@@ -1,0 +1,28 @@
+Universe, creation|Universe, luominen
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Käytä tällä alalla yleisiä sanoja viittaavat fyysisen maailmankaikkeuden. Jotkin kielet eivät ehkä ole yksittäinen sana maailmankaikkeuden ja joutua käyttämään esimerkiksi ilmaisu &quot;sade, maaperän, ja asiat taivaan&quot; tai &quot;taivasta, maata ja vettä&quot; tai kuvaileva ilmaisu kuten &quot;kaikki voit katso &quot;tai&quot; kaiken olemassaolevan &quot;.
+(1) What words refer to everything we can see?|(1) Mitä sanat viittaavat kaikkea voimme nähdä?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|universe, luominen, kosmos, taivas ja maa, maailmankaikkeus, kaikki, mikä on olemassa
+Sky|Taivas
+Use this domain for words related to the sky.|Käytä tätä verkkotunnus liittyviä sanoja taivaalle.
+(1) What words are used to refer to the sky?|(1) Mitä sanoja käytetään viittaamaan taivaalle?
+sky, firmament, canopy, vault|taivas, taivaankansi, katos, holvissa
+(2) What words refer to the air around the earth?|(2) Mitä sanoja viittaavat ilmaan ympäri maapallon?
+air, atmosphere, airspace, stratosphere, ozone layer|ilma, atmosphere, ilmatilan, stratosfäärissä, otsonikerroksen
+(3) What words are used to refer to the place or area beyond the sky?|(3) Mitä sanoja käytetään viitata paikkaan tai alueella ulkopuolella taivas?
+heaven, space, outer space, ether, void, solar system|taivas, avaruus, ulkoavaruudessa, eetteri, mitätön, aurinkokunta
+(4) What words describe something in the sky or something that happens in the sky?|(4) Mitä sanoja kuvaamaan jotain taivaalla tai jotain, joka tapahtuu taivaalla?
+aerial, heavenly, atmospheric, stratospheric, celestial,|antenni, taivaallinen, ilmakehän, stratosfäärin, celestial,
+(5) What words describe the appearance of the sky?|(5) Mitä sanat kuvaavat ulkonäkö taivaan?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|sininen, kirkas, musta (yö), pilvistä, pilvi täynnä, loistava, tumma, yö taivas, aavistus, myrskyinen, tumma, tähti nastoitettu
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Mitä sanoja viittaavat reunaan taivaalle jos se täyttää maahan?
+horizon, skyline|horisontti, horisonttiin
+(7) What words refer to something in the sky?|(7) Mitä sanoja viittaavat jotain taivaalla?
+heavenly body, celestial body, luminary|taivaankappale, taivaankappale, nero
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Mitä sanoja viittaavat valot, jotka näkyvät pohjoisen (tai eteläinen) taivaan?
+aurora borealis, northern lights|aurora borealis, revontulet
+(9) What words refer to something being in the sky?|(9) Mitä sanoja viittaavat jotain ollessa taivaalla?
+aloft, up in the sky, up in the air,|aloft, taivaalla, ilmaan,
+Sun|Aurinko
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Käytä tätä verkkotunnus liittyviä sanoja aurinkoa. Aurinko tekee kolme perusasiaa. Se liikkuu, se antaa valoa, ja se antaa lämpöä. Nämä kolme toimea ovat mukana merkityksiä suurin osa sanoista tällä alalla. Koska aurinko liikkuu horisontin alapuolella, monet sanat viittaavat siihen laskemassa tai nousemassa. Koska aurinko on pilvien yläpuolella, monet sanat viittaavat siihen liikkuvat taakse pilvien ja pilvet estää sen valoa. Auringon valoa ja lämpöä myös toissijaisia ​​vaikutuksia. Aurinko saa kasvit kasvamaan, ja se aiheuttaa vahinkoa asioita.
+(1) What words refer to the sun?|(1) Mitä sanoja viittaa aurinkoon?
+sun, solar, sol, daystar, our star|aurinko, aurinkoenergia, sol, Daystar, meidän tähti

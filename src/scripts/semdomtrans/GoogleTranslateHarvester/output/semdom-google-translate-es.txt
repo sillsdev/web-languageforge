@@ -1,0 +1,28 @@
+Universe, creation|Universo, la creación
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Utilice este dominio para palabras generales se refieren al universo físico. Algunos idiomas pueden no tener una sola palabra para el universo y puede que tenga que utilizar una frase como &#39;lluvia, el suelo, y las cosas del cielo &quot;o&quot; el cielo, la tierra y el agua &quot;o una frase descriptiva, como&quot; todo lo que pueda ver &quot;o&quot; todo lo que existe &quot;.
+(1) What words refer to everything we can see?|(1) ¿Qué palabras se refieren a todo lo que podemos ver?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|universo, la creación, el cosmos, el cielo y la tierra, macrocosmos, todo lo que existe
+Sky|Cielo
+Use this domain for words related to the sky.|Utilice este campo para palabras relacionadas con el cielo.
+(1) What words are used to refer to the sky?|(1) ¿Qué palabras se utilizan para referirse al cielo?
+sky, firmament, canopy, vault|cielo, firmamento, canopy, bóveda
+(2) What words refer to the air around the earth?|(2) ¿Qué palabras se refieren a que el aire alrededor de la Tierra?
+air, atmosphere, airspace, stratosphere, ozone layer|el aire, la atmósfera, el espacio aéreo, estratosfera, la capa de ozono
+(3) What words are used to refer to the place or area beyond the sky?|(3) ¿Qué palabras se utilizan para referirse al lugar o área más allá del cielo?
+heaven, space, outer space, ether, void, solar system|cielo, espacio, espacio exterior, éter, vacío, sistema solar
+(4) What words describe something in the sky or something that happens in the sky?|(4) ¿Qué palabras describen algo en el cielo o algo que sucede en el cielo?
+aerial, heavenly, atmospheric, stratospheric, celestial,|aérea, celestial, atmosférico, estratosférico, celestial,
+(5) What words describe the appearance of the sky?|(5) ¿Qué palabras describen el aspecto del cielo?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|azul, claro, negro (noche), nublado, nube llena, brillante, oscuro cielo nocturno, presentimiento, tempestuoso, oscuro, lleno de estrellas
+(6) What words refer to the edge of the sky where it meets the ground?|(6) ¿Qué palabras se refieren a la orilla del cielo donde se encuentra con el suelo?
+horizon, skyline|horizonte, horizonte
+(7) What words refer to something in the sky?|(7) ¿Qué palabras se refieren a algo en el cielo?
+heavenly body, celestial body, luminary|cuerpo celeste, cuerpo celeste, luminaria
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) ¿Qué palabras se refieren a las luces que aparecen en el cielo del norte (o sur)?
+aurora borealis, northern lights|aurora boreal, aurora boreal
+(9) What words refer to something being in the sky?|(9) ¿Qué palabras se refieren a algo que es en el cielo?
+aloft, up in the sky, up in the air,|en lo alto, en el cielo, en el aire,
+Sun|Sol
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Utilice este campo para palabras relacionadas con el sol. El sol hace tres cosas básicas. Se mueve, da luz, y da calor. Estas tres acciones están involucrados en el significado de la mayoría de las palabras en este dominio. Dado que el sol se mueve por debajo del horizonte, muchas palabras se refieren a ella el establecimiento o en aumento. Dado que el sol está por encima de las nubes, muchas palabras se refieren a ella se mueve detrás de las nubes y las nubes que bloquean su luz. La luz del sol y el calor también producen efectos secundarios. El sol hace que las plantas crezcan, y causa daños a las cosas.
+(1) What words refer to the sun?|(1) ¿Qué palabras se refieren al sol?
+sun, solar, sol, daystar, our star|sol, solar, sol, astro, nuestra estrella

@@ -1,0 +1,28 @@
+Universe, creation|Универзум, стварање
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Користите ову домен за опште речи које се односе на физичког универзума. Неки језици не може имати ниједну реч за свемиру и можда морати да користи израз као што је &quot;киша, тло, и ствари на небу &#39;или&#39; неба, земље и воде&quot; или описним изразом као што је &#39;све што можете да види &#39;или&#39; све што постоји &quot;.
+(1) What words refer to everything we can see?|(1) Које речи се односе на све што видимо?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|универзум, стварање, космос, небо и земља, макрокосмос, све што постоји
+Sky|Небо
+Use this domain for words related to the sky.|Користите ову домен за речи које се односе на небу.
+(1) What words are used to refer to the sky?|(1) Шта речи се користе да се односи на небу?
+sky, firmament, canopy, vault|небо, небески свод, купола, свод
+(2) What words refer to the air around the earth?|(2) Које речи се односе на ваздух око Земље?
+air, atmosphere, airspace, stratosphere, ozone layer|ваздух, атмосфера, ваздушни простор, стратосфера, озонски слој
+(3) What words are used to refer to the place or area beyond the sky?|(3) Шта речи користи да означи место или области изван неба?
+heaven, space, outer space, ether, void, solar system|небо, простор, спољашњи простор, етар, празнина, соларни систем
+(4) What words describe something in the sky or something that happens in the sky?|(4) Шта речи описују нешто на небу или нешто што се дешава на небу?
+aerial, heavenly, atmospheric, stratospheric, celestial,|антене, небески, атмосферска, Статосферична, небеска,
+(5) What words describe the appearance of the sky?|(5) Шта речи описују појаву на небу?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|плава, јасно, црно (ноћ), облачно, облак испуни, сјајан, тамно, ноћ небо, слутње, олујни, тамна, звезда студдед
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Шта речи се односе на ивици неба, где испуњава земљу?
+horizon, skyline|хоризонт, Скилине
+(7) What words refer to something in the sky?|(7) Које речи се односе на нешто на небу?
+heavenly body, celestial body, luminary|небеско тело, небеско тело, светиљка
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Које речи се односе на светлима која се појављују у северном (или југу) неба?
+aurora borealis, northern lights|аурора бореалис, поларна светлост
+(9) What words refer to something being in the sky?|(9) Које речи се односе на нешто чему на небу?
+aloft, up in the sky, up in the air,|високо, горе на небу, у ваздуху,
+Sun|Сунце
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Користите ову домен за речи које се односе на сунцу. Сунце ради три основне ствари. Она се креће, даје светлост, и даје топлоту. Ове три акције су укључени у значењу већина речи у овој области. Пошто сунце креће испод хоризонта, многе речи се односе на то постављање или расте. Пошто је сунце изнад облака, многе речи се односе на њега креће иза облака и облака блокирају његову светлост. Лигхт Тхе сунца и топлоте и производе секундарне ефекте. Сунце изазива биљке да расте, а то узрокује оштећења ствари.
+(1) What words refer to the sun?|(1) Шта речи се односе на сунцу?
+sun, solar, sol, daystar, our star|Сунце, соларна, сол, Даистар, наша звезда

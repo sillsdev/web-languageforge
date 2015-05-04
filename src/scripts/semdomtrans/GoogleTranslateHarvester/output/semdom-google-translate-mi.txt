@@ -1,0 +1,28 @@
+Universe, creation|Universe, hanga
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Whakamahia tēnei rohe mō kupu whānui uhinga ki te ao tinana. Kore ai ētahi reo e me te kupu kotahi mo te ao, kia whai ki te whakamahi i te kīanga pērā i &#39;ua, te oneone, me te mea o te rangi&#39; ranei &#39;rangi, te whenua, me te wai&#39;, ranei te kīanga whakamārama pērā i &#39;nga mea katoa e taea e koe kite i nga mea katoa &#39;ranei&#39; e te vai &#39;.
+(1) What words refer to everything we can see?|(1) Ko e hā kupu Titiro ki nga mea katoa e taea e tatou e kite?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|ao, hanga, hanganga, te rangi me te whenua, macrocosm, nga mea katoa e te vai
+Sky|Rangi
+Use this domain for words related to the sky.|Whakamahia tēnei rohe mō kupu e pā ana ki te rangi.
+(1) What words are used to refer to the sky?|(1) Ko e hā kupu e whakamahia ana ki te kōrero ki te rangi?
+sky, firmament, canopy, vault|rangi, kikorangi, teneti, taiawhio
+(2) What words refer to the air around the earth?|(2) Ko e hā kupu kōrero ki te rangi a tawhio noa te whenua?
+air, atmosphere, airspace, stratosphere, ozone layer|rangi, huru, te pïra e, kōhaupapa, pekerangi
+(3) What words are used to refer to the place or area beyond the sky?|(3) Ko e hā kupu e whakamahia ana ki te kōrero ki te wahi ranei rohe ki tua atu i te rangi?
+heaven, space, outer space, ether, void, solar system|te rangi, te wāhi, i waho wāhi, Etere, kau, te pūnaha solar
+(4) What words describe something in the sky or something that happens in the sky?|(4) Ko e hā kupu whakaahua te tahi mea i roto i te rangi te tahi mea e aore e tupu i roto i te rangi?
+aerial, heavenly, atmospheric, stratospheric, celestial,|irirangi, te rangi, kōhauhau, stratospheric, tiretiera,
+(5) What words describe the appearance of the sky?|(5) Ko e hā kupu whakaahua i te ahua o te rangi?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|puru, mārama, pango (po), kapua, ki tonu kapua, ngingila, pouri, po rangi, pakeke, te tupuhi, hokowhitu pouri, whetu
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Ko e hā kupu kōrero ki te mata o te rangi te wahi tutaki reira te whenua?
+horizon, skyline|huapae, Skyline
+(7) What words refer to something in the sky?|(7) Ko e hā kupu kōrero ki te tahi mea i roto i te rangi?
+heavenly body, celestial body, luminary|tinana i te rangi, tinana tiretiera, whakamarama
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) He aha te kupu kōrero ki te rama e puta i roto i te raki (tonga ranei) te rangi?
+aurora borealis, northern lights|aurora borealis, rama raki
+(9) What words refer to something being in the sky?|(9) Ko e hā kupu kōrero ki te tahi mea i roto i te rangi?
+aloft, up in the sky, up in the air,|tairanga, ake i roto i te rangi, ki runga i te rangi,
+Sun|Sun
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Whakamahia tēnei rohe mō kupu e pā ana ki te ra. Ko te ra e mahi toru nga mea tumu. E turai te reira, hoatu ana e ia te marama, a ka homai a reira e te wera. Whai wāhi ēnei mahi e toru e i roto i nga tikanga o te nuinga o nga kupu i roto i tenei rohe. Mai te ra ngokingoki ana i raro i te pae, kōrero maha nga kupu ki te whakatakoto i te reira maranga ranei. Mai te mea i runga i nga kapua o te ra, kōrero maha nga kupu ki reira neke i muri i nga kapua, me te kapua ārai tona marama. Marama, me te wera o te ra, hua i hoki ngā pānga tuarua. Ai te ra tipu ki te tupu, a ka meinga te reira kino ki nga mea.
+(1) What words refer to the sun?|(1) Ko e hā kupu kōrero ki te ra?
+sun, solar, sol, daystar, our star|te ra, kōmaru, sol, fetu&#39;u&#39;aho, to tatou whetu

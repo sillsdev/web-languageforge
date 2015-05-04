@@ -1,0 +1,28 @@
+Universe, creation|Universe, paglikha
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Gamitin ang domain na ito para sa pangkalahatang mga salita na tumutukoy sa pisikal na daigdig. Ang ilang mga wika ay hindi maaaring magkaroon ng isang salita para sa daigdig at maaaring gumamit ng isang parirala tulad ng &#39;ulan, lupa, at mga bagay sa langit&#39; o &#39;langit, lupa, at tubig&#39; o ng isang naglalarawang parirala tulad ng &#39;lahat ng iyong makakaya tingnan ang &#39;o&#39; lahat na umiiral &#39;.
+(1) What words refer to everything we can see?|(1) Ano ang mga salita sumangguni sa lahat ng bagay na maaari naming makita?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|universe, paglikha, cosmos, langit at lupa, makrokosm, lahat na umiiral
+Sky|Langit
+Use this domain for words related to the sky.|Gamitin ang domain na ito para sa mga salita na may kaugnayan sa langit.
+(1) What words are used to refer to the sky?|(1) Ano ang salita ay ginagamit upang sumangguni sa langit?
+sky, firmament, canopy, vault|kalangitan, kalawakan, canopy, taguan
+(2) What words refer to the air around the earth?|(2) Anong mga salita sumangguni sa hangin sa paligid ng lupa?
+air, atmosphere, airspace, stratosphere, ozone layer|hangin, kapaligiran, putok, alangaang, ozone layer
+(3) What words are used to refer to the place or area beyond the sky?|(3) Ano ang salita ay ginagamit upang tingnan ang lugar o area na lampas sa langit?
+heaven, space, outer space, ether, void, solar system|langit, space, kalawakan, eter, walang bisa, solar system
+(4) What words describe something in the sky or something that happens in the sky?|(4) Ano ang mga salita na naglalarawan ng isang bagay sa langit o isang bagay na mangyayari sa langit?
+aerial, heavenly, atmospheric, stratospheric, celestial,|aerial, langit, atmospera, estratosperiko, makalangit,
+(5) What words describe the appearance of the sky?|(5) Ano ang mga salita na naglalarawan sa itsura ng langit?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|asul, malinaw, black (gabi), maulap, napuno ng ulap, napakatalino, madilim, gabi langit, kaba, bagy, dark, star studded
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Ano ang mga salita sumangguni sa gilid ng langit kung saan ito ay nakakatugon sa lupa?
+horizon, skyline|abot-tanaw, skyline
+(7) What words refer to something in the sky?|(7) Ano ang mga salita na sumangguni sa isang bagay sa langit?
+heavenly body, celestial body, luminary|makalangit na katawan, celestial katawan, luminaryo
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Ano ang mga salita sumangguni sa ilaw na lalabas sa hilagang (o timog) langit?
+aurora borealis, northern lights|Aurora borealis, hilagang ilaw
+(9) What words refer to something being in the sky?|(9) Ano ang mga salita sumangguni sa isang bagay na sa langit?
+aloft, up in the sky, up in the air,|nasa itaas, sa kalangitan, hanggang sa himpapawid,
+Sun|Araw
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Gamitin ang domain na ito para sa mga salita na may kaugnayan sa sun. Ang araw ay tatlong pangunahing mga bagay-bagay. Ito gumagalaw, ito ay nagbibigay ng liwanag, at nagbibigay ito ng init. Ang mga tatlong mga aksyon ay kasangkot sa mga kahulugan ng karamihan ng mga salita sa domain na ito. Dahil sa araw na gumagalaw sa ibaba ng abot-tanaw, maraming salita sumangguni sa mga ito ang setting o umaangat. Dahil ang araw ay nasa itaas ng mga ulap, maraming salita sumangguni sa mga ito paglipat sa likod ng mga ulap at ang mga ulap pagharang kanyang liwanag. Liwanag at init ng araw Din pangalawang epekto. Ang araw ay nagiging sanhi ng mga halaman upang lumago, at ito ay nagiging sanhi ng pinsala sa mga bagay.
+(1) What words refer to the sun?|(1) Ano ang mga salita sumangguni sa sun?
+sun, solar, sol, daystar, our star|sun, solar, sol, daystar, ang aming star

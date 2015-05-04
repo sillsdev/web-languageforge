@@ -1,0 +1,28 @@
+Universe, creation|Cruinne, a chruthú
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Bain úsáid as an fhearainn seo focail ghinearálta ag tagairt do na Cruinne fisiciúil. Ní féidir le roinnt teangacha a bheith focal amháin don cruinne agus d&#39;fhéadfadh a úsáid abairt ar nós &#39;báisteach, ithir, agus rudaí ar an spéir&#39; nó &#39;spéir, talamh, agus uisce&#39; nó frása tuairisciúil, mar shampla &#39;gach rud is féidir leat féach &#39;nó&#39; gach rud atá ann &#39;.
+(1) What words refer to everything we can see?|(1) Cad iad na focail a tharchur chuig gach rud is féidir linn a fheiceáil?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|Cruinne, a chruthú, cosmos, neamh agus talamh, macrocosm, rud atá ann
+Sky|Spéir
+Use this domain for words related to the sky.|Bain úsáid as an fhearainn seo focail a bhaineann leis an spéir.
+(1) What words are used to refer to the sky?|(1) Cad iad na focail a úsáidtear chun tagairt a dhéanamh ar an spéir?
+sky, firmament, canopy, vault|spéir, firmament, ceannbhrat, cruinneachán
+(2) What words refer to the air around the earth?|(2) Cad iad na focail a tharchur chuig an aer ar fud an domhain?
+air, atmosphere, airspace, stratosphere, ozone layer|aer, atmaisféar, aerspás, stratosphere, ciseal ózóin
+(3) What words are used to refer to the place or area beyond the sky?|(3) Cad iad na focail a úsáidtear chun tagairt a dhéanamh ar an áit nó limistéar thar an spéir?
+heaven, space, outer space, ether, void, solar system|neamh, spás, spás amuigh, éitear, ar neamhní, córas gréine
+(4) What words describe something in the sky or something that happens in the sky?|(4) Cad iad na focail síos ar rud éigin sa spéir nó rud éigin a tharlaíonn sa spéir?
+aerial, heavenly, atmospheric, stratospheric, celestial,|ón aer, bhflaitheas, atmaisféarach, strataisféarach, neamhaí,
+(5) What words describe the appearance of the sky?|(5) Cad iad na focail cur síos ar an cuma ar an spéir?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|gorm, soiléir, dubh (oíche), scamallach, scamall líonadh, iontach, dorcha, spéir na hoíche, foreboding, stoirmiúil, dorcha, réalta studded
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Cad iad na focail a tharchur chuig an imeall an spéir mbuaileann sí leis an talamh?
+horizon, skyline|spéire, spéirlíne
+(7) What words refer to something in the sky?|(7) Cad iad na focail a tharchur chuig rud éigin sa spéir?
+heavenly body, celestial body, luminary|comhlacht heavenly, comhlacht neamhaí, luminary
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Cad iad na focail a tharchur chuig na soilse a thaispeánfar sa thuaidh (nó theas) spéir?
+aurora borealis, northern lights|Borealisstar Aurora, soilse thuaidh
+(9) What words refer to something being in the sky?|(9) Cad iad na focail a tharchur chuig rud éigin a bheith sa spéir?
+aloft, up in the sky, up in the air,|aloft, suas sa spéir, suas san aer,
+Sun|Sun
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Bain úsáid as an fhearainn seo focail a bhaineann leis an ghrian. A dhéanann an ghrian trí rudaí bunúsacha. Théann sé, tugann sé solas, agus tugann sé teas. Tá na trí ghníomh bhfuil baint acu na bríonna de chuid is mó de na focail sa réimse seo. Ós rud é go mbogann an ghrian faoi bhun na spéire, a tharchur go leor focal a leagan síos nó a ardú. Ós rud é go bhfuil an ghrian os cionn an scamaill, a tharchur go leor focal a dó ag bogadh taobh thiar de na scamaill agus na scamaill blocála a solas. An ghrian ar solas agus teas, freisin, éifeachtaí tánaisteacha. Cúiseanna an ghrian plandaí ag fás, agus cruthaíonn sé damáiste do rudaí.
+(1) What words refer to the sun?|(1) Cad iad na focail a tharchur chuig an ghrian?
+sun, solar, sol, daystar, our star|ghrian, gréine, sol, Daystar, ár réalta

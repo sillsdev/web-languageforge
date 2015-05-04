@@ -1,0 +1,28 @@
+Universe, creation|جهان، ایجاد
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|با استفاده از این دامنه برای کلمات عمومی با اشاره به جهان فیزیکی. بعضی از زبان های ممکن یک کلمه را برای جهان ندارد و ممکن است مجبور به استفاده از یک عبارت مانند &quot;باران، خاک، و چیزهایی از آسمان&quot; و یا &quot;آسمان، زمین، آب و یا یک عبارت توصیفی مانند&quot; شما می توانید &#39;یا&#39; چیزی که وجود دارد &quot;را ببینید.
+(1) What words refer to everything we can see?|(1) چه به همه چیز اشاره کلمات ما می توانید ببینید؟
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|جهان، ایجاد، کیهان، آسمان و زمین، دنیا، چیزی که وجود دارد
+Sky|آسمان
+Use this domain for words related to the sky.|با استفاده از این دامنه برای کلمات مربوط به آسمان است.
+(1) What words are used to refer to the sky?|(1) چه کلمات استفاده می شود برای اشاره به آسمان؟
+sky, firmament, canopy, vault|آسمان، آسمان، تاج پوشش، طاق
+(2) What words refer to the air around the earth?|(2) چه کلمات به هوا در اطراف زمین اشاره؟
+air, atmosphere, airspace, stratosphere, ozone layer|هوا، جو، حریم هوایی، استراتوسفر، ازن
+(3) What words are used to refer to the place or area beyond the sky?|(3) چه کلمات استفاده می شود برای اشاره به مکان یا منطقه فراتر از آسمان؟
+heaven, space, outer space, ether, void, solar system|آسمان، فضا، فضا، اتر، از درجه اعتبار ساقط، منظومه شمسی
+(4) What words describe something in the sky or something that happens in the sky?|(4) چه کلمات توصیف چیزی در آسمان و یا چیزی است که در آسمان می افتد؟
+aerial, heavenly, atmospheric, stratospheric, celestial,|هوایی، آسمانی، جو، استراتوسفر، آسمانی،
+(5) What words describe the appearance of the sky?|(5) چه کلمات توصیف ظاهر از آسمان؟
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|آبی، روشن، سیاه و سفید (شب)، ابری، ابر پر شده است، درخشان، تیره، آسمان شب، شوم، طوفانی، تیره، ستاره های نوک
+(6) What words refer to the edge of the sky where it meets the ground?|(6) چه کلمات را به لبه از آسمان که در آن ملاقات زمین اشاره؟
+horizon, skyline|آسمان شهر، خط افق
+(7) What words refer to something in the sky?|(7) چه کلمات را به چیزی در آسمان اشاره؟
+heavenly body, celestial body, luminary|بدن آسمانی، بدن آسمانی، اسمانی
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) چه کلمات به چراغ که در شمال (یا جنوب) آسمان ظاهر مراجعه؟
+aurora borealis, northern lights|شفق شمالی، چراغ های شمالی
+(9) What words refer to something being in the sky?|(9) چه کلمات را به چیزی که در آسمان اشاره؟
+aloft, up in the sky, up in the air,|در هوا، تا در آسمان، در هوا،
+Sun|خورشید
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|با استفاده از این دامنه برای کلمات مربوط به خورشید است. خورشید می کند سه چیز اساسی. این حرکت، آن نور می دهد، و آن را می دهد گرما. این سه عمل در معانی بسیاری از کلمات در این حوزه دخالت دارند. از آنجا که خورشید در زیر افق حرکت می کند، بسیاری از واژه ها به آن تنظیم و یا افزایش مراجعه کنید. از آنجا که خورشید بالاتر از ابرها، بسیاری از واژه ها به آن رجوع در حال حرکت در پشت ابرها و ابرها مانع عبور نور آن است. نور و گرمای خورشید نیز اثرات ثانویه. خورشید باعث گیاهان به رشد، و آن را باعث آسیب به چیزهایی.
+(1) What words refer to the sun?|(1) چه کلمات به خورشید اشاره؟
+sun, solar, sol, daystar, our star|خورشید، خورشیدی، سل، خورشید، ستاره ما
