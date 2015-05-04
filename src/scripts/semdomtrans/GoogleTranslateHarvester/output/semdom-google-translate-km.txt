@@ -1,0 +1,28 @@
+Universe, creation|ចក្កវាឡ​បង្កើត
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|ប្រើ​ដែន​សម្រាប់​ពាក្យ​ទូទៅ​សំដៅ​ទៅ​លើ​សកលលោក​នេះ​។ ភាសា​មួយ​ចំនួន​អាច​នឹង​មិន​មាន​ពាក្យ​តែ​មួយ​សម្រាប់​សកលលោក​និង​អាច​មាន​ការ​ប្រើ​ឃ្លា​ដូចជា​ភ្លៀង​, ដី​, រឿង​និង​លើ​មេឃ &#39;ឬ​&#39; មេឃ​ដី​និង​ទឹក &#39;ឬ​ឃ្លា​ដែល​បាន​ពិពណ៌នា​ដូចជា​អ្វី​គ្រប់យ៉ាង​ដែល​អ្នក​អាច​ធ្វើ​បាន​មួយ មើល​ឃើញ &quot;ឬ​&quot; អ្វី​គ្រប់​យ៉ាង​ដែល​មាន​។ &#39;
+(1) What words refer to everything we can see?|(1​) តើ​ពាក្យ​អ្វី​ដែល​យោង​ទៅ​លើ​អ្វី​គ្រប់យ៉ាង​ដែល​យើង​អាច​មើល​ឃើញ​?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|ចក្រវាល​, ការ​បង្កើត​, cosmos ស្ថាន​បរមសុខ * និង​ផែនដី macrocosm​, អ្វី​គ្រប់​យ៉ាង​ដែល​មាន
+Sky|ស្កា​យ
+Use this domain for words related to the sky.|ប្រើ​ដែន​សម្រាប់​ពាក្យ​ដែល​ទាក់​ទង​ទៅ​មេឃ​នេះ​។
+(1) What words are used to refer to the sky?|(1​) តើ​ពាក្យ​អ្វី​ដែល​ត្រូវ​បាន​គេ​ប្រើ​ដើម្បី​សំដៅ​ទៅ​លើមេឃ​ដូច្នេះ​?
+sky, firmament, canopy, vault|មេឃ​, លំហ​, ស្លឹក vault​,
+(2) What words refer to the air around the earth?|(2​) តើ​ពាក្យ​ដែល​យោង​ទៅ​តាម​អាកាស​នៅ​ជុំវិញ​ផែនដី​នេះ​?
+air, atmosphere, airspace, stratosphere, ozone layer|ខ្យល់​បរិយាកាស​ដែនអាកាស​, stratosphere ស្រទាប់​អូហ្សូន
+(3) What words are used to refer to the place or area beyond the sky?|(3​) តើ​ពាក្យ​អ្វី​ដែល​ត្រូវ​បាន​គេ​ប្រើ​ដើម្បី​សំដៅ​ទៅ​កន្លែង​ឬ​តំបន់​ហួស​ពី​លើមេឃ​?
+heaven, space, outer space, ether, void, solar system|ស្ថាន​បរមសុខ​, ចន្លោះ​, ចន្លោះ​ខាងក្រៅ​, អេ​ធើ​រ​, ចាត់​ទុកជាមោឃៈ​, ប្រព័ន្ធ​ព្រះ​អាទិត្យ
+(4) What words describe something in the sky or something that happens in the sky?|(4​) តើ​ពាក្យ​អ្វី​ដែល​មាន​អ្វី​មួយ​នៅ​លើ​មេឃ​ឬ​អ្វី​មួយ​ដែល​កើត​ឡើង​នៅ​លើ​មេឃ​អំពី​អ្វី​?
+aerial, heavenly, atmospheric, stratospheric, celestial,|ពី​លើ​អាកាស​នៅ​ស្ថានសួគ៌​បរិយាកាស stratospheric​, សេ​ឡេ​ស្ទា​ល​,
+(5) What words describe the appearance of the sky?|(5​) តើ​ពាក្យ​អ្វី​ដែល​នឹង​ពណ៌នា​អំពី​រូបរាង​នៃ​មេឃ​?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|ពណ៌​ខៀវ​, ច្បាស់​លាស់​, ខ្មៅ (យប់​)​, ​​ពពក​, ពពក​ដែល​ពោរពេញ​ទៅ​, អស្ចារ្យ​ងងឹត​, មេឃ​, យប់​, foreboding​, ព្យុះ​, ងងឹត​តារា​ដែល​មាន​លំអ
+(6) What words refer to the edge of the sky where it meets the ground?|(6​) តើ​ពាក្យ​អ្វី​ដែល​សំដៅ​ទៅ​លើ​គែម​នៃ​កន្លែង​ដែល​វា​បាន​ជួប​មេឃ​ដី​បាន​ដែរ​ឬទេ​?
+horizon, skyline|ផ្តេក​, ជើងមេឃ
+(7) What words refer to something in the sky?|(7​) តើ​ពាក្យ​អ្វី​ដែល​សំដៅ​ទៅ​លើ​អ្វី​មួយ​នៅ​លើ​មេឃ​?
+heavenly body, celestial body, luminary|រាង​កាយ​នៅ​ស្ថានសួគ៌​រាងកាយ celestial​, luminary
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8​) តើ​ពាក្យ​អ្វី​ដែល​សំដៅ​ទៅ​លើ​ពន្លឺ​ដែល​បង្ហាញ​នៅ​ក្នុង​មេឃ​ភាគ​ខាង​ជើង (ឬ​ភាគ​ខាង​ត្បូង​)​?
+aurora borealis, northern lights|borealis Aurora​, ពន្លឺ​ភ្លើង​នៅ​ភាគ​ខាងជើង
+(9) What words refer to something being in the sky?|(9​) តើ​ពាក្យ​អ្វី​ដែល​សំដៅ​ទៅ​លើ​អ្វី​មួយ​ដែល​ត្រូវ​បាន​នៅ​លើមេឃ​?
+aloft, up in the sky, up in the air,|ក្តោប​បាន​កើន​ឡើង​នៅ​លើ​មេឃ​ដោយ​បាន​កើន​ឡើង​នៅ​ក្នុង​ខ្យល់​,
+Sun|ស៊ុន
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|ប្រើ​ដែន​សម្រាប់​ពាក្យ​ដែល​ទាក់ទង​ទៅ​នឹង​ព្រះអាទិត្យ​នេះ​។ ព្រះអាទិត្យ​បាន​ធ្វើ​អ្វី​ជា​មូលដ្ឋាន​ទាំង​បី​។ វា​ផ្លាស់ទី​វា​ផ្តល់​នូវ​ពន្លឺ​និង​វា​ផ្តល់​នូវ​កំ​ដៅ​។ សកម្មភាព​ទាំង​បី​នេះ​ត្រូវ​បាន​ចូល​រួម​នៅ​ក្នុង​អត្ថន័យ​នៃ​ការ​ភាគ​ច្រើន​បំផុត​នៃ​ពាក្យ​នៅ​ក្នុង​ដែន​នេះ​។ ចាប់​តាំង​ពី​ពេល​ដែល​ព្រះអាទិត្យ​ផ្លាស់ទី​ផ្តេក​ខាង​ក្រោម​នេះ​ពាក្យ​ជា​ច្រើន​យោង​ទៅ​វា​កំណត់​ឬ​ការ​កើន​ឡើង​។ ចាប់​តាំង​ពី​ព្រះអាទិត្យ​ស្ថិត​នៅ​ពី​លើ​ពពក​ពាក្យ​ជា​ច្រើន​យោង​ទៅ​វា​បាន​ផ្លាស់​ប្តូ​រ​នៅ​ពីក្រោយ​ពពក​និង​ពពក​បាន​រារាំង​ពន្លឺ​របស់​វា​។ ពន្លឺ​ព្រះអាទិត្យ​និង​កំ​ដៅ​ផង​ដែរ​នូវ​ផល​អនុវិទ្យាល័យ​។ ព្រះអាទិត្យ​បាន​ប​ណ្តា​ល​ឱ្យ​រុក្ខជាតិ​ដើម្បី​រីក​លូតលាស់​ហើយ​វា​បាន​ប​ណ្តា​ល​ឱ្យ​មាន​ការ​ខូច​ខាត​ទៅ​នឹង​រឿង​។
+(1) What words refer to the sun?|(1​) តើ​ពាក្យ​អ្វី​ដែល​សំដៅ​ទៅ​លើ​ព្រះអាទិត្យ​?
+sun, solar, sol, daystar, our star|ព្រះអាទិត្យ​, ព្រះ​អាទិត្យ​, Sol​, ផ្កាយ​ថ្ងៃ​, តារា​របស់​យើង

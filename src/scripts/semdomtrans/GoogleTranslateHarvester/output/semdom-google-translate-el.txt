@@ -1,0 +1,28 @@
+Universe, creation|Σύμπαν, τη δημιουργία
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|Χρησιμοποιήστε αυτό το πεδίο για γενικές λέξεις αναφερόμενος στο φυσικό σύμπαν. Ορισμένες γλώσσες ενδέχεται να μην έχουν ούτε μία λέξη για το σύμπαν και μπορεί να χρειαστεί να χρησιμοποιήσω μια φράση όπως «βροχή, το χώμα, και τα πράγματα του ουρανού» ή «τον ουρανό, τη γη και το νερό» ή μια περιγραφική φράση όπως &#39;ό, τι μπορείτε δείτε »ή« ό, τι υπάρχει ».
+(1) What words refer to everything we can see?|(1) Τι λέξεις αυτές αναφέρονται σε όλα όσα μπορούμε να δούμε;
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|σύμπαν, δημιουργία, ο κόσμος, ο ουρανός και η γη, ο μακρόκοσμος, τα πάντα που υπάρχουν
+Sky|Ουρανός
+Use this domain for words related to the sky.|Χρησιμοποιήστε αυτό το πεδίο για λέξεις που σχετίζονται με τον ουρανό.
+(1) What words are used to refer to the sky?|(1) Τι λέξεις που χρησιμοποιείται για να δηλώσει τον ουρανό;
+sky, firmament, canopy, vault|ουρανό, στερέωμα, θόλος, θόλος
+(2) What words refer to the air around the earth?|(2) Ποια λέξεις αυτές αναφέρονται στον αέρα γύρω από τη Γη;
+air, atmosphere, airspace, stratosphere, ozone layer|αέρα, ατμόσφαιρα, εναέριου χώρου, στρατόσφαιρα, στοιβάδα του όζοντος
+(3) What words are used to refer to the place or area beyond the sky?|(3) Ποια λέξεις χρησιμοποιούνται για να αναφερθώ στον τόπο ή την περιοχή πέρα ​​από τον ουρανό;
+heaven, space, outer space, ether, void, solar system|ουρανό, το διάστημα, το διάστημα, αιθέρα, κενό, ηλιακό σύστημα
+(4) What words describe something in the sky or something that happens in the sky?|(4) Ποιες λέξεις περιγράφουν κάτι στον ουρανό ή κάτι που συμβαίνει στον ουρανό;
+aerial, heavenly, atmospheric, stratospheric, celestial,|εναέρια, παραδεισένιο, ατμοσφαιρική, στρατοσφαιρικού, ουράνια,
+(5) What words describe the appearance of the sky?|(5) Τι λέξεις περιγράφουν την εμφάνιση του ουρανού;
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|μπλε, σαφής, μαύρο (το βράδυ), συννεφιά, σύννεφο γεμάτο, λαμπερό, σκούρο, νυχτερινό ουρανό, προαίσθημα, θυελλώδης, σκοτεινό, γεμάτο αστέρες
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Ποιες λέξεις αυτές αναφέρονται στην άκρη του ουρανού όπου συναντά το έδαφος;
+horizon, skyline|ορίζοντα, ορίζοντα
+(7) What words refer to something in the sky?|(7) Ποιες λέξεις αναφερθώ σε κάτι στον ουρανό;
+heavenly body, celestial body, luminary|ουράνιο σώμα, ουράνια σώματα, φωτιστικό
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Ποιες λέξεις αυτές αναφέρονται στα φώτα που εμφανίζονται στο βόρειο (ή νότια) του ουρανού;
+aurora borealis, northern lights|Aurora Borealis, βόρειο σέλας
+(9) What words refer to something being in the sky?|(9) Ποιες λέξεις αναφερθώ σε κάτι που είναι στον ουρανό;
+aloft, up in the sky, up in the air,|ψηλά, στον ουρανό, στον αέρα,
+Sun|Ήλιος
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|Χρησιμοποιήστε αυτό το πεδίο για λέξεις που σχετίζονται με τον ήλιο. Ο ήλιος κάνει τρία βασικά πράγματα. Κινείται, που δίνει φως, και δίνει θερμότητα. Αυτές οι τρεις δράσεις που συμμετέχουν στις έννοιες των περισσότερων λέξεων σε αυτόν τον τομέα. Δεδομένου ότι ο ήλιος κινείται κάτω από τον ορίζοντα, πολλές λέξεις αναφέρονται σε αυτήν τη ρύθμιση ή να αυξάνεται. Επειδή ο ήλιος είναι πάνω από τα σύννεφα, πολλές λέξεις αναφέρονται σε αυτό κινείται πίσω από τα σύννεφα και τα σύννεφα μπλοκάρει το φως του. Το φως του ήλιου και τη θερμότητα παράγουν και δευτερογενείς επιπτώσεις. Ο ήλιος προκαλεί τα φυτά να μεγαλώνουν, και προκαλεί ζημιά σε πράγματα.
+(1) What words refer to the sun?|(1) Τι λέξεις αυτές αναφέρονται στον ήλιο;
+sun, solar, sol, daystar, our star|ήλιος, ηλιακό, Sol, DAYSTAR, το αστέρι μας

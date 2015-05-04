@@ -1,0 +1,28 @@
+Universe, creation|ಯೂನಿವರ್ಸ್, ಸೃಷ್ಟಿ
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|ಭೌತಿಕ ಬ್ರಹ್ಮಾಂಡದ ಉಲ್ಲೇಖಿಸಿ ಸಾಮಾನ್ಯ ಪದಗಳನ್ನು ಈ ಡೊಮೇನ್ ಬಳಸಿ. ಕೆಲವು ಭಾಷೆಗಳಲ್ಲಿ ಬ್ರಹ್ಮಾಂಡಕ್ಕೆ ಒಂದು ಪದ ಹೊಂದಿರುವುದಿಲ್ಲ ಮತ್ತು ಉದಾಹರಣೆಗೆ ನೀವು &#39;ಎಲ್ಲವೂ&#39; ಮಳೆ, ಮಣ್ಣಿನ ಮತ್ತು ಆಕಾಶದ ವಸ್ತುಗಳನ್ನು &#39;ಅಥವಾ&#39; ಆಕಾಶ, ಭೂಮಿ, ಮತ್ತು ನೀರು &#39;ಅಥವಾ ಒಂದು ವಿವರಣಾತ್ಮಕ ಪದಗುಚ್ಛವನ್ನು ಒಂದು ನುಡಿಗಟ್ಟು ಬಳಸಲು ಹೊಂದಿರಬಹುದು ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ &#39;ಅಥವಾ&#39; ಎಲ್ಲವೂ &#39;ನೋಡಿ.
+(1) What words refer to everything we can see?|(1) ನಾವು ಎಲ್ಲವನ್ನೂ ಯಾವ ಪದಗಳು ನೋಡಿ ನೋಡಬಹುದು?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ ಬ್ರಹ್ಮಾಂಡದ, ಸೃಷ್ಟಿ, ಬ್ರಹ್ಮಾಂಡದ, ಸ್ವರ್ಗ ಮತ್ತು ಭೂಮಿಯ, ಸಮಷ್ಟಿ, ಎಲ್ಲವನ್ನೂ
+Sky|ಸ್ಕೈ
+Use this domain for words related to the sky.|ಆಕಾಶದಲ್ಲಿ ಸಂಬಂಧಿಸಿದ ಪದಗಳಿಗೆ ಇದರ ಡೊಮೇನ್ ಬಳಸಿ.
+(1) What words are used to refer to the sky?|(1) ಯಾವ ಪದಗಳು ಆಕಾಶದಲ್ಲಿ ಉಲ್ಲೇಖಿಸಲು ಬಳಸಲಾಗುತ್ತದೆ?
+sky, firmament, canopy, vault|ಆಕಾಶ, ಆಕಾಶ, ಮೇಲಾವರಣ, ಚಾವಣಿ
+(2) What words refer to the air around the earth?|(2) ಯಾವ ಪದಗಳು ಭೂಮಿಯ ಸುತ್ತ ವಾಯು ಸಂಪರ್ಕಿಸಿ?
+air, atmosphere, airspace, stratosphere, ozone layer|ಗಾಳಿ, ವಾತಾವರಣ, ವಾಯುಪ್ರದೇಶದ, ವಾಯುಮಂಡಲ, ಓಝೋನ್ ಪದರ
+(3) What words are used to refer to the place or area beyond the sky?|(3) ಯಾವ ಪದಗಳು ಆಕಾಶದಲ್ಲಿ ಮೀರಿ ಸ್ಥಳದಲ್ಲಿ ಅಥವಾ ಪ್ರದೇಶವನ್ನು ಉಲ್ಲೇಖಿಸಲು ಬಳಸಲಾಗುತ್ತದೆ?
+heaven, space, outer space, ether, void, solar system|ಸ್ವರ್ಗ, ಬಾಹ್ಯಾಕಾಶ, ಬಾಹ್ಯಾಕಾಶದಲ್ಲಿ, ಆಕಾಶ, ಶೂನ್ಯ, ಸೌರಮಂಡಲದ
+(4) What words describe something in the sky or something that happens in the sky?|(4) ಯಾವ ಪದಗಳು ಆಕಾಶದಲ್ಲಿ ನಡೆಯುವ ಆಕಾಶ ಅಥವಾ ಏನೋ ಏನೋ ವಿವರಿಸಲು?
+aerial, heavenly, atmospheric, stratospheric, celestial,|ಆಕಾಶ, ಅಂತರಿಕ್ಷ ಆಕಾಶ, ವಾತಾವರಣದ, ವಾಯುಮಂಡಲದ
+(5) What words describe the appearance of the sky?|(5) ಯಾವ ಪದಗಳು ಆಕಾಶದಲ್ಲಿ ನೋಟವನ್ನು ವಿವರಿಸಲು?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|ನೀಲಿ, ಸ್ಪಷ್ಟ, ಕಪ್ಪು (ರಾತ್ರಿ), ಮೋಡ, ಮೋಡ ತುಂಬಿದ, ಅದ್ಭುತ, ಡಾರ್ಕ್, ರಾತ್ರಿ ಆಕಾಶದಲ್ಲಿ, ಭವಿಷ್ಯಹೇಳುವುದು, ಬಿರುಸಿನ, ಡಾರ್ಕ್, ಸ್ಟಾರ್ ದಟ್ಟವಾಗಿರುತ್ತದೆ
+(6) What words refer to the edge of the sky where it meets the ground?|(6) ಯಾವ ಪದಗಳು ನೆಲದ ಇದು ಸಂಧಿಸುವ ಆಕಾಶದ ಅಂಚಿಗೆ ನೋಡಿ?
+horizon, skyline|ಹಾರಿಜಾನ್ ಸ್ಕೈಲೈನ್
+(7) What words refer to something in the sky?|(7) ಯಾವ ಪದಗಳು ಆಕಾಶದಲ್ಲಿ ಏನೋ ನೋಡಿ?
+heavenly body, celestial body, luminary|ಆಕಾಶ ಕಾಯ, ಆಕಾಶಕಾಯಗಳ, ಪ್ರತಿಭಾಶಾಲಿ
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) ಯಾವ ಪದಗಳು ಉತ್ತರ (ಅಥವಾ ದಕ್ಷಿಣ) ಆಕಾಶದಲ್ಲಿ ಕಂಡುಬರುವ ದೀಪಗಳನ್ನು ನೋಡಿ?
+aurora borealis, northern lights|ಅರೋರಾ ಬೋರಿಯಾಲಿಸ್ ಉತ್ತರ ದೀಪಗಳು
+(9) What words refer to something being in the sky?|(9) ಯಾವ ಪದಗಳು ಆಕಾಶದಲ್ಲಿ ಏನೋ ನೋಡಿ?
+aloft, up in the sky, up in the air,|ಉನ್ನತ ಮಟ್ಟದಲ್ಲಿ, ಅಪ್ ಆಕಾಶದಲ್ಲಿ, ಗಾಳಿಯಲ್ಲಿ ಅಪ್,
+Sun|ಸನ್
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|ಸೂರ್ಯ ಸಂಬಂಧಿಸಿದ ಪದಗಳಿಗೆ ಇದರ ಡೊಮೇನ್ ಬಳಸಿ. ಸೂರ್ಯ ಮೂರು ಮೂಲಭೂತ ಕೆಲಸಗಳನ್ನು. ಇದು ಬೆಳಕನ್ನು ನೀಡುತ್ತದೆ, ಚಲಿಸುತ್ತದೆ, ಮತ್ತು ಇದು ಶಾಖ ನೀಡುತ್ತದೆ. ಈ ಮೂರು ಕ್ರಮಗಳು ಈ ಡೊಮೇನ್ನಲ್ಲಿ ಪದಗಳನ್ನು ಅತ್ಯಂತ ಅರ್ಥವನ್ನು ತೊಡಗಿಕೊಂಡಿವೆ. ಸೂರ್ಯ ದಿಗಂತದ ಕೆಳಗೆ ಚಲಿಸುತ್ತದೆ ಏಕೆಂದರೆ, ಅನೇಕ ಪದಗಳನ್ನು ಸ್ಥಾಪನೆಯಾಗುತ್ತದೆ ಅಥವಾ ಏರುತ್ತಿರುವ ಸಂಪರ್ಕಿಸಿ. ಸೂರ್ಯ ಮೋಡಗಳ ಮೇಲೆ ಏಕೆಂದರೆ, ಅನೇಕ ಪದಗಳನ್ನು ಮೋಡಗಳು ಮತ್ತು ಅದರ ಬೆಳಕಿನ ತಡೆಯುವ ಮೋಡಗಳು ಹಿಂದೆ ಚಲಿಸುವ ಇದನ್ನು. ಸೂರ್ಯನ ಬೆಳಕು ಮತ್ತು ಶಾಖ ಆನುಷಂಗಿಕ ಪ್ರಭಾವ ಮೂಡುತ್ತದೆ. ಸೂರ್ಯ ಸಸ್ಯಗಳು ಬೆಳೆಯಲು ಕಾರಣವಾಗುತ್ತದೆ, ಮತ್ತು ಇದು ವಿಷಯಗಳನ್ನು ಹಾನಿ ಉಂಟುಮಾಡುತ್ತದೆ.
+(1) What words refer to the sun?|(1) ಯಾವ ಪದಗಳು ಸೂರ್ಯನ ನೋಡಿ?
+sun, solar, sol, daystar, our star|ಸೂರ್ಯ, ಸೌರ, ಸೋಲ್, daystar ನಮ್ಮ ಸ್ಟಾರ್

@@ -1,0 +1,28 @@
+Universe, creation|Eluigwe na ala, ihe e kere eke
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|-Eji nke a na ngalaba maka n&#39;ozuzu okwu na-ekwu banyere eluigwe na ala nkịtị. Ụfọdụ asụsụ nwere ike ọ gaghị a otu okwu maka eluigwe na ụwa na nwere ike iji okwu ndị dị otú ahụ dị ka &#39;mmiri ozuzo, ala, na ihe nke elu-igwe&#39; ma ọ bụ &#39;na mbara igwe, ala, na mmiri&#39; ma ọ bụ a na-akọwa okwu ndị dị ka &#39;ihe niile i nwere ike na-ahụ &#39;ma ọ bụ&#39; ihe niile nke dị &#39;.
+(1) What words refer to everything we can see?|(1) Gịnị okwu na-ezo aka na ihe niile anyị nwere ike ịhụ?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|eluigwe na ala, ihe e kere eke, cosmos, eluigwe na ụwa, macrocosm, na ihe nile dị
+Sky|Sky
+Use this domain for words related to the sky.|-Eji nke a na ngalaba maka okwu ndị metụtara mbara igwe.
+(1) What words are used to refer to the sky?|(1) Gịnị okwu na-eji na-ezo aka na mbara igwe?
+sky, firmament, canopy, vault|elu-igwe, mbara-ígwé ahu, kanopi, uko
+(2) What words refer to the air around the earth?|(2) Olee okwu na-ezo aka ikuku gburugburu ụwa?
+air, atmosphere, airspace, stratosphere, ozone layer|ikuku, ikuku, airspace, stratosphere, ozone oyi akwa
+(3) What words are used to refer to the place or area beyond the sky?|(3) Olee okwu na-eji na-ezo aka ebe ma ọ bụ ebe ihe karịrị nke elu-igwe?
+heaven, space, outer space, ether, void, solar system|heaven, ohere, mbara igwe, ether, adabaghi, anyanwụ usoro
+(4) What words describe something in the sky or something that happens in the sky?|(4) Gịnị na-akọwa ihe nke elu-igwe ma ọ bụ ihe na-eme na mbara igwe?
+aerial, heavenly, atmospheric, stratospheric, celestial,|keikuku, eluigwe, ikuku, stratospheric, eluigwe,
+(5) What words describe the appearance of the sky?|(5) Olee okwu na-akọwa ọdịdị nke na mbara igwe?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|acha anụnụ anụnụ, doo anya, nwa (n&#39;abalị), urukpuru, ígwé ojii jupụtara, amamiihe, ọchịchịrị, mbara igwe n&#39;abalị, ihu, oké, ọchịchịrị, kpakpando studded
+(6) What words refer to the edge of the sky where it meets the ground?|(6) Olee okwu na-ezo aka na nsọtụ nke elu-igwe ebe ọ na-ezukọ na ala?
+horizon, skyline|mmiri, skyline
+(7) What words refer to something in the sky?|(7) Olee okwu na-ezo aka ihe nke elu-igwe?
+heavenly body, celestial body, luminary|eluigwe ahụ, eluigwe ahụ, enye ìhè
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) Olee okwu na-ezo aka ọkụ na-egosi na n&#39;ebe ugwu (ma ọ bụ n&#39;ebe ndịda) na mbara igwe?
+aurora borealis, northern lights|Aurora borealis, n&#39;ebe ugwu ọkụ
+(9) What words refer to something being in the sky?|(9) Olee okwu na-ezo aka ihe ịbụ na mbara igwe?
+aloft, up in the sky, up in the air,|akwụgo, ruo na mbara igwe, na ikuku,
+Sun|Sun
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|-Eji nke a na ngalaba maka okwu metụtara anyanwụ. Anyanwụ na-eme ihe atọ bụ isi ihe. Ọ na-akpali, ọ na-enye ìhè, na ọ na-enye okpomọkụ. Atọ ndị a na-eme na-aka na pụtara nke ọtụtụ n&#39;ime okwu ndị a na ngalaba. Ebe ọ bụ na anyanwụ na-akpali n&#39;okpuru mmiri, ọtụtụ okwu ezo aka na ya ma ọ bụ na-esetịpụ na-ebili. Ebe ọ bụ na anyanwụ bụ n&#39;elu ígwé ojii, ọtụtụ okwu ezo aka na ya na-akpụ akpụ n&#39;azụ igwe ojii na igwe-oji igbochi ya ìhè. Anyanwụ ìhè na okpomọkụ na-emepụta sekọndrị mmetụta. Anyanwụ na-akpata osisi na-eto eto, na ọ na-akpata mmebi ihe.
+(1) What words refer to the sun?|(1) Gịnị okwu na-ezo aka anyanwụ?
+sun, solar, sol, daystar, our star|anyanwụ, anyanwụ, Sol, kpakpando chi ọbụbọ, anyị kpakpando

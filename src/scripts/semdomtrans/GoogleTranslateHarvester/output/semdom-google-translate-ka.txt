@@ -1,0 +1,28 @@
+Universe, creation|სამყარო შექმნა
+Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.|გამოიყენეთ ეს domain ზოგადი სიტყვები გულისხმობდა ფიზიკური სამყაროს. ზოგი ენა შეიძლება არ აქვს არც ერთი სიტყვა სამყაროს და უნდა გამოვიყენოთ ფრაზა, როგორიცაა &quot;წვიმა, ნიადაგი, და რამ ცის&quot; ან &quot;ცის, მიწის და წყლის და აღწერითი ფრაზა, როგორიცაა&quot; ყველაფერი შეგიძლიათ იხილეთ &quot;ან&quot; ყველაფერი, რაც არსებობს.
+(1) What words refer to everything we can see?|(1) რა სიტყვა ეხება ყველაფერს, რაც ჩვენ ვხედავთ?
+universe, creation, cosmos, heaven and earth, macrocosm, everything that exists|სამყაროს შექმნა, კოსმოსში, ცაში და დედამიწაზე, macrocosm, ყველაფერი, რაც არსებობს
+Sky|Sky
+Use this domain for words related to the sky.|გამოიყენეთ ეს დომენი სიტყვა დაკავშირებული ცაში.
+(1) What words are used to refer to the sky?|(1) რა სიტყვა გამოიყენება ეხება ცაში?
+sky, firmament, canopy, vault|ცა, ცის კაბადონზე, canopy, სარდაფით
+(2) What words refer to the air around the earth?|(2) რა სიტყვები ეხება საჰაერო დედამიწის გარშემო?
+air, atmosphere, airspace, stratosphere, ozone layer|ჰაერი, ატმოსფერო, საჰაერო სივრცის, სტრატოსფეროში ოზონის შრის
+(3) What words are used to refer to the place or area beyond the sky?|(3) რა სიტყვა გამოიყენება ე ადგილი ტერიტორიაზე ან მის ფარგლებს გარეთ ცაში?
+heaven, space, outer space, ether, void, solar system|სამოთხეში, სივრცე, გარე სამყაროსთან, ეთერში, ბათილად, მზის სისტემა
+(4) What words describe something in the sky or something that happens in the sky?|(4) სიტყვა აღწერს რაღაც ცაში ან რაღაც რომ ხდება ცაში?
+aerial, heavenly, atmospheric, stratospheric, celestial,|საჰაერო, ზეციური, ატმოსფერული, stratospheric, ზეციური,
+(5) What words describe the appearance of the sky?|(5) რა სიტყვა აღწერს გამოჩენა ცაში?
+blue, clear, black (night), cloudy, cloud filled, brilliant, dark, night sky, foreboding, stormy, dark, star studded|ლურჯი, ნათელი, შავი (ღამე), წვიმა, ღრუბელი სავსე, ბრწყინვალე, მუქი, ღამის ცა, foreboding, მშფოთვარე, მუქი ვარსკვლავი studded
+(6) What words refer to the edge of the sky where it meets the ground?|(6) რა სიტყვები ეხება ზღვარზე ცაში, სადაც იგი ხვდება ადგილზე?
+horizon, skyline|ჰორიზონტზე, skyline
+(7) What words refer to something in the sky?|(7) რა სიტყვები ეხება რაღაც ცაში?
+heavenly body, celestial body, luminary|ზეციური სხეულის, ციური სხეული, მნათობი
+(8) What words refer to the lights that appear in the northern (or southern) sky?|(8) რა სიტყვები ეხება განათება, რომ, როგორც ჩანს, ჩრდილოეთ (ან სამხრეთ) ცაში?
+aurora borealis, northern lights|Aurora borealis, ჩრდილოეთის ციალი
+(9) What words refer to something being in the sky?|(9) რა სიტყვები ეხება რაღაც რომ ცაში?
+aloft, up in the sky, up in the air,|aloft, ცაში, მაღლა,
+Sun|Sun
+Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.|გამოიყენეთ ეს დომენი სიტყვა დაკავშირებული მზე. მზე სამი ძირითადი რამ. იგი მოძრაობს, იგი იძლევა მსუბუქი, და ეს იძლევა სითბოს. ეს სამი ქმედებები ჩართული მნიშვნელობა ყველაზე სიტყვები ამ დომენში. მას შემდეგ, რაც მზე მოძრაობს ქვემოთ ჰორიზონტზე, ბევრი სიტყვა ეხება, შექმნის ან იზრდება. მას შემდეგ, რაც მზე ზემოთ ღრუბლებში, ბევრი სიტყვა ეხება მოძრავი უკან ღრუბლებში და ღრუბლებს ბლოკირება მისი ნათელი. მზის სითბო და სინათლე ასევე აწარმოოს საშუალო ეფექტი. მზე იწვევს მცენარეთა იზრდება, და ეს იწვევს დაზიანება რამ.
+(1) What words refer to the sun?|(1) რა სიტყვები ეხება მზე?
+sun, solar, sol, daystar, our star|მზე, მზის, sol, ცისკრის ვარსკვლავი, ჩვენი ვარსკვლავი
