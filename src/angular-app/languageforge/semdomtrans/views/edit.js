@@ -93,6 +93,18 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
             }
           }, delay);
   }
+  
+  /*
+   * Set items to be included 
+   */
+  $scope.setInclusion = function setInclusion(itemsToInclude, v) {
+    for (var i in itemsToInclude) {
+      $scope.includedItems[itemsToInclude[i].key] = v;
+    }
+    
+    $scope.reloadItems($scope.selectedDepth);    
+  }
+  
   /*
    * Determines if a semdom item is completely translated
    */
