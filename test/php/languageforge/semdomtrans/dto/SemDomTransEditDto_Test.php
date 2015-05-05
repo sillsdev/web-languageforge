@@ -30,7 +30,7 @@ class TestSemDomTransEditDto extends UnitTestCase
         $e->getEnglishProjectAndCreateIfNecessary();
         $e->cleanPreviousProject('es');
         $user1Id = $e->createUser('u', 'u', 'u');
-        $targetProject = $e->createSemDomProject('es', $user1Id);
+        $targetProject = $e->createSemDomProject('es', "Spanish", $user1Id);
         $result = SemDomTransEditDto::encode($targetProject->id->asString(), null);
         $this->assertNotEqual($result["entries"], null);
         $this->assertEqual($result["entries"][0]["name"]["source"], "Universe, creation");
@@ -46,7 +46,7 @@ class TestSemDomTransEditDto extends UnitTestCase
 
         $sourceProject = $e->getEnglishProjectAndCreateIfNecessary();
         $user1Id = $e->createUser('u', 'u', 'u');
-        $targetProject = $e->createSemDomProject('es', $user1Id);
+        $targetProject = $e->createSemDomProject('es', "Spanish", $user1Id);
 
 
         /*

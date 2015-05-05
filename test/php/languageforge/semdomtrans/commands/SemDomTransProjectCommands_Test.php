@@ -21,7 +21,7 @@ class SemDomTransProjectCommands_Test extends UnitTestCase {
         $e->cleanPreviousProject('es');
         $user1Id = $e->createUser('u', 'u', 'u');
         $englishProject = $e->getEnglishProjectAndCreateIfNecessary();
-        $newProject = $e->createSemDomProject('es', $user1Id);
+        $newProject = $e->createSemDomProject('es', "Spanish", $user1Id);
 
         $this->assertEqual($newProject->sourceLanguageProjectId->asString(), $englishProject->id->asString());
         $this->assertEqual($newProject->isSourceLanguage, false);
@@ -45,8 +45,8 @@ class SemDomTransProjectCommands_Test extends UnitTestCase {
         $destArr = explode("\n", $destStr);
         for ($i = 0; $i < count($destArr); $i++) {
             if ($i % 500 == 0) {
-                $this->assertEqual($sourceArr[$i], $destArr[$i]);
-                //$this->assertEqual(substr($sourceArr[$i], 0, -1), $destArr[$i]);
+                //$this->assertEqual($sourceArr[$i], $destArr[$i]);
+                $this->assertEqual(substr($sourceArr[$i], 0, -1), $destArr[$i]);
             }
         }
 
