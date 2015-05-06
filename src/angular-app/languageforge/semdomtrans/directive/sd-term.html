@@ -5,11 +5,14 @@
     			<th style="width:35%"> Source </th>
     			<th style="width:35%"> Translation </th>
     		</tr>
-		    <tr ng-click="isInCommentMode() ? control.setSelectedField('name', model.name) : '' ">
+		    <tr 
+                ng-class="{approved: (model.name.status == 4), needRevision: (model.name.status == 3), suggested: (model.name.status == 2)}"
+                ng-click="isInCommentMode() ? control.setSelectedField('name', model.name) : '' ">
 			    <td > Name: </td>
 			    <td> {{model.name.source}}</td>
 			    <td> 
 			    	<input 
+                           
 			    		   ng-disabled="isInCommentMode() || model.name.status == 4 || !control.rights.canEditEntry()"
 			    		   ng-model="model.name.translation"
 						   ng-keypress="control.updateItem($event.which)"
@@ -17,7 +20,9 @@
 			    </td>
 		    </tr>
 		     <tr>
-		     <tr ng-click="isInCommentMode() ? control.setSelectedField('description', model.description) : '' ">
+		     <tr 
+                ng-class="{approved: (model.description.status == 4), needRevision: (model.description.status == 3), suggested: (model.description.status == 2)}"
+                ng-click="isInCommentMode() ? control.setSelectedField('description', model.description) : '' ">
 			    <td> Description: </td>
 			    <td> {{model.description.source}}</td>
 		        <td> 
@@ -39,7 +44,9 @@
 	    	<tr>
 	    		<th style="width:50%"> Source </th>
 	    		<th style="width:50%"> Translation </th>
-	    	<tr ng-repeat="searchKey in model.searchKeys" 
+	    	<tr 
+                ng-class="{approved: (searchKey.status == 4), needRevision: (searchKey.status == 3), suggested: (searchKey.status == 2)}"
+                ng-repeat="searchKey in model.searchKeys" 
 	    		ng-click="isInCommentMode() ? control.setSelectedField('search key ' + $index, searchKey) : '' ">
 	    		<td>{{searchKey.source}}</td>
 	    		<td>
