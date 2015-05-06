@@ -10,7 +10,7 @@
 			    <td> {{model.name.source}}</td>
 			    <td> 
 			    	<input 
-			    		   ng-disabled="isInCommentMode() || model.name.status == 4"
+			    		   ng-disabled="isInCommentMode() || model.name.status == 4 || !control.rights.canEditEntry()"
 			    		   ng-model="model.name.translation"
 						   ng-keypress="control.updateItem($event.which)"
 						   ng-blur="control.updateItem()">
@@ -22,7 +22,7 @@
 			    <td> {{model.description.source}}</td>
 		        <td> 
 		        	<textarea rows="4"
-		        		ng-disabled="isInCommentMode() || model.description.status == 4"
+		        		ng-disabled="isInCommentMode() || model.description.status == 4 || !control.rights.canEditEntry()"
 		        		ng-model="model.description.translation"
 		         		ng-keypress="control.updateItem($event.which)"
 		         		ng-blur="control.updateItem()" 
@@ -44,7 +44,7 @@
 	    		<td>{{searchKey.source}}</td>
 	    		<td>
 	    			<textarea 
-	    				ng-disabled="isInCommentMode() || searchKey.status == 4"
+	    				ng-disabled="isInCommentMode() || searchKey.status == 4 || !control.rights.canEditEntry()"
 	    				rows="4" 
 	    				ng-model="searchKey.translation"
 	    				ng-keypress="control.updateItem($event.which)"
