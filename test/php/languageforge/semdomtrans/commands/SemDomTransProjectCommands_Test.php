@@ -21,7 +21,7 @@ class SemDomTransProjectCommands_Test extends UnitTestCase {
         $e->cleanPreviousProject('es');
         $user1Id = $e->createUser('u', 'u', 'u');
         $englishProject = $e->getEnglishProjectAndCreateIfNecessary();
-        $newProject = $e->createSemDomProject('es', $user1Id);
+        $newProject = $e->createSemDomProject('es', "Spanish", $user1Id);
 
         $this->assertEqual($newProject->sourceLanguageProjectId->asString(), $englishProject->id->asString());
         $this->assertEqual($newProject->isSourceLanguage, false);
