@@ -4,6 +4,7 @@ import sys
 import os
 import json
 import os.path
+import time
 '''
 Translates a list of words from English to target language
 params:
@@ -14,18 +15,29 @@ params:
 def translate(listOfWordsToTranslate, key, to_language="auto", language="en"):
 	link = "https://www.googleapis.com/language/translate/v2?key=%s&source=%s&target=%s" % (key, language, to_language)
 	link = link.encode('utf-8')
-	if listOfWordsToTranslate.join('').len() < 4700:
+	if len(''.join(listOfWordsToTranslate)) < 2000:
 		return _request(link, listOfWordsToTranslate)
 	else:
-		return _request(link, listOfWordsToTranslate[0:5]) + _request(listOfWordsToTranslate[5:10])
+		return _request(link, listOfWordsToTranslate[0:5]) + _request(link, listOfWordsToTranslate[5:10])
 	
 
 def _request(link, words):	
 	for word in words:
 		link = link + "&q=" + urllib.quote_plus(word)
-	print link + '\n'
-	request = urllib2.Request(link)
-	result = urllib2.urlopen(request).read()
+	
+	while True:
+		try:
+			request = urllib2.Request(link)
+			result = urllib2.urlopen(request).read()
+			break
+		except (urllib2.URLError, urllib2.HTTPError) as error:
+			e = json.loads(error.read())
+			print e['error']['code'], e['error']['message']
+			print link + "\n"
+			if error.code == 403:
+				print "sleeping 7 seconds..."
+				time.sleep(7)
+	
 	return json.loads(result.decode('utf-8'))['data']['translations']
 
 	
@@ -73,8 +85,8 @@ if __name__ == '__main__':
 		f = open(outputPath,'a')
 		print "There are %d translations left to process" % len(processedLines)
 		# translate and print out using proper utf-8 encoding
-			print "processing %s language line %d" % (language, i)
 		for i in xrange(0, len(processedLines), 10):			
+			print "processing %s language line %d-%d of %d" % (language, skippedCtr+i, skippedCtr+i+10, skippedCtr+len(processedLines))
 			translatedItems = translate(processedLines[i:i+10], sys.argv[2], language)
 			for j in range(i, min(len(processedLines), i+10)):
 				f.write(processedLines[j] + "|" + translatedItems[j%10]['translatedText'].encode('utf-8') + "\n")
