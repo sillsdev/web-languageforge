@@ -93,6 +93,18 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
             }
           }, delay);
   }
+  
+  /*
+   * Set items to be included 
+   */
+  $scope.setInclusion = function setInclusion(itemsToInclude, v) {
+    for (var i in itemsToInclude) {
+      $scope.includedItems[itemsToInclude[i].key] = v;
+    }
+    
+    $scope.reloadItems($scope.selectedDepth);    
+  }
+  
   /*
    * Determines if a semdom item is completely translated
    */
@@ -183,7 +195,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
       $scope.reloadItems(1);
       
       // reload current entry if it is included in lsit
-      if ($scope.includedItems[$scope.items[$stateParams.position].key]) {      
+      if (!angular.isUndefined($stateParams.position) && $stateParams.position != "" && $scope.includedItems[$scope.items[$stateParams.position].key]) {      
         $scope.currentEntry = $scope.items[$stateParams.position];
         $scope.currentEntryIndex = angular.isUndefined($stateParams.position) ? 0 : $stateParams.position;
         $scope.changeTerm($scope.currentEntry.key);
