@@ -1,4 +1,5 @@
 import urllib2
+import urllib
 import sys
 import os
 import json
@@ -10,12 +11,7 @@ params:
 * to_language - target language of translation
 * language - source language
 '''
-def translate(listOfWordsToTranslate, key, to_language="auto", language="en"):
-	link = "https://www.googleapis.com/language/translate/v2?key=%s&source=%s&target=%s" % (key, language, to_language)
-	link = link.encode('utf-8')
-	for word in listOfWordsToTranslate:
-		link = link + "&q=" + word
-	link = link.replace(" ", "+")
+def translate(link, to_language="auto", language="en"):
 	print link + '\n'
 	request = urllib2.Request(link)
 	result = urllib2.urlopen(request).read()
@@ -64,9 +60,23 @@ if __name__ == '__main__':
 		
 		f = open(outputPath,'a')
 		print "There are %d translations left to process" % len(processedLines)
+		i = 0
+		preFixLink = "https://www.googleapis.com/language/translate/v2?key=%s&source=%s&target=%s" % (sys.argv[2], "en", language)
+		preFixLink = preFixLink.encode('utf-8')
+		link = preFixLink
 		# translate and print out using proper utf-8 encoding
-		for i in xrange(0, len(processedLines)):
-			print "processing %s language line %d" % (language, i)
-			translatedItems = translate([processedLines[i]], sys.argv[2], language)
-			f.write(processedLines[i] + "|" + translatedItems[0]['translatedText'].encode('utf-8') + "\n")
-				
+		while i < len(processedLines):				
+			wordToEncode = urllib.quote_plus(processedLines[i])
+			# concat to url request as long as adding does not cause request length to exceed 5000 characters
+			if len(link) + len(wordToEncode) < 5000:
+				link = link + "&q=" + urllib.quote_plus(processedLines[i])
+			# if url request would exceed 5000 charactesr upon adding encoded word, translate current request and start creating new one
+			else:
+				print "length of request: %s" % (len(link))
+				translatedItems = translate(link)
+				print "translating %s words" % (len(translatedItems))
+				for j in range(i, i+len(translatedItems)): 
+					f.write(processedLines[j] + "|" + translatedItems[j-i]['translatedText'].encode('utf-8') + "\n")
+				link = preFixLink + "&q=" + wordToEncode
+					
+					
