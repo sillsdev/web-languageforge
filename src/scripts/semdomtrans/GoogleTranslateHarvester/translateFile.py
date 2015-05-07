@@ -1,4 +1,5 @@
 import urllib2
+import urllib
 import sys
 import os
 import json
@@ -14,7 +15,7 @@ def translate(listOfWordsToTranslate, key, to_language="auto", language="en"):
 	link = "https://www.googleapis.com/language/translate/v2?key=%s&source=%s&target=%s" % (key, language, to_language)
 	link = link.encode('utf-8')
 	for word in listOfWordsToTranslate:
-		link = link + "&q=" + word
+		link = link + "&q=" + urllib.quote_plus(word)
 	link = link.replace(" ", "+")
 	print link + '\n'
 	request = urllib2.Request(link)
