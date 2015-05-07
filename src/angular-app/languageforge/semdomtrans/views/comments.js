@@ -3,17 +3,17 @@
 angular.module('semdomtrans.comments', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'bellows.services.comments', 'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.scroll', 'palaso.ui.comments'])
 // DBE controller
 .controller('commentsCtrl', ['$scope', 'semdomtransEditorDataService', '$stateParams', 'sessionService', 'modalService', 'silNoticeService', 'lexCommentService',
-function($scope, editorDataService, $stateParams, sessionService, modal, notice, commentService) {
+function($scope, editorService, $stateParams, sessionService, modal, notice, commentService) {
   $scope.control = $scope;
   $scope.currentEntryIndex = $stateParams.position;
-  $scope.editorDataService = editorDataService;
+  $scope.editorService = editorService;
   $scope.comments = commentService.comments.items.all;
    $scope.loadEntryComments = function loadEntryComments() {
       commentService.loadEntryComments($scope.items[$stateParams.position].id);
    }
    
     $scope.refreshDbeData = function refreshDbeData() {
-     return editorDataService.refreshEditorData();
+     return editorService.refreshEditorData();
     }
     
     $scope.$watchCollection('items', function(newVal) {

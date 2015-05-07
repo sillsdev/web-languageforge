@@ -92,7 +92,10 @@ function($scope, $state, $location, $window, semdomSetupApi, projectService, ses
   };
   
   $scope.createProject = function createProject(useGoogleTranslateData) {
+  
+    notice.setLoading('Creating and Loading Semdomtrans Project.');
     semdomSetupApi.createProject($scope.languageCode, $scope.languageName, useGoogleTranslateData,  function(result) {
+        notice.cancelLoading();
         if (result.ok) {
           $window.location = result.data;
         }
