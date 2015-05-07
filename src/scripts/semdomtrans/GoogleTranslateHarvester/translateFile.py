@@ -73,8 +73,8 @@ if __name__ == '__main__':
 		f = open(outputPath,'a')
 		print "There are %d translations left to process" % len(processedLines)
 		# translate and print out using proper utf-8 encoding
-		for i in xrange(0, len(processedLines)):
 			print "processing %s language line %d" % (language, i)
-			translatedItems = translate([processedLines[i]], sys.argv[2], language)
-			f.write(processedLines[i] + "|" + translatedItems[0]['translatedText'].encode('utf-8') + "\n")
-				
+		for i in xrange(0, len(processedLines), 10):			
+			translatedItems = translate(processedLines[i:i+10], sys.argv[2], language)
+			for j in range(i, min(len(processedLines), i+10)):
+				f.write(processedLines[j] + "|" + translatedItems[j%10]['translatedText'].encode('utf-8') + "\n")
