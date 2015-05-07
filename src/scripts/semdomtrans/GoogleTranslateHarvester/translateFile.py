@@ -14,14 +14,21 @@ params:
 def translate(listOfWordsToTranslate, key, to_language="auto", language="en"):
 	link = "https://www.googleapis.com/language/translate/v2?key=%s&source=%s&target=%s" % (key, language, to_language)
 	link = link.encode('utf-8')
-	for word in listOfWordsToTranslate:
+	if listOfWordsToTranslate.join('').len() < 4700:
+		return _request(link, listOfWordsToTranslate)
+	else:
+		return _request(link, listOfWordsToTranslate[0:5]) + _request(listOfWordsToTranslate[5:10])
+	
+
+def _request(link, words):	
+	for word in words:
 		link = link + "&q=" + urllib.quote_plus(word)
-	link = link.replace(" ", "+")
 	print link + '\n'
 	request = urllib2.Request(link)
 	result = urllib2.urlopen(request).read()
 	return json.loads(result.decode('utf-8'))['data']['translations']
 
+	
 '''
 Gets list of target languages for English language
 '''	
