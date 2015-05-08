@@ -53,11 +53,11 @@
     	                 <div ng-if="(!hideTranslated || !translatedItems[item.key])"
                             ng-repeat="item in displayedItems track by item.key" ng-class="{selected: (item.key == currentEntry.key)}"  ng-click="changeTerm(item.key)"
     	                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }"   >
-    				        <a ng-class="{displayedAsAncestor: !isIncluded(item.key)}"> {{item.key}} {{item.name.source}}</a>
+    				        <a ng-class="{displayedAsAncestor: !isIncludedInWs(item.key)}"> {{item.key}} {{item.name.source}}</a>
     				      </div>
     			    </div>
                     <div>
-                        <button ng-repeat="i in ['1','2','3','4','5','6','7','8','9']" ng-click="selectSubDomain(i)" ng-class="{selected: (i == subDomain)}">{{i}}</button>
+                        <button ng-repeat="i in allSubDomains" ng-click="selectSubDomain(i)" ng-class="{selected: (i == subDomain)}">{{i}}</button>
                     </div>
                 </div>
 				
