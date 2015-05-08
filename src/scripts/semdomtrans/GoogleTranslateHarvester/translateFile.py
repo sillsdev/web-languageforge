@@ -5,6 +5,9 @@ import os
 import json
 import os.path
 import time
+import atexit
+from datetime import datetime
+
 '''
 Translates a list of words from English to target language
 params:
@@ -12,13 +15,19 @@ params:
 * to_language - target language of translation
 * language - source language
 '''
-def translate(link, to_language="auto", language="en"):
-	print link + '\n'
-	request = urllib2.Request(link)
-	result = urllib2.urlopen(request).read()
-	return json.loads(result.decode('utf-8'))['data']['translations']
+def translate(listOfWordsToTranslate, key, to_language="auto", language="en"):
+	link = "https://www.googleapis.com/language/translate/v2?key=%s&source=%s&target=%s" % (key, language, to_language)
+	link = link.encode('utf-8')
+	if len(''.join(listOfWordsToTranslate)) < 2000:
+		return _request(link, listOfWordsToTranslate)
+	else:
+		return _request(link, listOfWordsToTranslate[0:5]) + _request(link, listOfWordsToTranslate[5:10])
 	
-
+def _touchFile(fname):
+    with open(fname, 'a'):
+        os.utime(fname, None)
+	
+	
 def _request(link, words):	
 	for word in words:
 		link = link + "&q=" + urllib.quote_plus(word)
@@ -26,15 +35,18 @@ def _request(link, words):
 	while True:
 		try:
 			request = urllib2.Request(link)
-			result = urllib2.urlopen(request).read()
+			result = urllib2.urlopen(request, '', 6).read()
 			break
-		except (urllib2.URLError, urllib2.HTTPError) as error:
+		except (urllib2.HTTPError) as error:
 			e = json.loads(error.read())
 			print e['error']['code'], e['error']['message']
 			print link + "\n"
 			if error.code == 403:
 				print "sleeping 7 seconds..."
 				time.sleep(7)
+		except (urllib2.URLError) as error:
+			print error
+			time.sleep(3)
 	
 	return json.loads(result.decode('utf-8'))['data']['translations']
 
@@ -51,16 +63,38 @@ def getTargetLanguages(key):
 if __name__ == '__main__':
 	languages = [langObj['language'] for langObj in getTargetLanguages(sys.argv[2]) if langObj['language'] != "en"]
 	inputFile = open(sys.argv[1])
+	
+	#process in reverse if specified
+	languagesIterator = languages
+	if len(sys.argv) > 3:
+		if sys.argv[3] == 'reverse':
+			languagesIterator = reversed(languages)
+	
 	lines = [word.strip() for word in inputFile.readlines()]
-	for language in languages:
-		print "\nProcessing language %s" % language
+	for language in languagesIterator:
+		print "\nProcessing language %s (%d of %d)" % (language, languages.index(language) + 1, len(languages))
 		skippedCtr = 0
 		#dirname = os.path.dirname(inputFile.name)
 		outputPath = "output/semdom-google-translate-" + language + ".txt"
 		processedLines = []
 		# check if there are previous translations, if so do not repeat translations for them 
 		# by excluding them from list of items to be translated
-		if os.path.isfile(outputPath): 
+		lockFile = outputPath + ".locked"
+		#atexit.register(os.remove, lockFile)
+
+		if os.path.isfile(lockFile):
+			print "Skipping language %s because another harvester is working on it now" % language
+			continue
+		
+		if os.path.isfile(outputPath):
+
+			# skip over existing file if it was modified in the last 60 seconds (to prevent multiple harvester collisions)
+			#if (datetime.now() - datetime.fromtimestamp(os.path.getmtime(outputPath))).total_seconds() < 60:
+			#	print "Skipping language %s because the file was recently modified (other harvester in progress?" % language
+			#	continue
+			
+
+		
 			prevF = open(outputPath)
 			prevTranslated = [line.strip() for line in prevF.readlines()]				
 			prevF.close()
@@ -75,31 +109,21 @@ if __name__ == '__main__':
 				else:
 					skippedCtr += 1
 		else:
-			processedLines = lines			
+			processedLines = lines
 		
 		if (skippedCtr > 0):
 			print "Found %d translations in an existing output file, so skipping those..." % skippedCtr
 		
 		f = open(outputPath,'a')
 		print "There are %d translations left to process" % len(processedLines)
-		
-		i = 0
-		preFixLink = "https://www.googleapis.com/language/translate/v2?key=%s&source=%s&target=%s" % (sys.argv[2], "en", language)
-		preFixLink = preFixLink.encode('utf-8')
-		link = preFixLink
-		# translate and print
 		# translate and print out using proper utf-8 encoding
-		while i < len(processedLines):				
-			wordToEncode = urllib.quote_plus(processedLines[i])
-			# concat to url request as long as adding does not cause request length to exceed 5000 characters
-			if len(link) + len(wordToEncode) < 5000:
-				link = link + "&q=" + urllib.quote_plus(processedLines[i])
-			# if url request would exceed 5000 charactesr upon adding encoded word, translate current request and start creating new one
-			else:
-				print "length of request: %s" % (len(link))
-				translatedItems = translate(link)
-				print "translating %s words" % (len(translatedItems))
-				for j in range(i, i+len(translatedItems)): 
-					f.write(processedLines[j] + "|" + translatedItems[j-i]['translatedText'].encode('utf-8') + "\n")
-				link = preFixLink + "&q=" + wordToEncode
-			i += 1
+		
+		_touchFile(lockFile)
+		for i in xrange(0, len(processedLines), 10):			
+			tstart = datetime.now()
+			translatedItems = translate(processedLines[i:i+10], sys.argv[2], language)
+			for j in range(i, min(len(processedLines), i+10)):
+				f.write(processedLines[j] + "|" + translatedItems[j%10]['translatedText'].encode('utf-8') + "\n")
+			print "processed '%s' %d-%d of %d (%f seconds)" % (language, skippedCtr+i, skippedCtr+i+10, skippedCtr+len(processedLines), (datetime.now() - tstart).total_seconds())	
+		os.remove(lockFile)
+
