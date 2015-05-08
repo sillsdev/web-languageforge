@@ -10,15 +10,30 @@
                         </select>
                     </div>
                     <div style="white-space: nowrap;">
-                        <span style="width:80%; float:left"> Hide Translated</span>
-                        <input style="width:10%; float:left; margin-top:0px; 1" ng-model="hideTranslated" type="checkbox" />
+                        <span style="float:left"> Hide Translated</span>
+                        <input style="float:left; margin-top:5px; margin-left:5px;" ng-model="hideTranslated" type="checkbox" />
                     </div>
                 </div>	   
                  
 		    	<div class="span5" >
 					<tabset class="pull-center">
-					    <tab heading="Terms"  ng-click="setTab(0)"> </tab>     
-						<tab heading="Questions" ng-click="setTab(1)"></tab>
+					    <tab heading="Terms"  ng-click="setTab(0)">
+                            <div style="white-space: nowrap;">
+                                <span style="float:left"> Hide Description</span>
+                                <input style="float:left; margin-top:5px; margin-left:5px" ng-model="$parent.hideDescription" type="checkbox" />
+                            </div>                            
+                            <br />
+                            <div style="white-space: nowrap">
+                                <span style="float:left"> Hide Search Keys</span>
+                                <input style="float:left; margin-top:5px; margin-left:5px" ng-model="$parent.hideSearchKeys" type="checkbox" />
+                            </div>
+                        </tab>     
+						<tab heading="Questions" ng-click="setTab(1)">
+                             <div style="white-space: nowrap; width: 150px">
+                                <span style="width:80%; float:left"> Hide Question Terms</span>
+                                <input style="width:10%; float:left; margin-top:5px; margin-left:5px" ng-model="$parent.hideQuestionTerms" type="checkbox" />
+                            </div>
+                        </tab>
                         <tab ng-if="rights.canEditProject()" heading="Filter" ng-click="setTab(2)"></tab>
 					</tabset>  
 				</div>

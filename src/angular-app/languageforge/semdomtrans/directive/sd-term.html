@@ -21,6 +21,7 @@
 		    </tr>
 		     <tr>
 		     <tr 
+                ng-if="!control.hideDescription"
                 ng-class="{approved: (model.description.status == 4), needRevision: (model.description.status == 3), suggested: (model.description.status == 2)}"
                 ng-click="isInCommentMode() ? control.setSelectedField('description', model.description) : '' ">
 			    <td> Description: </td>
@@ -39,7 +40,7 @@
 		</table>
 		<br />
 		<br />
-		<table style="width:100%">
+		<table style="width:100%" ng-if="!control.hideSearchKeys">
 	    	<caption><h4> Search Keys </h4></caption>
 	    	<tr>
 	    		<th style="width:50%"> Source </th>
