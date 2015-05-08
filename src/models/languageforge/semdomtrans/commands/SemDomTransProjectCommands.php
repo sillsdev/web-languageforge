@@ -48,8 +48,24 @@ class SemDomTransProjectCommands
 
         return $semdomProjects;
     }
-    
-
+   
+    public static function exportProjects() {
+        $zip = new ZipArchive();
+        $filename =  $path = APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/exportedProjects.zip";
+        
+        if ($zip->open($filename, ZipArchive::CREATE)!==TRUE) {
+            exit("cannot open <$filename>\n");
+        }
+        else {
+            $projects = SemDomTransProjectCommands::getOpenSemdomProjects($userId);
+            foreach($projects->entries as $p) {
+                $e = new SemDomXMLExporter($p, false, ($p->isSourceLanguage && $p->languageIsoCode != 'en'), !$p->isSourceLanguage);
+                $e->run();
+                $zip->addFile($p->$xmlFilePath , basename($p->$xmlFilePath));
+            }
+            $zip->close();
+        }
+    }
     public static function doesGoogleTranslateDataExist($languageIsoCode) {
         $path = APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/semdom-google-translate-$languageIsoCode.txt";
         return file_exists($path);
