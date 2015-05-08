@@ -22,6 +22,8 @@ class SemDomXMLImporter {
 	
 	private $_isEnglish;
 	
+	private $_outputFile;
+	
 	/**
 	 * 
 	 * @param string $xmlfilepath
@@ -35,6 +37,7 @@ class SemDomXMLImporter {
 		$this->_runForReal = ! $testMode;
 		$this->_lang = $projectModel->languageIsoCode;
 		$this->_isEnglish = $isEnglish;
+		$this->_outputFile =  fopen(APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/" . $projectModel->languageIsoCode. "UnprocessedList.txt","w");	      
 	}
 	
 	public function run($english=true) {
@@ -57,11 +60,17 @@ class SemDomXMLImporter {
 	}
 	
 	private function _processDomainNode($domainNode) {
+	   
 		$guid = (string)$domainNode['guid'];
-		$name = $this->_getPathVal($domainNode->xpath("Name/AUni[@ws='{$this->_lang}']"));		
+		
+		$name = $this->_getPathVal($domainNode->xpath("Name/AUni[@ws='{$this->_lang}']"));	
+		fwrite($this->_outputFile, $name . "\n");
+		
 		$abbreviation = $this->_getPathVal($domainNode->xpath("Abbreviation/AUni[@ws='en']"));		
+		
 		$description = $this->_getPathVal($domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']"));
-			
+		fwrite($this->_outputFile, $description . "\n");
+		
 		$questions = new ArrayOf(function ($data) {
         	return new SemDomTransQuestion();
         });      
@@ -77,7 +86,11 @@ class SemDomXMLImporter {
 			// parse nested questions
 			foreach($questionsXML as $questionXML) {
 				$question = $this->_getPathVal($questionXML->xpath("Question/AUni[@ws='{$this->_lang}']"));
+				fwrite($this->_outputFile, $question . "\n");
+				
 				$terms = $this->_getPathVal($questionXML->xpath("ExampleWords/AUni[@ws='{$this->_lang}']"));
+				fwrite($this->_outputFile, $terms . "\n");
+				
 				$q = new SemDomTransQuestion($question, $terms);
 				$sk = new SemDomTransTranslatedForm($terms);
 				

@@ -23,11 +23,12 @@ class SemdomTransItemCommands_Test extends UnitTestCase
     {
         $e = new SemDomMongoTestEnvironment();
         $lang = 'en2';
+        $languageName = "English";
         $e->cleanPreviousProject($lang);
 
         $e->getEnglishProjectAndCreateIfNecessary();
         $user1Id = $e->createUser('u', 'u', 'u');
-        $targetProject = $e->createSemDomProject($lang, $user1Id);
+        $targetProject = $e->createSemDomProject($lang, $languageName, $user1Id);
 
         // insert dummy models
         $targetItemModel = new SemDomTransItemModel($targetProject);

@@ -25,7 +25,27 @@
               </div>
               <div style="text-align: center; float:right; margin-left:0px; margin-right:0px" class="span9">
                 <div style="overflow-y:scroll; height:400px;">
-                   <field-review control="control" name="fieldName" model="fieldValue"  ng-repeat="(fieldName, fieldValue) in fieldsForReview"> </field-review>
+                <table style="width:100%"> 
+                    <tr>
+                        <th>Field Name</th>
+                        <th>Field Source</th>
+                        <th>Field Translation</th>
+                        <th ng-if="rights.canEditProject()">Approve/Send For Review</th>
+                    </tr>      
+                    <tr ng-repeat="(fieldName, fieldValue) in fieldsForReview">
+                        <td style="width:10%"> {{ fieldName }} </td>
+                        <td style="width:40%"> {{fieldValue.source}}</td>
+                        <td style="width:40%"> 
+                             {{fieldValue.translation}}
+                        </td>                
+                        <td ng-if="rights.canEditProject()" style="width:10%">
+                            <button class="btn btn-primary" ng-click="markAsApproved(fieldValue)"> Approve</button>
+                            <br />
+                            <br />
+                            <button class="btn btn-warning" ng-click="markAsNeedsRevision(fieldValue)"> Needs Revision</button>
+                        </td>        
+                       </tr>               
+                   </table>
                 </div>
               </div>
             </div>

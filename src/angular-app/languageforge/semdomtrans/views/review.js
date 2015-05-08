@@ -1,28 +1,29 @@
 'use strict';
 
-angular.module('semdomtrans.review', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.fieldReview', 'palaso.ui.scroll', 'palaso.ui.typeahead'])
+angular.module('semdomtrans.review', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.scroll', 'palaso.ui.typeahead'])
 // DBE controller
 .controller('reviewCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditorDataService', 'semdomtransEditService',  'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
 function($scope, $state, $stateParams, editorService, semdomEditApi, sessionService, modal, notice, $rootScope, $filter, $timeout) {
-    $scope.control = $scope;
-    if ($scope.displayedItems == undefined) {
-      editorService.refreshEditorData().then(function(result) {
-        calculateDisplayedItems();
-      });      
+    $scope.control = $scope;    
+    
+    $scope.refreshDbeData = function refreshDbeData() {
+      return editorService.refreshEditorData().then(function (result) {
+          editorService.processEditorDto(result).then(function (result) {
+            calculateDisplayedItems();
+          });
+        });
     }
     
-    $scope.refreshDbeData = function refreshDbeData(state) {
-      return editorService.refreshEditorData().then(function (result) {
-        calculateDisplayedItems();
-      })
-    };
+    if ($scope.displayedItems == undefined) {
+      $scope.refreshDbeData();
+    }
     
     function calculateDisplayedItems() {
       $scope.displayedItems = [];
       
       var isCurrentEntryStillInList = false;
       for (var i in $scope.items) {
-        if(doesItemNeedReview($scope.items[i])) {
+        if (doesItemNeedReview($scope.items[i])) {
           $scope.displayedItems.push($scope.items[i]);
           if ($scope.currentEntry != undefined && $scope.currentEntry.id == $scope.items[i].id) {
             isCurrentEntryStillInList = true;
@@ -64,69 +65,66 @@ function($scope, $state, $stateParams, editorService, semdomEditApi, sessionServ
     
     $scope.$watch("currentEntry", function (newVal, oldVal) {
       if (newVal != oldVal) {
-        var fieldsForReview = {};
-        if (!angular.isUndefined($scope.currentEntry)) {
-          if (doesFieldNeedReview($scope.currentEntry.name)) {
-            fieldsForReview["Name"] = $scope.currentEntry.name;
-          };
-          
-          if (doesFieldNeedReview($scope.currentEntry.description)) {
-            fieldsForReview["Description"] = $scope.currentEntry.description;
-          }
-          
-          for (var i = 0; i < $scope.currentEntry.searchKeys.length; i++) {
-            if (doesFieldNeedReview($scope.currentEntry.searchKeys[i])) {
-              fieldsForReview["Search Key " + i] = $scope.currentEntry.searchKeys[i];
-            }
-          }
-          
-          for (var i = 0; i < $scope.currentEntry.questions.length; i++) {
-            if (doesFieldNeedReview($scope.currentEntry.questions[i].question)) {
-              fieldsForReview["Question " + i] = $scope.currentEntry.questions[i].question;
-            }
-            if (doesFieldNeedReview($scope.currentEntry.questions[i].terms)) {
-              fieldsForReview["Question Terms " + i] = $scope.currentEntry.questions[i].terms;
-            }
+        calculateFieldsForReview();
+      }
+    });
+    
+    function calculateFieldsForReview() {
+      var fieldsForReview = {};
+      if (!angular.isUndefined($scope.currentEntry)) {
+        if (doesFieldNeedReview($scope.currentEntry.name)) {
+          fieldsForReview["Name"] = $scope.currentEntry.name;
+        };
+        
+        if (doesFieldNeedReview($scope.currentEntry.description)) {
+          fieldsForReview["Description"] = $scope.currentEntry.description;
+        }
+        
+        for (var i = 0; i < $scope.currentEntry.searchKeys.length; i++) {
+          if (doesFieldNeedReview($scope.currentEntry.searchKeys[i])) {
+            fieldsForReview["Search Key " + i] = $scope.currentEntry.searchKeys[i];
           }
         }
         
-        $scope.fieldsForReview = fieldsForReview;
+        for (var i = 0; i < $scope.currentEntry.questions.length; i++) {
+          if (doesFieldNeedReview($scope.currentEntry.questions[i].question)) {
+            fieldsForReview["Question " + i] = $scope.currentEntry.questions[i].question;
+          }
+          if (doesFieldNeedReview($scope.currentEntry.questions[i].terms)) {
+            fieldsForReview["Question Terms " + i] = $scope.currentEntry.questions[i].terms;
+          }
+        }
       }
-    });
-    function doesFieldNeedReview(field) {
-      return field.translation != '' && field.status == 1;
+      
+      $scope.fieldsForReview = fieldsForReview;
     }
-  
-  // permissions stuff
-    $scope.rights = {
-      canEditProject: function canEditProject() {
-        return sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
-      },
-      canEditEntry: function canEditEntry() {
-        return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.EDIT);
-      },
-      canDeleteEntry: function canDeleteEntry() {
-        return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.DELETE);
-      },
-      canComment: function canComment() {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.CREATE);
-      },
-      canDeleteComment: function canDeleteComment(commentAuthorId) {
-        if (sessionService.session.userId == commentAuthorId) {
-          return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE_OWN);
-        } else {
-          return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE);
-        }
-      },
-      canEditComment: function canEditComment(commentAuthorId) {
-        if (sessionService.session.userId == commentAuthorId) {
-          return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT_OWN);
-        } else {
-          return false;
-        }
-      },
-      canUpdateCommentStatus: function canUpdateCommentStatus() {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT);
-      }
-    };
+    
+    function doesFieldNeedReview(field) {
+      return field.translation != '' && (field.status == 1 || field.status == 2);
+    }
+    
+    
+     $scope.markAsApproved = function markAsApproved(field) {
+       field.status = 4;
+       updateParentItem();
+     }
+     
+     $scope.markAsNeedsRevision = function markAsNeedsRevision(field) {
+       field.status = 3;
+       updateParentItem();
+     }
+     
+     $scope.getAllFieldsForRevison = function getAllFieldsForRevision() {
+       
+     }
+     
+     function updateParentItem() {
+       calculateFieldsForReview();
+       semdomEditApi.updateTerm($scope.currentEntry, function(result) {
+         if (result.ok) {
+            $scope.refreshDbeData();
+         }
+       });
+     }
+
 }]);

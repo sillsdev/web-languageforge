@@ -16,7 +16,10 @@
                ng-model="languageCode"
                ng-change="checkLanguageAvailability()" />
              <button ng-click="openNewLanguageModal()" class="btn btn-primary"> Select Langauge</button>
-             <button ng-disabled="!canCreate" ng-click="createProject()" class="btn btn-primary"> Create</button>
+             <br/>
+             <br/>
+             <button ng-disabled="!canCreate" ng-click="createProject(false)" class="btn btn-primary"> Create Empty Project</button>
+             <button ng-show="canCreate && languageHasGoogleTranslateData" ng-click="createProject(true)" class="btn btn-primary"> Create With Google Data</button>
          </div>  
     </div>
 </div>
