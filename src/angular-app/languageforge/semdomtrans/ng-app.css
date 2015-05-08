@@ -21,3 +21,6 @@ div.hdrnav {
 .suggested:hover {
     background-color: #CCFFFF
 }
+.displayedAsAncestor {
+    color: gray
+}

@@ -38,7 +38,7 @@
     	                 <div ng-if="(!hideTranslated || !translatedItems[item.key])"
                             ng-repeat="item in displayedItems track by item.key" ng-class="{selected: (item.key == currentEntry.key)}"  ng-click="changeTerm(item.key)"
     	                 	ng-style="{ 'margin-left': (item.key.length-1)/2 * 20 }"   >
-    				        <a> {{item.key}} {{item.name.source}}</a>
+    				        <a ng-class="{displayedAsAncestor: !isIncluded(item.key)}"> {{item.key}} {{item.name.source}}</a>
     				      </div>
     			    </div>
                     <div>
