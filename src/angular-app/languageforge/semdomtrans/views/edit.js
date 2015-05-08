@@ -40,18 +40,21 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
               return;
             
             $scope.filteredByDepthItems = [];
+            var allWorkingSetItems = [];
             var addedToFiltered = {};
             
-            // get all actually included items in
+            // get all actually included items by depth
             for (var i in $scope.itemsTree) {
               var node = $scope.itemsTree[i];
               var item = node.content;
-              if (isIncluded(item.key) && item.key[0] == $scope.subDomain) {
+              if ($scope.isIncluded(item.key) && item.key[0] == $scope.subDomain) {
                 if (checkDepth(item.key)) {
                   $scope.filteredByDepthItems.push(item);
                 }
+                allWorkingSetItems.push(item);
               }              
             }
+            
             
             // apply filter       
             $scope.filteredByDepthItems = $filter('filter')($scope.filteredByDepthItems, $scope.searchText);
@@ -62,11 +65,11 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
               addedToFiltered[item.key] = true;
             }
             
-            // add ancestors of included items
-            for (var i in $scope.filteredByDepthItems) {
-              var node = $scope.itemsTree[$scope.filteredByDepthItems[i].key];
+            // add ancestors of items in working set
+            for (var i in allWorkingSetItems) {
+              var node = $scope.itemsTree[allWorkingSetItems[i].key];
               var item = node.content;      
-              if (isIncluded(item.key) && item.key[0] == $scope.subDomain) {
+              if ($scope.isIncluded(item.key) && item.key[0] == $scope.subDomain) {
                 while(node.parent != '') {
                   if (checkDepth(node.parent) && (angular.isUndefined(addedToFiltered[node.parent]) || !addedToFiltered[node.parent])) {
                     $scope.filteredByDepthItems.push($scope.itemsTree[node.parent].content);
@@ -253,7 +256,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
    
   }; 
   
-  function isIncluded(key) {
+  $scope.isIncluded = function isIncluded(key) {
     return !angular.isUndefined($scope.includedItems[key]) && $scope.includedItems[key] ;
   }
   
