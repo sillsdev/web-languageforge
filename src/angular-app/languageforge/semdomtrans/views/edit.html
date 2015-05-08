@@ -22,7 +22,7 @@
                         <tab ng-if="rights.canEditProject()" heading="Filter" ng-click="setTab(2)"></tab>
 					</tabset>  
 				</div>
-				<div class="span4" style="margin-left:0px; margin-right:0px" ng-if="isItemSelected()">
+				<div class="span4" style="margin-left:0px; margin-right:0px" ng-if="isItemSelected() && rights.canComment()">
 					<a ui-sref="comments({position:currentEntryIndex})"  style="float: right; margin-top:5px"> Comments &#8594;</a>                    
 				</div>
 			</div>
