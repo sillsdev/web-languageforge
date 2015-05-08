@@ -15,9 +15,12 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
   $scope.displayedItems = [];
   $scope.selectedDepth = 1;
   $scope.searchText = "";
-  $scope.isEditingWorkingSet = false;
   $scope.subDomain = "1";
+  $scope.isEditingWorkingSet = false;
   $scope.hideTranslated = false;
+  $scope.hideDescription = false;
+  $scope.hideSearchKeys = false;
+  $scope.hideQuestionsTerms = false;
   
   var api = semdomEditApi;
  
