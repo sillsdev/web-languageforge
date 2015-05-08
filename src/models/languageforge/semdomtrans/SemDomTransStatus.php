@@ -20,4 +20,8 @@ class SemDomTransStatus
         );
         return $statuses;
 	}
+	
+	public static function isApproved($status) {
+	    return $status == SemDomTransStatus::Approved;
+	}
 }

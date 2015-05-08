@@ -27,7 +27,7 @@ class TestSemDomTransProjectModel extends UnitTestCase
         $e->cleanPreviousProject('es');
         $user1Id = $e->createUser('u', 'u', 'u');
         $e->getEnglishProjectAndCreateIfNecessary();
-        $project = $e->createSemDomProject('es', $user1Id);
+        $project = $e->createSemDomProject('es', "Spanish", $user1Id);
 
     }
 
@@ -37,7 +37,7 @@ class TestSemDomTransProjectModel extends UnitTestCase
         $e->cleanPreviousProject('es');
         $user1Id = $e->createUser('u', 'u', 'u');
         $e->getEnglishProjectAndCreateIfNecessary();
-        $project = $e->createSemDomProject('es', $user1Id);
+        $project = $e->createSemDomProject('es', "Spanish", $user1Id);
 
         $listModel = new SemDomTransItemListModel($project);
         $listModel->read();

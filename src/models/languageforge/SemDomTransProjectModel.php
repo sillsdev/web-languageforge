@@ -10,6 +10,7 @@ use models\languageforge\semdomtrans\SemDomTransTranslatedForm;
 use models\mapper\IdReference;
 use models\commands\ProjectCommands;
 use models\mapper\Id;
+use models\languageforge\semdomtrans\SemDomTransStatus;
 
 
 class SemDomTransProjectModel extends LfProjectModel {
@@ -83,8 +84,20 @@ class SemDomTransProjectModel extends LfProjectModel {
         $importer->run();
     }
 
-    public function preFillFromSourceLanguage() {
-        // cjh review: we may actually want to only prefill from English, if in the future we allow creating projects from incomplete source projects
+    public function preFillFromSourceLanguage($useGoogleTranslateData = true) {
+        
+        $path = APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/semdom-google-translate-$this->languageIsoCode.txt";
+
+        $googleTranslateData = [];
+        if($useGoogleTranslateData && file_exists($path)) {
+            $lines = file($path);
+            foreach ($lines as $line) {
+                $splitLine = explode("|", $line);
+                $googleTranslateData[$splitLine[0]] = $splitLine[1];
+            }
+        }
+       
+        // cjh review: we may actually want to only prefill from English, if in the future we allow creating projects from incomplete source projects        
         $sourceProject = new SemDomTransProjectModel($this->sourceLanguageProjectId->asString());
 
         $this->_copyXmlToAssets($sourceProject->xmlFilePath);
@@ -93,12 +106,41 @@ class SemDomTransProjectModel extends LfProjectModel {
         $sourceItems->read();
         foreach ($sourceItems->entries as $item) {
             $newItem = new SemDomTransItemModel($this);
+            
+            // if Google translation exists for given name exists, use it
+            if (array_key_exists($item['name']['translation'], $googleTranslateData)) {
+                $newItem->name->translation = $googleTranslateData[$item['name']['translation']];    
+                $newItem->name->status = SemDomTransStatus::Suggested;
+            }
+            // if Google translation exists for given description exists, use it
+            if (array_key_exists($item['description']['translation'], $googleTranslateData)) {
+                $newItem->description->translation = $googleTranslateData[$item['description']['translation']];
+                $newItem->description->status = SemDomTransStatus::Suggested;
+            }
+            
             $newItem->key = $item['key'];
             for($x=0; $x<count($item['questions']); $x++) {
-                $newItem->questions[] = new SemDomTransQuestion();
+                $q = new SemDomTransQuestion();
+                // if Google translation exists for given question, use it
+                if (array_key_exists($item['questions'][$x]['question']['translation'], $googleTranslateData)) {
+                    $q->question->translation = $googleTranslateData[$item['questions'][$x]['question']['translation']];
+                    $q->question->status = SemDomTransStatus::Suggested;
+                } 
+                // if Google translation exists for given question term, use it
+                if (array_key_exists($item['questions'][$x]['terms']['translation'], $googleTranslateData)) {
+                    $q->terms->translation = $googleTranslateData[$item['questions'][$x]['terms']['translation']];
+                    $q->terms->status = SemDomTransStatus::Suggested;
+                }
+                $newItem->questions[] = $q;
             }
             for($x=0; $x<count($item['searchKeys']); $x++) {
-                $newItem->searchKeys[] = new SemDomTransTranslatedForm();
+                $sk = new SemDomTransTranslatedForm();
+                // if Google translation exists for given search key, use it
+                if (array_key_exists($item['searchKeys'][$x]['translation'], $googleTranslateData)) {
+                    $sk->translation = $googleTranslateData[$item['searchKeys'][$x]['translation']];
+                    $sk->status = SemDomTransStatus::Suggested;
+                }
+                $newItem->searchKeys[] = $sk;
             }
             $newItem->xmlGuid = $item['xmlGuid'];
             $newItem->write();
@@ -107,6 +149,10 @@ class SemDomTransProjectModel extends LfProjectModel {
 
     public static function projectCode($languageCode, $semdomVersion = self::SEMDOM_VERSION) {
         return "semdom-$languageCode-$semdomVersion";
+    }
+    
+    public static function projectName($languageCode, $languageName, $semdomVersion = self::SEMDOM_VERSION) {
+        return "Semantic Domain $languageName ($languageCode) Translation";
     }
 
     public function readByCode($languageCode, $semdomVersion = self::SEMDOM_VERSION) {

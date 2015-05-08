@@ -85,9 +85,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
               } else {
                 return 1;
               }
-            });
-            
-          
+            });           
             
             $scope.displayedItems = $scope.filteredByDepthItems;
             if (!$scope.$$phase) {
@@ -95,21 +93,33 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
             }
           }, delay);
   }
+  
+  /*
+   * Set items to be included 
+   */
+  $scope.setInclusion = function setInclusion(itemsToInclude, v) {
+    for (var i in itemsToInclude) {
+      $scope.includedItems[itemsToInclude[i].key] = v;
+    }
+    
+    $scope.reloadItems($scope.selectedDepth);    
+  }
+  
   /*
    * Determines if a semdom item is completely translated
    */
   
   function isItemTranslatedCompletely(item) {
     var translated = true;
-    translated = translated && (item.name.status == 0);
-    translated = translated && (item.description.status == 0);
+    translated = translated && (item.name.status == 4);
+    translated = translated && (item.description.status == 4);
     for (var i = 0; i < item.searchKeys.length; i++) {
-      translated = translated && (item.searchKeys[i].status == 0);
+      translated = translated && (item.searchKeys[i].status == 4);
     }
     
     for (var i = 0; i < item.questions.length; i++) {
-      translated = translated && (item.questions[i].question.status == 0);
-      translated = translated && (item.questions[i].terms.status == 0);
+      translated = translated && (item.questions[i].question.status == 4);
+      translated = translated && (item.questions[i].terms.status == 4);
     }
     
     return translated;
@@ -185,7 +195,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
       $scope.reloadItems(1);
       
       // reload current entry if it is included in lsit
-      if ($scope.includedItems[$scope.items[$stateParams.position].key]) {      
+      if (!angular.isUndefined($stateParams.position) && $stateParams.position != "" && $scope.includedItems[$scope.items[$stateParams.position].key]) {      
         $scope.currentEntry = $scope.items[$stateParams.position];
         $scope.currentEntryIndex = angular.isUndefined($stateParams.position) ? 0 : $stateParams.position;
         $scope.changeTerm($scope.currentEntry.key);
@@ -290,8 +300,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
     }
     
     $scope.reloadItems($scope.selectedDepth);    
-  }
-  
+  }  
   
   
   $scope.saveWorkingSet = function saveWorkingSet(ws) {
@@ -316,37 +325,5 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
   $scope.isItemSelected = function isItemSelected() {
     return !angular.isUndefined($scope.currentEntryIndex);
   }
-  
-  // permissions stuff
-    $scope.rights = {
-      canEditProject: function canEditProject() {
-        return sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
-      },
-      canEditEntry: function canEditEntry() {
-        return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.EDIT);
-      },
-      canDeleteEntry: function canDeleteEntry() {
-        return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.DELETE);
-      },
-      canComment: function canComment() {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.CREATE);
-      },
-      canDeleteComment: function canDeleteComment(commentAuthorId) {
-        if (sessionService.session.userId == commentAuthorId) {
-          return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE_OWN);
-        } else {
-          return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.DELETE);
-        }
-      },
-      canEditComment: function canEditComment(commentAuthorId) {
-        if (sessionService.session.userId == commentAuthorId) {
-          return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT_OWN);
-        } else {
-          return false;
-        }
-      },
-      canUpdateCommentStatus: function canUpdateCommentStatus() {
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS, sessionService.operation.EDIT);
-      }
-    };
+ 
 }]);
