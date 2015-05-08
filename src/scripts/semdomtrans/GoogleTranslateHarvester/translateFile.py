@@ -15,11 +15,13 @@ params:
 * to_language - target language of translation
 * language - source language
 '''
-def translate(link, to_language="auto", language="en"):
-	print link + '\n'
-	request = urllib2.Request(link)
-	result = urllib2.urlopen(request).read()
-	return json.loads(result.decode('utf-8'))['data']['translations']
+def translate(listOfWordsToTranslate, key, to_language="auto", language="en"):
+	link = "https://www.googleapis.com/language/translate/v2?key=%s&source=%s&target=%s" % (key, language, to_language)
+	link = link.encode('utf-8')
+	if len(''.join(listOfWordsToTranslate)) < 2000:
+		return _request(link, listOfWordsToTranslate)
+	else:
+		return _request(link, listOfWordsToTranslate[0:5]) + _request(link, listOfWordsToTranslate[5:10])
 	
 def _touchFile(fname):
     with open(fname, 'a'):
@@ -114,24 +116,14 @@ if __name__ == '__main__':
 		
 		f = open(outputPath,'a')
 		print "There are %d translations left to process" % len(processedLines)
-		
-		i = 0
-		preFixLink = "https://www.googleapis.com/language/translate/v2?key=%s&source=%s&target=%s" % (sys.argv[2], "en", language)
-		preFixLink = preFixLink.encode('utf-8')
-		link = preFixLink
-		# translate and print
 		# translate and print out using proper utf-8 encoding
-		while i < len(processedLines):				
-			wordToEncode = urllib.quote_plus(processedLines[i])
-			# concat to url request as long as adding does not cause request length to exceed 5000 characters
-			if len(link) + len(wordToEncode) < 5000:
-				link = link + "&q=" + urllib.quote_plus(processedLines[i])
-			# if url request would exceed 5000 charactesr upon adding encoded word, translate current request and start creating new one
-			else:
-				print "length of request: %s" % (len(link))
-				translatedItems = translate(link)
-				print "translating %s words" % (len(translatedItems))
-				for j in range(i, i+len(translatedItems)): 
-					f.write(processedLines[j] + "|" + translatedItems[j-i]['translatedText'].encode('utf-8') + "\n")
-				link = preFixLink + "&q=" + wordToEncode
-			i += 1
+		
+		_touchFile(lockFile)
+		for i in xrange(0, len(processedLines), 10):			
+			tstart = datetime.now()
+			translatedItems = translate(processedLines[i:i+10], sys.argv[2], language)
+			for j in range(i, min(len(processedLines), i+10)):
+				f.write(processedLines[j] + "|" + translatedItems[j%10]['translatedText'].encode('utf-8') + "\n")
+			print "processed '%s' %d-%d of %d (%f seconds)" % (language, skippedCtr+i, skippedCtr+i+10, skippedCtr+len(processedLines), (datetime.now() - tstart).total_seconds())	
+		os.remove(lockFile)
+
