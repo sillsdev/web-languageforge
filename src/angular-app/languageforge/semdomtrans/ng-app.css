@@ -2,3 +2,22 @@
 div.hdrnav {
     clear: both;    
 }
+.approved {
+    background-color: #5CB85C;
+}
+.approved:hover { 
+    background-color: #5CB85C;
+}
+.needRevision: {
+    background-color: #FFFF66;
+}
+.needRevision::hover {
+    background-color: #FFFF66;
+}
+
+.suggested {
+    background-color: #CCFFFF
+}
+.suggested:hover {
+    background-color: #CCFFFF
+}

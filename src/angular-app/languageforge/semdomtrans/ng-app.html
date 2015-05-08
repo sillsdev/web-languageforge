@@ -1,6 +1,6 @@
 <div class="content container" data-ng-cloak data-ng-controller="MainCtrl">
 	<div data-sil-notices></div>
-    <div class="hdrnav">
+    <div class="hdrnav" ng-if="rights.canEditProject()">
         <div class="btn-group" style="margin-top:25px; float:right">
                 <a class="btn dropdown-toggle"
                     data-toggle="dropdown"

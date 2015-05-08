@@ -25,6 +25,7 @@ use models\languageforge\LfProjectModel;
 use models\commands\ProjectCommands;
 use models\languageforge\semdomtrans\SemDomTransQuestion;
 use Palaso\Utilities\FileUtilities;
+use libraries\languageforge\semdomtrans\SemDomXMLExporter;
 
 class SemDomTransProjectCommands
 {
@@ -47,6 +48,13 @@ class SemDomTransProjectCommands
 
         return $semdomProjects;
     }
+    
+
+    public static function doesGoogleTranslateDataExist($languageIsoCode) {
+        $path = APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/semdom-google-translate-$languageIsoCode.txt";
+        return file_exists($path);
+    }
+    
 
     public static function checkProjectExists($languageCode) {
         $project = new SemDomTransProjectModel();
@@ -58,10 +66,10 @@ class SemDomTransProjectCommands
         }
     }
 
-    public static function createProject($languageCode, $userId, $website, $semdomVersion = SemDomTransProjectModel::SEMDOM_VERSION) {
+    public static function createProject($languageCode, $languageName, $useGoogleTranslateData, $userId, $website, $semdomVersion = SemDomTransProjectModel::SEMDOM_VERSION) {
 
         $projectCode = SemDomTransProjectModel::projectCode($languageCode, $semdomVersion);
-        $projectName = "Semantic Domain $languageCode Translation";
+        $projectName = SemDomTransProjectModel::projectName($languageCode, $languageName, $semdomVersion);
         $projectID =  ProjectCommands::createProject($projectName, $projectCode, LfProjectModel::SEMDOMTRANS_APP, $userId, $website);
 
         $project = new SemDomTransProjectModel($projectID);
@@ -73,7 +81,7 @@ class SemDomTransProjectCommands
         $englishProject = SemDomTransProjectModel::getEnglishProject($semdomVersion);
         $project->sourceLanguageProjectId->id = $englishProject->id->asString();
 
-        $project->preFillFromSourceLanguage();
+        $project->preFillFromSourceLanguage($useGoogleTranslateData);
         return $project->write();
     }
 

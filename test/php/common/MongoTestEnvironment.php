@@ -459,8 +459,8 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
         parent::clean();
     }
 
-    public function createSemDomProject($languageCode, $userId) {
-        $projectId = SemDomTransProjectCommands::createProject($languageCode, $userId, $this->website, self::TESTVERSION);
+    public function createSemDomProject($languageCode, $languageName, $userId) {
+        $projectId = SemDomTransProjectCommands::createProject($languageCode, $languageName, false, $userId, $this->website, self::TESTVERSION);
         return new SemDomTransProjectModel($projectId);
     }
 
