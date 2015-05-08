@@ -22,6 +22,7 @@
 		    </td> 
 	    </tr>	
         <tr
+            ng-if="!control.hideQuestionTerms"
             ng-class="{approved: (model.questions[currentQuestionPos].terms.status == 4), needRevision: (model.questions[currentQuestionPos].terms.status == 3), suggested: (model.questions[currentQuestionPos].terms.status == 2)}"
             ng-click="isInCommentMode() ? control.setSelectedField('question terms ' + currentQuestionPos, model.questions[currentQuestionPos].terms) : '' ">
 		    <td> Terms: </td>
