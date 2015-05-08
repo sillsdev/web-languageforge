@@ -53,6 +53,9 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
       }
     }
     
+    // sort in case earlier subdomains were added later to working set
+    $scope.allSubDomains.sort();
+    
     if (angular.isUndefined(subDomainsDict[$scope.subDomain]) || !subDomainsDict[$scope.subDomain]) {
       $scope.subDomain = $scope.allSubDomains[0];
     }
