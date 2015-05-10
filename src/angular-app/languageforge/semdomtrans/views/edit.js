@@ -80,11 +80,11 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
             // calculate list of subdomains
             calculateSubdomainList();
            
-            // keeps track of items in working set that are at appropriate depth (and their ancestors)
-            var filteredByDepthItems = [];
-            
             // list of all working set items
-            var allWorkingSetItems = [];
+            var includedItemList = [];
+            
+            // ancestors of filtered items
+            var ancestorsOfIncluded = [];
             
             // dictionary to keep track of items add 
             // (since it is possible for multiple items in a working set to have the same ancestors (e.g. 1.3 and 1.4 will have 1 as common ancestor
@@ -96,36 +96,50 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
               var node = $scope.itemsTree[i];
               var item = node.content;
               if ($scope.isIncludedInWs(item.key) && item.key[0] == $scope.subDomain) {
-                if (checkDepth(item.key)) {
-                  filteredByDepthItems.push(item);
-                }
-                allWorkingSetItems.push(item);
+                includedItemList.push(item);
               }              
-            }            
-            
+            }          
+          
             // apply filter       
-            filteredByDepthItems = $filter('filter')(filteredByDepthItems, $scope.searchText);
+            includedItemList = $filter('filter')(includedItemList, $scope.searchText);
             
             // check off that items have been added (to avoid duplicates in next step)
-            for (var i in filteredByDepthItems) {
-              var item = filteredByDepthItems[i];
+            for (var i in includedItemList) {
+              var item = includedItemList[i];
               addedToFiltered[item.key] = true;
             }
             
             // add ancestors of items in working set
-            for (var i in allWorkingSetItems) {
-              var node = $scope.itemsTree[allWorkingSetItems[i].key];
+            for (var i in includedItemList) {
+              var node = $scope.itemsTree[includedItemList[i].key];
               var item = node.content;      
               if ($scope.isIncludedInWs(item.key) && item.key[0] == $scope.subDomain) {
                 while(node.parent != '') {
-                  if (checkDepth(node.parent) && (angular.isUndefined(addedToFiltered[node.parent]) || !addedToFiltered[node.parent])) {
-                    filteredByDepthItems.push($scope.itemsTree[node.parent].content);
+                  if (angular.isUndefined(addedToFiltered[node.parent]) || !addedToFiltered[node.parent]) {
+                    ancestorsOfIncluded.push($scope.itemsTree[node.parent].content);
                     addedToFiltered[node.parent] = true;
                   }
                   
                   node = $scope.itemsTree[node.parent];
                 }
               }
+            }            
+            
+            includedItemList = includedItemList.concat(ancestorsOfIncluded);
+            
+            var filteredByDepthItems = [];
+            
+            // process by depth
+            for (var i in includedItemList) {
+              if (checkDepth(includedItemList[i].key)) {
+                filteredByDepthItems.push(includedItemList[i]);
+              }
+            }
+            
+            // check off that items have been added (to avoid duplicates in next step)
+            for (var i in includedItemList) {
+              var item = includedItemList[i];
+              addedToFiltered[item.key] = true;
             }
             
             
