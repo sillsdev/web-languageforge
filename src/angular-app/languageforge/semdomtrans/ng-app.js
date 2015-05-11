@@ -12,7 +12,7 @@ angular.module('semdomtrans',
     'semdomtrans.review',
     'pascalprecht.translate' 
   ])
-  .config(function($stateProvider, $urlRouterProvider) {
+  .config(['$stateProvidor', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
     
     $urlRouterProvider.otherwise('/edit');
     
@@ -45,7 +45,7 @@ angular.module('semdomtrans',
               '': {templateUrl: '/angular-app/languageforge/semdomtrans/views/review.html'}
             }
         })
-  })
+  }])
   .controller('MainCtrl', ['$scope', 'semdomtransEditorDataService', 'sessionService', 'lexCommentService', 'offlineCache', '$q',
   function($scope, editorDataService, ss, commentsSerivce, offlineCache, $q) {    
    $scope.rights = {};
