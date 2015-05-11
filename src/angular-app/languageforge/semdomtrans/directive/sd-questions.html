@@ -13,7 +13,7 @@
   			<th style="width:35%"> Translation </th>
   		</tr>
 	    <tr 
-              ng-class="{approved: (model.questions[control.currentQuestionPos].question.status == 4), needRevision: (model.questions[control.currentQuestionPos].question.status == 3), suggested: (model.questions[control.currentQuestionPos].question.status == 2)}"
+            ng-class="{approved: (model.questions[control.currentQuestionPos].question.status == 4), needsrevision: (model.questions[control.currentQuestionPos].question.status == 3), suggested: (model.questions[control.currentQuestionPos].question.status == 2)}"
             ng-click="isInCommentMode() ? control.setSelectedField('question ' + control.currentQuestionPos, model.questions[control.currentQuestionPos].question) : '' ">
 		    <td> Questions: </td>
 		    <td> {{model.questions[control.currentQuestionPos].question.source}} </td>
@@ -29,7 +29,7 @@
 	    </tr>	
         <tr
             ng-if="!control.hideQuestionTerms"
-            ng-class="{approved: (model.questions[control.currentQuestionPos].terms.status == 4), needRevision: (model.questions[control.currentQuestionPos].terms.status == 3), suggested: (model.questions[control.currentQuestionPos].terms.status == 2)}"
+            ng-class="{approved: (model.questions[control.currentQuestionPos].terms.status == 4), needsrevision: (model.questions[control.currentQuestionPos].terms.status == 3), suggested: (model.questions[control.currentQuestionPos].terms.status == 2)}"
             ng-click="isInCommentMode() ? control.setSelectedField('question terms ' + control.currentQuestionPos, model.questions[control.currentQuestionPos].terms) : '' ">
 		    <td> Terms: </td>
 		    <td> {{model.questions[control.currentQuestionPos].terms.source}}</td>

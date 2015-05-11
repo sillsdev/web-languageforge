@@ -6,13 +6,12 @@
     			<th style="width:35%"> Translation </th>
     		</tr>
 		    <tr 
-                ng-class="{approved: (model.name.status == 4), needRevision: (model.name.status == 3), suggested: (model.name.status == 2)}"
+                ng-class="{approved: (model.name.status == 4), needsrevision: (model.name.status == 3), suggested: (model.name.status == 2)}"
                 ng-click="isInCommentMode() ? control.setSelectedField('name', model.name) : '' ">
 			    <td > Name: </td>
-			    <td> {{model.name.source}}</td>
+			    <td> {{model.name.source}} </td>
 			    <td> 
-			    	<input 
-                           
+			    	<input                            
 			    		   ng-disabled="isInCommentMode() || model.name.status == 4 || !control.rights.canEditEntry()"
 			    		   ng-model="model.name.translation"
 						   ng-keypress="control.updateItem($event.which)"
@@ -22,10 +21,10 @@
 		     <tr>
 		     <tr 
                 ng-if="!control.hideDescription"
-                ng-class="{approved: (model.description.status == 4), needRevision: (model.description.status == 3), suggested: (model.description.status == 2)}"
+                ng-class="{approved: (model.description.status == 4), needsrevision: (model.description.status == 3), suggested: (model.description.status == 2)}"
                 ng-click="isInCommentMode() ? control.setSelectedField('description', model.description) : '' ">
 			    <td> Description: </td>
-			    <td> {{model.description.source}}</td>
+			    <td> {{model.description.source}} </td>
 		        <td> 
 		        	<textarea rows="4"
 		        		ng-disabled="isInCommentMode() || model.description.status == 4 || !control.rights.canEditEntry()"
@@ -46,7 +45,7 @@
 	    		<th style="width:50%"> Source </th>
 	    		<th style="width:50%"> Translation </th>
 	    	<tr 
-                ng-class="{approved: (searchKey.status == 4), needRevision: (searchKey.status == 3), suggested: (searchKey.status == 2)}"
+                ng-class="{approved: (searchKey.status == 4), needsrevision: (searchKey.status == 3), suggested: (searchKey.status == 2)}"
                 ng-repeat="searchKey in model.searchKeys" 
 	    		ng-click="isInCommentMode() ? control.setSelectedField('search key ' + $index, searchKey) : '' ">
 	    		<td>{{searchKey.source}}</td>
