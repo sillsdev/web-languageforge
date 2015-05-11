@@ -19,6 +19,11 @@ class app extends Secure_base
             $appFolder .= "/new-project";
             $projectId = '';
             $app = $app . "-new-project";
+        } elseif ($projectId == 'manage') {
+            $parentAppFolder = $appFolder;
+            $appFolder .= "/app-management";
+            $projectId = '';
+            $app = $app . "-app-management";
         }
         
         if (!file_exists($appFolder)) {
