@@ -24,7 +24,7 @@ angular.module('bellows.services')
      */
     var openDbIfNecessary = function openDbIfNecessary() {
       var deferred = $q.defer();
-      var version = 3;
+      var version = 4;
       if (db == null) {
         var request = indexedDB.open(dbName, version);
 
