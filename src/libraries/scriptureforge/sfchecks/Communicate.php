@@ -18,7 +18,9 @@ class CommunicateDelivery implements IDelivery
      */
     public function sendEmail($from, $to, $subject, $content)
     {
-        Email::send($from, $to, $subject, $content);
+        if (!defined('TestMode')) {
+            Email::send($from, $to, $subject, $content);
+        }
     }
 
     /**

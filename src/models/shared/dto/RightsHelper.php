@@ -345,6 +345,11 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
 
+            // semdomtrans app management
+            case 'semdomtrans_app_management_dto':
+            case 'semdomtrans_export_all_projects':
+                return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
+
             default:
                 throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");
         }

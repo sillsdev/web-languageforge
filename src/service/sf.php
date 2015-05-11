@@ -16,6 +16,7 @@ use models\languageforge\lexicon\commands\LexUploadCommands;
 use models\languageforge\lexicon\dto\LexBaseViewDto;
 use models\languageforge\lexicon\dto\LexDbeDto;
 use models\languageforge\lexicon\dto\LexProjectDto;
+use models\languageforge\semdomtrans\dto\SemDomTransAppManagementDto;
 use models\scriptureforge\sfchecks\commands\SfchecksProjectCommands;
 use models\scriptureforge\sfchecks\commands\SfchecksUploadCommands;
 use models\scriptureforge\dto\ProjectSettingsDto;
@@ -802,6 +803,18 @@ class sf
 
     public function project_management_report_sfchecks_responsesOverTimeReport() {
         return SfchecksReports::ResponsesOverTimeReport($this->_projectId);
+    }
+
+
+
+    // -------------------------------- Semdomtrans App Management Api ----------------------------------
+    public function semdomtrans_app_management_dto() {
+        return SemDomTransAppManagementDto::encode();
+    }
+
+    public function semdomtrans_export_all_projects() {
+        // TODO: implement this
+        return array('exportUrl' => '/sampledownload.zip');
     }
 
     // ---------------------------------------------------------------
