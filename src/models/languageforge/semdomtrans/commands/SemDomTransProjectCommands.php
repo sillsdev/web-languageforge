@@ -29,6 +29,11 @@ use libraries\languageforge\semdomtrans\SemDomXMLExporter;
 
 class SemDomTransProjectCommands
 {
+    /**
+     * Gets list of currently open projects for a user (excluding those he is part of are has submitted a join request for)
+     * @param string $userId
+     * @return multitype:\models\languageforge\SemDomTransProjectModel
+     */
     public static function getOpenSemdomProjects($userId) {
         $projects = new ProjectListModel();
         $projects->read();
@@ -49,6 +54,9 @@ class SemDomTransProjectCommands
         return $semdomProjects;
     }
    
+    /**
+     * exports all projects to a zip file - currently not working
+     */
     public static function exportProjects() {
         $zip = new ZipArchive();
         $filename =  $path = APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/exportedProjects.zip";
@@ -66,12 +74,23 @@ class SemDomTransProjectCommands
             $zip->close();
         }
     }
+    
+    /**
+     * Checks whether the language code has an associated google translate file that can be used
+     * for prepopulating translation
+     * @param string $languageIsoCode
+     * @return boolean
+     */
     public static function doesGoogleTranslateDataExist($languageIsoCode) {
-        $path = APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/semdom-google-translate-$languageIsoCode.txt";
+        $path = APPPATH . "resources/languageforge/semdomtrans/GoogleTranslateHarvester/semdom-google-translate-$languageIsoCode.txt.gz";
         return file_exists($path);
     }
     
-
+    /**
+     * Determines if project with given langauge code exists
+     * @param string $languageCode
+     * @return boolean
+     */
     public static function checkProjectExists($languageCode) {
         $project = new SemDomTransProjectModel();
         $project->readByCode($languageCode);
@@ -82,6 +101,16 @@ class SemDomTransProjectCommands
         }
     }
 
+    /**
+     * Creates a semdomtrans project and prefills it (using Google Translate data if appropriate flag is set)
+     * @param string $languageCode
+     * @param string $languageName
+     * @param bool $useGoogleTranslateData
+     * @param string $userId
+     * @param Website $website
+     * @param int $semdomVersion
+     * @return string
+     */
     public static function createProject($languageCode, $languageName, $useGoogleTranslateData, $userId, $website, $semdomVersion = SemDomTransProjectModel::SEMDOM_VERSION) {
 
         $projectCode = SemDomTransProjectModel::projectCode($languageCode, $semdomVersion);
@@ -96,7 +125,8 @@ class SemDomTransProjectCommands
         // by default all created projects have English as their source.  A future feature would allow creating projects off of other source languages
         $englishProject = SemDomTransProjectModel::getEnglishProject($semdomVersion);
         $project->sourceLanguageProjectId->id = $englishProject->id->asString();
-
+        
+        // prefill project with semdom items
         $project->preFillFromSourceLanguage($useGoogleTranslateData);
         return $project->write();
     }
