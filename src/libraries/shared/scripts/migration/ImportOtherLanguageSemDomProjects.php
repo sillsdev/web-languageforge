@@ -3,7 +3,10 @@
 namespace libraries\shared\scripts\migration;
 
 use libraries\languageforge\semdomtrans\SemDomXMLImporter;
+use libraries\shared\Website;
+use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
 use models\languageforge\SemDomTransProjectModel;
+use models\ProjectModel;
 
 class ImportOtherLanguageSemDomProjects
 {
@@ -15,6 +18,8 @@ class ImportOtherLanguageSemDomProjects
         $languages = array('es', 'fa', 'hi', 'id', 'km', 'ko', 'ne', 'pt', 'ru', 'te', 'th', 'ur', 'zh-CN');
         //$languages = array('es', 'fa');
 
+        $website = Website::get();
+
         foreach ($languages as $lang) {
             $projectCode = SemDomTransProjectModel::projectCode($lang);
             $existingProject = new SemDomTransProjectModel();
@@ -24,7 +29,8 @@ class ImportOtherLanguageSemDomProjects
                 continue;
             }
             if (!$testMode) {
-                $projectModel = SemDomTransProjectModel::createProject($lang, $userId);
+                $projectId = SemDomTransProjectCommands::createProject($lang, $lang, false, $userId, $website);
+                $projectModel = ProjectModel::getById($projectId);
                 $xmlFilePath = APPPATH . "resources/languageforge/semdomtrans/LocalizedLists-$lang.xml";
                 $projectModel->importFromFile($xmlFilePath);
             }
