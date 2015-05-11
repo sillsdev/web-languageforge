@@ -39,7 +39,7 @@ class ImportOtherLanguageSemDomProjects
                 }
             }
             if (!$testMode) {
-                $projectId = self::_createEmptyProject($lang, $projectName, $userId);
+                $projectId = self::_createEmptyProject($lang, $languageName, $userId);
                 $projectModel = ProjectModel::getById($projectId);
                 $xmlFilePath = APPPATH . "resources/languageforge/semdomtrans/LocalizedLists-$lang.xml";
                 $projectModel->importFromFile($xmlFilePath);
