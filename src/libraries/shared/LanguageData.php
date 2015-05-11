@@ -106,7 +106,7 @@ class LanguageData extends MapOf
         $unlisted = new Language('Unlisted Language', 'qaa');
         $unlisted->country[] = '?';
         $unlistedCode = $unlisted->code->three;
-        if (! key_exists($unlistedCode, $this)) {
+        if (! array_key_exists($unlistedCode, $this)) {
             $this[$unlistedCode] = $unlisted;
         }
     }
@@ -116,11 +116,20 @@ class LanguageData extends MapOf
      * @param string $tag
      * @return string
      */
-    public function getCode($tag)
+    public static function getCode($tag)
     {
         $tokens = explode('-', $tag);
 
         return $tokens[0];
+    }
+
+    /**
+     * @param string $tag
+     * @return Language
+     */
+    public function getLanguage($tag) {
+        $code = self::getCode($tag);
+        return $this[$code];
     }
 
 }

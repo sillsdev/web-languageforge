@@ -68,7 +68,7 @@ class LexiconProjectModel extends LfProjectModel
                 if (!$languages) {
                     $languages = new LanguageData();
                 }
-                $languageCode = $languages->getCode($tag);
+                $languageCode = LanguageData::getCode($tag);
                 if (key_exists($languageCode, $languages)) {
                     $name = $languages[$languageCode]->name;
                 }
