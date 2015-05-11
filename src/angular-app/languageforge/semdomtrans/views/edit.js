@@ -73,10 +73,17 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
        delay = 0;
      }
       var query = $scope.selectedText;
-      $timeout(function() {
+      $timeout(function() {        
+            // ensures that we are not constantly reloading
             if (query != $scope.selectedText)
-              return;
+              return;            
             
+            // reload working set of items
+            if (!angular.isUndefined($scope.newWs)) {
+              loadWorkingSetItems($scope.newWs);
+            } else {
+              loadWorkingSetItems($scope.workingSets[$scope.selectedWorkingSet]);
+            }
             // calculate list of subdomains
             calculateSubdomainList();
            
@@ -91,7 +98,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
             //- so this would result in duplicates if we did not keep track of what has been added)
             var addedToFiltered = {};
             
-            // get all actually included items by depth
+            // get all actually included items
             for (var i in $scope.itemsTree) {
               var node = $scope.itemsTree[i];
               var item = node.content;
@@ -103,6 +110,14 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
             // apply filter       
             includedItemList = $filter('filter')(includedItemList, $scope.searchText);
             
+            // reset included items dict to only include filtered items
+            var includedItemsDict = {};
+            for (var i in includedItemList) {
+              includedItemsDict[includedItemList[i].key] = true;
+            }
+            
+            $scope.includedItems = includedItemsDict;
+                        
             // check off that items have been added (to avoid duplicates in next step)
             for (var i in includedItemList) {
               var item = includedItemList[i];
@@ -256,7 +271,6 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
       }
       
       $scope.maxDepth = maxDepth;
-      $scope.reloadItems(1);
       
       // reload current entry if it is included in lsit
       if (!angular.isUndefined($stateParams.position) && $stateParams.position != null && $stateParams.position != "" && $scope.includedItems[$scope.items[$stateParams.position].key]) {      
@@ -288,7 +302,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
         $scope.selectedWorkingSet = 0;
       }
       else {
-        loadWorkingSetItems($scope.workingSets[$scope.selectedWorkingSet]);
+        $scope.reloadItems($scope.selectedDepth);  
       }
     }
   });
@@ -350,11 +364,11 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
    * isEditingWorkingSet is set to false, and newWS is set back to undefined
    */
   $scope.cancelEditingWorkingSet = function cancelEditingWorkingSet(wsOriginal) {
-    loadWorkingSetItems($scope.workingSets[$scope.selectedWorkingSet]);
     $scope.isEditingWorkingSet = false;
     if (!angular.isUndefined($scope.newWs)) {
       $scope.newWs = undefined;
     }
+    $scope.reloadItems($scope.selectedDepth);  
   }
 
   /*
@@ -363,7 +377,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
   $scope.createNewWorkingSet = function createNewWorkingSet() {    
     $scope.newWs = { id: '',  name: '', isShared : false, itemKeys : [] }   
     $scope.isEditingWorkingSet = true;
-    loadWorkingSetItems($scope.newWs)
+    $scope.reloadItems($scope.selectedDepth);  
   }
   
   /*
@@ -371,7 +385,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
    */
   $scope.$watch("selectedWorkingSet", function(newVal, oldVal) {
     if (oldVal != newVal) {
-      loadWorkingSetItems($scope.workingSets[$scope.selectedWorkingSet]);
+      $scope.reloadItems($scope.selectedDepth);  
     }
   })
   
@@ -380,8 +394,6 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
     for (var i = 0; i < ws.itemKeys.length; i++) {
       $scope.includedItems[ws.itemKeys[i]] = true;
     }
-    
-    $scope.reloadItems($scope.selectedDepth);    
   }  
   
   /*
