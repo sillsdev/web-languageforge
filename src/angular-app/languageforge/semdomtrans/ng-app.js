@@ -12,7 +12,7 @@ angular.module('semdomtrans',
     'semdomtrans.review',
     'pascalprecht.translate' 
   ])
-  .config(['$stateProvidor', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
     
     $urlRouterProvider.otherwise('/edit');
     
