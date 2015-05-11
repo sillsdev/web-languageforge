@@ -377,6 +377,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
    */
   $scope.$watch("selectedWorkingSet", function(newVal, oldVal) {
     if (oldVal != newVal) {
+      $scope.searchText = "";
       loadWorkingSetItems($scope.workingSets[$scope.selectedWorkingSet]);
     }
   })
