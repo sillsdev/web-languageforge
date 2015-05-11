@@ -50,6 +50,11 @@ class SemDomXMLImporter {
 		}
 	}
 
+	/**
+	 * Check if given xml path has value
+	 * @param XmlPath $xmlPath
+	 * @return string
+	 */
 	public function _getPathVal($xmlPath) {
 		if ($xmlPath) {
 			$val = (string)$xmlPath[0];
@@ -59,15 +64,28 @@ class SemDomXMLImporter {
 		return $val;
 	}
 	
+	/**
+	 * Recursively goes through each node and:
+	 * 1) pulls out its values (name, description, questions, search keys) and creates SemDomTransItem from them
+	 * 2) Recurses on all direct children (e.g. for 1 we would recurse on 1.1, 1.2, .... 1.5, not 1.1.1)
+	 * 
+	 * Note: all values that are parsed are printed to file storing list of words/phrases/sentences that Google Translate Harvester
+	 * can later use.
+	 * @param SimpleXMLNode $domainNode
+	 * @return \models\languageforge\semdomtrans\SemDomTransQuestion|\models\languageforge\semdomtrans\SemDomTransTranslatedForm
+	 */
 	private function _processDomainNode($domainNode) {
 	   
 		$guid = (string)$domainNode['guid'];
 		
+		// retrieve name
 		$name = $this->_getPathVal($domainNode->xpath("Name/AUni[@ws='{$this->_lang}']"));	
 		fwrite($this->_outputFile, $name . "\n");
 		
+		// retrieve abbrevation
 		$abbreviation = $this->_getPathVal($domainNode->xpath("Abbreviation/AUni[@ws='en']"));		
 		
+		//retrieve description
 		$description = $this->_getPathVal($domainNode->xpath("Description/AStr[@ws='{$this->_lang}']")[0]->xpath("Run[@ws='{$this->_lang}']"));
 		fwrite($this->_outputFile, $description . "\n");
 		
@@ -78,7 +96,7 @@ class SemDomXMLImporter {
         	return new SemDomTransTranslatedForm();
         });      
 	
-
+        // process question
 		if (property_exists($domainNode, 'Questions'))
 		{
 			$questionsXML = $domainNode->Questions->children();
@@ -94,9 +112,12 @@ class SemDomXMLImporter {
 				$q = new SemDomTransQuestion($question, $terms);
 				$sk = new SemDomTransTranslatedForm($terms);
 				
+				// if question is non-empty in XML file, set as approved
 				if ($question != "") {
 				    $q->question->status = SemDomTransStatus::Approved;
 				}
+				
+				// if question terms is non-empty in XML file, set as approved
 				if ($terms != '') {
 				    $q->terms->status = SemDomTransStatus::Approved;
 				    $sk->status = SemDomTransStatus::Approved;
@@ -114,15 +135,16 @@ class SemDomXMLImporter {
 		$itemModel->xmlGuid = $guid;
 		$itemModel->name = new SemDomTransTranslatedForm($name);
 		
+		// if name is non-empty in XML file, set as approved
 		if ($name != "") {
 		    $itemModel->name->status = SemDomTransStatus::Approved;
 		}
 		
-		$itemModel->key = $abbreviation;
-		
+		$itemModel->key = $abbreviation;		
 		
 		$itemModel->description = new SemDomTransTranslatedForm($description);
 
+		// if description is non-empty in XML file, set as approved
 		if ($description != "") {
 		    $itemModel->description->status = SemDomTransStatus::Approved;
 		}

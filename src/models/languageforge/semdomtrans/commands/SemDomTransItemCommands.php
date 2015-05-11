@@ -28,6 +28,12 @@ use models\languageforge\semdomtrans\SemDomTransStatus;
 
 class SemDomTransItemCommands
 {
+    /**
+     * Updates the SemdomTransItem - handles logic for switching from needs revision or suggested to draft
+     * @param array $data
+     * @param string $projectId
+     * @return string
+     */
 	public static function update($data, $projectId) {
 		$projectModel = new SemDomTransProjectModel($projectId);
 		$previousItemModel = new SemDomTransItemModel($projectModel);

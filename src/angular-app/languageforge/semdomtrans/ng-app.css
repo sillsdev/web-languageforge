@@ -8,16 +8,19 @@ div.hdrnav {
 .approved:hover { 
     background-color: #5CB85C;
 }
-.needRevision: {
+.needsrevision {
     background-color: #FFFF66;
 }
-.needRevision::hover {
+.needsrevision:hover { 
     background-color: #FFFF66;
 }
 
 .suggested {
-    background-color: #CCFFFF
+    background-color: #CCFFFF;
 }
 .suggested:hover {
-    background-color: #CCFFFF
+    background-color: #CCFFFF;
+}
+.displayedAsAncestor {
+    color: gray;
 }
