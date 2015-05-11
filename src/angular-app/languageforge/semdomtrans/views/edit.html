@@ -43,11 +43,12 @@
 			</div>
 			<div class="row" style='width:100%; margin-right:0px; margin-left:0px'>
 			  <div class="span3" style="border-right:solid black 1px; float:left; margin-left:-1px; margin-right:0px">
-			    <div>
+			    <div style="display:inline-block">
                     <label style="float:left; margin-top:20px; width:30%">Tree Depth: {{selectedDepth}}</label>
                     <input style="width:60%; float:right" class="progress-slider" type="range" min="1"
-                    max="{{maxDepth}}" data-ng-model="selectedDepth">
+                    max="{{maxDepth}}" data-ng-model="selectedDepth" />
                 </div>
+                <br/>
                 <div>
     			    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%; margin-left:0px; margin-right:0px" >
     	                 <div ng-if="(!hideTranslated || !translatedItems[item.key])"
