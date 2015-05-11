@@ -8,7 +8,7 @@ angular.module('usermanagement',
      'usermanagement.joinRequests',
      'palaso.ui.notice'
     ])
-  .config(function($stateProvider, $urlRouterProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 
     
     $urlRouterProvider.otherwise('/members');
@@ -27,7 +27,7 @@ angular.module('usermanagement',
                 '@': { templateUrl: '/angular-app/bellows/apps/usermanagement/views/joinRequests.html' }
               }
           });
-    })
+    }])
   .controller('MainCtrl', ['$scope', 'projectService', 'silNoticeService', '$route', '$routeParams', '$location',
                function($scope, projectService, noticeService, $route, $routeParams, $location) {
     $scope.roles = {};
