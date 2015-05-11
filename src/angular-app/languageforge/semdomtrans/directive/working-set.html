@@ -19,7 +19,7 @@
                             <ul style="width: 300px" ng-if="control.typeahead.searchResults.length > 0">
                                 <li data-ng-repeat="e in control.typeahead.searchResults |limitTo: 10" class="control.typeahead-item">
                                     <div class='listItemPrimary'>{{e.key}} {{e.name.source}} 
-                                    <input style="float: right" type="checkbox" ng-model="control.includedItems[e.key]" ng-change="control.reloadItems(selectedDepth)"> </div>
+                                    <input style="float: right" type="checkbox" ng-model="control.workingSetItems[e.key]" ng-change="control.reloadItems(selectedDepth)"> </div>
                                 </li>
                                 
                                
