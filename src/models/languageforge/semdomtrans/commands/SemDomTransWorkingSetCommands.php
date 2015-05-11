@@ -28,6 +28,12 @@ use models\languageforge\semdomtrans\SemDomTransWorkingSetModel;
 
 class SemDomTransWorkingSetCommands
 {
+    /**
+     * Updates semantic domain working set
+     * @param array $data
+     * @param string $projectId
+     * @return string
+     */
     public static function update($data, $projectId) {
         $projectModel = new SemDomTransProjectModel($projectId);
         

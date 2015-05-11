@@ -10,19 +10,17 @@ angular.module('palaso.ui.sd.questions', ['semdomtrans.services'])
       control : "="
     }, 
     controller: ['$scope', function($scope) {
-      $scope.currentQuestionPos = 0;
       
       $scope.isInCommentMode = function isInCommentMode() {
         return $scope.state == 'comments';
-      }
-      
+      }      
 
       $scope.getPreviousQuestion = function() {
-        $scope.currentQuestionPos--;
+        $scope.control.currentQuestionPos--;
       }
       
       $scope.getNextQuestion = function() {
-        $scope.currentQuestionPos++;
+        $scope.control.currentQuestionPos++;
       }    
       
     }],

@@ -19,7 +19,7 @@ class SemDomXMLExporter {
     
     private $_lang;
     
-    private $_isEnglish;
+    private $_isEnglishXMLFormat;
     
     private $_recreateXMLFile;
     
@@ -29,19 +29,19 @@ class SemDomXMLExporter {
      * @param SemDomTransProjectModel $projectModel
      * @param bool $testMode
      */
-    public function __construct($projectModel, $testMode = true, $isEnglish = true, $recreateXMLFile = false) {
+    public function __construct($projectModel, $testMode = true, $isEnglishXMLFormat = true, $recreateXMLFile = false) {
 
         $this->_xml = simplexml_load_file($projectModel->xmlFilePath);
         $this->_projectModel = $projectModel;
         $this->_runForReal = ! $testMode;
         $this->_lang = $projectModel->languageIsoCode;
-        $this->_isEnglish = $isEnglish;
+        $this->_isEnglishXMLFormat = $isEnglishXMLFormat;
         $this->_recreateXMLFile = $recreateXMLFile;
     }
     
     public function run() {
 
-        $possibilities = $this->_isEnglish ? 
+        $possibilities = $this->_isEnglishXMLFormat ? 
             $this->_xml->SemanticDomainList->CmPossibilityList->Possibilities 
             : $this->_xml->xpath("List[@field='SemanticDomainList']")[0]->Possibilities;
         
