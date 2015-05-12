@@ -2,7 +2,7 @@
 
 angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll', 'palaso.ui.typeahead', 'palaso.ui.sd.ws'])
 // DBE controller
-.controller('editCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService', 'semdomtransEditorDataService', 'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout', '$q',
+.controller('editCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService', 'semdomtransEditorDataService', 'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout', '$q', 
 function($scope, $state, $stateParams, semdomEditApi, editorDataService, sessionService, modal, notice, $rootScope, $filter, $timeout, $q) {
   
   // variable that determines which tab is selected
@@ -419,9 +419,11 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
     $scope.isEditingWorkingSet = false;
     $scope.newWs = undefined;
     
+    notice.setLoading('Creating and Loading Working Set.');
     api.updateWorkingSet(ws, function(result) {
       if (result.ok) {
         $scope.refreshDbeData().then(function(result) {
+            notice.cancelLoading();
             $scope.selectedWorkingSet = $scope.workingSets[position];
         });
       }
