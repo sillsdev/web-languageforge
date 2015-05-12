@@ -5,8 +5,10 @@
                     <input placeholder="Filter semantic domain items" style="margin-bottom:10px" ng-model="searchText" ng-change="reloadItems(selectedDepth, 100)" />
                     <br />
                     <div>
-                        <select style="margin-bottom:10px; margin-top:0px; float:left; width:" ng-model="selectedWorkingSet">
-                            <option style="font-size:small" ng-repeat="ws in workingSets track by $index"  value="{{$index}}">{{ws.name}}</option>
+                        <select style="margin-bottom:10px; margin-top:0px; float:left; font-size:small" 
+                         ng-model="selectedWorkingSet"
+                         ng-options="ws.name for ws in workingSets">
+                          <option value="" ng-if="false"></option>
                         </select>
                     </div>
                     <div style="white-space: nowrap;">
