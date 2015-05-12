@@ -771,6 +771,10 @@ class sf
         return SemDomTransWorkingSetCommands::update($data, $this->_projectId);
     }
     
+    public function semdom_export_project() {
+        return $this->_website->domain . "/" . SemDomTransProjectCommands::exportProject($this->_projectId);
+    }
+    
     /**
      *
      * @param string $projectName
