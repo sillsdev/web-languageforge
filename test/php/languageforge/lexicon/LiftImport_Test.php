@@ -154,7 +154,7 @@ class TestLiftImport extends UnitTestCase
 </lift>
 EOD;
 
-    public function testLiftImportMerge_XmlValidAndNoExistingData_NoExceptionAndMergeOk()
+    public function testLiftImportMerge_NoExistingData_NoExceptionAndMergeOk()
     {
         $liftFilePath = $this->environ->createTestLiftFile(self::liftTwoEntriesV0_13, 'TwoEntriesV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -1553,70 +1553,4 @@ EOD;
             '<p>First paragraph with <span lang="th">ไทย</span></p><p>Second Paragraph</p>',
             'custom field MultiPara has paragraph separator character U+2029 replaced by paragraph markup and native language spans removed');
     }
-
-    // 2x Validation tests, removed until validation is working IJH 2014-03
-/*
-    const liftOneEntryV0_12 = <<<EOD
-<?xml version="1.0" encoding="utf-8"?>
-<lift
-    version="0.12"
-    producer="WeSay 1.0.0.0">
-    <entry
-        id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
-        dateCreated="2008-11-03T06:17:24Z"
-        dateModified="2011-10-26T01:41:19Z"
-        guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
-        <lexical-unit>
-            <form
-                lang="th-fonipa">
-                <text>chùuchìi mǔu krɔ̂ɔp</text>
-            </form>
-        </lexical-unit>
-    </entry>
-</lift>
-EOD;
-
-    function testLiftImportMerge_XmlOldVer_Exception()
-    {
-        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = self::liftOneEntryV0_12;
-
-        $this->environ->inhibitErrorDisplay();
-        $this->expectException();
-        LiftImport::get()->merge($liftXml, $project);
-        $this->environ->restoreErrorDisplay();
-    }
-
-    const liftInvalidAttribute = <<<EOD
-<?xml version="1.0" encoding="utf-8"?>
-<lift
-    version="0.13"
-    producer="WeSay 1.0.0.0">
-    <entry
-        xXxXx = "invalidAttribute"
-        id="chùuchìi mǔu rɔ̂ɔp_dd15cbc4-9085-4d66-af3d-8428f078a7da"
-        dateCreated="2008-11-03T06:17:24Z"
-        dateModified="2011-10-26T01:41:19Z"
-        guid="dd15cbc4-9085-4d66-af3d-8428f078a7da">
-        <lexical-unit>
-            <form
-                lang="th-fonipa">
-                <text>chùuchìi mǔu krɔ̂ɔp</text>
-            </form>
-        </lexical-unit>
-    </entry>
-</lift>
-EOD;
-
-    function testLiftImportMerge_XmlInvalidAttribute_Exception()
-    {
-        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $liftXml = self::liftInvalidAttribute;
-
-        $this->environ->inhibitErrorDisplay();
-        $this->expectException();
-        LiftImport::get()->merge($liftXml, $project);
-        $this->environ->restoreErrorDisplay();
-    }
-*/
 }
