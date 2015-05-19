@@ -1471,7 +1471,7 @@ EOD;
 </lift>
 EOD;
 
-    public function testLiftImportMerge_NoExistingDataNoImportEntries_DefaultInputSystemsUnchanged()
+    public function testLiftImportMerge_NoExistingDataNoImportEntries_DefaultInputSystemsUnchangedAndConfigFieldInputSystemsCleared()
     {
         $liftFilePath = $this->environ->createTestLiftFile(self::liftNoEntriesV0_13, 'LiftNoEntriesV0_13.lift');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -1490,6 +1490,11 @@ EOD;
         $this->assertEqual($project->inputSystems->count(), 2);
         $this->assertTrue(array_key_exists('en', $project->inputSystems));
         $this->assertTrue(array_key_exists('th', $project->inputSystems));
+
+        $this->assertEqual($project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems->count(), 0);
+        $this->assertEqual($project->config->entry->fields[LexiconConfigObj::CITATIONFORM]->inputSystems->count(), 0);
+        $this->assertEqual($project->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems->count(), 0);
+        $this->assertEqual($project->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems->count(), 0);
     }
 
     // has correct th-fonipa form in entry and mod date changed
