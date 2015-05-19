@@ -60,7 +60,6 @@ class LiftImport
     public function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
     {
         ini_set('max_execution_time', 180); // Sufficient time to import webster.  TODO Make this async CP 2014-10
-//         self::validate($xml);    // TODO Fix. The XML Reader validator doesn't work with <optional> in the RelaxNG schema. IJH 2014-03
 
         $entryList = new LexEntryListModel($projectModel);
         $entryList->read();
@@ -459,7 +458,6 @@ class LiftImport
                 FileUtilities::promoteDirContents($destDir . "/" . $zipTopLevel);
             }
         }
-
     }
 
     /**
@@ -475,38 +473,5 @@ class LiftImport
         $sxeNode = simplexml_import_dom($n);
         $dom->appendChild($n);
         return $sxeNode;
-    }
-
-    /**
-     * validate the lift data
-     * @param string $xml
-     * @throws \Exception
-     * @return boolean
-     */
-    public static function validate($xml)
-    {
-        $reader = new \XMLReader();
-        $reader->XML($xml);
-
-        // validate LIFT
-        set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errcontext) {
-            // error was suppressed with the @-operator
-            if (0 === error_reporting()) {
-                return false;
-            }
-
-            $validationErrorIndex = strpos($errstr, 'XMLReader::next(): ');
-            if ($validationErrorIndex !== false) {
-                $errMsg = substr($errstr, $validationErrorIndex + 19);
-                throw new \Exception("Sorry, the selected LIFT file is invalid: $errMsg");
-            } else {
-                return true;    // use the default handler
-            }
-        });
-        $reader->setRelaxNGSchema(APPPATH . "vendor/lift/lift-0.13.rng");
-        while ($reader->next()) {}    // read the entire file to validate all
-        restore_error_handler();
-
-        return true;
     }
 }
