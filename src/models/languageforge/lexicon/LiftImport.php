@@ -66,18 +66,12 @@ class LiftImport
         $entryList->read();
         $hasExistingData = $entryList->count != 0;
 
-        // No data yet? (number of entries == 0)
         if (! $hasExistingData) {
+            $projectModel->config->clearAllInputSystems();
+
             // save and clear input systems
             $savedInputSystems = $projectModel->inputSystems->getArrayCopy();
             $projectModel->inputSystems->exchangeArray(array());
-
-            // clear entry field input systems config if there are no entries (only use imported input systems)
-            $projectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems = new ArrayOf();
-            $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems = new ArrayOf();
-            $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems = new ArrayOf();
-            $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems = new ArrayOf();
-            $projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems = new ArrayOf();
         }
 
         $reader = new \XMLReader();

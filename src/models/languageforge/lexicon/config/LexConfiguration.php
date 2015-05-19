@@ -4,6 +4,7 @@ namespace models\languageforge\lexicon\config;
 
 use models\languageforge\lexicon\LexiconRoles;
 use models\mapper\MapOf;
+use models\mapper\ArrayOf;
 
 class LexConfiguration
 {
@@ -452,5 +453,30 @@ class LexConfiguration
         $this->roleViews[LexiconRoles::MANAGER]->showTasks[LexiconTask::WORDLIST] = true;
         $this->roleViews[LexiconRoles::MANAGER]->showTasks[LexiconTask::REVIEW] = true;
 
+    }
+
+    /**
+     * Clear all field config input systems
+     */
+    public function clearAllInputSystems() {
+        self::setAllInputSystems($this->entry, new ArrayOf());
+    }
+
+    /**
+     * Recursively set all field input systems
+     *
+     * @param LexiconFieldListConfigObj $fieldListConfig
+     * @param ArrayOf $inputSystems
+     */
+    private static function setAllInputSystems($fieldListConfig, $inputSystems) {
+        foreach($fieldListConfig->fieldOrder as $fieldName) {
+            if ($fieldListConfig->fields[$fieldName]->type == 'fields') {
+                self::{__FUNCTION__}($fieldListConfig->fields[$fieldName], $inputSystems);
+            } else {
+                if (isset($fieldListConfig->fields[$fieldName]->inputSystems)) {
+                    $fieldListConfig->fields[$fieldName]->inputSystems = clone $inputSystems;
+                }
+            }
+        }
     }
 }
