@@ -301,10 +301,14 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       });
     }
     if (angular.isDefined(data['senses'])) {
-      data['senses'] = alignCustomFieldsInData(data['senses']);
+      angular.forEach(data['senses'], function(sense) {
+        sense = alignCustomFieldsInData(sense);
+      });
     }
     if (angular.isDefined(data['examples'])) {
-      data['examples'] = alignCustomFieldsInData(data['examples']);
+      angular.forEach(data['examples'], function(example) {
+        example = alignCustomFieldsInData(example);
+      });
     }
     return data;
   }
