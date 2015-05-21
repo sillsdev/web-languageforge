@@ -62,6 +62,12 @@ angular.module('semdomtrans.services', ['jsonRpc'])
         callback(result);
       })
     }
+    
+    this.exportProject = function exportProject(callback) {
+      jsonRpc.call('semdom_export_project', [], function(result) {
+        callback(result);
+      })
+    }
   }])
   .factory('semdomtransEditorDataService', ['$q', 'editorDataService', 'semdomtransEditService', 'sessionService', 'semdomtransOfflineCache', 'commentsOfflineCache', 'silNoticeService', 'lexCommentService',
 function($q, editorDataService, api, ss, semdomCache, commentsCache, notice, commentService) {

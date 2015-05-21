@@ -46,8 +46,8 @@ angular.module('semdomtrans',
             }
         })
   }])
-  .controller('MainCtrl', ['$scope', 'semdomtransEditorDataService', 'sessionService', 'lexCommentService', 'offlineCache', '$q',
-  function($scope, editorDataService, ss, commentsSerivce, offlineCache, $q) {    
+  .controller('MainCtrl', ['$scope', 'semdomtransEditorDataService', 'semdomtransEditService', 'sessionService', 'lexCommentService', 'offlineCache', '$q', 'silNoticeService',
+  function($scope, editorDataService, editorApi, ss, commentsSerivce, offlineCache, $q, notice) {    
    $scope.rights = {};
    $scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE); 
    $scope.rights.create = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE); 
@@ -63,6 +63,15 @@ angular.module('semdomtrans',
      });
    }
    
+   $scope.exportProject = function exportProject() {
+     notice.setLoading("Exporting Semantic Domain Data to XML File");
+     editorApi.exportProject(function (result) {
+       notice.cancelLoading();
+       if (result.ok) {
+         window.location = "http://" + result.data;
+       }
+     })
+   }
    
    $scope.includedItems = {};
    $scope.loadingDto = false;  

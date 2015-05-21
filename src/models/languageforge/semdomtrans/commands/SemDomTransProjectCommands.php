@@ -55,6 +55,22 @@ class SemDomTransProjectCommands
     }
    
     /**
+     * Exports the project to its respective XML file, and copies that XML file to the resource folder
+     * @param string $projectID
+     */
+    public static function exportProject($projectID) 
+    {
+        $p = new SemDomTransProjectModel($projectID);
+        $e = new SemDomXMLExporter($p, false, !($p->isSourceLanguage && $p->languageIsoCode != 'en'), !$p->isSourceLanguage);
+        $e->run();
+
+        $assetsPath = $e->getXMLPath();
+        $resourcePath =   "resources/languageforge/semdomtrans/exported-$p->languageIsoCode-semdomtrans.xml";
+        copy($p->xmlFilePath, APPPATH . $resourcePath);
+        return $resourcePath;
+    }
+    
+    /**
      * exports all projects to a zip file - currently not working
      */
     public static function exportProjects() {
@@ -121,6 +137,7 @@ class SemDomTransProjectCommands
         $project->languageIsoCode = $languageCode;
         $project->isSourceLanguage = false;
         $project->semdomVersion = $semdomVersion;
+        $project->languageName = $languageName;
 
         // by default all created projects have English as their source.  A future feature would allow creating projects off of other source languages
         $englishProject = SemDomTransProjectModel::getEnglishProject($semdomVersion);

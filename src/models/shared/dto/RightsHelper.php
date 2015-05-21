@@ -142,7 +142,10 @@ class RightsHelper
             case 'project_acceptJoinRequest':
                 returN $this->userHasProjectRight(Domain::USERS + OPERATION::EDIT);
             case 'project_denyJoinRequest':
-                return $this->userHasProjectRight(Domain::USERS + OPERATION::EDIT);
+                return $this->userHasProjectRight(Domain::USERS + OPERATION::EDIT); 
+            case 'semdom_export_project':
+                return $this->userHasProjectRight(DOMAIN::PROJECTS + Operation::EDIT );
+
                 
             case 'user_sendInvite':
             case 'message_markRead':

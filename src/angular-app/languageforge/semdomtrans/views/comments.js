@@ -8,6 +8,7 @@ function($scope, editorService, $stateParams, sessionService, modal, notice, com
   $scope.currentEntryIndex = $stateParams.position;
   $scope.editorService = editorService;
   $scope.comments = commentService.comments.items.all;
+  $scope.currentQuestionPos = 0;
    $scope.loadEntryComments = function loadEntryComments() {
       commentService.loadEntryComments($scope.items[$stateParams.position].id);
    }

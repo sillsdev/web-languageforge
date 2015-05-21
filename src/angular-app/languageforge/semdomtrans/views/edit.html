@@ -5,8 +5,10 @@
                     <input placeholder="Filter semantic domain items" style="margin-bottom:10px" ng-model="searchText" ng-change="reloadItems(selectedDepth, 100)" />
                     <br />
                     <div>
-                        <select style="margin-bottom:10px; margin-top:0px; float:left; width:" ng-model="selectedWorkingSet">
-                            <option style="font-size:small" ng-repeat="ws in workingSets track by $index"  value="{{$index}}">{{ws.name}}</option>
+                        <select style="margin-bottom:10px; margin-top:0px; float:left; font-size:small" 
+                         ng-model="selectedWorkingSet"
+                         ng-options="ws.name for ws in workingSets">
+                          <option value="" ng-if="false"></option>
                         </select>
                     </div>
                     <div style="white-space: nowrap;">
@@ -43,11 +45,12 @@
 			</div>
 			<div class="row" style='width:100%; margin-right:0px; margin-left:0px'>
 			  <div class="span3" style="border-right:solid black 1px; float:left; margin-left:-1px; margin-right:0px">
-			    <div>
+			    <div style="display:inline-block">
                     <label style="float:left; margin-top:20px; width:30%">Tree Depth: {{selectedDepth}}</label>
                     <input style="width:60%; float:right" class="progress-slider" type="range" min="1"
-                    max="{{maxDepth}}" data-ng-model="selectedDepth">
+                    max="{{maxDepth}}" data-ng-model="selectedDepth" />
                 </div>
+                <br/>
                 <div>
     			    <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%; margin-left:0px; margin-right:0px" >
     	                 <div ng-if="(!hideTranslated || !translatedItems[item.key])"
