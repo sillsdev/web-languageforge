@@ -2,8 +2,8 @@
 
 angular.module('semdomtrans.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll', 'palaso.ui.typeahead', 'palaso.ui.sd.ws'])
 // DBE controller
-.controller('editCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService', 'semdomtransEditorDataService', 'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
-function($scope, $state, $stateParams, semdomEditApi, editorDataService, sessionService, modal, notice, $rootScope, $filter, $timeout) {
+.controller('editCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditService', 'semdomtransEditorDataService', 'sessionService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout', '$q', 
+function($scope, $state, $stateParams, semdomEditApi, editorDataService, sessionService, modal, notice, $rootScope, $filter, $timeout, $q) {
   
   // variable that determines which tab is selected
   $scope.selectedTab = 0;
@@ -233,11 +233,15 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
   }
   
   $scope.refreshDbeData = function refreshDbeData(state) {
-     return editorDataService.refreshEditorData().then(function(result) { 
+    var deferred = $q.defer();
+    
+    editorDataService.refreshEditorData().then(function(result) { 
        editorDataService.processEditorDto(result).then(function(resut) {
-         ;
+         deferred.resolve(); 
        })
      });
+
+     return deferred.promise;
   };
     
   $scope.$watchCollection('items', function(newVal) {
@@ -285,10 +289,10 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
   $scope.$watchCollection('workingSets', function(newVal) {
     if (newVal) {
       if (angular.isUndefined($scope.selectedWorkingSet)) {
-        $scope.selectedWorkingSet = 0;
+        $scope.selectedWorkingSet = $scope.workingSets[0];
       }
       else {
-        loadWorkingSetItems($scope.workingSets[$scope.selectedWorkingSet]);
+        loadWorkingSetItems($scope.selectedWorkingSet);
       }
     }
   });
@@ -344,7 +348,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
   $scope.editWorkingSet = function editWorkingSet(wsID) {
     for (var i = 0; i < $scope.workingSets.length; i++) {
       if ($scope.workingSets[i].id == wsID) {
-        $scope.selectedWorkingSet = i;
+        $scope.selectedWorkingSet = $scope.workingSets[i];
         $scope.isEditingWorkingSet = true;
         break;
       }
@@ -356,7 +360,7 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
    * isEditingWorkingSet is set to false, and newWS is set back to undefined
    */
   $scope.cancelEditingWorkingSet = function cancelEditingWorkingSet(wsOriginal) {
-    loadWorkingSetItems($scope.workingSets[$scope.selectedWorkingSet]);
+    loadWorkingSetItems($scope.selectedWorkingSet);
     $scope.isEditingWorkingSet = false;
     if (!angular.isUndefined($scope.newWs)) {
       $scope.newWs = undefined;
@@ -377,7 +381,8 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
    */
   $scope.$watch("selectedWorkingSet", function(newVal, oldVal) {
     if (oldVal != newVal) {
-      loadWorkingSetItems($scope.workingSets[$scope.selectedWorkingSet]);
+      $scope.searchText = "";
+      loadWorkingSetItems($scope.selectedWorkingSet);
     }
   })
   
@@ -405,14 +410,25 @@ function($scope, $state, $stateParams, semdomEditApi, editorDataService, session
     }
     
     ws.itemKeys = ik;
-    api.updateWorkingSet(ws, function(result) {
-      if (result.ok) {
-        
-      }
-    })
+
+    // determine position of item in working set list:
+    // if new item set selected working set position to last,
+    // else keep selected working set position as is
+    var position = ($scope.newWs == undefined) ? $scope.workingSets.indexOf($scope.selectedWorkingSet) : $scope.workingSets.length; 
+
     $scope.isEditingWorkingSet = false;
     $scope.newWs = undefined;
-    $scope.refreshDbeData();
+    
+    notice.setLoading('Creating and Loading Working Set.');
+    api.updateWorkingSet(ws, function(result) {
+      if (result.ok) {
+        $scope.refreshDbeData().then(function(result) {
+            notice.cancelLoading();
+            $scope.selectedWorkingSet = $scope.workingSets[position];
+        });
+      }
+    })
+    
 
   }
   
