@@ -1,3 +1,5 @@
+// npm install gulp gulp-util async gulp-livereload tiny-lr
+
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var exec = require('child_process').exec;
@@ -114,4 +116,48 @@ gulp.task('coverage-close', function(cb) {
     cb(err)
   });
 
+});
+
+gulp.task('backup-prod-db', function(cb) {
+  execute("ssh scriptureforge.org 'bash -s' < server/mongodb/backupMongoOnServer.sh", function(err) {
+    cb(null);
+  });
+});
+
+gulp.task('cleanup-backup-prod-db', ['backup-prod-db', 'copy-backup-to-local'], function(cb) {
+  execute("ssh scriptureforge.org 'bash -s' < server/mongodb/deleteTarFileOnServer.sh", function(err) {
+    cb(null);
+  });
+});
+
+gulp.task('copy-backup-to-local', ['backup-prod-db'], function(cb) {
+  padLeft = function(i, len, ch) {
+    var val = i.toString();
+    while (val.length < len)
+      val = ch + val;
+    return val;
+  }
+
+  formatDateYMD = function(date) {
+    return date.getFullYear() + "-" + padLeft(date.getMonth() + 1, 2, '0') + "-" + padLeft(date.getDate(), 2, '0');
+  }
+
+  var today = formatDateYMD(new Date());
+  execute("scp scriptureforge.org:mongodb_backup_" + today + ".tgz /tmp/", function(err) {
+    cb(null);
+  });
+});
+
+gulp.task('restore-local-db', ['backup-prod-db', 'copy-backup-to-local'], function(cb) {
+  // To set the username, edit your ssh config file (~/.ssh/config) and add an entry:
+  // Host scriptureforge.org
+  //     User jdoe
+  execute("server/mongodb/restoreMongoOnLocal.sh /tmp", function(err) {
+    cb(null);
+  });
+});
+
+// Backup database on server and restore on local machine
+gulp.task('copy-prod-db', ['backup-prod-db', 'cleanup-backup-prod-db', 'copy-backup-to-local', 'restore-local-db'], function(cb) {
+  cb(null);
 });
