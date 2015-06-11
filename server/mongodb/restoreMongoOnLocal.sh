@@ -1,5 +1,6 @@
+#!/bin/bash
 TODAY=`date +%F`
-SRCDIR=/var/www/host/sil
+SRCDIR=${1:-/var/www/host/sil}
 BACKUPNAME=mongodb_backup_$TODAY
 ARCHIVEFILE=$BACKUPNAME.tgz
 
