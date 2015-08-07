@@ -1,5 +1,4 @@
-web-languageforge
-=================
+# web-scriptureforge / web-languageforge #
 
 ## Building with gulp
 
