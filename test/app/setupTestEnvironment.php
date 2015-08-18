@@ -3,22 +3,22 @@
 require_once('e2eTestConfig.php');
 
 // use commands go here (after the e2eTestConfig)
-use models\commands\ProjectCommands;
-use models\commands\UserCommands;
-use models\commands\TextCommands;
-use models\commands\QuestionCommands;
-use models\commands\QuestionTemplateCommands;
-use models\shared\rights\ProjectRoles;
-use models\shared\rights\SiteRoles;
-use models\shared\rights\SystemRoles;
-use models\scriptureforge\SfProjectModel;
-use models\languageforge\LfProjectModel;
-use models\ProjectModel;
-use models\languageforge\lexicon\LexiconProjectModel;
-use models\languageforge\lexicon\commands\LexEntryCommands;
-use models\languageforge\lexicon\commands\LexUploadCommands;
-use models\languageforge\lexicon\config\LexiconConfigObj;
-use libraries\shared\Website;
+use Api\Model\Command\ProjectCommands;
+use Api\Model\Command\UserCommands;
+use Api\Model\Command\TextCommands;
+use Api\Model\Command\QuestionCommands;
+use Api\Model\Command\QuestionTemplateCommands;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SiteRoles;
+use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\Scriptureforge\SfProjectModel;
+use Api\Model\Languageforge\LfProjectModel;
+use Api\Model\ProjectModel;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
+use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
+use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Library\Shared\Website;
 
 $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
 
@@ -36,7 +36,7 @@ if (is_null($website)) {
 $site = $website->base;
 
 // start with a fresh database
-$db = \models\mapper\MongoStore::connect(SF_DATABASE);
+$db = \Api\Model\Mapper\MongoStore::connect(SF_DATABASE);
 foreach ($db->listCollections() as $collection) { $collection->drop(); }
 
 // Also empty out databases for the test projects
@@ -48,7 +48,7 @@ foreach ($projectArrays as $projectName => $projectCode) {
     $projectModel = new ProjectModel();
     $projectModel->projectName = $projectName;
     $projectModel->projectCode = $projectCode;
-    $db = \models\mapper\MongoStore::connect($projectModel->databaseName());
+    $db = \Api\Model\Mapper\MongoStore::connect($projectModel->databaseName());
     foreach ($db->listCollections() as $collection) { $collection->drop(); }
 }
 
@@ -56,13 +56,13 @@ foreach ($projectArrays as $projectName => $projectCode) {
 $projectModel = new ProjectModel();
 $projectModel->projectName = $constants['thirdProjectName'];
 $projectModel->projectCode = $constants['thirdProjectCode'];
-$db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
+$db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
 
 // drop the and 'new' database because it is used in a 'create new project' test
 $projectModel = new ProjectModel();
 $projectModel->projectName = $constants['newProjectName'];
 $projectModel->projectCode = $constants['newProjectCode'];
-$db = \models\mapper\MongoStore::dropDB($projectModel->databaseName());
+$db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
 
 $adminUser = UserCommands::createUser(array(
     'id' => '',

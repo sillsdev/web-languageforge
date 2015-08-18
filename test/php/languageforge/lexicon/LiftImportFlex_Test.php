@@ -1,17 +1,17 @@
 <?php
-use models\languageforge\lexicon\LexEntryListModel;
-use models\languageforge\lexicon\LiftImport;
-use models\languageforge\lexicon\LiftMergeRule;
-use models\languageforge\lexicon\LexEntryModel;
-use models\languageforge\lexicon\Sense;
-use models\languageforge\lexicon\Example;
-use models\mapper\ArrayOf;
-use models\languageforge\lexicon\LexiconMultiValueField;
-use models\languageforge\lexicon\LexiconField;
-use models\languageforge\lexicon\Picture;
-use models\languageforge\lexicon\MultiText;
+use Api\Model\Languageforge\Lexicon\LexEntryListModel;
+use Api\Model\Languageforge\Lexicon\LiftImport;
+use Api\Model\Languageforge\Lexicon\LiftMergeRule;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\Sense;
+use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Mapper\ArrayOf;
+use Api\Model\Languageforge\Lexicon\LexiconMultiValueField;
+use Api\Model\Languageforge\Lexicon\LexiconField;
+use Api\Model\Languageforge\Lexicon\Picture;
+use Api\Model\Languageforge\Lexicon\MultiText;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

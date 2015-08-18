@@ -351,7 +351,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
       if (file['size'] <= ss.fileSizeMax()) {
         $upload.upload({
           
-          // upload.php script
+          // Upload.php script
           url: '/upload/sf-checks/audio',
           // headers: {'myHeaderKey': 'myHeaderVal'},
           data: {

@@ -36,12 +36,14 @@ cd deploy
 vagrant up --provision
 ````
 
-You will need to manually edit your `/etc/hosts` file such that *default.local*, *languageforge.local* and *scriptureforge.local* map to *192.168.33.10*.
+You will need to manually edit your `/etc/hosts` file such that *default.local*, *languageforge.local*, *scriptureforge.local*, *jamaicanpsalms.scriptureforge.local* and *demo.scriptureforge.local* map to *192.168.33.10*.
 
 ````
 192.168.33.10	default.local
 192.168.33.10	languageforge.local
 192.168.33.10	scriptureforge.local
+192.168.33.10	jamaicanpsalms.scriptureforge.local
+192.168.33.10	demo.scriptureforge.local
 ````
 
 The Vagrant configuration uses Ansible to provision the box.

@@ -11,11 +11,11 @@
 <!--         data-ng-click="selectField(currentField.name, currentView)"> -->
         <tab-heading>{{tab.name | translate}}
             <span data-ng-hide="tab.byUser || isAtLeastOneSense(tab.view)">
-                <img src="/images/shared/exclamation.png" 
+                <img src="/Site/views/shared/image/exclamation.png"
                     title="{{'At least one role Meaning field must be enabled!' | translate}}"
                     style="padding-left: 5px;"/></span>
             <span data-ng-hide="tab.byRole || allUsersHaveAtLeastOneSense()">
-                <img src="/images/shared/exclamation.png" 
+                <img src="/Site/views/shared/image/exclamation.png"
                     title="{{'At least one user Meaning field must be enabled!' | translate}}"
                     style="padding-left: 5px;"/></span>
         </tab-heading>
@@ -45,7 +45,7 @@
                                 data-ng-class="{selected:currentUserId == userId}"> 
                                 {{usersWithSettings[userId].name}} ({{usersWithSettings[userId].username}})
                                 <span data-ng-hide="isAtLeastOneSense(userView)">
-                                    <img src="/images/shared/exclamation.png" 
+                                    <img src="/Site/views/shared/image/exclamation.png"
                                         title="{{'At least one Meaning field must be enabled!' | translate}}"
                                         style="padding-left: 5px;"/></span>
                             </li>
@@ -95,7 +95,7 @@
                     </div></dd>
                     <dt>{{'Meaning Level Fields' | translate}}
                         <span data-ng-hide="isAtLeastOneSense(currentView)">
-                        <img src="/images/shared/exclamation.png" 
+                        <img src="/Site/views/shared/image/exclamation.png"
                             title="{{'At least one Meaning field must be enabled!' | translate}}"
                             style="position: absolute; padding-left: 5px;"/></span></dt>
                     <dd><div class="controls">

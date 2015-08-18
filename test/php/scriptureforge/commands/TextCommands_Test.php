@@ -1,9 +1,9 @@
 <?php
 
-use models\commands\TextCommands;
-use models\TextModel;
+use Api\Model\Command\TextCommands;
+use Api\Model\TextModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

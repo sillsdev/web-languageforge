@@ -1,10 +1,8 @@
 #!/bin/bash
 
 TESTPATH=`pwd|perl -pi -e 's@/test/.*@/test@'`
-CONFIGPATH=$TESTPATH/../src/config
+CONFIGPATH=$TESTPATH/../src
 
-SFCONFIG=$CONFIGPATH/sf_config.php
-MONGOCONFIG=$CONFIGPATH/mongodb.php
+CONFIG=$CONFIGPATH/config.php
 
-cp $SFCONFIG.fortest $SFCONFIG
-cp $MONGOCONFIG.fortest $MONGOCONFIG
+cp $CONFIG.fortest $CONFIG
