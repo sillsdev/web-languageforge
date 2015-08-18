@@ -6,7 +6,7 @@ specs.push('languageforge/**/e2e/*.spec.js');
 
 exports.config = {
   // The address of a running selenium server.
-  seleniumAddress: 'http://192.168.56.1:4444/wd/hub',
+  seleniumAddress: 'http://default.local:4444/wd/hub',
   baseUrl: 'http://languageforge.local',
 
   // The timeout in milliseconds for each script run on the browser. This should
