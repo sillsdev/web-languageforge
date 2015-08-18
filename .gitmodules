@@ -1,0 +1,8 @@
+[submodule "deploy/roles_common"]
+	path = deploy/roles_common
+	url = https://github.com/sillsdev/ops-ansible-common-roles
+	branch = master
+[submodule "deploy/roles/apache_config"]
+	path = deploy/roles/apache_config
+	url = https://github.com/saygoweb/ansible-role-apache.git
+	branch = master-our

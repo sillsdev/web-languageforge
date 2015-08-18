@@ -13,6 +13,8 @@ src/assets/
 test/app/node_modules/protractor/selenium/
 test/app/node_modules/.bin/
 src/vendor_bower/
-
 docs/semdom/*.xml
 docs/semdom/semdom lists/*.xml
+deploy/.vagrant/
+deploy/site_files/certificates/
+deploy/site_info/
