@@ -1,15 +1,15 @@
 <?php
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
 require_once TestPath . 'common/MongoTestEnvironment.php';
 
-require_once SourcePath . "models/ProjectModel.php";
-require_once SourcePath . "models/UserModel.php";
+require_once SourcePath . "Api/Model/ProjectModel.php";
+require_once SourcePath . "Api/Model/UserModel.php";
 
-use models\UserModel;
-use models\ProjectModel;
+use Api\Model\UserModel;
+use Api\Model\ProjectModel;
 
 class TestMultipleModel extends UnitTestCase
 {
@@ -46,7 +46,7 @@ class TestMultipleModel extends UnitTestCase
 
     public function testUserList_HadOnlyUsers()
     {
-        $model = new models\UserListModel();
+        $model = new Api\Model\UserListModel();
         $model->read();
 
         foreach ($model->entries as $entry) {
@@ -56,7 +56,7 @@ class TestMultipleModel extends UnitTestCase
 
     public function testProjectList_HadOnlyProjects()
     {
-        $model = new models\ProjectListModel();
+        $model = new Api\Model\ProjectListModel();
         $model->read();
 
         foreach ($model->entries as $entry) {

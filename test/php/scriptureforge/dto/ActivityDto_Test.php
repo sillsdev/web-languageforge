@@ -1,15 +1,15 @@
 <?php
 
-use models\commands\ActivityCommands;
-use models\shared\dto\ActivityListDto;
-use models\shared\rights\ProjectRoles;
-use models\AnswerModel;
-use models\CommentModel;
-use models\QuestionModel;
-use models\TextModel;
-use models\UserModel;
+use Api\Model\Command\ActivityCommands;
+use Api\Model\Shared\Dto\ActivityListDto;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\AnswerModel;
+use Api\Model\CommentModel;
+use Api\Model\QuestionModel;
+use Api\Model\TextModel;
+use Api\Model\UserModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

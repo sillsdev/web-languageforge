@@ -1,12 +1,12 @@
 <?php
 
-use models\scriptureforge\dto\ProjectPageDto;
-use models\AnswerModel;
-use models\CommentModel;
-use models\QuestionModel;
-use models\TextModel;
+use Api\Model\Scriptureforge\Dto\ProjectPageDto;
+use Api\Model\AnswerModel;
+use Api\Model\CommentModel;
+use Api\Model\QuestionModel;
+use Api\Model\TextModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

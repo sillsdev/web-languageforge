@@ -94,7 +94,7 @@
                         tags="answer.tags" on-delete="deletedTags(answer)"
                         rights-delete="rightsDeleteTag()"></view-tags>
                     <div class="by">
-                        <img data-ng-src="{{answer.userRef.avatar_ref}}"
+                        <img data-ng-src="{{getAvatarUrl(answer.userRef.avatar_ref)}}"
                             width="32" height="32" />
                         <div>
                             answered {{answer.dateCreated | date:mediumDate}}<br />

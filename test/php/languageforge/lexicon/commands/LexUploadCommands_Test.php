@@ -1,14 +1,14 @@
 <?php
-use models\languageforge\lexicon\commands\LexUploadCommands;
-use models\languageforge\lexicon\LexEntryListModel;
-use models\languageforge\lexicon\LexiconRoles;
-use models\languageforge\lexicon\LiftMergeRule;
-use models\mapper\Id;
-use models\languageforge\lexicon\LexOptionListListModel;
+use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
+use Api\Model\Languageforge\Lexicon\LexEntryListModel;
+use Api\Model\Languageforge\Lexicon\LexiconRoles;
+use Api\Model\Languageforge\Lexicon\LiftMergeRule;
+use Api\Model\Mapper\Id;
+use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 
-require_once (dirname(__FILE__) . '/../../../TestConfig.php');
-require_once (SimpleTestPath . 'autorun.php');
-require_once (TestPath . 'common/MongoTestEnvironment.php');
+require_once __DIR__ . '/../../../TestConfig.php';
+require_once SimpleTestPath . 'autorun.php';
+require_once TestPath . 'common/MongoTestEnvironment.php';
 
 class TestLexUploadCommands extends UnitTestCase
 {

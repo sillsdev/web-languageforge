@@ -1,16 +1,16 @@
 <?php
 
-use libraries\scriptureforge\sfchecks\IDelivery;
-use libraries\shared\Website;
-use models\commands\UserCommands;
-use models\mapper\Id;
-use models\shared\rights\SystemRoles;
-use models\PasswordModel;
-use models\ProjectModel;
-use models\UserModel;
-use models\UserProfileModel;
+use Api\Library\Scriptureforge\Sfchecks\IDelivery;
+use Api\Library\Shared\Website;
+use Api\Model\Command\UserCommands;
+use Api\Model\Mapper\Id;
+use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\PasswordModel;
+use Api\Model\ProjectModel;
+use Api\Model\UserModel;
+use Api\Model\UserProfileModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 
@@ -444,11 +444,11 @@ class TestUserCommands extends UnitTestCase
     {
         $this->environ->clean();
 
-        $adminModel = new models\UserModel();
+        $adminModel = new Api\Model\UserModel();
         $adminModel->username = 'admin';
         $adminModel->role = SystemRoles::SYSTEM_ADMIN;
         $adminId = $adminModel->write();
-        $userModel = new models\UserModel();
+        $userModel = new Api\Model\UserModel();
         $userModel->username = 'user';
         $userModel->role = SystemRoles::NONE;
         $userId = $userModel->write();

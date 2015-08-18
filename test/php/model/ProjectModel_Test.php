@@ -1,20 +1,20 @@
 <?php
-use models\scriptureforge\SfchecksProjectModel;
+use Api\Model\Scriptureforge\SfchecksProjectModel;
 
-use models\shared\rights\Operation;
-use models\shared\rights\Domain;
-use models\shared\rights\ProjectRoles;
-use models\mapper\Id;
-use models\UserModel;
-use models\ProjectModel;
+use Api\Model\Shared\Rights\Operation;
+use Api\Model\Shared\Rights\Domain;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Mapper\Id;
+use Api\Model\UserModel;
+use Api\Model\ProjectModel;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
 require_once TestPath . 'common/MongoTestEnvironment.php';
 
-require_once SourcePath . "models/UserModel.php";
-require_once SourcePath . "models/ProjectModel.php";
+require_once SourcePath . "Api/Model/UserModel.php";
+require_once SourcePath . "Api/Model/ProjectModel.php";
 
 class TestProjectModel extends UnitTestCase
 {
@@ -48,7 +48,7 @@ class TestProjectModel extends UnitTestCase
 
     public function testProjectList_HasCountAndEntries()
     {
-        $model = new models\ProjectListModel();
+        $model = new Api\Model\ProjectListModel();
         $model->read();
 
         $this->assertNotEqual(0, $model->count);

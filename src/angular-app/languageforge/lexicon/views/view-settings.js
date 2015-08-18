@@ -267,7 +267,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     };
 
     $scope.imageSource = function imageSource(avatarRef) {
-      return avatarRef ? '/images/shared/avatar/' + avatarRef : '/images/shared/avatar/anonymous02.png';
+      return avatarRef ? '/Site/views/shared/image/avatar/' + avatarRef : '/Site/views/shared/image/avatar/anonymous02.png';
     };
 
     $scope.goSelectUser = function goSelectUser() {

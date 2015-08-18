@@ -1,12 +1,12 @@
 <?php
-use models\ProjectModel;
-use models\QuestionListModel;
-use models\QuestionModel;
+use Api\Model\ProjectModel;
+use Api\Model\QuestionListModel;
+use Api\Model\QuestionModel;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
-require_once SourcePath . "models/QuestionModel.php";
+require_once SourcePath . "Api/Model/QuestionModel.php";
 
 class TestQuestionModel extends UnitTestCase
 {

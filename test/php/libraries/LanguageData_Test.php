@@ -1,8 +1,8 @@
 <?php
 
-use libraries\shared\LanguageData;
+use Api\Library\Shared\LanguageData;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
 class TestLanguageData extends UnitTestCase

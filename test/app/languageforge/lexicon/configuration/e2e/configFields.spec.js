@@ -7,7 +7,7 @@ describe('Configuration Fields', function() {
   var util          = require('../../../../bellows/pages/util.js');
   var configPage    = require('../../pages/configurationPage.js');
   var displayName = 'cust_name';
-  
+
   it('setup: login as manager, select test project, goto configuration', function() {
     loginPage.loginAsManager();
     projectsPage.get();
@@ -31,7 +31,7 @@ describe('Configuration Fields', function() {
     expect(configPage.fieldsTab.displayMultilineCheckbox.isPresent()).toBe(false);
     expect(configPage.fieldsTab.widthInput.isPresent()).toBe(false);
     expect(configPage.fieldsTab.captionHiddenIfEmptyCheckbox.isPresent()).toBe(false);
-    expect(configPage.fieldsTab.inputSystemTags.count()).toBe(0);    
+    expect(configPage.fieldsTab.inputSystemTags.count()).toBe(0);
   });
 
   it('can select Word Field; appropriate controls shown', function() {
@@ -41,7 +41,7 @@ describe('Configuration Fields', function() {
     expect(configPage.fieldsTab.displayMultilineCheckbox.isDisplayed()).toBe(true);
     expect(configPage.fieldsTab.widthInput.isDisplayed()).toBe(true);
     expect(configPage.fieldsTab.captionHiddenIfEmptyCheckbox.isPresent()).toBe(false);
-    expect(configPage.fieldsTab.inputSystemTags.count()).toBe(3);    
+    expect(configPage.fieldsTab.inputSystemTags.count()).toBe(3);
   });
 
   it('can move an Input System upwards', function() {
@@ -85,20 +85,20 @@ describe('Configuration Fields', function() {
     expect(configPage.fieldsTab.inputSystemTags.get(1).getText()).toEqual('tipa');
     expect(configPage.fieldsTab.inputSystemTags.last().getText()).toEqual('en');
   });
-  
+
   it('can save changed field settings', function() {
     expect(configPage.noticeList.count()).toBe(0);
     configPage.applyButton.click();
     expect(configPage.noticeList.count()).toBe(1);
     expect(configPage.noticeList.get(0).getText()).toContain('configuration updated successfully');
   });
-  
+
   describe('Add a new Custom Field modal', function() {
-    
+
     it('can open the new custom field modal', function() {
       expect(configPage.fieldsTab.removeCustomFieldButton.isDisplayed()).toBe(false);
       expect(configPage.fieldsTab.newCustomFieldButton.isEnabled()).toBe(true);
-      configPage.fieldsTab.newCustomFieldButton.click();
+      configPage.fieldsTab.newCustomFieldButtonClick();
       expect(configPage.modal.customField.displayNameInput.isDisplayed()).toBe(true);
       expect(configPage.modal.customField.levelDropdown.isDisplayed()).toBe(true);
       expect(configPage.modal.customField.typeDropdown.isDisplayed()).toBe(true);
@@ -106,7 +106,7 @@ describe('Configuration Fields', function() {
       expect(configPage.modal.customField.addButton.isPresent()).toBe(true);
       expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
-    
+
     it('can enter a field name', function() {
       expect(configPage.modal.customField.fieldCodeExists.isPresent()).toBe(true);
       expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
@@ -115,13 +115,13 @@ describe('Configuration Fields', function() {
       expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
       expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
-    
+
     it('can enter a field level', function() {
       util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Entry Level');
       expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
       expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
-    
+
     it('can enter a field type', function() {
       util.clickDropdownByValue(configPage.modal.customField.typeDropdown, 'Multi-input-system Text');
       expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
@@ -135,12 +135,12 @@ describe('Configuration Fields', function() {
       expect(configPage.fieldsTab.removeCustomFieldButton.isDisplayed()).toBe(true);
       expect(configPage.applyButton.isEnabled()).toBe(true);
     });
-    
+
     it('can re-open the new custom field modal', function() {
-      configPage.fieldsTab.newCustomFieldButton.click();
+      configPage.fieldsTab.newCustomFieldButtonClick();
       expect(configPage.modal.customField.displayNameInput.isDisplayed()).toBe(true);
     });
-    
+
     it('cannot add a duplicate field name', function() {
       expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
       configPage.modal.customField.displayNameInput.sendKeys(displayName + protractor.Key.ENTER);
@@ -150,13 +150,13 @@ describe('Configuration Fields', function() {
       expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(true);
       expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
-    
+
     it('can add a duplicate field name at a different level', function() {
       util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Meaning Level');
       expect(configPage.modal.customField.fieldCodeExists.isDisplayed()).toBe(false);
       expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
-    
+
     it('list code only shows when a list type is selected', function() {
       util.clickDropdownByValue(configPage.modal.customField.typeDropdown, 'Multi-input-system Text');
       expect(configPage.modal.customField.listCodeDropdown.isPresent()).toBe(false);
@@ -168,7 +168,7 @@ describe('Configuration Fields', function() {
       expect(configPage.modal.customField.listCodeDropdown.isDisplayed()).toBe(true);
       expect(configPage.modal.customField.addButton.isEnabled()).toBe(false);
     });
-    
+
     it('can enter a list code', function() {
       util.clickDropdownByValue(configPage.modal.customField.listCodeDropdown, 'Part of Speech');
       expect(configPage.modal.customField.addButton.isEnabled()).toBe(true);
@@ -179,16 +179,16 @@ describe('Configuration Fields', function() {
       expect(configPage.modal.customField.displayNameInput.isPresent()).toBe(false);
       expect(configPage.applyButton.isEnabled()).toBe(true);
     });
-    
+
   });
-  
+
   it('can delete a newly created custom field', function() {
     configPage.fieldsTab.removeCustomFieldButton.click();
     expect(configPage.fieldsTab.removeCustomFieldButton.isDisplayed()).toBe(false);
   });
-  
+
   it('can re-create custom field and save configuration', function() {
-    configPage.fieldsTab.newCustomFieldButton.click();
+    configPage.fieldsTab.newCustomFieldButtonClick();
     configPage.modal.customField.displayNameInput.sendKeys(displayName + protractor.Key.ENTER);
     util.clickDropdownByValue(configPage.modal.customField.levelDropdown, 'Entry Level');
     util.clickDropdownByValue(configPage.modal.customField.typeDropdown, 'Multi-input-system Text');
@@ -196,9 +196,9 @@ describe('Configuration Fields', function() {
     expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual(displayName + ' Field Setup');
     configPage.applyButton.click();
   });
-  
+
   it('cannot delete a newly saved custom field', function() {
     expect(configPage.fieldsTab.removeCustomFieldButton.isDisplayed()).toBe(false);
   });
-  
+
 });

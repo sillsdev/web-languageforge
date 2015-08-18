@@ -70,8 +70,8 @@ angular.module('bellows.services')
 
     this.session = $window.session;
 
-    this.getCaptchaSrc = function(callback) {
-      jsonRpc.call('get_captcha_src', [], callback);
+    this.getCaptchaData = function(callback) {
+      jsonRpc.call('get_captcha_data', [], callback);
     };
 
     this.refresh = function(callback) {
