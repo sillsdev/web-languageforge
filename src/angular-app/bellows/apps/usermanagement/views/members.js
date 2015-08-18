@@ -215,7 +215,7 @@ angular.module('usermanagement.members', ['bellows.services', 'palaso.ui.listvie
       };
 
       $scope.imageSource = function imageSource(avatarRef) {
-        return avatarRef ? '/images/shared/avatar/' + avatarRef : '/images/shared/avatar/anonymous02.png';
+        return avatarRef ? '/Site/views/shared/image/avatar/' + avatarRef : '/Site/views/shared/image/avatar/anonymous02.png';
       };
 
     }

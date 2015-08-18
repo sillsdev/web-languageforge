@@ -1,18 +1,18 @@
 <?php
 
-use libraries\shared\Website;
+use Api\Library\Shared\Website;
 
-use models\MessageModel;
+use Api\Model\MessageModel;
 
-use models\UnreadMessageModel;
+use Api\Model\UnreadMessageModel;
 
-use libraries\scriptureforge\sfchecks\IDelivery;
-use libraries\scriptureforge\sfchecks\Communicate;
-use libraries\scriptureforge\sfchecks\Email;
-use libraries\shared\sms\SmsModel;
-use models\UserModel;
+use Api\Library\Scriptureforge\Sfchecks\IDelivery;
+use Api\Library\Scriptureforge\Sfchecks\Communicate;
+use Api\Library\Scriptureforge\Sfchecks\Email;
+use Api\Library\Shared\Sms\SmsModel;
+use Api\Model\UserModel;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
 require_once TestPath . 'common/MongoTestEnvironment.php';

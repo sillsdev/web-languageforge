@@ -1,9 +1,9 @@
 <?php
 require_once ('e2eTestConfig.php');
 
-use models\languageforge\lexicon\LexiconProjectModel;
-use models\languageforge\lexicon\commands\LexUploadCommands;
-use models\ProjectModel;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
+use Api\Model\ProjectModel;
 use Palaso\Utilities\FileUtilities;
 
 $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);

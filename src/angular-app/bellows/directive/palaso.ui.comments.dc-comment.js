@@ -1,11 +1,13 @@
-"use strict";
+'use strict';
 angular.module('palaso.ui.comments')
+
 // Palaso UI Dictionary Control: Comments
   .directive('dcComment', [function() {
     return {
       restrict: 'E',
       templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.dc-comment.html',
-      controller: ['$scope', 'lexCommentService', 'sessionService', 'modalService', function($scope, commentService, sessionService, modal) {
+      controller: ['$scope', 'lexCommentService', 'sessionService', 'utilService', 'modalService', function($scope, commentService, sessionService, util, modal) {
+        $scope.getAvatarUrl = util.getAvatarUrl;
 
         $scope.hover = { comment: false };
 
@@ -15,11 +17,10 @@ angular.module('palaso.ui.comments')
 
         $scope.editingCommentContent = '';
 
-
         if ($scope.comment.regarding.field && $scope.control.configService != undefined) {
           $scope.commentRegardingFieldConfig = $scope.control.configService.getFieldConfig($scope.comment.regarding.field);
           $scope.isCommentRegardingPicture = (($scope.commentRegardingFieldConfig.type == 'pictures') &&
-          ! ($scope.comment.regarding.inputSystem));
+          !($scope.comment.regarding.inputSystem));
         }
 
         $scope.doReply = function doReply() {
@@ -40,7 +41,6 @@ angular.module('palaso.ui.comments')
           updateReply($scope.comment.id, reply);
           $scope.newReply = {id:'', editingContent:''};
         };
-
 
         function updateReply(commentId, reply) {
           commentService.updateReply(commentId, reply, function(result) {
@@ -65,9 +65,9 @@ angular.module('palaso.ui.comments')
         $scope.deleteComment = function deleteComment(comment) {
           var deletemsg;
           if (sessionService.session.userId == comment.authorInfo.createdByUserRef.id) {
-            deletemsg = "Are you sure you want to delete your own comment?";
+            deletemsg = 'Are you sure you want to delete your own comment?';
           } else {
-            deletemsg = "Are you sure you want to delete " + comment.authorInfo.createdByUserRef.name + "'s comment?";
+            deletemsg = 'Are you sure you want to delete ' + comment.authorInfo.createdByUserRef.name + '\'s comment?';
           }
 
           modal.showModalSimple('Delete Comment', deletemsg, 'Cancel', 'Delete Comment').then(function() {
@@ -78,17 +78,17 @@ angular.module('palaso.ui.comments')
                 });
               }
             });
+
             commentService.removeCommentFromLists(comment.id);
           });
         };
 
-
         $scope.deleteCommentReply = function deleteCommentReply(commentId, reply) {
           var deletemsg;
           if (sessionService.session.userId == reply.authorInfo.createdByUserRef.id) {
-            deletemsg = "Are you sure you want to delete your own comment reply?";
+            deletemsg = 'Are you sure you want to delete your own comment reply?';
           } else {
-            deletemsg = "Are you sure you want to delete " + reply.authorInfo.createdByUserRef.name + "'s comment reply?";
+            deletemsg = 'Are you sure you want to delete ' + reply.authorInfo.createdByUserRef.name + '\'s comment reply?';
           }
 
           modal.showModalSimple('Delete Reply', deletemsg, 'Cancel', 'Delete Reply').then(function() {
@@ -99,6 +99,7 @@ angular.module('palaso.ui.comments')
                 });
               }
             });
+
             commentService.removeCommentFromLists(commentId, reply.id);
           });
         };
@@ -120,23 +121,22 @@ angular.module('palaso.ui.comments')
               });
             }
           });
+
           $scope.editingCommentContent = '';
         };
 
         function hideInputFields() {
-          for (var i=0; i< $scope.comment.replies.length; i++) {
+          for (var i = 0; i < $scope.comment.replies.length; i++) {
             $scope.comment.replies[i].editing = false;
           }
+
           $scope.showNewReplyForm = false;
           $scope.comment.editing = false;
         }
 
+      },],
 
-
-
-
-      }],
       link: function(scope, element, attrs, controller) {
-      }
+      },
     };
-  }]);
+  },]);

@@ -24,7 +24,7 @@
     <div class="alert" style="padding:0; display:flex; min-height: 50px; " ng-show="isLoading()">
         <div style="margin:auto; max-width: 400px;">
             <div style="margin:10px">
-                <img src="/images/shared/loading-small.gif" style="margin-right:10px" /> <b>Please wait.  {{getLoadingMessage()}}</b>
+                <img src="/Site/views/shared/image/loading-small.gif" style="margin-right:10px" /> <b>Please wait.  {{getLoadingMessage()}}</b>
             </div>
             <div style="margin-top:10px" ng-show="showProgressBar()">
                 <progressbar value="getPercentComplete()" max="100.0">{{getPercentComplete() | number:0}}%</progressbar>

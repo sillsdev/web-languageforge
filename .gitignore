@@ -18,3 +18,4 @@ docs/semdom/semdom lists/*.xml
 deploy/.vagrant/
 deploy/site_files/certificates/
 deploy/site_info/
+deploy/callback_plugins/*.pyc

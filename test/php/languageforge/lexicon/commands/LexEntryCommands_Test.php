@@ -1,14 +1,14 @@
 <?php
 
-use models\languageforge\lexicon\commands\LexEntryCommands;
-use models\languageforge\lexicon\config\LexiconConfigObj;
-use models\languageforge\lexicon\Example;
-use models\languageforge\lexicon\LexEntryModel;
-use models\languageforge\lexicon\Sense;
-use models\mapper\JsonEncoder;
-use models\commands\ProjectCommands;
+use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
+use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\Sense;
+use Api\Model\Mapper\JsonEncoder;
+use Api\Model\Command\ProjectCommands;
 
-require_once dirname(__FILE__) . '/../../../TestConfig.php';
+require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

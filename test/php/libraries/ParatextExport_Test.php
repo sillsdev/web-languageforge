@@ -1,12 +1,12 @@
 <?php
 
-use libraries\scriptureforge\sfchecks\ParatextExport;
-use models\TextModel;
-use models\QuestionModel;
-use models\AnswerModel;
-use models\CommentModel;
+use Api\Library\Scriptureforge\Sfchecks\ParatextExport;
+use Api\Model\TextModel;
+use Api\Model\QuestionModel;
+use Api\Model\AnswerModel;
+use Api\Model\CommentModel;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

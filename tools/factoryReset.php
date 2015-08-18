@@ -5,11 +5,11 @@ require_once('toolsConfig.php');
 
 
 // use commands go here (after the e2eTestConfig)
-use models\commands\UserCommands;
-use models\shared\rights\SystemRoles;
-use models\ProjectModel;
-use libraries\shared\Website;
-use models\ProjectListModel;
+use Api\Model\Command\UserCommands;
+use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\ProjectModel;
+use Api\Library\Shared\Website;
+use Api\Model\ProjectListModel;
 
 if (php_sapi_name() != 'cli') { die('this script must be run on the command-line'); }
 
@@ -44,7 +44,7 @@ foreach ($projectList->entries as $p) {
 // start with a fresh database
 print "\nDropping main database...\n";
 if ($runForReal) {
-    $db = \models\mapper\MongoStore::connect(SF_DATABASE);
+    $db = \Api\Model\Mapper\MongoStore::connect(SF_DATABASE);
     foreach ($db->listCollections() as $collection) { $collection->drop(); }
 }
 
