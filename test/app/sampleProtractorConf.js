@@ -2,7 +2,7 @@
 exports.config = {
   // The address of a running selenium server.
   // seleniumAddress: 'http://localhost:4444/wd/hub',
-  seleniumAddress: 'http://192.168.56.1:4444/wd/hub',
+  seleniumAddress: 'http://default.local:4444/wd/hub',
 
   // To run tests in a single browser, uncomment the following
   // capabilities: {

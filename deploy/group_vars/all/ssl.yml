@@ -1,0 +1,18 @@
+---
+
+ssl_items:
+  - name: scriptureforge
+    state: selfsign
+    request:
+        country_code: "TH"
+        state: "Chiang Mai"
+        locality: "Chiang Mai"
+        organization: "SIL"
+        organization_unit: ""
+        common_name: "scriptureforge.local"
+        alt_names:
+          - key: DNS.1
+            value: "www.scriptureforge.local"
+          - key: DNS.2
+            value: "scriptureforge.local"
+    sign:
