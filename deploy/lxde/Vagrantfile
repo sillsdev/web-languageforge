@@ -9,16 +9,16 @@ if [ ! -d "/home/vagrant/src" ]; then
   mkdir /home/vagrant/src
 fi
 if [ ! -d "/home/vagrant/src/web-languageforge" ]; then
-  git clone https://github.com/sil-student-projects/web-languageforge.git /home/vagrant/src/web-languageforge
+  git clone https://github.com/sil-student-projects/web-languageforge.git /home/vagrant/src/web-languageforge --recursive
 else
   cd /home/vagrant/src/web-languageforge; git pull --ff-only --recurse-submodules origin master
 fi
 if [ ! -d "/home/vagrant/src/web-scriptureforge" ]; then
-  git clone https://github.com/sil-student-projects/web-scriptureforge.git /home/vagrant/src/web-scriptureforge
+  git clone https://github.com/sil-student-projects/web-scriptureforge.git /home/vagrant/src/web-scriptureforge --recursive
 else
   cd /home/vagrant/src/web-scriptureforge; git pull --ff-only --recurse-submodules origin master
 fi
-cd /home/vagrant/src/web-languageforge/deploy/; git checkout master; ansible-playbook -i hosts playbook_lxde.yml --extra-vars "deploy=lxde"  
+cd /home/vagrant/src/web-languageforge/deploy/; git checkout master-sbu; ansible-playbook -i hosts playbook_lxde.yml --extra-vars "deploy=lxde"  
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -67,10 +67,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   
   config.vm.provision "shell", inline: $script
   
-  config.vm.provision :ansible do |ansible|
-    ansible.playbook = '../playbook_lxde.yml'
-    ansible.extra_vars = { deploy: 'lxde', ansible_ssh_user: 'vagrant', vagrant: true }
-  
-    ansible.verbose = 'v'
-  end
+  #config.vm.provision :ansible do |ansible|
+  #  ansible.playbook = '../playbook_lxde.yml'
+  #  ansible.extra_vars = { deploy: 'lxde', ansible_ssh_user: 'vagrant', vagrant: true }
+  # 
+  #  ansible.verbose = 'v'
+  #end
 end
