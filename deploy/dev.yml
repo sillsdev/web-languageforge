@@ -3,16 +3,11 @@
 - name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
   hosts: all
   sudo: yes
-  vars:
-    # local path
-    mongo_path: /hddlinux/mongodb
-    # VM (Vagrant) path
-#    mongo_path: /var/lib/mongodb
-    # PHP log folder
-    php_log_folder: /var/log/php
+  pre_tasks:
+    - include_vars: "vars_{{ deploy }}.yml"
   roles:
-    - ssl_config
-    - apache_config
+    - ../../roles_common/ssl_config
+    - ../../roles/apache_config
   tasks:
     - name: install packages
       apt: name="{{item}}" state=present
@@ -98,10 +93,16 @@
     - name: install PECL mongo extension | count conf.d
       shell: ls /etc/php5/conf.d | wc -l
       register: php5_confd_n
-      when: mongo_confd_link.rc != 0
+      changed_when: False
+      failed_when: False
     - name: install PECL mongo extension | add mods-available in conf.d
       file: src=../mods-available/mongo.ini dest=/etc/php5/conf.d/{{php5_confd_n.stdout | int + 1}}0-mongo.ini state=link
-      when: mongo_confd_link.rc != 0
+      notify: Restart apache
+    - name: install PECL mongo extension | add mods-available in conf.d
+      file: src=/etc/php5/mods-available/mongo.ini dest=/etc/php5/cli/conf.d/{{php5_confd_n.stdout | int + 1}}0-mongo.ini state=link
+      notify: Restart apache
+    - name: install PECL mongo extension | add mods-available in conf.d
+      file: src=/etc/php5/mods-available/mongo.ini dest=/etc/php5/apache2/conf.d/{{php5_confd_n.stdout | int + 1}}0-mongo.ini state=link
       notify: Restart apache
     - name: update the mongo config file
       lineinfile:
@@ -113,6 +114,12 @@
     - name: ensure mongodb is running (and enable it at boot)
       service: name=mongodb state=started enabled=yes
     - meta: flush_handlers
+
+    - name: composer install
+      command: composer install
+      args:
+        chdir: /var/www/virtual/default_local/src
+      changed_when: false
 
     - name: factory reset mongodb to empty with admin user
       shell: php /var/www/virtual/default_local/tools/factoryReset.php run

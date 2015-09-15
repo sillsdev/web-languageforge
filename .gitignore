@@ -1,6 +1,7 @@
 *~
 .settings
 .externalToolBuilders
+vagrant_ansible_inventory_*
 /output
 /node_modules/
 src/vendor/*
@@ -19,3 +20,4 @@ deploy/.vagrant/
 deploy/site_files/certificates/
 deploy/site_info/
 deploy/callback_plugins/*.pyc
+.vagrant/
