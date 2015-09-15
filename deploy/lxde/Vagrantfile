@@ -11,14 +11,14 @@ fi
 if [ ! -d "/home/vagrant/src/web-languageforge" ]; then
   git clone https://github.com/sil-student-projects/web-languageforge.git /home/vagrant/src/web-languageforge
 else
-  git pull --ff-only /home/vagrant/src/web-languageforge
+  cd /home/vagrant/src/web-languageforge; git pull --ff-only --recurse-submodules origin master
 fi
 if [ ! -d "/home/vagrant/src/web-scriptureforge" ]; then
   git clone https://github.com/sil-student-projects/web-scriptureforge.git /home/vagrant/src/web-scriptureforge
 else
-  git pull --ff-only /home/vagrant/src/web-scriptureforge
+  cd /home/vagrant/src/web-scriptureforge; git pull --ff-only --recurse-submodules origin master
 fi
-cd /home/vagrant/src/web-languageforge/deploy/; git checkout master; ansible-playbook playbook.yml --extra-vars "deploy=lxde"  
+cd /home/vagrant/src/web-languageforge/deploy/; git checkout master; ansible-playbook -i hosts playbook_lxde.yml --extra-vars "deploy=lxde"  
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
