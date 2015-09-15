@@ -6,8 +6,8 @@
   pre_tasks:
     - include_vars: "vars_{{ deploy }}.yml"
   roles:
-    - ../../roles_common/ssl_config
-    - ../../roles/apache_config
+    - ssl_config
+    - apache_config
   tasks:
     - name: install packages
       apt: name="{{item}}" state=present
