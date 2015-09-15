@@ -1,12 +1,12 @@
 <?php
 
-use models\shared\rights\SystemRoles;
+use Api\Model\Shared\Rights\SystemRoles;
 
-use models\languageforge\lexicon\dto\LexProjectDto;
-use models\shared\rights\ProjectRoles;
-use models\UserModel;
+use Api\Model\Languageforge\Lexicon\Dto\LexProjectDto;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\UserModel;
 
-require_once dirname(__FILE__) . '/../../../TestConfig.php';
+require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

@@ -1,17 +1,17 @@
 <?php
 
-use libraries\shared\Website;
-use models\shared\rights\ProjectRoles;
-use models\mapper\Id;
-use models\ProjectModel;
-use models\UserListModel;
-use models\UserModel;
+use Api\Library\Shared\Website;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Mapper\Id;
+use Api\Model\ProjectModel;
+use Api\Model\UserListModel;
+use Api\Model\UserModel;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
-require_once SourcePath . "models/ProjectModel.php";
-require_once SourcePath . "models/UserModel.php";
+require_once SourcePath . "Api/Model/ProjectModel.php";
+require_once SourcePath . "Api/Model/UserModel.php";
 
 class TestUserModel extends UnitTestCase
 {
@@ -53,7 +53,7 @@ class TestUserModel extends UnitTestCase
         $userId = $e->createUser('someuser', 'Some User','user@example.com');
         $someUser = new UserModel($userId);
 
-        $model = new models\UserTypeaheadModel('', '', $e->website);
+        $model = new Api\Model\UserTypeaheadModel('', '', $e->website);
         $model->read();
 
         $this->assertEqual(1, $model->count);
@@ -68,7 +68,7 @@ class TestUserModel extends UnitTestCase
         $userId = $e->createUser('someuser', 'Some User','user@example.com');
         $someUser = new UserModel($userId);
 
-        $model = new models\UserTypeaheadModel('', '', $e->website);
+        $model = new Api\Model\UserTypeaheadModel('', '', $e->website);
         $model->read();
 
         $this->assertEqual(1, $model->count);
@@ -83,7 +83,7 @@ class TestUserModel extends UnitTestCase
         $userId = $e->createUser('someuser', 'Some User','user@example.com');
         $someUser = new UserModel($userId);
 
-        $model = new models\UserTypeaheadModel('Bogus', '', $e->website);
+        $model = new Api\Model\UserTypeaheadModel('Bogus', '', $e->website);
         $model->read();
 
         $this->assertEqual(0, $model->count);
@@ -99,7 +99,7 @@ class TestUserModel extends UnitTestCase
 
         // Check no users exist on another website
         $website = new Website('languageforge.local', Website::LANGUAGEFORGE);
-        $model = new models\UserTypeaheadModel('some', '', $website);
+        $model = new Api\Model\UserTypeaheadModel('some', '', $website);
         $model->read();
 
         $this->assertEqual(0, $model->count);

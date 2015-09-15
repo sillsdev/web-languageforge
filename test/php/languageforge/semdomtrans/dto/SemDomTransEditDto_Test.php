@@ -1,16 +1,16 @@
 <?php
 
-use models\languageforge\semdomtrans\SemDomTransItemModel;
-use models\languageforge\SemDomTransProjectModel;
-use models\languageforge\semdomtrans\SemDomTransTranslatedForm;
-use models\languageforge\semdomtrans\dto\SemDomTransEditDto;
-use models\languageforge\semdomtrans\SemDomTransItemListModel;
-use models\languageforge\semdomtrans\SemDomTransQuestion;
-use models\mapper\ArrayOf;
-use models\languageforge\semdomtrans\SemDomTransStatus;
-use models\languageforge\semdomtrans\commands\SemDomTransItemCommands;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransItemModel;
+use Api\Model\Languageforge\SemDomTransProjectModel;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
+use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransItemListModel;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransQuestion;
+use Api\Model\Mapper\ArrayOf;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
+use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransItemCommands;
 
-require_once dirname(__FILE__) . '/../../../TestConfig.php';
+require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

@@ -1,18 +1,18 @@
 <?php
 
-use models\scriptureforge\dto\QuestionCommentDto;
-use models\shared\rights\ProjectRoles;
-use models\AnswerModel;
-use models\CommentModel;
-use models\ProjectModel;
-use models\QuestionModel;
-use models\TextModel;
+use Api\Model\Scriptureforge\Dto\QuestionCommentDto;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\AnswerModel;
+use Api\Model\CommentModel;
+use Api\Model\ProjectModel;
+use Api\Model\QuestionModel;
+use Api\Model\TextModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
-require_once SourcePath . "models/ProjectModel.php";
-require_once SourcePath . "models/QuestionModel.php";
+require_once SourcePath . "Api/Model/ProjectModel.php";
+require_once SourcePath . "Api/Model/QuestionModel.php";
 
 class TestQuestionCommentDto extends UnitTestCase
 {

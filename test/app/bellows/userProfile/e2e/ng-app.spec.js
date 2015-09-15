@@ -31,7 +31,7 @@ describe('User Profile E2E Test', function() {
   
         var expectedColor = '';
         
-         expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(browser.baseUrl + constants.avatar);
+        expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(browser.baseUrl + constants.avatar);
         expect(userProfile.myAccountTab.avatarColor.$('option:checked').getText()).toBe('Select a Color...');
         expect(userProfile.myAccountTab.avatarShape.$('option:checked').getText()).toBe('Choose an animal...');
         expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual('');

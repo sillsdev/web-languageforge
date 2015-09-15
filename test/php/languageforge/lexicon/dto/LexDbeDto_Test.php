@@ -1,17 +1,17 @@
 <?php
 
-use models\shared\rights\SystemRoles;
+use Api\Model\Shared\Rights\SystemRoles;
 
-use models\languageforge\lexicon\commands\LexEntryCommands;
-use models\languageforge\lexicon\dto\LexDbeDto;
-use models\languageforge\lexicon\LexCommentReply;
-use models\languageforge\lexicon\LexEntryModel;
-use models\languageforge\lexicon\Example;
-use models\languageforge\lexicon\Sense;
-use models\shared\rights\ProjectRoles;
-use models\UserModel;
+use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
+use Api\Model\Languageforge\Lexicon\Dto\LexDbeDto;
+use Api\Model\Languageforge\Lexicon\LexCommentReply;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Languageforge\Lexicon\Sense;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\UserModel;
 
-require_once dirname(__FILE__) . '/../../../TestConfig.php';
+require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

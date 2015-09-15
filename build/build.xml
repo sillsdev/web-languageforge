@@ -109,14 +109,11 @@
 		<copy todir="${build.output}/package/htdocs">
 			<fileset dir="src"/>
 		</copy>
-		<copy todir="${build.output}/package/lib">
-			<fileset dir="lib"/>
-		</copy>
 		<copy todir="${build.output}/package/htdocs/js/lib"
 			file="${build.minJsFile}"
 		/>
-		<replace file="${build.output}/package/htdocs/config/sf_config.php">
-			<replacefilter token="$config['sfenv'] = 'dev';" value="$config['sfenv'] = 'prod';" />
+		<replace file="${build.output}/package/htdocs/config.php">
+			<replacefilter token="define('ENVIRONMENT', 'development');" value="define('ENVIRONMENT', 'production');" />
 		</replace>
 	    <replace file="${build.output}/package/htdocs/version.php">
 			<replacefilter token="9.9.9" value="${version}" />
@@ -124,10 +121,6 @@
 		<chgrp type="both" group="www-data">
 			<dirset dir="${build.output}/package/htdocs/" />
 			<fileset dir="${build.output}/package/htdocs/">
-			    <include name="**/*"/>
-			</fileset>
-			<dirset dir="${build.output}/package/lib/" />
-			<fileset dir="${build.output}/package/lib/">
 			    <include name="**/*"/>
 			</fileset>
 		</chgrp>
@@ -153,10 +146,6 @@
 			<fileset dir="${build.installPath}/htdocs/">
 			    <include name="**/*"/>
 			</fileset>
-			<dirset dir="${build.installPath}/lib/" />
-			<fileset dir="${build.installPath}/lib/">
-			    <include name="**/*"/>
-			</fileset>
 		</chgrp>
 		<chmod type="both" perm="g+w">
 			<dirset dir="${build.installPath}/htdocs/cache/" />
@@ -170,10 +159,6 @@
 		<chgrp type="both" group="www-data">
 			<dirset dir="${build.installForTestPath}/htdocs/" />
 			<fileset dir="${build.installForTestPath}/htdocs/">
-			    <include name="**/*"/>
-			</fileset>
-			<dirset dir="${build.installForTestPath}/lib/" />
-			<fileset dir="${build.installForTestPath}/lib/">
 			    <include name="**/*"/>
 			</fileset>
 		</chgrp>
@@ -192,15 +177,9 @@
 
 	<target name="test-e2e-env" depends="test-e2e-install,test-e2e-copyTest">
 		<replaceregexp
-			file="${build.installForTestPath}/htdocs/config/mongodb.php"
-			match="\$config\['default'\]\['mongo_database'\] = '([^']*)';"
-			replace="$config['default']['mongo_database'] = 'scriptureforge_test';"
-			byline="true"
-		/>
-		<replaceregexp
-			file="${build.installForTestPath}/htdocs/config/sf_config.php"
-			match="\$config\['db'\] = '([^']*)'"
-			replace="$config['db'] = 'scriptureforge_test'"
+			file="${build.installForTestPath}/htdocs/config.php"
+			match="define\('SF_DATABASE', '([^']*)'\);"
+			replace="define('SF_DATABASE', 'scriptureforge_test')"
 			byline="true"
 		/>
 		<!-- Note the UTF-8 below. This ensures that the filter copy doesn't mangle the Thai used in the examples. CP 2014-09 -->
@@ -290,10 +269,6 @@
 		<chgrp type="both" group="www-data">
 			<dirset dir="${build.uploadPath}/htdocs/" />
 			<fileset dir="${build.uploadPath}/htdocs/">
-			    <include name="**/*"/>
-			</fileset>
-			<dirset dir="${build.uploadPath}/lib/" />
-			<fileset dir="${build.uploadPath}/lib/">
 			    <include name="**/*"/>
 			</fileset>
 		</chgrp>

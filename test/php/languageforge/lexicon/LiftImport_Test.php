@@ -1,14 +1,14 @@
 <?php
-use models\languageforge\lexicon\config\LexiconConfigObj;
-use models\languageforge\lexicon\config\LexiconOptionListItem;
-use models\languageforge\lexicon\InputSystem;
-use models\languageforge\lexicon\LexEntryListModel;
-use models\languageforge\lexicon\LexOptionListModel;
-use models\languageforge\lexicon\LexOptionListListModel;
-use models\languageforge\lexicon\LiftImport;
-use models\languageforge\lexicon\LiftMergeRule;
+use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Model\Languageforge\Lexicon\Config\LexiconOptionListItem;
+use Api\Model\Languageforge\Lexicon\InputSystem;
+use Api\Model\Languageforge\Lexicon\LexEntryListModel;
+use Api\Model\Languageforge\Lexicon\LexOptionListModel;
+use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
+use Api\Model\Languageforge\Lexicon\LiftImport;
+use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

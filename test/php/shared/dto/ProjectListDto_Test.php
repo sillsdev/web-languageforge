@@ -1,12 +1,12 @@
 <?php
 
-use models\shared\dto\ProjectListDto;
-use models\TextModel;
-use models\UserModel;
-use models\shared\rights\ProjectRoles;
-use models\shared\rights\SystemRoles;
+use Api\Model\Shared\Dto\ProjectListDto;
+use Api\Model\TextModel;
+use Api\Model\UserModel;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SystemRoles;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

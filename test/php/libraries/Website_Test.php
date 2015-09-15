@@ -1,8 +1,8 @@
 <?php
 
-use libraries\shared\Website;
+use Api\Library\Shared\Website;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
 class TestWebsite extends UnitTestCase

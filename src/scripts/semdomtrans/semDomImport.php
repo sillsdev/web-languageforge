@@ -1,11 +1,12 @@
 <?php
-use models\languageforge\SemDomTransProjectModel;
-use libraries\shared\Website;
-use libraries\languageforge\semdomtrans\SemDomXMLImporter;
-use models\languageforge\LfProjectModel;
-use models\ProjectModel;
-use models\commands\ProjectCommands;
-use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
+
+use Api\Model\Languageforge\SemDomTransProjectModel;
+use Api\Library\Shared\Website;
+use Api\Library\Languageforge\Semdomtrans\SemDomXMLImporter;
+use Api\Model\Languageforge\LfProjectModel;
+use Api\Model\ProjectModel;
+use Api\Model\Command\ProjectCommands;
+use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
 use Palaso\Utilities\FileUtilities;
 
 require_once('../scriptConfig.php');
@@ -64,6 +65,3 @@ if ($previousProject->id->asString() == "")
 } else {
     echo "Project exists already" . "\n";
 }
-
-
-?>

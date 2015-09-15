@@ -1,10 +1,10 @@
 <?php
-use models\scriptureforge\sfchecks\commands\SfchecksUploadCommands;
-use models\TextModel;
-use models\mapper\Id;
+use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
+use Api\Model\TextModel;
+use Api\Model\Mapper\Id;
 use Palaso\Utilities\FileUtilities;
 
-require_once (dirname(__FILE__) . '/../../TestConfig.php');
+require_once (__DIR__ . '/../../TestConfig.php');
 require_once (SimpleTestPath . 'autorun.php');
 require_once (TestPath . 'common/MongoTestEnvironment.php');
 
