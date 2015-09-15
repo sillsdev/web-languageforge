@@ -1,12 +1,12 @@
 <?php
 
-use models\commands\SessionCommands;
-use models\commands\ProjectCommands;
+use Api\Model\Command\SessionCommands;
+use Api\Model\Command\ProjectCommands;
 //use models\AnswerModel;
 //use models\CommentModel;
-use models\QuestionModel;
+use Api\Model\QuestionModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

@@ -1,15 +1,15 @@
 <?php
-use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
-use models\languageforge\semdomtrans\SemDomTransItemListModel;
-use models\languageforge\SemDomTransProjectModel;
-use libraries\languageforge\semdomtrans\SemDomXMLExporter;
-use models\ProjectListModel;
-use libraries\languageforge\semdomtrans;
-use models\ProjectModel;
-use libraries\shared\Website;
-use libraries\languageforge\semdomtrans\SemDomXMLImporter;
+use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransItemListModel;
+use Api\Model\Languageforge\SemDomTransProjectModel;
+use Api\Library\Languageforge\Semdomtrans\SemDomXMLExporter;
+use Api\Model\ProjectListModel;
+use Api\Library\Languageforge\Semdomtrans;
+use Api\Model\ProjectModel;
+use Api\Library\Shared\Website;
+use Api\Library\Languageforge\Semdomtrans\SemDomXMLImporter;
 
-require_once dirname(__FILE__) . '/../../../TestConfig.php';
+require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

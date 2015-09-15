@@ -1,3 +1,4 @@
+{% verbatim %}
 <div class="content container" data-ng-cloak>
     <div data-ng-controller="userProfileCtrl">
         <h1>{{user.name}}'s User Profile</h1>
@@ -10,7 +11,7 @@
                 <tab heading="My Account" id="MyAccountTab">
                     <label>Username: <b style="margin-left:10px">{{user.username}}</b></label>
                     <label>Picture</label>
-                    <div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{user.avatar_ref}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
+                    <div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{getAvatarUrl(user.avatar_ref)}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
                     <div><select data-ng-model="user.avatar_color" data-ng-options="c.value as c.label for c in dropdown.avatarColors"><option value="">Select a Color...</option></select></div>
                     <div><select data-ng-model="user.avatar_shape" data-ng-options="s.value as s.label for s in dropdown.avatarShapes"><option value="">Choose an animal...</option></select></div>
                     <label>Email Address: <b style="margin-left:10px">{{user.email}}</b></label>
@@ -68,3 +69,4 @@
         </form>
     </div>
 </div>
+{% endverbatim %}

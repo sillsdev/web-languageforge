@@ -1,14 +1,14 @@
 <?php
 
-use models\languageforge\lexicon\commands\LexProjectCommands;
-use models\languageforge\lexicon\dto\LexBaseViewDto;
-use models\languageforge\lexicon\LexiconProjectModel;
-use models\languageforge\lexicon\LiftMergeRule;
-use models\shared\rights\ProjectRoles;
-use models\shared\rights\SystemRoles;
-use models\UserModel;
+use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
+use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LiftMergeRule;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\UserModel;
 
-require_once dirname(__FILE__) . '/../../../TestConfig.php';
+require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

@@ -1,9 +1,9 @@
 <?php
 
-use models\languageforge\lexicon\commands\LexOptionListCommands;
-use models\languageforge\lexicon\LexOptionListListModel;
+use Api\Model\Languageforge\Lexicon\Command\LexOptionListCommands;
+use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 
-require_once dirname(__FILE__) . '/../../../TestConfig.php';
+require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

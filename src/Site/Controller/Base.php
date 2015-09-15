@@ -1,0 +1,149 @@
+<?php
+
+namespace Site\Controller;
+
+use Api\Library\Shared\Website;
+use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\Shared\Rights\Operation;
+use Api\Model\Shared\Rights\Domain;
+use Api\Model\FeaturedProjectListModel;
+use Api\Model\UserModel;
+use Silex\Application;
+
+require_once APPPATH."version.php";
+
+class Base
+{
+    public function __construct() {
+        $this->website = Website::get();
+        $this->_isLoggedIn = false;
+        $this->data['isLoggedIn'] = $this->_isLoggedIn;
+        $this->data['isAdmin'] = false;
+        $this->data['projects'] = array();
+        $this->data['smallAvatarUrl'] = '';
+        $this->data['userName'] = '';
+        $this->data['version'] = VERSION;
+        $this->data['http_host'] = $_SERVER['HTTP_HOST'];
+
+        $this->data['jsFiles'] = array();
+        $this->data['jsNotMinifiedFiles'] = array();
+        $this->data['cssFiles'] = array();
+
+        $this->addCssFiles("Site/views/shared/css");
+        $this->addCssFiles($this->getThemePath()."/css");
+    }
+
+    /**
+     * data used to render templates
+     * @var array
+     */
+    public $data;
+
+    /**
+     * @var Website
+     */
+    public $website;
+
+    protected $_isLoggedIn;
+    protected $_user;
+    protected $_userId;
+    protected $_projectId;
+
+    // all child classes should use this method to render their pages
+    protected function renderPage(Application $app, $viewName, $render = true) {
+        $this->_isLoggedIn = $app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_REMEMBERED');
+        if ($this->_isLoggedIn) {
+            try {
+                $userId = (string) $app['session']->get('user_id');
+                $this->_userId = $userId;
+                $this->_user = new UserModel($userId);
+                $this->_projectId = (string) $app['session']->get('projectId');
+            } catch (\Exception $e) {
+//                error_log("User $userId not found, logged out.\n" . $e->getMessage());
+                return $app->redirect('/app/logout');
+            }
+        }
+
+        $this->populateHeaderMenuViewdata();
+
+        if (empty($this->data)) {
+            $app->abort(404, 'Error: cannot render without data');
+        }
+
+        try {
+            return $app['twig']->render($viewName.'.twig', $this->data);
+        } catch (\Twig_Error_Loader $e) {
+            $app->abort(404, "Page not found: $viewName.twig");
+        }
+    }
+
+    protected function populateHeaderMenuViewdata() {
+        $this->data['isAdmin'] = false;
+
+        // setup specific variables for header
+        $this->data['isLoggedIn'] = $this->_isLoggedIn;
+
+        $featuredProjectList = new FeaturedProjectListModel();
+        $featuredProjectList->read();
+        $this->data['featuredProjects'] = $featuredProjectList->entries;
+
+        if ($this->_isLoggedIn) {
+            if ($this->_user->role) {
+                $this->data['isAdmin'] = SystemRoles::hasRight($this->_user->role, Domain::USERS + Operation::CREATE);
+            }
+            $this->data['userName'] = $this->_user->username;
+            $this->data['smallAvatarUrl'] = '/Site/views/shared/image/avatar/'.$this->_user->avatar_ref;
+            $projects = $this->_user->listProjects($this->website->domain);
+            $this->data['projects_count'] = $projects->count;
+            $this->data['projects'] = $projects->entries;
+        }
+    }
+
+    protected function getThemePath($theme = "") {
+        if (! $theme) {
+            $theme = $this->website->theme;
+        }
+        if (! file_exists('Site/views/'.$this->website->base.'/theme/'.$theme)) {
+            $theme = 'default';
+        }
+
+        return 'Site/views/'.$this->website->base.'/theme/'.$theme;
+    }
+
+    protected function addJavascriptFiles($dir, $exclude = array()) {
+        self::addFiles('js', $dir, $this->data['jsFiles'], $exclude);
+    }
+
+    protected function addJavascriptNotMinifiedFiles($dir, $exclude = array()) {
+        self::addFiles('js', $dir, $this->data['jsNotMinifiedFiles'], $exclude);
+    }
+
+    protected function addCssFiles($dir) {
+        self::addFiles('css', $dir, $this->data['cssFiles'], array());
+    }
+
+    private static function ext($filename) {
+        return pathinfo($filename, PATHINFO_EXTENSION);
+    }
+
+    private static function addFiles($ext, $dir, &$result, $exclude) {
+        if (is_dir($dir)) {
+            $files = scandir($dir);
+            foreach ($files as $file) {
+                $filepath = $dir . '/' . $file;
+                foreach ($exclude as $ex) {
+                    if (strpos($filepath, $ex)) {
+                        continue 2;
+                    }
+                }
+                if (is_file($filepath)) {
+                    if (self::ext($file) == $ext) {
+                        $result[] = $filepath;
+                    }
+                } elseif ($file != '..' && $file != '.') {
+                    self::addFiles($ext, $filepath, $result, $exclude);
+                }
+            }
+        }
+    }
+}

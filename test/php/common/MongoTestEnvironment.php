@@ -1,25 +1,25 @@
 <?php
-use libraries\shared\Website;
-use models\mapper\Id;
+use Api\Library\Shared\Website;
+use Api\Model\Mapper\Id;
 use Palaso\Utilities\FileUtilities;
-use models\languageforge\lexicon\LexiconProjectModel;
-use models\shared\rights\ProjectRoles;
-use models\shared\rights\SystemRoles;
-use models\ProjectModel;
-use models\UserModel;
-use libraries\languageforge\semdomtrans\SemDomXMLImporter;
-use models\languageforge\SemDomTransProjectModel;
-use models\languageforge\semdomtrans\commands\SemDomTransProjectCommands;
-use models\mapper\ArrayOf;
-use models\languageforge\LfProjectModel;
-use models\commands\ProjectCommands;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\ProjectModel;
+use Api\Model\UserModel;
+use Api\Library\Languageforge\Semdomtrans\SemDomXMLImporter;
+use Api\Model\Languageforge\SemDomTransProjectModel;
+use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
+use Api\Model\Mapper\ArrayOf;
+use Api\Model\Languageforge\LfProjectModel;
+use Api\Model\Command\ProjectCommands;
 
 class MongoTestEnvironment
 {
 
     public function __construct($domain = 'scriptureforge.org')
     {
-        $this->db = \models\mapper\MongoStore::connect(SF_DATABASE);
+        $this->db = \Api\Model\Mapper\MongoStore::connect(SF_DATABASE);
         $this->website = Website::get($domain);
         if (! isset($this->uploadFilePaths)) {
             $this->uploadFilePaths = array();
@@ -82,7 +82,7 @@ class MongoTestEnvironment
      */
     public function createUser($username, $name, $email, $role = SystemRoles::USER)
     {
-        $userModel = new models\UserModel();
+        $userModel = new Api\Model\UserModel();
         $userModel->username = $username;
         $userModel->name = $name;
         $userModel->email = $email;
@@ -125,7 +125,7 @@ class MongoTestEnvironment
 
     public function createProjectSettings($code)
     {
-        $projectModel = new models\ProjectSettingsModel();
+        $projectModel = new Api\Model\ProjectSettingsModel();
         $projectModel->projectCode = $code;
         $projectModel->siteName = $this->website->domain;
         $this->cleanProjectEnvironment($projectModel);
@@ -137,7 +137,7 @@ class MongoTestEnvironment
     protected function cleanProjectEnvironment($projectModel)
     {
         // clean out old db if it is present
-        $projectDb = \models\mapper\MongoStore::connect($projectModel->databaseName());
+        $projectDb = \Api\Model\Mapper\MongoStore::connect($projectModel->databaseName());
         foreach ($projectDb->listCollections() as $collection) {
             $collection->drop();
         }

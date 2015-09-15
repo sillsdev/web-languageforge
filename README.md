@@ -1,5 +1,8 @@
 # web-languageforge / web-scriptureforge #
 
+[![Release](https://img.shields.io/github/release/sillsdev/web-languageforge.svg?style=flat)](releases)
+[![Tag](https://img.shields.io/github/tag/sillsdev/web-languageforge.svg?style=flat)](releases)
+
 Although [web-languageforge](https://github.com/sillsdev/web-languageforge) and [web-scriptureforge](https://github.com/sillsdev/web-scriptureforge) represent different websites, they have the same code base but are stored in seperate repositories for the purpose of  version control and issue tracking. Since they are related repos it is easy to merge from one to the other.
 
 ## Installation ##

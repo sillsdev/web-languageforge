@@ -1,10 +1,10 @@
 <?php
 
-use models\languageforge\lexicon\commands\LexCommentCommands;
-use models\languageforge\lexicon\LexCommentModel;
-use models\languageforge\lexicon\LexCommentListModel;
+use Api\Model\Languageforge\Lexicon\Command\LexCommentCommands;
+use Api\Model\Languageforge\Lexicon\LexCommentModel;
+use Api\Model\Languageforge\Lexicon\LexCommentListModel;
 
-require_once dirname(__FILE__) . '/../../../TestConfig.php';
+require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

@@ -1,17 +1,17 @@
 <?php
 
-use models\scriptureforge\dto\QuestionCommentDto;
-use models\commands\ActivityCommands;
-use models\commands\QuestionCommands;
-use models\ProjectModel;
-use models\QuestionModel;
-use models\TextModel;
-use models\UserModel;
-use models\UnreadActivityModel;
-use models\UnreadAnswerModel;
-use models\UnreadQuestionModel;
+use Api\Model\Scriptureforge\Dto\QuestionCommentDto;
+use Api\Model\Command\ActivityCommands;
+use Api\Model\Command\QuestionCommands;
+use Api\Model\ProjectModel;
+use Api\Model\QuestionModel;
+use Api\Model\TextModel;
+use Api\Model\UserModel;
+use Api\Model\UnreadActivityModel;
+use Api\Model\UnreadAnswerModel;
+use Api\Model\UnreadQuestionModel;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

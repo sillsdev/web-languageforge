@@ -31,7 +31,7 @@ function LiftImportCtrl($scope, $upload, $modal, notice, lexProjectService, $fil
       $scope.upload.progress = 0;
       $upload.upload({
 
-        // upload.php script
+        // Upload.php script
         'url': uploadUrl,
         // 'headers': {'myHeaderKey': 'myHeaderVal'},
         'data': {

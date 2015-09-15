@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+    <head>
+        {% block meta %}
+            <meta charset="utf-8" />
+            <title>{{ app.website.name }}</title>
+
+            {% for cssFile in cssFiles %}
+                <link rel=stylesheet href="/{{ cssFile }}" />
+            {% endfor %}
+
+            <link rel="icon" href="/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico" type="image/x-icon" />
+            <link data-require="font-awesome@*" data-semver="4.2.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
+
+            <script src="/js/lib/jquery-1.8.3.min.js"></script>
+            <!-- jquery must be the first js to be loaded -->
+        {% endblock %}
+    </head>
+    <body>
+        <div id="maincontainer">
+            {% block header %}{% endblock %}
+            {% block content %}{% endblock %}
+            {% block script %}{% endblock %}
+            <div class="clearfooter"></div>
+        </div>
+        {% block footer %}{% endblock %}
+        {% block analytics %}{% endblock %}
+    </body>
+</html>

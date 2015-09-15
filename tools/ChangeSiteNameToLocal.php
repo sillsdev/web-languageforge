@@ -3,8 +3,8 @@
 require_once('toolsConfig.php');
 
 # use statements go below here
-use models\ProjectListModel;
-use models\ProjectModel;
+use Api\Model\ProjectListModel;
+use Api\Model\ProjectModel;
 
 class ChangeSiteNameToLocal
 {

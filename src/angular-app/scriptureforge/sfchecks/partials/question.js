@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte', 'ui.bootstrap', 'sgw.soundmanager', 'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice'])
-  .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService', 'modalService', '$rootScope',
-  function($scope, $routeParams, questionService, ss, breadcrumbService, notice, linkService, modalService, $rootScope) {
+  .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'utilService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService', 'modalService', '$rootScope',
+  function($scope, $routeParams, questionService, ss, util, breadcrumbService, notice, linkService, modalService, $rootScope) {
     var Q_TITLE_LIMIT = 30;
+    $scope.getAvatarUrl = util.getAvatarUrl;
     $scope.finishedLoading = false;
     $scope.state = 'stop';
     $scope.audioReady = false;

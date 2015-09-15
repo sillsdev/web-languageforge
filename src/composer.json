@@ -1,28 +1,38 @@
 {
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/cambell-prince/LazyProperty"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/sillsdev/web-php-utilities"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/sillsdev/simpletest"
-        }
-    ],
-    "require": {
-        "swiftmailer/swiftmailer": "v5.0.2",
-        "twig/twig": "v1.14.0",
-        "twig/extensions": "dev-master",
-        "twilio/sdk": "dev-master",
-        "ocramius/lazy-property": "dev-feature/factory"
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/cambell-prince/LazyProperty"
     },
-    "require-dev": {
-        "simpletest/simpletest": "dev-master-sil",
-        "phpunit/phpunit": "~4.2.5",
-        "sillsdev/web-php-utilities": "dev-master"
+    {
+      "type": "vcs",
+      "url": "https://github.com/sillsdev/web-php-utilities"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/sillsdev/simpletest"
     }
+  ],
+  "require": {
+    "silex/silex": "~1.3.2",
+    "symfony/security": "^2.7",
+    "symfony/twig-bridge": "^2.7",
+    "swiftmailer/swiftmailer": "v5.0.2",
+    "twig/twig": "~1.21.0",
+    "twig/extensions": "~1.3.0",
+    "ircmaxell/password-compat": "^1.0",
+    "twilio/sdk": "dev-master",
+    "ocramius/lazy-property": "dev-feature/factory",
+    "sillsdev/web-php-utilities": "dev-master"
+  },
+  "require-dev": {
+    "simpletest/simpletest": "dev-master-sil",
+    "phpunit/phpunit": "~4.2.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Site\\": "./Site",
+      "Api\\": "./Api"
+    }
+  }
 }

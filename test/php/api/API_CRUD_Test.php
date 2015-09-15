@@ -1,25 +1,20 @@
 <?php
 
-use models\scriptureforge\sfchecks\commands\SfchecksProjectCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
+use Api\Model\Scriptureforge\Dto\ProjectPageDto;
+use Api\Model\Scriptureforge\Dto\QuestionListDto;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\Command\UserCommands;
+use Api\Model\Command\QuestionTemplateCommands;
+use Api\Model\Command\QuestionCommands;
+use Api\Model\Command\TextCommands;
+use Api\Model\Command\ProjectCommands;
+use Api\Model\UserModel;
+use Api\Model\ProjectModel;
 
-use libraries\shared\Website;
-
-use models\mapper\Id;
-use models\shared\rights\ProjectRoles;
-use models\shared\rights\SystemRoles;
-use models\commands\UserCommands;
-use models\commands\QuestionTemplateCommands;
-use models\commands\QuestionCommands;
-use models\commands\TextCommands;
-use models\commands\ProjectCommands;
-use models\scriptureforge\dto\ProjectPageDto;
-use models\scriptureforge\dto\QuestionListDto;
-use models\UserModel;
-use models\ProjectModel;
-
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-
 require_once TestPath . 'common/MongoTestEnvironment.php';
 
 class ApiCrudTestEnvironment
