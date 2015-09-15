@@ -1,9 +1,9 @@
 <?php
- require_once('scriptsConfig.php');
-use models\shared\DbIntegrityHelper;
-use models\ProjectListModel;
-use models\ProjectModel;
 
+require_once('scriptsConfig.php');
+
+use Api\Model\Shared\DbIntegrityHelper;
+use Api\Model\ProjectListModel;
 
 if (php_sapi_name() != 'cli') { die('this script must be run on the command-line'); }
 
@@ -28,6 +28,3 @@ print $helper->flushOutput();
 // verify integrity of all sites
 
 // list sites and which projects are in which sites
-
-
-?>

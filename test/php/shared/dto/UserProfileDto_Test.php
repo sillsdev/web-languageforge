@@ -1,12 +1,12 @@
 <?php
 
-use models\shared\dto\UserProfileDto;
-use models\shared\rights\ProjectRoles;
-use models\shared\rights\SiteRoles;
-use models\SfchecksUserProfile;
-use models\UserProfileModel;
+use Api\Model\Shared\Dto\UserProfileDto;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SiteRoles;
+use Api\Model\SfchecksUserProfile;
+use Api\Model\UserProfileModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

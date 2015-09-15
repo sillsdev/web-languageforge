@@ -113,4 +113,3 @@ if (php_sapi_name() != 'cli') { die('this script must be run on the command-line
 
     main($argv);
     exit(0);
-?>

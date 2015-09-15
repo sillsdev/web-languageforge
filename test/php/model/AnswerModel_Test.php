@@ -1,10 +1,10 @@
 <?php
-use models\AnswerModel;
-use models\CommentModel;
-use models\ProjectModel;
-use models\QuestionModel;
+use Api\Model\AnswerModel;
+use Api\Model\CommentModel;
+use Api\Model\ProjectModel;
+use Api\Model\QuestionModel;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

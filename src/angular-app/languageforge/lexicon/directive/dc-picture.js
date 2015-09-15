@@ -70,17 +70,17 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         // take the first file only
         var file = files[0];
         $scope.upload.file = file;
-        if (file['size'] <= ss.fileSizeMax()) {
+        if (file.size <= ss.fileSizeMax()) {
           $scope.upload.progress = 0;
           $upload.upload({
 
-            // upload.php script
+            // Upload.php script
             url: '/upload/lf-lexicon/sense-image',
             // headers: {'myHeaderKey': 'myHeaderVal'},
             data: {
-              'filename': file.name
+              filename: file.name,
             },
-            file: file
+            file: file,
           }).progress(function(evt) {
             $scope.upload.progress = parseInt(100.0 * evt.loaded / evt.total);
           }).success(function(data, status, headers, config) {
@@ -97,10 +97,9 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         } else {
           $scope.upload.progress = 0;
           $scope.upload.file = null;
-          notice.push(notice.ERROR, file['name'] + " is too large.");
+          notice.push(notice.ERROR, file.name + ' is too large.');
         }
       };
-      
     }]
   };
 }]);

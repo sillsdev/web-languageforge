@@ -1,7 +1,7 @@
 <?php
 
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 
@@ -14,12 +14,12 @@ class TestLexiconProjectModel extends UnitTestCase
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
-        $optionlists = new \models\languageforge\lexicon\LexOptionListListModel($project);
+        $optionlists = new \Api\Model\Languageforge\Lexicon\LexOptionListListModel($project);
         $optionlists->read();
 
         $this->assertEqual(count($optionlists->entries), 0);
 
-        $project = \models\ProjectModel::getById($project->id->asString());
+        $project = \Api\Model\ProjectModel::getById($project->id->asString());
         $project->initializeNewProject();
 
         $optionlists->read();

@@ -1,8 +1,8 @@
 <?php
 
-use models\scriptureforge\dto\UsxTrimHelper;
+use Api\Model\Scriptureforge\Dto\UsxTrimHelper;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

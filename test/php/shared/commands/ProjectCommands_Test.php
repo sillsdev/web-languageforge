@@ -1,15 +1,15 @@
 <?php
 
-use libraries\shared\Website;
-use models\shared\rights\ProjectRoles;
-use models\commands\ProjectCommands;
-use models\mapper\Id;
-use models\ProjectModel;
-use models\ProjectSettingsModel;
-use models\shared\rights\SiteRoles;
-use models\UserModel;
+use Api\Library\Shared\Website;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Command\ProjectCommands;
+use Api\Model\Mapper\Id;
+use Api\Model\ProjectModel;
+use Api\Model\ProjectSettingsModel;
+use Api\Model\Shared\Rights\SiteRoles;
+use Api\Model\UserModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 

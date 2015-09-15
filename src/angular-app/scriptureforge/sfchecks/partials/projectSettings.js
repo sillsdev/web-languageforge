@@ -553,7 +553,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
   };
 
   $scope.imageSource = function(avatarRef) {
-    return avatarRef ? '/images/shared/avatar/' + avatarRef : '/images/shared/avatar/anonymous02.png';
+    return avatarRef ? '/Site/views/shared/image/avatar/' + avatarRef : '/Site/views/shared/image/avatar/anonymous02.png';
   };
 
 }])

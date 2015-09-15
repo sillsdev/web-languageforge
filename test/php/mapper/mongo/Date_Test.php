@@ -1,9 +1,9 @@
 <?php
 
-use models\mapper\MongoEncoder;
-use models\mapper\MongoDecoder;
+use Api\Model\Mapper\MongoEncoder;
+use Api\Model\Mapper\MongoDecoder;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
 class TestMongoDateModel

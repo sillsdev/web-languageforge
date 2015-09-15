@@ -1,215 +1,223 @@
 <?php
 
+use Symfony\Component\Debug\ExceptionHandler;
+use Symfony\Component\HttpFoundation\Request;
+use Api\Library\Shared\Website;
 
-/*
- *---------------------------------------------------------------
- * APPLICATION ENVIRONMENT
- *---------------------------------------------------------------
- *
- * You can load different configurations depending on your
- * current environment. Setting the environment also influences
- * things like logging and error reporting.
- *
- * This can be set to anything, but default usage is:
- *
- *     development
- *     testing
- *     production
- *
- * NOTE: If you change these, also change the error_reporting() code below
- *
+require_once __DIR__.'/vendor/autoload.php';
+require_once 'config.php';
+
+// The name of THIS file
+define('SELF', basename(__FILE__));
+
+/*--------------------------------------------------------------------
+ * Load the bootstrap App
+ *--------------------------------------------------------------------
  */
-    define('ENVIRONMENT', 'development');
-/*
- *---------------------------------------------------------------
- * ERROR REPORTING
+
+$app = new Silex\Application();
+
+/*---------------------------------------------------------------
+ * Error Reporting and Debugging
  *---------------------------------------------------------------
  *
- * Different environments will require different levels of error reporting.
+ * Different environments will require different levels of error reporting and debugging.
  * By default development will show errors but testing and live will hide them.
+ * By default development will have debugging on but testing and live will turn it off.
  */
 
-if (defined('ENVIRONMENT'))
-{
-    switch (ENVIRONMENT)
-    {
+if (defined('ENVIRONMENT')) {
+    switch (ENVIRONMENT) {
         case 'development':
             error_reporting(E_ALL);
-        break;
+            $app['debug'] = true;
+            break;
 
         case 'testing':
         case 'production':
             error_reporting(0);
-        break;
+            $app['debug'] = false;
+            break;
 
         default:
-            exit('The application environment is not set correctly.');
+            exit('Error: The application environment is not set correctly. Please open the following file and correct this: '.SELF);
     }
+} else {
+    exit('Error: The application environment is not set correctly. Please open the following file and correct this: '.SELF);
 }
 
-/*
- *---------------------------------------------------------------
- * SYSTEM FOLDER NAME
- *---------------------------------------------------------------
- *
- * This variable must contain the name of your "system" folder.
- * Include the path if the folder is not in the same  directory
- * as this file.
- *
+/*--------------------------------------------------------------------
+ * Error Handling
+ *--------------------------------------------------------------------
  */
-    require_once 'libraries/shared/Website.php';
-    global $WEBSITE;
-    $WEBSITE = \libraries\shared\Website::getOrRedirect();
-    if ($WEBSITE) {
-        $site = $WEBSITE->base;
-        $system_path = realpath('../lib/CodeIgniter_2.1.3/system');
-    } else {
-        print "dead: could not get website instance;";
-        exit;
+
+$app->error(function (\Exception $e, $code) use ($app) {
+    if ($app['debug']) {
+        /** @noinspection PhpInconsistentReturnPointsInspection */
+        return;
     }
 
-/*
- *---------------------------------------------------------------
+    return Site\Handler\ErrorHandler::response($e, $code, $app);
+});
+
+ExceptionHandler::register($app['debug']);
+
+/*---------------------------------------------------------------
  * APPLICATION FOLDER NAME
  *---------------------------------------------------------------
  *
  * If you want this front controller to use a different "application"
  * folder then the default one you can set its name here. The folder
  * can also be renamed or relocated anywhere on your server.  If
- * you do, use a full server path. For more info please see the user guide:
- * http://codeigniter.com/user_guide/general/managing_apps.html
+ * you do, use a full server path.
  *
  * NO TRAILING SLASH!
  *
  */
-    $application_folder = realpath('.');
 
-/*
- * --------------------------------------------------------------------
- * DEFAULT CONTROLLER
- * --------------------------------------------------------------------
- *
- * Normally you will set your default controller in the routes.php file.
- * You can, however, force a custom routing by hard-coding a
- * specific controller class/function here.  For most applications, you
- * WILL NOT set your routing here, but it's an option for those
- * special instances where you might want to override the standard
- * routing in a specific front controller that shares a common CI installation.
- *
- * IMPORTANT:  If you set the routing here, NO OTHER controller will be
- * callable. In essence, this preference limits your application to ONE
- * specific controller.  Leave the function name blank if you need
- * to call functions dynamically via the URI.
- *
- * Un-comment the $routing array below to use this feature
- *
- */
-    // The directory name, relative to the "controllers" folder.  Leave blank
-    // if your controller is not in a sub-folder within the "controllers" folder
-    // $routing['directory'] = '';
+$application_folder = realpath(__DIR__);
 
-    // The controller class file name.  Example:  Mycontroller
-    // $routing['controller'] = '';
+// The path to the "application" folder
+if (is_dir($application_folder)) {
+    define('APPPATH', $application_folder.'/');
+} else {
+    exit('Error: Your application folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF);
+}
 
-    // The controller function you wish to be called.
-    // $routing['function']    = '';
-
-
-/*
- * -------------------------------------------------------------------
- *  CUSTOM CONFIG VALUES
- * -------------------------------------------------------------------
- *
- * The $assign_to_config array below will be passed dynamically to the
- * config class when initialized. This allows you to set custom config
- * items or override any default config values found in the config.php file.
- * This can be handy as it permits you to share one application between
- * multiple front controller files, with each file containing different
- * config values.
- *
- * Un-comment the $assign_to_config array below to use this feature
- *
- */
-    // $assign_to_config['name_of_config_item'] = 'value of config item';
-
-
-
-// --------------------------------------------------------------------
-// END OF USER CONFIGURABLE SETTINGS.  DO NOT EDIT BELOW THIS LINE
-// --------------------------------------------------------------------
-
-/*
- * ---------------------------------------------------------------
- *  Resolve the system path for increased reliability
- * ---------------------------------------------------------------
+/*---------------------------------------------------------------
+ * Website available to controllers and templates
+ *---------------------------------------------------------------
  */
 
-    // Set the current directory correctly for CLI requests
-    if (defined('STDIN'))
-    {
-        chdir(dirname(__FILE__));
-    }
+global $WEBSITE;
+$WEBSITE = Website::getOrRedirect();
+if ($WEBSITE) {
+    $app['website'] = $WEBSITE;
+} else {
+    exit('Dead: could not get website instance. Please open the following file and correct this: '.SELF);
+}
 
-    if (realpath($system_path) !== FALSE)
-    {
-        $system_path = realpath($system_path).'/';
-    }
-
-    // ensure there's a trailing slash
-    $system_path = rtrim($system_path, '/').'/';
-
-    // Is the system path correct?
-    if ( ! is_dir($system_path))
-    {
-        exit("Your system folder path does not appear to be set correctly. Please open the following file and correct this: ".pathinfo(__FILE__, PATHINFO_BASENAME));
-    }
-
-/*
- * -------------------------------------------------------------------
- *  Now that we know the path, set the main path constants
- * -------------------------------------------------------------------
+/*--------------------------------------------------------------------
+ * Templates
+ *--------------------------------------------------------------------
  */
-    // The name of THIS file
-    define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
-    // The PHP file extension
-    // this global constant is deprecated.
-    define('EXT', '.php');
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
+    'twig.path' => array(
 
-    // Path to the system folder
-    define('BASEPATH', str_replace("\\", "/", $system_path));
+        // pages
+        __DIR__.'/Site/views/'.$WEBSITE->base.'/theme/'.$WEBSITE->theme.'/page',
+        __DIR__.'/Site/views/'.$WEBSITE->base.'/theme/'.$WEBSITE->theme,
+        __DIR__.'/Site/views/'.$WEBSITE->base.'/theme/default/page',
+        __DIR__.'/Site/views/'.$WEBSITE->base.'/theme/default',
+        __DIR__.'/Site/views/'.$WEBSITE->base.'/container',
+        __DIR__.'/Site/views/'.$WEBSITE->base,
+        __DIR__.'/Site/views/shared/page',
+        __DIR__.'/Site/views/shared',
 
-    // Path to the front controller (this file)
-    define('FCPATH', str_replace(SELF, '', __FILE__));
+        // angular-app
+        __DIR__.'/angular-app',
 
-    // Name of the "system folder"
-    define('SYSDIR', trim(strrchr(trim(BASEPATH, '/'), '/'), '/'));
+        // errors
+        __DIR__.'/Site/views/'.$WEBSITE->base.'/error',
+        __DIR__.'/Site/views/shared/error',
+        __DIR__.'/Site/views',
+    ),
+    'twig.options' => array(
+        'cache' => false,
+        'debug' => false,
+    ),
+));
 
+/*--------------------------------------------------------------------
+ * Authentication
+ *--------------------------------------------------------------------
+ */
 
-    // The path to the "application" folder
-    if (is_dir($application_folder))
-    {
-        define('APPPATH', $application_folder.'/');
+$app->register(new Silex\Provider\SessionServiceProvider());
+$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+$app->register(new Silex\Provider\SecurityServiceProvider());
+$app->register(new Silex\Provider\RememberMeServiceProvider());
+$app['security.firewalls'] = array(
+	'site' => array(
+		'pattern' => '^.*$',
+		'anonymous' => true,
+		'form' => array('login_path' => '/auth/login', 'check_path' => '/app/login_check'),
+        'remember_me' => array('key' => REMEMBER_ME_SECRET),
+		'logout' => array('logout_path' => '/app/logout', 'target_url' => '/auth/login', 'invalidate_session' => true),
+		'users' => $app->share(function () use ($WEBSITE) {
+			return new \Site\Provider\AuthUserProvider($WEBSITE);
+		}),
+	),
+);
+$app['security.role_hierarchy'] = array(
+	'ROLE_system_admin' => array('ROLE_SITE_project_creator'),
+	'ROLE_SITE_project_creator' => array('ROLE_user', 'ROLE_ALLOWED_TO_SWITCH'),
+);
+$app['security.access_rules'] = array(
+	array('^/app', 'ROLE_user'),
+    array('^/upload', 'ROLE_user'),
+    array('^/script', 'ROLE_system_admin'),
+);
+// BCrypt needs PHP 5.5 on server, so have added composer require ircmaxell/password-compat. IJH 2015-09
+$app['security.encoder.digest'] = $app->share(function () {
+	return new \Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder(7);
+});
+$app['security.authentication.success_handler.site'] = $app->share(function() use ($app) {
+    return new \Site\Handler\AuthenticationSuccessHandler($app['security.http_utils'], array(
+        'default_target_path' => '/app',
+        'login_path' => '/auth/login',
+    ), $app['session']);
+});
+$app['security.authentication.logout_handler.site'] = $app->share(function() use ($app) {
+    return new \Site\Handler\LogoutSuccessHandler($app['security.http_utils'], '/', $app['session']);
+});
+
+/*--------------------------------------------------------------------
+ * Accept JSON Request Body
+ *--------------------------------------------------------------------
+ */
+
+$app->before(function (Request $request) {
+    if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+        $data = json_decode($request->getContent(), true);
+        $request->request->replace(is_array($data) ? $data : array());
     }
-    else
-    {
-        if ( ! is_dir(BASEPATH.$application_folder.'/'))
-        {
-            exit("Your application folder path does not appear to be set correctly. Please open the following file and correct this: ".SELF);
-        }
+});
 
-        define('APPPATH', BASEPATH.$application_folder.'/');
-    }
+/*--------------------------------------------------------------------
+ * Routing
+ *--------------------------------------------------------------------
+ */
 
-/*
- * --------------------------------------------------------------------
- * LOAD THE BOOTSTRAP FILE
- * --------------------------------------------------------------------
- *
+// secured
+$app->post('/upload/{appType}/{mediaType}', 'Site\Controller\Upload::receive');
+
+$app->get('/app/{appName}/{projectId}/',    'Site\Controller\App::view');
+$app->get('/app/{appName}/{projectId}',     'Site\Controller\App::view');
+$app->get('/app/{appName}/',    'Site\Controller\App::view')->value('appName', 'projects');
+$app->get('/app/{appName}',     'Site\Controller\App::view')->value('appName', 'projects');
+$app->get('/script/{folder}/{scriptName}/{runType}', 'Site\Controller\Script::view');
+$app->get('/script/{folder}/{scriptName}/', 'Site\Controller\Script::view');
+$app->get('/script/{folder}/{scriptName}',  'Site\Controller\Script::view');
+
+//public
+$app->post('/api/{apiName}',    'Site\Controller\Api::service');
+
+$app->get('/validate/{validateKeySubmitted}', 'Site\Controller\Validate::check');
+$app->get('/download/assets/{appName}/{projectSlug}/{file}', 'Site\Controller\Download::assets');
+$app->get('/signup',            'Site\Controller\PublicApp::view')->value('appName', 'signup');
+$app->get('/registration',      'Site\Controller\PublicApp::view')->value('appName', 'registration');
+$app->get('/login',             'Site\Controller\Auth::view')->value('appName', 'login');
+$app->get('/auth/{appName}',    'Site\Controller\Auth::view')->value('appName', 'login');
+$app->get('/{pageName}',        'Site\Controller\Page::view')->value('pageName', 'home');
+
+/*--------------------------------------------------------------------
  * And away we go...
- *
+ *--------------------------------------------------------------------
  */
-require_once BASEPATH.'core/CodeIgniter.php';
+
+$app->run();
 
 /* End of file index.php */
 /* Location: ./index.php */
