@@ -4,6 +4,6 @@
   name: Deploy xForge.org
   sudo: yes
   roles:
-    - ../../roles_common/fix
+    - fix
     # - locale_install
     # - user_accounts
