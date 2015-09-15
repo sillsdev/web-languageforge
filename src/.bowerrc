@@ -1,3 +1,4 @@
 {
-    "directory": "vendor_bower"
+    "directory": "vendor_bower",
+    "interactive": false
 }
