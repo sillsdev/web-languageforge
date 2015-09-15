@@ -11,12 +11,12 @@ fi
 if [ ! -d "/home/vagrant/src/web-languageforge" ]; then
   git clone https://github.com/sil-student-projects/web-languageforge.git /home/vagrant/src/web-languageforge --recursive
 else
-  cd /home/vagrant/src/web-languageforge; git pull --ff-only --recurse-submodules origin master
+  cd /home/vagrant/src/web-languageforge; git pull --ff-only --recurse-submodules origin
 fi
 if [ ! -d "/home/vagrant/src/web-scriptureforge" ]; then
   git clone https://github.com/sil-student-projects/web-scriptureforge.git /home/vagrant/src/web-scriptureforge --recursive
 else
-  cd /home/vagrant/src/web-scriptureforge; git pull --ff-only --recurse-submodules origin master
+  cd /home/vagrant/src/web-scriptureforge; git pull --ff-only --recurse-submodules origin
 fi
 cd /home/vagrant/src/web-languageforge/deploy/; git checkout master-sbu; ansible-playbook -i hosts playbook_lxde.yml --extra-vars "deploy=lxde"  
 SCRIPT
