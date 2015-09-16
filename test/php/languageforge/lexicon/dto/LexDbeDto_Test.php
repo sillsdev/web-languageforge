@@ -1,14 +1,15 @@
 <?php
 
-use Api\Model\Shared\Rights\SystemRoles;
-
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDto;
-use Api\Model\Languageforge\Lexicon\LexCommentReply;
-use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Languageforge\Lexicon\LexCommentReply;
+use Api\Model\Languageforge\Lexicon\LexCommentModel;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\LexiconField;
 use Api\Model\Languageforge\Lexicon\Sense;
 use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\UserModel;
 
 require_once __DIR__ . '/../../../TestConfig.php';
@@ -17,10 +18,7 @@ require_once TestPath . 'common/MongoTestEnvironment.php';
 
 class TestLexDbeDto extends UnitTestCase
 {
-    // TODO: reimplement these tests after the refactor - cjh 2014-07
-    /*
-    function testEncode_NoEntries_Ok()
-    {
+    function testEncode_NoEntries_Ok() {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -39,12 +37,11 @@ class TestLexDbeDto extends UnitTestCase
         $result = LexDbeDto::encode($projectId, $userId);
 
         $this->assertEqual(count($result['entries']), 0);
-        $this->assertEqual($result['entriesTotalCount'], 0);
-        $this->assertEqual(get_class($result['entry']['lexeme']), 'stdClass', 'blank first entry is not valid');
+        $this->assertEqual($result['itemCount'], 0);
+        $this->assertEqual($result['itemTotalCount'], 0);
     }
 
-    function testEncode_Entries_SortsOk()
-    {
+    function testEncode_Entries_SortsOk() {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -78,12 +75,12 @@ class TestLexDbeDto extends UnitTestCase
         $result = LexDbeDto::encode($projectId, $userId);
 
         $this->assertEqual(count($result['entries']), 11);
-        $this->assertEqual($result['entriesTotalCount'], 11);
-        $this->assertEqual($result['entry']['lexeme']['th']['value'], 'Aardvark', 'Aardvark should sort first');
+        $this->assertEqual($result['itemCount'], 11);
+        $this->assertEqual($result['itemTotalCount'], 11);
+        $this->assertEqual($result['entries'][0]['lexeme']['th']['value'], 'Aardvark', 'Aardvark should sort first');
     }
 
-    function testEncode_EntriesAndLoadPartial_PartialOk()
-    {
+    function testEncode_EntriesAndLoadPartial_PartialOk() {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -109,21 +106,23 @@ class TestLexDbeDto extends UnitTestCase
             $entry->write();
         }
 
-        $result = LexDbeDto::encode($projectId, $userId, 0, 5);
+        $result = LexDbeDto::encode($projectId, $userId, null, 5);
 
         $this->assertEqual(count($result['entries']), 5);
-        $this->assertEqual($result['entriesTotalCount'], 10);
-        $this->assertEqual($result['entry']['lexeme']['th']['value'], 'Apfel0', 'Apfel0 should sort first');
+        $this->assertEqual($result['itemCount'], 5);
+        $this->assertEqual($result['itemTotalCount'], 10);
+        $this->assertEqual($result['entries'][0]['lexeme']['th']['value'], 'Apfel0', 'Apfel0 should sort first');
+        $this->assertEqual($result['entries'][4]['lexeme']['th']['value'], 'Apfel4', 'Apfel4 should sort first');
 
-        $result = LexDbeDto::encode($projectId, $userId, 4, 5);
+        $result = LexDbeDto::encode($projectId, $userId, null, 9);
 
-        $this->assertEqual(count($result['entries']), 5);
-        $this->assertEqual($result['entriesTotalCount'], 10);
-        $this->assertEqual($result['entry']['lexeme']['th']['value'], 'Apfel4', 'Apfel4 should sort first');
+        $this->assertEqual(count($result['entries']), 1);
+        $this->assertEqual($result['itemCount'], 1);
+        $this->assertEqual($result['itemTotalCount'], 10);
+        $this->assertEqual($result['entries'][0]['lexeme']['th']['value'], 'Apfel0', 'Apfel0 should sort first');
     }
 
-    function testReadEntry_NoComments_ReadBackOk()
-    {
+    function testReadEntry_NoComments_ReadBackOk() {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -131,15 +130,15 @@ class TestLexDbeDto extends UnitTestCase
         $projectId = $project->id->asString();
 
         $entry = new LexEntryModel($project);
-        $entry->lexeme['th'] = new LexiconFieldWithComments('apple');
+        $entry->lexeme->form('th', 'apple');
 
         $sense = new Sense();
-        $sense->definition['en'] = new LexiconFieldWithComments('red fruit');
-        $sense->partOfSpeech = new LexiconFieldWithComments('noun');
+        $sense->definition->form('en', 'red fruit');
+        $sense->partOfSpeech = new LexiconField('noun');
 
         $example = new Example();
-        $example->sentence['th'] = new LexiconFieldWithComments('example1');
-        $example->translation['en'] = new LexiconFieldWithComments('trans1');
+        $example->sentence->form('th', 'example1');
+        $example->translation->form('en', 'trans1');
 
         $sense->examples[] = $example;
 
@@ -156,8 +155,9 @@ class TestLexDbeDto extends UnitTestCase
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
     }
 
-    function testReadEntry_HasComments_ReadBackOk()
-    {
+    // TODO: re-implement this test after the refactor - cjh 2014-07
+/*
+    function testReadEntry_HasComments_ReadBackOk() {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
 
@@ -165,25 +165,30 @@ class TestLexDbeDto extends UnitTestCase
         $projectId = $project->id->asString();
 
         $entry = new LexEntryModel($project);
-        $entry->lexeme['th'] = new LexiconFieldWithComments('apple');
+        $entry->lexeme->form('th', 'apple');
 
         $reply = new LexCommentReply('reply1');
-        $comment = new LexComment('this is a comment');
+        $comment = new LexCommentModel($project);
+        $comment->content = 'this is a comment';
         $comment->score = 5;
         $comment->regarding = "apple";
         $comment->replies[] = $reply;
 
-        $entry->lexeme['th']->comments[] = $comment;
+//        $entry->lexeme['th']->comments[] = $comment;
 
         $sense = new Sense();
-        $sense->definition['en'] = new LexiconFieldWithComments('red fruit');
-        $sense->partOfSpeech = new LexiconFieldWithComments('noun');
+        $sense->definition->form('en', 'red fruit');
+        $sense->partOfSpeech = new LexiconField('noun');
 
         $entry->senses[] = $sense;
 
         $entryId = $entry->write();
 
         $newEntry = LexEntryCommands::readEntry($projectId, $entryId);
+
+        echo '<pre>';
+        var_dump($newEntry);
+        echo '</pre>';
 
         $this->assertEqual($newEntry['lexeme']['th']['value'], 'apple');
         $this->assertEqual($newEntry['senses'][0]['definition']['en']['value'], 'red fruit');
@@ -193,5 +198,5 @@ class TestLexDbeDto extends UnitTestCase
         $this->assertEqual($newEntry['lexeme']['th']['comments'][0]['regarding'], 'apple');
         $this->assertEqual($newEntry['lexeme']['th']['comments'][0]['replies'][0]['content'], 'reply1');
     }
-    */
+*/
 }
