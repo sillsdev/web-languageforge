@@ -1,4 +1,12 @@
 ---
 
-- include: xForge.yml
-- include: dev.yml
+- name: Fix provisioning permissions
+  hosts: all
+  sudo: yes
+  tasks:
+    - name: chown ~/src
+      command: chown -R vagrant.vagrant /home/vagrant/src
+      changed_when: false
+
+- include: dependencies.yml
+- include: code.yml
