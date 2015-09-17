@@ -7,9 +7,13 @@ vagrant_ansible_inventory_*
 src/vendor/*
 src/vendor/*/
 !src/vendor/lift/
-src/cache/
-src/bower_components/
-src/assets/
+src/cache/*
+src/cache/*/
+!src/cache/index.html
+!src/cache/.htaccess
+src/assets/*
+src/assets/*/
+!src/assets/index.hmtl
 .idea/*
 test/app/node_modules/protractor/selenium/
 test/app/node_modules/.bin/
