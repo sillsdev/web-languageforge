@@ -18,8 +18,7 @@ class LogoutSuccessHandler extends DefaultLogoutSuccessHandler
     protected $session = null;
 
     public function onLogoutSuccess(Request $request) {
-//        $this->session->getFlashBag()->add('message', $this->ion_auth->messages());
-        $this->session->set('isFromLogout', true);
+        $this->session->getFlashBag()->add('infoMessage', 'Logged Out Successfully');
 
         return $this->httpUtils->createRedirectResponse($request, '/auth/login');
     }

@@ -2,6 +2,7 @@
 
 namespace Api\Model\Shared\Rights;
 
+use Api\Library\Shared\Website;
 use Api\Model\Mapper\MapOf;
 
 class SiteRoles extends RolesBase

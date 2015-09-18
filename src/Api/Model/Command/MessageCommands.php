@@ -2,7 +2,7 @@
 
 namespace Api\Model\Command;
 
-use Api\Library\Scriptureforge\Sfchecks\Communicate;
+use Api\Library\Shared\Communicate\Communicate;
 use Api\Model\ProjectSettingsModel;
 use Api\Model\UnreadMessageModel;
 use Api\Model\UserModel;
@@ -17,13 +17,12 @@ class MessageCommands
     }
 
     /**
-     *
      * @param string $projectId
-     * @param array $userIds
+     * @param array<string> $userIds
      * @param string $subject
      * @param string $emailTemplate
      * @param string $smsTemplate
-     * @param string $authUserId - the admin user's id performing the update (for auth purposes)
+     * @return string
      */
     // TODO this needs to be tested!  cjh 2014-02
     public static function sendMessage($projectId, $userIds, $subject, $emailTemplate, $smsTemplate)

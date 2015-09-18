@@ -1,13 +1,10 @@
 <?php
 
-use Api\Library\Shared\Sms\SmsModel;
-
-use Api\Library\Shared\Sms\Sms;
+use Api\Library\Shared\Communicate\Sms\SmsModel;
+use Api\Library\Shared\Communicate\Sms\SmsQueue;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-
-// require_once(TestPath . 'common/MongoTestEnvironment.php');
 
 class TestSms extends UnitTestCase
 {
@@ -21,8 +18,6 @@ class TestSms extends UnitTestCase
         $smsModel->providerInfo = 'ACc03c2767c2c9c138bde0aa0b30ac9d6e|be77f02cd3b6b13d3b42d8a64050fd35';
         $smsModel->message = 'Test Message';
 
-        Sms::deliver($smsModel);
-
+        SmsQueue::deliver($smsModel);
     }
-
 }

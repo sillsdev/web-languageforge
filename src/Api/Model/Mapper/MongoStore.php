@@ -2,21 +2,23 @@
 
 namespace Api\Model\Mapper;
 
+
+
 class MongoStore
 {
     /**
-     * @var MongoDB[]
+     * @var \MongoDB[]
      */
     private static $_pool = array();
 
     /**
-     * @var Mongo
+     * @var \Mongo
      */
     private static $_mongo;
 
     /**
      * @param string $databaseName
-     * @return MongoDB
+     * @return \MongoDB
      */
     public static function connect($databaseName)
     {
@@ -29,7 +31,7 @@ class MongoStore
 
     /**
      * @param string $databaseName
-     * @return MongoDB
+     * @return \MongoDB
      */
     private static function connectMongo($databaseName)
     {
@@ -40,6 +42,10 @@ class MongoStore
         return static::$_mongo->selectDB($databaseName);
     }
 
+    /**
+     * @param string $databaseName
+     * @return bool
+     */
     public static function hasDB($databaseName)
     {
         $databases = static::$_mongo->listDBs();
@@ -51,7 +57,7 @@ class MongoStore
     /**
      * @param string $sourceName
      * @param string $destName
-     * @return MongoDB
+     * @return \MongoDB
      */
     public static function copyDB($sourceName, $destName)
     {
@@ -67,7 +73,7 @@ class MongoStore
 
     /**
      * @param string $databaseName
-     * @return MongoDB
+     * @return \MongoDB
      */
     public static function dropDB($databaseName)
     {
@@ -80,7 +86,8 @@ class MongoStore
     /**
      * @param string $oldName
      * @param string $newName
-     * @return MongoDB
+     * @return array
+     * @throws \Exception
      */
     public static function renameDB($oldName, $newName)
     {

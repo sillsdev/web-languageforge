@@ -1,0 +1,8 @@
+/* form styling */
+#form-container .page-header h1 {
+    margin-left: 0; 
+}
+
+#form-container #forgot_password {
+    margin-left: 10px;
+}
