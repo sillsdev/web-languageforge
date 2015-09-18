@@ -2,6 +2,7 @@
 
 namespace Api\Model;
 
+use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Mapper\Id;
@@ -20,6 +21,7 @@ class UserModelBase extends Mapper\MapperModel
         $this->id = new Id();
         $this->siteRole = new MapOf();
         $this->validationExpirationDate = new \DateTime();
+        $this->resetPasswordExpirationDate = new \DateTime();
 //         $this->setReadOnlyProp('role');    // TODO Enhance. This currently causes API tests to fail but should be in for security. IJH 2014-03
         parent::__construct(UserModelMongoMapper::instance(), $id);
     }
@@ -132,10 +134,48 @@ class UserModelBase extends Mapper\MapperModel
     {
         $this->validationKey = sha1(microtime(true).mt_rand(10000,90000));
         $today = new \DateTime();
-        $today->add(new \DateInterval("P${days}D"));
-        $this->validationExpirationDate = $today;
+        $this->validationExpirationDate = $today->add(new \DateInterval("P${days}D"));
 
         return $this->validationKey;
+    }
+
+    /**
+     *
+     * @param bool $consumeKey - if true the resetPasswordKey will be destroyed upon validate()
+     * @return boolean
+     */
+    public function hasForgottenPassword($consumeKey = true)
+    {
+        if ($this->resetPasswordKey) {
+            $today = new \DateTime();
+            $interval = $today->diff($this->resetPasswordExpirationDate);
+
+            if ($consumeKey) {
+                $this->resetPasswordKey = '';
+                $this->resetPasswordExpirationDate = new \DateTime();
+            }
+
+            $intervalSeconds = ($interval->d * 86400) + ($interval->h * 3600) + ($interval->m * 60) + $interval->s;
+            if ($intervalSeconds > 0 && $interval->invert == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param int $days
+     * @return string - reset password key
+     */
+    public function setForgotPassword($days)
+    {
+        $this->resetPasswordKey = sha1(microtime(true).mt_rand(10000,90000));
+        $today = new \DateTime();
+        $this->resetPasswordExpirationDate = $today->add(new \DateInterval("P${days}D"));
+
+        return $this->resetPasswordKey;
     }
 
     /**
@@ -176,6 +216,16 @@ class UserModelBase extends Mapper\MapperModel
      * @var \DateTime
      */
     public $validationExpirationDate;
+
+    /**
+     * @var string
+     */
+    public $resetPasswordKey;
+
+    /**
+     * @var \DateTime
+     */
+    public $resetPasswordExpirationDate;
 
     /**
      * @var string
