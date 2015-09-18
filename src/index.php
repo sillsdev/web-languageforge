@@ -102,6 +102,18 @@ if ($WEBSITE) {
  *--------------------------------------------------------------------
  */
 
+if (defined('ENVIRONMENT')) {
+    switch (ENVIRONMENT) {
+        case 'development':
+            define('TWIG_CACHE_PATH', false);
+            break;
+        case 'testing':
+        case 'production':
+        default:
+            define('TWIG_CACHE_PATH', APPPATH . 'cache');
+    }
+}
+
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => array(
 
@@ -124,7 +136,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
         __DIR__.'/Site/views',
     ),
     'twig.options' => array(
-        'cache' => false,
+        'cache' => TWIG_CACHE_PATH,
         'debug' => false,
     ),
 ));
@@ -203,8 +215,10 @@ $app->get('/script/{folder}/{scriptName}',  'Site\Controller\Script::view');
 
 //public
 $app->post('/api/{apiName}',    'Site\Controller\Api::service');
+$app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bind('auth_forgot_password');
 
-$app->get('/validate/{validateKeySubmitted}', 'Site\Controller\Validate::check');
+$app->get('/validate/{validateKey}', 'Site\Controller\Validate::check');
+$app->get('/auth/reset_password/{resetPasswordKey}', 'Site\Controller\Auth::view')->value('appName', 'reset_password');
 $app->get('/download/assets/{appName}/{projectSlug}/{file}', 'Site\Controller\Download::assets');
 $app->get('/signup',            'Site\Controller\PublicApp::view')->value('appName', 'signup');
 $app->get('/registration',      'Site\Controller\PublicApp::view')->value('appName', 'registration');

@@ -1,30 +1,10 @@
 <?php
+
 namespace Api\Model;
 
 use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\MongoMapper;
-use Api\Model\Mapper\Id;
 use Api\Model\Mapper\IdReference;
-
-class UnreadItem
-{
-    public function __construct()
-    {
-        $this->itemRef = new IdReference();
-        $this->type = "";
-    }
-
-    /**
-     * @var IdReference
-     */
-    public $itemRef;
-
-    /**
-     *
-     * @var string
-     */
-    public $type;
-}
+use Api\Model\Mapper\MongoMapper;
 
 class UserUnreadModel extends UserRelationModel
 {
@@ -35,7 +15,7 @@ class UserUnreadModel extends UserRelationModel
     private $_type;
 
     /**
-     * @var ArrayOf ArrayOf<UnreadItem>
+     * @var ArrayOf ArrayOf<Api\Model\UnreadItem>
      */
     public $unread;
 
@@ -55,7 +35,7 @@ class UserUnreadModel extends UserRelationModel
     public function __construct($itemType, $userId, $projectId, $questionId = '')
     {
         $this->unread = new ArrayOf(
-            function ($data) {
+            function() {
                 return new UnreadItem();
             }
         );
@@ -82,7 +62,7 @@ class UserUnreadModel extends UserRelationModel
         } else {
             $query['questionRef'] = null;
         }
-        $exists = $mapper->readByProperties($this, $query);
+        $mapper->readByProperties($this, $query);
     }
 
     /**
@@ -143,8 +123,7 @@ class UserUnreadModel extends UserRelationModel
     }
 
     /**
-     *
-     * @return models\UnreadItem
+     * @return array<Api\Model\UnreadItem>
      */
     public function unreadItems()
     {
@@ -162,13 +141,13 @@ class UserUnreadModel extends UserRelationModel
      * markUnreadForProjectMembers() is only intended to be called from a child class such as UnreadActivityModel
      * @param string $itemId
      * @param ProjectModel $project
-     * @throws Exception
+     * @throws \Exception
      */
     public static function markUnreadForProjectMembers($itemId, $project, $questionId = '', $exceptThisUserId = '')
     {
         $className = get_called_class();
         if ($className == 'Api\Model\UserUnreadModel') {
-            throw new Exception("static method markUnreadForProject cannot be called from base class UserUnreadModel");
+            throw new \Exception("static method markUnreadForProject cannot be called from base class UserUnreadModel");
         }
         $userList = $project->listUsers();
         foreach ($userList->entries as $user) {
@@ -185,5 +164,4 @@ class UserUnreadModel extends UserRelationModel
             $unreadModel->write();
         }
     }
-
 }

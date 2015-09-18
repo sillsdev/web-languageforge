@@ -1,11 +1,10 @@
 'use strict';
 
-
 describe('E2E testing: Change password', function() {
-  var constants   = require('../../../testConstants');
-  var loginPage   = require('../../pages/loginPage'); 
-  var header     = require('../../pages/pageHeader'); 
-  var page     = require('../../pages/changePasswordPage'); 
+  var constants = require('../../../testConstants');
+  var loginPage = require('../../pages/loginPage');
+  var header    = require('../../pages/pageHeader');
+  var page      = require('../../pages/changePasswordPage');
   var newPassword = '12345678';
 
   it('setup: login, go to change password page', function() {
@@ -45,9 +44,11 @@ describe('E2E testing: Change password', function() {
     page.confirm.sendKeys(newPassword);
     page.confirm.sendKeys(protractor.Key.ENTER);
     loginPage.logout();
+
     //expect(header.loginButton.isElementPresent()).toBe(true);
     loginPage.login(constants.memberUsername, newPassword);
     expect(header.loginButton.isPresent()).toBe(false);
+
     // reset password back to original
     page.get();
     page.password.sendKeys(constants.memberPassword);

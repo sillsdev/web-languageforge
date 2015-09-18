@@ -2,9 +2,6 @@
 
 use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\Mapper\Id;
-use Api\Model\ProjectModel;
-use Api\Model\UserListModel;
 use Api\Model\UserModel;
 
 require_once __DIR__ . '/../TestConfig.php';
@@ -16,12 +13,12 @@ require_once SourcePath . "Api/Model/UserModel.php";
 class TestUserModel extends UnitTestCase
 {
     private $_someUserId;
-    private $_e;
 
     public function __construct()
     {
         $e = new MongoTestEnvironment();
         $e->clean();
+        parent::__construct();
     }
 
     public function testWrite_ReadBackSame()
@@ -210,6 +207,57 @@ class TestUserModel extends UnitTestCase
 
         $this->assertFalse($project->userIsMember($userId));
 
+    }
+
+    public function testHasForgottenPassword_KeyNotSetNoKeyConsume_HasNotForgotten()
+    {
+        $e = new MongoTestEnvironment();
+        $e->clean();
+        $userId = $e->createUser('user1', 'User1', 'user1');
+        $user = new UserModel($userId);
+
+        $hasForgottenPassword = $user->hasForgottenPassword(false);
+
+        $this->assertFalse($hasForgottenPassword);
+        $this->assertFalse($user->resetPasswordKey);
+        $this->assertIsA($user->resetPasswordExpirationDate, 'DateTime');
+    }
+
+    public function testHasForgottenPassword_KeySetNoKeyConsume_HasForgottenKeyNotConsumed()
+    {
+        $e = new MongoTestEnvironment();
+        $e->clean();
+        $userId = $e->createUser('user1', 'User1', 'user1');
+        $user = new UserModel($userId);
+        $user->setForgotPassword(7);
+        $user->write();
+
+        $hasForgottenPassword = $user->hasForgottenPassword(false);
+
+        $this->assertTrue($hasForgottenPassword);
+        $this->assertTrue($user->resetPasswordKey);
+        $today = new \DateTime();
+        $future = $today->add(new DateInterval('P7D'));
+        $hourMargin = 60;
+        $this->assertWithinMargin($user->resetPasswordExpirationDate->getTimestamp(), $future->getTimestamp(), $hourMargin);
+    }
+
+    public function testHasForgottenPassword_KeySetConsumeKey_HasForgottenKeyConsumed()
+    {
+        $e = new MongoTestEnvironment();
+        $e->clean();
+        $userId = $e->createUser('user1', 'User1', 'user1');
+        $user = new UserModel($userId);
+        $user->setForgotPassword(7);
+        $user->write();
+
+        $hasForgottenPassword = $user->hasForgottenPassword(true);
+
+        $this->assertTrue($hasForgottenPassword);
+        $this->assertFalse($user->resetPasswordKey);
+        $today = new \DateTime();
+        $hourMargin = 60;
+        $this->assertWithinMargin($user->resetPasswordExpirationDate->getTimestamp(), $today->getTimestamp(), $hourMargin);
     }
 /*
     function testWriteRemove_ListCorrect()

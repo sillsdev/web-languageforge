@@ -7,9 +7,9 @@ describe('E2E testing: New Lex Project wizard app', function() {
   var util      = require('../../../../bellows/pages/util.js');
   var dbePage   = require('../../pages/dbePage.js');
   var page      = require('../../pages/newLexProjectPage.js');
-  
+
   var CHECK_PAUSE = 50;
-  var SLIDE_UP_ANIMATION_PAUSE = 200;
+  var SLIDE_UP_ANIMATION_PAUSE = 250;
 
   afterEach(function() {
     expect(body.phpError.isPresent()).toBe(false);
@@ -52,7 +52,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
 
     it('finds the test project already exists', function() {
       page.namePage.projectNameInput.sendKeys(constants.testProjectName + protractor.Key.TAB);
-	  browser.sleep(CHECK_PAUSE);
+      browser.sleep(CHECK_PAUSE);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
@@ -71,7 +71,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
       page.namePage.projectNameInput.sendKeys('a' + protractor.Key.TAB);
       page.namePage.projectNameInput.clear();
       page.namePage.projectNameInput.sendKeys(protractor.Key.TAB);
-	  browser.sleep(CHECK_PAUSE);
+      browser.sleep(CHECK_PAUSE);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
@@ -84,7 +84,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
 
     it('can verify that an unused project name is available', function() {
       page.namePage.projectNameInput.sendKeys(constants.newProjectName + protractor.Key.TAB);
-	  browser.sleep(CHECK_PAUSE);
+      browser.sleep(CHECK_PAUSE);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
@@ -109,7 +109,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('project code cannot be empty; does not show an error but is still invalid', function() {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectNameInput.sendKeys(protractor.Key.TAB);     // trigger project code check
-	  browser.sleep(CHECK_PAUSE);
+      browser.sleep(CHECK_PAUSE);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
@@ -123,7 +123,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('project code can be one character', function() {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('a' + protractor.Key.TAB);
-	  browser.sleep(CHECK_PAUSE);
+      browser.sleep(CHECK_PAUSE);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
@@ -133,7 +133,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('project code cannot be uppercase', function() {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('A' + protractor.Key.TAB);
-	  browser.sleep(CHECK_PAUSE);
+      browser.sleep(CHECK_PAUSE);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
@@ -142,7 +142,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
       page.formStatus.expectContainsError('Project Code must begin with a letter');
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('aB' + protractor.Key.TAB);
-	  browser.sleep(CHECK_PAUSE);
+      browser.sleep(CHECK_PAUSE);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
@@ -154,7 +154,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('project code cannot start with a number', function() {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('1' + protractor.Key.TAB);
-	  browser.sleep(CHECK_PAUSE);
+      browser.sleep(CHECK_PAUSE);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
@@ -166,7 +166,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('project code cannot use non-alphanumeric', function() {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('a?' + protractor.Key.TAB);
-	  browser.sleep(CHECK_PAUSE);
+      browser.sleep(CHECK_PAUSE);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
@@ -291,7 +291,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('create: new empty project', function() {
       page.get();
       page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + protractor.Key.TAB);
-	  browser.sleep(CHECK_PAUSE);
+      browser.sleep(CHECK_PAUSE);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);

@@ -38,8 +38,8 @@ use Api\Model\UserProfileModel;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransItemCommands;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransCommentsCommands;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
+use Site\Controller\Auth;
 
 require_once APPPATH . 'vendor/autoload.php';
 require_once APPPATH . 'Api/Model/ProjectModel.php';
@@ -182,6 +182,11 @@ class Sf
     public function change_password($userId, $newPassword)
     {
         return UserCommands::changePassword($userId, $newPassword, $this->_userId);
+    }
+
+    public function reset_password($resetPasswordKey, $newPassword)
+    {
+        return Auth::resetPassword($this->_controller, $resetPasswordKey, $newPassword);
     }
 
     public function identity_check($username, $email)
@@ -821,6 +826,7 @@ class Sf
             'user_activate',
             'user_register',
             'get_captcha_data',
+            'reset_password',
             'user_readForRegistration',
             'user_updateFromRegistration'
         );

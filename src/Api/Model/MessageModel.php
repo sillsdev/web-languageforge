@@ -3,8 +3,10 @@
 namespace Api\Model;
 
 use Api\Model\Mapper\Id;
+use Api\Model\Mapper\MapperModel;
+use Api\Model\Mapper\MongoMapper;
 
-class MessageModelMongoMapper extends \Api\Model\Mapper\MongoMapper
+class MessageModelMongoMapper extends MongoMapper
 {
     /**
      * @var TextModelMongoMapper[]
@@ -26,7 +28,7 @@ class MessageModelMongoMapper extends \Api\Model\Mapper\MongoMapper
 
 }
 
-class MessageModel extends \Api\Model\Mapper\MapperModel
+class MessageModel extends MapperModel
 {
     /**
      * @var ProjectModel;

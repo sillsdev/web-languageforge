@@ -71,7 +71,7 @@ class Base
         }
 
         try {
-            return $app['twig']->render($viewName.'.twig', $this->data);
+            return $app['twig']->render($viewName.'.html.twig', $this->data);
         } catch (\Twig_Error_Loader $e) {
             $app->abort(404, "Page not found: $viewName.twig");
         }

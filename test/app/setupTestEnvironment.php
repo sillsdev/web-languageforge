@@ -3,22 +3,23 @@
 require_once('e2eTestConfig.php');
 
 // use commands go here (after the e2eTestConfig)
+use Api\Library\Shared\Website;
 use Api\Model\Command\ProjectCommands;
 use Api\Model\Command\UserCommands;
 use Api\Model\Command\TextCommands;
 use Api\Model\Command\QuestionCommands;
 use Api\Model\Command\QuestionTemplateCommands;
-use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\Shared\Rights\SiteRoles;
-use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\Scriptureforge\SfProjectModel;
-use Api\Model\Languageforge\LfProjectModel;
-use Api\Model\ProjectModel;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
-use Api\Library\Shared\Website;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\LfProjectModel;
+use Api\Model\Mapper\MongoStore;
+use Api\Model\ProjectModel;
+use Api\Model\Scriptureforge\SfProjectModel;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\UserModel;
 
 $constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
 
@@ -36,7 +37,7 @@ if (is_null($website)) {
 $site = $website->base;
 
 // start with a fresh database
-$db = \Api\Model\Mapper\MongoStore::connect(SF_DATABASE);
+$db = MongoStore::connect(SF_DATABASE);
 foreach ($db->listCollections() as $collection) { $collection->drop(); }
 
 // Also empty out databases for the test projects
@@ -94,6 +95,39 @@ $memberUser = UserCommands::createUser(array(
     'role' => SystemRoles::USER),
     $website
 );
+$expiredUserId = UserCommands::createUser(array(
+    'id' => '',
+    'name' => $constants['expiredName'],
+    'email' => $constants['expiredEmail'],
+    'username' => $constants['expiredUsername'],
+    'password' => $constants['memberPassword'], // intentionally set wrong password
+    'active' => true,
+    'role' => SystemRoles::USER),
+    $website
+);
+$resetUserId = UserCommands::createUser(array(
+    'id' => '',
+    'name' => $constants['resetName'],
+    'email' => $constants['resetEmail'],
+    'username' => $constants['resetUsername'],
+    'password' => $constants['memberPassword'], // intentionally set wrong password
+    'active' => true,
+    'role' => SystemRoles::USER),
+    $website
+);
+
+// set forgot password with expired date
+$today = new DateTime();
+$expiredUser = new UserModel($expiredUserId);
+$expiredUser->resetPasswordKey = $constants['expiredPasswordKey'];
+$expiredUser->resetPasswordExpirationDate = $today;
+$expiredUser->write();
+
+// set forgot password with valid date
+$resetUser = new UserModel($resetUserId);
+$resetUser->resetPasswordKey = $constants['resetPasswordKey'];
+$resetUser->resetPasswordExpirationDate = $today->add(new DateInterval('P5D'));
+$resetUser->write();
 
 if ($site == 'scriptureforge') {
     $projectType = SfProjectModel::SFCHECKS_APP;

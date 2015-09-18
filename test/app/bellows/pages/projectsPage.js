@@ -1,16 +1,16 @@
 'use strict';
 
 var projectTypes = {
-  'sf': 'Community Scripture Checking', // ScriptureForge
-  'lf': 'Web Dictionary', // LanguageForge
+  sf: 'Community Scripture Checking', // ScriptureForge
+  lf: 'Web Dictionary', // LanguageForge
 };
 
 var util = require('./util');
 var constants = require('../../testConstants.json');
 
 var SfProjectsPage = function() {
-  var page = this;
-  this.url = "/app/projects";
+  var _this = this;
+  this.url = '/app/projects';
   this.get = function() {
     browser.get(browser.baseUrl + this.url);
     browser.waitForAngular();
@@ -23,6 +23,7 @@ var SfProjectsPage = function() {
   this.newProjectNameInput  = element(by.model('newProject.projectName'));
   this.newProjectTypeSelect = element(by.model('newProject.appName'));
   this.saveBtn = element(by.partialButtonText('Save'));
+
   // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test Project will be on page 1, and you can find it.
   this.itemsPerPageCtrl = element(by.model('itemsPerPage'));
   this.projectsCtrl =     element(by.repeater('project in visibleProjects'));
@@ -35,16 +36,17 @@ var SfProjectsPage = function() {
       // One way to do it, not ideal
       // Options are 10, 25, 50, 100. We want 100, the 4th child. (CSS counts from 1).
       // this.itemsPerPageCtrl.$('option:nth-child(4)').click();
-    } else{
+    } else {
       // A better way to do it, which allows for other options
-      util.clickDropdownByValue(this.itemsPerPageCtrl, "100");
+      util.clickDropdownByValue(this.itemsPerPageCtrl, '100');
     };
+
     // Either way, the following expect() should be fulfilled
     expect(element(by.model('itemsPerPage')).$('option:checked').getText()).toEqual('100');
   };
-  
+
   this.projectExists = function() {
-    
+
   };
 
   this.findProject = function(projectName) {
@@ -61,27 +63,30 @@ var SfProjectsPage = function() {
       if (foundRow) {
         result.fulfill(foundRow);
       } else {
-        result.reject("Project " + projectName + " not found.");
+        result.reject('Project ' + projectName + ' not found.');
       }
     });
+
     return result;
   };
+
   this.deleteProject = function(nameToDelete) {
-    var page = this; // For use inside the anonymous functions below
+    var _this = this; // For use inside the anonymous functions below
     this.findProject(nameToDelete).then(function(projectRow) {
-      var elem = projectRow.$("input[type='checkbox']");
+      var elem = projectRow.$('input[type=\'checkbox\']');
       elem.click();
-      page.deleteBtn.click();
+      _this.deleteBtn.click();
+
       // Clicking the delete button pops up an "are you sure?" alert
       util.clickModalButton('Archive');
     });
   };
 
   this.addNewProject = function(nameToAdd) {
-    var page = this;
+    var _this = this;
     this.createBtn.click();
     this.newProjectNameInput.sendKeys(nameToAdd);
-    util.clickDropdownByValue(this.newProjectTypeSelect, projectTypes['sf']);
+    util.clickDropdownByValue(this.newProjectTypeSelect, projectTypes.sf);
     this.saveBtn.click();
   };
 
@@ -94,11 +99,11 @@ var SfProjectsPage = function() {
       });
     });
   };
-  
+
   this.addUserToProject = function(projectName, userName, roleText) {
     this.findProject(projectName).then(function(projectRow) {
-//      var btn = projectRow.element(by.partialButtonText("Add me as " + roleText));
-//      btn.click();
+      //      var btn = projectRow.element(by.partialButtonText("Add me as " + roleText));
+      //      btn.click();
       var link = projectRow.$('a');
       link.getAttribute('href').then(function(url) {
         var extraUrlPart = '';
@@ -107,12 +112,14 @@ var SfProjectsPage = function() {
         } else if (constants.siteType == 'languageforge') {
           extraUrlPart = '#/users';
         }
+
         browser.get(url + extraUrlPart);
         browser.waitForAngular();
+
         // Users tab is selected by default, so the following check might not be needed
-//        var usersTab = element(by.xpath('//li[@heading="Users"]'));
-//        expect(usersTab.isElementPresent()).toBeTruthy();
-        var addMembersBtn = element(by.partialButtonText("Add Members"));
+        //        var usersTab = element(by.xpath('//li[@heading="Users"]'));
+        //        expect(usersTab.isElementPresent()).toBeTruthy();
+        var addMembersBtn = element(by.partialButtonText('Add Members'));
         var newMembersDiv = $('#newMembersDiv');
         var userNameInput = newMembersDiv.$('input[type="text"]');
         addMembersBtn.click();
@@ -121,13 +128,14 @@ var SfProjectsPage = function() {
         var typeaheadItems = typeaheadDiv.$('ul li');
         typeaheadItems.click(); // Thanks to Protractor, this "just works", because it waits for Angular to settle
         var addToProjectBtn = newMembersDiv.$('button'); // This should be unique no matter what
-        expect(addToProjectBtn.getText()).toContain("Add Existing User");
+        expect(addToProjectBtn.getText()).toContain('Add Existing User');
         addToProjectBtn.click();
+
         // Now set the user to member or manager, as needed
         var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
         var foundUserRow;
         projectMemberRows.map(function(row) {
-          var nameColumn = row.element(by.binding("{{user.username}}"));
+          var nameColumn = row.element(by.binding('{{user.username}}'));
           nameColumn.getText().then(function(text) {
             if (text === userName) {
               foundUserRow = row;
@@ -140,23 +148,26 @@ var SfProjectsPage = function() {
           }
         });
       });
-//      link.click();
-//      browser.wait(function() {
-//        return browser.getCurrentUrl().then(function(url) {
-//          expect(url).toContain("/app/sfchecks#/p/");
-//        });
-//      }, 8000);
-//      browser.pause();
-      page.get(); // After all is finished, reload projects page
+
+      //      link.click();
+      //      browser.wait(function() {
+      //        return browser.getCurrentUrl().then(function(url) {
+      //          expect(url).toContain("/app/sfchecks#/p/");
+      //        });
+      //      }, 8000);
+      //      browser.pause();
+      _this.get(); // After all is finished, reload projects _this
     });
   };
+
   this.addManagerToProject = function(projectName, userName) {
-    this.addUserToProject(projectName, userName, "Manager");
+    this.addUserToProject(projectName, userName, 'Manager');
   };
+
   this.addMemberToProject = function(projectName, userName) {
-    this.addUserToProject(projectName, userName, "Contributor");
+    this.addUserToProject(projectName, userName, 'Contributor');
   };
-  
+
   this.removeUserFromProject = function(projectName, userName) {
     this.findProject(projectName).then(function(projectRow) {
       var link = projectRow.$('a');
@@ -167,6 +178,7 @@ var SfProjectsPage = function() {
         } else if (constants.siteType == 'languageforge') {
           extraUrlPart = '#/users';
         }
+
         browser.get(url + extraUrlPart);
         browser.waitForAngular();
         var userFilter = element(by.model('userFilter'));
@@ -175,10 +187,11 @@ var SfProjectsPage = function() {
         var foundUserRow = projectMemberRows.first();
         var rowCheckbox = foundUserRow.$('input[type="checkbox"]');
         util.setCheckbox(rowCheckbox, true);
-        var removeMembersBtn = element(by.partialButtonText("Remove Members"));
+        var removeMembersBtn = element(by.partialButtonText('Remove Members'));
         removeMembersBtn.click();
       });
-      page.get(); // After all is finished, reload projects page
+
+      _this.get(); // After all is finished, reload projects page
     });
   };
 };
