@@ -179,7 +179,7 @@
 		<replaceregexp
 			file="${build.installForTestPath}/htdocs/config.php"
 			match="define\('SF_DATABASE', '([^']*)'\);"
-			replace="define('SF_DATABASE', 'scriptureforge_test')"
+			replace="define('SF_DATABASE', 'scriptureforge_test');"
 			byline="true"
 		/>
 		<!-- Note the UTF-8 below. This ensures that the filter copy doesn't mangle the Thai used in the examples. CP 2014-09 -->
