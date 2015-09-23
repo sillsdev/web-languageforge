@@ -15,6 +15,10 @@ var reloadPatterns = [
   'src/**/*.js',
   'src/**/*.twig',
   '!src/vendor*',
+  'test/**/*.php',
+  'test/**/*.js',
+  'test/**/*.json',
+  '!test/app/node_modules',
 ];
 
 var execute = function(command, callback) {

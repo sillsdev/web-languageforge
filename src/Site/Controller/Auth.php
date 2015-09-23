@@ -2,14 +2,16 @@
 
 namespace Site\Controller;
 
-use Api\Library\Shared\Website;
-use Api\Model\Shared\Rights\SiteRoles;
+use Api\Library\Shared\Communicate\Communicate;
+use Api\Model\Command\UserCommands;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\ProjectModel;
+use Api\Model\UserModel;
+use Api\Model\UserModelBase;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 defined('ENVIRONMENT') or exit('No direct script access allowed');
 
@@ -20,19 +22,96 @@ class Auth extends PublicApp
     const LOGIN_FAIL_USER_UNAUTHORIZED = 'loginFailUserUnauthorized';
     const LOGIN_SUCCESS = 'loginSuccess';
 
-    public function view(Request $request, Application $app, $appName) {
-        if ('login' === $appName) {
-            $this->setupNgView($app, $appName);
-            $this->data['error'] = $app['security.last_error']($request);
-            $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
-            $this->data['alertMessage'] = '';
-            if ($app['session']->get('isFromLogout')) {
-                $this->data['alertMessage'] = 'Logged Out Successfully';
-            }
+    public function view(Request $request, Application $app, $appName, $resetPasswordKey = '')
+    {
+        switch ($appName) {
+            case 'login':
+                $this->setupNgView($app, $appName);
+                $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
+                if ($app['security.last_error']($request)) {
+                    $app['session']->getFlashBag()->add('errorMessage', $app['security.last_error']($request));
+                    if ($app['session']->has(SecurityContextInterface::AUTHENTICATION_ERROR)) {
+                        $app['session']->remove(SecurityContextInterface::AUTHENTICATION_ERROR);
+                    }
+                }
 
-            return $this->renderPage($app, 'angular-app');
+                return $this->renderPage($app, 'angular-app');
+                break;
+            case 'reset_password':
+                $user = new UserModelBase();
+                if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
+                    $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
+
+                    return $app->redirect('/auth/login');
+                }
+
+                if (!$user->hasForgottenPassword(false)) {
+                    $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. It may have expired. Please try again.');
+
+                    return $app->redirect('/auth/login');
+                }
+
+                // intentional fall through to next case
+            case 'forgot_password':
+                $this->setupNgView($app, $appName);
+                $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
+                if (!array_key_exists('error', $this->data) or !$this->data['error']) {
+                    $this->data['error'] = '';
+                }
+
+                return $this->renderPage($app, 'angular-app');
+                break;
+            default:
+                return $this->renderPage($app, $appName);
+        }
+    }
+
+    public function forgotPassword(Request $request, Application $app)
+    {
+        $username = $request->request->get('_username');
+        $identityCheck = UserCommands::checkIdentity($username, '', $this->website);
+        if (! $identityCheck->usernameExists) {
+            $this->data['error'] = 'User not found.';
+
+            return $this->view($request, $app, 'forgot_password');
+        }
+
+        $user = new UserModel();
+        $user->readByUserName($username);
+
+        if (! $identityCheck->usernameExistsOnThisSite and $user->role != SystemRoles::SYSTEM_ADMIN) {
+            $this->data['error'] = sprintf('Username "%s" not available on "%s". Use "Create an Account".', $username, $this->website->domain);
+
+            return $this->view($request, $app, 'forgot_password');
+        }
+
+        Communicate::sendForgotPasswordVerification($user, $this->website);
+
+        $app['session']->getFlashBag()->add('infoMessage', 'Password Reset email sent for username "'.$username.'"');
+
+        return $app->redirect('/auth/login');
+    }
+
+    /**
+     * @param Application $app
+     * @param string $resetPasswordKey
+     * @param string $newPassword
+     * @throws \Api\Library\Shared\Palaso\Exception\UserUnauthorizedException
+     */
+    public static function resetPassword(Application $app, $resetPasswordKey = '', $newPassword = '')
+    {
+        $user = new UserModelBase();
+        if ($user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
+            $userId = $user->id->asString();
+            if ($user->hasForgottenPassword()) {
+                UserCommands::changePassword($userId, $newPassword, $userId);
+                $user->write();
+                $app['session']->getFlashBag()->add('infoMessage', 'Your password has been reset. Please login.');
+            } else {
+                $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. It may have expired. Please try again.');
+            }
         } else {
-            return $this->renderPage($app, $appName);
+            $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
         }
     }
 
@@ -42,7 +121,8 @@ class Auth extends PublicApp
      * @param string $username
      * @param string $password
      */
-    public static function login(Application $app, $username, $password) {
+    public static function login(Application $app, $username, $password)
+    {
         $subRequest = Request::create(
             '/app/login_check', 'POST',
             array('_username' => $username, '_password' => $password),
@@ -57,7 +137,8 @@ class Auth extends PublicApp
      * @param string $method
      * @return array
      */
-    public static function result($status, $uri, $method = 'location') {
+    public static function result($status, $uri, $method = 'location')
+    {
         return array(
             'status' => $status,
             'redirect' => array(
