@@ -4,7 +4,7 @@
  *  TODO: refactor tests so that constants.siteType doesn't need to be specified
  *  in protractorConf.scriptureforge.js and protractorConf.languageforge.js as used in projectsPage.js.
  *  Perhaps User Management needs to be its own app. IJH 2015-01
- */ 
+ */
 describe('E2E Projects List App', function() {
   var constants     = require('../../../testConstants.json');
   var util          = require('../../pages/util.js');
@@ -38,9 +38,10 @@ describe('E2E Projects List App', function() {
   var shouldProjectBeLinked = function shouldProjectBeLinked(projectName, projectRow, bool) {
     expect(projectRow.element(by.elemMatches('a', projectName)).isDisplayed()).toBe(bool);
   };
+
   var shouldProjectHaveButtons = function shouldProjectHaveButtons(projectRow, bool) {
-    var addAsManagerBtn = projectRow.element(by.partialButtonText("Add me as Manager"));
-    var addAsMemberBtn = projectRow.element(by.partialButtonText("Add me as Contributor"));
+    var addAsManagerBtn = projectRow.element(by.partialButtonText('Add me as Manager'));
+    var addAsMemberBtn = projectRow.element(by.partialButtonText('Add me as Contributor'));
     expect(addAsManagerBtn.isDisplayed()).toBe(bool);
     expect(addAsMemberBtn.isDisplayed()).toBe(bool);
   };
@@ -51,6 +52,7 @@ describe('E2E Projects List App', function() {
       loginPage.loginAsAdmin();
       projectsPage.get();
       expect(projectsPage.projectsList.count()).toBeGreaterThan(0);
+
       // Check that the test project is around
       projectsPage.findProject(constants.testProjectName).then(function(projectRow) {
         shouldProjectBeLinked(constants.testProjectName, projectRow, true);
@@ -61,35 +63,37 @@ describe('E2E Projects List App', function() {
       // projectsPage.createBtn.getOuterHtml().then(console.log);
       // projectsPage.archiveButton.getOuterHtml().then(console.log);
       expect(projectsPage.createBtn.isDisplayed()).toBeTruthy();
+
       // expect(projectsPage.archiveButton.isDisplayed()).toBeTruthy();
     });
 
     it('should allow the admin to add themselves to the project as member or manager', function() {
-      
+
       // First remove the admin from the project (must be a project admin is not the owner of)
       loginPage.loginAsManager();
       projectsPage.get();
-      
+
       // The admin should not see "Add myself to project" buttons when he's already a project member or manager
       // And the project name should be a clickable link
       projectsPage.findProject(constants.otherProjectName).then(function(projectRow) {
         shouldProjectBeLinked(constants.otherProjectName, projectRow, true);
         shouldProjectHaveButtons(projectRow, false);
       });
+
       projectsPage.removeUserFromProject(constants.otherProjectName, constants.adminUsername);
       loginPage.loginAsAdmin();
       projectsPage.get();
-      
+
       // Now the admin should have "Add myself to project" buttons
       // And the project name should NOT be a clickable link
       projectsPage.findProject(constants.otherProjectName).then(function(projectRow) {
         shouldProjectBeLinked(constants.otherProjectName, projectRow, false);
         shouldProjectHaveButtons(projectRow, true);
-        
+
         // Now add the admin back to the project
-        projectRow.element(by.partialButtonText("Add me as Manager")).click();
+        projectRow.element(by.partialButtonText('Add me as Manager')).click();
       });
-      
+
       // And the buttons should go away after one of them is clicked
       projectsPage.findProject(constants.otherProjectName).then(function(projectRow) {
         shouldProjectBeLinked(constants.otherProjectName, projectRow, true);

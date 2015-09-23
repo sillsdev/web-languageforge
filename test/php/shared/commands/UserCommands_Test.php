@@ -1,9 +1,7 @@
 <?php
 
-use Api\Library\Scriptureforge\Sfchecks\IDelivery;
-use Api\Library\Shared\Website;
+use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Model\Command\UserCommands;
-use Api\Model\Mapper\Id;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\PasswordModel;
 use Api\Model\ProjectModel;
@@ -14,7 +12,7 @@ require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 
-class MockUserCommandsDelivery implements IDelivery
+class MockUserCommandsDelivery implements DeliveryInterface
 {
     public $from;
     public $to;
@@ -34,7 +32,6 @@ class MockUserCommandsDelivery implements IDelivery
     {
         $this->smsModel = $smsModel;
     }
-
 }
 
 class TestUserCommands extends UnitTestCase
@@ -67,7 +64,7 @@ class TestUserCommands extends UnitTestCase
 
         $userId = $this->environ->createUser('somename', 'Some Name', 'somename@example.com');
 
-        UserCommands::deleteUsers(array($userId), 'bogus auth userid');
+        UserCommands::deleteUsers(array($userId));
     }
 
     public function testUpdateUserProfile_SetLangCode_LangCodeSet()
@@ -309,7 +306,8 @@ class TestUserCommands extends UnitTestCase
         $user->write();
         $this->expectException();
         $this->environ->inhibitErrorDisplay();
-        $params = UserCommands::readForRegistration($key);
+
+        UserCommands::readForRegistration($key);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }

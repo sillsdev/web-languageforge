@@ -1,0 +1,19 @@
+{% extends 'scriptureforge.html.twig' %}
+
+{% block content %}
+    <div class="container banner">
+        <img src="/Site/views/scriptureforge/theme/default/image/beach2.jpg" width="965px" height="360px" alt="on the beach" />
+    </div>
+
+    <div class="container">
+        <h2>Explore Featured Scriptureforge.org Projects</h2>
+        {% if featuredProjects|length > 0 %}
+            <p>Below is a list of Scriptureforge.org projects that you can learn more about:</p>
+            {% for project in featuredProjects %}
+                <h3><a href="{{ '/projects/'~project.projectName|lower|replace({' ': '_'}) }}">{{ project.projectName }}</a></h3>
+            {% endfor %}
+        {% else %}
+            <h4>There are currently no featured projects listed.</h4><h4>Check back again later!</h4>
+        {% endif %}
+    </div>
+{% endblock %}

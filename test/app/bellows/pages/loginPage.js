@@ -10,9 +10,13 @@ var BellowsLoginPage = function() {
     browser.waitForAngular();
   };
 
+  this.form = element('form#loginForm');
+  this.infoMessages = element.all(by.css('.alert-info'));
+  this.errors = element.all(by.css('.alert-error'));
   this.username = element(by.id('username'));
   this.password = element(by.id('password'));
-  this.submit   = element(by.xpath('//input[@type="submit"]'));
+  this.forgotPasswordLink = element(by.id('forgot_password'));
+  this.submit   = element(by.xpath('//button[@type="submit"]'));
 
   this.login = function(username, password) {
     _this.get();

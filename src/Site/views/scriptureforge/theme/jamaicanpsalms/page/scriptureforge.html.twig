@@ -1,0 +1,136 @@
+{% extends 'container/scriptureforge.html.twig' %}
+
+{% block meta %}
+    {{ parent() }}
+    <link href="//fonts.googleapis.com/css?family=Dosis:300" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block header %}
+    <!--[if lte IE 8]>
+    <div style="text-align:center">Your browser may not work so well. Please consider <a href="learn_faq">upgrading</a> to a modern standards compliant browser.</div>
+    <![endif]-->
+    <div id="header">
+        <div class="container">
+            <div class="sf-logo-medium">
+                <img src="/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_j_logo.png" alt="Jamaican Psalms"  style="width:92px; height:114px" class="png_bg" />
+            </div>
+            <div id="header-nav" class="pull-left">
+                <ul class="sf-menu">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn_scripture_forge">Learn</a>
+                        <ul>
+                            <li><a href="/learn_faq">Frequently Asked Questions</a></li>
+                            <li><a href="/learn_scripture_forge">About Scripture Forge</a></li>
+                            <li><a href="/learn_how_it_works">How It Works</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/discuss">Discuss</a></li>
+                </ul>
+            </div>
+
+            {% if isLoggedIn %}
+                <div id="header-nav" class="pull-right">
+                    <ul class="sf-menu">
+                        <li id="myProjects"><a href="/app/projects">My Projects</a>
+                            <ul>
+                                {% for project in projects %}
+                                    <li><a href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><img src="{{ smallAvatarUrl }}" style="width: 29px; height: 29px; float:left; position:relative; top:-5px; border:1px solid white; margin-right:10px" />Hi, {{ userName }}</a>
+                            <ul>
+                                {% if isAdmin %}
+                                    <li><a href="/app/siteadmin">Site Administration</a></li>
+                                {% endif %}
+                                <li><a href="/app/userprofile">My Profile</a></li>
+                                <li><a href="/app/activity">My Activity</a></li>
+                                <li><a href="/app/changepassword">Change Password</a></li>
+                                <li><a href="/app/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <div id="account" class="pull-right">
+                    <input type="button" value="Login" style="position:relative; top:-3px" class="login-btn pull-left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/signup">Create an Account</a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+        <div id="footercontainer">
+            <div id="footer">
+
+                <div class="container">
+                    <div class="row">
+
+                        <div class="span2">
+                            <h4>Contact</h4>
+                            <small>Jamaican Psalms Project<br />Bible Society West Indies<br />24 Hagley Pk Plaza<br /> Kingston 10, Jamaica<br />(876) 926-2772</small>
+                        </div>
+
+                        <div class="span2">
+                            <h4>Navigate</h4>
+                            <small>
+                            <a href="/">Home</a><br /><a href="/learn_scripture_forge">Learn</a><br /><a href="/discuss">Discuss</a>
+                            </small>
+                        </div>
+
+
+                        <div id="sponsor" class="span4">
+                            <h4>Jamaican Psalms Project By</h4>
+<!--                             <small>Bible Societies of the West Indies</small> -->
+                            <div><a href="http://biblesocietywi.org/"><img src="/Site/views/scriptureforge/theme/jamaicanpsalms/image/bwsi_logo.png" alt="bwsi_logo" width="91" height="60" /></a></div>
+                        </div>
+
+
+                        <div class="span1">
+                            <p><a href="http://www.sil.org"><img src="/Site/views/shared/image/SIL_logo.png" alt="SIL Logo" width="50" height="49" /></a></p>
+                            <p><a href="http://www.unitedbiblesocieties.org/"><img src="/Site/views/shared/image/ubs-logo.png" alt="ubs-logo" width="71" height="50" /></a></p>
+                        </div>
+
+                        <div class="span3">
+                            <p><a href="http://ic.payap.ac.th/"><img src="/Site/views/shared/image/PAYAP_logo.png" alt="PAYAP Logo" width="170" height="50" /></a></p>
+                            <p><a href="http://www.theseedcompany.org/"><img src="/Site/views/shared/image/seed-company-logo.png" alt="Seed Company Logo" width="162" height="50" /></a></p>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="footerBaseline">
+            <div class="container">
+                <div class="row">
+                        <div class="darkTextLogo span2"></div>
+                        <div class="span1" style="color: #404040"><small>v {{ version }}</small></div>
+                    <div class="span8">
+                        <small>Copyright {{ "now"|date("Y") }} <a href="http://www.sil.org">SIL International</a>. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block analytics %}
+    {% if 'jamaicanpsalms.com' in http_host %}
+        <script>
+            (function (i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function () {
+                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-22170471-9', 'jamaicanpsalms.com');
+            ga('send', 'pageview');
+
+        </script>
+    {% endif %}
+{% endblock %}

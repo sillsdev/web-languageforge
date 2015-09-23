@@ -7,10 +7,10 @@ use Silex\Application;
 
 class Validate extends Base
 {
-    public function check(Application $app, $validateKeySubmitted = '') {
+    public function check(Application $app, $validateKey = '') {
         $userActivated = false;
         $userModel = new UserModelBase();
-        if ($userModel->readByProperty('validationKey', $validateKeySubmitted)) {
+        if ($userModel->readByProperty('validationKey', $validateKey)) {
             if ($userModel->validate()) {
                 $userModel->active = true;
                 $userModel->write();
