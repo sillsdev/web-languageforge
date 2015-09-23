@@ -1,0 +1,97 @@
+{% extends 'scriptureforge.html.twig' %}
+
+{% block content %}
+    {% block slides %}
+        {% set slides = [
+            {
+                'title': 'Community Checking',
+                'summary': 'Scripture Forge enables communities to participate in the Scripture checking process like never before',
+                'social_media': '',
+                'image_url': 'community.jpg',
+                'target_url': '/learn_scripture_forge'
+            },
+            {
+                'title': 'Your Team, Expanded',
+                'summary': 'Improve your scripture checking project by adding more native speakers to your workflow',
+                'social_media': '',
+                'image_url': 'team.jpg',
+                'target_url': '/learn_expand_your_team'
+            },
+            {
+                'title': 'Make a Difference Today',
+                'summary': 'Speak a minority language?  See if your language has a scripture checking project in progress today',
+                'social_media': '',
+                'image_url': 'contribute.jpg',
+                'target_url': '/learn_scripture_forge'
+            }
+        ] %}
+
+        <div id="promotion" class="container">
+            <div id="slides">
+                <div id="promotion-ribbon"></div>
+                <div id="promotionCutout"></div>
+                <div class="slides_container">
+                    {% for slide in slides %}
+                        <div class="slides_content">
+                            <img src="{{ '/Site/views/scriptureforge/theme/default/image/'~slide.image_url }}" alt="{{ slide.image_url }}" width="300" height="349" style="margin-top:110px; border: 2px solid grey" class="left png_bg">
+                            <h3 class="pull-left" style="margin-top: 110px;">{{ slide.title }}</h3>
+                            <p class="pull-left" style="margin-top: 10px;">{{ slide.summary }}</p>
+                            <p class="pull-left"><input type="button" class="btn standard-btn standard-btn-big" value="Learn More" onclick="window.location='{{ slide.target_url }}';" /></p>
+                            <p class="pull-left" style="margin-top: 50px;">{{ slide.social_media }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block columns %}
+        {% set columns = [
+            {
+                'title': 'Scripture Forge',
+                'summary': 'Take your scripture-checking project to the next level by involving tens or hundreds more in the scripture review process.  Engage your language\'s diaspora speakers on the web or their phone, wherever they are.',
+                'target_url': '/learn_scripture_forge'
+            },
+            {
+                'title': 'Expand Your Team',
+                'summary': 'Give your Scripture project a boost during the checking phase.  Sign-up is easy and free.  As the project manager, you can control who joins your "extended team" of scripture checkers.',
+                'target_url': '/learn_expand_your_team'
+            },
+            {
+                'title': 'Contribute',
+                'summary': 'Your ability to think and speak in your mother tongue is a powerful gift.  You could make an eternal difference by bringing God\'s Word into your own language through participating as a Scripture reviewer.  You can comment on text, answer questions, and follow up on other comments.  What are you waiting for?  Sign up today!',
+                'target_url': '/learn_scripture_forge'
+            }
+        ] %}
+
+        <div class="container">
+            <div class="row">
+                {% for column in columns %}
+                    <div class="span4">
+                        <h3>{{ column.title }}</h3>
+                        <p>{{ column.summary }}</p>
+                        {% if column.target_url %}
+                            <p><a href="{{ column.target_url }}" class="arrowed">Read More</a></p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endblock %}
+
+    <div class="container">
+        <div class="sub-promotion">
+            <div class="row row-padded">
+                <div class="span4">
+                    <img src="/Site/views/scriptureforge/theme/default/image/girlsmiling.jpg" alt="girl smiling" width="299" height="182" class="left">
+                </div>
+                <div class="span8">
+                    <h3>The Power of Collaboration</h3>
+                    <p>When everyone plays their part in getting Scripture translated and into the right hands, everyone benefits.  It&rsquo;s the power of collaboration that gets Scripture checking done faster and better. Our technology brings Scripture checking to the masses, in a positive environment that focuses participants on the task and works wherever they are. On the tablet, phone or web, Scripture Forge is there.</p>
+                    <p><a href="/signup" class="arrowed">Get Involved Today</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

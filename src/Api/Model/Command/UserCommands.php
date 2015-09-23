@@ -2,8 +2,8 @@
 
 namespace Api\Model\Command;
 
-use Api\Library\Scriptureforge\Sfchecks\Communicate;
-use Api\Library\Scriptureforge\Sfchecks\IDelivery;
+use Api\Library\Shared\Communicate\Communicate;
+use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Shared\Dto\CreateSimpleDto;
@@ -259,10 +259,10 @@ class UserCommands
      * @param string $email
      * @param Website $website
      * @param Application $app
-     * @param IDelivery $delivery
+     * @param DeliveryInterface $delivery
      * @return string|boolean $userId|false otherwise
      */
-    public static function activate($username, $password, $email, $website, $app, IDelivery $delivery = null)
+    public static function activate($username, $password, $email, $website, $app, DeliveryInterface $delivery = null)
     {
         CodeGuard::checkEmptyAndThrow($username, 'username');
         CodeGuard::checkEmptyAndThrow($password, 'password');
@@ -370,11 +370,11 @@ class UserCommands
      * @param array $params
      * @param string $captcha_info
      * @param Website $website
-     * @param IDelivery $delivery
+     * @param DeliveryInterface $delivery
      * @throws \Exception
      * @return string $userId
      */
-    public static function register($params, $captcha_info, $website, IDelivery $delivery = null)
+    public static function register($params, $captcha_info, $website, DeliveryInterface $delivery = null)
     {
         if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
             return false;  // captcha does not match
@@ -453,11 +453,11 @@ class UserCommands
     * @param string $inviterUserId
     * @param Website $website
     * @param string $toEmail
-    * @param IDelivery $delivery
+    * @param DeliveryInterface $delivery
     * @throws \Exception
     * @return string $userId
     */
-    public static function sendInvite($projectId, $inviterUserId, $website, $toEmail, IDelivery $delivery = null)
+    public static function sendInvite($projectId, $inviterUserId, $website, $toEmail, DeliveryInterface $delivery = null)
     {
         $newUser = new UserModel();
         $inviterUser = new UserModel($inviterUserId);
@@ -504,11 +504,11 @@ class UserCommands
      * @param string $inviterUserId
      * @param Website $website
      * @param string $toEmail
-     * @param IDelivery $delivery
+     * @param DeliveryInterface $delivery
      * @throws \Exception
      * @return string $userId
      */
-    public static function sendJoinRequest($projectId, $userId, $website, IDelivery $delivery = null)
+    public static function sendJoinRequest($projectId, $userId, $website, DeliveryInterface $delivery = null)
     {
         $newUser = new UserModel($userId);
         $project = new ProjectModel();
@@ -543,10 +543,10 @@ class UserCommands
      * @param string $userId
      * @param string $website
      * @param role $role
-     * @param IDelivery $delivery
+     * @param DeliveryInterface $delivery
      * @return \Api\Model\Mapper\IdReference|\Api\Model\UserModel
      */
-    public static function acceptJoinRequest($projectId, $userId, $website, $role, IDelivery $delivery = null)
+    public static function acceptJoinRequest($projectId, $userId, $website, $role, DeliveryInterface $delivery = null)
     {
         $newUser = new UserModel($userId);
         $project = new ProjectModel();

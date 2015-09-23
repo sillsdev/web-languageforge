@@ -1,0 +1,15 @@
+{% extends app.website.base~'.html.twig' %}
+
+{% block content %}
+    <div class="content container" style="padding-top:100px">
+        <div class="row">
+            <h4>Output of {{ scriptname }}</h4>
+            {% if insert %}
+                {% include insert %}
+            {% endif %}
+            {% if output %}
+                <pre>{{ output }}</pre>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
