@@ -259,7 +259,8 @@
 	</target>
 	
 	<target name="restartWebServer">
-		<exec executable="/etc/init.d/apache2">
+		<exec executable="sudo">
+			<arg line="/etc/init.d/apache2" />
 			<arg value="restart" />
 		</exec>
 	</target>
