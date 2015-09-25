@@ -2,7 +2,7 @@
 {% endverbatim %}
 
 <div class="content container" data-ng-controller="ForgotPasswordCtrl">
-<div class="row outer-flex">
+    <div class="row outer-flex">
     <div class="span8 offset2">
     <div id="form-container">
         <div class="page-header" align="center">
@@ -11,9 +11,9 @@
             {% for infoMessage in app.session.getFlashBag.get('infoMessage') %}
                 <div class="alert alert-info">{{ infoMessage }}</div>
             {% endfor %}
-            {% if error %}
-                <div class="alert alert-error">{{ error }}</div>
-            {% endif %}
+            {% for errorMessage in app.session.getFlashBag.get('errorMessage') %}
+                <div class="alert alert-error">{{ errorMessage }}</div>
+            {% endfor %}
         </div>
 
         <form class="form-horizontal" action="{{ path('auth_forgot_password') }}" method="post" accept-charset="utf-8" name="forgotPasswordForm">
