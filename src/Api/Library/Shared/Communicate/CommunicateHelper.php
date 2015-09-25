@@ -12,11 +12,12 @@ class CommunicateDelivery implements DeliveryInterface
      * @param string $to
      * @param string $subject
      * @param string $content
+     * @param string $htmlContent
      */
-    public function sendEmail($from, $to, $subject, $content)
+    public function sendEmail($from, $to, $subject, $content, $htmlContent = '')
     {
         if (!defined('TestMode')) {
-            Email::send($from, $to, $subject, $content);
+            Email::send($from, $to, $subject, $content, $htmlContent);
         }
     }
 
@@ -90,14 +91,14 @@ class CommunicateHelper
     }
 
     /**
-     *
      * @param mixed $from
      * @param mixed $to
      * @param string $subject
      * @param string $content
+     * @param string $htmlContent
      * @param DeliveryInterface $delivery
      */
-    public static function deliverEmail($from, $to, $subject, $content, DeliveryInterface $delivery = null)
+    public static function deliverEmail($from, $to, $subject, $content, $htmlContent = '', DeliveryInterface $delivery = null)
     {
         // Create our default delivery mechanism if one is not passed in.
         if ($delivery == null) {
@@ -105,6 +106,6 @@ class CommunicateHelper
         }
 
         // Deliver the email message
-        $delivery->sendEmail($from, $to, $subject, $content);
+        $delivery->sendEmail($from, $to, $subject, $content, $htmlContent);
     }
 }

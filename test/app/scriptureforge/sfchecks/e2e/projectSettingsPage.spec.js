@@ -45,8 +45,10 @@ describe('the project settings page - project manager', function() {
     it('can add a new user as a member', function() {
       page.membersTab.addButton.click();
       page.membersTab.newMember.input.sendKeys('dude');
-      browser.sleep(200);
       page.membersTab.newMember.button.click();
+
+      // wait for new user to load
+      browser.sleep(400);
       expect(page.membersTab.list.count()).toBe(memberCount + 1);
     });
 

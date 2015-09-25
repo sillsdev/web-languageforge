@@ -18,14 +18,16 @@ class MockUserCommandsDelivery implements DeliveryInterface
     public $to;
     public $subject;
     public $content;
+    public $htmlContent;
     public $smsModel;
 
-    public function sendEmail($from, $to, $subject, $content)
+    public function sendEmail($from, $to, $subject, $content, $htmlContent = '')
     {
         $this->from = $from;
         $this->to = $to;
         $this->subject = $subject;
         $this->content = $content;
+        $this->htmlContent = $htmlContent;
     }
 
     public function sendSms($smsModel)

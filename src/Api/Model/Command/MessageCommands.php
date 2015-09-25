@@ -20,12 +20,13 @@ class MessageCommands
      * @param string $projectId
      * @param array<string> $userIds
      * @param string $subject
-     * @param string $emailTemplate
      * @param string $smsTemplate
+     * @param string $emailTemplate
+     * @param string $htmlEmailTemplate
      * @return string
      */
     // TODO this needs to be tested!  cjh 2014-02
-    public static function sendMessage($projectId, $userIds, $subject, $emailTemplate, $smsTemplate)
+    public static function sendMessage($projectId, $userIds, $subject, $smsTemplate, $emailTemplate, $htmlEmailTemplate = '')
     {
         $project = new ProjectSettingsModel($projectId);
         $users = array();
@@ -33,6 +34,6 @@ class MessageCommands
             $users[] = new UserModel($id);
         }
 
-        return Communicate::communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate);
+        return Communicate::communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate, $htmlEmailTemplate);
     }
 }

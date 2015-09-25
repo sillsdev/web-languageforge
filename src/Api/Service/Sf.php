@@ -449,7 +449,7 @@ class Sf
 
     public function message_send($userIds, $subject, $emailTemplate, $smsTemplate)
     {
-        return MessageCommands::sendMessage($this->_projectId, $userIds, $subject, $emailTemplate, $smsTemplate);
+        return MessageCommands::sendMessage($this->_projectId, $userIds, $subject, $smsTemplate, $emailTemplate, '');
     }
 
     // ---------------------------------------------------------------
