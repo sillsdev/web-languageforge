@@ -9,6 +9,7 @@
 	<property name="build.minJsFile" value="${build.output}/${application.name}.min.js" />
 	<property name="build.packageFile" value="${build.output}/${application.name}.tgz" />
 	<property name="build.packageFileForTest" value="${build.output}/${application.name}_e2etest.tgz" />
+	<property name="build.secret" value="kT3sdPo60ewrGu8" />
 	<property name="build.installPath" value="/var/www/${application.name}.org_dev" />
 	<property name="build.installForTestPath" value="/var/www/${application.name}.org_e2etest" />
 	<property name="build.uploadPath" value="/var/www/${application.name}.org" />
@@ -114,6 +115,7 @@
 		/>
 		<replace file="${build.output}/package/htdocs/config.php">
 			<replacefilter token="define('ENVIRONMENT', 'development');" value="define('ENVIRONMENT', 'production');" />
+			<replacefilter token="define('REMEMBER_ME_SECRET', 'kT3sdPo60ewrGu8');" value="define('REMEMBER_ME_SECRET', '${build.secret}');" />
 		</replace>
 	    <replace file="${build.output}/package/htdocs/version.php">
 			<replacefilter token="9.9.9" value="${version}" />
