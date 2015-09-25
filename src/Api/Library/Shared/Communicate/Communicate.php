@@ -21,10 +21,11 @@ class Communicate
      * @param string $subject
      * @param string $smsTemplate
      * @param string $emailTemplate
+     * @param string $htmlEmailTemplate
      * @param DeliveryInterface|null $delivery
      * @return string
      */
-    public static function communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate, DeliveryInterface $delivery = null)
+    public static function communicateToUsers($users, $project, $subject, $smsTemplate, $emailTemplate, $htmlEmailTemplate = '', DeliveryInterface $delivery = null)
     {
         // store message in database
         $messageModel = new MessageModel($project);
@@ -33,7 +34,7 @@ class Communicate
         $messageId = $messageModel->write();
 
         foreach ($users as $user) {
-            self::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, $delivery);
+            self::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, $htmlEmailTemplate, $delivery);
             $unreadModel = new UnreadMessageModel($user->id->asString(), $project->id->asString());
             $unreadModel->markUnread($messageId);
             $unreadModel->write();
@@ -50,9 +51,10 @@ class Communicate
      * @param string $subject
      * @param string $smsTemplate
      * @param string $emailTemplate
+     * @param string $htmlEmailTemplate
      * @param DeliveryInterface $delivery
      */
-    public static function communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, DeliveryInterface $delivery = null)
+    public static function communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, $htmlEmailTemplate = '', DeliveryInterface $delivery = null)
     {
         // Prepare the email message if required
         if ($user->communicate_via == UserModel::COMMUNICATE_VIA_EMAIL || $user->communicate_via == UserModel::COMMUNICATE_VIA_BOTH) {
@@ -64,8 +66,13 @@ class Communicate
             );
             $template = CommunicateHelper::templateFromString($emailTemplate);
             $content = $template->render($vars);
+            $htmlContent = '';
+            if ($htmlEmailTemplate) {
+                $template = CommunicateHelper::templateFromString($emailTemplate);
+                $htmlContent = $template->render($vars);
+            }
 
-            CommunicateHelper::deliverEmail($from, $to, $subject, $content, $delivery);
+            CommunicateHelper::deliverEmail($from, $to, $subject, $content, $htmlContent, $delivery);
         }
 
         // Prepare the sms message if required
@@ -109,7 +116,7 @@ class Communicate
                 'website' => $website,
         );
 
-        self::sendTemplateEmail($to, $subject, 'SignupValidate.html.twig', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, 'SignupValidate', $vars, $website, $delivery);
     }
 
     /**
@@ -135,7 +142,7 @@ class Communicate
             'link' => $website->baseUrl() . '/registration#/?v=' . $toUserModel->validationKey,
         );
 
-        self::sendTemplateEmail($to, $subject, 'InvitationValidate.html.twig', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, 'InvitationValidate', $vars, $website, $delivery);
     }
 
     /**
@@ -161,7 +168,7 @@ class Communicate
                 'project' => $project
         );
 
-        self::sendTemplateEmail($to, $subject, 'NewUserInProject.html.twig', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, 'NewUserInProject', $vars, $website, $delivery);
     }
 
     /**
@@ -184,7 +191,7 @@ class Communicate
             'project' => $projectModel
         );
 
-        self::sendTemplateEmail($to, $subject, 'AddedToProject.html.twig', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, 'AddedToProject', $vars, $website, $delivery);
     }
 
     /**
@@ -208,7 +215,7 @@ class Communicate
             'website' => $website,
         );
 
-        self::sendTemplateEmail($to, $subject, 'ForgotPasswordVerification.html.twig', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, 'ForgotPasswordVerification', $vars, $website, $delivery);
     }
 
     /**
@@ -232,7 +239,7 @@ class Communicate
             'project' => $projectModel,
         );
 
-        self::sendTemplateEmail($to, $subject, 'JoinRequestConfirmation.html.twig', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, 'JoinRequestConfirmation', $vars, $website, $delivery);
     }
 
     /**
@@ -259,7 +266,7 @@ class Communicate
             'link' => $website->baseUrl() . '/app/usermanagement/' . $projectModel->id->asString() . '#/joinRequests',
         );
 
-        self::sendTemplateEmail($to, $subject, 'JoinRequest.html.twig', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, 'JoinRequest', $vars, $website, $delivery);
     }
     
     /**
@@ -280,7 +287,7 @@ class Communicate
             'link' => $website->baseUrl() . '/app/semdomtrans/' . $projectModel->id->asString() . '#/edit',
         );
 
-        self::sendTemplateEmail($to, $subject, 'JoinRequestAccepted.html.twig', $vars, $website, $delivery);
+        self::sendTemplateEmail($to, $subject, 'JoinRequestAccepted', $vars, $website, $delivery);
     }
 
     private static function sendTemplateEmail($to, $subject, $templateName, $vars, $website, DeliveryInterface $delivery = null)
@@ -288,18 +295,32 @@ class Communicate
         $senderEmail = 'no-reply@' . $website->domain;
         $from = array($senderEmail => $website->name);
 
-        $templateFile = $website->base . '/theme/' . $website->theme . '/email/en/' .$templateName;
-        if (! file_exists($templateFile)) {
-            $templateFile = $website->base . '/theme/default/email/en/' . $templateName;
+        $templateFile = $website->base . '/theme/' . $website->theme . '/email/en/' . $templateName . '.twig';
+        if (! file_exists(APPPATH . 'Site/views/' . $templateFile)) {
+            $templateFile = $website->base . '/theme/default/email/en/' . $templateName . '.twig';
         }
         $template = CommunicateHelper::templateFromFile($templateFile);
-        $html = $template->render($vars);
+        $content = $template->render($vars);
+
+        $templateFile = $website->base . '/theme/' . $website->theme . '/email/en/' . $templateName . '.html.twig';
+        if (! file_exists(APPPATH . 'Site/views/' . $templateFile)) {
+            $templateFile = $website->base . '/theme/default/email/en/' . $templateName . '.html.twig';
+            if (! file_exists(APPPATH . 'Site/views/' . $templateFile)) {
+                $templateFile = '';
+            }
+        }
+        $htmlContent = '';
+        if ($templateFile) {
+            $template = CommunicateHelper::templateFromFile($templateFile);
+            $htmlContent = $template->render($vars);
+        }
 
         CommunicateHelper::deliverEmail(
             $from,
             $to,
             $subject,
-            $html,
+            $content,
+            $htmlContent,
             $delivery
         );
     }
