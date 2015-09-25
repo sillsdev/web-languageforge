@@ -2,6 +2,7 @@
 
 namespace Api\Model\Shared\Dto;
 
+use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\ProjectRoles;
@@ -41,11 +42,11 @@ class ProjectListDto
                 }
             }
             $entry['role'] = $role;
-            if ($entry['ownerRef']) {
+            if (array_key_exists('ownerRef', $entry) and $entry['ownerRef']) {
                 $entry['ownerId'] = $entry['ownerRef']->{'$id'};
             } else {
                 $entry['ownerId'] = '';
-                // for legacy projects that dont have an owner
+                // for legacy projects that don't have an owner
             }
             unset($entry['ownerRef']);
             $entry['dateModified'] = $project->dateModified->format(\DateTime::RFC2822);

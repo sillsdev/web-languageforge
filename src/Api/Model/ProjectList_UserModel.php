@@ -2,14 +2,22 @@
 
 namespace Api\Model;
 
+use Api\Model\Mapper\MapperListModel;
+
 /**
  * List of projects of which a user is a member
  *
  */
-class ProjectList_UserModel extends \Api\Model\Mapper\MapperListModel
+class ProjectList_UserModel extends MapperListModel
 {
+    /**
+     * @var string
+     */
     private $_site;
 
+    /**
+     * @param string $site
+     */
     public function __construct($site)
     {
         $this->_site = $site;
@@ -29,7 +37,7 @@ class ProjectList_UserModel extends \Api\Model\Mapper\MapperListModel
         }
         $fields = array('projectName', 'appName', 'siteName', 'ownerRef');
 
-        return $this->_mapper->readList($this, $query, $fields);
+        $this->_mapper->readList($this, $query, $fields);
     }
 
     /**
@@ -56,5 +64,4 @@ class ProjectList_UserModel extends \Api\Model\Mapper\MapperListModel
 
         return;
     }
-
 }

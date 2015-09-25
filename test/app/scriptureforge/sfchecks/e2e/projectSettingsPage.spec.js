@@ -6,14 +6,13 @@ afterEach(function() {
 });
 
 describe('the project settings page - project manager', function() {
-  var constants     = require('../../../testConstants.json');
-  var loginPage     = require('../../../bellows/pages/loginPage.js');
-  var util       = require('../../../bellows/pages/util.js');
+  var constants       = require('../../../testConstants.json');
+  var loginPage       = require('../../../bellows/pages/loginPage.js');
+  var util            = require('../../../bellows/pages/util.js');
   var projectListPage = require('../../../bellows/pages/projectsPage.js');
-  var header       = require('../../../bellows/pages/pageHeader.js');
-  var projectPage   = require('../pages/projectPage.js');
+  var projectPage         = require('../pages/projectPage.js');
   var projectSettingsPage = require('../pages/projectSettingsPage.js');
-  var page       = require('../pages/projectSettingsPage.js');
+  var page                = require('../pages/projectSettingsPage.js');
 
   it('setup: logout, login as project manager, go to project settings', function() {
     loginPage.logout();
@@ -23,9 +22,9 @@ describe('the project settings page - project manager', function() {
     projectSettingsPage.get();
   });
 
-
   describe('members tab', function() {
     var memberCount = 0;
+
     it('setup: click on tab', function() {
       expect(page.tabs.members.isPresent()).toBe(true);
       page.tabs.members.click();
@@ -46,9 +45,9 @@ describe('the project settings page - project manager', function() {
     it('can add a new user as a member', function() {
       page.membersTab.addButton.click();
       page.membersTab.newMember.input.sendKeys('dude');
-      //this.membersTab.newMember.results.click();
+      browser.sleep(200);
       page.membersTab.newMember.button.click();
-      expect(page.membersTab.list.count()).toBe(memberCount+1);
+      expect(page.membersTab.list.count()).toBe(memberCount + 1);
     });
 
     it('can not add the same user twice', function() {
@@ -76,6 +75,7 @@ describe('the project settings page - project manager', function() {
       page.membersTab.listFilter.clear();
       expect(page.membersTab.list.count()).toBe(memberCount);
     });
+
     //it('can message selected user', function() {});  // how can we test this? - cjh
 
   });
@@ -104,6 +104,7 @@ describe('the project settings page - project manager', function() {
       browser.wait(function() {
         return page.templatesTab.editor.saveButton.isDisplayed();
       });
+
       expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(true);
       page.templatesTab.editor.title.clear();
       page.templatesTab.editor.title.sendKeys('test12');
@@ -119,7 +120,6 @@ describe('the project settings page - project manager', function() {
       expect(page.templatesTab.list.count()).toBe(2);
     });
 
-
   });
 
   // The Archived Texts tab is tested as part of a process in the Project page tests. IJH 2014-06
@@ -134,6 +134,7 @@ describe('the project settings page - project manager', function() {
 
     it('can read properties', function() {
       expect(page.propertiesTab.name.getAttribute('value')).toBe(constants.testProjectName);
+
       //expect(page.propertiesTab.featured.getAttribute('checked')).toBeFalsy();
       expect(page.propertiesTab.allowAudioDownload.getAttribute('checked')).toBeTruthy();
     });
@@ -141,12 +142,14 @@ describe('the project settings page - project manager', function() {
     it('can change properties and verify they persist', function() {
       page.propertiesTab.name.clear();
       page.propertiesTab.name.sendKeys(newName);
+
       //page.propertiesTab.featured.click();
       page.propertiesTab.allowAudioDownload.click();
       page.propertiesTab.button.click();
       browser.navigate().refresh();
       page.tabs.projectProperties.click();
       expect(page.propertiesTab.name.getAttribute('value')).toBe(newName);
+
       //expect(page.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
       expect(page.propertiesTab.allowAudioDownload.getAttribute('checked')).toBeFalsy();
       page.propertiesTab.button.click();
@@ -156,6 +159,7 @@ describe('the project settings page - project manager', function() {
       page.tabs.projectProperties.click();
       page.propertiesTab.name.clear();
       page.propertiesTab.name.sendKeys(constants.testProjectName);
+
       //page.propertiesTab.featured.click();
       page.propertiesTab.button.click();
     });
@@ -165,16 +169,17 @@ describe('the project settings page - project manager', function() {
   describe('user profile lists', function() {
     it('setup: click on tab and select the Location list for editing', function() {
       page.tabs.optionlists.click();
-      util.findRowByText(page.optionlistsTab.editList, "Study Group").then(function(row) {
+      util.findRowByText(page.optionlistsTab.editList, 'Study Group').then(function(row) {
         row.click();
       });
     });
+
     it('can add two values to a list', function() {
       expect(page.optionlistsTab.editContentsList.count()).toBe(0);
-      page.optionlistsTab.addInput.sendKeys("foo");
+      page.optionlistsTab.addInput.sendKeys('foo');
       page.optionlistsTab.addButton.click();
       expect(page.optionlistsTab.editContentsList.count()).toBe(1);
-      page.optionlistsTab.addInput.sendKeys("bar");
+      page.optionlistsTab.addInput.sendKeys('bar');
       page.optionlistsTab.addButton.click();
       expect(page.optionlistsTab.editContentsList.count()).toBe(2);
     });
@@ -196,8 +201,10 @@ describe('the project settings page - project manager', function() {
     it('can delete values from the list', function() {
       expect(page.optionlistsTab.editContentsList.count()).toBe(2);
       page.optionlistsTab.editContentsList.first().then(function(elem) { page.optionlistsTab.deleteButton(elem).click(); });
+
       expect(page.optionlistsTab.editContentsList.count()).toBe(1);
       page.optionlistsTab.editContentsList.first().then(function(elem) { page.optionlistsTab.deleteButton(elem).click(); });
+
       expect(page.optionlistsTab.editContentsList.count()).toBe(0);
     });
   });
@@ -206,6 +213,7 @@ describe('the project settings page - project manager', function() {
     it('is not visible for project manager', function() {
       expect(page.tabs.communication.isPresent()).toBe(false);
     });
+
     describe('as a system admin', function() {
       it('setup: logout, login as system admin, go to project settings', function() {
         loginPage.logout();
@@ -214,10 +222,12 @@ describe('the project settings page - project manager', function() {
         projectListPage.clickOnProject(constants.testProjectName);
         projectSettingsPage.get();
       });
+
       it('the communication settings tab is visible', function() {
         expect(page.tabs.communication.isPresent()).toBe(true);
         page.tabs.communication.click();
       });
+
       it('can persist communication fields', function() {
         expect(page.communicationTab.sms.accountId.getAttribute('value')).toBe('');
         expect(page.communicationTab.sms.authToken.getAttribute('value')).toBe('');
