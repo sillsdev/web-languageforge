@@ -44,14 +44,29 @@ class Base
      */
     public $website;
 
+    /**
+     * @var bool
+     */
     protected $_isLoggedIn;
+
+    /**
+     * @var UserModel
+     */
     protected $_user;
+
+    /**
+     * @var string
+     */
     protected $_userId;
+
+    /**
+     * @var string
+     */
     protected $_projectId;
 
     // all child classes should use this method to render their pages
     protected function renderPage(Application $app, $viewName, $render = true) {
-        $this->_isLoggedIn = $app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_REMEMBERED');
+        $this->_isLoggedIn = $this->isLoggedIn($app);
         if ($this->_isLoggedIn) {
             try {
                 $userId = (string) $app['session']->get('user_id');
@@ -97,6 +112,15 @@ class Base
             $this->data['projects_count'] = $projects->count;
             $this->data['projects'] = $projects->entries;
         }
+    }
+
+    /**
+     * @param Application $app
+     * @return mixed
+     */
+    protected function isLoggedIn(Application $app)
+    {
+        return $app['security.authorization_checker']->isGranted('IS_AUTHENTICATED_REMEMBERED');
     }
 
     protected function getThemePath($theme = "") {
