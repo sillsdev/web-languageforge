@@ -12,8 +12,9 @@ interface DeliveryInterface
      * @param string $to
      * @param string $subject
      * @param string $content
+     * @param string $htmlContent
      */
-    public function sendEmail($from, $to, $subject, $content);
+    public function sendEmail($from, $to, $subject, $content, $htmlContent = '');
 
     /**
      * Sends an Sms.

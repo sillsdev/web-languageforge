@@ -19,14 +19,16 @@ class MockCommunicateDelivery implements DeliveryInterface
     public $to;
     public $subject;
     public $content;
+    public $htmlContent;
     public $smsModel;
 
-    public function sendEmail($from, $to, $subject, $content)
+    public function sendEmail($from, $to, $subject, $content, $htmlContent = '')
     {
         $this->from = $from;
         $this->to = $to;
         $this->subject = $subject;
         $this->content = $content;
+        $this->htmlContent = $htmlContent;
     }
 
     public function sendSms($smsModel)
@@ -52,7 +54,7 @@ class TestCommunicate extends UnitTestCase
         $emailTemplate = 'TestMessage';
         $delivery = new MockCommunicateDelivery();
 
-        Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, $delivery);
+        Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, '', $delivery);
 
         // What's in the delivery?
         $expectedFrom = array($project->emailSettings->fromAddress => $project->emailSettings->fromName);
@@ -81,7 +83,7 @@ class TestCommunicate extends UnitTestCase
         $emailTemplate = '';
         $delivery = new MockCommunicateDelivery();
 
-        Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, $delivery);
+        Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, '', $delivery);
 
         // What's in the delivery?
         $expectedTo = $user->mobile_phone;
@@ -110,7 +112,7 @@ class TestCommunicate extends UnitTestCase
         $emailTemplate = 'TestMessage';
         $delivery = new MockCommunicateDelivery();
 
-        Communicate::communicateToUsers(array($user), $project, $subject, $smsTemplate, $emailTemplate, $delivery);
+        Communicate::communicateToUsers(array($user), $project, $subject, $smsTemplate, $emailTemplate, '', $delivery);
 
         $unread = new UnreadMessageModel($userId, $project->id->asString());
         $messageIds = $unread->unreadItems();
@@ -263,8 +265,12 @@ class TestCommunicate extends UnitTestCase
         $this->assertEqual($expectedFrom, $delivery->from);
         $this->assertEqual($expectedTo, $delivery->to);
         $this->assertPattern('/' . $e->website->name . '/', $delivery->subject);
+        $this->assertNoPattern('/<p>/', $delivery->content);
         $this->assertPattern('/Name/', $delivery->content);
         $this->assertPattern('/' . $user->resetPasswordKey . '/', $delivery->content);
+        $this->assertPattern('/<p>/', $delivery->htmlContent);
+        $this->assertPattern('/Name/', $delivery->htmlContent);
+        $this->assertPattern('/' . $user->resetPasswordKey . '/', $delivery->htmlContent);
     }
 
     public function testSendJoinRequestConfirmation_PropertiesFromToBodyOk()
