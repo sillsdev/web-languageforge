@@ -25,18 +25,7 @@ class Auth extends PublicApp
     public function view(Request $request, Application $app, $appName, $resetPasswordKey = '')
     {
         switch ($appName) {
-            case 'login':
-                $this->setupNgView($app, $appName);
-                $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
-                if ($app['security.last_error']($request)) {
-                    $app['session']->getFlashBag()->add('errorMessage', $app['security.last_error']($request));
-                    if ($app['session']->has(SecurityContextInterface::AUTHENTICATION_ERROR)) {
-                        $app['session']->remove(SecurityContextInterface::AUTHENTICATION_ERROR);
-                    }
-                }
-
-                return $this->renderPage($app, 'angular-app');
-                break;
+            /** @noinspection PhpMissingBreakStatementInspection */
             case 'reset_password':
                 $user = new UserModelBase();
                 if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
@@ -51,13 +40,11 @@ class Auth extends PublicApp
                     return $app->redirect('/auth/login');
                 }
 
-                // intentional fall through to next case
+                // no break; - intentional fall through to next case
             case 'forgot_password':
+            case 'login':
                 $this->setupNgView($app, $appName);
-                $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
-                if (!array_key_exists('error', $this->data) or !$this->data['error']) {
-                    $this->data['error'] = '';
-                }
+                $this->setupAuthView($request, $app);
 
                 return $this->renderPage($app, 'angular-app');
                 break;
@@ -71,7 +58,7 @@ class Auth extends PublicApp
         $username = $request->request->get('_username');
         $identityCheck = UserCommands::checkIdentity($username, '', $this->website);
         if (! $identityCheck->usernameExists) {
-            $this->data['error'] = 'User not found.';
+            $app['session']->getFlashBag()->add('errorMessage', 'User not found.');
 
             return $this->view($request, $app, 'forgot_password');
         }
@@ -80,7 +67,7 @@ class Auth extends PublicApp
         $user->readByUserName($username);
 
         if (! $identityCheck->usernameExistsOnThisSite and $user->role != SystemRoles::SYSTEM_ADMIN) {
-            $this->data['error'] = sprintf('Username "%s" not available on "%s". Use "Create an Account".', $username, $this->website->domain);
+            $app['session']->getFlashBag()->add('errorMessage', sprintf('Username "%s" not available on "%s". Use "Create an Account".', $username, $this->website->domain));
 
             return $this->view($request, $app, 'forgot_password');
         }
@@ -90,6 +77,21 @@ class Auth extends PublicApp
         $app['session']->getFlashBag()->add('infoMessage', 'Password Reset email sent for username "'.$username.'"');
 
         return $app->redirect('/auth/login');
+    }
+
+    /**
+     * @param Request $request
+     * @param Application $app
+     */
+    private function setupAuthView(Request $request, Application $app)
+    {
+        $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
+        if ($app['security.last_error']($request)) {
+            $app['session']->getFlashBag()->add('errorMessage', $app['security.last_error']($request));
+            if ($app['session']->has(SecurityContextInterface::AUTHENTICATION_ERROR)) {
+                $app['session']->remove(SecurityContextInterface::AUTHENTICATION_ERROR);
+            }
+        }
     }
 
     /**

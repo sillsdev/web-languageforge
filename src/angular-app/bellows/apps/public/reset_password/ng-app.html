@@ -11,9 +11,9 @@
             {% for infoMessage in app.session.getFlashBag.get('infoMessage') %}
                 <div class="alert alert-info">{{ infoMessage }}</div>
             {% endfor %}
-            {% if error %}
-                <div class="alert alert-error">{{ error }}</div>
-            {% endif %}
+            {% for errorMessage in app.session.getFlashBag.get('errorMessage') %}
+                <div class="alert alert-error">{{ errorMessage }}</div>
+            {% endfor %}
         </div>
 
         <form class="form-horizontal" data-ng-submit="resetPassword()" name="resetPasswordForm" novalidate>
