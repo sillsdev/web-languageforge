@@ -9,7 +9,7 @@
 	<property name="build.minJsFile" value="${build.output}/${application.name}.min.js" />
 	<property name="build.packageFile" value="${build.output}/${application.name}.tgz" />
 	<property name="build.packageFileForTest" value="${build.output}/${application.name}_e2etest.tgz" />
-	<property name="build.secret" value="kT3sdPo60ewrGu8" />
+	<property name="build.secret" value="not_a_secret" />
 	<property name="build.installPath" value="/var/www/${application.name}.org_dev" />
 	<property name="build.installForTestPath" value="/var/www/${application.name}.org_e2etest" />
 	<property name="build.uploadPath" value="/var/www/${application.name}.org" />
