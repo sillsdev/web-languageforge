@@ -1,0 +1,9 @@
+---
+
+- name: Fix provisioning permissions
+  hosts: all
+  sudo: yes
+  tasks:
+
+- include: dependencies.yml
+- include: code.yml
