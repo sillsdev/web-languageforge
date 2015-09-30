@@ -10,7 +10,7 @@
       changed_when: false
       with_items:
         - /var/www/virtual/languageforge.org/htdocs
-        - /var/www/virtual/scriptureforge.org/htdocs
+        #- /var/www/virtual/scriptureforge.org/htdocs
 
     - name: bower install
       command: bower install --allow-root
@@ -19,7 +19,7 @@
       changed_when: false
       with_items:
         - /var/www/virtual/languageforge.org/htdocs
-        - /var/www/virtual/scriptureforge.org/htdocs
+        #- /var/www/virtual/scriptureforge.org/htdocs
 
     - name: factory reset mongodb to empty with admin user
       shell: php /var/www/virtual/default_local/tools/factoryReset.php run
