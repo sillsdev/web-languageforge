@@ -19,20 +19,30 @@
 	<property name="e2etest.protractor.conf" value="protractorConf.${application.name}.js" />  <!-- Filename with base dir test/app/ -->
 
 	<target name="clean">
-		<delete dir="${build.output}" quiet="true" />
+		<exec executable="sudo">
+			<arg line="rm -rf ${build.output}" />
+		</exec>
 	</target>
 		
 	<target name="install-clean" depends="">
-		<delete dir="${build.installPath}" quiet="true" />
+		<exec executable="sudo">
+			<arg line="rm -rf ${build.installPath}" />
+		</exec>
+		<mkdir dir="${build.installPath}" />
 	</target>
 	
 	<target name="test-e2e-install-clean" depends="">
-		<delete dir="${build.installForTestPath}" quiet="true" />
+		<exec executable="sudo">
+			<arg line="rm -rf ${build.installForTestPath}" />
+		</exec>
 		<mkdir dir="${build.installForTestPath}" />
 	</target>
 
 	<target name="upload-clean" depends="">
-		<delete dir="${build.uploadPath}" quiet="true" />
+		<exec executable="sudo">
+			<arg line="rm -rf ${build.uploadPath}" />
+		</exec>
+		<mkdir dir="${build.uploadPath}" />
 	</target>
 
 	<target name="version">
