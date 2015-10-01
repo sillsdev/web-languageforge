@@ -179,9 +179,8 @@ $app['security.authentication.success_handler.site'] = $app->share(function() us
     return new \Site\Handler\AuthenticationSuccessHandler($app['security.http_utils'], array(
         'default_target_path' => '/app',
         'login_path' => '/auth/login',
-    ));
+    ), 'site');
 });
-$app['security.authentication.success_handler.site']->setProviderKey('site');
 $app['security.authentication.logout_handler.site'] = $app->share(function() use ($app) {
     return new \Site\Handler\LogoutSuccessHandler($app['security.http_utils'], '/', $app['session']);
 });
