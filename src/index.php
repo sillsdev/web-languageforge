@@ -157,7 +157,7 @@ $app['security.firewalls'] = array(
 		'form' => array('login_path' => '/auth/login', 'check_path' => '/app/login_check'),
         'remember_me' => array('key' => REMEMBER_ME_SECRET),
 		'logout' => array('logout_path' => '/app/logout', 'target_url' => '/auth/login', 'invalidate_session' => true),
-		'users' => $app->share(function () use ($WEBSITE) {
+		'users' => $app->share(function() use ($WEBSITE) {
 			return new \Site\Provider\AuthUserProvider($WEBSITE);
 		}),
 	),
@@ -171,16 +171,17 @@ $app['security.access_rules'] = array(
     array('^/upload', 'ROLE_user'),
     array('^/script', 'ROLE_system_admin'),
 );
-// BCrypt needs PHP 5.5 on server, so have added composer require ircmaxell/password-compat. IJH 2015-09
-$app['security.encoder.digest'] = $app->share(function () {
+// BCrypt needs PHP 5.5 on server, so instead have added "composer require ircmaxell/password-compat". IJH 2015-09
+$app['security.encoder.digest'] = $app->share(function() {
 	return new \Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder(7);
 });
 $app['security.authentication.success_handler.site'] = $app->share(function() use ($app) {
     return new \Site\Handler\AuthenticationSuccessHandler($app['security.http_utils'], array(
         'default_target_path' => '/app',
         'login_path' => '/auth/login',
-    ), $app['session']);
+    ));
 });
+$app['security.authentication.success_handler.site']->setProviderKey('site');
 $app['security.authentication.logout_handler.site'] = $app->share(function() use ($app) {
     return new \Site\Handler\LogoutSuccessHandler($app['security.http_utils'], '/', $app['session']);
 });
