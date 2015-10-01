@@ -43,12 +43,18 @@ describe('the project settings page - project manager', function() {
     });
 
     it('can add a new user as a member', function() {
+      expect(page.membersTab.list.count()).toBe(memberCount);
       page.membersTab.addButton.click();
       page.membersTab.newMember.input.sendKeys('dude');
       page.membersTab.newMember.button.click();
 
       // wait for new user to load
-      browser.sleep(400);
+      browser.wait(function() {
+        return page.membersTab.list.count().then(function(count) {
+          return count >= memberCount + 1;
+        });
+      });
+
       expect(page.membersTab.list.count()).toBe(memberCount + 1);
     });
 
@@ -113,7 +119,6 @@ describe('the project settings page - project manager', function() {
       page.templatesTab.editor.saveButton.click();
       expect(page.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
       expect(page.templatesTab.list.count()).toBe(3);
-
     });
 
     it('can delete a template', function() {

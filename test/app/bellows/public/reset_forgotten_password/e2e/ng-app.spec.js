@@ -99,7 +99,14 @@ describe('E2E testing: Reset Forgotten Password', function() {
       loginPage.username.sendKeys(constants.resetUsername);
       loginPage.password.sendKeys(constants.resetPassword);
       loginPage.submit.click();
+
+      // since the home page is non-angular...
+      browser.ignoreSynchronization = true;
       expect(header.loginButton.isPresent()).toBe(false);
+
+      // reset browser synchronization
+      loginPage.get();
+      browser.ignoreSynchronization = false;
     });
 
   });
