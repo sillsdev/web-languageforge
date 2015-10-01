@@ -39,9 +39,6 @@ if (! defined('SF_USE_MINIFIED_JS')) {
     }
 }
 
-define('SF_DEFAULT_EMAIL', 'no-reply@scriptureforge.org');
-define('SF_DEFAULT_EMAIL_NAME', 'Scripture Forge');
-
 define('NG_BASE_FOLDER', 'angular-app/');
 
 if (! defined('REMEMBER_ME_SECRET')) {
