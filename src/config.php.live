@@ -42,5 +42,5 @@ if (! defined('SF_USE_MINIFIED_JS')) {
 define('NG_BASE_FOLDER', 'angular-app/');
 
 if (! defined('REMEMBER_ME_SECRET')) {
-    define('REMEMBER_ME_SECRET', 'kT3sdPo60ewrGu8');
+    define('REMEMBER_ME_SECRET', 'not_a_secret');
 }
