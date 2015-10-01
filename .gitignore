@@ -25,3 +25,5 @@ deploy/site_files/certificates/
 deploy/site_info/
 deploy/callback_plugins/*.pyc
 .vagrant/
+src/js/lib/languageforge.min.js
+src/js/lib/scriptureforge.min.js
