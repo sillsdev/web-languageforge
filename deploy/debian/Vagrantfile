@@ -23,7 +23,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "..", "/var/www/virtual/default_local",
+  config.vm.synced_folder "../../..", "/var/www/virtual/default_local",
     id: "vagrant-root",
     owner: "vagrant",
     group: "www-data",
@@ -43,7 +43,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
 
   config.vm.provision :ansible do |ansible|
-    ansible.playbook = 'playbook.yml'
+    ansible.playbook = '../playbook_palaso.yml'
     ansible.extra_vars = { ansible_ssh_user: 'vagrant', vagrant: true }
     ansible.verbose = 'v'
     # ansible.vault_password_file was added in vagrant 1.6 so using raw_arguments for now CP 2015-07

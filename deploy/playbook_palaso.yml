@@ -6,4 +6,6 @@
   tasks:
 
 - include: dependencies.yml
+  vars:
+    deploy: palaso
 - include: code.yml

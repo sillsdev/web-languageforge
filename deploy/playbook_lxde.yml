@@ -9,4 +9,6 @@
       changed_when: false
 
 - include: dependencies.yml
+  vars:
+    deploy: lxde
 - include: code.yml
