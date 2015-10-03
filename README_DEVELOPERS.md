@@ -25,14 +25,14 @@ We recommend doing development on your development machine directly rather than 
 
 #### Ansible Setup ####
 
-For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/ansible.cfg.defaults` into `/etc/ansible/ansible.cfg`.
+For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/ansible.cfg` into `/etc/ansible/ansible.cfg`.
 
 #### Vagrant VM Setup ####
 
-Change the variable *mongo_path: /var/lib/mongodb* in `deploy/dev.yml`, i.e. uncomment line 10 and comment line 8. 
+Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`, i.e. uncomment line 6 and comment line 5. 
 
 ````
-cd deploy
+cd deploy/debian
 vagrant up --provision
 ````
 
@@ -48,22 +48,31 @@ You will need to manually edit your `/etc/hosts` file such that *default.local*,
 
 The Vagrant configuration uses Ansible to provision the box.
 
+Install the php packages, this can take awhile. Note that you must have [composer](https://getcomposer.org/) and [bower](http://bower.io/) installed to do this.
+
+```
+cd ../../src
+composer install
+bower install
+```
+
+
 #### Local Linux Development Setup ####
 
 The Ansible configuration used for the Vagrant setup can also be used to setup your local linux development machine.
 
-Change the variable *mongo_path: /hddlinux/mongodb* in `deploy/dev.yml`, i.e. uncomment line 8 and comment line 10 (or whatever is appropriate on your system, its best to have mongo on you HDD rather than SDD). 
+Change the variable *mongo_path: /hddlinux/mongodb* in `deploy/vars_palaso.yml`, i.e. uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have mongo on you HDD rather than SDD). 
 
 ````
 cd deploy
-ansible-playbook -i hosts playbook.yml --limit localhost -K
+ansible-playbook -i hosts playbook_palaso.yml --limit localhost -K
 ````
 
 ## Testing ##
 
 ### PHP Unit Tests ###
 
-Unit testing currently uses [SimpleTest](http://www.simpletest.org/). Browse to [default.local/test/php](http://default.local/test/php/) and click [AllTest.php](http://default.local/test/php/AllTests.php). Browse to sub-folders to narrow tests.
+Unit testing currently uses [SimpleTest](http://www.simpletest.org/). Browse to [default.local/web-language/test/php](http://default.local/web-language/test/php/) and click [AllTest.php](http://default.local/web-language/test/php/AllTests.php). Browse to sub-folders to narrow tests.
 
 ### End-to-End (E2E) Tests ###
 

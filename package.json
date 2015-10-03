@@ -8,21 +8,15 @@
   },
   "author": "",
   "license": "MIT",
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/sillsdev/web-languageforge.git"
-
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/sillsdev/web-scriptureforge.git"
-    }
-  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sillsdev/web-languageforge.git",
+    "alternate-url": "https://github.com/sillsdev/web-scriptureforge.git"
+  },
   "devDependencies": {
     "gulp-util": "~3.0.6",
     "gulp": "~3.9.0",
-    "gulp-exec": "~1.0",
+    "gulp-exec": "~2.1.0",
     "gulp-livereload": "~3.8.0",
     "async": "~1.4.2"
   }

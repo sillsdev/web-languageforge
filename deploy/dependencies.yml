@@ -7,12 +7,14 @@
     - include_vars: "vars_{{ deploy }}.yml"
   roles:
     - fix
+    - locale_install
     - ssl_config
     - apache_config
   tasks:
     - name: install packages
       apt: name="{{item}}" state=present
       with_items:
+        - gcc
         - libapache2-mod-php5
         - php5-gd
         - php5-dev
@@ -67,7 +69,7 @@
       register: local_dir
       when: inventory_hostname == "localhost"
     - name: Ensure default_local link exists (localhost)
-      file: src="{{local_dir.stdout | dirname | realpath}}" dest="/var/www/virtual/default_local" state=link force=true
+      file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/virtual/default_local" state=link force=true
       when: inventory_hostname == "localhost"
 
     - name: install PECL mongo extension
