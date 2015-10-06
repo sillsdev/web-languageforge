@@ -1,6 +1,6 @@
 ---
 
-- name: Fix provisioning permissions
+- name: Linux Mint local webserver
   hosts: all
   sudo: yes
   tasks:
@@ -9,3 +9,5 @@
   vars:
     deploy: palaso
 - include: code.yml
+  vars:
+    lf_path: /var/www/virtual/default_local/web-languageforge
