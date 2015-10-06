@@ -32,7 +32,7 @@ Now deploy both sites...
 
 ````
 cd web-languageforge/deploy
-ansible-playbook -i hosts playbook_palaso.yml --limit localhost -K
+ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
 ````
 
 Install the php packages, this can take awhile. Note that you must have [composer](https://getcomposer.org/) and [bower](http://bower.io/) installed to do this.
