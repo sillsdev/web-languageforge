@@ -65,7 +65,7 @@ Change the variable *mongo_path: /hddlinux/mongodb* in `deploy/vars_palaso.yml`,
 
 ````
 cd deploy
-ansible-playbook -i hosts playbook_palaso.yml --limit localhost -K
+ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
 ````
 
 ## Testing ##

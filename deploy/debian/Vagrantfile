@@ -43,7 +43,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
 
   config.vm.provision :ansible do |ansible|
-    ansible.playbook = '../playbook_palaso.yml'
+    ansible.playbook = '../playbook_debian.yml'
     ansible.extra_vars = { ansible_ssh_user: 'vagrant', vagrant: true }
     ansible.verbose = 'v'
     # ansible.vault_password_file was added in vagrant 1.6 so using raw_arguments for now CP 2015-07

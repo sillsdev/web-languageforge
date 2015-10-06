@@ -5,8 +5,8 @@
 # mongo_path: /hddlinux/mongodb
 mongo_path: /var/lib/mongodb
 php_log_folder: /var/log/php
-lf_path: /var/www/virtual/default_local/web-languageforge/src
-sf_path: /var/www/virtual/default_local/web-scriptureforge/src
+lf_path: /var/www/virtual/default_local/web-languageforge
+sf_path: /var/www/virtual/default_local/web-scriptureforge
 
 ssl_items:
   - name: scriptureforge
@@ -50,7 +50,7 @@ apache_vhosts:
     server_file_name: languageforge_org
     template: vhost_ssl.conf.j2
     document_root: /var/www/virtual/languageforge.org/htdocs
-    link_to: "{{lf_path}}"
+    link_to: "{{lf_path}}/src"
     directory_extra:
       - RewriteEngine On
     virtual_hosts:
@@ -63,7 +63,7 @@ apache_vhosts:
     server_file_name: scriptureforge_org
     template: vhost_ssl.conf.j2
     document_root: /var/www/virtual/scriptureforge.org/htdocs
-    link_to: "{{sf_path}}"
+    link_to: "{{sf_path}}/src"
     directory_extra:
       - RewriteEngine On
     virtual_hosts:
