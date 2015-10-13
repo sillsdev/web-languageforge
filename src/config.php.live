@@ -23,7 +23,7 @@ if (! defined('ENVIRONMENT')) {
 }
 
 /*---------------------------------------------------------------
- * General ScriptureForge Configuration
+ * General xForge Configuration
  *---------------------------------------------------------------
  */
 
@@ -31,11 +31,19 @@ if (! defined('SF_DATABASE')) {
     define('SF_DATABASE', 'scriptureforge');
 }
 
-if (! defined('SF_USE_MINIFIED_JS')) {
+if (! defined('USE_MINIFIED_JS')) {
     if (defined('ENVIRONMENT') and ENVIRONMENT === 'development') {
-        define('SF_USE_MINIFIED_JS', false);
+        define('USE_MINIFIED_JS', false);
     } else {
-        define('SF_USE_MINIFIED_JS', true);
+        define('USE_MINIFIED_JS', true);
+    }
+}
+
+if (! defined('USE_LOCAL_DEPENDENCIES')) {
+    if (defined('ENVIRONMENT') and ENVIRONMENT === 'development') {
+        define('USE_LOCAL_DEPENDENCIES', true);
+    } else {
+        define('USE_LOCAL_DEPENDENCIES', false);
     }
 }
 
