@@ -4,6 +4,8 @@
   },
   "devDependencies": {
     "angularjs-file-upload": "1.6.7",
-    "textAngular": "~1.2.2"
+    "textAngular": "~1.2.2",
+    "google-open-sans": "1.0.x",
+    "font-awesome": "4.2.x"
   }
 }
