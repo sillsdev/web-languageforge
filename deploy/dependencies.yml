@@ -7,7 +7,8 @@
     - include_vars: "vars_{{ deploy }}.yml"
   roles:
     - fix
-    - locale_install
+    # locale_install may be needed if locale has been changed away from defaults
+#    - locale_install
     - ssl_config
     - apache_config
   tasks:
