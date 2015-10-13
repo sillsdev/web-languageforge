@@ -43,7 +43,8 @@ class App extends Base
 
         $this->data['appName'] = $appName;
         $this->data['appFolder'] = $appFolder;
-        $this->data['useMinifiedJs'] = SF_USE_MINIFIED_JS;
+        $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
+        $this->data['useLocalDependencies'] = USE_LOCAL_DEPENDENCIES;
 
         // update the projectId in the session if it is not empty
         $projectModel = new ProjectModel();

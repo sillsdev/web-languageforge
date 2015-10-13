@@ -10,7 +10,12 @@
             {% endfor %}
 
             <link rel="icon" href="/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico" type="image/x-icon" />
-            <link data-require="font-awesome@*" data-semver="4.2.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
+
+            {% if useLocalDependencies %}
+                <link rel="stylesheet" href="/vendor_bower/font-awesome/css/font-awesome.css" />
+            {% else %}
+                <link data-require="font-awesome@*" data-semver="4.2.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
+            {% endif %}
 
             <script src="/js/lib/jquery-1.8.3.min.js"></script>
             <!-- jquery must be the first js to be loaded -->
