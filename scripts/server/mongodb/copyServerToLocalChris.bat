@@ -5,4 +5,4 @@ plink chris@scriptureforge.org -m backupMongoOnServer.sh
 pscp chris@scriptureforge.org:mongodb_backup_%today%.tgz c:\src
 plink chris@scriptureforge.org -m deleteTarFileOnServer.sh
 plink root@scriptureforge.local -m restoreMongoOnLocal.sh
-plink root@scriptureforge.local "php /var/www/host/sil/languageforge/tools/ChangeSiteNameToLocal.php"
+plink root@scriptureforge.local "php /var/www/host/sil/languageforge/scripts/tools/ChangeSiteNameToLocal.php"

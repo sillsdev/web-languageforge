@@ -173,7 +173,7 @@ $app['security.access_rules'] = array(
 );
 // BCrypt needs PHP 5.5 on server, so instead have added "composer require ircmaxell/password-compat". IJH 2015-09
 $app['security.encoder.digest'] = $app->share(function() {
-	return new \Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder(7);
+	return new \Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder(BCRYPT_COST);
 });
 $app['security.authentication.success_handler.site'] = $app->share(function() use ($app) {
     return new \Site\Handler\AuthenticationSuccessHandler($app['security.http_utils'], array(

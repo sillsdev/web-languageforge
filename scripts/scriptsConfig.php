@@ -1,4 +1,5 @@
 <?php
+
 $rootPath = realpath(__DIR__ . '/..');
 
 define('TestPath', $rootPath . '/test/app');
