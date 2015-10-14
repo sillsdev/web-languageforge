@@ -5,7 +5,7 @@ require_once('scriptsConfig.php');
 use Api\Model\Shared\DbIntegrityHelper;
 use Api\Model\ProjectListModel;
 
-if (php_sapi_name() != 'cli') { die('this script must be run on the command-line'); }
+(php_sapi_name() == 'cli') or die('this script must be run on the command-line');
 
 $runForReal = false;
 if (count($argv) > 1 && $argv[1] == 'run') {

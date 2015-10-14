@@ -25,4 +25,4 @@
         - /var/www/virtual/scriptureforge.org/htdocs
 
     - name: factory reset mongodb to empty with admin user
-      shell: php {{lf_path}}/tools/factoryReset.php run
+      shell: php {{lf_path}}/scripts/tools/factoryReset.php run
