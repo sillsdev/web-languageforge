@@ -5,7 +5,7 @@ namespace Api\Model;
 use Api\Model\Mapper\MongoMapper;
 use Api\Model\Mapper\MapperModel;
 use Api\Model\Mapper\Id;
-use Api\Library\Bcrypt;
+use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 
 class PasswordModel_MongoMapper extends MongoMapper
 {
@@ -17,7 +17,6 @@ class PasswordModel_MongoMapper extends MongoMapper
         }
         return $instance;
     }
-
 }
 
 class PasswordModel extends MapperModel
@@ -30,8 +29,8 @@ class PasswordModel extends MapperModel
 
     public function changePassword($newPassword)
     {
-        $bcrypt = new Bcrypt();
-        $this->password = $bcrypt->hash($newPassword);
+        $bcrypt = new BCryptPasswordEncoder(BCRYPT_COST);
+        $this->password = $bcrypt->encodePassword($newPassword, null);
         $this->remember_code = null;
     }
 
@@ -43,8 +42,8 @@ class PasswordModel extends MapperModel
      */
     public function verifyPassword($passwordToVerify)
     {
-        $bcrypt = new Bcrypt();
-        return $bcrypt->verify($passwordToVerify, $this->password);
+        $bcrypt = new BCryptPasswordEncoder(BCRYPT_COST);
+        return $bcrypt->isPasswordValid($this->password, $passwordToVerify, null);
     }
 
     public $id;

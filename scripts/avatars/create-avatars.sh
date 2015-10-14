@@ -37,7 +37,7 @@ if [ "$NOTFOUND" -gt 0 ]; then
     exit 2
 fi
 
-OUTDIR=../../images/avatar
+OUTDIR=../../src/Site/views/shared/image/avatar
 mkdir -p $OUTDIR
 for animal in `cat animals.txt`
 do

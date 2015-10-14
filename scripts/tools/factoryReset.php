@@ -1,17 +1,16 @@
 #!/usr/bin/php -q
+
 <?php
-require_once('toolsConfig.php');
 
+require_once('../scriptsConfig.php');
 
-
-// use commands go here (after the e2eTestConfig)
 use Api\Model\Command\UserCommands;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\ProjectModel;
 use Api\Library\Shared\Website;
 use Api\Model\ProjectListModel;
 
-if (php_sapi_name() != 'cli') { die('this script must be run on the command-line'); }
+(php_sapi_name() == 'cli') or die('this script must be run on the command-line');
 
 $scriptureforgeWebsite = Website::get('scriptureforge.org');
 $languageforgeWebsite = Website::get('languageforge.org');
