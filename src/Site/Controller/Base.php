@@ -80,6 +80,7 @@ class Base
         }
 
         $this->populateHeaderMenuViewdata();
+        $this->data['useLocalDependencies'] = USE_LOCAL_DEPENDENCIES;
 
         if (empty($this->data)) {
             $app->abort(404, 'Error: cannot render without data');

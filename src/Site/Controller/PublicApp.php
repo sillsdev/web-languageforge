@@ -26,7 +26,6 @@ class PublicApp extends Base
         $this->data['appName'] = $appName;
         $this->data['appFolder'] = $appFolder;
         $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
-        $this->data['useLocalDependencies'] = USE_LOCAL_DEPENDENCIES;
 
         $this->addJavascriptFiles(NG_BASE_FOLDER.'bellows/js', array('vendor/', 'assets/'));
         $this->addJavascriptFiles(NG_BASE_FOLDER.'bellows/directive');
