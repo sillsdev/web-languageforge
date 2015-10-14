@@ -27,7 +27,7 @@ class TestUserModel extends UnitTestCase
         $user->email = "user@example.com";
         $user->username = "SomeUser";
         $user->name = "Some User";
-        $user->avatar_ref = "images/avatar/pinkbat.png";
+        $user->avatar_ref = "Site/views/shared/image/avatar/pinkbat.png";
         $id = $user->write();
         $this->assertNotNull($id);
         $this->assertIsA($id, 'string');
@@ -37,7 +37,7 @@ class TestUserModel extends UnitTestCase
         $this->assertEqual('user@example.com', $otherModel->email);
         $this->assertEqual('SomeUser', $otherModel->username);
         $this->assertEqual('Some User', $otherModel->name);
-        $this->assertEqual('images/avatar/pinkbat.png', $otherModel->avatar_ref);
+        $this->assertEqual('Site/views/shared/image/avatar/pinkbat.png', $otherModel->avatar_ref);
 
         $this->_someUserId = $id;
     }

@@ -21,6 +21,7 @@ define('SF_TESTPROJECT',      'Test Project');
 define('SF_TESTPROJECTCODE',  'TestCode1');
 define('SF_TESTPROJECT2',     'Test Project2');
 define('SF_TESTPROJECTCODE2', 'TestCode2');
+define('BCRYPT_COST', 7);
 
 global $WEBSITE;
 $WEBSITE = Website::get('dev.scriptureforge.org');

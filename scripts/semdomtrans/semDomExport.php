@@ -1,19 +1,14 @@
 <?php
 
-use Api\Model\Languageforge\SemDomTransProjectModel;
-use Api\Library\Languageforge\Semdomtrans\SemDomXMLExporter;
-use Api\Model\ProjectListModel;
+require_once('../scriptsConfig.php');
+
 use Api\Library\Languageforge\Semdomtrans;
-use Api\Model\ProjectModel;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
-
-require_once('../scriptConfig.php');
-
+use Api\Library\Languageforge\Semdomtrans\SemDomXMLExporter;
+use Api\Model\Languageforge\SemDomTransProjectModel;
 
 $lang = $argv[1];
 $version = SemDomTransProjectModel::SEMDOM_VERSION;
 $testMode = false;
-
 
 $projectModel = new SemDomTransProjectModel();
 $projectModel->readByProperties(array("languageIsoCode" => $lang, "semdomVersion" => $version));

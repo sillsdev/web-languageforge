@@ -1,8 +1,9 @@
 #!/usr/bin/php -q
-<?php
-require_once('toolsConfig.php');
 
-# use statements go below here
+<?php
+
+require_once('../scriptsConfig.php');
+
 use Api\Model\ProjectListModel;
 use Api\Model\ProjectModel;
 
@@ -11,7 +12,7 @@ class ChangeSiteNameToLocal
     public static function run($mode = 'test')
     {
         $testMode = ($mode != 'run');
-        $message = "Change Site Name To Local\n\n";
+        print "Change Site Name To Local\n\n";
 
         $siteNameMap = array(
             "languageforge.org" => "languageforge.local",
