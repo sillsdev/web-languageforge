@@ -1,14 +1,10 @@
 <?php
-use Api\Model\Languageforge\SemDomTransProjectModel;
-use Api\Library\Languageforge\Semdomtrans\SemDomXMLExporter;
-use Api\Model\Languageforge\LfProjectModel;
-use Api\Library\Shared\Website;
-use Api\Model\ProjectModel;
 
-require_once('../scriptConfig.php');
+require_once('../scriptsConfig.php');
 
-use Api\Model\ProjectListModel;
 use Api\Library\Languageforge\Semdomtrans;
+use Api\Library\Shared\Website;
+use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
 
 $lang = $argv[1];
