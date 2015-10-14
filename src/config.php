@@ -47,8 +47,9 @@ if (! defined('USE_LOCAL_DEPENDENCIES')) {
     }
 }
 
-define('NG_BASE_FOLDER', 'angular-app/');
-
 if (! defined('REMEMBER_ME_SECRET')) {
     define('REMEMBER_ME_SECRET', 'not_a_secret');
 }
+
+define('NG_BASE_FOLDER', 'angular-app/');
+define('BCRYPT_COST', 7);

@@ -1,16 +1,13 @@
 <?php
 
-use Api\Model\Languageforge\SemDomTransProjectModel;
-use Api\Library\Shared\Website;
+require_once('../scriptsConfig.php');
+
 use Api\Library\Languageforge\Semdomtrans\SemDomXMLImporter;
-use Api\Model\Languageforge\LfProjectModel;
-use Api\Model\ProjectModel;
+use Api\Library\Shared\Website;
 use Api\Model\Command\ProjectCommands;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
+use Api\Model\Languageforge\LfProjectModel;
+use Api\Model\Languageforge\SemDomTransProjectModel;
 use Palaso\Utilities\FileUtilities;
-
-require_once('../scriptConfig.php');
-
 
 $xmlFilePath = $argv[1];
 $lang = $argv[2];
