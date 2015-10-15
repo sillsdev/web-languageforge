@@ -20,7 +20,8 @@
                 </div>
             </div>
             <div class="commentRightSide">
-                <div class="commentRegarding" ng-show="comment.regarding.field">
+                <div class="commentRegarding" ng-show="comment.regarding.field"
+                    data-ng-style="{width: (rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && hover.comment && !comment.editing) ? '90%' : 'initial'}">
                     <div class="regardingContext"><b>{{comment.regarding.word}}</b> <em>{{comment.regarding.meaning}}</em></div>
                     <span class="regardingFieldName">{{comment.regarding.fieldNameForDisplay}}</span>
                     <div data-ng-class="(comment.regarding.inputSystem) ? 'input-prepend' : ''"
