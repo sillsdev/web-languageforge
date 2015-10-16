@@ -68,13 +68,18 @@ class Website
      * @var array<Website>
      */
     private static $_sites;
+
     /**
      *
      * @var array
      */
     private static $_redirect;
+
     /**
-    */
+     * @param string $domain
+     * @param string $base
+     * @throws \Exception
+     */
     public function __construct($domain, $base)
     {
         if ($base != self::SCRIPTUREFORGE && $base != self::LANGUAGEFORGE) { throw new \Exception('website->base must be either scriptureforge or languageforge'); }
@@ -121,6 +126,7 @@ class Website
     /**
      * @param string $hostname
      * @return string
+     * @throws \Exception
      */
     public static function getRedirect($hostname = '')
     {
@@ -254,6 +260,13 @@ class Website
         $w->theme = 'jamaicanpsalms';
         $w->defaultProjectCode = 'jamaicanpsalms';
         $sites['jamaicanpsalms.scriptureforge.local'] = $w;
+
+        $w = new Website('jamaicanpsalms.e2etest.scriptureforge.local', self::SCRIPTUREFORGE);
+        $w->name = 'The Jamaican Psalms Project';
+        $w->ssl = true;
+        $w->theme = 'jamaicanpsalms';
+        $w->defaultProjectCode = 'jamaicanpsalms';
+        $sites['jamaicanpsalms.e2etest.scriptureforge.local'] = $w;
 
         $w = new Website('demo.scriptureforge.local', self::SCRIPTUREFORGE);
         $w->name = 'Scripture Forge';
