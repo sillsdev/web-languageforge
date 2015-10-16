@@ -224,6 +224,10 @@
 	</target>
 
 	<target name="test-e2e" depends="test-e2e-env">
+		<antcall target="retest-e2e"/>
+	</target>
+
+	<target name="retest-e2e">
 		<!-- TODO: Consider another design where multiple protractor.conf files can be selected -->
 		<!-- TODO: Figure out how to connect to the Windows build agent and start the Selenium server -->
 		<waitfor maxwait="3" maxwaitunit="second" timeoutproperty="selenium.server.notfound">
@@ -235,7 +239,7 @@
 		<antcall target="runE2ETests"/>
 		<antcall target="test-e2e-teardown"/>
 	</target>
-	
+
 	<target name="echoServerNotFound" if="selenium.server.notfound">
 		<echo message="Selenium server not found. Skipping E2E tests." />
 	</target>
