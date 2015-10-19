@@ -13,7 +13,7 @@
 	<property name="build.installPath" value="/var/www/${application.name}.org_dev" />
 	<property name="build.installForTestPath" value="/var/www/${application.name}.org_e2etest" />
 	<property name="build.uploadPath" value="/var/www/${application.name}.org" />
-	<property name="e2etest.selenium.server.host" value="ba-wxp32b.psonet" />
+	<property name="e2etest.selenium.server.host" value="ba-webtest-a.psonet" />
 	<property name="e2etest.selenium.server.port" value="4444" />
 	<property name="e2etest.webserver.host" value="e2etest.${application.name}.local" />
 	<property name="e2etest.protractor.conf" value="protractorConf.${application.name}.js" />  <!-- Filename with base dir test/app/ -->
