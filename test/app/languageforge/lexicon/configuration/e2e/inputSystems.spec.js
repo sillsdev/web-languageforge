@@ -71,7 +71,7 @@ describe('Configuration Input Systems', function() {
     });
 
     it('can search for a language', function() {
-      expect(configPage.modal.selectLanguage.firstLanguageRow.isPresent()).toBe(false);
+      expect(configPage.modal.selectLanguage.languageRows.count()).toBe(0);
       configPage.modal.selectLanguage.searchLanguageInput.sendKeys(firstLanguage + protractor.Key.ENTER);
       expect(configPage.modal.selectLanguage.firstLanguageRow.isPresent()).toBe(true);
       expect(configPage.modal.selectLanguage.firstLanguageName.getText()).toEqual(firstLanguage);
@@ -83,7 +83,7 @@ describe('Configuration Input Systems', function() {
       expect(configPage.modal.selectLanguage.searchLanguageInput.getAttribute('value')).toEqual(firstLanguage);
       configPage.modal.selectLanguage.clearSearchButton.click();
       expect(configPage.modal.selectLanguage.searchLanguageInput.getAttribute('value')).toEqual('');
-      expect(configPage.modal.selectLanguage.firstLanguageRow.isPresent()).toBe(false);
+      expect(configPage.modal.selectLanguage.languageRows.count()).toBe(0);
     });
 
     it('can select language', function() {

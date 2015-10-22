@@ -6,7 +6,7 @@ var BellowsResetPasswordPage = function() {
     browser.waitForAngular();
   };
 
-  this.form = element('form#resetPasswordForm');
+  this.form = element(by.tagName('form'));
   this.infoMessages = element.all(by.css('.alert-info'));
   this.errors = element.all(by.css('.alert-error'));
   this.passwordInput = element(by.model('record.password'));

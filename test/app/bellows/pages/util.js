@@ -5,9 +5,10 @@ var setCheckbox = function(checkboxElement, value) {
   checkboxElement.isSelected().then(function(checked) {
     if (checked != value) {
       checkboxElement.click();
-    };
+    }
   });
 };
+
 module.exports.setCheckbox = setCheckbox;
 
 var old_findDropdownByValue = function(dropdownElement, value) {
@@ -21,7 +22,8 @@ var old_findDropdownByValue = function(dropdownElement, value) {
       }
     });
   };
-  if ("filter" in options) {
+
+  if ('filter' in options) {
     options.filter(function(elem) {
       return elem.getText().then(function(text) {
         return text === value;
@@ -33,22 +35,25 @@ var old_findDropdownByValue = function(dropdownElement, value) {
         result.reject('Value \"' + value.toString() + '" not found in dropdown');
       }
     });
-  } else if ("map" in options) {
+  } else if ('map' in options) {
     options.map(check);
   } else {
     // Sometimes we get a promise that returns a basic list; deal with that here
     options.then(function(list) {
-      for (var i=0; i<list.length; i++) {
+      for (var i = 0; i < list.length; i++) {
         check(list[i]);
       }
     });
-  };
+  }
+
   return result;
 };
+
 var findDropdownByValue = function(dropdownElement, value) {
   // Simpler (MUCH simpler) approach based on our custom elemMatches locator (defined below)
   return dropdownElement.element(by.elemMatches('option', value));
 };
+
 // Need to explicitly specify exported names: see http://openmymind.net/2012/2/3/Node-Require-and-Exports/
 module.exports.findDropdownByValue = findDropdownByValue;
 module.exports.old_findDropdownByValue = old_findDropdownByValue;
@@ -60,6 +65,7 @@ var old_clickDropdownByValue = function(dropdownElement, value) {
     elem.click();
   });
 };
+
 var clickDropdownByValue = function(dropdownElement, value) {
   // Select an element of the dropdown based on its value (its text)
   var option = findDropdownByValue(dropdownElement, value);
@@ -67,6 +73,7 @@ var clickDropdownByValue = function(dropdownElement, value) {
     elem.click();
   });
 };
+
 module.exports.clickDropdownByValue = clickDropdownByValue;
 module.exports.old_clickDropdownByValue = old_clickDropdownByValue;
 
@@ -77,48 +84,54 @@ module.exports.old_clickDropdownByValue = old_clickDropdownByValue;
 // your locator will match three elements: the div, the span, and the a.
 by.addLocator('elemMatches', function(selector, regexOrString, parentElem) {
   var searchScope = parentElem || document;
-  var regex = RegExp(regexOrString);
+  var regex = new RegExp(regexOrString);
   var allElems = searchScope.querySelectorAll(selector);
   return Array.prototype.filter.call(allElems, function(elem) {
     return regex.test(elem.innerText);
   });
 });
+
 // No need for a module.exports here, as we are adding this function to Protractor's "by" namespace
 
 var findRowByFunc = function(repeater, searchFunc) {
   // Repeater can be either a string or an already-created by.repeater() object
-  if ("string" === typeof repeater) {
+  if (typeof repeater === 'string') {
     repeater = element.all(by.repeater(repeater));
   }
+
   var foundRow = undefined;
   var result = protractor.promise.defer();
   repeater.map(function(row) {
     row.getText().then(function(rowText) {
       if (searchFunc(rowText)) {
         foundRow = row;
-      };
+      }
     });
   }).then(function() {
     if (foundRow) {
       result.fulfill(foundRow);
     } else {
-      result.reject("Row not found.");
+      result.reject('Row not found.');
     }
   });
+
   return result;
 };
+
 var findRowByText = function(repeater, searchText, regExpFlags) {
   // regExpFlags is completely optional and can be left out.
   // searchText can be a string, in which case it is turned into a RegExp (with specified flags, if given),
   //      or it can be a RegExp
   // repeater is as in findRowByFunc
-  if ("string" === typeof searchText) {
+  if (typeof searchText === 'string') {
     searchText = new RegExp(searchText, regExpFlags);
   }
+
   return findRowByFunc(repeater, function(rowText) {
     return searchText.test(rowText);
   });
 };
+
 module.exports.findRowByFunc = findRowByFunc;
 module.exports.findRowByText = findRowByText;
 
@@ -130,12 +143,14 @@ module.exports.findRowByText = findRowByText;
  * @param textString - string of text to set the value to
  */
 var sendText = function(elem, textString) {
-  browser.executeScript("arguments[0].value = arguments[1];", elem.getWebElement(), textString);
+  browser.executeScript('arguments[0].value = arguments[1];', elem.getWebElement(), textString);
 };
+
 module.exports.sendText = sendText;
 
 var waitForAlert = function(timeout) {
   if (!timeout) { timeout = 8000; }
+
   browser.wait(function() {
     var alertPresent = true;
     try {
@@ -143,35 +158,43 @@ var waitForAlert = function(timeout) {
     } catch (NoSuchAlertError) {
       alertPresent = false;
     }
+
     return alertPresent;
   }, timeout);
 };
+
 module.exports.waitForAlert = waitForAlert;
 
 var checkModalTextMatches = function(expectedText) {
   var modalBody = $('.modal-body');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
+
+  browser.wait(expectedCondition.visibilityOf(modalBody), CONDITION_TIMEOUT);
   expect(modalBody.getText()).toMatch(expectedText);
 };
+
 module.exports.checkModalTextMatches = checkModalTextMatches;
-var clickModalButton = function(btnText) {
+var clickModalButton = function(buttonText) {
   var modalFooter = $('.modal-footer');
-  var btn = modalFooter.element(by.partialButtonText(btnText));
-  
-  // Some tests weren't passing without the waitForAngular, presummably because the animation is still moving the dialog into place.
-  browser.waitForAngular();
-  browser.driver.sleep(300); // wait an extra 300ms for the animation to finish
+  var button = modalFooter.element(by.partialButtonText(buttonText));
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
-
-  btn.click();
+  browser.wait(expectedCondition.elementToBeClickable(button), CONDITION_TIMEOUT);
+  button.click();
 };
+
 module.exports.clickModalButton = clickModalButton;
 
 var clickBreadcrumb = function clickBreadcrumb(breadcrumbText) {
-  element(by.elemMatches("ul.topCrumbs > li", breadcrumbText)).click();
+  element(by.elemMatches('ul.topCrumbs > li', breadcrumbText)).click();
 };
+
 module.exports.clickBreadcrumb = clickBreadcrumb;
 
 var parent = function parent(child) {
   return child.element(by.xpath('..'));
 };
+
 module.exports.parent = parent;

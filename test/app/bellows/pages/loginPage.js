@@ -10,7 +10,7 @@ var BellowsLoginPage = function() {
     browser.waitForAngular();
   };
 
-  this.form = element('form#loginForm');
+  this.form = element(by.tagName('form'));
   this.infoMessages = element.all(by.css('.alert-info'));
   this.errors = element.all(by.css('.alert-error'));
   this.username = element(by.id('username'));
@@ -26,15 +26,15 @@ var BellowsLoginPage = function() {
   };
 
   this.loginAsAdmin = function() {
-    this.login(constants.adminUsername, constants.adminPassword);
+    _this.login(constants.adminUsername, constants.adminPassword);
   };
 
   this.loginAsManager = function() {
-    this.login(constants.managerUsername, constants.managerPassword);
+    _this.login(constants.managerUsername, constants.managerPassword);
   };
 
   this.loginAsUser = this.loginAsMember = function() {
-    this.login(constants.memberUsername, constants.memberPassword);
+    _this.login(constants.memberUsername, constants.memberPassword);
   };
 
   this.logout = function() {
