@@ -13,7 +13,7 @@ function NewLexProjectPage() {
   // form controls
   this.noticeList = element.all(by.repeater('notice in notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
-  this.newLexProjectForm = element('form#newLexProjectForm');
+  this.newLexProjectForm = element(by.tagName('form'));
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
   this.backButton = element(by.id('backButton'));
   this.nextButton = element(by.id('nextButton'));
@@ -72,6 +72,6 @@ function NewLexProjectPage() {
   // select language modal
   this.modal = modal;
 
-};
+}
 
 module.exports = new NewLexProjectPage();

@@ -5,9 +5,9 @@ describe('Browse and edit page (DBE) Editor', function() {
   var loginPage    = require('../../../../bellows/pages/loginPage.js');
   var projectsPage = require('../../../../bellows/pages/projectsPage.js');
   var util         = require('../../../../bellows/pages/util.js');
-  var dbePage      = require('../../pages/dbePage.js');
-  var dbeUtil      = require('../../pages/dbeUtil.js');
-  var configPage   = require('../../pages/configurationPage.js');
+  var dbePage          = require('../../pages/dbePage.js');
+  var dbeUtil          = require('../../pages/dbeUtil.js');
+  var configPage       = require('../../pages/configurationPage.js');
   var viewSettingsPage = require('../../pages/viewSettingsPage.js');
 
   it('setup: login, click on test project', function() {
@@ -38,10 +38,10 @@ describe('Browse and edit page (DBE) Editor', function() {
 
   it('word 1: edit page has correct meaning, part of speech', function() {
     expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
-      {'en': constants.testEntry1.senses[0].definition.en.value}
+      {en: constants.testEntry1.senses[0].definition.en.value},
     ]);
     expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
-      dbeUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value)
+      dbeUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value),
     ]);
   });
 
@@ -50,7 +50,7 @@ describe('Browse and edit page (DBE) Editor', function() {
     expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme['th-fonipa'].value);
     expect(dbePage.edit.renderedDiv.getText()).not.toContain('citation form');
   });
-  
+
   it('add citation form as visible field', function() {
     configPage.get();
     configPage.getTabByName('Fields').click();
@@ -77,9 +77,9 @@ describe('Browse and edit page (DBE) Editor', function() {
 
   it('one picture and caption is present', function() {
     expect(dbePage.edit.pictures.getFileName(0)).toContain('_' + constants.testEntry1.senses[0].pictures[0].fileName);
-    expect(dbePage.edit.pictures.getCaption(0)).toEqual({'en': constants.testEntry1.senses[0].pictures[0].caption.en.value});
+    expect(dbePage.edit.pictures.getCaption(0)).toEqual({en: constants.testEntry1.senses[0].pictures[0].caption.en.value});
   });
-  
+
   it('file upload drop box is displayed when Add Picture is clicked', function() {
     expect(dbePage.edit.pictures.addPictureLink.isPresent()).toBe(true);
     expect(dbePage.edit.pictures.addDropBox.isDisplayed()).toBe(false);
@@ -113,7 +113,7 @@ describe('Browse and edit page (DBE) Editor', function() {
     dbePage.edit.hideUncommonFields();
     expect(dbePage.edit.pictures.captions.first().isDisplayed()).toBe(true);
     dbePage.edit.pictures.captions.first().clear();
-    expect(dbePage.edit.pictures.captions.first().isPresent()).toBe(false);
+    expect(dbePage.edit.pictures.captions.count()).toBe(0);
   });
 
   it('change config to show Pictures and show captions', function() {
@@ -137,7 +137,7 @@ describe('Browse and edit page (DBE) Editor', function() {
     expect(dbePage.edit.pictures.removeImages.first().isPresent()).toBe(true);
     dbePage.edit.pictures.removeImages.first().click();
     util.clickModalButton('Delete Picture');
-    expect(dbePage.edit.pictures.images.first().isPresent()).toBe(false);
+    expect(dbePage.edit.pictures.images.count()).toBe(0);
   });
 
   it('change config to hide Pictures and hide captions', function() {
@@ -153,11 +153,11 @@ describe('Browse and edit page (DBE) Editor', function() {
   it('while Show All Fields has not been clicked, Pictures field is hidden', function() {
     util.clickBreadcrumb(constants.testProjectName);
     dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.pictures.list.isPresent()).toBe(false);
+    expect(dbePage.edit.getFields('Pictures').count()).toBe(0);
     dbePage.edit.showUncommonFields();
     expect(dbePage.edit.pictures.list.isPresent()).toBe(true);
     dbePage.edit.hideUncommonFields();
-    expect(dbePage.edit.pictures.list.isPresent()).toBe(false);
+    expect(dbePage.edit.getFields('Pictures').count()).toBe(0);
   });
 
   it('click on second word (found by definition)', function() {
@@ -166,7 +166,7 @@ describe('Browse and edit page (DBE) Editor', function() {
 
   it('word 2: edit page has correct meaning, part of speech', function() {
     expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
-      {'en': constants.testEntry2.senses[0].definition.en.value},
+      {en: constants.testEntry2.senses[0].definition.en.value},
     ]);
     expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
       dbeUtil.expandPartOfSpeech(constants.testEntry2.senses[0].partOfSpeech.value),
@@ -179,8 +179,8 @@ describe('Browse and edit page (DBE) Editor', function() {
 
   it('word with multiple meanings: edit page has correct meanings, parts of speech', function() {
     expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
-      {'en': constants.testMultipleMeaningEntry1.senses[0].definition.en.value},
-      {'en': constants.testMultipleMeaningEntry1.senses[1].definition.en.value},
+      {en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value},
+      {en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value},
     ]);
     expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
       dbeUtil.expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.value),
@@ -190,21 +190,21 @@ describe('Browse and edit page (DBE) Editor', function() {
 
   it('word with multiple meanings: edit page has correct examples, translations', function() {
     expect(dbePage.edit.getFieldValues('Example')).toEqual([
-      {'th': constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value},
-      {'th': constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value},
-      {'th': constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value},
-      {'th': constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value},
+      {th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value},
+      {th: constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value},
+      {th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value},
+      {th: constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value},
     ]);
     expect(dbePage.edit.getFieldValues('Translation')).toEqual([
-      {'en': constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value},
-      {'en': constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value},
-      {'en': constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value},
-      {'en': constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value},
+      {en: constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value},
+      {en: constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value},
+      {en: constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value},
+      {en: constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value},
     ]);
   });
 
   it('while Show All Fields has not been clicked, uncommon fields are hidden if they are empty', function() {
-    expect(dbePage.edit.getOneField('Semantics Note').isPresent()).toBe(false);
+    expect(dbePage.edit.getFields('Semantics Note').count()).toBe(0);
     expect(dbePage.edit.getOneField('General Note').isPresent()).toBe(true);
     dbePage.edit.showUncommonFields();
     expect(dbePage.edit.getOneField('Semantics Note').isPresent()).toBe(true);
@@ -213,17 +213,18 @@ describe('Browse and edit page (DBE) Editor', function() {
 
   it('word with multiple meanings: edit page has correct general notes, sources', function() {
     expect(dbePage.edit.getFieldValues('General Note')).toEqual([
-      {'en': constants.testMultipleMeaningEntry1.senses[0].generalNote.en.value},
-      {'en': constants.testMultipleMeaningEntry1.senses[1].generalNote.en.value},
+      {en: constants.testMultipleMeaningEntry1.senses[0].generalNote.en.value},
+      {en: constants.testMultipleMeaningEntry1.senses[1].generalNote.en.value},
     ]);
+
     // first item is empty Etymology Source, now that View Settings all default to visible. IJH 2015-03
     expect(dbePage.edit.getFieldValues('Source')).toEqual([
-      {'en': ''},
-      {'en': constants.testMultipleMeaningEntry1.senses[0].source.en.value},
-      {'en': constants.testMultipleMeaningEntry1.senses[1].source.en.value},
+      {en: ''},
+      {en: constants.testMultipleMeaningEntry1.senses[0].source.en.value},
+      {en: constants.testMultipleMeaningEntry1.senses[1].source.en.value},
     ]);
   });
-  
+
   it('back to browse page, create new word', function() {
     dbePage.edit.toListLink.click();
     dbePage.browse.newWordBtn.click();
@@ -249,7 +250,7 @@ describe('Browse and edit page (DBE) Editor', function() {
     dbePage.edit.search.clearBtn.click();
   });
 
-    it('check that Semantic Domain field is visible (for view settings test later)', function() {
+  it('check that Semantic Domain field is visible (for view settings test later)', function() {
       expect(dbePage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
     });
 

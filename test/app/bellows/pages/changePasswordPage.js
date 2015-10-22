@@ -8,7 +8,7 @@ var BellowsChangePasswordPage = function() {
     browser.waitForAngular();
   };
 
-  this.form = element('form#passwordForm');
+  this.form = element(by.tagName('form'));
   this.password = element(by.model('vars.password'));
   this.confirm = element(by.model('vars.confirm_password'));
   this.submitButton = element(by.partialButtonText('Change Password'));

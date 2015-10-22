@@ -7,9 +7,9 @@ describe('E2E testing: New Lex Project wizard app', function() {
   var util      = require('../../../../bellows/pages/util.js');
   var dbePage   = require('../../pages/dbePage.js');
   var page      = require('../../pages/newLexProjectPage.js');
-
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
   var CHECK_PAUSE = 50;
-  var SLIDE_UP_ANIMATION_PAUSE = 250;
 
   afterEach(function() {
     expect(body.phpError.isPresent()).toBe(false);
@@ -272,7 +272,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.verifyDataPage.importErrors.isDisplayed()).toBe(true);
       expect(page.verifyDataPage.importErrors.getText()).toContain('range file \'TestProj.lift-ranges\' was not found');
       page.verifyDataPage.nonCriticalErrorsButton.click();
-      browser.sleep(SLIDE_UP_ANIMATION_PAUSE);
+      browser.wait(expectedCondition.invisibilityOf(page.verifyDataPage.importErrors), CONDITION_TIMEOUT);
       expect(page.verifyDataPage.importErrors.isDisplayed()).toBe(false);
     });
 
