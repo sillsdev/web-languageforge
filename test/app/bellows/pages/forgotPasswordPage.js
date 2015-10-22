@@ -6,7 +6,7 @@ var BellowsForgotPasswordPage = function() {
     browser.waitForAngular();
   };
 
-  this.form = element('form#forgotPasswordForm');
+  this.form = element(by.tagName('form'));
   this.infoMessages = element.all(by.css('.alert-info'));
   this.errors = element.all(by.css('.alert-error'));
   this.usernameInput = element(by.id('username'));

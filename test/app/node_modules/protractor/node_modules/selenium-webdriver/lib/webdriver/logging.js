@@ -20,30 +20,16 @@ goog.require('goog.object');
 
 
 /**
- * Log level names from WebDriver's JSON wire protocol.
- * @enum {string}
- */
-webdriver.logging.LevelName = {
-  ALL: 'ALL',
-  DEBUG: 'DEBUG',
-  INFO: 'INFO',
-  WARNING: 'WARNING',
-  SEVERE: 'SEVERE',
-  OFF: 'OFF'
-};
-
-
-/**
  * Logging levels.
- * @enum {{value: number, name: webdriver.logging.LevelName}}
+ * @enum {{value: number, name: string}}
  */
 webdriver.logging.Level = {
-  ALL: {value: Number.MIN_VALUE, name: webdriver.logging.LevelName.ALL},
-  DEBUG: {value: 700, name: webdriver.logging.LevelName.DEBUG},
-  INFO: {value: 800, name: webdriver.logging.LevelName.INFO},
-  WARNING: {value: 900, name: webdriver.logging.LevelName.WARNING},
-  SEVERE: {value: 1000, name: webdriver.logging.LevelName.SEVERE},
-  OFF: {value: Number.MAX_VALUE, name: webdriver.logging.LevelName.OFF}
+  ALL: {value: Number.MIN_VALUE, name: 'ALL'},
+  DEBUG: {value: 700, name: 'DEBUG'},
+  INFO: {value: 800, name: 'INFO'},
+  WARNING: {value: 900, name: 'WARNING'},
+  SEVERE: {value: 1000, name: 'SEVERE'},
+  OFF: {value: Number.MAX_VALUE, name: 'OFF'}
 };
 
 
@@ -84,10 +70,39 @@ webdriver.logging.Type = {
 
 
 /**
- * A hash describing log preferences.
- * @typedef {Object.<webdriver.logging.Type, webdriver.logging.LevelName>}
+ * Describes the log preferences for a WebDriver session.
+ * @constructor
  */
-webdriver.logging.Preferences;
+webdriver.logging.Preferences = function() {
+  /** @private {!Object.<string, webdriver.logging.Level>} */
+  this.prefs_ = {};
+};
+
+
+/**
+ * Sets the desired logging level for a particular log type.
+ * @param {(string|webdriver.logging.Type)} type The log type.
+ * @param {!webdriver.logging.Level} level The desired log level.
+ */
+webdriver.logging.Preferences.prototype.setLevel = function(type, level) {
+  this.prefs_[type] = level;
+};
+
+
+/**
+ * Converts this instance to its JSON representation.
+ * @return {!Object.<string, string>} The JSON representation of this set of
+ *     preferences.
+ */
+webdriver.logging.Preferences.prototype.toJSON = function() {
+  var obj = {};
+  for (var type in this.prefs_) {
+    if (this.prefs_.hasOwnProperty(type)) {
+      obj[type] = this.prefs_[type].name;
+    }
+  }
+  return obj;
+};
 
 
 /**

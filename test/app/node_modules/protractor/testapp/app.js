@@ -11,6 +11,8 @@ angular.module('myApp', ['ngAnimate', 'ngRoute', 'myApp.appVersion']).
     $routeProvider.when('/conflict', {templateUrl: 'conflict/conflict.html', controller: ConflictCtrl});
     $routeProvider.when('/polling', {templateUrl: 'polling/polling.html', controller: PollingCtrl});
     $routeProvider.when('/animation', {templateUrl: 'animation/animation.html', controller: AnimationCtrl});
+    $routeProvider.when('/interaction', {templateUrl: 'interaction/interaction.html', controller: InteractionCtrl});
+    $routeProvider.when('/shadow', {templateUrl: 'shadow/shadow.html', controller: ShadowCtrl});
     $routeProvider.when('/slowloader', {
       templateUrl: 'polling/polling.html',
       controller: PollingCtrl,

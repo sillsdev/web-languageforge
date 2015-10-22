@@ -22,17 +22,20 @@ describe('View settings page', function() {
 
   it('Hide Semantic Domain field for Manager', function() {
     var vsp = viewSettingsPage;
+
     // Eye icon should be present if "Show field" is checked for that field
     vsp.getFieldByName('Semantic Domain').then(function(elem) {
       var icon = elem.$('i');
       expect(icon.getAttribute('class')).toMatch('icon-eye-open');
     });
+
     vsp.clickFieldByName('Semantic Domain');
     util.setCheckbox(vsp.showField, false);
     vsp.getFieldByName('Semantic Domain').then(function(elem) {
       var icon = elem.$('i');
       expect(icon.getAttribute('class')).not.toMatch('icon-eye-open');
     });
+
     vsp.applyBtn.click();
   });
 
@@ -52,7 +55,7 @@ describe('View settings page', function() {
   it('Semantic Domain field is hidden for Manager', function() {
     util.clickBreadcrumb(constants.testProjectName);
     dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.getOneField('Semantic Domain').isPresent()).toBeFalsy();
+    expect(dbePage.edit.getFields('Semantic Domain').count()).toBe(0);
   });
 
   it('Semantic Domain field is visible for Member', function() {
@@ -68,7 +71,7 @@ describe('View settings page', function() {
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
     dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.getOneField('Semantic Domain').isPresent()).toBeFalsy();
+    expect(dbePage.edit.getFields('Semantic Domain').count()).toBe(0);
   });
 
   it('Return view settings to normal before next test', function() {

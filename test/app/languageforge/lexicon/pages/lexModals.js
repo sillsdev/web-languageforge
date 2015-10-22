@@ -1,18 +1,19 @@
 'use strict';
 
 function LexModals() {
-  
+
   // select language modal
   this.selectLanguage = {
     searchLanguageInput: element(by.model('searchText')),
-    firstLanguageRow: element.all(by.repeater('language in languages')).first(),
+    languageRows: element.all(by.repeater('language in languages')),
     firstLanguageName: element.all(by.repeater('language in languages').column('name')).first(),
-    lastLanguageRow: element.all(by.repeater('language in languages')).last(),
     lastLanguageName: element.all(by.repeater('language in languages').column('name')).last(),
     addButton: element(by.partialButtonText('Add')),
-    clearSearchButton: element(by.css('span .icon-remove'))
+    clearSearchButton: element(by.css('span .icon-remove')),
   };
-  
+  this.selectLanguage.firstLanguageRow = this.selectLanguage.languageRows.first();
+  this.selectLanguage.lastLanguageRow = this.selectLanguage.languageRows.last();
+
   // custom field modal
   this.customField = {
     displayNameInput: element(by.model('newCustomData.name')),
@@ -20,9 +21,9 @@ function LexModals() {
     levelDropdown: element(by.model('newCustomData.level')),
     typeDropdown: element(by.model('newCustomData.type')),
     listCodeDropdown: element(by.model('newCustomData.listCode')),
-    addButton: element(by.partialButtonText('Add'))
+    addButton: element(by.partialButtonText('Add')),
   };
-  
-};
+
+}
 
 module.exports = new LexModals();

@@ -19,7 +19,6 @@ var fs = require('fs'),
     util = require('util');
 
 var webdriver = require('./index'),
-    LogLevel = webdriver.logging.LevelName,
     executors = require('./executors'),
     io = require('./io'),
     portprober = require('./net/portprober'),
@@ -85,15 +84,16 @@ function findExecutable(opt_exe) {
 
 /**
  * Maps WebDriver logging level name to those recognised by PhantomJS.
- * @type {!Object.<webdriver.logging.LevelName, string>}
+ * @type {!Object.<string, string>}
  * @const
  */
 var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
   var map = {};
-  map[LogLevel.ALL] = map[LogLevel.DEBUG] = 'DEBUG';
-  map[LogLevel.INFO] = 'INFO';
-  map[LogLevel.WARNING] = 'WARN';
-  map[LogLevel.SEVERE] = map[LogLevel.OFF] = 'ERROR';
+  map[webdriver.logging.Level.ALL.name] = 'DEBUG';
+  map[webdriver.logging.Level.DEBUG.name] = 'DEBUG';
+  map[webdriver.logging.Level.INFO.name] = 'INFO';
+  map[webdriver.logging.Level.WARNING.name] = 'WARN';
+  map[webdriver.logging.Level.SEVERE.name] = 'ERROR';
   return map;
 })();
 
@@ -101,14 +101,35 @@ var WEBDRIVER_TO_PHANTOMJS_LEVEL = (function() {
 /**
  * Creates a new PhantomJS WebDriver client.
  * @param {webdriver.Capabilities=} opt_capabilities The desired capabilities.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use, or
+ *     {@code null} to use the currently active flow.
  * @return {!webdriver.WebDriver} A new WebDriver instance.
+ * @deprecated Use {@link Driver}.
  */
-function createDriver(opt_capabilities) {
+function createDriver(opt_capabilities, opt_flow) {
+  return new Driver(opt_capabilities, opt_flow);
+}
+
+
+/**
+ * Creates a new WebDriver client for PhantomJS.
+ *
+ * @param {webdriver.Capabilities=} opt_capabilities The desired capabilities.
+ * @param {webdriver.promise.ControlFlow=} opt_flow The control flow to use, or
+ *     {@code null} to use the currently active flow.
+ * @constructor
+ * @extends {webdriver.WebDriver}
+ */
+var Driver = function(opt_capabilities, opt_flow) {
   var capabilities = opt_capabilities || webdriver.Capabilities.phantomjs();
   var exe = findExecutable(capabilities.get(BINARY_PATH_CAPABILITY));
   var args = ['--webdriver-logfile=' + DEFAULT_LOG_FILE];
 
   var logPrefs = capabilities.get(webdriver.Capability.LOGGING_PREFS);
+  if (logPrefs instanceof webdriver.logging.Preferences) {
+    logPrefs = logPrefs.toJSON();
+  }
+
   if (logPrefs && logPrefs[webdriver.logging.Type.DRIVER]) {
     var level = WEBDRIVER_TO_PHANTOMJS_LEVEL[
         logPrefs[webdriver.logging.Type.DRIVER]];
@@ -149,16 +170,24 @@ function createDriver(opt_capabilities) {
   });
 
   var executor = executors.createExecutor(service.start());
-  var driver = webdriver.WebDriver.createSession(executor, capabilities);
-  var boundQuit = driver.quit.bind(driver);
-  driver.quit = function() {
+  var driver = webdriver.WebDriver.createSession(
+      executor, capabilities, opt_flow);
+
+  webdriver.WebDriver.call(
+      this, driver.getSession(), executor, driver.controlFlow());
+
+  var boundQuit = this.quit.bind(this);
+
+  /** @override */
+  this.quit = function() {
     return boundQuit().thenFinally(service.kill.bind(service));
   };
   return driver;
-}
+};
+util.inherits(Driver, webdriver.WebDriver);
 
 
 // PUBLIC API
 
-
+exports.Driver = Driver;
 exports.createDriver = createDriver;

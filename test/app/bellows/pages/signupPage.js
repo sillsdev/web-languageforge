@@ -6,7 +6,7 @@ var SignupPage = function() {
     browser.waitForAngular();
   };
 
-  this.signupForm = element('form#signupForm');
+  this.signupForm = element(by.tagName('form'));
   this.usernameExists = element(by.id('usernameExists'));
   this.usernameOk = element(by.id('usernameOk'));
   this.usernameInput = element(by.model('record.username'));
