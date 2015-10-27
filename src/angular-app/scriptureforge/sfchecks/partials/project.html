@@ -41,22 +41,22 @@
                             <a data-ng-click="toggleRangeSelector()">Select limited verse range</a>
                         </td>
                     </tr>
-        <tr>
-            <td>
-                <span class="text-info"><a href="/sfchecks_usersguide#exportusx" target="_blank">How can I export a USX file from ParaTExt?</a></span>
-            </td>
-        </tr>
+                    <tr>
+                        <td>
+                            <span class="text-info"><a href="/sfchecks_usersguide#exportusx" target="_blank">How can I export a USX file from ParaTExt?</a></span>
+                        </td>
+                    </tr>
                 </table>
                 <div data-collapse="rangeSelectorCollapsed">
                     <table>
                         <tr>
                             <td>From</td>
-                            <td><input type="number" data-ng-model="startCh" min="1" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" data-ng-model="startVs" min="1" placeholder="Verse" style="width: 4em"></input></td>
+                            <td><input type="number" data-ng-model="startCh" min="1" placeholder="Chap." style="width: 4em; text-align: right" />&nbsp;:&nbsp;<input type="number" data-ng-model="startVs" min="1" placeholder="Verse" style="width: 4em" /></td>
                             <td><a data-ng-click="startCh = ''; startVs = ''" class="btn-link">reset</a></td>
                         </tr>
                         <tr>
                             <td>To</td>
-                            <td><input type="number" data-ng-model="endCh" min="1" placeholder="Chap." style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;<input type="number" data-ng-model="endVs" min="1" placeholder="Verse" style="width: 4em"></input></td>
+                            <td><input type="number" data-ng-model="endCh" min="1" placeholder="Chap." style="width: 4em; text-align: right" />&nbsp;:&nbsp;<input type="number" data-ng-model="endVs" min="1" placeholder="Verse" style="width: 4em" /></td>
                             <td><a data-ng-click="endCh = ''; endVs = ''" class="btn-link">reset</a></td>
                         </tr>
                     </table>

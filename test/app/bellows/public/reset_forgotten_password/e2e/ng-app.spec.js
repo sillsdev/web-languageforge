@@ -2,10 +2,12 @@
 
 describe('E2E testing: Reset Forgotten Password', function() {
   var constants = require('../../../../testConstants');
-  var header    = require('../../../pages/pageHeader');
-  var loginPage = require('../../../pages/loginPage');
-  var resetPasswordPage = require('../../../pages/resetPasswordPage');
+  var header             = require('../../../pages/pageHeader');
+  var loginPage          = require('../../../pages/loginPage');
+  var resetPasswordPage  = require('../../../pages/resetPasswordPage');
   var forgotPasswordPage = require('../../../pages/forgotPasswordPage');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   it('with expired reset key routes to login with warning', function() {
     resetPasswordPage.get(constants.expiredPasswordKey);
@@ -23,6 +25,7 @@ describe('E2E testing: Reset Forgotten Password', function() {
 
     it('can navigate to request page', function() {
       loginPage.get();
+      browser.wait(expectedCondition.elementToBeClickable(loginPage.forgotPasswordLink), CONDITION_TIMEOUT);
       loginPage.forgotPasswordLink.click();
       expect(forgotPasswordPage.form).toBeDefined();
       expect(forgotPasswordPage.usernameInput.isPresent()).toBe(true);
