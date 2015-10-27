@@ -3,6 +3,12 @@
   "dependencies": {
   },
   "devDependencies": {
+    "angular": "1.2.15",
+    "angular-animate": "1.2.15",
+    "angular-route": "1.2.15",
+    "angular-ui-router": "0.2.10",
+    "angular-translate": "2.2.0",
+    "angular-translate-loader-static-files": "2.2.0",
     "angularjs-file-upload": "1.6.7",
     "textAngular": "~1.2.2",
     "google-open-sans": "1.0.x",
