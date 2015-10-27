@@ -114,14 +114,12 @@ describe('the project settings page - project manager', function() {
 
     it('can update an existing template', function() {
       projectSettingsPage.templatesTab.list.last().element(by.linkText('sound check')).click();
-      browser.wait(function() {
-        return projectSettingsPage.templatesTab.editor.saveButton.isDisplayed();
-      });
-
+      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.templatesTab.editor.saveButton), CONDITION_TIMEOUT);
       expect(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(true);
       projectSettingsPage.templatesTab.editor.title.clear();
       projectSettingsPage.templatesTab.editor.title.sendKeys('test12');
       projectSettingsPage.templatesTab.editor.saveButton.click();
+      browser.wait(expectedCondition.invisibilityOf(projectSettingsPage.templatesTab.editor.saveButton), CONDITION_TIMEOUT);
       expect(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
       expect(projectSettingsPage.templatesTab.list.count()).toBe(3);
     });
