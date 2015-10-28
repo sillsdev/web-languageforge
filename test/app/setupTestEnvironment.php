@@ -65,7 +65,7 @@ $projectModel->projectName = $constants['newProjectName'];
 $projectModel->projectCode = $constants['newProjectCode'];
 $db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
 
-$adminUser = UserCommands::createUser(array(
+$adminUserId = UserCommands::createUser(array(
     'id' => '',
     'name' => $constants['adminName'],
     'email' => $constants['adminEmail'],
@@ -75,7 +75,7 @@ $adminUser = UserCommands::createUser(array(
     'role' => SystemRoles::SYSTEM_ADMIN),
     $website
 );
-$managerUser = UserCommands::createUser(array(
+$managerUserId = UserCommands::createUser(array(
     'id' => '',
     'name' => $constants['managerName'],
     'email' => $constants['managerEmail'],
@@ -85,7 +85,7 @@ $managerUser = UserCommands::createUser(array(
     'role' => SystemRoles::USER),
     $website
 );
-$memberUser = UserCommands::createUser(array(
+$memberUserId = UserCommands::createUser(array(
     'id' => '',
     'name' => $constants['memberName'],
     'email' => $constants['memberEmail'],
@@ -138,7 +138,7 @@ $testProject = ProjectCommands::createProject(
     $constants['testProjectName'],
     $constants['testProjectCode'],
     $projectType,
-    $adminUser,
+    $adminUserId,
     $website
 );
 $testProjectModel = new ProjectModel($testProject);
@@ -150,7 +150,7 @@ $otherProject = ProjectCommands::createProject(
     $constants['otherProjectName'],
     $constants['otherProjectCode'],
     $projectType,
-    $managerUser,
+    $managerUserId,
     $website
 );
 $otherProjectModel = new ProjectModel($otherProject);
@@ -158,9 +158,10 @@ $otherProjectModel->projectCode = $constants['otherProjectCode'];
 $otherProjectModel->allowInviteAFriend = $constants['otherProjectAllowInvites'];
 $otherProjectModel->write();
 
-ProjectCommands::updateUserRole($testProject, $managerUser, ProjectRoles::MANAGER);
-ProjectCommands::updateUserRole($testProject, $memberUser, ProjectRoles::CONTRIBUTOR);
-ProjectCommands::updateUserRole($otherProject, $adminUser, ProjectRoles::MANAGER);
+ProjectCommands::updateUserRole($testProject, $managerUserId, ProjectRoles::MANAGER);
+ProjectCommands::updateUserRole($testProject, $memberUserId, ProjectRoles::CONTRIBUTOR);
+ProjectCommands::updateUserRole($testProject, $resetUserId, ProjectRoles::CONTRIBUTOR);
+ProjectCommands::updateUserRole($otherProject, $adminUserId, ProjectRoles::MANAGER);
 
 if ($site == 'scriptureforge') {
     $text1 = TextCommands::updateText($testProject, array(
@@ -202,22 +203,22 @@ if ($site == 'scriptureforge') {
     $answer1 = QuestionCommands::updateAnswer($testProject, $question1, array(
         'id' => '',
         'content' => $constants['testText1Question1Answer']),
-        $managerUser);
+        $managerUserId);
     $answer1Id = array_keys($answer1)[0];
     $answer2 = QuestionCommands::updateAnswer($testProject, $question2, array(
         'id' => '',
         'content' => $constants['testText1Question2Answer']),
-        $managerUser);
+        $managerUserId);
     $answer2Id = array_keys($answer2)[0];
 
     $comment1 = QuestionCommands::updateComment($testProject, $question1, $answer1Id, array(
         'id' => '',
         'content' => $constants['testText1Question1Answer1Comment']),
-        $managerUser);
+        $managerUserId);
     $comment2 = QuestionCommands::updateComment($testProject, $question2, $answer2Id, array(
         'id' => '',
         'content' => $constants['testText1Question2Answer2Comment']),
-        $managerUser);
+        $managerUserId);
 } elseif ($site == 'languageforge') {
     // Set up LanguageForge E2E test envrionment here
     $testProjectModel = new LexiconProjectModel($testProject);
@@ -250,19 +251,19 @@ if ($site == 'scriptureforge') {
             'id' => '',
             'lexeme' => $constants['testEntry1']['lexeme'],
             'senses' => $constants['testEntry1']['senses']
-        ), $managerUser);
+        ), $managerUserId);
     $entry2 = LexEntryCommands::updateEntry($testProject,
         array(
             'id' => '',
             'lexeme' => $constants['testEntry2']['lexeme'],
             'senses' => $constants['testEntry2']['senses']
-        ), $managerUser);
+        ), $managerUserId);
     $multipleMeaningEntry1 = LexEntryCommands::updateEntry($testProject,
         array(
             'id' => '',
             'lexeme' => $constants['testMultipleMeaningEntry1']['lexeme'],
             'senses' => $constants['testMultipleMeaningEntry1']['senses']
-        ), $managerUser);
+        ), $managerUserId);
 
     // put mock uploaded zip import (jpg file)
     $fileName = $constants['testMockJpgImportFile']['name'];
