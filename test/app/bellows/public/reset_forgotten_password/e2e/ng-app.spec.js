@@ -6,8 +6,6 @@ describe('E2E testing: Reset Forgotten Password', function() {
   var loginPage          = require('../../../pages/loginPage');
   var resetPasswordPage  = require('../../../pages/resetPasswordPage');
   var forgotPasswordPage = require('../../../pages/forgotPasswordPage');
-  var expectedCondition = protractor.ExpectedConditions;
-  var CONDITION_TIMEOUT = 3000;
 
   it('with expired reset key routes to login with warning', function() {
     resetPasswordPage.get(constants.expiredPasswordKey);
@@ -17,15 +15,13 @@ describe('E2E testing: Reset Forgotten Password', function() {
     expect(loginPage.errors.first().getText()).toContain('expired');
 
     // clear errors so that afterEach appFrame error check doesn't fail, see projectSettingsPage.spec.js
-    browser.refresh();
+    browser.navigate().refresh();
     expect(loginPage.errors.count()).toBe(0);
   });
 
   describe('for Forgot Password request', function() {
 
     it('can navigate to request page', function() {
-      loginPage.get();
-      browser.wait(expectedCondition.elementToBeClickable(loginPage.forgotPasswordLink), CONDITION_TIMEOUT);
       loginPage.forgotPasswordLink.click();
       expect(forgotPasswordPage.form).toBeDefined();
       expect(forgotPasswordPage.usernameInput.isPresent()).toBe(true);
@@ -41,7 +37,7 @@ describe('E2E testing: Reset Forgotten Password', function() {
       forgotPasswordPage.usernameInput.clear();
 
       // clear errors so that afterEach appFrame error check doesn't fail, see projectSettingsPage.spec.js
-      browser.refresh();
+      browser.navigate().refresh();
       expect(forgotPasswordPage.errors.count()).toBe(0);
     });
 
@@ -98,18 +94,12 @@ describe('E2E testing: Reset Forgotten Password', function() {
       expect(loginPage.infoMessages.count()).toBe(1);
       expect(loginPage.infoMessages.first().getText()).toContain('password has been reset');
       expect(loginPage.errors.count()).toBe(0);
-      expect(header.loginButton.isPresent()).toBe(true);
+      expect(header.myProjects.button.isPresent()).toBe(false);
       loginPage.username.sendKeys(constants.resetUsername);
       loginPage.password.sendKeys(constants.resetPassword);
       loginPage.submit.click();
-
-      // since the home page is non-angular...
-      browser.ignoreSynchronization = true;
       expect(header.loginButton.isPresent()).toBe(false);
-
-      // reset browser synchronization
-      loginPage.get();
-      browser.ignoreSynchronization = false;
+      expect(header.myProjects.button.isDisplayed()).toBe(true);
     });
 
   });
