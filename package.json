@@ -19,5 +19,8 @@
     "gulp-exec": "~2.1.0",
     "gulp-livereload": "~3.8.0",
     "async": "~1.4.2"
+  },
+  "jscsConfig": {
+    "disallowTrailingComma": true
   }
 }

@@ -15,7 +15,7 @@ describe('E2E testing: Reset Forgotten Password', function() {
     expect(loginPage.errors.first().getText()).toContain('expired');
 
     // clear errors so that afterEach appFrame error check doesn't fail, see projectSettingsPage.spec.js
-    browser.navigate().refresh();
+    browser.refresh();
     expect(loginPage.errors.count()).toBe(0);
   });
 
@@ -28,6 +28,7 @@ describe('E2E testing: Reset Forgotten Password', function() {
     });
 
     it('cannot request for non-existent user', function() {
+      forgotPasswordPage.get();
       expect(forgotPasswordPage.infoMessages.count()).toBe(0);
       expect(forgotPasswordPage.errors.count()).toBe(0);
       forgotPasswordPage.usernameInput.sendKeys(constants.notUsedUsername);
@@ -37,7 +38,7 @@ describe('E2E testing: Reset Forgotten Password', function() {
       forgotPasswordPage.usernameInput.clear();
 
       // clear errors so that afterEach appFrame error check doesn't fail, see projectSettingsPage.spec.js
-      browser.navigate().refresh();
+      browser.refresh();
       expect(forgotPasswordPage.errors.count()).toBe(0);
     });
 
@@ -86,7 +87,8 @@ describe('E2E testing: Reset Forgotten Password', function() {
       resetPasswordPage.confirmPasswordInput.clear();
     });
 
-    it('successfully changes user\'s password after form submission', function() {
+    it('successfully change user\'s password', function() {
+      resetPasswordPage.get(constants.resetPasswordKey);
       resetPasswordPage.passwordInput.sendKeys(constants.resetPassword);
       resetPasswordPage.confirmPasswordInput.sendKeys(constants.resetPassword);
       resetPasswordPage.resetButton.click();
@@ -94,10 +96,11 @@ describe('E2E testing: Reset Forgotten Password', function() {
       expect(loginPage.infoMessages.count()).toBe(1);
       expect(loginPage.infoMessages.first().getText()).toContain('password has been reset');
       expect(loginPage.errors.count()).toBe(0);
-      expect(header.myProjects.button.isPresent()).toBe(false);
-      loginPage.username.sendKeys(constants.resetUsername);
-      loginPage.password.sendKeys(constants.resetPassword);
-      loginPage.submit.click();
+    });
+
+    it('successfully login after password change', function() {
+      loginPage.get();
+      loginPage.login(constants.resetUsername, constants.resetPassword);
       expect(header.loginButton.isPresent()).toBe(false);
       expect(header.myProjects.button.isDisplayed()).toBe(true);
     });
