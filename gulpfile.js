@@ -127,13 +127,13 @@ gulp.task('coverage-close', function(cb) {
 });
 
 gulp.task('backup-prod-db', function(cb) {
-  execute('ssh scriptureforge.org \'bash -s\' < server/mongodb/backupMongoOnServer.sh', function(err) {
+  execute('ssh scriptureforge.org \'bash -s\' < scripts/server/mongodb/backupMongoOnServer.sh', function(err) {
     cb(null);
   });
 });
 
 gulp.task('cleanup-backup-prod-db', ['backup-prod-db', 'copy-backup-to-local'], function(cb) {
-  execute('ssh scriptureforge.org \'bash -s\' < server/mongodb/deleteTarFileOnServer.sh', function(err) {
+  execute('ssh scriptureforge.org \'bash -s\' < scripts/server/mongodb/deleteTarFileOnServer.sh', function(err) {
     cb(null);
   });
 });
@@ -160,7 +160,7 @@ gulp.task('restore-local-db', ['backup-prod-db', 'copy-backup-to-local'], functi
   // To set the username, edit your ssh config file (~/.ssh/config) and add an entry:
   // Host scriptureforge.org
   //     User jdoe
-  execute('server/mongodb/restoreMongoOnLocal.sh /tmp', function(err) {
+  execute('scripts/server/mongodb/restoreMongoOnLocal.sh /tmp', function(err) {
     cb(null);
   });
 });
