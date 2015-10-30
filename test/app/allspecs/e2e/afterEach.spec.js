@@ -38,14 +38,14 @@ afterEach(function() {
             /angular.*\.js .* Error: \[\$compile:tpload]/.test(message) ||
             /next_id/.test(message)) {
           // we ignore errors of this type caused by Angular being unloaded prematurely on page refreshes (since it's not a real error)
-          ;
+          return;
         } else if (/rangy-1\.3alpha\.772/.test(message)) {
           // we ignore rangy errors because we are lazy and don't want to upgrade to the latest rangy atm (but we really should upgrade at some point) - cjh 2015-02
-          ;
-        } else {
-          message = "\n\nBrowser Console JS Error: \n" + message + "\n\n";
-          expect(message).toEqual(''); // fail the test
+          return;
         }
+
+        message = "\n\nBrowser Console JS Error: \n" + message + "\n\n";
+        expect(message).toEqual(''); // fail the test
 
       }
     }

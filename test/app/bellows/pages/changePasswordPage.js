@@ -5,7 +5,6 @@ var BellowsChangePasswordPage = function() {
   // TODO: this will likely change when we refactor the display of notifications - cjh 2014-06
   this.get = function() {
     browser.get('/app/changepassword');
-    browser.waitForAngular();
   };
 
   this.form = element(by.tagName('form'));
