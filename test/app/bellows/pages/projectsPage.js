@@ -2,7 +2,7 @@
 
 var projectTypes = {
   sf: 'Community Scripture Checking', // ScriptureForge
-  lf: 'Web Dictionary', // LanguageForge
+  lf: 'Web Dictionary' // LanguageForge
 };
 
 var util = require('./util');
@@ -13,7 +13,6 @@ var SfProjectsPage = function() {
   this.url = '/app/projects';
   this.get = function() {
     browser.get(browser.baseUrl + this.url);
-    browser.waitForAngular();
   };
 
   this.testProjectName = 'Test Project';
@@ -32,21 +31,11 @@ var SfProjectsPage = function() {
   this.projectTypes = element.all(by.repeater('project in visibleProjects').column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
 
   this.select100ItemsPerPage = function() {
-    if (false) {
-      // One way to do it, not ideal
-      // Options are 10, 25, 50, 100. We want 100, the 4th child. (CSS counts from 1).
-      // this.itemsPerPageCtrl.$('option:nth-child(4)').click();
-    } else {
-      // A better way to do it, which allows for other options
-      util.clickDropdownByValue(this.itemsPerPageCtrl, '100');
-    };
-
-    // Either way, the following expect() should be fulfilled
+    util.clickDropdownByValue(this.itemsPerPageCtrl, '100');
     expect(element(by.model('itemsPerPage')).$('option:checked').getText()).toEqual('100');
   };
 
   this.projectExists = function() {
-
   };
 
   this.findProject = function(projectName) {
@@ -57,7 +46,7 @@ var SfProjectsPage = function() {
       row.getText().then(function(text) {
         if (searchName.test(text)) {
           foundRow = row;
-        };
+        }
       });
     }).then(function() {
       if (foundRow) {
@@ -83,7 +72,6 @@ var SfProjectsPage = function() {
   };
 
   this.addNewProject = function(nameToAdd) {
-    var _this = this;
     this.createBtn.click();
     this.newProjectNameInput.sendKeys(nameToAdd);
     util.clickDropdownByValue(this.newProjectTypeSelect, projectTypes.sf);
@@ -95,7 +83,6 @@ var SfProjectsPage = function() {
       var link = projectRow.$('a');
       link.getAttribute('href').then(function(url) {
         browser.get(url);
-        browser.waitForAngular();
       });
     });
   };
@@ -114,7 +101,6 @@ var SfProjectsPage = function() {
         }
 
         browser.get(url + extraUrlPart);
-        browser.waitForAngular();
 
         // Users tab is selected by default, so the following check might not be needed
         //        var usersTab = element(by.xpath('//li[@heading="Users"]'));
@@ -139,7 +125,7 @@ var SfProjectsPage = function() {
           nameColumn.getText().then(function(text) {
             if (text === userName) {
               foundUserRow = row;
-            };
+            }
           });
         }).then(function() {
           if (foundUserRow) {
@@ -180,7 +166,6 @@ var SfProjectsPage = function() {
         }
 
         browser.get(url + extraUrlPart);
-        browser.waitForAngular();
         var userFilter = element(by.model('userFilter'));
         userFilter.sendKeys(userName);
         var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));

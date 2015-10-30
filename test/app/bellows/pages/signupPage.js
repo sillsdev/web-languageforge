@@ -3,7 +3,6 @@
 var SignupPage = function() {
   this.get = function() {
     browser.get('/signup');
-    browser.waitForAngular();
   };
 
   this.signupForm = element(by.tagName('form'));
