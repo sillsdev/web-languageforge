@@ -3,17 +3,12 @@
 describe('E2E testing: New Lex Project wizard app', function() {
   var constants = require('../../../../testConstants.json');
   var loginPage = require('../../../../bellows/pages/loginPage.js');
-  var body      = require('../../../../bellows/pages/pageBody.js');
   var util      = require('../../../../bellows/pages/util.js');
   var dbePage   = require('../../pages/dbePage.js');
   var page      = require('../../pages/newLexProjectPage.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
-  var CHECK_PAUSE = 50;
-
-  afterEach(function() {
-    expect(body.phpError.isPresent()).toBe(false);
-  });
+  var CHECK_PAUSE = 1000;
 
   it('admin can get to wizard', function() {
     loginPage.loginAsAdmin();
@@ -52,13 +47,12 @@ describe('E2E testing: New Lex Project wizard app', function() {
 
     it('finds the test project already exists', function() {
       page.namePage.projectNameInput.sendKeys(constants.testProjectName + protractor.Key.TAB);
-      browser.sleep(CHECK_PAUSE);
+      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeExists), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.testProjectCode);
       page.formStatus.expectContainsError('Another project with code \'' + constants.testProjectCode + '\' already exists.');
-      page.namePage.projectNameInput.clear();
     });
 
     it('with a cleared name does not show an error but is still invalid', function() {
@@ -84,7 +78,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
 
     it('can verify that an unused project name is available', function() {
       page.namePage.projectNameInput.sendKeys(constants.newProjectName + protractor.Key.TAB);
-      browser.sleep(CHECK_PAUSE);
+      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
@@ -123,7 +117,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('project code can be one character', function() {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('a' + protractor.Key.TAB);
-      browser.sleep(CHECK_PAUSE);
+      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
@@ -133,7 +127,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('project code cannot be uppercase', function() {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('A' + protractor.Key.TAB);
-      browser.sleep(CHECK_PAUSE);
+      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeAlphanumeric), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
@@ -142,7 +136,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
       page.formStatus.expectContainsError('Project Code must begin with a letter');
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('aB' + protractor.Key.TAB);
-      browser.sleep(CHECK_PAUSE);
+      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeAlphanumeric), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
@@ -154,7 +148,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('project code cannot start with a number', function() {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('1' + protractor.Key.TAB);
-      browser.sleep(CHECK_PAUSE);
+      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeAlphanumeric), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
@@ -166,7 +160,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('project code cannot use non-alphanumeric', function() {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectCodeInput.sendKeys('a?' + protractor.Key.TAB);
-      browser.sleep(CHECK_PAUSE);
+      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeAlphanumeric), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
@@ -291,7 +285,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('create: new empty project', function() {
       page.get();
       page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + protractor.Key.TAB);
-      browser.sleep(CHECK_PAUSE);
+      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
