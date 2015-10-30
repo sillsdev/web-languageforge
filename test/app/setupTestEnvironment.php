@@ -43,7 +43,8 @@ foreach ($db->listCollections() as $collection) { $collection->drop(); }
 // Also empty out databases for the test projects
 $projectArrays = array(
     $constants['testProjectName']  => $constants['testProjectCode'],
-    $constants['otherProjectName'] => $constants['otherProjectCode']);
+    $constants['otherProjectName'] => $constants['otherProjectCode']
+);
 
 foreach ($projectArrays as $projectName => $projectCode) {
     $projectModel = new ProjectModel();
@@ -59,10 +60,14 @@ $projectModel->projectName = $constants['thirdProjectName'];
 $projectModel->projectCode = $constants['thirdProjectCode'];
 $db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
 
-// drop the and 'new' database because it is used in a 'create new project' test
+// drop the 'new' and 'empty' database because it is used in a 'create new project' test
 $projectModel = new ProjectModel();
 $projectModel->projectName = $constants['newProjectName'];
 $projectModel->projectCode = $constants['newProjectCode'];
+$db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
+$projectModel = new ProjectModel();
+$projectModel->projectName = $constants['emptyProjectName'];
+$projectModel->projectCode = $constants['emptyProjectCode'];
 $db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
 
 $adminUserId = UserCommands::createUser(array(
@@ -129,6 +134,7 @@ $resetUser->resetPasswordKey = $constants['resetPasswordKey'];
 $resetUser->resetPasswordExpirationDate = $today->add(new DateInterval('P5D'));
 $resetUser->write();
 
+$projectType = null;
 if ($site == 'scriptureforge') {
     $projectType = SfProjectModel::SFCHECKS_APP;
 } else if ($site == 'languageforge') {
