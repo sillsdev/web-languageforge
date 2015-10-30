@@ -7,7 +7,6 @@ var BellowsLoginPage = function() {
 
   this.get = function() {
     browser.get('/auth/login');
-    browser.waitForAngular();
   };
 
   this.form = element(by.tagName('form'));

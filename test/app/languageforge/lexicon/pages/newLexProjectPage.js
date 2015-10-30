@@ -7,7 +7,6 @@ function NewLexProjectPage() {
 
   this.get = function() {
     browser.get('/app/lexicon/new');
-    browser.waitForAngular();
   };
 
   // form controls
@@ -65,7 +64,6 @@ function NewLexProjectPage() {
   // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
   this.primaryLanguagePage.selectButtonClick = function() {
     _this.primaryLanguagePage.selectButton.click();
-    browser.waitForAngular();
     browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
   };
 

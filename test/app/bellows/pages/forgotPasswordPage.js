@@ -3,7 +3,6 @@
 var BellowsForgotPasswordPage = function() {
   this.get = function() {
     browser.get('/auth/forgot_password');
-    browser.waitForAngular();
   };
 
   this.form = element(by.tagName('form'));
