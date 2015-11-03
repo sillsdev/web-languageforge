@@ -6,7 +6,7 @@ var BellowsLoginPage = function() {
   var _this = this; // For use inside our methods. Necessary when passing anonymous functions around, which lose access to "this".
 
   this.get = function() {
-    browser.get('/auth/login');
+    browser.get(browser.baseUrl + '/auth/login');
   };
 
   this.form = element(by.tagName('form'));
@@ -37,7 +37,7 @@ var BellowsLoginPage = function() {
   };
 
   this.logout = function() {
-    browser.get('/app/logout');
+    browser.get(browser.baseUrl + '/app/logout');
   };
 };
 

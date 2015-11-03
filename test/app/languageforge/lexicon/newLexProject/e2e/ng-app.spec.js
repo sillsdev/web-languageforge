@@ -79,9 +79,9 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('can verify that an unused project name is available', function() {
       page.namePage.projectNameInput.sendKeys(constants.newProjectName + protractor.Key.TAB);
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
+      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
       expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual(constants.newProjectCode);
       page.formStatus.expectHasNoError();
     });
@@ -351,6 +351,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
         expect(page.modal.selectLanguage.addButton.getText()).toEqual('Add ' + language);
 
         page.modal.selectLanguage.addButton.click();
+        browser.wait(expectedCondition.stalenessOf(page.modal.selectLanguage.searchLanguageInput), CONDITION_TIMEOUT);
         expect(page.modal.selectLanguage.searchLanguageInput.isPresent()).toBe(false);
       });
 

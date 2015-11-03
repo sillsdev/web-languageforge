@@ -1,10 +1,14 @@
 'use strict';
 
 var BellowsChangePasswordPage = function() {
+  var _this = this;
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   // TODO: this will likely change when we refactor the display of notifications - cjh 2014-06
   this.get = function() {
-    browser.get('/app/changepassword');
+    browser.get(browser.baseUrl + '/app/changepassword');
+    browser.wait(expectedCondition.visibilityOf(_this.password), CONDITION_TIMEOUT);
   };
 
   this.form = element(by.tagName('form'));
