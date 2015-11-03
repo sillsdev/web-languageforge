@@ -2,7 +2,7 @@
 
 var BellowsResetPasswordPage = function() {
   this.get = function(resetPasswordKey) {
-    browser.get('/auth/reset_password/' + resetPasswordKey);
+    browser.get(browser.baseUrl + '/auth/reset_password/' + resetPasswordKey);
   };
 
   this.form = element(by.tagName('form'));
