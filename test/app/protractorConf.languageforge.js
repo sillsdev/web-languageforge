@@ -12,14 +12,14 @@ exports.config = {
   // The timeout in milliseconds for each script run on the browser. This should
   // be longer than the maximum time your application needs to stabilize between
   // tasks.
-  allScriptsTimeout: 12000,
+  allScriptsTimeout: 14000,
 
   // To run tests in a single browser, uncomment the following
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
-      args: ['--start-maximized'],
-    },
+      args: ['--start-maximized']
+    }
   },
 
   // To run tests in multiple browsers, uncomment the following
@@ -40,7 +40,7 @@ exports.config = {
   // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 70000,
+    defaultTimeoutInterval: 70000
 
     //isVerbose: true,
   },
@@ -52,7 +52,7 @@ exports.config = {
     var disableNgAnimate = function() {
       angular.module('disableNgAnimate', []).run(['$animate', function($animate) {
         $animate.enabled(false);
-      },]);
+      }]);
     };
 
     // This seemed to make the tests more flaky rather than less. IJH 2014-12
@@ -62,7 +62,7 @@ exports.config = {
       require('jasmine-reporters');
       jasmine.getEnv().addReporter(new jasmine.TeamcityReporter());
     }
-  },
+  }
 };
 
 if (process.env.TEAMCITY_VERSION) {
