@@ -18,8 +18,8 @@ exports.config = {
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
-      args: ['--start-maximized'],
-    },
+      args: ['--start-maximized']
+    }
   },
 
   // To run tests in multiple browsers, uncomment the following
@@ -40,7 +40,7 @@ exports.config = {
   // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 70000,
+    defaultTimeoutInterval: 120000
 
     //isVerbose: true,
   },
@@ -50,7 +50,7 @@ exports.config = {
       require('jasmine-reporters');
       jasmine.getEnv().addReporter(new jasmine.TeamcityReporter());
     }
-  },
+  }
 };
 
 if (process.env.TEAMCITY_VERSION) {

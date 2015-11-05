@@ -12,7 +12,7 @@ exports.config = {
   // The timeout in milliseconds for each script run on the browser. This should
   // be longer than the maximum time your application needs to stabilize between
   // tasks.
-  allScriptsTimeout: 14000,
+  allScriptsTimeout: 12000,
 
   // To run tests in a single browser, uncomment the following
   capabilities: {
@@ -40,7 +40,7 @@ exports.config = {
   // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 70000
+    defaultTimeoutInterval: 120000
 
     //isVerbose: true,
   },
