@@ -3,11 +3,6 @@
 describe('E2E testing: Signup app', function() {
   var constants = require('../../../../testConstants.json');
   var page      = require('../../../pages/signupPage.js');
-  var body      = require('../../../pages/pageBody.js');
-
-  afterEach(function() {
-    expect(body.phpError.isPresent()).toBe(false);
-  });
 
   it('setup and contains a user form', function() {
     page.get();
@@ -85,7 +80,7 @@ describe('E2E testing: Signup app', function() {
     expect(page.noticeList.count()).toBe(0);
     page.signupButton.click();
     expect(page.noticeList.count()).toBe(1);
-    expect(page.noticeList.get(0).getText()).toContain('image verification failed');
+    expect(page.noticeList.first().getText()).toContain('image verification failed');
   });
 
 });
