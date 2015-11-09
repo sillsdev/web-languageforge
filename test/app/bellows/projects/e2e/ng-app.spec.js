@@ -27,11 +27,12 @@ describe('E2E Projects List App', function() {
     it('can list two projects of which the user is a member', function() {
       loginPage.loginAsAdmin();
       projectsPage.get();
-      projectsPage.addMemberToProject(constants.otherProjectName, constants.memberUsername);
+      projectsPage.addMemberToProject(constants.otherProjectName, constants.memberName);
       loginPage.loginAsMember();
       projectsPage.get();
       expect(projectsPage.projectsList.count()).toBe(2);
     });
+
   });
 
   // Two helper functions to avoid duplicating the same checks in admin test below
@@ -100,6 +101,7 @@ describe('E2E Projects List App', function() {
         shouldProjectHaveButtons(projectRow, false);
       });
     });
+
   });
 
 });
