@@ -29,7 +29,6 @@ class LiftRangeElementError {
     public $rangeElementId;
 }
 
-// TODO: Should we inherit from LiftDecoder?
 class LiftRangeDecoder {
     public function __construct($projectModel)
     {
@@ -45,12 +44,12 @@ class LiftRangeDecoder {
 
     /**
      *
-     * @var array(RangeError / RangeElementError)
+     * @var array<LiftRangeError | LiftRangeElementError>
      */
     private $_errors;
 
     /**
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @return Array of Range objects, keyed by id
      */
     public function decode($sxeNode)
@@ -65,8 +64,8 @@ class LiftRangeDecoder {
 
     /**
      * Reads a Range from the XmlNode $sxeNode
-     * @param SimpleXMLElement $sxeNode
-     * @return Range
+     * @param \SimpleXMLElement $sxeNode
+     * @return LiftRange
      */
     public function readRange($sxeNode, $existingRange = null)
     {
@@ -106,8 +105,7 @@ class LiftRangeDecoder {
                     $element->parentRef = $elementsById[$element->parent];
                 } else {
                     $errorMsg = "Parent '$element->parent' not found";
-                    $this->_errors[] = new RangeElementError($errorMsg, $range->id, $element->id);
-                    // TODO: When parsing is done, collect all errors and report them somehow. 2014-09 RM
+                    $this->_errors[] = new LiftRangeElementError($errorMsg, $range->id, $element->id);
                 }
             }
         }
@@ -142,7 +140,7 @@ class LiftRangeDecoder {
 
     /**
      * Reads a MultiText from the XmlNode $sxeNode
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @param MultiText $existingMultiText
      * @param ArrayOf $inputSystems
      * @return MultiText
