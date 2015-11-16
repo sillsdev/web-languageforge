@@ -419,6 +419,16 @@ angular.module('lexicon-new-project',
             $scope.newProject.entriesImported = 0;
             notice.push(notice.ERROR, data.data.errorMessage);
           }
+        }).error(function(data, status) {
+          notice.cancelLoading();
+          var errorMessage = $filter('translate')('Import failed.');
+          if (status > 0) {
+            errorMessage += ' Status: ' + status;
+            if (data) {
+              errorMessage += '- ' + data;
+            }
+          }
+          notice.push(notice.ERROR, errorMessage);
         });
       } else {
         notice.push(notice.ERROR, '<b>' + $scope.datafile.name + '</b> (' + $filter('bytes')($scope.datafile.size) +

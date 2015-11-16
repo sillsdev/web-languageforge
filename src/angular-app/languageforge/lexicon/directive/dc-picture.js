@@ -11,8 +11,8 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       pictures: "=",
       control: "="
     },
-    controller: ['$scope', '$upload', 'sessionService', 'lexProjectService', 'lexConfigService', 'silNoticeService', 'modalService', '$rootScope', 
-    function($scope, $upload, ss, lexProjectService, lexConfigService, notice, modalService, $rootScope) {
+    controller: ['$scope', '$upload', 'sessionService', 'lexProjectService', 'lexConfigService', 'silNoticeService', 'modalService',
+    function($scope, $upload, ss, lexProjectService, lexConfigService, notice, modalService) {
       $scope.upload = {};
       $scope.upload.progress = 0;
       $scope.upload.file = null;
@@ -22,7 +22,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       function Picture(fileName, caption) {
         this.fileName = fileName || '';
         this.caption = caption || {};
-      };
+      }
       
       Picture.prototype.getUrl = function pictureGetUrl() {
         return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + this.fileName;
@@ -35,7 +35,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       // strips the timestamp file prefix (returns everything after the '_')
       function originalFileName(fileName) {
         return fileName.substr(fileName.indexOf('_') + 1); 
-      };
+      }
 
       function addPicture(fileName) {
 //        var newPicture = new Picture(fileName);
@@ -44,7 +44,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         newPicture.fileName = fileName;
         newPicture.caption = $scope.control.makeValidModelRecursive(captionConfig, {});
         $scope.pictures.push(newPicture);
-      };
+      }
 
       $scope.deletePicture = function deletePicture(index) {
         var fileName = $scope.pictures[index].fileName;
@@ -78,12 +78,12 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
             url: '/upload/lf-lexicon/sense-image',
             // headers: {'myHeaderKey': 'myHeaderVal'},
             data: {
-              filename: file.name,
+              filename: file.name
             },
-            file: file,
+            file: file
           }).progress(function(evt) {
             $scope.upload.progress = parseInt(100.0 * evt.loaded / evt.total);
-          }).success(function(data, status, headers, config) {
+          }).success(function(data) {
             if (data.result) {
               $scope.upload.progress = 100.0;
               addPicture(data.data.fileName);
@@ -93,6 +93,15 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
               notice.push(notice.ERROR, data.data.errorMessage);
             }
             $scope.upload.file = null;
+          }).error(function(data, status) {
+            var errorMessage = $filter('translate')('Import failed.');
+            if (status > 0) {
+              errorMessage += ' Status: ' + status;
+              if (data) {
+                errorMessage += '- ' + data;
+              }
+            }
+            notice.push(notice.ERROR, errorMessage);
           });
         } else {
           $scope.upload.progress = 0;
