@@ -13,6 +13,7 @@ class AllLexiconCommandsTests extends TestSuite
         $this->addFile(TestPath . 'languageforge/lexicon/commands/LexProjectCommands_Test.php');
         $this->addFile(TestPath . 'languageforge/lexicon/commands/LexCommentCommands_Test.php');
         $this->addFile(TestPath . 'languageforge/lexicon/commands/LexUploadCommands_Test.php');
+        $this->addFile(TestPath . 'languageforge/lexicon/commands/SendReceiveCommands_Test.php');
     }
 
 }
