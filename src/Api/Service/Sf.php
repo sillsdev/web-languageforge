@@ -12,6 +12,7 @@ use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexOptionListCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
+use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexProjectDto;
@@ -724,10 +725,25 @@ class Sf
         $response = LexUploadCommands::importLiftFile($this->_projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
-    
-    
-    
-    
+
+    // ---------------------------------------------------------------
+    // Send and Receive API
+    // ---------------------------------------------------------------
+    public function sr_check_credentials($username, $password)
+    {
+        $result = SendReceiveCommands::checkCredentials($username, $password);
+        return JsonEncoder::encode($result);
+    }
+
+    public function sr_check_project($projectCode, $username, $password)
+    {
+        $result = SendReceiveCommands::checkProject($projectCode, $username, $password);
+        return JsonEncoder::encode($result);
+    }
+
+
+
+
     /*
      * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
      */    
