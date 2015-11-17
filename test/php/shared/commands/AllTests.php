@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
