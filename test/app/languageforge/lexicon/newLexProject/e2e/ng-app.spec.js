@@ -14,28 +14,139 @@ describe('E2E testing: New Lex Project wizard app', function() {
     loginPage.loginAsAdmin();
     page.get();
     expect(page.newLexProjectForm).toBeDefined();
-    expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+    expect(page.chooserPage.createButton.isPresent()).toBe(true);
   });
 
   it('manager can get to wizard', function() {
     loginPage.loginAsManager();
     page.get();
     expect(page.newLexProjectForm).toBeDefined();
-    expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+    expect(page.chooserPage.createButton.isPresent()).toBe(true);
   });
 
   it('setup: user login and page contains a form', function() {
     loginPage.loginAsUser();
     page.get();
     expect(page.newLexProjectForm).toBeDefined();
-    expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+    expect(page.chooserPage.createButton.isPresent()).toBe(true);
   });
 
-  describe('Project Name page', function() {
+  describe('Chooser page', function() {
 
-    it('cannot see back button', function() {
+    it('cannot see Back or Next buttons', function() {
       expect(page.backButton.isDisplayed()).toBe(false);
+      expect(page.nextButton.isDisplayed()).toBe(false);
       page.formStatus.expectHasNoError();
+    });
+
+    it('can create a new project', function() {
+      expect(page.chooserPage.createButton.isEnabled()).toBe(true);
+      page.chooserPage.createButton.click();
+      expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+    });
+
+    it('can go back to Chooser page', function() {
+      expect(page.backButton.isDisplayed()).toBe(true);
+      page.backButton.click();
+      expect(page.chooserPage.sendReceiveButton.isPresent()).toBe(true);
+    });
+
+    it('can select Send and Receive', function() {
+      expect(page.chooserPage.sendReceiveButton.isEnabled()).toBe(true);
+      page.chooserPage.sendReceiveButton.click();
+      expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+    });
+
+    it('can go back to Chooser page', function() {
+      expect(page.backButton.isDisplayed()).toBe(true);
+      page.backButton.click();
+      expect(page.chooserPage.sendReceiveButton.isPresent()).toBe(true);
+    });
+
+  });
+
+  describe('Send Receive Project Name page', function() {
+
+    it('can create new empty project', function() {
+      page.chooserPage.sendReceiveButton.click();
+      page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + protractor.Key.TAB);
+      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
+      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
+      expect(page.namePage.projectNameInput.isPresent()).toBe(false);
+      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
+      expect(page.srCredentialsPage.projectIdInput.getAttribute('value')).toEqual(constants.emptyProjectCode);
+    });
+
+  });
+
+  describe('Send Receive Credentials page', function() {
+
+    it('can go back to Project Name page', function() {
+      expect(page.backButton.isDisplayed()).toBe(true);
+      page.backButton.click();
+      expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+    });
+
+    it('can go back to Chooser page', function() {
+      expect(page.backButton.isDisplayed()).toBe(true);
+      page.backButton.click();
+      expect(page.chooserPage.sendReceiveButton.isPresent()).toBe(true);
+    });
+
+    it('can get back to Send and Receive Credentials page', function() {
+      page.chooserPage.sendReceiveButton.click();
+      expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+      page.nextButton.click();
+      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
+      expect(page.srCredentialsPage.projectIdInput.getAttribute('value')).toEqual(constants.emptyProjectCode);
+    });
+
+    it('cannot move on if Password is empty', function() {
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
+      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
+      page.formStatus.expectContainsError('Login cannot be empty.');
+    });
+
+    it('cannot move on if Login is empty', function() {
+      page.srCredentialsPage.usernameInput.sendKeys(constants.notUsedUsername);
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
+      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
+      page.formStatus.expectContainsError('Password cannot be empty.');
+    });
+
+    it('cannot move on if Project ID is invalid', function() {
+      page.srCredentialsPage.passwordInput.sendKeys(constants.passwordValid);
+      page.srCredentialsPage.projectIdInput.sendKeys('1');
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
+      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
+      page.formStatus.expectContainsError('Project ID cannot be empty.');
+      page.srCredentialsPage.passwordInput.clear();
+      page.srCredentialsPage.usernameInput.clear();
+    });
+
+    it('cannot move on if Project ID is empty', function() {
+      page.srCredentialsPage.projectIdInput.clear();
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
+      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
+      page.formStatus.expectContainsError('Project ID cannot be empty.');
+    });
+
+  });
+
+  describe('New Project Name page', function() {
+
+    it('can create a new project', function() {
+      page.get();
+      page.chooserPage.createButton.click();
+      expect(page.namePage.projectNameInput.isPresent()).toBe(true);
     });
 
     it('cannot move on if name is invalid', function() {
@@ -280,10 +391,11 @@ describe('E2E testing: New Lex Project wizard app', function() {
 
   });
 
-  describe('Project Name page', function() {
+  describe('New Empty Project Name page', function() {
 
     it('create: new empty project', function() {
       page.get();
+      page.chooserPage.createButton.click();
       page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + protractor.Key.TAB);
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
