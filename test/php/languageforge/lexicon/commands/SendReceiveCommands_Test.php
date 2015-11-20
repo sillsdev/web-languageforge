@@ -2,6 +2,10 @@
 
 use Api\Library\Languageforge\Lexicon\LanguageServerApiInterface;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\UserModel;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -9,11 +13,11 @@ require_once TestPath . 'common/MongoTestEnvironment.php';
 
 class MockLanguageServerApi implements LanguageServerApiInterface
 {
-    public function __construct($projectCode = '') {
-        $this->projectCode = $projectCode;
+    public function __construct($identifier = '') {
+        $this->identifier = $identifier;
     }
 
-    public $projectCode;
+    public $identifier;
 
     public function getWebMetaData($url, $queryData, $method = 'POST')
     {
@@ -28,7 +32,7 @@ class MockLanguageServerApi implements LanguageServerApiInterface
     {
         $response = array(
             array(
-                'identifier' => $this->projectCode
+                'identifier' => $this->identifier
             )
         );
         return json_encode($response);
@@ -50,16 +54,46 @@ class TestSendReceiveCommands extends UnitTestCase
 
     public function testCheckProjectActualApi_ExistingProject_ProjectExists()
     {
-        $projectCode = 'test-eb-sena3-flex';
+        $identifier = 'test-eb-sena3-flex';
         $username = 'change to your username';
         $password = 'change to your password';
 
-        $result = SendReceiveCommands::checkProject($projectCode, $username, $password);
+        $result = SendReceiveCommands::checkProject($identifier, $username, $password);
 
         $this->assertEqual($result->hasValidCredentials, true);
         $this->assertEqual($result->projectExists, true);
     }
 */
+    public function testSaveCredentials_ProjectAndUser_CredentialsSaved()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $userId = $e->createUser("User", "Name", "name@example.com");
+        $user = new UserModel($userId);
+        $user->role = SystemRoles::USER;
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $project->addUser($userId, ProjectRoles::MANAGER);
+        $user->addProject($projectId);
+        $user->write();
+        $project->write();
+
+        $identifier = 'sr_id';
+        $username = 'sr_user';
+        $password = 'sr_pass';
+
+        $newProjectId = SendReceiveCommands::saveCredentials($projectId, $identifier, $username, $password);
+
+        $newProject = new LexiconProjectModelWithSRPassword($newProjectId);
+        $this->assertEqual($newProjectId, $projectId);
+        $this->assertEqual($newProject->sendReceiveIdentifier, $identifier);
+        $this->assertEqual($newProject->sendReceiveUsername, $username);
+        $this->assertEqual($newProject->sendReceivePassword, $password);
+    }
+
     public function testCheckCredentials_BlankCredentials_CredentialsInvalid()
     {
         $username = '';
@@ -84,12 +118,12 @@ class TestSendReceiveCommands extends UnitTestCase
 
     public function testCheckProject_BlankProject_ProjectDoesntExist()
     {
-        $projectCode = '';
+        $identifier = '';
         $username = 'mock_user';
         $password = 'mock_pass';
         $api = new MockLanguageServerApi();
 
-        $result = SendReceiveCommands::checkProject($projectCode, $username, $password, $api);
+        $result = SendReceiveCommands::checkProject($identifier, $username, $password, $api);
 
         $this->assertEqual($result->hasValidCredentials, true);
         $this->assertEqual($result->projectExists, false);
@@ -97,12 +131,12 @@ class TestSendReceiveCommands extends UnitTestCase
 
     public function testCheckProject_ExistingProject_ProjectExists()
     {
-        $projectCode = 'mock_project_code';
+        $identifier = 'mock_project_id';
         $username = 'mock_user';
         $password = 'mock_pass';
-        $api = new MockLanguageServerApi($projectCode);
+        $api = new MockLanguageServerApi($identifier);
 
-        $result = SendReceiveCommands::checkProject($projectCode, $username, $password, $api);
+        $result = SendReceiveCommands::checkProject($identifier, $username, $password, $api);
 
         $this->assertEqual($result->hasValidCredentials, true);
         $this->assertEqual($result->projectExists, true);

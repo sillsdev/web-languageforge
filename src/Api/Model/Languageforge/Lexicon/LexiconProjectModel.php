@@ -51,6 +51,18 @@ class LexiconProjectModel extends LfProjectModel
     public $liftFilePath;
 
     /**
+     *
+     * @var string
+     */
+    public $sendReceiveIdentifier;
+
+    /**
+     *
+     * @var string
+     */
+    public $sendReceiveUsername;
+
+    /**
      * Adds an input system if it doesn't already exist
      * @param string $tag
      * @param string $abbr
@@ -59,7 +71,7 @@ class LexiconProjectModel extends LfProjectModel
     public function addInputSystem($tag, $abbr = '', $name = '')
     {
         static $languages = null;
-        if (! key_exists($tag, $this->inputSystems)) {
+        if (!array_key_exists($tag, $this->inputSystems)) {
             if (! $abbr) {
                 $abbr = $tag;
             }
@@ -69,7 +81,7 @@ class LexiconProjectModel extends LfProjectModel
                     $languages = new LanguageData();
                 }
                 $languageCode = LanguageData::getCode($tag);
-                if (key_exists($languageCode, $languages)) {
+                if (array_key_exists($languageCode, $languages)) {
                     $name = $languages[$languageCode]->name;
                 }
             }
