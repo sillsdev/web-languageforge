@@ -337,6 +337,9 @@ class RightsHelper
             case 'sr_check_project':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
+            case 'sr_save_credentials':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+
             // project management app
             case 'project_management_dto':
             case 'project_management_report_sfchecks_userEngagementReport':
