@@ -35,6 +35,11 @@ function NewLexProjectPage() {
     expect(_this.formStatus.getText()).toContain(partialMsg);
   };
 
+  // step 0: chooser
+  this.chooserPage = {};
+  this.chooserPage.sendReceiveButton = element(by.id('sendReceiveButton'));
+  this.chooserPage.createButton = element(by.id('createButton'));
+
   // step 1: project name
   this.namePage = {};
   this.namePage.projectNameInput = element(by.model('newProject.projectName'));
@@ -49,6 +54,12 @@ function NewLexProjectPage() {
   this.initialDataPage = {};
   this.initialDataPage.browseButton = element(by.id('browseButton'));
   this.initialDataPage.mockUpload = mockUpload;
+
+  // step 2: send receive credentials
+  this.srCredentialsPage = {};
+  this.srCredentialsPage.projectIdInput = element(by.model('srProject.projectId'));
+  this.srCredentialsPage.usernameInput = element(by.model('srProject.username'));
+  this.srCredentialsPage.passwordInput = element(by.id('password'));
 
   // step 3: verify data
   this.verifyDataPage = {};
@@ -69,7 +80,6 @@ function NewLexProjectPage() {
 
   // select language modal
   this.modal = modal;
-
 }
 
 module.exports = new NewLexProjectPage();

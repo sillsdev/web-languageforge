@@ -290,6 +290,8 @@ class RightsHelper
                 // Are there any circumstances where this should be denied? Should this just be "return true;"?
                 return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
 
+
+
             // LanguageForge (lexicon)
             case 'lex_configuration_update':
             case 'lex_upload_importLift':
@@ -331,8 +333,9 @@ class RightsHelper
             case 'lex_project_removeMediaFile':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 
-
-
+            // send receive api
+            case 'sr_check_project':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
             // project management app
             case 'project_management_dto':
@@ -340,7 +343,6 @@ class RightsHelper
             case 'project_management_report_sfchecks_topContributorsWithTextReport':
             case 'project_management_report_sfchecks_responsesOverTimeReport':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-
 
             // semdomtrans app management
             case 'semdomtrans_app_management_dto':

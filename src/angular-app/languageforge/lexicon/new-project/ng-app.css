@@ -33,6 +33,10 @@ a.btn {
     font-weight: normal;
 }
 
+.newProjectChooserBtn {
+    width: 290px;
+}
+
 /* Initial Data */
 .drop-box {
     border: 4px dashed #e67345;
