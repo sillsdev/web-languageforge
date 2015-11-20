@@ -3,9 +3,26 @@
 namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Library\Languageforge\Lexicon\LanguageServerApiInterface;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
 
 class SendReceiveCommands
 {
+    /**
+     * @param string $projectId
+     * @param string $identifier
+     * @param string $username
+     * @param string $password
+     * @return string
+     */
+    public static function saveCredentials($projectId, $identifier, $username, $password)
+    {
+        $project = new LexiconProjectModelWithSRPassword($projectId);
+        $project->sendReceiveIdentifier = $identifier;
+        $project->sendReceiveUsername = $username;
+        $project->sendReceivePassword = $password;
+        return $project->write();
+    }
+
     /**
      * Based on http://php.net/manual/en/context.http.php
      * @param $username
@@ -54,13 +71,13 @@ class SendReceiveCommands
     }
 
     /**
-     * @param string $projectCode
+     * @param string $identifier
      * @param string $username
      * @param string $password
      * @param LanguageServerApiInterface $api
      * @return SendReceiveResult
      */
-    public static function checkProject($projectCode, $username, $password, LanguageServerApiInterface $api = null)
+    public static function checkProject($identifier, $username, $password, LanguageServerApiInterface $api = null)
     {
         $result = self::checkCredentials($username, $password, $api);
 
@@ -68,14 +85,14 @@ class SendReceiveCommands
         $data = self::getWebContent($url, 'GET', array(), $api);
         $response = json_decode($data);
 
-        if (self::isPropertyValueInObjectArray($response, 'identifier', $projectCode)) {
+        if (self::isPropertyValueInObjectArray($response, 'identifier', $identifier)) {
             $result->projectExists = true;
         } else {
             $url .= '/private';
             $data = self::getWebContent($url, 'GET', array(), $api);
             $response = json_decode($data);
 
-            if (self::isPropertyValueInObjectArray($response, 'identifier', $projectCode)) {
+            if (self::isPropertyValueInObjectArray($response, 'identifier', $identifier)) {
                 $result->projectExists = true;
             }
         }

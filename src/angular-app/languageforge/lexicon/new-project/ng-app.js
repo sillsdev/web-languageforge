@@ -293,7 +293,11 @@ angular.module('lexicon-new-project',
               $scope.srProject.projectId = $scope.newProject.projectCode;
             }
 
-            $scope.checkSRProject();
+            if (!$scope.srProject.username) {
+              $scope.srProject.username = ss.session.username;
+            }
+
+            $scope.checkSRProject(true);
           } else {
             createProject();
             $state.go('newProject.initialData');
@@ -317,7 +321,8 @@ angular.module('lexicon-new-project',
 
           break;
         case 'newProject.sendReceiveCredentials':
-          //break;
+          createProject(saveSRCredentials);
+          break;
         case 'newProject.verifyData':
           gotoLexicon();
           break;
@@ -391,9 +396,6 @@ angular.module('lexicon-new-project',
       $scope.projectCodeStateDefer = $q.defer();
       $scope.projectCodeStateDefer.resolve('unchecked');
       $scope.srProject.isUnchecked = true;
-      $scope.srProject.projectIdStatus = 'unchecked';
-      $scope.checkSRProjectStatusDefer = $q.defer();
-      $scope.checkSRProjectStatusDefer.resolve('unchecked');
     };
 
     $scope.$watch('projectCodeState', function(newval, oldval) {
@@ -426,7 +428,7 @@ angular.module('lexicon-new-project',
       }
     });
 
-    function createProject() {
+    function createProject(callback) {
       if (!$scope.newProject.projectName || !$scope.newProject.projectCode || !$scope.newProject.appName) {
         // This function sometimes gets called during setup, when $scope.newProject is still empty.
         return;
@@ -435,7 +437,7 @@ angular.module('lexicon-new-project',
       projectService.createSwitchSession($scope.newProject.projectName, $scope.newProject.projectCode, $scope.newProject.appName, function(result) {
         if (result.ok) {
           $scope.newProject.id = result.data;
-          ss.refresh();
+          ss.refresh(callback);
         } else {
           notice.push(notice.ERROR, 'The ' + $scope.newProject.projectName + ' project could not be created. Please try again.');
         }
@@ -530,89 +532,83 @@ angular.module('lexicon-new-project',
 
       if ($scope.srProject.isUnchecked) {
         $scope.checkSRProject();
+        return neutral();
       }
 
-      return $scope.checkSRProjectStatusDefer.promise.then(function() {
-        switch ($scope.srProject.projectIdStatus) {
-          case 'found':
-            if ($scope.srProject.passwordStatus == 'invalid') {
-              return error('The Login and password isn\'t valid on LanguageForge.org. Enter a Login and Password.');
-            }
+      switch ($scope.srProject.projectIdStatus) {
+        case 'found':
+          if ($scope.srProject.passwordStatus == 'invalid') {
+            return error('The Login and password isn\'t valid on LanguageForge.org. Enter a Login and Password.');
+          }
 
-            if ($scope.srProject.usernameStatus == 'no_access') {
-              return error('The Login dosen\'t have access to the Project ID on LanguageForge.org. Enter a Login and Password.');
-            }
+          if ($scope.srProject.usernameStatus == 'no_access') {
+            return error('The Login dosen\'t have access to the Project ID on LanguageForge.org. Enter a Login and Password.');
+          }
 
-            return ok();
-          case 'unknown':
-            return error('The Project ID \'' + $scope.srProject.projectId + '\' doesn\'t exist on LanguageForge.org. Enter an existing Project Id.');
-          case 'invalid':
-            return error('Project ID must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores.');
-          case 'loading':
-            return error();
-          default:
-            return error('Something went wrong checking the project on LanguageDepot.org.');
-        }
-      });
+          return ok();
+        case 'unknown':
+          return error('The Project ID \'' + $scope.srProject.projectId + '\' doesn\'t exist on LanguageForge.org. Enter an existing Project Id.');
+        case 'invalid':
+          return error('Project ID must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores.');
+        default:
+          return error('Something went wrong checking the project on LanguageDepot.org.');
+      }
     }
 
-    $scope.checkSRProject = function checkSRProject() {
-      $scope.checkSRProjectStatusDefer = $q.defer();
+    $scope.checkSRProject = function checkSRProject(isValidateSuppressed) {
       if (!isValidProjectCode($scope.srProject.projectId)) {
         $scope.srProject.projectIdStatus = 'invalid';
-        $scope.checkSRProjectStatusDefer.resolve('invalid');
       } else {
         $scope.srProject.projectIdStatus = 'loading';
         $scope.srProject.usernameStatus = 'loading';
         $scope.srProject.passwordStatus = 'loading';
-        $scope.checkSRProjectStatusDefer.notify('loading');
         sendReceiveService.checkProject($scope.srProject.projectId, $scope.srProject.username, $scope.srProject.password, function(result) {
           $scope.srProject.isUnchecked = false;
           if (result.ok) {
-            $scope.checkSRProjectStatusDefer.resolve('ok');
             if (result.data.projectExists) {
               $scope.srProject.projectIdStatus = 'found';
+              $scope.srProject.usernameStatus = 'no_access';
+              $scope.srProject.passwordStatus = 'invalid';
             } else {
               $scope.srProject.projectIdStatus = 'unknown';
+              $scope.srProject.usernameStatus = 'unknown';
+              $scope.srProject.passwordStatus = 'unknown';
             }
 
             //if (result.data.hasAccessToProject) {
             if (true) {
               $scope.srProject.usernameStatus = 'access';
-            } else {
-              $scope.srProject.usernameStatus = 'no_access';
             }
 
             if (result.data.hasValidCredentials) {
               $scope.srProject.passwordStatus = 'valid';
-            } else {
-              $scope.srProject.passwordStatus = 'invalid';
             }
           } else {
             $scope.srProject.projectIdStatus = 'failed';
             $scope.srProject.usernameStatus = 'failed';
             $scope.srProject.passwordStatus = 'failed';
-            $scope.checkSRProjectStatusDefer.reject('failed');
+          }
+
+          if (!isValidateSuppressed) {
+            validateForm();
           }
         });
       }
-
-      return $scope.checkSRProjectStatusDefer.promise;
     };
 
-    $scope.$watch('srProject.projectIdStatus', function(newval, oldval) {
-      if (!newval || newval == oldval) { return; }
-
-      if (newval == 'unchecked') {
-        // User just typed in the Project ID box. Need to wait just a bit for the idle-validate to kick in.
+    function saveSRCredentials() {
+      if (!$scope.srProject.projectId || !$scope.srProject.username || !$scope.srProject.password) {
         return;
       }
 
-      if (oldval == 'loading') {
-        // Project ID status just resolved. Validate rest of form so Forward button can activate.
-        validateForm();
-      }
-    });
+      sendReceiveService.saveCredentials($scope.srProject.projectId, $scope.srProject.username, $scope.srProject.password, function(result) {
+        if (result.ok) {
+          gotoLexicon();
+        } else {
+          notice.push(notice.ERROR, 'The LanguageDepot.org credentials could not be saved. Please try again.');
+        }
+      });
+    }
 
     // ----- Step 3: Verify initial data -OR- select primary language -----
 
