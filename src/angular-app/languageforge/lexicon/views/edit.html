@@ -21,7 +21,7 @@
                 <button class="btn btn-success btn-small pull-right" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
             </div>
             <div ng-hide="visibleEntries.length === 0" style="width:340px; margin:0 auto;" >
-                <typeahead style="margin:0px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
+                <typeahead style="margin: 0" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
                     <ul ng-if="typeahead.searchResults.length > 0">
                         <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
                             <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
@@ -33,10 +33,16 @@
             </div>
             <div style="border-bottom: 1px solid darkgray; width:100%;margin-top:15px"></div>
             <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-                <div ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading" style="text-align: center;margin-top:50px"><h4>Looks like there are no entries yet.</h4><button class="btn btn-primary" ng-click="navigateToLiftImport()">Import entries from LIFT</button></div>
+                <div data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading" style="text-align: center;margin-top:50px">
+                    <h4>Looks like there are no entries yet.</h4>
+                    <button class="btn btn-primary" data-ng-click="navigateToLiftImport()" data-ng-hide="hasSendReceive()">
+                        Import entries from LIFT</button>
+                    <button class="btn btn-primary" data-ng-click="" disabled data-ng-show="hasSendReceive()">
+                        Sync data with LanguageDepot.org</button>
+                </div>
                 <div class="lexiconListItem" data-ng-repeat="entry in visibleEntries track by entry.id" data-ng-click="editEntryAndScroll(entry.id)">
                     <dc-rendered config="config.entry" model="entry"></dc-rendered>
-                    <div ng-show="commentService.getEntryCommentCount(entry.id) > 0" style="position:absolute; right:5px;top:3px"><i style="color: #faa732;" class="icon-comment"></i></div>
+                    <div data-ng-show="commentService.getEntryCommentCount(entry.id) > 0" style="position:absolute; right:5px;top:3px"><i style="color: #faa732;" class="icon-comment"></i></div>
                 </div>
             </div>
         </div>
@@ -49,7 +55,7 @@
                     <button class="btn btn-success btn-small" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
                 </div>
                 <div style="margin: 5px 5px 5px 0">
-                    <typeahead style="margin:0px; width:162px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
+                    <typeahead style="margin: 0; width:162px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
                         <ul ng-if="typeahead.searchResults.length > 0">
                             <li style="margin-left:-10px" data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
                                 <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
