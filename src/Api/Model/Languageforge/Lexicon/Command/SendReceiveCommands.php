@@ -16,6 +16,10 @@ class SendReceiveCommands
      */
     public static function saveCredentials($projectId, $identifier, $username, $password)
     {
+        if (!$identifier || !$username || !$password) {
+            return false;
+        }
+
         $project = new LexiconProjectModelWithSRPassword($projectId);
         $project->sendReceiveIdentifier = $identifier;
         $project->sendReceiveUsername = $username;

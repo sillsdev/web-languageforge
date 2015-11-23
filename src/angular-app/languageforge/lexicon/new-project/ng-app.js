@@ -355,17 +355,9 @@ angular.module('lexicon-new-project',
       return name.toLowerCase().replace(/ /g, '_');
     }
 
-    function isValidProjectCode(code) {
-      if (angular.isUndefined(code)) return false;
-
-      // Valid project codes start with a letter and only contain lower-case letters, numbers, dashes and underscores
-      var pattern = /^[a-z][a-z0-9\-_]*$/;
-      return pattern.test(code);
-    }
-
     $scope.checkProjectCode = function checkProjectCode() {
       $scope.projectCodeStateDefer = $q.defer();
-      if (!isValidProjectCode($scope.newProject.projectCode)) {
+      if (!lexProjectService.isValidProjectCode($scope.newProject.projectCode)) {
         $scope.projectCodeState = 'invalid';
         $scope.projectCodeStateDefer.resolve('invalid');
       } else {
@@ -556,7 +548,7 @@ angular.module('lexicon-new-project',
     }
 
     $scope.checkSRProject = function checkSRProject(isValidateSuppressed) {
-      if (!isValidProjectCode($scope.srProject.projectId)) {
+      if (!lexProjectService.isValidProjectCode($scope.srProject.projectId)) {
         $scope.srProject.projectIdStatus = 'invalid';
       } else {
         $scope.srProject.projectIdStatus = 'loading';

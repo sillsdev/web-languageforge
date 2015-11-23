@@ -606,7 +606,7 @@ class Sf
 
     public function lex_projectDto()
     {
-        return LexProjectDto::encode($this->_projectId, $this->_userId);
+        return LexProjectDto::encode($this->_projectId);
     }
 
     public function lex_dbeDtoFull($browserId, $offset)

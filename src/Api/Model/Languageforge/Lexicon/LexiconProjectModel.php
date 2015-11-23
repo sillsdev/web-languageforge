@@ -93,6 +93,7 @@ class LexiconProjectModel extends LfProjectModel
     {
         $settings = parent::getPublicSettings($userId);
         $settings['currentUserRole'] = $this->users[$userId]->role;
+        $settings['hasSendReceive'] = ($this->sendReceiveIdentifier) ? true : false;
 
         return array_merge($settings, LexBaseViewDto::encode($this->id->asString(), $userId));
     }
