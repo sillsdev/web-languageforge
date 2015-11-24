@@ -40,6 +40,7 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
     $scope.checkSRProject = function checkSRProject(isValidateSuppressed) {
       if (!lexProjectService.isValidProjectCode($scope.project.sendReceive.identifier)) {
         $scope.sendReceive.identifierStatus = 'invalid';
+        $scope.sendReceive.isUnchecked = false;
       } else {
         makeFormNeutral();
         $scope.sendReceive.identifierStatus = 'loading';
@@ -112,16 +113,16 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
       switch ($scope.sendReceive.identifierStatus) {
         case 'found':
           if ($scope.sendReceive.passwordStatus == 'invalid') {
-            return error('The Login and Password isn\'t valid on LanguageForge.org. Enter a Login and Password.');
+            return error('The Login and Password isn\'t valid on LanguageDepot.org. Enter a Login and Password.');
           }
 
           if ($scope.sendReceive.usernameStatus == 'no_access') {
-            return error('The Login dosen\'t have access to the Project ID on LanguageForge.org. Enter a Login and Password.');
+            return error('The Login dosen\'t have access to the Project ID on LanguageDepot.org. Enter a Login and Password.');
           }
 
           return ok();
         case 'unknown':
-          return error('The Project ID \'' + $scope.project.sendReceive.identifier + '\' doesn\'t exist on LanguageForge.org. Enter an existing Project ID.');
+          return error('The Project ID \'' + $scope.project.sendReceive.identifier + '\' doesn\'t exist on LanguageDepot.org. Enter an existing Project ID.');
         case 'invalid':
           return error('Project ID must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores.');
         default:
