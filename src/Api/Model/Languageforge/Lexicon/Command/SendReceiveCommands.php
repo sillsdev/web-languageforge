@@ -101,6 +101,9 @@ class SendReceiveCommands
             }
         }
 
+        // ToDo: connect to new Language Depot API, currently assumes access
+        $result->hasAccessToProject = $result->projectExists && $result->hasValidCredentials;
+
         return $result;
     }
 
