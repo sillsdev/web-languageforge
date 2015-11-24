@@ -43,7 +43,8 @@ foreach ($db->listCollections() as $collection) { $collection->drop(); }
 // Also empty out databases for the test projects
 $projectArrays = array(
     $constants['testProjectName']  => $constants['testProjectCode'],
-    $constants['otherProjectName'] => $constants['otherProjectCode']
+    $constants['otherProjectName'] => $constants['otherProjectCode'],
+    $constants['srProjectName'] => $constants['srProjectCode']
 );
 
 foreach ($projectArrays as $projectName => $projectCode) {
@@ -164,10 +165,19 @@ $otherProjectModel->projectCode = $constants['otherProjectCode'];
 $otherProjectModel->allowInviteAFriend = $constants['otherProjectAllowInvites'];
 $otherProjectModel->write();
 
+$srProject = ProjectCommands::createProject(
+    $constants['srProjectName'],
+    $constants['srProjectCode'],
+    $projectType,
+    $managerUserId,
+    $website
+);
+
 ProjectCommands::updateUserRole($testProject, $managerUserId, ProjectRoles::MANAGER);
 ProjectCommands::updateUserRole($testProject, $memberUserId, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($testProject, $resetUserId, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($otherProject, $adminUserId, ProjectRoles::MANAGER);
+ProjectCommands::updateUserRole($srProject, $adminUserId, ProjectRoles::MANAGER);
 
 if ($site == 'scriptureforge') {
     $text1 = TextCommands::updateText($testProject, array(
@@ -231,6 +241,11 @@ if ($site == 'scriptureforge') {
     $testProjectModel->addInputSystem("th-fonipa", "tipa", "Thai");
     $testProjectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[] = 'th-fonipa';
     $testProjectId = $testProjectModel->write();
+
+    $srProjectModel = new LexiconProjectModel($srProject);
+    $srProjectModel->sendReceiveIdentifier = $constants['srIdentifier'];
+    $srProjectModel->sendReceiveUsername = $constants['srUsername'];
+    $srProjectId = $srProjectModel->write();
 
     // setup to mimic file upload
     $fileName = $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'];

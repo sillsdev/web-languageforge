@@ -2,12 +2,12 @@
 
 angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.textdrop'])
   .controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexSendReceiveService',
-  function($scope, $filter, userService, ss, notice, lexProjectService, sendReceiveService) {
+  function($scope, $filter, userService, sessionService, notice, lexProjectService, sendReceiveService) {
     lexProjectService.setBreadcrumbs('settings', $filter('translate')('Project Settings'));
 
-    $scope.rights.canViewSendReceiveProperties = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.VIEW);
-    $scope.rights.canEditSendReceiveProperties = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-    $scope.rights.canEditCommunicationSettings = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
+    $scope.rights.canViewSendReceiveProperties = sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.VIEW);
+    $scope.rights.canEditSendReceiveProperties = sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
+    $scope.rights.canEditCommunicationSettings = false;
 
     $scope.readProject = function() {
       lexProjectService.readProject(function(result) {
@@ -58,8 +58,7 @@ angular.module('lexicon.settings', ['bellows.services', 'palaso.ui.listview', 'p
               $scope.sendReceive.passwordStatus = 'unknown';
             }
 
-            //if (result.data.hasAccessToProject) {
-            if (true) {
+            if (result.data.hasAccessToProject) {
               $scope.sendReceive.usernameStatus = 'access';
             }
 
