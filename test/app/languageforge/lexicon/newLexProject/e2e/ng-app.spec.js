@@ -14,21 +14,21 @@ describe('E2E testing: New Lex Project wizard app', function() {
     loginPage.loginAsAdmin();
     page.get();
     expect(page.newLexProjectForm).toBeDefined();
-    expect(page.chooserPage.createButton.isPresent()).toBe(true);
+    expect(page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
 
   it('manager can get to wizard', function() {
     loginPage.loginAsManager();
     page.get();
     expect(page.newLexProjectForm).toBeDefined();
-    expect(page.chooserPage.createButton.isPresent()).toBe(true);
+    expect(page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
 
   it('setup: user login and page contains a form', function() {
     loginPage.loginAsUser();
     page.get();
     expect(page.newLexProjectForm).toBeDefined();
-    expect(page.chooserPage.createButton.isPresent()).toBe(true);
+    expect(page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
 
   describe('Chooser page', function() {
@@ -42,25 +42,25 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('can create a new project', function() {
       expect(page.chooserPage.createButton.isEnabled()).toBe(true);
       page.chooserPage.createButton.click();
-      expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+      expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
     });
 
     it('can go back to Chooser page', function() {
       expect(page.backButton.isDisplayed()).toBe(true);
       page.backButton.click();
-      expect(page.chooserPage.sendReceiveButton.isPresent()).toBe(true);
+      expect(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
     });
 
     it('can select Send and Receive', function() {
       expect(page.chooserPage.sendReceiveButton.isEnabled()).toBe(true);
       page.chooserPage.sendReceiveButton.click();
-      expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+      expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
     });
 
     it('can go back to Chooser page', function() {
       expect(page.backButton.isDisplayed()).toBe(true);
       page.backButton.click();
-      expect(page.chooserPage.sendReceiveButton.isPresent()).toBe(true);
+      expect(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
     });
 
   });
@@ -77,7 +77,7 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(false);
-      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
+      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.projectIdInput.getAttribute('value')).toEqual(constants.emptyProjectCode);
     });
 
@@ -88,54 +88,64 @@ describe('E2E testing: New Lex Project wizard app', function() {
     it('can go back to Project Name page', function() {
       expect(page.backButton.isDisplayed()).toBe(true);
       page.backButton.click();
-      expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+      expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
     });
 
     it('can go back to Chooser page', function() {
       expect(page.backButton.isDisplayed()).toBe(true);
       page.backButton.click();
-      expect(page.chooserPage.sendReceiveButton.isPresent()).toBe(true);
+      expect(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
     });
 
     it('can get back to Send and Receive Credentials page', function() {
       page.chooserPage.sendReceiveButton.click();
-      expect(page.namePage.projectNameInput.isPresent()).toBe(true);
+      expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
       page.nextButton.click();
-      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
+      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.projectIdInput.getAttribute('value')).toEqual(constants.emptyProjectCode);
     });
 
     it('cannot move on if Password is empty', function() {
+      page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
-      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
-      page.formStatus.expectContainsError('Login cannot be empty.');
-    });
-
-    it('cannot move on if Login is empty', function() {
-      page.srCredentialsPage.usernameInput.sendKeys(constants.notUsedUsername);
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
-      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
+      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
       page.formStatus.expectContainsError('Password cannot be empty.');
     });
 
-    it('cannot move on if Project ID is invalid', function() {
+    it('cannot move on if Project ID isn\'t found on Language Depot', function() {
       page.srCredentialsPage.passwordInput.sendKeys(constants.passwordValid);
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
+      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
+      page.formStatus.expectContainsError('The Project ID \'empty_project\' doesn\'t exist on LanguageDepot.org.');
+    });
+
+    it('cannot move on if Login is empty', function() {
+      page.srCredentialsPage.projectIdInput.clear();
+      page.srCredentialsPage.projectIdInput.sendKeys(constants.srIdentifier);
+      page.srCredentialsPage.usernameInput.clear();
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.nextButton.click();
+      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
+      page.formStatus.expectContainsError('Login cannot be empty.');
+    });
+
+    it('cannot move on if Project ID is invalid', function() {
+      page.srCredentialsPage.usernameInput.sendKeys(constants.notUsedUsername);
+      page.srCredentialsPage.projectIdInput.clear();
       page.srCredentialsPage.projectIdInput.sendKeys('1');
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
-      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
-      page.formStatus.expectContainsError('Project ID cannot be empty.');
-      page.srCredentialsPage.passwordInput.clear();
-      page.srCredentialsPage.usernameInput.clear();
+      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
+      page.formStatus.expectContainsError('Project ID must begin with a letter');
     });
 
     it('cannot move on if Project ID is empty', function() {
       page.srCredentialsPage.projectIdInput.clear();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
-      expect(page.srCredentialsPage.projectIdInput.isPresent()).toBe(true);
+      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
       page.formStatus.expectContainsError('Project ID cannot be empty.');
     });
 

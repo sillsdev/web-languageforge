@@ -127,6 +127,7 @@ class TestSendReceiveCommands extends UnitTestCase
 
         $this->assertEqual($result->hasValidCredentials, true);
         $this->assertEqual($result->projectExists, false);
+        $this->assertEqual($result->hasAccessToProject, false);
     }
 
     public function testCheckProject_ExistingProject_ProjectExists()
@@ -140,5 +141,6 @@ class TestSendReceiveCommands extends UnitTestCase
 
         $this->assertEqual($result->hasValidCredentials, true);
         $this->assertEqual($result->projectExists, true);
+        $this->assertEqual($result->hasAccessToProject, true);
     }
 }

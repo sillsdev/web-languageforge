@@ -57,7 +57,7 @@ function NewLexProjectPage() {
 
   // step 2: send receive credentials
   this.srCredentialsPage = {};
-  this.srCredentialsPage.projectIdInput = element(by.model('srProject.projectId'));
+  this.srCredentialsPage.projectIdInput = element(by.model('srProject.identifier'));
   this.srCredentialsPage.usernameInput = element(by.model('srProject.username'));
   this.srCredentialsPage.passwordInput = element(by.id('password'));
 

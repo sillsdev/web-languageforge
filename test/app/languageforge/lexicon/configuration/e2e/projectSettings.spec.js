@@ -76,6 +76,13 @@ describe('Project Settings page', function() {
       projectSettingsPage.sendReceiveTab.formStatus.expectContainsError('Project ID cannot be empty.');
     });
 
+    it('cannot submit if Project ID is invalid', function() {
+      projectSettingsPage.sendReceiveTab.projectIdInput.sendKeys('1');
+      expect(projectSettingsPage.sendReceiveTab.updateButton.isEnabled()).toBe(true);
+      projectSettingsPage.sendReceiveTab.updateButton.click();
+      expect(projectSettingsPage.sendReceiveTab.projectIdInput.isDisplayed()).toBe(true);
+      projectSettingsPage.sendReceiveTab.formStatus.expectContainsError('Project ID must begin with a letter');
+    });
   });
 
 });
