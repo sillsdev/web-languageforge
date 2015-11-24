@@ -25,7 +25,7 @@
                 <button type="submit" class="btn"><i class="fa fa-check"></i>{{'Save' | translate}}</button>
             </form>
         </tab>
-        <tab heading="{{'Send and Receive Properties' | translate}}" data-ng-show="sendReceive.showTab" disabled="!rights.canViewSendReceiveProperties">
+        <tab heading="{{'Send and Receive Properties' | translate}}" data-ng-show="sendReceive.showTab" disabled="!rights.canEditSendReceiveProperties">
             <form class="form-horizontal well" data-ng-submit="isChanging = !updateSendReceiveCredentials()" novalidate>
                 <div class="row" align="center">
                     <div class="span8" id="form-status" data-ng-class="formStatusClass">{{formStatus | translate}}&nbsp;</div>
@@ -116,7 +116,7 @@
                 </div>
                 <div class="control-group" data-ng-show="rights.canEditSendReceiveProperties">
                     <div class="controls">
-                        <a class="btn" data-ng-hide="isChanging" data-ng-click="isChanging = true">
+                        <a class="btn" data-ng-hide="isChanging" data-ng-click="isChanging = true" id="change">
                             <i class="fa fa-edit"></i>{{'Change' | translate}}</a>
                         <button class="btn" data-ng-show="isChanging" type="submit">
                             <i class="fa fa-check"></i>{{'Update' | translate}}</button>
@@ -124,7 +124,7 @@
                 </div>
             </form>
         </tab>
-        <tab heading="Communication Settings" select="readCommunicationSettings()" data-ng-show="true" disabled="rights.canEditCommunicationSettings">
+        <tab heading="Communication Settings" select="readCommunicationSettings()" data-ng-show="false" disabled="!rights.canEditCommunicationSettings">
             <form class="well" data-ng-submit="updateCommunicationSettings()">
                 <fieldset>
                     <label data-translate="Twilio Account Username"></label>
