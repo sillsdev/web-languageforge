@@ -105,7 +105,7 @@ angular.module('lexicon-new-project',
     // This is where form data will live
     $scope.newProject = {};
     $scope.newProject.appName = 'lexicon';
-    $scope.srProject = {};
+    $scope.sendReceive = {};
 
     $scope.projectCodeState = 'empty';
     $scope.projectCodeStateDefer = $q.defer();
@@ -280,24 +280,20 @@ angular.module('lexicon-new-project',
       return ok();
     }
 
+    $scope.validateForm = validateForm;
+
     function gotoNextState() {
       makeFormNeutral();
       switch ($state.current.name) {
         case 'newProject.name':
           if ($scope.isSRProject) {
             $state.go('newProject.sendReceiveCredentials');
-            $scope.nextButtonLabel = $filter('translate')('Download');
+            $scope.nextButtonLabel = $filter('translate')('Synchronise');
             $scope.show.backButton = true;
             $scope.resetValidateProjectForm();
-            if (!$scope.srProject.identifier) {
-              $scope.srProject.identifier = $scope.newProject.projectCode;
+            if (!$scope.sendReceive.username) {
+              $scope.sendReceive.username = ss.session.username;
             }
-
-            if (!$scope.srProject.username) {
-              $scope.srProject.username = ss.session.username;
-            }
-
-            $scope.checkSRProject(true);
           } else {
             createProject();
             $state.go('newProject.initialData');
@@ -387,7 +383,9 @@ angular.module('lexicon-new-project',
       $scope.projectCodeState = 'unchecked';
       $scope.projectCodeStateDefer = $q.defer();
       $scope.projectCodeStateDefer.resolve('unchecked');
-      $scope.srProject.isUnchecked = true;
+      $scope.sendReceive.isUnchecked = true;
+      $scope.sendReceive.usernameStatus = 'unchecked';
+      $scope.sendReceive.passwordStatus = 'unchecked';
     };
 
     $scope.$watch('projectCodeState', function(newval, oldval) {
@@ -510,94 +508,81 @@ angular.module('lexicon-new-project',
     // ----- Step 2: Send Receive Credentials -----
 
     function validateSendReceiveCredentialsForm() {
-      if (!$scope.srProject.identifier) {
-        return error('Project ID cannot be empty. Please enter a LanguageDepot.org project identifier.');
-      }
-
-      if (!lexProjectService.isValidProjectCode($scope.srProject.identifier)) {
-        return error('Project ID must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores.');
-      }
-
-      if (!$scope.srProject.username) {
+      $scope.sendReceive.projectStatus = 'unchecked';
+      if (!$scope.sendReceive.username) {
         return error('Login cannot be empty. Please enter your LanguageDepot.org login username.');
       }
 
-      if (!$scope.srProject.password) {
+      if (!$scope.sendReceive.password) {
         return error('Password cannot be empty. Please enter your LanguageDepot.org password.');
       }
 
-      if ($scope.srProject.isUnchecked) {
+      if ($scope.sendReceive.isUnchecked) {
         $scope.checkSRProject();
         return neutral();
       }
 
-      switch ($scope.srProject.identifierStatus) {
-        case 'found':
-          if ($scope.srProject.passwordStatus == 'invalid') {
-            return error('The Login and Password isn\'t valid on LanguageDepot.org. Enter a Login and Password.');
-          }
-
-          if ($scope.srProject.usernameStatus == 'no_access') {
-            return error('The Login dosen\'t have access to the Project ID on LanguageDepot.org. Enter a Login and Password.');
-          }
-
-          return ok();
-        case 'unknown':
-          return error('The Project ID \'' + $scope.srProject.identifier + '\' doesn\'t exist on LanguageDepot.org. Enter an existing Project ID.');
-        case 'invalid':
-          return error('Project ID must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores.');
-        default:
-          return error('Something went wrong checking the project on LanguageDepot.org.');
+      if ($scope.sendReceive.usernameStatus == 'unknown') {
+        return error('The Login dosen\'t exist on LanguageDepot.org. Enter a Login.');
       }
+
+      if ($scope.sendReceive.passwordStatus == 'invalid') {
+        return error('The Password isn\'t valid on LanguageDepot.org. Enter the Password.');
+      }
+
+      $scope.sendReceive.projectStatus = 'no_access';
+      if (!$scope.sendReceive.project) {
+        return error('Please select a Project.');
+      }
+
+      if ($scope.sendReceive.project.role != 'manager') {
+        return error('Please select a Project that you are the Manager on LanguageDepot.org.');
+      }
+
+      $scope.sendReceive.projectStatus = 'ok';
+      return ok();
     }
 
-    $scope.checkSRProject = function checkSRProject(isValidateSuppressed) {
-      if (!lexProjectService.isValidProjectCode($scope.srProject.identifier)) {
-        $scope.srProject.identifierStatus = 'invalid';
-        $scope.srProject.isUnchecked = false;
-      } else {
-        $scope.srProject.identifierStatus = 'loading';
-        $scope.srProject.usernameStatus = 'loading';
-        $scope.srProject.passwordStatus = 'loading';
-        sendReceiveService.checkProject($scope.srProject.identifier, $scope.srProject.username, $scope.srProject.password, function(result) {
-          $scope.srProject.isUnchecked = false;
-          if (result.ok) {
-            if (result.data.projectExists) {
-              $scope.srProject.identifierStatus = 'found';
-              $scope.srProject.usernameStatus = 'no_access';
-              $scope.srProject.passwordStatus = 'invalid';
-            } else {
-              $scope.srProject.identifierStatus = 'unknown';
-              $scope.srProject.usernameStatus = 'unknown';
-              $scope.srProject.passwordStatus = 'unknown';
-            }
-
-            if (result.data.hasAccessToProject) {
-              $scope.srProject.usernameStatus = 'access';
-            }
-
-            if (result.data.hasValidCredentials) {
-              $scope.srProject.passwordStatus = 'valid';
-            }
-          } else {
-            $scope.srProject.identifierStatus = 'failed';
-            $scope.srProject.usernameStatus = 'failed';
-            $scope.srProject.passwordStatus = 'failed';
+    $scope.checkSRProject = function checkSRProject() {
+      $scope.sendReceive.usernameStatus = 'loading';
+      $scope.sendReceive.passwordStatus = 'loading';
+      sendReceiveService.getUserProjects($scope.sendReceive.username, $scope.sendReceive.password, function(result) {
+        $scope.sendReceive.isUnchecked = false;
+        $scope.sendReceive.projects = result.data.projects;
+        if (result.ok) {
+          $scope.sendReceive.usernameStatus = 'unknown';
+          if (result.data.isKnownUser) {
+            $scope.sendReceive.usernameStatus = 'known';
           }
 
-          if (!isValidateSuppressed) {
-            validateForm();
+          $scope.sendReceive.passwordStatus = 'invalid';
+          if (result.data.hasValidCredentials) {
+            $scope.sendReceive.passwordStatus = 'valid';
           }
-        });
-      }
+        } else {
+          $scope.sendReceive.usernameStatus = 'failed';
+          $scope.sendReceive.passwordStatus = 'failed';
+        }
+      });
+    };
+
+    $scope.show.project = function showProject() {
+      return ($scope.sendReceive.usernameStatus == 'known' && $scope.sendReceive.passwordStatus == 'valid');
+    };
+
+    $scope.projectOption = function projectOption(project) {
+      var option = project.name + ' (' + project.identifier;
+      if (project.role != 'unknown') option += ', ' + project.role;
+      option +=  ')';
+      return option;
     };
 
     function saveSRCredentials() {
-      if (!$scope.srProject.identifier || !$scope.srProject.username || !$scope.srProject.password) {
+      if (!$scope.sendReceive.project || !$scope.sendReceive.username || !$scope.sendReceive.password) {
         return;
       }
 
-      sendReceiveService.saveCredentials($scope.srProject.identifier, $scope.srProject.username, $scope.srProject.password, function(result) {
+      sendReceiveService.saveCredentials($scope.sendReceive.project.identifier, $scope.sendReceive.username, $scope.sendReceive.password, function(result) {
         if (result.ok) {
           gotoLexicon();
         } else {

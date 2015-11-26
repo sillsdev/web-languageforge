@@ -35,7 +35,7 @@ class RightsHelper
      *
      * @param UserModel $userModel
      * @param ProjectModel $projectModel
-     * @return multitype:
+     * @return mixed
      */
     public static function encode($userModel, $projectModel) {
         return $projectModel->getRightsArray($userModel->id->asString());
@@ -334,6 +334,7 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 
             // send receive api
+            case 'sr_get_userProjects':
             case 'sr_check_project':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 

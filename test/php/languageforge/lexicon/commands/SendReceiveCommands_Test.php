@@ -6,6 +6,10 @@ use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\UserModel;
+use GuzzleHttp\Client;
+use GuzzleHttp\Message\Response;
+use GuzzleHttp\Stream\Stream;
+use GuzzleHttp\Subscriber\Mock;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -42,16 +46,19 @@ class MockLanguageServerApi implements LanguageServerApiInterface
 class TestSendReceiveCommands extends UnitTestCase
 {
 /*
-    public function testCheckCredentialsActualApi_ValidCredentials_CredentialsValid()
+    public function testGetUserProjectsActualApi_ValidCredentials_CredentialsValid()
     {
         $username = 'change to your username';
         $password = 'change to your password';
 
-        $result = SendReceiveCommands::checkCredentials($username, $password);
+        $result = SendReceiveCommands::getUserProjects($username, $password);
+//        var_dump($result);
+        var_dump($result->projects);
 
+        $this->assertEqual($result->isKnownUser, true);
         $this->assertEqual($result->hasValidCredentials, true);
     }
-
+/*
     public function testCheckProjectActualApi_ExistingProject_ProjectExists()
     {
         $identifier = 'test-eb-sena3-flex';
@@ -94,26 +101,79 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual($newProject->sendReceivePassword, $password);
     }
 
-    public function testCheckCredentials_BlankCredentials_CredentialsInvalid()
+    public function testGetUserProjects_BlankCredentials_CredentialsInvalid()
     {
         $username = '';
         $password = '';
-        $api = new MockLanguageServerApi();
+        $client = new Client();
 
-        $result = SendReceiveCommands::checkCredentials($username, $password, $api);
+        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
+        $this->assertEqual($result->isKnownUser, false);
         $this->assertEqual($result->hasValidCredentials, false);
+        $this->assertEqual($result->projects->count(), 0);
     }
 
-    public function testCheckCredentials_ValidCredentials_CredentialsValid()
+    public function testGetUserProjects_KnownUserBlankPassword_UserUnknown()
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $api = new MockLanguageServerApi();
+        $client = new Client();
+        $mock = new Mock([new Response(403)]);
+        $client->getEmitter()->attach($mock);
 
-        $result = SendReceiveCommands::checkCredentials($username, $password, $api);
+        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
+        $this->assertEqual($result->isKnownUser, true);
+        $this->assertEqual($result->hasValidCredentials, false);
+        $this->assertEqual($result->projects->count(), 0);
+    }
+
+    public function testGetUserProjects_UnknownUser_UserUnknown()
+    {
+        $username = 'mock_user';
+        $password = 'mock_pass';
+        $client = new Client();
+        $mock = new Mock([new Response(404)]);
+        $client->getEmitter()->attach($mock);
+
+        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+
+        $this->assertEqual($result->isKnownUser, false);
+        $this->assertEqual($result->hasValidCredentials, false);
+        $this->assertEqual($result->projects->count(), 0);
+    }
+
+    public function testGetUserProjects_InvalidPass_PassInvalid()
+    {
+        $username = 'mock_user';
+        $password = 'mock_pass';
+        $client = new Client();
+        $mock = new Mock([new Response(403)]);
+        $client->getEmitter()->attach($mock);
+
+        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+
+        $this->assertEqual($result->isKnownUser, true);
+        $this->assertEqual($result->hasValidCredentials, false);
+        $this->assertEqual($result->projects->count(), 0);
+    }
+
+    public function testGetUserProjects_ValidCredentials_CredentialsValid()
+    {
+        $username = 'mock_user';
+        $password = 'mock_pass';
+        $client = new Client();
+        $body = Stream::factory('[{"identifier": "identifier1", "name": "name", "repository": "", "role": ""}]');
+        $response = new Response(200, ['Content-Type' => 'application/json'], $body);
+        $mock = new Mock([$response]);
+        $client->getEmitter()->attach($mock);
+
+        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+
+        $this->assertEqual($result->isKnownUser, true);
         $this->assertEqual($result->hasValidCredentials, true);
+        $this->assertTrue($result->projects->count() > 0);
     }
 
     public function testCheckProject_BlankProject_ProjectDoesntExist()
