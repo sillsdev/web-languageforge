@@ -52,8 +52,9 @@
   "emptyProjectCode" : "empty_project",
   "srProjectName"    : "SR Project",
   "srProjectCode"    : "sr_project",
-  "srIdentifier"     : "test",
-  "srUsername"       : "sr-username",
+  "srIdentifier"     : "sr-mock-identifier",
+  "srUsername"       : "sr-mock-username",
+  "srPassword"       : "sr-mock-password",
 
 
 

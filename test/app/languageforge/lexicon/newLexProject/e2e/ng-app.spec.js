@@ -77,8 +77,10 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(false);
-      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.projectIdInput.getAttribute('value')).toEqual(constants.emptyProjectCode);
+      expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
+      expect(page.srCredentialsPage.passwordInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
     });
 
   });
@@ -101,52 +103,102 @@ describe('E2E testing: New Lex Project wizard app', function() {
       page.chooserPage.sendReceiveButton.click();
       expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
       page.nextButton.click();
-      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.projectIdInput.getAttribute('value')).toEqual(constants.emptyProjectCode);
+      expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
+      expect(page.srCredentialsPage.passwordInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
     });
 
     it('cannot move on if Password is empty', function() {
       page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
-      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
       page.formStatus.expectContainsError('Password cannot be empty.');
     });
 
-    it('cannot move on if Project ID isn\'t found on Language Depot', function() {
+    it('cannot move on if Login doesn\'t exist', function() {
       page.srCredentialsPage.passwordInput.sendKeys(constants.passwordValid);
-      expect(page.nextButton.isEnabled()).toBe(true);
+      browser.wait(expectedCondition.visibilityOf(page.srCredentialsPage.loginUnknown), CONDITION_TIMEOUT);
+      expect(page.srCredentialsPage.loginUnknown.isDisplayed()).toBe(true);
+      page.formStatus.expectHasNoError();
       page.nextButton.click();
-      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
-      page.formStatus.expectContainsError('The Project ID \'empty_project\' doesn\'t exist on LanguageDepot.org.');
+      expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
+      page.formStatus.expectContainsError('The Login dosen\'t exist on LanguageDepot.org.');
+    });
+
+    it('can go back to Project Name page, user and pass preserved', function() {
+      expect(page.backButton.isDisplayed()).toBe(true);
+      page.backButton.click();
+      expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
+      page.nextButton.click();
+      expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
+      expect(page.srCredentialsPage.passwordInput.getAttribute('value')).toEqual(constants.passwordValid);
+      page.srCredentialsPage.passwordInput.clear();
     });
 
     it('cannot move on if Login is empty', function() {
-      page.srCredentialsPage.projectIdInput.clear();
-      page.srCredentialsPage.projectIdInput.sendKeys(constants.srIdentifier);
-      page.srCredentialsPage.usernameInput.clear();
+      page.srCredentialsPage.loginInput.clear();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
-      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
       page.formStatus.expectContainsError('Login cannot be empty.');
     });
 
-    it('cannot move on if Project ID is invalid', function() {
-      page.srCredentialsPage.usernameInput.sendKeys(constants.notUsedUsername);
-      page.srCredentialsPage.projectIdInput.clear();
-      page.srCredentialsPage.projectIdInput.sendKeys('1');
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
-      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
-      page.formStatus.expectContainsError('Project ID must begin with a letter');
+    it('can find an existing Login', function() {
+      page.srCredentialsPage.loginInput.sendKeys(constants.srUsername);
+      browser.wait(expectedCondition.visibilityOf(page.srCredentialsPage.loginOk), CONDITION_TIMEOUT);
+      expect(page.srCredentialsPage.loginOk.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.passwordUnknown.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.passwordOk.isDisplayed()).toBe(false);
+      page.formStatus.expectHasNoError();
     });
 
-    it('cannot move on if Project ID is empty', function() {
-      page.srCredentialsPage.projectIdInput.clear();
-      expect(page.nextButton.isEnabled()).toBe(true);
+    it('cannot move on if Password is invalid', function() {
+      page.srCredentialsPage.passwordInput.sendKeys(constants.passwordValid);
+      browser.wait(expectedCondition.visibilityOf(page.srCredentialsPage.passwordUnknown), CONDITION_TIMEOUT);
+      expect(page.srCredentialsPage.loginOk.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.passwordUnknown.isDisplayed()).toBe(true);
+      page.formStatus.expectHasNoError();
       page.nextButton.click();
-      expect(page.srCredentialsPage.projectIdInput.isDisplayed()).toBe(true);
-      page.formStatus.expectContainsError('Project ID cannot be empty.');
+      expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
+      page.formStatus.expectContainsError('The Password isn\'t valid');
+    });
+
+    it('can move on when the credentials are valid', function() {
+      page.srCredentialsPage.passwordInput.clear();
+      page.srCredentialsPage.passwordInput.sendKeys(constants.srPassword);
+      browser.wait(expectedCondition.visibilityOf(page.srCredentialsPage.passwordOk), CONDITION_TIMEOUT);
+      expect(page.srCredentialsPage.loginOk.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.passwordOk.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(true);
+      page.formStatus.expectHasNoError();
+    });
+
+    it('cannot move on if no project is selected', function() {
+      page.nextButton.click();
+      expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(true);
+      page.formStatus.expectContainsError('Please select a Project.');
+    });
+
+    it('cannot move on if not a manager of the project', function() {
+      util.clickDropdownByValue(page.srCredentialsPage.projectSelect, 'mock-name2');
+      expect(page.srCredentialsPage.projectNoAccess.isDisplayed()).toBe(true);
+      page.formStatus.expectContainsError('select a Project that you are the Manager');
+    });
+
+    it('can move on when a managed project is selected', function() {
+      util.clickDropdownByValue(page.srCredentialsPage.projectSelect, 'mock-name1');
+      expect(page.srCredentialsPage.projectOk.isDisplayed()).toBe(true);
+      page.formStatus.expectHasNoError();
+      page.expectFormIsValid();
     });
 
   });
