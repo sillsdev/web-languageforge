@@ -729,6 +729,12 @@ class Sf
     // ---------------------------------------------------------------
     // Send and Receive API
     // ---------------------------------------------------------------
+    public function sr_get_userProjects($username, $password)
+    {
+        $result = SendReceiveCommands::getUserProjects($username, $password);
+        return JsonEncoder::encode($result);
+    }
+
     public function sr_check_project($identifier, $username, $password)
     {
         $result = SendReceiveCommands::checkProject($identifier, $username, $password);

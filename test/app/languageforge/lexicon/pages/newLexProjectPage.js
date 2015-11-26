@@ -57,9 +57,15 @@ function NewLexProjectPage() {
 
   // step 2: send receive credentials
   this.srCredentialsPage = {};
-  this.srCredentialsPage.projectIdInput = element(by.model('srProject.identifier'));
-  this.srCredentialsPage.usernameInput = element(by.model('srProject.username'));
-  this.srCredentialsPage.passwordInput = element(by.id('password'));
+  this.srCredentialsPage.loginInput = element(by.model('sendReceive.username'));
+  this.srCredentialsPage.loginUnknown = element(by.id('usernameUnknown'));
+  this.srCredentialsPage.loginOk = element(by.id('usernameOk'));
+  this.srCredentialsPage.passwordInput = element(by.id('srPassword'));
+  this.srCredentialsPage.passwordUnknown = element(by.id('passwordUnknown'));
+  this.srCredentialsPage.passwordOk = element(by.id('passwordOk'));
+  this.srCredentialsPage.projectSelect = element(by.model('sendReceive.project'));
+  this.srCredentialsPage.projectNoAccess = element(by.id('projectNoAccess'));
+  this.srCredentialsPage.projectOk = element(by.id('projectOk'));
 
   // step 3: verify data
   this.verifyDataPage = {};
