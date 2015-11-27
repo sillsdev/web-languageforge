@@ -12,8 +12,8 @@ angular.module('lexicon.services')
       jsonRpc.call('sr_check_project', [identifier, username, password], callback);
     };
 
-    this.saveCredentials = function saveCredentials(identifier, username, password, callback) {
-      jsonRpc.call('sr_save_credentials', [identifier, username, password], callback);
+    this.saveCredentials = function saveCredentials(srProject, username, password, callback) {
+      jsonRpc.call('sr_save_credentials', [srProject, username, password], callback);
     };
   }])
 

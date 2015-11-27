@@ -22,6 +22,7 @@ class LexiconProjectModel extends LfProjectModel
         );
 
         $this->config = new LexConfiguration();
+        $this->sendReceiveProject = new SendReceiveProjectModel();
 
         // default values
         $this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
@@ -52,9 +53,9 @@ class LexiconProjectModel extends LfProjectModel
 
     /**
      *
-     * @var string
+     * @var SendReceiveProjectModel
      */
-    public $sendReceiveIdentifier;
+    public $sendReceiveProject;
 
     /**
      *
@@ -93,7 +94,7 @@ class LexiconProjectModel extends LfProjectModel
     {
         $settings = parent::getPublicSettings($userId);
         $settings['currentUserRole'] = $this->users[$userId]->role;
-        $settings['hasSendReceive'] = ($this->sendReceiveIdentifier) ? true : false;
+        $settings['hasSendReceive'] = ($this->sendReceiveProject->identifier) ? true : false;
 
         return array_merge($settings, LexBaseViewDto::encode($this->id->asString(), $userId));
     }

@@ -13,6 +13,7 @@ use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Mapper\MongoStore;
 use Api\Model\ProjectModel;
@@ -243,7 +244,7 @@ if ($site == 'scriptureforge') {
     $testProjectId = $testProjectModel->write();
 
     $srProjectModel = new LexiconProjectModel($srProject);
-    $srProjectModel->sendReceiveIdentifier = $constants['srIdentifier'];
+    $srProjectModel->sendReceiveProject = new SendReceiveProjectModel($constants['srIdentifier'], $constants['srName'], 'http://public.languagedepot.org', 'manager');;
     $srProjectModel->sendReceiveUsername = $constants['srUsername'];
     $srProjectId = $srProjectModel->write();
 

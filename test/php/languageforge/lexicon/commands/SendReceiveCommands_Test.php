@@ -3,6 +3,8 @@
 use Api\Library\Languageforge\Lexicon\LanguageServerApiInterface;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
+use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
+use Api\Model\Mapper\JsonEncoder;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\UserModel;
@@ -88,15 +90,16 @@ class TestSendReceiveCommands extends UnitTestCase
         $user->write();
         $project->write();
 
-        $identifier = 'sr_id';
+        $sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
         $username = 'sr_user';
         $password = 'sr_pass';
+        $srProject = JsonEncoder::encode($sendReceiveProject);
 
-        $newProjectId = SendReceiveCommands::saveCredentials($projectId, $identifier, $username, $password);
+        $newProjectId = SendReceiveCommands::saveCredentials($projectId, $srProject, $username, $password);
 
         $newProject = new LexiconProjectModelWithSRPassword($newProjectId);
         $this->assertEqual($newProjectId, $projectId);
-        $this->assertEqual($newProject->sendReceiveIdentifier, $identifier);
+        $this->assertEqual($newProject->sendReceiveProject, $sendReceiveProject);
         $this->assertEqual($newProject->sendReceiveUsername, $username);
         $this->assertEqual($newProject->sendReceivePassword, $password);
     }
