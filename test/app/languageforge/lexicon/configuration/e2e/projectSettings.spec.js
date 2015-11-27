@@ -8,6 +8,8 @@ describe('Project Settings page', function() {
   var dbePage             = require('../../pages/dbePage.js');
   var dbeUtil             = require('../../pages/dbeUtil.js');
   var projectSettingsPage = require('../../pages/projectSettingsPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   it('cannot see Send and Receive on test project for manager', function() {
     loginPage.loginAsManager();
@@ -30,59 +32,33 @@ describe('Project Settings page', function() {
 
   describe('Send and Receive tab', function() {
 
-    it('can see Project ID, Login and Change button', function() {
-      projectSettingsPage.tabs.sendReceive.click();
-      expect(projectSettingsPage.sendReceiveTab.projectIdInput.isDisplayed()).toBe(true);
-      expect(projectSettingsPage.sendReceiveTab.loginInput.isDisplayed()).toBe(true);
-      expect(projectSettingsPage.sendReceiveTab.changeButton.isDisplayed()).toBe(true);
-      expect(projectSettingsPage.sendReceiveTab.passwordInput.isDisplayed()).toBe(false);
-      expect(projectSettingsPage.sendReceiveTab.visiblePasswordInput.isDisplayed()).toBe(false);
-      expect(projectSettingsPage.sendReceiveTab.showCharactersCheckbox.isDisplayed()).toBe(false);
-      expect(projectSettingsPage.sendReceiveTab.updateButton.isDisplayed()).toBe(false);
-    });
-
     it('can edit settings', function() {
-      projectSettingsPage.sendReceiveTab.changeButton.click();
-      expect(projectSettingsPage.sendReceiveTab.projectIdInput.isDisplayed()).toBe(true);
+      projectSettingsPage.tabs.sendReceive.click();
       expect(projectSettingsPage.sendReceiveTab.loginInput.isDisplayed()).toBe(true);
-      expect(projectSettingsPage.sendReceiveTab.changeButton.isDisplayed()).toBe(false);
+      expect(projectSettingsPage.sendReceiveTab.loginInput.getAttribute('value')).toEqual(constants.srUsername);
       expect(projectSettingsPage.sendReceiveTab.passwordInput.isDisplayed()).toBe(true);
+      expect(projectSettingsPage.sendReceiveTab.passwordInput.getAttribute('value')).toEqual('');
       expect(projectSettingsPage.sendReceiveTab.visiblePasswordInput.isDisplayed()).toBe(false);
       expect(projectSettingsPage.sendReceiveTab.showCharactersCheckbox.isDisplayed()).toBe(true);
-      expect(projectSettingsPage.sendReceiveTab.updateButton.isDisplayed()).toBe(true);
-    });
-
-    it('cannot submit if Password is empty', function() {
+      expect(projectSettingsPage.sendReceiveTab.projectUneditable.isDisplayed()).toBe(true);
+      expect(projectSettingsPage.sendReceiveTab.projectUneditable.getAttribute('value')).toContain(constants.srIdentifier);
+      expect(projectSettingsPage.sendReceiveTab.projectSelect().isPresent()).toBe(false);
+      expect(projectSettingsPage.sendReceiveTab.saveButton.isDisplayed()).toBe(true);
       projectSettingsPage.sendReceiveTab.formStatus.expectHasNoError();
-      expect(projectSettingsPage.sendReceiveTab.updateButton.isEnabled()).toBe(true);
-      projectSettingsPage.sendReceiveTab.updateButton.click();
-      expect(projectSettingsPage.sendReceiveTab.projectIdInput.isDisplayed()).toBe(true);
-      projectSettingsPage.sendReceiveTab.formStatus.expectContainsError('Password cannot be empty.');
     });
 
-    it('cannot submit if Login is empty', function() {
-      projectSettingsPage.sendReceiveTab.loginInput.clear();
-      expect(projectSettingsPage.sendReceiveTab.updateButton.isEnabled()).toBe(true);
-      projectSettingsPage.sendReceiveTab.updateButton.click();
-      expect(projectSettingsPage.sendReceiveTab.projectIdInput.isDisplayed()).toBe(true);
-      projectSettingsPage.sendReceiveTab.formStatus.expectContainsError('Login cannot be empty.');
+    it('can edit Project when password supplied', function() {
+      projectSettingsPage.sendReceiveTab.passwordInput.sendKeys(constants.srPassword);
+      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.sendReceiveTab.passwordOk), CONDITION_TIMEOUT);
+      expect(projectSettingsPage.sendReceiveTab.loginOk.isDisplayed()).toBe(true);
+      expect(projectSettingsPage.sendReceiveTab.passwordOk.isDisplayed()).toBe(true);
+      expect(projectSettingsPage.sendReceiveTab.loginInput.isDisplayed()).toBe(true);
+      expect(projectSettingsPage.sendReceiveTab.projectUneditable.isDisplayed()).toBe(false);
+      expect(projectSettingsPage.sendReceiveTab.projectSelect().isDisplayed()).toBe(true);
+      expect(projectSettingsPage.sendReceiveTab.projectSelectedOption()).toContain(constants.srIdentifier);
+      projectSettingsPage.sendReceiveTab.formStatus.expectHasNoError();
     });
 
-    it('cannot submit if Project ID is empty', function() {
-      projectSettingsPage.sendReceiveTab.projectIdInput.clear();
-      expect(projectSettingsPage.sendReceiveTab.updateButton.isEnabled()).toBe(true);
-      projectSettingsPage.sendReceiveTab.updateButton.click();
-      expect(projectSettingsPage.sendReceiveTab.projectIdInput.isDisplayed()).toBe(true);
-      projectSettingsPage.sendReceiveTab.formStatus.expectContainsError('Project ID cannot be empty.');
-    });
-
-    it('cannot submit if Project ID is invalid', function() {
-      projectSettingsPage.sendReceiveTab.projectIdInput.sendKeys('1');
-      expect(projectSettingsPage.sendReceiveTab.updateButton.isEnabled()).toBe(true);
-      projectSettingsPage.sendReceiveTab.updateButton.click();
-      expect(projectSettingsPage.sendReceiveTab.projectIdInput.isDisplayed()).toBe(true);
-      projectSettingsPage.sendReceiveTab.formStatus.expectContainsError('Project ID must begin with a letter');
-    });
   });
 
 });

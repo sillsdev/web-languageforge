@@ -741,9 +741,9 @@ class Sf
         return JsonEncoder::encode($result);
     }
 
-    public function sr_save_credentials($identifier, $username, $password)
+    public function sr_save_credentials($srProject, $username, $password)
     {
-        return SendReceiveCommands::saveCredentials($this->_projectId, $identifier, $username, $password);
+        return SendReceiveCommands::saveCredentials($this->_projectId, $srProject, $username, $password);
     }
 
 

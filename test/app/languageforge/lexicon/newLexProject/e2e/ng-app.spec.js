@@ -80,7 +80,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
       expect(page.srCredentialsPage.passwordInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
     });
 
   });
@@ -106,7 +107,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.loginInput.getAttribute('value')).toEqual(constants.memberUsername);
       expect(page.srCredentialsPage.passwordInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
     });
 
     it('cannot move on if Password is empty', function() {
@@ -114,7 +116,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
       page.formStatus.expectContainsError('Password cannot be empty.');
     });
 
@@ -125,7 +128,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
       page.formStatus.expectHasNoError();
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
       page.formStatus.expectContainsError('The Login dosen\'t exist on LanguageDepot.org.');
     });
 
@@ -145,7 +149,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
       page.formStatus.expectContainsError('Login cannot be empty.');
     });
 
@@ -166,7 +171,8 @@ describe('E2E testing: New Lex Project wizard app', function() {
       page.formStatus.expectHasNoError();
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
       page.formStatus.expectContainsError('The Password isn\'t valid');
     });
 
@@ -177,26 +183,30 @@ describe('E2E testing: New Lex Project wizard app', function() {
       expect(page.srCredentialsPage.loginOk.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.passwordOk.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectSelect().isDisplayed()).toBe(true);
       page.formStatus.expectHasNoError();
     });
 
     it('cannot move on if no project is selected', function() {
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.projectSelect.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.projectSelect().isDisplayed()).toBe(true);
       page.formStatus.expectContainsError('Please select a Project.');
     });
 
     it('cannot move on if not a manager of the project', function() {
-      util.clickDropdownByValue(page.srCredentialsPage.projectSelect, 'mock-name2');
+      util.clickDropdownByValue(page.srCredentialsPage.projectSelect(), 'mock-name2');
       expect(page.srCredentialsPage.projectNoAccess.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
       page.formStatus.expectContainsError('select a Project that you are the Manager');
     });
 
     it('can move on when a managed project is selected', function() {
-      util.clickDropdownByValue(page.srCredentialsPage.projectSelect, 'mock-name1');
+      util.clickDropdownByValue(page.srCredentialsPage.projectSelect(), 'mock-name1');
       expect(page.srCredentialsPage.projectOk.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
       page.formStatus.expectHasNoError();
       page.expectFormIsValid();
     });

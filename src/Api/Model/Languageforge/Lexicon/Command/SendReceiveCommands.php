@@ -4,6 +4,7 @@ namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Library\Languageforge\Lexicon\LanguageServerApiInterface;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
+use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Mapper\MapOf;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -21,19 +22,24 @@ class SendReceiveCommands
 
     /**
      * @param string $projectId
-     * @param string $identifier
+     * @param string $srProject
      * @param string $username
      * @param string $password
-     * @return string
+     * @return string $projectId
      */
-    public static function saveCredentials($projectId, $identifier, $username, $password)
+    public static function saveCredentials($projectId, $srProject, $username, $password)
     {
-        if (!$identifier || !$username || !$password) {
+        if (!$srProject || !$username || !$password) {
             return false;
         }
 
         $project = new LexiconProjectModelWithSRPassword($projectId);
-        $project->sendReceiveIdentifier = $identifier;
+        $project->sendReceiveProject = new SendReceiveProjectModel(
+            $srProject['identifier'],
+            $srProject['name'],
+            $srProject['repository'],
+            $srProject['role']
+        );
         $project->sendReceiveUsername = $username;
         $project->sendReceivePassword = $password;
         return $project->write();
@@ -63,7 +69,7 @@ class SendReceiveCommands
         }
         if ($username == self::TEST_SR_USERNAME) {
             if ($password == self::TEST_SR_PASSWORD) {
-                $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository": "", "role": "manager"},{"identifier": "mock-id2", "name": "mock-name2", "repository": "", "role": "contributor"}]');
+                $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository": "http://public.languagedepot.org", "role": "manager"},{"identifier": "mock-id2", "name": "mock-name2", "repository": "http://public.languagedepot.org", "role": "contributor"}]');
                 $response = new Response(200, ['Content-Type' => 'application/json'], $body);
                 $mock = new Mock([$response]);
                 $client->getEmitter()->attach($mock);
@@ -93,12 +99,12 @@ class SendReceiveCommands
         if ($response->getStatusCode() == 200) {
             $result->isKnownUser = true;
             $result->hasValidCredentials = true;
-            foreach ($response->json() as $index => $project) {
-                $result->projects[strval($index)] = new sendReceiveProjectOptions(
-                    $project['identifier'],
-                    $project['name'],
-                    $project['repository'],
-                    $project['role']
+            foreach ($response->json() as $index => $srProject) {
+                $result->projects[strval($index)] = new SendReceiveProjectModel(
+                    $srProject['identifier'],
+                    $srProject['name'],
+                    $srProject['repository'],
+                    $srProject['role']
                 );
             }
         }
@@ -249,7 +255,7 @@ class SendReceiveGetUserProjectResult
         $this->isKnownUser = false;
         $this->hasValidCredentials = false;
         $this->projects = new MapOf(function() {
-            return new SendReceiveProjectOptions();
+            return new SendReceiveProjectModel();
         });
     }
 
@@ -264,40 +270,9 @@ class SendReceiveGetUserProjectResult
     public $hasValidCredentials;
 
     /**
-     * @var MapOf <SendReceiveProjectOptions>
+     * @var MapOf <SendReceiveProjectModel>
      */
     public $projects;
-}
-
-class SendReceiveProjectOptions
-{
-    public function __construct($identifier = '', $name = '', $repository = '', $role = '')
-    {
-        $this->identifier = $identifier;
-        $this->name = $name;
-        $this->repository = $repository;
-        $this->role = $role;
-    }
-
-    /**
-     * @var string Language Depot project identifier
-     */
-    public $identifier;
-
-    /**
-     * @var string Language Depot project name
-     */
-    public $name;
-
-    /**
-     * @var string Language Depot project repository
-     */
-    public $repository;
-
-    /**
-     * @var string Language Depot project role
-     */
-    public $role;
 }
 
 class SendReceiveResult
