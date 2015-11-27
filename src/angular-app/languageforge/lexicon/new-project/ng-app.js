@@ -9,6 +9,7 @@ angular.module('lexicon-new-project',
     'ui.router',
     'palaso.ui.utils',
     'palaso.ui.language',
+    'palaso.ui.sendReceiveCredentials',
     'palaso.ui.mockUpload',
     'palaso.util.model.transform',
     'pascalprecht.translate',
@@ -105,7 +106,8 @@ angular.module('lexicon-new-project',
     // This is where form data will live
     $scope.newProject = {};
     $scope.newProject.appName = 'lexicon';
-    $scope.sendReceive = {};
+    $scope.project = {};
+    $scope.project.sendReceive = {};
 
     $scope.projectCodeState = 'empty';
     $scope.projectCodeStateDefer = $q.defer();
@@ -283,7 +285,6 @@ angular.module('lexicon-new-project',
     $scope.validateForm = validateForm;
 
     function gotoNextState() {
-      makeFormNeutral();
       switch ($state.current.name) {
         case 'newProject.name':
           if ($scope.isSRProject) {
@@ -291,11 +292,11 @@ angular.module('lexicon-new-project',
             $scope.nextButtonLabel = $filter('translate')('Synchronise');
             $scope.show.backButton = true;
             $scope.resetValidateProjectForm();
-            if (!$scope.sendReceive.username) {
-              $scope.sendReceive.username = ss.session.username;
+            if (!$scope.project.sendReceive.username) {
+              $scope.project.sendReceive.username = ss.session.username;
             }
           } else {
-            createProject();
+            createProject(makeFormNeutral);
             $state.go('newProject.initialData');
             $scope.nextButtonLabel = $filter('translate')('Skip');
             $scope.show.backButton = false;
@@ -304,12 +305,14 @@ angular.module('lexicon-new-project',
             $scope.projectCodeStateDefer.resolve('empty');
           }
 
+          makeFormNeutral();
           break;
         case 'newProject.initialData':
           $scope.nextButtonLabel = $filter('translate')('Dictionary');
           if ($scope.newProject.emptyProjectDesired) {
             $state.go('newProject.selectPrimaryLanguage');
             $scope.show.backButton = true;
+            makeFormNeutral();
           } else {
             $state.go('newProject.verifyData');
             makeFormValid();
@@ -383,9 +386,9 @@ angular.module('lexicon-new-project',
       $scope.projectCodeState = 'unchecked';
       $scope.projectCodeStateDefer = $q.defer();
       $scope.projectCodeStateDefer.resolve('unchecked');
-      $scope.sendReceive.isUnchecked = true;
-      $scope.sendReceive.usernameStatus = 'unchecked';
-      $scope.sendReceive.passwordStatus = 'unchecked';
+      $scope.project.sendReceive.isUnchecked = true;
+      $scope.project.sendReceive.usernameStatus = 'unchecked';
+      $scope.project.sendReceive.passwordStatus = 'unchecked';
     };
 
     $scope.$watch('projectCodeState', function(newval, oldval) {
@@ -508,81 +511,46 @@ angular.module('lexicon-new-project',
     // ----- Step 2: Send Receive Credentials -----
 
     function validateSendReceiveCredentialsForm() {
-      $scope.sendReceive.projectStatus = 'unchecked';
-      if (!$scope.sendReceive.username) {
+      $scope.project.sendReceive.projectStatus = 'unchecked';
+      if (!$scope.project.sendReceive.username) {
         return error('Login cannot be empty. Please enter your LanguageDepot.org login username.');
       }
 
-      if (!$scope.sendReceive.password) {
+      if (!$scope.project.sendReceive.password) {
         return error('Password cannot be empty. Please enter your LanguageDepot.org password.');
       }
 
-      if ($scope.sendReceive.isUnchecked) {
-        $scope.checkSRProject();
+      if ($scope.project.sendReceive.isUnchecked) {
         return neutral();
       }
 
-      if ($scope.sendReceive.usernameStatus == 'unknown') {
+      if ($scope.project.sendReceive.usernameStatus == 'unknown') {
         return error('The Login dosen\'t exist on LanguageDepot.org. Enter a Login.');
       }
 
-      if ($scope.sendReceive.passwordStatus == 'invalid') {
+      if ($scope.project.sendReceive.passwordStatus == 'invalid') {
         return error('The Password isn\'t valid on LanguageDepot.org. Enter the Password.');
       }
 
-      $scope.sendReceive.projectStatus = 'no_access';
-      if (!$scope.sendReceive.project) {
+      $scope.project.sendReceive.projectStatus = 'no_access';
+      if (!$scope.project.sendReceive.project) {
         return error('Please select a Project.');
       }
 
-      if ($scope.sendReceive.project.role != 'manager') {
+      if ($scope.project.sendReceive.project.role != 'manager') {
         return error('Please select a Project that you are the Manager on LanguageDepot.org.');
       }
 
-      $scope.sendReceive.projectStatus = 'ok';
+      $scope.project.sendReceive.projectStatus = 'ok';
       return ok();
     }
 
-    $scope.checkSRProject = function checkSRProject() {
-      $scope.sendReceive.usernameStatus = 'loading';
-      $scope.sendReceive.passwordStatus = 'loading';
-      sendReceiveService.getUserProjects($scope.sendReceive.username, $scope.sendReceive.password, function(result) {
-        $scope.sendReceive.isUnchecked = false;
-        $scope.sendReceive.projects = result.data.projects;
-        if (result.ok) {
-          $scope.sendReceive.usernameStatus = 'unknown';
-          if (result.data.isKnownUser) {
-            $scope.sendReceive.usernameStatus = 'known';
-          }
-
-          $scope.sendReceive.passwordStatus = 'invalid';
-          if (result.data.hasValidCredentials) {
-            $scope.sendReceive.passwordStatus = 'valid';
-          }
-        } else {
-          $scope.sendReceive.usernameStatus = 'failed';
-          $scope.sendReceive.passwordStatus = 'failed';
-        }
-      });
-    };
-
-    $scope.show.project = function showProject() {
-      return ($scope.sendReceive.usernameStatus == 'known' && $scope.sendReceive.passwordStatus == 'valid');
-    };
-
-    $scope.projectOption = function projectOption(project) {
-      var option = project.name + ' (' + project.identifier;
-      if (project.role != 'unknown') option += ', ' + project.role;
-      option +=  ')';
-      return option;
-    };
-
     function saveSRCredentials() {
-      if (!$scope.sendReceive.project || !$scope.sendReceive.username || !$scope.sendReceive.password) {
+      if (!$scope.project.sendReceive.project || !$scope.project.sendReceive.username || !$scope.project.sendReceive.password) {
         return;
       }
 
-      sendReceiveService.saveCredentials($scope.sendReceive.project.identifier, $scope.sendReceive.username, $scope.sendReceive.password, function(result) {
+      sendReceiveService.saveCredentials($scope.project.sendReceive.project, $scope.project.sendReceive.username, $scope.project.sendReceive.password, function(result) {
         if (result.ok) {
           gotoLexicon();
         } else {

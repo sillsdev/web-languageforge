@@ -1,6 +1,7 @@
 <?php
 
 use Api\Model\Languageforge\Lexicon\Dto\LexProjectDto;
+use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\UserModel;
@@ -54,7 +55,7 @@ class TestLexProjectDto extends UnitTestCase
         $project->interfaceLanguageCode = 'en';
         $project->projectCode = 'lf';
         $project->featured = true;
-        $project->sendReceiveIdentifier = 'test-sr-identifier';
+        $project->sendReceiveProject = new SendReceiveProjectModel('test-sr-identifier', 'test-sr-name', '', 'manager');
         $project->sendReceiveUsername = 'test-sr-username';
 
         $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
@@ -68,7 +69,7 @@ class TestLexProjectDto extends UnitTestCase
         $this->assertEqual($dto['project']['interfaceLanguageCode'], 'en');
         $this->assertEqual($dto['project']['projectCode'], 'lf');
         $this->assertTrue($dto['project']['featured']);
-        $this->assertEqual($dto['project']['sendReceive']['identifier'], 'test-sr-identifier');
+        $this->assertEqual($dto['project']['sendReceive']['project']['identifier'], 'test-sr-identifier');
         $this->assertEqual($dto['project']['sendReceive']['username'], 'test-sr-username');
         $this->assertFalse(array_key_exists('password', $dto['project']['sendReceive']));
     }

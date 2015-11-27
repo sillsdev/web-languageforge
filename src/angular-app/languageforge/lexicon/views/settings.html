@@ -26,119 +26,19 @@
             </form>
         </tab>
         <tab heading="{{'Send and Receive Properties' | translate}}" data-ng-show="sendReceive.showTab" disabled="!rights.canEditSendReceiveProperties">
-            <form class="form-horizontal well" data-ng-submit="isChanging = !updateSendReceiveCredentials()" novalidate>
+            <form class="form-horizontal well" data-ng-submit="updateSendReceiveCredentials()" novalidate>
                 <div class="row" align="center">
                     <div class="span8" id="form-status" data-ng-class="formStatusClass">{{formStatus | translate}}&nbsp;</div>
                 </div>
                 <h4 data-translate="Send and Receive with LanguageDepot.org"></h4>
-                <div class="control-group">
-                    <label class="control-label" for="identifier" data-translate="Project ID"></label>
-                    <div class="controls">
-                        <input id="identifier" name="identifier" type="text" placeholder="identifier"
-                            data-ng-model="project.sendReceive.identifier" data-ng-disabled="!isChanging"
-                            data-idle-validate="checkSRProject()" data-idle-validate-keypress="resetValidateForm()" />
-                        <span data-ng-show="project.sendReceive.identifier.length > 0">
-                            <span  data-ng-show="sendReceive.identifierStatus == 'loading'">
-                                <img id="projectIdLoading" class="validator" src="/Site/views/shared/image/loading-small.gif" /></span>
-                            <span  data-ng-show="sendReceive.identifierStatus == 'unknown'">
-                                <img id="projectIdUnknown" class="validator" src="/Site/views/shared/image/exclamation.png"
-                                     title="Project ID doesn't exist on LanguageDepot.org!" /></span>
-                            <span  data-ng-show="sendReceive.identifierStatus == 'invalid'">
-                                <img id="projectIdAlphanumeric" class="validator" src="/Site/views/shared/image/exclamation.png"
-                                     title="Project ID must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores!" /></span>
-                            <span  data-ng-show="sendReceive.identifierStatus == 'found'">
-                                <img id="projectIdOk" class="validator" src="/Site/views/shared/image/tick.png"
-                                     title="Project ID found!" /></span>
-                        </span>
-                    </div>
-                </div>
-                <div class="control-group">
-                <label class="control-label" for="login" data-translate="Login"></label>
-                    <div class="controls">
-                        <input type="text" id="login" name="login" placeholder="identifier" required
-                            data-ng-model="project.sendReceive.username" data-ng-disabled="!isChanging"
-                            data-idle-validate="checkSRProject()" data-idle-validate-keypress="resetValidateForm()" />
-                        <span data-ng-show="project.sendReceive.username.length > 0">
-                            <span  data-ng-show="sendReceive.usernameStatus == 'loading'">
-                                <img id="usernameLoading" class="validator" src="/Site/views/shared/image/loading-small.gif" /></span>
-                            <span  data-ng-show="sendReceive.usernameStatus == 'no_access'">
-                                <img id="usernameUnknown" class="validator" src="/Site/views/shared/image/exclamation.png"
-                                     title="The Login doesn't have access to the Project ID on LanguageDepot.org!" /></span>
-                            <span  data-ng-show="sendReceive.usernameStatus == 'access'">
-                                <img id="usernameOk" class="validator" src="/Site/views/shared/image/tick.png"
-                                     title="Login can access Project ID" /></span>
-                        </span>
-                    </div>
-                </div>
-                <div class="control-group" data-ng-show="isChanging && !showPassword">
-                    <label class="control-label" for="password" data-translate="Password"></label>
-                    <div class="controls">
-                        <input type="password" id="password" name="password" placeholder="password"
-                            data-ng-required="!showPassword" data-ng-model="project.sendReceive.password"
-                            data-idle-validate="checkSRProject()" data-idle-validate-keypress="resetValidateForm()" />
-                        <span data-ng-show="project.sendReceive.password.length > 0">
-                            <span  data-ng-show="sendReceive.passwordStatus == 'loading'">
-                                <img id="passwordLoading" class="validator" src="/Site/views/shared/image/loading-small.gif" /></span>
-                            <span  data-ng-show="sendReceive.passwordStatus == 'invalid'">
-                                <img id="passwordUnknown" class="validator" src="/Site/views/shared/image/exclamation.png"
-                                     title="The Login and Password isn't valid on LanguageDepot.org!" /></span>
-                            <span  data-ng-show="sendReceive.passwordStatus == 'valid'">
-                                <img id="passwordOk" class="validator" src="/Site/views/shared/image/tick.png"
-                                     title="Password valid!" /></span>
-                        </span>
-                    </div>
-                </div>
-                <div class="control-group" data-ng-show="isChanging && showPassword">
-                    <label class="control-label" for="visiblePassword" data-translate="Password"></label>
-                    <div class="controls">
-                        <input type="text" id="visiblePassword" name="visiblePassword" placeholder="password"
-                            data-ng-required="showPassword" data-ng-model="project.sendReceive.password"
-                            data-idle-validate="checkSRProject()" data-idle-validate-keypress="resetValidateForm()" />
-                        <span data-ng-show="project.sendReceive.password.length > 0">
-                            <span  data-ng-show="sendReceive.passwordStatus == 'loading'">
-                                <img id="visiblePasswordLoading" class="validator" src="/Site/views/shared/image/loading-small.gif" /></span>
-                            <span  data-ng-show="sendReceive.passwordStatus == 'invalid'">
-                                <img id="visiblePasswordUnknown" class="validator" src="/Site/views/shared/image/exclamation.png"
-                                     title="The Login and Password isn't valid on LanguageDepot.org!" /></span>
-                            <span  data-ng-show="sendReceive.passwordStatus == 'valid'">
-                                <img id="visiblePasswordOk" class="validator" src="/Site/views/shared/image/tick.png"
-                                     title="Password valid!" /></span>
-                        </span>
-                    </div>
-                </div>
-                <div class="control-group" data-ng-show="isChanging">
-                    <div class="controls">
-                        <label class="checkbox">
-                            <input type="checkbox" data-ng-model="showPassword"/>
-                            {{'Show characters' | translate}}
-                        </label>
-                    </div>
-                </div>
+                <pui-send-receive-credentials pui-project="project" pui-validate="isFormValid()" pui-reset="resetValidateForm()">
+                </pui-send-receive-credentials>
                 <div class="control-group" data-ng-show="rights.canEditSendReceiveProperties">
                     <div class="controls">
-                        <a class="btn" data-ng-hide="isChanging" data-ng-click="isChanging = true" id="change">
-                            <i class="fa fa-edit"></i>{{'Change' | translate}}</a>
-                        <button class="btn" data-ng-show="isChanging" type="submit">
-                            <i class="fa fa-check"></i>{{'Update' | translate}}</button>
+                        <button class="btn" type="submit">
+                            <i class="fa fa-check"></i>{{'Save' | translate}}</button>
                     </div>
                 </div>
-            </form>
-        </tab>
-        <tab heading="Communication Settings" select="readCommunicationSettings()" data-ng-show="false" disabled="!rights.canEditCommunicationSettings">
-            <form class="well" data-ng-submit="updateCommunicationSettings()">
-                <fieldset>
-                    <label data-translate="Twilio Account Username"></label>
-                    <input type="text" placeholder="(Twilio SID)" data-ng-model="settings.sms.accountId"/>
-                    <label data-translate="Twillio Auth Token"></label>
-                    <input type="text" placeholder="(Twilio Auth Token)" data-ng-model="settings.sms.authToken"/>
-                    <label data-translate="SMS From Number"></label>
-                    <input type="text" placeholder="(From Number)" data-ng-model="settings.sms.fromNumber"/>
-                    <label data-translate="Email From (reply-to) Address"></label>
-                    <input type="email" placeholder="(From Email)" data-ng-model="settings.email.fromAddress"/>
-                    <label data-translate="Email Name"></label>
-                    <input type="text" placeholder="(From Name)" data-ng-model="settings.email.fromName"/>
-                </fieldset>
-                <button type="submit" class="btn"><i class="fa fa-check"></i>{{'Save' | translate}}</button>
             </form>
         </tab>
     </tabset>

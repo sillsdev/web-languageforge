@@ -25,8 +25,7 @@ function ProjectSettingsPage() {
 
   this.tabs = {
     project: this.getTabByName('Project Properties'),
-    sendReceive: this.getTabByName('Send and Receive Properties'),
-    communication: this.getTabByName('Communication Settings')
+    sendReceive: this.getTabByName('Send and Receive Properties')
   };
 
   this.tabs.project.click = function() {
@@ -37,23 +36,30 @@ function ProjectSettingsPage() {
     _this.clickTabByName('Send and Receive Properties');
   };
 
-  this.tabs.communication.click = function() {
-    _this.clickTabByName('Communication Settings');
-  };
-
   this.projectTab = {
     saveButton: this.tabDivs.get(0).element(by.buttonText('Save'))
   };
 
   this.sendReceiveTab = {
     formStatus:             this.tabDivs.get(1).element(by.id('form-status')),
-    projectIdInput:         this.tabDivs.get(1).element(by.id('identifier')),
-    loginInput:             this.tabDivs.get(1).element(by.id('login')),
-    changeButton:           this.tabDivs.get(1).element(by.id('change')),
-    passwordInput:          this.tabDivs.get(1).element(by.id('password')),
-    visiblePasswordInput:   this.tabDivs.get(1).element(by.id('visiblePassword')),
+    loginInput:             this.tabDivs.get(1).element(by.id('srUsername')),
+    loginUnknown:           this.tabDivs.get(1).element(by.id('usernameUnknown')),
+    loginOk:                this.tabDivs.get(1).element(by.id('usernameOk')),
+    passwordInput:          this.tabDivs.get(1).element(by.id('srPassword')),
+    passwordUnknown:        this.tabDivs.get(1).element(by.id('passwordUnknown')),
+    passwordOk:             this.tabDivs.get(1).element(by.id('passwordOk')),
+    visiblePasswordInput:   this.tabDivs.get(1).element(by.id('srVisiblePassword')),
     showCharactersCheckbox: this.tabDivs.get(1).element(by.model('showPassword')),
-    updateButton:           this.tabDivs.get(1).element(by.buttonText('Update'))
+    projectUneditable:      this.tabDivs.get(1).element(by.id('srProject')),
+    saveButton:             this.tabDivs.get(1).element(by.buttonText('Save'))
+  };
+
+  this.sendReceiveTab.projectSelect = function projectSelect() {
+    return _this.tabDivs.get(1).element(by.id('srProjectSelect'));
+  };
+
+  this.sendReceiveTab.projectSelectedOption = function projectSelectedOption() {
+    return _this.sendReceiveTab.projectSelect().element(by.css('option:checked')).getText();
   };
 
   this.sendReceiveTab.formStatus.expectHasNoError = function expectHasNoError() {
