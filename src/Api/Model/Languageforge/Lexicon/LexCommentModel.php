@@ -5,8 +5,11 @@ namespace Api\Model\Languageforge\Lexicon;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\Id;
 use Api\Model\Mapper\IdReference;
+use Api\Model\Mapper\MapperModel;
+use Api\Model\Mapper\MongoMapper;
+use Api\Model\ProjectModel;
 
-class LexCommentModel extends \Api\Model\Mapper\MapperModel
+class LexCommentModel extends MapperModel
 {
     // Comment statuses
     const STATUS_OPEN = 'open';
@@ -17,14 +20,14 @@ class LexCommentModel extends \Api\Model\Mapper\MapperModel
     {
         static $instance = null;
         if (null === $instance) {
-            $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'lexiconComments');
+            $instance = new MongoMapper($databaseName, 'lexiconComments');
         }
 
         return $instance;
     }
 
     /**
-     * @param ProjectModel $projectModel
+     * @param ProjectModel|LexiconProjectModel $projectModel
      * @param string       $id
      */
     public function __construct($projectModel, $id = '')
@@ -39,7 +42,7 @@ class LexCommentModel extends \Api\Model\Mapper\MapperModel
         $this->entryRef = new IdReference();
         $this->isDeleted = false;
         $this->replies = new ArrayOf(
-            function ($data) {
+            function () {
                 return new LexCommentReply();
             }
         );
@@ -56,7 +59,7 @@ class LexCommentModel extends \Api\Model\Mapper\MapperModel
         // old method self:mapper($projectModel->databaseName())->remove($commentId);
         $comment = new self($projectModel, $commentId);
         $comment->isDeleted = true;
-        $comment->write();
+        return $comment->write();
     }
 
     /**
@@ -83,7 +86,7 @@ class LexCommentModel extends \Api\Model\Mapper\MapperModel
 
     /**
      *
-     * @var ArrayOf<LexCommentReply>
+     * @var ArrayOf <LexCommentReply>
      */
     public $replies;
 
@@ -120,6 +123,8 @@ class LexCommentModel extends \Api\Model\Mapper\MapperModel
                 return $reply;
             }
         }
+
+        return false;
     }
 
     public function setReply($id, $model)

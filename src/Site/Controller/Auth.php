@@ -99,22 +99,25 @@ class Auth extends PublicApp
      * @param string $resetPasswordKey
      * @param string $newPassword
      * @throws \Api\Library\Shared\Palaso\Exception\UserUnauthorizedException
+     * @return string $userId
      */
     public static function resetPassword(Application $app, $resetPasswordKey = '', $newPassword = '')
     {
         $user = new UserModelBase();
-        if ($user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
-            $userId = $user->id->asString();
-            if ($user->hasForgottenPassword()) {
-                UserCommands::changePassword($userId, $newPassword, $userId);
-                $user->write();
-                $app['session']->getFlashBag()->add('infoMessage', 'Your password has been reset. Please login.');
-            } else {
-                $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. It may have expired. Please try again.');
-            }
-        } else {
+        if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
             $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
+            return false;
         }
+
+        if (!$user->hasForgottenPassword()) {
+            $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. It may have expired. Please try again.');
+            return false;
+        }
+
+        $userId = $user->id->asString();
+        UserCommands::changePassword($userId, $newPassword, $userId);
+        $app['session']->getFlashBag()->add('infoMessage', 'Your password has been reset. Please login.');
+        return $user->write();
     }
 
     /**

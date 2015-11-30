@@ -83,12 +83,16 @@ class LexCommentCommands
         $comment = new LexCommentModel($project, $commentId);
 
         $vote = new UserGenericVoteModel($userId, $projectId, 'lexCommentPlusOne');
-        if (!$vote->hasVote($commentId)) {
-            $comment->score++;
-            $comment->write();
-            $vote->addVote($commentId);
-            $vote->write();
+        if ($vote->hasVote($commentId)) {
+            return false;
         }
+
+        $comment->score++;
+        $id = $comment->write();
+        $vote->addVote($commentId);
+        $vote->write();
+
+        return $id;
     }
 
     public static function updateCommentStatus($projectId, $commentId, $status)
@@ -98,18 +102,19 @@ class LexCommentCommands
             $comment = new LexCommentModel($project, $commentId);
 
             $comment->status = $status;
-            $comment->write();
+            return $comment->write();
         } else {
             throw new \Exception("unknown status type: $status");
         }
     }
 
     /**
-     * @param  string                    $projectId
-     * @param  string                    $userId
-     * @param  \libraries\shared\Website $website
-     * @param  string                    $commentId
+     * @param  string $projectId
+     * @param  string $userId
+     * @param  \Api\Library\Shared\Website $website
+     * @param  string $commentId
      * @throws \Exception
+     * @return string $commentId
      */
     public static function deleteComment($projectId, $userId, $website, $commentId)
     {
@@ -125,16 +130,17 @@ class LexCommentCommands
                 throw new \Exception("No permission to delete other people's comments!");
             }
         }
-        LexCommentModel::remove($project, $commentId);
+        return LexCommentModel::remove($project, $commentId);
     }
 
     /**
-     * @param  string                    $projectId
-     * @param  string                    $userId
-     * @param  \libraries\shared\Website $website
-     * @param  string                    $commentId
-     * @param  string                    $replyId
+     * @param  string $projectId
+     * @param  string $userId
+     * @param  \Api\Library\Shared\Website $website
+     * @param  string $commentId
+     * @param  string $replyId
      * @throws \Exception
+     * @return string $commentId
      */
     public static function deleteReply($projectId, $userId, $website, $commentId, $replyId)
     {
@@ -151,7 +157,7 @@ class LexCommentCommands
             }
         }
         $comment->deleteReply($replyId);
-        $comment->write();
+        return $comment->write();
     }
 
 }

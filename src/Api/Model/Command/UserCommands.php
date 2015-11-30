@@ -16,12 +16,16 @@ use Api\Model\Mapper\JsonDecoder;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\PasswordModel;
 use Api\Model\ProjectModel;
+use Api\Model\UserListModel;
 use Api\Model\UserModel;
+use Api\Model\UserModelBase;
 use Api\Model\UserModelWithPassword;
 use Api\Model\UserProfileModel;
+use Api\Model\UserTypeaheadModel;
 use Palaso\Utilities\CodeGuard;
 use Silex\Application;
 use Site\Controller\Auth;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class UserCommands
 {
@@ -39,6 +43,7 @@ class UserCommands
     /**
      * User Create/Update
      * @param array $params - user model fields to update
+     * @return string $userId
      */
     public static function updateUser($params)
     {
@@ -48,9 +53,7 @@ class UserCommands
         }
         UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
         JsonDecoder::decode($user, $params);
-        $result = $user->write();
-
-        return $result;
+        return $user->write();
     }
 
     /**
@@ -91,7 +94,7 @@ class UserCommands
         $count = 0;
         foreach ($userIds as $userId) {
             CodeGuard::checkTypeAndThrow($userId, 'string');
-            $userModel = new \Api\Model\UserModel($userId);
+            $userModel = new UserModel($userId);
             $userModel->remove();
             $count++;
         }
@@ -101,11 +104,11 @@ class UserCommands
 
     /**
      *
-     * @return \Api\Model\UserListModel
+     * @return UserListModel
      */
     public static function listUsers()
     {
-        $list = new \Api\Model\UserListModel();
+        $list = new UserListModel();
         $list->read();
 
         // Default sort on username (currently needed to sort on Site Admin because MongoDB doesn't do case insensitive sorts)
@@ -128,11 +131,11 @@ class UserCommands
      * @param string $term
      * @param string $projectIdToExclude
      * @param Website website
-     * @return \Api\Model\UserTypeaheadModel
+     * @return UserTypeaheadModel
      */
     public static function userTypeaheadList($term, $projectIdToExclude = '', $website)
     {
-        $list = new \Api\Model\UserTypeaheadModel($term, $projectIdToExclude, $website);
+        $list = new UserTypeaheadModel($term, $projectIdToExclude, $website);
         $list->read();
 
         return $list;
@@ -144,6 +147,7 @@ class UserCommands
      * @param string $newPassword
      * @param string $currentUserId
      * @throws \Exception
+     * @return string $userId
      */
     public static function changePassword($userId, $newPassword, $currentUserId)
     {
@@ -157,17 +161,18 @@ class UserCommands
         }
         $user = new PasswordModel($userId);
         $user->changePassword($newPassword);
-        $user->write();
+        return $user->write();
     }
 
     /**
      * Utility to check if user is updating to a unique set of username and email.
-     * @param UserModel $user
+     * @param UserModel|UserModelWithPassword $user
      * @param string $updatedUsername
      * @param string $updatedEmail
+     * @param Website $website
      * @return IdentityCheck
      */
-    public static function checkUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = '')
+    public static function checkUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = null)
     {
         $identityCheck = self::checkIdentity($updatedUsername, $updatedEmail, $website);
 
@@ -198,12 +203,13 @@ class UserCommands
 
     /**
      * Utility to assert user is updating to a unique set of username and email
-     * @param UserModel $user
+     * @param UserModel|UserModelWithPassword $user
      * @param string $updatedUsername
      * @param string $updatedEmail
+     * @param Website $website
      * @throws \Exception
      */
-    private static function assertUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = '')
+    private static function assertUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = null)
     {
         $identityCheck = self::checkUniqueIdentity($user, $updatedUsername, $updatedEmail, $website);
 
@@ -318,7 +324,7 @@ class UserCommands
      */
     public static function createUser($params, $website)
     {
-        $user = new \Api\Model\UserModelWithPassword();
+        $user = new UserModelWithPassword();
         JsonDecoder::decode($user, $params);
         UserCommands::assertUniqueIdentity($user, $params['username'], $params['email'], $website);
         $user->setPassword($params['password']);
@@ -414,7 +420,7 @@ class UserCommands
         return $userId;
     }
 
-    public static function getCaptchaData($session) {
+    public static function getCaptchaData(Session $session) {
         srand(microtime() * 100);
         $captchaData = array(
             'items' => array(
@@ -501,9 +507,8 @@ class UserCommands
     /**
      * Sends an email to request joining of the project
      * @param string $projectId
-     * @param string $inviterUserId
+     * @param string $userId
      * @param Website $website
-     * @param string $toEmail
      * @param DeliveryInterface $delivery
      * @throws \Exception
      * @return string $userId
@@ -541,10 +546,10 @@ class UserCommands
      * 
      * @param string $projectId
      * @param string $userId
-     * @param string $website
-     * @param role $role
+     * @param Website $website
+     * @param ProjectRoles $role
      * @param DeliveryInterface $delivery
-     * @return \Api\Model\Mapper\IdReference|\Api\Model\UserModel
+     * @return \Api\Model\Mapper\IdReference|UserModel
      */
     public static function acceptJoinRequest($projectId, $userId, $website, $role, DeliveryInterface $delivery = null)
     {
@@ -573,13 +578,13 @@ class UserCommands
     }
 
     /**
-     *
-     * @param  string $validationKey
+     * @param string $validationKey
      * @return array
+     * @throws \Exception
      */
     public static function readForRegistration($validationKey)
     {
-        $user = new \Api\Model\UserModelBase();
+        $user = new UserModelBase();
         if (!$user->readByProperty('validationKey', $validationKey)) {
             return array();
         }
@@ -591,29 +596,32 @@ class UserCommands
     }
 
     /**
-    *
-    * @param string $validationKey
-    * @param array $params
-    * @param Website $website
-    */
+     * @param string $validationKey
+     * @param array $params
+     * @param Website $website
+     * @throws \Exception
+     * @return string $userId
+     */
     public static function updateFromRegistration($validationKey, $params, $website)
     {
-        $user = new \Api\Model\UserModelWithPassword();
-        if ($user->readByProperty('validationKey', $validationKey)) {
-            if ($user->validate()) {
-                $params['id'] = $user->id->asString();
-                JsonDecoder::decode($user, $params);
-                $user->setPassword($params['password']);
-                $user->validate();
-                $user->role = SystemRoles::USER;
-                $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
-                $user->active = true;
-
-                return $user->write();
-            } else {
-                throw new \Exception("Sorry, your registration link has expired.");
-            }
+        $user = new UserModelWithPassword();
+        if (!$user->readByProperty('validationKey', $validationKey)) {
+            return false;
         }
+
+        if (!$user->validate()) {
+            throw new \Exception("Sorry, your registration link has expired.");
+        }
+
+        $params['id'] = $user->id->asString();
+        JsonDecoder::decode($user, $params);
+        $user->setPassword($params['password']);
+        $user->validate();
+        $user->role = SystemRoles::USER;
+        $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+        $user->active = true;
+
+        return $user->write();
     }
 }
 
