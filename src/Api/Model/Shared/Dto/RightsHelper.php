@@ -335,7 +335,6 @@ class RightsHelper
 
             // send receive api
             case 'sr_get_userProjects':
-            case 'sr_check_project':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
             case 'sr_save_credentials':
