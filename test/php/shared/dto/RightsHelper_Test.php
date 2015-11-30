@@ -42,7 +42,7 @@ class TestRightsHelper extends UnitTestCase
 
         $this->environ->inhibitErrorDisplay();
         $this->expectException();
-        $result = $rh->userCanAccessMethod($userId, 'bogusMethodName', array());
+        $rh->userCanAccessMethod('bogusMethodName', array());
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }

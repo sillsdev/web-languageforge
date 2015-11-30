@@ -12,7 +12,8 @@ class LexOptionListCommands
     /**
      * Update the optionlist with params
      * @param $projectId
-     * @param LexOptionListModel $params
+     * @param array $params (encoded LexOptionListModel)
+     * @return string $optionlistId
      */
     public static function updateList($projectId, $params)
     {
@@ -25,7 +26,7 @@ class LexOptionListCommands
         }
 
         JsonDecoder::decode($optionlist, $params);
-        $optionlist->write();
+        return $optionlist->write();
     }
 
 }
