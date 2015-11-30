@@ -17,10 +17,15 @@ use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexProjectDto;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransAppManagementDto;
+use Api\Model\Scriptureforge\Dto\ProjectPageDto;
+use Api\Model\Scriptureforge\Dto\QuestionCommentDto;
+use Api\Model\Scriptureforge\Dto\QuestionListDto;
+use Api\Model\Scriptureforge\Dto\TextSettingsDto;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
 use Api\Model\Scriptureforge\Dto\ProjectSettingsDto;
 use Api\Model\Shared\Dto\ActivityListDto;
+use Api\Model\Shared\Dto\CreateSimpleDto;
 use Api\Model\Shared\Dto\ProjectListDto;
 use Api\Model\Shared\Dto\ProjectManagementDto;
 use Api\Model\Shared\Dto\RightsHelper;
@@ -35,11 +40,11 @@ use Api\Model\Command\UserCommands;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectModel;
 use Api\Model\UserModel;
-use Api\Model\UserProfileModel;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransItemCommands;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
+use Silex\Application;
 use Site\Controller\Auth;
 
 require_once APPPATH . 'vendor/autoload.php';
@@ -50,25 +55,34 @@ require_once APPPATH . 'Api/Model/UserModel.php';
 
 class Sf
 {
+    /**
+     *
+     * @var string
+     */
+    private $userId;
 
     /**
      *
      * @var string
      */
-    private $_userId;
+    private $projectId;
 
-    private $_projectId;
+    /**
+     * @var Application
+     */
+    private $app;
 
-    private $_controller;
+    /**
+     * @var Website
+     */
+    private $website;
 
-    private $_website;
-
-    public function __construct($controller)
+    public function __construct(Application $app)
     {
-        $this->_userId = (string) $controller['session']->get('user_id');
-        $this->_projectId = (string) $controller['session']->get('projectId');
-        $this->_controller = $controller;
-        $this->_website = Website::get();
+        $this->userId = (string) $app['session']->get('user_id');
+        $this->projectId = (string) $app['session']->get('projectId');
+        $this->app = $app;
+        $this->website = Website::get();
 
         // "Kick" session every time we use an API call, so it won't time out
         $this->update_last_activity();
@@ -113,13 +127,13 @@ class Sf
      */
     public function user_readProfile()
     {
-        return UserProfileDto::encode($this->_userId, $this->_website);
+        return UserProfileDto::encode($this->userId, $this->website);
     }
 
     /**
      * Create/Update a User
      *
-     * @param UserModel $json
+     * @param array $params (encoded UserModel)
      * @return string Id of written object
      */
     public function user_update($params)
@@ -130,12 +144,12 @@ class Sf
     /**
      * Create/Update a User Profile
      *
-     * @param UserProfileModel $json
+     * @param array $params (encoded UserProfileModel)
      * @return string Id of written object
      */
     public function user_updateProfile($params)
     {
-        return UserCommands::updateUserProfile($params, $this->_userId);
+        return UserCommands::updateUserProfile($params, $this->userId);
     }
 
     /**
@@ -156,7 +170,7 @@ class Sf
      */
     public function user_createSimple($userName)
     {
-        return UserCommands::createSimple($userName, $this->_projectId, $this->_userId, $this->_website);
+        return UserCommands::createSimple($userName, $this->projectId, $this->userId, $this->website);
     }
 
     // TODO Pretty sure this is going to want some paging params
@@ -171,29 +185,29 @@ class Sf
 
     public function user_typeahead($term, $projectIdToExclude = '')
     {
-        return UserCommands::userTypeaheadList($term, $projectIdToExclude, $this->_website);
+        return UserCommands::userTypeaheadList($term, $projectIdToExclude, $this->website);
     }
 
     public function user_typeaheadExclusive($term, $projectIdToExclude = '')
     {
-        $projectIdToExclude = empty($projectIdToExclude) ? $this->_projectId : $projectIdToExclude;
-        return UserCommands::userTypeaheadList($term, $projectIdToExclude, $this->_website);
+        $projectIdToExclude = empty($projectIdToExclude) ? $this->projectId : $projectIdToExclude;
+        return UserCommands::userTypeaheadList($term, $projectIdToExclude, $this->website);
     }
 
     public function change_password($userId, $newPassword)
     {
-        return UserCommands::changePassword($userId, $newPassword, $this->_userId);
+        return UserCommands::changePassword($userId, $newPassword, $this->userId);
     }
 
     public function reset_password($resetPasswordKey, $newPassword)
     {
-        return Auth::resetPassword($this->_controller, $resetPasswordKey, $newPassword);
+        return Auth::resetPassword($this->app, $resetPasswordKey, $newPassword);
     }
 
     public function identity_check($username, $email)
     {
         // intentionally we have no security here: people can see what users exist by trial and error
-        $identityCheck = UserCommands::checkIdentity($username, $email, $this->_website);
+        $identityCheck = UserCommands::checkIdentity($username, $email, $this->website);
         return JsonEncoder::encode($identityCheck);
     }
 
@@ -210,7 +224,7 @@ class Sf
 
     public function user_activate($username, $password, $email)
     {
-        return UserCommands::activate($username, $password, $email, $this->_website, $this->_controller);
+        return UserCommands::activate($username, $password, $email, $this->website, $this->app);
     }
 
     /**
@@ -221,16 +235,16 @@ class Sf
      */
     public function user_register($params)
     {
-        return UserCommands::register($params, $this->_controller['session']->get('captcha_info'), $this->_website);
+        return UserCommands::register($params, $this->app['session']->get('captcha_info'), $this->website);
     }
 
     public function user_create($params)
     {
-        return UserCommands::createUser($params, $this->_website);
+        return UserCommands::createUser($params, $this->website);
     }
 
     public function get_captcha_data() {
-        return UserCommands::getCaptchaData($this->_controller['session']);
+        return UserCommands::getCaptchaData($this->app['session']);
     }
 
     public function user_readForRegistration($validationKey)
@@ -240,12 +254,12 @@ class Sf
 
     public function user_updateFromRegistration($validationKey, $params)
     {
-        return UserCommands::updateFromRegistration($validationKey, $params, $this->_website);
+        return UserCommands::updateFromRegistration($validationKey, $params, $this->website);
     }
 
     public function user_sendInvite($toEmail)
     {
-        return UserCommands::sendInvite($this->_projectId, $this->_userId, $this->_website, $toEmail);
+        return UserCommands::sendInvite($this->projectId, $this->userId, $this->website, $toEmail);
     }
     
     // ---------------------------------------------------------------
@@ -254,7 +268,7 @@ class Sf
 
     public function project_sendJoinRequest($projectID)
     {
-        return UserCommands::sendJoinRequest($projectID, $this->_userId, $this->_website);
+        return UserCommands::sendJoinRequest($projectID, $this->userId, $this->website);
     }
     
     
@@ -267,7 +281,7 @@ class Sf
      */
     public function project_create($projectName, $projectCode, $appName)
     {
-        return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->_userId, $this->_website);
+        return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->userId, $this->website);
     }
 
     /**
@@ -281,7 +295,7 @@ class Sf
     public function project_create_switchSession($projectName, $projectCode, $appName)
     {
         $projectId = $this->project_create($projectName, $projectCode, $appName);
-        $this->_controller['session']->set('projectId', $projectId);
+        $this->app['session']->set('projectId', $projectId);
         return $projectId;
     }
 
@@ -293,21 +307,21 @@ class Sf
      */
     public function project_archive_asAdmin()
     {
-        return ProjectCommands::archiveProject($this->_projectId);
+        return ProjectCommands::archiveProject($this->projectId);
     }
 
     public function project_archive_asOwner()
     {
-        $project = new ProjectModel($this->_projectId);
-        if ($project->ownerRef->asString() != $this->_userId) {
+        $project = new ProjectModel($this->projectId);
+        if ($project->ownerRef->asString() != $this->userId) {
             throw new UserUnauthorizedException('You are not authorized to archive this project');
         }
-        return ProjectCommands::archiveProject($this->_projectId);
+        return ProjectCommands::archiveProject($this->projectId);
     }
 
     public function project_archivedList()
     {
-        return ProjectListDto::encode($this->_userId, $this->_website, true);
+        return ProjectListDto::encode($this->userId, $this->website, true);
     }
 
     /**
@@ -329,22 +343,22 @@ class Sf
 
     public function project_list_dto()
     {
-        return ProjectListDto::encode($this->_userId, $this->_website);
+        return ProjectListDto::encode($this->userId, $this->website);
     }
 
     public function project_joinProject($projectId, $role)
     {
-        return ProjectCommands::updateUserRole($projectId, $this->_userId, $role);
+        return ProjectCommands::updateUserRole($projectId, $this->userId, $role);
     }
     
     public function project_usersDto()
     {
-        return ProjectCommands::usersDto($this->_projectId);
+        return ProjectCommands::usersDto($this->projectId);
     }
     
     public function project_getJoinRequests()
     {
-        return ProjectCommands::getJoinRequests($this->_projectId);
+        return ProjectCommands::getJoinRequests($this->projectId);
     }
     
     
@@ -354,7 +368,7 @@ class Sf
     // ---------------------------------------------------------------
     public function session_getSessionData()
     {
-        return SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->_website);
+        return SessionCommands::getSessionData($this->projectId, $this->userId, $this->website);
     }
 
     public function projectcode_exists($code)
@@ -367,7 +381,7 @@ class Sf
     // ---------------------------------------------------------------
     public function activity_list_dto()
     {
-        return \Api\Model\Shared\Dto\ActivityListDto::getActivityForUser($this->_website->domain, $this->_userId);
+        return ActivityListDto::getActivityForUser($this->website->domain, $this->userId);
     }
 
     /*
@@ -380,40 +394,41 @@ class Sf
     /**
      * Create/Update a Project
      *
-     * @param array $object
+     * @param array $settings
      * @return string Id of written object
      */
     public function project_update($settings)
     {
-        return SfchecksProjectCommands::updateProject($this->_projectId, $this->_userId, $settings);
+        return SfchecksProjectCommands::updateProject($this->projectId, $this->userId, $settings);
     }
 
     public function project_updateUserRole($userId, $role)
     {
-        return ProjectCommands::updateUserRole($this->_projectId, $userId, $role);
+        return ProjectCommands::updateUserRole($this->projectId, $userId, $role);
     }
     
     public function project_acceptJoinRequest($userId, $role) 
     {
-         UserCommands::acceptJoinRequest($this->_projectId, $userId, $this->_website, $role);
-         ProjectCommands::removeJoinRequest($this->_projectId, $userId);
+         UserCommands::acceptJoinRequest($this->projectId, $userId, $this->website, $role);
+         ProjectCommands::removeJoinRequest($this->projectId, $userId);
     }
     
     public function project_denyJoinRequest($userId) 
     {
-        ProjectCommands::removeJoinRequest($this->_projectId, $userId);
+        ProjectCommands::removeJoinRequest($this->projectId, $userId);
     }
 
     // REVIEW: should this be part of the general project API ?
     public function project_removeUsers($userIds)
     {
-        return ProjectCommands::removeUsers($this->_projectId, $userIds);
+        return ProjectCommands::removeUsers($this->projectId, $userIds);
     }
 
     /**
      * Read a project from the given $id
      *
      * @param string $id
+     * @return array
      */
     public function project_read($id)
     {
@@ -422,22 +437,22 @@ class Sf
 
     public function project_settings()
     {
-        return ProjectSettingsDto::encode($this->_projectId, $this->_userId);
+        return ProjectSettingsDto::encode($this->projectId, $this->userId);
     }
 
     public function project_updateSettings($smsSettingsArray, $emailSettingsArray)
     {
-        return ProjectCommands::updateProjectSettings($this->_projectId, $smsSettingsArray, $emailSettingsArray);
+        return ProjectCommands::updateProjectSettings($this->projectId, $smsSettingsArray, $emailSettingsArray);
     }
 
     public function project_readSettings()
     {
-        return ProjectCommands::readProjectSettings($this->_projectId);
+        return ProjectCommands::readProjectSettings($this->projectId);
     }
 
     public function project_pageDto()
     {
-        return \Api\Model\Scriptureforge\Dto\ProjectPageDto::encode($this->_projectId, $this->_userId);
+        return ProjectPageDto::encode($this->projectId, $this->userId);
     }
 
     // ---------------------------------------------------------------
@@ -445,12 +460,12 @@ class Sf
     // ---------------------------------------------------------------
     public function message_markRead($messageId)
     {
-        return MessageCommands::markMessageRead($this->_projectId, $messageId, $this->_userId);
+        return MessageCommands::markMessageRead($this->projectId, $messageId, $this->userId);
     }
 
     public function message_send($userIds, $subject, $emailTemplate, $smsTemplate)
     {
-        return MessageCommands::sendMessage($this->_projectId, $userIds, $subject, $smsTemplate, $emailTemplate, '');
+        return MessageCommands::sendMessage($this->projectId, $userIds, $subject, $smsTemplate, $emailTemplate, '');
     }
 
     // ---------------------------------------------------------------
@@ -458,37 +473,33 @@ class Sf
     // ---------------------------------------------------------------
     public function text_update($object)
     {
-        return TextCommands::updateText($this->_projectId, $object);
+        return TextCommands::updateText($this->projectId, $object);
     }
 
     public function text_read($textId)
     {
-        return TextCommands::readText($this->_projectId, $textId);
+        return TextCommands::readText($this->projectId, $textId);
     }
 
     public function text_archive($textIds)
     {
-        return TextCommands::archiveTexts($this->_projectId, $textIds);
+        return TextCommands::archiveTexts($this->projectId, $textIds);
     }
 
     public function text_publish($textIds)
     {
-        return TextCommands::publishTexts($this->_projectId, $textIds);
-    }
-
-    public function text_list_dto()
-    {
-        return \Api\Model\Scriptureforge\Dto\TextListDto::encode($this->_projectId, $this->_userId);
+        return TextCommands::publishTexts($this->projectId, $textIds);
     }
 
     public function text_settings_dto($textId)
     {
-        return \Api\Model\Scriptureforge\Dto\TextSettingsDto::encode($this->_projectId, $textId, $this->_userId);
+        return TextSettingsDto::encode($this->projectId, $textId, $this->userId);
+
     }
 
     public function text_exportComments($params)
     {
-        return ParatextExport::exportCommentsForText($this->_projectId, $params['textId'], $params);
+        return ParatextExport::exportCommentsForText($this->projectId, $params['textId'], $params);
     }
 
     // ---------------------------------------------------------------
@@ -496,72 +507,72 @@ class Sf
     // ---------------------------------------------------------------
     public function question_update($object)
     {
-        return QuestionCommands::updateQuestion($this->_projectId, $object);
+        return QuestionCommands::updateQuestion($this->projectId, $object);
     }
 
     public function question_read($questionId)
     {
-        return QuestionCommands::readQuestion($this->_projectId, $questionId);
+        return QuestionCommands::readQuestion($this->projectId, $questionId);
     }
 
     public function question_archive($questionIds)
     {
-        return QuestionCommands::archiveQuestions($this->_projectId, $questionIds);
+        return QuestionCommands::archiveQuestions($this->projectId, $questionIds);
     }
 
     public function question_publish($questionIds)
     {
-        return QuestionCommands::publishQuestions($this->_projectId, $questionIds);
+        return QuestionCommands::publishQuestions($this->projectId, $questionIds);
     }
 
     public function question_update_answer($questionId, $answer)
     {
-        return QuestionCommands::updateAnswer($this->_projectId, $questionId, $answer, $this->_userId);
+        return QuestionCommands::updateAnswer($this->projectId, $questionId, $answer, $this->userId);
     }
 
     public function question_update_answerExportFlag($questionId, $answerId, $isToBeExported)
     {
-        return QuestionCommands::updateAnswerExportFlag($this->_projectId, $questionId, $answerId, $isToBeExported);
+        return QuestionCommands::updateAnswerExportFlag($this->projectId, $questionId, $answerId, $isToBeExported);
     }
 
     public function question_update_answerTags($questionId, $answerId, $tags)
     {
-        return QuestionCommands::updateAnswerTags($this->_projectId, $questionId, $answerId, $tags);
+        return QuestionCommands::updateAnswerTags($this->projectId, $questionId, $answerId, $tags);
     }
 
     public function question_remove_answer($questionId, $answerId)
     {
-        return QuestionCommands::removeAnswer($this->_projectId, $questionId, $answerId);
+        return QuestionCommands::removeAnswer($this->projectId, $questionId, $answerId);
     }
 
     public function question_update_comment($questionId, $answerId, $comment)
     {
-        return QuestionCommands::updateComment($this->_projectId, $questionId, $answerId, $comment, $this->_userId);
+        return QuestionCommands::updateComment($this->projectId, $questionId, $answerId, $comment, $this->userId);
     }
 
     public function question_remove_comment($questionId, $answerId, $commentId)
     {
-        return QuestionCommands::removeComment($this->_projectId, $questionId, $answerId, $commentId);
+        return QuestionCommands::removeComment($this->projectId, $questionId, $answerId, $commentId);
     }
 
     public function question_comment_dto($questionId)
     {
-        return \Api\Model\Scriptureforge\Dto\QuestionCommentDto::encode($this->_projectId, $questionId, $this->_userId);
+        return QuestionCommentDto::encode($this->projectId, $questionId, $this->userId);
     }
 
     public function question_list_dto($textId)
     {
-        return \Api\Model\Scriptureforge\Dto\QuestionListDto::encode($this->_projectId, $textId, $this->_userId);
+        return QuestionListDto::encode($this->projectId, $textId, $this->userId);
     }
 
     public function answer_vote_up($questionId, $answerId)
     {
-        return QuestionCommands::voteUp($this->_userId, $this->_projectId, $questionId, $answerId);
+        return QuestionCommands::voteUp($this->userId, $this->projectId, $questionId, $answerId);
     }
 
     public function answer_vote_down($questionId, $answerId)
     {
-        return QuestionCommands::voteDown($this->_userId, $this->_projectId, $questionId, $answerId);
+        return QuestionCommands::voteDown($this->userId, $this->projectId, $questionId, $answerId);
     }
 
     // ---------------------------------------------------------------
@@ -569,22 +580,22 @@ class Sf
     // ---------------------------------------------------------------
     public function questionTemplate_update($model)
     {
-        return QuestionTemplateCommands::updateTemplate($this->_projectId, $model);
+        return QuestionTemplateCommands::updateTemplate($this->projectId, $model);
     }
 
     public function questionTemplate_read($id)
     {
-        return QuestionTemplateCommands::readTemplate($this->_projectId, $id);
+        return QuestionTemplateCommands::readTemplate($this->projectId, $id);
     }
 
     public function questionTemplate_delete($questionTemplateIds)
     {
-        return QuestionTemplateCommands::deleteQuestionTemplates($this->_projectId, $questionTemplateIds);
+        return QuestionTemplateCommands::deleteQuestionTemplates($this->projectId, $questionTemplateIds);
     }
 
     public function questionTemplate_list()
     {
-        return QuestionTemplateCommands::listTemplates($this->_projectId);
+        return QuestionTemplateCommands::listTemplates($this->projectId);
     }
 
     // ---------------------------------------------------------------
@@ -592,7 +603,7 @@ class Sf
     // ---------------------------------------------------------------
     public function sfChecks_uploadFile($mediaType, $tmpFilePath)
     {
-        $response = SfchecksUploadCommands::uploadFile($this->_projectId, $mediaType, $tmpFilePath);
+        $response = SfchecksUploadCommands::uploadFile($this->projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
@@ -601,43 +612,43 @@ class Sf
      */
     public function lex_baseViewDto()
     {
-        return LexBaseViewDto::encode($this->_projectId, $this->_userId);
+        return LexBaseViewDto::encode($this->projectId, $this->userId);
     }
 
     public function lex_projectDto()
     {
-        return LexProjectDto::encode($this->_projectId);
+        return LexProjectDto::encode($this->projectId);
     }
 
     public function lex_dbeDtoFull($browserId, $offset)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
-        $this->_controller['session']->set($sessionLabel, time());
+        $this->app['session']->set($sessionLabel, time());
 
-        return LexDbeDto::encode($this->_projectId, $this->_userId, null, $offset);
+        return LexDbeDto::encode($this->projectId, $this->userId, null, $offset);
     }
 
     public function lex_dbeDtoUpdatesOnly($browserId, $lastFetchTime = null)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
         if ($lastFetchTime == null) {
-            $lastFetchTime = $this->_controller['session']->get($sessionLabel);
+            $lastFetchTime = $this->app['session']->get($sessionLabel);
         }
-        $this->_controller['session']->set($sessionLabel, time());
+        $this->app['session']->set($sessionLabel, time());
         if ($lastFetchTime) {
             $lastFetchTime = $lastFetchTime - 5; // 5 second buffer
 
-            return LexDbeDto::encode($this->_projectId, $this->_userId, $lastFetchTime);
+            return LexDbeDto::encode($this->projectId, $this->userId, $lastFetchTime);
         } else {
-            return LexDbeDto::encode($this->_projectId, $this->_userId);
+            return LexDbeDto::encode($this->projectId, $this->userId);
         }
     }
 
     public function lex_configuration_update($config, $optionlists)
     {
-        LexProjectCommands::updateConfig($this->_projectId, $config);
+        LexProjectCommands::updateConfig($this->projectId, $config);
         foreach ($optionlists as $optionlist) {
-            LexOptionListCommands::updateList($this->_projectId, $optionlist);
+            LexOptionListCommands::updateList($this->projectId, $optionlist);
         }
         return;
     }
@@ -645,84 +656,84 @@ class Sf
     /**
      * Create/Update a Project
      *
-     * @param array $object
-     * @return string Id of written object
+     * @param array $settings
+     * @return string $projectId
      */
     public function lex_project_update($settings)
     {
-        return LexProjectCommands::updateProject($this->_projectId, $this->_userId, $settings);
+        return LexProjectCommands::updateProject($this->projectId, $this->userId, $settings);
     }
 
     public function lex_project_removeMediaFile($mediaType, $fileName)
     {
-        return LexUploadCommands::deleteMediaFile($this->_projectId, $mediaType, $fileName);
+        return LexUploadCommands::deleteMediaFile($this->projectId, $mediaType, $fileName);
     }
 
     public function lex_entry_read($entryId)
     {
-        return LexEntryCommands::readEntry($this->_projectId, $entryId);
+        return LexEntryCommands::readEntry($this->projectId, $entryId);
     }
 
     public function lex_entry_update($model)
     {
-        return LexEntryCommands::updateEntry($this->_projectId, $model, $this->_userId);
+        return LexEntryCommands::updateEntry($this->projectId, $model, $this->userId);
     }
 
     public function lex_entry_remove($entryId)
     {
-        return LexEntryCommands::removeEntry($this->_projectId, $entryId, $this->_userId);
+        return LexEntryCommands::removeEntry($this->projectId, $entryId, $this->userId);
     }
 
     public function lex_comment_update($data)
     {
-        return LexCommentCommands::updateComment($this->_projectId, $this->_userId, $this->_website, $data);
+        return LexCommentCommands::updateComment($this->projectId, $this->userId, $this->website, $data);
     }
 
     public function lex_commentReply_update($commentId, $data)
     {
-        return LexCommentCommands::updateReply($this->_projectId, $this->_userId, $this->_website, $commentId, $data);
+        return LexCommentCommands::updateReply($this->projectId, $this->userId, $this->website, $commentId, $data);
     }
 
     public function lex_comment_delete($commentId)
     {
-        return LexCommentCommands::deleteComment($this->_projectId, $this->_userId, $this->_website, $commentId);
+        return LexCommentCommands::deleteComment($this->projectId, $this->userId, $this->website, $commentId);
     }
 
     public function lex_commentReply_delete($commentId, $replyId)
     {
-        return LexCommentCommands::deleteReply($this->_projectId, $this->_userId, $this->_website, $commentId, $replyId);
+        return LexCommentCommands::deleteReply($this->projectId, $this->userId, $this->website, $commentId, $replyId);
     }
 
     public function lex_comment_plusOne($commentId)
     {
-        return LexCommentCommands::plusOneComment($this->_projectId, $this->_userId, $commentId);
+        return LexCommentCommands::plusOneComment($this->projectId, $this->userId, $commentId);
     }
 
     public function lex_comment_updateStatus($commentId, $status)
     {
-        return LexCommentCommands::updateCommentStatus($this->_projectId, $commentId, $status);
+        return LexCommentCommands::updateCommentStatus($this->projectId, $commentId, $status);
     }
 
     public function lex_optionlists_update($params)
     {
-        return LexOptionListCommands::updateList($this->_projectId, $params);
+        return LexOptionListCommands::updateList($this->projectId, $params);
     }
 
     public function lex_upload_importProjectZip($mediaType, $tmpFilePath)
     {
-        $response = LexUploadCommands::importProjectZip($this->_projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::importProjectZip($this->projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
     public function lex_uploadImageFile($mediaType, $tmpFilePath)
     {
-        $response = LexUploadCommands::uploadImageFile($this->_projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::uploadImageFile($this->projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
     public function lex_upload_importLift($mediaType, $tmpFilePath)
     {
-        $response = LexUploadCommands::importLiftFile($this->_projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::importLiftFile($this->projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
@@ -737,7 +748,7 @@ class Sf
 
     public function sr_save_credentials($srProject, $username, $password)
     {
-        return SendReceiveCommands::saveCredentials($this->_projectId, $srProject, $username, $password);
+        return SendReceiveCommands::saveCredentials($this->projectId, $srProject, $username, $password);
     }
 
 
@@ -748,53 +759,41 @@ class Sf
     public function semdom_editor_dto($browserId, $lastFetchTime = null)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
-        $this->_controller['session']->set($sessionLabel, time());
+        $this->app['session']->set($sessionLabel, time());
         if ($lastFetchTime) {
             $lastFetchTime = $lastFetchTime - 5; // 5 second buffer
     
-            return SemDomTransEditDto::encode($this->_projectId, $this->_userId, $lastFetchTime);
+            return SemDomTransEditDto::encode($this->projectId, $this->userId, $lastFetchTime);
         } else {
-            return SemDomTransEditDto::encode($this->_projectId, $this->_userId);
+            return SemDomTransEditDto::encode($this->projectId, $this->userId);
         }
     }
     
     
     
     public function semdom_get_open_projects() {
-        return SemDomTransProjectCommands::getOpenSemdomProjects($this->_userId);
+        return SemDomTransProjectCommands::getOpenSemdomProjects($this->userId);
     }
     
     public function semdom_item_update($data) {
-        return SemDomTransItemCommands::update($data, $this->_projectId);
-    }
-    
-    public function semdom_comment_update($data) {
-        return SemDomTransCommentsCommands::update($data, $this->_projectId);
+        return SemDomTransItemCommands::update($data, $this->projectId);
     }
     
     public function semdom_project_exists($languageIsoCode) {
-        return SemDomTransProjectCommands::checkProjectExists($languageIsoCode, 20);
+        return SemDomTransProjectCommands::checkProjectExists($languageIsoCode);
     }
     
     public function semdom_workingset_update($data) {
-        return SemDomTransWorkingSetCommands::update($data, $this->_projectId);
+        return SemDomTransWorkingSetCommands::update($data, $this->projectId);
     }
     
     public function semdom_export_project() {
-        return $this->_website->domain . "/" . SemDomTransProjectCommands::exportProject($this->_projectId);
+        return $this->website->domain . "/" . SemDomTransProjectCommands::exportProject($this->projectId);
     }
     
-    /**
-     *
-     * @param string $projectName
-     * @param string $projectCode
-     * @param string $appName
-     * @return string | boolean - $projectId on success, false if project code is not unique
-     */
-
     // 2015-04 CJH REVIEW: this method should be moved to the semdom project commands (and a test should be written around it).  This method should also assert that a project with that code does not already exist
     public function semdom_create_project($languageIsoCode, $languageName, $useGoogleTranslateData) {        
-        return SemDomTransProjectCommands::createProject($languageIsoCode, $languageName, $useGoogleTranslateData, $this->_userId, $this->_website);
+        return SemDomTransProjectCommands::createProject($languageIsoCode, $languageName, $useGoogleTranslateData, $this->userId, $this->website);
     }
     
     public function semdom_does_googletranslatedata_exist($languageIsoCode) {
@@ -803,19 +802,19 @@ class Sf
     
     // -------------------------------- Project Management App Api ----------------------------------
     public function project_management_dto() {
-        return ProjectManagementDto::encode($this->_projectId);
+        return ProjectManagementDto::encode($this->projectId);
     }
 
     public function project_management_report_sfchecks_userEngagementReport() {
-        return SfchecksReports::UserEngagementReport($this->_projectId);
+        return SfchecksReports::UserEngagementReport($this->projectId);
     }
 
     public function project_management_report_sfchecks_topContributorsWithTextReport() {
-        return SfchecksReports::TopContributorsWithTextReport($this->_projectId);
+        return SfchecksReports::TopContributorsWithTextReport($this->projectId);
     }
 
     public function project_management_report_sfchecks_responsesOverTimeReport() {
-        return SfchecksReports::ResponsesOverTimeReport($this->_projectId);
+        return SfchecksReports::ResponsesOverTimeReport($this->projectId);
     }
 
 
@@ -850,15 +849,15 @@ class Sf
     public function checkPermissions($methodName, $params)
     {
         if (! self::isAnonymousMethod($methodName)) {
-            if (! $this->_userId) {
+            if (! $this->userId) {
                 throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
             }
             try {
-                $projectModel = ProjectModel::getById($this->_projectId);
+                $projectModel = ProjectModel::getById($this->projectId);
             } catch (\Exception $e) {
                 $projectModel = null;
             }
-            $rightsHelper = new RightsHelper($this->_userId, $projectModel, $this->_website);
+            $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
             if (! $rightsHelper->userCanAccessMethod($methodName, $params)) {
                 throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
             }
@@ -871,6 +870,6 @@ class Sf
             // Default to current time
             $newtime = time();
         }
-        $this->_controller['session']->set('last_activity', $newtime);
+        $this->app['session']->set('last_activity', $newtime);
     }
 }

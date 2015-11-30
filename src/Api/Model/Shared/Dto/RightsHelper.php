@@ -103,11 +103,11 @@ class RightsHelper
     }
 
     /**
-     *
      * @param string $methodName
      * @param array $params
      *            - parameters passed to the method
-     * @return boolean
+     * @return bool
+     * @throws \Exception
      */
     public function userCanAccessMethod($methodName, $params) {
         switch ($methodName) {
@@ -119,8 +119,6 @@ class RightsHelper
                 return true;
             case 'semdom_item_update':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
-            case 'semdom_comment_update':
-                return $this->userHasProjectRight(Domain::COMMENTS + Operation::EDIT);
             case 'semdom_project_exists':
                 return true;
             case 'semdom_create_project':
@@ -134,13 +132,12 @@ class RightsHelper
             case 'semdom_does_googletranslatedata_exist':
                 return true;
             case 'project_acceptJoinRequest':
-                returN $this->userHasProjectRight(Domain::USERS + OPERATION::EDIT);
+                return $this->userHasProjectRight(Domain::USERS + OPERATION::EDIT);
             case 'project_denyJoinRequest':
                 return $this->userHasProjectRight(Domain::USERS + OPERATION::EDIT); 
             case 'semdom_export_project':
                 return $this->userHasProjectRight(DOMAIN::PROJECTS + Operation::EDIT );
 
-                
             case 'user_sendInvite':
             case 'message_markRead':
             case 'project_pageDto':
@@ -150,9 +147,6 @@ class RightsHelper
             case 'answer_vote_up':
             case 'answer_vote_down':
                 return $this->userHasProjectRight(Domain::ANSWERS + Operation::VIEW);
-
-            case 'text_list_dto':
-                return $this->userHasProjectRight(Domain::TEXTS + Operation::VIEW);
 
             case 'question_update_answer':
                 return $this->userHasProjectRight(Domain::ANSWERS + Operation::EDIT_OWN);

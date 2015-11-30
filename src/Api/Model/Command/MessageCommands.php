@@ -13,7 +13,7 @@ class MessageCommands
     {
         $unreadModel = new UnreadMessageModel($userId, $projectId);
         $unreadModel->markRead($messageId);
-        $unreadModel->write();
+        return $unreadModel->write();
     }
 
     /**

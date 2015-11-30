@@ -3,6 +3,8 @@
 namespace Api\Model;
 
 use Api\Library\Shared\Website;
+use Api\Model\Mapper\Id;
+use Api\Model\Mapper\MapperListModel;
 use Api\Model\Mapper\MongoEncoder;
 use Api\Model\Mapper\MongoMapper;
 use Api\Model\Mapper\ReferenceList;
@@ -29,6 +31,7 @@ class UserModel extends UserModelBase
     public function remove()
     {
         foreach ($this->projects->refs as $id) {
+            /* @var Id $id */
             $project = new ProjectModel($id->asString());
             $project->removeUser($this->id->asString());
             $project->write();
@@ -39,6 +42,7 @@ class UserModel extends UserModelBase
     public function isMemberOfProject($projectId)
     {
         foreach ($this->projects->refs as $id) {
+            /* @var Id $id */
             if ($projectId == $id->asString()) {
                 return true;
             }
@@ -102,7 +106,7 @@ class UserModel extends UserModelBase
 
 }
 
-class UserListModel extends \Api\Model\Mapper\MapperListModel
+class UserListModel extends MapperListModel
 {
 
     public function __construct()
@@ -116,11 +120,11 @@ class UserListModel extends \Api\Model\Mapper\MapperListModel
 
 }
 
-class UserTypeaheadModel extends \Api\Model\Mapper\MapperListModel
+class UserTypeaheadModel extends MapperListModel
 {
     /**
-     * @param MongoMapper $term
-     * @param string or array $projectIdOrIds
+     * @param string $term
+     * @param string | array $projectIdOrIds
      * @param Website $website
      * @param bool $include
      */
