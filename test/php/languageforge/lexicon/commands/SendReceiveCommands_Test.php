@@ -1,6 +1,5 @@
 <?php
 
-use Api\Library\Languageforge\Lexicon\LanguageServerApiInterface;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
@@ -17,34 +16,6 @@ require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPath . 'common/MongoTestEnvironment.php';
 
-class MockLanguageServerApi implements LanguageServerApiInterface
-{
-    public function __construct($identifier = '') {
-        $this->identifier = $identifier;
-    }
-
-    public $identifier;
-
-    public function getWebMetaData($url, $queryData, $method = 'POST')
-    {
-        $metaData = array();
-        $metaData['wrapper_data'] = array();
-        $metaData['wrapper_data'][0] = 'HTTP/1.1 302 Found ';
-
-        return $metaData;
-    }
-
-    public function getWebContent($url, $method = 'GET', $queryData = array())
-    {
-        $response = array(
-            array(
-                'identifier' => $this->identifier
-            )
-        );
-        return json_encode($response);
-    }
-}
-
 class TestSendReceiveCommands extends UnitTestCase
 {
 /*
@@ -59,18 +30,6 @@ class TestSendReceiveCommands extends UnitTestCase
 
         $this->assertEqual($result->isKnownUser, true);
         $this->assertEqual($result->hasValidCredentials, true);
-    }
-/*
-    public function testCheckProjectActualApi_ExistingProject_ProjectExists()
-    {
-        $identifier = 'test-eb-sena3-flex';
-        $username = 'change to your username';
-        $password = 'change to your password';
-
-        $result = SendReceiveCommands::checkProject($identifier, $username, $password);
-
-        $this->assertEqual($result->hasValidCredentials, true);
-        $this->assertEqual($result->projectExists, true);
     }
 */
     public function testSaveCredentials_ProjectAndUser_CredentialsSaved()
@@ -117,7 +76,7 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual($result->projects->count(), 0);
     }
 
-    public function testGetUserProjects_KnownUserBlankPassword_UserUnknown()
+    public function testGetUserProjects_KnownUser_UserKnown()
     {
         $username = 'mock_user';
         $password = 'mock_pass';
@@ -177,33 +136,5 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual($result->isKnownUser, true);
         $this->assertEqual($result->hasValidCredentials, true);
         $this->assertTrue($result->projects->count() > 0);
-    }
-
-    public function testCheckProject_BlankProject_ProjectDoesntExist()
-    {
-        $identifier = '';
-        $username = 'mock_user';
-        $password = 'mock_pass';
-        $api = new MockLanguageServerApi();
-
-        $result = SendReceiveCommands::checkProject($identifier, $username, $password, $api);
-
-        $this->assertEqual($result->hasValidCredentials, true);
-        $this->assertEqual($result->projectExists, false);
-        $this->assertEqual($result->hasAccessToProject, false);
-    }
-
-    public function testCheckProject_ExistingProject_ProjectExists()
-    {
-        $identifier = 'mock_project_id';
-        $username = 'mock_user';
-        $password = 'mock_pass';
-        $api = new MockLanguageServerApi($identifier);
-
-        $result = SendReceiveCommands::checkProject($identifier, $username, $password, $api);
-
-        $this->assertEqual($result->hasValidCredentials, true);
-        $this->assertEqual($result->projectExists, true);
-        $this->assertEqual($result->hasAccessToProject, true);
     }
 }

@@ -7,7 +7,7 @@ use Palaso\Utilities\CodeGuard;
 class ArrayOf extends \ArrayObject
 {
     /**
-     * @param function The function <object> function($data = null) returns an instance of the object.
+     * @param callable $generator The function <object> function($data = null) returns an instance of the object.
      */
     public function __construct($generator = null)
     {
@@ -15,7 +15,7 @@ class ArrayOf extends \ArrayObject
     }
 
     /**
-     * @var function The function <object> function($data = null) returns an instance of the object.
+     * @var callable The function <object> function($data = null) returns an instance of the object.
      */
     private $_generator;
 
@@ -50,7 +50,7 @@ class ArrayOf extends \ArrayObject
 
     /**
      * Appends $value if it doesn't already exist in the array
-     * @param unknown $value
+     * @param mixed $value
      */
     public function value($value)
     {
@@ -61,7 +61,7 @@ class ArrayOf extends \ArrayObject
 
     /**
      * Return true if $item exists in the data
-     * @param unknown $item
+     * @param mixed $item
      * @return boolean
      */
     public function array_search($item)
