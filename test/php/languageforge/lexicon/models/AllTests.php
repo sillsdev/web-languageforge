@@ -8,8 +8,8 @@ class AllLexiconModelTests extends TestSuite
     public function __construct()
     {
         parent::__construct();
-        $this->addFile(TestPath . 'languageforge/lexicon/models/LexEntryModel_Test.php');
-        $this->addFile(TestPath . 'languageforge/lexicon/models/SenseModel_Test.php');
+        $this->addFile(TestPhpPath . 'languageforge/lexicon/models/LexEntryModel_Test.php');
+        $this->addFile(TestPhpPath . 'languageforge/lexicon/models/SenseModel_Test.php');
     }
 
 }

@@ -1,4 +1,5 @@
 <?php
+
 require_once ('e2eTestConfig.php');
 
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
@@ -6,7 +7,7 @@ use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Api\Model\ProjectModel;
 use Palaso\Utilities\FileUtilities;
 
-$constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
+$constants = json_decode(file_get_contents(TestPath . 'app/testConstants.json'), true);
 
 // cleanup test assets folder
 $project = new ProjectModel();

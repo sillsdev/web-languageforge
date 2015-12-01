@@ -5,7 +5,7 @@ use Api\Model\QuestionModel;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 require_once SourcePath . "Api/Model/QuestionModel.php";
 
 class TestQuestionModel extends UnitTestCase

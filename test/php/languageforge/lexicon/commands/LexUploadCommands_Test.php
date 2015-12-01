@@ -8,7 +8,7 @@ use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestLexUploadCommands extends UnitTestCase
 {
@@ -40,7 +40,7 @@ class TestLexUploadCommands extends UnitTestCase
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestImage.jpg';
-        $tmpFilePath = $this->environ->uploadFile(TestPath . "common/$fileName", $fileName);
+        $tmpFilePath = $this->environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -59,7 +59,7 @@ class TestLexUploadCommands extends UnitTestCase
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestImage.JPG';
-        $tmpFilePath = $this->environ->uploadFile(TestPath . "common/TestImage.jpg", $fileName);
+        $tmpFilePath = $this->environ->uploadFile(TestPhpPath . "common/TestImage.jpg", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -76,7 +76,7 @@ class TestLexUploadCommands extends UnitTestCase
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $tmpFilePath = $this->environ->uploadFile(TestPath . 'common/TestImage.tif', 'TestImage.jpg');
+        $tmpFilePath = $this->environ->uploadFile(TestPhpPath . 'common/TestImage.tif', 'TestImage.jpg');
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -84,7 +84,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertPattern('/not an allowed image file/', $response->data->errorMessage, 'Error message should match the error');
 
-        $tmpFilePath = $this->environ->uploadFile(TestPath . 'common/TestImage.jpg', 'TestImage.tif');
+        $tmpFilePath = $this->environ->uploadFile(TestPhpPath . 'common/TestImage.jpg', 'TestImage.tif');
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -98,7 +98,7 @@ class TestLexUploadCommands extends UnitTestCase
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestImage.jpg';
-        $tmpFilePath = $this->environ->uploadFile(TestPath . "common/$fileName", $fileName);
+        $tmpFilePath = $this->environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -139,7 +139,7 @@ class TestLexUploadCommands extends UnitTestCase
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestLexProject.zip';
-        $tmpFilePath = $this->environ->uploadFile(TestPath . "common/$fileName", $fileName);
+        $tmpFilePath = $this->environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
 
         $this->assertTrue(array_key_exists('en', $project->inputSystems));
         $this->assertTrue(array_key_exists('th', $project->inputSystems));
@@ -169,7 +169,7 @@ class TestLexUploadCommands extends UnitTestCase
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestLangProj.7z';  // Ken Zook's test data
-        $tmpFilePath = $this->environ->uploadFile(TestPath . "common/$fileName", $fileName);
+        $tmpFilePath = $this->environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
         $userId = $this->environ->createUser('bob', 'bob', 'bob@example.com');
         $project->addUser($userId, LexiconRoles::OBSERVER);
         $project->config->userViews[$userId] = clone $project->config->roleViews[LexiconRoles::OBSERVER];
@@ -246,7 +246,7 @@ class TestLexUploadCommands extends UnitTestCase
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $tmpFilePath = $this->environ->uploadFile(TestPath . 'common/TestImage.jpg', 'TestLexProject.zip');
+        $tmpFilePath = $this->environ->uploadFile(TestPhpPath . 'common/TestImage.jpg', 'TestLexProject.zip');
 
         $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
 
@@ -254,7 +254,7 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertPattern('/not an allowed compressed file/', $response->data->errorMessage, 'Error message should match the error');
 
-        $tmpFilePath = $this->environ->uploadFile(TestPath . 'common/TestLexProject.zip', 'TestImage.jpg');
+        $tmpFilePath = $this->environ->uploadFile(TestPhpPath . 'common/TestLexProject.zip', 'TestImage.jpg');
 
         $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
 
@@ -394,7 +394,7 @@ EOD;
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertPattern('/not an allowed LIFT file/', $response->data->errorMessage, 'Error message should match the error');
 
-        $tmpFilePath = $this->environ->uploadFile(TestPath . 'common/TestImage.jpg', 'TestImage.lift');
+        $tmpFilePath = $this->environ->uploadFile(TestPhpPath . 'common/TestImage.jpg', 'TestImage.lift');
 
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
 
