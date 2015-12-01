@@ -8,10 +8,10 @@ class AllScriptureforgeCommandsTests extends TestSuite
     public function __construct()
     {
         parent::__construct();
-        $this->addFile(TestPath . 'scriptureforge/commands/TextCommands_Test.php');
-        $this->addFile(TestPath . 'scriptureforge/commands/SessionCommands_Test.php');
-        $this->addFile(TestPath . 'scriptureforge/commands/QuestionCommands_Test.php');
-        $this->addFile(TestPath . 'scriptureforge/commands/SfchecksUploadCommands_Test.php');
+        $this->addFile(TestPhpPath . 'scriptureforge/commands/TextCommands_Test.php');
+        $this->addFile(TestPhpPath . 'scriptureforge/commands/SessionCommands_Test.php');
+        $this->addFile(TestPhpPath . 'scriptureforge/commands/QuestionCommands_Test.php');
+        $this->addFile(TestPhpPath . 'scriptureforge/commands/SfchecksUploadCommands_Test.php');
     }
 
 }

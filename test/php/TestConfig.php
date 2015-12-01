@@ -11,7 +11,8 @@ require_once APPPATH . 'vendor/autoload.php';
 
 define('TestMode', true);
 
-define('TestPath', $rootPath . 'test/php/');
+define('TestPath', $rootPath . 'test/');
+define('TestPhpPath', $rootPath . 'test/php/');
 define('TestLibPath', $rootPath . 'test/lib/');
 define('SimpleTestPath', $rootPath . 'src/vendor/simpletest/simpletest/');
 define('SourcePath', $rootPath . 'src/');

@@ -8,7 +8,7 @@ class AllSemDomTransDtoTests extends TestSuite
     public function __construct()
     {
         parent::__construct();
-        $this->addFile(TestPath . 'languageforge/semdomtrans/dto/SemDomTransEditDto_Test.php');
+        $this->addFile(TestPhpPath . 'languageforge/semdomtrans/dto/SemDomTransEditDto_Test.php');
     }
 
 }

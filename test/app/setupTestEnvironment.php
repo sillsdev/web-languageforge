@@ -22,7 +22,7 @@ use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\UserModel;
 
-$constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
+$constants = json_decode(file_get_contents(TestPath . 'app/testConstants.json'), true);
 
 // Fake some $_SERVER variables like HTTP_HOST for the sake of the code that needs it
 $hostname = "languageforge.local";
@@ -256,7 +256,7 @@ if ($site == 'scriptureforge') {
 
     // put a copy of the test file in tmp
     $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
-    copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "php/common/$fileName", $tmpFilePath);
 
     $response = LexUploadCommands::uploadImageFile($testProjectId, 'sense-image', $tmpFilePath);
 
@@ -290,10 +290,10 @@ if ($site == 'scriptureforge') {
     // put mock uploaded zip import (jpg file)
     $fileName = $constants['testMockJpgImportFile']['name'];
     $tmpFilePath = sys_get_temp_dir() . '/' . $fileName;
-    copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "php/common/$fileName", $tmpFilePath);
 
     // put mock uploaded zip import (zip file)
     $fileName = $constants['testMockZipImportFile']['name'];
     $tmpFilePath = sys_get_temp_dir() . '/' . $fileName;
-    copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "php/common/$fileName", $tmpFilePath);
 }

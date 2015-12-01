@@ -8,8 +8,8 @@ class AllCommandsTests extends TestSuite
     public function __construct()
     {
         parent::__construct();
-        $this->addFile(TestPath . 'shared/commands/ProjectCommands_Test.php');
-        $this->addFile(TestPath . 'shared/commands/UserCommands_Test.php');
+        $this->addFile(TestPhpPath . 'shared/commands/ProjectCommands_Test.php');
+        $this->addFile(TestPhpPath . 'shared/commands/UserCommands_Test.php');
     }
 
 }
