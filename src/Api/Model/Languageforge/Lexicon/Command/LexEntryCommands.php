@@ -2,7 +2,6 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
-use Palaso\Utilities\CodeGuard;
 use Api\Model\Command\ActivityCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
@@ -11,6 +10,7 @@ use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Mapper\JsonDecoder;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectModel;
+use Palaso\Utilities\CodeGuard;
 
 class LexEntryCommands
 {
@@ -68,6 +68,8 @@ class LexEntryCommands
         $entry->write();
         ActivityCommands::writeEntry($project, $userId, $entry, $action);
 
+        SendReceiveCommands::queueProjectForUpdate($project);
+
         return JsonEncoder::encode($entry);
     }
 
@@ -99,6 +101,7 @@ class LexEntryCommands
      * @param string $projectId
      * @param string $missingInfo - if empty, returns all entries.
      *                                 if matches one of LexiconConfigObj constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
+     * @return LexEntryListModel
      */
     public static function listEntries($projectId, $missingInfo = '')
     {
@@ -120,9 +123,9 @@ class LexEntryCommands
     }
 
     /**
-     *
      * @param string $projectId
      * @param string $entryId
+     * @return string
      */
     public static function getEntryLexeme($projectId, $entryId) {
         $project = new LexiconProjectModel($projectId);

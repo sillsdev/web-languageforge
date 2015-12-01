@@ -11,6 +11,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\Mock;
+use Palaso\Utilities\FileUtilities;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -136,5 +137,98 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual($result->isKnownUser, true);
         $this->assertEqual($result->hasValidCredentials, true);
         $this->assertTrue($result->projects->count() > 0);
+    }
+
+    public function testQueueProjectForUpdate_NoSendReceive_NoAction()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $mockMergeQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
+        FileUtilities::createAllFolders($mockMergeQueuePath);
+
+        $filename = SendReceiveCommands::queueProjectForUpdate($project, $mockMergeQueuePath);
+
+        $queueFileNames = scandir($mockMergeQueuePath);
+        $this->assertFalse($filename);
+        $this->assertEqual(count($queueFileNames), 2);
+    }
+
+    public function testQueueProjectForUpdate_HasSendReceive_QueueFileCreated()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->write();
+        $mockMergeQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
+
+        $filename = SendReceiveCommands::queueProjectForUpdate($project, $mockMergeQueuePath);
+
+        $queueFileNames = scandir($mockMergeQueuePath);
+        $this->assertPattern('/' . $project->projectCode . '/', $filename);
+        $this->assertEqual(count($queueFileNames), 3);
+        FileUtilities::removeFolderAndAllContents($mockMergeQueuePath);
+    }
+
+    public function testIsProcessRunningByPidFile_NoPidFile_NotRunning()
+    {
+        $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
+
+        $isRunning = SendReceiveCommands::isProcessRunningByPidFile($pidFilePath);
+
+        $this->assertFalse($isRunning);
+    }
+
+    public function testIsProcessRunningByPidFile_NoProcess_NotRunning()
+    {
+        $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
+        $pid = 1024;
+        file_put_contents($pidFilePath, $pid);
+
+        $isRunning = SendReceiveCommands::isProcessRunningByPidFile($pidFilePath);
+
+        $this->assertFalse($isRunning);
+        unlink($pidFilePath);
+    }
+
+    public function testStartLFMergeIfRequired_NoSendReceive_NoAction()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $result = SendReceiveCommands::startLFMergeIfRequired($projectId);
+
+        $this->assertFalse($result);
+    }
+
+    public function testStartLFMergeIfRequired_HasSendReceiveButNoPidFile_Started()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $projectId = $project->write();
+        $queueType = 'merge';
+        $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
+        $runSeconds = 3;
+        $command = 'php mockLFMergeExe.php ' . $runSeconds;
+
+        $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $pidFilePath, $command);
+
+        $this->assertTrue($isRunning);
+        sleep(1);
+        $this->assertTrue(SendReceiveCommands::isProcessRunningByPidFile($pidFilePath));
+        sleep(1);
+
+        $isStillRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $pidFilePath, $command);
+
+        $this->assertTrue($isStillRunning);
     }
 }

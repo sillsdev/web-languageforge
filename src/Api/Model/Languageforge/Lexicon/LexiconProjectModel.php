@@ -16,7 +16,7 @@ class LexiconProjectModel extends LfProjectModel
         $this->appName = LfProjectModel::LEXICON_APP;
         $this->rolesClass = 'Api\Model\Languageforge\Lexicon\LexiconRoles';
         $this->inputSystems = new MapOf(
-            function ($data) {
+            function($data) {
                 return new InputSystem();
             }
         );
@@ -94,9 +94,17 @@ class LexiconProjectModel extends LfProjectModel
     {
         $settings = parent::getPublicSettings($userId);
         $settings['currentUserRole'] = $this->users[$userId]->role;
-        $settings['hasSendReceive'] = ($this->sendReceiveProject->identifier) ? true : false;
+        $settings['hasSendReceive'] = $this->hasSendReceive();
 
         return array_merge($settings, LexBaseViewDto::encode($this->id->asString(), $userId));
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasSendReceive()
+    {
+        return ($this->sendReceiveProject->identifier) ? true : false;
     }
 
     /**

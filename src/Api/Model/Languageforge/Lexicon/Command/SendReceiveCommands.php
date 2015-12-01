@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
+use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Mapper\MapOf;
@@ -11,9 +12,14 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\Mock;
+use Palaso\Utilities\FileUtilities;
 
 class SendReceiveCommands
 {
+    const MERGE_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/mergequeue';
+    const LFMERGE_PID_FILE_PATH = '/var/run/lfmerge.pid';
+    const LFMERGE_EXE = 'LFMerge.exe';
+
     // duplicate of data in /test/app/testConstants.json
     const TEST_MEMBER_USERNAME = 'test_runner_normal_user';
     const TEST_SR_USERNAME = 'sr-mock-username';
@@ -53,30 +59,11 @@ class SendReceiveCommands
     public static function getUserProjects($username, $password, ClientInterface $client = null)
     {
         $result = new SendReceiveGetUserProjectResult();
-        if (!$username) {
-            return $result;
-        }
+        if (!$username) return $result;
 
-        if (!$client) {
-            $client = new Client();
-        }
+        if (is_null($client)) $client = new Client();
 
-        // mock data for E2E testing
-        if ($username == self::TEST_MEMBER_USERNAME) {
-            $mock = new Mock([new Response(404)]);
-            $client->getEmitter()->attach($mock);
-        }
-        if ($username == self::TEST_SR_USERNAME) {
-            if ($password == self::TEST_SR_PASSWORD) {
-                $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository": "http://public.languagedepot.org", "role": "manager"},{"identifier": "mock-id2", "name": "mock-name2", "repository": "http://public.languagedepot.org", "role": "contributor"}]');
-                $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-                $mock = new Mock([$response]);
-                $client->getEmitter()->attach($mock);
-            } else {
-                $mock = new Mock([new Response(403)]);
-                $client->getEmitter()->attach($mock);
-            }
-        }
+        self::mockE2ETestingData($username, $password, $client);
 
         $url = 'http://admin.languagedepot.org/api/user/'.$username.'/projects';
         $postData = ['json' => ['password' => $password]];
@@ -84,16 +71,12 @@ class SendReceiveCommands
         try {
             $response = $client->post($url, $postData);
         } catch (RequestException $e) {
-            if ($e->getCode() != 403 && $e->getCode() != 404) {
-                throw $e;
-            }
+            if ($e->getCode() != 403 && $e->getCode() != 404)  throw $e;
 
             $response = $e->getResponse();
         }
 
-        if ($response->getStatusCode() == 403) {
-            $result->isKnownUser = true;
-        }
+        if ($response->getStatusCode() == 403) $result->isKnownUser = true;
 
         if ($response->getStatusCode() == 200) {
             $result->isKnownUser = true;
@@ -111,6 +94,113 @@ class SendReceiveCommands
         return $result;
     }
 
+    /**
+     * @param LexiconProjectModel $project
+     * @param string $mergeQueuePath
+     * @return string|bool $filename on success or false otherwise
+     */
+    public static function queueProjectForUpdate($project, $mergeQueuePath = null)
+    {
+        if (!$project->hasSendReceive()) return false;
+
+        if (is_null($mergeQueuePath)) $mergeQueuePath = self::MERGE_QUEUE_PATH;
+
+        FileUtilities::createAllFolders($mergeQueuePath);
+        $milliseconds = round(microtime(true) * 1000);
+        $filename =  $project->projectCode . '_' . $milliseconds;
+        $filePath = $mergeQueuePath . '/' . $filename;
+        $line = 'projectCode: ' . $project->projectCode;
+        if (!file_put_contents($filePath, $line)) return false;
+
+        return $filename;
+    }
+
+    /**
+     * @param string $projectId
+     * @param string $queueType
+     * @param string $pidFilePath
+     * @param string $command
+     * @return bool true if process started or already running, otherwise false
+     */
+    public static function startLFMergeIfRequired($projectId, $queueType = 'merge', $pidFilePath = null, $command = null)
+    {
+        $project = new LexiconProjectModel($projectId);
+        if (!$project->hasSendReceive()) return false;
+
+        if (is_null($pidFilePath)) $pidFilePath = self::LFMERGE_PID_FILE_PATH;
+
+        if (self::isProcessRunningByPidFile($pidFilePath)) return true;
+
+        if (is_null($command)) $command = self::LFMERGE_EXE . ' -q ' . $queueType . ' -p ' . $project->projectCode;
+
+        $pid = self::runInBackground($command);
+
+        return self::isProcessRunningByPid(intval($pid));
+    }
+
+    /**
+     * Taken from http://stackoverflow.com/questions/3111406/checking-if-process-still-running
+     * @param string $pidFilePath
+     * @return bool
+     */
+    public static function isProcessRunningByPidFile($pidFilePath)
+    {
+        if (!file_exists($pidFilePath) || !is_file($pidFilePath)) return false;
+        $pid = file_get_contents($pidFilePath);
+        return posix_kill($pid, 0);
+    }
+
+    /**
+     * Taken from https://nsaunders.wordpress.com/2007/01/12/running-a-background-process-in-php/
+     * @param string $pid
+     * @return bool
+     */
+    private static function isProcessRunningByPid($pid)
+    {
+        exec("ps $pid", $processState);
+        return (count($processState) >= 2);
+    }
+
+    /**
+     * Taken from https://nsaunders.wordpress.com/2007/01/12/running-a-background-process-in-php/
+     * @param string $command
+     * @param int $priority
+     * @return string $pid
+     */
+    private static function runInBackground($command, $priority = 0)
+    {
+        if ($priority) {
+            $pid = shell_exec("nohup nice -n $priority $command > /dev/null 2> /dev/null & echo $!");
+        } else {
+            $pid = shell_exec("nohup $command > /dev/null 2> /dev/null & echo $!");
+        }
+        return $pid;
+    }
+
+    /**
+     * @param $username
+     * @param $password
+     * @param ClientInterface $client
+     */
+    private static function mockE2ETestingData($username, $password, ClientInterface $client)
+    {
+        if ($username == self::TEST_MEMBER_USERNAME) {
+            $mock = new Mock([new Response(404)]);
+            $client->getEmitter()->attach($mock);
+        }
+
+        if ($username == self::TEST_SR_USERNAME) {
+            if ($password == self::TEST_SR_PASSWORD) {
+                $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository": "http://public.languagedepot.org", "role": "manager"},{"identifier": "mock-id2", "name": "mock-name2", "repository": "http://public.languagedepot.org", "role": "contributor"}]');
+                $response = new Response(200, ['Content-Type' => 'application/json'], $body);
+                $mock = new Mock([$response]);
+                $client->getEmitter()->attach($mock);
+            } else {
+                $mock = new Mock([new Response(403)]);
+                $client->getEmitter()->attach($mock);
+            }
+        }
+    }
 }
 
 class SendReceiveGetUserProjectResult
