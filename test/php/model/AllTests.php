@@ -7,17 +7,17 @@ class AllModelTests extends TestSuite
     public function __construct()
     {
         parent::__construct();
-        $this->addFile(TestPath . 'model/UserModel_Test.php');
-        $this->addFile(TestPath . 'model/ProjectModel_Test.php');
-        $this->addFile(TestPath . 'model/MultipleModel_Test.php');
-        $this->addFile(TestPath . 'model/TextModel_Test.php');
-        $this->addFile(TestPath . 'model/PasswordModel_Test.php');
-        $this->addFile(TestPath . 'model/QuestionModel_Test.php');
-        $this->addFile(TestPath . 'model/AnswerModel_Test.php');
-        $this->addFile(TestPath . 'model/CommentModel_Test.php');
-        $this->addFile(TestPath . 'model/Roles_Test.php');
-        $this->addFile(TestPath . 'model/UserVoteModel_Test.php');
-        $this->addFile(TestPath . 'model/UserUnreadModel_Test.php');
+        $this->addFile(TestPhpPath . 'model/UserModel_Test.php');
+        $this->addFile(TestPhpPath . 'model/ProjectModel_Test.php');
+        $this->addFile(TestPhpPath . 'model/MultipleModel_Test.php');
+        $this->addFile(TestPhpPath . 'model/TextModel_Test.php');
+        $this->addFile(TestPhpPath . 'model/PasswordModel_Test.php');
+        $this->addFile(TestPhpPath . 'model/QuestionModel_Test.php');
+        $this->addFile(TestPhpPath . 'model/AnswerModel_Test.php');
+        $this->addFile(TestPhpPath . 'model/CommentModel_Test.php');
+        $this->addFile(TestPhpPath . 'model/Roles_Test.php');
+        $this->addFile(TestPhpPath . 'model/UserVoteModel_Test.php');
+        $this->addFile(TestPhpPath . 'model/UserUnreadModel_Test.php');
     }
 
 }

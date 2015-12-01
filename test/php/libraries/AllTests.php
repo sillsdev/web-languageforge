@@ -8,10 +8,10 @@ class AllLibrariesTests extends TestSuite
     public function __construct()
     {
         parent::__construct();
-        $this->addFile(TestPath . 'libraries/scriptureforge/AllTests.php');
-        $this->addFile(TestPath . 'libraries/LanguageData_Test.php');
-        $this->addFile(TestPath . 'libraries/ParatextExport_Test.php');
-        $this->addFile(TestPath . 'libraries/Website_Test.php');
+        $this->addFile(TestPhpPath . 'libraries/scriptureforge/AllTests.php');
+        $this->addFile(TestPhpPath . 'libraries/LanguageData_Test.php');
+        $this->addFile(TestPhpPath . 'libraries/ParatextExport_Test.php');
+        $this->addFile(TestPhpPath . 'libraries/Website_Test.php');
     }
 
 }
