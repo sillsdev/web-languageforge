@@ -185,7 +185,7 @@ class TestSendReceiveCommands extends UnitTestCase
     public function testIsProcessRunningByPidFile_NoProcess_NotRunning()
     {
         $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
-        $pid = 1024;
+        $pid = 1;
         file_put_contents($pidFilePath, $pid);
 
         $isRunning = SendReceiveCommands::isProcessRunningByPidFile($pidFilePath);
@@ -202,9 +202,28 @@ class TestSendReceiveCommands extends UnitTestCase
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
-        $result = SendReceiveCommands::startLFMergeIfRequired($projectId);
+        $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId);
 
-        $this->assertFalse($result);
+        $this->assertFalse($isRunning);
+    }
+
+    public function testStartLFMergeIfRequired_HasSendReceiveButNoLFMergeExe_Exception()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $projectId = $project->write();
+        $queueType = 'merge';
+        $pidFilePath = sys_get_temp_dir() . '/mockLFMergeExe.pid';
+        $command = 'mockLFMerge.exe';
+
+        $this->expectException(new \Exception('LFMerge is not installed. Contact the website administrator.'));
+        $e->inhibitErrorDisplay();
+        SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $pidFilePath, $command);
+
+        // nothing runs in the current test function after an exception. IJH 2015-12
     }
 
     public function testStartLFMergeIfRequired_HasSendReceiveButNoPidFile_Started()
