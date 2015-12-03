@@ -11,6 +11,7 @@ use Api\Model\Mapper\JsonDecoder;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectModel;
 use Palaso\Utilities\CodeGuard;
+use Ramsey\Uuid\Uuid;
 
 class LexEntryCommands
 {
@@ -39,9 +40,11 @@ class LexEntryCommands
      * @param string $projectId
      * @param array $params
      * @param string $userId
-     * @return LexEntryModel
+     * @param string $pidFilePath
+     * @param string $command
+     * @return array<encoded LexEntryModel>
      */
-    public static function updateEntry($projectId, $params, $userId)
+    public static function updateEntry($projectId, $params, $userId, $pidFilePath = null, $command = null)
     {
         CodeGuard::checkTypeAndThrow($params, 'array');
         $project = new LexiconProjectModel($projectId);
@@ -52,6 +55,7 @@ class LexEntryCommands
             $entry = new LexEntryModel($project);
             $entry->authorInfo->createdByUserRef->id = $userId;
             $entry->authorInfo->createdDate = new \DateTime();
+            $entry->guid = Uuid::uuid4()->toString();
             $action = 'create';
             // TODO: Consider adding more specific activity entry: which fields were modified? 2014-09-03 RM
             // E.g., "User _____ updated entry _____ by adding a new sense with definition ______"
@@ -61,6 +65,8 @@ class LexEntryCommands
         $entry->authorInfo->modifiedDate = new \DateTime();
         $entry->authorInfo->modifiedByUserRef->id = $userId;
 
+        if ($project->hasSendReceive()) $entry->dirtySR++;
+
         $params = self::recursiveRemoveEmptyFieldValues($params);
         //$params = self::recursiveAlignCustomFieldsWithModel($params);
         JsonDecoder::decode($entry, $params);
@@ -69,7 +75,7 @@ class LexEntryCommands
         ActivityCommands::writeEntry($project, $userId, $entry, $action);
 
         SendReceiveCommands::queueProjectForUpdate($project);
-        SendReceiveCommands::startLFMergeIfRequired($projectId, 'merge');
+        SendReceiveCommands::startLFMergeIfRequired($projectId, 'merge', $pidFilePath, $command);
 
         return JsonEncoder::encode($entry);
     }
