@@ -69,6 +69,7 @@ class LexEntryCommands
         ActivityCommands::writeEntry($project, $userId, $entry, $action);
 
         SendReceiveCommands::queueProjectForUpdate($project);
+        SendReceiveCommands::startLFMergeIfRequired($projectId, 'merge');
 
         return JsonEncoder::encode($entry);
     }

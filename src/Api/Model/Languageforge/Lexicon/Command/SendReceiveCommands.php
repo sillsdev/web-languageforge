@@ -121,6 +121,7 @@ class SendReceiveCommands
      * @param string $pidFilePath
      * @param string $command
      * @return bool true if process started or already running, otherwise false
+     * @throws \Exception
      */
     public static function startLFMergeIfRequired($projectId, $queueType = 'merge', $pidFilePath = null, $command = null)
     {
@@ -133,9 +134,16 @@ class SendReceiveCommands
 
         if (is_null($command)) $command = self::LFMERGE_EXE . ' -q ' . $queueType . ' -p ' . $project->projectCode;
 
+        if (!self::commandExists($command)) throw new \Exception('LFMerge is not installed. Contact the website administrator.');
+
         $pid = self::runInBackground($command);
 
         return self::isProcessRunningByPid(intval($pid));
+    }
+
+    public static function commandExists($command)
+    {
+        return !!`which $command`;
     }
 
     /**
@@ -147,18 +155,17 @@ class SendReceiveCommands
     {
         if (!file_exists($pidFilePath) || !is_file($pidFilePath)) return false;
         $pid = file_get_contents($pidFilePath);
-        return posix_kill($pid, 0);
+        return self::isProcessRunningByPid($pid);
     }
 
     /**
-     * Taken from https://nsaunders.wordpress.com/2007/01/12/running-a-background-process-in-php/
+     * Taken from http://stackoverflow.com/questions/3111406/checking-if-process-still-running
      * @param string $pid
      * @return bool
      */
     private static function isProcessRunningByPid($pid)
     {
-        exec("ps $pid", $processState);
-        return (count($processState) >= 2);
+        return posix_kill($pid, 0);
     }
 
     /**
