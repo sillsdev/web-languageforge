@@ -18,7 +18,7 @@ class SendReceiveCommands
 {
     const MERGE_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/mergequeue';
     const LFMERGE_PID_FILE_PATH = '/var/run/lfmerge.pid';
-    const LFMERGE_EXE = 'LFMerge.exe';
+    const LFMERGE_EXE = 'lfmerge';
 
     // duplicate of data in /test/app/testConstants.json
     const TEST_MEMBER_USERNAME = 'test_runner_normal_user';
