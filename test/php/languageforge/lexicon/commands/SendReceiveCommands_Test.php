@@ -216,7 +216,7 @@ class TestSendReceiveCommands extends UnitTestCase
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
         $projectId = $project->write();
         $queueType = 'merge';
-        $pidFilePath = sys_get_temp_dir() . '/mockLFMergeExe.pid';
+        $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
         $command = 'mockLFMerge.exe';
 
         $this->expectException(new \Exception('LFMerge is not installed. Contact the website administrator.'));

@@ -2,12 +2,14 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Palaso\Utilities\CodeGuard;
-use Api\Model\Mapper\Id;
 use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\MapOf;
-use Api\Model\ProjectModel;
+use Api\Model\Mapper\Id;
 use Api\Model\Mapper\IdReference;
+use Api\Model\Mapper\MapOf;
+use Api\Model\Mapper\MapperModel;
+use Api\Model\Mapper\MongoMapper;
+use Api\Model\ProjectModel;
+use Palaso\Utilities\CodeGuard;
 
 function _createSense($data)
 {
@@ -26,7 +28,7 @@ function _createCustomField($data)
     }
 }
 
-class LexEntryModel extends \Api\Model\Mapper\MapperModel
+class LexEntryModel extends MapperModel
 {
     use \LazyProperty\LazyPropertiesTrait;
 
@@ -44,6 +46,11 @@ class LexEntryModel extends \Api\Model\Mapper\MapperModel
      * @var string
      */
     public $guid;
+
+    /**
+     * @var int
+     */
+    public $dirtySR;
 
     // PUBLIC PROPERTIES
 
@@ -161,7 +168,7 @@ class LexEntryModel extends \Api\Model\Mapper\MapperModel
     {
         static $instance = null;
         if (null === $instance) {
-            $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'lexicon');
+            $instance = new MongoMapper($databaseName, 'lexicon');
         }
 
         return $instance;
@@ -174,6 +181,7 @@ class LexEntryModel extends \Api\Model\Mapper\MapperModel
     public function __construct($projectModel, $id = '')
     {
         $this->setPrivateProp('guid');
+        $this->setPrivateProp('dirtySR');
         $this->setPrivateProp('mercurialSha');
         $this->setReadOnlyProp('authorInfo');
 
@@ -276,6 +284,8 @@ class LexEntryModel extends \Api\Model\Mapper\MapperModel
                 return $sense;
             }
         }
+
+        return new Sense();
     }
 
     /**
