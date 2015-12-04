@@ -332,6 +332,7 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
             case 'sr_save_credentials':
+            case 'sr_mergeProject':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             // project management app

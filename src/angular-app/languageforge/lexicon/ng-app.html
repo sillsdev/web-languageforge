@@ -10,13 +10,21 @@
                 <i class="icon-cog icon-large"></i>
                 <span class="caret"></span></a>
             <ul class="dropdown-menu" data-ng-class="interfaceConfig.pullToSide">
-                <li><a href="#/configuration" translate="Dictionary Configuration"></a></li>
-                <li><a href="#/viewSettings" translate="View Settings"></a></li>
+                <li><a href="#/configuration" data-translate="Dictionary Configuration"></a></li>
+                <li><a href="#/viewSettings" data-translate="View Settings"></a></li>
                 <li class="divider"></li>
-                <li><a href="#/importExport" translate="Import/Export"></a></li>
-                <li><a href="#/settings" translate="Project Settings"></a></li>
-                <li><a ng-href="/app/usermanagement/{{project.id}}" translate="User Management"></a></li>
+                <li><a href="#/importExport" data-translate="Import/Export"></a></li>
+                <li><a href="#/settings" data-translate="Project Settings"></a></li>
+                <li><a ng-href="/app/usermanagement/{{project.id}}" data-translate="User Management"></a></li>
             </ul>
+        </div>
+        <div data-ng-class="interfaceConfig.pullToSide" data-ng-show="showSyncButton()">
+            <span class="muted" style="margin-right: 10px">{{syncNotice()}}</span>
+            <button class="btn" data-tooltip="Send and Receive with LanguageDepot.org"
+                    data-tooltip-placement="bottom"
+                    data-ng-click="syncProject()">
+                <i class="fa fa-cloud-upload fa-lg text-info"></i>{{'Synchronise' | translate}}
+            </button>
         </div>
         <div>
             <button class="btn" data-tooltip="View the dictionary"
