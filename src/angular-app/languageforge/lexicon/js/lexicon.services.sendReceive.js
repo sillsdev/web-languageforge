@@ -11,6 +11,10 @@ angular.module('lexicon.services')
     this.saveCredentials = function saveCredentials(srProject, username, password, callback) {
       jsonRpc.call('sr_save_credentials', [srProject, username, password], callback);
     };
+
+    this.mergeProject = function mergeProject(callback) {
+      jsonRpc.call('sr_mergeProject', [], callback);
+    };
   }])
 
   ;

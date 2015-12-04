@@ -751,6 +751,10 @@ class Sf
         return SendReceiveCommands::saveCredentials($this->projectId, $srProject, $username, $password);
     }
 
+    public function sr_mergeProject()
+    {
+        return SendReceiveCommands::startLFMergeIfRequired($this->projectId, 'merge');
+    }
 
 
     /*

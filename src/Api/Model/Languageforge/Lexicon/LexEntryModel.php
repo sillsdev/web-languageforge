@@ -10,8 +10,9 @@ use Api\Model\Mapper\MapperModel;
 use Api\Model\Mapper\MongoMapper;
 use Api\Model\ProjectModel;
 use Palaso\Utilities\CodeGuard;
+use Ramsey\Uuid\Uuid;
 
-function _createSense($data)
+function _createSense()
 {
     return new Sense();
 }
@@ -164,16 +165,6 @@ class LexEntryModel extends MapperModel
      */
     public $summaryDefinition;
 
-    public static function mapper($databaseName)
-    {
-        static $instance = null;
-        if (null === $instance) {
-            $instance = new MongoMapper($databaseName, 'lexicon');
-        }
-
-        return $instance;
-    }
-
     /**
      * @param ProjectModel $projectModel
      * @param string $id
@@ -216,6 +207,16 @@ class LexEntryModel extends MapperModel
         parent::__construct(self::mapper($databaseName), $id);
     }
 
+    public static function mapper($databaseName)
+    {
+        static $instance = null;
+        if (null === $instance) {
+            $instance = new MongoMapper($databaseName, 'lexicon');
+        }
+
+        return $instance;
+    }
+
     protected function createProperty($name)
     {
         switch ($name) {
@@ -246,6 +247,7 @@ class LexEntryModel extends MapperModel
             case 'location':
                 return new LexiconField();
             case 'morphologyType':
+            default:
                 return '';
         }
     }
@@ -314,4 +316,11 @@ class LexEntryModel extends MapperModel
         self::mapper($databaseName)->remove($id);
     }
 
+    /**
+     * @return string
+     */
+    public function createGuid()
+    {
+        return Uuid::uuid4()->toString();
+    }
 }
