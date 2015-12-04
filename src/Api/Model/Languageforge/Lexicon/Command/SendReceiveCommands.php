@@ -5,7 +5,8 @@ namespace Api\Model\Languageforge\Lexicon\Command;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
-use Api\Model\Mapper\MapOf;
+use Api\Model\Mapper\ArrayOf;
+use Api\Model\Mapper\JsonEncoder;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -59,7 +60,7 @@ class SendReceiveCommands
     public static function getUserProjects($username, $password, ClientInterface $client = null)
     {
         $result = new SendReceiveGetUserProjectResult();
-        if (!$username) return $result;
+        if (!$username) return JsonEncoder::encode($result);
 
         if (is_null($client)) $client = new Client();
 
@@ -82,7 +83,7 @@ class SendReceiveCommands
             $result->isKnownUser = true;
             $result->hasValidCredentials = true;
             foreach ($response->json() as $index => $srProject) {
-                $result->projects[strval($index)] = new SendReceiveProjectModel(
+                $result->projects[] = new SendReceiveProjectModel(
                     $srProject['identifier'],
                     $srProject['name'],
                     $srProject['repository'],
@@ -91,7 +92,28 @@ class SendReceiveCommands
             }
         }
 
-        return $result;
+        $data = JsonEncoder::encode($result);
+
+        // sort projects by identifier then repository
+        usort($data['projects'], function ($a, $b) {
+            $sortOn = 'identifier';
+            if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
+                if ($a[$sortOn] == $b[$sortOn]) {
+                    $sortOn = 'repository';
+                    if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
+                        return strcmp($a[$sortOn], $b[$sortOn]);
+                    } else {
+                        return 0;
+                    }
+                }
+
+                return strcmp($a[$sortOn], $b[$sortOn]);
+            } else {
+                return 0;
+            }
+        });
+
+        return $data;
     }
 
     /**
@@ -216,7 +238,7 @@ class SendReceiveGetUserProjectResult
     {
         $this->isKnownUser = false;
         $this->hasValidCredentials = false;
-        $this->projects = new MapOf(function() {
+        $this->projects = new ArrayOf(function() {
             return new SendReceiveProjectModel();
         });
     }
@@ -232,7 +254,7 @@ class SendReceiveGetUserProjectResult
     public $hasValidCredentials;
 
     /**
-     * @var MapOf <SendReceiveProjectModel>
+     * @var ArrayOf <SendReceiveProjectModel>
      */
     public $projects;
 }

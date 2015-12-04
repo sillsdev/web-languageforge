@@ -72,9 +72,9 @@ class TestSendReceiveCommands extends UnitTestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertEqual($result->isKnownUser, false);
-        $this->assertEqual($result->hasValidCredentials, false);
-        $this->assertEqual($result->projects->count(), 0);
+        $this->assertEqual($result['isKnownUser'], false);
+        $this->assertEqual($result['hasValidCredentials'], false);
+        $this->assertEqual(count($result['projects']), 0);
     }
 
     public function testGetUserProjects_KnownUser_UserKnown()
@@ -87,9 +87,9 @@ class TestSendReceiveCommands extends UnitTestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertEqual($result->isKnownUser, true);
-        $this->assertEqual($result->hasValidCredentials, false);
-        $this->assertEqual($result->projects->count(), 0);
+        $this->assertEqual($result['isKnownUser'], true);
+        $this->assertEqual($result['hasValidCredentials'], false);
+        $this->assertEqual(count($result['projects']), 0);
     }
 
     public function testGetUserProjects_UnknownUser_UserUnknown()
@@ -102,9 +102,9 @@ class TestSendReceiveCommands extends UnitTestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertEqual($result->isKnownUser, false);
-        $this->assertEqual($result->hasValidCredentials, false);
-        $this->assertEqual($result->projects->count(), 0);
+        $this->assertEqual($result['isKnownUser'], false);
+        $this->assertEqual($result['hasValidCredentials'], false);
+        $this->assertEqual(count($result['projects']), 0);
     }
 
     public function testGetUserProjects_InvalidPass_PassInvalid()
@@ -117,9 +117,9 @@ class TestSendReceiveCommands extends UnitTestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertEqual($result->isKnownUser, true);
-        $this->assertEqual($result->hasValidCredentials, false);
-        $this->assertEqual($result->projects->count(), 0);
+        $this->assertEqual($result['isKnownUser'], true);
+        $this->assertEqual($result['hasValidCredentials'], false);
+        $this->assertEqual(count($result['projects']), 0);
     }
 
     public function testGetUserProjects_ValidCredentials_CredentialsValid()
@@ -134,9 +134,47 @@ class TestSendReceiveCommands extends UnitTestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertEqual($result->isKnownUser, true);
-        $this->assertEqual($result->hasValidCredentials, true);
-        $this->assertTrue($result->projects->count() > 0);
+        $this->assertEqual($result['isKnownUser'], true);
+        $this->assertEqual($result['hasValidCredentials'], true);
+        $this->assertEqual(count($result['projects']), 1);
+    }
+
+    public function testGetUserProjects_2Projects_SortedByIdentifier()
+    {
+        $username = 'mock_user';
+        $password = 'mock_pass';
+        $client = new Client();
+        $body = Stream::factory('[{"identifier": "identifier2", "name": "name2", "repository": "", "role": ""}, {"identifier": "identifier1", "name": "name1", "repository": "", "role": ""}]');
+        $response = new Response(200, ['Content-Type' => 'application/json'], $body);
+        $mock = new Mock([$response]);
+        $client->getEmitter()->attach($mock);
+
+        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+
+        $this->assertEqual($result['isKnownUser'], true);
+        $this->assertEqual($result['hasValidCredentials'], true);
+        $this->assertEqual(count($result['projects']), 2);
+        $this->assertEqual($result['projects'][0]['name'], 'name1');
+        $this->assertEqual($result['projects'][1]['name'], 'name2');
+    }
+
+    public function testGetUserProjects_DuplicateIdentifier_SortedByRepo()
+    {
+        $username = 'mock_user';
+        $password = 'mock_pass';
+        $client = new Client();
+        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "repo1", "role": ""}, {"identifier": "identifier", "name": "name1", "repository": "repo2", "role": ""}]');
+        $response = new Response(200, ['Content-Type' => 'application/json'], $body);
+        $mock = new Mock([$response]);
+        $client->getEmitter()->attach($mock);
+
+        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+
+        $this->assertEqual($result['isKnownUser'], true);
+        $this->assertEqual($result['hasValidCredentials'], true);
+        $this->assertEqual(count($result['projects']), 2);
+        $this->assertEqual($result['projects'][0]['name'], 'name2');
+        $this->assertEqual($result['projects'][1]['name'], 'name1');
     }
 
     public function testQueueProjectForUpdate_NoSendReceive_NoAction()
