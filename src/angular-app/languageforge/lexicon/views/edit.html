@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <div class="animate-switch-container" data-ng-switch on=state>
+    <div class="animate-switch-container" data-ng-switch data-on="state">
 
         <!-- entry list view -->
         <div id="lexAppListView" class="animate-switch" data-ng-switch-when="list">
@@ -35,10 +35,10 @@
             <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
                 <div data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading" style="text-align: center;margin-top:50px">
                     <h4>Looks like there are no entries yet.</h4>
-                    <button class="btn btn-primary" data-ng-click="navigateToLiftImport()" data-ng-hide="hasSendReceive()">
+                    <button class="btn btn-primary" data-ng-click="navigateToLiftImport()" data-ng-hide="projectSettings.hasSendReceive">
                         Import entries from LIFT</button>
-                    <button class="btn btn-primary" data-ng-click="" disabled data-ng-show="hasSendReceive()">
-                        Sync data with LanguageDepot.org</button>
+                    <button class="btn btn-primary" data-ng-click="syncProject()" data-ng-show="projectSettings.hasSendReceive">
+                        Sync project with LanguageDepot.org</button>
                 </div>
                 <div class="lexiconListItem" data-ng-repeat="entry in visibleEntries track by entry.id" data-ng-click="editEntryAndScroll(entry.id)">
                     <dc-rendered config="config.entry" model="entry"></dc-rendered>
@@ -78,9 +78,9 @@
             <div style="flex: 4;padding:5px;display: flex; flex-direction: column">
                 <div style="margin-bottom: 5px; border-bottom: solid black 1px">
                     <div ng-if="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
+                        <span class="muted" style="margin-right: 10px">{{saveNotice()}}</span>
+                        <button class="btn btn-mini" style="margin-right: 30px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
                         <button data-ng-if="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
-                        <button class="btn btn-mini" style="margin-left:20px; margin-right: 10px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
-                        <span style="color: grey; margin-right: 10px">{{saveNotice()}}</span>
                     </div>
                     <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
                 </div>

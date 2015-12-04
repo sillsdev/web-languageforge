@@ -18,7 +18,6 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
     $scope.editorService = editorService;
-    $scope.hasSendReceive = lexProjectService.hasSendReceive;
 
     // default state. State is one of 'list', 'edit', or 'comment'
     $scope.state = 'list';
@@ -88,6 +87,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
       if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
         cancelAutoSaveTimer();
+        $scope.sendReceive.status = 'unsynced';
         saving = true;
         var entryToSave = angular.copy($scope.currentEntry);
         if (entryIsNew(entryToSave)) {
@@ -397,10 +397,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         var node = stopAtNodes;
         stopAtNodes = [];
         stopAtNodes.push(node);
-      } else if (angular.isArray(stopAtNodes)) {
-        // array
-        ;
-      } else {
+      } else if (!angular.isArray(stopAtNodes)) {
         stopAtNodes = [];
       }
 
@@ -602,7 +599,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       $scope.saveCurrentEntry();
     });
 
-    $scope.$on('$locationChangeStart', function(event, next, current) {
+    $scope.$on('$locationChangeStart', function() {
       cancelAutoSaveTimer();
       $scope.saveCurrentEntry();
     });

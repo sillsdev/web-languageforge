@@ -11,7 +11,6 @@ use Api\Model\Mapper\JsonDecoder;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectModel;
 use Palaso\Utilities\CodeGuard;
-use Ramsey\Uuid\Uuid;
 
 class LexEntryCommands
 {
@@ -55,7 +54,7 @@ class LexEntryCommands
             $entry = new LexEntryModel($project);
             $entry->authorInfo->createdByUserRef->id = $userId;
             $entry->authorInfo->createdDate = new \DateTime();
-            $entry->guid = Uuid::uuid4()->toString();
+            $entry->guid = $entry->createGuid();
             $action = 'create';
             // TODO: Consider adding more specific activity entry: which fields were modified? 2014-09-03 RM
             // E.g., "User _____ updated entry _____ by adding a new sense with definition ______"

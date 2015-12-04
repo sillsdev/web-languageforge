@@ -181,19 +181,6 @@ angular.module('lexicon-new-project',
       $scope.show.backButton = true;
     };
 
-    $scope.nextStep = function nextStep() {
-      if ($state.current.name === 'newProject.initialData') {
-        $scope.newProject.emptyProjectDesired = true;
-        $scope.progressIndicatorStep3Label = $filter('translate')('Language');
-      }
-
-      validateForm().then(function(isValid) {
-        if (isValid) {
-          gotoNextState();
-        }
-      });
-    };
-
     $scope.prevStep = function prevStep() {
       $scope.show.backButton = false;
       $scope.resetValidateProjectForm();
@@ -218,6 +205,19 @@ angular.module('lexicon-new-project',
           $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
           break;
       }
+    };
+
+    $scope.nextStep = function nextStep() {
+      if ($state.current.name === 'newProject.initialData') {
+        $scope.newProject.emptyProjectDesired = true;
+        $scope.progressIndicatorStep3Label = $filter('translate')('Language');
+      }
+
+      validateForm().then(function(isValid) {
+        if (isValid) {
+          gotoNextState();
+        }
+      });
     };
 
     // Form validation requires API calls, so it return a promise rather than a value.
@@ -552,10 +552,22 @@ angular.module('lexicon-new-project',
 
       sendReceiveService.saveCredentials($scope.project.sendReceive.project, $scope.project.sendReceive.username, $scope.project.sendReceive.password, function(result) {
         if (result.ok) {
-          gotoLexicon();
+          syncProject();
         } else {
           notice.push(notice.ERROR, 'The LanguageDepot.org credentials could not be saved. Please try again.');
         }
+      });
+    }
+
+    function syncProject() {
+      sendReceiveService.mergeProject(function(result) {
+        if (result.ok) {
+          notice.push(notice.SUCCESS, 'Successfully synced with LanguageDepot.org.');
+        } else {
+          notice.push(notice.ERROR, 'The project could not be synced with LanguageDepot.org. Please try again.');
+        }
+
+        gotoLexicon();
       });
     }
 
