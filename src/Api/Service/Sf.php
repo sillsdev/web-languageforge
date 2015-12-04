@@ -742,8 +742,7 @@ class Sf
     // ---------------------------------------------------------------
     public function sr_get_userProjects($username, $password)
     {
-        $result = SendReceiveCommands::getUserProjects($username, $password);
-        return JsonEncoder::encode($result);
+        return SendReceiveCommands::getUserProjects($username, $password);
     }
 
     public function sr_save_credentials($srProject, $username, $password)
