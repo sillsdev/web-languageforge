@@ -93,25 +93,8 @@ class SendReceiveCommands
         }
 
         $data = JsonEncoder::encode($result);
-
-        // sort projects by identifier then repository
-        usort($data['projects'], function ($a, $b) {
-            $sortOn = 'identifier';
-            if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
-                if ($a[$sortOn] == $b[$sortOn]) {
-                    $sortOn = 'repository';
-                    if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
-                        return strcmp($a[$sortOn], $b[$sortOn]);
-                    } else {
-                        return 0;
-                    }
-                }
-
-                return strcmp($a[$sortOn], $b[$sortOn]);
-            } else {
-                return 0;
-            }
-        });
+        self::addSRProjectClarification($data['projects']);
+        self::sortSRProjectByName($data['projects']);
 
         return $data;
     }
@@ -220,7 +203,7 @@ class SendReceiveCommands
 
         if ($username == self::TEST_SR_USERNAME) {
             if ($password == self::TEST_SR_PASSWORD) {
-                $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository": "http://public.languagedepot.org", "role": "manager"},{"identifier": "mock-id2", "name": "mock-name2", "repository": "http://public.languagedepot.org", "role": "contributor"}]');
+                $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository": "http://public.languagedepot.org", "role": "manager"},{"identifier": "mock-id2", "name": "mock-name2", "repository": "http://public.languagedepot.org", "role": "contributor"},{"identifier": "mock-id3", "name": "mock-name3", "repository": "http://public.languagedepot.org", "role": "contributor"},{"identifier": "mock-id3", "name": "mock-name3", "repository": "http://private.languagedepot.org", "role": "manager"}]');
                 $response = new Response(200, ['Content-Type' => 'application/json'], $body);
                 $mock = new Mock([$response]);
                 $client->getEmitter()->attach($mock);
@@ -229,6 +212,65 @@ class SendReceiveCommands
                 $client->getEmitter()->attach($mock);
             }
         }
+    }
+
+    /**
+     * @param array $projects
+     * @return array
+     */
+    private static function addSRProjectClarification(&$projects)
+    {
+        // sort projects by identifier then repository
+        usort($projects, function ($a, $b) {
+            $sortOn = 'identifier';
+            if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
+                if ($a[$sortOn] == $b[$sortOn]) {
+                    $sortOn = 'repository';
+                    if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
+                        return strcmp($a[$sortOn], $b[$sortOn]);
+                    } else {
+                        return 0;
+                    }
+                }
+
+                return strcmp($a[$sortOn], $b[$sortOn]);
+            } else {
+                return 0;
+            }
+        });
+
+        foreach ($projects as $index => &$project) {
+            if (array_key_exists($index - 1, $projects) &&
+                $projects[$index - 1]['identifier'] == $project['identifier'] &&
+                stripos($project['repository'], '://private') !== false) {
+                $project['repoClarification'] = 'private';
+            }
+            if (array_key_exists($index + 1, $projects) &&
+                $projects[$index + 1]['identifier'] == $project['identifier'] &&
+                stripos($project['repository'], '://private') !== false) {
+                $project['repoClarification'] = 'private';
+            }
+        }
+
+        return $projects;
+    }
+
+    /**
+     * @param array $projects
+     * @return array
+     */
+    private static function sortSRProjectByName(&$projects)
+    {
+        usort($projects, function ($a, $b) {
+            $sortOn = 'name';
+            if (array_key_exists($sortOn, $a) && array_key_exists($sortOn, $b)) {
+                return strcmp($a[$sortOn], $b[$sortOn]);
+            } else {
+                return 0;
+            }
+        });
+
+        return $projects;
     }
 }
 

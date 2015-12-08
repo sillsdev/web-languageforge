@@ -139,7 +139,7 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual(count($result['projects']), 1);
     }
 
-    public function testGetUserProjects_2Projects_SortedByIdentifier()
+    public function testGetUserProjects_2Projects_SortedByName()
     {
         $username = 'mock_user';
         $password = 'mock_pass';
@@ -158,12 +158,12 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual($result['projects'][1]['name'], 'name2');
     }
 
-    public function testGetUserProjects_DuplicateIdentifier_SortedByRepo()
+    public function testGetUserProjects_2ProjectsDuplicateIdentifiersBeginCase_RepoClarification()
     {
         $username = 'mock_user';
         $password = 'mock_pass';
         $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "repo1", "role": ""}, {"identifier": "identifier", "name": "name1", "repository": "repo2", "role": ""}]');
+        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "http://public.languagedepot.org", "role": ""}, {"identifier": "identifier", "name": "name1", "repository": "http://private.languagedepot.org", "role": ""}]');
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
         $mock = new Mock([$response]);
         $client->getEmitter()->attach($mock);
@@ -173,8 +173,31 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual($result['isKnownUser'], true);
         $this->assertEqual($result['hasValidCredentials'], true);
         $this->assertEqual(count($result['projects']), 2);
-        $this->assertEqual($result['projects'][0]['name'], 'name2');
-        $this->assertEqual($result['projects'][1]['name'], 'name1');
+        $this->assertEqual($result['projects'][0]['name'], 'name1');
+        $this->assertEqual($result['projects'][0]['repoClarification'], 'private');
+        $this->assertEqual($result['projects'][1]['name'], 'name2');
+        $this->assertEqual($result['projects'][1]['repoClarification'], '');
+    }
+
+    public function testGetUserProjects_2ProjectsDuplicateIdentifiersEndCase_RepoClarification()
+    {
+        $username = 'mock_user';
+        $password = 'mock_pass';
+        $client = new Client();
+        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "http://private.languagedepot.org", "role": ""}, {"identifier": "identifier", "name": "name1", "repository": "http://public.languagedepot.org", "role": ""}]');
+        $response = new Response(200, ['Content-Type' => 'application/json'], $body);
+        $mock = new Mock([$response]);
+        $client->getEmitter()->attach($mock);
+
+        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+
+        $this->assertEqual($result['isKnownUser'], true);
+        $this->assertEqual($result['hasValidCredentials'], true);
+        $this->assertEqual(count($result['projects']), 2);
+        $this->assertEqual($result['projects'][0]['name'], 'name1');
+        $this->assertEqual($result['projects'][0]['repoClarification'], '');
+        $this->assertEqual($result['projects'][1]['name'], 'name2');
+        $this->assertEqual($result['projects'][1]['repoClarification'], 'private');
     }
 
     public function testQueueProjectForUpdate_NoSendReceive_NoAction()
@@ -275,7 +298,7 @@ class TestSendReceiveCommands extends UnitTestCase
         $queueType = 'merge';
         $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
         $runSeconds = 3;
-        $command = 'php mockLFMergeExe.php ' . $runSeconds;
+        $command = 'php ' . __DIR__ . '/mockLFMergeExe.php ' . $runSeconds;
 
         $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $pidFilePath, $command);
 
