@@ -106,8 +106,8 @@ angular.module('lexicon',
     );
     $routeProvider.otherwise({redirectTo: '/projects'});
   }])
-  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate', '$location', 'silNoticeService', 'lexEditorDataService', 'lexSendReceiveService',
-  function($scope, ss, lexConfigService, lexProjectService, $translate, $location, noticeService, editorService, sendReceiveService) {
+  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService', 'lexSendReceiveService',
+  function($scope, ss, lexConfigService, lexProjectService, $translate, $location, $interval, noticeService, editorService, sendReceiveService) {
     var pristineLanguageCode;
 
     $scope.rights = {};
@@ -117,13 +117,24 @@ angular.module('lexicon',
     $scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
     $scope.project = ss.session.project;
     $scope.projectSettings = ss.session.projectSettings;
-    $scope.sendReceive = {};
+    $scope.sendReceive = $scope.projectSettings.sendReceive;
 
     // persist the entries and comments array across all controllers
 
     $scope.finishedLoading = false;
     editorService.loadEditorData().then(function() {
       $scope.finishedLoading = true;
+
+      if (!$scope.sendReceive.status) {
+        $scope.sendReceive.status = {};
+        $scope.sendReceive.status.state = '';
+      } else if ($scope.sendReceive.status.state == 'IDLE') {
+        $scope.sendReceive.status.state = '';
+      } else {
+        startSyncStatusTimer();
+      }
+
+      console.log($scope.sendReceive);
     });
 
     $scope.currentUserRole = ss.session.projectSettings.currentUserRole;
@@ -177,28 +188,69 @@ angular.module('lexicon',
     };
 
     $scope.syncNotice = function syncNotice() {
-      switch ($scope.sendReceive.status) {
+      switch ($scope.sendReceive.status.state) {
+        case 'QUEUED':
+        case 'MERGING':
+        case 'SENDING':
+        case 'RECEIVING':
+        case 'UPDATING':
         case 'syncing':
           return 'Syncing';
+        case 'IDLE':
         case 'synced':
           return 'Synced';
         case 'unsynced':
           return 'Un-synced';
+        case 'HOLD':
+          return 'On hold';
         default:
           return '';
       }
     };
 
     $scope.syncProject = function syncProject() {
-      $scope.sendReceive.status = 'syncing';
       sendReceiveService.mergeProject(function(result) {
         if (result.ok) {
-          $scope.sendReceive.status = 'synced';
+          $scope.sendReceive.status.state = 'syncing';
+          startSyncStatusTimer();
         } else {
-          noticeService.push(noticeService.ERROR, 'The project could not be synced with LanguageDepot.org. Please try again.');
+          noticeService.push(noticeService.ERROR, 'The project could not be synchronized with LanguageDepot.org. Please try again.');
         }
       });
     };
+
+    var syncStatusTimer;
+
+    function startSyncStatusTimer() {
+      if (angular.isDefined(syncStatusTimer)) return;
+
+      syncStatusTimer = $interval(function() {
+        sendReceiveService.getProjectStatus(function(result) {
+          if (result.ok) {
+            if (!result.data) {
+              $scope.sendReceive.status.state = '';
+              cancelSyncStatusTimer();
+              return;
+            }
+
+            $scope.sendReceive.status = result.data;
+            if ($scope.sendReceive.status.state == 'IDLE') {
+              cancelSyncStatusTimer();
+            }
+          }
+        });
+      }, 3000);
+    }
+
+    function cancelSyncStatusTimer() {
+      if (angular.isDefined(syncStatusTimer)) {
+        $interval.cancel(syncStatusTimer);
+        syncStatusTimer = undefined;
+      }
+    }
+
+    $scope.$on('$destroy', cancelSyncStatusTimer);
+    $scope.$on('$locationChangeStart', cancelSyncStatusTimer);
 
     // setup offline.js options
     // see https://github.com/hubspot/offline for all options

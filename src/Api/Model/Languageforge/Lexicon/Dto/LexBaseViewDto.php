@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Dto;
 
+use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 use Api\Model\Mapper\JsonEncoder;
@@ -45,6 +46,11 @@ class LexBaseViewDto
         $optionlistListModel = new LexOptionListListModel($project);
         $optionlistListModel->read();
         $data['optionlists'] = $optionlistListModel->entries;
+
+        if ($project->hasSendReceive()) {
+            $data['sendReceive'] = array();
+            $data['sendReceive']['status'] = SendReceiveCommands::getProjectStatus($projectId);
+        }
 
         return $data;
     }
