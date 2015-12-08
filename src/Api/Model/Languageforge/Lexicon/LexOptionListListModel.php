@@ -2,13 +2,16 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-class LexOptionListListModel extends \Api\Model\Mapper\MapperListModel
+use Api\Model\Mapper\MapperListModel;
+use Api\Model\Mapper\MongoMapper;
+
+class LexOptionListListModel extends MapperListModel
 {
     public static function mapper($databaseName)
     {
         static $instance = null;
         if (null === $instance) {
-            $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'optionlists');
+            $instance = new MongoMapper($databaseName, 'optionlists');
         }
 
         return $instance;
@@ -16,17 +19,16 @@ class LexOptionListListModel extends \Api\Model\Mapper\MapperListModel
 
     /**
      *
-     * @param ProjectModel $projectModel
-     * @param int          $newerThanTimestamp
+     * @param LexiconProjectModel $project
+     * @param int $newerThanTimestamp
      */
-    public function __construct($projectModel, $newerThanTimestamp = null)
+    public function __construct($project, $newerThanTimestamp = null)
     {
         if (!is_null($newerThanTimestamp)) {
             $startDate = new \MongoDate($newerThanTimestamp);
-            parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array());
+            parent::__construct( self::mapper($project->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array());
         } else {
-            parent::__construct( self::mapper($projectModel->databaseName()), array('name' => array('$regex' => '')));
+            parent::__construct( self::mapper($project->databaseName()), array('name' => array('$regex' => '')));
         }
     }
-
 }

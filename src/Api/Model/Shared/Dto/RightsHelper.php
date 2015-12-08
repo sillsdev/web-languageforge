@@ -328,11 +328,12 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 
             // send receive api
-            case 'sr_get_userProjects':
+            case 'sendReceive_getUserProjects':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
-            case 'sr_save_credentials':
-            case 'sr_mergeProject':
+            case 'sendReceive_saveCredentials':
+            case 'sendReceive_mergeProject':
+            case 'sendReceive_getProjectStatus':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             // project management app

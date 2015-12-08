@@ -18,6 +18,7 @@ use Palaso\Utilities\FileUtilities;
 class SendReceiveCommands
 {
     const MERGE_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/mergequeue';
+    const STATE_PATH = '/var/lib/languageforge/lexicon/sendreceive/state';
     const LFMERGE_PID_FILE_PATH = '/var/run/lfmerge.pid';
     const LFMERGE_EXE = 'lfmerge';
 
@@ -146,9 +147,24 @@ class SendReceiveCommands
         return self::isProcessRunningByPid(intval($pid));
     }
 
-    public static function commandExists($command)
+    /**
+     * @param string $projectId
+     * @param string $statePath
+     * @return bool|array
+     */
+    public static function getProjectStatus($projectId, $statePath = null)
     {
-        return !!`which $command`;
+        $project = new LexiconProjectModel($projectId);
+        if (!$project->hasSendReceive()) return false;
+
+        if (is_null($statePath)) $statePath = self::STATE_PATH;
+
+        $projectStatePath = $statePath . '/' . $project->projectCode . '.state';
+        if (!file_exists($projectStatePath) || !is_file($projectStatePath)) return false;
+
+        $statusJson = file_get_contents($projectStatePath);
+
+        return json_decode($statusJson, true);
     }
 
     /**
@@ -171,6 +187,15 @@ class SendReceiveCommands
     private static function isProcessRunningByPid($pid)
     {
         return posix_kill($pid, 0);
+    }
+
+    /**
+     * @param string $command
+     * @return bool
+     */
+    private static function commandExists($command)
+    {
+        return !!`which $command`;
     }
 
     /**
@@ -239,14 +264,14 @@ class SendReceiveCommands
             }
         });
 
+        if (array_key_exists(1, $projects) &&
+            $projects[1]['identifier'] == $projects[0]['identifier'] &&
+            stripos($projects[0]['repository'], '://private') !== false) {
+            $projects[0]['repoClarification'] = 'private';
+        }
         foreach ($projects as $index => &$project) {
             if (array_key_exists($index - 1, $projects) &&
                 $projects[$index - 1]['identifier'] == $project['identifier'] &&
-                stripos($project['repository'], '://private') !== false) {
-                $project['repoClarification'] = 'private';
-            }
-            if (array_key_exists($index + 1, $projects) &&
-                $projects[$index + 1]['identifier'] == $project['identifier'] &&
                 stripos($project['repository'], '://private') !== false) {
                 $project['repoClarification'] = 'private';
             }

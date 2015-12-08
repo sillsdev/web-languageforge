@@ -740,19 +740,24 @@ class Sf
     // ---------------------------------------------------------------
     // Send and Receive API
     // ---------------------------------------------------------------
-    public function sr_get_userProjects($username, $password)
+    public function sendReceive_getUserProjects($username, $password)
     {
         return SendReceiveCommands::getUserProjects($username, $password);
     }
 
-    public function sr_save_credentials($srProject, $username, $password)
+    public function sendReceive_saveCredentials($srProject, $username, $password)
     {
         return SendReceiveCommands::saveCredentials($this->projectId, $srProject, $username, $password);
     }
 
-    public function sr_mergeProject()
+    public function sendReceive_mergeProject()
     {
         return SendReceiveCommands::startLFMergeIfRequired($this->projectId, 'merge');
+    }
+
+    public function sendReceive_getProjectStatus()
+    {
+        return SendReceiveCommands::getProjectStatus($this->projectId);
     }
 
 

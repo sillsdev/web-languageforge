@@ -5,15 +5,19 @@ angular.module('lexicon.services')
     jsonRpc.connect('/api/sf');
 
     this.getUserProjects = function getUserProjects(username, password, callback) {
-      jsonRpc.call('sr_get_userProjects', [username, password], callback);
+      jsonRpc.call('sendReceive_getUserProjects', [username, password], callback);
     };
 
     this.saveCredentials = function saveCredentials(srProject, username, password, callback) {
-      jsonRpc.call('sr_save_credentials', [srProject, username, password], callback);
+      jsonRpc.call('sendReceive_saveCredentials', [srProject, username, password], callback);
     };
 
     this.mergeProject = function mergeProject(callback) {
-      jsonRpc.call('sr_mergeProject', [], callback);
+      jsonRpc.call('sendReceive_mergeProject', [], callback);
+    };
+
+    this.getProjectStatus = function getProjectStatus(callback) {
+      jsonRpc.call('sendReceive_getProjectStatus', [], callback);
     };
   }])
 

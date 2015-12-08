@@ -289,7 +289,7 @@ angular.module('lexicon-new-project',
         case 'newProject.name':
           if ($scope.isSRProject) {
             $state.go('newProject.sendReceiveCredentials');
-            $scope.nextButtonLabel = $filter('translate')('Synchronise');
+            $scope.nextButtonLabel = $filter('translate')('Synchronize');
             $scope.show.backButton = true;
             $scope.resetValidateProjectForm();
             if (!$scope.project.sendReceive.username) {

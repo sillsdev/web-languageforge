@@ -52,6 +52,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     */
 
     // Reviewed CP 2014-08: Um, shouldn't these two be mutually exclusive.
+    // No, status is tri-state: unsaved, saving, saved IH 2015-12
     var saving = false;
     var saved = false;
 
@@ -87,7 +88,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
       if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
         cancelAutoSaveTimer();
-        $scope.sendReceive.status = 'unsynced';
+        $scope.sendReceive.status.state = 'unsynced';
         saving = true;
         var entryToSave = angular.copy($scope.currentEntry);
         if (entryIsNew(entryToSave)) {
@@ -308,7 +309,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
       $scope.currentEntry = entry;
       pristineEntry = angular.copy(entry);
-      saving = false; // This should be redundant.
+      saving = false;
       saved = false;
     }
 

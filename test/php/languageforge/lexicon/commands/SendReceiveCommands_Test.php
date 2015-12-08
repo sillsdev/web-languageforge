@@ -297,7 +297,7 @@ class TestSendReceiveCommands extends UnitTestCase
         $projectId = $project->write();
         $queueType = 'merge';
         $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
-        $runSeconds = 3;
+        $runSeconds = 2;
         $command = 'php ' . __DIR__ . '/mockLFMergeExe.php ' . $runSeconds;
 
         $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $pidFilePath, $command);
@@ -305,10 +305,75 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertTrue($isRunning);
         sleep(1);
         $this->assertTrue(SendReceiveCommands::isProcessRunningByPidFile($pidFilePath));
-        sleep(1);
 
         $isStillRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $pidFilePath, $command);
 
         $this->assertTrue($isStillRunning);
+    }
+
+    public function testGetProjectStatus_NoSendReceive_NoState()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $status = SendReceiveCommands::getProjectStatus($projectId);
+
+        $this->assertFalse($status);
+    }
+
+    public function testGetProjectStatus_HasSendReceiveNoStateFile_NoState()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $projectId = $project->write();
+        $statePath = sys_get_temp_dir();
+
+        $status = SendReceiveCommands::getProjectStatus($projectId, $statePath);
+
+        $this->assertFalse($status);
+    }
+
+    public function testGetProjectStatus_HasSendReceiveAndStateFileNotJson_NoException()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $projectId = $project->write();
+        $statePath = sys_get_temp_dir();
+        $projectStatePath = $statePath . '/' . $project->projectCode . '.state';
+        file_put_contents($projectStatePath, 'state: IDLE');
+
+        $status = SendReceiveCommands::getProjectStatus($projectId, $statePath);
+
+        $this->assertFalse($status);
+
+        unlink($projectStatePath);
+    }
+
+    public function testGetProjectStatus_HasSendReceiveAndIdleStateFile_IdleState()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $projectId = $project->write();
+        $statePath = sys_get_temp_dir();
+        $projectStatePath = $statePath . '/' . $project->projectCode . '.state';
+        file_put_contents($projectStatePath, '{"state": "IDLE"}');
+
+        $status = SendReceiveCommands::getProjectStatus($projectId, $statePath);
+
+        $this->assertEqual($status['state'], 'IDLE');
+
+        unlink($projectStatePath);
     }
 }
