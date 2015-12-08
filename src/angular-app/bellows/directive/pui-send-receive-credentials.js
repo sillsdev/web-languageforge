@@ -40,6 +40,7 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
           }
 
           var option = project.name + ' (' + project.identifier;
+          if (project.repoClarification) option += ', ' + project.repoClarification;
           if (project.role != 'unknown') option += ', ' + project.role;
           option +=  ')';
           return option;
