@@ -750,9 +750,9 @@ class Sf
         return SendReceiveCommands::saveCredentials($this->projectId, $srProject, $username, $password);
     }
 
-    public function sendReceive_mergeProject()
+    public function sendReceive_commitProject()
     {
-        return SendReceiveCommands::startLFMergeIfRequired($this->projectId, 'merge');
+        return SendReceiveCommands::startLFMergeIfRequired($this->projectId, 'commit');
     }
 
     public function sendReceive_getProjectStatus()
@@ -763,6 +763,11 @@ class Sf
     public function sendReceive_notification_receiveRequest($projectCode)
     {
         return SendReceiveCommands::notificationReceiveRequest($projectCode);
+    }
+
+    public function sendReceive_notification_sendRequest($projectCode)
+    {
+        return SendReceiveCommands::notificationSendRequest($projectCode);
     }
 
 
@@ -849,11 +854,13 @@ class Sf
     {
         $methods = array(
             'identity_check',
-            'user_activate',
-            'user_register',
             'get_captcha_data',
             'reset_password',
+            'sendReceive_notification_receiveRequest',
+            'sendReceive_notification_sendRequest',
+            'user_activate',
             'user_readForRegistration',
+            'user_register',
             'user_updateFromRegistration'
         );
         return in_array($methodName, $methods);

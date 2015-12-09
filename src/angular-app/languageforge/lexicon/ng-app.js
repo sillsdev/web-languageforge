@@ -209,7 +209,7 @@ angular.module('lexicon',
     };
 
     $scope.syncProject = function syncProject() {
-      sendReceiveService.mergeProject(function(result) {
+      sendReceiveService.commitProject(function(result) {
         if (result.ok) {
           $scope.sendReceive.status.state = 'syncing';
           startSyncStatusTimer();
