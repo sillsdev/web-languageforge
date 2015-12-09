@@ -560,7 +560,7 @@ angular.module('lexicon-new-project',
     }
 
     function syncProject() {
-      sendReceiveService.mergeProject(function(result) {
+      sendReceiveService.commitProject(function(result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, 'Successfully synced with LanguageDepot.org.');
         } else {
