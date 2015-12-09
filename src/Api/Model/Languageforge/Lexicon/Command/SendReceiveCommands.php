@@ -18,6 +18,7 @@ use Palaso\Utilities\FileUtilities;
 class SendReceiveCommands
 {
     const MERGE_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/mergequeue';
+    const RECEIVE_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/receivequeue';
     const STATE_PATH = '/var/lib/languageforge/lexicon/sendreceive/state';
     const LFMERGE_PID_FILE_PATH = '/var/run/lfmerge.pid';
     const LFMERGE_EXE = 'lfmerge';
@@ -165,6 +166,30 @@ class SendReceiveCommands
         $statusJson = file_get_contents($projectStatePath);
 
         return json_decode($statusJson, true);
+    }
+
+    /**
+     * @param string $projectCode
+     * @param string $receiveQueuePath
+     * @param string $pidFilePath
+     * @param string $command
+     * @return bool true if notification file is created (or already exists) and LFMerge started, false otherwise
+     */
+    public static function notificationReceiveRequest($projectCode, $receiveQueuePath = null, $pidFilePath = null, $command = null)
+    {
+        $project = new LexiconProjectModel();
+        if (!$project->readByProperty('projectCode', $projectCode)) return false;
+        if (!$project->hasSendReceive()) return false;
+
+        if (is_null($receiveQueuePath)) $receiveQueuePath = self::RECEIVE_QUEUE_PATH ;
+
+        $notificationFilePath = $receiveQueuePath . '/' . $project->projectCode . '.notification';
+        if (!file_exists($notificationFilePath) || !is_file($notificationFilePath)) {
+            FileUtilities::createAllFolders($receiveQueuePath);
+            if (file_put_contents($notificationFilePath, '') === false) return false;
+        }
+
+        return self::startLFMergeIfRequired($project->id->asString(), 'receive', $pidFilePath, $command);
     }
 
     /**

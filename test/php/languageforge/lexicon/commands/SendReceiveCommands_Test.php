@@ -33,16 +33,26 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual($result->hasValidCredentials, true);
     }
 */
+    public function __construct() {
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
+        parent::__construct();
+    }
+
+    /**
+     * Local store of mock test environment
+     *
+     * @var LexiconMongoTestEnvironment
+     */
+    private $environ;
+    
     public function testSaveCredentials_ProjectAndUser_CredentialsSaved()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $userId = $e->createUser("User", "Name", "name@example.com");
+        $userId = $this->environ->createUser("User", "Name", "name@example.com");
         $user = new UserModel($userId);
         $user->role = SystemRoles::USER;
 
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
         $project->addUser($userId, ProjectRoles::MANAGER);
@@ -202,10 +212,7 @@ class TestSendReceiveCommands extends UnitTestCase
 
     public function testQueueProjectForUpdate_NoSendReceive_NoAction()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mockMergeQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
         FileUtilities::createAllFolders($mockMergeQueuePath);
 
@@ -218,10 +225,7 @@ class TestSendReceiveCommands extends UnitTestCase
 
     public function testQueueProjectForUpdate_HasSendReceive_QueueFileCreated()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
         $project->write();
         $mockMergeQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
@@ -236,31 +240,28 @@ class TestSendReceiveCommands extends UnitTestCase
 
     public function testIsProcessRunningByPidFile_NoPidFile_NotRunning()
     {
-        $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
+        $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
 
-        $isRunning = SendReceiveCommands::isProcessRunningByPidFile($pidFilePath);
+        $isRunning = SendReceiveCommands::isProcessRunningByPidFile($mockPidFilePath);
 
         $this->assertFalse($isRunning);
     }
 
     public function testIsProcessRunningByPidFile_NoProcess_NotRunning()
     {
-        $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
+        $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
         $pid = 1;
-        file_put_contents($pidFilePath, $pid);
+        file_put_contents($mockPidFilePath, $pid);
 
-        $isRunning = SendReceiveCommands::isProcessRunningByPidFile($pidFilePath);
+        $isRunning = SendReceiveCommands::isProcessRunningByPidFile($mockPidFilePath);
 
         $this->assertFalse($isRunning);
-        unlink($pidFilePath);
+        unlink($mockPidFilePath);
     }
 
     public function testStartLFMergeIfRequired_NoSendReceive_NoAction()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
         $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId);
@@ -270,53 +271,50 @@ class TestSendReceiveCommands extends UnitTestCase
 
     public function testStartLFMergeIfRequired_HasSendReceiveButNoLFMergeExe_Exception()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
         $projectId = $project->write();
         $queueType = 'merge';
-        $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
-        $command = 'mockLFMerge.exe';
+        $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
+        $mockCommand = 'mockLFMerge.exe';
 
         $this->expectException(new \Exception('LFMerge is not installed. Contact the website administrator.'));
-        $e->inhibitErrorDisplay();
-        SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $pidFilePath, $command);
+        $this->environ->inhibitErrorDisplay();
+        SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $mockPidFilePath, $mockCommand);
 
         // nothing runs in the current test function after an exception. IJH 2015-12
     }
 
+    public function testStartLFMergeIfRequired_HasSendReceiveButNoLFMergeExe_RestoreErrorDisplay()
+    {
+        // restore error display after last test
+        $this->environ->restoreErrorDisplay();
+    }
+
     public function testStartLFMergeIfRequired_HasSendReceiveButNoPidFile_Started()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
         $projectId = $project->write();
         $queueType = 'merge';
-        $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
+        $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
         $runSeconds = 2;
-        $command = 'php ' . __DIR__ . '/mockLFMergeExe.php ' . $runSeconds;
+        $mockCommand = 'php ' . __DIR__ . '/mockLFMergeExe.php ' . $runSeconds;
 
-        $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $pidFilePath, $command);
+        $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $mockPidFilePath, $mockCommand);
 
         $this->assertTrue($isRunning);
         sleep(1);
-        $this->assertTrue(SendReceiveCommands::isProcessRunningByPidFile($pidFilePath));
+        $this->assertTrue(SendReceiveCommands::isProcessRunningByPidFile($mockPidFilePath));
 
-        $isStillRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $pidFilePath, $command);
+        $isStillRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $mockPidFilePath, $mockCommand);
 
         $this->assertTrue($isStillRunning);
     }
 
     public function testGetProjectStatus_NoSendReceive_NoState()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
         $status = SendReceiveCommands::getProjectStatus($projectId);
@@ -326,32 +324,26 @@ class TestSendReceiveCommands extends UnitTestCase
 
     public function testGetProjectStatus_HasSendReceiveNoStateFile_NoState()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
         $projectId = $project->write();
-        $statePath = sys_get_temp_dir();
+        $mockStatePath = sys_get_temp_dir();
 
-        $status = SendReceiveCommands::getProjectStatus($projectId, $statePath);
+        $status = SendReceiveCommands::getProjectStatus($projectId, $mockStatePath);
 
         $this->assertFalse($status);
     }
 
     public function testGetProjectStatus_HasSendReceiveAndStateFileNotJson_NoException()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
         $projectId = $project->write();
-        $statePath = sys_get_temp_dir();
-        $projectStatePath = $statePath . '/' . $project->projectCode . '.state';
+        $mockStatePath = sys_get_temp_dir();
+        $projectStatePath = $mockStatePath . '/' . $project->projectCode . '.state';
         file_put_contents($projectStatePath, 'state: IDLE');
 
-        $status = SendReceiveCommands::getProjectStatus($projectId, $statePath);
+        $status = SendReceiveCommands::getProjectStatus($projectId, $mockStatePath);
 
         $this->assertFalse($status);
 
@@ -360,20 +352,81 @@ class TestSendReceiveCommands extends UnitTestCase
 
     public function testGetProjectStatus_HasSendReceiveAndIdleStateFile_IdleState()
     {
-        $e = new LexiconMongoTestEnvironment();
-        $e->clean();
-
-        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
         $projectId = $project->write();
-        $statePath = sys_get_temp_dir();
-        $projectStatePath = $statePath . '/' . $project->projectCode . '.state';
+        $mockStatePath = sys_get_temp_dir();
+        $projectStatePath = $mockStatePath . '/' . $project->projectCode . '.state';
         file_put_contents($projectStatePath, '{"state": "IDLE"}');
 
-        $status = SendReceiveCommands::getProjectStatus($projectId, $statePath);
+        $status = SendReceiveCommands::getProjectStatus($projectId, $mockStatePath);
 
         $this->assertEqual($status['state'], 'IDLE');
 
         unlink($projectStatePath);
+    }
+
+    public function testNotificationReceiveRequest_NonExistentProjectCode_NoAction()
+    {
+        $projectCode = 'non-existent-projectCode';
+
+        $isNotified = SendReceiveCommands::notificationReceiveRequest($projectCode);
+
+        $this->assertFalse($isNotified);
+    }
+
+    public function testNotificationReceiveRequest_NoSendReceive_NoAction()
+    {
+        $this->environ->clean();
+
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $isNotified = SendReceiveCommands::notificationReceiveRequest($project->projectCode);
+
+        $this->assertFalse($isNotified);
+    }
+
+    public function testNotificationReceiveRequest_HasSendReceiveAndQueueFileExists_Exception()
+    {
+        $this->environ->clean();
+
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->write();
+        $mockReceiveQueuePath = sys_get_temp_dir() . '/mockReceiveQueue';
+        $notificationFilePath = $mockReceiveQueuePath . '/' . $project->projectCode . '.notification';
+        FileUtilities::createAllFolders($mockReceiveQueuePath);
+        file_put_contents($notificationFilePath, '');
+
+        $this->expectException(new \Exception('LFMerge is not installed. Contact the website administrator.'));
+        $this->environ->inhibitErrorDisplay();
+        SendReceiveCommands::notificationReceiveRequest($project->projectCode, $mockReceiveQueuePath);
+
+        // nothing runs in the current test function after an exception. IJH 2015-12
+    }
+
+    public function testNotificationReceiveRequest_HasSendReceiveAndQueueFileExists_RestoreErrorDisplay()
+    {
+        // restore error display after last test
+        $this->environ->restoreErrorDisplay();
+    }
+
+    public function testNotificationReceiveRequest_HasSendReceive_QueueFileCreated()
+    {
+        $this->environ->clean();
+
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->write();
+        $mockReceiveQueuePath = sys_get_temp_dir() . '/mockReceiveQueue';
+        $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
+        $mockCommand = 'php ' . __DIR__ . '/mockLFMergeExe.php';
+
+        $isNotified = SendReceiveCommands::notificationReceiveRequest($project->projectCode, $mockReceiveQueuePath, $mockPidFilePath, $mockCommand);
+
+        $queueFileNames = scandir($mockReceiveQueuePath);
+        $this->assertTrue($isNotified);
+        $this->assertEqual(count($queueFileNames), 3);
+        FileUtilities::removeFolderAndAllContents($mockReceiveQueuePath);
     }
 }

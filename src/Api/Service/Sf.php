@@ -760,6 +760,11 @@ class Sf
         return SendReceiveCommands::getProjectStatus($this->projectId);
     }
 
+    public function sendReceive_notification_receiveRequest($projectCode)
+    {
+        return SendReceiveCommands::notificationReceiveRequest($projectCode);
+    }
+
 
     /*
      * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
