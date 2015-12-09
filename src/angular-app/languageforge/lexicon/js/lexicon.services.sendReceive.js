@@ -12,8 +12,8 @@ angular.module('lexicon.services')
       jsonRpc.call('sendReceive_saveCredentials', [srProject, username, password], callback);
     };
 
-    this.mergeProject = function mergeProject(callback) {
-      jsonRpc.call('sendReceive_mergeProject', [], callback);
+    this.commitProject = function commitProject(callback) {
+      jsonRpc.call('sendReceive_commitProject', [], callback);
     };
 
     this.getProjectStatus = function getProjectStatus(callback) {

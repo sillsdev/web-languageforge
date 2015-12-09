@@ -19,6 +19,7 @@ class SendReceiveCommands
 {
     const MERGE_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/mergequeue';
     const RECEIVE_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/receivequeue';
+    const SEND_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/sendqueue';
     const STATE_PATH = '/var/lib/languageforge/lexicon/sendreceive/state';
     const LFMERGE_PID_FILE_PATH = '/var/run/lfmerge.pid';
     const LFMERGE_EXE = 'lfmerge';
@@ -174,6 +175,7 @@ class SendReceiveCommands
      * @param string $pidFilePath
      * @param string $command
      * @return bool true if notification file is created (or already exists) and LFMerge started, false otherwise
+     * @throws \Exception
      */
     public static function notificationReceiveRequest($projectCode, $receiveQueuePath = null, $pidFilePath = null, $command = null)
     {
@@ -181,15 +183,45 @@ class SendReceiveCommands
         if (!$project->readByProperty('projectCode', $projectCode)) return false;
         if (!$project->hasSendReceive()) return false;
 
-        if (is_null($receiveQueuePath)) $receiveQueuePath = self::RECEIVE_QUEUE_PATH ;
+        if (is_null($receiveQueuePath)) $receiveQueuePath = self::RECEIVE_QUEUE_PATH;
 
         $notificationFilePath = $receiveQueuePath . '/' . $project->projectCode . '.notification';
         if (!file_exists($notificationFilePath) || !is_file($notificationFilePath)) {
             FileUtilities::createAllFolders($receiveQueuePath);
-            if (file_put_contents($notificationFilePath, '') === false) return false;
+            if (file_put_contents($notificationFilePath, '') === false) throw new \Exception('Cannot write to Send/Receive Receive Queue. Contact the website administrator.');
         }
 
         return self::startLFMergeIfRequired($project->id->asString(), 'receive', $pidFilePath, $command);
+    }
+
+    /**
+     * @param string $projectCode
+     * @param string $statePath
+     * @param string $sendQueuePath
+     * @param string $pidFilePath
+     * @param string $command
+     * @return bool true if notification file is created (or already exists) and LFMerge started, false otherwise
+     * @throws \Exception
+     */
+    public static function notificationSendRequest($projectCode, $statePath = null, $sendQueuePath = null, $pidFilePath = null, $command = null)
+    {
+        $project = new LexiconProjectModel();
+        if (!$project->readByProperty('projectCode', $projectCode)) return false;
+        if (!$project->hasSendReceive()) return false;
+
+        $status = self::getProjectStatus($project->id->asString(), $statePath);
+        if (!$status || !array_key_exists('uncommittedEditCount', $status)) return false;
+        if ($status['uncommittedEditCount'] <= 0) return false;
+
+        if (is_null($sendQueuePath)) $sendQueuePath = self::SEND_QUEUE_PATH;
+
+        $notificationFilePath = $sendQueuePath . '/' . $project->projectCode . '.notification';
+        if (!file_exists($notificationFilePath) || !is_file($notificationFilePath)) {
+            FileUtilities::createAllFolders($sendQueuePath);
+            if (file_put_contents($notificationFilePath, '') === false) throw new \Exception('Cannot write to Send/Receive Send Queue. Contact the website administrator.');
+        }
+
+        return self::startLFMergeIfRequired($project->id->asString(), 'send', $pidFilePath, $command);
     }
 
     /**

@@ -429,4 +429,77 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual(count($queueFileNames), 3);
         FileUtilities::removeFolderAndAllContents($mockReceiveQueuePath);
     }
+
+    public function testNotificationSendRequest_NonExistentProjectCode_NoAction()
+    {
+        $projectCode = 'non-existent-projectCode';
+
+        $isNotified = SendReceiveCommands::notificationSendRequest($projectCode);
+
+        $this->assertFalse($isNotified);
+    }
+
+    public function testNotificationSendRequest_NoSendReceive_NoAction()
+    {
+        $this->environ->clean();
+
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        $isNotified = SendReceiveCommands::notificationSendRequest($project->projectCode);
+
+        $this->assertFalse($isNotified);
+    }
+
+    public function testNotificationSendRequest_HasSendReceive_NoAction()
+    {
+        $this->environ->clean();
+
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->write();
+
+        $isNotified = SendReceiveCommands::notificationSendRequest($project->projectCode);
+
+        $this->assertFalse($isNotified);
+    }
+
+    public function testNotificationSendRequest_HasSendReceiveAndNoUncommittedEntries_NoAction()
+    {
+        $this->environ->clean();
+
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->write();
+        $mockStatePath = sys_get_temp_dir();
+        $projectStatePath = $mockStatePath . '/' . $project->projectCode . '.state';
+        file_put_contents($projectStatePath, '{"state": "IDLE", "uncommittedEditCount": 0}');
+
+        $isNotified = SendReceiveCommands::notificationSendRequest($project->projectCode, $mockStatePath);
+
+        $this->assertFalse($isNotified);
+        unlink($projectStatePath);
+    }
+
+    public function testNotificationSendRequest_HasSendReceiveAndHasUncommittedEntry_Notified()
+    {
+        $this->environ->clean();
+
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->write();
+        $mockStatePath = sys_get_temp_dir();
+        $projectStatePath = $mockStatePath . '/' . $project->projectCode . '.state';
+        file_put_contents($projectStatePath, '{"state": "SENDING", "uncommittedEditCount": 1}');
+        $mockSendQueuePath = sys_get_temp_dir() . '/mockReceiveQueue';
+        $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
+        $mockCommand = 'php ' . __DIR__ . '/mockLFMergeExe.php';
+
+        $isNotified = SendReceiveCommands::notificationSendRequest($project->projectCode, $mockStatePath, $mockSendQueuePath, $mockPidFilePath, $mockCommand);
+
+        $queueFileNames = scandir($mockSendQueuePath);
+        $this->assertTrue($isNotified);
+        $this->assertEqual(count($queueFileNames), 3);
+        FileUtilities::removeFolderAndAllContents($mockSendQueuePath);
+        unlink($projectStatePath);
+    }
 }
