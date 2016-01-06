@@ -39,11 +39,12 @@ class LexEntryCommands
      * @param string $projectId
      * @param array $params
      * @param string $userId
+     * @param string $mergeQueuePath
      * @param string $pidFilePath
      * @param string $command
      * @return array<encoded LexEntryModel>
      */
-    public static function updateEntry($projectId, $params, $userId, $pidFilePath = null, $command = null)
+    public static function updateEntry($projectId, $params, $userId, $mergeQueuePath = null, $pidFilePath = null, $command = null)
     {
         CodeGuard::checkTypeAndThrow($params, 'array');
         $project = new LexiconProjectModel($projectId);
@@ -73,7 +74,7 @@ class LexEntryCommands
         $entry->write();
         ActivityCommands::writeEntry($project, $userId, $entry, $action);
 
-        SendReceiveCommands::queueProjectForUpdate($project);
+        SendReceiveCommands::queueProjectForUpdate($project, $mergeQueuePath);
         SendReceiveCommands::startLFMergeIfRequired($projectId, 'merge', $pidFilePath, $command);
 
         return JsonEncoder::encode($entry);
