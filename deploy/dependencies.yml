@@ -69,7 +69,7 @@
       register: local_dir
       when: inventory_hostname == "localhost"
     - name: Ensure default_local link exists (localhost)
-      file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/virtual/default_local" state=link force=true
+      file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/virtual/default_local" state=link group=www-data force=true
       when: inventory_hostname == "localhost"
 
     - name: install PECL mongo extension

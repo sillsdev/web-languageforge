@@ -25,7 +25,7 @@ We recommend doing development on your development machine directly rather than 
 
 #### Ansible Setup ####
 
-For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/ansible.cfg` into `/etc/ansible/ansible.cfg`.
+For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/default_ansible.cfg` into `/etc/ansible/ansible.cfg` or `.ansible.cfg` (in your home folder).
 
 #### Vagrant VM Setup ####
 
