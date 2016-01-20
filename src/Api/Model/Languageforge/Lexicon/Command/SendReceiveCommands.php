@@ -21,6 +21,7 @@ class SendReceiveCommands
     const RECEIVE_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/receivequeue';
     const SEND_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/sendqueue';
     const STATE_PATH = '/var/lib/languageforge/lexicon/sendreceive/state';
+    const LFMERGE_CONF_FILE_PATH = '/etc/languageforge/conf/sendreceive.conf';
     const LFMERGE_PID_FILE_PATH = '/var/run/lfmerge.pid';
     const LFMERGE_EXE = 'lfmerge';
 
@@ -111,7 +112,7 @@ class SendReceiveCommands
     {
         if (!$project->hasSendReceive()) return false;
 
-        if (is_null($mergeQueuePath)) $mergeQueuePath = self::MERGE_QUEUE_PATH;
+        if (is_null($mergeQueuePath)) $mergeQueuePath = self::getLFMergePaths()->mergeQueuePath;
 
         FileUtilities::createAllFolders($mergeQueuePath);
         $milliseconds = round(microtime(true) * 1000);
@@ -159,7 +160,7 @@ class SendReceiveCommands
         $project = new LexiconProjectModel($projectId);
         if (!$project->hasSendReceive()) return false;
 
-        if (is_null($statePath)) $statePath = self::STATE_PATH;
+        if (is_null($statePath)) $statePath = self::getLFMergePaths()->statePath;
 
         $projectStatePath = $statePath . '/' . $project->projectCode . '.state';
         if (!file_exists($projectStatePath) || !is_file($projectStatePath)) return false;
@@ -183,7 +184,7 @@ class SendReceiveCommands
         if (!$project->readByProperty('projectCode', $projectCode)) return false;
         if (!$project->hasSendReceive()) return false;
 
-        if (is_null($receiveQueuePath)) $receiveQueuePath = self::RECEIVE_QUEUE_PATH;
+        if (is_null($receiveQueuePath)) $receiveQueuePath = self::getLFMergePaths()->receiveQueuePath;
 
         $notificationFilePath = $receiveQueuePath . '/' . $project->projectCode . '.notification';
         if (!file_exists($notificationFilePath) || !is_file($notificationFilePath)) {
@@ -213,7 +214,7 @@ class SendReceiveCommands
         if (!$status || !array_key_exists('uncommittedEditCount', $status)) return false;
         if ($status['uncommittedEditCount'] <= 0) return false;
 
-        if (is_null($sendQueuePath)) $sendQueuePath = self::SEND_QUEUE_PATH;
+        if (is_null($sendQueuePath)) $sendQueuePath = self::getLFMergePaths()->sendQueuePath;
 
         $notificationFilePath = $sendQueuePath . '/' . $project->projectCode . '.notification';
         if (!file_exists($notificationFilePath) || !is_file($notificationFilePath)) {
@@ -222,6 +223,33 @@ class SendReceiveCommands
         }
 
         return self::startLFMergeIfRequired($project->id->asString(), 'send', $pidFilePath, $command);
+    }
+
+    /**
+     * @param bool $reload will reload the configuration if true
+     * @return SendReceivePaths|null
+     */
+    public static function getLFMergePaths($reload = false)
+    {
+        static $paths = null;
+
+        if (is_null($paths) || $reload) {
+            $paths = new SendReceivePaths();
+            $paths->mergeQueuePath = self::MERGE_QUEUE_PATH;
+            $paths->receiveQueuePath = self::RECEIVE_QUEUE_PATH;
+            $paths->sendQueuePath = self::SEND_QUEUE_PATH;
+            $paths->statePath = self::STATE_PATH;
+            if (!file_exists(self::LFMERGE_CONF_FILE_PATH)) return $paths;
+
+            $conf = parse_ini_file(self::LFMERGE_CONF_FILE_PATH);
+            if (!array_key_exists('BaseDir', $conf)) return $paths;
+
+            foreach ($paths as &$path) {
+                $path = $conf['BaseDir'] . DIRECTORY_SEPARATOR . basename($path);
+            }
+        }
+
+        return $paths;
     }
 
     /**
@@ -354,6 +382,29 @@ class SendReceiveCommands
 
         return $projects;
     }
+}
+
+class SendReceivePaths
+{
+    /**
+     * @var string
+     */
+    public $mergeQueuePath;
+
+    /**
+     * @var string
+     */
+    public $receiveQueuePath;
+
+    /**
+     * @var string
+     */
+    public $sendQueuePath;
+
+    /**
+     * @var string
+     */
+    public $statePath;
 }
 
 class SendReceiveGetUserProjectResult
