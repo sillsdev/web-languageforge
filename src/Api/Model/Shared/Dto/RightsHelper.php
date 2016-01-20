@@ -332,6 +332,7 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
             case 'sendReceive_saveCredentials':
+            case 'sendReceive_receiveProject':
             case 'sendReceive_commitProject':
             case 'sendReceive_getProjectStatus':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
