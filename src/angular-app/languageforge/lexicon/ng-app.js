@@ -104,7 +104,7 @@ angular.module('lexicon',
         templateUrl: '/angular-app/languageforge/lexicon/views/manage-users.html'
       }
     );
-    $routeProvider.otherwise({redirectTo: '/projects'});
+    $routeProvider.otherwise({ redirectTo: '/projects' });
   }])
   .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService', 'lexSendReceiveService',
   function($scope, ss, lexConfigService, lexProjectService, $translate, $location, $interval, noticeService, editorService, sendReceiveService) {
@@ -127,9 +127,9 @@ angular.module('lexicon',
 
       if (!$scope.sendReceive.status) {
         $scope.sendReceive.status = {};
-        $scope.sendReceive.status.state = '';
-      } else if ($scope.sendReceive.status.state == 'IDLE') {
-        $scope.sendReceive.status.state = '';
+        $scope.sendReceive.status.SRState = '';
+      } else if ($scope.sendReceive.status.SRState == 'IDLE') {
+        $scope.sendReceive.status.SRState = '';
       } else {
         startSyncStatusTimer();
       }
@@ -188,7 +188,7 @@ angular.module('lexicon',
     };
 
     $scope.syncNotice = function syncNotice() {
-      switch ($scope.sendReceive.status.state) {
+      switch ($scope.sendReceive.status.SRState) {
         case 'QUEUED':
         case 'MERGING':
         case 'SENDING':
@@ -209,9 +209,9 @@ angular.module('lexicon',
     };
 
     $scope.syncProject = function syncProject() {
-      sendReceiveService.commitProject(function(result) {
+      sendReceiveService.receiveProject(function(result) {
         if (result.ok) {
-          $scope.sendReceive.status.state = 'syncing';
+          $scope.sendReceive.status.SRState = 'syncing';
           startSyncStatusTimer();
         } else {
           noticeService.push(noticeService.ERROR, 'The project could not be synchronized with LanguageDepot.org. Please try again.');
@@ -228,13 +228,13 @@ angular.module('lexicon',
         sendReceiveService.getProjectStatus(function(result) {
           if (result.ok) {
             if (!result.data) {
-              $scope.sendReceive.status.state = '';
+              $scope.sendReceive.status.SRState = '';
               cancelSyncStatusTimer();
               return;
             }
 
             $scope.sendReceive.status = result.data;
-            if ($scope.sendReceive.status.state == 'IDLE') {
+            if ($scope.sendReceive.status.SRState == 'IDLE') {
               cancelSyncStatusTimer();
             }
           }
@@ -257,7 +257,7 @@ angular.module('lexicon',
     // we tell offline.js to NOT store and remake requests while the connection is down
     Offline.options.requests = false;
     Offline.options.checkOnLoad = true;
-    Offline.options.checks = {xhr: {url: '/offlineCheck.txt'}};
+    Offline.options.checks = { xhr: { url: '/offlineCheck.txt' } };
 
     var offlineMessageId;
     Offline.on('up', function() {

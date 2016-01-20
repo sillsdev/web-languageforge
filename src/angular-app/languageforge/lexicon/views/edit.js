@@ -88,7 +88,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
       if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
         cancelAutoSaveTimer();
-        $scope.sendReceive.status.state = 'unsynced';
+        $scope.sendReceive.status.SRState = 'unsynced';
         saving = true;
         var entryToSave = angular.copy($scope.currentEntry);
         if (entryIsNew(entryToSave)) {
@@ -511,7 +511,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       });
     };
 
-    $scope.show = {emptyFields: false};
+    $scope.show = { emptyFields: false };
 
     $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {
       var title;
