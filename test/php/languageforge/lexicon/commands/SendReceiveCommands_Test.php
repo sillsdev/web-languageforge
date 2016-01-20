@@ -45,7 +45,7 @@ class TestSendReceiveCommands extends UnitTestCase
      * @var LexiconMongoTestEnvironment
      */
     private $environ;
-    
+
     public function testSaveCredentials_ProjectAndUser_CredentialsSaved()
     {
         $userId = $this->environ->createUser("User", "Name", "name@example.com");
@@ -384,31 +384,6 @@ class TestSendReceiveCommands extends UnitTestCase
         $isNotified = SendReceiveCommands::notificationReceiveRequest($project->projectCode);
 
         $this->assertFalse($isNotified);
-    }
-
-    public function testNotificationReceiveRequest_HasSendReceiveAndQueueFileExists_Exception()
-    {
-        $this->environ->clean();
-
-        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
-        $project->write();
-        $mockReceiveQueuePath = sys_get_temp_dir() . '/mockReceiveQueue';
-        $notificationFilePath = $mockReceiveQueuePath . '/' . $project->projectCode . '.notification';
-        FileUtilities::createAllFolders($mockReceiveQueuePath);
-        file_put_contents($notificationFilePath, '');
-
-        $this->expectException(new \Exception('LFMerge is not installed. Contact the website administrator.'));
-        $this->environ->inhibitErrorDisplay();
-        SendReceiveCommands::notificationReceiveRequest($project->projectCode, $mockReceiveQueuePath);
-
-        // nothing runs in the current test function after an exception. IJH 2015-12
-    }
-
-    public function testNotificationReceiveRequest_HasSendReceiveAndQueueFileExists_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        $this->environ->restoreErrorDisplay();
     }
 
     public function testNotificationReceiveRequest_HasSendReceive_QueueFileCreated()
