@@ -12,6 +12,10 @@ angular.module('lexicon.services')
       jsonRpc.call('sendReceive_saveCredentials', [srProject, username, password], callback);
     };
 
+    this.receiveProject = function receiveProject(callback) {
+      jsonRpc.call('sendReceive_receiveProject', [], callback);
+    };
+
     this.commitProject = function commitProject(callback) {
       jsonRpc.call('sendReceive_commitProject', [], callback);
     };
