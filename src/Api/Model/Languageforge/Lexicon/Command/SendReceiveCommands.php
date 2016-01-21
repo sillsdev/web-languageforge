@@ -147,7 +147,7 @@ class SendReceiveCommands
 
         $pid = self::runInBackground($command);
 
-        return self::isProcessRunningByPid(intval($pid));
+        return self::isProcessRunningByPid($pid);
     }
 
     /**
@@ -241,7 +241,7 @@ class SendReceiveCommands
             $paths->statePath = self::STATE_PATH;
             if (!file_exists(self::LFMERGE_CONF_FILE_PATH)) return $paths;
 
-            $conf = parse_ini_file(self::LFMERGE_CONF_FILE_PATH);
+            $conf = parse_ini_string(self::removeConfComments(self::LFMERGE_CONF_FILE_PATH));
             if (!array_key_exists('BaseDir', $conf)) return $paths;
 
             foreach ($paths as &$path) {
@@ -271,7 +271,7 @@ class SendReceiveCommands
      */
     private static function isProcessRunningByPid($pid)
     {
-        return posix_kill($pid, 0);
+        return posix_kill(intval($pid), 0);
     }
 
     /**
@@ -300,8 +300,25 @@ class SendReceiveCommands
     }
 
     /**
-     * @param $username
-     * @param $password
+     * Remove conf file comments because '#" comments are deprecated in PHP but typically used in Linux conf files
+     * @param string $filePath
+     * @return string
+     */
+    private static function removeConfComments($filePath)
+    {
+        $confStr = "";
+        $lines = explode("\n", file_get_contents($filePath));
+        foreach($lines as $line) {
+            if(!$line || $line[0] == "#" || $line[0] == ";") continue;
+
+            $confStr .= $line . "\n";
+        }
+        return $confStr;
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
      * @param ClientInterface $client
      */
     private static function mockE2ETestingData($username, $password, ClientInterface $client)
