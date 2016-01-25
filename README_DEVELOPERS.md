@@ -72,7 +72,7 @@ ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
 
 ### PHP Unit Tests ###
 
-Unit testing currently uses [SimpleTest](http://www.simpletest.org/). Browse to [default.local/web-language/test/php](http://default.local/web-language/test/php/) and click [AllTest.php](http://default.local/web-language/test/php/AllTests.php). Browse to sub-folders to narrow tests.
+Unit testing currently uses [SimpleTest](http://www.simpletest.org/). Browse to [default.local/web-languageforge/test/php](http://default.local/web-languageforge/test/php/) and click [AllTest.php](http://default.local/web-languageforge/test/php/AllTests.php). Browse to sub-folders to narrow tests.
 
 ### End-to-End (E2E) Tests ###
 
