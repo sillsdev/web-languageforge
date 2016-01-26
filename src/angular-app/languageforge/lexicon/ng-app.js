@@ -117,7 +117,7 @@ angular.module('lexicon',
     $scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
     $scope.project = ss.session.project;
     $scope.projectSettings = ss.session.projectSettings;
-    $scope.sendReceive = $scope.projectSettings.sendReceive;
+    $scope.sendReceive = $scope.projectSettings.sendReceive || {};
 
     // persist the entries and comments array across all controllers
 
@@ -133,8 +133,6 @@ angular.module('lexicon',
       } else {
         startSyncStatusTimer();
       }
-
-      console.log($scope.sendReceive);
     });
 
     $scope.currentUserRole = ss.session.projectSettings.currentUserRole;
@@ -188,6 +186,7 @@ angular.module('lexicon',
     };
 
     $scope.syncNotice = function syncNotice() {
+      if (angular.isUndefined($scope.sendReceive) || angular.isUndefined($scope.sendReceive.status)) return;
       switch ($scope.sendReceive.status.SRState) {
         case 'QUEUED':
         case 'MERGING':
@@ -227,6 +226,7 @@ angular.module('lexicon',
       syncStatusTimer = $interval(function() {
         sendReceiveService.getProjectStatus(function(result) {
           if (result.ok) {
+            console.log($scope.sendReceive.status);
             if (!result.data) {
               $scope.sendReceive.status.SRState = '';
               cancelSyncStatusTimer();
