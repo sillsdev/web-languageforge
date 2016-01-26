@@ -22,13 +22,14 @@ class SendReceiveCommands
     const SEND_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/sendqueue';
     const STATE_PATH = '/var/lib/languageforge/lexicon/sendreceive/state';
     const LFMERGE_CONF_FILE_PATH = '/etc/languageforge/conf/sendreceive.conf';
-    const LFMERGE_PID_FILE_PATH = '/var/run/lfmerge.pid';
     const LFMERGE_EXE = 'lfmerge';
 
     // duplicate of data in /test/app/testConstants.json
     const TEST_MEMBER_USERNAME = 'test_runner_normal_user';
     const TEST_SR_USERNAME = 'sr-mock-username';
     const TEST_SR_PASSWORD = 'sr-mock-password';
+
+    private static $lfmergePidFilePaths = ['/tmp/run/lfmerge.pid', '/var/run/lfmerge.pid'];
 
     /**
      * @param string $projectId
@@ -104,6 +105,28 @@ class SendReceiveCommands
     }
 
     /**
+     * @param string $projectId
+     * @param string $receiveQueuePath
+     * @return string|bool $filename on success or false otherwise
+     */
+    public static function queueProjectForReceive($projectId, $receiveQueuePath = null)
+    {
+        $project = new LexiconProjectModelWithSRPassword($projectId);
+        if (!$project->hasSendReceive()) return false;
+
+        if (is_null($receiveQueuePath)) $receiveQueuePath = self::getLFMergePaths()->receiveQueuePath;
+
+        FileUtilities::createAllFolders($receiveQueuePath);
+        $milliseconds = round(microtime(true) * 1000);
+        $filename =  $project->projectCode; // . '_' . $milliseconds;
+        $filePath = $receiveQueuePath . '/' . $filename;
+        $line = 'projectCode: ' . $project->projectCode;
+        if (!file_put_contents($filePath, $line)) return false;
+
+        return $filename;
+    }
+
+    /**
      * @param LexiconProjectModel $project
      * @param string $mergeQueuePath
      * @return string|bool $filename on success or false otherwise
@@ -137,7 +160,15 @@ class SendReceiveCommands
         $project = new LexiconProjectModel($projectId);
         if (!$project->hasSendReceive()) return false;
 
-        if (is_null($pidFilePath)) $pidFilePath = self::LFMERGE_PID_FILE_PATH;
+        if (is_null($pidFilePath)) {
+            $pidFilePath = self::$lfmergePidFilePaths[0];
+            foreach (self::$lfmergePidFilePaths as $path) {
+                if (file_exists($path)) {
+                    $pidFilePath = $path;
+                    break;
+                }
+            }
+        }
 
         if (self::isProcessRunningByPidFile($pidFilePath)) return true;
 

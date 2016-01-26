@@ -552,15 +552,15 @@ angular.module('lexicon-new-project',
 
       sendReceiveService.saveCredentials($scope.project.sendReceive.project, $scope.project.sendReceive.username, $scope.project.sendReceive.password, function(result) {
         if (result.ok) {
-          syncProject();
+          getProject();
         } else {
           notice.push(notice.ERROR, 'The LanguageDepot.org credentials could not be saved. Please try again.');
         }
       });
     }
 
-    function syncProject() {
-      sendReceiveService.commitProject(function(result) {
+    function getProject() {
+      sendReceiveService.receiveProject(function(result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, 'Successfully synced with LanguageDepot.org.');
         } else {
@@ -601,7 +601,7 @@ angular.module('lexicon-new-project',
     };
 
     function savePrimaryLanguage(callback) {
-      var config = {inputSystems: []};
+      var config = { inputSystems: [] };
       var optionlist = {};
       var inputSystem = {};
       notice.setLoading('Configuring project for first use...');

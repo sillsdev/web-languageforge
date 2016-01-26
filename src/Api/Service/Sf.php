@@ -752,6 +752,7 @@ class Sf
 
     public function sendReceive_receiveProject()
     {
+        SendReceiveCommands::queueProjectForReceive($this->projectId);
         return SendReceiveCommands::startLFMergeIfRequired($this->projectId, 'receive');
     }
 
