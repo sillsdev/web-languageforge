@@ -130,7 +130,7 @@ angular.module('lexicon',
         $scope.sendReceive.status.SRState = '';
       } else if ($scope.sendReceive.status.SRState == 'IDLE') {
         $scope.sendReceive.status.SRState = '';
-      } else {
+      } else if ($scope.sendReceive.status.SRState != 'HOLD') {
         startSyncStatusTimer();
       }
     });
@@ -226,7 +226,6 @@ angular.module('lexicon',
       syncStatusTimer = $interval(function() {
         sendReceiveService.getProjectStatus(function(result) {
           if (result.ok) {
-            console.log($scope.sendReceive.status);
             if (!result.data) {
               $scope.sendReceive.status.SRState = '';
               cancelSyncStatusTimer();
@@ -234,9 +233,11 @@ angular.module('lexicon',
             }
 
             $scope.sendReceive.status = result.data;
-            if ($scope.sendReceive.status.SRState == 'IDLE') {
+            if ($scope.sendReceive.status.SRState == 'IDLE' || $scope.sendReceive.status.SRState == 'HOLD') {
               cancelSyncStatusTimer();
             }
+
+            console.log($scope.sendReceive.status);
           }
         });
       }, 3000);
