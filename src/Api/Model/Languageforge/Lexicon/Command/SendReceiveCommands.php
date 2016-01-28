@@ -326,6 +326,7 @@ class SendReceiveCommands
             $pid = shell_exec("nohup nice -n $priority $command > /dev/null 2> /dev/null & echo $!");
         } else {
             $pid = shell_exec("nohup $command > /dev/null 2> /dev/null & echo $!");
+//            $pid = shell_exec("nohup $command > /tmp/LfMergeOut.log 2> /tmp/LfMergeErr.log & echo $!");
         }
         return $pid;
     }

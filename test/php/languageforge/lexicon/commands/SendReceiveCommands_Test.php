@@ -1,6 +1,7 @@
 <?php
 
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Mapper\JsonEncoder;
@@ -19,6 +20,18 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestSendReceiveCommands extends UnitTestCase
 {
+    public function __construct() {
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
+        parent::__construct();
+    }
+
+    /**
+     * Local store of mock test environment
+     *
+     * @var LexiconMongoTestEnvironment
+     */
+    private $environ;
 /*
     public function testGetUserProjectsActualApi_ValidCredentials_CredentialsValid()
     {
@@ -32,20 +45,43 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual($result->isKnownUser, true);
         $this->assertEqual($result->hasValidCredentials, true);
     }
-*/
-    public function __construct() {
-        $this->environ = new LexiconMongoTestEnvironment();
-        $this->environ->clean();
-        parent::__construct();
+
+    public function testShellExec_LfMergeHelp()
+    {
+        $output = shell_exec("lfmerge -h 2>&1");
+        var_dump($output);
     }
 
-    /**
-     * Local store of mock test environment
-     *
-     * @var LexiconMongoTestEnvironment
-     */
-    private $environ;
+    public function testShellExec_LfMergeHickenplatt()
+    {
+        $projectCode = 'hickenplatt';
+        $statePath = SendReceiveCommands::getLFMergePaths()->statePath .DIRECTORY_SEPARATOR.$projectCode.'.state';
+        if (file_exists($statePath)) unlink($statePath);
 
+        $receiveQueueFilePath = SendReceiveCommands::getLFMergePaths()->receiveQueuePath .DIRECTORY_SEPARATOR.$projectCode;
+        if (!file_put_contents($receiveQueueFilePath, 'projectCode: '.$projectCode)) return;
+
+        $output = shell_exec('lfmerge -q receive -p '.$projectCode.' 2>&1');
+        var_dump($output);
+
+        $pidFilePath = sys_get_temp_dir() . '/run/lfmerge.pid';
+        $isRunning = SendReceiveCommands::isProcessRunningByPidFile($pidFilePath);
+        $this->assertFalse($isRunning);
+    }
+
+    public function testStartLFMergeIfRequiredActual_HasSendReceiveButNoPidFile_Started()
+    {
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('test-eb-sena3-flex', 'ihopkinson', 'h&0#Z0awvjfm', 'manager');
+        $projectId = $project->write();
+        $queueType = 'receive';
+
+        SendReceiveCommands::queueProjectForReceive($projectId);
+        $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType);
+
+        $this->assertTrue($isRunning);
+    }
+*/
     public function testSaveCredentials_ProjectAndUser_CredentialsSaved()
     {
         $userId = $this->environ->createUser("User", "Name", "name@example.com");
