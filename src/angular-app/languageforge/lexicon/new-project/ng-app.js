@@ -562,7 +562,7 @@ angular.module('lexicon-new-project',
     function getProject() {
       sendReceiveService.receiveProject(function(result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, 'Successfully synced with LanguageDepot.org.');
+          notice.push(notice.SUCCESS, 'Started sync with LanguageDepot.org...');
         } else {
           notice.push(notice.ERROR, 'The project could not be synced with LanguageDepot.org. Please try again.');
         }

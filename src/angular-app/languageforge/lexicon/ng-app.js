@@ -128,9 +128,12 @@ angular.module('lexicon',
       if (!$scope.sendReceive.status) {
         $scope.sendReceive.status = {};
         $scope.sendReceive.status.SRState = '';
+        getProjectStatus();
+        startSyncStatusTimer();
       } else if ($scope.sendReceive.status.SRState == 'IDLE') {
         $scope.sendReceive.status.SRState = '';
       } else if ($scope.sendReceive.status.SRState != 'HOLD') {
+        getProjectStatus();
         startSyncStatusTimer();
       }
     });
@@ -194,7 +197,7 @@ angular.module('lexicon',
         case 'RECEIVING':
         case 'UPDATING':
         case 'syncing':
-          return 'Syncing';
+          return 'Syncing...';
         case 'IDLE':
         case 'synced':
           return 'Synced';
@@ -220,27 +223,29 @@ angular.module('lexicon',
 
     var syncStatusTimer;
 
+    function getProjectStatus() {
+      sendReceiveService.getProjectStatus(function(result) {
+        if (result.ok) {
+          if (!result.data) {
+            $scope.sendReceive.status.SRState = '';
+            cancelSyncStatusTimer();
+            return;
+          }
+
+          $scope.sendReceive.status = result.data;
+          if ($scope.sendReceive.status.SRState == 'IDLE' || $scope.sendReceive.status.SRState == 'HOLD') {
+            cancelSyncStatusTimer();
+          }
+
+          console.log($scope.sendReceive.status);
+        }
+      });
+    }
+
     function startSyncStatusTimer() {
       if (angular.isDefined(syncStatusTimer)) return;
 
-      syncStatusTimer = $interval(function() {
-        sendReceiveService.getProjectStatus(function(result) {
-          if (result.ok) {
-            if (!result.data) {
-              $scope.sendReceive.status.SRState = '';
-              cancelSyncStatusTimer();
-              return;
-            }
-
-            $scope.sendReceive.status = result.data;
-            if ($scope.sendReceive.status.SRState == 'IDLE' || $scope.sendReceive.status.SRState == 'HOLD') {
-              cancelSyncStatusTimer();
-            }
-
-            console.log($scope.sendReceive.status);
-          }
-        });
-      }, 3000);
+      syncStatusTimer = $interval(getProjectStatus, 3000);
     }
 
     function cancelSyncStatusTimer() {
