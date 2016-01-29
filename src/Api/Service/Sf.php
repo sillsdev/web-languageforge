@@ -862,6 +862,7 @@ class Sf
             'identity_check',
             'get_captcha_data',
             'reset_password',
+            'sendReceive_getUserProjects',
             'sendReceive_notification_receiveRequest',
             'sendReceive_notification_sendRequest',
             'user_activate',
