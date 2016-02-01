@@ -20,6 +20,8 @@ class SendReceiveCommands
     const MERGE_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/mergequeue';
     const RECEIVE_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/receivequeue';
     const SEND_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/sendqueue';
+    const EDIT_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/editqueue';
+    const SYNC_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/syncqueue';
     const STATE_PATH = '/var/lib/languageforge/lexicon/sendreceive/state';
     const LFMERGE_CONF_FILE_PATH = '/etc/languageforge/conf/sendreceive.conf';
     const LFMERGE_EXE = 'lfmerge';
@@ -106,20 +108,20 @@ class SendReceiveCommands
 
     /**
      * @param string $projectId
-     * @param string $receiveQueuePath
+     * @param string $syncQueuePath
      * @return string|bool $filename on success or false otherwise
      */
-    public static function queueProjectForReceive($projectId, $receiveQueuePath = null)
+    public static function queueProjectForSync($projectId, $syncQueuePath = null)
     {
         $project = new LexiconProjectModelWithSRPassword($projectId);
         if (!$project->hasSendReceive()) return false;
 
-        if (is_null($receiveQueuePath)) $receiveQueuePath = self::getLFMergePaths()->receiveQueuePath;
+        if (is_null($syncQueuePath)) $syncQueuePath = self::getLFMergePaths()->syncQueuePath;
 
-        FileUtilities::createAllFolders($receiveQueuePath);
-        $milliseconds = round(microtime(true) * 1000);
+        FileUtilities::createAllFolders($syncQueuePath);
+        // $milliseconds = round(microtime(true) * 1000);
         $filename =  $project->projectCode; // . '_' . $milliseconds;
-        $filePath = $receiveQueuePath . '/' . $filename;
+        $filePath = $syncQueuePath . '/' . $filename;
         $line = 'projectCode: ' . $project->projectCode;
         if (!file_put_contents($filePath, $line)) return false;
 
@@ -172,7 +174,7 @@ class SendReceiveCommands
 
         if (self::isProcessRunningByPidFile($pidFilePath)) return true;
 
-        if (is_null($command)) $command = self::LFMERGE_EXE . ' -q ' . $queueType . ' -p ' . $project->projectCode;
+        if (is_null($command)) $command = self::LFMERGE_EXE . ' -p ' . $project->projectCode;
 
         if (!self::commandExists($command)) throw new \Exception('LFMerge is not installed. Contact the website administrator.');
 
@@ -269,6 +271,8 @@ class SendReceiveCommands
             $paths->mergeQueuePath = self::MERGE_QUEUE_PATH;
             $paths->receiveQueuePath = self::RECEIVE_QUEUE_PATH;
             $paths->sendQueuePath = self::SEND_QUEUE_PATH;
+            $paths->editQueuePath = self::EDIT_QUEUE_PATH;
+            $paths->syncQueuePath = self::SYNC_QUEUE_PATH;
             $paths->statePath = self::STATE_PATH;
             if (!file_exists(self::LFMERGE_CONF_FILE_PATH)) return $paths;
 
@@ -449,6 +453,16 @@ class SendReceivePaths
      * @var string
      */
     public $sendQueuePath;
+
+    /**
+     * @var string
+     */
+    public $editQueuePath;
+
+    /**
+     * @var string
+     */
+    public $syncQueuePath;
 
     /**
      * @var string
