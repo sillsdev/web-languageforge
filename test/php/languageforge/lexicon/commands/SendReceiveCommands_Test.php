@@ -76,7 +76,7 @@ class TestSendReceiveCommands extends UnitTestCase
         $projectId = $project->write();
         $queueType = 'receive';
 
-        SendReceiveCommands::queueProjectForReceive($projectId);
+        SendReceiveCommands::queueProjectForSync($projectId);
         $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType);
 
         $this->assertTrue($isRunning);
