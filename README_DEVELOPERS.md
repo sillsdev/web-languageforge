@@ -25,6 +25,12 @@ We recommend doing development on your development machine directly rather than 
 
 #### Ansible Setup ####
 
+At the moment (2016 Feb 4) Ansible v2.0.0.2 is [broken on local connections](https://github.com/ansible/ansible/issues/13763). Install v1.9 instead:
+````
+sudo apt-get install python-pip
+sudo pip install ansible==1.9.4
+````
+
 For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/ansible.cfg` into `/etc/ansible/ansible.cfg`.
 
 #### Vagrant VM Setup ####
