@@ -121,8 +121,8 @@ angular.module('lexicon.services')
     };
 
     this.getPartOfSpeechAbbreviation = function getPartOfSpeechAbbreviation(posModel, optionlists) {
-      if (angular.isDefined(posModel)) {
-        if (angular.isDefined(optionlists)) {
+      if (posModel) {
+        if (optionlists) {
           var abbreviation = '';
           angular.forEach(optionlists, function(optionlist) {
             if (optionlist.code == 'partOfSpeech' || optionlist.code == 'grammatical-info') {
