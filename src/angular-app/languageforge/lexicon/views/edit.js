@@ -394,6 +394,8 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     };
 
     $scope.makeValidModelRecursive = function makeValidModelRecursive(config, data, stopAtNodes) {
+      if (!data) data = {};
+
       if (angular.isString(stopAtNodes)) {
         var node = stopAtNodes;
         stopAtNodes = [];
