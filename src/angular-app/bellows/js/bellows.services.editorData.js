@@ -12,7 +12,7 @@ function($q, ss, cache, commentsCache, notice, commentService) {
   var api = undefined;
 
   var showInitialEntries = function showInitial() {
-    visibleEntries.length = 0 // clear out the array
+    visibleEntries.length = 0; // clear out the array
     visibleEntries.push.apply(visibleEntries, entries.slice(0, 50));
   };
 
@@ -26,23 +26,22 @@ function($q, ss, cache, commentsCache, notice, commentService) {
   };
 
   var registerEntryApi = function registerEntryApi(a) {
-   api = a;
-  }
-  
+    api = a;
+  };
+
   /**
    * Called when loading the controller
-   * @param callback
    * @return promise
    */
   var loadEditorData = function loadEditorData() {
     var deferred = $q.defer();
     if (entries.length == 0) { // first page load
       if (cache.canCache()) {
-        notice.setLoading("Loading Dictionary");
+        notice.setLoading('Loading Dictionary');
         loadDataFromOfflineCache().then(function(projectObj) {
           if (projectObj.isComplete) {
             // data found in cache
-            console.log("data successfully loaded from the cache.  Downloading updates...");
+            console.log('data successfully loaded from the cache.  Downloading updates...');
             notice.setLoading('Downloading Updates to Dictionary.');
             showInitialEntries();
             refreshEditorData(projectObj.timestamp).then(function(result) {
@@ -52,7 +51,7 @@ function($q, ss, cache, commentsCache, notice, commentService) {
 
           } else {
             entries = [];
-            console.log("cached data was found to be incomplete. Full download started...");
+            console.log('cached data was found to be incomplete. Full download started...');
             notice.setLoading('Downloading Full Dictionary.');
             notice.setPercentComplete(0);
             doFullRefresh().then(function(result) {
@@ -62,10 +61,9 @@ function($q, ss, cache, commentsCache, notice, commentService) {
             });
           }
 
-
         }, function() {
           // no data found in cache
-          console.log("no data found in cache. Full download started...");
+          console.log('no data found in cache. Full download started...');
           notice.setLoading('Downloading Full Dictionary.');
           notice.setPercentComplete(0);
           doFullRefresh().then(function(result) {
@@ -75,7 +73,7 @@ function($q, ss, cache, commentsCache, notice, commentService) {
           });
         });
       } else {
-        console.log("caching not enabled. Full download started...");
+        console.log('caching not enabled. Full download started...');
         notice.setLoading('Downloading Full Dictionary.');
         notice.setPercentComplete(0);
         doFullRefresh().then(function(result) {
@@ -90,6 +88,7 @@ function($q, ss, cache, commentsCache, notice, commentService) {
         deferred.resolve(result);
       });
     }
+
     return deferred.promise;
   };
 
@@ -97,12 +96,20 @@ function($q, ss, cache, commentsCache, notice, commentService) {
     offset = offset || 0;
     var deferred = $q.defer();
     api.dbeDtoFull(browserInstanceId, offset, function(result) {
-      var newOffset = offset + result.data.itemCount, totalCount = result.data.itemTotalCount;
+      if (!result.ok) {
+        notice.cancelLoading();
+        deferred.error(result);
+        return;
+      }
+
+      var newOffset = offset + result.data.itemCount;
+      var totalCount = result.data.itemTotalCount;
       notice.setPercentComplete(parseInt(newOffset * 100 / totalCount));
       processEditorDto(result, false).then(function() {
         if (offset == 0) {
           showInitialEntries();
         }
+
         if (newOffset < totalCount) {
           doFullRefresh(newOffset).then(function() {
             deferred.resolve(result);
@@ -112,6 +119,7 @@ function($q, ss, cache, commentsCache, notice, commentService) {
         }
       });
     });
+
     return deferred.promise;
   }
 
@@ -122,19 +130,20 @@ function($q, ss, cache, commentsCache, notice, commentService) {
    */
   var refreshEditorData = function refreshEditorData(timestamp) {
     var deferred = $q.defer();
+
     // get data from the server
     api.dbeDtoUpdatesOnly(browserInstanceId, timestamp, function(result) {
       processEditorDto(result, true).then(function(result) {
         deferred.resolve(result);
       });
     });
+
     return deferred.promise;
   };
 
   var addEntryToEntryList = function addEntryToEntryList(entry) {
     entries.unshift(entry);
   };
-
 
   var removeEntryFromLists = function removeEntryFromLists(id) {
     // todo: make this method async, returning a promise
@@ -144,6 +153,7 @@ function($q, ss, cache, commentsCache, notice, commentService) {
       if (angular.isDefined(iFullList)) {
         entries.splice(iFullList, 1);
       }
+
       var iShowList = getIndexInList(id, visibleEntries);
       if (angular.isDefined(iShowList)) {
         visibleEntries.splice(iShowList, 1);
@@ -167,6 +177,7 @@ function($q, ss, cache, commentsCache, notice, commentService) {
     } else {
       deferred.reject();
     }
+
     return deferred.promise;
   }
 
@@ -175,8 +186,9 @@ function($q, ss, cache, commentsCache, notice, commentService) {
    * @returns {promise} which resolves to an project object containing the epoch cache timestamp
    */
   function loadDataFromOfflineCache() {
-    var startTime = performance.now(), endTime;
+    var startTime = performance.now();
     var deferred = $q.defer();
+    var endTime;
     var numOfEntries;
     cache.getAllEntries().then(function(result) {
       entries.push.apply(entries, result); // proper way to extend the array
@@ -189,7 +201,7 @@ function($q, ss, cache, commentsCache, notice, commentService) {
           cache.getProjectData().then(function(result) {
             commentService.comments.counts.userPlusOne = result.commentsUserPlusOne;
             endTime = performance.now();
-            console.log("Loaded " + numOfEntries + " entries from the cache in " + ((endTime - startTime) / 1000).toFixed(2) + " seconds");
+            console.log('Loaded ' + numOfEntries + ' entries from the cache in ' + ((endTime - startTime) / 1000).toFixed(2) + ' seconds');
             deferred.resolve(result);
 
           }, function() { deferred.reject(); });
@@ -200,9 +212,9 @@ function($q, ss, cache, commentsCache, notice, commentService) {
       }
 
     }, function() { deferred.reject(); });
+
     return deferred.promise;
   }
-
 
   function processEditorDto(result, updateOnly) {
     var deferred = $q.defer();
@@ -230,8 +242,6 @@ function($q, ss, cache, commentsCache, notice, commentService) {
           i = getIndexInList(e.id, visibleEntries);
           if (angular.isDefined(i)) {
             visibleEntries[i] = e;
-          } else {
-            // don't do anything. The entry is not in view so we don't need to update it
           }
         });
 
@@ -253,13 +263,12 @@ function($q, ss, cache, commentsCache, notice, commentService) {
         // todo: maybe sort both lists after splicing in updates ???
       }
 
-
       if (result.data.itemCount && result.data.itemCount + result.data.offset < result.data.itemTotalCount) {
         isLastRequest = false;
       }
 
-
       storeDataInOfflineCache(result.data, isLastRequest).then(function() { deferred.resolve(); });
+
       commentService.updateGlobalCommentCounts();
       deferred.resolve(result);
       return deferred.promise;
@@ -275,6 +284,7 @@ function($q, ss, cache, commentsCache, notice, commentService) {
         break;
       }
     }
+
     return index;
   }
 
