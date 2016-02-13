@@ -238,6 +238,13 @@ angular.module('lexicon',
           }
 
           console.log($scope.sendReceive.status);
+
+          if ($scope.sendReceive.status.SRState == 'IDLE') {
+            $scope.finishedLoading = false;
+            editorService.loadEditorData().then(function () {
+              $scope.finishedLoading = true;
+            });
+          }
         }
       });
     }
