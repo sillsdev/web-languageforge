@@ -3,11 +3,13 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Library\Shared\LanguageData;
+use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Mapper\MapOf;
+use Palaso\Utilities\FileUtilities;
 
 class LexiconProjectModel extends LfProjectModel
 {
@@ -16,7 +18,7 @@ class LexiconProjectModel extends LfProjectModel
         $this->appName = LfProjectModel::LEXICON_APP;
         $this->rolesClass = 'Api\Model\Languageforge\Lexicon\LexiconRoles';
         $this->inputSystems = new MapOf(
-            function($data) {
+            function() {
                 return new InputSystem();
             }
         );
@@ -108,7 +110,7 @@ class LexiconProjectModel extends LfProjectModel
     }
 
     /**
-     * Initialize the optionlists in a project
+     * Initialize the optionlists and create send receive symlinks for a project
      */
     public function initializeNewProject()
     {
@@ -123,7 +125,35 @@ class LexiconProjectModel extends LfProjectModel
             $optionList->write();
         }
 
+        if ($this->hasSendReceive()) {
+            $projectWorkPath = SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . strtolower($this->projectCode);
 
+            $srImagePath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'Pictures';
+            $assetImagePath = $this->getImageFolderPath();
+            if (file_exists($assetImagePath)) {
+                if (is_dir($assetImagePath)) {
+                    FileUtilities::copyDirTree($assetImagePath, $srImagePath);
+                    FileUtilities::removeFolderAndAllContents($assetImagePath);
+                } else {
+                    unlink($assetImagePath);
+                }
+            }
+            FileUtilities::createAllFolders($srImagePath);
+            symlink($srImagePath, $assetImagePath);
+
+            $srAudioPath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'AudioVisual';
+            $assetAudioPath = $this->getAudioFolderPath();
+            if (file_exists($assetAudioPath)) {
+                if (is_dir($assetAudioPath)) {
+                    FileUtilities::copyDirTree($assetAudioPath, $srAudioPath);
+                    FileUtilities::removeFolderAndAllContents($assetAudioPath);
+                } else {
+                    unlink($assetAudioPath);
+                }
+            }
+            FileUtilities::createAllFolders($srAudioPath);
+            symlink($srAudioPath, $assetAudioPath);
+        }
     }
 
     /**

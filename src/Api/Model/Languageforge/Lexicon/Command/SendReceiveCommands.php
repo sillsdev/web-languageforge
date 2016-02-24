@@ -22,6 +22,7 @@ class SendReceiveCommands
     const SEND_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/sendqueue';
     const EDIT_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/editqueue';
     const SYNC_QUEUE_PATH = '/var/lib/languageforge/lexicon/sendreceive/syncqueue';
+    const WORK_PATH = '/var/lib/languageforge/lexicon/sendreceive/webwork';
     const STATE_PATH = '/var/lib/languageforge/lexicon/sendreceive/state';
     const LFMERGE_CONF_FILE_PATH = '/etc/languageforge/conf/sendreceive.conf';
     const LFMERGE_EXE = 'lfmerge';
@@ -273,6 +274,7 @@ class SendReceiveCommands
             $paths->sendQueuePath = self::SEND_QUEUE_PATH;
             $paths->editQueuePath = self::EDIT_QUEUE_PATH;
             $paths->syncQueuePath = self::SYNC_QUEUE_PATH;
+            $paths->workPath = self::WORK_PATH;
             $paths->statePath = self::STATE_PATH;
             if (!file_exists(self::LFMERGE_CONF_FILE_PATH)) return $paths;
 
@@ -463,6 +465,11 @@ class SendReceivePaths
      * @var string
      */
     public $syncQueuePath;
+
+    /**
+     * @var string
+     */
+    public $workPath;
 
     /**
      * @var string
