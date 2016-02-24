@@ -65,7 +65,8 @@ class LexEntryCommands
         $entry->authorInfo->modifiedDate = new \DateTime();
         $entry->authorInfo->modifiedByUserRef->id = $userId;
 
-        if ($project->hasSendReceive()) $entry->dirtySR++;
+//        if ($project->hasSendReceive()) $entry->dirtySR++;
+        if ($project->hasSendReceive()) $entry->dirtySR = 0;
 
         $params = self::recursiveRemoveEmptyFieldValues($params);
         //$params = self::recursiveAlignCustomFieldsWithModel($params);
@@ -74,8 +75,8 @@ class LexEntryCommands
         $entry->write();
         ActivityCommands::writeEntry($project, $userId, $entry, $action);
 
-        SendReceiveCommands::queueProjectForUpdate($project, $mergeQueuePath);
-        SendReceiveCommands::startLFMergeIfRequired($projectId, 'merge', $pidFilePath, $command);
+//        SendReceiveCommands::queueProjectForUpdate($project, $mergeQueuePath);
+//        SendReceiveCommands::startLFMergeIfRequired($projectId, 'merge', $pidFilePath, $command);
 
         return JsonEncoder::encode($entry);
     }
