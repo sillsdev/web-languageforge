@@ -123,25 +123,25 @@ class LexiconProjectModel extends LfProjectModel
             $optionList->write();
         }
 
-        /*
-        $optionList = new LexOptionListModel($this);
-        $optionList->name = 'Semantic Domains';
-        $optionList->code = 'semdom';
-        $optionList->canDelete = false;
-        $optionList->readFromJson(APPPATH . 'json/languageforge/lexicon/semdom.json');
-        $optionList->write();
 
-        // we should have a default list for every delivered field that is an option list type
-        $optionList = new LexOptionListModel($this);
-        $optionList->name = 'Environments';
-        $optionList->code = 'environments';
-        $optionList->canDelete = false;
-        $optionList->readFromJson($environmentsFilePath);
-        $optionList->write();
-        */
+    }
 
-        // repeat for other delivered option list types
+    /**
+     *
+     * @return string
+     */
+    public function getImageFolderPath()
+    {
+        return $this->getAssetsFolderPath() . DIRECTORY_SEPARATOR . 'pictures';
+    }
 
+    /**
+     *
+     * @return string
+     */
+    public function getAudioFolderPath()
+    {
+        return $this->getAssetsFolderPath() . DIRECTORY_SEPARATOR . 'audio';
     }
 
 }

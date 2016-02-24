@@ -11,7 +11,6 @@ use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\LiftImport;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
-use Api\Model\Languageforge\LfProjectModel;
 
 class LexUploadCommands
 {
@@ -62,8 +61,8 @@ class LexUploadCommands
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folders if they don't exist
-            $project = new LfProjectModel($projectId);
-            $folderPath = $project->getAssetsFolderPath() . '/audio';
+            $project = new LexiconProjectModel($projectId);
+            $folderPath = $project->getAudioFolderPath();
             FileUtilities::createAllFolders($folderPath);
 
             // cleanup previous files of any allowed extension
@@ -157,8 +156,8 @@ class LexUploadCommands
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folders if they don't exist
-            $project = new LfProjectModel($projectId);
-            $folderPath = self::imageFolderPath($project->getAssetsFolderPath());
+            $project = new LexiconProjectModel($projectId);
+            $folderPath = $project->getImageFolderPath();
             FileUtilities::createAllFolders($folderPath);
 
             // move uploaded file from tmp location to assets
@@ -169,7 +168,7 @@ class LexUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
-                $data->path = self::imageFolderPath($project->getAssetsRelativePath());
+                $data->path = $project->getImageFolderPath();
                 $data->fileName = $fileNamePrefix . '_' . $fileName;
                 $response->result = true;
             } else {
@@ -207,10 +206,10 @@ class LexUploadCommands
     public static function deleteMediaFile($projectId, $mediaType, $fileName) {
         $response = new UploadResponse();
         $response->result = false;
-        $project = new LfProjectModel($projectId);
+        $project = new LexiconProjectModel($projectId);
         switch ($mediaType) {
             case 'sense-image':
-                $folderPath = self::imageFolderPath($project->getAssetsFolderPath());
+                $folderPath = $project->getImageFolderPath();
                 break;
             default:
                 $errorMsg = "Error in function deleteImageFile, unsupported mediaType: $mediaType";
@@ -224,7 +223,7 @@ class LexUploadCommands
         if (file_exists($filePath) and ! is_dir($filePath)) {
             if (@unlink($filePath)) {
                 $data = new MediaResult();
-                $data->path = self::imageFolderPath($project->getAssetsRelativePath());
+                $data->path = $project->getImageFolderPath();
                 $data->fileName = $fileName;
                 $response->result = true;
             } else {
@@ -242,16 +241,6 @@ class LexUploadCommands
 
     /**
      *
-     * @param string $assetsFolderPath
-     * @return string
-     */
-    public static function imageFolderPath($assetsFolderPath)
-    {
-        return $assetsFolderPath . '/pictures';
-    }
-
-    /**
-     *
      * @param string $folderPath
      * @param string $fileNamePrefix
      * @param string $originalFileName
@@ -259,7 +248,7 @@ class LexUploadCommands
      */
     public static function mediaFilePath($folderPath, $fileNamePrefix, $originalFileName)
     {
-        return $folderPath . '/' . $fileNamePrefix . '_' . $originalFileName;
+        return $folderPath . DIRECTORY_SEPARATOR . $fileNamePrefix . '_' . $originalFileName;
     }
 
     /**
@@ -271,7 +260,7 @@ class LexUploadCommands
      */
     public static function cleanupFiles($folderPath, $fileNamePrefix, $allowedExtensions)
     {
-        $cleanupFiles = glob($folderPath . '/' . $fileNamePrefix . '*[' . implode(', ', $allowedExtensions) . ']');
+        $cleanupFiles = glob($folderPath . DIRECTORY_SEPARATOR . $fileNamePrefix . '*[' . implode(', ', $allowedExtensions) . ']');
         foreach ($cleanupFiles as $cleanupFile) {
             @unlink($cleanupFile);
         }
@@ -338,7 +327,7 @@ class LexUploadCommands
             FileUtilities::createAllFolders($folderPath);
 
             // move uploaded file from tmp location to assets
-            $filePath =  $folderPath . '/' . $fileName;
+            $filePath =  $folderPath . DIRECTORY_SEPARATOR . $fileName;
             $moveOk = copy($tmpFilePath, $filePath);
             @unlink($tmpFilePath);
 
@@ -357,7 +346,7 @@ class LexUploadCommands
                     }
 
                     // copy uploaded LIFT file from extract location to assets
-                    $filePath =  $folderPath . '/' . $liftFilename;
+                    $filePath =  $folderPath . DIRECTORY_SEPARATOR . $liftFilename;
                     $project->liftFilePath = $filePath;
                     $project->write();
                     $moveOk = copy($importer->liftFilePath, $filePath);
@@ -458,7 +447,7 @@ class LexUploadCommands
                 }
 
                 // move uploaded LIFT file from tmp location to assets
-                $filePath =  $folderPath . '/' . $fileName;
+                $filePath =  $folderPath . DIRECTORY_SEPARATOR . $fileName;
                 $project->liftFilePath = $filePath;
                 $project->write();
                 $moveOk = copy($tmpFilePath, $filePath);
