@@ -130,29 +130,11 @@ class LexiconProjectModel extends LfProjectModel
 
             $srImagePath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'Pictures';
             $assetImagePath = $this->getImageFolderPath();
-            if (file_exists($assetImagePath)) {
-                if (is_dir($assetImagePath)) {
-                    FileUtilities::copyDirTree($assetImagePath, $srImagePath);
-                    FileUtilities::removeFolderAndAllContents($assetImagePath);
-                } else {
-                    unlink($assetImagePath);
-                }
-            }
-            FileUtilities::createAllFolders($srImagePath);
-            symlink($srImagePath, $assetImagePath);
+            $this->moveExistingFilesAndCreateSymlink($srImagePath, $assetImagePath);
 
             $srAudioPath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'AudioVisual';
             $assetAudioPath = $this->getAudioFolderPath();
-            if (file_exists($assetAudioPath)) {
-                if (is_dir($assetAudioPath)) {
-                    FileUtilities::copyDirTree($assetAudioPath, $srAudioPath);
-                    FileUtilities::removeFolderAndAllContents($assetAudioPath);
-                } else {
-                    unlink($assetAudioPath);
-                }
-            }
-            FileUtilities::createAllFolders($srAudioPath);
-            symlink($srAudioPath, $assetAudioPath);
+            $this->moveExistingFilesAndCreateSymlink($srAudioPath, $assetAudioPath);
         }
     }
 
@@ -172,6 +154,24 @@ class LexiconProjectModel extends LfProjectModel
     public function getAudioFolderPath()
     {
         return $this->getAssetsFolderPath() . DIRECTORY_SEPARATOR . 'audio';
+    }
+
+    /**
+     * @param $targetPath
+     * @param $linkPath
+     */
+    private function moveExistingFilesAndCreateSymlink($targetPath, $linkPath)
+    {
+        if (file_exists($linkPath)) {
+            if (is_dir($linkPath)) {
+                FileUtilities::copyDirTree($linkPath, $targetPath);
+                FileUtilities::removeFolderAndAllContents($linkPath);
+            } else {
+                unlink($linkPath);
+            }
+        }
+        FileUtilities::createAllFolders($targetPath);
+        symlink($targetPath, $linkPath);
     }
 
 }
