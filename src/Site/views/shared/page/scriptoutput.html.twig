@@ -21,6 +21,9 @@
                 <h4>Output of {{ scriptname }}</h4>
                 <h6><a href="/script">return to list of scripts</a></h6>
                 <pre>{{ output }}</pre>
+                {% if runtype != 'run' %}
+                    <h6><a href="{{ scriptrunurl }}">Run this script for real!</a></li></h6>
+                {% endif %}
             {% endif %}
         </div>
     </div>
