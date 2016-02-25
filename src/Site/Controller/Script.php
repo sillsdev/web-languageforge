@@ -11,6 +11,7 @@ class Script extends Base
 {
     public function view(Application $app, $folder = '', $scriptName = '', $runType = 'test') {
         $this->data['controlpanel'] = false;
+        $this->data['runtype'] = $runType;
         if (! file_exists("Api/Library/Shared/Script/$folder/$scriptName.php")) {
             // show list of scripts
             $this->data['scriptnames'] = $this->scriptBaseNames();
@@ -18,6 +19,7 @@ class Script extends Base
             return $this->renderPage($app, 'scriptoutput');
         } else {
             // run script and render output
+            $this->data['scriptrunurl'] = '/script/Migration/' . $scriptName . '/run';
             $userId = (string) $app['session']->get('user_id');
             if (! RightsHelper::hasSiteRight($userId, Domain::PROJECTS + Operation::DELETE)) {
                 $app->abort(403, 'You have insufficient privileges to run scripts'); // this terminates PHP
