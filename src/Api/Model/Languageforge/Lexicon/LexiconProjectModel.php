@@ -110,7 +110,7 @@ class LexiconProjectModel extends LfProjectModel
     }
 
     /**
-     * Initialize the optionlists and create send receive symlinks for a project
+     * Initialize the default option lists and create assets folders
      */
     public function initializeNewProject()
     {
@@ -125,35 +125,51 @@ class LexiconProjectModel extends LfProjectModel
             $optionList->write();
         }
 
+        $this->createAssetsFolders();
+    }
+
+    /**
+     *
+     * @param string $assetsFolderPath
+     * @return string
+     */
+    public function getImageFolderPath($assetsFolderPath = null)
+    {
+        if ($assetsFolderPath == null) {
+            return $this->getAssetsFolderPath() . DIRECTORY_SEPARATOR . 'pictures';
+        }
+        return $assetsFolderPath . DIRECTORY_SEPARATOR . 'pictures';
+    }
+
+    /**
+     *
+     * @param string $assetsFolderPath
+     * @return string
+     */
+    public function getAudioFolderPath($assetsFolderPath = null)
+    {
+        if ($assetsFolderPath == null) {
+            return $this->getAssetsFolderPath() . DIRECTORY_SEPARATOR . 'audio';
+        }
+        return $assetsFolderPath . DIRECTORY_SEPARATOR . 'audio';
+    }
+
+    public function createAssetsFolders()
+    {
+        $assetImagePath = $this->getImageFolderPath();
+        $assetAudioPath = $this->getAudioFolderPath();
         if ($this->hasSendReceive()) {
             $projectWorkPath = SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . strtolower($this->projectCode);
 
             $srImagePath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'Pictures';
-            $assetImagePath = $this->getImageFolderPath();
             $this->moveExistingFilesAndCreateSymlink($srImagePath, $assetImagePath);
 
             $srAudioPath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'AudioVisual';
-            $assetAudioPath = $this->getAudioFolderPath();
             $this->moveExistingFilesAndCreateSymlink($srAudioPath, $assetAudioPath);
+        } else {
+            FileUtilities::createAllFolders($assetImagePath);
+            FileUtilities::createAllFolders($assetAudioPath);
         }
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getImageFolderPath()
-    {
-        return $this->getAssetsFolderPath() . DIRECTORY_SEPARATOR . 'pictures';
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getAudioFolderPath()
-    {
-        return $this->getAssetsFolderPath() . DIRECTORY_SEPARATOR . 'audio';
     }
 
     /**

@@ -62,8 +62,8 @@ class LexUploadCommands
 
             // make the folders if they don't exist
             $project = new LexiconProjectModel($projectId);
+            $project->createAssetsFolders();
             $folderPath = $project->getAudioFolderPath();
-            FileUtilities::createAllFolders($folderPath);
 
             // cleanup previous files of any allowed extension
             self::cleanupFiles($folderPath, $entryId, $allowedExtensions);
@@ -84,7 +84,7 @@ class LexUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
-                $data->path = $project->getAssetsRelativePath();
+                $data->path = $project->getAudioFolderPath($project->getAssetsRelativePath());
                 $data->fileName = $fileName;
                 $response->result = true;
             } else {
@@ -157,8 +157,8 @@ class LexUploadCommands
 
             // make the folders if they don't exist
             $project = new LexiconProjectModel($projectId);
+            $project->createAssetsFolders();
             $folderPath = $project->getImageFolderPath();
-            FileUtilities::createAllFolders($folderPath);
 
             // move uploaded file from tmp location to assets
             $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
@@ -168,7 +168,7 @@ class LexUploadCommands
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
-                $data->path = $project->getImageFolderPath();
+                $data->path = $project->getImageFolderPath($project->getAssetsRelativePath());
                 $data->fileName = $fileNamePrefix . '_' . $fileName;
                 $response->result = true;
             } else {
@@ -323,8 +323,8 @@ class LexUploadCommands
 
             // make the folders if they don't exist
             $project = new LexiconProjectModel($projectId);
+            $project->createAssetsFolders();
             $folderPath = $project->getAssetsFolderPath();
-            FileUtilities::createAllFolders($folderPath);
 
             // move uploaded file from tmp location to assets
             $filePath =  $folderPath . DIRECTORY_SEPARATOR . $fileName;
@@ -431,8 +431,8 @@ class LexUploadCommands
 
             // make the folders if they don't exist
             $project = new LexiconProjectModel($projectId);
+            $project->createAssetsFolders();
             $folderPath = $project->getAssetsFolderPath();
-            FileUtilities::createAllFolders($folderPath);
 
             $importer = LiftImport::get()->merge($tmpFilePath, $project, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
             $project->write();

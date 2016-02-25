@@ -72,5 +72,6 @@ class TestLexiconProjectModel extends UnitTestCase
 
         $projectWorkPath = SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . strtolower($project->projectCode);
         FileUtilities::removeFolderAndAllContents($projectWorkPath);
+        FileUtilities::removeFolderAndAllContents($project->getAssetsFolderPath());
     }
 }
