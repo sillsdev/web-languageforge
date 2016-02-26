@@ -82,6 +82,14 @@ class TestLexiconProjectModel extends UnitTestCase
         $assetAudioPath = $project->getAudioFolderPath();
         $this->assertTrue(is_link($assetAudioPath));
 
+        $project->initializeNewProject();
+
+        $this->assertTrue(is_link($assetImagePath));
+        $this->assertTrue(file_exists($srTestImageFilePath));
+        $this->assertTrue(file_exists($filePathToMove));
+        $this->assertTrue(file_exists($srImagePath . DIRECTORY_SEPARATOR . $filenameToMove));
+        $this->assertTrue(is_link($assetAudioPath));
+
         FileUtilities::removeFolderAndAllContents($project->getAssetsFolderPath());
         FileUtilities::removeFolderAndAllContents($projectWorkPath);
     }
