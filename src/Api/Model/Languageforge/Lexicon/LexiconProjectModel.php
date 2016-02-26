@@ -135,9 +135,7 @@ class LexiconProjectModel extends LfProjectModel
      */
     public function getImageFolderPath($assetsFolderPath = null)
     {
-        if ($assetsFolderPath == null) {
-            return $this->getAssetsFolderPath() . DIRECTORY_SEPARATOR . 'pictures';
-        }
+        $assetsFolderPath || $assetsFolderPath = $this->getAssetsFolderPath();
         return $assetsFolderPath . DIRECTORY_SEPARATOR . 'pictures';
     }
 
@@ -148,9 +146,7 @@ class LexiconProjectModel extends LfProjectModel
      */
     public function getAudioFolderPath($assetsFolderPath = null)
     {
-        if ($assetsFolderPath == null) {
-            return $this->getAssetsFolderPath() . DIRECTORY_SEPARATOR . 'audio';
-        }
+        $assetsFolderPath || $assetsFolderPath = $this->getAssetsFolderPath();
         return $assetsFolderPath . DIRECTORY_SEPARATOR . 'audio';
     }
 
@@ -159,7 +155,7 @@ class LexiconProjectModel extends LfProjectModel
         $assetImagePath = $this->getImageFolderPath();
         $assetAudioPath = $this->getAudioFolderPath();
         if ($this->hasSendReceive()) {
-            $projectWorkPath = SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . strtolower($this->projectCode);
+            $projectWorkPath = $this->getSendReceiveWorkFolder();
 
             $srImagePath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'Pictures';
             $this->moveExistingFilesAndCreateSymlink($srImagePath, $assetImagePath);
@@ -170,6 +166,17 @@ class LexiconProjectModel extends LfProjectModel
             FileUtilities::createAllFolders($assetImagePath);
             FileUtilities::createAllFolders($assetAudioPath);
         }
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSendReceiveWorkFolder()
+    {
+        if ($this->hasSendReceive()) {
+            return SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . strtolower($this->projectCode);
+        }
+        return null;
     }
 
     /**
