@@ -1,6 +1,5 @@
 <?php
 
-use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\ProjectModel;
@@ -50,7 +49,7 @@ class TestLexiconProjectModel extends UnitTestCase
         $this->assertFalse(is_link($assetAudioPath));
     }
 
-    public function testInitializeNewProject_SendReceiveProject_SymlinksCreated()
+    public function testInitializeNewProject_SendReceiveProjectAndExistingTargetFile_SourceFileMovedAndSymlinksCreated()
     {
         $e = new LexiconMongoTestEnvironment();
         $e->clean();
@@ -60,18 +59,30 @@ class TestLexiconProjectModel extends UnitTestCase
         $project->write();
         $this->assertTrue($project->hasSendReceive());
 
-        $project->initializeNewProject();
+        $projectWorkPath = $project->getSendReceiveWorkFolder();
+        $srImagePath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'Pictures';
+        FileUtilities::createAllFolders($srImagePath);
+        $srTestImageFilePath = $srImagePath . DIRECTORY_SEPARATOR . 'existingTargetImage.jpg';
+        touch($srTestImageFilePath);
+        $this->assertTrue(file_exists($srTestImageFilePath));
 
         $assetImagePath = $project->getImageFolderPath();
+        $filenameToMove = 'existingSourceImage.jpg';
+        $filePathToMove = $assetImagePath . DIRECTORY_SEPARATOR . $filenameToMove;
+        touch($filePathToMove);
+        $this->assertTrue(file_exists($filePathToMove));
+
+        $project->initializeNewProject();
+
         $this->assertTrue(is_link($assetImagePath));
-        @unlink($assetImagePath);
+        $this->assertTrue(file_exists($srTestImageFilePath));
+        $this->assertTrue(file_exists($filePathToMove));
+        $this->assertTrue(file_exists($srImagePath . DIRECTORY_SEPARATOR . $filenameToMove));
 
         $assetAudioPath = $project->getAudioFolderPath();
         $this->assertTrue(is_link($assetAudioPath));
-        @unlink($assetAudioPath);
 
-        $projectWorkPath = SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . strtolower($project->projectCode);
-        FileUtilities::removeFolderAndAllContents($projectWorkPath);
         FileUtilities::removeFolderAndAllContents($project->getAssetsFolderPath());
+        FileUtilities::removeFolderAndAllContents($projectWorkPath);
     }
 }
