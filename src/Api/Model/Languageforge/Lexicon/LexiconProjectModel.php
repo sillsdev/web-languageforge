@@ -186,8 +186,8 @@ class LexiconProjectModel extends LfProjectModel
     private function moveExistingFilesAndCreateSymlink($targetPath, $linkPath)
     {
         if (file_exists($linkPath)) {
-            if (is_dir($linkPath)) {
-                FileUtilities::copyDirTree($linkPath, $targetPath);
+            if (is_dir($linkPath) && !is_link($linkPath)) {
+                FileUtilities::copyFolderTree($linkPath, $targetPath);
                 FileUtilities::removeFolderAndAllContents($linkPath);
             } else {
                 unlink($linkPath);
