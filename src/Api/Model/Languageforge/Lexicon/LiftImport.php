@@ -51,7 +51,7 @@ class LiftImport
     /**
      * @param string $liftFilePath
      * @param LexiconProjectModel $projectModel
-     * @param LiftMergeRule $mergeRule
+     * @param string $mergeRule
      * @param boolean $skipSameModTime
      * @param boolean $deleteMatchingEntry
      * @return \Api\Model\Languageforge\Lexicon\LiftImport
@@ -350,7 +350,7 @@ class LiftImport
                     case 'WritingSystems':
                         $assetsPath = $assetsFolderPath . "/" . $folderName;
                         if (file_exists($folderPath) && is_dir($folderPath)) {
-                            FileUtilities::copyDirTree($folderPath, $assetsPath);
+                            FileUtilities::copyFolderTree($folderPath, $assetsPath);
                         }
                         break;
                     default:
@@ -448,7 +448,7 @@ class LiftImport
             $diff = array_values(array_diff($destFilesAfterUnpacking, $destFilesBeforeUnpacking));
             $zipTopLevel = $diff[0];
             if (is_dir($destDir . "/" . $zipTopLevel)) {
-                FileUtilities::promoteDirContents($destDir . "/" . $zipTopLevel);
+                FileUtilities::promoteFolderContents($destDir . "/" . $zipTopLevel);
             }
         }
     }
