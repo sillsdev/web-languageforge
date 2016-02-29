@@ -45,16 +45,18 @@ class App extends Base
         $this->data['appFolder'] = $appFolder;
         $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
 
+        $userId = (string) $app['security.token_storage']->getToken()->getUser()->getUserId();
+
         // update the projectId in the session if it is not empty
         $projectModel = new ProjectModel();
         if ($projectId && $projectModel->exists($projectId)) {
             $projectModel = $projectModel->getById($projectId);
-            if (!$projectModel->userIsMember((string)$app['session']->get('user_id'))) {
+            if (!$projectModel->userIsMember($userId)) {
                 $projectId = '';
             }
             $app['session']->set('projectId', $projectId);
         } else {
-            if (!$projectModel->userIsMember((string)$app['session']->get('user_id'))) {
+            if (!$projectModel->userIsMember($userId)) {
                 $projectId = '';
             } else {
                 $projectId = (string)$app['session']->get('projectId');
@@ -63,8 +65,7 @@ class App extends Base
 
         // Other session data
 
-        $sessionData = SessionCommands::getSessionData($projectId, (string)$app['session']->get('user_id'),
-            $this->website);
+        $sessionData = SessionCommands::getSessionData($projectId, $userId, $this->website);
         $this->data['jsonSession'] = json_encode($sessionData);
 
         $this->addJavascriptFiles(NG_BASE_FOLDER . 'bellows/js', array('vendor/', 'assets/'));
