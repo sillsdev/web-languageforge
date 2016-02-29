@@ -291,7 +291,7 @@ class LiftImport
         foreach ($liftRange->rangeElements as $id => $elem) {
             if ($elem->label && array_key_exists($interfaceLang, $elem->label)) {
                 $label = $elem->label[$interfaceLang]->value;
-                if (isset($elem->abbrev)) {
+                if (isset($elem->abbrev) && isset($elem->abbrev[$interfaceLang])) {
                     $abbrev = $elem->abbrev[$interfaceLang]->value;
                 } else {
                     $abbrev = null;
