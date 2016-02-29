@@ -3,11 +3,13 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Library\Shared\LanguageData;
+use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Mapper\MapOf;
+use Palaso\Utilities\FileUtilities;
 
 class LexiconProjectModel extends LfProjectModel
 {
@@ -16,7 +18,7 @@ class LexiconProjectModel extends LfProjectModel
         $this->appName = LfProjectModel::LEXICON_APP;
         $this->rolesClass = 'Api\Model\Languageforge\Lexicon\LexiconRoles';
         $this->inputSystems = new MapOf(
-            function($data) {
+            function() {
                 return new InputSystem();
             }
         );
@@ -108,7 +110,7 @@ class LexiconProjectModel extends LfProjectModel
     }
 
     /**
-     * Initialize the optionlists in a project
+     * Initialize the default option lists and create assets folders
      */
     public function initializeNewProject()
     {
@@ -123,25 +125,76 @@ class LexiconProjectModel extends LfProjectModel
             $optionList->write();
         }
 
-        /*
-        $optionList = new LexOptionListModel($this);
-        $optionList->name = 'Semantic Domains';
-        $optionList->code = 'semdom';
-        $optionList->canDelete = false;
-        $optionList->readFromJson(APPPATH . 'json/languageforge/lexicon/semdom.json');
-        $optionList->write();
+        $this->createAssetsFolders();
+    }
 
-        // we should have a default list for every delivered field that is an option list type
-        $optionList = new LexOptionListModel($this);
-        $optionList->name = 'Environments';
-        $optionList->code = 'environments';
-        $optionList->canDelete = false;
-        $optionList->readFromJson($environmentsFilePath);
-        $optionList->write();
-        */
+    /**
+     *
+     * @param string $assetsFolderPath
+     * @return string
+     */
+    public function getImageFolderPath($assetsFolderPath = null)
+    {
+        $assetsFolderPath || $assetsFolderPath = $this->getAssetsFolderPath();
+        return $assetsFolderPath . DIRECTORY_SEPARATOR . 'pictures';
+    }
 
-        // repeat for other delivered option list types
+    /**
+     *
+     * @param string $assetsFolderPath
+     * @return string
+     */
+    public function getAudioFolderPath($assetsFolderPath = null)
+    {
+        $assetsFolderPath || $assetsFolderPath = $this->getAssetsFolderPath();
+        return $assetsFolderPath . DIRECTORY_SEPARATOR . 'audio';
+    }
 
+    public function createAssetsFolders()
+    {
+        $assetImagePath = $this->getImageFolderPath();
+        $assetAudioPath = $this->getAudioFolderPath();
+        if ($this->hasSendReceive()) {
+            $projectWorkPath = $this->getSendReceiveWorkFolder();
+
+            $srImagePath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'Pictures';
+            $this->moveExistingFilesAndCreateSymlink($srImagePath, $assetImagePath);
+
+            $srAudioPath = $projectWorkPath . DIRECTORY_SEPARATOR . 'LinkedFiles' . DIRECTORY_SEPARATOR . 'AudioVisual';
+            $this->moveExistingFilesAndCreateSymlink($srAudioPath, $assetAudioPath);
+        } else {
+            FileUtilities::createAllFolders($assetImagePath);
+            FileUtilities::createAllFolders($assetAudioPath);
+        }
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSendReceiveWorkFolder()
+    {
+        if ($this->hasSendReceive()) {
+            return SendReceiveCommands::getLFMergePaths()->workPath . DIRECTORY_SEPARATOR . strtolower($this->projectCode);
+        }
+        return null;
+    }
+
+    /**
+     * @param $targetPath
+     * @param $linkPath
+     */
+    private function moveExistingFilesAndCreateSymlink($targetPath, $linkPath)
+    {
+        if (file_exists($linkPath)) {
+            if (is_dir($linkPath) && !is_link($linkPath)) {
+                FileUtilities::copyFolderTree($linkPath, $targetPath);
+                FileUtilities::removeFolderAndAllContents($linkPath);
+            } else {
+                unlink($linkPath);
+            }
+        }
+        FileUtilities::createAllFolders($targetPath);
+        symlink($targetPath, $linkPath);
     }
 
 }

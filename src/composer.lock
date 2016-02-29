@@ -545,12 +545,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sillsdev/web-php-utilities.git",
-                "reference": "b3af48667dc42cdf45ec86170d02956b3fd75cd9"
+                "reference": "6ac0cb22e5b8e458f6c77ba956dbd300b0a9b2cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/b3af48667dc42cdf45ec86170d02956b3fd75cd9",
-                "reference": "b3af48667dc42cdf45ec86170d02956b3fd75cd9",
+                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/6ac0cb22e5b8e458f6c77ba956dbd300b0a9b2cf",
+                "reference": "6ac0cb22e5b8e458f6c77ba956dbd300b0a9b2cf",
                 "shasum": ""
             },
             "require-dev": {
@@ -567,7 +567,7 @@
                 "source": "https://github.com/sillsdev/web-php-utilities/tree/master",
                 "issues": "https://github.com/sillsdev/web-php-utilities/issues"
             },
-            "time": "2014-10-24 04:55:14"
+            "time": "2016-02-26 08:37:08"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1228,7 +1228,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/f83a9f8db1cc29f42edb77c7c77382bf9769953a",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/b822b7d04ebc48eb1e235c7fc8bb607f6e9996c1",
                 "reference": "f83a9f8db1cc29f42edb77c7c77382bf9769953a",
                 "shasum": ""
             },
