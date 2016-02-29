@@ -20,7 +20,7 @@ class Script extends Base
         } else {
             // run script and render output
             $this->data['scriptrunurl'] = '/script/Migration/' . $scriptName . '/run';
-            $userId = (string) $app['session']->get('user_id');
+            $userId = (string) $app['security.token_storage']->getToken()->getUser()->getUserId();
             if (! RightsHelper::hasSiteRight($userId, Domain::PROJECTS + Operation::DELETE)) {
                 $app->abort(403, 'You have insufficient privileges to run scripts'); // this terminates PHP
             } else {
