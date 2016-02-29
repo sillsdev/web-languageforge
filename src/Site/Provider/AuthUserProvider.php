@@ -7,12 +7,12 @@ use Api\Model\Command\UserCommands;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\UserModelWithPassword;
+use Site\Model\UserWithId;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 Use Symfony\Component\Security\Core\User\UserInterface;
-Use Symfony\Component\Security\Core\User\User;
 
 class AuthUserProvider implements UserProviderInterface
 {
@@ -45,11 +45,11 @@ class AuthUserProvider implements UserProviderInterface
             $roles[] = 'ROLE_SITE_'.$user->siteRole[$this->website->domain];
         }
 
-        return new User($user->username, $user->password, $roles, $user->active, true, true, true);
+        return new UserWithId($user->username, $user->password, $user->id->asString(), $roles);
     }
 
     public function refreshUser(UserInterface $user) {
-        if (! $user instanceof User) {
+        if (! $user instanceof UserWithId) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
         }
 
@@ -57,6 +57,6 @@ class AuthUserProvider implements UserProviderInterface
     }
 
     public function supportsClass($class) {
-        return $class === 'Symfony\Component\Security\Core\User\User';
+        return $class === 'Site\Model\UserWithId';
     }
 }

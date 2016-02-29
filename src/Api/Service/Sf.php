@@ -79,7 +79,7 @@ class Sf
 
     public function __construct(Application $app)
     {
-        $this->userId = (string) $app['session']->get('user_id');
+        $this->userId = (string) $app['security.token_storage']->getToken()->getUser()->getUserId();
         $this->projectId = (string) $app['session']->get('projectId');
         $this->app = $app;
         $this->website = Website::get();

@@ -69,7 +69,7 @@ class Base
         $this->_isLoggedIn = $this->isLoggedIn($app);
         if ($this->_isLoggedIn) {
             try {
-                $userId = (string) $app['session']->get('user_id');
+                $userId = (string) $app['security.token_storage']->getToken()->getUser()->getUserId();
                 $this->_userId = $userId;
                 $this->_user = new UserModel($userId);
                 $this->_projectId = (string) $app['session']->get('projectId');
