@@ -1,9 +1,9 @@
 <?php
+
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexiconRoles;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
-use Api\Model\Mapper\Id;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 
 require_once __DIR__ . '/../../../TestConfig.php';
@@ -44,7 +44,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $folderPath = LexUploadCommands::imageFolderPath($project->getAssetsFolderPath());
+        $folderPath = $project->getImageFolderPath();
         $filePath = $folderPath . '/' . $response->data->fileName;
         $projectSlug = $project->databaseName();
 
@@ -63,7 +63,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $folderPath = LexUploadCommands::imageFolderPath($project->getAssetsFolderPath());
+        $folderPath = $project->getImageFolderPath();
         $filePath = $folderPath . '/' . $response->data->fileName;
 
         $this->assertTrue($response->result, 'Import should succeed');
@@ -104,7 +104,7 @@ class TestLexUploadCommands extends UnitTestCase
 
         $this->assertTrue($response->result, 'Import should succeed');
 
-        $folderPath = LexUploadCommands::imageFolderPath($project->getAssetsFolderPath());
+        $folderPath = $project->getImageFolderPath();
         $fileName = $response->data->fileName;
         $filePath = $folderPath . '/' . $fileName;
 
