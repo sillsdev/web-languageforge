@@ -77,12 +77,21 @@ class SendReceiveCommands
         $url = 'http://admin.languagedepot.org/api/user/'.$username.'/projects';
         $postData = ['json' => ['password' => $password]];
 
-        try {
-            $response = $client->post($url, $postData);
-        } catch (RequestException $e) {
-            if ($e->getCode() != 403 && $e->getCode() != 404)  throw $e;
-
-            $response = $e->getResponse();
+        $tryCounter = 1;
+        while ($tryCounter <= 5) {
+            try {
+                $result->errorMessage = '';
+                $response = $client->post($url, $postData);
+                break;
+            } catch (RequestException $e) {
+                if ($e->getCode() != 403 && $e->getCode() != 404) {
+                    $tryCounter++;
+                    $result->errorMessage = $e->getMessage();
+                    continue;
+                }
+                $response = $e->getResponse();
+                break;
+            }
         }
 
         if ($response->getStatusCode() == 403) $result->isKnownUser = true;
@@ -482,6 +491,7 @@ class SendReceiveGetUserProjectResult
     public function __construct()
     {
         $this->isKnownUser = false;
+        $this->errorMessage = '';
         $this->hasValidCredentials = false;
         $this->projects = new ArrayOf(function() {
             return new SendReceiveProjectModel();
@@ -502,4 +512,9 @@ class SendReceiveGetUserProjectResult
      * @var ArrayOf <SendReceiveProjectModel>
      */
     public $projects;
+
+    /**
+     * @var string
+     */
+    public $errorMessage;
 }
