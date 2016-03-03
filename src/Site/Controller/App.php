@@ -45,7 +45,9 @@ class App extends Base
         $this->data['appFolder'] = $appFolder;
         $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
 
-        $userId = (string) $app['security.token_storage']->getToken()->getUser()->getUserId();
+        if (get_class($app['security.token_storage']->getToken()->getUser()) == 'Site\Model\UserWithId')  {
+            $userId = $app['security.token_storage']->getToken()->getUser()->getUserId();
+        }
 
         // update the projectId in the session if it is not empty
         $projectModel = new ProjectModel();

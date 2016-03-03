@@ -79,7 +79,9 @@ class Sf
 
     public function __construct(Application $app)
     {
-        $this->userId = (string) $app['security.token_storage']->getToken()->getUser()->getUserId();
+        if (get_class($app['security.token_storage']->getToken()->getUser()) == 'Site\Model\UserWithId')  {
+            $this->userId = $app['security.token_storage']->getToken()->getUser()->getUserId();
+        }
         $this->projectId = (string) $app['session']->get('projectId');
         $this->app = $app;
         $this->website = Website::get();
