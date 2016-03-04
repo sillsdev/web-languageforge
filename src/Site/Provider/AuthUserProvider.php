@@ -25,18 +25,36 @@ class AuthUserProvider implements UserProviderInterface
      */
     private $website;
 
-    public function loadUserByUsername($username) {
-        $identityCheck = UserCommands::checkIdentity($username, '', $this->website);
-        if (! $identityCheck->usernameExists) {
-            throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
-        }
+    public function loadUserByUsername($usernameOrEmail) {
 
         $user = new UserModelWithPassword();
-        $user->readByUserName($username);
+
+        // try to load user by email address
+        if (strpos($usernameOrEmail, '@') !== false) {
+            $user->readByEmail($usernameOrEmail);
+        } else {
+            $user->readByUserName($usernameOrEmail);
+        }
+
+        if ($user->id->asString() == '') {
+            throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $usernameOrEmail));
+        }
+        if (!$user->hasRoleOnSite($this->website) and $user->role != SystemRoles::SYSTEM_ADMIN) {
+            throw new AccessDeniedException(sprintf('Username "%s" not available on "%s". Use "Create an Account".', $usernameOrEmail, $this->website->domain));
+        }
+
+        /*
+        $identityCheck = UserCommands::checkIdentity($usernameOrEmail, '', $this->website);
+        if (! $identityCheck->usernameExists) {
+            throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $usernameOrEmail));
+        }
+
+        $user->readByUserName($usernameOrEmail);
 
         if (! $identityCheck->usernameExistsOnThisSite and $user->role != SystemRoles::SYSTEM_ADMIN) {
-            throw new AccessDeniedException(sprintf('Username "%s" not available on "%s". Use "Create an Account".', $username, $this->website->domain));
+            throw new AccessDeniedException(sprintf('Username "%s" not available on "%s". Use "Create an Account".', $usernameOrEmail, $this->website->domain));
         }
+        */
 
         $roles = array('ROLE_'.$user->role);
         if ($user->siteRole and
