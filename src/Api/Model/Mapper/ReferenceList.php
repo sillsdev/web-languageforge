@@ -6,6 +6,9 @@ use Palaso\Utilities\CodeGuard;
 
 class ReferenceList
 {
+    /**
+     * @var array <Id>
+     */
     public $refs;
 
     public function __construct()

@@ -9,7 +9,7 @@ use Api\Model\UserModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestRightsHelper extends UnitTestCase
 {
@@ -42,7 +42,7 @@ class TestRightsHelper extends UnitTestCase
 
         $this->environ->inhibitErrorDisplay();
         $this->expectException();
-        $result = $rh->userCanAccessMethod($userId, 'bogusMethodName', array());
+        $rh->userCanAccessMethod('bogusMethodName', array());
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }

@@ -1,10 +1,10 @@
-<h3 translate="Choose a project name"></h3>
+<h3 data-translate="Choose a project name"></h3>
 
 <div class="control-group">
     <div class="controls">
         <input type="text" data-ng-model="newProject.projectName" data-ng-blur="checkProjectCode()" 
             set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name" 
-            idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+            data-idle-validate="checkProjectCode()" data-idle-validate-keypress="resetValidateProjectForm()"/>
         <span  data-ng-show="newProject.projectCode.length > 0">
             <span  data-ng-show="projectCodeState == 'loading'">
                 <img id="projectCodeLoading" class="validator" src="/Site/views/shared/image/loading-small.gif" /></span>
@@ -22,11 +22,11 @@
 </div>
 <br />
 <div class="control-group">
-    <label class="control-label muted" translate="Project Code"></label>
+    <label class="control-label muted" for="projectCode" data-translate="Project Code"></label>
     <div class="controls" data-ng-show="newProject.editProjectCode">
-        <input type="text" data-ng-model="newProject.projectCode" 
+        <input type="text" data-ng-model="newProject.projectCode" id="projectCode"
             data-ng-trim="false" maxlength="50" required data-ng-blur="checkProjectCode()" 
-            idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+            data-idle-validate="checkProjectCode()" data-idle-validate-keypress="resetValidateProjectForm()"/>
     </div>
     <div class="controls" data-ng-hide="newProject.editProjectCode">
         <div class="uneditable-input"

@@ -10,7 +10,7 @@ use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestLiftImport extends UnitTestCase
 {
@@ -1360,7 +1360,6 @@ EOD;
         $this->assertEqual($optionList->items[1]->value, 'anthropology');
     }
 
-
     // lift-ranges another POS
     const liftRangesAnotherPosV0_13 = <<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1418,6 +1417,66 @@ EOD;
         $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS));
         $this->assertEqual($optionList->items->count(), 1);
         $this->assertEqual($optionList->items[0]->value, 'adjunct');
+    }
+
+    // lift-ranges another POS
+    const liftUnknownRangeV0_13 = <<<EOD
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- See http://code.google.com/p/lift-standard for more information on the format used here. -->
+<lift producer="SIL.FLEx 8.1.1.41891" version="0.13">
+<header>
+<ranges>
+<range id="dialect" href="file://C:/Users/zook/Desktop/TestLangProj/TestLangProj.lift-ranges"/>
+</ranges>
+</header>
+<entry dateCreated="2003-08-07T13:42:42Z" dateModified="2007-01-17T19:16:55Z" id="*hindoksa_016f2759-ed12-42a5-abcb-7fe3f53d05b0" guid="016f2759-ed12-42a5-abcb-7fe3f53d05b0">
+<lexical-unit>
+<form lang="qaa-fonipa-x-kal"><text>*dok</text></form>
+<form lang="qaa-x-kal"><text>*dok</text></form>
+</lexical-unit>
+</entry>
+</lift>
+EOD;
+
+    // lift-ranges with unknown range
+    const liftRangesUnknownRangeV0_13 = <<<EOD
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- See http://code.google.com/p/lift-standard for more information on the format used here. -->
+<lift-ranges>
+<range id="grammatical-info">
+<!-- These are all the parts of speech in the FLEx db, used or unused.  These are used as the basic grammatical-info values. -->
+<range-element id="Associativo" guid="8d0461bd-2b2e-4d65-9f17-0ab5b99d0736" parent="Preposição">
+<label>
+<form lang="en"><text>Associative</text></form>
+<form lang="pt"><text>Associativo</text></form>
+</label>
+<abbrev>
+<form lang="en"><text>Assoc</text></form>
+<form lang="pt"><text>Assoc</text></form>
+</abbrev>
+<description>
+<form lang="en"><text>As a word it functions as a preposition, it can also be a prefix to a possessive root. Q: should it be listed separtely as a preposion and a prefix- ?</text></form>
+</description>
+<trait name="catalog-source-id" value=""/>
+</range-element>
+</range>
+</lift-ranges>
+EOD;
+
+    public function testLiftImportMerge_UnknownRange_RangeError()
+    {
+        $liftFilePath = $this->environ->createTestLiftFile(self::liftUnknownRangeV0_13, 'LiftUnknownRangeV0_13.lift');
+        $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangesUnknownRangeV0_13, 'TestLangProj.lift-ranges');
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $mergeRule = LiftMergeRule::IMPORT_WINS;
+        $skipSameModTime = false;
+
+        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+
+        $report = $importer->getReport();
+        $reportStr = $report->toString();
+        $this->assertTrue($report->hasError());
+        $this->assertPattern("/the lift range 'dialect' was not found in the current file/", $reportStr);
     }
 
     public function testLiftImportMerge_NoLiftRanges_Error()

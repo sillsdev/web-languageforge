@@ -50,6 +50,12 @@
   "newProjectCode"   : "new_project",
   "emptyProjectName" : "Empty Project",
   "emptyProjectCode" : "empty_project",
+  "srProjectName"    : "SR Project",
+  "srProjectCode"    : "sr_project",
+  "srIdentifier"     : "mock-id1",
+  "srName"           : "mock-name1",
+  "srUsername"       : "sr-mock-username",
+  "srPassword"       : "sr-mock-password",
 
 
 

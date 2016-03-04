@@ -8,7 +8,7 @@ class AllSemDomTransModelTests extends TestSuite
     public function __construct()
     {
         parent::__construct();
-        $this->addFile(TestPath . 'languageforge/semdomtrans/models/SemDomTransProjectModel_Test.php');
+        $this->addFile(TestPhpPath . 'languageforge/semdomtrans/models/SemDomTransProjectModel_Test.php');
     }
 
 }

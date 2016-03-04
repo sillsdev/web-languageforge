@@ -7,7 +7,7 @@
     <div id="form-container">
         <div class="page-header" align="center">
             <h1>Login</h1>
-            <p>Please login with your <b>Username</b> and <b>Password</b> below.</p>
+            <p>Please login with your <b>Username / Email</b> and <b>Password</b> below.</p>
             <p>Don't have an account? <a href="/signup">Register now.</a></p>
             {% for infoMessage in app.session.getFlashBag.get('infoMessage') %}
                 <div class="alert alert-info">{{ infoMessage }}</div>
@@ -20,7 +20,7 @@
         <form class="form-horizontal" action="{{ path('app_login_check') }}" method="post" accept-charset="utf-8" name="loginForm" novalidate>
             <fieldset>
                 <div class="control-group">
-                    <label class="control-label" for="username" translate="Username"></label>
+                    <label class="control-label" for="username" translate="Username or Email"></label>
                     <div class="controls">
                         <input class="span3" id="username" autofocus
                                required type="text" name="_username"
@@ -38,7 +38,7 @@
                 <div class="control-group">
                     <div class="controls">
                         <label class="checkbox">
-                            <input type="checkbox" id="remember" name="_remember_me" />
+                            <input type="checkbox" id="remember" checked name="_remember_me" />
                             Remember me on this device
                         </label>
                     </div>

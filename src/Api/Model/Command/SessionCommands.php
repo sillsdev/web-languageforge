@@ -23,6 +23,7 @@ class SessionCommands
         // Rights
         $user = new UserModel($userId);
         $sessionData['userSiteRights'] = $user->getRightsArray($website);
+        $sessionData['username'] = $user->username;
 
         if ($projectId) {
             $project = ProjectModel::getById($projectId);

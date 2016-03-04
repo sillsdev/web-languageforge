@@ -2,14 +2,17 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Palaso\Utilities\CodeGuard;
-use Api\Model\Mapper\Id;
 use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\MapOf;
-use Api\Model\ProjectModel;
+use Api\Model\Mapper\Id;
 use Api\Model\Mapper\IdReference;
+use Api\Model\Mapper\MapOf;
+use Api\Model\Mapper\MapperModel;
+use Api\Model\Mapper\MongoMapper;
+use Api\Model\ProjectModel;
+use Palaso\Utilities\CodeGuard;
+use Ramsey\Uuid\Uuid;
 
-function _createSense($data)
+function _createSense()
 {
     return new Sense();
 }
@@ -26,7 +29,7 @@ function _createCustomField($data)
     }
 }
 
-class LexEntryModel extends \Api\Model\Mapper\MapperModel
+class LexEntryModel extends MapperModel
 {
     use \LazyProperty\LazyPropertiesTrait;
 
@@ -44,6 +47,11 @@ class LexEntryModel extends \Api\Model\Mapper\MapperModel
      * @var string
      */
     public $guid;
+
+    /**
+     * @var int
+     */
+    public $dirtySR;
 
     // PUBLIC PROPERTIES
 
@@ -157,16 +165,6 @@ class LexEntryModel extends \Api\Model\Mapper\MapperModel
      */
     public $summaryDefinition;
 
-    public static function mapper($databaseName)
-    {
-        static $instance = null;
-        if (null === $instance) {
-            $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'lexicon');
-        }
-
-        return $instance;
-    }
-
     /**
      * @param ProjectModel $projectModel
      * @param string $id
@@ -174,6 +172,7 @@ class LexEntryModel extends \Api\Model\Mapper\MapperModel
     public function __construct($projectModel, $id = '')
     {
         $this->setPrivateProp('guid');
+        $this->setPrivateProp('dirtySR');
         $this->setPrivateProp('mercurialSha');
         $this->setReadOnlyProp('authorInfo');
 
@@ -208,6 +207,16 @@ class LexEntryModel extends \Api\Model\Mapper\MapperModel
         parent::__construct(self::mapper($databaseName), $id);
     }
 
+    public static function mapper($databaseName)
+    {
+        static $instance = null;
+        if (null === $instance) {
+            $instance = new MongoMapper($databaseName, 'lexicon');
+        }
+
+        return $instance;
+    }
+
     protected function createProperty($name)
     {
         switch ($name) {
@@ -238,6 +247,7 @@ class LexEntryModel extends \Api\Model\Mapper\MapperModel
             case 'location':
                 return new LexiconField();
             case 'morphologyType':
+            default:
                 return '';
         }
     }
@@ -276,6 +286,8 @@ class LexEntryModel extends \Api\Model\Mapper\MapperModel
                 return $sense;
             }
         }
+
+        return new Sense();
     }
 
     /**
@@ -304,4 +316,11 @@ class LexEntryModel extends \Api\Model\Mapper\MapperModel
         self::mapper($databaseName)->remove($id);
     }
 
+    /**
+     * @return string
+     */
+    public function createGuid()
+    {
+        return Uuid::uuid4()->toString();
+    }
 }

@@ -1,50 +1,52 @@
-"use strict";
+'use strict';
 
 angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.notice', 'ngAnimate', 'bellows.services', 'angularFileUpload', 'lexicon.services'])
+
 // Palaso UI Dictionary Control: Picture
-.directive('dcPicture', [ function() {
+.directive('dcPicture', [function() {
   return {
     restrict: 'E',
     templateUrl: '/angular-app/languageforge/lexicon/directive/dc-picture.html',
     scope: {
-      config: "=",
-      pictures: "=",
-      control: "="
+      config: '=',
+      pictures: '=',
+      control: '='
     },
-    controller: ['$scope', '$upload', 'sessionService', 'lexProjectService', 'lexConfigService', 'silNoticeService', 'modalService', '$rootScope', 
-    function($scope, $upload, ss, lexProjectService, lexConfigService, notice, modalService, $rootScope) {
+    controller: ['$scope', '$upload', '$filter', 'sessionService', 'lexProjectService', 'lexConfigService', 'silNoticeService', 'modalService',
+    function($scope, $upload, $filter, ss, lexProjectService, lexConfigService, notice, modalService) {
       $scope.upload = {};
       $scope.upload.progress = 0;
       $scope.upload.file = null;
-      
+
       $scope.fieldContainsData = lexConfigService.fieldContainsData;
-      
+
       function Picture(fileName, caption) {
         this.fileName = fileName || '';
         this.caption = caption || {};
-      };
-      
+      }
+
       Picture.prototype.getUrl = function pictureGetUrl() {
         return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + this.fileName;
       };
-      
+
       $scope.getPictureUrl = function getPictureUrl(fileName) {
         return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + fileName;
       };
 
       // strips the timestamp file prefix (returns everything after the '_')
       function originalFileName(fileName) {
-        return fileName.substr(fileName.indexOf('_') + 1); 
-      };
+        return fileName.substr(fileName.indexOf('_') + 1);
+      }
 
       function addPicture(fileName) {
-//        var newPicture = new Picture(fileName);
-        var newPicture = {}, captionConfig = angular.copy($scope.config);
+        //        var newPicture = new Picture(fileName);
+        var newPicture = {};
+        var captionConfig = angular.copy($scope.config);
         captionConfig.type = 'multitext';
         newPicture.fileName = fileName;
         newPicture.caption = $scope.control.makeValidModelRecursive(captionConfig, {});
         $scope.pictures.push(newPicture);
-      };
+      }
 
       $scope.deletePicture = function deletePicture(index) {
         var fileName = $scope.pictures[index].fileName;
@@ -54,7 +56,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
             $scope.pictures.splice(index, 1);
             lexProjectService.removeMediaFile('sense-image', fileName, function(result) {
               if (result.ok) {
-                if (! result.data.result) {
+                if (!result.data.result) {
                   notice.push(notice.ERROR, result.data.errorMessage);
                 }
               }
@@ -76,14 +78,15 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
 
             // Upload.php script
             url: '/upload/lf-lexicon/sense-image',
+
             // headers: {'myHeaderKey': 'myHeaderVal'},
             data: {
-              filename: file.name,
+              filename: file.name
             },
-            file: file,
+            file: file
           }).progress(function(evt) {
             $scope.upload.progress = parseInt(100.0 * evt.loaded / evt.total);
-          }).success(function(data, status, headers, config) {
+          }).success(function(data) {
             if (data.result) {
               $scope.upload.progress = 100.0;
               addPicture(data.data.fileName);
@@ -92,7 +95,18 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
               $scope.upload.progress = 0;
               notice.push(notice.ERROR, data.data.errorMessage);
             }
+
             $scope.upload.file = null;
+          }).error(function(data, status) {
+            var errorMessage = $filter('translate')('Import failed.');
+            if (status > 0) {
+              errorMessage += ' Status: ' + status;
+              if (data) {
+                errorMessage += '- ' + data;
+              }
+            }
+
+            notice.push(notice.ERROR, errorMessage);
           });
         } else {
           $scope.upload.progress = 0;

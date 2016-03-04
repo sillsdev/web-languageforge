@@ -2,6 +2,7 @@
 
 namespace Api\Model\Shared\Dto;
 
+use Api\Library\Shared\Website;
 use Api\Model\UserProfileModel;
 
 class UserProfileDto

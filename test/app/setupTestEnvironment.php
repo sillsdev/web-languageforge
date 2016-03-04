@@ -13,6 +13,7 @@ use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Mapper\MongoStore;
 use Api\Model\ProjectModel;
@@ -21,7 +22,7 @@ use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\UserModel;
 
-$constants = json_decode(file_get_contents(TestPath . '/testConstants.json'), true);
+$constants = json_decode(file_get_contents(TestPath . 'app/testConstants.json'), true);
 
 // Fake some $_SERVER variables like HTTP_HOST for the sake of the code that needs it
 $hostname = "languageforge.local";
@@ -43,7 +44,8 @@ foreach ($db->listCollections() as $collection) { $collection->drop(); }
 // Also empty out databases for the test projects
 $projectArrays = array(
     $constants['testProjectName']  => $constants['testProjectCode'],
-    $constants['otherProjectName'] => $constants['otherProjectCode']
+    $constants['otherProjectName'] => $constants['otherProjectCode'],
+    $constants['srProjectName'] => $constants['srProjectCode']
 );
 
 foreach ($projectArrays as $projectName => $projectCode) {
@@ -164,10 +166,19 @@ $otherProjectModel->projectCode = $constants['otherProjectCode'];
 $otherProjectModel->allowInviteAFriend = $constants['otherProjectAllowInvites'];
 $otherProjectModel->write();
 
+$srProject = ProjectCommands::createProject(
+    $constants['srProjectName'],
+    $constants['srProjectCode'],
+    $projectType,
+    $managerUserId,
+    $website
+);
+
 ProjectCommands::updateUserRole($testProject, $managerUserId, ProjectRoles::MANAGER);
 ProjectCommands::updateUserRole($testProject, $memberUserId, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($testProject, $resetUserId, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($otherProject, $adminUserId, ProjectRoles::MANAGER);
+ProjectCommands::updateUserRole($srProject, $adminUserId, ProjectRoles::MANAGER);
 
 if ($site == 'scriptureforge') {
     $text1 = TextCommands::updateText($testProject, array(
@@ -232,6 +243,11 @@ if ($site == 'scriptureforge') {
     $testProjectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[] = 'th-fonipa';
     $testProjectId = $testProjectModel->write();
 
+    $srProjectModel = new LexiconProjectModel($srProject);
+    $srProjectModel->sendReceiveProject = new SendReceiveProjectModel($constants['srIdentifier'], $constants['srName'], 'http://public.languagedepot.org', 'manager');;
+    $srProjectModel->sendReceiveUsername = $constants['srUsername'];
+    $srProjectId = $srProjectModel->write();
+
     // setup to mimic file upload
     $fileName = $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'];
     $file = array();
@@ -240,7 +256,7 @@ if ($site == 'scriptureforge') {
 
     // put a copy of the test file in tmp
     $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
-    copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "php/common/$fileName", $tmpFilePath);
 
     $response = LexUploadCommands::uploadImageFile($testProjectId, 'sense-image', $tmpFilePath);
 
@@ -274,10 +290,10 @@ if ($site == 'scriptureforge') {
     // put mock uploaded zip import (jpg file)
     $fileName = $constants['testMockJpgImportFile']['name'];
     $tmpFilePath = sys_get_temp_dir() . '/' . $fileName;
-    copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "php/common/$fileName", $tmpFilePath);
 
     // put mock uploaded zip import (zip file)
     $fileName = $constants['testMockZipImportFile']['name'];
     $tmpFilePath = sys_get_temp_dir() . '/' . $fileName;
-    copy(dirname(TestPath) . "/php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "php/common/$fileName", $tmpFilePath);
 }

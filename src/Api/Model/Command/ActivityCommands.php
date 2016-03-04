@@ -2,9 +2,11 @@
 
 namespace Api\Model\Command;
 
+use Api\Model\AnswerModel;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\ActivityModel;
 use Api\Model\CommentModel;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\ProjectModel;
 use Api\Model\QuestionModel;
 use Api\Model\TextModel;
@@ -24,6 +26,7 @@ class ActivityCommands
      * @param string $questionId
      * @param string $answerId
      * @param CommentModel $commentModel
+     * @param string $mode
      * @return string activity id
      */
     public static function updateComment($projectModel, $questionId, $answerId, $commentModel, $mode = "update")
@@ -61,8 +64,8 @@ class ActivityCommands
      *
      * @param ProjectModel $projectModel
      * @param string $questionId
-     * @param string $answerId
      * @param AnswerModel $answerModel
+     * @param string $mode
      * @return string activity id
      */
     public static function updateAnswer($projectModel, $questionId, $answerModel, $mode = "update")
@@ -95,6 +98,7 @@ class ActivityCommands
     /**
      *
      * @param ProjectModel $projectModel
+     * @param string $textId
      * @param TextModel $textModel
      * @return string activity id
      */
@@ -165,7 +169,6 @@ class ActivityCommands
      */
     public static function updateScore($projectModel, $questionId, $answerId, $userId, $mode = 'increase')
     {
-        $activity = new ActivityModel($projectModel);
         $question = new QuestionModel($projectModel, $questionId);
         $text = new TextModel($projectModel, $question->textRef->asString());
         $answer = $question->answers[$answerId];
@@ -192,7 +195,7 @@ class ActivityCommands
      * @param ProjectModel $projectModel
      * @param string $userId
      * @param LexEntryModel $entry
-     * @param Action $action
+     * @param string $action
      * @return string activity id
      */
     public static function writeEntry($projectModel, $userId, $entry, $action)
@@ -208,7 +211,7 @@ class ActivityCommands
             $activity->action = ActivityModel::ADD_ENTRY;
             try {
                 $title = LexEntryCommands::getEntryLexeme($projectModel->id->asString(), $entry->id->asString());
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 $title = '';
             }
         }
@@ -223,7 +226,7 @@ class ActivityCommands
      *
      * @param ProjectModel $projectModel
      * @param string $userId
-     * @param string entry id
+     * @param string $id entry id
      * @return string activity id
      */
     public static function deleteEntry($projectModel, $userId, $id)
