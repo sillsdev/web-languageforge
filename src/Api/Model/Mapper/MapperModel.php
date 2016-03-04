@@ -86,18 +86,19 @@ class MapperModel
     // TODO Would be nice to deprecate this. Should be removed. Derived models should do their own query, or have methods that do the right query not elsewhere in app code. CP 2013-11
     public function findOneByQuery($query, $fields = array())
     {
-        return $this->_mapper->findOneByQuery($this, $query, $fields = array());
+        $this->_mapper->findOneByQuery($this, $query, $fields = array());
     }
 
     /**
      * Reads the model from the mongo collection
      * @param string $id
      * @see MongoMapper::read()
+     * @throws \Exception
      */
     public function read($id)
     {
         if ($this->_mapper->exists($id)) {
-            return $this->_mapper->read($this, $id);
+            $this->_mapper->read($this, $id);
         } else {
             throw new \Exception(get_called_class() . "($id) doesn't exist");
         }

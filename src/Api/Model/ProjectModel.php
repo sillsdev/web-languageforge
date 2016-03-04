@@ -2,36 +2,43 @@
 
 namespace Api\Model;
 
-use Palaso\Utilities\CodeGuard;
-use Palaso\Utilities\FileUtilities;
 use Api\Library\Shared\Website;
 use Api\Model\Command\UserCommands;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexiconRoles;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransRoles;
+use Api\Model\Languageforge\SemDomTransProjectModel;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\Id;
 use Api\Model\Mapper\IdReference;
 use Api\Model\Mapper\MapOf;
 use Api\Model\Mapper\MapperUtils;
-use Api\Model\Languageforge\SemDomTransProjectModel;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Scriptureforge\Rapuma\RapumaRoles;
 use Api\Model\Scriptureforge\RapumaProjectModel;
+use Api\Model\Scriptureforge\Sfchecks\SfchecksRoles;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
 use Api\Model\Shared\Rights\ProjectRoleModel;
 use Api\Model\Sms\SmsSettings;
+use Palaso\Utilities\CodeGuard;
+use Palaso\Utilities\FileUtilities;
 
 class ProjectModel extends Mapper\MapperModel
 {
 
+    /**
+     * @var LexiconRoles|SfchecksRoles|SemDomTransRoles|RapumaRoles
+     */
     protected $rolesClass;
 
     public function __construct($id = '')
     {
         $this->id = new Id();
         $this->ownerRef = new IdReference();
-        $this->users = new MapOf(function ($data) {
+        $this->users = new MapOf(function() {
             return new ProjectRoleModel();
         });
         
-        $this->userJoinRequests = new MapOf(function ($data) {
+        $this->userJoinRequests = new MapOf(function() {
             return new ProjectRoleModel();
         });
         
@@ -66,9 +73,8 @@ class ProjectModel extends Mapper\MapperModel
      */
     public function read($id)
     {
-        $result = parent::read($id);
+        parent::read($id);
         $this->userProperties->ensurePickListsExist();
-        return $result;
     }
 
     /**
@@ -95,7 +101,7 @@ class ProjectModel extends Mapper\MapperModel
             $user->removeProject($this->id->asString());
             $user->write();
         }
-        $this->rrmdir($this->getAssetsFolderPath());
+        FileUtilities::removeFolderAndAllContents($this->getAssetsFolderPath());
 
         MapperUtils::dropAllCollections($this->databaseName());
         ProjectModelMongoMapper::instance()->remove($this->id->asString());
@@ -109,7 +115,7 @@ class ProjectModel extends Mapper\MapperModel
      */
     public function addUser($userId, $role)
     {
-        $mapper = ProjectModelMongoMapper::instance();
+        ProjectModelMongoMapper::instance();
 //        $ProjectModelMongoMapper::mongoID($userId)
         $model = new ProjectRoleModel();
         $model->role = $role;
@@ -123,7 +129,7 @@ class ProjectModel extends Mapper\MapperModel
      * @see roles
      */
     public function createUserJoinRequest($userId, $role) {
-        $mapper = ProjectModelMongoMapper::instance();
+        ProjectModelMongoMapper::instance();
         $model = new ProjectRoleModel();
         $model->role = $role;
         $this->userJoinRequests[$userId] = $model;
@@ -158,7 +164,7 @@ class ProjectModel extends Mapper\MapperModel
      */
     public function userIsMember($userId)
     {
-        return key_exists($userId, $this->users);
+        return key_exists($userId, $this->users->getArrayCopy());
     }
 
     public function listUsers()
@@ -190,13 +196,13 @@ class ProjectModel extends Mapper\MapperModel
         }
         return $userList;
     }
-    
 
     /**
      * Returns true if the given $userId has the $right in this project.
      * @param string $userId
      * @param int $right
      * @return bool
+     * @throws \Exception
      */
     public function hasRight($userId, $right)
     {
@@ -204,7 +210,7 @@ class ProjectModel extends Mapper\MapperModel
             throw new \Exception('hasRight method cannot be called directly from ProjectModel');
         }
         $hasRight = false;
-        if (key_exists($userId, $this->users)) {
+        if (key_exists($userId, $this->users->getArrayCopy())) {
             $rolesClass = $this->rolesClass;
             $hasRight = $rolesClass::hasRight($this->users[$userId]->role, $right);
         }
@@ -228,6 +234,7 @@ class ProjectModel extends Mapper\MapperModel
      * Returns the rights array for the $userId role.
      * @param string $userId
      * @return array
+     * @throws \Exception
      */
     public function getRightsArray($userId)
     {
@@ -235,7 +242,7 @@ class ProjectModel extends Mapper\MapperModel
             throw new \Exception('getRightsArray method cannot be called directly from ProjectModel');
         }
         CodeGuard::checkTypeAndThrow($userId, 'string');
-        if (!key_exists($userId, $this->users)) {
+        if (!key_exists($userId, $this->users->getArrayCopy())) {
             $result = array();
         } else {
             $role = $this->users[$userId]->role;
@@ -403,21 +410,7 @@ class ProjectModel extends Mapper\MapperModel
      * @var ArrayOf
      */
     public $usersRequestingAccess;
-    
-    
-    private function rrmdir($dir)
-    {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (filetype($dir."/".$object) == "dir") $this->rrmdir($dir."/".$object); else unlink($dir."/".$object);
-                }
-            }
-            reset($objects);
-            rmdir($dir);
-        }
-    }
+
 }
 
 /**
