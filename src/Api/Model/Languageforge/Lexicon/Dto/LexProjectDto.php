@@ -60,7 +60,7 @@ class LexProjectDto
         $data['project']['ownerRef'] = $projectJson['ownerRef'];
         $data['project']['projectCode'] = $projectJson['projectCode'];
         $data['project']['featured'] = $projectJson['featured'];
-        if ($project->sendReceiveProject->identifier) {
+        if ($project->hasSendReceive()) {
             $data['project']['sendReceive'] = array();
             $data['project']['sendReceive']['project'] = $projectJson['sendReceiveProject'];
             $data['project']['sendReceive']['username'] = $projectJson['sendReceiveUsername'];

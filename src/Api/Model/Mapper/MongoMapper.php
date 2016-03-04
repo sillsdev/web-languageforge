@@ -11,12 +11,12 @@ class MongoMapper
     const ID_IN_DOC = 1;
 
     /**
-     * @var MongoDB
+     * @var \MongoDB
      */
     protected $_db;
 
     /**
-     * @var MongoCollection
+     * @var \MongoCollection
      */
     protected $_collection;
 
@@ -181,6 +181,7 @@ class MongoMapper
     /**
      *
      * @param string $id
+     * @return bool
      */
     public function exists($id)
     {
@@ -195,8 +196,9 @@ class MongoMapper
     }
 
     /**
-     * @param Object $model
+     * @param mixed $model
      * @param string $id
+     * @throws \Exception
      */
     public function read($model, $id)
     {
@@ -215,7 +217,7 @@ class MongoMapper
 
     /**
      *
-     * @param Object $model
+     * @param mixed $model
      * @param string $property
      * @param string $value
      * @return bool true on document found, false otherwise
@@ -236,8 +238,9 @@ class MongoMapper
 
     /**
      *
-     * @param Object $model
+     * @param mixed $model
      * @param array  $properties
+     * @return bool
      */
     public function readByProperties($model, $properties)
     {
