@@ -212,6 +212,8 @@ $app->get('/app/{appName}',     'Site\Controller\App::view')->value('appName', '
 $app->get('/script/{folder}/{scriptName}/{runType}', 'Site\Controller\Script::view');
 $app->get('/script/{folder}/{scriptName}/', 'Site\Controller\Script::view');
 $app->get('/script/{folder}/{scriptName}',  'Site\Controller\Script::view');
+$app->get('/script/',  'Site\Controller\Script::view');
+$app->get('/script',  'Site\Controller\Script::view');
 
 //public
 $app->post('/api/{apiName}',    'Site\Controller\Api::service');

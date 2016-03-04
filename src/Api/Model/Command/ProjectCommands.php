@@ -2,18 +2,19 @@
 
 namespace Api\Model\Command;
 
-use Palaso\Utilities\CodeGuard;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\Website;
+use Api\Model\EmailSettings;
 use Api\Model\Shared\Dto\ManageUsersDto;
 use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\Mapper\Id;
 use Api\Model\Mapper\JsonDecoder;
 use Api\Model\Mapper\JsonEncoder;
-use Api\Model\JoinRequests_ProjectModel;
+use Api\Model\ProjectListModel;
 use Api\Model\ProjectModel;
 use Api\Model\ProjectSettingsModel;
+use Api\Model\Sms\SmsSettings;
 use Api\Model\UserModel;
+use Palaso\Utilities\CodeGuard;
 
 class ProjectCommands
 {
@@ -52,12 +53,12 @@ class ProjectCommands
     }
 
     /**
-     *
      * @param string $id
+     * @return array
      */
     public static function readProject($id)
     {
-        $project = new \Api\Model\ProjectModel($id);
+        $project = new ProjectModel($id);
 
         return JsonEncoder::encode($project);
     }
@@ -72,7 +73,7 @@ class ProjectCommands
         $count = 0;
         foreach ($projectIds as $projectId) {
             CodeGuard::checkTypeAndThrow($projectId, 'string');
-            $project = new \Api\Model\ProjectModel($projectId);
+            $project = new ProjectModel($projectId);
             $project->remove();
             $count++;
         }
@@ -91,7 +92,7 @@ class ProjectCommands
     public static function archiveProject($projectId)
     {
         CodeGuard::checkTypeAndThrow($projectId, 'string');
-        $project = new \Api\Model\ProjectModel($projectId);
+        $project = new ProjectModel($projectId);
         $project->isArchived = true;
         return $project->write();
     }
@@ -121,7 +122,7 @@ class ProjectCommands
      */
     public static function listProjects()
     {
-        $list = new \Api\Model\ProjectListModel();
+        $list = new ProjectListModel();
         $list->read();
 
         return $list;
@@ -153,13 +154,14 @@ class ProjectCommands
         $list = $projectModel->listRequests();
         return $list;
     }
-    
+
     /**
      * Update the user project role in the project
      * @param string $projectId
      * @param string $userId
      * @param string $projectRole
-     * @return string - userId
+     * @throws \Exception
+     * @return string $userId
      */
     public static function updateUserRole($projectId, $userId, $projectRole = ProjectRoles::CONTRIBUTOR)
     {
@@ -176,7 +178,7 @@ class ProjectCommands
         }
 
         // TODO: Only trigger activity if this is the first time they have been added to project
-        $usersDto = ProjectCommands::usersDto($projectId);
+        ProjectCommands::usersDto($projectId);
         if (!$project->users->offsetExists($userId)) {
             ActivityCommands::addUserToProject($project, $userId);
         }
@@ -191,8 +193,10 @@ class ProjectCommands
 
     /**
      * Removes users from the project (two-way unlink)
-     * @param Id $projectId
+     * @param string $projectId
      * @param array $userIds array<string>
+     * @return string $projectId
+     * @throws \Exception
      */
     public static function removeUsers($projectId, $userIds)
     {
@@ -209,18 +213,21 @@ class ProjectCommands
                 throw new \Exception("Cannot remove project owner");
             }
         }
+
+        return $projectId;
     }
     
     /**
      * Removes users from the project (two-way unlink)
-     * @param Id $projectId
-     * @param array $userIds array<string>
+     * @param string $projectId
+     * @param string $joinRequestId
+     * @return string $projectId
      */
     public static function removeJoinRequest($projectId, $joinRequestId)
     {
         $project = new ProjectModel($projectId);
         $project->removeUserJoinRequest($joinRequestId);
-        $project->write();
+        return $project->write();
     }
     
     public static function grantAccessForUserRequest($projectId, $userId, $projectRole) {
@@ -244,8 +251,8 @@ class ProjectCommands
 
     public static function updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray)
     {
-        $smsSettings = new \Api\Model\Sms\SmsSettings();
-        $emailSettings = new \Api\Model\EmailSettings();
+        $smsSettings = new SmsSettings();
+        $emailSettings = new EmailSettings();
         JsonDecoder::decode($smsSettings, $smsSettingsArray);
         JsonDecoder::decode($emailSettings, $emailSettingsArray);
         $projectSettings = new ProjectSettingsModel($projectId);
@@ -267,8 +274,6 @@ class ProjectCommands
     }
 
     /**
-     *
-     * @param Website $website
      * @param string $code
      * @return bool
      */

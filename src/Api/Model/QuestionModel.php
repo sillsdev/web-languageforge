@@ -2,14 +2,14 @@
 
 namespace Api\Model;
 
+use Api\Model\Mapper\Id;
+use Api\Model\Mapper\IdReference;
+use Api\Model\Mapper\MapperListModel;
+use Api\Model\Mapper\MapOf;
+use Api\Model\Mapper\MapperModel;
 use Api\Model\Mapper\MongoMapper;
 
-use Api\Model\Mapper\IdReference;
-
-use Api\Model\Mapper\Id;
-use Api\Model\Mapper\MapOf;
-
-class QuestionModelMongoMapper extends \Api\Model\Mapper\MongoMapper
+class QuestionModelMongoMapper extends MongoMapper
 {
     /**
      * @var QuestionModelMongoMapper[]
@@ -30,8 +30,12 @@ class QuestionModelMongoMapper extends \Api\Model\Mapper\MongoMapper
 
 }
 
-class QuestionModel extends \Api\Model\Mapper\MapperModel
+class QuestionModel extends MapperModel
 {
+    /**
+     * @param ProjectModel $projectModel
+     * @param string $id
+     */
     public function __construct($projectModel, $id = '')
     {
         $this->id = new Id();
@@ -67,6 +71,7 @@ class QuestionModel extends \Api\Model\Mapper\MapperModel
     /**
      * Adds / updates an answer to the given question.
      * @param AnswerModel $answer
+     * @return string $id
      */
     public function writeAnswer($answer)
     {
@@ -122,7 +127,7 @@ class QuestionModel extends \Api\Model\Mapper\MapperModel
      * @param string $databaseName
      * @param string $questionId
      * @param string $answerId
-     * @return
+     * @return int
      */
     public static function removeAnswer($databaseName, $questionId, $answerId)
     {
@@ -138,6 +143,7 @@ class QuestionModel extends \Api\Model\Mapper\MapperModel
      * @param string $questionId
      * @param string $answerId
      * @param CommentModel $comment
+     * @return string $id
      */
     public static function writeComment($databaseName, $questionId, $answerId, $comment)
     {
@@ -162,7 +168,7 @@ class QuestionModel extends \Api\Model\Mapper\MapperModel
      * @param string $questionId
      * @param string $answerId
      * @param string $commentId
-     * @return
+     * @return int
      */
     public static function removeComment($databaseName, $questionId, $answerId, $commentId)
     {
@@ -243,9 +249,12 @@ class QuestionModel extends \Api\Model\Mapper\MapperModel
 
 }
 
-class QuestionListModel extends \Api\Model\Mapper\MapperListModel
+class QuestionListModel extends MapperListModel
 {
-
+    /**
+     * @param ProjectModel $projectModel
+     * @param string $textId
+     */
     public function __construct($projectModel, $textId)
     {
         parent::__construct(

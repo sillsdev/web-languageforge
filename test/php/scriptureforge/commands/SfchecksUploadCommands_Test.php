@@ -6,7 +6,7 @@ use Palaso\Utilities\FileUtilities;
 
 require_once (__DIR__ . '/../../TestConfig.php');
 require_once (SimpleTestPath . 'autorun.php');
-require_once (TestPath . 'common/MongoTestEnvironment.php');
+require_once (TestPhpPath . 'common/MongoTestEnvironment.php');
 
 class TestSfchecksUploadCommands extends UnitTestCase
 {
@@ -20,7 +20,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $text = new TextModel($project);
         $textId = $text->write();
         $fileName = 'TestAudio.mp3';
-        $tmpFilePath = $environ->uploadTextAudioFile(TestPath . "common/$fileName", $fileName, $textId);
+        $tmpFilePath = $environ->uploadTextAudioFile(TestPhpPath . "common/$fileName", $fileName, $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
@@ -48,7 +48,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $text = new TextModel($project);
         $textId = $text->write();
         $fileName = 'TestAudio.MP3';
-        $tmpFilePath = $environ->uploadTextAudioFile(TestPath . 'common/TestAudio.mp3', $fileName, $textId);
+        $tmpFilePath = $environ->uploadTextAudioFile(TestPhpPath . 'common/TestAudio.mp3', $fileName, $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
@@ -67,7 +67,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $projectId = $project->write();
         $text = new TextModel($project);
         $textId = $text->write();
-        $tmpFilePath = $environ->uploadTextAudioFile(TestPath . 'common/TestAudio.wav', 'TestAudio.mp3', $textId);
+        $tmpFilePath = $environ->uploadTextAudioFile(TestPhpPath . 'common/TestAudio.wav', 'TestAudio.mp3', $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
@@ -75,7 +75,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $this->assertEqual('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertPattern('/Ensure the file is a .mp3/', $response->data->errorMessage, 'Error message should match the error');
 
-        $tmpFilePath = $environ->uploadTextAudioFile(TestPath . 'common/TestAudio.mp3', 'TestAudio.wav', $textId);
+        $tmpFilePath = $environ->uploadTextAudioFile(TestPhpPath . 'common/TestAudio.mp3', 'TestAudio.wav', $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
@@ -109,16 +109,16 @@ class TestSfchecksUploadCommands extends UnitTestCase
         // put a copy of the test files in the folderPath
         $fileName1 = 'TestAudio1.mp1';
         $filePath1 = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName1);
-        copy(TestPath . 'common/TestAudio.mp3', $filePath1);
+        copy(TestPhpPath . 'common/TestAudio.mp3', $filePath1);
         $fileName2 = 'TestAudio2.mp2';
         $filePath2 = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName2);
-        copy(TestPath . 'common/TestAudio.mp3', $filePath2);
+        copy(TestPhpPath . 'common/TestAudio.mp3', $filePath2);
         $fileName3 = 'TestAudio3.mp3';
         $filePath3 = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName3);
-        copy(TestPath . 'common/TestAudio.mp3', $filePath3);
+        copy(TestPhpPath . 'common/TestAudio.mp3', $filePath3);
         $fileName4 = 'TestAudio4.mp3';
         $filePath4 = SfchecksUploadCommands::mediaFilePath($folderPath, $fakeTextId, $fileName4);
-        copy(TestPath . 'common/TestAudio.mp3', $filePath4);
+        copy(TestPhpPath . 'common/TestAudio.mp3', $filePath4);
 
         $this->assertTrue(file_exists($filePath1), 'File should exist before cleanup');
         $this->assertTrue(file_exists($filePath2), 'File should exist before cleanup');

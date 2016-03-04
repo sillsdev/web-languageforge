@@ -20,14 +20,14 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
         }
 
         // Ready to use; soundManager.createSound() etc. can now be called.
-      },
+      }
     });
 
     $scope.audioIcon = function() {
       var map = {
         stop: 'icon-volume-up',
         play: 'icon-pause',
-        pause: 'icon-play',
+        pause: 'icon-play'
       };
       return map[$scope.state];
     };
@@ -43,7 +43,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
     // Question templates
     $scope.emptyTemplate = {
       title: '(Select a template)',
-      description: undefined,
+      description: undefined
     };
     $scope.templates = [$scope.emptyTemplate];
     $scope.queryTemplates = function() {
@@ -123,7 +123,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
             [
               {href: '/app/projects', label: 'My Projects'},
               {href: sfchecksLinkService.project(), label: $scope.project.name},
-              {href: sfchecksLinkService.text($routeParams.textId), label: $scope.text.title},
+              {href: sfchecksLinkService.text($routeParams.textId), label: $scope.text.title}
             ]
           );
 
@@ -161,7 +161,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
         closeButtonText: 'Cancel',
         actionButtonText: 'Archive',
         headerText: 'Archive Questions?',
-        bodyText: message,
+        bodyText: message
       };
       modalService.showModal({}, modalOptions).then(function() {
         questionService.archive(questionIds, function(result) {
@@ -235,14 +235,14 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
       });
     };
 
-  },])
+  }])
   .controller('QuestionsSettingsCtrl', ['$scope', '$upload', 'sessionService', '$routeParams', 'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService', 'modalService',
   function($scope, $upload, ss, $routeParams, breadcrumbService, notice, textService, questionService, sfchecksLinkService, modalService) {
     var Q_TITLE_LIMIT = 50;
     var textId = $routeParams.textId;
     $scope.textId = textId;
     $scope.editedText = {
-      id: textId,
+      id: textId
     };
     $scope.rangeSelectorCollapsed = true;
     $scope.settings = {};
@@ -280,7 +280,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
               {href: '/app/projects', label: 'My Projects'},
               {href: sfchecksLinkService.project(), label: $scope.dto.bcs.project.crumb},
               {href: sfchecksLinkService.text($routeParams.textId), label: $scope.dto.text.title},
-              {href: sfchecksLinkService.text($routeParams.textId) + '/Settings', label: 'Settings'},
+              {href: sfchecksLinkService.text($routeParams.textId) + '/Settings', label: 'Settings'}
             ]
           );
         }
@@ -311,7 +311,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
         closeButtonText: 'Cancel',
         actionButtonText: 'Edit',
         headerText: 'Edit USX text?',
-        bodyText: msg,
+        bodyText: msg
       };
       modalService.showModal({}, modalOptions).then(function() {
         if ($scope.editedText.content && $scope.editedText.content != $scope.dto.text.content) {
@@ -321,7 +321,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
             closeButtonText: 'Cancel',
             actionButtonText: 'Replace',
             headerText: 'Replace previous edits?',
-            bodyText: msg,
+            bodyText: msg
           };
           modalService.showModal({}, modalOptions).then(function() {
             $scope.editedText.content = $scope.dto.text.content;
@@ -373,12 +373,12 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
           // headers: {'myHeaderKey': 'myHeaderVal'},
           data: {
             filename: file.name,
-            textId: textId,
+            textId: textId
           },
-          file: file,
+          file: file
         }).progress(function(evt) {
           $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
-        }).success(function(data, status, headers, config) {
+        }).success(function(data) {
           if (data.result) {
             $scope.progress = 100.0;
             $scope.uploadResult = 'File uploaded successfully.';
@@ -392,6 +392,15 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
           }
 
           $scope.file = null;
+        }).error(function(data, status) {
+          var errorMessage = $filter('translate')('Import failed.');
+          if (status > 0) {
+            errorMessage += ' Status: ' + status;
+            if (data) {
+              errorMessage += '- ' + data;
+            }
+          }
+          notice.push(notice.ERROR, errorMessage);
         });
       } else {
         $scope.progress = 0;
@@ -400,7 +409,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
       }
     };
 
-  },])
+  }])
   .controller('TextSettingsArchivedQuestionsCtrl', ['$scope', 'questionService', 'silNoticeService',
   function($scope, questionService, notice) {
     // Listview Selection
@@ -450,14 +459,14 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
       });
     };
 
-  },])
+  }])
   .controller('ParatextExportTextCtrl', ['$scope', 'textService', '$routeParams',
   function($scope, textService, $routeParams) {
     $scope.exportConfig = {
       textId: $routeParams.textId,
       exportComments: false,
       exportFlagged: true,
-      tags: [],
+      tags: []
     };
 
     $scope.download = {
@@ -466,7 +475,7 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
       answerCount: 0,
       totalCount: 0,
       complete: false,
-      inprogress: false,
+      inprogress: false
     };
 
     $scope.returnTrue = function() {
@@ -494,6 +503,6 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
       link.click();
     };
 
-  },])
+  }])
 
   ;

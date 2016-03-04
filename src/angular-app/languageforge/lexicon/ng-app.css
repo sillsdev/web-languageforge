@@ -3,6 +3,10 @@ div.hdrnav {
     clear: both;    
 }
 
+.hdrnav button.btn {
+    margin-right: 10px;
+}
+
 div.lexnav {
     overflow: visible;
     padding-left: 115px;    /* Align with topNav and breadcrumbs */

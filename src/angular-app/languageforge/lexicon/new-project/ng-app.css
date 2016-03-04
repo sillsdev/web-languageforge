@@ -6,8 +6,9 @@
 }
 
 /* form styling */
-#form-container .page-header { 
+.form-container.wizard .page-header {
     margin-bottom: 20px;
+    border-bottom: 0;
 }
 
 #form-status {
@@ -33,6 +34,10 @@ a.btn {
     font-weight: normal;
 }
 
+.newProjectChooserBtn {
+    width: 290px;
+}
+
 /* Initial Data */
 .drop-box {
     border: 4px dashed #e67345;
@@ -49,6 +54,17 @@ a#flexHelpLink {
 }
 
 /* progress indicator */
+.form-container.wizard .page-header .row {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eeeeee;
+}
+.form-container.wizard .page-header .span2 {
+    padding-top: 44px;
+}
+#progress-indicator {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
 #progress-indicator i {
     display: block;
     font-size: 55px;

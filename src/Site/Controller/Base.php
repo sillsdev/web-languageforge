@@ -69,7 +69,11 @@ class Base
         $this->_isLoggedIn = $this->isLoggedIn($app);
         if ($this->_isLoggedIn) {
             try {
-                $userId = (string) $app['session']->get('user_id');
+                $userId = '';
+                $silexUser = $app['security.token_storage']->getToken()->getUser();
+                if (is_object($silexUser) && get_class($silexUser) == 'Site\Model\UserWithId') {
+                    $userId = $silexUser->getUserId();
+                }
                 $this->_userId = $userId;
                 $this->_user = new UserModel($userId);
                 $this->_projectId = (string) $app['session']->get('projectId');

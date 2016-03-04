@@ -1,11 +1,15 @@
 <?php
+
 namespace Api\Model;
 
 use Api\Model\Mapper\Id;
+use Api\Model\Mapper\MapperListModel;
+use Api\Model\Mapper\MapperModel;
+use Api\Model\Mapper\MongoMapper;
 
 require_once APPPATH . 'Api/Model/ProjectModel.php';
 
-class TextModelMongoMapper extends \Api\Model\Mapper\MongoMapper
+class TextModelMongoMapper extends MongoMapper
 {
 
     /**
@@ -28,15 +32,19 @@ class TextModelMongoMapper extends \Api\Model\Mapper\MongoMapper
     }
 }
 
-class TextModel extends \Api\Model\Mapper\MapperModel
+class TextModel extends MapperModel
 {
 
     /**
      *
-     * @var ProjectModel;
+     * @var ProjectModel
      */
     private $_projectModel;
 
+    /**
+     * @param ProjectModel $projectModel
+     * @param string $id
+     */
     public function __construct($projectModel, $id = '')
     {
         $this->id = new Id();
@@ -78,9 +86,8 @@ class TextModel extends \Api\Model\Mapper\MapperModel
     public $isArchived;
 }
 
-class TextListModel extends \Api\Model\Mapper\MapperListModel
+class TextListModel extends MapperListModel
 {
-
     public function __construct($projectModel)
     {
         parent::__construct(
