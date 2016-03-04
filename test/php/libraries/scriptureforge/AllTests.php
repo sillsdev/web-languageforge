@@ -8,7 +8,7 @@ class AllLibrariesScriptureForgeTests extends TestSuite
     public function __construct()
     {
         parent::__construct();
-        $this->addFile(TestPath . 'libraries/scriptureforge/sfchecks/AllTests.php');
+        $this->addFile(TestPhpPath . 'libraries/scriptureforge/sfchecks/AllTests.php');
     }
 
 }

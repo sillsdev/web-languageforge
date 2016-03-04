@@ -47,10 +47,9 @@ class LexProjectDto
 {
     /**
      * @param string $projectId
-     * @param string $userId
      * @returns array - the DTO array
      */
-    public static function encode($projectId, $userId)
+    public static function encode($projectId)
     {
         $project = new LexiconProjectModel($projectId);
         $projectJson = LexProjectDtoEncoder::encode($project);
@@ -61,6 +60,11 @@ class LexProjectDto
         $data['project']['ownerRef'] = $projectJson['ownerRef'];
         $data['project']['projectCode'] = $projectJson['projectCode'];
         $data['project']['featured'] = $projectJson['featured'];
+        if ($project->sendReceiveProject->identifier) {
+            $data['project']['sendReceive'] = array();
+            $data['project']['sendReceive']['project'] = $projectJson['sendReceiveProject'];
+            $data['project']['sendReceive']['username'] = $projectJson['sendReceiveUsername'];
+        }
 
         return $data;
     }

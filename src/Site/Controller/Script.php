@@ -10,10 +10,23 @@ use Silex\Application;
 class Script extends Base
 {
     public function view(Application $app, $folder = '', $scriptName = '', $runType = 'test') {
+        $this->data['controlpanel'] = false;
+        $this->data['runtype'] = $runType;
         if (! file_exists("Api/Library/Shared/Script/$folder/$scriptName.php")) {
-            $app->abort(404, $this->website->base); // this terminates PHP
+            // show list of scripts
+            $this->data['scriptnames'] = $this->scriptBaseNames();
+            $this->data['controlpanel'] = true;
+            return $this->renderPage($app, 'scriptoutput');
         } else {
-            $userId = (string) $app['session']->get('user_id');
+            // run script and render output
+            $this->data['scriptrunurl'] = '/script/Migration/' . $scriptName . '/run';
+
+            $userId = '';
+            $silexUser = $app['security.token_storage']->getToken()->getUser();
+            if (is_object($silexUser) && get_class($silexUser) == 'Site\Model\UserWithId') {
+                $userId = $silexUser->getUserId();
+            }
+
             if (! RightsHelper::hasSiteRight($userId, Domain::PROJECTS + Operation::DELETE)) {
                 $app->abort(403, 'You have insufficient privileges to run scripts'); // this terminates PHP
             } else {
@@ -22,22 +35,29 @@ class Script extends Base
                     $script = new $className();
 
                     $this->data['scriptname'] = $className.'->run()';
-                    $this->data['insert'] = '';
                     $this->data['output'] = '';
-                    if (strtolower($folder) == 'control' and strtolower($scriptName) == 'panel') {
-                        $this->data['insert'] .= $script->run($userId, $runType);
-                    } else {
-                        if ($runType != 'run') {
-                            $this->data['output'] .= "--------------- THIS IS A TEST RUN - The database should not be modified ----------------\n\n";
-                        }
-                        $this->data['output'] .= $script->run($userId, $runType);
+                    if ($runType != 'run') {
+                        $this->data['scriptname'] = "[TEST RUN] " . $this->data['scriptname'];
                     }
+                    $this->data['output'] .= $script->run($userId, $runType);
 
-                    return $this->renderPage($app, 'textoutput');
+                    return $this->renderPage($app, 'scriptoutput');
                 } catch (\Exception $e) {
+                    var_dump($e);
                     $app->abort(500, "Looks like there was a problem with the script $className"); // this terminates PHP
                 }
             }
         }
+    }
+
+    private function scriptBaseNames() {
+        $folderPath = APPPATH.'Api/Library/Shared/Script/Migration';
+        $baseNames = glob($folderPath . '/*.php');
+        $file_count = count($baseNames);
+        for ($i = 0; $i < $file_count; $i++) {
+            $baseNames[$i] = basename($baseNames[$i], '.php');
+        }
+
+        return $baseNames;
     }
 }

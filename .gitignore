@@ -1,7 +1,6 @@
 *~
 .settings
 .externalToolBuilders
-vagrant_ansible_inventory_*
 /output
 /node_modules/
 src/vendor/*
@@ -20,10 +19,10 @@ test/app/node_modules/.bin/
 src/vendor_bower/
 docs/semdom/*.xml
 docs/semdom/semdom lists/*.xml
-deploy/.vagrant/
+.vagrant/
+vagrant_ansible_inventory_*
 deploy/site_files/certificates/
 deploy/site_info/
 deploy/callback_plugins/*.pyc
-.vagrant/
 src/js/lib/languageforge.min.js
 src/js/lib/scriptureforge.min.js

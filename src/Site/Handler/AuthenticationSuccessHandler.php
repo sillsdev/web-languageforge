@@ -30,6 +30,8 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         $username = $token->getUser()->getUsername();
         $user = new UserModel();
         $website = Website::get();
+
+        // automatically logout if 1) the user doesn't exist or 2) the user is not a system admin and has no site rights on the current site
         if (! $user->readByUserName($username) or
             (($user->role != SystemRoles::SYSTEM_ADMIN) and
             !($user->siteRole->offsetExists($website->domain) and
@@ -37,14 +39,15 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
             return $this->httpUtils->createRedirectResponse($request, '/app/logout');
         }
 
-        $request->getSession()->set('user_id', $user->id->asString());
-        $request->getSession()->set('user', array('username' => $username));
+        //$request->getSession()->set('user_id', $user->id->asString());
+        //$request->getSession()->set('user', array('username' => $username));
 
         $projectId = $user->getDefaultProjectId($website->domain);
         if ($projectId) {
             $request->getSession()->set('projectId', $projectId);
         }
 
+        // redirect to page before the login screen was presented, or to the default project for this user
         $referer = $this->determineTargetUrl($request);
         if ($referer and strpos($referer, '/app/') !== false) {
             return $this->httpUtils->createRedirectResponse($request, $referer);

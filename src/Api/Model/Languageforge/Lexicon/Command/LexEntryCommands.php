@@ -2,7 +2,6 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
-use Palaso\Utilities\CodeGuard;
 use Api\Model\Command\ActivityCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
@@ -11,6 +10,7 @@ use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Mapper\JsonDecoder;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectModel;
+use Palaso\Utilities\CodeGuard;
 
 class LexEntryCommands
 {
@@ -39,9 +39,12 @@ class LexEntryCommands
      * @param string $projectId
      * @param array $params
      * @param string $userId
-     * @return LexEntryModel
+     * @param string $mergeQueuePath
+     * @param string $pidFilePath
+     * @param string $command
+     * @return array<encoded LexEntryModel>
      */
-    public static function updateEntry($projectId, $params, $userId)
+    public static function updateEntry($projectId, $params, $userId, $mergeQueuePath = null, $pidFilePath = null, $command = null)
     {
         CodeGuard::checkTypeAndThrow($params, 'array');
         $project = new LexiconProjectModel($projectId);
@@ -52,6 +55,7 @@ class LexEntryCommands
             $entry = new LexEntryModel($project);
             $entry->authorInfo->createdByUserRef->id = $userId;
             $entry->authorInfo->createdDate = new \DateTime();
+            $entry->guid = $entry->createGuid();
             $action = 'create';
             // TODO: Consider adding more specific activity entry: which fields were modified? 2014-09-03 RM
             // E.g., "User _____ updated entry _____ by adding a new sense with definition ______"
@@ -61,12 +65,18 @@ class LexEntryCommands
         $entry->authorInfo->modifiedDate = new \DateTime();
         $entry->authorInfo->modifiedByUserRef->id = $userId;
 
+//        if ($project->hasSendReceive()) $entry->dirtySR++;
+        if ($project->hasSendReceive()) $entry->dirtySR = 0;
+
         $params = self::recursiveRemoveEmptyFieldValues($params);
         //$params = self::recursiveAlignCustomFieldsWithModel($params);
         JsonDecoder::decode($entry, $params);
 
         $entry->write();
         ActivityCommands::writeEntry($project, $userId, $entry, $action);
+
+//        SendReceiveCommands::queueProjectForUpdate($project, $mergeQueuePath);
+//        SendReceiveCommands::startLFMergeIfRequired($projectId, 'merge', $pidFilePath, $command);
 
         return JsonEncoder::encode($entry);
     }
@@ -99,6 +109,7 @@ class LexEntryCommands
      * @param string $projectId
      * @param string $missingInfo - if empty, returns all entries.
      *                                 if matches one of LexiconConfigObj constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
+     * @return LexEntryListModel
      */
     public static function listEntries($projectId, $missingInfo = '')
     {
@@ -120,9 +131,9 @@ class LexEntryCommands
     }
 
     /**
-     *
      * @param string $projectId
      * @param string $entryId
+     * @return string
      */
     public static function getEntryLexeme($projectId, $entryId) {
         $project = new LexiconProjectModel($projectId);

@@ -35,6 +35,11 @@ function NewLexProjectPage() {
     expect(_this.formStatus.getText()).toContain(partialMsg);
   };
 
+  // step 0: chooser
+  this.chooserPage = {};
+  this.chooserPage.sendReceiveButton = element(by.id('sendReceiveButton'));
+  this.chooserPage.createButton = element(by.id('createButton'));
+
   // step 1: project name
   this.namePage = {};
   this.namePage.projectNameInput = element(by.model('newProject.projectName'));
@@ -49,6 +54,22 @@ function NewLexProjectPage() {
   this.initialDataPage = {};
   this.initialDataPage.browseButton = element(by.id('browseButton'));
   this.initialDataPage.mockUpload = mockUpload;
+
+  // step 2: send receive credentials
+  this.srCredentialsPage = {};
+  this.srCredentialsPage.loginInput = element(by.id('srUsername'));
+  this.srCredentialsPage.loginUnknown = element(by.id('usernameUnknown'));
+  this.srCredentialsPage.loginOk = element(by.id('usernameOk'));
+  this.srCredentialsPage.passwordInput = element(by.id('srPassword'));
+  this.srCredentialsPage.passwordUnknown = element(by.id('passwordUnknown'));
+  this.srCredentialsPage.passwordOk = element(by.id('passwordOk'));
+  this.srCredentialsPage.projectUneditable = element(by.id('srProject'));
+  this.srCredentialsPage.projectSelect = function() {
+    return element(by.id('srProjectSelect'));
+  };
+
+  this.srCredentialsPage.projectNoAccess = element(by.id('projectNoAccess'));
+  this.srCredentialsPage.projectOk = element(by.id('projectOk'));
 
   // step 3: verify data
   this.verifyDataPage = {};
@@ -69,7 +90,6 @@ function NewLexProjectPage() {
 
   // select language modal
   this.modal = modal;
-
 }
 
 module.exports = new NewLexProjectPage();

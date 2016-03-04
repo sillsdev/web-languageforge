@@ -1,16 +1,19 @@
 <?php
 
+use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\Example;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Languageforge\Lexicon\Sense;
 use Api\Model\Mapper\JsonEncoder;
-use Api\Model\Command\ProjectCommands;
+use Palaso\Utilities\FileUtilities;
+use Ramsey\Uuid\Uuid;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestLexEntryCommands extends UnitTestCase
 {
@@ -159,10 +162,45 @@ class TestLexEntryCommands extends UnitTestCase
         $this->assertEqual($newEntry['senses'][0]['partOfSpeech']['value'], 'noun');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['sentence']['th']['value'], 'example1');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
-
     }
+/* Ignore test for send receive v1.1 since dirtySR counter is not being incremented on edit. IJH 2015-02
+    public function testUpdateEntry_ProjectHasSendReceive_EntryHasGuidAndDirtySRIncremented()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
 
-    // todo get these working again after the refactor - cjh 2014-07
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $projectId = $project->write();
+        $pidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
+        $command = 'php mockLFMergeExe.php';
+        $mockMergeQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
+        FileUtilities::createAllFolders($mockMergeQueuePath);
+
+        $userId = $e->createUser('john', 'john', 'john');
+
+        $params['id'] = '';
+        $params['lexeme']['th']['value'] = 'apple';
+
+        $newParams = LexEntryCommands::updateEntry($projectId, $params, $userId, $mockMergeQueuePath, $pidFilePath, $command);
+
+        $newEntry = new LexEntryModel($project, $newParams['id']);
+        $this->assertTrue(Uuid::isValid($newEntry->guid));
+        $this->assertEqual($newEntry->lexeme['th'], 'apple');
+        $this->assertEqual($newEntry->dirtySR, 1);
+
+        $newParams['lexeme']['th']['value'] = 'rose apple';
+
+        $updatedParams = LexEntryCommands::updateEntry($projectId, $newParams, $userId, $mockMergeQueuePath, $pidFilePath, $command);
+
+        $updatedEntry = new LexEntryModel($project, $updatedParams['id']);
+        $this->assertTrue(Uuid::isValid($updatedEntry->guid));
+        $this->assertEqual($updatedEntry->guid, $newEntry->guid);
+        $this->assertEqual($updatedEntry->lexeme['th'], 'rose apple');
+        $this->assertEqual($updatedEntry->dirtySR, 2);
+        FileUtilities::removeFolderAndAllContents($mockMergeQueuePath);
+    }
+*/
     public function testListEntries_allEntries()
     {
         $e = new LexiconMongoTestEnvironment();

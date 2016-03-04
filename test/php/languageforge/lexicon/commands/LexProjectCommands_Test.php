@@ -10,7 +10,7 @@ use Api\Model\UserModel;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestLexProjectCommands extends UnitTestCase
 {

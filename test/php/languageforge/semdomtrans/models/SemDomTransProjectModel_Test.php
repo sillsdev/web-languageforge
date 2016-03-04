@@ -11,7 +11,7 @@ use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestSemDomTransProjectModel extends UnitTestCase
 {
@@ -41,7 +41,7 @@ class TestSemDomTransProjectModel extends UnitTestCase
 
         $listModel = new SemDomTransItemListModel($project);
         $listModel->read();
-        $xmlFilePath  = TestPath . "languageforge/semdomtrans/testFiles/LocalizedLists-es.xml";
+        $xmlFilePath  = TestPhpPath . "languageforge/semdomtrans/testFiles/LocalizedLists-es.xml";
         $project->importFromFile($xmlFilePath);
         $listModel->read();
         $this->assertEqual($listModel->count, 1792);

@@ -7,7 +7,7 @@ class AllCommunicateTests extends TestSuite
     public function __construct()
     {
         parent::__construct();
-        $this->addFile(TestPath . 'communicate/Communicate_Test.php');
+        $this->addFile(TestPhpPath . 'communicate/Communicate_Test.php');
     }
 
 }

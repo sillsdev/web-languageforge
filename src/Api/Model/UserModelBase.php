@@ -58,6 +58,16 @@ class UserModelBase extends Mapper\MapperModel
     }
 
     /**
+     *
+     * @param string $email
+     * @return boolean - true if the email exists, false otherwise
+     */
+    public function readByEmail($email)
+    {
+        return $this->readByProperty('email', $email);
+    }
+
+    /**
      * Returns true if the current user has $right to $website.
      * @param int $right
      * @param Website $website
