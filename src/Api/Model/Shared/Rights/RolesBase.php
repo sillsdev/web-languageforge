@@ -19,6 +19,7 @@ class RolesBase
 
     /**
      * Returns true if the given $role has the $right in the $realm
+     * @param array $rightsArray
      * @param string $role
      * @param int $right
      * @return bool
@@ -37,8 +38,10 @@ class RolesBase
 
     /**
      * Returns the array of rights for this $role in the given $realm
+     * @param array $rightsArray
      * @param string $role
      * @return array
+     * @throws \Exception
      */
     protected static function _getRightsArray($rightsArray, $role)
     {
