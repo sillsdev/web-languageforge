@@ -25,7 +25,13 @@ We recommend doing development on your development machine directly rather than 
 
 #### Ansible Setup ####
 
-For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/default_ansible.cfg` into `/etc/ansible/ansible.cfg` or `.ansible.cfg` (in your home folder).
+At the moment (2016 Feb 4) Ansible v2.0.0.2 is [broken on local connections](https://github.com/ansible/ansible/issues/13763). Install v1.9 instead:
+````
+sudo apt-get install python-pip
+sudo pip install ansible==1.9.4
+````
+
+For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/ansible.cfg` into `/etc/ansible/ansible.cfg`.
 
 #### Vagrant VM Setup ####
 
@@ -78,7 +84,7 @@ Unit testing currently uses [SimpleTest](http://www.simpletest.org/). Browse to 
 
 #### E2E Test Install ####
 
-Install **webdriver-manager** globally, then install **webdriver**:
+Install **webdriver-manager** globally (it needs to be installed globally since our local repo is on an NTFS partition and items there are not executable), then install **webdriver**:
 
 ````
 sudo npm install -g webdriver-manager
@@ -99,19 +105,19 @@ Then run tests in another terminal:
 cd test/app
 sh rune2eLF.sh
 ````
-to test in on the **languageforge** site or run `sh rune2eSF.sh` to test on the **scriptureforge** site. Browse to sub-folders to narrow tests.
+to test in on the **languageforge** site or run `sh rune2eSF.sh` to test on the **scriptureforge** site. Add a test name argument to the previous or browse to sub-folders to narrow tests.
 
 ## Building with gulp ##
 
 (For installation of npm see https://github.com/nodesource/distributions)
 
-Install gulp and dependencies by running
+Install **gulp** globally (it needs to be installed globally since our local repo is on an NTFS partition and items there are not executable):
 
-    npm install gulp gulp-util async gulp-livereload tiny-lr
+	sudo npm install -g gulp
 
-Afterwards you can build by running (from the root directory of the source tree):
+Install gulp dependencies by running from the repo root (where):
 
-    gulp
+    npm install
 
 To install the mongodb databases locally, run:
 
