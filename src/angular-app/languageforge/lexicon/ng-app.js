@@ -106,8 +106,8 @@ angular.module('lexicon',
     );
     $routeProvider.otherwise({ redirectTo: '/projects' });
   }])
-  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService', 'lexSendReceiveService',
-  function($scope, ss, lexConfigService, lexProjectService, $translate, $location, $interval, noticeService, editorService, sendReceiveService) {
+  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService', 'lexConfigService', 'lexSendReceiveService',
+  function($scope, ss, lexConfigService, lexProjectService, $translate, $location, $interval, noticeService, editorService, configService, sendReceiveService) {
     var pristineLanguageCode;
 
     $scope.rights = {};
@@ -117,6 +117,7 @@ angular.module('lexicon',
     $scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
     $scope.project = ss.session.project;
     $scope.projectSettings = ss.session.projectSettings;
+    $scope.config = configService.getConfigForUser();
     $scope.sendReceive = $scope.projectSettings.sendReceive || {};
 
     // persist the entries and comments array across all controllers
@@ -241,8 +242,11 @@ angular.module('lexicon',
 
           if ($scope.sendReceive.status.SRState == 'IDLE') {
             $scope.finishedLoading = false;
-            editorService.loadEditorData().then(function () {
+            editorService.loadEditorData().then(function() {
               $scope.finishedLoading = true;
+              ss.refresh(function() {
+                $scope.config = configService.getConfigForUser();
+              });
             });
           }
         }

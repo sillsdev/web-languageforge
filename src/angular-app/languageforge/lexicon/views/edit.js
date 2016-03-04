@@ -9,7 +9,8 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // TODO use ui-router for this instead!
 
     var pristineEntry = {};
-    $scope.config = configService.getConfigForUser();
+
+    //$scope.config is set in the parent controller, ng-app.js 'MainCtrl', so it can be updated after Send/Receive. IJH 2016-03
     $scope.lastSavedDate = new Date();
     $scope.currentEntry = {};
     $scope.commentService = commentService;
@@ -17,7 +18,6 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     $scope.configService = configService;
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
-    $scope.editorService = editorService;
 
     // default state. State is one of 'list', 'edit', or 'comment'
     $scope.state = 'list';
@@ -322,13 +322,13 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
       if (angular.isDefined(data.senses)) {
         angular.forEach(data.senses, function(sense) {
-          sense = alignCustomFieldsInData(sense);
+          alignCustomFieldsInData(sense);
         });
       }
 
       if (angular.isDefined(data.examples)) {
         angular.forEach(data.examples, function(example) {
-          example = alignCustomFieldsInData(example);
+          alignCustomFieldsInData(example);
         });
       }
 
