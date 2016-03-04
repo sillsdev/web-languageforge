@@ -79,8 +79,11 @@ class Sf
 
     public function __construct(Application $app)
     {
-        if (get_class($app['security.token_storage']->getToken()->getUser()) == 'Site\Model\UserWithId')  {
-            $this->userId = $app['security.token_storage']->getToken()->getUser()->getUserId();
+        $silexUser = $app['security.token_storage']->getToken()->getUser();
+        if (is_object($silexUser) && get_class($silexUser) == 'Site\Model\UserWithId') {
+            $this->userId = $silexUser->getUserId();
+        } else {
+            $this->userId = '';
         }
         $this->projectId = (string) $app['session']->get('projectId');
         $this->app = $app;

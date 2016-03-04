@@ -20,9 +20,13 @@ class Script extends Base
         } else {
             // run script and render output
             $this->data['scriptrunurl'] = '/script/Migration/' . $scriptName . '/run';
-            if (get_class($app['security.token_storage']->getToken()->getUser()) == 'Site\Model\UserWithId')  {
-                $userId = $app['security.token_storage']->getToken()->getUser()->getUserId();
+
+            $userId = '';
+            $silexUser = $app['security.token_storage']->getToken()->getUser();
+            if (is_object($silexUser) && get_class($silexUser) == 'Site\Model\UserWithId') {
+                $userId = $silexUser->getUserId();
             }
+
             if (! RightsHelper::hasSiteRight($userId, Domain::PROJECTS + Operation::DELETE)) {
                 $app->abort(403, 'You have insufficient privileges to run scripts'); // this terminates PHP
             } else {

@@ -45,8 +45,10 @@ class App extends Base
         $this->data['appFolder'] = $appFolder;
         $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
 
-        if (get_class($app['security.token_storage']->getToken()->getUser()) == 'Site\Model\UserWithId')  {
-            $userId = $app['security.token_storage']->getToken()->getUser()->getUserId();
+        $userId = '';
+        $silexUser = $app['security.token_storage']->getToken()->getUser();
+        if (is_object($silexUser) && get_class($silexUser) == 'Site\Model\UserWithId') {
+            $userId = $silexUser->getUserId();
         }
 
         // update the projectId in the session if it is not empty
