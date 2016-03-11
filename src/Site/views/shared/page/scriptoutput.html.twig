@@ -13,7 +13,7 @@
                         <option value="run">Run Mode</option>
                     </select>
                     {% for script in scriptnames %}
-                        <li><a ng-href="/script/Migration/{{ script }}/{{ '{{run}}' }}">{{ script }}</a></li>
+                        <li><a ng-href="/script/{{ script }}/{{ '{{run}}' }}">{{ script }}</a></li>
                     {% endfor %}
                 </div>
 
