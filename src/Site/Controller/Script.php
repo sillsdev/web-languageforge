@@ -12,6 +12,7 @@ class Script extends Base
     public function view(Application $app, $folder = '', $scriptName = '', $runType = 'test') {
         $this->data['controlpanel'] = false;
         $this->data['runtype'] = $runType;
+
         if (! file_exists("Api/Library/Shared/Script/$folder/$scriptName.php")) {
             // show list of scripts
             $this->data['scriptnames'] = $this->scriptBaseNames();
@@ -19,7 +20,7 @@ class Script extends Base
             return $this->renderPage($app, 'scriptoutput');
         } else {
             // run script and render output
-            $this->data['scriptrunurl'] = '/script/Migration/' . $scriptName . '/run';
+            $this->data['scriptrunurl'] = "/script/$folder/$scriptName/run";
 
             $userId = '';
             $silexUser = $app['security.token_storage']->getToken()->getUser();
@@ -51,13 +52,28 @@ class Script extends Base
     }
 
     private function scriptBaseNames() {
-        $folderPath = APPPATH.'Api/Library/Shared/Script/Migration';
-        $baseNames = glob($folderPath . '/*.php');
+        $folderPath = APPPATH.'Api/Library/Shared/Script/';
+        $baseNames = self::recursiveDirectorySearch($folderPath, '/.*\.php/');
         $file_count = count($baseNames);
         for ($i = 0; $i < $file_count; $i++) {
-            $baseNames[$i] = basename($baseNames[$i], '.php');
+            if (strpos($baseNames[$i], '/retired/') === FALSE) {
+                $baseNames[$i] = substr($baseNames[$i], strlen($folderPath), strlen($baseNames[$i])-strlen($folderPath)-4);
+            } else {
+                unset($baseNames[$i]);
+            }
         }
 
         return $baseNames;
+    }
+
+    private static function recursiveDirectorySearch($folder, $pattern) {
+        $dir = new \RecursiveDirectoryIterator($folder);
+        $ite = new \RecursiveIteratorIterator($dir);
+        $files = new \RegexIterator($ite, $pattern, \RegexIterator::GET_MATCH);
+        $fileList = array();
+        foreach($files as $file) {
+            $fileList = array_merge($fileList, $file);
+        }
+        return $fileList;
     }
 }
