@@ -2,6 +2,7 @@
 
 namespace Site\Controller;
 
+use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Rights\Operation;
@@ -69,14 +70,13 @@ class Base
         $this->_isLoggedIn = $this->isLoggedIn($app);
         if ($this->_isLoggedIn) {
             try {
-                $userId = '';
-                $silexUser = $app['security.token_storage']->getToken()->getUser();
-                if (is_object($silexUser) && get_class($silexUser) == 'Site\Model\UserWithId') {
-                    $userId = $silexUser->getUserId();
+                if (!$this->_userId) {
+                    $this->_userId = SilexSessionHelper::getUserId($app);
                 }
-                $this->_userId = $userId;
-                $this->_user = new UserModel($userId);
-                $this->_projectId = (string) $app['session']->get('projectId');
+                $this->_user = new UserModel($this->_userId);
+                if (!$this->_projectId) {
+                    $this->_projectId = SilexSessionHelper::getProjectId($app, $this->website);
+                }
             } catch (\Exception $e) {
 //                error_log("User $userId not found, logged out.\n" . $e->getMessage());
                 return $app->redirect('/app/logout');

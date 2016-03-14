@@ -56,15 +56,18 @@ class UserModel extends UserModelBase
      * @param string $site
      * @return string - projectId
      */
-    public function getDefaultProjectId($site)
+    public function getCurrentProjectId($site)
     {
-        // note: this method could be refactored to use an actual "default project" value on the user model
-        $projectList = $this->listProjects($site);
-        if (count($projectList->entries) > 0) {
-            return $projectList->entries[0]['id'];
+        $projectId = '';
+        if ($this->lastUsedProjectId) {
+            $projectId = $this->lastUsedProjectId;
         } else {
-            return '';
+            $projectList = $this->listProjects($site);
+            if (count($projectList->entries) > 0) {
+                $projectId = $projectList->entries[0]['id'];
+            }
         }
+        return $projectId;
     }
 
     /**
