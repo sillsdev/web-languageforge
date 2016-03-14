@@ -2,6 +2,7 @@
 
 namespace Site\Controller;
 
+use Api\Library\Shared\SilexSessionHelper;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Dto\RightsHelper;
@@ -22,11 +23,7 @@ class Script extends Base
             // run script and render output
             $this->data['scriptrunurl'] = "/script/$folder/$scriptName/run";
 
-            $userId = '';
-            $silexUser = $app['security.token_storage']->getToken()->getUser();
-            if (is_object($silexUser) && get_class($silexUser) == 'Site\Model\UserWithId') {
-                $userId = $silexUser->getUserId();
-            }
+            $userId = SilexSessionHelper::getUserId($app);
 
             if (! RightsHelper::hasSiteRight($userId, Domain::PROJECTS + Operation::DELETE)) {
                 $app->abort(403, 'You have insufficient privileges to run scripts'); // this terminates PHP

@@ -104,7 +104,7 @@ angular.module('lexicon',
         templateUrl: '/angular-app/languageforge/lexicon/views/manage-users.html'
       }
     );
-    $routeProvider.otherwise({ redirectTo: '/projects' });
+    $routeProvider.otherwise({ redirectTo: '/dbe' });
   }])
   .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService', 'lexConfigService', 'lexSendReceiveService',
   function($scope, ss, lexConfigService, lexProjectService, $translate, $location, $interval, noticeService, editorService, configService, sendReceiveService) {

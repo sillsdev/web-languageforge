@@ -6,6 +6,7 @@ use Api\Library\Scriptureforge\Sfchecks\ParatextExport;
 use Api\Library\Scriptureforge\Sfchecks\SfchecksReports;
 use Api\Library\Shared\Palaso\Exception\UserNotAuthenticatedException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
+use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\Command\LexCommentCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
@@ -79,15 +80,10 @@ class Sf
 
     public function __construct(Application $app)
     {
-        $silexUser = $app['security.token_storage']->getToken()->getUser();
-        if (is_object($silexUser) && get_class($silexUser) == 'Site\Model\UserWithId') {
-            $this->userId = $silexUser->getUserId();
-        } else {
-            $this->userId = '';
-        }
-        $this->projectId = (string) $app['session']->get('projectId');
         $this->app = $app;
         $this->website = Website::get();
+        $this->userId = SilexSessionHelper::getUserId($app);
+        $this->projectId = SilexSessionHelper::getProjectId($app, $this->website);
 
         // "Kick" session every time we use an API call, so it won't time out
         $this->update_last_activity();

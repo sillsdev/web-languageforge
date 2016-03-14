@@ -39,13 +39,8 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
             return $this->httpUtils->createRedirectResponse($request, '/app/logout');
         }
 
-        //$request->getSession()->set('user_id', $user->id->asString());
-        //$request->getSession()->set('user', array('username' => $username));
 
-        $projectId = $user->getDefaultProjectId($website->domain);
-        if ($projectId) {
-            $request->getSession()->set('projectId', $projectId);
-        }
+        $projectId = $user->getCurrentProjectId($website->domain);
 
         // redirect to page before the login screen was presented, or to the default project for this user
         $referer = $this->determineTargetUrl($request);
