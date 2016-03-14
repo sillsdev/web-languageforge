@@ -2,6 +2,8 @@
 
 namespace Site\Controller;
 
+use Api\Library\Shared\SilexSessionHelper;
+use Api\Model\UserModel;
 use Silex\Application;
 use Api\Model\ProjectModel;
 use Api\Model\Command\SessionCommands;
@@ -45,31 +47,28 @@ class App extends Base
         $this->data['appFolder'] = $appFolder;
         $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
 
-        $userId = '';
-        $silexUser = $app['security.token_storage']->getToken()->getUser();
-        if (is_object($silexUser) && get_class($silexUser) == 'Site\Model\UserWithId') {
-            $userId = $silexUser->getUserId();
-        }
+        $this->_userId = SilexSessionHelper::getUserId($app);
 
         // update the projectId in the session if it is not empty
         $projectModel = new ProjectModel();
         if ($projectId && $projectModel->exists($projectId)) {
             $projectModel = $projectModel->getById($projectId);
-            if (!$projectModel->userIsMember($userId)) {
-                $projectId = '';
-            }
-            $app['session']->set('projectId', $projectId);
-        } else {
-            if (!$projectModel->userIsMember($userId)) {
-                $projectId = '';
+            if (!$projectModel->userIsMember($this->_userId)) {
+                $this->_projectId = '';
             } else {
-                $projectId = (string)$app['session']->get('projectId');
+                $this->_projectId = $projectId;
+                $app['session']->set('projectId', $projectId);
+                $user = new UserModel($this->_userId);
+                $user->lastUsedProjectId = $projectId;
+                $user->write();
             }
+        } else {
+            $this->_projectId = SilexSessionHelper::getProjectId($app, $this->website);
         }
 
         // Other session data
 
-        $sessionData = SessionCommands::getSessionData($projectId, $userId, $this->website);
+        $sessionData = SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website);
         $this->data['jsonSession'] = json_encode($sessionData);
 
         $this->addJavascriptFiles(NG_BASE_FOLDER . 'bellows/js', array('vendor/', 'assets/'));

@@ -206,6 +206,11 @@ class UserModelBase extends Mapper\MapperModel
     public $avatar_ref;
 
     /**
+     * @var string
+     */
+    public $lastUsedProjectId;
+
+    /**
      *
      * @var string
      * An unconfirmed email address for this user
