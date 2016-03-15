@@ -21,16 +21,17 @@ class App extends Base
         $siteFolder = NG_BASE_FOLDER . $this->website->base;
         $parentAppFolder = '';
         $appFolder = $this->website->base . '/' . $appName;
-        if ($projectId == 'new') {
-            $parentAppFolder = $appFolder;
-            $appFolder .= '/new-project';
+
+        if ($projectId == 'favicon.ico') {
             $projectId = '';
-            $appName = $appName . '-new-project';
-        } elseif ($projectId == 'manage') {
+        }
+
+        $possibleSubFolder = "$siteFolder/$appName/$projectId";
+        if ($projectId != '' && file_exists($possibleSubFolder) && file_exists("$possibleSubFolder/ng-app.html") && file_exists("$possibleSubFolder/views")) {
             $parentAppFolder = $appFolder;
-            $appFolder .= '/app-management';
+            $appFolder .= "/$projectId";
+            $appName .= "-$projectId";
             $projectId = '';
-            $appName = $appName . '-app-management';
         }
 
         if (!file_exists(NG_BASE_FOLDER . $appFolder)) {
@@ -38,9 +39,6 @@ class App extends Base
             if (!file_exists(NG_BASE_FOLDER . $appFolder)) {
                 $app->abort(404, $this->website->base); // this terminates PHP
             }
-        }
-        if ($projectId == 'favicon.ico') {
-            $projectId = '';
         }
 
         $this->data['appName'] = $appName;
