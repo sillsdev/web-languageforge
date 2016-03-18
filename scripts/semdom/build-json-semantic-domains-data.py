@@ -6,6 +6,8 @@ and outputs JSON data in the following format:
 
 var semanticDomains_en = {
     '1.1 Sky': {
+        'key': '1.1',
+        'guid': '999581c4-1611-4acb-ae1b-5e6c1dfe6f0c',
         'name': 'Sky',
         'abbreviation': '1.1',
         'description': 'Use this domain for words related to the sky.',
@@ -21,7 +23,11 @@ var semanticDomainQuestions_en = {
         # ...
     ],
     # ...
-}"""
+}
+
+The GUIDs found in the output data will be the GUIDs that FieldWorks uses for its semantic domains, as found in
+src/resources/languageforge/semdomtrans/SemDom_en.xml
+"""
 
 import os, sys
 import re
@@ -35,6 +41,8 @@ import glob
 
 # Constants - mostly hardcoded filenames
 DDP_FNAME = "Ddp4.xml"
+SEMDOM_EN_FNAME = "SemDom_en.xml"
+SEMDOM_EN_PATH = "src/resources/languageforge/semdomtrans/{}".format(SEMDOM_EN_FNAME)
 QUESTIONS_FNAME_BASE = "Ddp4Questions-{}.xml"
 DEFAULT_LANG = 'en' # If any language is lacking certain domains, substitute English for missing domains
 ALL_LANGUAGES = ['en', 'es', 'fr', 'hi', 'id', 'km', 'ne', 'ru', 'th', 'ur', 'zh-CN']
@@ -58,15 +66,48 @@ OUTPUT_PREFIX_QUESTIONS = OUTPUT_PREFIX_DOMAINS.replace('Domains', 'DomainQuesti
 # OUTPUT_SUFFIX is the text to write *after* the JSON output
 OUTPUT_SUFFIX = ";\n"
 
+def find_gitroot(startpath=None):
+    if startpath is None:
+        startpath = os.getcwd()
+    curpath = os.path.abspath(startpath)
+    while not os.path.exists(os.path.join(curpath, ".git")):
+        parent = os.path.abspath(os.path.join(curpath, ".."))
+        if parent == curpath:
+            # Hit filesystem root without finding a Git repo
+            return None
+        curpath = parent
+    return curpath
+
+def gitrooted_filename(fname, startpath=None):
+    return os.path.join(find_gitroot(startpath), fname)
+
 def parse_file(fname):
     with codecs.open(fname, 'rU', 'utf-8-sig') as f:
         return etree.parse(f)
 
-def build_ddp_data(tree, lang):
+def build_guid_lookups(semdom_tree, lang="en"):
+    result = {}
+    for elem in semdom_tree.iter('CmSemanticDomain'):
+        if not elem.attrib.has_key("guid"):
+            continue
+        guid = elem.attrib["guid"].strip().lower()  # RFC 4122 section 3 says output GUIDs should be LOWERCASE
+        abbr = elem.find("./Abbreviation/AUni[@ws='{}']".format(lang))
+        if abbr is None:
+            continue
+        result[abbr.text.strip()] = guid
+    return result
+
+def build_ddp_data(tree, guids_by_abbr, lang):
     result = collections.OrderedDict()
     for option in tree.iter('option'):
         record = collections.OrderedDict()
         key = option.find("./key").text
+        # English abbreviations are used as unchanging, unique keys in LF optionlist
+        en_abbr = option.find("./abbreviation/form[@ws='{0}']".format(DEFAULT_LANG))
+        en_abbr_text = en_abbr.text.strip()
+        record['key'] = en_abbr_text
+        if en_abbr_text in guids_by_abbr:
+            record['guid'] = guids_by_abbr[en_abbr_text]
         for elemName in ["name", "abbreviation", "description"]:
             elem = option.find("./{0}/form[@ws='{1}']".format(elemName, lang))
             if elem is None:
@@ -88,19 +129,24 @@ def build_question_data(tree, lang):
 def write_json(data, lang, out_fname, prefix, suffix):
     with codecs.open(out_fname, 'wU', 'utf-8') as f:
         f.write(prefix)
-        json.dump(data, f, ensure_ascii=False, indent=4, separators=(',', ': '))
+        json.dump(data, f, ensure_ascii=False, indent=2, separators=(',', ' : '))
         f.write(suffix)
 
 def main():
     sys.stderr.write("Processing languages {}...\n".format(repr(ALL_LANGUAGES)))
     ddp_tree = parse_file(DDP_FNAME)
-    for lang in ALL_LANGUAGES:  # Replace with ALL_LANGUAGES if desired
+    semdom_tree = parse_file(gitrooted_filename(SEMDOM_EN_PATH))
+    guids_by_abbr = build_guid_lookups(semdom_tree, DEFAULT_LANG)
+    for lang in ALL_LANGUAGES:  # Replace with LANGUAGES_TO_PROCESS if desired
         underscore_lang = lang.replace('-', '_')  # So zh-CN doesn't produce invalid Javascript
 
-        data = build_ddp_data(ddp_tree, lang)
+        data = build_ddp_data(ddp_tree, guids_by_abbr, lang)
         fname = OUTPUT_DDP_FNAME_BASE.format(lang)
         write_json(data, lang, fname, OUTPUT_PREFIX_DOMAINS.format(underscore_lang), OUTPUT_SUFFIX)
 
+        if not os.path.exists(QUESTIONS_FNAME_BASE.format(lang)):
+            print "No questions file found for language tag \"{}\"; this language will have only example words but no questions.".format(lang)
+            continue
         questions_tree = parse_file(QUESTIONS_FNAME_BASE.format(lang))
         data = build_question_data(questions_tree, lang)
         fname = OUTPUT_QUESTIONS_FNAME_BASE.format(lang)

@@ -6,12 +6,16 @@
 // input systems languages data
 var semanticDomains_en = {
   "1 Universe, creation" : {
+    "key" : "1",
+    "guid" : "63403699-07c1-43f3-a47c-069d6e4316e5",
     "name" : "Universe, creation",
     "abbreviation" : "1",
     "description" : "Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.",
     "searchKeys" : [ "universe, creation, cosmos, heaven and earth, macrocosm, everything that exists" ]
   },
   "1.1 Sky" : {
+    "key" : "1.1",
+    "guid" : "999581c4-1611-4acb-ae1b-5e6c1dfe6f0c",
     "name" : "Sky",
     "abbreviation" : "1.1",
     "description" : "Use this domain for words related to the sky.",
@@ -26,6 +30,8 @@ var semanticDomains_en = {
         "aloft, up in the sky, up in the air," ]
   },
   "1.1.1 Sun" : {
+    "key" : "1.1.1",
+    "guid" : "dc1a2c6f-1b32-4631-8823-36dacc8cb7bb",
     "name" : "Sun",
     "abbreviation" : "1.1.1",
     "description" : "Use this domain for words related to the sun. The sun does three basic things. It moves, it gives light, and it gives heat. These three actions are involved in the meanings of most of the words in this domain. Since the sun moves below the horizon, many words refer to it setting or rising. Since the sun is above the clouds, many words refer to it moving behind the clouds and the clouds blocking its light. The sun's light and heat also produce secondary effects. The sun causes plants to grow, and it causes damage to things.",
@@ -49,6 +55,8 @@ var semanticDomains_en = {
         "solar energy, solar power, solar panel" ]
   },
   "1.1.1.1 Moon" : {
+    "key" : "1.1.1.1",
+    "guid" : "1bd42665-0610-4442-8d8d-7c666fee3a6d",
     "name" : "Moon",
     "abbreviation" : "1.1.1.1",
     "description" : "Use this domain for words related to the moon. In your culture people may believe things about the moon. For instance in European culture people used to believe that the moon caused people to become crazy. So in English we have words like \"moon-struck\" and \"lunatic.\" You should include such words in this domain.",
@@ -68,6 +76,8 @@ var semanticDomains_en = {
         "(lunar) month" ]
   },
   "1.1.1.2 Star" : {
+    "key" : "1.1.1.2",
+    "guid" : "b044e890-ce30-455c-aede-7e9d5569396e",
     "name" : "Star",
     "abbreviation" : "1.1.1.2",
     "description" : "Use this domain for words related to the stars and other heavenly bodies.",
@@ -83,6 +93,8 @@ var semanticDomains_en = {
         "constellation, galaxy, nebula" ]
   },
   "1.1.1.3 Planet" : {
+    "key" : "1.1.1.3",
+    "guid" : "a0d073df-d413-4dfd-9ba1-c3c68f126d90",
     "name" : "Planet",
     "abbreviation" : "1.1.1.3",
     "description" : "Use this domain for words related to planets (large objects that circle the sun, looking like bright wandering stars in the sky), comets (objects that circle the sun, looking like a star with a tail), meteors (small objects that come from space and burn up when they hit the earth's atmosphere, causing a streak of light across the sky), and asteroids (small objects that circle the sun), planetary moons (large objects that circle the planets). Some cultures do not study the stars and will have few or no words in this domain. Others cultures that study the stars will have many words. There are only five planets that people can see in the sky--Mercury, Venus, Mars, Jupiter, and Saturn. The others are only known from the scientific study of astronomy.",
@@ -98,6 +110,8 @@ var semanticDomains_en = {
         "meteorite, meteor crater", "asteroid, moon" ]
   },
   "1.1.2 Air" : {
+    "key" : "1.1.2",
+    "guid" : "e836b01b-6c1a-4d41-b90a-ea5f349f88d4",
     "name" : "Air",
     "abbreviation" : "1.1.2",
     "description" : "Use this domain for words related to the air around us, including the air we breathe and the atmosphere around the earth.",
@@ -106,6 +120,8 @@ var semanticDomains_en = {
         "stuffy, airless, stifling, polluted, air pollution, smog" ]
   },
   "1.1.2.1 Blow air" : {
+    "key" : "1.1.2.1",
+    "guid" : "18595df7-1c69-40db-a7c1-74d490115c0c",
     "name" : "Blow air",
     "abbreviation" : "1.1.2.1",
     "description" : "Use this domain for words related to causing air to move.",
@@ -119,6 +135,8 @@ var semanticDomains_en = {
         "fan, air pump, bellows, ventilator, wind tunnel, propeller, air pipe, airshaft, vent, chimney, exhaust, funnel, windmill, sail, valve" ]
   },
   "1.1.3 Weather" : {
+    "key" : "1.1.3",
+    "guid" : "b4aa4bbd-8abf-4503-96e4-05c75efd23d5",
     "name" : "Weather",
     "abbreviation" : "1.1.3",
     "description" : "Use this domain for words related to the weather.",
@@ -140,6 +158,8 @@ var semanticDomains_en = {
         "weather forecast, weather report, the weather, the outlook" ]
   },
   "1.1.3.1 Wind" : {
+    "key" : "1.1.3.1",
+    "guid" : "93b8bd61-137a-4ebc-b12f-52fa5d2b3ea4",
     "name" : "Wind",
     "abbreviation" : "1.1.3.1",
     "description" : "Use this domain for words related to the wind. Some words refer to when the wind begins and ends. The wind changes in speed, so some words refer to how fast the wind is moving. Try to rank these on a scale from very slow to very fast. These words may also be distinguished by what the wind does, since a fast wind does more things. These words may also be distinguished by how long the wind blows. Some words refer to the speed of the wind becoming faster or slower. Some words distinguish a steady wind from a wind in which the speed keeps changing. Some words refer to when the speed of the wind becomes faster for a short time. A steady wind moves in a particular direction, so there are words that include the direction of the wind. The direction of the wind may refer to the points of the compass, a neighboring geographical feature or area, or the direction in which the speaker is moving. Some words refer to a wind that moves in a small circle, making a pillar of dust or a funnel-shaped cloud. Some words refer to what the wind does, such as when it moves or damages something. People can feel the wind, so some words refer to how it feels. The wind makes noise, so there are words that refer to the sound of the wind. In some cultures there is a relation between the wind and spirits, so some words may refer to the activity of the spirits in the wind, or that the wind brings disease.",
@@ -162,6 +182,8 @@ var semanticDomains_en = {
         "whisper, sigh, moan, whistle, howl, scream, shriek" ]
   },
   "1.1.3.2 Cloud" : {
+    "key" : "1.1.3.2",
+    "guid" : "5b12ea7b-790f-4f3e-8d07-893fc267773e",
     "name" : "Cloud",
     "abbreviation" : "1.1.3.2",
     "description" : "Use this domain for words related to the clouds.",
@@ -172,6 +194,8 @@ var semanticDomains_en = {
         "cloudy, cloud up, cloud cover, be clouded over, overcast, partly cloudy, scattered clouds, gray, dull, foggy" ]
   },
   "1.1.3.3 Rain" : {
+    "key" : "1.1.3.3",
+    "guid" : "bfa3be74-0390-4e2e-bdb7-ed41eb67e4f1",
     "name" : "Rain",
     "abbreviation" : "1.1.3.3",
     "description" : "Use this domain for words related to the rain.",
@@ -187,6 +211,8 @@ var semanticDomains_en = {
         "umbrella, raincoat, boot" ]
   },
   "1.1.3.4 Snow, ice" : {
+    "key" : "1.1.3.4",
+    "guid" : "ab8f12fb-57b0-4d61-8ae0-50d7cbc412df",
     "name" : "Snow, ice",
     "abbreviation" : "1.1.3.4",
     "description" : "Use this domain for words related to snow, ice, sleet, and hail.",
@@ -206,6 +232,8 @@ var semanticDomains_en = {
         "snowy", "snowy, snow covered, icy, frosty" ]
   },
   "1.1.3.5 Storm" : {
+    "key" : "1.1.3.5",
+    "guid" : "380b0d15-77a1-49ba-ad83-a508e7ffb83d",
     "name" : "Storm",
     "abbreviation" : "1.1.3.5",
     "description" : "Use this domain for words related to storms.",
@@ -216,6 +244,8 @@ var semanticDomains_en = {
         "break", "die down" ]
   },
   "1.1.3.6 Lightning, thunder" : {
+    "key" : "1.1.3.6",
+    "guid" : "63c69d11-1101-4870-aeb8-43ee364381b0",
     "name" : "Lightning, thunder",
     "abbreviation" : "1.1.3.6",
     "description" : "Use this domain for words related to lightning and thunder.",
@@ -227,6 +257,8 @@ var semanticDomains_en = {
         "peal (of thunder), clap, rumble, boom, crack of lightning, roll" ]
   },
   "1.1.3.7 Flood" : {
+    "key" : "1.1.3.7",
+    "guid" : "349937e3-a2fd-41f8-b7c4-bd6fa106add4",
     "name" : "Flood",
     "abbreviation" : "1.1.3.7",
     "description" : "Use this domain for words related to floods.",
@@ -235,6 +267,8 @@ var semanticDomains_en = {
         "floodplain,", "silt," ]
   },
   "1.1.3.8 Drought" : {
+    "key" : "1.1.3.8",
+    "guid" : "e6b21531-b7d0-4e37-b01b-3ca49a285168",
     "name" : "Drought",
     "abbreviation" : "1.1.3.8",
     "description" : "Use this domain for words related to drought.",
@@ -243,6 +277,8 @@ var semanticDomains_en = {
         "dry, parched, cracked, dusty" ]
   },
   "1.2 World" : {
+    "key" : "1.2",
+    "guid" : "b47d2604-8b23-41e9-9158-01526dd83894",
     "name" : "World",
     "abbreviation" : "1.2",
     "description" : "Use this domain for words referring to the planet we live on.",
@@ -255,6 +291,8 @@ var semanticDomains_en = {
         "geography, geographical, geographer, geology" ]
   },
   "1.2.1 Land" : {
+    "key" : "1.2.1",
+    "guid" : "cce98603-ff8f-4213-945a-bd6746716139",
     "name" : "Land",
     "abbreviation" : "1.2.1",
     "description" : "Use this domain for words referring to the ground we stand on, the earth versus the sky.",
@@ -265,6 +303,8 @@ var semanticDomains_en = {
         "altitude, sea level", "surface, crust, lithosphere" ]
   },
   "1.2.1.1 Mountain" : {
+    "key" : "1.2.1.1",
+    "guid" : "0ac5e5f9-e7fe-4d37-a631-eab1ceb1f8ae",
     "name" : "Mountain",
     "abbreviation" : "1.2.1.1",
     "description" : "Use this domain for words related to mountains.",
@@ -280,6 +320,8 @@ var semanticDomains_en = {
         "climb", "pass, tunnel" ]
   },
   "1.2.1.2 Volcano" : {
+    "key" : "1.2.1.2",
+    "guid" : "d50f3921-fcea-4ac9-b64a-25bf47dc3292",
     "name" : "Volcano",
     "abbreviation" : "1.2.1.2",
     "description" : "Use this domain for words related to volcanoes.",
@@ -291,6 +333,8 @@ var semanticDomains_en = {
         "active, dormant, extinct" ]
   },
   "1.2.1.3 Plain, plateau" : {
+    "key" : "1.2.1.3",
+    "guid" : "4fb79b12-3bd1-46ed-8698-7d27052a5dc7",
     "name" : "Plain, plateau",
     "abbreviation" : "1.2.1.3",
     "description" : "Use this domain for words referring to land that is flat.",
@@ -300,6 +344,8 @@ var semanticDomains_en = {
         "uneven, dip, depression, basin, rut, rutted" ]
   },
   "1.2.1.4 Valley" : {
+    "key" : "1.2.1.4",
+    "guid" : "cd403434-a5a1-4700-8ad3-b7c9aabd99d9",
     "name" : "Valley",
     "abbreviation" : "1.2.1.4",
     "description" : "Use this domain for words related to valleys.",
@@ -308,6 +354,8 @@ var semanticDomains_en = {
         "narrow, broad, deep" ]
   },
   "1.2.1.5 Underground" : {
+    "key" : "1.2.1.5",
+    "guid" : "b3be00a9-41a4-42ae-ba51-320b5000a563",
     "name" : "Underground",
     "abbreviation" : "1.2.1.5",
     "description" : "Use this domain for words referring to the area under the ground, and to holes in the ground.",
@@ -318,6 +366,8 @@ var semanticDomains_en = {
         "burrow, den, foxhole, lair", "aquifer, underground river" ]
   },
   "1.2.1.6 Forest, grassland, desert" : {
+    "key" : "1.2.1.6",
+    "guid" : "7988974c-99fd-40dd-9b5e-2d81ec603ddc",
     "name" : "Forest, grassland, desert",
     "abbreviation" : "1.2.1.6",
     "description" : "Use this domain for words referring to an area of land that has particular types of plants growing in it.",
@@ -331,6 +381,8 @@ var semanticDomains_en = {
         "wilderness, uninhabited, frontier, hinterland, outback" ]
   },
   "1.2.1.7 Earthquake" : {
+    "key" : "1.2.1.7",
+    "guid" : "b3745f13-3632-4f13-b0cc-a74c51f8f2a1",
     "name" : "Earthquake",
     "abbreviation" : "1.2.1.7",
     "description" : "Use this domain for words related to earthquakes. In some languages earthquakes are thought of as moving somewhere. In Amele (PNG) they say \"mim nen\" which means 'the earthquake came down (from above)'. In Northern Embera an earthquake is a \"house-shaking\". They say \"a house-shaking went.\"",
@@ -341,6 +393,8 @@ var semanticDomains_en = {
         "tidal wave, tsunami," ]
   },
   "1.2.2 Substance, matter" : {
+    "key" : "1.2.2",
+    "guid" : "f899802d-bd32-427f-a101-c84219f7e14e",
     "name" : "Substance, matter",
     "abbreviation" : "1.2.2",
     "description" : "Use this domain for general words referring to matter--what something is made out of, or a type of solid, liquid, or gas.",
@@ -348,6 +402,8 @@ var semanticDomains_en = {
         "natural resources, raw materials", "chemistry" ]
   },
   "1.2.2.1 Soil, dirt" : {
+    "key" : "1.2.2.1",
+    "guid" : "180a2220-942c-4e17-96ee-cd4f63a4c715",
     "name" : "Soil, dirt",
     "abbreviation" : "1.2.2.1",
     "description" : "Use this domain for words referring to soil and dirt.",
@@ -362,6 +418,8 @@ var semanticDomains_en = {
         "topsoil, sod", "erode, erosion," ]
   },
   "1.2.2.2 Rock" : {
+    "key" : "1.2.2.2",
+    "guid" : "0f07adb7-4387-4723-9800-8362e825ad45",
     "name" : "Rock",
     "abbreviation" : "1.2.2.2",
     "description" : "Use this domain for words referring to rock.",
@@ -372,6 +430,8 @@ var semanticDomains_en = {
         "hard, soft, sharp, smooth", "rocky, stony", "block, slab" ]
   },
   "1.2.2.3 Metal" : {
+    "key" : "1.2.2.3",
+    "guid" : "3df7d174-83d1-4e17-890e-1272e171ca41",
     "name" : "Metal",
     "abbreviation" : "1.2.2.3",
     "description" : "Use this domain for words referring to metal.",
@@ -382,6 +442,8 @@ var semanticDomains_en = {
         "magnet, magnetic, magnetism, lodestone" ]
   },
   "1.2.2.4 Mineral" : {
+    "key" : "1.2.2.4",
+    "guid" : "56c9c38c-728a-42fe-b93c-6ca67fdf2a9a",
     "name" : "Mineral",
     "abbreviation" : "1.2.2.4",
     "description" : "Use this domain for naturally occurring elements, compounds, and minerals--things you can find in the ground.",
@@ -392,6 +454,8 @@ var semanticDomains_en = {
         "mineralize, calcify, petrify, vitrify" ]
   },
   "1.2.2.5 Jewel" : {
+    "key" : "1.2.2.5",
+    "guid" : "21bcc306-13cb-4162-98b3-2ba319ba14ea",
     "name" : "Jewel",
     "abbreviation" : "1.2.2.5",
     "description" : "Use this domain for words referring to jewels and precious stones.",
@@ -401,6 +465,8 @@ var semanticDomains_en = {
         "precious, semiprecious, facet, glitter, sparkle, lustrous" ]
   },
   "1.2.3 Solid, liquid, gas" : {
+    "key" : "1.2.3",
+    "guid" : "756728a8-9eb8-4329-aee2-d6a3d64585f2",
     "name" : "Solid, liquid, gas",
     "abbreviation" : "1.2.3",
     "description" : "Use this domain for words describing the different states of matter (solid, liquid, and gas), and words for changing from one to another.",
@@ -414,6 +480,8 @@ var semanticDomains_en = {
         "melting point, freezing point, dew point, boiling point" ]
   },
   "1.2.3.1 Liquid" : {
+    "key" : "1.2.3.1",
+    "guid" : "f56a2511-10cc-4829-940d-49051429bfba",
     "name" : "Liquid",
     "abbreviation" : "1.2.3.1",
     "description" : "Use this domain for words referring to liquids.",
@@ -430,6 +498,8 @@ var semanticDomains_en = {
         "bubble (n), bubble (v), bubbly, suds, foam" ]
   },
   "1.2.3.2 Oil" : {
+    "key" : "1.2.3.2",
+    "guid" : "962cb994-0183-4ac5-94b2-82a33f1d64e4",
     "name" : "Oil",
     "abbreviation" : "1.2.3.2",
     "description" : "Use this domain for words referring to oil.",
@@ -442,6 +512,8 @@ var semanticDomains_en = {
         "lubricate, lubrication, lube, oil (v), anoint, rub, salve, slick, smear, grease (v)" ]
   },
   "1.2.3.3 Gas" : {
+    "key" : "1.2.3.3",
+    "guid" : "34c3edad-a158-44e7-989b-5b74401e6945",
     "name" : "Gas",
     "abbreviation" : "1.2.3.3",
     "description" : "Use this domain for words referring to gas.",
@@ -453,6 +525,8 @@ var semanticDomains_en = {
         "spread, drift, creep along the ground, vapor trail, rise" ]
   },
   "1.3 Water" : {
+    "key" : "1.3",
+    "guid" : "60364974-a005-4567-82e9-7aaeff894ab0",
     "name" : "Water",
     "abbreviation" : "1.3",
     "description" : "Use this domain for general words referring to water.",
@@ -460,6 +534,8 @@ var semanticDomains_en = {
         "waterproof, watertight" ]
   },
   "1.3.1 Bodies of water" : {
+    "key" : "1.3.1",
+    "guid" : "79ebb5ce-f0fd-4fb5-9f22-1fa4965a555b",
     "name" : "Bodies of water",
     "abbreviation" : "1.3.1",
     "description" : "Use this domain for general words referring to bodies of water.",
@@ -467,6 +543,8 @@ var semanticDomains_en = {
         "marine, oceanic, riverine" ]
   },
   "1.3.1.1 Ocean, lake" : {
+    "key" : "1.3.1.1",
+    "guid" : "14e9c20c-6eb5-49a4-a03f-3be26a934500",
     "name" : "Ocean, lake",
     "abbreviation" : "1.3.1.1",
     "description" : "Use this domain for words referring to bodies of standing water.",
@@ -477,6 +555,8 @@ var semanticDomains_en = {
         "oceanography" ]
   },
   "1.3.1.2 Swamp" : {
+    "key" : "1.3.1.2",
+    "guid" : "31777669-e37b-4b77-9cce-0d8c33f6ebb9",
     "name" : "Swamp",
     "abbreviation" : "1.3.1.2",
     "description" : "Use this domain for words referring to bodies of standing water with plants growing in them.",
@@ -485,6 +565,8 @@ var semanticDomains_en = {
         "swampy, marshy, boggy", "get bogged down, sink" ]
   },
   "1.3.1.3 River" : {
+    "key" : "1.3.1.3",
+    "guid" : "4153416a-784d-4f7c-a664-2640f7979a14",
     "name" : "River",
     "abbreviation" : "1.3.1.3",
     "description" : "Use this domain for words referring to bodies of flowing water.",
@@ -501,6 +583,8 @@ var semanticDomains_en = {
         "watershed, basin", "current, flow" ]
   },
   "1.3.1.4 Spring, well" : {
+    "key" : "1.3.1.4",
+    "guid" : "bf6e1719-11ee-4ace-9c84-72019c01aabc",
     "name" : "Spring, well",
     "abbreviation" : "1.3.1.4",
     "description" : "Use this domain for words referring to a place where water comes out of the ground.",
@@ -509,6 +593,8 @@ var semanticDomains_en = {
         "spring up, well up, bubble up, flow out of" ]
   },
   "1.3.1.5 Island, shore" : {
+    "key" : "1.3.1.5",
+    "guid" : "928741b5-bff6-4dd1-be37-ec6e7a4eb6ca",
     "name" : "Island, shore",
     "abbreviation" : "1.3.1.5",
     "description" : "Use this domain for words referring to land in contrast with the sea or river.",
@@ -522,6 +608,8 @@ var semanticDomains_en = {
         "seaside, beachfront, lakeside, bordering", "shallows, shoal," ]
   },
   "1.3.2 Movement of water" : {
+    "key" : "1.3.2",
+    "guid" : "50ab3705-a81e-4fcc-b3ae-95c075966f69",
     "name" : "Movement of water",
     "abbreviation" : "1.3.2",
     "description" : "Use this domain for words referring to the way in which water and other liquids move.",
@@ -531,6 +619,8 @@ var semanticDomains_en = {
         "splash, spray", "bubble, foam, foaming, froth, whip" ]
   },
   "1.3.2.1 Flow" : {
+    "key" : "1.3.2.1",
+    "guid" : "60595d09-4a15-4499-b6e1-d36a704bcbe9",
     "name" : "Flow",
     "abbreviation" : "1.3.2.1",
     "description" : "Use this domain for words referring to the way water moves over a surface, such as in a river or along the ground.",
@@ -541,6 +631,8 @@ var semanticDomains_en = {
         "drain, bleed, discharge, draw off, empty, leak, ooze, strain," ]
   },
   "1.3.2.2 Pour" : {
+    "key" : "1.3.2.2",
+    "guid" : "647603c2-6f32-48f3-91fa-1f7f0e44b539",
     "name" : "Pour",
     "abbreviation" : "1.3.2.2",
     "description" : "Use this domain for words referring to water coming out of something (such as a container), or causing water to come out of something.",
@@ -553,6 +645,8 @@ var semanticDomains_en = {
         "spill", "inject," ]
   },
   "1.3.2.3 Drip" : {
+    "key" : "1.3.2.3",
+    "guid" : "a9fbc056-3134-41af-baf4-9f63fa5bd5ae",
     "name" : "Drip",
     "abbreviation" : "1.3.2.3",
     "description" : "Use this domain for words referring to drops of water and what they do.",
@@ -562,6 +656,8 @@ var semanticDomains_en = {
         "dripping (of water), steady drip, drip-drip (of water)" ]
   },
   "1.3.2.4 Wave" : {
+    "key" : "1.3.2.4",
+    "guid" : "741c417a-11e9-460c-9ab3-51b8220df016",
     "name" : "Wave",
     "abbreviation" : "1.3.2.4",
     "description" : "Use this domain for words related to waves and what they do.",
@@ -576,6 +672,8 @@ var semanticDomains_en = {
         "crash, roar, thunder, thunderous roar, slap" ]
   },
   "1.3.2.5 Calm, rough" : {
+    "key" : "1.3.2.5",
+    "guid" : "b09205d4-fbb4-4bcd-94ef-f8d83e298462",
     "name" : "Calm, rough",
     "abbreviation" : "1.3.2.5",
     "description" : "Use this domain for words describing the surface of water.",
@@ -587,6 +685,8 @@ var semanticDomains_en = {
         "agitate, churn, stir, whip" ]
   },
   "1.3.2.6 Tide" : {
+    "key" : "1.3.2.6",
+    "guid" : "c1a63ba2-1db6-410d-a4ed-5f64d1798bc1",
     "name" : "Tide",
     "abbreviation" : "1.3.2.6",
     "description" : "Use this domain for words related to the tide.",
@@ -595,6 +695,8 @@ var semanticDomains_en = {
         "rise, fall, ebb, come in, go out", "tidal flat" ]
   },
   "1.3.3 Wet" : {
+    "key" : "1.3.3",
+    "guid" : "f38f8344-838f-44ba-b103-22289c2d2793",
     "name" : "Wet",
     "abbreviation" : "1.3.3",
     "description" : "Use this domain for words referring to when something has water on it or water has soaked into it.",
@@ -613,6 +715,8 @@ var semanticDomains_en = {
         "absorbent, porous" ]
   },
   "1.3.3.1 Dry" : {
+    "key" : "1.3.3.1",
+    "guid" : "0b0801a3-8a0c-40ea-bf41-07df80bd0d5f",
     "name" : "Dry",
     "abbreviation" : "1.3.3.1",
     "description" : "Use this domain for words describing something that is dry.",
@@ -626,6 +730,8 @@ var semanticDomains_en = {
         "sieve, press" ]
   },
   "1.3.4 Be in water" : {
+    "key" : "1.3.4",
+    "guid" : "bf25931d-4760-4c66-abe8-c05a6dc5adbe",
     "name" : "Be in water",
     "abbreviation" : "1.3.4",
     "description" : "Use this domain for words referring to being in water or putting something in water.",
@@ -637,6 +743,8 @@ var semanticDomains_en = {
         "soak, marinate,", "fall, sink, settle,", "splash, plop" ]
   },
   "1.3.5 Solutions of water" : {
+    "key" : "1.3.5",
+    "guid" : "e7e5dbf2-6d5b-4869-b357-8a7860c29002",
     "name" : "Solutions of water",
     "abbreviation" : "1.3.5",
     "description" : "Use this domain for words referring to a mixture of water and a substance (such as salt or sugar) that dissolves in water.",
@@ -647,6 +755,8 @@ var semanticDomains_en = {
         "aerate, carbonated, carbonation", "leach" ]
   },
   "1.3.6 Water quality" : {
+    "key" : "1.3.6",
+    "guid" : "4d19f09f-035b-477e-862c-a4157acdfe81",
     "name" : "Water quality",
     "abbreviation" : "1.3.6",
     "description" : "Use this domain for words describing the quality or condition of water.",
@@ -659,6 +769,8 @@ var semanticDomains_en = {
         "to pollute, pollution, polluted, contaminate, dump sewage into" ]
   },
   "1.4 Living things" : {
+    "key" : "1.4",
+    "guid" : "8d47c9ec-80c4-4309-9848-c453dcd71182",
     "name" : "Living things",
     "abbreviation" : "1.4",
     "description" : "Use this domain for general words that relate to all living things.",
@@ -672,6 +784,8 @@ var semanticDomains_en = {
         "edible, inedible" ]
   },
   "1.4.1 Dead things" : {
+    "key" : "1.4.1",
+    "guid" : "06a89652-70e0-40ac-b929-ed42f011c9fc",
     "name" : "Dead things",
     "abbreviation" : "1.4.1",
     "description" : "Use this domain for words referring to dead things--things that were alive before, but aren't now.",
@@ -681,6 +795,8 @@ var semanticDomains_en = {
         "dinosaur, fossil, extinct" ]
   },
   "1.4.2 Spirits of things" : {
+    "key" : "1.4.2",
+    "guid" : "1c512719-6ecb-48cb-980e-4ff20e8b5f9b",
     "name" : "Spirits of things",
     "abbreviation" : "1.4.2",
     "description" : "Use this domain for words referring to the spirits of things.",
@@ -688,6 +804,8 @@ var semanticDomains_en = {
         "animism, animistic,", "amulet, fetish," ]
   },
   "1.5 Plant" : {
+    "key" : "1.5",
+    "guid" : "025da6f4-b1b6-423a-8c0f-b324f531a6f1",
     "name" : "Plant",
     "abbreviation" : "1.5",
     "description" : "Use this domain for general words for all plants. Use a book of pictures to identify plant names and the scientific name. Languages divide plants into various domains that are not always comparable from language to language. Criterial features may be characteristics (trees and bushes are distinguished by size and number of trunks) and use (grass and weeds are distinguished by their desirability). A common distinction is between trees and non-trees, with trees described as being big, woody, and having a life expectancy of several years, while non-trees are small, non-woody, and have a life expectancy of typically not more than one year (Heine, Bernd and Karsten Legere. 1995. Swahili plants. Rudiger Koppe Verlag: Koln.). Agricultural societies will divide plants into wild and cultivated. However most plants for which there are names have some use. Therefore it does not seem helpful to divide plant names into domains for useful and non-useful plants. Since only parts of plants are eaten, edible parts of plants are listed under the domain 'Food'. Some languages may have more domains than are used in this list, others may have fewer. The classification system used here does not agree entirely with the system used by botanists. For instance botanists do not classify all the tree species together. The palm trees belong to the class Monocotyledoneae and are classified with lilies, bananas, and orchids. Apple and cherry trees belong to the class Dicotyledoneae and are classified in the rose family along with roses and blackberries. The acacia tree also belongs to the class Dicotyledoneae and is classified in the pulse family along with lupines and beans. However most folk taxonomies bring all the trees together. The scientific classification system for plants and animals is taken from: Carruth, Gorton, ed. 1989. The Volume Library, Vols. 1 and 2. The Southwestern Company: Nashville.",
@@ -700,6 +818,8 @@ var semanticDomains_en = {
         "botany, botanist, herbalist" ]
   },
   "1.5.1 Tree" : {
+    "key" : "1.5.1",
+    "guid" : "0ee5b933-f1ab-485f-894a-51fe239cb726",
     "name" : "Tree",
     "abbreviation" : "1.5.1",
     "description" : "Use this domain for trees--flowering plants with roots, stems, and leaves, which are large and have a wooden trunk (Phylum Spermatophyta, Subdivision Angiospermae). Also include the evergreen trees (Phylum Spermatophyta, Subdivision Gymnospermae). Evergreen trees do not have flowers, but have cone like fruits (pinecones) that contain seeds. Their leaves are shaped like needles and are retained for over a year.",
@@ -710,6 +830,8 @@ var semanticDomains_en = {
         "bonsai", "forest, woods, grove, stand" ]
   },
   "1.5.2 Bush, shrub" : {
+    "key" : "1.5.2",
+    "guid" : "531af868-b5fb-41c2-ba50-764458f9102f",
     "name" : "Bush, shrub",
     "abbreviation" : "1.5.2",
     "description" : "Use this domain for bushes and shrubs--plants that are smaller than trees and have several wooden trunks (Phylum Spermatophyta, Subdivision Angiospermae).",
@@ -717,6 +839,8 @@ var semanticDomains_en = {
         "poinsettia, rose bush, bougainvillea" ]
   },
   "1.5.3 Grass, herb, vine" : {
+    "key" : "1.5.3",
+    "guid" : "c345f278-91ff-463d-b9a6-8abac8a267eb",
     "name" : "Grass, herb, vine",
     "abbreviation" : "1.5.3",
     "description" : "Use this domain for small plants that have roots, stems, flowers, and seeds, but do not have a wooden trunk (Phylum Spermatophyta, Subdivision Angiospermae). Also include the seedless plants, such as ferns (phylum Pteridophyta, class Felicineae), horsetails (phylum Pteridophyta, class Equisetineae), and club mosses (phylum Pteridophyta, class Lycopodineae). Plants of the Pteridophyta phylum have no flowers or seeds. Ferns have large, divided, feather-like leaves, or fronds. Club mosses are small (rarely over one meter) evergreen plants with simple leaves resembling pine or hemlock needles. Sometimes they grow upright, but often trail on the ground, where they propagate by means of runners. Horsetails send up tall, vertical, jointed stalks with branches covered with scale like leaves.",
@@ -738,6 +862,8 @@ var semanticDomains_en = {
         "bracken, brake, fern, maidenhair", "horsetail", "club moss" ]
   },
   "1.5.4 Moss, fungus, algae" : {
+    "key" : "1.5.4",
+    "guid" : "d06dae77-134a-403f-ba88-52ecd66c0522",
     "name" : "Moss, fungus, algae",
     "abbreviation" : "1.5.4",
     "description" : "Use this domain for mosses (phylum Bryophyta, class Musci), liverworts (phylum Bryophyta, class Hepaticae), fungi (phylum Thallophyta, subdivision Fungi), algae (phylum Thallophyta, subdivision Algae), and lichens. These plants do not have true roots, stems, or leaves. The mosses are small, green, flowerless plants that grow in moist environments and look like velvety or feathery growths carpeting the ground, tree trunks, and rocks. The liverworts are similar to the mosses with a flat and branching growth pattern. The algae possess green chlorophyll. They vary from one-celled organisms, which sometimes live in colonies such as pond scum, to complex organisms such as seaweed. The fungi do not possess chlorophyll and feed off of other organic material. Lichens consist of a fungus and an algae growing together. They commonly grow on trunks of trees and rocks. Some are flat and leafy, and some are moss like.",
@@ -752,6 +878,8 @@ var semanticDomains_en = {
         "lichen", "reindeer moss" ]
   },
   "1.5.5 Parts of a plant" : {
+    "key" : "1.5.5",
+    "guid" : "d117aa22-3f18-47c4-9683-51ecf1dc7134",
     "name" : "Parts of a plant",
     "abbreviation" : "1.5.5",
     "description" : "Use this domain for words that refer to parts of a plant. Start with general words that all plants have. Then think through each major type of plant. Finish by thinking of specific plants that are well known (usually cultivated crops) and that have words for specific parts (e.g. tassel on a corn/maize cob).",
@@ -779,6 +907,8 @@ var semanticDomains_en = {
         "log, stump, grass trimmings, compost, pile of leaves, straw, hay" ]
   },
   "1.5.6 Growth of plants" : {
+    "key" : "1.5.6",
+    "guid" : "d2ca3194-e393-480e-ae1d-dd67bed55227",
     "name" : "Growth of plants",
     "abbreviation" : "1.5.6",
     "description" : "Use this domain for words related to the growth of plants.",
@@ -792,18 +922,24 @@ var semanticDomains_en = {
         "wither, droop, fade, decay, rot, dry, die", "compost pile" ]
   },
   "1.5.7 Plant diseases" : {
+    "key" : "1.5.7",
+    "guid" : "f7b7eb3c-b784-4ba5-8dac-a68fd27ce0ea",
     "name" : "Plant diseases",
     "abbreviation" : "1.5.7",
     "description" : "Use this domain for words related to plant diseases.",
     "searchKeys" : [ "blight, wither", "mistletoe", "drop fruit" ]
   },
   "1.6 Animal" : {
+    "key" : "1.6",
+    "guid" : "944cf5af-469e-4b03-878f-a05d34b0d9f6",
     "name" : "Animal",
     "abbreviation" : "1.6",
     "description" : "Use this domain for general words referring to animals.",
     "searchKeys" : [ "animal, fauna, creature, critter, organism, wildlife" ]
   },
   "1.6.1 Types of animals" : {
+    "key" : "1.6.1",
+    "guid" : "73499b8b-76fc-4121-8bfa-1bdebe537259",
     "name" : "Types of animals",
     "abbreviation" : "1.6.1",
     "description" : "Use this domain for words describing types of animals. Use a book of pictures to identify each species and its scientific name. This section is organized according to the scientific, biological classification of animals. It may not correspond to the local classification of animals (folk taxonomy), which are often based on how people relate to animals (tame/wild, edible/work). Use this domain for words referring to large classes of animals that do not correspond to the scientific classification. For instance this would be the place for a word like 'flying animal', which includes birds, bats, and flying insects.",
@@ -817,12 +953,16 @@ var semanticDomains_en = {
         "amphibian, aquatic, arboreal, barnyard, tropical" ]
   },
   "1.6.1.1 Mammal" : {
+    "key" : "1.6.1.1",
+    "guid" : "5e9f361d-17dc-4ada-a312-8da269d22a64",
     "name" : "Mammal",
     "abbreviation" : "1.6.1.1",
     "description" : "Use this domain for general words referring to mammals (phylum Chordata, class Mammalia).",
     "searchKeys" : [ "mammal, mammalian, animal" ]
   },
   "1.6.1.1.1 Primate" : {
+    "key" : "1.6.1.1.1",
+    "guid" : "40248a12-1809-4561-b786-e4e274c14d82",
     "name" : "Primate",
     "abbreviation" : "1.6.1.1.1",
     "description" : "Use this domain for primates (phylum Chordata, class Mammalia, order Primates).",
@@ -831,6 +971,8 @@ var semanticDomains_en = {
         "baboon, capuchin, chimpanzee, colobus, gibbon, gorilla, langur, lemur, orangutan, macaque, mandrill, marmoset, rhesus, ringtail" ]
   },
   "1.6.1.1.2 Carnivore" : {
+    "key" : "1.6.1.1.2",
+    "guid" : "56ef3f06-7fb9-462e-a7d0-517f3ce1623f",
     "name" : "Carnivore",
     "abbreviation" : "1.6.1.1.2",
     "description" : "Use this domain for carnivores--meat-eating animals (phylum Chordata, class Mammalia, order Carnivora).",
@@ -844,6 +986,8 @@ var semanticDomains_en = {
         "hyena, raccoon, coon," ]
   },
   "1.6.1.1.3 Hoofed animals" : {
+    "key" : "1.6.1.1.3",
+    "guid" : "bbd3c3f1-7387-4ec6-a75d-66c1355a94ef",
     "name" : "Hoofed animals",
     "abbreviation" : "1.6.1.1.3",
     "description" : "Use this domain for even-toed hoofed animals (phylum Chordata, class Mammalia, order Artiodactyla), odd-toed hoofed animals (phylum Chordata, class Mammalia, order Perissodactyla), and elephants (phylum Chordata, class Mammalia, order Proboscidea).",
@@ -854,6 +998,8 @@ var semanticDomains_en = {
         "horse, donkey, zebra, tapir, rhinoceros, elephant, pachyderm, onager" ]
   },
   "1.6.1.1.4 Rodent" : {
+    "key" : "1.6.1.1.4",
+    "guid" : "a8b9e892-df3e-44c4-8c68-7a0f7f4468bb",
     "name" : "Rodent",
     "abbreviation" : "1.6.1.1.4",
     "description" : "Use this domain for rodents--gnawing animals (phylum Chordata, class Mammalia, order Rodentia), insect eating animals (phylum Chordata, class Mammalia, order Insectivora), rabbits (phylum Chordata, class Mammalia, order Lagomorpha), and hyraxes (phylum Chordata, class Mammalia, order Hyracoidea).",
@@ -864,6 +1010,8 @@ var semanticDomains_en = {
         "hyrax, coney, dassy" ]
   },
   "1.6.1.1.5 Marsupial" : {
+    "key" : "1.6.1.1.5",
+    "guid" : "31171aa9-e243-4b46-abd8-f3e52843cdfc",
     "name" : "Marsupial",
     "abbreviation" : "1.6.1.1.5",
     "description" : "Use this domain for marsupials (phylum Chordata, class Mammalia, order Marsupialia). Marsupials carry their young in a pouch.",
@@ -871,6 +1019,8 @@ var semanticDomains_en = {
         "opossum, possum, kangaroo, wallaby, Tasmanian devil, wombat" ]
   },
   "1.6.1.1.6 Anteater, aardvark" : {
+    "key" : "1.6.1.1.6",
+    "guid" : "445f3084-f250-40fa-87ba-ebd233f9018f",
     "name" : "Anteater, aardvark",
     "abbreviation" : "1.6.1.1.6",
     "description" : "Use this domain for mammals with few or no teeth--anteaters (phylum Chordata, class Mammalia, order Edentata), pangolins (phylum Chordata, class Mammalia, order Pholidota), aardvarks (phylum Chordata, class Mammalia, order Tubulidentata), and platypus--mammals that lay eggs (phylum Chordata, class Mammalia, order Monotremata).",
@@ -879,6 +1029,8 @@ var semanticDomains_en = {
         "duckbill platypus, spiny anteater" ]
   },
   "1.6.1.1.7 Sea mammal" : {
+    "key" : "1.6.1.1.7",
+    "guid" : "e22d860a-d207-4649-8ab5-4592b838febb",
     "name" : "Sea mammal",
     "abbreviation" : "1.6.1.1.7",
     "description" : "Use this domain for mammals that live in the sea--whales and dolphins (phylum Chordata, class Mammalia, order Cetacea), seals (phylum Chordata, class Mammalia, order Pinnipedia), and sea cows (phylum Chordata, class Mammalia, order Sirenia).",
@@ -888,12 +1040,16 @@ var semanticDomains_en = {
         "seal, walrus, sea lion", "sea cow, manatee" ]
   },
   "1.6.1.1.8 Bat" : {
+    "key" : "1.6.1.1.8",
+    "guid" : "2c322d8b-d762-43ce-b905-aab41f9c7bbb",
     "name" : "Bat",
     "abbreviation" : "1.6.1.1.8",
     "description" : "Use this domain for bats--flying mammals (phylum Chordata, class Mammalia, order Chiroptera).",
     "searchKeys" : [ "bat", "fruit bat, vampire bat" ]
   },
   "1.6.1.2 Bird" : {
+    "key" : "1.6.1.2",
+    "guid" : "83b483b8-f036-44be-8510-ea337d010a1c",
     "name" : "Bird",
     "abbreviation" : "1.6.1.2",
     "description" : "Use this domain for birds (phylum Chordata, class Aves).",
@@ -904,12 +1060,16 @@ var semanticDomains_en = {
         "long-necked, short-necked, long-winged, zygodactyl" ]
   },
   "1.6.1.3 Reptile" : {
+    "key" : "1.6.1.3",
+    "guid" : "ee446395-781b-4651-afef-cad78b71f843",
     "name" : "Reptile",
     "abbreviation" : "1.6.1.3",
     "description" : "Use this domain for general words referring to reptiles (phylum Chordata, class Reptilia).",
     "searchKeys" : [ "reptile, reptilian" ]
   },
   "1.6.1.3.1 Snake" : {
+    "key" : "1.6.1.3.1",
+    "guid" : "7d472317-b5e8-4cae-a03f-913ecdaf4c29",
     "name" : "Snake",
     "abbreviation" : "1.6.1.3.1",
     "description" : "Use this domain for words related to snakes.",
@@ -919,6 +1079,8 @@ var semanticDomains_en = {
         "rattlesnake, python, boa, anaconda, cobra, viper, mamba, sea snake, adder, anaconda, asp, boa, bushmaster, cobra, copperhead, cottonmouth, fer-de-lance, mamba, water moccasin, python, racer, rattler, rattlesnake, sidewinder, viper" ]
   },
   "1.6.1.3.2 Lizard" : {
+    "key" : "1.6.1.3.2",
+    "guid" : "36b3cfb6-0fea-4628-aa8d-f9b7af48f436",
     "name" : "Lizard",
     "abbreviation" : "1.6.1.3.2",
     "description" : "Use this domain for words related to lizards.",
@@ -926,6 +1088,8 @@ var semanticDomains_en = {
         "chameleon, agama lizard, skink, gecko, monitor lizard, iguana" ]
   },
   "1.6.1.3.3 Turtle" : {
+    "key" : "1.6.1.3.3",
+    "guid" : "faf0ae24-6584-4766-a93b-389c1cb06d8d",
     "name" : "Turtle",
     "abbreviation" : "1.6.1.3.3",
     "description" : "Use this domain for words related to turtles.",
@@ -933,12 +1097,16 @@ var semanticDomains_en = {
         "box turtle, leatherback, snapping turtle, Galapagos tortoise, terrapin" ]
   },
   "1.6.1.3.4 Crocodile" : {
+    "key" : "1.6.1.3.4",
+    "guid" : "c21c28e8-9731-4ee0-acbb-32501bf8abd1",
     "name" : "Crocodile",
     "abbreviation" : "1.6.1.3.4",
     "description" : "Use this domain for words referring to crocodiles.",
     "searchKeys" : [ "alligator, caiman, crocodile" ]
   },
   "1.6.1.4 Amphibian" : {
+    "key" : "1.6.1.4",
+    "guid" : "8d8a7656-8f8e-467e-b72e-535db6a17c6a",
     "name" : "Amphibian",
     "abbreviation" : "1.6.1.4",
     "description" : "Use this domain for amphibians (phylum Chordata, class Amphibia).",
@@ -948,6 +1116,8 @@ var semanticDomains_en = {
         "tadpole" ]
   },
   "1.6.1.5 Fish" : {
+    "key" : "1.6.1.5",
+    "guid" : "85188748-1919-4210-a9e9-91171d9d6454",
     "name" : "Fish",
     "abbreviation" : "1.6.1.5",
     "description" : "Use this domain for fish (phylum Chordata, class Osteichthyes).",
@@ -959,6 +1129,8 @@ var semanticDomains_en = {
         "bony, finned, jawed, jawless, lobe-finned, poisonous, snouted" ]
   },
   "1.6.1.6 Shark, ray" : {
+    "key" : "1.6.1.6",
+    "guid" : "3014de03-88e5-4330-9682-51963a41ca50",
     "name" : "Shark, ray",
     "abbreviation" : "1.6.1.6",
     "description" : "Use this domain for sharks and rays--animals with cartilage instead of bones (phylum Chordata, class Chondrichthyes), and eels (phylum Chordata, class Cyclostomata).",
@@ -967,6 +1139,8 @@ var semanticDomains_en = {
         "cartilaginous, ray-finned, soft finned" ]
   },
   "1.6.1.7 Insect" : {
+    "key" : "1.6.1.7",
+    "guid" : "ecc39bc2-6336-48ca-be46-cf5e49a3c267",
     "name" : "Insect",
     "abbreviation" : "1.6.1.7",
     "description" : "Use this domain for the names of insect species (phylum Arthropoda, class Insecta). Note that insects have six legs and spiders have eight legs. However some languages may not distinguish insects from spiders and may use other characteristics to sub-divide the Arthropods.",
@@ -977,6 +1151,8 @@ var semanticDomains_en = {
         "borer, carnivorous, cosmopolitan, crawling, creeping, diurnal, dauber, flying, hopper, hopping, insectile, larva, larval, nocturnal, pest, predacious, predator, pupa, queen, segmented, stinging, two-winged, venomous, winged, wingless" ]
   },
   "1.6.1.8 Spider" : {
+    "key" : "1.6.1.8",
+    "guid" : "cfb159f7-82f6-4789-b9b4-8f611820f350",
     "name" : "Spider",
     "abbreviation" : "1.6.1.8",
     "description" : "Use this domain for spiders (phylum Arthropoda, class Arachnida). Note that insects have six legs and spiders have eight legs. However some languages may not distinguish insects from spiders and may use other characteristics to sub-divide the Arthropods.",
@@ -986,6 +1162,8 @@ var semanticDomains_en = {
         "spider web, cobweb, web, spin, silk" ]
   },
   "1.6.1.9 Small animals" : {
+    "key" : "1.6.1.9",
+    "guid" : "38473463-4b92-4681-8fd0-0aca0342e88a",
     "name" : "Small animals",
     "abbreviation" : "1.6.1.9",
     "description" : "Use this domain for the names of worms, animals with shells, and other animals that do not fit into any of the other categories.",
@@ -1009,6 +1187,8 @@ var semanticDomains_en = {
         "arrow worm" ]
   },
   "1.6.2 Parts of an animal" : {
+    "key" : "1.6.2",
+    "guid" : "ffd0547e-e537-4614-ac3f-6d8cd3351f33",
     "name" : "Parts of an animal",
     "abbreviation" : "1.6.2",
     "description" : "Use this domain for the parts of animals, especially those of mammals.",
@@ -1022,12 +1202,16 @@ var semanticDomains_en = {
         "whale flukes, flipper, blubber, baleen, blow hole," ]
   },
   "1.6.2.1 Parts of a bird" : {
+    "key" : "1.6.2.1",
+    "guid" : "e6221c7a-4608-4114-ba9f-532a3b943113",
     "name" : "Parts of a bird",
     "abbreviation" : "1.6.2.1",
     "description" : "Use this domain for the parts of a bird, but not general parts that belong to all animals.",
     "searchKeys" : [ "feather, feathered, plumage, plume, quill, down, wing, winged, wing tip, beak, bill, cockscomb (rooster's red crest), wattles (rooster's red flap of skin under beak), crop, gizzard, claw, talon, egg, eggshell, egg tooth, craw, gullet, spur," ]
   },
   "1.6.2.2 Parts of a reptile" : {
+    "key" : "1.6.2.2",
+    "guid" : "203f46d2-f0d0-4dda-8d1a-ddc15065b005",
     "name" : "Parts of a reptile",
     "abbreviation" : "1.6.2.2",
     "description" : "Use this domain for the parts of a reptile.",
@@ -1036,18 +1220,24 @@ var semanticDomains_en = {
         "shell", "venom, venomous, poison, poisonous" ]
   },
   "1.6.2.3 Parts of a fish" : {
+    "key" : "1.6.2.3",
+    "guid" : "73f3bd83-c9a5-4613-aeb1-0c5076d4850e",
     "name" : "Parts of a fish",
     "abbreviation" : "1.6.2.3",
     "description" : "Use this domain for the parts of a fish.",
     "searchKeys" : [ "scale, scaly, fin, tail fin, dorsal fin, gill, guts, slime, slimy, fishy smell" ]
   },
   "1.6.2.4 Parts of an insect" : {
+    "key" : "1.6.2.4",
+    "guid" : "0a37e7d5-b10e-4f1d-baf0-e71668425b3e",
     "name" : "Parts of an insect",
     "abbreviation" : "1.6.2.4",
     "description" : "Use this domain for the parts of an insect.",
     "searchKeys" : [ "head, abdomen, thorax, carapace, exoskeleton, wing, horn, stinger, sting, segment, antenna, feeler, forewing, proboscis, compound eye, spinneret," ]
   },
   "1.6.2.5 Parts of small animals" : {
+    "key" : "1.6.2.5",
+    "guid" : "5d72af95-facd-4be2-80e9-37528f0f34b5",
     "name" : "Parts of small animals",
     "abbreviation" : "1.6.2.5",
     "description" : "Use this domain for the parts of small animals.",
@@ -1055,6 +1245,8 @@ var semanticDomains_en = {
         "segment", "tentacle, sucker, appendage," ]
   },
   "1.6.3 Animal life cycle" : {
+    "key" : "1.6.3",
+    "guid" : "ac187298-85e8-43ed-ba85-cc06a62c08ba",
     "name" : "Animal life cycle",
     "abbreviation" : "1.6.3",
     "description" : "Use this domain for words related to the life cycle of an animal.",
@@ -1066,6 +1258,8 @@ var semanticDomains_en = {
         "shed (skin), molt (feathers)", "molt, shed, down, fledge," ]
   },
   "1.6.3.1 Egg" : {
+    "key" : "1.6.3.1",
+    "guid" : "b6a40216-fe93-4b0f-b85b-5622327031d0",
     "name" : "Egg",
     "abbreviation" : "1.6.3.1",
     "description" : "Use this domain for words related to eggs.",
@@ -1077,6 +1271,8 @@ var semanticDomains_en = {
         "crack, break, smash", "rotten, cracked, broken" ]
   },
   "1.6.4 Animal actions" : {
+    "key" : "1.6.4",
+    "guid" : "e76227e8-4a04-4fbd-a16e-5baa3d9e97a9",
     "name" : "Animal actions",
     "abbreviation" : "1.6.4",
     "description" : "Use this domain for actions of animals.",
@@ -1086,6 +1282,8 @@ var semanticDomains_en = {
         "spawn, lay eggs", "sting, collect nectar" ]
   },
   "1.6.4.1 Animal movement" : {
+    "key" : "1.6.4.1",
+    "guid" : "284433df-7b37-4e63-a614-78520c483213",
     "name" : "Animal movement",
     "abbreviation" : "1.6.4.1",
     "description" : "Use this domain for ways in which animals move. Only include words specific for the movement of animals. For the movement of people use the domains under Movement. It is necessary to think through how each type of animal moves, especially the important ones.",
@@ -1106,6 +1304,8 @@ var semanticDomains_en = {
         "track," ]
   },
   "1.6.4.2 Animal eating" : {
+    "key" : "1.6.4.2",
+    "guid" : "8f68d85f-70f8-4662-9b4b-1dd2900a002a",
     "name" : "Animal eating",
     "abbreviation" : "1.6.4.2",
     "description" : "Use this domain for words referring to animals eating. Because animals often eat in very different ways from people, many languages will have words that are specific to the way an animal eats.",
@@ -1114,6 +1314,8 @@ var semanticDomains_en = {
         "suck blood, bloodsucking, chew (holes in leaves)" ]
   },
   "1.6.4.3 Animal sounds" : {
+    "key" : "1.6.4.3",
+    "guid" : "cb99a086-8c6d-4f90-81db-6afa69ae5455",
     "name" : "Animal sounds",
     "abbreviation" : "1.6.4.3",
     "description" : "Use this domain for the sounds animals make. It is necessary to think through the sounds each type of animal makes, especially the important ones.",
@@ -1133,6 +1335,8 @@ var semanticDomains_en = {
         "buzz, chirp, chirr, drone, whine, gnaw" ]
   },
   "1.6.5 Animal home" : {
+    "key" : "1.6.5",
+    "guid" : "17d5f429-6550-4a3a-a755-5ac3c3d7e04f",
     "name" : "Animal home",
     "abbreviation" : "1.6.5",
     "description" : "Use this domain for animal homes. It is necessary to think through the homes of each type of animal, especially the important ones.",
@@ -1147,6 +1351,8 @@ var semanticDomains_en = {
         "spider web, cobweb", "wormhole" ]
   },
   "1.6.6 Animal group" : {
+    "key" : "1.6.6",
+    "guid" : "85646774-8145-4553-b8a7-6927cd077908",
     "name" : "Animal group",
     "abbreviation" : "1.6.6",
     "description" : "Use this domain for words referring to groups of animals.",
@@ -1162,12 +1368,16 @@ var semanticDomains_en = {
         "herd instinct" ]
   },
   "1.6.7 Male and female animals" : {
+    "key" : "1.6.7",
+    "guid" : "7c64f65b-2889-4f90-ba61-6b5f7634d4bc",
     "name" : "Male and female animals",
     "abbreviation" : "1.6.7",
     "description" : "Use this domain for words referring to male and female animals. Most languages have special words for the male and female of a species only for domesticated animals. Sometimes there will be a word for the male and not the female, and vice versa (male dog, bitch). Sometimes the word for one is also used generically (cow for both female and generic).",
     "searchKeys" : [ "male, female, bitch, tom, tomcat, bull, bullock, cow, heifer, ram, ewe, billy goat, nanny goat, boar, sow, stallion, mare, filly, stag, buck, hart, doe, vixen, lioness, tigress, bull elephant, rooster, cock, hen, drake, peacock, peahen" ]
   },
   "1.7 Nature, environment" : {
+    "key" : "1.7",
+    "guid" : "aa57936d-f8a9-4603-8c3d-27abccd13531",
     "name" : "Nature, environment",
     "abbreviation" : "1.7",
     "description" : "Use this domain for words referring to nature and the environment--the world around us. Include words that refer to how people damage or protect nature.",
@@ -1178,12 +1388,16 @@ var semanticDomains_en = {
         "environmentalist, conservationist, ecologist, Green Party" ]
   },
   "1.7.1 Natural" : {
+    "key" : "1.7.1",
+    "guid" : "f4ed1712-c072-4213-b89d-eb3a9be233b2",
     "name" : "Natural",
     "abbreviation" : "1.7.1",
     "description" : "Use this domain for words describing something that is natural--something in the world around us, as opposed to something that has been made or changed by people.",
     "searchKeys" : [ "natural, naturally, wild (animals, country), raw (materials), virgin (forest), untamed, organic" ]
   },
   "2 Person" : {
+    "key" : "2",
+    "guid" : "ba06de9e-63e1-43e6-ae94-77bea498379a",
     "name" : "Person",
     "abbreviation" : "2",
     "description" : "Use this domain for general words for a person or all mankind.",
@@ -1195,6 +1409,8 @@ var semanticDomains_en = {
         "no one, nobody" ]
   },
   "2.1 Body" : {
+    "key" : "2.1",
+    "guid" : "1b0270a5-babf-4151-99f5-279ba5a4b044",
     "name" : "Body",
     "abbreviation" : "2.1",
     "description" : "Use this domain for general words for the whole human body, and general words for any part of the body. Use a drawing or photo to label each part. Some words may be more general than others are and include some of the other words. For instance 'head' is more general than 'face' or 'nose'. Be sure that both general and specific parts are labeled.",
@@ -1206,6 +1422,8 @@ var semanticDomains_en = {
         "cell, cellular, chromosome, protoplasm," ]
   },
   "2.1.1 Head" : {
+    "key" : "2.1.1",
+    "guid" : "d98c1c67-b70e-4a35-89db-2e744bd5197f",
     "name" : "Head",
     "abbreviation" : "2.1.1",
     "description" : "Use this domain for the parts of the head.",
@@ -1217,6 +1435,8 @@ var semanticDomains_en = {
         "facial, thin (face), high (forehead), thick (eyebrows), long (eyelashes), beady (eyes), stubby (nose), fleshy (cheeks), narrow (mouth), double chin" ]
   },
   "2.1.1.1 Eye" : {
+    "key" : "2.1.1.1",
+    "guid" : "bc8d0ad4-6ebf-4fa0-bc7e-60e8ec9c43db",
     "name" : "Eye",
     "abbreviation" : "2.1.1.1",
     "description" : "Use this domain for words related to the eye.",
@@ -1231,6 +1451,8 @@ var semanticDomains_en = {
         "sleep, sand, matter", "dilate", "optic, retinal," ]
   },
   "2.1.1.2 Ear" : {
+    "key" : "2.1.1.2",
+    "guid" : "2e97b83d-1152-473f-9cbe-347f0655041a",
     "name" : "Ear",
     "abbreviation" : "2.1.1.2",
     "description" : "Use this domain for words related to the ear.",
@@ -1245,6 +1467,8 @@ var semanticDomains_en = {
         "wax, earwax,", "Q-tip", "aural," ]
   },
   "2.1.1.3 Nose" : {
+    "key" : "2.1.1.3",
+    "guid" : "68ed3e51-ddc4-4cec-89ff-605259ac9fcf",
     "name" : "Nose",
     "abbreviation" : "2.1.1.3",
     "description" : "Use this domain for words related to the nose.",
@@ -1259,6 +1483,8 @@ var semanticDomains_en = {
         "nasal," ]
   },
   "2.1.1.4 Mouth" : {
+    "key" : "2.1.1.4",
+    "guid" : "e626c65e-eb79-4230-b07a-a6d975d3fe3d",
     "name" : "Mouth",
     "abbreviation" : "2.1.1.4",
     "description" : "Use this domain for words related to the mouth. Do not use this domain for words referring to eating, drinking, or speaking.",
@@ -1275,6 +1501,8 @@ var semanticDomains_en = {
         "oral, orally, labial, palatal, velar," ]
   },
   "2.1.1.5 Tooth" : {
+    "key" : "2.1.1.5",
+    "guid" : "c8602dc5-5c91-480a-b5ce-1c82fe3da83a",
     "name" : "Tooth",
     "abbreviation" : "2.1.1.5",
     "description" : "Use this domain for words related to the teeth.",
@@ -1285,6 +1513,8 @@ var semanticDomains_en = {
         "grind, gnash,", "pick,", "dental," ]
   },
   "2.1.2 Torso" : {
+    "key" : "2.1.2",
+    "guid" : "a80f12aa-c30d-4892-978a-b076985742d5",
     "name" : "Torso",
     "abbreviation" : "2.1.2",
     "description" : "Use this domain for the parts of the torso.",
@@ -1293,12 +1523,16 @@ var semanticDomains_en = {
         "shoulder, chest, breast, bust, nipple, teat, bosom, stomach, belly, tummy, navel, belly button, back, lower back, rear end, buttock, bottom, behind, side, waist, middle, hip, girdle, groin, hollow part of hip, anus, lumbar, midriff, pectoral, pubis, thorax, thoracic," ]
   },
   "2.1.3 Limb" : {
+    "key" : "2.1.3",
+    "guid" : "c5282457-be5f-4ce9-a802-91140cb0a22b",
     "name" : "Limb",
     "abbreviation" : "2.1.3",
     "description" : "Use this domain for words referring to a limb--either an arm or a leg.",
     "searchKeys" : [ "limb, extremity, arms and legs" ]
   },
   "2.1.3.1 Arm" : {
+    "key" : "2.1.3.1",
+    "guid" : "c2f01aa8-9f94-43c9-9ada-b1e4a60aba07",
     "name" : "Arm",
     "abbreviation" : "2.1.3.1",
     "description" : "Use this domain for the parts of the arm.",
@@ -1309,6 +1543,8 @@ var semanticDomains_en = {
         "crook (of the arm when it is bent), fist," ]
   },
   "2.1.3.2 Leg" : {
+    "key" : "2.1.3.2",
+    "guid" : "71f89512-17f0-484c-aca8-ddd226e3c794",
     "name" : "Leg",
     "abbreviation" : "2.1.3.2",
     "description" : "Use this domain for the parts of the leg and foot.",
@@ -1318,6 +1554,8 @@ var semanticDomains_en = {
         "lap,", "pigeon toed, knock-kneed, bow-legged, flat-footed," ]
   },
   "2.1.3.3 Finger, toe" : {
+    "key" : "2.1.3.3",
+    "guid" : "9cfe4c5a-80d4-4b31-ba89-79b2e3d28a1c",
     "name" : "Finger, toe",
     "abbreviation" : "2.1.3.3",
     "description" : "Use this domain for words related to the fingers and toes.",
@@ -1329,6 +1567,8 @@ var semanticDomains_en = {
         "nail, fingernail, toenail", "cuticle, root" ]
   },
   "2.1.4 Skin" : {
+    "key" : "2.1.4",
+    "guid" : "df2b9d7a-9b90-4704-8bc3-11dcffe985f4",
     "name" : "Skin",
     "abbreviation" : "2.1.4",
     "description" : "Use this domain for words related to the skin.",
@@ -1346,6 +1586,8 @@ var semanticDomains_en = {
         "goose flesh, goose pimples, goose bumps," ]
   },
   "2.1.5 Hair" : {
+    "key" : "2.1.5",
+    "guid" : "2e5acfd2-3009-4496-9cc2-58d2a0088994",
     "name" : "Hair",
     "abbreviation" : "2.1.5",
     "description" : "Use this domain for words related to hair.",
@@ -1363,6 +1605,8 @@ var semanticDomains_en = {
         "dandruff, dander," ]
   },
   "2.1.6 Bone, joint" : {
+    "key" : "2.1.6",
+    "guid" : "1d8633e0-4279-4ddc-826e-16aa08a977e5",
     "name" : "Bone, joint",
     "abbreviation" : "2.1.6",
     "description" : "Use this domain for words related to the bones and joints.",
@@ -1376,6 +1620,8 @@ var semanticDomains_en = {
         "to crack (your knuckles), pop" ]
   },
   "2.1.7 Flesh" : {
+    "key" : "2.1.7",
+    "guid" : "49c525b3-2163-48e1-b3bd-57e5cdc486a4",
     "name" : "Flesh",
     "abbreviation" : "2.1.7",
     "description" : "Use this domain for words related to the soft tissue of the body.",
@@ -1387,6 +1633,8 @@ var semanticDomains_en = {
         "tendon, ligament, sinew, hamstring" ]
   },
   "2.1.8 Internal organs" : {
+    "key" : "2.1.8",
+    "guid" : "4c862416-f7c4-4a3c-82ac-fe81e1efb879",
     "name" : "Internal organs",
     "abbreviation" : "2.1.8",
     "description" : "Use this domain for words referring to the internal organs.",
@@ -1401,6 +1649,8 @@ var semanticDomains_en = {
         "brain, spinal column, spinal cord, nerve, nervous, nerve ending, synapse, synaptic, cerebellum, cerebrum, ganglion, hypothalamus, neural, neuron," ]
   },
   "2.1.8.1 Heart" : {
+    "key" : "2.1.8.1",
+    "guid" : "2d0b3058-d8bb-4110-a54a-e507b0d3a0e4",
     "name" : "Heart",
     "abbreviation" : "2.1.8.1",
     "description" : "Use this domain for functions of the heart and blood veins.",
@@ -1416,6 +1666,8 @@ var semanticDomains_en = {
         "stop beating, heart attack," ]
   },
   "2.1.8.2 Stomach" : {
+    "key" : "2.1.8.2",
+    "guid" : "b9a4b336-080a-4973-a7e3-a9af10fc347c",
     "name" : "Stomach",
     "abbreviation" : "2.1.8.2",
     "description" : "Use this domain for words referring to the stomach and to the normal functions of the stomach. Do not use this domain for stomach illness.",
@@ -1427,6 +1679,8 @@ var semanticDomains_en = {
         "gastric, gastrointestinal, abdominal," ]
   },
   "2.1.8.3 Male organs" : {
+    "key" : "2.1.8.3",
+    "guid" : "7dbd7f43-4291-47f8-a392-6fdf3c98d522",
     "name" : "Male organs",
     "abbreviation" : "2.1.8.3",
     "description" : "Use this domain for words related to the male reproductive organs.",
@@ -1437,6 +1691,8 @@ var semanticDomains_en = {
         "semen, sperm, seminal,", "reproductive, genital, sexual," ]
   },
   "2.1.8.4 Female organs" : {
+    "key" : "2.1.8.4",
+    "guid" : "3d5d93ce-00e0-46ff-b220-553c12c38381",
     "name" : "Female organs",
     "abbreviation" : "2.1.8.4",
     "description" : "Use this domain for words related to the female reproductive organs and a woman's monthly menstrual cycle. Some of these terms may be taboo. Care must be exercised in which terms are included in the dictionary. A group of women should decide which terms are 'public' and can go in the dictionary, and which would be considered taboo, overly crude, or embarrassing. For example some societies have been afraid that their women will be taken advantage of if these terms are known.",
@@ -1450,6 +1706,8 @@ var semanticDomains_en = {
         "menopause," ]
   },
   "2.2 Body functions" : {
+    "key" : "2.2",
+    "guid" : "7fe69c4c-2603-4949-afca-f39c010ad24e",
     "name" : "Body functions",
     "abbreviation" : "2.2",
     "description" : "Use this domain for the functions and actions of the whole body. Use the subdomains in this section for functions, actions, secretions, and products of various parts of the body. In each domain include any special words that are used of animals.",
@@ -1459,6 +1717,8 @@ var semanticDomains_en = {
         "bile, gall (fluid from the liver stored in the gall bladder)" ]
   },
   "2.2.1 Breathe, breath" : {
+    "key" : "2.2.1",
+    "guid" : "a1959b00-9702-4b45-ac46-93f18d3bc5e6",
     "name" : "Breathe, breath",
     "abbreviation" : "2.2.1",
     "description" : "Use this domain for words related to breathing.",
@@ -1476,6 +1736,8 @@ var semanticDomains_en = {
         "give artificial respiration," ]
   },
   "2.2.2 Cough, sneeze" : {
+    "key" : "2.2.2",
+    "guid" : "8b52a9d6-a07e-4ac8-8f84-6eb5ba578d97",
     "name" : "Cough, sneeze",
     "abbreviation" : "2.2.2",
     "description" : "Use this domain for words related to coughing, sneezing, and other actions of the mouth and nose.",
@@ -1484,6 +1746,8 @@ var semanticDomains_en = {
         "hiccup (v), hiccup (n), have the hiccups," ]
   },
   "2.2.3 Spit, saliva" : {
+    "key" : "2.2.3",
+    "guid" : "75825d72-695b-4e92-9f33-0f3ab4d7dd11",
     "name" : "Spit, saliva",
     "abbreviation" : "2.2.3",
     "description" : "Use this domain for words related to spitting.",
@@ -1495,6 +1759,8 @@ var semanticDomains_en = {
         "mouth is dry,", "ptui," ]
   },
   "2.2.4 Mucus" : {
+    "key" : "2.2.4",
+    "guid" : "591fd489-36e6-4ffd-a976-58876d851829",
     "name" : "Mucus",
     "abbreviation" : "2.2.4",
     "description" : "Use this domain for words related to mucus in the nose.",
@@ -1504,6 +1770,8 @@ var semanticDomains_en = {
         "handkerchief, hanky, tissue," ]
   },
   "2.2.5 Bleed, blood" : {
+    "key" : "2.2.5",
+    "guid" : "8c41d2d1-6da6-4ab8-8b29-7e226192d64e",
     "name" : "Bleed, blood",
     "abbreviation" : "2.2.5",
     "description" : "Use this domain for words related to blood and bleeding.",
@@ -1516,6 +1784,8 @@ var semanticDomains_en = {
         "give blood, blood transfusion,", "blood type," ]
   },
   "2.2.6 Sweat" : {
+    "key" : "2.2.6",
+    "guid" : "d395edc8-fb58-4ba4-8446-dacf8ea0477a",
     "name" : "Sweat",
     "abbreviation" : "2.2.6",
     "description" : "Use this domain for words related to sweating.",
@@ -1530,6 +1800,8 @@ var semanticDomains_en = {
         "bead of sweat" ]
   },
   "2.2.7 Urinate, urine" : {
+    "key" : "2.2.7",
+    "guid" : "e7f94aea-ba50-481d-b640-d5cd8bdedc72",
     "name" : "Urinate, urine",
     "abbreviation" : "2.2.7",
     "description" : "Use this domain for words related to urination.",
@@ -1538,6 +1810,8 @@ var semanticDomains_en = {
         "kidney stone, pass (a kidney stone)" ]
   },
   "2.2.8 Defecate, feces" : {
+    "key" : "2.2.8",
+    "guid" : "cbc24a98-1c64-467e-98aa-251a28e4c0b8",
     "name" : "Defecate, feces",
     "abbreviation" : "2.2.8",
     "description" : "Use this domain for words related to defecation.",
@@ -1550,6 +1824,8 @@ var semanticDomains_en = {
         "fetid, malodorous, putrid,", "gas, pass gas, break wind, fart" ]
   },
   "2.3 Sense, perceive" : {
+    "key" : "2.3",
+    "guid" : "38bbb33a-90bf-4a2c-a0e5-4bde7e134bd9",
     "name" : "Sense, perceive",
     "abbreviation" : "2.3",
     "description" : "Use this domain for general words related to all the senses--sight, hearing, smell, taste, and feeling. Some languages may not distinguish some of these senses, and some languages may have words for other senses. There are also other senses that animals have. If your language has words for other senses, include them here.",
@@ -1563,6 +1839,8 @@ var semanticDomains_en = {
         "sensitive, perceptive, acute sense," ]
   },
   "2.3.1 See" : {
+    "key" : "2.3.1",
+    "guid" : "a8568a16-4c3b-4ce4-84a7-b8b0c6b0432f",
     "name" : "See",
     "abbreviation" : "2.3.1",
     "description" : "Use this domain for words related to seeing something (in general or without conscious choice).",
@@ -1580,6 +1858,8 @@ var semanticDomains_en = {
         "seeing, optic, optical, visual," ]
   },
   "2.3.1.1 Look" : {
+    "key" : "2.3.1.1",
+    "guid" : "d7861def-70c1-470f-bca6-8230cbbaa3e9",
     "name" : "Look",
     "abbreviation" : "2.3.1.1",
     "description" : "Use this domain for words that refer to looking at someone or something--to see something because you want to.",
@@ -1597,6 +1877,8 @@ var semanticDomains_en = {
         "look away, avert your eyes" ]
   },
   "2.3.1.2 Watch" : {
+    "key" : "2.3.1.2",
+    "guid" : "fda0c1ac-5728-4ba2-9f8e-827f161b5bb1",
     "name" : "Watch",
     "abbreviation" : "2.3.1.2",
     "description" : "Use this domain for words that refer to watching someone or something--to look for some time at something that is happening because you are interested in it and want to know what is happening.",
@@ -1610,6 +1892,8 @@ var semanticDomains_en = {
         "alert, watchful, vigilant, keep your eyes peeled, keep your eyes open, look out, keep a lookout for," ]
   },
   "2.3.1.3 Examine" : {
+    "key" : "2.3.1.3",
+    "guid" : "90c06635-a12c-4cd4-a190-46925ff0f43e",
     "name" : "Examine",
     "abbreviation" : "2.3.1.3",
     "description" : "Use this domain for words referring to examining--to look carefully at something because you want to learn something about it.",
@@ -1619,6 +1903,8 @@ var semanticDomains_en = {
         "examination, analysis, inspection, check, check-up, study, scrutiny, post mortem," ]
   },
   "2.3.1.4 Show, let someone see" : {
+    "key" : "2.3.1.4",
+    "guid" : "273f4956-f79f-4b1e-b552-466280a65e60",
     "name" : "Show, let someone see",
     "abbreviation" : "2.3.1.4",
     "description" : "Use this domain for words related to showing something to someone so that they can see it--to cause someone to see something.",
@@ -1632,6 +1918,8 @@ var semanticDomains_en = {
         "display, exhibit," ]
   },
   "2.3.1.5 Visible" : {
+    "key" : "2.3.1.5",
+    "guid" : "3f4c559f-ab4f-411f-a23b-d2396c977005",
     "name" : "Visible",
     "abbreviation" : "2.3.1.5",
     "description" : "Use this domain for words related to being able to see something--words that describe something that can be seen, something that cannot be seen, something that is easy to see, or something that is difficult to see.",
@@ -1649,6 +1937,8 @@ var semanticDomains_en = {
         "beclouded, befogged, blocked, cloaked, concealed, covered, eclipsed, enshrouded, hidden, masked, obscured, screened, shrouded, veiled" ]
   },
   "2.3.1.5.1 Appear" : {
+    "key" : "2.3.1.5.1",
+    "guid" : "79a33505-0c33-4e92-89b9-6a42e6ff2228",
     "name" : "Appear",
     "abbreviation" : "2.3.1.5.1",
     "description" : "Use this domain for words referring to something appearing (becoming visible) and disappearing (becoming invisible).",
@@ -1658,6 +1948,8 @@ var semanticDomains_en = {
         "appearance,", "disappearance," ]
   },
   "2.3.1.6 Transparent" : {
+    "key" : "2.3.1.6",
+    "guid" : "cd6f1b37-5bdd-4237-8827-b1c947c8e1b4",
     "name" : "Transparent",
     "abbreviation" : "2.3.1.6",
     "description" : "Use this domain for words that describe how well you can see through something.",
@@ -1667,6 +1959,8 @@ var semanticDomains_en = {
         "opaque, obscure, dark, darkened, impervious-to-light," ]
   },
   "2.3.1.7 Reflect, mirror" : {
+    "key" : "2.3.1.7",
+    "guid" : "ec118a28-fd23-48b3-8819-bfe1329f028d",
     "name" : "Reflect, mirror",
     "abbreviation" : "2.3.1.7",
     "description" : "Use this domain for words related to reflecting light.",
@@ -1675,6 +1969,8 @@ var semanticDomains_en = {
         "mirror, looking glass, reflector,", "reflective," ]
   },
   "2.3.1.8 Appearance" : {
+    "key" : "2.3.1.8",
+    "guid" : "4275df2e-d4f6-461a-9279-39e0712dc082",
     "name" : "Appearance",
     "abbreviation" : "2.3.1.8",
     "description" : "Use this domain for words related to how something appears.",
@@ -1687,6 +1983,8 @@ var semanticDomains_en = {
         "go with, set off, match, go together, complement, matching, blend in," ]
   },
   "2.3.1.8.1 Beautiful" : {
+    "key" : "2.3.1.8.1",
+    "guid" : "e4517880-aa2d-4977-b55a-dcb0b6d1f533",
     "name" : "Beautiful",
     "abbreviation" : "2.3.1.8.1",
     "description" : "Use this domain for words describing someone or something that is beautiful--pleasing in appearance,.",
@@ -1701,6 +1999,8 @@ var semanticDomains_en = {
         "plain, average, ordinary," ]
   },
   "2.3.1.8.2 Ugly" : {
+    "key" : "2.3.1.8.2",
+    "guid" : "2f151c35-72e1-4665-bc05-6fc70a3ecff2",
     "name" : "Ugly",
     "abbreviation" : "2.3.1.8.2",
     "description" : "Use this domain for words describing someone or something that is ugly--not pleasing in appearance.",
@@ -1715,6 +2015,8 @@ var semanticDomains_en = {
         "contorted, cunning, hard-featured, rough," ]
   },
   "2.3.1.9 Something used to see" : {
+    "key" : "2.3.1.9",
+    "guid" : "e4e05724-01ec-4c61-90f0-b8658cc8ca51",
     "name" : "Something used to see",
     "abbreviation" : "2.3.1.9",
     "description" : "Use this domain for words referring to glasses and other things people use to help them see.",
@@ -1726,6 +2028,8 @@ var semanticDomains_en = {
         "sunglasses, dark glasses, goggles,", "enlarge, reflect, focus" ]
   },
   "2.3.2 Hear" : {
+    "key" : "2.3.2",
+    "guid" : "8503660c-03af-49ee-86b6-525aab4da828",
     "name" : "Hear",
     "abbreviation" : "2.3.2",
     "description" : "Use this domain for words related to hearing something (in general or without conscious choice).",
@@ -1738,6 +2042,8 @@ var semanticDomains_en = {
         "aural, auditory, audio, acoustic, sound (adj)," ]
   },
   "2.3.2.1 Listen" : {
+    "key" : "2.3.2.1",
+    "guid" : "0de28f92-c851-413c-bb6c-3ad21f5e267f",
     "name" : "Listen",
     "abbreviation" : "2.3.2.1",
     "description" : "Use this domain for words related to listening--to deliberately hear something.",
@@ -1748,6 +2054,8 @@ var semanticDomains_en = {
         "Listen. Listen up. Hear me. Your attention please. Pay attention. Lend an ear. Mark my words. Hark." ]
   },
   "2.3.2.2 Sound" : {
+    "key" : "2.3.2.2",
+    "guid" : "acf5e294-d169-45c1-a9d3-960536e018cc",
     "name" : "Sound",
     "abbreviation" : "2.3.2.2",
     "description" : "Use this domain for words referring to sounds.",
@@ -1761,6 +2069,8 @@ var semanticDomains_en = {
         "become audible, reach the ear, be heard, fall on the ear," ]
   },
   "2.3.2.3 Types of sounds" : {
+    "key" : "2.3.2.3",
+    "guid" : "fd33670e-ef16-4566-a62e-aa077e58407b",
     "name" : "Types of sounds",
     "abbreviation" : "2.3.2.3",
     "description" : "Use this domain for words referring to types of sounds.",
@@ -1790,6 +2100,8 @@ var semanticDomains_en = {
         "ring, toll, chime, buzz, peal, tinkle," ]
   },
   "2.3.2.4 Loud" : {
+    "key" : "2.3.2.4",
+    "guid" : "6804db44-b71b-4452-98b1-b726bc7cf022",
     "name" : "Loud",
     "abbreviation" : "2.3.2.4",
     "description" : "Use this domain for words that describe loud sounds.",
@@ -1807,6 +2119,8 @@ var semanticDomains_en = {
         "get louder, sound grows, raise your voice, speak up," ]
   },
   "2.3.2.5 Quiet" : {
+    "key" : "2.3.2.5",
+    "guid" : "d853597b-f3ed-470b-b6dd-8fe93b8e43eb",
     "name" : "Quiet",
     "abbreviation" : "2.3.2.5",
     "description" : "Use this domain for words that describe quiet sounds.",
@@ -1824,6 +2138,8 @@ var semanticDomains_en = {
         "without a sound, not make a sound, in silence, noiseless, soundless, quietly, silently," ]
   },
   "2.3.3 Taste" : {
+    "key" : "2.3.3",
+    "guid" : "8497fb66-8b91-46b9-a0d5-fb9385319561",
     "name" : "Taste",
     "abbreviation" : "2.3.3",
     "description" : "Use this domain for words related to tasting something.",
@@ -1845,6 +2161,8 @@ var semanticDomains_en = {
         "bitter, acrid, astringent, bitter-tasting, caustic,", "salty," ]
   },
   "2.3.4 Smell" : {
+    "key" : "2.3.4",
+    "guid" : "ed7930df-e7b4-43c9-a11a-b09521276b57",
     "name" : "Smell",
     "abbreviation" : "2.3.4",
     "description" : "Use this domain for words related to smelling something.",
@@ -1873,6 +2191,8 @@ var semanticDomains_en = {
         "hold your nose," ]
   },
   "2.3.5 Sense of touch" : {
+    "key" : "2.3.5",
+    "guid" : "72274e9d-5d3c-4ae7-93ab-db3617cdda1e",
     "name" : "Sense of touch",
     "abbreviation" : "2.3.5",
     "description" : "Use this domain for words related to the sense of touch--to feel something with your skin, to feel hot or cold, to feel tired or rested.",
@@ -1899,6 +2219,8 @@ var semanticDomains_en = {
         "anesthetize, numb (an area), deaden," ]
   },
   "2.3.5.1 Comfortable" : {
+    "key" : "2.3.5.1",
+    "guid" : "295dc021-5b50-47b3-8340-1631c6d6fadc",
     "name" : "Comfortable",
     "abbreviation" : "2.3.5.1",
     "description" : "Use this domain for words related to feeling comfortable--to feel good in your body because there is nothing around you that makes you feel bad. This includes comfortable clothes, chair, bed, temperature, or journey.",
@@ -1910,12 +2232,16 @@ var semanticDomains_en = {
         "rough it, austere, austerity, Spartan" ]
   },
   "2.4 Body condition" : {
+    "key" : "2.4",
+    "guid" : "f7706644-542f-4fcb-b8e1-e91d04c8032a",
     "name" : "Body condition",
     "abbreviation" : "2.4",
     "description" : "Use this domain for general words related to the condition of the body.",
     "searchKeys" : [ "condition, state, shape (as in 'to be in shape')" ]
   },
   "2.4.1 Strong" : {
+    "key" : "2.4.1",
+    "guid" : "e949f393-2a5b-4792-af8f-75138322ceee",
     "name" : "Strong",
     "abbreviation" : "2.4.1",
     "description" : "Use this domain for words that related to being strong, such as being able to lift a heavy object or being able to work hard.",
@@ -1932,6 +2258,8 @@ var semanticDomains_en = {
         "energetic, full of energy, have lots of energy, active, vigorous," ]
   },
   "2.4.2 Weak" : {
+    "key" : "2.4.2",
+    "guid" : "94af09fa-ff23-433b-a881-ceaca87d9d18",
     "name" : "Weak",
     "abbreviation" : "2.4.2",
     "description" : "Use this domain for words related to being weak.",
@@ -1945,6 +2273,8 @@ var semanticDomains_en = {
         "weaken, debilitate, enfeeble" ]
   },
   "2.4.3 Energetic" : {
+    "key" : "2.4.3",
+    "guid" : "2daede19-ce5f-46b6-ae68-32d6092441f1",
     "name" : "Energetic",
     "abbreviation" : "2.4.3",
     "description" : "Use this domain for words related to being energetic.",
@@ -1955,6 +2285,8 @@ var semanticDomains_en = {
         "energy, vigor, get-up-and-go, vitality, vim and vigor, oomph," ]
   },
   "2.4.4 Tired" : {
+    "key" : "2.4.4",
+    "guid" : "b5700ad7-36a1-4608-8789-8f84007244f8",
     "name" : "Tired",
     "abbreviation" : "2.4.4",
     "description" : "Use this domain for words related to being tired.",
@@ -1969,6 +2301,8 @@ var semanticDomains_en = {
         "yawn, sigh, drag, droop, drop, faint, flag, pant, puff, stretch, wilt, wind down," ]
   },
   "2.4.5 Rest" : {
+    "key" : "2.4.5",
+    "guid" : "2c401e7f-6ce9-470f-b6b6-fadf7a798536",
     "name" : "Rest",
     "abbreviation" : "2.4.5",
     "description" : "Use this domain for words related to resting.",
@@ -1979,6 +2313,8 @@ var semanticDomains_en = {
         "break room, lunchroom, in the shade,", "restful, relaxing," ]
   },
   "2.5 Healthy" : {
+    "key" : "2.5",
+    "guid" : "32bebe7e-bdcc-4e40-8f0a-894cd6b26f25",
     "name" : "Healthy",
     "abbreviation" : "2.5",
     "description" : "Use this domain for words related to a person being healthy--not sick.",
@@ -1992,6 +2328,8 @@ var semanticDomains_en = {
         "wholesome, nutritious, nourishing, healthful," ]
   },
   "2.5.1 Sick" : {
+    "key" : "2.5.1",
+    "guid" : "7c6cad26-79c3-403a-a3aa-59babdfcd46f",
     "name" : "Sick",
     "abbreviation" : "2.5.1",
     "description" : "Use this domain for words describing a person who is sick.",
@@ -2008,6 +2346,8 @@ var semanticDomains_en = {
         "epidemic, plague, outbreak, pestilence," ]
   },
   "2.5.1.1 Recover from sickness" : {
+    "key" : "2.5.1.1",
+    "guid" : "104d40c9-2a4f-4696-ad99-5cf0eb86ab2e",
     "name" : "Recover from sickness",
     "abbreviation" : "2.5.1.1",
     "description" : "Use this domain for words referring to recovering from sickness or injury.",
@@ -2020,6 +2360,8 @@ var semanticDomains_en = {
         "feel up to,", "go away, clear up,", "heal, mend," ]
   },
   "2.5.2 Disease" : {
+    "key" : "2.5.2",
+    "guid" : "cf337287-c9fa-43d2-93c4-284f45e262c0",
     "name" : "Disease",
     "abbreviation" : "2.5.2",
     "description" : "Use this domain for general words for disease and for words referring to specific diseases.",
@@ -2043,6 +2385,8 @@ var semanticDomains_en = {
         "cancer, cancerous, tumor, skin cancer, leukemia, lung cancer, liver cancer, malignancy, malignant, benign," ]
   },
   "2.5.2.1 Malnutrition, starvation" : {
+    "key" : "2.5.2.1",
+    "guid" : "f0de6c5a-3df6-4483-8c63-2d8fcd6c97be",
     "name" : "Malnutrition, starvation",
     "abbreviation" : "2.5.2.1",
     "description" : "Use this domain for words related to not having enough food.",
@@ -2052,6 +2396,8 @@ var semanticDomains_en = {
         "starving, malnourished, anemic, emaciated," ]
   },
   "2.5.2.2 Skin disease" : {
+    "key" : "2.5.2.2",
+    "guid" : "4d2a67fb-91c8-4436-87f4-f4eab6cb0828",
     "name" : "Skin disease",
     "abbreviation" : "2.5.2.2",
     "description" : "Use this domain for words related to skin diseases such as leprosy, boils, and rashes.",
@@ -2064,6 +2410,8 @@ var semanticDomains_en = {
         "ooze, run,", "leper" ]
   },
   "2.5.2.3 Stomach illness" : {
+    "key" : "2.5.2.3",
+    "guid" : "39dcb6b9-94df-45be-a128-c14c7a9dcdbd",
     "name" : "Stomach illness",
     "abbreviation" : "2.5.2.3",
     "description" : "Use this domain for words related to stomach illness.",
@@ -2077,6 +2425,8 @@ var semanticDomains_en = {
         "nauseate, give you an upset stomach, make you sick to your stomach," ]
   },
   "2.5.2.4 Tooth decay" : {
+    "key" : "2.5.2.4",
+    "guid" : "77f0d0dc-61ee-4373-9879-35a7059bd892",
     "name" : "Tooth decay",
     "abbreviation" : "2.5.2.4",
     "description" : "Use this domain for words related to tooth decay.",
@@ -2087,6 +2437,8 @@ var semanticDomains_en = {
         "false teeth, dentures,", "dentist, oral surgeon, dentistry," ]
   },
   "2.5.3 Injure" : {
+    "key" : "2.5.3",
+    "guid" : "9d865347-6656-4ab7-8613-bf2e8bc53aa7",
     "name" : "Injure",
     "abbreviation" : "2.5.3",
     "description" : "Use this domain for words related to injuring someone.",
@@ -2109,6 +2461,8 @@ var semanticDomains_en = {
         "dangerous, harmful,", "harmless," ]
   },
   "2.5.3.1 Amputate" : {
+    "key" : "2.5.3.1",
+    "guid" : "5fcadae4-b4a8-4600-8d30-c4f67986d619",
     "name" : "Amputate",
     "abbreviation" : "2.5.3.1",
     "description" : "Use this domain for words related to amputating or losing a limb or other part of your body.",
@@ -2117,6 +2471,8 @@ var semanticDomains_en = {
         "amputee", "artificial limb, wooden leg, peg leg, prosthesis" ]
   },
   "2.5.3.2 Poison" : {
+    "key" : "2.5.3.2",
+    "guid" : "962941b2-66bd-437f-aadc-b1921bcae5b4",
     "name" : "Poison",
     "abbreviation" : "2.5.3.2",
     "description" : "Use this domain for words referring to poison--something that is bad for your body if you eat it, it gets on you, or an animal injects it into you.",
@@ -2133,6 +2489,8 @@ var semanticDomains_en = {
         "antidote, administer (the antidote)" ]
   },
   "2.5.4 Disabled" : {
+    "key" : "2.5.4",
+    "guid" : "c2dbe83a-d638-45ac-a6d5-5f041b9dde71",
     "name" : "Disabled",
     "abbreviation" : "2.5.4",
     "description" : "Use this domain for general words for being disabled--to be injured or born with a condition, so that some part of your body does not work.",
@@ -2145,6 +2503,8 @@ var semanticDomains_en = {
         "crutch, cane, wheelchair, walker, stretcher, pallet," ]
   },
   "2.5.4.1 Blind" : {
+    "key" : "2.5.4.1",
+    "guid" : "b602c0e1-5398-4cc9-850b-7cfb5c592d13",
     "name" : "Blind",
     "abbreviation" : "2.5.4.1",
     "description" : "Use this domain for words related to being blind.",
@@ -2155,6 +2515,8 @@ var semanticDomains_en = {
         "cane, dark glasses, seeing-eye dog, Braille" ]
   },
   "2.5.4.2 Poor eyesight" : {
+    "key" : "2.5.4.2",
+    "guid" : "23fb1571-c04e-4850-b499-f170bc45247f",
     "name" : "Poor eyesight",
     "abbreviation" : "2.5.4.2",
     "description" : "Use this domain for words related to having poor eyesight.",
@@ -2166,6 +2528,8 @@ var semanticDomains_en = {
         "eye exam, prescription, frames, lens" ]
   },
   "2.5.4.3 Deaf" : {
+    "key" : "2.5.4.3",
+    "guid" : "3be7e3fe-89d4-471a-92bd-8c70fcb146bb",
     "name" : "Deaf",
     "abbreviation" : "2.5.4.3",
     "description" : "Use this domain for words related to being deaf.",
@@ -2179,6 +2543,8 @@ var semanticDomains_en = {
         "sign language, sign (v),", "lip-read, lip-reading," ]
   },
   "2.5.4.4 Mute" : {
+    "key" : "2.5.4.4",
+    "guid" : "d2f05cc8-1a3f-4bc2-9a2b-38174bb84091",
     "name" : "Mute",
     "abbreviation" : "2.5.4.4",
     "description" : "Use this domain for words related to being mute--unable to speak (usually because of being unable to hear).",
@@ -2186,6 +2552,8 @@ var semanticDomains_en = {
         "sign language, gestures, writing" ]
   },
   "2.5.4.5 Birth defect" : {
+    "key" : "2.5.4.5",
+    "guid" : "4a5c8fdb-c8a0-49d2-a0d6-342428682d65",
     "name" : "Birth defect",
     "abbreviation" : "2.5.4.5",
     "description" : "Use this domain for words related to having a birth defect.",
@@ -2197,6 +2565,8 @@ var semanticDomains_en = {
         "(no words in English)" ]
   },
   "2.5.5 Cause of disease" : {
+    "key" : "2.5.5",
+    "guid" : "fa32115e-e389-47bd-91e1-61779172ccf2",
     "name" : "Cause of disease",
     "abbreviation" : "2.5.5",
     "description" : "Use this domain for words referring to the cause of disease.",
@@ -2208,6 +2578,8 @@ var semanticDomains_en = {
         "diagnose," ]
   },
   "2.5.6 Symptom of disease" : {
+    "key" : "2.5.6",
+    "guid" : "a894d991-d5da-45a6-9c62-009133257f36",
     "name" : "Symptom of disease",
     "abbreviation" : "2.5.6",
     "description" : "Use this domain for words for symptoms of disease--something that happens to you when you get sick, something that shows that you are sick.",
@@ -2222,6 +2594,8 @@ var semanticDomains_en = {
         "convulsion, chills, fit,", "dizzy, dizziness, feel faint," ]
   },
   "2.5.6.1 Pain" : {
+    "key" : "2.5.6.1",
+    "guid" : "768aed05-dbc9-4caf-9461-76cb3720f908",
     "name" : "Pain",
     "abbreviation" : "2.5.6.1",
     "description" : "Use this domain for words related to pain",
@@ -2245,6 +2619,8 @@ var semanticDomains_en = {
         "Ow! Ouch!", "not hurt, painless, not feel a thing," ]
   },
   "2.5.6.2 Fever" : {
+    "key" : "2.5.6.2",
+    "guid" : "5238fe9c-4bbe-444c-b5f6-18f946b3d6aa",
     "name" : "Fever",
     "abbreviation" : "2.5.6.2",
     "description" : "Use this domain for words related to having a fever.",
@@ -2255,6 +2631,8 @@ var semanticDomains_en = {
         "take someone's temperature,", "thermometer" ]
   },
   "2.5.6.3 Swell" : {
+    "key" : "2.5.6.3",
+    "guid" : "6eaba0c3-cdfe-435d-8811-7f2ddf6facbd",
     "name" : "Swell",
     "abbreviation" : "2.5.6.3",
     "description" : "Use this domain for words related to swelling of the body.",
@@ -2264,6 +2642,8 @@ var semanticDomains_en = {
         "relieve swelling, reduce swelling, go down" ]
   },
   "2.5.6.4 Lose consciousness" : {
+    "key" : "2.5.6.4",
+    "guid" : "d83ebe2c-c1d6-49ec-a4a9-1cdced843387",
     "name" : "Lose consciousness",
     "abbreviation" : "2.5.6.4",
     "description" : "Use this domain for words related to losing consciousness, including fainting, being knocked out, and anesthesia.",
@@ -2279,6 +2659,8 @@ var semanticDomains_en = {
         "be unresponsive, be like dead" ]
   },
   "2.5.6.5 Dazed, confused" : {
+    "key" : "2.5.6.5",
+    "guid" : "81e03df2-33a8-4735-aa23-80ef1c63679e",
     "name" : "Dazed, confused",
     "abbreviation" : "2.5.6.5",
     "description" : "Use this domain for words that describe the state of the mind when a person's mind is not working well or when he is not thinking very well.",
@@ -2290,6 +2672,8 @@ var semanticDomains_en = {
         "daze, confuse, disorient, befuddle, shock, stupefy" ]
   },
   "2.5.6.6 Vision, hallucination" : {
+    "key" : "2.5.6.6",
+    "guid" : "5c091d8d-5bc4-40c3-8a30-2a08fb0794b8",
     "name" : "Vision, hallucination",
     "abbreviation" : "2.5.6.6",
     "description" : "Use this domain for words related to having a vision--when a person sees something that isn't there because something unusual has happened to their mind. Include unusual, abnormal, and paranormal states of consciousness, visions, hallucinations, and spiritually induced trances.",
@@ -2299,6 +2683,8 @@ var semanticDomains_en = {
         "be possessed by a spirit, drugs" ]
   },
   "2.5.7 Treat disease" : {
+    "key" : "2.5.7",
+    "guid" : "101c16f8-ec76-4ec7-895a-fd814fef51dd",
     "name" : "Treat disease",
     "abbreviation" : "2.5.7",
     "description" : "Use this domain for words related to the treatment of disease and injury.",
@@ -2320,6 +2706,8 @@ var semanticDomains_en = {
         "hygiene, immunization, immunize, inoculate, inoculation, vaccinate, vaccination" ]
   },
   "2.5.7.1 Doctor, nurse" : {
+    "key" : "2.5.7.1",
+    "guid" : "c01bbcef-7d89-4753-bafd-3a7f23648982",
     "name" : "Doctor, nurse",
     "abbreviation" : "2.5.7.1",
     "description" : "Use this domain for words referring to people who habitually take care of the sick and injured, such as those who do it for a living.",
@@ -2335,6 +2723,8 @@ var semanticDomains_en = {
         "go to the doctor, see a doctor, consult a doctor," ]
   },
   "2.5.7.2 Medicine" : {
+    "key" : "2.5.7.2",
+    "guid" : "b82c7ba0-9f4e-44da-bcd0-d30f5b224de5",
     "name" : "Medicine",
     "abbreviation" : "2.5.7.2",
     "description" : "Use this domain for words related to medicine, types of medicine, and the application of medicine.",
@@ -2352,6 +2742,8 @@ var semanticDomains_en = {
         "chemist, pharmacist, druggist, pharmacy, herbalist," ]
   },
   "2.5.7.3 Medicinal plants" : {
+    "key" : "2.5.7.3",
+    "guid" : "f3627c41-5daf-4f73-ac42-8a0522035e0b",
     "name" : "Medicinal plants",
     "abbreviation" : "2.5.7.3",
     "description" : "Use this domain for plants that are used for medicine.",
@@ -2359,6 +2751,8 @@ var semanticDomains_en = {
         "medicinal, curative" ]
   },
   "2.5.7.4 Hospital" : {
+    "key" : "2.5.7.4",
+    "guid" : "250a52e4-ede0-427d-8382-46a5742d4f96",
     "name" : "Hospital",
     "abbreviation" : "2.5.7.4",
     "description" : "Use this domain for words that refer to a place where the sick and injured are treated.",
@@ -2373,6 +2767,8 @@ var semanticDomains_en = {
         "go to the hospital, have someone in, stay in the hospital, hospital stay, admit, discharge," ]
   },
   "2.5.7.5 Traditional medicine" : {
+    "key" : "2.5.7.5",
+    "guid" : "8e88ed6a-000d-400a-8cd8-7b3cc7f1818c",
     "name" : "Traditional medicine",
     "abbreviation" : "2.5.7.5",
     "description" : "Use this domain for words related to traditional medicine. There may be no distinction in terminology between 'modern medicine' and 'traditional medicine.' In that case this domain should be ignored. (Our purpose here is not to judge the value of traditional medicine, but to collect and describe the words used for it.)",
@@ -2381,6 +2777,8 @@ var semanticDomains_en = {
         "potion, herb" ]
   },
   "2.5.8 Mental illness" : {
+    "key" : "2.5.8",
+    "guid" : "a01a1900-fc1f-462e-ba3d-ae822711b034",
     "name" : "Mental illness",
     "abbreviation" : "2.5.8",
     "description" : "Use this domain for words related to being mentally ill or disabled.",
@@ -2396,6 +2794,8 @@ var semanticDomains_en = {
         "sane, sanity, of sound mind," ]
   },
   "2.6 Life" : {
+    "key" : "2.6",
+    "guid" : "50db27b5-89eb-4ffb-af82-566f51c8ec0b",
     "name" : "Life",
     "abbreviation" : "2.6",
     "description" : "Use this domain for general words referring to being alive and to a person's lifetime.",
@@ -2412,6 +2812,8 @@ var semanticDomains_en = {
         "way of life, lifestyle,", "all your life, for life, lifelong," ]
   },
   "2.6.1 Marriage" : {
+    "key" : "2.6.1",
+    "guid" : "ffcc57f8-6c6d-4bf4-85be-9220ca7c739d",
     "name" : "Marriage",
     "abbreviation" : "2.6.1",
     "description" : "Use this domain for words related to the state of being married.",
@@ -2430,6 +2832,8 @@ var semanticDomains_en = {
         "married, marital, matrimonial, conjugal, nuptial, connubial," ]
   },
   "2.6.1.1 Arrange a marriage" : {
+    "key" : "2.6.1.1",
+    "guid" : "2e95bd1e-82f0-461d-8ca6-b5f1ce1fb180",
     "name" : "Arrange a marriage",
     "abbreviation" : "2.6.1.1",
     "description" : "Use this domain for all the words related to arranging a marriage. Cultures vary widely in their practices. In some cultures marriages are arranged by the parents. In other cultures a man must seek a wife for himself. Some cultures allow either practice or a combination of the two. So some of the questions below may be inappropriate to your culture.",
@@ -2447,6 +2851,8 @@ var semanticDomains_en = {
         "elope," ]
   },
   "2.6.1.2 Wedding" : {
+    "key" : "2.6.1.2",
+    "guid" : "ed4a2ca6-c03c-4c72-9431-b72fb7294b8f",
     "name" : "Wedding",
     "abbreviation" : "2.6.1.2",
     "description" : "Use this domain for words related to the wedding ceremony.",
@@ -2463,6 +2869,8 @@ var semanticDomains_en = {
         "newlyweds, honeymooner, man and wife,", "wedding anniversary," ]
   },
   "2.6.1.3 Unmarried" : {
+    "key" : "2.6.1.3",
+    "guid" : "f7e625a6-53e3-4f9b-8764-119e3906f5cf",
     "name" : "Unmarried",
     "abbreviation" : "2.6.1.3",
     "description" : "Use this domain for words related to being unmarried.",
@@ -2472,6 +2880,8 @@ var semanticDomains_en = {
         "bachelor, bachelorhood," ]
   },
   "2.6.1.4 Divorce" : {
+    "key" : "2.6.1.4",
+    "guid" : "f6e416b3-50b1-4e48-8a39-2998725b1c79",
     "name" : "Divorce",
     "abbreviation" : "2.6.1.4",
     "description" : "Use this domain for words related to divorce--to legally end your marriage.",
@@ -2487,6 +2897,8 @@ var semanticDomains_en = {
         "get custody, alimony," ]
   },
   "2.6.1.5 Romantic love" : {
+    "key" : "2.6.1.5",
+    "guid" : "edbfc928-049c-4cb7-8c88-8e8af38287c7",
     "name" : "Romantic love",
     "abbreviation" : "2.6.1.5",
     "description" : "Use this domain for words related to romantic love.",
@@ -2503,6 +2915,8 @@ var semanticDomains_en = {
         "make up, get back together," ]
   },
   "2.6.2 Sexual relations" : {
+    "key" : "2.6.2",
+    "guid" : "c753fc8b-22ae-4e71-807f-56fb3ebd3cdd",
     "name" : "Sexual relations",
     "abbreviation" : "2.6.2",
     "description" : "Use this domain for words related to sexual relations and having sex. Be careful that your domain label does not use a taboo word.",
@@ -2517,6 +2931,8 @@ var semanticDomains_en = {
         "platonic, be just good friends," ]
   },
   "2.6.2.1 Virginity" : {
+    "key" : "2.6.2.1",
+    "guid" : "9f6754ae-a429-4bba-8f6f-2cd4ea0cbe45",
     "name" : "Virginity",
     "abbreviation" : "2.6.2.1",
     "description" : "Use this domain for words related to being a virgin--a person who has never had sex.",
@@ -2526,6 +2942,8 @@ var semanticDomains_en = {
         "lose your virginity, become sexually active, have sex for the first time" ]
   },
   "2.6.2.2 Attract sexually" : {
+    "key" : "2.6.2.2",
+    "guid" : "23190f9e-2db2-4ef9-8c0e-495dbef05571",
     "name" : "Attract sexually",
     "abbreviation" : "2.6.2.2",
     "description" : "Use this domain for words related to attracting someone sexually--to cause someone to want to have sex with you, and for words related to being sexually attracted to someone--to want to have sex with someone.",
@@ -2540,6 +2958,8 @@ var semanticDomains_en = {
         "unattractive, be a turn-off, sexless," ]
   },
   "2.6.2.3 Sexual immorality" : {
+    "key" : "2.6.2.3",
+    "guid" : "b0905fa9-2f90-410b-8eb5-7c7944c4f0f9",
     "name" : "Sexual immorality",
     "abbreviation" : "2.6.2.3",
     "description" : "Use this domain for words referring to illicit sexual relations.",
@@ -2566,6 +2986,8 @@ var semanticDomains_en = {
         "bestial, bestiality" ]
   },
   "2.6.3 Birth" : {
+    "key" : "2.6.3",
+    "guid" : "35e61ec4-0542-4583-b5da-0aa5e31a35aa",
     "name" : "Birth",
     "abbreviation" : "2.6.3",
     "description" : "Use this domain for words related to giving birth and being born.",
@@ -2579,6 +3001,8 @@ var semanticDomains_en = {
         "start a family," ]
   },
   "2.6.3.1 Pregnancy" : {
+    "key" : "2.6.3.1",
+    "guid" : "3cb4c07c-8760-4ff9-8d45-1c0bed80ffb3",
     "name" : "Pregnancy",
     "abbreviation" : "2.6.3.1",
     "description" : "Use this domain for words related to being pregnant.",
@@ -2591,6 +3015,8 @@ var semanticDomains_en = {
         "kick, turn, drop,", "egg, sperm, gamete, ovum, gene," ]
   },
   "2.6.3.2 Fetus" : {
+    "key" : "2.6.3.2",
+    "guid" : "bd002dfa-e842-47d6-b11b-3c213cbf133a",
     "name" : "Fetus",
     "abbreviation" : "2.6.3.2",
     "description" : "Use this domain for words related to a fetus--a baby that has not been born yet.",
@@ -2598,6 +3024,8 @@ var semanticDomains_en = {
         "umbilical cord, placenta, placental, sack, fluid, afterbirth," ]
   },
   "2.6.3.3 Miscarriage" : {
+    "key" : "2.6.3.3",
+    "guid" : "dbebc3bd-2d01-4d62-a009-866c18ee3527",
     "name" : "Miscarriage",
     "abbreviation" : "2.6.3.3",
     "description" : "Use this domain for words related to the prevention or termination of a pregnancy, and for words related to killing babies.",
@@ -2609,6 +3037,8 @@ var semanticDomains_en = {
         "infanticide" ]
   },
   "2.6.3.4 Labor and birth pains" : {
+    "key" : "2.6.3.4",
+    "guid" : "56984b2b-3417-49b4-a082-1a383551a9e9",
     "name" : "Labor and birth pains",
     "abbreviation" : "2.6.3.4",
     "description" : "Use this domain for words related to labor and birth pains.",
@@ -2618,6 +3048,8 @@ var semanticDomains_en = {
         "groan, cry out" ]
   },
   "2.6.3.5 Help to give birth" : {
+    "key" : "2.6.3.5",
+    "guid" : "5c468a85-e45f-4ea0-a3ba-68feda7e85a1",
     "name" : "Help to give birth",
     "abbreviation" : "2.6.3.5",
     "description" : "Use this domain for words related to helping a woman to give birth.",
@@ -2627,6 +3059,8 @@ var semanticDomains_en = {
         "knife, clamp, forceps, incubator," ]
   },
   "2.6.3.6 Unusual birth" : {
+    "key" : "2.6.3.6",
+    "guid" : "f3d162d7-da79-4ce4-9610-040f03b57d9d",
     "name" : "Unusual birth",
     "abbreviation" : "2.6.3.6",
     "description" : "Use this domain for words related to an unusual birth.",
@@ -2634,12 +3068,16 @@ var semanticDomains_en = {
         "die in childbirth" ]
   },
   "2.6.3.7 Multiple births" : {
+    "key" : "2.6.3.7",
+    "guid" : "f4f99472-0b23-42b9-8b51-1d56fe24715b",
     "name" : "Multiple births",
     "abbreviation" : "2.6.3.7",
     "description" : "Use this domain for words related to multiple births--when a woman give birth to more than one baby at the same time.",
     "searchKeys" : [ "single birth, twins, triplets, quadruplets, quintuplets" ]
   },
   "2.6.3.8 Fertile, infertile" : {
+    "key" : "2.6.3.8",
+    "guid" : "447f258b-2160-42c7-9431-ffeeb86edcb8",
     "name" : "Fertile, infertile",
     "abbreviation" : "2.6.3.8",
     "description" : "Use this domain for words related to being unable to have children.",
@@ -2649,6 +3087,8 @@ var semanticDomains_en = {
         "be unable to have children, infertile, sterile, barren, childless, sterility, unfruitful, impotence, impotent, infertility," ]
   },
   "2.6.3.9 Birth ceremony" : {
+    "key" : "2.6.3.9",
+    "guid" : "34a02a17-23fb-4260-9f97-c125842a3594",
     "name" : "Birth ceremony",
     "abbreviation" : "2.6.3.9",
     "description" : "Use this domain for words related to a birth ceremony.",
@@ -2657,12 +3097,16 @@ var semanticDomains_en = {
         "birthday", "birthday party" ]
   },
   "2.6.4 Stage of life" : {
+    "key" : "2.6.4",
+    "guid" : "444407f2-0c75-4bb9-a84c-cbd52d0fa9c9",
     "name" : "Stage of life",
     "abbreviation" : "2.6.4",
     "description" : "Use this domain for words referring to a stage of life--a time period in a person's life.",
     "searchKeys" : [ "stage of life, time of life, phase" ]
   },
   "2.6.4.1 Baby" : {
+    "key" : "2.6.4.1",
+    "guid" : "79ca34ea-68a7-4fe9-b5ac-4f3d6a1ab99d",
     "name" : "Baby",
     "abbreviation" : "2.6.4.1",
     "description" : "Use this domain for words related to a baby.",
@@ -2674,6 +3118,8 @@ var semanticDomains_en = {
         "cry, babble, coo, baby talk," ]
   },
   "2.6.4.1.1 Care for a baby" : {
+    "key" : "2.6.4.1.1",
+    "guid" : "a19e219a-6cc1-4057-a8d9-18554ae88de1",
     "name" : "Care for a baby",
     "abbreviation" : "2.6.4.1.1",
     "description" : "Use this domain for words related to caring for a baby.",
@@ -2691,6 +3137,8 @@ var semanticDomains_en = {
         "rattle, pacifier, dummy,", "amulet, evil eye," ]
   },
   "2.6.4.2 Child" : {
+    "key" : "2.6.4.2",
+    "guid" : "7d472dd5-636d-4499-bf66-83cf23c0dbe1",
     "name" : "Child",
     "abbreviation" : "2.6.4.2",
     "description" : "Use this domain for words related to a child.",
@@ -2700,6 +3148,8 @@ var semanticDomains_en = {
         "child (adj), childish, juvenile," ]
   },
   "2.6.4.2.1 Rear a child" : {
+    "key" : "2.6.4.2.1",
+    "guid" : "ca91e41a-81c3-4c96-87e6-f67477fcd686",
     "name" : "Rear a child",
     "abbreviation" : "2.6.4.2.1",
     "description" : "Use this domain for words related to rearing a child--to take care of someone while they are a child so that their needs are met and they become a good person.",
@@ -2716,6 +3166,8 @@ var semanticDomains_en = {
         "nursery, crèche, childcare facility," ]
   },
   "2.6.4.3 Youth" : {
+    "key" : "2.6.4.3",
+    "guid" : "f74f28d1-8742-4c9f-95dc-d08336e91249",
     "name" : "Youth",
     "abbreviation" : "2.6.4.3",
     "description" : "Use this domain for words referring to a youth.",
@@ -2727,6 +3179,8 @@ var semanticDomains_en = {
         "youth (adj), juvenile, teenage, adolescent," ]
   },
   "2.6.4.4 Adult" : {
+    "key" : "2.6.4.4",
+    "guid" : "fc82fcec-d03c-4fb0-bf62-714c71754402",
     "name" : "Adult",
     "abbreviation" : "2.6.4.4",
     "description" : "Use this domain for words referring to an adult.",
@@ -2739,6 +3193,8 @@ var semanticDomains_en = {
         "adult (adj), grown-up (adj), mature (adj)," ]
   },
   "2.6.4.5 Old person" : {
+    "key" : "2.6.4.5",
+    "guid" : "8fff393a-23c2-42bb-8da8-9b151e790904",
     "name" : "Old person",
     "abbreviation" : "2.6.4.5",
     "description" : "Use this domain for words related to old age and older persons?",
@@ -2756,6 +3212,8 @@ var semanticDomains_en = {
         "geriatric, senior," ]
   },
   "2.6.4.6 Grow, get bigger" : {
+    "key" : "2.6.4.6",
+    "guid" : "f718fc15-59b2-4b6a-a9e3-39b3e8d487d7",
     "name" : "Grow, get bigger",
     "abbreviation" : "2.6.4.6",
     "description" : "Use this domain for words referring to people, animals, or plants growing and getting bigger.",
@@ -2766,6 +3224,8 @@ var semanticDomains_en = {
         "immature,", "growth, development, maturation," ]
   },
   "2.6.4.7 Initiation" : {
+    "key" : "2.6.4.7",
+    "guid" : "adf6ad2b-7af9-4bd8-a7b4-f864b9dad86d",
     "name" : "Initiation",
     "abbreviation" : "2.6.4.7",
     "description" : "Use this domain for words related to initiation rites--a ceremony when a child becomes an adult.",
@@ -2773,6 +3233,8 @@ var semanticDomains_en = {
         "(no words in English)", "initiate (n),", "coming of age" ]
   },
   "2.6.4.8 Peer group" : {
+    "key" : "2.6.4.8",
+    "guid" : "9e587127-4f2c-4796-9c67-d37332b57303",
     "name" : "Peer group",
     "abbreviation" : "2.6.4.8",
     "description" : "Use this domain for words referring to a peer group--all the people who were born during the same time period.",
@@ -2781,6 +3243,8 @@ var semanticDomains_en = {
         "mate," ]
   },
   "2.6.5 Male, female" : {
+    "key" : "2.6.5",
+    "guid" : "0db5817e-05bf-4703-a6b9-e239ac44f857",
     "name" : "Male, female",
     "abbreviation" : "2.6.5",
     "description" : "Use this domain for words referring to male and female people.",
@@ -2796,6 +3260,8 @@ var semanticDomains_en = {
         "sexual equality, sexual discrimination, sexism, sexist, male chauvinism, male chauvinist, feminism, feminist," ]
   },
   "2.6.5.1 Man" : {
+    "key" : "2.6.5.1",
+    "guid" : "04582a28-b94a-4e7f-8cc4-5cdefa8a39f0",
     "name" : "Man",
     "abbreviation" : "2.6.5.1",
     "description" : "Use this domain for words referring to a man or any male person.",
@@ -2810,6 +3276,8 @@ var semanticDomains_en = {
         "sir, Mr., mate, buddy, mister, sire, lord," ]
   },
   "2.6.5.2 Woman" : {
+    "key" : "2.6.5.2",
+    "guid" : "ae6f73ab-432d-42e8-aa1a-c848652a13f0",
     "name" : "Woman",
     "abbreviation" : "2.6.5.2",
     "description" : "Use this domain for words referring to a woman or any female person.",
@@ -2823,6 +3291,8 @@ var semanticDomains_en = {
         "madam, ma'am, Miss, Mrs., Ms., lady, Lady," ]
   },
   "2.6.6 Die" : {
+    "key" : "2.6.6",
+    "guid" : "1c3c8af0-56b9-4617-862e-21f39b388606",
     "name" : "Die",
     "abbreviation" : "2.6.6",
     "description" : "Use this domain for words related to dying.",
@@ -2843,6 +3313,8 @@ var semanticDomains_en = {
         "fatal, terminal," ]
   },
   "2.6.6.1 Kill" : {
+    "key" : "2.6.6.1",
+    "guid" : "b8d2fdb9-22ea-4040-8abb-aeeff0399f23",
     "name" : "Kill",
     "abbreviation" : "2.6.6.1",
     "description" : "Use this domain for words related to killing someone--to cause someone to die.",
@@ -2866,6 +3338,8 @@ var semanticDomains_en = {
         "slaughter, destroy, put down, put away, put something out of it misery," ]
   },
   "2.6.6.2 Corpse" : {
+    "key" : "2.6.6.2",
+    "guid" : "7e2b6218-0837-4b16-a982-c9535cccdb21",
     "name" : "Corpse",
     "abbreviation" : "2.6.6.2",
     "description" : "Use this domain for words referring to a corpse--the body of a person who has died.",
@@ -2875,6 +3349,8 @@ var semanticDomains_en = {
         "remains, bones, skeleton," ]
   },
   "2.6.6.3 Funeral" : {
+    "key" : "2.6.6.3",
+    "guid" : "08d5e632-0aed-4924-b3bb-d43de3420385",
     "name" : "Funeral",
     "abbreviation" : "2.6.6.3",
     "description" : "Use this domain for words related to a funeral and other things that are done after a person dies.",
@@ -2887,6 +3363,8 @@ var semanticDomains_en = {
         "memorial, monument, in memory of," ]
   },
   "2.6.6.4 Mourn" : {
+    "key" : "2.6.6.4",
+    "guid" : "f2d0f288-5bbe-4fa0-9e8f-ddcc74891701",
     "name" : "Mourn",
     "abbreviation" : "2.6.6.4",
     "description" : "Use this domain for words related to mourning a death--to feel bad because someone died and to show this feeling in various ways. Include whatever cultural practices are used.",
@@ -2899,6 +3377,8 @@ var semanticDomains_en = {
         "beat their breast, tear their clothes, shave their head, put ashes on their head" ]
   },
   "2.6.6.5 Bury" : {
+    "key" : "2.6.6.5",
+    "guid" : "ca9c215a-e568-4d09-b3a9-b5727cd831d6",
     "name" : "Bury",
     "abbreviation" : "2.6.6.5",
     "description" : "Use this domain for words related to disposing of a dead body. Different cultures have practices other than burying a body in the ground. Include words for all practices used by the culture.",
@@ -2913,6 +3393,8 @@ var semanticDomains_en = {
         "embalm, mummify, mummy," ]
   },
   "2.6.6.6 Grave" : {
+    "key" : "2.6.6.6",
+    "guid" : "32cf3835-bced-4ea1-9c7a-f7ff653e59fe",
     "name" : "Grave",
     "abbreviation" : "2.6.6.6",
     "description" : "Use this domain for words related to a grave--the place where a dead body is put.",
@@ -2922,6 +3404,8 @@ var semanticDomains_en = {
         "grave marker, gravestone, headstone, tombstone, slab, memorial, monument, epitaph" ]
   },
   "2.6.6.7 Inherit" : {
+    "key" : "2.6.6.7",
+    "guid" : "1ec85151-eba0-48f4-b56d-4f8040602a4b",
     "name" : "Inherit",
     "abbreviation" : "2.6.6.7",
     "description" : "Use this domain for words related to inheriting something from your parents after they die.",
@@ -2935,6 +3419,8 @@ var semanticDomains_en = {
         "executor,", "birthright," ]
   },
   "2.6.6.8 Life after death" : {
+    "key" : "2.6.6.8",
+    "guid" : "0281fb1d-ab12-41b9-a3dc-09ef6b1e4733",
     "name" : "Life after death",
     "abbreviation" : "2.6.6.8",
     "description" : "Use this domain for words related to life after death.",
@@ -2946,12 +3432,16 @@ var semanticDomains_en = {
         "oblivion, end of existence, finality of death," ]
   },
   "3 Language and thought" : {
+    "key" : "3",
+    "guid" : "f4491f9b-3c5e-42ab-afc0-f22e19d0fff5",
     "name" : "Language and thought",
     "abbreviation" : "3",
     "description" : "Use this domain for general words referring to mental and verbal activity. This domain is primarily for grouping many related domains. Therefore there may be no general word in a language to cover such a broad area of meaning.",
     "searchKeys" : [ "psychology, life of the soul" ]
   },
   "3.1 Soul, spirit" : {
+    "key" : "3.1",
+    "guid" : "1cb79293-d4f7-4990-9f50-3bb595744f61",
     "name" : "Soul, spirit",
     "abbreviation" : "3.1",
     "description" : "Use this domain for general words related to the immaterial, non-physical part of a person, as opposed to the body.",
@@ -2963,6 +3453,8 @@ var semanticDomains_en = {
         "personality, character, conscience, disposition, nature, tendency," ]
   },
   "3.1.1 Personality" : {
+    "key" : "3.1.1",
+    "guid" : "6fe11b6a-8d01-4a0b-bdeb-e4e6f420340a",
     "name" : "Personality",
     "abbreviation" : "3.1.1",
     "description" : "Use this domain for words that describe a person's personality (the way he usually thinks, talks, and how he acts with other people).",
@@ -2971,12 +3463,16 @@ var semanticDomains_en = {
         "introvert, extrovert, outgoing, shy, quiet, sociable, talkative, vivacious, intense, easy-going, down-to-earth, homespun, melancholic, phlegmatic, choleric, sanguine, logical, emotional, unemotional, impulsive, cool-headed, even keeled, flamboyant" ]
   },
   "3.1.2 Mental state" : {
+    "key" : "3.1.2",
+    "guid" : "a2508183-7ea5-434e-a773-00d53087d27b",
     "name" : "Mental state",
     "abbreviation" : "3.1.2",
     "description" : "Use this domain for words referring to a person's mental state.",
     "searchKeys" : [ "mental state, mental condition, conscious state" ]
   },
   "3.1.2.1 Alert" : {
+    "key" : "3.1.2.1",
+    "guid" : "e9ef98d9-8844-4804-88a5-614493d150f5",
     "name" : "Alert",
     "abbreviation" : "3.1.2.1",
     "description" : "Use this domain for words referring to a mental state when the mind is working hard.",
@@ -2986,6 +3482,8 @@ var semanticDomains_en = {
         "unaware, mindless, unmindful, bored, disregard, flighty, heedless, oblivious," ]
   },
   "3.1.2.2 Notice" : {
+    "key" : "3.1.2.2",
+    "guid" : "267b98aa-e17c-4ebb-a752-ed4210701867",
     "name" : "Notice",
     "abbreviation" : "3.1.2.2",
     "description" : "Use this domain for words related to noticing something.",
@@ -2998,6 +3496,8 @@ var semanticDomains_en = {
         "distract," ]
   },
   "3.1.2.3 Attention" : {
+    "key" : "3.1.2.3",
+    "guid" : "5b5bcd42-09bb-4c2f-a2da-569cfa69b6ac",
     "name" : "Attention",
     "abbreviation" : "3.1.2.3",
     "description" : "Use this domain for words referring to a mental state when the mind is working hard.",
@@ -3016,6 +3516,8 @@ var semanticDomains_en = {
         "attention is divided," ]
   },
   "3.1.2.4 Ignore" : {
+    "key" : "3.1.2.4",
+    "guid" : "878a313b-a201-444e-8bdb-67048d60c63e",
     "name" : "Ignore",
     "abbreviation" : "3.1.2.4",
     "description" : "Use this domain for words related to ignoring someone--to not look at, listen to, or talk to someone because you think they are not important or you don't like them.",
@@ -3027,6 +3529,8 @@ var semanticDomains_en = {
         "trample on, trample underfoot, ride roughshod over," ]
   },
   "3.2 Think" : {
+    "key" : "3.2",
+    "guid" : "df9ee372-e92e-4f73-aac5-d36908497698",
     "name" : "Think",
     "abbreviation" : "3.2",
     "description" : "Use this domain for words related to thinking, thought processes, and kinds of thinking.",
@@ -3036,12 +3540,16 @@ var semanticDomains_en = {
         "thought, concept, consideration, fact, idea, image, notion, opinion, sentiment, syllogism," ]
   },
   "3.2.1 Mind" : {
+    "key" : "3.2.1",
+    "guid" : "7185bd93-5281-46de-80af-767f0ec40ff6",
     "name" : "Mind",
     "abbreviation" : "3.2.1",
     "description" : "Use this domain for general words referring to the mind--the part of a person that thinks.",
     "searchKeys" : [ "mind, intellect, intelligence, reason, understanding, brain, head" ]
   },
   "3.2.1.1 Think about" : {
+    "key" : "3.2.1.1",
+    "guid" : "2a2af155-9db9-41c5-860a-fe0a3a09d6de",
     "name" : "Think about",
     "abbreviation" : "3.2.1.1",
     "description" : "Use this domain for words related to thinking about something for some time.",
@@ -3063,6 +3571,8 @@ var semanticDomains_en = {
         "thinker, brain, intellectual, philosopher," ]
   },
   "3.2.1.2 Imagine" : {
+    "key" : "3.2.1.2",
+    "guid" : "be89e0ba-4c6a-4986-ac0d-859a901b89a1",
     "name" : "Imagine",
     "abbreviation" : "3.2.1.2",
     "description" : "Use this domain for imagining things--to think about something that does not exist, or to think about something happening that has never happened.",
@@ -3078,6 +3588,8 @@ var semanticDomains_en = {
         "unimaginative, uncreative,", "unimaginable, inconceivable," ]
   },
   "3.2.1.3 Intelligent" : {
+    "key" : "3.2.1.3",
+    "guid" : "48ac206f-2706-4500-bb63-2e499b790259",
     "name" : "Intelligent",
     "abbreviation" : "3.2.1.3",
     "description" : "Use this domain for words that describe a person who thinks well.",
@@ -3091,6 +3603,8 @@ var semanticDomains_en = {
         "academician, genius, highbrow, illuminati, intellectual, literati, magus, philosopher, priest, prodigy, sage, scholar, scholastic, thinker, able thinker, wise man," ]
   },
   "3.2.1.4 Stupid" : {
+    "key" : "3.2.1.4",
+    "guid" : "1f3519f8-d946-4857-a1fd-553d98dddf6d",
     "name" : "Stupid",
     "abbreviation" : "3.2.1.4",
     "description" : "Use this domain for words that describe a person who does not think well.",
@@ -3102,6 +3616,8 @@ var semanticDomains_en = {
         "airhead, blockhead, dolt, donkey, dullard, dumbbell, dummy, dunce, dupe, fanatic, fool, idiot, imbecile, moron, numskull, scatterbrain, sucker," ]
   },
   "3.2.1.5 Logical" : {
+    "key" : "3.2.1.5",
+    "guid" : "6866ee4c-78cd-47d1-ba4a-8461fdcc5e2a",
     "name" : "Logical",
     "abbreviation" : "3.2.1.5",
     "description" : "Use this domain for words describing logical thinking.",
@@ -3111,12 +3627,16 @@ var semanticDomains_en = {
         "illogical, irrational, make no sense, not hold water, not stand up, not add up" ]
   },
   "3.2.1.6 Instinct" : {
+    "key" : "3.2.1.6",
+    "guid" : "3fd34185-19a1-44bd-8555-bc76e2847bee",
     "name" : "Instinct",
     "abbreviation" : "3.2.1.6",
     "description" : "Use this domain for words related to instinct--to know something without being told, to know what to do without taught how to do it.",
     "searchKeys" : [ "instinct, instinctive, intuition, intuitive, sixth sense, gut feeling, just seem to know" ]
   },
   "3.2.2 Learn" : {
+    "key" : "3.2.2",
+    "guid" : "a42db5b4-6317-4d3f-beff-cb92dbaca914",
     "name" : "Learn",
     "abbreviation" : "3.2.2",
     "description" : "Use this domain for words referring to learning something, acquiring information, gaining knowledge (whether done intentionally or unintentionally), or discovering the answer to some question.",
@@ -3130,6 +3650,8 @@ var semanticDomains_en = {
         "learning, answer, solution, information, conclusion, discovery, discipline, education, initiation, instruction, training," ]
   },
   "3.2.2.1 Study" : {
+    "key" : "3.2.2.1",
+    "guid" : "f0e68d2f-f7b3-4722-80a4-8e9c5638b0d4",
     "name" : "Study",
     "abbreviation" : "3.2.2.1",
     "description" : "Use this domain for words referring to studying--to try to learn something.",
@@ -3142,12 +3664,16 @@ var semanticDomains_en = {
         "studious, inquisitive," ]
   },
   "3.2.2.2 Check" : {
+    "key" : "3.2.2.2",
+    "guid" : "f39b14c4-52cf-4afa-956c-f0f5815ef6ac",
     "name" : "Check",
     "abbreviation" : "3.2.2.2",
     "description" : "Use this domain for words referring to checking something--when you think something is true or correct, but you aren't sure, you do something to find out if it is true or correct.",
     "searchKeys" : [ "check, make sure, make certain, double-check, verify, confirm, check out, crosscheck, see for yourself, check up on," ]
   },
   "3.2.2.3 Evaluate, test" : {
+    "key" : "3.2.2.3",
+    "guid" : "167bfba5-0785-4bb5-a083-3ffbefa57897",
     "name" : "Evaluate, test",
     "abbreviation" : "3.2.2.3",
     "description" : "Use this domain for words referring to the process of determining the truth or falsehood of something, or for determining the nature or value of something.",
@@ -3163,6 +3689,8 @@ var semanticDomains_en = {
         "move up, rise, climb, shoot up," ]
   },
   "3.2.2.4 Guess" : {
+    "key" : "3.2.2.4",
+    "guid" : "f1af3f4c-6e0e-4cfa-adcf-9dcddf05feab",
     "name" : "Guess",
     "abbreviation" : "3.2.2.4",
     "description" : "Use this domain for words referring to answering a question when one is unsure of the answer.",
@@ -3170,18 +3698,24 @@ var semanticDomains_en = {
         "guess, estimate, supposition, assumption, theory, intuition" ]
   },
   "3.2.2.5 Solve" : {
+    "key" : "3.2.2.5",
+    "guid" : "909a3113-88bc-470b-8d48-7c0d37966982",
     "name" : "Solve",
     "abbreviation" : "3.2.2.5",
     "description" : "Use this domain for words related to solving something--finding the answer to something that is difficult to understand.",
     "searchKeys" : [ "solve, figure out, work out, clear up, find an explanation, answer, calculate, calculator" ]
   },
   "3.2.2.6 Realize" : {
+    "key" : "3.2.2.6",
+    "guid" : "eac4b58e-1fd7-4ce1-9a68-c7516470e876",
     "name" : "Realize",
     "abbreviation" : "3.2.2.6",
     "description" : "Use this domain for words related to realizing something.",
     "searchKeys" : [ "realize, occur to, dawn on, become aware that, strike, hit, sink in, wake up to the fact that, it clicked," ]
   },
   "3.2.2.7 Willing to learn" : {
+    "key" : "3.2.2.7",
+    "guid" : "880647e5-6543-46dd-9178-8edae9272add",
     "name" : "Willing to learn",
     "abbreviation" : "3.2.2.7",
     "description" : "Use this domain for words referring to being willing to learn or unwilling to learn.",
@@ -3191,6 +3725,8 @@ var semanticDomains_en = {
         "curious, interested" ]
   },
   "3.2.3 Know" : {
+    "key" : "3.2.3",
+    "guid" : "07476166-c5e5-4701-97d3-d97de8b5be6f",
     "name" : "Know",
     "abbreviation" : "3.2.3",
     "description" : "Use this domain for words referring to the results of thinking.",
@@ -3204,6 +3740,8 @@ var semanticDomains_en = {
         "knowledge", "knowable", "unknowable" ]
   },
   "3.2.3.1 Known, unknown" : {
+    "key" : "3.2.3.1",
+    "guid" : "14954a0f-5c8a-4680-90b0-53398bd3a2a7",
     "name" : "Known, unknown",
     "abbreviation" : "3.2.3.1",
     "description" : "Use this domain for words that describe whether or not something is known.",
@@ -3216,12 +3754,16 @@ var semanticDomains_en = {
         "apparent, evident, obvious", "unapparent" ]
   },
   "3.2.3.2 Area of knowledge" : {
+    "key" : "3.2.3.2",
+    "guid" : "e3300171-d7b2-4fb4-a103-e8fdcf3ff2ed",
     "name" : "Area of knowledge",
     "abbreviation" : "3.2.3.2",
     "description" : "Use this domain for words referring to an area of knowledge.",
     "searchKeys" : [ "area, field, world, domain, realm, sphere, branch, province" ]
   },
   "3.2.3.3 Secret" : {
+    "key" : "3.2.3.3",
+    "guid" : "e0e8af5a-04c1-49a1-9955-9a2af7879068",
     "name" : "Secret",
     "abbreviation" : "3.2.3.3",
     "description" : "Use this domain for words that describe whether or not something is known.",
@@ -3234,6 +3776,8 @@ var semanticDomains_en = {
         "apparent, evident, obvious", "unapparent" ]
   },
   "3.2.4 Understand" : {
+    "key" : "3.2.4",
+    "guid" : "d10301f3-573c-4005-ad65-1c73fb80b3b6",
     "name" : "Understand",
     "abbreviation" : "3.2.4",
     "description" : "Use this domain for words referring to understanding a topic or the meaning of something.",
@@ -3242,6 +3786,8 @@ var semanticDomains_en = {
         "understand, perceive, realize, see, recognize, recognition, figure out" ]
   },
   "3.2.4.1 Misunderstand" : {
+    "key" : "3.2.4.1",
+    "guid" : "cab8e9dc-5e4f-4a12-8b3d-4acbb7ad2059",
     "name" : "Misunderstand",
     "abbreviation" : "3.2.4.1",
     "description" : "Use this domain for when a person does not understand a topic or the meaning of something.",
@@ -3250,6 +3796,8 @@ var semanticDomains_en = {
         "understand differently, give a different interpretation" ]
   },
   "3.2.4.2 Understandable" : {
+    "key" : "3.2.4.2",
+    "guid" : "cba1f6cc-58ac-4d09-aa6a-1661f5945787",
     "name" : "Understandable",
     "abbreviation" : "3.2.4.2",
     "description" : "Use this domain for words that describe something that is easy to understand.",
@@ -3258,6 +3806,8 @@ var semanticDomains_en = {
         "relevant, pertinent, clear, clearly, obvious," ]
   },
   "3.2.4.3 Mysterious" : {
+    "key" : "3.2.4.3",
+    "guid" : "6ea13b69-b2a8-41f9-b0bc-14316ebc5118",
     "name" : "Mysterious",
     "abbreviation" : "3.2.4.3",
     "description" : "Use this domain for words that describe something that is difficult to understand.",
@@ -3267,6 +3817,8 @@ var semanticDomains_en = {
         "obscure, shrouded in mystery, mysterious," ]
   },
   "3.2.5 Opinion" : {
+    "key" : "3.2.5",
+    "guid" : "541dfa10-bf97-4713-a534-9cbcc7f66bc9",
     "name" : "Opinion",
     "abbreviation" : "3.2.5",
     "description" : "Use this domain for situations in which a question or issues are being debated, more than one option is possible, and a person chooses to think in one way about the question or issue.",
@@ -3275,6 +3827,8 @@ var semanticDomains_en = {
         "position, view, outlook, perspective, leaning, opinion" ]
   },
   "3.2.5.1 Believe" : {
+    "key" : "3.2.5.1",
+    "guid" : "c0f4715e-55c9-4379-ab6f-ad561a5e7151",
     "name" : "Believe",
     "abbreviation" : "3.2.5.1",
     "description" : "Use this domain for words referring to believing that something is true.",
@@ -3288,6 +3842,8 @@ var semanticDomains_en = {
         "believer, follower", "belief", "evidence, grounds, basis" ]
   },
   "3.2.5.1.1 Trust" : {
+    "key" : "3.2.5.1.1",
+    "guid" : "691bdba3-c216-4b42-877c-674bbdb517a7",
     "name" : "Trust",
     "abbreviation" : "3.2.5.1.1",
     "description" : "Use this domain for words referring to trusting someone--believing that someone is honest and will not do something bad to you.",
@@ -3302,6 +3858,8 @@ var semanticDomains_en = {
         "distrustful, mistrustful," ]
   },
   "3.2.5.2 Disbelief" : {
+    "key" : "3.2.5.2",
+    "guid" : "0f46cb61-7bb5-410d-abc5-4a75dc80a24f",
     "name" : "Disbelief",
     "abbreviation" : "3.2.5.2",
     "description" : "Use this domain for words referring to not believing something or someone.",
@@ -3311,6 +3869,8 @@ var semanticDomains_en = {
         "hard to believe, unbelievable, doubtful, incredible, unconvincing, disputable, untrustworthy, unfaithful, undependable, improbable, unpersuasive" ]
   },
   "3.2.5.3 Doubt" : {
+    "key" : "3.2.5.3",
+    "guid" : "6fc8ae4d-9fad-462e-9ea0-c613c3c1cb5e",
     "name" : "Doubt",
     "abbreviation" : "3.2.5.3",
     "description" : "Use this domain for words related to doubt--not being sure if something is true or not.",
@@ -3320,6 +3880,8 @@ var semanticDomains_en = {
         "suspicious character," ]
   },
   "3.2.5.4 Agree with someone" : {
+    "key" : "3.2.5.4",
+    "guid" : "fd9b8618-1f62-419b-85c3-365a12e85523",
     "name" : "Agree with someone",
     "abbreviation" : "3.2.5.4",
     "description" : "Use this domain for when two people agree on something, think the same way about something, or agree on a decision.",
@@ -3334,12 +3896,16 @@ var semanticDomains_en = {
         "disagree, disagreement, think differently, dissent, contest (v)," ]
   },
   "3.2.5.4.1 Disagree" : {
+    "key" : "3.2.5.4.1",
+    "guid" : "1d5c798b-0f2d-49f2-bde6-cbcf2ef8fd02",
     "name" : "Disagree",
     "abbreviation" : "3.2.5.4.1",
     "description" : "Use this domain for when two people disagree about something.",
     "searchKeys" : [ "disagree, disagreement, think differently, dissent, dissenting, contest (v)," ]
   },
   "3.2.5.4.2 Protest" : {
+    "key" : "3.2.5.4.2",
+    "guid" : "2855cda6-a031-46aa-bf3f-718d94374d46",
     "name" : "Protest",
     "abbreviation" : "3.2.5.4.2",
     "description" : "Use this domain for words related to protesting--to say publicly that you do not like something.",
@@ -3354,6 +3920,8 @@ var semanticDomains_en = {
         "Down with (someone/something)! No more (something)!" ]
   },
   "3.2.5.5 Philosophy" : {
+    "key" : "3.2.5.5",
+    "guid" : "b8e633f7-ca67-40cb-84e7-8b42887d161b",
     "name" : "Philosophy",
     "abbreviation" : "3.2.5.5",
     "description" : "Use this domain for words referring to a set of beliefs about truth.",
@@ -3362,12 +3930,16 @@ var semanticDomains_en = {
         "philosopher, sage", "Epicurean, Stoic, school (of thought)" ]
   },
   "3.2.5.6 Attitude" : {
+    "key" : "3.2.5.6",
+    "guid" : "81e366fa-450b-42ad-b23f-7074dc7823e2",
     "name" : "Attitude",
     "abbreviation" : "3.2.5.6",
     "description" : "Use this domain for words referring to a person's attitude--the way you think and feel about something.",
     "searchKeys" : [ "attitude, mentality, way of thinking, outlook, worldview" ]
   },
   "3.2.5.7 Extreme belief" : {
+    "key" : "3.2.5.7",
+    "guid" : "3aab9c42-b696-4440-8e28-8380f5d25199",
     "name" : "Extreme belief",
     "abbreviation" : "3.2.5.7",
     "description" : "Use this domain for words referring to an extreme belief--something that you believe, that most people think is not good.",
@@ -3376,6 +3948,8 @@ var semanticDomains_en = {
         "extremist, hardliner, leftist, idealist, fanatic, zealot" ]
   },
   "3.2.5.8 Change your mind" : {
+    "key" : "3.2.5.8",
+    "guid" : "6c6259f0-eca6-4a30-8662-eedbaf293527",
     "name" : "Change your mind",
     "abbreviation" : "3.2.5.8",
     "description" : "Use this domain for words related to changing your mind--to change what you think about something, or change your plans or decisions.",
@@ -3388,6 +3962,8 @@ var semanticDomains_en = {
         "closed, close minded, rigid, inflexible, entrenched, reactionary, diehard, intransigent, have fixed ideas, stick in the mud" ]
   },
   "3.2.5.9 Approve of something" : {
+    "key" : "3.2.5.9",
+    "guid" : "a3f1d702-8ca1-457a-a569-eb6fdf696bbe",
     "name" : "Approve of something",
     "abbreviation" : "3.2.5.9",
     "description" : "Use this domain for words related to approving of doing something--to think that doing something is good.",
@@ -3404,6 +3980,8 @@ var semanticDomains_en = {
         "disapproving, derogatory, pejorative,", "fall into disrepute," ]
   },
   "3.2.6 Remember" : {
+    "key" : "3.2.6",
+    "guid" : "9f868391-f1df-4682-bdcb-2c2c799006cf",
     "name" : "Remember",
     "abbreviation" : "3.2.6",
     "description" : "Use this domain for words referring to remembering something you know.",
@@ -3417,6 +3995,8 @@ var semanticDomains_en = {
         "cherish (a memory/thought), treasure", "regret, rue the day" ]
   },
   "3.2.6.1 Forget" : {
+    "key" : "3.2.6.1",
+    "guid" : "ce30eb9c-8260-476b-878c-0a078d596955",
     "name" : "Forget",
     "abbreviation" : "3.2.6.1",
     "description" : "Use this domain for words referring to forgetting something.",
@@ -3426,6 +4006,8 @@ var semanticDomains_en = {
         "forgetful, absentminded", "amnesia" ]
   },
   "3.2.6.2 Recognize" : {
+    "key" : "3.2.6.2",
+    "guid" : "a86b2e14-1299-4f59-842c-c4c5a401aace",
     "name" : "Recognize",
     "abbreviation" : "3.2.6.2",
     "description" : "Use this domain for words referring to recognizing something.",
@@ -3435,12 +4017,16 @@ var semanticDomains_en = {
         "unrecognizable, unfamiliar, strange, changed beyond all recognition" ]
   },
   "3.2.6.3 Memorize" : {
+    "key" : "3.2.6.3",
+    "guid" : "65a928b8-8587-48be-8f23-41f85549c547",
     "name" : "Memorize",
     "abbreviation" : "3.2.6.3",
     "description" : "Use this domain for words referring to memorizing something--to think hard about something so that you will not forget it.",
     "searchKeys" : [ "memorize, commit to memory, make a mental note, record, remember, store," ]
   },
   "3.2.6.4 Remind" : {
+    "key" : "3.2.6.4",
+    "guid" : "45e90d41-a462-4671-968f-92166378b3f0",
     "name" : "Remind",
     "abbreviation" : "3.2.6.4",
     "description" : "Use this domain for words referring to reminding someone about something--to make someone remember something.",
@@ -3449,6 +4035,8 @@ var semanticDomains_en = {
         "remind, be a reminder, bring back memories, take someone back, drag up, rake up, evoke, evocative, make someone think of," ]
   },
   "3.2.7 Expect" : {
+    "key" : "3.2.7",
+    "guid" : "5e3bb9e5-fd70-4c5a-95a0-938bc4876a47",
     "name" : "Expect",
     "abbreviation" : "3.2.7",
     "description" : "Use this domain for words referring to thinking about the future.",
@@ -3459,6 +4047,8 @@ var semanticDomains_en = {
         "not come true, fail to materialize" ]
   },
   "3.2.7.1 Hope" : {
+    "key" : "3.2.7.1",
+    "guid" : "aaf63abd-c8a5-4546-8fc1-a51c6e607683",
     "name" : "Hope",
     "abbreviation" : "3.2.7.1",
     "description" : "Use this domain for words related to hoping that something will happen--to want something good to happen in the future.",
@@ -3467,24 +4057,32 @@ var semanticDomains_en = {
         "hope (n), wish (n)" ]
   },
   "3.2.7.2 Hopeless" : {
+    "key" : "3.2.7.2",
+    "guid" : "218c1d59-0ebb-4936-b9cf-0a93e88aa729",
     "name" : "Hopeless",
     "abbreviation" : "3.2.7.2",
     "description" : "Use this domain for words related to feeling hopeless--to thinking that nothing good will happen in the future.",
     "searchKeys" : [ "hopeless, lose hope, cynical, cynicism, despair, fatalistic, fatalism, pessimistic, pessimism" ]
   },
   "3.2.7.3 Predict" : {
+    "key" : "3.2.7.3",
+    "guid" : "c956a98a-4c85-4c85-868d-f27f44bd6422",
     "name" : "Predict",
     "abbreviation" : "3.2.7.3",
     "description" : "Use this domain for words referring to predicting the future--saying what you think will happen.",
     "searchKeys" : [ "claim, forecast, foretell, predict, prognosticate, prophesy," ]
   },
   "3.2.8 Tendency" : {
+    "key" : "3.2.8",
+    "guid" : "05f95abb-163a-4927-83c5-8c81ef7b769c",
     "name" : "Tendency",
     "abbreviation" : "3.2.8",
     "description" : "Use this domain for words indicating that the speaker thinks that something tends to be a certain way.",
     "searchKeys" : [ "tend, have a tendency, lean a certain way, apt to, prone to, proclivity, predilection, bent, bias, leaning, penchant, inclination, propensity, susceptibility, likelihood, liable to, trend, drift, conducive to, leads in the direction of, dispose, incline toward, gravitate toward, likely" ]
   },
   "3.3 Want" : {
+    "key" : "3.3",
+    "guid" : "b50f39cb-3152-4d56-9ddc-4b98f763e76a",
     "name" : "Want",
     "abbreviation" : "3.3",
     "description" : "Use this domain for words related to wanting something or wanting to do something.",
@@ -3495,6 +4093,8 @@ var semanticDomains_en = {
         "desirable,", "unwanted, undesirable," ]
   },
   "3.3.1 Decide, plan" : {
+    "key" : "3.3.1",
+    "guid" : "af4ac058-d4b3-4c7a-ade8-6af762d0486d",
     "name" : "Decide, plan",
     "abbreviation" : "3.3.1",
     "description" : "Use this domain for words related to deciding to do something.",
@@ -3503,6 +4103,8 @@ var semanticDomains_en = {
         "decision, choice, plan, course, strategy" ]
   },
   "3.3.1.1 Purpose, goal" : {
+    "key" : "3.3.1.1",
+    "guid" : "b6b73d41-e23f-4f22-b01e-7e75f4115fce",
     "name" : "Purpose, goal",
     "abbreviation" : "3.3.1.1",
     "description" : "Use this domain for words referring to a goal--something that you want to do or something that you want to happen.",
@@ -3517,6 +4119,8 @@ var semanticDomains_en = {
         "purposeless, without purpose, lack a goal, aimless, drifting, no direction," ]
   },
   "3.3.1.2 Choose" : {
+    "key" : "3.3.1.2",
+    "guid" : "fed2b7bd-2315-4085-b0a7-2ced988120f3",
     "name" : "Choose",
     "abbreviation" : "3.3.1.2",
     "description" : "Use this domain for words related to choosing something--to want one thing (or person) from a group of things, or to choose to do one thing from several possible things you could do.",
@@ -3526,6 +4130,8 @@ var semanticDomains_en = {
         "alternative, option, selection, candidate" ]
   },
   "3.3.1.3 Cast lots" : {
+    "key" : "3.3.1.3",
+    "guid" : "7337b2dd-b574-4a41-affa-2dfad7f6cdbc",
     "name" : "Cast lots",
     "abbreviation" : "3.3.1.3",
     "description" : "Use this domain for words referring to casting lots--to make a decision by chance.",
@@ -3537,6 +4143,8 @@ var semanticDomains_en = {
         "fate, chance, God's will, social consensus" ]
   },
   "3.3.1.4 Intend" : {
+    "key" : "3.3.1.4",
+    "guid" : "7bf77556-64df-428e-bfdd-095af5bfeeda",
     "name" : "Intend",
     "abbreviation" : "3.3.1.4",
     "description" : "Use this domain for words related to intending to do something--to do something intentionally and not by accident.",
@@ -3546,6 +4154,8 @@ var semanticDomains_en = {
         "intentional, intentionally, on purpose, because I wanted to" ]
   },
   "3.3.1.5 Deliberately" : {
+    "key" : "3.3.1.5",
+    "guid" : "26bc089a-a989-4763-be6c-05d127d1c0e8",
     "name" : "Deliberately",
     "abbreviation" : "3.3.1.5",
     "description" : "Use this domain for words related to doing something deliberately--to intend to do something, as opposed to doing something accidentally.",
@@ -3556,6 +4166,8 @@ var semanticDomains_en = {
         "accidental, unintentional, unconscious, involuntary" ]
   },
   "3.3.1.6 Determined" : {
+    "key" : "3.3.1.6",
+    "guid" : "15fb022e-1b45-41e9-bd8a-09ddc9dc6acd",
     "name" : "Determined",
     "abbreviation" : "3.3.1.6",
     "description" : "Use this domain for words related to being determined to do something--deciding to do something and not letting anything stop you.",
@@ -3570,6 +4182,8 @@ var semanticDomains_en = {
         "apathetic, indifference, indifferent, listless, lethargic, neutral, nonchalant, uncaring," ]
   },
   "3.3.1.7 Stubborn" : {
+    "key" : "3.3.1.7",
+    "guid" : "cc121082-2d07-484e-8a6f-7382f7d71f39",
     "name" : "Stubborn",
     "abbreviation" : "3.3.1.7",
     "description" : "Use this domain for words related to being stubborn--to be unwilling to change a decision; to be unwilling to do something someone wants you to do; or to do what you want to do, even though other people do not want you to do it.",
@@ -3580,12 +4194,16 @@ var semanticDomains_en = {
         "stubbornness, inflexibility, obstinacy, tenacity, stick-to-itiveness" ]
   },
   "3.3.1.8 Lust" : {
+    "key" : "3.3.1.8",
+    "guid" : "41b80f5d-0298-4d3c-b1a3-6d5e6c3985b1",
     "name" : "Lust",
     "abbreviation" : "3.3.1.8",
     "description" : "Use this domain for words related to lusting for something--to want something bad or forbidden.",
     "searchKeys" : [ "desire, lust, avarice, burn, covet, crave, grasping, greed, inflamed" ]
   },
   "3.3.2 Request" : {
+    "key" : "3.3.2",
+    "guid" : "45f7b003-ade3-4efc-8dee-259dcbf80a4a",
     "name" : "Request",
     "abbreviation" : "3.3.2",
     "description" : "Use this domain for words related to requesting something--to ask for something, or ask someone to do something.",
@@ -3598,6 +4216,8 @@ var semanticDomains_en = {
         "plea, entreaty", "importunate" ]
   },
   "3.3.2.1 Agree to do something" : {
+    "key" : "3.3.2.1",
+    "guid" : "d2e73238-ff99-4ba3-8ce6-d8ae98721710",
     "name" : "Agree to do something",
     "abbreviation" : "3.3.2.1",
     "description" : "Use this domain for words related to agreeing to do something.",
@@ -3609,6 +4229,8 @@ var semanticDomains_en = {
         "give in, bow to, accede to," ]
   },
   "3.3.2.2 Refuse to do something" : {
+    "key" : "3.3.2.2",
+    "guid" : "1137590c-6f2f-4b69-b04e-f6a890a335a2",
     "name" : "Refuse to do something",
     "abbreviation" : "3.3.2.2",
     "description" : "Use this domain for words related to refusing to do something.",
@@ -3618,6 +4240,8 @@ var semanticDomains_en = {
         "refuse, deny, withhold" ]
   },
   "3.3.2.3 Intercede" : {
+    "key" : "3.3.2.3",
+    "guid" : "593073d6-9893-4670-98fb-c485406a950b",
     "name" : "Intercede",
     "abbreviation" : "3.3.2.3",
     "description" : "Use this domain for words related to interceding for someone--to say something to someone because you want them to do something good for someone else.",
@@ -3626,6 +4250,8 @@ var semanticDomains_en = {
         "intercessor, go-between, intermediary, mediator, peacemaker" ]
   },
   "3.3.2.4 Willing" : {
+    "key" : "3.3.2.4",
+    "guid" : "6b19e828-f597-4d0d-b7a6-f52f3bbd041f",
     "name" : "Willing",
     "abbreviation" : "3.3.2.4",
     "description" : "Use this domain for words related to being willing to do something.",
@@ -3634,6 +4260,8 @@ var semanticDomains_en = {
         "unwilling, unwillingness, forced, grudging, involuntary, loath, pressured, reluctant," ]
   },
   "3.3.3 Influence" : {
+    "key" : "3.3.3",
+    "guid" : "5ea9301a-9906-4e81-97cf-48ee95a54c63",
     "name" : "Influence",
     "abbreviation" : "3.3.3",
     "description" : "Use this domain for words related to influencing someone--to do something because you want someone to change his thinking.",
@@ -3644,6 +4272,8 @@ var semanticDomains_en = {
         "influential" ]
   },
   "3.3.3.1 Suggest" : {
+    "key" : "3.3.3.1",
+    "guid" : "8ea4e0d4-71a2-4583-a1fe-f1a941af8478",
     "name" : "Suggest",
     "abbreviation" : "3.3.3.1",
     "description" : "Use this domain for words referring to suggesting something--saying that something might be good.",
@@ -3655,6 +4285,8 @@ var semanticDomains_en = {
         "suggestion, proposal, recommendation, proposition, submission" ]
   },
   "3.3.3.2 Advise" : {
+    "key" : "3.3.3.2",
+    "guid" : "6bfb7813-3a7d-47e2-88e1-d54034c07e5d",
     "name" : "Advise",
     "abbreviation" : "3.3.3.2",
     "description" : "Use this domain for words referring to giving someone advice or counsel, for instance recommending a wise course of action.",
@@ -3672,6 +4304,8 @@ var semanticDomains_en = {
         "good, wise, bad, bum steer, advisable, helpful, constructive, positive," ]
   },
   "3.3.3.3 Persuade" : {
+    "key" : "3.3.3.3",
+    "guid" : "9d428e57-e125-4575-b165-9bc6fd4ec507",
     "name" : "Persuade",
     "abbreviation" : "3.3.3.3",
     "description" : "Use this domain for words related to persuading someone--to try to get someone to do something or to change his thinking.",
@@ -3682,6 +4316,8 @@ var semanticDomains_en = {
         "dissuade" ]
   },
   "3.3.3.4 Insist" : {
+    "key" : "3.3.3.4",
+    "guid" : "ad56dc48-9c39-43f6-9386-f7df80d93cd4",
     "name" : "Insist",
     "abbreviation" : "3.3.3.4",
     "description" : "Use this domain for words related to insisting--to say strongly or repeatedly that someone must do something, because the other person does not want to do it.",
@@ -3690,6 +4326,8 @@ var semanticDomains_en = {
         "insistent, importunate, resolute" ]
   },
   "3.3.3.5 Compel" : {
+    "key" : "3.3.3.5",
+    "guid" : "6fbe39fb-a4cb-4fcf-830b-8875fd4324e0",
     "name" : "Compel",
     "abbreviation" : "3.3.3.5",
     "description" : "Use this domain for words related to compelling someone to do something--to cause or force someone to do something that they do not want to do.",
@@ -3703,6 +4341,8 @@ var semanticDomains_en = {
         "bully,", "bossy, coercive, pushy" ]
   },
   "3.3.3.6 Control" : {
+    "key" : "3.3.3.6",
+    "guid" : "e6ec43ef-0100-4cf4-a047-c575ee8613b4",
     "name" : "Control",
     "abbreviation" : "3.3.3.6",
     "description" : "Use this domain for words related to controlling someone--to force someone to do what you want them to do by ordering them to do it, or by doing something so that they have no choice. Also use this domain for words related to controlling something, for instance to control a machine, so that it does what you want it to do.",
@@ -3711,6 +4351,8 @@ var semanticDomains_en = {
         "be under someone's control, be in someone's power, be under someone's spell, be at someone's mercy, be a doormat" ]
   },
   "3.3.3.7 Warn" : {
+    "key" : "3.3.3.7",
+    "guid" : "3445e61b-61a3-4ede-93f5-402ebe9ca51c",
     "name" : "Warn",
     "abbreviation" : "3.3.3.7",
     "description" : "Use this domain for words related to warning someone--saying something to someone so that he will not do something bad.",
@@ -3720,6 +4362,8 @@ var semanticDomains_en = {
         "inadvisable,", "alarm, bell, buzzer," ]
   },
   "3.3.3.8 Threaten" : {
+    "key" : "3.3.3.8",
+    "guid" : "c1c1dcb4-8fe5-43ac-9b91-b2b2bc33de5b",
     "name" : "Threaten",
     "abbreviation" : "3.3.3.8",
     "description" : "Use this domain for words related to threatening someone--to say that you will do something bad to someone if they don't do what you want them to do.",
@@ -3730,6 +4374,8 @@ var semanticDomains_en = {
         "bully, terrorist, blackmailer, extortionist" ]
   },
   "3.3.4 Ask permission" : {
+    "key" : "3.3.4",
+    "guid" : "8383b4cb-e14a-4d04-a8c3-9c5276384953",
     "name" : "Ask permission",
     "abbreviation" : "3.3.4",
     "description" : "Use this domain for words related to asking permission to do something. This domain is part of a scenario: You have authority over me. I want to do something. I ask you for permission to do it. You give permission or refuse permission. I obey you or disobey you.",
@@ -3737,6 +4383,8 @@ var semanticDomains_en = {
         "can I, may I, do you mind if, would you mind if, is it all right if," ]
   },
   "3.3.4.1 Give permission" : {
+    "key" : "3.3.4.1",
+    "guid" : "a3e905b8-107b-4311-bb50-0abe151131b3",
     "name" : "Give permission",
     "abbreviation" : "3.3.4.1",
     "description" : "Use this domain for words related to giving someone permission to do something. This domain is about a scenario: You have authority over me. I want to do something. I ask you for permission to do it. You give permission or refuse permission.",
@@ -3752,18 +4400,24 @@ var semanticDomains_en = {
         "be allowed, allowable, permissible, acceptable," ]
   },
   "3.3.4.2 Refuse permission" : {
+    "key" : "3.3.4.2",
+    "guid" : "8f46496a-d5b2-411d-944d-9d4d4b6f2e31",
     "name" : "Refuse permission",
     "abbreviation" : "3.3.4.2",
     "description" : "Use this domain for words related to refusing to permit someone to do something.",
     "searchKeys" : [ "refuse permission, deny permission, forbid, prohibit," ]
   },
   "3.3.4.3 Exempt" : {
+    "key" : "3.3.4.3",
+    "guid" : "b6baa8bf-7691-431d-8715-3937372b9da0",
     "name" : "Exempt",
     "abbreviation" : "3.3.4.3",
     "description" : "Use this domain for words related to being exempt from a law or obligation.",
     "searchKeys" : [ "exempt, free, not bound by, not answerable to, immune from prosecution, privileged, excused" ]
   },
   "3.3.4.4 Prevent" : {
+    "key" : "3.3.4.4",
+    "guid" : "66fc9a08-3661-4dd5-94b0-1eea41fb4554",
     "name" : "Prevent",
     "abbreviation" : "3.3.4.4",
     "description" : "Use this domain for words related to preventing someone from doing something.",
@@ -3772,6 +4426,8 @@ var semanticDomains_en = {
         "check, constraint, impediment, limitation, restriction," ]
   },
   "3.3.4.5 Free to do what you want" : {
+    "key" : "3.3.4.5",
+    "guid" : "c8c74ec6-3f7a-4b45-b0e9-399b97c4a800",
     "name" : "Free to do what you want",
     "abbreviation" : "3.3.4.5",
     "description" : "Use this domain for words related to freedom--when you can do the things that you want to do.",
@@ -3783,6 +4439,8 @@ var semanticDomains_en = {
         "free someone, set free, liberate, emancipate" ]
   },
   "3.3.5 Offer" : {
+    "key" : "3.3.5",
+    "guid" : "7c9c6263-9f7d-472c-a4c9-1767015d41fe",
     "name" : "Offer",
     "abbreviation" : "3.3.5",
     "description" : "Use this domain for words related to offering to do something for someone.",
@@ -3795,6 +4453,8 @@ var semanticDomains_en = {
         "Would you like...? Can I...? Shall I...? Have a/some.... Help yourself to...." ]
   },
   "3.3.5.1 Accept" : {
+    "key" : "3.3.5.1",
+    "guid" : "dafc4b97-2b70-4986-b2b4-c05eb060786d",
     "name" : "Accept",
     "abbreviation" : "3.3.5.1",
     "description" : "Use this domain for words referring to accepting something such as an offer, invitation, or request.",
@@ -3803,6 +4463,8 @@ var semanticDomains_en = {
         "acceptance," ]
   },
   "3.3.5.2 Reject" : {
+    "key" : "3.3.5.2",
+    "guid" : "612424b8-997e-4661-a452-772e14a3c4a0",
     "name" : "Reject",
     "abbreviation" : "3.3.5.2",
     "description" : "Use this domain for words referring to rejecting something such as an offer, invitation, or request.",
@@ -3811,6 +4473,8 @@ var semanticDomains_en = {
         "refusal, rejection," ]
   },
   "3.4 Emotion" : {
+    "key" : "3.4",
+    "guid" : "cb95189c-8c74-465b-af07-48e08dbf7c39",
     "name" : "Emotion",
     "abbreviation" : "3.4",
     "description" : "Use this domain for general words related to feelings and emotions.",
@@ -3833,6 +4497,8 @@ var semanticDomains_en = {
         "snap out of it, get a grip on yourself, pull yourself together," ]
   },
   "3.4.1 Feel good" : {
+    "key" : "3.4.1",
+    "guid" : "474aa982-8350-47e2-a983-e1e2bce9d928",
     "name" : "Feel good",
     "abbreviation" : "3.4.1",
     "description" : "Use this domain for general words related to positive emotions.",
@@ -3843,6 +4509,8 @@ var semanticDomains_en = {
         "cheerful (thought)," ]
   },
   "3.4.1.1 Like, love" : {
+    "key" : "3.4.1.1",
+    "guid" : "d030f0c7-31a3-47da-be35-46f1eba63ae9",
     "name" : "Like, love",
     "abbreviation" : "3.4.1.1",
     "description" : "Use this domain for words related to liking something or someone, or liking to do something.",
@@ -3860,6 +4528,8 @@ var semanticDomains_en = {
         "beguiling, bewitching, charming, dazzling, delightful, enchanting, enthralling, fascinating, gratifying, impressive, pleasing, thrilling," ]
   },
   "3.4.1.1.1 Enjoy doing something" : {
+    "key" : "3.4.1.1.1",
+    "guid" : "50eb32a2-6dbb-4b7c-b370-aacdcfeaf5fc",
     "name" : "Enjoy doing something",
     "abbreviation" : "3.4.1.1.1",
     "description" : "Use this domain for words related to enjoying doing something.",
@@ -3878,6 +4548,8 @@ var semanticDomains_en = {
         "recreation, leisure,", "spoilsport," ]
   },
   "3.4.1.1.2 Self-esteem" : {
+    "key" : "3.4.1.1.2",
+    "guid" : "ce6d5e60-7cf6-46ab-bd02-453ec7b04f7a",
     "name" : "Self-esteem",
     "abbreviation" : "3.4.1.1.2",
     "description" : "Use this domain for words related to feeling good about yourself.",
@@ -3887,6 +4559,8 @@ var semanticDomains_en = {
         "encouragement, boost, congratulations,", "encouraging" ]
   },
   "3.4.1.1.3 Prefer" : {
+    "key" : "3.4.1.1.3",
+    "guid" : "ef409fc6-bd89-4cc6-ade5-abb882272313",
     "name" : "Prefer",
     "abbreviation" : "3.4.1.1.3",
     "description" : "Use this domain for words related to preferring one thing over another--to like something more than something else.",
@@ -3901,6 +4575,8 @@ var semanticDomains_en = {
         "unbiased, impartial, impartially, impartiality," ]
   },
   "3.4.1.1.4 Popular" : {
+    "key" : "3.4.1.1.4",
+    "guid" : "ac550d1f-ec74-46a8-bf81-7832ace533ee",
     "name" : "Popular",
     "abbreviation" : "3.4.1.1.4",
     "description" : "Use this domain for words describing something that many people like.",
@@ -3911,6 +4587,8 @@ var semanticDomains_en = {
         "unpopular, be out of favor, go out of favor with, there's no demand for" ]
   },
   "3.4.1.1.5 Fashionable" : {
+    "key" : "3.4.1.1.5",
+    "guid" : "e54cd744-d106-4bcf-bd07-b8783c075c21",
     "name" : "Fashionable",
     "abbreviation" : "3.4.1.1.5",
     "description" : "Use this domain for words describing something that many people like.",
@@ -3925,6 +4603,8 @@ var semanticDomains_en = {
         "go out, date," ]
   },
   "3.4.1.1.6 Contentment" : {
+    "key" : "3.4.1.1.6",
+    "guid" : "f0fdbdfa-094e-4bec-ae19-af23d2c02ed6",
     "name" : "Contentment",
     "abbreviation" : "3.4.1.1.6",
     "description" : "Use this domain for words related to feeling contented.",
@@ -3934,6 +4614,8 @@ var semanticDomains_en = {
         "be displeased with, be unhappy with, not happy, dissatisfied, discontented, disgruntled," ]
   },
   "3.4.1.1.7 Happy for" : {
+    "key" : "3.4.1.1.7",
+    "guid" : "4aedd6d3-8f4b-4986-8d51-b0ace0137bf0",
     "name" : "Happy for",
     "abbreviation" : "3.4.1.1.7",
     "description" : "Use this domain for words related to feeling happy for someone--to feel good because something good happened to someone. The opposite is jealousy and envy.",
@@ -3941,12 +4623,16 @@ var semanticDomains_en = {
         "cheer for, applaud, congratulate" ]
   },
   "3.4.1.1.8 Pleased with" : {
+    "key" : "3.4.1.1.8",
+    "guid" : "46b13a77-fe12-49fb-afbe-826480ec97f4",
     "name" : "Pleased with",
     "abbreviation" : "3.4.1.1.8",
     "description" : "Use this domain for words related to feeling pleased with someone--to feel good because someone did something good.",
     "searchKeys" : [ "be pleased with, happy with, satisfied with, approve of, delight in, be favorable toward, impressed with, thrilled with, tickled with, respect," ]
   },
   "3.4.1.2 Happy" : {
+    "key" : "3.4.1.2",
+    "guid" : "afa77a2a-8b0f-4a39-91bc-040e90ffbb3a",
     "name" : "Happy",
     "abbreviation" : "3.4.1.2",
     "description" : "Use this domain for words related to feeling happy--to feel good when something good happens (such as receiving a gift, hearing good news, or watching something good happening).",
@@ -3968,6 +4654,8 @@ var semanticDomains_en = {
         "happy, blissful, delightful (time), idyllic, joyous (occasion), pleasant" ]
   },
   "3.4.1.2.1 Relaxed" : {
+    "key" : "3.4.1.2.1",
+    "guid" : "26fb2e94-b8fe-4216-9057-ca17a71df83b",
     "name" : "Relaxed",
     "abbreviation" : "3.4.1.2.1",
     "description" : "Use this domain for words related to feeling relaxed--to feel good when you are not working and nothing bad is happening.",
@@ -3979,6 +4667,8 @@ var semanticDomains_en = {
         "sedative, relaxant,", "relaxing," ]
   },
   "3.4.1.2.2 Calm" : {
+    "key" : "3.4.1.2.2",
+    "guid" : "9351d5b6-5a87-422a-9e82-ca6a0bacd3e9",
     "name" : "Calm",
     "abbreviation" : "3.4.1.2.2",
     "description" : "Use this domain for words related to feeling calm.",
@@ -3996,6 +4686,8 @@ var semanticDomains_en = {
         "Cool it. Take it easy. Calm down." ]
   },
   "3.4.1.3 Surprise" : {
+    "key" : "3.4.1.3",
+    "guid" : "0e590da7-c027-42e0-b580-f65686cee461",
     "name" : "Surprise",
     "abbreviation" : "3.4.1.3",
     "description" : "Use this domain for words related to feeling surprised--to feel something when something unexpected, unusual, or amazing happens.",
@@ -4009,6 +4701,8 @@ var semanticDomains_en = {
         "Wow!" ]
   },
   "3.4.1.4 Interested" : {
+    "key" : "3.4.1.4",
+    "guid" : "f9d020d6-b129-4bb8-9509-3b4a6c27482e",
     "name" : "Interested",
     "abbreviation" : "3.4.1.4",
     "description" : "Use this domain for words related to feeling interested.",
@@ -4028,6 +4722,8 @@ var semanticDomains_en = {
         "hobby, interest, recreation," ]
   },
   "3.4.1.4.1 Excited" : {
+    "key" : "3.4.1.4.1",
+    "guid" : "00364f0c-9a3a-4910-a82e-1ffbc4d4137f",
     "name" : "Excited",
     "abbreviation" : "3.4.1.4.1",
     "description" : "Use this domain for words related to feeling excited--to feel good when something good has happening or is about to happen.",
@@ -4048,6 +4744,8 @@ var semanticDomains_en = {
         "calm down,", "calm, unexcited," ]
   },
   "3.4.1.4.2 Enthusiastic" : {
+    "key" : "3.4.1.4.2",
+    "guid" : "85912845-21b0-41eb-8b8c-1f5c3d53df08",
     "name" : "Enthusiastic",
     "abbreviation" : "3.4.1.4.2",
     "description" : "Use this domain for words related to feeling enthusiastic--to feel very good because you want to do something or you want something to happen.",
@@ -4063,6 +4761,8 @@ var semanticDomains_en = {
         "not enthusiastic, unenthusiastic, lack of enthusiasm, half-hearted, lukewarm, muted, your heart's not in it," ]
   },
   "3.4.1.4.3 Obsessed" : {
+    "key" : "3.4.1.4.3",
+    "guid" : "1c0c4951-03b6-49b8-8a8e-724397cfd5a7",
     "name" : "Obsessed",
     "abbreviation" : "3.4.1.4.3",
     "description" : "Use this domain for words related to feeling obsessed--to be very interested in something for a long time.",
@@ -4074,6 +4774,8 @@ var semanticDomains_en = {
         "fascinating, intriguing, irresistible, absorbing, riveting, gripping, compelling, couldn't put it down," ]
   },
   "3.4.1.4.4 Attract" : {
+    "key" : "3.4.1.4.4",
+    "guid" : "bb2a112f-af6f-4a54-bbf0-ba7b8289e58b",
     "name" : "Attract",
     "abbreviation" : "3.4.1.4.4",
     "description" : "Use this domain for words related to attracting someone's attention to something. In a typical situation, a person sees something with an interesting quality. The person moves closer, pays close attention to the thing, and possibly does something to it.",
@@ -4084,6 +4786,8 @@ var semanticDomains_en = {
         "appeal (n), the lure of, charm, pull (n), draw (n)" ]
   },
   "3.4.1.4.5 Indifferent" : {
+    "key" : "3.4.1.4.5",
+    "guid" : "5c31bdf6-901f-4f14-ab64-7a99524710fc",
     "name" : "Indifferent",
     "abbreviation" : "3.4.1.4.5",
     "description" : "Use this domain for words related to feeling indifferent about something.",
@@ -4098,6 +4802,8 @@ var semanticDomains_en = {
         "insensitive" ]
   },
   "3.4.1.4.6 Uninterested, bored" : {
+    "key" : "3.4.1.4.6",
+    "guid" : "0fa0be21-2246-40b2-86b1-ca572fe8c16c",
     "name" : "Uninterested, bored",
     "abbreviation" : "3.4.1.4.6",
     "description" : "Use this domain for words related to feeling uninterested or bored--when someone is not interested in something.",
@@ -4116,6 +4822,8 @@ var semanticDomains_en = {
         "the novelty wears off, lose interest, get tired of," ]
   },
   "3.4.1.5 Confident" : {
+    "key" : "3.4.1.5",
+    "guid" : "e0a8e1d9-c43e-4092-a8dc-476a3417924e",
     "name" : "Confident",
     "abbreviation" : "3.4.1.5",
     "description" : "Use this domain for words related to feeling confident--to feel sure that you can do something.",
@@ -4131,6 +4839,8 @@ var semanticDomains_en = {
         "insecure, unsure of yourself" ]
   },
   "3.4.2 Feel bad" : {
+    "key" : "3.4.2",
+    "guid" : "60dc7cf6-0a41-4cd3-99a6-0b7a71488e7e",
     "name" : "Feel bad",
     "abbreviation" : "3.4.2",
     "description" : "Use this domain for general words related to feeling bad.",
@@ -4139,6 +4849,8 @@ var semanticDomains_en = {
         "get someone down,", "downer," ]
   },
   "3.4.2.1 Sad" : {
+    "key" : "3.4.2.1",
+    "guid" : "6142c173-161a-47d5-bdec-c827518fd67c",
     "name" : "Sad",
     "abbreviation" : "3.4.2.1",
     "description" : "Use this domain for words related to feeling sad--to feel bad because something bad has happened (such as losing something, hearing bad news, or watching something bad happening).",
@@ -4162,6 +4874,8 @@ var semanticDomains_en = {
         "comfort, console, reassure, solace," ]
   },
   "3.4.2.1.1 Dislike" : {
+    "key" : "3.4.2.1.1",
+    "guid" : "82ecb5b3-9128-4b38-b9c5-612857417ceb",
     "name" : "Dislike",
     "abbreviation" : "3.4.2.1.1",
     "description" : "Use this domain for words related to not liking someone or something.",
@@ -4177,6 +4891,8 @@ var semanticDomains_en = {
         "harsh, grating, rasping,", "go off,", "sneer, boo," ]
   },
   "3.4.2.1.2 Hate, detest" : {
+    "key" : "3.4.2.1.2",
+    "guid" : "97393c87-07e2-4633-88f9-c8bf4d9b935c",
     "name" : "Hate, detest",
     "abbreviation" : "3.4.2.1.2",
     "description" : "Use this domain for words related to hating someone or something--to dislike someone or something very much.",
@@ -4188,6 +4904,8 @@ var semanticDomains_en = {
         "hateful, abominable, deplorable, despicable, detestable, execrable, reprehensible," ]
   },
   "3.4.2.1.3 Disgusted" : {
+    "key" : "3.4.2.1.3",
+    "guid" : "8d5c28b8-91be-40b0-b6c2-4d5adbb495a3",
     "name" : "Disgusted",
     "abbreviation" : "3.4.2.1.3",
     "description" : "Use this domain for words related to feeling disgusted--to dislike something so much that you feel sick.",
@@ -4200,6 +4918,8 @@ var semanticDomains_en = {
         "disgusting, abhorrent, abominable, awful, detestable, foul, gross, loathsome, nasty, nauseating, repugnant, repulsive, revolting, sick, sickening," ]
   },
   "3.4.2.1.4 Disappointed" : {
+    "key" : "3.4.2.1.4",
+    "guid" : "2e30f02d-d1e6-489c-a1fb-8b9fb6ecd819",
     "name" : "Disappointed",
     "abbreviation" : "3.4.2.1.4",
     "description" : "Use this domain for words related to feeling disappointed--to feel bad because something did not happen that you wanted to happen or someone did not do something that you wanted them to do.",
@@ -4213,6 +4933,8 @@ var semanticDomains_en = {
         "disappointing, be a disappointment, be an anticlimax, be a letdown, not live up to expectations, not all it's cracked up to be, discouraging, disheartening, frustrating, not up to par," ]
   },
   "3.4.2.1.5 Lonely" : {
+    "key" : "3.4.2.1.5",
+    "guid" : "39611e8d-cc67-4c84-977c-094c5cbe9dbc",
     "name" : "Lonely",
     "abbreviation" : "3.4.2.1.5",
     "description" : "Use this domain for words related to feeling lonely--to feel bad because you are alone and not with people you love.",
@@ -4222,6 +4944,8 @@ var semanticDomains_en = {
         "pine away," ]
   },
   "3.4.2.1.6 Upset" : {
+    "key" : "3.4.2.1.6",
+    "guid" : "bfe8902a-32a7-4092-93b2-9dcf3dce205f",
     "name" : "Upset",
     "abbreviation" : "3.4.2.1.6",
     "description" : "Use this domain for word related to feeling upset--to feel very bad because someone has done something bad to you or because something bad has happened to you, so that your thinking and behavior is affected.",
@@ -4237,6 +4961,8 @@ var semanticDomains_en = {
         "sensitive," ]
   },
   "3.4.2.1.7 Shock" : {
+    "key" : "3.4.2.1.7",
+    "guid" : "67d10a00-fda8-4a3a-becd-f3ae3b00fcca",
     "name" : "Shock",
     "abbreviation" : "3.4.2.1.7",
     "description" : "Use this domain for words related to feeling shocked--feeling both surprised and angry when something very bad suddenly happens or when someone does something very bad.",
@@ -4250,6 +4976,8 @@ var semanticDomains_en = {
         "shocking, horrible, horrifying, shattering," ]
   },
   "3.4.2.1.8 Jealous" : {
+    "key" : "3.4.2.1.8",
+    "guid" : "262fc4ae-7735-465b-934b-2125d95de147",
     "name" : "Jealous",
     "abbreviation" : "3.4.2.1.8",
     "description" : "Use this domain for words related to feeling jealous--to feel bad when someone does well, has something good, receives something good, or something good happens to them, because you want what they have. Also use this domain for words for when a husband (or wife) is jealous because he thinks his wife loves someone else.",
@@ -4261,12 +4989,16 @@ var semanticDomains_en = {
         "not begrudge," ]
   },
   "3.4.2.1.9 Discontent" : {
+    "key" : "3.4.2.1.9",
+    "guid" : "f3654a7f-d16e-4870-9ef0-4b4268faeffb",
     "name" : "Discontent",
     "abbreviation" : "3.4.2.1.9",
     "description" : "Use this domain for words related to feeling discontent.",
     "searchKeys" : [ "be discontent, complain, complaint, fuss, chafe," ]
   },
   "3.4.2.2 Sorry" : {
+    "key" : "3.4.2.2",
+    "guid" : "da39c0d9-a5c1-4f10-bd3b-4e988abcab5a",
     "name" : "Sorry",
     "abbreviation" : "3.4.2.2",
     "description" : "Use this domain for words related to feeling sorry--to feel bad about something bad that you did.",
@@ -4284,6 +5016,8 @@ var semanticDomains_en = {
         "salve your conscience, clear your conscience," ]
   },
   "3.4.2.2.1 Ashamed" : {
+    "key" : "3.4.2.2.1",
+    "guid" : "43cb3488-711b-4d9d-9d0e-03d0c1f6eb8b",
     "name" : "Ashamed",
     "abbreviation" : "3.4.2.2.1",
     "description" : "Use this domain for words related to feeling ashamed--to feel bad because people think you did something bad.",
@@ -4299,6 +5033,8 @@ var semanticDomains_en = {
         "shameless, brazen, callous, shameless, unabashed, unashamed," ]
   },
   "3.4.2.2.2 Embarrassed" : {
+    "key" : "3.4.2.2.2",
+    "guid" : "e08e252a-9227-42e4-bcb8-b803d25071b6",
     "name" : "Embarrassed",
     "abbreviation" : "3.4.2.2.2",
     "description" : "Use this domain for words related to feeling embarrassed--to feel bad in front of other people because you did or said something that makes you seem stupid.",
@@ -4311,6 +5047,8 @@ var semanticDomains_en = {
         "embarrassment,", "embarrassing,", "blush, turn red," ]
   },
   "3.4.2.3 Angry" : {
+    "key" : "3.4.2.3",
+    "guid" : "2a62f8e4-7da3-4f37-bf44-e24033c99c00",
     "name" : "Angry",
     "abbreviation" : "3.4.2.3",
     "description" : "Use this domain for words related to feeling angry--to feel bad when someone does something wrong and to want to do something bad to them.",
@@ -4332,6 +5070,8 @@ var semanticDomains_en = {
         "inoffensive, harmless, innocuous," ]
   },
   "3.4.2.3.1 Annoyed" : {
+    "key" : "3.4.2.3.1",
+    "guid" : "8ce6709f-f772-4638-a1aa-c132666f3563",
     "name" : "Annoyed",
     "abbreviation" : "3.4.2.3.1",
     "description" : "Use this domain for words related to feeling annoyed--to feel a little angry because someone keeps doing something you don't like.",
@@ -4345,6 +5085,8 @@ var semanticDomains_en = {
         "annoying, exasperating, frustrating, irritating, galling, nettlesome, stupid, bloody, be a drag," ]
   },
   "3.4.2.4 Afraid" : {
+    "key" : "3.4.2.4",
+    "guid" : "2b6f9af7-04ee-4030-a2cd-87d55959caa8",
     "name" : "Afraid",
     "abbreviation" : "3.4.2.4",
     "description" : "Use this domain for words related to fear--to feel bad because you think something bad might happen to you.",
@@ -4363,6 +5105,8 @@ var semanticDomains_en = {
         "tremble, quail, quake, shake, shiver, shudder, heart pounds, teeth chatter, be paralyzed with fear, freeze, cower, crouch, cringe, jump, flinch, wince, shrink, slink, stampede, turn tail, turn white, blanch, cry out, goose-flesh, goose-pimples, goose-bumps," ]
   },
   "3.4.2.4.1 Worried" : {
+    "key" : "3.4.2.4.1",
+    "guid" : "ba1e8d2b-7d3e-4b65-a9be-ee1a4063c796",
     "name" : "Worried",
     "abbreviation" : "3.4.2.4.1",
     "description" : "Use this domain for words related to feeling worried--to feel bad because you think something bad might happen.",
@@ -4386,6 +5130,8 @@ var semanticDomains_en = {
         "wring your hands, bite your lip," ]
   },
   "3.4.2.4.2 Nervous" : {
+    "key" : "3.4.2.4.2",
+    "guid" : "64e3d6b1-1d61-454c-97ab-e1d7cb0a8917",
     "name" : "Nervous",
     "abbreviation" : "3.4.2.4.2",
     "description" : "Use this domain for words related to feeling nervous--to be worried and frightened that something bad may happen, so that you are unable to relax.",
@@ -4401,6 +5147,8 @@ var semanticDomains_en = {
         "reassure, reassuring, reassurance, reassuringly," ]
   },
   "3.4.2.4.3 Shy, timid" : {
+    "key" : "3.4.2.4.3",
+    "guid" : "100e62a6-b6f4-4b30-b317-0517d6b102a9",
     "name" : "Shy, timid",
     "abbreviation" : "3.4.2.4.3",
     "description" : "Use this domain for words related to feeling shy--to feel bad (afraid) when you are with people because you think they might think something bad about you if you say or do something (for instance, being afraid to talk, feeling inadequate to do what is required in a social situation, or not feeling as good as other people).",
@@ -4414,6 +5162,8 @@ var semanticDomains_en = {
         "bring someone out of their shell, bring someone out, put someone at ease," ]
   },
   "3.4.2.5 Confused" : {
+    "key" : "3.4.2.5",
+    "guid" : "8052744f-7a9a-49da-89e3-4c518126180b",
     "name" : "Confused",
     "abbreviation" : "3.4.2.5",
     "description" : "Use this domain for words related to feeling confused--to be worried and uncertain about what something means or what to do.",
@@ -4428,12 +5178,16 @@ var semanticDomains_en = {
         "confuse, mix someone up with, mix people up, get something mixed up with, get things mixed up," ]
   },
   "3.5 Communication" : {
+    "key" : "3.5",
+    "guid" : "c9aee4df-ac3e-4159-bd1a-060db1a5f070",
     "name" : "Communication",
     "abbreviation" : "3.5",
     "description" : "Use this domain for general words referring to communication of all kinds.",
     "searchKeys" : [ "communicate, communication" ]
   },
   "3.5.1 Say" : {
+    "key" : "3.5.1",
+    "guid" : "9efa7949-de15-499a-b382-4560e06c4fb4",
     "name" : "Say",
     "abbreviation" : "3.5.1",
     "description" : "Use this domain for words related to saying something.",
@@ -4443,6 +5197,8 @@ var semanticDomains_en = {
         "pronunciation" ]
   },
   "3.5.1.1 Voice" : {
+    "key" : "3.5.1.1",
+    "guid" : "1e9a0881-f715-4057-9af8-251cb8eec9da",
     "name" : "Voice",
     "abbreviation" : "3.5.1.1",
     "description" : "Use this domain for words referring to a person's voice and the way it sounds--the kind of sound a person makes when they speak or sing.",
@@ -4452,12 +5208,16 @@ var semanticDomains_en = {
         "rough, throaty, husky, gruff, hoarse," ]
   },
   "3.5.1.1.1 Shout" : {
+    "key" : "3.5.1.1.1",
+    "guid" : "8c7da1d1-d7d7-470c-b6a3-edefb0e9a4d2",
     "name" : "Shout",
     "abbreviation" : "3.5.1.1.1",
     "description" : "Use this domain for words related to shouting--to speak loudly.",
     "searchKeys" : [ "shout, speak loudly, yell, scream, talk in a loud voice, holler, call out, project your voice, aloud, exclaim, exclamation, vociferate," ]
   },
   "3.5.1.1.2 Speak quietly" : {
+    "key" : "3.5.1.1.2",
+    "guid" : "9612bdd6-15cb-4269-aaf9-481c7b35b5dd",
     "name" : "Speak quietly",
     "abbreviation" : "3.5.1.1.2",
     "description" : "Use this domain for words that describe a person speaking quietly.",
@@ -4466,6 +5226,8 @@ var semanticDomains_en = {
         "mouth the words,", "tone it down," ]
   },
   "3.5.1.1.3 Speak a lot" : {
+    "key" : "3.5.1.1.3",
+    "guid" : "b2fa4109-1165-4c1f-9613-c5b2d349d2d4",
     "name" : "Speak a lot",
     "abbreviation" : "3.5.1.1.3",
     "description" : "Use this domain for words related to speaking a lot.",
@@ -4473,6 +5235,8 @@ var semanticDomains_en = {
         "loquacious, verbose, wordy, run on, longwinded, compendious, interminable," ]
   },
   "3.5.1.1.4 Speak little" : {
+    "key" : "3.5.1.1.4",
+    "guid" : "78b0ad1b-0766-41ba-b788-d176addd5e9f",
     "name" : "Speak little",
     "abbreviation" : "3.5.1.1.4",
     "description" : "Use this domain for words related to speaking a little, either because you do not like to talk, or you think you should not talk.",
@@ -4481,6 +5245,8 @@ var semanticDomains_en = {
         "brevity, brief, concise, curt, pithy, succinct, synopsis, synoptic, terse," ]
   },
   "3.5.1.1.5 Say nothing" : {
+    "key" : "3.5.1.1.5",
+    "guid" : "f5642647-9b9c-499b-a66e-349593c863f1",
     "name" : "Say nothing",
     "abbreviation" : "3.5.1.1.5",
     "description" : "Use this domain for words related to being silent--to say nothing for some time.",
@@ -4490,18 +5256,24 @@ var semanticDomains_en = {
         "gag, hush, muffle, silence (v),", "silence" ]
   },
   "3.5.1.1.6 Speech style" : {
+    "key" : "3.5.1.1.6",
+    "guid" : "e482bb5a-5a32-4bc5-a0de-32cbe0aa7908",
     "name" : "Speech style",
     "abbreviation" : "3.5.1.1.6",
     "description" : "Use this domain for words describing the way a person talks in a particular social situation.",
     "searchKeys" : [ "style, register, formal, informal, colloquial, humorously, seriously, pronunciation" ]
   },
   "3.5.1.1.7 Speak well" : {
+    "key" : "3.5.1.1.7",
+    "guid" : "e96f6860-0914-4324-9c49-48f24a0ff7f1",
     "name" : "Speak well",
     "abbreviation" : "3.5.1.1.7",
     "description" : "Use this domain for words related to speaking well.",
     "searchKeys" : [ "speak well, be eloquent, be a good speaker, be an excellent speaker, be fluent, speak clearly, articulate," ]
   },
   "3.5.1.1.8 Speak poorly" : {
+    "key" : "3.5.1.1.8",
+    "guid" : "8f779877-7d86-4683-8a8b-298c7fc62815",
     "name" : "Speak poorly",
     "abbreviation" : "3.5.1.1.8",
     "description" : "Use this domain for words related to speaking poorly.",
@@ -4516,6 +5288,8 @@ var semanticDomains_en = {
         "trite, over-used, stale, banal, be wearing thin, threadbare, clichéd, corny, hackneyed, shopworn, stereotyped, commonplace" ]
   },
   "3.5.1.2 Talk about a subject" : {
+    "key" : "3.5.1.2",
+    "guid" : "e45b8bac-9623-4f84-a113-9dec13a8db64",
     "name" : "Talk about a subject",
     "abbreviation" : "3.5.1.2",
     "description" : "Use this domain for words related to talking about a subject.",
@@ -4529,6 +5303,8 @@ var semanticDomains_en = {
         "get off the subject, digress, get sidetracked, stray from, ramble, lose the thread, where was I?" ]
   },
   "3.5.1.2.1 Announce" : {
+    "key" : "3.5.1.2.1",
+    "guid" : "1148684a-0f44-4b5a-9e3e-3823163cd4a1",
     "name" : "Announce",
     "abbreviation" : "3.5.1.2.1",
     "description" : "Use this domain for words related to announcing something--communicating something to many people.",
@@ -4537,6 +5313,8 @@ var semanticDomains_en = {
         "announcement, publicity, propaganda", "well publicized" ]
   },
   "3.5.1.2.2 Describe" : {
+    "key" : "3.5.1.2.2",
+    "guid" : "dc1ab28c-3e1e-474c-8359-2548b7ad5595",
     "name" : "Describe",
     "abbreviation" : "3.5.1.2.2",
     "description" : "Use this domain for words related to describing something--to say some things about something.",
@@ -4546,6 +5324,8 @@ var semanticDomains_en = {
         "description, descriptive, portrayal, profile, account, report, commentary, characterization, definition, redefinition, depiction, representation," ]
   },
   "3.5.1.2.3 Explain" : {
+    "key" : "3.5.1.2.3",
+    "guid" : "e080687b-0900-4dd0-9677-e3aaa3eae641",
     "name" : "Explain",
     "abbreviation" : "3.5.1.2.3",
     "description" : "Use this domain for words related to explaining something--to help someone to understand something.",
@@ -4557,12 +5337,16 @@ var semanticDomains_en = {
         "explanation, account, instructions, directions," ]
   },
   "3.5.1.2.4 Mention" : {
+    "key" : "3.5.1.2.4",
+    "guid" : "7ad54364-ca8c-4b7c-9748-f83efb44d0ea",
     "name" : "Mention",
     "abbreviation" : "3.5.1.2.4",
     "description" : "Use this domain for words related to mentioning something--to talk about something but without saying much about it.",
     "searchKeys" : [ "mention, refer to, allude to, touch on, say briefly," ]
   },
   "3.5.1.2.5 Introduce" : {
+    "key" : "3.5.1.2.5",
+    "guid" : "67d282f8-151d-429b-8183-6a7d2f5ac98d",
     "name" : "Introduce",
     "abbreviation" : "3.5.1.2.5",
     "description" : "Use this domain for words related to introducing a new subject--to start talking or writing about something new for the first time.",
@@ -4571,6 +5355,8 @@ var semanticDomains_en = {
         "introduction, lead-in, introductory" ]
   },
   "3.5.1.2.6 Repeat" : {
+    "key" : "3.5.1.2.6",
+    "guid" : "0539de86-f407-4b3d-b1b8-028822fb9f26",
     "name" : "Repeat",
     "abbreviation" : "3.5.1.2.6",
     "description" : "Use this domain for words related to repeating something--saying something a second time.",
@@ -4581,6 +5367,8 @@ var semanticDomains_en = {
         "repetition, recapitulation" ]
   },
   "3.5.1.2.7 Summarize" : {
+    "key" : "3.5.1.2.7",
+    "guid" : "728bbc7c-e5b3-47d8-8532-72239e5c88bb",
     "name" : "Summarize",
     "abbreviation" : "3.5.1.2.7",
     "description" : "Use this domain for words referring to summarizing what you have said or what someone else has said.",
@@ -4588,6 +5376,8 @@ var semanticDomains_en = {
         "summarize, summary, synopsis, overview" ]
   },
   "3.5.1.2.8 Emphasize" : {
+    "key" : "3.5.1.2.8",
+    "guid" : "49cd2c20-098a-46d9-9e47-6bf109308793",
     "name" : "Emphasize",
     "abbreviation" : "3.5.1.2.8",
     "description" : "Use this domain for words related to emphasizing something--to say something in a way that other people know that you think this thing is important.",
@@ -4595,6 +5385,8 @@ var semanticDomains_en = {
         "important, stand out, be conspicuous, be prominent" ]
   },
   "3.5.1.2.9 Be about, subject" : {
+    "key" : "3.5.1.2.9",
+    "guid" : "06b23bcd-69df-471a-b5a5-4ca8cab7f0d9",
     "name" : "Be about, subject",
     "abbreviation" : "3.5.1.2.9",
     "description" : "Use this domain for words that express the idea that something (said, written, thought, or made) depicts or is about a subject, or that something is logically related to some topic. Also use this domain for words that mark the topic or subject of what is being thought about, talked about, or written about. Verbs of thinking, knowing, or speaking (including other types of expression) can take a 'topic' role. We can think of a 'topic' as the main idea. Use this domain also for the important thing in a picture.",
@@ -4604,6 +5396,8 @@ var semanticDomains_en = {
         "subject, topic, theme, issue, question, matter, business, thing," ]
   },
   "3.5.1.3 True" : {
+    "key" : "3.5.1.3",
+    "guid" : "ac2e424b-6aee-4031-8864-7b3f4a6fb5a3",
     "name" : "True",
     "abbreviation" : "3.5.1.3",
     "description" : "Use this domain for words that indicate if something is true, if it agrees with reality, or if it is not true.",
@@ -4611,6 +5405,8 @@ var semanticDomains_en = {
         "untrue, false, falsehood, wrong, error, inaccurate, incorrect, mistake" ]
   },
   "3.5.1.3.1 Tell the truth" : {
+    "key" : "3.5.1.3.1",
+    "guid" : "3bc961d1-9f4f-4f1b-ada7-b1e9a2928ea4",
     "name" : "Tell the truth",
     "abbreviation" : "3.5.1.3.1",
     "description" : "Use this domain for words related to telling the truth.",
@@ -4622,6 +5418,8 @@ var semanticDomains_en = {
         "honesty, integrity, truthfulness, scruples," ]
   },
   "3.5.1.3.2 Tell a lie" : {
+    "key" : "3.5.1.3.2",
+    "guid" : "9f0bcab1-8256-47a1-853c-408f025e04e7",
     "name" : "Tell a lie",
     "abbreviation" : "3.5.1.3.2",
     "description" : "Use this domain for words related to lying--to say something that is not true.",
@@ -4631,18 +5429,24 @@ var semanticDomains_en = {
         "liar" ]
   },
   "3.5.1.3.3 Contradict" : {
+    "key" : "3.5.1.3.3",
+    "guid" : "02b6da2b-fae3-49f4-83f0-fd014024e117",
     "name" : "Contradict",
     "abbreviation" : "3.5.1.3.3",
     "description" : "Use this domain for words related to contradicting someone--to say that something someone has said is not true.",
     "searchKeys" : [ "contradict, speak in opposition to, disagree with, speak against, deny, dispute, argue against" ]
   },
   "3.5.1.3.4 Expose falsehood" : {
+    "key" : "3.5.1.3.4",
+    "guid" : "016e3f5b-b527-446e-9da6-49af34870001",
     "name" : "Expose falsehood",
     "abbreviation" : "3.5.1.3.4",
     "description" : "Use this domain for words related to exposing falsehood--to do something to show that someone has told a lie.",
     "searchKeys" : [ "testify, expose falsehood, catch in a lie, contradict, enlighten, substantiate, provide evidence, call a liar" ]
   },
   "3.5.1.3.5 Real" : {
+    "key" : "3.5.1.3.5",
+    "guid" : "51d9d243-35cc-4a1e-bcdd-f2749975f5fd",
     "name" : "Real",
     "abbreviation" : "3.5.1.3.5",
     "description" : "Use this domain for words that indicate if something is real.",
@@ -4652,6 +5456,8 @@ var semanticDomains_en = {
         "unreal, artificial, imaginary, phony, pretend," ]
   },
   "3.5.1.3.6 Exaggerate" : {
+    "key" : "3.5.1.3.6",
+    "guid" : "ab8ca07c-b23c-43dc-b705-7fe34ddf6d4d",
     "name" : "Exaggerate",
     "abbreviation" : "3.5.1.3.6",
     "description" : "Use this domain for words referring to exaggerating--reporting information but saying something untrue that makes the information seem bigger or more important than it really is.",
@@ -4661,6 +5467,8 @@ var semanticDomains_en = {
         "exaggerated, extravagant, melodramatic" ]
   },
   "3.5.1.4 Speak with others" : {
+    "key" : "3.5.1.4",
+    "guid" : "ec1bcace-fc10-45df-8e1f-29bce1ef786a",
     "name" : "Speak with others",
     "abbreviation" : "3.5.1.4",
     "description" : "Use this domain for words referring to carrying on a conversation with other people.",
@@ -4670,6 +5478,8 @@ var semanticDomains_en = {
         "long (conversation, talk), brief (conversation)" ]
   },
   "3.5.1.4.1 Call" : {
+    "key" : "3.5.1.4.1",
+    "guid" : "14a32765-81b0-411e-89fa-91e092a70818",
     "name" : "Call",
     "abbreviation" : "3.5.1.4.1",
     "description" : "Use this domain for words related to calling someone--to say something loud because you want someone who is far away to listen to you.",
@@ -4678,6 +5488,8 @@ var semanticDomains_en = {
         "call, phone (v)" ]
   },
   "3.5.1.4.2 Contact" : {
+    "key" : "3.5.1.4.2",
+    "guid" : "e033ca92-ee8c-4ab9-9368-5f6f4e942987",
     "name" : "Contact",
     "abbreviation" : "3.5.1.4.2",
     "description" : "Use this domain for words related to contacting someone--to communicate with someone who is far away from you using some communication device such as a telephone.",
@@ -4688,6 +5500,8 @@ var semanticDomains_en = {
         "lose touch, lose contact," ]
   },
   "3.5.1.4.3 Greet" : {
+    "key" : "3.5.1.4.3",
+    "guid" : "52b04e15-7062-4fb2-9eaa-4fe8726f302a",
     "name" : "Greet",
     "abbreviation" : "3.5.1.4.3",
     "description" : "Use this domain for words related to greeting someone.",
@@ -4698,6 +5512,8 @@ var semanticDomains_en = {
         "refuse to greet, snub, ignore" ]
   },
   "3.5.1.4.4 Say farewell" : {
+    "key" : "3.5.1.4.4",
+    "guid" : "a9625460-7162-447c-b400-84fbc5744f1b",
     "name" : "Say farewell",
     "abbreviation" : "3.5.1.4.4",
     "description" : "Use this domain for words related to saying farewell.",
@@ -4705,6 +5521,8 @@ var semanticDomains_en = {
         "Goodbye. See you later. Have a good day." ]
   },
   "3.5.1.4.5 Speak in unison" : {
+    "key" : "3.5.1.4.5",
+    "guid" : "45b9bf61-3138-4206-9478-b4d3f082358b",
     "name" : "Speak in unison",
     "abbreviation" : "3.5.1.4.5",
     "description" : "Use this domain for words related to speaking in unison--to say something at the same time as someone else.",
@@ -4712,6 +5530,8 @@ var semanticDomains_en = {
         "speak in unison, speak at once, congregational reading" ]
   },
   "3.5.1.5 Ask" : {
+    "key" : "3.5.1.5",
+    "guid" : "77b4d6c1-87bf-4839-b4be-6a45119b700a",
     "name" : "Ask",
     "abbreviation" : "3.5.1.5",
     "description" : "Use this domain for words related to asking a question.",
@@ -4720,6 +5540,8 @@ var semanticDomains_en = {
         "inquisitive, curious" ]
   },
   "3.5.1.5.1 Answer" : {
+    "key" : "3.5.1.5.1",
+    "guid" : "5fdf3946-7e47-4fd2-906f-4da7ce5fa490",
     "name" : "Answer",
     "abbreviation" : "3.5.1.5.1",
     "description" : "Use this domain for words related to answering a question.",
@@ -4732,6 +5554,8 @@ var semanticDomains_en = {
         "have no answer, lack answer, not know what to answer, don't know how to answer, don't know what to say, don't have an answer, can't answer" ]
   },
   "3.5.1.5.2 Disclose" : {
+    "key" : "3.5.1.5.2",
+    "guid" : "a30e0391-ea64-4938-9eca-023c351d60af",
     "name" : "Disclose",
     "abbreviation" : "3.5.1.5.2",
     "description" : "Use this domain for words that refer to discovering and revealing unknown information.",
@@ -4740,6 +5564,8 @@ var semanticDomains_en = {
         "open, openly, in the open, for all to see" ]
   },
   "3.5.1.5.3 Hide your thoughts" : {
+    "key" : "3.5.1.5.3",
+    "guid" : "16dbd62c-f60d-4530-ba4e-0e74221e4681",
     "name" : "Hide your thoughts",
     "abbreviation" : "3.5.1.5.3",
     "description" : "Use this domain for words related to hiding your thoughts.",
@@ -4749,6 +5575,8 @@ var semanticDomains_en = {
         "cover, front, smokescreen, blind" ]
   },
   "3.5.1.6 Debate" : {
+    "key" : "3.5.1.6",
+    "guid" : "eafdea8e-521e-4614-8fd5-e8446adf9203",
     "name" : "Debate",
     "abbreviation" : "3.5.1.6",
     "description" : "Use this domain for words referring to debating--for two or more people to discuss some issue and try to persuade the other person to accept one's view.",
@@ -4757,6 +5585,8 @@ var semanticDomains_en = {
         "reply, contradict, say in rebuttal, rebuttal, refute, rejoinder" ]
   },
   "3.5.1.6.1 Demonstrate" : {
+    "key" : "3.5.1.6.1",
+    "guid" : "ebac5ec8-dc4c-4b2b-a727-3ca82404cdbb",
     "name" : "Demonstrate",
     "abbreviation" : "3.5.1.6.1",
     "description" : "Use this domain for words referring to demonstrating something--to do something that shows the truth of a statement, or shows how to do something.",
@@ -4765,6 +5595,8 @@ var semanticDomains_en = {
         "demonstration," ]
   },
   "3.5.1.6.2 Quarrel" : {
+    "key" : "3.5.1.6.2",
+    "guid" : "e5020b79-6fb0-4be4-a359-d4f899da5c7e",
     "name" : "Quarrel",
     "abbreviation" : "3.5.1.6.2",
     "description" : "Use this domain for words related to quarreling--to fight with words.",
@@ -4776,6 +5608,8 @@ var semanticDomains_en = {
         "quarrelsome, contentious, argumentative, combative, pugnacious, faultfinding" ]
   },
   "3.5.1.7 Praise" : {
+    "key" : "3.5.1.7",
+    "guid" : "a4958dd9-03cc-4863-ab76-cd0682060cb0",
     "name" : "Praise",
     "abbreviation" : "3.5.1.7",
     "description" : "Use this domain for words related to praising someone or something--to say something good about someone, or to say that someone did something good.",
@@ -4786,6 +5620,8 @@ var semanticDomains_en = {
         "praise the Lord, hallelujah, hosanna," ]
   },
   "3.5.1.7.1 Thank" : {
+    "key" : "3.5.1.7.1",
+    "guid" : "27048124-c204-4585-9997-c51728f085d6",
     "name" : "Thank",
     "abbreviation" : "3.5.1.7.1",
     "description" : "Use this domain for words related to thanking someone--to tell someone that you feel good about something they did for you.",
@@ -4799,12 +5635,16 @@ var semanticDomains_en = {
         "thankless (task), unacknowledged, unappreciated," ]
   },
   "3.5.1.7.2 Flatter" : {
+    "key" : "3.5.1.7.2",
+    "guid" : "53d34f16-2f94-4afa-9530-7ac75e05b8d4",
     "name" : "Flatter",
     "abbreviation" : "3.5.1.7.2",
     "description" : "Use this domain for words referring to flattering someone--saying something nice to someone but not meaning it.",
     "searchKeys" : [ "flatter, ingratiate, adulate, blandish, cajole," ]
   },
   "3.5.1.7.3 Boast" : {
+    "key" : "3.5.1.7.3",
+    "guid" : "80415fac-b3d8-4e3c-bdb8-dc92f3c6dad8",
     "name" : "Boast",
     "abbreviation" : "3.5.1.7.3",
     "description" : "Use this domain for words related to boasting--to say something good about yourself, especially to make it seem that you are better than you really are.",
@@ -4816,6 +5656,8 @@ var semanticDomains_en = {
         "blowhard, braggart, bighead, name-dropper" ]
   },
   "3.5.1.8 Criticize" : {
+    "key" : "3.5.1.8",
+    "guid" : "bc9d763c-e4fe-48ab-ad44-87a36f6cc06f",
     "name" : "Criticize",
     "abbreviation" : "3.5.1.8",
     "description" : "Use this domain for words related to criticizing someone or something--to say that something is bad, especially something that someone did.",
@@ -4831,6 +5673,8 @@ var semanticDomains_en = {
         "target,", "don't blame, can't blame," ]
   },
   "3.5.1.8.1 Blame" : {
+    "key" : "3.5.1.8.1",
+    "guid" : "c79d49f1-74ec-4dba-a5aa-5e861af63d05",
     "name" : "Blame",
     "abbreviation" : "3.5.1.8.1",
     "description" : "Use this domain for words related to blaming someone for something--to say that someone did something, and because of this something bad happened.",
@@ -4843,12 +5687,16 @@ var semanticDomains_en = {
         "recriminations,", "reproach (n)," ]
   },
   "3.5.1.8.2 Insult" : {
+    "key" : "3.5.1.8.2",
+    "guid" : "81b62078-984c-4e82-94c4-39fa44dd3e56",
     "name" : "Insult",
     "abbreviation" : "3.5.1.8.2",
     "description" : "Use this domain for words related to insulting someone--to say that someone is bad.",
     "searchKeys" : [ "insult (v), insult (n), offend, offense, rebuke, criticize, curse, speak evil of" ]
   },
   "3.5.1.8.3 Mock" : {
+    "key" : "3.5.1.8.3",
+    "guid" : "e2d3294b-4463-48bb-95e4-8c9b5238ecec",
     "name" : "Mock",
     "abbreviation" : "3.5.1.8.3",
     "description" : "Use this domain for words referring to mocking someone--doing or saying something to make people laugh at someone because you don't like them.",
@@ -4859,6 +5707,8 @@ var semanticDomains_en = {
         "be ridiculous, make a fool of yourself" ]
   },
   "3.5.1.8.4 Gossip" : {
+    "key" : "3.5.1.8.4",
+    "guid" : "7bca1201-31f8-4f65-8da9-af0eff36b388",
     "name" : "Gossip",
     "abbreviation" : "3.5.1.8.4",
     "description" : "Use this domain for words related to gossip--to say something bad about a person who is not with you.",
@@ -4869,6 +5719,8 @@ var semanticDomains_en = {
         "circulate, float, go around, be all over town, get spread" ]
   },
   "3.5.1.8.5 Complain" : {
+    "key" : "3.5.1.8.5",
+    "guid" : "f3dbb078-6265-4861-a6e3-46cc151c5d72",
     "name" : "Complain",
     "abbreviation" : "3.5.1.8.5",
     "description" : "Use this domain for words related to complaining--to say that you don't like something.",
@@ -4882,6 +5734,8 @@ var semanticDomains_en = {
         "plaintive, whiny" ]
   },
   "3.5.1.9 Promise" : {
+    "key" : "3.5.1.9",
+    "guid" : "3dba39bc-48f2-4bcb-9357-c8fbed6922ca",
     "name" : "Promise",
     "abbreviation" : "3.5.1.9",
     "description" : "Use this domain for words related to promising to do something--to say that you will do something in the future.",
@@ -4893,6 +5747,8 @@ var semanticDomains_en = {
         "hold you to your promise,", "release someone from a promise," ]
   },
   "3.5.2 Make speech" : {
+    "key" : "3.5.2",
+    "guid" : "05472990-3f51-40b3-bca8-df3cf383328b",
     "name" : "Make speech",
     "abbreviation" : "3.5.2",
     "description" : "Use this domain for words related to making a speech--to talk for a long time to many people.",
@@ -4905,6 +5761,8 @@ var semanticDomains_en = {
         "oratory, homiletics", "long winded" ]
   },
   "3.5.2.1 Report" : {
+    "key" : "3.5.2.1",
+    "guid" : "cc3f1dc8-a31e-4459-ba13-f82b45df37b5",
     "name" : "Report",
     "abbreviation" : "3.5.2.1",
     "description" : "Use this domain for words related to reporting something--to say that something has happened and to tell about it.",
@@ -4913,12 +5771,16 @@ var semanticDomains_en = {
         "report, account" ]
   },
   "3.5.2.2 News, message" : {
+    "key" : "3.5.2.2",
+    "guid" : "f2342d42-bdc4-449c-9891-58f90318b9f1",
     "name" : "News, message",
     "abbreviation" : "3.5.2.2",
     "description" : "Use this domain for words referring to something someone says, which relays information from someone else, or about something someone has done.",
     "searchKeys" : [ "news, message, report, account", "messenger" ]
   },
   "3.5.2.3 Figurative" : {
+    "key" : "3.5.2.3",
+    "guid" : "22e8f542-0ab1-4f25-af50-fd0d02917fda",
     "name" : "Figurative",
     "abbreviation" : "3.5.2.3",
     "description" : "Use this domain for words referring to figurative speech--saying something that is not meant to be understood literally (according to the normal meaning of each word), or saying something that compares one thing to another.",
@@ -4927,6 +5789,8 @@ var semanticDomains_en = {
         "metaphor, simile, comparison" ]
   },
   "3.5.2.4 Admit" : {
+    "key" : "3.5.2.4",
+    "guid" : "7158c621-c46e-4173-80c1-188f514a920f",
     "name" : "Admit",
     "abbreviation" : "3.5.2.4",
     "description" : "Use this domain for words referring to admitting something--saying that you have done wrong, or that your beliefs were wrong",
@@ -4934,6 +5798,8 @@ var semanticDomains_en = {
         "deny, disavow, disclaim" ]
   },
   "3.5.3 Language" : {
+    "key" : "3.5.3",
+    "guid" : "bc96b3e3-6185-4925-b79e-8f0f9555bfb7",
     "name" : "Language",
     "abbreviation" : "3.5.3",
     "description" : "Use this domain for words referring to a language.",
@@ -4946,6 +5812,8 @@ var semanticDomains_en = {
         "linguistics, linguistic, metalanguage, vocabulary, dictionary, grammar, syntax, morphology, phonology, phonetics, sounds, semantics, meaning, pragmatics, rhetoric, pronunciation" ]
   },
   "3.5.3.1 Word" : {
+    "key" : "3.5.3.1",
+    "guid" : "29a8ebbe-ebc4-4295-b6af-84331d019361",
     "name" : "Word",
     "abbreviation" : "3.5.3.1",
     "description" : "Use this domain for words that refer to words and groups of words.",
@@ -4968,6 +5836,8 @@ var semanticDomains_en = {
         "collocate, collocate (v)," ]
   },
   "3.5.3.2 Information" : {
+    "key" : "3.5.3.2",
+    "guid" : "4a388000-d5c6-4127-91cd-f4e0c9fac6f1",
     "name" : "Information",
     "abbreviation" : "3.5.3.2",
     "description" : "Use this domain for words referring to information--something someone says about something.",
@@ -4976,6 +5846,8 @@ var semanticDomains_en = {
         "file, record, dossier, database", "informative" ]
   },
   "3.5.4 Story" : {
+    "key" : "3.5.4",
+    "guid" : "3160b7ad-e4e8-4a46-8e2e-d5e601969547",
     "name" : "Story",
     "abbreviation" : "3.5.4",
     "description" : "Use this domain for words referring to a story.",
@@ -4986,12 +5858,16 @@ var semanticDomains_en = {
         "storyteller, narrator," ]
   },
   "3.5.4.1 Fable, myth" : {
+    "key" : "3.5.4.1",
+    "guid" : "f0404b23-db91-46c7-87e1-9f1be0712980",
     "name" : "Fable, myth",
     "abbreviation" : "3.5.4.1",
     "description" : "Use this domain for words referring to a fable or myth--a story that people tell that is not true.",
     "searchKeys" : [ "fable, myth, tale, fairytale, tall tale, legend, fiction, folklore, lore, parable," ]
   },
   "3.5.4.2 Saying, proverb" : {
+    "key" : "3.5.4.2",
+    "guid" : "65ef6aae-019f-4980-b6d9-5b7ad2c8e68f",
     "name" : "Saying, proverb",
     "abbreviation" : "3.5.4.2",
     "description" : "Use this domain for words referring to a saying or proverb--a short thing that people say to teach something.",
@@ -5003,6 +5879,8 @@ var semanticDomains_en = {
         "as the saying goes, as they say, to coin a phrase," ]
   },
   "3.5.4.3 Riddle" : {
+    "key" : "3.5.4.3",
+    "guid" : "26d32f3e-ced6-45fc-afd0-7e017fa252c6",
     "name" : "Riddle",
     "abbreviation" : "3.5.4.3",
     "description" : "Use this domain for words referring to a riddle--something someone says that is hard to understand.",
@@ -5012,6 +5890,8 @@ var semanticDomains_en = {
         "solve the riddle, figure out the riddle, guess the meaning of the riddle, tell the meaning of the riddle" ]
   },
   "3.5.4.4 Poetry" : {
+    "key" : "3.5.4.4",
+    "guid" : "f0f3c371-166e-4a66-849f-60d6fa7ad889",
     "name" : "Poetry",
     "abbreviation" : "3.5.4.4",
     "description" : "Use this domain for words related to poetry.",
@@ -5021,6 +5901,8 @@ var semanticDomains_en = {
         "rhyme, rhythm" ]
   },
   "3.5.4.5 History" : {
+    "key" : "3.5.4.5",
+    "guid" : "2629943b-3a69-4c6b-9956-2aa59ebd03d3",
     "name" : "History",
     "abbreviation" : "3.5.4.5",
     "description" : "Use this domain for words related to history.",
@@ -5029,12 +5911,16 @@ var semanticDomains_en = {
         "historian, archaeologist" ]
   },
   "3.5.4.6 Verbal tradition" : {
+    "key" : "3.5.4.6",
+    "guid" : "a4fa9f98-73c6-4c3e-9dad-d73d2634be3b",
     "name" : "Verbal tradition",
     "abbreviation" : "3.5.4.6",
     "description" : "Use this domain for words referring to verbal tradition--something that your ancestors told to each successive generation.",
     "searchKeys" : [ "verbal tradition, hand down a tradition" ]
   },
   "3.5.5 Foolish talk" : {
+    "key" : "3.5.5",
+    "guid" : "f4b77866-c607-43f0-b816-95459c269525",
     "name" : "Foolish talk",
     "abbreviation" : "3.5.5",
     "description" : "Use this domain for words related to foolish talk--something someone says that other people think is silly or stupid.",
@@ -5043,6 +5929,8 @@ var semanticDomains_en = {
         "foolish, meaningless, silly, stupid,", "babbler, fool," ]
   },
   "3.5.5.1 Obscenity" : {
+    "key" : "3.5.5.1",
+    "guid" : "59a95939-44d7-4396-9ef7-3a80c17e9fb1",
     "name" : "Obscenity",
     "abbreviation" : "3.5.5.1",
     "description" : "Use this domain for obscene words related to sex, defecation, death, damnation, and other taboo or offensive subjects. It is important to check the appropriateness of including obscene words in the dictionary. It should be the choice of the speakers of the language whether a word should be included or excluded. Obscene words included in the dictionary should be clearly marked as such. Obscenity is often used to heighten the emotion of an expression, and is often used when someone is angry. Obscenity is often associated with sex or defecation. Cursing is often associated with God, religion, or the afterlife. Insults often involve equating a person with an animal that is associated with an undesirable characteristic, questioning someone's parentage/legitimacy, questioning someone's character, or questioning someone's intelligence/sanity.",
@@ -5054,12 +5942,16 @@ var semanticDomains_en = {
         "foul-mouthed," ]
   },
   "3.5.6 Sign, symbol" : {
+    "key" : "3.5.6",
+    "guid" : "767aa167-af3d-4e11-a68b-ec31f9d2ef1a",
     "name" : "Sign, symbol",
     "abbreviation" : "3.5.6",
     "description" : "Use this domain for words referring to a sign or symbol--a picture or shape that has a meaning.",
     "searchKeys" : [ "sign, symbol, emblem, logo, insignia, flag," ]
   },
   "3.5.6.1 Gesture" : {
+    "key" : "3.5.6.1",
+    "guid" : "96a1ad48-1a70-425b-bd20-59294902581f",
     "name" : "Gesture",
     "abbreviation" : "3.5.6.1",
     "description" : "Use this domain for words referring to gesturing--moving a part of the body to communicate a message.",
@@ -5068,12 +5960,16 @@ var semanticDomains_en = {
         "gesture (n), sign (n), signal" ]
   },
   "3.5.6.2 Point at" : {
+    "key" : "3.5.6.2",
+    "guid" : "ef876104-eb3e-420d-9c7b-124538a7b2a6",
     "name" : "Point at",
     "abbreviation" : "3.5.6.2",
     "description" : "Use this domain for words related to pointing at something--to move a part of your body toward something so that people will look at it.",
     "searchKeys" : [ "indicate, point to, point at, point out, signal that, gesture towards" ]
   },
   "3.5.6.3 Facial expression" : {
+    "key" : "3.5.6.3",
+    "guid" : "339f54a5-125b-435f-bf37-cfc2a2bd26d3",
     "name" : "Facial expression",
     "abbreviation" : "3.5.6.3",
     "description" : "Use this domain for facial expressions--ways in which people move the parts of their faces to show feeling or communicate something.",
@@ -5090,6 +5986,8 @@ var semanticDomains_en = {
         "cheerful, solemn, horrified, pained, wry," ]
   },
   "3.5.6.4 Laugh" : {
+    "key" : "3.5.6.4",
+    "guid" : "cbc0a8f5-9cba-41d2-a7e5-565fbf09c8c4",
     "name" : "Laugh",
     "abbreviation" : "3.5.6.4",
     "description" : "Use this domain for words related to the expression of good feelings, including laughing--the sounds a person makes when he is enjoying himself or thinks something is funny.",
@@ -5110,6 +6008,8 @@ var semanticDomains_en = {
         "Hurrah! Hooray! Yeah! Three cheers! Hallelujah! Yippee! Yahoo!" ]
   },
   "3.5.6.5 Cry, tear" : {
+    "key" : "3.5.6.5",
+    "guid" : "b4fe4698-54a2-4bcd-9490-e07ee1ee97af",
     "name" : "Cry, tear",
     "abbreviation" : "3.5.6.5",
     "description" : "Use this domain for words related to crying--when water forms in the eyes because of sadness or pain.",
@@ -5126,6 +6026,8 @@ var semanticDomains_en = {
         "wipe away, dry", "don't cry, there there," ]
   },
   "3.5.7 Reading and writing" : {
+    "key" : "3.5.7",
+    "guid" : "70eac6be-66e8-4827-8f2f-d15427efff60",
     "name" : "Reading and writing",
     "abbreviation" : "3.5.7",
     "description" : "Use this domain for general words related to reading and writing.",
@@ -5133,6 +6035,8 @@ var semanticDomains_en = {
         "literate, illiterate" ]
   },
   "3.5.7.1 Write" : {
+    "key" : "3.5.7.1",
+    "guid" : "af700054-258a-458a-9e38-e90397833e51",
     "name" : "Write",
     "abbreviation" : "3.5.7.1",
     "description" : "Use this domain for words related to writing.",
@@ -5142,6 +6046,8 @@ var semanticDomains_en = {
         "writing materials, paper, pen, ink, pencil" ]
   },
   "3.5.7.2 Written material" : {
+    "key" : "3.5.7.2",
+    "guid" : "8db7c016-bdc9-410b-9523-3197602358f4",
     "name" : "Written material",
     "abbreviation" : "3.5.7.2",
     "description" : "Use this domain for words referring to written material--something that has writing on it.",
@@ -5150,6 +6056,8 @@ var semanticDomains_en = {
         "library, bookcase, file cabinet, archive" ]
   },
   "3.5.7.3 Read" : {
+    "key" : "3.5.7.3",
+    "guid" : "710828bc-5dfb-4685-b1a5-156700ab08f1",
     "name" : "Read",
     "abbreviation" : "3.5.7.3",
     "description" : "Use this domain for words related to reading.",
@@ -5159,6 +6067,8 @@ var semanticDomains_en = {
         "study, read up on, pore over" ]
   },
   "3.5.7.4 Publish" : {
+    "key" : "3.5.7.4",
+    "guid" : "50ac28ab-7385-408f-b5eb-3e27b191fcf4",
     "name" : "Publish",
     "abbreviation" : "3.5.7.4",
     "description" : "Use this domain for words related to publishing books.",
@@ -5169,6 +6079,8 @@ var semanticDomains_en = {
         "publication date, appear, come out" ]
   },
   "3.5.7.5 Record" : {
+    "key" : "3.5.7.5",
+    "guid" : "ba8d18bd-2556-47a0-aa33-3ebef3e90814",
     "name" : "Record",
     "abbreviation" : "3.5.7.5",
     "description" : "Use this domain for words related to a record--something written because people need to remember it.",
@@ -5177,6 +6089,8 @@ var semanticDomains_en = {
         "record (n), chart (n), document (n), register (n), archives, chronicle" ]
   },
   "3.5.7.6 List" : {
+    "key" : "3.5.7.6",
+    "guid" : "b7801f6e-683b-4d5d-9bab-57f6e593db8c",
     "name" : "List",
     "abbreviation" : "3.5.7.6",
     "description" : "Use this domain for words related to a list of things.",
@@ -5187,6 +6101,8 @@ var semanticDomains_en = {
         "list, reel off" ]
   },
   "3.5.7.7 Letter" : {
+    "key" : "3.5.7.7",
+    "guid" : "d586a164-ac8f-4356-8aa8-07721c2b5e09",
     "name" : "Letter",
     "abbreviation" : "3.5.7.7",
     "description" : "Use this domain for words referring to letter--a written message that is sent to someone.",
@@ -5195,12 +6111,16 @@ var semanticDomains_en = {
         "post office, postal service," ]
   },
   "3.5.8 Interpreting messages" : {
+    "key" : "3.5.8",
+    "guid" : "c4330001-83ca-485d-8b9b-09f7e1be60cc",
     "name" : "Interpreting messages",
     "abbreviation" : "3.5.8",
     "description" : "Use this domain for words referring to interpreting something someone says--to try to understand the meaning of something someone says and express it in other words.",
     "searchKeys" : [ "interpret, understand, translate" ]
   },
   "3.5.8.1 Meaning" : {
+    "key" : "3.5.8.1",
+    "guid" : "8894cac9-c82a-4616-856e-0516d2ed1df7",
     "name" : "Meaning",
     "abbreviation" : "3.5.8.1",
     "description" : "Use this domain for words related to the meaning of something that is said.",
@@ -5210,6 +6130,8 @@ var semanticDomains_en = {
         "ambiguous, double meaning, doubletalk," ]
   },
   "3.5.8.2 Meaningless" : {
+    "key" : "3.5.8.2",
+    "guid" : "edf17f72-7e7a-4f8d-a5ee-f4889492d73a",
     "name" : "Meaningless",
     "abbreviation" : "3.5.8.2",
     "description" : "Use this domain for words describing something that is meaningless--something someone says that doesn't mean anything.",
@@ -5219,6 +6141,8 @@ var semanticDomains_en = {
         "nonsense, gibberish, babble, drivel, hocus-pocus, mumbo-jumbo, gobbledygook" ]
   },
   "3.5.8.3 Unintelligible" : {
+    "key" : "3.5.8.3",
+    "guid" : "751bd45c-abfb-443f-ac55-aad3472c20de",
     "name" : "Unintelligible",
     "abbreviation" : "3.5.8.3",
     "description" : "Use this domain for words related to being unintelligible--to say something that someone cannot understand.",
@@ -5226,6 +6150,8 @@ var semanticDomains_en = {
         "unintelligible, indistinct, garbled" ]
   },
   "3.5.8.4 Show, indicate" : {
+    "key" : "3.5.8.4",
+    "guid" : "8225de87-35a3-4c7a-b35c-f45b152caebe",
     "name" : "Show, indicate",
     "abbreviation" : "3.5.8.4",
     "description" : "Use this domain for words referring to showing or indicating something--if something (such as an object, something said, or something that happens) shows something, it makes people think of something or understand something (e.g. When his face turns red, it indicates he is angry.)",
@@ -5238,6 +6164,8 @@ var semanticDomains_en = {
         "sign, indication, indicator, evidence, mark, trace, manifestation, symptom, omen, telltale, be a giveaway," ]
   },
   "3.5.9 Mass communication" : {
+    "key" : "3.5.9",
+    "guid" : "cac1d7a8-7382-466e-ba4a-ba2bfe50f13b",
     "name" : "Mass communication",
     "abbreviation" : "3.5.9",
     "description" : "Use this domain for words related to radio, television, newspapers, magazines and other forms of mass communication.",
@@ -5245,6 +6173,8 @@ var semanticDomains_en = {
         "program, article", "broadcast" ]
   },
   "3.5.9.1 Radio, television" : {
+    "key" : "3.5.9.1",
+    "guid" : "eef8c50e-c391-482c-9f60-1bba2d8892b3",
     "name" : "Radio, television",
     "abbreviation" : "3.5.9.1",
     "description" : "Use this domain for words related to radio and television.",
@@ -5253,6 +6183,8 @@ var semanticDomains_en = {
         "station, band, frequency, reception," ]
   },
   "3.5.9.2 Telephone" : {
+    "key" : "3.5.9.2",
+    "guid" : "32bf055a-d666-4d6e-a3c6-6c984e2c9868",
     "name" : "Telephone",
     "abbreviation" : "3.5.9.2",
     "description" : "Use this domain for words related to the telephone.",
@@ -5262,6 +6194,8 @@ var semanticDomains_en = {
         "busy signal, go dead, wrong number" ]
   },
   "3.5.9.3 Newspaper" : {
+    "key" : "3.5.9.3",
+    "guid" : "12781062-ee36-4703-9bc0-cee4ed467ee5",
     "name" : "Newspaper",
     "abbreviation" : "3.5.9.3",
     "description" : "Use this domain for words related to newspapers and magazines.",
@@ -5270,6 +6204,8 @@ var semanticDomains_en = {
         "issue, edition" ]
   },
   "3.5.9.4 Movie" : {
+    "key" : "3.5.9.4",
+    "guid" : "4f516445-e044-4d9c-ac9b-a3178f72b405",
     "name" : "Movie",
     "abbreviation" : "3.5.9.4",
     "description" : "Use this domain for words related to movies and the cinema.",
@@ -5282,6 +6218,8 @@ var semanticDomains_en = {
         "camera, set, prop, studio" ]
   },
   "3.5.9.5 Recorded music" : {
+    "key" : "3.5.9.5",
+    "guid" : "80dc5ca1-44ce-4406-add8-2bbe19c122ab",
     "name" : "Recorded music",
     "abbreviation" : "3.5.9.5",
     "description" : "Use this domain for words related to recording music.",
@@ -5294,12 +6232,16 @@ var semanticDomains_en = {
         "studio, record company" ]
   },
   "3.5.9.6 Communication devices" : {
+    "key" : "3.5.9.6",
+    "guid" : "8d266c98-9db3-4d3e-b204-956aa848ffa5",
     "name" : "Communication devices",
     "abbreviation" : "3.5.9.6",
     "description" : "Use this domain for words related to communication devices.",
     "searchKeys" : [ "telephone, radio, television, amplifier, megaphone, telegraph, telegram" ]
   },
   "3.6 Teach" : {
+    "key" : "3.6",
+    "guid" : "6137239a-b469-46be-b7cb-b9ac22fcc195",
     "name" : "Teach",
     "abbreviation" : "3.6",
     "description" : "Use this domain for words related to teaching.",
@@ -5309,6 +6251,8 @@ var semanticDomains_en = {
         "pupil, student,", "teaching, subject, education" ]
   },
   "3.6.1 Show, explain" : {
+    "key" : "3.6.1",
+    "guid" : "4093bfe8-54b3-4ffc-bfe3-3999279840b5",
     "name" : "Show, explain",
     "abbreviation" : "3.6.1",
     "description" : "Use this domain for words related to showing someone how something works, or explaining something to someone.",
@@ -5317,6 +6261,8 @@ var semanticDomains_en = {
         "comment, remark, observation," ]
   },
   "3.6.2 School" : {
+    "key" : "3.6.2",
+    "guid" : "3fdba5e5-eb24-4b2f-a6fc-d1ed7397c39c",
     "name" : "School",
     "abbreviation" : "3.6.2",
     "description" : "Use this domain for words related to school.",
@@ -5332,6 +6278,8 @@ var semanticDomains_en = {
         "expel, kick out, suspend," ]
   },
   "3.6.3 Subject of teaching" : {
+    "key" : "3.6.3",
+    "guid" : "1fa683b9-78fd-4feb-9978-55d5953f38ec",
     "name" : "Subject of teaching",
     "abbreviation" : "3.6.3",
     "description" : "Use this domain for words related to a subject that is taught or a subject that you study at school.",
@@ -5339,18 +6287,24 @@ var semanticDomains_en = {
         "course, syllabus, curriculum," ]
   },
   "3.6.4 Class, lesson" : {
+    "key" : "3.6.4",
+    "guid" : "e4bacc52-dcaa-4e68-b736-f0b5d9aeca41",
     "name" : "Class, lesson",
     "abbreviation" : "3.6.4",
     "description" : "Use this domain for words related to a class--the period of time when a subject is taught.",
     "searchKeys" : [ "class, lesson, period, session, lecture, seminar, tutorial, course," ]
   },
   "3.6.5 Correct" : {
+    "key" : "3.6.5",
+    "guid" : "87dd09b8-689c-4a56-b3f6-846a849f71b8",
     "name" : "Correct",
     "abbreviation" : "3.6.5",
     "description" : "Use this domain for words related to correcting a mistake.",
     "searchKeys" : [ "correct, edit, mark, reprove, punish, discipline" ]
   },
   "3.6.6 Science" : {
+    "key" : "3.6.6",
+    "guid" : "1886ffc9-0a18-41ea-b2f6-c17c297f1681",
     "name" : "Science",
     "abbreviation" : "3.6.6",
     "description" : "Use this domain for words related to science.",
@@ -5360,6 +6314,8 @@ var semanticDomains_en = {
         "hydrology, oceanography,", "biology, ecology", "scientist" ]
   },
   "3.6.7 Test" : {
+    "key" : "3.6.7",
+    "guid" : "1688280e-27c4-47a8-87b7-8fe31b174ab8",
     "name" : "Test",
     "abbreviation" : "3.6.7",
     "description" : "Use this domain for words related to a test.",
@@ -5367,6 +6323,8 @@ var semanticDomains_en = {
         "grade, score, mark, results", "grade, mark" ]
   },
   "3.6.8 Answer in a test" : {
+    "key" : "3.6.8",
+    "guid" : "51d4e258-430c-4032-94e3-ee53095e7045",
     "name" : "Answer in a test",
     "abbreviation" : "3.6.8",
     "description" : "Use this domain for words related to the answer to a question in a test.",
@@ -5374,12 +6332,16 @@ var semanticDomains_en = {
         "solve, work out" ]
   },
   "4 Social behavior" : {
+    "key" : "4",
+    "guid" : "62b4ae33-f3c2-447a-9ef7-7e41805b6a02",
     "name" : "Social behavior",
     "abbreviation" : "4",
     "description" : "Use this domain for very general words having to do with how people behave in relationship to other people.",
     "searchKeys" : [ "behave, behavior, conduct, relate, relationship, socialize, society" ]
   },
   "4.1 Relationships" : {
+    "key" : "4.1",
+    "guid" : "0e79435b-f5ff-4061-81ff-49557ba2aed4",
     "name" : "Relationships",
     "abbreviation" : "4.1",
     "description" : "Use this domain for words related to relationships between people and groups of people.",
@@ -5392,6 +6354,8 @@ var semanticDomains_en = {
         "allied, bonded, related, friendly, affiliated, associated," ]
   },
   "4.1.1 Friend" : {
+    "key" : "4.1.1",
+    "guid" : "646dab64-5c2f-4f45-8e28-4d13437639d4",
     "name" : "Friend",
     "abbreviation" : "4.1.1",
     "description" : "Use this domain for words related to friendship.",
@@ -5405,12 +6369,16 @@ var semanticDomains_en = {
         "broken relationship, break up, strained relationship, misunderstanding, co-dependency" ]
   },
   "4.1.1.1 Girlfriend, boyfriend" : {
+    "key" : "4.1.1.1",
+    "guid" : "b40637e5-be76-4a82-96bb-c55306ee293d",
     "name" : "Girlfriend, boyfriend",
     "abbreviation" : "4.1.1.1",
     "description" : "Use this domain for words referring to a girlfriend or boyfriend.",
     "searchKeys" : [ "girlfriend, boyfriend, partner, lover, mistress, old flame" ]
   },
   "4.1.2 Types of people" : {
+    "key" : "4.1.2",
+    "guid" : "995751ef-d71b-429c-a4ee-032f5b309bd7",
     "name" : "Types of people",
     "abbreviation" : "4.1.2",
     "description" : "Use this domain for words referring to different types of people.",
@@ -5423,6 +6391,8 @@ var semanticDomains_en = {
         "foreigner, stranger, enemy, foe" ]
   },
   "4.1.2.1 Working relationship" : {
+    "key" : "4.1.2.1",
+    "guid" : "513771eb-8467-468a-8bc8-e52567e66df9",
     "name" : "Working relationship",
     "abbreviation" : "4.1.2.1",
     "description" : "Use this domain for words related to a relationship between people who work together.",
@@ -5434,6 +6404,8 @@ var semanticDomains_en = {
         "partnership, association, office, working group" ]
   },
   "4.1.3 Know someone" : {
+    "key" : "4.1.3",
+    "guid" : "469b0a30-3c26-4cfd-b948-7bb952eeff41",
     "name" : "Know someone",
     "abbreviation" : "4.1.3",
     "description" : "Use this domain for words referring to knowing someone.",
@@ -5445,12 +6417,16 @@ var semanticDomains_en = {
         "know someone's name, know of someone, have heard the name, have heard of someone, have heard about someone" ]
   },
   "4.1.3.1 Meet for the first time" : {
+    "key" : "4.1.3.1",
+    "guid" : "b5d679e3-506a-4994-81a2-be48a698d945",
     "name" : "Meet for the first time",
     "abbreviation" : "4.1.3.1",
     "description" : "Use this domain for words related to meeting someone for the first time.",
     "searchKeys" : [ "meet (for the first time), introduce someone, introduce oneself, introduce each other, be introduced" ]
   },
   "4.1.4 Neighbor" : {
+    "key" : "4.1.4",
+    "guid" : "d49f2c9d-1b4a-4370-b107-71f9b9fbdc8e",
     "name" : "Neighbor",
     "abbreviation" : "4.1.4",
     "description" : "Use this domain for words referring to a neighbor--someone who lives nearby.",
@@ -5461,6 +6437,8 @@ var semanticDomains_en = {
         "neighborhood, community, our street, our area, subdivision, housing development, compound, apartment complex, district, vicinity, environs" ]
   },
   "4.1.4.1 Social class" : {
+    "key" : "4.1.4.1",
+    "guid" : "aec8c246-0ef7-414a-94a6-b9fdd6812a7c",
     "name" : "Social class",
     "abbreviation" : "4.1.4.1",
     "description" : "Use this domain for words related to social class.",
@@ -5474,6 +6452,8 @@ var semanticDomains_en = {
         "classless" ]
   },
   "4.1.5 Unity" : {
+    "key" : "4.1.5",
+    "guid" : "9ac6dec6-1b8f-463c-8239-e2acb93586b1",
     "name" : "Unity",
     "abbreviation" : "4.1.5",
     "description" : "Use this domain for words related to unity--when a group of people agree with each other and are not fighting.",
@@ -5484,6 +6464,8 @@ var semanticDomains_en = {
         "unifying, uniting" ]
   },
   "4.1.6 Disunity" : {
+    "key" : "4.1.6",
+    "guid" : "d59a84e1-5e12-4cb7-b72b-15c51810ad48",
     "name" : "Disunity",
     "abbreviation" : "4.1.6",
     "description" : "Use this domain for words related to disunity--when a group of people do not agree with each other and are fighting.",
@@ -5494,6 +6476,8 @@ var semanticDomains_en = {
         "divisive, disruptive" ]
   },
   "4.1.6.1 Unfriendly" : {
+    "key" : "4.1.6.1",
+    "guid" : "eaed8c63-9f97-4116-927c-19f364a99e72",
     "name" : "Unfriendly",
     "abbreviation" : "4.1.6.1",
     "description" : "Use this domain for words related to being antisocial--when someone does not want to talk to other people or be friends with them.",
@@ -5504,12 +6488,16 @@ var semanticDomains_en = {
         "unfriendly, unwelcoming, inhospitable, impersonal, forbidding" ]
   },
   "4.1.6.2 Set self apart" : {
+    "key" : "4.1.6.2",
+    "guid" : "a8b2abb3-d09f-4ff1-89ce-6ae99f16401c",
     "name" : "Set self apart",
     "abbreviation" : "4.1.6.2",
     "description" : "Use this domain for words related to setting yourself apart from other people and not relating to them.",
     "searchKeys" : [ "isolate, set self apart, remove, disengage, estrange, reserve, withdraw, quit, resign" ]
   },
   "4.1.6.3 Alone" : {
+    "key" : "4.1.6.3",
+    "guid" : "4651aef1-e18f-481e-9c3e-d9dfff4a6b51",
     "name" : "Alone",
     "abbreviation" : "4.1.6.3",
     "description" : "Use this domain for words related to being alone.",
@@ -5522,24 +6510,32 @@ var semanticDomains_en = {
         "miss, want to see someone, feel lonesome, long for someone" ]
   },
   "4.1.6.4 Independent person" : {
+    "key" : "4.1.6.4",
+    "guid" : "0ac81210-20ff-4a89-948f-5d154668f05c",
     "name" : "Independent person",
     "abbreviation" : "4.1.6.4",
     "description" : "Use this domain for words describing an independent person--someone who does things without other people's help.",
     "searchKeys" : [ "independent, self-reliant, self-sufficient, individualist" ]
   },
   "4.1.6.5 Private, public" : {
+    "key" : "4.1.6.5",
+    "guid" : "c223335b-4803-4f1b-bf4d-f1ee077513cf",
     "name" : "Private, public",
     "abbreviation" : "4.1.6.5",
     "description" : "Use this domain for words describing something that is private--something that only concerns you, and for words describing something that is public--something that concerns many people.",
     "searchKeys" : [ "private, secret, personal, innermost" ]
   },
   "4.1.7 Begin a relationship" : {
+    "key" : "4.1.7",
+    "guid" : "675d67bb-da64-456e-8825-bdf074bb82be",
     "name" : "Begin a relationship",
     "abbreviation" : "4.1.7",
     "description" : "Use this domain for words related to beginning a relationship.",
     "searchKeys" : [ "begin a relationship, join, affiliate, associate, enlist, enroll, enter, establish, fall in with, sign up, worm your way in, hit it off," ]
   },
   "4.1.7.1 End a relationship" : {
+    "key" : "4.1.7.1",
+    "guid" : "06341e45-c407-49d0-98d8-74ecc303fb02",
     "name" : "End a relationship",
     "abbreviation" : "4.1.7.1",
     "description" : "Use this domain for words related to ending a relationship.",
@@ -5548,12 +6544,16 @@ var semanticDomains_en = {
         "broken relationship, break up, strained relationship, misunderstanding, co-dependency" ]
   },
   "4.1.8 Show affection" : {
+    "key" : "4.1.8",
+    "guid" : "aeb20093-26ba-492b-a69d-af18d5ba51eb",
     "name" : "Show affection",
     "abbreviation" : "4.1.8",
     "description" : "Use this domain for words related to showing affection.",
     "searchKeys" : [ "show affection, kiss, embrace, hug, hold hands, public display of affection" ]
   },
   "4.1.9 Kinship" : {
+    "key" : "4.1.9",
+    "guid" : "e7c58c11-2911-446a-96b0-2113247f3792",
     "name" : "Kinship",
     "abbreviation" : "4.1.9",
     "description" : "Use this domain for general words for family relationships, not for specific terms.",
@@ -5565,6 +6565,8 @@ var semanticDomains_en = {
         "(none in English)" ]
   },
   "4.1.9.1 Related by birth" : {
+    "key" : "4.1.9.1",
+    "guid" : "529140d1-6e8e-44fe-99f0-95289e933607",
     "name" : "Related by birth",
     "abbreviation" : "4.1.9.1",
     "description" : "Use this domain for words referring to being related by birth--when one of your ancestors and one of someone else's ancestors are the same person.",
@@ -5575,6 +6577,8 @@ var semanticDomains_en = {
         "genetics, inherit, heredity, run in the family, pass on, take after, bad blood, genes, breeding" ]
   },
   "4.1.9.1.1 Grandfather, grandmother" : {
+    "key" : "4.1.9.1.1",
+    "guid" : "d1e58469-52e3-4b50-b0de-00bf9f09f8d4",
     "name" : "Grandfather, grandmother",
     "abbreviation" : "4.1.9.1.1",
     "description" : "Use this domain for words referring to grandparents and ancestors.",
@@ -5584,6 +6588,8 @@ var semanticDomains_en = {
         "ancestral, ancestry," ]
   },
   "4.1.9.1.2 Father, mother" : {
+    "key" : "4.1.9.1.2",
+    "guid" : "44dc42e4-e9c7-4aa9-ac9b-1008385244b1",
     "name" : "Father, mother",
     "abbreviation" : "4.1.9.1.2",
     "description" : "Use this domain for words related to parents.",
@@ -5596,6 +6602,8 @@ var semanticDomains_en = {
         "father's wife, second wife", "stepfather", "stepmother" ]
   },
   "4.1.9.1.3 Brother, sister" : {
+    "key" : "4.1.9.1.3",
+    "guid" : "bb29001e-97f3-4bb4-8946-7c33b9835fcb",
     "name" : "Brother, sister",
     "abbreviation" : "4.1.9.1.3",
     "description" : "Use this domain for words related to siblings.",
@@ -5604,6 +6612,8 @@ var semanticDomains_en = {
         "half-brother, half-sister", "stepbrother, stepsister" ]
   },
   "4.1.9.1.4 Son, daughter" : {
+    "key" : "4.1.9.1.4",
+    "guid" : "87c499b3-5fab-45e0-9999-9c4fcbba1e2b",
     "name" : "Son, daughter",
     "abbreviation" : "4.1.9.1.4",
     "description" : "Use this domain for words referring to your children.",
@@ -5612,6 +6622,8 @@ var semanticDomains_en = {
         "stepson, stepdaughter, stepchild," ]
   },
   "4.1.9.1.5 Grandson, granddaughter" : {
+    "key" : "4.1.9.1.5",
+    "guid" : "f47d681b-4f0d-43ca-a465-2e1724825752",
     "name" : "Grandson, granddaughter",
     "abbreviation" : "4.1.9.1.5",
     "description" : "Use this domain for words referring to your grandchildren.",
@@ -5619,6 +6631,8 @@ var semanticDomains_en = {
         "descendant, offshoot, offspring, posterity, progeny, line," ]
   },
   "4.1.9.1.6 Uncle, aunt" : {
+    "key" : "4.1.9.1.6",
+    "guid" : "75202262-cdba-4c43-9343-764c84138797",
     "name" : "Uncle, aunt",
     "abbreviation" : "4.1.9.1.6",
     "description" : "Use this domain for words related to your uncles and aunts.",
@@ -5626,18 +6640,24 @@ var semanticDomains_en = {
         "granduncle, grandaunt, great-uncle, great-aunt" ]
   },
   "4.1.9.1.7 Cousin" : {
+    "key" : "4.1.9.1.7",
+    "guid" : "f957a4aa-d3d4-4dad-93d1-20565b5158d4",
     "name" : "Cousin",
     "abbreviation" : "4.1.9.1.7",
     "description" : "Use this domain for words referring to your cousins.",
     "searchKeys" : [ "cousin", "cousin", "cousin", "cousin" ]
   },
   "4.1.9.1.8 Nephew, niece" : {
+    "key" : "4.1.9.1.8",
+    "guid" : "eb0c9e02-e4c1-4e5e-84b6-be63aaf439d5",
     "name" : "Nephew, niece",
     "abbreviation" : "4.1.9.1.8",
     "description" : "Use this domain for words referring to your nephews and nieces.",
     "searchKeys" : [ "nephew, niece", "nephew, niece" ]
   },
   "4.1.9.1.9 Birth order" : {
+    "key" : "4.1.9.1.9",
+    "guid" : "89944377-8694-4394-bced-153cc22a0e30",
     "name" : "Birth order",
     "abbreviation" : "4.1.9.1.9",
     "description" : "Use this domain for words related to birth order.",
@@ -5646,6 +6666,8 @@ var semanticDomains_en = {
         "only child" ]
   },
   "4.1.9.2 Related by marriage" : {
+    "key" : "4.1.9.2",
+    "guid" : "49bc0d75-4f07-44b4-a50f-bc9a557dc15e",
     "name" : "Related by marriage",
     "abbreviation" : "4.1.9.2",
     "description" : "Use this domain for words referring to being related by marriage.",
@@ -5653,12 +6675,16 @@ var semanticDomains_en = {
         "intermarry," ]
   },
   "4.1.9.2.1 Husband, wife" : {
+    "key" : "4.1.9.2.1",
+    "guid" : "a4627ca8-f27b-44ce-91f5-cc992332bc86",
     "name" : "Husband, wife",
     "abbreviation" : "4.1.9.2.1",
     "description" : "Use this domain for words related to your spouse.",
     "searchKeys" : [ "spouse, husband, wife, second wife" ]
   },
   "4.1.9.2.2 In-law" : {
+    "key" : "4.1.9.2.2",
+    "guid" : "89ad4e41-bf08-4d93-a4f3-f72e8cc62bed",
     "name" : "In-law",
     "abbreviation" : "4.1.9.2.2",
     "description" : "Use this domain for words referring to being related by marriage.",
@@ -5667,6 +6693,8 @@ var semanticDomains_en = {
         "in-law, father-in-law, mother-in-law, brother-in-law, sister-in-law, son-in-law, daughter-in-law" ]
   },
   "4.1.9.3 Widow, widower" : {
+    "key" : "4.1.9.3",
+    "guid" : "04370e1f-25aa-4d9e-97c5-de9b59156666",
     "name" : "Widow, widower",
     "abbreviation" : "4.1.9.3",
     "description" : "Use this domain for words referring to widows and widowers. Some languages also have words for a parent who has lost a child, someone who has lost a brother or sister, or a general word for someone who has lost a relative.",
@@ -5676,6 +6704,8 @@ var semanticDomains_en = {
         "bereaved," ]
   },
   "4.1.9.4 Orphan" : {
+    "key" : "4.1.9.4",
+    "guid" : "57237095-23cf-43ba-aa6c-89cecdd35ff8",
     "name" : "Orphan",
     "abbreviation" : "4.1.9.4",
     "description" : "Use this domain for words referring to orphans.",
@@ -5683,6 +6713,8 @@ var semanticDomains_en = {
         "be orphaned, be an orphan", "orphanage," ]
   },
   "4.1.9.5 Illegitimate child" : {
+    "key" : "4.1.9.5",
+    "guid" : "0656f6a7-9a88-4c03-a8ab-ace8c0f52ebf",
     "name" : "Illegitimate child",
     "abbreviation" : "4.1.9.5",
     "description" : "Use this domain for words referring to an illegitimate child.",
@@ -5691,6 +6723,8 @@ var semanticDomains_en = {
         "(no words in English)" ]
   },
   "4.1.9.6 Adopt" : {
+    "key" : "4.1.9.6",
+    "guid" : "4405e74c-f64c-4609-8f7b-99ba563d659a",
     "name" : "Adopt",
     "abbreviation" : "4.1.9.6",
     "description" : "Use this domain for words related to adopting a child.",
@@ -5698,12 +6732,16 @@ var semanticDomains_en = {
         "adoptive father, adoptive mother, foster parent" ]
   },
   "4.1.9.7 Non-relative" : {
+    "key" : "4.1.9.7",
+    "guid" : "fa41dbc5-adbb-4ad0-9fd2-0278d4689a28",
     "name" : "Non-relative",
     "abbreviation" : "4.1.9.7",
     "description" : "Use this domain for words that refer to people who are not related by blood or marriage.",
     "searchKeys" : [ "non-relative, unrelated, not related" ]
   },
   "4.1.9.8 Family, clan" : {
+    "key" : "4.1.9.8",
+    "guid" : "a781d57d-174d-47a6-b6a1-ae635a13df84",
     "name" : "Family, clan",
     "abbreviation" : "4.1.9.8",
     "description" : "Use this domain for words that refer to social groups composed of related people.",
@@ -5712,6 +6750,8 @@ var semanticDomains_en = {
         "family, domestic, run in the family," ]
   },
   "4.1.9.9 Race" : {
+    "key" : "4.1.9.9",
+    "guid" : "6cbdaf94-8e2c-4b26-936a-d2f86d158250",
     "name" : "Race",
     "abbreviation" : "4.1.9.9",
     "description" : "Use this domain for words referring to different races of people--the large groups of people in the world that are different in color and appearance.",
@@ -5722,12 +6762,16 @@ var semanticDomains_en = {
         "integration, segregation, multiracial, interracial, cosmopolitan, multicultural, mixed," ]
   },
   "4.2 Social activity" : {
+    "key" : "4.2",
+    "guid" : "57225f57-ba51-45d7-b6d2-b22052877ea4",
     "name" : "Social activity",
     "abbreviation" : "4.2",
     "description" : "Use this domain for general words referring to social activities.",
     "searchKeys" : [ "socialize" ]
   },
   "4.2.1 Come together, form a group" : {
+    "key" : "4.2.1",
+    "guid" : "935da513-126e-4cab-8e07-625458821181",
     "name" : "Come together, form a group",
     "abbreviation" : "4.2.1",
     "description" : "Use this domain for words referring to coming together to form a group.",
@@ -5736,6 +6780,8 @@ var semanticDomains_en = {
         "unification, union,", "unified," ]
   },
   "4.2.1.1 Invite" : {
+    "key" : "4.2.1.1",
+    "guid" : "7459c0d8-4da1-4944-a95e-bc64cde860f5",
     "name" : "Invite",
     "abbreviation" : "4.2.1.1",
     "description" : "Use this domain for words referring to inviting people to meet together--to say something to someone because you want to meet with them.",
@@ -5744,12 +6790,16 @@ var semanticDomains_en = {
         "invitation,", "invited guest," ]
   },
   "4.2.1.2 Encounter" : {
+    "key" : "4.2.1.2",
+    "guid" : "6709cc78-cb0b-493e-b3e6-8590a2f20c95",
     "name" : "Encounter",
     "abbreviation" : "4.2.1.2",
     "description" : "Use this domain for words referring to encountering someone.",
     "searchKeys" : [ "encounter, meet, run into, run across, cross paths, happen to see," ]
   },
   "4.2.1.3 Meet together" : {
+    "key" : "4.2.1.3",
+    "guid" : "c358b041-7a1a-43d6-8e61-26b9507f559f",
     "name" : "Meet together",
     "abbreviation" : "4.2.1.3",
     "description" : "Use this domain for words related to meeting together.",
@@ -5757,6 +6807,8 @@ var semanticDomains_en = {
         "have a meeting, attend, attendance, congregate, convene," ]
   },
   "4.2.1.4 Visit" : {
+    "key" : "4.2.1.4",
+    "guid" : "4f19ab95-428a-4a0b-a069-ca8be6b72b08",
     "name" : "Visit",
     "abbreviation" : "4.2.1.4",
     "description" : "Use this domain for words related to visiting someone.",
@@ -5769,6 +6821,8 @@ var semanticDomains_en = {
         "host, hostess", "freeload, freeloader, sponge, sponger," ]
   },
   "4.2.1.4.1 Welcome, receive" : {
+    "key" : "4.2.1.4.1",
+    "guid" : "252886c4-9317-4c6b-a69e-13520eb89736",
     "name" : "Welcome, receive",
     "abbreviation" : "4.2.1.4.1",
     "description" : "Use this domain for words related to welcoming a visitor.",
@@ -5777,6 +6831,8 @@ var semanticDomains_en = {
         "Hello. Welcome. Come in." ]
   },
   "4.2.1.4.2 Show hospitality" : {
+    "key" : "4.2.1.4.2",
+    "guid" : "17851b86-f8fb-4850-9b33-c1a9fcb0aec1",
     "name" : "Show hospitality",
     "abbreviation" : "4.2.1.4.2",
     "description" : "Use this domain for words related to showing hospitality to a visitor.",
@@ -5784,6 +6840,8 @@ var semanticDomains_en = {
         "gracious hostess, hospitable", "inhospitable" ]
   },
   "4.2.1.5 Meeting, assembly" : {
+    "key" : "4.2.1.5",
+    "guid" : "54b6dff4-a21d-490d-8279-69f36a179c93",
     "name" : "Meeting, assembly",
     "abbreviation" : "4.2.1.5",
     "description" : "Use this domain for words referring to a meeting.",
@@ -5792,6 +6850,8 @@ var semanticDomains_en = {
         "meeting place, venue, rendezvous, center, haunt," ]
   },
   "4.2.1.6 Participate" : {
+    "key" : "4.2.1.6",
+    "guid" : "efd03c89-bf8b-4d46-a921-06cc06f28356",
     "name" : "Participate",
     "abbreviation" : "4.2.1.6",
     "description" : "Use this domain for words related to participating in a group--to do things with a group.",
@@ -5803,6 +6863,8 @@ var semanticDomains_en = {
         "bystander, onlooker, spectator, wall flower," ]
   },
   "4.2.1.7 Crowd, group" : {
+    "key" : "4.2.1.7",
+    "guid" : "87eb572c-bae2-45d8-a36a-919561b55d0d",
     "name" : "Crowd, group",
     "abbreviation" : "4.2.1.7",
     "description" : "Use this domain for words referring to a crowd or group of people.",
@@ -5811,6 +6873,8 @@ var semanticDomains_en = {
         "huge, large, crowded" ]
   },
   "4.2.1.8 Organization" : {
+    "key" : "4.2.1.8",
+    "guid" : "86f90eff-158b-4f6d-82e9-fab136dfd141",
     "name" : "Organization",
     "abbreviation" : "4.2.1.8",
     "description" : "Use this domain for words referring to an organization.",
@@ -5818,12 +6882,16 @@ var semanticDomains_en = {
         "department, committee", "form, organize" ]
   },
   "4.2.1.8.1 Join an organization" : {
+    "key" : "4.2.1.8.1",
+    "guid" : "e3a6f918-4b0f-4515-bd6c-4f3370bcbf67",
     "name" : "Join an organization",
     "abbreviation" : "4.2.1.8.1",
     "description" : "Use this domain for words related to joining an organization.",
     "searchKeys" : [ "join a group, affiliate, associate, enlist, enroll, enter, sign up" ]
   },
   "4.2.1.8.2 Leave an organization" : {
+    "key" : "4.2.1.8.2",
+    "guid" : "e173f481-ec57-4d1c-b517-be38ccb038f5",
     "name" : "Leave an organization",
     "abbreviation" : "4.2.1.8.2",
     "description" : "Use this domain for words related to leaving an organization.",
@@ -5831,6 +6899,8 @@ var semanticDomains_en = {
         "disperse, break up, scatter", "resign from a group, quit" ]
   },
   "4.2.1.8.3 Belong to an organization" : {
+    "key" : "4.2.1.8.3",
+    "guid" : "92ef1096-bae2-4bc5-b4b8-c16f429c4867",
     "name" : "Belong to an organization",
     "abbreviation" : "4.2.1.8.3",
     "description" : "Use this domain for words related to belonging to an organization.",
@@ -5840,6 +6910,8 @@ var semanticDomains_en = {
         "be affiliated with, affiliation," ]
   },
   "4.2.1.9 Social group" : {
+    "key" : "4.2.1.9",
+    "guid" : "f81b7632-3e5a-4a2d-8a93-648872a6616b",
     "name" : "Social group",
     "abbreviation" : "4.2.1.9",
     "description" : "Use this domain for words referring to an organization.",
@@ -5847,12 +6919,16 @@ var semanticDomains_en = {
         "hippies, yuppies, beatniks, greens, teenagers" ]
   },
   "4.2.2 Social event" : {
+    "key" : "4.2.2",
+    "guid" : "c4b110cf-d968-4bc6-ac0c-7e70cbad2756",
     "name" : "Social event",
     "abbreviation" : "4.2.2",
     "description" : "Use this domain for words referring to a social event.",
     "searchKeys" : [ "event, show, special day, gathering, meal, observance" ]
   },
   "4.2.2.1 Ceremony" : {
+    "key" : "4.2.2.1",
+    "guid" : "71cbefc3-e0a5-4b97-9672-fa0cb34c59e4",
     "name" : "Ceremony",
     "abbreviation" : "4.2.2.1",
     "description" : "Use this domain for words referring to a ceremony.",
@@ -5863,6 +6939,8 @@ var semanticDomains_en = {
         "Christmas, New Years, Thanksgiving, Easter, Good Friday, Independence Day, Memorial Day, Labor Day, Washington's Birthday, Valentine's Day, Mothers Day," ]
   },
   "4.2.2.2 Festival, show" : {
+    "key" : "4.2.2.2",
+    "guid" : "ddc96103-4bc5-44d3-9412-c57569d2a9f5",
     "name" : "Festival, show",
     "abbreviation" : "4.2.2.2",
     "description" : "Use this domain for words referring to a festival or show--a large social event during which some people entertain other people.",
@@ -5871,6 +6949,8 @@ var semanticDomains_en = {
         "routine, act, ride, float, booth," ]
   },
   "4.2.2.3 Celebrate" : {
+    "key" : "4.2.2.3",
+    "guid" : "aff720bd-fb3d-4f85-bbc4-41d5fc5b83f8",
     "name" : "Celebrate",
     "abbreviation" : "4.2.2.3",
     "description" : "Use this domain for words related to celebrating.",
@@ -5879,6 +6959,8 @@ var semanticDomains_en = {
         "celebration, party, feast, festival, pageant, parade" ]
   },
   "4.2.3 Music" : {
+    "key" : "4.2.3",
+    "guid" : "5446b5cf-f05a-4bb2-89eb-ce63e27040f3",
     "name" : "Music",
     "abbreviation" : "4.2.3",
     "description" : "Use this domain for words related to music.",
@@ -5892,6 +6974,8 @@ var semanticDomains_en = {
         "scale, tune, melody, melodic, harmony, chord, pitch, soft, pianissimo, loud, forte, crescendo, rhythm, rhythmic, beat, time" ]
   },
   "4.2.3.1 Compose music" : {
+    "key" : "4.2.3.1",
+    "guid" : "aa0f165d-3013-4a0c-b68c-14ea317013f9",
     "name" : "Compose music",
     "abbreviation" : "4.2.3.1",
     "description" : "Use this domain for words related to composing music.",
@@ -5902,6 +6986,8 @@ var semanticDomains_en = {
         "music, notation, key, staff, bar, note, quarter note, half note, whole note, sharp, flat, scale" ]
   },
   "4.2.3.2 Play music" : {
+    "key" : "4.2.3.2",
+    "guid" : "7fed6281-326a-4a15-8cbf-dc574594da19",
     "name" : "Play music",
     "abbreviation" : "4.2.3.2",
     "description" : "Use this domain for words related to playing music.",
@@ -5916,6 +7002,8 @@ var semanticDomains_en = {
         "performance, execution, touch, expression, fingering, keep time" ]
   },
   "4.2.3.3 Sing" : {
+    "key" : "4.2.3.3",
+    "guid" : "de6b15d3-6409-4998-b03d-903133f4ad70",
     "name" : "Sing",
     "abbreviation" : "4.2.3.3",
     "description" : "Use this domain for words related to singing.",
@@ -5932,6 +7020,8 @@ var semanticDomains_en = {
         "sing in unison, sing in harmony, sing the melody/harmony, keep time" ]
   },
   "4.2.3.4 Musician" : {
+    "key" : "4.2.3.4",
+    "guid" : "0a1b26b2-2152-45e2-9b63-4a68fca73a90",
     "name" : "Musician",
     "abbreviation" : "4.2.3.4",
     "description" : "Use this domain for words related to a musician.",
@@ -5942,6 +7032,8 @@ var semanticDomains_en = {
         "have an ear for music, have a good ear, maestro, tone deaf" ]
   },
   "4.2.3.5 Musical instrument" : {
+    "key" : "4.2.3.5",
+    "guid" : "91ddf495-a28b-4a32-90dc-6f997d0cd069",
     "name" : "Musical instrument",
     "abbreviation" : "4.2.3.5",
     "description" : "Use this domain for words referring to musical instruments and people who play a particular instrument.",
@@ -5956,6 +7048,8 @@ var semanticDomains_en = {
         "mouthpiece, bell, key, keyboard, drumstick, reed, bow, string, fret, pick, organ pipe" ]
   },
   "4.2.4 Dance" : {
+    "key" : "4.2.4",
+    "guid" : "4b3a9b5a-df7d-4ec2-9576-2c07fe396021",
     "name" : "Dance",
     "abbreviation" : "4.2.4",
     "description" : "Use this domain for words related to dancing.",
@@ -5967,6 +7061,8 @@ var semanticDomains_en = {
         "dance hall, dance floor" ]
   },
   "4.2.5 Drama" : {
+    "key" : "4.2.5",
+    "guid" : "e27adda9-0761-4b7f-abbf-24938ce1c01a",
     "name" : "Drama",
     "abbreviation" : "4.2.5",
     "description" : "Use this domain for words related to drama.",
@@ -5983,12 +7079,16 @@ var semanticDomains_en = {
         "prop, scenery, backdrop, curtain", "overact, ham it up," ]
   },
   "4.2.6 Entertainment, recreation" : {
+    "key" : "4.2.6",
+    "guid" : "6745c89d-1fcd-44b8-be4b-9fd9d62f64e7",
     "name" : "Entertainment, recreation",
     "abbreviation" : "4.2.6",
     "description" : "Use this domain for words related to entertainment and recreation.",
     "searchKeys" : [ "recreational activity, amusement, competition, recreation, leisure, play, hobby, distraction, diversion, entertainment, frolic, fun, merriment, pastime, revelry, romp, shindig" ]
   },
   "4.2.6.1 Game" : {
+    "key" : "4.2.6.1",
+    "guid" : "721e7782-9add-41fa-a7cf-659d5ca33926",
     "name" : "Game",
     "abbreviation" : "4.2.6.1",
     "description" : "Use this domain for words referring to games. Some languages do not make a distinction between \"Games\" and \"Sports.\"",
@@ -6003,6 +7103,8 @@ var semanticDomains_en = {
         "opponent, opposition, rival," ]
   },
   "4.2.6.1.1 Card game" : {
+    "key" : "4.2.6.1.1",
+    "guid" : "ac4a936e-6c05-4e73-8d40-dfe4223b47fa",
     "name" : "Card game",
     "abbreviation" : "4.2.6.1.1",
     "description" : "Use this domain for words related to a particular game. The example words are from the card games. If you do not play card games in your culture, you can rename this domain and use it for one of your games. Add other domains for each of your games.",
@@ -6016,6 +7118,8 @@ var semanticDomains_en = {
         "card, deck, suit, heart, diamond, club, hand, trick, spade, kitty," ]
   },
   "4.2.6.1.2 Chess" : {
+    "key" : "4.2.6.1.2",
+    "guid" : "2d92e248-1512-4e89-b886-425814c6dd32",
     "name" : "Chess",
     "abbreviation" : "4.2.6.1.2",
     "description" : "Use this domain for words related to a particular game. The example words are from the game of chess. If you do not play chess in your culture, you can rename this domain and use it for one of your games. Add other domains for each of your games.",
@@ -6029,6 +7133,8 @@ var semanticDomains_en = {
         "chess board, square, white square, black square, chess piece, king, queen, rook, knight/horse, bishop, pawn" ]
   },
   "4.2.6.2 Sports" : {
+    "key" : "4.2.6.2",
+    "guid" : "01441207-4935-49a5-a192-16d949f5606c",
     "name" : "Sports",
     "abbreviation" : "4.2.6.2",
     "description" : "Use this domain for words related to sports.",
@@ -6058,6 +7164,8 @@ var semanticDomains_en = {
         "commentator, announcer, sportscaster, reporter" ]
   },
   "4.2.6.2.1 Football, soccer" : {
+    "key" : "4.2.6.2.1",
+    "guid" : "6187e620-89bd-4b9d-9896-0c0c788e7740",
     "name" : "Football, soccer",
     "abbreviation" : "4.2.6.2.1",
     "description" : "Use this domain for words related to a particular sport. The example words are from the sport of football (also called soccer). If you do not play football in your culture, you can rename this domain and use it for one of your sports. Add other domains for each of your sports.",
@@ -6072,6 +7180,8 @@ var semanticDomains_en = {
         "line, out of bounds," ]
   },
   "4.2.6.2.2 Basketball" : {
+    "key" : "4.2.6.2.2",
+    "guid" : "21ebc64a-a1b8-45bd-b7f6-143a053f1d31",
     "name" : "Basketball",
     "abbreviation" : "4.2.6.2.2",
     "description" : "Use this domain for words related to a particular sport. The example words are from the sport of basketball. If you do not play basketball in your culture, you can rename this domain and use it for one of your sports. Add other domains for each of your sports.",
@@ -6091,6 +7201,8 @@ var semanticDomains_en = {
         "court, line, out of bounds, key, free throw line, jump circle" ]
   },
   "4.2.6.3 Exercise" : {
+    "key" : "4.2.6.3",
+    "guid" : "28e874fb-b2e7-4afa-a4d7-600306ad2583",
     "name" : "Exercise",
     "abbreviation" : "4.2.6.3",
     "description" : "Use this domain for words related to exercise.",
@@ -6098,6 +7210,8 @@ var semanticDomains_en = {
         "gymnastics, aerobics, training, exercise (n)" ]
   },
   "4.2.6.4 Gambling" : {
+    "key" : "4.2.6.4",
+    "guid" : "42133f78-9860-4bb7-8083-5559083f0714",
     "name" : "Gambling",
     "abbreviation" : "4.2.6.4",
     "description" : "Use this domain for words related to gambling.",
@@ -6106,6 +7220,8 @@ var semanticDomains_en = {
         "gambler, bookie", "odds," ]
   },
   "4.2.7 Play, fun" : {
+    "key" : "4.2.7",
+    "guid" : "a3d95c6a-4b0b-4af0-aca8-addd042becd2",
     "name" : "Play, fun",
     "abbreviation" : "4.2.7",
     "description" : "Use this domain for words related to playing and fun.",
@@ -6117,6 +7233,8 @@ var semanticDomains_en = {
         "playground" ]
   },
   "4.2.8 Humor" : {
+    "key" : "4.2.8",
+    "guid" : "c27b87cf-1211-4df2-96b1-12c416edabbe",
     "name" : "Humor",
     "abbreviation" : "4.2.8",
     "description" : "Use this domain for words related to humor.",
@@ -6133,12 +7251,16 @@ var semanticDomains_en = {
         "humorously, jokingly, jestingly, in jest, in sport, in play, in fun, not seriously" ]
   },
   "4.2.8.1 Serious" : {
+    "key" : "4.2.8.1",
+    "guid" : "37a08f65-5a79-4e17-8e19-0975d6531d64",
     "name" : "Serious",
     "abbreviation" : "4.2.8.1",
     "description" : "Use this domain for words related to being serious--not laughing or joking.",
     "searchKeys" : [ "serious, earnest, sober, solemn, somber, stodgy," ]
   },
   "4.2.9 Holiday" : {
+    "key" : "4.2.9",
+    "guid" : "4e791773-94c8-4667-93f8-92dc0100ddfe",
     "name" : "Holiday",
     "abbreviation" : "4.2.9",
     "description" : "Use this domain for words related to a holiday.",
@@ -6150,12 +7272,16 @@ var semanticDomains_en = {
         "free time, spare time, time off, time out, leisure time," ]
   },
   "4.2.9.1 Free time" : {
+    "key" : "4.2.9.1",
+    "guid" : "e791df50-8880-4080-a5ee-d4e58bb7b8ca",
     "name" : "Free time",
     "abbreviation" : "4.2.9.1",
     "description" : "Use this domain for words related to a holiday.",
     "searchKeys" : [ "free time, spare time, time off, time out, leisure time," ]
   },
   "4.3 Behavior" : {
+    "key" : "4.3",
+    "guid" : "8e11dd10-459b-4fb3-b876-7d80ec5f8a4d",
     "name" : "Behavior",
     "abbreviation" : "4.3",
     "description" : "Use this domain for general words referring to a person's behavior.",
@@ -6164,6 +7290,8 @@ var semanticDomains_en = {
         "behavior, antics, conduct, character, manner, demeanor, characteristic, air, bearing, behavior, carriage, comportment, course, custom, dealing, deportment, doings, etiquette, existence, life, manners, mien, trait, way of life, the way someone acts," ]
   },
   "4.3.1 Good, moral" : {
+    "key" : "4.3.1",
+    "guid" : "30e6b42c-6bbf-4659-99e7-aa4b8e68c9ce",
     "name" : "Good, moral",
     "abbreviation" : "4.3.1",
     "description" : "Use this domain for words related to being good or moral in behavior.",
@@ -6177,6 +7305,8 @@ var semanticDomains_en = {
         "improve, develop, reform," ]
   },
   "4.3.1.1 Bad, immoral" : {
+    "key" : "4.3.1.1",
+    "guid" : "744d1402-05f5-4491-9c15-a5af03595edb",
     "name" : "Bad, immoral",
     "abbreviation" : "4.3.1.1",
     "description" : "Use this domain for words related to being bad or immoral in behavior, and for words describing a bad person.",
@@ -6194,6 +7324,8 @@ var semanticDomains_en = {
         "tempt, corrupt, pervert, turn," ]
   },
   "4.3.1.2 Meet a standard" : {
+    "key" : "4.3.1.2",
+    "guid" : "a6797fd1-e368-422b-9710-96e0af39552d",
     "name" : "Meet a standard",
     "abbreviation" : "4.3.1.2",
     "description" : "Use this domain for words related to meeting a standard.",
@@ -6203,6 +7335,8 @@ var semanticDomains_en = {
         "acceptable, satisfactory, normal, pleasing, polite, well mannered" ]
   },
   "4.3.1.2.1 Below standard" : {
+    "key" : "4.3.1.2.1",
+    "guid" : "1461c106-d9e0-417d-9487-a57e6d0cced0",
     "name" : "Below standard",
     "abbreviation" : "4.3.1.2.1",
     "description" : "Use this domain for words related to behaving below a standard.",
@@ -6212,6 +7346,8 @@ var semanticDomains_en = {
         "unacceptable, dissatisfactory, abnormal, unpleasing, impolite, ill mannered, rude" ]
   },
   "4.3.1.3 Mature in behavior" : {
+    "key" : "4.3.1.3",
+    "guid" : "4260e110-7b04-4d40-9391-486a57aa3031",
     "name" : "Mature in behavior",
     "abbreviation" : "4.3.1.3",
     "description" : "Use this domain for words related to acting maturely--to act like an adult rather than a child.",
@@ -6220,6 +7356,8 @@ var semanticDomains_en = {
         "mature,", "maturely,", "mature (v), grow up," ]
   },
   "4.3.1.3.1 Immature in behavior" : {
+    "key" : "4.3.1.3.1",
+    "guid" : "2b846476-00cf-4d82-97a1-26e1eda880ca",
     "name" : "Immature in behavior",
     "abbreviation" : "4.3.1.3.1",
     "description" : "Use this domain for words related to behaving in an immature way--for either a child or an adult to act like a child.",
@@ -6231,12 +7369,16 @@ var semanticDomains_en = {
         "brat, nuisance, pest, bully," ]
   },
   "4.3.1.3.2 Sensible" : {
+    "key" : "4.3.1.3.2",
+    "guid" : "de1ffd73-af3b-47a2-8e98-ac1659a84cac",
     "name" : "Sensible",
     "abbreviation" : "4.3.1.3.2",
     "description" : "Use this domain for words related to being sensible--to think about what you do.",
     "searchKeys" : [ "sensible, thoughtful, astute, calculating, cautious, circumspect, discreet, discriminating, foresighted, judicious, logical, practical, pragmatic, prudent, rational, realistic, reasonable, sagacious, sane, sensible, sensibly, sensitive, sound, thoughtful, wholesome" ]
   },
   "4.3.1.4 Reputation" : {
+    "key" : "4.3.1.4",
+    "guid" : "cb783ad9-4650-416e-bf63-88c4ca43fe6a",
     "name" : "Reputation",
     "abbreviation" : "4.3.1.4",
     "description" : "Use this domain for words related to having a good reputation--when most people think well of someone because he does good things and doesn't do bad things.",
@@ -6249,6 +7391,8 @@ var semanticDomains_en = {
         "have a bad reputation, be of evil repute, be poorly thought of, have a bad name" ]
   },
   "4.3.1.5 Patient" : {
+    "key" : "4.3.1.5",
+    "guid" : "afc25fbb-9060-4af2-8225-3fddbab2227d",
     "name" : "Patient",
     "abbreviation" : "4.3.1.5",
     "description" : "Use this domain for words related to being patient--if you are patient, you don't get angry or do anything bad even though something bad happens to you for a long time.",
@@ -6259,6 +7403,8 @@ var semanticDomains_en = {
         "bearable, endurable, tolerable," ]
   },
   "4.3.1.5.1 Impatient" : {
+    "key" : "4.3.1.5.1",
+    "guid" : "8d490e91-6383-45ea-a3d7-b9c950822f98",
     "name" : "Impatient",
     "abbreviation" : "4.3.1.5.1",
     "description" : "Use this domain for words related to being impatient--if you are impatient, you get angry or do something bad when something bad happens to you for a long time.",
@@ -6267,6 +7413,8 @@ var semanticDomains_en = {
         "impatience, intolerance,", "intolerable," ]
   },
   "4.3.1.5.2 Bad-tempered" : {
+    "key" : "4.3.1.5.2",
+    "guid" : "93489181-ad8c-4a18-8dbc-fd7a9c871126",
     "name" : "Bad-tempered",
     "abbreviation" : "4.3.1.5.2",
     "description" : "Use this domain for words related to being bad-tempered--to behave in an angry, unfriendly way.",
@@ -6279,6 +7427,8 @@ var semanticDomains_en = {
         "grouch," ]
   },
   "4.3.2 Admire someone" : {
+    "key" : "4.3.2",
+    "guid" : "9b0fef63-5935-447d-801a-bb02dd6212bb",
     "name" : "Admire someone",
     "abbreviation" : "4.3.2",
     "description" : "Use this domain for words related to admiring someone--to feel good about someone because you think that he is a good person.",
@@ -6291,6 +7441,8 @@ var semanticDomains_en = {
         "admirable, estimable, honorable, idolized," ]
   },
   "4.3.2.1 Despise someone" : {
+    "key" : "4.3.2.1",
+    "guid" : "a2a3e21a-819c-4400-b2e6-e6c1a0a0ded3",
     "name" : "Despise someone",
     "abbreviation" : "4.3.2.1",
     "description" : "Use this domain for words related to despising someone--to feel bad about someone because you think they are not as good as you.",
@@ -6304,6 +7456,8 @@ var semanticDomains_en = {
         "contemptible, despicable, pitiable, pitiful, despised," ]
   },
   "4.3.2.2 Humble" : {
+    "key" : "4.3.2.2",
+    "guid" : "5d21b3f1-85d5-4999-af64-c4d0101050c0",
     "name" : "Humble",
     "abbreviation" : "4.3.2.2",
     "description" : "Use this domain for words related to being humble--to not think that you are better than other people, or to not think that you are better than you really are, and to not talk or act as if you were better than other people.",
@@ -6317,6 +7471,8 @@ var semanticDomains_en = {
         "put yourself down, run yourself down, sell yourself short, underestimate yourself," ]
   },
   "4.3.2.3 Proud" : {
+    "key" : "4.3.2.3",
+    "guid" : "18b3ca02-18fe-4ab5-8709-c20957a0a2fb",
     "name" : "Proud",
     "abbreviation" : "4.3.2.3",
     "description" : "Use this domain for words referring to being proud--to think that something or someone is very good and to feel very good about them, especially to think and feel very good about yourself--to think that you are better than others, to think that you are better than you really are, or to talk and act as if you were better than other people.",
@@ -6335,6 +7491,8 @@ var semanticDomains_en = {
         "put someone in their place, wipe the smile off someone's face, cut someone down to size," ]
   },
   "4.3.2.4 Show off" : {
+    "key" : "4.3.2.4",
+    "guid" : "054e81ce-abd8-4069-989d-13e2fa58851c",
     "name" : "Show off",
     "abbreviation" : "4.3.2.4",
     "description" : "Use this domain for words referring to showing off--to behave in a way that attracts people's attention because you want them to admire you.",
@@ -6345,6 +7503,8 @@ var semanticDomains_en = {
         "showiness, flashiness, ostentation," ]
   },
   "4.3.3 Love" : {
+    "key" : "4.3.3",
+    "guid" : "e7caa24f-155d-47cd-946d-cc0d06dfc764",
     "name" : "Love",
     "abbreviation" : "4.3.3",
     "description" : "Use this domain for words related to loving someone--to feel good about someone, want good things to happen to them, and want to do good things for them.",
@@ -6359,6 +7519,8 @@ var semanticDomains_en = {
         "unloved, unlovable," ]
   },
   "4.3.3.1 Hate, ill will" : {
+    "key" : "4.3.3.1",
+    "guid" : "642ff468-e6c8-4fd0-8f52-262efa8f7774",
     "name" : "Hate, ill will",
     "abbreviation" : "4.3.3.1",
     "description" : "Use this domain for words referring to hating someone--to want something bad to happen to someone, or to want to do something bad to someone.",
@@ -6369,6 +7531,8 @@ var semanticDomains_en = {
         "hated," ]
   },
   "4.3.3.2 Not care" : {
+    "key" : "4.3.3.2",
+    "guid" : "b553e989-2b2a-4b1e-a987-ae75f3862501",
     "name" : "Not care",
     "abbreviation" : "4.3.3.2",
     "description" : "Use this domain for words related to not caring about someone.",
@@ -6381,6 +7545,8 @@ var semanticDomains_en = {
         "not mind, not be fussy, it doesn't matter to me, it doesn't bother me, I'm easy, suit yourself, have no objection," ]
   },
   "4.3.3.3 Abandon" : {
+    "key" : "4.3.3.3",
+    "guid" : "611aa361-4ddd-450b-a152-94984a274575",
     "name" : "Abandon",
     "abbreviation" : "4.3.3.3",
     "description" : "Use this domain for words related to abandoning someone or something--to leave and not return to them.",
@@ -6393,6 +7559,8 @@ var semanticDomains_en = {
         "abandoned, forsaken, derelict, uncared-for," ]
   },
   "4.3.4 Do good to" : {
+    "key" : "4.3.4",
+    "guid" : "771e3882-f672-4e67-8580-edd82d7e5090",
     "name" : "Do good to",
     "abbreviation" : "4.3.4",
     "description" : "Use this domain for words referring to doing good to someone.",
@@ -6403,6 +7571,8 @@ var semanticDomains_en = {
         "consideration, courtesy, graciousness, kindness, kindliness, thoughtfulness" ]
   },
   "4.3.4.1 Do evil to" : {
+    "key" : "4.3.4.1",
+    "guid" : "ec79e90e-ecd3-497f-bc14-ac64181f53d7",
     "name" : "Do evil to",
     "abbreviation" : "4.3.4.1",
     "description" : "Use this domain for words related to doing evil to someone.",
@@ -6414,6 +7584,8 @@ var semanticDomains_en = {
         "harmless, innocuous, do no harm," ]
   },
   "4.3.4.2 Help" : {
+    "key" : "4.3.4.2",
+    "guid" : "87d344ac-94cc-49d6-9878-ebc86a933033",
     "name" : "Help",
     "abbreviation" : "4.3.4.2",
     "description" : "Use this domain for words related to helping someone.",
@@ -6424,12 +7596,16 @@ var semanticDomains_en = {
         "helpful, accommodating, cooperative, obliging," ]
   },
   "4.3.4.2.1 Hinder" : {
+    "key" : "4.3.4.2.1",
+    "guid" : "60e63d4a-702e-4238-a42b-d97f6be09c29",
     "name" : "Hinder",
     "abbreviation" : "4.3.4.2.1",
     "description" : "Use this domain for words related to hindering someone.",
     "searchKeys" : [ "hinder, hinder someone from, oppose, opposition, stand in opposition to, be antagonistic" ]
   },
   "4.3.4.3 Cooperate with" : {
+    "key" : "4.3.4.3",
+    "guid" : "50dfffe4-dfe8-445f-bdde-4cc8d83ebd6b",
     "name" : "Cooperate with",
     "abbreviation" : "4.3.4.3",
     "description" : "Use this domain for words related to cooperating with someone to do something.",
@@ -6438,6 +7614,8 @@ var semanticDomains_en = {
         "joint," ]
   },
   "4.3.4.3.1 Compete with" : {
+    "key" : "4.3.4.3.1",
+    "guid" : "92e441df-7e56-4e2c-b205-79a95800f567",
     "name" : "Compete with",
     "abbreviation" : "4.3.4.3.1",
     "description" : "Use this domain for words related to competing with someone.",
@@ -6447,12 +7625,16 @@ var semanticDomains_en = {
         "competitor, opposition, rival," ]
   },
   "4.3.4.4 Altruistic, selfless" : {
+    "key" : "4.3.4.4",
+    "guid" : "e6cf2c28-7630-41d7-835d-bd171ab67378",
     "name" : "Altruistic, selfless",
     "abbreviation" : "4.3.4.4",
     "description" : "Use this domain for words describing a person who acts in an altruistic, selfless manner--to act out of concern for the welfare of others without concern for your own welfare.",
     "searchKeys" : [ "altruistic, selfless, unselfish, thinks of others, self-sacrificing, benevolent, Good Samaritan" ]
   },
   "4.3.4.4.1 Selfish" : {
+    "key" : "4.3.4.4.1",
+    "guid" : "5dcf3ce8-aa00-4478-b00e-691549fa29e8",
     "name" : "Selfish",
     "abbreviation" : "4.3.4.4.1",
     "description" : "Use this domain for words related to being selfish.",
@@ -6462,12 +7644,16 @@ var semanticDomains_en = {
         "selfishness," ]
   },
   "4.3.4.4.2 Use a person" : {
+    "key" : "4.3.4.4.2",
+    "guid" : "a7e4f8a8-3fe3-4c86-85df-059f8983df26",
     "name" : "Use a person",
     "abbreviation" : "4.3.4.4.2",
     "description" : "Use this domain for words related to using someone for your own purpose or gain without helping them.",
     "searchKeys" : [ "use someone, take advantage of, exploit, take liberties, manipulate, wrap/twist someone around your little finger," ]
   },
   "4.3.4.5 Share with" : {
+    "key" : "4.3.4.5",
+    "guid" : "b5b36c31-c56d-44b9-933c-fe0e62d80c25",
     "name" : "Share with",
     "abbreviation" : "4.3.4.5",
     "description" : "Use this domain for words related to sharing with other people.",
@@ -6476,6 +7662,8 @@ var semanticDomains_en = {
         "take turns, take it in turns, share, alternate," ]
   },
   "4.3.4.5.1 Provide for, support" : {
+    "key" : "4.3.4.5.1",
+    "guid" : "0f323bee-0d8a-4564-9691-87880f55d910",
     "name" : "Provide for, support",
     "abbreviation" : "4.3.4.5.1",
     "description" : "Use this domain for words referring to providing someone with what they need to live each day, such as providing for an elderly parent who can no longer earn what they need.",
@@ -6485,6 +7673,8 @@ var semanticDomains_en = {
         "provisions, support (n), supply (n)" ]
   },
   "4.3.4.5.2 Care for" : {
+    "key" : "4.3.4.5.2",
+    "guid" : "50e28fa7-f6c3-45bc-871d-12ef771d532c",
     "name" : "Care for",
     "abbreviation" : "4.3.4.5.2",
     "description" : "Use this domain for words related to caring for someone--to do something good for someone, because they need something and cannot do it.",
@@ -6492,12 +7682,16 @@ var semanticDomains_en = {
         "caregiver" ]
   },
   "4.3.4.5.3 Entrust to the care of" : {
+    "key" : "4.3.4.5.3",
+    "guid" : "5d9ef67a-e4ba-47ca-8c8c-ea0f512a66cd",
     "name" : "Entrust to the care of",
     "abbreviation" : "4.3.4.5.3",
     "description" : "Use this domain for words related to entrusting something to the care of someone.",
     "searchKeys" : [ "entrust to the care of, assign, commend, commit, trust with" ]
   },
   "4.3.4.6 Meddle" : {
+    "key" : "4.3.4.6",
+    "guid" : "fe66d433-5135-498e-a29d-b42bf0317252",
     "name" : "Meddle",
     "abbreviation" : "4.3.4.6",
     "description" : "Use this domain for words referring to meddling--involving oneself in something that does not concern oneself, such as someone else's business or affairs, or a fight between other people.",
@@ -6506,6 +7700,8 @@ var semanticDomains_en = {
         "busybody, eavesdropper, interloper, intruder, meddler, snoop" ]
   },
   "4.3.4.6.1 Spoil" : {
+    "key" : "4.3.4.6.1",
+    "guid" : "57c9a370-0f46-4475-98fd-c7a8b3f5074c",
     "name" : "Spoil",
     "abbreviation" : "4.3.4.6.1",
     "description" : "Use this domain for words referring to spoiling something that is happening, such as an event, work, relationship, or feeling, by doing something that makes it less attractive, less enjoyable, or less effective--to do something bad to something that is happening, so that people can't do what they were doing or don't enjoy it as much.",
@@ -6519,12 +7715,16 @@ var semanticDomains_en = {
         "wet blanket, spoilsport, killjoy,", "unspoiled, unblemished," ]
   },
   "4.3.4.7 Enter by force" : {
+    "key" : "4.3.4.7",
+    "guid" : "9060339e-d697-4c35-bc83-ced6bebfee63",
     "name" : "Enter by force",
     "abbreviation" : "4.3.4.7",
     "description" : "Use this domain for words related to entering a place, such as a house, by force.",
     "searchKeys" : [ "enter by force, break in, force your way in, forcible entry," ]
   },
   "4.3.4.8 Kidnap" : {
+    "key" : "4.3.4.8",
+    "guid" : "b0e5042d-1ade-4fb1-a6fd-9a165f5c4763",
     "name" : "Kidnap",
     "abbreviation" : "4.3.4.8",
     "description" : "Use this domain for words related to kidnapping someone.",
@@ -6532,6 +7732,8 @@ var semanticDomains_en = {
         "kidnapping, abduction,", "kidnapper, abductor, snatcher" ]
   },
   "4.3.4.9 Cruel" : {
+    "key" : "4.3.4.9",
+    "guid" : "80b48f92-0a83-4eeb-bfe0-6980285feb65",
     "name" : "Cruel",
     "abbreviation" : "4.3.4.9",
     "description" : "Use this domain for words related to being cruel.",
@@ -6539,6 +7741,8 @@ var semanticDomains_en = {
         "cruelty," ]
   },
   "4.3.5 Honest" : {
+    "key" : "4.3.5",
+    "guid" : "7d54d3dd-5fb2-4640-9bcf-c234696af894",
     "name" : "Honest",
     "abbreviation" : "4.3.5",
     "description" : "Use this domain for words related to being honest--words describing someone who does not cheat, steal, or break the law.",
@@ -6546,12 +7750,16 @@ var semanticDomains_en = {
         "honesty, integrity," ]
   },
   "4.3.5.1 Dishonest" : {
+    "key" : "4.3.5.1",
+    "guid" : "5658ae3d-ea15-44db-bae4-47df792da12e",
     "name" : "Dishonest",
     "abbreviation" : "4.3.5.1",
     "description" : "Use this domain for words related to being dishonest.",
     "searchKeys" : [ "dishonest, lying, devious, sly, untrustworthy, sneaky, unscrupulous, have no scruples, corrupt, crooked" ]
   },
   "4.3.5.2 Faithful" : {
+    "key" : "4.3.5.2",
+    "guid" : "eea7c79b-6150-4aba-8105-a94b7e6aeab7",
     "name" : "Faithful",
     "abbreviation" : "4.3.5.2",
     "description" : "Use this domain for words related to being faithful--to continue to love and do good to someone so that they can always trust you.",
@@ -6561,6 +7769,8 @@ var semanticDomains_en = {
         "faithfulness, allegiance, devotion, fidelity, loyalty, solidarity," ]
   },
   "4.3.5.3 Reliable" : {
+    "key" : "4.3.5.3",
+    "guid" : "99ee1558-34b2-4a1b-bfd2-eb4ccbfe7728",
     "name" : "Reliable",
     "abbreviation" : "4.3.5.3",
     "description" : "Use this domain for words related to being reliable--words describe a person who can be relied on to do what he is supposed to.",
@@ -6569,12 +7779,16 @@ var semanticDomains_en = {
         "integrity,", "rely on, depend on" ]
   },
   "4.3.5.4 Unreliable" : {
+    "key" : "4.3.5.4",
+    "guid" : "81855f47-aa24-435d-a123-7dfe61c80702",
     "name" : "Unreliable",
     "abbreviation" : "4.3.5.4",
     "description" : "Use this domain for words related to being unreliable.",
     "searchKeys" : [ "be unreliable, untrustworthy, irresponsible, unfaithful, disloyal, treacherous, cheat on" ]
   },
   "4.3.5.5 Deceive" : {
+    "key" : "4.3.5.5",
+    "guid" : "a730d0b4-b6db-45ac-bf6e-cefc96ae3fbb",
     "name" : "Deceive",
     "abbreviation" : "4.3.5.5",
     "description" : "Use this domain for words related to deceiving someone.",
@@ -6587,6 +7801,8 @@ var semanticDomains_en = {
         "deceptive, fraudulent, cunning, treacherous" ]
   },
   "4.3.5.6 Hypocrite" : {
+    "key" : "4.3.5.6",
+    "guid" : "9bf21458-0acc-4d8d-ba9a-7b9fb6b8ee0b",
     "name" : "Hypocrite",
     "abbreviation" : "4.3.5.6",
     "description" : "Use this domain for words related to being a hypocrite.",
@@ -6595,6 +7811,8 @@ var semanticDomains_en = {
         "hypocrite, pretender, actor" ]
   },
   "4.3.6 Self-controlled" : {
+    "key" : "4.3.6",
+    "guid" : "8add7f4d-333b-4b2c-9999-48a14162152b",
     "name" : "Self-controlled",
     "abbreviation" : "4.3.6",
     "description" : "Use this domain for words referring to self-control--deciding not to do something that you want to do, because you think it would be bad to do it; or deciding to do something, because you know it is good.",
@@ -6608,6 +7826,8 @@ var semanticDomains_en = {
         "frugal, frugality, thrifty, thrift," ]
   },
   "4.3.6.1 Lack self-control" : {
+    "key" : "4.3.6.1",
+    "guid" : "3e546c11-bcb6-4024-b2f3-c15be40e257f",
     "name" : "Lack self-control",
     "abbreviation" : "4.3.6.1",
     "description" : "Use this domain for words related to a lack of self-control.",
@@ -6618,6 +7838,8 @@ var semanticDomains_en = {
         "addiction, debauchery, dissipation, excess, excitability, extravagance, gluttony, indulgence, intemperance, leniency, overindulgence," ]
   },
   "4.3.6.2 Tidy" : {
+    "key" : "4.3.6.2",
+    "guid" : "4acc430b-9c98-4a49-a8b4-15edc0f6d19b",
     "name" : "Tidy",
     "abbreviation" : "4.3.6.2",
     "description" : "Use this domain for words referring to being tidy in your habits, such as keeping your belongings neat and organized,.",
@@ -6628,6 +7850,8 @@ var semanticDomains_en = {
         "tidy, immaculate, just so, neat, shipshape, smart, trim, well-kept" ]
   },
   "4.3.6.3 Untidy" : {
+    "key" : "4.3.6.3",
+    "guid" : "9a9c7174-4148-43c2-875c-0d2f884a5fe3",
     "name" : "Untidy",
     "abbreviation" : "4.3.6.3",
     "description" : "Use this domain for words related to being untidy--to not keep your things tidy and orderly.",
@@ -6641,6 +7865,8 @@ var semanticDomains_en = {
         "mess, clutter" ]
   },
   "4.3.6.4 Mistake" : {
+    "key" : "4.3.6.4",
+    "guid" : "cd8b2a8b-687b-42e9-91e7-cfb8812b64ee",
     "name" : "Mistake",
     "abbreviation" : "4.3.6.4",
     "description" : "Use this domain for words referring to mistakes--something bad that someone does by accident.",
@@ -6655,6 +7881,8 @@ var semanticDomains_en = {
         "trip someone up, catch someone out,", "oops," ]
   },
   "4.3.7 Polite" : {
+    "key" : "4.3.7",
+    "guid" : "721e2ee8-7ea5-4d17-94cc-d77d8e92bd27",
     "name" : "Polite",
     "abbreviation" : "4.3.7",
     "description" : "Use this domain for words related to social refinement.",
@@ -6665,12 +7893,16 @@ var semanticDomains_en = {
         "good, well-behaved, well-brought up" ]
   },
   "4.3.7.1 Impolite" : {
+    "key" : "4.3.7.1",
+    "guid" : "f4ec8f2e-f89e-40c1-ae50-900927d20af6",
     "name" : "Impolite",
     "abbreviation" : "4.3.7.1",
     "description" : "Use this domain for words related to being impolite.",
     "searchKeys" : [ "rude, impolite, ill-mannered, discourteous, unpleasant, offensive, loutish, churlish, impudent, cheeky, impertinent, insolent, disrespectful, sassy" ]
   },
   "4.3.7.2 Crazy" : {
+    "key" : "4.3.7.2",
+    "guid" : "fc193988-26ca-49e9-849a-b12456d98792",
     "name" : "Crazy",
     "abbreviation" : "4.3.7.2",
     "description" : "Use this domain for words related to being crazy--to act stupid or strange.",
@@ -6686,6 +7918,8 @@ var semanticDomains_en = {
         "drive someone crazy, drive someone nuts, drive someone mad, drive someone round the bend," ]
   },
   "4.3.8 Change behavior" : {
+    "key" : "4.3.8",
+    "guid" : "bce3f390-452c-4ca9-8c36-5fbcfd6b4755",
     "name" : "Change behavior",
     "abbreviation" : "4.3.8",
     "description" : "Use this domain for words related to changing your behavior either for the better or for the worse.",
@@ -6696,24 +7930,32 @@ var semanticDomains_en = {
         "change someone, discipline, train, reform someone, influence, have a good/bad influence on someone, turn someone toward/away from something" ]
   },
   "4.3.8.1 Conform" : {
+    "key" : "4.3.8.1",
+    "guid" : "0efe342d-4969-4bd1-95be-556f6c62adfc",
     "name" : "Conform",
     "abbreviation" : "4.3.8.1",
     "description" : "Use this domain for words related to conforming to the behavior of others--to try to behave the same way as other people, or to try to behave the way other people want you to act.",
     "searchKeys" : [ "conform,", "conventional," ]
   },
   "4.3.9 Culture" : {
+    "key" : "4.3.9",
+    "guid" : "73a59333-134f-4a1d-aba7-e134bdefe059",
     "name" : "Culture",
     "abbreviation" : "4.3.9",
     "description" : "Use this domain for general words referring to culture--the way a group of people (such as a tribe) behaves that is different from other groups.",
     "searchKeys" : [ "culture, cultural norm, civilization" ]
   },
   "4.3.9.1 Custom" : {
+    "key" : "4.3.9.1",
+    "guid" : "f5567550-e3c9-4589-8f88-8159eadcd194",
     "name" : "Custom",
     "abbreviation" : "4.3.9.1",
     "description" : "Use this domain for words referring to customs--a particular practice of a cultural group.",
     "searchKeys" : [ "custom, convention, tradition, (our) way, praxis," ]
   },
   "4.3.9.2 Habit" : {
+    "key" : "4.3.9.2",
+    "guid" : "6a6bbf65-b521-4b74-bf35-dede87217d3c",
     "name" : "Habit",
     "abbreviation" : "4.3.9.2",
     "description" : "Use this domain for words referring to a habit--a pattern of behavior of a person; something a person does frequently or regularly.",
@@ -6722,12 +7964,16 @@ var semanticDomains_en = {
         "have a habit of doing something, out of habit, from habit, force of habit, be accustomed to" ]
   },
   "4.4 Prosperity, trouble" : {
+    "key" : "4.4",
+    "guid" : "9bb173c6-cf38-47cd-803f-ebdf964ca2fc",
     "name" : "Prosperity, trouble",
     "abbreviation" : "4.4",
     "description" : "Use this domain for general words referring to prosperity and trouble",
     "searchKeys" : [ "prosperity and trouble, good and evil, ying and yang" ]
   },
   "4.4.1 Prosperity" : {
+    "key" : "4.4.1",
+    "guid" : "c1144a6e-3fce-4084-93d6-6f305eda8b1f",
     "name" : "Prosperity",
     "abbreviation" : "4.4.1",
     "description" : "Use this domain for words related to prosperity--when good things are happening.",
@@ -6737,6 +7983,8 @@ var semanticDomains_en = {
         "good, blessed, fortunate, easy, prosperous, carefree, trouble free, quality, plentiful, fun-filled, fantastic, great, full, fruitful, productive, enjoyable, happy, wonderful" ]
   },
   "4.4.2 Trouble" : {
+    "key" : "4.4.2",
+    "guid" : "01459db0-bf2a-422b-8d55-0ab505aea2b4",
     "name" : "Trouble",
     "abbreviation" : "4.4.2",
     "description" : "Use this domain for words referring to bad things that happen in life.",
@@ -6746,6 +7994,8 @@ var semanticDomains_en = {
         "war, famine, disaster, accident, sickness, injury, death, conflict, harm, destruction, oppression" ]
   },
   "4.4.2.1 Problem" : {
+    "key" : "4.4.2.1",
+    "guid" : "4c823e93-3966-461f-bd64-3a9303966338",
     "name" : "Problem",
     "abbreviation" : "4.4.2.1",
     "description" : "Use this domain for words related to problems.",
@@ -6754,6 +8004,8 @@ var semanticDomains_en = {
         "solve, resolve, figure out" ]
   },
   "4.4.2.2 Danger" : {
+    "key" : "4.4.2.2",
+    "guid" : "e0e83cc9-b876-47f6-8e66-60c9c505b927",
     "name" : "Danger",
     "abbreviation" : "4.4.2.2",
     "description" : "Use this domain for words referring to danger--things and events that threaten to inflict damage, pain, or death.",
@@ -6762,6 +8014,8 @@ var semanticDomains_en = {
         "safe, harmless, out of harm's way" ]
   },
   "4.4.2.3 Accident" : {
+    "key" : "4.4.2.3",
+    "guid" : "9ec62ffe-69be-4b9b-944c-29a0f4f133db",
     "name" : "Accident",
     "abbreviation" : "4.4.2.3",
     "description" : "Use this domain for words related to accidents--something bad that happens without anyone wanting it to happen or doing anything to cause it to happen.",
@@ -6771,6 +8025,8 @@ var semanticDomains_en = {
         "accidental" ]
   },
   "4.4.2.4 Disaster" : {
+    "key" : "4.4.2.4",
+    "guid" : "c8c8b1f6-a898-4d5b-a1ce-fa7284915e8f",
     "name" : "Disaster",
     "abbreviation" : "4.4.2.4",
     "description" : "Use this domain for words related to a disaster.",
@@ -6781,12 +8037,16 @@ var semanticDomains_en = {
         "epidemic (of disease), forest/grass fire, storm, famine, plague (of insects), earthquake, war" ]
   },
   "4.4.2.5 Separate, alone" : {
+    "key" : "4.4.2.5",
+    "guid" : "97885cab-cd96-4d34-a62a-3e3daac0c165",
     "name" : "Separate, alone",
     "abbreviation" : "4.4.2.5",
     "description" : "Use this domain for words referring to a person being separate or alone.",
     "searchKeys" : [ "be separate, alone, lonely, isolated, hermit, recluse, cloistered, sanctified, singular, bachelor, old maid, orphan, be by yourself, cut off from people, marooned, remote, distant" ]
   },
   "4.4.2.6 Suffer" : {
+    "key" : "4.4.2.6",
+    "guid" : "9a7604b4-d42f-44b7-9aef-47847dc93f0b",
     "name" : "Suffer",
     "abbreviation" : "4.4.2.6",
     "description" : "Use this domain for words related to suffering--to feel very bad because of something very bad that has happened to you.",
@@ -6803,12 +8063,16 @@ var semanticDomains_en = {
         "masochist, martyr, be a glutton for punishment," ]
   },
   "4.4.3 Respond to trouble" : {
+    "key" : "4.4.3",
+    "guid" : "65bb0844-9a71-4eec-9b86-bf4b4b508a28",
     "name" : "Respond to trouble",
     "abbreviation" : "4.4.3",
     "description" : "Use this domain for words related to responding to trouble.",
     "searchKeys" : [ "cry for help, rise to the occasion, respond, take action, deal with" ]
   },
   "4.4.3.1 Brave" : {
+    "key" : "4.4.3.1",
+    "guid" : "76a4a286-1c8a-4c4a-9eaf-dca040be574a",
     "name" : "Brave",
     "abbreviation" : "4.4.3.1",
     "description" : "Use this domain for words describing someone who is brave--not afraid to do something dangerous.",
@@ -6820,6 +8084,8 @@ var semanticDomains_en = {
         "be brave enough to do something, dare, have the guts to do something, have the nerve to do something, pluck up the courage to do something, have the courage of your convictions," ]
   },
   "4.4.3.2 Cowardice" : {
+    "key" : "4.4.3.2",
+    "guid" : "401bbbe4-a33a-4a1e-b26a-18a756e002c4",
     "name" : "Cowardice",
     "abbreviation" : "4.4.3.2",
     "description" : "Use this domain for words related to feeling cowardly--to be afraid to do something because you think something bad might happen to you.",
@@ -6834,12 +8100,16 @@ var semanticDomains_en = {
         "cower," ]
   },
   "4.4.3.3 Avoid" : {
+    "key" : "4.4.3.3",
+    "guid" : "20fadd54-6cec-4bb3-a47c-66c29aaff227",
     "name" : "Avoid",
     "abbreviation" : "4.4.3.3",
     "description" : "Use this domain for words related to avoiding something bad, such as trouble or someone you don't want to meet.",
     "searchKeys" : [ "avoid trouble, avoid adversity, retreat, appease, to run away" ]
   },
   "4.4.3.4 Caution" : {
+    "key" : "4.4.3.4",
+    "guid" : "a90e47fb-667c-46f7-beab-5ec4e9e6edb5",
     "name" : "Caution",
     "abbreviation" : "4.4.3.4",
     "description" : "Use this domain for words related to being cautious.",
@@ -6847,24 +8117,32 @@ var semanticDomains_en = {
         "incautious, rash, impetuous" ]
   },
   "4.4.3.5 Solve a problem" : {
+    "key" : "4.4.3.5",
+    "guid" : "05811fbe-2361-4219-a5d3-be3dc487f6fa",
     "name" : "Solve a problem",
     "abbreviation" : "4.4.3.5",
     "description" : "Use this domain for words related to solving a problem.",
     "searchKeys" : [ "solve, resolve, put right, find a solution, rectify" ]
   },
   "4.4.3.6 Endure" : {
+    "key" : "4.4.3.6",
+    "guid" : "2aabd548-5ee2-4962-8f10-84d1b0427c41",
     "name" : "Endure",
     "abbreviation" : "4.4.3.6",
     "description" : "Use this domain for words related to enduring a problem.",
     "searchKeys" : [ "endure, stand, bear, put up with" ]
   },
   "4.4.3.7 Survive" : {
+    "key" : "4.4.3.7",
+    "guid" : "7babf463-5e62-4a82-96d3-ef5989803c41",
     "name" : "Survive",
     "abbreviation" : "4.4.3.7",
     "description" : "Use this domain for words referring to surviving--to live through a time of danger.",
     "searchKeys" : [ "survive, live through, last, remain, survivor, escape, squeak by, make it" ]
   },
   "4.4.4 Respond to someone in trouble" : {
+    "key" : "4.4.4",
+    "guid" : "3dd684e6-75d9-41f4-aaa3-fb0cb3c7d400",
     "name" : "Respond to someone in trouble",
     "abbreviation" : "4.4.4",
     "description" : "Use this domain for words related to responding to someone in trouble.",
@@ -6872,6 +8150,8 @@ var semanticDomains_en = {
         "response, help, aid" ]
   },
   "4.4.4.1 Mercy" : {
+    "key" : "4.4.4.1",
+    "guid" : "51c2e2e4-438c-414b-bd15-773b664dd289",
     "name" : "Mercy",
     "abbreviation" : "4.4.4.1",
     "description" : "Use this domain for words related to having mercy on someone who has done something bad.",
@@ -6883,18 +8163,24 @@ var semanticDomains_en = {
         "pitiable," ]
   },
   "4.4.4.2 Show sympathy, support" : {
+    "key" : "4.4.4.2",
+    "guid" : "7ec98665-275f-4d57-8022-2740b9e90059",
     "name" : "Show sympathy, support",
     "abbreviation" : "4.4.4.2",
     "description" : "Use this domain for words related to showing sympathy and support to someone in trouble.",
     "searchKeys" : [ "feel sympathy, empathize with, feel with, sympathetic, comfort, console, compassion," ]
   },
   "4.4.4.3 Gentle" : {
+    "key" : "4.4.4.3",
+    "guid" : "65926a7a-bc46-4a40-a2c9-bf84696a3903",
     "name" : "Gentle",
     "abbreviation" : "4.4.4.3",
     "description" : "Use this domain for words related to being gentle.",
     "searchKeys" : [ "be gentle, careful, mild" ]
   },
   "4.4.4.4 Save from trouble" : {
+    "key" : "4.4.4.4",
+    "guid" : "06ac577a-4d61-4898-ac9d-e3f18b7504af",
     "name" : "Save from trouble",
     "abbreviation" : "4.4.4.4",
     "description" : "Use this domain for words related to saving someone or something from trouble (something bad is happening) or danger (something bad will happen).",
@@ -6907,6 +8193,8 @@ var semanticDomains_en = {
         "safety, place of safety, refuge, sanctuary, shelter, safe house, safe harbor, haven, stronghold, asylum, hideout, retreat" ]
   },
   "4.4.4.5 Protect" : {
+    "key" : "4.4.4.5",
+    "guid" : "0a42fd83-3b30-4c85-bb68-f5132e9ffeee",
     "name" : "Protect",
     "abbreviation" : "4.4.4.5",
     "description" : "Use this domain for words related to protecting someone from danger or being hurt.",
@@ -6917,12 +8205,16 @@ var semanticDomains_en = {
         "armor, shield, guard," ]
   },
   "4.4.4.6 Free from bondage" : {
+    "key" : "4.4.4.6",
+    "guid" : "6c282031-f1ca-492a-b94c-b48e74e6f25d",
     "name" : "Free from bondage",
     "abbreviation" : "4.4.4.6",
     "description" : "Use this domain for words related to freeing someone from bondage.",
     "searchKeys" : [ "liberated, be free, unfettered, unbound, unchained, unleashed, pardoned, release (n), released, reprieve, parole, unrestrained, licensed, authorized, unconfined" ]
   },
   "4.4.4.7 Relief" : {
+    "key" : "4.4.4.7",
+    "guid" : "290f0994-ce8e-4922-975f-fa091f566823",
     "name" : "Relief",
     "abbreviation" : "4.4.4.7",
     "description" : "Use this domain for words related to relief.",
@@ -6931,12 +8223,16 @@ var semanticDomains_en = {
         "relief" ]
   },
   "4.4.4.8 Risk" : {
+    "key" : "4.4.4.8",
+    "guid" : "0eda983b-633e-4b11-b5c8-28be60067782",
     "name" : "Risk",
     "abbreviation" : "4.4.4.8",
     "description" : "Use this domain for words referring to risk--exposing oneself or something to danger.",
     "searchKeys" : [ "risk, run a risk, expose (oneself to danger), hazard, wager, dare" ]
   },
   "4.4.5 Chance" : {
+    "key" : "4.4.5",
+    "guid" : "b5499348-b8ca-4fae-8486-b23863560ae5",
     "name" : "Chance",
     "abbreviation" : "4.4.5",
     "description" : "Use this domain for words related to chance--when something happens that no one intended.",
@@ -6944,6 +8240,8 @@ var semanticDomains_en = {
         "superstition, superstitious," ]
   },
   "4.4.5.1 Lucky" : {
+    "key" : "4.4.5.1",
+    "guid" : "99b40843-54bf-4c59-ae1d-d7146cebec48",
     "name" : "Lucky",
     "abbreviation" : "4.4.5.1",
     "description" : "Use this domain for words related to being lucky.",
@@ -6957,6 +8255,8 @@ var semanticDomains_en = {
         "knock on wood, touch wood, keep your fingers crossed," ]
   },
   "4.4.5.2 Unlucky" : {
+    "key" : "4.4.5.2",
+    "guid" : "ce6a862d-a4bb-4378-b14d-439806870c41",
     "name" : "Unlucky",
     "abbreviation" : "4.4.5.2",
     "description" : "Use this domain for words related to being unlucky.",
@@ -6968,30 +8268,40 @@ var semanticDomains_en = {
         "bad luck, misfortune, bit of bad luck, hard luck," ]
   },
   "4.5 Authority" : {
+    "key" : "4.5",
+    "guid" : "aad7c9b0-aff3-4684-86d5-657a20e39288",
     "name" : "Authority",
     "abbreviation" : "4.5",
     "description" : "Use this domain for words related to authority.",
     "searchKeys" : [ "authority, power, dominion, hegemony, control, right" ]
   },
   "4.5.1 Person in authority" : {
+    "key" : "4.5.1",
+    "guid" : "67087306-0211-4c28-b17e-0b6827723f07",
     "name" : "Person in authority",
     "abbreviation" : "4.5.1",
     "description" : "Use this domain for words related to a person in authority.",
     "searchKeys" : [ "person in authority, authority, authority figure, person in charge, leader, boss, captain, director, chairman, chairperson, head, figurehead, master" ]
   },
   "4.5.2 Have authority" : {
+    "key" : "4.5.2",
+    "guid" : "b8f59ddd-48de-4b3d-af47-687c9237ccd9",
     "name" : "Have authority",
     "abbreviation" : "4.5.2",
     "description" : "Use this domain for words related to having authority.",
     "searchKeys" : [ "have authority, be in authority, be in charge" ]
   },
   "4.5.3 Exercise authority" : {
+    "key" : "4.5.3",
+    "guid" : "577017b0-ae87-4fa2-a51b-4f430497be75",
     "name" : "Exercise authority",
     "abbreviation" : "4.5.3",
     "description" : "Use this domain for words related to exercising authority.",
     "searchKeys" : [ "exercise authority, use authority, authorize, strict, severe" ]
   },
   "4.5.3.1 Lead" : {
+    "key" : "4.5.3.1",
+    "guid" : "f70907c6-a064-425a-830f-e669319c38da",
     "name" : "Lead",
     "abbreviation" : "4.5.3.1",
     "description" : "Use this domain for words referring to one person leading or controlling other people because they have authority over them.",
@@ -7000,18 +8310,24 @@ var semanticDomains_en = {
         "leader," ]
   },
   "4.5.3.2 Command" : {
+    "key" : "4.5.3.2",
+    "guid" : "94f919c2-bf8b-4ae5-a611-8c0cd4d7a5d2",
     "name" : "Command",
     "abbreviation" : "4.5.3.2",
     "description" : "Use this domain for words related to commanding someone to do something.",
     "searchKeys" : [ "command, order, direct, impel, prescribe," ]
   },
   "4.5.3.3 Discipline, train" : {
+    "key" : "4.5.3.3",
+    "guid" : "a84a5ffc-006c-4d29-b71f-5215cc40a5a8",
     "name" : "Discipline, train",
     "abbreviation" : "4.5.3.3",
     "description" : "Use this domain for words related to disciplining someone.",
     "searchKeys" : [ "discipline, train, drill, prepare, train, control, strict, severe" ]
   },
   "4.5.3.4 Appoint, delegate" : {
+    "key" : "4.5.3.4",
+    "guid" : "bf0bdeeb-564d-407b-8bdf-31221aff7364",
     "name" : "Appoint, delegate",
     "abbreviation" : "4.5.3.4",
     "description" : "Use this domain for words related to appointing someone to a position of authority, or delegating authority to someone.",
@@ -7020,12 +8336,16 @@ var semanticDomains_en = {
         "responsible" ]
   },
   "4.5.4 Submit to authority" : {
+    "key" : "4.5.4",
+    "guid" : "b0a9a631-e0dc-47d4-a762-e9a627732218",
     "name" : "Submit to authority",
     "abbreviation" : "4.5.4",
     "description" : "Use this domain for words related to submitting to authority.",
     "searchKeys" : [ "submit to authority, obey, law abiding" ]
   },
   "4.5.4.1 Obey" : {
+    "key" : "4.5.4.1",
+    "guid" : "b632b00b-b03f-4549-8e02-6402c05a4f06",
     "name" : "Obey",
     "abbreviation" : "4.5.4.1",
     "description" : "Use this domain for words related to obeying someone.",
@@ -7034,6 +8354,8 @@ var semanticDomains_en = {
         "obedient, law-abiding, submissive, compliant" ]
   },
   "4.5.4.2 Disobey" : {
+    "key" : "4.5.4.2",
+    "guid" : "28ba8f5c-5baa-4500-a6f5-be292caa673f",
     "name" : "Disobey",
     "abbreviation" : "4.5.4.2",
     "description" : "Use this domain for words related to disobeying someone.",
@@ -7042,6 +8364,8 @@ var semanticDomains_en = {
         "disobedient, law breaking, unsubmissive, rebellious" ]
   },
   "4.5.4.3 Serve" : {
+    "key" : "4.5.4.3",
+    "guid" : "430ce279-1464-4d55-8483-5525a3c3094d",
     "name" : "Serve",
     "abbreviation" : "4.5.4.3",
     "description" : "Use this domain for words related to serving someone.",
@@ -7050,6 +8374,8 @@ var semanticDomains_en = {
         "butler, maid, chambermaid, housemaid, houseboy," ]
   },
   "4.5.4.4 Slave" : {
+    "key" : "4.5.4.4",
+    "guid" : "e1ac83c2-352f-4a2e-9612-99e66d6d3d0c",
     "name" : "Slave",
     "abbreviation" : "4.5.4.4",
     "description" : "Use this domain for words referring to a slave--a person owned by another and obligated to work without wages.",
@@ -7057,6 +8383,8 @@ var semanticDomains_en = {
         "slavery, bondage, servitude" ]
   },
   "4.5.4.5 Follow, be a disciple" : {
+    "key" : "4.5.4.5",
+    "guid" : "896d57d4-4c25-4f0b-9985-a30974f64704",
     "name" : "Follow, be a disciple",
     "abbreviation" : "4.5.4.5",
     "description" : "Use this domain for words related to being a disciple of someone.",
@@ -7064,6 +8392,8 @@ var semanticDomains_en = {
         "disciple, adherent, devotee, follower, imitator, learner, proselyte" ]
   },
   "4.5.4.6 Rebel against authority" : {
+    "key" : "4.5.4.6",
+    "guid" : "c60cf6a1-7868-4536-ac73-387bfa26e04b",
     "name" : "Rebel against authority",
     "abbreviation" : "4.5.4.6",
     "description" : "Use this domain for words related to rebelling against authority.",
@@ -7080,12 +8410,16 @@ var semanticDomains_en = {
         "put down, suppress," ]
   },
   "4.5.4.7 Independent" : {
+    "key" : "4.5.4.7",
+    "guid" : "e9947962-a243-4a44-a94d-64d68718d88c",
     "name" : "Independent",
     "abbreviation" : "4.5.4.7",
     "description" : "Use this domain for words related to being independent.",
     "searchKeys" : [ "independent, sovereign, self-governing" ]
   },
   "4.5.5 Honor" : {
+    "key" : "4.5.5",
+    "guid" : "4a8c6c2e-7a8f-4dd6-97d3-20a35d7d10e9",
     "name" : "Honor",
     "abbreviation" : "4.5.5",
     "description" : "Use this domain for words related to honoring someone.",
@@ -7094,6 +8428,8 @@ var semanticDomains_en = {
         "bow, prostrate" ]
   },
   "4.5.5.1 Title, name of honor" : {
+    "key" : "4.5.5.1",
+    "guid" : "bc61bd8d-295b-4965-a183-703d21a56996",
     "name" : "Title, name of honor",
     "abbreviation" : "4.5.5.1",
     "description" : "Use this domain for words related to a title of honor.",
@@ -7101,12 +8437,16 @@ var semanticDomains_en = {
         "your honor, your majesty, your grace, sir, mister, madam, ma'am" ]
   },
   "4.5.5.2 Lack respect" : {
+    "key" : "4.5.5.2",
+    "guid" : "bd9bb361-3c12-4c70-8098-40b0df9824ce",
     "name" : "Lack respect",
     "abbreviation" : "4.5.5.2",
     "description" : "Use this domain for words related to lacking respect.",
     "searchKeys" : [ "lack respect, show disrespect, disrespectful, dishonor, despise" ]
   },
   "4.5.6 Status" : {
+    "key" : "4.5.6",
+    "guid" : "785e7f1f-21ed-46b6-8599-c6ced4fd26d8",
     "name" : "Status",
     "abbreviation" : "4.5.6",
     "description" : "Use this domain for words related to a person's social status.",
@@ -7116,6 +8456,8 @@ var semanticDomains_en = {
         "promote, upgrade, elevate," ]
   },
   "4.5.6.1 High status" : {
+    "key" : "4.5.6.1",
+    "guid" : "a977c4b6-1004-448f-b6b0-daf5ce87d76d",
     "name" : "High status",
     "abbreviation" : "4.5.6.1",
     "description" : "Use this domain for words related to high social status.",
@@ -7124,6 +8466,8 @@ var semanticDomains_en = {
         "sir, my lord, gentleman, lady" ]
   },
   "4.5.6.2 Low status" : {
+    "key" : "4.5.6.2",
+    "guid" : "9ed42115-8532-4f99-b0c0-36abfe9db652",
     "name" : "Low status",
     "abbreviation" : "4.5.6.2",
     "description" : "Use this domain for words related to low social status.",
@@ -7135,6 +8479,8 @@ var semanticDomains_en = {
         "be reduced in status, humble, reduce in rank, bust (in rank), debase, degrade, demote" ]
   },
   "4.6 Government" : {
+    "key" : "4.6",
+    "guid" : "7558d071-a885-447b-9aa2-604c29669492",
     "name" : "Government",
     "abbreviation" : "4.6",
     "description" : "Use this domain for words related to government.",
@@ -7146,6 +8492,8 @@ var semanticDomains_en = {
         "flag, official seal, crown, scepter, throne, regalia," ]
   },
   "4.6.1 Ruler" : {
+    "key" : "4.6.1",
+    "guid" : "7ddbd56f-e458-4a72-a9bc-9b7db6bde75a",
     "name" : "Ruler",
     "abbreviation" : "4.6.1",
     "description" : "Use this domain for words related to the ruler of a country.",
@@ -7160,6 +8508,8 @@ var semanticDomains_en = {
         "abdicate, resign, overthrow, leave office," ]
   },
   "4.6.1.1 King's family" : {
+    "key" : "4.6.1.1",
+    "guid" : "ded0e58d-8ad7-4909-b0f1-b9ab9c10bb0d",
     "name" : "King's family",
     "abbreviation" : "4.6.1.1",
     "description" : "Use this domain for words related to the king's family.",
@@ -7170,6 +8520,8 @@ var semanticDomains_en = {
         "royal, queenly, princely, noble" ]
   },
   "4.6.1.2 Government official" : {
+    "key" : "4.6.1.2",
+    "guid" : "5f3e44b8-e94c-49b4-9e2d-1acd93dddf75",
     "name" : "Government official",
     "abbreviation" : "4.6.1.2",
     "description" : "Use this domain for words related to a government official.",
@@ -7178,6 +8530,8 @@ var semanticDomains_en = {
         "position, post, office," ]
   },
   "4.6.2 Citizen" : {
+    "key" : "4.6.2",
+    "guid" : "134c68a9-ac3f-4b7e-8fca-63642d796a75",
     "name" : "Citizen",
     "abbreviation" : "4.6.2",
     "description" : "Use this domain for words related to a citizen of a country.",
@@ -7190,6 +8544,8 @@ var semanticDomains_en = {
         "demography", "inhabitant, resident" ]
   },
   "4.6.2.1 Foreigner" : {
+    "key" : "4.6.2.1",
+    "guid" : "d2f516f4-df1c-44f6-8704-76dd52201317",
     "name" : "Foreigner",
     "abbreviation" : "4.6.2.1",
     "description" : "Use this domain for words related to a foreigner--a person who visits or lives in a country but is not a citizen.",
@@ -7197,30 +8553,40 @@ var semanticDomains_en = {
         "stranger", "foreign, overseas,", "abroad, overseas," ]
   },
   "4.6.3 Government organization" : {
+    "key" : "4.6.3",
+    "guid" : "562f55de-efc7-41a7-b450-6f9dea2813e2",
     "name" : "Government organization",
     "abbreviation" : "4.6.3",
     "description" : "Use this domain for words related to a government organization.",
     "searchKeys" : [ "government organization, ministry, department, branch, agency" ]
   },
   "4.6.3.1 Governing body" : {
+    "key" : "4.6.3.1",
+    "guid" : "f9935962-9a14-485d-9bef-bd4a52dd92c1",
     "name" : "Governing body",
     "abbreviation" : "4.6.3.1",
     "description" : "Use this domain for words related to a governing body--an organization within the government.",
     "searchKeys" : [ "governing body, congress, parliament, legislature, court, cabinet, council, ministry, department" ]
   },
   "4.6.4 Rule" : {
+    "key" : "4.6.4",
+    "guid" : "ff0a16f2-c44d-4ed4-9520-c214acfb68e5",
     "name" : "Rule",
     "abbreviation" : "4.6.4",
     "description" : "Use this domain for words related to ruling.",
     "searchKeys" : [ "rule, reign, be in power" ]
   },
   "4.6.5 Subjugate" : {
+    "key" : "4.6.5",
+    "guid" : "bf007cd9-925d-4073-a1d6-16d64a45ca25",
     "name" : "Subjugate",
     "abbreviation" : "4.6.5",
     "description" : "Use this domain for words related to a person subjugating someone to their authority.",
     "searchKeys" : [ "subjugate, subject (someone) to authority" ]
   },
   "4.6.6 Government functions" : {
+    "key" : "4.6.6",
+    "guid" : "5e7a5899-df78-4aa7-bec9-b354acfe087f",
     "name" : "Government functions",
     "abbreviation" : "4.6.6",
     "description" : "Use this domain for words related to government functions--the things a government does.",
@@ -7229,6 +8595,8 @@ var semanticDomains_en = {
         "mail, post, post office, stamp, postman, postal" ]
   },
   "4.6.6.1 Police" : {
+    "key" : "4.6.6.1",
+    "guid" : "16d2c60a-52d7-4ec5-a5b1-c559dc078bf3",
     "name" : "Police",
     "abbreviation" : "4.6.6.1",
     "description" : "Use this domain for words related to the police.",
@@ -7239,6 +8607,8 @@ var semanticDomains_en = {
         "police station, precinct, beat," ]
   },
   "4.6.6.1.1 Arrest" : {
+    "key" : "4.6.6.1.1",
+    "guid" : "0448c78b-dbb7-417c-afc5-b227a1475825",
     "name" : "Arrest",
     "abbreviation" : "4.6.6.1.1",
     "description" : "Use this domain for words related to arresting a criminal.",
@@ -7248,18 +8618,24 @@ var semanticDomains_en = {
         "arraign, book, lock up, imprison, put behind bars, handcuff, chain" ]
   },
   "4.6.6.1.2 Informal justice" : {
+    "key" : "4.6.6.1.2",
+    "guid" : "d7349bac-efc0-41ba-ba60-f23d38e97a36",
     "name" : "Informal justice",
     "abbreviation" : "4.6.6.1.2",
     "description" : "Use this domain for words related to informal justice--punishing someone when you are not in a position of authority, as when a mob catches and kills a criminal.",
     "searchKeys" : [ "informal justice, mob justice, lynch" ]
   },
   "4.6.6.2 Diplomacy" : {
+    "key" : "4.6.6.2",
+    "guid" : "8b6aecfb-071d-439d-9ee0-efa3c57967a0",
     "name" : "Diplomacy",
     "abbreviation" : "4.6.6.2",
     "description" : "Use this domain for words related to diplomacy between nations.",
     "searchKeys" : [ "diplomacy, diplomatic corps, ambassador, (king's) representative, Secretary of State, treaty, international relations," ]
   },
   "4.6.6.3 Represent" : {
+    "key" : "4.6.6.3",
+    "guid" : "57ed66ee-f82b-4e80-955f-7492d85372b0",
     "name" : "Represent",
     "abbreviation" : "4.6.6.3",
     "description" : "Use this domain for words related to representing another person.",
@@ -7271,12 +8647,16 @@ var semanticDomains_en = {
         "ambassador, ambassador, embassy, diplomat, diplomatic," ]
   },
   "4.6.6.4 Election" : {
+    "key" : "4.6.6.4",
+    "guid" : "b53deac1-26c7-4fe9-9109-8496e248e8c7",
     "name" : "Election",
     "abbreviation" : "4.6.6.4",
     "description" : "Use this domain for words related to an election.",
     "searchKeys" : [ "election, elect, to vote, vote, candidate, campaign" ]
   },
   "4.6.6.5 Politics" : {
+    "key" : "4.6.6.5",
+    "guid" : "d8631167-08bd-4571-bc7c-57a4407da51c",
     "name" : "Politics",
     "abbreviation" : "4.6.6.5",
     "description" : "Use this domain for words related to politics--the activities of politicians and political parties.",
@@ -7287,6 +8667,8 @@ var semanticDomains_en = {
         "convention, caucus,", "politics, movement, machine," ]
   },
   "4.6.7 Region" : {
+    "key" : "4.6.7",
+    "guid" : "c8d94c8f-db0b-4016-bdd2-e41a2eae4288",
     "name" : "Region",
     "abbreviation" : "4.6.7",
     "description" : "Use this domain for words referring to a region--a part of a country, or a part of the earth.",
@@ -7295,6 +8677,8 @@ var semanticDomains_en = {
         "state, province, territory, prefecture, county, district," ]
   },
   "4.6.7.1 Country" : {
+    "key" : "4.6.7.1",
+    "guid" : "a7dae83a-dce6-47ea-ab3f-ac8a3af4cce9",
     "name" : "Country",
     "abbreviation" : "4.6.7.1",
     "description" : "Use this domain for words related to a country.",
@@ -7304,6 +8688,8 @@ var semanticDomains_en = {
         "international" ]
   },
   "4.6.7.2 City" : {
+    "key" : "4.6.7.2",
+    "guid" : "b536622c-80a3-4b31-9d22-4ed2fb76324d",
     "name" : "City",
     "abbreviation" : "4.6.7.2",
     "description" : "Use this domain for words related to a city.",
@@ -7311,6 +8697,8 @@ var semanticDomains_en = {
         "district, park" ]
   },
   "4.6.7.3 Countryside" : {
+    "key" : "4.6.7.3",
+    "guid" : "0f983449-1c43-4974-b388-7695b1af4bfa",
     "name" : "Countryside",
     "abbreviation" : "4.6.7.3",
     "description" : "Use this domain for words related to the countryside--the area away from a city",
@@ -7319,12 +8707,16 @@ var semanticDomains_en = {
         "deserted, desolate, lonely, uninhabited, sparsely populated" ]
   },
   "4.6.7.4 Community" : {
+    "key" : "4.6.7.4",
+    "guid" : "ec998dc6-d509-4832-8434-d2abac34ba70",
     "name" : "Community",
     "abbreviation" : "4.6.7.4",
     "description" : "Use this domain for words related to a community.",
     "searchKeys" : [ "community" ]
   },
   "4.7 Law" : {
+    "key" : "4.7",
+    "guid" : "87bd0d45-8a94-41cb-9864-90d53a11a4b9",
     "name" : "Law",
     "abbreviation" : "4.7",
     "description" : "Use this domain for words related to the law.",
@@ -7336,6 +8728,8 @@ var semanticDomains_en = {
         "responsible, responsibility, obligation", "right" ]
   },
   "4.7.1 Laws" : {
+    "key" : "4.7.1",
+    "guid" : "f51bcafa-e624-4555-b8f1-b5726d74734d",
     "name" : "Laws",
     "abbreviation" : "4.7.1",
     "description" : "Use this domain for words referring to a specific law or set of laws.",
@@ -7344,6 +8738,8 @@ var semanticDomains_en = {
         "laws, canon, code of laws, legal code", "constitution" ]
   },
   "4.7.2 Pass laws" : {
+    "key" : "4.7.2",
+    "guid" : "05a7bbdc-7cf5-47d3-830b-84e1591b11cc",
     "name" : "Pass laws",
     "abbreviation" : "4.7.2",
     "description" : "Use this domain for words related to passing a law.",
@@ -7355,6 +8751,8 @@ var semanticDomains_en = {
         "legislator, congressman, senator, member of parliament (MP), lawgiver," ]
   },
   "4.7.3 Break the law" : {
+    "key" : "4.7.3",
+    "guid" : "1dc717b9-c5e8-4482-b076-22102da9d553",
     "name" : "Break the law",
     "abbreviation" : "4.7.3",
     "description" : "Use this domain for words related to breaking the law.",
@@ -7365,6 +8763,8 @@ var semanticDomains_en = {
         "illegal, against the law, criminal, wrong," ]
   },
   "4.7.4 Court of law" : {
+    "key" : "4.7.4",
+    "guid" : "30ea3057-753d-4c4c-9b1f-ed30e569feea",
     "name" : "Court of law",
     "abbreviation" : "4.7.4",
     "description" : "Use this domain for words related to a court of law.",
@@ -7377,6 +8777,8 @@ var semanticDomains_en = {
         "trial, case, lawsuit, suit, action, litigation, proceedings, dispute, hearing" ]
   },
   "4.7.4.1 Legal personnel" : {
+    "key" : "4.7.4.1",
+    "guid" : "cca44b46-437c-42ee-93d7-a8820d61d0c8",
     "name" : "Legal personnel",
     "abbreviation" : "4.7.4.1",
     "description" : "Use this domain for words related to legal personnel.",
@@ -7388,12 +8790,16 @@ var semanticDomains_en = {
         "prosecutor, district attorney, prosecuting attorney, attorney general" ]
   },
   "4.7.5 Trial" : {
+    "key" : "4.7.5",
+    "guid" : "85214614-ab45-4805-9014-092750d47511",
     "name" : "Trial",
     "abbreviation" : "4.7.5",
     "description" : "Use this domain for words related to the legal process.",
     "searchKeys" : [ "legal process, due process of law, lawsuit, jurisdiction, take legal action, jurisprudence," ]
   },
   "4.7.5.1 Investigate a crime" : {
+    "key" : "4.7.5.1",
+    "guid" : "e10b9449-08a3-4c13-aff2-31486749b62f",
     "name" : "Investigate a crime",
     "abbreviation" : "4.7.5.1",
     "description" : "Use this domain for words referring to investigating a crime, accident, or criminal--to try to learn something about something bad that has happened because you want to know who did it, or to try to learn something about someone because you think they did something bad.",
@@ -7406,6 +8812,8 @@ var semanticDomains_en = {
         "investigator, private investigator, detective, private detective, inquisitor, private eye" ]
   },
   "4.7.5.2 Suspect" : {
+    "key" : "4.7.5.2",
+    "guid" : "67d74de1-33f9-4d39-8fa5-5dd27e7cd1d1",
     "name" : "Suspect",
     "abbreviation" : "4.7.5.2",
     "description" : "Use this domain for words related to suspecting someone--to think that someone might have done something bad.",
@@ -7415,6 +8823,8 @@ var semanticDomains_en = {
         "suspect (n),", "suspected (terrorist), be under suspicion," ]
   },
   "4.7.5.3 Accuse, confront" : {
+    "key" : "4.7.5.3",
+    "guid" : "fa660c9d-8787-4335-8744-3dbc139b2df1",
     "name" : "Accuse, confront",
     "abbreviation" : "4.7.5.3",
     "description" : "Use this domain for words related to accusing someone of doing something bad.",
@@ -7423,12 +8833,16 @@ var semanticDomains_en = {
         "plaintiff", "the accused, the defendant" ]
   },
   "4.7.5.4 Defend against accusation" : {
+    "key" : "4.7.5.4",
+    "guid" : "e83586c6-8d8e-4a23-bdda-a1731a5ece22",
     "name" : "Defend against accusation",
     "abbreviation" : "4.7.5.4",
     "description" : "Use this domain for words related to defending someone who has been accused of breaking a law.",
     "searchKeys" : [ "make defense, defend, uphold, protect, fortify, excuse, apologize, plead, make a case for, represent, advocate, argue a case, prove, offer proof" ]
   },
   "4.7.5.5 Witness, testify" : {
+    "key" : "4.7.5.5",
+    "guid" : "ca511a0c-5628-4726-8a6e-aa9fa3b73bfc",
     "name" : "Witness, testify",
     "abbreviation" : "4.7.5.5",
     "description" : "Use this domain for words related to testifying in a court of law.",
@@ -7437,24 +8851,32 @@ var semanticDomains_en = {
         "witness", "false testimony, perjury" ]
   },
   "4.7.5.6 Drop charges" : {
+    "key" : "4.7.5.6",
+    "guid" : "70963c34-dd34-40c2-bb21-e9cea73c7923",
     "name" : "Drop charges",
     "abbreviation" : "4.7.5.6",
     "description" : "Use this domain for words related to dropping legal charges against someone.",
     "searchKeys" : [ "drop charges, decide not to press charges" ]
   },
   "4.7.5.7 Take oath" : {
+    "key" : "4.7.5.7",
+    "guid" : "59d19623-0f3b-484d-96eb-a9093b020c8d",
     "name" : "Take oath",
     "abbreviation" : "4.7.5.7",
     "description" : "Use this domain for words related to taking an oath.",
     "searchKeys" : [ "take an oath, swear, solemnly swear, promise, guarantee, invoke a curse, vow, forswear, raise right hand, blood oath, adjure" ]
   },
   "4.7.5.8 Vindicate" : {
+    "key" : "4.7.5.8",
+    "guid" : "2cd48908-8f12-4e0f-a22e-87237618ce9f",
     "name" : "Vindicate",
     "abbreviation" : "4.7.5.8",
     "description" : "Use this domain for words referring to vindicating someone--to prove that someone is innocent of an accusation made against them.",
     "searchKeys" : [ "vindicate, exonerate, justify, warrant, exculpate, acquit, clear, set right" ]
   },
   "4.7.6 Judge, render a verdict" : {
+    "key" : "4.7.6",
+    "guid" : "bd7d0c9c-791e-4c34-b9ed-ebddad8f9724",
     "name" : "Judge, render a verdict",
     "abbreviation" : "4.7.6",
     "description" : "Use this domain for words related to judging someone.",
@@ -7462,6 +8884,8 @@ var semanticDomains_en = {
         "judgment, verdict, ruling" ]
   },
   "4.7.6.1 Acquit" : {
+    "key" : "4.7.6.1",
+    "guid" : "0c1bcc98-9bc3-4da0-8eac-ff8a6eecbf84",
     "name" : "Acquit",
     "abbreviation" : "4.7.6.1",
     "description" : "Use this domain for words related to acquitting a person.",
@@ -7471,6 +8895,8 @@ var semanticDomains_en = {
         "innocence", "blameless, inculpable, irreproachable," ]
   },
   "4.7.6.2 Condemn, find guilty" : {
+    "key" : "4.7.6.2",
+    "guid" : "0ede51d2-69bd-411e-97f9-da0d5118bbff",
     "name" : "Condemn, find guilty",
     "abbreviation" : "4.7.6.2",
     "description" : "Use this domain for words related to condemning someone.",
@@ -7480,12 +8906,16 @@ var semanticDomains_en = {
         "condemned man, convict, guilty party", "guilt" ]
   },
   "4.7.6.3 Fault" : {
+    "key" : "4.7.6.3",
+    "guid" : "8570f05c-a152-4117-9f54-4edfa9c06a32",
     "name" : "Fault",
     "abbreviation" : "4.7.6.3",
     "description" : "Use this domain for words related to something being someone's fault.",
     "searchKeys" : [ "fault, blame, responsible, be to blame for, be guilty of, be responsible for, guilt, responsibility, guilty, blameless, innocent," ]
   },
   "4.7.7 Punish" : {
+    "key" : "4.7.7",
+    "guid" : "6bf7569e-dc79-49da-9ce1-e2e03303828a",
     "name" : "Punish",
     "abbreviation" : "4.7.7",
     "description" : "Use this domain for words related to punishing someone.",
@@ -7496,18 +8926,24 @@ var semanticDomains_en = {
         "torture,", "rack, screw, thumbscrew," ]
   },
   "4.7.7.1 Reward" : {
+    "key" : "4.7.7.1",
+    "guid" : "ba98f891-77df-4910-8657-38f4ba79d3a5",
     "name" : "Reward",
     "abbreviation" : "4.7.7.1",
     "description" : "Use this domain for words related to rewarding someone.",
     "searchKeys" : [ "reward, recompense" ]
   },
   "4.7.7.2 Fine" : {
+    "key" : "4.7.7.2",
+    "guid" : "feca6b23-1ca1-4d99-ac79-3672d1d1f7db",
     "name" : "Fine",
     "abbreviation" : "4.7.7.2",
     "description" : "Use this domain for words referring to a fine--a payment (usually of money) made to a victim or the government for a crime committed against them.",
     "searchKeys" : [ "fine, fine (n), financial penalty, citation, ticket, cite, confiscate" ]
   },
   "4.7.7.3 Imprison" : {
+    "key" : "4.7.7.3",
+    "guid" : "13f62fa1-589c-4a46-9bbc-b0fd1001e21f",
     "name" : "Imprison",
     "abbreviation" : "4.7.7.3",
     "description" : "Use this domain for words related to imprisoning someone.",
@@ -7525,6 +8961,8 @@ var semanticDomains_en = {
         "release, let go, let out of prison, set free" ]
   },
   "4.7.7.4 Execute" : {
+    "key" : "4.7.7.4",
+    "guid" : "bf5175f6-fbe4-4ac6-9041-f8aa78b7ac78",
     "name" : "Execute",
     "abbreviation" : "4.7.7.4",
     "description" : "Use this domain for words related to executing someone for a crime.",
@@ -7534,6 +8972,8 @@ var semanticDomains_en = {
         "gas chamber, electric chair, gallows, gibbet, guillotine, lethal injection, noose, scaffold, cross, stake, sword," ]
   },
   "4.7.7.5 Ostracize" : {
+    "key" : "4.7.7.5",
+    "guid" : "55a7b809-4196-4c5a-a6d6-09b586ce71e7",
     "name" : "Ostracize",
     "abbreviation" : "4.7.7.5",
     "description" : "Use this domain for words referring to ostracizing someone--excluding someone from society as punishment for some wrong.",
@@ -7542,12 +8982,16 @@ var semanticDomains_en = {
         "outcast, pariah" ]
   },
   "4.7.7.6 Pardon, release" : {
+    "key" : "4.7.7.6",
+    "guid" : "9fcae400-ce8f-4e30-9516-97ab794c30a9",
     "name" : "Pardon, release",
     "abbreviation" : "4.7.7.6",
     "description" : "Use this domain for words related to pardoning someone who has been found guilty of a crime.",
     "searchKeys" : [ "pardon, grant a pardon, have mercy on, release, commute sentence, reduce sentence, let out, let off" ]
   },
   "4.7.7.7 Atone, restitution" : {
+    "key" : "4.7.7.7",
+    "guid" : "62efa729-0920-4933-93f3-b6a48519a5c7",
     "name" : "Atone, restitution",
     "abbreviation" : "4.7.7.7",
     "description" : "Use this domain for words referring to atoning for a past sin--doing something to make up for something bad you did, or giving something to pay for something bad you did.",
@@ -7558,36 +9002,48 @@ var semanticDomains_en = {
         "atonement, expiation, reparation, redress," ]
   },
   "4.7.8 Legal contract" : {
+    "key" : "4.7.8",
+    "guid" : "ef6d136e-ac1d-48b9-819d-252485534557",
     "name" : "Legal contract",
     "abbreviation" : "4.7.8",
     "description" : "Use this domain for words related to a legal contract.",
     "searchKeys" : [ "contract, memorandum of agreement, treaty, peace accord, charter, constitution, compact, pact, will, testament, covenant, notarize" ]
   },
   "4.7.8.1 Covenant" : {
+    "key" : "4.7.8.1",
+    "guid" : "69455770-fca7-4f41-9e7d-236e8f094ce6",
     "name" : "Covenant",
     "abbreviation" : "4.7.8.1",
     "description" : "Use this domain for words related to a covenant between two people or groups of people.",
     "searchKeys" : [ "covenant, testament, deal, agreement, bond, commitment, to trust" ]
   },
   "4.7.8.2 Break a contract" : {
+    "key" : "4.7.8.2",
+    "guid" : "6aa8133a-2578-4617-bd9c-6428e897a4f1",
     "name" : "Break a contract",
     "abbreviation" : "4.7.8.2",
     "description" : "Use this domain for words related to breaking a contract.",
     "searchKeys" : [ "break a contract, nullify" ]
   },
   "4.7.9 Justice" : {
+    "key" : "4.7.9",
+    "guid" : "596ab399-e442-4afe-8796-633a49de65a7",
     "name" : "Justice",
     "abbreviation" : "4.7.9",
     "description" : "Use this domain for words related to justice.",
     "searchKeys" : [ "justice, fairness" ]
   },
   "4.7.9.1 Impartial" : {
+    "key" : "4.7.9.1",
+    "guid" : "38bdff04-c7a9-41fa-a6a2-7aa214de308c",
     "name" : "Impartial",
     "abbreviation" : "4.7.9.1",
     "description" : "Use this domain for words related to being impartial.",
     "searchKeys" : [ "be impartial, fair, consistent, equal treatment, impartial, impartiality," ]
   },
   "4.7.9.2 Unfair" : {
+    "key" : "4.7.9.2",
+    "guid" : "793d3124-8b77-4ff0-82ec-09a3a9d8d865",
     "name" : "Unfair",
     "abbreviation" : "4.7.9.2",
     "description" : "Use this domain for words related to being unfair.",
@@ -7595,6 +9051,8 @@ var semanticDomains_en = {
         "undeserved, inappropriate, unwarranted, unearned," ]
   },
   "4.7.9.3 Deserve" : {
+    "key" : "4.7.9.3",
+    "guid" : "5737714d-49e4-4eb4-8e46-03203ee5340b",
     "name" : "Deserve",
     "abbreviation" : "4.7.9.3",
     "description" : "Use this domain for words related to deserving something--if you do something, either good or bad, something can happen to you as a result of what you did. For instance you can receive a reward for doing good, or a punishment for doing wrong. If what happened to you is like what you did, people can think it is right that this thing happened to you.",
@@ -7604,6 +9062,8 @@ var semanticDomains_en = {
         "well-deserved, well-earned, fitting, appropriate," ]
   },
   "4.7.9.4 Discriminate, be unfair" : {
+    "key" : "4.7.9.4",
+    "guid" : "f9516c66-ac2c-49dd-951a-0d3606450463",
     "name" : "Discriminate, be unfair",
     "abbreviation" : "4.7.9.4",
     "description" : "Use this domain for words related to being unfair to someone.",
@@ -7612,12 +9072,16 @@ var semanticDomains_en = {
         "bias someone against, prejudice someone against" ]
   },
   "4.7.9.5 Act harshly" : {
+    "key" : "4.7.9.5",
+    "guid" : "bd31529c-ab67-419b-89a4-949aee8b3b11",
     "name" : "Act harshly",
     "abbreviation" : "4.7.9.5",
     "description" : "Use this domain for words related to acting harshly.",
     "searchKeys" : [ "act harshly, abrasive, abrupt, acrid, acrimonious, brute, bully, caustic, cruel, cruelty, demanding, exacting, forceful, grate, grim, hard, harsh, martial law, pugnacious, rigid, rough, severe, sharp, stern, stiff, stinging, strict, stringent, tough, unfavorable, unfeeling, ungentle, violent" ]
   },
   "4.7.9.6 Oppress" : {
+    "key" : "4.7.9.6",
+    "guid" : "bb4e0a69-db20-4757-beff-5dcb1c5e0f92",
     "name" : "Oppress",
     "abbreviation" : "4.7.9.6",
     "description" : "Use this domain for words related to oppressing someone or a particular group of people--when a person uses his power or authority to harm others who are innocent.",
@@ -7629,12 +9093,16 @@ var semanticDomains_en = {
         "oppressive, tyrannical, cruel" ]
   },
   "4.8 Conflict" : {
+    "key" : "4.8",
+    "guid" : "f7da1907-e6c5-4d21-a8e8-81376f3467df",
     "name" : "Conflict",
     "abbreviation" : "4.8",
     "description" : "Use this domain for general words referring to conflict between people, including quarreling, fighting, and war. The words in this domain should be very general, rather than referring to specific kinds of conflict.",
     "searchKeys" : [ "conflict, strife," ]
   },
   "4.8.1 Hostility" : {
+    "key" : "4.8.1",
+    "guid" : "189f8c29-f0ff-44b6-a0db-5b287c412a75",
     "name" : "Hostility",
     "abbreviation" : "4.8.1",
     "description" : "The words in this domain describe a situation in which people disagree about something so strongly that they might start fighting. But these words imply that they have not started fighting yet.",
@@ -7643,6 +9111,8 @@ var semanticDomains_en = {
         "hostile, aggressive, combative, contentious, discordant," ]
   },
   "4.8.1.1 Oppose" : {
+    "key" : "4.8.1.1",
+    "guid" : "763fa2e0-c119-4f50-a307-81ed8c3497ed",
     "name" : "Oppose",
     "abbreviation" : "4.8.1.1",
     "description" : "Use this domain for words referring to opposing something that you think is wrong.",
@@ -7654,6 +9124,8 @@ var semanticDomains_en = {
         "opposing, hostile, antagonistic, opposing," ]
   },
   "4.8.2 Fight" : {
+    "key" : "4.8.2",
+    "guid" : "55201761-fe2e-40d5-a2a7-8079e00a2c32",
     "name" : "Fight",
     "abbreviation" : "4.8.2",
     "description" : "Use this domain for words referring to fighting someone. The words in this domain describe a situation in which two people or groups of people fight each other over something or in order to reach some goal. A fight can use words, various kinds of weapons, or other actions. For fights that only use words use the domain 'Quarrel'.",
@@ -7667,6 +9139,8 @@ var semanticDomains_en = {
         "fighter, hooligan," ]
   },
   "4.8.2.1 Fight for something good" : {
+    "key" : "4.8.2.1",
+    "guid" : "e072bd42-eb0f-48c8-97fd-ae9ca8bc3a75",
     "name" : "Fight for something good",
     "abbreviation" : "4.8.2.1",
     "description" : "Use this domain for words referring to fighting for something good.",
@@ -7675,6 +9149,8 @@ var semanticDomains_en = {
         "fight (n) for, struggle for, battle, campaign for, crusade for, drive" ]
   },
   "4.8.2.2 Fight against something bad" : {
+    "key" : "4.8.2.2",
+    "guid" : "37e6c8b5-f63c-4f5b-8c16-eccd727d6618",
     "name" : "Fight against something bad",
     "abbreviation" : "4.8.2.2",
     "description" : "Use this domain for words referring to fighting against something bad.",
@@ -7684,6 +9160,8 @@ var semanticDomains_en = {
         "fight (n) against, struggle against, battle against, campaign against, crusade against," ]
   },
   "4.8.2.3 Attack" : {
+    "key" : "4.8.2.3",
+    "guid" : "80563285-4de7-4040-8080-a5b22208e7d5",
     "name" : "Attack",
     "abbreviation" : "4.8.2.3",
     "description" : "Use this domain for words referring to attacking someone--to begin fighting someone.",
@@ -7701,6 +9179,8 @@ var semanticDomains_en = {
         "counter-attack, hit back, retaliate, strike back," ]
   },
   "4.8.2.3.1 Ambush" : {
+    "key" : "4.8.2.3.1",
+    "guid" : "5489f4ae-34a7-4f8b-9086-4247b0d8b3de",
     "name" : "Ambush",
     "abbreviation" : "4.8.2.3.1",
     "description" : "Use this domain for words related to ambushing someone--to attacking someone without warning.",
@@ -7710,6 +9190,8 @@ var semanticDomains_en = {
         "ambusher, bushwhacker," ]
   },
   "4.8.2.4 Defend" : {
+    "key" : "4.8.2.4",
+    "guid" : "243d8a57-d5ed-4d7f-bd5e-f2605634f0fc",
     "name" : "Defend",
     "abbreviation" : "4.8.2.4",
     "description" : "Use this domain for words related to defending someone from attack.",
@@ -7722,6 +9204,8 @@ var semanticDomains_en = {
         "defensive, protective,", "fortify, entrench, dig in," ]
   },
   "4.8.2.5 Revenge" : {
+    "key" : "4.8.2.5",
+    "guid" : "530ff7e0-e3cb-4dc3-9c1c-3034969e1ce8",
     "name" : "Revenge",
     "abbreviation" : "4.8.2.5",
     "description" : "Use this domain for words related to revenge--to do something bad to someone because they did something bad to you.",
@@ -7732,6 +9216,8 @@ var semanticDomains_en = {
         "be even, be quits,", "retributive," ]
   },
   "4.8.2.6 Riot" : {
+    "key" : "4.8.2.6",
+    "guid" : "8594cb26-9f3c-48f5-b00b-f055eb5a5e61",
     "name" : "Riot",
     "abbreviation" : "4.8.2.6",
     "description" : "Use this domain for words related to a riot--when lots of people are fighting and breaking the law.",
@@ -7742,6 +9228,8 @@ var semanticDomains_en = {
         "riotous, convulsive, disorderly, tumultuous, turbulent," ]
   },
   "4.8.2.7 Betray" : {
+    "key" : "4.8.2.7",
+    "guid" : "0066f0f7-02dd-4f8e-afa5-59b8cb5a434a",
     "name" : "Betray",
     "abbreviation" : "4.8.2.7",
     "description" : "Use this domain for words related to betraying someone.",
@@ -7756,6 +9244,8 @@ var semanticDomains_en = {
         "treacherous," ]
   },
   "4.8.2.8 Violent" : {
+    "key" : "4.8.2.8",
+    "guid" : "8a7fdd75-01dc-4d40-84ff-fa0484da3abb",
     "name" : "Violent",
     "abbreviation" : "4.8.2.8",
     "description" : "Use this domain for words related to being violent--a word describing someone who is likely to attack and injure or kill people.",
@@ -7769,6 +9259,8 @@ var semanticDomains_en = {
         "peaceful, non-violent" ]
   },
   "4.8.2.9 Enemy" : {
+    "key" : "4.8.2.9",
+    "guid" : "77f27500-aad8-409c-a28e-92df73794dce",
     "name" : "Enemy",
     "abbreviation" : "4.8.2.9",
     "description" : "Use this domain for words related to an enemy--someone you are fighting against.",
@@ -7777,6 +9269,8 @@ var semanticDomains_en = {
         "enemy (troops/action/tanks), hostile (forces/territory)" ]
   },
   "4.8.3 War" : {
+    "key" : "4.8.3",
+    "guid" : "a3ba10f3-66e3-4ad5-8057-453b8941e497",
     "name" : "War",
     "abbreviation" : "4.8.3",
     "description" : "Use this domain for words related to war--fighting between countries.",
@@ -7791,6 +9285,8 @@ var semanticDomains_en = {
         "casualty, missing in action," ]
   },
   "4.8.3.1 Defeat" : {
+    "key" : "4.8.3.1",
+    "guid" : "225c48dd-9fc2-4467-944f-16a098b4e518",
     "name" : "Defeat",
     "abbreviation" : "4.8.3.1",
     "description" : "Use this domain for words related to defeating someone.",
@@ -7804,6 +9300,8 @@ var semanticDomains_en = {
         "conqueror, vanquisher, victor,", "conquering, victorious," ]
   },
   "4.8.3.2 Win" : {
+    "key" : "4.8.3.2",
+    "guid" : "c8595a5f-4dde-4260-b8d8-265d0554ce93",
     "name" : "Win",
     "abbreviation" : "4.8.3.2",
     "description" : "Use this domain for words related to winning a victory.",
@@ -7821,6 +9319,8 @@ var semanticDomains_en = {
         "frontrunner, strong contender, be the favorite, be in the running," ]
   },
   "4.8.3.3 Lose a fight" : {
+    "key" : "4.8.3.3",
+    "guid" : "17102138-b97a-4f1d-81bc-9be4af90889e",
     "name" : "Lose a fight",
     "abbreviation" : "4.8.3.3",
     "description" : "Use this domain for words related to losing a fight.",
@@ -7829,12 +9329,16 @@ var semanticDomains_en = {
         "defeat, loss, fall,", "loser, losing side, defeated army" ]
   },
   "4.8.3.4 Surrender" : {
+    "key" : "4.8.3.4",
+    "guid" : "8a5c87ad-2d15-40c2-9f15-d7942ac80261",
     "name" : "Surrender",
     "abbreviation" : "4.8.3.4",
     "description" : "Use this domain for words related to surrendering to an enemy.",
     "searchKeys" : [ "surrender, sue for peace, armistice, concede defeat, accept defeat, admit defeat, give up, give in, yield, call it quits, unconditional surrender, lay down arms, turn yourself in," ]
   },
   "4.8.3.5 Prisoner of war" : {
+    "key" : "4.8.3.5",
+    "guid" : "21461d78-02f9-4be6-80e3-6a4498ce8f4c",
     "name" : "Prisoner of war",
     "abbreviation" : "4.8.3.5",
     "description" : "Use this domain for words related to a prisoner of war.",
@@ -7842,6 +9346,8 @@ var semanticDomains_en = {
         "captive, prisoner of war", "capture, take captive, captured," ]
   },
   "4.8.3.6 Military organization" : {
+    "key" : "4.8.3.6",
+    "guid" : "f595deab-1838-4ddb-9ebe-55fb3007b309",
     "name" : "Military organization",
     "abbreviation" : "4.8.3.6",
     "description" : "Use this domain for words related to military organizations.",
@@ -7853,6 +9359,8 @@ var semanticDomains_en = {
         "military," ]
   },
   "4.8.3.6.1 Army" : {
+    "key" : "4.8.3.6.1",
+    "guid" : "d90db6d4-6c78-4ac8-9764-0cafa79b8b31",
     "name" : "Army",
     "abbreviation" : "4.8.3.6.1",
     "description" : "Use this domain for words related to the army.",
@@ -7863,6 +9371,8 @@ var semanticDomains_en = {
         "army," ]
   },
   "4.8.3.6.2 Navy" : {
+    "key" : "4.8.3.6.2",
+    "guid" : "7d629c80-e5c2-409f-a592-39c56e9ace6d",
     "name" : "Navy",
     "abbreviation" : "4.8.3.6.2",
     "description" : "Use this domain for words related to the navy.",
@@ -7871,6 +9381,8 @@ var semanticDomains_en = {
         "detachment, squadron, task force, fleet, flotilla,", "naval," ]
   },
   "4.8.3.6.3 Air force" : {
+    "key" : "4.8.3.6.3",
+    "guid" : "eb842dc1-ad9c-4c1a-9eb2-a48b7f3092be",
     "name" : "Air force",
     "abbreviation" : "4.8.3.6.3",
     "description" : "Use this domain for words related to the air force.",
@@ -7879,6 +9391,8 @@ var semanticDomains_en = {
         "airman, pilot, wingman," ]
   },
   "4.8.3.6.4 Soldier" : {
+    "key" : "4.8.3.6.4",
+    "guid" : "f5e2ad18-5ad4-4186-9572-b1542096759e",
     "name" : "Soldier",
     "abbreviation" : "4.8.3.6.4",
     "description" : "Use this domain for words related to a soldier.",
@@ -7892,6 +9406,8 @@ var semanticDomains_en = {
         "civilian, non-combatant," ]
   },
   "4.8.3.6.5 Spy" : {
+    "key" : "4.8.3.6.5",
+    "guid" : "362a2bdd-985e-4bc0-a41c-358bd1babb12",
     "name" : "Spy",
     "abbreviation" : "4.8.3.6.5",
     "description" : "Use this domain for words related to a spy.",
@@ -7902,6 +9418,8 @@ var semanticDomains_en = {
         "spy ring, intelligence agency, intelligence community" ]
   },
   "4.8.3.6.6 Fort" : {
+    "key" : "4.8.3.6.6",
+    "guid" : "98830eda-3997-4f4a-9ba4-664df669e7e2",
     "name" : "Fort",
     "abbreviation" : "4.8.3.6.6",
     "description" : "Use this domain for words related to a fort.",
@@ -7914,6 +9432,8 @@ var semanticDomains_en = {
         "fortify, entrench, strengthen, dig in," ]
   },
   "4.8.3.7 Weapon, shoot" : {
+    "key" : "4.8.3.7",
+    "guid" : "738a09a5-59df-40f9-8a4e-176e00d03bbf",
     "name" : "Weapon, shoot",
     "abbreviation" : "4.8.3.7",
     "description" : "Use this domain for words related to a weapon and using a weapon.",
@@ -7940,6 +9460,8 @@ var semanticDomains_en = {
         "defensive, offensive, protective, deadly, weapon of mass destruction, conventional" ]
   },
   "4.8.3.8 Plunder" : {
+    "key" : "4.8.3.8",
+    "guid" : "3615c3d1-fd5b-40c5-80ad-80bfd6451d56",
     "name" : "Plunder",
     "abbreviation" : "4.8.3.8",
     "description" : "Use this domain for words related to plundering--stealing something from an enemy during a war.",
@@ -7949,6 +9471,8 @@ var semanticDomains_en = {
         "plunder, booty, loot, spoils" ]
   },
   "4.8.4 Peace" : {
+    "key" : "4.8.4",
+    "guid" : "0b7b9a1c-588b-475a-ac14-00f0999cbfe9",
     "name" : "Peace",
     "abbreviation" : "4.8.4",
     "description" : "Use this domain for words related to peace--when people or countries are not fighting.",
@@ -7958,12 +9482,16 @@ var semanticDomains_en = {
         "keep the peace, peacekeeping force" ]
   },
   "4.8.4.1 Rebuke" : {
+    "key" : "4.8.4.1",
+    "guid" : "6eafbb5a-26ba-44b5-a0d5-21b9e7750ece",
     "name" : "Rebuke",
     "abbreviation" : "4.8.4.1",
     "description" : "Use this domain for words related to rebuking someone--to tell someone that he has done something wrong.",
     "searchKeys" : [ "rebuke, chew out, reprimand, scold, reprove, excoriate, censor, verbal abuse, yell at, lecture, call on the carpet, lay out, tell off" ]
   },
   "4.8.4.2 Make an appeal" : {
+    "key" : "4.8.4.2",
+    "guid" : "9afb64d6-feae-4490-9b7e-95768627f643",
     "name" : "Make an appeal",
     "abbreviation" : "4.8.4.2",
     "description" : "Use this domain for words related to making an appeal.",
@@ -7971,6 +9499,8 @@ var semanticDomains_en = {
         "exhort, encourage, encouragement" ]
   },
   "4.8.4.3 Appease" : {
+    "key" : "4.8.4.3",
+    "guid" : "fd7e03f8-61c9-47e9-afa4-ab8917db03a5",
     "name" : "Appease",
     "abbreviation" : "4.8.4.3",
     "description" : "Use this domain for words related to appeasing someone.",
@@ -7978,6 +9508,8 @@ var semanticDomains_en = {
         "bribery, appeasement, pacification", "bribe" ]
   },
   "4.8.4.4 Negotiate" : {
+    "key" : "4.8.4.4",
+    "guid" : "675eccbb-9858-4cd4-8405-5f0d0faa792c",
     "name" : "Negotiate",
     "abbreviation" : "4.8.4.4",
     "description" : "Use this domain for words related to negotiating with someone.",
@@ -7985,12 +9517,16 @@ var semanticDomains_en = {
         "negotiation, discussion" ]
   },
   "4.8.4.5 Renounce claim, concede" : {
+    "key" : "4.8.4.5",
+    "guid" : "9b9ccd76-76d6-457b-93d2-c4d242a395f8",
     "name" : "Renounce claim, concede",
     "abbreviation" : "4.8.4.5",
     "description" : "Use this domain for words related to renouncing a claim.",
     "searchKeys" : [ "renounce claim, concede, relinquish, cede, no contest, concession, disclaim, disclaimer" ]
   },
   "4.8.4.6 Repent" : {
+    "key" : "4.8.4.6",
+    "guid" : "1ca26512-75f6-4a7a-a7cc-07d08aa799d9",
     "name" : "Repent",
     "abbreviation" : "4.8.4.6",
     "description" : "Use this domain for words related to repenting.",
@@ -8004,18 +9540,24 @@ var semanticDomains_en = {
         "Sorry! Excuse me. I'm sorry. Forgive me." ]
   },
   "4.8.4.6.1 Request forgiveness" : {
+    "key" : "4.8.4.6.1",
+    "guid" : "4b669bed-ba46-41cc-bcba-c2ef8e129c85",
     "name" : "Request forgiveness",
     "abbreviation" : "4.8.4.6.1",
     "description" : "Use this domain for words related to asking for forgiveness.",
     "searchKeys" : [ "ask forgiveness, sue for peace, seek pardon, beg for mercy" ]
   },
   "4.8.4.7 Forgive" : {
+    "key" : "4.8.4.7",
+    "guid" : "7d7c81d5-9713-423f-b12e-8e11e451f0a7",
     "name" : "Forgive",
     "abbreviation" : "4.8.4.7",
     "description" : "Use this domain for words related to forgiving someone.",
     "searchKeys" : [ "forgive, pardon, release, restore to favor, clear your record, have mercy on, wipe the slate clean, reassure, accept, accept an apology, overlook a wrong, cancel a debt" ]
   },
   "4.8.4.8 Make peace" : {
+    "key" : "4.8.4.8",
+    "guid" : "a1dd1d94-fa8e-4325-9f72-b39bcac69755",
     "name" : "Make peace",
     "abbreviation" : "4.8.4.8",
     "description" : "Use this domain for words related to making peace--to try to prevent or end a war.",
@@ -8023,6 +9565,8 @@ var semanticDomains_en = {
         "settle dispute, end hostilities, restore harmony, pacify" ]
   },
   "4.8.4.8.1 Stop fighting" : {
+    "key" : "4.8.4.8.1",
+    "guid" : "9e2b0c61-304e-4cad-9708-792bfde880b4",
     "name" : "Stop fighting",
     "abbreviation" : "4.8.4.8.1",
     "description" : "Use this domain for words related to stopping fighting.",
@@ -8032,12 +9576,16 @@ var semanticDomains_en = {
         "ceasefire, truce, armistice, peace treaty," ]
   },
   "4.8.4.9 Reconcile" : {
+    "key" : "4.8.4.9",
+    "guid" : "3f069313-4827-4fc5-b73b-b9fbd42ca38c",
     "name" : "Reconcile",
     "abbreviation" : "4.8.4.9",
     "description" : "Use this domain for words related to reconciling with someone.",
     "searchKeys" : [ "make amends, reconcile, ameliorate, restore, make up, make peace, pacify" ]
   },
   "4.9 Religion" : {
+    "key" : "4.9",
+    "guid" : "7556a257-3703-40d3-91d3-c891fb250947",
     "name" : "Religion",
     "abbreviation" : "4.9",
     "description" : "Use this domain for general words referring to religion and the supernatural.",
@@ -8047,6 +9595,8 @@ var semanticDomains_en = {
         "spirit world, spiritual realm, the supernatural, the unseen" ]
   },
   "4.9.1 God" : {
+    "key" : "4.9.1",
+    "guid" : "b60bf544-7774-4623-8c67-19b32b53dea2",
     "name" : "God",
     "abbreviation" : "4.9.1",
     "description" : "Use this domain for words related to God--the supreme being in the universe. Each theological system will have different beliefs concerning the existence and nature of God. Our purpose here is to collect and define the terms used to refer to the supreme deity. If there is no such person in the theological system, then use this domain for other terms for the pantheon of gods, ultimate reality, nirvana, and similar concepts. However most theological systems, even atheism, have the concept of a supreme God and use words to refer to him.",
@@ -8056,6 +9606,8 @@ var semanticDomains_en = {
         "divine," ]
   },
   "4.9.2 Supernatural being" : {
+    "key" : "4.9.2",
+    "guid" : "7f6c81fb-02a4-415f-a363-fb11cc6b9254",
     "name" : "Supernatural being",
     "abbreviation" : "4.9.2",
     "description" : "Use this domain for words referring to supernatural beings--gods, spirits, other types of beings, which normally cannot be seen and do not belong to this world. Some people accept the existence of certain supernatural beings and not others. Mythological beings are those that were believed in during previous times but that are no longer believed in. Fictional beings are those that no one has ever believed in. An indication of whether most people believe in the supernatural being should be put in the definition.",
@@ -8069,6 +9621,8 @@ var semanticDomains_en = {
         "divine, angelic, demonic, Satanic, devilish, diabolical, ghost like, ghoulish, monstrous, alien," ]
   },
   "4.9.3 Theology" : {
+    "key" : "4.9.3",
+    "guid" : "25bf6690-6ed1-42e9-8a4a-3518f9cf382c",
     "name" : "Theology",
     "abbreviation" : "4.9.3",
     "description" : "Use this domain for words related to theology--the study of God and what people believe about God.",
@@ -8076,6 +9630,8 @@ var semanticDomains_en = {
         "heterodoxy, sect, denomination, dissent", "superstition" ]
   },
   "4.9.3.1 Sacred writings" : {
+    "key" : "4.9.3.1",
+    "guid" : "e9fdc131-addb-4db6-8f79-ae0044e1eb81",
     "name" : "Sacred writings",
     "abbreviation" : "4.9.3.1",
     "description" : "Use this domain for words related to sacred writings. Examples are only given for the Christian sacred writings. However you should include words referring to the holy books of all religions .",
@@ -8088,6 +9644,8 @@ var semanticDomains_en = {
         "interpretation, exegesis", "commentary" ]
   },
   "4.9.4 Miracle, supernatural power" : {
+    "key" : "4.9.4",
+    "guid" : "61f52196-a8b2-496d-96ea-8c15dc7d377a",
     "name" : "Miracle, supernatural power",
     "abbreviation" : "4.9.4",
     "description" : "Use this domain for words related to miracles--the use of supernatural power to do something good.",
@@ -8098,6 +9656,8 @@ var semanticDomains_en = {
         "miraculous,", "miracle worker, prophet" ]
   },
   "4.9.4.1 Sorcery" : {
+    "key" : "4.9.4.1",
+    "guid" : "b6e45998-9f6a-4b19-9cda-62410a11afa2",
     "name" : "Sorcery",
     "abbreviation" : "4.9.4.1",
     "description" : "Use this domain for words related to sorcery--the use of supernatural power to do something bad.",
@@ -8114,6 +9674,8 @@ var semanticDomains_en = {
         "malevolent power, evil force, Satanic force, demonic power, black magic" ]
   },
   "4.9.4.2 Demon possession" : {
+    "key" : "4.9.4.2",
+    "guid" : "3ea52505-aa6c-4f28-b475-f15ac1820ec1",
     "name" : "Demon possession",
     "abbreviation" : "4.9.4.2",
     "description" : "Use this domain for words referring to demon possession--when a demon or spirit influences or controls the behavior of a person. Use this domain for all words related to the relationship between spirits and people, including communication between people and spirits. Also use this domain for words referring to casting out demons--causing a demon to stop influencing or controlling a person.",
@@ -8124,6 +9686,8 @@ var semanticDomains_en = {
         "exorcist" ]
   },
   "4.9.4.3 Bless" : {
+    "key" : "4.9.4.3",
+    "guid" : "38d1a6fe-0811-4eb0-a1d8-f69b6ad978e0",
     "name" : "Bless",
     "abbreviation" : "4.9.4.3",
     "description" : "Use this domain for words related to blessing someone--saying something that causes something good to happen, or requests God to do something good to someone.",
@@ -8132,6 +9696,8 @@ var semanticDomains_en = {
         "blessing, benediction," ]
   },
   "4.9.4.4 Curse" : {
+    "key" : "4.9.4.4",
+    "guid" : "106c2c42-36fd-4b0a-94f7-e998f6eae6f5",
     "name" : "Curse",
     "abbreviation" : "4.9.4.4",
     "description" : "Use this domain for words related to cursing someone.",
@@ -8140,6 +9706,8 @@ var semanticDomains_en = {
         "curse, anathema," ]
   },
   "4.9.4.5 Destiny" : {
+    "key" : "4.9.4.5",
+    "guid" : "7c7f62d8-0293-45ba-8658-956c38bafc66",
     "name" : "Destiny",
     "abbreviation" : "4.9.4.5",
     "description" : "Use this domain for words related to destiny--decisions and actions by God, spirits, or by impersonal forces that determine or influence what happens to a person.",
@@ -8148,6 +9716,8 @@ var semanticDomains_en = {
         "destiny, fate" ]
   },
   "4.9.4.6 Prophecy" : {
+    "key" : "4.9.4.6",
+    "guid" : "147c2e58-9ae8-460f-8cab-bf04a668945d",
     "name" : "Prophecy",
     "abbreviation" : "4.9.4.6",
     "description" : "Use this domain for words referring to speaking for God, including foretelling the future through divine knowledge.",
@@ -8156,6 +9726,8 @@ var semanticDomains_en = {
         "prophet, prophetess", "prophetic" ]
   },
   "4.9.4.7 Omen, divination" : {
+    "key" : "4.9.4.7",
+    "guid" : "b2830b72-c642-484f-9485-24682aa11ed8",
     "name" : "Omen, divination",
     "abbreviation" : "4.9.4.7",
     "description" : "Use this domain for words related to supernatural knowledge.",
@@ -8170,12 +9742,16 @@ var semanticDomains_en = {
         "interpret dreams, read palms, read tea leaves, read cards, read the stars, consult your horoscope, look into a crystal ball, play with a Ouija board, examine the entrails of an animal" ]
   },
   "4.9.5 Practice religion" : {
+    "key" : "4.9.5",
+    "guid" : "b9c752a4-66be-493c-8955-cfa5324a54c1",
     "name" : "Practice religion",
     "abbreviation" : "4.9.5",
     "description" : "Use this domain for words related to practicing religion.",
     "searchKeys" : [ "practice your religion, serve God" ]
   },
   "4.9.5.1 Devout" : {
+    "key" : "4.9.5.1",
+    "guid" : "4cb8b433-4efa-4698-8ebd-0f00f8fc3f66",
     "name" : "Devout",
     "abbreviation" : "4.9.5.1",
     "description" : "Use this domain for words related to being devout.",
@@ -8184,6 +9760,8 @@ var semanticDomains_en = {
         "uncommitted, nominal, lukewarm" ]
   },
   "4.9.5.2 Pray" : {
+    "key" : "4.9.5.2",
+    "guid" : "00dde3be-e53d-42c3-b3ff-717e25cbffb6",
     "name" : "Pray",
     "abbreviation" : "4.9.5.2",
     "description" : "Use this domain for words related to praying--talking to God.",
@@ -8193,6 +9771,8 @@ var semanticDomains_en = {
         "bow your head, kneel, fold your hands" ]
   },
   "4.9.5.3 Worship" : {
+    "key" : "4.9.5.3",
+    "guid" : "2ccab97a-fb98-4054-a29b-e5ceac8ca1b4",
     "name" : "Worship",
     "abbreviation" : "4.9.5.3",
     "description" : "Use this domain for personal expressions of devotion to God, in whatever ways the religion defines and expresses it.",
@@ -8203,6 +9783,8 @@ var semanticDomains_en = {
         "prayer, singing hymns, praising God" ]
   },
   "4.9.5.4 Religious ceremony" : {
+    "key" : "4.9.5.4",
+    "guid" : "5a4a8ae5-a209-4946-8fa1-3c3bd5083e0d",
     "name" : "Religious ceremony",
     "abbreviation" : "4.9.5.4",
     "description" : "Use this domain for words related to religious ceremonies.",
@@ -8211,6 +9793,8 @@ var semanticDomains_en = {
         "religious ceremony, worship service, church service, time of prayer, prayer meeting, Bible study, liturgy, invocation" ]
   },
   "4.9.5.5 Offering, sacrifice" : {
+    "key" : "4.9.5.5",
+    "guid" : "9f792202-8023-4ef3-b269-5ae4b6908a0b",
     "name" : "Offering, sacrifice",
     "abbreviation" : "4.9.5.5",
     "description" : "Use this domain for words related to offering a sacrifice.",
@@ -8221,6 +9805,8 @@ var semanticDomains_en = {
         "sacrificial (giving, lamb), devoted, consecrated" ]
   },
   "4.9.5.6 Religious purification" : {
+    "key" : "4.9.5.6",
+    "guid" : "b790470f-ed4e-42ac-932d-cd15ef701b03",
     "name" : "Religious purification",
     "abbreviation" : "4.9.5.6",
     "description" : "Use this domain for words related to religious purification.",
@@ -8231,6 +9817,8 @@ var semanticDomains_en = {
         "impurity, defilement, pollution" ]
   },
   "4.9.5.6.1 Taboo" : {
+    "key" : "4.9.5.6.1",
+    "guid" : "24361be2-49be-4860-bb56-4e46dd1e8b0c",
     "name" : "Taboo",
     "abbreviation" : "4.9.5.6.1",
     "description" : "Use this domain for words referring to things that are taboo--something to be avoided; a religious, social, or cultural restriction on behavior, as opposed to a government law.",
@@ -8240,6 +9828,8 @@ var semanticDomains_en = {
         "taboo, forbidden, prohibited, untouchable, inviolable, banned, off-limits, avoided" ]
   },
   "4.9.5.7 Salvation" : {
+    "key" : "4.9.5.7",
+    "guid" : "6105a207-4311-4920-8c19-63259424bfaf",
     "name" : "Salvation",
     "abbreviation" : "4.9.5.7",
     "description" : "Use this domain for the primary goal or goals of a religion, for instance in Christianity salvation from sin, death and Hell. Each religion has different beliefs about salvation. Our purpose here is not to preach or argue, but to list those words that people use to talk about this topic.",
@@ -8249,6 +9839,8 @@ var semanticDomains_en = {
         "believe, repent, return (to God), receive, work, earn" ]
   },
   "4.9.5.8 Dedicate to religious use" : {
+    "key" : "4.9.5.8",
+    "guid" : "62ed8254-e53a-4781-935e-79869619e40a",
     "name" : "Dedicate to religious use",
     "abbreviation" : "4.9.5.8",
     "description" : "Use this domain for words related to dedicating someone or something to religious use.",
@@ -8258,6 +9850,8 @@ var semanticDomains_en = {
         "unholy, common", "desecrate" ]
   },
   "4.9.5.9 Fasting" : {
+    "key" : "4.9.5.9",
+    "guid" : "79f3b53a-eb56-4188-87f8-48317f76e7ce",
     "name" : "Fasting",
     "abbreviation" : "4.9.5.9",
     "description" : "Use this domain for words related to fasting--to not eat for a period of time.",
@@ -8265,6 +9859,8 @@ var semanticDomains_en = {
         "fast, Lent, Ramadan" ]
   },
   "4.9.6 Heaven, hell" : {
+    "key" : "4.9.6",
+    "guid" : "1c3f8996-362e-4ee0-af02-0dd02887f6aa",
     "name" : "Heaven, hell",
     "abbreviation" : "4.9.6",
     "description" : "Use this domain for words related to heaven and hell--the place where people go after they die.",
@@ -8277,6 +9873,8 @@ var semanticDomains_en = {
         "celestial, heavenly, hellish" ]
   },
   "4.9.6.1 Resurrection" : {
+    "key" : "4.9.6.1",
+    "guid" : "ff505092-6d88-4b5e-8095-04e471d7ad4c",
     "name" : "Resurrection",
     "abbreviation" : "4.9.6.1",
     "description" : "Use this domain for words related to resurrection--life after death, or living again after dying.",
@@ -8287,6 +9885,8 @@ var semanticDomains_en = {
         "reincarnation, reincarnated," ]
   },
   "4.9.7 Religious organization" : {
+    "key" : "4.9.7",
+    "guid" : "2470ad05-636e-4c85-96ab-cd880da58741",
     "name" : "Religious organization",
     "abbreviation" : "4.9.7",
     "description" : "Use this domain for words referring to official religions, groups within a religion, and religious meetings. Each religion will have different names for its groups. Answer each question for each religion.",
@@ -8297,6 +9897,8 @@ var semanticDomains_en = {
         "church, congregation, diocese, parish", "convert, conversion" ]
   },
   "4.9.7.1 Religious person" : {
+    "key" : "4.9.7.1",
+    "guid" : "ef860ee3-a4a5-4a42-b810-fdf41e35d151",
     "name" : "Religious person",
     "abbreviation" : "4.9.7.1",
     "description" : "Use this domain for words referring to religious practitioners--people who practice a religion, who are members of the religion, believe in the religion, leaders of the religion, and followers of the religion. Each religion has its own terms for religious practitioners. List these terms separately for each religion. The examples given below are for the Christian religion.",
@@ -8309,42 +9911,56 @@ var semanticDomains_en = {
         "laity, layperson, flock" ]
   },
   "4.9.7.2 Christianity" : {
+    "key" : "4.9.7.2",
+    "guid" : "1229dd8f-5cfc-4644-93c3-d256fc34d054",
     "name" : "Christianity",
     "abbreviation" : "4.9.7.2",
     "description" : "Use this domain for words used in Christianity.",
     "searchKeys" : [ "Christian, Christianity, Jesus Christ, the Virgin Mary, the Trinity, the Father, the Son of God, the Holy Spirit, Lord, cross, crucify, crucifixion, resurrection, Bible, Biblical, Scripture, Old Testament, New Testament, Gospel, apostle, church, chapel, churchgoer, priest, vicar, minister, pastor, service, Communion, Mass, sacrament, baptize, baptism, christen, christening, Christian name, confession, Christmas, Good Friday, Easter, crucifix, make the sign of the cross, saint, patron saint, Roman Catholic, Catholic, Pope, papal, Orthodox Church, Reformation, Protestant Church, Protestant, Anglican, Baptist, Methodist, Lutheran, Presbyterian" ]
   },
   "4.9.7.3 Islam" : {
+    "key" : "4.9.7.3",
+    "guid" : "ab8f5391-ad8b-42dc-a43c-22590a09ce77",
     "name" : "Islam",
     "abbreviation" : "4.9.7.3",
     "description" : "Use this domain for words used in Islam.",
     "searchKeys" : [ "Islam, Islamic, Muslim, Allah, Mohammed, the Prophet, Koran, Kaaba, mosque, sharia, Ramadan, hajj" ]
   },
   "4.9.7.4 Hinduism" : {
+    "key" : "4.9.7.4",
+    "guid" : "4ce22ed0-6fe3-47ae-83e4-e7c7310cb1d4",
     "name" : "Hinduism",
     "abbreviation" : "4.9.7.4",
     "description" : "Use this domain for words used in Hinduism.",
     "searchKeys" : [ "Hinduism, Hindu, New Age, Vishnu, Vedic, guru, reincarnation" ]
   },
   "4.9.7.5 Buddhism" : {
+    "key" : "4.9.7.5",
+    "guid" : "df647b1a-ed79-4a8e-b781-56ed25fe4405",
     "name" : "Buddhism",
     "abbreviation" : "4.9.7.5",
     "description" : "Use this domain for words used in Buddhism.",
     "searchKeys" : [ "Buddhism, Buddhist, Buddha, temple, pagoda, nirvana, enlightenment, monk" ]
   },
   "4.9.7.6 Judaism" : {
+    "key" : "4.9.7.6",
+    "guid" : "f211defe-d80f-4e40-9842-af19cb0719e7",
     "name" : "Judaism",
     "abbreviation" : "4.9.7.6",
     "description" : "Use this domain for words used in Judaism.",
     "searchKeys" : [ "Judaism, Jew, Jewish, Israel, Torah, Mishna, rabbi, synagogue, kosher, Passover, Hanukkah, Messiah, Mosaic Law" ]
   },
   "4.9.7.7 Animism " : {
+    "key" : "4.9.7.7",
+    "guid" : "f6134be5-3f96-4750-a03e-fca381a42db1",
     "name" : "Animism",
     "abbreviation" : "4.9.7.7",
     "description" : "Use this domain for words used in Animism--the belief in spirits.",
     "searchKeys" : [ "Animism, paganism,", "Animist, pagan," ]
   },
   "4.9.8 Religious things" : {
+    "key" : "4.9.8",
+    "guid" : "e311cc3a-a387-449e-a05a-07ed9678411d",
     "name" : "Religious things",
     "abbreviation" : "4.9.8",
     "description" : "Use this domain for words related to a religious object.",
@@ -8354,12 +9970,16 @@ var semanticDomains_en = {
         "(priest's) robes, habit, cloth, vestments, frock, cassock, cowl, hood, clerical collar, skullcap, surplice, miter," ]
   },
   "4.9.8.1 Idol" : {
+    "key" : "4.9.8.1",
+    "guid" : "b97531df-8256-4796-8335-f69753a8f2e3",
     "name" : "Idol",
     "abbreviation" : "4.9.8.1",
     "description" : "Use this domain for words related to idols and their use.",
     "searchKeys" : [ "idol, image, icon", "idolatry" ]
   },
   "4.9.8.2 Place of worship" : {
+    "key" : "4.9.8.2",
+    "guid" : "9b476afd-58c2-46a2-8294-449ac4aad3a9",
     "name" : "Place of worship",
     "abbreviation" : "4.9.8.2",
     "description" : "Use this domain for words related to places of worship. Each religion has different types of places of worship. These questions must be answered according to the practices of each religion and for each separate type of place.",
@@ -8370,6 +9990,8 @@ var semanticDomains_en = {
         "god shelf, shrine", "monastery, convent, parsonage" ]
   },
   "4.9.9 Irreligion" : {
+    "key" : "4.9.9",
+    "guid" : "725d78eb-8cac-4b2f-b5a4-f0a9adb80f5d",
     "name" : "Irreligion",
     "abbreviation" : "4.9.9",
     "description" : "Use this domain for words related to thinking and acting against God or religion.",
@@ -8386,12 +10008,16 @@ var semanticDomains_en = {
         "tolerance, intolerance" ]
   },
   "5 Daily life" : {
+    "key" : "5",
+    "guid" : "0f883eb0-00a1-44cc-b719-97fb6ec145d4",
     "name" : "Daily life",
     "abbreviation" : "5",
     "description" : "Use this domain for words related to daily life at home.",
     "searchKeys" : [ "life, routine, homemaking," ]
   },
   "5.1 Household equipment" : {
+    "key" : "5.1",
+    "guid" : "bd4a2527-f66c-4f48-922e-8b180bba8ef6",
     "name" : "Household equipment",
     "abbreviation" : "5.1",
     "description" : "Use this domain for words related to household equipment and tools.",
@@ -8402,6 +10028,8 @@ var semanticDomains_en = {
         "bag, garbage pail, mirror" ]
   },
   "5.1.1 Furniture" : {
+    "key" : "5.1.1",
+    "guid" : "44bf22fd-3725-4c49-bd3c-434402c33493",
     "name" : "Furniture",
     "abbreviation" : "5.1.1",
     "description" : "Use this domain for words related to furniture.",
@@ -8409,6 +10037,8 @@ var semanticDomains_en = {
         "furnish", "carpet, rug, mat" ]
   },
   "5.1.1.1 Table" : {
+    "key" : "5.1.1.1",
+    "guid" : "f732bdb5-9a04-468a-b50b-510f94d20fb4",
     "name" : "Table",
     "abbreviation" : "5.1.1.1",
     "description" : "Use this domain for words related to a table.",
@@ -8418,6 +10048,8 @@ var semanticDomains_en = {
         "tablecloth, runner, centerpiece, table decoration" ]
   },
   "5.1.1.2 Chair" : {
+    "key" : "5.1.1.2",
+    "guid" : "4fc734f2-a91d-4693-8caf-e7fe51a2df8a",
     "name" : "Chair",
     "abbreviation" : "5.1.1.2",
     "description" : "Use this domain for words related to a chair.",
@@ -8426,6 +10058,8 @@ var semanticDomains_en = {
         "arm, back, chair leg, seat cushion, footrest" ]
   },
   "5.1.1.3 Bed" : {
+    "key" : "5.1.1.3",
+    "guid" : "943eb131-2761-4c98-90a0-0bdfb0f8584d",
     "name" : "Bed",
     "abbreviation" : "5.1.1.3",
     "description" : "Use this domain for words related to a bed.",
@@ -8435,6 +10069,8 @@ var semanticDomains_en = {
         "make the bed, make up the bed, pull up the covers, throw off the covers, arrange the covers, sleep, lie down" ]
   },
   "5.1.1.4 Cabinet" : {
+    "key" : "5.1.1.4",
+    "guid" : "fe89a0f4-2155-424b-bf90-c1133dc41c8d",
     "name" : "Cabinet",
     "abbreviation" : "5.1.1.4",
     "description" : "Use this domain for words related to a cabinet.",
@@ -8443,18 +10079,24 @@ var semanticDomains_en = {
         "put things away, store, open a drawer, close a drawer, put things on a shelf" ]
   },
   "5.1.2 Household decoration" : {
+    "key" : "5.1.2",
+    "guid" : "a220a734-af03-4de3-8d05-369a3cad14cf",
     "name" : "Household decoration",
     "abbreviation" : "5.1.2",
     "description" : "Use this domain for words related to household decorations.",
     "searchKeys" : [ "decoration, picture, frame, calendar, poster, knickknack, flower vase, doily" ]
   },
   "5.2 Food" : {
+    "key" : "5.2",
+    "guid" : "4098899a-0ad0-4d71-9f9f-b99d5ba2e0d5",
     "name" : "Food",
     "abbreviation" : "5.2",
     "description" : "Use this domain for general words referring to food.",
     "searchKeys" : [ "food, sustenance, nourishment, intake, nutrition, nutritional, non-nutritional, diet" ]
   },
   "5.2.1 Food preparation" : {
+    "key" : "5.2.1",
+    "guid" : "1fda68d4-5941-4695-b656-090d603a3344",
     "name" : "Food preparation",
     "abbreviation" : "5.2.1",
     "description" : "Use this domain for words related to food preparation.",
@@ -8469,6 +10111,8 @@ var semanticDomains_en = {
         "recipe, ingredients, instructions, measurements" ]
   },
   "5.2.1.1 Cooking methods" : {
+    "key" : "5.2.1.1",
+    "guid" : "fc0afb69-a4d4-439a-91cd-ed0ce67677b5",
     "name" : "Cooking methods",
     "abbreviation" : "5.2.1.1",
     "description" : "Use this domain for words referring to various ways of cooking food. It is necessary to think through different kinds of food and how they are cooked. An example is given below for cooking eggs.",
@@ -8479,6 +10123,8 @@ var semanticDomains_en = {
         "sizzle," ]
   },
   "5.2.1.2 Steps in food preparation" : {
+    "key" : "5.2.1.2",
+    "guid" : "726923d4-b25c-46eb-8ab0-427207177ae3",
     "name" : "Steps in food preparation",
     "abbreviation" : "5.2.1.2",
     "description" : "Use this domain for words related to the steps in food preparation. One way to find the words in this domain is to describe how each type of food is prepared.",
@@ -8489,18 +10135,24 @@ var semanticDomains_en = {
         "ripen, age (cheese), allow cream to rise, allow bread to rise," ]
   },
   "5.2.1.2.1 Remove shell, skin" : {
+    "key" : "5.2.1.2.1",
+    "guid" : "6e83c471-0fe8-4641-8ecf-68b63df29ab7",
     "name" : "Remove shell, skin",
     "abbreviation" : "5.2.1.2.1",
     "description" : "Use this domain for words related to removing the shell or skin from food.",
     "searchKeys" : [ "shell, skin, pare, peel, husk" ]
   },
   "5.2.1.2.2 Pound in mortar and pestle" : {
+    "key" : "5.2.1.2.2",
+    "guid" : "8a9b5484-eda8-4194-95ca-c2e76e83ae67",
     "name" : "Pound in mortar and pestle",
     "abbreviation" : "5.2.1.2.2",
     "description" : "Use this domain for words related to pounding food in a mortar.",
     "searchKeys" : [ "mortar, pestle, pound" ]
   },
   "5.2.1.2.3 Grind flour" : {
+    "key" : "5.2.1.2.3",
+    "guid" : "ac7de73d-0059-4f35-9317-462a1813edba",
     "name" : "Grind flour",
     "abbreviation" : "5.2.1.2.3",
     "description" : "Use this domain for words related to grinding flour.",
@@ -8509,6 +10161,8 @@ var semanticDomains_en = {
         "mill, flourmill, grind stone, millstone, grinder, grinding mill, flour sack" ]
   },
   "5.2.1.3 Cooking utensil" : {
+    "key" : "5.2.1.3",
+    "guid" : "dbd3e164-3f70-4395-9728-1c24c8900da6",
     "name" : "Cooking utensil",
     "abbreviation" : "5.2.1.3",
     "description" : "Use this domain for words related to cooking utensils.",
@@ -8526,6 +10180,8 @@ var semanticDomains_en = {
         "handle (of a pot, knife), blade (of a knife), lid (of a pot, container), lip (of a bowl), door (of an oven, refrigerator, cupboard), shelf (of a refrigerator, cupboard), rack (of an oven, grill)" ]
   },
   "5.2.1.4 Food storage" : {
+    "key" : "5.2.1.4",
+    "guid" : "1b399fa1-e4f7-4d7b-a33e-3972b8b556e2",
     "name" : "Food storage",
     "abbreviation" : "5.2.1.4",
     "description" : "Use this domain for words referring to food preservation and storage.",
@@ -8534,6 +10190,8 @@ var semanticDomains_en = {
         "container, jar, bottle, canister, spice rack, flour sack, bag, granary" ]
   },
   "5.2.1.5 Serve food" : {
+    "key" : "5.2.1.5",
+    "guid" : "cd01db6c-8aa6-42d1-93ac-05e81a8be523",
     "name" : "Serve food",
     "abbreviation" : "5.2.1.5",
     "description" : "Use this domain for words related to serving food.",
@@ -8546,6 +10204,8 @@ var semanticDomains_en = {
         "dining room, restaurant, banquet hall, serving line, buffet, soup line" ]
   },
   "5.2.2 Eat" : {
+    "key" : "5.2.2",
+    "guid" : "0f568473-880d-43bd-b5ce-590100fdcaf6",
     "name" : "Eat",
     "abbreviation" : "5.2.2",
     "description" : "Use this domain for words related to eating.",
@@ -8553,6 +10213,8 @@ var semanticDomains_en = {
         "swallow, gulp", "choke, gag", "feed (someone), force-feed" ]
   },
   "5.2.2.1 Bite, chew" : {
+    "key" : "5.2.2.1",
+    "guid" : "8242fc85-a703-4efa-a78a-0556a84e811e",
     "name" : "Bite, chew",
     "abbreviation" : "5.2.2.1",
     "description" : "Use this domain for words referring to biting and chewing with the teeth.",
@@ -8563,6 +10225,8 @@ var semanticDomains_en = {
         "grind your teeth, gnash, clench your teeth,", "swallow," ]
   },
   "5.2.2.2 Meal" : {
+    "key" : "5.2.2.2",
+    "guid" : "02d404d7-f3d7-492c-92a0-c6c9ff1a1908",
     "name" : "Meal",
     "abbreviation" : "5.2.2.2",
     "description" : "Use this domain for words related to a meal.",
@@ -8578,6 +10242,8 @@ var semanticDomains_en = {
         "Thank you. May I be excused." ]
   },
   "5.2.2.3 Feast" : {
+    "key" : "5.2.2.3",
+    "guid" : "08788e9a-93b8-4a2e-ab01-dea177f061e8",
     "name" : "Feast",
     "abbreviation" : "5.2.2.3",
     "description" : "Use this domain for words related to a feast.",
@@ -8586,6 +10252,8 @@ var semanticDomains_en = {
         "guest, dinner guest, guest of honor", "propose a toast" ]
   },
   "5.2.2.4 Manner of eating" : {
+    "key" : "5.2.2.4",
+    "guid" : "12b6934d-3a4a-4623-995f-865f401349ab",
     "name" : "Manner of eating",
     "abbreviation" : "5.2.2.4",
     "description" : "Use this domain for words describing the manner in which a person eats.",
@@ -8599,6 +10267,8 @@ var semanticDomains_en = {
         "(no words in English, but some in North American Indian languages)" ]
   },
   "5.2.2.5 Hungry, thirsty" : {
+    "key" : "5.2.2.5",
+    "guid" : "0a27d9d1-0f1f-475a-92a2-bbccf5b15f41",
     "name" : "Hungry, thirsty",
     "abbreviation" : "5.2.2.5",
     "description" : "Use this domain for words related to being hungry or thirsty.",
@@ -8609,6 +10279,8 @@ var semanticDomains_en = {
         "lack of appetite, no appetite, not hungry" ]
   },
   "5.2.2.6 Satiated, full" : {
+    "key" : "5.2.2.6",
+    "guid" : "40ff5cee-31d8-4c89-a212-877347212a0e",
     "name" : "Satiated, full",
     "abbreviation" : "5.2.2.6",
     "description" : "Use this domain for words related to being full of food.",
@@ -8617,6 +10289,8 @@ var semanticDomains_en = {
         "filling, heavy, stodgy," ]
   },
   "5.2.2.7 Drink" : {
+    "key" : "5.2.2.7",
+    "guid" : "6de42a33-35b2-49c6-b2c4-fa9c0c5094f0",
     "name" : "Drink",
     "abbreviation" : "5.2.2.7",
     "description" : "Use this domain for words related to drinking.",
@@ -8626,6 +10300,8 @@ var semanticDomains_en = {
         "drink (n)" ]
   },
   "5.2.2.8 Eating utensil" : {
+    "key" : "5.2.2.8",
+    "guid" : "b4e6c077-4f5e-44f3-8868-1f7ae3486585",
     "name" : "Eating utensil",
     "abbreviation" : "5.2.2.8",
     "description" : "Use this domain for words related to eating utensils.",
@@ -8636,6 +10312,8 @@ var semanticDomains_en = {
         "place setting", "set the table" ]
   },
   "5.2.2.9 Fast, not eat" : {
+    "key" : "5.2.2.9",
+    "guid" : "b3d3dd7d-0cb1-4c25-bcae-cc402fcfa3ea",
     "name" : "Fast, not eat",
     "abbreviation" : "5.2.2.9",
     "description" : "Use this domain for words related to fasting--to not eat for a period of time.",
@@ -8644,6 +10322,8 @@ var semanticDomains_en = {
         "break a fast" ]
   },
   "5.2.3 Types of food" : {
+    "key" : "5.2.3",
+    "guid" : "5bcd08a6-cb46-41bb-a732-0d690b5ea596",
     "name" : "Types of food",
     "abbreviation" : "5.2.3",
     "description" : "Use this domain for words related to types of food.",
@@ -8653,12 +10333,16 @@ var semanticDomains_en = {
         "tender, tough, crisp, crispy, raw, stale, fresh" ]
   },
   "5.2.3.1 Food from plants" : {
+    "key" : "5.2.3.1",
+    "guid" : "32125c5f-d69a-442f-ba66-6277ec0a3b15",
     "name" : "Food from plants",
     "abbreviation" : "5.2.3.1",
     "description" : "Use this domain for words related to food from plants.",
     "searchKeys" : [ "edible plants", "vegetarian" ]
   },
   "5.2.3.1.1 Food from seeds" : {
+    "key" : "5.2.3.1.1",
+    "guid" : "1447278f-efff-4807-b9ea-c487dea1ba5e",
     "name" : "Food from seeds",
     "abbreviation" : "5.2.3.1.1",
     "description" : "Use this domain for words related to food from seeds.",
@@ -8670,12 +10354,16 @@ var semanticDomains_en = {
         "cottonseed, pumpkin seeds, sunflower seeds" ]
   },
   "5.2.3.1.2 Food from fruit" : {
+    "key" : "5.2.3.1.2",
+    "guid" : "9cae4ee3-03cf-46f7-9475-21d66c93ae04",
     "name" : "Food from fruit",
     "abbreviation" : "5.2.3.1.2",
     "description" : "Use this domain for words related to food from fruit.",
     "searchKeys" : [ "apple, apricot, avocado, banana, berry, blueberry, breadfruit, carob, citrus, cranberry, date, fig, flaxseed, grape, grapefruit, hayseed, jackfruit, legume, lemon, lime, linseed, mango, olive, orange, papaya, passion fruit, pea, peach, pear, pineapple, plantain, plum, prune, raisin, raspberry, strawberry, tomato" ]
   },
   "5.2.3.1.3 Food from vegetables" : {
+    "key" : "5.2.3.1.3",
+    "guid" : "929720f5-c264-49fd-b817-3e1ebff6e1de",
     "name" : "Food from vegetables",
     "abbreviation" : "5.2.3.1.3",
     "description" : "Use this domain for words related to food from vegetables.",
@@ -8684,6 +10372,8 @@ var semanticDomains_en = {
         "gourd, pumpkin, squash, eggplant" ]
   },
   "5.2.3.1.4 Food from leaves" : {
+    "key" : "5.2.3.1.4",
+    "guid" : "e496a6d3-a00c-470e-81c3-314f3f97840e",
     "name" : "Food from leaves",
     "abbreviation" : "5.2.3.1.4",
     "description" : "Use this domain for words referring to food from leaves and stems.",
@@ -8692,12 +10382,16 @@ var semanticDomains_en = {
         "sugarcane, rhubarb, celery" ]
   },
   "5.2.3.1.5 Food from roots" : {
+    "key" : "5.2.3.1.5",
+    "guid" : "462f5606-5bd8-4543-aa35-26b0cffd7163",
     "name" : "Food from roots",
     "abbreviation" : "5.2.3.1.5",
     "description" : "Use this domain for words referring to food from roots.",
     "searchKeys" : [ "potato, sweet potato, carrot, onion, beet, cassava, yam, ginger" ]
   },
   "5.2.3.2 Food from animals" : {
+    "key" : "5.2.3.2",
+    "guid" : "1f608e18-958e-4bb3-a977-04879fb5acd5",
     "name" : "Food from animals",
     "abbreviation" : "5.2.3.2",
     "description" : "Use this domain for words referring to eating meat and to types of animals that are eaten. Only include those animals that are commonly eaten, especially those that are domesticated.",
@@ -8708,24 +10402,32 @@ var semanticDomains_en = {
         "shrimp, lobster", "cannibal" ]
   },
   "5.2.3.2.1 Meat" : {
+    "key" : "5.2.3.2.1",
+    "guid" : "5c348090-12f4-4c83-8331-e10971bbc8d3",
     "name" : "Meat",
     "abbreviation" : "5.2.3.2.1",
     "description" : "Use this domain for words referring to meat and types of animals that are eaten. Only include those animals that are commonly eaten.",
     "searchKeys" : [ "meat", "ground beef, steak", "fat, grease", "gristle" ]
   },
   "5.2.3.2.2 Milk products" : {
+    "key" : "5.2.3.2.2",
+    "guid" : "d4769748-7c4e-4359-9da5-2ea64d5948d9",
     "name" : "Milk products",
     "abbreviation" : "5.2.3.2.2",
     "description" : "Use this domain for words related to milk products.",
     "searchKeys" : [ "milk, butter, cheese, cream, whey, milk solids, butterfat, yogurt, curd" ]
   },
   "5.2.3.2.3 Egg dishes" : {
+    "key" : "5.2.3.2.3",
+    "guid" : "aa5658da-8926-4519-83a5-d451dc5a6b49",
     "name" : "Egg dishes",
     "abbreviation" : "5.2.3.2.3",
     "description" : "Use this domain for words related to food made from eggs.",
     "searchKeys" : [ "boiled egg, fried egg, scrambled eggs, poached egg, omelet, baked eggs, quiche, caviar (fish eggs)" ]
   },
   "5.2.3.3 Cooking ingredients" : {
+    "key" : "5.2.3.3",
+    "guid" : "36ad58e3-ade7-49b9-9922-de0b5c3f13c3",
     "name" : "Cooking ingredients",
     "abbreviation" : "5.2.3.3",
     "description" : "Use this domain for general words referring to ingredients--the things that are added together when preparing food.",
@@ -8734,6 +10436,8 @@ var semanticDomains_en = {
         "thickener, cornstarch, pectin, egg, gelatin, agar, wheat flour, corn flour, tapioca flour, cassava flour, sago flour, rice flour, glutinous rice flour," ]
   },
   "5.2.3.3.1 Sugar" : {
+    "key" : "5.2.3.3.1",
+    "guid" : "9bb6f1ed-7170-4caa-a14c-747fd95ca30e",
     "name" : "Sugar",
     "abbreviation" : "5.2.3.3.1",
     "description" : "Use this domain for words related to sugar.",
@@ -8743,6 +10447,8 @@ var semanticDomains_en = {
         "spoonful of sugar, sugar bowl" ]
   },
   "5.2.3.3.2 Salt" : {
+    "key" : "5.2.3.3.2",
+    "guid" : "7beca90c-3671-4b3c-bf9a-fb8f08ff914b",
     "name" : "Salt",
     "abbreviation" : "5.2.3.3.2",
     "description" : "Use this domain for words related to salt.",
@@ -8750,6 +10456,8 @@ var semanticDomains_en = {
         "saltshaker" ]
   },
   "5.2.3.3.3 Spice" : {
+    "key" : "5.2.3.3.3",
+    "guid" : "bf0b24d2-4bd6-4e9c-8775-a623ace8db56",
     "name" : "Spice",
     "abbreviation" : "5.2.3.3.3",
     "description" : "Use this domain for spices--things that are added to food to make them taste better.",
@@ -8759,6 +10467,8 @@ var semanticDomains_en = {
         "spice, flavor, season", "spicy, flavorful, seasoned" ]
   },
   "5.2.3.3.4 Leaven" : {
+    "key" : "5.2.3.3.4",
+    "guid" : "e11d6360-6fa9-45a9-a23e-2252a301cf86",
     "name" : "Leaven",
     "abbreviation" : "5.2.3.3.4",
     "description" : "Use this domain for leaven--things that are added to food to make them ferment.",
@@ -8767,6 +10477,8 @@ var semanticDomains_en = {
         "leaven", "rise, ferment" ]
   },
   "5.2.3.3.5 Cooking oil" : {
+    "key" : "5.2.3.3.5",
+    "guid" : "c7c1c25a-d89d-4720-846c-d6e1dd723a17",
     "name" : "Cooking oil",
     "abbreviation" : "5.2.3.3.5",
     "description" : "Use this domain for words related to cooking oil.",
@@ -8774,6 +10486,8 @@ var semanticDomains_en = {
         "olive, corn, canola, cottonseed," ]
   },
   "5.2.3.4 Prepared food" : {
+    "key" : "5.2.3.4",
+    "guid" : "effc49dd-6322-4302-899c-4cf540f0e2e4",
     "name" : "Prepared food",
     "abbreviation" : "5.2.3.4",
     "description" : "Use this domain for words referring to prepared food. Cultures vary widely in the number and types of foods they prepare, and in how they classify them. For instance the English distinction between main dish and side dish is not found in the classification system of other languages. If your language has well-recognized subcategories, you can set up a separate subdomain for each. The questions below are based on the main ingredient in the dish.",
@@ -8793,12 +10507,16 @@ var semanticDomains_en = {
         "sack lunch, picnic lunch, dried food, C-rations, fast food" ]
   },
   "5.2.3.5 Prohibited food" : {
+    "key" : "5.2.3.5",
+    "guid" : "2eba12c6-7817-4dfd-9e7c-94c8b8b389ef",
     "name" : "Prohibited food",
     "abbreviation" : "5.2.3.5",
     "description" : "Use this domain for words that describe food that is prohibited by the culture or religion. Do not list the foods that are prohibited.",
     "searchKeys" : [ "prohibited food, taboo food, unclean", "kosher" ]
   },
   "5.2.3.6 Beverage" : {
+    "key" : "5.2.3.6",
+    "guid" : "31dc3d15-c6f8-4405-a33b-8f3a52f8671a",
     "name" : "Beverage",
     "abbreviation" : "5.2.3.6",
     "description" : "Use this domain for words referring to things people drink.",
@@ -8807,6 +10525,8 @@ var semanticDomains_en = {
         "water, milk, juice, tea, coffee, soda, soda pop, coke, milkshake, malt, chocolate" ]
   },
   "5.2.3.7 Alcoholic beverage" : {
+    "key" : "5.2.3.7",
+    "guid" : "2d894eca-8f6c-4b63-b265-0914a65d9be9",
     "name" : "Alcoholic beverage",
     "abbreviation" : "5.2.3.7",
     "description" : "Use this domain for types of beverages containing alcohol.",
@@ -8816,6 +10536,8 @@ var semanticDomains_en = {
         "proof" ]
   },
   "5.2.3.7.1 Alcohol preparation" : {
+    "key" : "5.2.3.7.1",
+    "guid" : "ee8a20b7-4202-489a-b8cd-bdebaf770313",
     "name" : "Alcohol preparation",
     "abbreviation" : "5.2.3.7.1",
     "description" : "Use this domain for words related to making alcoholic beverages.",
@@ -8824,6 +10546,8 @@ var semanticDomains_en = {
         "distillery, brewery, still, filter" ]
   },
   "5.2.3.7.2 Drunk" : {
+    "key" : "5.2.3.7.2",
+    "guid" : "d067b555-e53c-4c16-bb09-5314862d8bae",
     "name" : "Drunk",
     "abbreviation" : "5.2.3.7.2",
     "description" : "Use this domain for words related to drinking alcohol and the effect it has on a person.",
@@ -8834,6 +10558,8 @@ var semanticDomains_en = {
         "hangover", "bar, saloon, bartender" ]
   },
   "5.2.4 Tobacco" : {
+    "key" : "5.2.4",
+    "guid" : "c6688928-6694-4264-8048-a60b665b5793",
     "name" : "Tobacco",
     "abbreviation" : "5.2.4",
     "description" : "Use this domain for words related to using tobacco.",
@@ -8846,6 +10572,8 @@ var semanticDomains_en = {
         "nicotine, tar" ]
   },
   "5.2.5 Narcotic" : {
+    "key" : "5.2.5",
+    "guid" : "3710e019-46c9-44db-a0aa-9054d3126161",
     "name" : "Narcotic",
     "abbreviation" : "5.2.5",
     "description" : "Use this domain for words related to narcotics and drugs that are not used as medicine but as stimulants. Narcotics are often addicting and harmful to a person's health.",
@@ -8858,6 +10586,8 @@ var semanticDomains_en = {
         "addiction, habit, dependence,", "addictive," ]
   },
   "5.2.6 Stimulant" : {
+    "key" : "5.2.6",
+    "guid" : "029e0760-3306-41cc-b032-40befb22303e",
     "name" : "Stimulant",
     "abbreviation" : "5.2.6",
     "description" : "Use this domain for words related to stimulants--substances that are drunk, eaten, or chewed to make a person more alert or give him more energy.",
@@ -8865,24 +10595,32 @@ var semanticDomains_en = {
         "coffee, tea, mate, hookah, chewing gum, beetle nut," ]
   },
   "5.3 Clothing" : {
+    "key" : "5.3",
+    "guid" : "8a11e609-e88d-4247-8c5f-224ddb20de10",
     "name" : "Clothing",
     "abbreviation" : "5.3",
     "description" : "Use this domain for words related to clothing.",
     "searchKeys" : [ "clothing, clothes, dress", "shabby," ]
   },
   "5.3.1 Men's clothing" : {
+    "key" : "5.3.1",
+    "guid" : "ee6e993c-5551-42ae-b35e-26bc6aeeb3a4",
     "name" : "Men's clothing",
     "abbreviation" : "5.3.1",
     "description" : "Use this domain for words related to men's clothing.",
     "searchKeys" : [ "shirt, pants, trousers, short pants, sock, stocking, shoe, boot, belt, hat, cap, underclothes, underwear, tie, suit, vest, coat, gloves, robe, pajamas, overcoat," ]
   },
   "5.3.2 Women's clothing" : {
+    "key" : "5.3.2",
+    "guid" : "410a3d81-290f-416b-8012-3aa16eaa9e55",
     "name" : "Women's clothing",
     "abbreviation" : "5.3.2",
     "description" : "Use this domain for words related to women's clothing.",
     "searchKeys" : [ "dress, skirt, blouse, underwear, slip, petticoat, bra, shoe, sock, nylons, stockings, hat, glove, sweater, coat, nightgown, maternity dress, belt, scarf, shawl, veil," ]
   },
   "5.3.3 Traditional clothing" : {
+    "key" : "5.3.3",
+    "guid" : "5b41c1ed-95bb-4cca-8cff-87361acb5683",
     "name" : "Traditional clothing",
     "abbreviation" : "5.3.3",
     "description" : "Use this domain for words related to traditional clothing.",
@@ -8890,6 +10628,8 @@ var semanticDomains_en = {
         "top hat, cravat, bustle, turban, headdress," ]
   },
   "5.3.4 Clothes for special occasions" : {
+    "key" : "5.3.4",
+    "guid" : "c3b808d4-d94e-4c8e-b7b2-87b4f4a83198",
     "name" : "Clothes for special occasions",
     "abbreviation" : "5.3.4",
     "description" : "Use this domain for words referring to special clothes worn on special occasions. It is necessary to think through all the various special occasions in the culture and think of any special clothes worn on those occasions. Two examples are given below for work and graduation, but there are many others.",
@@ -8899,6 +10639,8 @@ var semanticDomains_en = {
         "cap and gown" ]
   },
   "5.3.5 Clothes for special people" : {
+    "key" : "5.3.5",
+    "guid" : "c817af65-7cc8-4105-a8ed-47067d97b73b",
     "name" : "Clothes for special people",
     "abbreviation" : "5.3.5",
     "description" : "Use this domain for special clothes worn by special people. It is necessary to think through all the various special types of people in the culture and think of any special clothes worn by them. Several examples are given below, but there are many others.",
@@ -8910,6 +10652,8 @@ var semanticDomains_en = {
         "greens, surgical suit, white coat, nurses cap" ]
   },
   "5.3.6 Parts of clothing" : {
+    "key" : "5.3.6",
+    "guid" : "40516af2-d413-418e-8b68-8443847ee169",
     "name" : "Parts of clothing",
     "abbreviation" : "5.3.6",
     "description" : "Use this domain for words related to parts of clothing.",
@@ -8920,6 +10664,8 @@ var semanticDomains_en = {
         "belt buckle, button, buttonhole, clasp, cuff-link, lace, snap, zip, zipper," ]
   },
   "5.3.7 Wear clothing" : {
+    "key" : "5.3.7",
+    "guid" : "4445cccd-e9b9-4f25-9e8c-2ef58408297d",
     "name" : "Wear clothing",
     "abbreviation" : "5.3.7",
     "description" : "Use this domain for words related to wearing clothing.",
@@ -8930,6 +10676,8 @@ var semanticDomains_en = {
         "barefoot, shoeless, shirtless, hatless, unshod, topless," ]
   },
   "5.3.8 Naked" : {
+    "key" : "5.3.8",
+    "guid" : "5450043d-907b-4884-a9e5-35cfd5935947",
     "name" : "Naked",
     "abbreviation" : "5.3.8",
     "description" : "Use this domain for words related to being naked--not wearing any clothes, and for words referring to how a person feels about being naked. It is a part of universal human experience that people do not want to be naked. So there are words that refer to feeling bad if one does not have enough clothes on (shame). Other words refer to wanting to have enough clothes (modest). Other words refer to how people feel about other people who do not wear enough clothes (indecent).",
@@ -8939,12 +10687,16 @@ var semanticDomains_en = {
         "modest, propriety, decent", "shame, embarrassed, blush" ]
   },
   "5.3.9 Style of clothing" : {
+    "key" : "5.3.9",
+    "guid" : "72d9b7cd-aa06-4f7b-a66b-b992171d2cd4",
     "name" : "Style of clothing",
     "abbreviation" : "5.3.9",
     "description" : "Use this domain for words related to clothing styles.",
     "searchKeys" : [ "style, stylish, in style, fashion, out of fashion, modern, traditional, old-fashioned" ]
   },
   "5.4 Adornment" : {
+    "key" : "5.4",
+    "guid" : "15947464-997a-4f44-9a4b-ac4916e7e19b",
     "name" : "Adornment",
     "abbreviation" : "5.4",
     "description" : "Use this domain for words related to adornment.",
@@ -8953,6 +10705,8 @@ var semanticDomains_en = {
         "adornment, accessories, decoration" ]
   },
   "5.4.1 Jewelry" : {
+    "key" : "5.4.1",
+    "guid" : "844f922b-6fb6-49aa-864b-b1c49edaa1ae",
     "name" : "Jewelry",
     "abbreviation" : "5.4.1",
     "description" : "Use this domain for objects such as jewelry that are put on or attached to the body or to the clothes as decoration.",
@@ -8963,6 +10717,8 @@ var semanticDomains_en = {
         "anklet,", "bedeck, adorn" ]
   },
   "5.4.2 Cosmetics" : {
+    "key" : "5.4.2",
+    "guid" : "5bdb3c06-fbee-4f5f-991a-e2128f65bb86",
     "name" : "Cosmetics",
     "abbreviation" : "5.4.2",
     "description" : "Use this domain for words related to cosmetics--things you put on your skin to make yourself beautiful in appearance.",
@@ -8973,6 +10729,8 @@ var semanticDomains_en = {
         "have on, wear,", "made-up," ]
   },
   "5.4.3 Care for hair" : {
+    "key" : "5.4.3",
+    "guid" : "6b8366b9-b5e8-42b8-991c-c568d4442a81",
     "name" : "Care for hair",
     "abbreviation" : "5.4.3",
     "description" : "Use this domain for words related to caring for your hair.",
@@ -8983,18 +10741,24 @@ var semanticDomains_en = {
         "beauty salon, beauty parlor, barber shop, hair salon," ]
   },
   "5.4.3.1 Comb hair" : {
+    "key" : "5.4.3.1",
+    "guid" : "fc1e4ea7-15fa-4bbf-8697-f312762504ba",
     "name" : "Comb hair",
     "abbreviation" : "5.4.3.1",
     "description" : "Use this domain for words related to combing your hair.",
     "searchKeys" : [ "to comb, comb, brush, pick, tangle, snarl, rats nest" ]
   },
   "5.4.3.2 Plait hair" : {
+    "key" : "5.4.3.2",
+    "guid" : "b0e3486c-bd3d-4b5c-be9a-40cd2c0ce2a1",
     "name" : "Plait hair",
     "abbreviation" : "5.4.3.2",
     "description" : "Use this domain for words related to plaiting your hair.",
     "searchKeys" : [ "plait, braid", "French braid" ]
   },
   "5.4.3.3 Dye hair" : {
+    "key" : "5.4.3.3",
+    "guid" : "64fa0ba7-73cb-40e9-a8d2-3e61fff146c9",
     "name" : "Dye hair",
     "abbreviation" : "5.4.3.3",
     "description" : "Use this domain for words related to dying your hair.",
@@ -9004,6 +10768,8 @@ var semanticDomains_en = {
         "dye, rinse", "hair coloring" ]
   },
   "5.4.3.4 Hairstyle" : {
+    "key" : "5.4.3.4",
+    "guid" : "041b5ac9-99be-4281-a17e-654eff33d793",
     "name" : "Hairstyle",
     "abbreviation" : "5.4.3.4",
     "description" : "Use this domain for words related to hairstyles.",
@@ -9013,6 +10779,8 @@ var semanticDomains_en = {
         "curled, wavy, straight, bobbed, pigtailed," ]
   },
   "5.4.3.5 Cut hair" : {
+    "key" : "5.4.3.5",
+    "guid" : "9c21f9bd-a7e0-4989-99f1-7fa2853ab73c",
     "name" : "Cut hair",
     "abbreviation" : "5.4.3.5",
     "description" : "Use this domain for words related to cutting hair.",
@@ -9021,6 +10789,8 @@ var semanticDomains_en = {
         "scissors, haircutters, shears" ]
   },
   "5.4.3.6 Shave" : {
+    "key" : "5.4.3.6",
+    "guid" : "84d67c87-86ff-4e71-8a26-abe048132f8f",
     "name" : "Shave",
     "abbreviation" : "5.4.3.6",
     "description" : "Use this domain for words related to shaving.",
@@ -9030,6 +10800,8 @@ var semanticDomains_en = {
         "clean-shaven," ]
   },
   "5.4.4 Care for the teeth" : {
+    "key" : "5.4.4",
+    "guid" : "c81004a7-499e-4e05-84c8-3d74a17e97fd",
     "name" : "Care for the teeth",
     "abbreviation" : "5.4.4",
     "description" : "Use this domain for words related to caring for your teeth.",
@@ -9039,6 +10811,8 @@ var semanticDomains_en = {
         "clean, dirty, yellow, decayed, chipped, loose, worn, bad breath, food stuck between the teeth" ]
   },
   "5.4.5 Anoint the body" : {
+    "key" : "5.4.5",
+    "guid" : "03e22b05-8505-442d-9c3b-7e691bd525e0",
     "name" : "Anoint the body",
     "abbreviation" : "5.4.5",
     "description" : "Use this domain for words related to anointing the body.",
@@ -9046,6 +10820,8 @@ var semanticDomains_en = {
         "perfume, deodorant, scent, oil, fat, aftershave," ]
   },
   "5.4.6 Ritual scar" : {
+    "key" : "5.4.6",
+    "guid" : "6ea9bfc6-723c-466f-9efc-0992879ae47d",
     "name" : "Ritual scar",
     "abbreviation" : "5.4.6",
     "description" : "Use this domain for words related to ritual scarring.",
@@ -9053,6 +10829,8 @@ var semanticDomains_en = {
         "tattoo (v), get a tattoo", "pigment", "file teeth" ]
   },
   "5.4.6.1 Circumcision" : {
+    "key" : "5.4.6.1",
+    "guid" : "7f1dfb68-bf07-472d-a481-b802d2591ca6",
     "name" : "Circumcision",
     "abbreviation" : "5.4.6.1",
     "description" : "Use this domain for words related to circumcision.",
@@ -9061,6 +10839,8 @@ var semanticDomains_en = {
         "(no words in English)" ]
   },
   "5.4.7 Care for the fingernails" : {
+    "key" : "5.4.7",
+    "guid" : "93de2257-8303-490d-b2fe-6d1d838b08c6",
     "name" : "Care for the fingernails",
     "abbreviation" : "5.4.7",
     "description" : "Use this domain for words related to caring for the fingernails.",
@@ -9071,6 +10851,8 @@ var semanticDomains_en = {
         "long, clean, dirty, dirt under the nails, chipped, curved" ]
   },
   "5.5 Fire" : {
+    "key" : "5.5",
+    "guid" : "ff7e3abd-6810-4128-83c9-701b4925c2fe",
     "name" : "Fire",
     "abbreviation" : "5.5",
     "description" : "Use this domain for general words that refer to fire and for words referring to types of fire. These words may be specific for what is being burned (forest fire 'a fire burning a forest'), the size of the fire (inferno 'a very large hot fire'), or the place where the fire burns (hellfire 'the fire in hell').",
@@ -9087,6 +10869,8 @@ var semanticDomains_en = {
         "fireproof, unburnable, fire-resistant, unquenchable" ]
   },
   "5.5.1 Light a fire" : {
+    "key" : "5.5.1",
+    "guid" : "1438c623-c4ce-4559-b71b-cfb86a71e6d7",
     "name" : "Light a fire",
     "abbreviation" : "5.5.1",
     "description" : "Use this domain for words related to lighting a fire.",
@@ -9097,6 +10881,8 @@ var semanticDomains_en = {
         "kindling, tinder, punk" ]
   },
   "5.5.2 Tend a fire" : {
+    "key" : "5.5.2",
+    "guid" : "9a456463-3c71-4f9a-8117-dc2fcb087bd3",
     "name" : "Tend a fire",
     "abbreviation" : "5.5.2",
     "description" : "Use this domain for words that refer to tending a fire--to keep a fire burning so that it burns well and does not go out.",
@@ -9110,6 +10896,8 @@ var semanticDomains_en = {
         "fire pan, brazier", "poker, tongs, wick trimmer, snuffer," ]
   },
   "5.5.3 Extinguish a fire" : {
+    "key" : "5.5.3",
+    "guid" : "514974a2-c2fd-4b25-a24d-2ff52fa3d798",
     "name" : "Extinguish a fire",
     "abbreviation" : "5.5.3",
     "description" : "Use this domain for all the ways a person can stop a fire.",
@@ -9122,6 +10910,8 @@ var semanticDomains_en = {
         "fire engine, fire truck, fire extinguisher" ]
   },
   "5.5.4 Burn" : {
+    "key" : "5.5.4",
+    "guid" : "2933a9c1-aa62-46fb-a03c-68aed7fae9b7",
     "name" : "Burn",
     "abbreviation" : "5.5.4",
     "description" : "Use this domain for verbs that are used of fire: \"The fire is ____.\" In some languages there are verbs for what is happening to the thing that is burning: \"The house is ____.\"",
@@ -9139,6 +10929,8 @@ var semanticDomains_en = {
         "burnt," ]
   },
   "5.5.5 What fires produce" : {
+    "key" : "5.5.5",
+    "guid" : "b93bdfa4-486c-44a0-8266-557ccdc78b31",
     "name" : "What fires produce",
     "abbreviation" : "5.5.5",
     "description" : "Use this domain for words related to the things that fires produce.",
@@ -9153,6 +10945,8 @@ var semanticDomains_en = {
         "burn (n), burned off area" ]
   },
   "5.5.6 Fuel" : {
+    "key" : "5.5.6",
+    "guid" : "9fc25175-3b4a-4248-bc7f-b86012ec584f",
     "name" : "Fuel",
     "abbreviation" : "5.5.6",
     "description" : "Use this domain for types of fuel and for words used in making, collecting, storing, or using fuel. This domain includes the scenario of collecting firewood.",
@@ -9167,6 +10961,8 @@ var semanticDomains_en = {
         "gas can, jerry can" ]
   },
   "5.5.7 Fireplace" : {
+    "key" : "5.5.7",
+    "guid" : "70164474-a65b-4506-9953-f26afb6b497a",
     "name" : "Fireplace",
     "abbreviation" : "5.5.7",
     "description" : "Use this domain for any place where fires are normally burned.",
@@ -9177,6 +10973,8 @@ var semanticDomains_en = {
         "lamp stand, oil, wick," ]
   },
   "5.6 Cleaning" : {
+    "key" : "5.6",
+    "guid" : "bbb897b5-f09b-4263-9f81-826ca61084f1",
     "name" : "Cleaning",
     "abbreviation" : "5.6",
     "description" : "Use this domain for general words related to cleaning things.",
@@ -9184,6 +10982,8 @@ var semanticDomains_en = {
         "soap, shampoo, laundry soap, detergent, cleanser, scouring powder" ]
   },
   "5.6.1 Clean, dirty" : {
+    "key" : "5.6.1",
+    "guid" : "46ad1505-9049-41d8-831b-768f46f12500",
     "name" : "Clean, dirty",
     "abbreviation" : "5.6.1",
     "description" : "Use this domain for words describing whether something is clean or dirty.",
@@ -9192,6 +10992,8 @@ var semanticDomains_en = {
         "be dirty, filthy, soiled, stained, smeared, dusty, spotted, corrupted, grimy, greasy, polluted" ]
   },
   "5.6.2 Bathe" : {
+    "key" : "5.6.2",
+    "guid" : "dd12ac0f-55cc-4c79-a50c-d23cc7ea60b3",
     "name" : "Bathe",
     "abbreviation" : "5.6.2",
     "description" : "Use this domain for words related to bathing.",
@@ -9203,6 +11005,8 @@ var semanticDomains_en = {
         "soap, shampoo, lather, washcloth, towel, shower cap, bathrobe, shower curtain, bathmat, bathroom sink" ]
   },
   "5.6.3 Wash dishes" : {
+    "key" : "5.6.3",
+    "guid" : "9d79be9a-f21e-4189-be39-779db79da027",
     "name" : "Wash dishes",
     "abbreviation" : "5.6.3",
     "description" : "Use this domain for words related to washing dishes.",
@@ -9211,6 +11015,8 @@ var semanticDomains_en = {
         "dishpan, pan, dish rack, dishtowel, dishcloth, sponge, dishwater, dishwasher, kitchen sink" ]
   },
   "5.6.4 Wash clothes" : {
+    "key" : "5.6.4",
+    "guid" : "dae6488c-7fea-4fa3-84c9-b611d017b6a5",
     "name" : "Wash clothes",
     "abbreviation" : "5.6.4",
     "description" : "Use this domain for words related to washing clothes.",
@@ -9223,6 +11029,8 @@ var semanticDomains_en = {
         "clean, dirty, filthy, soiled, stained, faded, old, new, brand new, never been worn, worn, torn, ripped, patched, mended" ]
   },
   "5.6.5 Sweep, rake" : {
+    "key" : "5.6.5",
+    "guid" : "dc71598d-21a2-4598-9c12-13978796d2c9",
     "name" : "Sweep, rake",
     "abbreviation" : "5.6.5",
     "description" : "Use this domain for words related to cleaning the floor or ground.",
@@ -9231,6 +11039,8 @@ var semanticDomains_en = {
         "sweepings, leaves" ]
   },
   "5.6.6 Wipe, erase" : {
+    "key" : "5.6.6",
+    "guid" : "c09eedd3-c4e1-4cf9-b6d1-a01624c6426a",
     "name" : "Wipe, erase",
     "abbreviation" : "5.6.6",
     "description" : "Use this domain for words related to wiping dirt off of things.",
@@ -9238,6 +11048,8 @@ var semanticDomains_en = {
         "dust cloth, rag, eraser, rubber", "dust" ]
   },
   "5.7 Sleep" : {
+    "key" : "5.7",
+    "guid" : "d502512c-966b-4752-8636-716fb29facfe",
     "name" : "Sleep",
     "abbreviation" : "5.7",
     "description" : "Use this domain for words related to sleeping.",
@@ -9252,6 +11064,8 @@ var semanticDomains_en = {
         "wet the bed", "talk in your sleep" ]
   },
   "5.7.1 Go to sleep" : {
+    "key" : "5.7.1",
+    "guid" : "a3fe0ca2-64fe-44db-ac3f-14513385bc25",
     "name" : "Go to sleep",
     "abbreviation" : "5.7.1",
     "description" : "Use this domain for words related to going to bed and going to sleep.",
@@ -9268,6 +11082,8 @@ var semanticDomains_en = {
         "stay up (late), stay awake", "keep (someone) awake" ]
   },
   "5.7.2 Dream" : {
+    "key" : "5.7.2",
+    "guid" : "6736dafe-2916-40f6-b6b7-b6300100933b",
     "name" : "Dream",
     "abbreviation" : "5.7.2",
     "description" : "Use this domain for words related to dreaming.",
@@ -9276,6 +11092,8 @@ var semanticDomains_en = {
         "sweet dreams, pleasant dreams", "nightmare, bad dream" ]
   },
   "5.7.3 Wake up" : {
+    "key" : "5.7.3",
+    "guid" : "2158eb7d-eb59-4740-9628-9080d7f51a97",
     "name" : "Wake up",
     "abbreviation" : "5.7.3",
     "description" : "Use this domain for words related to waking up from sleep.",
@@ -9291,6 +11109,8 @@ var semanticDomains_en = {
         "stay awake, be alert, stay up" ]
   },
   "5.8 Manage a house" : {
+    "key" : "5.8",
+    "guid" : "716b3e9d-9bb9-42a6-ba56-829b1c018b28",
     "name" : "Manage a house",
     "abbreviation" : "5.8",
     "description" : "Use this domain for words related to managing a house.",
@@ -9299,6 +11119,8 @@ var semanticDomains_en = {
         "maid, butler, valet, domestic servant, house help, household staff" ]
   },
   "5.9 Live, stay" : {
+    "key" : "5.9",
+    "guid" : "f07f867d-808f-4750-92ca-859aea59e58c",
     "name" : "Live, stay",
     "abbreviation" : "5.9",
     "description" : "Use this domain for words related to living in a place.",
@@ -9307,18 +11129,24 @@ var semanticDomains_en = {
         "homebody," ]
   },
   "6 Work and occupation" : {
+    "key" : "6",
+    "guid" : "c82fa28f-7e26-489e-a244-4d69cea87b94",
     "name" : "Work and occupation",
     "abbreviation" : "6",
     "description" : "Use this domain for general words related to working.",
     "searchKeys" : [ "work, labor, toil" ]
   },
   "6.1 Work" : {
+    "key" : "6.1",
+    "guid" : "d68911f6-6507-483a-b015-44726fdf868a",
     "name" : "Work",
     "abbreviation" : "6.1",
     "description" : "Use this domain for words related to working.",
     "searchKeys" : [ "work, labor, operate" ]
   },
   "6.1.1 Worker" : {
+    "key" : "6.1.1",
+    "guid" : "8be94377-a3cc-4187-a6e2-51523e953503",
     "name" : "Worker",
     "abbreviation" : "6.1.1",
     "description" : "Use this domain for words related to a worker.",
@@ -9331,6 +11159,8 @@ var semanticDomains_en = {
         "carpenter (wood), blacksmith (iron, metal), cowboy (cattle), shepherd (sheep)" ]
   },
   "6.1.1.1 Expert" : {
+    "key" : "6.1.1.1",
+    "guid" : "b6ead5e6-dab5-4941-9017-d03452182709",
     "name" : "Expert",
     "abbreviation" : "6.1.1.1",
     "description" : "Use this domain for words related to being an expert--someone who can do something well.",
@@ -9342,6 +11172,8 @@ var semanticDomains_en = {
         "green, beginning (student), new, uninitiated, ignorant, untrained, inexperienced, unknowledgeable" ]
   },
   "6.1.2 Method" : {
+    "key" : "6.1.2",
+    "guid" : "d8366daf-ae1d-4b2c-a447-478c73580639",
     "name" : "Method",
     "abbreviation" : "6.1.2",
     "description" : "Use this domain for words related to the method of doing something.",
@@ -9351,6 +11183,8 @@ var semanticDomains_en = {
         "technical, strategic, tactical,", "work style" ]
   },
   "6.1.2.1 Try, attempt" : {
+    "key" : "6.1.2.1",
+    "guid" : "3393b3b2-b324-408d-9c59-057a0de9c3bd",
     "name" : "Try, attempt",
     "abbreviation" : "6.1.2.1",
     "description" : "Use this domain for words indicating that someone is trying to do something.",
@@ -9365,6 +11199,8 @@ var semanticDomains_en = {
         "attempt (n), endeavor (n), try (n), campaign, drive," ]
   },
   "6.1.2.2 Use" : {
+    "key" : "6.1.2.2",
+    "guid" : "64493789-1c2c-4b24-a7e6-f00ff9be923e",
     "name" : "Use",
     "abbreviation" : "6.1.2.2",
     "description" : "Use this domain for words related to using something to do something.",
@@ -9374,6 +11210,8 @@ var semanticDomains_en = {
         "abuse, misuse" ]
   },
   "6.1.2.2.1 Useful" : {
+    "key" : "6.1.2.2.1",
+    "guid" : "8411fa09-b1a5-4b62-aa47-f28bee9f6616",
     "name" : "Useful",
     "abbreviation" : "6.1.2.2.1",
     "description" : "Use this domain for words related to being useful--words describing something that can be used to do something.",
@@ -9384,6 +11222,8 @@ var semanticDomains_en = {
         "usefulness, utility," ]
   },
   "6.1.2.2.2 Useless" : {
+    "key" : "6.1.2.2.2",
+    "guid" : "29d131d2-5e52-49e3-83b1-c872d331cf03",
     "name" : "Useless",
     "abbreviation" : "6.1.2.2.2",
     "description" : "Use this domain for words related to being useless--words describing something that cannot be used to do anything.",
@@ -9392,30 +11232,40 @@ var semanticDomains_en = {
         "junk, garbage," ]
   },
   "6.1.2.2.3 Available" : {
+    "key" : "6.1.2.2.3",
+    "guid" : "34dd26b6-d081-42f5-8be9-c5fe7a7253b2",
     "name" : "Available",
     "abbreviation" : "6.1.2.2.3",
     "description" : "Use this domain for words related to something being available to use.",
     "searchKeys" : [ "available, obtainable, at your disposal" ]
   },
   "6.1.2.2.4 Use up" : {
+    "key" : "6.1.2.2.4",
+    "guid" : "b4dc89dc-3811-4d45-b0ee-0b71e28305cc",
     "name" : "Use up",
     "abbreviation" : "6.1.2.2.4",
     "description" : "Use this domain for words related to using something up.",
     "searchKeys" : [ "finish, use up, exhaust, run out of, consume, deplete, drink up, exhaust, sap, swallow, tap, use up" ]
   },
   "6.1.2.2.5 Take care of something" : {
+    "key" : "6.1.2.2.5",
+    "guid" : "424ced39-d801-419a-86fe-265942a9b74b",
     "name" : "Take care of something",
     "abbreviation" : "6.1.2.2.5",
     "description" : "Use this domain for words related to taking care of something.",
     "searchKeys" : [ "take care of, look after, maintain" ]
   },
   "6.1.2.2.6 Waste" : {
+    "key" : "6.1.2.2.6",
+    "guid" : "a72515ec-998d-4b48-bd69-c67cf9245abc",
     "name" : "Waste",
     "abbreviation" : "6.1.2.2.6",
     "description" : "Use this domain for words related to wasting something.",
     "searchKeys" : [ "waste, squander, dissipate, uneconomical" ]
   },
   "6.1.2.3 Work well" : {
+    "key" : "6.1.2.3",
+    "guid" : "d6c29733-beeb-4fc9-975f-5e78a8acc273",
     "name" : "Work well",
     "abbreviation" : "6.1.2.3",
     "description" : "Use this domain for words related to working well.",
@@ -9424,12 +11274,16 @@ var semanticDomains_en = {
         "proficient, businesslike, practical, thorough" ]
   },
   "6.1.2.3.1 Careful" : {
+    "key" : "6.1.2.3.1",
+    "guid" : "5b3c7b4d-d5bb-488e-8f3f-fe8206fb0e55",
     "name" : "Careful",
     "abbreviation" : "6.1.2.3.1",
     "description" : "Use this domain for words related to being careful.",
     "searchKeys" : [ "careful, conscientious, painstaking, deliberate, deliberately" ]
   },
   "6.1.2.3.2 Work hard" : {
+    "key" : "6.1.2.3.2",
+    "guid" : "398ffed0-bfa7-452c-8521-7d37b3082dcf",
     "name" : "Work hard",
     "abbreviation" : "6.1.2.3.2",
     "description" : "Use this domain for words related to working hard.",
@@ -9439,18 +11293,24 @@ var semanticDomains_en = {
         "overburdened, worn," ]
   },
   "6.1.2.3.3 Busy" : {
+    "key" : "6.1.2.3.3",
+    "guid" : "0d935e77-e437-426f-acff-dccfb516ec8c",
     "name" : "Busy",
     "abbreviation" : "6.1.2.3.3",
     "description" : "Use this domain for words related to being busy.",
     "searchKeys" : [ "busy, have a lot to do, have your hands full, pressure, overburdened," ]
   },
   "6.1.2.3.4 Power, force" : {
+    "key" : "6.1.2.3.4",
+    "guid" : "303539ba-7253-4590-b8c4-7751caa52c65",
     "name" : "Power, force",
     "abbreviation" : "6.1.2.3.4",
     "description" : "Use this domain for words related to the power used to do something.",
     "searchKeys" : [ "power, force, energy" ]
   },
   "6.1.2.3.5 Complete, finish" : {
+    "key" : "6.1.2.3.5",
+    "guid" : "80f26fbc-ca89-4789-996d-4c09547f2504",
     "name" : "Complete, finish",
     "abbreviation" : "6.1.2.3.5",
     "description" : "Use this domain for words related to completing a task.",
@@ -9459,24 +11319,32 @@ var semanticDomains_en = {
         "leave undone, incomplete, unfinished" ]
   },
   "6.1.2.3.6 Ambitious" : {
+    "key" : "6.1.2.3.6",
+    "guid" : "5f63805f-1c8e-440a-a13c-222c5d81eb9c",
     "name" : "Ambitious",
     "abbreviation" : "6.1.2.3.6",
     "description" : "Use this domain for words related to being ambitious.",
     "searchKeys" : [ "ambitious, ambition, competitive, power-hungry, pushy" ]
   },
   "6.1.2.4 Work poorly" : {
+    "key" : "6.1.2.4",
+    "guid" : "b760a3a7-ea7f-4a4b-a4b5-81752f2ca158",
     "name" : "Work poorly",
     "abbreviation" : "6.1.2.4",
     "description" : "Use this domain for words related to working poorly.",
     "searchKeys" : [ "work poorly, work slowly, do a bad job, mess up on the job, slipshod, sloppy," ]
   },
   "6.1.2.4.1 Careless, irresponsible" : {
+    "key" : "6.1.2.4.1",
+    "guid" : "6e04a3e2-3b3a-4d0b-bf71-1596ca0aa211",
     "name" : "Careless, irresponsible",
     "abbreviation" : "6.1.2.4.1",
     "description" : "Use this domain for words related to being careless.",
     "searchKeys" : [ "be careless, irresponsible" ]
   },
   "6.1.2.4.2 Lazy" : {
+    "key" : "6.1.2.4.2",
+    "guid" : "0c21ae3d-10b1-481f-8d8f-66e2590c4578",
     "name" : "Lazy",
     "abbreviation" : "6.1.2.4.2",
     "description" : "Use this domain for words related to being lazy.",
@@ -9485,12 +11353,16 @@ var semanticDomains_en = {
         "loaf, goof off" ]
   },
   "6.1.2.4.3 Give up" : {
+    "key" : "6.1.2.4.3",
+    "guid" : "a2ae0c29-df1c-486d-a44b-96fcc4e0aa8c",
     "name" : "Give up",
     "abbreviation" : "6.1.2.4.3",
     "description" : "Use this domain for words related to giving up.",
     "searchKeys" : [ "give up, quit, resign, offer to resign, submit your resignation, fire, dismiss, sack" ]
   },
   "6.1.2.5 Plan" : {
+    "key" : "6.1.2.5",
+    "guid" : "53ba3b61-4f4e-4749-8a7f-0d2b327a113d",
     "name" : "Plan",
     "abbreviation" : "6.1.2.5",
     "description" : "Use this domain for words related to planning.",
@@ -9499,18 +11371,24 @@ var semanticDomains_en = {
         "plan, aim, objective, goal, purpose, program, scheme," ]
   },
   "6.1.2.5.1 Arrange an event" : {
+    "key" : "6.1.2.5.1",
+    "guid" : "da203891-90a2-48f0-955a-8a80b6c62af9",
     "name" : "Arrange an event",
     "abbreviation" : "6.1.2.5.1",
     "description" : "Use this domain for words related to arranging an event, such as a meeting.",
     "searchKeys" : [ "arrange, organize, make arrangements, line up, prepare" ]
   },
   "6.1.2.5.2 Cancel an event" : {
+    "key" : "6.1.2.5.2",
+    "guid" : "6fceec81-1967-4fe5-81f3-86bcaf3f1c2f",
     "name" : "Cancel an event",
     "abbreviation" : "6.1.2.5.2",
     "description" : "Use this domain for words related to canceling a plan, decision, or event.",
     "searchKeys" : [ "cancel, call off, be off, scrub, shelve" ]
   },
   "6.1.2.6 Prepare" : {
+    "key" : "6.1.2.6",
+    "guid" : "889de305-82ad-4d1a-9a97-63733ed27bfc",
     "name" : "Prepare",
     "abbreviation" : "6.1.2.6",
     "description" : "Use this domain for words related to preparing to do something.",
@@ -9519,30 +11397,40 @@ var semanticDomains_en = {
         "prepared, ready", "unprepared, unready" ]
   },
   "6.1.2.6.1 Prepare something for use" : {
+    "key" : "6.1.2.6.1",
+    "guid" : "f77053f4-ed5a-4376-bcba-17552ea447ba",
     "name" : "Prepare something for use",
     "abbreviation" : "6.1.2.6.1",
     "description" : "Use this domain for words related to preparing something so that it can be used for some purpose.",
     "searchKeys" : [ "prepare, get something ready,", "prepared, ready," ]
   },
   "6.1.2.7 Effective" : {
+    "key" : "6.1.2.7",
+    "guid" : "6eb2ef50-7e6b-41b8-a82e-6eb307c908ca",
     "name" : "Effective",
     "abbreviation" : "6.1.2.7",
     "description" : "Use this domain for words related to being effective.",
     "searchKeys" : [ "effective, work, successful" ]
   },
   "6.1.2.8 Efficient" : {
+    "key" : "6.1.2.8",
+    "guid" : "6dd16e6e-fbdb-4df1-9730-4877651e68f3",
     "name" : "Efficient",
     "abbreviation" : "6.1.2.8",
     "description" : "Use this domain for words related to being efficient.",
     "searchKeys" : [ "efficient, productive" ]
   },
   "6.1.2.9 Opportunity" : {
+    "key" : "6.1.2.9",
+    "guid" : "a7568031-43e3-4cf9-b162-ac2fe74125f1",
     "name" : "Opportunity",
     "abbreviation" : "6.1.2.9",
     "description" : "Use this domain for words related to an opportunity to do something.",
     "searchKeys" : [ "opportunity, chance, opening, occasion" ]
   },
   "6.1.3 Difficult, impossible" : {
+    "key" : "6.1.3",
+    "guid" : "31ccb9e3-d434-4430-ac84-486cc5a1c53d",
     "name" : "Difficult, impossible",
     "abbreviation" : "6.1.3",
     "description" : "Use this domain for words describing something that is difficult or impossible to do.",
@@ -9552,6 +11440,8 @@ var semanticDomains_en = {
         "difficulty" ]
   },
   "6.1.3.1 Easy, possible" : {
+    "key" : "6.1.3.1",
+    "guid" : "77bcdcab-e9fd-48ba-8dcd-63f425367735",
     "name" : "Easy, possible",
     "abbreviation" : "6.1.3.1",
     "description" : "Use this domain for words describing something that is easy or possible to do.",
@@ -9559,6 +11449,8 @@ var semanticDomains_en = {
         "be possible, not too hard, can do it, no problem, doable" ]
   },
   "6.1.3.2 Succeed" : {
+    "key" : "6.1.3.2",
+    "guid" : "58eeb55b-c57d-4f59-a7d6-9bf663fbf831",
     "name" : "Succeed",
     "abbreviation" : "6.1.3.2",
     "description" : "Use this domain for words related to succeeding in doing something.",
@@ -9567,12 +11459,16 @@ var semanticDomains_en = {
         "success, accomplishment, achievement," ]
   },
   "6.1.3.3 Fail" : {
+    "key" : "6.1.3.3",
+    "guid" : "a764174f-ccb7-48b1-add7-158bc89a5e81",
     "name" : "Fail",
     "abbreviation" : "6.1.3.3",
     "description" : "Use this domain for words related to failing to do something.",
     "searchKeys" : [ "fail, unsuccessful, not make it", "failure" ]
   },
   "6.1.3.4 Advantage" : {
+    "key" : "6.1.3.4",
+    "guid" : "7c6ba6e5-d81e-4a50-a111-c946a0793378",
     "name" : "Advantage",
     "abbreviation" : "6.1.3.4",
     "description" : "Use this domain for words related to having an advantage--something that helps you succeed that other people don't have.",
@@ -9586,6 +11482,8 @@ var semanticDomains_en = {
         "advantages and disadvantages, pros and cons, pluses and minuses," ]
   },
   "6.1.4 Job satisfaction" : {
+    "key" : "6.1.4",
+    "guid" : "2e9f06f3-c986-43da-a035-e3cc9aef13d4",
     "name" : "Job satisfaction",
     "abbreviation" : "6.1.4",
     "description" : "Use this domain for words related to being satisfied with your job.",
@@ -9594,18 +11492,24 @@ var semanticDomains_en = {
         "hate your job, boring" ]
   },
   "6.1.5 Unemployed, not working" : {
+    "key" : "6.1.5",
+    "guid" : "b285bc3b-ba9f-4160-8e79-81dd43dfdbaa",
     "name" : "Unemployed, not working",
     "abbreviation" : "6.1.5",
     "description" : "Use this domain for words related to being unemployed.",
     "searchKeys" : [ "unemployed, not working, out of work, idle, jobless, looking for work" ]
   },
   "6.1.6 Made by hand" : {
+    "key" : "6.1.6",
+    "guid" : "67247ab3-7b3a-4035-a0d0-a05c8e615c71",
     "name" : "Made by hand",
     "abbreviation" : "6.1.6",
     "description" : "Use this domain for words describing something made by hand instead of by a machine.",
     "searchKeys" : [ "made by hand, craft, crafted, craftsman, craftsmanship" ]
   },
   "6.1.7 Artificial" : {
+    "key" : "6.1.7",
+    "guid" : "97f40359-f4e8-4545-9ba5-980b47487540",
     "name" : "Artificial",
     "abbreviation" : "6.1.7",
     "description" : "Use this domain for words describing something that is artificial--something that is made by people.",
@@ -9613,24 +11517,32 @@ var semanticDomains_en = {
         "natural, wild, raw, virgin, untamed, organic" ]
   },
   "6.1.8 Experienced" : {
+    "key" : "6.1.8",
+    "guid" : "5d92b4a7-baf7-495e-bb43-4f733cc55935",
     "name" : "Experienced",
     "abbreviation" : "6.1.8",
     "description" : "Use this domain for words related to being experienced at doing something.",
     "searchKeys" : [ "experienced, seasoned, practiced, veteran, pro" ]
   },
   "6.1.8.1 Accustomed to" : {
+    "key" : "6.1.8.1",
+    "guid" : "ea839451-f89e-4432-b361-3086ca4f13fd",
     "name" : "Accustomed to",
     "abbreviation" : "6.1.8.1",
     "description" : "Use this domain for words related to being accustomed to something.",
     "searchKeys" : [ "be accustomed to, used to, familiar with" ]
   },
   "6.2 Agriculture" : {
+    "key" : "6.2",
+    "guid" : "5bb29704-fe0f-4594-9622-ce0aa42b93c8",
     "name" : "Agriculture",
     "abbreviation" : "6.2",
     "description" : "Use this domain for words related to agriculture--working with plants.",
     "searchKeys" : [ "agriculture, farming" ]
   },
   "6.2.1 Growing crops" : {
+    "key" : "6.2.1",
+    "guid" : "cb362fc7-b3aa-46f4-b9a8-0f8c97fb16fe",
     "name" : "Growing crops",
     "abbreviation" : "6.2.1",
     "description" : "Use this domain for general words related to growing crops. If one crop is cultivated extensively and there are many words related to it, set up a separate domain for it.",
@@ -9639,138 +11551,184 @@ var semanticDomains_en = {
         "crop, produce (n)," ]
   },
   "6.2.1.1 Growing grain" : {
+    "key" : "6.2.1.1",
+    "guid" : "36a2c83f-f7aa-41b0-9b17-f801f3720e4f",
     "name" : "Growing grain",
     "abbreviation" : "6.2.1.1",
     "description" : "Use this domain for general words related to growing grain crops such as barley, maize (corn), millet, oats, rice, rye, sesame, sorghum, and wheat. If one crop is cultivated extensively and there are many words related to it, set up a separate domain for it. This has already been done for rice, wheat, and maize, since they are so common around the world.",
     "searchKeys" : [ "grow grain, sheaf, winnow" ]
   },
   "6.2.1.1.1 Growing rice" : {
+    "key" : "6.2.1.1.1",
+    "guid" : "7d7bc686-faf5-484b-8519-b2529ac581bf",
     "name" : "Growing rice",
     "abbreviation" : "6.2.1.1.1",
     "description" : "Use this domain for words related to growing rice.",
     "searchKeys" : [ "rice paddy, transplant seedling" ]
   },
   "6.2.1.1.2 Growing wheat" : {
+    "key" : "6.2.1.1.2",
+    "guid" : "d7e4e538-039f-47bb-aa42-a2cf455668cc",
     "name" : "Growing wheat",
     "abbreviation" : "6.2.1.1.2",
     "description" : "Use this domain for words related to growing wheat.",
     "searchKeys" : [ "sheaf" ]
   },
   "6.2.1.1.3 Growing maize" : {
+    "key" : "6.2.1.1.3",
+    "guid" : "37f6a1d9-985d-465e-b62d-37c1f9bf855b",
     "name" : "Growing maize",
     "abbreviation" : "6.2.1.1.3",
     "description" : "Use this domain for words related to growing maize.",
     "searchKeys" : [ "ear, husk, stalk, silk" ]
   },
   "6.2.1.2 Growing roots" : {
+    "key" : "6.2.1.2",
+    "guid" : "7524887a-5cf0-4459-96d1-fd8262bef7d4",
     "name" : "Growing roots",
     "abbreviation" : "6.2.1.2",
     "description" : "Use this domain for words related to growing root crops such as beets, carrots, cassava, garlic, ginger, leeks, manioc, onions, peanuts, potatoes, radishes, rutabagas, taro, turnips, and yams. If one crop is cultivated extensively and there are many words related to it, set up a separate domain for it. This has already been done for potatoes and cassava, since they are so common around the world.",
     "searchKeys" : [ "root, uproot" ]
   },
   "6.2.1.2.1 Growing potatoes" : {
+    "key" : "6.2.1.2.1",
+    "guid" : "c982941c-0cff-47aa-9e08-5234a8e0d6e8",
     "name" : "Growing potatoes",
     "abbreviation" : "6.2.1.2.1",
     "description" : "Use this domain for words related to growing potatoes.",
     "searchKeys" : [ "potato, potato vine, potato mound" ]
   },
   "6.2.1.2.2 Growing cassava" : {
+    "key" : "6.2.1.2.2",
+    "guid" : "139cd00c-429c-465a-a227-512af0c48039",
     "name" : "Growing cassava",
     "abbreviation" : "6.2.1.2.2",
     "description" : "Use this domain for words related to growing cassava.",
     "searchKeys" : [ "cassava" ]
   },
   "6.2.1.3 Growing vegetables" : {
+    "key" : "6.2.1.3",
+    "guid" : "2854734e-834a-42cb-8812-d9e7028916dc",
     "name" : "Growing vegetables",
     "abbreviation" : "6.2.1.3",
     "description" : "Use this domain for words related to growing vegetables, such as asparagus, beans, broccoli, cabbage, celery, chard, cucumbers, eggplant, melons, peas, peppers, pumpkins, spinach, squash, tomatoes, and watermelons. If one type of vegetable is cultivated extensively and there are many words related to it, set up a separate domain for it.",
     "searchKeys" : [ "vegetable garden, hoe, pick" ]
   },
   "6.2.1.4 Growing fruit" : {
+    "key" : "6.2.1.4",
+    "guid" : "af5bcf27-56e2-4072-b321-30a31b58af78",
     "name" : "Growing fruit",
     "abbreviation" : "6.2.1.4",
     "description" : "Use this domain for words related to growing fruit, such as berries, cranberries, grapes, raspberries, and strawberries. If one type of fruit is cultivated extensively and there are many words related to it, set up a separate domain for it. This has already been done for grapes and bananas, since they are so common around the world.",
     "searchKeys" : [ "pick, press, juice, fruit juice" ]
   },
   "6.2.1.4.1 Growing grapes" : {
+    "key" : "6.2.1.4.1",
+    "guid" : "7d9f48f5-aba3-486f-b49d-cd2cb0ac03f8",
     "name" : "Growing grapes",
     "abbreviation" : "6.2.1.4.1",
     "description" : "Use this domain for words related to growing grapes.",
     "searchKeys" : [ "grape, pick, vine, vineyard, prune, winepress, cluster, wine, grape juice" ]
   },
   "6.2.1.4.2 Growing bananas" : {
+    "key" : "6.2.1.4.2",
+    "guid" : "b7662b2b-e57c-400b-8ef6-6fb612f5ee9f",
     "name" : "Growing bananas",
     "abbreviation" : "6.2.1.4.2",
     "description" : "Use this domain for words related to growing bananas.",
     "searchKeys" : [ "banana, stalk, flower, finger, hand, bunch, pulp, prune, leaf, leaf stem, stem" ]
   },
   "6.2.1.5 Growing grass" : {
+    "key" : "6.2.1.5",
+    "guid" : "198436ae-c3c6-4f3c-8fe0-ea10c867f1c6",
     "name" : "Growing grass",
     "abbreviation" : "6.2.1.5",
     "description" : "Use this domain for words related to growing grass, such as sod, hay, alfalfa, bamboo, papyrus, sugarcane, and tobacco. If one type of grass is cultivated extensively and there are many words related to it, set up a separate domain for it. This has already been done for sugarcane and tobacco, since they are so common around the world.",
     "searchKeys" : [ "sod, hay, alfalfa, mow, haystack, bale" ]
   },
   "6.2.1.5.1 Growing sugarcane" : {
+    "key" : "6.2.1.5.1",
+    "guid" : "31426c31-9439-406c-9867-bc98c6ca0565",
     "name" : "Growing sugarcane",
     "abbreviation" : "6.2.1.5.1",
     "description" : "Use this domain for words related to growing sugarcane.",
     "searchKeys" : [ "sugarcane, press, juice, pulp, boil, sugar" ]
   },
   "6.2.1.5.2 Growing tobacco" : {
+    "key" : "6.2.1.5.2",
+    "guid" : "99d0d129-b427-4468-b4c6-91005be63e18",
     "name" : "Growing tobacco",
     "abbreviation" : "6.2.1.5.2",
     "description" : "Use this domain for words related to growing tobacco.",
     "searchKeys" : [ "tobacco, leaf, dry, rack, cut" ]
   },
   "6.2.1.6 Growing flowers" : {
+    "key" : "6.2.1.6",
+    "guid" : "bf1f9360-6dd4-4ee3-b9f8-a5539baeb53b",
     "name" : "Growing flowers",
     "abbreviation" : "6.2.1.6",
     "description" : "Use this domain for words related to growing flowers. If one type of flower is cultivated extensively and there are many words related to it, set up a separate domain for it.",
     "searchKeys" : [ "growing flowers, floriculture, flower, prune, pick flower, gardening, garden, flower garden, flowering plants" ]
   },
   "6.2.1.7 Growing trees" : {
+    "key" : "6.2.1.7",
+    "guid" : "ef5ee2be-8a32-452a-818b-80191edb8e41",
     "name" : "Growing trees",
     "abbreviation" : "6.2.1.7",
     "description" : "Use this domain for words related to growing trees. If one crop is cultivated extensively and there are many words related to it, set up a separate domain for it. This has already been done for coconuts and coffee, since they are so common around the world.",
     "searchKeys" : [ "prune, seedling, graft" ]
   },
   "6.2.1.7.1 Growing coconuts" : {
+    "key" : "6.2.1.7.1",
+    "guid" : "18043b8c-3ff0-46a5-87cc-626f62f967cc",
     "name" : "Growing coconuts",
     "abbreviation" : "6.2.1.7.1",
     "description" : "Use this domain for words related to growing coconuts.",
     "searchKeys" : [ "coconut, husk, shell, copra, milk, dry" ]
   },
   "6.2.1.7.2 Growing coffee" : {
+    "key" : "6.2.1.7.2",
+    "guid" : "22300e2c-3d7d-4c36-a2b7-e2bbb247f793",
     "name" : "Growing coffee",
     "abbreviation" : "6.2.1.7.2",
     "description" : "Use this domain for words related to growing coffee.",
     "searchKeys" : [ "bean, dry, grind" ]
   },
   "6.2.2 Land preparation" : {
+    "key" : "6.2.2",
+    "guid" : "d345142f-d51e-4023-a25a-2a4c0f1fbcbf",
     "name" : "Land preparation",
     "abbreviation" : "6.2.2",
     "description" : "Use this domain for words related to preparing land for planting crops.",
     "searchKeys" : [ "prepare field, clear field", "(no words in English)" ]
   },
   "6.2.2.1 Clear a field" : {
+    "key" : "6.2.2.1",
+    "guid" : "685d474d-3b84-4339-98c6-2aac28b9870c",
     "name" : "Clear a field",
     "abbreviation" : "6.2.2.1",
     "description" : "Use this domain for words related to clearing a field.",
     "searchKeys" : [ "clear a field, burn grass, slash and burn, uproot weeds, cut the grass" ]
   },
   "6.2.2.2 Plow a field" : {
+    "key" : "6.2.2.2",
+    "guid" : "62030451-c0f2-4e80-8085-05c6400fc914",
     "name" : "Plow a field",
     "abbreviation" : "6.2.2.2",
     "description" : "Use this domain for words related to plowing a field.",
     "searchKeys" : [ "plow, cultivate, dig, hoe, harrow, make a row, plow a furrow, break up soil" ]
   },
   "6.2.2.3 Fertilize a field" : {
+    "key" : "6.2.2.3",
+    "guid" : "58de3766-8729-48e2-97fe-937a441eb722",
     "name" : "Fertilize a field",
     "abbreviation" : "6.2.2.3",
     "description" : "Use this domain for words related to fertilizing a field.",
     "searchKeys" : [ "fertilize, add fertilizer, fertilizer, fertile, manure" ]
   },
   "6.2.3 Plant a field" : {
+    "key" : "6.2.3",
+    "guid" : "be280123-dda6-49a0-bd8c-5e2855b56159",
     "name" : "Plant a field",
     "abbreviation" : "6.2.3",
     "description" : "Use this domain for words related to planting a field.",
@@ -9779,6 +11737,8 @@ var semanticDomains_en = {
         "seed, seedling, cutting" ]
   },
   "6.2.4 Tend a field" : {
+    "key" : "6.2.4",
+    "guid" : "811e8c93-d97a-4aab-bd67-268b7783ff11",
     "name" : "Tend a field",
     "abbreviation" : "6.2.4",
     "description" : "Use this domain for words related to tending a field.",
@@ -9787,6 +11747,8 @@ var semanticDomains_en = {
         "scarecrow," ]
   },
   "6.2.4.1 Cut grass" : {
+    "key" : "6.2.4.1",
+    "guid" : "32f868e0-54a7-4d04-8689-ac10e13396e5",
     "name" : "Cut grass",
     "abbreviation" : "6.2.4.1",
     "description" : "Use this domain for words related to cutting grass.",
@@ -9794,6 +11756,8 @@ var semanticDomains_en = {
         "machete, sickle, scythe, lawnmower, grass clippers" ]
   },
   "6.2.4.2 Uproot plants" : {
+    "key" : "6.2.4.2",
+    "guid" : "9e98c76f-6c1c-4b7d-8f71-38f9f0e8750e",
     "name" : "Uproot plants",
     "abbreviation" : "6.2.4.2",
     "description" : "Use this domain for words related to uprooting plants.",
@@ -9801,6 +11765,8 @@ var semanticDomains_en = {
         "weed (v), hoe weeds, weed killer, herbicide, rake weeds, weed carelessly" ]
   },
   "6.2.4.3 Irrigate" : {
+    "key" : "6.2.4.3",
+    "guid" : "a2ce1453-9832-447c-9481-70c9e2da4227",
     "name" : "Irrigate",
     "abbreviation" : "6.2.4.3",
     "description" : "Use this domain for words related to irrigating a field.",
@@ -9808,6 +11774,8 @@ var semanticDomains_en = {
         "irrigate, irrigation, irrigation canal, to water" ]
   },
   "6.2.4.4 Trim plants" : {
+    "key" : "6.2.4.4",
+    "guid" : "a9fe3347-12ae-4624-b55e-45ea42cdbf9b",
     "name" : "Trim plants",
     "abbreviation" : "6.2.4.4",
     "description" : "Use this domain for words related to trimming plants.",
@@ -9815,12 +11783,16 @@ var semanticDomains_en = {
         "pruning hook, pruning shears" ]
   },
   "6.2.4.5 Neglect plants" : {
+    "key" : "6.2.4.5",
+    "guid" : "0698b0f4-0a31-4a70-9262-8d36677d8faa",
     "name" : "Neglect plants",
     "abbreviation" : "6.2.4.5",
     "description" : "Use this domain for words related to neglecting plants.",
     "searchKeys" : [ "neglect, allow to grow wild, become overgrown, let the weeds grow" ]
   },
   "6.2.5 Harvest" : {
+    "key" : "6.2.5",
+    "guid" : "c2630384-2f72-4a96-baed-3fff03383362",
     "name" : "Harvest",
     "abbreviation" : "6.2.5",
     "description" : "Use this domain for words related to harvesting crops. If there is an important crop and there are a lot of words that refer to harvesting it, set up a special domain for it, such as 'Harvest rice' or 'Harvest coconuts'. If there is more than one such crop, set up a separate domain for each of them.",
@@ -9832,12 +11804,16 @@ var semanticDomains_en = {
         "harvest, harvest time" ]
   },
   "6.2.5.1 First fruits" : {
+    "key" : "6.2.5.1",
+    "guid" : "0e5a6bd0-470f-4231-9f57-a73b725807f4",
     "name" : "First fruits",
     "abbreviation" : "6.2.5.1",
     "description" : "Use this domain for words referring to the first fruits or crops to be harvested.",
     "searchKeys" : [ "first fruits, eat first of new crops" ]
   },
   "6.2.5.2 Crop failure" : {
+    "key" : "6.2.5.2",
+    "guid" : "35faefb3-7498-4735-9b05-e7035dd368fc",
     "name" : "Crop failure",
     "abbreviation" : "6.2.5.2",
     "description" : "Use this domain for words related to crop failure.",
@@ -9847,12 +11823,16 @@ var semanticDomains_en = {
         "famine, lean times" ]
   },
   "6.2.5.3 Gather wild plants" : {
+    "key" : "6.2.5.3",
+    "guid" : "a8bfd196-8b54-4084-b11a-fe6e8bc5da4c",
     "name" : "Gather wild plants",
     "abbreviation" : "6.2.5.3",
     "description" : "Use this domain for words related to gathering wild plants. In a hunter-gatherer culture this domain might need to be extensively developed.",
     "searchKeys" : [ "gather, collect, pick (berries)" ]
   },
   "6.2.5.4 Plant product" : {
+    "key" : "6.2.5.4",
+    "guid" : "4bedae6a-1df4-40e5-8a2f-ab0a1f41997e",
     "name" : "Plant product",
     "abbreviation" : "6.2.5.4",
     "description" : "Use this domain for words referring to materials and substances that are taken from plants and used for various purposes. It is necessary to think through various types of plants to think of what materials are taken from each.",
@@ -9860,30 +11840,40 @@ var semanticDomains_en = {
         "sap, rubber", "firewood" ]
   },
   "6.2.6 Process harvest" : {
+    "key" : "6.2.6",
+    "guid" : "8080c7ed-e69a-4a8a-bd8d-bf3447b13630",
     "name" : "Process harvest",
     "abbreviation" : "6.2.6",
     "description" : "Use this domain for words related to processing the harvest.",
     "searchKeys" : [ "process harvest, shell groundnuts, shell beans, remove beans from pods, husk corn, remove leaves from maize cob, remove maize from the cob, dry, separate bad from good" ]
   },
   "6.2.6.1 Winnow grain" : {
+    "key" : "6.2.6.1",
+    "guid" : "8fb9a1a6-844d-45a5-86c7-977d3e420149",
     "name" : "Winnow grain",
     "abbreviation" : "6.2.6.1",
     "description" : "Use this domain for words related to winnowing grain--to separate the chaff from the grain.",
     "searchKeys" : [ "winnow, winnowing basket, winnowing fork, winnowing floor, chaff, grain" ]
   },
   "6.2.6.2 Mill grain" : {
+    "key" : "6.2.6.2",
+    "guid" : "69d0a37d-f5b3-48a5-9486-5654d37b030b",
     "name" : "Mill grain",
     "abbreviation" : "6.2.6.2",
     "description" : "Use this domain for words related to milling grain.",
     "searchKeys" : [ "mill (v), grind", "mill (n),", "rice, wheat, maize" ]
   },
   "6.2.6.3 Thresh" : {
+    "key" : "6.2.6.3",
+    "guid" : "47ed6c39-b728-4ae7-be7c-c45c714c3153",
     "name" : "Thresh",
     "abbreviation" : "6.2.6.3",
     "description" : "Use this domain for words related to threshing grain.",
     "searchKeys" : [ "thresh, beat", "beans", "threshing floor" ]
   },
   "6.2.6.4 Store the harvest" : {
+    "key" : "6.2.6.4",
+    "guid" : "ceedce41-cdef-4766-9c5e-8ff5608c5464",
     "name" : "Store the harvest",
     "abbreviation" : "6.2.6.4",
     "description" : "Use this domain for words related to storing the harvest.",
@@ -9892,12 +11882,16 @@ var semanticDomains_en = {
         "barn, granary, silo, grain sack" ]
   },
   "6.2.7 Farm worker" : {
+    "key" : "6.2.7",
+    "guid" : "ff9dfc70-526d-405e-b613-5a2a21c1b2d8",
     "name" : "Farm worker",
     "abbreviation" : "6.2.7",
     "description" : "Use this domain for words related to farm workers.",
     "searchKeys" : [ "farmer, farm worker, field hand, sharecropper, itinerant farm laborer, hired hand" ]
   },
   "6.2.8 Agricultural tool" : {
+    "key" : "6.2.8",
+    "guid" : "0d972590-5947-4983-a092-443697baec24",
     "name" : "Agricultural tool",
     "abbreviation" : "6.2.8",
     "description" : "Use this domain for words related to agricultural tools.",
@@ -9910,12 +11904,16 @@ var semanticDomains_en = {
         "tip, edge, handle, blade" ]
   },
   "6.2.9 Farmland" : {
+    "key" : "6.2.9",
+    "guid" : "c7990233-ef2e-4ea6-8d1e-ccf56e540394",
     "name" : "Farmland",
     "abbreviation" : "6.2.9",
     "description" : "Use this domain for words related to farmland.",
     "searchKeys" : [ "farmland, farm, field, garden, cultivated land, agricultural land, plantation, plowed field, tilled field, field ready for harvest, harvested field, fallow field, ground prepared for planting" ]
   },
   "6.3 Animal husbandry" : {
+    "key" : "6.3",
+    "guid" : "79b580ff-64a7-445b-abcb-b49b9093779c",
     "name" : "Animal husbandry",
     "abbreviation" : "6.3",
     "description" : "Use this domain for words related to animal husbandry--working with animals.",
@@ -9926,6 +11924,8 @@ var semanticDomains_en = {
         "breed, crossbred, crossbreed, hybrid, interbred, mongrel, stud" ]
   },
   "6.3.1 Domesticated animal" : {
+    "key" : "6.3.1",
+    "guid" : "8c28c640-db5b-43e2-a1e6-b0e381962129",
     "name" : "Domesticated animal",
     "abbreviation" : "6.3.1",
     "description" : "Use this domain for words related to domesticated animals. Add extra domains for specific domesticated animals in your culture such as elephants in east Asia, camels in the Middle East, and llamas in South America.",
@@ -9935,6 +11935,8 @@ var semanticDomains_en = {
         "cow, goat, sheep, horse, donkey, dog, cat, chicken, duck, goose, turkey" ]
   },
   "6.3.1.1 Cattle" : {
+    "key" : "6.3.1.1",
+    "guid" : "32fc19fd-a04e-4b69-9442-f7d57348ec55",
     "name" : "Cattle",
     "abbreviation" : "6.3.1.1",
     "description" : "Use this domain for words related to cattle and the care of cattle.",
@@ -9950,6 +11952,8 @@ var semanticDomains_en = {
         "beef, steak, hamburger, minced meat, rump roast, fillet" ]
   },
   "6.3.1.2 Sheep" : {
+    "key" : "6.3.1.2",
+    "guid" : "26b97047-edb1-44e9-8c7b-463de9cfbe78",
     "name" : "Sheep",
     "abbreviation" : "6.3.1.2",
     "description" : "Use this domain for words related to sheep.",
@@ -9958,6 +11962,8 @@ var semanticDomains_en = {
         "pasture, range, pen, fold, sheepfold", "flock" ]
   },
   "6.3.1.3 Goat" : {
+    "key" : "6.3.1.3",
+    "guid" : "c36131c3-b5e1-4aac-a7b5-7c9cfa1e8f74",
     "name" : "Goat",
     "abbreviation" : "6.3.1.3",
     "description" : "Use this domain for words related to goats.",
@@ -9966,6 +11972,8 @@ var semanticDomains_en = {
         "goatherd" ]
   },
   "6.3.1.4 Pig" : {
+    "key" : "6.3.1.4",
+    "guid" : "c888c7ac-8cf4-49d2-a33e-20d19d84c47b",
     "name" : "Pig",
     "abbreviation" : "6.3.1.4",
     "description" : "Use this domain for words related to pigs.",
@@ -9975,6 +11983,8 @@ var semanticDomains_en = {
         "pigsty, sty, pigpen, barn, shed, stall" ]
   },
   "6.3.1.5 Dog" : {
+    "key" : "6.3.1.5",
+    "guid" : "10a82711-8829-461a-b172-fc8fff3d555c",
     "name" : "Dog",
     "abbreviation" : "6.3.1.5",
     "description" : "Use this domain for words related to dogs.",
@@ -9986,6 +11996,8 @@ var semanticDomains_en = {
         "bark, howl, yap, growl", "doghouse, kennel" ]
   },
   "6.3.1.6 Cat" : {
+    "key" : "6.3.1.6",
+    "guid" : "49c878dd-277f-4bc9-b8ad-9ba192709108",
     "name" : "Cat",
     "abbreviation" : "6.3.1.6",
     "description" : "Use this domain for words related to cats.",
@@ -9995,6 +12007,8 @@ var semanticDomains_en = {
         "meow, mew, caterwaul, hiss, purr" ]
   },
   "6.3.1.7 Beast of burden" : {
+    "key" : "6.3.1.7",
+    "guid" : "e545baab-581d-4af8-81f2-5a884e272349",
     "name" : "Beast of burden",
     "abbreviation" : "6.3.1.7",
     "description" : "Use this domain for words related to animals that are used as a beast of burden--either to ride, to carry loads, or to pull vehicles. The questions refer to horses, but can be applied to any animal.",
@@ -10006,6 +12020,8 @@ var semanticDomains_en = {
         "saddle, bit, bridle, reins, harness, yoke" ]
   },
   "6.3.2 Tend herds in fields" : {
+    "key" : "6.3.2",
+    "guid" : "167a5bae-f06f-424c-bfcb-ec547a076c8d",
     "name" : "Tend herds in fields",
     "abbreviation" : "6.3.2",
     "description" : "Use this domain for words related to tending a herd in the fields.",
@@ -10016,12 +12032,16 @@ var semanticDomains_en = {
         "pasture, field, range" ]
   },
   "6.3.3 Milk" : {
+    "key" : "6.3.3",
+    "guid" : "d85391fa-680a-4715-81ac-c0835acac8c5",
     "name" : "Milk",
     "abbreviation" : "6.3.3",
     "description" : "Use this domain for words related to milking an animal.",
     "searchKeys" : [ "milk (v), milk (n), milk jug, bucket, dairy, dairy cow" ]
   },
   "6.3.4 Butcher, slaughter" : {
+    "key" : "6.3.4",
+    "guid" : "71a2cc77-f968-4341-84c1-6c16d007a093",
     "name" : "Butcher, slaughter",
     "abbreviation" : "6.3.4",
     "description" : "Use this domain for words referring to killing animals and cutting them up for food.",
@@ -10031,12 +12051,16 @@ var semanticDomains_en = {
         "slaughterhouse, butchery," ]
   },
   "6.3.5 Wool production" : {
+    "key" : "6.3.5",
+    "guid" : "c880c81f-65dc-4d93-8c39-22920fdbe4c7",
     "name" : "Wool production",
     "abbreviation" : "6.3.5",
     "description" : "Use this domain for words related to wool production--cutting the hair off of a sheep.",
     "searchKeys" : [ "wool, shear, fleece" ]
   },
   "6.3.6 Poultry raising" : {
+    "key" : "6.3.6",
+    "guid" : "b2bb077a-92c8-4e54-8dfa-c89efd60b82d",
     "name" : "Poultry raising",
     "abbreviation" : "6.3.6",
     "description" : "Use this domain for words related to raising birds.",
@@ -10046,6 +12070,8 @@ var semanticDomains_en = {
         "pluck" ]
   },
   "6.3.6.1 Chicken" : {
+    "key" : "6.3.6.1",
+    "guid" : "d7da5318-dccf-477f-967d-1e3f6a421860",
     "name" : "Chicken",
     "abbreviation" : "6.3.6.1",
     "description" : "Use this domain for words related to chickens.",
@@ -10054,24 +12080,32 @@ var semanticDomains_en = {
         "cluck, crow, cock-a-doodle-doo, cheep" ]
   },
   "6.3.7 Animal products" : {
+    "key" : "6.3.7",
+    "guid" : "040e4b3e-2f36-430a-ab09-1917f96a09de",
     "name" : "Animal products",
     "abbreviation" : "6.3.7",
     "description" : "Use this domain for words related to animal products.",
     "searchKeys" : [ "hide, meat, blood, milk, eggs, wool, skins, leather, bone meal, fat, tallow, grease, horn, blood, feathers, down, silk" ]
   },
   "6.3.8 Veterinary science" : {
+    "key" : "6.3.8",
+    "guid" : "71dbaf5f-2afa-4282-b9b8-8a50d8c8e5e9",
     "name" : "Veterinary science",
     "abbreviation" : "6.3.8",
     "description" : "Use this domain for words related to treating animal diseases.",
     "searchKeys" : [ "veterinarian, veterinary, animal diseases" ]
   },
   "6.3.8.1 Animal diseases" : {
+    "key" : "6.3.8.1",
+    "guid" : "acddd447-bf8a-4d74-8501-7defb0525cc0",
     "name" : "Animal diseases",
     "abbreviation" : "6.3.8.1",
     "description" : "Use this domain for words related to animal diseases.",
     "searchKeys" : [ "hoof and mouth, cowpox" ]
   },
   "6.3.8.2 Castrate animal" : {
+    "key" : "6.3.8.2",
+    "guid" : "4f80a620-30db-4529-94e8-f0cd9d0b0e96",
     "name" : "Castrate animal",
     "abbreviation" : "6.3.8.2",
     "description" : "Use this domain for words related to castrating animals. There are sometimes specific terms for castrated animals, such as 'steer--a male cow that has been castrated before maturity'.",
@@ -10079,12 +12113,16 @@ var semanticDomains_en = {
         "steer, ox (castrated bull), gelding" ]
   },
   "6.4 Hunt and fish" : {
+    "key" : "6.4",
+    "guid" : "9e6d7c69-788c-4d40-8584-32f185e91932",
     "name" : "Hunt and fish",
     "abbreviation" : "6.4",
     "description" : "Use this domain for words related to hunting and fishing--catching and killing wild animals.",
     "searchKeys" : [ "hunt, trap, fish" ]
   },
   "6.4.1 Hunt" : {
+    "key" : "6.4.1",
+    "guid" : "a1ce19c4-d12c-46da-a718-6d03949b3db1",
     "name" : "Hunt",
     "abbreviation" : "6.4.1",
     "description" : "Use this domain for words related to hunting wild animals.",
@@ -10096,6 +12134,8 @@ var semanticDomains_en = {
         "hunt with dog, hunting dog, hunting dog bell, take up the chase, catch the scent, follow the scent, corner an animal, tree an animal, bay (sound of a dog when following an animal)" ]
   },
   "6.4.1.1 Track an animal" : {
+    "key" : "6.4.1.1",
+    "guid" : "62b40326-f74c-4d80-9b1c-4dae0fc07026",
     "name" : "Track an animal",
     "abbreviation" : "6.4.1.1",
     "description" : "Use this domain for words related to tracking an animal.",
@@ -10103,6 +12143,8 @@ var semanticDomains_en = {
         "track, print, footprint, paw print, hoof print, sign, trail" ]
   },
   "6.4.2 Trap" : {
+    "key" : "6.4.2",
+    "guid" : "196f81d0-6a1a-4cc0-936a-367423ff485c",
     "name" : "Trap",
     "abbreviation" : "6.4.2",
     "description" : "Use this domain for words related to trapping an animal.",
@@ -10111,12 +12153,16 @@ var semanticDomains_en = {
         "fall into (a pit)", "escape" ]
   },
   "6.4.3 Hunting birds" : {
+    "key" : "6.4.3",
+    "guid" : "4e0992cd-c04c-4b55-beab-6b0a3c98a994",
     "name" : "Hunting birds",
     "abbreviation" : "6.4.3",
     "description" : "Use this domain for words related to hunting birds.",
     "searchKeys" : [ "hunt for birds, snare, fowling, look for bird's nest" ]
   },
   "6.4.4 Beekeeping" : {
+    "key" : "6.4.4",
+    "guid" : "b0e2635e-47c4-4995-942b-07f6635faf6f",
     "name" : "Beekeeping",
     "abbreviation" : "6.4.4",
     "description" : "Use this domain for words related to keeping bees.",
@@ -10125,6 +12171,8 @@ var semanticDomains_en = {
         "collect honey" ]
   },
   "6.4.5 Fishing" : {
+    "key" : "6.4.5",
+    "guid" : "ea46de30-a1a9-4828-84a8-9165f61f8b20",
     "name" : "Fishing",
     "abbreviation" : "6.4.5",
     "description" : "Use this domain for words related to catching fish.",
@@ -10134,6 +12182,8 @@ var semanticDomains_en = {
         "catch, scale, gut, clean, smoke, dry, smoked fish, dried fish" ]
   },
   "6.4.5.1 Fish with net" : {
+    "key" : "6.4.5.1",
+    "guid" : "573bf23a-3fde-4552-9263-62b7c71cad02",
     "name" : "Fish with net",
     "abbreviation" : "6.4.5.1",
     "description" : "Use this domain for words related to fishing with a net.",
@@ -10141,18 +12191,24 @@ var semanticDomains_en = {
         "fishnet, net", "a catch of fish" ]
   },
   "6.4.5.2 Fish with hooks" : {
+    "key" : "6.4.5.2",
+    "guid" : "d7e0ed88-6d5a-44cc-a0fe-070a5aab3e60",
     "name" : "Fish with hooks",
     "abbreviation" : "6.4.5.2",
     "description" : "Use this domain for words related to fishing with a hook and line.",
     "searchKeys" : [ "fish, trawl, fly-fishing, cast, bait the hook" ]
   },
   "6.4.5.3 Fishing equipment" : {
+    "key" : "6.4.5.3",
+    "guid" : "eb07e333-38d2-4ddb-9bc9-5990403600b4",
     "name" : "Fishing equipment",
     "abbreviation" : "6.4.5.3",
     "description" : "Use this domain for words related to fishing equipment.",
     "searchKeys" : [ "fishing equipment, fishing gear, net, hook, fishhook, line, sinker, float, rod, reel, tackle, boat, dam, trap, bait" ]
   },
   "6.4.6 Things done to animals" : {
+    "key" : "6.4.6",
+    "guid" : "7c234ccc-0dbe-42b0-a377-db99ebd2b51e",
     "name" : "Things done to animals",
     "abbreviation" : "6.4.6",
     "description" : "Use this domain for words related to things done to animals.",
@@ -10173,6 +12229,8 @@ var semanticDomains_en = {
         "cage, birdcage, zoo, park, reserve, preserve" ]
   },
   "6.5 Working with buildings" : {
+    "key" : "6.5",
+    "guid" : "cde96694-79e5-44af-8d38-d988d1938e5f",
     "name" : "Working with buildings",
     "abbreviation" : "6.5",
     "description" : "Use this domain for words related to working with buildings.",
@@ -10185,6 +12243,8 @@ var semanticDomains_en = {
         "to roof, a roof, roofing material" ]
   },
   "6.5.1 Building" : {
+    "key" : "6.5.1",
+    "guid" : "dc177f3c-d0fd-4232-adf1-a77b339cdbb2",
     "name" : "Building",
     "abbreviation" : "6.5.1",
     "description" : "Use this domain for words related to buildings and other large structures that people build.",
@@ -10209,6 +12269,8 @@ var semanticDomains_en = {
         "enclosed, open, multi-story, high-rise," ]
   },
   "6.5.1.1 House" : {
+    "key" : "6.5.1.1",
+    "guid" : "191ca5a5-0a67-426e-adfc-6fdf7c2aaa2c",
     "name" : "House",
     "abbreviation" : "6.5.1.1",
     "description" : "Use this domain for general words referring to a house where people live.",
@@ -10218,6 +12280,8 @@ var semanticDomains_en = {
         "inside, indoors, indoor, interior" ]
   },
   "6.5.1.2 Types of houses" : {
+    "key" : "6.5.1.2",
+    "guid" : "c8e3c39c-d895-4e42-8e1e-1574137ba016",
     "name" : "Types of houses",
     "abbreviation" : "6.5.1.2",
     "description" : "Use this domain for words referring to types of houses.",
@@ -10229,6 +12293,8 @@ var semanticDomains_en = {
         "outhouse, bunkhouse, garage, shed, barn" ]
   },
   "6.5.1.3 Land, property" : {
+    "key" : "6.5.1.3",
+    "guid" : "7981a8e1-cf0b-44a0-9de4-12160b2f201d",
     "name" : "Land, property",
     "abbreviation" : "6.5.1.3",
     "description" : "Use this domain for words related to land that a person owns or the land on which a house is built.",
@@ -10239,6 +12305,8 @@ var semanticDomains_en = {
         "title, deed" ]
   },
   "6.5.1.4 Yard" : {
+    "key" : "6.5.1.4",
+    "guid" : "c1ceebe1-1274-40c1-a932-696265d9d412",
     "name" : "Yard",
     "abbreviation" : "6.5.1.4",
     "description" : "Use this domain for words referring to the outside of a house, the area around a house, a barrier separating one house from another, and the entryway to the area around a house.",
@@ -10247,6 +12315,8 @@ var semanticDomains_en = {
         "yard, front yard, back yard, patio, courtyard, garden, driveway, sidewalk, outside," ]
   },
   "6.5.1.5 Fence, wall" : {
+    "key" : "6.5.1.5",
+    "guid" : "7a8cb8d3-797d-478d-b7dd-265a1eedc0c1",
     "name" : "Fence, wall",
     "abbreviation" : "6.5.1.5",
     "description" : "Use this domain for words referring to a fence, wall, hedge, or other barrier separating one house from another, and a gate or entryway through a fence or wall.",
@@ -10254,6 +12324,8 @@ var semanticDomains_en = {
         "enclosure,", "walled, enclosed," ]
   },
   "6.5.2 Parts of a building" : {
+    "key" : "6.5.2",
+    "guid" : "22acd714-b11e-462a-bd8e-6ff50843c103",
     "name" : "Parts of a building",
     "abbreviation" : "6.5.2",
     "description" : "Use this domain for words referring to the parts and areas of a building.",
@@ -10262,6 +12334,8 @@ var semanticDomains_en = {
         "side, front, back,", "inside, interior, outside, exterior," ]
   },
   "6.5.2.1 Wall" : {
+    "key" : "6.5.2.1",
+    "guid" : "50903b35-5606-4727-8474-01c06bf588da",
     "name" : "Wall",
     "abbreviation" : "6.5.2.1",
     "description" : "Use this domain for words related to walls.",
@@ -10269,6 +12343,8 @@ var semanticDomains_en = {
         "frame, siding, insulation, arch" ]
   },
   "6.5.2.2 Roof" : {
+    "key" : "6.5.2.2",
+    "guid" : "eec72226-106c-4825-b245-6e18110ee917",
     "name" : "Roof",
     "abbreviation" : "6.5.2.2",
     "description" : "Use this domain for words related to a roof.",
@@ -10278,6 +12354,8 @@ var semanticDomains_en = {
         "attic" ]
   },
   "6.5.2.3 Floor" : {
+    "key" : "6.5.2.3",
+    "guid" : "3a568f98-8446-4327-876b-7c5ec78d9084",
     "name" : "Floor",
     "abbreviation" : "6.5.2.3",
     "description" : "Use this domain for words related to a floor.",
@@ -10285,6 +12363,8 @@ var semanticDomains_en = {
         "carpet, carpeted, rug, throw rug, floor mat, rushes, straw mat" ]
   },
   "6.5.2.4 Door" : {
+    "key" : "6.5.2.4",
+    "guid" : "bafa274e-8bf0-4cf7-8ce7-2c28293db809",
     "name" : "Door",
     "abbreviation" : "6.5.2.4",
     "description" : "Use this domain for words related to a door.",
@@ -10297,6 +12377,8 @@ var semanticDomains_en = {
         "open, close, swing close, slam, walk through, leave by, lock, unlock, bolt, block, hang, install" ]
   },
   "6.5.2.5 Window" : {
+    "key" : "6.5.2.5",
+    "guid" : "eeee02e1-157e-4786-ab92-80c92e5023b8",
     "name" : "Window",
     "abbreviation" : "6.5.2.5",
     "description" : "Use this domain for words related to a window.",
@@ -10306,6 +12388,8 @@ var semanticDomains_en = {
         "open, close, look out, view" ]
   },
   "6.5.2.6 Foundation" : {
+    "key" : "6.5.2.6",
+    "guid" : "58be5db0-c648-4522-bad0-02cd9cc15f37",
     "name" : "Foundation",
     "abbreviation" : "6.5.2.6",
     "description" : "Use this domain for words related to the foundation of a building.",
@@ -10315,6 +12399,8 @@ var semanticDomains_en = {
         "good foundation, firm foundation, even foundation, proper foundation, weak foundation" ]
   },
   "6.5.2.7 Room" : {
+    "key" : "6.5.2.7",
+    "guid" : "d2b61570-af54-44f3-846e-6d7ec9d3737f",
     "name" : "Room",
     "abbreviation" : "6.5.2.7",
     "description" : "Use this domain for words related to the rooms of a building.",
@@ -10327,6 +12413,8 @@ var semanticDomains_en = {
         "foyer, sanctuary, meeting hall, worship center, baptistery, classroom, pastor's study, vestibule, belfry, choir loft, balcony" ]
   },
   "6.5.2.8 Floor, story" : {
+    "key" : "6.5.2.8",
+    "guid" : "84a8d541-9571-4ce9-abea-bd9cccb8dbf0",
     "name" : "Floor, story",
     "abbreviation" : "6.5.2.8",
     "description" : "Use this domain for words related to the levels of a building.",
@@ -10336,6 +12424,8 @@ var semanticDomains_en = {
         "stair, step, rung (of a ladder), staircase, stairway, stairwell, stairs, flight of stairs, elevator, lift, escalator, fire escape, ladder, banister, handrail, landing, ramp," ]
   },
   "6.5.3 Building materials" : {
+    "key" : "6.5.3",
+    "guid" : "97e1aba5-2ac1-44a3-8f18-59b2347a54a1",
     "name" : "Building materials",
     "abbreviation" : "6.5.3",
     "description" : "Use this domain for words related to the materials used to make a building.",
@@ -10349,6 +12439,8 @@ var semanticDomains_en = {
         "wood, glass, screen", "foundation stone, cornerstone" ]
   },
   "6.5.3.1 Building equipment and maintenance" : {
+    "key" : "6.5.3.1",
+    "guid" : "4a44ac87-5ad5-44de-8170-9fd88b056010",
     "name" : "Building equipment and maintenance",
     "abbreviation" : "6.5.3.1",
     "description" : "Use this domain for words referring to the equipment and maintenance of a building.",
@@ -10358,12 +12450,16 @@ var semanticDomains_en = {
         "repair, restore, restoration, fix up," ]
   },
   "6.5.4 Infrastructure" : {
+    "key" : "6.5.4",
+    "guid" : "c6b62d63-b355-46c9-a8c7-e0a0bf112a9e",
     "name" : "Infrastructure",
     "abbreviation" : "6.5.4",
     "description" : "Use this domain for words related to infrastructure--the big things people make that many people use, such as roads, electric power lines, and water supply systems.",
     "searchKeys" : [ "infrastructure, public works, park" ]
   },
   "6.5.4.1 Road" : {
+    "key" : "6.5.4.1",
+    "guid" : "31debfe3-91da-4588-b433-21b0e14a101b",
     "name" : "Road",
     "abbreviation" : "6.5.4.1",
     "description" : "Use this domain for words related to a road.",
@@ -10380,12 +12476,16 @@ var semanticDomains_en = {
         "traffic" ]
   },
   "6.5.4.2 Boundary" : {
+    "key" : "6.5.4.2",
+    "guid" : "73adcfbe-8a74-4fda-969f-616964226b9b",
     "name" : "Boundary",
     "abbreviation" : "6.5.4.2",
     "description" : "Use this domain for words related to the boundary of an area.",
     "searchKeys" : [ "boundary, border," ]
   },
   "6.6 Occupation" : {
+    "key" : "6.6",
+    "guid" : "9bab95c4-9773-4894-9cb9-d7ad39378b45",
     "name" : "Occupation",
     "abbreviation" : "6.6",
     "description" : "Use this domain for words related to occupations.",
@@ -10411,6 +12511,8 @@ var semanticDomains_en = {
         "do a job, make a living, perform a task" ]
   },
   "6.6.1 Working with cloth" : {
+    "key" : "6.6.1",
+    "guid" : "71430132-f2ea-40fe-b3f5-b6775741cc56",
     "name" : "Working with cloth",
     "abbreviation" : "6.6.1",
     "description" : "Use this domain for words related to working with cloth.",
@@ -10424,6 +12526,8 @@ var semanticDomains_en = {
         "needle, knitting needle, spinning wheel, sewing machine, pins, scissors, tape measure" ]
   },
   "6.6.1.1 Cloth" : {
+    "key" : "6.6.1.1",
+    "guid" : "ec8e1481-827c-4554-bf50-0d3f592f3702",
     "name" : "Cloth",
     "abbreviation" : "6.6.1.1",
     "description" : "Use this domain for words related to cloth.",
@@ -10431,6 +12535,8 @@ var semanticDomains_en = {
         "cotton, wool, nylon, polyester, silk" ]
   },
   "6.6.1.2 Spinning thread" : {
+    "key" : "6.6.1.2",
+    "guid" : "7edf9e7c-3e32-4307-b5e3-b0d704df7803",
     "name" : "Spinning thread",
     "abbreviation" : "6.6.1.2",
     "description" : "Use this domain for words related to spinning thread.",
@@ -10439,6 +12545,8 @@ var semanticDomains_en = {
         "fiber, thread, yarn, string, cord, rope" ]
   },
   "6.6.1.3 Knitting" : {
+    "key" : "6.6.1.3",
+    "guid" : "b6e9b9c9-632b-48e7-99f7-fa53ebcb3bc5",
     "name" : "Knitting",
     "abbreviation" : "6.6.1.3",
     "description" : "Use this domain for words related to knitting.",
@@ -10447,6 +12555,8 @@ var semanticDomains_en = {
         "knitting, knitwear,", "knitted," ]
   },
   "6.6.1.4 Weaving cloth" : {
+    "key" : "6.6.1.4",
+    "guid" : "77d1610f-4757-46de-b5f8-e127dc270dfd",
     "name" : "Weaving cloth",
     "abbreviation" : "6.6.1.4",
     "description" : "Use this domain for words related to weaving cloth.",
@@ -10454,12 +12564,16 @@ var semanticDomains_en = {
         "plaid, tartan," ]
   },
   "6.6.2 Working with minerals" : {
+    "key" : "6.6.2",
+    "guid" : "34e92ff1-32aa-49c7-b4da-d161bedc5adc",
     "name" : "Working with minerals",
     "abbreviation" : "6.6.2",
     "description" : "Use this domain for words related to working with minerals.",
     "searchKeys" : [ "mineral, miner" ]
   },
   "6.6.2.1 Mining" : {
+    "key" : "6.6.2.1",
+    "guid" : "c5996b7d-0acc-4ac7-bfa0-09b93a0eccbc",
     "name" : "Mining",
     "abbreviation" : "6.6.2.1",
     "description" : "Use this domain for words related to mining.",
@@ -10472,6 +12586,8 @@ var semanticDomains_en = {
         "pan, sluice, Geiger counter, metal detector, pick, rock hammer" ]
   },
   "6.6.2.2 Smelting" : {
+    "key" : "6.6.2.2",
+    "guid" : "993b8955-52db-4b2a-8e9a-405a155e7b60",
     "name" : "Smelting",
     "abbreviation" : "6.6.2.2",
     "description" : "Use this domain for words related to smelting--melting rocks to get metal out of them.",
@@ -10479,6 +12595,8 @@ var semanticDomains_en = {
         "furnace, forge, crucible", "slag, slagheap, dross" ]
   },
   "6.6.2.3 Working with metal" : {
+    "key" : "6.6.2.3",
+    "guid" : "7ee3ccb5-e6cb-4028-9af5-62ae782967b5",
     "name" : "Working with metal",
     "abbreviation" : "6.6.2.3",
     "description" : "Use this domain for words related to working with metal. Answer each question below for each kind of smith.",
@@ -10492,6 +12610,8 @@ var semanticDomains_en = {
         "nugget, bar, rod, ingot, wire" ]
   },
   "6.6.2.4 Working with clay" : {
+    "key" : "6.6.2.4",
+    "guid" : "66abfbe5-e011-48de-8773-905f1b1ce215",
     "name" : "Working with clay",
     "abbreviation" : "6.6.2.4",
     "description" : "Use this domain for words related to working with clay.",
@@ -10505,6 +12625,8 @@ var semanticDomains_en = {
         "workshop, potter's field" ]
   },
   "6.6.2.5 Working with glass" : {
+    "key" : "6.6.2.5",
+    "guid" : "5a585789-2ef6-42c5-9c5a-34ff716059b7",
     "name" : "Working with glass",
     "abbreviation" : "6.6.2.5",
     "description" : "Use this domain for words related to working with glass.",
@@ -10514,6 +12636,8 @@ var semanticDomains_en = {
         "furnace, pipe" ]
   },
   "6.6.2.6 Working with oil and gas" : {
+    "key" : "6.6.2.6",
+    "guid" : "3f6dc9af-0c50-44d5-99f0-4aa67c668186",
     "name" : "Working with oil and gas",
     "abbreviation" : "6.6.2.6",
     "description" : "Use this domain for words related to working with oil and gas.",
@@ -10524,6 +12648,8 @@ var semanticDomains_en = {
         "pipeline, pump, oil tanker, tank, tanker truck" ]
   },
   "6.6.2.7 Working with stone" : {
+    "key" : "6.6.2.7",
+    "guid" : "084e2568-3f54-4eab-b436-8a87fb466659",
     "name" : "Working with stone",
     "abbreviation" : "6.6.2.7",
     "description" : "Use this domain for words related to working with stone.",
@@ -10532,6 +12658,8 @@ var semanticDomains_en = {
         "hammer, chisel", "quarry" ]
   },
   "6.6.2.8 Working with bricks" : {
+    "key" : "6.6.2.8",
+    "guid" : "33037a4d-3454-4c59-9a61-c5fb747f107a",
     "name" : "Working with bricks",
     "abbreviation" : "6.6.2.8",
     "description" : "Use this domain for words related to working with bricks.",
@@ -10539,6 +12667,8 @@ var semanticDomains_en = {
         "cement, mortar" ]
   },
   "6.6.2.9 Working with chemicals" : {
+    "key" : "6.6.2.9",
+    "guid" : "8b76f4a2-9926-4c76-8d4f-563371683219",
     "name" : "Working with chemicals",
     "abbreviation" : "6.6.2.9",
     "description" : "Use this domain for words related to working with chemicals.",
@@ -10552,12 +12682,16 @@ var semanticDomains_en = {
         "acetate, alcohol, amino, ammonia, arsenic, asbestos, bicarbonate, butane, camphor, carbohydrate, chloride, chlorine, cleaner, cleanser, colloidal, creosote, cyanide, detergent, diesel, dioxide, emulsion, enamel, ethane, ethanol, ether, fluoride, fluorite, fuel, gas, gel, helium, hydrogen, iodine, leaven, hydrocarbon, hydrochloric, gasohol, gasoline, glycerin, kerosene, lacquer, latex, lithium, lubricant, methane, neon, nitrogen, nylon, oil, oxide, oxygen, ozone, paraffin, peroxide, phosgene, petrochemical, petrol, petrolatum, petroleum, polyester, protein, rayon, resin, rosin, yeast, silicate, silicon, sodium, solution, sol, solvent, spar, sulfuric, tallow, tannin, tartar, thinner, turpentine, varnish, vitriol, water" ]
   },
   "6.6.2.9.1 Explode" : {
+    "key" : "6.6.2.9.1",
+    "guid" : "1fd8a8d6-6795-4a5b-90e0-342e8b0975a1",
     "name" : "Explode",
     "abbreviation" : "6.6.2.9.1",
     "description" : "Use this domain for words related to bombs or chemicals exploding.",
     "searchKeys" : [ "explode, blow up, detonate" ]
   },
   "6.6.3 Working with wood" : {
+    "key" : "6.6.3",
+    "guid" : "adde4a66-9040-47a9-91ab-327934a2e97e",
     "name" : "Working with wood",
     "abbreviation" : "6.6.3",
     "description" : "Use this domain for words related to working with wood.",
@@ -10569,6 +12703,8 @@ var semanticDomains_en = {
         "carpentry shop" ]
   },
   "6.6.3.1 Lumbering" : {
+    "key" : "6.6.3.1",
+    "guid" : "345e019f-87d2-415d-ba37-9fb85460f7e1",
     "name" : "Lumbering",
     "abbreviation" : "6.6.3.1",
     "description" : "Use this domain for words related to lumbering--cutting down trees and cutting them up.",
@@ -10579,6 +12715,8 @@ var semanticDomains_en = {
         "saw, ax, logging truck" ]
   },
   "6.6.3.2 Wood" : {
+    "key" : "6.6.3.2",
+    "guid" : "0fef044a-c822-450d-b54a-eac8621e50c2",
     "name" : "Wood",
     "abbreviation" : "6.6.3.2",
     "description" : "Use this domain for words related to wood.",
@@ -10587,6 +12725,8 @@ var semanticDomains_en = {
         "wooden" ]
   },
   "6.6.3.3 Working with paper" : {
+    "key" : "6.6.3.3",
+    "guid" : "d8389a63-8b39-4e23-8528-cd756dae2f5c",
     "name" : "Working with paper",
     "abbreviation" : "6.6.3.3",
     "description" : "Use this domain for words related to paper.",
@@ -10594,12 +12734,16 @@ var semanticDomains_en = {
         "paper, sheet, page, card, cardboard" ]
   },
   "6.6.4 Crafts" : {
+    "key" : "6.6.4",
+    "guid" : "f6eb81d5-caba-4735-be6f-ae038656b555",
     "name" : "Crafts",
     "abbreviation" : "6.6.4",
     "description" : "Use this domain for words related to crafts.",
     "searchKeys" : [ "craft" ]
   },
   "6.6.4.1 Cordage" : {
+    "key" : "6.6.4.1",
+    "guid" : "0b7bfd0a-249c-45b6-9427-2c17ae00bf37",
     "name" : "Cordage",
     "abbreviation" : "6.6.4.1",
     "description" : "Use this domain for words related to working with cords and ropes.",
@@ -10607,6 +12751,8 @@ var semanticDomains_en = {
         "unravel, come unraveled, be all unraveled, ravel" ]
   },
   "6.6.4.2 Weaving baskets and mats" : {
+    "key" : "6.6.4.2",
+    "guid" : "019e3b64-c68a-4b19-bec5-a22f4eb88f48",
     "name" : "Weaving baskets and mats",
     "abbreviation" : "6.6.4.2",
     "description" : "Use this domain for words related to weaving baskets, mats, and other things.",
@@ -10614,6 +12760,8 @@ var semanticDomains_en = {
         "reed, palm leaf, rope, string", "network, weaving" ]
   },
   "6.6.4.3 Working with leather" : {
+    "key" : "6.6.4.3",
+    "guid" : "7ee96f62-7c8e-4c27-a373-d7a534844612",
     "name" : "Working with leather",
     "abbreviation" : "6.6.4.3",
     "description" : "Use this domain for words related to working with leather.",
@@ -10621,12 +12769,16 @@ var semanticDomains_en = {
         "skin, leather, leather goods, parchment" ]
   },
   "6.6.4.4 Working with bone" : {
+    "key" : "6.6.4.4",
+    "guid" : "49471924-2458-4cb0-9430-f38cfc2fb63b",
     "name" : "Working with bone",
     "abbreviation" : "6.6.4.4",
     "description" : "Use this domain for words related to working with bone.",
     "searchKeys" : [ "bone, horn, shell" ]
   },
   "6.6.5 Art" : {
+    "key" : "6.6.5",
+    "guid" : "0bc02285-8e70-442a-8d08-e04d922507c8",
     "name" : "Art",
     "abbreviation" : "6.6.5",
     "description" : "Use this domain for words related to art.",
@@ -10635,6 +12787,8 @@ var semanticDomains_en = {
         "artist, painter", "portrait, landscape, seascape, still life" ]
   },
   "6.6.5.1 Draw, paint" : {
+    "key" : "6.6.5.1",
+    "guid" : "89ba59d4-b314-4070-83bb-f9f868bcd363",
     "name" : "Draw, paint",
     "abbreviation" : "6.6.5.1",
     "description" : "Use this domain for words related to drawing and painting pictures.",
@@ -10646,6 +12800,8 @@ var semanticDomains_en = {
         "paint, brush, palette, easel, canvas, medium, tempera, distemper," ]
   },
   "6.6.5.2 Photography" : {
+    "key" : "6.6.5.2",
+    "guid" : "6b208fda-544c-4cba-b8cc-887b1018837f",
     "name" : "Photography",
     "abbreviation" : "6.6.5.2",
     "description" : "Use this domain for words related to photography.",
@@ -10657,6 +12813,8 @@ var semanticDomains_en = {
         "lens, body, shutter, filter, film, film canister, tripod, flash" ]
   },
   "6.6.5.3 Sculpture" : {
+    "key" : "6.6.5.3",
+    "guid" : "3ae3a1be-cfb5-4953-b65b-68f0c51b1d40",
     "name" : "Sculpture",
     "abbreviation" : "6.6.5.3",
     "description" : "Use this domain for words related to sculpture.",
@@ -10665,6 +12823,8 @@ var semanticDomains_en = {
         "chisel, hammer, marble, clay" ]
   },
   "6.6.6 Working with land" : {
+    "key" : "6.6.6",
+    "guid" : "0644f4da-c9fe-4239-bbe5-6efc85f98968",
     "name" : "Working with land",
     "abbreviation" : "6.6.6",
     "description" : "Use this domain for words related to working with land.",
@@ -10676,6 +12836,8 @@ var semanticDomains_en = {
         "park" ]
   },
   "6.6.7 Working with water" : {
+    "key" : "6.6.7",
+    "guid" : "683f570a-0bfe-4a97-b55d-4319b328508b",
     "name" : "Working with water",
     "abbreviation" : "6.6.7",
     "description" : "Use this domain for words related to working with water.",
@@ -10688,6 +12850,8 @@ var semanticDomains_en = {
         "sieve, drain, press, extract, strain" ]
   },
   "6.6.7.1 Plumber" : {
+    "key" : "6.6.7.1",
+    "guid" : "515f9b40-0637-4ce3-b343-2d99de3f723b",
     "name" : "Plumber",
     "abbreviation" : "6.6.7.1",
     "description" : "Use this domain for words related to working with water pipes.",
@@ -10699,6 +12863,8 @@ var semanticDomains_en = {
         "put in plumbing, fix a pipe, fix a leak, to thread a pipe" ]
   },
   "6.6.7.2 Conveying water" : {
+    "key" : "6.6.7.2",
+    "guid" : "0205145d-23b6-4c3c-bf2d-bf866bb010e7",
     "name" : "Conveying water",
     "abbreviation" : "6.6.7.2",
     "description" : "Use this domain for words related to conveying water--moving water from one place to another place.",
@@ -10710,6 +12876,8 @@ var semanticDomains_en = {
         "cistern, bucket, pitcher", "pump, siphon, suck, suction" ]
   },
   "6.6.7.3 Controlling water" : {
+    "key" : "6.6.7.3",
+    "guid" : "6f83b918-dc9f-4053-90a4-a6b9e750db29",
     "name" : "Controlling water",
     "abbreviation" : "6.6.7.3",
     "description" : "Use this domain for words related to controlling the movement of water.",
@@ -10717,12 +12885,16 @@ var semanticDomains_en = {
         "dam, dike, levee" ]
   },
   "6.6.7.4 Working in the sea" : {
+    "key" : "6.6.7.4",
+    "guid" : "a6616a09-df51-4ca6-850f-733ee73c8750",
     "name" : "Working in the sea",
     "abbreviation" : "6.6.7.4",
     "description" : "Use this domain for words related to working in the sea.",
     "searchKeys" : [ "growing seaweed, scuba diving, pearl diving, offshore drilling, fishpond" ]
   },
   "6.6.8 Working with machines" : {
+    "key" : "6.6.8",
+    "guid" : "f1373316-7917-4dca-9d33-c6b520bd4034",
     "name" : "Working with machines",
     "abbreviation" : "6.6.8",
     "description" : "Use this domain for words related to working with machines.",
@@ -10731,6 +12903,8 @@ var semanticDomains_en = {
         "mechanic, machinist, operator, engineer" ]
   },
   "6.6.8.1 Working with electricity" : {
+    "key" : "6.6.8.1",
+    "guid" : "b917ffec-ab7e-496a-bfe4-35c567fa0785",
     "name" : "Working with electricity",
     "abbreviation" : "6.6.8.1",
     "description" : "Use this domain for words related to working with electricity.",
@@ -10741,6 +12915,8 @@ var semanticDomains_en = {
         "battery," ]
   },
   "6.7 Tool" : {
+    "key" : "6.7",
+    "guid" : "6342c8bf-55b5-400f-af7e-63055fe6813b",
     "name" : "Tool",
     "abbreviation" : "6.7",
     "description" : "Use this domain for general words for tools and machines. The domains in this section should be used for general tools and machines that are used in a variety of tasks. Specialized tools and machines should be classified under the specific work or activity for which they are used.",
@@ -10751,12 +12927,16 @@ var semanticDomains_en = {
         "equipment, apparatus, gear, kit, things, stuff, tools," ]
   },
   "6.7.1 Cutting tool" : {
+    "key" : "6.7.1",
+    "guid" : "efe8e7b5-e008-4a3a-b3e1-23ae03a0083e",
     "name" : "Cutting tool",
     "abbreviation" : "6.7.1",
     "description" : "Use this domain for words related to cutting tools.",
     "searchKeys" : [ "knife, paring knife, butcher knife, jackknife, pocketknife, hunting knife, ax, hatchet, saw, blade, razor blade, scissors, wire-cutters" ]
   },
   "6.7.1.1 Poking tool" : {
+    "key" : "6.7.1.1",
+    "guid" : "a3bc1fbd-9f2f-4a9d-ae6e-7b02da8a05b4",
     "name" : "Poking tool",
     "abbreviation" : "6.7.1.1",
     "description" : "Use this domain for words related to poking tools--tools used to make holes in things.",
@@ -10764,12 +12944,16 @@ var semanticDomains_en = {
         "poke, dig, jab, pierce, prick, stick" ]
   },
   "6.7.1.2 Digging tool" : {
+    "key" : "6.7.1.2",
+    "guid" : "818e33ff-590e-4d0e-b84e-67771324a545",
     "name" : "Digging tool",
     "abbreviation" : "6.7.1.2",
     "description" : "Use this domain for words related to digging tools.",
     "searchKeys" : [ "hoe, pick, shovel, spade" ]
   },
   "6.7.2 Pounding tool" : {
+    "key" : "6.7.2",
+    "guid" : "65c68427-2e20-42b2-8f49-623055ea9246",
     "name" : "Pounding tool",
     "abbreviation" : "6.7.2",
     "description" : "Use this domain for words related to pounding tools.",
@@ -10777,18 +12961,24 @@ var semanticDomains_en = {
         "pound, hit, smack, club" ]
   },
   "6.7.3 Carrying tool" : {
+    "key" : "6.7.3",
+    "guid" : "62964baf-fea6-4d8e-8509-d312bff8761a",
     "name" : "Carrying tool",
     "abbreviation" : "6.7.3",
     "description" : "Use this domain for words related to carrying tools.",
     "searchKeys" : [ "pole, pack, backpack, suitcase, case, briefcase, sling, stretcher, tray, grass ring for head, carrying basket for back, rope, string, liana" ]
   },
   "6.7.4 Lifting tool" : {
+    "key" : "6.7.4",
+    "guid" : "be4ab208-1fa0-463f-9ca0-4c7e3e03aafd",
     "name" : "Lifting tool",
     "abbreviation" : "6.7.4",
     "description" : "Use this domain for words referring to tools used to lift things.",
     "searchKeys" : [ "lever, pulley, block and tackle" ]
   },
   "6.7.5 Fastening tool" : {
+    "key" : "6.7.5",
+    "guid" : "5cd2f365-2d84-451e-9f2d-bc2561eff909",
     "name" : "Fastening tool",
     "abbreviation" : "6.7.5",
     "description" : "Use this domain for words related to fastening tools.",
@@ -10797,12 +12987,16 @@ var semanticDomains_en = {
         "screwdriver," ]
   },
   "6.7.6 Holding tool" : {
+    "key" : "6.7.6",
+    "guid" : "b2fee662-c451-4d32-aca5-a913ca0b2164",
     "name" : "Holding tool",
     "abbreviation" : "6.7.6",
     "description" : "Use this domain for words related to holding tools--tools used to grip and hold things so that they don't move, and tools used to hold things that you can't hold with your hand, such as very hot things.",
     "searchKeys" : [ "clamp, vise, pliers, tongs, tweezers, hot pad," ]
   },
   "6.7.7 Container" : {
+    "key" : "6.7.7",
+    "guid" : "eca46133-c350-4573-a349-9b7ce11b6fa8",
     "name" : "Container",
     "abbreviation" : "6.7.7",
     "description" : "Use this domain for words related to containers.",
@@ -10811,18 +13005,24 @@ var semanticDomains_en = {
         "contain, hold, carry", "contents", "lid, lip, neck" ]
   },
   "6.7.7.1 Bag" : {
+    "key" : "6.7.7.1",
+    "guid" : "4d3412e3-85a0-4f81-9dad-efd6101b4945",
     "name" : "Bag",
     "abbreviation" : "6.7.7.1",
     "description" : "Use this domain for words related to bags.",
     "searchKeys" : [ "bag, purse" ]
   },
   "6.7.7.2 Sheath" : {
+    "key" : "6.7.7.2",
+    "guid" : "3acf5e20-b626-4f0a-a582-d386a0e30792",
     "name" : "Sheath",
     "abbreviation" : "6.7.7.2",
     "description" : "Use this domain for words related to a sheath--a container for a weapon.",
     "searchKeys" : [ "sheath, holster" ]
   },
   "6.7.8 Parts of tools" : {
+    "key" : "6.7.8",
+    "guid" : "3aec74e5-6cfd-46d2-b26f-503fad761583",
     "name" : "Parts of tools",
     "abbreviation" : "6.7.8",
     "description" : "Use this domain for words referring to parts of tools and machines. You need to think of different tools and machines, and think of each part.",
@@ -10832,6 +13032,8 @@ var semanticDomains_en = {
         "handle, neck, head, claw", "handle, blade, teeth" ]
   },
   "6.7.9 Machine" : {
+    "key" : "6.7.9",
+    "guid" : "7575d654-e528-4fe0-85eb-481b0e6654bb",
     "name" : "Machine",
     "abbreviation" : "6.7.9",
     "description" : "Use this domain for words referring to machines.",
@@ -10844,18 +13046,24 @@ var semanticDomains_en = {
         "stop, turn off, shut down" ]
   },
   "6.8 Finance" : {
+    "key" : "6.8",
+    "guid" : "2b893d04-3450-4862-b046-7df6f87272f6",
     "name" : "Finance",
     "abbreviation" : "6.8",
     "description" : "Use this domain for words related to finance.",
     "searchKeys" : [ "finance, financial, monetary, fiscal" ]
   },
   "6.8.1 Have wealth" : {
+    "key" : "6.8.1",
+    "guid" : "ff736f67-197b-46b9-bc14-edbeb1fb3d5a",
     "name" : "Have wealth",
     "abbreviation" : "6.8.1",
     "description" : "Use this domain for words related to having wealth.",
     "searchKeys" : [ "have, possess, own", "possessions, property", "owner" ]
   },
   "6.8.1.1 Own, possess" : {
+    "key" : "6.8.1.1",
+    "guid" : "d9cb2e69-133d-4525-bca5-50b0f3402cbb",
     "name" : "Own, possess",
     "abbreviation" : "6.8.1.1",
     "description" : "Use this domain for words related to owning something.",
@@ -10863,6 +13071,8 @@ var semanticDomains_en = {
         "call, claim, have dibs, lay claim to, stake a claim" ]
   },
   "6.8.1.2 Rich" : {
+    "key" : "6.8.1.2",
+    "guid" : "c1a70060-ba04-4f16-879e-5563492aee02",
     "name" : "Rich",
     "abbreviation" : "6.8.1.2",
     "description" : "Use this domain for words related to being rich.",
@@ -10873,6 +13083,8 @@ var semanticDomains_en = {
         "middle class, bourgeois" ]
   },
   "6.8.1.3 Poor" : {
+    "key" : "6.8.1.3",
+    "guid" : "45993c48-3893-4d9e-96a3-b6b1ad160538",
     "name" : "Poor",
     "abbreviation" : "6.8.1.3",
     "description" : "Use this domain for words related to being poor.",
@@ -10885,6 +13097,8 @@ var semanticDomains_en = {
         "the poor, the homeless, the destitute" ]
   },
   "6.8.1.4 Store wealth" : {
+    "key" : "6.8.1.4",
+    "guid" : "2e2a17ba-9d81-4a3d-8af5-96c8f0e39e7e",
     "name" : "Store wealth",
     "abbreviation" : "6.8.1.4",
     "description" : "Use this domain for words related to storing wealth.",
@@ -10895,6 +13109,8 @@ var semanticDomains_en = {
         "bank, storehouse, vault, safe, piggy bank, cookie jar, cash box, wallet, purse, money belt, under the mattress" ]
   },
   "6.8.1.5 Possession, property" : {
+    "key" : "6.8.1.5",
+    "guid" : "3022c764-ba88-41d0-94db-393312214f4e",
     "name" : "Possession, property",
     "abbreviation" : "6.8.1.5",
     "description" : "Use this domain for words related to property--the things you own.",
@@ -10902,18 +13118,24 @@ var semanticDomains_en = {
         "property, wealth, riches, belongings, real estate" ]
   },
   "6.8.2 Accumulate wealth" : {
+    "key" : "6.8.2",
+    "guid" : "4f22ebdb-01db-432a-9d7a-41cd44010265",
     "name" : "Accumulate wealth",
     "abbreviation" : "6.8.2",
     "description" : "Use this domain for words related to accumulating wealth.",
     "searchKeys" : [ "accumulate, acquire, get rich, prosper" ]
   },
   "6.8.2.1 Produce wealth" : {
+    "key" : "6.8.2.1",
+    "guid" : "d1aecdba-3938-4b0c-a2e6-7dc3b7cc5cde",
     "name" : "Produce wealth",
     "abbreviation" : "6.8.2.1",
     "description" : "Use this domain for words related to producing wealth.",
     "searchKeys" : [ "produce, make, manufacture, supply" ]
   },
   "6.8.2.2 Make profit" : {
+    "key" : "6.8.2.2",
+    "guid" : "b1756402-83c4-476d-8f55-010a0a10b5d9",
     "name" : "Make profit",
     "abbreviation" : "6.8.2.2",
     "description" : "Use this domain for words related to making a profit.",
@@ -10922,12 +13144,16 @@ var semanticDomains_en = {
         "profit, income, take (n)" ]
   },
   "6.8.2.3 Lose wealth" : {
+    "key" : "6.8.2.3",
+    "guid" : "07cf5182-d090-4432-817b-037895b5cd1d",
     "name" : "Lose wealth",
     "abbreviation" : "6.8.2.3",
     "description" : "Use this domain for words related to losing wealth.",
     "searchKeys" : [ "lose (wealth), lose your business, lose your shirt, loss, suffer loss, fail to make a profit, go bankrupt, fall behind, fall into debt, be unprofitable" ]
   },
   "6.8.2.4 Frugal" : {
+    "key" : "6.8.2.4",
+    "guid" : "5627904e-59c7-4dd5-aeb5-c6fe0c0a0571",
     "name" : "Frugal",
     "abbreviation" : "6.8.2.4",
     "description" : "Use this domain for words related to being frugal--to not spend a lot of money.",
@@ -10936,18 +13162,24 @@ var semanticDomains_en = {
         "economize, tighten your belt, budget, scrimp and save, on a shoestring, skimp by on, scrape by" ]
   },
   "6.8.2.5 Greedy" : {
+    "key" : "6.8.2.5",
+    "guid" : "dd830047-d7f5-4010-a8ea-ae20468a0cbf",
     "name" : "Greedy",
     "abbreviation" : "6.8.2.5",
     "description" : "Use this domain for words related to being greedy.",
     "searchKeys" : [ "greedy, greed, grasping, materialistic" ]
   },
   "6.8.2.6 Collect" : {
+    "key" : "6.8.2.6",
+    "guid" : "044f740b-94f3-4096-aa3a-c07f5e708346",
     "name" : "Collect",
     "abbreviation" : "6.8.2.6",
     "description" : "Use this domain for words related to collecting things you find interesting. In some cultures people collect rare or valuable things that they think are attractive or interesting, such as art, stamps, coins, books, or antiques.",
     "searchKeys" : [ "collect, acquire,", "collector,", "collection, set," ]
   },
   "6.8.2.7 Earn" : {
+    "key" : "6.8.2.7",
+    "guid" : "d21db541-4122-465f-9db5-4c76f5e84426",
     "name" : "Earn",
     "abbreviation" : "6.8.2.7",
     "description" : "Use this domain for words related to earning money for work that you do.",
@@ -10960,12 +13192,16 @@ var semanticDomains_en = {
         "the breadwinner, wage-earner, salaried, on a salary," ]
   },
   "6.8.3 Share wealth" : {
+    "key" : "6.8.3",
+    "guid" : "749ad6fe-5509-4e45-b236-84ea12de102e",
     "name" : "Share wealth",
     "abbreviation" : "6.8.3",
     "description" : "Use this domain for words related to sharing wealth with others.",
     "searchKeys" : [ "share, hand out, give out, distribute, dish out, dole out, give away, give to charity, give to the poor, donate, make a donation" ]
   },
   "6.8.3.1 Give, donate" : {
+    "key" : "6.8.3.1",
+    "guid" : "85f211ae-cc16-4042-8c27-e99ff8f01f61",
     "name" : "Give, donate",
     "abbreviation" : "6.8.3.1",
     "description" : "Use this domain for words referring to giving something to someone, in which there is a transference of ownership.",
@@ -10978,12 +13214,16 @@ var semanticDomains_en = {
         "gift, present, prize, reward,", "charity, donation, handout," ]
   },
   "6.8.3.2 Generous" : {
+    "key" : "6.8.3.2",
+    "guid" : "339ee46b-d69a-4f2e-8fba-d1b2adff763b",
     "name" : "Generous",
     "abbreviation" : "6.8.3.2",
     "description" : "Use this domain for words related to being generous.",
     "searchKeys" : [ "be generous, be kind, be gracious, be charitable, generosity, charity, charitable giving" ]
   },
   "6.8.3.3 Stingy" : {
+    "key" : "6.8.3.3",
+    "guid" : "0105615f-0a96-4d08-ab00-ca4b4473de39",
     "name" : "Stingy",
     "abbreviation" : "6.8.3.3",
     "description" : "Use this domain for words related to being stingy.",
@@ -10991,6 +13231,8 @@ var semanticDomains_en = {
         "stingy, avaricious, parsimonious, miserly", "miser" ]
   },
   "6.8.3.4 Beg" : {
+    "key" : "6.8.3.4",
+    "guid" : "6681f03b-06c4-4509-9253-e4739c9c1614",
     "name" : "Beg",
     "abbreviation" : "6.8.3.4",
     "description" : "Use this domain for words related to begging--for a poor person to ask other people to give them money, food, or other things.",
@@ -10999,12 +13241,16 @@ var semanticDomains_en = {
         "give alms,", "alms, contribution, charity," ]
   },
   "6.8.4 Financial transaction" : {
+    "key" : "6.8.4",
+    "guid" : "67931f1c-9a0c-4d18-9762-e553c132256c",
     "name" : "Financial transaction",
     "abbreviation" : "6.8.4",
     "description" : "Use this domain for words related to financial transactions.",
     "searchKeys" : [ "transact, transaction" ]
   },
   "6.8.4.1 Buy" : {
+    "key" : "6.8.4.1",
+    "guid" : "063e0810-8e49-44ef-aa8f-bb9e63bb66dd",
     "name" : "Buy",
     "abbreviation" : "6.8.4.1",
     "description" : "Use this domain for words related to buying something.",
@@ -11012,12 +13258,16 @@ var semanticDomains_en = {
         "buyer, customer", "purchase, merchandise, goods" ]
   },
   "6.8.4.2 Sell" : {
+    "key" : "6.8.4.2",
+    "guid" : "a758718d-6e90-471d-acde-a637ba9ff9eb",
     "name" : "Sell",
     "abbreviation" : "6.8.4.2",
     "description" : "Use this domain for words related to selling something.",
     "searchKeys" : [ "sell, offer (for purchase), to market" ]
   },
   "6.8.4.3 Price" : {
+    "key" : "6.8.4.3",
+    "guid" : "0f7c4d2f-ed94-49ba-a91c-fba36193f35a",
     "name" : "Price",
     "abbreviation" : "6.8.4.3",
     "description" : "Use this domain for words related to the price of something--how much money you have to pay to buy something.",
@@ -11025,30 +13275,40 @@ var semanticDomains_en = {
         "price, set price, fix price, raise price, lower price, value, charge" ]
   },
   "6.8.4.3.1 Expensive" : {
+    "key" : "6.8.4.3.1",
+    "guid" : "a755eaba-fce9-4a8b-b9cf-b3970a49f464",
     "name" : "Expensive",
     "abbreviation" : "6.8.4.3.1",
     "description" : "Use this domain for words related to an expensive price.",
     "searchKeys" : [ "expensive, high, dear, costly" ]
   },
   "6.8.4.3.2 Cheap" : {
+    "key" : "6.8.4.3.2",
+    "guid" : "ecbdf1c5-9d7f-4446-b6a1-644a379a480b",
     "name" : "Cheap",
     "abbreviation" : "6.8.4.3.2",
     "description" : "Use this domain for words related to a cheap price.",
     "searchKeys" : [ "cheap, low, inexpensive, great price, bargain, on sale, deal (n)" ]
   },
   "6.8.4.3.3 Free of charge" : {
+    "key" : "6.8.4.3.3",
+    "guid" : "ffe84c4f-8c38-4b84-ac36-e79ffadbd426",
     "name" : "Free of charge",
     "abbreviation" : "6.8.4.3.3",
     "description" : "Use this domain for words related to something being free of charge--something you can have without paying for it.",
     "searchKeys" : [ "free, free of charge, cost nothing, complementary, no charge" ]
   },
   "6.8.4.4 Bargain" : {
+    "key" : "6.8.4.4",
+    "guid" : "36123ffe-14d8-4198-b32c-eabd0b23e0dd",
     "name" : "Bargain",
     "abbreviation" : "6.8.4.4",
     "description" : "Use this domain for words related to bargaining over the price of something.",
     "searchKeys" : [ "bargain, negotiate a price, haggle, discount," ]
   },
   "6.8.4.5 Pay" : {
+    "key" : "6.8.4.5",
+    "guid" : "0ca05184-08b9-4dc7-a4c7-ff762380b111",
     "name" : "Pay",
     "abbreviation" : "6.8.4.5",
     "description" : "Use this domain for words related to paying money for something.",
@@ -11056,6 +13316,8 @@ var semanticDomains_en = {
         "receipt, ticket" ]
   },
   "6.8.4.6 Hire, rent" : {
+    "key" : "6.8.4.6",
+    "guid" : "3b69f6b6-d64a-43aa-99dc-05e34f81e07f",
     "name" : "Hire, rent",
     "abbreviation" : "6.8.4.6",
     "description" : "Use this domain for words related to hiring or renting something--to pay money so that you can use something that belongs to someone else.",
@@ -11064,6 +13326,8 @@ var semanticDomains_en = {
         "hired hand, employee", "tenant" ]
   },
   "6.8.4.7 Spend" : {
+    "key" : "6.8.4.7",
+    "guid" : "57e367f4-7029-4916-a700-791db32b4745",
     "name" : "Spend",
     "abbreviation" : "6.8.4.7",
     "description" : "Use this domain for words related to spending money.",
@@ -11077,6 +13341,8 @@ var semanticDomains_en = {
         "expenses, expenditure, spending, outlay, overhead, costs, budget" ]
   },
   "6.8.4.8 Store, marketplace" : {
+    "key" : "6.8.4.8",
+    "guid" : "869d0c7b-d792-45ab-bf31-fd9f6fea3107",
     "name" : "Store, marketplace",
     "abbreviation" : "6.8.4.8",
     "description" : "Use this domain for words related to a store or marketplace where things are sold.",
@@ -11085,12 +13351,16 @@ var semanticDomains_en = {
         "salesman, clerk, shopkeeper, storekeeper" ]
   },
   "6.8.4.9 Exchange, trade" : {
+    "key" : "6.8.4.9",
+    "guid" : "7e0bc050-5298-4808-af22-5e284526c652",
     "name" : "Exchange, trade",
     "abbreviation" : "6.8.4.9",
     "description" : "Use this domain for words related to exchanging or trading things.",
     "searchKeys" : [ "trade (v), trade (n), exchange (v), exchange (n), swap, barter," ]
   },
   "6.8.5 Borrow" : {
+    "key" : "6.8.5",
+    "guid" : "49ee84ff-eb2b-4ba3-b193-3018d34599c2",
     "name" : "Borrow",
     "abbreviation" : "6.8.5",
     "description" : "Use this domain for words related to borrowing something.",
@@ -11098,18 +13368,24 @@ var semanticDomains_en = {
         "rent, hire, lease, charter", "loan, mortgage, debt" ]
   },
   "6.8.5.1 Lend" : {
+    "key" : "6.8.5.1",
+    "guid" : "48380d5d-bd54-48a9-92bc-7c8a93de0567",
     "name" : "Lend",
     "abbreviation" : "6.8.5.1",
     "description" : "Use this domain for words related to lending something.",
     "searchKeys" : [ "lend, loan, invest" ]
   },
   "6.8.5.2 Give pledge, bond" : {
+    "key" : "6.8.5.2",
+    "guid" : "ec90e061-e6a0-435f-8784-7269a24c670a",
     "name" : "Give pledge, bond",
     "abbreviation" : "6.8.5.2",
     "description" : "Use this domain for words related to giving a pledge to replay a loan.",
     "searchKeys" : [ "give a pledge, bond, collateral, earnest, put up collateral, promissory note, lien, credit, security, surety" ]
   },
   "6.8.5.3 Owe" : {
+    "key" : "6.8.5.3",
+    "guid" : "4eb41e40-4115-435a-934a-5d91022a29dc",
     "name" : "Owe",
     "abbreviation" : "6.8.5.3",
     "description" : "Use this domain for words related to owing money.",
@@ -11117,36 +13393,48 @@ var semanticDomains_en = {
         "debt, indebtedness," ]
   },
   "6.8.5.4 Repay debt" : {
+    "key" : "6.8.5.4",
+    "guid" : "1da9c4f4-8ae2-47d9-8068-ff65fa3848a9",
     "name" : "Repay debt",
     "abbreviation" : "6.8.5.4",
     "description" : "Use this domain for words related to repaying a debt.",
     "searchKeys" : [ "repay, return, restore (to rightful owner)" ]
   },
   "6.8.5.5 Credit" : {
+    "key" : "6.8.5.5",
+    "guid" : "5a2355b4-c295-4b94-86da-6ac18198bae4",
     "name" : "Credit",
     "abbreviation" : "6.8.5.5",
     "description" : "Use this domain for words referring to credit--when a lending institution, such as a bank, has some of your money, so they owe you something.",
     "searchKeys" : [ "credit, account, place to your credit, to the account of, deposit" ]
   },
   "6.8.6 Money" : {
+    "key" : "6.8.6",
+    "guid" : "43282de6-51e1-4e52-99fc-d54e2043fb6c",
     "name" : "Money",
     "abbreviation" : "6.8.6",
     "description" : "Use this domain for words related to money.",
     "searchKeys" : [ "money, currency, finance, financial, bill, denomination, bread (slang), coin, bill, check, cash" ]
   },
   "6.8.6.1 Monetary units" : {
+    "key" : "6.8.6.1",
+    "guid" : "0772919e-eb4c-45e3-b705-73007f5e5583",
     "name" : "Monetary units",
     "abbreviation" : "6.8.6.1",
     "description" : "Use this domain for words related to monetary units.",
     "searchKeys" : [ "cent, penny, nickel, dime, quarter, half dollar, dollar, silver dollar, greenback, bill, C note, pence, pound" ]
   },
   "6.8.7 Accounting" : {
+    "key" : "6.8.7",
+    "guid" : "ed2113c8-1784-4808-ab1a-fd269f86fa99",
     "name" : "Accounting",
     "abbreviation" : "6.8.7",
     "description" : "Use this domain for words related to accounting--to keep records of money.",
     "searchKeys" : [ "accounting, account, accountant, CPA, ledger" ]
   },
   "6.8.8 Tax" : {
+    "key" : "6.8.8",
+    "guid" : "9a8f2f6a-a039-45dd-80d3-d1e0911907b2",
     "name" : "Tax",
     "abbreviation" : "6.8.8",
     "description" : "Use this domain for words related to tax.",
@@ -11155,6 +13443,8 @@ var semanticDomains_en = {
         "pay taxes", "Internal Revenue Service" ]
   },
   "6.8.9 Dishonest financial practices" : {
+    "key" : "6.8.9",
+    "guid" : "63b18261-faf3-4ab2-bcb4-7c3ac4d6d6ba",
     "name" : "Dishonest financial practices",
     "abbreviation" : "6.8.9",
     "description" : "Use this domain for words related to dishonest financial practices.",
@@ -11163,6 +13453,8 @@ var semanticDomains_en = {
         "counterfeit, counterfeiter, counterfeit bill, bogus" ]
   },
   "6.8.9.1 Steal" : {
+    "key" : "6.8.9.1",
+    "guid" : "db2232d9-8b17-4920-936f-2b6249c6f7fa",
     "name" : "Steal",
     "abbreviation" : "6.8.9.1",
     "description" : "Use this domain for words related to stealing something--to take something that does not belong to you.",
@@ -11185,24 +13477,32 @@ var semanticDomains_en = {
         "caught red-handed" ]
   },
   "6.8.9.2 Cheat" : {
+    "key" : "6.8.9.2",
+    "guid" : "d7ae7208-7869-46e3-90c1-676342c3d7af",
     "name" : "Cheat",
     "abbreviation" : "6.8.9.2",
     "description" : "Use this domain for words related to cheating someone.",
     "searchKeys" : [ "cheat, chisel, deceive, defraud, fraud, greed, impose yourself on, maneuver, scheme, swindle, take someone, trick," ]
   },
   "6.8.9.3 Extort money" : {
+    "key" : "6.8.9.3",
+    "guid" : "a8ae0ee7-56ca-4bdf-bd9a-c56da3ff9254",
     "name" : "Extort money",
     "abbreviation" : "6.8.9.3",
     "description" : "Use this domain for words related to extorting money--forcing someone to give you money on a regular basis by threatening them with some harm.",
     "searchKeys" : [ "extort, extortion, racket, racketeering, organized crime" ]
   },
   "6.8.9.4 Take by force" : {
+    "key" : "6.8.9.4",
+    "guid" : "b4fc91fe-68f7-45a6-8863-75bba1029bef",
     "name" : "Take by force",
     "abbreviation" : "6.8.9.4",
     "description" : "Use this domain for words related to taking something by force.",
     "searchKeys" : [ "take by force, snatch, ransack, plunder, pillage" ]
   },
   "6.8.9.5 Bribe" : {
+    "key" : "6.8.9.5",
+    "guid" : "892b66f4-5dfd-4451-a491-4c4fd2179081",
     "name" : "Bribe",
     "abbreviation" : "6.8.9.5",
     "description" : "Use this domain for money given to a person to do something bad.",
@@ -11211,12 +13511,16 @@ var semanticDomains_en = {
         "murder money, blood money, cursed money" ]
   },
   "6.8.9.6 Smuggle" : {
+    "key" : "6.8.9.6",
+    "guid" : "a36b3354-8598-4228-b779-c7c922b1e61d",
     "name" : "Smuggle",
     "abbreviation" : "6.8.9.6",
     "description" : "Use this domain for words related to smuggling--taking something secretly into a country, something which is illegal or without paying duty.",
     "searchKeys" : [ "smuggle, smuggling", "smuggler", "contraband" ]
   },
   "6.9 Business organization" : {
+    "key" : "6.9",
+    "guid" : "f726d9bb-ae80-4c01-bdef-b600cb27736e",
     "name" : "Business organization",
     "abbreviation" : "6.9",
     "description" : "Use this domain for words related to business organization.",
@@ -11226,12 +13530,16 @@ var semanticDomains_en = {
         "system, structure, network, framework, apparatus, mechanism, set-up" ]
   },
   "6.9.1 Management" : {
+    "key" : "6.9.1",
+    "guid" : "0b98fb79-222f-418c-8107-5d4e791d329c",
     "name" : "Management",
     "abbreviation" : "6.9.1",
     "description" : "Use this domain for words related to managing something.",
     "searchKeys" : [ "organization, management, administration, direct, manage, regulate," ]
   },
   "6.9.2 Work for someone" : {
+    "key" : "6.9.2",
+    "guid" : "5c770098-2c91-4a9c-bfa0-a7ffaa871a7f",
     "name" : "Work for someone",
     "abbreviation" : "6.9.2",
     "description" : "Use this domain for words related to working for someone.",
@@ -11250,6 +13558,8 @@ var semanticDomains_en = {
         "strike (v), go on strike, strike (n), striker," ]
   },
   "6.9.3 Marketing" : {
+    "key" : "6.9.3",
+    "guid" : "b33da469-fefa-44f3-b35c-d70411bfe7e1",
     "name" : "Marketing",
     "abbreviation" : "6.9.3",
     "description" : "Use this domain for words related to the promotion of trade and sales.",
@@ -11259,6 +13569,8 @@ var semanticDomains_en = {
         "guild, trade association, chamber of commerce" ]
   },
   "6.9.4 Commerce" : {
+    "key" : "6.9.4",
+    "guid" : "cd436263-30a3-498c-93f6-3d5682f7f7c0",
     "name" : "Commerce",
     "abbreviation" : "6.9.4",
     "description" : "Use this domain for words related to commerce--taking something to a place and trying to sell it there.",
@@ -11267,6 +13579,8 @@ var semanticDomains_en = {
         "merchant, trader, salesman" ]
   },
   "6.9.5 Economics" : {
+    "key" : "6.9.5",
+    "guid" : "73726931-ef12-4d39-a76e-7742f4b7c9cd",
     "name" : "Economics",
     "abbreviation" : "6.9.5",
     "description" : "Use this domain for words related to economics--the study of the money, trade, and industry of a country.",
@@ -11280,18 +13594,24 @@ var semanticDomains_en = {
         "depression, recession, inflation, crash, slump, bear market" ]
   },
   "6.9.6 Insurance" : {
+    "key" : "6.9.6",
+    "guid" : "a197dbfb-20e4-40c2-9c76-6abbeb1a9b12",
     "name" : "Insurance",
     "abbreviation" : "6.9.6",
     "description" : "Use this domain for words related to insurance.",
     "searchKeys" : [ "insure, insurance, premium" ]
   },
   "7 Physical actions" : {
+    "key" : "7",
+    "guid" : "d60faf11-cc6e-48db-8a13-82f86d78ab00",
     "name" : "Physical actions",
     "abbreviation" : "7",
     "description" : "Use this domain for general words for physical actions--moving yourself, moving things, and changing things.",
     "searchKeys" : [ "act, action, active, activity, do, event, process" ]
   },
   "7.1 Posture" : {
+    "key" : "7.1",
+    "guid" : "9f3b4cab-dc8a-430e-88f3-d3002df64fb8",
     "name" : "Posture",
     "abbreviation" : "7.1",
     "description" : "Use this domain for general words indicating the posture or stance of a person's body. Use the domains in this section for specific words for postures and for moving parts of the body. Many of these words have two meanings. One meaning is stative, indicating that the body is in a particular posture, but not moving. The other meaning is active, indicating that the person is moving his body into a particular posture. Some of these words can be used of animals or even things, if the things are perceived as being similar in posture to that of a human body.",
@@ -11299,6 +13619,8 @@ var semanticDomains_en = {
         "change your posture/stance, pose, shift, squirm" ]
   },
   "7.1.1 Stand" : {
+    "key" : "7.1.1",
+    "guid" : "8841af5e-74e6-4c5d-a313-ba9aa7fdb78b",
     "name" : "Stand",
     "abbreviation" : "7.1.1",
     "description" : "Use this domain for words related to standing. The words in this domain may include whether the person is standing on one foot or two, whether the person's feet are together or placed apart, whether something is between the person's feet, how fast the person stands up.",
@@ -11310,6 +13632,8 @@ var semanticDomains_en = {
         "stand around, stand together", "on your feet" ]
   },
   "7.1.2 Sit" : {
+    "key" : "7.1.2",
+    "guid" : "975d0109-1bba-4b0e-85b8-2c6b51c8e074",
     "name" : "Sit",
     "abbreviation" : "7.1.2",
     "description" : "Use this domain for words referring to sitting and squatting.",
@@ -11325,6 +13649,8 @@ var semanticDomains_en = {
         "sit down, take a seat, have a seat, please be seated" ]
   },
   "7.1.3 Lie down" : {
+    "key" : "7.1.3",
+    "guid" : "0aae0254-dc06-4906-8ecf-2d8450fb83f1",
     "name" : "Lie down",
     "abbreviation" : "7.1.3",
     "description" : "Use this domain for words referring to lying down.",
@@ -11337,6 +13663,8 @@ var semanticDomains_en = {
         "lay someone (down/somewhere)", "bed" ]
   },
   "7.1.4 Kneel" : {
+    "key" : "7.1.4",
+    "guid" : "3a28ab73-2847-44a4-97ed-7129269f1366",
     "name" : "Kneel",
     "abbreviation" : "7.1.4",
     "description" : "Use this domain for words referring to kneeling.",
@@ -11345,6 +13673,8 @@ var semanticDomains_en = {
         "be kneeling, be down on your knees" ]
   },
   "7.1.5 Bow" : {
+    "key" : "7.1.5",
+    "guid" : "c3f20ce7-d30e-40fd-af8a-713a65c46cd0",
     "name" : "Bow",
     "abbreviation" : "7.1.5",
     "description" : "Use this domain for words referring to bowing to someone--to face someone and lower your head or bend at the waist so that your upper body is lowered. The words in this domain should all be symbolic acts, that is, the culture assigns a meaning and significance to the physical action. Some cultures define it as a greeting, as an act of respect, or as an act of submission. For instance in ancient middle eastern culture bowing was an act of submission done in the presence of the king. Failure to bow was an act of rebellion punishable by death. In far eastern culture it is a greeting. In African culture it is an act of respect or done to welcome a visitor. Cultures define how a person is to bow, for instance how they are to hold their hands. A person may bow while standing, or may kneel, or even prostrate himself flat on his face. Whether both people bow is also significant. The depth of the bow can have significance. In Japan the person of lower social rank must bow deeper. In European culture a performer bows to acknowledge applause.",
@@ -11354,6 +13684,8 @@ var semanticDomains_en = {
         "obeisance, worship, bow in submission/reverence/greeting" ]
   },
   "7.1.6 Lean" : {
+    "key" : "7.1.6",
+    "guid" : "566be8c1-3e42-4f8b-87eb-e70e8c13c6f8",
     "name" : "Lean",
     "abbreviation" : "7.1.6",
     "description" : "Use this domain for words describing a person who is leaning.",
@@ -11362,6 +13694,8 @@ var semanticDomains_en = {
         "leaning, lean forward, lean towards, lean over" ]
   },
   "7.1.7 Straight posture" : {
+    "key" : "7.1.7",
+    "guid" : "85b9908f-4f57-4baa-9ed2-bc4705b12e72",
     "name" : "Straight posture",
     "abbreviation" : "7.1.7",
     "description" : "Use this domain for words referring to straight posture--holding your body straight, stiff, or erect, rather than relaxed.",
@@ -11370,6 +13704,8 @@ var semanticDomains_en = {
         "straighten up, sit up straight, stand up straight" ]
   },
   "7.1.7.1 Relaxed posture" : {
+    "key" : "7.1.7.1",
+    "guid" : "8e65904c-f9e9-4e12-b430-c1ddc540f1ae",
     "name" : "Relaxed posture",
     "abbreviation" : "7.1.7.1",
     "description" : "Use this domain for words describing a relaxed posture.",
@@ -11378,6 +13714,8 @@ var semanticDomains_en = {
         "relax (your posture), slouch, lean back, slump" ]
   },
   "7.1.8 Bend down" : {
+    "key" : "7.1.8",
+    "guid" : "85dfc6a3-6c70-41f2-a869-32e2fb3c40ee",
     "name" : "Bend down",
     "abbreviation" : "7.1.8",
     "description" : "Use this domain for words referring to bending down--to bend your body so that it is closer to the ground (in order to see something, pick up something, or hide).",
@@ -11387,6 +13725,8 @@ var semanticDomains_en = {
         "straighten up, rear up" ]
   },
   "7.1.9 Move a part of the body" : {
+    "key" : "7.1.9",
+    "guid" : "86e5c062-d90f-476c-a363-264adfafedfa",
     "name" : "Move a part of the body",
     "abbreviation" : "7.1.9",
     "description" : "Use this domain for words referring to moving various parts of the body.",
@@ -11402,6 +13742,8 @@ var semanticDomains_en = {
         "jerk, twitch," ]
   },
   "7.2 Move" : {
+    "key" : "7.2",
+    "guid" : "c7c85346-158d-4881-839d-9a6a8e47209b",
     "name" : "Move",
     "abbreviation" : "7.2",
     "description" : "Use this domain for intransitive verbs of movement referring to moving your whole body to a different location. There are many components of meaning involved in verbs of movement. They can include a source location (from), a goal location (to), a path (along), manner (walk, run), speed (race, crawl), direction (forward, back, side, up, down, toward, away from), shape of the path (straight, curve, circle, angle), relationship to some object or objects (on, hang, against, between, across, through, into, out of, onto, off of, around), proximity (near, far), multiple movements (back and forth, return, bounce), inclusion with other objects or parts of objects (join, leave, collect, disperse, unite, separate), volition (go versus drift), intransitive versus transitive (move versus move something). Some verbs of movement do not involve moving from one place to another, but express bodily movement.",
@@ -11410,12 +13752,16 @@ var semanticDomains_en = {
         "stir, make a move", "moving, be in motion" ]
   },
   "7.2.1 Manner of movement" : {
+    "key" : "7.2.1",
+    "guid" : "5cc64831-c14a-4dbe-beba-214e725ad041",
     "name" : "Manner of movement",
     "abbreviation" : "7.2.1",
     "description" : "Use this domain for general words referring to the way in which a person moves.",
     "searchKeys" : [ "gait" ]
   },
   "7.2.1.1 Walk" : {
+    "key" : "7.2.1.1",
+    "guid" : "643cc712-b3b3-42d0-971e-7a4c8a6cbf1e",
     "name" : "Walk",
     "abbreviation" : "7.2.1.1",
     "description" : "Use this domain for words related to walking--moving slowly using your legs.",
@@ -11446,6 +13792,8 @@ var semanticDomains_en = {
         "walking stick, cane, crutch" ]
   },
   "7.2.1.1.1 Run" : {
+    "key" : "7.2.1.1.1",
+    "guid" : "b16de6a0-71dd-448c-9ffa-49f6646a5219",
     "name" : "Run",
     "abbreviation" : "7.2.1.1.1",
     "description" : "Use this domain for words referring to running--moving fast on your legs.",
@@ -11459,12 +13807,16 @@ var semanticDomains_en = {
         "be out of breath, be winded, have a stitch (in your side)" ]
   },
   "7.2.1.1.2 Crawl" : {
+    "key" : "7.2.1.1.2",
+    "guid" : "a2bbf179-8d38-4d2e-84cd-0e00bb6c74f3",
     "name" : "Crawl",
     "abbreviation" : "7.2.1.1.2",
     "description" : "Use this domain for words referring to crawling--moving on your hands and knees or on your stomach.",
     "searchKeys" : [ "crawl, walk on your hand and knees, on all fours, scoot, drag, creep" ]
   },
   "7.2.1.1.3 Jump" : {
+    "key" : "7.2.1.1.3",
+    "guid" : "5abd1270-261a-4980-93e5-e10eacea99ad",
     "name" : "Jump",
     "abbreviation" : "7.2.1.1.3",
     "description" : "Use this domain for words referring to jumping--moving your body off the ground by pushing hard with your legs.",
@@ -11477,6 +13829,8 @@ var semanticDomains_en = {
         "skipping rope, trampoline, pogo stick, springboard, parachute" ]
   },
   "7.2.1.2 Move quickly" : {
+    "key" : "7.2.1.2",
+    "guid" : "1017cbc3-0dfb-4930-9881-28f96784035c",
     "name" : "Move quickly",
     "abbreviation" : "7.2.1.2",
     "description" : "Use this domain for words referring to moving quickly or slowly.",
@@ -11489,6 +13843,8 @@ var semanticDomains_en = {
         "zip, zoom, whiz, vroom, chop chop" ]
   },
   "7.2.1.2.1 Move slowly" : {
+    "key" : "7.2.1.2.1",
+    "guid" : "e442afe1-e7cd-4ab2-b456-963e2e041a1e",
     "name" : "Move slowly",
     "abbreviation" : "7.2.1.2.1",
     "description" : "Use this domain for words referring to moving slowly.",
@@ -11499,6 +13855,8 @@ var semanticDomains_en = {
         "chug" ]
   },
   "7.2.1.3 Wander" : {
+    "key" : "7.2.1.3",
+    "guid" : "deff977c-a664-4456-9d44-a5127dd2a7d1",
     "name" : "Wander",
     "abbreviation" : "7.2.1.3",
     "description" : "Use this domain for words referring to wandering--to move slowly without any purpose or goal.",
@@ -11506,6 +13864,8 @@ var semanticDomains_en = {
         "wanderer, vagabond, tramp, hobo" ]
   },
   "7.2.1.4 Graceful" : {
+    "key" : "7.2.1.4",
+    "guid" : "250baab9-5a31-493c-95ea-9fee8baf9fd5",
     "name" : "Graceful",
     "abbreviation" : "7.2.1.4",
     "description" : "Use this domain for words referring to moving in a graceful manner.",
@@ -11515,6 +13875,8 @@ var semanticDomains_en = {
         "grace, gracefulness, poise, elegance, coordination," ]
   },
   "7.2.1.4.1 Clumsy" : {
+    "key" : "7.2.1.4.1",
+    "guid" : "b5aa5873-4c66-4d2d-935a-18e0ab231dbb",
     "name" : "Clumsy",
     "abbreviation" : "7.2.1.4.1",
     "description" : "Use this domain for words referring to moving in a clumsy manner.",
@@ -11523,6 +13885,8 @@ var semanticDomains_en = {
         "clumsy, klutz, be all thumbs, accident-prone, ham-fisted, bungling, bumbling, bull in a china shop, butterfingers," ]
   },
   "7.2.1.5 Walk with difficulty" : {
+    "key" : "7.2.1.5",
+    "guid" : "879e66bc-af29-4fe4-86e0-0047973a57d6",
     "name" : "Walk with difficulty",
     "abbreviation" : "7.2.1.5",
     "description" : "Use this domain for words referring to walking with some difficulty such as stumbling--to miss your step because of hitting an object such as a stone, hole, or mud; staggering--to walk unsteadily because of weakness, illness, or drunkenness; or limping--to walk unevenly or with difficulty because of injury to a foot.",
@@ -11535,12 +13899,16 @@ var semanticDomains_en = {
         "walker, cane, crutch, walking stick, wheelchair" ]
   },
   "7.2.1.5.1 Slip, slide" : {
+    "key" : "7.2.1.5.1",
+    "guid" : "3f535689-944a-4e9c-8f64-ec6395b7c8d7",
     "name" : "Slip, slide",
     "abbreviation" : "7.2.1.5.1",
     "description" : "Use this domain for moving across a smooth or lubricated surface.",
     "searchKeys" : [ "slip, slide, glide, coast, skim, skate", "slippery," ]
   },
   "7.2.1.6 Steady, unsteady" : {
+    "key" : "7.2.1.6",
+    "guid" : "985f099d-f38c-4957-907a-769d1a45ca10",
     "name" : "Steady, unsteady",
     "abbreviation" : "7.2.1.6",
     "description" : "Use this domain for words that refer to balancing yourself or something--when someone or something is able stand or move without falling.",
@@ -11551,6 +13919,8 @@ var semanticDomains_en = {
         "steady, firm, stable," ]
   },
   "7.2.1.6.1 Balance" : {
+    "key" : "7.2.1.6.1",
+    "guid" : "c6132280-d2aa-46f8-9e94-b087dbda09cb",
     "name" : "Balance",
     "abbreviation" : "7.2.1.6.1",
     "description" : "Use this domain for words that refer to balancing yourself or something--when someone or something is able stand or move without falling.",
@@ -11561,12 +13931,16 @@ var semanticDomains_en = {
         "dizzy, giddy, vertigo, dizziness, someone's head is swimming," ]
   },
   "7.2.1.7 Move noisily" : {
+    "key" : "7.2.1.7",
+    "guid" : "32d5b3de-0500-4ad6-b94e-20b8001d0a91",
     "name" : "Move noisily",
     "abbreviation" : "7.2.1.7",
     "description" : "Use this domain for words referring to making a noise while moving.",
     "searchKeys" : [ "bang, buzz, chug, clack, clang, clank, clatter, click, clink, clump, clunk, crackle, crash, creak, crunch, fizz, gurgle, hiss, howl, patter, ping, purr, putter, roar, rumble, rustle, screech, splash, splutter, squelch, swish, thud, thump, thunder, wheeze, whine, whir, zing" ]
   },
   "7.2.2 Move in a direction" : {
+    "key" : "7.2.2",
+    "guid" : "12fe5f6c-7f98-47ba-936a-bcd1065c2db3",
     "name" : "Move in a direction",
     "abbreviation" : "7.2.2",
     "description" : "Use the domains in this section for words referring to moving in a direction related to the orientation of the person's body (not in relation to the position of the destination).",
@@ -11574,24 +13948,32 @@ var semanticDomains_en = {
         "direction, heading, way, course" ]
   },
   "7.2.2.1 Move forward" : {
+    "key" : "7.2.2.1",
+    "guid" : "8e59041e-660b-4f3e-9a11-83217417209e",
     "name" : "Move forward",
     "abbreviation" : "7.2.2.1",
     "description" : "Use this domain for words referring to moving in a forward direction--in the same direction the person is facing.",
     "searchKeys" : [ "move forward, advance, move ahead, go ahead" ]
   },
   "7.2.2.2 Move back" : {
+    "key" : "7.2.2.2",
+    "guid" : "6de4e99b-2b5a-493a-a208-f024d1eabdf3",
     "name" : "Move back",
     "abbreviation" : "7.2.2.2",
     "description" : "Use this domain for words referring to moving in a backward direction--the person is facing one direction, but moving toward their back--to move in the opposite direction from the direction the person is facing.",
     "searchKeys" : [ "move back, back up, move backwards, move in reverse" ]
   },
   "7.2.2.3 Move sideways" : {
+    "key" : "7.2.2.3",
+    "guid" : "f4b18e9c-b465-4763-ba79-d7eed2cebcfa",
     "name" : "Move sideways",
     "abbreviation" : "7.2.2.3",
     "description" : "Use this domain for words referring to moving in a sideways direction--the person is facing one direction, but moving toward their side.",
     "searchKeys" : [ "move sideways, make room for, move aside, move out of the way, get out of the way, move over, budge, shift" ]
   },
   "7.2.2.4 Move up" : {
+    "key" : "7.2.2.4",
+    "guid" : "9d6cbe74-93d6-41fb-b7e2-cc30adb28187",
     "name" : "Move up",
     "abbreviation" : "7.2.2.4",
     "description" : "Use this domain for words referring to moving in an upward direction or to moving to a higher place.",
@@ -11607,12 +13989,16 @@ var semanticDomains_en = {
         "climbing, mountaineering, go climbing, rock-climbing," ]
   },
   "7.2.2.5 Move down" : {
+    "key" : "7.2.2.5",
+    "guid" : "16081dd6-72e5-4826-b86d-958dd82a01c0",
     "name" : "Move down",
     "abbreviation" : "7.2.2.5",
     "description" : "Use this domain for words referring to moving in a downward direction or to moving to a lower place.",
     "searchKeys" : [ "move down, go down, lower oneself, climb down, jump down, descend, descent" ]
   },
   "7.2.2.5.1 Fall" : {
+    "key" : "7.2.2.5.1",
+    "guid" : "b14db9f4-5e1d-4a2b-bec0-0d6bcb5b1a31",
     "name" : "Fall",
     "abbreviation" : "7.2.2.5.1",
     "description" : "Use this domain for words referring to something falling--for something to move down under the influence of gravity.",
@@ -11636,6 +14022,8 @@ var semanticDomains_en = {
         "gravity,", "hold up, prop up, brace," ]
   },
   "7.2.2.6 Turn" : {
+    "key" : "7.2.2.6",
+    "guid" : "60a5fa58-45b1-41ae-9430-5200e8bfbcb8",
     "name" : "Turn",
     "abbreviation" : "7.2.2.6",
     "description" : "Use this domain for words referring to turning and changing the direction in which one is moving.",
@@ -11644,6 +14032,8 @@ var semanticDomains_en = {
         "turn around, reverse direction, retreat, go back, retire to the rear" ]
   },
   "7.2.2.7 Move in a circle" : {
+    "key" : "7.2.2.7",
+    "guid" : "8bcc3b3d-dd0c-4838-a33a-b395f354c86f",
     "name" : "Move in a circle",
     "abbreviation" : "7.2.2.7",
     "description" : "Use this domain for words referring to continually changing the direction you are facing in until you are once again facing in the same direction, e.g. moving in a circle, moving around something, or rotating.",
@@ -11654,6 +14044,8 @@ var semanticDomains_en = {
         "roll, turn, rotate, spin" ]
   },
   "7.2.2.8 Move back and forth" : {
+    "key" : "7.2.2.8",
+    "guid" : "3c9fe647-2647-4f43-8bac-7facc054f7ff",
     "name" : "Move back and forth",
     "abbreviation" : "7.2.2.8",
     "description" : "Use this domain for words related to moving back and forth.",
@@ -11663,12 +14055,16 @@ var semanticDomains_en = {
         "shake, shiver, wiggle, wriggle, squirm, writhe" ]
   },
   "7.2.2.9 Move straight without turning" : {
+    "key" : "7.2.2.9",
+    "guid" : "36176d59-171b-4a0a-a0f7-a8f9857536a1",
     "name" : "Move straight without turning",
     "abbreviation" : "7.2.2.9",
     "description" : "Use this domain for words referring to moving straight without changing direction.",
     "searchKeys" : [ "go straight, in a straight line, direct, as the crow flies" ]
   },
   "7.2.3 Move toward something" : {
+    "key" : "7.2.3",
+    "guid" : "fcd22c85-7ee1-4d31-8633-9dbd32344211",
     "name" : "Move toward something",
     "abbreviation" : "7.2.3",
     "description" : "Use this domain for words referring to moving toward, in the direction of, or near something or some place. The words in this domain should refer to moving in the direction of a place, but should not require that the person actually arrived. Some languages (such as German and Polish) distinguish 'go on foot' from 'go in a vehicle'.",
@@ -11678,42 +14074,56 @@ var semanticDomains_en = {
         "converge, be on a collision course", "destination, goal" ]
   },
   "7.2.3.1 Move away" : {
+    "key" : "7.2.3.1",
+    "guid" : "5832eb32-8a90-42a7-b2bc-a9bb575b1b7c",
     "name" : "Move away",
     "abbreviation" : "7.2.3.1",
     "description" : "Use this domain for words referring to moving away from a place.",
     "searchKeys" : [ "move from/away/away from, go away, get away, retreat, back off, run away, come from" ]
   },
   "7.2.3.2 Go" : {
+    "key" : "7.2.3.2",
+    "guid" : "2cc624fa-76cb-46ab-87c8-c13c6adb1c72",
     "name" : "Go",
     "abbreviation" : "7.2.3.2",
     "description" : "Use this domain for words referring to moving away from the speaker. In Australian languages many movement words are marked for direction toward or away from the speaker.",
     "searchKeys" : [ "go (away), leave here/this place, get out of here" ]
   },
   "7.2.3.2.1 Come" : {
+    "key" : "7.2.3.2.1",
+    "guid" : "aa8d812b-7c13-414a-ad02-a4240d2cef68",
     "name" : "Come",
     "abbreviation" : "7.2.3.2.1",
     "description" : "Use this domain for words referring to moving toward the speaker.",
     "searchKeys" : [ "come, come here" ]
   },
   "7.2.3.3 Leave" : {
+    "key" : "7.2.3.3",
+    "guid" : "20e7d987-0d55-46d4-ab69-0b0cce2f1e24",
     "name" : "Leave",
     "abbreviation" : "7.2.3.3",
     "description" : "Use this domain for words referring to moving away from a place.",
     "searchKeys" : [ "leave, depart, departure, go away, withdraw, take your leave, scram, skedaddle, beat it, set out, hit the road, quit (a place), absent yourself, slip away, vacate, make yourself scarce," ]
   },
   "7.2.3.3.1 Arrive" : {
+    "key" : "7.2.3.3.1",
+    "guid" : "b08424b7-a2f1-4a0e-82d1-665249e12cfc",
     "name" : "Arrive",
     "abbreviation" : "7.2.3.3.1",
     "description" : "Use this domain for words referring to arriving at a place.",
     "searchKeys" : [ "arrive, arrival, reach, get to, come to, attain, land, landing, advent" ]
   },
   "7.2.3.4 Move in" : {
+    "key" : "7.2.3.4",
+    "guid" : "88269184-d033-454e-b750-559d5f53287c",
     "name" : "Move in",
     "abbreviation" : "7.2.3.4",
     "description" : "Use this domain for words related to moving into something, such as a house or an area.",
     "searchKeys" : [ "move in, go in, go into, enter", "move inwards," ]
   },
   "7.2.3.4.1 Move out" : {
+    "key" : "7.2.3.4.1",
+    "guid" : "d95ed463-ac64-4004-9c3b-0fce2f7639be",
     "name" : "Move out",
     "abbreviation" : "7.2.3.4.1",
     "description" : "Use this domain for words related to moving out of something, such as a house or area.",
@@ -11722,6 +14132,8 @@ var semanticDomains_en = {
         "exit, outlet, vent, mouth, opening, way out" ]
   },
   "7.2.3.5 Move past, over, through" : {
+    "key" : "7.2.3.5",
+    "guid" : "ea2d0dc5-2cdb-4686-9f48-abe65ed295a4",
     "name" : "Move past, over, through",
     "abbreviation" : "7.2.3.5",
     "description" : "Use this domain for words referring to moving past, over, or through something.",
@@ -11732,12 +14144,16 @@ var semanticDomains_en = {
         "move across, go across, cross, go to the other side" ]
   },
   "7.2.3.6 Return" : {
+    "key" : "7.2.3.6",
+    "guid" : "5a021f98-2efb-4baf-9384-a553dc3df86c",
     "name" : "Return",
     "abbreviation" : "7.2.3.6",
     "description" : "Use this domain for words referring to returning to a place--to go back to a place you earlier left.",
     "searchKeys" : [ "return, come back, move back" ]
   },
   "7.2.4 Travel" : {
+    "key" : "7.2.4",
+    "guid" : "6f01b67c-33a0-4ed3-8205-f868e97a1a3a",
     "name" : "Travel",
     "abbreviation" : "7.2.4",
     "description" : "Use this domain for words referring to traveling--to move a long distance. The words in this domain may imply that the person has to sleep somewhere other than his home.",
@@ -11750,6 +14166,8 @@ var semanticDomains_en = {
         "hotel, motel, inn, campground, restaurant" ]
   },
   "7.2.4.1 Travel by land" : {
+    "key" : "7.2.4.1",
+    "guid" : "c0b7f354-a75c-41d5-a489-ae2df6364d02",
     "name" : "Travel by land",
     "abbreviation" : "7.2.4.1",
     "description" : "Use this domain for words related to traveling by land.",
@@ -11757,6 +14175,8 @@ var semanticDomains_en = {
         "start, accelerate, pull out", "stop, brake, park" ]
   },
   "7.2.4.1.1 Vehicle" : {
+    "key" : "7.2.4.1.1",
+    "guid" : "1e102423-6167-486a-bfef-dad1c9cdf1eb",
     "name" : "Vehicle",
     "abbreviation" : "7.2.4.1.1",
     "description" : "Use this domain for things used to move.",
@@ -11770,6 +14190,8 @@ var semanticDomains_en = {
         "wheel, tire, rim, spokes, hub, axle," ]
   },
   "7.2.4.1.2 Railroad" : {
+    "key" : "7.2.4.1.2",
+    "guid" : "4d1ac5e6-dfe3-4643-b6e5-21649a01cce9",
     "name" : "Railroad",
     "abbreviation" : "7.2.4.1.2",
     "description" : "Use this domain for words related to railroads.",
@@ -11781,6 +14203,8 @@ var semanticDomains_en = {
         "engineer, conductor, station master" ]
   },
   "7.2.4.2 Travel by water" : {
+    "key" : "7.2.4.2",
+    "guid" : "f4580c19-ba9e-4f71-a46a-6f3c4b19c36c",
     "name" : "Travel by water",
     "abbreviation" : "7.2.4.2",
     "description" : "Use this domain for words related to traveling by water.",
@@ -11790,6 +14214,8 @@ var semanticDomains_en = {
         "harbor, port, landing, dock, wharf, water break" ]
   },
   "7.2.4.2.1 Boat" : {
+    "key" : "7.2.4.2.1",
+    "guid" : "4bfe53d2-fb85-4397-98a8-97d59b907064",
     "name" : "Boat",
     "abbreviation" : "7.2.4.2.1",
     "description" : "Use this domain for words related to a boat.",
@@ -11801,12 +14227,16 @@ var semanticDomains_en = {
         "sailor, captain" ]
   },
   "7.2.4.2.2 Swim" : {
+    "key" : "7.2.4.2.2",
+    "guid" : "fffa74fb-5b5c-453f-9120-94686033d894",
     "name" : "Swim",
     "abbreviation" : "7.2.4.2.2",
     "description" : "Use this domain for words related to swimming.",
     "searchKeys" : [ "swim, dog paddle, stroke, kick, breaststroke, freestyle, backstroke, swim underwater, tread water, wade" ]
   },
   "7.2.4.2.3 Dive" : {
+    "key" : "7.2.4.2.3",
+    "guid" : "0bbe1739-e0b4-442e-b69c-02a0ea20d790",
     "name" : "Dive",
     "abbreviation" : "7.2.4.2.3",
     "description" : "Use this domain for words referring to moving under the water.",
@@ -11817,6 +14247,8 @@ var semanticDomains_en = {
         "drown" ]
   },
   "7.2.4.3 Fly" : {
+    "key" : "7.2.4.3",
+    "guid" : "75eb23c7-28b5-4c98-937a-1d8f371b24cf",
     "name" : "Fly",
     "abbreviation" : "7.2.4.3",
     "description" : "Use this domain for words related to traveling by air.",
@@ -11825,6 +14257,8 @@ var semanticDomains_en = {
         "airport, runway, airstrip, landing field" ]
   },
   "7.2.4.4 Travel in space" : {
+    "key" : "7.2.4.4",
+    "guid" : "161cae07-d1cb-467c-920f-62ba9039584c",
     "name" : "Travel in space",
     "abbreviation" : "7.2.4.4",
     "description" : "Use this domain for words related to traveling in space.",
@@ -11836,6 +14270,8 @@ var semanticDomains_en = {
         "land, reenter, reentry" ]
   },
   "7.2.4.5 Move to a new house" : {
+    "key" : "7.2.4.5",
+    "guid" : "547f1151-5816-4d89-b0bc-ece2a86c92eb",
     "name" : "Move to a new house",
     "abbreviation" : "7.2.4.5",
     "description" : "Use this domain for words related to permanently leaving your home or country, and for words related to migrating--moving every year to the same places because of the weather and food supplies.",
@@ -11844,6 +14280,8 @@ var semanticDomains_en = {
         "emigrate, immigrate", "migrate" ]
   },
   "7.2.4.6 Way, route" : {
+    "key" : "7.2.4.6",
+    "guid" : "70953222-5bc5-4fa2-a85a-01827f7bc537",
     "name" : "Way, route",
     "abbreviation" : "7.2.4.6",
     "description" : "Use this domain for words related to the way or route that you take to go somewhere.",
@@ -11856,12 +14294,16 @@ var semanticDomains_en = {
         "can you tell me the way to, do you know the way to, how do I get to, can you direct me to, is this the way to," ]
   },
   "7.2.4.7 Lose your way" : {
+    "key" : "7.2.4.7",
+    "guid" : "cf93b8e0-9f28-4485-b9d6-22293ccd73ce",
     "name" : "Lose your way",
     "abbreviation" : "7.2.4.7",
     "description" : "Use this domain for words related to losing your way.",
     "searchKeys" : [ "be lost, not know where you are, get lost, lose your way" ]
   },
   "7.2.4.8 Map" : {
+    "key" : "7.2.4.8",
+    "guid" : "390ad7fc-8360-4eae-8736-3aedc15ae659",
     "name" : "Map",
     "abbreviation" : "7.2.4.8",
     "description" : "Use this domain for words related to a map--a drawing of the world or part of the world.",
@@ -11876,6 +14318,8 @@ var semanticDomains_en = {
         "compass, sextant" ]
   },
   "7.2.5 Accompany" : {
+    "key" : "7.2.5",
+    "guid" : "196bf7b1-54a1-4a78-8d10-c61585849c63",
     "name" : "Accompany",
     "abbreviation" : "7.2.5",
     "description" : "Use this domain for words referring to moving with someone.",
@@ -11886,6 +14330,8 @@ var semanticDomains_en = {
         "convoy" ]
   },
   "7.2.5.1 Go first" : {
+    "key" : "7.2.5.1",
+    "guid" : "ecf9ebd7-f991-41df-98cd-bcf1254d5d0b",
     "name" : "Go first",
     "abbreviation" : "7.2.5.1",
     "description" : "Use this domain for words related to going first or going ahead of someone.",
@@ -11894,6 +14340,8 @@ var semanticDomains_en = {
         "leader, van, vanguard," ]
   },
   "7.2.5.2 Follow" : {
+    "key" : "7.2.5.2",
+    "guid" : "1b73b2bf-9582-4f8a-822a-e0d020272c7c",
     "name" : "Follow",
     "abbreviation" : "7.2.5.2",
     "description" : "Use this domain for words related to following someone.",
@@ -11905,6 +14353,8 @@ var semanticDomains_en = {
         "lag behind, fall behind, straggle,", "catch up with, overtake" ]
   },
   "7.2.5.3 Guide" : {
+    "key" : "7.2.5.3",
+    "guid" : "902cfcbe-6e42-4e55-b2a5-9146702fc16b",
     "name" : "Guide",
     "abbreviation" : "7.2.5.3",
     "description" : "Use this domain for words related to guiding someone--to show someone where to go by going ahead of them.",
@@ -11913,6 +14363,8 @@ var semanticDomains_en = {
         "guide, leader, pilot, point man, usher" ]
   },
   "7.2.5.4 Move together" : {
+    "key" : "7.2.5.4",
+    "guid" : "678a3319-a12b-4f92-857d-167def8ef583",
     "name" : "Move together",
     "abbreviation" : "7.2.5.4",
     "description" : "Use this domain for words referring to more than one thing moving together.",
@@ -11921,6 +14373,8 @@ var semanticDomains_en = {
         "crowd, flock, flood, hail, parade, pelt, pour, rain, roll, shower, stream, swarm, teem, throng, troop," ]
   },
   "7.2.6 Pursue" : {
+    "key" : "7.2.6",
+    "guid" : "19d54c2f-ae03-4cbc-9b7e-57292f92fbc1",
     "name" : "Pursue",
     "abbreviation" : "7.2.6",
     "description" : "Use this domain for words related to pursuing someone--to follow someone in order to catch them.",
@@ -11930,6 +14384,8 @@ var semanticDomains_en = {
         "chase (n), pursuit,", "pursuer," ]
   },
   "7.2.6.1 Catch, capture" : {
+    "key" : "7.2.6.1",
+    "guid" : "34c9408c-c3f7-49db-8bce-de7fa7da03d7",
     "name" : "Catch, capture",
     "abbreviation" : "7.2.6.1",
     "description" : "Use this domain for words related to catching someone who is trying to escape.",
@@ -11940,6 +14396,8 @@ var semanticDomains_en = {
         "catch, trap, snare, capture, round up," ]
   },
   "7.2.6.2 Prevent from moving" : {
+    "key" : "7.2.6.2",
+    "guid" : "d7140538-fb99-4af9-8398-8c31a1b79fb5",
     "name" : "Prevent from moving",
     "abbreviation" : "7.2.6.2",
     "description" : "Use this domain for words referring to preventing someone or something from moving.",
@@ -11953,6 +14411,8 @@ var semanticDomains_en = {
         "be under restraint, bound, captive, in confinement, held, limited, restricted," ]
   },
   "7.2.6.3 Escape" : {
+    "key" : "7.2.6.3",
+    "guid" : "36e8f1df-1798-4ae6-904d-600ca6eb4145",
     "name" : "Escape",
     "abbreviation" : "7.2.6.3",
     "description" : "Use this domain for words related to escaping from danger.",
@@ -11971,6 +14431,8 @@ var semanticDomains_en = {
         "can't escape, can't get out, trapped, be stuck, there is no escape, be imprisoned, be a prisoner," ]
   },
   "7.2.6.4 Set free" : {
+    "key" : "7.2.6.4",
+    "guid" : "28a68cea-9128-4d5c-8542-8df38c907310",
     "name" : "Set free",
     "abbreviation" : "7.2.6.4",
     "description" : "Use this domain for words related to setting someone free.",
@@ -11982,6 +14444,8 @@ var semanticDomains_en = {
         "free, at liberty, be out," ]
   },
   "7.2.7 Not moving" : {
+    "key" : "7.2.7",
+    "guid" : "6330871b-6008-490e-bfff-e28e17ebce7e",
     "name" : "Not moving",
     "abbreviation" : "7.2.7",
     "description" : "Use this domain for words referring to not moving.",
@@ -11989,12 +14453,16 @@ var semanticDomains_en = {
         "immoveable, fixed, fast, set, permanent", "stable" ]
   },
   "7.2.7.1 Stop moving" : {
+    "key" : "7.2.7.1",
+    "guid" : "7110adbe-a4ce-47b0-8c2f-6b41edaf2fcb",
     "name" : "Stop moving",
     "abbreviation" : "7.2.7.1",
     "description" : "Use this domain for words referring to stopping moving.",
     "searchKeys" : [ "stop, come to rest, halt, brake" ]
   },
   "7.2.7.2 Stay, remain" : {
+    "key" : "7.2.7.2",
+    "guid" : "82eb3050-d382-48f6-a049-22a5f8a3b25a",
     "name" : "Stay, remain",
     "abbreviation" : "7.2.7.2",
     "description" : "Use this domain for words referring to not moving.",
@@ -12003,6 +14471,8 @@ var semanticDomains_en = {
         "permanent, final resting place" ]
   },
   "7.2.7.3 Wait" : {
+    "key" : "7.2.7.3",
+    "guid" : "d88d862c-01d4-4b43-9fbe-59208922e022",
     "name" : "Wait",
     "abbreviation" : "7.2.7.3",
     "description" : "Use this domain for words referring to waiting in a place, waiting to do something, or waiting for something to happen. The basic idea of waiting is for someone to not do anything for a period of time, because he expects something to happen that will cause him to do something.",
@@ -12016,12 +14486,16 @@ var semanticDomains_en = {
         "cut in line, cut in front of someone, cut someone off, jump the queue, push in" ]
   },
   "7.2.8 Send someone" : {
+    "key" : "7.2.8",
+    "guid" : "38ab2681-fcc7-4a75-bb0b-29c5cd2e3a8f",
     "name" : "Send someone",
     "abbreviation" : "7.2.8",
     "description" : "Use this domain for words related to causing someone to go somewhere.",
     "searchKeys" : [ "send, dismiss, transfer", "summon", "send" ]
   },
   "7.3 Move something" : {
+    "key" : "7.3",
+    "guid" : "2810998c-d6cc-47a3-a946-66d0986a2767",
     "name" : "Move something",
     "abbreviation" : "7.3",
     "description" : "Use this domain for general words referring to moving something or someone.",
@@ -12030,6 +14504,8 @@ var semanticDomains_en = {
         "jerk", "swing", "shift, free, release" ]
   },
   "7.3.1 Carry" : {
+    "key" : "7.3.1",
+    "guid" : "6430b89c-7077-418a-a558-51f0e3f2c1a6",
     "name" : "Carry",
     "abbreviation" : "7.3.1",
     "description" : "Use this domain for words referring to carrying something--to pick something up and hold it while moving oneself.",
@@ -12042,6 +14518,8 @@ var semanticDomains_en = {
         "portable", "pack, backpack, stretcher, carrying pole," ]
   },
   "7.3.1.1 Throw" : {
+    "key" : "7.3.1.1",
+    "guid" : "7831223b-e5ed-4186-a321-94e9ae72a27d",
     "name" : "Throw",
     "abbreviation" : "7.3.1.1",
     "description" : "Use this domain for words referring to throwing something.",
@@ -12058,18 +14536,24 @@ var semanticDomains_en = {
         "sling, slingshot, throwing stick," ]
   },
   "7.3.1.2 Catch" : {
+    "key" : "7.3.1.2",
+    "guid" : "ef025cd9-dd92-442b-a8f9-fe7ac944ccec",
     "name" : "Catch",
     "abbreviation" : "7.3.1.2",
     "description" : "Use this domain for verbs for catching something that is thrown or dropped",
     "searchKeys" : [ "catch, intercept, snag" ]
   },
   "7.3.1.3 Shake" : {
+    "key" : "7.3.1.3",
+    "guid" : "05371057-2fe4-49ef-b203-f5bd6727645e",
     "name" : "Shake",
     "abbreviation" : "7.3.1.3",
     "description" : "Use this domain for words referring to moving something back and forth.",
     "searchKeys" : [ "shake, rattle, fan, move something back and forth" ]
   },
   "7.3.1.4 Knock over" : {
+    "key" : "7.3.1.4",
+    "guid" : "06905a7e-47f4-4c86-afea-a4175295b566",
     "name" : "Knock over",
     "abbreviation" : "7.3.1.4",
     "description" : "Use this domain for words referring to knocking something over so that it falls, and for knocking a container over so that it spills its contents.",
@@ -12077,36 +14561,48 @@ var semanticDomains_en = {
         "knock over, tip over, spill, dump" ]
   },
   "7.3.1.5 Set upright" : {
+    "key" : "7.3.1.5",
+    "guid" : "28a37d39-8347-4254-99bf-8e3c37dbf8a8",
     "name" : "Set upright",
     "abbreviation" : "7.3.1.5",
     "description" : "Use this domain for words related to setting something upright.",
     "searchKeys" : [ "Set upright, set up, stand" ]
   },
   "7.3.2 Move something in a direction" : {
+    "key" : "7.3.2",
+    "guid" : "d9f336cf-0682-4702-ab94-5ade755ddc64",
     "name" : "Move something in a direction",
     "abbreviation" : "7.3.2",
     "description" : "Use this domain for general words related to moving something in a direction.",
     "searchKeys" : [ "move (something), transfer, shift" ]
   },
   "7.3.2.1 Put in front" : {
+    "key" : "7.3.2.1",
+    "guid" : "ddef260e-b183-47f7-837e-165ffbd1af2c",
     "name" : "Put in front",
     "abbreviation" : "7.3.2.1",
     "description" : "Use this domain for words referring to putting something in front of you or in front of something else.",
     "searchKeys" : [ "put in front, place in front, advance something" ]
   },
   "7.3.2.2 Put in back" : {
+    "key" : "7.3.2.2",
+    "guid" : "b035dcf9-1dd0-4fb3-bd04-7c8945e92cdf",
     "name" : "Put in back",
     "abbreviation" : "7.3.2.2",
     "description" : "Use this domain for words referring to putting something in back of you or in back of something else.",
     "searchKeys" : [ "put in back, place in back, put behind, place in the rear" ]
   },
   "7.3.2.3 Put aside" : {
+    "key" : "7.3.2.3",
+    "guid" : "d975a233-1e48-4313-8bed-aada7460487e",
     "name" : "Put aside",
     "abbreviation" : "7.3.2.3",
     "description" : "Use this domain for words referring to putting something to the side of you.",
     "searchKeys" : [ "put aside, put to the side, put beside, put next to you, push aside, push to the side, move aside, move to the side" ]
   },
   "7.3.2.4 Lift" : {
+    "key" : "7.3.2.4",
+    "guid" : "7c7fc1b6-3775-4881-bbe0-9d0ce50e42a9",
     "name" : "Lift",
     "abbreviation" : "7.3.2.4",
     "description" : "Use this domain for words referring to putting something above you or above something else, putting something on top of something else, or moving something higher than it was.",
@@ -12116,12 +14612,16 @@ var semanticDomains_en = {
         "lever, fulcrum, elevator, lift, jack, hoist, crane," ]
   },
   "7.3.2.4.1 Hang" : {
+    "key" : "7.3.2.4.1",
+    "guid" : "f472b2d2-b4d3-4852-914d-71b66bdb6f26",
     "name" : "Hang",
     "abbreviation" : "7.3.2.4.1",
     "description" : "Use this domain for words referring to hanging something, and for words describing something that has been hung.",
     "searchKeys" : [ "hang, hang up, suspend", "dangle, hanging" ]
   },
   "7.3.2.5 Lower something" : {
+    "key" : "7.3.2.5",
+    "guid" : "ab127348-7f98-43e5-801d-01241ecdb517",
     "name" : "Lower something",
     "abbreviation" : "7.3.2.5",
     "description" : "Use this domain for words referring to putting something lower than you or lower than something else, putting something under something else, or moving something lower than it was.",
@@ -12131,6 +14631,8 @@ var semanticDomains_en = {
         "drop, let fall, slip through your fingers, slip out of your hand" ]
   },
   "7.3.2.6 Put in" : {
+    "key" : "7.3.2.6",
+    "guid" : "756f67e9-2b22-4c43-913c-ceff0e781545",
     "name" : "Put in",
     "abbreviation" : "7.3.2.6",
     "description" : "Use this domain for words referring to putting something inside something else.",
@@ -12142,6 +14644,8 @@ var semanticDomains_en = {
         "immerse, submerge", "dip, dunk" ]
   },
   "7.3.2.7 Take something out of something" : {
+    "key" : "7.3.2.7",
+    "guid" : "5a39edae-1ace-4889-b636-1dfd2a1bcc3c",
     "name" : "Take something out of something",
     "abbreviation" : "7.3.2.7",
     "description" : "Use this domain for words referring to taking something out of something else.",
@@ -12153,6 +14657,8 @@ var semanticDomains_en = {
         "push out, eject, squeeze out, expel" ]
   },
   "7.3.2.8 Pull" : {
+    "key" : "7.3.2.8",
+    "guid" : "6bd023f6-730e-44c2-ae8f-78df967e2e18",
     "name" : "Pull",
     "abbreviation" : "7.3.2.8",
     "description" : "Use this domain for words related to pulling--causing something to move toward you.",
@@ -12169,6 +14675,8 @@ var semanticDomains_en = {
         "tug of war" ]
   },
   "7.3.2.9 Push" : {
+    "key" : "7.3.2.9",
+    "guid" : "20baa5e7-4f02-4782-a292-c6281d7b5f3a",
     "name" : "Push",
     "abbreviation" : "7.3.2.9",
     "description" : "Use this domain for when someone or something causes something to move away from him.",
@@ -12189,6 +14697,8 @@ var semanticDomains_en = {
         "pressure, put pressure on", "wheel (v), push, roll, trundle" ]
   },
   "7.3.3 Take somewhere" : {
+    "key" : "7.3.3",
+    "guid" : "e931da8a-efc1-46cb-836a-72fba4a1eb4f",
     "name" : "Take somewhere",
     "abbreviation" : "7.3.3",
     "description" : "Use this domain for words referring to taking something or someone somewhere.",
@@ -12196,6 +14706,8 @@ var semanticDomains_en = {
         "take, bring, deliver, transport,", "lead, guide", "lead, herd" ]
   },
   "7.3.3.1 Take something from somewhere" : {
+    "key" : "7.3.3.1",
+    "guid" : "11cf45ec-f9d6-4c99-8782-738e26a342c8",
     "name" : "Take something from somewhere",
     "abbreviation" : "7.3.3.1",
     "description" : "Use this domain for words referring to taking something or someone from its place.",
@@ -12206,48 +14718,64 @@ var semanticDomains_en = {
         "displace, dislocate, dislodge" ]
   },
   "7.3.3.2 Return something" : {
+    "key" : "7.3.3.2",
+    "guid" : "3180b6aa-3ad9-4bd3-96f7-ae72264406fb",
     "name" : "Return something",
     "abbreviation" : "7.3.3.2",
     "description" : "Use this domain for words referring to moving something back to an original place or person. (Something is in a place, someone (or something) moves it, then someone moves it back to the first place.)",
     "searchKeys" : [ "replace, put back, return (something), return to its place, restore to owner" ]
   },
   "7.3.3.3 Send" : {
+    "key" : "7.3.3.3",
+    "guid" : "87c55aea-2c3f-44ce-81ec-18a153c5deb2",
     "name" : "Send",
     "abbreviation" : "7.3.3.3",
     "description" : "Use this domain for words related to sending something--to cause someone to take something somewhere.",
     "searchKeys" : [ "send, sent with, have someone take, have something delivered" ]
   },
   "7.3.3.4 Chase away" : {
+    "key" : "7.3.3.4",
+    "guid" : "b79f8775-d8d0-4aa5-b4ab-917f6f3d6c13",
     "name" : "Chase away",
     "abbreviation" : "7.3.3.4",
     "description" : "Use this domain for words related to chasing or driving people and animals--to cause someone (or an animal) to move.",
     "searchKeys" : [ "chase away, send away, exile, expel, send out, dismiss" ]
   },
   "7.3.3.5 Drive along" : {
+    "key" : "7.3.3.5",
+    "guid" : "bca1af45-7621-43c0-9152-fac0018e5319",
     "name" : "Drive along",
     "abbreviation" : "7.3.3.5",
     "description" : "Use this domain for words related to driving people and animals--to cause someone (or an animal) to move with you.",
     "searchKeys" : [ "drive, force, goad, prod, propel, ride, spur" ]
   },
   "7.3.4 Handle something" : {
+    "key" : "7.3.4",
+    "guid" : "3b4b947a-f223-4c87-8839-9f6237cda9f6",
     "name" : "Handle something",
     "abbreviation" : "7.3.4",
     "description" : "Use this domain for general words for using the hands to move something.",
     "searchKeys" : [ "handle, manipulate" ]
   },
   "7.3.4.1 Touch" : {
+    "key" : "7.3.4.1",
+    "guid" : "c35cba91-742c-4b98-b848-dfd520d959cf",
     "name" : "Touch",
     "abbreviation" : "7.3.4.1",
     "description" : "Use this domain for words referring to touching something with your hand without moving the thing.",
     "searchKeys" : [ "touch, feel, run your hand over, brush, caress, contact, feel, finger, fondle, glance, graze, handle, handling, kiss, lick, massage, nuzzle, palm, palpate, paw, rub, scrape, sense, skim, stroke, sweep, thumb, tickle, tickling," ]
   },
   "7.3.4.2 Pick up" : {
+    "key" : "7.3.4.2",
+    "guid" : "3885231e-8b18-4da3-af76-c75e8b731ed8",
     "name" : "Pick up",
     "abbreviation" : "7.3.4.2",
     "description" : "Use this domain for words related to picking something up.",
     "searchKeys" : [ "pick up, take, get" ]
   },
   "7.3.4.3 Put down" : {
+    "key" : "7.3.4.3",
+    "guid" : "b7ed2482-6883-4a02-a992-e86c2573cc74",
     "name" : "Put down",
     "abbreviation" : "7.3.4.3",
     "description" : "Use this domain for words related to putting something down.",
@@ -12257,6 +14785,8 @@ var semanticDomains_en = {
         "put, place, position, post" ]
   },
   "7.3.4.4 Hold" : {
+    "key" : "7.3.4.4",
+    "guid" : "1e419f7a-7363-46bc-8044-157ed0b40ccd",
     "name" : "Hold",
     "abbreviation" : "7.3.4.4",
     "description" : "Use this domain for holding something in the hand.",
@@ -12264,6 +14794,8 @@ var semanticDomains_en = {
         "hold in the palm", "hold in the fist", "release, let go of," ]
   },
   "7.3.4.5 Actions of the hand" : {
+    "key" : "7.3.4.5",
+    "guid" : "5db1b502-7c36-44fb-a7b4-50744e9ec286",
     "name" : "Actions of the hand",
     "abbreviation" : "7.3.4.5",
     "description" : "Use this domain for the functions and actions of the hand.",
@@ -12272,6 +14804,8 @@ var semanticDomains_en = {
         "tickle, pinch, crack a knuckle, hug, embrace" ]
   },
   "7.3.4.6 Support" : {
+    "key" : "7.3.4.6",
+    "guid" : "eb821083-3fb0-441a-9f1d-ad2a9ed918d8",
     "name" : "Support",
     "abbreviation" : "7.3.4.6",
     "description" : "Use this domain for words related to keeping something from falling.",
@@ -12279,12 +14813,16 @@ var semanticDomains_en = {
         "prop, support, brace, retaining wall" ]
   },
   "7.3.4.7 Extend" : {
+    "key" : "7.3.4.7",
+    "guid" : "df47f55d-b15d-4261-881e-3c4b0dc6d9be",
     "name" : "Extend",
     "abbreviation" : "7.3.4.7",
     "description" : "Use this domain for words related to extending something--to move something so that it covers a greater distance or area.",
     "searchKeys" : [ "extend, expand, grow, reach" ]
   },
   "7.3.5 Turn something" : {
+    "key" : "7.3.5",
+    "guid" : "40590157-9412-4558-b0f7-311867b649cc",
     "name" : "Turn something",
     "abbreviation" : "7.3.5",
     "description" : "Use this domain for turning something--to cause something to change direction, or to cause something to revolve or move in a circle.",
@@ -12295,18 +14833,24 @@ var semanticDomains_en = {
         "wind, coil, curl, loop, roll, spin, twirl, twist, whirl," ]
   },
   "7.3.6 Open" : {
+    "key" : "7.3.6",
+    "guid" : "8b9f23f4-a147-4ea8-a13a-c5b1edc7f5e4",
     "name" : "Open",
     "abbreviation" : "7.3.6",
     "description" : "Use this domain for words related to opening something.",
     "searchKeys" : [ "open, leave open", "open, ajar" ]
   },
   "7.3.6.1 Shut, close" : {
+    "key" : "7.3.6.1",
+    "guid" : "d7e4bf3e-e539-43bc-bb43-3ae0980ffb86",
     "name" : "Shut, close",
     "abbreviation" : "7.3.6.1",
     "description" : "Use this domain for words related to shutting something.",
     "searchKeys" : [ "shut, close", "shut, closed", "lock" ]
   },
   "7.3.6.2 Block, dam up" : {
+    "key" : "7.3.6.2",
+    "guid" : "7992958d-fd36-469e-a94b-f8a9eb26af64",
     "name" : "Block, dam up",
     "abbreviation" : "7.3.6.2",
     "description" : "Use this domain for words referring to preventing someone or something from moving",
@@ -12314,6 +14858,8 @@ var semanticDomains_en = {
         "blockade, dam, barricade, wall, barrier, fence" ]
   },
   "7.3.6.3 Limit" : {
+    "key" : "7.3.6.3",
+    "guid" : "440608df-3c98-4dc8-9fd3-fad08afe7aef",
     "name" : "Limit",
     "abbreviation" : "7.3.6.3",
     "description" : "Use this domain for words referring to a limit beyond which something may or should not go, and for words referring to imposing a limit.",
@@ -12323,6 +14869,8 @@ var semanticDomains_en = {
         "exceed, cross, trespass, overstep" ]
   },
   "7.3.7 Cover" : {
+    "key" : "7.3.7",
+    "guid" : "7c80f6ee-e76d-4903-aee6-7a33d1da3f75",
     "name" : "Cover",
     "abbreviation" : "7.3.7",
     "description" : "Use this domain for words related to covering something.",
@@ -12330,12 +14878,16 @@ var semanticDomains_en = {
         "covering, lid, cap", "covered, draped, hung, wrapped" ]
   },
   "7.3.7.1 Uncover" : {
+    "key" : "7.3.7.1",
+    "guid" : "5b925ee1-82ef-4692-bba2-9ce3cb41c7bb",
     "name" : "Uncover",
     "abbreviation" : "7.3.7.1",
     "description" : "Use this domain for words related to uncovering something.",
     "searchKeys" : [ "uncover, remove (a cover), take off, reveal" ]
   },
   "7.3.7.2 Wrap" : {
+    "key" : "7.3.7.2",
+    "guid" : "2608bcf8-ed20-4501-8510-4ecacf922dd4",
     "name" : "Wrap",
     "abbreviation" : "7.3.7.2",
     "description" : "Use this domain for words related to wrapping something--to cover something on all sides with something like leaves, cloth, or paper.",
@@ -12343,12 +14895,16 @@ var semanticDomains_en = {
         "wrapper, wrapping, covering, shroud" ]
   },
   "7.3.7.3 Spread, smear" : {
+    "key" : "7.3.7.3",
+    "guid" : "a2240259-608b-40f1-990a-7f8e00ef1d07",
     "name" : "Spread, smear",
     "abbreviation" : "7.3.7.3",
     "description" : "Use this domain for words related to spreading something--to cover something on all sides with something liquid or sticky like paint or mud.",
     "searchKeys" : [ "spread, smear, brush, cover, dab, daub, paint, plaster, rub, slather, smear, smudge, swab," ]
   },
   "7.3.8 Transport" : {
+    "key" : "7.3.8",
+    "guid" : "991357dc-9f56-47ed-8790-85cbd5f9b06f",
     "name" : "Transport",
     "abbreviation" : "7.3.8",
     "description" : "Use this domain for words referring to moving something in a vehicle.",
@@ -12357,24 +14913,32 @@ var semanticDomains_en = {
         "load" ]
   },
   "7.4 Have, be with" : {
+    "key" : "7.4",
+    "guid" : "24398eec-edd1-449a-ad36-d609be24a79e",
     "name" : "Have, be with",
     "abbreviation" : "7.4",
     "description" : "Use this domain for words related to having something.",
     "searchKeys" : [ "have, be with," ]
   },
   "7.4.1 Give, hand to" : {
+    "key" : "7.4.1",
+    "guid" : "56d1a950-8798-45fb-bccd-d8b1eb37c071",
     "name" : "Give, hand to",
     "abbreviation" : "7.4.1",
     "description" : "Use this domain for words referring to giving something to someone, in which there is no transaction of ownership, merely the movement of the thing from one person to another.",
     "searchKeys" : [ "give, hand to, pass to, deliver" ]
   },
   "7.4.2 Receive" : {
+    "key" : "7.4.2",
+    "guid" : "c96ac1eb-12f2-47af-9e96-9d99fce7e8f5",
     "name" : "Receive",
     "abbreviation" : "7.4.2",
     "description" : "Use this domain for words related to receiving something from someone.",
     "searchKeys" : [ "receive, take, accept, pick up, get, obtain, gain" ]
   },
   "7.4.3 Get" : {
+    "key" : "7.4.3",
+    "guid" : "adfc2bcd-6b8e-486c-b105-29b286b61cc0",
     "name" : "Get",
     "abbreviation" : "7.4.3",
     "description" : "Use this domain for words referring to getting something.",
@@ -12382,6 +14946,8 @@ var semanticDomains_en = {
         "acquisition,", "acquisition," ]
   },
   "7.4.4 Distribute" : {
+    "key" : "7.4.4",
+    "guid" : "86c065ea-2420-4619-82d4-1d43527b3371",
     "name" : "Distribute",
     "abbreviation" : "7.4.4",
     "description" : "Use this domain for words related to distributing things to several people.",
@@ -12389,12 +14955,16 @@ var semanticDomains_en = {
         "share, portion, lot, part" ]
   },
   "7.4.5 Keep something" : {
+    "key" : "7.4.5",
+    "guid" : "7df3078c-f681-4123-a712-4b83e438ea1d",
     "name" : "Keep something",
     "abbreviation" : "7.4.5",
     "description" : "Use this domain for words related to keeping something.",
     "searchKeys" : [ "keep, save, hold on to, retain, keep possession of" ]
   },
   "7.4.5.1 Leave something" : {
+    "key" : "7.4.5.1",
+    "guid" : "1b3dccfe-29e4-478e-8443-17be9454a05a",
     "name" : "Leave something",
     "abbreviation" : "7.4.5.1",
     "description" : "Use this domain for words referring to leaving something or someone in a place and going away.",
@@ -12404,6 +14974,8 @@ var semanticDomains_en = {
         "Leave it. Leave it where it is. Leave it behind. Leave it here. Don't move it. Forget it." ]
   },
   "7.4.5.2 Throw away" : {
+    "key" : "7.4.5.2",
+    "guid" : "6c32038c-adf3-4085-bde3-cd2f21a421ba",
     "name" : "Throw away",
     "abbreviation" : "7.4.5.2",
     "description" : "Use this domain for throwing away something that you no longer want.",
@@ -12412,12 +14984,16 @@ var semanticDomains_en = {
         "litter, trash, garbage" ]
   },
   "7.4.6 Not have" : {
+    "key" : "7.4.6",
+    "guid" : "e7119442-3063-422a-a03e-d02e570ccd0f",
     "name" : "Not have",
     "abbreviation" : "7.4.6",
     "description" : "Use this domain for words related to having something.",
     "searchKeys" : [ "not have, haven't go, without, be missing, devoid of, empty-handed, wanting," ]
   },
   "7.5 Arrange" : {
+    "key" : "7.5",
+    "guid" : "6045c6eb-efea-4586-95f8-840d32578d66",
     "name" : "Arrange",
     "abbreviation" : "7.5",
     "description" : "Use this domain for words referring to arranging things--to physically move a group of things or people and put them in a pattern.",
@@ -12429,6 +15005,8 @@ var semanticDomains_en = {
         "order," ]
   },
   "7.5.1 Gather" : {
+    "key" : "7.5.1",
+    "guid" : "c16334a0-be29-4a1e-a870-4cb3f1df984d",
     "name" : "Gather",
     "abbreviation" : "7.5.1",
     "description" : "Use this domain for words referring to gathering things into a group. The basic idea of this domain involves a situation in which two or more things are not together, and someone moves them so that they are together.",
@@ -12439,6 +15017,8 @@ var semanticDomains_en = {
         "gathering, assemblage, bunch, collection, concentration, group, heap, huddle, mass, pile, stack," ]
   },
   "7.5.1.1 Separate, scatter" : {
+    "key" : "7.5.1.1",
+    "guid" : "30b3faa8-747e-465f-833a-a9957a259be2",
     "name" : "Separate, scatter",
     "abbreviation" : "7.5.1.1",
     "description" : "Use this domain for words referring to separating things into groups, and scattering things. The basic idea of this domain involves a situation in which two or more things are together, and someone moves them so that they are no longer together.",
@@ -12451,6 +15031,8 @@ var semanticDomains_en = {
         "set aside, put aside, separate from the others, keep separate, keep special, reserve, pull out" ]
   },
   "7.5.1.2 Include" : {
+    "key" : "7.5.1.2",
+    "guid" : "71b19b9e-231c-4196-a7d7-aa56a5079782",
     "name" : "Include",
     "abbreviation" : "7.5.1.2",
     "description" : "Use this domain for words related to including something in a group.",
@@ -12458,12 +15040,16 @@ var semanticDomains_en = {
         "exclude, segregate" ]
   },
   "7.5.1.3 Special" : {
+    "key" : "7.5.1.3",
+    "guid" : "b7f058af-9ce6-4dd0-b555-00526975300e",
     "name" : "Special",
     "abbreviation" : "7.5.1.3",
     "description" : "Use this domain for words that describe a member of a group that is different or special.",
     "searchKeys" : [ "special, different, unique" ]
   },
   "7.5.2 Join, attach" : {
+    "key" : "7.5.2",
+    "guid" : "08239f53-daa5-47a6-9f39-29a9064b0c27",
     "name" : "Join, attach",
     "abbreviation" : "7.5.2",
     "description" : "Use this domain for words related to joining two or more things together.",
@@ -12481,6 +15067,8 @@ var semanticDomains_en = {
         "reunite, reassemble, rejoin, re-glue, reattach, refasten, put back together" ]
   },
   "7.5.2.1 Link, connect" : {
+    "key" : "7.5.2.1",
+    "guid" : "6ab060ca-ecfc-4a46-accb-42b0473998cd",
     "name" : "Link, connect",
     "abbreviation" : "7.5.2.1",
     "description" : "Use this domain for words related to a linking or connecting things together--to put something like a road, pipe, or wire between things so that people or things can move between them.",
@@ -12491,6 +15079,8 @@ var semanticDomains_en = {
         "joint, connection, junction, intersection,", "connecting," ]
   },
   "7.5.2.2 Stick together" : {
+    "key" : "7.5.2.2",
+    "guid" : "e43c9905-ae67-4627-8b10-bd7a453828b4",
     "name" : "Stick together",
     "abbreviation" : "7.5.2.2",
     "description" : "Use this domain for words referring to two or more things cohering or sticking together.",
@@ -12500,6 +15090,8 @@ var semanticDomains_en = {
         "sticky, adhesive, gummy, magnetic, tacky," ]
   },
   "7.5.2.3 Add to something" : {
+    "key" : "7.5.2.3",
+    "guid" : "2b27b8ca-188e-44ad-aa86-ffa1f99106e3",
     "name" : "Add to something",
     "abbreviation" : "7.5.2.3",
     "description" : "Use this domain for words related to adding something to another thing.",
@@ -12510,6 +15102,8 @@ var semanticDomains_en = {
         "extra, supplemental, supplementary," ]
   },
   "7.5.2.4 Remove, take apart" : {
+    "key" : "7.5.2.4",
+    "guid" : "a31c85df-02a9-4dd8-a094-0f07a0afbcca",
     "name" : "Remove, take apart",
     "abbreviation" : "7.5.2.4",
     "description" : "Use this domain for words related to removing part of something, taking something apart, and things coming apart.",
@@ -12528,6 +15122,8 @@ var semanticDomains_en = {
         "come apart, come free, come loose, come off, come undone, come unglued, come unhooked, come unstuck, break up, disintegrate, fall apart, fall off, fall to pieces, peel off, pop off, separate, unravel, unroll, work free, work loose," ]
   },
   "7.5.3 Mix" : {
+    "key" : "7.5.3",
+    "guid" : "fe58ae61-ab0b-43a4-86fb-d9aedd199932",
     "name" : "Mix",
     "abbreviation" : "7.5.3",
     "description" : "Use this domain for words related to mixing things together--to put two or more different kinds of substances, like liquids or cooking ingredients, together.",
@@ -12542,6 +15138,8 @@ var semanticDomains_en = {
         "do not mix, incompatible, do not go well together," ]
   },
   "7.5.3.1 Pure, unmixed" : {
+    "key" : "7.5.3.1",
+    "guid" : "9b158c9e-9ba5-4be2-a9a1-77ef888a3b06",
     "name" : "Pure, unmixed",
     "abbreviation" : "7.5.3.1",
     "description" : "Use this domain for words related to being pure--words describing something (like water, food, or air) that does not have anything bad in it; or unmixed--words describing something that is only one thing and has not been mixed with something else.",
@@ -12554,6 +15152,8 @@ var semanticDomains_en = {
         "impurity, contaminant, pollutant, pollution," ]
   },
   "7.5.4 Tie" : {
+    "key" : "7.5.4",
+    "guid" : "9b267cc1-983c-407a-98d2-1e27add6292c",
     "name" : "Tie",
     "abbreviation" : "7.5.4",
     "description" : "Use this domain for words related to tying things together.",
@@ -12571,12 +15171,16 @@ var semanticDomains_en = {
         "come untied, come loose,", "retie" ]
   },
   "7.5.4.1 Rope, string" : {
+    "key" : "7.5.4.1",
+    "guid" : "761706fe-d289-4ace-b2c3-ab15d80dba7f",
     "name" : "Rope, string",
     "abbreviation" : "7.5.4.1",
     "description" : "Use this domain for words referring to rope, string, and other things used to tie things together.",
     "searchKeys" : [ "rope, string, band, bindings, bonds, cable, chain, cord, lace, lashing, line, ribbon, rubber band, shoelace, shoestring, strap, thong, twine, binder twine, wire," ]
   },
   "7.5.4.2 Tangle" : {
+    "key" : "7.5.4.2",
+    "guid" : "5f791daf-98a2-4787-93cc-8813aea93c4d",
     "name" : "Tangle",
     "abbreviation" : "7.5.4.2",
     "description" : "Use this domain for words related to becoming tangled--when something long and thin, such as rope, string, thread, hair, grass, or vines, becomes disorganized, twisted, or knotted, so that it is hard to separate it.",
@@ -12587,6 +15191,8 @@ var semanticDomains_en = {
         "tangle (n), tangled mess, jumble, mix-up, rat's nest, snarl," ]
   },
   "7.5.5 Organize" : {
+    "key" : "7.5.5",
+    "guid" : "e6c9fe4c-199e-4934-b622-739a85b0830d",
     "name" : "Organize",
     "abbreviation" : "7.5.5",
     "description" : "Use this domain for words referring to organizing things, people, events, and ideas--to think about and decide on the pattern a group of things should be arranged in, and then doing whatever is necessary to arrange them so that they can be used for some purpose. This domain is like the domain 'Arrange' except that 'Arrange' emphasizes physically moving the things, and the domain 'Organize' emphasizes the logical system. 'Organize' does not require that the things be moved, only that the logical pattern is specified.",
@@ -12599,6 +15205,8 @@ var semanticDomains_en = {
         "organized, methodical, neat, together,", "order," ]
   },
   "7.5.5.1 Disorganized" : {
+    "key" : "7.5.5.1",
+    "guid" : "583c98ff-1cc8-4b05-9086-974d13a78894",
     "name" : "Disorganized",
     "abbreviation" : "7.5.5.1",
     "description" : "Use this domain for words related to things becoming disorganized.",
@@ -12608,6 +15216,8 @@ var semanticDomains_en = {
         "disorganization, ambient state, chaos, disorder," ]
   },
   "7.5.6 Substitute" : {
+    "key" : "7.5.6",
+    "guid" : "b3fb9960-8f42-43bc-9595-dfb3e04f5bfd",
     "name" : "Substitute",
     "abbreviation" : "7.5.6",
     "description" : "Use this domain for words referring to substituting something for something else--to move something and put something else in its place.",
@@ -12615,6 +15225,8 @@ var semanticDomains_en = {
         "exchange, switch (places)" ]
   },
   "7.5.7 Multiple things moving" : {
+    "key" : "7.5.7",
+    "guid" : "be2f2785-7219-4a35-b8d3-aa56b9b78514",
     "name" : "Multiple things moving",
     "abbreviation" : "7.5.7",
     "description" : "Use this domain for words referring to multiple things moving.",
@@ -12627,6 +15239,8 @@ var semanticDomains_en = {
         "crowd, fill, mill around, swarm," ]
   },
   "7.5.8 Simple, complicated" : {
+    "key" : "7.5.8",
+    "guid" : "467dd680-ac64-4dc4-8a17-1cfe297d3392",
     "name" : "Simple, complicated",
     "abbreviation" : "7.5.8",
     "description" : "Use this domain for words related to being simple or complicated--words describing the organization of a group of things.",
@@ -12637,18 +15251,24 @@ var semanticDomains_en = {
         "complex, complicated, one to many," ]
   },
   "7.5.9 Put" : {
+    "key" : "7.5.9",
+    "guid" : "3fae9066-eb66-444e-bd41-818b9f7b3bae",
     "name" : "Put",
     "abbreviation" : "7.5.9",
     "description" : "Use this domain for words related to putting something somewhere.",
     "searchKeys" : [ "put, install, lodge, mount, place (v), position (v), set, situate, sling, stash, stow," ]
   },
   "7.5.9.1 Load, pile" : {
+    "key" : "7.5.9.1",
+    "guid" : "4068488f-59e9-47d1-8884-a1d6dcc10c36",
     "name" : "Load, pile",
     "abbreviation" : "7.5.9.1",
     "description" : "Use this domain for words related to putting lots of things on something.",
     "searchKeys" : [ "cram, crowd, drape, dust, hang, heap, jam, load, mound, pack, pile, scatter, settle, sew, shower, spread, stack, stick, stock, strew, string, stuff, wrap" ]
   },
   "7.5.9.2 Fill, cover" : {
+    "key" : "7.5.9.2",
+    "guid" : "dfe59469-d1bf-4ed2-9faa-6d5af52eefdd",
     "name" : "Fill, cover",
     "abbreviation" : "7.5.9.2",
     "description" : "Use this domain for words related to filling a container or covering an area with something.",
@@ -12657,6 +15277,8 @@ var semanticDomains_en = {
         "cover, coat, blanket, coat, encrust, mask, pave, plate, robe, shroud, smother, swathe," ]
   },
   "7.6 Hide" : {
+    "key" : "7.6",
+    "guid" : "043d12ac-c76d-4b4c-813b-4ef7758c8085",
     "name" : "Hide",
     "abbreviation" : "7.6",
     "description" : "Use this domain for words related to hiding things so that they cannot be seen or found, and for hiding oneself.",
@@ -12666,6 +15288,8 @@ var semanticDomains_en = {
         "come out (from hiding), surface" ]
   },
   "7.6.1 Search" : {
+    "key" : "7.6.1",
+    "guid" : "0ce61f27-9de8-49b2-9189-6f6efe488f6d",
     "name" : "Search",
     "abbreviation" : "7.6.1",
     "description" : "Use this domain for words related to searching for something that has been hidden or lost.",
@@ -12676,6 +15300,8 @@ var semanticDomains_en = {
         "overlook," ]
   },
   "7.6.2 Find" : {
+    "key" : "7.6.2",
+    "guid" : "bd9de99f-6a92-47ee-b6bc-e9877ea21202",
     "name" : "Find",
     "abbreviation" : "7.6.2",
     "description" : "Use this domain for words related to finding something that has been hidden or lost.",
@@ -12684,12 +15310,16 @@ var semanticDomains_en = {
         "come upon, discover, discovery, ferret out, find, learn, learn the whereabouts, strike," ]
   },
   "7.6.3 Lose, misplace" : {
+    "key" : "7.6.3",
+    "guid" : "b7f4fd44-fa17-46a8-bdaf-d3399d6cb0ac",
     "name" : "Lose, misplace",
     "abbreviation" : "7.6.3",
     "description" : "Use this domain for words referring to putting something in a place and not being able to find it again, or for when someone else moves something without your knowledge so that you cannot find it.",
     "searchKeys" : [ "lose, loss, misplace" ]
   },
   "7.7 Physical impact" : {
+    "key" : "7.7",
+    "guid" : "66d8b546-92f5-4e94-b992-08be81c3d30c",
     "name" : "Physical impact",
     "abbreviation" : "7.7",
     "description" : "Use this domain for general words referring to making a physical impact on something, including the words for the action itself and the result of the action.",
@@ -12697,6 +15327,8 @@ var semanticDomains_en = {
         "impact (n), effect, change (n), impression" ]
   },
   "7.7.1 Hit" : {
+    "key" : "7.7.1",
+    "guid" : "d25f7907-091e-4cf7-bd8c-bdb97278b616",
     "name" : "Hit",
     "abbreviation" : "7.7.1",
     "description" : "Use this domain for words related to hitting something.",
@@ -12713,6 +15345,8 @@ var semanticDomains_en = {
         "bounce, rebound, glance off, ricochet, recoil," ]
   },
   "7.7.2 Aim at a target" : {
+    "key" : "7.7.2",
+    "guid" : "5718fcc8-1eba-4b8d-9b6b-0c8349f53f80",
     "name" : "Aim at a target",
     "abbreviation" : "7.7.2",
     "description" : "Use this domain for words referring to aiming at a target, and for hitting or missing the target.",
@@ -12724,30 +15358,40 @@ var semanticDomains_en = {
         "sharpshooter, marksman, good aim, good eye" ]
   },
   "7.7.3 Kick" : {
+    "key" : "7.7.3",
+    "guid" : "be4a63e7-f4ba-4de2-be69-d26219d99cb6",
     "name" : "Kick",
     "abbreviation" : "7.7.3",
     "description" : "Use this domain for words referring to kicking--to hit something with your foot. The words in this domain may be distinguished by the way in which the foot moves, either in a swinging motion, or by first bending the leg and then quickly straightening it. They may also be distinguished by whether the foot moves horizontally or vertically, whether the effect is to move something or damage it, or how hard the person kicks.",
     "searchKeys" : [ "kick, give something a kick, kick in (a door), boot, punt, stamp, stomp on, stub your toe on something" ]
   },
   "7.7.4 Press" : {
+    "key" : "7.7.4",
+    "guid" : "0a85ee64-e466-4295-8e2c-5b06c8e3054f",
     "name" : "Press",
     "abbreviation" : "7.7.4",
     "description" : "Use this domain for words referring to pressing something.",
     "searchKeys" : [ "press, push on, apply pressure" ]
   },
   "7.7.5 Rub" : {
+    "key" : "7.7.5",
+    "guid" : "709d43dd-ce94-4df1-91b1-edb0b12fdaea",
     "name" : "Rub",
     "abbreviation" : "7.7.5",
     "description" : "Use this domain for words referring to rubbing--to move something smooth against something else, in order to make it smooth or clean.",
     "searchKeys" : [ "rub, chafe, rasp,", "wipe", "polish", "polish" ]
   },
   "7.7.6 Grind" : {
+    "key" : "7.7.6",
+    "guid" : "a3ba23d2-618e-4618-af18-9befae2f888b",
     "name" : "Grind",
     "abbreviation" : "7.7.6",
     "description" : "Use this domain for words referring to grinding--to rub something rough against something else, while applying force, in order to break it or remove its surface.",
     "searchKeys" : [ "grind, grate, scrape, scratch" ]
   },
   "7.7.7 Mark" : {
+    "key" : "7.7.7",
+    "guid" : "06be473e-c2f3-45fe-8522-3a0c033b5067",
     "name" : "Mark",
     "abbreviation" : "7.7.7",
     "description" : "Use this domain for words related to making a mark on something.",
@@ -12755,12 +15399,16 @@ var semanticDomains_en = {
         "mark, stain, spot, smudge, fingerprint" ]
   },
   "7.8 Divide into pieces" : {
+    "key" : "7.8",
+    "guid" : "e5f9c9cf-0b0c-47aa-b7df-8c37f211cd00",
     "name" : "Divide into pieces",
     "abbreviation" : "7.8",
     "description" : "Use this domain for words referring to dividing something into parts or pieces, perhaps with the added idea of using care, or into a certain number of parts.",
     "searchKeys" : [ "divide (up), divide into pieces, division, split (up), halve, quarter (v), apportion, take apart" ]
   },
   "7.8.1 Break" : {
+    "key" : "7.8.1",
+    "guid" : "23b1a6b4-8d91-425c-b8c2-52d06b1c1d23",
     "name" : "Break",
     "abbreviation" : "7.8.1",
     "description" : "Use this domain for words referring breaking something into pieces, perhaps with the added idea of doing it accidentally or without being careful.",
@@ -12773,12 +15421,16 @@ var semanticDomains_en = {
         "strong, tough, hard, unbreakable, durable," ]
   },
   "7.8.2 Crack" : {
+    "key" : "7.8.2",
+    "guid" : "b62b5fc7-1b20-4f63-8459-8eb4991839ee",
     "name" : "Crack",
     "abbreviation" : "7.8.2",
     "description" : "Use this domain for words referring to a crack--a partial break in something that does not entirely divide it in pieces.",
     "searchKeys" : [ "crack, split, fissure, crevasse" ]
   },
   "7.8.3 Cut" : {
+    "key" : "7.8.3",
+    "guid" : "42be1634-72ca-4a20-80a1-ba726e5cd1d2",
     "name" : "Cut",
     "abbreviation" : "7.8.3",
     "description" : "Use this domain for words related to cutting something.",
@@ -12790,12 +15442,16 @@ var semanticDomains_en = {
         "chop", "knife, ax", "cut, incision" ]
   },
   "7.8.4 Tear, rip" : {
+    "key" : "7.8.4",
+    "guid" : "b0b161b2-e773-4b04-99eb-23778fd2aa80",
     "name" : "Tear, rip",
     "abbreviation" : "7.8.4",
     "description" : "Use this domain for words related to tearing or ripping something.",
     "searchKeys" : [ "tear, rip, shred" ]
   },
   "7.8.5 Make hole, opening" : {
+    "key" : "7.8.5",
+    "guid" : "313a65bf-450f-48da-8903-a43247f1a5f8",
     "name" : "Make hole, opening",
     "abbreviation" : "7.8.5",
     "description" : "Use this domain for words related to making a hole or opening in something.",
@@ -12804,6 +15460,8 @@ var semanticDomains_en = {
         "opening, hole, aperture" ]
   },
   "7.8.6 Dig" : {
+    "key" : "7.8.6",
+    "guid" : "c5b8c936-1e01-4e86-9145-a2b721ec9e39",
     "name" : "Dig",
     "abbreviation" : "7.8.6",
     "description" : "Use this domain for words related to digging in the ground.",
@@ -12814,6 +15472,8 @@ var semanticDomains_en = {
         "deep, shallow, narrow, wide", "bury" ]
   },
   "7.9 Break, wear out" : {
+    "key" : "7.9",
+    "guid" : "f5156cde-9735-4249-920d-597fb0a7a8e3",
     "name" : "Break, wear out",
     "abbreviation" : "7.9",
     "description" : "Use this domain for words related to something breaking or wearing out, especially for things that people make and use.",
@@ -12825,6 +15485,8 @@ var semanticDomains_en = {
         "worn out, has had it, is past it," ]
   },
   "7.9.1 Damage" : {
+    "key" : "7.9.1",
+    "guid" : "eb00b4c2-5b87-4ef8-9548-800fc5c9b524",
     "name" : "Damage",
     "abbreviation" : "7.9.1",
     "description" : "Use this domain for words referring to damaging something--to do something bad to something, but not completely ruin it so that it can't be used any more.",
@@ -12843,12 +15505,16 @@ var semanticDomains_en = {
         "vulnerable," ]
   },
   "7.9.2 Tear down" : {
+    "key" : "7.9.2",
+    "guid" : "1a28d255-8f58-428c-9641-59f17f8b1e08",
     "name" : "Tear down",
     "abbreviation" : "7.9.2",
     "description" : "Use this domain for words referring to tearing down buildings and other structures.",
     "searchKeys" : [ "tear down, demolish, dismantle, take apart, take down" ]
   },
   "7.9.3 Destroy" : {
+    "key" : "7.9.3",
+    "guid" : "ca98bd7b-8711-41f6-86d0-5cd07b7bfe0d",
     "name" : "Destroy",
     "abbreviation" : "7.9.3",
     "description" : "Use this domain for words referring to destroying something--to damage something so that it is beyond repair and cannot be used.",
@@ -12860,12 +15526,16 @@ var semanticDomains_en = {
         "destroyed, ruined, wrecked, be in ruins," ]
   },
   "7.9.4 Repair" : {
+    "key" : "7.9.4",
+    "guid" : "41cac849-613d-4be4-a3bc-389412b7f653",
     "name" : "Repair",
     "abbreviation" : "7.9.4",
     "description" : "Use this domain for words related to repairing something.",
     "searchKeys" : [ "repair, fix, mend, restore, restoration, undo, correct, rebuild, right, put to rights" ]
   },
   "8 States" : {
+    "key" : "8",
+    "guid" : "c72985cf-b07f-4ed5-873a-a2209929667e",
     "name" : "States",
     "abbreviation" : "8",
     "description" : "Use this domain for general words refer to the state or condition of something.",
@@ -12873,6 +15543,8 @@ var semanticDomains_en = {
         "be, fare, stand," ]
   },
   "8.1 Quantity" : {
+    "key" : "8.1",
+    "guid" : "c6c772af-7b6b-4393-b0da-5b4a329d3426",
     "name" : "Quantity",
     "abbreviation" : "8.1",
     "description" : "Use this domain for general words referring to the amount or quantity of something.",
@@ -12884,6 +15556,8 @@ var semanticDomains_en = {
         "extent, incidence, level, rate," ]
   },
   "8.1.1 Number" : {
+    "key" : "8.1.1",
+    "guid" : "fb84538a-17a8-4adc-8d50-e2b66f8e4099",
     "name" : "Number",
     "abbreviation" : "8.1.1",
     "description" : "Use this domain for words related to numbers. Every language has a word for 'one', and a word for 'two'. These two numbers often have special words. So we have included a separate domain for 'one' and 'two'. In addition the numbers form a series (one, two, three...). Most languages have more than one series of numbers (first, second, third...). So we have also included a domain for each series of numbers that most languages have. Your language may have other series of numbers. Put them in the domain 'Number series'.",
@@ -12894,6 +15568,8 @@ var semanticDomains_en = {
         "number (v), numbered,", "number (v)," ]
   },
   "8.1.1.1 Cardinal numbers" : {
+    "key" : "8.1.1.1",
+    "guid" : "b6686c7c-39de-40b5-adee-67fc7dc54374",
     "name" : "Cardinal numbers",
     "abbreviation" : "8.1.1.1",
     "description" : "Use this domain for words related to the cardinal numbers (one, two, three)--the numbers used to count.",
@@ -12909,6 +15585,8 @@ var semanticDomains_en = {
         "infinity, infinite, boundless, endless, limitless," ]
   },
   "8.1.1.1.1 One" : {
+    "key" : "8.1.1.1.1",
+    "guid" : "2c04fa05-eebf-4331-b392-23f795c32382",
     "name" : "One",
     "abbreviation" : "8.1.1.1.1",
     "description" : "Use this domain for words related to the number one. It appears that every language has a word for 'one' and 'two', but not every language has a word for the numbers higher than two. Many languages have several words that mean 'one'.",
@@ -12920,6 +15598,8 @@ var semanticDomains_en = {
         "once, one time, single time, one-off," ]
   },
   "8.1.1.1.2 Two" : {
+    "key" : "8.1.1.1.2",
+    "guid" : "d086c2ad-2d11-4250-a25a-dc6538439db6",
     "name" : "Two",
     "abbreviation" : "8.1.1.1.2",
     "description" : "Use this domain for words related to the number two.",
@@ -12934,12 +15614,16 @@ var semanticDomains_en = {
         "twice, twice over, two-time," ]
   },
   "8.1.1.2 Ordinal numbers" : {
+    "key" : "8.1.1.2",
+    "guid" : "816490a4-2cac-472a-bbb0-eafbb9bbe4a8",
     "name" : "Ordinal numbers",
     "abbreviation" : "8.1.1.2",
     "description" : "Use this domain for words related to the ordinal numbers (first, second, third)--the numbers used to indicate the order of something in a series, such as \"the first child\".",
     "searchKeys" : [ "first, second, third, fourth, fifth, sixth, seven, eighth, ninth, tenth, eleventh, twelfth, thirteenth, hundredth, thousandth," ]
   },
   "8.1.1.3 Number of times" : {
+    "key" : "8.1.1.3",
+    "guid" : "d85d0838-a9e4-4787-8fce-7d0466bc24b9",
     "name" : "Number of times",
     "abbreviation" : "8.1.1.3",
     "description" : "Use this domain for numbers that refer to the number of times something happens or is done. These numbers may be adverbs as in English (twice) or in some languages they may be verbs (to do something two times).",
@@ -12948,6 +15632,8 @@ var semanticDomains_en = {
         "two-time, three-time,", "(none in English)" ]
   },
   "8.1.1.4 Multiples" : {
+    "key" : "8.1.1.4",
+    "guid" : "a57185c3-0cb5-41fa-94bf-da0c9edac600",
     "name" : "Multiples",
     "abbreviation" : "8.1.1.4",
     "description" : "Use this domain for words related to multiples of something (single, double, triple).",
@@ -12958,6 +15644,8 @@ var semanticDomains_en = {
         "double (vt), triple, treble, quadruple," ]
   },
   "8.1.1.5 Numbered group" : {
+    "key" : "8.1.1.5",
+    "guid" : "ffa13b7d-5eaa-43be-8518-51d9aa08f321",
     "name" : "Numbered group",
     "abbreviation" : "8.1.1.5",
     "description" : "Use this domain for words related to a group of a particular number of things or people (solo, duo, trio; alone, in threes).",
@@ -12970,6 +15658,8 @@ var semanticDomains_en = {
         "one apiece, two apiece, three apiece, one each, two each, three each," ]
   },
   "8.1.1.6 Fraction" : {
+    "key" : "8.1.1.6",
+    "guid" : "64e6c0db-6dd6-4b80-bbe9-c96bb161674b",
     "name" : "Fraction",
     "abbreviation" : "8.1.1.6",
     "description" : "Use this domain for the numbers that refer to a fraction of something.",
@@ -12979,12 +15669,16 @@ var semanticDomains_en = {
         "halve, quarter (v), bisect, trisect, (divide/cut/fold) in half, in two," ]
   },
   "8.1.1.7 Number series" : {
+    "key" : "8.1.1.7",
+    "guid" : "0e250e72-6c3f-424f-9e62-2dcc9729d817",
     "name" : "Number series",
     "abbreviation" : "8.1.1.7",
     "description" : "Use this domain for other series of numbers that are different from those in the previous domains.",
     "searchKeys" : [ "duplex, tandem, tripartite," ]
   },
   "8.1.2 Count" : {
+    "key" : "8.1.2",
+    "guid" : "c0d903bf-6502-45dd-9dd8-cff7f022c696",
     "name" : "Count",
     "abbreviation" : "8.1.2",
     "description" : "Use this domain for words related to counting--to say the numbers in order, or to use numbers to find an amount.",
@@ -12998,6 +15692,8 @@ var semanticDomains_en = {
         "innumerable, unnumbered, uncountable, uncounted, countless," ]
   },
   "8.1.2.1 Mathematics" : {
+    "key" : "8.1.2.1",
+    "guid" : "8bdf4847-903b-4af6-9553-3cfab65de516",
     "name" : "Mathematics",
     "abbreviation" : "8.1.2.1",
     "description" : "Use this domain for words related to mathematics and arithmetic--the study of numbers.",
@@ -13010,6 +15706,8 @@ var semanticDomains_en = {
         "calculator, computer, abacus, slide rule," ]
   },
   "8.1.2.2 Add numbers" : {
+    "key" : "8.1.2.2",
+    "guid" : "83899b19-8b39-4bf0-b124-4c6188569ec8",
     "name" : "Add numbers",
     "abbreviation" : "8.1.2.2",
     "description" : "Use this domain for words related to adding two numbers together.",
@@ -13023,6 +15721,8 @@ var semanticDomains_en = {
         "come to, amount to, total (v), reach, add up to, make, bring the number to, bring the total to, number (v)," ]
   },
   "8.1.2.3 Subtract numbers" : {
+    "key" : "8.1.2.3",
+    "guid" : "7cf6312e-f9f0-49e8-ae60-7677fac86c3f",
     "name" : "Subtract numbers",
     "abbreviation" : "8.1.2.3",
     "description" : "Use this domain for words related to subtracting one number from another.",
@@ -13031,6 +15731,8 @@ var semanticDomains_en = {
         "remainder, difference," ]
   },
   "8.1.2.4 Multiply numbers" : {
+    "key" : "8.1.2.4",
+    "guid" : "57f07b5f-75bf-4565-b969-ce0adc0b50d4",
     "name" : "Multiply numbers",
     "abbreviation" : "8.1.2.4",
     "description" : "Use this domain for words related to multiplying one number times another.",
@@ -13038,6 +15740,8 @@ var semanticDomains_en = {
         "multiplied by, times,", "makes,", "product," ]
   },
   "8.1.2.5 Divide numbers" : {
+    "key" : "8.1.2.5",
+    "guid" : "7b17e304-9a3f-463f-8216-cd1e1e119e0e",
     "name" : "Divide numbers",
     "abbreviation" : "8.1.2.5",
     "description" : "Use this domain for words related to dividing one number by another number.",
@@ -13045,12 +15749,16 @@ var semanticDomains_en = {
         "times,", "quotient," ]
   },
   "8.1.3 Plural" : {
+    "key" : "8.1.3",
+    "guid" : "0ebf9fcc-ee38-4f5f-ab5e-c76e199ef7ae",
     "name" : "Plural",
     "abbreviation" : "8.1.3",
     "description" : "Use this domain for words and affixes that indicate that there is more than one of something. Some languages, such as Indo-European languages, indicate plural with an affix. Other languages, such as Austronesian languages, use a separate word. Some languages also have words or affixes that indicate that there are two of something.",
     "searchKeys" : [ "-s", "pair of" ]
   },
   "8.1.3.1 Many, much" : {
+    "key" : "8.1.3.1",
+    "guid" : "1b6b0c12-9ecd-45cb-bb0e-0dadb435eddf",
     "name" : "Many, much",
     "abbreviation" : "8.1.3.1",
     "description" : "Use this domain for words indicating that there are many things or people, or that there is much of something.",
@@ -13070,6 +15778,8 @@ var semanticDomains_en = {
         "huge, enormous, vast, massive, colossal, goodly, immense, whopping," ]
   },
   "8.1.3.2 Few, little" : {
+    "key" : "8.1.3.2",
+    "guid" : "36934fab-c0ed-4f25-a387-e1cca26b2401",
     "name" : "Few, little",
     "abbreviation" : "8.1.3.2",
     "description" : "Use this domain for words related there being few or little of something.",
@@ -13086,6 +15796,8 @@ var semanticDomains_en = {
         "dab (v), spoon out, frugal, parsimonious, scrimp, be sparing, stingy, stint," ]
   },
   "8.1.3.3 Group of things" : {
+    "key" : "8.1.3.3",
+    "guid" : "d8ea1902-5fa6-4fda-b7b2-1f9c301cdc5f",
     "name" : "Group of things",
     "abbreviation" : "8.1.3.3",
     "description" : "Use this domain for words that refer to a group of things.",
@@ -13098,6 +15810,8 @@ var semanticDomains_en = {
         "member, one of, part of, belong to, go with," ]
   },
   "8.1.4 More" : {
+    "key" : "8.1.4",
+    "guid" : "8216627d-9d20-4a5c-8bfd-0709c16e7a08",
     "name" : "More",
     "abbreviation" : "8.1.4",
     "description" : "Use this domain for words related to there being more of something.",
@@ -13110,6 +15824,8 @@ var semanticDomains_en = {
         "many more, much more, far more, far beyond, way beyond, a lot more," ]
   },
   "8.1.4.1 Less" : {
+    "key" : "8.1.4.1",
+    "guid" : "fcc204a3-eae4-46d1-a9dc-08864fde1772",
     "name" : "Less",
     "abbreviation" : "8.1.4.1",
     "description" : "Use this domain for words that indicate that the number or amount of something is less than the number or amount of another thing.",
@@ -13120,6 +15836,8 @@ var semanticDomains_en = {
         "less, not as, not so,", "not as much, not so much," ]
   },
   "8.1.4.2 Increase" : {
+    "key" : "8.1.4.2",
+    "guid" : "f2022802-4f43-4fa2-8c58-33a8b9e75895",
     "name" : "Increase",
     "abbreviation" : "8.1.4.2",
     "description" : "Use this domain for words related to something increasing in number or amount--to be more than before.",
@@ -13138,6 +15856,8 @@ var semanticDomains_en = {
         "increased, heightened, greater, higher," ]
   },
   "8.1.4.3 Decrease" : {
+    "key" : "8.1.4.3",
+    "guid" : "1ff743cb-49e0-483d-8a1d-4603a7d6c395",
     "name" : "Decrease",
     "abbreviation" : "8.1.4.3",
     "description" : "Use this domain for words related to something decreasing in number or amount--to be less than before.",
@@ -13157,6 +15877,8 @@ var semanticDomains_en = {
         "erode, eat into, deplete, whittle away," ]
   },
   "8.1.5 All" : {
+    "key" : "8.1.5",
+    "guid" : "f7960e84-5af9-4999-9028-783058aa8c5c",
     "name" : "All",
     "abbreviation" : "8.1.5",
     "description" : "Use this domain for words related to all.",
@@ -13170,6 +15892,8 @@ var semanticDomains_en = {
         "every way, all-out," ]
   },
   "8.1.5.1 Some" : {
+    "key" : "8.1.5.1",
+    "guid" : "cbcff912-e1c2-4d9b-9938-85d73e7e7265",
     "name" : "Some",
     "abbreviation" : "8.1.5.1",
     "description" : "Use this domain for words related to some--a number or amount of things or people when the number is not stated; an indefinite number or amount.",
@@ -13177,6 +15901,8 @@ var semanticDomains_en = {
         "some, any, a certain amount of, a measure of," ]
   },
   "8.1.5.2 None, nothing" : {
+    "key" : "8.1.5.2",
+    "guid" : "bfbfb9b5-363d-4767-a5cb-1b11b348efd6",
     "name" : "None, nothing",
     "abbreviation" : "8.1.5.2",
     "description" : "Use this domain for words that nothing, no one, never, and nowhere.",
@@ -13187,12 +15913,16 @@ var semanticDomains_en = {
         "zero, nil, naught, o," ]
   },
   "8.1.5.3 Both" : {
+    "key" : "8.1.5.3",
+    "guid" : "bbb21324-089d-4368-a2ac-37c6bbfcbffc",
     "name" : "Both",
     "abbreviation" : "8.1.5.3",
     "description" : "Use this domain for words referring to both of two things.",
     "searchKeys" : [ "both, the two of, the pair of, each, mutual, share, either, neither," ]
   },
   "8.1.5.4 Most, almost all" : {
+    "key" : "8.1.5.4",
+    "guid" : "d1687857-0f1d-4098-affb-b283a6677b6b",
     "name" : "Most, almost all",
     "abbreviation" : "8.1.5.4",
     "description" : "Use this domain for words related to most--more than half and less than all of something.",
@@ -13203,6 +15933,8 @@ var semanticDomains_en = {
         "mostly, mainly, in most cases, most of the time,", "minority," ]
   },
   "8.1.5.5 Most, least" : {
+    "key" : "8.1.5.5",
+    "guid" : "0aaacffe-9b6c-49a7-bf68-c0f9ff3e120e",
     "name" : "Most, least",
     "abbreviation" : "8.1.5.5",
     "description" : "Use this domain for words related to the most--the largest number or amount; or the least--the smallest number or amount. Most/least may refer to the largest/smallest number possible or needed. If there are several groups being counted, most/least may refer to the largest/smallest group.",
@@ -13213,6 +15945,8 @@ var semanticDomains_en = {
         "an all-time low, record low, lowest ebb," ]
   },
   "8.1.5.6 Almost" : {
+    "key" : "8.1.5.6",
+    "guid" : "afdd8b8e-9502-4d06-94ee-e79815b65750",
     "name" : "Almost",
     "abbreviation" : "8.1.5.6",
     "description" : "Use this domain for words related to a number or amount that is almost the same as another number.",
@@ -13229,6 +15963,8 @@ var semanticDomains_en = {
         "almost, nearly, practically, virtually, pretty well, more or less, just about," ]
   },
   "8.1.5.7 Only" : {
+    "key" : "8.1.5.7",
+    "guid" : "e94a5cf3-1fd4-4b52-902f-bbf0ad6bac2b",
     "name" : "Only",
     "abbreviation" : "8.1.5.7",
     "description" : "Use this domain for words referring to only a particular number or amount of people or things--no more than one, or no more than a particular number or amount.",
@@ -13239,6 +15975,8 @@ var semanticDomains_en = {
         "only, just, purely, merely, mere, nothing but," ]
   },
   "8.1.5.8 Exact" : {
+    "key" : "8.1.5.8",
+    "guid" : "8f4c9266-a025-4b7a-bd67-fe0c043bf6f5",
     "name" : "Exact",
     "abbreviation" : "8.1.5.8",
     "description" : "Use this domain for words that indicate whether a number or amount is exact--not more and not less.",
@@ -13251,6 +15989,8 @@ var semanticDomains_en = {
         "exactly, strictly, religiously, to the letter," ]
   },
   "8.1.5.8.1 Approximate" : {
+    "key" : "8.1.5.8.1",
+    "guid" : "ca752706-1c9e-43e7-bd17-845c4736ccd8",
     "name" : "Approximate",
     "abbreviation" : "8.1.5.8.1",
     "description" : "Use this domain for words that indicate whether a number or amount is approximate.",
@@ -13269,6 +16009,8 @@ var semanticDomains_en = {
         "loose, vague, hazy, impressionistic, broad," ]
   },
   "8.1.5.9 Average" : {
+    "key" : "8.1.5.9",
+    "guid" : "3389561c-f264-48b9-b94c-86c33fc3c423",
     "name" : "Average",
     "abbreviation" : "8.1.5.9",
     "description" : "Use this domain for words related to an average number.",
@@ -13277,6 +16019,8 @@ var semanticDomains_en = {
         "average (v), average out," ]
   },
   "8.1.6 Whole, complete" : {
+    "key" : "8.1.6",
+    "guid" : "7cfc8b3c-ad67-4928-ae6a-74afd47ced89",
     "name" : "Whole, complete",
     "abbreviation" : "8.1.6",
     "description" : "Use this domain for words describing a whole thing--all of something with no parts missing.",
@@ -13286,6 +16030,8 @@ var semanticDomains_en = {
         "incomplete, partial, missing something," ]
   },
   "8.1.6.1 Part" : {
+    "key" : "8.1.6.1",
+    "guid" : "aadefee4-ed14-4753-952e-e945f2972e37",
     "name" : "Part",
     "abbreviation" : "8.1.6.1",
     "description" : "Many things have parts. Use this domain for words referring to a part of something, and for words that express the idea that something has parts, that something is a part of something, or that link the whole with a part.",
@@ -13300,6 +16046,8 @@ var semanticDomains_en = {
         "have, of, -'s, consist of, be made of, be made up of, be composed of, comprise, be divided into, include" ]
   },
   "8.1.6.2 Piece" : {
+    "key" : "8.1.6.2",
+    "guid" : "1d34380d-61bf-4247-9145-ba318a14a97e",
     "name" : "Piece",
     "abbreviation" : "8.1.6.2",
     "description" : "Use this domain for words referring to a part of something that has been broken or cut off.",
@@ -13313,6 +16061,8 @@ var semanticDomains_en = {
         "pinch (of salt), cut (of meat), slice (of bread), bite (of cake)" ]
   },
   "8.1.7 Enough" : {
+    "key" : "8.1.7",
+    "guid" : "286ee16c-a218-43d5-bbac-ab15f80c3fcf",
     "name" : "Enough",
     "abbreviation" : "8.1.7",
     "description" : "Use this domain for words related to being or having enough--to have as much of something or as many of something as you need or want.",
@@ -13332,6 +16082,8 @@ var semanticDomains_en = {
         "not have enough, can't afford, be strapped for cash," ]
   },
   "8.1.7.1 Extra" : {
+    "key" : "8.1.7.1",
+    "guid" : "755a7462-1d87-48b0-939c-08be5b5ea002",
     "name" : "Extra",
     "abbreviation" : "8.1.7.1",
     "description" : "Use this domain for words related to having extra--to have more than enough or more than what you need.",
@@ -13343,6 +16095,8 @@ var semanticDomains_en = {
         "too much, too many, excessive," ]
   },
   "8.1.7.2 Lack" : {
+    "key" : "8.1.7.2",
+    "guid" : "1621aac3-4ea9-4373-bf1b-40fce0ca7b5e",
     "name" : "Lack",
     "abbreviation" : "8.1.7.2",
     "description" : "Use this domain for words related to having insufficient--to not have enough.",
@@ -13353,6 +16107,8 @@ var semanticDomains_en = {
         "destitute, can't make ends meet, starve," ]
   },
   "8.1.7.3 Need" : {
+    "key" : "8.1.7.3",
+    "guid" : "d1b3d0f0-5319-4a6a-8a70-2179a8e76d22",
     "name" : "Need",
     "abbreviation" : "8.1.7.3",
     "description" : "Use this domain for words related to needing something for some purpose.",
@@ -13371,6 +16127,8 @@ var semanticDomains_en = {
         "independent," ]
   },
   "8.1.7.4 Remain, remainder" : {
+    "key" : "8.1.7.4",
+    "guid" : "60b8dcfd-49a0-4ab4-82a7-2c5058b325ae",
     "name" : "Remain, remainder",
     "abbreviation" : "8.1.7.4",
     "description" : "Use this domain for words related to the remainder of something--the part or amount of something that remains behind after the other parts have been taken away. Something can be left because everything else has been used or eaten, or everything else has been destroyed or burned.",
@@ -13382,6 +16140,8 @@ var semanticDomains_en = {
         "remaining, last, outstanding, spare, leftover, residual, surplus, surviving," ]
   },
   "8.1.8 Full" : {
+    "key" : "8.1.8",
+    "guid" : "8a81b9bc-9c66-4d57-a2d1-2e592604c4b1",
     "name" : "Full",
     "abbreviation" : "8.1.8",
     "description" : "Use this domain for words referring to a container being full of something.",
@@ -13402,6 +16162,8 @@ var semanticDomains_en = {
         "overflow, overflowing, run over, running over, brimming over, full and running over, overcrowded, overfilled," ]
   },
   "8.1.8.1 Empty" : {
+    "key" : "8.1.8.1",
+    "guid" : "e9cafabe-f0f7-4142-a6f6-d1c94bdc4b5c",
     "name" : "Empty",
     "abbreviation" : "8.1.8.1",
     "description" : "Use this domain for words referring to being empty.",
@@ -13416,6 +16178,8 @@ var semanticDomains_en = {
         "almost empty, not quite empty,", "half empty," ]
   },
   "8.2 Big" : {
+    "key" : "8.2",
+    "guid" : "8a0c5ed9-0041-4af5-a193-329e6c9f2717",
     "name" : "Big",
     "abbreviation" : "8.2",
     "description" : "Use this domain for words describing something that is big.",
@@ -13439,6 +16203,8 @@ var semanticDomains_en = {
         "gross, outsized, overgrown, oversized, unwieldy," ]
   },
   "8.2.1 Small" : {
+    "key" : "8.2.1",
+    "guid" : "b43fae8e-6b19-42ed-98cd-d363174b9cf8",
     "name" : "Small",
     "abbreviation" : "8.2.1",
     "description" : "Use this domain for words referring to being small.",
@@ -13453,6 +16219,8 @@ var semanticDomains_en = {
         "how small,", "compact, pocket, miniature" ]
   },
   "8.2.2 Long" : {
+    "key" : "8.2.2",
+    "guid" : "7648040b-0aa5-4d9a-8f13-ffd066b81602",
     "name" : "Long",
     "abbreviation" : "8.2.2",
     "description" : "Use this domain for words related to being long. In many languages there is more than one system of measuring length. These systems may be used for different purposes or in different jobs. For instance measuring the length of an object may use different words than measuring the distance a person travels.",
@@ -13472,6 +16240,8 @@ var semanticDomains_en = {
         "metric," ]
   },
   "8.2.2.1 Short, not long" : {
+    "key" : "8.2.2.1",
+    "guid" : "3ccc3a21-07c8-4983-a044-e3c74b538135",
     "name" : "Short, not long",
     "abbreviation" : "8.2.2.1",
     "description" : "Use this domain for words related to being short in length.",
@@ -13484,6 +16254,8 @@ var semanticDomains_en = {
         "how short, be (two inches) (too) short," ]
   },
   "8.2.2.2 Tall" : {
+    "key" : "8.2.2.2",
+    "guid" : "b844d2f8-d3ef-4605-b038-8bc0a2cff0af",
     "name" : "Tall",
     "abbreviation" : "8.2.2.2",
     "description" : "Use this domain for words related to being tall--a word describing something that is big from the top to the bottom.",
@@ -13500,6 +16272,8 @@ var semanticDomains_en = {
         "how tall, be (six feet) tall, be (ten meters) high, be (six feet) in height," ]
   },
   "8.2.2.3 Short, not tall" : {
+    "key" : "8.2.2.3",
+    "guid" : "0aae1951-4d5b-45a0-853c-1839764c9862",
     "name" : "Short, not tall",
     "abbreviation" : "8.2.2.3",
     "description" : "Use this domain for words related to being short in height.",
@@ -13512,6 +16286,8 @@ var semanticDomains_en = {
         "shortness, how short,", "be (two inches) (too) short," ]
   },
   "8.2.3 Thick" : {
+    "key" : "8.2.3",
+    "guid" : "b1688009-474d-4e2e-a137-acc1e32a435f",
     "name" : "Thick",
     "abbreviation" : "8.2.3",
     "description" : "Use this domain for words referring to being thick.",
@@ -13521,6 +16297,8 @@ var semanticDomains_en = {
         "how thick, be ten centimeters thick,", "thickening," ]
   },
   "8.2.3.1 Thin thing" : {
+    "key" : "8.2.3.1",
+    "guid" : "627280f0-4f98-4b31-ad23-eabe37b002ad",
     "name" : "Thin thing",
     "abbreviation" : "8.2.3.1",
     "description" : "Use this domain for words describing something that is thin.",
@@ -13532,6 +16310,8 @@ var semanticDomains_en = {
         "tapering," ]
   },
   "8.2.3.2 Fat person" : {
+    "key" : "8.2.3.2",
+    "guid" : "45d867c7-8496-4c92-bb41-b7db5db47717",
     "name" : "Fat person",
     "abbreviation" : "8.2.3.2",
     "description" : "Use this domain for words describing a person or animal who is fat.",
@@ -13546,6 +16326,8 @@ var semanticDomains_en = {
         "paunch, pot belly, beer gut, spare tire, middle-age spread, paunchy," ]
   },
   "8.2.3.3 Thin person" : {
+    "key" : "8.2.3.3",
+    "guid" : "08c05e00-9660-4491-af2f-a05fab27ef39",
     "name" : "Thin person",
     "abbreviation" : "8.2.3.3",
     "description" : "Use this domain for words describing a person or animal who is thin.",
@@ -13564,6 +16346,8 @@ var semanticDomains_en = {
         "try to lose weight, watch your weight, watch your figure, diet, be on a diet, go on a diet, slim (v)," ]
   },
   "8.2.4 Wide" : {
+    "key" : "8.2.4",
+    "guid" : "f8863b67-b911-4334-a1b6-6eb913bd14af",
     "name" : "Wide",
     "abbreviation" : "8.2.4",
     "description" : "Use this domain for words related to being wide--a word describing something like a road or river that is far from one side to the other side.",
@@ -13576,6 +16360,8 @@ var semanticDomains_en = {
         "how wide, be (ten feet) wide, be (ten feet) across," ]
   },
   "8.2.4.1 Narrow" : {
+    "key" : "8.2.4.1",
+    "guid" : "aa2b547c-2c82-4ce0-a1b3-35fa809d666c",
     "name" : "Narrow",
     "abbreviation" : "8.2.4.1",
     "description" : "Use this domain for words related to being narrow.",
@@ -13589,6 +16375,8 @@ var semanticDomains_en = {
         "how narrow, be only (one inch) wide, be (two inches) (too) narrow," ]
   },
   "8.2.5 Big area" : {
+    "key" : "8.2.5",
+    "guid" : "67e57493-d286-4271-b877-f63f962dddf1",
     "name" : "Big area",
     "abbreviation" : "8.2.5",
     "description" : "Use this domain for words describing a big area.",
@@ -13609,6 +16397,8 @@ var semanticDomains_en = {
         "circumference, around," ]
   },
   "8.2.5.1 Big container, volume" : {
+    "key" : "8.2.5.1",
+    "guid" : "ea17aba7-6d4e-4dbf-89ea-84a1b1c47647",
     "name" : "Big container, volume",
     "abbreviation" : "8.2.5.1",
     "description" : "Use this domain for words referring to the volume of something.",
@@ -13630,6 +16420,8 @@ var semanticDomains_en = {
         "small," ]
   },
   "8.2.6 Distance" : {
+    "key" : "8.2.6",
+    "guid" : "73d580ac-dc89-474c-8048-3453ebdda807",
     "name" : "Distance",
     "abbreviation" : "8.2.6",
     "description" : "Use this domain for words referring to the distance between two things.",
@@ -13639,6 +16431,8 @@ var semanticDomains_en = {
         "extend, stretch, go on, continue, spread" ]
   },
   "8.2.6.1 Far" : {
+    "key" : "8.2.6.1",
+    "guid" : "bba30b56-6cd8-4542-81ab-f983cf1354bd",
     "name" : "Far",
     "abbreviation" : "8.2.6.1",
     "description" : "Use this domain for words indicating that something is far from something else.",
@@ -13655,6 +16449,8 @@ var semanticDomains_en = {
         "farther, further, beyond, past, on the other side of, farthest, furthest, extreme, in the offing, background" ]
   },
   "8.2.6.2 Near" : {
+    "key" : "8.2.6.2",
+    "guid" : "1133ad78-9ce9-46aa-b181-bb6f7a84a07b",
     "name" : "Near",
     "abbreviation" : "8.2.6.2",
     "description" : "Use this domain for words indicating that something is near something else.",
@@ -13669,6 +16465,8 @@ var semanticDomains_en = {
         "nearer, closer, before, on this side of, nearest, closest" ]
   },
   "8.2.6.3 High" : {
+    "key" : "8.2.6.3",
+    "guid" : "7d8898d6-6296-4d4d-b8dd-2f48c49f9e98",
     "name" : "High",
     "abbreviation" : "8.2.6.3",
     "description" : "Use this domain for words that express the idea that something is high.",
@@ -13683,6 +16481,8 @@ var semanticDomains_en = {
         "fear of heights, vertigo," ]
   },
   "8.2.6.4 Low" : {
+    "key" : "8.2.6.4",
+    "guid" : "6c54f0b0-b056-4090-b3f0-d5ec6710d4ab",
     "name" : "Low",
     "abbreviation" : "8.2.6.4",
     "description" : "Use this domain for words indicating that something is low--in the air but not high above the ground.",
@@ -13691,6 +16491,8 @@ var semanticDomains_en = {
         "low-lying, depressed, depression,", "lower, lowest," ]
   },
   "8.2.6.5 Deep, shallow" : {
+    "key" : "8.2.6.5",
+    "guid" : "4e7a6dfe-3654-4ca1-874d-02424581b774",
     "name" : "Deep, shallow",
     "abbreviation" : "8.2.6.5",
     "description" : "Use this domain for words related to being deep or shallow--how far something such as a hole extends below the ground or other surface, or how far something is below the surface of the water.",
@@ -13709,6 +16511,8 @@ var semanticDomains_en = {
         "shallows, shoal," ]
   },
   "8.2.7 Fit, size" : {
+    "key" : "8.2.7",
+    "guid" : "d0dee676-f3ae-43cc-96f1-7e3bb65870f5",
     "name" : "Fit, size",
     "abbreviation" : "8.2.7",
     "description" : "Use this domain for words referring to something fitting--when something is not too big or too small, but just right.",
@@ -13717,24 +16521,32 @@ var semanticDomains_en = {
         "fit something to something, resize," ]
   },
   "8.2.7.1 Tight" : {
+    "key" : "8.2.7.1",
+    "guid" : "4d61f524-7213-4c2c-8c14-f8eff3aed813",
     "name" : "Tight",
     "abbreviation" : "8.2.7.1",
     "description" : "Use this domain for words referring to being tight--when something is too small.",
     "searchKeys" : [ "tight, too small", "get tight", "tighten" ]
   },
   "8.2.7.2 Loose" : {
+    "key" : "8.2.7.2",
+    "guid" : "7162885d-1d35-4baf-97d6-7368fff7c723",
     "name" : "Loose",
     "abbreviation" : "8.2.7.2",
     "description" : "Use this domain for words referring to being loose--when something is too big.",
     "searchKeys" : [ "loose, too big", "come loose", "loosen" ]
   },
   "8.2.7.3 Wedged in, stuck" : {
+    "key" : "8.2.7.3",
+    "guid" : "a3fb18fd-befb-493f-8a19-760883ed9697",
     "name" : "Wedged in, stuck",
     "abbreviation" : "8.2.7.3",
     "description" : "Use this domain for words referring to being wedged in or stuck in a hole.",
     "searchKeys" : [ "wedged in, stuck" ]
   },
   "8.2.8 Measure" : {
+    "key" : "8.2.8",
+    "guid" : "dfdcfa24-b013-4566-af4a-28ef1dfd4742",
     "name" : "Measure",
     "abbreviation" : "8.2.8",
     "description" : "Use this domain for words related to measuring something--to find out the size, length, weight, or amount of something.",
@@ -13749,6 +16561,8 @@ var semanticDomains_en = {
         "immeasurable, measureless, incalculable, unfathomable, unmeasured, untold," ]
   },
   "8.2.9 Weigh" : {
+    "key" : "8.2.9",
+    "guid" : "aba3f7f1-9e13-4b48-acbb-3bf6d6bfa0e8",
     "name" : "Weigh",
     "abbreviation" : "8.2.9",
     "description" : "Use this domain for words related to weighing something.",
@@ -13762,6 +16576,8 @@ var semanticDomains_en = {
         "support, carry, hold, load, weight, pressure," ]
   },
   "8.2.9.1 Heavy" : {
+    "key" : "8.2.9.1",
+    "guid" : "d574c970-6834-4566-ae37-f42c7e95483b",
     "name" : "Heavy",
     "abbreviation" : "8.2.9.1",
     "description" : "Use this domain for words related to being heavy.",
@@ -13771,6 +16587,8 @@ var semanticDomains_en = {
         "weigh down, weight (v),", "weighted,", "heavier, heaviest," ]
   },
   "8.2.9.2 Light in weight" : {
+    "key" : "8.2.9.2",
+    "guid" : "6e7d10f8-6da5-4a8a-a06d-952511194105",
     "name" : "Light in weight",
     "abbreviation" : "8.2.9.2",
     "description" : "Use this domain for words related to being light in weight.",
@@ -13782,6 +16600,8 @@ var semanticDomains_en = {
         "lighter, lightest,", "how light, be (two pounds) (too) light," ]
   },
   "8.3 Quality" : {
+    "key" : "8.3",
+    "guid" : "ac9ee84f-f0c7-48b3-8e5a-b4c967112394",
     "name" : "Quality",
     "abbreviation" : "8.3",
     "description" : "Use this domain for general words referring to the quality or condition of something.",
@@ -13790,6 +16610,8 @@ var semanticDomains_en = {
         "more, surpass,", "less, not as, not so" ]
   },
   "8.3.1 Shape" : {
+    "key" : "8.3.1",
+    "guid" : "080bf07b-e58b-4a75-bb97-84d980a143f0",
     "name" : "Shape",
     "abbreviation" : "8.3.1",
     "description" : "Use this domain for general words referring to the shape of something, and for general words referring to changing the shape of something.",
@@ -13804,18 +16626,24 @@ var semanticDomains_en = {
         "forked, bifurcate, bifurcated, fork, branch, a Y in the road," ]
   },
   "8.3.1.1 Point, dot" : {
+    "key" : "8.3.1.1",
+    "guid" : "6ffe33fe-b49c-45c8-a50b-cd0065c0c869",
     "name" : "Point, dot",
     "abbreviation" : "8.3.1.1",
     "description" : "Use this domain for words referring to a point--a small mark such as might be made by a pointed object.",
     "searchKeys" : [ "point, dot, polka dot, spot, pinpoint, speck, mote, jot, iota, fleck, period" ]
   },
   "8.3.1.2 Line" : {
+    "key" : "8.3.1.2",
+    "guid" : "07e97f87-68ca-4d18-9f86-a326e0400947",
     "name" : "Line",
     "abbreviation" : "8.3.1.2",
     "description" : "Use this domain for words referring to a line.",
     "searchKeys" : [ "line, band, row", "ruler, straightedge", "parallel" ]
   },
   "8.3.1.3 Straight" : {
+    "key" : "8.3.1.3",
+    "guid" : "a3ca2a31-259e-4e15-9696-75b0c81886e9",
     "name" : "Straight",
     "abbreviation" : "8.3.1.3",
     "description" : "Use this domain for words referring to being straight.",
@@ -13824,6 +16652,8 @@ var semanticDomains_en = {
         "straighten, straighten out,", "straighten, straighten out," ]
   },
   "8.3.1.3.1 Flat" : {
+    "key" : "8.3.1.3.1",
+    "guid" : "61f40376-729d-4d99-894f-06c5689a06ac",
     "name" : "Flat",
     "abbreviation" : "8.3.1.3.1",
     "description" : "Use this domain for words describing something that is flat--having a surface that is even. A board or wall is flat when its surface is even and it does not bend.",
@@ -13834,6 +16664,8 @@ var semanticDomains_en = {
         "rough, bumpy, uneven, lumpy, hilly, rolling, mountainous," ]
   },
   "8.3.1.4 Horizontal" : {
+    "key" : "8.3.1.4",
+    "guid" : "82a4ae36-8e70-4c0d-8144-ad9fc3c0e04f",
     "name" : "Horizontal",
     "abbreviation" : "8.3.1.4",
     "description" : "Use this domain for words describing a horizontal orientation in relation to the ground or something that is level--a flat surface that does not rise in any direction. A person is horizontal when he is sleeping. A field is level when it is not on a hill and it has no uneven areas in it.",
@@ -13844,6 +16676,8 @@ var semanticDomains_en = {
         "level (adj), even (adj), flat", "make level, level (v)," ]
   },
   "8.3.1.4.1 Vertical" : {
+    "key" : "8.3.1.4.1",
+    "guid" : "b8df8589-d03c-4e6d-bbeb-4f24fbf6a1dc",
     "name" : "Vertical",
     "abbreviation" : "8.3.1.4.1",
     "description" : "Use this domain for words describing a vertical orientation in relation to the ground. A person is vertical when he is standing.",
@@ -13854,6 +16688,8 @@ var semanticDomains_en = {
         "plumb line, level, square" ]
   },
   "8.3.1.4.2 Leaning, sloping" : {
+    "key" : "8.3.1.4.2",
+    "guid" : "0add0775-0ed0-46be-ba4a-76310e63a036",
     "name" : "Leaning, sloping",
     "abbreviation" : "8.3.1.4.2",
     "description" : "Use this domain for words describing a leaning orientation in relation to the ground, or a surface that is sloping.",
@@ -13867,6 +16703,8 @@ var semanticDomains_en = {
         "uneven, rough, hilly, wavy, lumpy, broken (ground), rugged" ]
   },
   "8.3.1.5 Bend" : {
+    "key" : "8.3.1.5",
+    "guid" : "5c35c2f8-d17c-42a3-aa12-a4c29b6603e8",
     "name" : "Bend",
     "abbreviation" : "8.3.1.5",
     "description" : "Use this domain for words referring to bending something and for words that describe something that is bent or curved.",
@@ -13883,6 +16721,8 @@ var semanticDomains_en = {
         "unbending, inflexible, inflexibility, rigid, rigidity," ]
   },
   "8.3.1.5.1 Roll up" : {
+    "key" : "8.3.1.5.1",
+    "guid" : "7ee92ca4-19aa-4abd-9f88-508766acc39c",
     "name" : "Roll up",
     "abbreviation" : "8.3.1.5.1",
     "description" : "Use this domain for words referring to rolling something up.",
@@ -13890,6 +16730,8 @@ var semanticDomains_en = {
         "unroll, unfurl," ]
   },
   "8.3.1.5.2 Twist, wring" : {
+    "key" : "8.3.1.5.2",
+    "guid" : "19fea936-30d1-482f-a103-1c5549b19745",
     "name" : "Twist, wring",
     "abbreviation" : "8.3.1.5.2",
     "description" : "Use this domain for words referring to twisting something--to take something long and turn one end one way and the other end the other way.",
@@ -13897,6 +16739,8 @@ var semanticDomains_en = {
         "twisted, winding, entwined, coiled, wrung out" ]
   },
   "8.3.1.5.3 Fold" : {
+    "key" : "8.3.1.5.3",
+    "guid" : "8f7c9d7d-9b2a-40f3-9314-8f16f0aa31ef",
     "name" : "Fold",
     "abbreviation" : "8.3.1.5.3",
     "description" : "Use this domain for words referring to folding something.",
@@ -13909,6 +16753,8 @@ var semanticDomains_en = {
         "crumpled up, pleated, wrinkled,", "folding, jointed," ]
   },
   "8.3.1.6 Round" : {
+    "key" : "8.3.1.6",
+    "guid" : "6c36a680-4ff4-43b9-a7c2-9037ceb0d3f6",
     "name" : "Round",
     "abbreviation" : "8.3.1.6",
     "description" : "Use this domain for words referring to being round.",
@@ -13919,6 +16765,8 @@ var semanticDomains_en = {
         "compass", "cylinder, cylindrical, rod, pipe, tube" ]
   },
   "8.3.1.6.1 Concave" : {
+    "key" : "8.3.1.6.1",
+    "guid" : "2d563d27-8ac3-41c9-b326-856c9e1f6401",
     "name" : "Concave",
     "abbreviation" : "8.3.1.6.1",
     "description" : "Use this domain for words describing something that is concave--extending inward in shape away from the viewer. The inside of a bowl is concave in shape.",
@@ -13928,6 +16776,8 @@ var semanticDomains_en = {
         "nook" ]
   },
   "8.3.1.6.2 Convex" : {
+    "key" : "8.3.1.6.2",
+    "guid" : "995ee828-2393-462b-be82-47f5b5439aaf",
     "name" : "Convex",
     "abbreviation" : "8.3.1.6.2",
     "description" : "Use this domain for words describing something that is convex--extending outward in shape toward the viewer.",
@@ -13935,24 +16785,32 @@ var semanticDomains_en = {
         "bulge, puff out, balloon out, protrude" ]
   },
   "8.3.1.6.3 Hollow" : {
+    "key" : "8.3.1.6.3",
+    "guid" : "3d10e03a-7902-458d-9c45-938da103d639",
     "name" : "Hollow",
     "abbreviation" : "8.3.1.6.3",
     "description" : "Use this domain for words describing something that is hollow--empty on the inside.",
     "searchKeys" : [ "hollow, cavernous, inflated", "hollow out", "solid" ]
   },
   "8.3.1.7 Square" : {
+    "key" : "8.3.1.7",
+    "guid" : "0fabc72a-ce97-41f3-8a2d-2f27eae09499",
     "name" : "Square",
     "abbreviation" : "8.3.1.7",
     "description" : "Use this domain for words referring to being square.",
     "searchKeys" : [ "square", "square, rectangle, cube, block" ]
   },
   "8.3.1.8 Pattern, design" : {
+    "key" : "8.3.1.8",
+    "guid" : "706cb38c-9aca-4e2f-9653-d9562f07331c",
     "name" : "Pattern, design",
     "abbreviation" : "8.3.1.8",
     "description" : "Use this domain for words that refer to a pattern--a regular arrangement of shapes.",
     "searchKeys" : [ "pattern, design, motif, patterning, markings," ]
   },
   "8.3.1.8.1 Symmetrical" : {
+    "key" : "8.3.1.8.1",
+    "guid" : "45b7dcce-21d5-4738-a64d-e8b0be8a1824",
     "name" : "Symmetrical",
     "abbreviation" : "8.3.1.8.1",
     "description" : "Use this domain for words that describe something that is symmetrical--having the same shape on both sides",
@@ -13960,6 +16818,8 @@ var semanticDomains_en = {
         "asymmetrical, irregular, uneven, unbalanced, lopsided" ]
   },
   "8.3.1.9 Stretch" : {
+    "key" : "8.3.1.9",
+    "guid" : "2594fe01-4d20-4a20-b093-2df70bced18f",
     "name" : "Stretch",
     "abbreviation" : "8.3.1.9",
     "description" : "Use this domain for words referring to stretching something.",
@@ -13967,6 +16827,8 @@ var semanticDomains_en = {
         "inelastic" ]
   },
   "8.3.2 Texture" : {
+    "key" : "8.3.2",
+    "guid" : "2621e605-3ecc-4f3d-b28c-f8c92b3c4584",
     "name" : "Texture",
     "abbreviation" : "8.3.2",
     "description" : "Use this domain for general words referring to the texture of something--how the surface of something feels when you touch it.",
@@ -13975,6 +16837,8 @@ var semanticDomains_en = {
         "texture (v)" ]
   },
   "8.3.2.1 Smooth" : {
+    "key" : "8.3.2.1",
+    "guid" : "867f515b-ed0f-431e-a84a-6c562e1bdbb7",
     "name" : "Smooth",
     "abbreviation" : "8.3.2.1",
     "description" : "Use this domain for words referring to being smooth.",
@@ -13982,6 +16846,8 @@ var semanticDomains_en = {
         "to smooth, even out, polish, buff, shine" ]
   },
   "8.3.2.2 Rough" : {
+    "key" : "8.3.2.2",
+    "guid" : "2e09535f-f61f-4ff5-8d56-23c2916cbb7f",
     "name" : "Rough",
     "abbreviation" : "8.3.2.2",
     "description" : "Use this domain for words referring to being rough.",
@@ -13991,6 +16857,8 @@ var semanticDomains_en = {
         "rut, groove, furrow, groove, wrinkle" ]
   },
   "8.3.2.3 Sharp" : {
+    "key" : "8.3.2.3",
+    "guid" : "313ca832-ce91-44c9-bb35-bd130c39d924",
     "name" : "Sharp",
     "abbreviation" : "8.3.2.3",
     "description" : "Use this domain for words describing something that is sharp.",
@@ -13998,6 +16866,8 @@ var semanticDomains_en = {
         "sharpen, give an edge to" ]
   },
   "8.3.2.3.1 Pointed" : {
+    "key" : "8.3.2.3.1",
+    "guid" : "34fe8676-7bda-493d-a012-bc5748e87823",
     "name" : "Pointed",
     "abbreviation" : "8.3.2.3.1",
     "description" : "Use this domain for words describing something that is pointed.",
@@ -14005,12 +16875,16 @@ var semanticDomains_en = {
         "to point, give a point to, sharpen to a point" ]
   },
   "8.3.2.4 Blunt" : {
+    "key" : "8.3.2.4",
+    "guid" : "396a2a1b-832f-4180-b26a-c606550541d7",
     "name" : "Blunt",
     "abbreviation" : "8.3.2.4",
     "description" : "Use this domain for words describing something that is blunt.",
     "searchKeys" : [ "blunt, dull" ]
   },
   "8.3.2.5 Furrow" : {
+    "key" : "8.3.2.5",
+    "guid" : "c8aea8b2-4088-4d20-a0d2-45c2ad974ee1",
     "name" : "Furrow",
     "abbreviation" : "8.3.2.5",
     "description" : "Use this domain for words related to a furrow--a long mark cut into the surface of something, such as the furrow made by a plow, or a long cut made by a knife.",
@@ -14020,6 +16894,8 @@ var semanticDomains_en = {
         "furrowed, ribbed, striated, fluted, corduroy, corrugated, rippled, washboard, wrinkled" ]
   },
   "8.3.3 Light" : {
+    "key" : "8.3.3",
+    "guid" : "4bf411b7-2b5b-4673-b116-0e6c31fbd08a",
     "name" : "Light",
     "abbreviation" : "8.3.3",
     "description" : "Use this domain for words related to light.",
@@ -14032,6 +16908,8 @@ var semanticDomains_en = {
         "candlepower, frequency, lumen, radiant, radiation, refract, short-wave, spectrum," ]
   },
   "8.3.3.1 Shine" : {
+    "key" : "8.3.3.1",
+    "guid" : "a7824686-a3f3-4c8a-907e-5d841cf846c8",
     "name" : "Shine",
     "abbreviation" : "8.3.3.1",
     "description" : "Use this domain for words related to a light source shining--for something to make light.",
@@ -14042,6 +16920,8 @@ var semanticDomains_en = {
         "luminous, fluorescent, glow in the dark, glimmer," ]
   },
   "8.3.3.1.1 Light source" : {
+    "key" : "8.3.3.1.1",
+    "guid" : "64e41545-3a0a-4524-a8d4-8e5e0f0e2391",
     "name" : "Light source",
     "abbreviation" : "8.3.3.1.1",
     "description" : "Use this domain for words related to a source of light--something that makes or gives light.",
@@ -14057,6 +16937,8 @@ var semanticDomains_en = {
         "leave the lights on," ]
   },
   "8.3.3.1.2 Bright" : {
+    "key" : "8.3.3.1.2",
+    "guid" : "2330813b-7413-41a8-8eb2-ae138511c953",
     "name" : "Bright",
     "abbreviation" : "8.3.3.1.2",
     "description" : "Use this domain for words describing something that is bright.",
@@ -14066,6 +16948,8 @@ var semanticDomains_en = {
         "get light, brighten, lighten, the light grows," ]
   },
   "8.3.3.2 Dark" : {
+    "key" : "8.3.3.2",
+    "guid" : "bf9606ec-9a8e-4822-8bfd-d5eebc58c65b",
     "name" : "Dark",
     "abbreviation" : "8.3.3.2",
     "description" : "Use this domain for words describing something that is dark--a place where there is little or no light.",
@@ -14078,6 +16962,8 @@ var semanticDomains_en = {
         "darkness, the dark, gloom," ]
   },
   "8.3.3.2.1 Shadow" : {
+    "key" : "8.3.3.2.1",
+    "guid" : "cba6876c-5b48-42f4-ae0a-7fbe9bb971ef",
     "name" : "Shadow",
     "abbreviation" : "8.3.3.2.1",
     "description" : "Use this domain for words related to a shadow--the area on the ground where the light does not shine because something is in the way. For instance if the sun (or another light) is shining on an object, the area behind the object is in shadow (dark).",
@@ -14087,6 +16973,8 @@ var semanticDomains_en = {
         "in the shade, shaded, shady, shadowy," ]
   },
   "8.3.3.3 Color" : {
+    "key" : "8.3.3.3",
+    "guid" : "d01f1c51-522e-4b35-81b3-00577dbfa3bd",
     "name" : "Color",
     "abbreviation" : "8.3.3.3",
     "description" : "Use this domain for words related to color.",
@@ -14105,24 +16993,32 @@ var semanticDomains_en = {
         "clash,", "color-blind", "livery, tartan, team colors," ]
   },
   "8.3.3.3.1 White" : {
+    "key" : "8.3.3.3.1",
+    "guid" : "7adf468c-b93a-4b04-8af6-4c691122a4eb",
     "name" : "White",
     "abbreviation" : "8.3.3.3.1",
     "description" : "Use this domain for words describing something that is white.",
     "searchKeys" : [ "white, alabaster, albino, bleached, chalky, cream, cream-colored, creamy, eggshell, fair, ivory, lily-white, milk-white, milky, off-white, oyster white, pearl, pearly, snowy, snow-white," ]
   },
   "8.3.3.3.2 Black" : {
+    "key" : "8.3.3.3.2",
+    "guid" : "ff73fb69-7dac-43e2-876b-0ead264c3f2d",
     "name" : "Black",
     "abbreviation" : "8.3.3.3.2",
     "description" : "Use this domain for words describing something that is black.",
     "searchKeys" : [ "black, pitch black, jet-black, inky black, ebony black, black as coal, coal-black, black as pitch, black as night, night-black, henna, negro, raven," ]
   },
   "8.3.3.3.3 Gray" : {
+    "key" : "8.3.3.3.3",
+    "guid" : "538a4c20-01d7-40b9-b462-ae279ff3dc27",
     "name" : "Gray",
     "abbreviation" : "8.3.3.3.3",
     "description" : "Use this domain for words describing something that is gray.",
     "searchKeys" : [ "gray, ashen, charcoal gray, grizzle, grizzled, grizzly, hoar, hoary, leaden, mouse-colored, mousy, muddy, slate-gray, smoky, sooty, steel-gray," ]
   },
   "8.3.3.3.4 Colors of the spectrum" : {
+    "key" : "8.3.3.3.4",
+    "guid" : "536a2d3e-2303-43bc-bf53-379131eb5730",
     "name" : "Colors of the spectrum",
     "abbreviation" : "8.3.3.3.4",
     "description" : "Use this domain for words describing something that is colored.",
@@ -14139,6 +17035,8 @@ var semanticDomains_en = {
         "metallic, copper, brass, bronze, bronzed, gilded, gilt, gold, golden, platinum, silver, silvery, steely," ]
   },
   "8.3.3.3.5 Animal color, marking" : {
+    "key" : "8.3.3.3.5",
+    "guid" : "16de6eab-afab-4ba4-a279-cf0ba4d7c9e6",
     "name" : "Animal color, marking",
     "abbreviation" : "8.3.3.3.5",
     "description" : "Use this domain for words related to animal colors and markings.",
@@ -14147,6 +17045,8 @@ var semanticDomains_en = {
         "spotted, striped, camouflaged, flecked, speckled, piebald, dappled, star, blaze, brindled, calico, tabby, pinto," ]
   },
   "8.3.3.3.6 Change color" : {
+    "key" : "8.3.3.3.6",
+    "guid" : "a8b3fa0c-077e-4c0d-b4cc-36dcfbdcb4d4",
     "name" : "Change color",
     "abbreviation" : "8.3.3.3.6",
     "description" : "Use this domain for words related to changing the color of something.",
@@ -14160,6 +17060,8 @@ var semanticDomains_en = {
         "fast," ]
   },
   "8.3.3.3.7 Multicolored" : {
+    "key" : "8.3.3.3.7",
+    "guid" : "97ed5af8-29ca-428d-8ac5-c61b61a963fd",
     "name" : "Multicolored",
     "abbreviation" : "8.3.3.3.7",
     "description" : "Use this domain for words describing something that is multicolored--having many different colors.",
@@ -14170,6 +17072,8 @@ var semanticDomains_en = {
         "rainbow-hued, iridescence, iridescent, prismatic, opalescence, opalescent, pearly," ]
   },
   "8.3.3.4 Shiny" : {
+    "key" : "8.3.3.4",
+    "guid" : "aed6c1ec-abbe-47e3-a6cc-a99ecff3b825",
     "name" : "Shiny",
     "abbreviation" : "8.3.3.4",
     "description" : "Use this domain for words that describe something that is shiny--when something gives back light because light is shining on it.",
@@ -14181,6 +17085,8 @@ var semanticDomains_en = {
         "shine, sheen, gloss, luster,", "dull, matt," ]
   },
   "8.3.4 Hot" : {
+    "key" : "8.3.4",
+    "guid" : "742996cd-b87f-40a8-bdb3-dba74219bd73",
     "name" : "Hot",
     "abbreviation" : "8.3.4",
     "description" : "Use this domain for words describing something that is hot.",
@@ -14203,6 +17109,8 @@ var semanticDomains_en = {
         "room temperature, ambient temperature," ]
   },
   "8.3.4.1 Cold" : {
+    "key" : "8.3.4.1",
+    "guid" : "82e4394a-2f58-4356-8d9c-1ad9dbe95293",
     "name" : "Cold",
     "abbreviation" : "8.3.4.1",
     "description" : "Use this domain for words describing something that is cold.",
@@ -14225,6 +17133,8 @@ var semanticDomains_en = {
         "fan, cooler, air-conditioning, air-conditioner, air-conditioned, refrigeration," ]
   },
   "8.3.5 Type, kind" : {
+    "key" : "8.3.5",
+    "guid" : "bfeba2a4-4479-49e9-838c-3baa2ad0fcae",
     "name" : "Type, kind",
     "abbreviation" : "8.3.5",
     "description" : "Use this domain for words related to something being a type of thing, or that something belongs to a class of things.",
@@ -14235,18 +17145,24 @@ var semanticDomains_en = {
         "classify (with, as), classification, class, assign to a class, categorize, grade, group, sort," ]
   },
   "8.3.5.1 Nature, character" : {
+    "key" : "8.3.5.1",
+    "guid" : "25763563-5ad6-4b4d-9073-3fc88f6dd44e",
     "name" : "Nature, character",
     "abbreviation" : "8.3.5.1",
     "description" : "Use this domain for words related to the nature of character of something.",
     "searchKeys" : [ "nature, character, such" ]
   },
   "8.3.5.2 Compare" : {
+    "key" : "8.3.5.2",
+    "guid" : "fe9253f4-d063-4d63-91af-85273d61337f",
     "name" : "Compare",
     "abbreviation" : "8.3.5.2",
     "description" : "Use this domain for words related to comparing something or someone with another thing.",
     "searchKeys" : [ "compare, comparison, contrast, than, comparable" ]
   },
   "8.3.5.2.1 Same" : {
+    "key" : "8.3.5.2.1",
+    "guid" : "99b5b80a-a2d6-4820-adfc-1da72528c272",
     "name" : "Same",
     "abbreviation" : "8.3.5.2.1",
     "description" : "Use this domain for words describing something that is the same thing as you just mentioned, or describing two things that are exactly the same.",
@@ -14266,6 +17182,8 @@ var semanticDomains_en = {
         "equate," ]
   },
   "8.3.5.2.2 Like, similar" : {
+    "key" : "8.3.5.2.2",
+    "guid" : "fba27833-d6f1-4c36-ac39-28902b29261b",
     "name" : "Like, similar",
     "abbreviation" : "8.3.5.2.2",
     "description" : "Use this domain for words describing two things or people that are similar, but not the same.",
@@ -14284,6 +17202,8 @@ var semanticDomains_en = {
         "similarity, likeness, resemblance,", "similarity, parallel," ]
   },
   "8.3.5.2.3 Different" : {
+    "key" : "8.3.5.2.3",
+    "guid" : "0d427d55-d63e-4a35-a66a-5e4dce0a963e",
     "name" : "Different",
     "abbreviation" : "8.3.5.2.3",
     "description" : "Use this domain for words describing two things that are different--not the same.",
@@ -14292,48 +17212,64 @@ var semanticDomains_en = {
         "tell the difference, see the difference, distinguish, differentiate," ]
   },
   "8.3.5.2.4 Other" : {
+    "key" : "8.3.5.2.4",
+    "guid" : "99988f94-3aa4-4984-88df-ae228f01d3b7",
     "name" : "Other",
     "abbreviation" : "8.3.5.2.4",
     "description" : "Use this domain for words related to other, as in 'the other person', 'another thing'--a thing that is not the same as something that has been mentioned.",
     "searchKeys" : [ "other, another, different, else, other than," ]
   },
   "8.3.5.2.5 Various" : {
+    "key" : "8.3.5.2.5",
+    "guid" : "2f98291a-47a7-4b7b-9256-2c0249105be1",
     "name" : "Various",
     "abbreviation" : "8.3.5.2.5",
     "description" : "Use this domain for words describing a group of things that are all different from each other.",
     "searchKeys" : [ "various," ]
   },
   "8.3.5.2.6 Opposite" : {
+    "key" : "8.3.5.2.6",
+    "guid" : "23fa2115-3979-472c-8939-4db8d54e4c98",
     "name" : "Opposite",
     "abbreviation" : "8.3.5.2.6",
     "description" : "Use this domain for words describing two things that are opposite.",
     "searchKeys" : [ "opposite," ]
   },
   "8.3.5.3 Common" : {
+    "key" : "8.3.5.3",
+    "guid" : "06a44085-cbcf-4217-ae5e-56c51899c99a",
     "name" : "Common",
     "abbreviation" : "8.3.5.3",
     "description" : "Use this domain for words describing something that is common.",
     "searchKeys" : [ "common, widespread" ]
   },
   "8.3.5.3.1 Usual" : {
+    "key" : "8.3.5.3.1",
+    "guid" : "f6896060-4d5c-45e2-b89a-f9f6328a479c",
     "name" : "Usual",
     "abbreviation" : "8.3.5.3.1",
     "description" : "Use this domain for words describing something that is usual.",
     "searchKeys" : [ "usual, normal, natural, typical, ordinary" ]
   },
   "8.3.5.3.2 Unusual" : {
+    "key" : "8.3.5.3.2",
+    "guid" : "b0156a7c-928a-4cc8-a021-4af4dc74fead",
     "name" : "Unusual",
     "abbreviation" : "8.3.5.3.2",
     "description" : "Use this domain for words describing something that is unusual.",
     "searchKeys" : [ "unusual, rare, infrequent, out of the ordinary, abnormal, unnatural, atypical, singular" ]
   },
   "8.3.5.3.3 Unique" : {
+    "key" : "8.3.5.3.3",
+    "guid" : "2cccfd92-de45-42c2-83f7-1e0ef7dfddc1",
     "name" : "Unique",
     "abbreviation" : "8.3.5.3.3",
     "description" : "Use this domain for words describing something that is unique--not like anything else.",
     "searchKeys" : [ "unique, distinctive" ]
   },
   "8.3.5.3.4 Strange" : {
+    "key" : "8.3.5.3.4",
+    "guid" : "6a6f0748-a6e9-4d64-b14e-543bb6ec2ec8",
     "name" : "Strange",
     "abbreviation" : "8.3.5.3.4",
     "description" : "Use this domain for words describing something that is strange.",
@@ -14343,6 +17279,8 @@ var semanticDomains_en = {
         "unconformity, nonconformity" ]
   },
   "8.3.5.4 Pattern, model" : {
+    "key" : "8.3.5.4",
+    "guid" : "ac527685-f31d-42f3-81bd-97221a01c7ef",
     "name" : "Pattern, model",
     "abbreviation" : "8.3.5.4",
     "description" : "Use this domain for words related to a pattern or model.",
@@ -14351,6 +17289,8 @@ var semanticDomains_en = {
         "scale, full-scale, life-size," ]
   },
   "8.3.5.5 Imitate" : {
+    "key" : "8.3.5.5",
+    "guid" : "af62c8f6-43c7-4c44-a0d1-ab9bcff8e26f",
     "name" : "Imitate",
     "abbreviation" : "8.3.5.5",
     "description" : "Use this domain for words related to imitating someone--to do things in the same way as another person.",
@@ -14358,6 +17298,8 @@ var semanticDomains_en = {
         "likewise," ]
   },
   "8.3.5.6 Copy" : {
+    "key" : "8.3.5.6",
+    "guid" : "0c7c33f2-4cfa-42df-84bb-19fc915a72bd",
     "name" : "Copy",
     "abbreviation" : "8.3.5.6",
     "description" : "Use this domain for words related to copying something.",
@@ -14366,6 +17308,8 @@ var semanticDomains_en = {
         "copy (n), duplicate, photocopy, duplication, clone, replica, reproduction," ]
   },
   "8.3.6 Made of, material" : {
+    "key" : "8.3.6",
+    "guid" : "c05bf8c3-78f2-4ec5-b0d7-32d4963a5794",
     "name" : "Made of, material",
     "abbreviation" : "8.3.6",
     "description" : "Use this domain for words that mark the material out of which something has been made.",
@@ -14376,6 +17320,8 @@ var semanticDomains_en = {
         "out of, with, from, of," ]
   },
   "8.3.6.1 Strong, brittle" : {
+    "key" : "8.3.6.1",
+    "guid" : "e86364ac-6fa1-4aad-a6c1-068d56b6a1f1",
     "name" : "Strong, brittle",
     "abbreviation" : "8.3.6.1",
     "description" : "Use this domain for words that describe something that is strong--not easily broken.",
@@ -14383,6 +17329,8 @@ var semanticDomains_en = {
         "brittle, weak, weakness, breakable" ]
   },
   "8.3.6.2 Hard, firm" : {
+    "key" : "8.3.6.2",
+    "guid" : "16ee1e09-27ad-48c5-aa07-6933ecbbc716",
     "name" : "Hard, firm",
     "abbreviation" : "8.3.6.2",
     "description" : "Use this domain for words that describe something that is hard--not easily cut, or broken.",
@@ -14392,6 +17340,8 @@ var semanticDomains_en = {
         "harden, firm up, petrify, stiffen, toughen" ]
   },
   "8.3.6.3 Stiff, flexible" : {
+    "key" : "8.3.6.3",
+    "guid" : "314c8fea-4bdb-4bc8-ab67-a26a9c5abbd4",
     "name" : "Stiff, flexible",
     "abbreviation" : "8.3.6.3",
     "description" : "Use this domain for words that describe something that is stiff--not easy to bend.",
@@ -14401,6 +17351,8 @@ var semanticDomains_en = {
         "stiffen, rigidify" ]
   },
   "8.3.6.4 Dense" : {
+    "key" : "8.3.6.4",
+    "guid" : "6c305af5-cff5-4f7f-bd89-040d4c265355",
     "name" : "Dense",
     "abbreviation" : "8.3.6.4",
     "description" : "Use this domain for words describing something that is dense.",
@@ -14409,12 +17361,16 @@ var semanticDomains_en = {
         "thin, porous, spongy, hollow, tenuous, rare", "thin, rarefy" ]
   },
   "8.3.6.5 Soft, flimsy" : {
+    "key" : "8.3.6.5",
+    "guid" : "47f170eb-5f1d-49a5-85bb-240047f392c0",
     "name" : "Soft, flimsy",
     "abbreviation" : "8.3.6.5",
     "description" : "Use this domain for words describing something that is soft or flimsy.",
     "searchKeys" : [ "soft, flimsy, easily broken, tender", "soften" ]
   },
   "8.3.7 Good" : {
+    "key" : "8.3.7",
+    "guid" : "83adeb9d-c0be-4073-894d-913014420280",
     "name" : "Good",
     "abbreviation" : "8.3.7",
     "description" : "Use this domain for words describing something that is good.",
@@ -14422,48 +17378,64 @@ var semanticDomains_en = {
         "good, nice", "well done" ]
   },
   "8.3.7.1 Bad" : {
+    "key" : "8.3.7.1",
+    "guid" : "aecf2aad-b7a4-444f-9b13-64bc534126d2",
     "name" : "Bad",
     "abbreviation" : "8.3.7.1",
     "description" : "Use this domain for words describing something bad.",
     "searchKeys" : [ "bad, no good, lousy, unpleasant, cheap, severe, terrible, abject, mean, low, base, infamous, ignoble, irregular," ]
   },
   "8.3.7.2 Better" : {
+    "key" : "8.3.7.2",
+    "guid" : "434ec34f-e7ca-44f8-9252-dff5b9b2b62f",
     "name" : "Better",
     "abbreviation" : "8.3.7.2",
     "description" : "Use this domain for words describing something that is better than something else.",
     "searchKeys" : [ "better, best, surpass, superior" ]
   },
   "8.3.7.2.1 Worse" : {
+    "key" : "8.3.7.2.1",
+    "guid" : "91cc7e8f-522e-4ff1-b545-5a5b72f4e953",
     "name" : "Worse",
     "abbreviation" : "8.3.7.2.1",
     "description" : "Use this domain for words describing something that is worse than something else.",
     "searchKeys" : [ "worse, lesser, inferior", "degenerate, deteriorate" ]
   },
   "8.3.7.3 Perfect" : {
+    "key" : "8.3.7.3",
+    "guid" : "c7ccc5bb-181d-420f-8665-64793fefb37b",
     "name" : "Perfect",
     "abbreviation" : "8.3.7.3",
     "description" : "Use this domain for words describing something that is perfect.",
     "searchKeys" : [ "perfect, flawless", "imperfect, flawed" ]
   },
   "8.3.7.4 Mediocre" : {
+    "key" : "8.3.7.4",
+    "guid" : "b59f6fc4-629d-4e62-8673-cf62f8ad8197",
     "name" : "Mediocre",
     "abbreviation" : "8.3.7.4",
     "description" : "Use this domain for words describing something that is mediocre.",
     "searchKeys" : [ "mediocre, average, undistinguished" ]
   },
   "8.3.7.5 Important" : {
+    "key" : "8.3.7.5",
+    "guid" : "11665f1d-aca9-4699-afb2-bcdea69c6645",
     "name" : "Important",
     "abbreviation" : "8.3.7.5",
     "description" : "Use this domain for words describing something that is important.",
     "searchKeys" : [ "important, main (thing), grand, great, urgent, worthy" ]
   },
   "8.3.7.5.1 Basic" : {
+    "key" : "8.3.7.5.1",
+    "guid" : "8938e132-6534-4428-9b03-cb1f459b7cbe",
     "name" : "Basic",
     "abbreviation" : "8.3.7.5.1",
     "description" : "Use this domain for words describing something that is basic.",
     "searchKeys" : [ "basic, fundamental, essential, central" ]
   },
   "8.3.7.6 Improve" : {
+    "key" : "8.3.7.6",
+    "guid" : "c9b5f83e-529d-45af-949f-4cc6b0591b66",
     "name" : "Improve",
     "abbreviation" : "8.3.7.6",
     "description" : "Use this domain for words related to improving something--to make something better.",
@@ -14472,6 +17444,8 @@ var semanticDomains_en = {
         "improved, corrected," ]
   },
   "8.3.7.7 Right, proper" : {
+    "key" : "8.3.7.7",
+    "guid" : "f29dccae-1654-4eb7-8aae-04f7df4fe90c",
     "name" : "Right, proper",
     "abbreviation" : "8.3.7.7",
     "description" : "Use this domain for words describing something, such as a tool or way of doing something, that is proper for a particular time, place, purpose, or job. The words in this domain involve a comparison between two things, an item and a setting. An evaluation is made as to how good the item is in the setting. The words may be used only of certain types of items, certain types of settings, or certain types of usefulness.",
@@ -14484,6 +17458,8 @@ var semanticDomains_en = {
         "suitability, suitableness, fit (n)," ]
   },
   "8.3.7.7.1 Wrong, unsuitable" : {
+    "key" : "8.3.7.7.1",
+    "guid" : "21f21658-a69a-491c-a37b-156a8f4ad3fb",
     "name" : "Wrong, unsuitable",
     "abbreviation" : "8.3.7.7.1",
     "description" : "Use this domain for words describing something, such as a tool or way of doing something, that is unsuitable for a particular time, place, purpose, or job.",
@@ -14496,6 +17472,8 @@ var semanticDomains_en = {
         "be out of place, misfit," ]
   },
   "8.3.7.7.2 Convenient" : {
+    "key" : "8.3.7.7.2",
+    "guid" : "c7dbd50e-0ff5-42af-a7a9-9eaf03671c49",
     "name" : "Convenient",
     "abbreviation" : "8.3.7.7.2",
     "description" : "Use this domain for words describing something that is convenient--a good time to do something.",
@@ -14504,6 +17482,8 @@ var semanticDomains_en = {
         "inconvenient, not convenient, be bad for, a bad time" ]
   },
   "8.3.7.7.3 Compatible" : {
+    "key" : "8.3.7.7.3",
+    "guid" : "2b2bedd5-3f9c-4c18-a256-aa65ee19f15c",
     "name" : "Compatible",
     "abbreviation" : "8.3.7.7.3",
     "description" : "Use this domain for words related to being compatible--words that describe two things or people that can be together or work together without problems or conflict.",
@@ -14518,6 +17498,8 @@ var semanticDomains_en = {
         "incompatibility," ]
   },
   "8.3.7.8 Decay" : {
+    "key" : "8.3.7.8",
+    "guid" : "76a06e45-99f7-446f-a2e8-e23edf6064bd",
     "name" : "Decay",
     "abbreviation" : "8.3.7.8",
     "description" : "Use this domain for words related to something decaying--when a living thing dies and becomes bad, or when a part of a living thing becomes bad.",
@@ -14531,6 +17513,8 @@ var semanticDomains_en = {
         "eaten by insects, infested with termites, moth-eaten" ]
   },
   "8.3.7.8.1 Rust" : {
+    "key" : "8.3.7.8.1",
+    "guid" : "94f50cb8-9a59-42cc-9891-247cc3de7428",
     "name" : "Rust",
     "abbreviation" : "8.3.7.8.1",
     "description" : "Use this domain for words related to metal rusting--when metal becomes bad.",
@@ -14541,6 +17525,8 @@ var semanticDomains_en = {
         "rust, tarnish,", "corrosive," ]
   },
   "8.3.7.8.2 Blemish" : {
+    "key" : "8.3.7.8.2",
+    "guid" : "de7b8df5-83a7-4456-a63a-1075ff17dbaf",
     "name" : "Blemish",
     "abbreviation" : "8.3.7.8.2",
     "description" : "Use this domain for words related to a blemish--something small and bad on the skin of a person or the surface of something, but not something serious, especially something wrong that does not affect how something works.",
@@ -14549,6 +17535,8 @@ var semanticDomains_en = {
         "blemished, defaced, marred," ]
   },
   "8.3.7.8.3 Garbage" : {
+    "key" : "8.3.7.8.3",
+    "guid" : "03352940-c220-4a32-a9a5-fc08d1d0dc71",
     "name" : "Garbage",
     "abbreviation" : "8.3.7.8.3",
     "description" : "Use this domain for words related to garbage--something that is no longer wanted.",
@@ -14562,6 +17550,8 @@ var semanticDomains_en = {
         "pollution, pollute, pollutant, smog, acid rain" ]
   },
   "8.3.7.8.4 Preserve" : {
+    "key" : "8.3.7.8.4",
+    "guid" : "98f9ceff-e8a2-4e24-abc4-561b80bb5889",
     "name" : "Preserve",
     "abbreviation" : "8.3.7.8.4",
     "description" : "Use this domain for words related to preserving the condition of something from decay.",
@@ -14574,6 +17564,8 @@ var semanticDomains_en = {
         "preservation, embalming, mummification," ]
   },
   "8.3.7.9 Value" : {
+    "key" : "8.3.7.9",
+    "guid" : "cd4300c9-265e-4457-8e33-4e0c9a4d4ba8",
     "name" : "Value",
     "abbreviation" : "8.3.7.9",
     "description" : "Use this domain for words related to the value of something.",
@@ -14586,6 +17578,8 @@ var semanticDomains_en = {
         "decrease in value, debase, degrade, deflate, deflation, depreciate" ]
   },
   "8.3.8 Decorated" : {
+    "key" : "8.3.8",
+    "guid" : "130e2cbb-7e51-4f6f-a1cf-7a053a44c9b7",
     "name" : "Decorated",
     "abbreviation" : "8.3.8",
     "description" : "Use this domain for words describing something that is decorated.",
@@ -14595,18 +17589,24 @@ var semanticDomains_en = {
         "decoration, adornment, embellishment, ornament," ]
   },
   "8.3.8.1 Simple, plain" : {
+    "key" : "8.3.8.1",
+    "guid" : "91e95825-677a-4221-9e55-78a73bbac6ee",
     "name" : "Simple, plain",
     "abbreviation" : "8.3.8.1",
     "description" : "Use this domain for words describing something that is simple or plain.",
     "searchKeys" : [ "simple, plain, bare" ]
   },
   "8.3.8.2 Glory" : {
+    "key" : "8.3.8.2",
+    "guid" : "312ce7a7-8c7c-416d-bf93-73376f1f16d8",
     "name" : "Glory",
     "abbreviation" : "8.3.8.2",
     "description" : "Use this domain for words describing the appearance of something that has pleasing aspects or inspires awe and wonder in the viewer. For instance, the palace of a king, the home of a rich man, or a temple may be elaborately decorated and be described as glorious or magnificent. Or something in nature such as a sunset or flower may inspire awe and wonder.",
     "searchKeys" : [ "glory, glorious, magnificent, splendor, resplendent, awe inspiring, wonderful, grand, great" ]
   },
   "8.4 Time" : {
+    "key" : "8.4",
+    "guid" : "21167445-f1b1-49b4-b147-bc792616c432",
     "name" : "Time",
     "abbreviation" : "8.4",
     "description" : "Use this domain for general words related to time, and for words indicating the temporal location of an event.",
@@ -14614,6 +17614,8 @@ var semanticDomains_en = {
         "when, upon, thereupon, then, at, be at, be on, -'s, time" ]
   },
   "8.4.1 Period of time" : {
+    "key" : "8.4.1",
+    "guid" : "14ad95ad-50fc-450f-b44d-4273df0b1e8b",
     "name" : "Period of time",
     "abbreviation" : "8.4.1",
     "description" : "Use this domain for words referring to a period of time.",
@@ -14623,6 +17625,8 @@ var semanticDomains_en = {
         "point, moment," ]
   },
   "8.4.1.1 Calendar" : {
+    "key" : "8.4.1.1",
+    "guid" : "f8c6a6a9-49f0-408a-9237-a66e852da7d3",
     "name" : "Calendar",
     "abbreviation" : "8.4.1.1",
     "description" : "Use this domain for words related to the calendar.",
@@ -14632,6 +17636,8 @@ var semanticDomains_en = {
         "calendar, Gregorian calendar, Julian calendar, BC (before Christ), AD (ad Domino), Christian era" ]
   },
   "8.4.1.2 Day" : {
+    "key" : "8.4.1.2",
+    "guid" : "afe7cc92-e0ad-40d9-be56-aa12d2693a3f",
     "name" : "Day",
     "abbreviation" : "8.4.1.2",
     "description" : "Use this domain for words referring to a day.",
@@ -14643,6 +17649,8 @@ var semanticDomains_en = {
         "day (as opposed to night), during the day, daytime, daylight, daylight hours" ]
   },
   "8.4.1.2.1 Night" : {
+    "key" : "8.4.1.2.1",
+    "guid" : "1088cc2f-83ae-4911-8018-401a745dcfd5",
     "name" : "Night",
     "abbreviation" : "8.4.1.2.1",
     "description" : "Use this domain for words referring to night.",
@@ -14654,12 +17662,16 @@ var semanticDomains_en = {
         "all night long, the whole night long," ]
   },
   "8.4.1.2.2 Yesterday, today, tomorrow" : {
+    "key" : "8.4.1.2.2",
+    "guid" : "3a0dc521-f028-4c17-945c-b121e2d3dc0b",
     "name" : "Yesterday, today, tomorrow",
     "abbreviation" : "8.4.1.2.2",
     "description" : "Use this domain for words referring to days relative to each other.",
     "searchKeys" : [ "today, yesterday, the day before yesterday, three days ago, tomorrow, the day after tomorrow, three days from now, the day before, the day after" ]
   },
   "8.4.1.2.3 Time of the day" : {
+    "key" : "8.4.1.2.3",
+    "guid" : "0cc62b4a-d5ff-4f45-83d1-e2b46e5d159a",
     "name" : "Time of the day",
     "abbreviation" : "8.4.1.2.3",
     "description" : "Use this domain for words referring to a time of the day.",
@@ -14678,6 +17690,8 @@ var semanticDomains_en = {
         "time to get up," ]
   },
   "8.4.1.3 Week" : {
+    "key" : "8.4.1.3",
+    "guid" : "b21ace5f-9307-4bdc-b103-9fdf14a5655e",
     "name" : "Week",
     "abbreviation" : "8.4.1.3",
     "description" : "Use this domain for words related to a week.",
@@ -14686,6 +17700,8 @@ var semanticDomains_en = {
         "weekly, every week, each week" ]
   },
   "8.4.1.3.1 Days of the week" : {
+    "key" : "8.4.1.3.1",
+    "guid" : "de544ebd-9f94-4831-8887-944c3bbbc254",
     "name" : "Days of the week",
     "abbreviation" : "8.4.1.3.1",
     "description" : "Use this domain for words referring to the days of the week.",
@@ -14695,6 +17711,8 @@ var semanticDomains_en = {
         "days of the week" ]
   },
   "8.4.1.4 Month" : {
+    "key" : "8.4.1.4",
+    "guid" : "4e23b037-0547-4650-89c3-2b259b637fb6",
     "name" : "Month",
     "abbreviation" : "8.4.1.4",
     "description" : "Use this domain for words referring to a month.",
@@ -14704,12 +17722,16 @@ var semanticDomains_en = {
         "full moon, half moon, new moon," ]
   },
   "8.4.1.4.1 Months of the year" : {
+    "key" : "8.4.1.4.1",
+    "guid" : "46dbda42-fe21-4e52-8eeb-4263ded7031b",
     "name" : "Months of the year",
     "abbreviation" : "8.4.1.4.1",
     "description" : "Use this domain for words referring to the months of the year.",
     "searchKeys" : [ "January, February, March, April, May, June, July, August, September, October, November, December" ]
   },
   "8.4.1.5 Season" : {
+    "key" : "8.4.1.5",
+    "guid" : "0622d3f7-1ab2-482b-9f9c-9c101cd35182",
     "name" : "Season",
     "abbreviation" : "8.4.1.5",
     "description" : "Use this domain for words referring to seasons of the year that are related to the time of year, the weather, or times of cultivation.",
@@ -14721,6 +17743,8 @@ var semanticDomains_en = {
         "planting season, growing season, harvest season, hunger season" ]
   },
   "8.4.1.6 Year" : {
+    "key" : "8.4.1.6",
+    "guid" : "fcf16495-5226-4192-afdb-e748192efc3a",
     "name" : "Year",
     "abbreviation" : "8.4.1.6",
     "description" : "Use this domain for words referring to a year.",
@@ -14729,12 +17753,16 @@ var semanticDomains_en = {
         "yearly, every year, annually, annual" ]
   },
   "8.4.1.7 Era" : {
+    "key" : "8.4.1.7",
+    "guid" : "1689ac96-1159-4575-bf5f-d16345f9496c",
     "name" : "Era",
     "abbreviation" : "8.4.1.7",
     "description" : "Use this domain for words referring to an era--a very long period of time.",
     "searchKeys" : [ "era, age, epoch, the times, generation, this age, the age to come" ]
   },
   "8.4.1.8 Special days" : {
+    "key" : "8.4.1.8",
+    "guid" : "659ccabf-f978-4852-a1a6-c225f1d76b97",
     "name" : "Special days",
     "abbreviation" : "8.4.1.8",
     "description" : "Use this domain for words referring to a special day.",
@@ -14743,12 +17771,16 @@ var semanticDomains_en = {
         "weekend, day off, Sabbath, day of rest" ]
   },
   "8.4.2 Take time" : {
+    "key" : "8.4.2",
+    "guid" : "c2b720f5-1123-446e-9f60-088a3272b889",
     "name" : "Take time",
     "abbreviation" : "8.4.2",
     "description" : "Use this domain for words referring to taking time to do something.",
     "searchKeys" : [ "take time, spend time, use time, make time, find time" ]
   },
   "8.4.2.1 A short time" : {
+    "key" : "8.4.2.1",
+    "guid" : "5bb495a5-ab5b-4409-8cd1-e48b56401fad",
     "name" : "A short time",
     "abbreviation" : "8.4.2.1",
     "description" : "Use this domain for words referring to a short time.",
@@ -14759,6 +17791,8 @@ var semanticDomains_en = {
         "be brief, don't take long, get it over with" ]
   },
   "8.4.2.2 A long time" : {
+    "key" : "8.4.2.2",
+    "guid" : "7ea946fb-6469-4f21-a5a4-7963878e6fe2",
     "name" : "A long time",
     "abbreviation" : "8.4.2.2",
     "description" : "Use this domain for words referring to a long time.",
@@ -14767,6 +17801,8 @@ var semanticDomains_en = {
         "take your time, make it last, we want this to last a long time" ]
   },
   "8.4.2.3 Forever" : {
+    "key" : "8.4.2.3",
+    "guid" : "c8185ca6-567a-40ef-939f-ffefdd9a4770",
     "name" : "Forever",
     "abbreviation" : "8.4.2.3",
     "description" : "Use this domain for words referring to something happening forever.",
@@ -14777,18 +17813,24 @@ var semanticDomains_en = {
         "eternity, infinity, all times" ]
   },
   "8.4.2.4 Temporary" : {
+    "key" : "8.4.2.4",
+    "guid" : "f3a26e0a-727f-43ab-9310-88b8cec8f6d7",
     "name" : "Temporary",
     "abbreviation" : "8.4.2.4",
     "description" : "Use this domain for words referring to something being temporary.",
     "searchKeys" : [ "temporary, transient" ]
   },
   "8.4.3 Indefinite time" : {
+    "key" : "8.4.3",
+    "guid" : "532245e7-8f46-4394-9045-240475ee62e8",
     "name" : "Indefinite time",
     "abbreviation" : "8.4.3",
     "description" : "Use this domain for words referring to an indefinite time.",
     "searchKeys" : [ "when, then, sometime, someday, anytime, onetime, whenever, approximate, approximately," ]
   },
   "8.4.4 Telling time" : {
+    "key" : "8.4.4",
+    "guid" : "06cb2024-5f7b-467c-b32c-ef4c56030ac0",
     "name" : "Telling time",
     "abbreviation" : "8.4.4",
     "description" : "Use this domain for words related to telling time.",
@@ -14799,6 +17841,8 @@ var semanticDomains_en = {
         "(In written English we use a semicolon to separate the hour from the minute: 5:00.)" ]
   },
   "8.4.4.1 Plan a time" : {
+    "key" : "8.4.4.1",
+    "guid" : "12d752d5-53a9-46f6-9e81-3153401cc760",
     "name" : "Plan a time",
     "abbreviation" : "8.4.4.1",
     "description" : "Use this domain for words referring to planning the time of an event.",
@@ -14807,18 +17851,24 @@ var semanticDomains_en = {
         "time, date, timing", "schedule, timetable, program" ]
   },
   "8.4.4.2 Clock, watch" : {
+    "key" : "8.4.4.2",
+    "guid" : "c4fdb9ce-93cc-405b-b673-4058821bf794",
     "name" : "Clock, watch",
     "abbreviation" : "8.4.4.2",
     "description" : "Use this domain for machines that indicate what time it is.",
     "searchKeys" : [ "timepiece, watch, clock, alarm clock, digital watch, analog watch, electric clock, sundial, pendulum, hourglass" ]
   },
   "8.4.5 Relative time" : {
+    "key" : "8.4.5",
+    "guid" : "1f4efae7-1029-4b66-80ee-802459a7baf5",
     "name" : "Relative time",
     "abbreviation" : "8.4.5",
     "description" : "Use the domains in this section for words that relate one time to another. Use this domain for words that indicate a temporal relation between situations.",
     "searchKeys" : [ "relative to, in relation to, before or after" ]
   },
   "8.4.5.1 Order, sequence" : {
+    "key" : "8.4.5.1",
+    "guid" : "00269021-e1c4-474d-9dba-341d296bdac7",
     "name" : "Order, sequence",
     "abbreviation" : "8.4.5.1",
     "description" : "Use this domain for words referring to temporal order or sequence--the order in which a group of events happen. Things and people may also be in order based on the order in which something happened or should happen to them.",
@@ -14834,6 +17884,8 @@ var semanticDomains_en = {
         "gap", "be,", "of," ]
   },
   "8.4.5.1.1 Series" : {
+    "key" : "8.4.5.1.1",
+    "guid" : "00041516-72d1-4e56-9ed8-fe235a9b1a68",
     "name" : "Series",
     "abbreviation" : "8.4.5.1.1",
     "description" : "Use this domain for words related to a series--several things that happen one after another.",
@@ -14844,6 +17896,8 @@ var semanticDomains_en = {
         "place, order, rank, slot, grade," ]
   },
   "8.4.5.1.2 First" : {
+    "key" : "8.4.5.1.2",
+    "guid" : "f352a437-58f2-4920-aec3-eda8041f7447",
     "name" : "First",
     "abbreviation" : "8.4.5.1.2",
     "description" : "Use this domain for words referring to something happening first--to be before all other things in order or time.",
@@ -14860,6 +17914,8 @@ var semanticDomains_en = {
         "pioneer, the first,", "prototype, original (n)," ]
   },
   "8.4.5.1.3 Next" : {
+    "key" : "8.4.5.1.3",
+    "guid" : "a345d090-14e2-4897-9186-debcb05ab27c",
     "name" : "Next",
     "abbreviation" : "8.4.5.1.3",
     "description" : "Use this domain for words referring to something happening next.",
@@ -14869,6 +17925,8 @@ var semanticDomains_en = {
         "follow, come next, be after, be next, succeed, come after, go after, go next, ensue," ]
   },
   "8.4.5.1.4 Last" : {
+    "key" : "8.4.5.1.4",
+    "guid" : "49aa89f2-2022-4213-845e-dbbb4b53476c",
     "name" : "Last",
     "abbreviation" : "8.4.5.1.4",
     "description" : "Use this domain for words referring to something happening last--to happen after all other things in a sequence, or to be the last person or thing in a sequence.",
@@ -14882,6 +17940,8 @@ var semanticDomains_en = {
         "the last, the latter,", "end, ending, finish," ]
   },
   "8.4.5.1.5 Regular" : {
+    "key" : "8.4.5.1.5",
+    "guid" : "6712385a-6740-4f28-8bbe-8615ea17116b",
     "name" : "Regular",
     "abbreviation" : "8.4.5.1.5",
     "description" : "Use this domain for words referring to something that happens regularly.",
@@ -14891,6 +17951,8 @@ var semanticDomains_en = {
         "irregular, without warning" ]
   },
   "8.4.5.1.6 Alternate" : {
+    "key" : "8.4.5.1.6",
+    "guid" : "95a8d932-9554-439f-afb5-ab158f2eed96",
     "name" : "Alternate",
     "abbreviation" : "8.4.5.1.6",
     "description" : "Use this domain for words related to alternating--when several things happen one after another in a repeated pattern.",
@@ -14901,6 +17963,8 @@ var semanticDomains_en = {
         "alternate, take turns, take it in turns, share, spell each other, go back and forth," ]
   },
   "8.4.5.2 Before" : {
+    "key" : "8.4.5.2",
+    "guid" : "d80360f9-7319-40a7-a2bc-fd8718711ba4",
     "name" : "Before",
     "abbreviation" : "8.4.5.2",
     "description" : "Use this domain for words referring to one event happening before another.",
@@ -14921,6 +17985,8 @@ var semanticDomains_en = {
         "above, aforementioned, foregoing," ]
   },
   "8.4.5.2.1 After" : {
+    "key" : "8.4.5.2.1",
+    "guid" : "bdaecf2f-d0fa-49f7-891e-bcb0a31ae630",
     "name" : "After",
     "abbreviation" : "8.4.5.2.1",
     "description" : "Use this domain for words referring to one event happening after another.",
@@ -14937,6 +18003,8 @@ var semanticDomains_en = {
         "and, and then, then, having...-en, after, thereafter, thereon, thereupon, whereupon, upon," ]
   },
   "8.4.5.2.2 At the same time" : {
+    "key" : "8.4.5.2.2",
+    "guid" : "9f8b8c01-f790-469f-bc37-dece6227e276",
     "name" : "At the same time",
     "abbreviation" : "8.4.5.2.2",
     "description" : "Use this domain for words referring to two things happening at the same time.",
@@ -14949,6 +18017,8 @@ var semanticDomains_en = {
         "contemporary, be a contemporary of someone, be contemporaries" ]
   },
   "8.4.5.2.3 During" : {
+    "key" : "8.4.5.2.3",
+    "guid" : "69d039e6-f669-4d54-8b67-89b19ff0a19c",
     "name" : "During",
     "abbreviation" : "8.4.5.2.3",
     "description" : "Use this domain for words indicating that something happened during some time period, or that something happened while something else was happening.",
@@ -14957,6 +18027,8 @@ var semanticDomains_en = {
         "while, meanwhile, in the meantime," ]
   },
   "8.4.5.3 Right time" : {
+    "key" : "8.4.5.3",
+    "guid" : "6bf8ce57-1970-4efb-a7d7-b0bf8be6fb6b",
     "name" : "Right time",
     "abbreviation" : "8.4.5.3",
     "description" : "Use this domain for words referring to the right time to do something.",
@@ -14968,6 +18040,8 @@ var semanticDomains_en = {
         "badly-timed, ill-timed, come at the wrong time, at a bad time, inopportune," ]
   },
   "8.4.5.3.1 Early" : {
+    "key" : "8.4.5.3.1",
+    "guid" : "eb662979-604c-455e-a2c6-a84b03a2ee3a",
     "name" : "Early",
     "abbreviation" : "8.4.5.3.1",
     "description" : "Use this domain for words that indicate that something happens early--before the expected time, before the usual time, or before the time that was agreed on. Some words may include the idea that it is good that the event happened early. Other words may include the idea that it is bad that the event happened early.",
@@ -14980,6 +18054,8 @@ var semanticDomains_en = {
         "at the earliest, no earlier than," ]
   },
   "8.4.5.3.2 On time" : {
+    "key" : "8.4.5.3.2",
+    "guid" : "b7b0819b-eceb-4f16-ae6d-2298c4df1e6f",
     "name" : "On time",
     "abbreviation" : "8.4.5.3.2",
     "description" : "Use this domain for words describing something happening on time--at the expected time, at the usual time, or at the time that was agreed on.",
@@ -14991,6 +18067,8 @@ var semanticDomains_en = {
         "meet a deadline, on schedule," ]
   },
   "8.4.5.3.3 Late" : {
+    "key" : "8.4.5.3.3",
+    "guid" : "6fb1d03c-b0fe-49b7-a473-168f12a54a36",
     "name" : "Late",
     "abbreviation" : "8.4.5.3.3",
     "description" : "Use this domain for words describing something happening late--after the expected time, after the usual time, or after the time that was agreed on.",
@@ -15006,6 +18084,8 @@ var semanticDomains_en = {
         "no later than, at the latest," ]
   },
   "8.4.5.3.4 Delay" : {
+    "key" : "8.4.5.3.4",
+    "guid" : "4526b41d-6f3c-494f-93a2-ea3e9705269d",
     "name" : "Delay",
     "abbreviation" : "8.4.5.3.4",
     "description" : "Use this domain for words referring to something delaying someone or something--to cause something to happen at a later time, cause someone to do something at a later time, or cause someone or something to be late.",
@@ -15016,6 +18096,8 @@ var semanticDomains_en = {
         "stall, play for time, delaying tactics," ]
   },
   "8.4.5.3.5 Postpone" : {
+    "key" : "8.4.5.3.5",
+    "guid" : "daefd275-98e3-4534-a991-c7d396b54c69",
     "name" : "Postpone",
     "abbreviation" : "8.4.5.3.5",
     "description" : "Use this domain for words referring to postponing something--to decide to do something later.",
@@ -15024,12 +18106,16 @@ var semanticDomains_en = {
         "put off, procrastinate," ]
   },
   "8.4.6 Aspectual time" : {
+    "key" : "8.4.6",
+    "guid" : "18a6684f-d324-45ee-855c-44d473916b14",
     "name" : "Aspectual time",
     "abbreviation" : "8.4.6",
     "description" : "Use this domain for words referring to a time period that is part of a longer time period.",
     "searchKeys" : [ "phase, aspect," ]
   },
   "8.4.6.1 Start something" : {
+    "key" : "8.4.6.1",
+    "guid" : "3f37bb6f-cd32-4430-aa35-700acabbee15",
     "name" : "Start something",
     "abbreviation" : "8.4.6.1",
     "description" : "Use this domain for words referring to starting something, or for something beginning to happen.",
@@ -15041,6 +18127,8 @@ var semanticDomains_en = {
         "restart, bring back, reintroduce, revive, restore, resurrect," ]
   },
   "8.4.6.1.1 Beginning" : {
+    "key" : "8.4.6.1.1",
+    "guid" : "5261497b-6beb-4db1-9de2-10b5f6f8ec69",
     "name" : "Beginning",
     "abbreviation" : "8.4.6.1.1",
     "description" : "Use this domain for words referring to something beginning to happen, to beginning to do something, to cause something to start happening, or to cause people to start doing something.",
@@ -15052,6 +18140,8 @@ var semanticDomains_en = {
         "achieve, appear, arrive, attain," ]
   },
   "8.4.6.1.2 Stop something" : {
+    "key" : "8.4.6.1.2",
+    "guid" : "2c42f822-2079-440c-b3b7-7725b6a8db8b",
     "name" : "Stop something",
     "abbreviation" : "8.4.6.1.2",
     "description" : "Use this domain for words related to the end of an action or situation.",
@@ -15065,12 +18155,16 @@ var semanticDomains_en = {
         "fade away, wear off, go away, die away," ]
   },
   "8.4.6.1.3 End" : {
+    "key" : "8.4.6.1.3",
+    "guid" : "86615235-8cdd-413d-b722-11bc5a4653d6",
     "name" : "End",
     "abbreviation" : "8.4.6.1.3",
     "description" : "Use this domain for words referring to the end of an action or situation.",
     "searchKeys" : [ "end, finish, conclusion, consummation, culmination, denouement, expiration, finale, homestretch, last, outcome, termination, terminus, terminal, conclusion, time is up, that is all," ]
   },
   "8.4.6.1.4 Until" : {
+    "key" : "8.4.6.1.4",
+    "guid" : "590570c5-3267-4966-b0db-2af7a5105c83",
     "name" : "Until",
     "abbreviation" : "8.4.6.1.4",
     "description" : "Use this domain for words that indicate that something will continue to happen until a particular time or until something else happens, and then it will stop.",
@@ -15079,6 +18173,8 @@ var semanticDomains_en = {
         "until, wait until," ]
   },
   "8.4.6.1.5 Since, from" : {
+    "key" : "8.4.6.1.5",
+    "guid" : "3edb307f-be46-40b6-a6a4-ae075b40258c",
     "name" : "Since, from",
     "abbreviation" : "8.4.6.1.5",
     "description" : "Use this domain for words that indicate that something will start to happen at some time and continue for some time.",
@@ -15089,6 +18185,8 @@ var semanticDomains_en = {
         "from then on, starting then," ]
   },
   "8.4.6.2 Past" : {
+    "key" : "8.4.6.2",
+    "guid" : "bbc5b3a2-4c6e-4d07-849b-4d616615a794",
     "name" : "Past",
     "abbreviation" : "8.4.6.2",
     "description" : "Use this domain for words referring to the past or to a time in the past.",
@@ -15097,6 +18195,8 @@ var semanticDomains_en = {
         "earlier, foregoing,", "the distant past, long ago," ]
   },
   "8.4.6.2.1 Recently" : {
+    "key" : "8.4.6.2.1",
+    "guid" : "0656cd5e-641f-46f3-bcad-6f643727a344",
     "name" : "Recently",
     "abbreviation" : "8.4.6.2.1",
     "description" : "Use this domain for words indicating that something happened recently--a short time before now.",
@@ -15107,12 +18207,16 @@ var semanticDomains_en = {
         "recent, latest,", "latest, up-to-date, up-to-the-minute," ]
   },
   "8.4.6.3 Present" : {
+    "key" : "8.4.6.3",
+    "guid" : "7b816f6a-4b46-403d-a1a2-2914ee070568",
     "name" : "Present",
     "abbreviation" : "8.4.6.3",
     "description" : "Use this domain for words referring to the present time.",
     "searchKeys" : [ "present, now, right now, is (being/doing/happening), the present day, today," ]
   },
   "8.4.6.3.1 Now" : {
+    "key" : "8.4.6.3.1",
+    "guid" : "3fbe3ea6-3ad3-430f-ab67-2d9c9f852c61",
     "name" : "Now",
     "abbreviation" : "8.4.6.3.1",
     "description" : "Use this domain for words referring to now.",
@@ -15121,6 +18225,8 @@ var semanticDomains_en = {
         "current, present, present-day,", "Go! Now!" ]
   },
   "8.4.6.4 Future" : {
+    "key" : "8.4.6.4",
+    "guid" : "50c1a392-2928-407a-8306-3c70141e375e",
     "name" : "Future",
     "abbreviation" : "8.4.6.4",
     "description" : "Use this domain for words referring to the future.",
@@ -15129,24 +18235,32 @@ var semanticDomains_en = {
         "future (adj), coming, forthcoming, upcoming, in the offing," ]
   },
   "8.4.6.4.1 Soon" : {
+    "key" : "8.4.6.4.1",
+    "guid" : "d27a5602-ece1-452e-9ed6-7261082dc8b8",
     "name" : "Soon",
     "abbreviation" : "8.4.6.4.1",
     "description" : "Use this domain for words referring to something happening soon.",
     "searchKeys" : [ "soon, sooner, almost, approach, close, directly, imminence, imminent, impending, near, presently, quickly, shortly, about to, in a little while, not long, won't be long, almost here, just around the corner, in the near future, about to happen, any minute (now), in a minute, in a moment," ]
   },
   "8.4.6.4.2 Not yet" : {
+    "key" : "8.4.6.4.2",
+    "guid" : "99e38da1-91ad-4dff-a68f-972607936e50",
     "name" : "Not yet",
     "abbreviation" : "8.4.6.4.2",
     "description" : "Use this domain for words referring to something not happening yet.",
     "searchKeys" : [ "not yet, not now, still need to wait, it will be awhile (still), it will take some time, not quite here, almost" ]
   },
   "8.4.6.4.3 Eventually" : {
+    "key" : "8.4.6.4.3",
+    "guid" : "73ea23c2-db45-49fa-a72b-0fc6eff4ce30",
     "name" : "Eventually",
     "abbreviation" : "8.4.6.4.3",
     "description" : "Use this domain for words referring to something happening eventually.",
     "searchKeys" : [ "eventually, in the end, finally, end up, at last, in time" ]
   },
   "8.4.6.4.4 Immediately" : {
+    "key" : "8.4.6.4.4",
+    "guid" : "04543543-4c3d-4d71-aa87-53191ef3b7b0",
     "name" : "Immediately",
     "abbreviation" : "8.4.6.4.4",
     "description" : "Use this domain for words referring to something happening immediately--without any time passing before it happens.",
@@ -15156,6 +18270,8 @@ var semanticDomains_en = {
         "immediate, instant, instantaneous,", "then and there," ]
   },
   "8.4.6.5 Age" : {
+    "key" : "8.4.6.5",
+    "guid" : "615674ac-8158-4089-ae70-b55472fd279b",
     "name" : "Age",
     "abbreviation" : "8.4.6.5",
     "description" : "Use this domain for words referring to the age of something.",
@@ -15167,6 +18283,8 @@ var semanticDomains_en = {
         "date (v), establish the date of, determine the age of" ]
   },
   "8.4.6.5.1 Young" : {
+    "key" : "8.4.6.5.1",
+    "guid" : "0d38c343-9c51-47fe-a367-ffadfc92c507",
     "name" : "Young",
     "abbreviation" : "8.4.6.5.1",
     "description" : "Use this domain for words describing something young--a word describing a living thing that has only existed for a short time.",
@@ -15177,6 +18295,8 @@ var semanticDomains_en = {
         "green, immature, young,", "youthful, well-preserved," ]
   },
   "8.4.6.5.2 Old, not young" : {
+    "key" : "8.4.6.5.2",
+    "guid" : "cc6f100a-5220-4f53-801c-b1fdcc619608",
     "name" : "Old, not young",
     "abbreviation" : "8.4.6.5.2",
     "description" : "Use this domain for words describing something old--a word describing a living thing that has existed for a long time.",
@@ -15186,6 +18306,8 @@ var semanticDomains_en = {
         "be pushing, be getting on for," ]
   },
   "8.4.6.5.3 New" : {
+    "key" : "8.4.6.5.3",
+    "guid" : "efef45bd-26be-46f8-b85b-424be55bcdac",
     "name" : "New",
     "abbreviation" : "8.4.6.5.3",
     "description" : "Use this domain for words describing something new--a word describing something that has only existed for a short time.",
@@ -15205,6 +18327,8 @@ var semanticDomains_en = {
         "novelty, innovation, latest, original," ]
   },
   "8.4.6.5.4 Old, not new" : {
+    "key" : "8.4.6.5.4",
+    "guid" : "99861dcb-c6ca-4e50-a19a-efadbb10c2cf",
     "name" : "Old, not new",
     "abbreviation" : "8.4.6.5.4",
     "description" : "Use this domain for words describing something old--a word describing something that has existed for a long time.",
@@ -15222,6 +18346,8 @@ var semanticDomains_en = {
         "antique, antiquities," ]
   },
   "8.4.6.5.5 Modern" : {
+    "key" : "8.4.6.5.5",
+    "guid" : "31e0fde8-b3ab-47ae-b791-54309e6ed0bd",
     "name" : "Modern",
     "abbreviation" : "8.4.6.5.5",
     "description" : "Use this domain for words describing something modern--a word that describes something like a machine, system, or country that uses the most recent equipment, ideas, and methods.",
@@ -15233,6 +18359,8 @@ var semanticDomains_en = {
         "modernize, bring something up to date, update," ]
   },
   "8.4.6.5.6 Old fashioned" : {
+    "key" : "8.4.6.5.6",
+    "guid" : "b015f460-faeb-4aa5-b453-9e5e9ae061fe",
     "name" : "Old fashioned",
     "abbreviation" : "8.4.6.5.6",
     "description" : "Use this domain for words describing something old fashioned--something that was done or used in the past, but not done or used now.",
@@ -15248,12 +18376,16 @@ var semanticDomains_en = {
         "fuddy-duddy, old fogy, old guard, traditionalist," ]
   },
   "8.4.6.6 Once" : {
+    "key" : "8.4.6.6",
+    "guid" : "457231c8-4eb6-4460-aa45-3e9f2c4e8975",
     "name" : "Once",
     "abbreviation" : "8.4.6.6",
     "description" : "Use this domain for words referring to something happening once.",
     "searchKeys" : [ "once, one time, on one occasion, at one stage, at one point, one day" ]
   },
   "8.4.6.6.1 Again" : {
+    "key" : "8.4.6.6.1",
+    "guid" : "2351f52a-8822-46ad-99c4-7ef526e94a6f",
     "name" : "Again",
     "abbreviation" : "8.4.6.6.1",
     "description" : "Use this domain for words referring to something happening again or doing something again.",
@@ -15268,6 +18400,8 @@ var semanticDomains_en = {
         "repeated, repeatedly, recurrent, recurring, repetitive, again and again, over and over again, always, never stop," ]
   },
   "8.4.6.6.2 Sometimes" : {
+    "key" : "8.4.6.6.2",
+    "guid" : "776de0c6-fdd7-46df-b33f-b1e4af6ee099",
     "name" : "Sometimes",
     "abbreviation" : "8.4.6.6.2",
     "description" : "Use this domain for words referring to something happening sometimes.",
@@ -15276,6 +18410,8 @@ var semanticDomains_en = {
         "occasional, the odd, periodic, intermittent, casual" ]
   },
   "8.4.6.6.3 Often" : {
+    "key" : "8.4.6.6.3",
+    "guid" : "12f12bf3-f232-4477-bf39-d91b7f55c2c3",
     "name" : "Often",
     "abbreviation" : "8.4.6.6.3",
     "description" : "Use this domain for words referring to something happening often--happening or done many times.",
@@ -15287,6 +18423,8 @@ var semanticDomains_en = {
         "increasingly," ]
   },
   "8.4.6.6.4 All the time" : {
+    "key" : "8.4.6.6.4",
+    "guid" : "03d65d0c-aafb-40c0-9cd2-3e5ced66ad03",
     "name" : "All the time",
     "abbreviation" : "8.4.6.6.4",
     "description" : "Use this domain for words referring to something happening all the time.",
@@ -15295,6 +18433,8 @@ var semanticDomains_en = {
         "throughout, all through, the whole time, all day, all week, from start to finish" ]
   },
   "8.4.6.6.5 Every time" : {
+    "key" : "8.4.6.6.5",
+    "guid" : "1c8da3aa-3c74-4188-8949-5ab82fc1f99c",
     "name" : "Every time",
     "abbreviation" : "8.4.6.6.5",
     "description" : "Use this domain for words referring to something happening every time something else happens.",
@@ -15302,12 +18442,16 @@ var semanticDomains_en = {
         "every (day)," ]
   },
   "8.4.6.6.6 Never" : {
+    "key" : "8.4.6.6.6",
+    "guid" : "4e2adaed-145e-45fc-8448-81c0bd47c414",
     "name" : "Never",
     "abbreviation" : "8.4.6.6.6",
     "description" : "Use this domain for words that indicate that something that never happens, or that something has not once happened.",
     "searchKeys" : [ "never, not ever, never once, not once, never for a moment, not for a moment, never ever, at no time, not in a million years, never in a million years, have never been known to do something," ]
   },
   "8.4.7 Continue, persevere" : {
+    "key" : "8.4.7",
+    "guid" : "780fbf89-f2ba-404c-b288-f6ca637bbc90",
     "name" : "Continue, persevere",
     "abbreviation" : "8.4.7",
     "description" : "Use this domain for words referring to continuing to do something.",
@@ -15317,6 +18461,8 @@ var semanticDomains_en = {
         "go ahead, proceed,", "continuum," ]
   },
   "8.4.7.1 Interrupt" : {
+    "key" : "8.4.7.1",
+    "guid" : "0d7409ab-fc1f-4680-b040-d91d7004084f",
     "name" : "Interrupt",
     "abbreviation" : "8.4.7.1",
     "description" : "Use this domain for words referring to interrupting someone--speaking when someone is speaking, or doing something to stop someone from doing what they are doing.",
@@ -15325,24 +18471,32 @@ var semanticDomains_en = {
         "incessant, uninterrupted" ]
   },
   "8.4.7.2 Start again" : {
+    "key" : "8.4.7.2",
+    "guid" : "08244b88-bfba-487a-96bc-ca3771d1fa7c",
     "name" : "Start again",
     "abbreviation" : "8.4.7.2",
     "description" : "Use this domain for words referring to starting to do something after stopping for some time.",
     "searchKeys" : [ "continue, start again, resume, get on with, get around to" ]
   },
   "8.4.7.3 Interval" : {
+    "key" : "8.4.7.3",
+    "guid" : "76d4c718-a84d-4b7b-9767-1c350c3bc124",
     "name" : "Interval",
     "abbreviation" : "8.4.7.3",
     "description" : "Use this domain for words referring to an interval between two events.",
     "searchKeys" : [ "interval, space things out" ]
   },
   "8.4.8 Speed" : {
+    "key" : "8.4.8",
+    "guid" : "df149819-608f-46cd-ba0f-55f1d9d2e8ec",
     "name" : "Speed",
     "abbreviation" : "8.4.8",
     "description" : "Use this domain for words referring to the speed at which a person acts or the speed at which something happens.",
     "searchKeys" : [ "speed, velocity, pace" ]
   },
   "8.4.8.1 Quick" : {
+    "key" : "8.4.8.1",
+    "guid" : "2fc69f71-e9f1-45f9-b88e-bdaf97457fc3",
     "name" : "Quick",
     "abbreviation" : "8.4.8.1",
     "description" : "Use this domain for words referring to doing something at a quick speed or something happening quickly.",
@@ -15355,6 +18509,8 @@ var semanticDomains_en = {
         "Hurry up! Move it! Let's go, let's go! Quick! Faster! Speed it up! Get a move on! Giddy up! (horse)" ]
   },
   "8.4.8.2 Slow" : {
+    "key" : "8.4.8.2",
+    "guid" : "af399519-5d7c-4100-9c79-8162cb4641cb",
     "name" : "Slow",
     "abbreviation" : "8.4.8.2",
     "description" : "Use this domain for words referring to doing something at a slow speed.",
@@ -15366,6 +18522,8 @@ var semanticDomains_en = {
         "Slow down! Take it easy! Take your time! Whoa! (horse)" ]
   },
   "8.4.8.3 Sudden" : {
+    "key" : "8.4.8.3",
+    "guid" : "4c31ac6a-3197-4762-9937-2fdea90784b7",
     "name" : "Sudden",
     "abbreviation" : "8.4.8.3",
     "description" : "Use this domain for words referring to a sudden event--something happens that I don't expect.",
@@ -15375,6 +18533,8 @@ var semanticDomains_en = {
         "suddenness" ]
   },
   "8.5 Location" : {
+    "key" : "8.5",
+    "guid" : "2dca9338-85cb-4f58-b40d-d2d759e8edd6",
     "name" : "Location",
     "abbreviation" : "8.5",
     "description" : "Use this domain for words that refer to the place where something is located and for words indicating the location of something.",
@@ -15382,6 +18542,8 @@ var semanticDomains_en = {
         "be at, at, be, be located, location" ]
   },
   "8.5.1 Here, there" : {
+    "key" : "8.5.1",
+    "guid" : "f76c3803-1c7a-4181-9a87-64ae7231a67d",
     "name" : "Here, there",
     "abbreviation" : "8.5.1",
     "description" : "Use this domain for words that refer to a place in relation to the speaker or listener.",
@@ -15391,6 +18553,8 @@ var semanticDomains_en = {
         "over there, elsewhere, yon, yonder" ]
   },
   "8.5.1.1 In front of" : {
+    "key" : "8.5.1.1",
+    "guid" : "70f80041-af88-4521-9ebd-21d8f0b0d131",
     "name" : "In front of",
     "abbreviation" : "8.5.1.1",
     "description" : "Use this domain for words referring to being in front of you.",
@@ -15400,36 +18564,48 @@ var semanticDomains_en = {
         "in front, ahead, up ahead,", "face to face, facing each other" ]
   },
   "8.5.1.1.1 Behind" : {
+    "key" : "8.5.1.1.1",
+    "guid" : "775b53f1-bfcf-4270-a60d-b5affc9d6a99",
     "name" : "Behind",
     "abbreviation" : "8.5.1.1.1",
     "description" : "Use this domain for words indicating that something is behind you.",
     "searchKeys" : [ "behind, in back, way back, in the rear, background" ]
   },
   "8.5.1.2 Beside" : {
+    "key" : "8.5.1.2",
+    "guid" : "b8fc54d8-afd2-4ef8-b811-efb8aa7064db",
     "name" : "Beside",
     "abbreviation" : "8.5.1.2",
     "description" : "Use this domain for words that indicate that something is to the side of someone.",
     "searchKeys" : [ "be beside, alongside, along, next to, at your side, be way over to the side, be on the right, be on the left" ]
   },
   "8.5.1.2.1 Around" : {
+    "key" : "8.5.1.2.1",
+    "guid" : "6bc8e911-36f2-4d45-b237-2bdb6c03cc11",
     "name" : "Around",
     "abbreviation" : "8.5.1.2.1",
     "description" : "Use this domain for words indicating that something is around something else.",
     "searchKeys" : [ "be around, surrounding" ]
   },
   "8.5.1.2.2 Between" : {
+    "key" : "8.5.1.2.2",
+    "guid" : "c7c2d82e-d86c-4bf3-81a1-82772e87d709",
     "name" : "Between",
     "abbreviation" : "8.5.1.2.2",
     "description" : "Use this domain for words indicating that something is between two other things.",
     "searchKeys" : [ "between, amid, amidships, amidst, among, amongst, betwixt, center, central, equidistant, half-way, mean, medial, median, medium, mid, middle, middlemost, midst, midway, therein, throughout, within," ]
   },
   "8.5.1.3 On" : {
+    "key" : "8.5.1.3",
+    "guid" : "86287a4c-0d64-4f28-9a5c-17fb9df37ab6",
     "name" : "On",
     "abbreviation" : "8.5.1.3",
     "description" : "Use this domain for words indicating that something is on another thing.",
     "searchKeys" : [ "be on, be on top of, topside, upon," ]
   },
   "8.5.1.3.1 Above" : {
+    "key" : "8.5.1.3.1",
+    "guid" : "c13ca251-6103-4475-85af-933311923f2c",
     "name" : "Above",
     "abbreviation" : "8.5.1.3.1",
     "description" : "Use this domain for words that express the idea that something is above another thing. The concept 'above' is inherently relational, expressing the relative positions of two things.",
@@ -15438,6 +18614,8 @@ var semanticDomains_en = {
         "aloft, overhanging, overhead, upper," ]
   },
   "8.5.1.3.2 Under, below" : {
+    "key" : "8.5.1.3.2",
+    "guid" : "0a1ad4c9-8bf3-448b-a27f-611813b305de",
     "name" : "Under, below",
     "abbreviation" : "8.5.1.3.2",
     "description" : "Use this domain for words that express the idea that something is under another thing. The concept 'under' is inherently relational, expressing the relative positions of two things.",
@@ -15446,18 +18624,24 @@ var semanticDomains_en = {
         "underlay, underlie,", "underlying, nether," ]
   },
   "8.5.1.4 Inside" : {
+    "key" : "8.5.1.4",
+    "guid" : "2265a4bd-379d-4a9d-80d5-2318e6c8c683",
     "name" : "Inside",
     "abbreviation" : "8.5.1.4",
     "description" : "Use this domain for words indicating that something is outside something else.",
     "searchKeys" : [ "be in, inside, inner, within" ]
   },
   "8.5.1.4.1 Out, outside" : {
+    "key" : "8.5.1.4.1",
+    "guid" : "f4829d9d-a93f-4fc5-918c-6d4c501a6573",
     "name" : "Out, outside",
     "abbreviation" : "8.5.1.4.1",
     "description" : "Use this domain for words indicating that something is outside of another thing.",
     "searchKeys" : [ "be out, outside, outer" ]
   },
   "8.5.1.5 Touching, contact" : {
+    "key" : "8.5.1.5",
+    "guid" : "8596f086-ee46-4245-8d45-2171a60e19e4",
     "name" : "Touching, contact",
     "abbreviation" : "8.5.1.5",
     "description" : "Use this domain for words indicating that two things are touching or in contact with each other.",
@@ -15467,6 +18651,8 @@ var semanticDomains_en = {
         "abutting, adjoining, contiguous" ]
   },
   "8.5.1.5.1 Next to" : {
+    "key" : "8.5.1.5.1",
+    "guid" : "bcb1252c-7cb4-4fbc-b83f-e5f9c65b4afb",
     "name" : "Next to",
     "abbreviation" : "8.5.1.5.1",
     "description" : "Use this domain for words indicating that something is next to something else.",
@@ -15477,18 +18663,24 @@ var semanticDomains_en = {
         "the next, adjacent, adjoining, bordering, neighboring" ]
   },
   "8.5.1.6 Across" : {
+    "key" : "8.5.1.6",
+    "guid" : "d2001c9c-3c37-4910-8b8a-adcffc6fbf26",
     "name" : "Across",
     "abbreviation" : "8.5.1.6",
     "description" : "Use this domain for words that refer to a place on another side of something from the reference point. 'Across' involves three things--the object, the reference point, and something else in between the two.",
     "searchKeys" : [ "across, across from, on the other side of, on the opposite side of, beyond, offshore from" ]
   },
   "8.5.1.7 Indefinite location" : {
+    "key" : "8.5.1.7",
+    "guid" : "2c143278-3ea0-49c6-9e50-e0bf7c8cf4e2",
     "name" : "Indefinite location",
     "abbreviation" : "8.5.1.7",
     "description" : "Use this domain for words indicating that something is at an indefinite location.",
     "searchKeys" : [ "somewhere, anywhere, someplace, anyplace, where, here, there, over there, any old place, wherever, who knows where, could be anywhere, undisclosed location, location unknown, here and there, whereabouts, hereabouts, thereabouts" ]
   },
   "8.5.2 Direction" : {
+    "key" : "8.5.2",
+    "guid" : "4f485a60-e3ba-42e6-9d59-185305c5d1f2",
     "name" : "Direction",
     "abbreviation" : "8.5.2",
     "description" : "Use this domain for general words referring to a direction.",
@@ -15497,24 +18689,32 @@ var semanticDomains_en = {
         "against" ]
   },
   "8.5.2.1 Forward" : {
+    "key" : "8.5.2.1",
+    "guid" : "095c36bd-b74a-44f5-987b-85909e3f4c1d",
     "name" : "Forward",
     "abbreviation" : "8.5.2.1",
     "description" : "Use this domain for words indicating a forward direction.",
     "searchKeys" : [ "forward, ahead," ]
   },
   "8.5.2.2 Backward" : {
+    "key" : "8.5.2.2",
+    "guid" : "9ed66151-c144-4e5e-a3a2-f5d08b0c9bb8",
     "name" : "Backward",
     "abbreviation" : "8.5.2.2",
     "description" : "Use this domain for words indicating a backward direction.",
     "searchKeys" : [ "back, backward, behind, reverse," ]
   },
   "8.5.2.3 Right, left" : {
+    "key" : "8.5.2.3",
+    "guid" : "1a8322d7-cda9-41e5-a14b-f41274cb7157",
     "name" : "Right, left",
     "abbreviation" : "8.5.2.3",
     "description" : "Use this domain for words referring to right and left.",
     "searchKeys" : [ "right", "left", "right-handed", "left-handed" ]
   },
   "8.5.2.4 Up" : {
+    "key" : "8.5.2.4",
+    "guid" : "e0ad6bb1-d422-408a-83f8-f1a7661ed225",
     "name" : "Up",
     "abbreviation" : "8.5.2.4",
     "description" : "Use this domain for words referring to the direction up.",
@@ -15523,12 +18723,16 @@ var semanticDomains_en = {
         "face-up,", "go up, climb, rise," ]
   },
   "8.5.2.5 Down" : {
+    "key" : "8.5.2.5",
+    "guid" : "84084e67-b321-4b6a-a436-29ead0bee586",
     "name" : "Down",
     "abbreviation" : "8.5.2.5",
     "description" : "Use this domain for words referring to the direction down.",
     "searchKeys" : [ "down, downwards, downhill" ]
   },
   "8.5.2.6 Away from" : {
+    "key" : "8.5.2.6",
+    "guid" : "3420b36a-a033-4af9-a8c4-53f8221ee56e",
     "name" : "Away from",
     "abbreviation" : "8.5.2.6",
     "description" : "Use this domain for words indicating a direction away from something.",
@@ -15537,6 +18741,8 @@ var semanticDomains_en = {
         "from," ]
   },
   "8.5.2.7 Towards" : {
+    "key" : "8.5.2.7",
+    "guid" : "21a284ab-b9a3-42c8-8fb9-96aff1e1fe8f",
     "name" : "Towards",
     "abbreviation" : "8.5.2.7",
     "description" : "Use this domain for words indicating a direction toward something.",
@@ -15545,6 +18751,8 @@ var semanticDomains_en = {
         "to," ]
   },
   "8.5.2.8 North, south, east, west" : {
+    "key" : "8.5.2.8",
+    "guid" : "6b1eeebd-2433-4f39-9e67-7ac4dd0fe20a",
     "name" : "North, south, east, west",
     "abbreviation" : "8.5.2.8",
     "description" : "Use this domain for words referring to the directions of the compass.",
@@ -15557,6 +18765,8 @@ var semanticDomains_en = {
         "compass, needle" ]
   },
   "8.5.3 Be at a place" : {
+    "key" : "8.5.3",
+    "guid" : "80bcbc99-3c85-46d6-b15c-895367231747",
     "name" : "Be at a place",
     "abbreviation" : "8.5.3",
     "description" : "Use this domain for words related to being at a place.",
@@ -15565,6 +18775,8 @@ var semanticDomains_en = {
         "in place, in the proper place, in your place, out of place" ]
   },
   "8.5.3.1 Absent" : {
+    "key" : "8.5.3.1",
+    "guid" : "8affe94d-a396-4404-a0d7-c65046e617e6",
     "name" : "Absent",
     "abbreviation" : "8.5.3.1",
     "description" : "Use this domain for words related to being absent--to not be in a particular place, or not be in the correct or expected place.",
@@ -15573,24 +18785,32 @@ var semanticDomains_en = {
         "absentee, truant, missing person, no-show," ]
   },
   "8.5.4 Area" : {
+    "key" : "8.5.4",
+    "guid" : "a4b03891-c2df-4d72-bbdc-13bc8d4eceba",
     "name" : "Area",
     "abbreviation" : "8.5.4",
     "description" : "Use this domain for words referring to an area.",
     "searchKeys" : [ "area, region, district, expanse (of land)" ]
   },
   "8.5.4.1 Vicinity" : {
+    "key" : "8.5.4.1",
+    "guid" : "ec6f626c-e7a0-4ec7-a541-d683f20c9271",
     "name" : "Vicinity",
     "abbreviation" : "8.5.4.1",
     "description" : "Use this domain for words related to a vicinity--an area around something else.",
     "searchKeys" : [ "area, vicinity, environs, neighborhood, surroundings, community, district, region, context" ]
   },
   "8.5.4.2 Occupy an area" : {
+    "key" : "8.5.4.2",
+    "guid" : "80de758c-537d-4c8c-8308-4babfb2c787a",
     "name" : "Occupy an area",
     "abbreviation" : "8.5.4.2",
     "description" : "Use this domain for words related to occupying an area.",
     "searchKeys" : [ "occupy, occupy an area, take up space, cover an area, fill" ]
   },
   "8.5.4.3 Space, room" : {
+    "key" : "8.5.4.3",
+    "guid" : "f45a456e-8e23-4364-8842-047cc73f529b",
     "name" : "Space, room",
     "abbreviation" : "8.5.4.3",
     "description" : "Use this domain for words referring to the amount of empty space that is available to be used.",
@@ -15599,6 +18819,8 @@ var semanticDomains_en = {
         "a tight squeeze, barely enough room, close fit," ]
   },
   "8.5.4.4 Interval, space" : {
+    "key" : "8.5.4.4",
+    "guid" : "061749a8-e28a-461c-bf2d-052ab3e157d5",
     "name" : "Interval, space",
     "abbreviation" : "8.5.4.4",
     "description" : "Use this domain for words related to an interval or space between things.",
@@ -15608,6 +18830,8 @@ var semanticDomains_en = {
         "at regular intervals, every meter, evenly spaced," ]
   },
   "8.5.5 Spatial relations" : {
+    "key" : "8.5.5",
+    "guid" : "3785d9f3-0922-4d79-a0fa-b97c4a26fe17",
     "name" : "Spatial relations",
     "abbreviation" : "8.5.5",
     "description" : "Use this domain for words that indicate a spatial relation between situations.",
@@ -15615,12 +18839,16 @@ var semanticDomains_en = {
         "somewhere else, elsewhere," ]
   },
   "8.5.6 Contain" : {
+    "key" : "8.5.6",
+    "guid" : "8fbed974-7d25-44c3-80cb-7d02e4069007",
     "name" : "Contain",
     "abbreviation" : "8.5.6",
     "description" : "Use this domain for words that express the idea that something contains something.",
     "searchKeys" : [ "have, of, -'s, contain, hold" ]
   },
   "8.6 Parts of things" : {
+    "key" : "8.6",
+    "guid" : "91913920-8a6a-4ba0-9361-d6cc9e1f3639",
     "name" : "Parts of things",
     "abbreviation" : "8.6",
     "description" : "Use this domain for words that refer to a part of something. These words are often based on the parts of a person's body.",
@@ -15634,6 +18862,8 @@ var semanticDomains_en = {
         "flap, detail, bar, blade, hook, lid, neck, nose, shelf, wheel, longitudinal, projection," ]
   },
   "8.6.1 Front" : {
+    "key" : "8.6.1",
+    "guid" : "bddc70ea-d46f-4e4b-83a1-a47bea858dd6",
     "name" : "Front",
     "abbreviation" : "8.6.1",
     "description" : "Use this domain for words related to the front part of something.",
@@ -15641,6 +18871,8 @@ var semanticDomains_en = {
         "front (adj), frontal, anterior" ]
   },
   "8.6.1.1 Back" : {
+    "key" : "8.6.1.1",
+    "guid" : "ed976bbe-4fb2-4365-b136-d2fce077a73f",
     "name" : "Back",
     "abbreviation" : "8.6.1.1",
     "description" : "Use this domain for words related to the back part of something.",
@@ -15648,6 +18880,8 @@ var semanticDomains_en = {
         "back (adj), rear, posterior," ]
   },
   "8.6.2 Top" : {
+    "key" : "8.6.2",
+    "guid" : "5ee64d88-c462-4505-b14a-5d36e357a024",
     "name" : "Top",
     "abbreviation" : "8.6.2",
     "description" : "Use this domain for words related to the top part of something.",
@@ -15656,6 +18890,8 @@ var semanticDomains_en = {
         "top (adj), uppermost," ]
   },
   "8.6.2.1 Bottom" : {
+    "key" : "8.6.2.1",
+    "guid" : "6a4f5638-388e-4c8e-9bb7-8e742dac43db",
     "name" : "Bottom",
     "abbreviation" : "8.6.2.1",
     "description" : "Use this domain for words related to the bottom part of something.",
@@ -15664,6 +18900,8 @@ var semanticDomains_en = {
         "bottom (adj)," ]
   },
   "8.6.3 Side" : {
+    "key" : "8.6.3",
+    "guid" : "9e775794-3dda-4942-b6af-087ffd57f342",
     "name" : "Side",
     "abbreviation" : "8.6.3",
     "description" : "Use this domain for words related to the side part of something.",
@@ -15671,6 +18909,8 @@ var semanticDomains_en = {
         "side (adj), lateral," ]
   },
   "8.6.4 Inner part" : {
+    "key" : "8.6.4",
+    "guid" : "4d2a247e-4925-4750-8c39-e2d78665d33c",
     "name" : "Inner part",
     "abbreviation" : "8.6.4",
     "description" : "Use this domain for words related to the inside part of something.",
@@ -15678,6 +18918,8 @@ var semanticDomains_en = {
         "inside (adj), interior, inner," ]
   },
   "8.6.4.1 Outer part" : {
+    "key" : "8.6.4.1",
+    "guid" : "e2806bed-b450-4469-900a-1afa7ded2224",
     "name" : "Outer part",
     "abbreviation" : "8.6.4.1",
     "description" : "Use this domain for words related to the outside or surface part of something.",
@@ -15686,6 +18928,8 @@ var semanticDomains_en = {
         "outside (adj), outer, external, surface, superficial," ]
   },
   "8.6.5 Middle" : {
+    "key" : "8.6.5",
+    "guid" : "3005971d-de4d-401f-8400-b25de5e052ad",
     "name" : "Middle",
     "abbreviation" : "8.6.5",
     "description" : "Use this domain for words related to the middle part or center of something.",
@@ -15695,6 +18939,8 @@ var semanticDomains_en = {
         "in the middle, halfway, midway, midpoint," ]
   },
   "8.6.6 Edge" : {
+    "key" : "8.6.6",
+    "guid" : "fc170f70-520e-4f3e-b8b8-98e4b898fd24",
     "name" : "Edge",
     "abbreviation" : "8.6.6",
     "description" : "Use this domain for words related to the edge of something--the part of something where two sides come together.",
@@ -15706,6 +18952,8 @@ var semanticDomains_en = {
         "corner (n),", "corner (adj)," ]
   },
   "8.6.7 End, point" : {
+    "key" : "8.6.7",
+    "guid" : "e1e0b800-85ad-4886-abe5-9f67c022a5ed",
     "name" : "End, point",
     "abbreviation" : "8.6.7",
     "description" : "Use this domain for words related to the end of something.",
@@ -15713,6 +18961,8 @@ var semanticDomains_en = {
         "end (adj), pointy," ]
   },
   "9 Grammar" : {
+    "key" : "9",
+    "guid" : "349f0278-7998-422a-9c3b-6053989cbb20",
     "name" : "Grammar",
     "abbreviation" : "9",
     "description" : "Use this domain for technical linguistic terms that refer to grammatical words and constructions. Most languages have few if any words in this domain.",
@@ -15725,12 +18975,16 @@ var semanticDomains_en = {
         "letter, consonant, vowel, syllable" ]
   },
   "9.1 General words" : {
+    "key" : "9.1",
+    "guid" : "3a2c0773-6b3e-4f8b-909d-c8f84d66d4f4",
     "name" : "General words",
     "abbreviation" : "9.1",
     "description" : "Use the following section for words that don't belong in any other domain because they are so general in meaning that you can use them to talk about any topic. Use this domain for general and indefinite words that can be used in the place of any word. Some languages have a general word that can replace a noun or a verb. For instance some Philippine languages use the word 'kwan' in this way. Colloquial German can use the word 'dings' as a noun or verb. Often these words are used when you can't remember the particular word you are trying to think of. In English we use the word 'blank' when we don't want to say a word, for instance when we are testing someone and want them to say the word.",
     "searchKeys" : [ "blank, ... (ellipsis), you know what I mean" ]
   },
   "9.1.1 Be" : {
+    "key" : "9.1.1",
+    "guid" : "a72ca6f7-e389-408a-8276-fec4d60a3a56",
     "name" : "Be",
     "abbreviation" : "9.1.1",
     "description" : "Many languages have general words that indicate some kind of state. These general words may be used with a wide variety of specific meanings. For instance in English the word 'be' may be used to identify something, describe something, and many other ideas.",
@@ -15738,6 +18992,8 @@ var semanticDomains_en = {
         "is", "make up, form, constitute, add up to," ]
   },
   "9.1.1.1 Exist" : {
+    "key" : "9.1.1.1",
+    "guid" : "0d63adce-41dd-4873-b0bf-331d0205e65d",
     "name" : "Exist",
     "abbreviation" : "9.1.1.1",
     "description" : "Use this domain for words indicating that something exists.",
@@ -15749,6 +19005,8 @@ var semanticDomains_en = {
         "non-existent, extinct, there's no, there's no such thing," ]
   },
   "9.1.1.2 Become, change state" : {
+    "key" : "9.1.1.2",
+    "guid" : "093eeea2-4ff6-4ee8-ad05-8af1702b7246",
     "name" : "Become, change state",
     "abbreviation" : "9.1.1.2",
     "description" : "Many languages have general words that indicate some kind of change of state. These general words may be used with a wide variety of specific meanings. For instance in English the word 'become' may be used to a change in identity, a change in characteristic, a change in nature, and many other ideas.",
@@ -15758,18 +19016,24 @@ var semanticDomains_en = {
         "come to be, attain, achieve, reach" ]
   },
   "9.1.1.3 Have, of" : {
+    "key" : "9.1.1.3",
+    "guid" : "da988f73-fc9d-4a23-b70d-22299a7c6097",
     "name" : "Have, of",
     "abbreviation" : "9.1.1.3",
     "description" : "Many languages have several general words that are used to indicate a variety of relationships between two things. There are three such words in English: \"have,\" \"of,\" and the possessive suffix \"-'s.\" The basic meaning of these words in English is 'to own', but they can mean many other things too. For instance they can mean that I am related to someone (I have a brother), something has a part (birds have wings), and many other ideas. There is also a set of pronouns in English that are like nouns ending in -'s (my/mine, your/yours, his, her/hers, its, our/ours, their/theirs, whose). Use this domain for these general words.",
     "searchKeys" : [ "have, of, -'s" ]
   },
   "9.1.1.4 Attribution" : {
+    "key" : "9.1.1.4",
+    "guid" : "94cad4ca-c2ec-4ff3-b9b1-11107549941d",
     "name" : "Attribution",
     "abbreviation" : "9.1.1.4",
     "description" : "Attributes often belong to a class of attributes (shape = straight, curved) or to a scale (length = long, short). The class or scale can sometimes be included in the expression, but does not mark the proposition itself. (The towel <feels> damp. The box <weighs> five kilos.)",
     "searchKeys" : [ "found to be, discover to be, turn out to be, be in many ways" ]
   },
   "9.1.2 Do" : {
+    "key" : "9.1.2",
+    "guid" : "e28f3f79-d4a5-402c-8a70-196856791078",
     "name" : "Do",
     "abbreviation" : "9.1.2",
     "description" : "Use this domain for general verbs with a volitional subject (agent).",
@@ -15780,6 +19044,8 @@ var semanticDomains_en = {
         "What are you doing? What are you up to? What do you think you are doing?" ]
   },
   "9.1.2.1 Happen" : {
+    "key" : "9.1.2.1",
+    "guid" : "b158fe11-5af2-4467-bbc0-cc1aee766592",
     "name" : "Happen",
     "abbreviation" : "9.1.2.1",
     "description" : "Use this domain for non-volitional pro-verbs.",
@@ -15788,6 +19054,8 @@ var semanticDomains_en = {
         "event, experience, affair, occurrence, phenomenon, occasion," ]
   },
   "9.1.2.2 React, respond" : {
+    "key" : "9.1.2.2",
+    "guid" : "12a028d1-d910-4011-ab9d-59be69daaf65",
     "name" : "React, respond",
     "abbreviation" : "9.1.2.2",
     "description" : "Use this domain for words referring to reacting or responding to something.",
@@ -15796,6 +19064,8 @@ var semanticDomains_en = {
         "reactions, reflexes,", "responsive" ]
   },
   "9.1.2.3 Create" : {
+    "key" : "9.1.2.3",
+    "guid" : "d47b69e0-ab4a-4111-aec3-2c889a4e70b3",
     "name" : "Create",
     "abbreviation" : "9.1.2.3",
     "description" : "Use this domain for words referring to creating something--causing something to be that did not exist before.",
@@ -15805,6 +19075,8 @@ var semanticDomains_en = {
         "creator, inventor,", "created," ]
   },
   "9.1.2.4 Design" : {
+    "key" : "9.1.2.4",
+    "guid" : "ecaff061-6a12-4ad6-b818-9b140a9a3e11",
     "name" : "Design",
     "abbreviation" : "9.1.2.4",
     "description" : "Use this domain for words referring to designing something--to decide and plan how something new will look and work.",
@@ -15812,6 +19084,8 @@ var semanticDomains_en = {
         "designer, architect, planners" ]
   },
   "9.1.2.5 Make" : {
+    "key" : "9.1.2.5",
+    "guid" : "2d5d634e-75b5-4921-922e-573a809a49f8",
     "name" : "Make",
     "abbreviation" : "9.1.2.5",
     "description" : "Use this domain for words referring to making something--joining things together to create something to be that did not exist before.",
@@ -15822,6 +19096,8 @@ var semanticDomains_en = {
         "man-made, hand-made, manufactured, artificial, synthetic" ]
   },
   "9.1.2.6 Change something" : {
+    "key" : "9.1.2.6",
+    "guid" : "10b6c417-d020-4318-a44a-ae69ea3eec5a",
     "name" : "Change something",
     "abbreviation" : "9.1.2.6",
     "description" : "Use this domain for words referring to someone changing something.",
@@ -15834,12 +19110,16 @@ var semanticDomains_en = {
         "slow, gradual," ]
   },
   "9.1.2.7 Event propositions" : {
+    "key" : "9.1.2.7",
+    "guid" : "754ac437-2841-48c3-bbb0-7d6dff52605e",
     "name" : "Event propositions",
     "abbreviation" : "9.1.2.7",
     "description" : "Use this domain for words that indicate event propositions. Event propositions are similar in that they are normally expressed by a subject and a verb, possibly including an object, indirect object, or complement clause. However there are multiple ways in which a language can express an event, such as a passive construction, noun phrase, or subordinate clause. In addition each event type is different in its primary cases, and in the ways those cases are marked. Each event type has subtypes, such as intransitive, transitive, and bitransitive verbs. A great deal of research is needed in order to identify all the variations. Ultimately every verb must be investigated to determine how it behaves in each syntactic construction and how its case relations are marked. No two verbs are entirely alike.",
     "searchKeys" : [ "-ing, -'s...-ing, -ing...of, to," ]
   },
   "9.1.3 Thing" : {
+    "key" : "9.1.3",
+    "guid" : "0037693a-ae42-4e5c-85f5-10a05482d4ee",
     "name" : "Thing",
     "abbreviation" : "9.1.3",
     "description" : "Use this domain for general words referring to things.",
@@ -15850,6 +19130,8 @@ var semanticDomains_en = {
         "et cetera, etc., and what not, and so forth, and the like, and on and on, ... [ellipsis]" ]
   },
   "9.1.3.1 Physical, non-physical" : {
+    "key" : "9.1.3.1",
+    "guid" : "c9741b97-ad50-465c-a4ca-b21d488f45fe",
     "name" : "Physical, non-physical",
     "abbreviation" : "9.1.3.1",
     "description" : "Use this domain for words describing something that is physical--that you can touch and see, and for words describing something that is non-physical--that you cannot touch or see.",
@@ -15860,6 +19142,8 @@ var semanticDomains_en = {
         "spirit" ]
   },
   "9.1.3.2 Situation" : {
+    "key" : "9.1.3.2",
+    "guid" : "74cd7314-5ef6-4505-a35a-81468b5a3f3a",
     "name" : "Situation",
     "abbreviation" : "9.1.3.2",
     "description" : "Use this domain for words referring to a situation--a particular time and place, and the things that are true about it.",
@@ -15872,6 +19156,8 @@ var semanticDomains_en = {
         "under the circumstances, in the circumstances, given the circumstances, given the situation, as it is, as things stand, force of circumstances, the way things are," ]
   },
   "9.1.4 General adjectives" : {
+    "key" : "9.1.4",
+    "guid" : "316f27aa-ed6d-4bc3-9d14-840946a6f4e9",
     "name" : "General adjectives",
     "abbreviation" : "9.1.4",
     "description" : "Use this domain for general adjectives that can replace or stand for a specific adjective.",
@@ -15879,30 +19165,40 @@ var semanticDomains_en = {
         "what kind of, what sort of,", "how," ]
   },
   "9.1.5 General adverbs" : {
+    "key" : "9.1.5",
+    "guid" : "d9b9db39-d87e-4d04-8298-1f1b969dbda1",
     "name" : "General adverbs",
     "abbreviation" : "9.1.5",
     "description" : "Use this domain for general adverbs that can replace or stand for other adverbs.",
     "searchKeys" : [ "thus, thusly, so, how, like this, this way, in that way, in this manner" ]
   },
   "9.2 Part of speech" : {
+    "key" : "9.2",
+    "guid" : "af0909a5-928a-4421-baaa-f33b14302714",
     "name" : "Part of speech",
     "abbreviation" : "9.2",
     "description" : "This domain is for organization purposes and should not be used for any words. Use the domains in this section for words that belong to a particular part of speech. It is best not to use these domains, since they are based on grammar and not meaning. But if you have a small group of words that belong to a part of speech and you want to list them all, you can use these domains. You can also classify words in this section if you don't know what they mean yet.",
     "searchKeys" : []
   },
   "9.2.1 Adjectives" : {
+    "key" : "9.2.1",
+    "guid" : "64f39297-426b-45a8-b5d2-097cf71d688c",
     "name" : "Adjectives",
     "abbreviation" : "9.2.1",
     "description" : "Use this domain to list all adjectives. If there are many adjectives in your language, you should not try to list them all here. If you want to find all the adjectives, most dictionary programs can sort your dictionary by part of speech. However if your language only has a few adjectives, you can list them all in this domain. In the book, \"Where Have All the Adjectives Gone?\" R. M. W. Dixon [Dixon, R. M. W. 1982. Where have all the adjectives gone? Berlin: Mouton.] identifies seven universal semantic types that are often expressed by adjectives. They are: Age (new, young, old), Dimension (big, little, long, short, wide, narrow, thick, fat, thin), Value (good, bad, proper, perfect, excellent, fine, delicious, atrocious, poor), Color (black, white, red), Human propensity (jealous, happy, kind, clever, generous, cruel, rude, proud, wicked), Physical property (hard, soft, heavy, light, rough, smooth, hot, cold, sweet, sour), Speed (fast, slow). Words in the Human propensity class may be nouns. Words in the Physical property and Speed classes may be verbs.",
     "searchKeys" : [ "young, big, good, black, kind, hot, fast," ]
   },
   "9.2.2 Adverbs" : {
+    "key" : "9.2.2",
+    "guid" : "24d3d7f9-0fda-4759-930b-6b721d3e9115",
     "name" : "Adverbs",
     "abbreviation" : "9.2.2",
     "description" : "Use this domain to list all adverbs. If there are many adverbs in your language, it is probably not worth the trouble to list them here. The Shoebox program (and other dictionary programs) can sort your dictionary by part of speech.",
     "searchKeys" : [ "quickly" ]
   },
   "9.2.3 Pronouns" : {
+    "key" : "9.2.3",
+    "guid" : "0296465a-25de-4af6-a122-376956b4b452",
     "name" : "Pronouns",
     "abbreviation" : "9.2.3",
     "description" : "Use this domain for the personal pronouns, including independent, subject, object, and possessive pronouns. It is best to collect all the pronouns in a chart. This way you are more certain of collecting them all and seeing how they are related to each other. A language may have more sets and more distinctions than English does, or it may have less. For instance some languages have a pronoun 'we' which includes the hearer, and another pronoun 'we' which excludes the hearer. Other languages have an indefinite pronoun that means something like the English word 'someone'. Many languages do not have the masculine (he), feminine (she), and neuter (it) distinctions that English has. It is necessary to determine the sets and functions of the pronouns for each language.",
@@ -15919,6 +19215,8 @@ var semanticDomains_en = {
         "as for me (I), as for you (you), as for him (he), as for us (we), as for them (they)" ]
   },
   "9.2.3.1 Reflexive pronouns" : {
+    "key" : "9.2.3.1",
+    "guid" : "13df6ee2-4189-4faa-b54d-768588d03978",
     "name" : "Reflexive pronouns",
     "abbreviation" : "9.2.3.1",
     "description" : "Use this domain for pronouns that refer back to the subject of the sentence. These pronouns should be added to the chart of personal pronouns.",
@@ -15927,6 +19225,8 @@ var semanticDomains_en = {
         "each other, one another" ]
   },
   "9.2.3.2 Indefinite pronouns" : {
+    "key" : "9.2.3.2",
+    "guid" : "d4521b0f-0703-48cc-94a0-f42ccc09959c",
     "name" : "Indefinite pronouns",
     "abbreviation" : "9.2.3.2",
     "description" : "Use this domain for pronouns that do not refer to a definite person or thing, but can refer to anyone or anything. Some languages will not have all the sets of pronouns described below. Add each set you find in your language to the pronoun chart.",
@@ -15940,108 +19240,144 @@ var semanticDomains_en = {
         "amount, how much, however many, however much, plenty" ]
   },
   "9.2.3.3 Relative pronouns" : {
+    "key" : "9.2.3.3",
+    "guid" : "8db17eef-6c42-4ba0-9f07-a3b0e7c8f1e1",
     "name" : "Relative pronouns",
     "abbreviation" : "9.2.3.3",
     "description" : "Use this domain for pronouns used in relative clauses.",
     "searchKeys" : [ "who, whom, that, which, why" ]
   },
   "9.2.3.4 Question words" : {
+    "key" : "9.2.3.4",
+    "guid" : "76795fdd-55dc-4fb7-a9ad-d1423c31df50",
     "name" : "Question words",
     "abbreviation" : "9.2.3.4",
     "description" : "Use this domain for pronouns used in questions.",
     "searchKeys" : [ "who, what, when, where, how, why" ]
   },
   "9.2.3.5 Demonstrative pronouns" : {
+    "key" : "9.2.3.5",
+    "guid" : "ad4d28f0-5cbb-4b82-b736-9b41860a248c",
     "name" : "Demonstrative pronouns",
     "abbreviation" : "9.2.3.5",
     "description" : "Use this domain for demonstrative pronouns.",
     "searchKeys" : [ "a, an, the, this, these, that, those, specific," ]
   },
   "9.2.3.6 Personally" : {
+    "key" : "9.2.3.6",
+    "guid" : "a139558a-8df9-4fc9-bd3e-816a1408ba7f",
     "name" : "Personally",
     "abbreviation" : "9.2.3.6",
     "description" : "Use this domain for words that indicate that someone does something himself, rather than through someone else.",
     "searchKeys" : [ "personally, in person, direct", "by hand" ]
   },
   "9.2.4 Prepositions, postpositions" : {
+    "key" : "9.2.4",
+    "guid" : "811a2abc-4bf3-44e4-9ff4-e33ff4470ce6",
     "name" : "Prepositions, postpositions",
     "abbreviation" : "9.2.4",
     "description" : "Use this domain to list all prepositions and postpositions.",
     "searchKeys" : [ "in, on, at, from, to, away, toward, about," ]
   },
   "9.2.5 Conjunctions" : {
+    "key" : "9.2.5",
+    "guid" : "f950b7cc-fb85-4dbb-b8ca-934d38cae7fc",
     "name" : "Conjunctions",
     "abbreviation" : "9.2.5",
     "description" : "Use this domain to list all conjunctions.",
     "searchKeys" : [ "and, or, but," ]
   },
   "9.2.5.1 Phrase conjunctions" : {
+    "key" : "9.2.5.1",
+    "guid" : "a42aa891-e4fd-489e-b573-b9d20dfc5c2a",
     "name" : "Phrase conjunctions",
     "abbreviation" : "9.2.5.1",
     "description" : "Use this domain to list all phrase level conjunctions--conjunctions that join two words within a phrase.",
     "searchKeys" : [ "and, both...and, or, either...or, neither...nor, but," ]
   },
   "9.2.5.2 Clause conjunctions" : {
+    "key" : "9.2.5.2",
+    "guid" : "2c576c40-17ae-45a7-9ec8-6c16e02ab9c3",
     "name" : "Clause conjunctions",
     "abbreviation" : "9.2.5.2",
     "description" : "Use this domain to list all clause level conjunctions--conjunctions that join two clauses.",
     "searchKeys" : [ "and, or, while, then, if, because," ]
   },
   "9.2.5.3 Sentence conjunctions" : {
+    "key" : "9.2.5.3",
+    "guid" : "ae04020a-3bb2-4672-ad75-71ce72d461ea",
     "name" : "Sentence conjunctions",
     "abbreviation" : "9.2.5.3",
     "description" : "Use this domain to list all sentence level conjunctions--conjunctions that join two sentences.",
     "searchKeys" : [ "then, so," ]
   },
   "9.2.6 Particles" : {
+    "key" : "9.2.6",
+    "guid" : "a7b32d1b-1be7-43ec-94a1-fc7bdd826168",
     "name" : "Particles",
     "abbreviation" : "9.2.6",
     "description" : "Use this domain to list all particles.",
     "searchKeys" : [ "He lives <just> across the street." ]
   },
   "9.2.6.1 Classifiers" : {
+    "key" : "9.2.6.1",
+    "guid" : "da41ea1f-dd09-421d-a1a5-174ff43f4eff",
     "name" : "Classifiers",
     "abbreviation" : "9.2.6.1",
     "description" : "Use this domain to list all classifiers.",
     "searchKeys" : [ "(Japanese) -hon (long objects), -mai (flat objects), -ban (order in a series), -nin (people), -fun (minutes), -dai (large vehicles)" ]
   },
   "9.2.7 Interjections" : {
+    "key" : "9.2.7",
+    "guid" : "b34dc5c9-3367-4bfc-b077-cd014250dc5c",
     "name" : "Interjections",
     "abbreviation" : "9.2.7",
     "description" : "Use this domain to list all interjections.",
     "searchKeys" : [ "Wow! Hold on! Good grief!" ]
   },
   "9.2.8 Idiophones" : {
+    "key" : "9.2.8",
+    "guid" : "8206415e-a915-4842-a46a-fbea64f1a0e3",
     "name" : "Idiophones",
     "abbreviation" : "9.2.8",
     "description" : "Use this domain to list all idiophones. If there are many idiophones in your language, it is probably not worth the trouble to list them here. The Shoebox program (and other dictionary programs) can sort your dictionary by part of speech.",
     "searchKeys" : [ "knick-knack, flimflam" ]
   },
   "9.2.9 Affixes" : {
+    "key" : "9.2.9",
+    "guid" : "35624f3a-2029-43b3-b70a-83e63ac9052f",
     "name" : "Affixes",
     "abbreviation" : "9.2.9",
     "description" : "Use this domain to list all affixes that do not fit in any of the subdomains under it. This section should be filled out by a linguist.",
     "searchKeys" : [ "-s, -ed, -ing" ]
   },
   "9.2.9.1 Verb affixes" : {
+    "key" : "9.2.9.1",
+    "guid" : "0049664f-0931-487b-ab3c-ce11e134ce7a",
     "name" : "Verb affixes",
     "abbreviation" : "9.2.9.1",
     "description" : "Use this domain to list all verb affixes.",
     "searchKeys" : [ "-ing, -ed, -s" ]
   },
   "9.2.9.2 Noun affixes" : {
+    "key" : "9.2.9.2",
+    "guid" : "a4f4943f-ad94-4736-bf5d-f8a3cb15919f",
     "name" : "Noun affixes",
     "abbreviation" : "9.2.9.2",
     "description" : "Use this domain to list all noun affixes.",
     "searchKeys" : [ "-s, -en" ]
   },
   "9.2.9.3 Derivational affixes" : {
+    "key" : "9.2.9.3",
+    "guid" : "751f726b-b7cd-470e-a9fd-f2f1b460dd0d",
     "name" : "Derivational affixes",
     "abbreviation" : "9.2.9.3",
     "description" : "Use this domain to list all derivational affixes. A derivational affix is joined to a root and changes it into a different word. Derivational affixes often change the root into a different part of speech. Adding a derivational affix usually changes the meaning of the root in a significant way.",
     "searchKeys" : [ "un-, a-, self-, super-, -ment, -hood, -ous, -ly, -fy" ]
   },
   "9.3 Very" : {
+    "key" : "9.3",
+    "guid" : "5422d4ba-8af4-4767-912e-43b60ef28eab",
     "name" : "Very",
     "abbreviation" : "9.3",
     "description" : "Use this domain for words that intensify an attribute.",
@@ -16051,6 +19387,8 @@ var semanticDomains_en = {
         "not very, hardly, barely, a little, fairly" ]
   },
   "9.3.1 Degree" : {
+    "key" : "9.3.1",
+    "guid" : "aaf9d375-f0a0-4c7b-bbf8-3c7ffd4f5a52",
     "name" : "Degree",
     "abbreviation" : "9.3.1",
     "description" : "Use this domain for words that indicate a degree on a scale.",
@@ -16061,6 +19399,8 @@ var semanticDomains_en = {
         "most, -est" ]
   },
   "9.3.1.1 To a large degree" : {
+    "key" : "9.3.1.1",
+    "guid" : "7f91aa6d-f342-4fb9-9448-69d694cda9c5",
     "name" : "To a large degree",
     "abbreviation" : "9.3.1.1",
     "description" : "Use this domain for words referring to a large degree.",
@@ -16069,12 +19409,16 @@ var semanticDomains_en = {
         "size, magnitude," ]
   },
   "9.3.1.2 To a small degree" : {
+    "key" : "9.3.1.2",
+    "guid" : "1082c52b-490a-4eec-acf1-7016796dafd9",
     "name" : "To a small degree",
     "abbreviation" : "9.3.1.2",
     "description" : "Use this domain for words referring to a small degree.",
     "searchKeys" : [ "deficient, inappreciably, inconsequentially, insignificantly, lacking, lightly, limited, little, low, merely, moderately, negligibly, piddling, possible, puny, reasonably, relatively, slightly, somewhat, sparingly, temperately, trivial, trivially," ]
   },
   "9.3.1.3 To a larger degree" : {
+    "key" : "9.3.1.3",
+    "guid" : "73b959ab-0229-4710-af99-dfc9b5370540",
     "name" : "To a larger degree",
     "abbreviation" : "9.3.1.3",
     "description" : "Use this domain for words referring to a larger degree.",
@@ -16084,6 +19428,8 @@ var semanticDomains_en = {
         "increase, raise, swell", "more than," ]
   },
   "9.3.1.4 To a smaller degree" : {
+    "key" : "9.3.1.4",
+    "guid" : "984dc2b7-6fdd-4257-abdc-5873abb7bb70",
     "name" : "To a smaller degree",
     "abbreviation" : "9.3.1.4",
     "description" : "Use this domain for words referring to a smaller degree.",
@@ -16093,6 +19439,8 @@ var semanticDomains_en = {
         "decrease, lower, reduce,", "less than, lower," ]
   },
   "9.3.2 Completely" : {
+    "key" : "9.3.2",
+    "guid" : "e1dd83dd-955a-4bc7-a761-fc91555da1f8",
     "name" : "Completely",
     "abbreviation" : "9.3.2",
     "description" : "Use this domain for words referring to a complete degree--when something is done, happens, is thought, is felt, etc completely and in every way.",
@@ -16102,6 +19450,8 @@ var semanticDomains_en = {
         "complete, thorough, full, comprehensive, exhaustive, entire," ]
   },
   "9.3.3 Partly" : {
+    "key" : "9.3.3",
+    "guid" : "d74914e7-e329-49d4-8513-ec8d850241e4",
     "name" : "Partly",
     "abbreviation" : "9.3.3",
     "description" : "Use this domain for words referring to a complete degree--when something is done, happens, is thought, is felt, etc completely and in every way.",
@@ -16110,30 +19460,40 @@ var semanticDomains_en = {
         "gradually, in stages, step by step, one step at a time, in increments, incrementally, piecemeal, by degrees, little by little," ]
   },
   "9.3.4 Do intensely" : {
+    "key" : "9.3.4",
+    "guid" : "a22d5c1c-daed-4e7a-8243-493f2d841314",
     "name" : "Do intensely",
     "abbreviation" : "9.3.4",
     "description" : "Use this domain for words indicating intensity of an action.",
     "searchKeys" : [ "intense, intensely, extensively" ]
   },
   "9.3.5 Attribution of an attribute" : {
+    "key" : "9.3.5",
+    "guid" : "c7c3aa7d-a4b5-45af-9a31-a640179e8fa4",
     "name" : "Attribution of an attribute",
     "abbreviation" : "9.3.5",
     "description" : "Use this domain for words that modify an attribute.",
     "searchKeys" : [ "fairly, sort of, quite," ]
   },
   "9.4 Semantic constituents related to verbs" : {
+    "key" : "9.4",
+    "guid" : "61a28bdc-c05c-49d8-b47e-d54a9082156c",
     "name" : "Semantic constituents related to verbs",
     "abbreviation" : "9.4",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that modify verbs.",
     "searchKeys" : []
   },
   "9.4.1 Tense and aspect" : {
+    "key" : "9.4.1",
+    "guid" : "793993ac-20c1-49f0-9716-e4cdc7da4439",
     "name" : "Tense and aspect",
     "abbreviation" : "9.4.1",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate tense and aspect.",
     "searchKeys" : []
   },
   "9.4.1.1 Tense" : {
+    "key" : "9.4.1.1",
+    "guid" : "df2ee830-0668-43d7-8a32-e2fd3e7b31d8",
     "name" : "Tense",
     "abbreviation" : "9.4.1.1",
     "description" : "Use this domain for verbal auxiliaries, affixes, adverbs, and particles that indicate tense (also known as temporal deixis)--the time of a situation (event, activity, or state) in relation to a reference point, which is usually the time of utterance. The following definitions are taken from Bybee, Joan, Revere Perkins, and William Pagliuca. 1994. The evolution of grammar. Chicago and London: University of Chicago Press.",
@@ -16144,6 +19504,8 @@ var semanticDomains_en = {
         "will, going to" ]
   },
   "9.4.1.2 Aspect--dynamic verbs" : {
+    "key" : "9.4.1.2",
+    "guid" : "ccbbd16f-58c5-45c1-bfff-1fba64d9740e",
     "name" : "Aspect--dynamic verbs",
     "abbreviation" : "9.4.1.2",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate aspects of dynamic verbs. Aspects describe the temporal contours of a situation. They may be combined with any of the tenses, either in the same morpheme or in combinations of morphemes. The following definitions are taken from Bybee, Joan, Revere Perkins, and William Pagliuca. 1994. The evolution of grammar. Chicago and London: University of Chicago Press.",
@@ -16157,12 +19519,16 @@ var semanticDomains_en = {
         "continue, continuous, keep on", "complete, finish, succeed" ]
   },
   "9.4.1.3 Aspect--stative verbs" : {
+    "key" : "9.4.1.3",
+    "guid" : "321d0a74-705f-40bf-8d24-809f65bee895",
     "name" : "Aspect--stative verbs",
     "abbreviation" : "9.4.1.3",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate aspects of stative verbs. Aspects describe the temporal contours of a situation. They may be combined with any of the tenses, either in the same morpheme or in combinations of morphemes. The following definitions are taken from Bybee, Joan, Revere Perkins, and William Pagliuca. 1994. The evolution of grammar. Chicago and London: University of Chicago Press.",
     "searchKeys" : [ "is,", "becoming,", "no longer,", "still,", "turn," ]
   },
   "9.4.1.4 Relational tenses" : {
+    "key" : "9.4.1.4",
+    "guid" : "54f59b23-a2e8-4bfc-9da2-7dd7c37d2a47",
     "name" : "Relational tenses",
     "abbreviation" : "9.4.1.4",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate relational tenses. Relational tenses describe situations where the reference time is not the same as the moment of speech. They may be combined with any of the tenses, either in the same morpheme or in combinations of morphemes. The following definitions are taken from Bybee, Joan, Revere Perkins, and William Pagliuca. 1994. The evolution of grammar. Chicago and London: University of Chicago Press.",
@@ -16170,6 +19536,8 @@ var semanticDomains_en = {
         "had... -en," ]
   },
   "9.4.2 Agent-oriented modalities" : {
+    "key" : "9.4.2",
+    "guid" : "7bf05f4e-909f-40ca-b742-9be21eba9fbb",
     "name" : "Agent-oriented modalities",
     "abbreviation" : "9.4.2",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate agent-oriented modalities. Agent-oriented modalities describe internal or external conditions on a willful agent with respect to the completion of the predicate situation. They may be combined with any of the tenses, either in the same morpheme or in combinations of morphemes. The following definitions are taken from Bybee, Joan, Revere Perkins, and William Pagliuca. 1994. The evolution of grammar. Chicago and London: University of Chicago Press.",
@@ -16179,6 +19547,8 @@ var semanticDomains_en = {
         "gonna, going to, intend to,", "go to,", "come to," ]
   },
   "9.4.2.1 Can" : {
+    "key" : "9.4.2.1",
+    "guid" : "59d936f3-dffb-4585-80e0-eaf6cd6a8026",
     "name" : "Can",
     "abbreviation" : "9.4.2.1",
     "description" : "Use this domain for words indicating that someone can do something.",
@@ -16188,6 +19558,8 @@ var semanticDomains_en = {
         "inability, unable, incapable," ]
   },
   "9.4.2.2 Can't" : {
+    "key" : "9.4.2.2",
+    "guid" : "ab8d8dc9-eeb7-41ff-93a9-cbbd50b89a73",
     "name" : "Can't",
     "abbreviation" : "9.4.2.2",
     "description" : "Use this domain for words related to being incapable of doing something.",
@@ -16196,6 +19568,8 @@ var semanticDomains_en = {
         "incapacity, incompetence, inability, deficiency, lack of training" ]
   },
   "9.4.2.3 Necessary " : {
+    "key" : "9.4.2.3",
+    "guid" : "47feee3e-80e1-469a-911c-0c550b37a2f8",
     "name" : "Necessary",
     "abbreviation" : "9.4.2.3",
     "description" : "Use this domain for words that a speaker uses to indicate that he thinks something must happen.",
@@ -16206,12 +19580,16 @@ var semanticDomains_en = {
         "unnecessary, extraneous, incidental, inessential, needless, nonessential, uncalled-for, unessential, unnecessary, unneeded," ]
   },
   "9.4.3 Moods" : {
+    "key" : "9.4.3",
+    "guid" : "c3ddfc77-e3a6-450e-a853-111f5595df87",
     "name" : "Moods",
     "abbreviation" : "9.4.3",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate moods.",
     "searchKeys" : []
   },
   "9.4.3.1 Imperative " : {
+    "key" : "9.4.3.1",
+    "guid" : "965c6a0b-3034-4e2f-a00b-ed2eb3119a5d",
     "name" : "Imperative",
     "abbreviation" : "9.4.3.1",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate imperatives. The following definitions are taken from Bybee, Joan, Revere Perkins, and William Pagliuca. 1994. The evolution of grammar. Chicago and London: University of Chicago Press. Use this domain for words and affixes that a speaker uses to indicate that he is making a command. English has no command word. Some languages change the form of the verb by adding an affix. Some languages have special verbs that are only or normally used as commands. Those verbs could be classified here.",
@@ -16221,6 +19599,8 @@ var semanticDomains_en = {
         "whoa (stop)" ]
   },
   "9.4.3.2 Hortative" : {
+    "key" : "9.4.3.2",
+    "guid" : "edeb9458-3bdb-4d14-aaa1-6eb457307b9c",
     "name" : "Hortative",
     "abbreviation" : "9.4.3.2",
     "description" : "Use this domain for ways of saying that someone should do something. If I say someone should do something, I think it is good that he does it.",
@@ -16231,12 +19611,16 @@ var semanticDomains_en = {
         "responsible,", "dutiful, responsible" ]
   },
   "9.4.3.3 Interrogative " : {
+    "key" : "9.4.3.3",
+    "guid" : "6fa33de6-00f4-44d5-b6b3-b3c4a4f671e5",
     "name" : "Interrogative",
     "abbreviation" : "9.4.3.3",
     "description" : "Use this domain for words that a speaker uses to indicate that he is asking a question. English has no question word, but other languages such as Japanese do.",
     "searchKeys" : [ "(Japanese) ka? 'a particle coming at the end of a sentence to indicate that it is a question'" ]
   },
   "9.4.4 Epistemic moods" : {
+    "key" : "9.4.4",
+    "guid" : "3ea4c495-b837-4310-8741-38d89fa63e0b",
     "name" : "Epistemic moods",
     "abbreviation" : "9.4.4",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate epistemic moods. Epistemic moods have the whole proposition in their scope and indicate the degree of commitment of the speaker to the truth or future truth of the proposition. They may be combined with any of the tenses, either in the same morpheme or in combinations of morphemes. The following definitions are taken from Bybee, Joan, Revere Perkins, and William Pagliuca. 1994. The evolution of grammar. Chicago and London: University of Chicago Press.",
@@ -16244,6 +19628,8 @@ var semanticDomains_en = {
         "might,", "[none in English]" ]
   },
   "9.4.4.1 Certainly, definitely" : {
+    "key" : "9.4.4.1",
+    "guid" : "ad7cc381-1dc6-4fc2-94a4-acd5bf7a11da",
     "name" : "Certainly, definitely",
     "abbreviation" : "9.4.4.1",
     "description" : "Use this domain for words that a speaker uses to indicate that he thinks something is certainly true or is certain to happen.",
@@ -16257,6 +19643,8 @@ var semanticDomains_en = {
         "absolute, assurance, assured, can, certain, certainly, certitude, clear, decided, decisive, definite, doubtless, established, fixed, guaranteed, incalculable, incontestable, incontrovertible, indisputable, indubitable, ineluctable, inevitable, infallible, inescapable, inevitable, irrefragable, irrefutable, positive, really, set, settled, single-minded, sure, sureness, trustworthy, unarguable, unavoidable, undeniable, unequivocal, unmistakable, unquestionable," ]
   },
   "9.4.4.2 Sure" : {
+    "key" : "9.4.4.2",
+    "guid" : "af6fe2d6-576d-473f-8a32-583779d95d1d",
     "name" : "Sure",
     "abbreviation" : "9.4.4.2",
     "description" : "Use this domain for words related to being sure that something is true.",
@@ -16265,6 +19653,8 @@ var semanticDomains_en = {
         "convince" ]
   },
   "9.4.4.3 Probably " : {
+    "key" : "9.4.4.3",
+    "guid" : "84eb31d3-b932-4b3b-b945-85884ea856c7",
     "name" : "Probably",
     "abbreviation" : "9.4.4.3",
     "description" : "Use this domain for words that a speaker uses to indicate that he thinks something is probable or likely to occur.",
@@ -16281,12 +19671,16 @@ var semanticDomains_en = {
         "little chance, little hope, little prospect, have little chance, stand little chance, outside chance" ]
   },
   "9.4.4.4 Possible" : {
+    "key" : "9.4.4.4",
+    "guid" : "85c5b8f7-8086-493d-b70d-a361bfa56f09",
     "name" : "Possible",
     "abbreviation" : "9.4.4.4",
     "description" : "Use this domain for words that a speaker uses to indicate that he thinks something is possible. Maybe implies that the speaker doesn't know something.",
     "searchKeys" : [ "possible, possibly, could, might, may, able, maybe, perhaps, sort of, I guess so" ]
   },
   "9.4.4.5 Uncertain" : {
+    "key" : "9.4.4.5",
+    "guid" : "e0c32642-7c51-4e23-a776-f63f2f2f936d",
     "name" : "Uncertain",
     "abbreviation" : "9.4.4.5",
     "description" : "Use this domain for words that indicate that no one is certain that something is true, or when it is impossible to be certain that something is true.",
@@ -16297,6 +19691,8 @@ var semanticDomains_en = {
         "debatable, questionable, open to question, open to debate, moot point" ]
   },
   "9.4.4.6 Unsure" : {
+    "key" : "9.4.4.6",
+    "guid" : "1a635032-6e13-4a56-aa03-6c6a015c502e",
     "name" : "Unsure",
     "abbreviation" : "9.4.4.6",
     "description" : "Use this domain for words related to not feeling sure about something or someone.",
@@ -16306,6 +19702,8 @@ var semanticDomains_en = {
         "make someone unsure, make someone uncertain, cause doubt, cause uncertainty, it makes you wonder, raise doubts" ]
   },
   "9.4.4.6.1 Think so" : {
+    "key" : "9.4.4.6.1",
+    "guid" : "13e67cc9-055b-4f9b-9217-a16b18db0329",
     "name" : "Think so",
     "abbreviation" : "9.4.4.6.1",
     "description" : "Use this domain for words indicating that you think something is true, but you are not completely sure about it.",
@@ -16315,6 +19713,8 @@ var semanticDomains_en = {
         "I think so, I guess so, as far as I know, to the best of my knowledge, as far as I'm aware," ]
   },
   "9.4.4.6.2 Maybe" : {
+    "key" : "9.4.4.6.2",
+    "guid" : "e0b00a13-8648-4635-afe5-0be3c0b6a05c",
     "name" : "Maybe",
     "abbreviation" : "9.4.4.6.2",
     "description" : "Use this domain for words that a speaker uses to indicate that he thinks it is possible that something may happen or be true, but he isn't certain.",
@@ -16323,6 +19723,8 @@ var semanticDomains_en = {
         "maybe, perhaps, possibly,", "maybe, perhaps," ]
   },
   "9.4.4.6.3 Seem" : {
+    "key" : "9.4.4.6.3",
+    "guid" : "858af232-b570-4153-b4c0-f60930df9ced",
     "name" : "Seem",
     "abbreviation" : "9.4.4.6.3",
     "description" : "Use this domain for words indicating that something seems to be a certain way--you see (or hear) something and think something about it, but you are not sure that what you think is true.",
@@ -16336,6 +19738,8 @@ var semanticDomains_en = {
         "impression, feeling,", "appearance, semblance of," ]
   },
   "9.4.4.7 Just, almost not" : {
+    "key" : "9.4.4.7",
+    "guid" : "7c022751-a9f9-412d-8b27-8cd03b797e2d",
     "name" : "Just, almost not",
     "abbreviation" : "9.4.4.7",
     "description" : "Use this domain for words indicating that although something is true, it almost is not true.",
@@ -16347,12 +19751,16 @@ var semanticDomains_en = {
         "just, only just, barely" ]
   },
   "9.4.4.8 Don't think so, doubt it" : {
+    "key" : "9.4.4.8",
+    "guid" : "ca495e57-a8e0-4294-bfe3-7b7995dc96c7",
     "name" : "Don't think so, doubt it",
     "abbreviation" : "9.4.4.8",
     "description" : "Use this domain for words indicating that you think something is unlikely to be true or to happen.",
     "searchKeys" : [ "don't think, doubt, be doubtful, be dubious, I'd be surprised if, I think not, I wouldn't have thought so" ]
   },
   "9.4.4.9 Impossible" : {
+    "key" : "9.4.4.9",
+    "guid" : "f883266a-146a-41c7-b1db-85120840c3a8",
     "name" : "Impossible",
     "abbreviation" : "9.4.4.9",
     "description" : "Use this domain for words that a speaker uses to indicate that he thinks something is impossible.",
@@ -16365,6 +19773,8 @@ var semanticDomains_en = {
         "absurd, impenetrable, impervious, inaccessible, inoperable, insurmountable, no chance, no earthly way, outlandish, preposterous, ridiculous, unable, unachievable, unapproachable, undoable, unfeasible, unimaginable, unworkable," ]
   },
   "9.4.5 Evidentials" : {
+    "key" : "9.4.5",
+    "guid" : "04752883-aa3e-42a2-bd42-454e9cd99b11",
     "name" : "Evidentials",
     "abbreviation" : "9.4.5",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate evidentials. An evidential is when the speaker indicates the source of the information on which an assertion about a situation is based. The following definitions are taken from Bybee, Joan, Revere Perkins, and William Pagliuca. 1994. The evolution of grammar. Chicago and London: University of Chicago Press.",
@@ -16376,6 +19786,8 @@ var semanticDomains_en = {
         "I figure that..., I conclude that...," ]
   },
   "9.4.5.1 Evaluator" : {
+    "key" : "9.4.5.1",
+    "guid" : "cf5f83be-2c19-4cf8-8cc5-53bd32b50530",
     "name" : "Evaluator",
     "abbreviation" : "9.4.5.1",
     "description" : "Use this domain for words indicating who is evaluating the proposition.",
@@ -16384,6 +19796,8 @@ var semanticDomains_en = {
         "according to, rumor has it, they say, people say, there is talk of, apparently, supposedly, be rumored to be," ]
   },
   "9.4.6 Yes" : {
+    "key" : "9.4.6",
+    "guid" : "a03663ca-0c66-4570-be2d-b40105cc4400",
     "name" : "Yes",
     "abbreviation" : "9.4.6",
     "description" : "Use this domain for words that affirm or agree with the truth of something, or that answer a yes/no question in the affirmative.",
@@ -16392,6 +19806,8 @@ var semanticDomains_en = {
         "affirm, affirmation, confirm, concur, agree, agreement" ]
   },
   "9.4.6.1 No, not" : {
+    "key" : "9.4.6.1",
+    "guid" : "350667ee-592b-47af-adca-14e820ec58cf",
     "name" : "No, not",
     "abbreviation" : "9.4.6.1",
     "description" : "Use this domain for words that negate or deny the truth of something, or that answer a yes/no question in the negative.",
@@ -16400,24 +19816,32 @@ var semanticDomains_en = {
         "deny, denial, negate, negation, disavow, disavowal, contradict, contradiction, repudiate, repudiation" ]
   },
   "9.4.6.2 Markers expecting an affirmative answer" : {
+    "key" : "9.4.6.2",
+    "guid" : "b4c1e05f-f741-45cc-8d13-a1f60f474325",
     "name" : "Markers expecting an affirmative answer",
     "abbreviation" : "9.4.6.2",
     "description" : "Use this domain for words indicating that an affirmative answer is expected to a question.",
     "searchKeys" : [ "n't," ]
   },
   "9.4.6.3 Markers expecting a negative answer" : {
+    "key" : "9.4.6.3",
+    "guid" : "e64e647e-a5fb-463c-8eef-44879e2e70b2",
     "name" : "Markers expecting a negative answer",
     "abbreviation" : "9.4.6.3",
     "description" : "Use this domain for words indicating that a negative answer is expected to a question.",
     "searchKeys" : [ "n't...are you," ]
   },
   "9.4.7 Subordinating particles" : {
+    "key" : "9.4.7",
+    "guid" : "1de2cef5-3a2d-45c1-8cb6-06b2ac087907",
     "name" : "Subordinating particles",
     "abbreviation" : "9.4.7",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate a subordinate clause. The following definitions are taken from Bybee, Joan, Revere Perkins, and William Pagliuca. 1994. The evolution of grammar. Chicago and London: University of Chicago Press.",
     "searchKeys" : []
   },
   "9.4.8 Adverbial clauses" : {
+    "key" : "9.4.8",
+    "guid" : "fa8e72a0-1bfe-4b49-a287-293b44213960",
     "name" : "Adverbial clauses",
     "abbreviation" : "9.4.8",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate adverbial clauses. The following definitions are taken from Bybee, Joan, Revere Perkins, and William Pagliuca. 1994. The evolution of grammar. Chicago and London: University of Chicago Press.",
@@ -16425,12 +19849,16 @@ var semanticDomains_en = {
         "although, even though, despite the fact that" ]
   },
   "9.5 Case" : {
+    "key" : "9.5",
+    "guid" : "aab82dc7-de9f-44b3-845e-0c926f47cfb6",
     "name" : "Case",
     "abbreviation" : "9.5",
     "description" : "Each verb has a set of semantic case relations. For instance in the sentence 'I gave flowers to my wife' the verb give has three case relations. 'I' is the Agent, 'flowers' is the Patient, and 'my wife is the 'Recipient'. In this sentence the only word that marks a case relation is 'to'. English often marks case relations by their position in the sentence. Some languages mark case relations by affixes, prepositions, postpositions, and sometimes special verbs. To completely describe a language, each verb must be investigated, all its case relations must be identified, and all the ways in which these relations are marked must be described. Since verbs are often unique and unpredictable in their case relations, this information should go into the dictionary. This section should be used to classify the words and affixes that are used to mark case relations. This domain should be used for technical terms that refer to case.",
     "searchKeys" : [ "case, declension" ]
   },
   "9.5.1 Primary cases" : {
+    "key" : "9.5.1",
+    "guid" : "bb8ddf5f-707d-46c0-aff4-45683d26fd68",
     "name" : "Primary cases",
     "abbreviation" : "9.5.1",
     "description" : "Use this section for primary cases.",
@@ -16438,24 +19866,32 @@ var semanticDomains_en = {
         "to," ]
   },
   "9.5.1.1 Beneficiary of an event" : {
+    "key" : "9.5.1.1",
+    "guid" : "93df663c-9a5e-48aa-984f-fdf413079bc2",
     "name" : "Beneficiary of an event",
     "abbreviation" : "9.5.1.1",
     "description" : "Use this domain for words that mark the beneficiary of an event. The sentence \"John built a house for his father\" is ambiguous. If the house was for his father to live in, then \"for\" would mark the 'Beneficiary of a patient', meaning that the house was for the father. If, on the other hand, the father was intending to build the house to sell, but couldn't due to an injury, then \"for\" would mark the 'Beneficiary of an event', meaning the father benefited from the building of the house.",
     "searchKeys" : [ "for, for (someone's) sake, for the sake of, for (someone's) benefit, for the benefit of" ]
   },
   "9.5.1.2 Instrument" : {
+    "key" : "9.5.1.2",
+    "guid" : "4415aff1-4d74-463e-a25d-9832c7477329",
     "name" : "Instrument",
     "abbreviation" : "9.5.1.2",
     "description" : "Use this domain for words that mark an instrument used to do something.",
     "searchKeys" : [ "with, using" ]
   },
   "9.5.1.3 Means" : {
+    "key" : "9.5.1.3",
+    "guid" : "4f587b2b-60a6-4ea0-9fe5-89e5a502d380",
     "name" : "Means",
     "abbreviation" : "9.5.1.3",
     "description" : "Use this domain for words indicating the means by which something is done.",
     "searchKeys" : [ "by, by means of" ]
   },
   "9.5.1.4 Way, manner" : {
+    "key" : "9.5.1.4",
+    "guid" : "d0b14231-1471-41b3-aeb5-69199acaaefb",
     "name" : "Way, manner",
     "abbreviation" : "9.5.1.4",
     "description" : "Use this domain for words indicating the way or manner in which something is done.",
@@ -16466,60 +19902,80 @@ var semanticDomains_en = {
         "in," ]
   },
   "9.5.1.5 Attendant circumstances" : {
+    "key" : "9.5.1.5",
+    "guid" : "aabc32ee-46e4-469f-93ad-673373cb2e8d",
     "name" : "Attendant circumstances",
     "abbreviation" : "9.5.1.5",
     "description" : "Use this domain for words indicating the attendant circumstances in which something happened.",
     "searchKeys" : [ "in" ]
   },
   "9.5.1.6 Spatial location of an event" : {
+    "key" : "9.5.1.6",
+    "guid" : "71757ff0-d698-426d-a791-50c4bde6f735",
     "name" : "Spatial location of an event",
     "abbreviation" : "9.5.1.6",
     "description" : "Use this domain for words indicating the spatial location of an event.",
     "searchKeys" : [ "at" ]
   },
   "9.5.1.6.1 Source (of movement)" : {
+    "key" : "9.5.1.6.1",
+    "guid" : "400d318e-a9ef-40b4-92be-0d7e96e51d8a",
     "name" : "Source (of movement)",
     "abbreviation" : "9.5.1.6.1",
     "description" : "Use this domain for words that mark the Source (original location) of something.",
     "searchKeys" : [ "source, from" ]
   },
   "9.5.1.6.2 Path (of movement)" : {
+    "key" : "9.5.1.6.2",
+    "guid" : "a9470e53-ee43-4c87-9cce-09cc4fa6b1c1",
     "name" : "Path (of movement)",
     "abbreviation" : "9.5.1.6.2",
     "description" : "Use this domain for words indicating the Path of movement.",
     "searchKeys" : [ "via, course, route," ]
   },
   "9.5.1.6.3 Goal (of movement)" : {
+    "key" : "9.5.1.6.3",
+    "guid" : "9f91cd53-8b9e-4d76-82e4-5ede39112322",
     "name" : "Goal (of movement)",
     "abbreviation" : "9.5.1.6.3",
     "description" : "Use this domain for words indicating the Goal of movement.",
     "searchKeys" : [ "to, destination," ]
   },
   "9.5.1.6.4 Origin (of a person)" : {
+    "key" : "9.5.1.6.4",
+    "guid" : "66e2806d-3e16-4fb2-a158-7f3b4dd5d9af",
     "name" : "Origin (of a person)",
     "abbreviation" : "9.5.1.6.4",
     "description" : "Use this domain for words that mark the place where someone was born or the place where they have been living.",
     "searchKeys" : [ "from, be from (the tribe, or country),", "home town," ]
   },
   "9.5.2 Semantically similar events" : {
+    "key" : "9.5.2",
+    "guid" : "0eefa07a-e0a3-49e3-aeb4-62f1eafd8e23",
     "name" : "Semantically similar events",
     "abbreviation" : "9.5.2",
     "description" : "Use this section for words that join semantically similar events into one sentence. Each sentence is actually reporting two or more situations, which may differ in one or two respects. The words to be included in these domains indicate that two situations are being reported, or mark the differences between the two situations.",
     "searchKeys" : []
   },
   "9.5.2.1 Together" : {
+    "key" : "9.5.2.1",
+    "guid" : "42b21a6e-e2f3-4468-9e92-49ee4de6909a",
     "name" : "Together",
     "abbreviation" : "9.5.2.1",
     "description" : "Use this domain for words indicating when two or more people each do the same thing and do it together, or when they do it separately.",
     "searchKeys" : [ "together,", "separately," ]
   },
   "9.5.2.2 With, be with" : {
+    "key" : "9.5.2.2",
+    "guid" : "3a545732-145a-4034-8f72-e08d752cb4d4",
     "name" : "With, be with",
     "abbreviation" : "9.5.2.2",
     "description" : "Use this domain for words indicating a person who accompanied the subject of a proposition.",
     "searchKeys" : [ "with, be accompanied by, company, in someone's company, in someone's presence, contact, along with, together with," ]
   },
   "9.5.2.3 With, do with someone" : {
+    "key" : "9.5.2.3",
+    "guid" : "6903b844-79be-4e9d-a3c8-1ca2a385bf4f",
     "name" : "With, do with someone",
     "abbreviation" : "9.5.2.3",
     "description" : "Use this domain for words indicating a person who does something with another person who is the subject of the sentence.",
@@ -16530,6 +19986,8 @@ var semanticDomains_en = {
         "partner, companion, fellow (student), sidekick," ]
   },
   "9.5.2.4 Each other" : {
+    "key" : "9.5.2.4",
+    "guid" : "d39b2432-87d5-4f3e-8101-de06001b42d6",
     "name" : "Each other",
     "abbreviation" : "9.5.2.4",
     "description" : "Use this domain for words indicating that two or more people do something to each other.",
@@ -16538,36 +19996,48 @@ var semanticDomains_en = {
         "mutual, reciprocal, two-way," ]
   },
   "9.5.2.5 In groups" : {
+    "key" : "9.5.2.5",
+    "guid" : "52f9a8f0-d97d-4aa1-8c2c-d907d7cb83fc",
     "name" : "In groups",
     "abbreviation" : "9.5.2.5",
     "description" : "Use this domain for words indicating that the subjects of a clause do something in groups.",
     "searchKeys" : [ "in, by" ]
   },
   "9.5.3 Patient-related cases" : {
+    "key" : "9.5.3",
+    "guid" : "116bef13-e80f-4a15-bb0a-bb7b3794ffac",
     "name" : "Patient-related cases",
     "abbreviation" : "9.5.3",
     "description" : "Use this section for cases that bear a relationship to the 'Patient' of a proposition.",
     "searchKeys" : []
   },
   "9.5.3.1 Beneficiary (of a patient)" : {
+    "key" : "9.5.3.1",
+    "guid" : "ca0f9b9b-31fc-4ae6-9563-abedc4a5af98",
     "name" : "Beneficiary (of a patient)",
     "abbreviation" : "9.5.3.1",
     "description" : "Use this domain for words that mark the beneficiary of the Patient of an activity. The Patient is often expressed as the object of a sentence. In the sentence \"John built a house for his parents,\" the house is the Patient. It is the house that benefits the parents, not the building of the house.",
     "searchKeys" : [ "for" ]
   },
   "9.5.3.2 Recipient (of a patient)" : {
+    "key" : "9.5.3.2",
+    "guid" : "99c51a2c-ad49-48a6-bb0b-f059da745ec4",
     "name" : "Recipient (of a patient)",
     "abbreviation" : "9.5.3.2",
     "description" : "Use this domain for words that mark the recipient of the Patient of an activity. The Patient is usually expressed as the object of a sentence.",
     "searchKeys" : [ "to" ]
   },
   "9.5.3.3 With (a patient)" : {
+    "key" : "9.5.3.3",
+    "guid" : "55b93f1c-6ce0-4d13-ae1e-f06360e4689c",
     "name" : "With (a patient)",
     "abbreviation" : "9.5.3.3",
     "description" : "Use this domain for words that mark a second Patient that accompanies the primary Patient of an activity. In this type of sentence there are actually two Patients, but one of them has more prominence than the other. The primary patient is usually expressed as the object of the sentence. The second Patient may be marked by an oblique case or preposition/postposition. For instance it may be conceived as accompanying the first Patient.",
     "searchKeys" : [ "with, together with, combined with, in combination, in conjunction with, alongside, along with," ]
   },
   "9.6 Connected with, related " : {
+    "key" : "9.6",
+    "guid" : "7f7fc197-5064-43c0-af51-2919fb7355c9",
     "name" : "Connected with, related",
     "abbreviation" : "9.6",
     "description" : "Use the domains in this section for words that indicate a logical relation between two or more words or sentences. Use this domain for words that indicate an unspecified logical relation between people, things, or situations.",
@@ -16582,12 +20052,16 @@ var semanticDomains_en = {
         "irrelevant, be beside the point, have nothing to do with, be nothing to do with, be neither here nor there, doesn't come into it, be a red herring," ]
   },
   "9.6.1 Coordinate relations" : {
+    "key" : "9.6.1",
+    "guid" : "265f5645-94cb-485c-8bf9-0a3ab2354f63",
     "name" : "Coordinate relations",
     "abbreviation" : "9.6.1",
     "description" : "Use this section for words indicating coordinate relations. Do not put any words in this domain. It is only for organizational purposes.",
     "searchKeys" : []
   },
   "9.6.1.1 And, also" : {
+    "key" : "9.6.1.1",
+    "guid" : "c029eed8-2ec0-4f6f-aa22-3a066bb23ea6",
     "name" : "And, also",
     "abbreviation" : "9.6.1.1",
     "description" : "Use this domain for words that indicate that you are adding another thought to a previous thought. Words in this domain may indicate a variety of relationships between words, phrases, clauses, or sentences. For instance the words may join two clauses that are the same except that the subjects are different, or the objects are different, or the verbs are different.",
@@ -16598,24 +20072,32 @@ var semanticDomains_en = {
         "first, second, third, firstly, secondly, thirdly, in the first/second/third place, first of all, to begin with, to start with, finally, lastly, to conclude, in conclusion, last but not least," ]
   },
   "9.6.1.2 Or, either" : {
+    "key" : "9.6.1.2",
+    "guid" : "8b5f9519-7301-4400-b93d-ebde4ea3def8",
     "name" : "Or, either",
     "abbreviation" : "9.6.1.2",
     "description" : "Use this domain for words indicating an alternative relation between two things or propositions.",
     "searchKeys" : [ "or, either...or, alternatively, nor, otherwise, alternative, optional," ]
   },
   "9.6.1.3 Association" : {
+    "key" : "9.6.1.3",
+    "guid" : "13edbeff-8913-49ef-8f02-777f86fb512d",
     "name" : "Association",
     "abbreviation" : "9.6.1.3",
     "description" : "Use this domain for words indicating an association between two things.",
     "searchKeys" : [ "with, among, together with, between...and, be one with, in common, in union with, union" ]
   },
   "9.6.1.4 Combinative relation" : {
+    "key" : "9.6.1.4",
+    "guid" : "ecf1cce7-ed58-44bf-870a-e8579b309c54",
     "name" : "Combinative relation",
     "abbreviation" : "9.6.1.4",
     "description" : "Use this domain for words indicating a combinative relation between two things.",
     "searchKeys" : [ "with, together with, combined with, mixed with," ]
   },
   "9.6.1.5 But" : {
+    "key" : "9.6.1.5",
+    "guid" : "30fff450-1aa5-4993-9c14-c8019a5f072e",
     "name" : "But",
     "abbreviation" : "9.6.1.5",
     "description" : "Use this domain for words indicating a contrast between two thoughts that are different in some way.",
@@ -16630,6 +20112,8 @@ var semanticDomains_en = {
         "on the contrary, contrary to, in contrast, as opposed to," ]
   },
   "9.6.1.5.1 Except" : {
+    "key" : "9.6.1.5.1",
+    "guid" : "49f45f97-95f8-4a53-8952-f90147af2ba9",
     "name" : "Except",
     "abbreviation" : "9.6.1.5.1",
     "description" : "Use this domain for words indicating that something is an exception to a group, rule or pattern--something is true of all the things (or people) in a group, but it is not true of one thing.",
@@ -16638,6 +20122,8 @@ var semanticDomains_en = {
         "exception," ]
   },
   "9.6.1.5.2 Instead" : {
+    "key" : "9.6.1.5.2",
+    "guid" : "f94e9041-49b0-4d25-aa54-9446c5ab45f4",
     "name" : "Instead",
     "abbreviation" : "9.6.1.5.2",
     "description" : "Use this domain for words indicating that something is true of one thing (or person) instead of another thing.",
@@ -16646,60 +20132,80 @@ var semanticDomains_en = {
         "instead, in someone's place, for, on someone's behalf," ]
   },
   "9.6.1.6 Dissociation" : {
+    "key" : "9.6.1.6",
+    "guid" : "d8dfa6fc-84ea-4178-b4f5-95e0c113140a",
     "name" : "Dissociation",
     "abbreviation" : "9.6.1.6",
     "description" : "Use this domain for words indicating a dissociation relation between two things or propositions.",
     "searchKeys" : [ "without, not with, no relationship to, apart from, independent of, from, free from, separated from" ]
   },
   "9.6.1.7 Distribution" : {
+    "key" : "9.6.1.7",
+    "guid" : "ea7c06d0-5e33-4702-b6a0-51582b216fe8",
     "name" : "Distribution",
     "abbreviation" : "9.6.1.7",
     "description" : "Use this domain for words indicating that an event is distributed throughout a group, area, or time span.",
     "searchKeys" : [ "throughout, through, from...to, after, each, apiece" ]
   },
   "9.6.1.8 Equivalence" : {
+    "key" : "9.6.1.8",
+    "guid" : "251b17bd-5796-43ce-ba10-54140a99a1e0",
     "name" : "Equivalence",
     "abbreviation" : "9.6.1.8",
     "description" : "Use this domain for words indicating equivalence between two things or propositions.",
     "searchKeys" : [ "that is, that means, i.e.," ]
   },
   "9.6.2 Dependency relations" : {
+    "key" : "9.6.2",
+    "guid" : "b2fd2d29-1389-4114-91a8-15b8d9742794",
     "name" : "Dependency relations",
     "abbreviation" : "9.6.2",
     "description" : "Use this domain for words indicating that something is dependent on another thing.",
     "searchKeys" : [ "to depend on, that depends, depend upon, dependency, dependent, hang on, tied to, lean on, stand on, supportive relationship" ]
   },
   "9.6.2.1 Derivation " : {
+    "key" : "9.6.2.1",
+    "guid" : "66dedb31-dd2a-4e94-825e-331590ac59a9",
     "name" : "Derivation",
     "abbreviation" : "9.6.2.1",
     "description" : "Use this domain for words indicating that something derives from another thing.",
     "searchKeys" : [ "derive, derived from, derivation, rooted in the past," ]
   },
   "9.6.2.2 Limitation of topic" : {
+    "key" : "9.6.2.2",
+    "guid" : "05e20a72-9496-4bba-8097-5605692e83a1",
     "name" : "Limitation of topic",
     "abbreviation" : "9.6.2.2",
     "description" : "Use this domain for words indicating the topic that is being talked about.",
     "searchKeys" : [ "specify, specified, specification, specifically in regard to, with regard to, in the case of, concerning, in the area of, in, with, between...and, as touching, particular, particularly, more especially" ]
   },
   "9.6.2.2.1 In general" : {
+    "key" : "9.6.2.2.1",
+    "guid" : "1b4f987d-3eaa-46dd-95ee-e0cb1f30cfbb",
     "name" : "In general",
     "abbreviation" : "9.6.2.2.1",
     "description" : "Use this domain for words indicating that something is generally true, but not true in every case.",
     "searchKeys" : [ "in general, generally, mostly, on the whole, in most cases," ]
   },
   "9.6.2.3 Relations involving correspondences" : {
+    "key" : "9.6.2.3",
+    "guid" : "3759bdda-2b52-43dc-8995-8379e3129dce",
     "name" : "Relations involving correspondences",
     "abbreviation" : "9.6.2.3",
     "description" : "Use this domain for words indicating relations involving correspondences--a situation in which one thing is the same or similar in some respect to something else.",
     "searchKeys" : [ "correspond to, correspondence, in accordance with, in relation to, according to, in line with, in proportion to, to apply to, to regard as applicable to, in keeping with" ]
   },
   "9.6.2.4 Basis" : {
+    "key" : "9.6.2.4",
+    "guid" : "779e4547-dee6-4780-a180-30a740f9574c",
     "name" : "Basis",
     "abbreviation" : "9.6.2.4",
     "description" : "Use this domain for words indicating that something is the basis for another thing.",
     "searchKeys" : [ "basis, foundation, on the basis of, in view of, by virtue of, be the basis of, form the basis of, on what basis? What do you base your...?" ]
   },
   "9.6.2.5 Cause" : {
+    "key" : "9.6.2.5",
+    "guid" : "23bc906d-c15a-4368-b0ca-7443d5e37b83",
     "name" : "Cause",
     "abbreviation" : "9.6.2.5",
     "description" : "Use this domain for words that indicate that someone or something is the cause for an event or state, that one event is the cause for another event or state, or that an event or state is reasonable (having sufficient cause). For instance in the sentence, \"John caused David to fall,\" \"John caused\" is an enabling proposition that brings about the primary proposition \"David fell.\"",
@@ -16709,12 +20215,16 @@ var semanticDomains_en = {
         "reasonable" ]
   },
   "9.6.2.5.1 Reason" : {
+    "key" : "9.6.2.5.1",
+    "guid" : "e173ea34-c216-4702-aa24-ca9ab40d48dd",
     "name" : "Reason",
     "abbreviation" : "9.6.2.5.1",
     "description" : "Use this domain for words that reason why someone does something.",
     "searchKeys" : [ "reason, motive, motivation", "reason, explanation," ]
   },
   "9.6.2.5.2 Without cause" : {
+    "key" : "9.6.2.5.2",
+    "guid" : "be3559d9-d69f-4e06-8184-071c35aa2e10",
     "name" : "Without cause",
     "abbreviation" : "9.6.2.5.2",
     "description" : "Use this domain for words that indicate that an event or state has no cause or reason, or is unreasonable (has insufficient cause).",
@@ -16723,18 +20233,24 @@ var semanticDomains_en = {
         "contrary to reason, absurd" ]
   },
   "9.6.2.6 Result" : {
+    "key" : "9.6.2.6",
+    "guid" : "48d3de9f-3619-4785-b50b-6921ba7eecd6",
     "name" : "Result",
     "abbreviation" : "9.6.2.6",
     "description" : "Use this domain for words indicating that something is the result of another thing.",
     "searchKeys" : [ "result, outcome, end, to result in, to lead to, wages, to end up being, have as a consequence, therefore, so then, consequently, as a result, for this reason, with the result that, so that as a result, to cause, which caused, so that, that, accordingly, then, hence, and so, yield, has the effect of" ]
   },
   "9.6.2.6.1 Without result " : {
+    "key" : "9.6.2.6.1",
+    "guid" : "139409c3-7860-4586-897f-85ba3226046c",
     "name" : "Without result",
     "abbreviation" : "9.6.2.6.1",
     "description" : "Use this domain for words indicating that something had no result.",
     "searchKeys" : [ "without result, without effect, in vain, to no avail, with no result, have no discernable effect, pointless, useless, worthless, be left with nothing, not yield" ]
   },
   "9.6.2.7 Purpose " : {
+    "key" : "9.6.2.7",
+    "guid" : "18bf6c79-6399-4977-be3d-93135302d8c4",
     "name" : "Purpose",
     "abbreviation" : "9.6.2.7",
     "description" : "Use this domain for words indicating that something was done for the purpose of another thing happening.",
@@ -16743,42 +20259,56 @@ var semanticDomains_en = {
         "in order that...not, so that...not, lest" ]
   },
   "9.6.2.7.1 Without purpose " : {
+    "key" : "9.6.2.7.1",
+    "guid" : "4fdf3cf1-0808-4f11-acdd-9db71550baab",
     "name" : "Without purpose",
     "abbreviation" : "9.6.2.7.1",
     "description" : "Use this domain for words indicating that something had no purpose.",
     "searchKeys" : [ "without purpose, for no purpose, in vain, purposeless, senseless, chance, indiscriminate, meaningless, pointless, undirected," ]
   },
   "9.6.2.8 Condition" : {
+    "key" : "9.6.2.8",
+    "guid" : "f858278a-2727-4403-9cf0-565cdececb1e",
     "name" : "Condition",
     "abbreviation" : "9.6.2.8",
     "description" : "Use this section for verbal auxiliaries, affixes, adverbs, and particles that indicate a clause in a conditional sentence (If this is true, then that is true). The following definitions are taken from Bybee, Joan, Revere Perkins, and William Pagliuca. 1994. The evolution of grammar. Chicago and London: University of Chicago Press.",
     "searchKeys" : [ "condition, if, if indeed, if at all, whether...or, or else, otherwise, unless" ]
   },
   "9.6.2.9 Concession" : {
+    "key" : "9.6.2.9",
+    "guid" : "2f28f1ab-476e-4317-8787-124d95d6b9d2",
     "name" : "Concession",
     "abbreviation" : "9.6.2.9",
     "description" : "Use this domain for words indicating that the speaker is conceding a point in a debate.",
     "searchKeys" : [ "concession, although, though, even though, and yet, even if, nevertheless" ]
   },
   "9.6.3 Discourse markers" : {
+    "key" : "9.6.3",
+    "guid" : "f02ae505-d6b7-4b30-9d97-8505d0d1a0c7",
     "name" : "Discourse markers",
     "abbreviation" : "9.6.3",
     "description" : "Use this domain for conjunctions and particles that function on the discourse level, and whose meaning and function is uncertain.",
     "searchKeys" : [ "just, you know, OK, yeah, like" ]
   },
   "9.6.3.1 Markers of transition " : {
+    "key" : "9.6.3.1",
+    "guid" : "638679c7-1c7c-41da-ab60-0ac7e98fcd72",
     "name" : "Markers of transition",
     "abbreviation" : "9.6.3.1",
     "description" : "Use this domain for conjunctions that simply move the discourse forward without any specific relationship indicated between what comes before and what comes after.",
     "searchKeys" : [ "and, then, but, now, it happened that, it came to pass that, one day, my next topic is, my next point is, now about" ]
   },
   "9.6.3.2 Markers of emphasis " : {
+    "key" : "9.6.3.2",
+    "guid" : "7c1c3730-3b35-4150-b54e-bf6d344546b3",
     "name" : "Markers of emphasis",
     "abbreviation" : "9.6.3.2",
     "description" : "Use this domain for words that indicate that the phrase or sentence is particularly important.",
     "searchKeys" : [ "then, indeed, surely, so, certainly, in fact, actually, how, you know, really, sure, just, you know don't you that, how much more, emphatically, absolutely, without question, no way, of course, obviously, you've got to be kidding, it is just that, the only thing is, one thing that, in reality, only that, as it were, just as you can see, as you know, without a doubt, don't you remember, I am convinced that" ]
   },
   "9.6.3.3 Prompters of attention " : {
+    "key" : "9.6.3.3",
+    "guid" : "c103d339-24f2-45c6-8539-d3c445e15c49",
     "name" : "Prompters of attention",
     "abbreviation" : "9.6.3.3",
     "description" : "Use this domain for words that are used to get someone's attention or direct the listener's attention to something. These may use a verb meaning 'look' or 'listen'. Some may be a word specifically referring to attention. Others may be a greeting. Others may be words that refer to non-verbal communication such as clearing your throat.",
@@ -16789,12 +20319,16 @@ var semanticDomains_en = {
         "clear throat, whistle, raise hand" ]
   },
   "9.6.3.4 Markers of direct address " : {
+    "key" : "9.6.3.4",
+    "guid" : "577a9f51-263a-4c80-a439-84ce45b9c7cc",
     "name" : "Markers of direct address",
     "abbreviation" : "9.6.3.4",
     "description" : "Use this domain for words that the speaker uses to refer to the person he is addressing. These words are usually used when you start talking to someone, but can be used during a speech or conversation to refer to the person you are talking to.",
     "searchKeys" : [ "O, sir, ma'am, ladies and gentlemen, men and brothers, (look) you, (listen) all of you" ]
   },
   "9.6.3.5 Markers of identificational and explanatory clauses " : {
+    "key" : "9.6.3.5",
+    "guid" : "fbf40f2e-e743-479d-80b2-63325407d5d1",
     "name" : "Markers of identificational and explanatory clauses",
     "abbreviation" : "9.6.3.5",
     "description" : "Use this domain for words that begin a clause that identifies a specific case or example of what has just been said, or that explains what has just been said. Specific case: I have just mentioned a general class of things or a general idea and want to give a specific example of what I am talking about. Explanation: I have just said something and I think people might misunderstand, so I want to explain what I mean. Digression: I am talking about a particular topic, but want to say something that does not fit into my topic, so I say something that is about a different topic.",
@@ -16806,18 +20340,24 @@ var semanticDomains_en = {
         "let me just insert, as an aside, this is off the subject, oh by the way" ]
   },
   "9.6.3.6 Markers of focus" : {
+    "key" : "9.6.3.6",
+    "guid" : "15e0b54b-bb7c-4900-b048-20b718d05f79",
     "name" : "Markers of focus",
     "abbreviation" : "9.6.3.6",
     "description" : "Use this domain for words indicating that one of several things is in focus.",
     "searchKeys" : [ "especially, particularly, particular, most of all" ]
   },
   "9.6.3.7 Hesitation fillers" : {
+    "key" : "9.6.3.7",
+    "guid" : "41837400-bdc5-4cbc-a1dc-d793f713f883",
     "name" : "Hesitation fillers",
     "abbreviation" : "9.6.3.7",
     "description" : "Use this domain for words that a speaker uses when he hesitates or pauses while he is speaking in order to think about what he is saying.",
     "searchKeys" : [ "um, uh, er, hmm, yeah, let's see, hold on a minute, let me see, let me think" ]
   },
   "9.6.3.8 Honorifics " : {
+    "key" : "9.6.3.8",
+    "guid" : "2e5a80f9-35ae-4850-9627-be530832a781",
     "name" : "Honorifics",
     "abbreviation" : "9.6.3.8",
     "description" : "Use this domain for words that the speaker uses to show respect or a lack of respect to the person he is addressing. Some languages have elaborate systems of honorifics. Other languages have none. Languages with a stratified social structure often use honorifics. Egalitarian societies generally lack them, but some egalitarian societies may use them. For instance in Nahuatl there are four levels of honorifics. Level 1 is how one addresses intimates, small children, and pets. Level 2 is for strangers and persons treated formally. Level 3 is for respected persons, the dead, and God. Level 4 is for obsequious respect, as for the archbishop in an interview with a priest, and for ritual kin. (Jane H. Hill and Kenneth C. Hill. 1978. Honorific usage in modern Nahuatl: the expression of social distance and respect in the Nahuatl of the Malinche Volcano area, Language 54:123-155.) In Japanese, which has a stratified social structure, a person uses one set of words and affixes when speaking to someone below you in the social hierarchy, such as your wife, children, and pets. A different set of words is used when speaking to peers. Another set is used when speaking to a superior. A fourth set is used when speaking to the emperor. English used to have two pronouns for second person singular. 'Thou' was used for equals and inferiors, and 'you' was used for superiors. Your language may have special honorific words used as (1) pronouns, (2) affixes, (3) particles, (4) terms of direct address, (5) greetings (6) requests, (7) apologies.",
@@ -16827,12 +20367,16 @@ var semanticDomains_en = {
         "sorry, excuse me, I beg your pardon," ]
   },
   "9.7 Name" : {
+    "key" : "9.7",
+    "guid" : "5b7666bd-c6c1-45e7-aa2e-1799fcb16d97",
     "name" : "Name",
     "abbreviation" : "9.7",
     "description" : "Use this domain for general words referring to proper nouns--the name given to a particular person or thing to distinguish it from other things like it. Proper nouns are often not included in a dictionary, or are included in an appendix at the front or back of a dictionary. This is because there are so many of them, they are sometimes difficult to define, and it saves space in the dictionary. For instance place names can be included in a map. So it might be good to type the proper nouns into a special file.",
     "searchKeys" : [ "name, proper noun,", "name (v), call, christen," ]
   },
   "9.7.1 Name of a person" : {
+    "key" : "9.7.1",
+    "guid" : "7b513a02-c3ae-4243-9410-16854d911258",
     "name" : "Name of a person",
     "abbreviation" : "9.7.1",
     "description" : "Use this domain for words related to the name of a person. Each culture has a system of personal names to identify individuals and kin groups. The subcategories under this heading should reflect the cultural system. If your language has a special set of names that do not fit any of they domains given here, then set up a special domain.",
@@ -16849,36 +20393,48 @@ var semanticDomains_en = {
         "naming ceremony, christening", "sign (your name), signature" ]
   },
   "9.7.1.1 Personal names" : {
+    "key" : "9.7.1.1",
+    "guid" : "6b921117-47e9-4717-b3b3-4e170d26b6d9",
     "name" : "Personal names",
     "abbreviation" : "9.7.1.1",
     "description" : "Use this domain for those names that are given to people, that people use to call to each other and to talk about each other.",
     "searchKeys" : [ "John, David, Mary, Elizabeth" ]
   },
   "9.7.1.2 Family names" : {
+    "key" : "9.7.1.2",
+    "guid" : "c2ec9cee-7fe3-44f2-9008-c8b42f6f78dd",
     "name" : "Family names",
     "abbreviation" : "9.7.1.2",
     "description" : "Use this domain for the proper names of the families that exist within the language community. If your culture does not use family names, just leave this domain empty.",
     "searchKeys" : [ "Smith, Jones, MacDonald, Johnson" ]
   },
   "9.7.1.3 Clan names" : {
+    "key" : "9.7.1.3",
+    "guid" : "774cdff1-8cba-4f94-a519-c66abd3b5f49",
     "name" : "Clan names",
     "abbreviation" : "9.7.1.3",
     "description" : "Use this domain for the proper names of the clans that exist within the language community. The distinction between family, clan, tribe, and nation is based on politics and emotion. Our purpose here is not to make political statements, but merely to list the names. There may be no distinction between family and clan, in which case ignore this domain and use the domain 'Family names'.",
     "searchKeys" : [ "Hatfields, McCoys, Bear Clan" ]
   },
   "9.7.1.4 Tribal names" : {
+    "key" : "9.7.1.4",
+    "guid" : "5771f3a1-fda3-4111-9abc-7a0d76c60a79",
     "name" : "Tribal names",
     "abbreviation" : "9.7.1.4",
     "description" : "Use this domain for the proper names of the tribes that exist around the language community, including the name of your own tribe. These tribal names may or may not correspond with the names of countries.",
     "searchKeys" : [ "Saxons, Scots, Welsh, Picts, Irish, Normans, Vikings, Brits, Americans, Aussies, Kiwis, Sioux, Cherokee" ]
   },
   "9.7.1.5 Names of languages" : {
+    "key" : "9.7.1.5",
+    "guid" : "dd3e872a-fb50-4204-9646-7a24c644013b",
     "name" : "Names of languages",
     "abbreviation" : "9.7.1.5",
     "description" : "Use this domain for the proper names of the languages that are spoken in the area around the language community, including the name of your own language. These language names may or may not correspond with the names of countries. Do not try to include every language name in the world, only the neighboring and important ones. For instance you might want to include the languages that border your own and the national language. Give the form that you use. For instance the German people call their language 'Deutsch', but in English we call it 'German'.",
     "searchKeys" : [ "English, Gaelic, Irish, Welsh, Dutch, German, French, Spanish, Pidgin English" ]
   },
   "9.7.1.6 Nickname" : {
+    "key" : "9.7.1.6",
+    "guid" : "94f573ff-29f0-42ae-b1d9-f882823b2935",
     "name" : "Nickname",
     "abbreviation" : "9.7.1.6",
     "description" : "Use this domain for common nicknames--an additional name given to a person later in life, often descriptive. Also include general names used to call or refer to someone when you don't know their name",
@@ -16886,18 +20442,24 @@ var semanticDomains_en = {
         "John Doe, Jane Doe, Joe Blow, GI Joe" ]
   },
   "9.7.1.7 Terms of endearment" : {
+    "key" : "9.7.1.7",
+    "guid" : "ebb5f3e5-bfe5-4a40-986a-938c1bdb9c76",
     "name" : "Terms of endearment",
     "abbreviation" : "9.7.1.7",
     "description" : "Use this domain for terms of endearment--a name used by lovers or spouses to express love or intimacy. Some languages may have special names used by close friends.",
     "searchKeys" : [ "sweetheart, honey, dear" ]
   },
   "9.7.2 Name of a place" : {
+    "key" : "9.7.2",
+    "guid" : "69541573-f845-4e77-91f6-1e3551fc6c82",
     "name" : "Name of a place",
     "abbreviation" : "9.7.2",
     "description" : "Use this domain for words referring to the name of a place.",
     "searchKeys" : [ "place name" ]
   },
   "9.7.2.1 Names of countries" : {
+    "key" : "9.7.2.1",
+    "guid" : "ee0585b1-627a-4a71-888d-b5d82619431e",
     "name" : "Names of countries",
     "abbreviation" : "9.7.2.1",
     "description" : "Use this domain for the proper names of the countries that exist around the language community, especially those countries where your language is spoken. Include the name of your own country. Do not list every country in the world, unless your language has developed special names or pronunciations for those countries. Include any country that you refer to in your language, especially those names whose pronunciation you have adapted to fit your language. Give the form of the name that you use, rather than the official spelling. For instance the Japanese refer to their country as 'Nihon', but in English will call it 'Japan'. So 'Japan' is an English word and should go into an English dictionary. But 'Nihon' is not an English word and should not go in the dictionary.",
@@ -16907,24 +20469,32 @@ var semanticDomains_en = {
         "Brit, the English, American, Canadian, Aussie, Kiwi" ]
   },
   "9.7.2.2 Names of regions" : {
+    "key" : "9.7.2.2",
+    "guid" : "85cb1e3c-62ba-4a77-a838-0237707fb0cb",
     "name" : "Names of regions",
     "abbreviation" : "9.7.2.2",
     "description" : "Use this domain for the proper names of the regions within your country or language area. Some of these may be political regions. Others may be informal terms. Give the local pronunciation, rather than some foreign spelling. You may want to limit this domain to just those areas within your language area. However if you have special names for areas outside of your language area, for example 'the Mideast', you should include them.",
     "searchKeys" : [ "Yorkshire, California, Midlands, Midwest, the South, outback" ]
   },
   "9.7.2.3 Names of cities" : {
+    "key" : "9.7.2.3",
+    "guid" : "b8e66bb4-140c-45b4-89ce-d9a77b9e5d21",
     "name" : "Names of cities",
     "abbreviation" : "9.7.2.3",
     "description" : "Use this domain for the proper names of cities, towns, and villages in the language area. Include the names of important cities outside of the language area if your language has a special name for the city or a different pronunciation for it. It might be good to use a map for this. In fact it is good to include a map of the language area in a published dictionary. If your language area is very large, there may be hundreds or thousands of cities, towns, and villages. In this case you will have to decide which should be included in the dictionary. Or you could decided to list them in a special section.",
     "searchKeys" : [ "London, Washington D.C.", "Westminster, Chelsea" ]
   },
   "9.7.2.4 Names of streets" : {
+    "key" : "9.7.2.4",
+    "guid" : "35a9da32-53ee-44fa-9c65-5a15f88ad283",
     "name" : "Names of streets",
     "abbreviation" : "9.7.2.4",
     "description" : "Use this domain for the proper names of highways, roads, streets, and trails in the language area. If there are many such names, only include the important names (e.g. King's Highway) or commonly used names (e.g. Main Street).",
     "searchKeys" : [ "King's Highway, Highway 66, Main Street, Piccadilly Square, Oregon Trail" ]
   },
   "9.7.2.5 Names of heavenly bodies" : {
+    "key" : "9.7.2.5",
+    "guid" : "69d366d2-9735-4a1b-b938-7b212932b568",
     "name" : "Names of heavenly bodies",
     "abbreviation" : "9.7.2.5",
     "description" : "Use this domain for the proper names of the heavenly bodies.",
@@ -16935,12 +20505,16 @@ var semanticDomains_en = {
         "Halley's Comet" ]
   },
   "9.7.2.6 Names of continents" : {
+    "key" : "9.7.2.6",
+    "guid" : "09ac3709-0b0e-4046-b6b2-7869d574aa0d",
     "name" : "Names of continents",
     "abbreviation" : "9.7.2.6",
     "description" : "Use this domain for the proper names of the continents. Only include the names of continents if your language has borrowed or adapted the name and you talk about them in your language.",
     "searchKeys" : [ "Africa, Antarctica, Asia, Australia, Europe, North America, South America," ]
   },
   "9.7.2.7 Names of mountains" : {
+    "key" : "9.7.2.7",
+    "guid" : "d90e71bf-2898-4501-9d09-c518999f83e2",
     "name" : "Names of mountains",
     "abbreviation" : "9.7.2.7",
     "description" : "Use this domain for the proper names of the mountains in the language area. Only include the names of mountains outside the language area if your language has borrowed or adapted the name and you talk about them in your language.",
@@ -16948,6 +20522,8 @@ var semanticDomains_en = {
         "Rocky Mountains, Sierras, Appalachian Mountains" ]
   },
   "9.7.2.8 Names of oceans and lakes" : {
+    "key" : "9.7.2.8",
+    "guid" : "a105e31c-1268-4fc2-8655-838d34860ece",
     "name" : "Names of oceans and lakes",
     "abbreviation" : "9.7.2.8",
     "description" : "Use this domain for the proper names of the oceans and lakes in the language area. Only include the names of oceans and lakes outside the language area if your language has borrowed or adapted the name and you talk about them in your language.",
@@ -16956,12 +20532,16 @@ var semanticDomains_en = {
         "Lake Superior, Lake Michigan" ]
   },
   "9.7.2.9 Names of rivers" : {
+    "key" : "9.7.2.9",
+    "guid" : "e8ec3885-c692-4b90-a5b3-4c86da642666",
     "name" : "Names of rivers",
     "abbreviation" : "9.7.2.9",
     "description" : "Use this domain for the proper names of the rivers in the language area. Only include the names of rivers outside the language area if your language has borrowed or adapted the name and you talk about them in your language.",
     "searchKeys" : [ "Thames, Mississippi, Missouri, Hudson" ]
   },
   "9.7.3 Name of a thing" : {
+    "key" : "9.7.3",
+    "guid" : "7d111356-e04e-4891-960c-2f35147eba82",
     "name" : "Name of a thing",
     "abbreviation" : "9.7.3",
     "description" : "Use this domain for words related to the name of a thing. Many cultures give names to particular buildings, ships, airplanes, organizations, companies, schools, and other things. If your language has hundreds of names for some kind of thing, it is best to not try to list them all. But if there are a few important names for one kind of thing, set up a domain for them.",
@@ -16972,12 +20552,16 @@ var semanticDomains_en = {
         "misnomer,", "nominal, in name only,", "call, name, rename," ]
   },
   "9.7.3.1 Names of animals" : {
+    "key" : "9.7.3.1",
+    "guid" : "5df53b87-7f59-4f5c-991e-5ae007b68fa9",
     "name" : "Names of animals",
     "abbreviation" : "9.7.3.1",
     "description" : "Use this domain for words referring to the name of an animal. Some cultures give names to domesticated animals or to animals in stories. Think through each kind of domesticated animal.",
     "searchKeys" : [ "Br'er rabbit", "Lassie, Fifi, Toto" ]
   },
   "9.7.3.2 Names of buildings" : {
+    "key" : "9.7.3.2",
+    "guid" : "4223d3ba-5560-4c30-b013-4e31fee36329",
     "name" : "Names of buildings",
     "abbreviation" : "9.7.3.2",
     "description" : "Use this domain for words referring to the name of a building.",
