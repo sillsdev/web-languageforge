@@ -192,11 +192,9 @@ angular.module('lexicon',
     $scope.syncNotice = function syncNotice() {
       if (angular.isUndefined($scope.sendReceive) || angular.isUndefined($scope.sendReceive.status)) return;
       switch ($scope.sendReceive.status.SRState) {
-        case 'QUEUED':
-        case 'MERGING':
-        case 'SENDING':
-        case 'RECEIVING':
-        case 'UPDATING':
+        case 'CLONING':
+          return 'Creating initial data...';
+        case 'SYNCING':
         case 'syncing':
           return 'Syncing...';
         case 'IDLE':
