@@ -31,7 +31,7 @@ sudo apt-get install python-pip
 sudo pip install ansible==1.9.4
 ````
 
-For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/ansible.cfg` into `/etc/ansible/ansible.cfg`.
+For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/default_ansible.cfg` into `/etc/ansible/ansible.cfg` or `.ansible.cfg` (in your home folder).
 
 #### Vagrant VM Setup ####
 
