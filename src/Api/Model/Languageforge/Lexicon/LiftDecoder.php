@@ -2,8 +2,6 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Palaso\Utilities\CodeGuard;
-use Palaso\Utilities\FileUtilities;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\Config\LexiconFieldListConfigObj;
 use Api\Model\Languageforge\Lexicon\Config\LexiconMultiOptionlistConfigObj;
@@ -13,6 +11,8 @@ use Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig;
 use Api\Model\Languageforge\Lexicon\Config\LexViewMultiTextFieldConfig;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\Id;
+use Palaso\Utilities\CodeGuard;
+use Palaso\Utilities\FileUtilities;
 
 class LiftDecoder
 {
@@ -55,15 +55,16 @@ class LiftDecoder
 
     /**
      *
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @param LexEntryModel $entry
-     * @param LiftMergeRule $mergeRule
+     * @param string $mergeRule
      * @throws \Exception
      */
     public function readEntry($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES)
     {
         $this->nodeErrors = array();
         $this->nodeErrors[] = new LiftImportNodeError(LiftImportNodeError::ENTRY, (string) $sxeNode['guid']);
+        /** @var \SimpleXMLElement $element */
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'lexical-unit':
@@ -93,7 +94,7 @@ class LiftDecoder
                         if ($field['type'] == 'comment') {
                             $entry->etymologyComment = $this->readMultiText($field, $this->projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGYCOMMENT]->inputSystems);
                         } else {
-                            $this->currentNodeError()->addUnhandledField($field['type'], 'etymology');
+                            $this->currentNodeError()->addUnhandledField('etymology: ' . $field['type']);
                         }
                     }
                     break;
@@ -180,13 +181,14 @@ class LiftDecoder
     /**
      * Reads a Sense from the XmlNode $sxeNode
      *
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @param Sense $sense
      * @return Sense
      */
     public function readSense($sxeNode, $sense)
     {
         $this->addAndPushSubnodeError(LiftImportNodeError::SENSE, (string) $sxeNode['id']);
+        /** @var \SimpleXMLElement $element */
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'definition':
@@ -220,6 +222,7 @@ class LiftDecoder
                 case 'illustration':
                     $picture = new Picture();
                     $picture->fileName = (string) $element['href'];
+                    /** @var \SimpleXMLElement $child */
                     foreach ($element as $child) {
                         switch($child->getName()) {
                             case 'label':
@@ -282,7 +285,7 @@ class LiftDecoder
     /**
      * Reads an Example from the XmlNode $sxeNode
      *
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @return Example
      */
     public function readExample($sxeNode)
@@ -291,6 +294,7 @@ class LiftDecoder
         $this->addAndPushSubnodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['source']);
 
         $example->sentence = $this->readMultiText($sxeNode, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems, true);
+        /** @var \SimpleXMLElement $element */
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'form':
@@ -328,7 +332,7 @@ class LiftDecoder
     /**
      * Reads a MultiText from the XmlNode $sxeNode given by the element 'form'
      *
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @param ArrayOf $inputSystems
      * @param bool $ignoreErrors
      * @return MultiText
@@ -337,6 +341,7 @@ class LiftDecoder
     {
         $multiText = new MultiText();
         $this->addAndPushSubnodeError(LiftImportNodeError::MULTITEXT, $sxeNode->getName());
+        /** @var \SimpleXMLElement $element */
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'form':
@@ -364,10 +369,10 @@ class LiftDecoder
     /**
      * Reads a MultiText from the XmlNode $sxeNode given by the element 'gloss'
      *
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @param MultiText $multiText
      * @param ArrayOf $inputSystems
-     * @return MultiText
+     * @throws \Exception
      */
     public function readMultiTextGloss($sxeNode, $multiText, $inputSystems = null)
     {
@@ -390,7 +395,7 @@ class LiftDecoder
      * Recursively sanitizes the element only allowing <span> elements through; coverts everthing else to text
      *  - also removes native language spans, i.e those that match the input system tag
      *
-     * @param DOMDocument $textDom
+     * @param \DOMElement $textDom
      * @param string $inputSystemTag
      * @return string
      */
@@ -500,7 +505,7 @@ class LiftDecoder
     /**
      * Add node as a custom entry field
      *
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @param string $nodeId
      * @param LexEntryModel $entry
      */
@@ -511,39 +516,40 @@ class LiftDecoder
     /**
      * Add node as a custom sense field
      *
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @param string $nodeId
      * @param Sense $sense
      */
     public function addSenseCustomField($sxeNode, $nodeId, $sense) {
-        $this->addCustomField($sxeNode, $nodeId, 'customField_senses_', $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST], $sense);
+        $this->addCustomField($sxeNode, $nodeId, 'customField_senses_',
+            $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST], $sense);
     }
 
     /**
      * Add node as a custom example field
      *
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @param string $nodeId
      * @param Example $example
      */
     public function addExampleCustomField($sxeNode, $nodeId, $example) {
-        $this->addCustomField($sxeNode, $nodeId, 'customField_examples_', $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST], $example);
+        $this->addCustomField($sxeNode, $nodeId, 'customField_examples_',
+            $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST], $example);
     }
 
     /**
      * Add node as a custom field
      *
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @param string $nodeId
      * @param string $customFieldNamePrefix
-     * @param array $customFieldSpecs
      * @param LexiconFieldListConfigObj $levelConfig
      * @param LexEntryModel|Sense|Example $item
      */
     private function addCustomField($sxeNode, $nodeId, $customFieldNamePrefix, $levelConfig, $item) {
         $fieldType = FileUtilities::replaceSpecialCharacters($nodeId);
         $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
-        $customFieldName = $this->createCustomField($nodeId, $fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig);
+        $customFieldName = $this->createCustomField($fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig);
         if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
             $item->customFields[$customFieldName] = new LexiconField();
             $item->customFields[$customFieldName]->value = (string) $sxeNode['value'];
@@ -563,14 +569,13 @@ class LiftDecoder
     /**
      * Create custom field config
      *
-     * @param string $nodeId
      * @param string $fieldType
      * @param string $customFieldNamePrefix
      * @param array $customFieldSpecs
      * @param LexiconFieldListConfigObj $levelConfig
      * @return string $customFieldName
      */
-    private function createCustomField($nodeId, $fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig) {
+    private function createCustomField($fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig) {
         $customFieldName = $customFieldNamePrefix . str_replace(' ', '_', $fieldType);
         $levelConfig->fieldOrder->value($customFieldName);
         if (! array_key_exists($customFieldName, $levelConfig->fields)) {
@@ -659,7 +664,7 @@ class LiftDecoder
     /**
      * Returns the current node error
      *
-     * @return \Api\Model\Languageforge\Lexicon\LiftImportNodeError
+     * @return LiftImportNodeError
      */
     public function currentNodeError() {
         return end($this->nodeErrors);
@@ -670,7 +675,7 @@ class LiftDecoder
      *
      * @param string $type
      * @param string $identifier
-     * @return \Api\Model\Languageforge\Lexicon\LiftImportNodeError
+     * @return LiftImportNodeError
      */
     public function addAndPushSubnodeError($type, $identifier) {
         $subnodeError = new LiftImportNodeError($type, $identifier);
@@ -682,7 +687,7 @@ class LiftDecoder
     /**
      * Returns the import node error. If import is in progress it returns an empty node error.
      *
-     * @return \Api\Model\Languageforge\Lexicon\LiftImportNodeError
+     * @return LiftImportNodeError
      */
     public function getImportNodeError() {
         if (count($this->nodeErrors) == 1) {
@@ -691,6 +696,9 @@ class LiftDecoder
         return new LiftImportNodeError('', '');
     }
 
+    /**
+     * @param string $name
+     */
     public function addKnownUnhandledElement($name) {
         $index = (string)$name;
         if (!array_key_exists($index, $this->knownUnhandledNodes)) {
