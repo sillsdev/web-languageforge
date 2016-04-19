@@ -18,7 +18,6 @@ use Api\Model\Scriptureforge\RapumaProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksRoles;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
 use Api\Model\Shared\Rights\ProjectRoleModel;
-use Api\Model\Sms\SmsSettings;
 use Palaso\Utilities\CodeGuard;
 use Palaso\Utilities\FileUtilities;
 
@@ -413,27 +412,3 @@ class ProjectModel extends Mapper\MapperModel
 
 }
 
-/**
- * This class is separate from the ProjectModel to protect the smsSettings and emailSettings which are managed
- * by the site administrator only.
- */
-class ProjectSettingsModel extends ProjectModel
-{
-    public function __construct($id = '')
-    {
-        $this->smsSettings = new SmsSettings();
-        $this->emailSettings = new EmailSettings();
-        parent::__construct($id);
-    }
-
-    /**
-     * @var SmsSettings
-     */
-    public $smsSettings;
-
-    /**
-     * @var EmailSettings
-     */
-    public $emailSettings;
-
-}
