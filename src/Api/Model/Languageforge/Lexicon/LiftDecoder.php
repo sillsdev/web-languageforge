@@ -2,13 +2,12 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
+use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\Config\LexiconFieldListConfigObj;
 use Api\Model\Languageforge\Lexicon\Config\LexiconMultiOptionlistConfigObj;
 use Api\Model\Languageforge\Lexicon\Config\LexiconMultitextConfigObj;
 use Api\Model\Languageforge\Lexicon\Config\LexiconOptionlistConfigObj;
-use Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig;
-use Api\Model\Languageforge\Lexicon\Config\LexViewMultiTextFieldConfig;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\Id;
 use Palaso\Utilities\CodeGuard;
@@ -594,27 +593,8 @@ class LiftDecoder
             $levelConfig->fields[$customFieldName]->label = $fieldType;
             $levelConfig->fields[$customFieldName]->hideIfEmpty = false;
         }
-        foreach ($this->projectModel->config->roleViews as $role => $roleView) {
-            if (! array_key_exists($customFieldName, $roleView->fields)) {
-                if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
-                    $roleView->fields[$customFieldName] = new LexViewFieldConfig();
-                } else {
-                    $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
-                }
-                if ($role == LexiconRoles::MANAGER) {
-                    $roleView->fields[$customFieldName]->show = true;
-                }
-            }
-        }
-        foreach ($this->projectModel->config->userViews as $userId => $userView) {
-            if (! array_key_exists($customFieldName, $userView->fields)) {
-                if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
-                    $userView->fields[$customFieldName] = new LexViewFieldConfig();
-                } else {
-                    $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
-                }
-            }
-        }
+
+        LexProjectCommands::createCustomFieldViews($customFieldName, $customFieldSpecs['Type'], $this->projectModel->config);
 
         return $customFieldName;
     }
