@@ -3,7 +3,7 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 
-class LexiconMultiParagraphItem
+class LexMultiParagraphItem
 {
 
     public $content;
