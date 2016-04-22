@@ -33,4 +33,51 @@ class LexiconMultiParagraph
     public $paragraphs;
 
 
+    /**
+     * @return string
+     */
+    public function toHTML() {
+        $html = "";
+        foreach ($this->paragraphs as $paragraph) {
+            $html .="<p guid='" . $paragraph->guid . "'>";
+            $html .="<p styleName='" . $paragraph->styleName . "'>";
+            $html .= $paragraph->content;
+            $html .= "</p>";
+        }
+        return $html;
+    }
+
+    /**
+     * @param $html string
+     */
+    public function fromHTML($html) {
+        $dom = new \DOMDocument();
+        $dom->loadHTML($html);
+        $this->paragraphs->exchangeArray(array());
+        foreach ($dom->getElementsByTagName('p') as $node) {
+            $paragraph = new LexiconMultiParagraphItem();
+            $paragraph->guid = $node->getAttribute('guid');
+            $paragraph->styleName = $node->getAttribute('styleName');
+            $paragraph->content = self::_innerHTML($node);
+            $this->paragraphs->append($paragraph);
+        }
+    }
+
+
+    /**
+     * @param \DOMNode $element
+     * @return string
+     */
+    private static function _innerHTML(\DOMNode $element)
+    {
+        $innerHTML = "";
+        $children  = $element->childNodes;
+
+        foreach ($children as $child)
+        {
+            $innerHTML .= $element->ownerDocument->saveHTML($child);
+        }
+
+        return $innerHTML;
+    }
 }

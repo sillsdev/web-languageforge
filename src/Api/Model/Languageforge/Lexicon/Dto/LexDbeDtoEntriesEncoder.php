@@ -4,7 +4,6 @@ namespace Api\Model\Languageforge\Lexicon\Dto;
 
 use Api\Model\Languageforge\Lexicon\LexiconMultiParagraphHelper;
 use Api\Model\Mapper\JsonEncoder;
-use Api\Model\UserModel;
 
 class LexDbeDtoEntriesEncoder extends JsonEncoder
 {
@@ -18,7 +17,9 @@ class LexDbeDtoEntriesEncoder extends JsonEncoder
             case 'Api\Model\Languageforge\Lexicon\LexiconMultiParagraph':
                 
                 // convert multiparagraph model to HTML version
-                $dataToReturn = $this->_encodeLexiconMultiParagraph($model);
+                $dataToReturn = array();
+                $dataToReturn['inputSystem'] = $model->inputSystem;
+                $dataToReturn['value'] = $model->toHTML();
                 break;
         }
 
@@ -29,12 +30,5 @@ class LexDbeDtoEntriesEncoder extends JsonEncoder
     {
         $e = new LexDbeDtoEntriesEncoder();
         return $e->_encode($model);
-    }
-
-    private function _encodeLexiconMultiParagraph($model) {
-        $data = array();
-        $data['inputSystem'] = $model->inputSystem;
-        $data['value'] = LexiconMultiParagraphHelper::toHTML($model);
-        return $data;
     }
 }
