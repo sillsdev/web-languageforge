@@ -5,11 +5,11 @@ namespace Api\Model\Languageforge\Lexicon;
 use Api\Model\Mapper\ArrayOf;
 
 function _createMultiParagraphItem() {
-    return new LexiconMultiParagraphItem();
+    return new LexMultiParagraphItem();
 }
 
 
-class LexiconMultiParagraph
+class LexMultiParagraph
 {
     use \LazyProperty\LazyPropertiesTrait;
     
@@ -28,7 +28,7 @@ class LexiconMultiParagraph
     public $inputSystem;
 
     /**
-     * @var ArrayOf LexiconMultiParagraphItem
+     * @var ArrayOf LexMultiParagraphItem
      */
     public $paragraphs;
 
@@ -55,7 +55,7 @@ class LexiconMultiParagraph
         $dom->loadHTML($html);
         $this->paragraphs->exchangeArray(array());
         foreach ($dom->getElementsByTagName('p') as $node) {
-            $paragraph = new LexiconMultiParagraphItem();
+            $paragraph = new LexMultiParagraphItem();
             $paragraph->guid = $node->getAttribute('guid');
             $paragraph->styleName = $node->getAttribute('styleName');
             $paragraph->content = self::_innerHTML($node);

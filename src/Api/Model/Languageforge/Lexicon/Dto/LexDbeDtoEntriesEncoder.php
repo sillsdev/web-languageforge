@@ -14,7 +14,7 @@ class LexDbeDtoEntriesEncoder extends JsonEncoder
         $dataToReturn = $data;
 
         switch (get_class($model)) {
-            case 'Api\Model\Languageforge\Lexicon\LexiconMultiParagraph':
+            case 'Api\Model\Languageforge\Lexicon\LexMultiParagraph':
                 
                 // convert multiparagraph model to HTML version
                 $dataToReturn = array();
