@@ -9,6 +9,7 @@ class AllLexiconAppTests extends TestSuite
     {
         parent::__construct();
         $this->addFile(TestPhpPath . 'languageforge/lexicon/LexiconProjectModel_Test.php');
+        $this->addFile(TestPhpPath . 'languageforge/lexicon/LexiconMultiParagraphHelper_Test.php');
         $this->addFile(TestPhpPath . 'languageforge/lexicon/LiftImport_Test.php');
         $this->addFile(TestPhpPath . 'languageforge/lexicon/LiftImportFlex_Test.php');
         $this->addFile(TestPhpPath . 'languageforge/lexicon/LiftImportZip_Test.php');

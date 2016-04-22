@@ -25,6 +25,13 @@
                         select-field="control.selectFieldForComment(fieldName, model[fieldName], inputSystem)"></dc-multitext>
                     <comment-bubble control="control" field="fieldName"></comment-bubble>
                 </div>
+                <div class="flex100" data-ng-switch-when="multiparagraph">
+                    <dc-multiparagraph class="dc-item" control="control"
+                                  config="config.fields[fieldName]"
+                                  model="model[fieldName]"
+                                  select-field="control.selectFieldForComment(fieldName, model[fieldName], inputSystem)"></dc-multiparagraph>
+                    <comment-bubble control="control" field="fieldName"></comment-bubble>
+                </div>
                 <div class="flex100" data-ng-switch-when="pictures">
                     <dc-picture class="dc-item" control="control"
                         config="config.fields[fieldName]"

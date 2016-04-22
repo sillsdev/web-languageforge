@@ -5,6 +5,7 @@ namespace Api\Model\Languageforge\Lexicon;
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\ProjectModel;
+use Api\Model\Mapper\ArrayOf;
 
 class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
 {
@@ -33,6 +34,9 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
      */
     public function __construct($projectModel, $newerThanTimestamp = null, $limit = 0, $skip = 0)
     {
+        // for use with readAsModels()
+        $this->entries = new ArrayOf(function () use ($projectModel) { return new LexEntryModel($projectModel); });
+        
         $lexProject = new LexiconProjectModel($projectModel->id->asString());
         $this->_config = $lexProject->config;
 
