@@ -9,11 +9,13 @@ class LexiconConfigObj extends ObjectForEncoding
     public function __construct()
     {
         $this->hideIfEmpty = false;
+        $this->label = '';
     }
 
     // config types
     const FIELDLIST = 'fields';
     const MULTITEXT = 'multitext';
+    const MULTIPARAGRAPH = 'multiparagraph';
     const OPTIONLIST = 'optionlist';
     const MULTIOPTIONLIST = 'multioptionlist';
 
@@ -85,6 +87,11 @@ class LexiconConfigObj extends ObjectForEncoding
      */
     public $type;
 
+    /**
+     * @var string
+     */
+    public $label;
+    
     /**
      * @var boolean
      */

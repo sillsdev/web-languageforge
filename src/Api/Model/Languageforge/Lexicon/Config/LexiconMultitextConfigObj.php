@@ -11,16 +11,11 @@ class LexiconMultitextConfigObj extends LexiconConfigObj
         $this->type = LexiconConfigObj::MULTITEXT;
 
         // default values
-        $this->label = '';
         $this->displayMultiline = false;
         $this->width = 20;
         $this->inputSystems = new ArrayOf();
     }
 
-    /**
-     * @var string
-     */
-    public $label;
 
     /**
      * @var int

@@ -76,7 +76,7 @@ class MapperListModel
     }
 
     /**
-     * Note: use of this method assumes that you have redefined $this->entries to be of type MapOf or ArrayOf.
+     * Developer Note: use of this method assumes that you have redefined $this->entries to be of type MapOf or ArrayOf.
      * e.g. $this->entries = new MapOf(function ($data) use ($projectModel) { return new ActivityModel($projectModel); });
      */
     public function readAsModels()
