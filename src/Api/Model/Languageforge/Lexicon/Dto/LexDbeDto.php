@@ -8,6 +8,7 @@ use Api\Model\Languageforge\Lexicon\LexDeletedEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexDeletedCommentListModel;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Mapper\JsonEncoder;
 use Api\Model\Shared\UserGenericVoteModel;
 
 class LexDbeDto
@@ -28,12 +29,12 @@ class LexDbeDto
         $project = new LexiconProjectModel($projectId);
         if ($lastFetchTime) {
             $entriesModel = new LexEntryListModel($project, $lastFetchTime);
-            $entriesModel->readForDto();
+            $entriesModel->readAsModels();
             $commentsModel = new LexCommentListModel($project, $lastFetchTime);
             $commentsModel->readAsModels();
         } else {
             $entriesModel = new LexEntryListModel($project, null, self::MAX_ENTRIES_PER_REQUEST, $offset);
-            $entriesModel->readForDto();
+            $entriesModel->readAsModels();
             $commentsModel = new LexCommentListModel($project, null, self::MAX_ENTRIES_PER_REQUEST, $offset);
             $commentsModel->readAsModels();
 
@@ -41,13 +42,10 @@ class LexDbeDto
             $data['itemCount'] = ($entriesModel->count > $commentsModel->count) ? $entriesModel->count : $commentsModel->count;
             $data['offset'] = $offset;
         }
-        $entries = $entriesModel->entries;
+        $entries = LexDbeDtoEntriesEncoder::encode($entriesModel);
+        $entries = $entries['entries'];
         $encodedComments = LexDbeDtoCommentsEncoder::encode($commentsModel);
         $data['comments'] = $encodedComments['entries'];
-        /*
-        $commentsModel->read();
-        $data['comments'] = $commentsModel->entries;
-        */
 
         $votes = new UserGenericVoteModel($userId, $projectId, 'lexCommentPlusOne');
         $votesDto = array();
