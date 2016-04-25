@@ -594,7 +594,7 @@ class LiftDecoder
             $levelConfig->fields[$customFieldName]->hideIfEmpty = false;
         }
 
-        LexProjectCommands::createCustomFieldViews($customFieldName, $customFieldSpecs['Type'], $this->projectModel->config);
+        LexProjectCommands::createNewCustomFieldViews($customFieldName, $customFieldSpecs['Type'], $this->projectModel->config);
 
         return $customFieldName;
     }

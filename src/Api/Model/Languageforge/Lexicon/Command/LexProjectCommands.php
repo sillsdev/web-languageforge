@@ -4,6 +4,8 @@ namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
+use Api\Model\Languageforge\Lexicon\Config\LexRoleViewConfig;
+use Api\Model\Languageforge\Lexicon\Config\LexUserViewConfig;
 use Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig;
 use Api\Model\Languageforge\Lexicon\Config\LexViewMultiTextFieldConfig;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
@@ -75,36 +77,45 @@ class LexProjectCommands
     }
 
     /**
-     * Create Role Views and User Views for each custom field
+     * @param string $fieldName
+     * @return bool
+     */
+    public static function isCustomField($fieldName) {
+        return (strpos($fieldName, 'customField_') === 0);
+    }
+
+    /**
+     * Update Role Views and User Views for each custom field
      * Designed to be externally called (e.g. from LfMerge)
      *
      * @param string $projectCode
-     * @param array $customFields
+     * @param array<string> $customFieldSpecs
      * @return bool|string returns the project id on success, false otherwise
      */
-    public static function createCustomFieldsViews($projectCode, $customFields)
+    public static function updateCustomFieldViews($projectCode, $customFieldSpecs)
     {
         $project = new LexiconProjectModel();
         if (!$project->readByProperty('projectCode', $projectCode)) return false;
-        foreach ($customFields as $customField) {
-            self::createCustomFieldViews($customField['name'], $customField['specType'], $project->config);
+        self::removeDeletedCustomFieldViews($customFieldSpecs, $project->config);
+        foreach ($customFieldSpecs as $customFieldSpec) {
+            self::createNewCustomFieldViews($customFieldSpec['fieldName'], $customFieldSpec['fieldType'], $project->config);
         }
 
         return $project->write();
     }
 
     /**
-     * Create custom field config Role Views and User Views
+     * Create any new custom field config Role Views and User Views
      *
      * @param string $customFieldName
-     * @param string $customFieldSpecType
+     * @param string $customFieldType
      * @param LexConfiguration $config
      */
-    public static function createCustomFieldViews($customFieldName, $customFieldSpecType, &$config)
+    public static function createNewCustomFieldViews($customFieldName, $customFieldType, &$config)
     {
         foreach ($config->roleViews as $role => $roleView) {
             if (!array_key_exists($customFieldName, $roleView->fields)) {
-                if ($customFieldSpecType == 'ReferenceAtom') {
+                if ($customFieldType == 'ReferenceAtom') {
                     $roleView->fields[$customFieldName] = new LexViewFieldConfig();
                 } else {
                     $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
@@ -117,11 +128,55 @@ class LexProjectCommands
 
         foreach ($config->userViews as $userId => $userView) {
             if (!array_key_exists($customFieldName, $userView->fields)) {
-                if ($customFieldSpecType == 'ReferenceAtom') {
+                if ($customFieldType == 'ReferenceAtom') {
                     $userView->fields[$customFieldName] = new LexViewFieldConfig();
                 } else {
                     $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
                 }
+            }
+        }
+    }
+
+    /**
+     * Remove deleted custom field config Role Views and User Views
+     *
+     * @param array<string> $customFieldSpecs
+     * @param LexConfiguration $config
+     */
+    public static function removeDeletedCustomFieldViews($customFieldSpecs, &$config)
+    {
+        foreach ($config->roleViews as $role => $roleView) {
+            self::removeDeletedCustomFieldView($customFieldSpecs, $roleView);
+        }
+
+        foreach ($config->userViews as $userId => $userView) {
+            self::removeDeletedCustomFieldView($customFieldSpecs, $userView);
+        }
+    }
+
+    /**
+     * Remove any view custom field that doesn't have a fieldName in customFieldSpecs
+     *
+     * @param array<string> $customFieldSpecs
+     * @param LexRoleViewConfig|LexUserViewConfig $view
+     */
+    private static function removeDeletedCustomFieldView($customFieldSpecs, &$view)
+    {
+        $customFieldNames = array();
+        foreach ($customFieldSpecs as $customFieldSpec) {
+            $customFieldNames[] = $customFieldSpec['fieldName'];
+        }
+
+        $customFieldNamesToRemove = array();
+        foreach ($view->fields as $fieldName => $field) {
+            if (self::isCustomField($fieldName) && array_search($fieldName, $customFieldNames) === false) {
+                $customFieldNamesToRemove[] = $fieldName;
+            }
+        }
+
+        foreach ($customFieldNamesToRemove as $customFieldName) {
+            if (array_key_exists($customFieldName, $view->fields)) {
+                unset($view->fields[$customFieldName]);
             }
         }
     }
