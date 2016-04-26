@@ -115,10 +115,10 @@ class LexProjectCommands
     {
         foreach ($config->roleViews as $role => $roleView) {
             if (!array_key_exists($customFieldName, $roleView->fields)) {
-                if ($customFieldType == 'ReferenceAtom') {
-                    $roleView->fields[$customFieldName] = new LexViewFieldConfig();
-                } else {
+                if ($customFieldType == 'MultiUnicode' || $customFieldType == 'MultiString') {
                     $roleView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
+                } else {
+                    $roleView->fields[$customFieldName] = new LexViewFieldConfig();
                 }
                 if ($role == LexiconRoles::MANAGER) {
                     $roleView->fields[$customFieldName]->show = true;
@@ -128,10 +128,10 @@ class LexProjectCommands
 
         foreach ($config->userViews as $userId => $userView) {
             if (!array_key_exists($customFieldName, $userView->fields)) {
-                if ($customFieldType == 'ReferenceAtom') {
-                    $userView->fields[$customFieldName] = new LexViewFieldConfig();
-                } else {
+                if ($customFieldType == 'MultiUnicode' || $customFieldType == 'MultiString') {
                     $userView->fields[$customFieldName] = new LexViewMultiTextFieldConfig();
+                } else {
+                    $userView->fields[$customFieldName] = new LexViewFieldConfig();
                 }
             }
         }
