@@ -74,11 +74,11 @@ class TestLexProjectCommands extends UnitTestCase
         $viewFieldConfig->type = 'ReferenceAtom';
         $viewFieldConfig->show = false;
         $project->config->roleViews[LexiconRoles::MANAGER]->fields[$customFieldNameExisting] = $viewFieldConfig;
-        $customFieldNameToCreate = 'customField_entry_testMultiPara';
+        $customFieldNameToCreate = 'customField_entry_testMultiText';
         $customFieldSpecs = array(
             array(
                 'fieldName' => $customFieldNameToCreate,
-                'fieldType' => 'OwningAtom'
+                'fieldType' => 'MultiString'
             ),
             array(
                 'fieldName' => $customFieldNameExisting,
@@ -123,8 +123,8 @@ class TestLexProjectCommands extends UnitTestCase
         $projectId = $project->write();
         $customFieldSpecs = array(
             array(
-                'fieldName' => 'customField_entry_testMultiPara',
-                'fieldType' => 'OwningAtom'
+                'fieldName' => 'customField_entry_testMultiText',
+                'fieldType' => 'MultiString'
             ),
             array(
                 'fieldName' => 'customField_examples_testOptionList',
