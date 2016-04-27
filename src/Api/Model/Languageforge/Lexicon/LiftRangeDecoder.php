@@ -50,7 +50,7 @@ class LiftRangeDecoder {
 
     /**
      * @param \SimpleXMLElement $sxeNode
-     * @return Array of Range objects, keyed by id
+     * @return array<LiftRange> Array of Lift Range objects, keyed by id
      */
     public function decode($sxeNode)
     {
@@ -65,6 +65,7 @@ class LiftRangeDecoder {
     /**
      * Reads a Range from the XmlNode $sxeNode
      * @param \SimpleXMLElement $sxeNode
+     * @param LiftRange $existingRange
      * @return LiftRange
      */
     public function readRange($sxeNode, $existingRange = null)
@@ -163,7 +164,7 @@ class LiftRangeDecoder {
                 // been defined, which is not the same concept as "ones for which data exists". 2014-09 RM
                 //$this->_projectModel->addInputSystem($inputSystemTag);
                 if (isset($inputSystems)) {
-                    $inputSystems->value($inputSystemTag);
+                    $inputSystems->ensureValueExists($inputSystemTag);
                 }
             }
         }
