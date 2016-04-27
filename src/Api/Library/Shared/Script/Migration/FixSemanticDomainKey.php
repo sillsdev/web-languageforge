@@ -3,6 +3,7 @@ namespace Api\Library\Shared\Script\Migration;
 
     use Api\Model\Languageforge\Lexicon\LexEntryListModel;
     use Api\Model\Languageforge\Lexicon\LexEntryModel;
+    use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
     use Api\Model\Languageforge\Lexicon\LexiconMultiValueField;
     use Api\Model\Languageforge\Lexicon\Sense;
     use Api\Model\Mapper\ArrayOf;
@@ -14,61 +15,45 @@ class FixSemanticDomainKey
     public function run($mode = 'test')
     {
         $testMode = ($mode == 'test');
-        $message = "Fix SemanticDomain Keys to only store numbers\n\n";
+        $message = "Fix SemanticDomain Keys to only store numeric keys (like 1.1.1) \n\n";
 
         $projectlist = new ProjectListModel();
         $projectlist->read();
         $projectIds = array_map(function ($e) { return $e['id'];}, $projectlist->entries);
 
         foreach ($projectIds as $projectId) {
-            $projectModel = new ProjectModel($projectId);
-            $message .= "----------------\nA new project: $projectModel->projectCode id: $projectId\n";
 
-            $entryList = new LexEntryListModel($projectModel);
-            $entryList->read();
+            $project = new ProjectModel($projectId);
+            if ($project->appName == 'lexicon') {
+                $project = new LexiconProjectModel($projectId);
+                $entryList = new LexEntryListModel($project);
+                $entryList->read();
 
-            foreach ($entryList->entries as $entryListItem) {
-                $entry = new LexEntryModel($projectModel, $entryListItem['id']);
-                $message .= "Entry Id: " . $entryListItem['id'] . "\n";
-                if ($entryListItem['id'] == '571454d6cdf43a052c190ad4') {
-                    $message .= "Entry Id found\n\n";
-                }
+                foreach ($entryList->entries as $entryListItem) {
+                    $entry = new LexEntryModel($project, $entryListItem['id']);
+                    $entryModified = false;
+                    if ($entry->hasSenses()) {
 
-                if ($entry->hasSenses()) {
-                    /** @var Sense $sense */
-                    foreach ($entry->senses as $index => $sense) {
-                        if ($sense->gloss->hasForm('en')) {
-                            $gloss = (string)$sense->gloss['en']->value;
-                            $message .= "English gloss: $gloss:\n";
+                        /** @var Sense $sense */
+                        foreach ($entry->senses as $sense) {
+                            $updatedSemDomArray = $sense->semanticDomain->values->getArrayCopy();
 
-                        }
-
-//                        if ($sense->liftId == "eea9c29f-244f-4891-81db-c8274cd61f0c") {
-                        if ($entryListItem['senses'][$index]['liftId'] == "eea9c29f-244f-4891-81db-c8274cd61f0c") {
-                            $message .= "Semantic Domain: with data\n\n";
-                        }
-
-                        if ($sense->semanticDomain) {
-//                            $message .= "has offset\n";
-
-                            $semanticDomainString = $sense->semanticDomain->values;
-                            //foreach ($semanticDomainString as $s) {
-                            $s = implode(" ", $sense->semanticDomain->values->getArrayCopy());
-                            if (strlen($s) > 0) {
-                                $message .= "Has Semantic Domain $s:\n\n";
+                            foreach ($sense->semanticDomain->values as $index => $semanticDomain) {
+                                if (preg_match("/^\d+(\.\d)*/", $semanticDomain, $matches)) {
+                                    $updatedSemDomArray[$index] = $matches[0];
+                                    $entryModified = true;
+                                }
+                            }
+                            if ($entryModified) {
+                                $sense->semanticDomain->values->exchangeArray($updatedSemDomArray);
                             }
                         }
-
-                        foreach ($sense->semanticDomain->values as $semanticDomain) {
-                            $semDomString = (string)$semanticDomain;
-                            $message .= "Semantic Domain: $semDomString\n\n";
-                        }
+                    }
+                    if ((!$testMode) && ($entryModified)) {
+                        $message .= "  Saving migrated semantic domain key.\n";
+                        $entry->write();
                     }
                 }
-                $message .= "\n";
-            }
-            if (!$testMode) {
-                $projectModel->write();
             }
         }
         return $message;
