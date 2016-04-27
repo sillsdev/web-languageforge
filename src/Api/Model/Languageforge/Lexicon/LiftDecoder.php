@@ -236,7 +236,9 @@ class LiftDecoder
                 case 'trait':
                     switch ($element['name']) {
                         case 'semantic-domain-ddp4':
-                            $sense->semanticDomain->value((string) $element['value']);
+                            if (preg_match("/^\d+(\.\d)*/", (string)$element['value'], $matches)) {
+                                $sense->semanticDomain->value((string) $matches[0]);
+                            }
                             break;
                         case 'anthro-code':
                             $sense->anthropologyCategories->value((string) $element['value']);
