@@ -9,6 +9,7 @@ class LexiconFieldListConfigObj extends LexiconConfigObj
 {
     public function __construct()
     {
+        parent::__construct();
         $this->type = LexiconConfigObj::FIELDLIST;
         $this->fieldOrder = new ArrayOf();
         $this->fields = new MapOf(
@@ -32,6 +33,9 @@ class LexiconFieldListConfigObj extends LexiconConfigObj
         );
     }
 
+    /**
+     * @var ArrayOf<string> fieldName
+     */
     public $fieldOrder;
 
     /**
