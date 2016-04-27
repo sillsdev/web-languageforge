@@ -237,7 +237,10 @@ class LiftDecoder
                 case 'trait':
                     switch ($element['name']) {
                         case 'semantic-domain-ddp4':
-                            $sense->semanticDomain->value((string) $element['value']);
+                            $splitKeyValue = explode(" ", (string)$element['value']);
+                            if (count($splitKeyValue) > 0) {
+                                $sense->semanticDomain->value((string) $splitKeyValue[0]);
+                            }
                             break;
                         case 'anthro-code':
                             $sense->anthropologyCategories->value((string) $element['value']);

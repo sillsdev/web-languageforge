@@ -63,8 +63,8 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertEqual($entry0['senses'][0]['gloss']['en']['value'], "incorrect gloss");
         $this->assertEqual($entry0['senses'][0]['gloss']['th']['value'], "th incorrect gloss");
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Adjective");
-        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][0], "5.2 Food");
-        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][1], "1 Universe, creation");
+        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][0], "5.2");
+        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][1], "1");
         $this->assertEqual($entry0['senses'][0]['examples'][0]['sentence']['th-fonipa']['value'], "sentence 1");
         $this->assertEqual($entry0['senses'][0]['examples'][0]['translation']['en']['value'], "translation 1");
         $this->assertEqual($entry0['senses'][0]['examples'][1]['sentence']['th-fonipa']['value'], "sentence 2");
@@ -125,8 +125,8 @@ class TestLiftImportZip extends UnitTestCase
         $this->assertEqual($entry0['senses'][0]['gloss']['en']['value'], "incorrect gloss");
         $this->assertEqual($entry0['senses'][0]['gloss']['th']['value'], "th incorrect gloss");
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Adjective");
-        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][0], "5.2 Food");
-        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][1], "1 Universe, creation");
+        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][0], "5.2");
+        $this->assertEqual($entry0['senses'][0]['semanticDomain']['values'][1], "1");
         $this->assertEqual($entry0['senses'][0]['examples'][0]['sentence']['th-fonipa']['value'], "sentence 1");
         $this->assertEqual($entry0['senses'][0]['examples'][0]['translation']['en']['value'], "translation 1");
         $this->assertEqual($entry0['senses'][0]['examples'][1]['sentence']['th-fonipa']['value'], "sentence 2");
