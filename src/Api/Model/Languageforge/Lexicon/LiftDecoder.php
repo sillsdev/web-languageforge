@@ -350,10 +350,8 @@ class LiftDecoder
                     $multiText->form($inputSystemTag, $this->sanitizeSpans(dom_import_simplexml($element->text), $inputSystemTag));
 
                     $this->projectModel->addInputSystem($inputSystemTag);
-                    // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
                     if (isset($inputSystems)) {
-                        // i.e. $inputSystems->ensureFieldHasInputSystem($inputSystemTag);
-                        $inputSystems->value($inputSystemTag);
+                        $inputSystems->ensureValueExists($inputSystemTag);
                     }
                     break;
                 default:
@@ -385,10 +383,8 @@ class LiftDecoder
         $multiText->form($inputSystemTag, (string) $sxeNode->text);
 
         $this->projectModel->addInputSystem($inputSystemTag);
-        // TODO InputSystems should extend ArrayOf (or Map) and become more useful. CP 2014-10
         if (isset($inputSystems)) {
-            // i.e. $inputSystems->ensureFieldHasInputSystem($inputSystemTag);
-            $inputSystems->value($inputSystemTag);
+            $inputSystems->ensureValueExists($inputSystemTag);
         }
     }
 
@@ -578,7 +574,7 @@ class LiftDecoder
      */
     private function createCustomField($fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig) {
         $customFieldName = $customFieldNamePrefix . str_replace(' ', '_', $fieldType);
-        $levelConfig->fieldOrder->value($customFieldName);
+        $levelConfig->fieldOrder->ensureValueExists($customFieldName);
         if (! array_key_exists($customFieldName, $levelConfig->fields)) {
             if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
                 $levelConfig->fields[$customFieldName] = new LexiconOptionlistConfigObj();
