@@ -117,8 +117,13 @@ angular.module('lexicon',
     $scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
     $scope.project = ss.session.project;
     $scope.projectSettings = ss.session.projectSettings;
-    $scope.config = configService.getConfigForUser();
     $scope.sendReceive = $scope.projectSettings.sendReceive || {};
+
+    $scope.refreshConfig = function refreshConfig() {
+      $scope.config = configService.getConfigForUser();
+    };
+
+    $scope.refreshConfig();
 
     // persist the entries and comments array across all controllers
 
@@ -243,7 +248,7 @@ angular.module('lexicon',
             editorService.loadEditorData().then(function() {
               $scope.finishedLoading = true;
               ss.refresh(function() {
-                $scope.config = configService.getConfigForUser();
+                $scope.refreshConfig();
               });
             });
           }
