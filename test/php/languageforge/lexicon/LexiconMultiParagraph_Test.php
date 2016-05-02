@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
-class TestLexiconMultiParagraphHelper extends UnitTestCase
+class TestLexMultiParagraph extends UnitTestCase
 {
     public function testToHTMLAndFromHTML_existingModel_roundTripDataIdentical()
     {
@@ -29,10 +29,12 @@ class TestLexiconMultiParagraphHelper extends UnitTestCase
         $paragraph3->content = "This is the third string in <span lang='pt'>a lingua Portugues</span>";
         $model->paragraphs->append($paragraph3);
 
-        $html = \Api\Model\Languageforge\Lexicon\LexiconMultiParagraphHelper::toHTML($model);
+        $html = $model->toHTML();
         $this->assertTrue(is_string($html));
 
-        $newModel = \Api\Model\Languageforge\Lexicon\LexiconMultiParagraphHelper::fromHTML($inputSystem, $html);
+        $newModel = new \Api\Model\Languageforge\Lexicon\LexMultiParagraph();
+        $newModel->fromHTML($html);
+        $newModel->inputSystem = $inputSystem;
 
         $this->assertCopy($model, $newModel);
     }
