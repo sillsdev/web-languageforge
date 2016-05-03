@@ -203,4 +203,31 @@ describe('Configuration Fields', function () {
     expect(configPage.fieldsTab.removeCustomFieldButton.isDisplayed()).toBe(false);
   });
 
+  // this regression test added because the code has been fixed at least once before. IJH 2016-05
+  it('does not regress Input System selection', function () {
+    configPage.showAllFieldsButton.click();
+    configPage.getFieldByName('Example').click();
+    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Example Field Setup');
+    configPage.getFieldByName('Translation').click();
+    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Translation Field Setup');
+    configPage.getFieldByName('Literal Meaning').click();
+    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Literal Meaning Field Setup');
+    expect(configPage.fieldsTab.inputSystemTags.first().getText()).toEqual('en');
+    expect(configPage.fieldsTab.inputSystemTags.get(1).getText()).toEqual('th');
+    expect(configPage.fieldsTab.inputSystemTags.last().getText()).toEqual('tipa');
+    expect(configPage.fieldsTab.inputSystemCheckboxes.first().isSelected()).toBe(true);
+    expect(configPage.fieldsTab.inputSystemCheckboxes.get(1).isSelected()).toBe(false);
+    expect(configPage.fieldsTab.inputSystemCheckboxes.last().isSelected()).toBe(false);
+    configPage.getFieldByName('Example').click();
+    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Example Field Setup');
+    configPage.getFieldByName('Literal Meaning').click();
+    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Literal Meaning Field Setup');
+    expect(configPage.fieldsTab.inputSystemTags.first().getText()).toEqual('en');
+    expect(configPage.fieldsTab.inputSystemTags.get(1).getText()).toEqual('th');
+    expect(configPage.fieldsTab.inputSystemTags.last().getText()).toEqual('tipa');
+    expect(configPage.fieldsTab.inputSystemCheckboxes.first().isSelected()).toBe(true);
+    expect(configPage.fieldsTab.inputSystemCheckboxes.get(1).isSelected()).toBe(false);
+    expect(configPage.fieldsTab.inputSystemCheckboxes.last().isSelected()).toBe(false);
+  });
+
 });
