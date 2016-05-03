@@ -37,7 +37,7 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
         $this->_config = $lexProject->config;
 
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new \MongoDate($newerThanTimestamp);
+            $startDate = new \MongoDB\BSON\UTCDatetime(1000*$newerThanTimestamp);
             parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate), 'isDeleted' => false), array(), array(), $limit, $skip);
         } else {
             parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false), array(), array(), $limit, $skip);

@@ -64,7 +64,7 @@ class TestQuestionModel extends UnitTestCase
         $e = new MongoTestEnvironment();
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
-        $mockTextRef = (string) new \MongoId();
+        $mockTextRef = (string) \Api\Model\Mapper\MongoMapper::mongoID();
 
         // Test create with null textRef
         $question = new QuestionModel($project);

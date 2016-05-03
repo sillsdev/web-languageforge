@@ -43,7 +43,7 @@ class ProjectListDto
             }
             $entry['role'] = $role;
             if (array_key_exists('ownerRef', $entry) and $entry['ownerRef']) {
-                $entry['ownerId'] = $entry['ownerRef']->{'$id'};
+                $entry['ownerId'] = strval($entry['ownerRef']);
             } else {
                 $entry['ownerId'] = '';
                 // for legacy projects that don't have an owner
