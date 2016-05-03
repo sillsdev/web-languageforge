@@ -55,9 +55,11 @@ class MongoTestEnvironment
      */
     public function clean()
     {
-        /** @var MongoCollection $collection */
-        foreach ($this->db->listCollections() as $collection) {
-            $collection->drop();
+        foreach ($this->db->listCollections() as $collectionInfo) {
+            if ($collectionInfo->getName() != 'system.indexes') {
+                $collection = $this->db->selectCollection($collectionInfo->getName());
+                $collection->drop();
+            }
         }
     }
 
@@ -71,7 +73,7 @@ class MongoTestEnvironment
      */
     public function find($collection, $query, $fields = array())
     {
-        $collection = $this->db->$collection;
+        $collection = $this->db->selectCollection($collection);
 
         return $collection->find($query, $fields);
     }
@@ -148,10 +150,13 @@ class MongoTestEnvironment
         // clean out old db if it is present
         $projectDb = \Api\Model\Mapper\MongoStore::connect($project->databaseName());
 
-        /** @var MongoCollection $collection */
-        foreach ($projectDb->listCollections() as $collection) {
-            $collection->drop();
+        foreach ($projectDb->listCollections() as $collectionInfo) {
+            if ($collectionInfo->getName() != 'system.indexes') {
+                $collection = $projectDb->selectCollection($collectionInfo->getName());
+                $collection->drop();
+            }
         }
+        
         // clean up assets folder
         $folderPath = $project->getAssetsFolderPath();
         $cleanupFiles = glob($folderPath . '/*');
@@ -168,9 +173,7 @@ class MongoTestEnvironment
      */
     public static function mockId()
     {
-        $id = new MongoId();
-
-        return (string) $id;
+        return strval(new MongoDB\BSON\ObjectID());
     }
 
     /**

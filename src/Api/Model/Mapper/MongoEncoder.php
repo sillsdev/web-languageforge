@@ -169,7 +169,7 @@ class MongoEncoder
      */
     public function encodeDateTime($model)
     {
-        return new \MongoDate($model->getTimeStamp());
+        return new \MongoDB\BSON\UTCDatetime(1000*$model->getTimeStamp());
     }
 
 }
