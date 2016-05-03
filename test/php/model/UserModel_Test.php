@@ -47,8 +47,7 @@ class TestUserModel extends UnitTestCase
         $e = new MongoTestEnvironment();
         $e->clean();
 
-        $userId = $e->createUser('someuser', 'Some User','user@example.com');
-        $someUser = new UserModel($userId);
+        $e->createUser('someuser', 'Some User','user@example.com');
 
         $model = new Api\Model\UserTypeaheadModel('', '', $e->website);
         $model->read();
@@ -62,8 +61,7 @@ class TestUserModel extends UnitTestCase
     {
         $e = new MongoTestEnvironment();
         $e->clean();
-        $userId = $e->createUser('someuser', 'Some User','user@example.com');
-        $someUser = new UserModel($userId);
+        $e->createUser('someuser', 'Some User','user@example.com');
 
         $model = new Api\Model\UserTypeaheadModel('', '', $e->website);
         $model->read();
@@ -77,8 +75,7 @@ class TestUserModel extends UnitTestCase
     {
         $e = new MongoTestEnvironment();
         $e->clean();
-        $userId = $e->createUser('someuser', 'Some User','user@example.com');
-        $someUser = new UserModel($userId);
+        $e->createUser('someuser', 'Some User','user@example.com');
 
         $model = new Api\Model\UserTypeaheadModel('Bogus', '', $e->website);
         $model->read();
@@ -91,8 +88,7 @@ class TestUserModel extends UnitTestCase
     {
         $e = new MongoTestEnvironment();
         $e->clean();
-        $userId = $e->createUser('someuser', 'Some User','user@example.com');
-        $someUser = new UserModel($userId);
+        $e->createUser('someuser', 'Some User','user@example.com');
 
         // Check no users exist on another website
         $website = new Website('languageforge.local', Website::LANGUAGEFORGE);

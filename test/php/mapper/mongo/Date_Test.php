@@ -26,7 +26,7 @@ class TestMongoDateMapper extends UnitTestCase
     {
         $model = new TestMongoDateModel();
         $encoded = MongoEncoder::encode($model);
-        $this->assertIsA($encoded['date'], 'MongoDate');
+        $this->assertIsA($encoded['date'], 'MongoDB\BSON\UTCDateTime');
 //          var_dump($encoded);
 
         $otherModel = new TestMongoDateModel();
@@ -42,7 +42,7 @@ class TestMongoDateMapper extends UnitTestCase
         $model = new TestMongoDateModel();
         $model->date = new DateTime('2001-01-01');
         $encoded = MongoEncoder::encode($model);
-        $this->assertIsA($encoded['date'], 'MongoDate');
+        $this->assertIsA($encoded['date'], 'MongoDB\BSON\UTCDateTime');
 
         $otherModel = new TestMongoDateModel();
         MongoDecoder::decode($otherModel, $encoded);

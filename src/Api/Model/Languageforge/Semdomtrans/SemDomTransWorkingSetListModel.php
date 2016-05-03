@@ -24,7 +24,7 @@ class SemDomTransWorkingSetListModel extends \Api\Model\Mapper\MapperListModel
     public function __construct($projectModel, $newerThanTimestamp = null)
     {
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new \MongoDate($newerThanTimestamp);
+            $startDate = new \MongoDB\BSON\UTCDatetime(1000*$newerThanTimestamp);
             parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate)),  array(), array('name' => 1));
         } else {
             parent::__construct( self::mapper($projectModel->databaseName()), array(),  array(), array('name' => 1));
