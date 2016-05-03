@@ -485,10 +485,11 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServi
   };
   $scope.selectField = function selectField(fieldName) {
     if ($scope.currentField.name !== fieldName) {
-      var inputSystems = $scope.fieldConfig[fieldName].inputSystems;
+      var inputSystems = angular.copy($scope.fieldConfig[fieldName].inputSystems);
 
       $scope.currentField.name = fieldName;
 
+      $scope.currentField.inputSystems.fieldOrder = [];
       $scope.currentField.inputSystems.selecteds = {};
       angular.forEach(inputSystems, function (tag) {
         $scope.currentField.inputSystems.selecteds[tag] = true;
