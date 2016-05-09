@@ -144,8 +144,7 @@ class TestLexProjectCommands extends UnitTestCase
         );
         $runClassParameterFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'testCustomFieldsViews.json';
         file_put_contents($runClassParameterFilePath, json_encode($runClassParameters));
-        $webPath = '/var/www/virtual/languageforge.org/htdocs/';
-        $command = 'php ' . $webPath . 'Api/Library/Shared/CLI/RunClass.php < ' . $runClassParameterFilePath;
+        $command = 'php ' . APPPATH . 'Api/Library/Shared/CLI/RunClass.php < ' . $runClassParameterFilePath;
         $output = shell_exec($command);
         unlink($runClassParameterFilePath);
         $result = json_decode($output);
