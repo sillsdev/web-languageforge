@@ -97,8 +97,8 @@ class MongoStore
      * @param string $databaseName
      */
     public static function dropAllCollections($databaseName) {
+        $db = self::connect($databaseName);
         if (self::hasDB($databaseName)) {
-            $db = self::connect($databaseName);
             foreach ($db->listCollections() as $collectionInfo) {
                 if ($collectionInfo->getName() != 'system.indexes') {
                     $collection = $db->selectCollection($collectionInfo->getName());
