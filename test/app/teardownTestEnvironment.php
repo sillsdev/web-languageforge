@@ -2,8 +2,6 @@
 
 require_once ('e2eTestConfig.php');
 
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Api\Model\ProjectModel;
 use Palaso\Utilities\FileUtilities;
 
@@ -14,7 +12,7 @@ $project = new ProjectModel();
 $project->readByProperties(array(
     'projectCode' => $constants['testProjectCode']
 ));
-$testProject = $project->getById($project->id->asString());
+$testProject = ProjectModel::getById($project->id->asString());
 $assetsFolderPath = $testProject->getAssetsFolderPath();
 FileUtilities::removeFolderAndAllContents($assetsFolderPath);
 
