@@ -7,9 +7,10 @@
                 <i data-ng-click="deletePicture($index)" title="Delete Picture"
                     class="icon-remove"></i>
             </div>
-            <img data-ng-src="{{getPictureUrl(picture.fileName)}}" 
-                data-ng-click="control.selectFieldForComment('pictures', picture, '', '', getPictureUrl(picture.fileName))" />
-            <div data-ng-if="!config.captionHideIfEmpty || control.show.emptyFields || (config.captionHideIfEmpty && fieldContainsData('multitext', picture.caption))">
+            <img data-ng-src="{{getPictureUrl(picture)}}" data-ng-attr-title="{{getPictureDescription(picture)}}"
+                 data-ng-click="control.selectFieldForComment('pictures', picture, '', '', getPictureUrl(picture))" />
+            <div data-ng-if="!config.captionHideIfEmpty || control.show.emptyFields ||
+                 (config.captionHideIfEmpty && fieldContainsData('multitext', picture.caption))">
                 <dc-multitext control="control"
                     config="config"
                     model="picture.caption"
@@ -19,7 +20,8 @@
         </div>
         <div class="dc-picture" data-ng-show="upload.showAddPicture">
             <div class="deleteX pull-right">
-                <i data-ng-click="upload.showAddPicture = false" title="Cancel Adding Picture" class="icon-remove" id="addCancel"></i>
+                <i data-ng-click="upload.showAddPicture = false" title="Cancel Adding Picture" class="icon-remove"
+                   id="addCancel"></i>
             </div>
             <div class="drop-box" data-ng-file-drop="onFileSelect($files)"
                 data-ng-file-drop-available="dropSupported = true">
@@ -43,4 +45,3 @@
     class="addItem">
     <a data-ng-click="upload.showAddPicture = true; upload.progress = 0">Add Picture</a>
 </div>
-    
