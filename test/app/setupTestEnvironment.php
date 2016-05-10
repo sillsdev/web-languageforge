@@ -38,8 +38,7 @@ if (is_null($website)) {
 $site = $website->base;
 
 // start with a fresh database
-$db = MongoStore::connect(SF_DATABASE);
-foreach ($db->listCollections() as $collection) { $collection->drop(); }
+MongoStore::dropAllCollections(SF_DATABASE);
 
 // Also empty out databases for the test projects
 $projectArrays = array(
@@ -52,25 +51,24 @@ foreach ($projectArrays as $projectName => $projectCode) {
     $projectModel = new ProjectModel();
     $projectModel->projectName = $projectName;
     $projectModel->projectCode = $projectCode;
-    $db = \Api\Model\Mapper\MongoStore::connect($projectModel->databaseName());
-    foreach ($db->listCollections() as $collection) { $collection->drop(); }
+    MongoStore::dropAllCollections($projectModel->databaseName());
 }
 
 // drop the third database because it is used in a rename test
 $projectModel = new ProjectModel();
 $projectModel->projectName = $constants['thirdProjectName'];
 $projectModel->projectCode = $constants['thirdProjectCode'];
-$db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
+MongoStore::dropDB($projectModel->databaseName());
 
 // drop the 'new' and 'empty' database because it is used in a 'create new project' test
 $projectModel = new ProjectModel();
 $projectModel->projectName = $constants['newProjectName'];
 $projectModel->projectCode = $constants['newProjectCode'];
-$db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
+MongoStore::dropDB($projectModel->databaseName());
 $projectModel = new ProjectModel();
 $projectModel->projectName = $constants['emptyProjectName'];
 $projectModel->projectCode = $constants['emptyProjectCode'];
-$db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
+MongoStore::dropDB($projectModel->databaseName());
 
 $adminUserId = UserCommands::createUser(array(
     'id' => '',
