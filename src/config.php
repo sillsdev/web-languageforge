@@ -30,6 +30,7 @@ if (! defined('ENVIRONMENT')) {
 if (! defined('SF_DATABASE')) {
     define('SF_DATABASE', 'scriptureforge');
 }
+
 if (! defined('MONGODB_CONN')) {
     define('MONGODB_CONN', 'mongodb://localhost:27017');
 }
