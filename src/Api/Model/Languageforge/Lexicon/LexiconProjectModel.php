@@ -115,15 +115,10 @@ class LexiconProjectModel extends LfProjectModel
     public function initializeNewProject()
     {
         // setup default option lists
-        $optionList = new LexOptionListModel($this);
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS);
-        if (! $optionList->readByProperty('code', $listCode)) {
-            $optionList->name = LexiconConfigObj::flexOptionlistName($listCode);
-            $optionList->code = $listCode;
-            $optionList->canDelete = false;
-            $optionList->readFromJson(APPPATH . 'json/languageforge/lexicon/partOfSpeech.json');
-            $optionList->write();
-        }
+        $jsonFilePath = APPPATH . 'json/languageforge/lexicon/partOfSpeech.json';
+        LexOptionListModel::CreateFromJson($this, LexiconConfigObj::POS, $jsonFilePath);
+
+        // ToDo: create LF-wide semantic domain option list if it doesn't exist. IJH 2016-05
 
         $this->createAssetsFolders();
     }
