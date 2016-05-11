@@ -2,11 +2,14 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
+use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\Config\LexiconOptionListItem;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\Id;
+use Api\Model\Mapper\MapperModel;
+use Api\Model\Mapper\MongoMapper;
 
-class LexOptionListModel extends \Api\Model\Mapper\MapperModel
+class LexOptionListModel extends MapperModel
 {
     /**
      * @var Id
@@ -39,11 +42,15 @@ class LexOptionListModel extends \Api\Model\Mapper\MapperModel
      */
     public $canDelete;
 
+    /**
+     * @param string $databaseName
+     * @return MongoMapper
+     */
     public static function mapper($databaseName)
     {
         static $instance = null;
         if (null === $instance) {
-            $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'optionlists');
+            $instance = new MongoMapper($databaseName, 'optionlists');
         }
 
         return $instance;
@@ -51,11 +58,11 @@ class LexOptionListModel extends \Api\Model\Mapper\MapperModel
 
     /**
      * @param \Api\Model\ProjectModel $projectModel
-     * @param string               $id
+     * @param string $id
      */
     public function __construct($projectModel, $id = '')
     {
-        $this->items = new ArrayOf(function ($data) {
+        $this->items = new ArrayOf(function () {
             return new LexiconOptionListItem();
         });
         $this->id = new Id();
@@ -64,19 +71,48 @@ class LexOptionListModel extends \Api\Model\Mapper\MapperModel
         parent::__construct(self::mapper($databaseName), $id);
     }
 
-    public function readFromJson($filePath)
+    /**
+     * @param LexiconProjectModel $projectModel
+     * @param string $fieldName
+     * @param string $jsonFilePath
+     * @return bool true on success, false otherwise
+     * @throws \Exception
+     */
+    public static function CreateFromJson($projectModel, $fieldName, $jsonFilePath)
     {
-        if (file_exists($filePath)) {
-            $json = json_decode(file_get_contents($filePath), true);
+        $optionList = new LexOptionListModel($projectModel);
+        $listCode = LexiconConfigObj::flexOptionlistCode($fieldName);
+        if (!$optionList->readByProperty('code', $listCode)) {
+            $optionList->name = LexiconConfigObj::flexOptionlistName($listCode);
+            $optionList->code = $listCode;
+            $optionList->canDelete = false;
+            $optionList->readFromJson($jsonFilePath);
+            $optionList->write();
+            return true;
+        }
+        return false;
+    }
 
-            if (count($json) > 0) {
-                $this->items->exchangeArray(array());
-            }
-            foreach ($json as $item) {
-                $this->items[] = new LexiconOptionListItem($item['value'], $item['key']);
-            }
-        } else {
+    /**
+     * @param string $filePath
+     * @throws \Exception
+     */
+    private function readFromJson($filePath)
+    {
+        if (!file_exists($filePath)) {
             throw new \Exception("JSON file path $filePath does not exist!");
+        }
+
+        $json = json_decode(file_get_contents($filePath), true);
+        if (count($json) <= 0) return;
+
+        $this->items->exchangeArray(array());
+        foreach ($json as $item) {
+            $optionListItem = new LexiconOptionListItem($item['value'], $item['key']);
+            if (array_key_exists('abbreviation', $item)) {
+                $optionListItem->abbreviation = $item['abbreviation'];
+            }
+            $this->items[] = $optionListItem;
         }
     }
 
