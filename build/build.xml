@@ -68,6 +68,9 @@
     </target>
 
     <target name="test-php" depends="build-prepare,build-composer,build-bower">
+        <replace file="test/php/TestConfig.php">
+            <replacefilter token="define('MONGODB_CONN', 'mongodb://localhost:27017');" value="define('MONGODB_CONN', 'mongodb://${mongodb.connection}');" />
+        </replace>
         <echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
         <exec executable="php" dir="test/php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
             <arg line="AllTests.php" />
@@ -131,6 +134,7 @@
         />
         <replace file="${build.output}/package/htdocs/config.php">
             <replacefilter token="define('ENVIRONMENT', 'development');" value="define('ENVIRONMENT', 'production');" />
+            <replacefilter token="define('MONGODB_CONN', 'mongodb://localhost:27017');" value="define('MONGODB_CONN', 'mongodb://${mongodb.connection}');" />
             <replacefilter token="define('REMEMBER_ME_SECRET', 'kT3sdPo60ewrGu8');" value="define('REMEMBER_ME_SECRET', '${build.secret}');" />
         </replace>
         <replace file="${build.output}/package/htdocs/version.php">
