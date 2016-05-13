@@ -302,7 +302,7 @@
 			<dirset dir="${build.uploadPath}/htdocs/assets/" />
 		</chmod>
 		<exec dir="${build.uploadPath}" executable="rsync" failonerror="true">
-			<arg value="-vaz" />
+			<arg value="-vrzlt" />
 			<arg value="--delete-during" />
             <arg value="--exclude=htdocs/assets" />
             <arg value="--exclude=htdocs/cache" />
