@@ -118,7 +118,7 @@ class LexiconProjectModel extends LfProjectModel
         $jsonFilePath = APPPATH . 'json/languageforge/lexicon/partOfSpeech.json';
         LexOptionListModel::CreateFromJson($this, LexiconConfigObj::POS, $jsonFilePath);
 
-        // ToDo: create LF-wide semantic domain option list if it doesn't exist. IJH 2016-05
+        // Semantic Domains are delivered to the client as a javascript variable.
 
         $this->createAssetsFolders();
     }
