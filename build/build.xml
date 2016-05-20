@@ -287,20 +287,6 @@
 	
 	<target name="upload" depends="package,upload-clean">
 		<untar src="${build.packageFile}" dest="${build.uploadPath}" compression="gzip" />
-		<chgrp type="both" group="www-data">
-			<dirset dir="${build.uploadPath}/htdocs/" />
-			<fileset dir="${build.uploadPath}/htdocs/">
-			    <include name="**/*"/>
-			</fileset>
-			<dirset dir="${build.uploadPath}/lib/" />
-			<fileset dir="${build.uploadPath}/lib/">
-			    <include name="**/*"/>
-			</fileset>
-		</chgrp>
-		<chmod type="both" perm="g+w">
-			<dirset dir="${build.uploadPath}/htdocs/cache/" />
-			<dirset dir="${build.uploadPath}/htdocs/assets/" />
-		</chmod>
 		<exec dir="${build.uploadPath}" executable="rsync" failonerror="true">
 			<arg value="-vrzlt" />
 			<arg value="--delete-during" />
