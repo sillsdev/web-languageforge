@@ -719,6 +719,8 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
         });
 
         // todo: maybe sort both lists after splicing in updates ???
+        sortList($scope.entries);
+        sortList($scope.show.entries);
       }
 
 
@@ -731,6 +733,35 @@ function($scope, userService, sessionService, lexService, $window, $interval, $f
       commentService.updateGlobalCommentCounts();
       return deferred.promise;
     }
+  }
+
+  function sortList(list) {
+    var inputSystems = $scope.config.entry.fields.lexeme.inputSystems;
+    var lexemeA = '';
+    var lexemeB = '';
+    list.sort(function (a, b) {
+      for (var x = 0; x < inputSystems.length; x++) {
+        var ws = inputSystems[x];
+        if (angular.isDefined(a.lexeme[ws])) {
+          lexemeA = a.lexeme[ws].value;
+          break;
+        }
+      }
+
+      for (var x = 0; x < inputSystems.length; x++) {
+        var ws = inputSystems[x];
+        if (angular.isDefined(b.lexeme[ws])) {
+          lexemeB = b.lexeme[ws].value;
+          break;
+        }
+      }
+
+      if (lexemeA > lexemeB) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
   }
 
   function evaluateState() {
