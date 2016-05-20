@@ -48,6 +48,7 @@ class LexOptionListModel extends MapperModel
      */
     public static function mapper($databaseName)
     {
+        /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
             $instance = new MongoMapper($databaseName, 'optionlists');
@@ -111,6 +112,9 @@ class LexOptionListModel extends MapperModel
             $optionListItem = new LexiconOptionListItem($item['value'], $item['key']);
             if (array_key_exists('abbreviation', $item)) {
                 $optionListItem->abbreviation = $item['abbreviation'];
+            }
+            if (array_key_exists('guid', $item)) {
+                $optionListItem->guid = $item['guid'];
             }
             $this->items[] = $optionListItem;
         }
