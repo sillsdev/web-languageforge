@@ -6,6 +6,7 @@ angular.module('bellows.services')
 .factory('editorDataService', ['$q', 'sessionService', 'editorOfflineCache', 'commentsOfflineCache', 'silNoticeService', 'lexCommentService',
 function($q, ss, cache, commentsCache, notice, commentService) {
 
+  var config = ss.session.projectSettings.config;
   var entries = [];
   var visibleEntries = [];
   var browserInstanceId = Math.floor(Math.random() * 1000);
@@ -260,7 +261,8 @@ function($q, ss, cache, commentsCache, notice, commentService) {
 
         angular.forEach(result.data.deletedCommentIds, commentService.removeCommentFromLists);
 
-        // todo: maybe sort both lists after splicing in updates ???
+        sortList(entries);
+        sortList(visibleEntries);
       }
 
       if (result.data.itemCount && result.data.itemCount + result.data.offset < result.data.itemTotalCount) {
@@ -286,6 +288,51 @@ function($q, ss, cache, commentsCache, notice, commentService) {
     }
 
     return index;
+  }
+
+  function sortList(list) {
+    var inputSystems = config.entry.fields.lexeme.inputSystems;
+    var lexemeA = '';
+    var lexemeB = '';
+    list.sort(function (a, b) {
+      for (var x = 0; x < inputSystems.length; x++) {
+        var ws = inputSystems[x];
+        if (angular.isDefined(a.lexeme[ws])) {
+          lexemeA = a.lexeme[ws].value;
+          break;
+        }
+      }
+
+      for (var x = 0; x < inputSystems.length; x++) {
+        var ws = inputSystems[x];
+        if (angular.isDefined(b.lexeme[ws])) {
+          lexemeB = b.lexeme[ws].value;
+          break;
+        }
+      }
+
+      if (lexemeA > lexemeB) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
+  }
+
+  /**
+   * A function useful for debugging (prints out to the console the lexeme values)
+   * @param list
+   */
+  function printLexemesInList(list) {
+    var ws = config.entry.fields.lexeme.inputSystems[1];
+    var arr = [];
+    for (var i = 0; i < list.length; i++) {
+      if (angular.isDefined(list[i].lexeme[ws])) {
+        arr.push(list[i].lexeme[ws].value);
+      }
+    }
+
+    console.log(arr);
   }
 
   return {
