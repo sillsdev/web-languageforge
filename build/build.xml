@@ -288,7 +288,8 @@
 	<target name="upload" depends="package,upload-clean">
 		<untar src="${build.packageFile}" dest="${build.uploadPath}" compression="gzip" />
 		<exec dir="${build.uploadPath}" executable="rsync" failonerror="true">
-			<arg value="-vrzlt" />
+			<arg value="-vprogzlt" />
+			<arg value="--chown=root:www-data" />
 			<arg value="--delete-during" />
             <arg value="--exclude=htdocs/assets" />
             <arg value="--exclude=htdocs/cache" />
