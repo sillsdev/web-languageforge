@@ -1,0 +1,32 @@
+<form class="form-horizontal dc-semanticdomain">
+    <label class="control-label">{{config.label}}</label>
+    <div class="controls">
+        <div class="dc-semanticdomain-values" 
+            data-ng-repeat="value in model.values | orderBy: orderItemsByListOrder">
+            <div data-ng-mouseover="valueToBeDeleted = value" data-ng-mouseleave="valueToBeDeleted = ''">
+                <div class="dc-semanticdomain-value"
+                    data-ng-click="selectValue(value)">
+                    {{getDisplayName(value)}}</div>
+                <img class="closeicon" src="/Site/views/shared/image/closeicon.svg" width="15" height="15"
+                    title="Delete {{config.label}}" 
+                    data-ng-show="showDeleteButton(valueToBeDeleted, value)" data-ng-click="deleteValue(value)" />
+            </div>
+        </div>
+        <div class="dc-semanticdomain-values"
+            data-ng-show="control.state == 'edit' && control.rights.canEditEntry() && isAdding">
+            <select data-ng-change="addValue()" data-ng-model="newValue" 
+                data-ng-options="option.key as option.value for (key, option) in options | filter: filterSelectedOptions">
+                <option value="">Pick an item</option>
+            </select>
+            <div class="deleteX">
+                <i class="icon-remove" data-ng-click="isAdding = false" title="Cancel adding {{config.label}}"></i>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="addItem" 
+    data-ng-show="control.rights.canEditEntry() && control.state == 'edit' && showAddButton()">
+    <a data-ng-click="isAdding = true">Add {{config.label}}</a>
+</div>
+<div class="spacing-after"
+    data-ng-hide="control.rights.canEditEntry() && control.state == 'edit' && showAddButton()">&nbsp;</div>
