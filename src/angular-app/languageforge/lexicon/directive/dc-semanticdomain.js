@@ -1,0 +1,78 @@
+'use strict';
+
+angular.module('palaso.ui.dc.semanticdomain', [])
+
+// Palaso UI Semanticdomain
+.directive('dcSemanticdomain', [function () {
+  return {
+    restrict: 'E',
+    templateUrl: '/angular-app/languageforge/lexicon/directive/dc-semanticdomain.html',
+    scope: {
+      config: '=',
+      model: '=',
+      control: '=',
+      selectField: '&'
+    },
+    controller: ['$scope', function ($scope) {
+      // Semantic Domain is not editable until we re-work the control as an indented list picker
+      var isEditable = false;
+
+      $scope.isAdding = false;
+      $scope.valueToBeDeleted = '';
+      $scope.options = semanticDomains_en;
+
+      $scope.getDisplayName = function getDisplayName(value) {
+        var displayName = value;
+        if (angular.isDefined(semanticDomains_en)) {
+          displayName = semanticDomains_en[value].value;
+        }
+
+        return displayName;
+      };
+
+      $scope.orderItemsByListOrder = function orderItemsByListOrder(value) {
+        return value;
+      };
+
+      $scope.filterSelectedOptions = function filterSelectedOptions(item) {
+        return $scope.model.values.indexOf(item.key) == -1;
+      };
+
+      $scope.showAddButton = function showAddButton() {
+        return (angular.isDefined(semanticDomains_en) && !$scope.isAdding
+          && $scope.model.values.length < Object.keys(semanticDomains_en).length && isEditable);
+      };
+
+      $scope.addValue = function addValue() {
+        if (angular.isDefined($scope.newValue)) {
+          $scope.model.values.push($scope.newValue);
+        }
+
+        $scope.newValue = '';
+        $scope.isAdding = false;
+      };
+
+      $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
+        if (angular.isDefined(semanticDomains_en) && $scope.control.state == 'edit'
+          && $scope.control.rights.canEditEntry() && isEditable) {
+          return valueToBeDeleted == value;
+        }
+
+        return false;
+      };
+
+      $scope.deleteValue = function deleteValue(value) {
+        var index = $scope.model.values.indexOf(value);
+        $scope.model.values.splice(index, 1);
+      };
+
+      $scope.selectValue = function selectValue(value) {
+        $scope.selectField({
+          inputSystem: '',
+          multioptionValue: $scope.getDisplayName(value)
+        });
+      };
+
+    }]
+  };
+}]);
