@@ -15,7 +15,7 @@
         <div class="dc-semanticdomain-values"
             data-ng-show="control.state == 'edit' && control.rights.canEditEntry() && isAdding">
             <select data-ng-change="addValue()" data-ng-model="newValue" 
-                data-ng-options="option.key as option.value for (key, option) in options | filter: filterSelectedOptions">
+                data-ng-options="option.key as option.value for option in options | orderBy: 'key' | filter: filterSelectedOptions">
                 <option value="">Pick an item</option>
             </select>
             <div class="deleteX">

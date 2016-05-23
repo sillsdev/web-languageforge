@@ -14,12 +14,19 @@ angular.module('palaso.ui.dc.semanticdomain', [])
       selectField: '&'
     },
     controller: ['$scope', function ($scope) {
-      // Semantic Domain is not editable until we re-work the control as an indented list picker
-      var isEditable = false;
-
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
-      $scope.options = semanticDomains_en;
+
+      function createOptions() {
+        var options = [];
+        angular.forEach(semanticDomains_en, function (item) {
+          options.push(item);
+        });
+
+        return options;
+      }
+
+      $scope.options = createOptions();
 
       $scope.getDisplayName = function getDisplayName(value) {
         var displayName = value;
@@ -40,7 +47,7 @@ angular.module('palaso.ui.dc.semanticdomain', [])
 
       $scope.showAddButton = function showAddButton() {
         return (angular.isDefined(semanticDomains_en) && !$scope.isAdding
-          && $scope.model.values.length < Object.keys(semanticDomains_en).length && isEditable);
+          && $scope.model.values.length < Object.keys(semanticDomains_en).length);
       };
 
       $scope.addValue = function addValue() {
@@ -54,7 +61,7 @@ angular.module('palaso.ui.dc.semanticdomain', [])
 
       $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
         if (angular.isDefined(semanticDomains_en) && $scope.control.state == 'edit'
-          && $scope.control.rights.canEditEntry() && isEditable) {
+          && $scope.control.rights.canEditEntry()) {
           return valueToBeDeleted == value;
         }
 
