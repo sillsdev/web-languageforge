@@ -37,8 +37,9 @@ describe('Browse and edit page (DBE) Editor', function () {
   });
 
   it('word 1: edit page has correct meaning, part of speech', function () {
+    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
     expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
-      {en: constants.testEntry1.senses[0].definition.en.value},
+      { en: constants.testEntry1.senses[0].definition.en.value }, ''
     ]);
     expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
       dbeUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value)
@@ -170,8 +171,9 @@ describe('Browse and edit page (DBE) Editor', function () {
   });
 
   it('word 2: edit page has correct meaning, part of speech', function () {
+    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
     expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
-      {en: constants.testEntry2.senses[0].definition.en.value},
+      { en: constants.testEntry2.senses[0].definition.en.value }, ''
     ]);
     expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
       dbeUtil.expandPartOfSpeech(constants.testEntry2.senses[0].partOfSpeech.value)
@@ -183,9 +185,10 @@ describe('Browse and edit page (DBE) Editor', function () {
   });
 
   it('word with multiple meanings: edit page has correct meanings, parts of speech', function () {
+    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
     expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
-      {en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value},
-      {en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value},
+      { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value }, '',
+      { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value }, ''
     ]);
     expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
       dbeUtil.expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.value),
@@ -224,10 +227,11 @@ describe('Browse and edit page (DBE) Editor', function () {
     ]);
 
     // First item is empty Etymology Source, now that View Settings all default to visible. IJH
+    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
     expect(dbePage.edit.getFieldValues('Source')).toEqual([
-      {en: ''},
-      {en: constants.testMultipleMeaningEntry1.senses[0].source.en.value},
-      {en: constants.testMultipleMeaningEntry1.senses[1].source.en.value},
+      { en: '' }, '',
+      { en: constants.testMultipleMeaningEntry1.senses[0].source.en.value }, '',
+      { en: constants.testMultipleMeaningEntry1.senses[1].source.en.value }
     ]);
   });
 
