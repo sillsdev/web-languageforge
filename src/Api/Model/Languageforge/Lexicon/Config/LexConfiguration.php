@@ -73,7 +73,7 @@ class LexConfiguration
         $this->entry = new LexiconFieldListConfigObj();
         $this->entry->fieldOrder[] = LexiconConfigObj::LEXEME;
         $this->entry->fieldOrder[] = LexiconConfigObj::CITATIONFORM;
-        $this->entry->fieldOrder[] = LexiconConfigObj::ENVIRONMENTS;
+        //$this->entry->fieldOrder[] = LexiconConfigObj::ENVIRONMENTS; // Disabled 05-2016
         $this->entry->fieldOrder[] = LexiconConfigObj::PRONUNCIATION;
         $this->entry->fieldOrder[] = LexiconConfigObj::CVPATTERN;
         $this->entry->fieldOrder[] = LexiconConfigObj::TONE;
@@ -114,7 +114,7 @@ class LexConfiguration
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SOCIOLINGUISTICSNOTE;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SOURCE;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::USAGES;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::REVERSALENTRIES;
+        //$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::REVERSALENTRIES; // Disabled 05-2016
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SENSETYPE;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::ACADEMICDOMAINS;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SENSEPUBLISHIN;
@@ -162,12 +162,14 @@ class LexConfiguration
         $this->entry->fields[LexiconConfigObj::CITATIONFORM]->hideIfEmpty = true;
         $this->entry->fields[LexiconConfigObj::CITATIONFORM]->inputSystems[] = 'th';
 
+        /*
+        ENVIRONMENTS disabled 05-2016
         $this->entry->fields[LexiconConfigObj::ENVIRONMENTS] = new LexiconMultiOptionlistConfigObj();
         $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ENVIRONMENTS);
         $this->entry->fields[LexiconConfigObj::ENVIRONMENTS]->label = LexiconConfigObj::flexOptionlistName($listCode);
         $this->entry->fields[LexiconConfigObj::ENVIRONMENTS]->listCode = $listCode;
         $this->entry->fields[LexiconConfigObj::ENVIRONMENTS]->hideIfEmpty = true;
-
+        */
         $this->entry->fields[LexiconConfigObj::PRONUNCIATION] = new LexiconMultitextConfigObj();
         $this->entry->fields[LexiconConfigObj::PRONUNCIATION]->label = 'Pronunciation';
         $this->entry->fields[LexiconConfigObj::PRONUNCIATION]->hideIfEmpty = true;
@@ -318,11 +320,14 @@ class LexConfiguration
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES]->hideIfEmpty = true;
 
         // TODO This needs to be a taglist DDW 2014-07
+        /*
+        REVERSALENTRIES disabled 05-2016
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES] = new LexiconMultiOptionlistConfigObj();
         $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::REVERSALENTRIES);
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES]->label = LexiconConfigObj::flexOptionlistName($listCode);
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES]->listCode = $listCode;
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES]->hideIfEmpty = true;
+        */
 
         $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSETYPE] = new LexiconOptionlistConfigObj();
         $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::SENSETYPE);
@@ -387,7 +392,7 @@ class LexConfiguration
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::GLOSS] = new LexViewMultiTextFieldConfig(true);
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::PICTURES] = new LexViewMultiTextFieldConfig(true);
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::CITATIONFORM] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ENVIRONMENTS] = new LexViewFieldConfig(true);
+        //$this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ENVIRONMENTS] = new LexViewFieldConfig(true); // Disabled 05-2016
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::PRONUNCIATION] = new LexViewMultiTextFieldConfig(true);
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::CVPATTERN] = new LexViewMultiTextFieldConfig(true);
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::TONE] = new LexViewMultiTextFieldConfig(true);
@@ -415,7 +420,7 @@ class LexConfiguration
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SOCIOLINGUISTICSNOTE] = new LexViewMultiTextFieldConfig(true);
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SOURCE] = new LexViewMultiTextFieldConfig(true);
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::USAGES] = new LexViewFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::REVERSALENTRIES] = new LexViewFieldConfig(true);
+        //$this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::REVERSALENTRIES] = new LexViewFieldConfig(true); // Disabled 05-2016
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SENSETYPE] = new LexViewFieldConfig(true);
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ACADEMICDOMAINS] = new LexViewFieldConfig(true);
         $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SENSEPUBLISHIN] = new LexViewFieldConfig(true);
