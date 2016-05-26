@@ -36,6 +36,7 @@ angular.module('lexicon-new-project',
         controller: 'NewLexProjectCtrl'
       })
       .state('newProject.chooser', {
+        url: '/chooser',
         templateUrl:
           '/angular-app/languageforge/lexicon/new-project/views/new-project-chooser.html',
         data: {
@@ -48,6 +49,13 @@ angular.module('lexicon-new-project',
           step: 1
         }
       })
+      .state('newProject.sendReceiveCredentials', {
+        templateUrl:
+          '/angular-app/languageforge/lexicon/new-project/views/new-project-sr-credentials.html',
+        data: {
+          step: 1 // This is not a typo. There are two possible step 2 templates.
+        }
+      })
       .state('newProject.initialData', {
         templateUrl:
           '/angular-app/languageforge/lexicon/new-project/views/new-project-initial-data.html',
@@ -55,9 +63,8 @@ angular.module('lexicon-new-project',
           step: 2
         }
       })
-      .state('newProject.sendReceiveCredentials', {
-        templateUrl:
-          '/angular-app/languageforge/lexicon/new-project/views/new-project-sr-credentials.html',
+      .state('newProject.sendReceiveName', {
+        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-name.html',
         data: {
           step: 2 // This is not a typo. There are two possible step 2 templates.
         }
@@ -80,7 +87,8 @@ angular.module('lexicon-new-project',
     $urlRouterProvider
       .when('', ['$state', function ($state) {
         if (!$state.$current.navigable) {
-          $state.go('newProject.chooser');
+          //$state.go('newProject.chooser');
+          $state.go('newProject.name');
         }
       }]);
 
@@ -117,6 +125,16 @@ angular.module('lexicon-new-project',
     $scope.newProject.appName = 'lexicon';
     $scope.project = {};
     $scope.project.sendReceive = {};
+
+    $scope.isSRProject = false;
+    $scope.show = {};
+    $scope.show.nextButton = ($state.current.name != 'newProject.chooser');
+    $scope.show.backButton = false;
+    $scope.show.flexHelp = false;
+    $scope.nextButtonLabel = $filter('translate')('Next');
+    $scope.progressIndicatorStep1Label = $filter('translate')('Name');
+    $scope.progressIndicatorStep2Label = $filter('translate')('Initial Data');
+    $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
 
     $scope.projectCodeState = 'empty';
     $scope.projectCodeStateDefer = $q.defer();
@@ -177,10 +195,18 @@ angular.module('lexicon-new-project',
     };
 
     $scope.getProjectFromInternet = function getProjectFromInternet() {
-      $state.go('newProject.name');
+      $state.go('newProject.sendReceiveCredentials');
       $scope.isSRProject = true;
       $scope.show.nextButton = true;
       $scope.show.backButton = true;
+      $scope.progressIndicatorStep1Label = $filter('translate')('Initial Data');
+      $scope.progressIndicatorStep2Label = $filter('translate')('Name');
+      $scope.resetValidateProjectForm();
+      if (!$scope.project.sendReceive.username) {
+        $scope.project.sendReceive.username = ss.session.username;
+      }
+
+      validateForm();
     };
 
     $scope.createNew = function createNew() {
@@ -188,21 +214,25 @@ angular.module('lexicon-new-project',
       $scope.isSRProject = false;
       $scope.show.nextButton = true;
       $scope.show.backButton = true;
+      $scope.progressIndicatorStep1Label = $filter('translate')('Name');
+      $scope.progressIndicatorStep2Label = $filter('translate')('Initial Data');
     };
 
     $scope.prevStep = function prevStep() {
       $scope.show.backButton = false;
       $scope.resetValidateProjectForm();
       switch ($state.current.name) {
-        case 'newProject.name':
+        case 'newProject.sendReceiveCredentials':
           $state.go('newProject.chooser');
           $scope.show.nextButton = false;
           break;
-        case 'newProject.sendReceiveCredentials':
-          $state.go('newProject.name');
-          $scope.show.backButton = true;
+        case 'newProject.sendReceiveName':
           $scope.nextButtonLabel = $filter('translate')('Next');
-          $scope.checkProjectCode();
+          $scope.getProjectFromInternet();
+          break;
+        case 'newProject.name':
+          $state.go('newProject.chooser');
+          $scope.show.nextButton = false;
           break;
         case 'newProject.initialData':
         case 'newProject.verifyData':
@@ -302,25 +332,38 @@ angular.module('lexicon-new-project',
 
     function gotoNextState() {
       switch ($state.current.name) {
-        case 'newProject.name':
-          if ($scope.isSRProject) {
-            $state.go('newProject.sendReceiveCredentials');
-            $scope.nextButtonLabel = $filter('translate')('Synchronize');
-            $scope.show.backButton = true;
-            $scope.resetValidateProjectForm();
-            if (!$scope.project.sendReceive.username) {
-              $scope.project.sendReceive.username = ss.session.username;
-            }
+        case 'newProject.sendReceiveCredentials':
+          $state.go('newProject.sendReceiveName');
+          $scope.nextButtonLabel = $filter('translate')('Synchronize');
+          $scope.show.backButton = true;
+          $scope.resetValidateProjectForm();
+          if (!$scope.newProject.projectName) {
+            $scope.newProject.projectName = $scope.project.sendReceive.project.name;
+            $scope.newProject.projectCode = $scope.project.sendReceive.project.identifier;
+            projectService.projectCodeExists($scope.newProject.projectCode, function (result) {
+              if (result.ok && result.data) {
+                $scope.newProject.projectCode += '_lf';
+              }
+
+              $scope.checkProjectCode();
+            });
           } else {
-            createProject(makeFormNeutral);
-            $state.go('newProject.initialData');
-            $scope.nextButtonLabel = $filter('translate')('Skip');
-            $scope.show.backButton = false;
-            $scope.projectCodeState = 'empty';
-            $scope.projectCodeStateDefer = $q.defer();
-            $scope.projectCodeStateDefer.resolve('empty');
+            $scope.checkProjectCode();
           }
 
+          break;
+        case 'newProject.sendReceiveName':
+          createProject(saveSRCredentials);
+          makeFormNeutral();
+          break;
+        case 'newProject.name':
+          createProject(makeFormNeutral);
+          $state.go('newProject.initialData');
+          $scope.nextButtonLabel = $filter('translate')('Skip');
+          $scope.show.backButton = false;
+          $scope.projectCodeState = 'empty';
+          $scope.projectCodeStateDefer = $q.defer();
+          $scope.projectCodeStateDefer.resolve('empty');
           makeFormNeutral();
           break;
         case 'newProject.initialData':
@@ -334,9 +377,6 @@ angular.module('lexicon-new-project',
             makeFormValid();
           }
 
-          break;
-        case 'newProject.sendReceiveCredentials':
-          createProject(saveSRCredentials);
           break;
         case 'newProject.verifyData':
           gotoLexicon();
@@ -353,15 +393,6 @@ angular.module('lexicon-new-project',
       url = linkService.project($scope.newProject.id, $scope.newProject.appName);
       $window.location.href = url;
     }
-
-    // ----- Step 0: Chooser -----
-
-    $scope.show = {};
-    $scope.show.nextButton = false;
-    $scope.show.backButton = false;
-    $scope.show.flexHelp = false;
-    $scope.nextButtonLabel = $filter('translate')('Next');
-    $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
 
     // ----- Step 1: Project name -----
 
@@ -431,10 +462,12 @@ angular.module('lexicon-new-project',
     });
 
     $scope.$watch('newProject.projectName', function (newval, oldval) {
-      if (angular.isUndefined(newval)) {
-        $scope.newProject.projectCode = '';
-      } else if (newval != oldval) {
-        $scope.newProject.projectCode = newval.toLowerCase().replace(/ /g, '_');
+      if (!$scope.isSRProject) {
+        if (angular.isUndefined(newval)) {
+          $scope.newProject.projectCode = '';
+        } else if (newval != oldval) {
+          $scope.newProject.projectCode = newval.toLowerCase().replace(/ /g, '_');
+        }
       }
     });
 

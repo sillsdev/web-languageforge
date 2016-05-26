@@ -15,10 +15,10 @@
             <div class="span4" align="center">
                 <ul class="inline" id="progress-indicator">
                     <li><i data-ng-class="iconForStep(1)"></i>
-                        <span >{{'Name' | translate}}</span></li>
+                        <span data-ng-bind="progressIndicatorStep1Label"></span></li>
                     <li>&gt;</li>
                     <li><i data-ng-class="iconForStep(2)"></i>
-                        <span>{{'Initial Data' | translate}}</span></li>
+                        <span data-ng-bind="progressIndicatorStep2Label"></span></li>
                     <li>&gt;</li>
                     <li><i data-ng-class="iconForStep(3)"></i>
                         <span data-ng-bind="progressIndicatorStep3Label"></span></li>
