@@ -5,7 +5,7 @@ function NewLexProjectPage() {
   var modal      = require('./lexModals.js');
   var _this = this;
 
-  this.get = function() {
+  this.get = function () {
     browser.get(browser.baseUrl + '/app/lexicon/new');
   };
 
@@ -64,7 +64,7 @@ function NewLexProjectPage() {
   this.srCredentialsPage.passwordUnknown = element(by.id('passwordUnknown'));
   this.srCredentialsPage.passwordOk = element(by.id('passwordOk'));
   this.srCredentialsPage.projectUneditable = element(by.id('srProject'));
-  this.srCredentialsPage.projectSelect = function() {
+  this.srCredentialsPage.projectSelect = function () {
     return element(by.id('srProjectSelect'));
   };
 
@@ -83,7 +83,7 @@ function NewLexProjectPage() {
   this.primaryLanguagePage.selectButton = element(by.id('selectLanguageButton'));
 
   // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
-  this.primaryLanguagePage.selectButtonClick = function() {
+  this.primaryLanguagePage.selectButtonClick = function () {
     _this.primaryLanguagePage.selectButton.click();
     browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
   };
