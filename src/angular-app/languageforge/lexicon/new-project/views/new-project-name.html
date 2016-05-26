@@ -2,8 +2,8 @@
 
 <div class="control-group">
     <div class="controls">
-        <input type="text" data-ng-model="newProject.projectName" data-ng-blur="checkProjectCode()" 
-            set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name" 
+        <input type="text" data-ng-model="newProject.projectName" data-ng-blur="checkProjectCode()"
+            data-set-focus="{{isSRProject ? '' : true}}" maxlength="50" required placeholder="Project Name"
             data-idle-validate="checkProjectCode()" data-idle-validate-keypress="resetValidateProjectForm()"/>
         <span  data-ng-show="newProject.projectCode.length > 0">
             <span  data-ng-show="projectCodeState == 'loading'">
@@ -33,7 +33,7 @@
             data-ng-hide="newProject.editProjectCode"
             data-ng-bind="newProject.projectCode"></div>
     </div>
-    <div class="controls">
+    <div class="controls" data-ng-hide="isSRProject">
         <label class="checkbox">
             <input type="checkbox" data-ng-model="newProject.editProjectCode"/>
             {{'Edit project code' | translate}}
