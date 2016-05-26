@@ -8,7 +8,8 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
       scope: {
         puiProject: '=',
         puiValidate: '&',
-        puiReset: '&'
+        puiReset: '&',
+        puiInitialCheck: '='
       },
       controller: ['$scope', 'lexSendReceiveService', function ($scope, sendReceiveService) {
         $scope.checkSRProject = function checkSRProject() {
@@ -36,6 +37,10 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
             }
           );
         };
+
+        if (angular.isDefined($scope.puiInitialCheck) && $scope.puiInitialCheck) {
+          $scope.checkSRProject();
+        }
 
         $scope.projectOption = function projectOption(project) {
           if (!project) {
