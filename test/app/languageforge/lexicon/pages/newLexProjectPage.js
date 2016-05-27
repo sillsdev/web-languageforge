@@ -5,8 +5,12 @@ function NewLexProjectPage() {
   var modal      = require('./lexModals.js');
   var _this = this;
 
-  this.get = function () {
+  this.get = function get() {
     browser.get(browser.baseUrl + '/app/lexicon/new');
+  };
+
+  this.getChooser = function getChooser() {
+    browser.get(browser.baseUrl + '/app/lexicon/new/#/chooser');
   };
 
   // form controls
@@ -44,6 +48,7 @@ function NewLexProjectPage() {
   this.namePage = {};
   this.namePage.projectNameInput = element(by.model('newProject.projectName'));
   this.namePage.projectCodeInput = element(by.model('newProject.projectCode'));
+  this.namePage.projectCodeUneditableInput = element(by.binding('newProject.projectCode'));
   this.namePage.projectCodeLoading = element(by.id('projectCodeLoading'));
   this.namePage.projectCodeExists = element(by.id('projectCodeExists'));
   this.namePage.projectCodeAlphanumeric = element(by.id('projectCodeAlphanumeric'));
