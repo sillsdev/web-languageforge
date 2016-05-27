@@ -31,7 +31,7 @@ angular.module('lexicon-new-project',
       .state('newProject', {
 
         // Need quotes around Javascript keywords like "abstract" so YUI compressor won't complain
-        "abstract": true,
+        "abstract": true, // jscs:ignore
         templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project.html',
         controller: 'NewLexProjectCtrl'
       })
@@ -80,7 +80,14 @@ angular.module('lexicon-new-project',
         templateUrl: '/angular-app/languageforge/lexicon/new-project/views/' +
           'new-project-select-primary-language.html',
         data: {
-          step: 3 // This is not a typo. There are two possible step 3 templates.
+          step: 3 // This is not a typo. There are three possible step 3 templates.
+        }
+      })
+      .state('newProject.sendReceiveClone', {
+        templateUrl:
+          '/angular-app/languageforge/lexicon/new-project/views/new-project-sr-clone.html',
+        data: {
+          step: 3 // This is not a typo. There are three possible step 3 templates.
         }
       });
 
@@ -95,10 +102,10 @@ angular.module('lexicon-new-project',
   }])
   .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$modal', '$window',
     'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate',
-    '$state', '$upload', 'lexProjectService', 'lexSendReceiveService',
+    '$state', '$upload', 'lexProjectService', 'lexSendReceiveService', '$interval',
   function ($scope, $q, $filter, $modal, $window,
             ss, notice, projectService, linkService, $translate,
-            $state, $upload, lexProjectService, sendReceiveService) {
+            $state, $upload, lexProjectService, sendReceiveService, $interval) {
     $scope.interfaceConfig = {};
     $scope.interfaceConfig.userLanguageCode = 'en';
     if (angular.isDefined(ss.session.projectSettings)) {
@@ -131,6 +138,7 @@ angular.module('lexicon-new-project',
     $scope.show.nextButton = ($state.current.name != 'newProject.chooser');
     $scope.show.backButton = false;
     $scope.show.flexHelp = false;
+    $scope.show.cloning = true;
     $scope.nextButtonLabel = $filter('translate')('Next');
     $scope.progressIndicatorStep1Label = $filter('translate')('Name');
     $scope.progressIndicatorStep2Label = $filter('translate')('Initial Data');
@@ -353,6 +361,8 @@ angular.module('lexicon-new-project',
 
           break;
         case 'newProject.sendReceiveName':
+          $scope.show.backButton = false;
+          $scope.show.cloning = true;
           createProject(saveSRCredentials);
           makeFormNeutral();
           break;
@@ -623,14 +633,75 @@ angular.module('lexicon-new-project',
       sendReceiveService.receiveProject(function (result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, 'Started sync with LanguageDepot.org...');
+          $state.go('newProject.sendReceiveClone');
+          startSyncStatusTimer();
         } else {
           notice.push(notice.ERROR, 'The project could not be synced with LanguageDepot.org. ' +
             'Please try again.');
+          gotoLexicon();
         }
-
-        gotoLexicon();
       });
     }
+
+    // ----- Step 3: Send Receive Clone -----
+
+    $scope.sendReceive = { status: { SRState: '' } };
+
+    $scope.syncNotice = function syncNotice() {
+      if (angular.isUndefined($scope.sendReceive) ||
+          angular.isUndefined($scope.sendReceive.status)) return;
+      switch ($scope.sendReceive.status.SRState) {
+        case 'CLONING':
+          return 'Creating initial data...';
+        case 'SYNCING':
+          return 'Syncing...';
+        case 'IDLE':
+          return 'Synced';
+        case 'HOLD':
+          return 'On hold';
+        default:
+          return '';
+      }
+    };
+
+    var syncStatusTimer;
+
+    function getProjectStatus() {
+      sendReceiveService.getProjectStatus(function (result) {
+        if (result.ok) {
+          if (!result.data) {
+            $scope.sendReceive.status.SRState = '';
+            cancelSyncStatusTimer();
+            return;
+          }
+
+          $scope.sendReceive.status = result.data;
+          console.log($scope.sendReceive.status);
+          if ($scope.sendReceive.status.SRState == 'IDLE' ||
+              $scope.sendReceive.status.SRState == 'HOLD') {
+            cancelSyncStatusTimer();
+            gotoLexicon();
+          }
+
+        }
+      });
+    }
+
+    function startSyncStatusTimer() {
+      if (angular.isDefined(syncStatusTimer)) return;
+
+      syncStatusTimer = $interval(getProjectStatus, 3000);
+    }
+
+    function cancelSyncStatusTimer() {
+      if (angular.isDefined(syncStatusTimer)) {
+        $interval.cancel(syncStatusTimer);
+        syncStatusTimer = undefined;
+      }
+    }
+
+    $scope.$on('$destroy', cancelSyncStatusTimer);
+    $scope.$on('$locationChangeStart', cancelSyncStatusTimer);
 
     // ----- Step 3: Verify initial data -OR- select primary language -----
 
