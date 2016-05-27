@@ -220,6 +220,14 @@ describe('E2E testing: New Lex Project wizard app', function () {
 
   });
 
+  describe('Send Receive Verify page', function () {
+
+    it('can clone project', function () {
+      page.nextButton.click();
+      expect(page.srClonePage.cloning.isDisplayed()).toBe(true);
+    });
+
+  });
   describe('New Project Name page', function () {
 
     it('can create a new project', function () {
