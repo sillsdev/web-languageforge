@@ -10,16 +10,22 @@ describe('E2E testing: New Lex Project wizard app', function () {
   var CONDITION_TIMEOUT = 3000;
   var CHECK_PAUSE = 1000;
 
-  it('admin can get to wizard', function () {
+  it('admin can get to each wizard', function () {
     loginPage.loginAsAdmin();
     page.get();
+    expect(page.newLexProjectForm).toBeDefined();
+    expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
+    page.getChooser();
     expect(page.newLexProjectForm).toBeDefined();
     expect(page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
 
-  it('manager can get to wizard', function () {
+  it('manager can get to each wizard', function () {
     loginPage.loginAsManager();
     page.get();
+    expect(page.newLexProjectForm).toBeDefined();
+    expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
+    page.getChooser();
     expect(page.newLexProjectForm).toBeDefined();
     expect(page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
@@ -27,6 +33,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
   it('setup: user login and page contains a form', function () {
     loginPage.loginAsUser();
     page.get();
+    expect(page.newLexProjectForm).toBeDefined();
+    expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
+    page.getChooser();
     expect(page.newLexProjectForm).toBeDefined();
     expect(page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
@@ -54,57 +63,21 @@ describe('E2E testing: New Lex Project wizard app', function () {
     it('can select Send and Receive', function () {
       expect(page.chooserPage.sendReceiveButton.isEnabled()).toBe(true);
       page.chooserPage.sendReceiveButton.click();
-      expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
     });
 
     it('can go back to Chooser page', function () {
       expect(page.backButton.isDisplayed()).toBe(true);
       page.backButton.click();
       expect(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
-    });
-
-  });
-
-  describe('Send Receive Project Name page', function () {
-
-    it('can create new empty project', function () {
-      page.chooserPage.sendReceiveButton.click();
-      page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + protractor.Key.TAB);
-      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
-      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.nextButton.click();
-      expect(page.namePage.projectNameInput.isPresent()).toBe(false);
-      expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.loginInput.getAttribute('value'))
-        .toEqual(constants.memberUsername);
-      expect(page.srCredentialsPage.passwordInput.isDisplayed()).toBe(true);
-      expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
-      expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
     });
 
   });
 
   describe('Send Receive Credentials page', function () {
 
-    it('can go back to Project Name page', function () {
-      expect(page.backButton.isDisplayed()).toBe(true);
-      page.backButton.click();
-      expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
-    });
-
-    it('can go back to Chooser page', function () {
-      expect(page.backButton.isDisplayed()).toBe(true);
-      page.backButton.click();
-      expect(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
-    });
-
     it('can get back to Send and Receive Credentials page', function () {
       page.chooserPage.sendReceiveButton.click();
-      expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
-      page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.loginInput.getAttribute('value'))
         .toEqual(constants.memberUsername);
@@ -136,11 +109,11 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.formStatus.expectContainsError('The Login dosen\'t exist on LanguageDepot.org.');
     });
 
-    it('can go back to Project Name page, user and pass preserved', function () {
+    it('can go back to Chooser page, user and pass preserved', function () {
       expect(page.backButton.isDisplayed()).toBe(true);
       page.backButton.click();
-      expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
-      page.nextButton.click();
+      expect(page.chooserPage.sendReceiveButton.isDisplayed()).toBe(true);
+      page.chooserPage.sendReceiveButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.loginInput.getAttribute('value'))
         .toEqual(constants.memberUsername);
@@ -221,11 +194,38 @@ describe('E2E testing: New Lex Project wizard app', function () {
 
   });
 
+  describe('Send Receive Project Name page', function () {
+
+    it('cannot change Project Code', function () {
+      page.nextButton.click();
+      expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
+      expect(page.namePage.projectNameInput.getAttribute('value')).toEqual(constants.srName);
+      expect(page.namePage.projectCodeUneditableInput.isDisplayed()).toBe(true);
+      expect(page.namePage.projectCodeUneditableInput.getText()).toEqual(constants.srIdentifier);
+      expect(page.namePage.projectCodeInput.isDisplayed()).toBe(false);
+      expect(page.namePage.editProjectCodeCheckbox.isDisplayed()).toBe(false);
+    });
+
+    it('can rename project', function () {
+      page.namePage.projectNameInput.clear();
+      page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + protractor.Key.TAB);
+      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
+      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
+      expect(page.nextButton.isEnabled()).toBe(true);
+      page.formStatus.expectHasNoError();
+      page.expectFormIsValid();
+    });
+
+  });
+
   describe('New Project Name page', function () {
 
     it('can create a new project', function () {
       page.get();
-      page.chooserPage.createButton.click();
+
+      //page.chooserPage.createButton.click();  // removed while the Chooser page is hidden
       expect(page.namePage.projectNameInput.isPresent()).toBe(true);
     });
 
@@ -495,7 +495,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
 
     it('create: new empty project', function () {
       page.get();
-      page.chooserPage.createButton.click();
+
+      //page.chooserPage.createButton.click();  // removed while the Chooser page is hidden
       page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + protractor.Key.TAB);
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
