@@ -194,32 +194,6 @@ describe('E2E testing: New Lex Project wizard app', function () {
 
   });
 
-  describe('Send Receive Project Name page', function () {
-
-    it('cannot change Project Code', function () {
-      page.nextButton.click();
-      expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
-      expect(page.namePage.projectNameInput.getAttribute('value')).toEqual(constants.srName);
-      expect(page.namePage.projectCodeUneditableInput.isDisplayed()).toBe(true);
-      expect(page.namePage.projectCodeUneditableInput.getText()).toEqual(constants.srIdentifier);
-      expect(page.namePage.projectCodeInput.isDisplayed()).toBe(false);
-      expect(page.namePage.editProjectCodeCheckbox.isDisplayed()).toBe(false);
-    });
-
-    it('can rename project', function () {
-      page.namePage.projectNameInput.clear();
-      page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + protractor.Key.TAB);
-      browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
-      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
-      expect(page.nextButton.isEnabled()).toBe(true);
-      page.formStatus.expectHasNoError();
-      page.expectFormIsValid();
-    });
-
-  });
-
   describe('Send Receive Verify page', function () {
 
     it('can clone project', function () {
@@ -227,7 +201,18 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.srClonePage.cloning.isDisplayed()).toBe(true);
     });
 
+    it('cannot move on while cloning', function () {
+      expect(page.nextButton.isDisplayed()).toBe(true);
+      expect(page.nextButton.getText()).toContain('Go to project');
+      page.expectFormIsNotValid();
+      page.nextButton.click();
+      expect(page.srClonePage.cloning.isDisplayed()).toBe(true);
+      expect(page.nextButton.isDisplayed()).toBe(true);
+      page.expectFormIsNotValid();
+    });
+
   });
+
   describe('New Project Name page', function () {
 
     it('can create a new project', function () {
