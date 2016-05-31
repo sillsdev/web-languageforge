@@ -1,7 +1,6 @@
 <?php
 
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Mapper\JsonEncoder;
@@ -190,7 +189,8 @@ class TestSendReceiveCommands extends UnitTestCase
         $username = 'mock_user';
         $password = 'mock_pass';
         $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier2", "name": "name2", "repository": "", "role": ""}, {"identifier": "identifier1", "name": "name1", "repository": "", "role": ""}]');
+        $body = Stream::factory('[{"identifier": "identifier2", "name": "name2", "repository": "", "role": ""}, '.
+            '{"identifier": "identifier1", "name": "name1", "repository": "", "role": ""}]');
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
         $mock = new Mock([$response]);
         $client->getEmitter()->attach($mock);
@@ -209,7 +209,10 @@ class TestSendReceiveCommands extends UnitTestCase
         $username = 'mock_user';
         $password = 'mock_pass';
         $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "http://public.languagedepot.org", "role": ""}, {"identifier": "identifier", "name": "name1", "repository": "http://private.languagedepot.org", "role": ""}]');
+        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", '.
+            '"repository": "http://public.languagedepot.org", "role": ""}, '.
+            '{"identifier": "identifier", "name": "name1", "repository": '.
+            '"http://private.languagedepot.org", "role": ""}]');
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
         $mock = new Mock([$response]);
         $client->getEmitter()->attach($mock);
@@ -230,7 +233,10 @@ class TestSendReceiveCommands extends UnitTestCase
         $username = 'mock_user';
         $password = 'mock_pass';
         $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "http://private.languagedepot.org", "role": ""}, {"identifier": "identifier", "name": "name1", "repository": "http://public.languagedepot.org", "role": ""}]');
+        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": '.
+            '"http://private.languagedepot.org", "role": ""}, '.
+            '{"identifier": "identifier", "name": "name1", '.
+            '"repository": "http://public.languagedepot.org", "role": ""}]');
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
         $mock = new Mock([$response]);
         $client->getEmitter()->attach($mock);
@@ -244,6 +250,27 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual($result['projects'][0]['repoClarification'], '');
         $this->assertEqual($result['projects'][1]['name'], 'name2');
         $this->assertEqual($result['projects'][1]['repoClarification'], 'private');
+    }
+
+    public function testGetUserProjects_TwoSRProjectsOneExistingLFProject_ProjectExists()
+    {
+        $username = 'mock_user';
+        $password = 'mock_pass';
+        $client = new Client();
+        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "", "role": ""}, '.
+            '{"identifier": "sr_id", "name": "sr_name", "repository": "", "role": ""}]');
+        $response = new Response(200, ['Content-Type' => 'application/json'], $body);
+        $mock = new Mock([$response]);
+        $client->getEmitter()->attach($mock);
+
+        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+
+        $this->assertEqual($result['isKnownUser'], true);
+        $this->assertEqual($result['hasValidCredentials'], true);
+        $this->assertEqual(count($result['projects']), 2);
+        $this->assertEqual($result['projects'][0]['isLinked'], false);
+        $this->assertEqual($result['projects'][1]['isLinked'], true);
+        $this->assertEqual($result['projects'][1]['name'], 'sr_name');
     }
 
     public function testQueueProjectForUpdate_NoSendReceive_NoAction()

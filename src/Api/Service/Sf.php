@@ -291,11 +291,29 @@ class Sf
      * @param string $projectName
      * @param string $projectCode
      * @param string $appName
-     * @return string | boolean - $projectId on success, false if project code is not unique
+     * @return string|bool $projectId on success, false if project code is not unique
      */
     public function project_create_switchSession($projectName, $projectCode, $appName)
     {
         $projectId = $this->project_create($projectName, $projectCode, $appName);
+        $this->app['session']->set('projectId', $projectId);
+        return $projectId;
+    }
+
+    /**
+     * Join user to project and switches the session to the new project
+     *
+     * @param string $srIdentifier
+     * @param string $role
+     * @return string|bool $projectId on success, false if project code doesn't exist
+     * @throws \Exception
+     */
+    public function project_join_switchSession($srIdentifier, $role)
+    {
+        $projectId = SendReceiveCommands::getProjectIdFromSendReceive($srIdentifier);
+        if (!$projectId) return false;
+
+        ProjectCommands::updateUserRole($projectId, $this->userId, $role);
         $this->app['session']->set('projectId', $projectId);
         return $projectId;
     }
