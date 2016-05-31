@@ -21,11 +21,11 @@ function NewLexProjectPage() {
   this.backButton = element(by.id('backButton'));
   this.nextButton = element(by.id('nextButton'));
   this.expectFormIsValid = function expectFormIsValid() {
-    expect(_this.nextButton.getAttribute('class')).toMatch(/btn-success(?:[\s]+?|$)/);
+    expect(_this.nextButton.getAttribute('class')).toMatch(/btn-success(?:\s|$)/);
   };
 
   this.expectFormIsNotValid = function expectFormIsNotValid() {
-    expect(_this.nextButton.getAttribute('class')).not.toMatch(/btn-success(?:[\s]+?|$)/);
+    expect(_this.nextButton.getAttribute('class')).not.toMatch(/btn-success(?:\s|$)/);
   };
 
   this.formStatus = element(by.id('form-status'));
