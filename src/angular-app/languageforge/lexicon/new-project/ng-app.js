@@ -138,10 +138,7 @@ angular.module('lexicon-new-project',
     $scope.progressIndicatorStep1Label = $filter('translate')('Name');
     $scope.progressIndicatorStep2Label = $filter('translate')('Initial Data');
     $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
-
-    $scope.projectCodeState = 'empty';
-    $scope.projectCodeStateDefer = $q.defer();
-    $scope.projectCodeStateDefer.resolve('empty');
+    resetValidateProjectForm();
 
     function makeFormValid(msg) {
       if (!msg) msg = '';
@@ -175,8 +172,6 @@ angular.module('lexicon-new-project',
       return $scope.formValidationDefer.promise;
     }
 
-    makeFormNeutral();
-
     // Shorthand to make things look a touch nicer
     var ok = makeFormValid;
     var neutral = makeFormNeutral;
@@ -203,7 +198,7 @@ angular.module('lexicon-new-project',
       $scope.show.nextButton = true;
       $scope.show.backButton = true;
       $scope.show.step3 = false;
-      $scope.nextButtonLabel = $filter('translate')('Synchronize');
+      $scope.nextButtonLabel = $filter('translate')('Get Started');
       $scope.progressIndicatorStep1Label = $filter('translate')('Connect');
       $scope.progressIndicatorStep2Label = $filter('translate')('Verify');
       $scope.resetValidateProjectForm();
@@ -267,6 +262,9 @@ angular.module('lexicon-new-project',
       $scope.formValidationDefer = $q.defer();
 
       switch ($state.current.name) {
+        case 'newProject.chooser':
+          return error();
+          break;
         case 'newProject.sendReceiveCredentials':
           return validateSendReceiveCredentialsForm();
           break;
@@ -347,16 +345,35 @@ angular.module('lexicon-new-project',
           $scope.show.cloning = true;
           $scope.nextButtonLabel = $filter('translate')('Go to project');
           $scope.resetValidateProjectForm();
-          $scope.newProject.projectName = $scope.project.sendReceive.project.name;
-          $scope.newProject.projectCode = $scope.project.sendReceive.project.identifier;
-          projectService.projectCodeExists($scope.newProject.projectCode, function (result) {
-            if (result.ok && result.data) {
-              $scope.newProject.projectCode += '_lf';
+          if ($scope.project.sendReceive.project.isLinked) {
+            var role = 'contributor';
+            if ($scope.project.sendReceive.project.role == 'manager') {
+              role = 'project_manager';
             }
 
-            createProject(saveSRCredentials);
-            makeFormNeutral();
-          });
+            projectService.joinSwitchSession($scope.project.sendReceive.project.identifier, role,
+              function (result) {
+                if (result.ok) {
+                  $scope.newProject.id = result.data;
+                  sessionService.refresh(gotoLexicon);
+                } else {
+                  notice.push(notice.ERROR, 'Well this is embarrassing. ' +
+                    'We couldn\'t join you to the project. Sorry about that.');
+                }
+              });
+
+          } else {
+            $scope.newProject.projectName = $scope.project.sendReceive.project.name;
+            $scope.newProject.projectCode = $scope.project.sendReceive.project.identifier;
+            projectService.projectCodeExists($scope.newProject.projectCode, function (result) {
+              if (result.ok && result.data) {
+                $scope.newProject.projectCode += '_lf';
+              }
+
+              createProject(saveSRCredentials);
+              makeFormNeutral();
+            });
+          }
 
           break;
         case 'newProject.sendReceiveClone':
@@ -438,7 +455,7 @@ angular.module('lexicon-new-project',
       return $scope.projectCodeStateDefer.promise;
     };
 
-    $scope.resetValidateProjectForm = function resetValidateProjectForm() {
+    function resetValidateProjectForm() {
       makeFormNeutral();
       $scope.projectCodeState = 'unchecked';
       $scope.projectCodeStateDefer = $q.defer();
@@ -446,7 +463,9 @@ angular.module('lexicon-new-project',
       $scope.project.sendReceive.isUnchecked = true;
       $scope.project.sendReceive.usernameStatus = 'unchecked';
       $scope.project.sendReceive.passwordStatus = 'unchecked';
-    };
+    }
+
+    $scope.resetValidateProjectForm = resetValidateProjectForm;
 
     $scope.$watch('projectCodeState', function (newval, oldval) {
       if (!newval || newval == oldval) { return; }
@@ -577,6 +596,13 @@ angular.module('lexicon-new-project',
     // ----- Step 1: Send Receive Credentials -----
 
     function validateSendReceiveCredentialsForm() {
+      if (angular.isDefined($scope.project.sendReceive.project) &&
+          $scope.project.sendReceive.project.isLinked) {
+        $scope.nextButtonLabel = $filter('translate')('Join Project');
+      } else {
+        $scope.nextButtonLabel = $filter('translate')('Get Started');
+      }
+
       $scope.project.sendReceive.projectStatus = 'unchecked';
       if (!$scope.project.sendReceive.username) {
         return error('Login cannot be empty. Please enter your LanguageDepot.org login username.');
@@ -603,7 +629,8 @@ angular.module('lexicon-new-project',
         return error('Please select a Project.');
       }
 
-      if ($scope.project.sendReceive.project.role != 'manager') {
+      if (!$scope.project.sendReceive.project.isLinked &&
+          $scope.project.sendReceive.project.role != 'manager') {
         return error('Please select a Project that you are the Manager on LanguageDepot.org.');
       }
 

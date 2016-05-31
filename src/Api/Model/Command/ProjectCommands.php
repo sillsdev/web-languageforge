@@ -172,14 +172,16 @@ class ProjectCommands
         // Add the user to the project
         $user = new UserModel($userId);
         $project = ProjectModel::getById($projectId);
+        if ($project->userIsMember($userId) && $projectRole == $project->users[$userId]->role) {
+            return $userId;
+        }
 
         if ($userId == $project->ownerRef->asString()) {
             throw new \Exception("Cannot update role for project owner");
         }
 
-        // TODO: Only trigger activity if this is the first time they have been added to project
         ProjectCommands::usersDto($projectId);
-        if (!$project->users->offsetExists($userId)) {
+        if (!$project->userIsMember($userId)) {
             ActivityCommands::addUserToProject($project, $userId);
         }
 
