@@ -312,7 +312,7 @@ class SendReceiveCommands
         foreach ($projectList->entries as $projectParams) {
             $projectId = $projectParams['id'];
             $project = new ProjectModel($projectId);
-            if ($project->appName == 'lexicon') {
+            if ($project->appName == LexiconProjectModel::LEXICON_APP) {
                 $project = new LexiconProjectModel($projectId);
                 if ($project->sendReceiveProject->identifier === $identifier) {
                     return $projectId;
