@@ -185,7 +185,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
     });
 
     it('can move on when a managed project is selected', function () {
-      util.clickDropdownByValue(page.srCredentialsPage.projectSelect(), 'mock-name1');
+      util.clickDropdownByValue(page.srCredentialsPage.projectSelect(), 'mock-name4');
       expect(page.srCredentialsPage.projectOk.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.projectUneditable.isDisplayed()).toBe(false);
       page.formStatus.expectHasNoError();
