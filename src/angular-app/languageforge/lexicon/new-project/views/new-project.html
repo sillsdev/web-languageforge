@@ -19,15 +19,15 @@
                     <li>&gt;</li>
                     <li><i data-ng-class="iconForStep(2)"></i>
                         <span data-ng-bind="progressIndicatorStep2Label"></span></li>
-                    <li>&gt;</li>
-                    <li><i data-ng-class="iconForStep(3)"></i>
+                    <li data-ng-show="show.step3">&gt;</li>
+                    <li data-ng-show="show.step3"><i data-ng-class="iconForStep(3)"></i>
                         <span data-ng-bind="progressIndicatorStep3Label"></span></li>
                 </ul>
             </div>
             <div class="span2">
                 <button class="btn" data-ng-class="[interfaceConfig.pullToSide, forwardBtnClass]"
                         id="nextButton" data-ng-click="nextStep()">
-                    {{nextButtonLabel | translate}}&nbsp;
+                    {{nextButtonLabel}}&nbsp;
                     <i class="icon-circle-arrow-right"></i></button>
             </div>
         </div>
