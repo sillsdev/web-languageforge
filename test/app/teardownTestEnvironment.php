@@ -2,6 +2,8 @@
 
 require_once ('e2eTestConfig.php');
 
+use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\ProjectModel;
 use Palaso\Utilities\FileUtilities;
 
@@ -15,6 +17,16 @@ $project->readByProperties(array(
 $testProject = ProjectModel::getById($project->id->asString());
 $assetsFolderPath = $testProject->getAssetsFolderPath();
 FileUtilities::removeFolderAndAllContents($assetsFolderPath);
+
+// cleanup LfMerge 'syncqueue' folder
+if ($testProject->appName == LexiconProjectModel::LEXICON_APP) {
+    $syncQueuePath = SendReceiveCommands::getLFMergePaths()->syncQueuePath;
+    foreach (glob("{$syncQueuePath}/*") as $file) {
+        if (is_file($file)) {
+            unlink($file);
+        }
+    }
+}
 
 // cleanup mocked uploaded zip import (jpg file)
 $tmpFilePath = sys_get_temp_dir() . '/' . $constants['testMockJpgImportFile']['name'];
