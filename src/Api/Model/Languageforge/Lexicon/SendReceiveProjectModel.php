@@ -28,11 +28,6 @@ class SendReceiveProjectModel
     public $repository;
 
     /**
-     * @var string disambiguates private and public repos with identical identifiers
-     */
-    public $repoClarification;
-
-    /**
      * @var string Language Depot project role
      */
     public $role;
