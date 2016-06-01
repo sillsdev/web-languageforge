@@ -3,7 +3,6 @@
 namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\JsonEncoder;
@@ -39,25 +38,19 @@ class SendReceiveCommands
     /**
      * @param string $projectId
      * @param string $srProject
-     * @param string $username
-     * @param string $password
      * @return string $projectId
      */
-    public static function saveCredentials($projectId, $srProject, $username, $password)
+    public static function updateSRProject($projectId, $srProject)
     {
-        if (!$srProject || !$username || !$password) {
-            return false;
-        }
+        if (!$srProject) return false;
 
-        $project = new LexiconProjectModelWithSRPassword($projectId);
+        $project = new LexiconProjectModel($projectId);
         $project->sendReceiveProject = new SendReceiveProjectModel(
             $srProject['identifier'],
             $srProject['name'],
             $srProject['repository'],
             $srProject['role']
         );
-        $project->sendReceiveUsername = $username;
-        $project->sendReceivePassword = $password;
         return $project->write();
     }
 
@@ -126,7 +119,7 @@ class SendReceiveCommands
      */
     public static function queueProjectForSync($projectId, $syncQueuePath = null)
     {
-        $project = new LexiconProjectModelWithSRPassword($projectId);
+        $project = new LexiconProjectModel($projectId);
         if (!$project->hasSendReceive()) return false;
 
         if (is_null($syncQueuePath)) $syncQueuePath = self::getLFMergePaths()->syncQueuePath;

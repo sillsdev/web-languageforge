@@ -1,34 +1,42 @@
 'use strict';
 
-angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.sendReceiveCredentials', 'palaso.ui.notice', 'palaso.ui.textdrop'])
-  .controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService', 'silNoticeService', 'lexProjectService', 'lexSendReceiveService',
-  function($scope, $filter, userService, sessionService, notice, lexProjectService, sendReceiveService) {
+angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.ui.listview',
+  'palaso.ui.typeahead', 'palaso.ui.sendReceiveCredentials', 'palaso.ui.notice',
+  'palaso.ui.textdrop'])
+  .controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService',
+    'silNoticeService', 'lexProjectService', 'lexSendReceiveService',
+  function ($scope, $filter, userService, sessionService,
+            notice, lexProjectService, sendReceiveService) {
     lexProjectService.setBreadcrumbs('settings', $filter('translate')('Project Settings'));
 
-    $scope.rights.canViewSendReceiveProperties = sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.VIEW);
-    $scope.rights.canEditSendReceiveProperties = sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
+    $scope.rights.canViewSendReceiveProperties = sessionService
+      .hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.VIEW);
+    $scope.rights.canEditSendReceiveProperties = sessionService
+      .hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
 
-    $scope.readProject = function() {
-      lexProjectService.readProject(function(result) {
+    $scope.readProject = function () {
+      lexProjectService.readProject(function (result) {
         if (result.ok) {
           $.extend($scope.project, result.data.project);
-          $scope.sendReceive.showTab = ($scope.project.sendReceive && $scope.project.sendReceive.project) ? true : false;
+          $scope.sendReceive.showTab =
+            ($scope.project.sendReceive && $scope.project.sendReceive.project) ? true : false;
         }
       });
     };
 
     $scope.readProject();
 
-    $scope.updateProject = function() {
+    $scope.updateProject = function () {
       var settings = {
         projectName: $scope.project.projectName,
         interfaceLanguageCode: $scope.project.interfaceLanguageCode,
         featured: $scope.project.featured
       };
 
-      lexProjectService.updateProject(settings, function(result) {
+      lexProjectService.updateProject(settings, function (result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, $scope.project.projectName + ' settings updated successfully.');
+          notice.push(notice.SUCCESS,
+            $scope.project.projectName + ' settings updated successfully.');
         }
       });
     };
@@ -46,13 +54,15 @@ angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.
         return;
       }
 
-      sendReceiveService.saveCredentials($scope.project.sendReceive.project, $scope.project.sendReceive.username, $scope.project.sendReceive.password, function(result) {
+      sendReceiveService.updateSRProject($scope.project.sendReceive.project, function (result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, 'The LanguageDepot.org credentials updated successfully.');
+          notice.push(notice.SUCCESS,
+            'The LanguageDepot.org project info was updated successfully.');
           $scope.project.sendReceive.password = '';
           $scope.project.sendReceive.passwordStatus = 'unchecked';
         } else {
-          notice.push(notice.ERROR, 'The LanguageDepot.org credentials could not be saved. Please try again.');
+          notice.push(notice.ERROR,
+            'The LanguageDepot.org project info could not be saved. Please try again.');
         }
       });
     };

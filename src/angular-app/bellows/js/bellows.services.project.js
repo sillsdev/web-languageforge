@@ -9,8 +9,9 @@ angular.module('bellows.services')
       jsonRpc.call('project_create', [projectName, projectCode, appName], callback);
     };
 
-    this.createSwitchSession = function (projectName, projectCode, appName, callback) {
-      jsonRpc.call('project_create_switchSession', [projectName, projectCode, appName], callback);
+    this.createSwitchSession = function (projectName, projectCode, appName, srProject, callback) {
+      jsonRpc.call('project_create_switchSession',
+        [projectName, projectCode, appName, srProject], callback);
     };
 
     this.joinSwitchSession = function (srIdentifier, role, callback) {
