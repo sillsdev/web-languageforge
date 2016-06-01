@@ -370,7 +370,7 @@ angular.module('lexicon-new-project',
                 $scope.newProject.projectCode += '_lf';
               }
 
-              createProject(saveSRCredentials);
+              createProject(getProject);
               makeFormNeutral();
             });
           }
@@ -508,7 +508,8 @@ angular.module('lexicon-new-project',
       }
 
       projectService.createSwitchSession($scope.newProject.projectName,
-        $scope.newProject.projectCode, $scope.newProject.appName, function (result) {
+        $scope.newProject.projectCode, $scope.newProject.appName,
+        $scope.project.sendReceive.project, function (result) {
         if (result.ok) {
           $scope.newProject.id = result.data;
           sessionService.refresh(callback);
@@ -636,24 +637,6 @@ angular.module('lexicon-new-project',
 
       $scope.project.sendReceive.projectStatus = 'ok';
       return ok();
-    }
-
-    function saveSRCredentials() {
-      if (!$scope.project.sendReceive.project || !$scope.project.sendReceive.username ||
-        !$scope.project.sendReceive.password) {
-        return;
-      }
-
-      sendReceiveService.saveCredentials($scope.project.sendReceive.project,
-        $scope.project.sendReceive.username,
-        $scope.project.sendReceive.password, function (result) {
-        if (result.ok) {
-          getProject();
-        } else {
-          notice.push(notice.ERROR, 'The LanguageDepot.org credentials could not be saved. ' +
-            'Please try again.');
-        }
-      });
     }
 
     function getProject() {

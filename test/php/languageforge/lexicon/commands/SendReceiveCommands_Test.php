@@ -1,12 +1,9 @@
 <?php
 
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Mapper\JsonEncoder;
-use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
@@ -81,32 +78,18 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertTrue($isRunning);
     }
 */
-    public function testSaveCredentials_ProjectAndUser_CredentialsSaved()
+    public function testUpdateSRProject_ProjectAndUser_SRProjectSaved()
     {
-        $userId = $this->environ->createUser("User", "Name", "name@example.com");
-        $user = new UserModel($userId);
-        $user->role = SystemRoles::USER;
-
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-
-        $project->addUser($userId, ProjectRoles::MANAGER);
-        $user->addProject($projectId);
-        $user->write();
-        $project->write();
-
         $sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
-        $username = 'sr_user';
-        $password = 'sr_pass';
         $srProject = JsonEncoder::encode($sendReceiveProject);
 
-        $newProjectId = SendReceiveCommands::saveCredentials($projectId, $srProject, $username, $password);
+        $newProjectId = SendReceiveCommands::updateSRProject($projectId, $srProject);
 
-        $newProject = new LexiconProjectModelWithSRPassword($newProjectId);
+        $newProject = new LexiconProjectModel($newProjectId);
         $this->assertEqual($newProjectId, $projectId);
         $this->assertEqual($newProject->sendReceiveProject, $sendReceiveProject);
-        $this->assertEqual($newProject->sendReceiveUsername, $username);
-        $this->assertEqual($newProject->sendReceivePassword, $password);
     }
 
     public function testGetUserProjects_BlankCredentials_CredentialsInvalid()

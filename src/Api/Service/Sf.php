@@ -291,11 +291,15 @@ class Sf
      * @param string $projectName
      * @param string $projectCode
      * @param string $appName
+     * @param array $srProject
      * @return string|bool $projectId on success, false if project code is not unique
      */
-    public function project_create_switchSession($projectName, $projectCode, $appName)
+    public function project_create_switchSession($projectName, $projectCode, $appName, $srProject)
     {
         $projectId = $this->project_create($projectName, $projectCode, $appName);
+        if ($srProject) {
+            SendReceiveCommands::updateSRProject($projectId, $srProject);
+        }
         $this->app['session']->set('projectId', $projectId);
         return $projectId;
     }
@@ -764,9 +768,9 @@ class Sf
         return SendReceiveCommands::getUserProjects($username, $password);
     }
 
-    public function sendReceive_saveCredentials($srProject, $username, $password)
+    public function sendReceive_updateSRProject($srProject)
     {
-        return SendReceiveCommands::saveCredentials($this->projectId, $srProject, $username, $password);
+        return SendReceiveCommands::updateSRProject($this->projectId, $srProject);
     }
 
     public function sendReceive_receiveProject()
