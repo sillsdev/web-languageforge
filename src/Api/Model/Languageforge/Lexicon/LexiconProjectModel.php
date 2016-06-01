@@ -60,12 +60,6 @@ class LexiconProjectModel extends LfProjectModel
     public $sendReceiveProject;
 
     /**
-     *
-     * @var string
-     */
-    public $sendReceiveUsername;
-
-    /**
      * Adds an input system if it doesn't already exist
      * @param string $tag
      * @param string $abbr

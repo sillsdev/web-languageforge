@@ -20,6 +20,9 @@ angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.
           $.extend($scope.project, result.data.project);
           $scope.sendReceive.showTab =
             ($scope.project.sendReceive && $scope.project.sendReceive.project) ? true : false;
+          if ($scope.sendReceive.showTab && !$scope.project.sendReceive.username) {
+            $scope.project.sendReceive.username = sessionService.session.username;
+          }
         }
       });
     };
