@@ -1,15 +1,15 @@
 'use strict';
 
 angular.module('lexicon.services')
-  .service('lexSendReceiveService', ['jsonRpc', function(jsonRpc) {
+  .service('lexSendReceiveService', ['jsonRpc', function (jsonRpc) {
     jsonRpc.connect('/api/sf');
 
     this.getUserProjects = function getUserProjects(username, password, callback) {
       jsonRpc.call('sendReceive_getUserProjects', [username, password], callback);
     };
 
-    this.saveCredentials = function saveCredentials(srProject, username, password, callback) {
-      jsonRpc.call('sendReceive_saveCredentials', [srProject, username, password], callback);
+    this.updateSRProject = function updateSRProject(srProject, callback) {
+      jsonRpc.call('sendReceive_updateSRProject', [srProject], callback);
     };
 
     this.receiveProject = function receiveProject(callback) {
