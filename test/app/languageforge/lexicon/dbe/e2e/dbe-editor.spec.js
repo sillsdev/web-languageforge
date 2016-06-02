@@ -182,6 +182,7 @@ describe('Browse and edit page (DBE) Editor', function () {
 
   it('setup: click on word with multiple meanings (found by lexeme)', function () {
     dbePage.edit.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
+    dbePage.edit.clickFirstSense();
   });
 
   it('word with multiple meanings: edit page has correct meanings, parts of speech', function () {
