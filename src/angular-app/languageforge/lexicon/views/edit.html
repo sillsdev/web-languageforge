@@ -15,7 +15,7 @@
     <div class="animate-switch-container" data-ng-switch data-on="state">
 
         <!-- entry list view -->
-        <div id="lexAppListView" data-ng-switch-when="list">
+        <div id="lexAppListView" class="animate-switch" data-ng-switch-when="list">
             <div style="margin: 5px 5px 5px 0">
                 <small style="color: grey">{{entries.length}} {{'entries' | translate}}</small>
                 <button class="btn btn-success btn-small pull-right" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
@@ -48,7 +48,7 @@
         </div>
 
         <!-- entry edit view -->
-        <div id="lexAppEditView" data-ng-switch-when="edit">
+        <div id="lexAppEditView" class="animate-switch" data-ng-switch-when="edit">
             <div style="flex: 1; border-right: 1px #dcdcdc solid">
                 <div style="display:flex; justify-content: space-between; margin: 5px 5px 5px 0">
                     <small style="color: grey; margin: 3px 0 0 2px">{{entries.length}} {{'entries' | translate}}</small>
@@ -79,8 +79,8 @@
                 <div style="margin-bottom: 5px; border-bottom: solid black 1px">
                     <div ng-if="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
                         <span class="muted" style="margin-right: 10px">{{saveNotice()}}</span>
-                        <button class="btn btn-mini" style="margin-right: 30px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
-                        <button data-ng-if="rights.canDeleteEntry()" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
+                        <button class="btn btn-mini" style="margin-right: 25px" data-ng-disabled="!currentEntryIsDirty()" data-ng-click="saveCurrentEntry(true)"> <i class="icon-save"></i> {{saveButtonTitle()}} </button>
+                        <button data-ng-if="rights.canDeleteEntry()" style="margin-right: 5px" data-ng-click="deleteEntry(currentEntry)" class="btn btn-mini" title="{{ 'Delete Entry' | translate }}"> <i class="icon-remove"></i> {{'Word' | translate}} </button>
                     </div>
                     <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
                 </div>
@@ -94,7 +94,7 @@
         </div>
 
         <!-- entry comment view -->
-        <lex-comments-view id="lexAppCommentView" data-ng-switch-when="comment" entry-config="config.entry" entry="currentEntry" control="control"></lex-comments-view>
+        <lex-comments-view id="lexAppCommentView" class="animate-switch" data-ng-switch-when="comment" entry-config="config.entry" entry="currentEntry" control="control"></lex-comments-view>
 
     </div>
 </div>
