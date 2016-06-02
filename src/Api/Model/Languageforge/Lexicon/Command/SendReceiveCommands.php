@@ -4,10 +4,9 @@ namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
+use Api\Model\Languageforge\Lexicon\SendReceiveProjectModelWithIdentifier;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\JsonEncoder;
-use Api\Model\ProjectListModel;
-use Api\Model\ProjectModel;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -45,8 +44,8 @@ class SendReceiveCommands
         if (!$srProject) return false;
 
         $project = new LexiconProjectModel($projectId);
+        $project->sendReceiveProjectIdentifier = $srProject['identifier'];
         $project->sendReceiveProject = new SendReceiveProjectModel(
-            $srProject['identifier'],
             $srProject['name'],
             $srProject['repository'],
             $srProject['role']
@@ -95,7 +94,7 @@ class SendReceiveCommands
             $result->isKnownUser = true;
             $result->hasValidCredentials = true;
             foreach ($response->json() as $index => $srProject) {
-                $result->projects[] = new SendReceiveProjectModel(
+                $result->projects[] = new SendReceiveProjectModelWithIdentifier(
                     $srProject['identifier'],
                     $srProject['name'],
                     $srProject['repository'],
@@ -300,19 +299,10 @@ class SendReceiveCommands
      */
     public static function getProjectIdFromSendReceive($identifier)
     {
-        $projectList = new ProjectListModel();
-        $projectList->read();
-        foreach ($projectList->entries as $projectParams) {
-            $projectId = $projectParams['id'];
-            $project = new ProjectModel($projectId);
-            if ($project->appName == LexiconProjectModel::LEXICON_APP) {
-                $project = new LexiconProjectModel($projectId);
-                if ($project->sendReceiveProject->identifier === $identifier) {
-                    return $projectId;
-                }
-            }
-        }
-        return false;
+        $project = new LexiconProjectModel();
+        if (!$project->readByProperty('sendReceiveProjectIdentifier', $identifier)) return false;
+
+        return $project->id->asString();
     }
 
     /**

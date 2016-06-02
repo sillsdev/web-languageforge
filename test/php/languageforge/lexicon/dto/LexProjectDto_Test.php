@@ -55,7 +55,8 @@ class TestLexProjectDto extends UnitTestCase
         $project->interfaceLanguageCode = 'en';
         $project->projectCode = 'lf';
         $project->featured = true;
-        $project->sendReceiveProject = new SendReceiveProjectModel('test-sr-identifier', 'test-sr-name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'test-sr-identifier';
+        $project->sendReceiveProject = new SendReceiveProjectModel('test-sr-name', '', 'manager');
 
         $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
         $user->addProject($projectId);
