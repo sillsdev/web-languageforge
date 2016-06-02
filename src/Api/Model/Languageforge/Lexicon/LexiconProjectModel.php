@@ -36,25 +36,26 @@ class LexiconProjectModel extends LfProjectModel
     }
 
     /**
-     *
      * @var MapOf <InputSystem>
      */
     public $inputSystems;
 
     /**
-     *
      * @var LexConfiguration
      */
     public $config;
 
     /**
-     *
      * @var string
      */
     public $liftFilePath;
 
     /**
-     *
+     * @var string Language Depot project identifier (this is here for DB queries)
+     */
+    public $sendReceiveProjectIdentifier;
+
+    /**
      * @var SendReceiveProjectModel
      */
     public $sendReceiveProject;
@@ -100,7 +101,7 @@ class LexiconProjectModel extends LfProjectModel
      */
     public function hasSendReceive()
     {
-        return ($this->sendReceiveProject->identifier) ? true : false;
+        return ($this->sendReceiveProjectIdentifier) ? true : false;
     }
 
     /**

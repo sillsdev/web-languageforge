@@ -55,7 +55,8 @@ class TestLexiconProjectModel extends UnitTestCase
         $e->clean();
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $project->write();
         $this->assertTrue($project->hasSendReceive());
 
