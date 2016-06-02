@@ -242,7 +242,9 @@ if ($site == 'scriptureforge') {
     $testProjectId = $testProjectModel->write();
 
     $srProjectModel = new LexiconProjectModel($srProject);
-    $srProjectModel->sendReceiveProject = new SendReceiveProjectModel($constants['srIdentifier'], $constants['srName'], 'http://public.languagedepot.org', 'manager');;
+    $srProjectModel->sendReceiveProjectIdentifier = $constants['srIdentifier'];
+    $srProjectModel->sendReceiveProject =
+        new SendReceiveProjectModel($constants['srName'], 'http://public.languagedepot.org', 'manager');
     $srProjectId = $srProjectModel->write();
 
     // setup to mimic file upload
