@@ -269,6 +269,7 @@ legend.override-bootstrap {
 #lexAppListView .typeahead input, #lexAppListView .typeahead-item {
     width:300px;
     font-family: "Bookman", Georgia, "Times New Roman", serif;
+    padding-right: 20px;
 }
 
 #lexAppEditView {
@@ -300,9 +301,10 @@ legend.override-bootstrap {
     font-family: "Bookman", Georgia, "Times New Roman", serif;
 }
 
-#lexAppEditView .typeahead-item {
-    width:300px;
+#lexAppEditView .typeahead input, #lexAppEditView .typeahead-item {
+    width:162px;
     font-family: "Bookman", Georgia, "Times New Roman", serif;
+    padding-right: 25px;
 }
 
 .listItemPrimary {
