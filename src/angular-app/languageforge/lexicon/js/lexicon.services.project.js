@@ -2,7 +2,7 @@
 
 angular.module('lexicon.services')
   .service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService',
-  function(jsonRpc, ss, breadcrumbService, linkService) {
+  function (jsonRpc, ss, breadcrumbService, linkService) {
     jsonRpc.connect('/api/sf');
 
     this.setBreadcrumbs = function setBreadcrumbs(view, label) {
@@ -20,7 +20,7 @@ angular.module('lexicon.services')
 
     this.baseViewDto = function baseViewDto(view, label, callback) {
       var setBreadcrumbs = this.setBreadcrumbs;
-      jsonRpc.call('lex_baseViewDto', [], function(result) {
+      jsonRpc.call('lex_baseViewDto', [], function (result) {
         if (result.ok) {
           setBreadcrumbs(view, label);
         }
@@ -76,7 +76,8 @@ angular.module('lexicon.services')
     this.isValidProjectCode = function isValidProjectCode(code) {
       if (angular.isUndefined(code)) return false;
 
-      // Valid project codes start with a letter and only contain lower-case letters, numbers, dashes and underscores
+      // Valid project codes start with a letter and only contain lower-case letters, numbers,
+      // dashes and underscores
       var pattern = /^[a-z][a-z0-9\-_]*$/;
       return pattern.test(code);
     };
