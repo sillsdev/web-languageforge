@@ -278,11 +278,12 @@ class Sf
      * @param string $projectName
      * @param string $projectCode
      * @param string $appName
+     * @param array $srProject send receive project data
      * @return string | boolean - $projectId on success, false if project code is not unique
      */
-    public function project_create($projectName, $projectCode, $appName)
+    public function project_create($projectName, $projectCode, $appName, $srProject = null)
     {
-        return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->userId, $this->website);
+        return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->userId, $this->website, $srProject);
     }
 
     /**
@@ -296,10 +297,7 @@ class Sf
      */
     public function project_create_switchSession($projectName, $projectCode, $appName, $srProject)
     {
-        $projectId = $this->project_create($projectName, $projectCode, $appName);
-        if ($srProject) {
-            SendReceiveCommands::updateSRProject($projectId, $srProject);
-        }
+        $projectId = $this->project_create($projectName, $projectCode, $appName, $srProject);
         $this->app['session']->set('projectId', $projectId);
         return $projectId;
     }
