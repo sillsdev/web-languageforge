@@ -55,9 +55,9 @@
                     <button class="btn btn-success btn-small" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
                 </div>
                 <div style="margin: 5px 5px 5px 0">
-                    <typeahead style="margin: 0; width:162px" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
+                    <typeahead style="margin: 0" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
                         <ul ng-if="typeahead.searchResults.length > 0">
-                            <li style="margin-left:-10px" data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
+                            <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: 10" class="typeahead-item">
                                 <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
                                 <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
                             </li>
