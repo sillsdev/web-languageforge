@@ -13,6 +13,7 @@ function($q, ss, cache, commentsCache, notice, commentService) {
   var api = undefined;
 
   var showInitialEntries = function showInitial() {
+    sortList(entries);
     visibleEntries.length = 0; // clear out the array
     visibleEntries.push.apply(visibleEntries, entries.slice(0, 50));
   };
