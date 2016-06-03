@@ -20,7 +20,7 @@ angular.module('lexicon',
     'lexicon.filters',
     'pascalprecht.translate'
   ])
-  .config(['$routeProvider', '$translateProvider', function($routeProvider, $translateProvider) {
+  .config(['$routeProvider', '$translateProvider', function ($routeProvider, $translateProvider) {
 
     // configure interface language filepath
     $translateProvider.useStaticFilesLoader({
@@ -29,14 +29,20 @@ angular.module('lexicon',
     });
     $translateProvider.preferredLanguage('en');
 
-    // the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
-    $routeProvider.when('/projects', { template: ' ', controller: function() { window.location.replace('/app/projects'); } });
+    // The "projects" route is a hack to redirect to the /app/projects URL.
+    // See "otherwise" route below
+    $routeProvider.when('/projects', { template: ' ', controller: function () {
+      window.location.replace('/app/projects'); } });
 
     $routeProvider.when('/', { redirectTo: '/dbe' });
-    $routeProvider.when('/view', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
-    $routeProvider.when('/gatherTexts', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
-    $routeProvider.when('/review', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
-    $routeProvider.when('/wordlist', { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
+    $routeProvider.when('/view',
+      { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
+    $routeProvider.when('/gatherTexts',
+      { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
+    $routeProvider.when('/review',
+      { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
+    $routeProvider.when('/wordlist',
+      { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
 
     $routeProvider.when(
       '/dbe',
@@ -106,17 +112,25 @@ angular.module('lexicon',
     );
     $routeProvider.otherwise({ redirectTo: '/dbe' });
   }])
-  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService', '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService', 'lexConfigService', 'lexSendReceiveService',
-  function($scope, ss, lexConfigService, lexProjectService, $translate, $location, $interval, noticeService, editorService, configService, sendReceiveService) {
+  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService',
+    '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService',
+    'lexConfigService', 'lexSendReceiveService',
+  function ($scope, sessionService, lexConfigService, lexProjectService,
+            $translate, $location, $interval, noticeService, editorService,
+            configService, sendReceiveService) {
     var pristineLanguageCode;
 
     $scope.rights = {};
-    $scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE);
-    $scope.rights.create = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE);
-    $scope.rights.edit = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
-    $scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create || $scope.rights.edit;
-    $scope.project = ss.session.project;
-    $scope.projectSettings = ss.session.projectSettings;
+    $scope.rights.remove =
+      sessionService.hasProjectRight(sessionService.domain.USERS, sessionService.operation.DELETE);
+    $scope.rights.create =
+      sessionService.hasProjectRight(sessionService.domain.USERS, sessionService.operation.CREATE);
+    $scope.rights.edit =
+      sessionService.hasProjectRight(sessionService.domain.USERS, sessionService.operation.EDIT);
+    $scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create ||
+      $scope.rights.edit;
+    $scope.project = sessionService.session.project;
+    $scope.projectSettings = sessionService.session.projectSettings;
     $scope.sendReceive = $scope.projectSettings.sendReceive || {};
 
     $scope.refreshConfig = function refreshConfig() {
@@ -128,7 +142,7 @@ angular.module('lexicon',
     // persist the entries and comments array across all controllers
 
     $scope.finishedLoading = false;
-    editorService.loadEditorData().then(function() {
+    editorService.loadEditorData().then(function () {
       $scope.finishedLoading = true;
 
       if (!$scope.sendReceive.status) {
@@ -144,8 +158,8 @@ angular.module('lexicon',
       }
     });
 
-    $scope.currentUserRole = ss.session.projectSettings.currentUserRole;
-    $scope.interfaceConfig = ss.session.projectSettings.interfaceConfig;
+    $scope.currentUserRole = sessionService.session.projectSettings.currentUserRole;
+    $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
     pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
     changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
 
@@ -178,7 +192,7 @@ angular.module('lexicon',
       }
     }
 
-    $scope.$watch('interfaceConfig.userLanguageCode', function(newVal) {
+    $scope.$watch('interfaceConfig.userLanguageCode', function (newVal) {
       if (newVal && newVal != pristineLanguageCode) {
         var user = {};
         user.interfaceLanguageCode = newVal;
@@ -195,7 +209,9 @@ angular.module('lexicon',
     };
 
     $scope.syncNotice = function syncNotice() {
-      if (angular.isUndefined($scope.sendReceive) || angular.isUndefined($scope.sendReceive.status)) return;
+      if (angular.isUndefined($scope.sendReceive) ||
+        angular.isUndefined($scope.sendReceive.status)) return;
+
       switch ($scope.sendReceive.status.SRState) {
         case 'CLONING':
           return 'Creating initial data...';
@@ -215,12 +231,13 @@ angular.module('lexicon',
     };
 
     $scope.syncProject = function syncProject() {
-      sendReceiveService.receiveProject(function(result) {
+      sendReceiveService.receiveProject(function (result) {
         if (result.ok) {
           $scope.sendReceive.status.SRState = 'syncing';
           startSyncStatusTimer();
         } else {
-          noticeService.push(noticeService.ERROR, 'The project could not be synchronized with LanguageDepot.org. Please try again.');
+          noticeService.push(noticeService.ERROR,
+            'The project could not be synchronized with LanguageDepot.org. Please try again.');
         }
       });
     };
@@ -228,7 +245,7 @@ angular.module('lexicon',
     var syncStatusTimer;
 
     function getProjectStatus() {
-      sendReceiveService.getProjectStatus(function(result) {
+      sendReceiveService.getProjectStatus(function (result) {
         if (result.ok) {
           if (!result.data) {
             $scope.sendReceive.status.SRState = '';
@@ -237,7 +254,8 @@ angular.module('lexicon',
           }
 
           $scope.sendReceive.status = result.data;
-          if ($scope.sendReceive.status.SRState == 'IDLE' || $scope.sendReceive.status.SRState == 'HOLD') {
+          if ($scope.sendReceive.status.SRState == 'IDLE' ||
+              $scope.sendReceive.status.SRState == 'HOLD') {
             cancelSyncStatusTimer();
           }
 
@@ -245,9 +263,9 @@ angular.module('lexicon',
 
           if ($scope.sendReceive.status.SRState == 'IDLE') {
             $scope.finishedLoading = false;
-            editorService.loadEditorData().then(function() {
+            editorService.loadEditorData().then(function () {
               $scope.finishedLoading = true;
-              ss.refresh(function() {
+              sessionService.refresh(function () {
                 $scope.refreshConfig();
               });
             });
@@ -280,7 +298,7 @@ angular.module('lexicon',
     Offline.options.checks = { xhr: { url: '/offlineCheck.txt' } };
 
     var offlineMessageId;
-    Offline.on('up', function() {
+    Offline.on('up', function () {
       if ($scope.online == false) {
         noticeService.removeById(offlineMessageId);
         noticeService.push(noticeService.SUCCESS, 'You are back online!');
@@ -290,26 +308,29 @@ angular.module('lexicon',
       $scope.$digest();
     });
 
-    Offline.on('down', function() {
-      offlineMessageId = noticeService.push(noticeService.ERROR, 'You are offline.  Some features are not available', null, true);
+    Offline.on('down', function () {
+      offlineMessageId = noticeService.push(noticeService.ERROR,
+        'You are offline.  Some features are not available', null, true);
       $scope.online = false;
       if (!/^dbe/.test($location.path())) {
         // redirect to the dbe
         $location.path('/dbe');
-        noticeService.push(noticeService.SUCCESS, 'The dictionary editor is available offline.  Settings are not.');
+        noticeService.push(noticeService.SUCCESS,
+          'The dictionary editor is available offline.  Settings are not.');
       }
 
       $scope.$digest();
     });
 
   }])
-  .controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService', function($scope, $rootScope, breadcrumbService) {
+  .controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService',
+  function ($scope, $rootScope, breadcrumbService) {
     $scope.idmap = breadcrumbService.idmap;
-    $rootScope.$on('$routeChangeSuccess', function() {
+    $rootScope.$on('$routeChangeSuccess', function () {
       $scope.breadcrumbs = breadcrumbService.read();
     });
 
-    $scope.$watch('idmap', function() {
+    $scope.$watch('idmap', function () {
       $scope.breadcrumbs = breadcrumbService.read();
     }, true);
   }])
