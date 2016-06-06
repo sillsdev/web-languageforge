@@ -120,18 +120,36 @@ angular.module('lexicon',
             configService, sendReceiveService) {
     var pristineLanguageCode;
 
-    $scope.rights = {};
-    $scope.rights.remove =
-      sessionService.hasProjectRight(sessionService.domain.USERS, sessionService.operation.DELETE);
-    $scope.rights.create =
-      sessionService.hasProjectRight(sessionService.domain.USERS, sessionService.operation.CREATE);
-    $scope.rights.edit =
-      sessionService.hasProjectRight(sessionService.domain.USERS, sessionService.operation.EDIT);
-    $scope.rights.showControlBar = $scope.rights.remove || $scope.rights.create ||
-      $scope.rights.edit;
     $scope.project = sessionService.session.project;
     $scope.projectSettings = sessionService.session.projectSettings;
     $scope.sendReceive = $scope.projectSettings.sendReceive || {};
+
+    $scope.rights = {};
+    $scope.rights.canRemoveUsers = function canRemoveUsers() {
+      if (isSyncing()) return false;
+
+      return sessionService.hasProjectRight(sessionService.domain.USERS,
+        sessionService.operation.DELETE);
+    };
+
+    $scope.rights.canCreateUsers = function canCreateUsers() {
+      if (isSyncing()) return false;
+
+      return sessionService.hasProjectRight(sessionService.domain.USERS,
+          sessionService.operation.CREATE);
+    };
+
+    $scope.rights.canEditUsers = function canEditUsers() {
+      if (isSyncing()) return false;
+
+      return sessionService.hasProjectRight(sessionService.domain.USERS,
+          sessionService.operation.EDIT);
+    };
+
+    $scope.rights.showControlBar = function showControlBar() {
+      return $scope.rights.canRemoveUsers() || $scope.rights.canCreateUsers() ||
+        $scope.rights.canEditUsers();
+    };
 
     $scope.refreshConfig = function refreshConfig() {
       $scope.config = configService.getConfigForUser();
@@ -205,7 +223,7 @@ angular.module('lexicon',
 
     $scope.showSyncButton = function showSyncButton() {
       var isDbeView = ($location.path().indexOf('/dbe') == 0);
-      return $scope.rights.edit && $scope.projectSettings.hasSendReceive && isDbeView;
+      return $scope.rights.canEditUsers() && $scope.projectSettings.hasSendReceive && isDbeView;
     };
 
     $scope.syncNotice = function syncNotice() {
@@ -233,6 +251,7 @@ angular.module('lexicon',
     $scope.syncProject = function syncProject() {
       sendReceiveService.receiveProject(function (result) {
         if (result.ok) {
+          noticeService.setLoading('Syncing with LanguageDepot.org...');
           $scope.sendReceive.status.SRState = 'syncing';
           startSyncStatusTimer();
         } else {
@@ -242,6 +261,17 @@ angular.module('lexicon',
       });
     };
 
+    function isSyncing() {
+      return ($scope.projectSettings.hasSendReceive &&
+        angular.isDefined($scope.sendReceive.status) &&
+        angular.isDefined($scope.sendReceive.status.SRState) &&
+        $scope.sendReceive.status.SRState != 'IDLE' && $scope.sendReceive.status.SRState != '' &&
+        $scope.sendReceive.status.SRState != 'HOLD'
+      );
+    }
+
+    $scope.isSyncing = isSyncing;
+
     var syncStatusTimer;
 
     function getProjectStatus() {
@@ -250,18 +280,25 @@ angular.module('lexicon',
           if (!result.data) {
             $scope.sendReceive.status.SRState = '';
             cancelSyncStatusTimer();
+            noticeService.cancelLoading();
             return;
           }
 
           $scope.sendReceive.status = result.data;
-          if ($scope.sendReceive.status.SRState == 'IDLE' ||
-              $scope.sendReceive.status.SRState == 'HOLD') {
+          if (!$scope.isSyncing()) {
             cancelSyncStatusTimer();
+            noticeService.cancelLoading();
           }
 
           console.log($scope.sendReceive.status);
 
+          if ($scope.sendReceive.status.SRState == 'HOLD') {
+            noticeService.push(noticeService.ERROR, 'Well this is embarrassing. Something went ' +
+              'wrong and your project is now on hold. Contact an administrator.');
+          }
+
           if ($scope.sendReceive.status.SRState == 'IDLE') {
+            noticeService.push(noticeService.SUCCESS, 'The project was successfully synchronized.');
             $scope.finishedLoading = false;
             editorService.loadEditorData().then(function () {
               $scope.finishedLoading = true;

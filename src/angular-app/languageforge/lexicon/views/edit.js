@@ -634,16 +634,22 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // permissions stuff
     $scope.rights = {
       canEditProject: function canEditProject() {
+        if ($scope.isSyncing()) return false;
+
         return sessionService.hasProjectRight(sessionService.domain.PROJECTS,
           sessionService.operation.EDIT);
       },
 
       canEditEntry: function canEditEntry() {
+        if ($scope.isSyncing()) return false;
+
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.EDIT);
       },
 
       canDeleteEntry: function canDeleteEntry() {
+        if ($scope.isSyncing()) return false;
+
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.DELETE);
       }
