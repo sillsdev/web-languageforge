@@ -286,8 +286,7 @@ EOD;
         $expected = LexiconMultiValueField::createFromArray(array('colloquial'));
         $this->assertEqual($sense00->usages, $expected);
 
-        $expected = new Picture();
-        $expected->fileName = 'Desert.jpg';
+        $expected = new Picture('Desert.jpg', $sense00->pictures[0]->guid);
         $expected->caption['th'] = 'รูป';
         $expected->caption['en'] = 'image';
         $expected->caption['fr'] = 'photo';

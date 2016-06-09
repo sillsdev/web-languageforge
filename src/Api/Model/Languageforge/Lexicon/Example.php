@@ -9,11 +9,13 @@ class Example extends ObjectForEncoding
 {
     use \LazyProperty\LazyPropertiesTrait;
 
-    public function __construct($liftId = '')
+    public function __construct($liftId = '', $guid = '')
     {
         $this->setPrivateProp('liftId');
+        $this->setReadOnlyProp('guid');
         $this->setReadOnlyProp('authorInfo');
-        $this->liftId = $liftId;
+        if ($liftId) $this->liftId = $liftId;
+        if ($guid) $this->guid = $guid;
 
         $this->initLazyProperties([
             'authorInfo',
@@ -73,6 +75,11 @@ class Example extends ObjectForEncoding
      * @var string
      */
     public $id;
+
+    /**
+     * @var string
+     */
+    public $guid;
 
     // less common fields used in FLEx
 
