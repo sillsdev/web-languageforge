@@ -322,7 +322,7 @@ class LexEntryModel extends MapperModel
     /**
      * @return string
      */
-    public function createGuid()
+    public static function createGuid()
     {
         return Uuid::uuid4()->toString();
     }
