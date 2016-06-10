@@ -65,6 +65,15 @@ class ProjectModel extends Mapper\MapperModel
     }
 
     /**
+     * @param string $projectId
+     * @return bool
+     */
+    public static function projectExists($projectId) {
+        $projectModel = new ProjectModel();
+        return $projectModel->exists($projectId);
+    }
+
+    /**
      * Reads the model from the mongo collection
      * Ensures that the required pick lists exist even if not present in the database
      * @param string $id
@@ -163,7 +172,7 @@ class ProjectModel extends Mapper\MapperModel
      */
     public function userIsMember($userId)
     {
-        return key_exists($userId, $this->users->getArrayCopy());
+        return $this->users->offsetExists($userId);
     }
 
     public function listUsers()

@@ -9,7 +9,7 @@ class LexDeletedCommentListModel extends \Api\Model\Mapper\MapperListModel
     public static function mapper($databaseName)
     {
         static $instance = null;
-        if (null === $instance) {
+        if (null === $instance || $instance->databaseName() != $databaseName) {
             $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'lexiconComments');
         }
 
@@ -26,7 +26,7 @@ class LexDeletedCommentListModel extends \Api\Model\Mapper\MapperListModel
         $lexProject = new LexiconProjectModel($projectModel->id->asString());
 
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new \MongoDate($newerThanTimestamp);
+            $startDate = new \MongoDB\BSON\UTCDatetime(1000*$newerThanTimestamp);
             parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => true, 'dateModified'=> array('$gte' => $startDate)), array());
         } else {
             parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => true), array());

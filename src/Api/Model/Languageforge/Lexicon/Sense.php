@@ -19,10 +19,11 @@ class Sense
 {
     use \LazyProperty\LazyPropertiesTrait;
 
-    public function __construct($liftId = '')
+    public function __construct($liftId = '', $guid = '')
     {
-        $this->liftId = $liftId;
         $this->id = uniqid();
+        if ($liftId) $this->liftId = $liftId;
+        if ($guid) $this->guid = $guid;
 
         $this->initLazyProperties([
                 'partOfSpeech',
@@ -106,6 +107,11 @@ class Sense
      * @var string
      */
     public $id;
+
+    /**
+     * @var string
+     */
+    public $guid;
 
     /**
      * @var MultiText

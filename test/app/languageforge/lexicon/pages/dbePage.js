@@ -180,6 +180,13 @@ var LfDbePage = function() {
       });
     },
 
+    clickFirstSense: function() {
+      var senses = element.all(by.css('dc-sense'));
+      senses.get(0).then(function(elem) {
+        elem.click();
+      });
+    },
+
     pictures: {
       list: dbeUtil.getOneField('Pictures'),
       images: dbeUtil.getOneField('Pictures').all(by.css('img')),

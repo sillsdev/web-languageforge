@@ -3,10 +3,10 @@
 namespace Site\Controller;
 
 use Api\Library\Shared\SilexSessionHelper;
+use Api\Model\Command\SessionCommands;
+use Api\Model\ProjectModel;
 use Api\Model\UserModel;
 use Silex\Application;
-use Api\Model\ProjectModel;
-use Api\Model\Command\SessionCommands;
 
 class App extends Base
 {
@@ -21,16 +21,17 @@ class App extends Base
         $siteFolder = NG_BASE_FOLDER . $this->website->base;
         $parentAppFolder = '';
         $appFolder = $this->website->base . '/' . $appName;
-        if ($projectId == 'new') {
-            $parentAppFolder = $appFolder;
-            $appFolder .= '/new-project';
+
+        if ($projectId == 'favicon.ico') {
             $projectId = '';
-            $appName = $appName . '-new-project';
-        } elseif ($projectId == 'manage') {
+        }
+
+        $possibleSubFolder = "$siteFolder/$appName/$projectId";
+        if ($projectId != '' && file_exists($possibleSubFolder) && file_exists("$possibleSubFolder/ng-app.html") && file_exists("$possibleSubFolder/views")) {
             $parentAppFolder = $appFolder;
-            $appFolder .= '/app-management';
+            $appFolder .= "/$projectId";
+            $appName .= "-$projectId";
             $projectId = '';
-            $appName = $appName . '-app-management';
         }
 
         if (!file_exists(NG_BASE_FOLDER . $appFolder)) {
@@ -38,9 +39,6 @@ class App extends Base
             if (!file_exists(NG_BASE_FOLDER . $appFolder)) {
                 $app->abort(404, $this->website->base); // this terminates PHP
             }
-        }
-        if ($projectId == 'favicon.ico') {
-            $projectId = '';
         }
 
         $this->data['appName'] = $appName;
@@ -50,21 +48,23 @@ class App extends Base
         $this->_userId = SilexSessionHelper::getUserId($app);
 
         // update the projectId in the session if it is not empty
-        $projectModel = new ProjectModel();
-        if ($projectId && $projectModel->exists($projectId)) {
-            $projectModel = $projectModel->getById($projectId);
+        if (!$projectId) {
+            $projectId = SilexSessionHelper::getProjectId($app, $this->website);
+        }
+        if ($projectId && ProjectModel::projectExists($projectId)) {
+            $projectModel = ProjectModel::getById($projectId);
             if (!$projectModel->userIsMember($this->_userId)) {
-                $this->_projectId = '';
+                $projectId = '';
             } else {
-                $this->_projectId = $projectId;
-                $app['session']->set('projectId', $projectId);
                 $user = new UserModel($this->_userId);
                 $user->lastUsedProjectId = $projectId;
                 $user->write();
             }
         } else {
-            $this->_projectId = SilexSessionHelper::getProjectId($app, $this->website);
+            $projectId = '';
         }
+        $app['session']->set('projectId', $projectId);
+        $this->_projectId = $projectId;
 
         // Other session data
 

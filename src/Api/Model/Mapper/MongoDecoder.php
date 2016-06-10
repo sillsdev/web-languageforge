@@ -69,9 +69,9 @@ class MongoDecoder extends JsonDecoder
         }
         $refsArray = $data;
         foreach ($refsArray as $objectId) {
-            if (!is_a($objectId, 'MongoId')) {
+            if (!is_a($objectId, 'MongoDB\BSON\ObjectID')) {
                 throw new \Exception(
-                        "Invalid type '" . gettype($objectId) . "' in ref collection"
+                        "Invalid type '" . gettype($objectId) . " : " . get_class($objectId) . "' in ref collection"
                 );
             }
             array_push($model->refs, new Id((string) $objectId));
@@ -80,14 +80,15 @@ class MongoDecoder extends JsonDecoder
 
     /**
      * @param string $key
-     * @param object $model
-     * @param MongoDate $data
+     * @param \DateTime $model
+     * @param \MongoDB\BSON\UTCDatetime $data
      */
     public function decodeDateTime($key, $model, $data)
     {
-        CodeGuard::checkTypeAndThrow($data, 'MongoDate', CodeGuard::CHECK_NULL_OK);
+        CodeGuard::checkTypeAndThrow($data, '\MongoDB\BSON\UTCDatetime', CodeGuard::CHECK_NULL_OK);
         if ($data !== null) {
-            $model->setTimeStamp($data->sec);
+            $newDateTime = $data->toDateTime();
+            $model->setTimestamp($newDateTime->getTimestamp());
         }
     }
 
@@ -96,7 +97,7 @@ class MongoDecoder extends JsonDecoder
      * Replace '___DOLLAR___' with '$'
      * Replace '___DOT___' with '.'
      * @param string $key
-     * @param MongoDate $data
+     * @param array $data
      */
     public function decodeDollarDot($key, &$data)
     {
@@ -114,8 +115,8 @@ class MongoDecoder extends JsonDecoder
 
     /**
      * @param string $key
-     * @param object $model
-     * @param MongoDate $data
+     * @param MapOf $model
+     * @param array $data
      */
     public function decodeMapOf($key, $model, $data)
     {

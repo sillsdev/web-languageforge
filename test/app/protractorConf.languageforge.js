@@ -48,6 +48,8 @@ exports.config = {
   onPrepare: function() {
     /* global angular: false, browser: false, jasmine: false */
 
+    browser.driver.manage().window().maximize();
+
     // Disable animations so e2e tests run more quickly
     var disableNgAnimate = function() {
       angular.module('disableNgAnimate', []).run(['$animate', function($animate) {

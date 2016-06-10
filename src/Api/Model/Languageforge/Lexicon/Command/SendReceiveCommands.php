@@ -3,8 +3,8 @@
 namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
+use Api\Model\Languageforge\Lexicon\SendReceiveProjectModelWithIdentifier;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\JsonEncoder;
 use GuzzleHttp\Client;
@@ -37,25 +37,19 @@ class SendReceiveCommands
     /**
      * @param string $projectId
      * @param string $srProject
-     * @param string $username
-     * @param string $password
      * @return string $projectId
      */
-    public static function saveCredentials($projectId, $srProject, $username, $password)
+    public static function updateSRProject($projectId, $srProject)
     {
-        if (!$srProject || !$username || !$password) {
-            return false;
-        }
+        if (!$srProject) return false;
 
-        $project = new LexiconProjectModelWithSRPassword($projectId);
+        $project = new LexiconProjectModel($projectId);
+        $project->sendReceiveProjectIdentifier = $srProject['identifier'];
         $project->sendReceiveProject = new SendReceiveProjectModel(
-            $srProject['identifier'],
             $srProject['name'],
             $srProject['repository'],
             $srProject['role']
         );
-        $project->sendReceiveUsername = $username;
-        $project->sendReceivePassword = $password;
         return $project->write();
     }
 
@@ -84,12 +78,12 @@ class SendReceiveCommands
                 $response = $client->post($url, $postData);
                 break;
             } catch (RequestException $e) {
+                $response = $e->getResponse();
                 if ($e->getCode() != 403 && $e->getCode() != 404) {
                     $tryCounter++;
                     $result->errorMessage = $e->getMessage();
                     continue;
                 }
-                $response = $e->getResponse();
                 break;
             }
         }
@@ -100,7 +94,7 @@ class SendReceiveCommands
             $result->isKnownUser = true;
             $result->hasValidCredentials = true;
             foreach ($response->json() as $index => $srProject) {
-                $result->projects[] = new SendReceiveProjectModel(
+                $result->projects[] = new SendReceiveProjectModelWithIdentifier(
                     $srProject['identifier'],
                     $srProject['name'],
                     $srProject['repository'],
@@ -112,6 +106,7 @@ class SendReceiveCommands
         $data = JsonEncoder::encode($result);
         self::addSRProjectClarification($data['projects']);
         self::sortSRProjectByName($data['projects']);
+        self::checkSRProjectsAreLinked($data['projects']);
 
         return $data;
     }
@@ -123,7 +118,7 @@ class SendReceiveCommands
      */
     public static function queueProjectForSync($projectId, $syncQueuePath = null)
     {
-        $project = new LexiconProjectModelWithSRPassword($projectId);
+        $project = new LexiconProjectModel($projectId);
         if (!$project->hasSendReceive()) return false;
 
         if (is_null($syncQueuePath)) $syncQueuePath = self::getLFMergePaths()->syncQueuePath;
@@ -299,6 +294,18 @@ class SendReceiveCommands
     }
 
     /**
+     * @param $identifier
+     * @return string|bool $projectId if send receive project is linked to a LF project, false otherwise
+     */
+    public static function getProjectIdFromSendReceive($identifier)
+    {
+        $project = new LexiconProjectModel();
+        if (!$project->readByProperty('sendReceiveProjectIdentifier', $identifier)) return false;
+
+        return $project->id->asString();
+    }
+
+    /**
      * Taken from http://stackoverflow.com/questions/3111406/checking-if-process-still-running
      * @param string $pidFilePath
      * @return bool
@@ -377,7 +384,14 @@ class SendReceiveCommands
 
         if ($username == self::TEST_SR_USERNAME) {
             if ($password == self::TEST_SR_PASSWORD) {
-                $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository": "http://public.languagedepot.org", "role": "manager"},{"identifier": "mock-id2", "name": "mock-name2", "repository": "http://public.languagedepot.org", "role": "contributor"},{"identifier": "mock-id3", "name": "mock-name3", "repository": "http://public.languagedepot.org", "role": "contributor"},{"identifier": "mock-id3", "name": "mock-name3", "repository": "http://private.languagedepot.org", "role": "manager"}]');
+                $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository":'.
+                    ' "http://public.languagedepot.org", "role": "manager", "isLinked": false}, '.
+                    '{"identifier": "mock-id2", "name": "mock-name2", "repository": '.
+                    '"http://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
+                    '{"identifier": "mock-id3", "name": "mock-name3", "repository": '.
+                    '"http://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
+                    '{"identifier": "mock-id4", "name": "mock-name4", "repository": '.
+                    '"http://private.languagedepot.org", "role": "manager", "isLinked": false}]');
                 $response = new Response(200, ['Content-Type' => 'application/json'], $body);
                 $mock = new Mock([$response]);
                 $client->getEmitter()->attach($mock);
@@ -419,6 +433,9 @@ class SendReceiveCommands
             $projects[0]['repoClarification'] = 'private';
         }
         foreach ($projects as $index => &$project) {
+            if (!array_key_exists('repoClarification', $project)) {
+                $project['repoClarification'] = '';
+            }
             if (array_key_exists($index - 1, $projects) &&
                 $projects[$index - 1]['identifier'] == $project['identifier'] &&
                 stripos($project['repository'], '://private') !== false) {
@@ -446,6 +463,30 @@ class SendReceiveCommands
 
         return $projects;
     }
+
+    /**
+     * @param array $projects
+     * @return array
+     */
+    private static function checkSRProjectsAreLinked(&$projects)
+    {
+        foreach ($projects as $index => &$project) {
+            $project['isLinked'] = self::isSendReceiveProjectLinked($project['identifier']);
+        }
+
+        return $projects;
+    }
+
+    /**
+     * @param $identifier
+     * @return bool true if send receive project is linked to a LF project
+     */
+    private static function isSendReceiveProjectLinked($identifier)
+    {
+        $projectId = self::getProjectIdFromSendReceive($identifier);
+        return ($projectId !== false);
+    }
+
 }
 
 class SendReceivePaths

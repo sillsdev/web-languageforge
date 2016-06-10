@@ -1,16 +1,25 @@
 'use strict';
 
-angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry', 'palaso.ui.comments', 'palaso.ui.showOverflow', 'ngAnimate', 'truncate', 'lexicon.services', 'palaso.ui.scroll', 'palaso.ui.notice'])
+angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry',
+  'palaso.ui.comments', 'palaso.ui.showOverflow', 'ngAnimate', 'truncate', 'lexicon.services',
+  'palaso.ui.scroll', 'palaso.ui.notice'])
 
   // DBE controller
-  .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService', 'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService', 'lexCommentService', 'lexEditorDataService', 'lexProjectService',
-  function($scope, userService, sessionService, lexService, $window, $interval, $filter, linkService, utils, modal, notice, $route, $rootScope, $location, configService, commentService, editorService, lexProjectService) {
+  .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService',
+    '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService',
+    'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService',
+    'lexCommentService', 'lexEditorDataService', 'lexProjectService',
+  function ($scope, userService, sessionService, lexService,
+            $window, $interval, $filter, linkService, utils, modal,
+            notice, $route, $rootScope, $location, configService,
+            commentService, editorService, lexProjectService) {
 
     // TODO use ui-router for this instead!
 
     var pristineEntry = {};
 
-    //$scope.config is set in the parent controller, ng-app.js 'MainCtrl', so it can be updated after Send/Receive. IJH 2016-03
+    // $scope.config is set in the parent controller, ng-app.js 'MainCtrl', so it can be updated
+    // after Send/Receive. IJH 2016-03
     $scope.lastSavedDate = new Date();
     $scope.currentEntry = {};
     $scope.commentService = commentService;
@@ -97,7 +106,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
           entryToSave.id = ''; // send empty id which indicated "create new"
         }
 
-        lexService.update(prepEntryForUpdate(entryToSave), function(result) {
+        lexService.update(prepEntryForUpdate(entryToSave), function (result) {
           if (result.ok) {
             var entry = result.data;
             if (isNewEntry) {
@@ -118,17 +127,17 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
              * a better real time experience.
              */
 
-            /* Reviewed CJH 2015-03: setCurrentEntry is useful in the case when the entry being saved is a new entry.
-               In this case the new entry is replaced entirely by the one returned from the server (with a proper id, etc).
-               I'm currently unclear on whether the doSetEntry parameter is still necessary
-             *
+            /* Reviewed CJH 2015-03: setCurrentEntry is useful in the case when the entry being
+             * saved is a new entry. In this case the new entry is replaced entirely by the one
+             * returned from the server (with a proper id, etc).
+             * I'm currently unclear on whether the doSetEntry parameter is still necessary
              */
 
             pristineEntry = angular.copy(entryToSave);
             $scope.lastSavedDate = new Date();
 
             // refresh data will add the new entry to the entries list
-            editorService.refreshEditorData().then(function() {
+            editorService.refreshEditorData().then(function () {
               if (isNewEntry) {
                 setCurrentEntry($scope.entries[getIndexInList(entry.id, $scope.entries)]);
                 editorService.removeEntryFromLists(newEntryTempId);
@@ -152,7 +161,8 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     };
 
     function prepEntryForUpdate(entry) {
-      var entryForUpdate = recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha', 'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
+      var entryForUpdate = recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha',
+        'authorInfo', 'dateCreated', 'dateModified', 'liftId', '$$hashKey']);
       entryForUpdate = prepCustomFieldsForUpdate(entryForUpdate);
       return entryForUpdate;
     }
@@ -208,8 +218,8 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     };
 
     function _scrollDivToId(containerId, divId, posOffset) {
-      var div = $(divId);
-      var containerDiv = $(containerId);
+      var $div = $(divId);
+      var $containerDiv = $(containerId);
       var foundDiv = false;
       var offsetTop;
       if (angular.isUndefined(posOffset)) {
@@ -217,10 +227,10 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       }
 
       // todo: refactor this spaghetti logic
-      if (div && containerDiv) {
-        if (angular.isUndefined(div.offsetTop)) {
-          if (angular.isDefined(div[0])) {
-            div = div[0];
+      if ($div && $containerDiv) {
+        if (angular.isUndefined($div.offsetTop)) {
+          if (angular.isDefined($div[0])) {
+            $div = $div[0];
             foundDiv = true;
           } else {
             console.log('Error: unable to scroll to div with div id ' + divId);
@@ -228,16 +238,16 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         }
 
         if (foundDiv) {
-          if (angular.isUndefined(div.offsetTop)) {
+          if (angular.isUndefined($div.offsetTop)) {
 
-            offsetTop = div.offset().top - posOffset;
+            offsetTop = $div.offset().top - posOffset;
           } else {
-            offsetTop = div.offsetTop - posOffset;
+            offsetTop = $div.offsetTop - posOffset;
           }
 
           if (offsetTop < 0)
             offsetTop = 0;
-          containerDiv.scrollTop(offsetTop);
+          $containerDiv.scrollTop(offsetTop);
         }
       }
     }
@@ -274,7 +284,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         _scrollDivToId(listDivId, entryDivId, posOffset);
       } else {
         // wait then try to scroll
-        $interval(function() {
+        $interval(function () {
           _scrollDivToId(listDivId, entryDivId, posOffset);
         }, 200, 1);
       }
@@ -315,19 +325,19 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
     function alignCustomFieldsInData(data) {
       if (angular.isDefined(data.customFields)) {
-        angular.forEach(data.customFields, function(item, key) {
+        angular.forEach(data.customFields, function (item, key) {
           data[key] = item;
         });
       }
 
       if (angular.isDefined(data.senses)) {
-        angular.forEach(data.senses, function(sense) {
+        angular.forEach(data.senses, function (sense) {
           alignCustomFieldsInData(sense);
         });
       }
 
       if (angular.isDefined(data.examples)) {
-        angular.forEach(data.examples, function(example) {
+        angular.forEach(data.examples, function (example) {
           alignCustomFieldsInData(example);
         });
       }
@@ -337,7 +347,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
     function prepCustomFieldsForUpdate(data) {
       data.customFields = {};
-      angular.forEach(data, function(item, key) {
+      angular.forEach(data, function (item, key) {
         if (/^customField_/.test(key)) {
           data.customFields[key] = item;
         }
@@ -364,7 +374,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     };
 
     $scope.newEntry = function newEntry() {
-      $scope.saveCurrentEntry(false, function() {
+      $scope.saveCurrentEntry(false, function () {
         var d = new Date();
         var uniqueId = '_new_' + d.getSeconds() + d.getMilliseconds();
         var newEntry = {
@@ -406,7 +416,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
       switch (config.type) {
         case 'fields':
-          angular.forEach(config.fieldOrder, function(f) {
+          angular.forEach(config.fieldOrder, function (f) {
             if (angular.isUndefined(data[f])) {
               if (config.fields[f].type == 'fields' || config.fields[f].type == 'pictures') {
                 data[f] = [];
@@ -423,7 +433,8 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
                 }
 
                 for (var i = 0; i < data[f].length; i++) {
-                  data[f][i] = $scope.makeValidModelRecursive(config.fields[f], data[f][i], stopAtNodes);
+                  data[f][i] =
+                    $scope.makeValidModelRecursive(config.fields[f], data[f][i], stopAtNodes);
                 }
               } else {
                 data[f] = $scope.makeValidModelRecursive(config.fields[f], data[f], stopAtNodes);
@@ -442,7 +453,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
             data = {};
           }
 
-          angular.forEach(config.inputSystems, function(ws) {
+          angular.forEach(config.inputSystems, function (ws) {
             if (angular.isUndefined(data[ws])) {
               data[ws] = {
                 value: ''
@@ -454,7 +465,8 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         case 'optionlist':
           if (angular.isUndefined(data.value) || data.value == null) {
             data.value = '';
-            if (angular.isDefined($scope.config.optionlists) && angular.isDefined(config.listCode) &&
+            if (angular.isDefined($scope.config.optionlists) &&
+                angular.isDefined(config.listCode) &&
                 (config.listCode in $scope.config.optionlists) &&
                 angular.isDefined($scope.config.optionlists[config.listCode].defaultItemKey)) {
               data.value = $scope.config.optionlists[config.listCode].defaultItemKey;
@@ -475,7 +487,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
             data = [];
           }
 
-          angular.forEach(data, function(picture) {
+          angular.forEach(data, function (picture) {
             if (angular.isUndefined(picture.caption)) {
               picture.caption = {};
             }
@@ -491,10 +503,12 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     };
 
     $scope.deleteEntry = function deleteEntry(entry) {
-      var deletemsg = 'Are you sure you want to delete the word <b>\' ' + utils.getLexeme($scope.config.entry, entry) + ' \'</b>';
+      var deletemsg = 'Are you sure you want to delete the word <b>\' ' +
+        utils.getLexeme($scope.config.entry, entry) + ' \'</b>';
 
-      // var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?", {lexeme:utils.getLexeme($scope.config.entry, entry)});
-      modal.showModalSimple('Delete Word', deletemsg, 'Cancel', 'Delete Word').then(function() {
+      // var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?",
+      // {lexeme:utils.getLexeme($scope.config.entry, entry)});
+      modal.showModalSimple('Delete Word', deletemsg, 'Cancel', 'Delete Word').then(function () {
         var iShowList = getIndexInList(entry.id, $scope.visibleEntries);
         editorService.removeEntryFromLists(entry.id);
         if ($scope.entries.length > 0) {
@@ -506,7 +520,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         }
 
         if (!entryIsNew(entry)) {
-          lexService.remove(entry.id, function() {
+          lexService.remove(entry.id, function () {
             editorService.refreshEditorData();
           });
         }
@@ -555,14 +569,14 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       if (skipLoadingEditorData || !$scope.finishedLoading) {
         goToState();
       } else {
-        editorService.loadEditorData().then(function() {
+        editorService.loadEditorData().then(function () {
           goToState();
         });
       }
     }
 
     // watch for when data has been loaded completely, then evaluate state
-    $scope.$watch('finishedLoading', function(newVal) {
+    $scope.$watch('finishedLoading', function (newVal) {
       if (newVal) {
         evaluateState(true);
       }
@@ -585,7 +599,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         return;
       }
 
-      autoSaveTimer = $interval(function() {
+      autoSaveTimer = $interval(function () {
         $scope.saveCurrentEntry(true);
       }, 5000, 1);
     }
@@ -597,12 +611,12 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       }
     }
 
-    $scope.$on('$destroy', function() {
+    $scope.$on('$destroy', function () {
       cancelAutoSaveTimer();
       $scope.saveCurrentEntry();
     });
 
-    $scope.$on('$locationChangeStart', function() {
+    $scope.$on('$locationChangeStart', function () {
       cancelAutoSaveTimer();
       $scope.saveCurrentEntry();
     });
@@ -620,21 +634,30 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // permissions stuff
     $scope.rights = {
       canEditProject: function canEditProject() {
-        return sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
+        if ($scope.isSyncing()) return false;
+
+        return sessionService.hasProjectRight(sessionService.domain.PROJECTS,
+          sessionService.operation.EDIT);
       },
 
       canEditEntry: function canEditEntry() {
-        return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.EDIT);
+        if ($scope.isSyncing()) return false;
+
+        return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
+          sessionService.operation.EDIT);
       },
 
       canDeleteEntry: function canDeleteEntry() {
-        return sessionService.hasProjectRight(sessionService.domain.ENTRIES, sessionService.operation.DELETE);
+        if ($scope.isSyncing()) return false;
+
+        return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
+          sessionService.operation.DELETE);
       }
     };
 
     // conditionally register watch
     if ($scope.rights.canEditEntry()) {
-      $scope.$watch('currentEntry', function(newValue) {
+      $scope.$watch('currentEntry', function (newValue) {
         if (newValue != undefined) {
           cancelAutoSaveTimer();
           if ($scope.currentEntryIsDirty) {
@@ -645,9 +668,9 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     }
 
     function recursiveRemoveProperties(startAt, properties) {
-      angular.forEach(startAt, function(value, key) {
+      angular.forEach(startAt, function (value, key) {
         var deleted = false;
-        angular.forEach(properties, function(propName) {
+        angular.forEach(properties, function (propName) {
           // console.log ("key = " + key + " && propName = " + propName);
           if (!deleted && key == propName) {
             // console.log("deleted " + key + " (" + startAt[key] + ")");
