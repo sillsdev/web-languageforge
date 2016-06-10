@@ -1,9 +1,10 @@
 'use strict';
 
-angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.notice', 'ngAnimate', 'bellows.services', 'angularFileUpload', 'lexicon.services'])
+angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.notice', 'ngAnimate',
+  'bellows.services', 'angularFileUpload', 'lexicon.services'])
 
 // Palaso UI Dictionary Control: Picture
-.directive('dcPicture', [function() {
+.directive('dcPicture', [function () {
   return {
     restrict: 'E',
     templateUrl: '/angular-app/languageforge/lexicon/directive/dc-picture.html',
@@ -12,26 +13,37 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       pictures: '=',
       control: '='
     },
-    controller: ['$scope', '$upload', '$filter', 'sessionService', 'lexProjectService', 'lexConfigService', 'silNoticeService', 'modalService',
-    function($scope, $upload, $filter, ss, lexProjectService, lexConfigService, notice, modalService) {
+    controller: ['$scope', '$upload', '$filter', 'sessionService', 'lexProjectService',
+      'lexConfigService', 'silNoticeService', 'modalService',
+    function ($scope, $upload, $filter, ss, lexProjectService,
+              lexConfigService, notice, modalService) {
       $scope.upload = {};
       $scope.upload.progress = 0;
       $scope.upload.file = null;
 
       $scope.fieldContainsData = lexConfigService.fieldContainsData;
 
-      function Picture(fileName, caption) {
-        this.fileName = fileName || '';
-        this.caption = caption || {};
+      $scope.getPictureUrl = function getPictureUrl(picture) {
+        if (isExternalReference(picture.fileName))
+          return '/Site/views/shared/image/placeholder.png';
+        return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + picture.fileName;
+      };
+
+      $scope.getPictureDescription = function getPictureDescription(picture) {
+        if (!isExternalReference(picture.fileName)) return picture.fileName;
+
+        return 'This picture references an external file (' +
+          picture.fileName +
+          ') and therefore cannot be synchronised. ' +
+          'To see the picture, link it to an internally referenced file. ' +
+          'Replace the file here or in FLEx, move or copy the file to the Linked Files folder.';
+      };
+
+      function isExternalReference(fileName) {
+        var isWindowsLink = (fileName.indexOf(':\\') >= 0);
+        var isLinuxLink = (fileName.indexOf('//') >= 0);
+        return isWindowsLink || isLinuxLink;
       }
-
-      Picture.prototype.getUrl = function pictureGetUrl() {
-        return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + this.fileName;
-      };
-
-      $scope.getPictureUrl = function getPictureUrl(fileName) {
-        return '/assets/lexicon/' + $scope.control.project.slug + '/pictures/' + fileName;
-      };
 
       // strips the timestamp file prefix (returns everything after the '_')
       function originalFileName(fileName) {
@@ -39,7 +51,6 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       }
 
       function addPicture(fileName) {
-        //        var newPicture = new Picture(fileName);
         var newPicture = {};
         var captionConfig = angular.copy($scope.config);
         captionConfig.type = 'multitext';
@@ -51,17 +62,19 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       $scope.deletePicture = function deletePicture(index) {
         var fileName = $scope.pictures[index].fileName;
         if (fileName) {
-          var deletemsg = "Are you sure you want to delete the picture <b>'" + originalFileName(fileName) + "'</b>";
-          modalService.showModalSimple('Delete Picture', deletemsg, 'Cancel', 'Delete Picture').then(function() {
-            $scope.pictures.splice(index, 1);
-            lexProjectService.removeMediaFile('sense-image', fileName, function(result) {
-              if (result.ok) {
-                if (!result.data.result) {
-                  notice.push(notice.ERROR, result.data.errorMessage);
+          var deleteMsg = "Are you sure you want to delete the picture <b>'" +
+            originalFileName(fileName) + "'</b>";
+          modalService.showModalSimple('Delete Picture', deleteMsg, 'Cancel', 'Delete Picture').
+            then(function () {
+              $scope.pictures.splice(index, 1);
+              lexProjectService.removeMediaFile('sense-image', fileName, function (result) {
+                if (result.ok) {
+                  if (!result.data.result) {
+                    notice.push(notice.ERROR, result.data.errorMessage);
+                  }
                 }
-              }
+              });
             });
-          });
         } else {
           $scope.pictures.splice(index, 1);
         }
@@ -84,9 +97,9 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
               filename: file.name
             },
             file: file
-          }).progress(function(evt) {
+          }).progress(function (evt) {
             $scope.upload.progress = parseInt(100.0 * evt.loaded / evt.total);
-          }).success(function(data) {
+          }).success(function (data) {
             if (data.result) {
               $scope.upload.progress = 100.0;
               addPicture(data.data.fileName);
@@ -97,7 +110,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
             }
 
             $scope.upload.file = null;
-          }).error(function(data, status) {
+          }).error(function (data, status) {
             var errorMessage = $filter('translate')('Import failed.');
             if (status > 0) {
               errorMessage += ' Status: ' + status;

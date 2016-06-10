@@ -76,7 +76,7 @@ class SfchecksReports {
                                 continue;
                             }
                             $commentCtr++;
-                            if ($comment['userRef'] && $comment['userRef']->{'$id'} == $user['id']) {
+                            if ($comment['userRef'] && strval($comment['userRef']) == $user['id']) {
                                 $user['comments']++;
                                 $user['responses']++;
                                 array_push($user['textIds'], $question['textRef']);
@@ -93,7 +93,7 @@ class SfchecksReports {
                                 ));
                             }
                         }
-                        if ($answer['userRef'] && $answer['userRef']->{'$id'} == $user['id']) {
+                        if ($answer['userRef'] && strval($answer['userRef']) == $user['id']) {
                             $user['answers']++;
                             $user['responses']++;
                             array_push($user['textIds'], $question['textRef']);
@@ -376,14 +376,14 @@ class SfchecksReports {
                                 continue;
                             }
                             $commentCtr++;
-                            if ($comment['userRef'] && $comment['userRef']->{'$id'} == $user['id']) {
+                            if ($comment['userRef'] && strval($comment['userRef']) == $user['id']) {
                                 $user['comments']++;
                                 $user['responses']++;
                                 array_push($user['textIds'], $question['textRef']);
                                 $responses++;
                             }
                         }
-                        if ($answer['userRef'] && $answer['userRef']->{'$id'} == $user['id']) {
+                        if ($answer['userRef'] && strval($answer['userRef']) == $user['id']) {
                             $user['answers']++;
                             $user['responses']++;
                             array_push($user['textIds'], $question['textRef']);

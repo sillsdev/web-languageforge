@@ -11,7 +11,7 @@ class FixLexViewSettings
     public function run($userId, $mode = 'test')
     {
         $testMode = ($mode != 'run');
-        $message = "Fix Lexicon View Settings to default to visible\n\n";
+        $message = "Fix Lexicon View Settings (except Environments and ReversalEntries) to default to visible\n\n";
 
         $projectlist = new ProjectListModel();
         $projectlist->read();
@@ -21,13 +21,27 @@ class FixLexViewSettings
             $project = new ProjectModel($projectId);
             if ($project->appName == 'lexicon') {
                 $project = new LexiconProjectModel($projectId);
-                $message .= "Inspecting project $project->projectName.\n";
+                $message .= "\nInspecting project $project->projectName.\n";
 
                 $showFieldUpdated = 0;
                 $roleShowFieldUpdated = 0;
+                //$hideFieldUpdated = 0;
+                $roleHideFieldUpdated = 0;
+                $disabledFields = array("environments", "reversalEntries");
                 foreach ($project->config->roleViews as $role => $roleView) {
                     foreach ($roleView->fields as $fieldName => $field) {
-                        if (! $field->show) {
+                        if (in_array($fieldName, $disabledFields)) {
+                            if ($field->show) {
+                                // Hide disabled fields
+                                //$message .= "Hiding role $role view of $fieldName\n";
+                                $field->show = false;
+                                $showFieldUpdated++;
+                                $roleHideFieldUpdated++;
+
+                            }
+                        }
+                        else if (! $field->show) {
+                            // enable all other fields by default
                             $field->show = true;
                             $showFieldUpdated++;
                             $roleShowFieldUpdated++;
@@ -36,9 +50,20 @@ class FixLexViewSettings
                 }
 
                 $userShowFieldUpdated = 0;
+                $userHideFieldUpdated = 0;
                 foreach ($project->config->userViews as $userId => $userView) {
                     foreach ($userView->fields as $fieldName => $field) {
-                        if (! $field->show) {
+                        if (in_array($fieldName, $disabledFields)) {
+                            if ($field->show) {
+                                // Hide disabled fields
+                                //$message .= "Hiding user $userId view of $fieldName\n";
+                                $field->show = false;
+                                $showFieldUpdated++;
+                                $userHideFieldUpdated++;
+                            }
+                        }
+                        else if (! $field->show) {
+                            // enable all other fields by default
                             $field->show = true;
                             $showFieldUpdated++;
                             $userShowFieldUpdated++;
@@ -47,16 +72,26 @@ class FixLexViewSettings
                 }
 
                 if ($showFieldUpdated > 0) {
-                    $message .= "  Changed $showFieldUpdated View Settings fields to be visible. This comprised: \n";
-                    $message .= "   - Changed $roleShowFieldUpdated role-based View Settings fields to be visible.\n";
-                    $message .= "   - Changed $userShowFieldUpdated user-based View Settings fields to be visible.\n\n";
+                    $message .= "  Toggled $showFieldUpdated View Settings fields. This comprised: \n";
+                    if ($roleShowFieldUpdated > 0) {
+                        $message .= "   - Changed $roleShowFieldUpdated role-based View Settings fields to be visible.\n";
+                    }
+                    if  ($userShowFieldUpdated > 0) {
+                        $message .= "   - Changed $userShowFieldUpdated user-based View Settings fields to be visible.\n";
+                    }
+                    if ($roleHideFieldUpdated > 0) {
+                        $message .= "   - Changed $roleHideFieldUpdated role-based View Settings fields to be invisible.\n";
+                    }
+                    if ($userHideFieldUpdated > 0) {
+                        $message .= "   - Changed $userHideFieldUpdated user-based View Settings fields to be invisible.\n";
+                    }
 
                     if (!$testMode) {
-                        $message .= "  Saving changes to project $project->projectName.\n\n";
+                        $message .= "  Saving changes to project $project->projectName.\n";
                         $project->write();
                     }
                 } else {
-                    $message .= "  No invisible View Settings fields found/changed.\n\n";
+                    $message .= "  No invisible View Settings fields found/changed.\n";
                 }
             }
         }

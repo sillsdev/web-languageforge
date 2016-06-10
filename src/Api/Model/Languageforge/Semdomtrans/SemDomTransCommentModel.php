@@ -11,7 +11,7 @@ class SemDomTransCommentModel extends \Api\Model\Mapper\MapperModel
     public static function mapper($databaseName)
     {
         static $instance = null;
-        if (null === $instance) {
+        if (null === $instance || $instance->databaseName() != $databaseName) {
             $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'semdomTransComments');
         }
 

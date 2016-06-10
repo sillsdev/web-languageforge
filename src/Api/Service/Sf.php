@@ -278,11 +278,12 @@ class Sf
      * @param string $projectName
      * @param string $projectCode
      * @param string $appName
+     * @param array $srProject send receive project data
      * @return string | boolean - $projectId on success, false if project code is not unique
      */
-    public function project_create($projectName, $projectCode, $appName)
+    public function project_create($projectName, $projectCode, $appName, $srProject = null)
     {
-        return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->userId, $this->website);
+        return ProjectCommands::createProject($projectName, $projectCode, $appName, $this->userId, $this->website, $srProject);
     }
 
     /**
@@ -291,11 +292,30 @@ class Sf
      * @param string $projectName
      * @param string $projectCode
      * @param string $appName
-     * @return string | boolean - $projectId on success, false if project code is not unique
+     * @param array $srProject
+     * @return string|bool $projectId on success, false if project code is not unique
      */
-    public function project_create_switchSession($projectName, $projectCode, $appName)
+    public function project_create_switchSession($projectName, $projectCode, $appName, $srProject)
     {
-        $projectId = $this->project_create($projectName, $projectCode, $appName);
+        $projectId = $this->project_create($projectName, $projectCode, $appName, $srProject);
+        $this->app['session']->set('projectId', $projectId);
+        return $projectId;
+    }
+
+    /**
+     * Join user to project and switches the session to the new project
+     *
+     * @param string $srIdentifier
+     * @param string $role
+     * @return string|bool $projectId on success, false if project code doesn't exist
+     * @throws \Exception
+     */
+    public function project_join_switchSession($srIdentifier, $role)
+    {
+        $projectId = SendReceiveCommands::getProjectIdFromSendReceive($srIdentifier);
+        if (!$projectId) return false;
+
+        ProjectCommands::updateUserRole($projectId, $this->userId, $role);
         $this->app['session']->set('projectId', $projectId);
         return $projectId;
     }
@@ -746,9 +766,9 @@ class Sf
         return SendReceiveCommands::getUserProjects($username, $password);
     }
 
-    public function sendReceive_saveCredentials($srProject, $username, $password)
+    public function sendReceive_updateSRProject($srProject)
     {
-        return SendReceiveCommands::saveCredentials($this->projectId, $srProject, $username, $password);
+        return SendReceiveCommands::updateSRProject($this->projectId, $srProject);
     }
 
     public function sendReceive_receiveProject()

@@ -55,7 +55,7 @@ class LexEntryCommands
             $entry = new LexEntryModel($project);
             $entry->authorInfo->createdByUserRef->id = $userId;
             $entry->authorInfo->createdDate = new \DateTime();
-            $entry->guid = $entry->createGuid();
+            $entry->guid = LexEntryModel::createGuid();
             $action = 'create';
             // TODO: Consider adding more specific activity entry: which fields were modified? 2014-09-03 RM
             // E.g., "User _____ updated entry _____ by adding a new sense with definition ______"

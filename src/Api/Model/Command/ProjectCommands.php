@@ -5,6 +5,7 @@ namespace Api\Model\Command;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\Website;
 use Api\Model\EmailSettings;
+use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Shared\Dto\ManageUsersDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Mapper\JsonDecoder;
@@ -25,9 +26,10 @@ class ProjectCommands
      * @param string $appName
      * @param string $userId
      * @param Website $website
+     * @param array $srProject send receive project data
      * @return string - projectId
      */
-    public static function createProject($projectName, $projectCode, $appName, $userId, $website)
+    public static function createProject($projectName, $projectCode, $appName, $userId, $website, $srProject = null)
     {
         // Check for unique project code
         if (ProjectCommands::projectCodeExists($projectCode)) {
@@ -41,6 +43,9 @@ class ProjectCommands
         $project->ownerRef->id = $userId;
         $project->addUser($userId, ProjectRoles::MANAGER);
         $projectId = $project->write();
+        if ($srProject) {
+            SendReceiveCommands::updateSRProject($projectId, $srProject);
+        }
         $user = new UserModel($userId);
         $user->addProject($projectId);
         $user->write();
@@ -172,14 +177,16 @@ class ProjectCommands
         // Add the user to the project
         $user = new UserModel($userId);
         $project = ProjectModel::getById($projectId);
+        if ($project->userIsMember($userId) && $projectRole == $project->users[$userId]->role) {
+            return $userId;
+        }
 
         if ($userId == $project->ownerRef->asString()) {
             throw new \Exception("Cannot update role for project owner");
         }
 
-        // TODO: Only trigger activity if this is the first time they have been added to project
         ProjectCommands::usersDto($projectId);
-        if (!$project->users->offsetExists($userId)) {
+        if (!$project->userIsMember($userId)) {
             ActivityCommands::addUserToProject($project, $userId);
         }
 

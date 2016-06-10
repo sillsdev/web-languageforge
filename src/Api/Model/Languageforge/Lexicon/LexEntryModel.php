@@ -209,8 +209,11 @@ class LexEntryModel extends MapperModel
 
     public static function mapper($databaseName)
     {
+        /*
+         * @var MongoMapper
+         */
         static $instance = null;
-        if (null === $instance) {
+        if (null === $instance || $instance->databaseName() != $databaseName) {
             $instance = new MongoMapper($databaseName, 'lexicon');
         }
 
@@ -319,7 +322,7 @@ class LexEntryModel extends MapperModel
     /**
      * @return string
      */
-    public function createGuid()
+    public static function createGuid()
     {
         return Uuid::uuid4()->toString();
     }

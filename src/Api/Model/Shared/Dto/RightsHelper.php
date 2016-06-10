@@ -252,6 +252,10 @@ class RightsHelper
             case 'project_create':
             case 'project_create_switchSession':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
+
+            case 'project_join_switchSession':
+                return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
+
             case 'projectcode_exists':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
 
@@ -331,7 +335,7 @@ class RightsHelper
             case 'sendReceive_getProjectStatus':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
-            case 'sendReceive_saveCredentials':
+            case 'sendReceive_updateSRProject':
             case 'sendReceive_receiveProject':
             case 'sendReceive_commitProject':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);

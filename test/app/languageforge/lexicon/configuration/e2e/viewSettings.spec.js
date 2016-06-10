@@ -1,6 +1,6 @@
 'use strict';
 
-describe('View settings page', function() {
+describe('View settings page', function () {
   var constants    = require('../../../../testConstants');
   var loginPage    = require('../../../../bellows/pages/loginPage.js');
   var projectsPage = require('../../../../bellows/pages/projectsPage.js');
@@ -9,29 +9,29 @@ describe('View settings page', function() {
   var dbeUtil      = require('../../pages/dbeUtil.js');
   var viewSettingsPage = require('../../pages/viewSettingsPage.js');
 
-  it('setup: login, click on test project, go to the View Settings page', function() {
+  it('setup: login, click on test project, go to the View Settings page', function () {
     loginPage.loginAsManager();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
     viewSettingsPage.get();
   });
 
-  it('setup: click Manager tab', function() {
+  it('setup: click Manager tab', function () {
     viewSettingsPage.clickTabByName('Manager');
   });
 
-  it('Hide Semantic Domain field for Manager', function() {
+  it('Hide Semantic Domain field for Manager', function () {
     var vsp = viewSettingsPage;
 
     // Eye icon should be present if "Show field" is checked for that field
-    vsp.getFieldByName('Semantic Domain').then(function(elem) {
+    vsp.getFieldByName('Semantic Domain').then(function (elem) {
       var icon = elem.$('i');
       expect(icon.getAttribute('class')).toMatch('icon-eye-open');
     });
 
     vsp.clickFieldByName('Semantic Domain');
     util.setCheckbox(vsp.showField, false);
-    vsp.getFieldByName('Semantic Domain').then(function(elem) {
+    vsp.getFieldByName('Semantic Domain').then(function (elem) {
       var icon = elem.$('i');
       expect(icon.getAttribute('class')).not.toMatch('icon-eye-open');
     });
@@ -39,7 +39,7 @@ describe('View settings page', function() {
     vsp.applyBtn.click();
   });
 
-  it('Hide Semantic Domain field for specific username of admin user', function() {
+  it('Hide Semantic Domain field for specific username of admin user', function () {
     var vsp = viewSettingsPage;
     vsp.clickTabByName('Member Specific');
     vsp.addViewSettingsForMember(constants.adminUsername);
@@ -52,13 +52,13 @@ describe('View settings page', function() {
     vsp.applyBtn.click();
   });
 
-  it('Semantic Domain field is hidden for Manager', function() {
+  it('Semantic Domain field is hidden for Manager', function () {
     util.clickBreadcrumb(constants.testProjectName);
     dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     expect(dbePage.edit.getFields('Semantic Domain').count()).toBe(0);
   });
 
-  it('Semantic Domain field is visible for Member', function() {
+  it('Semantic Domain field is visible for Member', function () {
     loginPage.loginAsMember();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
@@ -66,7 +66,7 @@ describe('View settings page', function() {
     expect(dbePage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
   });
 
-  it('Semantic Domain field is hidden for admin user', function() {
+  it('Semantic Domain field is hidden for admin user', function () {
     loginPage.loginAsAdmin();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
@@ -74,7 +74,7 @@ describe('View settings page', function() {
     expect(dbePage.edit.getFields('Semantic Domain').count()).toBe(0);
   });
 
-  it('Return view settings to normal before next test', function() {
+  it('Return view settings to normal before next test', function () {
     var vsp = viewSettingsPage;
     vsp.get();
     vsp.clickTabByName('Member Specific');

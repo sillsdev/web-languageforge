@@ -8,17 +8,17 @@ var projectTypes = {
 var util = require('./util');
 var constants = require('../../testConstants.json');
 
-var SfProjectsPage = function() {
+var SfProjectsPage = function () {
   var _this = this;
   this.url = '/app/projects';
-  this.get = function() {
+  this.get = function () {
     browser.get(browser.baseUrl + this.url);
   };
 
   this.testProjectName = 'Test Project';
 
   this.archiveButton = element(by.partialButtonText('Archive Selected Projects'));
-  this.createBtn = element(by.partialButtonText('Create New Project'));
+  this.createBtn = element(by.partialButtonText('Start or Join a New Project'));
   this.newProjectNameInput  = element(by.model('newProject.projectName'));
   this.newProjectTypeSelect = element(by.model('newProject.appName'));
   this.saveBtn = element(by.partialButtonText('Save'));
@@ -31,28 +31,32 @@ var SfProjectsPage = function() {
     this.settings.userManagementLink = element(by.linkText('User Management'));
   }
 
-  // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test Project will be on page 1, and you can find it.
+  // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test
+  // Project will be on page 1, and you can find it.
   this.itemsPerPageCtrl = element(by.model('itemsPerPage'));
   this.projectsList = element.all(by.repeater('project in visibleProjects'));
-  this.projectNames = element.all(by.repeater('project in visibleProjects').column('{{project.projectName}}'));
-  this.projectTypes = element.all(by.repeater('project in visibleProjects').column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
+  this.projectNames = element.all(by.repeater('project in visibleProjects')
+    .column('{{project.projectName}}'));
+  this.projectTypes = element.all(by.repeater('project in visibleProjects')
+    .column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
 
-  this.select100ItemsPerPage = function() {
+  this.select100ItemsPerPage = function () {
     util.clickDropdownByValue(this.itemsPerPageCtrl, '100');
-    expect(element(by.model('itemsPerPage')).element(by.css('option:checked')).getText()).toEqual('100');
+    expect(element(by.model('itemsPerPage')).element(by.css('option:checked'))
+      .getText()).toEqual('100');
   };
 
-  this.findProject = function(projectName) {
+  this.findProject = function (projectName) {
     var foundRow = undefined;
     var result = protractor.promise.defer();
     var searchName = new RegExp(projectName);
-    this.projectsList.map(function(row) {
-      row.getText().then(function(text) {
+    this.projectsList.map(function (row) {
+      row.getText().then(function (text) {
         if (searchName.test(text)) {
           foundRow = row;
         }
       });
-    }).then(function() {
+    }).then(function () {
       if (foundRow) {
         result.fulfill(foundRow);
       } else {
@@ -63,9 +67,9 @@ var SfProjectsPage = function() {
     return result;
   };
 
-  this.deleteProject = function(nameToDelete) {
+  this.deleteProject = function (nameToDelete) {
     var _this = this; // For use inside the anonymous functions below
-    this.findProject(nameToDelete).then(function(projectRow) {
+    this.findProject(nameToDelete).then(function (projectRow) {
       var elem = projectRow.element(by.css('input[type=\'checkbox\']'));
       elem.click();
       _this.deleteBtn.click();
@@ -75,24 +79,24 @@ var SfProjectsPage = function() {
     });
   };
 
-  this.addNewProject = function(nameToAdd) {
+  this.addNewProject = function (nameToAdd) {
     this.createBtn.click();
     this.newProjectNameInput.sendKeys(nameToAdd);
     util.clickDropdownByValue(this.newProjectTypeSelect, projectTypes.sf);
     this.saveBtn.click();
   };
 
-  this.clickOnProject = function(projectName) {
-    this.findProject(projectName).then(function(projectRow) {
+  this.clickOnProject = function (projectName) {
+    this.findProject(projectName).then(function (projectRow) {
       var projectLink = projectRow.element(by.css('a'));
-      projectLink.getAttribute('href').then(function(url) {
+      projectLink.getAttribute('href').then(function (url) {
         browser.get(url);
       });
     });
   };
 
-  this.addUserToProject = function(projectName, usersName, roleText) {
-    this.findProject(projectName).then(function(projectRow) {
+  this.addUserToProject = function (projectName, usersName, roleText) {
+    this.findProject(projectName).then(function (projectRow) {
       var projectLink = projectRow.element(by.css('a'));
       projectLink.click();
 
@@ -107,25 +111,26 @@ var SfProjectsPage = function() {
 
       var typeaheadDiv = element(by.css('.typeahead'));
       var typeaheadItems = typeaheadDiv.all(by.css('ul li'));
-      util.findRowByText(typeaheadItems, usersName).then(function(item) {
+      util.findRowByText(typeaheadItems, usersName).then(function (item) {
         item.click();
       });
 
-      var addToProjectBtn = newMembersDiv.element(by.css('button')); // This should be unique no matter what
+      // This should be unique no matter what
+      var addToProjectBtn = newMembersDiv.element(by.css('button'));
       expect(addToProjectBtn.getText()).toContain('Add Existing User');
       addToProjectBtn.click();
 
       // Now set the user to member or manager, as needed
       var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
       var foundUserRow;
-      projectMemberRows.map(function(row) {
+      projectMemberRows.map(function (row) {
         var nameColumn = row.element(by.binding('{{user.username}}'));
-        nameColumn.getText().then(function(text) {
+        nameColumn.getText().then(function (text) {
           if (text === usersName) {
             foundUserRow = row;
           }
         });
-      }).then(function() {
+      }).then(function () {
         if (foundUserRow) {
           var select = foundUserRow.element(by.css('select:not([disabled])'));
           util.clickDropdownByValue(select, roleText);
@@ -136,16 +141,16 @@ var SfProjectsPage = function() {
     });
   };
 
-  this.addManagerToProject = function(projectName, usersName) {
+  this.addManagerToProject = function (projectName, usersName) {
     this.addUserToProject(projectName, usersName, 'Manager');
   };
 
-  this.addMemberToProject = function(projectName, usersName) {
+  this.addMemberToProject = function (projectName, usersName) {
     this.addUserToProject(projectName, usersName, 'Contributor');
   };
 
-  this.removeUserFromProject = function(projectName, userName) {
-    this.findProject(projectName).then(function(projectRow) {
+  this.removeUserFromProject = function (projectName, userName) {
+    this.findProject(projectName).then(function (projectRow) {
       var projectLink = projectRow.element(by.css('a'));
       projectLink.click();
 
