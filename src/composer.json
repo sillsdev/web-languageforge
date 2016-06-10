@@ -25,7 +25,8 @@
     "guzzlehttp/guzzle": "~5.0",
     "twilio/sdk": "dev-master",
     "ocramius/lazy-property": "dev-feature/factory",
-    "sillsdev/web-php-utilities": "dev-master"
+    "sillsdev/web-php-utilities": "dev-master",
+    "mongodb/mongodb": "^1.0"
   },
   "require-dev": {
     "simpletest/simpletest": "dev-master-sil",

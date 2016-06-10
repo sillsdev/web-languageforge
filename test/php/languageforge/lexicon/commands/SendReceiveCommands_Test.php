@@ -2,12 +2,8 @@
 
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModelWithSRPassword;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Mapper\JsonEncoder;
-use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
@@ -72,7 +68,8 @@ class TestSendReceiveCommands extends UnitTestCase
     public function testStartLFMergeIfRequiredActual_HasSendReceiveButNoPidFile_Started()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('test-eb-sena3-flex', 'ihopkinson', 'h&0#Z0awvjfm', 'manager');
+        $project->sendReceiveProjectIdentifier = 'test-eb-sena3-flex';
+        $project->sendReceiveProject = new SendReceiveProjectModel('change to your username', 'change to your password', 'manager');
         $projectId = $project->write();
         $queueType = 'receive';
 
@@ -82,32 +79,20 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertTrue($isRunning);
     }
 */
-    public function testSaveCredentials_ProjectAndUser_CredentialsSaved()
+    public function testUpdateSRProject_ProjectAndUser_SRProjectSaved()
     {
-        $userId = $this->environ->createUser("User", "Name", "name@example.com");
-        $user = new UserModel($userId);
-        $user->role = SystemRoles::USER;
-
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-
-        $project->addUser($userId, ProjectRoles::MANAGER);
-        $user->addProject($projectId);
-        $user->write();
-        $project->write();
-
-        $sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
-        $username = 'sr_user';
-        $password = 'sr_pass';
+        $sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $srProject = JsonEncoder::encode($sendReceiveProject);
+        $srProject['identifier'] = 'sr_id';
 
-        $newProjectId = SendReceiveCommands::saveCredentials($projectId, $srProject, $username, $password);
+        $newProjectId = SendReceiveCommands::updateSRProject($projectId, $srProject);
 
-        $newProject = new LexiconProjectModelWithSRPassword($newProjectId);
+        $newProject = new LexiconProjectModel($newProjectId);
         $this->assertEqual($newProjectId, $projectId);
         $this->assertEqual($newProject->sendReceiveProject, $sendReceiveProject);
-        $this->assertEqual($newProject->sendReceiveUsername, $username);
-        $this->assertEqual($newProject->sendReceivePassword, $password);
+        $this->assertEqual($newProject->sendReceiveProjectIdentifier, $srProject['identifier']);
     }
 
     public function testGetUserProjects_BlankCredentials_CredentialsInvalid()
@@ -123,7 +108,7 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual(count($result['projects']), 0);
     }
 
-    public function testGetUserProjects_KnownUser_UserKnown()
+    public function testGetUserProjects_KnownUserInvalidPass_UserKnownPassInvalid()
     {
         $username = 'mock_user';
         $password = 'mock_pass';
@@ -153,21 +138,6 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual(count($result['projects']), 0);
     }
 
-    public function testGetUserProjects_InvalidPass_PassInvalid()
-    {
-        $username = 'mock_user';
-        $password = 'mock_pass';
-        $client = new Client();
-        $mock = new Mock([new Response(403)]);
-        $client->getEmitter()->attach($mock);
-
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
-
-        $this->assertEqual($result['isKnownUser'], true);
-        $this->assertEqual($result['hasValidCredentials'], false);
-        $this->assertEqual(count($result['projects']), 0);
-    }
-
     public function testGetUserProjects_ValidCredentials_CredentialsValid()
     {
         $username = 'mock_user';
@@ -190,7 +160,8 @@ class TestSendReceiveCommands extends UnitTestCase
         $username = 'mock_user';
         $password = 'mock_pass';
         $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier2", "name": "name2", "repository": "", "role": ""}, {"identifier": "identifier1", "name": "name1", "repository": "", "role": ""}]');
+        $body = Stream::factory('[{"identifier": "identifier2", "name": "name2", "repository": "", "role": ""}, '.
+            '{"identifier": "identifier1", "name": "name1", "repository": "", "role": ""}]');
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
         $mock = new Mock([$response]);
         $client->getEmitter()->attach($mock);
@@ -202,6 +173,7 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual(count($result['projects']), 2);
         $this->assertEqual($result['projects'][0]['name'], 'name1');
         $this->assertEqual($result['projects'][1]['name'], 'name2');
+        $this->assertEqual($result['projects'][0]['identifier'], 'identifier1');
     }
 
     public function testGetUserProjects_2ProjectsDuplicateIdentifiersBeginCase_RepoClarification()
@@ -209,7 +181,10 @@ class TestSendReceiveCommands extends UnitTestCase
         $username = 'mock_user';
         $password = 'mock_pass';
         $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "http://public.languagedepot.org", "role": ""}, {"identifier": "identifier", "name": "name1", "repository": "http://private.languagedepot.org", "role": ""}]');
+        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", '.
+            '"repository": "http://public.languagedepot.org", "role": ""}, '.
+            '{"identifier": "identifier", "name": "name1", "repository": '.
+            '"http://private.languagedepot.org", "role": ""}]');
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
         $mock = new Mock([$response]);
         $client->getEmitter()->attach($mock);
@@ -230,7 +205,10 @@ class TestSendReceiveCommands extends UnitTestCase
         $username = 'mock_user';
         $password = 'mock_pass';
         $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "http://private.languagedepot.org", "role": ""}, {"identifier": "identifier", "name": "name1", "repository": "http://public.languagedepot.org", "role": ""}]');
+        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": '.
+            '"http://private.languagedepot.org", "role": ""}, '.
+            '{"identifier": "identifier", "name": "name1", '.
+            '"repository": "http://public.languagedepot.org", "role": ""}]');
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
         $mock = new Mock([$response]);
         $client->getEmitter()->attach($mock);
@@ -244,6 +222,27 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual($result['projects'][0]['repoClarification'], '');
         $this->assertEqual($result['projects'][1]['name'], 'name2');
         $this->assertEqual($result['projects'][1]['repoClarification'], 'private');
+    }
+
+    public function testGetUserProjects_TwoSRProjectsOneExistingLFProject_ProjectExists()
+    {
+        $username = 'mock_user';
+        $password = 'mock_pass';
+        $client = new Client();
+        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "", "role": ""}, '.
+            '{"identifier": "sr_id", "name": "sr_name", "repository": "", "role": ""}]');
+        $response = new Response(200, ['Content-Type' => 'application/json'], $body);
+        $mock = new Mock([$response]);
+        $client->getEmitter()->attach($mock);
+
+        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+
+        $this->assertEqual($result['isKnownUser'], true);
+        $this->assertEqual($result['hasValidCredentials'], true);
+        $this->assertEqual(count($result['projects']), 2);
+        $this->assertEqual($result['projects'][0]['isLinked'], false);
+        $this->assertEqual($result['projects'][1]['isLinked'], true);
+        $this->assertEqual($result['projects'][1]['name'], 'sr_name');
     }
 
     public function testQueueProjectForUpdate_NoSendReceive_NoAction()
@@ -262,7 +261,8 @@ class TestSendReceiveCommands extends UnitTestCase
     public function testQueueProjectForUpdate_HasSendReceive_QueueFileCreated()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $project->write();
         $mockMergeQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
 
@@ -308,7 +308,8 @@ class TestSendReceiveCommands extends UnitTestCase
     public function testStartLFMergeIfRequired_HasSendReceiveButNoLFMergeExe_Exception()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $projectId = $project->write();
         $queueType = 'merge';
         $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
@@ -330,7 +331,8 @@ class TestSendReceiveCommands extends UnitTestCase
     public function testStartLFMergeIfRequired_HasSendReceiveButNoPidFile_Started()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $projectId = $project->write();
         $queueType = 'merge';
         $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
@@ -361,7 +363,8 @@ class TestSendReceiveCommands extends UnitTestCase
     public function testGetProjectStatus_HasSendReceiveNoStateFile_NoState()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $projectId = $project->write();
         $mockStatePath = sys_get_temp_dir();
 
@@ -373,7 +376,8 @@ class TestSendReceiveCommands extends UnitTestCase
     public function testGetProjectStatus_HasSendReceiveAndStateFileNotJson_NoException()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $projectId = $project->write();
         $mockStatePath = sys_get_temp_dir();
         $projectStatePath = $mockStatePath . '/' . $project->projectCode . '.state';
@@ -389,7 +393,8 @@ class TestSendReceiveCommands extends UnitTestCase
     public function testGetProjectStatus_HasSendReceiveAndIdleStateFile_IdleState()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $projectId = $project->write();
         $mockStatePath = sys_get_temp_dir();
         $projectStatePath = $mockStatePath . '/' . $project->projectCode . '.state';
@@ -427,7 +432,8 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->environ->clean();
 
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $project->write();
         $mockReceiveQueuePath = sys_get_temp_dir() . '/mockReceiveQueue';
         $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
@@ -466,7 +472,8 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->environ->clean();
 
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $project->write();
 
         $isNotified = SendReceiveCommands::notificationSendRequest($project->projectCode);
@@ -479,7 +486,8 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->environ->clean();
 
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $project->write();
         $mockStatePath = sys_get_temp_dir();
         $projectStatePath = $mockStatePath . '/' . $project->projectCode . '.state';
@@ -496,7 +504,8 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->environ->clean();
 
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $project->sendReceiveProject = new SendReceiveProjectModel('sr_id', 'sr_name', '', 'manager');
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $project->write();
         $mockStatePath = sys_get_temp_dir();
         $projectStatePath = $mockStatePath . '/' . $project->projectCode . '.state';

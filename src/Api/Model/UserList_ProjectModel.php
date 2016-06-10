@@ -9,7 +9,10 @@ use Api\Model\Mapper\MongoMapper;
  */
 class UserList_ProjectModel extends Mapper\MapperListModel
 {
-
+    /**
+     * UserList_ProjectModel constructor.
+     * @param string $projectId
+     */
     public function __construct($projectId)
     {
         parent::__construct(

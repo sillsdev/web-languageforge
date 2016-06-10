@@ -8,13 +8,13 @@ class MapperUtils
      * @param string $databaseName
      */
     public static function drop($databaseName) {
-        return MongoUtils::drop($databaseName);
+        return MongoStore::dropDB($databaseName);
     }
 
     /**
      * @param string $databaseName
      */
-    public static function dropAllCollections($mapper) {
-        return MongoUtils::dropAllCollections($mapper);
+    public static function dropAllCollections($databaseName) {
+        return MongoStore::dropAllCollections($databaseName);
     }
 }

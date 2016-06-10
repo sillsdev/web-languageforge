@@ -36,34 +36,29 @@ class LexiconProjectModel extends LfProjectModel
     }
 
     /**
-     *
      * @var MapOf <InputSystem>
      */
     public $inputSystems;
 
     /**
-     *
      * @var LexConfiguration
      */
     public $config;
 
     /**
-     *
      * @var string
      */
     public $liftFilePath;
 
     /**
-     *
+     * @var string Language Depot project identifier (this is here for DB queries)
+     */
+    public $sendReceiveProjectIdentifier;
+
+    /**
      * @var SendReceiveProjectModel
      */
     public $sendReceiveProject;
-
-    /**
-     *
-     * @var string
-     */
-    public $sendReceiveUsername;
 
     /**
      * Adds an input system if it doesn't already exist
@@ -106,7 +101,7 @@ class LexiconProjectModel extends LfProjectModel
      */
     public function hasSendReceive()
     {
-        return ($this->sendReceiveProject->identifier) ? true : false;
+        return ($this->sendReceiveProjectIdentifier) ? true : false;
     }
 
     /**
@@ -115,15 +110,10 @@ class LexiconProjectModel extends LfProjectModel
     public function initializeNewProject()
     {
         // setup default option lists
-        $optionList = new LexOptionListModel($this);
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS);
-        if (! $optionList->readByProperty('code', $listCode)) {
-            $optionList->name = LexiconConfigObj::flexOptionlistName($listCode);
-            $optionList->code = $listCode;
-            $optionList->canDelete = false;
-            $optionList->readFromJson(APPPATH . 'json/languageforge/lexicon/partOfSpeech.json');
-            $optionList->write();
-        }
+        $jsonFilePath = APPPATH . 'json/languageforge/lexicon/partOfSpeech.json';
+        LexOptionListModel::CreateFromJson($this, LexiconConfigObj::POS, $jsonFilePath);
+
+        // Semantic Domains are delivered to the client as a javascript variable.
 
         $this->createAssetsFolders();
     }

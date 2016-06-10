@@ -45,13 +45,13 @@ class TextCommands
 
     /**
      * @param string $projectId
-     * @param JSON $object
-     * @return ID of text updated/added
+     * @param array $object (json encoded)
+     * @return string Id of text updated/added
      */
     public static function updateText($projectId, $object)
     {
-        $projectModel = new \Api\Model\ProjectModel($projectId);
-        $textModel = new \Api\Model\TextModel($projectModel);
+        $projectModel = new ProjectModel($projectId);
+        $textModel = new TextModel($projectModel);
         $isNewText = ($object['id'] == '');
         if (!$isNewText) {
             $textModel->read($object['id']);
@@ -77,14 +77,14 @@ class TextCommands
     }
 
     /**
-     *
      * @param string $projectId
      * @param string $textId
+     * @return array
      */
     public static function readText($projectId, $textId)
     {
-        $projectModel = new \Api\Model\ProjectModel($projectId);
-        $textModel = new \Api\Model\TextModel($projectModel, $textId);
+        $projectModel = new ProjectModel($projectId);
+        $textModel = new TextModel($projectModel, $textId);
 
         return JsonEncoder::encode($textModel);
     }

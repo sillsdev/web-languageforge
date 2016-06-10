@@ -52,7 +52,7 @@ class ArrayOf extends \ArrayObject
      * Appends $value if it doesn't already exist in the array
      * @param mixed $value
      */
-    public function value($value)
+    public function ensureValueExists($value)
     {
         if ($this->count() <= 0 || !$this->array_search($value)) {
             $this[] = $value;

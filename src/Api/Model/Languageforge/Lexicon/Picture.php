@@ -4,10 +4,11 @@ namespace Api\Model\Languageforge\Lexicon;
 
 class Picture
 {
-    public function __construct($fileName = '')
+    public function __construct($fileName = '', $guid = '')
     {
         $this->fileName = $fileName;
         $this->caption = new MultiText();
+        if ($guid) $this->guid = $guid;
     }
 
     /**
@@ -19,5 +20,10 @@ class Picture
      * @var MultiText
      */
     public $caption;
+
+    /**
+     * @var string
+     */
+    public $guid;
 
 }

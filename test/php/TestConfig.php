@@ -18,6 +18,7 @@ define('SimpleTestPath', $rootPath . 'src/vendor/simpletest/simpletest/');
 define('SourcePath', $rootPath . 'src/');
 
 define('SF_DATABASE', 'scriptureforge_test');
+define('MONGODB_CONN', 'mongodb://localhost:27017');
 define('SF_TESTPROJECT',      'Test Project');
 define('SF_TESTPROJECTCODE',  'TestCode1');
 define('SF_TESTPROJECT2',     'Test Project2');

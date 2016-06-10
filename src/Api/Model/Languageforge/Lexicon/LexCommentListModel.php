@@ -10,7 +10,7 @@ class LexCommentListModel extends \Api\Model\Mapper\MapperListModel
     public static function mapper($databaseName)
     {
         static $instance = null;
-        if (null === $instance) {
+        if (null === $instance || $instance->databaseName() != $databaseName) {
             $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'lexiconComments');
         }
 
@@ -29,7 +29,7 @@ class LexCommentListModel extends \Api\Model\Mapper\MapperListModel
         $this->entries = new ArrayOf(function ($data) use ($projectModel) { return new LexCommentModel($projectModel); });
         // sort ascending by creation date
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new \MongoDate($newerThanTimestamp);
+            $startDate = new \MongoDB\BSON\UTCDatetime($newerThanTimestamp*1000);
             parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false, 'dateModified'=> array('$gte' => $startDate)), array(), array('dateCreated' => 1), $limit, $skip);
         } else {
             parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false), array(), array('dateCreated' => 1), $limit, $skip);

@@ -2,7 +2,7 @@
 <div class="content container"
     data-ng-cloak data-ng-controller="MainCtrl" dir="{{interfaceConfig.direction}}">
     <div class="hdrnav">
-        <div class="btn-group" data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.edit">
+        <div class="btn-group" data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.canEditUsers()">
             <a class="btn dropdown-toggle" data-ng-class="interfaceConfig.pullToSide"
                 data-toggle="dropdown"
                 data-tooltip-placement="{{interfaceConfig.placementToSide}}"

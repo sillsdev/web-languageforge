@@ -9,7 +9,7 @@ class LexDeletedEntryListModel extends \Api\Model\Mapper\MapperListModel
     public static function mapper($databaseName)
     {
         static $instance = null;
-        if (null === $instance) {
+        if (null === $instance || $instance->databaseName() != $databaseName) {
             $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'lexicon');
         }
 
@@ -24,7 +24,7 @@ class LexDeletedEntryListModel extends \Api\Model\Mapper\MapperListModel
     public function __construct($projectModel, $newerThanTimestamp = null)
     {
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new \MongoDate($newerThanTimestamp);
+            $startDate = new \MongoDB\BSON\UTCDatetime(1000*$newerThanTimestamp);
             parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate), 'isDeleted' => true), array('id'));
         } else {
             parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => true), array('id'));

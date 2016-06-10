@@ -13,7 +13,6 @@ use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Mapper\MongoStore;
 use Api\Model\ProjectModel;
@@ -38,8 +37,7 @@ if (is_null($website)) {
 $site = $website->base;
 
 // start with a fresh database
-$db = MongoStore::connect(SF_DATABASE);
-foreach ($db->listCollections() as $collection) { $collection->drop(); }
+MongoStore::dropAllCollections(SF_DATABASE);
 
 // Also empty out databases for the test projects
 $projectArrays = array(
@@ -52,25 +50,24 @@ foreach ($projectArrays as $projectName => $projectCode) {
     $projectModel = new ProjectModel();
     $projectModel->projectName = $projectName;
     $projectModel->projectCode = $projectCode;
-    $db = \Api\Model\Mapper\MongoStore::connect($projectModel->databaseName());
-    foreach ($db->listCollections() as $collection) { $collection->drop(); }
+    MongoStore::dropAllCollections($projectModel->databaseName());
 }
 
 // drop the third database because it is used in a rename test
 $projectModel = new ProjectModel();
 $projectModel->projectName = $constants['thirdProjectName'];
 $projectModel->projectCode = $constants['thirdProjectCode'];
-$db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
+MongoStore::dropDB($projectModel->databaseName());
 
 // drop the 'new' and 'empty' database because it is used in a 'create new project' test
 $projectModel = new ProjectModel();
 $projectModel->projectName = $constants['newProjectName'];
 $projectModel->projectCode = $constants['newProjectCode'];
-$db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
+MongoStore::dropDB($projectModel->databaseName());
 $projectModel = new ProjectModel();
 $projectModel->projectName = $constants['emptyProjectName'];
 $projectModel->projectCode = $constants['emptyProjectCode'];
-$db = \Api\Model\Mapper\MongoStore::dropDB($projectModel->databaseName());
+MongoStore::dropDB($projectModel->databaseName());
 
 $adminUserId = UserCommands::createUser(array(
     'id' => '',
@@ -142,111 +139,113 @@ if ($site == 'scriptureforge') {
 } else if ($site == 'languageforge') {
     $projectType = LfProjectModel::LEXICON_APP;
 }
-$testProject = ProjectCommands::createProject(
+$testProjectId = ProjectCommands::createProject(
     $constants['testProjectName'],
     $constants['testProjectCode'],
     $projectType,
     $adminUserId,
     $website
 );
-$testProjectModel = new ProjectModel($testProject);
+$testProjectModel = new ProjectModel($testProjectId);
 $testProjectModel->projectCode = $constants['testProjectCode'];
 $testProjectModel->allowInviteAFriend = $constants['testProjectAllowInvites'];
 $testProjectModel->write();
 
-$otherProject = ProjectCommands::createProject(
+$otherProjectId = ProjectCommands::createProject(
     $constants['otherProjectName'],
     $constants['otherProjectCode'],
     $projectType,
     $managerUserId,
     $website
 );
-$otherProjectModel = new ProjectModel($otherProject);
+$otherProjectModel = new ProjectModel($otherProjectId);
 $otherProjectModel->projectCode = $constants['otherProjectCode'];
 $otherProjectModel->allowInviteAFriend = $constants['otherProjectAllowInvites'];
 $otherProjectModel->write();
 
-$srProject = ProjectCommands::createProject(
+$srProject = array(
+    'identifier' => $constants['srIdentifier'],
+    'name' => $constants['srName'],
+    'repository' => 'http://public.languagedepot.org',
+    'role' => 'manager'
+);
+$srTestProjectId = ProjectCommands::createProject(
     $constants['srProjectName'],
     $constants['srProjectCode'],
     $projectType,
     $managerUserId,
-    $website
+    $website,
+    $srProject
 );
 
-ProjectCommands::updateUserRole($testProject, $managerUserId, ProjectRoles::MANAGER);
-ProjectCommands::updateUserRole($testProject, $memberUserId, ProjectRoles::CONTRIBUTOR);
-ProjectCommands::updateUserRole($testProject, $resetUserId, ProjectRoles::CONTRIBUTOR);
-ProjectCommands::updateUserRole($otherProject, $adminUserId, ProjectRoles::MANAGER);
-ProjectCommands::updateUserRole($srProject, $adminUserId, ProjectRoles::MANAGER);
+ProjectCommands::updateUserRole($testProjectId, $managerUserId, ProjectRoles::MANAGER);
+ProjectCommands::updateUserRole($testProjectId, $memberUserId, ProjectRoles::CONTRIBUTOR);
+ProjectCommands::updateUserRole($testProjectId, $resetUserId, ProjectRoles::CONTRIBUTOR);
+ProjectCommands::updateUserRole($otherProjectId, $adminUserId, ProjectRoles::MANAGER);
+ProjectCommands::updateUserRole($srTestProjectId, $adminUserId, ProjectRoles::MANAGER);
 
 if ($site == 'scriptureforge') {
-    $text1 = TextCommands::updateText($testProject, array(
+    $text1 = TextCommands::updateText($testProjectId, array(
         'id' => '',
         'title' => $constants['testText1Title'],
         'content' => $constants['testText1Content']
     ));
-    $text2 = TextCommands::updateText($testProject, array(
+    $text2 = TextCommands::updateText($testProjectId, array(
         'id' => '',
         'title' => $constants['testText2Title'],
         'content' => $constants['testText2Content']
     ));
 
-    $question1 = QuestionCommands::updateQuestion($testProject, array(
+    $question1 = QuestionCommands::updateQuestion($testProjectId, array(
         'id' => '',
         'textRef' => $text1,
         'title' => $constants['testText1Question1Title'],
         'description' => $constants['testText1Question1Content']
     ));
-    $question2 = QuestionCommands::updateQuestion($testProject, array(
+    $question2 = QuestionCommands::updateQuestion($testProjectId, array(
         'id' => '',
         'textRef' => $text1,
         'title' => $constants['testText1Question2Title'],
         'description' => $constants['testText1Question2Content']
     ));
 
-    $template1 = QuestionTemplateCommands::updateTemplate($testProject, array(
+    $template1 = QuestionTemplateCommands::updateTemplate($testProjectId, array(
         'id' => '',
         'title' => 'first template',
         'description' => 'not particularly interesting'
             ));
 
-    $template2 = QuestionTemplateCommands::updateTemplate($testProject, array(
+    $template2 = QuestionTemplateCommands::updateTemplate($testProjectId, array(
         'id' => '',
         'title' => 'second template',
         'description' => 'not entirely interesting'
             ));
 
-    $answer1 = QuestionCommands::updateAnswer($testProject, $question1, array(
+    $answer1 = QuestionCommands::updateAnswer($testProjectId, $question1, array(
         'id' => '',
         'content' => $constants['testText1Question1Answer']),
         $managerUserId);
     $answer1Id = array_keys($answer1)[0];
-    $answer2 = QuestionCommands::updateAnswer($testProject, $question2, array(
+    $answer2 = QuestionCommands::updateAnswer($testProjectId, $question2, array(
         'id' => '',
         'content' => $constants['testText1Question2Answer']),
         $managerUserId);
     $answer2Id = array_keys($answer2)[0];
 
-    $comment1 = QuestionCommands::updateComment($testProject, $question1, $answer1Id, array(
+    $comment1 = QuestionCommands::updateComment($testProjectId, $question1, $answer1Id, array(
         'id' => '',
         'content' => $constants['testText1Question1Answer1Comment']),
         $managerUserId);
-    $comment2 = QuestionCommands::updateComment($testProject, $question2, $answer2Id, array(
+    $comment2 = QuestionCommands::updateComment($testProjectId, $question2, $answer2Id, array(
         'id' => '',
         'content' => $constants['testText1Question2Answer2Comment']),
         $managerUserId);
 } elseif ($site == 'languageforge') {
     // Set up LanguageForge E2E test envrionment here
-    $testProjectModel = new LexiconProjectModel($testProject);
+    $testProjectModel = new LexiconProjectModel($testProjectId);
     $testProjectModel->addInputSystem("th-fonipa", "tipa", "Thai");
     $testProjectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[] = 'th-fonipa';
     $testProjectId = $testProjectModel->write();
-
-    $srProjectModel = new LexiconProjectModel($srProject);
-    $srProjectModel->sendReceiveProject = new SendReceiveProjectModel($constants['srIdentifier'], $constants['srName'], 'http://public.languagedepot.org', 'manager');;
-    $srProjectModel->sendReceiveUsername = $constants['srUsername'];
-    $srProjectId = $srProjectModel->write();
 
     // setup to mimic file upload
     $fileName = $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'];
@@ -268,19 +267,19 @@ if ($site == 'scriptureforge') {
     // put uploaded file into entry1
     $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'] = $response->data->fileName;
 
-    $entry1 = LexEntryCommands::updateEntry($testProject,
+    $entry1 = LexEntryCommands::updateEntry($testProjectId,
         array(
             'id' => '',
             'lexeme' => $constants['testEntry1']['lexeme'],
             'senses' => $constants['testEntry1']['senses']
         ), $managerUserId);
-    $entry2 = LexEntryCommands::updateEntry($testProject,
+    $entry2 = LexEntryCommands::updateEntry($testProjectId,
         array(
             'id' => '',
             'lexeme' => $constants['testEntry2']['lexeme'],
             'senses' => $constants['testEntry2']['senses']
         ), $managerUserId);
-    $multipleMeaningEntry1 = LexEntryCommands::updateEntry($testProject,
+    $multipleMeaningEntry1 = LexEntryCommands::updateEntry($testProjectId,
         array(
             'id' => '',
             'lexeme' => $constants['testMultipleMeaningEntry1']['lexeme'],

@@ -74,28 +74,28 @@
 
     - name: install PECL mongo extension
       # yes types empty line over and over to accept defaults
-      shell: yes '' | /usr/bin/pecl install mongo-1.4.1
+      shell: yes '' | /usr/bin/pecl install mongodb
       register: pecl_result
       changed_when: "pecl_result.rc == 0"
       failed_when: "not (('already installed' in pecl_result.stdout) or ('install ok:' in pecl_result.stdout))"
     - name: install PECL mongo extension | enable module in mods-available
       lineinfile:
-        dest: /etc/php5/mods-available/mongo.ini
-        regexp: 'mongo.so'
-        line: 'extension=mongo.so'
+        dest: /etc/php5/mods-available/mongodb.ini
+        regexp: 'mongodb.so'
+        line: 'extension=mongodb.so'
         state: present
         create: yes
         mode: 0644
     - name: install PECL mongo extension | ensure conf.d exists
       file: path=/etc/php5/conf.d state=directory mode=0755
     - name: install PECL mongo extension | add mods-available in conf.d
-      file: src=../mods-available/mongo.ini dest=/etc/php5/conf.d/20-mongo.ini state=link
+      file: src=../mods-available/mongodb.ini dest=/etc/php5/conf.d/20-mongodb.ini state=link
       notify: Restart apache
     - name: install PECL mongo extension | add mods-available in cli/conf.d
-      file: src=/etc/php5/mods-available/mongo.ini dest=/etc/php5/cli/conf.d/20-mongo.ini state=link
+      file: src=/etc/php5/mods-available/mongodb.ini dest=/etc/php5/cli/conf.d/20-mongodb.ini state=link
       notify: Restart apache
     - name: install PECL mongo extension | add mods-available in apache2/conf.d
-      file: src=/etc/php5/mods-available/mongo.ini dest=/etc/php5/apache2/conf.d/20-mongo.ini state=link
+      file: src=/etc/php5/mods-available/mongodb.ini dest=/etc/php5/apache2/conf.d/20-mongodb.ini state=link
       notify: Restart apache
       
     - name: update the mongo config file

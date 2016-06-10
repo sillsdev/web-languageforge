@@ -268,7 +268,7 @@ EOD;
         $this->assertEqual($sense00->gloss['en']->value, 'A Word');
         $this->assertEqual($sense00->definition['en']->value, 'A Word Defn');
 
-        $expected = LexiconMultiValueField::createFromArray(array('9.1.3.1 Physical, non-physical'));
+        $expected = LexiconMultiValueField::createFromArray(array('9.1.3.1'));
         $this->assertEqual($sense00->semanticDomain, $expected);
 
         $expected = LexiconMultiValueField::createFromArray(array('901'));
@@ -286,8 +286,7 @@ EOD;
         $expected = LexiconMultiValueField::createFromArray(array('colloquial'));
         $this->assertEqual($sense00->usages, $expected);
 
-        $expected = new Picture();
-        $expected->fileName = 'Desert.jpg';
+        $expected = new Picture('Desert.jpg', $sense00->pictures[0]->guid);
         $expected->caption['th'] = 'รูป';
         $expected->caption['en'] = 'image';
         $expected->caption['fr'] = 'photo';

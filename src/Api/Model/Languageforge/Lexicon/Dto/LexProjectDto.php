@@ -52,18 +52,18 @@ class LexProjectDto
     public static function encode($projectId)
     {
         $project = new LexiconProjectModel($projectId);
-        $projectJson = LexProjectDtoEncoder::encode($project);
+        $projectDto = LexProjectDtoEncoder::encode($project);
 
         $data = array();
         $data['project'] = array();
-        $data['project']['interfaceLanguageCode'] = $projectJson['interfaceLanguageCode'];
-        $data['project']['ownerRef'] = $projectJson['ownerRef'];
-        $data['project']['projectCode'] = $projectJson['projectCode'];
-        $data['project']['featured'] = $projectJson['featured'];
+        $data['project']['interfaceLanguageCode'] = $projectDto['interfaceLanguageCode'];
+        $data['project']['ownerRef'] = $projectDto['ownerRef'];
+        $data['project']['projectCode'] = $projectDto['projectCode'];
+        $data['project']['featured'] = $projectDto['featured'];
         if ($project->hasSendReceive()) {
             $data['project']['sendReceive'] = array();
-            $data['project']['sendReceive']['project'] = $projectJson['sendReceiveProject'];
-            $data['project']['sendReceive']['username'] = $projectJson['sendReceiveUsername'];
+            $data['project']['sendReceive']['project'] = $projectDto['sendReceiveProject'];
+            $data['project']['sendReceive']['project']['identifier'] = $projectDto['sendReceiveProjectIdentifier'];
         }
 
         return $data;

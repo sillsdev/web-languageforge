@@ -82,7 +82,7 @@ class ParatextExport
         $user = new UserModel((string) $comment['userRef']);
         $username = $user->username;
 
-        $content = self::sanitizeComment($comment['content']) . " (by " . $user->username . " on " . date(\DateTime::RFC822, $comment['dateEdited']->sec) . ")";
+        $content = self::sanitizeComment($comment['content']) . " (by " . $user->username . " on " . $comment['dateEdited']->toDateTime()->format(\DateTime::RFC822) . ")";
         if (count($tags) > 0) {
             $content .= " (Tags: ";
             foreach ($tags as $tag) {
@@ -98,7 +98,7 @@ class ParatextExport
         return "\t<Comment>
         <Thread>" . $commentId . "</Thread>
         <User>SF-$username</User>
-        <Date>" . date(\DateTime::ISO8601, $comment['dateEdited']->sec) . "</Date>
+        <Date>" . $comment['dateEdited']->toDateTime()->format(\DateTime::RFC822) . "</Date>
         <VerseRef>" . $textInfo['bookCode'] . " " . $textInfo['startChapter'] . ":" . $textInfo['startVerse'] . "</VerseRef>
         <SelectedText />
         <StartPosition>" . $textInfo['startVerse'] . "</StartPosition>

@@ -56,7 +56,7 @@
 
     <target name="build" />
 
-    <target name="test-js-unit" depends="build-composer">
+    <target name="test-js-unit" depends="build-composer,build-bower">
         <exec dir="test/app" executable="node">
             <arg value="node_modules/karma/bin/karma" />
             <arg value="start" />
@@ -67,7 +67,13 @@
         </exec>
     </target>
 
-    <target name="test-php" depends="build-prepare,build-composer">
+    <target name="test-php" depends="build-prepare,build-composer,build-bower">
+        <replace file="test/php/TestConfig.php">
+            <replacefilter token="define('MONGODB_CONN', 'mongodb://localhost:27017');" value="define('MONGODB_CONN', 'mongodb://${mongodb.connection}');" />
+        </replace>
+        <replace file="src/config.php">
+            <replacefilter token="define('MONGODB_CONN', 'mongodb://localhost:27017');" value="define('MONGODB_CONN', 'mongodb://${mongodb.connection}');" />
+        </replace>
         <echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
         <exec executable="php" dir="test/php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
             <arg line="AllTests.php" />
@@ -86,6 +92,12 @@
 
     <target name="build-composer">
         <exec executable="composer" dir="src" failonerror="true">
+            <arg line="install" />
+        </exec>
+    </target>
+
+    <target name="build-bower">
+        <exec executable="bower" dir="src" failonerror="true">
             <arg line="install" />
         </exec>
     </target>
@@ -116,7 +128,7 @@
         <copy file="${build.libJsFile}" tofile="${build.minJsFile}" />
     </target>
 
-    <target name="package-copyWeb" depends="build-prepare,build-composer,build-minify,version">
+    <target name="package-copyWeb" depends="build-prepare,build-composer,build-bower,build-minify,version">
         <copy todir="${build.output}/package/htdocs">
             <fileset dir="src"/>
         </copy>
@@ -125,6 +137,7 @@
         />
         <replace file="${build.output}/package/htdocs/config.php">
             <replacefilter token="define('ENVIRONMENT', 'development');" value="define('ENVIRONMENT', 'production');" />
+            <replacefilter token="define('MONGODB_CONN', 'mongodb://localhost:27017');" value="define('MONGODB_CONN', 'mongodb://${mongodb.connection}');" />
             <replacefilter token="define('REMEMBER_ME_SECRET', 'kT3sdPo60ewrGu8');" value="define('REMEMBER_ME_SECRET', '${build.secret}');" />
         </replace>
         <replace file="${build.output}/package/htdocs/version.php">
@@ -294,7 +307,8 @@
             <dirset dir="${build.uploadPath}/htdocs/assets/" />
         </chmod>
         <exec dir="${build.uploadPath}" executable="rsync" failonerror="true">
-            <arg value="-vazHAX" />
+            <arg value="-vprogzlt" />
+            <arg value="--chown=root:www-data" />
             <arg value="--delete-during" />
             <arg value="--exclude=htdocs/assets" />
             <arg value="--exclude=htdocs/cache" />

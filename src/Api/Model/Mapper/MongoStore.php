@@ -2,44 +2,29 @@
 
 namespace Api\Model\Mapper;
 
+use MongoDB\Client;
+
 
 
 class MongoStore
 {
     /**
-     * @var \MongoDB[]
+     * @var \MongoDB\Client
      */
-    private static $_pool = array();
-
-    /**
-     * @var \Mongo
-     */
-    private static $_mongo;
+    private static $_mongoClient;
 
     /**
      * @param string $databaseName
-     * @return \MongoDB
+     * @return \MongoDB\Database
      */
     public static function connect($databaseName)
     {
-        if (!isset(static::$_pool[$databaseName])) {
-            static::$_pool[$databaseName] = static::connectMongo($databaseName);
+        if (static::$_mongoClient == null) {
+            // MongoDB Client that will unserialize everything as PHP Arrays consistent with the legacy driver (which our code was built on)
+            // see http://mongodb.github.io/mongo-php-library/classes/client/#example
+            static::$_mongoClient = new Client(MONGODB_CONN, [], ['typeMap' => ['root' => 'array', 'document' => 'array', 'array' => 'array']]);
         }
-
-        return static::$_pool[$databaseName];
-    }
-
-    /**
-     * @param string $databaseName
-     * @return \MongoDB
-     */
-    private static function connectMongo($databaseName)
-    {
-        if (static::$_mongo == null) {
-            static::$_mongo = new \Mongo();
-        }
-
-        return static::$_mongo->selectDB($databaseName);
+        return static::$_mongoClient->selectDatabase($databaseName);
     }
 
     /**
@@ -48,20 +33,22 @@ class MongoStore
      */
     public static function hasDB($databaseName)
     {
-        $databases = static::$_mongo->listDBs();
-        $result = array_filter($databases['databases'], function ($item) use ($databaseName) { return $item['name'] == $databaseName; } );
-
-        return count($result) != 0;
+        foreach (static::$_mongoClient->listDatabases() as $databaseInfo) {
+            if ($databaseInfo->getName() == $databaseName) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * @param string $sourceName
      * @param string $destName
-     * @return \MongoDB
+     * @return array - command result
      */
     public static function copyDB($sourceName, $destName)
     {
-        $response = static::$_mongo->admin->command(array(
+        $response = static::$_mongoClient->selectDatabase($sourceName)->command(array(
             'copydb' => 1,
             'fromhost' => 'localhost',
             'fromdb' => $sourceName,
@@ -73,38 +60,68 @@ class MongoStore
 
     /**
      * @param string $databaseName
-     * @return \MongoDB
+     * @return array - command result
      */
     public static function dropDB($databaseName)
     {
-        $oldDB = MongoStore::connectMongo($databaseName);
-        $response = $oldDB->drop();
-
-        return $response;
+        return static::$_mongoClient->dropDatabase($databaseName);
     }
 
     /**
      * @param string $oldName
      * @param string $newName
-     * @return array
+     * @return array - command result
      * @throws \Exception
      */
     public static function renameDB($oldName, $newName)
     {
         // See http://stackoverflow.com/questions/14701418/rename-mongo-database
-        if (!MongoStore::hasDB($oldName)) {
+        if (!self::hasDB($oldName)) {
             throw new \Exception("Database " . $oldName . " does not exist; cannot rename it to " . $newName . ".");
         }
-        if (MongoStore::hasDB($newName)) {
+        if (self::hasDB($newName)) {
             throw new \Exception("Database " . $newName . " already exists; not renaming " . $oldName . " to " . $newName . ".");
         }
-        $copyResult = MongoStore::copyDB($oldName, $newName);
-        $dropResult = MongoStore::dropDB($oldName);
+        $copyResult = self::copyDB($oldName, $newName);
+        $dropResult = self::dropDB($oldName);
         $result = array(
             'copyResult' => $copyResult,
             'dropResult' => $dropResult
         );
 
         return $result;
+    }
+
+    /**
+     *
+     * @param string $databaseName
+     */
+    public static function dropAllCollections($databaseName) {
+        $db = self::connect($databaseName);
+        if (self::hasDB($databaseName)) {
+            foreach ($db->listCollections() as $collectionInfo) {
+                if ($collectionInfo->getName() != 'system.indexes') {
+                    $collection = $db->selectCollection($collectionInfo->getName());
+                    $collection->drop();
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $databaseName
+     * @return integer
+     */
+    public static function countCollections($databaseName) {
+        $count = 0;
+        if (self::hasDB($databaseName)) {
+            $db = self::connect($databaseName);
+            foreach ($db->listCollections() as $collectionInfo) {
+                if ($collectionInfo->getName() != 'system.indexes') {
+                    $count++;
+                }
+            }
+        }
+        return $count;
     }
 }
