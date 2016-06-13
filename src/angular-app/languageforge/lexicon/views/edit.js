@@ -108,6 +108,18 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         lexService.update(prepEntryForUpdate(entryToSave), function (result) {
           if (result.ok) {
             var entry = result.data;
+            if (!entry && sendReceive.isSendReceiveProject()) {
+              notice.push(notice.WARN, 'Your edits in entry "' +
+                $scope.getWordForDisplay(entryToSave) + '" could not be saved because a ' +
+                'synchronise has been started by another user. When the synchronise finishes ' +
+                'please make your edits again.');
+              sendReceive.startSyncStatusTimer();
+            }
+
+            if (!entry) {
+              $scope.currentEntry = angular.copy(pristineEntry);
+            }
+
             if (isNewEntry) {
               // note: we have to reset the show window, because we don't know
               // where the new entry will show up in the list
@@ -137,7 +149,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
             // refresh data will add the new entry to the entries list
             editorService.refreshEditorData().then(function () {
-              if (isNewEntry) {
+              if (entry && isNewEntry) {
                 setCurrentEntry($scope.entries[getIndexInList(entry.id, $scope.entries)]);
                 editorService.removeEntryFromLists(newEntryTempId);
                 if (doSetEntry) {
