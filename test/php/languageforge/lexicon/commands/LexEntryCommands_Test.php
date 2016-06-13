@@ -5,11 +5,8 @@ use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\Example;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
-use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Languageforge\Lexicon\Sense;
 use Api\Model\Mapper\JsonEncoder;
-use Palaso\Utilities\FileUtilities;
-use Ramsey\Uuid\Uuid;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -347,5 +344,40 @@ class TestLexEntryCommands extends UnitTestCase
         $this->assertEqual($result->entries[0]['lexeme']['th']['value'], 'Apfel0');
         $this->assertTrue(!array_key_exists('definition', $result->entries[0]['senses'][0]));
         $this->assertEqual($result->entries[3]['senses'][0]['definition']['en']['value'], 'apple');
+    }
+
+    public function testRecursiveRemoveEmptyFieldValues_3EmptyItemsAnd3NonEmptyItems_NonEmptyItemsRemain()
+    {
+        $params = array(
+            'customFieldsEmpty' => array(
+                'customField_entry_Cust_Single_Line_All' => array(
+                    'en' => array('value' => ''),
+                    'fr' => array('value' => '')
+                )
+            ),
+            'literalMeaningEmpty' => array(
+                'en' => array('value' => '')
+            ),
+            'locationEmpty' => array('value' => ''),
+            'customFields' => array(
+                'customField_entry_Cust_Single_Line_All' => array(
+                    'en' => array('value' => 'english'),
+                    'fr' => array('value' => 'french')
+                )
+            ),
+            'literalMeaning' => array(
+                'en' => array('value' => 'literal')
+            ),
+            'location' => array('value' => 'locale')
+        );
+        $this->assertEqual(count($params), 6);
+
+        $params = LexEntryCommands::recursiveRemoveEmptyFieldValues($params);
+
+        $this->assertEqual(count($params), 3);
+        $this->assertEqual($params['customFields']['customField_entry_Cust_Single_Line_All']['en']['value'], 'english');
+        $this->assertEqual($params['customFields']['customField_entry_Cust_Single_Line_All']['fr']['value'], 'french');
+        $this->assertEqual($params['literalMeaning']['en']['value'], 'literal');
+        $this->assertEqual($params['location']['value'], 'locale');
     }
 }

@@ -95,6 +95,9 @@ class LexEntryCommands
                     }
                 } elseif (is_array($item)) {
                     $arr[$key] = self::recursiveRemoveEmptyFieldValues($item);
+                    if (count($arr[$key]) == 0) {
+                        unset($arr[$key]);
+                    }
                 } else {
                     // don't do anything for other types (e.g. boolean)
                 }
