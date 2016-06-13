@@ -4,7 +4,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
   'palaso.ui.language', 'ngAnimate', 'lexicon.services'])
   .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService',
     'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService',
-  function ($scope, notice, userService, lexProjectService, ss, $filter, $modal, lexConfigService) {
+  function ($scope, notice, userService, lexProjectService, ss, $filter, $modal, lexConfig) {
     lexProjectService.setBreadcrumbs('viewSettings', $filter('translate')('View Settings'));
 
     // ViewModel for input systems selectors
@@ -165,7 +165,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       }
     });
 
-    $scope.isCustomField = lexConfigService.isCustomField;
+    $scope.isCustomField = lexConfig.isCustomField;
 
     // $scope.fieldConfig, fieldOrder, and customFieldOrder will be read-only copies
     // of the config, so the view doesn't need to dig too deeply into config.entry.foo.bar.baz.quux
@@ -212,7 +212,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
           notice.push(notice.SUCCESS, $filter('translate')('View settings updated successfully'));
           $scope.viewSettingForm.$setPristine();
           $scope.projectSettings.config = angular.copy($scope.configDirty);
-          $scope.refreshConfig();
+          lexConfig.refresh();
         }
 
         $scope.isSaving = false;

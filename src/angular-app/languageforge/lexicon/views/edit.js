@@ -8,23 +8,22 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
   .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService',
     '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService',
     'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService',
-    'lexCommentService', 'lexEditorDataService', 'lexProjectService',
+    'lexCommentService', 'lexEditorDataService', 'lexProjectService', 'lexSendReceive',
   function ($scope, userService, sessionService, lexService,
             $window, $interval, $filter, linkService, utils, modal,
-            notice, $route, $rootScope, $location, configService,
-            commentService, editorService, lexProjectService) {
+            notice, $route, $rootScope, $location, lexConfig,
+            commentService, editorService, lexProjectService, sendReceive) {
 
     // TODO use ui-router for this instead!
 
     var pristineEntry = {};
 
-    // $scope.config is set in the parent controller, ng-app.js 'MainCtrl', so it can be updated
-    // after Send/Receive. IJH 2016-03
+    $scope.config = lexConfig.configForUser;
     $scope.lastSavedDate = new Date();
     $scope.currentEntry = {};
     $scope.commentService = commentService;
     $scope.editorService = editorService;
-    $scope.configService = configService;
+    $scope.configService = lexConfig;
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
 
@@ -97,7 +96,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
       if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
         cancelAutoSaveTimer();
-        $scope.sendReceive.status.SRState = 'unsynced';
+        sendReceive.setStateUnsyned();
         saving = true;
         var entryToSave = angular.copy($scope.currentEntry);
         if (entryIsNew(entryToSave)) {
@@ -520,6 +519,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         }
 
         if (!entryIsNew(entry)) {
+          sendReceive.setStateUnsyned();
           lexService.remove(entry.id, function () {
             editorService.refreshEditorData();
           });
@@ -634,21 +634,21 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // permissions stuff
     $scope.rights = {
       canEditProject: function canEditProject() {
-        if ($scope.isSyncing()) return false;
+        if (sendReceive.isSyncing()) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.PROJECTS,
           sessionService.operation.EDIT);
       },
 
       canEditEntry: function canEditEntry() {
-        if ($scope.isSyncing()) return false;
+        if (sendReceive.isSyncing()) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.EDIT);
       },
 
       canDeleteEntry: function canDeleteEntry() {
-        if ($scope.isSyncing()) return false;
+        if (sendReceive.isSyncing()) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.DELETE);

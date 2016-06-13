@@ -11,11 +11,11 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
         puiReset: '&',
         puiInitialCheck: '='
       },
-      controller: ['$scope', 'lexSendReceiveService', function ($scope, sendReceiveService) {
+      controller: ['$scope', 'lexSendReceiveApi', function ($scope, sendReceiveApi) {
         $scope.checkSRProject = function checkSRProject() {
           $scope.puiProject.sendReceive.usernameStatus = 'loading';
           $scope.puiProject.sendReceive.passwordStatus = 'loading';
-          sendReceiveService.getUserProjects($scope.puiProject.sendReceive.username,
+          sendReceiveApi.getUserProjects($scope.puiProject.sendReceive.username,
             $scope.puiProject.sendReceive.password,
             function (result) {
               $scope.puiProject.sendReceive.isUnchecked = false;
