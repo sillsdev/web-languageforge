@@ -14,9 +14,9 @@ angular.module('palaso.ui.comments')
       },
       controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService',
         'lexConfigService',
-      function ($scope, $filter, commentService, sessionService, modal, configService) {
-
-        $scope.config = configService.getConfigForUser();
+      function ($scope, $filter, commentService, sessionService, modal, lexConfig) {
+        lexConfig.refresh();
+        $scope.config = lexConfig.configForUser;
 
         function canComment() {
           return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
@@ -32,7 +32,7 @@ angular.module('palaso.ui.comments')
         function selectFieldForComment(fieldName, model, inputSystem, multioptionValue,
                                        pictureFilePath) {
           if (canComment()) {
-            $scope.newCommentRegardingFieldConfig = configService.getFieldConfig(fieldName);
+            $scope.newCommentRegardingFieldConfig = lexConfig.getFieldConfig(fieldName);
             $scope.newComment.regarding.field = fieldName;
             $scope.newComment.regarding.fieldNameForDisplay =
               $scope.newCommentRegardingFieldConfig.label;
