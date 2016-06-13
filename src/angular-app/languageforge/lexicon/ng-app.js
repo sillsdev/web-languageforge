@@ -218,9 +218,9 @@ angular.module('lexicon',
     };
 
     function projectStatusSuccess() {
-      $scope.finishedLoading = false;
+      //$scope.finishedLoading = false;
       editorService.loadEditorData().then(function () {
-        $scope.finishedLoading = true;
+        //$scope.finishedLoading = true;
         sessionService.refresh(lexConfig.refresh);
       });
     }
