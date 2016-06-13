@@ -48,7 +48,7 @@ angular.module('lexicon.services')
         return (_this.isSendReceiveProject &&
           angular.isDefined(_this.status) && angular.isDefined(_this.status.SRState) &&
           _this.status.SRState != 'IDLE' && _this.status.SRState != '' &&
-          _this.status.SRState != 'HOLD'
+          _this.status.SRState != 'HOLD' && _this.status.SRState != 'unsynced'
         );
       };
 
@@ -83,7 +83,6 @@ angular.module('lexicon.services')
 
       this.setStateUnsyned = function setStateUnsyned() {
         _this.status.SRState = 'unsynced';
-
       };
 
       this.getSyncProjectStatus = function getSyncProjectStatus() {
@@ -115,6 +114,8 @@ angular.module('lexicon.services')
             if (_this.status.SRState == 'IDLE') {
               if (!isInitialCheck) {
                 notice.push(notice.SUCCESS, 'The project was successfully synchronized.');
+              } else {
+                _this.clearState();
               }
 
               (syncProjectStatusSuccessCallback || angular.noop)();
@@ -186,7 +187,7 @@ angular.module('lexicon.services')
       this.startCloneStatusTimer = function startCloneStatusTimer() {
         if (angular.isDefined(cloneStatusTimer)) return;
 
-        cloneStatusTimer = $interval(getCloneProjectStatus, 3000);
+        cloneStatusTimer = $interval(_this.getCloneProjectStatus, 3000);
       };
 
       this.cancelCloneStatusTimer = function cancelCloneStatusTimer() {

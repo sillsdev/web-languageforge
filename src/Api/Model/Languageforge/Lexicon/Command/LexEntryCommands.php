@@ -42,7 +42,7 @@ class LexEntryCommands
      * @param string $mergeQueuePath
      * @param string $pidFilePath
      * @param string $command
-     * @return array<encoded LexEntryModel>
+     * @return bool|array<encoded LexEntryModel> if the project is syncing (or on hold) return false (no save)FixSe
      */
     public static function updateEntry($projectId, $params, $userId, $mergeQueuePath = null, $pidFilePath = null, $command = null)
     {
@@ -61,12 +61,15 @@ class LexEntryCommands
             // E.g., "User _____ updated entry _____ by adding a new sense with definition ______"
         }
 
-        // set authorInfo
         $entry->authorInfo->modifiedDate = new \DateTime();
         $entry->authorInfo->modifiedByUserRef->id = $userId;
 
-//        if ($project->hasSendReceive()) $entry->dirtySR++;
-        if ($project->hasSendReceive()) $entry->dirtySR = 0;
+        if ($project->hasSendReceive()) {
+//            $entry->dirtySR++;
+            $entry->dirtySR = 0;
+            $status = SendReceiveCommands::getProjectStatus($projectId);
+            if ($status && $status['SRState'] != 'IDLE') return false;
+        }
 
         $params = self::recursiveRemoveEmptyFieldValues($params);
         //$params = self::recursiveAlignCustomFieldsWithModel($params);
