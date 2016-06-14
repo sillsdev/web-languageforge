@@ -32,12 +32,17 @@ angular.module('lexicon.services')
       var syncProjectStatusSuccessCallback = angular.noop;
       var cloneProjectStatusSuccessCallback = angular.noop;
       var syncStatusTimer;
+      var pollStatusTimer;
       var cloneStatusTimer;
 
       this.status = undefined;
+      if (angular.isDefined(projectSettings.sendReceive) &&
+          angular.isDefined(projectSettings.sendReceive.status)) {
+        this.status = projectSettings.sendReceive.status;
+      }
 
       this.clearState = function clearState() {
-        if (angular.isUndefined(_this.status)) {
+        if (!_this.status || angular.isUndefined(_this.status)) {
           _this.status = {};
         }
 
@@ -62,15 +67,17 @@ angular.module('lexicon.services')
         };
 
       this.checkInitialState = function checkInitialState() {
-        if (!_this.status) {
-          _this.clearState();
-          _this.getSyncProjectStatus();
-          _this.startSyncStatusTimer();
-        } else if (_this.status.SRState == 'IDLE') {
-          _this.clearState();
-        } else if (_this.status.SRState != 'HOLD') {
-          _this.getSyncProjectStatus();
-          _this.startSyncStatusTimer();
+        if (_this.isSendReceiveProject()) {
+          if (!_this.status || angular.isUndefined(_this.status)) {
+            _this.clearState();
+            getSyncProjectStatus();
+            _this.startSyncStatusTimer();
+          } else if (_this.isSyncing()) {
+            _this.setSyncStarted();
+          } else {
+            _this.clearState();
+            _this.startPollStatusTimer();
+          }
         }
       };
 
@@ -82,15 +89,17 @@ angular.module('lexicon.services')
       };
 
       this.setStateUnsyned = function setStateUnsyned() {
-        _this.status.SRState = 'unsynced';
+        if (_this.isSendReceiveProject()) {
+          _this.status.SRState = 'unsynced';
+        }
       };
 
-      this.getSyncProjectStatus = function getSyncProjectStatus() {
+      function getSyncProjectStatus() {
         sendReceiveApi.getProjectStatus(function (result) {
           if (result.ok) {
             if (!result.data) {
               _this.clearState();
-              _this.cancelSyncStatusTimer();
+              _this.startPollStatusTimer();
               notice.cancelLoading();
               return;
             }
@@ -100,7 +109,7 @@ angular.module('lexicon.services')
             notice.setLoading('Syncing with LanguageDepot.org...');
             _this.status = result.data;
             if (!_this.isSyncing()) {
-              _this.cancelSyncStatusTimer();
+              _this.startPollStatusTimer();
               notice.cancelLoading();
             }
 
@@ -122,12 +131,14 @@ angular.module('lexicon.services')
             }
           }
         });
-      };
+      }
 
       this.startSyncStatusTimer = function startSyncStatusTimer() {
+        _this.cancelPollStatusTimer();
+        _this.cancelCloneStatusTimer();
         if (angular.isDefined(syncStatusTimer)) return;
 
-        syncStatusTimer = $interval(_this.getSyncProjectStatus, 3000);
+        syncStatusTimer = $interval(getSyncProjectStatus, 3000);
       };
 
       this.cancelSyncStatusTimer = function cancelSyncStatusTimer() {
@@ -158,12 +169,46 @@ angular.module('lexicon.services')
         }
       };
 
+      function getPollProjectStatus() {
+        sendReceiveApi.getProjectStatus(function (result) {
+          if (result.ok) {
+            if (!result.data) {
+              _this.clearState();
+              return;
+            }
+
+            var stateWasClear = (_this.status.SRState == '');
+            _this.status = result.data;
+            if (_this.isSyncing()) {
+              _this.setSyncStarted();
+            } else {
+              stateWasClear && _this.clearState();
+            }
+          }
+        });
+      }
+
+      this.startPollStatusTimer = function startPollStatusTimer() {
+        _this.cancelSyncStatusTimer();
+        _this.cancelCloneStatusTimer();
+        if (angular.isDefined(pollStatusTimer)) return;
+
+        pollStatusTimer = $interval(getPollProjectStatus, 32000);
+      };
+
+      this.cancelPollStatusTimer = function cancelPollStatusTimer() {
+        if (angular.isDefined(pollStatusTimer)) {
+          $interval.cancel(pollStatusTimer);
+          pollStatusTimer = undefined;
+        }
+      };
+
       this.setCloneProjectStatusSuccessCallback =
         function setCloneProjectStatusSuccessCallback(callback) {
           cloneProjectStatusSuccessCallback = callback;
         };
 
-      this.getCloneProjectStatus = function getCloneProjectStatus() {
+      function getCloneProjectStatus() {
         sendReceiveApi.getProjectStatus(function (result) {
           if (result.ok) {
             if (!result.data) {
@@ -179,19 +224,19 @@ angular.module('lexicon.services')
               _this.cancelCloneStatusTimer();
               (cloneProjectStatusSuccessCallback || angular.noop)();
             }
-
           }
         });
-      };
+      }
 
       this.startCloneStatusTimer = function startCloneStatusTimer() {
+        _this.cancelPollStatusTimer();
+        _this.cancelSyncStatusTimer();
         if (angular.isDefined(cloneStatusTimer)) return;
 
-        cloneStatusTimer = $interval(_this.getCloneProjectStatus, 3000);
+        cloneStatusTimer = $interval(getCloneProjectStatus, 3000);
       };
 
       this.cancelCloneStatusTimer = function cancelCloneStatusTimer() {
-        _this.clearState();
         if (angular.isDefined(cloneStatusTimer)) {
           $interval.cancel(cloneStatusTimer);
           cloneStatusTimer = undefined;
@@ -212,6 +257,12 @@ angular.module('lexicon.services')
           default:
             return '';
         }
+      };
+
+      this.cancelAllStatusTimers = function cancelAllStatusTimers() {
+        _this.cancelSyncStatusTimer();
+        _this.cancelPollStatusTimer();
+        _this.cancelCloneStatusTimer();
       };
 
     }])
