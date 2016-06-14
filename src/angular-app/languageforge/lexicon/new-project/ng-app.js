@@ -269,8 +269,7 @@ angular.module('lexicon-new-project',
           return validateSendReceiveCredentialsForm();
           break;
         case 'newProject.sendReceiveClone':
-          if ($scope.sendReceive.status.SRState != 'IDLE' &&
-            $scope.sendReceive.status.SRState != 'HOLD') {
+          if (sendReceive.status.SRState != 'IDLE' && sendReceive.status.SRState != 'HOLD') {
             return error();
           }
 
@@ -377,8 +376,7 @@ angular.module('lexicon-new-project',
 
           break;
         case 'newProject.sendReceiveClone':
-          if ($scope.sendReceive.status.SRState == 'IDLE' ||
-              $scope.sendReceive.status.SRState == 'HOLD') {
+          if (sendReceive.status.SRState == 'IDLE' || sendReceive.status.SRState == 'HOLD') {
             gotoLexicon();
           }
 
@@ -642,7 +640,6 @@ angular.module('lexicon-new-project',
     function getProject() {
       sendReceiveApi.receiveProject(function (result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, 'Started sync with LanguageDepot.org...');
           $state.go('newProject.sendReceiveClone');
           sendReceive.startCloneStatusTimer();
         } else {
@@ -655,7 +652,8 @@ angular.module('lexicon-new-project',
 
     // ----- Step 2: Send Receive Clone -----
 
-    $scope.sendReceive = sendReceive;
+    $scope.cloneNotice = sendReceive.cloneNotice;
+    sendReceive.clearState();
     sendReceive.setCloneProjectStatusSuccessCallback(gotoLexicon);
 
     $scope.$on('$destroy', sendReceive.cancelCloneStatusTimer);
