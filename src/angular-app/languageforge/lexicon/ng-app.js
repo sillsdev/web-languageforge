@@ -122,7 +122,7 @@ angular.module('lexicon',
 
     $scope.project = sessionService.session.project;
     $scope.projectSettings = sessionService.session.projectSettings;
-    $scope.sendReceive = sendReceive;
+    $scope.syncNotice = sendReceive.syncNotice;
     sendReceive.setSyncProjectStatusSuccessCallback(projectStatusSuccess);
 
     $scope.rights = {};
@@ -225,8 +225,8 @@ angular.module('lexicon',
       });
     }
 
-    $scope.$on('$destroy', sendReceive.cancelSyncStatusTimer);
-    $scope.$on('$locationChangeStart', sendReceive.cancelSyncStatusTimer);
+    $scope.$on('$destroy', sendReceive.cancelAllStatusTimers);
+    $scope.$on('$locationChangeStart', sendReceive.cancelAllStatusTimers);
 
     // setup offline.js options
     // see https://github.com/hubspot/offline for all options
