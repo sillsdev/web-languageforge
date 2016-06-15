@@ -13,7 +13,11 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
         $scope.addSense = function() {
           var newSense = {};
           $scope.control.makeValidModelRecursive($scope.config.fields.senses, newSense, 'examples');
-          $scope.model.senses.unshift(newSense);
+          $scope.model.senses.push(newSense);
+
+          // Scroll to the newly added sense to provide UI feedback
+          var elem = document.getElementsByClassName('entryItemView')[0];
+          $(elem).animate({scrollTop:elem.scrollHeight}, 1500);
         };
 
 
