@@ -266,6 +266,51 @@ describe('Browse and edit page (DBE) Editor', function () {
       expect(dbePage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
     });
 
+  describe('Dictionary Configuration check', function () {
+
+    it('Word has only "th" and "tipa" visible', function () {
+      expect(dbePage.edit.getMultiTextInputSystems('Word').count()).toEqual(2);
+      expect(dbePage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
+      expect(dbePage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
+    });
+
+    it('make "en" input system visible for "Word" field', function () {
+      configPage.get();
+      configPage.getTabByName('Fields').click();
+      configPage.getFieldByName('Word').click();
+      expect(configPage.fieldsTab.inputSystemTags.get(2).getText()).toEqual('en');
+      util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(2), true);
+      configPage.applyButton.click();
+      util.clickBreadcrumb(constants.testProjectName);
+      dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    });
+
+    it('Word has "th", "tipa" and "en" visible', function () {
+      expect(dbePage.edit.getMultiTextInputSystems('Word').count()).toEqual(3);
+      expect(dbePage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
+      expect(dbePage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
+      expect(dbePage.edit.getMultiTextInputSystems('Word').get(2).getText()).toEqual('en');
+    });
+
+    it('make "en" input system invisible for "Word" field', function () {
+      configPage.get();
+      configPage.getTabByName('Fields').click();
+      configPage.getFieldByName('Word').click();
+      expect(configPage.fieldsTab.inputSystemTags.get(2).getText()).toEqual('en');
+      util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(2), false);
+      configPage.applyButton.click();
+      util.clickBreadcrumb(constants.testProjectName);
+      dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    });
+
+    it('Word has only "th" and "tipa" visible', function () {
+      expect(dbePage.edit.getMultiTextInputSystems('Word').count()).toEqual(2);
+      expect(dbePage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
+      expect(dbePage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
+    });
+
+  });
+
   it('new word is visible in browse page', function () {
     dbePage.edit.toListLink.click();
     dbePage.browse.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
