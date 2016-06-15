@@ -351,8 +351,9 @@ legend.override-bootstrap {
 
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 600px;
+    height: 580px;
     padding-right:5px;
+    margin-right: 5px;
 }
 
 .entryItemView i.icon-remove {
