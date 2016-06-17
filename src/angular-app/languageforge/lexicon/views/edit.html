@@ -27,7 +27,7 @@
                             <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
                             <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
                         </li>
-                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
+                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.matchCountCaption}}</i></small></li>
                     </ul>
                 </typeahead>
             </div>
@@ -61,7 +61,7 @@
                                 <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
                                 <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
                             </li>
-                            <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.searchResults.length}} match(es)</i></small></li>
+                            <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.matchCountCaption}}</i></small></li>
                         </ul>
                     </typeahead>
                 </div>
