@@ -702,11 +702,25 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // search typeahead
     $scope.typeahead = {
       term: '',
-      searchResults: []
+      searchResults: [],
+      matchCountCaption: ''
     };
     $scope.typeahead.searchEntries = function searchEntries(query) {
       $scope.typeahead.searchResults = $filter('filter')($scope.entries, query);
+      $scope.typeahead.matchCountCaption = '';
+      var numMatches = $scope.typeahead.searchResults.length;
+      var limit = 10;
+      if (numMatches > limit) {
+        $scope.typeahead.matchCountCaption = limit + ' of ' + numMatches + " matches";
+      }
+      else if (1 < numMatches && numMatches < limit) {
+        $scope.typeahead.matchCountCaption = numMatches + ' matches';
+      }
+      else if (numMatches == 1) {
+        $scope.typeahead.matchCountCaption = numMatches + ' match';
+      }
     };
+
 
     $scope.typeahead.searchSelect = function searchSelect(entry) {
       $scope.typeahead.searchItemSelected = '';

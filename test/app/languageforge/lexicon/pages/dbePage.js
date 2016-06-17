@@ -43,7 +43,7 @@ var LfDbePage = function () {
       results: _this.browseDiv.element(by.css('div.typeahead'))
         .all(by.repeater('e in typeahead.searchResults')),
       matchCountElem: _this.browseDiv.element(by.css('div.typeahead'))
-        .element(by.binding('typeahead.searchResults.length')),
+        .element(by.binding('typeahead.matchCountCaption')),
       getMatchCount: function () {
 
         // Inside this function, "this" == _this.browse.search
@@ -141,7 +141,7 @@ var LfDbePage = function () {
       results: _this.editDiv.element(by.css('div.typeahead'))
         .all(by.repeater('e in typeahead.searchResults')),
       matchCountElem: _this.editDiv.element(by.css('div.typeahead'))
-        .element(by.binding('typeahead.searchResults.length')),
+        .element(by.binding('typeahead.matchCountCaption')),
       getMatchCount: function () {
         // Inside this function, "this" == _this.edit.search
         return this.matchCountElem.getText().then(function (s) {
