@@ -323,5 +323,11 @@ describe('Browse and edit page (DBE) Editor', function () {
     expect(dbePage.browse.getEntryCount()).toBe(4);
   });
 
+  it('remove new word to restore original word count', function () {
+    dbePage.browse.clickEntryByLexeme(constants.testEntry3.lexeme.th.value);
+    dbePage.edit.deleteBtn.click();
+    util.clickModalButton('Delete Word');
+    expect(dbePage.edit.getEntryCount()).toBe(3);
+  });
 });
 
