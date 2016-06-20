@@ -605,6 +605,26 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // only refresh the full view if we have not yet loaded the dictionary for the first time
     evaluateState();
 
+    sendReceive.setPollProjectStatusSuccessCallback(pollProjectStatusSuccess);
+    sendReceive.setSyncProjectStatusSuccessCallback(syncProjectStatusSuccess);
+
+    function pollProjectStatusSuccess() {
+      cancelAutoSaveTimer();
+      notice.push(notice.WARN, 'Your edits in entry "' +
+        $scope.getWordForDisplay($scope.currentEntry) + '" will not be saved because a ' +
+        'synchronise has been started by another user. When the synchronise finishes ' +
+        'please make your edits again.');
+      $scope.currentEntry = angular.copy(pristineEntry);
+    }
+
+    function syncProjectStatusSuccess() {
+      $scope.finishedLoading = false;
+      editorService.loadEditorData().then(function () {
+        $scope.finishedLoading = true;
+        sessionService.refresh(lexConfig.refresh);
+      });
+    }
+
     var autoSaveTimer;
     function startAutoSaveTimer() {
       if (angular.isDefined(autoSaveTimer)) {
