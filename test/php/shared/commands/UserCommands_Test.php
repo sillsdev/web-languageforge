@@ -1,40 +1,39 @@
 <?php
 
-use libraries\scriptureforge\sfchecks\IDelivery;
-use libraries\shared\Website;
-use models\commands\UserCommands;
-use models\mapper\Id;
-use models\shared\rights\SystemRoles;
-use models\PasswordModel;
-use models\ProjectModel;
-use models\UserModel;
-use models\UserProfileModel;
+use Api\Library\Shared\Communicate\DeliveryInterface;
+use Api\Model\Command\UserCommands;
+use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\PasswordModel;
+use Api\Model\ProjectModel;
+use Api\Model\UserModel;
+use Api\Model\UserProfileModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
-class MockUserCommandsDelivery implements IDelivery
+class MockUserCommandsDelivery implements DeliveryInterface
 {
     public $from;
     public $to;
     public $subject;
     public $content;
+    public $htmlContent;
     public $smsModel;
 
-    public function sendEmail($from, $to, $subject, $content)
+    public function sendEmail($from, $to, $subject, $content, $htmlContent = '')
     {
         $this->from = $from;
         $this->to = $to;
         $this->subject = $subject;
         $this->content = $content;
+        $this->htmlContent = $htmlContent;
     }
 
     public function sendSms($smsModel)
     {
         $this->smsModel = $smsModel;
     }
-
 }
 
 class TestUserCommands extends UnitTestCase
@@ -67,7 +66,7 @@ class TestUserCommands extends UnitTestCase
 
         $userId = $this->environ->createUser('somename', 'Some Name', 'somename@example.com');
 
-        UserCommands::deleteUsers(array($userId), 'bogus auth userid');
+        UserCommands::deleteUsers(array($userId));
     }
 
     public function testUpdateUserProfile_SetLangCode_LangCodeSet()
@@ -309,7 +308,8 @@ class TestUserCommands extends UnitTestCase
         $user->write();
         $this->expectException();
         $this->environ->inhibitErrorDisplay();
-        $params = UserCommands::readForRegistration($key);
+
+        UserCommands::readForRegistration($key);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
@@ -444,11 +444,11 @@ class TestUserCommands extends UnitTestCase
     {
         $this->environ->clean();
 
-        $adminModel = new models\UserModel();
+        $adminModel = new Api\Model\UserModel();
         $adminModel->username = 'admin';
         $adminModel->role = SystemRoles::SYSTEM_ADMIN;
         $adminId = $adminModel->write();
-        $userModel = new models\UserModel();
+        $userModel = new Api\Model\UserModel();
         $userModel->username = 'user';
         $userModel->role = SystemRoles::NONE;
         $userId = $userModel->write();

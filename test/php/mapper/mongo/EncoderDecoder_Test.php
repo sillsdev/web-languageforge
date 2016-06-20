@@ -1,14 +1,14 @@
 <?php
 
-use models\mapper\ArrayOf;
+use Api\Model\Mapper\ArrayOf;
 
-use models\mapper\MapOf;
+use Api\Model\Mapper\MapOf;
 
-use models\UserModel;
+use Api\Model\UserModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class CodecTest extends UserModel
 {

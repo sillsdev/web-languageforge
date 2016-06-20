@@ -1,28 +1,29 @@
 <?php
 
-$rootPath = realpath(dirname(__FILE__) . '/../../') . '/';
+use Api\Library\Shared\Website;
+
+$rootPath = realpath(__DIR__ . '/../../') . '/';
+
+// Fake app path define
+define('APPPATH', $rootPath . 'src/');
+
+require_once APPPATH . 'vendor/autoload.php';
 
 define('TestMode', true);
 
-define('TestPath', $rootPath . 'test/php/');
+define('TestPath', $rootPath . 'test/');
+define('TestPhpPath', $rootPath . 'test/php/');
 define('TestLibPath', $rootPath . 'test/lib/');
 define('SimpleTestPath', $rootPath . 'src/vendor/simpletest/simpletest/');
 define('SourcePath', $rootPath . 'src/');
 
-// Fake some CodeIgniter path defines
-define('APPPATH', $rootPath . 'src/');
-define('BASEPATH', $rootPath . 'lib/CodeIgniter_2.1.3/system/');
-
-require_once APPPATH . 'helpers/loader_helper.php';
-require_once APPPATH . 'vendor/autoload.php';
-
 define('SF_DATABASE', 'scriptureforge_test');
+define('MONGODB_CONN', 'mongodb://localhost:27017');
 define('SF_TESTPROJECT',      'Test Project');
 define('SF_TESTPROJECTCODE',  'TestCode1');
 define('SF_TESTPROJECT2',     'Test Project2');
 define('SF_TESTPROJECTCODE2', 'TestCode2');
+define('BCRYPT_COST', 7);
 
 global $WEBSITE;
-$WEBSITE = \libraries\shared\Website::get('dev.scriptureforge.org');
-
-require_once APPPATH . 'config/sf_config.php';
+$WEBSITE = Website::get('dev.scriptureforge.org');

@@ -1,0 +1,130 @@
+---
+
+- name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
+  hosts: all
+  sudo: yes
+  pre_tasks:
+    - include_vars: "vars_{{ deploy }}.yml"
+  roles:
+    - fix
+    # locale_install may be needed if locale has been changed away from defaults
+#    - locale_install
+    - ssl_config
+    - apache_config
+  tasks:
+    - name: install packages
+      apt: name="{{item}}" state=present
+      with_items:
+        - libapache2-mod-php5
+        - php5-gd
+        - php5-dev
+        - php5-cli
+        - php-pear
+        - mongodb-server
+        - postfix
+        - unzip
+        - p7zip-full
+
+    - name: php log folder exists
+      file: path={{php_log_folder}} state=directory owner=www-data group=www-data mode=0775 recurse=yes
+
+    - name: php.ini changes
+      lineinfile:
+        dest: /etc/php5/apache2/php.ini
+        regexp: '^;?{{item.property}}'
+        line: "{{item.property}} = {{item.value}}"
+        backrefs: yes
+      with_items:
+        - property: 'memory_limit'
+          value: '256M'
+        - property: 'display_errors'
+          value: 'On'
+        - property: 'display_startup_errors'
+          value: 'On'
+        - property: 'error_log'
+          value: '{{php_log_folder}}/php_error.log'
+        - property: 'post_max_size'
+          value: '60M'
+        - property: 'upload_max_filesize'
+          value: '60M'
+      notify: Restart apache
+
+    - name: postfix | halt emails in output queue
+      lineinfile:
+        dest: /etc/postfix/main.cf
+        state: present
+        create: yes
+        regexp: '^#?{{item.property}}'
+        line: "{{item.property}} = {{item.value}}"
+      with_items:
+        - property: 'default_transport'
+          value: 'retry:no outbound email allowed'
+      notify: restart postfix
+
+    - name: Ensure default_local folder does not exist (localhost)
+      file: path="/var/www/virtual/default_local" state=absent force=true
+      when: inventory_hostname == "localhost"
+    - name: Get local dir (localhost)
+      local_action: shell pwd
+      register: local_dir
+      when: inventory_hostname == "localhost"
+    - name: Ensure default_local link exists (localhost)
+      file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/virtual/default_local" state=link group=www-data force=true
+      when: inventory_hostname == "localhost"
+
+    - name: install PECL mongo extension
+      # yes types empty line over and over to accept defaults
+      shell: yes '' | /usr/bin/pecl install mongodb
+      register: pecl_result
+      changed_when: "pecl_result.rc == 0"
+      failed_when: "not (('already installed' in pecl_result.stdout) or ('install ok:' in pecl_result.stdout))"
+    - name: install PECL mongo extension | enable module in mods-available
+      lineinfile:
+        dest: /etc/php5/mods-available/mongodb.ini
+        regexp: 'mongodb.so'
+        line: 'extension=mongodb.so'
+        state: present
+        create: yes
+        mode: 0644
+    - name: install PECL mongo extension | ensure conf.d exists
+      file: path=/etc/php5/conf.d state=directory mode=0755
+    - name: install PECL mongo extension | add mods-available in conf.d
+      file: src=../mods-available/mongodb.ini dest=/etc/php5/conf.d/20-mongodb.ini state=link
+      notify: Restart apache
+    - name: install PECL mongo extension | add mods-available in cli/conf.d
+      file: src=/etc/php5/mods-available/mongodb.ini dest=/etc/php5/cli/conf.d/20-mongodb.ini state=link
+      notify: Restart apache
+    - name: install PECL mongo extension | add mods-available in apache2/conf.d
+      file: src=/etc/php5/mods-available/mongodb.ini dest=/etc/php5/apache2/conf.d/20-mongodb.ini state=link
+      notify: Restart apache
+      
+    - name: update the mongo config file
+      lineinfile:
+        dest: /etc/mongodb.conf
+        regexp: '^(dbpath=).*$'
+        line: '\1{{mongo_path}}'
+        backrefs: yes
+      notify: restart mongodb
+    - name: ensure mongodb is running (and enable it at boot)
+      service: name=mongodb state=started enabled=yes
+
+    - name: add host aliases
+      lineinfile:
+        dest: /etc/hosts
+        regexp: '\s{{item}}'
+        line: "127.0.0.1    {{item}}"
+        state: present
+        create: yes
+      with_items:
+        - "default.local"
+        - "languageforge.local"
+        - "scriptureforge.local"
+        - "jamaicanpsalms.scriptureforge.local"
+        - "demo.scriptureforge.local"
+
+  handlers:
+    - name: restart mongodb
+      service: name=mongodb state=restarted
+
+    - name: restart postfix
+      service: name=postfix state=restarted

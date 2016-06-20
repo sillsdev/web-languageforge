@@ -1,0 +1,39 @@
+{% verbatim %}
+{% endverbatim %}
+
+<div class="content container" data-ng-controller="ForgotPasswordCtrl">
+    <div class="row outer-flex">
+    <div class="span8 offset2">
+    <div id="form-container">
+        <div class="page-header" align="center">
+            <h1>Forgot Password</h1>
+            <p>Please enter your <b>Username</b> and we will send you an email to reset your password.</p>
+            {% for infoMessage in app.session.getFlashBag.get('infoMessage') %}
+                <div class="alert alert-info">{{ infoMessage }}</div>
+            {% endfor %}
+            {% for errorMessage in app.session.getFlashBag.get('errorMessage') %}
+                <div class="alert alert-error">{{ errorMessage }}</div>
+            {% endfor %}
+        </div>
+
+        <form class="form-horizontal" action="{{ path('auth_forgot_password') }}" method="post" accept-charset="utf-8" name="forgotPasswordForm">
+            <fieldset>
+                <div class="control-group">
+                    <label class="control-label" for="username" translate="Username"></label>
+                    <div class="controls">
+                        <input class="span3" id="username"
+                               type="text" name="_username"
+                               value="{{ last_username }}" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn" name="submit" >Submit</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    </div>
+    </div>
+</div>

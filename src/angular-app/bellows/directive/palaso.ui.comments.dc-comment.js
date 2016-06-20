@@ -1,11 +1,13 @@
-"use strict";
+'use strict';
 angular.module('palaso.ui.comments')
+
 // Palaso UI Dictionary Control: Comments
   .directive('dcComment', [function() {
     return {
       restrict: 'E',
       templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.dc-comment.html',
-      controller: ['$scope', 'lexCommentService', 'lexConfigService', 'sessionService', 'modalService', function($scope, commentService, configService, sessionService, modal) {
+      controller: ['$scope', 'lexCommentService', 'sessionService', 'utilService', 'modalService', function($scope, commentService, sessionService, util, modal) {
+        $scope.getAvatarUrl = util.getAvatarUrl;
 
         $scope.hover = { comment: false };
 
@@ -15,11 +17,10 @@ angular.module('palaso.ui.comments')
 
         $scope.editingCommentContent = '';
 
-
-        if ($scope.comment.regarding.field) {
-          $scope.commentRegardingFieldConfig = configService.getFieldConfig($scope.comment.regarding.field);
+        if ($scope.comment.regarding.field && $scope.control.configService != undefined) {
+          $scope.commentRegardingFieldConfig = $scope.control.configService.getFieldConfig($scope.comment.regarding.field);
           $scope.isCommentRegardingPicture = (($scope.commentRegardingFieldConfig.type == 'pictures') &&
-          ! ($scope.comment.regarding.inputSystem));
+          !($scope.comment.regarding.inputSystem));
         }
 
         $scope.doReply = function doReply() {
@@ -41,11 +42,10 @@ angular.module('palaso.ui.comments')
           $scope.newReply = {id:'', editingContent:''};
         };
 
-
         function updateReply(commentId, reply) {
           commentService.updateReply(commentId, reply, function(result) {
             if (result.ok) {
-              $scope.control.refreshDbeData().then(function() {
+              $scope.control.editorDataService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }
@@ -55,7 +55,7 @@ angular.module('palaso.ui.comments')
         $scope.updateCommentStatus = function updateCommentStatus(commentId, status) {
           commentService.updateStatus(commentId, status, function(result) {
             if (result.ok) {
-              $scope.control.refreshDbeData().then(function() {
+              $scope.control.editorDataService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }
@@ -65,41 +65,42 @@ angular.module('palaso.ui.comments')
         $scope.deleteComment = function deleteComment(comment) {
           var deletemsg;
           if (sessionService.session.userId == comment.authorInfo.createdByUserRef.id) {
-            deletemsg = "Are you sure you want to delete your own comment?";
+            deletemsg = 'Are you sure you want to delete your own comment?';
           } else {
-            deletemsg = "Are you sure you want to delete " + comment.authorInfo.createdByUserRef.name + "'s comment?";
+            deletemsg = 'Are you sure you want to delete ' + comment.authorInfo.createdByUserRef.name + '\'s comment?';
           }
 
           modal.showModalSimple('Delete Comment', deletemsg, 'Cancel', 'Delete Comment').then(function() {
             commentService.remove(comment.id, function(result) {
               if (result.ok) {
-                $scope.control.refreshDbeData().then(function() {
+                $scope.control.editorDataService.refreshEditorData().then(function() {
                   $scope.loadComments();
                 });
               }
             });
-            removeCommentFromLists(comment.id);
+
+            commentService.removeCommentFromLists(comment.id);
           });
         };
-
 
         $scope.deleteCommentReply = function deleteCommentReply(commentId, reply) {
           var deletemsg;
           if (sessionService.session.userId == reply.authorInfo.createdByUserRef.id) {
-            deletemsg = "Are you sure you want to delete your own comment reply?";
+            deletemsg = 'Are you sure you want to delete your own comment reply?';
           } else {
-            deletemsg = "Are you sure you want to delete " + reply.authorInfo.createdByUserRef.name + "'s comment reply?";
+            deletemsg = 'Are you sure you want to delete ' + reply.authorInfo.createdByUserRef.name + '\'s comment reply?';
           }
 
           modal.showModalSimple('Delete Reply', deletemsg, 'Cancel', 'Delete Reply').then(function() {
             commentService.deleteReply(commentId, reply.id, function(result) {
               if (result.ok) {
-                $scope.control.refreshDbeData().then(function() {
+                $scope.control.editorDataService.refreshEditorData().then(function() {
                   $scope.loadComments();
                 });
               }
             });
-            removeCommentFromLists(commentId, reply.id);
+
+            commentService.removeCommentFromLists(commentId, reply.id);
           });
         };
 
@@ -115,57 +116,27 @@ angular.module('palaso.ui.comments')
 
           commentService.update($scope.comment, function(result) {
             if (result.ok) {
-              $scope.control.refreshDbeData().then(function() {
+              $scope.control.editorDataService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }
           });
+
           $scope.editingCommentContent = '';
         };
 
         function hideInputFields() {
-          for (var i=0; i< $scope.comment.replies.length; i++) {
+          for (var i = 0; i < $scope.comment.replies.length; i++) {
             $scope.comment.replies[i].editing = false;
           }
+
           $scope.showNewReplyForm = false;
           $scope.comment.editing = false;
         }
 
-        function removeCommentFromLists(commentId, replyId) {
-          _deleteCommentInList(commentId, replyId, commentService.comments.items.all);
-          _deleteCommentInList(commentId, replyId, commentService.comments.items.currentEntry);
-          $scope.loadComments();
-        }
+      },],
 
-        function _deleteCommentInList(commentId, replyId, list) {
-          var deleteComment = true;
-          if (angular.isDefined(replyId)) {
-            deleteComment = false;
-          }
-          for (var i = list.length - 1; i >= 0; i--) {
-            var c = list[i];
-            if (deleteComment) {
-              if (c.id == commentId) {
-                list.splice(i, 1);
-              }
-            } else {
-
-              // delete Reply
-              for (var j = c.replies.length - 1; j >= 0; j--) {
-                var r = c.replies[j];
-                if (r.id == replyId) {
-                  c.replies.splice(j, 1);
-                }
-              }
-            }
-          }
-        }
-
-
-
-
-      }],
       link: function(scope, element, attrs, controller) {
-      }
+      },
     };
-  }]);
+  },]);

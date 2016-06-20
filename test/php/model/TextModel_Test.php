@@ -1,13 +1,13 @@
 <?php
-use models\mapper\MongoStore;
-use models\ProjectModel;
-use models\TextListModel;
-use models\TextModel;
+use Api\Model\Mapper\MongoStore;
+use Api\Model\ProjectModel;
+use Api\Model\TextListModel;
+use Api\Model\TextModel;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
-require_once SourcePath . "models/TextModel.php";
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
+require_once SourcePath . "Api/Model/TextModel.php";
 
 class TestTextModel extends UnitTestCase
 {
@@ -68,16 +68,17 @@ class TestTextModel extends UnitTestCase
         $databaseName = $project->databaseName();
 
         $project->remove();
-        $this->assertFalse(MongoStore::hasDB($databaseName));
+        $this->assertEqual(MongoStore::countCollections($databaseName), 0);
 
         $text = new TextModel($project);
         $text->title = 'Some Title';
         $text->write();
 
         $this->assertTrue(MongoStore::hasDB($databaseName));
+        $this->assertEqual(MongoStore::countCollections($databaseName), 1);
 
         $project->remove();
 
-        $this->assertFalse(MongoStore::hasDB($databaseName));
+        $this->assertEqual(MongoStore::countCollections($databaseName), 0);
     }
 }

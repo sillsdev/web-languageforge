@@ -3,12 +3,12 @@
 describe('the question page', function() {
   var constants       = require('../../../testConstants.json');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
-  var util         = require('../../../bellows/pages/util.js');
-  var projectListPage   = require('../../../bellows/pages/projectsPage.js');
-  var projectPage     = require('../pages/projectPage.js');
-  var textPage       = require('../pages/textPage.js');
-  var textSettingsPage   = require('../pages/textSettingsPage.js');
-  var page         = require('../pages/questionPage.js');
+  var util            = require('../../../bellows/pages/util.js');
+  var projectListPage = require('../../../bellows/pages/projectsPage.js');
+  var projectPage      = require('../pages/projectPage.js');
+  var textPage         = require('../pages/textPage.js');
+  var textSettingsPage = require('../pages/textSettingsPage.js');
+  var questionPage     = require('../pages/questionPage.js');
 
   describe('a normal user', function() {
 
@@ -39,14 +39,14 @@ describe('the question page', function() {
     });
 
     it('cannot flag answer for export', function() {
-      expect(page.answers.flags.lastButtonSet().isDisplayed()).toBeFalsy();
-      expect(page.answers.flags.lastButtonClear().isDisplayed()).toBeFalsy();
+      expect(questionPage.answers.flags.lastButtonSet().isDisplayed()).toBeFalsy();
+      expect(questionPage.answers.flags.lastButtonClear().isDisplayed()).toBeFalsy();
     });
 
   });
 
   describe('a project manager', function() {
-    
+
     it('setup: login as manager', function() {
       loginPage.loginAsManager();
       projectListPage.get();
@@ -74,11 +74,11 @@ describe('the question page', function() {
     });
 
     it('can flag answer for export', function() {
-      expect(page.answers.flags.lastButtonSet().isDisplayed()).toBeFalsy();
-      expect(page.answers.flags.lastButtonClear().isDisplayed()).toBe(true);
-      page.answers.flags.lastButtonClear().click();
-      expect(page.answers.flags.lastButtonSet().isDisplayed()).toBe(true);
-      expect(page.answers.flags.lastButtonClear().isDisplayed()).toBeFalsy();
+      expect(questionPage.answers.flags.lastButtonSet().isDisplayed()).toBeFalsy();
+      expect(questionPage.answers.flags.lastButtonClear().isDisplayed()).toBe(true);
+      questionPage.answers.flags.lastButtonClear().click();
+      expect(questionPage.answers.flags.lastButtonSet().isDisplayed()).toBe(true);
+      expect(questionPage.answers.flags.lastButtonClear().isDisplayed()).toBeFalsy();
     });
 
     describe('paratext export of flagged answer', function() {
@@ -88,31 +88,31 @@ describe('the question page', function() {
         textPage.textSettingsBtn.click();
         textSettingsPage.tabs.paratextExport.click();
       });
-      
+
       it('can prepare export for answers flagged for export without comments', function() {
-        expect(textSettingsPage.paratextExportTab.exportAnswers.getAttribute('checked')).toBeTruthy;
+        expect(textSettingsPage.paratextExportTab.exportAnswers.getAttribute('checked')).toBeTruthy();
         expect(textSettingsPage.paratextExportTab.exportComments.getAttribute('checked')).toBeFalsy();
-        expect(textSettingsPage.paratextExportTab.exportFlagged.getAttribute('checked')).toBeTruthy;
+        expect(textSettingsPage.paratextExportTab.exportFlagged.getAttribute('checked')).toBeTruthy();
         expect(textSettingsPage.paratextExportTab.prepareButton.isPresent()).toBe(true);
         textSettingsPage.paratextExportTab.prepareButton.click();
         expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
-        expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual("1 answer(s)");
+        expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1 answer(s)');
         expect(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(false);
         expect(textSettingsPage.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
       });
-      
+
       it('can prepare export for answers flagged for export with comments', function() {
         textSettingsPage.paratextExportTab.exportComments.click();
         textSettingsPage.paratextExportTab.prepareButton.click();
         expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
-        expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual("1 answer(s)");
+        expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1 answer(s)');
         expect(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(true);
-        expect(textSettingsPage.paratextExportTab.commentCount.getText()).toEqual("1 comment(s)");
+        expect(textSettingsPage.paratextExportTab.commentCount.getText()).toEqual('1 comment(s)');
         expect(textSettingsPage.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
       });
-      
+
     });
-    
+
   });
 
   describe('a system admin', function() {
@@ -143,13 +143,13 @@ describe('the question page', function() {
     });
 
     it('can flag answer for export', function() {
-      expect(page.answers.flags.lastButtonSet().isDisplayed()).toBe(true);
-      expect(page.answers.flags.lastButtonClear().isDisplayed()).toBeFalsy();
-      page.answers.flags.lastButtonSet().click();
-      expect(page.answers.flags.lastButtonSet().isDisplayed()).toBeFalsy();
-      expect(page.answers.flags.lastButtonClear().isDisplayed()).toBe(true);
+      expect(questionPage.answers.flags.lastButtonSet().isDisplayed()).toBe(true);
+      expect(questionPage.answers.flags.lastButtonClear().isDisplayed()).toBeFalsy();
+      questionPage.answers.flags.lastButtonSet().click();
+      expect(questionPage.answers.flags.lastButtonSet().isDisplayed()).toBeFalsy();
+      expect(questionPage.answers.flags.lastButtonClear().isDisplayed()).toBe(true);
     });
 
   });
-  
+
 });

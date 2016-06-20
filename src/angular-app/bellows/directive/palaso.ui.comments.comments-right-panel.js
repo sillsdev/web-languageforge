@@ -34,7 +34,7 @@ angular.module('palaso.ui.comments')
         };
 
 
-        $scope.currentEntryCommentsFiltered = [];
+        $scope.currentEntryCommentsFiltered = commentService.comments.items.currentEntryFiltered;
 
         $scope.numberOfComments = function numberOfComments() {
           return commentService.comments.counts.currentEntry.total;
@@ -92,29 +92,29 @@ angular.module('palaso.ui.comments')
           }
         };
 
-        refreshFilteredComments();
+        commentService.refreshFilteredComments($scope.commentFilter);
 
         $scope.loadComments = function loadComments() {
           commentService.loadEntryComments($scope.entry.id);
-          refreshFilteredComments();
+          commentService.refreshFilteredComments($scope.commentFilter);
         };
 
         $scope.postNewComment = function postNewComment() {
           commentService.update($scope.newComment, function(result) {
             if (result.ok) {
-              $scope.control.refreshDbeData().then(function() {
+              $scope.control.editorService.refreshEditorData().then(function() {
                 $scope.loadComments();
                 $scope.initializeNewComment();
               });
             }
           });
-          refreshFilteredComments(); // for instant feedback
+          commentService.refreshFilteredComments($scope.commentFilter); // for instant feedback
         }
 
         $scope.plusOneComment = function plusOneComment(commentId) {
           commentService.plusOne(commentId, function(result) {
             if (result.ok) {
-              $scope.control.refreshDbeData().then(function() {
+              $scope.control.editorService.refreshEditorData().then(function() {
                 $scope.loadComments();
               });
             }
@@ -122,7 +122,8 @@ angular.module('palaso.ui.comments')
         };
 
         $scope.canPlusOneComment = function canPlusOneComment(commentId) {
-          if (angular.isDefined(commentService.comments.counts.userPlusOne[commentId])) {
+          if (angular.isDefined(commentService.comments.counts.userPlusOne) &&
+              angular.isDefined(commentService.comments.counts.userPlusOne[commentId])) {
             return false;
           }
           return true;
@@ -153,21 +154,17 @@ angular.module('palaso.ui.comments')
 
 
 
-        function refreshFilteredComments() {
-          var comments = $filter('filter')(commentService.comments.items.currentEntry, $scope.commentFilter.byText);
-          $scope.currentEntryCommentsFiltered = $filter('filter')(comments, $scope.commentFilter.byStatus);
-        }
 
         $scope.$watch('commentFilter.text', function(newVal, oldVal) {
           if (newVal != oldVal) {
-            refreshFilteredComments();
+            commentService.refreshFilteredComments($scope.commentFilter);
           }
 
         });
 
         $scope.$watch('commentFilter.status', function(newVal, oldVal) {
           if (newVal != oldVal) {
-            refreshFilteredComments();
+            commentService.refreshFilteredComments($scope.commentFilter);
           }
 
         });

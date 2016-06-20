@@ -8,7 +8,7 @@ angular.module('palaso.ui.tagging', ['ui.bootstrap'])
   <ul>\
     <li ng-repeat="tag in tags" ng-mouseenter="show = true && rightsDelete()" ng-mouseleave="show = false">\
       {{tag}}\
-      <img class="closeicon" src="/images/shared/closeicon.svg" width="20" height="20" ng-show="show" ng-click="removeTag($index)"></img>\
+      <img class="closeicon" src="/Site/views/shared/image/closeicon.svg" width="20" height="20" ng-show="show" ng-click="removeTag($index)"></img>\
     </li>\
   </ul>\
 </div>\

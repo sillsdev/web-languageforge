@@ -1,0 +1,13 @@
+---
+
+- name: Linux Mint local webserver
+  hosts: all
+  sudo: yes
+  tasks:
+
+- include: dependencies.yml
+  vars:
+    deploy: palaso
+- include: code.yml
+  vars:
+    lf_path: /var/www/virtual/default_local/web-languageforge
