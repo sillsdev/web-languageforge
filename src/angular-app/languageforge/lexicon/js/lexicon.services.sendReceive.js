@@ -30,6 +30,7 @@ angular.module('lexicon.services')
       var _this = this;
       var projectSettings = sessionService.session.projectSettings;
       var syncProjectStatusSuccessCallback = angular.noop;
+      var pollProjectStatusSuccessCallback = angular.noop;
       var cloneProjectStatusSuccessCallback = angular.noop;
       var syncStatusTimer;
       var pollStatusTimer;
@@ -169,6 +170,11 @@ angular.module('lexicon.services')
         }
       };
 
+      this.setPollProjectStatusSuccessCallback =
+        function setPollProjectStatusSuccessCallback(callback) {
+          pollProjectStatusSuccessCallback = callback;
+        };
+
       function getPollProjectStatus() {
         sendReceiveApi.getProjectStatus(function (result) {
           if (result.ok) {
@@ -180,6 +186,7 @@ angular.module('lexicon.services')
             var stateWasClear = (_this.status.SRState == '');
             _this.status = result.data;
             if (_this.isInProgress()) {
+              (pollProjectStatusSuccessCallback || angular.noop)();
               _this.setSyncStarted();
             } else {
               stateWasClear && _this.clearState();

@@ -123,7 +123,6 @@ angular.module('lexicon',
     $scope.project = sessionService.session.project;
     $scope.projectSettings = sessionService.session.projectSettings;
     $scope.syncNotice = sendReceive.syncNotice;
-    sendReceive.setSyncProjectStatusSuccessCallback(projectStatusSuccess);
 
     $scope.rights = {};
     $scope.rights.canRemoveUsers = function canRemoveUsers() {
@@ -216,14 +215,6 @@ angular.module('lexicon',
         }
       });
     };
-
-    function projectStatusSuccess() {
-      //$scope.finishedLoading = false;
-      editorService.loadEditorData().then(function () {
-        //$scope.finishedLoading = true;
-        sessionService.refresh(lexConfig.refresh);
-      });
-    }
 
     $scope.$on('$destroy', sendReceive.cancelAllStatusTimers);
     $scope.$on('$locationChangeStart', sendReceive.cancelAllStatusTimers);
