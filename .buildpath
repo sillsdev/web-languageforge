@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <buildpath>
 	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
-	<buildpathentry excluding="build/|docs/|lib/|lib/CodeIgniter_2.1.3|lib/CodeIgniter_2.1.3/|output/|src/vendor/|test/lib/|test/lib/|test/lib/simpletest|test/lib/simpletest/|.git/|node_modules/|src/vendor/" kind="src" path=""/>
-	<buildpathentry excluding="simpletest/" kind="src" path="test/lib"/>
-	<buildpathentry kind="src" path="lib/CodeIgniter_2.1.3"/>
-	<buildpathentry excluding="test/|docs/|extensions/" kind="src" path="test/lib/simpletest"/>
-	<buildpathentry excluding="phpunit/" kind="src" path="src/vendor"/>
+	<buildpathentry excluding=".git/|build/|docs/|lib/|node_modules/|output/|src/vendor/" kind="src" path=""/>
 </buildpath>

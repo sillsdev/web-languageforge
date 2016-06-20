@@ -8,7 +8,6 @@
     margin: 0 10px 0 10px;
     padding: 3px;
     font-size: 12px;
-
 }
 
 .regardingFieldName {
@@ -33,27 +32,26 @@
 }
 
 .commentContainer .commentRegarding {
-    margin:0 10px 0 0;
+    margin: 0 10px 0 0;
 }
 
 .commentContainer {
     margin: 5px 0 5px 0;
-    position:relative;
+    position: relative;
 }
 
 .commentContainer a{
     font-size: small;
     font-weight: normal;
-
 }
 
 .commentContentContainer {
-    display:flex;
+    display: flex;
     width: 100%;
 }
 
 .commentContent {
-    padding-right:20px;
+    padding-right: 20px;
 }
 .commentContentContainer i.icon-remove:hover, .commentRepliesContainer i.icon-remove:hover {
     color: #ed364f;
@@ -70,7 +68,7 @@
 
 .commentBottomBar {
     background-color: #f4f4f4;
-    display:flex;
+    display: flex;
     justify-content: space-between;
 }
 
@@ -86,24 +84,23 @@
 }
 
 .commentBottomBar i.icon-ok, .commentBottomBar i.icon-edit, .commentBottomBar i.icon-chevron-sign-up {
-    padding-left:10px;
+    padding-left: 10px;
     cursor: pointer;
 }
 
 .commentLeftSide {
     text-align: center;
-    flex:1;
+    flex: 1;
 }
 
 .commentRightSide {
-    flex:5;
+    flex: 5;
     padding: 3px;
 }
 
-
 .commentPlusOne .icon-thumbs-up-alt {
     color: darkblue;
-    margin-left:5px;
+    margin-left: 5px;
 }
 
 .commentPlusOne {
@@ -123,16 +120,16 @@
     font-size: x-small;
     color: #808080;
     line-height: 1.2em;
-    margin:5px;
+    margin: 5px;
 }
 
 .commentRepliesContainer input[type=text] {
     width: 300px;
-    margin: 0px;
+    margin: 0;
 }
 
 .editReplyLink {
-    padding-right:10px;
+    padding-right: 10px;
     cursor: pointer;
 }
 
@@ -153,23 +150,22 @@
 }
 
 div.commentListContainer {
-
 }
 
 div.newCommentForm {
-    padding-bottom:10px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #d8d8d8;
 }
 
 div.newCommentForm textarea {
-    width: 382px;
+    width: 90%;
     margin: 10px;
-    height:90px;
+    height: 90px;
 
 }
 div.newCommentForm button {
-    width:70px;
-    margin-top:10px
+    width: 70px;
+    margin-top: 10px
 }
 
 .commentListView {
@@ -196,4 +192,3 @@ div.newCommentForm button {
 .selectableInputSystemFieldForComment .uneditable-input, .selectableFieldForComment .uneditable-input {
     cursor: pointer;
 }
-

@@ -4,8 +4,8 @@
 // also http://www.ng-newsletter.com/posts/angular-ui-router.html
 
 // Declare app level module which depends on filters, and services
-angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.router', 'pascalprecht.translate', 'palaso.util.model.transform'])
-  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', 
+angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.router', 'pascalprecht.translate', 'palaso.util.model.transform', 'palaso.ui.captcha'])
+  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
            function($stateProvider, $urlRouterProvider, $translateProvider) {
     
     $stateProvider
@@ -54,9 +54,9 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
       ;
     
     // catch all route
-    // send users to the form page 
+    // send users to the form page
     $urlRouterProvider
-      .when('', ['$state', function ($state) {
+      .when('', ['$state', function($state) {
         if (! $state.$current.navigable) {
           $state.go('form.identify');
         }
@@ -66,26 +66,26 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     
     // configure interface language filepath
     $translateProvider.useStaticFilesLoader({
-      prefix: '/angular-app/bellows/apps/public/signup/lang/',
-      suffix: '.json'
+      prefix: '/angular-app/bellows/lang/',
+      suffix: '.json',
     });
     $translateProvider.preferredLanguage('en');
     
   }])
-  .controller('SignupCtrl', ['$scope', '$state', '$window', 'userService', 'sessionService', 'silNoticeService',  
+  .controller('SignupCtrl', ['$scope', '$state', '$window', 'userService', 'sessionService', 'silNoticeService',
                              function($scope, $state, $window, userService, sessionService, notice) {
     $scope.showPassword = false;
     $scope.record = {};
     $scope.record.id = '';
-    $scope.captchaSrc = '';
+    $scope.captchaData = '';
     $scope.currentState = $state.current;
     $scope.location = $window.location;
 
-    $scope.getCaptchaSrc = function() {
-      sessionService.getCaptchaSrc(function(result) {
+    $scope.getCaptchaData = function() {
+      sessionService.getCaptchaData(function(result) {
         if (result.ok) {
-          $scope.captchaSrc = result.data;
-          $scope.record.captcha = "";
+          $scope.captchaData = result.data;
+          $scope.record.captcha = null;
         }
       });
     };
@@ -96,11 +96,11 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
           $scope.checkIdentity(function(){
             if ($scope.usernameOk && ! $scope.emailExists) {
               $state.go('form.register');
-              $scope.getCaptchaSrc();
-            } else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && 
+              $scope.getCaptchaData();
+            } else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite &&
                 $scope.allowSignupFromOtherSites && $scope.emailIsEmpty) {
               $state.go('form.activate');
-            } else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite && 
+            } else if ($scope.usernameExists && ! $scope.usernameExistsOnThisSite &&
                 $scope.allowSignupFromOtherSites && $scope.emailMatchesAccount) {
               $state.go('form.login');
             } else {
@@ -140,9 +140,9 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
       userService.register($scope.record, function(result) {
         $scope.submissionInProgress = false;
         if (result.ok) {
-          if (! result.data) {
-            notice.push(notice.WARN, "The image verification failed.  Please try again");
-            $scope.getCaptchaSrc();
+          if (!result.data) {
+            notice.push(notice.WARN, 'The image verification failed.  Please try again');
+            $scope.getCaptchaData();
           } else {
             $scope.submissionComplete = true;
             (successCallback || angular.noop)();
@@ -176,7 +176,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
       $scope.emailMatchesAccount = false;
       if ($scope.record.username) {
         $scope.usernameLoading = true;
-        if (! $scope.record.email) {
+        if (!$scope.record.email) {
           $scope.record.email = '';
         }
         userService.identityCheck($scope.record.username, $scope.record.email, function(result) {

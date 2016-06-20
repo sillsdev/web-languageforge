@@ -170,7 +170,7 @@ function wrapMatcher(matcher, actualPromise, not) {
         jasmine.Spec.prototype.addMatcherResult.call(this, result);
       };
 
-      if (expected instanceof webdriver.promise.Promise) {
+      if (webdriver.promise.isPromise(expected)) {
         if (originalArgs.length > 1) {
           throw error('Multi-argument matchers with promises are not ' +
               'supported.');
@@ -213,11 +213,11 @@ function promiseMatchers(actualPromise) {
 var originalExpect = global.expect;
 
 global.expect = function(actual) {
-  if (actual instanceof webdriver.promise.Promise) {
-    if (actual instanceof webdriver.WebElement) {
-      throw 'expect called with WebElement argument, expected a Promise. ' +
-          'Did you mean to use .getText()?';
-    }
+  if (actual instanceof webdriver.WebElement) {
+    throw 'expect called with WebElement argument, expected a Promise. ' +
+        'Did you mean to use .getText()?';
+  }
+  if (webdriver.promise.isPromise(actual)) {
     return promiseMatchers(actual);
   } else {
     return originalExpect(actual);
@@ -235,7 +235,7 @@ jasmine.Matchers.matcherFn_ = function(matcherName, matcherFunction) {
     var matcherArgs = jasmine.util.argsToArray(arguments);
     var result = matcherFunction.apply(this, arguments);
 
-    if (result instanceof webdriver.promise.Promise) {
+    if (webdriver.promise.isPromise(result)) {
       result.then(function(resolution) {
         matcherFnArgs[1] = function() {
           return resolution;

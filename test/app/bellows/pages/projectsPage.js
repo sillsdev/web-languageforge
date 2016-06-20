@@ -1,184 +1,172 @@
 'use strict';
 
 var projectTypes = {
-  'sf': 'Community Scripture Checking', // ScriptureForge
-  'lf': 'Web Dictionary', // LanguageForge
+  sf: 'Community Scripture Checking', // ScriptureForge
+  lf: 'Web Dictionary' // LanguageForge
 };
 
 var util = require('./util');
 var constants = require('../../testConstants.json');
 
-var SfProjectsPage = function() {
-  var page = this;
-  this.url = "/app/projects";
-  this.get = function() {
+var SfProjectsPage = function () {
+  var _this = this;
+  this.url = '/app/projects';
+  this.get = function () {
     browser.get(browser.baseUrl + this.url);
-    browser.waitForAngular();
   };
 
   this.testProjectName = 'Test Project';
 
   this.archiveButton = element(by.partialButtonText('Archive Selected Projects'));
-  this.createBtn = element(by.partialButtonText('Create New Project'));
+  this.createBtn = element(by.partialButtonText('Start or Join a New Project'));
   this.newProjectNameInput  = element(by.model('newProject.projectName'));
   this.newProjectTypeSelect = element(by.model('newProject.appName'));
   this.saveBtn = element(by.partialButtonText('Save'));
-  // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test Project will be on page 1, and you can find it.
+
+  this.settings = {};
+  this.settings.button = element(by.css('a.btn i.icon-cog'));
+  if (constants.siteType == 'scriptureforge') {
+    this.settings.userManagementLink = element(by.linkText('Project Settings'));
+  } else if (constants.siteType == 'languageforge') {
+    this.settings.userManagementLink = element(by.linkText('User Management'));
+  }
+
+  // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test
+  // Project will be on page 1, and you can find it.
   this.itemsPerPageCtrl = element(by.model('itemsPerPage'));
-  this.projectsCtrl =     element(by.repeater('project in visibleProjects'));
   this.projectsList = element.all(by.repeater('project in visibleProjects'));
-  this.projectNames = element.all(by.repeater('project in visibleProjects').column('{{project.projectName}}'));
-  this.projectTypes = element.all(by.repeater('project in visibleProjects').column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
+  this.projectNames = element.all(by.repeater('project in visibleProjects')
+    .column('{{project.projectName}}'));
+  this.projectTypes = element.all(by.repeater('project in visibleProjects')
+    .column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
 
-  this.select100ItemsPerPage = function() {
-    if (false) {
-      // One way to do it, not ideal
-      // Options are 10, 25, 50, 100. We want 100, the 4th child. (CSS counts from 1).
-      // this.itemsPerPageCtrl.$('option:nth-child(4)').click();
-    } else{
-      // A better way to do it, which allows for other options
-      util.clickDropdownByValue(this.itemsPerPageCtrl, "100");
-    };
-    // Either way, the following expect() should be fulfilled
-    expect(element(by.model('itemsPerPage')).$('option:checked').getText()).toEqual('100');
-  };
-  
-  this.projectExists = function() {
-    
+  this.select100ItemsPerPage = function () {
+    util.clickDropdownByValue(this.itemsPerPageCtrl, '100');
+    expect(element(by.model('itemsPerPage')).element(by.css('option:checked'))
+      .getText()).toEqual('100');
   };
 
-  this.findProject = function(projectName) {
+  this.findProject = function (projectName) {
     var foundRow = undefined;
     var result = protractor.promise.defer();
     var searchName = new RegExp(projectName);
-    this.projectsList.map(function(row) {
-      row.getText().then(function(text) {
+    this.projectsList.map(function (row) {
+      row.getText().then(function (text) {
         if (searchName.test(text)) {
           foundRow = row;
-        };
+        }
       });
-    }).then(function() {
+    }).then(function () {
       if (foundRow) {
         result.fulfill(foundRow);
       } else {
-        result.reject("Project " + projectName + " not found.");
+        result.reject('Project ' + projectName + ' not found.');
       }
     });
+
     return result;
   };
-  this.deleteProject = function(nameToDelete) {
-    var page = this; // For use inside the anonymous functions below
-    this.findProject(nameToDelete).then(function(projectRow) {
-      var elem = projectRow.$("input[type='checkbox']");
+
+  this.deleteProject = function (nameToDelete) {
+    var _this = this; // For use inside the anonymous functions below
+    this.findProject(nameToDelete).then(function (projectRow) {
+      var elem = projectRow.element(by.css('input[type=\'checkbox\']'));
       elem.click();
-      page.deleteBtn.click();
+      _this.deleteBtn.click();
+
       // Clicking the delete button pops up an "are you sure?" alert
       util.clickModalButton('Archive');
     });
   };
 
-  this.addNewProject = function(nameToAdd) {
-    var page = this;
+  this.addNewProject = function (nameToAdd) {
     this.createBtn.click();
     this.newProjectNameInput.sendKeys(nameToAdd);
-    util.clickDropdownByValue(this.newProjectTypeSelect, projectTypes['sf']);
+    util.clickDropdownByValue(this.newProjectTypeSelect, projectTypes.sf);
     this.saveBtn.click();
   };
 
-  this.clickOnProject = function(projectName) {
-    this.findProject(projectName).then(function(projectRow) {
-      var link = projectRow.$('a');
-      link.getAttribute('href').then(function(url) {
+  this.clickOnProject = function (projectName) {
+    this.findProject(projectName).then(function (projectRow) {
+      var projectLink = projectRow.element(by.css('a'));
+      projectLink.getAttribute('href').then(function (url) {
         browser.get(url);
-        browser.waitForAngular();
       });
     });
   };
-  
-  this.addUserToProject = function(projectName, userName, roleText) {
-    this.findProject(projectName).then(function(projectRow) {
-//      var btn = projectRow.element(by.partialButtonText("Add me as " + roleText));
-//      btn.click();
-      var link = projectRow.$('a');
-      link.getAttribute('href').then(function(url) {
-        var extraUrlPart = '';
-        if (constants.siteType == 'scriptureforge') {
-          extraUrlPart = '#/settings';
-        } else if (constants.siteType == 'languageforge') {
-          extraUrlPart = '#/users';
-        }
-        browser.get(url + extraUrlPart);
-        browser.waitForAngular();
-        // Users tab is selected by default, so the following check might not be needed
-//        var usersTab = element(by.xpath('//li[@heading="Users"]'));
-//        expect(usersTab.isElementPresent()).toBeTruthy();
-        var addMembersBtn = element(by.partialButtonText("Add Members"));
-        var newMembersDiv = $('#newMembersDiv');
-        var userNameInput = newMembersDiv.$('input[type="text"]');
-        addMembersBtn.click();
-        userNameInput.sendKeys(userName);
-        var typeaheadDiv = $('.typeahead');
-        var typeaheadItems = typeaheadDiv.$('ul li');
-        typeaheadItems.click(); // Thanks to Protractor, this "just works", because it waits for Angular to settle
-        var addToProjectBtn = newMembersDiv.$('button'); // This should be unique no matter what
-        expect(addToProjectBtn.getText()).toContain("Add Existing User");
-        addToProjectBtn.click();
-        // Now set the user to member or manager, as needed
-        var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
-        var foundUserRow;
-        projectMemberRows.map(function(row) {
-          var nameColumn = row.element(by.binding("{{user.username}}"));
-          nameColumn.getText().then(function(text) {
-            if (text === userName) {
-              foundUserRow = row;
-            };
-          });
-        }).then(function() {
-          if (foundUserRow) {
-            var select = foundUserRow.$('select:not([disabled])');
-            util.clickDropdownByValue(select, roleText);
+
+  this.addUserToProject = function (projectName, usersName, roleText) {
+    this.findProject(projectName).then(function (projectRow) {
+      var projectLink = projectRow.element(by.css('a'));
+      projectLink.click();
+
+      _this.settings.button.click();
+      _this.settings.userManagementLink.click();
+
+      var addMembersBtn = element(by.partialButtonText('Add Members'));
+      var newMembersDiv = element(by.css('#newMembersDiv'));
+      var userNameInput = newMembersDiv.element(by.css('input[type="text"]'));
+      addMembersBtn.click();
+      userNameInput.sendKeys(usersName);
+
+      var typeaheadDiv = element(by.css('.typeahead'));
+      var typeaheadItems = typeaheadDiv.all(by.css('ul li'));
+      util.findRowByText(typeaheadItems, usersName).then(function (item) {
+        item.click();
+      });
+
+      // This should be unique no matter what
+      var addToProjectBtn = newMembersDiv.element(by.css('button'));
+      expect(addToProjectBtn.getText()).toContain('Add Existing User');
+      addToProjectBtn.click();
+
+      // Now set the user to member or manager, as needed
+      var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
+      var foundUserRow;
+      projectMemberRows.map(function (row) {
+        var nameColumn = row.element(by.binding('{{user.username}}'));
+        nameColumn.getText().then(function (text) {
+          if (text === usersName) {
+            foundUserRow = row;
           }
         });
+      }).then(function () {
+        if (foundUserRow) {
+          var select = foundUserRow.element(by.css('select:not([disabled])'));
+          util.clickDropdownByValue(select, roleText);
+        }
       });
-//      link.click();
-//      browser.wait(function() {
-//        return browser.getCurrentUrl().then(function(url) {
-//          expect(url).toContain("/app/sfchecks#/p/");
-//        });
-//      }, 8000);
-//      browser.pause();
-      page.get(); // After all is finished, reload projects page
+
+      _this.get(); // After all is finished, reload projects _this
     });
   };
-  this.addManagerToProject = function(projectName, userName) {
-    this.addUserToProject(projectName, userName, "Manager");
+
+  this.addManagerToProject = function (projectName, usersName) {
+    this.addUserToProject(projectName, usersName, 'Manager');
   };
-  this.addMemberToProject = function(projectName, userName) {
-    this.addUserToProject(projectName, userName, "Contributor");
+
+  this.addMemberToProject = function (projectName, usersName) {
+    this.addUserToProject(projectName, usersName, 'Contributor');
   };
-  
-  this.removeUserFromProject = function(projectName, userName) {
-    this.findProject(projectName).then(function(projectRow) {
-      var link = projectRow.$('a');
-      link.getAttribute('href').then(function(url) {
-        var extraUrlPart;
-        if (constants.siteType == 'scriptureforge') {
-          extraUrlPart = '#/settings';
-        } else if (constants.siteType == 'languageforge') {
-          extraUrlPart = '#/users';
-        }
-        browser.get(url + extraUrlPart);
-        browser.waitForAngular();
-        var userFilter = element(by.model('userFilter'));
-        userFilter.sendKeys(userName);
-        var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
-        var foundUserRow = projectMemberRows.first();
-        var rowCheckbox = foundUserRow.$('input[type="checkbox"]');
-        util.setCheckbox(rowCheckbox, true);
-        var removeMembersBtn = element(by.partialButtonText("Remove Members"));
-        removeMembersBtn.click();
-      });
-      page.get(); // After all is finished, reload projects page
+
+  this.removeUserFromProject = function (projectName, userName) {
+    this.findProject(projectName).then(function (projectRow) {
+      var projectLink = projectRow.element(by.css('a'));
+      projectLink.click();
+
+      _this.settings.button.click();
+      _this.settings.userManagementLink.click();
+
+      var userFilter = element(by.model('userFilter'));
+      userFilter.sendKeys(userName);
+      var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
+      var foundUserRow = projectMemberRows.first();
+      var rowCheckbox = foundUserRow.element(by.css('input[type="checkbox"]'));
+      util.setCheckbox(rowCheckbox, true);
+      var removeMembersBtn = element(by.partialButtonText('Remove Members'));
+      removeMembersBtn.click();
+
+      _this.get(); // After all is finished, reload projects page
     });
   };
 };

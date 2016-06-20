@@ -64,6 +64,10 @@ exports.WebDriver = base.require('webdriver.WebDriver');
 exports.WebElement = base.require('webdriver.WebElement');
 
 
+/** @type {function(new: webdriver.WebElementPromise)} */
+exports.WebElementPromise = base.require('webdriver.WebElementPromise');
+
+
 // Export the remainder of our API through getters to keep things cleaner
 // when this module is used in a REPL environment.
 
@@ -125,4 +129,10 @@ exports.WebElement = base.require('webdriver.WebElement');
 /** @type {webdriver.stacktrace.} */
 (exports.__defineGetter__('stacktrace', function() {
   return base.exportPublicApi('webdriver.stacktrace');
+}));
+
+
+/** @type {webdriver.until.} */
+(exports.__defineGetter__('until', function() {
+  return base.exportPublicApi('webdriver.until');
 }));

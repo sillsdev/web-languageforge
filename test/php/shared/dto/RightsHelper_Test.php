@@ -1,15 +1,15 @@
 <?php
 
-use models\ProjectModel;
+use Api\Model\ProjectModel;
 
-use models\shared\dto\RightsHelper;
-use models\shared\rights\ProjectRoles;
-use models\shared\rights\SystemRoles;
-use models\UserModel;
+use Api\Model\Shared\Dto\RightsHelper;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\UserModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestRightsHelper extends UnitTestCase
 {
@@ -42,7 +42,7 @@ class TestRightsHelper extends UnitTestCase
 
         $this->environ->inhibitErrorDisplay();
         $this->expectException();
-        $result = $rh->userCanAccessMethod($userId, 'bogusMethodName', array());
+        $rh->userCanAccessMethod('bogusMethodName', array());
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }

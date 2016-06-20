@@ -1,16 +1,16 @@
 <?php
 
 
-use models\scriptureforge\sfchecks\SfchecksRoles;
+use Api\Model\Scriptureforge\Sfchecks\SfchecksRoles;
 
-use models\shared\rights\Operation;
+use Api\Model\Shared\Rights\Operation;
 
-use models\shared\rights\Domain;
+use Api\Model\Shared\Rights\Domain;
 
-use models\shared\rights\ProjectRoles;
-use models\shared\rights\SystemRoles;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SystemRoles;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
 class TestRoles extends UnitTestCase

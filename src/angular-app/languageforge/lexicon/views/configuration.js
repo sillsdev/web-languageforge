@@ -1,11 +1,16 @@
 'use strict';
 
-angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor', 'lexicon.services', 'palaso.util.model.transform'])
+angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
+  'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor', 'lexicon.services',
+  'palaso.util.model.transform'])
+
 // Configuation Controller
-.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService', 'utilService', 
-function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigService, util) {
+.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService',
+  '$filter', '$modal', 'lexConfigService', 'utilService',
+function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, util) {
   var inputSystemSelected = true;
-  lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Dictionary Configuration'));
+  lexProjectService.setBreadcrumbs('configuration',
+    $filter('translate')('Dictionary Configuration'));
   $scope.configDirty = angular.copy(ss.session.projectSettings.config);
   $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
   $scope.optionlistPristine = angular.copy(ss.session.projectSettings.optionlists);
@@ -15,7 +20,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
    * InputSystemsViewModel class (based on BCP 47)
    * References: http://en.wikipedia.org/wiki/IETF_language_tag
    *             http://tools.ietf.org/html/rfc5646#page-15
-   *             
+   *
    * @param {InputSystem} inputSystem
    */
   function InputSystemsViewModel(inputSystem) {
@@ -52,17 +57,16 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
     if (inputSystem.tag != undefined) {
       this.parseTag(inputSystem.tag);
     }
-  };
+  }
 
   /**
    * Create a language tag based on the view
-   * 
+   *
    * @return {InputSystemsViewModel} this
    */
   InputSystemsViewModel.prototype.buildTag = function buildTag() {
     var newTag = this.language;
     var specialOptions = $scope.selects.special.optionsOrder;
-    var scriptOptionsOrder = $scope.selects.script.optionsOrder;
     switch (this.special) {
       // IPA transcription
       case specialOptions[1]:
@@ -70,6 +74,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
         if (this.purpose || this.variantString.length > 0) {
           newTag += '-x';
         }
+
         newTag += (this.purpose) ? '-' + this.purpose : '';
         newTag += (this.variantString) ? '-' + this.variantString : '';
         break;
@@ -87,20 +92,22 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
         newTag += (this.script) ? '-' + this.script : '';
         newTag += (this.region) ? '-' + this.region : '';
         newTag += (this.variantString) ? '-x-' + this.variantString : '';
-        if (! this.script && ! this.region && ! this.variantString) {
+        if (!this.script && !this.region && !this.variantString) {
           newTag += '-unspecified';
         }
+
         break;
     }
 
     this.inputSystem.tag = newTag;
+
     // console.log('newTag: ' + newTag);
     return this;
   };
 
   /**
    * Parse the language tag to populate InputSystemsViewModel
-   * 
+   *
    * @param {String} tag
    * @return {InputSystemsViewModel} this
    */
@@ -136,7 +143,8 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
         // Region
         // scripts would be better obtained from a service CP 2014-08
-        if ((/^[a-zA-Z]{2}$/.test(tokens[i]) || /^[0-9]{3}$/.test(tokens[i])) && (tokens[i] in _inputSystems_regions)) {
+        if ((/^[a-zA-Z]{2}$/.test(tokens[i]) || /^[0-9]{3}$/.test(tokens[i])) &&
+            (tokens[i] in _inputSystems_regions)) {
           this.region = tokens[i];
           this.special = specialOptionsOrder[3];
           continue;
@@ -148,13 +156,13 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
           if (tokens[i] == 'fonipa') {
             this.special = specialOptionsOrder[1];
           }
+
           continue;
         }
 
         // Special marker for private usage
         if (tokens[i] == 'x') {
           lookForPrivateUsage = true;
-          continue;
         }
 
         // Parse for the rest of the private usage tags
@@ -191,18 +199,20 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
                 this.variantString += '-';
               }
             }
+
             this.variantString += tokens[i];
             continue;
             break;
-        };
+        }
       }
     }
+
     return this;
   };
 
   /**
    * Compute the language name for display
-   * 
+   *
    * @return {String} name
    */
   InputSystemsViewModel.prototype.languageDisplayName = function languageDisplayName() {
@@ -228,37 +238,39 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
       } else {
         name += 'unspecified';
       }
+
       name += ')';
     }
+
     return name;
   };
 
   $scope.selects = {
-    'special': {
-      'optionsOrder': ['none', 'ipaTranscription', 'voice', 'scriptRegionVariant'],
-      'options': {
-        'none': $filter('translate')('none'),
-        'ipaTranscription': $filter('translate')('IPA transcription'),
-        'voice': $filter('translate')('Voice'),
-        'scriptRegionVariant': $filter('translate')('Script / Region / Variant')
+    special: {
+      optionsOrder: ['none', 'ipaTranscription', 'voice', 'scriptRegionVariant'],
+      options: {
+        none: $filter('translate')('none'),
+        ipaTranscription: $filter('translate')('IPA transcription'),
+        voice: $filter('translate')('Voice'),
+        scriptRegionVariant: $filter('translate')('Script / Region / Variant')
       }
     },
-    'purpose': {
-      'optionsOrder': ['etic', 'emic'],
-      'options': {
-        'etic': $filter('translate')('Etic (raw phonetic transcription)'),
-        'emic': $filter('translate')('Emic (uses the phonology of the language)')
+    purpose: {
+      optionsOrder: ['etic', 'emic'],
+      options: {
+        etic: $filter('translate')('Etic (raw phonetic transcription)'),
+        emic: $filter('translate')('Emic (uses the phonology of the language)')
       }
     },
-    'script': {
-      'options': InputSystems.scripts()
+    script: {
+      options: InputSystems.scripts()
     },
-    'region': {
-      'options': InputSystems.regions()
+    region: {
+      options: InputSystems.regions()
     }
   };
 
-  $scope.isCustomField = lexConfigService.isCustomField;
+  $scope.isCustomField = lexConfig.isCustomField;
   $scope.selectInputSystem = function selectInputSystem(id) {
     $scope.selectedInputSystemId = id;
     inputSystemSelected = true;
@@ -268,8 +280,11 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
   // TODO Fix sorting 2014-08 DDW
   function sortInputSystemsList() {
-    return $filter('orderBy')($filter('orderAsArray')($scope.inputSystemViewModels, 'tag'), 'languageName');
-    // return $filter('orderBy')($filter('orderAsArray')($scope.configDirty.inputSystems, 'tag'), 'languageName');
+    return $filter('orderBy')($filter('orderAsArray')($scope.inputSystemViewModels, 'tag'),
+      'languageName');
+
+    // return $filter('orderBy')($filter('orderAsArray')($scope.configDirty.inputSystems, 'tag'),
+    //  'languageName');
   }
 
   function setupView() {
@@ -279,7 +294,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
     // InputSystemsViewModels
     $scope.inputSystemViewModels = {};
-    angular.forEach($scope.configDirty.inputSystems, function(item) {
+    angular.forEach($scope.configDirty.inputSystems, function (item) {
       var vm = new InputSystemsViewModel(item);
       $scope.inputSystemViewModels[vm.uuid] = vm;
     });
@@ -292,14 +307,15 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
     // for FieldConfigCtrl
     $scope.fieldConfig = {};
-    angular.forEach($scope.configDirty.entry.fieldOrder, function(fieldName) {
+    angular.forEach($scope.configDirty.entry.fieldOrder, function (fieldName) {
       if (angular.isDefined($scope.configDirty.entry.fields[fieldName])) {
         if ($scope.configDirty.entry.fields[fieldName].type !== 'fields') {
           $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields[fieldName];
         }
       }
     });
-    angular.forEach($scope.configDirty.entry.fields.senses.fieldOrder, function(fieldName) {
+
+    angular.forEach($scope.configDirty.entry.fields.senses.fieldOrder, function (fieldName) {
       if (angular.isDefined($scope.configDirty.entry.fields.senses.fields[fieldName])) {
         if ($scope.configDirty.entry.fields.senses.fields[fieldName].type !== 'fields') {
           $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields[fieldName];
@@ -307,7 +323,8 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
       }
     });
-    angular.forEach($scope.configDirty.entry.fields.senses.fields.examples.fieldOrder, function(fieldName) {
+
+    angular.forEach($scope.configDirty.entry.fields.senses.fields.examples.fieldOrder, function (fieldName) {
       if (angular.isDefined($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName])) {
         if ($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName].type !== 'fields') {
           $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName];
@@ -317,7 +334,7 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
     // suggested languages from lexical data
     $scope.suggestedLanguageCodes = [];
-  };
+  }
 
   $scope.configurationApply = function configurationApply() {
     var isAnyTagUnspecified = false;
@@ -325,37 +342,44 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
     // Publish updates in configDirty to send to server
     $scope.configDirty.inputSystems = {};
-    angular.forEach($scope.inputSystemViewModels, function(viewModel) {
+    angular.forEach($scope.inputSystemViewModels, function (viewModel) {
       if (viewModel.inputSystem.tag.indexOf('-unspecified') > -1) {
         isAnyTagUnspecified = true;
-        notice.push(notice.ERROR, 'Specify at least one Script, Region or Variant for ' + viewModel.languageDisplayName());
+        notice.push(notice.ERROR, 'Specify at least one Script, Region or Variant for ' +
+          viewModel.languageDisplayName());
       }
+
       $scope.configDirty.inputSystems[viewModel.inputSystem.tag] = viewModel.inputSystem;
     });
-    
+
     if (isAnyTagUnspecified) {
       $scope.isSaving = false;
       return;
-    };
+    }
 
-    lexProjectService.updateConfiguration($scope.configDirty, $scope.optionlistDirty, function(result) {
-      if (result.ok) {
-        notice.push(notice.SUCCESS, $filter('translate')('Dictionary configuration updated successfully'));
-        $scope.configForm.$setPristine();
-        $scope.projectSettings.config = angular.copy($scope.configDirty);
-        $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
-        $scope.optionlistPristine = angular.copy($scope.optionlistDirty);
-        // setupView();
+    lexProjectService.updateConfiguration($scope.configDirty, $scope.optionlistDirty,
+      function (result) {
+        if (result.ok) {
+          notice.push(notice.SUCCESS,
+            $filter('translate')('Dictionary configuration updated successfully'));
+          $scope.configForm.$setPristine();
+          $scope.projectSettings.config = angular.copy($scope.configDirty);
+          $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
+          $scope.optionlistPristine = angular.copy($scope.optionlistDirty);
+          lexConfig.refresh();
+        }
+
+        $scope.isSaving = false;
       }
-      $scope.isSaving = false;
-    });
+    );
 
   };
 
   // InputSystemsConfigCtrl
-  
+
   $scope.isInputSystemInUse = function isInputSystemInUse() {
-    return ($scope.inputSystemViewModels[$scope.selectedInputSystemId].inputSystem.tag in $scope.projectSettings.config.inputSystems);
+    return ($scope.inputSystemViewModels[$scope.selectedInputSystemId].inputSystem.tag in
+      $scope.projectSettings.config.inputSystems);
   };
 
   $scope.newExists = function newExists(special) {
@@ -368,14 +392,15 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
         return true;
       }
     }
+
     return false;
   };
 
   $scope.addInputSystem = function addInputSystem(code, languageName, special) {
     var viewModel = new InputSystemsViewModel({
-      'tag': code,
-      'languageName': languageName,
-      'abbreviation': code
+      tag: code,
+      languageName: languageName,
+      abbreviation: code
     });
     viewModel.special = special;
     viewModel.buildTag();
@@ -384,10 +409,12 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
     for (var uuid in $scope.inputSystemViewModels) {
       if (special != $scope.selects.special.optionsOrder[3] &&
           $scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag) {
-        notice.push(notice.ERROR, 'Input system for ' + viewModel.inputSystem.languageName + ' already exists');
+        notice.push(notice.ERROR, 'Input system for ' + viewModel.inputSystem.languageName +
+          ' already exists');
         return;
       }
     }
+
     $scope.inputSystemViewModels[viewModel.uuid] = viewModel;
     $scope.selectedInputSystemId = viewModel.uuid;
   };
@@ -408,57 +435,63 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
   $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes) {
     var modalInstance = $modal.open({
       templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
-      controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+      controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
         $scope.selected = {
           code: '',
           language: {}
         };
-        $scope.add = function() {
+        $scope.add = function () {
           $modalInstance.close($scope.selected);
         };
+
         $scope.suggestedLanguageCodes = suggestedLanguageCodes;
       }]
     });
 
-    modalInstance.result.then(function(selected) {
-      $scope.addInputSystem(selected.code, selected.language.name, $scope.selects.special.optionsOrder[0]);
+    modalInstance.result.then(function (selected) {
+      $scope.addInputSystem(selected.code, selected.language.name,
+        $scope.selects.special.optionsOrder[0]);
     });
 
   };
 
-  $scope.$watchCollection('inputSystemViewModels[selectedInputSystemId]', function(newValue, oldValue) {
+  $scope.$watchCollection('inputSystemViewModels[selectedInputSystemId]', function (newValue) {
     if (newValue == undefined) {
       return;
     }
+
     if (inputSystemSelected) {
       inputSystemSelected = false;
       return;
     }
+
     newValue.buildTag();
     $scope.configForm.$setDirty();
     $scope.inputSystemsList = sortInputSystemsList();
   });
 
 }])
+
 // Field Configuration Controller
-.controller('FieldConfigCtrl', ['$scope', '$modal', function($scope, $modal) {
+.controller('FieldConfigCtrl', ['$scope', '$modal', function ($scope, $modal) {
   $scope.showAllFields = false;
 
   $scope.currentField = {
-    'name': '',
-    'inputSystems': {
-      'fieldOrder': [],
-      'selecteds': {}
+    name: '',
+    inputSystems: {
+      fieldOrder: [],
+      selecteds: {}
     }
   };
   $scope.selectField = function selectField(fieldName) {
     if ($scope.currentField.name !== fieldName) {
-      var inputSystems = $scope.fieldConfig[fieldName].inputSystems;
+      var inputSystems = angular.copy($scope.fieldConfig[fieldName].inputSystems);
 
       $scope.currentField.name = fieldName;
 
+      $scope.currentField.inputSystems.fieldOrder = [];
       $scope.currentField.inputSystems.selecteds = {};
-      angular.forEach(inputSystems, function(tag) {
+      angular.forEach(inputSystems, function (tag) {
         $scope.currentField.inputSystems.selecteds[tag] = true;
       });
 
@@ -466,45 +499,54 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
       // the unselected systems
       if (inputSystems) {
         $scope.currentField.inputSystems.fieldOrder = inputSystems;
-        angular.forEach($scope.configDirty.inputSystems, function(inputSystem, tag) {
-          if (!(tag in $scope.currentField.inputSystems.selecteds) && $scope.currentField.inputSystems.fieldOrder.indexOf(tag) == -1) {
+        angular.forEach($scope.configDirty.inputSystems, function (inputSystem, tag) {
+          if (!(tag in $scope.currentField.inputSystems.selecteds) &&
+              $scope.currentField.inputSystems.fieldOrder.indexOf(tag) == -1) {
             $scope.currentField.inputSystems.fieldOrder.push(tag);
           }
         });
       }
     }
   };
+
   $scope.selectField('lexeme');
 
   $scope.moveUp = function moveUp(currentTag) {
     var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
-    $scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1];
+    $scope.currentField.inputSystems.fieldOrder[currentTagIndex] =
+      $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1];
     $scope.currentField.inputSystems.fieldOrder[currentTagIndex - 1] = currentTag;
     $scope.fieldConfig[$scope.currentField.name].inputSystems = [];
-    angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
+    angular.forEach($scope.currentField.inputSystems.fieldOrder, function (tag) {
       if ($scope.currentField.inputSystems.selecteds[tag]) {
         $scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
       }
     });
+
     $scope.configForm.$setDirty();
   };
+
   $scope.moveDown = function moveDown(currentTag) {
     var currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
-    $scope.currentField.inputSystems.fieldOrder[currentTagIndex] = $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1];
+    $scope.currentField.inputSystems.fieldOrder[currentTagIndex] =
+      $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1];
     $scope.currentField.inputSystems.fieldOrder[currentTagIndex + 1] = currentTag;
     $scope.fieldConfig[$scope.currentField.name].inputSystems = [];
-    angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
+    angular.forEach($scope.currentField.inputSystems.fieldOrder, function (tag) {
       if ($scope.currentField.inputSystems.selecteds[tag]) {
         $scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
       }
     });
+
     $scope.configForm.$setDirty();
   };
 
   $scope.fieldIsHidden = function fieldIsHidden(fieldName) {
-    if (angular.isUndefined($scope.fieldConfig[fieldName]) || !('hideIfEmpty' in $scope.fieldConfig[fieldName])) {
+    if (angular.isUndefined($scope.fieldConfig[fieldName]) ||
+        !('hideIfEmpty' in $scope.fieldConfig[fieldName])) {
       return true;
     }
+
     return !$scope.showAllFields && $scope.fieldConfig[fieldName].hideIfEmpty;
   };
 
@@ -516,62 +558,65 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
     var modalInstance = $modal.open({
       scope: $scope,
       templateUrl: '/angular-app/languageforge/lexicon/views/new-custom-field.html',
-      controller: ['$scope', '$filter', '$modalInstance', function($scope, $filter, $modalInstance) {
-        $scope.selects = {};
-        $scope.selects.level = {
-          'optionsOrder': ['entry', 'senses', 'examples'],
-          'options': {
-            'entry': $filter('translate')('Entry Level'),
-            'senses': $filter('translate')('Meaning Level'),
-            'examples': $filter('translate')('Example Level')
-          }
-        };
-        $scope.selects.type = {
-          'optionsOrder': ['multitext', 'optionlist', 'multioptionlist'],
-          'options': {
-            'multitext': $filter('translate')('Multi-input-system Text'),
-            'optionlist': $filter('translate')('Option List'),
-            'multioptionlist': $filter('translate')('Multi-option List'),
-            'reference': $filter('translate')('Entry Reference'),
-            'picture': $filter('translate')('Picture'),
-            'date': $filter('translate')('Date'),
-            'number': $filter('translate')('Number')
-          }
-        };
-        $scope.selects.listCode = {
-            'optionsOrder': [],
-            'options': {}
-        };
-        angular.forEach($scope.optionlistDirty, function(optionList, index) {
-          $scope.selects.listCode.optionsOrder.push(optionList.code);
-          $scope.selects.listCode.options[optionList.code] = optionList.name;
-        });
-        
-        $scope.newCustomData = {
-          'name': ''
-        };
-        $scope.customFieldNameExists = function customFieldNameExists(level, code) {
-          var customFieldName = 'customField_' + level + '_' + code;
-          return customFieldName in $scope.fieldConfig;
-        };
-        $scope.add = function add() {
-          $modalInstance.close($scope.newCustomData);
-        };
+      controller: ['$scope', '$filter', '$modalInstance',
+        function ($scope, $filter, $modalInstance) {
+          $scope.selects = {};
+          $scope.selects.level = {
+            optionsOrder: ['entry', 'senses', 'examples'],
+            options: {
+              entry: $filter('translate')('Entry Level'),
+              senses: $filter('translate')('Meaning Level'),
+              examples: $filter('translate')('Example Level')
+            }
+          };
+          $scope.selects.type = {
+            optionsOrder: ['multitext', 'optionlist', 'multioptionlist'],
+            options: {
+              multitext: $filter('translate')('Multi-input-system Text'),
+              optionlist: $filter('translate')('Option List'),
+              multioptionlist: $filter('translate')('Multi-option List'),
+              reference: $filter('translate')('Entry Reference'),
+              picture: $filter('translate')('Picture'),
+              date: $filter('translate')('Date'),
+              number: $filter('translate')('Number')
+            }
+          };
+          $scope.selects.listCode = {
+            optionsOrder: [],
+            options: {}
+          };
+          angular.forEach($scope.optionlistDirty, function (optionList) {
+            $scope.selects.listCode.optionsOrder.push(optionList.code);
+            $scope.selects.listCode.options[optionList.code] = optionList.name;
+          });
 
-        $scope.$watch('newCustomData.name', function(newValue, oldValue) {
-          if (angular.isDefined(newValue) && newValue !== oldValue) {
+          $scope.newCustomData = {
+            name: ''
+          };
+          $scope.customFieldNameExists = function customFieldNameExists(level, code) {
+            var customFieldName = 'customField_' + level + '_' + code;
+            return customFieldName in $scope.fieldConfig;
+          };
 
-            // replace spaces with underscore
-            $scope.newCustomData.code = newValue.replace(/ /g, '_');
-          }
-        });
+          $scope.add = function add() {
+            $modalInstance.close($scope.newCustomData);
+          };
 
-      }]
+          $scope.$watch('newCustomData.name', function (newValue, oldValue) {
+            if (angular.isDefined(newValue) && newValue !== oldValue) {
+
+              // replace spaces with underscore
+              $scope.newCustomData.code = newValue.replace(/ /g, '_');
+            }
+          });
+
+        }
+      ]
     });
 
-    modalInstance.result.then(function(newCustomData) {
-      var customField = {}; 
-      var customViewField = {}; 
+    modalInstance.result.then(function (newCustomData) {
+      var customField = {};
+      var customViewField = {};
       var customFieldName = 'customField_' + newCustomData.level + '_' + newCustomData.code;
       customField.label = newCustomData.name;
       customField.type = newCustomData.type;
@@ -595,18 +640,24 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
 
       switch (newCustomData.level) {
         case 'examples':
-          $scope.configDirty.entry.fields.senses.fields.examples.fields[customFieldName] = customField;
-          $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields[customFieldName];
-          if (!(customFieldName in $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder)) {
+          $scope.configDirty.entry.fields.senses.fields.examples.fields[customFieldName] =
+            customField;
+          $scope.fieldConfig[customFieldName] =
+            $scope.configDirty.entry.fields.senses.fields.examples.fields[customFieldName];
+          if (!(customFieldName in
+              $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder)) {
             $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder.push(customFieldName);
           }
+
           break;
         case 'senses':
           $scope.configDirty.entry.fields.senses.fields[customFieldName] = customField;
-          $scope.fieldConfig[customFieldName] = $scope.configDirty.entry.fields.senses.fields[customFieldName];
+          $scope.fieldConfig[customFieldName] =
+            $scope.configDirty.entry.fields.senses.fields[customFieldName];
           if (!(customFieldName in $scope.configDirty.entry.fields.senses.fieldOrder)) {
             $scope.configDirty.entry.fields.senses.fieldOrder.push(customFieldName);
           }
+
           break;
 
         // 'entry'
@@ -618,11 +669,13 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
           }
       }
 
-      angular.forEach($scope.configDirty.roleViews, function(roleView) {
+      angular.forEach($scope.configDirty.roleViews, function (roleView) {
         roleView.fields[customFieldName] = angular.copy(customViewField);
       });
-      $scope.configDirty.roleViews['project_manager'].fields[customFieldName].show = true;
-      angular.forEach($scope.configDirty.userViews, function(userView) {
+
+      var role = 'project_manager';
+      $scope.configDirty.roleViews[role].fields[customFieldName].show = true;
+      angular.forEach($scope.configDirty.userViews, function (userView) {
         userView.fields[customFieldName] = angular.copy(customViewField);
       });
 
@@ -632,17 +685,19 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
   };
 
   $scope.showRemoveCustomField = function showRemoveCustomField(fieldName) {
-    if ($scope.isCustomField(fieldName) && 
-        !(fieldName in $scope.projectSettings.config.entry.fields) && 
-        !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields) && 
+    if ($scope.isCustomField(fieldName) &&
+        !(fieldName in $scope.projectSettings.config.entry.fields) &&
+        !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields) &&
         !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields.examples.fields)) {
       return true;
     }
+
     return false;
   };
 
   $scope.removeSelectedCustomField = function removeSelectedCustomField() {
-    var fieldName = $scope.currentField.name, i;
+    var fieldName = $scope.currentField.name;
+    var i;
     if ($scope.isCustomField(fieldName)) {
       delete $scope.fieldConfig[fieldName];
 
@@ -651,10 +706,12 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
       if (i > -1) {
         $scope.configDirty.entry.fields.senses.fields.examples.fieldOrder.splice(i, 1);
       }
+
       i = $scope.configDirty.entry.fields.senses.fieldOrder.indexOf(fieldName);
       if (i > -1) {
         $scope.configDirty.entry.fields.senses.fieldOrder.splice(i, 1);
       }
+
       i = $scope.configDirty.entry.fieldOrder.indexOf(fieldName);
       if (i > -1) {
         $scope.configDirty.entry.fieldOrder.splice(i, 1);
@@ -666,17 +723,17 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
   };
 
   $scope.editInputSystems = {
-    'collapsed': true,
-    'done': function() {
+    collapsed: true,
+    done: function () {
       this.collapsed = true;
     }
   };
 
-  $scope.$watchCollection('currentField.inputSystems.selecteds', function(newValue) {
+  $scope.$watchCollection('currentField.inputSystems.selecteds', function (newValue) {
     if (angular.isDefined(newValue)) {
       if (angular.isDefined($scope.fieldConfig[$scope.currentField.name].inputSystems)) {
         $scope.fieldConfig[$scope.currentField.name].inputSystems = [];
-        angular.forEach($scope.currentField.inputSystems.fieldOrder, function(tag) {
+        angular.forEach($scope.currentField.inputSystems.fieldOrder, function (tag) {
           if ($scope.currentField.inputSystems.selecteds[tag]) {
             $scope.fieldConfig[$scope.currentField.name].inputSystems.push(tag);
           }
@@ -686,52 +743,55 @@ function($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServic
   });
 
 }])
+
 // Task Configuration Controller
-.controller('TaskConfigCtrl', ['$scope', '$filter', function($scope, $filter) {
+.controller('TaskConfigCtrl', ['$scope', '$filter', function ($scope, $filter) {
   $scope.selects.timeRange = {
-    'optionsOrder': ['30days', '90days', '1year', 'all'],
-    'options': {
+    optionsOrder: ['30days', '90days', '1year', 'all'],
+    options: {
       '30days': $filter('translate')('Up to 30 days'),
       '90days': $filter('translate')('Up to 90 days'),
       '1year': $filter('translate')('Up to 1 year'),
-      'all': $filter('translate')('All')
+      all: $filter('translate')('All')
     }
   };
   $scope.selects.language = {
-    'options': {
-      'en': $filter('translate')('English'),
-      'es': $filter('translate')('Spanish'),
-      'fr': $filter('translate')('French'),
-      'hi': $filter('translate')('Hindi'),
-      'id': $filter('translate')('Indonesian'),
-      'km': $filter('translate')('Central Khmer'),
-      'ne': $filter('translate')('Nepali'),
-      'ru': $filter('translate')('Russian'),
-      'th': $filter('translate')('Thai'),
-      'ur': $filter('translate')('Urdu'),
+    options: {
+      en: $filter('translate')('English'),
+      es: $filter('translate')('Spanish'),
+      fr: $filter('translate')('French'),
+      hi: $filter('translate')('Hindi'),
+      id: $filter('translate')('Indonesian'),
+      km: $filter('translate')('Central Khmer'),
+      ne: $filter('translate')('Nepali'),
+      ru: $filter('translate')('Russian'),
+      th: $filter('translate')('Thai'),
+      ur: $filter('translate')('Urdu'),
       'zh-CN': $filter('translate')('Chinese')
     }
   };
 
-  $scope.selectTask = function(taskName) {
+  $scope.selectTask = function (taskName) {
     $scope.currentTaskName = taskName;
   };
 
 }])
+
 // Option List Configuration Controller
-.controller('OptionListCtrl', ['$scope', function($scope) {
+.controller('OptionListCtrl', ['$scope', function ($scope) {
   var oldListIndex = 0;
   $scope.currentListIndex = 0;
 
-  $scope.selectList = function($index) {
+  $scope.selectList = function ($index) {
     $scope.currentListIndex = $index;
   };
 
-  $scope.$watch('optionlistDirty[currentListIndex].items', function(newval, oldval) {
+  $scope.$watch('optionlistDirty[currentListIndex].items', function (newval, oldval) {
     if (angular.isDefined(newval) && newval != oldval) {
       if ($scope.currentListIndex == oldListIndex) {
         $scope.configForm.$setDirty();
       }
+
       oldListIndex = $scope.currentListIndex;
     }
   }, true);

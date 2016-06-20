@@ -1,14 +1,15 @@
 'use strict';
 
 // module definition
-angular.module('bellows.services')
+angular.module('bellows.services.comments')
 //Lexicon Comment Service
-  .service('lexCommentService', ['jsonRpc', function(jsonRpc) {
+  .service('lexCommentService', ['jsonRpc', 'commentsOfflineCache', '$filter', function(jsonRpc, offlineCache, $filter) {
     var _this = this;
 
     this.comments = {
       items: {
         currentEntry: [],
+        currentEntryFiltered: [],
         all: []
       },
       counts: {
@@ -91,6 +92,54 @@ angular.module('bellows.services')
       }
       return 0;
     };
+
+    this.removeCommentFromLists = function removeCommentFromLists(commentId, replyId) {
+      if (replyId) {
+        // just delete the replyId but don't delete the entire comment
+        _deleteCommentInList(commentId, replyId, _this.comments.items.all);
+        _deleteCommentInList(commentId, replyId, _this.comments.items.currentEntry);
+        _deleteCommentInList(commentId, replyId, _this.comments.items.currentEntryFiltered);
+
+      } else {
+        // delete the entire comment
+        offlineCache.deleteComment(commentId).then(function() {
+          _deleteCommentInList(commentId, null, _this.comments.items.all);
+          _deleteCommentInList(commentId, null, _this.comments.items.currentEntry);
+          _deleteCommentInList(commentId, null, _this.comments.items.currentEntryFiltered);
+        });
+      }
+    };
+
+    this.refreshFilteredComments = function refreshFilteredComments(filter) {
+      _this.comments.items.currentEntryFiltered.length = 0;
+      var comments = $filter('filter')(_this.comments.items.currentEntry, filter.byText);
+      var arr = _this.comments.items.currentEntryFiltered;
+      arr.push.apply(arr, $filter('filter')(comments, filter.byStatus));
+    };
+
+    function _deleteCommentInList(commentId, replyId, list) {
+      var deleteComment = true;
+      if (replyId) {
+        deleteComment = false;
+      }
+      for (var i = list.length - 1; i >= 0; i--) {
+        var c = list[i];
+        if (deleteComment) {
+          if (c.id == commentId) {
+            list.splice(i, 1);
+          }
+        } else {
+
+          // delete Reply
+          for (var j = c.replies.length - 1; j >= 0; j--) {
+            var r = c.replies[j];
+            if (r.id == replyId) {
+              c.replies.splice(j, 1);
+            }
+          }
+        }
+      }
+    }
 
 
     function getCurrentEntryComment(id) {

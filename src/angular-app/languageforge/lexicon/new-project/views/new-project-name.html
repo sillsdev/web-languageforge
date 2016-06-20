@@ -1,39 +1,39 @@
-<h3 translate="Choose a project name"></h3>
+<h3 data-translate="Choose a project name"></h3>
 
 <div class="control-group">
     <div class="controls">
-        <input type="text" data-ng-model="newProject.projectName" data-ng-blur="checkProjectCode()" 
-            set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name" 
-            idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+        <input type="text" data-ng-model="newProject.projectName" data-ng-blur="checkProjectCode()"
+            data-set-focus="{{isSRProject ? '' : true}}" maxlength="50" required placeholder="Project Name"
+            data-idle-validate="checkProjectCode()" data-idle-validate-keypress="resetValidateProjectForm()"/>
         <span  data-ng-show="newProject.projectCode.length > 0">
             <span  data-ng-show="projectCodeState == 'loading'">
-                <img id="projectCodeLoading" class="validator" src="/images/shared/loading-small.gif" /></span>
+                <img id="projectCodeLoading" class="validator" src="/Site/views/shared/image/loading-small.gif" /></span>
             <span  data-ng-show="projectCodeState == 'exists'">
-                <img id="projectCodeExists" class="validator" src="/images/shared/exclamation.png" 
+                <img id="projectCodeExists" class="validator" src="/Site/views/shared/image/exclamation.png"
                 title="Project Code already exists!" /></span>
             <span  data-ng-show="projectCodeState == 'invalid'">
-                <img id="projectCodeAlphanumeric" class="validator" src="/images/shared/exclamation.png" 
+                <img id="projectCodeAlphanumeric" class="validator" src="/Site/views/shared/image/exclamation.png"
                 title="Project Code must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores!" /></span>
             <span  data-ng-show="projectCodeState == 'ok'">
-                <img id="projectCodeOk" class="validator" src="/images/shared/tick.png" 
+                <img id="projectCodeOk" class="validator" src="/Site/views/shared/image/tick.png"
                 title="Project Code is available!" /></span>
         </span>
     </div>
 </div>
 <br />
 <div class="control-group">
-    <label class="control-label muted" translate="Project Code"></label>
+    <label class="control-label muted" for="projectCode" data-translate="Project Code"></label>
     <div class="controls" data-ng-show="newProject.editProjectCode">
-        <input type="text" data-ng-model="newProject.projectCode" 
+        <input type="text" data-ng-model="newProject.projectCode" id="projectCode"
             data-ng-trim="false" maxlength="50" required data-ng-blur="checkProjectCode()" 
-            idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+            data-idle-validate="checkProjectCode()" data-idle-validate-keypress="resetValidateProjectForm()"/>
     </div>
     <div class="controls" data-ng-hide="newProject.editProjectCode">
         <div class="uneditable-input"
             data-ng-hide="newProject.editProjectCode"
             data-ng-bind="newProject.projectCode"></div>
     </div>
-    <div class="controls">
+    <div class="controls" data-ng-hide="isSRProject">
         <label class="checkbox">
             <input type="checkbox" data-ng-model="newProject.editProjectCode"/>
             {{'Edit project code' | translate}}

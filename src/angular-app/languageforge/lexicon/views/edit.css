@@ -31,12 +31,10 @@ legend.override-bootstrap {
 }
 
 /*animate*/
-/*
-// TODO: analyze height property: 625px.  This seems to be related to where the footer is.  Too big, and the footer "tears" on animation
-// 2014-08 DDW
-*/
 .animate-switch-container {
     position:relative;
+    height: 665px;
+    overflow: hidden;
 }
 
 .animate-switch {
@@ -45,19 +43,75 @@ legend.override-bootstrap {
 
 .animate-switch.ng-animate {
     -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-    transition: 500ms ease-in all;
+    -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.040) 0.5s;
+    transition: all ease-in 0.5s;
     position:relative;
     display: block;
 }
 
 .animate-switch.ng-leave.ng-leave-active,
 .animate-switch.ng-enter {
+    /*animation: moveToLeft .5s ease-in;*/
     right:721px;
 }
 .animate-switch.ng-leave,
 .animate-switch.ng-enter.ng-enter-active {
+    /*animation: moveToRight .5s ease-in;*/
     right:0;
 }
+
+/* This is TODO for getting the scroll bars to line up in the animation
+.animate-switch.moveToLeft {
+    -webkit-animation: moveToLeft .5s ease both;
+    animation: moveToLeft .5s ease both;
+}
+
+.animate-switch.moveToRight {
+    -webkit-animation: moveToRight .5s ease both;
+    animation: moveToRight .5s ease both;
+}
+
+******************** keyframes ***************************************
+
+@-webkit-keyframes moveToLeft {
+    from { margin-right: 100%; width: 100%; }
+    to { margin-right: 22%; width:22%; }
+}
+@keyframes moveToLeft {
+    from { margin-right: 100%; width: 100%; }
+    to { margin-right: 22%; width:22%; }
+}
+
+@-webkit-keyframes moveToRight {
+    from { margin-right: 22%; width: 22%; }
+    to { margin-right: 100%; width:100%; }
+}
+@keyframes moveToRight {
+    from { margin-right: 22%; width: 22%; }
+    to { margin-right: 100%; width:100%; }
+}
+
+@-webkit-keyframes moveToLeft {
+    from { }
+    to { -webkit-transform: translateX(-100%); }
+}
+@keyframes moveToLeft {
+    from { }
+    to { -webkit-transform: translateX(-100%); transform: translateX(-100%); }
+}
+
+@-webkit-keyframes moveToRight {
+    from { }
+    to { -webkit-transform: translateX(100%); }
+}
+@keyframes moveToRight {
+    from { }
+    to { -webkit-transform: translateX(100%); transform: translateX(100%); }
+}
+
+
+
+/*********************************************************/
 
 .override-bootstrap input[type="checkbox"] {
     text-align: center;
@@ -189,7 +243,7 @@ legend.override-bootstrap {
     display: flex;
     flex-flow: column;
     align-items: center;
-    height: 500px;
+    height: 560px;
     overflow-y: scroll;
     overflow-x: hidden;
     margin-bottom: 15px;
@@ -215,6 +269,7 @@ legend.override-bootstrap {
 #lexAppListView .typeahead input, #lexAppListView .typeahead-item {
     width:300px;
     font-family: "Bookman", Georgia, "Times New Roman", serif;
+    padding-right: 20px;
 }
 
 #lexAppEditView {
@@ -246,9 +301,10 @@ legend.override-bootstrap {
     font-family: "Bookman", Georgia, "Times New Roman", serif;
 }
 
-#lexAppEditView .typeahead-item {
-    width:300px;
+#lexAppEditView .typeahead input, #lexAppEditView .typeahead-item {
+    width:162px;
     font-family: "Bookman", Georgia, "Times New Roman", serif;
+    padding-right: 25px;
 }
 
 .listItemPrimary {
@@ -290,12 +346,14 @@ legend.override-bootstrap {
 
 
 .entryItemView {
-/*  TODO: review this in light of animation and the footer staying at the bottom. IJH 2014-09*/    
+/*  TODO: review this in light of animation and the footer staying at the bottom. IJH 2014-09
+    The view is used in edit and comment view */
+
     overflow-y: scroll;
     overflow-x: hidden;
-
-    height: 588px;
+    height: 580px;
     padding-right:5px;
+    margin-right: 5px;
 }
 
 .entryItemView i.icon-remove {

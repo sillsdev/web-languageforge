@@ -1,9 +1,9 @@
 <div class="container" data-ng-cloak data-ng-controller="manageUsersCtrl">
-    <br><h2 style="font-weight:normal" >{{project.projectName}} <span translate="User Management"></span></h2>
-    <!-- <h2 translate="{projectName} User Management" translate-values="{projectName: project.projectName}"></h2> -->
-    <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-        <button data-ng-disabled="selected.length == 0" data-ng-show="rights.remove" class="btn" data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>{{ 'Remove Members' | translate }}</button>
-        <button data-ng-show="rights.create" class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>{{ 'Add Members' | translate }}</button>
+    <br><h2 style="font-weight:normal" >{{project.projectName}} <span data-translate="User Management"></span></h2>
+    <!-- <h2 data-translate="{projectName} User Management" data-translate-values="{projectName: project.projectName}"></h2> -->
+    <form data-ng-show="rights.showControlBar()" class="control-bar form-inline">
+        <button data-ng-disabled="selected.length == 0" data-ng-show="rights.canRemoveUsers()" class="btn" data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>{{ 'Remove Members' | translate }}</button>
+        <button data-ng-show="rights.canCreateUsers()" class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>{{ 'Add Members' | translate }}</button>
         <input type="text" ng-model="userFilter" placeholder="Member List Filter"/> <a ng-show="userFilter != ''" title="Clear Filter" ng-click="userFilter = ''"><i class="icon-remove" style="color:gray"></i></a>
     </form>
     <div id="newMembersDiv" class="new-item" data-collapse="!newUserCollapsed">
@@ -21,19 +21,19 @@
         <span class="warning" data-ng-show="warningText">{{warningText}}</span>
         </form>
     </div>
-    <div listview search="queryProjectUsers()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
+    <listview search="queryProjectUsers()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
         <table class="table" style="width: 100%">
             <thead>
             <tr>
                 <th></th>
-                <th translate="Username"></th>
-                <th translate="Full Name"></th>
-                <th translate="Role"></th>
+                <th data-translate="Username"></th>
+                <th data-translate="Full Name"></th>
+                <th data-translate="Role"></th>
             </tr>
             </thead>
             <tbody>
             <tr data-ng-repeat="user in list.visibleUsers" data-ng-class="{active: isSelected(user)}" >
-                <td width="16px" align="center"><input data-ng-show="rights.remove" type="checkbox" data-ng-checked="isSelected(user)" data-ng-click="updateSelection($event, user)" /></td>
+                <td width="16px" align="center"><input data-ng-show="rights.canRemoveUsers()" type="checkbox" data-ng-checked="isSelected(user)" data-ng-click="updateSelection($event, user)" /></td>
                 <td>{{user.username}}</td>
                 <td>{{user.name}}</td>
                 <td ng-show="showProjectOwner(user.id)">Manager and Project Owner</td>
@@ -41,5 +41,5 @@
             </tr>
             </tbody>
         </table>
-    </div>
+    </listview>
 </div>

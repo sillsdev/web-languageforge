@@ -353,7 +353,9 @@ webdriver.stacktrace.V8_LOCATION_PATTERN_ = ' (?:\\((.*)\\)|(.*))';
  * @private {!RegExp}
  * @const
  */
-webdriver.stacktrace.V8_STACK_FRAME_REGEXP_ = new RegExp('^    at' +
+webdriver.stacktrace.V8_STACK_FRAME_REGEXP_ = new RegExp('^\\s+at' +
+    // Prevent intersections with IE10 stack frame regex.
+    '(?! (?:Anonymous function|Global code|eval code) )' +
     '(?:' + webdriver.stacktrace.V8_FUNCTION_CALL_PATTERN_ + ')?' +
     webdriver.stacktrace.V8_LOCATION_PATTERN_ + '$');
 
@@ -426,13 +428,16 @@ webdriver.stacktrace.OPERA_STACK_FRAME_REGEXP_ = new RegExp('^' +
 
 /**
  * RegExp pattern for function call in a Chakra (IE) stack trace. This
- * expression allows for identifiers like 'Anonymous function', 'eval code',
- * and 'Global code'.
+ * expression creates 2 submatches on the (optional) context and function name,
+ * matching identifiers like 'foo.Bar.prototype.baz', 'Anonymous function',
+ * 'eval code', and 'Global code'.
  * @private {string}
  * @const
  */
-webdriver.stacktrace.CHAKRA_FUNCTION_CALL_PATTERN_ = '(' +
-    webdriver.stacktrace.IDENTIFIER_PATTERN_ + '(?:\\s+\\w+)*)';
+webdriver.stacktrace.CHAKRA_FUNCTION_CALL_PATTERN_ =
+    '(?:(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ +
+    '(?:\\.' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + ')*)\\.)?' +
+    '(' + webdriver.stacktrace.IDENTIFIER_PATTERN_ + '(?:\\s+\\w+)*)';
 
 
 /**
@@ -518,7 +523,7 @@ webdriver.stacktrace.parseStackFrame_ = function(frameStr) {
 
   m = frameStr.match(webdriver.stacktrace.CHAKRA_STACK_FRAME_REGEXP_);
   if (m) {
-    return new webdriver.stacktrace.Frame('', m[1], '', m[2]);
+    return new webdriver.stacktrace.Frame(m[1], m[2], '', m[3]);
   }
 
   if (frameStr == webdriver.stacktrace.UNKNOWN_CLOSURE_FRAME_ ||
@@ -587,6 +592,18 @@ webdriver.stacktrace.getStack_ = function(error) {
 webdriver.stacktrace.format = function(error) {
   var stack = webdriver.stacktrace.getStack_(error);
   var frames = webdriver.stacktrace.parse_(stack);
+
+  // If the original stack is in an unexpected format, our formatted stack
+  // trace will be a bunch of "    at <anonymous>" lines. If this is the case,
+  // just return the error unmodified to avoid losing information. This is
+  // necessary since the user may have defined a custom stack formatter in
+  // V8 via Error.prepareStackTrace. See issue 7994.
+  var isAnonymousFrame = function(frame) {
+    return frame.toString() === '    at <anonymous>';
+  };
+  if (frames.length && goog.array.every(frames, isAnonymousFrame)) {
+    return error;
+  }
 
   // Older versions of IE simply return [object Error] for toString(), so
   // only use that as a last resort.

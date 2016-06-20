@@ -1,27 +1,24 @@
 <?php
 
-use libraries\shared\Website;
-use models\shared\rights\ProjectRoles;
-use models\mapper\Id;
-use models\ProjectModel;
-use models\UserListModel;
-use models\UserModel;
+use Api\Library\Shared\Website;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\UserModel;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
-require_once SourcePath . "models/ProjectModel.php";
-require_once SourcePath . "models/UserModel.php";
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
+require_once SourcePath . "Api/Model/ProjectModel.php";
+require_once SourcePath . "Api/Model/UserModel.php";
 
 class TestUserModel extends UnitTestCase
 {
     private $_someUserId;
-    private $_e;
 
     public function __construct()
     {
         $e = new MongoTestEnvironment();
         $e->clean();
+        parent::__construct();
     }
 
     public function testWrite_ReadBackSame()
@@ -30,7 +27,7 @@ class TestUserModel extends UnitTestCase
         $user->email = "user@example.com";
         $user->username = "SomeUser";
         $user->name = "Some User";
-        $user->avatar_ref = "images/avatar/pinkbat.png";
+        $user->avatar_ref = "Site/views/shared/image/avatar/pinkbat.png";
         $id = $user->write();
         $this->assertNotNull($id);
         $this->assertIsA($id, 'string');
@@ -40,7 +37,7 @@ class TestUserModel extends UnitTestCase
         $this->assertEqual('user@example.com', $otherModel->email);
         $this->assertEqual('SomeUser', $otherModel->username);
         $this->assertEqual('Some User', $otherModel->name);
-        $this->assertEqual('images/avatar/pinkbat.png', $otherModel->avatar_ref);
+        $this->assertEqual('Site/views/shared/image/avatar/pinkbat.png', $otherModel->avatar_ref);
 
         $this->_someUserId = $id;
     }
@@ -50,10 +47,9 @@ class TestUserModel extends UnitTestCase
         $e = new MongoTestEnvironment();
         $e->clean();
 
-        $userId = $e->createUser('someuser', 'Some User','user@example.com');
-        $someUser = new UserModel($userId);
+        $e->createUser('someuser', 'Some User','user@example.com');
 
-        $model = new models\UserTypeaheadModel('', '', $e->website);
+        $model = new Api\Model\UserTypeaheadModel('', '', $e->website);
         $model->read();
 
         $this->assertEqual(1, $model->count);
@@ -65,10 +61,9 @@ class TestUserModel extends UnitTestCase
     {
         $e = new MongoTestEnvironment();
         $e->clean();
-        $userId = $e->createUser('someuser', 'Some User','user@example.com');
-        $someUser = new UserModel($userId);
+        $e->createUser('someuser', 'Some User','user@example.com');
 
-        $model = new models\UserTypeaheadModel('', '', $e->website);
+        $model = new Api\Model\UserTypeaheadModel('', '', $e->website);
         $model->read();
 
         $this->assertEqual(1, $model->count);
@@ -80,10 +75,9 @@ class TestUserModel extends UnitTestCase
     {
         $e = new MongoTestEnvironment();
         $e->clean();
-        $userId = $e->createUser('someuser', 'Some User','user@example.com');
-        $someUser = new UserModel($userId);
+        $e->createUser('someuser', 'Some User','user@example.com');
 
-        $model = new models\UserTypeaheadModel('Bogus', '', $e->website);
+        $model = new Api\Model\UserTypeaheadModel('Bogus', '', $e->website);
         $model->read();
 
         $this->assertEqual(0, $model->count);
@@ -94,12 +88,11 @@ class TestUserModel extends UnitTestCase
     {
         $e = new MongoTestEnvironment();
         $e->clean();
-        $userId = $e->createUser('someuser', 'Some User','user@example.com');
-        $someUser = new UserModel($userId);
+        $e->createUser('someuser', 'Some User','user@example.com');
 
         // Check no users exist on another website
         $website = new Website('languageforge.local', Website::LANGUAGEFORGE);
-        $model = new models\UserTypeaheadModel('some', '', $website);
+        $model = new Api\Model\UserTypeaheadModel('some', '', $website);
         $model->read();
 
         $this->assertEqual(0, $model->count);
@@ -111,16 +104,20 @@ class TestUserModel extends UnitTestCase
         $e = new MongoTestEnvironment();
         $e->clean();
 
+        $userId = $e->createUser('jsmith', 'joe smith', 'joe@smith.com');
+
         $p1m = $e->createProject('p1', 'p1Code');
         $p1m->appName = 'sfchecks';
+        $p1m->ownerRef->id = $userId;
+
         $p1m->write();
         $p1 = $p1m->id->asString();
         $p2m = $e->createProject('p2', 'p2Code');
         $p2 = $p2m->id->asString();
         $p2m->appName = 'sfchecks';
+        $p2m->ownerRef->id = $userId;
         $p2m->write();
 
-        $userId = $e->createUser('jsmith', 'joe smith', 'joe@smith.com');
         $userModel = new UserModel($userId);
 
         // Check that list projects is empty
@@ -129,9 +126,9 @@ class TestUserModel extends UnitTestCase
         $this->assertEqual(array(), $result->entries);
 
         // Add our two projects
-        $p1m->addUser($userModel->id->asString(), ProjectRoles::CONTRIBUTOR);
+        $p1m->addUser($userModel->id->asString(), ProjectRoles::MANAGER);
         $userModel->addProject($p1m->id->asString());
-        $p2m->addUser($userModel->id->asString(), ProjectRoles::CONTRIBUTOR);
+        $p2m->addUser($userModel->id->asString(), ProjectRoles::MANAGER);
         $userModel->addProject($p2m->id->asString());
         $p1m->write();
         $p2m->write();
@@ -142,16 +139,18 @@ class TestUserModel extends UnitTestCase
         $this->assertEqual(
             array(
                 array(
-                  'projectName' => 'p1',
-                  'id' => $p1,
-                  'appName' => 'sfchecks',
-                  'siteName' => $e->website->domain
+                    'projectName' => 'p1',
+                    'ownerRef' => $userId,
+                    'id' => $p1,
+                    'appName' => 'sfchecks',
+                    'siteName' => $e->website->domain
                 ),
                 array(
-                  'projectName' => 'p2',
-                  'id' => $p2,
-                  'appName' => 'sfchecks',
-                  'siteName' => $e->website->domain
+                    'projectName' => 'p2',
+                    'ownerRef' => $userId,
+                    'id' => $p2,
+                    'appName' => 'sfchecks',
+                    'siteName' => $e->website->domain
                 )
             ), $result->entries
         );
@@ -204,6 +203,57 @@ class TestUserModel extends UnitTestCase
 
         $this->assertFalse($project->userIsMember($userId));
 
+    }
+
+    public function testHasForgottenPassword_KeyNotSetNoKeyConsume_HasNotForgotten()
+    {
+        $e = new MongoTestEnvironment();
+        $e->clean();
+        $userId = $e->createUser('user1', 'User1', 'user1');
+        $user = new UserModel($userId);
+
+        $hasForgottenPassword = $user->hasForgottenPassword(false);
+
+        $this->assertFalse($hasForgottenPassword);
+        $this->assertFalse($user->resetPasswordKey);
+        $this->assertIsA($user->resetPasswordExpirationDate, 'DateTime');
+    }
+
+    public function testHasForgottenPassword_KeySetNoKeyConsume_HasForgottenKeyNotConsumed()
+    {
+        $e = new MongoTestEnvironment();
+        $e->clean();
+        $userId = $e->createUser('user1', 'User1', 'user1');
+        $user = new UserModel($userId);
+        $user->setForgotPassword(7);
+        $user->write();
+
+        $hasForgottenPassword = $user->hasForgottenPassword(false);
+
+        $this->assertTrue($hasForgottenPassword);
+        $this->assertTrue($user->resetPasswordKey);
+        $today = new \DateTime();
+        $future = $today->add(new DateInterval('P7D'));
+        $hourMargin = 60;
+        $this->assertWithinMargin($user->resetPasswordExpirationDate->getTimestamp(), $future->getTimestamp(), $hourMargin);
+    }
+
+    public function testHasForgottenPassword_KeySetConsumeKey_HasForgottenKeyConsumed()
+    {
+        $e = new MongoTestEnvironment();
+        $e->clean();
+        $userId = $e->createUser('user1', 'User1', 'user1');
+        $user = new UserModel($userId);
+        $user->setForgotPassword(7);
+        $user->write();
+
+        $hasForgottenPassword = $user->hasForgottenPassword(true);
+
+        $this->assertTrue($hasForgottenPassword);
+        $this->assertFalse($user->resetPasswordKey);
+        $today = new \DateTime();
+        $hourMargin = 60;
+        $this->assertWithinMargin($user->resetPasswordExpirationDate->getTimestamp(), $today->getTimestamp(), $hourMargin);
     }
 /*
     function testWriteRemove_ListCorrect()
