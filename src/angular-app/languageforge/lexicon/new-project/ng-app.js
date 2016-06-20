@@ -269,7 +269,7 @@ angular.module('lexicon-new-project',
           return validateSendReceiveCredentialsForm();
           break;
         case 'newProject.sendReceiveClone':
-          if (sendReceive.status.SRState != 'IDLE' && sendReceive.status.SRState != 'HOLD') {
+          if (sendReceive.isInProgress()) {
             return error();
           }
 
@@ -376,7 +376,7 @@ angular.module('lexicon-new-project',
 
           break;
         case 'newProject.sendReceiveClone':
-          if (sendReceive.status.SRState == 'IDLE' || sendReceive.status.SRState == 'HOLD') {
+          if (!sendReceive.isInProgress()) {
             gotoLexicon();
           }
 
