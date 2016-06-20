@@ -49,7 +49,7 @@ angular.module('lexicon.services')
         _this.status.SRState = '';
       };
 
-      this.isSyncing = function isSyncing() {
+      this.isInProgress = function isInProgress() {
         return (_this.isSendReceiveProject &&
           angular.isDefined(_this.status) && angular.isDefined(_this.status.SRState) &&
           _this.status.SRState != 'IDLE' && _this.status.SRState != '' &&
@@ -72,7 +72,7 @@ angular.module('lexicon.services')
             _this.clearState();
             getSyncProjectStatus();
             _this.startSyncStatusTimer();
-          } else if (_this.isSyncing()) {
+          } else if (_this.isInProgress()) {
             _this.setSyncStarted();
           } else {
             _this.clearState();
@@ -108,7 +108,7 @@ angular.module('lexicon.services')
             notice.cancelProgressBar();
             notice.setLoading('Syncing with LanguageDepot.org...');
             _this.status = result.data;
-            if (!_this.isSyncing()) {
+            if (!_this.isInProgress()) {
               _this.startPollStatusTimer();
               notice.cancelLoading();
             }
@@ -179,7 +179,7 @@ angular.module('lexicon.services')
 
             var stateWasClear = (_this.status.SRState == '');
             _this.status = result.data;
-            if (_this.isSyncing()) {
+            if (_this.isInProgress()) {
               _this.setSyncStarted();
             } else {
               stateWasClear && _this.clearState();
@@ -231,6 +231,7 @@ angular.module('lexicon.services')
       this.startCloneStatusTimer = function startCloneStatusTimer() {
         _this.cancelPollStatusTimer();
         _this.cancelSyncStatusTimer();
+        _this.status.SRState = 'cloning';
         if (angular.isDefined(cloneStatusTimer)) return;
 
         cloneStatusTimer = $interval(getCloneProjectStatus, 3000);

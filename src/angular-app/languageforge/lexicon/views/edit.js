@@ -646,21 +646,21 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // permissions stuff
     $scope.rights = {
       canEditProject: function canEditProject() {
-        if (sendReceive.isSyncing()) return false;
+        if (sendReceive.isInProgress()) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.PROJECTS,
           sessionService.operation.EDIT);
       },
 
       canEditEntry: function canEditEntry() {
-        if (sendReceive.isSyncing()) return false;
+        if (sendReceive.isInProgress()) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.EDIT);
       },
 
       canDeleteEntry: function canDeleteEntry() {
-        if (sendReceive.isSyncing()) return false;
+        if (sendReceive.isInProgress()) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.DELETE);
@@ -711,16 +711,13 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       var numMatches = $scope.typeahead.searchResults.length;
       var limit = 10;
       if (numMatches > limit) {
-        $scope.typeahead.matchCountCaption = limit + ' of ' + numMatches + " matches";
-      }
-      else if (1 < numMatches && numMatches < limit) {
+        $scope.typeahead.matchCountCaption = limit + ' of ' + numMatches + ' matches';
+      } else if (1 < numMatches && numMatches < limit) {
         $scope.typeahead.matchCountCaption = numMatches + ' matches';
-      }
-      else if (numMatches == 1) {
+      } else if (numMatches == 1) {
         $scope.typeahead.matchCountCaption = numMatches + ' match';
       }
     };
-
 
     $scope.typeahead.searchSelect = function searchSelect(entry) {
       $scope.typeahead.searchItemSelected = '';

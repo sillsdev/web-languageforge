@@ -127,21 +127,21 @@ angular.module('lexicon',
 
     $scope.rights = {};
     $scope.rights.canRemoveUsers = function canRemoveUsers() {
-      if (sendReceive.isSyncing()) return false;
+      if (sendReceive.isInProgress()) return false;
 
       return sessionService.hasProjectRight(sessionService.domain.USERS,
         sessionService.operation.DELETE);
     };
 
     $scope.rights.canCreateUsers = function canCreateUsers() {
-      if (sendReceive.isSyncing()) return false;
+      if (sendReceive.isInProgress()) return false;
 
       return sessionService.hasProjectRight(sessionService.domain.USERS,
           sessionService.operation.CREATE);
     };
 
     $scope.rights.canEditUsers = function canEditUsers() {
-      if (sendReceive.isSyncing()) return false;
+      if (sendReceive.isInProgress()) return false;
 
       return sessionService.hasProjectRight(sessionService.domain.USERS,
           sessionService.operation.EDIT);
