@@ -6,11 +6,10 @@ angular.module('bellows.services')
  *
  *
  */
-  .factory('offlineCache', ['$window', '$q', 'sessionService', function($window, $q, sessionService) {
+  .factory('offlineCache', ['$window', '$q', function($window, $q) {
     var indexedDB = $window.indexedDB;
     var dbName = 'xforgeCache';
     var db = null;
-    var projectId = sessionService.session.project.id;
 
     /**
      *
@@ -25,7 +24,7 @@ angular.module('bellows.services')
      */
     var openDbIfNecessary = function openDbIfNecessary() {
       var deferred = $q.defer();
-      var version = 2;
+      var version = 4;
       if (db == null) {
         var request = indexedDB.open(dbName, version);
 
@@ -35,20 +34,36 @@ angular.module('bellows.services')
 
           e.target.transaction.onerror = indexedDB.onerror;
 
-          // get rid of old 'cached' store - no longer used - cjh 2015-03
+          // get rid of old stores - no longer used - cjh 2015-03
           if (db.objectStoreNames.contains('cached')) {
             db.deleteObjectStore('cached');
           }
+          if (db.objectStoreNames.contains('offlineActions')) {
+            db.deleteObjectStore('offlineActions');
+          }
 
+
+          if (db.objectStoreNames.contains('entries')) {
+            db.deleteObjectStore('entries');
+          }
           var entriesStore = db.createObjectStore('entries', {keyPath: "id"});
           entriesStore.createIndex('projectId', 'projectId', { unique: false });
 
+          if (db.objectStoreNames.contains('comments')) {
+            db.deleteObjectStore('comments');
+          }
           var commentsStore = db.createObjectStore('comments', {keyPath: "id"});
           commentsStore.createIndex('projectId', 'projectId', { unique: false });
 
-          var actionsStore = db.createObjectStore('offlineActions', {keyPath: "id"});
-          actionsStore.createIndex('projectId', 'projectId', { unique: false });
-
+          if (db.objectStoreNames.contains('workingsets')) {
+            db.deleteObjectStore('workingsets');
+          }
+          var workingsetStore = db.createObjectStore('workingsets', {keyPath: "id"});
+          workingsetStore.createIndex('projectId', 'projectId', { unique: false });
+          
+          if (db.objectStoreNames.contains('projects')) {
+            db.deleteObjectStore('projects');
+          }
           var projectsStore = db.createObjectStore('projects', {keyPath: "id"});
         };
 
@@ -74,7 +89,7 @@ angular.module('bellows.services')
      * @param isAdd
      * @returns {*}
      */
-    function setObjectsInStore(storeName, items, isAdd) {
+    function setObjectsInStore(storeName, projectId, items, isAdd) {
       var isAdd = isAdd || false;
       var deferred = $q.defer();
       openDbIfNecessary().then(function() {
@@ -112,10 +127,27 @@ angular.module('bellows.services')
       return deferred.promise;
     }
 
-    function deleteObjectInStore(storeName, id) {
+    function deleteObjectInStore(storeName, key) {
+      // cjh 2015-03 it seems to me from the spec that we can call "delete" without first checking if the id exists
+      // http://www.w3.org/TR/IndexedDB/#dfn-steps-for-deleting-records-from-an-object-store
+      var deferred = $q.defer();
+      openDbIfNecessary().then(function() {
+        // we write ['delete'] to satisfy the yui compressor - arg! - time to get a new compressor - cjh 2015-03
+        var request = db.transaction(storeName, "readwrite").objectStore(storeName)['delete'](key);
+        request.onsuccess = function(e) {
+          deferred.resolve(true);
+        };
+        request.onerror = function(e) {
+          deferred.reject(e.value);
+        };
+      }, function(error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+
     }
 
-    function getAllFromStore(storeName) {
+    function getAllFromStore(storeName, projectId) {
       var deferred = $q.defer();
       openDbIfNecessary().then(function() {
         var entries = [];
@@ -128,9 +160,6 @@ angular.module('bellows.services')
             // should be  cursor.continue(); but needed a work around to work with the yui compressor - cjh 2015-03
             cursor["continue"]();
           } else {
-            if (entries.length == 0) {
-              //console.log("offline cache getAll" + storeName + " MISS for project = " + projectId);
-            }
             deferred.resolve(entries);
           }
         };
@@ -164,63 +193,12 @@ angular.module('bellows.services')
       return deferred.promise;
     }
 
-    var getAllEntries = function getAllEntries() {
-      return getAllFromStore('entries');
-    };
-
-    var getAllComments = function getAllComments() {
-      return getAllFromStore('comments');
-    };
-
-    var getAllOfflineActions = function getAllOfflineActions() {
-      return getAllFromStore('offlineActions');
-    };
-
-    /**
-     *
-     * @param entries - array
-     * @returns {promise}
-     */
-    var updateEntries = function updateEntries(entries) {
-      return setObjectsInStore('entries', entries);
-    };
-
-    var updateComments = function updateComments(comments) {
-      return setObjectsInStore('comments', comments);
-    };
-
-    var addOfflineAction = function addOfflineAction(action) {
-      return setObjectsInStore('offlineActions', [action], true);
-    };
-
-    var deleteOfflineAction = function deleteOfflineAction(id) {
-      return deleteObjectInStore('offlineActions', id);
-    };
-
-    var updateProjectData = function updateProject(timestamp, commentsUserPlusOne, isComplete) {
-      var obj = {
-        id: projectId,
-        commentsUserPlusOne: commentsUserPlusOne,
-        timestamp: timestamp,
-        isComplete: isComplete
-      };
-      return setObjectsInStore('projects', [obj]);
-    };
-
-    var getProjectData = function getProjectData() {
-      return getOneFromStore('projects', projectId);
-    };
 
     return {
-      getAllEntries: getAllEntries,
-      getAllComments: getAllComments,
-      getAllOfflineActions: getAllOfflineActions,
-      getProjectData: getProjectData,
-      updateEntries: updateEntries,
-      updateComments: updateComments,
-      addOfflineAction: addOfflineAction,
-      deleteOfflineAction: deleteOfflineAction,
-      updateProjectData: updateProjectData,
+      setObjectsInStore: setObjectsInStore,
+      deleteObjectInStore: deleteObjectInStore,
+      getAllFromStore: getAllFromStore,
+      getOneFromStore: getOneFromStore,
       canCache: canCache
     };
   }]);

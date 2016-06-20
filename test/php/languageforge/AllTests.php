@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
 class AllLanguageForgeTests extends TestSuite
@@ -7,7 +7,8 @@ class AllLanguageForgeTests extends TestSuite
     public function __construct()
     {
         parent::__construct();
-        $this->addFile(TestPath . 'languageforge/lexicon/AllTests.php');
+        $this->addFile(TestPhpPath . 'languageforge/lexicon/AllTests.php');
+        $this->addFile(TestPhpPath . 'languageforge/semdomtrans/AllTests.php');
     }
 
 }

@@ -1,0 +1,166 @@
+{% extends 'container.html.twig' %}
+
+{% block header %}
+    <div id="header">
+        <div class="container">
+            <div class="lf-logo">
+                <img src="/Site/views/languageforge/theme/default/image/lf_logo-beta.png" alt="Language Forge" width="96" height="117" class="png_bg" />
+            </div>
+            <div id="header-nav" class="pull-left">
+                <ul class="sf-menu">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn_language_forge">Learn</a>
+                        <ul>
+                            <li><a href="/learn_language_forge">About Language Forge</a></li>
+                            <li><a href="/learn_expand_your_team">Expand Your Team</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/discuss">Discuss</a></li>
+                </ul>
+            </div>
+
+            {% if isLoggedIn %}
+                <div class="pull-right">
+                    <ul id="header-nav" class="sf-menu">
+                        <li id="myProjects"><a href="/app/projects">My Projects</a>
+                            <ul>
+                                {% for project in projects %}
+                                    <li><a href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><img src="{{ smallAvatarUrl }}" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid white; margin-right:10px" id="smallAvatarURL" />Hi, {{ userName }}</a>
+                            <ul>
+                                {% if isAdmin %}
+                                    <li><a href="/app/siteadmin">Site Administration</a></li>
+                                {% endif %}
+                                <li><a href="/app/userprofile">My Profile</a></li>
+                                <li><a href="/app/changepassword">Change Password</a></li>
+                                <li><a href="/app/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <div id="account" class="pull-right">
+                    <input type="button" value="Login" style="position:relative; top:-3px" class="login-btn left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/signup">Create an Account</a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="/js/lib/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="/js/lib/superfish/superfish.js"></script>
+    <script src="/js/lib/superfish/hoverIntent.js"></script>
+    <script src="/js/lib/slides.min.jquery.js"></script>
+    <script src="/js/lib/jquery.iframe-transport.js"></script>
+    <script src="/js/lib/jquery.fileupload.js"></script>
+    <script src="/js/lib/jquery.fileupload-process.js"></script>
+    <script src="/js/lib/jquery.fileupload-validate.js"></script>
+    <script src="/js/lib/jquery.jsonrpc.js"></script>
+    <!--
+        <script type="text/javascript"
+    src="//www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+    <script src="/js/lib/angular-recaptcha.min.js"></script>  -->
+    <script>
+
+        $(document).ready(function () {
+            // Superfish menu delay
+            $("ul.sf-menu").superfish({
+                delay: 500
+            });
+
+            // Slideshow
+            $('#slides').slides({
+                preload: false,
+                preloadImage: 'Site/views/shared/image/loading.gif',
+                play: 5000,
+                pause: 2500,
+                hoverPause: true,
+                prependPagination: true,
+                paginationClass: 'slide_pagination'
+            });
+
+            /* Workaround for IE image loading with black edges */
+            if ($.browser.msie) {
+                if (parseInt($.browser.version, 10) != 6) {
+                    setTimeout(function () { $('.slides_container img').css('visibility','visible') }, 400);
+                }
+            } else {
+                $('.slides_container img').css('visibility','visible');
+            }
+
+        });
+    </script>
+    <!--[if IE 6]>
+    <script src="/js/lib/DD_belatedPNG.js"></script>
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () { DD_belatedPNG.fix('.png_bg') }, 100);
+        });
+    </script>
+    <![endif]-->
+{% endblock %}
+
+{% block footer %}
+    <div id="footercontainer">
+
+        <div id="footer">
+            <div class="container">
+                <div class="row">
+
+                    <div class="span2">
+                        <h4>Contact</h4>
+                        <p class="small">Language Forge<br />SIL International<br />7500 W. Camp Wisdom Road<br />Dallas, TX 75236-5629 USA</p>
+                    </div>
+                    <div class="span2">
+                        <h4>Navigate</h4>
+                        <small>
+                            <a href="/">Home</a><br /><a href="/learn_language_forge">Learn</a><br /><a href="/discuss">Discuss</a>
+                        </small>
+                    </div>
+
+                    <div class="span1 offset4">
+                    </div>
+
+                    <div class="span3">
+                        <p><a href="http://ic.payap.ac.th/"><img src="/Site/views/shared/image/PAYAP_logo.png" alt="PAYAP" width="170" height="50" class="right png_bg" /></a></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="footerBaseline">
+            <div class="container">
+                <div class="row">
+                    <!--                    <div class="darkTextLogo span2"></div>-->
+                    <div class="span1" style="color: #404040"><small>v {{ version }}</small></div>
+                    <div class="span8">
+                        <small>Copyright {{ "now"|date("Y") }} <a href="http://www.sil.org">SIL International</a>. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block analytics %}
+    {% if 'languageforge.org' in http_host %}
+        <script>
+            (function (i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function () {
+                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-22170471-11', 'auto');
+            ga('send', 'pageview');
+
+        </script>
+    {% endif %}
+{% endblock %}

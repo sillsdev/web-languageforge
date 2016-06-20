@@ -1,0 +1,38 @@
+{% verbatim %}
+<div class="content container" data-ng-cloak data-ng-controller="ProjectManagementCtrl">
+<div id="sfchecks-hmenu" class="hdrnav">
+    <ul class="topNav">
+        <li class="here"><a href="/app/projects">My Projects</a></li>
+        <li><a href="/app/activity">Activity</a></li>
+    </ul>
+    <br />
+</div>
+<div style="padding-top:10px">
+    <sil-notices></sil-notices>
+
+    <a class="btn" ng-href="{{project.appLink}}" data-tooltip="Back to the project"
+       data-tooltip-placement="right">
+        <i class="icon-reply"></i>Back
+    </a>
+    <h2 style="font-weight:normal">{{project.projectName}} Project Management</h2>
+    <tabset ng-show="dtoLoaded">
+        <tab heading="Reports">
+            <div ng-show="reports.length > 0">
+                <div>
+                    <select data-ng-model="report.currentId" data-ng-options="report.id as report.name for report in reports"><option value="">Select a Report...</option></select>
+                    <button style="position:relative; top:-5px" ng-show="report.output" class="btn" ng-click="runReport()">Run Again</button>
+                </div>
+                <pre ng-show="report.output" data-ng-bind="report.output"></pre>
+            </div>
+            <div ng-hide="reports.length > 0">
+                No reports are available at this time.
+            </div>
+        </tab>
+        <tab heading="Archive">
+            <button class="btn" data-ng-disabled="actionInProgress" ng-click="archiveProject()">Archive this project</button>
+            <div class="text-error">Warning: This action can only be undone by a site administrator (at this point)</div>
+        </tab>
+    </tabset>
+</div>
+</div>
+{% endverbatim %}

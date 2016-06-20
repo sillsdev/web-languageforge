@@ -1,36 +1,26 @@
-<div style="margin-top:30px">
-
-    <a class="btn" ng-href="{{project.appLink}}" data-tooltip="Back to the project"
-            data-tooltip-placement="{{interfaceConfig.placementNormal}}">
-        <i class="icon-reply"></i>Back
-    </a>
-</div>
-<h2 style="font-weight:normal">{{project.name}} User Management</h2>
-
-<tabset>
-    <tab heading="Members">
-        <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-            <button data-ng-disabled="selected.length == 0" data-ng-show="rights.remove" class="btn" data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Members</button>
-            <button data-ng-show="rights.add" class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
-            <input type="text" ng-model="userFilter" placeholder="Member List Filter"/> <a ng-show="userFilter != ''" title="Clear Filter" ng-click="userFilter = ''"><i class="icon-remove" style="color:gray"></i></a>
+<div data-ng-cloak data-ng-controller="MembersCtrl">
+    <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+        <button data-ng-disabled="selected.length == 0" data-ng-show="rights.remove" class="btn" data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Members</button>
+        <button data-ng-show="rights.add" class="btn" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
+        <input type="text" ng-model="userFilter" placeholder="Member List Filter"/> <a ng-show="userFilter != ''" title="Clear Filter" ng-click="userFilter = ''"><i class="icon-remove" style="color:gray"></i></a>
+    </form>
+    <div id="newMembersDiv" class="new-item" data-collapse="!newUserCollapsed">
+        <form class="well form-inline">
+        <typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
+            <ul>
+                <li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
+                    <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
+                    <p class="name">{{user.name}}</p>
+                    <p class="email">{{user.email}}</p>
+                </li>
+            </ul>
+        </typeahead>
+        <button data-ng-model="addMode" class="btn" data-ng-disabled="disableAddButton" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+        <span class="warning" data-ng-show="warningText">{{warningText}}</span>
         </form>
-        <div id="newMembersDiv" class="new-item" data-collapse="!newUserCollapsed">
-            <form class="well form-inline">
-            <typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
-                <ul>
-                    <li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
-                        <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
-                        <p class="name">{{user.name}}</p>
-                        <p class="email">{{user.email}}</p>
-                    </li>
-                </ul>
-            </typeahead>
-            <button data-ng-model="addMode" class="btn" data-ng-disabled="disableAddButton" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
-            <span class="warning" data-ng-show="warningText">{{warningText}}</span>
-            </form>
-        </div>
-        <listview search="queryUserList()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
-        <table class="table" style="width: 100%">
+    </div>
+    <listview search="queryUserList()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
+    <table class="table" style="width: 100%">
             <thead>
             <tr>
                 <th></th>
@@ -50,5 +40,4 @@
             </tbody>
         </table>
     </listview>
-    </tab>
-</tabset>
+</div>

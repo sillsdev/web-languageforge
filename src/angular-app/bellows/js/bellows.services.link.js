@@ -9,26 +9,26 @@ angular.module('bellows.services')
     this.project = function(projectId, projectType) {
       projectType = projectType || 'sfchecks';
       if (angular.isDefined(projectId)) {
-        return '/app/' + projectType + '/' + projectId + '/#';
+        return '/app/' + projectType + '/' + projectId + '#';
       } else {
         return '#';
-      };
+      }
     };
 
     this.text = function(textId, projectId) {
       if (angular.isDefined(projectId)) {
-        return this.project(projectId) + "/" + textId;
+        return this.project(projectId) + '/' + textId;
       } else {
-        return this.project() + "/" + textId;
-      };
+        return this.project() + '/' + textId;
+      }
     };
 
     this.question = function(textId, questionId, projectId) {
       if (angular.isDefined(projectId)) {
-        return this.text(textId, projectId) + "/" + questionId;
+        return this.text(textId, projectId) + '/' + questionId;
       } else {
-        return this.text(textId) + "/" + questionId;
-      };
+        return this.text(textId) + '/' + questionId;
+      }
     };
 
     this.entry = function(entryId, projectId) {
@@ -37,7 +37,7 @@ angular.module('bellows.services')
         return this.project(projectId, 'lexicon') + '/dbe/' + entryId;
       } else {
         return '#/dbe/' + entryId;
-      };
+      }
     };
 
     this.settings = function(projectId) {
@@ -48,4 +48,3 @@ angular.module('bellows.services')
       return '/app/userprofile/' + userId;
     };
   });
-

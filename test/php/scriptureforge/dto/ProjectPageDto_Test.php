@@ -1,14 +1,14 @@
 <?php
 
-use models\scriptureforge\dto\ProjectPageDto;
-use models\AnswerModel;
-use models\CommentModel;
-use models\QuestionModel;
-use models\TextModel;
+use Api\Model\Scriptureforge\Dto\ProjectPageDto;
+use Api\Model\AnswerModel;
+use Api\Model\CommentModel;
+use Api\Model\QuestionModel;
+use Api\Model\TextModel;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestProjectPageDto extends UnitTestCase
 {
@@ -42,7 +42,7 @@ class TestProjectPageDto extends UnitTestCase
         $question1->title = "Who is speaking?";
         $question1->description = "Who is telling the story in this text?";
         $question1->textRef->id = $text1Id;
-        $question1Id = $question1->write();
+        $question1->write();
 
         $question2 = new QuestionModel($project);
         $question2->title = "Where is the storyteller?";
@@ -55,7 +55,7 @@ class TestProjectPageDto extends UnitTestCase
         $question3->title = "How far had they travelled?";
         $question3->description = "How far had the group just travelled when this text begins?";
         $question3->textRef->id = $text2Id;
-        $question3Id = $question3->write();
+        $question3->write();
 
         // One answer for question 1...
         $answer1 = new AnswerModel();
@@ -63,7 +63,7 @@ class TestProjectPageDto extends UnitTestCase
         $answer1->score = 10;
         $answer1->userRef->id = $user1Id;
         $answer1->textHightlight = "I knew that I was on Mars";
-        $answer1Id = $question1->writeAnswer($answer1);
+        $question1->writeAnswer($answer1);
 
         // ... and two answers for question 2...
         $answer2 = new AnswerModel();
@@ -71,7 +71,7 @@ class TestProjectPageDto extends UnitTestCase
         $answer2->score = 1;
         $answer2->userRef->id = $user1Id;
         $answer2->textHightlight = "I knew that I was on Mars";
-        $answer2Id = $question2->writeAnswer($answer2);
+        $question2->writeAnswer($answer2);
 
         $answer3 = new AnswerModel();
         $answer3->content = "On the planet we call Barsoom, which you inhabitants of Earth normally call Mars.";
@@ -84,12 +84,12 @@ class TestProjectPageDto extends UnitTestCase
         $comment1 = new CommentModel();
         $comment1->content = "By the way, our name for Earth is Jasoom.";
         $comment1->userRef->id = $user2Id;
-        $comment1Id = QuestionModel::writeComment($project->databaseName(), $question2Id, $answer3Id, $comment1);
+        QuestionModel::writeComment($project->databaseName(), $question2Id, $answer3Id, $comment1);
 
         $dto = ProjectPageDto::encode($projectId, $user1Id);
 
         // Now check that it all looks right
-        $this->assertIsa($dto['texts'], 'array');
+        $this->assertIsA($dto['texts'], 'array');
         $this->assertEqual($dto['texts'][0]['id'], $text2Id);
         $this->assertEqual($dto['texts'][1]['id'], $text1Id);
         $this->assertEqual($dto['texts'][0]['title'], "Chapter 4");

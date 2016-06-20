@@ -17,7 +17,8 @@ form.dc-multitext textarea {
 
 form.dc-multitext label, 
 form.dc-optionlist label, 
-form.dc-multioptionlist label{
+form.dc-multioptionlist label,
+form.dc-semanticdomain label {
     font-weight:bold;
     cursor: default;
 }

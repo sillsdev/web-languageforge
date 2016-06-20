@@ -1,0 +1,104 @@
+/*
+    Slideshow
+*/
+
+#slides {
+    position: relative;
+}
+
+/*
+    Slides container
+    Important:
+    Set the width of your slides container
+    Set to display none, prevents content flash
+*/
+
+.slides_container {
+    width: 936px;
+    overflow:hidden;
+    position:relative;
+    display:none;
+    z-index: 1;
+}
+
+/*
+    Each slide
+    Important:
+    Set the width of your slides
+    If height not specified height will be set by the slide content
+    Set to display block
+*/
+
+.slides_container a, .slides_container div {
+    width: 936px;
+    height: 440px;
+    display:block;
+}
+
+.slides_container img { /* Workaround for IE image loading with black edges */
+    visibility: hidden;
+}
+
+.slides_container h2, .slides_container p {
+    width: 500px;
+}
+
+.slides_content img {
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+/*
+    Next/prev buttons
+*/
+
+#slides .next,#slides .prev {
+    position:absolute;
+    top:107px;
+    left:-39px;
+    width:24px;
+    height:43px;
+    display:none;
+}
+
+#slides .next {
+    left:585px;
+}
+
+/*
+    Pagination
+*/
+
+.slide_pagination {
+    position: absolute;
+    display: block;
+    width:50px;
+    bottom: -18px;
+    right: -11px;
+    z-index: 5;
+}
+
+.slide_pagination li {
+    float:left;
+    margin:0 1px;
+    list-style:none;
+}
+
+.slide_pagination li a {
+    display: block;
+    width: 10px;
+    height: 0;
+    padding-top: 10px;
+    margin-right: 3px;
+    _margin-right: 1px;
+    background-image:url(/Site/views/languageforge/theme/default/image/sf_sprite.png);
+    _background-image:url(/Site/views/languageforge/theme/default/image/sf_sprite.gif);
+    background-position: 0 0;
+    float: left;
+    overflow: hidden;
+    outline: none;
+}
+
+.slide_pagination li.current a {
+    background-position: -12px 0;
+}

@@ -1,19 +1,19 @@
 <?php
-use models\languageforge\lexicon\LexEntryListModel;
-use models\languageforge\lexicon\LiftImport;
-use models\languageforge\lexicon\LiftMergeRule;
-use models\languageforge\lexicon\LexEntryModel;
-use models\languageforge\lexicon\Sense;
-use models\languageforge\lexicon\Example;
-use models\mapper\ArrayOf;
-use models\languageforge\lexicon\LexiconMultiValueField;
-use models\languageforge\lexicon\LexiconField;
-use models\languageforge\lexicon\Picture;
-use models\languageforge\lexicon\MultiText;
+use Api\Model\Languageforge\Lexicon\LexEntryListModel;
+use Api\Model\Languageforge\Lexicon\LiftImport;
+use Api\Model\Languageforge\Lexicon\LiftMergeRule;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\Sense;
+use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Mapper\ArrayOf;
+use Api\Model\Languageforge\Lexicon\LexiconMultiValueField;
+use Api\Model\Languageforge\Lexicon\LexiconField;
+use Api\Model\Languageforge\Lexicon\Picture;
+use Api\Model\Languageforge\Lexicon\MultiText;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestLiftImportFlex extends UnitTestCase
 {
@@ -268,7 +268,7 @@ EOD;
         $this->assertEqual($sense00->gloss['en']->value, 'A Word');
         $this->assertEqual($sense00->definition['en']->value, 'A Word Defn');
 
-        $expected = LexiconMultiValueField::createFromArray(array('9.1.3.1 Physical, non-physical'));
+        $expected = LexiconMultiValueField::createFromArray(array('9.1.3.1'));
         $this->assertEqual($sense00->semanticDomain, $expected);
 
         $expected = LexiconMultiValueField::createFromArray(array('901'));
@@ -286,8 +286,7 @@ EOD;
         $expected = LexiconMultiValueField::createFromArray(array('colloquial'));
         $this->assertEqual($sense00->usages, $expected);
 
-        $expected = new Picture();
-        $expected->fileName = 'Desert.jpg';
+        $expected = new Picture('Desert.jpg', $sense00->pictures[0]->guid);
         $expected->caption['th'] = 'รูป';
         $expected->caption['en'] = 'image';
         $expected->caption['fr'] = 'photo';

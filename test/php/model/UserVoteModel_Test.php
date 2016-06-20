@@ -1,10 +1,10 @@
 <?php
-use models\ProjectModel;
-use models\UserVoteModel;
+use Api\Model\ProjectModel;
+use Api\Model\UserVoteModel;
 
-require_once dirname(__FILE__) . '/../TestConfig.php';
+require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestUserUserVoteModel extends UnitTestCase
 {

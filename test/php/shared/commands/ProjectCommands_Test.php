@@ -1,16 +1,17 @@
 <?php
 
-use libraries\shared\Website;
-use models\shared\rights\ProjectRoles;
-use models\commands\ProjectCommands;
-use models\mapper\Id;
-use models\ProjectModel;
-use models\ProjectSettingsModel;
-use models\UserModel;
+use Api\Model\Command\ProjectCommands;
+use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\ProjectModel;
+use Api\Model\ProjectSettingsModel;
+use Api\Model\Scriptureforge\SfProjectModel;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\UserModel;
+use Palaso\Utilities\FileUtilities;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestProjectCommands extends UnitTestCase
 {
@@ -55,10 +56,9 @@ class TestProjectCommands extends UnitTestCase
 
         $this->assertFalse($project->isArchived);
 
-        $count = ProjectCommands::archiveProjects(array($projectId));
+        ProjectCommands::archiveProject($projectId);
 
         $project->read($projectId);
-        $this->assertEqual($count, 1);
         $this->assertTrue($project->isArchived);
     }
 
@@ -88,10 +88,6 @@ class TestProjectCommands extends UnitTestCase
         $user = new UserModel($userId);
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $params = array(
-                'id' => $user->id->asString(),
-                'role' => ProjectRoles::MANAGER,
-        );
 
         // update user role in project
         $updatedUserId = ProjectCommands::updateUserRole($projectId, $user->id->asString(), ProjectRoles::MANAGER);
@@ -117,9 +113,6 @@ class TestProjectCommands extends UnitTestCase
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $userId = $this->environ->createUser("existinguser", "Existing Name", "existing@example.com");
-        $params = array(
-                'id' => $userId,
-        );
 
         // update user role in project once
         $updatedUserId = ProjectCommands::updateUserRole($projectId, $userId);
@@ -171,9 +164,7 @@ class TestProjectCommands extends UnitTestCase
         $projectSettings->smsSettings->accountId = "12345";
         $projectSettings->write();
 
-        $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
-
-        $result = ProjectCommands::readProjectSettings($projectId, $user1Id);
+        $result = ProjectCommands::readProjectSettings($projectId);
 
         $this->assertEqual($result['sms']['accountId'], "12345");
     }
@@ -205,8 +196,6 @@ class TestProjectCommands extends UnitTestCase
         // read from disk
         $otherProject = new ProjectModel($projectId);
         $otherUser1 = new UserModel($user1Id);
-        $otherUser2 = new UserModel($user2Id);
-        $otherUser3 = new UserModel($user3Id);
 
         // each user in project, project has each user
         $user1Project = $otherUser1->listProjects($this->environ->website->domain)->entries[0];
@@ -312,14 +301,65 @@ class TestProjectCommands extends UnitTestCase
     public function testCreateProject_newProject_projectOwnerSet()
     {
         $this->environ->clean();
-
         $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
-
         $user1 = new UserModel($user1Id);
-        $projectID = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, 'sfchecks', $user1->id->asString(), $this->environ->website);
 
-        $projectModel = new ProjectModel($projectID);
-        $this->assertTrue($projectModel->ownerRef->asString() == $user1->id->asString());
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP,
+            $user1->id->asString(), $this->environ->website);
+
+        $project = new ProjectModel($projectId);
+        $this->assertTrue($project->ownerRef->asString() == $user1->id->asString());
+    }
+
+    public function testCreateProject_NoSRProject_NotSRProjectWithNoLinks()
+    {
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
+        $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
+        $user1 = new UserModel($user1Id);
+        $srProject = null;
+
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
+            LexiconProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
+
+        $project = new LexiconProjectModel($projectId);
+        $assetImagePath = $project->getImageFolderPath();
+        $assetAudioPath = $project->getAudioFolderPath();
+        $this->assertFalse($project->hasSendReceive());
+        $this->assertFalse(is_link($assetImagePath));
+        $this->assertFalse(is_link($assetAudioPath));
+
+        $projectWorkPath = $project->getSendReceiveWorkFolder();
+        FileUtilities::removeFolderAndAllContents($project->getAssetsFolderPath());
+        FileUtilities::removeFolderAndAllContents($projectWorkPath);
+    }
+
+    public function testCreateProject_NewSRProject_SRProjectWithLinks()
+    {
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
+        $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
+        $user1 = new UserModel($user1Id);
+        $srProject = array(
+            'identifier' => 'srIdentifier',
+            'name' => 'srName',
+            'repository' => 'http://public.languagedepot.org',
+            'role' => 'manager'
+        );
+
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
+            LexiconProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
+
+        $project = new LexiconProjectModel($projectId);
+        $assetImagePath = $project->getImageFolderPath();
+        $assetAudioPath = $project->getAudioFolderPath();
+        $this->assertTrue($project->hasSendReceive());
+        $this->assertTrue(is_link($assetImagePath));
+        $this->assertTrue(is_link($assetAudioPath));
+
+        $projectWorkPath = $project->getSendReceiveWorkFolder();
+        FileUtilities::removeFolderAndAllContents($project->getAssetsFolderPath());
+        FileUtilities::removeFolderAndAllContents($projectWorkPath);
     }
 
 }

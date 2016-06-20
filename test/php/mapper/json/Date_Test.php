@@ -1,9 +1,9 @@
 <?php
 
-use models\mapper\JsonEncoder;
-use models\mapper\JsonDecoder;
+use Api\Model\Mapper\JsonEncoder;
+use Api\Model\Mapper\JsonDecoder;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
 class TestJsonDateModel

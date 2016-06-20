@@ -3,11 +3,11 @@
 describe('the questions list page (AKA the text page)', function() {
   var constants       = require('../../../testConstants.json');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
-  var util         = require('../../../bellows/pages/util.js');
-  var projectListPage   = require('../../../bellows/pages/projectsPage.js');
-  var projectPage     = require('../pages/projectPage.js');
-  var textPage       = require('../pages/textPage.js');
-  var textSettingsPage   = require('../pages/textSettingsPage.js');
+  var util            = require('../../../bellows/pages/util.js');
+  var projectListPage = require('../../../bellows/pages/projectsPage.js');
+  var projectPage      = require('../pages/projectPage.js');
+  var textPage         = require('../pages/textPage.js');
+  var textSettingsPage = require('../pages/textSettingsPage.js');
 
   describe('a normal user', function() {
 
@@ -22,14 +22,15 @@ describe('the questions list page (AKA the text page)', function() {
       // Setup script creates two questions. Since we can't count on them being in specific positions
       // as that might be modified by other tests that add questions, we'll search for them.
       util.findRowByText(textPage.questionRows, constants.testText1Question1Title).then(function(row) {
-        expect("undefined" == typeof row).toBeFalsy(); // This seems to be the best way to check that the row exists
+        expect(typeof row == 'undefined').toBeFalsy(); // This seems to be the best way to check that the row exists
         var answerCount = row.element(by.binding('question.answerCount'));
         var responseCount = row.element(by.binding('question.responseCount'));
         expect(answerCount.getText()).toBe('1 answers');
         expect(responseCount.getText()).toBe('2 responses');
       });
+
       util.findRowByText(textPage.questionRows, constants.testText1Question2Title).then(function(row) {
-        expect("undefined" == typeof row).toBeFalsy(); // This seems to be the best way to check that the row exists
+        expect(typeof row == 'undefined').toBeFalsy(); // This seems to be the best way to check that the row exists
         var answerCount = row.element(By.binding('question.answerCount'));
         var responseCount = row.element(By.binding('question.responseCount'));
         expect(answerCount.getText()).toBe('1 answers');
@@ -57,7 +58,7 @@ describe('the questions list page (AKA the text page)', function() {
   describe('a project manager', function() {
     var questionTitle = '111TestQTitle1234';
     var questionDesc = '111TestQDesc1234';
-    
+
     it('setup: login as manager', function() {
       loginPage.loginAsManager();
       projectListPage.get();
@@ -75,7 +76,7 @@ describe('the questions list page (AKA the text page)', function() {
       textPage.questionLink(questionTitle).click();
       browser.navigate().back();
     });
-    
+
     it('can archive the question that was just created', function() {
       var archiveButton = textPage.archiveButton.getWebElement();
       expect(archiveButton.isDisplayed()).toBe(true);
@@ -84,12 +85,14 @@ describe('the questions list page (AKA the text page)', function() {
       expect(archiveButton.isEnabled()).toBe(true);
       archiveButton.click();
       util.clickModalButton('Archive');
+
       // Wait for archive button to become disabled again
       browser.wait(function() {
         return archiveButton.isEnabled().then(function(bool) {
           return !bool;
         });
       }, 1000);
+
       expect(textPage.questionLink(questionTitle).isPresent()).toBe(false);
     });
 
@@ -108,7 +111,7 @@ describe('the questions list page (AKA the text page)', function() {
       browser.navigate().back();
       expect(textPage.questionLink(questionTitle).isDisplayed()).toBe(true);
     });
-    
+
     it('can delete questions', function() {
       expect(textPage.archiveButton.isDisplayed()).toBeTruthy();
     });
@@ -150,7 +153,7 @@ describe('the questions list page (AKA the text page)', function() {
       expect(textPage.textSettingsBtn.isPresent()).toBeTruthy();
       expect(textPage.textSettingsBtn.isDisplayed()).toBeTruthy();
     });
-    
+
   });
-  
+
 });

@@ -1,3 +1,76 @@
+## v2.44.0
+
+* Added the `until` module, which defines common explicit wait conditions.
+    Sample usage:
+
+        var firefox = require('selenium-webdriver/firefox'),
+            until = require('selenium-webdriver/until');
+
+        var driver = new firefox.Driver();
+        driver.get('http://www.google.com/ncr');
+        driver.wait(until.titleIs('Google Search'), 1000);
+
+* FIXED: 8000: `Builder.forBrowser()` now accepts an empty string since some
+    WebDriver implementations ignore the value. A value must still be specified,
+    however, since it is a required field in WebDriver's wire protocol.
+* FIXED: 7994: The `stacktrace` module will not modify stack traces if the
+    initial parse fails (e.g. the user defined `Error.prepareStackTrace`)
+* FIXED: 5855: Added a module (`until`) that defines several common conditions 
+    for use with explicit waits. See updated examples for usage.
+
+## v2.43.5
+
+* FIXED: 7905: `Builder.usingServer(url)` once again returns `this` for
+    chaining.
+
+## v2.43.2-4
+
+* No changes; version bumps while attempting to work around an issue with
+    publishing to npm (a version string may only be used once).
+
+## v2.43.1
+
+* Fixed an issue with flakiness when setting up the Firefox profile that could
+    prevent the driver from initializing properly.
+
+## v2.43.0
+
+* Added native support for Firefox - the Java Selenium server is no longer
+    required.
+* Added support for generator functions to `ControlFlow#execute` and
+    `ControlFlow#wait`. For more information, see documentation on
+    `webdriver.promise.consume`. Requires harmony support (run with
+    `node --harmony-generators` in `v0.11.x`).
+* Various improvements to the `Builder` API. Notably, the `build()` function
+    will no longer default to attempting to use a server at
+    `http://localhost:4444/wd/hub` if it cannot start a browser directly -
+    you must specify the WebDriver server with `usingServer(url)`. You can
+    also set the target browser and WebDriver server through a pair of
+    environment variables. See the documentation on the `Builder` constructor
+    for more information.
+* For consistency with the other language bindings, added browser specific
+    classes that can be used to start a browser without the builder.
+
+        var webdriver = require('selenium-webdriver')
+            chrome = require('selenium-webdriver/chrome');
+
+        // The following are equivalent.
+        var driver1 = new webdriver.Builder().forBrowser('chrome').build();
+        var driver2 = new chrome.Driver();
+
+* Promise A+ compliance: a promise may no longer resolve to itself.
+* For consistency with other language bindings, deprecated
+    `UnhandledAlertError#getAlert` and added `#getAlertText`.
+    `getAlert` will be removed in `2.45.0`.
+* FIXED: 7641: Deprecated `ErrorCode.NO_MODAL_DIALOG_OPEN` and
+    `ErrorCode.MODAL_DIALOG_OPENED` in favor of the new
+    `ErrorCode.NO_SUCH_ALERT` and `ErrorCode.UNEXPECTED_ALERT_OPEN`,
+    respecitvely.
+* FIXED: 7563: Mocha integration no longer disables timeouts. Default Mocha
+    timeouts apply (2000 ms) and may be changed using `this.timeout(ms)`.
+* FIXED: 7470: Make it easier to create WebDriver instances in custom flows for
+    parallel execution.
+
 ## v2.42.1
 
 * FIXED: 7465: Fixed `net.getLoopbackAddress` on Windows

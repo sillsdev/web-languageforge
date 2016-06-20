@@ -8,9 +8,8 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
   // Rights
   $scope.rights = {};
   $scope.rights.edit = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-  $scope.rights.archive = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE);
   $scope.rights.create = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.CREATE);
-  $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create;
+  $scope.rights.showControlBar = $scope.rights.create;
 
   $scope.siteName = ss.baseSite();
 
@@ -43,6 +42,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
   };
 
   // Archive projects
+                               /*
   $scope.archiveProjects = function() {
     var projectIds = [];
     var message = '';
@@ -74,6 +74,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
       });
     });
   };
+  */
 
   $scope.isInProject = function(project) {
     if (project.role != 'none') {

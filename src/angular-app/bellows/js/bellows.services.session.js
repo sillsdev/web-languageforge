@@ -37,7 +37,8 @@ angular.module('bellows.services')
       VIEW_OWN:     function() { return 6;},
       EDIT_OWN:     function() { return 7;},
       DELETE_OWN:   function() { return 8;},
-      ARCHIVE:      function() { return 9;}
+      ARCHIVE:      function() { return 9;},
+      ARCHIVE_OWN:  function() { return 10;}
     };
 
     this.hasSiteRight = function(domain, operation) {
@@ -69,8 +70,8 @@ angular.module('bellows.services')
 
     this.session = $window.session;
 
-    this.getCaptchaSrc = function(callback) {
-      jsonRpc.call('get_captcha_src', [], callback);
+    this.getCaptchaData = function(callback) {
+      jsonRpc.call('get_captcha_data', [], callback);
     };
 
     this.refresh = function(callback) {

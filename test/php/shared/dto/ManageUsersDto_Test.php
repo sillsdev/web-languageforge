@@ -1,14 +1,14 @@
 <?php
 
-use models\shared\rights\SystemRoles;
+use Api\Model\Shared\Rights\SystemRoles;
 
-use models\shared\dto\ManageUsersDto;
-use models\UserModel;
-use models\shared\rights\ProjectRoles;
+use Api\Model\Shared\Dto\ManageUsersDto;
+use Api\Model\UserModel;
+use Api\Model\Shared\Rights\ProjectRoles;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-require_once TestPath . 'common/MongoTestEnvironment.php';
+require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestManageUsersDto extends UnitTestCase
 {

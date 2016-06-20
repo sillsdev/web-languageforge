@@ -1,9 +1,9 @@
 <?php
 
-use models\mapper\MongoEncoder;
-use models\mapper\MongoDecoder;
+use Api\Model\Mapper\MongoEncoder;
+use Api\Model\Mapper\MongoDecoder;
 
-require_once dirname(__FILE__) . '/../../TestConfig.php';
+require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
 class TestMongoDateModel
@@ -26,7 +26,7 @@ class TestMongoDateMapper extends UnitTestCase
     {
         $model = new TestMongoDateModel();
         $encoded = MongoEncoder::encode($model);
-        $this->assertIsA($encoded['date'], 'MongoDate');
+        $this->assertIsA($encoded['date'], 'MongoDB\BSON\UTCDateTime');
 //          var_dump($encoded);
 
         $otherModel = new TestMongoDateModel();
@@ -42,7 +42,7 @@ class TestMongoDateMapper extends UnitTestCase
         $model = new TestMongoDateModel();
         $model->date = new DateTime('2001-01-01');
         $encoded = MongoEncoder::encode($model);
-        $this->assertIsA($encoded['date'], 'MongoDate');
+        $this->assertIsA($encoded['date'], 'MongoDB\BSON\UTCDateTime');
 
         $otherModel = new TestMongoDateModel();
         MongoDecoder::decode($otherModel, $encoded);

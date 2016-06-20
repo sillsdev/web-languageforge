@@ -11,7 +11,7 @@
                 <div ng-show="comment.status == 'todo' && rights.canUpdateCommentStatus()" style="width:70px; height:20px; font-size: x-small; font-weight: bold" tooltip-placement="right" tooltip="This comment is marked as Todo">
                     <i style="color: #247aff;" class="icon-edit icon-2x"></i>Todo
                 </div>
-                <img width="50px" height="50px" ng-src="{{comment.authorInfo.createdByUserRef.avatar_ref}}" />
+                <img width="50px" height="50px" ng-src="{{getAvatarUrl(comment.authorInfo.createdByUserRef.avatar_ref)}}" />
                 <div class="commentAuthor">{{comment.authorInfo.createdByUserRef.name}}</div>
                 <div class="commentDate">{{comment.authorInfo.createdDate | relativetime}}</div>
                 <div class="commentPlusOne">{{comment.score}}
@@ -20,16 +20,14 @@
                 </div>
             </div>
             <div class="commentRightSide">
-                <div class="commentRegarding" ng-show="comment.regarding.field">
+                <div class="commentRegarding" ng-show="comment.regarding.field"
+                    data-ng-style="{width: (rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && hover.comment && !comment.editing) ? '90%' : 'initial'}">
                     <div class="regardingContext"><b>{{comment.regarding.word}}</b> <em>{{comment.regarding.meaning}}</em></div>
                     <span class="regardingFieldName">{{comment.regarding.fieldNameForDisplay}}</span>
                     <div data-ng-class="(comment.regarding.inputSystem) ? 'input-prepend' : ''"
                          data-ng-hide="isCommentRegardingPicture">
                         <span data-ng-show="comment.regarding.inputSystem" class="add-on wsid regardingInputSystem" title="{{comment.regarding.inputSystem}}">{{comment.regarding.inputSystemAbbreviation}}</span>
-                        <div class="uneditable-input regardingFieldValue"
-                             data-ng-class="{'dc-multioptionlist-value': (commentRegardingFieldConfig.type == 'multioptionlist')}"
-                             data-ng-bind-html="comment.regarding.fieldValue"
-                             data-pui-show-overflow></div>
+                        <regarding-field content="comment.regarding.fieldValue" commentRegardingFieldConfig="commentRegardingFieldConfig"> </regarding-field>
                     </div>
                     <div data-ng-if="isCommentRegardingPicture">
                         <img data-ng-src="{{comment.regarding.fieldValue}}" />
