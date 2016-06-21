@@ -156,6 +156,7 @@ class Base
     }
 
     private static function addFiles($ext, $dir, &$result, $exclude) {
+        array_push($exclude, 'excluded/');
         if (is_dir($dir)) {
             $files = scandir($dir);
             foreach ($files as $file) {
