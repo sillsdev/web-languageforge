@@ -73,9 +73,11 @@ class App extends Base
 
         $this->addJavascriptFiles(NG_BASE_FOLDER . 'bellows/js', array('vendor/', 'assets/'));
         $this->addJavascriptFiles(NG_BASE_FOLDER . 'bellows/directive');
-        $this->addJavascriptFiles($siteFolder . '/js');
-        if (NG_BASE_FOLDER . $parentAppFolder) {
+        $this->addJavascriptFiles($siteFolder . '/js', array('vendor/', 'assets/'));
+        if ($parentAppFolder) {
             $this->addJavascriptFiles(NG_BASE_FOLDER . $parentAppFolder, array('vendor/', 'assets/'));
+            $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . $parentAppFolder . '/js/vendor');
+            $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . $parentAppFolder . '/js/assets');
         }
         $this->addJavascriptFiles(NG_BASE_FOLDER . $appFolder, array('vendor/', 'assets/'));
 
@@ -87,6 +89,8 @@ class App extends Base
 
         $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . 'bellows/js/vendor');
         $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . 'bellows/js/assets');
+        $this->addJavascriptNotMinifiedFiles($siteFolder . '/js/vendor');
+        $this->addJavascriptNotMinifiedFiles($siteFolder . '/js/assets');
         $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . $appFolder . '/js/vendor');
         $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . $appFolder . '/js/assets');
 
