@@ -138,7 +138,7 @@
         <replace file="${build.output}/package/htdocs/config.php">
             <replacefilter token="define('ENVIRONMENT', 'development');" value="define('ENVIRONMENT', 'production');" />
             <replacefilter token="define('MONGODB_CONN', 'mongodb://localhost:27017');" value="define('MONGODB_CONN', 'mongodb://${mongodb.connection}');" />
-            <replacefilter token="define('REMEMBER_ME_SECRET', 'kT3sdPo60ewrGu8');" value="define('REMEMBER_ME_SECRET', '${build.secret}');" />
+            <replacefilter token="define('REMEMBER_ME_SECRET', 'not_a_secret');" value="define('REMEMBER_ME_SECRET', '${build.secret}');" />
         </replace>
         <replace file="${build.output}/package/htdocs/version.php">
             <replacefilter token="9.9.9" value="${version}" />
@@ -311,7 +311,6 @@
             <arg value="--chown=root:www-data" />
             <arg value="--delete-during" />
             <arg value="--exclude=htdocs/assets" />
-            <arg value="--exclude=htdocs/cache" />
             <arg value='--rsh=ssh -i ${upload.credentials}' />
             <arg value="${build.uploadPath}/" />
             <arg value="${upload.destination}" />
