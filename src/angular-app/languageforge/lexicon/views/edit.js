@@ -723,16 +723,28 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     $scope.typeahead = {
       term: '',
       searchResults: [],
+      limit: 50,
       matchCountCaption: ''
     };
+
     $scope.typeahead.searchEntries = function searchEntries(query) {
-      $scope.typeahead.searchResults = $filter('filter')($scope.entries, query);
+
+      // Concatenate to get prioritized list of exact matches, then non-exact.
+      // TODO: would be better to search for gloss.  DDW 2016-06-22
+      var results =
+          $filter('filter')($scope.entries, {lexeme: query}, true).concat(
+          $filter('filter')($scope.entries, {senses: query}, true),
+          $filter('filter')($scope.entries, {lexeme: query}),
+          $filter('filter')($scope.entries, {senses: query}),
+          $filter('filter')($scope.entries, query));
+
+      // Set function to return unique results
+      $scope.typeahead.searchResults = Array.from(new Set(results));
       $scope.typeahead.matchCountCaption = '';
       var numMatches = $scope.typeahead.searchResults.length;
-      var limit = 10;
-      if (numMatches > limit) {
-        $scope.typeahead.matchCountCaption = limit + ' of ' + numMatches + ' matches';
-      } else if (1 < numMatches && numMatches < limit) {
+      if (numMatches > $scope.typeahead.limit) {
+        $scope.typeahead.matchCountCaption = $scope.typeahead.limit + ' of ' + numMatches + " matches";
+      } else if (numMatches > 1) {
         $scope.typeahead.matchCountCaption = numMatches + ' matches';
       } else if (numMatches == 1) {
         $scope.typeahead.matchCountCaption = numMatches + ' match';
