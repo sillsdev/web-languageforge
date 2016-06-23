@@ -20,6 +20,8 @@ div.typeahead > div {
 
 div.typeahead ul {
     margin: 0 2px 2px 2px;
+    overflow-y: scroll;
+    max-height: 300px;
 }
 
 li.typeahead-item {
