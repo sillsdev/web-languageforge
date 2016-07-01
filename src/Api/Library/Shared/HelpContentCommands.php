@@ -11,7 +11,7 @@ namespace Api\Library\Shared;
 use Api\Library\Shared\Website;
 
 
-class XForgeFrameCommands
+class HelpContentCommands
 {
     /**
      * @param Website $website
@@ -40,6 +40,24 @@ class XForgeFrameCommands
             if (file_exists($pathToHelpFile)) {
                 $result['showButton'] = true;
                 $result['helpFilePath'] = "/$pathToHelpFile";
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $appName string
+     * @param $website Website
+     * @return array
+     */
+    public static function getSessionData($appName, $website) {
+        $rootFolder = $website->getAngularPath($appName) . "/helps";
+        $result = array('filePaths' => array());
+
+        if (file_exists($rootFolder)) {
+            foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($rootFolder, \RecursiveDirectoryIterator::SKIP_DOTS)) as $file) {
+                array_push($result['filePaths'], $file->getPathname());
             }
         }
 
