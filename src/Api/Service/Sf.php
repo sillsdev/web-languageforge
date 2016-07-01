@@ -8,6 +8,7 @@ use Api\Library\Shared\Palaso\Exception\UserNotAuthenticatedException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
+use Api\Library\Shared\XForgeFrameCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexCommentCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexOptionListCommands;
@@ -795,6 +796,15 @@ class Sf
     public function sendReceive_notification_sendRequest($projectCode)
     {
         return SendReceiveCommands::notificationSendRequest($projectCode);
+    }
+
+
+    /*
+     * --------------------------------------------------------------- XFORGE FRAME API ---------------------------------------------------------------
+     */
+
+    public function xforge_frame_can_show_page_help_button($urlPath, $hashPath) {
+        return XForgeFrameCommands::canShowPageHelpButton($this->website, $urlPath, $hashPath);
     }
 
 
