@@ -205,6 +205,17 @@ class Website
         return $path;
     }
 
+    public function getAngularPath($appName) {
+        $dirPath = "angular-app/" . $this->base . "/$appName";
+        if (!file_exists($dirPath)) {
+            $dirPath = "angular-app/bellows/apps/$appName";
+            if (!file_exists($dirPath)) {
+                $dirPath = '';
+            }
+        }
+        return $dirPath;
+    }
+
     /**
      * get an array of available project themes for a base site (scriptureforge or languageforge)
      * @param string $baseSite

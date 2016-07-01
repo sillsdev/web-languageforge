@@ -285,8 +285,7 @@ class RightsHelper
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::VIEW_OWN);
 
             case 'session_getSessionData':
-                // Are there any circumstances where this should be denied? Should this just be "return true;"?
-                return $this->userHasSiteRight(Domain::USERS + Operation::VIEW_OWN);
+                return true;
 
 
 
@@ -352,6 +351,10 @@ class RightsHelper
             case 'semdomtrans_export_all_projects':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::EDIT);
 
+            // xforge frame
+            case 'xforge_frame_can_show_page_help_button':
+                return true;
+            
             default:
                 throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");
         }
