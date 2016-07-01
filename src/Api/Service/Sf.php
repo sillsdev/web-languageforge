@@ -4,11 +4,11 @@ namespace Api\Service;
 
 use Api\Library\Scriptureforge\Sfchecks\ParatextExport;
 use Api\Library\Scriptureforge\Sfchecks\SfchecksReports;
+use Api\Library\Shared\HelpContentCommands;
 use Api\Library\Shared\Palaso\Exception\UserNotAuthenticatedException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
-use Api\Library\Shared\XForgeFrameCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexCommentCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexOptionListCommands;
@@ -804,7 +804,7 @@ class Sf
      */
 
     public function xforge_frame_can_show_page_help_button($urlPath, $hashPath) {
-        return XForgeFrameCommands::canShowPageHelpButton($this->website, $urlPath, $hashPath);
+        return HelpContentCommands::canShowPageHelpButton($this->website, $urlPath, $hashPath);
     }
 
 

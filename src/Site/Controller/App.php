@@ -77,8 +77,8 @@ class App extends Base
         }
 
         // Other session data
-        $sessionData = SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website);
-        $this->data['jsonSession'] = json_encode($sessionData);
+        $sessionData = SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $appName);
+        $this->data['jsonSession'] = json_encode($sessionData, JSON_UNESCAPED_SLASHES);
 
         $this->addJavascriptFiles(NG_BASE_FOLDER . 'bellows/js', array('vendor/', 'assets/'));
         $this->addJavascriptFiles(NG_BASE_FOLDER . 'bellows/directive');
