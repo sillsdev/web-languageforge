@@ -311,7 +311,7 @@
             <arg value="--chown=root:www-data" />
             <arg value="--delete-during" />
             <arg value="--exclude=htdocs/assets" />
-            <arg value='--rsh=ssh -i ${upload.credentials}' />
+            <arg value='--rsh=ssh -v -i ${upload.credentials}' />
             <arg value="${build.uploadPath}/" />
             <arg value="${upload.destination}" />
         </exec>
