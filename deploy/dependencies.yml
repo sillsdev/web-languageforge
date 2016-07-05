@@ -98,6 +98,14 @@
       file: src=/etc/php5/mods-available/mongodb.ini dest=/etc/php5/apache2/conf.d/20-mongodb.ini state=link
       notify: Restart apache
       
+    - name: Set Apache umask to 002
+      lineinfile:
+        dest: /etc/apache2/envvars
+        regexp: '^umask \d+'
+        line: 'umask 002'
+        backrefs: no
+      notify: Restart apache
+
     - name: update the mongo config file
       lineinfile:
         dest: /etc/mongodb.conf
