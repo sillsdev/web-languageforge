@@ -37,7 +37,8 @@ angular.module('lexicon.services')
       var cloneStatusTimer;
 
       this.status = undefined;
-      if (angular.isDefined(projectSettings.sendReceive) &&
+      if (angular.isDefined(projectSettings) &&
+          angular.isDefined(projectSettings.sendReceive) &&
           angular.isDefined(projectSettings.sendReceive.status)) {
         this.status = projectSettings.sendReceive.status;
       }
