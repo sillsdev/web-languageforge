@@ -67,6 +67,10 @@ class Base
 
     // all child classes should use this method to render their pages
     protected function renderPage(Application $app, $viewName, $render = true) {
+        if ($viewName == 'favicon.ico') {
+            $viewName = 'container';
+        }
+
         $this->_isLoggedIn = $this->isLoggedIn($app);
         if ($this->_isLoggedIn) {
             try {
