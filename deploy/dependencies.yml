@@ -50,6 +50,7 @@
       notify: Restart apache
 
     - name: postfix | halt emails in output queue
+      when: inventory_hostname == "localhost"
       lineinfile:
         dest: /etc/postfix/main.cf
         state: present
@@ -71,6 +72,11 @@
     - name: Ensure default_local link exists (localhost)
       file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/virtual/default_local" state=link group=www-data force=true
       when: inventory_hostname == "localhost"
+
+    - name: Ensure /var/lib/languageforge directory is writeable (for LfMerge)
+      file: path="/var/lib/languageforge" state=directory owner=www-data group=www-data mode=0755
+    - name: Ensure /var/www/.local directory is writeable (for LfMerge)
+      file: path="/var/www/.local" state=directory owner=www-data group=www-data mode=0755
 
     - name: install PECL mongo extension
       # yes types empty line over and over to accept defaults
@@ -97,7 +103,7 @@
     - name: install PECL mongo extension | add mods-available in apache2/conf.d
       file: src=/etc/php5/mods-available/mongodb.ini dest=/etc/php5/apache2/conf.d/20-mongodb.ini state=link
       notify: Restart apache
-      
+
     - name: Set Apache umask to 002
       lineinfile:
         dest: /etc/apache2/envvars

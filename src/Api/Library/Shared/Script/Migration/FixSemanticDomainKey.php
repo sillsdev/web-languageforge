@@ -122,8 +122,10 @@ class FixSemanticDomainKey
             if ($lfProjectCount >= $maxNumProjects) {
                 $message .= "Processed projects " . ($skippedProjects + 1) . " - " . ($skippedProjects + $lfProjectCount) .
                     " of $totalProjectCount projects (skipped $skippedProjects)\n";
-                return $message;
-            };
+                break;
+            } else {
+                $message .= "All projects have now been processed ($totalProjectCount).";
+            }
         } // foreach project
 
         return $message;

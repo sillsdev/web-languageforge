@@ -7,6 +7,8 @@ require_once('../scriptsConfig.php');
 use Api\Model\ProjectListModel;
 use Api\Model\ProjectModel;
 
+(php_sapi_name() == 'cli') or die('this script must be run on the command-line');
+
 class ChangeSiteNameToLocal
 {
     public static function run($mode = 'test')
