@@ -102,7 +102,8 @@ angular.module('lexicon-new-project',
             $state, $upload, lexProjectService, sendReceiveApi, sendReceive) {
     $scope.interfaceConfig = {};
     $scope.interfaceConfig.userLanguageCode = 'en';
-    if (angular.isDefined(sessionService.session.projectSettings)) {
+    if (angular.isDefined(sessionService.session.projectSettings) &&
+        angular.isDefined(sessionService.session.projectSettings.interfaceConfig)) {
       $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
     }
 
