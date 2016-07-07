@@ -129,7 +129,7 @@ angular.module('lexicon.services')
           angular.forEach(optionlists, function (optionlist) {
             if (optionlist.code == 'partOfSpeech' || optionlist.code == 'grammatical-info') {
               angular.forEach(optionlist.items, function (item) {
-                if (item.value == posModel.value) {
+                if (item.key == posModel.value) {
                   abbreviation = item.abbreviation;
                 }
               });
