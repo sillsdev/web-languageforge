@@ -269,7 +269,7 @@
         </exec>
     </target>
 
-    <target name="runE2ETests" unless="selenium.server.notfound">
+    <target name="runE2ETests" unless="selenium.server.notfound" failonerror="true">
         <exec dir="${build.installForTestPath}/test/app/" executable="node">
             <arg value="node_modules/protractor/bin/protractor" />
             <arg value="${e2etest.protractor.conf}" />
