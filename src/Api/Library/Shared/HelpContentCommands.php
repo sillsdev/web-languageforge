@@ -57,7 +57,10 @@ class HelpContentCommands
 
         if (file_exists($rootFolder)) {
             foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($rootFolder, \RecursiveDirectoryIterator::SKIP_DOTS)) as $file) {
-                array_push($result['filePaths'], $file->getPathname());
+                $filepath = $file->getPathname();
+                if (strpos($filepath, '.html') > -1) {
+                    array_push($result['filePaths'], $file->getPathname());
+                }
             }
         }
 
