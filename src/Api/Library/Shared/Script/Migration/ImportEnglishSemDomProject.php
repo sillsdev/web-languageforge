@@ -34,6 +34,7 @@ class ImportEnglishSemDomProject
         $projectModel->isSourceLanguage = true;
         $projectModel->semdomVersion = SemDomTransProjectModel::SEMDOM_VERSION;
         $projectModel->ownerRef->id = $userId;
+        $projectModel->siteName = 'languageforge.org';
 
         if (!$testMode) {
             $projectModel->importFromFile($englishXmlFilePath, true);

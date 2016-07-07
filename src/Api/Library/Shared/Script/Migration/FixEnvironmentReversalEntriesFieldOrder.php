@@ -20,13 +20,14 @@ class FixEnvironmentReversalEntriesFieldOrder
         $projectlist = new ProjectListModel();
         $projectlist->read();
 
+        $projectsAffected = 0;
+
         foreach ($projectlist->entries as $projectParams) { // foreach existing project
             $projectId = $projectParams['id'];
             $project = new ProjectModel($projectId);
             if ($project->appName == 'lexicon') {
                 $project = new LexiconProjectModel($projectId);
                 $fieldOrderUpdated = 0;
-                $message .= "Inspecting project $project->projectName.\n";
 
                 $this->RemoveFromArray("environments", $project->config->entry->fieldOrder, $message, $fieldOrderUpdated);
 
@@ -37,17 +38,22 @@ class FixEnvironmentReversalEntriesFieldOrder
                 }
 
                 if ($fieldOrderUpdated > 0) {
-                    $message .= "\tRemoved: $fieldOrderUpdated field orders\n";
+                    $projectsAffected++;
+                    $message .= "\tRemoved: $fieldOrderUpdated field orders from $project->projectName\n";
 
                     if (!$testMode) {
                         $message .= "\tSaving changes to project $project->projectName.\n\n";
                         $project->write();
                     }
-                } else {
-                    $message .= "\tNo fieldOrders to remove\n";
                 }
             }
             unset($project);
+        }
+
+        if ($projectsAffected > 0) {
+            $message .= "$projectsAffected projects were fixed\n";
+        } else {
+            $message .= "No projects needed fixing\n";
         }
 
         return $message;
