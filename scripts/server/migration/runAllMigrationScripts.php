@@ -7,23 +7,28 @@ require_once('../../scriptsConfig.php');
 class RunAllMigrationScripts {
 
     public static function run() {
-        fwrite(STDOUT, \Api\Library\Shared\Script\Migration\FixAvatarRefs::run('run'));
-        fwrite(STDOUT, \Api\Library\Shared\Script\Migration\FixEnvironmentReversalEntriesFieldOrder::run('run'));
-        fwrite(STDOUT, \Api\Library\Shared\Script\Migration\FixLexViewSettings::run('run'));
-        fwrite(STDOUT, \Api\Library\Shared\Script\Migration\FixProjectSiteNameIntegrity::run('run'));
-        fwrite(STDOUT, \Api\Library\Shared\Script\Migration\FixSiteRolesIntegrity::run('run'));
-        fwrite(STDOUT, \Api\Library\Shared\Script\Migration\ImportEnglishSemDomProject::run('run'));
-        //fwrite(STDOUT, \Api\Library\Shared\Script\Migration\ImportOtherLanguageSemDomProjects::run('run'));
+        $user = new \Api\Model\UserModel();
+        $user->readByUserName('chris');
+        $userId = $user->id->asString();
+        $scriptNames = array("FixAvatarRefs", "FixEnvironmentReversalEntriesFieldOrder", "FixLexViewSettings",
+            "FixProjectSiteNameIntegrity", "FixSiteRolesIntegrity", "ImportEnglishSemDomProject");
 
-        $migrationFinished = false;
-        $output = '';
-        while (!$migrationFinished) {
-            $output .= \Api\Library\Shared\Script\Migration\FixSemanticDomainKey::run('run');
-            if (strstr($output, "All projects have now been processed")) {
-               $migrationFinished = true;
-            }
+        foreach ($scriptNames as $scriptName) {
+            print("\n\n\n***RUNNING $scriptName\n");
+            $className = "\\Api\\Library\\Shared\\Script\\Migration\\$scriptName";
+            $class = new $className;
+            print($class->run($userId, 'run'));
+
         }
-        fwrite(STDOUT, $output);
+        print("Skipping ImportOtherLanguageSemDomProjects\n");
+
+        $ctr = 1;
+        while ($ctr < 6) {
+            print("\n\n\n***Running FixSemanticDomainKey\n");
+            $class = new \Api\Library\Shared\Script\Migration\FixSemanticDomainKey;
+            print $class->run($userId, 'run');
+            $ctr++;
+        }
     }
 }
 
