@@ -16,20 +16,26 @@ angular.module('xforge.helpButton', ['jsonRpc', 'ui.bootstrap', 'pascalprecht.tr
     // this function should be run whenever the location changes
     function isHelpFilePresentOnServer() {
       var helpFilePathsAvailable = ss.session.helps.filePaths;
-      var hashPath = $location.hash();
-      var appName = $location.path().split('/')[2];
+      var hashPath = $location.path();
+      // couldn't figure out an easy way to get just the pathname from $location, so using window.location instead
+      var appName = window.location.pathname.split('/')[2];
 
       var partialPath = "/helps/en/page/" + appName;
       if (hashPath) {
-        partialPath += $location.hash.substring(1).replace('/', '-');
+        partialPath += hashPath.replace('/', '-');
       }
       partialPath += ".html";
+      console.log("Looking for: " + partialPath);
 
       var foundFile = false;
       angular.forEach(helpFilePathsAvailable, function(path) {
-        if (path.indexOf(partialPath)) {
+        console.log("path = " + path);
+        console.log("partialPath = " + partialPath);
+        if (path.indexOf(partialPath) > -1) {
+          console.log("path.indexOf(partialPath) = " + path.indexOf(partialPath));
           foundFile = true;
           $scope.helpFilePath = "/" + path;
+          console.log("found help file: " + $scope.helpFilePath);
         }
 
       });
