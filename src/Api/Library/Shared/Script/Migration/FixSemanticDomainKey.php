@@ -106,27 +106,27 @@ class FixSemanticDomainKey
             if ($project->appName == 'lexicon') {
                 $project = new ProjectModelForUseWithSemanticDomainMigration($projectId);
 
-                $message .= "\n-------------  $project->projectName.";
                 if (!$project->hasMigratedSemanticDomainKeys) {
+                    $message .= "\n-------------  $project->projectName.";
                     $message .= "\n";
                     $lfProjectCount++;
                     $this->analyzeProject($project, $projectId, $testMode, $message);
                     $message .= "Memory usage: " . $this->getMemoryUsage() . "\n";
                 } else {
                     $skippedProjects++;
-                    $message .= " (skipped)";
                 }
             } // if lexicon project
 
             // Summary
             if ($lfProjectCount >= $maxNumProjects) {
                 $message .= "Processed projects " . ($skippedProjects + 1) . " - " . ($skippedProjects + $lfProjectCount) .
-                    " of $totalProjectCount projects (skipped $skippedProjects)\n";
+                    " of $totalProjectCount projects\n";
                 break;
-            } else {
-                $message .= "All projects have now been processed ($totalProjectCount).";
             }
         } // foreach project
+        if ($skippedProjects > 0) {
+            $message .= "Skipped $skippedProjects projects\n";
+        }
 
         return $message;
     }
