@@ -12,6 +12,7 @@ class FixLexViewSettings
     {
         $testMode = ($mode != 'run');
         $message = "Fix Lexicon View Settings (except Environments and ReversalEntries) to default to visible\n\n";
+        $fixCount = 0;
 
         $projectlist = new ProjectListModel();
         $projectlist->read();
@@ -21,7 +22,7 @@ class FixLexViewSettings
             $project = new ProjectModel($projectId);
             if ($project->appName == 'lexicon') {
                 $project = new LexiconProjectModel($projectId);
-                $message .= "\nInspecting project $project->projectName.\n";
+                //$message .= "\nInspecting project $project->projectName.\n";
 
                 $showFieldUpdated = 0;
                 $roleShowFieldUpdated = 0;
@@ -72,6 +73,7 @@ class FixLexViewSettings
                 }
 
                 if ($showFieldUpdated > 0) {
+                    $fixCount++;
                     $message .= "  Toggled $showFieldUpdated View Settings fields. This comprised: \n";
                     if ($roleShowFieldUpdated > 0) {
                         $message .= "   - Changed $roleShowFieldUpdated role-based View Settings fields to be visible.\n";
@@ -91,9 +93,15 @@ class FixLexViewSettings
                         $project->write();
                     }
                 } else {
-                    $message .= "  No invisible View Settings fields found/changed.\n";
+                    //$message .= "  No invisible View Settings fields found/changed.\n";
                 }
             }
+        }
+        
+        if ($fixCount > 0) {
+            $message .= "$fixCount projects were fixed\n";
+        } else {
+            $message .= "No projects needed fixing\n";
         }
 
         return $message;
