@@ -82,7 +82,7 @@ class SfchecksReports {
                                 array_push($user['textIds'], $question['textRef']);
                                 $responses++;
                                 self::_addResponseToList($user['responsesList'], array(
-                                    'timestamp' => $comment['dateEdited']->sec,
+                                    'timestamp' => $comment['dateEdited']->toDateTime(),
                                     'comment' => $comment['content'],
                                     'answer' => strip_tags($answer['content']),
                                     'answerSelectedText' => strip_tags($answer['textHighlight']),
@@ -99,7 +99,7 @@ class SfchecksReports {
                             array_push($user['textIds'], $question['textRef']);
                             $responses++;
                             self::_addResponseToList($user['responsesList'], array(
-                                'timestamp' => $comment['dateEdited']->sec,
+                                'timestamp' => $comment['dateEdited']->toDateTime(),
                                 'answer' => strip_tags($answer['content']),
                                 'answerSelectedText' => strip_tags($answer['textHighlight']),
                                 'comment' => '',
@@ -155,7 +155,7 @@ class SfchecksReports {
                 foreach ($text['questions'] as $question) {
                     $output .= "\n\tIn reference to the question '" . $question['content'] . "'\n";
                     foreach ($question['answers'] as $answer) {
-                        $date = new \DateTime('@' . $answer['timestamp']);
+                        $date = $answer['timestamp'];
 
                         if ($answer['selectedText']) {
                             $answer['answer'] = "(reference: '" . $answer['selectedText'] . "') " . $answer['answer'];
@@ -225,7 +225,7 @@ class SfchecksReports {
 
 
     private static function _addResponseOnEpoch(&$responses, $epochTime) {
-        $dateObj = new \DateTime("@$epochTime");
+        $dateObj = $epochTime;
         $dateString = $dateObj->format('M d, Y');
         if (array_key_exists($dateString, $responses)) {
             $responses[$dateString]++;
@@ -268,13 +268,13 @@ class SfchecksReports {
                     if ($answer['content']) {
                         $answerCtr++;
                         $responseCtr++;
-                        self::_addResponseOnEpoch($responses, $answer['dateCreated']->sec);
+                        self::_addResponseOnEpoch($responses, $answer['dateCreated']->toDateTime());
                     }
                     foreach ($answer['comments'] as $comment) {
                         if ($comment['content']) {
                             $commentCtr++;
                             $responseCtr++;
-                            self::_addResponseOnEpoch($responses, $answer['dateCreated']->sec);
+                            self::_addResponseOnEpoch($responses, $answer['dateCreated']->toDateTime());
                         }
                     }
                 }
