@@ -58,6 +58,9 @@ angular.module('lexicon.services')
     };
 
     this.getCitationForms = function (config, entry) {
+      if (!angular.isDefined(entry.lexeme)) {
+        return '';
+      }
       var citation = '';
       var citationFormByInputSystem = {};
       if (angular.isDefined(config.fields.citationForm)) {
