@@ -92,7 +92,7 @@ class FixSemanticDomainKey
 
         // Because of the memory needed to process semdom keys for projects, we'll limit the
         // migration script to run in batches of this many projects per run.
-        $maxNumProjects = 50;
+        $maxNumProjects = 1;
 
         $lfProjectCount = 0; // Counter of LF projects analyzed
         $skippedProjects = 0;
@@ -100,20 +100,16 @@ class FixSemanticDomainKey
 
         foreach ($projectlist->entries as $projectParams) {
             $projectId = $projectParams['id'];
-            $project = new ProjectModel($projectId);
-            if ($project->appName == 'lexicon') {
-                $project = new ProjectModelForUseWithSemanticDomainMigration($projectId);
-
-                if (!$project->hasMigratedSemanticDomainKeys) {
-                    print "\n-------------  $project->projectName.";
-                    print "\n";
-                    $lfProjectCount++;
-                    $this->analyzeProject($project, $projectId, $testMode, $message);
-                    print "Memory usage: " . $this->getMemoryUsage() . "\n";
-                } else {
-                    $skippedProjects++;
-                }
-            } // if lexicon project
+            $project = new ProjectModelForUseWithSemanticDomainMigration($projectId);
+            if ($project->appName == 'lexicon' && !$project->hasMigratedSemanticDomainKeys) {
+                print "\n-------------  $project->projectName.";
+                print "\n";
+                $lfProjectCount++;
+                $this->analyzeProject($project, $projectId, $testMode, $message);
+                print "Memory usage: " . $this->getMemoryUsage() . "\n";
+            } else {
+                $skippedProjects++;
+            }
 
             // Summary
             if ($lfProjectCount >= $maxNumProjects) {
