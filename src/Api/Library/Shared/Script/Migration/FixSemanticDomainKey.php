@@ -30,7 +30,7 @@ class FixSemanticDomainKey
 
                 /** @var Sense $sense */
                 foreach ($entry->senses as $sense) {
-                    $this->migrateSemDomKey($sense, $message, $entryModified);
+                    $this->migrateSemDomKey($sense, $project->projectName, $message, $entryModified);
                 }
             }
 
@@ -57,7 +57,7 @@ class FixSemanticDomainKey
      * @param string $message
      * @param bool $entryModified
      */
-    private function migrateSemDomKey($sense, &$message, &$entryModified)
+    private function migrateSemDomKey($sense, $projectName, &$message, &$entryModified)
     {
         $senseModified = false;
         $updatedSemDomArray = $sense->semanticDomain->values->getArrayCopy();
@@ -76,7 +76,7 @@ class FixSemanticDomainKey
             }
             print " semdom key(s)\n\tfrom: {" . implode(", ", $sense->semanticDomain->values->getArrayCopy()) .
                 "}\n\tto: {" . implode(", ", $updatedSemDomArray) . "}\n";
-            print "Memory usage: " . $this->getMemoryUsage() . "\n";
+            print "$projectName Memory usage: " . $this->getMemoryUsage() . "\n";
             $sense->semanticDomain->values->exchangeArray($updatedSemDomArray);
         }
     }
