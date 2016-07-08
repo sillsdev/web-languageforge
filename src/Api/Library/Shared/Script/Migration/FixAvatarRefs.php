@@ -7,7 +7,7 @@ use Api\Model\UserProfileModel;
 
 class FixAvatarRefs
 {
-    public static function run($mode = 'test') {
+    public static function run($userId, $mode = 'test') {
         $testMode = ($mode != 'run');
         $message = '';
 
