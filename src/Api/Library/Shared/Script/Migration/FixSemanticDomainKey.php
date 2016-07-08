@@ -47,7 +47,7 @@ class FixSemanticDomainKey
             $project->write();
         }
         if ($entryModifiedCount > 0) {
-            $message .= "$entryModifiedCount entries with semantic domains were migrated\n";
+            print "$entryModifiedCount entries with semantic domains were migrated\n";
         }
     }
 
@@ -69,16 +69,14 @@ class FixSemanticDomainKey
                 $entryModified = true;
             }
         }
-        if ($senseModified && (count($updatedSemDomArray) > 1)) {
-            /*
-            $message .= "   Change ";
-            if ((key_exists('gloss', $sense)) && ($sense->gloss != null) && (reset($sense->gloss)->value)) {
-                $message .= reset($sense->gloss)->value;
+        if ($senseModified && (count($updatedSemDomArray) > 0)) {
+            print "   Change ";
+            if ((key_exists('gloss', $sense)) && ($sense->gloss->count() > 0) && (reset($sense->gloss)->value)) {
+                print reset($sense->gloss)->value;
             }
-            $message .= " semdom key(s)\n\tfrom: {" . implode(", ", $sense->semanticDomain->values->getArrayCopy()) .
+            print " semdom key(s)\n\tfrom: {" . implode(", ", $sense->semanticDomain->values->getArrayCopy()) .
                 "}\n\tto: {" . implode(", ", $updatedSemDomArray) . "}\n";
-            $message .= "Memory usage: " . $this->getMemoryUsage() . "\n";
-            */
+            print "Memory usage: " . $this->getMemoryUsage() . "\n";
             $sense->semanticDomain->values->exchangeArray($updatedSemDomArray);
         }
     }
@@ -107,11 +105,11 @@ class FixSemanticDomainKey
                 $project = new ProjectModelForUseWithSemanticDomainMigration($projectId);
 
                 if (!$project->hasMigratedSemanticDomainKeys) {
-                    $message .= "\n-------------  $project->projectName.";
-                    $message .= "\n";
+                    print "\n-------------  $project->projectName.";
+                    print "\n";
                     $lfProjectCount++;
                     $this->analyzeProject($project, $projectId, $testMode, $message);
-                    $message .= "Memory usage: " . $this->getMemoryUsage() . "\n";
+                    print "Memory usage: " . $this->getMemoryUsage() . "\n";
                 } else {
                     $skippedProjects++;
                 }
@@ -119,13 +117,13 @@ class FixSemanticDomainKey
 
             // Summary
             if ($lfProjectCount >= $maxNumProjects) {
-                $message .= "Processed projects " . ($skippedProjects + 1) . " - " . ($skippedProjects + $lfProjectCount) .
+                print "Processed projects " . ($skippedProjects + 1) . " - " . ($skippedProjects + $lfProjectCount) .
                     " of $totalProjectCount projects\n";
                 break;
             }
         } // foreach project
         if ($skippedProjects > 0) {
-            $message .= "Skipped $skippedProjects projects\n";
+            print "Skipped $skippedProjects projects\n";
         }
 
         return $message;
