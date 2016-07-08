@@ -21,14 +21,19 @@
                 <button class="btn btn-success btn-small pull-right" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
             </div>
             <div ng-hide="visibleEntries.length === 0" style="width:340px; margin:0 auto;" >
-                <typeahead style="margin: 0" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
-                    <ul ng-if="typeahead.searchResults.length > 0">
-                        <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: typeahead.limit" class="typeahead-item">
+                <typeahead style="margin: 0" class="typeahead" placeholder="'Search Entries'"
+                           items="typeahead.searchResults" term="typeahead.searchItemSelected"
+                           search="typeahead.searchEntries" select="typeahead.searchSelect">
+                    <ul data-ng-if="typeahead.searchResults.length > 0">
+                        <li data-typeahead-item="e" class="typeahead-item"
+                            data-ng-repeat="e in typeahead.searchResults | limitTo: typeahead.limit">
                             <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
                             <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
                         </li>
-                        <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.matchCountCaption}}</i></small></li>
                     </ul>
+                    <div style="text-align:center; background-color: #d3d3d3; color:black; margin-top:5px"
+                         data-ng-if="typeahead.searchResults.length > 0">
+                        <small><i>{{typeahead.matchCountCaption}}</i></small></div>
                 </typeahead>
             </div>
             <div style="border-bottom: 1px solid darkgray; width:100%;margin-top:15px"></div>
@@ -55,14 +60,19 @@
                     <button class="btn btn-success btn-small" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
                 </div>
                 <div style="margin: 5px 5px 5px 0">
-                    <typeahead style="margin: 0" class="typeahead" placeholder="'Search Entries'" items="typeahead.searchResults" term="typeahead.searchItemSelected" search="typeahead.searchEntries" select="typeahead.searchSelect">
+                    <typeahead style="margin: 0" class="typeahead" placeholder="'Search Entries'"
+                               items="typeahead.searchResults" term="typeahead.searchItemSelected"
+                               search="typeahead.searchEntries" select="typeahead.searchSelect">
                         <ul ng-if="typeahead.searchResults.length > 0">
-                            <li data-typeahead-item="e" data-ng-repeat="e in typeahead.searchResults |limitTo: typeahead.limit" class="typeahead-item">
+                            <li data-typeahead-item="e" class="typeahead-item"
+                                data-ng-repeat="e in typeahead.searchResults | limitTo: typeahead.limit">
                                 <p class="listItemPrimary" ng-bind-html="getWordForDisplay(e)"></p>
                                 <p class="listItemSecondary" ng-bind-html="getMeaningForDisplay(e)"></p>
                             </li>
-                            <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="typeahead.searchResults.length > 0"><small ><i>{{typeahead.matchCountCaption}}</i></small></li>
                         </ul>
+                        <div style="text-align:center; background-color: #d3d3d3; color:black; margin-top:5px"
+                             data-ng-if="typeahead.searchResults.length > 0">
+                            <small><i>{{typeahead.matchCountCaption}}</i></small></div>
                     </typeahead>
                 </div>
                 <div style="margin-right: 10px; display:flex; flex-direction: column">
