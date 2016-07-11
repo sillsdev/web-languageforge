@@ -437,8 +437,8 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
               }
             }
 
-            // only recurse if the field is not in our node stoplist
-            if (stopAtNodes.indexOf(fieldName) == -1) {
+            // only recurse if the field is not in our node stop list or if it contains data
+            if (stopAtNodes.indexOf(fieldName) == -1 || data[fieldName].length != 0) {
               if (config.fields[fieldName].type == 'fields') {
                 if (data[fieldName].length == 0) {
                   data[fieldName].push({});
