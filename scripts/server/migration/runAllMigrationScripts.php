@@ -21,14 +21,7 @@ class RunAllMigrationScripts {
 
         }
         print("Skipping ImportOtherLanguageSemDomProjects\n");
-
-        $ctr = 1;
-        while ($ctr < 6) {
-            print("\n\n\n***Running FixSemanticDomainKey\n");
-            $class = new \Api\Library\Shared\Script\Migration\FixSemanticDomainKey;
-            print $class->run($userId, 'run');
-            $ctr++;
-        }
+        print("Skipping FixSemanticDomainKey\n");
     }
 }
 
