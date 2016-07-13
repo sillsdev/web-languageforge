@@ -197,7 +197,7 @@ class JsonDecoder
      * @param object $model
      * @param string $data
      */
-    public function decodeDateTime($key, $model, $data)
+    public function decodeDateTime($key, &$model, $data)
     {
         $model = new \DateTime($data);
     }
