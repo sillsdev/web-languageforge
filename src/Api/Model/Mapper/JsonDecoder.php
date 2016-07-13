@@ -37,51 +37,35 @@ class JsonDecoder
     protected function _decode($model, $values, $id)
     {
         CodeGuard::checkTypeAndThrow($values, 'array');
-        $properties = get_object_vars($model);
-        $propsToIgnore = array();
-
-        if (method_exists($model, 'getLazyProperties')) {
-            $properties = array_merge($properties, $model->getLazyProperties());
-        }
-
-        if (get_class($this) == 'Api\Model\Mapper\JsonDecoder') {
-
-            if (method_exists($model, 'getPrivateProperties')) {
-                $propsToIgnore = (array) $model->getPrivateProperties();
-            }
-            if (method_exists($model, 'getReadOnlyProperties')) {
-                $propsToIgnore = array_merge($propsToIgnore, (array) $model->getReadOnlyProperties());
-            }
-        }
-
-        foreach ($properties as $key => $value) {
+        $propertiesToIgnore = $this->getPrivateAndReadOnlyProperties($model);
+        foreach ($this->getProperties($model) as $property => $value) {
             if (is_a($value, 'Api\Model\Mapper\Id') && get_class($value) == 'Api\Model\Mapper\Id') {
-                 $this->decodeId($key, $model, $values, $id);
+                 $this->decodeId($property, $model, $values, $id);
                  continue;
             }
-            if (!array_key_exists($key, $values) || in_array($key, $propsToIgnore)) {
+            if (!array_key_exists($property, $values) || in_array($property, $propertiesToIgnore)) {
                 continue;
             }
             if ($value === false) {
-                $value = $model->$key; // To force the lazy evaluation to create the property.
+                $value = $model->{$property}; // To force the lazy evaluation to create the property.
             }
             if (is_a($value, 'Api\Model\Mapper\IdReference')) {
-                $this->decodeIdReference($key, $model, $values);
+                $this->decodeIdReference($property, $model, $values);
             } elseif (is_a($value, 'Api\Model\Mapper\ArrayOf')) {
-                $this->decodeArrayOf($key, $model->$key, $values[$key]);
+                $this->decodeArrayOf($property, $model->{$property}, $values[$property]);
             } elseif (is_a($value, 'Api\Model\Mapper\MapOf')) {
-                $this->decodeMapOf($key, $model->$key, $values[$key]);
+                $this->decodeMapOf($property, $model->{$property}, $values[$property]);
             } elseif (is_a($value, 'DateTime')) {
-                $this->decodeDateTime($key, $model->$key, $values[$key]);
+                $this->decodeDateTime($property, $model->{$property}, $values[$property]);
             } elseif (is_a($value, 'Api\Model\Mapper\ReferenceList')) {
-                $this->decodeReferenceList($model->$key, $values[$key]);
+                $this->decodeReferenceList($model->{$property}, $values[$property]);
             } elseif (is_object($value)) {
-                $this->_decode($model->$key, $values[$key], '');
+                $this->_decode($model->{$property}, $values[$property], '');
             } else {
-                if (is_array($values[$key])) {
-                    throw new \Exception("Must not decode array in '" . get_class($model) . "->" . $key . "'");
+                if (is_array($values[$property])) {
+                    throw new \Exception("Must not decode array in '" . get_class($model) . "->" . $property . "'");
                 }
-                $model->$key = $values[$key];
+                $model->{$property} = $values[$property];
             }
         }
 
@@ -130,10 +114,26 @@ class JsonDecoder
             $data = array();
         }
         CodeGuard::checkTypeAndThrow($data, 'array');
-        $model->exchangeArray(array());
-        foreach ($data as $item) {
+        $propertiesToKeep = array();
+
+        // check if array item class has any private, read-only or recursive properties
+        if (get_class($this) == 'Api\Model\Mapper\JsonDecoder' && $model->hasGenerator()) {
+            $arrayItem = $model->generate();
+            $propertiesToKeep = $this->getPrivateAndReadOnlyProperties($arrayItem);
+            $propertiesToKeep = array_merge($propertiesToKeep, $this->getRecursiveProperties($arrayItem));
+        }
+
+        $oldModelArray = $model->exchangeArray(array());
+        foreach ($data as $index => $item) {
             if ($model->hasGenerator()) {
                 $object = $model->generate($item);
+
+                // put back private, read-only and recursive properties into new object that was just generated
+                foreach ($propertiesToKeep as $property) {
+                    if (array_key_exists($index, $oldModelArray)) {
+                        $object->{$property} = $oldModelArray[$index]->{$property};
+                    }
+                }
                 $this->_decode($object, $item, '');
                 $model[] = $object;
             } else {
@@ -200,6 +200,63 @@ class JsonDecoder
     public function decodeDateTime($key, &$model, $data)
     {
         $model = new \DateTime($data);
+    }
+
+    /**
+     * @param ObjectForEncoding|object $model
+     * @return array
+     */
+    private function getPrivateAndReadOnlyProperties($model)
+    {
+        $properties = array();
+        if (get_class($this) == 'Api\Model\Mapper\JsonDecoder') {
+            if (method_exists($model, 'getPrivateProperties')) {
+                $properties = (array)$model->getPrivateProperties();
+            }
+            if (method_exists($model, 'getReadOnlyProperties')) {
+                $properties = array_merge($properties, (array)$model->getReadOnlyProperties());
+            }
+        }
+
+        return $properties;
+    }
+
+    /**
+     * @param object $model
+     * @return array
+     */
+    private function getRecursiveProperties($model)
+    {
+        $properties = array();
+        if (get_class($this) == 'Api\Model\Mapper\JsonDecoder') {
+            foreach ($this->getProperties($model) as $property => $value) {
+                if ($value === false) {
+                    $value = $model->{$property}; // To force the lazy evaluation to create the property.
+                }
+
+                if (is_a($value, 'Api\Model\Mapper\ArrayOf')) {
+                    $properties[] = $property;
+                } elseif (is_a($value, 'Api\Model\Mapper\MapOf')) {
+                    $properties[] = $property;
+                }
+            }
+        }
+
+        return $properties;
+    }
+
+    /**
+     * @param object $model
+     * @return array
+     */
+    private function getProperties($model)
+    {
+        $properties = get_object_vars($model);
+        if (method_exists($model, 'getLazyProperties')) {
+            $properties = array_merge($properties, $model->getLazyProperties());
+        }
+
+        return $properties;
     }
 
 }
