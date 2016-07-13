@@ -4,7 +4,7 @@ namespace Api\Model\Mapper;
 
 use Palaso\Utilities\CodeGuard;
 
-class MapperModel
+class MapperModel extends ObjectForEncoding
 {
     /**
      *
@@ -26,47 +26,6 @@ class MapperModel
 
     /**
      *
-     * @var array
-     */
-    private $_privateProperties;
-
-    /**
-     *
-     * @var array
-     */
-    private $_readOnlyProperties;
-
-    protected function setReadOnlyProp($propertyName)
-    {
-        if (!is_array($this->_readOnlyProperties)) {
-            $this->_readOnlyProperties = array();
-        }
-        if (!in_array($propertyName, $this->_readOnlyProperties)) {
-            $this->_readOnlyProperties[] = $propertyName;
-        }
-    }
-    protected function setPrivateProp($propertyName)
-    {
-        if (!is_array($this->_privateProperties)) {
-            $this->_privateProperties = array();
-        }
-        if (!in_array($propertyName, $this->_privateProperties)) {
-            $this->_privateProperties[] = $propertyName;
-        }
-    }
-
-    public function getReadOnlyProperties()
-    {
-        return $this->_readOnlyProperties;
-    }
-
-    public function getPrivateProperties()
-    {
-        return $this->_privateProperties;
-    }
-
-    /**
-     *
      * @param MongoMapper $mapper
      * @param string $id
      */
@@ -81,12 +40,6 @@ class MapperModel
         if (!empty($id)) {
             $this->read($id);
         }
-    }
-
-    // TODO Would be nice to deprecate this. Should be removed. Derived models should do their own query, or have methods that do the right query not elsewhere in app code. CP 2013-11
-    public function findOneByQuery($query, $fields = array())
-    {
-        $this->_mapper->findOneByQuery($this, $query, $fields = array());
     }
 
     /**

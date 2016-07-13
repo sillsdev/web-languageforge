@@ -4,10 +4,11 @@ namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Mapper\MapOf;
 use Api\Model\Mapper\ObjectForEncoding;
+use LazyProperty\LazyPropertiesTrait;
 
 class Example extends ObjectForEncoding
 {
-    use \LazyProperty\LazyPropertiesTrait;
+    use LazyPropertiesTrait;
 
     public function __construct($liftId = '', $guid = '')
     {

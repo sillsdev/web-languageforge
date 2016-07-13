@@ -22,6 +22,7 @@ class JsonEncoder
      * Sets key/values in the array from the public properties of $model
      * @param object $model
      * @return array
+     * @throws \Exception
      */
     protected function _encode($model)
     {
@@ -173,7 +174,7 @@ class JsonEncoder
 
     /**
      * @param string $key
-     * @param DateTime $model
+     * @param \DateTime $model
      * @return string;
      */
     public function encodeDateTime($key, $model)
