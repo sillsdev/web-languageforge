@@ -8,7 +8,7 @@ class JsonDecoder
 {
     /**
      * @param array $array
-`     * @return bool
+     * @return bool true if at least one key is a string, false otherwise
      */
     public static function is_assoc($array)
     {
@@ -24,15 +24,15 @@ class JsonDecoder
     public static function decode($model, $values, $id = '')
     {
         $decoder = new JsonDecoder();
-
         $decoder->_decode($model, $values, $id);
     }
 
     /**
      * Sets the public properties of $model to values from $values[propertyName]
-     * @param object $model
+     * @param object|MapOf $model
      * @param array $values A mixed array of JSON (like) data.
-     * @param bool $isRootDocument true if this is the root document, false if a sub-document. Defaults to true
+     * @param string $id
+     * @throws \Exception
      */
     protected function _decode($model, $values, $id)
     {
@@ -84,7 +84,6 @@ class JsonDecoder
                 $model->$key = $values[$key];
             }
         }
-        $this->_id = null;
 
         // support for nested MapOf
         if (is_a($model, 'Api\Model\Mapper\MapOf')) {
