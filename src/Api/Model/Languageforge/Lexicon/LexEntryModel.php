@@ -9,6 +9,7 @@ use Api\Model\Mapper\MapOf;
 use Api\Model\Mapper\MapperModel;
 use Api\Model\Mapper\MongoMapper;
 use Api\Model\ProjectModel;
+use LazyProperty\LazyPropertiesTrait;
 use Palaso\Utilities\CodeGuard;
 use Ramsey\Uuid\Uuid;
 
@@ -31,7 +32,7 @@ function _createCustomField($data)
 
 class LexEntryModel extends MapperModel
 {
-    use \LazyProperty\LazyPropertiesTrait;
+    use LazyPropertiesTrait;
 
     /**
      * @var bool
@@ -67,7 +68,6 @@ class LexEntryModel extends MapperModel
 
     // REMAINING PUBLIC PROPERTIES IN ALPHABETIC ORDER
 
-    // TODO Renamed $_metadata to $authorInfo, remove this comment when stitched in IJH 2013-11
     /**
      * @var AuthorInfo
      */
