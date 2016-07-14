@@ -3,6 +3,9 @@
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\ProjectModel;
+use Api\Model\Shared\Rights\Operation;
+use Api\Model\Shared\Rights\Domain;
+use Api\Model\Shared\Rights\ProjectRoles;
 use Palaso\Utilities\FileUtilities;
 
 require_once __DIR__ . '/../../TestConfig.php';
@@ -93,5 +96,31 @@ class TestLexiconProjectModel extends UnitTestCase
 
         FileUtilities::removeFolderAndAllContents($project->getAssetsFolderPath());
         FileUtilities::removeFolderAndAllContents($projectWorkPath);
+    }
+
+    public function testHasRight_OwnerHasArchiveOwn()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        // Setup users and project
+        $user1Id = $e->createUser('jsmith', 'joe manager', 'joe@manager.com');
+        $user2Id = $e->createUser('jsmith2', 'joe 2 manager', 'joe2@manager.com');
+        $user3Id = $e->createUser('user3', 'joe 3 user', 'joe3@user.com');
+        $projectModel = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+
+        // create the references
+        $projectModel->addUser($user1Id, ProjectRoles::MANAGER);
+        $projectModel->ownerRef->id = $user1Id;
+        $projectModel->addUser($user2Id, ProjectRoles::MANAGER);
+        $projectModel->addUser($user3Id, ProjectRoles::CONTRIBUTOR);
+        $projectModel->write();
+
+        $result1 = $projectModel->hasRight($user1Id, Domain::PROJECTS + Operation::ARCHIVE_OWN);
+        $this->assertTrue($result1);
+        $result2 = $projectModel->hasRight($user2Id, Domain::PROJECTS + Operation::ARCHIVE_OWN);
+        $this->assertFalse($result2);
+        $result3 = $projectModel->hasRight($user3Id, Domain::PROJECTS + Operation::ARCHIVE_OWN);
+        $this->assertFalse($result3);
     }
 }

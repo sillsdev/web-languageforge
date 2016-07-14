@@ -62,10 +62,7 @@ describe('E2E Projects List App', function() {
 
     it('should show add and delete buttons', function() {
       // projectsPage.createBtn.getOuterHtml().then(console.log);
-      // projectsPage.archiveButton.getOuterHtml().then(console.log);
       expect(projectsPage.createBtn.isDisplayed()).toBeTruthy();
-
-      // expect(projectsPage.archiveButton.isDisplayed()).toBeTruthy();
     });
 
     it('should allow the admin to add themselves to the project as member or manager', function() {
@@ -102,6 +99,12 @@ describe('E2E Projects List App', function() {
       });
     });
 
+    it('should allow admin to archive and re-publish projects', function() {
+      loginPage.loginAsManager();
+      projectsPage.get();
+
+      projectsPage.archiveProject(constants.otherProjectName);
+    });
   });
 
 });
