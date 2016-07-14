@@ -27,6 +27,9 @@ if (! defined('ENVIRONMENT')) {
  *---------------------------------------------------------------
  */
 
+define('TestMode', true);
+define('SF_DATABASE', 'scriptureforge_test');
+
 if (! defined('SF_DATABASE')) {
     define('SF_DATABASE', 'scriptureforge');
 }

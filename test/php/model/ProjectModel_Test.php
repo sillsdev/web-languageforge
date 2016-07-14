@@ -1,6 +1,4 @@
 <?php
-use Api\Model\Scriptureforge\SfchecksProjectModel;
-
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\ProjectRoles;
@@ -119,9 +117,7 @@ class TestProjectModel extends UnitTestCase
 
         // setup user and projects
         $userId = $e->createUser('jsmith', 'joe smith', 'joe@email.com');
-        $userModel = new UserModel($userId);
         $projectModel = $e->createProject('new project', 'newProjCode');
-        $projectId = $projectModel->id;
 
         $projectModel->addUser($userId, ProjectRoles::CONTRIBUTOR);
         $this->assertEqual(1, count($projectModel->users));
@@ -198,23 +194,37 @@ class TestProjectModel extends UnitTestCase
         $this->assertEqual('sf_some_project', $result);
     }
 
-    public function testHasRight_Ok()
+    public function testHasRight_Exception()
     {
         $userId = MongoTestEnvironment::mockId();
-        $project = new SfchecksProjectModel();
+        $project = new ProjectModel();
         $project->addUser($userId, ProjectRoles::MANAGER);
-        $result = $project->hasRight($userId, Domain::QUESTIONS + Operation::CREATE);
-        $this->assertTrue($result);
+
+        // rolesClass undefined in base ProjectModel
+        $this->expectException();
+        $project->hasRight($userId, Domain::QUESTIONS + Operation::CREATE);
     }
 
-    public function testGetRightsArray_Ok()
+    public function testGetRolesList_Exception()
     {
         $userId = MongoTestEnvironment::mockId();
-        $project = new SfchecksProjectModel();
+        $project = new ProjectModel();
         $project->addUser($userId, ProjectRoles::MANAGER);
-        $result = $project->getRightsArray($userId);
-        $this->assertIsA($result, 'array');
-        $this->assertTrue(in_array(Domain::QUESTIONS + Operation::CREATE, $result));
+
+        // rolesClass undefined in base ProjectModel
+        $this->expectException();
+        $project->getRolesList();
+    }
+
+    public function testGetRightsArray_Exception()
+    {
+        $userId = MongoTestEnvironment::mockId();
+        $project = new ProjectModel();
+        $project->addUser($userId, ProjectRoles::MANAGER);
+        
+        // rolesClass undefined in base ProjectModel
+        $this->expectException();
+        $project->getRightsArray($userId);
     }
 
     public function testRemoveProject_ProjectHasMembers_UserRefsToProjectAreRemoved()
@@ -236,7 +246,6 @@ class TestProjectModel extends UnitTestCase
         $user->read($userId);
 
         $this->assertFalse($user->isMemberOfProject($projectId));
-
     }
 
 }

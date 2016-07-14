@@ -247,8 +247,9 @@ angular.module('siteadmin', [
   $scope.list.archivedProjects = [];
   // Rights
   $scope.rights = {};
-  $scope.rights.archive = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE); 
-  $scope.rights.showControlBar = $scope.rights.archive;
+  $scope.rights.delete = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
+  $scope.rights.publish = $scope.rights.delete;
+  $scope.rights.showControlBar = $scope.rights.delete;
 
   $scope.queryArchivedProjects = function() {
     projectService.archivedList(function(result) {
@@ -281,7 +282,7 @@ angular.module('siteadmin', [
   // Publish Projects
   $scope.publishProjects = function() {
     var projectIds = [];
-    for(var i = 0, l = $scope.selected.length; i < l; i++) {
+    for (var i = 0, l = $scope.selected.length; i < l; i++) {
       projectIds.push($scope.selected[i].id);
     }
     projectService.publish(projectIds, function(result) {
@@ -295,6 +296,27 @@ angular.module('siteadmin', [
         }
       }
     });
+  };
+
+  // TODO: Delete Projects - DDW 07/13/2016
+  $scope.deleteProjects = function() {
+    /*
+    var projectIds = [];
+    for (var i = 0, l = $scope.selected.length; i < l; i++) {
+      projectIds.push($scope.selected[i].id);
+    }
+    projectService.deleteProjects(projectIds, function (result) {
+      if (result.ok) {
+        $scope.selected = []; // Reset the selection
+        $scope.queryArchivedProjects();
+        if (projectIds.length == 1) {
+          notice.push(notice.SUCCESS, "The project was re-published successfully");
+        } else {
+          notice.push(notice.SUCCESS, "The projects were re-published successfully");
+        }
+      }
+    });
+    */
   };
 }])
 ;
