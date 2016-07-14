@@ -256,11 +256,8 @@ class RightsHelper
             case 'project_join_switchSession':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
 
-            /*
-             * TODO: DDW 07/13/2016
             case 'project_delete':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::DELETE);
-            */
 
             case 'projectcode_exists':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
