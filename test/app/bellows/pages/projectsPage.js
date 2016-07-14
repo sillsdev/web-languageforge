@@ -67,17 +67,7 @@ var SfProjectsPage = function () {
 
     return result;
   };
-
-  this.archiveProject = function (nameToArchive) {
-    this.clickOnProject(nameToArchive);
-    browser.pause();
-    this.settings.manageProjectLink.click();
-    _this.archiveBtn.click();
-
-    // Clicking the Archive button pops up an "are you sure?" alert
-    util.clickModalButton('Archive');
-  };
-
+  
   this.addNewProject = function (nameToAdd) {
     this.createBtn.click();
     this.newProjectNameInput.sendKeys(nameToAdd);
