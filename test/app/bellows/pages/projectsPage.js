@@ -17,7 +17,7 @@ var SfProjectsPage = function () {
 
   this.testProjectName = 'Test Project';
 
-  this.archiveButton = element(by.partialButtonText('Archive Selected Projects'));
+  this.archiveBtn = element(by.linkText('Archive'));
   this.createBtn = element(by.partialButtonText('Start or Join a New Project'));
   this.newProjectNameInput  = element(by.model('newProject.projectName'));
   this.newProjectTypeSelect = element(by.model('newProject.appName'));
@@ -30,6 +30,7 @@ var SfProjectsPage = function () {
   } else if (constants.siteType == 'languageforge') {
     this.settings.userManagementLink = element(by.linkText('User Management'));
   }
+  this.settings.manageProjectLink = element(by.linkText('Manage Project'));
 
   // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test
   // Project will be on page 1, and you can find it.
@@ -67,16 +68,14 @@ var SfProjectsPage = function () {
     return result;
   };
 
-  this.deleteProject = function (nameToDelete) {
-    var _this = this; // For use inside the anonymous functions below
-    this.findProject(nameToDelete).then(function (projectRow) {
-      var elem = projectRow.element(by.css('input[type=\'checkbox\']'));
-      elem.click();
-      _this.deleteBtn.click();
+  this.archiveProject = function (nameToArchive) {
+    this.clickOnProject(nameToArchive);
+    browser.pause();
+    this.settings.manageProjectLink.click();
+    _this.archiveBtn.click();
 
-      // Clicking the delete button pops up an "are you sure?" alert
-      util.clickModalButton('Archive');
-    });
+    // Clicking the Archive button pops up an "are you sure?" alert
+    util.clickModalButton('Archive');
   };
 
   this.addNewProject = function (nameToAdd) {

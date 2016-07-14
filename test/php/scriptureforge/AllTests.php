@@ -9,6 +9,7 @@ class AllScriptureForgeTests extends TestSuite
         parent::__construct();
         $this->addFile(TestPhpPath . 'scriptureforge/commands/AllTests.php');
         $this->addFile(TestPhpPath . 'scriptureforge/dto/AllTests.php');
+        $this->addFile(TestPhpPath . 'scriptureforge/Sfchecks/AllTests.php');
     }
 
 }
