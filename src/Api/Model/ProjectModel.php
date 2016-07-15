@@ -17,6 +17,8 @@ use Api\Model\Scriptureforge\Rapuma\RapumaRoles;
 use Api\Model\Scriptureforge\RapumaProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksRoles;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
+use Api\Model\Shared\Rights\Domain;
+use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\ProjectRoleModel;
 use Palaso\Utilities\CodeGuard;
 use Palaso\Utilities\FileUtilities;
@@ -109,7 +111,7 @@ class ProjectModel extends Mapper\MapperModel
             $user->removeProject($this->id->asString());
             $user->write();
         }
-        FileUtilities::removeFolderAndAllContents($this->getAssetsFolderPath());
+        $this->cleanup();
 
         MapperUtils::dropAllCollections($this->databaseName());
         ProjectModelMongoMapper::instance()->remove($this->id->asString());
@@ -222,6 +224,12 @@ class ProjectModel extends Mapper\MapperModel
             $rolesClass = $this->rolesClass;
             $hasRight = $rolesClass::hasRight($this->users[$userId]->role, $right);
         }
+
+        // Determine ARCHIVE_OWN right
+        if (($right == Domain::PROJECTS + Operation::ARCHIVE_OWN) &&
+            ($userId == $this->ownerRef->asString())) {
+            $hasRight = true;
+        }
         return $hasRight;
     }
 
@@ -256,6 +264,11 @@ class ProjectModel extends Mapper\MapperModel
             $role = $this->users[$userId]->role;
             $rolesClass = $this->rolesClass;
             $result = $rolesClass::getRightsArray($role);
+
+            // Assign special ARCHIVE_OWN right for project owner
+            if ($userId == $this->ownerRef->asString()) {
+                array_push($result, Domain::PROJECTS + Operation::ARCHIVE_OWN);
+            }
         }
         return $result;
     }
@@ -326,6 +339,14 @@ class ProjectModel extends Mapper\MapperModel
     public function initializeNewProject()
     {
         // this method should be overridden by child classes
+    }
+
+    /**
+     * Cleanup assets folder upon project deletion
+     */
+    protected function cleanup()
+    {
+        FileUtilities::removeFolderAndAllContents($this->getAssetsFolderPath());
     }
 
     /**
