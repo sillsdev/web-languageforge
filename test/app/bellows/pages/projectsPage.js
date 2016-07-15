@@ -8,7 +8,7 @@ var projectTypes = {
 var util = require('./util');
 var constants = require('../../testConstants.json');
 
-var SfProjectsPage = function () {
+var ProjectsPage = function () {
   var _this = this;
   this.url = '/app/projects';
   this.get = function () {
@@ -17,7 +17,6 @@ var SfProjectsPage = function () {
 
   this.testProjectName = 'Test Project';
 
-  this.archiveBtn = element(by.linkText('Archive'));
   this.createBtn = element(by.partialButtonText('Start or Join a New Project'));
   this.newProjectNameInput  = element(by.model('newProject.projectName'));
   this.newProjectTypeSelect = element(by.model('newProject.appName'));
@@ -30,7 +29,6 @@ var SfProjectsPage = function () {
   } else if (constants.siteType == 'languageforge') {
     this.settings.userManagementLink = element(by.linkText('User Management'));
   }
-  this.settings.manageProjectLink = element(by.linkText('Manage Project'));
 
   // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test
   // Project will be on page 1, and you can find it.
@@ -67,7 +65,7 @@ var SfProjectsPage = function () {
 
     return result;
   };
-  
+
   this.addNewProject = function (nameToAdd) {
     this.createBtn.click();
     this.newProjectNameInput.sendKeys(nameToAdd);
@@ -160,4 +158,4 @@ var SfProjectsPage = function () {
   };
 };
 
-module.exports = new SfProjectsPage();
+module.exports = new ProjectsPage();
