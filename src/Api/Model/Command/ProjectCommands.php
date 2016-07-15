@@ -69,6 +69,7 @@ class ProjectCommands
     }
 
     /**
+     * Delete a list of projects
      * @param array $projectIds
      * @return int Total number of projects removed.
      */
@@ -79,6 +80,7 @@ class ProjectCommands
         foreach ($projectIds as $projectId) {
             CodeGuard::checkTypeAndThrow($projectId, 'string');
             $project = new ProjectModel($projectId);
+            $project = $project->getById($projectId);
             $project->remove();
             $count++;
         }
