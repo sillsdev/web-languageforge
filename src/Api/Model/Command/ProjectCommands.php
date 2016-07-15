@@ -69,6 +69,7 @@ class ProjectCommands
     }
 
     /**
+     * Delete a list of projects
      * @param array $projectIds
      * @return int Total number of projects removed.
      */
@@ -79,13 +80,10 @@ class ProjectCommands
         foreach ($projectIds as $projectId) {
             CodeGuard::checkTypeAndThrow($projectId, 'string');
             $project = new ProjectModel($projectId);
+            $project = $project->getById($projectId);
             $project->remove();
             $count++;
         }
-        // TODO BUG: this does not remove users from a project before the project is deleted
-        // STEP 1: enumerate users in the project
-        // STEP 2: remove the user from the project
-        // STEP 3: delete the project
         return $count;
     }
 
