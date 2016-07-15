@@ -111,7 +111,7 @@ class ProjectModel extends Mapper\MapperModel
             $user->removeProject($this->id->asString());
             $user->write();
         }
-        FileUtilities::removeFolderAndAllContents($this->getAssetsFolderPath());
+        $this->cleanup();
 
         MapperUtils::dropAllCollections($this->databaseName());
         ProjectModelMongoMapper::instance()->remove($this->id->asString());
@@ -339,6 +339,14 @@ class ProjectModel extends Mapper\MapperModel
     public function initializeNewProject()
     {
         // this method should be overridden by child classes
+    }
+
+    /**
+     * Cleanup assets folder upon project deletion
+     */
+    protected function cleanup()
+    {
+        FileUtilities::removeFolderAndAllContents($this->getAssetsFolderPath());
     }
 
     /**
