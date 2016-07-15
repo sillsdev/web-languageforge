@@ -8,7 +8,7 @@ var projectTypes = {
 var util = require('./util');
 var constants = require('../../testConstants.json');
 
-var SfProjectsPage = function () {
+var ProjectsPage = function () {
   var _this = this;
   this.url = '/app/projects';
   this.get = function () {
@@ -17,7 +17,6 @@ var SfProjectsPage = function () {
 
   this.testProjectName = 'Test Project';
 
-  this.archiveButton = element(by.partialButtonText('Archive Selected Projects'));
   this.createBtn = element(by.partialButtonText('Start or Join a New Project'));
   this.newProjectNameInput  = element(by.model('newProject.projectName'));
   this.newProjectTypeSelect = element(by.model('newProject.appName'));
@@ -65,18 +64,6 @@ var SfProjectsPage = function () {
     });
 
     return result;
-  };
-
-  this.deleteProject = function (nameToDelete) {
-    var _this = this; // For use inside the anonymous functions below
-    this.findProject(nameToDelete).then(function (projectRow) {
-      var elem = projectRow.element(by.css('input[type=\'checkbox\']'));
-      elem.click();
-      _this.deleteBtn.click();
-
-      // Clicking the delete button pops up an "are you sure?" alert
-      util.clickModalButton('Archive');
-    });
   };
 
   this.addNewProject = function (nameToAdd) {
@@ -171,4 +158,4 @@ var SfProjectsPage = function () {
   };
 };
 
-module.exports = new SfProjectsPage();
+module.exports = new ProjectsPage();

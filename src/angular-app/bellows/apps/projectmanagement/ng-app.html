@@ -29,8 +29,8 @@
             </div>
         </tab>
         <tab heading="Archive">
-            <button class="btn" data-ng-disabled="actionInProgress" ng-click="archiveProject()">Archive this project</button>
-            <div class="text-error">Warning: This action can only be undone by a site administrator (at this point)</div>
+            <button class="btn" data-ng-disabled="actionInProgress || !rights.archive" ng-click="archiveProject()">Archive this project</button>
+            <div class="text-error">Only project owners can archive a project, and this action can only be undone by a site administrator (at this point)</div>
         </tab>
     </tabset>
 </div>

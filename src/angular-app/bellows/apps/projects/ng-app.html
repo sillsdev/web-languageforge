@@ -13,7 +13,6 @@
 
             <h2 style="font-weight:normal">My Projects</h2>
             <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-                <button data-ng-show="rights.archive" data-ng-disabled="selected.length == 0" class="btn" data-ng-click="archiveProjects()"><i class="icon-archive icon-large"></i>Archive Selected Projects</button>
                 <button data-ng-show="rights.create" class="btn" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Start or Join a New Project</button>
             </form>
             <div class="new-item" data-collapse="newProjectCollapsed">
