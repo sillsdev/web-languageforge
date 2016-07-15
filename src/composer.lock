@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "516562b463926e4d87983e383b110068",
+    "hash": "f9f699e8bdabc9b41958443a3b75a54c",
     "content-hash": "2bc76f63dc9d7d9ebb0c973587e949dc",
     "packages": [
         {
@@ -600,12 +600,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sillsdev/web-php-utilities.git",
-                "reference": "6ac0cb22e5b8e458f6c77ba956dbd300b0a9b2cf"
+                "reference": "ebe1ad7f14700d571261df9766fbbe17c6563016"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/6ac0cb22e5b8e458f6c77ba956dbd300b0a9b2cf",
-                "reference": "6ac0cb22e5b8e458f6c77ba956dbd300b0a9b2cf",
+                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/ebe1ad7f14700d571261df9766fbbe17c6563016",
+                "reference": "ebe1ad7f14700d571261df9766fbbe17c6563016",
                 "shasum": ""
             },
             "require-dev": {
@@ -622,7 +622,7 @@
                 "source": "https://github.com/sillsdev/web-php-utilities/tree/master",
                 "issues": "https://github.com/sillsdev/web-php-utilities/issues"
             },
-            "time": "2016-02-26 08:37:08"
+            "time": "2016-07-15 09:11:36"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1283,7 +1283,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/f83a9f8db1cc29f42edb77c7c77382bf9769953a",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/d7d9be918f12e809d64ff6dac7411801b1a98e58",
                 "reference": "f83a9f8db1cc29f42edb77c7c77382bf9769953a",
                 "shasum": ""
             },

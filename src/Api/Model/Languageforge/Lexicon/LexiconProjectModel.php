@@ -187,4 +187,33 @@ class LexiconProjectModel extends LfProjectModel
         symlink($targetPath, $linkPath);
     }
 
+    /**
+     * Cleanup associated project files
+     */
+    protected function cleanup()
+    {
+        parent::cleanup();
+
+        if (!is_null($this->projectCode)) {
+            $projectFilename = strtolower($this->projectCode);
+            $stateFilename = strtolower($this->projectCode) . '.state';
+            $lfmergePaths = SendReceiveCommands::getLFMergePaths();
+
+            foreach($lfmergePaths as $key => $path) {
+                if (!is_null($path)) {
+                    if ($key == "workPath") {
+                        FileUtilities::removeFolderAndAllContents($lfmergePaths->workPath . DIRECTORY_SEPARATOR . $projectFilename);
+                    }
+
+                    if (file_exists($path . DIRECTORY_SEPARATOR . $projectFilename)) {
+                        unlink($path . DIRECTORY_SEPARATOR . $projectFilename);
+                    }
+                    if (file_exists($path . DIRECTORY_SEPARATOR . $stateFilename)) {
+                        unlink($path . DIRECTORY_SEPARATOR . $stateFilename);
+                    }
+                }
+            }
+        }
+    }
+
 }
