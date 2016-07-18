@@ -2,12 +2,15 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-class Picture
+use Api\Model\Mapper\ObjectForEncoding;
+
+class Picture extends ObjectForEncoding
 {
     public function __construct($fileName = '', $guid = '')
     {
         $this->fileName = $fileName;
         $this->caption = new MultiText();
+        $this->setReadOnlyProp('guid');
         if ($guid) $this->guid = $guid;
     }
 
