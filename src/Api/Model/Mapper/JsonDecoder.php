@@ -120,7 +120,7 @@ class JsonDecoder
         if (get_class($this) == 'Api\Model\Mapper\JsonDecoder' && $model->hasGenerator()) {
             $arrayItem = $model->generate();
             $propertiesToKeep = $this->getPrivateAndReadOnlyProperties($arrayItem);
-            $propertiesToKeep = array_merge($propertiesToKeep, $this->getRecursiveProperties($arrayItem));
+            $propertiesToKeep = $this->getRecursiveProperties($arrayItem, $propertiesToKeep);
         }
 
         $oldModelArray = $model->exchangeArray(array());
@@ -157,10 +157,28 @@ class JsonDecoder
             $data = array();
         }
         CodeGuard::checkTypeAndThrow($data, 'array');
-        $model->exchangeArray(array());
+        $propertiesToKeep = array();
+
+        // check if array item class has any private, read-only or recursive properties
+        if (get_class($this) == 'Api\Model\Mapper\JsonDecoder' && $model->hasGenerator()) {
+            foreach ($data as $itemKey => $item) {
+                $mapItem = $model->generate($item);
+                $propertiesToKeep = $this->getPrivateAndReadOnlyProperties($mapItem, $propertiesToKeep);
+                $propertiesToKeep = $this->getRecursiveProperties($mapItem, $propertiesToKeep);
+            }
+        }
+
+        $oldModelArray = $model->exchangeArray(array());
         foreach ($data as $itemKey => $item) {
             if ($model->hasGenerator()) {
                 $object = $model->generate($item);
+
+                // put back private, read-only and recursive properties into new object that was just generated
+                foreach ($propertiesToKeep as $property) {
+                    if (array_key_exists($itemKey, $oldModelArray) && property_exists($oldModelArray[$itemKey], $property)) {
+                        $object->{$property} = $oldModelArray[$itemKey]->{$property};
+                    }
+                }
                 $this->_decode($object, $item, $itemKey);
                 $model[$itemKey] = $object;
             } else {
@@ -204,14 +222,14 @@ class JsonDecoder
 
     /**
      * @param ObjectForEncoding|object $model
+     * @param array $properties to merge
      * @return array
      */
-    private function getPrivateAndReadOnlyProperties($model)
+    private function getPrivateAndReadOnlyProperties($model, $properties = array())
     {
-        $properties = array();
         if (get_class($this) == 'Api\Model\Mapper\JsonDecoder') {
             if (method_exists($model, 'getPrivateProperties')) {
-                $properties = (array)$model->getPrivateProperties();
+                $properties = array_merge($properties, (array)$model->getPrivateProperties());
             }
             if (method_exists($model, 'getReadOnlyProperties')) {
                 $properties = array_merge($properties, (array)$model->getReadOnlyProperties());
@@ -223,11 +241,11 @@ class JsonDecoder
 
     /**
      * @param object $model
+     * @param array $properties to merge
      * @return array
      */
-    private function getRecursiveProperties($model)
+    private function getRecursiveProperties($model, $properties = array())
     {
-        $properties = array();
         if (get_class($this) == 'Api\Model\Mapper\JsonDecoder') {
             foreach ($this->getProperties($model) as $property => $value) {
                 if ($value === false) {
@@ -246,7 +264,7 @@ class JsonDecoder
     }
 
     /**
-     * @param object $model
+     * @param ObjectForEncoding|object $model
      * @return array
      */
     private function getProperties($model)

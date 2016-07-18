@@ -72,7 +72,6 @@ class LexEntryCommands
         }
 
         $params = self::recursiveRemoveEmptyFieldValues($params);
-        //$params = self::recursiveAlignCustomFieldsWithModel($params);
         JsonDecoder::decode($entry, $params);
 
         $entry->write();
@@ -153,22 +152,4 @@ class LexEntryCommands
         return ''; // TODO: Decide what to return for "not found", if empty string is not suitable.
     }
 
-    /*
-    private static function recursiveAlignCustomFieldsWithModel($params)
-    {
-        if (!array_key_exists('customFields', $params)) {
-            $params['customFields'] = array();
-        }
-        foreach ($params as $key => $value) {
-            if (preg_match('/^customField_/', $key)) {
-                $params['customFields'][$key] = $value;
-                unset($params[$key]);
-            } elseif ($key == 'senses' || $key == 'examples') {
-                $params[$key] = self::recursiveAlignCustomFieldsWithModel($params[$key]);
-            }
-        }
-
-        return $params;
-    }
-    */
 }
