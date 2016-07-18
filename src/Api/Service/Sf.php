@@ -346,7 +346,7 @@ class Sf
     }
 
     /**
-     * Publish projects
+     * Publish selected list of archived projects
      *
      * @param array<string> $projectIds
      * @return int Count of published projects
@@ -381,8 +381,17 @@ class Sf
     {
         return ProjectCommands::getJoinRequests($this->projectId);
     }
-    
-    
+
+    /**
+     * Permanently delete selected list of archived projects.
+     *
+     * @param array<string> $projectIds
+     * @return int Total number of projects removed.
+     */
+    public function project_delete($projectIds)
+    {
+        return ProjectCommands::deleteProjects($projectIds);
+    }
 
     // ---------------------------------------------------------------
     // SESSION API

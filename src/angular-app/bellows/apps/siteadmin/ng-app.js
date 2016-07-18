@@ -240,15 +240,16 @@ angular.module('siteadmin', [
   };
 
 }])
-.controller('ArchivedProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', function($scope, projectService, ss, notice) {
+.controller('ArchivedProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService', 'modalService', function($scope, projectService, ss, notice, modalService) {
   $scope.finishedLoading = false;
   $scope.projectTypeNames = projectService.data.projectTypeNames;
   $scope.list = {};
   $scope.list.archivedProjects = [];
   // Rights
   $scope.rights = {};
-  $scope.rights.archive = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE); 
-  $scope.rights.showControlBar = $scope.rights.archive;
+  $scope.rights.remove = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
+  $scope.rights.publish = $scope.rights.remove;
+  $scope.rights.showControlBar = $scope.rights.remove;
 
   $scope.queryArchivedProjects = function() {
     projectService.archivedList(function(result) {
@@ -278,10 +279,10 @@ angular.module('siteadmin', [
     return item != null && $scope.selected.indexOf(item) >= 0;
   };
   
-  // Publish Projects
+  // Publish archived Projects
   $scope.publishProjects = function() {
     var projectIds = [];
-    for(var i = 0, l = $scope.selected.length; i < l; i++) {
+    for (var i = 0, l = $scope.selected.length; i < l; i++) {
       projectIds.push($scope.selected[i].id);
     }
     projectService.publish(projectIds, function(result) {
@@ -293,6 +294,40 @@ angular.module('siteadmin', [
         } else {
           notice.push(notice.SUCCESS, "The projects were re-published successfully");
         }
+      }
+    });
+  };
+
+  // Permanently delete archived Projects
+  $scope.deleteProjects = function() {
+    var message = "Are you sure you want permanently delete these projects?";
+    var modalOptions = {
+      closeButtonText: 'Cancel',
+      actionButtonText: 'Delete',
+      headerText: 'Permanently Delete Project?',
+      bodyText: message
+    };
+    modalService.showModal({}, modalOptions).then(function (result) {
+      var projectIds = [];
+      for (var i = 0, l = $scope.selected.length; i < l; i++) {
+        projectIds.push($scope.selected[i].id);
+      }
+      if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE)) {
+        projectService.remove(projectIds, function (result) {
+          if (result.ok) {
+            $scope.selected = []; // Reset the selection
+            $scope.queryArchivedProjects();
+            if (projectIds.length == 1) {
+              notice.push(notice.SUCCESS, "The project was permanently deleted");
+            } else {
+              notice.push(notice.SUCCESS, "The projects were permanently deleted");
+            }
+          }
+        });
+      }
+      else {
+        notice.push(notice.ERROR, "You must be Site Admin to permanently delete this project");
+        return;
       }
     });
   };
