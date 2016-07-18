@@ -252,10 +252,12 @@ class JsonDecoder
                     $value = $model->{$property}; // To force the lazy evaluation to create the property.
                 }
 
-                if (is_a($value, 'Api\Model\Mapper\ArrayOf')) {
-                    $properties[] = $property;
-                } elseif (is_a($value, 'Api\Model\Mapper\MapOf')) {
-                    $properties[] = $property;
+                if (is_object($value)) {
+                    if (get_class($value) == 'Api\Model\Mapper\ArrayOf' && !in_array($property, $properties)) {
+                        $properties[] = $property;
+                    } elseif (get_class($value) == 'Api\Model\Mapper\MapOf' && !in_array($property, $properties)) {
+                        $properties[] = $property;
+                    }
                 }
             }
         }

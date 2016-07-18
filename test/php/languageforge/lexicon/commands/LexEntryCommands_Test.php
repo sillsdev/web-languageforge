@@ -159,6 +159,7 @@ class TestLexEntryCommands extends UnitTestCase
         $this->assertEqual($newEntry['senses'][0]['gloss']['en']['value'], 'rose fruit');
         $this->assertEqual($newEntry['senses'][0]['partOfSpeech']['value'], 'noun');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['guid'], $exampleGuid);
+        $this->assertFalse(array_key_exists('scientificName', $newEntry['senses'][0]), 'should be no empty fields');
         $this->assertFalse(array_key_exists('liftId', $newEntry['senses'][0]['examples'][0]), 'example liftId should be private');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['sentence']['th']['value'], 'example1');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
