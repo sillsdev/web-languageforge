@@ -30,7 +30,7 @@ class TestWebsite extends UnitTestCase
         $this->assertEqual($redirect, 'https://scriptureforge.org');
 
         $redirect = Website::getRedirect('jamaicanpsalms.org');
-        $this->assertEqual($redirect, 'https://jamaicanpsalms.com');
+        $this->assertEqual($redirect, 'https://jamaicanpsalms.scriptureforge.org');
     }
 
     /* -- currently not in use so commented out cjh 2014-06
