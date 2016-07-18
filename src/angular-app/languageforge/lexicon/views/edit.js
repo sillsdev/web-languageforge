@@ -427,28 +427,31 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
       switch (config.type) {
         case 'fields':
-          angular.forEach(config.fieldOrder, function (f) {
-            if (angular.isUndefined(data[f])) {
-              if (config.fields[f].type == 'fields' || config.fields[f].type == 'pictures') {
-                data[f] = [];
+          angular.forEach(config.fieldOrder, function (fieldName) {
+            if (angular.isUndefined(data[fieldName])) {
+              if (config.fields[fieldName].type == 'fields' ||
+                  config.fields[fieldName].type == 'pictures') {
+                data[fieldName] = [];
               } else {
-                data[f] = {};
+                data[fieldName] = {};
               }
             }
 
-            // only recurse if the field is not in our node stoplist
-            if (stopAtNodes.indexOf(f) == -1) {
-              if (config.fields[f].type == 'fields') {
-                if (data[f].length == 0) {
-                  data[f].push({});
+            // only recurse if the field is not in our node stop list or if it contains data
+            if (stopAtNodes.indexOf(fieldName) == -1 || data[fieldName].length != 0) {
+              if (config.fields[fieldName].type == 'fields') {
+                if (data[fieldName].length == 0) {
+                  data[fieldName].push({});
                 }
 
-                for (var i = 0; i < data[f].length; i++) {
-                  data[f][i] =
-                    $scope.makeValidModelRecursive(config.fields[f], data[f][i], stopAtNodes);
+                for (var i = 0; i < data[fieldName].length; i++) {
+                  data[fieldName][i] =
+                    $scope.makeValidModelRecursive(config.fields[fieldName],
+                      data[fieldName][i], stopAtNodes);
                 }
               } else {
-                data[f] = $scope.makeValidModelRecursive(config.fields[f], data[f], stopAtNodes);
+                data[fieldName] = $scope.makeValidModelRecursive(config.fields[fieldName],
+                  data[fieldName], stopAtNodes);
               }
             }
           });
@@ -732,10 +735,10 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       // Concatenate to get prioritized list of exact matches, then non-exact.
       // TODO: would be better to search for gloss.  DDW 2016-06-22
       var results =
-          $filter('filter')($scope.entries, {lexeme: query}, true).concat(
-          $filter('filter')($scope.entries, {senses: query}, true),
-          $filter('filter')($scope.entries, {lexeme: query}),
-          $filter('filter')($scope.entries, {senses: query}),
+          $filter('filter')($scope.entries, { lexeme: query }, true).concat(
+          $filter('filter')($scope.entries, { senses: query }, true),
+          $filter('filter')($scope.entries, { lexeme: query }),
+          $filter('filter')($scope.entries, { senses: query }),
           $filter('filter')($scope.entries, query));
 
       // Set function to return unique results
@@ -743,7 +746,8 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       $scope.typeahead.matchCountCaption = '';
       var numMatches = $scope.typeahead.searchResults.length;
       if (numMatches > $scope.typeahead.limit) {
-        $scope.typeahead.matchCountCaption = $scope.typeahead.limit + ' of ' + numMatches + " matches";
+        $scope.typeahead.matchCountCaption =
+          $scope.typeahead.limit + ' of ' + numMatches + ' matches';
       } else if (numMatches > 1) {
         $scope.typeahead.matchCountCaption = numMatches + ' matches';
       } else if (numMatches == 1) {

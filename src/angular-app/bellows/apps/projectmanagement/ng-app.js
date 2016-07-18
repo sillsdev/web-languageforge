@@ -6,6 +6,11 @@ angular.module('projectmanagement', ['projectManagement.services', 'bellows.serv
 
       $scope.project = ss.session.project;
       $scope.actionInProgress = false;
+      // Rights
+      $scope.rights = {};
+      $scope.rights.archive = (ss.hasProjectRight(ss.domain.PROJECTS, ss.operation.ARCHIVE_OWN) ||
+                               ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE));
+
       $scope.report = {
         output: '',
         currentId: ''
@@ -53,8 +58,13 @@ angular.module('projectmanagement', ['projectManagement.services', 'bellows.serv
           var archiveFunction;
           if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE)) {
             archiveFunction = projectService.archiveAsAdmin;
-          } else {
+          } else if (ss.hasProjectRight(ss.domain.PROJECTS, ss.operation.ARCHIVE_OWN)) {
             archiveFunction = appService.archiveProjectAsOwner;
+          }
+          else {
+            $scope.actionInProgress = false;
+            notice.push(notice.ERROR, "You must be Project Owner to archive this project");
+            return;
           }
           archiveFunction(function(result) {
             if (result.ok) {
