@@ -4,24 +4,29 @@ namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\MapOf;
+use Api\Model\Mapper\ObjectForEncoding;
+use LazyProperty\LazyPropertiesTrait;
 
-function _createExample($data)
+function _createExample()
 {
     return new Example();
 }
 
-function _createPicture($data)
+function _createPicture()
 {
     return new Picture();
 }
 
-class Sense
+class Sense extends ObjectForEncoding
 {
-    use \LazyProperty\LazyPropertiesTrait;
+    use LazyPropertiesTrait;
 
     public function __construct($liftId = '', $guid = '')
     {
         $this->id = uniqid();
+        $this->setPrivateProp('liftId');
+        $this->setReadOnlyProp('guid');
+        $this->setReadOnlyProp('authorInfo');
         if ($liftId) $this->liftId = $liftId;
         if ($guid) $this->guid = $guid;
 

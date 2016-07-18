@@ -146,6 +146,14 @@ angular.module('lexicon',
           sessionService.operation.EDIT);
     };
 
+    $scope.rights.canArchiveProject = function canArchiveProject() {
+      if (sendReceive.isInProgress() ||
+          !angular.isDefined(sessionService.session.project)) return false;
+
+      return (sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.ARCHIVE_OWN) ||
+              sessionService.hasSiteRight(sessionService.domain.PROJECTS, sessionService.operation.ARCHIVE));
+    };
+
     $scope.rights.showControlBar = function showControlBar() {
       return $scope.rights.canRemoveUsers() || $scope.rights.canCreateUsers() ||
         $scope.rights.canEditUsers();

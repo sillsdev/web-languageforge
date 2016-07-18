@@ -26,6 +26,10 @@ angular.module('bellows.services')
       jsonRpc.call('project_archivedList', [], callback);
     };
 
+    this.remove = function (projectIds, callback) {
+      jsonRpc.call('project_delete', [projectIds], callback);
+    };
+
     this.publish = function (projectIds, callback) {
       jsonRpc.call('project_publish', [projectIds], callback);
     };
