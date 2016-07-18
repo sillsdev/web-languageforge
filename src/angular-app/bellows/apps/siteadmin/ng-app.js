@@ -247,9 +247,9 @@ angular.module('siteadmin', [
   $scope.list.archivedProjects = [];
   // Rights
   $scope.rights = {};
-  $scope.rights.delete = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
-  $scope.rights.publish = $scope.rights.delete;
-  $scope.rights.showControlBar = $scope.rights.delete;
+  $scope.rights.remove = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
+  $scope.rights.publish = $scope.rights.remove;
+  $scope.rights.showControlBar = $scope.rights.remove;
 
   $scope.queryArchivedProjects = function() {
     projectService.archivedList(function(result) {
@@ -313,7 +313,7 @@ angular.module('siteadmin', [
         projectIds.push($scope.selected[i].id);
       }
       if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE)) {
-        projectService.delete(projectIds, function (result) {
+        projectService.remove(projectIds, function (result) {
           if (result.ok) {
             $scope.selected = []; // Reset the selection
             $scope.queryArchivedProjects();

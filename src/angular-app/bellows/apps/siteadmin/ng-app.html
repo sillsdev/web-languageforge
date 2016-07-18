@@ -100,7 +100,7 @@
     <tab heading="Archived Projects" data-ng-controller="ArchivedProjectsCtrl" select="queryArchivedProjects()">
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
             <button data-ng-disabled="selected.length == 0" data-ng-show="rights.publish" class="btn" data-ng-click="publishProjects()"><i class="icon-globe icon-large" style="color:black"></i>Re-publish Projects</button>
-            <button data-ng-disabled="selected.length == 0" data-ng-show="rights.delete" class="btn" data-ng-click="deleteProjects()" style="color:black">Delete Projects</button>
+            <button data-ng-disabled="selected.length == 0" data-ng-show="rights.remove" class="btn" data-ng-click="deleteProjects()" style="color:black">Delete Projects</button>
         </form>
         <hr />
         <listview hide-if-empty="true" items="list.archivedProjects" visible-items="visibleProjects" select="">
