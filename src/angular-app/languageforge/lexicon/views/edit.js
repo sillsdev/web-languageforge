@@ -26,6 +26,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     $scope.configService = lexConfig;
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
+    $scope.show = { more: editorService.showMoreEntries };
 
     // default state. State is one of 'list', 'edit', or 'comment'
     $scope.state = 'list';
@@ -542,7 +543,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       });
     };
 
-    $scope.show = { emptyFields: false };
+    $scope.show.emptyFields = false;
 
     $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {
       var title;
