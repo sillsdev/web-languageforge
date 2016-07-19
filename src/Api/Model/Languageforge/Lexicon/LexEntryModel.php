@@ -11,7 +11,6 @@ use Api\Model\Mapper\MongoMapper;
 use Api\Model\ProjectModel;
 use LazyProperty\LazyPropertiesTrait;
 use Palaso\Utilities\CodeGuard;
-use Ramsey\Uuid\Uuid;
 
 function _createSense()
 {
@@ -209,9 +208,7 @@ class LexEntryModel extends MapperModel
 
     public static function mapper($databaseName)
     {
-        /*
-         * @var MongoMapper
-         */
+        /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
             $instance = new MongoMapper($databaseName, 'lexicon');
@@ -278,37 +275,6 @@ class LexEntryModel extends MapperModel
     }
 
     /**
-     *
-     * @param string $id
-     * @return Sense
-     */
-    public function getSense($id)
-    {
-        foreach ($this->senses as $sense) {
-            if ($sense->id == $id) {
-                return $sense;
-            }
-        }
-
-        return new Sense();
-    }
-
-    /**
-     *
-     * @param string $id
-     * @param Sense $model
-     */
-    public function setSense($id, $model)
-    {
-        foreach ($this->senses as $key => $sense) {
-            if ($sense->id == $id) {
-                $this->senses[$key] = $model;
-                break;
-            }
-        }
-    }
-
-    /**
      * Remove this LexEntry from the collection
      * @param ProjectModel $projectModel
      * @param string $id
@@ -317,13 +283,5 @@ class LexEntryModel extends MapperModel
     {
         $databaseName = $projectModel->databaseName();
         self::mapper($databaseName)->remove($id);
-    }
-
-    /**
-     * @return string
-     */
-    public static function createGuid()
-    {
-        return Uuid::uuid4()->toString();
     }
 }
