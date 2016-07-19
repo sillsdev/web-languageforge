@@ -9,7 +9,7 @@ angular.module('xforge.helpButton', ['jsonRpc', 'ui.bootstrap', 'pascalprecht.tr
     };
   }])
   */
-  .controller('helpButtonController', ['$scope', '$modal', '$location', 'sessionService', function($scope, $modal, $location, ss) {
+  .controller('helpButtonController', ['$scope', 'modalService', '$location', 'sessionService', function($scope, modalService, $location, ss) {
     
     $scope.helpFilePath = '';
 
@@ -60,6 +60,9 @@ angular.module('xforge.helpButton', ['jsonRpc', 'ui.bootstrap', 'pascalprecht.tr
     $scope.showHelpContent = function showHelpContent() {
       if ($scope.helpFilePath) {
         console.log($scope.helpFilePath);
+        modalService.showModalSimpleWithCustomTemplate($scope.helpFilePath);
+        // should implement this with $templateRequest (only available in later versions of angularjs i.e. v1.5
+        /*
         $modal.open({
           templateUrl: $scope.helpFilePath,
           controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
@@ -68,6 +71,7 @@ angular.module('xforge.helpButton', ['jsonRpc', 'ui.bootstrap', 'pascalprecht.tr
             };
           }]
         });
+        */
       }
 
     };

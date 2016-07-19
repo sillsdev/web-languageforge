@@ -90,6 +90,11 @@
         <antcall target="test-e2e" />
     </target>
 
+    <target name="build-gulp">
+        <exec executable="gulp" dir="." failonerror="true">
+        </exec>
+    </target>
+
     <target name="build-composer">
         <exec executable="composer" dir="src" failonerror="true">
             <arg line="install" />
@@ -128,7 +133,7 @@
         <copy file="${build.libJsFile}" tofile="${build.minJsFile}" />
     </target>
 
-    <target name="package-copyWeb" depends="build-prepare,build-composer,build-bower,build-minify,version">
+    <target name="package-copyWeb" depends="build-prepare,build-composer,build-bower,build-gulp,build-minify,version">
         <copy todir="${build.output}/package/htdocs">
             <fileset dir="src"/>
         </copy>
