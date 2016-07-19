@@ -259,16 +259,9 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 
     // TODO This can be moved to the page level controller, it is common with the Setup tab.
     $scope.updateProject = function () {
-      // TODO this should be fine just being $scope.project from the dto.
-      var settings = {
-        projectName: $scope.project.projectName,
-        projectCode: $scope.project.projectCode,
-        featured: $scope.project.featured,
-        allowAudioDownload: $scope.project.allowAudioDownload,
-        allowInviteAFriend: $scope.project.allowInviteAFriend
-      };
-
-      sfchecksProjectService.update(settings, function (result) {
+      var project = angular.copy($scope.project);
+      delete project.ownerRef; // ownerRef is expected as string id not array of id and username
+      sfchecksProjectService.update(project, function (result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, $scope.project.projectName +
             ' settings updated successfully');
@@ -294,7 +287,9 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
         }
       }
 
-      sfchecksProjectService.update($scope.project, function (result) {
+      var project = angular.copy($scope.project);
+      delete project.ownerRef; // ownerRef is expected as string id not array of id and username
+      sfchecksProjectService.update(project, function (result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, $scope.project.projectName +
             ' settings updated successfully');
