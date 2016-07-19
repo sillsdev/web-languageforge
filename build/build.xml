@@ -90,7 +90,12 @@
         <antcall target="test-e2e" />
     </target>
 
-    <target name="build-gulp">
+    <target name="build-npm">
+        <exec executable="npm" dir="." failonerror="true">
+            <arg line="install" />
+        </exec>
+    </target>
+    <target name="build-gulp" depends="build-npm">
         <exec executable="gulp" dir="." failonerror="true">
         </exec>
     </target>
