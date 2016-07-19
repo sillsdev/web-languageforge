@@ -4,6 +4,7 @@ namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Model\Command\ActivityCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Model\Languageforge\Lexicon\GuidHelper;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
@@ -55,7 +56,7 @@ class LexEntryCommands
             $entry = new LexEntryModel($project);
             $entry->authorInfo->createdByUserRef->id = $userId;
             $entry->authorInfo->createdDate = new \DateTime();
-            $entry->guid = LexEntryModel::createGuid();
+            $entry->guid = GuidHelper::create();
             $action = 'create';
             // TODO: Consider adding more specific activity entry: which fields were modified? 2014-09-03 RM
             // E.g., "User _____ updated entry _____ by adding a new sense with definition ______"
@@ -72,7 +73,6 @@ class LexEntryCommands
         }
 
         $params = self::recursiveRemoveEmptyFieldValues($params);
-        //$params = self::recursiveAlignCustomFieldsWithModel($params);
         JsonDecoder::decode($entry, $params);
 
         $entry->write();
@@ -153,22 +153,4 @@ class LexEntryCommands
         return ''; // TODO: Decide what to return for "not found", if empty string is not suitable.
     }
 
-    /*
-    private static function recursiveAlignCustomFieldsWithModel($params)
-    {
-        if (!array_key_exists('customFields', $params)) {
-            $params['customFields'] = array();
-        }
-        foreach ($params as $key => $value) {
-            if (preg_match('/^customField_/', $key)) {
-                $params['customFields'][$key] = $value;
-                unset($params[$key]);
-            } elseif ($key == 'senses' || $key == 'examples') {
-                $params[$key] = self::recursiveAlignCustomFieldsWithModel($params[$key]);
-            }
-        }
-
-        return $params;
-    }
-    */
 }
