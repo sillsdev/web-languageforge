@@ -45,7 +45,7 @@ angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.
     };
 
     $scope.sendReceive = {};
-    $scope.project = {};
+    $scope.project = $scope.project || {};
     $scope.project.sendReceive = {};
 
     $scope.resetValidateForm = function resetValidateForm() {

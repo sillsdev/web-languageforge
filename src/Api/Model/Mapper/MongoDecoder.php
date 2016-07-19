@@ -83,7 +83,7 @@ class MongoDecoder extends JsonDecoder
      * @param \DateTime $model
      * @param \MongoDB\BSON\UTCDatetime $data
      */
-    public function decodeDateTime($key, $model, $data)
+    public function decodeDateTime($key, &$model, $data)
     {
         CodeGuard::checkTypeAndThrow($data, '\MongoDB\BSON\UTCDatetime', CodeGuard::CHECK_NULL_OK);
         if ($data !== null) {

@@ -99,13 +99,14 @@
     -->
     <tab heading="Archived Projects" data-ng-controller="ArchivedProjectsCtrl" select="queryArchivedProjects()">
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-            <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn" data-ng-click="publishProjects()"><i class="icon-globe icon-large" style="color:black"></i>Re-publish Projects</button>
+            <button data-ng-disabled="selected.length == 0" data-ng-show="rights.publish" class="btn" data-ng-click="publishProjects()"><i class="icon-globe icon-large" style="color:black"></i>Re-publish Projects</button>
+            <button data-ng-disabled="selected.length == 0" data-ng-show="rights.remove" class="btn" data-ng-click="deleteProjects()" style="color:black">Delete Projects</button>
         </form>
         <hr />
         <listview hide-if-empty="true" items="list.archivedProjects" visible-items="visibleProjects" select="">
             <div data-ng-repeat="project in visibleProjects" class="details-row">
                 <ul class="inline" data-ng-class="{active: isSelected(project)}">
-                    <li data-ng-show="rights.archive" ><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
+                    <li data-ng-show="rights.publish" ><input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
                     <li>
                     <span class="span5">
                         <a href="/app/{{project.appName}}/{{project.id}}/">

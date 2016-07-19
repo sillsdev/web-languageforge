@@ -2,13 +2,14 @@
 
 angular.module('lexicon.services')
 
-  .service('lexUtils', [function() {
+  .service('lexUtils', [function () {
 
     function getFirstField(config, node, fieldName) {
       var result = '';
       var ws;
       var field;
-      if (node[fieldName] && config && config.fields && config.fields[fieldName] && config.fields[fieldName].inputSystems) {
+      if (node[fieldName] && config && config.fields && config.fields[fieldName] &&
+          config.fields[fieldName].inputSystems) {
         for (var i = 0; i < config.fields[fieldName].inputSystems.length; i++) {
           ws = config.fields[fieldName].inputSystems[i];
           field = node[fieldName][ws];
@@ -25,8 +26,9 @@ angular.module('lexicon.services')
     function getFields(config, node, fieldName, delimiter) {
       var result = '';
       if (typeof (delimiter) === 'undefined') delimiter = ' ';
-      if (node[fieldName] && config && config.fields && config.fields[fieldName] && config.fields[fieldName].inputSystems) {
-        angular.forEach(config.fields[fieldName].inputSystems, function(inputSystem) {
+      if (node[fieldName] && config && config.fields && config.fields[fieldName] &&
+        config.fields[fieldName].inputSystems) {
+        angular.forEach(config.fields[fieldName].inputSystems, function (inputSystem) {
           var field = node[fieldName][inputSystem];
           if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '') {
             if (result) {
@@ -55,11 +57,14 @@ angular.module('lexicon.services')
       return getFields(config, entry, 'lexeme');
     };
 
-    this.getCitationForms = function(config, entry) {
+    this.getCitationForms = function (config, entry) {
+      if (!angular.isDefined(entry.lexeme)) {
+        return '';
+      }
       var citation = '';
       var citationFormByInputSystem = {};
       if (angular.isDefined(config.fields.citationForm)) {
-        angular.forEach(config.fields.citationForm.inputSystems, function(inputSystem) {
+        angular.forEach(config.fields.citationForm.inputSystems, function (inputSystem) {
           if (angular.isDefined(entry.citationForm)) {
             var field = entry.citationForm[inputSystem];
             if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '') {
@@ -69,7 +74,7 @@ angular.module('lexicon.services')
         });
       }
 
-      angular.forEach(config.fields.lexeme.inputSystems, function(inputSystem) {
+      angular.forEach(config.fields.lexeme.inputSystems, function (inputSystem) {
         var field = entry.lexeme[inputSystem];
         var valueToAppend = '';
         if (angular.isDefined(citationFormByInputSystem[inputSystem])) {
@@ -124,10 +129,10 @@ angular.module('lexicon.services')
       if (posModel) {
         if (optionlists) {
           var abbreviation = '';
-          angular.forEach(optionlists, function(optionlist) {
+          angular.forEach(optionlists, function (optionlist) {
             if (optionlist.code == 'partOfSpeech' || optionlist.code == 'grammatical-info') {
-              angular.forEach(optionlist.items, function(item) {
-                if (item.value == posModel.value) {
+              angular.forEach(optionlist.items, function (item) {
+                if (item.key == posModel.value) {
                   abbreviation = item.abbreviation;
                 }
               });

@@ -19,8 +19,9 @@ div.typeahead > div {
 }
 
 div.typeahead ul {
-    margin: 0 2px 2px 2px;
-    overflow-y: scroll;
+    margin: 0 0 2px 2px;
+    overflow-y: auto;
+    overflow-x: hidden;
     max-height: 300px;
 }
 

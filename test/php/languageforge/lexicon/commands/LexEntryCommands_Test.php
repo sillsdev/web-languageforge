@@ -128,22 +128,21 @@ class TestLexEntryCommands extends UnitTestCase
 
         $userId = $e->createUser('john', 'john', 'john');
 
-        $entry = new LexEntryModel($project);
-        $entry->lexeme->form('th', 'apple');
-
-        $sense = new Sense();
-        $sense->definition->form('en', 'red fruit');
-        $sense->gloss->form('en', 'rose fruit');
-        $sense->partOfSpeech->value = 'noun';
-
-        $example = new Example();
+        $exampleGuid = LexEntryModel::createGuid();
+        $example = new Example($exampleGuid, $exampleGuid);
         $example->sentence->form('th', 'example1');
         $example->translation->form('en', 'trans1');
 
+        $senseGuid = LexEntryModel::createGuid();
+        $sense = new Sense($senseGuid, $senseGuid);
+        $sense->definition->form('en', 'red fruit');
+        $sense->gloss->form('en', 'rose fruit');
+        $sense->partOfSpeech->value = 'noun';
         $sense->examples[] = $example;
 
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
         $entry->senses[] = $sense;
-
         $entryId = $entry->write();
 
         $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
@@ -154,9 +153,13 @@ class TestLexEntryCommands extends UnitTestCase
         $newEntry = LexEntryCommands::readEntry($projectId, $entryId);
 
         $this->assertEqual($newEntry['lexeme']['th']['value'], 'rose apple');
+        $this->assertEqual($newEntry['senses'][0]['guid'], $senseGuid);
+        $this->assertFalse(array_key_exists('liftId', $newEntry['senses'][0]), 'sense liftId should be private');
         $this->assertEqual($newEntry['senses'][0]['definition']['en']['value'], 'red fruit');
         $this->assertEqual($newEntry['senses'][0]['gloss']['en']['value'], 'rose fruit');
         $this->assertEqual($newEntry['senses'][0]['partOfSpeech']['value'], 'noun');
+        $this->assertEqual($newEntry['senses'][0]['examples'][0]['guid'], $exampleGuid);
+        $this->assertFalse(array_key_exists('liftId', $newEntry['senses'][0]['examples'][0]), 'example liftId should be private');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['sentence']['th']['value'], 'example1');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
     }
