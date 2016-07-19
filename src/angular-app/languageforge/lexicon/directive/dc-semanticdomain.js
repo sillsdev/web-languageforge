@@ -28,10 +28,10 @@ angular.module('palaso.ui.dc.semanticdomain', [])
 
       $scope.options = createOptions();
 
-      $scope.getDisplayName = function getDisplayName(value) {
-        var displayName = value;
-        if (angular.isDefined(semanticDomains_en)) {
-          displayName = semanticDomains_en[value].value;
+      $scope.getDisplayName = function getDisplayName(key) {
+        var displayName = key;
+        if (angular.isDefined(semanticDomains_en) && key in semanticDomains_en) {
+          displayName = semanticDomains_en[key].value;
         }
 
         return displayName;

@@ -1,25 +1,29 @@
 'use strict';
 
 angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
+
 // Palaso UI Rendered Definition
-.directive('dcRendered', [function() {
+.directive('dcRendered', [function () {
   return {
     restrict: 'E',
     templateUrl: '/angular-app/languageforge/lexicon/directive/dc-rendered.html',
     scope: {
-      config: "=",
-      model: "=",
-      hideIfEmpty: "=?"
+      config: '=',
+      model: '=',
+      hideIfEmpty: '=?'
     },
-    controller: ['$scope', 'sessionService', 'lexUtils', function($scope, ss, utils) {
-      $scope.render = function() {
-        var optionlists = ss.session.projectSettings.optionlists, sense, lastPos, pos;
+    controller: ['$scope', 'sessionService', 'lexUtils', function ($scope, ss, utils) {
+      $scope.render = function () {
+        var optionlists = ss.session.projectSettings.optionlists;
+        var sense;
+        var lastPos;
+        var pos;
         $scope.entry = {
           word: '',
           senses: []
         };
         $scope.entry.word = utils.getCitationForms($scope.config, $scope.model);
-        angular.forEach($scope.model.senses, function(senseModel) {
+        angular.forEach($scope.model.senses, function (senseModel) {
           pos = utils.getPartOfSpeechAbbreviation(senseModel.partOfSpeech, optionlists);
 
           // do not repeat parts of speech
@@ -28,21 +32,24 @@ angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
           } else {
             lastPos = pos;
           }
+
           sense = {
             meaning: utils.getMeanings($scope.config.fields.senses, senseModel),
             partOfSpeech: pos,
             examples: []
           };
-          angular.forEach(senseModel.examples, function(exampleModel) {
+          angular.forEach(senseModel.examples, function (exampleModel) {
             sense.examples.push({
-              sentence: utils.getExampleSentence($scope.config.fields.senses.fields.examples, exampleModel)
+              sentence:
+                utils.getExampleSentence($scope.config.fields.senses.fields.examples, exampleModel)
             });
           });
+
           $scope.entry.senses.push(sense);
         });
       };
 
-      $scope.makeValidModel = function() {
+      $scope.makeValidModel = function () {
         // if the model doesn't exist, create an object for it based upon the
         // definition
         if (!$scope.model) {
@@ -52,11 +59,13 @@ angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
         }
       };
     }],
-    link: function(scope, element, attrs, controller) {
+
+    link: function (scope) {
       if (angular.isUndefined(scope.hideIfEmpty)) {
         scope.hideIfEmpty = false;
       }
-      scope.$watch('model', function(model) {
+
+      scope.$watch('model', function () {
         scope.makeValidModel();
         scope.render();
       }, true); // deep watch
