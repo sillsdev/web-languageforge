@@ -8,8 +8,9 @@ angular.module('projectmanagement', ['projectManagement.services', 'bellows.serv
       $scope.actionInProgress = false;
       // Rights
       $scope.rights = {};
-      $scope.rights.archive = (ss.hasProjectRight(ss.domain.PROJECTS, ss.operation.ARCHIVE_OWN) ||
-                               ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE));
+      $scope.rights.archive = (!ss.session.project.isArchived &&
+                              (ss.hasProjectRight(ss.domain.PROJECTS, ss.operation.ARCHIVE_OWN) ||
+                               ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE)));
 
       $scope.report = {
         output: '',
@@ -56,10 +57,9 @@ angular.module('projectmanagement', ['projectManagement.services', 'bellows.serv
         modalService.showModal({}, modalOptions).then(function (result) {
           $scope.actionInProgress = true;
           var archiveFunction;
-          if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE)) {
-            archiveFunction = projectService.archiveAsAdmin;
-          } else if (ss.hasProjectRight(ss.domain.PROJECTS, ss.operation.ARCHIVE_OWN)) {
-            archiveFunction = appService.archiveProjectAsOwner;
+          if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE) ||
+              ss.hasProjectRight(ss.domain.PROJECTS, ss.operation.ARCHIVE_OWN)) {
+            archiveFunction = projectService.archive;
           }
           else {
             $scope.actionInProgress = false;

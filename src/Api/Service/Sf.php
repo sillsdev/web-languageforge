@@ -326,17 +326,14 @@ class Sf
      * @param string
      * @return string
      */
-    public function project_archive_asAdmin()
-    {
-        return ProjectCommands::archiveProject($this->projectId);
-    }
 
-    public function project_archive_asOwner()
+    public function project_archive()
     {
-        $project = new ProjectModel($this->projectId);
-        if ($project->ownerRef->asString() != $this->userId) {
-            throw new UserUnauthorizedException('You are not authorized to archive this project');
-        }
+        // Clear out the session project id and then archive the project
+        $user = new UserModel($this->userId);
+        $user->lastUsedProjectId = "";
+        $user->write();
+        $this->app['session']->set('projectId', "");
         return ProjectCommands::archiveProject($this->projectId);
     }
 
