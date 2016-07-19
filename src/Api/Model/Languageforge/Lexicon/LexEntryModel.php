@@ -208,9 +208,7 @@ class LexEntryModel extends MapperModel
 
     public static function mapper($databaseName)
     {
-        /*
-         * @var MongoMapper
-         */
+        /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
             $instance = new MongoMapper($databaseName, 'lexicon');
