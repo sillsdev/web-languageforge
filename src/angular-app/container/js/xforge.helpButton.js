@@ -25,17 +25,17 @@ angular.module('xforge.helpButton', ['jsonRpc', 'ui.bootstrap', 'pascalprecht.tr
         partialPath += hashPath.replace('/', '-');
       }
       partialPath += ".html";
-      console.log("Looking for: " + partialPath);
+      //console.log("Looking for: " + partialPath);
 
       var foundFile = false;
       angular.forEach(helpFilePathsAvailable, function(path) {
-        console.log("path = " + path);
-        console.log("partialPath = " + partialPath);
+        //console.log("path = " + path);
+        //console.log("partialPath = " + partialPath);
         if (path.indexOf(partialPath) > -1) {
-          console.log("path.indexOf(partialPath) = " + path.indexOf(partialPath));
+          //console.log("path.indexOf(partialPath) = " + path.indexOf(partialPath));
           foundFile = true;
           $scope.helpFilePath = "/" + path;
-          console.log("found help file: " + $scope.helpFilePath);
+          //console.log("found help file: " + $scope.helpFilePath);
         }
 
       });
@@ -45,35 +45,11 @@ angular.module('xforge.helpButton', ['jsonRpc', 'ui.bootstrap', 'pascalprecht.tr
 
     $scope.showButton = isHelpFilePresentOnServer();
 
-
-
-    /*
-    helpButtonService.checkIfCanShowPageButton(location.pathname, location.hash, function(result) {
-      if (result.data.showButton) {
-        $scope.helpFilePath = result.data.helpFilePath;
-        $scope.showButton = true;
-      }
-    });
-    */
-
-
     $scope.showHelpContent = function showHelpContent() {
       if ($scope.helpFilePath) {
         console.log($scope.helpFilePath);
         modalService.showModalSimpleWithCustomTemplate($scope.helpFilePath);
-        // should implement this with $templateRequest (only available in later versions of angularjs i.e. v1.5
-        /*
-        $modal.open({
-          templateUrl: $scope.helpFilePath,
-          controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
-            $scope.close = function () {
-              $modalInstance.close();
-            };
-          }]
-        });
-        */
       }
-
     };
     
   }]);
