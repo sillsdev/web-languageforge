@@ -1,27 +1,36 @@
 'use strict';
 
-angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'palaso.ui.picklistEditor', 'angularFileUpload', 'ngRoute'])
-  .controller('ProjectSettingsCtrl', ['$scope', 'breadcrumbService', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService', 'sfchecksLinkService',
-  function($scope, breadcrumbService, userService, sfchecksProjectService, ss, notice, messageService, sfchecksLinkService) {
+angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services',
+  'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb',
+  'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'palaso.ui.picklistEditor',
+  'angularFileUpload', 'ngRoute'])
+  .controller('ProjectSettingsCtrl', ['$scope', 'breadcrumbService', 'userService',
+    'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
+    'sfchecksLinkService',
+  function ($scope, breadcrumbService, userService,
+            sfchecksProjectService, ss, notice, messageService,
+            sfchecksLinkService) {
     $scope.project = {};
     $scope.finishedLoading = false;
     $scope.list = {};
     $scope.list.archivedTexts = [];
 
-    $scope.canEditCommunicationSettings = function() {
+    $scope.canEditCommunicationSettings = function () {
       return ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
     };
 
-    $scope.queryProjectSettings = function() {
-      sfchecksProjectService.projectSettings(function(result) {
+    $scope.queryProjectSettings = function () {
+      sfchecksProjectService.projectSettings(function (result) {
         if (result.ok) {
           $scope.project = result.data.project;
           $scope.list.users = result.data.entries;
           $scope.list.userCount = result.data.count;
           $scope.list.archivedTexts = result.data.archivedTexts;
           for (var i = 0; i < $scope.list.archivedTexts.length; i++) {
-            $scope.list.archivedTexts[i].url = sfchecksLinkService.text($scope.list.archivedTexts[i].id);
-            $scope.list.archivedTexts[i].dateModified = new Date($scope.list.archivedTexts[i].dateModified);
+            $scope.list.archivedTexts[i].url =
+              sfchecksLinkService.text($scope.list.archivedTexts[i].id);
+            $scope.list.archivedTexts[i].dateModified =
+              new Date($scope.list.archivedTexts[i].dateModified);
           }
 
           // Rights
@@ -31,14 +40,15 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
           $scope.rights.deleteOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.DELETE);
           $scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE);
           $scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
-          $scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create || $scope.rights.editOther;
+          $scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create ||
+            $scope.rights.editOther;
 
           // Breadcrumb
           breadcrumbService.set('top',
               [
-               {href: '/app/projects', label: 'My Projects'},
-               {href: sfchecksLinkService.project(), label: result.data.bcs.project.crumb},
-               {href: sfchecksLinkService.project() + '/settings', label: 'Settings'},
+               { href: '/app/projects', label: 'My Projects' },
+               { href: sfchecksLinkService.project(), label: result.data.bcs.project.crumb },
+               { href: sfchecksLinkService.project() + '/settings', label: 'Settings' }
               ]
           );
           $scope.finishedLoading = true;
@@ -48,11 +58,11 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 
     $scope.settings = {
       sms: {},
-      email: {},
+      email: {}
     };
 
-    $scope.readCommunicationSettings = function() {
-      sfchecksProjectService.readSettings(function(result) {
+    $scope.readCommunicationSettings = function () {
+      sfchecksProjectService.readSettings(function (result) {
         if (result.ok) {
           $scope.settings.sms = result.data.sms;
           $scope.settings.email = result.data.email;
@@ -61,13 +71,14 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       });
     };
 
-  },])
-  .controller('ProjectSettingsQTemplateCtrl', ['$scope', 'silNoticeService', 'questionTemplateService', function($scope, notice, qts) {
+  }])
+  .controller('ProjectSettingsQTemplateCtrl', ['$scope', 'silNoticeService',
+    'questionTemplateService', function ($scope, notice, qts) {
     $scope.selected = [];
     $scope.vars = {
-      selectedIndex: -1,
+      selectedIndex: -1
     };
-    $scope.updateSelection = function(event, item) {
+    $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
       if (checkbox.checked && selectedIndex == -1) {
@@ -79,13 +90,13 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       $scope.vars.selectedIndex = selectedIndex; // Needed?
     };
 
-    $scope.isSelected = function(item) {
+    $scope.isSelected = function (item) {
       return item != null && $scope.selected.indexOf(item) >= 0;
     };
 
     $scope.editTemplateButtonText = 'Add New Template';
     $scope.editTemplateButtonIcon = 'plus';
-    $scope.$watch('selected.length', function(newval) {
+    $scope.$watch('selected.length', function (newval) {
       if (newval >= 1) {
         $scope.editTemplateButtonText = 'Edit Template';
         $scope.editTemplateButtonIcon = 'pencil';
@@ -98,10 +109,10 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     $scope.editedTemplate = {
       id: '',
       title: '',
-      description: '',
+      description: ''
     };
     $scope.templateEditorVisible = false;
-    $scope.showTemplateEditor = function(template) {
+    $scope.showTemplateEditor = function (template) {
       $scope.templateEditorVisible = true;
       if (template) {
         $scope.editedTemplate = template;
@@ -112,11 +123,11 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       }
     };
 
-    $scope.hideTemplateEditor = function() {
+    $scope.hideTemplateEditor = function () {
       $scope.templateEditorVisible = false;
     };
 
-    $scope.toggleTemplateEditor = function() {
+    $scope.toggleTemplateEditor = function () {
       // Can't just do "visible = !visible" because show() has logic we need to run
       if ($scope.templateEditorVisible) {
         $scope.hideTemplateEditor();
@@ -125,14 +136,16 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       }
     };
 
-    $scope.editTemplate = function() {
+    $scope.editTemplate = function () {
       if ($scope.editedTemplate.title && $scope.editedTemplate.description) {
-        qts.update($scope.editedTemplate, function(result) {
+        qts.update($scope.editedTemplate, function (result) {
           if (result.ok) {
             if ($scope.editedTemplate.id) {
-              notice.push(notice.SUCCESS, 'The template \'' + $scope.editedTemplate.title + '\' was updated successfully');
+              notice.push(notice.SUCCESS, 'The template \'' + $scope.editedTemplate.title +
+                '\' was updated successfully');
             } else {
-              notice.push(notice.SUCCESS, 'The new template \'' + $scope.editedTemplate.title + '\' was added successfully');
+              notice.push(notice.SUCCESS, 'The new template \'' + $scope.editedTemplate.title +
+                '\' was added successfully');
             }
 
             $scope.hideTemplateEditor();
@@ -145,10 +158,10 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     };
 
     $scope.templates = [];
-    $scope.queryTemplates = function(invalidateCache) {
+    $scope.queryTemplates = function (invalidateCache) {
       var forceReload = (invalidateCache || (!$scope.templates) || ($scope.templates.length == 0));
       if (forceReload) {
-        qts.list(function(result) {
+        qts.list(function (result) {
           if (result.ok) {
             $scope.templates = result.data.entries;
             $scope.finishedLoading = true;
@@ -159,7 +172,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       }
     };
 
-    $scope.removeTemplates = function() {
+    $scope.removeTemplates = function () {
       var templateIds = [];
       for (var i = 0, l = $scope.selected.length; i < l; i++) {
         templateIds.push($scope.selected[i].id);
@@ -169,7 +182,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
         return;
       }
 
-      qts.remove(templateIds, function(result) {
+      qts.remove(templateIds, function (result) {
         if (result.ok) {
           if (templateIds.length == 1) {
             notice.push(notice.SUCCESS, 'The template was removed successfully');
@@ -184,11 +197,12 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       });
     };
 
-  },])
-  .controller('ProjectSettingsArchiveTextsCtrl', ['$scope', 'textService', 'silNoticeService', function($scope, textService, notice) {
+  }])
+  .controller('ProjectSettingsArchiveTextsCtrl', ['$scope', 'textService', 'silNoticeService',
+  function ($scope, textService, notice) {
     // Listview Selection
     $scope.selected = [];
-    $scope.updateSelection = function(event, item) {
+    $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
       if (checkbox.checked && selectedIndex == -1) {
@@ -198,18 +212,18 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       }
     };
 
-    $scope.isSelected = function(item) {
+    $scope.isSelected = function (item) {
       return item != null && $scope.selected.indexOf(item) >= 0;
     };
 
     // Publish Texts
-    $scope.publishTexts = function() {
+    $scope.publishTexts = function () {
       var textIds = [];
       for (var i = 0, l = $scope.selected.length; i < l; i++) {
         textIds.push($scope.selected[i].id);
       }
 
-      textService.publish(textIds, function(result) {
+      textService.publish(textIds, function (result) {
         if (result.ok) {
           $scope.selected = []; // Reset the selection
           $scope.queryProjectSettings();
@@ -222,57 +236,68 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       });
     };
 
-  },])
-  .controller('ProjectSettingsCommunicationCtrl', ['$scope', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService',
-  function($scope, userService, sfchecksProjectService, ss, notice) {
-    $scope.updateCommunicationSettings = function() {
-      sfchecksProjectService.updateSettings($scope.settings.sms, $scope.settings.email, function(result) {
+  }])
+  .controller('ProjectSettingsCommunicationCtrl', ['$scope', 'userService',
+    'sfchecksProjectService', 'sessionService', 'silNoticeService',
+  function ($scope, userService,
+            sfchecksProjectService, ss, notice) {
+    $scope.updateCommunicationSettings = function () {
+      sfchecksProjectService.updateSettings($scope.settings.sms, $scope.settings.email,
+      function (result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, $scope.project.projectName + ' SMS settings updated successfully');
+          notice.push(notice.SUCCESS, $scope.project.projectName +
+            ' SMS settings updated successfully');
         }
       });
     };
 
-  },])
-  .controller('ProjectSettingsPropertiesCtrl', ['$scope', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService',
-  function($scope, userService, sfchecksProjectService, ss, notice) {
+  }])
+  .controller('ProjectSettingsPropertiesCtrl', ['$scope', 'userService', 'sfchecksProjectService',
+    'sessionService', 'silNoticeService',
+  function ($scope, userService, sfchecksProjectService,
+            ss, notice) {
 
     // TODO This can be moved to the page level controller, it is common with the Setup tab.
-    $scope.updateProject = function() {
+    $scope.updateProject = function () {
       // TODO this should be fine just being $scope.project from the dto.
       var settings = {
         projectName: $scope.project.projectName,
         projectCode: $scope.project.projectCode,
         featured: $scope.project.featured,
         allowAudioDownload: $scope.project.allowAudioDownload,
-        allowInviteAFriend: $scope.project.allowInviteAFriend,
+        allowInviteAFriend: $scope.project.allowInviteAFriend
       };
 
-      sfchecksProjectService.update(settings, function(result) {
+      sfchecksProjectService.update(settings, function (result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, $scope.project.projectName + ' settings updated successfully');
+          notice.push(notice.SUCCESS, $scope.project.projectName +
+            ' settings updated successfully');
         }
       });
     };
 
-  },])
-  .controller('ProjectSettingsSetupCtrl', ['$scope', 'userService', 'sfchecksProjectService', 'sessionService', 'silNoticeService',
-  function($scope, userService, sfchecksProjectService, ss, notice) {
+  }])
+  .controller('ProjectSettingsSetupCtrl', ['$scope', 'userService', 'sfchecksProjectService',
+    'sessionService', 'silNoticeService',
+  function ($scope, userService, sfchecksProjectService,
+            ss, notice) {
 
     // TODO This can be moved to the page level controller, it is common with the Setup tab.
     $scope.currentListsEnabled = [];
-    $scope.updateProject = function() {
+    $scope.updateProject = function () {
       // populate the list of enabled user profile properties
       $scope.project.userProperties.userProfilePropertiesEnabled = [];
       for (var listId in $scope.currentListsEnabled) {
-        if ($scope.currentListsEnabled[listId]) {
+        if ($scope.currentListsEnabled.hasOwnProperty(listId) &&
+            $scope.currentListsEnabled[listId]) {
           $scope.project.userProperties.userProfilePropertiesEnabled.push(listId);
         }
       }
 
-      sfchecksProjectService.update($scope.project, function(result) {
+      sfchecksProjectService.update($scope.project, function (result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, $scope.project.projectName + ' settings updated successfully');
+          notice.push(notice.SUCCESS, $scope.project.projectName +
+            ' settings updated successfully');
         }
       });
 
@@ -281,11 +306,11 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     };
 
     $scope.currentListId = '';
-    $scope.selectList = function(listId) {
+    $scope.selectList = function (listId) {
       $scope.currentListId = listId;
     };
 
-    $scope.picklistWatcher = function(newval, oldval) {
+    $scope.picklistWatcher = function (newval, oldval) {
       if (angular.isDefined(newval) && newval != oldval) {
         $scope.unsavedChanges = true;
 
@@ -294,19 +319,20 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       }
     };
 
-    $scope.stopWatchingPicklists = function() {
+    $scope.stopWatchingPicklists = function () {
       if ($scope.deregisterPicklistWatcher) {
         $scope.deregisterPicklistWatcher();
         $scope.deregisterPicklistWatcher = undefined;
       }
     };
 
-    $scope.startWatchingPicklists = function() {
+    $scope.startWatchingPicklists = function () {
       $scope.stopWatchingPicklists(); // Ensure we never register two expensive watches at once
-      $scope.deregisterPicklistWatcher = $scope.$watch('project.userProperties.userProfilePickLists', $scope.picklistWatcher, true);
+      $scope.deregisterPicklistWatcher =
+        $scope.$watch('project.userProperties.userProfilePickLists', $scope.picklistWatcher, true);
     };
 
-    $scope.$watch('project.userProperties', function(newValue) {
+    $scope.$watch('project.userProperties', function (newValue) {
       if (newValue != undefined) {
         for (var key in newValue.userProfilePickLists) {
           $scope.currentListId = key;
@@ -314,17 +340,21 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
         }
 
         $scope.currentListsEnabled = {};
-        for (var i = 0; i < $scope.project.userProperties.userProfilePropertiesEnabled.length; i++) {
-          $scope.currentListsEnabled[$scope.project.userProperties.userProfilePropertiesEnabled[i]] = true;
+        var userProfilePropertiesEnabled =
+          $scope.project.userProperties.userProfilePropertiesEnabled;
+        for (var i = 0; i < userProfilePropertiesEnabled.length; i++) {
+          $scope.currentListsEnabled[userProfilePropertiesEnabled[i]] = true;
         }
       }
 
       $scope.startWatchingPicklists();
     });
 
-  },])
-  .controller('ProjectSettingsUsersCtrl', ['$scope', 'userService', 'projectService', 'sessionService', 'silNoticeService', 'messageService',
-  function($scope, userService, projectService, ss, notice, messageService) {
+  }])
+  .controller('ProjectSettingsUsersCtrl', ['$scope', 'userService', 'projectService',
+    'sessionService', 'silNoticeService', 'messageService',
+  function ($scope, userService, projectService,
+            ss, notice, messageService) {
     $scope.userFilter = '';
     $scope.message = {};
     $scope.newMessageCollapsed = true;
@@ -348,17 +378,18 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       format: false,
       formats: [
         ['p', 'Normal'],
-        ['h4', 'Large'],
-      ],
+        ['h4', 'Large']
+      ]
     };
 
-    $scope.sendMessageToSelectedUsers = function() {
+    $scope.sendMessageToSelectedUsers = function () {
       var userIds = [];
       for (var i = 0, l = $scope.selected.length; i < l; i++) {
         userIds.push($scope.selected[i].id);
       }
 
-      messageService.send(userIds, $scope.message.subject, $scope.message.emailTemplate, $scope.message.smsTemplate, function(result) {
+      messageService.send(userIds, $scope.message.subject, $scope.message.emailTemplate,
+        $scope.message.smsTemplate, function (result) {
         if (result.ok) {
           $scope.message.subject = '';
           $scope.message.emailTemplate = '';
@@ -374,7 +405,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     // List
     // ----------------------------------------------------------
     $scope.selected = [];
-    $scope.updateSelection = function(event, item) {
+    $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
       if (checkbox.checked && selectedIndex == -1) {
@@ -384,11 +415,11 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       }
     };
 
-    $scope.isSelected = function(item) {
+    $scope.isSelected = function (item) {
       return item != null && $scope.selected.indexOf(item) >= 0;
     };
 
-    $scope.removeProjectUsers = function() {
+    $scope.removeProjectUsers = function () {
       var userIds = [];
       for (var i = 0, l = $scope.selected.length; i < l; i++) {
 
@@ -406,7 +437,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
         return;
       }
 
-      projectService.removeUsers(userIds, function(result) {
+      projectService.removeUsers(userIds, function (result) {
         if (result.ok) {
           $scope.queryProjectSettings();
           $scope.selected = [];
@@ -421,12 +452,12 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 
     // Roles in list
     $scope.roles = [
-          {key: 'contributor', name: 'Contributor'},
-          {key: 'project_manager', name: 'Manager'},
+          { key: 'contributor', name: 'Contributor' },
+          { key: 'project_manager', name: 'Manager' }
       ];
 
-    $scope.onRoleChange = function(user) {
-      projectService.updateUserRole(user.id, user.role, function(result) {
+    $scope.onRoleChange = function (user) {
+      projectService.updateUserRole(user.id, user.role, function (result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, user.username + '\'s role was changed to ' + user.role);
         }
@@ -438,17 +469,17 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     // ----------------------------------------------------------
     $scope.users = [];
     $scope.addModes = {
-        addNew: { en: 'Create New User', icon: 'icon-user'},
-        addExisting: { en: 'Add Existing User', icon: 'icon-user'},
-        invite: { en: 'Send Email Invite', icon: 'icon-envelope'},
+        addNew: { en: 'Create New User', icon: 'icon-user' },
+        addExisting: { en: 'Add Existing User', icon: 'icon-user' },
+        invite: { en: 'Send Email Invite', icon: 'icon-envelope' }
       };
     $scope.addMode = 'addNew';
     $scope.disableAddButton = true;
     $scope.typeahead = {};
     $scope.typeahead.userName = '';
 
-    $scope.queryUser = function(userName) {
-      userService.typeaheadExclusive(userName, $scope.project.id, function(result) {
+    $scope.queryUser = function (userName) {
+      userService.typeaheadExclusive(userName, $scope.project.id, function (result) {
         // TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
         if (result.ok) {
           $scope.users = result.data.entries;
@@ -463,15 +494,15 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       });
     };
 
-    $scope.addModeText = function(addMode) {
+    $scope.addModeText = function (addMode) {
       return $scope.addModes[addMode].en;
     };
 
-    $scope.addModeIcon = function(addMode) {
+    $scope.addModeIcon = function (addMode) {
       return $scope.addModes[addMode].icon;
     };
 
-    $scope.updateAddMode = function(newMode) {
+    $scope.updateAddMode = function (newMode) {
       if (newMode in $scope.addModes) {
         $scope.addMode = newMode;
       } else {
@@ -480,7 +511,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       }
     };
 
-    $scope.isExcludedUser = function(userName) {
+    $scope.isExcludedUser = function (userName) {
       // Is this userName in the "excluded users" list? (I.e., users already in current project)
       // Note that it's not enough to check whether the "excluded users" list is non-empty,
       // as the "excluded users" list might include some users that had a partial match on
@@ -499,8 +530,9 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       return false;
     };
 
-    $scope.calculateAddMode = function() {
-      // TODO This isn't adequate.  Need to watch the 'typeahead.userName' and 'selection' also. CP 2013-07
+    $scope.calculateAddMode = function () {
+      // TODO This isn't adequate. Need to watch the 'typeahead.userName' and 'selection' also.
+      // CP 2013-07
       if (!$scope.typeahead.userName) {
         $scope.addMode = 'addNew';
         $scope.disableAddButton = true;
@@ -528,11 +560,12 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       }
     };
 
-    $scope.addProjectUser = function() {
+    $scope.addProjectUser = function () {
       if ($scope.addMode == 'addNew') {
-        userService.createSimple($scope.typeahead.userName, function(result) {
+        userService.createSimple($scope.typeahead.userName, function (result) {
           if (result.ok) {
-            notice.push(notice.INFO, 'User created.  Username: ' + $scope.typeahead.userName + '    Password: ' + result.data.password);
+            notice.push(notice.INFO, 'User created.  Username: ' + $scope.typeahead.userName +
+              '    Password: ' + result.data.password);
             $scope.queryProjectSettings();
           }
         });
@@ -541,38 +574,42 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
         model.id = $scope.user.id;
 
         // Check existing users to see if we're adding someone that already exists in the project
-        projectService.users(function(result) {
+        projectService.users(function (result) {
           if (result.ok) {
             for (var i = 0, l = result.data.users.length; i < l; i++) {
-              // This approach works, but is unnecessarily slow. We should have an "is user in project?" API,
-              // rather than returning all users then searching through them in O(N) time.
+              // This approach works, but is unnecessarily slow. We should have an "is user in
+              // project?" API, rather than returning all users then searching through them in
+              // O(N) time.
               // TODO: Make an "is user in project?" query API. 2014-06 RM
               var thisUser = result.data.users[i];
               if (thisUser.id == model.id) {
-                notice.push(notice.WARN, '\'' + $scope.user.name + '\' is already a member of ' + $scope.project.projectName + '.');
+                notice.push(notice.WARN, '\'' + $scope.user.name + '\' is already a member of ' +
+                  $scope.project.projectName + '.');
                 return;
               }
             }
 
-            projectService.updateUserRole($scope.user.id, 'contributor', function(result) {
+            projectService.updateUserRole($scope.user.id, 'contributor', function (result) {
               if (result.ok) {
-                notice.push(notice.SUCCESS, '\'' + $scope.user.name + '\' was added to ' + $scope.project.projectName + ' successfully');
+                notice.push(notice.SUCCESS, '\'' + $scope.user.name + '\' was added to ' +
+                  $scope.project.projectName + ' successfully');
                 $scope.queryProjectSettings();
               }
             });
           }
         });
       } else if ($scope.addMode == 'invite') {
-        userService.sendInvite($scope.typeahead.userName, function(result) {
+        userService.sendInvite($scope.typeahead.userName, function (result) {
           if (result.ok) {
-            notice.push(notice.SUCCESS, '\'' + $scope.typeahead.userName + '\' was invited to join the project ' + $scope.project.projectName);
+            notice.push(notice.SUCCESS, '\'' + $scope.typeahead.userName +
+              '\' was invited to join the project ' + $scope.project.projectName);
             $scope.queryProjectSettings();
           }
         });
       }
     };
 
-    $scope.selectUser = function(item) {
+    $scope.selectUser = function (item) {
       if (item) {
         $scope.user = item;
         $scope.typeahead.userName = item.name;
@@ -580,10 +617,11 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       }
     };
 
-    $scope.imageSource = function(avatarRef) {
-      return avatarRef ? '/Site/views/shared/image/avatar/' + avatarRef : '/Site/views/shared/image/avatar/anonymous02.png';
+    $scope.imageSource = function (avatarRef) {
+      return avatarRef ? '/Site/views/shared/image/avatar/' + avatarRef :
+        '/Site/views/shared/image/avatar/anonymous02.png';
     };
 
-  },])
+  }])
 
   ;
