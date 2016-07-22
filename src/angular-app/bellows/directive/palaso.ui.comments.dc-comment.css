@@ -72,7 +72,7 @@
     justify-content: space-between;
 }
 
-.commentBottomBar i.icon-edit, .commentBottomBar i.icon-ok,  {
+.commentBottomBar i.icon-edit, .commentBottomBar i.icon-ok  {
     cursor: pointer;
     color: #7c7c7c;
 }
