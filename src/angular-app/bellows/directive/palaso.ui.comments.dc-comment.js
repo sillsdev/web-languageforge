@@ -18,7 +18,7 @@ angular.module('palaso.ui.comments')
 
         $scope.editingCommentContent = '';
 
-        if ($scope.comment.regarding.field && $scope.control.configService != undefined) {
+        if ($scope.comment.regarding.field && angular.isDefined($scope.control.configService)) {
           $scope.commentRegardingFieldConfig =
             $scope.control.configService.getFieldConfig($scope.comment.regarding.field);
           $scope.isCommentRegardingPicture =
