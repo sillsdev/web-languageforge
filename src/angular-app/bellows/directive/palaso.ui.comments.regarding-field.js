@@ -9,16 +9,16 @@ angular.module('palaso.ui.comments')
       scope: {
         content: '=',
         control: '=',
-        commentRegardingFieldConfig: '='
+        fieldConfig: '='
       },
       controller: ['$scope', function ($scope) {
         if (!angular.isUndefined($scope.content)) {
           $scope.contentArr = $scope.content.split('#');
         }
 
-        $scope.$watch('content', function (newVal) {
-          if (newVal && !angular.isUndefined($scope.content)) {
-            $scope.contentArr = $scope.content.split('#');
+        $scope.$watch('content', function (newContent) {
+          if (angular.isDefined(newContent)) {
+            $scope.contentArr = newContent.split('#');
           }
         });
       }],
