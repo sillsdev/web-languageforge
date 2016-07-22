@@ -15,9 +15,7 @@ use Palaso\Utilities\FileUtilities;
 
 class LiftDecoder
 {
-
     /**
-     *
      * @param LexiconProjectModel $projectModel
      */
     public function __construct($projectModel)
@@ -27,33 +25,23 @@ class LiftDecoder
         $this->knownUnhandledNodes = array();
     }
 
-    /**
-     *
-     * @var array
-     */
+    /** @var array */
     public $liftFields;
 
-    /**
-     *
-     * @var LexiconProjectModel
-     */
+    /** @var LexiconProjectModel */
     private $projectModel;
 
     /**
      * node error stack
      *
-     * @var array <LiftImportNodeError>
+     * @var LiftImportNodeError[]
      */
     private $nodeErrors;
 
-    /**
-     *
-     * @var array <string => boolean> key is node identifier
-     */
+    /** @var array <string => boolean> key is node identifier */
     private $knownUnhandledNodes;
 
     /**
-     *
      * @param \SimpleXMLElement $sxeNode
      * @param LexEntryModel $entry
      * @param string $mergeRule
@@ -151,7 +139,7 @@ class LiftDecoder
                                 $entry->senses[] = $this->readSense($element, $sense);
                                 break;
                             case LiftMergeRule::IMPORT_WINS:
-                                $sense = new Sense($liftId);
+                                $sense = new Sense($liftId, GuidHelper::extractGuid($liftId));
                                 $entry->senses[$existingSenseIndex] = $this->readSense($element, $sense);
                                 break;
                             case LiftMergeRule::IMPORT_LOSES:
@@ -160,7 +148,7 @@ class LiftDecoder
                                 throw new \Exception("unknown LiftMergeRule " . $mergeRule);
                         }
                     } else {
-                        $sense = new Sense($liftId);
+                        $sense = new Sense($liftId, GuidHelper::extractGuid($liftId));
                         $entry->senses[] = $this->readSense($element, $sense);
                     }
                     break;
@@ -439,7 +427,8 @@ class LiftDecoder
      * @param string $nodeId
      * @return boolean
      */
-    public function isEntryCustomField($nodeId) {
+    public function isEntryCustomField($nodeId)
+    {
         return $this->isCustomField($nodeId, 'LexEntry');
     }
 
@@ -449,7 +438,8 @@ class LiftDecoder
      * @param string $nodeId
      * @return boolean
      */
-    public function isSenseCustomField($nodeId) {
+    public function isSenseCustomField($nodeId)
+    {
         return $this->isCustomField($nodeId, 'LexSense');
     }
 
@@ -459,7 +449,8 @@ class LiftDecoder
      * @param string $nodeId
      * @return boolean
      */
-    public function isExampleCustomField($nodeId) {
+    public function isExampleCustomField($nodeId)
+    {
         return $this->isCustomField($nodeId, 'LexExampleSentence');
     }
 
@@ -470,7 +461,8 @@ class LiftDecoder
      * @param string $levelClass
      * @return boolean
      */
-    private function isCustomField($nodeId, $levelClass) {
+    private function isCustomField($nodeId, $levelClass)
+    {
         $fieldType = FileUtilities::replaceSpecialCharacters($nodeId);
         $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
         if (array_key_exists('Class', $customFieldSpecs) &&
@@ -487,7 +479,8 @@ class LiftDecoder
      * @param array<string> $customFieldSpecs
      * @return boolean
      */
-    private function isCustomFieldType($customFieldSpecs) {
+    private function isCustomFieldType($customFieldSpecs)
+    {
         if (array_key_exists('Type', $customFieldSpecs) &&
             ($customFieldSpecs['Type'] == 'MultiUnicode' ||
                 $customFieldSpecs['Type'] == 'String' ||
@@ -506,7 +499,8 @@ class LiftDecoder
      * @param string $nodeId
      * @param LexEntryModel $entry
      */
-    public function addEntryCustomField($sxeNode, $nodeId, $entry) {
+    public function addEntryCustomField($sxeNode, $nodeId, $entry)
+    {
         $this->addCustomField($sxeNode, $nodeId, 'customField_entry_', $this->projectModel->config->entry, $entry);
     }
 
@@ -517,7 +511,8 @@ class LiftDecoder
      * @param string $nodeId
      * @param Sense $sense
      */
-    public function addSenseCustomField($sxeNode, $nodeId, $sense) {
+    public function addSenseCustomField($sxeNode, $nodeId, $sense)
+    {
         $this->addCustomField($sxeNode, $nodeId, 'customField_senses_',
             $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST], $sense);
     }
@@ -529,7 +524,8 @@ class LiftDecoder
      * @param string $nodeId
      * @param Example $example
      */
-    public function addExampleCustomField($sxeNode, $nodeId, $example) {
+    public function addExampleCustomField($sxeNode, $nodeId, $example)
+    {
         $this->addCustomField($sxeNode, $nodeId, 'customField_examples_',
             $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST], $example);
     }
@@ -543,7 +539,8 @@ class LiftDecoder
      * @param LexiconFieldListConfigObj $levelConfig
      * @param LexEntryModel|Sense|Example $item
      */
-    private function addCustomField($sxeNode, $nodeId, $customFieldNamePrefix, $levelConfig, $item) {
+    private function addCustomField($sxeNode, $nodeId, $customFieldNamePrefix, $levelConfig, $item)
+    {
         $fieldType = FileUtilities::replaceSpecialCharacters($nodeId);
         $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
         $customFieldName = $this->createCustomField($fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig);
@@ -572,7 +569,8 @@ class LiftDecoder
      * @param LexiconFieldListConfigObj $levelConfig
      * @return string $customFieldName
      */
-    private function createCustomField($fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig) {
+    private function createCustomField($fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig)
+    {
         $customFieldName = $customFieldNamePrefix . str_replace(' ', '_', $fieldType);
         $levelConfig->fieldOrder->ensureValueExists($customFieldName);
         if (! array_key_exists($customFieldName, $levelConfig->fields)) {
@@ -610,7 +608,8 @@ class LiftDecoder
      * @param string $fieldType
      * @return array
      */
-    private function getCustomFieldSpecs($fieldType) {
+    private function getCustomFieldSpecs($fieldType)
+    {
         $specs = array();
         if (array_key_exists($fieldType, $this->liftFields) &&
             array_key_exists('qaa-x-spec', $this->liftFields[$fieldType])) {
@@ -629,7 +628,8 @@ class LiftDecoder
      * @param MultiText $multiText
      * @return MultiText
      */
-    public static function convertMultiParaMultiText($multiText) {
+    public static function convertMultiParaMultiText($multiText)
+    {
         $paraSeparator = mb_convert_encoding('&#x2029;', 'UTF-8', 'HTML-ENTITIES');
         foreach ($multiText as $tag => $text) {
             // replace paragraph separator character U+2029 with paragraph markup
@@ -644,7 +644,8 @@ class LiftDecoder
      *
      * @return LiftImportNodeError
      */
-    public function currentNodeError() {
+    public function currentNodeError()
+    {
         return end($this->nodeErrors);
     }
 
@@ -655,7 +656,8 @@ class LiftDecoder
      * @param string $identifier
      * @return LiftImportNodeError
      */
-    public function addAndPushSubnodeError($type, $identifier) {
+    public function addAndPushSubnodeError($type, $identifier)
+    {
         $subnodeError = new LiftImportNodeError($type, $identifier);
         $this->currentNodeError()->addSubnodeError($subnodeError);
         $this->nodeErrors[] = $subnodeError;
@@ -667,7 +669,8 @@ class LiftDecoder
      *
      * @return LiftImportNodeError
      */
-    public function getImportNodeError() {
+    public function getImportNodeError()
+    {
         if (count($this->nodeErrors) == 1) {
             return $this->currentNodeError();
         }
@@ -677,7 +680,8 @@ class LiftDecoder
     /**
      * @param string $name
      */
-    public function addKnownUnhandledElement($name) {
+    public function addKnownUnhandledElement($name)
+    {
         $index = (string)$name;
         if (!array_key_exists($index, $this->knownUnhandledNodes)) {
             $this->knownUnhandledNodes[$index] = true;
