@@ -688,6 +688,13 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.DELETE);
+      },
+
+      canComment: function canComment() {
+        if (sendReceive.isInProgress()) return false;
+
+        return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
+          sessionService.operation.CREATE);
       }
     };
 
