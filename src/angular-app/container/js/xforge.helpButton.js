@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('xforge.helpButton', ['jsonRpc', 'ui.bootstrap', 'pascalprecht.translate', 'bellows.services'])
+angular.module('xforge.helpButton', ['jsonRpc', 'ui.bootstrap', 'pascalprecht.translate',
+  'bellows.services'])
   /*
   .service('helpButtonService', ['jsonRpc', function(jsonRpc) {
     jsonRpc.connect('/api/sf');
@@ -9,38 +10,46 @@ angular.module('xforge.helpButton', ['jsonRpc', 'ui.bootstrap', 'pascalprecht.tr
     };
   }])
   */
-  .controller('helpButtonController', ['$scope', 'modalService', '$location', 'sessionService', function($scope, modalService, $location, ss) {
-    
+  .controller('helpButtonController', ['$scope', 'modalService', '$location', 'sessionService',
+  function ($scope, modalService, $location, ss) {
+
     $scope.helpFilePath = '';
 
     // this function should be run whenever the location changes
     function isHelpFilePresentOnServer() {
-      var helpFilePathsAvailable = ss.session.helps.filePaths;
-      var hashPath = $location.path();
-      // couldn't figure out an easy way to get just the pathname from $location, so using window.location instead
+      // couldn't figure out an easy way to get just the pathname from $location,
+      // so using window.location instead
       var appName = window.location.pathname.split('/')[2];
+      var hashPath = $location.path();
+      var helpFilePathsAvailable = [];
+      if (angular.isDefined(ss.session.helps)) {
+        helpFilePathsAvailable = ss.session.helps.filePaths;
+      }
 
-      var partialPath = "/helps/en/page/" + appName;
+      var partialPath = '/helps/en/page/' + appName;
       if (hashPath) {
         partialPath += hashPath.replace('/', '-');
       }
-      partialPath += ".html";
+
+      partialPath += '.html';
+
       //console.log("Looking for: " + partialPath);
 
       var foundFile = false;
-      angular.forEach(helpFilePathsAvailable, function(path) {
+      angular.forEach(helpFilePathsAvailable, function (path) {
         //console.log("path = " + path);
         //console.log("partialPath = " + partialPath);
         if (path.indexOf(partialPath) > -1) {
           //console.log("path.indexOf(partialPath) = " + path.indexOf(partialPath));
           foundFile = true;
-          $scope.helpFilePath = "/" + path;
+          $scope.helpFilePath = '/' + path;
+
           //console.log("found help file: " + $scope.helpFilePath);
         }
 
       });
-      return foundFile;
 
+      return foundFile;
     }
 
     $scope.showButton = isHelpFilePresentOnServer();
@@ -51,5 +60,5 @@ angular.module('xforge.helpButton', ['jsonRpc', 'ui.bootstrap', 'pascalprecht.tr
         modalService.showModalSimpleWithCustomTemplate($scope.helpFilePath);
       }
     };
-    
+
   }]);
