@@ -92,8 +92,9 @@ class FixSenseGuids
         $senseModified = false;
         unset($sense->id);
         if (!$sense->guid || !GuidHelper::isValid($sense->guid)) {
-            if (GuidHelper::isValid($sense->liftId)) {
-                $sense->guid = $sense->liftId;
+            $liftGuid = GuidHelper::extractGuid($sense->liftId);
+            if (GuidHelper::isValid($liftGuid)) {
+                $sense->guid = $liftGuid;
             } else {
                 $sense->guid = GuidHelper::create();
             }
@@ -105,8 +106,9 @@ class FixSenseGuids
             foreach ($sense->examples as $example) {
                 unset($example->id);
                 if (!$example->guid || !GuidHelper::isValid($example->guid)) {
-                    if (GuidHelper::isValid($example->liftId)) {
-                        $example->guid = $example->liftId;
+                    $liftGuid = GuidHelper::extractGuid($example->liftId);
+                    if (GuidHelper::isValid($liftGuid)) {
+                        $example->guid = $liftGuid;
                     } else {
                         $example->guid = GuidHelper::create();
                     }

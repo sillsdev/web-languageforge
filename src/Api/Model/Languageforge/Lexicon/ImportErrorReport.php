@@ -10,10 +10,7 @@ class ImportErrorReport
         $this->nodeErrors = array();
     }
 
-    /**
-     *
-     * @var array <ImportNodeError>
-     */
+    /** @var ImportNodeError[] */
     public $nodeErrors;
 
     public function hasError()
