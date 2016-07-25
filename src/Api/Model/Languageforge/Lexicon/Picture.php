@@ -11,7 +11,7 @@ class Picture extends ObjectForEncoding
         $this->fileName = $fileName;
         $this->caption = new MultiText();
         $this->setReadOnlyProp('guid');
-        if (!$guid || !GuidHelper::isValid($guid)) $guid = GuidHelper::create();
+        if (!$guid || !Guid::isValid($guid)) $guid = Guid::create();
         $this->guid = $guid;
     }
 

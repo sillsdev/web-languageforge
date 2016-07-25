@@ -1,7 +1,7 @@
 <?php
 
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
-use Api\Model\Languageforge\Lexicon\GuidHelper;
+use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\InputSystem;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListModel;
@@ -1619,11 +1619,11 @@ EOD;
 
     public function testLiftDecoderGetGuid()
     {
-        $guid = GuidHelper::extractGuid('');
+        $guid = Guid::extract('');
         $this->assertEqual($guid, '');
 
-        $liftGuid = GuidHelper::create();
-        $guid = GuidHelper::extractGuid('lexeme_' . $liftGuid);
+        $liftGuid = Guid::create();
+        $guid = Guid::extract('lexeme_' . $liftGuid);
         $this->assertEqual($guid, $liftGuid);
     }
 }

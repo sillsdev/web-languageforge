@@ -4,7 +4,7 @@ namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Model\Command\ActivityCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
-use Api\Model\Languageforge\Lexicon\GuidHelper;
+use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
@@ -56,7 +56,7 @@ class LexEntryCommands
             $entry = new LexEntryModel($project);
             $entry->authorInfo->createdByUserRef->id = $userId;
             $entry->authorInfo->createdDate = new \DateTime();
-            $entry->guid = GuidHelper::create();
+            $entry->guid = Guid::create();
             $action = 'create';
             // TODO: Consider adding more specific activity entry: which fields were modified? 2014-09-03 RM
             // E.g., "User _____ updated entry _____ by adding a new sense with definition ______"
