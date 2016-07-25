@@ -16,7 +16,8 @@ class Example extends ObjectForEncoding
         $this->setReadOnlyProp('guid');
         $this->setReadOnlyProp('authorInfo');
         if ($liftId) $this->liftId = $liftId;
-        if ($guid) $this->guid = $guid;
+        if (!$guid || !Guid::isValid($guid)) $guid = Guid::create();
+        $this->guid = $guid;
 
         $this->initLazyProperties([
             'authorInfo',
@@ -26,8 +27,6 @@ class Example extends ObjectForEncoding
             'customFields',
             'examplePublishIn'
         ], false);
-
-        $this->id = uniqid();
     }
 
     protected function createProperty($name) {
@@ -70,12 +69,6 @@ class Example extends ObjectForEncoding
      * @var AuthorInfo
      */
     public $authorInfo;
-
-    /**
-     *
-     * @var string
-     */
-    public $id;
 
     /**
      * @var string

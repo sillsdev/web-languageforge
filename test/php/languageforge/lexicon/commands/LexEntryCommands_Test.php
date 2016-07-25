@@ -4,7 +4,9 @@ use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\Picture;
 use Api\Model\Languageforge\Lexicon\Sense;
 use Api\Model\Mapper\JsonEncoder;
 
@@ -128,17 +130,21 @@ class TestLexEntryCommands extends UnitTestCase
 
         $userId = $e->createUser('john', 'john', 'john');
 
-        $exampleGuid = LexEntryModel::createGuid();
+        $exampleGuid = Guid::create();
         $example = new Example($exampleGuid, $exampleGuid);
         $example->sentence->form('th', 'example1');
         $example->translation->form('en', 'trans1');
 
-        $senseGuid = LexEntryModel::createGuid();
+        $pictureGuid = Guid::create();
+        $picture = new Picture('someFilename', $pictureGuid);
+
+        $senseGuid = Guid::create();
         $sense = new Sense($senseGuid, $senseGuid);
         $sense->definition->form('en', 'red fruit');
         $sense->gloss->form('en', 'rose fruit');
         $sense->partOfSpeech->value = 'noun';
         $sense->examples[] = $example;
+        $sense->pictures[] = $picture;
 
         $entry = new LexEntryModel($project);
         $entry->lexeme->form('th', 'apple');
@@ -159,6 +165,8 @@ class TestLexEntryCommands extends UnitTestCase
         $this->assertEqual($newEntry['senses'][0]['gloss']['en']['value'], 'rose fruit');
         $this->assertEqual($newEntry['senses'][0]['partOfSpeech']['value'], 'noun');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['guid'], $exampleGuid);
+        $this->assertEqual($newEntry['senses'][0]['pictures'][0]['guid'], $pictureGuid);
+        $this->assertFalse(array_key_exists('scientificName', $newEntry['senses'][0]), 'should be no empty fields');
         $this->assertFalse(array_key_exists('liftId', $newEntry['senses'][0]['examples'][0]), 'example liftId should be private');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['sentence']['th']['value'], 'example1');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
