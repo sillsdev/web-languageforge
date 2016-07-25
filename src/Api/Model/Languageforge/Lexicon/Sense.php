@@ -23,12 +23,12 @@ class Sense extends ObjectForEncoding
 
     public function __construct($liftId = '', $guid = '')
     {
-        $this->id = uniqid();
         $this->setPrivateProp('liftId');
         $this->setReadOnlyProp('guid');
         $this->setReadOnlyProp('authorInfo');
         if ($liftId) $this->liftId = $liftId;
-        if ($guid) $this->guid = $guid;
+        if (!$guid || !Guid::isValid($guid)) $guid = Guid::create();
+        $this->guid = $guid;
 
         $this->initLazyProperties([
                 'partOfSpeech',
@@ -106,12 +106,6 @@ class Sense extends ObjectForEncoding
      * @var string
      */
     public $liftId;
-
-    /**
-     * uniqid
-     * @var string
-     */
-    public $id;
 
     /**
      * @var string
@@ -210,35 +204,6 @@ class Sense extends ObjectForEncoding
             }
         }
         return -1;
-    }
-
-    /**
-     *
-     * @param string $id
-     * @return Example
-     */
-    public function getExample($id)
-    {
-        foreach ($this->examples as $example) {
-            if ($example->id == $id) {
-                return $example;
-            }
-        }
-    }
-
-    /**
-     *
-     * @param string $id
-     * @param Example $model
-     */
-    public function setExample($id, $model)
-    {
-        foreach ($this->examples as $key => $example) {
-            if ($example->id == $id) {
-                $this->examples[$key] = $model;
-                break;
-            }
-        }
     }
 
     // less common fields used in FLEx
