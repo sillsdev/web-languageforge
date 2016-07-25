@@ -1622,6 +1622,9 @@ EOD;
         $guid = Guid::extract('');
         $this->assertEqual($guid, '');
 
+        $guid = Guid::extract('does not contain guid');
+        $this->assertEqual($guid, '');
+
         $liftGuid = Guid::create();
         $guid = Guid::extract('lexeme_' . $liftGuid);
         $this->assertEqual($guid, $liftGuid);
