@@ -4,7 +4,7 @@ namespace Api\Library\Shared\Script\Migration;
 
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Example;
-use Api\Model\Languageforge\Lexicon\GuidHelper;
+use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\Picture;
@@ -91,12 +91,12 @@ class FixSenseGuids
     {
         $senseModified = false;
         unset($sense->id);
-        if (!$sense->guid || !GuidHelper::isValid($sense->guid)) {
-            $liftGuid = GuidHelper::extractGuid($sense->liftId);
-            if (GuidHelper::isValid($liftGuid)) {
+        if (!$sense->guid || !Guid::isValid($sense->guid)) {
+            $liftGuid = Guid::extract($sense->liftId);
+            if (Guid::isValid($liftGuid)) {
                 $sense->guid = $liftGuid;
             } else {
-                $sense->guid = GuidHelper::create();
+                $sense->guid = Guid::create();
             }
             $senseModified = true;
         }
@@ -105,12 +105,12 @@ class FixSenseGuids
             /** @var Example $example */
             foreach ($sense->examples as $example) {
                 unset($example->id);
-                if (!$example->guid || !GuidHelper::isValid($example->guid)) {
-                    $liftGuid = GuidHelper::extractGuid($example->liftId);
-                    if (GuidHelper::isValid($liftGuid)) {
+                if (!$example->guid || !Guid::isValid($example->guid)) {
+                    $liftGuid = Guid::extract($example->liftId);
+                    if (Guid::isValid($liftGuid)) {
                         $example->guid = $liftGuid;
                     } else {
-                        $example->guid = GuidHelper::create();
+                        $example->guid = Guid::create();
                     }
                     $exampleModifiedCount++;
                     $senseModified = true;
@@ -121,8 +121,8 @@ class FixSenseGuids
         if (isset($sense->pictures)) {
             /** @var Picture $example */
             foreach ($sense->pictures as $picture) {
-                if (!$picture->guid || !GuidHelper::isValid($picture->guid)) {
-                    $picture->guid = GuidHelper::create();
+                if (!$picture->guid || !Guid::isValid($picture->guid)) {
+                    $picture->guid = Guid::create();
                     $pictureModifiedCount++;
                     $senseModified = true;
                 }
