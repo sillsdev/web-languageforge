@@ -22,5 +22,8 @@
   },
   "jscsConfig": {
     "disallowTrailingComma": true
+  },
+  "dependencies": {
+    "gulp-markdown": "^1.2.0"
   }
 }

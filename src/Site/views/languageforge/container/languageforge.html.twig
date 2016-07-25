@@ -16,6 +16,9 @@
                         </ul>
                     </li>
                     <li><a href="/discuss">Discuss</a></li>
+                    {% if showHelpButton %}
+                        <li ng-app="xforge.helpButton" ng-controller="helpButtonController" ng-show="showButton"><a ng-click="showHelpContent()">Help</a></li>
+                    {% endif %}
                 </ul>
             </div>
 

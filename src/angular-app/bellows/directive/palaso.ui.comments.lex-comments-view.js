@@ -32,13 +32,13 @@ angular.module('palaso.ui.comments')
         function selectFieldForComment(fieldName, model, inputSystem, multioptionValue,
                                        pictureFilePath) {
           if (canComment()) {
-            $scope.newCommentRegardingFieldConfig = lexConfig.getFieldConfig(fieldName);
+            $scope.newComment.regardingFieldConfig = lexConfig.getFieldConfig(fieldName);
             $scope.newComment.regarding.field = fieldName;
             $scope.newComment.regarding.fieldNameForDisplay =
-              $scope.newCommentRegardingFieldConfig.label;
+              $scope.newComment.regardingFieldConfig.label;
             delete $scope.newComment.regarding.inputSystem;
             delete $scope.newComment.regarding.inputSystemAbbreviation;
-            $scope.isNewCommentRegardingPicture = false;
+            $scope.newComment.isRegardingPicture = false;
             if (inputSystem) {
               $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
               $scope.newComment.regarding.inputSystem =
@@ -49,7 +49,7 @@ angular.module('palaso.ui.comments')
               $scope.newComment.regarding.fieldValue = multioptionValue;
             } else if (pictureFilePath) {
               $scope.newComment.regarding.fieldValue = pictureFilePath;
-              $scope.isNewCommentRegardingPicture = true;
+              $scope.newComment.isRegardingPicture = true;
             } else {
               $scope.newComment.regarding.fieldValue = getFieldValue(model);
             }
@@ -82,6 +82,7 @@ angular.module('palaso.ui.comments')
           angular.forEach(model, function (prop) {
             if (angular.isUndefined(valueToReturn)) {
               valueToReturn = prop.value;
+              return valueToReturn;
             }
           });
 
