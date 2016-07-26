@@ -41,8 +41,8 @@ class Guid
     {
         $guid = '';
         if ($idContainingGuid) {
-            preg_match('/' . self::UUID4_PATTERN . '/', $idContainingGuid, $guids);
-            if (self::isValid($guids[0])) {
+            $isMatched = preg_match('/' . self::UUID4_PATTERN . '/', $idContainingGuid, $guids);
+            if ($isMatched && self::isValid($guids[0])) {
                 $guid = $guids[0];
             }
         }
