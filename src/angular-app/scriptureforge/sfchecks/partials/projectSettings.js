@@ -12,6 +12,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
             sfchecksLinkService) {
     $scope.project = {};
     $scope.finishedLoading = false;
+    $scope.show = {};
     $scope.list = {};
     $scope.list.archivedTexts = [];
 
@@ -61,7 +62,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       email: {}
     };
 
-    $scope.readCommunicationSettings = function () {
+    $scope.readCommunicationSettings = function readCommunicationSettings() {
       sfchecksProjectService.readSettings(function (result) {
         if (result.ok) {
           $scope.settings.sms = result.data.sms;
@@ -354,6 +355,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     $scope.message = {};
     $scope.newMessageCollapsed = true;
 
+    $scope.readCommunicationSettings();
+
     // jqte options for html email message composition
     $scope.jqteOptions = {
       placeholder: 'Email Message',
@@ -377,7 +380,16 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
       ]
     };
 
+    $scope.show.messaging = function showMessaging() {
+      return !!($scope.settings.email.fromAddress);
+    };
+
     $scope.sendMessageToSelectedUsers = function () {
+      if ($scope.selected.length == 0) {
+        $scope.messagingWarning = 'Select at least one member to message';
+        return;
+      }
+
       var userIds = [];
       for (var i = 0, l = $scope.selected.length; i < l; i++) {
         userIds.push($scope.selected[i].id);
@@ -403,6 +415,10 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
+      if (checkbox.checked) {
+        $scope.messagingWarning = '';
+      }
+
       if (checkbox.checked && selectedIndex == -1) {
         $scope.selected.push(item);
       } else if (!checkbox.checked && selectedIndex != -1) {
