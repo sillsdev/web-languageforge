@@ -24,7 +24,7 @@ class WebsiteInstances
         // scriptureforge.local sites
         $w = new Website('scriptureforge.local', Website::SCRIPTUREFORGE);
         $w->name = 'Scripture Forge';
-        $w->ssl = true;
+        $w->ssl = false;
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
         $sites['scriptureforge.local'] = $w;
 
