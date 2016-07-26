@@ -27,7 +27,7 @@ class Sense extends ObjectForEncoding
         $this->setReadOnlyProp('guid');
         $this->setReadOnlyProp('authorInfo');
         if ($liftId) $this->liftId = $liftId;
-        if (!$guid || !GuidHelper::isValid($guid)) $guid = GuidHelper::create();
+        if (!$guid || !Guid::isValid($guid)) $guid = Guid::create();
         $this->guid = $guid;
 
         $this->initLazyProperties([

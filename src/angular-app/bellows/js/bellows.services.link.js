@@ -9,17 +9,17 @@ angular.module('bellows.services')
     this.project = function(projectId, projectType) {
       projectType = projectType || 'sfchecks';
       if (angular.isDefined(projectId)) {
-        return '/app/' + projectType + '/' + projectId + '#';
+        return '/app/' + projectType + '/' + projectId + '#/';
       } else {
-        return '#';
+        return '#/';
       }
     };
 
     this.text = function(textId, projectId) {
       if (angular.isDefined(projectId)) {
-        return this.project(projectId) + '/' + textId;
+        return this.project(projectId) + textId;
       } else {
-        return this.project() + '/' + textId;
+        return this.project() + textId;
       }
     };
 

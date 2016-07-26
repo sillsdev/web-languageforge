@@ -252,14 +252,13 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
     $scope.file = null;
     $scope.uploadResult = '';
 
-    // Get name from text service. This really should be in the DTO, but this will work for now.
-    // TODO: Move this to the DTO (or BreadcrumbHelper?) so we don't have to do a second server round-trip. RM 2013-08. Appears to be in the DTO now. IJH 2014-06
     $scope.queryTextSettings = function() {
       textService.settings_dto($scope.textId, function(result) {
         if (result.ok) {
           $scope.dto = result.data;
           $scope.textTitle = $scope.dto.text.title;
           $scope.editedText.title = $scope.dto.text.title;
+          $scope.editedText.fontfamily = $scope.dto.text.fontfamily;
           $scope.settings.archivedQuestions = result.data.archivedQuestions;
           for (var i = 0; i < $scope.settings.archivedQuestions.length; i++) {
             $scope.settings.archivedQuestions[i].url = sfchecksLinkService.question($scope.textId, $scope.settings.archivedQuestions[i].id);

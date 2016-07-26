@@ -4,53 +4,69 @@ namespace Api\Library\Shared\Script\Migration;
 
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Example;
-use Api\Model\Languageforge\Lexicon\GuidHelper;
+use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\Picture;
 use Api\Model\Languageforge\Lexicon\Sense;
 use Api\Model\ProjectListModel;
-use Api\Model\ProjectModel;
+
+(php_sapi_name() == 'cli') or die('this script must be run on the command-line');
+
+require_once('../scriptConfig.php');
 
 class FixSenseGuids
 {
-    public function run($userId, $mode = 'test')
+    public static function run($mode = 'test')
     {
         ini_set('max_execution_time', 300); // Sufficient time to update for every project
         $testMode = ($mode == 'test');
-        $message = "Fix Sense, Example and Picture guids.\n";
+        print("Fix Sense, Example and Picture guids.\n");
 
         $projectList = new ProjectListModel();
         $projectList->read();
+        $totalProjectCount = $projectList->count;
 
+        // Because of the time needed to process projects, we'll limit the
+        // migration script to run in batches of this many projects per run.
+        $maxNumProjects = 1;
+
+        $skippedProjects = 0;
         $lfProjectCount = 0;
         foreach ($projectList->entries as $projectParams) {
             $projectId = $projectParams['id'];
-            $project = new ProjectModel($projectId);
-            if ($project->appName == 'lexicon') {
-                $project = new LexiconProjectModel($projectId);
-                $message .= "\n-------------  $project->projectName.\n";
-                $lfProjectCount++;
+            $project = new LexProjectModelForUseWithSenseGuidMigration($projectId);
+            if ($project->appName == 'lexicon' && !$project->hasHadSenseGuidsMigrated) {
                 if (!$project->hasSendReceive()) {
-                    $this->analyzeProject($project, $projectId, $testMode, $message);
+                    print("\n-------------  $project->projectName.\n");
+                    $lfProjectCount++;
+                    self::analyzeProject($project, $projectId, $testMode);
                 } else {
-                    $message .= "S/R project skipped.\n";
+                    continue;
                 }
+            } else {
+                $skippedProjects++;
+            }
+
+            unset($project);
+            if ($lfProjectCount >= $maxNumProjects) {
+                print("\nProcessed projects " . ($skippedProjects + 1) . " - " .
+                    ($skippedProjects + $lfProjectCount) . " of $totalProjectCount projects\n");
+                break;
             }
         }
-        $message .= "\nProcessed $lfProjectCount projects.\n";
-
-        return $message;
+        if ($skippedProjects > 0) {
+            print("Skipped $skippedProjects projects\n");
+        }
     }
 
     /**
      * Analyze a lexicon project and create Sense, Example and Picture guids. Remove id from Sense and Example
-     * @param LexiconProjectModel $project
+     * @param LexProjectModelForUseWithSenseGuidMigration $project
      * @param string $projectId
      * @param string $testMode
-     * @param string $message
      */
-    private function analyzeProject($project, $projectId, $testMode, &$message)
+    private static function analyzeProject($project, $projectId, $testMode)
     {
         $entryModifiedCount = 0;
         $exampleModifiedCount = 0;
@@ -62,7 +78,7 @@ class FixSenseGuids
             if ($entry->hasSenses()) {
                 /** @var Sense $sense */
                 foreach ($entry->senses as $sense) {
-                    $this->createSenseGuids($sense, $entryModified, $exampleModifiedCount, $pictureModifiedCount);
+                    self::createSenseGuids($sense, $entryModified, $exampleModifiedCount, $pictureModifiedCount);
                 }
 
                 if ($entryModified) {
@@ -75,10 +91,11 @@ class FixSenseGuids
         }
 
         if (!$testMode) {
+            $project->hasHadSenseGuidsMigrated = true;
             $project->write();
         }
-        $message .= "$exampleModifiedCount example and $pictureModifiedCount picture guids created.\n";
-        $message .= "$entryModifiedCount of $entryList->count entries had sense guids created.\n";
+        print("$exampleModifiedCount example and $pictureModifiedCount picture guids created.\n");
+        print("$entryModifiedCount of $entryList->count entries had sense guids created.\n");
     }
 
     /**
@@ -87,15 +104,16 @@ class FixSenseGuids
      * @param int $exampleModifiedCount
      * @param int $pictureModifiedCount
      */
-    private function createSenseGuids($sense, &$entryModified, &$exampleModifiedCount = 0, &$pictureModifiedCount = 0)
+    private static function createSenseGuids($sense, &$entryModified, &$exampleModifiedCount = 0, &$pictureModifiedCount = 0)
     {
         $senseModified = false;
         unset($sense->id);
-        if (!$sense->guid || !GuidHelper::isValid($sense->guid)) {
-            if (GuidHelper::isValid($sense->liftId)) {
-                $sense->guid = $sense->liftId;
+        if (!$sense->guid || !Guid::isValid($sense->guid)) {
+            $liftGuid = Guid::extract($sense->liftId);
+            if (Guid::isValid($liftGuid)) {
+                $sense->guid = $liftGuid;
             } else {
-                $sense->guid = GuidHelper::create();
+                $sense->guid = Guid::create();
             }
             $senseModified = true;
         }
@@ -104,11 +122,12 @@ class FixSenseGuids
             /** @var Example $example */
             foreach ($sense->examples as $example) {
                 unset($example->id);
-                if (!$example->guid || !GuidHelper::isValid($example->guid)) {
-                    if (GuidHelper::isValid($example->liftId)) {
-                        $example->guid = $example->liftId;
+                if (!$example->guid || !Guid::isValid($example->guid)) {
+                    $liftGuid = Guid::extract($example->liftId);
+                    if (Guid::isValid($liftGuid)) {
+                        $example->guid = $liftGuid;
                     } else {
-                        $example->guid = GuidHelper::create();
+                        $example->guid = Guid::create();
                     }
                     $exampleModifiedCount++;
                     $senseModified = true;
@@ -117,10 +136,10 @@ class FixSenseGuids
         }
 
         if (isset($sense->pictures)) {
-            /** @var Picture $example */
+            /** @var Picture $picture */
             foreach ($sense->pictures as $picture) {
-                if (!$picture->guid || !GuidHelper::isValid($picture->guid)) {
-                    $picture->guid = GuidHelper::create();
+                if (!$picture->guid || !Guid::isValid($picture->guid)) {
+                    $picture->guid = Guid::create();
                     $pictureModifiedCount++;
                     $senseModified = true;
                 }
@@ -132,3 +151,14 @@ class FixSenseGuids
         }
     }
 }
+
+/**
+ * Class LexProjectModelForUseWithSenseGuidMigration
+ * Has a flag to store in Mongo about whether the sense guids have been migrated
+ * @package Api\Library\Shared\Script\Migration
+ */
+class LexProjectModelForUseWithSenseGuidMigration extends LexiconProjectModel {
+    public $hasHadSenseGuidsMigrated;
+}
+
+FixSenseGuids::run('run');
