@@ -11,6 +11,7 @@ use Api\Model\ProjectSettingsModel;
 use Api\Model\UserModel;
 use Api\Model\UserProfileModel;
 use Api\Model\UnreadMessageModel;
+use Palaso\Utilities\CodeGuard;
 
 class Communicate
 {
@@ -58,6 +59,8 @@ class Communicate
     {
         // Prepare the email message if required
         if ($user->communicate_via == UserModel::COMMUNICATE_VIA_EMAIL || $user->communicate_via == UserModel::COMMUNICATE_VIA_BOTH) {
+            CodeGuard::checkNotFalseAndThrow($project->emailSettings->fromAddress, 'email from address');
+            CodeGuard::checkNotFalseAndThrow($user->email, 'email to address');
             $from = array($project->emailSettings->fromAddress => $project->emailSettings->fromName);
             $to = array($user->email => $user->name);
             $vars = array(
