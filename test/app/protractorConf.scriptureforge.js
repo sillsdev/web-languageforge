@@ -31,7 +31,7 @@ exports.config = {
 
   // Selector for the element housing the angular app - this defaults to
   // body, but is necessary if ng-app is on a descendant of <body>
-  rootElement: 'div',
+  rootElement: '[id="app-container-for-bootstrap"]',
 
   // Spec patterns are relative to the current working directly when
   // protractor is called.

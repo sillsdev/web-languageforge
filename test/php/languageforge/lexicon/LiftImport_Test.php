@@ -1,10 +1,10 @@
 <?php
+
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
-use Api\Model\Languageforge\Lexicon\Config\LexiconOptionListItem;
+use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\InputSystem;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListModel;
-use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 use Api\Model\Languageforge\Lexicon\LiftImport;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 
@@ -179,6 +179,7 @@ EOD;
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
         $this->assertEqual($entry0['lexeme']['th']['value'], "ฉู่ฉี่หมูกรอบ");
         $this->assertEqual(count($entry0['senses']), 1);
+        $this->assertEqual($entry0['senses'][0]['guid'], "9d50e072-0206-4776-9ee6-bddf89b96aed");
         $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], "incorrect definition");
         $this->assertEqual($entry0['senses'][0]['gloss']['en']['value'], "incorrect gloss");
         $this->assertEqual($entry0['senses'][0]['gloss']['th']['value'], "th incorrect gloss");
@@ -292,6 +293,7 @@ EOD;
         $this->assertEqual($entryList->count, 2);
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
         $this->assertEqual(count($entry0['senses']), 1);
+        $this->assertEqual($entry0['senses'][0]['guid'], "9d50e072-0206-4776-9ee6-bddf89b96aed");
         $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork");
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Noun");
         $this->assertEqual(count($entry0['senses'][0]['examples']), 1);
@@ -597,6 +599,7 @@ EOD;
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̀ɔp");
         $this->assertEqual(count($entry0['senses']), 1);
+        $this->assertEqual($entry0['senses'][0]['guid'], "9d50e072-0206-4776-9ee6-bddf89b96aed");
         $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], "A kind of curry fried with crispy pork");
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Noun");
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
@@ -634,6 +637,7 @@ EOD;
         $this->assertEqual($entry0['guid'], "dd15cbc4-9085-4d66-af3d-8428f078a7da");
         $this->assertEqual($entry0['lexeme']['th-fonipa']['value'], "chùuchìi mǔu krɔ̂ɔp");
         $this->assertEqual(count($entry0['senses']), 1);
+        $this->assertEqual($entry0['senses'][0]['guid'], "9d50e072-0206-4776-9ee6-bddf89b96aed");
         $this->assertEqual($entry0['senses'][0]['definition']['en']['value'], "incorrect definition");
         $this->assertEqual($entry0['senses'][0]['partOfSpeech']['value'], "Adjective");
         $this->assertEqual($entry1['guid'], "05473cb0-4165-4923-8d81-02f8b8ed3f26");
@@ -1315,7 +1319,7 @@ EOD;
     public function testLiftImportMerge_LiftRanges_ImportOk()
     {
         $liftFilePath = $this->environ->createTestLiftFile(self::liftWithRangesV0_13, 'LiftWithRangesV0_13.lift');
-        $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangesV0_13, 'TestLangProj.lift-ranges');
+        $this->environ->createTestLiftFile(self::liftRangesV0_13, 'TestLangProj.lift-ranges');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
@@ -1387,7 +1391,7 @@ EOD;
     public function testLiftImportMerge_ExistingData_RangesChanged()
     {
         $liftFilePath = $this->environ->createTestLiftFile(self::liftWithRangesV0_13, 'LiftWithRangesV0_13.lift');
-        $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangesV0_13, 'TestLangProj.lift-ranges');
+        $this->environ->createTestLiftFile(self::liftRangesV0_13, 'TestLangProj.lift-ranges');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
@@ -1398,7 +1402,7 @@ EOD;
         $this->assertEqual($optionList->items->count(), 3);
         $this->assertEqual($optionList->items[0]->value, 'article');
 
-        $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangesAnotherPosV0_13, 'TestLangProj.lift-ranges');
+        $this->environ->createTestLiftFile(self::liftRangesAnotherPosV0_13, 'TestLangProj.lift-ranges');
 
         $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
@@ -1466,7 +1470,7 @@ EOD;
     public function testLiftImportMerge_UnknownRange_RangeError()
     {
         $liftFilePath = $this->environ->createTestLiftFile(self::liftUnknownRangeV0_13, 'LiftUnknownRangeV0_13.lift');
-        $liftRangesFilePath = $this->environ->createTestLiftFile(self::liftRangesUnknownRangeV0_13, 'TestLangProj.lift-ranges');
+        $this->environ->createTestLiftFile(self::liftRangesUnknownRangeV0_13, 'TestLangProj.lift-ranges');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
@@ -1510,7 +1514,7 @@ EOD;
         $this->assertFalse(array_key_exists('th', $project->inputSystems));
         $this->assertFalse(array_key_exists('th-fonipa', $project->inputSystems));
 
-        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
@@ -1540,7 +1544,7 @@ EOD;
         $this->assertTrue(array_key_exists('en', $project->inputSystems));
         $this->assertTrue(array_key_exists('th', $project->inputSystems));
 
-        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
@@ -1600,7 +1604,7 @@ EOD;
         $mergeRule = LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
-        $importer = LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $entryList = new LexEntryListModel($project);
         $entryList->read();
@@ -1611,5 +1615,18 @@ EOD;
         $this->assertEqual($entry0['customFields']['customField_entry_Cust_MultiPara']['en']['value'],
             '<p>First paragraph with <span lang="th">ไทย</span></p><p>Second Paragraph</p>',
             'custom field MultiPara has paragraph separator character U+2029 replaced by paragraph markup and native language spans removed');
+    }
+
+    public function testLiftDecoderGetGuid()
+    {
+        $guid = Guid::extract('');
+        $this->assertEqual($guid, '');
+
+        $guid = Guid::extract('does not contain guid');
+        $this->assertEqual($guid, '');
+
+        $liftGuid = Guid::create();
+        $guid = Guid::extract('lexeme_' . $liftGuid);
+        $this->assertEqual($guid, $liftGuid);
     }
 }

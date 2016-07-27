@@ -11,7 +11,7 @@
                 <a style="font-size: smaller;" ng-click="notice.toggleDetails()">Click for details</a>
                 <div style="clear:both" ng-show="notice.showDetails">
                     <hr />
-                    <pre>{{notice.details}}</pre>
+                    <pre style="max-height: 600px; overflow-y: auto;">{{notice.details}}</pre>
                     <div ng-if="notice.type == 'error'">
                         <a target="_blank" data-ng-href="https://github.com/sillsdev/{{githubRepo}}/issues/new">Report this bug to the developers</a><br /><i>Please copy error above and include screenshot</i>
                         <!-- TODO: automate this via https://developer.github.com/v3/issues/#create-an-issue -->

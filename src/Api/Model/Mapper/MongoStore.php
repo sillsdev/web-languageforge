@@ -105,6 +105,7 @@ class MongoStore
                     $collection->drop();
                 }
             }
+            self::dropDB($databaseName);
         }
     }
 

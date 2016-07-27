@@ -67,23 +67,27 @@ class LexDbeDto
         $lexemeInputSystems = $project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems;
 
         usort($entries, function ($a, $b) use ($lexemeInputSystems) {
-            $lexeme1 = $a[LexiconConfigObj::LEXEME];
             $lexeme1Value = '';
-            foreach ($lexemeInputSystems as $ws) {
-                if (array_key_exists($ws, $lexeme1) && $lexeme1[$ws]['value'] != '') {
-                    $lexeme1Value = $lexeme1[$ws]['value'];
-                    // '\P{xx} matches all characters without the Unicode property XX. L is the Unicode property "letter".
-                    $lexeme1Value = preg_replace('/^\P{L}+/', '', $lexeme1Value); // Strip non-letter characters from front of word for sorting
-                    break;
+            if (array_key_exists(LexiconConfigObj::LEXEME, $a)) {
+                $lexeme1 = $a[LexiconConfigObj::LEXEME];
+                foreach ($lexemeInputSystems as $ws) {
+                    if (array_key_exists($ws, $lexeme1) && $lexeme1[$ws]['value'] != '') {
+                        $lexeme1Value = $lexeme1[$ws]['value'];
+                        // '\P{xx} matches all characters without the Unicode property XX. L is the Unicode property "letter".
+                        $lexeme1Value = preg_replace('/^\P{L}+/', '', $lexeme1Value); // Strip non-letter characters from front of word for sorting
+                        break;
+                    }
                 }
             }
-            $lexeme2 = $b[LexiconConfigObj::LEXEME];
             $lexeme2Value = '';
-            foreach ($lexemeInputSystems as $ws) {
-                if (array_key_exists($ws, $lexeme2) && $lexeme2[$ws]['value'] != '') {
-                    $lexeme2Value = $lexeme2[$ws]['value'];
-                    $lexeme2Value = preg_replace('/^\P{L}+/', '', $lexeme2Value); // Strip non-letter characters from front of word for sorting
-                    break;
+            if (array_key_exists(LexiconConfigObj::LEXEME, $b)) {
+                $lexeme2 = $b[LexiconConfigObj::LEXEME];
+                foreach ($lexemeInputSystems as $ws) {
+                    if (array_key_exists($ws, $lexeme2) && $lexeme2[$ws]['value'] != '') {
+                        $lexeme2Value = $lexeme2[$ws]['value'];
+                        $lexeme2Value = preg_replace('/^\P{L}+/', '', $lexeme2Value); // Strip non-letter characters from front of word for sorting
+                        break;
+                    }
                 }
             }
 

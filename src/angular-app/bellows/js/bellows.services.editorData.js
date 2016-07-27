@@ -306,7 +306,7 @@ function ($q, sessionService, cache, commentsCache,
       var ws;
       for (x = 0; x < inputSystems.length; x++) {
         ws = inputSystems[x];
-        if (angular.isDefined(a.lexeme[ws])) {
+        if (angular.isDefined(a.lexeme) && angular.isDefined(a.lexeme[ws])) {
           lexemeA = a.lexeme[ws].value;
           break;
         }
@@ -314,7 +314,7 @@ function ($q, sessionService, cache, commentsCache,
 
       for (x = 0; x < inputSystems.length; x++) {
         ws = inputSystems[x];
-        if (angular.isDefined(b.lexeme[ws])) {
+        if (angular.isDefined(b.lexeme) && angular.isDefined(b.lexeme[ws])) {
           lexemeB = b.lexeme[ws].value;
           break;
         }

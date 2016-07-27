@@ -96,13 +96,14 @@ angular.module('lexicon-new-project',
   }])
   .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$modal', '$window',
     'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate',
-    '$state', '$upload', 'lexProjectService', 'lexSendReceiveService', '$interval',
+    '$state', '$upload', 'lexProjectService', 'lexSendReceiveApi',  'lexSendReceive',
   function ($scope, $q, $filter, $modal, $window,
             sessionService, notice, projectService, linkService, $translate,
-            $state, $upload, lexProjectService, sendReceiveService, $interval) {
+            $state, $upload, lexProjectService, sendReceiveApi, sendReceive) {
     $scope.interfaceConfig = {};
     $scope.interfaceConfig.userLanguageCode = 'en';
-    if (angular.isDefined(sessionService.session.projectSettings)) {
+    if (angular.isDefined(sessionService.session.projectSettings) &&
+        angular.isDefined(sessionService.session.projectSettings.interfaceConfig)) {
       $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
     }
 
@@ -269,8 +270,7 @@ angular.module('lexicon-new-project',
           return validateSendReceiveCredentialsForm();
           break;
         case 'newProject.sendReceiveClone':
-          if ($scope.sendReceive.status.SRState != 'IDLE' &&
-            $scope.sendReceive.status.SRState != 'HOLD') {
+          if (sendReceive.isInProgress()) {
             return error();
           }
 
@@ -377,8 +377,7 @@ angular.module('lexicon-new-project',
 
           break;
         case 'newProject.sendReceiveClone':
-          if ($scope.sendReceive.status.SRState == 'IDLE' ||
-              $scope.sendReceive.status.SRState == 'HOLD') {
+          if (!sendReceive.isInProgress()) {
             gotoLexicon();
           }
 
@@ -640,11 +639,10 @@ angular.module('lexicon-new-project',
     }
 
     function getProject() {
-      sendReceiveService.receiveProject(function (result) {
+      sendReceiveApi.receiveProject(function (result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, 'Started sync with LanguageDepot.org...');
           $state.go('newProject.sendReceiveClone');
-          startSyncStatusTimer();
+          sendReceive.startCloneStatusTimer();
         } else {
           notice.push(notice.ERROR, 'The project could not be synced with LanguageDepot.org. ' +
             'Please try again.');
@@ -655,63 +653,12 @@ angular.module('lexicon-new-project',
 
     // ----- Step 2: Send Receive Clone -----
 
-    $scope.sendReceive = { status: { SRState: '' } };
+    $scope.cloneNotice = sendReceive.cloneNotice;
+    sendReceive.clearState();
+    sendReceive.setCloneProjectStatusSuccessCallback(gotoLexicon);
 
-    $scope.syncNotice = function syncNotice() {
-      if (angular.isUndefined($scope.sendReceive) ||
-          angular.isUndefined($scope.sendReceive.status)) return;
-      switch ($scope.sendReceive.status.SRState) {
-        case 'CLONING':
-          return 'Creating initial data...';
-        case 'SYNCING':
-          return 'Syncing...';
-        case 'IDLE':
-          return 'Synced';
-        case 'HOLD':
-          return 'On hold';
-        default:
-          return '';
-      }
-    };
-
-    var syncStatusTimer;
-
-    function getProjectStatus() {
-      sendReceiveService.getProjectStatus(function (result) {
-        if (result.ok) {
-          if (!result.data) {
-            $scope.sendReceive.status.SRState = '';
-            cancelSyncStatusTimer();
-            return;
-          }
-
-          $scope.sendReceive.status = result.data;
-          console.log($scope.sendReceive.status);
-          if ($scope.sendReceive.status.SRState == 'IDLE' ||
-              $scope.sendReceive.status.SRState == 'HOLD') {
-            cancelSyncStatusTimer();
-            gotoLexicon();
-          }
-
-        }
-      });
-    }
-
-    function startSyncStatusTimer() {
-      if (angular.isDefined(syncStatusTimer)) return;
-
-      syncStatusTimer = $interval(getProjectStatus, 3000);
-    }
-
-    function cancelSyncStatusTimer() {
-      if (angular.isDefined(syncStatusTimer)) {
-        $interval.cancel(syncStatusTimer);
-        syncStatusTimer = undefined;
-      }
-    }
-
-    $scope.$on('$destroy', cancelSyncStatusTimer);
-    $scope.$on('$locationChangeStart', cancelSyncStatusTimer);
+    $scope.$on('$destroy', sendReceive.cancelCloneStatusTimer);
+    $scope.$on('$locationChangeStart', sendReceive.cancelCloneStatusTimer);
 
     // ----- Step 3: Verify initial data -OR- select primary language -----
 

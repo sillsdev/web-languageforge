@@ -3,6 +3,7 @@
 use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\UserModel;
+use Api\Model\UserTypeaheadModel;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -49,7 +50,7 @@ class TestUserModel extends UnitTestCase
 
         $e->createUser('someuser', 'Some User','user@example.com');
 
-        $model = new Api\Model\UserTypeaheadModel('', '', $e->website);
+        $model = new UserTypeaheadModel('', '', $e->website);
         $model->read();
 
         $this->assertEqual(1, $model->count);
@@ -63,7 +64,7 @@ class TestUserModel extends UnitTestCase
         $e->clean();
         $e->createUser('someuser', 'Some User','user@example.com');
 
-        $model = new Api\Model\UserTypeaheadModel('', '', $e->website);
+        $model = new UserTypeaheadModel('', '', $e->website);
         $model->read();
 
         $this->assertEqual(1, $model->count);
@@ -77,7 +78,7 @@ class TestUserModel extends UnitTestCase
         $e->clean();
         $e->createUser('someuser', 'Some User','user@example.com');
 
-        $model = new Api\Model\UserTypeaheadModel('Bogus', '', $e->website);
+        $model = new UserTypeaheadModel('Bogus', '', $e->website);
         $model->read();
 
         $this->assertEqual(0, $model->count);
@@ -92,11 +93,40 @@ class TestUserModel extends UnitTestCase
 
         // Check no users exist on another website
         $website = new Website('languageforge.local', Website::LANGUAGEFORGE);
-        $model = new Api\Model\UserTypeaheadModel('some', '', $website);
+        $model = new UserTypeaheadModel('some', '', $website);
         $model->read();
 
         $this->assertEqual(0, $model->count);
         $this->assertEqual(array(), $model->entries);
+    }
+
+    public function testUserTypeahead_ExcludeProject_UserExcluded()
+    {
+        $e = new MongoTestEnvironment();
+        $e->clean();
+        $userId = $e->createUser('projectuser', 'Project User','projectUser@example.com');
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $user = new UserModel($userId);
+        $user->addProject($projectId);
+        $user->write();
+        $e->createUser('someuser', 'Some User','user@example.com');
+        $e->createUser('anotheruser', 'Another User','another@example.com');
+
+        $model = new UserTypeaheadModel('', $projectId, $e->website);
+        $model->read();
+
+        $this->assertEqual(2, $model->count);
+        $this->assertNotNull($model->entries);
+        $this->assertEqual('Some User', $model->entries[0]['name']);
+        $this->assertEqual('Another User', $model->entries[1]['name']);
+
+        $model = new UserTypeaheadModel('Some', $projectId, $e->website);
+        $model->read();
+
+        $this->assertEqual(1, $model->count);
+        $this->assertNotNull($model->entries);
+        $this->assertEqual('Some User', $model->entries[0]['name']);
     }
 
     public function testUserListProjects_TwoProjects_ListHasDetails()

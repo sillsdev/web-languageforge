@@ -8,9 +8,7 @@ use Api\Model\Mapper\MongoMapper;
 
 class MessageModelMongoMapper extends MongoMapper
 {
-    /**
-     * @var TextModelMongoMapper[]
-     */
+    /** @var TextModelMongoMapper[] */
     private static $_pool = array();
 
     /**
@@ -30,11 +28,13 @@ class MessageModelMongoMapper extends MongoMapper
 
 class MessageModel extends MapperModel
 {
-    /**
-     * @var ProjectModel;
-     */
+    /** @var ProjectModel */
     private $_projectModel;
 
+    /**
+     * @param ProjectModel $projectModel
+     * @param string $id
+     */
     public function __construct($projectModel, $id = '')
     {
         $this->id = new Id();

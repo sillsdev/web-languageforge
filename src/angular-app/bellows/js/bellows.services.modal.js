@@ -33,6 +33,13 @@ angular.module('bellows.services')
       return this.showModal({}, opts);
     };
 
+    this.showModalSimpleWithCustomTemplate = function showModalSimpleWithCustomTemplate(customTemplateUrl) {
+      var opts = {
+        customTemplateUrl: customTemplateUrl
+      };
+      return this.show({ templateUrl: '/angular-app/bellows/js/modalCustomTemplate.html', backdrop: true}, opts);
+    };
+
     this.show = function (customModalDefaults, customModalOptions) {
       // Create temp objects to work with since we're in a singleton service
       var tempModalDefaults = {};

@@ -7,7 +7,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 // Configuation Controller
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService',
   '$filter', '$modal', 'lexConfigService', 'utilService',
-function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigService, util) {
+function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, util) {
   var inputSystemSelected = true;
   lexProjectService.setBreadcrumbs('configuration',
     $filter('translate')('Dictionary Configuration'));
@@ -270,7 +270,7 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServi
     }
   };
 
-  $scope.isCustomField = lexConfigService.isCustomField;
+  $scope.isCustomField = lexConfig.isCustomField;
   $scope.selectInputSystem = function selectInputSystem(id) {
     $scope.selectedInputSystemId = id;
     inputSystemSelected = true;
@@ -366,7 +366,7 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfigServi
           $scope.projectSettings.config = angular.copy($scope.configDirty);
           $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
           $scope.optionlistPristine = angular.copy($scope.optionlistDirty);
-          $scope.refreshConfig();
+          lexConfig.refresh();
         }
 
         $scope.isSaving = false;
