@@ -1,12 +1,16 @@
 <div class="dc-entry">
-<dc-fieldrepeat config="config" model="model" control="control"></dc-fieldrepeat>
-    <div ng-if="config.fields.senses.fieldOrder.length > 0">
-        <div ng-if="control.rights.canEditEntry() && control.state == 'edit'" class="addItem">
+    <dc-fieldrepeat config="config" model="model" control="control"></dc-fieldrepeat>
+    <div data-ng-if="config.fields.senses.fieldOrder.length > 0">
+        <!-- Place links to "Add Meaning" at the top and bottom of the senses so users can easily find them -->
+        <div data-ng-if="control.rights.canEditEntry() && control.state == 'edit'" class="addItem">
             <a data-ng-click="addSense()">Add Meaning</a>
         </div>
         <div data-ng-repeat="sense in model.senses">
             <dc-sense remove="deleteSense" index="$index"
                 config="config.fields.senses" model="sense" control="control"></dc-sense>
+        </div>
+        <div data-ng-if="control.rights.canEditEntry() && control.state == 'edit'" class="addItem">
+            <a data-ng-click="addSense()">Add Meaning</a>
         </div>
     </div>
 </div>

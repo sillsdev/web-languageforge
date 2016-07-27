@@ -4,6 +4,7 @@ namespace Api\Service;
 
 use Api\Library\Scriptureforge\Sfchecks\ParatextExport;
 use Api\Library\Scriptureforge\Sfchecks\SfchecksReports;
+use Api\Library\Shared\HelpContentCommands;
 use Api\Library\Shared\Palaso\Exception\UserNotAuthenticatedException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
@@ -346,7 +347,7 @@ class Sf
     }
 
     /**
-     * Publish projects
+     * Publish selected list of archived projects
      *
      * @param array<string> $projectIds
      * @return int Count of published projects
@@ -381,8 +382,17 @@ class Sf
     {
         return ProjectCommands::getJoinRequests($this->projectId);
     }
-    
-    
+
+    /**
+     * Permanently delete selected list of archived projects.
+     *
+     * @param array<string> $projectIds
+     * @return int Total number of projects removed.
+     */
+    public function project_delete($projectIds)
+    {
+        return ProjectCommands::deleteProjects($projectIds);
+    }
 
     // ---------------------------------------------------------------
     // SESSION API
@@ -795,6 +805,15 @@ class Sf
     public function sendReceive_notification_sendRequest($projectCode)
     {
         return SendReceiveCommands::notificationSendRequest($projectCode);
+    }
+
+
+    /*
+     * --------------------------------------------------------------- XFORGE FRAME API ---------------------------------------------------------------
+     */
+
+    public function xforge_frame_can_show_page_help_button($urlPath, $hashPath) {
+        return HelpContentCommands::canShowPageHelpButton($this->website, $urlPath, $hashPath);
     }
 
 

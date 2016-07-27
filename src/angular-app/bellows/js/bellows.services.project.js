@@ -26,6 +26,10 @@ angular.module('bellows.services')
       jsonRpc.call('project_archivedList', [], callback);
     };
 
+    this.remove = function (projectIds, callback) {
+      jsonRpc.call('project_delete', [projectIds], callback);
+    };
+
     this.publish = function (projectIds, callback) {
       jsonRpc.call('project_publish', [projectIds], callback);
     };
@@ -93,7 +97,8 @@ angular.module('bellows.services')
     this.data.projectTypesBySite = function () {
       var types = {
         scriptureforge: ['sfchecks'],
-        languageforge: ['lexicon', 'semdomtrans']
+        //languageforge: ['lexicon', 'semdomtrans']
+        languageforge: ['lexicon']
       };
       return types[ss.baseSite()];
     };

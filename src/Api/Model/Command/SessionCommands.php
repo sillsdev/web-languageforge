@@ -2,6 +2,7 @@
 
 namespace Api\Model\Command;
 
+use Api\Library\Shared\HelpContentCommands;
 use Api\Library\Shared\Website;
 use Api\Model\ProjectModel;
 use Api\Model\UserModel;
@@ -12,9 +13,10 @@ class SessionCommands
      * @param string $projectId
      * @param string $userId
      * @param Website $website
+     * @param string $appName - refers to the application being used by the user
      * @return array
      */
-    public static function getSessionData($projectId, $userId, $website)
+    public static function getSessionData($projectId, $userId, $website, $appName = '')
     {
         $sessionData = array();
         $sessionData['userId'] = (string) $userId;
@@ -36,6 +38,10 @@ class SessionCommands
             $sessionData['project']['slug'] = $project->databaseName();
             $sessionData['userProjectRights'] = $project->getRightsArray($userId);
             $sessionData['projectSettings'] = $project->getPublicSettings($userId);
+        }
+
+        if ($appName) {
+            $sessionData['helps'] = HelpContentCommands::getSessionData($appName, $website);
         }
 
         // File Size

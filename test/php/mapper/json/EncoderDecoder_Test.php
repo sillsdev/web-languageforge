@@ -1,79 +1,257 @@
 <?php
 
-use Api\Model\UserModel;
-
+use Api\Model\Mapper\ArrayOf;
+use Api\Model\Mapper\MapOf;
+use Api\Model\Mapper\ObjectForEncoding;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\Mapper\JsonDecoder;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 
-class PropertiesTest extends UserModel
+class PropertyObject extends ObjectForEncoding
 {
-    public function __construct($id = '')
+    public function __construct()
     {
         $this->setPrivateProp('shouldBePrivate');
         $this->setReadOnlyProp('shouldBeReadOnly');
-        $this->shouldBePrivate = 'default';
-        $this->shouldBeReadOnly = 'default';
-        parent::__construct($id);
     }
+
+    public $name;
 
     public $shouldBeReadOnly;
 
     public $shouldBePrivate;
+}
 
+class PropertyObjectInArray
+{
+    public function __construct()
+    {
+        $this->data = new ArrayOf(function() {
+            return new PropertyObject();
+        });
+    }
+
+    public $name;
+
+    /**
+     * @var ArrayOf ArrayOf<PropertyObject>
+     */
+    public $data;
+}
+
+class PropertyObjectInArray2
+{
+    public function __construct()
+    {
+        $this->data2 = new ArrayOf(function() {
+            return new PropertyObjectInArray();
+        });
+    }
+
+    public $name;
+
+    /**
+     * @var ArrayOf ArrayOf<PropertyObjectInArray>
+     */
+    public $data2;
+}
+
+class PropertyObjectInMap
+{
+    public function __construct()
+    {
+        $this->data = new MapOf(function() {
+            return new PropertyObject();
+        });
+    }
+
+    public $name;
+
+    /**
+     * @var MapOf MapOf<PropertyObject>
+     */
+    public $data;
+}
+
+class PropertyObjectInMap2
+{
+    public function __construct()
+    {
+        $this->data2 = new MapOf(function() {
+            return new PropertyObjectInArray();
+        });
+    }
+
+    public $name;
+
+    /**
+     * @var MapOf MapOf<PropertyObjectInArray>
+     */
+    public $data2;
 }
 
 class TestJsonEncoderDecoder extends UnitTestCase
 {
-    public function __construct()
+
+    public function testEncode_PrivateProperties_NotVisible()
     {
+        $object = new PropertyObject();
+        $object->name = 'can change name';
+        $object->shouldBePrivate = 'this is private';
+
+        $params = json_decode(json_encode(JsonEncoder::encode($object)), true);
+
+        $this->assertTrue(array_key_exists('name', $params));
+        $this->assertFalse(array_key_exists('shouldBePrivate', $params));
+        $this->assertEqual($params['name'], $object->name);
+
+        $params['name'] = 'different name';
+        $params['shouldBePrivate'] = 'hacked';
+
+        JsonDecoder::decode($object, $params);
+
+        $this->assertEqual($object->name, 'different name');
+        $this->assertEqual($object->shouldBePrivate, 'this is private');
     }
 
-    public function testEncode_privateProperties_notVisible()
+    public function testDecode_ReadOnlyProperties_PropertiesNotChanged()
     {
-        $test = new PropertiesTest();
-        $test->name = 'test';
-        $test->shouldBePrivate = 'this is private';
+        $object = new PropertyObject();
+        $object->name = 'can change name';
+        $object->shouldBeReadOnly = 'cannot change this';
 
-        $data = json_decode(json_encode(JsonEncoder::encode($test)), true);
-        $this->assertTrue(array_key_exists('name', $data));
-        $this->assertFalse(array_key_exists('shouldBePrivate', $data));
+        $params = json_decode(json_encode(JsonEncoder::encode($object)), true);
 
-        // change some data
-        $data['name'] = 'different'; // this can be changed
-        $data['shouldBePrivate'] = 'hacked'; // this prop is private and cannot be set
+        $this->assertTrue(array_key_exists('name', $params));
+        $this->assertTrue(array_key_exists('shouldBeReadOnly', $params));
+        $this->assertEqual($params['name'], $object->name);
+        $this->assertEqual($params['shouldBeReadOnly'], $object->shouldBeReadOnly);
 
-        $test2 = new PropertiesTest();
-        JsonDecoder::decode($test2, $data);
+        $params['name'] = 'different name';
+        $params['shouldBeReadOnly'] = 'changed';
 
-        $this->assertEqual($test2->name, 'different');
-        $this->assertEqual($test2->shouldBePrivate, 'default');
+        JsonDecoder::decode($object, $params);
 
+        $this->assertEqual($object->name, 'different name');
+        $this->assertEqual($object->shouldBeReadOnly, 'cannot change this');
     }
 
-    public function testDecode_readOnlyProperties_propertiesNotChanged()
+    public function testDecode_ReadOnlyPropertiesInArray_PropertiesNotChanged()
     {
-        $test = new PropertiesTest();
-        $test->name = 'test';
-        $test->shouldBeReadOnly = 'cannot change this';
+        $objectData = new PropertyObject();
+        $objectData->shouldBeReadOnly = 'cannot change this';
 
-        $data = json_decode(json_encode(JsonEncoder::encode($test)), true);
+        $object = new PropertyObjectInArray();
+        $object->name = 'can change name';
+        $object->data[] = $objectData;
 
-        $this->assertTrue(array_key_exists('name', $data));
-        $this->assertTrue(array_key_exists('shouldBeReadOnly', $data));
-        $this->assertEqual($test->shouldBeReadOnly, $data['shouldBeReadOnly']);
+        $params = json_decode(json_encode(JsonEncoder::encode($object)), true);
 
-        // change some data
-        $data['name'] = 'different'; // this can be changed
-        $data['shouldBeReadOnly'] = 'changed'; // this prop is read-only
+        $this->assertTrue(array_key_exists('name', $params));
+        $this->assertTrue(array_key_exists('shouldBeReadOnly', $params['data'][0]));
+        $this->assertEqual($object->data[0]->shouldBeReadOnly, $params['data'][0]['shouldBeReadOnly']);
 
-        $test2 = new PropertiesTest();
-        JsonDecoder::decode($test2, $data);
+        $params['name'] = 'different name';
+        $params['data'][0]['shouldBeReadOnly'] = 'changed';
 
-        $this->assertEqual($test2->name, 'different');
-        $this->assertEqual($test2->shouldBeReadOnly, 'default');
+        JsonDecoder::decode($object, $params);
 
+        $this->assertEqual($object->name, 'different name');
+        $this->assertEqual($object->data[0]->shouldBeReadOnly, 'cannot change this');
     }
+
+    public function testDecode_ReadOnlyPropertiesInTwoArrays_PropertiesNotChanged()
+    {
+        $objectData = new PropertyObject();
+        $objectData->name = 'can change name';
+        $objectData->shouldBeReadOnly = 'cannot change this';
+
+        $object1 = new PropertyObjectInArray();
+        $object1->name = 'can change name';
+        $object1->data[] = $objectData;
+
+        $object = new PropertyObjectInArray2();
+        $object->name = 'can change name';
+        $object->data2[] = $object1;
+
+        $params = json_decode(json_encode(JsonEncoder::encode($object)), true);
+
+        $this->assertTrue(array_key_exists('name', $params));
+        $this->assertTrue(array_key_exists('shouldBeReadOnly', $params['data2'][0]['data'][0]));
+        $this->assertEqual($object->data2[0]->data[0]->shouldBeReadOnly, $params['data2'][0]['data'][0]['shouldBeReadOnly']);
+
+        $params['name'] = 'different name2';
+        $params['data2'][0]['name'] = 'different name1';
+        $params['data2'][0]['data'][0]['name'] = 'different name';
+        $params['data2'][0]['data'][0]['shouldBeReadOnly'] = 'changed';
+
+        JsonDecoder::decode($object, $params);
+
+        $this->assertEqual($object->name, 'different name2');
+        $this->assertEqual($object->data2[0]->name, 'different name1');
+        $this->assertEqual($object->data2[0]->data[0]->name, 'different name');
+        $this->assertEqual($object->data2[0]->data[0]->shouldBeReadOnly, 'cannot change this');
+    }
+
+    public function testDecode_ReadOnlyPropertiesInMap_PropertiesNotChanged()
+    {
+        $objectData = new PropertyObject();
+        $objectData->shouldBeReadOnly = 'cannot change this';
+
+        $key = 'key1';
+        $object = new PropertyObjectInMap();
+        $object->name = 'can change name';
+        $object->data[$key] = $objectData;
+
+        $params = json_decode(json_encode(JsonEncoder::encode($object)), true);
+
+        $this->assertTrue(array_key_exists('name', $params));
+        $this->assertTrue(array_key_exists('shouldBeReadOnly', $params['data'][$key]));
+        $this->assertEqual($object->data[$key]->shouldBeReadOnly, $params['data'][$key]['shouldBeReadOnly']);
+
+        $params['name'] = 'different name';
+        $params['data'][$key]['shouldBeReadOnly'] = 'changed';
+
+        JsonDecoder::decode($object, $params);
+
+        $this->assertEqual($object->name, 'different name');
+        $this->assertEqual($object->data[$key]->shouldBeReadOnly, 'cannot change this');
+    }
+
+    public function testDecode_ReadOnlyPropertiesInTwoMaps_PropertiesNotChanged()
+    {
+        $objectData = new PropertyObject();
+        $objectData->name = 'can change name';
+        $objectData->shouldBeReadOnly = 'cannot change this';
+
+        $key = 'key1';
+        $object1 = new PropertyObjectInMap();
+        $object1->name = 'can change name';
+        $object1->data[$key] = $objectData;
+
+        $object = new PropertyObjectInMap2();
+        $object->name = 'can change name';
+        $object->data2[$key] = $object1;
+
+        $params = json_decode(json_encode(JsonEncoder::encode($object)), true);
+
+        $this->assertTrue(array_key_exists('name', $params));
+        $this->assertTrue(array_key_exists('shouldBeReadOnly', $params['data2'][$key]['data'][$key]));
+        $this->assertEqual($object->data2[$key]->data[$key]->shouldBeReadOnly, $params['data2'][$key]['data'][$key]['shouldBeReadOnly']);
+
+        $params['name'] = 'different name2';
+        $params['data2'][$key]['name'] = 'different name1';
+        $params['data2'][$key]['data'][$key]['name'] = 'different name';
+        $params['data2'][$key]['data'][$key]['shouldBeReadOnly'] = 'changed';
+
+        JsonDecoder::decode($object, $params);
+
+        $this->assertEqual($object->name, 'different name2');
+        $this->assertEqual($object->data2[$key]->name, 'different name1');
+        $this->assertEqual($object->data2[$key]->data[$key]->name, 'different name');
+        $this->assertEqual($object->data2[$key]->data[$key]->shouldBeReadOnly, 'cannot change this');
+    }
+
 }

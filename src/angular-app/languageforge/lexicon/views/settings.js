@@ -4,9 +4,9 @@ angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.
   'palaso.ui.typeahead', 'palaso.ui.sendReceiveCredentials', 'palaso.ui.notice',
   'palaso.ui.textdrop'])
   .controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService',
-    'silNoticeService', 'lexProjectService', 'lexSendReceiveService',
+    'silNoticeService', 'lexProjectService', 'lexSendReceiveApi',
   function ($scope, $filter, userService, sessionService,
-            notice, lexProjectService, sendReceiveService) {
+            notice, lexProjectService, sendReceiveApi) {
     lexProjectService.setBreadcrumbs('settings', $filter('translate')('Project Settings'));
 
     $scope.rights.canViewSendReceiveProperties = sessionService
@@ -45,7 +45,7 @@ angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.
     };
 
     $scope.sendReceive = {};
-    $scope.project = {};
+    $scope.project = $scope.project || {};
     $scope.project.sendReceive = {};
 
     $scope.resetValidateForm = function resetValidateForm() {
@@ -57,7 +57,7 @@ angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.
         return;
       }
 
-      sendReceiveService.updateSRProject($scope.project.sendReceive.project, function (result) {
+      sendReceiveApi.updateSRProject($scope.project.sendReceive.project, function (result) {
         if (result.ok) {
           notice.push(notice.SUCCESS,
             'The LanguageDepot.org project info was updated successfully.');

@@ -22,6 +22,7 @@ class FixSiteRolesIntegrity
         $projectlist = new ProjectListModel();
         $projectlist->read();
         $fixCount = array();
+        $userNoRoleCount = 0;
 
         foreach ($projectlist->entries as $projectParams) { // foreach existing project
             $projectId = $projectParams['id'];
@@ -30,7 +31,7 @@ class FixSiteRolesIntegrity
             $website = Website::get($hostname);
             $fixCount[$hostname] = 0;
             $projectUserRefs = array_keys($project->users->getArrayCopy());
-            $message .= "-------------  " . $project->projectName . "\n";
+            //$message .= "-------------  " . $project->projectName . "\n";
             foreach ($projectUserRefs as $userId) { // foreach user that is a member of this project
                 $user = new UserModel($userId);
                 if (!array_key_exists($hostname, $user->siteRole) && $user->username != '') {
@@ -51,7 +52,8 @@ class FixSiteRolesIntegrity
             $userId = $userParams['id'];
             $user = new UserModel($userId);
             if (count($user->projects->refs) == 0 && count(array_keys($user->siteRole->getArrayCopy())) == 0) {
-                $message .= "Warning: user '" . $user->username . "' has no projects and no siteRoles on any site!\n";
+                $userNoRoleCount++;
+                //$message .= "Warning: user '" . $user->username . "' has no projects and no siteRoles on any site!\n";
             }
         }
         
@@ -61,6 +63,9 @@ class FixSiteRolesIntegrity
             } else {
                 $message .= "\n\n$site : Nothing to do \n\n";
             }
+        }
+        if ($userNoRoleCount > 0) {
+            $message .= "Warning: $userNoRoleCount useless users had no projects and no siteRoles on any site!\n";
         }
 
 

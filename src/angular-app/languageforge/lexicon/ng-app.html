@@ -14,8 +14,9 @@
                 <li><a href="#/viewSettings" data-translate="View Settings"></a></li>
                 <li class="divider"></li>
                 <li><a href="#/importExport" data-translate="Import/Export"></a></li>
-                <li><a href="#/settings" data-translate="Project Settings"></a></li>
                 <li><a ng-href="/app/usermanagement/{{project.id}}" data-translate="User Management"></a></li>
+                <li><a href="#/settings" data-translate="Project Settings"></a></li>
+                <li><a href="/app/projectmanagement/{{project.id}}" data-ng-show="rights.canArchiveProject()">Manage Project</a></li>
             </ul>
         </div>
         <div data-ng-class="interfaceConfig.pullToSide" data-ng-show="showSyncButton()">

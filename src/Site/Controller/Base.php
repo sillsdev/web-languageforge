@@ -18,6 +18,7 @@ class Base
     public function __construct() {
         $this->website = Website::get();
         $this->_isLoggedIn = false;
+        $this->_showHelp = false;
         $this->data['isLoggedIn'] = $this->_isLoggedIn;
         $this->data['isAdmin'] = false;
         $this->data['projects'] = array();
@@ -46,6 +47,12 @@ class Base
     public $website;
 
     /**
+     * Variable used to control visibility of help button in header menu bar
+     * @var bool
+     */
+    protected $_showHelp;
+
+    /**
      * @var bool
      */
     protected $_isLoggedIn;
@@ -67,6 +74,10 @@ class Base
 
     // all child classes should use this method to render their pages
     protected function renderPage(Application $app, $viewName, $render = true) {
+        if ($viewName == 'favicon.ico') {
+            $viewName = 'container';
+        }
+
         $this->_isLoggedIn = $this->isLoggedIn($app);
         if ($this->_isLoggedIn) {
             try {
@@ -102,6 +113,7 @@ class Base
 
         // setup specific variables for header
         $this->data['isLoggedIn'] = $this->_isLoggedIn;
+        $this->data['showHelpButton'] = $this->_showHelp;
 
         $featuredProjectList = new FeaturedProjectListModel();
         $featuredProjectList->read();
@@ -156,6 +168,7 @@ class Base
     }
 
     private static function addFiles($ext, $dir, &$result, $exclude) {
+        array_push($exclude, 'excluded/');
         if (is_dir($dir)) {
             $files = scandir($dir);
             foreach ($files as $file) {

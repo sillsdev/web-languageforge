@@ -16,6 +16,9 @@
                         </ul>
                     </li>
                     <li><a href="/discuss">Discuss</a></li>
+                    {% if showHelpButton %}
+                        <li ng-app="xforge.helpButton" ng-controller="helpButtonController" ng-show="showButton"><a ng-click="showHelpContent()">Help</a></li>
+                    {% endif %}
                 </ul>
             </div>
 
@@ -117,6 +120,7 @@
                         <h4>Contact</h4>
                         <p class="small">Language Forge<br />SIL International<br />7500 W. Camp Wisdom Road<br />Dallas, TX 75236-5629 USA</p>
                     </div>
+
                     <div class="span2">
                         <h4>Navigate</h4>
                         <small>
@@ -125,6 +129,7 @@
                     </div>
 
                     <div class="span1 offset4">
+                        <p><a href="http://www.sil.org"><img src="/Site/views/shared/image/SIL Logo 2014 TM.png" alt="SIL Logo" width="56" height="63" /></a></p>
                     </div>
 
                     <div class="span3">

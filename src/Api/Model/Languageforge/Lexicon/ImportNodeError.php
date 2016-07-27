@@ -5,27 +5,16 @@ namespace Api\Model\Languageforge\Lexicon;
 class ImportNodeError
 {
 
-    /**
-     *
-     * @var string guid of lift entry, sense lift id, or attribute name
-     */
+    /** @var string guid of lift entry, sense lift id, or attribute name */
     protected $identifier;
 
-    /**
-     *
-     * @var array of errors
-     */
+    /** @var array of errors */
     protected $errors;
 
-    /**
-     *
-     * @var array <ImportNodeError>
-     */
+    /** @var ImportNodeError[] */
     protected $subnodeErrors;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $type;
 
     public function __construct($type, $identifier)

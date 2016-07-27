@@ -30,7 +30,7 @@ class FixSemanticDomainKey
 
                 /** @var Sense $sense */
                 foreach ($entry->senses as $sense) {
-                    $this->migrateSemDomKey($sense, $message, $entryModified);
+                    $this->migrateSemDomKey($sense, $project->projectName, $message, $entryModified);
                 }
             }
 
@@ -47,7 +47,7 @@ class FixSemanticDomainKey
             $project->write();
         }
         if ($entryModifiedCount > 0) {
-            $message .= "$entryModifiedCount entries with semantic domains were migrated\n";
+            print "$entryModifiedCount entries with semantic domains were migrated\n";
         }
     }
 
@@ -57,7 +57,7 @@ class FixSemanticDomainKey
      * @param string $message
      * @param bool $entryModified
      */
-    private function migrateSemDomKey($sense, &$message, &$entryModified)
+    private function migrateSemDomKey($sense, $projectName, &$message, &$entryModified)
     {
         $senseModified = false;
         $updatedSemDomArray = $sense->semanticDomain->values->getArrayCopy();
@@ -69,16 +69,14 @@ class FixSemanticDomainKey
                 $entryModified = true;
             }
         }
-        if ($senseModified && (count($updatedSemDomArray) > 1)) {
-            /*
-            $message .= "   Change ";
-            if ((key_exists('gloss', $sense)) && ($sense->gloss != null) && (reset($sense->gloss)->value)) {
-                $message .= reset($sense->gloss)->value;
+        if ($senseModified && (count($updatedSemDomArray) > 0)) {
+            print "   Change ";
+            if ((key_exists('gloss', $sense)) && ($sense->gloss->count() > 0) && (reset($sense->gloss)->value)) {
+                print reset($sense->gloss)->value;
             }
-            $message .= " semdom key(s)\n\tfrom: {" . implode(", ", $sense->semanticDomain->values->getArrayCopy()) .
+            print " semdom key(s)\n\tfrom: {" . implode(", ", $sense->semanticDomain->values->getArrayCopy()) .
                 "}\n\tto: {" . implode(", ", $updatedSemDomArray) . "}\n";
-            $message .= "Memory usage: " . $this->getMemoryUsage() . "\n";
-            */
+            print "$projectName Memory usage: " . $this->getMemoryUsage() . "\n";
             $sense->semanticDomain->values->exchangeArray($updatedSemDomArray);
         }
     }
@@ -94,7 +92,7 @@ class FixSemanticDomainKey
 
         // Because of the memory needed to process semdom keys for projects, we'll limit the
         // migration script to run in batches of this many projects per run.
-        $maxNumProjects = 50;
+        $maxNumProjects = 1;
 
         $lfProjectCount = 0; // Counter of LF projects analyzed
         $skippedProjects = 0;
@@ -102,29 +100,27 @@ class FixSemanticDomainKey
 
         foreach ($projectlist->entries as $projectParams) {
             $projectId = $projectParams['id'];
-            $project = new ProjectModel($projectId);
-            if ($project->appName == 'lexicon') {
-                $project = new ProjectModelForUseWithSemanticDomainMigration($projectId);
-
-                $message .= "\n-------------  $project->projectName.";
-                if (!$project->hasMigratedSemanticDomainKeys) {
-                    $message .= "\n";
-                    $lfProjectCount++;
-                    $this->analyzeProject($project, $projectId, $testMode, $message);
-                    $message .= "Memory usage: " . $this->getMemoryUsage() . "\n";
-                } else {
-                    $skippedProjects++;
-                    $message .= " (skipped)";
-                }
-            } // if lexicon project
+            $project = new ProjectModelForUseWithSemanticDomainMigration($projectId);
+            if ($project->appName == 'lexicon' && !$project->hasMigratedSemanticDomainKeys) {
+                print "\n-------------  $project->projectName.";
+                print "\n";
+                $lfProjectCount++;
+                $this->analyzeProject($project, $projectId, $testMode, $message);
+                print "Memory usage: " . $this->getMemoryUsage() . "\n";
+            } else {
+                $skippedProjects++;
+            }
 
             // Summary
             if ($lfProjectCount >= $maxNumProjects) {
-                $message .= "Processed projects " . ($skippedProjects + 1) . " - " . ($skippedProjects + $lfProjectCount) .
-                    " of $totalProjectCount projects (skipped $skippedProjects)\n";
-                return $message;
-            };
+                print "Processed projects " . ($skippedProjects + 1) . " - " . ($skippedProjects + $lfProjectCount) .
+                    " of $totalProjectCount projects\n";
+                break;
+            }
         } // foreach project
+        if ($skippedProjects > 0) {
+            print "Skipped $skippedProjects projects\n";
+        }
 
         return $message;
     }
