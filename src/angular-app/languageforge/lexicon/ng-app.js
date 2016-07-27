@@ -114,36 +114,44 @@ angular.module('lexicon',
   }])
   .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService',
     '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService',
-    'lexConfigService', 'lexSendReceiveService',
-  function ($scope, sessionService, lexConfigService, lexProjectService,
-            $translate, $location, $interval, noticeService, editorService,
-            configService, sendReceiveService) {
+    'lexSendReceiveApi', 'lexSendReceive',
+  function ($scope, sessionService, lexConfig, lexProjectService,
+            $translate, $location, $interval, notice, editorService,
+            sendReceiveApi, sendReceive) {
     var pristineLanguageCode;
 
     $scope.project = sessionService.session.project;
     $scope.projectSettings = sessionService.session.projectSettings;
-    $scope.sendReceive = $scope.projectSettings.sendReceive || {};
+    $scope.syncNotice = sendReceive.syncNotice;
 
     $scope.rights = {};
     $scope.rights.canRemoveUsers = function canRemoveUsers() {
-      if (isSyncing()) return false;
+      if (sendReceive.isInProgress()) return false;
 
       return sessionService.hasProjectRight(sessionService.domain.USERS,
         sessionService.operation.DELETE);
     };
 
     $scope.rights.canCreateUsers = function canCreateUsers() {
-      if (isSyncing()) return false;
+      if (sendReceive.isInProgress()) return false;
 
       return sessionService.hasProjectRight(sessionService.domain.USERS,
           sessionService.operation.CREATE);
     };
 
     $scope.rights.canEditUsers = function canEditUsers() {
-      if (isSyncing()) return false;
+      if (sendReceive.isInProgress()) return false;
 
       return sessionService.hasProjectRight(sessionService.domain.USERS,
           sessionService.operation.EDIT);
+    };
+
+    $scope.rights.canArchiveProject = function canArchiveProject() {
+      if (sendReceive.isInProgress() ||
+          !angular.isDefined(sessionService.session.project)) return false;
+
+      return (sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.ARCHIVE_OWN) ||
+              sessionService.hasSiteRight(sessionService.domain.PROJECTS, sessionService.operation.ARCHIVE));
     };
 
     $scope.rights.showControlBar = function showControlBar() {
@@ -151,37 +159,16 @@ angular.module('lexicon',
         $scope.rights.canEditUsers();
     };
 
-    $scope.refreshConfig = function refreshConfig() {
-      $scope.config = configService.getConfigForUser();
-    };
-
-    $scope.refreshConfig();
-
-    // persist the entries and comments array across all controllers
-
     $scope.finishedLoading = false;
     editorService.loadEditorData().then(function () {
       $scope.finishedLoading = true;
-
-      if (!$scope.sendReceive.status) {
-        $scope.sendReceive.status = {};
-        $scope.sendReceive.status.SRState = '';
-        getProjectStatus();
-        startSyncStatusTimer();
-      } else if ($scope.sendReceive.status.SRState == 'IDLE') {
-        $scope.sendReceive.status.SRState = '';
-      } else if ($scope.sendReceive.status.SRState != 'HOLD') {
-        getProjectStatus();
-        startSyncStatusTimer();
-      }
+      sendReceive.checkInitialState();
     });
 
     $scope.currentUserRole = sessionService.session.projectSettings.currentUserRole;
     $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
     pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
     changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
-
-    $scope.isTaskEnabled = lexConfigService.isTaskEnabled;
 
     $scope.gotoDictionary = function gotoDictionary() {
       $location.path('/dbe');
@@ -226,106 +213,19 @@ angular.module('lexicon',
       return $scope.rights.canEditUsers() && $scope.projectSettings.hasSendReceive && isDbeView;
     };
 
-    $scope.syncNotice = function syncNotice() {
-      if (angular.isUndefined($scope.sendReceive) ||
-        angular.isUndefined($scope.sendReceive.status)) return;
-
-      switch ($scope.sendReceive.status.SRState) {
-        case 'CLONING':
-          return 'Creating initial data...';
-        case 'SYNCING':
-        case 'syncing':
-          return 'Syncing...';
-        case 'IDLE':
-        case 'synced':
-          return 'Synced';
-        case 'unsynced':
-          return 'Un-synced';
-        case 'HOLD':
-          return 'On hold';
-        default:
-          return '';
-      }
-    };
-
     $scope.syncProject = function syncProject() {
-      sendReceiveService.receiveProject(function (result) {
+      sendReceiveApi.receiveProject(function (result) {
         if (result.ok) {
-          noticeService.setLoading('Syncing with LanguageDepot.org...');
-          $scope.sendReceive.status.SRState = 'syncing';
-          startSyncStatusTimer();
+          sendReceive.setSyncStarted();
         } else {
-          noticeService.push(noticeService.ERROR,
+          notice.push(notice.ERROR,
             'The project could not be synchronized with LanguageDepot.org. Please try again.');
         }
       });
     };
 
-    function isSyncing() {
-      return ($scope.projectSettings.hasSendReceive &&
-        angular.isDefined($scope.sendReceive.status) &&
-        angular.isDefined($scope.sendReceive.status.SRState) &&
-        $scope.sendReceive.status.SRState != 'IDLE' && $scope.sendReceive.status.SRState != '' &&
-        $scope.sendReceive.status.SRState != 'HOLD'
-      );
-    }
-
-    $scope.isSyncing = isSyncing;
-
-    var syncStatusTimer;
-
-    function getProjectStatus() {
-      sendReceiveService.getProjectStatus(function (result) {
-        if (result.ok) {
-          if (!result.data) {
-            $scope.sendReceive.status.SRState = '';
-            cancelSyncStatusTimer();
-            noticeService.cancelLoading();
-            return;
-          }
-
-          $scope.sendReceive.status = result.data;
-          if (!$scope.isSyncing()) {
-            cancelSyncStatusTimer();
-            noticeService.cancelLoading();
-          }
-
-          console.log($scope.sendReceive.status);
-
-          if ($scope.sendReceive.status.SRState == 'HOLD') {
-            noticeService.push(noticeService.ERROR, 'Well this is embarrassing. Something went ' +
-              'wrong and your project is now on hold. Contact an administrator.');
-          }
-
-          if ($scope.sendReceive.status.SRState == 'IDLE') {
-            noticeService.push(noticeService.SUCCESS, 'The project was successfully synchronized.');
-            $scope.finishedLoading = false;
-            editorService.loadEditorData().then(function () {
-              $scope.finishedLoading = true;
-              sessionService.refresh(function () {
-                $scope.refreshConfig();
-              });
-            });
-          }
-        }
-      });
-    }
-
-    function startSyncStatusTimer() {
-      if (angular.isDefined(syncStatusTimer)) return;
-
-      syncStatusTimer = $interval(getProjectStatus, 3000);
-    }
-
-    function cancelSyncStatusTimer() {
-      if (angular.isDefined(syncStatusTimer)) {
-        $interval.cancel(syncStatusTimer);
-        syncStatusTimer = undefined;
-      }
-    }
-
-    $scope.$on('$destroy', cancelSyncStatusTimer);
-    $scope.$on('$locationChangeStart', cancelSyncStatusTimer);
+    $scope.$on('$destroy', sendReceive.cancelAllStatusTimers);
+    $scope.$on('$locationChangeStart', sendReceive.cancelAllStatusTimers);
 
     // setup offline.js options
     // see https://github.com/hubspot/offline for all options
@@ -337,8 +237,8 @@ angular.module('lexicon',
     var offlineMessageId;
     Offline.on('up', function () {
       if ($scope.online == false) {
-        noticeService.removeById(offlineMessageId);
-        noticeService.push(noticeService.SUCCESS, 'You are back online!');
+        notice.removeById(offlineMessageId);
+        notice.push(notice.SUCCESS, 'You are back online!');
       }
 
       $scope.online = true;
@@ -346,13 +246,13 @@ angular.module('lexicon',
     });
 
     Offline.on('down', function () {
-      offlineMessageId = noticeService.push(noticeService.ERROR,
+      offlineMessageId = notice.push(notice.ERROR,
         'You are offline.  Some features are not available', null, true);
       $scope.online = false;
       if (!/^dbe/.test($location.path())) {
         // redirect to the dbe
         $location.path('/dbe');
-        noticeService.push(noticeService.SUCCESS,
+        notice.push(notice.SUCCESS,
           'The dictionary editor is available offline.  Settings are not.');
       }
 

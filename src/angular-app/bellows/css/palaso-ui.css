@@ -19,7 +19,10 @@ div.typeahead > div {
 }
 
 div.typeahead ul {
-    margin: 0 2px 2px 2px;
+    margin: 0 0 2px 2px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 300px;
 }
 
 li.typeahead-item {

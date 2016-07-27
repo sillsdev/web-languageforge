@@ -8,25 +8,25 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
   .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService',
     '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService',
     'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService',
-    'lexCommentService', 'lexEditorDataService', 'lexProjectService',
+    'lexCommentService', 'lexEditorDataService', 'lexProjectService', 'lexSendReceive',
   function ($scope, userService, sessionService, lexService,
             $window, $interval, $filter, linkService, utils, modal,
-            notice, $route, $rootScope, $location, configService,
-            commentService, editorService, lexProjectService) {
+            notice, $route, $rootScope, $location, lexConfig,
+            commentService, editorService, lexProjectService, sendReceive) {
 
     // TODO use ui-router for this instead!
 
     var pristineEntry = {};
 
-    // $scope.config is set in the parent controller, ng-app.js 'MainCtrl', so it can be updated
-    // after Send/Receive. IJH 2016-03
+    $scope.config = lexConfig.configForUser;
     $scope.lastSavedDate = new Date();
     $scope.currentEntry = {};
     $scope.commentService = commentService;
     $scope.editorService = editorService;
-    $scope.configService = configService;
+    $scope.configService = lexConfig;
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
+    $scope.show = { more: editorService.showMoreEntries };
 
     // default state. State is one of 'list', 'edit', or 'comment'
     $scope.state = 'list';
@@ -97,7 +97,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
       if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
         cancelAutoSaveTimer();
-        $scope.sendReceive.status.SRState = 'unsynced';
+        sendReceive.setStateUnsyned();
         saving = true;
         var entryToSave = angular.copy($scope.currentEntry);
         if (entryIsNew(entryToSave)) {
@@ -109,6 +109,18 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         lexService.update(prepEntryForUpdate(entryToSave), function (result) {
           if (result.ok) {
             var entry = result.data;
+            if (!entry && sendReceive.isSendReceiveProject()) {
+              notice.push(notice.WARN, 'Your edits in entry "' +
+                $scope.getWordForDisplay(entryToSave) + '" could not be saved because a ' +
+                'synchronise has been started by another user. When the synchronise finishes ' +
+                'please make your edits again.');
+              sendReceive.startSyncStatusTimer();
+            }
+
+            if (!entry) {
+              $scope.currentEntry = angular.copy(pristineEntry);
+            }
+
             if (isNewEntry) {
               // note: we have to reset the show window, because we don't know
               // where the new entry will show up in the list
@@ -138,7 +150,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
             // refresh data will add the new entry to the entries list
             editorService.refreshEditorData().then(function () {
-              if (isNewEntry) {
+              if (entry && isNewEntry) {
                 setCurrentEntry($scope.entries[getIndexInList(entry.id, $scope.entries)]);
                 editorService.removeEntryFromLists(newEntryTempId);
                 if (doSetEntry) {
@@ -416,28 +428,31 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
       switch (config.type) {
         case 'fields':
-          angular.forEach(config.fieldOrder, function (f) {
-            if (angular.isUndefined(data[f])) {
-              if (config.fields[f].type == 'fields' || config.fields[f].type == 'pictures') {
-                data[f] = [];
+          angular.forEach(config.fieldOrder, function (fieldName) {
+            if (angular.isUndefined(data[fieldName])) {
+              if (config.fields[fieldName].type == 'fields' ||
+                  config.fields[fieldName].type == 'pictures') {
+                data[fieldName] = [];
               } else {
-                data[f] = {};
+                data[fieldName] = {};
               }
             }
 
-            // only recurse if the field is not in our node stoplist
-            if (stopAtNodes.indexOf(f) == -1) {
-              if (config.fields[f].type == 'fields') {
-                if (data[f].length == 0) {
-                  data[f].push({});
+            // only recurse if the field is not in our node stop list or if it contains data
+            if (stopAtNodes.indexOf(fieldName) == -1 || data[fieldName].length != 0) {
+              if (config.fields[fieldName].type == 'fields') {
+                if (data[fieldName].length == 0) {
+                  data[fieldName].push({});
                 }
 
-                for (var i = 0; i < data[f].length; i++) {
-                  data[f][i] =
-                    $scope.makeValidModelRecursive(config.fields[f], data[f][i], stopAtNodes);
+                for (var i = 0; i < data[fieldName].length; i++) {
+                  data[fieldName][i] =
+                    $scope.makeValidModelRecursive(config.fields[fieldName],
+                      data[fieldName][i], stopAtNodes);
                 }
               } else {
-                data[f] = $scope.makeValidModelRecursive(config.fields[f], data[f], stopAtNodes);
+                data[fieldName] = $scope.makeValidModelRecursive(config.fields[fieldName],
+                  data[fieldName], stopAtNodes);
               }
             }
           });
@@ -520,6 +535,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         }
 
         if (!entryIsNew(entry)) {
+          sendReceive.setStateUnsyned();
           lexService.remove(entry.id, function () {
             editorService.refreshEditorData();
           });
@@ -527,7 +543,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       });
     };
 
-    $scope.show = { emptyFields: false };
+    $scope.show.emptyFields = false;
 
     $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {
       var title;
@@ -593,6 +609,26 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // only refresh the full view if we have not yet loaded the dictionary for the first time
     evaluateState();
 
+    sendReceive.setPollProjectStatusSuccessCallback(pollProjectStatusSuccess);
+    sendReceive.setSyncProjectStatusSuccessCallback(syncProjectStatusSuccess);
+
+    function pollProjectStatusSuccess() {
+      cancelAutoSaveTimer();
+      notice.push(notice.WARN, 'Your edits in entry "' +
+        $scope.getWordForDisplay($scope.currentEntry) + '" will not be saved because a ' +
+        'synchronise has been started by another user. When the synchronise finishes ' +
+        'please make your edits again.');
+      $scope.currentEntry = angular.copy(pristineEntry);
+    }
+
+    function syncProjectStatusSuccess() {
+      $scope.finishedLoading = false;
+      editorService.loadEditorData().then(function () {
+        $scope.finishedLoading = true;
+        sessionService.refresh(lexConfig.refresh);
+      });
+    }
+
     var autoSaveTimer;
     function startAutoSaveTimer() {
       if (angular.isDefined(autoSaveTimer)) {
@@ -634,24 +670,31 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // permissions stuff
     $scope.rights = {
       canEditProject: function canEditProject() {
-        if ($scope.isSyncing()) return false;
+        if (sendReceive.isInProgress()) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.PROJECTS,
           sessionService.operation.EDIT);
       },
 
       canEditEntry: function canEditEntry() {
-        if ($scope.isSyncing()) return false;
+        if (sendReceive.isInProgress()) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.EDIT);
       },
 
       canDeleteEntry: function canDeleteEntry() {
-        if ($scope.isSyncing()) return false;
+        if (sendReceive.isInProgress()) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.DELETE);
+      },
+
+      canComment: function canComment() {
+        if (sendReceive.isInProgress()) return false;
+
+        return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
+          sessionService.operation.CREATE);
       }
     };
 
@@ -690,10 +733,34 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // search typeahead
     $scope.typeahead = {
       term: '',
-      searchResults: []
+      searchResults: [],
+      limit: 50,
+      matchCountCaption: ''
     };
+
     $scope.typeahead.searchEntries = function searchEntries(query) {
-      $scope.typeahead.searchResults = $filter('filter')($scope.entries, query);
+
+      // Concatenate to get prioritized list of exact matches, then non-exact.
+      // TODO: would be better to search for gloss.  DDW 2016-06-22
+      var results =
+          $filter('filter')($scope.entries, { lexeme: query }, true).concat(
+          $filter('filter')($scope.entries, { senses: query }, true),
+          $filter('filter')($scope.entries, { lexeme: query }),
+          $filter('filter')($scope.entries, { senses: query }),
+          $filter('filter')($scope.entries, query));
+
+      // Set function to return unique results
+      $scope.typeahead.searchResults = Array.from(new Set(results));
+      $scope.typeahead.matchCountCaption = '';
+      var numMatches = $scope.typeahead.searchResults.length;
+      if (numMatches > $scope.typeahead.limit) {
+        $scope.typeahead.matchCountCaption =
+          $scope.typeahead.limit + ' of ' + numMatches + ' matches';
+      } else if (numMatches > 1) {
+        $scope.typeahead.matchCountCaption = numMatches + ' matches';
+      } else if (numMatches == 1) {
+        $scope.typeahead.matchCountCaption = numMatches + ' match';
+      }
     };
 
     $scope.typeahead.searchSelect = function searchSelect(entry) {

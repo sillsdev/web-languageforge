@@ -18,13 +18,41 @@ $testProject = ProjectModel::getById($project->id->asString());
 $assetsFolderPath = $testProject->getAssetsFolderPath();
 FileUtilities::removeFolderAndAllContents($assetsFolderPath);
 
-// cleanup LfMerge 'syncqueue' folder
+// cleanup other assets folders
+$otherAssetsFolderPath = str_replace($constants['testProjectCode'], $constants['otherProjectCode'], $assetsFolderPath);
+FileUtilities::removeFolderAndAllContents($otherAssetsFolderPath);
+$otherAssetsFolderPath = str_replace($constants['testProjectCode'], $constants['newProjectCode'], $assetsFolderPath);
+FileUtilities::removeFolderAndAllContents($otherAssetsFolderPath);
+$otherAssetsFolderPath = str_replace($constants['testProjectCode'], $constants['emptyProjectCode'], $assetsFolderPath);
+FileUtilities::removeFolderAndAllContents($otherAssetsFolderPath);
+$otherAssetsFolderPath = str_replace($constants['testProjectCode'], $constants['srProjectCode'], $assetsFolderPath);
+FileUtilities::removeFolderAndAllContents($otherAssetsFolderPath);
+$otherAssetsFolderPath = str_replace($constants['testProjectCode'], 'mock-id4', $assetsFolderPath);
+if (file_exists($otherAssetsFolderPath)) {
+    // glob doesn't list broken links, manually remove them first
+    foreach (array_diff(scandir($otherAssetsFolderPath), array('.', '..')) as $filename) {
+        $filePath = $otherAssetsFolderPath . DIRECTORY_SEPARATOR . $filename;
+        if (is_link($filePath)) {
+            unlink($filePath);
+        }
+    }
+    FileUtilities::removeFolderAndAllContents($otherAssetsFolderPath);
+}
+
+// cleanup LfMerge 'syncqueue', 'webwork' and 'state' folders
 if ($testProject->appName == LexiconProjectModel::LEXICON_APP) {
     $syncQueuePath = SendReceiveCommands::getLFMergePaths()->syncQueuePath;
     foreach (glob("{$syncQueuePath}/*") as $file) {
         if (is_file($file)) {
             unlink($file);
         }
+    }
+    $workPath = SendReceiveCommands::getLFMergePaths()->workPath;
+    FileUtilities::removeFolderAndAllContents($workPath . DIRECTORY_SEPARATOR . $constants['srProjectCode']);
+    FileUtilities::removeFolderAndAllContents($workPath . DIRECTORY_SEPARATOR . 'mock-id4');
+    $stateFilePath = SendReceiveCommands::getLFMergePaths()->statePath . DIRECTORY_SEPARATOR . 'mock-id4.state';
+    if (is_file($stateFilePath)) {
+        unlink($stateFilePath);
     }
 }
 

@@ -4,6 +4,7 @@ namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Model\Command\ActivityCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
@@ -42,7 +43,7 @@ class LexEntryCommands
      * @param string $mergeQueuePath
      * @param string $pidFilePath
      * @param string $command
-     * @return array<encoded LexEntryModel>
+     * @return bool|array<encoded LexEntryModel> if the project is syncing (or on hold) return false (no save)FixSe
      */
     public static function updateEntry($projectId, $params, $userId, $mergeQueuePath = null, $pidFilePath = null, $command = null)
     {
@@ -55,21 +56,23 @@ class LexEntryCommands
             $entry = new LexEntryModel($project);
             $entry->authorInfo->createdByUserRef->id = $userId;
             $entry->authorInfo->createdDate = new \DateTime();
-            $entry->guid = LexEntryModel::createGuid();
+            $entry->guid = Guid::create();
             $action = 'create';
             // TODO: Consider adding more specific activity entry: which fields were modified? 2014-09-03 RM
             // E.g., "User _____ updated entry _____ by adding a new sense with definition ______"
         }
 
-        // set authorInfo
         $entry->authorInfo->modifiedDate = new \DateTime();
         $entry->authorInfo->modifiedByUserRef->id = $userId;
 
-//        if ($project->hasSendReceive()) $entry->dirtySR++;
-        if ($project->hasSendReceive()) $entry->dirtySR = 0;
+        if ($project->hasSendReceive()) {
+//            $entry->dirtySR++;
+            $entry->dirtySR = 0;
+            $status = SendReceiveCommands::getProjectStatus($projectId);
+            if ($status && $status['SRState'] != 'IDLE') return false;
+        }
 
         $params = self::recursiveRemoveEmptyFieldValues($params);
-        //$params = self::recursiveAlignCustomFieldsWithModel($params);
         JsonDecoder::decode($entry, $params);
 
         $entry->write();
@@ -95,6 +98,9 @@ class LexEntryCommands
                     }
                 } elseif (is_array($item)) {
                     $arr[$key] = self::recursiveRemoveEmptyFieldValues($item);
+                    if (count($arr[$key]) == 0) {
+                        unset($arr[$key]);
+                    }
                 } else {
                     // don't do anything for other types (e.g. boolean)
                 }
@@ -147,22 +153,4 @@ class LexEntryCommands
         return ''; // TODO: Decide what to return for "not found", if empty string is not suitable.
     }
 
-    /*
-    private static function recursiveAlignCustomFieldsWithModel($params)
-    {
-        if (!array_key_exists('customFields', $params)) {
-            $params['customFields'] = array();
-        }
-        foreach ($params as $key => $value) {
-            if (preg_match('/^customField_/', $key)) {
-                $params['customFields'][$key] = $value;
-                unset($params[$key]);
-            } elseif ($key == 'senses' || $key == 'examples') {
-                $params[$key] = self::recursiveAlignCustomFieldsWithModel($params[$key]);
-            }
-        }
-
-        return $params;
-    }
-    */
 }

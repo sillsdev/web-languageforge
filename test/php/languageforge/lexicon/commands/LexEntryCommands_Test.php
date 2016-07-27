@@ -4,12 +4,11 @@ use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
-use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
+use Api\Model\Languageforge\Lexicon\Picture;
 use Api\Model\Languageforge\Lexicon\Sense;
 use Api\Model\Mapper\JsonEncoder;
-use Palaso\Utilities\FileUtilities;
-use Ramsey\Uuid\Uuid;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -131,22 +130,25 @@ class TestLexEntryCommands extends UnitTestCase
 
         $userId = $e->createUser('john', 'john', 'john');
 
-        $entry = new LexEntryModel($project);
-        $entry->lexeme->form('th', 'apple');
-
-        $sense = new Sense();
-        $sense->definition->form('en', 'red fruit');
-        $sense->gloss->form('en', 'rose fruit');
-        $sense->partOfSpeech->value = 'noun';
-
-        $example = new Example();
+        $exampleGuid = Guid::create();
+        $example = new Example($exampleGuid, $exampleGuid);
         $example->sentence->form('th', 'example1');
         $example->translation->form('en', 'trans1');
 
+        $pictureGuid = Guid::create();
+        $picture = new Picture('someFilename', $pictureGuid);
+
+        $senseGuid = Guid::create();
+        $sense = new Sense($senseGuid, $senseGuid);
+        $sense->definition->form('en', 'red fruit');
+        $sense->gloss->form('en', 'rose fruit');
+        $sense->partOfSpeech->value = 'noun';
         $sense->examples[] = $example;
+        $sense->pictures[] = $picture;
 
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
         $entry->senses[] = $sense;
-
         $entryId = $entry->write();
 
         $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
@@ -157,9 +159,15 @@ class TestLexEntryCommands extends UnitTestCase
         $newEntry = LexEntryCommands::readEntry($projectId, $entryId);
 
         $this->assertEqual($newEntry['lexeme']['th']['value'], 'rose apple');
+        $this->assertEqual($newEntry['senses'][0]['guid'], $senseGuid);
+        $this->assertFalse(array_key_exists('liftId', $newEntry['senses'][0]), 'sense liftId should be private');
         $this->assertEqual($newEntry['senses'][0]['definition']['en']['value'], 'red fruit');
         $this->assertEqual($newEntry['senses'][0]['gloss']['en']['value'], 'rose fruit');
         $this->assertEqual($newEntry['senses'][0]['partOfSpeech']['value'], 'noun');
+        $this->assertEqual($newEntry['senses'][0]['examples'][0]['guid'], $exampleGuid);
+        $this->assertEqual($newEntry['senses'][0]['pictures'][0]['guid'], $pictureGuid);
+        $this->assertFalse(array_key_exists('scientificName', $newEntry['senses'][0]), 'should be no empty fields');
+        $this->assertFalse(array_key_exists('liftId', $newEntry['senses'][0]['examples'][0]), 'example liftId should be private');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['sentence']['th']['value'], 'example1');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
     }
@@ -347,5 +355,40 @@ class TestLexEntryCommands extends UnitTestCase
         $this->assertEqual($result->entries[0]['lexeme']['th']['value'], 'Apfel0');
         $this->assertTrue(!array_key_exists('definition', $result->entries[0]['senses'][0]));
         $this->assertEqual($result->entries[3]['senses'][0]['definition']['en']['value'], 'apple');
+    }
+
+    public function testRecursiveRemoveEmptyFieldValues_3EmptyItemsAnd3NonEmptyItems_NonEmptyItemsRemain()
+    {
+        $params = array(
+            'customFieldsEmpty' => array(
+                'customField_entry_Cust_Single_Line_All' => array(
+                    'en' => array('value' => ''),
+                    'fr' => array('value' => '')
+                )
+            ),
+            'literalMeaningEmpty' => array(
+                'en' => array('value' => '')
+            ),
+            'locationEmpty' => array('value' => ''),
+            'customFields' => array(
+                'customField_entry_Cust_Single_Line_All' => array(
+                    'en' => array('value' => 'english'),
+                    'fr' => array('value' => 'french')
+                )
+            ),
+            'literalMeaning' => array(
+                'en' => array('value' => 'literal')
+            ),
+            'location' => array('value' => 'locale')
+        );
+        $this->assertEqual(count($params), 6);
+
+        $params = LexEntryCommands::recursiveRemoveEmptyFieldValues($params);
+
+        $this->assertEqual(count($params), 3);
+        $this->assertEqual($params['customFields']['customField_entry_Cust_Single_Line_All']['en']['value'], 'english');
+        $this->assertEqual($params['customFields']['customField_entry_Cust_Single_Line_All']['fr']['value'], 'french');
+        $this->assertEqual($params['literalMeaning']['en']['value'], 'literal');
+        $this->assertEqual($params['location']['value'], 'locale');
     }
 }
