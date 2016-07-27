@@ -10,20 +10,22 @@ class LexiconFieldListConfigObj extends LexiconConfigObj
     public function __construct()
     {
         parent::__construct();
-        $this->type = LexiconConfigObj::FIELDLIST;
+        $this->type = self::FIELDLIST;
         $this->fieldOrder = new ArrayOf();
         $this->fields = new MapOf(
             function ($data) {
                 switch ($data['type']) {
-                    case LexiconConfigObj::FIELDLIST:
+                    case self::FIELDLIST:
                         return new LexiconFieldListConfigObj();
-                    case LexiconConfigObj::MULTITEXT:
+                    case self::MULTITEXT:
                         return new LexiconMultitextConfigObj();
-                    case LexiconConfigObj::OPTIONLIST:
+                    case self::MULTIPARAGRAPH:
+                        return new LexMultiParagraphConfigObj();
+                    case self::OPTIONLIST:
                         return new LexiconOptionlistConfigObj();
-                    case LexiconConfigObj::MULTIOPTIONLIST:
+                    case self::MULTIOPTIONLIST:
                         return new LexiconMultiOptionlistConfigObj();
-                    case LexiconConfigObj::PICTURES:
+                    case self::PICTURES:
                         return new LexPicturesConfigObj();
                     default:
                         $type = $data['type'];
@@ -33,14 +35,10 @@ class LexiconFieldListConfigObj extends LexiconConfigObj
         );
     }
 
-    /**
-     * @var ArrayOf<string> fieldName
-     */
+    /** @var ArrayOf<string> fieldName */
     public $fieldOrder;
 
-    /**
-     * @var MapOf<LexiconConfigObj>
-     */
+    /** @var MapOf<LexiconConfigObj> */
     public $fields;
 
 }
