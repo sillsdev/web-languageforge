@@ -7,6 +7,6 @@ class LexMultiParagraphConfigObj extends LexiconConfigObj
     public function __construct()
     {
         parent::__construct();
-        $this->type = LexiconConfigObj::MULTIPARAGRAPH;
+        $this->type = self::MULTIPARAGRAPH;
     }
 }

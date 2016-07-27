@@ -40,7 +40,9 @@ class Example extends ObjectForEncoding
             case 'examplePublishIn':
                 return new LexiconMultiValueField();
             case 'customFields':
-                return new MapOf('\Api\Model\Languageforge\Lexicon\_createCustomField');
+                return new MapOf('\Api\Model\Languageforge\Lexicon\generateCustomField');
+            default:
+                return '';
         }
     }
 
@@ -50,41 +52,27 @@ class Example extends ObjectForEncoding
      */
     public $liftId;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $sentence;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $translation;
 
-    /**
-     * @var MapOf<MultiText|LexiconField|LexiconMultiValueField>
-     */
+    /** @var MapOf<MultiText|LexMultiParagraph|LexiconField|LexiconMultiValueField> */
     public $customFields;
 
-    /**
-     * @var AuthorInfo
-     */
+    /** @var AuthorInfo */
     public $authorInfo;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $guid;
 
     // less common fields used in FLEx
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $reference;
 
-    /**
-     * @var LexiconMultiValueField
-     */
+    /** @var LexiconMultiValueField */
     public $examplePublishIn;
 
 }
