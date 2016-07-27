@@ -4,7 +4,7 @@ namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Mapper\MapOf;
 
-function _createLexiconField($data)
+function generateLexiconField()
 {
     return new LexiconField();
 }
@@ -13,7 +13,7 @@ class MultiText extends MapOf
 {
     public function __construct()
     {
-        parent::__construct('\Api\Model\Languageforge\Lexicon\_createLexiconField');
+        parent::__construct('\Api\Model\Languageforge\Lexicon\generateLexiconField');
     }
 
     public function form($inputSystem, $value)
@@ -26,7 +26,6 @@ class MultiText extends MapOf
     }
 
     /**
-     *
      * @param string $inputSystem
      * @return boolean
      */

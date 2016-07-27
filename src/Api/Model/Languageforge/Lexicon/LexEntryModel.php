@@ -12,18 +12,20 @@ use Api\Model\ProjectModel;
 use LazyProperty\LazyPropertiesTrait;
 use Palaso\Utilities\CodeGuard;
 
-function _createSense()
+function generateSense()
 {
     return new Sense();
 }
 
-function _createCustomField($data)
+function generateCustomField($data)
 {
     CodeGuard::checkTypeAndThrow($data, 'array');
     if (array_key_exists('value', $data)) {
         return new LexiconField();
     } elseif (array_key_exists('values', $data)) {
         return new LexiconMultiValueField();
+    } elseif (array_key_exists('paragraphs', $data)) {
+        return new LexMultiParagraph();
     } else {
         return new MultiText();
     }
@@ -33,118 +35,74 @@ class LexEntryModel extends MapperModel
 {
     use LazyPropertiesTrait;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $isDeleted;
 
-    /**
-     * @var IdReference
-     */
+    /** @var IdReference */
     public $id;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $guid;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     public $dirtySR;
 
     // PUBLIC PROPERTIES
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $lexeme;
 
-    /**
-     * @var ArrayOf ArrayOf<Sense>
-     */
+    /** @var ArrayOf<Sense> */
     public $senses;
 
     // REMAINING PUBLIC PROPERTIES IN ALPHABETIC ORDER
 
-    /**
-     * @var AuthorInfo
-     */
+    /** @var AuthorInfo */
     public $authorInfo;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $citationForm;
 
-    /**
-     * @var MapOf<MultiText|LexiconField|LexiconMultiValueField>
-     */
+    /** @var MapOf<MultiText|LexMultiParagraph|LexiconField|LexiconMultiValueField> */
     public $customFields;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $entryBibliography;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $entryRestrictions;
 
-    /**
-     * @var LexiconMultiValueField
-     */
+    /** @var LexiconMultiValueField */
     public $environments;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $etymology;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $etymologyGloss;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $etymologyComment;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $etymologySource;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $literalMeaning;
 
-    /**
-     * @var LexiconField
-     */
+    /** @var LexiconField */
     public $location;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $mercurialSha;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $morphologyType;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $note;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $pronunciation;
 
     /**
@@ -159,9 +117,7 @@ class LexEntryModel extends MapperModel
      */
     public $tone;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $summaryDefinition;
 
     /**
@@ -221,9 +177,9 @@ class LexEntryModel extends MapperModel
     {
         switch ($name) {
             case 'senses':
-                return new ArrayOf('Api\Model\Languageforge\Lexicon\_createSense');
+                return new ArrayOf('Api\Model\Languageforge\Lexicon\generateSense');
             case 'customFields':
-                return new MapOf('Api\Model\Languageforge\Lexicon\_createCustomField');
+                return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
             case 'authorInfo':
                 return new AuthorInfo();
 

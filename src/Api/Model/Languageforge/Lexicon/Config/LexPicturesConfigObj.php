@@ -7,26 +7,16 @@ class LexPicturesConfigObj extends LexiconMultitextConfigObj
     public function __construct()
     {
         parent::__construct();
-        $this->type = LexiconConfigObj::PICTURES;
+        $this->type = self::PICTURES;
         $this->label = 'Pictures';
         $this->captionLabel = 'Captions';
         $this->captionHideIfEmpty = true;
     }
 
-    /**
-     * @var string
-     */
-    public $label;
-
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $captionLabel;
 
-    /**
-     * @var boolean
-     */
+    /** @var boolean */
     public $captionHideIfEmpty;
 
 }
