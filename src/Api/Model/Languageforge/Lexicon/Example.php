@@ -40,7 +40,7 @@ class Example extends ObjectForEncoding
             case 'examplePublishIn':
                 return new LexiconMultiValueField();
             case 'customFields':
-                return new MapOf('\Api\Model\Languageforge\Lexicon\generateCustomField');
+                return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
             default:
                 return '';
         }
