@@ -13,15 +13,15 @@
     "alternate-url": "https://github.com/sillsdev/web-scriptureforge.git"
   },
   "devDependencies": {
-    "phantomjs": "",
-    "protractor": "",
-    "karma": "",
-    "astrolabe": "",
+    "phantomjs-prebuilt": "~2.1",
+    "protractor": "~4.0",
+    "karma": "~1.1",
+    "astrolabe": "~0.3",
 
-    "jasmine-reporters": "",
-    "karma-teamcity-reporter": "",
-    "karma-chrome-launcher": "",
-    "karma-jasmine": "",
-    "karma-phantomjs-launcher": ""
+    "jasmine-reporters": "~2.2",
+    "karma-teamcity-reporter": "~1.0",
+    "karma-chrome-launcher": "~1.0",
+    "karma-jasmine": "~1.0",
+    "karma-phantomjs-launcher": "~1.0"
   }
 }
