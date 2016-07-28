@@ -11,15 +11,15 @@
 
             <link rel="icon" href="/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico" type="image/x-icon" />
 
-            <script src="/js/lib/jquery-1.8.3.min.js"></script>
             <!-- jquery must be the first js to be loaded -->
-
-            {% if useCdn %}
-                <link data-require="font-awesome@*" data-semver="4.2.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
-                <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
-            {% else %}
-                <link rel="stylesheet" href="/vendor_bower/font-awesome/css/font-awesome.css" />
+            {%  if useMinifiedJs %}
+                <script src="/vendor_bower/jquery/dist/jquery.min.js"></script>
+                <script src="/vendor_bower/angular/angular.min.js"></script>
+                <link rel="stylesheet" href="/vendor_bower/font-awesome/css/font-awesome.min.css" />
+            {%  else %}
+                <script src="/vendor_bower/jquery/dist/jquery.js"></script>
                 <script src="/vendor_bower/angular/angular.js"></script>
+                <link rel="stylesheet" href="/vendor_bower/font-awesome/css/font-awesome.css" />
             {% endif %}
 
         {% endblock %}
