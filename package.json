@@ -1,7 +1,7 @@
 {
-  "name": "forge",
+  "name": "xForge",
   "version": "0.1.0",
-  "description": "Forge - Languageforge and Scriptureforge",
+  "description": "xForge - Languageforge and Scriptureforge",
   "main": "src/index.php",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

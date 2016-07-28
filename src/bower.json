@@ -1,18 +1,22 @@
 {
-  "name": "ScriptureForge",
+  "name": "web-xForge",
   "dependencies": {
-  },
-  "devDependencies": {
-    "angular": "1.2.15",
-    "angular-animate": "1.2.15",
-    "angular-route": "1.2.15",
-    "angular-sanitize": "1.2.15",
-    "angular-ui-router": "0.2.10",
-    "angular-translate": "2.2.0",
-    "angular-translate-loader-static-files": "2.2.0",
-    "angularjs-file-upload": "1.6.7",
-    "textAngular": "~1.2.2",
+    "jquery": "~3.1",
+    "angular": "~1.5",
     "google-open-sans": "1.0.x",
-    "font-awesome": "4.2.x"
-  }
+    "font-awesome": "4.2.x",
+
+    "angular-animate": "~1.5",
+    "angular-route": "~1.5",
+    "angular-sanitize": "~1.5",
+    "angular-ui-router": "~0.3",
+    "angular-translate": "~2",
+    "angular-translate-loader-static-files": "~2",
+    "angularjs-file-upload": "~12.0",
+    "lodash": "~4.14",
+    "angular-truncate-2": "~0.4.2",
+    "angular-bootstrap": "~0.8",
+    "angular-ui-validate": "~1.2"
+  },
+  "devDependencies": {}
 }

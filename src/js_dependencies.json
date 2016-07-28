@@ -1,0 +1,13 @@
+{
+  "angular-animate": { "path": "vendor_bower/angular-animate" },
+  "angular-route": { "path": "vendor_bower/angular-route" },
+  "angular-sanitize": { "path": "vendor_bower/angular-sanitize" },
+  "angular-ui-router": { "path": "vendor_bower/angular-ui-router/release" },
+  "angular-translate": { "path": "vendor_bower/angular-translate" },
+  "angular-translate-loader-static-files": { "path": "vendor_bower/angular-translate-loader-static-files" },
+  "angularjs-file-upload": { "path": "vendor_bower/angularjs-file-upload", "jsFile": ["ng-file-upload", "ng-file-upload-shim"] },
+  "lodash": { "path": "vendor_bower/lodash/dist" },
+  "angular-truncate-2": { "path": "vendor_bower/angular-truncate-2/dist" },
+  "angular-bootstrap": { "path": "vendor_bower/angular-bootstrap", "jsFile": "ui-bootstrap-tpls" },
+  "angular-ui-validate": { "path": "vendor_bower/angular-ui-validate/dist", "jsFile": "validate" }
+}
