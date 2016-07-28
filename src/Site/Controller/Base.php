@@ -30,6 +30,8 @@ class Base
         $this->data['jsFiles'] = array();
         $this->data['jsNotMinifiedFiles'] = array();
         $this->data['cssFiles'] = array();
+        $this->data['vendorFilesJs'] = array();
+        $this->data['vendorFilesMinJs'] = array();
 
         $this->addCssFiles("Site/views/shared/css");
         $this->addCssFiles($this->getThemePath()."/css");
