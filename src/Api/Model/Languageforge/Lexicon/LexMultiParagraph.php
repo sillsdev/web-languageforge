@@ -6,27 +6,33 @@ use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\ObjectForEncoding;
 use LazyProperty\LazyPropertiesTrait;
 
-function generateMultiParagraphItem() {
+function generateParagraph() {
     return new LexParagraph();
 }
 
 class LexMultiParagraph extends ObjectForEncoding
 {
     use LazyPropertiesTrait;
-    
-    public function __construct()
+
+    public function __construct($guid = '')
     {
+        $this->setReadOnlyProp('guid');
+        if (!$guid || !Guid::isValid($guid)) $guid = Guid::create();
+        $this->guid = $guid;
         $this->initLazyProperties(['paragraphs'], false);
     }
 
     protected function createProperty($name) {
         switch ($name) {
             case 'paragraphs':
-                return new ArrayOf('\Api\Model\Languageforge\Lexicon\generateMultiParagraphItem');
+                return new ArrayOf('Api\Model\Languageforge\Lexicon\generateParagraph');
             default:
                 return '';
         }
     }
+
+    /** @var string */
+    public $guid;
 
     /** @var string */
     public $inputSystem;
@@ -39,12 +45,16 @@ class LexMultiParagraph extends ObjectForEncoding
      * @return string
      */
     public function toHTML() {
-        $html = "";
+        $html = '';
+        /** @var LexParagraph $paragraph */
         foreach ($this->paragraphs as $paragraph) {
-            $html .= "<p guid='" . $paragraph->guid . "'>";
-            $html .= "<p styleName='" . $paragraph->styleName . "'>";
+            $html .= '<p';
+            $html .= ' lang="' . $this->inputSystem . '"';
+            $html .= ' data-guid="' . $paragraph->guid . '"';
+            $html .= ' data-style-name="' . $paragraph->styleName . '"';
+            $html .= '>';
             $html .= $paragraph->content;
-            $html .= "</p>";
+            $html .= '</p>';
         }
         return $html;
     }
@@ -56,11 +66,12 @@ class LexMultiParagraph extends ObjectForEncoding
         $dom = new \DOMDocument();
         $dom->loadHTML($html);
         $this->paragraphs->exchangeArray(array());
-        /** @var \DOMNode $node */
+        /** @var \DOMElement $node */
         foreach ($dom->getElementsByTagName('p') as $node) {
+            $this->inputSystem = $node->getAttribute('lang');
             $paragraph = new LexParagraph();
-            $paragraph->guid = $node->getAttribute('guid');
-            $paragraph->styleName = $node->getAttribute('styleName');
+            $paragraph->guid = $node->getAttribute('data-guid');
+            $paragraph->styleName = $node->getAttribute('data-style-name');
             $paragraph->content = self::innerHTML($node);
             $this->paragraphs->append($paragraph);
         }
@@ -73,9 +84,8 @@ class LexMultiParagraph extends ObjectForEncoding
      */
     private static function innerHTML(\DOMNode $element)
     {
-        $innerHTML = "";
+        $innerHTML = '';
         $children  = $element->childNodes;
-
         foreach ($children as $child)
         {
             $innerHTML .= $element->ownerDocument->saveHTML($child);
