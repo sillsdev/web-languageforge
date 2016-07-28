@@ -1,0 +1,27 @@
+{
+  "name": "xForge-testing",
+  "version": "0.1.0",
+  "description": "xForge - Languageforge and Scriptureforge",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sillsdev/web-languageforge.git",
+    "alternate-url": "https://github.com/sillsdev/web-scriptureforge.git"
+  },
+  "devDependencies": {
+    "phantomjs": "",
+    "protractor": "",
+    "karma": "",
+    "astrolabe": "",
+
+    "jasmine-reporters": "",
+    "karma-teamcity-reporter": "",
+    "karma-chrome-launcher": "",
+    "karma-jasmine": "",
+    "karma-phantomjs-launcher": ""
+  }
+}
