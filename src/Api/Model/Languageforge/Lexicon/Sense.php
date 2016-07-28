@@ -67,10 +67,10 @@ class Sense extends ObjectForEncoding
         switch ($name) {
             case 'partOfSpeech': return new LexiconField();
             case 'semanticDomain': return new LexiconMultiValueField();
-            case 'examples': return new ArrayOf('\Api\Model\Languageforge\Lexicon\generateExample');
-            case 'customFields': return new MapOf('\Api\Model\Languageforge\Lexicon\generateCustomField');
+            case 'examples': return new ArrayOf('Api\Model\Languageforge\Lexicon\generateExample');
+            case 'customFields': return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
             case 'authorInfo': return new AuthorInfo();
-            case 'pictures': return new ArrayOf('\Api\Model\Languageforge\Lexicon\generatePicture');
+            case 'pictures': return new ArrayOf('Api\Model\Languageforge\Lexicon\generatePicture');
 
             case 'definition':
             case 'gloss':

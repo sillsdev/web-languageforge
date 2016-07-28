@@ -13,7 +13,7 @@ class MultiText extends MapOf
 {
     public function __construct()
     {
-        parent::__construct('\Api\Model\Languageforge\Lexicon\generateLexiconField');
+        parent::__construct('Api\Model\Languageforge\Lexicon\generateLexiconField');
     }
 
     public function form($inputSystem, $value)
@@ -33,5 +33,4 @@ class MultiText extends MapOf
     {
         return array_key_exists($inputSystem, $this);
     }
-
 }
