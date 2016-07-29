@@ -36,4 +36,23 @@ class TestLexMultiParagraph extends UnitTestCase
 
         $this->assertClone($multiParagraph, $newMultiParagraph);
     }
+
+    public function testFromHTML_MultipleClassValues_GuidExtracted()
+    {
+        $multiParagraph = new LexMultiParagraph();
+        $multiParagraph->inputSystem = '';
+
+        $paragraph = new LexParagraph();
+        $paragraph->styleName = 'styleA';
+        $paragraph->content = 'This is the first paragraph in <span lang="de">die Deutsche Sprache</span>';
+        $multiParagraph->paragraphs->append($paragraph);
+
+        $html = '<p lang="" class="firstClassValue guid_' . $paragraph->guid . ' styleName_' . $paragraph->styleName .
+            ' fourthClassValue'.'">' . $paragraph->content . '</p>';
+
+        $newMultiParagraph = new LexMultiParagraph($multiParagraph->guid);
+        $newMultiParagraph->fromHTML($html);
+
+        $this->assertClone($multiParagraph, $newMultiParagraph);
+    }
 }
