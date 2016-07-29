@@ -335,8 +335,9 @@ class LiftDecoder
             switch ($element->getName()) {
                 case 'form':
                     $inputSystemTag = (string) $element['lang'];
-                    $multiText->form($inputSystemTag, $this->sanitizeSpans(dom_import_simplexml($element->text), $inputSystemTag));
-
+                    $value = self::sanitizeSpans(dom_import_simplexml($element->text), $inputSystemTag,
+                        $this->currentNodeError());
+                    $multiText->form($inputSystemTag, $value);
                     $this->projectModel->addInputSystem($inputSystemTag);
                     if (isset($inputSystems)) {
                         $inputSystems->ensureValueExists($inputSystemTag);
@@ -377,26 +378,27 @@ class LiftDecoder
     }
 
     /**
-     * Recursively sanitizes the element only allowing <span> elements through; coverts everthing else to text
+     * Recursively sanitizes the element only allowing <span> elements through; coverts everything else to text
      *  - also removes native language spans, i.e those that match the input system tag
      *
      * @param \DOMElement $textDom
      * @param string $inputSystemTag
+     * @param LiftImportNodeError $currentNodeError
      * @return string
      */
-    public function sanitizeSpans($textDom, $inputSystemTag)
+    public static function sanitizeSpans($textDom, $inputSystemTag, $currentNodeError = null)
     {
         $textStr = '';
         foreach ($textDom->childNodes as $child) {
             if ($child->nodeType == XML_TEXT_NODE) {
                 $childTextStr = $child->textContent;
             } else {
-                if ($child->nodeName != 'span') {
-                    $this->currentNodeError()->addUnhandledElement($child->nodeName);
+                if ($currentNodeError && $child->nodeName != 'span') {
+                    $currentNodeError->addUnhandledElement($child->nodeName);
                 }
 
                 // recurse to sanitize child node
-                $childTextStr = $this->{__FUNCTION__}($child, $inputSystemTag);
+                $childTextStr = self::sanitizeSpans($child, $inputSystemTag, $currentNodeError);
             }
             if ($child->nodeName == 'span') {
                 $spanTag = '<span';
