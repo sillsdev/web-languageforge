@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'angularFileUpload', 'lexicon.upload'])
+angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'ngFileUpload', 'lexicon.upload'])
   .controller('LiftImportCtrl', ['$scope', '$upload', '$modal', 'silNoticeService', 'lexProjectService', '$filter', '$location', 'sessionService',
   function($scope, $upload, $modal, notice, lexProjectService, $filter, $location, ss) {
     lexProjectService.setBreadcrumbs('importExport', 'Import/export');

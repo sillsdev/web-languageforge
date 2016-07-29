@@ -43,7 +43,6 @@ class App extends Base
 
         $this->data['appName'] = $appName;
         $this->data['appFolder'] = $appFolder;
-        $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
 
         $this->_userId = SilexSessionHelper::getUserId($app);
 
@@ -65,16 +64,6 @@ class App extends Base
         }
         $app['session']->set('projectId', $projectId);
         $this->_projectId = $projectId;
-
-        // Add general Angular app dependencies
-        $dependencies = $this->getAngularAppJsDependencies();
-        foreach ($dependencies["js"] as $dependencyFilePath) {
-            $this->data['vendorFilesJs'][] = $dependencyFilePath;
-        }
-        foreach ($dependencies["min"] as $dependencyFilePath) {
-            $this->data['vendorFilesMinJs'][] = $dependencyFilePath;
-        }
-
 
         // determine help menu button visibility
         // placeholder for UI language 'en' to support translation of helps in the future
@@ -119,67 +108,5 @@ class App extends Base
 
     }
 
-    /**
-     * Reads the js_dependencies.json file and creates a structure for use in the controller above
-     *
-     * The format of a line in the JSON is expected to be:
-     * "itemName": {"path": "folderPath"}
-     *
-     * Additional properties could be:
-     * "jsFile" as a string or an array
-     * "jsMinFile" as a string or an array
-     *
-     * if jsFile is absent, then "itemName" is used as the filename
-     * if jsMinFile is absent, then jsFile or "itemName is used as the min filename
-     *
-     * @return array
-     */
-    private function getAngularAppJsDependencies() {
-        $jsonData = json_decode(file_get_contents(APPPATH . "js_dependencies.json"), true);
-        $jsFilesToReturn = array();
-        $jsMinFilesToReturn = array();
-        foreach ($jsonData as $itemName => $properties) {
-            $path = $properties["path"];
-
-            // process regular JS files
-            if (array_key_exists("jsFile", $properties)) {
-                $jsFile = $properties["jsFile"];
-                if (is_array($jsFile)) {
-                    foreach ($jsFile as $file) {
-                        $jsFilesToReturn[] = "$path/$file.js";
-                    }
-                } else {
-                    $jsFilesToReturn[] = "$path/$jsFile.js";
-                }
-            } else {
-                $jsFilesToReturn[] = "$path/$itemName.js";
-            }
-
-            // process minified JS files
-            if (array_key_exists("jsMinFile", $properties)) {
-                $jsMinFile = $properties["jsMinFile"];
-                if (is_array($jsMinFile)) {
-                    foreach ($jsMinFile as $file) {
-                        $jsMinFilesToReturn[] = "$path/$file.min.js";
-                    }
-                } else {
-                    $jsMinFilesToReturn[] = "$path/$jsMinFile.min.js";
-                }
-            } elseif (array_key_exists("jsFile", $properties)) {
-                $jsMinFile = $properties["jsFile"];
-                if (is_array($jsMinFile)) {
-                    foreach ($jsMinFile as $file) {
-                        $jsMinFilesToReturn[] = "$path/$file.min.js";
-                    }
-                } else {
-                    $jsMinFilesToReturn[] = "$path/$jsMinFile.min.js";
-                }
-            } else {
-                $jsMinFilesToReturn[] = "$path/$itemName.min.js";
-            }
-
-        }
-        return array("js" => $jsMinFilesToReturn, "min" => $jsMinFilesToReturn);
-    }
 
 }

@@ -21,7 +21,7 @@
                 <button class="btn btn-success btn-small pull-right" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
             </div>
             <div ng-hide="visibleEntries.length === 0" style="width:340px; margin:0 auto;" >
-                <typeahead style="margin: 0" class="typeahead" placeholder="'Search Entries'"
+                <pui-typeahead style="margin: 0" class="typeahead" placeholder="'Search Entries'"
                            items="typeahead.searchResults" term="typeahead.searchItemSelected"
                            search="typeahead.searchEntries" select="typeahead.searchSelect">
                     <ul data-ng-if="typeahead.searchResults.length > 0">
@@ -34,7 +34,7 @@
                     <div style="text-align:center; background-color: #d3d3d3; color:black; margin-top:5px"
                          data-ng-if="typeahead.searchResults.length > 0">
                         <small><i>{{typeahead.matchCountCaption}}</i></small></div>
-                </typeahead>
+                </pui-typeahead>
             </div>
             <div style="border-bottom: 1px solid darkgray; width:100%;margin-top:15px"></div>
             <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
@@ -60,7 +60,7 @@
                     <button class="btn btn-success btn-small" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()"><i class="icon-plus"></i> {{'New Word' | translate}} </button>
                 </div>
                 <div style="margin: 5px 5px 5px 0">
-                    <typeahead style="margin: 0" class="typeahead" placeholder="'Search Entries'"
+                    <pui-typeahead style="margin: 0" class="typeahead" placeholder="'Search Entries'"
                                items="typeahead.searchResults" term="typeahead.searchItemSelected"
                                search="typeahead.searchEntries" select="typeahead.searchSelect">
                         <ul ng-if="typeahead.searchResults.length > 0">
@@ -73,7 +73,7 @@
                         <div style="text-align:center; background-color: #d3d3d3; color:black; margin-top:5px"
                              data-ng-if="typeahead.searchResults.length > 0">
                             <small><i>{{typeahead.matchCountCaption}}</i></small></div>
-                    </typeahead>
+                    </pui-typeahead>
                 </div>
                 <div style="margin-right: 10px; display:flex; flex-direction: column">
                     <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">

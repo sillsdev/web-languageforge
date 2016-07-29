@@ -10,16 +10,16 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
   function(taRegisterTool, taOptions, taTranslations, taTools, ss, $window, $compile, $animate) {
 
     // remove the built-in insertLink tool
-    delete taTools.insertLink;
+    //delete taTools.insertLink;
 
     // register the tool with textAngular
-    taRegisterTool('insertLink', {
-//      tooltiptext: taTranslations.insertLink.tooltip,
+    taRegisterTool('lexInsertLink', {
+//      tooltiptext: taTranslations.lexInsertLink.tooltip,
       tooltiptext: 'Insert/edit link',
       iconclass: 'fa fa-link',
       action: function() {
         var urlLink;
-        urlLink = $window.prompt(taTranslations.insertLink.dialogPrompt, 'http://');
+        urlLink = $window.prompt(taTranslations.lexInsertLink.dialogPrompt, 'http://');
         if (urlLink && urlLink !== '' && urlLink !== 'http://') {
           return this.$editor().wrapSelection('createLink', urlLink, true);
         }
@@ -53,7 +53,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
               reLinkButton = angular.element('<button type="button" class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on"><i class="fa fa-edit icon-edit"></i></button>');
           reLinkButton.on('click', function(event) {
             event.preventDefault();
-            var urlLink = $window.prompt(taTranslations.insertLink.dialogPrompt, $element.attr('href'));
+            var urlLink = $window.prompt(taTranslations.lexInsertLink.dialogPrompt, $element.attr('href'));
             if (urlLink && urlLink !== '' && urlLink !== 'http://') {
               $element.attr('href', urlLink);
               editorScope.updateTaBindtaTextElement();
@@ -198,7 +198,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
     });
 
     // add the button to the default toolbar definition
-    taOptions.toolbar[0].push('languageSpan');
+    taOptions.toolbar[0].push('lexInsertLink', 'languageSpan');
     return taOptions;
   }]);
   
@@ -227,11 +227,11 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       } else if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT)) {
         
         // if site administrator enable development controls
-//        $scope.fte.toolbar = "[['insertLink', 'languageSpan'], ['html']]";
+//        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan'], ['html']]";
         // html toggle for development only
-        $scope.fte.toolbar = "[['insertLink', 'languageSpan']]";
+        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
       } else {
-//        $scope.fte.toolbar = "[['insertLink', 'languageSpan']]";
+//        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
         // disable unfinished link and language span controls
         $scope.fte.toolbar = "[[]]";
       }

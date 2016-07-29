@@ -3,7 +3,7 @@
 angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb',
   'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'palaso.ui.picklistEditor',
-  'angularFileUpload', 'ngRoute'])
+  'ngFileUpload', 'ngRoute'])
   .controller('ProjectSettingsCtrl', ['$scope', 'breadcrumbService', 'userService',
     'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
     'sfchecksLinkService',
