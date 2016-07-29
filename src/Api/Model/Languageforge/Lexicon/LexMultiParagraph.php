@@ -72,25 +72,8 @@ class LexMultiParagraph extends ObjectForEncoding
             $paragraph = new LexParagraph();
             $paragraph->guid = $node->getAttribute('data-guid');
             $paragraph->styleName = $node->getAttribute('data-style-name');
-            $paragraph->content = self::innerHTML($node);
+            $paragraph->content = LiftDecoder::sanitizeSpans($node, $this->inputSystem);
             $this->paragraphs->append($paragraph);
         }
-    }
-
-
-    /**
-     * @param \DOMNode $element
-     * @return string
-     */
-    private static function innerHTML(\DOMNode $element)
-    {
-        $innerHTML = '';
-        $children  = $element->childNodes;
-        foreach ($children as $child)
-        {
-            $innerHTML .= $element->ownerDocument->saveHTML($child);
-        }
-
-        return $innerHTML;
     }
 }
