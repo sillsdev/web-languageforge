@@ -11,6 +11,7 @@ angular.module('sfchecks-new-project', ['ui.router', 'pascalprecht.translate', '
         suffix: '.json'
       });
       $translateProvider.preferredLanguage('en');
+      $translateProvider.useSanitizeValueStrategy('escape');
       */
 
       // State machine from ui.router

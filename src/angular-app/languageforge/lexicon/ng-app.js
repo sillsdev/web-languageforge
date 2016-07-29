@@ -28,6 +28,7 @@ angular.module('lexicon',
       suffix: '.json'
     });
     $translateProvider.preferredLanguage('en');
+      $translateProvider.useSanitizeValueStrategy('escape');
 
     // The "projects" route is a hack to redirect to the /app/projects URL.
     // See "otherwise" route below

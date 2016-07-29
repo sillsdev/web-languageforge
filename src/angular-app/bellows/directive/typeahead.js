@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('palaso.ui.typeahead', [])
-  .directive('typeahead', ['$timeout', function ($timeout) {
+  .directive('puiTypeahead', ['$timeout', function ($timeout) {
     return {
       restrict: 'E',
       transclude: true,

@@ -8,7 +8,7 @@
     </form>
     <div id="newMembersDiv" class="new-item" data-collapse="!newUserCollapsed">
         <form class="well form-inline">
-        <typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
+        <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
             <ul>
                 <li data-typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
                     <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
@@ -16,7 +16,7 @@
                     <p class="email">{{user.username}}</p>
                 </li>
             </ul>
-        </typeahead>
+        </pui-typeahead>
         <button data-ng-model="addMode" class="btn" data-ng-disabled="disableAddButton" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
         <span class="warning" data-ng-show="warningText">{{warningText}}</span>
         </form>

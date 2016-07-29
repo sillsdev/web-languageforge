@@ -10,6 +10,7 @@ angular.module('login', ['bellows.services', 'ui.bootstrap', 'pascalprecht.trans
         suffix: '.json',
       });
       $translateProvider.preferredLanguage('en');
+      $translateProvider.useSanitizeValueStrategy('escape');
     },
   ])
   .controller('LoginCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',

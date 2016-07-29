@@ -13,7 +13,7 @@ angular.module('lexicon-new-project',
     'palaso.ui.mockUpload',
     'palaso.util.model.transform',
     'pascalprecht.translate',
-    'angularFileUpload',
+    'ngFileUpload',
     'lexicon.services'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
@@ -25,6 +25,7 @@ angular.module('lexicon-new-project',
       suffix: '.json'
     });
     $translateProvider.preferredLanguage('en');
+      $translateProvider.useSanitizeValueStrategy('escape');
 
     // State machine from ui.router
     $stateProvider

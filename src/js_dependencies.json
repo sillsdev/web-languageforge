@@ -7,6 +7,8 @@
   "angular-translate-loader-static-files": { "path": "vendor_bower/angular-translate-loader-static-files" },
   "angularjs-file-upload": { "path": "vendor_bower/angularjs-file-upload", "jsFile": ["ng-file-upload", "ng-file-upload-shim"] },
   "lodash": { "path": "vendor_bower/lodash/dist" },
+  "textAngular": { "path": "vendor_bower/textAngular/dist", "jsFile": ["textAngular", "textAngular-sanitize", "textAngularSetup"], "jsMinFile": ["textAngular", "textAngular-sanitize"] },
+  "rangy": { "path": "vendor_bower/rangy", "jsFile": ["rangy-core", "rangy-selectionsaverestore"] },
   "angular-truncate-2": { "path": "vendor_bower/angular-truncate-2/dist" },
   "angular-bootstrap": { "path": "vendor_bower/angular-bootstrap", "jsFile": "ui-bootstrap-tpls" },
   "angular-ui-validate": { "path": "vendor_bower/angular-ui-validate/dist", "jsFile": "validate" }
