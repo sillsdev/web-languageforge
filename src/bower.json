@@ -1,11 +1,10 @@
 {
   "name": "web-xForge",
   "dependencies": {
-    "jquery": "~3.1",
+    "jquery": "1.8.3",
     "angular": "~1.5",
     "google-open-sans": "1.0.x",
     "font-awesome": "4.2.x",
-
     "angular-animate": "~1.5",
     "angular-route": "~1.5",
     "angular-sanitize": "~1.5",
@@ -16,7 +15,8 @@
     "lodash": "~4.14",
     "angular-truncate-2": "~0.4.2",
     "angular-bootstrap": "~0.8",
-    "angular-ui-validate": "~1.2"
+    "angular-ui-validate": "~1.2",
+    "textAngular": "~1.5"
   },
   "devDependencies": {}
 }

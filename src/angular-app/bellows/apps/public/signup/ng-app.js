@@ -70,6 +70,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
       suffix: '.json',
     });
     $translateProvider.preferredLanguage('en');
+      $translateProvider.useSanitizeValueStrategy('escape');
     
   }])
   .controller('SignupCtrl', ['$scope', '$state', '$window', 'userService', 'sessionService', 'silNoticeService',
