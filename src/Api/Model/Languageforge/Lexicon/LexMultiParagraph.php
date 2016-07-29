@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
+use Api\Library\Shared\Palaso\StringHelper;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\ObjectForEncoding;
 use LazyProperty\LazyPropertiesTrait;
@@ -50,8 +51,8 @@ class LexMultiParagraph extends ObjectForEncoding
         foreach ($this->paragraphs as $paragraph) {
             $html .= '<p';
             $html .= ' lang="' . $this->inputSystem . '"';
-            $html .= ' data-guid="' . $paragraph->guid . '"';
-            $html .= ' data-style-name="' . $paragraph->styleName . '"';
+            $html .= ' class="guid_' . $paragraph->guid;
+            $html .= ' styleName_' . $paragraph->styleName . '"';
             $html .= '>';
             $html .= $paragraph->content;
             $html .= '</p>';
@@ -70,8 +71,14 @@ class LexMultiParagraph extends ObjectForEncoding
         foreach ($dom->getElementsByTagName('p') as $node) {
             $this->inputSystem = $node->getAttribute('lang');
             $paragraph = new LexParagraph();
-            $paragraph->guid = $node->getAttribute('data-guid');
-            $paragraph->styleName = $node->getAttribute('data-style-name');
+            foreach (explode(' ', $node->getAttribute('class')) as $classValue) {
+                if (StringHelper::startsWith($classValue, 'guid_')) {
+                    $paragraph->guid = substr($classValue, 5);
+                }
+                if (StringHelper::startsWith($classValue, 'styleName_')) {
+                    $paragraph->styleName = substr($classValue, 10);
+                }
+            }
             $paragraph->content = LiftDecoder::sanitizeSpans($node, $this->inputSystem);
             $this->paragraphs->append($paragraph);
         }
