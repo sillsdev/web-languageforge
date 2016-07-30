@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
+use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\Id;
 use Api\Model\Mapper\IdReference;
@@ -20,7 +21,15 @@ function generateSense()
 function generateCustomField($data)
 {
     CodeGuard::checkTypeAndThrow($data, 'array');
-    if (array_key_exists('value', $data)) {
+    if (array_key_exists('type', $data)) {
+        switch ($data['type']) {
+            case LexiconConfigObj::MULTIPARAGRAPH:
+                return new LexMultiParagraph();
+            default:
+                $type = $data['type'];
+                throw new \Exception("Cannot generate unknown custom field type: $type");
+        }
+    } elseif (array_key_exists('value', $data)) {
         return new LexiconField();
     } elseif (array_key_exists('values', $data)) {
         return new LexiconMultiValueField();

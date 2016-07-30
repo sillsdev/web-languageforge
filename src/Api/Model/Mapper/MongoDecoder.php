@@ -17,6 +17,7 @@ class MongoDecoder extends JsonDecoder
      * Sets the public properties of $model to values from $values[propertyName]
      * @param object $model
      * @param array $values A mixed array of JSON (like) data.
+     * @param string $id
      */
     public static function decode($model, $values, $id = '')
     {
@@ -79,14 +80,14 @@ class MongoDecoder extends JsonDecoder
     }
 
     /**
-     * @param string $key
      * @param \DateTime $model
      * @param \MongoDB\BSON\UTCDatetime $data
      */
-    public function decodeDateTime($key, &$model, $data)
+    public function decodeDateTime(&$model, $data)
     {
         CodeGuard::checkTypeAndThrow($data, '\MongoDB\BSON\UTCDatetime', CodeGuard::CHECK_NULL_OK);
         if ($data !== null) {
+            /** @var \DateTime $newDateTime */
             $newDateTime = $data->toDateTime();
             $model->setTimestamp($newDateTime->getTimestamp());
         }

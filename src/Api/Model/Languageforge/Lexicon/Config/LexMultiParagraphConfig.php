@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-class LexMultiParagraphConfigObj extends LexiconConfigObj
+class LexMultiParagraphConfig extends LexiconConfigObj
 {
     public function __construct()
     {

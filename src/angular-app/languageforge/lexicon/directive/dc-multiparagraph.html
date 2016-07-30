@@ -10,14 +10,14 @@
                 <dc-formattedtext class="dc-formattedtext"
                     data-ng-if="control.state == 'edit' && control.rights.canEditEntry()"
                     fte-disabled="! (control.state == 'edit' && control.rights.canEditEntry()) || modelContainsSpan()"
-                    fte-model="model.value"
+                    fte-model="model.paragraphsHtml"
                     fte-dir="inputSystemDirection(model.inputSystem)"></dc-formattedtext>
                     -->
                 <dc-formattedtext class="dc-formattedtext"
-                      data-ng-if="control.state == 'edit' && control.rights.canEditEntry()"
-                      fte-disabled="true"
-                      fte-model="model.value"
-                      fte-dir="inputSystemDirection(model.inputSystem)"></dc-formattedtext>
+                    data-ng-if="control.state == 'edit' && control.rights.canEditEntry()"
+                    fte-disabled="true"
+                    fte-model="model.paragraphsHtml"
+                    fte-dir="inputSystemDirection(model.inputSystem)"></dc-formattedtext>
             </div>
         </div>
     </div>
