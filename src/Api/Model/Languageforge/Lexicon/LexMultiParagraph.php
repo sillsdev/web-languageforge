@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Library\Shared\Palaso\StringHelper;
+use Api\Library\Shared\Palaso\StringUtil;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\ObjectForEncoding;
 use LazyProperty\LazyPropertiesTrait;
@@ -41,20 +41,23 @@ class LexMultiParagraph extends ObjectForEncoding
     /** @var ArrayOf LexParagraph */
     public $paragraphs;
 
-
     /**
      * @return string
      */
-    public function toHTML() {
+    public function toHtml() {
         $html = '';
         /** @var LexParagraph $paragraph */
         foreach ($this->paragraphs as $paragraph) {
             $html .= '<p';
             $html .= ' lang="' . $this->inputSystem . '"';
             $html .= ' class="guid_' . $paragraph->guid;
-            $html .= ' styleName_' . $paragraph->styleName . '"';
-            $html .= '>';
-            $html .= $paragraph->content;
+            if (isset($paragraph->styleName)) {
+                $html .= ' styleName_' . $paragraph->styleName;
+            }
+            $html .= '">';
+            if (isset($paragraph->content)) {
+                $html .= $paragraph->content;
+            }
             $html .= '</p>';
         }
         return $html;
@@ -63,7 +66,7 @@ class LexMultiParagraph extends ObjectForEncoding
     /**
      * @param $html string
      */
-    public function fromHTML($html) {
+    public function fromHtml($html) {
         $dom = new \DOMDocument();
         $dom->loadHTML($html);
         $this->paragraphs->exchangeArray(array());
@@ -72,14 +75,23 @@ class LexMultiParagraph extends ObjectForEncoding
             $this->inputSystem = $node->getAttribute('lang');
             $paragraph = new LexParagraph();
             foreach (explode(' ', $node->getAttribute('class')) as $classValue) {
-                if (StringHelper::startsWith($classValue, 'guid_')) {
-                    $paragraph->guid = substr($classValue, 5);
+                if (StringUtil::startsWith($classValue, 'guid_')) {
+                    $guid = substr($classValue, 5);
+                    if ($guid) {
+                        $paragraph->guid = $guid;
+                    }
                 }
-                if (StringHelper::startsWith($classValue, 'styleName_')) {
-                    $paragraph->styleName = substr($classValue, 10);
+                if (StringUtil::startsWith($classValue, 'styleName_')) {
+                    $styleName = substr($classValue, 10);
+                    if ($styleName) {
+                        $paragraph->styleName = $styleName;
+                    }
                 }
             }
-            $paragraph->content = LiftDecoder::sanitizeSpans($node, $this->inputSystem);
+            $content = LiftDecoder::sanitizeSpans($node, $this->inputSystem);
+            if ($content) {
+                $paragraph->content = $content;
+            }
             $this->paragraphs->append($paragraph);
         }
     }

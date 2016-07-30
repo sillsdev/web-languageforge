@@ -30,7 +30,7 @@ angular.module('palaso.ui.dc.multiparagraph', ['bellows.services', 'palaso.ui.sh
           return false;
         }
 
-        return $scope.model.value.indexOf('</span>') > -1;
+        return $scope.model.paragraphsHtml.indexOf('</span>') > -1;
       };
 
     }]
