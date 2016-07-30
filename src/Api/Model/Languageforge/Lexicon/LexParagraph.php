@@ -3,16 +3,28 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Mapper\ObjectForEncoding;
+use LazyProperty\LazyPropertiesTrait;
 
 class LexParagraph extends ObjectForEncoding
 {
+    use LazyPropertiesTrait;
     public function __construct($guid = '', $styleName = '')
     {
         $this->setReadOnlyProp('guid');
         if (!$guid || !Guid::isValid($guid)) $guid = Guid::create();
         $this->guid = $guid;
         $this->setPrivateProp('styleName');
-        $this->styleName = $styleName;
+        $this->initLazyProperties(['content', 'styleName'], false);
+        if ($styleName) {
+            $this->styleName = $styleName;
+        }
+    }
+
+    protected function createProperty($name) {
+        switch ($name) {
+            default:
+                return '';
+        }
     }
 
     /** @var string */

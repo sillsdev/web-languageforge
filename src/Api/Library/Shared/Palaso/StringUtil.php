@@ -2,7 +2,7 @@
 
 namespace Api\Library\Shared\Palaso;
 
-class StringHelper
+class StringUtil
 {
     /**
      * see http://stackoverflow.com/questions/834303/startswith-and-endswith-functions-in-php

@@ -20,7 +20,7 @@ class LexiconFieldListConfigObj extends LexiconConfigObj
                     case self::MULTITEXT:
                         return new LexiconMultitextConfigObj();
                     case self::MULTIPARAGRAPH:
-                        return new LexMultiParagraphConfigObj();
+                        return new LexMultiParagraphConfig();
                     case self::OPTIONLIST:
                         return new LexiconOptionlistConfigObj();
                     case self::MULTIOPTIONLIST:
