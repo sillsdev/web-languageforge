@@ -37,12 +37,12 @@ class FixSenseGuids
             $projectId = $projectParams['id'];
             $project = new LexProjectModelForUseWithSenseGuidMigration($projectId);
             if ($project->appName == 'lexicon' && !$project->hasHadSenseGuidsMigrated) {
-                print("\n-------------  $project->projectName.\n");
-                $lfProjectCount++;
                 if (!$project->hasSendReceive()) {
+                    print("\n-------------  $project->projectName.\n");
+                    $lfProjectCount++;
                     self::analyzeProject($project, $projectId, $testMode);
                 } else {
-                    print("S/R project ignored.\n");
+                    continue;
                 }
             } else {
                 $skippedProjects++;
