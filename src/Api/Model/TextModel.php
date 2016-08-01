@@ -84,6 +84,11 @@ class TextModel extends MapperModel
     public $content;
 
     public $isArchived;
+
+    /**
+     * @var string - the font-family CSS string used in the Text div.  This is optional, for cases where font-fallback is not working properly or a font-family preference is needed
+     */
+    public $fontfamily;
 }
 
 class TextListModel extends MapperListModel
