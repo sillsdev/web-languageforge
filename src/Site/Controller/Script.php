@@ -53,8 +53,9 @@ class Script extends Base
         $baseNames = self::recursiveDirectorySearch($folderPath, '/.*\.php/');
         $file_count = count($baseNames);
         for ($i = 0; $i < $file_count; $i++) {
-            if (strpos($baseNames[$i], '/retired/') === FALSE) {
-                $baseNames[$i] = substr($baseNames[$i], strlen($folderPath), strlen($baseNames[$i])-strlen($folderPath)-4);
+            $scriptFilename = substr($baseNames[$i], strlen($folderPath), strlen($baseNames[$i])-strlen($folderPath)-4);
+            if (strpos($baseNames[$i], '/retired/') === false && $scriptFilename != 'scriptConfig') {
+                $baseNames[$i] = $scriptFilename;
             } else {
                 unset($baseNames[$i]);
             }
