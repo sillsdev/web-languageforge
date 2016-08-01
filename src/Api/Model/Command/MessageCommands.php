@@ -25,7 +25,8 @@ class MessageCommands
      * @param string $htmlEmailTemplate
      * @return string
      */
-    // TODO this needs to be tested!  cjh 2014-02
+    // This is untested because email is not usually setup on a developers machine and it is easier to mock it.
+    // However, Communicate::communicateToUsers is tested using a mock for delivery of email or sms. IJH 2016-07
     public static function sendMessage($projectId, $userIds, $subject, $smsTemplate, $emailTemplate, $htmlEmailTemplate = '')
     {
         $project = new ProjectSettingsModel($projectId);
