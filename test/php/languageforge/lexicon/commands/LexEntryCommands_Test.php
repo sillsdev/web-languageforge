@@ -4,7 +4,7 @@ use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\Example;
-use Api\Model\Languageforge\Lexicon\GuidHelper;
+use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\Picture;
 use Api\Model\Languageforge\Lexicon\Sense;
@@ -130,15 +130,15 @@ class TestLexEntryCommands extends UnitTestCase
 
         $userId = $e->createUser('john', 'john', 'john');
 
-        $exampleGuid = GuidHelper::create();
+        $exampleGuid = Guid::create();
         $example = new Example($exampleGuid, $exampleGuid);
         $example->sentence->form('th', 'example1');
         $example->translation->form('en', 'trans1');
 
-        $pictureGuid = GuidHelper::create();
+        $pictureGuid = Guid::create();
         $picture = new Picture('someFilename', $pictureGuid);
 
-        $senseGuid = GuidHelper::create();
+        $senseGuid = Guid::create();
         $sense = new Sense($senseGuid, $senseGuid);
         $sense->definition->form('en', 'red fruit');
         $sense->gloss->form('en', 'rose fruit');

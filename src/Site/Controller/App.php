@@ -74,10 +74,19 @@ class App extends Base
         $app['session']->set('projectId', $projectId);
         $this->_projectId = $projectId;
 
-        // Other session data
 
-        $sessionData = SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website);
-        $this->data['jsonSession'] = json_encode($sessionData);
+        // determine help menu button visibility
+        // placeholder for UI language 'en' to support translation of helps in the future
+        $helpsFolder = NG_BASE_FOLDER . $appFolder . "/helps/en/page";
+        if (file_exists($helpsFolder) && iterator_count(new \FilesystemIterator($helpsFolder, \FilesystemIterator::SKIP_DOTS)) > 0) {
+            $this->_showHelp = true;
+            // there is an implicit dependency on bellows JS here using the jsonRpc module
+            $this->addJavascriptFiles(NG_BASE_FOLDER . 'container/js', array('vendor/', 'assets/'));
+        }
+
+        // Other session data
+        $sessionData = SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $appName);
+        $this->data['jsonSession'] = json_encode($sessionData, JSON_UNESCAPED_SLASHES);
 
         $this->addJavascriptFiles(NG_BASE_FOLDER . 'bellows/js', array('vendor/', 'assets/'));
         $this->addJavascriptFiles(NG_BASE_FOLDER . 'bellows/directive');
@@ -105,4 +114,12 @@ class App extends Base
         $this->addCssFiles(NG_BASE_FOLDER . 'bellows');
         $this->addCssFiles(NG_BASE_FOLDER . $appFolder);
     }
+
+    /**
+     * @return bool
+     */
+    private function canShowHelpMenuButton() {
+        return true;
+    }
+
 }

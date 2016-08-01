@@ -1,7 +1,9 @@
 {% extends app.website.base~'.html.twig' %}
 
 {% block content %}
-    {% include appFolder~'/ng-app.html' %}
+    <div id="app-container-for-bootstrap">
+        {% include appFolder~'/ng-app.html' %}
+    </div>
 
     <script type="text/javascript">
         window.session = {{ jsonSession|raw }};
@@ -15,7 +17,7 @@
     {% endif %}
 
     {% if useCdn %}
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+        {# angular.js is loaded in container.html.twig as of 2016-07 #}
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-animate.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.min.js"></script>
         {# Text Angular has its own version of sanitize, see https://github.com/fraywing/textAngular#where-to-get-it
@@ -26,7 +28,7 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/angular-translate/2.2.0/angular-translate.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/angular-translate-loader-static-files/2.2.0/angular-translate-loader-static-files.min.js"></script>
     {% else %}
-        <script src="/vendor_bower/angular/angular.js"></script>
+        {# angular.js is loaded in container.html.twig as of 2016-07 #}
         <script src="/vendor_bower/angular-animate/angular-animate.js"></script>
         <script src="/vendor_bower/angular-route/angular-route.js"></script>
         {# Text Angular has its own version of sanitize, see https://github.com/fraywing/textAngular#where-to-get-it
@@ -66,5 +68,5 @@
 
     {# this is necessary to fix an IE 10 bug where documentReady fires before all JS resources are loaded.
         see: http://stackoverflow.com/questions/12988506/angularjs-fail-to-load-module #}
-    <script>angular.bootstrap(document, ['{{ appName }}']);</script>
+    <script>angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);</script>
 {% endblock %}
