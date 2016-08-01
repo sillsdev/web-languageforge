@@ -137,6 +137,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
       model.startVs = $scope.startVs;
       model.endCh = $scope.endCh;
       model.endVs = $scope.endVs;
+      model.fontfamily = $scope.fontfamily;
       textService.update(model, function(result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, 'The text \'' + model.title + '\' was added successfully');
