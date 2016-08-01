@@ -67,7 +67,7 @@
         </exec>
     </target>
 
-    <target name="test-php" depends="build-prepare,build-composer,build-bower">
+    <target name="test-php" depends="build-prepare,build-composer,build-bower,build-gulp">
         <replace file="test/php/TestConfig.php">
             <replacefilter token="define('MONGODB_CONN', 'mongodb://localhost:27017');" value="define('MONGODB_CONN', 'mongodb://${mongodb.connection}');" />
         </replace>
@@ -88,6 +88,20 @@
         -->
         <antcall target="test-php" />
         <antcall target="test-e2e" />
+    </target>
+
+    <target name="build-npm">
+        <!-- Not working just yet on build server
+        <exec executable="npm" dir="." failonerror="true">
+            <arg line="install" />
+        </exec>
+        -->
+    </target>
+    <target name="build-gulp" depends="build-npm">
+        <!-- Not working just yet on build server
+        <exec executable="gulp" dir="." failonerror="true">
+        </exec>
+        -->
     </target>
 
     <target name="build-composer">
@@ -128,7 +142,7 @@
         <copy file="${build.libJsFile}" tofile="${build.minJsFile}" />
     </target>
 
-    <target name="package-copyWeb" depends="build-prepare,build-composer,build-bower,build-minify,version">
+    <target name="package-copyWeb" depends="build-prepare,build-composer,build-bower,build-gulp,build-minify,version">
         <copy todir="${build.output}/package/htdocs">
             <fileset dir="src"/>
         </copy>

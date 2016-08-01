@@ -63,7 +63,7 @@
                     <i class="icon-download" data-tooltip="Download audio"></i></a>
             </h2>
             <h2>{{text.title}}</h2>
-            <div id="text" data-ng-bind-html="text.content"></div>
+            <div id="text" style="font-family: {{text.fontfamily}}" data-ng-bind-html="text.content"></div>
         </div>
         <div class="span7">
             <listview hide-if-empty="true" search="queryQuestions()"

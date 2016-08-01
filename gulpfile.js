@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var exec = require('child_process').exec;
 var async = require('async');
+var markdown = require('gulp-markdown');
 
 // livereload
 var livereload = require('gulp-livereload');
@@ -30,7 +31,9 @@ var execute = function(command, callback) {
   });
 };
 
+
 gulp.task('default', function() {
+  return gulp.src('src/angular-app/**/helps/**/*.md').pipe(markdown()).pipe(gulp.dest('src/angular-app'));
   // place code for your default task here
 });
 
