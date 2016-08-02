@@ -79,9 +79,9 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
           );
 
           var rights = result.data.rights;
-          $scope.rights.archive = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE);
-          $scope.rights.create = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE);
-          $scope.rights.edit = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT);
+          $scope.rights.archive = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE) && !ss.session.project.isArchived;
+          $scope.rights.create = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE) && !ss.session.project.isArchived;
+          $scope.rights.edit = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) && !ss.session.project.isArchived;
           $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.edit;
 
           $scope.finishedLoading = true;
