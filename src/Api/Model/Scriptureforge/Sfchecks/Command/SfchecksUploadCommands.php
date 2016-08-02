@@ -2,6 +2,7 @@
 
 namespace Api\Model\Scriptureforge\Sfchecks\Command;
 
+use Api\Model\Command\ProjectCommands;
 use Palaso\Utilities\FileUtilities;
 use Api\Model\Shared\Command\UploadResponse;
 use Api\Model\Shared\Command\MediaResult;
@@ -56,6 +57,7 @@ class SfchecksUploadCommands
 
             // make the folders if they don't exist
             $project = new SfchecksProjectModel($projectId);
+            ProjectCommands::checkIfArchivedAndThrow($project);
             $folderPath = $project->getAssetsFolderPath();
             FileUtilities::createAllFolders($folderPath);
 

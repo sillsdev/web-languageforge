@@ -3,6 +3,7 @@
 namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Model\Command\ActivityCommands;
+use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
 use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
@@ -49,6 +50,7 @@ class LexEntryCommands
     {
         CodeGuard::checkTypeAndThrow($params, 'array');
         $project = new LexiconProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         if (array_key_exists('id', $params) && $params['id'] != '') {
             $entry = new LexEntryModel($project, $params['id']);
             $action = 'update';
