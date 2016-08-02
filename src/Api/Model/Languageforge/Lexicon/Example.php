@@ -14,6 +14,7 @@ class Example extends ObjectForEncoding
     {
         $this->setPrivateProp('liftId');
         $this->setReadOnlyProp('guid');
+        $this->setReadOnlyProp('translationGuid');
         $this->setReadOnlyProp('authorInfo');
         if ($liftId) $this->liftId = $liftId;
         if (!$guid || !Guid::isValid($guid)) $guid = Guid::create();
@@ -23,6 +24,7 @@ class Example extends ObjectForEncoding
             'authorInfo',
             'sentence',
             'translation',
+            'translationGuid',
             'reference',
             'customFields',
             'examplePublishIn'
@@ -37,6 +39,8 @@ class Example extends ObjectForEncoding
             case 'translation':
             case 'reference':
                 return new MultiText();
+            case 'translationGuid':
+                return Guid::create();
             case 'examplePublishIn':
                 return new LexiconMultiValueField();
             case 'customFields':
@@ -59,6 +63,9 @@ class Example extends ObjectForEncoding
      * @var MultiText
      */
     public $translation;
+
+    /** @var Guid */
+    public $translationGuid;
 
     /**
      * @var MapOf<MultiText|LexiconField|LexiconMultiValueField>
