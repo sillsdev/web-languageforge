@@ -8,6 +8,7 @@ use Api\Model\Languageforge\Lexicon\Config\LexiconFieldListConfigObj;
 use Api\Model\Languageforge\Lexicon\Config\LexiconMultiOptionlistConfigObj;
 use Api\Model\Languageforge\Lexicon\Config\LexiconMultitextConfigObj;
 use Api\Model\Languageforge\Lexicon\Config\LexiconOptionlistConfigObj;
+use Api\Model\Languageforge\Lexicon\Config\LexMultiParagraphConfig;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\Id;
 use Palaso\Utilities\CodeGuard;
@@ -16,11 +17,11 @@ use Palaso\Utilities\FileUtilities;
 class LiftDecoder
 {
     /**
-     * @param LexiconProjectModel $projectModel
+     * @param LexiconProjectModel $project
      */
-    public function __construct($projectModel)
+    public function __construct($project)
     {
-        $this->projectModel = $projectModel;
+        $this->project = $project;
         $this->nodeErrors = array();
         $this->knownUnhandledNodes = array();
     }
@@ -29,7 +30,7 @@ class LiftDecoder
     public $liftFields;
 
     /** @var LexiconProjectModel */
-    private $projectModel;
+    private $project;
 
     /**
      * node error stack
@@ -59,34 +60,34 @@ class LiftDecoder
                         $entry->guid = (string) $sxeNode['guid'];
                         $entry->authorInfo->createdDate = new \DateTime((string) $sxeNode['dateCreated']);
                         $entry->authorInfo->modifiedDate = new \DateTime((string) $sxeNode['dateModified']);
-                        $entry->lexeme = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems);
+                        $entry->lexeme = $this->readMultiText($element, $this->project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems);
                     }
                     break;
                 case 'citation':
-                    $entry->citationForm = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::CITATIONFORM]->inputSystems);
+                    $entry->citationForm = $this->readMultiText($element, $this->project->config->entry->fields[LexiconConfigObj::CITATIONFORM]->inputSystems);
                     break;
                 case 'note':
                     if ($element['type'] == '') {
-                        $entry->note = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::NOTE]->inputSystems);
+                        $entry->note = $this->readMultiText($element, $this->project->config->entry->fields[LexiconConfigObj::NOTE]->inputSystems);
                     } else {
                         $this->addKnownUnhandledElement('Note: ' . $element['type']);
                     }
                     break;
                 case 'etymology':
-                   $entry->etymology = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGY]->inputSystems, true);
+                   $entry->etymology = $this->readMultiText($element, $this->project->config->entry->fields[LexiconConfigObj::ETYMOLOGY]->inputSystems, true);
                     if ($element->{'gloss'}) {
-                        $this->readMultiTextGloss($element->gloss, $entry->etymologyGloss, $this->projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGYGLOSS]->inputSystems);
+                        $this->readMultiTextGloss($element->gloss, $entry->etymologyGloss, $this->project->config->entry->fields[LexiconConfigObj::ETYMOLOGYGLOSS]->inputSystems);
                     }
                     foreach ($element->{'field'} as $field) {
                         if ($field['type'] == 'comment') {
-                            $entry->etymologyComment = $this->readMultiText($field, $this->projectModel->config->entry->fields[LexiconConfigObj::ETYMOLOGYCOMMENT]->inputSystems);
+                            $entry->etymologyComment = $this->readMultiText($field, $this->project->config->entry->fields[LexiconConfigObj::ETYMOLOGYCOMMENT]->inputSystems);
                         } else {
                             $this->currentNodeError()->addUnhandledField('etymology: ' . $field['type']);
                         }
                     }
                     break;
                 case 'pronunciation':
-                    $entry->pronunciation = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::PRONUNCIATION]->inputSystems, true);
+                    $entry->pronunciation = $this->readMultiText($element, $this->project->config->entry->fields[LexiconConfigObj::PRONUNCIATION]->inputSystems, true);
                     if ($element->{'media'}) {
                         $this->addKnownUnhandledElement('pronunciation: media');
                     }
@@ -94,10 +95,10 @@ class LiftDecoder
                 case 'field':
                     switch ($element['type']) {
                         case 'literal-meaning':
-                            $entry->literalMeaning = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::LITERALMEANING]->inputSystems);
+                            $entry->literalMeaning = $this->readMultiText($element, $this->project->config->entry->fields[LexiconConfigObj::LITERALMEANING]->inputSystems);
                             break;
                         case 'summary-definition':
-                            $entry->summaryDefinition = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SUMMARYDEFINITION]->inputSystems);
+                            $entry->summaryDefinition = $this->readMultiText($element, $this->project->config->entry->fields[LexiconConfigObj::SUMMARYDEFINITION]->inputSystems);
                             break;
                         case 'import-residue': // Currently ignored in LanguageForge
                             break;
@@ -179,7 +180,7 @@ class LiftDecoder
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'definition':
-                    $sense->definition = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
+                    $sense->definition = $this->readMultiText($element, $this->project->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems);
                     break;
                 case 'example':
                     $sense->examples[] = $this->readExample($element);
@@ -189,7 +190,7 @@ class LiftDecoder
                         case 'import-residue': // Currently ignored by LanguageForge
                             break;
                         case 'scientific-name':
-                            $sense->scientificName = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->inputSystems);
+                            $sense->scientificName = $this->readMultiText($element, $this->project->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->inputSystems);
                             break;
                         default:
                             if ($this->isSenseCustomField($element['type'])) {
@@ -200,7 +201,7 @@ class LiftDecoder
                     }
                     break;
                 case 'gloss':
-                    $this->readMultiTextGloss($element, $sense->gloss, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems);
+                    $this->readMultiTextGloss($element, $sense->gloss, $this->project->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems);
                     break;
                 case 'grammatical-info':
                     // Part Of Speech
@@ -213,7 +214,7 @@ class LiftDecoder
                     foreach ($element as $child) {
                         switch($child->getName()) {
                             case 'label':
-                                $picture->caption = $this->readMultiText($child, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems);
+                                $picture->caption = $this->readMultiText($child, $this->project->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems);
                                 break;
                             default:
                                 $this->currentNodeError()->addUnhandledElement($child->getName());
@@ -282,7 +283,7 @@ class LiftDecoder
         $example = new Example((string) $sxeNode['source']);
         $this->addAndPushSubnodeError(LiftImportNodeError::EXAMPLE, (string) $sxeNode['source']);
 
-        $example->sentence = $this->readMultiText($sxeNode, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems, true);
+        $example->sentence = $this->readMultiText($sxeNode, $this->project->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems, true);
         /** @var \SimpleXMLElement $element */
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
@@ -290,7 +291,7 @@ class LiftDecoder
                     // this is handled above when reading Example Sentence MultiText
                     break;
                 case 'translation':
-                    $example->translation = $this->readMultiText($element, $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems);
+                    $example->translation = $this->readMultiText($element, $this->project->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems);
                     break;
                 case 'field':
                     if ($this->isExampleCustomField($element['type'])) {
@@ -338,7 +339,7 @@ class LiftDecoder
                     $value = self::sanitizeSpans(dom_import_simplexml($element->text), $inputSystemTag,
                         $this->currentNodeError());
                     $multiText->form($inputSystemTag, $value);
-                    $this->projectModel->addInputSystem($inputSystemTag);
+                    $this->project->addInputSystem($inputSystemTag);
                     if (isset($inputSystems)) {
                         $inputSystems->ensureValueExists($inputSystemTag);
                     }
@@ -371,10 +372,48 @@ class LiftDecoder
         $inputSystemTag = (string) $sxeNode['lang'];
         $multiText->form($inputSystemTag, (string) $sxeNode->text);
 
-        $this->projectModel->addInputSystem($inputSystemTag);
+        $this->project->addInputSystem($inputSystemTag);
         if (isset($inputSystems)) {
             $inputSystems->ensureValueExists($inputSystemTag);
         }
+    }
+
+    /**
+     * Reads a MultiParagraph from the XmlNode $sxeNode given by the element 'form'
+     *
+     * @param \SimpleXMLElement $sxeNode
+     * @return LexMultiParagraph
+     */
+    public function readMultiParagraph($sxeNode)
+    {
+        // paragraph separator character U+2029
+        $paraSeparator = mb_convert_encoding('&#x2029;', 'UTF-8', 'HTML-ENTITIES');
+        $multiParagraph = new LexMultiParagraph();
+        $this->addAndPushSubnodeError(LiftImportNodeError::MULTIPARAGRAPH, $sxeNode->getName());
+        /** @var \SimpleXMLElement $element */
+        foreach ($sxeNode as $element) {
+            switch ($element->getName()) {
+                case 'form':
+                    $inputSystemTag = (string) $element['lang'];
+                    $multiParagraph->inputSystem = $inputSystemTag;
+                    $value = self::sanitizeSpans(dom_import_simplexml($element->text), $inputSystemTag,
+                        $this->currentNodeError());
+                    foreach (explode($paraSeparator, $value) as $content) {
+                        $paragraph = new LexParagraph();
+                        if ($content) {
+                            $paragraph->content = $content;
+                        }
+                        $multiParagraph->paragraphs->append($paragraph);
+                    }
+                    $this->project->addInputSystem($inputSystemTag);
+                    break;
+                default:
+                    $this->currentNodeError()->addUnhandledElement($element->getName());
+            }
+        }
+        array_pop($this->nodeErrors);
+
+        return $multiParagraph;
     }
 
     /**
@@ -503,7 +542,7 @@ class LiftDecoder
      */
     public function addEntryCustomField($sxeNode, $nodeId, $entry)
     {
-        $this->addCustomField($sxeNode, $nodeId, 'customField_entry_', $this->projectModel->config->entry, $entry);
+        $this->addCustomField($sxeNode, $nodeId, 'customField_entry_', $this->project->config->entry, $entry);
     }
 
     /**
@@ -516,7 +555,7 @@ class LiftDecoder
     public function addSenseCustomField($sxeNode, $nodeId, $sense)
     {
         $this->addCustomField($sxeNode, $nodeId, 'customField_senses_',
-            $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST], $sense);
+            $this->project->config->entry->fields[LexiconConfigObj::SENSES_LIST], $sense);
     }
 
     /**
@@ -529,7 +568,7 @@ class LiftDecoder
     public function addExampleCustomField($sxeNode, $nodeId, $example)
     {
         $this->addCustomField($sxeNode, $nodeId, 'customField_examples_',
-            $this->projectModel->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST], $example);
+            $this->project->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST], $example);
     }
 
     /**
@@ -555,10 +594,10 @@ class LiftDecoder
             }
             $item->customFields[$customFieldName]->value((string) $sxeNode['value']);
         } elseif ($customFieldSpecs['Type'] == 'OwningAtom') {
-            $multiText = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
-            $item->customFields[$customFieldName] = self::convertMultiParaMultiText($multiText);
+            $item->customFields[$customFieldName] = $this->readMultiParagraph($sxeNode);
         } else {
-            $item->customFields[$customFieldName] = $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
+            $item->customFields[$customFieldName] =
+                $this->readMultiText($sxeNode, $levelConfig->fields[$customFieldName]->inputSystems);
         }
     }
 
@@ -582,17 +621,16 @@ class LiftDecoder
             } elseif ($customFieldSpecs['Type'] == 'ReferenceCollection') {
                 $levelConfig->fields[$customFieldName] = new LexiconMultiOptionlistConfigObj();
                 $levelConfig->fields[$customFieldName]->listCode = $customFieldSpecs['range'];
+            } elseif ($customFieldSpecs['Type'] == 'OwningAtom') {
+                $levelConfig->fields[$customFieldName] = new LexMultiParagraphConfig();
             } else {
                 $levelConfig->fields[$customFieldName] = new LexiconMultitextConfigObj();
-                if ($customFieldSpecs['Type'] == 'OwningAtom') {
-                    $levelConfig->fields[$customFieldName]->displayMultiline = true;
-                }
             }
             $levelConfig->fields[$customFieldName]->label = $fieldType;
             $levelConfig->fields[$customFieldName]->hideIfEmpty = false;
         }
 
-        LexProjectCommands::createNewCustomFieldViews($customFieldName, $customFieldSpecs['Type'], $this->projectModel->config);
+        LexProjectCommands::createNewCustomFieldViews($customFieldName, $customFieldSpecs['Type'], $this->project->config);
 
         return $customFieldName;
     }
@@ -622,23 +660,6 @@ class LiftDecoder
             }
         }
         return $specs;
-    }
-
-    /**
-     * Convert MuiltPara fields from FLEx by adding paragraph markup
-     *
-     * @param MultiText $multiText
-     * @return MultiText
-     */
-    public static function convertMultiParaMultiText($multiText)
-    {
-        $paraSeparator = mb_convert_encoding('&#x2029;', 'UTF-8', 'HTML-ENTITIES');
-        foreach ($multiText as $tag => $text) {
-            // replace paragraph separator character U+2029 with paragraph markup
-            $text->value = "<p>" . $text->value . "</p>";
-            $text->value = str_replace($paraSeparator, "</p><p>", $text->value);
-        }
-        return $multiText;
     }
 
     /**
