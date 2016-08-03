@@ -56,6 +56,11 @@ class SfchecksRoles extends ProjectRoles
         $rights[] = Domain::USERS + Operation::VIEW;
         self::grantAllOnDomain($rights, Domain::TEMPLATES);
         self::$_rights[self::MANAGER] = $rights;
+
+        // Owner (everything a Manager has... plus the following)
+        $rights = self::$_rights[self::MANAGER];
+        $rights[] = Domain::PROJECTS + Operation::ARCHIVE_OWN;
+        self::$_rights[self::OWNER] = $rights;
     }
 
     private static $_rights;
