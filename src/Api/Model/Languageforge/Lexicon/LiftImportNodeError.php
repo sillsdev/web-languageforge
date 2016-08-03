@@ -10,6 +10,7 @@ class LiftImportNodeError extends ImportNodeError
     const SENSE = 'sense';
     const EXAMPLE = 'example';
     const MULTITEXT = 'multitext';
+    const MULTIPARAGRAPH = 'multiparagraph';
 
     /**
      *

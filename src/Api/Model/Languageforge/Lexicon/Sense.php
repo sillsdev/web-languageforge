@@ -7,12 +7,12 @@ use Api\Model\Mapper\MapOf;
 use Api\Model\Mapper\ObjectForEncoding;
 use LazyProperty\LazyPropertiesTrait;
 
-function _createExample()
+function generateExample()
 {
     return new Example();
 }
 
-function _createPicture()
+function generatePicture()
 {
     return new Picture();
 }
@@ -67,10 +67,10 @@ class Sense extends ObjectForEncoding
         switch ($name) {
             case 'partOfSpeech': return new LexiconField();
             case 'semanticDomain': return new LexiconMultiValueField();
-            case 'examples': return new ArrayOf('\Api\Model\Languageforge\Lexicon\_createExample');
-            case 'customFields': return new MapOf('\Api\Model\Languageforge\Lexicon\_createCustomField');
+            case 'examples': return new ArrayOf('Api\Model\Languageforge\Lexicon\generateExample');
+            case 'customFields': return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
             case 'authorInfo': return new AuthorInfo();
-            case 'pictures': return new ArrayOf('\Api\Model\Languageforge\Lexicon\_createPicture');
+            case 'pictures': return new ArrayOf('Api\Model\Languageforge\Lexicon\generatePicture');
 
             case 'definition':
             case 'gloss':
@@ -98,6 +98,8 @@ class Sense extends ObjectForEncoding
             case 'sensePublishIn': return new LexiconMultiValueField();
             case 'anthropologyCategories': return new LexiconMultiValueField();
             case 'status': return new LexiconMultiValueField();
+            default:
+                return '';
         }
     }
 
@@ -107,49 +109,31 @@ class Sense extends ObjectForEncoding
      */
     public $liftId;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $guid;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $definition;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $gloss;
 
-    /**
-     * @var ArrayOf<Picture>
-     */
+    /** @var ArrayOf<Picture> */
     public $pictures;
 
-    /**
-     * @var LexiconField
-     */
+    /** @var LexiconField */
     public $partOfSpeech;
 
-    /**
-     * @var LexiconMultiValueField
-     */
+    /** @var LexiconMultiValueField */
     public $semanticDomain;
 
-    /**
-     * @var ArrayOf<Example>
-     */
+    /** @var ArrayOf<Example> */
     public $examples;
 
-    /**
-     * @var MapOf<MultiText|LexiconField|LexiconMultiValueField>
-     */
+    /** @var MapOf<MultiText|LexMultiParagraph|LexiconField|LexiconMultiValueField> */
     public $customFields;
 
-    /**
-     * @var AuthorInfo
-     */
+    /** @var AuthorInfo */
     public $authorInfo;
 
     /**
@@ -208,105 +192,64 @@ class Sense extends ObjectForEncoding
 
     // less common fields used in FLEx
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $scientificName;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $anthropologyNote;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $senseBibliography;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $discourseNote;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $encyclopedicNote;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $generalNote;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $grammarNote;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $phonologyNote;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $senseRestrictions;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $semanticsNote;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $sociolinguisticsNote;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $source;
 
-    /**
-     * @var LexiconMultiValueField
-     */
+    /** @var LexiconMultiValueField */
     public $usages;
 
     // TODO 07-2014 DDW make this Taglist
-    /**
-     * @var Taglist
-     */
+    /** @var Taglist */
     public $reversalEntries;
 
-    /**
-     * @var LexiconField
-     */
+    /** @var LexiconField */
     public $senseType;
 
-    /**
-     * @var LexiconMultiValueField
-     */
+    /** @var LexiconMultiValueField */
     public $academicDomains;
 
-    /**
-     * @var LexiconMultiValueField
-     */
+    /** @var LexiconMultiValueField */
     public $sensePublishIn;
 
-    /**
-     * @var LexiconMultiValueField
-     */
+    /** @var LexiconMultiValueField */
     public $anthropologyCategories;
 
-    /**
-     * @var MultiText
-     */
+    /** @var MultiText */
     public $senseImportResidue;
 
-    /**
-     * @var LexiconMultiValueField
-     */
+    /** @var LexiconMultiValueField */
     public $status;
-
 }

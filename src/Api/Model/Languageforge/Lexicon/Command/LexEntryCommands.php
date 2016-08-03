@@ -8,7 +8,6 @@ use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Mapper\JsonDecoder;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectModel;
 use Palaso\Utilities\CodeGuard;
@@ -73,7 +72,7 @@ class LexEntryCommands
         }
 
         $params = self::recursiveRemoveEmptyFieldValues($params);
-        JsonDecoder::decode($entry, $params);
+        LexEntryDecoder::decode($entry, $params);
 
         $entry->write();
         ActivityCommands::writeEntry($project, $userId, $entry, $action);
