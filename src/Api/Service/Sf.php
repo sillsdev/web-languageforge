@@ -322,20 +322,15 @@ class Sf
     }
 
     /**
-     * Archive projects
+     * Clear out the session projectId and archive project
      *
-     * @param string
      * @return string
      */
 
     public function project_archive()
     {
-        // Clear out the session project id and then archive the project
-        $user = new UserModel($this->userId);
-        $user->lastUsedProjectId = "";
-        $user->write();
         $this->app['session']->set('projectId', "");
-        return ProjectCommands::archiveProject($this->projectId);
+        return ProjectCommands::archiveProject($this->projectId, $this->userId);
     }
 
     public function project_archivedList()

@@ -42,7 +42,7 @@ class ProjectCommands
         $project->appName = $appName;
         $project->siteName = $website->domain;
         $project->ownerRef->id = $userId;
-        $project->addUser($userId, ProjectRoles::MANAGER);
+        $project->addUser($userId, ProjectRoles::OWNER);
         $projectId = $project->write();
         if ($srProject) {
             SendReceiveCommands::updateSRProject($projectId, $srProject);
@@ -89,14 +89,28 @@ class ProjectCommands
     }
 
     /**
-     * @param $projectId
-     * @return int Total number of projects archived.
+     * @param string $projectId
+     * @param string $userId
+     * @return string projectId of the project archived.
      * @throws UserUnauthorizedException
      */
-    public static function archiveProject($projectId)
+    public static function archiveProject($projectId, $userId)
     {
         CodeGuard::checkTypeAndThrow($projectId, 'string');
+        CodeGuard::checkTypeAndThrow($userId, 'string');
+
         $project = new ProjectModel($projectId);
+        $user = new UserModel($userId);
+        if ($userId != $project->ownerRef->asString()) {
+            throw new UserUnauthorizedException(
+                "This $project->appName project '$project->projectName'\n" .
+                "can only be archived by project owner or\n " .
+                "a system administrator to re-publish\n");
+        }
+
+        $user->lastUsedProjectId = "";
+        $user->write();
+
         $project->isArchived = true;
         return $project->write();
     }

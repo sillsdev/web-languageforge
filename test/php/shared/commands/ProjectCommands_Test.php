@@ -53,10 +53,11 @@ class TestProjectCommands extends UnitTestCase
 
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
+        $ownerId = $project->ownerRef->asString();
 
         $this->assertFalse($project->isArchived);
 
-        ProjectCommands::archiveProject($projectId);
+        ProjectCommands::archiveProject($projectId, $ownerId);
 
         $project->read($projectId);
         $this->assertTrue($project->isArchived);
