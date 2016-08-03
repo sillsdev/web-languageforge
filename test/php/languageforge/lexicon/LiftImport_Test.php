@@ -1612,9 +1612,12 @@ EOD;
 
         $this->assertEqual($entryList->count, 1);
         $this->assertTrue(array_key_exists('customField_entry_Cust_MultiPara', $entry0['customFields']), 'custom field MultiPara exists');
-        $this->assertEqual($entry0['customFields']['customField_entry_Cust_MultiPara']['en']['value'],
-            '<p>First paragraph with <span lang="th">ไทย</span></p><p>Second Paragraph</p>',
-            'custom field MultiPara has paragraph separator character U+2029 replaced by paragraph markup and native language spans removed');
+        $this->assertEqual($entry0['customFields']['customField_entry_Cust_MultiPara']['paragraphs'][0]['content'],
+            'First paragraph with <span lang="th">ไทย</span>',
+            'custom field MultiPara has paragraphs separated into paragraph 1 and native language spans removed');
+        $this->assertEqual($entry0['customFields']['customField_entry_Cust_MultiPara']['paragraphs'][1]['content'],
+            'Second Paragraph',
+            'custom field MultiPara has paragraphs separated into paragraph 2 and native language spans removed');
     }
 
     public function testLiftDecoderGetGuid()
