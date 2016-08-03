@@ -57,15 +57,7 @@ angular.module('projectmanagement', ['projectManagement.services', 'bellows.serv
         modalService.showModal({}, modalOptions).then(function (result) {
           $scope.actionInProgress = true;
           var archiveFunction;
-          if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE) ||
-              ss.hasProjectRight(ss.domain.PROJECTS, ss.operation.ARCHIVE_OWN)) {
-            archiveFunction = projectService.archive;
-          }
-          else {
-            $scope.actionInProgress = false;
-            notice.push(notice.ERROR, "You must be Project Owner to archive this project");
-            return;
-          }
+          archiveFunction = projectService.archive;
           archiveFunction(function(result) {
             if (result.ok) {
               notice.push(notice.SUCCESS, "The project was archived successfully");

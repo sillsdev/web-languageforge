@@ -51,6 +51,10 @@ angular.module('usermanagement',
           $scope.list.userCount = result.data.userCount;
           $scope.project = result.data.project;
           $scope.roles = $scope.project.roles;
+          // Currently, only 1 project owner allowed per project, so remove it as an option
+          if ('project_owner' in $scope.roles) {
+           delete $scope.roles.project_owner;
+          }
         }
       });
     };
