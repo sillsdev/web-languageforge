@@ -42,7 +42,7 @@ class ProjectCommands
         $project->appName = $appName;
         $project->siteName = $website->domain;
         $project->ownerRef->id = $userId;
-        $project->addUser($userId, ProjectRoles::OWNER);
+        $project->addUser($userId, ProjectRoles::MANAGER);
         $projectId = $project->write();
         if ($srProject) {
             SendReceiveCommands::updateSRProject($projectId, $srProject);

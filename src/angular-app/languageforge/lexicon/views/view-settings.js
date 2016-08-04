@@ -87,7 +87,6 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
     };
 
     $scope.configDirty = angular.copy($scope.projectSettings.config);
-    $scope.configDirty.roleViews.project_owner = $scope.configDirty.roleViews.project_manager;
 
     // Typeahead for user selection
     $scope.typeahead = {};
