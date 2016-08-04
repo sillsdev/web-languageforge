@@ -18,6 +18,9 @@ angular.module('lexicon.services')
     var role = sessionService.session.projectSettings.currentUserRole;
     var fieldsConfig;
 
+    // Copy project_owner role view from project_manager
+    config.roleViews['project_owner'] = config.roleViews['project_manager'];
+
     // copy option lists to config object
     config.optionlists = {};
     angular.forEach(sessionService.session.projectSettings.optionlists, function (optionlist) {
