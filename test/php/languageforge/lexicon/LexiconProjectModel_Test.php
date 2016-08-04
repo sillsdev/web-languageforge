@@ -110,7 +110,7 @@ class TestLexiconProjectModel extends UnitTestCase
         $projectModel = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         // create the references
-        $projectModel->addUser($user1Id, ProjectRoles::OWNER);
+        $projectModel->addUser($user1Id, ProjectRoles::MANAGER);
         $projectModel->ownerRef->id = $user1Id;
         $projectModel->addUser($user2Id, ProjectRoles::MANAGER);
         $projectModel->addUser($user3Id, ProjectRoles::CONTRIBUTOR);
