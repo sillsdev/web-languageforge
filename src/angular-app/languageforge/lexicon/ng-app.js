@@ -104,12 +104,6 @@ angular.module('lexicon',
         templateUrl: '/angular-app/languageforge/lexicon/views/settings.html'
       }
     );
-    $routeProvider.when(
-      '/users',
-      {
-        templateUrl: '/angular-app/languageforge/lexicon/views/manage-users.html'
-      }
-    );
     $routeProvider.otherwise({ redirectTo: '/dbe' });
   }])
   .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService',
