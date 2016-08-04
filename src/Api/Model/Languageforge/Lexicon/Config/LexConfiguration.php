@@ -457,6 +457,9 @@ class LexConfiguration
         $this->roleViews[LexiconRoles::MANAGER]->showTasks[LexiconTask::SEMDOM] = true;
         $this->roleViews[LexiconRoles::MANAGER]->showTasks[LexiconTask::WORDLIST] = true;
         $this->roleViews[LexiconRoles::MANAGER]->showTasks[LexiconTask::REVIEW] = true;
+
+        // Pointing the views to the same record
+        $this->roleViews[LexiconRoles::OWNER] = $this->roleViews[LexiconRoles::MANAGER];
     }
 
     /**
