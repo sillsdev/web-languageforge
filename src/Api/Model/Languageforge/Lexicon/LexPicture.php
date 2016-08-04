@@ -11,8 +11,7 @@ class LexPicture extends ObjectForEncoding
         $this->fileName = $fileName;
         $this->caption = new LexMultiText();
         $this->setReadOnlyProp('guid');
-        if (!$guid || !Guid::isValid($guid)) $guid = Guid::create();
-        $this->guid = $guid;
+        $this->guid = Guid::makeValid($guid);
     }
 
     /** @var string */
