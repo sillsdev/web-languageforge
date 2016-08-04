@@ -38,6 +38,7 @@ class SessionCommands
             $sessionData['project']['appName'] = $project->appName;
             $sessionData['project']['appLink'] = "/app/{$project->appName}/$projectId/";
             $sessionData['project']['ownerRef'] = $project->ownerRef->asString();
+            $sessionData['project']['userIsProjectOwner'] = $project->isOwner($userId);
             $sessionData['project']['slug'] = $project->databaseName();
             $sessionData['project']['isArchived'] = $project->isArchived;
             $sessionData['userProjectRights'] = $project->getRightsArray($userId);

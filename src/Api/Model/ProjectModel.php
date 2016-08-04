@@ -207,6 +207,15 @@ class ProjectModel extends Mapper\MapperModel
     }
 
     /**
+     * Returns true if the given $userId is the owner of this project
+     * @param string $userId
+     * @return bool
+     */
+    public function isOwner($userId) {
+        return $this->ownerRef->asString() == $userId;
+    }
+
+    /**
      * Returns true if the given $userId has the $right in this project.
      * @param string $userId
      * @param int $right

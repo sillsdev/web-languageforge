@@ -9,8 +9,8 @@ angular.module('projectmanagement', ['projectManagement.services', 'bellows.serv
       // Rights
       $scope.rights = {};
       $scope.rights.archive = (!ss.session.project.isArchived &&
-                              (ss.hasProjectRight(ss.domain.PROJECTS, ss.operation.ARCHIVE_OWN) ||
-                               ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE)));
+                              (ss.session.project.userIsProjectOwner || ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE) )
+                              );
 
       $scope.report = {
         output: '',
