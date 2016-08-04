@@ -3,6 +3,7 @@
 namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
+use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexRoleViewConfig;
 use Api\Model\Languageforge\Lexicon\Config\LexUserViewConfig;
@@ -26,6 +27,7 @@ class LexProjectCommands
     public static function updateConfig($projectId, $config)
     {
         $project = new LexiconProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         $configModel = new LexConfiguration();
         JsonDecoder::decode($configModel, $config);
         $project->config = $configModel;
@@ -46,6 +48,7 @@ class LexProjectCommands
     public static function updateProject($projectId, $userId, $object)
     {
         $project = new LexiconProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         if (!$project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
             throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
         }
