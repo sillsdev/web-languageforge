@@ -1,27 +1,19 @@
 <?php
 
-namespace Api\Model\Languageforge\Lexicon\Config;
+namespace Api\Model\Languageforge\Lexicon;
 
-class LexiconOptionListItem
+class LexOptionListItem
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $key;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $value;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $abbreviation;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $guid;
 
     public function __construct($value = '', $key = null, $guid = '')

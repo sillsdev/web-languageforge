@@ -5,7 +5,7 @@ namespace Api\Model\Languageforge\Lexicon\Config;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\MapOf;
 
-class LexiconFieldListConfigObj extends LexiconConfigObj
+class LexConfigFieldList extends LexConfig
 {
     public function __construct()
     {
@@ -16,17 +16,17 @@ class LexiconFieldListConfigObj extends LexiconConfigObj
             function ($data) {
                 switch ($data['type']) {
                     case self::FIELDLIST:
-                        return new LexiconFieldListConfigObj();
+                        return new LexConfigFieldList();
                     case self::MULTITEXT:
-                        return new LexiconMultitextConfigObj();
+                        return new LexConfigMultiText();
                     case self::MULTIPARAGRAPH:
-                        return new LexMultiParagraphConfig();
+                        return new LexConfigMultiParagraph();
                     case self::OPTIONLIST:
-                        return new LexiconOptionlistConfigObj();
+                        return new LexConfigOptionList();
                     case self::MULTIOPTIONLIST:
-                        return new LexiconMultiOptionlistConfigObj();
+                        return new LexConfigMultiOptionList();
                     case self::PICTURES:
-                        return new LexPicturesConfigObj();
+                        return new LexConfigPictures();
                     default:
                         $type = $data['type'];
                         throw new \Exception("Unknown field list config type: $type");
@@ -38,7 +38,7 @@ class LexiconFieldListConfigObj extends LexiconConfigObj
     /** @var ArrayOf<string> fieldName */
     public $fieldOrder;
 
-    /** @var MapOf<LexiconConfigObj> */
+    /** @var MapOf<LexConfig> */
     public $fields;
 
 }

@@ -8,7 +8,7 @@ use Api\Model\Mapper\ObjectForEncoding;
 /**
  * This class contains author information for the lex entry element and it sub-elements
  */
-class AuthorInfo extends ObjectForEncoding
+class LexAuthorInfo extends ObjectForEncoding
 {
     public function __construct()
     {
@@ -29,10 +29,7 @@ class AuthorInfo extends ObjectForEncoding
      */
     public $createdByUserRef;
 
-    /**
-     *    datetime
-     * @var DateTime
-     */
+    /** @var \DateTime */
     public $createdDate;
 
     /**
@@ -41,10 +38,6 @@ class AuthorInfo extends ObjectForEncoding
      */
     public $modifiedByUserRef;
 
-    /**
-     * datetime
-     * @var DateTime
-     */
+    /** @var \DateTime */
     public $modifiedDate;
-
 }

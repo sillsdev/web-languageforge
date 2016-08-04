@@ -10,11 +10,11 @@ class LexCommentReply extends ObjectForEncoding
     {
         $this->content = $content;
         $this->id = uniqid();
-        $this->authorInfo = new AuthorInfo();
+        $this->authorInfo = new LexAuthorInfo();
     }
 
     /**
-     * @var AuthorInfo
+     * @var LexAuthorInfo
      */
     public $authorInfo;
 

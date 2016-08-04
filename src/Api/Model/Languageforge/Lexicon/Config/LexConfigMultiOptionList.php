@@ -2,11 +2,11 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-class LexiconMultiOptionlistConfigObj extends LexiconOptionlistConfigObj
+class LexConfigMultiOptionList extends LexConfigOptionList
 {
     public function __construct()
     {
         parent::__construct();
-        $this->type = LexiconConfigObj::MULTIOPTIONLIST;
+        $this->type = LexConfig::MULTIOPTIONLIST;
     }
 }

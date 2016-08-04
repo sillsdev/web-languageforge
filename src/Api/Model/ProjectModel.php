@@ -4,8 +4,8 @@ namespace Api\Model;
 
 use Api\Library\Shared\Website;
 use Api\Model\Command\UserCommands;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Languageforge\Lexicon\LexiconRoles;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransRoles;
 use Api\Model\Languageforge\SemDomTransProjectModel;
 use Api\Model\Mapper\ArrayOf;
@@ -25,7 +25,7 @@ class ProjectModel extends Mapper\MapperModel
 {
 
     /**
-     * @var LexiconRoles|SfchecksRoles|SemDomTransRoles|RapumaRoles
+     * @var LexRoles|SfchecksRoles|SemDomTransRoles|RapumaRoles
      */
     protected $rolesClass;
 
@@ -277,7 +277,9 @@ class ProjectModel extends Mapper\MapperModel
      * @param string $userId
      * @return array
      */
-    public function getPublicSettings($userId)
+    public function getPublicSettings(
+        /** @noinspection PhpUnusedParameterInspection used in inherited methods */
+        $userId)
     {
         $settings = array(
             "allowInviteAFriend" => $this->allowInviteAFriend,
@@ -299,7 +301,7 @@ class ProjectModel extends Mapper\MapperModel
             case 'rapuma':
                 return new RapumaProjectModel($projectId);
             case 'lexicon':
-                return new LexiconProjectModel($projectId);
+                return new LexProjectModel($projectId);
             case 'semdomtrans':
                 return new SemDomTransProjectModel($projectId);
             default:

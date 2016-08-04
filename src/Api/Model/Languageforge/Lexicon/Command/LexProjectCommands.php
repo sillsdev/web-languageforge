@@ -9,8 +9,8 @@ use Api\Model\Languageforge\Lexicon\Config\LexRoleViewConfig;
 use Api\Model\Languageforge\Lexicon\Config\LexUserViewConfig;
 use Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig;
 use Api\Model\Languageforge\Lexicon\Config\LexViewMultiTextFieldConfig;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Languageforge\Lexicon\LexiconRoles;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\Mapper\JsonDecoder;
 use Api\Model\Mapper\MongoStore;
@@ -26,7 +26,7 @@ class LexProjectCommands
      */
     public static function updateConfig($projectId, $config)
     {
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
         $configModel = new LexConfiguration();
         JsonDecoder::decode($configModel, $config);
@@ -47,7 +47,7 @@ class LexProjectCommands
      */
     public static function updateProject($projectId, $userId, $object)
     {
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
         if (!$project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
             throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
@@ -74,7 +74,7 @@ class LexProjectCommands
      */
     public static function readProject($id)
     {
-        $project = new LexiconProjectModel($id);
+        $project = new LexProjectModel($id);
 
         return JsonEncoder::encode($project);
     }
@@ -97,7 +97,7 @@ class LexProjectCommands
      */
     public static function updateCustomFieldViews($projectCode, $customFieldSpecs)
     {
-        $project = new LexiconProjectModel();
+        $project = new LexProjectModel();
         if (!$project->readByProperty('projectCode', $projectCode)) return false;
         self::removeDeletedCustomFieldViews($customFieldSpecs, $project->config);
         foreach ($customFieldSpecs as $customFieldSpec) {
@@ -123,7 +123,7 @@ class LexProjectCommands
                 } else {
                     $roleView->fields[$customFieldName] = new LexViewFieldConfig();
                 }
-                if ($role == LexiconRoles::MANAGER) {
+                if ($role == LexRoles::MANAGER) {
                     $roleView->fields[$customFieldName]->show = true;
                 }
             }

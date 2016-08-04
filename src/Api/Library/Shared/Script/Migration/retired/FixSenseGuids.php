@@ -3,12 +3,12 @@
 namespace Api\Library\Shared\Script\Migration;
 
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
-use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Languageforge\Lexicon\LexExample;
 use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Languageforge\Lexicon\Picture;
-use Api\Model\Languageforge\Lexicon\Sense;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Languageforge\Lexicon\LexPicture;
+use Api\Model\Languageforge\Lexicon\LexSense;
 use Api\Model\ProjectListModel;
 
 (php_sapi_name() == 'cli') or die('this script must be run on the command-line');
@@ -76,7 +76,7 @@ class FixSenseGuids
             $entry = new LexEntryModel($project, $entryListItem['id']);
             $entryModified = false;
             if ($entry->hasSenses()) {
-                /** @var Sense $sense */
+                /** @var LexSense $sense */
                 foreach ($entry->senses as $sense) {
                     self::createSenseGuids($sense, $entryModified, $exampleModifiedCount, $pictureModifiedCount);
                 }
@@ -99,7 +99,7 @@ class FixSenseGuids
     }
 
     /**
-     * @param Sense $sense
+     * @param LexSense $sense
      * @param bool $entryModified
      * @param int $exampleModifiedCount
      * @param int $pictureModifiedCount
@@ -119,7 +119,7 @@ class FixSenseGuids
         }
 
         if (isset($sense->examples)) {
-            /** @var Example $example */
+            /** @var LexExample $example */
             foreach ($sense->examples as $example) {
                 unset($example->id);
                 if (!$example->guid || !Guid::isValid($example->guid)) {
@@ -136,7 +136,7 @@ class FixSenseGuids
         }
 
         if (isset($sense->pictures)) {
-            /** @var Picture $picture */
+            /** @var LexPicture $picture */
             foreach ($sense->pictures as $picture) {
                 if (!$picture->guid || !Guid::isValid($picture->guid)) {
                     $picture->guid = Guid::create();
@@ -157,7 +157,7 @@ class FixSenseGuids
  * Has a flag to store in Mongo about whether the sense guids have been migrated
  * @package Api\Library\Shared\Script\Migration
  */
-class LexProjectModelForUseWithSenseGuidMigration extends LexiconProjectModel {
+class LexProjectModelForUseWithSenseGuidMigration extends LexProjectModel {
     public $hasHadSenseGuidsMigrated;
 }
 

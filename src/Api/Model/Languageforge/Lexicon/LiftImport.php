@@ -2,9 +2,8 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Palaso\Utilities\FileUtilities;
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
-use Api\Model\Languageforge\Lexicon\Config\LexiconOptionListItem;
 
 class LiftImport
 {
@@ -50,7 +49,7 @@ class LiftImport
 
     /**
      * @param string $liftFilePath
-     * @param LexiconProjectModel $projectModel
+     * @param LexProjectModel $projectModel
      * @param string $mergeRule
      * @param boolean $skipSameModTime
      * @param boolean $deleteMatchingEntry
@@ -212,7 +211,7 @@ class LiftImport
             foreach ($liftRanges as $liftRangeCode => $liftRange) {
                 // add everything except semantic domains
                 if (strpos($liftRangeCode, 'semantic-domain') === false) {
-                    self::rangeToOptionList($projectModel, $liftRangeCode, LexiconConfigObj::flexOptionlistName($liftRangeCode), $liftRange);
+                    self::rangeToOptionList($projectModel, $liftRangeCode, LexConfig::flexOptionlistName($liftRangeCode), $liftRange);
                 }
             }
         }
@@ -271,7 +270,7 @@ class LiftImport
     /**
      * Convert a LIFT range to an option list of the right code
      * Usage example: rangeToOptionList($projectModel, 'grammatical-info', 'Part of Speech', $liftRanges['grammatical-info'])
-     * @param LexiconProjectModel $projectModel
+     * @param LexProjectModel $projectModel
      * @param string $optionListCode
      * @param string $optionListName
      * @param LiftRange $liftRange
@@ -296,7 +295,7 @@ class LiftImport
                 } else {
                     $abbrev = null;
                 }
-                $optionListItem = new LexiconOptionListItem($label, $id);
+                $optionListItem = new LexOptionListItem($label, $id);
                 $optionListItem->abbreviation = $abbrev;
                 $optionList->items->append($optionListItem);
             }
@@ -307,7 +306,7 @@ class LiftImport
     /**
      *
      * @param string $zipFilePath
-     * @param LexiconProjectModel $projectModel
+     * @param LexProjectModel $projectModel
      * @param LiftMergeRule $mergeRule
      * @param boolean $skipSameModTime
      * @param boolean $deleteMatchingEntry

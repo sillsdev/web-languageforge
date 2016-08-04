@@ -1,6 +1,6 @@
 <?php
 
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\InputSystem;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
@@ -1333,10 +1333,10 @@ EOD;
         $this->assertEqual($importer->stats->newEntries, 1);
 
         $optionList = new LexOptionListModel($project);
-        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ANTHROPOLOGYCATEGORIES));
+        $optionList->readByProperty('code', LexConfig::flexOptionlistCode(LexConfig::ANTHROPOLOGYCATEGORIES));
         $this->assertEqual($optionList->items->count(), 0);
 
-        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS));
+        $optionList->readByProperty('code', LexConfig::flexOptionlistCode(LexConfig::POS));
         $this->assertEqual($optionList->items->count(), 3);
         $this->assertEqual($optionList->items[0]->abbreviation, 'art');
         $this->assertEqual($optionList->items[0]->value, 'article');
@@ -1345,7 +1345,7 @@ EOD;
         $this->assertEqual($optionList->items[2]->abbreviation, 'indef');
         $this->assertEqual($optionList->items[2]->value, 'indefinite article');
 
-        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::STATUS));
+        $optionList->readByProperty('code', LexConfig::flexOptionlistCode(LexConfig::STATUS));
         $this->assertEqual($optionList->items->count(), 4);
         $this->assertEqual($optionList->items[0]->abbreviation, 'Conf');
         $this->assertEqual($optionList->items[0]->value, 'Confirmed');
@@ -1356,7 +1356,7 @@ EOD;
         $this->assertEqual($optionList->items[3]->abbreviation, 'Tent');
         $this->assertEqual($optionList->items[3]->value, 'Tentative');
 
-        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ACADEMICDOMAINS));
+        $optionList->readByProperty('code', LexConfig::flexOptionlistCode(LexConfig::ACADEMICDOMAINS));
         $this->assertEqual($optionList->items->count(), 2);
         $this->assertEqual($optionList->items[0]->abbreviation, 'Anat');
         $this->assertEqual($optionList->items[0]->value, 'anatomy');
@@ -1398,7 +1398,7 @@ EOD;
         LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
 
         $optionList = new LexOptionListModel($project);
-        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS));
+        $optionList->readByProperty('code', LexConfig::flexOptionlistCode(LexConfig::POS));
         $this->assertEqual($optionList->items->count(), 3);
         $this->assertEqual($optionList->items[0]->value, 'article');
 
@@ -1409,16 +1409,16 @@ EOD;
         $this->assertEqual($importer->stats->existingEntries, 1);
 
         $optionList = new LexOptionListModel($project);
-        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ANTHROPOLOGYCATEGORIES));
+        $optionList->readByProperty('code', LexConfig::flexOptionlistCode(LexConfig::ANTHROPOLOGYCATEGORIES));
         $this->assertEqual($optionList->items->count(), 0);
 
-        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::STATUS));
+        $optionList->readByProperty('code', LexConfig::flexOptionlistCode(LexConfig::STATUS));
         $this->assertEqual($optionList->items->count(), 4);
 
-        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ACADEMICDOMAINS));
+        $optionList->readByProperty('code', LexConfig::flexOptionlistCode(LexConfig::ACADEMICDOMAINS));
         $this->assertEqual($optionList->items->count(), 2);
 
-        $optionList->readByProperty('code', LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS));
+        $optionList->readByProperty('code', LexConfig::flexOptionlistCode(LexConfig::POS));
         $this->assertEqual($optionList->items->count(), 1);
         $this->assertEqual($optionList->items[0]->value, 'adjunct');
     }
@@ -1554,10 +1554,10 @@ EOD;
         $this->assertTrue(array_key_exists('en', $project->inputSystems));
         $this->assertTrue(array_key_exists('th', $project->inputSystems));
 
-        $this->assertEqual($project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems->count(), 0);
-        $this->assertEqual($project->config->entry->fields[LexiconConfigObj::CITATIONFORM]->inputSystems->count(), 0);
-        $this->assertEqual($project->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems->count(), 0);
-        $this->assertEqual($project->config->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems->count(), 0);
+        $this->assertEqual($project->config->entry->fields[LexConfig::LEXEME]->inputSystems->count(), 0);
+        $this->assertEqual($project->config->entry->fields[LexConfig::CITATIONFORM]->inputSystems->count(), 0);
+        $this->assertEqual($project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DEFINITION]->inputSystems->count(), 0);
+        $this->assertEqual($project->config->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_SENTENCE]->inputSystems->count(), 0);
     }
 
     // has correct th-fonipa form in entry and mod date changed

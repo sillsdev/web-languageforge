@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Dto;
 
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Mapper\JsonEncoder;
 
 class LexDbeDtoEntriesEncoder extends JsonEncoder
@@ -17,7 +17,7 @@ class LexDbeDtoEntriesEncoder extends JsonEncoder
                 
                 // convert multiparagraph model to HTML version
                 $data = array();
-                $data['type'] = LexiconConfigObj::MULTIPARAGRAPH;
+                $data['type'] = LexConfig::MULTIPARAGRAPH;
                 $data['inputSystem'] = $model->inputSystem;
                 $data['paragraphsHtml'] = $model->toHTML();
                 break;

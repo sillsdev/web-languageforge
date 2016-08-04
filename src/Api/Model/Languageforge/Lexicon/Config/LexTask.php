@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-class LexiconTask
+class LexTask
 {
     // task types
     const VIEW = 'view';
@@ -24,14 +24,9 @@ class LexiconTask
         $this->type = '';
     }
 
-    /**
-     *
-     * @var boolean
-     */
+    /** @var boolean */
     public $visible;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $type;
 }
