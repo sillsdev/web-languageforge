@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
+use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModelWithIdentifier;
@@ -44,6 +45,7 @@ class SendReceiveCommands
         if (!$srProject) return false;
 
         $project = new LexiconProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         $project->sendReceiveProjectIdentifier = $srProject['identifier'];
         $project->sendReceiveProject = new SendReceiveProjectModel(
             $srProject['name'],
@@ -165,6 +167,7 @@ class SendReceiveCommands
     public static function startLFMergeIfRequired($projectId, $queueType = 'merge', $pidFilePath = null, $command = null)
     {
         $project = new LexiconProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         if (!$project->hasSendReceive()) return false;
 
         if (is_null($pidFilePath)) {

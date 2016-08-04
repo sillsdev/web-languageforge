@@ -10,8 +10,8 @@ function(jsonRpc) {
     jsonRpc.call('project_management_dto', [], callback);
   };
 
-  this.archiveProjectAsOwner = function archiveProjectAsOwner(callback) {
-    jsonRpc.call('project_archive_asOwner', [], callback);
+  this.archiveProject = function archiveProject(callback) {
+    jsonRpc.call('project_archive', [], callback);
   };
 
   this.runReport = function runReport(reportName, params, callback) {

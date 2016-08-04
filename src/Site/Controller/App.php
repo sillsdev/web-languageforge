@@ -6,6 +6,7 @@ use Api\Library\Shared\SilexSessionHelper;
 use Api\Model\Command\SessionCommands;
 use Api\Model\ProjectModel;
 use Api\Model\UserModel;
+use Api\Model\Shared\Rights\SystemRoles;
 use Silex\Application;
 
 class App extends Base
@@ -59,6 +60,13 @@ class App extends Base
                 $user = new UserModel($this->_userId);
                 $user->lastUsedProjectId = $projectId;
                 $user->write();
+                if (($projectModel->isArchived) and ($user->role != SystemRoles::SYSTEM_ADMIN)) {
+                    // Forbidden access to archived projects
+                    $projectId = '';
+                    $user->lastUsedProjectId = $projectId;
+                    $user->write();
+                    $app->abort(403, "Forbidden access to archived project");
+                }
             }
         } else {
             $projectId = '';

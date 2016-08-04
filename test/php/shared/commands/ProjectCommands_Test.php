@@ -53,13 +53,36 @@ class TestProjectCommands extends UnitTestCase
 
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
+        $ownerId = $project->ownerRef->asString();
 
         $this->assertFalse($project->isArchived);
 
-        ProjectCommands::archiveProject($projectId);
+        ProjectCommands::archiveProject($projectId, $ownerId);
 
         $project->read($projectId);
         $this->assertTrue($project->isArchived);
+    }
+
+    public function testCheckIfArchivedAndThrow_NonArchivedProject_NoThrow()
+    {
+        $this->environ->clean();
+
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        // Project not archived, no throw expected
+        ProjectCommands::checkIfArchivedAndThrow($project);
+    }
+
+    public function testCheckIfArchivedAndThrow_ArchivedProject_Throw()
+    {
+        $this->environ->clean();
+
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->isArchived = true;
+        $projectId = $project->write();
+
+        $this->assertTrue($project->isArchived);
+        $this->expectException();
+        ProjectCommands::checkIfArchivedAndThrow($project);
     }
 
     public function testPublishProjects_ArchivedProject_ProjectPublished()
