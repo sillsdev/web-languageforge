@@ -136,19 +136,20 @@ class SendReceiveCommands
     }
 
     /**
-     * @param LexProjectModel $project
+     * @param string $projectId
      * @param string $mergeQueuePath
      * @return string|bool $filename on success or false otherwise
      */
-    public static function queueProjectForUpdate($project, $mergeQueuePath = null)
+    public static function queueProjectForUpdate($projectId, $mergeQueuePath = null)
     {
+        $project = new LexProjectModel($projectId);
         if (!$project->hasSendReceive()) return false;
 
         if (is_null($mergeQueuePath)) $mergeQueuePath = self::getLFMergePaths()->mergeQueuePath;
 
         FileUtilities::createAllFolders($mergeQueuePath);
-        $milliseconds = round(microtime(true) * 1000);
-        $filename =  $project->projectCode . '_' . $milliseconds;
+        //$milliseconds = round(microtime(true) * 1000);
+        $filename =  $project->projectCode; // . '_' . $milliseconds;
         $filePath = $mergeQueuePath . '/' . $filename;
         $line = 'projectCode: ' . $project->projectCode;
         if (!file_put_contents($filePath, $line)) return false;
@@ -192,6 +193,7 @@ class SendReceiveCommands
     }
 
     /**
+     * Decode the state file for project status.  If the project is in a queue, override the state to PENDING
      * @param string $projectId
      * @param string $statePath
      * @return bool|array
@@ -201,14 +203,27 @@ class SendReceiveCommands
         $project = new LexProjectModel($projectId);
         if (!$project->hasSendReceive()) return false;
 
-        if (is_null($statePath)) $statePath = self::getLFMergePaths()->statePath;
+        if (is_null($statePath)) {
+            $statePath = self::getLFMergePaths()->statePath;
+        }else {
+            self::getLFMergePaths(true, realpath($statePath . '/..'));
+        }
 
-        $projectStatePath = $statePath . '/' . $project->projectCode . '.state';
+        $projectStatePath = $statePath . DIRECTORY_SEPARATOR . strtolower($project->projectCode) . '.state';
         if (!file_exists($projectStatePath) || !is_file($projectStatePath)) return false;
 
         $statusJson = file_get_contents($projectStatePath);
+        $decodedStatusJson = json_decode($statusJson, true);
 
-        return json_decode($statusJson, true);
+        // If the project is in a queue, override the state to PENDING
+        if (file_exists(self::getLFMergePaths()->mergeQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
+            file_exists(self::getLFMergePaths()->receiveQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
+            file_exists(self::getLFMergePaths()->sendQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
+            file_exists(self::getLFMergePaths()->editQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
+            file_exists(self::getLFMergePaths()->syncQueuePath . DIRECTORY_SEPARATOR . $project->projectCode)) {
+            $decodedStatusJson['state'] = "PENDING";
+        }
+        return $decodedStatusJson;
     }
 
     /**
@@ -268,9 +283,10 @@ class SendReceiveCommands
 
     /**
      * @param bool $reload will reload the configuration if true
+     * @param string $basePath If specified, base path for the directories
      * @return SendReceivePaths|null
      */
-    public static function getLFMergePaths($reload = false)
+    public static function getLFMergePaths($reload = false, $basePath = null)
     {
         static $paths = null;
 
@@ -283,13 +299,18 @@ class SendReceiveCommands
             $paths->syncQueuePath = self::SYNC_QUEUE_PATH;
             $paths->workPath = self::WORK_PATH;
             $paths->statePath = self::STATE_PATH;
-            if (!file_exists(self::LFMERGE_CONF_FILE_PATH)) return $paths;
 
-            $conf = parse_ini_string(self::removeConfComments(self::LFMERGE_CONF_FILE_PATH));
-            if (!array_key_exists('BaseDir', $conf)) return $paths;
+            if (is_null($basePath)) {
+                if (!file_exists(self::LFMERGE_CONF_FILE_PATH)) return $paths;
+
+                $conf = parse_ini_string(self::removeConfComments(self::LFMERGE_CONF_FILE_PATH));
+                if (!array_key_exists('BaseDir', $conf)) return $paths;
+
+                $basePath = $conf['BaseDir'];
+            }
 
             foreach ($paths as &$path) {
-                $path = $conf['BaseDir'] . DIRECTORY_SEPARATOR . basename($path);
+                $path = $basePath . DIRECTORY_SEPARATOR . basename($path);
             }
         }
 
