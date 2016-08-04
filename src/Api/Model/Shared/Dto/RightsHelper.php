@@ -238,7 +238,7 @@ class RightsHelper
 
             case 'project_archive':
                 return $this->userHasSiteRight(Domain::PROJECTS + Operation::ARCHIVE) ||
-                        $this->userHasProjectRight(Domain::PROJECTS + Operation::ARCHIVE_OWN);
+                        $this->userHasSiteRight(Domain::PROJECTS + Operation::CREATE);
 
             case 'project_archivedList':
             case 'project_publish':

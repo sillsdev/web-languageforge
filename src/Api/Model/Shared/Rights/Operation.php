@@ -13,7 +13,6 @@ class Operation
     const EDIT_OWN   = 7;
     const DELETE_OWN = 8;
     const ARCHIVE    = 9;
-    const ARCHIVE_OWN = 10;
 
     public static $operations = array(
         self::CREATE,
@@ -24,8 +23,7 @@ class Operation
         self::VIEW_OWN,
         self::EDIT_OWN,
         self::DELETE_OWN,
-        self::ARCHIVE,
-        self::ARCHIVE_OWN
+        self::ARCHIVE
     );
 
 }
