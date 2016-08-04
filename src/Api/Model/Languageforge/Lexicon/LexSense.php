@@ -27,8 +27,7 @@ class LexSense extends ObjectForEncoding
         $this->setReadOnlyProp('guid');
         $this->setReadOnlyProp('authorInfo');
         if ($liftId) $this->liftId = $liftId;
-        if (!$guid || !Guid::isValid($guid)) $guid = Guid::create();
-        $this->guid = $guid;
+        $this->guid = Guid::makeValid($guid);
 
         $this->initLazyProperties([
                 'partOfSpeech',
@@ -231,8 +230,8 @@ class LexSense extends ObjectForEncoding
     /** @var LexMultiValue */
     public $usages;
 
-    // TODO 07-2014 DDW make this Taglist
-    /** @var Taglist */
+    // TODO 07-2014 DDW make this TagList
+    /** @var LexMultiValue */
     public $reversalEntries;
 
     /** @var LexValue */

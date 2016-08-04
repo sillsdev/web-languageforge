@@ -17,8 +17,7 @@ class LexExample extends ObjectForEncoding
         $this->setReadOnlyProp('translationGuid');
         $this->setReadOnlyProp('authorInfo');
         if ($liftId) $this->liftId = $liftId;
-        if (!$guid || !Guid::isValid($guid)) $guid = Guid::create();
-        $this->guid = $guid;
+        $this->guid = Guid::makeValid($guid);
 
         $this->initLazyProperties([
             'authorInfo',
