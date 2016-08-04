@@ -149,7 +149,7 @@ angular.module('lexicon',
     $scope.rights.canArchiveProject = function canArchiveProject() {
       if (sendReceive.isInProgress() || !angular.isDefined(sessionService.session.project)) return false;
 
-      return (sessionService.hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.ARCHIVE_OWN) ||
+      return (sessionService.session.project.userIsProjectOwner ||
               sessionService.hasSiteRight(sessionService.domain.PROJECTS, sessionService.operation.ARCHIVE));
     };
 
