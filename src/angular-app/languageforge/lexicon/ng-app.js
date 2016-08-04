@@ -15,7 +15,6 @@ angular.module('lexicon',
     'lexicon.view.settings',
     'lexicon.import-export',
     'lexicon.settings',
-    'lexicon.manage-users',
     'lexicon.services',
     'lexicon.filters',
     'pascalprecht.translate'
