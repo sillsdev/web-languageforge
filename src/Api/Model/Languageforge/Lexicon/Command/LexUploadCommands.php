@@ -3,6 +3,7 @@
 namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Palaso\Utilities\FileUtilities;
+use Api\Model\Command\ProjectCommands;
 use Api\Model\Shared\Command\ErrorResult;
 use Api\Model\Shared\Command\ImportResult;
 use Api\Model\Shared\Command\MediaResult;
@@ -30,6 +31,8 @@ class LexUploadCommands
      */
     public static function uploadAudioFile($projectId, $mediaType, $tmpFilePath)
     {
+        $project = new LexiconProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         if ($mediaType != 'entry-audio') {
             throw new \Exception("Unsupported upload type.");
         }
@@ -61,7 +64,6 @@ class LexUploadCommands
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folders if they don't exist
-            $project = new LexiconProjectModel($projectId);
             $project->createAssetsFolders();
             $folderPath = $project->getAudioFolderPath();
 
@@ -122,6 +124,8 @@ class LexUploadCommands
      */
     public static function uploadImageFile($projectId, $mediaType, $tmpFilePath)
     {
+        $project = new LexiconProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         if ($mediaType != 'sense-image') {
             throw new \Exception("Unsupported upload type.");
         }
@@ -156,7 +160,6 @@ class LexUploadCommands
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folders if they don't exist
-            $project = new LexiconProjectModel($projectId);
             $project->createAssetsFolders();
             $folderPath = $project->getImageFolderPath();
 
@@ -207,6 +210,7 @@ class LexUploadCommands
         $response = new UploadResponse();
         $response->result = false;
         $project = new LexiconProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         switch ($mediaType) {
             case 'sense-image':
                 $folderPath = $project->getImageFolderPath();

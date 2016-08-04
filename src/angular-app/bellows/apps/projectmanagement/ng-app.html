@@ -28,8 +28,8 @@
                 No reports are available at this time.
             </div>
         </tab>
-        <tab heading="Archive">
-            <button class="btn" data-ng-disabled="actionInProgress || !rights.archive" ng-click="archiveProject()">Archive this project</button>
+        <tab heading="Archive" data-ng-show="rights.archive">
+            <button class="btn" data-ng-disabled="actionInProgress" ng-click="archiveProject()">Archive this project</button>
             <div class="text-error">Only project owners can archive a project, and this action can only be undone by a site administrator (at this point)</div>
         </tab>
     </tabset>
