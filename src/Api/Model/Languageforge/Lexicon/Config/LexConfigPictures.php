@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-class LexPicturesConfigObj extends LexiconMultitextConfigObj
+class LexConfigPictures extends LexConfigMultiText
 {
     public function __construct()
     {
@@ -18,5 +18,4 @@ class LexPicturesConfigObj extends LexiconMultitextConfigObj
 
     /** @var boolean */
     public $captionHideIfEmpty;
-
 }

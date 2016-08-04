@@ -2,13 +2,12 @@
 
 namespace Api\Model\Languageforge\Lexicon\Dto;
 
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\LexCommentListModel;
 use Api\Model\Languageforge\Lexicon\LexDeletedEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexDeletedCommentListModel;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Mapper\JsonEncoder;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Shared\UserGenericVoteModel;
 
 class LexDbeDto
@@ -26,7 +25,7 @@ class LexDbeDto
     public static function encode($projectId, $userId, $lastFetchTime = null, $offset = 0)
     {
         $data = array();
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         if ($lastFetchTime) {
             $entriesModel = new LexEntryListModel($project, $lastFetchTime);
             $entriesModel->readAsModels();
@@ -64,12 +63,12 @@ class LexDbeDto
             $data['deletedCommentIds'] = array_map(function ($c) {return $c['id']; }, $deletedCommentsModel->entries);
         }
 
-        $lexemeInputSystems = $project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems;
+        $lexemeInputSystems = $project->config->entry->fields[LexConfig::LEXEME]->inputSystems;
 
         usort($entries, function ($a, $b) use ($lexemeInputSystems) {
             $lexeme1Value = '';
-            if (array_key_exists(LexiconConfigObj::LEXEME, $a)) {
-                $lexeme1 = $a[LexiconConfigObj::LEXEME];
+            if (array_key_exists(LexConfig::LEXEME, $a)) {
+                $lexeme1 = $a[LexConfig::LEXEME];
                 foreach ($lexemeInputSystems as $ws) {
                     if (array_key_exists($ws, $lexeme1) && $lexeme1[$ws]['value'] != '') {
                         $lexeme1Value = $lexeme1[$ws]['value'];
@@ -80,8 +79,8 @@ class LexDbeDto
                 }
             }
             $lexeme2Value = '';
-            if (array_key_exists(LexiconConfigObj::LEXEME, $b)) {
-                $lexeme2 = $b[LexiconConfigObj::LEXEME];
+            if (array_key_exists(LexConfig::LEXEME, $b)) {
+                $lexeme2 = $b[LexConfig::LEXEME];
                 foreach ($lexemeInputSystems as $ws) {
                     if (array_key_exists($ws, $lexeme2) && $lexeme2[$ws]['value'] != '') {
                         $lexeme2Value = $lexeme2[$ws]['value'];

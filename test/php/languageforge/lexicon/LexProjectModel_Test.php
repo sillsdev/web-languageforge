@@ -12,7 +12,7 @@ require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
-class TestLexiconProjectModel extends UnitTestCase
+class TestLexProjectModel extends UnitTestCase
 {
     public function testInitializeNewProject_defaultPartOfSpeechOptionListExists()
     {

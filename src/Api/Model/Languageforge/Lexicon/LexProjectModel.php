@@ -5,18 +5,18 @@ namespace Api\Model\Languageforge\Lexicon;
 use Api\Library\Shared\LanguageData;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Mapper\MapOf;
 use Palaso\Utilities\FileUtilities;
 
-class LexiconProjectModel extends LfProjectModel
+class LexProjectModel extends LfProjectModel
 {
     public function __construct($id = '')
     {
         $this->appName = LfProjectModel::LEXICON_APP;
-        $this->rolesClass = 'Api\Model\Languageforge\Lexicon\LexiconRoles';
+        $this->rolesClass = 'Api\Model\Languageforge\Lexicon\LexRoles';
         $this->inputSystems = new MapOf(
             function() {
                 return new InputSystem();
@@ -29,35 +29,25 @@ class LexiconProjectModel extends LfProjectModel
         // default values
         $this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
         $this->inputSystems['th'] = new InputSystem('th', 'Thai', 'th');
-        $this->languageCode = $this->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[0];
+        $this->languageCode = $this->config->entry->fields[LexConfig::LEXEME]->inputSystems[0];
 
         // This must be last, the constructor reads data in from the database which must overwrite the defaults above.
         parent::__construct($id);
     }
 
-    /**
-     * @var MapOf <InputSystem>
-     */
+    /** @var MapOf <InputSystem> */
     public $inputSystems;
 
-    /**
-     * @var LexConfiguration
-     */
+    /** @var LexConfiguration */
     public $config;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $liftFilePath;
 
-    /**
-     * @var string Language Depot project identifier (this is here for DB queries)
-     */
+    /** @var string Language Depot project identifier (this is here for DB queries) */
     public $sendReceiveProjectIdentifier;
 
-    /**
-     * @var SendReceiveProjectModel
-     */
+    /** @var SendReceiveProjectModel */
     public $sendReceiveProject;
 
     /**
@@ -111,7 +101,7 @@ class LexiconProjectModel extends LfProjectModel
     {
         // setup default option lists
         $jsonFilePath = APPPATH . 'json/languageforge/lexicon/partOfSpeech.json';
-        LexOptionListModel::CreateFromJson($this, LexiconConfigObj::POS, $jsonFilePath);
+        LexOptionListModel::CreateFromJson($this, LexConfig::POS, $jsonFilePath);
 
         // Semantic Domains are delivered to the client as a javascript variable.
 
