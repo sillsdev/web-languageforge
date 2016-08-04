@@ -4,14 +4,14 @@ namespace Api\Library\Shared\Script\Migration;
 
 use Api\Library\Shared\Palaso\StringUtil;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
-use Api\Model\Languageforge\Lexicon\Config\LexiconFieldListConfigObj;
-use Api\Model\Languageforge\Lexicon\Config\LexMultiParagraphConfig;
-use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Languageforge\Lexicon\Config\LexConfigFieldList;
+use Api\Model\Languageforge\Lexicon\Config\LexConfigMultiParagraph;
+use Api\Model\Languageforge\Lexicon\LexExample;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexMultiParagraph;
 use Api\Model\Languageforge\Lexicon\LexParagraph;
-use Api\Model\Languageforge\Lexicon\Sense;
+use Api\Model\Languageforge\Lexicon\LexSense;
 use Api\Model\Mapper\ObjectForEncoding;
 use Api\Model\ProjectListModel;
 
@@ -79,12 +79,12 @@ class FixMultiParagraph
             $entry = new LexEntryModel($project, $entryListItem['id']);
             self::migrateMultiParagraphs($entry, $entryConfig, $multiParagraphCount, $entryModified);
             if ($entry->hasSenses()) {
-                /** @var Sense $sense */
+                /** @var LexSense $sense */
                 foreach ($entry->senses as $sense) {
                     $senseModified = false;
                     self::migrateMultiParagraphs($sense, $senseConfig, $multiParagraphCount, $senseModified);
                     if (isset($sense->examples)) {
-                        /** @var Example $example */
+                        /** @var LexExample $example */
                         foreach ($sense->examples as $example) {
                             $exampleModified = false;
                             self::migrateMultiParagraphs($example, $exampleConfig, $multiParagraphCount, $exampleModified);
@@ -122,7 +122,7 @@ class FixMultiParagraph
 
     /**
      * @param ObjectForEncoding $model
-     * @param LexiconFieldListConfigObj $config
+     * @param LexConfigFieldList $config
      * @param int $multiParagraphCount
      * @param boolean $modelModified
      */
@@ -130,7 +130,7 @@ class FixMultiParagraph
     {
         if (isset($model->customFields)) {
             foreach ($model->customFields as $fieldName => $customField) {
-                if (is_a($customField, 'Api\Model\Languageforge\Lexicon\MultiText')) {
+                if (is_a($customField, 'Api\Model\Languageforge\Lexicon\LexMultiText')) {
                     $isMultiParagraph = false;
                     $multiParagraph = new LexMultiParagraph();
                     foreach ($customField as $tag => $text) {
@@ -155,9 +155,9 @@ class FixMultiParagraph
                         $modelModified = true;
                         $model->customFields[$fieldName] = $multiParagraph;
                         if (!is_a($config->fields[$fieldName],
-                            'Api\Model\Languageforge\Lexicon\Config\LexMultiParagraphConfig')
+                            'Api\Model\Languageforge\Lexicon\Config\LexConfigMultiParagraph')
                         ) {
-                            $multiParagraphConfig = new LexMultiParagraphConfig();
+                            $multiParagraphConfig = new LexConfigMultiParagraph();
                             $multiParagraphConfig->label = $config->fields[$fieldName]->label;
                             $multiParagraphConfig->hideIfEmpty = $config->fields[$fieldName]->hideIfEmpty;
                             $config->fields[$fieldName] = $multiParagraphConfig;
@@ -174,7 +174,7 @@ class FixMultiParagraph
  * Has a flag to store in Mongo whether MultiParagraphs have been migrated
  * @package Api\Library\Shared\Script\Migration
  */
-class LexProjectModelForUseWithMultiParagraphMigration extends LexiconProjectModel {
+class LexProjectModelForUseWithMultiParagraphMigration extends LexProjectModel {
     public $hasHadMultiParagraphsMigrated;
 }
 

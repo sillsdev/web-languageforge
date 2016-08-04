@@ -6,7 +6,7 @@ use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\ProjectRoles;
 
-class LexiconRoles extends ProjectRoles
+class LexRoles extends ProjectRoles
 {
     const OBSERVER = 'observer';
     const OBSERVER_WITH_COMMENT = 'observer_with_comment';
@@ -59,4 +59,4 @@ class LexiconRoles extends ProjectRoles
     public static function getRightsArray($role) { return self::_getRightsArray(self::$_rights, $role); }
 
 }
-LexiconRoles::init();
+LexRoles::init();

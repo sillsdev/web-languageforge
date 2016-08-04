@@ -4,30 +4,23 @@ namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Mapper\ObjectForEncoding;
 
-class Picture extends ObjectForEncoding
+class LexPicture extends ObjectForEncoding
 {
     public function __construct($fileName = '', $guid = '')
     {
         $this->fileName = $fileName;
-        $this->caption = new MultiText();
+        $this->caption = new LexMultiText();
         $this->setReadOnlyProp('guid');
         if (!$guid || !Guid::isValid($guid)) $guid = Guid::create();
         $this->guid = $guid;
     }
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $fileName;
 
-    /**
-     * @var MultiText
-     */
+    /** @var LexMultiText */
     public $caption;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $guid;
-
 }

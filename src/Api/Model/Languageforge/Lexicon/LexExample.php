@@ -6,7 +6,7 @@ use Api\Model\Mapper\MapOf;
 use Api\Model\Mapper\ObjectForEncoding;
 use LazyProperty\LazyPropertiesTrait;
 
-class Example extends ObjectForEncoding
+class LexExample extends ObjectForEncoding
 {
     use LazyPropertiesTrait;
 
@@ -34,15 +34,15 @@ class Example extends ObjectForEncoding
     protected function createProperty($name) {
         switch ($name) {
             case 'authorInfo':
-                return new AuthorInfo();
+                return new LexAuthorInfo();
             case 'sentence':
             case 'translation':
             case 'reference':
-                return new MultiText();
+                return new LexMultiText();
             case 'translationGuid':
                 return Guid::create();
             case 'examplePublishIn':
-                return new LexiconMultiValueField();
+                return new LexMultiValue();
             case 'customFields':
                 return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
             default:
@@ -56,19 +56,19 @@ class Example extends ObjectForEncoding
      */
     public $liftId;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $sentence;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $translation;
 
     /** @var string */
     public $translationGuid;
 
-    /** @var MapOf<MultiText|LexMultiParagraph|LexiconField|LexiconMultiValueField> */
+    /** @var MapOf<LexMultiText|LexMultiParagraph|LexValue|LexMultiValue> */
     public $customFields;
 
-    /** @var AuthorInfo */
+    /** @var LexAuthorInfo */
     public $authorInfo;
 
     /** @var string */
@@ -76,10 +76,9 @@ class Example extends ObjectForEncoding
 
     // less common fields used in FLEx
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $reference;
 
-    /** @var LexiconMultiValueField */
+    /** @var LexMultiValue */
     public $examplePublishIn;
-
 }

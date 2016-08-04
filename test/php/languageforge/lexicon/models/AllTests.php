@@ -9,7 +9,7 @@ class AllLexiconModelTests extends TestSuite
     {
         parent::__construct();
         $this->addFile(TestPhpPath . 'languageforge/lexicon/models/LexEntryModel_Test.php');
-        $this->addFile(TestPhpPath . 'languageforge/lexicon/models/SenseModel_Test.php');
+        $this->addFile(TestPhpPath . 'languageforge/lexicon/models/LexSenseModel_Test.php');
     }
 
 }

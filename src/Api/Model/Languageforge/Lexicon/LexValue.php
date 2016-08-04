@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-class LexiconField
+class LexValue
 {
     public function __construct($value = '')
     {
@@ -16,7 +16,7 @@ class LexiconField
 
     /**
      * Ensures that the value $value is set
-     * This method is primarily to give an api consistent with LexiconMultiValueField
+     * This method is primarily to give an api consistent with LexMultiValue
      * @param string $value
      */
     public function value($value)

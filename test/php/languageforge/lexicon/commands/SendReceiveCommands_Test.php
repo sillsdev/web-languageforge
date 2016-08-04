@@ -1,7 +1,7 @@
 <?php
 
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Mapper\JsonEncoder;
 use GuzzleHttp\Client;
@@ -89,7 +89,7 @@ class TestSendReceiveCommands extends UnitTestCase
 
         $newProjectId = SendReceiveCommands::updateSRProject($projectId, $srProject);
 
-        $newProject = new LexiconProjectModel($newProjectId);
+        $newProject = new LexProjectModel($newProjectId);
         $this->assertEqual($newProjectId, $projectId);
         $this->assertEqual($newProject->sendReceiveProject, $sendReceiveProject);
         $this->assertEqual($newProject->sendReceiveProjectIdentifier, $srProject['identifier']);

@@ -2,4 +2,4 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-class LexiconWordlistTask extends LexiconTask {}
+class LexTaskAddMeanings extends LexTask {}

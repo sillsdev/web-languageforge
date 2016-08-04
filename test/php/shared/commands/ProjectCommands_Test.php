@@ -1,7 +1,7 @@
 <?php
 
 use Api\Model\Command\ProjectCommands;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\ProjectModel;
 use Api\Model\ProjectSettingsModel;
 use Api\Model\Scriptureforge\SfProjectModel;
@@ -343,9 +343,9 @@ class TestProjectCommands extends UnitTestCase
         $srProject = null;
 
         $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
-            LexiconProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
+            LexProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
 
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         $assetImagePath = $project->getImageFolderPath();
         $assetAudioPath = $project->getAudioFolderPath();
         $this->assertFalse($project->hasSendReceive());
@@ -371,9 +371,9 @@ class TestProjectCommands extends UnitTestCase
         );
 
         $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
-            LexiconProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
+            LexProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
 
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         $assetImagePath = $project->getImageFolderPath();
         $assetAudioPath = $project->getAudioFolderPath();
         $this->assertTrue($project->hasSendReceive());

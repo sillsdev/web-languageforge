@@ -4,11 +4,11 @@ namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Mapper\ArrayOf;
 
-class LexiconMultiValueField
+class LexMultiValue
 {
 
     public static function createFromArray($values) {
-        $field = new LexiconMultiValueField();
+        $field = new LexMultiValue();
         $field->values = new ArrayOf();
         $field->values->exchangeArray($values);
         return $field;

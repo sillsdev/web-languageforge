@@ -4,7 +4,7 @@ namespace Api\Model\Languageforge\Lexicon\Config;
 
 use Api\Model\Mapper\ObjectForEncoding;
 
-class LexiconConfigObj extends ObjectForEncoding
+class LexConfig extends ObjectForEncoding
 {
     public function __construct()
     {
@@ -82,19 +82,13 @@ class LexiconConfigObj extends ObjectForEncoding
     const COMMENTS_LIST = 'comments';
     const REPLIES_LIST = 'replies';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $type;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $label;
     
-    /**
-     * @var boolean
-     */
+    /** @var boolean */
     public $hideIfEmpty;
 
     /**

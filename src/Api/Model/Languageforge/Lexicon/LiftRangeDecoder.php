@@ -38,7 +38,7 @@ class LiftRangeDecoder {
 
     /**
      *
-     * @var LexiconProjectModel
+     * @var LexProjectModel
      */
     private $_projectModel;
 
@@ -142,9 +142,9 @@ class LiftRangeDecoder {
     /**
      * Reads a MultiText from the XmlNode $sxeNode
      * @param \SimpleXMLElement $sxeNode
-     * @param MultiText $existingMultiText
+     * @param LexMultiText $existingMultiText
      * @param ArrayOf $inputSystems
-     * @return MultiText
+     * @return LexMultiText
      */
     // TODO: If we don't use $this->_projectModel (and I think we shouldn't), this can be
     // converted to a static method so other code could use it.
@@ -153,7 +153,7 @@ class LiftRangeDecoder {
         if (isset($existingMultiText)) {
             $multiText = $existingMultiText;
         } else {
-            $multiText = new MultiText();
+            $multiText = new LexMultiText();
         }
         if (isset($sxeNode->form)) {
             foreach ($sxeNode->form as $form) {

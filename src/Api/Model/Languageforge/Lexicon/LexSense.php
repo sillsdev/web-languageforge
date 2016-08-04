@@ -9,15 +9,15 @@ use LazyProperty\LazyPropertiesTrait;
 
 function generateExample()
 {
-    return new Example();
+    return new LexExample();
 }
 
 function generatePicture()
 {
-    return new Picture();
+    return new LexPicture();
 }
 
-class Sense extends ObjectForEncoding
+class LexSense extends ObjectForEncoding
 {
     use LazyPropertiesTrait;
 
@@ -65,11 +65,11 @@ class Sense extends ObjectForEncoding
 
     protected function createProperty($name) {
         switch ($name) {
-            case 'partOfSpeech': return new LexiconField();
-            case 'semanticDomain': return new LexiconMultiValueField();
+            case 'partOfSpeech': return new LexValue();
+            case 'semanticDomain': return new LexMultiValue();
             case 'examples': return new ArrayOf('Api\Model\Languageforge\Lexicon\generateExample');
             case 'customFields': return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
-            case 'authorInfo': return new AuthorInfo();
+            case 'authorInfo': return new LexAuthorInfo();
             case 'pictures': return new ArrayOf('Api\Model\Languageforge\Lexicon\generatePicture');
 
             case 'definition':
@@ -87,17 +87,17 @@ class Sense extends ObjectForEncoding
             case 'sociolinguisticsNote':
             case 'source':
             case 'senseImportResidue':
-                return new MultiText();
+                return new LexMultiText();
 
-            case 'usages': return new LexiconMultiValueField();
+            case 'usages': return new LexMultiValue();
 
             // TODO reversalEntries needs to be a Taglist 07-2014 DDW
-            case 'reversalEntries': return new LexiconMultiValueField();
-            case 'senseType': return new LexiconField();
-            case 'academicDomains': return new LexiconMultiValueField();
-            case 'sensePublishIn': return new LexiconMultiValueField();
-            case 'anthropologyCategories': return new LexiconMultiValueField();
-            case 'status': return new LexiconMultiValueField();
+            case 'reversalEntries': return new LexMultiValue();
+            case 'senseType': return new LexValue();
+            case 'academicDomains': return new LexMultiValue();
+            case 'sensePublishIn': return new LexMultiValue();
+            case 'anthropologyCategories': return new LexMultiValue();
+            case 'status': return new LexMultiValue();
             default:
                 return '';
         }
@@ -112,28 +112,28 @@ class Sense extends ObjectForEncoding
     /** @var string */
     public $guid;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $definition;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $gloss;
 
-    /** @var ArrayOf<Picture> */
+    /** @var ArrayOf<LexPicture> */
     public $pictures;
 
-    /** @var LexiconField */
+    /** @var LexValue */
     public $partOfSpeech;
 
-    /** @var LexiconMultiValueField */
+    /** @var LexMultiValue */
     public $semanticDomain;
 
-    /** @var ArrayOf<Example> */
+    /** @var ArrayOf<LexExample> */
     public $examples;
 
-    /** @var MapOf<MultiText|LexMultiParagraph|LexiconField|LexiconMultiValueField> */
+    /** @var MapOf<LexMultiText|LexMultiParagraph|LexValue|LexMultiValue> */
     public $customFields;
 
-    /** @var AuthorInfo */
+    /** @var LexAuthorInfo */
     public $authorInfo;
 
     /**
@@ -192,64 +192,64 @@ class Sense extends ObjectForEncoding
 
     // less common fields used in FLEx
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $scientificName;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $anthropologyNote;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $senseBibliography;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $discourseNote;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $encyclopedicNote;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $generalNote;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $grammarNote;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $phonologyNote;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $senseRestrictions;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $semanticsNote;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $sociolinguisticsNote;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $source;
 
-    /** @var LexiconMultiValueField */
+    /** @var LexMultiValue */
     public $usages;
 
     // TODO 07-2014 DDW make this Taglist
     /** @var Taglist */
     public $reversalEntries;
 
-    /** @var LexiconField */
+    /** @var LexValue */
     public $senseType;
 
-    /** @var LexiconMultiValueField */
+    /** @var LexMultiValue */
     public $academicDomains;
 
-    /** @var LexiconMultiValueField */
+    /** @var LexMultiValue */
     public $sensePublishIn;
 
-    /** @var LexiconMultiValueField */
+    /** @var LexMultiValue */
     public $anthropologyCategories;
 
-    /** @var MultiText */
+    /** @var LexMultiText */
     public $senseImportResidue;
 
-    /** @var LexiconMultiValueField */
+    /** @var LexMultiValue */
     public $status;
 }

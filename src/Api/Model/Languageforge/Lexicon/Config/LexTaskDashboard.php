@@ -2,11 +2,11 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-class LexiconDashboardTask extends LexiconTask
+class LexTaskDashboard extends LexTask
 {
     public function __construct()
     {
-        $this->type = LexiconTask::DASHBOARD;
+        $this->type = LexTask::DASHBOARD;
         parent::__construct();
     }
 

@@ -4,11 +4,11 @@ namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Model\Command\ActivityCommands;
 use Api\Model\Command\ProjectCommands;
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectModel;
 use Palaso\Utilities\CodeGuard;
@@ -18,7 +18,7 @@ class LexEntryCommands
     // Note: this is not actually used anymore...but we'll keep it around just in case - cjh 2014-07
     public static function readEntry($projectId, $entryId)
     {
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         $entry = new LexEntryModel($project, $entryId);
 
         return JsonEncoder::encode($entry);
@@ -28,7 +28,7 @@ class LexEntryCommands
     public static function addEntry($projectId, $params)
     {
         CodeGuard::checkTypeAndThrow($params, 'array');
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         $entry = new LexEntryModel($project);
         JsonDecoder::decode($entry, $params);
         return $entry->write();
@@ -48,7 +48,7 @@ class LexEntryCommands
     public static function updateEntry($projectId, $params, $userId, $mergeQueuePath = null, $pidFilePath = null, $command = null)
     {
         CodeGuard::checkTypeAndThrow($params, 'array');
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
         if (array_key_exists('id', $params) && $params['id'] != '') {
             $entry = new LexEntryModel($project, $params['id']);
@@ -115,12 +115,12 @@ class LexEntryCommands
      *
      * @param string $projectId
      * @param string $missingInfo - if empty, returns all entries.
-     *                                 if matches one of LexiconConfigObj constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
+     *                                 if matches one of LexConfig constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
      * @return LexEntryListModel
      */
     public static function listEntries($projectId, $missingInfo = '')
     {
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         $lexEntries = new LexEntryListModel($project);
         $lexEntries->readForDto($missingInfo);
 
@@ -143,9 +143,9 @@ class LexEntryCommands
      * @return string
      */
     public static function getEntryLexeme($projectId, $entryId) {
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         $entry = new LexEntryModel($project, $entryId);
-        $inputSystems = $project->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems;
+        $inputSystems = $project->config->entry->fields[LexConfig::LEXEME]->inputSystems;
         foreach ($inputSystems as $inputSystem) {
             if (array_key_exists($inputSystem, $entry->lexeme) && !empty($entry->lexeme[$inputSystem])) {
                 return $entry->lexeme[$inputSystem]->value;

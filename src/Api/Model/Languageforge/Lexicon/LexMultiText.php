@@ -4,16 +4,16 @@ namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Mapper\MapOf;
 
-function generateLexiconField()
+function generateLexValue()
 {
-    return new LexiconField();
+    return new LexValue();
 }
 
-class MultiText extends MapOf
+class LexMultiText extends MapOf
 {
     public function __construct()
     {
-        parent::__construct('Api\Model\Languageforge\Lexicon\generateLexiconField');
+        parent::__construct('Api\Model\Languageforge\Lexicon\generateLexValue');
     }
 
     public function form($inputSystem, $value)
@@ -21,7 +21,7 @@ class MultiText extends MapOf
         if (array_key_exists($inputSystem, $this)) {
             $this[$inputSystem]->value = $value;
         } else {
-            $this[$inputSystem] = new LexiconField($value);
+            $this[$inputSystem] = new LexValue($value);
         }
     }
 
