@@ -312,23 +312,18 @@ angular.module('siteadmin', [
       for (var i = 0, l = $scope.selected.length; i < l; i++) {
         projectIds.push($scope.selected[i].id);
       }
-      if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE)) {
-        projectService.remove(projectIds, function (result) {
-          if (result.ok) {
-            $scope.selected = []; // Reset the selection
-            $scope.queryArchivedProjects();
-            if (projectIds.length == 1) {
-              notice.push(notice.SUCCESS, "The project was permanently deleted");
-            } else {
-              notice.push(notice.SUCCESS, "The projects were permanently deleted");
-            }
+
+      projectService.remove(projectIds, function (result) {
+        if (result.ok) {
+          $scope.selected = []; // Reset the selection
+          $scope.queryArchivedProjects();
+          if (projectIds.length == 1) {
+            notice.push(notice.SUCCESS, "The project was permanently deleted");
+          } else {
+            notice.push(notice.SUCCESS, "The projects were permanently deleted");
           }
-        });
-      }
-      else {
-        notice.push(notice.ERROR, "You must be Site Admin to permanently delete this project");
-        return;
-      }
+        }
+      });
     });
   };
 }])

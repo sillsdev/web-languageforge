@@ -2,26 +2,20 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-use Api\Model\Languageforge\Lexicon\LexiconRoles;
+use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Mapper\MapOf;
 use Api\Model\Mapper\ArrayOf;
 
 class LexConfiguration
 {
-    /**
-     *
-     * @var MapOf <LexiconTask>
-     */
+    /** @var MapOf <LexTask> */
     public $tasks;
 
-    /**
-     *
-     * @var LexiconFieldListConfigObj
-     */
+    /** @var LexConfigFieldList */
     public $entry;
 
     /**
-     * key is LexiconRoles const
+     * key is LexRoles const
      * @var MapOf <LexRoleViewConfig>
      */
     public $roleViews;
@@ -37,426 +31,426 @@ class LexConfiguration
         $this->tasks = new MapOf(
             function ($data) {
                 switch ($data['type']) {
-                    case LexiconTask::DASHBOARD:
-                        return new LexiconDashboardTask();
-                    case LexiconTask::SEMDOM:
-                        return new LexiconSemdomTask();
+                    case LexTask::DASHBOARD:
+                        return new LexTaskDashboard();
+                    case LexTask::SEMDOM:
+                        return new LexTaskSemdom();
                     default:
-                        return new LexiconTask();
+                        return new LexTask();
                 }
             }
         );
 
-        $this->roleViews = new MapOf(function ($data) {
+        $this->roleViews = new MapOf(function () {
             return new LexRoleViewConfig();
         });
 
-        $this->userViews = new MapOf(function ($data) {
+        $this->userViews = new MapOf(function () {
             return new LexUserViewConfig();
         });
 
         // default tasks values
-        $this->tasks[LexiconTask::VIEW] = new LexiconTask();
-        $this->tasks[LexiconTask::DASHBOARD] = new LexiconDashboardTask();
-        $this->tasks[LexiconTask::GATHERTEXTS] = new LexiconTask();
-        $this->tasks[LexiconTask::SEMDOM] = new LexiconSemdomTask();
-        $this->tasks[LexiconTask::WORDLIST] = new LexiconTask();
-        $this->tasks[LexiconTask::DBE] = new LexiconTask();
-        $this->tasks[LexiconTask::ADDMEANINGS] = new LexiconTask();
-        $this->tasks[LexiconTask::ADDGRAMMAR] = new LexiconTask();
-        $this->tasks[LexiconTask::ADDEXAMPLES] = new LexiconTask();
-        $this->tasks[LexiconTask::REVIEW] = new LexiconTask();
-        $this->tasks[LexiconTask::IMPORTEXPORT] = new LexiconTask();
-        $this->tasks[LexiconTask::CONFIGURATION] = new LexiconTask();
+        $this->tasks[LexTask::VIEW] = new LexTask();
+        $this->tasks[LexTask::DASHBOARD] = new LexTaskDashboard();
+        $this->tasks[LexTask::GATHERTEXTS] = new LexTask();
+        $this->tasks[LexTask::SEMDOM] = new LexTaskSemdom();
+        $this->tasks[LexTask::WORDLIST] = new LexTask();
+        $this->tasks[LexTask::DBE] = new LexTask();
+        $this->tasks[LexTask::ADDMEANINGS] = new LexTask();
+        $this->tasks[LexTask::ADDGRAMMAR] = new LexTask();
+        $this->tasks[LexTask::ADDEXAMPLES] = new LexTask();
+        $this->tasks[LexTask::REVIEW] = new LexTask();
+        $this->tasks[LexTask::IMPORTEXPORT] = new LexTask();
+        $this->tasks[LexTask::CONFIGURATION] = new LexTask();
 
         // default entry fields values
-        $this->entry = new LexiconFieldListConfigObj();
-        $this->entry->fieldOrder[] = LexiconConfigObj::LEXEME;
-        $this->entry->fieldOrder[] = LexiconConfigObj::CITATIONFORM;
-        //$this->entry->fieldOrder[] = LexiconConfigObj::ENVIRONMENTS; // Disabled 05-2016
-        $this->entry->fieldOrder[] = LexiconConfigObj::PRONUNCIATION;
-        $this->entry->fieldOrder[] = LexiconConfigObj::CVPATTERN;
-        $this->entry->fieldOrder[] = LexiconConfigObj::TONE;
-        $this->entry->fieldOrder[] = LexiconConfigObj::LOCATION;
-        $this->entry->fieldOrder[] = LexiconConfigObj::ETYMOLOGY;
-        $this->entry->fieldOrder[] = LexiconConfigObj::ETYMOLOGYGLOSS;
-        $this->entry->fieldOrder[] = LexiconConfigObj::ETYMOLOGYCOMMENT;
-        $this->entry->fieldOrder[] = LexiconConfigObj::ETYMOLOGYSOURCE;
-        $this->entry->fieldOrder[] = LexiconConfigObj::NOTE;
-        $this->entry->fieldOrder[] = LexiconConfigObj::LITERALMEANING;
-        $this->entry->fieldOrder[] = LexiconConfigObj::ENTRYBIBLIOGRAPHY;
-        $this->entry->fieldOrder[] = LexiconConfigObj::ENTRYRESTRICTIONS;
-        $this->entry->fieldOrder[] = LexiconConfigObj::SUMMARYDEFINITION;
-        $this->entry->fieldOrder[] = LexiconConfigObj::ENTRYIMPORTRESIDUE;
+        $this->entry = new LexConfigFieldList();
+        $this->entry->fieldOrder[] = LexConfig::LEXEME;
+        $this->entry->fieldOrder[] = LexConfig::CITATIONFORM;
+        //$this->entry->fieldOrder[] = LexConfig::ENVIRONMENTS; // Disabled 05-2016
+        $this->entry->fieldOrder[] = LexConfig::PRONUNCIATION;
+        $this->entry->fieldOrder[] = LexConfig::CVPATTERN;
+        $this->entry->fieldOrder[] = LexConfig::TONE;
+        $this->entry->fieldOrder[] = LexConfig::LOCATION;
+        $this->entry->fieldOrder[] = LexConfig::ETYMOLOGY;
+        $this->entry->fieldOrder[] = LexConfig::ETYMOLOGYGLOSS;
+        $this->entry->fieldOrder[] = LexConfig::ETYMOLOGYCOMMENT;
+        $this->entry->fieldOrder[] = LexConfig::ETYMOLOGYSOURCE;
+        $this->entry->fieldOrder[] = LexConfig::NOTE;
+        $this->entry->fieldOrder[] = LexConfig::LITERALMEANING;
+        $this->entry->fieldOrder[] = LexConfig::ENTRYBIBLIOGRAPHY;
+        $this->entry->fieldOrder[] = LexConfig::ENTRYRESTRICTIONS;
+        $this->entry->fieldOrder[] = LexConfig::SUMMARYDEFINITION;
+        $this->entry->fieldOrder[] = LexConfig::ENTRYIMPORTRESIDUE;
 
-        $this->entry->fieldOrder[] = LexiconConfigObj::SENSES_LIST;
+        $this->entry->fieldOrder[] = LexConfig::SENSES_LIST;
 
-        $this->entry->fields[LexiconConfigObj::LEXEME] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::LEXEME]->label = 'Word';
-        $this->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[] = 'th';
+        $this->entry->fields[LexConfig::LEXEME] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::LEXEME]->label = 'Word';
+        $this->entry->fields[LexConfig::LEXEME]->inputSystems[] = 'th';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST] = new LexiconFieldListConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::DEFINITION;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::GLOSS;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::PICTURES;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::POS;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SEMDOM;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SCIENTIFICNAME;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::ANTHROPOLOGYNOTE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SENSEBIBLIOGRAPHY;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::DISCOURSENOTE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::ENCYCLOPEDICNOTE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::GENERALNOTE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::GRAMMARNOTE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::PHONOLOGYNOTE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SENSERESTRCTIONS;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SEMANTICSNOTE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SOCIOLINGUISTICSNOTE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SOURCE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::USAGES;
-        //$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::REVERSALENTRIES; // Disabled 05-2016
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SENSETYPE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::ACADEMICDOMAINS;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SENSEPUBLISHIN;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::ANTHROPOLOGYCATEGORIES;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::SENSEIMPORTRESIDUE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::STATUS;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fieldOrder[] = LexiconConfigObj::EXAMPLES_LIST;
+        $this->entry->fields[LexConfig::SENSES_LIST] = new LexConfigFieldList();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::DEFINITION;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::GLOSS;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::PICTURES;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::POS;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SEMDOM;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SCIENTIFICNAME;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::ANTHROPOLOGYNOTE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SENSEBIBLIOGRAPHY;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::DISCOURSENOTE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::ENCYCLOPEDICNOTE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::GENERALNOTE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::GRAMMARNOTE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::PHONOLOGYNOTE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SENSERESTRCTIONS;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SEMANTICSNOTE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SOCIOLINGUISTICSNOTE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SOURCE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::USAGES;
+        //$this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::REVERSALENTRIES; // Disabled 05-2016
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SENSETYPE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::ACADEMICDOMAINS;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SENSEPUBLISHIN;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::ANTHROPOLOGYCATEGORIES;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SENSEIMPORTRESIDUE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::STATUS;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::EXAMPLES_LIST;
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->label = 'Meaning';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DEFINITION]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DEFINITION] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DEFINITION]->label = 'Meaning';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DEFINITION]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS] = new LexiconOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::POS);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::POS]->listCode = $listCode;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::POS] = new LexConfigOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::POS);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::POS]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::POS]->listCode = $listCode;
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM] = new LexiconMultiOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::SEMDOM);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMDOM]->listCode = $listCode;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SEMDOM] = new LexConfigMultiOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::SEMDOM);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SEMDOM]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SEMDOM]->listCode = $listCode;
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST] = new LexiconFieldListConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fieldOrder[] = LexiconConfigObj::EXAMPLE_SENTENCE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fieldOrder[] = LexiconConfigObj::EXAMPLE_TRANSLATION;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fieldOrder[] = LexiconConfigObj::REFERENCE;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fieldOrder[] = LexiconConfigObj::EXAMPLEPUBLISHIN;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST] = new LexConfigFieldList();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::EXAMPLE_SENTENCE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::EXAMPLE_TRANSLATION;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::REFERENCE;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::EXAMPLEPUBLISHIN;
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->label = 'Example';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_SENTENCE]->inputSystems[] = 'th';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_SENTENCE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_SENTENCE]->label = 'Example';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_SENTENCE]->inputSystems[] = 'th';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->label = 'Translation';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_TRANSLATION] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_TRANSLATION]->label = 'Translation';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_TRANSLATION]->inputSystems[] = 'en';
 
-        //$this->entry->fields[LexiconConfigObj::CUSTOM_FIELDS_LIST] = new LexiconFieldListConfigObj();
-        //$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::CUSTOM_FIELDS_LIST] = new LexiconFieldListConfigObj();
-        //$this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::CUSTOM_FIELDS_LIST] = new LexiconFieldListConfigObj();
+        //$this->entry->fields[LexConfig::CUSTOM_FIELDS_LIST] = new LexConfigFieldList();
+        //$this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::CUSTOM_FIELDS_LIST] = new LexConfigFieldList();
+        //$this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::CUSTOM_FIELDS_LIST] = new LexConfigFieldList();
 
         /*  Configuration for less common fields (mostly used in FLEx are defined below) */
 
-        $this->entry->fields[LexiconConfigObj::CITATIONFORM] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::CITATIONFORM]->label = 'Citation Form';
-        $this->entry->fields[LexiconConfigObj::CITATIONFORM]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::CITATIONFORM]->inputSystems[] = 'th';
+        $this->entry->fields[LexConfig::CITATIONFORM] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::CITATIONFORM]->label = 'Citation Form';
+        $this->entry->fields[LexConfig::CITATIONFORM]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::CITATIONFORM]->inputSystems[] = 'th';
 
         /*
         ENVIRONMENTS disabled 05-2016
-        $this->entry->fields[LexiconConfigObj::ENVIRONMENTS] = new LexiconMultiOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ENVIRONMENTS);
-        $this->entry->fields[LexiconConfigObj::ENVIRONMENTS]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::ENVIRONMENTS]->listCode = $listCode;
-        $this->entry->fields[LexiconConfigObj::ENVIRONMENTS]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::ENVIRONMENTS] = new LexConfigMultiOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::ENVIRONMENTS);
+        $this->entry->fields[LexConfig::ENVIRONMENTS]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::ENVIRONMENTS]->listCode = $listCode;
+        $this->entry->fields[LexConfig::ENVIRONMENTS]->hideIfEmpty = true;
         */
-        $this->entry->fields[LexiconConfigObj::PRONUNCIATION] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::PRONUNCIATION]->label = 'Pronunciation';
-        $this->entry->fields[LexiconConfigObj::PRONUNCIATION]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::PRONUNCIATION]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::PRONUNCIATION] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::PRONUNCIATION]->label = 'Pronunciation';
+        $this->entry->fields[LexConfig::PRONUNCIATION]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::PRONUNCIATION]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::CVPATTERN] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::CVPATTERN]->label = 'CV Pattern';
-        $this->entry->fields[LexiconConfigObj::CVPATTERN]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::CVPATTERN]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::CVPATTERN] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::CVPATTERN]->label = 'CV Pattern';
+        $this->entry->fields[LexConfig::CVPATTERN]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::CVPATTERN]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::TONE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::TONE]->label = 'Tone';
-        $this->entry->fields[LexiconConfigObj::TONE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::TONE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::TONE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::TONE]->label = 'Tone';
+        $this->entry->fields[LexConfig::TONE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::TONE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::LOCATION] = new LexiconOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::LOCATION);
-        $this->entry->fields[LexiconConfigObj::LOCATION]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::LOCATION]->listCode = $listCode;
-        $this->entry->fields[LexiconConfigObj::LOCATION]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::LOCATION] = new LexConfigOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::LOCATION);
+        $this->entry->fields[LexConfig::LOCATION]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::LOCATION]->listCode = $listCode;
+        $this->entry->fields[LexConfig::LOCATION]->hideIfEmpty = true;
 
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGY] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGY]->label = 'Etymology';
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGY]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGY]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::ETYMOLOGY] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::ETYMOLOGY]->label = 'Etymology';
+        $this->entry->fields[LexConfig::ETYMOLOGY]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::ETYMOLOGY]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYGLOSS] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYGLOSS]->label = 'Etymology Gloss';
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYGLOSS]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYGLOSS]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::ETYMOLOGYGLOSS] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::ETYMOLOGYGLOSS]->label = 'Etymology Gloss';
+        $this->entry->fields[LexConfig::ETYMOLOGYGLOSS]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::ETYMOLOGYGLOSS]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYCOMMENT] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYCOMMENT]->label = 'Etymology Comment';
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYCOMMENT]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYCOMMENT]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::ETYMOLOGYCOMMENT] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::ETYMOLOGYCOMMENT]->label = 'Etymology Comment';
+        $this->entry->fields[LexConfig::ETYMOLOGYCOMMENT]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::ETYMOLOGYCOMMENT]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYSOURCE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYSOURCE]->label = 'Etymology Source';
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYSOURCE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::ETYMOLOGYSOURCE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::ETYMOLOGYSOURCE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::ETYMOLOGYSOURCE]->label = 'Etymology Source';
+        $this->entry->fields[LexConfig::ETYMOLOGYSOURCE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::ETYMOLOGYSOURCE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::NOTE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::NOTE]->label = 'Note';
-        $this->entry->fields[LexiconConfigObj::NOTE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::NOTE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::NOTE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::NOTE]->label = 'Note';
+        $this->entry->fields[LexConfig::NOTE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::NOTE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::LITERALMEANING] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::LITERALMEANING]->label = 'Literal Meaning';
-        $this->entry->fields[LexiconConfigObj::LITERALMEANING]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::LITERALMEANING]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::LITERALMEANING] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::LITERALMEANING]->label = 'Literal Meaning';
+        $this->entry->fields[LexConfig::LITERALMEANING]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::LITERALMEANING]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::ENTRYBIBLIOGRAPHY] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::ENTRYBIBLIOGRAPHY]->label = 'Bibliography';
-        $this->entry->fields[LexiconConfigObj::ENTRYBIBLIOGRAPHY]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::ENTRYBIBLIOGRAPHY]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::ENTRYBIBLIOGRAPHY] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::ENTRYBIBLIOGRAPHY]->label = 'Bibliography';
+        $this->entry->fields[LexConfig::ENTRYBIBLIOGRAPHY]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::ENTRYBIBLIOGRAPHY]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::ENTRYRESTRICTIONS] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::ENTRYRESTRICTIONS]->label = 'Restrictions';
-        $this->entry->fields[LexiconConfigObj::ENTRYRESTRICTIONS]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::ENTRYRESTRICTIONS]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::ENTRYRESTRICTIONS] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::ENTRYRESTRICTIONS]->label = 'Restrictions';
+        $this->entry->fields[LexConfig::ENTRYRESTRICTIONS]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::ENTRYRESTRICTIONS]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SUMMARYDEFINITION] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SUMMARYDEFINITION]->label = 'Summary Definition';
-        $this->entry->fields[LexiconConfigObj::SUMMARYDEFINITION]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SUMMARYDEFINITION]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SUMMARYDEFINITION] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SUMMARYDEFINITION]->label = 'Summary Definition';
+        $this->entry->fields[LexConfig::SUMMARYDEFINITION]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SUMMARYDEFINITION]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::ENTRYIMPORTRESIDUE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::ENTRYIMPORTRESIDUE]->label = 'Import Residue';
-        $this->entry->fields[LexiconConfigObj::ENTRYIMPORTRESIDUE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::ENTRYIMPORTRESIDUE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::ENTRYIMPORTRESIDUE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::ENTRYIMPORTRESIDUE]->label = 'Import Residue';
+        $this->entry->fields[LexConfig::ENTRYIMPORTRESIDUE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::ENTRYIMPORTRESIDUE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->label = 'Gloss';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GLOSS]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GLOSS] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GLOSS]->label = 'Gloss';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GLOSS]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GLOSS]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES] = new LexPicturesConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->label = 'Pictures';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->captionLabel = 'Captions';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->captionHideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PICTURES]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::PICTURES] = new LexConfigPictures();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::PICTURES]->label = 'Pictures';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::PICTURES]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::PICTURES]->captionLabel = 'Captions';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::PICTURES]->captionHideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::PICTURES]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->label = 'Scientific Name';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SCIENTIFICNAME]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SCIENTIFICNAME] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SCIENTIFICNAME]->label = 'Scientific Name';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SCIENTIFICNAME]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SCIENTIFICNAME]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYNOTE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYNOTE]->label = 'Anthropology Note';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYNOTE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYNOTE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ANTHROPOLOGYNOTE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ANTHROPOLOGYNOTE]->label = 'Anthropology Note';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ANTHROPOLOGYNOTE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ANTHROPOLOGYNOTE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEBIBLIOGRAPHY] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEBIBLIOGRAPHY]->label = 'Bibliography';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEBIBLIOGRAPHY]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEBIBLIOGRAPHY]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEBIBLIOGRAPHY] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEBIBLIOGRAPHY]->label = 'Bibliography';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEBIBLIOGRAPHY]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEBIBLIOGRAPHY]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DISCOURSENOTE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DISCOURSENOTE]->label = 'Discourse Note';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DISCOURSENOTE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::DISCOURSENOTE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DISCOURSENOTE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DISCOURSENOTE]->label = 'Discourse Note';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DISCOURSENOTE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DISCOURSENOTE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ENCYCLOPEDICNOTE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ENCYCLOPEDICNOTE]->label = 'Encyclopedic Note';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ENCYCLOPEDICNOTE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ENCYCLOPEDICNOTE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ENCYCLOPEDICNOTE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ENCYCLOPEDICNOTE]->label = 'Encyclopedic Note';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ENCYCLOPEDICNOTE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ENCYCLOPEDICNOTE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GENERALNOTE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GENERALNOTE]->label = 'General Note';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GENERALNOTE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GENERALNOTE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GENERALNOTE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GENERALNOTE]->label = 'General Note';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GENERALNOTE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GENERALNOTE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GRAMMARNOTE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GRAMMARNOTE]->label = 'Grammar Note';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GRAMMARNOTE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::GRAMMARNOTE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GRAMMARNOTE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GRAMMARNOTE]->label = 'Grammar Note';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GRAMMARNOTE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::GRAMMARNOTE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PHONOLOGYNOTE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PHONOLOGYNOTE]->label = 'Phonology Note';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PHONOLOGYNOTE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::PHONOLOGYNOTE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::PHONOLOGYNOTE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::PHONOLOGYNOTE]->label = 'Phonology Note';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::PHONOLOGYNOTE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::PHONOLOGYNOTE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSERESTRCTIONS] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSERESTRCTIONS]->label = 'Restrictions';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSERESTRCTIONS]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSERESTRCTIONS]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSERESTRCTIONS] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSERESTRCTIONS]->label = 'Restrictions';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSERESTRCTIONS]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSERESTRCTIONS]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMANTICSNOTE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMANTICSNOTE]->label = 'Semantics Note';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMANTICSNOTE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SEMANTICSNOTE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SEMANTICSNOTE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SEMANTICSNOTE]->label = 'Semantics Note';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SEMANTICSNOTE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SEMANTICSNOTE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SOCIOLINGUISTICSNOTE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SOCIOLINGUISTICSNOTE]->label = 'Sociolinguistics Note';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SOCIOLINGUISTICSNOTE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SOCIOLINGUISTICSNOTE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SOCIOLINGUISTICSNOTE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SOCIOLINGUISTICSNOTE]->label = 'Sociolinguistics Note';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SOCIOLINGUISTICSNOTE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SOCIOLINGUISTICSNOTE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SOURCE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SOURCE]->label = 'Source';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SOURCE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SOURCE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SOURCE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SOURCE]->label = 'Source';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SOURCE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SOURCE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES] = new LexiconMultiOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::USAGES);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES]->listCode = $listCode;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::USAGES]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::USAGES] = new LexConfigMultiOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::USAGES);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::USAGES]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::USAGES]->listCode = $listCode;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::USAGES]->hideIfEmpty = true;
 
         // TODO This needs to be a taglist DDW 2014-07
         /*
         REVERSALENTRIES disabled 05-2016
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES] = new LexiconMultiOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::REVERSALENTRIES);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES]->listCode = $listCode;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::REVERSALENTRIES]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::REVERSALENTRIES] = new LexConfigMultiOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::REVERSALENTRIES);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::REVERSALENTRIES]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::REVERSALENTRIES]->listCode = $listCode;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::REVERSALENTRIES]->hideIfEmpty = true;
         */
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSETYPE] = new LexiconOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::SENSETYPE);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSETYPE]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSETYPE]->listCode = $listCode;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSETYPE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSETYPE] = new LexConfigOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::SENSETYPE);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSETYPE]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSETYPE]->listCode = $listCode;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSETYPE]->hideIfEmpty = true;
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS] = new LexiconMultiOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ACADEMICDOMAINS);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS]->listCode = $listCode;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ACADEMICDOMAINS]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ACADEMICDOMAINS] = new LexConfigMultiOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::ACADEMICDOMAINS);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ACADEMICDOMAINS]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ACADEMICDOMAINS]->listCode = $listCode;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ACADEMICDOMAINS]->hideIfEmpty = true;
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEPUBLISHIN] = new LexiconMultiOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::SENSEPUBLISHIN);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEPUBLISHIN]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEPUBLISHIN]->listCode = $listCode;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEPUBLISHIN]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEPUBLISHIN] = new LexConfigMultiOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::SENSEPUBLISHIN);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEPUBLISHIN]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEPUBLISHIN]->listCode = $listCode;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEPUBLISHIN]->hideIfEmpty = true;
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES] = new LexiconMultiOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::ANTHROPOLOGYCATEGORIES);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES]->listCode = $listCode;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ANTHROPOLOGYCATEGORIES] = new LexConfigMultiOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::ANTHROPOLOGYCATEGORIES);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ANTHROPOLOGYCATEGORIES]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ANTHROPOLOGYCATEGORIES]->listCode = $listCode;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ANTHROPOLOGYCATEGORIES]->hideIfEmpty = true;
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEIMPORTRESIDUE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEIMPORTRESIDUE]->label = 'Import Residue';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEIMPORTRESIDUE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::SENSEIMPORTRESIDUE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEIMPORTRESIDUE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEIMPORTRESIDUE]->label = 'Import Residue';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEIMPORTRESIDUE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEIMPORTRESIDUE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS] = new LexiconOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::STATUS);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS]->listCode = $listCode;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::STATUS]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::STATUS] = new LexConfigOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::STATUS);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::STATUS]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::STATUS]->listCode = $listCode;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::STATUS]->hideIfEmpty = true;
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::REFERENCE] = new LexiconMultitextConfigObj();
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::REFERENCE]->label = 'Reference';
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::REFERENCE]->hideIfEmpty = true;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::REFERENCE]->inputSystems[] = 'en';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::REFERENCE] = new LexConfigMultiText();
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::REFERENCE]->label = 'Reference';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::REFERENCE]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::REFERENCE]->inputSystems[] = 'en';
 
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLEPUBLISHIN] = new LexiconMultiOptionlistConfigObj();
-        $listCode = LexiconConfigObj::flexOptionlistCode(LexiconConfigObj::EXAMPLEPUBLISHIN);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLEPUBLISHIN]->label = LexiconConfigObj::flexOptionlistName($listCode);
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLEPUBLISHIN]->listCode = $listCode;
-        $this->entry->fields[LexiconConfigObj::SENSES_LIST]->fields[LexiconConfigObj::EXAMPLES_LIST]->fields[LexiconConfigObj::EXAMPLEPUBLISHIN]->hideIfEmpty = true;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLEPUBLISHIN] = new LexConfigMultiOptionList();
+        $listCode = LexConfig::flexOptionlistCode(LexConfig::EXAMPLEPUBLISHIN);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLEPUBLISHIN]->label = LexConfig::flexOptionlistName($listCode);
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLEPUBLISHIN]->listCode = $listCode;
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLEPUBLISHIN]->hideIfEmpty = true;
 
         // default role views values
-        $this->roleViews[LexiconRoles::OBSERVER] = new LexRoleViewConfig();
-        $this->roleViews[LexiconRoles::OBSERVER_WITH_COMMENT] = new LexRoleViewConfig();
-        $this->roleViews[LexiconRoles::CONTRIBUTOR] = new LexRoleViewConfig();
-        $this->roleViews[LexiconRoles::MANAGER] = new LexRoleViewConfig();
+        $this->roleViews[LexRoles::OBSERVER] = new LexRoleViewConfig();
+        $this->roleViews[LexRoles::OBSERVER_WITH_COMMENT] = new LexRoleViewConfig();
+        $this->roleViews[LexRoles::CONTRIBUTOR] = new LexRoleViewConfig();
+        $this->roleViews[LexRoles::MANAGER] = new LexRoleViewConfig();
 
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::LEXEME] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::DEFINITION] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::POS] = new LexViewFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SEMDOM] = new LexViewFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::EXAMPLE_SENTENCE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::EXAMPLE_TRANSLATION] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::LEXEME] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::DEFINITION] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::POS] = new LexViewFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SEMDOM] = new LexViewFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::EXAMPLE_SENTENCE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::EXAMPLE_TRANSLATION] = new LexViewMultiTextFieldConfig(true);
 
         // Less common fields are visible by default
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::GLOSS] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::PICTURES] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::CITATIONFORM] = new LexViewMultiTextFieldConfig(true);
-        //$this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ENVIRONMENTS] = new LexViewFieldConfig(true); // Disabled 05-2016
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::PRONUNCIATION] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::CVPATTERN] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::TONE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::LOCATION] = new LexViewFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ETYMOLOGY] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ETYMOLOGYGLOSS] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ETYMOLOGYCOMMENT] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ETYMOLOGYSOURCE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::NOTE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::LITERALMEANING] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ENTRYBIBLIOGRAPHY] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ENTRYRESTRICTIONS] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SUMMARYDEFINITION] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ENTRYIMPORTRESIDUE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SCIENTIFICNAME] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ANTHROPOLOGYNOTE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SENSEBIBLIOGRAPHY] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::DISCOURSENOTE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ENCYCLOPEDICNOTE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::GENERALNOTE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::GRAMMARNOTE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::PHONOLOGYNOTE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SENSERESTRCTIONS] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SEMANTICSNOTE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SOCIOLINGUISTICSNOTE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SOURCE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::USAGES] = new LexViewFieldConfig(true);
-        //$this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::REVERSALENTRIES] = new LexViewFieldConfig(true); // Disabled 05-2016
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SENSETYPE] = new LexViewFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ACADEMICDOMAINS] = new LexViewFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SENSEPUBLISHIN] = new LexViewFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::ANTHROPOLOGYCATEGORIES] = new LexViewFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::SENSEIMPORTRESIDUE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::STATUS] = new LexViewFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::REFERENCE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexiconRoles::OBSERVER]->fields[LexiconConfigObj::EXAMPLEPUBLISHIN] = new LexViewFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::GLOSS] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::PICTURES] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::CITATIONFORM] = new LexViewMultiTextFieldConfig(true);
+        //$this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ENVIRONMENTS] = new LexViewFieldConfig(true); // Disabled 05-2016
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::PRONUNCIATION] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::CVPATTERN] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::TONE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::LOCATION] = new LexViewFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ETYMOLOGY] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ETYMOLOGYGLOSS] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ETYMOLOGYCOMMENT] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ETYMOLOGYSOURCE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::NOTE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::LITERALMEANING] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ENTRYBIBLIOGRAPHY] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ENTRYRESTRICTIONS] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SUMMARYDEFINITION] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ENTRYIMPORTRESIDUE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SCIENTIFICNAME] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ANTHROPOLOGYNOTE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SENSEBIBLIOGRAPHY] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::DISCOURSENOTE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ENCYCLOPEDICNOTE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::GENERALNOTE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::GRAMMARNOTE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::PHONOLOGYNOTE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SENSERESTRCTIONS] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SEMANTICSNOTE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SOCIOLINGUISTICSNOTE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SOURCE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::USAGES] = new LexViewFieldConfig(true);
+        //$this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::REVERSALENTRIES] = new LexViewFieldConfig(true); // Disabled 05-2016
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SENSETYPE] = new LexViewFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ACADEMICDOMAINS] = new LexViewFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SENSEPUBLISHIN] = new LexViewFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ANTHROPOLOGYCATEGORIES] = new LexViewFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SENSEIMPORTRESIDUE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::STATUS] = new LexViewFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::REFERENCE] = new LexViewMultiTextFieldConfig(true);
+        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::EXAMPLEPUBLISHIN] = new LexViewFieldConfig(true);
 
-        $this->roleViews[LexiconRoles::OBSERVER_WITH_COMMENT]->fields = clone $this->roleViews[LexiconRoles::OBSERVER]->fields;
-        $this->roleViews[LexiconRoles::CONTRIBUTOR]->fields = clone $this->roleViews[LexiconRoles::OBSERVER]->fields;
-        $this->roleViews[LexiconRoles::MANAGER]->fields = clone $this->roleViews[LexiconRoles::OBSERVER]->fields;
+        $this->roleViews[LexRoles::OBSERVER_WITH_COMMENT]->fields = clone $this->roleViews[LexRoles::OBSERVER]->fields;
+        $this->roleViews[LexRoles::CONTRIBUTOR]->fields = clone $this->roleViews[LexRoles::OBSERVER]->fields;
+        $this->roleViews[LexRoles::MANAGER]->fields = clone $this->roleViews[LexRoles::OBSERVER]->fields;
 
-        $this->roleViews[LexiconRoles::OBSERVER]->showTasks[LexiconTask::VIEW] = true;
-        $this->roleViews[LexiconRoles::OBSERVER]->showTasks[LexiconTask::DASHBOARD] = true;
-        $this->roleViews[LexiconRoles::OBSERVER]->showTasks[LexiconTask::GATHERTEXTS] = false;
-        $this->roleViews[LexiconRoles::OBSERVER]->showTasks[LexiconTask::SEMDOM] = false;
-        $this->roleViews[LexiconRoles::OBSERVER]->showTasks[LexiconTask::WORDLIST] = false;
-        $this->roleViews[LexiconRoles::OBSERVER]->showTasks[LexiconTask::DBE] = true;
-        $this->roleViews[LexiconRoles::OBSERVER]->showTasks[LexiconTask::ADDMEANINGS] = false;
-        $this->roleViews[LexiconRoles::OBSERVER]->showTasks[LexiconTask::ADDGRAMMAR] = false;
-        $this->roleViews[LexiconRoles::OBSERVER]->showTasks[LexiconTask::ADDEXAMPLES] = false;
-        $this->roleViews[LexiconRoles::OBSERVER]->showTasks[LexiconTask::REVIEW] = false;
+        $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::VIEW] = true;
+        $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::DASHBOARD] = true;
+        $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::GATHERTEXTS] = false;
+        $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::SEMDOM] = false;
+        $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::WORDLIST] = false;
+        $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::DBE] = true;
+        $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::ADDMEANINGS] = false;
+        $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::ADDGRAMMAR] = false;
+        $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::ADDEXAMPLES] = false;
+        $this->roleViews[LexRoles::OBSERVER]->showTasks[LexTask::REVIEW] = false;
 
-        $this->roleViews[LexiconRoles::OBSERVER_WITH_COMMENT]->showTasks = clone $this->roleViews[LexiconRoles::OBSERVER]->showTasks;
+        $this->roleViews[LexRoles::OBSERVER_WITH_COMMENT]->showTasks = clone $this->roleViews[LexRoles::OBSERVER]->showTasks;
 
-        $this->roleViews[LexiconRoles::CONTRIBUTOR]->showTasks = clone $this->roleViews[LexiconRoles::OBSERVER]->showTasks;
-        $this->roleViews[LexiconRoles::CONTRIBUTOR]->showTasks[LexiconTask::ADDMEANINGS] = true;
-        $this->roleViews[LexiconRoles::CONTRIBUTOR]->showTasks[LexiconTask::ADDGRAMMAR] = true;
-        $this->roleViews[LexiconRoles::CONTRIBUTOR]->showTasks[LexiconTask::ADDEXAMPLES] = true;
+        $this->roleViews[LexRoles::CONTRIBUTOR]->showTasks = clone $this->roleViews[LexRoles::OBSERVER]->showTasks;
+        $this->roleViews[LexRoles::CONTRIBUTOR]->showTasks[LexTask::ADDMEANINGS] = true;
+        $this->roleViews[LexRoles::CONTRIBUTOR]->showTasks[LexTask::ADDGRAMMAR] = true;
+        $this->roleViews[LexRoles::CONTRIBUTOR]->showTasks[LexTask::ADDEXAMPLES] = true;
 
-        $this->roleViews[LexiconRoles::MANAGER]->showTasks = clone $this->roleViews[LexiconRoles::CONTRIBUTOR]->showTasks;
-        $this->roleViews[LexiconRoles::MANAGER]->showTasks[LexiconTask::GATHERTEXTS] = true;
-        $this->roleViews[LexiconRoles::MANAGER]->showTasks[LexiconTask::SEMDOM] = true;
-        $this->roleViews[LexiconRoles::MANAGER]->showTasks[LexiconTask::WORDLIST] = true;
-        $this->roleViews[LexiconRoles::MANAGER]->showTasks[LexiconTask::REVIEW] = true;
+        $this->roleViews[LexRoles::MANAGER]->showTasks = clone $this->roleViews[LexRoles::CONTRIBUTOR]->showTasks;
+        $this->roleViews[LexRoles::MANAGER]->showTasks[LexTask::GATHERTEXTS] = true;
+        $this->roleViews[LexRoles::MANAGER]->showTasks[LexTask::SEMDOM] = true;
+        $this->roleViews[LexRoles::MANAGER]->showTasks[LexTask::WORDLIST] = true;
+        $this->roleViews[LexRoles::MANAGER]->showTasks[LexTask::REVIEW] = true;
 
     }
 
@@ -470,7 +464,7 @@ class LexConfiguration
     /**
      * Recursively set all field input systems
      *
-     * @param LexiconFieldListConfigObj $fieldListConfig
+     * @param LexConfigFieldList $fieldListConfig
      * @param ArrayOf $inputSystems
      */
     private static function setAllInputSystems($fieldListConfig, $inputSystems) {

@@ -20,17 +20,16 @@ class LexRoleViewConfig
     }
 
     /**
-     * key is LexiconConfigObj field const
+     * key is LexConfig field const
      * @var MapOf <LexViewFieldConfig>
      */
     public $fields;
 
     /**
-     * key is LexiconTask const
+     * key is LexTask const
      * @var MapOf <bool>
      */
     public $showTasks;
-
 }
 
 class LexViewFieldConfig
@@ -41,16 +40,11 @@ class LexViewFieldConfig
         $this->type = 'basic';
     }
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $show;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $type;
-
 }
 
 class LexViewMultiTextFieldConfig extends LexViewFieldConfig
@@ -63,14 +57,9 @@ class LexViewMultiTextFieldConfig extends LexViewFieldConfig
         $this->inputSystems = new ArrayOf();
     }
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $overrideInputSystems;
 
-    /**
-     * @var ArrayOf
-     */
+    /** @var ArrayOf */
     public $inputSystems;
-
 }

@@ -2,7 +2,7 @@
 
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
-use Api\Model\Languageforge\Lexicon\LexiconRoles;
+use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 
@@ -171,14 +171,14 @@ class TestLexUploadCommands extends UnitTestCase
         $fileName = 'TestLangProj.7z';  // Ken Zook's test data
         $tmpFilePath = $this->environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
         $userId = $this->environ->createUser('bob', 'bob', 'bob@example.com');
-        $project->addUser($userId, LexiconRoles::OBSERVER);
-        $project->config->userViews[$userId] = clone $project->config->roleViews[LexiconRoles::OBSERVER];
+        $project->addUser($userId, LexRoles::OBSERVER);
+        $project->config->userViews[$userId] = clone $project->config->roleViews[LexRoles::OBSERVER];
         $project->write();
 
         $this->assertFalse($project->config->entry->fieldOrder->array_search('customField_entry_Cust_Single_Line_All'), "custom field entry config doesn't yet exist");
         $this->assertFalse(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->entry->fields), "custom field entry config doesn't yet exist");
-        $this->assertFalse(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexiconRoles::OBSERVER]->fields), "custom field roleView config doesn't yet exist");
-        $this->assertFalse(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexiconRoles::MANAGER]->fields), "custom field roleView config doesn't yet exist");
+        $this->assertFalse(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexRoles::OBSERVER]->fields), "custom field roleView config doesn't yet exist");
+        $this->assertFalse(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexRoles::MANAGER]->fields), "custom field roleView config doesn't yet exist");
         $this->assertFalse(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->userViews[$userId]->fields), "custom field userView config doesn't yet exist");
 
         $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
@@ -222,10 +222,10 @@ class TestLexUploadCommands extends UnitTestCase
         $this->assertEqual($project->config->entry->fields['customField_entry_Cust_Single_Line_All']->label, 'Cust Single Line All');
         $this->assertEqual($project->config->entry->fields['customField_entry_Cust_Single_Line_All']->type, 'multitext');
         $this->assertTrue($project->config->entry->fields['customField_entry_Cust_Single_Line_All']->inputSystems->array_search('en'));
-        $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexiconRoles::OBSERVER]->fields), "custom field roleView config exists");
-        $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexiconRoles::MANAGER]->fields), "custom field roleView config exists");
-        $this->assertTrue($project->config->roleViews[LexiconRoles::OBSERVER]->fields['customField_entry_Cust_Single_Line_All']->show);
-        $this->assertTrue($project->config->roleViews[LexiconRoles::MANAGER]->fields['customField_entry_Cust_Single_Line_All']->show);
+        $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexRoles::OBSERVER]->fields), "custom field roleView config exists");
+        $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->roleViews[LexRoles::MANAGER]->fields), "custom field roleView config exists");
+        $this->assertTrue($project->config->roleViews[LexRoles::OBSERVER]->fields['customField_entry_Cust_Single_Line_All']->show);
+        $this->assertTrue($project->config->roleViews[LexRoles::MANAGER]->fields['customField_entry_Cust_Single_Line_All']->show);
         $this->assertTrue(array_key_exists('customField_entry_Cust_Single_Line_All', $project->config->userViews[$userId]->fields), "custom field userView config doesn't yet exist");
         $this->assertTrue($project->config->userViews[$userId]->fields['customField_entry_Cust_Single_Line_All']->show);
         $this->assertEqual($entryB['lexeme']['qaa-fonipa-x-kal']['value'], 'zitʰɛstmen');

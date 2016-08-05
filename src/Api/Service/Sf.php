@@ -322,23 +322,15 @@ class Sf
     }
 
     /**
-     * Archive projects
+     * Clear out the session projectId and archive project
      *
-     * @param string
      * @return string
      */
-    public function project_archive_asAdmin()
-    {
-        return ProjectCommands::archiveProject($this->projectId);
-    }
 
-    public function project_archive_asOwner()
+    public function project_archive()
     {
-        $project = new ProjectModel($this->projectId);
-        if ($project->ownerRef->asString() != $this->userId) {
-            throw new UserUnauthorizedException('You are not authorized to archive this project');
-        }
-        return ProjectCommands::archiveProject($this->projectId);
+        $this->app['session']->set('projectId', "");
+        return ProjectCommands::archiveProject($this->projectId, $this->userId);
     }
 
     public function project_archivedList()
@@ -784,12 +776,12 @@ class Sf
     public function sendReceive_receiveProject()
     {
         SendReceiveCommands::queueProjectForSync($this->projectId);
-        return SendReceiveCommands::startLFMergeIfRequired($this->projectId, 'receive');
+        return SendReceiveCommands::startLFMergeIfRequired($this->projectId);
     }
 
     public function sendReceive_commitProject()
     {
-        return SendReceiveCommands::startLFMergeIfRequired($this->projectId, 'commit');
+        return SendReceiveCommands::startLFMergeIfRequired($this->projectId);
     }
 
     public function sendReceive_getProjectStatus()

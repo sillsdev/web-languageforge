@@ -3,13 +3,13 @@ use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LiftImport;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
-use Api\Model\Languageforge\Lexicon\Sense;
-use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Languageforge\Lexicon\LexSense;
+use Api\Model\Languageforge\Lexicon\LexExample;
 use Api\Model\Mapper\ArrayOf;
-use Api\Model\Languageforge\Lexicon\LexiconMultiValueField;
-use Api\Model\Languageforge\Lexicon\LexiconField;
-use Api\Model\Languageforge\Lexicon\Picture;
-use Api\Model\Languageforge\Lexicon\MultiText;
+use Api\Model\Languageforge\Lexicon\LexMultiValue;
+use Api\Model\Languageforge\Lexicon\LexValue;
+use Api\Model\Languageforge\Lexicon\LexPicture;
+use Api\Model\Languageforge\Lexicon\LexMultiText;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -261,38 +261,38 @@ EOD;
         $this->assertEqual($entry0->morphologyType, 'stem');
         $this->assertEqual($entry0->literalMeaning['en'], 'A Literal Meaning');
 
-        /* @var $sense00 Sense */
+        /* @var $sense00 LexSense */
         $sense00 = $entry0->senses[0];
 
         $this->assertEqual($sense00->partOfSpeech->value, 'Noun');
         $this->assertEqual($sense00->gloss['en']->value, 'A Word');
         $this->assertEqual($sense00->definition['en']->value, 'A Word Defn');
 
-        $expected = LexiconMultiValueField::createFromArray(array('9.1.3.1'));
+        $expected = LexMultiValue::createFromArray(array('9.1.3.1'));
         $this->assertEqual($sense00->semanticDomain, $expected);
 
-        $expected = LexiconMultiValueField::createFromArray(array('901'));
+        $expected = LexMultiValue::createFromArray(array('901'));
         $this->assertEqual($sense00->anthropologyCategories, $expected);
 
-        $expected = LexiconMultiValueField::createFromArray(array('applied linguistics'));
+        $expected = LexMultiValue::createFromArray(array('applied linguistics'));
         $this->assertEqual($sense00->academicDomains, $expected);
 
-        $expected = new LexiconField('primary');
+        $expected = new LexValue('primary');
         $this->assertEqual($sense00->senseType, $expected);
 
-        $expected = LexiconMultiValueField::createFromArray(array('Tentative'));
+        $expected = LexMultiValue::createFromArray(array('Tentative'));
         $this->assertEqual($sense00->status, $expected);
 
-        $expected = LexiconMultiValueField::createFromArray(array('colloquial'));
+        $expected = LexMultiValue::createFromArray(array('colloquial'));
         $this->assertEqual($sense00->usages, $expected);
 
-        $expected = new Picture('Desert.jpg', $sense00->pictures[0]->guid);
+        $expected = new LexPicture('Desert.jpg', $sense00->pictures[0]->guid);
         $expected->caption['th'] = 'รูป';
         $expected->caption['en'] = 'image';
         $expected->caption['fr'] = 'photo';
         $this->assertEqual($sense00->pictures[0], $expected);
 
-        /* @var $example000 Example */
+        /* @var $example000 LexExample */
         $example000 = $sense00->examples[0];
         $this->assertEqual($example000->sentence['th'], 'ใหท่ มี');
         $this->assertEqual($example000->translation['en']->value, 'A Translation');

@@ -18,8 +18,8 @@ angular.module('bellows.services')
       jsonRpc.call('project_join_switchSession', [srIdentifier, role], callback);
     };
 
-    this.archiveAsAdmin = function (callback) {
-      jsonRpc.call('project_archive_asAdmin', [], callback);
+    this.archive = function (callback) {
+      jsonRpc.call('project_archive', [], callback);
     };
 
     this.archivedList = function (callback) {

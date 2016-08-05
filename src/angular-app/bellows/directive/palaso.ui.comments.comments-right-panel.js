@@ -72,11 +72,13 @@ angular.module('palaso.ui.comments')
 
         $scope.rights = {
           canComment: function canComment() {
+            if (sessionService.session.project.isArchived) return false;
             return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
               sessionService.operation.CREATE);
           },
 
           canDeleteComment: function canDeleteComment(commentAuthorId) {
+            if (sessionService.session.project.isArchived) return false;
             if (sessionService.session.userId == commentAuthorId) {
               return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
                 sessionService.operation.DELETE_OWN);
@@ -87,6 +89,7 @@ angular.module('palaso.ui.comments')
           },
 
           canEditComment: function canEditComment(commentAuthorId) {
+            if (sessionService.session.project.isArchived) return false;
             if (sessionService.session.userId == commentAuthorId) {
               return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
                 sessionService.operation.EDIT_OWN);
@@ -96,6 +99,7 @@ angular.module('palaso.ui.comments')
           },
 
           canUpdateCommentStatus: function canUpdateCommentStatus() {
+            if (sessionService.session.project.isArchived) return false;
             return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
               sessionService.operation.EDIT);
           }
