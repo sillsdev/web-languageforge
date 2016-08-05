@@ -89,4 +89,32 @@ describe('E2E Project Management App', function () {
     expect(projectsPage.projectsList.count()).toBe(3);
   });
 
+  it('System Admin can archive', function () {
+    managementPage.get();
+    expect(managementPage.noticeList.count()).toBe(0);
+    managementPage.tabs.archive.click();
+    expect(managementPage.archiveTab.archiveButton.isDisplayed()).toBe(true);
+    expect(managementPage.archiveTab.archiveButton.isEnabled()).toBe(true);
+    managementPage.archiveTab.archiveButton.click();
+    util.clickModalButton('Archive');
+    projectsPage.get();
+    expect(projectsPage.projectsList.count()).toBe(2);
+  });
+
+  it('System Admin can re-publish project', function () {
+    siteAdminPage.get();
+    siteAdminPage.tabs.archivedProjects.click();
+    expect(siteAdminPage.tabs.archivedProjects.republishButton.isDisplayed()).toBe(true);
+    expect(siteAdminPage.tabs.archivedProjects.republishButton.isEnabled()).toBe(false);
+    expect(siteAdminPage.tabs.archivedProjects.deleteButton.isDisplayed()).toBe(true);
+    expect(siteAdminPage.tabs.archivedProjects.deleteButton.isEnabled()).toBe(false);
+    expect(siteAdminPage.tabs.archivedProjects.projectsList.count()).toBe(1);
+    siteAdminPage.tabs.archivedProjects.setCheckbox(0, true);
+    expect(siteAdminPage.tabs.archivedProjects.republishButton.isEnabled()).toBe(true);
+    expect(siteAdminPage.tabs.archivedProjects.deleteButton.isEnabled()).toBe(true);
+    siteAdminPage.tabs.archivedProjects.republishButton.click();
+    projectsPage.get();
+    expect(projectsPage.projectsList.count()).toBe(3);
+  });
+
 });
