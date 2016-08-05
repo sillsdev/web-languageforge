@@ -14,6 +14,7 @@ use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectListModel;
 use Api\Model\ProjectModel;
 use Api\Model\ProjectSettingsModel;
+use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Sms\SmsSettings;
 use Api\Model\UserModel;
 use Palaso\Utilities\CodeGuard;
@@ -101,14 +102,14 @@ class ProjectCommands
 
         $project = new ProjectModel($projectId);
         $user = new UserModel($userId);
-        if ($userId != $project->ownerRef->asString()) {
+        if ($userId != $project->ownerRef->asString() && $user->role != SystemRoles::SYSTEM_ADMIN) {
             throw new UserUnauthorizedException(
                 "This $project->appName project '$project->projectName'\n" .
                 "can only be archived by project owner or\n " .
-                "a system administrator to re-publish\n");
+                "a system administrator\n");
         }
 
-        $user->lastUsedProjectId = "";
+        $user->lastUsedProjectId = '';
         $user->write();
 
         $project->isArchived = true;
