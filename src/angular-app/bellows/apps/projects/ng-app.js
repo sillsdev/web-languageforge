@@ -41,41 +41,6 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
     });
   };
 
-  // Archive projects
-                               /*
-  $scope.archiveProjects = function() {
-    var projectIds = [];
-    var message = '';
-    for(var i = 0, l = $scope.selected.length; i < l; i++) {
-      projectIds.push($scope.selected[i].id);
-    }
-    if (projectIds.length == 1) {
-      message = "Are you sure you want to archive the selected project?";
-    } else {
-      message = "Are you sure you want to archive the " + projectIds.length + " selected projects?";
-    }
-    var modalOptions = {
-        closeButtonText: 'Cancel',
-        actionButtonText: 'Archive',
-        headerText: 'Archive Project?',
-        bodyText: message
-      };
-    modalService.showModal({}, modalOptions).then(function (result) {
-      projectService.archive(projectIds, function(result) {
-        if (result.ok) {
-          $scope.selected = []; // Reset the selection
-          $scope.queryProjectsForUser();
-          if (projectIds.length == 1) {
-            notice.push(notice.SUCCESS, "The project was archived successfully");
-          } else {
-            notice.push(notice.SUCCESS, "The projects were archived successfully");
-          }
-        }
-      });
-    });
-  };
-  */
-
   $scope.isInProject = function(project) {
     if (project.role != 'none') {
       return true;

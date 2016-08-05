@@ -1,0 +1,23 @@
+<form class="form-horizontal dc-multitext">
+    <div class="control-group">
+        <label class="control-label">{{config.label}}</label>
+        <div class="controls">
+            <div class="input-prepend" data-ng-click="selectInputSystem(model.inputSystem)"
+                data-ng-class="{selectableInputSystemFieldForComment: control.state == 'comment' && control.rights.canComment()}">
+                <span class="add-on wsid"
+                    title="{{inputSystems[model.inputSystem].languageName}}">{{inputSystems[model.inputSystem].abbreviation}}</span>
+                <!--
+                <dc-formattedtext class="dc-formattedtext"
+                    data-ng-if="control.state == 'edit' && control.rights.canEditEntry()"
+                    fte-disabled="!(control.state == 'edit' && control.rights.canEditEntry())"
+                    fte-model="model.paragraphsHtml"
+                    fte-dir="inputSystemDirection(model.inputSystem)"></dc-formattedtext>
+                    -->
+                <dc-formattedtext class="dc-formattedtext"
+                    fte-disabled="true"
+                    fte-model="model.paragraphsHtml"
+                    fte-dir="inputSystemDirection(model.inputSystem)"></dc-formattedtext>
+            </div>
+        </div>
+    </div>
+</form>

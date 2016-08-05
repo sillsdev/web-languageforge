@@ -3,6 +3,7 @@
 namespace Api\Model\Scriptureforge\Sfchecks\Command;
 
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
+use Api\Model\Command\ProjectCommands;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Mapper\JsonDecoder;
@@ -23,6 +24,8 @@ class SfchecksProjectCommands
     public static function updateProject($projectId, $userId, $object)
     {
         $project = new SfchecksProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
+
         if (!$project->hasRight($userId, Domain::USERS + Operation::EDIT)) {
             throw new UserUnauthorizedException("Insufficient privileges to update project in method 'updateProject'");
         }

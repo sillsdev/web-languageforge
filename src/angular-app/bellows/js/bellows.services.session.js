@@ -37,8 +37,7 @@ angular.module('bellows.services')
       VIEW_OWN:     function() { return 6;},
       EDIT_OWN:     function() { return 7;},
       DELETE_OWN:   function() { return 8;},
-      ARCHIVE:      function() { return 9;},
-      ARCHIVE_OWN:  function() { return 10;}
+      ARCHIVE:      function() { return 9;}
     };
 
     this.hasSiteRight = function(domain, operation) {

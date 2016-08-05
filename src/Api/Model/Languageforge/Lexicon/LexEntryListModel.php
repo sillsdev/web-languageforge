@@ -3,8 +3,9 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\ProjectModel;
+use Api\Model\Mapper\ArrayOf;
 
 class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
 {
@@ -33,7 +34,10 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
      */
     public function __construct($projectModel, $newerThanTimestamp = null, $limit = 0, $skip = 0)
     {
-        $lexProject = new LexiconProjectModel($projectModel->id->asString());
+        // for use with readAsModels()
+        $this->entries = new ArrayOf(function () use ($projectModel) { return new LexEntryModel($projectModel); });
+        
+        $lexProject = new LexProjectModel($projectModel->id->asString());
         $this->_config = $lexProject->config;
 
         if (!is_null($newerThanTimestamp)) {
@@ -58,7 +62,7 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
                 } else {
                     foreach ($entry['senses'] as $sense) {
                         switch ($missingInfo) {
-                            case LexiconConfigObj::DEFINITION:
+                            case LexConfig::DEFINITION:
                                 if (!array_key_exists('definition', $sense) || count($sense['definition']) == 0) {
                                     $foundMissingInfo = true;
                                 } else {
@@ -70,13 +74,13 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
                                 }
                                 break;
 
-                            case LexiconConfigObj::POS:
+                            case LexConfig::POS:
                                 if (!array_key_exists('partOfSpeech', $sense) || !array_key_exists('value', $sense['partOfSpeech']) || $sense['partOfSpeech']['value'] == '') {
                                     $foundMissingInfo = true;
                                 }
                                 break;
 
-                            case LexiconConfigObj::EXAMPLE_SENTENCE:
+                            case LexConfig::EXAMPLE_SENTENCE:
                                 if (!array_key_exists('examples', $sense) || count($sense['examples']) == 0) {
                                     $foundMissingInfo = true;
                                 } else {
@@ -94,7 +98,7 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
                                 }
                                 break;
 
-                            case LexiconConfigObj::EXAMPLE_TRANSLATION:
+                            case LexConfig::EXAMPLE_TRANSLATION:
                                 if (!array_key_exists('examples', $sense) || count($sense['examples']) == 0) {
                                     $foundMissingInfo = true;
                                 } else {

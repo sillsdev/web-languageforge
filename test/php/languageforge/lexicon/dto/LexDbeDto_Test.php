@@ -2,12 +2,12 @@
 
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDto;
-use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Languageforge\Lexicon\LexExample;
 use Api\Model\Languageforge\Lexicon\LexCommentReply;
 use Api\Model\Languageforge\Lexicon\LexCommentModel;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
-use Api\Model\Languageforge\Lexicon\LexiconField;
-use Api\Model\Languageforge\Lexicon\Sense;
+use Api\Model\Languageforge\Lexicon\LexValue;
+use Api\Model\Languageforge\Lexicon\LexSense;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\UserModel;
@@ -57,7 +57,7 @@ class TestLexDbeDto extends UnitTestCase
         $user->write();
         $project->write();
 
-        $sense = new Sense();
+        $sense = new LexSense();
         $sense->definition->form('en', 'apple');
 
         for ($i = 0; $i < 10; $i++) {
@@ -96,7 +96,7 @@ class TestLexDbeDto extends UnitTestCase
         $user->write();
         $project->write();
 
-        $sense = new Sense();
+        $sense = new LexSense();
         $sense->definition->form('en', 'apple');
 
         for ($i = 9; $i >= 0; $i--) {
@@ -132,11 +132,11 @@ class TestLexDbeDto extends UnitTestCase
         $entry = new LexEntryModel($project);
         $entry->lexeme->form('th', 'apple');
 
-        $sense = new Sense();
+        $sense = new LexSense();
         $sense->definition->form('en', 'red fruit');
-        $sense->partOfSpeech = new LexiconField('noun');
+        $sense->partOfSpeech = new LexValue('noun');
 
-        $example = new Example();
+        $example = new LexExample();
         $example->sentence->form('th', 'example1');
         $example->translation->form('en', 'trans1');
 
@@ -176,9 +176,9 @@ class TestLexDbeDto extends UnitTestCase
 
 //        $entry->lexeme['th']->comments[] = $comment;
 
-        $sense = new Sense();
+        $sense = new LexSense();
         $sense->definition->form('en', 'red fruit');
-        $sense->partOfSpeech = new LexiconField('noun');
+        $sense->partOfSpeech = new LexValue('noun');
 
         $entry->senses[] = $sense;
 

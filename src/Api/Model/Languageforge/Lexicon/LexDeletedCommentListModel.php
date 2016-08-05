@@ -23,7 +23,7 @@ class LexDeletedCommentListModel extends \Api\Model\Mapper\MapperListModel
      */
     public function __construct($projectModel, $newerThanTimestamp = null)
     {
-        $lexProject = new LexiconProjectModel($projectModel->id->asString());
+        $lexProject = new LexProjectModel($projectModel->id->asString());
 
         if (!is_null($newerThanTimestamp)) {
             $startDate = new \MongoDB\BSON\UTCDatetime(1000*$newerThanTimestamp);

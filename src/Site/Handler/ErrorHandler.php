@@ -9,6 +9,9 @@ class ErrorHandler
 {
     public static function response(\Exception $e, $code, Application $app) {
         switch ($code) {
+            case 403:
+                return $app['twig']->render('error403.twig', array());
+                break;
             case 404:
                 return $app['twig']->render('error404.twig', array());
                 break;
