@@ -245,34 +245,34 @@ class TestSendReceiveCommands extends UnitTestCase
         $this->assertEqual($result['projects'][1]['name'], 'sr_name');
     }
 
-    public function testQueueProjectForUpdate_NoSendReceive_NoAction()
+    public function testQueueProjectForEdit_NoSendReceive_NoAction()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $mockMergeQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
-        FileUtilities::createAllFolders($mockMergeQueuePath);
+        $mockEditQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
+        FileUtilities::createAllFolders($mockEditQueuePath);
 
-        $filename = SendReceiveCommands::queueProjectForUpdate($projectId, $mockMergeQueuePath);
+        $filename = SendReceiveCommands::queueProjectForEdit($projectId, $mockEditQueuePath);
 
-        $queueFileNames = scandir($mockMergeQueuePath);
+        $queueFileNames = scandir($mockEditQueuePath);
         $this->assertFalse($filename);
         $this->assertEqual(count($queueFileNames), 2);
     }
 
-    public function testQueueProjectForUpdate_HasSendReceive_QueueFileCreated()
+    public function testQueueProjectForEdit_HasSendReceive_QueueFileCreated()
     {
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->sendReceiveProjectIdentifier = 'sr_id';
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $projectId = $project->write();
-        $mockMergeQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
+        $mockEditQueuePath = sys_get_temp_dir() . '/mockLFMergeQueue';
 
-        $filename = SendReceiveCommands::queueProjectForUpdate($projectId, $mockMergeQueuePath);
+        $filename = SendReceiveCommands::queueProjectForEdit($projectId, $mockEditQueuePath);
 
-        $queueFileNames = scandir($mockMergeQueuePath);
+        $queueFileNames = scandir($mockEditQueuePath);
         $this->assertPattern('/' . $project->projectCode . '/', $filename);
         $this->assertEqual(count($queueFileNames), 3);
-        FileUtilities::removeFolderAndAllContents($mockMergeQueuePath);
+        FileUtilities::removeFolderAndAllContents($mockEditQueuePath);
     }
 
     public function testIsProcessRunningByPidFile_NoPidFile_NotRunning()
@@ -417,29 +417,65 @@ class TestSendReceiveCommands extends UnitTestCase
 
         // Create test queue directories
         $tmpTestPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'pendingStateTest';
-        $lfmergePaths = SendReceiveCommands::getLFMergePaths(true, $tmpTestPath);
-        $projectStatePath = $lfmergePaths->statePath . DIRECTORY_SEPARATOR . strtolower($project->projectCode) . '.state';
+        $lfMergePaths = SendReceiveCommands::getLFMergePaths(true, $tmpTestPath);
+        $projectStatePath = $lfMergePaths->statePath . DIRECTORY_SEPARATOR . strtolower($project->projectCode) . '.state';
         FileUtilities::createAllFolders($tmpTestPath);
-        FileUtilities::createAllFolders($lfmergePaths->mergeQueuePath);
-        FileUtilities::createAllFolders($lfmergePaths->receiveQueuePath);
-        FileUtilities::createAllFolders($lfmergePaths->sendQueuePath);
-        FileUtilities::createAllFolders($lfmergePaths->editQueuePath);
-        FileUtilities::createAllFolders($lfmergePaths->syncQueuePath);
-        FileUtilities::createAllFolders($lfmergePaths->statePath);
+        FileUtilities::createAllFolders($lfMergePaths->mergeQueuePath);
+        FileUtilities::createAllFolders($lfMergePaths->receiveQueuePath);
+        FileUtilities::createAllFolders($lfMergePaths->sendQueuePath);
+        FileUtilities::createAllFolders($lfMergePaths->editQueuePath);
+        FileUtilities::createAllFolders($lfMergePaths->syncQueuePath);
+        FileUtilities::createAllFolders($lfMergePaths->statePath);
 
-        $queuePath = $lfmergePaths->syncQueuePath;
-        SendReceiveCommands::queueProjectForSync($projectId, $queuePath);
+        $mockQueuePath = $lfMergePaths->syncQueuePath;
+        SendReceiveCommands::queueProjectForSync($projectId, $mockQueuePath);
         file_put_contents($projectStatePath, '{"state": "IDLE"}');
-        $status = SendReceiveCommands::getProjectStatus($projectId, $lfmergePaths->statePath);
+        $status = SendReceiveCommands::getProjectStatus($projectId, $lfMergePaths->statePath);
         $this->assertEqual($status['state'], 'PENDING');
-        FileUtilities::removeFolderAndAllContents($queuePath);
+        FileUtilities::removeFolderAndAllContents($mockQueuePath);
 
-        $queuePath = $lfmergePaths->mergeQueuePath;
-        SendReceiveCommands::queueProjectForUpdate($projectId, $queuePath);
+        $mockQueuePath = $lfMergePaths->editQueuePath;
+        SendReceiveCommands::queueProjectForEdit($projectId, $mockQueuePath);
         file_put_contents($projectStatePath, '{"state": "IDLE"}');
-        $status = SendReceiveCommands::getProjectStatus($projectId, $lfmergePaths->statePath);
+        $status = SendReceiveCommands::getProjectStatus($projectId, $lfMergePaths->statePath);
         $this->assertEqual($status['state'], 'PENDING');
-        FileUtilities::removeFolderAndAllContents($queuePath);
+        FileUtilities::removeFolderAndAllContents($mockQueuePath);
+
+        FileUtilities::removeFolderAndAllContents($tmpTestPath);
+    }
+
+    public function testGetProjectStatus_HasSendReceiveAndSyncing_SyncingState()
+    {
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->sendReceiveProjectIdentifier = 'sr_id';
+        $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
+        $projectId = $project->write();
+
+        // Create test queue directories
+        $tmpTestPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'pendingStateTest';
+        $lfMergePaths = SendReceiveCommands::getLFMergePaths(true, $tmpTestPath);
+        $projectStatePath = $lfMergePaths->statePath . DIRECTORY_SEPARATOR . strtolower($project->projectCode) . '.state';
+        FileUtilities::createAllFolders($tmpTestPath);
+        FileUtilities::createAllFolders($lfMergePaths->mergeQueuePath);
+        FileUtilities::createAllFolders($lfMergePaths->receiveQueuePath);
+        FileUtilities::createAllFolders($lfMergePaths->sendQueuePath);
+        FileUtilities::createAllFolders($lfMergePaths->editQueuePath);
+        FileUtilities::createAllFolders($lfMergePaths->syncQueuePath);
+        FileUtilities::createAllFolders($lfMergePaths->statePath);
+
+        $mockQueuePath = $lfMergePaths->syncQueuePath;
+        SendReceiveCommands::queueProjectForSync($projectId, $mockQueuePath);
+        file_put_contents($projectStatePath, '{"state": "SYNCING"}');
+        $status = SendReceiveCommands::getProjectStatus($projectId, $lfMergePaths->statePath);
+        $this->assertEqual($status['state'], 'SYNCING');
+        FileUtilities::removeFolderAndAllContents($mockQueuePath);
+
+        $mockQueuePath = $lfMergePaths->editQueuePath;
+        SendReceiveCommands::queueProjectForEdit($projectId, $mockQueuePath);
+        file_put_contents($projectStatePath, '{"state": "SYNCING"}');
+        $status = SendReceiveCommands::getProjectStatus($projectId, $lfMergePaths->statePath);
+        $this->assertEqual($status['state'], 'SYNCING');
+        FileUtilities::removeFolderAndAllContents($mockQueuePath);
 
         FileUtilities::removeFolderAndAllContents($tmpTestPath);
     }

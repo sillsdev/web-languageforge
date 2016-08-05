@@ -137,20 +137,20 @@ class SendReceiveCommands
 
     /**
      * @param string $projectId
-     * @param string $mergeQueuePath
-     * @return string|bool $filename on success or false otherwise
+     * @param string $editQueuePath
+     * @return bool|string $filename on success or false otherwise
      */
-    public static function queueProjectForUpdate($projectId, $mergeQueuePath = null)
+    public static function queueProjectForEdit($projectId, $editQueuePath = null)
     {
         $project = new LexProjectModel($projectId);
         if (!$project->hasSendReceive()) return false;
 
-        if (is_null($mergeQueuePath)) $mergeQueuePath = self::getLFMergePaths()->mergeQueuePath;
+        if (is_null($editQueuePath)) $editQueuePath = self::getLFMergePaths()->editQueuePath;
 
-        FileUtilities::createAllFolders($mergeQueuePath);
+        FileUtilities::createAllFolders($editQueuePath);
         //$milliseconds = round(microtime(true) * 1000);
         $filename =  $project->projectCode; // . '_' . $milliseconds;
-        $filePath = $mergeQueuePath . '/' . $filename;
+        $filePath = $editQueuePath . '/' . $filename;
         $line = 'projectCode: ' . $project->projectCode;
         if (!file_put_contents($filePath, $line)) return false;
 
@@ -213,17 +213,16 @@ class SendReceiveCommands
         if (!file_exists($projectStatePath) || !is_file($projectStatePath)) return false;
 
         $statusJson = file_get_contents($projectStatePath);
-        $decodedStatusJson = json_decode($statusJson, true);
+        $status = json_decode($statusJson, true);
 
-        // If the project is in a queue, override the state to PENDING
-        if (file_exists(self::getLFMergePaths()->mergeQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
-            file_exists(self::getLFMergePaths()->receiveQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
-            file_exists(self::getLFMergePaths()->sendQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
-            file_exists(self::getLFMergePaths()->editQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
-            file_exists(self::getLFMergePaths()->syncQueuePath . DIRECTORY_SEPARATOR . $project->projectCode)) {
-            $decodedStatusJson['state'] = "PENDING";
+        // If the project is in a queue and the state is IDLE, override the state to PENDING
+        if ($status['state'] == "IDLE" &&
+            (file_exists(self::getLFMergePaths()->editQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
+            file_exists(self::getLFMergePaths()->syncQueuePath . DIRECTORY_SEPARATOR . $project->projectCode))
+        ) {
+            $status['state'] = "PENDING";
         }
-        return $decodedStatusJson;
+        return $status;
     }
 
     /**
