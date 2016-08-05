@@ -223,6 +223,14 @@ class SendReceiveCommands
         ) {
             $status['SRState'] = "PENDING";
         }
+
+        // If the previousRunTotalMilliseconds is set, estimate percentComplete
+        if (key_exists('PreviousRunTotalMilliseconds', $status) &&
+                $status['PreviousRunTotalMilliseconds'] != '' &&
+                key_exists('StartTimestamp', $status) &&
+                $status['StartTimestamp'] != '') {
+            $status['PercentComplete'] = intval((time() - $status['StartTimestamp']) / ($status['PreviousRunTotalMilliseconds'] * 1000) * 100);
+        }
         return $status;
     }
 
