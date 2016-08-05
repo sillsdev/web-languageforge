@@ -37,6 +37,9 @@ class ProjectPageDto
         $data['project'] = array(
                 'name' => $project->projectName,
                 'id' => $projectId);
+        if ($project->isArchived) {
+            $data['project']['name'] .= " [ARCHIVED]";
+        }
         $data['texts'] = array();
         foreach ($textList->entries as $entry) {
             $text = new TextModel($project, $entry['id']);

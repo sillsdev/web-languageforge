@@ -2,7 +2,7 @@
 
 namespace Api\Library\Shared\Script\Migration;
 
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\ProjectListModel;
 use Api\Model\ProjectModel;
 
@@ -21,7 +21,7 @@ class FixLexViewSettings
             $projectId = $projectParams['id'];
             $project = new ProjectModel($projectId);
             if ($project->appName == 'lexicon') {
-                $project = new LexiconProjectModel($projectId);
+                $project = new LexProjectModel($projectId);
                 //$message .= "\nInspecting project $project->projectName.\n";
 
                 $showFieldUpdated = 0;

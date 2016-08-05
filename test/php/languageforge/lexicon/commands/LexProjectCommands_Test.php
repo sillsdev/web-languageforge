@@ -3,8 +3,8 @@
 use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Languageforge\Lexicon\LexiconRoles;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\UserModel;
@@ -42,7 +42,7 @@ class TestLexProjectCommands extends UnitTestCase
 
         LexProjectCommands::updateConfig($projectId, $config);
 
-        $project2 = new LexiconProjectModel($projectId);
+        $project2 = new LexProjectModel($projectId);
 
         // test for a few default values
         $this->assertEqual($project2->inputSystems['en']->tag, 'en');
@@ -73,7 +73,7 @@ class TestLexProjectCommands extends UnitTestCase
         $viewFieldConfig = new LexViewFieldConfig();
         $viewFieldConfig->type = 'ReferenceAtom';
         $viewFieldConfig->show = false;
-        $project->config->roleViews[LexiconRoles::MANAGER]->fields[$customFieldNameExisting] = $viewFieldConfig;
+        $project->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameExisting] = $viewFieldConfig;
         $customFieldNameToCreate = 'customField_entry_testMultiText';
         $customFieldSpecs = array(
             array(
@@ -85,26 +85,26 @@ class TestLexProjectCommands extends UnitTestCase
                 'fieldType' => $viewFieldConfig->type
             )
         );
-        $mangerRoleViewFieldCount = $project->config->roleViews[LexiconRoles::MANAGER]->fields->count();
+        $mangerRoleViewFieldCount = $project->config->roleViews[LexRoles::MANAGER]->fields->count();
         $customFieldNameToDelete = 'customField_senses_testOptionList';
         $viewFieldConfig = new LexViewFieldConfig();
         $viewFieldConfig->type = 'ReferenceAtom';
-        $project->config->roleViews[LexiconRoles::MANAGER]->fields[$customFieldNameToDelete] = $viewFieldConfig;
+        $project->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameToDelete] = $viewFieldConfig;
         $projectId = $project->write();
-        $this->assertFalse($project->config->roleViews[LexiconRoles::MANAGER]->fields[$customFieldNameExisting]->show);
+        $this->assertFalse($project->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameExisting]->show);
 
         // execute
         $result = LexProjectCommands::updateCustomFieldViews($project->projectCode, $customFieldSpecs);
 
         // verify
         $this->assertEqual($result, $projectId);
-        $project2 = new LexiconProjectModel($projectId);
-        $this->assertEqual($project2->config->roleViews[LexiconRoles::MANAGER]->fields->count(),
+        $project2 = new LexProjectModel($projectId);
+        $this->assertEqual($project2->config->roleViews[LexRoles::MANAGER]->fields->count(),
             $mangerRoleViewFieldCount + 1);
-        $this->assertFalse(array_key_exists($customFieldNameToDelete, $project2->config->roleViews[LexiconRoles::MANAGER]->fields));
-        $customFieldCreated = $project2->config->roleViews[LexiconRoles::MANAGER]->fields[$customFieldNameToCreate];
+        $this->assertFalse(array_key_exists($customFieldNameToDelete, $project2->config->roleViews[LexRoles::MANAGER]->fields));
+        $customFieldCreated = $project2->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameToCreate];
         $this->assertTrue(is_a($customFieldCreated, 'Api\Model\Languageforge\Lexicon\Config\LexViewMultiTextFieldConfig'));
-        $customFieldExisting = $project2->config->roleViews[LexiconRoles::MANAGER]->fields[$customFieldNameExisting];
+        $customFieldExisting = $project2->config->roleViews[LexRoles::MANAGER]->fields[$customFieldNameExisting];
         $this->assertTrue(is_a($customFieldExisting, 'Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig'));
         $this->assertFalse($customFieldExisting->show);
     }
@@ -119,7 +119,7 @@ class TestLexProjectCommands extends UnitTestCase
         $customFieldName = 'customField_senses_testOptionList';
         $viewFieldConfig = new LexViewFieldConfig();
         $viewFieldConfig->type = 'ReferenceAtom';
-        $project->config->roleViews[LexiconRoles::MANAGER]->fields[$customFieldName] = $viewFieldConfig;
+        $project->config->roleViews[LexRoles::MANAGER]->fields[$customFieldName] = $viewFieldConfig;
         $projectId = $project->write();
         $customFieldSpecs = array(
             array(
@@ -151,13 +151,13 @@ class TestLexProjectCommands extends UnitTestCase
 
         // verify
         $this->assertEqual($result, $projectId);
-        $project2 = new LexiconProjectModel($projectId);
-        $this->assertFalse(array_key_exists($customFieldName, $project2->config->roleViews[LexiconRoles::MANAGER]->fields));
+        $project2 = new LexProjectModel($projectId);
+        $this->assertFalse(array_key_exists($customFieldName, $project2->config->roleViews[LexRoles::MANAGER]->fields));
         $customFieldName = $customFieldSpecs[0]['fieldName'];
-        $customField0 = $project2->config->roleViews[LexiconRoles::MANAGER]->fields[$customFieldName];
+        $customField0 = $project2->config->roleViews[LexRoles::MANAGER]->fields[$customFieldName];
         $this->assertTrue(is_a($customField0, 'Api\Model\Languageforge\Lexicon\Config\LexViewMultiTextFieldConfig'));
         $customFieldName = $customFieldSpecs[1]['fieldName'];
-        $customField1 = $project2->config->roleViews[LexiconRoles::MANAGER]->fields[$customFieldName];
+        $customField1 = $project2->config->roleViews[LexRoles::MANAGER]->fields[$customFieldName];
         $this->assertTrue(is_a($customField1, 'Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig'));
     }
 }

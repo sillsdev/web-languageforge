@@ -3,7 +3,7 @@
 require_once ('e2eTestConfig.php');
 
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\ProjectModel;
 use Palaso\Utilities\FileUtilities;
 
@@ -40,7 +40,7 @@ if (file_exists($otherAssetsFolderPath)) {
 }
 
 // cleanup LfMerge 'syncqueue', 'webwork' and 'state' folders
-if ($testProject->appName == LexiconProjectModel::LEXICON_APP) {
+if ($testProject->appName == LexProjectModel::LEXICON_APP) {
     $syncQueuePath = SendReceiveCommands::getLFMergePaths()->syncQueuePath;
     foreach (glob("{$syncQueuePath}/*") as $file) {
         if (is_file($file)) {

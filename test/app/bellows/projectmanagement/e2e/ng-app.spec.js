@@ -40,12 +40,10 @@ describe('E2E Project Management App', function () {
       .not.toContain(constants.managerUsername);
   });
 
-  it('Manager cannot archive if not owner', function () {
+  it('Manager cannot view archive tab if not owner', function () {
     managementPage.get();
     expect(managementPage.noticeList.count()).toBe(0);
-    managementPage.tabs.archive.click();
-    expect(managementPage.archiveTab.archiveButton.isDisplayed()).toBe(true);
-    expect(managementPage.archiveTab.archiveButton.isEnabled()).toBe(false);
+    expect(managementPage.tabs.archive.isPresent()).toBe(false);
   });
 
   it('confirm Manager is owner of other project', function () {
