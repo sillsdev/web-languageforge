@@ -90,6 +90,7 @@ class SendReceiveCommands
             }
         }
 
+        /** @noinspection PhpUndefinedVariableInspection */
         if ($response->getStatusCode() == 403) $result->isKnownUser = true;
 
         if ($response->getStatusCode() == 200) {
@@ -159,13 +160,13 @@ class SendReceiveCommands
 
     /**
      * @param string $projectId
-     * @param string $queueType
      * @param string $pidFilePath
      * @param string $command
      * @return bool true if process started or already running, otherwise false
+     * @throws \Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException
      * @throws \Exception
      */
-    public static function startLFMergeIfRequired($projectId, $queueType = 'merge', $pidFilePath = null, $command = null)
+    public static function startLFMergeIfRequired($projectId, $pidFilePath = null, $command = null)
     {
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
@@ -247,7 +248,7 @@ class SendReceiveCommands
             if (file_put_contents($notificationFilePath, '') === false) throw new \Exception('Cannot write to Send/Receive Receive Queue. Contact the website administrator.');
         }
 
-        return self::startLFMergeIfRequired($project->id->asString(), 'receive', $pidFilePath, $command);
+        return self::startLFMergeIfRequired($project->id->asString(), $pidFilePath, $command);
     }
 
     /**
@@ -277,7 +278,7 @@ class SendReceiveCommands
             if (file_put_contents($notificationFilePath, '') === false) throw new \Exception('Cannot write to Send/Receive Send Queue. Contact the website administrator.');
         }
 
-        return self::startLFMergeIfRequired($project->id->asString(), 'send', $pidFilePath, $command);
+        return self::startLFMergeIfRequired($project->id->asString(), $pidFilePath, $command);
     }
 
     /**
