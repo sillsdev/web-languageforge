@@ -19,7 +19,7 @@ class LexOptionListListModel extends MapperListModel
 
     /**
      *
-     * @param LexiconProjectModel $project
+     * @param LexProjectModel $project
      * @param int $newerThanTimestamp
      */
     public function __construct($project, $newerThanTimestamp = null)

@@ -11,8 +11,8 @@ use Api\Model\Command\QuestionCommands;
 use Api\Model\Command\QuestionTemplateCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Mapper\MongoStore;
 use Api\Model\ProjectModel;
@@ -242,9 +242,9 @@ if ($site == 'scriptureforge') {
         $managerUserId);
 } elseif ($site == 'languageforge') {
     // Set up LanguageForge E2E test envrionment here
-    $testProjectModel = new LexiconProjectModel($testProjectId);
+    $testProjectModel = new LexProjectModel($testProjectId);
     $testProjectModel->addInputSystem("th-fonipa", "tipa", "Thai");
-    $testProjectModel->config->entry->fields[LexiconConfigObj::LEXEME]->inputSystems[] = 'th-fonipa';
+    $testProjectModel->config->entry->fields[LexConfig::LEXEME]->inputSystems[] = 'th-fonipa';
     $testProjectId = $testProjectModel->write();
 
     // setup to mimic file upload

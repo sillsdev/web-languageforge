@@ -670,28 +670,28 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // permissions stuff
     $scope.rights = {
       canEditProject: function canEditProject() {
-        if (sendReceive.isInProgress()) return false;
+        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.PROJECTS,
           sessionService.operation.EDIT);
       },
 
       canEditEntry: function canEditEntry() {
-        if (sendReceive.isInProgress()) return false;
+        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.EDIT);
       },
 
       canDeleteEntry: function canDeleteEntry() {
-        if (sendReceive.isInProgress()) return false;
+        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.DELETE);
       },
 
       canComment: function canComment() {
-        if (sendReceive.isInProgress()) return false;
+        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
           sessionService.operation.CREATE);

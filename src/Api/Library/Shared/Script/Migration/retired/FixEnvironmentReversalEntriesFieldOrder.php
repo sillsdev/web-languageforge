@@ -2,7 +2,7 @@
 
 namespace Api\Library\Shared\Script\Migration;
 
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\ProjectListModel;
 use Api\Model\ProjectModel;
@@ -26,7 +26,7 @@ class FixEnvironmentReversalEntriesFieldOrder
             $projectId = $projectParams['id'];
             $project = new ProjectModel($projectId);
             if ($project->appName == 'lexicon') {
-                $project = new LexiconProjectModel($projectId);
+                $project = new LexProjectModel($projectId);
                 $fieldOrderUpdated = 0;
 
                 $this->RemoveFromArray("environments", $project->config->entry->fieldOrder, $message, $fieldOrderUpdated);
