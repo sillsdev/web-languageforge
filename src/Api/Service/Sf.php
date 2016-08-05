@@ -776,12 +776,12 @@ class Sf
     public function sendReceive_receiveProject()
     {
         SendReceiveCommands::queueProjectForSync($this->projectId);
-        return SendReceiveCommands::startLFMergeIfRequired($this->projectId, 'receive');
+        return SendReceiveCommands::startLFMergeIfRequired($this->projectId);
     }
 
     public function sendReceive_commitProject()
     {
-        return SendReceiveCommands::startLFMergeIfRequired($this->projectId, 'commit');
+        return SendReceiveCommands::startLFMergeIfRequired($this->projectId);
     }
 
     public function sendReceive_getProjectStatus()

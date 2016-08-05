@@ -312,13 +312,12 @@ class TestSendReceiveCommands extends UnitTestCase
         $project->sendReceiveProjectIdentifier = 'sr_id';
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $projectId = $project->write();
-        $queueType = 'merge';
         $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
         $mockCommand = 'mockLFMerge.exe';
 
         $this->expectException(new \Exception('LFMerge is not installed. Contact the website administrator.'));
         $this->environ->inhibitErrorDisplay();
-        SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $mockPidFilePath, $mockCommand);
+        SendReceiveCommands::startLFMergeIfRequired($projectId, $mockPidFilePath, $mockCommand);
 
         // nothing runs in the current test function after an exception. IJH 2015-12
     }
@@ -335,18 +334,17 @@ class TestSendReceiveCommands extends UnitTestCase
         $project->sendReceiveProjectIdentifier = 'sr_id';
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $projectId = $project->write();
-        $queueType = 'merge';
         $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
         $runSeconds = 2;
         $mockCommand = 'php ' . __DIR__ . '/mockLFMergeExe.php ' . $runSeconds;
 
-        $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $mockPidFilePath, $mockCommand);
+        $isRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $mockPidFilePath, $mockCommand);
 
         $this->assertTrue($isRunning);
         sleep(1);
         $this->assertTrue(SendReceiveCommands::isProcessRunningByPidFile($mockPidFilePath));
 
-        $isStillRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $queueType, $mockPidFilePath, $mockCommand);
+        $isStillRunning = SendReceiveCommands::startLFMergeIfRequired($projectId, $mockPidFilePath, $mockCommand);
 
         $this->assertTrue($isStillRunning);
     }
