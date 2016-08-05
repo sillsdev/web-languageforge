@@ -2,7 +2,8 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Command\ProjectCommands;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModelWithIdentifier;
 use Api\Model\Mapper\ArrayOf;
@@ -43,7 +44,8 @@ class SendReceiveCommands
     {
         if (!$srProject) return false;
 
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         $project->sendReceiveProjectIdentifier = $srProject['identifier'];
         $project->sendReceiveProject = new SendReceiveProjectModel(
             $srProject['name'],
@@ -88,6 +90,7 @@ class SendReceiveCommands
             }
         }
 
+        /** @noinspection PhpUndefinedVariableInspection */
         if ($response->getStatusCode() == 403) $result->isKnownUser = true;
 
         if ($response->getStatusCode() == 200) {
@@ -118,7 +121,7 @@ class SendReceiveCommands
      */
     public static function queueProjectForSync($projectId, $syncQueuePath = null)
     {
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         if (!$project->hasSendReceive()) return false;
 
         if (is_null($syncQueuePath)) $syncQueuePath = self::getLFMergePaths()->syncQueuePath;
@@ -134,20 +137,21 @@ class SendReceiveCommands
     }
 
     /**
-     * @param LexiconProjectModel $project
-     * @param string $mergeQueuePath
-     * @return string|bool $filename on success or false otherwise
+     * @param string $projectId
+     * @param string $editQueuePath
+     * @return bool|string $filename on success or false otherwise
      */
-    public static function queueProjectForUpdate($project, $mergeQueuePath = null)
+    public static function queueProjectForEdit($projectId, $editQueuePath = null)
     {
+        $project = new LexProjectModel($projectId);
         if (!$project->hasSendReceive()) return false;
 
-        if (is_null($mergeQueuePath)) $mergeQueuePath = self::getLFMergePaths()->mergeQueuePath;
+        if (is_null($editQueuePath)) $editQueuePath = self::getLFMergePaths()->editQueuePath;
 
-        FileUtilities::createAllFolders($mergeQueuePath);
-        $milliseconds = round(microtime(true) * 1000);
-        $filename =  $project->projectCode . '_' . $milliseconds;
-        $filePath = $mergeQueuePath . '/' . $filename;
+        FileUtilities::createAllFolders($editQueuePath);
+        //$milliseconds = round(microtime(true) * 1000);
+        $filename =  $project->projectCode; // . '_' . $milliseconds;
+        $filePath = $editQueuePath . '/' . $filename;
         $line = 'projectCode: ' . $project->projectCode;
         if (!file_put_contents($filePath, $line)) return false;
 
@@ -156,15 +160,16 @@ class SendReceiveCommands
 
     /**
      * @param string $projectId
-     * @param string $queueType
      * @param string $pidFilePath
      * @param string $command
      * @return bool true if process started or already running, otherwise false
+     * @throws \Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException
      * @throws \Exception
      */
-    public static function startLFMergeIfRequired($projectId, $queueType = 'merge', $pidFilePath = null, $command = null)
+    public static function startLFMergeIfRequired($projectId, $pidFilePath = null, $command = null)
     {
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         if (!$project->hasSendReceive()) return false;
 
         if (is_null($pidFilePath)) {
@@ -189,23 +194,36 @@ class SendReceiveCommands
     }
 
     /**
+     * Decode the state file for project status.  If the project is in a queue, override the state to PENDING
      * @param string $projectId
      * @param string $statePath
      * @return bool|array
      */
     public static function getProjectStatus($projectId, $statePath = null)
     {
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         if (!$project->hasSendReceive()) return false;
 
-        if (is_null($statePath)) $statePath = self::getLFMergePaths()->statePath;
+        if (is_null($statePath)) {
+            $statePath = self::getLFMergePaths()->statePath;
+        }else {
+            self::getLFMergePaths(true, realpath($statePath . '/..'));
+        }
 
-        $projectStatePath = $statePath . '/' . $project->projectCode . '.state';
+        $projectStatePath = $statePath . DIRECTORY_SEPARATOR . strtolower($project->projectCode) . '.state';
         if (!file_exists($projectStatePath) || !is_file($projectStatePath)) return false;
 
         $statusJson = file_get_contents($projectStatePath);
+        $status = json_decode($statusJson, true);
 
-        return json_decode($statusJson, true);
+        // If the project is in a queue and the state is IDLE, override the state to PENDING
+        if ($status['state'] == "IDLE" &&
+            (file_exists(self::getLFMergePaths()->editQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
+            file_exists(self::getLFMergePaths()->syncQueuePath . DIRECTORY_SEPARATOR . $project->projectCode))
+        ) {
+            $status['state'] = "PENDING";
+        }
+        return $status;
     }
 
     /**
@@ -218,7 +236,7 @@ class SendReceiveCommands
      */
     public static function notificationReceiveRequest($projectCode, $receiveQueuePath = null, $pidFilePath = null, $command = null)
     {
-        $project = new LexiconProjectModel();
+        $project = new LexProjectModel();
         if (!$project->readByProperty('projectCode', $projectCode)) return false;
         if (!$project->hasSendReceive()) return false;
 
@@ -230,7 +248,7 @@ class SendReceiveCommands
             if (file_put_contents($notificationFilePath, '') === false) throw new \Exception('Cannot write to Send/Receive Receive Queue. Contact the website administrator.');
         }
 
-        return self::startLFMergeIfRequired($project->id->asString(), 'receive', $pidFilePath, $command);
+        return self::startLFMergeIfRequired($project->id->asString(), $pidFilePath, $command);
     }
 
     /**
@@ -244,7 +262,7 @@ class SendReceiveCommands
      */
     public static function notificationSendRequest($projectCode, $statePath = null, $sendQueuePath = null, $pidFilePath = null, $command = null)
     {
-        $project = new LexiconProjectModel();
+        $project = new LexProjectModel();
         if (!$project->readByProperty('projectCode', $projectCode)) return false;
         if (!$project->hasSendReceive()) return false;
 
@@ -260,14 +278,15 @@ class SendReceiveCommands
             if (file_put_contents($notificationFilePath, '') === false) throw new \Exception('Cannot write to Send/Receive Send Queue. Contact the website administrator.');
         }
 
-        return self::startLFMergeIfRequired($project->id->asString(), 'send', $pidFilePath, $command);
+        return self::startLFMergeIfRequired($project->id->asString(), $pidFilePath, $command);
     }
 
     /**
      * @param bool $reload will reload the configuration if true
+     * @param string $basePath If specified, base path for the directories
      * @return SendReceivePaths|null
      */
-    public static function getLFMergePaths($reload = false)
+    public static function getLFMergePaths($reload = false, $basePath = null)
     {
         static $paths = null;
 
@@ -280,13 +299,18 @@ class SendReceiveCommands
             $paths->syncQueuePath = self::SYNC_QUEUE_PATH;
             $paths->workPath = self::WORK_PATH;
             $paths->statePath = self::STATE_PATH;
-            if (!file_exists(self::LFMERGE_CONF_FILE_PATH)) return $paths;
 
-            $conf = parse_ini_string(self::removeConfComments(self::LFMERGE_CONF_FILE_PATH));
-            if (!array_key_exists('BaseDir', $conf)) return $paths;
+            if (is_null($basePath)) {
+                if (!file_exists(self::LFMERGE_CONF_FILE_PATH)) return $paths;
+
+                $conf = parse_ini_string(self::removeConfComments(self::LFMERGE_CONF_FILE_PATH));
+                if (!array_key_exists('BaseDir', $conf)) return $paths;
+
+                $basePath = $conf['BaseDir'];
+            }
 
             foreach ($paths as &$path) {
-                $path = $conf['BaseDir'] . DIRECTORY_SEPARATOR . basename($path);
+                $path = $basePath . DIRECTORY_SEPARATOR . basename($path);
             }
         }
 
@@ -299,7 +323,7 @@ class SendReceiveCommands
      */
     public static function getProjectIdFromSendReceive($identifier)
     {
-        $project = new LexiconProjectModel();
+        $project = new LexProjectModel();
         if (!$project->readByProperty('sendReceiveProjectIdentifier', $identifier)) return false;
 
         return $project->id->asString();

@@ -1,9 +1,12 @@
 <form class="form-horizontal dc-optionlist" style="margin-right:60px">
     <label class="control-label">{{config.label}}</label>
         <div class="controls">
-            <select ng-show="control.state == 'edit' && control.rights.canEditEntry()" ng-model="model.value" ng-options="item.key as item.value for item in items">
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select data-ng-show="control.state == 'edit' && control.rights.canEditEntry()" data-ng-model="model.value"
+                    data-ng-options="item.key as item.value for item in items">
                 <option value="">Unknown</option>
             </select>
-            <span class="uneditable-input" ng-hide="control.state == 'edit' && control.rights.canEditEntry()" ng-bind="model.value"></span>
+            <span class="uneditable-input" data-ng-hide="control.state == 'edit' && control.rights.canEditEntry()"
+                  data-ng-bind="getDisplayName(model.value)"></span>
         </div>
 </form>

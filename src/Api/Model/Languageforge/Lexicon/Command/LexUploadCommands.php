@@ -3,12 +3,13 @@
 namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Palaso\Utilities\FileUtilities;
+use Api\Model\Command\ProjectCommands;
 use Api\Model\Shared\Command\ErrorResult;
 use Api\Model\Shared\Command\ImportResult;
 use Api\Model\Shared\Command\MediaResult;
 use Api\Model\Shared\Command\UploadResponse;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LiftImport;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 
@@ -30,6 +31,8 @@ class LexUploadCommands
      */
     public static function uploadAudioFile($projectId, $mediaType, $tmpFilePath)
     {
+        $project = new LexProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         if ($mediaType != 'entry-audio') {
             throw new \Exception("Unsupported upload type.");
         }
@@ -61,7 +64,6 @@ class LexUploadCommands
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folders if they don't exist
-            $project = new LexiconProjectModel($projectId);
             $project->createAssetsFolders();
             $folderPath = $project->getAudioFolderPath();
 
@@ -122,6 +124,8 @@ class LexUploadCommands
      */
     public static function uploadImageFile($projectId, $mediaType, $tmpFilePath)
     {
+        $project = new LexProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         if ($mediaType != 'sense-image') {
             throw new \Exception("Unsupported upload type.");
         }
@@ -156,7 +160,6 @@ class LexUploadCommands
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folders if they don't exist
-            $project = new LexiconProjectModel($projectId);
             $project->createAssetsFolders();
             $folderPath = $project->getImageFolderPath();
 
@@ -206,7 +209,8 @@ class LexUploadCommands
     public static function deleteMediaFile($projectId, $mediaType, $fileName) {
         $response = new UploadResponse();
         $response->result = false;
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         switch ($mediaType) {
             case 'sense-image':
                 $folderPath = $project->getImageFolderPath();
@@ -322,7 +326,7 @@ class LexUploadCommands
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), $allowedExtensions)) {
 
             // make the folders if they don't exist
-            $project = new LexiconProjectModel($projectId);
+            $project = new LexProjectModel($projectId);
             $project->createAssetsFolders();
             $folderPath = $project->getAssetsFolderPath();
 
@@ -430,7 +434,7 @@ class LexUploadCommands
         if (in_array(strtolower($fileType), $allowedTypes) && in_array(strtolower($fileExt), self::$allowedLiftExtensions)) {
 
             // make the folders if they don't exist
-            $project = new LexiconProjectModel($projectId);
+            $project = new LexProjectModel($projectId);
             $project->createAssetsFolders();
             $folderPath = $project->getAssetsFolderPath();
 
