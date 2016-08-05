@@ -380,7 +380,7 @@ class TestSendReceiveCommands extends UnitTestCase
         $projectId = $project->write();
         $mockStatePath = sys_get_temp_dir();
         $projectStatePath = $mockStatePath . '/' . $project->projectCode . '.state';
-        file_put_contents($projectStatePath, 'state: IDLE');
+        file_put_contents($projectStatePath, '{"SRState": "IDLE"}');
 
         $status = SendReceiveCommands::getProjectStatus($projectId, $mockStatePath);
 
@@ -397,11 +397,11 @@ class TestSendReceiveCommands extends UnitTestCase
         $projectId = $project->write();
         $mockStatePath = sys_get_temp_dir();
         $projectStatePath = $mockStatePath . DIRECTORY_SEPARATOR . strtolower($project->projectCode) . '.state';
-        file_put_contents($projectStatePath, '{"state": "IDLE"}');
+        file_put_contents($projectStatePath, '{"SRState": "IDLE"}');
 
         $status = SendReceiveCommands::getProjectStatus($projectId, $mockStatePath);
 
-        $this->assertEqual($status['state'], 'IDLE');
+        $this->assertEqual($status['SRState'], 'IDLE');
 
         unlink($projectStatePath);
     }
@@ -427,16 +427,16 @@ class TestSendReceiveCommands extends UnitTestCase
 
         $mockQueuePath = $lfMergePaths->syncQueuePath;
         SendReceiveCommands::queueProjectForSync($projectId, $mockQueuePath);
-        file_put_contents($projectStatePath, '{"state": "IDLE"}');
+        file_put_contents($projectStatePath, '{"SRState": "IDLE"}');
         $status = SendReceiveCommands::getProjectStatus($projectId, $lfMergePaths->statePath);
-        $this->assertEqual($status['state'], 'PENDING');
+        $this->assertEqual($status['SRState'], 'PENDING');
         FileUtilities::removeFolderAndAllContents($mockQueuePath);
 
         $mockQueuePath = $lfMergePaths->editQueuePath;
         SendReceiveCommands::queueProjectForEdit($projectId, $mockQueuePath);
-        file_put_contents($projectStatePath, '{"state": "IDLE"}');
+        file_put_contents($projectStatePath, '{"SRState": "IDLE"}');
         $status = SendReceiveCommands::getProjectStatus($projectId, $lfMergePaths->statePath);
-        $this->assertEqual($status['state'], 'PENDING');
+        $this->assertEqual($status['SRState'], 'PENDING');
         FileUtilities::removeFolderAndAllContents($mockQueuePath);
 
         FileUtilities::removeFolderAndAllContents($tmpTestPath);
@@ -463,16 +463,16 @@ class TestSendReceiveCommands extends UnitTestCase
 
         $mockQueuePath = $lfMergePaths->syncQueuePath;
         SendReceiveCommands::queueProjectForSync($projectId, $mockQueuePath);
-        file_put_contents($projectStatePath, '{"state": "SYNCING"}');
+        file_put_contents($projectStatePath, '{"SRState": "SYNCING"}');
         $status = SendReceiveCommands::getProjectStatus($projectId, $lfMergePaths->statePath);
-        $this->assertEqual($status['state'], 'SYNCING');
+        $this->assertEqual($status['SRState'], 'SYNCING');
         FileUtilities::removeFolderAndAllContents($mockQueuePath);
 
         $mockQueuePath = $lfMergePaths->editQueuePath;
         SendReceiveCommands::queueProjectForEdit($projectId, $mockQueuePath);
-        file_put_contents($projectStatePath, '{"state": "SYNCING"}');
+        file_put_contents($projectStatePath, '{"SRState": "SYNCING"}');
         $status = SendReceiveCommands::getProjectStatus($projectId, $lfMergePaths->statePath);
-        $this->assertEqual($status['state'], 'SYNCING');
+        $this->assertEqual($status['SRState'], 'SYNCING');
         FileUtilities::removeFolderAndAllContents($mockQueuePath);
 
         FileUtilities::removeFolderAndAllContents($tmpTestPath);
