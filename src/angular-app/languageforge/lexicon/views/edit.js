@@ -85,6 +85,25 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       }
     };
 
+    function updateEntryLists(id, entry) {
+      var entryIndex = getIndexInList(id, $scope.entries);
+      if (angular.isDefined(entryIndex)) {
+        $scope.entries[entryIndex] = entry;
+        $scope.currentEntry = $scope.entries[entryIndex];
+      }
+
+      var visibleEntryIndex = getIndexInList(id, $scope.visibleEntries);
+      if (angular.isDefined(visibleEntryIndex)) {
+        $scope.visibleEntries[visibleEntryIndex] = entry;
+      }
+    }
+
+    function warnOfUnsavedEdits(entry) {
+      notice.push(notice.WARN, 'A synchronise has been started by another user. ' +
+        'Please check your recent edits in entry "' + $scope.getWordForDisplay(entry) + '" ' +
+        'when the synchronise has finished.');
+    }
+
     $scope.saveCurrentEntry = function saveCurrentEntry(doSetEntry, successCallback, failCallback) {
       var isNewEntry = false;
       var newEntryTempId;
@@ -103,22 +122,19 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         if (entryIsNew(entryToSave)) {
           isNewEntry = true;
           newEntryTempId = entryToSave.id;
-          entryToSave.id = ''; // send empty id which indicated "create new"
+          entryToSave.id = ''; // send empty id to indicate "create new"
         }
 
         lexService.update(prepEntryForUpdate(entryToSave), function (result) {
           if (result.ok) {
             var entry = result.data;
             if (!entry && sendReceive.isSendReceiveProject()) {
-              notice.push(notice.WARN, 'Your edits in entry "' +
-                $scope.getWordForDisplay(entryToSave) + '" could not be saved because a ' +
-                'synchronise has been started by another user. When the synchronise finishes ' +
-                'please make your edits again.');
+              warnOfUnsavedEdits(entryToSave);
               sendReceive.startSyncStatusTimer();
             }
 
             if (!entry) {
-              $scope.currentEntry = angular.copy(pristineEntry);
+              updateEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
             }
 
             if (isNewEntry) {
@@ -145,8 +161,10 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
              * I'm currently unclear on whether the doSetEntry parameter is still necessary
              */
 
-            pristineEntry = angular.copy(entryToSave);
-            $scope.lastSavedDate = new Date();
+            if (entry) {
+              pristineEntry = angular.copy(entryToSave);
+              $scope.lastSavedDate = new Date();
+            }
 
             // refresh data will add the new entry to the entries list
             editorService.refreshEditorData().then(function () {
@@ -613,12 +631,11 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     sendReceive.setSyncProjectStatusSuccessCallback(syncProjectStatusSuccess);
 
     function pollProjectStatusSuccess() {
-      cancelAutoSaveTimer();
-      notice.push(notice.WARN, 'Your edits in entry "' +
-        $scope.getWordForDisplay($scope.currentEntry) + '" will not be saved because a ' +
-        'synchronise has been started by another user. When the synchronise finishes ' +
-        'please make your edits again.');
-      $scope.currentEntry = angular.copy(pristineEntry);
+      if ($scope.currentEntryIsDirty()) {
+        cancelAutoSaveTimer();
+        warnOfUnsavedEdits($scope.currentEntry);
+        updateEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
+      }
     }
 
     function syncProjectStatusSuccess() {
