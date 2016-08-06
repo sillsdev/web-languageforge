@@ -85,11 +85,12 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       }
     };
 
-    function updateEntryLists(id, entry) {
+    function resetEntryLists(id, pristineEntry) {
       var entryIndex = getIndexInList(id, $scope.entries);
+      var entry = prepCustomFieldsForUpdate(pristineEntry);
       if (angular.isDefined(entryIndex)) {
         $scope.entries[entryIndex] = entry;
-        $scope.currentEntry = $scope.entries[entryIndex];
+        $scope.currentEntry = pristineEntry;
       }
 
       var visibleEntryIndex = getIndexInList(id, $scope.visibleEntries);
@@ -100,8 +101,8 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
     function warnOfUnsavedEdits(entry) {
       notice.push(notice.WARN, 'A synchronise has been started by another user. ' +
-        'Please check your recent edits in entry "' + $scope.getWordForDisplay(entry) + '" ' +
-        'when the synchronise has finished.');
+        'When the synchronise has finished, please check your recent edits in entry "' +
+        $scope.getWordForDisplay(entry) + '".');
     }
 
     $scope.saveCurrentEntry = function saveCurrentEntry(doSetEntry, successCallback, failCallback) {
@@ -134,7 +135,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
             }
 
             if (!entry) {
-              updateEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
+              resetEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
             }
 
             if (isNewEntry) {
@@ -634,14 +635,12 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       if ($scope.currentEntryIsDirty()) {
         cancelAutoSaveTimer();
         warnOfUnsavedEdits($scope.currentEntry);
-        updateEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
+        resetEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
       }
     }
 
     function syncProjectStatusSuccess() {
-      $scope.finishedLoading = false;
-      editorService.loadEditorData().then(function () {
-        $scope.finishedLoading = true;
+      editorService.refreshEditorData().then(function () {
         sessionService.refresh(lexConfig.refresh);
       });
     }
