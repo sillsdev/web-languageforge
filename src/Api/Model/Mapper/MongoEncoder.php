@@ -2,6 +2,10 @@
 
 namespace Api\Model\Mapper;
 
+use Litipk\Jiffy\UniversalTimestamp;
+use MongoDB\BSON\UTCDatetime;
+use Palaso\Utilities\CodeGuard;
+
 class MongoEncoder
 {
     /**
@@ -18,7 +22,9 @@ class MongoEncoder
     /**
      * Sets key/values in the array from the public properties of $model
      * @param object $model
+     * @param boolean $encodeId
      * @return array
+     * @throws \Exception
      */
     protected function _encode($model, $encodeId = false)
     {
@@ -26,19 +32,21 @@ class MongoEncoder
         $properties = get_object_vars($model);
         foreach ($properties as $key => $value) {
             if (is_a($value, 'Api\Model\Mapper\ArrayOf')) {
-                $data[$key] = $this->encodeArrayOf($model->$key);
+                $data[$key] = $this->encodeArrayOf($model->{$key});
             } elseif (is_a($value, 'Api\Model\Mapper\MapOf')) {
-                $data[$key] = $this->encodeMapOf($model->$key);
+                $data[$key] = $this->encodeMapOf($model->{$key});
             } elseif (is_a($value, 'Api\Model\Mapper\IdReference')) {
-                $data[$key] = $this->encodeIdReference($model->$key);
+                $data[$key] = $this->encodeIdReference($model->{$key});
             } elseif (is_a($value, 'Api\Model\Mapper\Id')) {
                 if ($encodeId) {
-                    $data[$key] = $this->encodeId($model->$key);
+                    $data[$key] = $this->encodeId($model->{$key});
                 }
             } elseif (is_a($value, 'DateTime')) {
-                $data[$key] = $this->encodeDateTime($model->$key);
+                $data[$key] = $this->encodeDateTime($model->{$key});
+            } elseif (is_a($value, 'Litipk\Jiffy\UniversalTimestamp')) {
+                $data[$key] = $this->encodeUniversalTimestamp($model->{$key});
             } elseif (is_a($value, 'Api\Model\Mapper\ReferenceList')) {
-                $data[$key] = $this->encodeReferenceList($model->$key);
+                $data[$key] = $this->encodeReferenceList($model->{$key});
             } else {
                 // Data type protection
                 if (is_array($value)) {
@@ -95,8 +103,7 @@ class MongoEncoder
             } else {
                 // Data type protection
                 if (is_array($item)) {
-                    // TODO Fix missing parameter ($key missing for a long time?)  2014-08 DDW
-                    throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
+                    throw new \Exception("Must not encode array in '" . get_class($model) . "'");
                 }
                 // Default encode
                 $result[] = $item;
@@ -156,6 +163,8 @@ class MongoEncoder
     {
         $result = array_map(
             function ($id) {
+                CodeGuard::checkTypeAndThrow($id, 'Api\Model\Mapper\Id');
+                /** @var Id $id */
                 return MongoMapper::mongoID($id->asString());
             },
             $model->refs
@@ -164,12 +173,21 @@ class MongoEncoder
     }
 
     /**
-     * @param DateTime $model
-     * @return string;
+     * @param \DateTime $model
+     * @return UTCDatetime;
      */
     public function encodeDateTime($model)
     {
-        return new \MongoDB\BSON\UTCDatetime(1000*$model->getTimeStamp());
+        return new UTCDatetime(1000*$model->getTimeStamp());
+    }
+
+    /**
+     * @param UniversalTimestamp $model
+     * @return UTCDatetime;
+     */
+    public function encodeUniversalTimestamp($model)
+    {
+        return new UTCDatetime($model->asMilliseconds());
     }
 
 }
