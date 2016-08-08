@@ -55,7 +55,7 @@ class TestQuestionListDto extends UnitTestCase
         $question1->description = "Who is telling the story in this text?";
         $question1->textRef->id = $textId;
         $question1->write();
-        $question1->dateCreated->sub(date_interval_create_from_date_string('1 day'));
+        $question1->dateCreated->addSeconds(-date_interval_create_from_date_string('1 day')->s);
         $question1Id = $question1->write();
 
         $question2 = new QuestionModel($project);
@@ -70,7 +70,7 @@ class TestQuestionListDto extends UnitTestCase
         $answer1->score = 10;
         $answer1->userRef->id = $user1Id;
         $answer1->textHightlight = "I knew that I was on Mars";
-        $answer1Id = $question1->writeAnswer($answer1);
+        $question1->writeAnswer($answer1);
 
         // ... and two answers for question 2
         $answer2 = new AnswerModel();
@@ -78,7 +78,7 @@ class TestQuestionListDto extends UnitTestCase
         $answer2->score = 1;
         $answer2->userRef->id = $user1Id;
         $answer2->textHightlight = "I knew that I was on Mars";
-        $answer2Id = $question2->writeAnswer($answer2);
+        $question2->writeAnswer($answer2);
 
         $answer3 = new AnswerModel();
         $answer3->content = "On the planet we call Barsoom, which you inhabitants of Earth normally call Mars.";
@@ -91,23 +91,24 @@ class TestQuestionListDto extends UnitTestCase
         $comment1 = new CommentModel();
         $comment1->content = "By the way, our name for Earth is Jasoom.";
         $comment1->userRef->id = $user2Id;
-        $comment1Id = QuestionModel::writeComment($project->databaseName(), $question2Id, $answer3Id, $comment1);
+        QuestionModel::writeComment($project->databaseName(), $question2Id, $answer3Id, $comment1);
 
         $dto = QuestionListDto::encode($projectId, $textId, $user1Id);
 
         // Now check that it all looks right, 1 Text & 2 Questions
         $this->assertEqual($dto['count'], 2);
         $this->assertIsa($dto['entries'], 'array');
-        $this->assertEqual($dto['entries'][0]['id'], $question2Id);
-        $this->assertEqual($dto['entries'][1]['id'], $question1Id);
-        $this->assertEqual($dto['entries'][0]['title'], "Where is the storyteller?");
-        $this->assertEqual($dto['entries'][1]['title'], "Who is speaking?");
-        $this->assertEqual($dto['entries'][0]['answerCount'], 2);
-        $this->assertEqual($dto['entries'][1]['answerCount'], 1);
+        $entriesById = $this->environ->indexItemsBy($dto['entries'], 'id');
+        $entry0 = $entriesById[$question1Id];
+        $entry1 = $entriesById[$question2Id];
+        $this->assertEqual($entry0['title'], "Who is speaking?");
+        $this->assertEqual($entry1['title'], "Where is the storyteller?");
+        $this->assertEqual($entry0['answerCount'], 1);
+        $this->assertEqual($entry1['answerCount'], 2);
         // Specifically check if comments got included in answer count
         $this->assertNotEqual($dto['entries'][1]['answerCount'], 3, "Comments should not be included in answer count.");
-        $this->assertEqual($dto['entries'][0]['responseCount'], 3);
-        $this->assertEqual($dto['entries'][1]['responseCount'], 1);
+        $this->assertEqual($entry0['responseCount'], 1);
+        $this->assertEqual($entry1['responseCount'], 3);
         // make sure our text content is coming down into the dto
         $this->assertTrue(strlen($dto['text']['content']) > 0);
 
@@ -149,7 +150,7 @@ class TestQuestionListDto extends UnitTestCase
         // Contributor cannot view archived Text, throw Exception
         $this->environ->inhibitErrorDisplay();
         $this->expectException();
-        $dto = QuestionListDto::encode($projectId, $textId, $contributorId);
+        QuestionListDto::encode($projectId, $textId, $contributorId);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
