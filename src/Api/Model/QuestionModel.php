@@ -11,9 +11,7 @@ use Api\Model\Mapper\MongoMapper;
 
 class QuestionModelMongoMapper extends MongoMapper
 {
-    /**
-     * @var QuestionModelMongoMapper[]
-     */
+    /** @var QuestionModelMongoMapper[] */
     private static $_pool = array();
 
     /**
@@ -27,7 +25,6 @@ class QuestionModelMongoMapper extends MongoMapper
         }
         return static::$_pool[$databaseName];
     }
-
 }
 
 class QuestionModel extends MapperModel
@@ -42,8 +39,6 @@ class QuestionModel extends MapperModel
         $this->workflowState = "open"; // default workflow state
         $this->description = '';
         $this->title = '';
-        $this->dateCreated = new \DateTime();
-        $this->dateEdited = new \DateTime();
         $this->textRef = new IdReference();
         $this->answers = new MapOf(
             function () {
@@ -103,7 +98,6 @@ class QuestionModel extends MapperModel
      * Reads an answer model for a question
      * @param string $answerId
      * @return AnswerModel
-     *
      */
     public function readAnswer($answerId)
     {
@@ -111,7 +105,6 @@ class QuestionModel extends MapperModel
     }
 
     /**
-     *
      * @param string $answerId
      * @param string $commentId
      * @return CommentModel
@@ -179,7 +172,6 @@ class QuestionModel extends MapperModel
     }
 
     /**
-     *
      * @return string - the title for display
      */
     public function getTitleForDisplay()
@@ -201,52 +193,29 @@ class QuestionModel extends MapperModel
         return $title;
     }
 
-    /**
-     * @var Id
-     */
+    /** @var Id */
     public $id;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $title;
 
-    /**
-     * @var string A content description/explanation of the question being asked
-     */
+    /** @var string A content description/explanation of the question being asked */
     public $description;
 
-    /**
-     * @var \DateTime
-     */
-    public $dateCreated;
-
-    /**
-     * @var \DateTime
-     */
+    /** @var \DateTime */
     public $dateEdited;
 
-    /**
-     * @var IdReference - Id of the referring text
-     */
+    /** @var IdReference - Id of the referring text */
     public $textRef;
 
-    /**
-     * @var MapOf<AnswerModel>
-     */
+    /** @var MapOf<AnswerModel> */
     public $answers;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $workflowState;
 
-    /**
-     * @var Boolean
-     */
+    /** @var Boolean */
     public $isArchived;
-
 }
 
 class QuestionListModel extends MapperListModel
@@ -263,5 +232,4 @@ class QuestionListModel extends MapperListModel
             array('description')
         );
     }
-
 }
