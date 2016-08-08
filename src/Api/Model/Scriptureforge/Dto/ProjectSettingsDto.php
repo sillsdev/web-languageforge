@@ -81,7 +81,7 @@ class ProjectSettingsDto
                     }
                 }
                 $entry['responseCount'] = $responseCount;
-                $entry['dateModified'] = $textModel->dateModified->format(\DateTime::RFC2822);
+                $entry['dateModified'] = $textModel->dateModified->asDateTimeInterface()->format(\DateTime::RFC2822);
 
                 $data['archivedTexts'][] = $entry;
             }
