@@ -2,10 +2,13 @@
 
 namespace Api\Model\Scriptureforge\Dto;
 
+use Api\Model\ProjectModel;
+use Api\Model\QuestionModel;
+use Api\Model\TextModel;
+
 class BreadCrumbHelper
 {
     /**
-     *
      * @param string $operation
      * @param ProjectModel $project
      * @param TextModel $text

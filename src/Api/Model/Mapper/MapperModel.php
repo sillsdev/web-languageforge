@@ -2,38 +2,30 @@
 
 namespace Api\Model\Mapper;
 
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\CodeGuard;
 
 class MapperModel extends ObjectForEncoding
 {
-    /**
-     *
-     * @var MongoMapper
-     */
+    /** @var MongoMapper */
     protected $_mapper;
 
-    /**
-     *
-     * @var \DateTime
-     */
+    /** @var UniversalTimestamp */
     public $dateModified;
 
-    /**
-     *
-     * @var \DateTime
-     */
+    /** @var UniversalTimestamp */
     public $dateCreated;
 
     /**
-     *
      * @param MongoMapper $mapper
      * @param string $id
      */
     protected function __construct($mapper, $id = '')
     {
         $this->_mapper = $mapper;
-        $this->dateModified = new \DateTime();
-        $this->dateCreated = new \DateTime();
+        $now = UniversalTimestamp::now();
+        $this->dateModified = $now;
+        $this->dateCreated = $now;
         $this->setReadOnlyProp('dateModified');
         $this->setReadOnlyProp('dateCreated');
         CodeGuard::checkTypeAndThrow($id, 'string');
@@ -67,7 +59,6 @@ class MapperModel extends ObjectForEncoding
     }
 
     /**
-     *
      * @param string $property
      * @param string $value
      * @return boolean
@@ -78,7 +69,6 @@ class MapperModel extends ObjectForEncoding
     }
 
     /**
-     *
      * @param array $properties
      * @return boolean
      */
@@ -95,9 +85,10 @@ class MapperModel extends ObjectForEncoding
     public function write()
     {
         CodeGuard::checkTypeAndThrow($this->id, 'Api\Model\Mapper\Id');
-        $this->dateModified = new \DateTime();
+        $now = UniversalTimestamp::now();
+        $this->dateModified = $now;
         if (Id::isEmpty($this->id)) {
-            $this->dateCreated = new \DateTime();
+            $this->dateCreated = $now;
         }
         $this->id->id = $this->_mapper->write($this, $this->id->id);
 

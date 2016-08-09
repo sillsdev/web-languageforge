@@ -41,7 +41,7 @@ class TextSettingsDto
                 }
                 $questionData['responseCount'] = $responseCount;
                 unset($questionData['answers']);
-                $questionData['dateModified'] = $question->dateModified->format(\DateTime::RFC2822);
+                $questionData['dateModified'] = $question->dateModified->asDateTimeInterface()->format(\DateTime::RFC2822);
 
                 $data['archivedQuestions'][] = $questionData;
             }

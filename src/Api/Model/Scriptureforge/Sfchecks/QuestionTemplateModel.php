@@ -4,16 +4,19 @@ namespace Api\Model\Scriptureforge\Sfchecks;
 
 use Api\Model\Mapper\Id;
 use Api\Model\Mapper\IdReference;
+use Api\Model\Mapper\MapperModel;
+use Api\Model\Mapper\MongoMapper;
 
-class QuestionTemplateModel extends \Api\Model\Mapper\MapperModel
+class QuestionTemplateModel extends MapperModel
 {
     private $_projectModel;
 
     public static function mapper($databaseName)
     {
+        /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'questionTemplates');
+            $instance = new MongoMapper($databaseName, 'questionTemplates');
         }
 
         return $instance;
@@ -34,18 +37,12 @@ class QuestionTemplateModel extends \Api\Model\Mapper\MapperModel
         return $result;
     }
 
-    /**
-     * @var IdReference
-     */
+    /** @var IdReference */
     public $id;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $title;
 
-    /**
-     * @var string A content description/explanation of the question being asked
-     */
+    /** @var string A content description/explanation of the question being asked */
     public $description;
 }
