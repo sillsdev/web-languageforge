@@ -14,13 +14,12 @@ use Api\Model\UserModel;
 
 class QuestionListDto
 {
-
     /**
-     *
      * @param string $projectId
      * @param string $textId
      * @param string $userId
      * @return array - the DTO array
+     * @throws ResourceNotAvailableException
      */
     public static function encode($projectId, $textId, $userId)
     {
@@ -57,7 +56,7 @@ class QuestionListDto
                 }
                 $questionData['responseCount'] = $responseCount;
                 unset($questionData['answers']);
-                $questionData['dateCreated'] = $question->dateCreated->format(\DateTime::RFC2822);
+                $questionData['dateCreated'] = $question->dateCreated->asDateTimeInterface()->format(\DateTime::RFC2822);
 
                 $data['entries'][] = $questionData;
             }

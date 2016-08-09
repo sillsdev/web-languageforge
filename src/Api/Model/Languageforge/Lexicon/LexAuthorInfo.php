@@ -4,6 +4,7 @@ namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Mapper\IdReference;
 use Api\Model\Mapper\ObjectForEncoding;
+use Litipk\Jiffy\UniversalTimestamp;
 
 /**
  * This class contains author information for the lex entry element and it sub-elements
@@ -13,31 +14,26 @@ class LexAuthorInfo extends ObjectForEncoding
     public function __construct()
     {
         $this->createdByUserRef = new IdReference();
-        $this->createdDate = new \DateTime();
         $this->modifiedByUserRef = new IdReference();
-        $this->modifiedDate = new \DateTime();
+        $now = UniversalTimestamp::now();
+        $this->createdDate = $now;
+        $this->modifiedDate = $now;
 
         $this->setReadOnlyProp('createdByUserRef');
-        $this->setReadOnlyProp('createdDate');
         $this->setReadOnlyProp('modifiedByUserRef');
+        $this->setReadOnlyProp('createdDate');
         $this->setReadOnlyProp('modifiedDate');
     }
 
-    /**
-     * user's Id as string
-     * @var IdReference
-     */
+    /** @var IdReference user's Id as string */
     public $createdByUserRef;
 
-    /** @var \DateTime */
+    /** @var UniversalTimestamp */
     public $createdDate;
 
-    /**
-     * user's Id as string
-     * @var IdReference
-     */
+    /** @var IdReference user's Id as string */
     public $modifiedByUserRef;
 
-    /** @var \DateTime */
+    /** @var UniversalTimestamp */
     public $modifiedDate;
 }
