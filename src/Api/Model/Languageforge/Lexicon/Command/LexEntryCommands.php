@@ -11,6 +11,7 @@ use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectModel;
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\CodeGuard;
 
 class LexEntryCommands
@@ -50,20 +51,21 @@ class LexEntryCommands
         CodeGuard::checkTypeAndThrow($params, 'array');
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
+        $now = UniversalTimestamp::now();
         if (array_key_exists('id', $params) && $params['id'] != '') {
             $entry = new LexEntryModel($project, $params['id']);
             $action = 'update';
         } else {
             $entry = new LexEntryModel($project);
             $entry->authorInfo->createdByUserRef->id = $userId;
-            $entry->authorInfo->createdDate = new \DateTime();
+            $entry->authorInfo->createdDate = $now;
             $entry->guid = Guid::create();
             $action = 'create';
             // TODO: Consider adding more specific activity entry: which fields were modified? 2014-09-03 RM
             // E.g., "User _____ updated entry _____ by adding a new sense with definition ______"
         }
 
-        $entry->authorInfo->modifiedDate = new \DateTime();
+        $entry->authorInfo->modifiedDate = $now;
         $entry->authorInfo->modifiedByUserRef->id = $userId;
 
         if ($project->hasSendReceive()) {

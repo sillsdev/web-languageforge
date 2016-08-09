@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\CodeGuard;
 use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\LexCommentModel;
@@ -39,10 +40,10 @@ class LexCommentCommands
 
         if ($isNew) {
             $comment->authorInfo->createdByUserRef->id = $userId;
-            $comment->authorInfo->createdDate = new \DateTime();
+            $comment->authorInfo->createdDate = UniversalTimestamp::now();
         }
         $comment->authorInfo->modifiedByUserRef->id = $userId;
-        $comment->authorInfo->modifiedDate = new \DateTime();
+        $comment->authorInfo->modifiedDate = UniversalTimestamp::now();
 
         return $comment->write();
     }
@@ -62,7 +63,7 @@ class LexCommentCommands
                 throw new \Exception("No permission to update other people's lex comment replies!");
             }
             if ($reply->content != $params['content']) {
-                $reply->authorInfo->modifiedDate = new \DateTime();
+                $reply->authorInfo->modifiedDate = UniversalTimestamp::now();
             }
             $reply->content = $params['content'];
             $comment->setReply($replyId, $reply);
@@ -71,7 +72,9 @@ class LexCommentCommands
             $reply->content = $params['content'];
             $reply->authorInfo->createdByUserRef->id = $userId;
             $reply->authorInfo->modifiedByUserRef->id = $userId;
-            $reply->authorInfo->createdDate = new \DateTime();
+            $now = UniversalTimestamp::now();
+            $reply->authorInfo->createdDate = $now;
+            $reply->authorInfo->modifiedDate = $now;
             $comment->replies->append($reply);
             $replyId = $reply->id;
         }
