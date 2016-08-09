@@ -2,10 +2,10 @@
 
 namespace Api\Library\Scriptureforge\Sfchecks;
 
-use Api\Model\Scriptureforge\Dto\UsxHelper;
-use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\ProjectModel;
 use Api\Model\QuestionAnswersListModel;
+use Api\Model\Scriptureforge\Dto\UsxHelper;
+use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\TextListModel;
 use Api\Model\TextModel;
 use Api\Model\UserList_ProjectModel;
@@ -240,7 +240,7 @@ class SfchecksReports {
         $output = str_pad('**** Responses Over Time Report ****', 120, " ", STR_PAD_BOTH) . "\n";
         $output .= str_pad(date(DATE_RFC2822), 120, " ", STR_PAD_BOTH) . "\n\n";
         $data = array();
-        $startDate = $project->dateCreated;
+        $startDate = new \DateTime($project->dateCreated->asFormattedString());
         $endDate = new \DateTime();
         $iv = $endDate->diff($startDate);
 

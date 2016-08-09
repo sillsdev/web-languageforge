@@ -2,6 +2,7 @@
 
 use Api\Model\Mapper\MongoEncoder;
 use Api\Model\Mapper\MongoDecoder;
+use Litipk\Jiffy\UniversalTimestamp;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -10,45 +11,45 @@ class TestMongoDateModel
 {
     public function __construct()
     {
-        $this->date = new DateTime('2013-08-01');
+        $this->dateTime =  new DateTime('2013-08-01 12:01:01.321');
+        $this->universalTimestamp = UniversalTimestamp::fromStringTimestamp('2013-08-01 12:01:01.321');
     }
 
-    public $date;
+    public $dateTime;
+
+    public $universalTimestamp;
 }
 
 class TestMongoDateMapper extends UnitTestCase
 {
-    public function __construct()
-    {
-    }
-
-    public function testEncodeDecode_Same()
+    public function testEncodeDecodeDateTime_HistoricalDate_Same()
     {
         $model = new TestMongoDateModel();
+        $model->dateTime = new DateTime('2001-01-01 12:01:01.321');
         $encoded = MongoEncoder::encode($model);
-        $this->assertIsA($encoded['date'], 'MongoDB\BSON\UTCDateTime');
-//          var_dump($encoded);
+        $this->assertIsA($encoded['dateTime'], 'MongoDB\BSON\UTCDateTime');
+//        var_dump($encoded);
 
-        $otherModel = new TestMongoDateModel();
-        MongoDecoder::decode($otherModel, $encoded);
-        $iso8601 = $otherModel->date->format(DateTime::ISO8601);
-        $this->assertEqual($model->date, $otherModel->date);
-//          var_dump($iso8601);
-
+        $decodedModel = new TestMongoDateModel();
+        MongoDecoder::decode($decodedModel, $encoded);
+        $this->assertEqual($model->dateTime, $decodedModel->dateTime);
+//        $iso8601 = $decodedModel->dateTime->asFormattedString(UniversalTimestamp::ISO8601_WITH_MILLISECONDS);
+//        var_dump($iso8601);
     }
 
-    public function testEncodeDecode_HistoricalDate_Same()
+    public function testEncodeDecodeUniversalTimestamp_HistoricalDate_Same()
     {
         $model = new TestMongoDateModel();
-        $model->date = new DateTime('2001-01-01');
+        $model->universalTimestamp = UniversalTimestamp::fromStringTimestamp('2001-01-01 12:01:01.321');
         $encoded = MongoEncoder::encode($model);
-        $this->assertIsA($encoded['date'], 'MongoDB\BSON\UTCDateTime');
+        $this->assertIsA($encoded['universalTimestamp'], 'MongoDB\BSON\UTCDateTime');
+//        var_dump($encoded);
 
-        $otherModel = new TestMongoDateModel();
-        MongoDecoder::decode($otherModel, $encoded);
-        $iso8601 = $otherModel->date->format(DateTime::ISO8601);
-        $this->assertEqual($model->date, $otherModel->date);
-
+        $decodedModel = new TestMongoDateModel();
+        MongoDecoder::decode($decodedModel, $encoded);
+        $this->assertEqual($model->universalTimestamp, $decodedModel->universalTimestamp);
+//        $iso8601 = $decodedModel->universalTimestamp->asFormattedString(UniversalTimestamp::ISO8601_WITH_MILLISECONDS);
+//        var_dump($iso8601);
     }
 
 }
