@@ -4,29 +4,29 @@ namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
+use Api\Model\Mapper\MapperListModel;
+use Api\Model\Mapper\MongoMapper;
 use Api\Model\ProjectModel;
 use Api\Model\Mapper\ArrayOf;
+use MongoDB\BSON\UTCDatetime;
 
-class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
+class LexEntryListModel extends MapperListModel
 {
-    /**
-     *
-     * @var LexConfiguration
-     */
+    /** @var LexConfiguration */
     private $_config;
 
     public static function mapper($databaseName)
     {
+        /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'lexicon');
+            $instance = new MongoMapper($databaseName, 'lexicon');
         }
 
         return $instance;
     }
 
     /**
-     *
      * @param ProjectModel $projectModel
      * @param int $newerThanTimestamp
      * @param int $limit
@@ -41,7 +41,7 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
         $this->_config = $lexProject->config;
 
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new \MongoDB\BSON\UTCDatetime(1000*$newerThanTimestamp);
+            $startDate = new UTCDatetime(1000*$newerThanTimestamp);
             parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate), 'isDeleted' => false), array(), array(), $limit, $skip);
         } else {
             parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false), array(), array(), $limit, $skip);
@@ -136,7 +136,7 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
     /**
      * If the $value of $propertyName exists in entries return the entry
      * @param string $propertyName
-     * @param unknown $value
+     * @param mixed $value
      * @return array|boolean $entry or false if not found
      */
     public function searchEntriesFor($propertyName, $value)
@@ -149,5 +149,4 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
 
         return false;
     }
-
 }

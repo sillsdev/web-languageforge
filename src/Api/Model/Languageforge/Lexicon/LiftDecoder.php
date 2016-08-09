@@ -11,6 +11,7 @@ use Api\Model\Languageforge\Lexicon\Config\LexConfigOptionList;
 use Api\Model\Languageforge\Lexicon\Config\LexConfigMultiParagraph;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\Id;
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\CodeGuard;
 use Palaso\Utilities\FileUtilities;
 
@@ -58,8 +59,8 @@ class LiftDecoder
                 case 'lexical-unit':
                     if ($mergeRule != LiftMergeRule::IMPORT_LOSES || Id::isEmpty($entry->id)) {
                         $entry->guid = (string) $sxeNode['guid'];
-                        $entry->authorInfo->createdDate = new \DateTime((string) $sxeNode['dateCreated']);
-                        $entry->authorInfo->modifiedDate = new \DateTime((string) $sxeNode['dateModified']);
+                        $entry->authorInfo->createdDate = UniversalTimestamp::fromStringTimestamp((string) $sxeNode['dateCreated']);
+                        $entry->authorInfo->modifiedDate = UniversalTimestamp::fromStringTimestamp((string) $sxeNode['dateModified']);
                         $entry->lexeme = $this->readMultiText($element, $this->project->config->entry->fields[LexConfig::LEXEME]->inputSystems);
                     }
                     break;
@@ -76,7 +77,7 @@ class LiftDecoder
                 case 'etymology':
                    $entry->etymology = $this->readMultiText($element, $this->project->config->entry->fields[LexConfig::ETYMOLOGY]->inputSystems, true);
                     if ($element->{'gloss'}) {
-                        $this->readMultiTextGloss($element->gloss, $entry->etymologyGloss, $this->project->config->entry->fields[LexConfig::ETYMOLOGYGLOSS]->inputSystems);
+                        $this->readMultiTextGloss($element->{'gloss'}[0], $entry->etymologyGloss, $this->project->config->entry->fields[LexConfig::ETYMOLOGYGLOSS]->inputSystems);
                     }
                     foreach ($element->{'field'} as $field) {
                         if ($field['type'] == 'comment') {
@@ -336,7 +337,7 @@ class LiftDecoder
             switch ($element->getName()) {
                 case 'form':
                     $inputSystemTag = (string) $element['lang'];
-                    $value = self::sanitizeSpans(dom_import_simplexml($element->text), $inputSystemTag,
+                    $value = self::sanitizeSpans(dom_import_simplexml($element->{'text'}[0]), $inputSystemTag,
                         $this->currentNodeError());
                     $multiText->form($inputSystemTag, $value);
                     $this->project->addInputSystem($inputSystemTag);
@@ -370,7 +371,7 @@ class LiftDecoder
             throw new \Exception("'" . $sxeNode->getName() . "' is not a gloss");
         }
         $inputSystemTag = (string) $sxeNode['lang'];
-        $multiText->form($inputSystemTag, (string) $sxeNode->text);
+        $multiText->form($inputSystemTag, (string) $sxeNode->{'text'});
 
         $this->project->addInputSystem($inputSystemTag);
         if (isset($inputSystems)) {
@@ -396,7 +397,7 @@ class LiftDecoder
                 case 'form':
                     $inputSystemTag = (string) $element['lang'];
                     $multiParagraph->inputSystem = $inputSystemTag;
-                    $value = self::sanitizeSpans(dom_import_simplexml($element->text), $inputSystemTag,
+                    $value = self::sanitizeSpans(dom_import_simplexml($element->{'text'}[0]), $inputSystemTag,
                         $this->currentNodeError());
                     foreach (explode($paraSeparator, $value) as $content) {
                         $paragraph = new LexParagraph();
