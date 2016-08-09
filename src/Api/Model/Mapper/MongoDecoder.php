@@ -103,6 +103,9 @@ class MongoDecoder extends JsonDecoder
     public function decodeUniversalTimestamp(&$model, $data)
     {
         CodeGuard::checkTypeAndThrow($data, 'MongoDB\BSON\UTCDatetime', CodeGuard::CHECK_NULL_OK);
+        // account for difference between .NET and Linux epoch
+        // (which produces negative milliseconds in UTCDatetime then causes an exception in UniversalTimestamp)
+        if ((int) (String) $data < 0) $data = new UTCDatetime(0);
         parent::decodeUniversalTimestamp($model, $data);
     }
 
@@ -139,5 +142,4 @@ class MongoDecoder extends JsonDecoder
         }
         parent::decodeMapOf($key, $model, $data);
     }
-
 }
