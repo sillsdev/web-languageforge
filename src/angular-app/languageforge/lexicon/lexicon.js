@@ -10,7 +10,6 @@ angular.module('lexicon',
     'examples',
     'bellows.services',
     'bellows.filters',
-    'lexicon.add-meanings',
     'lexicon.configuration',
     'lexicon.view.settings',
     'lexicon.import-export',
@@ -34,14 +33,6 @@ angular.module('lexicon',
       window.location.replace('/app/projects'); } });
 
     $routeProvider.when('/', { redirectTo: '/dbe' });
-    $routeProvider.when('/view',
-      { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
-    $routeProvider.when('/gatherTexts',
-      { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
-    $routeProvider.when('/review',
-      { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
-    $routeProvider.when('/wordlist',
-      { templateUrl: '/angular-app/languageforge/lexicon/views/not-implemented.html' });
 
     $routeProvider.when(
       '/dbe',
@@ -57,24 +48,6 @@ angular.module('lexicon',
     );
     $routeProvider.when(
       '/dbe/:entryId/comments',
-      {
-        templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
-      }
-    );
-    $routeProvider.when(
-      '/add-grammar',
-      {
-        templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
-      }
-    );
-    $routeProvider.when(
-      '/add-examples',
-      {
-        templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
-      }
-    );
-    $routeProvider.when(
-      '/add-meanings',
       {
         templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
       }
