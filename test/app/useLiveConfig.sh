@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TESTPATH=`pwd|perl -pi -e 's@/test/.*@/test@'`
+TESTPATH=`pwd|perl -p -e 's@/test/.*@/test@'`
 CONFIGPATH=$TESTPATH/../src
 
 CONFIG=$CONFIGPATH/config.php
