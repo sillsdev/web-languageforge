@@ -8,23 +8,25 @@ angular.module('activity',
      'bellows.filters',
      'ui.bootstrap',
      'sgw.ui.breadcrumb',
-     'wc.Directives',
+     'wc.Directives'
     ])
-  .controller('ActivityCtrl', ['$scope', '$sce', 'activityPageService', 'sfchecksLinkService', 'sessionService', 'utilService', 'breadcrumbService',
-  function($scope, $sce, activityService, sfchecksLinkService, sessionService, util, breadcrumbService) {
+  .controller('ActivityCtrl', ['$scope', '$sce', 'activityPageService', 'sfchecksLinkService',
+    'sessionService', 'utilService', 'breadcrumbService',
+  function ($scope, $sce, activityService, sfchecksLinkService,
+            sessionService, util, breadcrumbService) {
     $scope.getAvatarUrl = util.getAvatarUrl;
 
     breadcrumbService.set('top', [
-      {label: 'Activity'},
+      { label: 'Activity' }
     ]);
 
     $scope.unread = [];
 
-    $scope.isUnread = function(id) {
+    $scope.isUnread = function (id) {
       return ($.inArray(id, $scope.unread) > -1);
     };
 
-    $scope.decodeActivityList = function(items) {
+    $scope.decodeActivityList = function (items) {
       for (var i = 0; i < items.length; i++) {
         if ('userRef' in items[i]) {
           items[i].userHref = sfchecksLinkService.user(items[i].userRef.id);
@@ -35,7 +37,8 @@ angular.module('activity',
         }
 
         if ('projectRef' in items[i]) {
-          items[i].projectHref = sfchecksLinkService.project(items[i].projectRef.id, items[i].projectRef.type);
+          items[i].projectHref =
+            sfchecksLinkService.project(items[i].projectRef.id, items[i].projectRef.type);
         }
 
         if ('textRef' in items[i]) {
@@ -43,7 +46,8 @@ angular.module('activity',
         }
 
         if ('questionRef' in items[i]) {
-          items[i].questionHref = sfchecksLinkService.question(items[i].textRef, items[i].questionRef, items[i].projectRef.id);
+          items[i].questionHref = sfchecksLinkService.question(items[i].textRef,
+            items[i].questionRef, items[i].projectRef.id);
         }
 
         if ('entryRef' in items[i]) {
@@ -51,20 +55,22 @@ angular.module('activity',
         }
 
         if ('content' in items[i]) {
-          if ('answer' in items[i]['content']) {
-            items[i]['content']['answer'] = $sce.trustAsHtml(items[i]['content']['answer']);
+          if ('answer' in items[i].content) {
+            items[i].content.answer = $sce.trustAsHtml(items[i].content.answer);
           }
 
         }
       }
     };
 
-    activityService.list_activity(0, 50, function(result) {
+    activityService.list_activity(0, 50, function (result) {
       if (result.ok) {
         $scope.activities = [];
         $scope.unread = result.data.unread;
         for (var key in result.data.activity) {
-          $scope.activities.push(result.data.activity[key]);
+          if (result.data.activity.hasOwnProperty(key)) {
+            $scope.activities.push(result.data.activity[key]);
+          }
         }
 
         $scope.decodeActivityList($scope.activities);
@@ -74,21 +80,22 @@ angular.module('activity',
 
     $scope.showAllActivity = true;
 
-    $scope.filterAllActivity = function() {
+    $scope.filterAllActivity = function () {
       $scope.showAllActivity = true;
       $scope.filteredActivities = $scope.activities;
     };
 
-    $scope.filterMyActivity = function() {
+    $scope.filterMyActivity = function () {
       $scope.showAllActivity = false;
       $scope.filteredActivities = [];
-      for (var i in $scope.activities) {
-        var a = $scope.activities[i];
-        if (a.userRef && a.userRef.id == sessionService.currentUserId() || a.userRef2 && a.userRef2.id == sessionService.currentUserId()) {
-          $scope.filteredActivities.push(a);
+      angular.forEach($scope.activities, function (activity) {
+        if (activity.userRef && activity.userRef.id == sessionService.currentUserId() ||
+          activity.userRef2 && activity.userRef2.id == sessionService.currentUserId()
+        ) {
+          $scope.filteredActivities.push(activity);
         }
-      }
+      });
     };
-  },])
+  }])
 
   ;
