@@ -1,6 +1,6 @@
 .no-margin {
     /* Fix Bootstrap's margins on checkboxes, etc. */
-    margin: 0px !important;
+    margin: 0 !important;
 }
 
 span.fk { /* TODO: Find a better place for this (partials/questions.css, perhaps?) */

@@ -8,44 +8,46 @@ angular.module('usermanagement',
      'usermanagement.joinRequests',
      'palaso.ui.notice'
     ])
-  .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
-    
     $urlRouterProvider.otherwise('/members');
-    // the "projects" route is a hack to redirect to the /app/projects URL.  See "otherwise" route below
+
     $stateProvider.state('members',
           {
             url: '/members',
             views: {
               '@': { templateUrl: '/angular-app/bellows/apps/usermanagement/views/members.html' }
             }
-        })
-        .state('joinRequests',
+          })
+          .state('joinRequests',
             {
               url: '/joinRequests',
               views: {
-                '@': { templateUrl: '/angular-app/bellows/apps/usermanagement/views/joinRequests.html' }
+                '@': { templateUrl:
+                  '/angular-app/bellows/apps/usermanagement/views/joinRequests.html' }
               }
-          });
-    }])
-  .controller('MainCtrl', ['$scope', 'projectService', 'silNoticeService', '$route', '$routeParams', '$location',
-               function($scope, projectService, noticeService, $route, $routeParams, $location) {
+            });
+  }])
+  .controller('MainCtrl', ['$scope', 'projectService', 'silNoticeService', '$route', '$routeParams',
+    '$location',
+  function ($scope, projectService, noticeService, $route, $routeParams,
+            $location) {
     $scope.roles = {};
     $scope.project = {};
     $scope.route = $route;
     $scope.location = $location;
     $scope.routeParams = $routeParams;
-    $scope.isActive = function(route) {
+    $scope.isActive = function (route) {
       return route === $location.path();
-    }
+    };
 
     $scope.list = {
       visibleUsers: [],
       users: []
     };
-    
+
     $scope.queryUserList = function queryUserList() {
-      projectService.listUsers(function(result) {
+      projectService.listUsers(function (result) {
         if (result.ok) {
           $scope.list.users = result.data.users;
           $scope.list.userCount = result.data.userCount;
@@ -54,11 +56,12 @@ angular.module('usermanagement',
         }
       });
     };
-    
+
     $scope.joinRequests = [];
-    projectService.getJoinRequests(function(result) {
+    projectService.getJoinRequests(function (result) {
       $scope.joinRequests = result.data;
-    })
-    
+    });
+
   }])
+
   ;
