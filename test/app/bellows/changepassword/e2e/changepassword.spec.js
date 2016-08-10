@@ -1,6 +1,6 @@
 'use strict';
 
-describe('E2E testing: Change password', function() {
+describe('E2E testing: Change password', function () {
   var constants = require('../../../testConstants');
   var loginPage          = require('../../pages/loginPage');
   var header             = require('../../pages/pageHeader');
@@ -9,12 +9,12 @@ describe('E2E testing: Change password', function() {
   var CONDITION_TIMEOUT = 5000;
   var newPassword = '12345678';
 
-  it('setup: login as user, go to change password page', function() {
+  it('setup: login as user, go to change password page', function () {
     loginPage.loginAsUser();
     changePasswordPage.get();
   });
 
-  it('refuses to allow form submission if the confirm input does not match', function() {
+  it('refuses to allow form submission if the confirm input does not match', function () {
     changePasswordPage.password.sendKeys(newPassword);
     changePasswordPage.confirm.sendKeys('blah12345');
     expect(changePasswordPage.submitButton.isEnabled()).toBeFalsy();
@@ -22,7 +22,7 @@ describe('E2E testing: Change password', function() {
     changePasswordPage.confirm.clear();
   });
 
-  it('allows form submission if the confirm input matches', function() {
+  it('allows form submission if the confirm input matches', function () {
     changePasswordPage.password.sendKeys(newPassword);
     changePasswordPage.confirm.sendKeys(newPassword);
     expect(changePasswordPage.submitButton.isEnabled()).toBeTruthy();
@@ -41,11 +41,13 @@ describe('E2E testing: Change password', function() {
   });
   */
 
-  it('can successfully changes user\'s password after form submission', function() {
+  it('can successfully changes user\'s password after form submission', function () {
     changePasswordPage.password.sendKeys(newPassword);
     changePasswordPage.confirm.sendKeys(newPassword);
-    browser.wait(expectedCondition.visibilityOf(changePasswordPage.passwordMatchImage), CONDITION_TIMEOUT);
-    browser.wait(expectedCondition.elementToBeClickable(changePasswordPage.submitButton), CONDITION_TIMEOUT);
+    browser.wait(expectedCondition.visibilityOf(changePasswordPage.passwordMatchImage),
+      CONDITION_TIMEOUT);
+    browser.wait(expectedCondition.elementToBeClickable(changePasswordPage.submitButton),
+      CONDITION_TIMEOUT);
     changePasswordPage.submitButton.click();
     expect(changePasswordPage.noticeList.count()).toBe(1);
     expect(changePasswordPage.noticeList.first().getText()).toContain('Password Updated');
@@ -59,8 +61,11 @@ describe('E2E testing: Change password', function() {
     changePasswordPage.get();
     changePasswordPage.password.sendKeys(constants.memberPassword);
     changePasswordPage.confirm.sendKeys(constants.memberPassword);
-    browser.wait(expectedCondition.visibilityOf(changePasswordPage.passwordMatchImage), CONDITION_TIMEOUT);
-    browser.wait(expectedCondition.elementToBeClickable(changePasswordPage.submitButton), CONDITION_TIMEOUT);
+    browser.wait(expectedCondition.visibilityOf(changePasswordPage.passwordMatchImage),
+      CONDITION_TIMEOUT);
+    browser.wait(expectedCondition.elementToBeClickable(changePasswordPage.submitButton),
+      CONDITION_TIMEOUT);
     changePasswordPage.submitButton.click();
   });
+
 });

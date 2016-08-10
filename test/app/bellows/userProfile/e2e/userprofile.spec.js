@@ -9,15 +9,15 @@ var usernames = [constants.memberUsername,
                  constants.managerUsername
          ];
 
-describe('User Profile E2E Test', function() {
+describe('User Profile E2E Test', function () {
 
   // Run the Activity E2E as each test user
-  usernames.forEach(function(expectedUsername) {
+  usernames.forEach(function (expectedUsername) {
 
     // Perform activity E2E tests according to the different roles
-    describe('Running as: ' + expectedUsername, function() {
+    describe('Running as: ' + expectedUsername, function () {
 
-      it('Logging in', function() {
+      it('Logging in', function () {
         // Login before test to ensure proper role
         if (expectedUsername == constants.memberUsername) {
           loginPage.loginAsUser();
@@ -26,17 +26,20 @@ describe('User Profile E2E Test', function() {
         }
       });
 
-      it('Verify initial "My Account" settings created from setupTestEnvironment.php', function() {
+      it('Verify initial "My Account" settings created from setupTestEnvironment.php', function () {
         userProfile.getMyAccount();
 
-        expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(browser.baseUrl + constants.avatar);
-        expect(userProfile.myAccountTab.avatarColor.$('option:checked').getText()).toBe('Select a Color...');
-        expect(userProfile.myAccountTab.avatarShape.$('option:checked').getText()).toBe('Choose an animal...');
+        expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(browser.baseUrl +
+          constants.avatar);
+        expect(userProfile.myAccountTab.avatarColor.$('option:checked').getText())
+          .toBe('Select a Color...');
+        expect(userProfile.myAccountTab.avatarShape.$('option:checked').getText())
+          .toBe('Choose an animal...');
         expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual('');
         expect(userProfile.myAccountTab.emailBtn.isSelected());
       });
 
-      it('Verify initial "About Me" settings created from setupTestEnvironment.php', function() {
+      it('Verify initial "About Me" settings created from setupTestEnvironment.php', function () {
         userProfile.getAboutMe();
 
         var expectedFullname = '';
@@ -54,7 +57,7 @@ describe('User Profile E2E Test', function() {
         expect(userProfile.aboutMeTab.gender.$('option:checked').getText()).toBe(expectedGender);
       });
 
-      it('Update and store "My Account" settings', function() {
+      it('Update and store "My Account" settings', function () {
         userProfile.getMyAccount();
 
         var newColor;
@@ -73,7 +76,8 @@ describe('User Profile E2E Test', function() {
           expectedAvatar   = userProfile.goldPigAvatarURL;
         }
 
-        userProfile.myAccountTab.selectColor('^' + newColor + '$'); // Ensure "Blue" won't match "Steel Blue", etc.
+        // Ensure "Blue" won't match "Steel Blue", etc.
+        userProfile.myAccountTab.selectColor('^' + newColor + '$');
         userProfile.myAccountTab.selectShape(newShape);
 
         userProfile.myAccountTab.updateMobilePhone(newMobilePhone);
@@ -83,7 +87,7 @@ describe('User Profile E2E Test', function() {
 
         // Change Password tested in changepassword e2e
         // Submit updated profile
-        userProfile.myAccountTab.saveBtn.click().then(function() {
+        userProfile.myAccountTab.saveBtn.click().then(function () {
           browser.refresh();
         });
 
@@ -91,11 +95,12 @@ describe('User Profile E2E Test', function() {
         expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(expectedAvatar);
         expect(userProfile.myAccountTab.avatarColor.$('option:checked').getText()).toBe(newColor);
         expect(userProfile.myAccountTab.avatarShape.$('option:checked').getText()).toBe(newShape);
-        expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value')).toEqual(newMobilePhone);
+        expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value'))
+          .toEqual(newMobilePhone);
         expect(userProfile.myAccountTab.bothBtn.isSelected());
       });
 
-      it('Update and store "About Me" settings', function() {
+      it('Update and store "About Me" settings', function () {
         userProfile.getAboutMe();
 
         // New user profile to put in
@@ -129,6 +134,9 @@ describe('User Profile E2E Test', function() {
         expect(userProfile.aboutMeTab.age.getAttribute('value')).toEqual(newAge);
         expect(userProfile.aboutMeTab.gender.$('option:checked').getText()).toBe(newGender);
       });
+
     });
+
   });
+
 });
