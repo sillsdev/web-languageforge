@@ -10,9 +10,10 @@
                     <i class="icon-cog icon-large"></i>
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu" data-ng-class="interfaceConfig.pullToSide">
-                    <li><a ng-href="/app/usermanagement/{{project.id}}" translate="User Management"></a></li>
+                    <li><a ng-href="/app/usermanagement/{{project.id}}" data-translate="User Management"></a></li>
                     <li><a ui-sref="review"> Review </a></li>
                     <li><a href="#" ng-click="exportProject()"> Export Project</a></li>
+                </ul>
         </div>
     </div>
     <div ui-view></div> <!-- todo: use ui-router instead -->

@@ -140,10 +140,12 @@ angular.module('lexicon',
     };
 
     $scope.rights.canArchiveProject = function canArchiveProject() {
-      if (sendReceive.isInProgress() || !angular.isDefined(sessionService.session.project)) return false;
+      if (sendReceive.isInProgress() || !angular.isDefined(sessionService.session.project))
+        return false;
 
       return (sessionService.session.project.userIsProjectOwner ||
-              sessionService.hasSiteRight(sessionService.domain.PROJECTS, sessionService.operation.ARCHIVE));
+        sessionService.hasSiteRight(sessionService.domain.PROJECTS,
+          sessionService.operation.ARCHIVE));
     };
 
     $scope.rights.showControlBar = function showControlBar() {
@@ -202,7 +204,8 @@ angular.module('lexicon',
 
     $scope.showSyncButton = function showSyncButton() {
       var isDbeView = ($location.path().indexOf('/dbe') == 0);
-      return !$scope.project.isArchived && $scope.rights.canEditUsers() && $scope.projectSettings.hasSendReceive && isDbeView;
+      return !$scope.project.isArchived && $scope.rights.canEditUsers() &&
+        $scope.projectSettings.hasSendReceive && isDbeView;
     };
 
     $scope.syncProject = function syncProject() {
