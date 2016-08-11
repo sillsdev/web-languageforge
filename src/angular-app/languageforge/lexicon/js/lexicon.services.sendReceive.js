@@ -54,9 +54,7 @@ angular.module('lexicon.services')
       this.isInProgress = function isInProgress() {
         return (_this.isSendReceiveProject &&
           angular.isDefined(_this.status) && angular.isDefined(_this.status.SRState) &&
-          _this.status.SRState != 'IDLE' && _this.status.SRState != '' &&
-          _this.status.SRState != 'HOLD' && _this.status.SRState != 'unsynced'
-        );
+          (_this.status.SRState.toLowerCase() == 'cloning' || _this.status.SRState.toLowerCase() == 'syncing'));
       };
 
       this.isSendReceiveProject = function isSendReceiveProject() {
@@ -160,18 +158,19 @@ angular.module('lexicon.services')
       this.syncNotice = function syncNotice() {
         if (angular.isUndefined(_this.status)) return;
 
-        switch (_this.status.SRState) {
-          case 'CLONING':
+        switch (_this.status.SRState.toLowerCase()) {
+          case 'cloning':
             return 'Creating initial data...';
-          case 'SYNCING':
           case 'syncing':
             return 'Syncing...';
-          case 'IDLE':
+          case 'pending':
+            return 'Pending';
+          case 'idle':
           case 'synced':
             return 'Synced';
           case 'unsynced':
             return 'Un-synced';
-          case 'HOLD':
+          case 'hold':
             return 'On hold';
           default:
             return '';
@@ -261,14 +260,16 @@ angular.module('lexicon.services')
 
       this.cloneNotice = function cloneNotice() {
         if (angular.isUndefined(_this.status)) return;
-        switch (_this.status.SRState) {
-          case 'CLONING':
+        switch (_this.status.SRState.toLowerCase()) {
+          case 'cloning':
             return 'Creating initial data...';
-          case 'SYNCING':
+          case 'syncing':
             return 'Syncing...';
-          case 'IDLE':
+          case 'pending':
+            return 'Pending';
+          case 'idle':
             return 'Synced';
-          case 'HOLD':
+          case 'hold':
             return 'On hold';
           default:
             return '';
