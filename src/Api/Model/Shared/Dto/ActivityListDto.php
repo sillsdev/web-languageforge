@@ -2,10 +2,10 @@
 
 namespace Api\Model\Shared\Dto;
 
-use Api\Model\Languageforge\Lexicon\LexEntryModel;
-use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ActivityListModel;
 use Api\Model\GlobalUnreadActivityModel;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectList_UserModel;
 use Api\Model\ProjectModel;
 use Api\Model\QuestionModel;
@@ -20,13 +20,13 @@ class ActivityListDtoEncoder extends JsonEncoder
     private $_project;
 
     /**
-     *
      * @param ProjectModel $projectModel
      */
     public function __construct($projectModel)
     {
         $this->_project = $projectModel;
     }
+
     public function encodeIdReference($key, $model)
     {
         if ($model->asString() == '') {
@@ -78,8 +78,7 @@ class ActivityListDtoEncoder extends JsonEncoder
     }
 
     /**
-     *
-     * @param Object $model - the model to encode
+     * @param ActivityListModel $model - the model to encode
      * @param ProjectModel $projectModel
      * @return array
      */
@@ -98,8 +97,7 @@ class ActivityListDtoEncoder extends JsonEncoder
 class ActivityListDto
 {
     /**
-     * @param string $projectModel
-     * @param string $questionId
+     * @param ProjectModel $projectModel
      * @return array - the DTO array
      */
     public static function getActivityForProject($projectModel)
@@ -152,8 +150,8 @@ class ActivityListDto
         $unreadItems = array_merge($unreadItems, self::getGlobalUnreadActivityForUser($userId));
         uasort($activity, array('self', 'sortActivity'));
         $dto = array(
-                'activity' => $activity,
-                'unread' => $unreadItems
+            'activity' => $activity,
+            'unread' => $unreadItems
         );
 
         return $dto;
@@ -161,7 +159,7 @@ class ActivityListDto
 
     private static function sortActivity($a, $b)
     {
-        return (new \DateTime($a['date']) < new \DateTime($b['date'])) ? 1 : -1;
+        return ((new \DateTime($a['date'])) < (new \DateTime($b['date']))) ? 1 : -1;
     }
 
     private static function prepareDto(&$dto)
