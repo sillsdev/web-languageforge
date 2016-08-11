@@ -180,6 +180,14 @@ angular.module('lexicon',
         $scope.projectSettings.hasSendReceive && isDbeView;
     };
 
+    $scope.disableSyncButton = function disableSyncButton() {
+      if ((sendReceive.status.SRState.toLowerCase() != 'idle') &&
+          (sendReceive.status.SRState.toLowerCase() != '')) {
+        return true;
+      }
+      return false;
+    };
+
     $scope.syncProject = function syncProject() {
       sendReceiveApi.receiveProject(function (result) {
         if (result.ok) {
