@@ -23,6 +23,7 @@
             <span class="muted" style="margin-right: 10px">{{syncNotice()}}</span>
             <button class="btn" data-tooltip="Send and Receive with LanguageDepot.org"
                     data-tooltip-placement="bottom"
+                    data-ng-disabled="disableSyncButton()"
                     data-ng-click="syncProject()">
                 <i class="fa fa-cloud-upload fa-lg text-info"></i>{{'Send/Receive' | translate}}
             </button>
