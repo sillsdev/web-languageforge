@@ -75,7 +75,6 @@ class LexEntryCommands
             if ($status && $status['SRState'] != 'IDLE') return false;
         }
 
-        $params = self::recursiveRemoveEmptyFieldValues($params);
         LexEntryDecoder::decode($entry, $params);
 
         $entry->write();
@@ -88,33 +87,6 @@ class LexEntryCommands
     }
 
     /**
-     * @param  array $arr
-     * @return array
-     */
-    public static function recursiveRemoveEmptyFieldValues($arr)
-    {
-        foreach ($arr as $key => $item) {
-            if ($key != 'id') {
-                if (is_string($item)) {
-                    if (trim($item) === '') {
-                        unset($arr[$key]);
-                    }
-                } elseif (is_array($item)) {
-                    $arr[$key] = self::recursiveRemoveEmptyFieldValues($item);
-                    if (count($arr[$key]) == 0) {
-                        unset($arr[$key]);
-                    }
-                } else {
-                    // don't do anything for other types (e.g. boolean)
-                }
-            }
-        }
-
-        return $arr;
-    }
-
-    /**
-     *
      * @param string $projectId
      * @param string $missingInfo - if empty, returns all entries.
      *                                 if matches one of LexConfig constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
