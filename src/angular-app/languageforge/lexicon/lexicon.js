@@ -3,12 +3,15 @@
 // Declare app level module which depends on filters, and services
 angular.module('lexicon',
   [
-    'ngRoute',
+    'ui.router',
+    'ui.bootstrap',
+    'ngAnimate',
     'ngSanitize',
-    'lexicon.edit',
     'palaso.ui.dc.rendered',
+    'palaso.ui.typeahead',
     'bellows.services',
     'bellows.filters',
+    'lexicon.editor',
     'lexicon.configuration',
     'lexicon.view.settings',
     'lexicon.import-export',
@@ -17,67 +20,38 @@ angular.module('lexicon',
     'lexicon.filters',
     'pascalprecht.translate'
   ])
-  .config(['$routeProvider', '$translateProvider', function ($routeProvider, $translateProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
+  function ($stateProvider, $urlRouterProvider, $translateProvider) {
+    $urlRouterProvider.otherwise('/editor/list');
 
-    // configure interface language filepath
+    // State machine from ui.router
+    $stateProvider
+      .state('configuration', {
+        url: '/configuration',
+        templateUrl: '/angular-app/languageforge/lexicon/views/configuration.html'
+      })
+      .state('viewSettings', {
+        url: '/viewSettings',
+        templateUrl: '/angular-app/languageforge/lexicon/views/view-settings.html'
+      })
+      .state('importExport', {
+        url: '/importExport',
+        templateUrl: '/angular-app/languageforge/lexicon/views/import-export.html'
+      })
+      .state('settings', {
+        url: '/settings',
+        templateUrl: '/angular-app/languageforge/lexicon/views/settings.html'
+      })
+      ;
+
+    // configure interface language file path
     $translateProvider.useStaticFilesLoader({
       prefix: '/angular-app/languageforge/lexicon/lang/',
       suffix: '.json'
     });
     $translateProvider.preferredLanguage('en');
-
-    // The "projects" route is a hack to redirect to the /app/projects URL.
-    // See "otherwise" route below
-    $routeProvider.when('/projects', { template: ' ', controller: function () {
-      window.location.replace('/app/projects'); } });
-
-    $routeProvider.when('/', { redirectTo: '/dbe' });
-
-    $routeProvider.when(
-      '/dbe',
-      {
-        templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
-      }
-    );
-    $routeProvider.when(
-      '/dbe/:entryId',
-      {
-        templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
-      }
-    );
-    $routeProvider.when(
-      '/dbe/:entryId/comments',
-      {
-        templateUrl: '/angular-app/languageforge/lexicon/views/edit.html'
-      }
-    );
-    $routeProvider.when(
-      '/configuration',
-      {
-        templateUrl: '/angular-app/languageforge/lexicon/views/configuration.html'
-      }
-    );
-    $routeProvider.when(
-      '/viewSettings',
-      {
-        templateUrl: '/angular-app/languageforge/lexicon/views/view-settings.html'
-      }
-    );
-    $routeProvider.when(
-      '/importExport',
-      {
-        templateUrl: '/angular-app/languageforge/lexicon/views/import-export.html'
-      }
-    );
-    $routeProvider.when(
-      '/settings',
-      {
-        templateUrl: '/angular-app/languageforge/lexicon/views/settings.html'
-      }
-    );
-    $routeProvider.otherwise({ redirectTo: '/dbe' });
   }])
-  .controller('MainCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService',
+  .controller('LexiconCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService',
     '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService',
     'lexSendReceiveApi', 'lexSendReceive',
   function ($scope, sessionService, lexConfig, lexProjectService,
@@ -137,11 +111,11 @@ angular.module('lexicon',
     changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
 
     $scope.gotoDictionary = function gotoDictionary() {
-      $location.path('/dbe');
+      $location.path('/editor/list');
     };
 
     $scope.showDictionaryButton = function showDictionaryButton() {
-      return !($location.path().indexOf('/dbe') == 0);
+      return !($location.path().indexOf('/editor') == 0);
     };
 
     function changeInterfaceLanguage(code) {
@@ -216,9 +190,9 @@ angular.module('lexicon',
       offlineMessageId = notice.push(notice.ERROR,
         'You are offline.  Some features are not available', null, true);
       $scope.online = false;
-      if (!/^dbe/.test($location.path())) {
+      if (!/^\/editor/.test($location.path())) {
         // redirect to the dbe
-        $location.path('/dbe');
+        $location.path('/editor');
         notice.push(notice.SUCCESS,
           'The dictionary editor is available offline.  Settings are not.');
       }
