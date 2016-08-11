@@ -1,20 +1,42 @@
 'use strict';
 
-angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.dc.entry',
-  'palaso.ui.comments', 'palaso.ui.showOverflow', 'ngAnimate', 'truncate', 'lexicon.services',
-  'palaso.ui.scroll', 'palaso.ui.notice'])
+angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services',
+  'ngAnimate', 'palaso.ui.dc.entry', 'palaso.ui.comments', 'palaso.ui.showOverflow', 'truncate',
+  'palaso.ui.scroll', 'palaso.ui.notice', 'lexicon.services'])
+  .config(['$stateProvider', function ($stateProvider) {
 
-  // DBE controller
-  .controller('editCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService',
-    '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'modalService',
-    'silNoticeService', '$route', '$rootScope', '$location', 'lexConfigService',
-    'lexCommentService', 'lexEditorDataService', 'lexProjectService', 'lexSendReceive',
+    // State machine from ui.router
+    $stateProvider
+      .state('editor', {
+
+        // Need quotes around Javascript keywords like 'abstract' so YUI compressor won't complain
+        'abstract': true, // jscs:ignore
+        url: '/editor',
+        templateUrl: '/angular-app/languageforge/lexicon/views/editor-abstract.html',
+        controller: 'EditorCtrl'
+      })
+      .state('editor.list', {
+        url: '/list',
+        templateUrl: '/angular-app/languageforge/lexicon/views/editor-list.html'
+      })
+      .state('editor.entry', {
+        url: '/entry/{entryId:[0-9a-z]{24}}',
+        templateUrl: '/angular-app/languageforge/lexicon/views/editor-entry.html'
+      })
+      .state('editor.comments', {
+        url: '/entry/{entryId:[0-9a-z]{24}}/comments',
+        templateUrl: '/angular-app/languageforge/lexicon/views/editor-comments.html'
+      })
+      ;
+  }])
+  .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService',
+    '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils',
+    'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
+    'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService',
   function ($scope, userService, sessionService, lexService,
-            $window, $interval, $filter, linkService, utils, modal,
-            notice, $route, $rootScope, $location, lexConfig,
-            commentService, editorService, lexProjectService, sendReceive) {
-
-    // TODO use ui-router for this instead!
+            $state, $window, $interval, $filter, linkService, utils,
+            notice, $rootScope, $location, lexConfig, commentService,
+            editorService, lexProjectService, sendReceive, modal) {
 
     var pristineEntry = {};
 
@@ -26,14 +48,14 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     $scope.configService = lexConfig;
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
-    $scope.show = { more: editorService.showMoreEntries };
+    $scope.show = {
+      more: editorService.showMoreEntries,
+      emptyFields: false
+    };
 
     // default state. State is one of 'list', 'edit', or 'comment'
     $scope.state = 'list';
-    lexProjectService.setBreadcrumbs('dbe', 'Edit');
-
-    // Note: $scope.entries is declared on the MainCtrl so that each view refresh
-    // will not cause a full dictionary reload
+    lexProjectService.setBreadcrumbs('editor/list', 'List');
 
     $scope.currentEntryIsDirty = function currentEntryIsDirty() {
       if ($scope.entryLoaded()) {
@@ -400,8 +422,9 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       }
 
       $scope.state = 'edit';
+      lexProjectService.setBreadcrumbs('editor/entry', 'Edit');
 
-      // $location.path('/dbe/' + id, false);
+      $state.go('editor.entry', { entryId: id });
     };
 
     $scope.newEntry = function newEntry() {
@@ -417,8 +440,9 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         editorService.showInitialEntries();
         scrollListToEntry(uniqueId, 'top');
         $scope.state = 'edit';
+        lexProjectService.setBreadcrumbs('editor/entry', 'Edit');
 
-        // $location.path('/dbe', false);
+        $state.go('editor.entry', { entryId: newEntry.id });
       });
     };
 
@@ -430,8 +454,9 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       $scope.saveCurrentEntry();
       setCurrentEntry();
       $scope.state = 'list';
+      lexProjectService.setBreadcrumbs('editor/list', 'List');
 
-      // $location.path('/dbe', false);
+      $state.go('editor.list');
     };
 
     $scope.makeValidModelRecursive = function makeValidModelRecursive(config, data, stopAtNodes) {
@@ -562,8 +587,6 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       });
     };
 
-    $scope.show.emptyFields = false;
-
     $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {
       var title;
       var subtitle;
@@ -578,20 +601,18 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
     function evaluateState(skipLoadingEditorData) {
       var path = $location.path();
-      var match;
 
       // TODO implement this using ui-router!!!
-
-      var goToState = function goToState() {
-        match = /dbe\/(.+)\/comments/.exec(path);
+      function goToState() {
+        var match = /editor\/entry\/(.+)\/comments/.exec(path);
         if (match) {
           editorService.showInitialEntries();
           $scope.editEntryAndScroll(match[1]);
-          $scope.showComments(match[1]);
+          $scope.showComments();
           return;
         }
 
-        match = /dbe\/(.+)$/.exec(path);
+        match = /editor\/entry\/(.+)$/.exec(path);
         if (match) {
           editorService.showInitialEntries();
           $scope.editEntryAndScroll(match[1]);
@@ -599,14 +620,14 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         }
 
         $scope.returnToList();
-      };
+      }
 
-      if (skipLoadingEditorData || !$scope.finishedLoading) {
-        goToState();
-      } else {
-        editorService.loadEditorData().then(function () {
+      if ($scope.finishedLoading) {
+        if (skipLoadingEditorData) {
           goToState();
-        });
+        } else {
+          editorService.loadEditorData().then(goToState);
+        }
       }
     }
 
@@ -621,12 +642,10 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     $scope.showComments = function showComments() {
       $scope.saveCurrentEntry(true);
       $scope.state = 'comment';
+      lexProjectService.setBreadcrumbs('editor/entry', 'Comments');
 
-      // $location.path('/dbe/' + $scope.currentEntry.id + '/comments', false);
+      $state.go('editor.comments', { entryId: $scope.currentEntry.id });
     };
-
-    // only refresh the full view if we have not yet loaded the dictionary for the first time
-    evaluateState();
 
     sendReceive.setPollProjectStatusSuccessCallback(pollProjectStatusSuccess);
     sendReceive.setSyncProjectStatusSuccessCallback(syncProjectStatusSuccess);
@@ -672,13 +691,6 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       cancelAutoSaveTimer();
       $scope.saveCurrentEntry();
     });
-
-    /*
-     * $window.onbeforeunload = function (event) { var message =
-     * $filter('translate')('You have unsaved changes.'); if (typeof event ==
-     * 'undefined') { event = window.event; } if (! $scope.currentEntryIsDirty())
-     * return; if (event) { event.returnValue = message; } return message; };
-     */
 
     // hack to pass down the parent scope down into all child directives (i.e. entry, sense, etc)
     $scope.control = $scope;
