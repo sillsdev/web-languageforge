@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Dto;
 
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\UserModel;
 
@@ -51,7 +51,7 @@ class LexProjectDto
      */
     public static function encode($projectId)
     {
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         $projectDto = LexProjectDtoEncoder::encode($project);
 
         $data = array();

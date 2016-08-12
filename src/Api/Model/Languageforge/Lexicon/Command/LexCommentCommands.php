@@ -2,10 +2,12 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\CodeGuard;
+use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\LexCommentModel;
 use Api\Model\Languageforge\Lexicon\LexCommentReply;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Mapper\JsonDecoder;
 use Api\Model\Shared\Dto\RightsHelper;
 use Api\Model\Shared\Rights\Domain;
@@ -17,7 +19,8 @@ class LexCommentCommands
     public static function updateComment($projectId, $userId, $website, $params)
     {
         CodeGuard::checkTypeAndThrow($params, 'array');
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         $rightsHelper = new RightsHelper($userId, $project, $website);
         $isNew = ($params['id'] == '');
         if ($isNew) {
@@ -37,10 +40,10 @@ class LexCommentCommands
 
         if ($isNew) {
             $comment->authorInfo->createdByUserRef->id = $userId;
-            $comment->authorInfo->createdDate = new \DateTime();
+            $comment->authorInfo->createdDate = UniversalTimestamp::now();
         }
         $comment->authorInfo->modifiedByUserRef->id = $userId;
-        $comment->authorInfo->modifiedDate = new \DateTime();
+        $comment->authorInfo->modifiedDate = UniversalTimestamp::now();
 
         return $comment->write();
     }
@@ -49,7 +52,8 @@ class LexCommentCommands
     {
         CodeGuard::checkTypeAndThrow($params, 'array');
         CodeGuard::checkEmptyAndThrow($commentId, 'commentId in updateReply()');
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         $comment = new LexCommentModel($project, $commentId);
         $rightsHelper = new RightsHelper($userId, $project, $website);
         $replyId = $params['id'];
@@ -59,7 +63,7 @@ class LexCommentCommands
                 throw new \Exception("No permission to update other people's lex comment replies!");
             }
             if ($reply->content != $params['content']) {
-                $reply->authorInfo->modifiedDate = new \DateTime();
+                $reply->authorInfo->modifiedDate = UniversalTimestamp::now();
             }
             $reply->content = $params['content'];
             $comment->setReply($replyId, $reply);
@@ -68,7 +72,9 @@ class LexCommentCommands
             $reply->content = $params['content'];
             $reply->authorInfo->createdByUserRef->id = $userId;
             $reply->authorInfo->modifiedByUserRef->id = $userId;
-            $reply->authorInfo->createdDate = new \DateTime();
+            $now = UniversalTimestamp::now();
+            $reply->authorInfo->createdDate = $now;
+            $reply->authorInfo->modifiedDate = $now;
             $comment->replies->append($reply);
             $replyId = $reply->id;
         }
@@ -79,7 +85,8 @@ class LexCommentCommands
 
     public static function plusOneComment($projectId, $userId, $commentId)
     {
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         $comment = new LexCommentModel($project, $commentId);
 
         $vote = new UserGenericVoteModel($userId, $projectId, 'lexCommentPlusOne');
@@ -98,7 +105,8 @@ class LexCommentCommands
     public static function updateCommentStatus($projectId, $commentId, $status)
     {
         if (in_array($status, array(LexCommentModel::STATUS_OPEN, LexCommentModel::STATUS_RESOLVED, LexCommentModel::STATUS_TODO))) {
-            $project = new LexiconProjectModel($projectId);
+            $project = new LexProjectModel($projectId);
+            ProjectCommands::checkIfArchivedAndThrow($project);
             $comment = new LexCommentModel($project, $commentId);
 
             $comment->status = $status;
@@ -120,7 +128,8 @@ class LexCommentCommands
     {
         // user must have DELETE_OWN privilege just to access this method
 
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         $comment = new LexCommentModel($project, $commentId);
         if ($comment->authorInfo->createdByUserRef->asString() != $userId) {
 
@@ -145,7 +154,8 @@ class LexCommentCommands
     public static function deleteReply($projectId, $userId, $website, $commentId, $replyId)
     {
         // if the userId is different from the author, throw if user does not have DELETE privilege
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         $comment = new LexCommentModel($project, $commentId);
         $reply = $comment->getReply($replyId);
         if ($reply->authorInfo->createdByUserRef->asString() != $userId) {

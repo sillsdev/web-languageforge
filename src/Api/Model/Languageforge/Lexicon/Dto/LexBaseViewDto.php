@@ -3,7 +3,7 @@
 namespace Api\Model\Languageforge\Lexicon\Dto;
 
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 use Api\Model\Mapper\JsonEncoder;
 use Api\Model\UserProfileModel;
@@ -19,7 +19,7 @@ class LexBaseViewDto
     {
         $data = array();
         $user = new UserProfileModel($userId);
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
 
         $config = JsonEncoder::encode($project->config);
         $config['inputSystems'] = JsonEncoder::encode($project->inputSystems);

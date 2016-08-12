@@ -4,15 +4,18 @@ namespace Api\Model\Languageforge\Semdomtrans;
 
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\Id;
+use Api\Model\Mapper\MapperModel;
+use Api\Model\Mapper\MongoMapper;
 use Api\Model\ProjectModel;
 
-class SemDomTransWorkingSetModel extends \Api\Model\Mapper\MapperModel
+class SemDomTransWorkingSetModel extends MapperModel
 {
     public static function mapper($databaseName)
     {
+        /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'semDomTransWorkingSets');
+            $instance = new MongoMapper($databaseName, 'semDomTransWorkingSets');
         }
 
         return $instance;
@@ -32,25 +35,15 @@ class SemDomTransWorkingSetModel extends \Api\Model\Mapper\MapperModel
         parent::__construct(self::mapper($databaseName), $id);
     }
 
-    /**
-     * @var Id
-     */
+    /** @var Id */
     public $id;
     
-    /**
-     * @var string
-     */
+    /** @var string */
     public $name;
     
-    /**
-     * @var boolean
-     */
+    /** @var boolean */
     public $isShared;
    
-    /**
-     * @var ArrayOf(String)
-     */
+    /** @var ArrayOf<String> */
     public $itemKeys;
-    
-    
- }
+}

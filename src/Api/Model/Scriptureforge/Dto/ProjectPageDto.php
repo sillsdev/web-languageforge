@@ -17,10 +17,10 @@ use Api\Model\UserModel;
 class ProjectPageDto
 {
     /**
-     *
      * @param string $projectId
      * @param string $userId
      * @returns array - the DTO array
+     * @throws ResourceNotAvailableException
      */
     public static function encode($projectId, $userId)
     {
@@ -37,6 +37,9 @@ class ProjectPageDto
         $data['project'] = array(
                 'name' => $project->projectName,
                 'id' => $projectId);
+        if ($project->isArchived) {
+            $data['project']['name'] .= " [ARCHIVED]";
+        }
         $data['texts'] = array();
         foreach ($textList->entries as $entry) {
             $text = new TextModel($project, $entry['id']);
@@ -56,7 +59,7 @@ class ProjectPageDto
                     }
                 }
                 $entry['responseCount'] = $responseCount;
-                $entry['dateCreated'] = $text->dateCreated->format(\DateTime::RFC2822);
+                $entry['dateCreated'] = $text->dateCreated->asDateTimeInterface()->format(\DateTime::RFC2822);
 
                 $data['texts'][] = $entry;
             }

@@ -20,6 +20,7 @@ class QuestionTemplateCommands
         CodeGuard::checkTypeAndThrow($questionTemplateIds, 'array');
         $count = 0;
         $projectModel = new ProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($projectModel);
         foreach ($questionTemplateIds as $questionTemplateId) {
             CodeGuard::checkTypeAndThrow($questionTemplateId, 'string');
             $questionTemplate = new QuestionTemplateModel($projectModel, $questionTemplateId);
@@ -33,6 +34,7 @@ class QuestionTemplateCommands
     public static function updateTemplate($projectId, $params)
     {
         $projectModel = new ProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($projectModel);
         $questionTemplate = new QuestionTemplateModel($projectModel);
         JsonDecoder::decode($questionTemplate, $params);
         $result = $questionTemplate->write();

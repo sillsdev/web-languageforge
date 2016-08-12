@@ -96,7 +96,7 @@
                 </div>
                 <div style="margin-top:5px">
                     <div class="entryItemView" data-ng-if="entryLoaded()">
-                        <button id="toggleUncommonFieldsBtn" ng-show="rights.canEditEntry()" class="pull-right btn btn-mini" style="margin:10px" ng-click="show.emptyFields = !show.emptyFields">{{show.emptyFields ? 'Hide Uncommon Fields' : 'Show All Fields' |translate}}</button>
+                        <button id="toggleUncommonFieldsBtn" class="pull-right btn btn-mini" style="margin:10px" ng-click="show.emptyFields = !show.emptyFields">{{show.emptyFields ? 'Hide Uncommon Fields' : 'Show All Fields' |translate}}</button>
                         <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
                     </div>
                 </div>

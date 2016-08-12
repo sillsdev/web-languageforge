@@ -2,6 +2,7 @@
 
 namespace Api\Model\Mapper;
 
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\CodeGuard;
 
 class JsonDecoder
@@ -56,7 +57,9 @@ class JsonDecoder
             } elseif (is_a($value, 'Api\Model\Mapper\MapOf')) {
                 $this->decodeMapOf($property, $model->{$property}, $values[$property]);
             } elseif (is_a($value, 'DateTime')) {
-                $this->decodeDateTime($property, $model->{$property}, $values[$property]);
+                $this->decodeDateTime($model->{$property}, $values[$property]);
+            } elseif (is_a($value, 'Litipk\Jiffy\UniversalTimestamp')) {
+                $this->decodeUniversalTimestamp($model->{$property}, $values[$property]);
             } elseif (is_a($value, 'Api\Model\Mapper\ReferenceList')) {
                 $this->decodeReferenceList($model->{$property}, $values[$property]);
             } elseif (is_object($value)) {
@@ -97,7 +100,9 @@ class JsonDecoder
      * @param array $values
      * @param string $id
      */
-    public function decodeId($key, $model, $values, $id)
+    public function decodeId($key, $model, $values,
+        /** @noinspection PhpUnusedParameterInspection (used by inherited function) */
+        $id)
     {
         $model->$key = new Id($values[$key]);
     }
@@ -117,7 +122,7 @@ class JsonDecoder
         $propertiesToKeep = array();
 
         // check if array item class has any private, read-only or recursive properties
-        if (get_class($this) == 'Api\Model\Mapper\JsonDecoder' && $model->hasGenerator()) {
+        if (get_class($this) != 'Api\Model\Mapper\MongoDecoder' && $model->hasGenerator()) {
             $arrayItem = $model->generate();
             $propertiesToKeep = $this->getPrivateAndReadOnlyProperties($arrayItem);
             $propertiesToKeep = $this->getRecursiveProperties($arrayItem, $propertiesToKeep);
@@ -160,7 +165,7 @@ class JsonDecoder
         $propertiesToKeep = array();
 
         // check if array item class has any private, read-only or recursive properties
-        if (get_class($this) == 'Api\Model\Mapper\JsonDecoder' && $model->hasGenerator()) {
+        if (get_class($this) != 'Api\Model\Mapper\MongoDecoder' && $model->hasGenerator()) {
             foreach ($data as $itemKey => $item) {
                 $mapItem = $model->generate($item);
                 $propertiesToKeep = $this->getPrivateAndReadOnlyProperties($mapItem, $propertiesToKeep);
@@ -211,13 +216,23 @@ class JsonDecoder
     }
 
     /**
-     * @param string $key
-     * @param object $model
+     * @param \DateTime $model
      * @param string $data
      */
-    public function decodeDateTime($key, &$model, $data)
+    public function decodeDateTime(&$model, $data)
     {
         $model = new \DateTime($data);
+    }
+
+    /**
+     * @param UniversalTimestamp $model
+     * @param string $data
+     */
+    public function decodeUniversalTimestamp(&$model, $data)
+    {
+        if ($data !== null) {
+            $model = UniversalTimestamp::fromWhatever($data);
+        }
     }
 
     /**
@@ -227,7 +242,7 @@ class JsonDecoder
      */
     private function getPrivateAndReadOnlyProperties($model, $properties = array())
     {
-        if (get_class($this) == 'Api\Model\Mapper\JsonDecoder') {
+        if (get_class($this) != 'Api\Model\Mapper\MongoDecoder') {
             if (method_exists($model, 'getPrivateProperties')) {
                 $properties = array_merge($properties, (array)$model->getPrivateProperties());
             }
@@ -246,7 +261,7 @@ class JsonDecoder
      */
     private function getRecursiveProperties($model, $properties = array())
     {
-        if (get_class($this) == 'Api\Model\Mapper\JsonDecoder') {
+        if (get_class($this) != 'Api\Model\Mapper\MongoDecoder') {
             foreach ($this->getProperties($model) as $property => $value) {
                 if ($value === false) {
                     $value = $model->{$property}; // To force the lazy evaluation to create the property.
