@@ -51,6 +51,7 @@ class TextCommands
     public static function updateText($projectId, $object)
     {
         $projectModel = new ProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($projectModel);
         $textModel = new TextModel($projectModel);
         $isNewText = ($object['id'] == '');
         if (!$isNewText) {

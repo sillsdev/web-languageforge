@@ -34,6 +34,18 @@ class Guid
     }
 
     /**
+     * @param $guid
+     * @return string $guid if valid, otherwise create one
+     */
+    public static function makeValid($guid)
+    {
+        if (!$guid || !self::isValid($guid)) {
+            $guid = self::create();
+        }
+        return $guid;
+    }
+
+    /**
      * @param string $idContainingGuid
      * @return string guid in $idContainingGuid if found, empty string otherwise
      */

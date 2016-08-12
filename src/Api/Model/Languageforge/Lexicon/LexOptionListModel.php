@@ -2,8 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
-use Api\Model\Languageforge\Lexicon\Config\LexiconOptionListItem;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\Id;
 use Api\Model\Mapper\MapperModel;
@@ -27,7 +26,7 @@ class LexOptionListModel extends MapperModel
     public $code;
 
     /**
-     * @var ArrayOf<LexiconOptionListItem>
+     * @var ArrayOf<LexOptionListItem>
      */
     public $items;
 
@@ -64,7 +63,7 @@ class LexOptionListModel extends MapperModel
     public function __construct($projectModel, $id = '')
     {
         $this->items = new ArrayOf(function () {
-            return new LexiconOptionListItem();
+            return new LexOptionListItem();
         });
         $this->id = new Id();
         $this->canDelete = true;
@@ -73,7 +72,7 @@ class LexOptionListModel extends MapperModel
     }
 
     /**
-     * @param LexiconProjectModel $projectModel
+     * @param LexProjectModel $projectModel
      * @param string $fieldName
      * @param string $jsonFilePath
      * @return bool true on success, false otherwise
@@ -82,9 +81,9 @@ class LexOptionListModel extends MapperModel
     public static function CreateFromJson($projectModel, $fieldName, $jsonFilePath)
     {
         $optionList = new LexOptionListModel($projectModel);
-        $listCode = LexiconConfigObj::flexOptionlistCode($fieldName);
+        $listCode = LexConfig::flexOptionlistCode($fieldName);
         if (!$optionList->readByProperty('code', $listCode)) {
-            $optionList->name = LexiconConfigObj::flexOptionlistName($listCode);
+            $optionList->name = LexConfig::flexOptionlistName($listCode);
             $optionList->code = $listCode;
             $optionList->canDelete = false;
             $optionList->readFromJson($jsonFilePath);
@@ -109,7 +108,7 @@ class LexOptionListModel extends MapperModel
 
         $this->items->exchangeArray(array());
         foreach ($json as $item) {
-            $optionListItem = new LexiconOptionListItem($item['value'], $item['key']);
+            $optionListItem = new LexOptionListItem($item['value'], $item['key']);
             if (array_key_exists('abbreviation', $item)) {
                 $optionListItem->abbreviation = $item['abbreviation'];
             }

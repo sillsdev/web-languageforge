@@ -107,9 +107,16 @@ angular.module('lexicon.services')
             }
 
             var isInitialCheck = (_this.status.SRState == '');
-            notice.cancelProgressBar();
-            notice.setLoading('Syncing with LanguageDepot.org...');
             _this.status = result.data;
+
+            notice.setLoading('Syncing with LanguageDepot.org...');
+
+            if (_this.status.PercentComplete > 0) {
+              notice.setPercentComplete(_this.status.PercentComplete);
+            } else {
+              notice.cancelProgressBar();
+            }
+
             if (!_this.isInProgress()) {
               _this.startPollStatusTimer();
               notice.cancelLoading();

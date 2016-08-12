@@ -2,12 +2,12 @@
 
 use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
-use Api\Model\Languageforge\Lexicon\Example;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
+use Api\Model\Languageforge\Lexicon\LexExample;
 use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
-use Api\Model\Languageforge\Lexicon\Picture;
-use Api\Model\Languageforge\Lexicon\Sense;
+use Api\Model\Languageforge\Lexicon\LexPicture;
+use Api\Model\Languageforge\Lexicon\LexSense;
 use Api\Model\Mapper\JsonEncoder;
 
 require_once __DIR__ . '/../../../TestConfig.php';
@@ -30,11 +30,11 @@ class TestLexEntryCommands extends UnitTestCase
         $entry = new LexEntryModel($project);
         $entry->lexeme->form('th', 'SomeEntry');
 
-        $sense = new Sense();
+        $sense = new LexSense();
         $sense->definition->form('en', 'red fruit');
         $sense->partOfSpeech->value = 'noun';
 
-        $example = new Example();
+        $example = new LexExample();
         $example->sentence->form('th', 'example1');
         $example->translation->form('en', 'trans1');
 
@@ -96,11 +96,11 @@ class TestLexEntryCommands extends UnitTestCase
         $entry = new LexEntryModel($project);
         $entry->lexeme->form('th', 'apple');
 
-        $sense = new Sense();
+        $sense = new LexSense();
         $sense->definition->form('en', 'red fruit');
         $sense->partOfSpeech->value = 'noun';
 
-        $example = new Example();
+        $example = new LexExample();
         $example->sentence->form('th', 'example1');
         $example->translation->form('en', 'trans1');
 
@@ -131,15 +131,15 @@ class TestLexEntryCommands extends UnitTestCase
         $userId = $e->createUser('john', 'john', 'john');
 
         $exampleGuid = Guid::create();
-        $example = new Example($exampleGuid, $exampleGuid);
+        $example = new LexExample($exampleGuid, $exampleGuid);
         $example->sentence->form('th', 'example1');
         $example->translation->form('en', 'trans1');
 
         $pictureGuid = Guid::create();
-        $picture = new Picture('someFilename', $pictureGuid);
+        $picture = new LexPicture('someFilename', $pictureGuid);
 
         $senseGuid = Guid::create();
-        $sense = new Sense($senseGuid, $senseGuid);
+        $sense = new LexSense($senseGuid, $senseGuid);
         $sense->definition->form('en', 'red fruit');
         $sense->gloss->form('en', 'rose fruit');
         $sense->partOfSpeech->value = 'noun';
@@ -170,6 +170,28 @@ class TestLexEntryCommands extends UnitTestCase
         $this->assertFalse(array_key_exists('liftId', $newEntry['senses'][0]['examples'][0]), 'example liftId should be private');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['sentence']['th']['value'], 'example1');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
+    }
+
+    public function testUpdateEntry_ClearedData_DataIsCleared() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $params['lexeme']['th']['value'] = '';
+
+        $userId = $e->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = LexEntryCommands::readEntry($projectId, $entryId);
+        $this->assertEqual($updatedEntry['lexeme']['th']['value'], '');
     }
 /* Ignore test for send receive v1.1 since dirtySR counter is not being incremented on edit. IJH 2015-02
     public function testUpdateEntry_ProjectHasSendReceive_EntryHasGuidAndDirtySRIncremented()
@@ -217,7 +239,7 @@ class TestLexEntryCommands extends UnitTestCase
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
-        $sense = new Sense();
+        $sense = new LexSense();
         $sense->definition->form('en', 'apple');
 
         for ($i = 0; $i < 10; $i++) {
@@ -240,10 +262,10 @@ class TestLexEntryCommands extends UnitTestCase
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
-        $sense = new Sense();
+        $sense = new LexSense();
         $sense->definition->form('en', 'apple');
 
-        $senseNoDef = new Sense();
+        $senseNoDef = new LexSense();
         $senseNoDef->definition->form('en', '');
 
         for ($i = 0; $i < 10; $i++) {
@@ -259,7 +281,7 @@ class TestLexEntryCommands extends UnitTestCase
         $entry->senses[] = $senseNoDef;
         $entry->write();
 
-        $result = LexEntryCommands::listEntries($projectId, LexiconConfigObj::DEFINITION);
+        $result = LexEntryCommands::listEntries($projectId, LexConfig::DEFINITION);
         $this->assertEqual($result->count, 6);
     }
 
@@ -271,11 +293,11 @@ class TestLexEntryCommands extends UnitTestCase
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
-        $sense = new Sense();
+        $sense = new LexSense();
         $sense->definition->form('en', 'apple');
         $sense->partOfSpeech->value = 'noun';
 
-        $senseNoPos = new Sense();
+        $senseNoPos = new LexSense();
         $senseNoPos->definition->form('en', 'orange');
 
         for ($i = 0; $i < 10; $i++) {
@@ -288,7 +310,7 @@ class TestLexEntryCommands extends UnitTestCase
             $entry->write();
         }
 
-        $result = LexEntryCommands::listEntries($projectId, LexiconConfigObj::POS);
+        $result = LexEntryCommands::listEntries($projectId, LexConfig::POS);
         $this->assertEqual($result->count, 5);
 
     }
@@ -304,10 +326,10 @@ class TestLexEntryCommands extends UnitTestCase
         for ($i = 0; $i < 10; $i++) {
             $entry = new LexEntryModel($project);
             $entry->lexeme->form('th', 'Apfel' . $i);
-            $sense = new Sense();
+            $sense = new LexSense();
             $sense->definition->form('en', 'apple');
             $sense->partOfSpeech->value = 'noun';
-            $example = new Example();
+            $example = new LexExample();
             if ($i % 2 == 0) {
                 $example->sentence->form('th', 'Ich esse Apfeln oft');
             }
@@ -319,10 +341,10 @@ class TestLexEntryCommands extends UnitTestCase
             $entry->write();
         }
 
-        $result = LexEntryCommands::listEntries($projectId, LexiconConfigObj::EXAMPLE_SENTENCE);
+        $result = LexEntryCommands::listEntries($projectId, LexConfig::EXAMPLE_SENTENCE);
         $this->assertEqual($result->count, 5);
 
-        $result = LexEntryCommands::listEntries($projectId, LexiconConfigObj::EXAMPLE_TRANSLATION);
+        $result = LexEntryCommands::listEntries($projectId, LexConfig::EXAMPLE_TRANSLATION);
         $this->assertEqual($result->count, 6);
     }
 
@@ -338,11 +360,11 @@ class TestLexEntryCommands extends UnitTestCase
             $entry = new LexEntryModel($project);
             $entry->lexeme->form('th', 'Apfel' . $i);
             if ($i % 2 == 0) {
-                $sense = new Sense();
+                $sense = new LexSense();
                 $entry->senses[] = $sense;
             }
             if ($i % 3 == 0) {
-                $sense = new Sense();
+                $sense = new LexSense();
                 $sense->definition->form('en', 'apple');
                 $sense->partOfSpeech->value = 'noun';
                 $entry->senses[] = $sense;
@@ -355,40 +377,5 @@ class TestLexEntryCommands extends UnitTestCase
         $this->assertEqual($result->entries[0]['lexeme']['th']['value'], 'Apfel0');
         $this->assertTrue(!array_key_exists('definition', $result->entries[0]['senses'][0]));
         $this->assertEqual($result->entries[3]['senses'][0]['definition']['en']['value'], 'apple');
-    }
-
-    public function testRecursiveRemoveEmptyFieldValues_3EmptyItemsAnd3NonEmptyItems_NonEmptyItemsRemain()
-    {
-        $params = array(
-            'customFieldsEmpty' => array(
-                'customField_entry_Cust_Single_Line_All' => array(
-                    'en' => array('value' => ''),
-                    'fr' => array('value' => '')
-                )
-            ),
-            'literalMeaningEmpty' => array(
-                'en' => array('value' => '')
-            ),
-            'locationEmpty' => array('value' => ''),
-            'customFields' => array(
-                'customField_entry_Cust_Single_Line_All' => array(
-                    'en' => array('value' => 'english'),
-                    'fr' => array('value' => 'french')
-                )
-            ),
-            'literalMeaning' => array(
-                'en' => array('value' => 'literal')
-            ),
-            'location' => array('value' => 'locale')
-        );
-        $this->assertEqual(count($params), 6);
-
-        $params = LexEntryCommands::recursiveRemoveEmptyFieldValues($params);
-
-        $this->assertEqual(count($params), 3);
-        $this->assertEqual($params['customFields']['customField_entry_Cust_Single_Line_All']['en']['value'], 'english');
-        $this->assertEqual($params['customFields']['customField_entry_Cust_Single_Line_All']['fr']['value'], 'french');
-        $this->assertEqual($params['literalMeaning']['en']['value'], 'literal');
-        $this->assertEqual($params['location']['value'], 'locale');
     }
 }

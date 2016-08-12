@@ -88,30 +88,36 @@ angular.module('sfchecks.question', ['bellows.services', 'sfchecks.services', 'n
 
     // Rights: Answers
     $scope.rightsEditResponse = function(userId) {
+      if (ss.session.project.isArchived) return false;
       var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT) || ((userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
       return right;
     };
 
     $scope.rightsDeleteResponse = function(userId) {
+      if (ss.session.project.isArchived) return false;
       var right = ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE) || ((userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
       return right;
     };
 
     // Rights: Question
     $scope.rightsCloseQuestion = function(userId) {
+      if (ss.session.project.isArchived) return false;
       return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
     };
 
     $scope.rightsEditQuestion = function(userId) {
+      if (ss.session.project.isArchived) return false;
       return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
     };
 
     // Rights: Tags
     $scope.rightsCreateTag = function() {
+      if (ss.session.project.isArchived) return false;
       return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.CREATE);
     };
 
     $scope.rightsDeleteTag = function() {
+      if (ss.session.project.isArchived) return false;
       return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.DELETE);
     };
 

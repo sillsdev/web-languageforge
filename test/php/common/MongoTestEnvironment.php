@@ -1,7 +1,7 @@
 <?php
 
 use Api\Library\Shared\Website;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Languageforge\SemDomTransProjectModel;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
@@ -315,7 +315,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
 
     /**
      *
-     * @var LexiconProjectModel
+     * @var LexProjectModel
      */
     public $project;
 
@@ -323,11 +323,11 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
      * @param string $name
      * @param string $code
      * @param string $appName - included only to make the signature the same as the parent
-     * @return LexiconProjectModel
+     * @return LexProjectModel
      */
     public function createProject($name, $code , $appName = '')
     {
-        $projectModel = new LexiconProjectModel();
+        $projectModel = new LexProjectModel();
         $projectModel->projectName = $name;
         $projectModel->projectCode = $code;
         $projectModel->siteName = $this->website->domain;

@@ -2,6 +2,7 @@
 
 namespace Api\Model\Command;
 
+use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\Website;
 use Api\Model\EmailSettings;
@@ -13,6 +14,7 @@ use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectListModel;
 use Api\Model\ProjectModel;
 use Api\Model\ProjectSettingsModel;
+use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Sms\SmsSettings;
 use Api\Model\UserModel;
 use Palaso\Utilities\CodeGuard;
@@ -88,14 +90,28 @@ class ProjectCommands
     }
 
     /**
-     * @param $projectId
-     * @return int Total number of projects archived.
+     * @param string $projectId
+     * @param string $userId
+     * @return string projectId of the project archived.
      * @throws UserUnauthorizedException
      */
-    public static function archiveProject($projectId)
+    public static function archiveProject($projectId, $userId)
     {
         CodeGuard::checkTypeAndThrow($projectId, 'string');
+        CodeGuard::checkTypeAndThrow($userId, 'string');
+
         $project = new ProjectModel($projectId);
+        $user = new UserModel($userId);
+        if ($userId != $project->ownerRef->asString() && $user->role != SystemRoles::SYSTEM_ADMIN) {
+            throw new UserUnauthorizedException(
+                "This $project->appName project '$project->projectName'\n" .
+                "can only be archived by project owner or\n " .
+                "a system administrator\n");
+        }
+
+        $user->lastUsedProjectId = '';
+        $user->write();
+
         $project->isArchived = true;
         return $project->write();
     }
@@ -129,6 +145,23 @@ class ProjectCommands
         $list->read();
 
         return $list;
+    }
+
+    /**
+     * If the project is archived, throws an exception because the project should not be modified
+     * @param ProjectModel $project
+     * @throws ResourceNotAvailableException
+     */
+    public static function checkIfArchivedAndThrow($project) {
+        CodeGuard::checkNullAndThrow($project, 'project');
+        CodeGuard::checkTypeAndThrow($project, '\Api\Model\ProjectModel');
+        if ($project->isArchived) {
+            throw new ResourceNotAvailableException(
+                "This $project->appName project '$project->projectName'\n" .
+                "is archived and cannot be modified. Please\n" .
+                "contact a system administrator to re-publish\n" .
+                "this project if you want to make further updates.");
+        }
     }
 
     /**
@@ -256,11 +289,12 @@ class ProjectCommands
 
     public static function updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray)
     {
+        $projectSettings = new ProjectSettingsModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($projectSettings);
         $smsSettings = new SmsSettings();
         $emailSettings = new EmailSettings();
         JsonDecoder::decode($smsSettings, $smsSettingsArray);
         JsonDecoder::decode($emailSettings, $emailSettingsArray);
-        $projectSettings = new ProjectSettingsModel($projectId);
         $projectSettings->smsSettings = $smsSettings;
         $projectSettings->emailSettings = $emailSettings;
         $result = $projectSettings->write();

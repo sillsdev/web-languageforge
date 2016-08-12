@@ -10,6 +10,7 @@ use Api\Model\Shared\Rights\Domain;
 use Api\Model\FeaturedProjectListModel;
 use Api\Model\UserModel;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Response;
 
 require_once APPPATH."version.php";
 
@@ -76,7 +77,7 @@ class Base
     protected $_projectId;
 
     // all child classes should use this method to render their pages
-    protected function renderPage(Application $app, $viewName, $render = true) {
+    protected function renderPage(Application $app, $viewName) {
         if ($viewName == 'favicon.ico') {
             $viewName = 'container';
         }
@@ -118,6 +119,8 @@ class Base
         } catch (\Twig_Error_Loader $e) {
             $app->abort(404, "Page not found: $viewName.twig");
         }
+
+        return new Response('Should not get here', 500);
     }
 
     protected function populateHeaderMenuViewdata() {

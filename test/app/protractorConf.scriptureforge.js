@@ -7,7 +7,7 @@ specs.push('scriptureforge/**/e2e/*.spec.js');
 exports.config = {
   // The address of a running selenium server.
   seleniumAddress: 'http://default.local:4444/wd/hub',
-  baseUrl: 'https://scriptureforge.local',
+  baseUrl: 'http://scriptureforge.local',
 
   // The timeout in milliseconds for each script run on the browser. This should
   // be longer than the maximum time your application needs to stabilize between

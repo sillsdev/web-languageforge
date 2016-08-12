@@ -3,29 +3,30 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
+use Api\Model\Mapper\MapperListModel;
+use Api\Model\Mapper\MongoMapper;
 use Api\Model\ProjectModel;
+use Api\Model\Mapper\ArrayOf;
+use MongoDB\BSON\UTCDatetime;
 
-class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
+class LexEntryListModel extends MapperListModel
 {
-    /**
-     *
-     * @var LexConfiguration
-     */
+    /** @var LexConfiguration */
     private $_config;
 
     public static function mapper($databaseName)
     {
+        /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new \Api\Model\Mapper\MongoMapper($databaseName, 'lexicon');
+            $instance = new MongoMapper($databaseName, 'lexicon');
         }
 
         return $instance;
     }
 
     /**
-     *
      * @param ProjectModel $projectModel
      * @param int $newerThanTimestamp
      * @param int $limit
@@ -33,11 +34,14 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
      */
     public function __construct($projectModel, $newerThanTimestamp = null, $limit = 0, $skip = 0)
     {
-        $lexProject = new LexiconProjectModel($projectModel->id->asString());
+        // for use with readAsModels()
+        $this->entries = new ArrayOf(function () use ($projectModel) { return new LexEntryModel($projectModel); });
+        
+        $lexProject = new LexProjectModel($projectModel->id->asString());
         $this->_config = $lexProject->config;
 
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new \MongoDB\BSON\UTCDatetime(1000*$newerThanTimestamp);
+            $startDate = new UTCDatetime(1000*$newerThanTimestamp);
             parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate), 'isDeleted' => false), array(), array(), $limit, $skip);
         } else {
             parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false), array(), array(), $limit, $skip);
@@ -58,7 +62,7 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
                 } else {
                     foreach ($entry['senses'] as $sense) {
                         switch ($missingInfo) {
-                            case LexiconConfigObj::DEFINITION:
+                            case LexConfig::DEFINITION:
                                 if (!array_key_exists('definition', $sense) || count($sense['definition']) == 0) {
                                     $foundMissingInfo = true;
                                 } else {
@@ -70,13 +74,13 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
                                 }
                                 break;
 
-                            case LexiconConfigObj::POS:
+                            case LexConfig::POS:
                                 if (!array_key_exists('partOfSpeech', $sense) || !array_key_exists('value', $sense['partOfSpeech']) || $sense['partOfSpeech']['value'] == '') {
                                     $foundMissingInfo = true;
                                 }
                                 break;
 
-                            case LexiconConfigObj::EXAMPLE_SENTENCE:
+                            case LexConfig::EXAMPLE_SENTENCE:
                                 if (!array_key_exists('examples', $sense) || count($sense['examples']) == 0) {
                                     $foundMissingInfo = true;
                                 } else {
@@ -94,7 +98,7 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
                                 }
                                 break;
 
-                            case LexiconConfigObj::EXAMPLE_TRANSLATION:
+                            case LexConfig::EXAMPLE_TRANSLATION:
                                 if (!array_key_exists('examples', $sense) || count($sense['examples']) == 0) {
                                     $foundMissingInfo = true;
                                 } else {
@@ -132,7 +136,7 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
     /**
      * If the $value of $propertyName exists in entries return the entry
      * @param string $propertyName
-     * @param unknown $value
+     * @param mixed $value
      * @return array|boolean $entry or false if not found
      */
     public function searchEntriesFor($propertyName, $value)
@@ -145,5 +149,4 @@ class LexEntryListModel extends \Api\Model\Mapper\MapperListModel
 
         return false;
     }
-
 }

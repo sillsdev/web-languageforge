@@ -4,8 +4,8 @@ namespace Api\Library\Shared\Script\Migration;
     use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
     use Api\Model\Languageforge\Lexicon\LexEntryListModel;
     use Api\Model\Languageforge\Lexicon\LexEntryModel;
-    use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-    use Api\Model\Languageforge\Lexicon\Sense;
+    use Api\Model\Languageforge\Lexicon\LexProjectModel;
+    use Api\Model\Languageforge\Lexicon\LexSense;
     use Api\Model\ProjectListModel;
     use Api\Model\ProjectModel;
 
@@ -28,7 +28,7 @@ class FixSemanticDomainKey
             $entryModified = false;
             if ($entry->hasSenses()) {
 
-                /** @var Sense $sense */
+                /** @var LexSense $sense */
                 foreach ($entry->senses as $sense) {
                     $this->migrateSemDomKey($sense, $project->projectName, $message, $entryModified);
                 }
@@ -53,7 +53,7 @@ class FixSemanticDomainKey
 
     /**
      * Migrate the semantic domain keys within a sense
-     * @param Sense $sense
+     * @param LexSense $sense
      * @param string $message
      * @param bool $entryModified
      */
@@ -142,6 +142,6 @@ class FixSemanticDomainKey
      * Has a flag to store in Mongo about whether the semantic domain keys have been migrated
      * @package Api\Library\Shared\Script\Migration
      */
-class ProjectModelForUseWithSemanticDomainMigration extends LexiconProjectModel {
+class ProjectModelForUseWithSemanticDomainMigration extends LexProjectModel {
     public $hasMigratedSemanticDomainKeys;
 }

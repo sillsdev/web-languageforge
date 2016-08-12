@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f9f699e8bdabc9b41958443a3b75a54c",
-    "content-hash": "2bc76f63dc9d7d9ebb0c973587e949dc",
+    "hash": "c2e49f066d97e57d21452dc3a3d8beda",
+    "content-hash": "448decd0d913f05860133204f53cbcb0",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -207,6 +207,51 @@
                 "password"
             ],
             "time": "2014-11-20 16:49:30"
+        },
+        {
+            "name": "litipk/php-jiffy",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Litipk/php-jiffy.git",
+                "reference": "6ba3bcdf488f95351a36ecef9d06e21f366da5a3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Litipk/php-jiffy/zipball/6ba3bcdf488f95351a36ecef9d06e21f366da5a3",
+                "reference": "6ba3bcdf488f95351a36ecef9d06e21f366da5a3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "ext-mongo": "*",
+                "ext-mongodb": "*",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Litipk\\Jiffy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andrés Correa Casablanca",
+                    "email": "castarco@litipk.com"
+                }
+            ],
+            "description": "A library to handle precise timestamps the easy way.",
+            "keywords": [
+                "time",
+                "timestamp"
+            ],
+            "time": "2016-06-06 21:45:43"
         },
         {
             "name": "mongodb/mongodb",
@@ -1283,7 +1328,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/d7d9be918f12e809d64ff6dac7411801b1a98e58",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/f83a9f8db1cc29f42edb77c7c77382bf9769953a",
                 "reference": "f83a9f8db1cc29f42edb77c7c77382bf9769953a",
                 "shasum": ""
             },

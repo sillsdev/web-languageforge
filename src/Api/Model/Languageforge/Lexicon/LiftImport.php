@@ -2,41 +2,25 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
+use Api\Model\Languageforge\Lexicon\Config\LexConfig;
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\FileUtilities;
-use Api\Model\Languageforge\Lexicon\Config\LexiconConfigObj;
-use Api\Model\Languageforge\Lexicon\Config\LexiconOptionListItem;
 
 class LiftImport
 {
-
-    /**
-     *
-     * @var LiftImportStats
-     */
+    /** @var LiftImportStats */
     public $stats;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $liftFilePath;
 
-    /**
-     *
-     * @var ImportErrorReport
-     */
+    /** @var ImportErrorReport */
     private $report;
 
-    /**
-     *
-     * @var LiftImportNodeError
-     */
+    /** @var LiftImportNodeError */
     private $liftImportNodeError;
 
-    /**
-     *
-     * @var LiftDecoder
-     */
+    /** @var LiftDecoder */
     private $liftDecoder;
 
     public static function get()
@@ -50,11 +34,11 @@ class LiftImport
 
     /**
      * @param string $liftFilePath
-     * @param LexiconProjectModel $projectModel
-     * @param string $mergeRule
+     * @param LexProjectModel $projectModel
+     * @param string $mergeRule (use LiftMergeRule const)
      * @param boolean $skipSameModTime
      * @param boolean $deleteMatchingEntry
-     * @return \Api\Model\Languageforge\Lexicon\LiftImport
+     * @return LiftImport
      */
     public function merge($liftFilePath, $projectModel, $mergeRule = LiftMergeRule::CREATE_DUPLICATES, $skipSameModTime = true, $deleteMatchingEntry = false)
     {
@@ -64,6 +48,7 @@ class LiftImport
         $entryList->read();
         $hasExistingData = $entryList->count != 0;
 
+        $savedInputSystems = array();
         if (! $hasExistingData) {
             $projectModel->config->clearAllInputSystems();
 
@@ -80,8 +65,8 @@ class LiftImport
         $this->report = new ImportErrorReport();
         $this->liftImportNodeError = new LiftImportNodeError(LiftImportNodeError::FILE, basename($liftFilePath));
         $liftRangeDecoder = new LiftRangeDecoder($projectModel);
-        $liftRangeFiles = array(); // Keys: filenames. Values: parsed files.
-        $liftRanges = array(); // Keys: @id attributes of <range> elements. Values: parsed <range> elements.
+        $liftRangeFiles = array(); // Key: filenames. Value: parsed files.
+        $liftRanges = array(); // Key: @id attributes of <range> elements. Value: parsed <range> elements.
         $liftFolderPath = dirname($liftFilePath);
 
         while ($reader->read()) {
@@ -93,6 +78,7 @@ class LiftImport
                 $rangeHref = $node->attributes->getNamedItem('href')->textContent;
                 $hrefPath = parse_url($rangeHref, PHP_URL_PATH);
                 $rangeFilename = basename($hrefPath);
+                $rangeFilePath = null;
                 $rangeImportNodeError = new LiftRangeImportNodeError(LiftRangeImportNodeError::FILE, $rangeFilename);
                 if (! array_key_exists($rangeFilename, $liftRangeFiles)) {
                     // Haven't parsed the .lift-ranges file yet. We'll assume it is alongside the .lift file.
@@ -141,10 +127,11 @@ class LiftImport
                         $sxeNode = self::domNode_to_sxeNode($node);
                         $LiftFieldTag = (string) $sxeNode['tag'];
                         $liftField = array();
+                        /** @var \SimpleXMLElement $element */
                         foreach ($sxeNode as $element) {
                             if ($element->getName() === 'form') {
                                 $inputSystemTag = (string) $element['lang'];
-                                $liftField[$inputSystemTag] = (string) $element->text;
+                                $liftField[$inputSystemTag] = (string) $element->{'text'};
                             }
                         }
                         $this->liftDecoder->liftFields[$LiftFieldTag] = $liftField;
@@ -177,14 +164,14 @@ class LiftImport
                                 $this->readEntryWithErrorReport($sxeNode, $entry, $mergeRule);
                                 $entry->write();
                                 $this->stats->entriesMerged++;
-                            } elseif (isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
+                            } elseif (isset($sxeNode->attributes()->{'dateDeleted'}) && $deleteMatchingEntry) {
                                 LexEntryModel::remove($projectModel, $existingEntry['id']);
                                 $this->stats->entriesDeleted++;
                             }
                         }
                     } else {
                         // skip because same mod time and skip enabled
-                        if (! isset($sxeNode->{'lexical-unit'}) && isset($sxeNode->attributes()->dateDeleted) && $deleteMatchingEntry) {
+                        if (! isset($sxeNode->{'lexical-unit'}) && isset($sxeNode->attributes()->{'dateDeleted'}) && $deleteMatchingEntry) {
                             LexEntryModel::remove($projectModel, $existingEntry['id']);
                             $this->stats->entriesDeleted++;
                         }
@@ -212,7 +199,7 @@ class LiftImport
             foreach ($liftRanges as $liftRangeCode => $liftRange) {
                 // add everything except semantic domains
                 if (strpos($liftRangeCode, 'semantic-domain') === false) {
-                    self::rangeToOptionList($projectModel, $liftRangeCode, LexiconConfigObj::flexOptionlistName($liftRangeCode), $liftRange);
+                    self::rangeToOptionList($projectModel, $liftRangeCode, LexConfig::flexOptionlistName($liftRangeCode), $liftRange);
                 }
             }
         }
@@ -227,41 +214,42 @@ class LiftImport
 
     /**
      * @param string $importDateModified
-     * @param DateTime $entryDateModified
+     * @param UniversalTimestamp $entryDateModified
      * @return boolean
      */
     private static function differentModTime($importDateModified, $entryDateModified)
     {
-        $dateModified = new \DateTime($importDateModified);
+        $dateModified = UniversalTimestamp::fromWhatever($importDateModified);
 
-        return ($dateModified->getTimestamp() != $entryDateModified->getTimestamp());
+        return ($dateModified->asMilliseconds() != $entryDateModified->asMilliseconds());
     }
 
     /**
      * Read LIFT entry with error reporting
      *
-     * @param SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement $sxeNode
      * @param LexEntryModel $entry
-     * @param LiftMergeRule $mergeRule
+     * @param string $mergeRule (use LiftMergeRule const)
+     * @throws \Exception
      */
     private function readEntryWithErrorReport($sxeNode, $entry, $mergeRule = LiftMergeRule::CREATE_DUPLICATES) {
         try {
             $this->liftDecoder->readEntry($sxeNode, $entry, $mergeRule);
             $this->liftImportNodeError->addSubnodeError($this->liftDecoder->getImportNodeError());
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->liftImportNodeError->addSubnodeError($this->liftDecoder->getImportNodeError());
             $this->report->nodeErrors[] = $this->liftImportNodeError;
             if ($this->report->hasError()) {
                 error_log($this->report->toString());
             }
-            throw new \Exception($e);
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
     }
 
     /**
      * Get LIFT import error report
      *
-     * @return \Api\Model\Languageforge\Lexicon\ImportErrorReport
+     * @return ImportErrorReport
      */
     public function getReport()
     {
@@ -271,7 +259,7 @@ class LiftImport
     /**
      * Convert a LIFT range to an option list of the right code
      * Usage example: rangeToOptionList($projectModel, 'grammatical-info', 'Part of Speech', $liftRanges['grammatical-info'])
-     * @param LexiconProjectModel $projectModel
+     * @param LexProjectModel $projectModel
      * @param string $optionListCode
      * @param string $optionListName
      * @param LiftRange $liftRange
@@ -296,7 +284,7 @@ class LiftImport
                 } else {
                     $abbrev = null;
                 }
-                $optionListItem = new LexiconOptionListItem($label, $id);
+                $optionListItem = new LexOptionListItem($label, $id);
                 $optionListItem->abbreviation = $abbrev;
                 $optionList->items->append($optionListItem);
             }
@@ -307,12 +295,12 @@ class LiftImport
     /**
      *
      * @param string $zipFilePath
-     * @param LexiconProjectModel $projectModel
-     * @param LiftMergeRule $mergeRule
+     * @param LexProjectModel $projectModel
+     * @param string $mergeRule (use LiftMergeRule const)
      * @param boolean $skipSameModTime
      * @param boolean $deleteMatchingEntry
      * @throws \Exception
-     * @return \Api\Model\Languageforge\Lexicon\LiftImport
+     * @return LiftImport
      */
     public function importZip($zipFilePath, $projectModel, $mergeRule = LiftMergeRule::IMPORT_WINS, $skipSameModTime = false, $deleteMatchingEntry = false)
     {
@@ -370,7 +358,7 @@ class LiftImport
             }
             $this->report = new ImportErrorReport();
             $this->report->nodeErrors[] = $zipNodeError;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if ($zipNodeError->hasError()) {
                 error_log($zipNodeError->toString() . "\n");
             }
@@ -379,7 +367,7 @@ class LiftImport
             }
             $this->report = new ImportErrorReport();
             $this->report->nodeErrors[] = $zipNodeError;
-            throw new \Exception($e);
+            throw new \Exception($e->getMessage(), $e->getCode());
         }
 
         return $this;
@@ -456,8 +444,8 @@ class LiftImport
     /**
      * Convert a DOMNode to an SXE node -- simplexml_import_node() won't actually work
      *
-     * @param DOMNode $node
-     * @return SimpleXMLElement
+     * @param \DOMNode $node
+     * @return \SimpleXMLElement
      */
     private static function domNode_to_sxeNode($node)
     {

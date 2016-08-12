@@ -18,6 +18,7 @@ class LexCommentModel extends MapperModel
 
     public static function mapper($databaseName)
     {
+        /** @var MongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
             $instance = new MongoMapper($databaseName, 'lexiconComments');
@@ -27,7 +28,7 @@ class LexCommentModel extends MapperModel
     }
 
     /**
-     * @param ProjectModel|LexiconProjectModel $projectModel
+     * @param ProjectModel|LexProjectModel $projectModel
      * @param string       $id
      */
     public function __construct($projectModel, $id = '')
@@ -48,7 +49,7 @@ class LexCommentModel extends MapperModel
         );
         $this->status = self::STATUS_OPEN;
         $this->score = 0;
-        $this->authorInfo = new AuthorInfo();
+        $this->authorInfo = new LexAuthorInfo();
         $this->regarding = new LexCommentFieldReference();
         $databaseName = $projectModel->databaseName();
         parent::__construct(self::mapper($databaseName), $id);
@@ -102,7 +103,7 @@ class LexCommentModel extends MapperModel
     public $isDeleted;
 
     /**
-     * @var AuthorInfo
+     * @var LexAuthorInfo
      */
     public $authorInfo;
 
