@@ -85,6 +85,26 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
       }
     };
 
+    function resetEntryLists(id, pristineEntry) {
+      var entryIndex = getIndexInList(id, $scope.entries);
+      var entry = prepCustomFieldsForUpdate(pristineEntry);
+      if (angular.isDefined(entryIndex)) {
+        $scope.entries[entryIndex] = entry;
+        $scope.currentEntry = pristineEntry;
+      }
+
+      var visibleEntryIndex = getIndexInList(id, $scope.visibleEntries);
+      if (angular.isDefined(visibleEntryIndex)) {
+        $scope.visibleEntries[visibleEntryIndex] = entry;
+      }
+    }
+
+    function warnOfUnsavedEdits(entry) {
+      notice.push(notice.WARN, 'A synchronise has been started by another user. ' +
+        'When the synchronise has finished, please check your recent edits in entry "' +
+        $scope.getWordForDisplay(entry) + '".');
+    }
+
     $scope.saveCurrentEntry = function saveCurrentEntry(doSetEntry, successCallback, failCallback) {
       var isNewEntry = false;
       var newEntryTempId;
@@ -103,22 +123,19 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         if (entryIsNew(entryToSave)) {
           isNewEntry = true;
           newEntryTempId = entryToSave.id;
-          entryToSave.id = ''; // send empty id which indicated "create new"
+          entryToSave.id = ''; // send empty id to indicate "create new"
         }
 
         lexService.update(prepEntryForUpdate(entryToSave), function (result) {
           if (result.ok) {
             var entry = result.data;
             if (!entry && sendReceive.isSendReceiveProject()) {
-              notice.push(notice.WARN, 'Your edits in entry "' +
-                $scope.getWordForDisplay(entryToSave) + '" could not be saved because a ' +
-                'synchronise has been started by another user. When the synchronise finishes ' +
-                'please make your edits again.');
+              warnOfUnsavedEdits(entryToSave);
               sendReceive.startSyncStatusTimer();
             }
 
             if (!entry) {
-              $scope.currentEntry = angular.copy(pristineEntry);
+              resetEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
             }
 
             if (isNewEntry) {
@@ -145,8 +162,10 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
              * I'm currently unclear on whether the doSetEntry parameter is still necessary
              */
 
-            pristineEntry = angular.copy(entryToSave);
-            $scope.lastSavedDate = new Date();
+            if (entry) {
+              pristineEntry = angular.copy(entryToSave);
+              $scope.lastSavedDate = new Date();
+            }
 
             // refresh data will add the new entry to the entries list
             editorService.refreshEditorData().then(function () {
@@ -613,18 +632,15 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     sendReceive.setSyncProjectStatusSuccessCallback(syncProjectStatusSuccess);
 
     function pollProjectStatusSuccess() {
-      cancelAutoSaveTimer();
-      notice.push(notice.WARN, 'Your edits in entry "' +
-        $scope.getWordForDisplay($scope.currentEntry) + '" will not be saved because a ' +
-        'synchronise has been started by another user. When the synchronise finishes ' +
-        'please make your edits again.');
-      $scope.currentEntry = angular.copy(pristineEntry);
+      if ($scope.currentEntryIsDirty()) {
+        cancelAutoSaveTimer();
+        warnOfUnsavedEdits($scope.currentEntry);
+        resetEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
+      }
     }
 
     function syncProjectStatusSuccess() {
-      $scope.finishedLoading = false;
-      editorService.loadEditorData().then(function () {
-        $scope.finishedLoading = true;
+      editorService.refreshEditorData().then(function () {
         sessionService.refresh(lexConfig.refresh);
       });
     }
@@ -670,28 +686,28 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
     // permissions stuff
     $scope.rights = {
       canEditProject: function canEditProject() {
-        if (sendReceive.isInProgress()) return false;
+        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.PROJECTS,
           sessionService.operation.EDIT);
       },
 
       canEditEntry: function canEditEntry() {
-        if (sendReceive.isInProgress()) return false;
+        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.EDIT);
       },
 
       canDeleteEntry: function canDeleteEntry() {
-        if (sendReceive.isInProgress()) return false;
+        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
           sessionService.operation.DELETE);
       },
 
       canComment: function canComment() {
-        if (sendReceive.isInProgress()) return false;
+        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
 
         return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
           sessionService.operation.CREATE);

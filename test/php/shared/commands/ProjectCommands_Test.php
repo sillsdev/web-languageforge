@@ -1,7 +1,7 @@
 <?php
 
 use Api\Model\Command\ProjectCommands;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\ProjectModel;
 use Api\Model\ProjectSettingsModel;
 use Api\Model\Scriptureforge\SfProjectModel;
@@ -53,13 +53,36 @@ class TestProjectCommands extends UnitTestCase
 
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
+        $ownerId = $project->ownerRef->asString();
 
         $this->assertFalse($project->isArchived);
 
-        ProjectCommands::archiveProject($projectId);
+        ProjectCommands::archiveProject($projectId, $ownerId);
 
         $project->read($projectId);
         $this->assertTrue($project->isArchived);
+    }
+
+    public function testCheckIfArchivedAndThrow_NonArchivedProject_NoThrow()
+    {
+        $this->environ->clean();
+
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        // Project not archived, no throw expected
+        ProjectCommands::checkIfArchivedAndThrow($project);
+    }
+
+    public function testCheckIfArchivedAndThrow_ArchivedProject_Throw()
+    {
+        $this->environ->clean();
+
+        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->isArchived = true;
+        $projectId = $project->write();
+
+        $this->assertTrue($project->isArchived);
+        $this->expectException();
+        ProjectCommands::checkIfArchivedAndThrow($project);
     }
 
     public function testPublishProjects_ArchivedProject_ProjectPublished()
@@ -320,9 +343,9 @@ class TestProjectCommands extends UnitTestCase
         $srProject = null;
 
         $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
-            LexiconProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
+            LexProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
 
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         $assetImagePath = $project->getImageFolderPath();
         $assetAudioPath = $project->getAudioFolderPath();
         $this->assertFalse($project->hasSendReceive());
@@ -348,9 +371,9 @@ class TestProjectCommands extends UnitTestCase
         );
 
         $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
-            LexiconProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
+            LexProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
 
-        $project = new LexiconProjectModel($projectId);
+        $project = new LexProjectModel($projectId);
         $assetImagePath = $project->getImageFolderPath();
         $assetAudioPath = $project->getAudioFolderPath();
         $this->assertTrue($project->hasSendReceive());

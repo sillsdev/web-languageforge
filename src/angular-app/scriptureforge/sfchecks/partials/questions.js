@@ -128,10 +128,10 @@ angular.module('sfchecks.questions', ['bellows.services', 'sfchecks.services', '
           );
 
           var rights = result.data.rights;
-          $scope.rights.archive = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE);
-          $scope.rights.create = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE);
-          $scope.rights.createTemplate = ss.hasRight(rights, ss.domain.TEMPLATES, ss.operation.CREATE);
-          $scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT);
+          $scope.rights.archive = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE) && !ss.session.project.isArchived;
+          $scope.rights.create = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE) && !ss.session.project.isArchived;
+          $scope.rights.createTemplate = ss.hasRight(rights, ss.domain.TEMPLATES, ss.operation.CREATE) && !ss.session.project.isArchived;
+          $scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) && !ss.session.project.isArchived;
           $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
           if ($scope.rights.create) {
             $scope.queryTemplates();

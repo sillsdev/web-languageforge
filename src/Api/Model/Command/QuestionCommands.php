@@ -18,8 +18,9 @@ class QuestionCommands
 
     public static function updateQuestion($projectId, $object)
     {
-        $projectModel = new \Api\Model\ProjectModel($projectId);
-        $questionModel = new \Api\Model\QuestionModel($projectModel);
+        $projectModel = new ProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($projectModel);
+        $questionModel = new QuestionModel($projectModel);
         $isNewQuestion = ($object['id'] == '');
         if (!$isNewQuestion) {
             $questionModel->read($object['id']);
@@ -121,6 +122,7 @@ class QuestionCommands
         CodeGuard::assertKeyExistsOrThrow('id', $answerJson, "answerJson");
         CodeGuard::checkNotFalseAndThrow($answerJson['content'], "answerJson['content']");
         $project = new ProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         $question = new QuestionModel($project, $questionId);
 
         // whitelist updatable items
@@ -178,6 +180,7 @@ class QuestionCommands
     {
         CodeGuard::checkNotFalseAndThrow($answerId, 'answerId');
         $project = new ProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         $question = new QuestionModel($project, $questionId);
         $answer = $question->readAnswer($answerId);
         $answer->isToBeExported = $isToBeExported;
@@ -198,6 +201,7 @@ class QuestionCommands
     {
         CodeGuard::checkNotFalseAndThrow($answerId, 'answerId');
         $project = new ProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
         $question = new QuestionModel($project, $questionId);
         $answer = $question->readAnswer($answerId);
         $answer->tags = new ArrayOf();
@@ -221,6 +225,7 @@ class QuestionCommands
     public static function updateComment($projectId, $questionId, $answerId, $comment, $userId)
     {
         $projectModel = new ProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($projectModel);
         $questionModel = new QuestionModel($projectModel, $questionId);
         $authorId = $userId;
         if ($comment['id'] != '') {
@@ -252,7 +257,7 @@ class QuestionCommands
     public static function removeComment($projectId, $questionId, $answerId, $commentId)
     {
         $projectModel = new \Api\Model\ProjectModel($projectId);
-
+        ProjectCommands::checkIfArchivedAndThrow($projectModel);
         return QuestionModel::removeComment($projectModel->databaseName(), $questionId, $answerId, $commentId);
     }
 
@@ -276,10 +281,12 @@ class QuestionCommands
      * @param string $projectId
      * @param string $questionId
      * @param string $answerId
+     * @return array
      */
     public static function voteUp($userId, $projectId, $questionId, $answerId)
     {
         $projectModel = new ProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($projectModel);
         $questionModel = new QuestionModel($projectModel, $questionId);
         // Check the vote lock.
         $vote = new UserVoteModel($userId, $projectId, $questionId);
@@ -301,6 +308,7 @@ class QuestionCommands
     public static function voteDown($userId, $projectId, $questionId, $answerId)
     {
         $projectModel = new ProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($projectModel);
         $questionModel = new QuestionModel($projectModel, $questionId);
         // Check the vote lock.
         $vote = new UserVoteModel($userId, $projectId, $questionId);

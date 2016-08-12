@@ -4,8 +4,8 @@ namespace Api\Model;
 
 use Api\Library\Shared\Website;
 use Api\Model\Command\UserCommands;
-use Api\Model\Languageforge\Lexicon\LexiconProjectModel;
-use Api\Model\Languageforge\Lexicon\LexiconRoles;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransRoles;
 use Api\Model\Languageforge\SemDomTransProjectModel;
 use Api\Model\Mapper\ArrayOf;
@@ -17,8 +17,6 @@ use Api\Model\Scriptureforge\Rapuma\RapumaRoles;
 use Api\Model\Scriptureforge\RapumaProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksRoles;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
-use Api\Model\Shared\Rights\Domain;
-use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\ProjectRoleModel;
 use Palaso\Utilities\CodeGuard;
 use Palaso\Utilities\FileUtilities;
@@ -27,7 +25,7 @@ class ProjectModel extends Mapper\MapperModel
 {
 
     /**
-     * @var LexiconRoles|SfchecksRoles|SemDomTransRoles|RapumaRoles
+     * @var LexRoles|SfchecksRoles|SemDomTransRoles|RapumaRoles
      */
     protected $rolesClass;
 
@@ -114,6 +112,7 @@ class ProjectModel extends Mapper\MapperModel
         $this->cleanup();
 
         MapperUtils::dropAllCollections($this->databaseName());
+        MapperUtils::drop($this->databaseName());
         ProjectModelMongoMapper::instance()->remove($this->id->asString());
     }
 
@@ -208,6 +207,15 @@ class ProjectModel extends Mapper\MapperModel
     }
 
     /**
+     * Returns true if the given $userId is the owner of this project
+     * @param string $userId
+     * @return bool
+     */
+    public function isOwner($userId) {
+        return $this->ownerRef->asString() == $userId;
+    }
+
+    /**
      * Returns true if the given $userId has the $right in this project.
      * @param string $userId
      * @param int $right
@@ -223,12 +231,6 @@ class ProjectModel extends Mapper\MapperModel
         if (key_exists($userId, $this->users->getArrayCopy())) {
             $rolesClass = $this->rolesClass;
             $hasRight = $rolesClass::hasRight($this->users[$userId]->role, $right);
-        }
-
-        // Determine ARCHIVE_OWN right
-        if (($right == Domain::PROJECTS + Operation::ARCHIVE_OWN) &&
-            ($userId == $this->ownerRef->asString())) {
-            $hasRight = true;
         }
         return $hasRight;
     }
@@ -264,11 +266,6 @@ class ProjectModel extends Mapper\MapperModel
             $role = $this->users[$userId]->role;
             $rolesClass = $this->rolesClass;
             $result = $rolesClass::getRightsArray($role);
-
-            // Assign special ARCHIVE_OWN right for project owner
-            if ($userId == $this->ownerRef->asString()) {
-                array_push($result, Domain::PROJECTS + Operation::ARCHIVE_OWN);
-            }
         }
         return $result;
     }
@@ -280,7 +277,9 @@ class ProjectModel extends Mapper\MapperModel
      * @param string $userId
      * @return array
      */
-    public function getPublicSettings($userId)
+    public function getPublicSettings(
+        /** @noinspection PhpUnusedParameterInspection used in inherited methods */
+        $userId)
     {
         $settings = array(
             "allowInviteAFriend" => $this->allowInviteAFriend,
@@ -302,7 +301,7 @@ class ProjectModel extends Mapper\MapperModel
             case 'rapuma':
                 return new RapumaProjectModel($projectId);
             case 'lexicon':
-                return new LexiconProjectModel($projectId);
+                return new LexProjectModel($projectId);
             case 'semdomtrans':
                 return new SemDomTransProjectModel($projectId);
             default:

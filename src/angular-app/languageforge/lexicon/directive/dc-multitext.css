@@ -77,13 +77,3 @@ form.dc-multitext .uneditable-input {
     margin-left: 0;
     margin-right: -1px;
 }
-
-/* language span highlight */
-form.dc-multitext .uneditable-input span {
-    border-radius: 9px;
-    padding-left: 5px;
-    padding-right: 5px;
-}
-form.dc-multitext .uneditable-input span:hover {
-    background-color: #ADDDDD;
-}
