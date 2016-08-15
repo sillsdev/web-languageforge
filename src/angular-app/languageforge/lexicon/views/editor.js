@@ -17,15 +17,18 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       })
       .state('editor.list', {
         url: '/list',
-        templateUrl: '/angular-app/languageforge/lexicon/views/editor-list.html'
+        templateUrl: '/angular-app/languageforge/lexicon/views/editor-list.html',
+        controller: 'EditorListCtrl'
       })
       .state('editor.entry', {
         url: '/entry/{entryId:[0-9a-z]{24}}',
-        templateUrl: '/angular-app/languageforge/lexicon/views/editor-entry.html'
+        templateUrl: '/angular-app/languageforge/lexicon/views/editor-entry.html',
+        controller: 'EditorEntryCtrl'
       })
       .state('editor.comments', {
         url: '/entry/{entryId:[0-9a-z]{24}}/comments',
-        templateUrl: '/angular-app/languageforge/lexicon/views/editor-comments.html'
+        templateUrl: '/angular-app/languageforge/lexicon/views/editor-comments.html',
+        controller: 'EditorCommentsCtrl'
       })
       ;
   }])
@@ -40,6 +43,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
     var pristineEntry = {};
 
+    $scope.$state = $state;
     $scope.config = lexConfig.configForUser;
     $scope.lastSavedDate = new Date();
     $scope.currentEntry = {};
@@ -52,10 +56,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       more: editorService.showMoreEntries,
       emptyFields: false
     };
-
-    // default state. State is one of 'list', 'edit', or 'comment'
-    $scope.state = 'list';
-    lexProjectService.setBreadcrumbs('editor/list', 'List');
 
     $scope.currentEntryIsDirty = function currentEntryIsDirty() {
       if ($scope.entryLoaded()) {
@@ -421,9 +421,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         commentService.loadEntryComments(id);
       }
 
-      $scope.state = 'edit';
-      lexProjectService.setBreadcrumbs('editor/entry', 'Edit');
-
       $state.go('editor.entry', { entryId: id });
     };
 
@@ -439,9 +436,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         editorService.addEntryToEntryList(newEntry);
         editorService.showInitialEntries();
         scrollListToEntry(uniqueId, 'top');
-        $scope.state = 'edit';
-        lexProjectService.setBreadcrumbs('editor/entry', 'Edit');
-
         $state.go('editor.entry', { entryId: newEntry.id });
       });
     };
@@ -453,9 +447,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     $scope.returnToList = function returnToList() {
       $scope.saveCurrentEntry();
       setCurrentEntry();
-      $scope.state = 'list';
-      lexProjectService.setBreadcrumbs('editor/list', 'List');
-
       $state.go('editor.list');
     };
 
@@ -610,34 +601,23 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     };
 
     function evaluateState(skipLoadingEditorData) {
-      var path = $location.path();
-
-      // TODO implement this using ui-router!!!
       function goToState() {
-        var match = /editor\/entry\/(.+)\/comments/.exec(path);
-        if (match) {
+        if ($state.is('editor.comments')) {
           editorService.showInitialEntries();
-          $scope.editEntryAndScroll(match[1]);
+          $scope.editEntryAndScroll($state.params.entryId);
           $scope.showComments();
-          return;
         }
 
-        match = /editor\/entry\/(.+)$/.exec(path);
-        if (match) {
+        if ($state.is('editor.entry')) {
           editorService.showInitialEntries();
-          $scope.editEntryAndScroll(match[1]);
-          return;
+          $scope.editEntryAndScroll($state.params.entryId);
         }
-
-        $scope.returnToList();
       }
 
-      if ($scope.finishedLoading) {
-        if (skipLoadingEditorData) {
-          goToState();
-        } else {
-          editorService.loadEditorData().then(goToState);
-        }
+      if (skipLoadingEditorData) {
+        goToState();
+      } else {
+        editorService.loadEditorData().then(goToState);
       }
     }
 
@@ -651,9 +631,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     // Comments View
     $scope.showComments = function showComments() {
       $scope.saveCurrentEntry(true);
-      $scope.state = 'comment';
-      lexProjectService.setBreadcrumbs('editor/entry', 'Comments');
-
       $state.go('editor.comments', { entryId: $scope.currentEntry.id });
     };
 
@@ -809,4 +786,21 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       }
     };
 
-  }]);
+  }])
+  .controller('EditorListCtrl', ['$scope', 'lexProjectService',
+    function ($scope, lexProjectService) {
+      lexProjectService.setBreadcrumbs('editor/list', 'List');
+    }
+  ])
+  .controller('EditorEntryCtrl', ['$scope', 'lexProjectService',
+    function ($scope, lexProjectService) {
+      lexProjectService.setBreadcrumbs('editor/entry', 'Edit');
+    }
+  ])
+  .controller('EditorCommentsCtrl', ['$scope', 'lexProjectService',
+    function ($scope, lexProjectService) {
+      lexProjectService.setBreadcrumbs('editor/entry', 'Comments');
+    }
+  ])
+
+  ;
