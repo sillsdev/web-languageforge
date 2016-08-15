@@ -243,10 +243,10 @@ describe('Browse and edit page (DBE) Editor', function () {
 
   it('check that word count is still correct', function () {
     expect(dbePage.edit.entriesList.count()).toEqual(dbePage.edit.getEntryCount());
-    expect(dbePage.edit.getEntryCount()).toBe(4);
+    expect(dbePage.edit.getEntryCount()).toEqual(4);
   });
 
-  it('create new word', function () {
+  it('modify new word', function () {
     var word    = constants.testEntry3.lexeme.th.value;
     var meaning = constants.testEntry3.senses[0].definition.en.value;
     dbePage.edit.getMultiTextInputs('Word').first().sendKeys(word);
