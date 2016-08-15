@@ -14,8 +14,9 @@ angular.module('palaso.ui.dc.multiparagraph', ['bellows.services', 'palaso.ui.sh
       control: '=',
       selectField: '&'
     },
-    controller: ['$scope', 'sessionService', function ($scope, ss) {
-      $scope.inputSystems = ss.session.projectSettings.config.inputSystems;
+    controller: ['$scope', '$state', 'sessionService', function ($scope, $state, sessionService) {
+      $scope.$state = $state;
+      $scope.inputSystems = sessionService.session.projectSettings.config.inputSystems;
 
       $scope.inputSystemDirection = function inputSystemDirection(tag) {
         if (!(tag in $scope.inputSystems)) {
