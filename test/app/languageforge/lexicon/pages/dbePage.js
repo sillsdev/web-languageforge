@@ -114,7 +114,8 @@ var LfDbePage = function () {
     entriesList: _this.editDiv.all(by.repeater('entry in visibleEntries')),
     findEntryByLexeme: function (lexeme) {
       var div = _this.editDiv.element(by.css('#compactEntryListContainer'));
-      return div.element(by.cssContainingText('[ng-bind-html="getWordForDisplay(entry)"', lexeme));
+      return div.element(by.cssContainingText('[data-ng-bind-html="getWordForDisplay(entry)"',
+        lexeme));
     },
 
     clickEntryByLexeme: function (lexeme) {
@@ -125,7 +126,7 @@ var LfDbePage = function () {
 
     findEntryByDefinition: function (definition) {
       var div = _this.editDiv.element(by.css('#compactEntryListContainer'));
-      return div.element(by.cssContainingText('[ng-bind-html="getMeaningForDisplay(entry)"',
+      return div.element(by.cssContainingText('[data-ng-bind-html="getMeaningForDisplay(entry)"',
         definition));
     },
 
