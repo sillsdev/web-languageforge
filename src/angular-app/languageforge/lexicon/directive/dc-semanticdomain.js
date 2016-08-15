@@ -13,7 +13,8 @@ angular.module('palaso.ui.dc.semanticdomain', [])
       control: '=',
       selectField: '&'
     },
-    controller: ['$scope', function ($scope) {
+    controller: ['$scope', '$state', function ($scope, $state) {
+      $scope.$state = $state;
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
 
@@ -60,7 +61,7 @@ angular.module('palaso.ui.dc.semanticdomain', [])
       };
 
       $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
-        if (angular.isDefined(semanticDomains_en) && $scope.control.state == 'edit'
+        if (angular.isDefined(semanticDomains_en) && $state.is('editor.entry')
           && $scope.control.rights.canEditEntry()) {
           return valueToBeDeleted == value;
         }
