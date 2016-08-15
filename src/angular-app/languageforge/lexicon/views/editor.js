@@ -555,6 +555,16 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           });
 
           break;
+        case 'multiparagraph':
+          if (angular.isUndefined(data)) {
+            data = {};
+          }
+
+          if (angular.isUndefined(data.type)) {
+            data.type = 'multiparagraph';
+          }
+
+          break;
       }
 
       // console.log('end data: ', data);

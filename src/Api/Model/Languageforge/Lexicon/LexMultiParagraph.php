@@ -66,32 +66,34 @@ class LexMultiParagraph extends ObjectForEncoding
      * @param $html string
      */
     public function fromHtml($html) {
-        $dom = new \DOMDocument();
-        $dom->loadHTML($html);
         $this->paragraphs->exchangeArray(array());
-        /** @var \DOMElement $node */
-        foreach ($dom->getElementsByTagName('p') as $node) {
-            $this->inputSystem = $node->getAttribute('lang');
-            $paragraph = new LexParagraph();
-            foreach (explode(' ', $node->getAttribute('class')) as $classValue) {
-                if (StringUtil::startsWith($classValue, 'guid_')) {
-                    $guid = substr($classValue, 5);
-                    if ($guid) {
-                        $paragraph->guid = $guid;
+        if (trim($html)) {
+            $dom = new \DOMDocument();
+            $dom->loadHTML(trim($html));
+            /** @var \DOMElement $node */
+            foreach ($dom->getElementsByTagName('p') as $node) {
+                $this->inputSystem = $node->getAttribute('lang');
+                $paragraph = new LexParagraph();
+                foreach (explode(' ', $node->getAttribute('class')) as $classValue) {
+                    if (StringUtil::startsWith($classValue, 'guid_')) {
+                        $guid = substr($classValue, 5);
+                        if ($guid) {
+                            $paragraph->guid = $guid;
+                        }
+                    }
+                    if (StringUtil::startsWith($classValue, 'styleName_')) {
+                        $styleName = substr($classValue, 10);
+                        if ($styleName) {
+                            $paragraph->styleName = $styleName;
+                        }
                     }
                 }
-                if (StringUtil::startsWith($classValue, 'styleName_')) {
-                    $styleName = substr($classValue, 10);
-                    if ($styleName) {
-                        $paragraph->styleName = $styleName;
-                    }
+                $content = LiftDecoder::sanitizeSpans($node, $this->inputSystem);
+                if ($content) {
+                    $paragraph->content = $content;
                 }
+                $this->paragraphs->append($paragraph);
             }
-            $content = LiftDecoder::sanitizeSpans($node, $this->inputSystem);
-            if ($content) {
-                $paragraph->content = $content;
-            }
-            $this->paragraphs->append($paragraph);
         }
     }
 }
