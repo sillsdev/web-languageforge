@@ -21,12 +21,12 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         controller: 'EditorListCtrl'
       })
       .state('editor.entry', {
-        url: '/entry/{entryId:[0-9a-z]{24}}',
+        url: '/entry/{entryId:[0-9a-z_]{6,24}}',
         templateUrl: '/angular-app/languageforge/lexicon/views/editor-entry.html',
         controller: 'EditorEntryCtrl'
       })
       .state('editor.comments', {
-        url: '/entry/{entryId:[0-9a-z]{24}}/comments',
+        url: '/entry/{entryId:[0-9a-z_]{6,24}}/comments',
         templateUrl: '/angular-app/languageforge/lexicon/views/editor-comments.html',
         controller: 'EditorCommentsCtrl'
       })
@@ -432,10 +432,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           id: uniqueId
         };
         setCurrentEntry(newEntry);
-        commentService.loadEntryComments(uniqueId);
+        commentService.loadEntryComments(newEntry.id);
         editorService.addEntryToEntryList(newEntry);
         editorService.showInitialEntries();
-        scrollListToEntry(uniqueId, 'top');
+        scrollListToEntry(newEntry.id, 'top');
         $state.go('editor.entry', { entryId: newEntry.id });
       });
     };
@@ -674,9 +674,13 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       $scope.saveCurrentEntry();
     });
 
-    $scope.$on('$locationChangeStart', function () {
-      cancelAutoSaveTimer();
-      $scope.saveCurrentEntry();
+    $scope.$on('$locationChangeStart', function (event, next, current) {
+      if (~current.indexOf('#/editor/list') && ~next.indexOf('#/editor/list') &&
+        ~next.indexOf('#/editor/entry')
+      ) {
+        cancelAutoSaveTimer();
+        $scope.saveCurrentEntry();
+      }
     });
 
     // hack to pass down the parent scope down into all child directives (i.e. entry, sense, etc)
@@ -718,7 +722,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       $scope.$watch('currentEntry', function (newValue) {
         if (newValue != undefined) {
           cancelAutoSaveTimer();
-          if ($scope.currentEntryIsDirty) {
+          if ($scope.currentEntryIsDirty()) {
             startAutoSaveTimer();
           }
         }
