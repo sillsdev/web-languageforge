@@ -1,12 +1,12 @@
 'use strict';
 
-describe('Browse and edit page (DBE) Editor', function () {
+describe('Editor List and Entry', function () {
   var constants    = require('../../../../testConstants');
   var loginPage    = require('../../../../bellows/pages/loginPage.js');
   var projectsPage = require('../../../../bellows/pages/projectsPage.js');
   var util         = require('../../../../bellows/pages/util.js');
-  var dbePage          = require('../../pages/dbePage.js');
-  var dbeUtil          = require('../../pages/dbeUtil.js');
+  var editorPage       = require('../../pages/editorPage.js');
+  var editorUtil       = require('../../pages/editorUtil.js');
   var configPage       = require('../../pages/configurationPage.js');
   var viewSettingsPage = require('../../pages/viewSettingsPage.js');
 
@@ -17,40 +17,40 @@ describe('Browse and edit page (DBE) Editor', function () {
   });
 
   it('browse page has correct word count', function () {
-    expect(dbePage.browse.entriesList.count()).toEqual(dbePage.browse.getEntryCount());
-    expect(dbePage.browse.getEntryCount()).toBe(3);
+    expect(editorPage.browse.entriesList.count()).toEqual(editorPage.browse.getEntryCount());
+    expect(editorPage.browse.getEntryCount()).toBe(3);
   });
 
   it('search function works correctly', function () {
-    dbePage.browse.search.input.sendKeys('asparagus');
-    expect(dbePage.browse.search.getMatchCount()).toBe(1);
-    dbePage.browse.search.clearBtn.click();
+    editorPage.browse.search.input.sendKeys('asparagus');
+    expect(editorPage.browse.search.getMatchCount()).toBe(1);
+    editorPage.browse.search.clearBtn.click();
   });
 
   it('click on first word', function () {
-    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
   });
 
   it('edit page has correct word count', function () {
-    expect(dbePage.edit.entriesList.count()).toEqual(dbePage.edit.getEntryCount());
-    expect(dbePage.edit.getEntryCount()).toBe(3);
+    expect(editorPage.edit.entriesList.count()).toEqual(editorPage.edit.getEntryCount());
+    expect(editorPage.edit.getEntryCount()).toBe(3);
   });
 
   it('word 1: edit page has correct meaning, part of speech', function () {
     // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
+    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
       { en: constants.testEntry1.senses[0].definition.en.value }, ''
     ]);
-    expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
-      dbeUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value)
+    expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
+      editorUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value)
     ]);
   });
 
   it('dictionary citation reflects lexeme form', function () {
-    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.renderedDiv.getText())
+    expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.edit.renderedDiv.getText())
       .toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-    expect(dbePage.edit.renderedDiv.getText()).not.toContain('citation form');
+    expect(editorPage.edit.renderedDiv.getText()).not.toContain('citation form');
   });
 
   it('add citation form as visible field', function () {
@@ -61,46 +61,47 @@ describe('Browse and edit page (DBE) Editor', function () {
     util.setCheckbox(configPage.hiddenIfEmpty, false);
     configPage.applyButton.click();
     util.clickBreadcrumb(constants.testProjectName);
-    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
   });
 
   it('citation form field overrides lexeme form in dictionary citation view', function () {
-    dbePage.edit.showUncommonFields();
-    dbePage.edit.getMultiTextInputs('Citation Form').first().sendKeys('citation form');
-    expect(dbePage.edit.renderedDiv.getText()).toContain('citation form');
-    expect(dbePage.edit.renderedDiv.getText()).not.toContain(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.renderedDiv.getText())
+    editorPage.edit.showUncommonFields();
+    editorPage.edit.getMultiTextInputs('Citation Form').first().sendKeys('citation form');
+    expect(editorPage.edit.renderedDiv.getText()).toContain('citation form');
+    expect(editorPage.edit.renderedDiv.getText())
+      .not.toContain(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.edit.renderedDiv.getText())
       .toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-    dbePage.edit.getMultiTextInputs('Citation Form').first().clear();
-    expect(dbePage.edit.renderedDiv.getText()).not.toContain('citation form');
-    expect(dbePage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.renderedDiv.getText())
+    editorPage.edit.getMultiTextInputs('Citation Form').first().clear();
+    expect(editorPage.edit.renderedDiv.getText()).not.toContain('citation form');
+    expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.edit.renderedDiv.getText())
       .toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-    dbePage.edit.hideUncommonFields();
+    editorPage.edit.hideUncommonFields();
   });
 
   it('one picture and caption is present', function () {
-    expect(dbePage.edit.pictures.getFileName(0))
+    expect(editorPage.edit.pictures.getFileName(0))
       .toContain('_' + constants.testEntry1.senses[0].pictures[0].fileName);
-    expect(dbePage.edit.pictures.getCaption(0))
+    expect(editorPage.edit.pictures.getCaption(0))
       .toEqual({ en: constants.testEntry1.senses[0].pictures[0].caption.en.value });
   });
 
   it('file upload drop box is displayed when Add Picture is clicked', function () {
-    expect(dbePage.edit.pictures.addPictureLink.isPresent()).toBe(true);
-    expect(dbePage.edit.pictures.addDropBox.isDisplayed()).toBe(false);
-    expect(dbePage.edit.pictures.addCancelButton.isDisplayed()).toBe(false);
-    dbePage.edit.pictures.addPictureLink.click();
-    expect(dbePage.edit.pictures.addPictureLink.isPresent()).toBe(false);
-    expect(dbePage.edit.pictures.addDropBox.isDisplayed()).toBe(true);
+    expect(editorPage.edit.pictures.addPictureLink.isPresent()).toBe(true);
+    expect(editorPage.edit.pictures.addDropBox.isDisplayed()).toBe(false);
+    expect(editorPage.edit.pictures.addCancelButton.isDisplayed()).toBe(false);
+    editorPage.edit.pictures.addPictureLink.click();
+    expect(editorPage.edit.pictures.addPictureLink.isPresent()).toBe(false);
+    expect(editorPage.edit.pictures.addDropBox.isDisplayed()).toBe(true);
   });
 
   it('file upload drop box is not displayed when Cancel Adding Picture is clicked', function () {
-    expect(dbePage.edit.pictures.addCancelButton.isDisplayed()).toBe(true);
-    dbePage.edit.pictures.addCancelButton.click();
-    expect(dbePage.edit.pictures.addPictureLink.isPresent()).toBe(true);
-    expect(dbePage.edit.pictures.addDropBox.isDisplayed()).toBe(false);
-    expect(dbePage.edit.pictures.addCancelButton.isDisplayed()).toBe(false);
+    expect(editorPage.edit.pictures.addCancelButton.isDisplayed()).toBe(true);
+    editorPage.edit.pictures.addCancelButton.click();
+    expect(editorPage.edit.pictures.addPictureLink.isPresent()).toBe(true);
+    expect(editorPage.edit.pictures.addDropBox.isDisplayed()).toBe(false);
+    expect(editorPage.edit.pictures.addCancelButton.isDisplayed()).toBe(false);
   });
 
   it('change config to show Pictures and hide captions', function () {
@@ -115,11 +116,11 @@ describe('Browse and edit page (DBE) Editor', function () {
 
   it('caption is hidden when empty if "Hidden if empty" is set in config', function () {
     util.clickBreadcrumb(constants.testProjectName);
-    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    dbePage.edit.hideUncommonFields();
-    expect(dbePage.edit.pictures.captions.first().isDisplayed()).toBe(true);
-    dbePage.edit.pictures.captions.first().clear();
-    expect(dbePage.edit.pictures.captions.count()).toBe(0);
+    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.edit.hideUncommonFields();
+    expect(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
+    editorPage.edit.pictures.captions.first().clear();
+    expect(editorPage.edit.pictures.captions.count()).toBe(0);
   });
 
   it('change config to show Pictures and show captions', function () {
@@ -134,16 +135,16 @@ describe('Browse and edit page (DBE) Editor', function () {
 
   it('when caption is empty, it is visible if "Hidden if empty" is cleared in config', function () {
     util.clickBreadcrumb(constants.testProjectName);
-    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.pictures.captions.first().isDisplayed()).toBe(true);
+    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
   });
 
   it('picture is removed when Delete is clicked', function () {
-    expect(dbePage.edit.pictures.images.first().isPresent()).toBe(true);
-    expect(dbePage.edit.pictures.removeImages.first().isPresent()).toBe(true);
-    dbePage.edit.pictures.removeImages.first().click();
+    expect(editorPage.edit.pictures.images.first().isPresent()).toBe(true);
+    expect(editorPage.edit.pictures.removeImages.first().isPresent()).toBe(true);
+    editorPage.edit.pictures.removeImages.first().click();
     util.clickModalButton('Delete Picture');
-    expect(dbePage.edit.pictures.images.count()).toBe(0);
+    expect(editorPage.edit.pictures.images.count()).toBe(0);
   });
 
   it('change config to hide Pictures and hide captions', function () {
@@ -158,53 +159,55 @@ describe('Browse and edit page (DBE) Editor', function () {
 
   it('while Show All Fields has not been clicked, Pictures field is hidden', function () {
     util.clickBreadcrumb(constants.testProjectName);
-    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.getFields('Pictures').count()).toBe(0);
-    dbePage.edit.showUncommonFields();
-    expect(dbePage.edit.pictures.list.isPresent()).toBe(true);
-    dbePage.edit.hideUncommonFields();
-    expect(dbePage.edit.getFields('Pictures').count()).toBe(0);
+    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.edit.getFields('Pictures').count()).toBe(0);
+    editorPage.edit.showUncommonFields();
+    expect(editorPage.edit.pictures.list.isPresent()).toBe(true);
+    editorPage.edit.hideUncommonFields();
+    expect(editorPage.edit.getFields('Pictures').count()).toBe(0);
   });
 
   it('click on second word (found by definition)', function () {
-    dbePage.edit.clickEntryByDefinition(constants.testEntry2.senses[0].definition.en.value);
+    editorPage.edit.clickEntryByDefinition(constants.testEntry2.senses[0].definition.en.value);
   });
 
   it('word 2: edit page has correct meaning, part of speech', function () {
     // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
+    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
       { en: constants.testEntry2.senses[0].definition.en.value }, ''
     ]);
-    expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
-      dbeUtil.expandPartOfSpeech(constants.testEntry2.senses[0].partOfSpeech.value)
+    expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
+      editorUtil.expandPartOfSpeech(constants.testEntry2.senses[0].partOfSpeech.value)
     ]);
   });
 
   it('setup: click on word with multiple meanings (found by lexeme)', function () {
-    dbePage.edit.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
-    dbePage.edit.clickFirstSense();
+    editorPage.edit.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
+    editorPage.edit.clickFirstSense();
   });
 
   it('word with multiple meanings: edit page has correct meanings, parts of speech', function () {
     // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(dbePage.edit.getFieldValues('Meaning')).toEqual([
+    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
       { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value }, '',
       { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value }, ''
     ]);
-    expect(dbePage.edit.getFieldValues('Part of Speech')).toEqual([
-      dbeUtil.expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.value),
-      dbeUtil.expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[1].partOfSpeech.value)
+    expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
+      editorUtil
+        .expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[0].partOfSpeech.value),
+      editorUtil
+        .expandPartOfSpeech(constants.testMultipleMeaningEntry1.senses[1].partOfSpeech.value)
     ]);
   });
 
   it('word with multiple meanings: edit page has correct examples, translations', function () {
-    expect(dbePage.edit.getFieldValues('Example')).toEqual([
+    expect(editorPage.edit.getFieldValues('Example')).toEqual([
       { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value }
     ]);
-    expect(dbePage.edit.getFieldValues('Translation')).toEqual([
+    expect(editorPage.edit.getFieldValues('Translation')).toEqual([
       { en: constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value },
       { en: constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value },
       { en: constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value },
@@ -214,22 +217,22 @@ describe('Browse and edit page (DBE) Editor', function () {
 
   it('while Show All Fields has not been clicked, uncommon fields are hidden if they are empty',
   function () {
-    expect(dbePage.edit.getFields('Semantics Note').count()).toBe(0);
-    expect(dbePage.edit.getOneField('General Note').isPresent()).toBe(true);
-    dbePage.edit.showUncommonFields();
-    expect(dbePage.edit.getOneField('Semantics Note').isPresent()).toBe(true);
-    expect(dbePage.edit.getOneField('General Note').isPresent()).toBe(true);
+    expect(editorPage.edit.getFields('Semantics Note').count()).toBe(0);
+    expect(editorPage.edit.getOneField('General Note').isPresent()).toBe(true);
+    editorPage.edit.showUncommonFields();
+    expect(editorPage.edit.getOneField('Semantics Note').isPresent()).toBe(true);
+    expect(editorPage.edit.getOneField('General Note').isPresent()).toBe(true);
   });
 
   it('word with multiple meanings: edit page has correct general notes, sources', function () {
-    expect(dbePage.edit.getFieldValues('General Note')).toEqual([
+    expect(editorPage.edit.getFieldValues('General Note')).toEqual([
       { en: constants.testMultipleMeaningEntry1.senses[0].generalNote.en.value },
       { en: constants.testMultipleMeaningEntry1.senses[1].generalNote.en.value }
     ]);
 
     // First item is empty Etymology Source, now that View Settings all default to visible. IJH
     // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(dbePage.edit.getFieldValues('Source')).toEqual([
+    expect(editorPage.edit.getFieldValues('Source')).toEqual([
       { en: '' }, '',
       { en: constants.testMultipleMeaningEntry1.senses[0].source.en.value }, '',
       { en: constants.testMultipleMeaningEntry1.senses[1].source.en.value }
@@ -237,41 +240,41 @@ describe('Browse and edit page (DBE) Editor', function () {
   });
 
   it('back to browse page, create new word', function () {
-    dbePage.edit.toListLink.click();
-    dbePage.browse.newWordBtn.click();
+    editorPage.edit.toListLink.click();
+    editorPage.browse.newWordBtn.click();
   });
 
   it('check that word count is still correct', function () {
-    expect(dbePage.edit.entriesList.count()).toEqual(dbePage.edit.getEntryCount());
-    expect(dbePage.edit.getEntryCount()).toEqual(4);
+    expect(editorPage.edit.entriesList.count()).toEqual(editorPage.edit.getEntryCount());
+    expect(editorPage.edit.getEntryCount()).toEqual(4);
   });
 
   it('modify new word', function () {
     var word    = constants.testEntry3.lexeme.th.value;
     var meaning = constants.testEntry3.senses[0].definition.en.value;
-    dbePage.edit.getMultiTextInputs('Word').first().sendKeys(word);
-    dbePage.edit.getMultiTextInputs('Meaning').first().sendKeys(meaning);
-    util.clickDropdownByValue(dbePage.edit.getOneField('Part of Speech').$('select'),
+    editorPage.edit.getMultiTextInputs('Word').first().sendKeys(word);
+    editorPage.edit.getMultiTextInputs('Meaning').first().sendKeys(meaning);
+    util.clickDropdownByValue(editorPage.edit.getOneField('Part of Speech').$('select'),
       'Noun \\(n\\)');
-    dbePage.edit.saveBtn.click();
+    editorPage.edit.saveBtn.click();
   });
 
   it('new word is visible in edit page', function () {
-    dbePage.edit.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
-    expect(dbePage.edit.search.getMatchCount()).toBe(1);
-    dbePage.edit.search.clearBtn.click();
+    editorPage.edit.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
+    expect(editorPage.edit.search.getMatchCount()).toBe(1);
+    editorPage.edit.search.clearBtn.click();
   });
 
   it('check that Semantic Domain field is visible (for view settings test later)', function () {
-      expect(dbePage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
+      expect(editorPage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
     });
 
   describe('Dictionary Configuration check', function () {
 
     it('Word has only "th" and "tipa" visible', function () {
-      expect(dbePage.edit.getMultiTextInputSystems('Word').count()).toEqual(2);
-      expect(dbePage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
-      expect(dbePage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
+      expect(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(2);
+      expect(editorPage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
+      expect(editorPage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
     });
 
     it('make "en" input system visible for "Word" field', function () {
@@ -282,14 +285,14 @@ describe('Browse and edit page (DBE) Editor', function () {
       util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(2), true);
       configPage.applyButton.click();
       util.clickBreadcrumb(constants.testProjectName);
-      dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+      editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     });
 
     it('Word has "th", "tipa" and "en" visible', function () {
-      expect(dbePage.edit.getMultiTextInputSystems('Word').count()).toEqual(3);
-      expect(dbePage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
-      expect(dbePage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
-      expect(dbePage.edit.getMultiTextInputSystems('Word').get(2).getText()).toEqual('en');
+      expect(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(3);
+      expect(editorPage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
+      expect(editorPage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
+      expect(editorPage.edit.getMultiTextInputSystems('Word').get(2).getText()).toEqual('en');
     });
 
     it('make "en" input system invisible for "Word" field', function () {
@@ -300,34 +303,34 @@ describe('Browse and edit page (DBE) Editor', function () {
       util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(2), false);
       configPage.applyButton.click();
       util.clickBreadcrumb(constants.testProjectName);
-      dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+      editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
     });
 
     it('Word has only "th" and "tipa" visible', function () {
-      expect(dbePage.edit.getMultiTextInputSystems('Word').count()).toEqual(2);
-      expect(dbePage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
-      expect(dbePage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
+      expect(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(2);
+      expect(editorPage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
+      expect(editorPage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
     });
 
   });
 
   it('new word is visible in browse page', function () {
-    dbePage.edit.toListLink.click();
-    dbePage.browse.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
-    expect(dbePage.browse.search.getMatchCount()).toBe(1);
-    dbePage.browse.search.clearBtn.click();
+    editorPage.edit.toListLink.click();
+    editorPage.browse.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
+    expect(editorPage.browse.search.getMatchCount()).toBe(1);
+    editorPage.browse.search.clearBtn.click();
   });
 
   it('check that word count is still correct in browse page', function () {
-    expect(dbePage.browse.entriesList.count()).toEqual(dbePage.browse.getEntryCount());
-    expect(dbePage.browse.getEntryCount()).toBe(4);
+    expect(editorPage.browse.entriesList.count()).toEqual(editorPage.browse.getEntryCount());
+    expect(editorPage.browse.getEntryCount()).toBe(4);
   });
 
   it('remove new word to restore original word count', function () {
-    dbePage.browse.clickEntryByLexeme(constants.testEntry3.lexeme.th.value);
-    dbePage.edit.deleteBtn.click();
+    editorPage.browse.clickEntryByLexeme(constants.testEntry3.lexeme.th.value);
+    editorPage.edit.deleteBtn.click();
     util.clickModalButton('Delete Word');
-    expect(dbePage.edit.getEntryCount()).toBe(3);
+    expect(editorPage.edit.getEntryCount()).toBe(3);
   });
 });
 
