@@ -1,23 +1,13 @@
 'use strict';
 
-var projectTypes = {
-
-  // ScriptureForge
-  sf: 'Community Scripture Checking',
-
-  // LanguageForge
-  lf: 'Web Dictionary'
-};
-
-var util = require('../../../bellows/pages/util');
-var dbeUtil = require('./dbeUtil');
-
-var LfDbePage = function () {
+function EditorPage() {
+  var util = require('../../../bellows/pages/util.js');
+  var editorUtil = require('./editorUtil.js');
   var _this = this;
-  this.url = '/app/lexicon';
+
   this.get = function (projectId) {
     var extra = projectId ? ('/' + projectId) : '';
-    browser.get(browser.baseUrl + _this.url + extra);
+    browser.get(browser.baseUrl + '/app/lexicon' + extra);
   };
 
   this.browseDiv = element(by.css('#lexAppListView'));
@@ -71,6 +61,7 @@ var LfDbePage = function () {
   };
 
   // --- Edit view ---
+  //noinspection JSUnusedGlobalSymbols
   this.edit = {
     fields: _this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
     toListLink: element(by.css('#toListLink')),
@@ -162,26 +153,26 @@ var LfDbePage = function () {
       // Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid:
       // 'de', value: 'Wort'}]
       var lexeme = this.fields.get(0);
-      return dbeUtil.dcMultitextToArray(lexeme);
+      return editorUtil.dcMultitextToArray(lexeme);
     },
 
     getLexemesAsObject: function () {
 
       // Returns lexemes in the format [{en: 'word', de: 'Wort'}]
       var lexeme = this.fields.get(0);
-      return dbeUtil.dcMultitextToObject(lexeme);
+      return editorUtil.dcMultitextToObject(lexeme);
     },
 
     getFirstLexeme: function () {
 
       // Returns the first (topmost) lexeme regardless of its wsid
       var lexeme = this.fields.get(0);
-      return dbeUtil.dcMultitextToFirstValue(lexeme);
+      return editorUtil.dcMultitextToFirstValue(lexeme);
     },
 
     getLexemeByWsid: function (searchWsid) {
       var lexeme = this.fields.get(0);
-      return dbeUtil.dcMultitextToObject(lexeme).then(function (lexemes) {
+      return editorUtil.dcMultitextToObject(lexeme).then(function (lexemes) {
         return lexemes[searchWsid];
       });
     },
@@ -194,42 +185,43 @@ var LfDbePage = function () {
     },
 
     pictures: {
-      list: dbeUtil.getOneField('Pictures'),
-      images: dbeUtil.getOneField('Pictures').all(by.css('img')),
-      captions: dbeUtil.getOneField('Pictures').all(by.css('.input-prepend > input')),
-      removeImages: dbeUtil.getOneField('Pictures').all(by.css('.icon-remove')),
+      list: editorUtil.getOneField('Pictures'),
+      images: editorUtil.getOneField('Pictures').all(by.css('img')),
+      captions: editorUtil.getOneField('Pictures').all(by.css('.input-prepend > input')),
+      removeImages: editorUtil.getOneField('Pictures').all(by.css('.icon-remove')),
       getFileName: function (index) {
-        return dbeUtil.getOneFieldValue('Pictures').then(function (pictures) {
+        return editorUtil.getOneFieldValue('Pictures').then(function (pictures) {
           return pictures[index].fileName;
         });
       },
 
       getCaption: function (index) {
-        return dbeUtil.getOneFieldValue('Pictures').then(function (pictures) {
+        return editorUtil.getOneFieldValue('Pictures').then(function (pictures) {
           return pictures[index].caption;
         });
       },
 
       addPictureLink: element(by.linkText('Add Picture')),
-      addDropBox: dbeUtil.getOneField('Pictures').element(by.css('.drop-box')),
+      addDropBox: editorUtil.getOneField('Pictures').element(by.css('.drop-box')),
       addCancelButton: element(by.id('addCancel'))
     },
 
     getMultiTextInputs: function getMultiTextInputs(searchLabel) {
-      return dbeUtil.getOneField(searchLabel).all(by.css('.input-prepend > input'));
+      return editorUtil.getOneField(searchLabel).all(by.css('.input-prepend > input'));
     },
 
     getMultiTextInputSystems: function getMultiTextInputSystems(searchLabel) {
-      return dbeUtil.getOneField(searchLabel).all(by.css('.input-prepend > span.wsid'));
+      return editorUtil.getOneField(searchLabel).all(by.css('.input-prepend > span.wsid'));
     },
 
-    getFields: dbeUtil.getFields,
-    getOneField: dbeUtil.getOneField,
-    getFieldValues: dbeUtil.getFieldValues,
-    getOneFieldValue: dbeUtil.getOneFieldValue
+    getFields: editorUtil.getFields,
+    getOneField: editorUtil.getOneField,
+    getFieldValues: editorUtil.getFieldValues,
+    getOneFieldValue: editorUtil.getOneFieldValue
   };
 
   // --- Comment view ---
+  //noinspection JSUnusedGlobalSymbols
   this.comment = {
     toEditLink: element(by.css('#toEditLink')),
 
@@ -266,10 +258,10 @@ var LfDbePage = function () {
     entry: {
       // We can just reuse the functions from dbeUtil, since they default to
       // using element(by.css('dc-entry')) as their root element.
-      getFields: dbeUtil.getFields,
-      getOneField: dbeUtil.getOneField,
-      getFieldValues: dbeUtil.getFieldValues,
-      getOneFieldValue: dbeUtil.getOneFieldValue
+      getFields: editorUtil.getFields,
+      getOneField: editorUtil.getOneField,
+      getFieldValues: editorUtil.getFieldValues,
+      getOneFieldValue: editorUtil.getOneFieldValue
     },
 
     // Right half of page: comments
@@ -396,6 +388,6 @@ var LfDbePage = function () {
     };
   };
 
-};
+}
 
-module.exports = new LfDbePage();
+module.exports = new EditorPage();
