@@ -149,9 +149,9 @@ angular.module('lexicon',
     });
 
     $scope.showSyncButton = function showSyncButton() {
-      var isDbeView = ($location.path().indexOf('/dbe') == 0);
+      var isEditorView = ($location.path().indexOf('/editor/') == 0);
       return !$scope.project.isArchived && $scope.rights.canEditUsers() &&
-        $scope.projectSettings.hasSendReceive && isDbeView;
+        $scope.projectSettings.hasSendReceive && isEditorView;
     };
 
     $scope.syncProject = function syncProject() {
@@ -190,8 +190,8 @@ angular.module('lexicon',
       offlineMessageId = notice.push(notice.ERROR,
         'You are offline.  Some features are not available', null, true);
       $scope.online = false;
-      if (!/^\/editor/.test($location.path())) {
-        // redirect to the dbe
+      if (!/^\/editor\//.test($location.path())) {
+        // redirect to the editor
         $location.path('/editor');
         notice.push(notice.SUCCESS,
           'The dictionary editor is available offline.  Settings are not.');
