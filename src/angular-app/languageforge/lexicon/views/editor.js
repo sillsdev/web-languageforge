@@ -571,6 +571,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           if (iShowList != 0)
             iShowList--;
           setCurrentEntry($scope.visibleEntries[iShowList]);
+          $state.go('.', { entryId: $scope.visibleEntries[iShowList].id });
         } else {
           $scope.returnToList();
         }
