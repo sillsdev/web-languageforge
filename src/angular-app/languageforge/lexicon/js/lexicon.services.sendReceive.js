@@ -122,20 +122,24 @@ angular.module('lexicon.services')
 
             console.log(_this.status);
 
-            if (_this.status.SRState == 'HOLD') {
-              notice.push(notice.ERROR, 'Well this is embarrassing. Something went ' +
-                'wrong and your project is now on hold. Contact an administrator.');
-            }
-
-            if (_this.status.SRState == 'IDLE') {
-              if (!isInitialCheck) {
-                notice.push(notice.SUCCESS, 'The project was successfully synchronized.');
-              } else {
-                _this.clearState();
-              }
-
-              (syncProjectStatusSuccessCallback || angular.noop)();
-            }
+            switch(_this.status.SRState.toLowerCase()) {
+              case 'pending' :
+                notice.push(notice.INFO, 'Please wait while other projects are being synced. ' +
+                    'You may continue to edit this project until it starts to sync.');
+                break;
+              case 'hold' :
+                notice.push(notice.ERROR, 'Well this is embarrassing. Something went ' +
+                    'wrong and your project is now on hold. Contact an administrator.');
+                break;
+              case 'idle' :
+                if (!isInitialCheck) {
+                  notice.push(notice.SUCCESS, 'The project was successfully synced.');
+                } else {
+                  _this.clearState();
+                }
+                (syncProjectStatusSuccessCallback || angular.noop)();
+                break;
+            };
           }
         });
       }
