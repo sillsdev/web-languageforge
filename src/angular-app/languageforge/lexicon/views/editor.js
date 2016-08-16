@@ -82,21 +82,18 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     };
     */
 
-    // Reviewed CP 2014-08: Um, shouldn't these two be mutually exclusive.
-    // No, status is tri-state: unsaved, saving, saved IH 2015-12
-    var saving = false;
-    var saved = false;
+    // status is tri-state: unsaved, saving, saved
+    var saveStatus = 'unsaved';
 
     $scope.saveNotice = function saveNotice() {
-      if (saving) {
-        return 'Saving';
+      switch (saveStatus) {
+        case 'saving':
+          return 'Saving';
+        case 'saved':
+          return 'Saved';
+        default:
+          return '';
       }
-
-      if (saved) {
-        return 'Saved';
-      }
-
-      return '';
     };
 
     $scope.saveButtonTitle = function saveButtonTitle() {
@@ -140,7 +137,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
         cancelAutoSaveTimer();
         sendReceive.setStateUnsyned();
-        saving = true;
+        saveStatus = 'saving';
         var entryToSave = angular.copy($scope.currentEntry);
         if (entryIsNew(entryToSave)) {
           isNewEntry = true;
@@ -195,18 +192,18 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
                 setCurrentEntry($scope.entries[getIndexInList(entry.id, $scope.entries)]);
                 editorService.removeEntryFromLists(newEntryTempId);
                 if (doSetEntry) {
+                  $state.go('.', { entryId: entry.id });
                   scrollListToEntry(entry.id, 'top');
                 }
               }
             });
 
-            saved = true;
+            saveStatus = 'saved';
             (successCallback || angular.noop)(result);
           } else {
+            saveStatus = 'unsaved';
             (failCallback || angular.noop)(result);
           }
-
-          saving = false;
         });
       } else {
         (successCallback || angular.noop)();
@@ -372,8 +369,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
       $scope.currentEntry = entry;
       pristineEntry = angular.copy(entry);
-      saving = false;
-      saved = false;
+      saveStatus = 'unsaved';
     }
 
     function alignCustomFieldsInData(data) {
