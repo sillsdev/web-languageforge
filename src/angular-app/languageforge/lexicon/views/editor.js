@@ -303,7 +303,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     }
 
     function scrollListToEntry(id, position) {
-      var posOffset = (position == 'top') ? 237 : 450;
+      var posOffset = (position == 'top') ? 274 : 450;
       var entryDivId = '#entryId_' + id;
       var listDivId = '#compactEntryListContainer';
       var index;
