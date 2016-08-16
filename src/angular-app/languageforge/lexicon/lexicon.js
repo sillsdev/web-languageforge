@@ -181,11 +181,7 @@ angular.module('lexicon',
     };
 
     $scope.disableSyncButton = function disableSyncButton() {
-      if ((sendReceive.status.SRState.toLowerCase() != 'idle') &&
-          (sendReceive.status.SRState.toLowerCase() != '')) {
-        return true;
-      }
-      return false;
+      return sendReceive.isInProgress() || sendReceive.status.SRState == 'PENDING';
     };
 
     $scope.syncProject = function syncProject() {
@@ -194,7 +190,7 @@ angular.module('lexicon',
           sendReceive.setSyncStarted();
         } else {
           notice.push(notice.ERROR,
-            'The project could not be synchronized with LanguageDepot.org. Please try again.');
+            'The project could not be synced with LanguageDepot.org. Please try again.');
         }
       });
     };
