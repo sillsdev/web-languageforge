@@ -88,7 +88,7 @@ angular.module('lexicon.services')
         _this.startSyncStatusTimer();
       };
 
-      this.setStateUnsyned = function setStateUnsyned() {
+      this.setStateUnsynced = function setStateUnsynced() {
         if (_this.isSendReceiveProject()) {
           _this.status.SRState = 'unsynced';
         }

@@ -117,7 +117,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
 
       if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
         cancelAutoSaveTimer();
-        sendReceive.setStateUnsyned();
+        sendReceive.setStateUnsynced();
         saving = true;
         var entryToSave = angular.copy($scope.currentEntry);
         if (entryIsNew(entryToSave)) {
@@ -554,7 +554,7 @@ angular.module('lexicon.edit', ['jsonRpc', 'ui.bootstrap', 'bellows.services', '
         }
 
         if (!entryIsNew(entry)) {
-          sendReceive.setStateUnsyned();
+          sendReceive.setStateUnsynced();
           lexService.remove(entry.id, function () {
             editorService.refreshEditorData();
           });
