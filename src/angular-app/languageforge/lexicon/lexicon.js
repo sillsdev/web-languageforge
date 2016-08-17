@@ -184,6 +184,7 @@ angular.module('lexicon',
       return sendReceive.isInProgress() || sendReceive.status.SRState == 'PENDING';
     };
 
+    // Called when Send/Receive button clicked
     $scope.syncProject = function syncProject() {
       sendReceiveApi.receiveProject(function (result) {
         if (result.ok) {
