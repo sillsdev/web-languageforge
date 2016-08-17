@@ -181,7 +181,7 @@ angular.module('lexicon',
     };
 
     $scope.disableSyncButton = function disableSyncButton() {
-      return sendReceive.isInProgress() || sendReceive.status.SRState == 'PENDING';
+      return sendReceive.isStarted();
     };
 
     // Called when Send/Receive button clicked
