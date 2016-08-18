@@ -35,12 +35,15 @@ angular.module('lexicon.services')
       var syncStatusTimer;
       var pollStatusTimer;
       var cloneStatusTimer;
-      var previousSRState;
+      var pendingMessageId;
+      // Constants
+      var syncStatusInterval = 3000; // ms
       var pollStatusInterval = 32000; // ms
-      var syncStatusInverval = 3000; // ms
-      var unknownSRState = 'LF_UNKNOWN';
+      var cloneStatusInterval = 3000; // ms
+      var unknownSRState = 'LF_CHECK';
 
       var status = undefined;
+      var previousSRState = unknownSRState;
       if (angular.isDefined(projectSettings) &&
           angular.isDefined(projectSettings.sendReceive) &&
           angular.isDefined(projectSettings.sendReceive.status)) {
@@ -64,9 +67,10 @@ angular.module('lexicon.services')
           (status.SRState == 'CLONING' || status.SRState == 'LF_CLONING' || status.SRState == 'SYNCING'));
       };
 
-      // S/R isInProgress() or SRState is PENDING
+      // S/R isInProgress(), SRState is unknown, or SRState is PENDING
       this.isStarted = function isStarted() {
-        return (_this.isInProgress() || status.SRState == 'PENDING') || status.SRState == 'LF_PENDING';
+        return (_this.isInProgress() || (angular.isDefined(status) && angular.isDefined(status.SRState) &&
+            (status.SRState == unknownSRState || status.SRState == 'PENDING' || status.SRState == 'LF_PENDING')));
       };
 
       this.isSendReceiveProject = function isSendReceiveProject() {
@@ -100,11 +104,9 @@ angular.module('lexicon.services')
         notice.cancelProgressBar();
 
         // TODO: Remove this loading notice and display when we determine the real initial state
-         notice.setLoading('***Syncing with LanguageDepot.org...');
+         notice.setLoading('If server available, syncing with LanguageDepot.org...');
         // Until LfMerge runs and updates the state file, SRState is unknown
-        // Assume LF_PENDING for now
-        console.log('SRState is ' + status.SRState + '.  Going to LF_PENDING');
-        status.SRState = 'SYNCING'; // 'LF_PENDING'
+        status.SRState = unknownSRState;
         _this.startSyncStatusTimer();
       };
 
@@ -143,10 +145,11 @@ angular.module('lexicon.services')
             switch(status.SRState) {
               case 'PENDING' :
               case 'LF_PENDING' :
-                notice.push(notice.INFO, 'Please wait while other projects are being synced. ' +
+                pendingMessageId = notice.push(notice.INFO, 'Please wait while other projects are being synced. ' +
                     'You may continue to edit this project until it starts to sync.');
                 break;
               case 'SYNCING' :
+                notice.removeById(pendingMessageId);
                 notice.setLoading('Syncing with LanguageDepot.org...');
                 break;
               case 'HOLD' :
@@ -154,7 +157,6 @@ angular.module('lexicon.services')
                     'wrong and your project is now on hold. Contact an administrator.');
                 break;
               case 'IDLE' :
-                console.log('previousSRState: ' + previousSRState);
                 if (previousSRState == 'SYNCING') {
                   notice.push(notice.SUCCESS, 'The project was successfully synced.');
                 }
@@ -171,7 +173,7 @@ angular.module('lexicon.services')
         _this.cancelCloneStatusTimer();
         if (angular.isDefined(syncStatusTimer)) return;
 
-        syncStatusTimer = $interval(getSyncProjectStatus, syncStatusInverval);
+        syncStatusTimer = $interval(getSyncProjectStatus, syncStatusInterval);
       };
 
       this.cancelSyncStatusTimer = function cancelSyncStatusTimer() {
@@ -188,7 +190,8 @@ angular.module('lexicon.services')
 
         switch (status.SRState) {
           case 'CLONING':
-            return 'Creating initial data...';
+          case 'LF_CLONING':
+            return 'Creating initial data. This may take a few minutes...';
           case 'SYNCING':
             return 'Syncing...';
           case 'PENDING':
@@ -275,10 +278,11 @@ angular.module('lexicon.services')
       this.startCloneStatusTimer = function startCloneStatusTimer() {
         _this.cancelPollStatusTimer();
         _this.cancelSyncStatusTimer();
+        // Whether the true SRState is CLONING or PENDING, the user is going to have to wait for CLONING anyways
         status.SRState = 'LF_CLONING';
         if (angular.isDefined(cloneStatusTimer)) return;
 
-        cloneStatusTimer = $interval(getCloneProjectStatus, 3000);
+        cloneStatusTimer = $interval(getCloneProjectStatus, cloneStatusInterval);
       };
 
       this.cancelCloneStatusTimer = function cancelCloneStatusTimer() {
