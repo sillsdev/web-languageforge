@@ -188,7 +188,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
                 setCurrentEntry($scope.entries[editorService.getIndexInEntries(entry.id)]);
                 editorService.removeEntryFromLists(newEntryTempId);
                 if (doSetEntry) {
-                  $state.params.entryId = entry.id;
+                  $state.go('.', { entryId: entry.id }, { notify: false });
                   scrollListToEntry(entry.id, 'top');
                 }
               }
@@ -401,7 +401,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       }
 
       if ($state.is('editor.entry')) {
-        $state.params.entryId = id;
+        $state.go('.', { entryId: id }, { notify: false });
       } else {
         $state.go('editor.entry', { entryId: id });
       }
@@ -420,7 +420,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         editorService.showInitialEntries();
         scrollListToEntry(newEntry.id, 'top');
         if ($state.is('editor.entry')) {
-          $state.params.entryId = newEntry.id;
+          $state.go('.', { entryId: newEntry.id }, { notify: false });
         } else {
           $state.go('editor.entry', { entryId: newEntry.id });
         }
@@ -562,7 +562,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           if (iShowList != 0)
             iShowList--;
           setCurrentEntry($scope.visibleEntries[iShowList]);
-          $state.params.entryId = $scope.visibleEntries[iShowList].id;
+          $state.go('.', { entryId: $scope.visibleEntries[iShowList].id }, { notify: false });
         } else {
           $scope.returnToList();
         }
