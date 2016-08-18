@@ -295,6 +295,14 @@ function ($q, sessionService, cache, commentsCache,
     return index;
   }
 
+  function getIndexInEntries(id) {
+    return getIndexInList(id, entries);
+  }
+
+  function getIndexInVisibleEntries(id) {
+    return getIndexInList(id, visibleEntries);
+  }
+
   function sortList(list) {
     var inputSystems = config.entry.fields.lexeme.inputSystems;
     var lexemeA = '';
@@ -352,6 +360,8 @@ function ($q, sessionService, cache, commentsCache,
     refreshEditorData: refreshEditorData,
     removeEntryFromLists: removeEntryFromLists,
     addEntryToEntryList: addEntryToEntryList,
+    getIndexInEntries: getIndexInEntries,
+    getIndexInVisibleEntries: getIndexInVisibleEntries,
     entries: entries,
     visibleEntries: visibleEntries,
     showInitialEntries: showInitialEntries,
