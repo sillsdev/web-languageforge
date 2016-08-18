@@ -1,20 +1,24 @@
 angular.module('palaso.ui.dc.example', ['palaso.ui.dc.fieldrepeat'])
+
 // Palaso UI Dictionary Control: Example Sentence
-.directive('dcExample', [function() {
+.directive('dcExample', [function () {
   return {
-    restrict : 'E',
-    templateUrl : '/angular-app/languageforge/lexicon/directive/dc-example.html',
-    scope : {
-      config : "=",
-      model : "=",
-      index : "=",
-      remove : "=",
-      control : "="
+    restrict: 'E',
+    templateUrl: '/angular-app/languageforge/lexicon/directive/dc-example.html',
+    scope: {
+      config: '=',
+      model: '=',
+      index: '=',
+      remove: '=',
+      control: '='
     },
-    controller: ['$scope', function($scope) {
+    controller: ['$scope', '$state', function ($scope, $state) {
+      $scope.$state = $state;
     }],
-    link : function(scope, element, attrs, controller) {
+
+    link: function (scope, element, attrs, controller) {
     }
   };
 }])
+
 ;
