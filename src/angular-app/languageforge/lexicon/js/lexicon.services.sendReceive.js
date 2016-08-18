@@ -70,7 +70,7 @@ angular.module('lexicon.services')
       // S/R isInProgress(), SRState is unknown, or SRState is PENDING
       this.isStarted = function isStarted() {
         return (_this.isInProgress() || (angular.isDefined(status) && angular.isDefined(status.SRState) &&
-            (status.SRState == unknownSRState || status.SRState == 'PENDING' || status.SRState == 'LF_PENDING')));
+            (status.SRState == unknownSRState || status.SRState == 'PENDING')));
       };
 
       this.isSendReceiveProject = function isSendReceiveProject() {
@@ -144,7 +144,6 @@ angular.module('lexicon.services')
 
             switch(status.SRState) {
               case 'PENDING' :
-              case 'LF_PENDING' :
                 pendingMessageId = notice.push(notice.INFO, 'Please wait while other projects are being synced. ' +
                     'You may continue to edit this project until it starts to sync.');
                 break;
@@ -195,7 +194,6 @@ angular.module('lexicon.services')
           case 'SYNCING':
             return 'Syncing...';
           case 'PENDING':
-          case 'LF_PENDING':
             return 'Pending';
           case 'IDLE':
           case 'SYNCED':
