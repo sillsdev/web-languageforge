@@ -38,8 +38,8 @@
         <div style="margin-bottom: 5px; border-bottom: solid black 1px">
             <div data-ng-if="rights.canEditEntry()" style="float:right; position:relative; top:-5px">
                 <span class="muted" style="margin-right: 10px">{{saveNotice()}}</span>
-                <button class="btn btn-mini" style="margin-right: 25px" data-ng-disabled="!currentEntryIsDirty()"
-                        data-ng-click="saveCurrentEntry(true)">
+                <button class="btn btn-mini" style="margin-right: 25px" data-ng-click="saveCurrentEntry(true)"
+                        data-ng-disabled="!currentEntryIsDirty()">
                     <i class="icon-save"></i> {{saveButtonTitle()}} </button>
                 <button data-ng-if="rights.canDeleteEntry()" style="margin-right: 5px" data-ng-click="deleteEntry(currentEntry)"
                         class="btn btn-mini" title="{{ 'Delete Entry' | translate }}">
@@ -57,4 +57,3 @@
         </div>
     </div>
 </div>
-
