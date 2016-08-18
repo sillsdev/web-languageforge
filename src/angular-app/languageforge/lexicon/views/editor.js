@@ -58,15 +58,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     };
 
     $scope.currentEntryIsDirty = function currentEntryIsDirty() {
-      if ($scope.entryLoaded()) {
-        if (entryIsNew($scope.currentEntry)) {
-          return true;
-        }
+      if (!$scope.entryLoaded()) return false;
 
-        return !angular.equals($scope.currentEntry, pristineEntry);
-      }
-
-      return false;
+      return !angular.equals($scope.currentEntry, pristineEntry);
     };
 
     function entryIsNew(entry) {
@@ -99,6 +93,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     $scope.saveButtonTitle = function saveButtonTitle() {
       if ($scope.currentEntryIsDirty()) {
         return 'Save Entry';
+      } else if (entryIsNew($scope.currentEntry)) {
+        return 'Entry unchanged';
       } else {
         return 'Entry saved';
       }
