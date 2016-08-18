@@ -4,8 +4,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
   var constants = require('../../../../testConstants.json');
   var loginPage = require('../../../../bellows/pages/loginPage.js');
   var util      = require('../../../../bellows/pages/util.js');
-  var dbePage   = require('../../pages/dbePage.js');
-  var page      = require('../../pages/newLexProjectPage.js');
+  var editorPage = require('../../pages/editorPage.js');
+  var page       = require('../../pages/newLexProjectPage.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
   var CHECK_PAUSE = 1000;
@@ -479,7 +479,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.nextButton.isEnabled()).toBe(true);
       page.expectFormIsValid();
       page.nextButton.click();
-      expect(dbePage.browse.getEntryCount()).toBe(2);
+      expect(editorPage.browse.getEntryCount()).toBe(2);
     });
 
   });
@@ -569,10 +569,10 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.nextButton.isEnabled()).toBe(true);
       page.expectFormIsValid();
       page.nextButton.click();
-      expect(dbePage.browse.getEntryCount()).toBe(0);
-      dbePage.browse.newWordBtn.click();
-      expect(dbePage.edit.getEntryCount()).toBe(1);
-      expect(dbePage.edit.getLexemesAsObject()).toEqual({ fr: '' });
+      expect(editorPage.browse.getEntryCount()).toBe(0);
+      editorPage.browse.newWordBtn.click();
+      expect(editorPage.edit.getEntryCount()).toBe(1);
+      expect(editorPage.edit.getLexemesAsObject()).toEqual({ fr: '' });
     });
 
   });

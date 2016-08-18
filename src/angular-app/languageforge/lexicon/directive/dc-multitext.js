@@ -1,25 +1,28 @@
 'use strict';
 
-angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOverflow', 'palaso.ui.dc.formattedtext'])
+angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOverflow',
+  'palaso.ui.dc.formattedtext'])
 
 // Dictionary Control Multitext
-.directive('dcMultitext', [function() {
+.directive('dcMultitext', [function () {
   return {
     restrict: 'E',
     templateUrl: '/angular-app/languageforge/lexicon/directive/dc-multitext.html',
     scope: {
-      config: "=",
-      model: "=",
-      control: "=",
-      selectField: "&"
+      config: '=',
+      model: '=',
+      control: '=',
+      selectField: '&'
     },
-    controller: ['$scope', 'sessionService', function($scope, ss) {
-      $scope.inputSystems = ss.session.projectSettings.config.inputSystems;
+    controller: ['$scope', '$state', 'sessionService', function ($scope, $state, sessionService) {
+      $scope.$state = $state;
+      $scope.inputSystems = sessionService.session.projectSettings.config.inputSystems;
 
       $scope.inputSystemDirection = function inputSystemDirection(tag) {
         if (!(tag in $scope.inputSystems)) {
           return 'ltr';
         }
+
         return ($scope.inputSystems[tag].isRightToLeft) ? 'rtl' : 'ltr';
       };
 
@@ -28,11 +31,12 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
           inputSystem: tag
         });
       };
-                
+
       $scope.modelContainsSpan = function modelContainsSpan(tag) {
-        if (angular.isUndefined($scope.model) || ! (tag in $scope.model)) {
+        if (angular.isUndefined($scope.model) || !(tag in $scope.model)) {
           return false;
         }
+
         return $scope.model[tag].value.indexOf('</span>') > -1;
       };
 
