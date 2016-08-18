@@ -60,6 +60,7 @@ describe('Editor Comments', function () {
     // Earlier tests modify the avatar and name of the manager user; don't check those
     //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
     //expect(comment.author.getText()).toEqual(constants.managerName);
+    browser.sleep(200);
     expect(comment.date.getText()).toContain('ago');
     expect(comment.score.getText()).toEqual('0');
     expect(comment.plusOne.isPresent()).toBe(true);
@@ -88,6 +89,12 @@ describe('Editor Comments', function () {
     expect(comment.plusOne.getAttribute('ng-click')).toBe(null); // Should NOT be clickable
     comment.plusOne.click();
     expect(comment.score.getText()).toEqual('1'); // Should not change from previous test
+  });
+
+  it('comments page: refresh returns to comment', function () {
+    var comment = editorPage.comment.getComment(0);
+    browser.refresh();
+    expect(comment.content.getText()).toEqual('First comment on this word.');
   });
 
 });

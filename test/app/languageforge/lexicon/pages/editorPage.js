@@ -5,9 +5,22 @@ function EditorPage() {
   var editorUtil = require('./editorUtil.js');
   var _this = this;
 
-  this.get = function (projectId) {
+  this.get = function get(projectId, entryId) {
     var extra = projectId ? ('/' + projectId) : '';
+    extra += (projectId && entryId) ? ('#/editor/entry/' + entryId) : '';
     browser.get(browser.baseUrl + '/app/lexicon' + extra);
+  };
+
+  this.getProjectIdFromUrl = function getProjectIdFromUrl() {
+    return browser.getCurrentUrl().then(function (url) {
+      var match = url.match(/\/app\/lexicon\/([0-9a-z]{24})/);
+      var projectId = '';
+      if (match) {
+        projectId = match[1];
+      }
+
+      return projectId;
+    });
   };
 
   this.browseDiv = element(by.css('#lexAppListView'));
