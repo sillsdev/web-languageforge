@@ -105,14 +105,14 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     };
 
     function resetEntryLists(id, pristineEntry) {
-      var entryIndex = getIndexInList(id, $scope.entries);
+      var entryIndex = editorService.getIndexInEntries(id);
       var entry = prepCustomFieldsForUpdate(pristineEntry);
       if (angular.isDefined(entryIndex)) {
         $scope.entries[entryIndex] = entry;
         $scope.currentEntry = pristineEntry;
       }
 
-      var visibleEntryIndex = getIndexInList(id, $scope.visibleEntries);
+      var visibleEntryIndex = editorService.getIndexInVisibleEntries(id);
       if (angular.isDefined(visibleEntryIndex)) {
         $scope.visibleEntries[visibleEntryIndex] = entry;
       }
@@ -189,7 +189,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
             // refresh data will add the new entry to the entries list
             editorService.refreshEditorData().then(function () {
               if (entry && isNewEntry) {
-                setCurrentEntry($scope.entries[getIndexInList(entry.id, $scope.entries)]);
+                setCurrentEntry($scope.entries[editorService.getIndexInEntries(entry.id)]);
                 editorService.removeEntryFromLists(newEntryTempId);
                 if (doSetEntry) {
                   $state.go('.', { entryId: entry.id });
@@ -313,9 +313,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
       // only expand the "show window" if we know that the entry is actually in
       // the entry list - a safe guard
-      if (angular.isDefined(getIndexInList(id, $scope.entries))) {
+      if (angular.isDefined(editorService.getIndexInEntries(id))) {
         while ($scope.visibleEntries.length < $scope.entries.length) {
-          index = getIndexInList(id, $scope.visibleEntries);
+          index = editorService.getIndexInVisibleEntries(id);
           if (angular.isDefined(index)) {
             break;
           }
@@ -344,19 +344,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       $scope.editEntry(id);
       scrollListToEntry(id, 'middle');
     };
-
-    function getIndexInList(id, list) {
-      var index = undefined;
-      for (var i = 0; i < list.length; i++) {
-        var e = list[i];
-        if (e.id == id) {
-          index = i;
-          break;
-        }
-      }
-
-      return index;
-    }
 
     function setCurrentEntry(entry) {
       entry = entry || {};
@@ -413,7 +400,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     $scope.editEntry = function editEntry(id) {
       if ($scope.currentEntry.id != id) {
         $scope.saveCurrentEntry();
-        setCurrentEntry($scope.entries[getIndexInList(id, $scope.entries)]);
+        setCurrentEntry($scope.entries[editorService.getIndexInEntries(id)]);
         commentService.loadEntryComments(id);
       }
 
@@ -565,7 +552,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       // var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?",
       // {lexeme:utils.getLexeme($scope.config.entry, entry)});
       modal.showModalSimple('Delete Word', deletemsg, 'Cancel', 'Delete Word').then(function () {
-        var iShowList = getIndexInList(entry.id, $scope.visibleEntries);
+        var iShowList = editorService.getIndexInVisibleEntries(entry.id);
         editorService.removeEntryFromLists(entry.id);
         if ($scope.entries.length > 0) {
           if (iShowList != 0)
@@ -599,15 +586,24 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
     function evaluateState(skipLoadingEditorData) {
       function goToState() {
+        // if entry not found goto first visible entry
+        var entryId = $state.params.entryId;
+        if (angular.isUndefined(editorService.getIndexInEntries(entryId))) {
+          entryId = '';
+          if (angular.isDefined($scope.visibleEntries[0])) {
+            entryId = $scope.visibleEntries[0].id;
+          }
+        }
+
         if ($state.is('editor.comments')) {
           editorService.showInitialEntries();
-          $scope.editEntryAndScroll($state.params.entryId);
+          $scope.editEntryAndScroll(entryId);
           $scope.showComments();
         }
 
         if ($state.is('editor.entry')) {
           editorService.showInitialEntries();
-          $scope.editEntryAndScroll($state.params.entryId);
+          $scope.editEntryAndScroll(entryId);
         }
       }
 
