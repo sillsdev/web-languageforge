@@ -27,8 +27,19 @@ describe('Editor List and Entry', function () {
     editorPage.browse.search.clearBtn.click();
   });
 
+  it('refresh returns to list view', function () {
+    browser.refresh();
+    expect(editorPage.browse.getEntryCount()).toBe(3);
+  });
+
   it('click on first word', function () {
     editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+  });
+
+  it('refresh returns to entry view', function () {
+    expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
+    browser.refresh();
+    expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
   });
 
   it('edit page has correct word count', function () {
@@ -314,6 +325,15 @@ describe('Editor List and Entry', function () {
 
   });
 
+  it('first entry is selected if entryId unknown', function () {
+    editorPage.edit.clickEntryByLexeme(constants.testEntry3.lexeme.th.value);
+    editorPage.getProjectIdFromUrl().then(function (projectId) {
+      editorPage.get(projectId, '_unknown_id_1234');
+    });
+
+    expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
+  });
+
   it('new word is visible in browse page', function () {
     editorPage.edit.toListLink.click();
     editorPage.browse.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
@@ -331,6 +351,10 @@ describe('Editor List and Entry', function () {
     editorPage.edit.deleteBtn.click();
     util.clickModalButton('Delete Word');
     expect(editorPage.edit.getEntryCount()).toBe(3);
+  });
+
+  it('previous entry is selected after delete', function () {
+    expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
   });
 });
 
