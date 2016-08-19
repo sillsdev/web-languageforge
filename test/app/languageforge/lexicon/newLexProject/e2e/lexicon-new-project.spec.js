@@ -202,12 +202,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
     });
 
     it('cannot move on while cloning', function () {
-      expect(page.nextButton.isDisplayed()).toBe(true);
-      expect(page.nextButton.getText()).toContain('Go to project');
-      page.expectFormIsNotValid();
-      page.nextButton.click();
-      expect(page.srClonePage.cloning.isDisplayed()).toBe(true);
-      expect(page.nextButton.isDisplayed()).toBe(true);
+      expect(page.nextButton.isDisplayed()).toBe(false);
+      expect(page.nextButton.isEnabled()).toBe(false);
       page.expectFormIsNotValid();
     });
 
