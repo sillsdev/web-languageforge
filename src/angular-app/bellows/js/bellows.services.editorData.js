@@ -14,7 +14,7 @@ function ($q, sessionService, cache, commentsCache,
   var browserInstanceId = Math.floor(Math.random() * 1000);
   var api = undefined;
 
-  var showInitialEntries = function showInitial() {
+  var showInitialEntries = function showInitialEntries() {
     sortList(entries);
     visibleEntries.length = 0; // clear out the array
     visibleEntries.push.apply(visibleEntries, entries.slice(0, 50));
@@ -150,19 +150,17 @@ function ($q, sessionService, cache, commentsCache,
   };
 
   var removeEntryFromLists = function removeEntryFromLists(id) {
-    // todo: make this method async, returning a promise
+    var iFullList = getIndexInList(id, entries);
+    if (angular.isDefined(iFullList)) {
+      entries.splice(iFullList, 1);
+    }
 
-    cache.deleteEntry(id).then(function () {
-      var iFullList = getIndexInList(id, entries);
-      if (angular.isDefined(iFullList)) {
-        entries.splice(iFullList, 1);
-      }
+    var iShowList = getIndexInList(id, visibleEntries);
+    if (angular.isDefined(iShowList)) {
+      visibleEntries.splice(iShowList, 1);
+    }
 
-      var iShowList = getIndexInList(id, visibleEntries);
-      if (angular.isDefined(iShowList)) {
-        visibleEntries.splice(iShowList, 1);
-      }
-    });
+    return cache.deleteEntry(id);
   };
 
   /**
@@ -297,6 +295,14 @@ function ($q, sessionService, cache, commentsCache,
     return index;
   }
 
+  function getIndexInEntries(id) {
+    return getIndexInList(id, entries);
+  }
+
+  function getIndexInVisibleEntries(id) {
+    return getIndexInList(id, visibleEntries);
+  }
+
   function sortList(list) {
     var inputSystems = config.entry.fields.lexeme.inputSystems;
     var lexemeA = '';
@@ -328,6 +334,7 @@ function ($q, sessionService, cache, commentsCache,
     });
   }
 
+  //noinspection JSUnusedLocalSymbols
   /**
    * A function useful for debugging (prints out to the console the lexeme values)
    * @param list
@@ -353,6 +360,8 @@ function ($q, sessionService, cache, commentsCache,
     refreshEditorData: refreshEditorData,
     removeEntryFromLists: removeEntryFromLists,
     addEntryToEntryList: addEntryToEntryList,
+    getIndexInEntries: getIndexInEntries,
+    getIndexInVisibleEntries: getIndexInVisibleEntries,
     entries: entries,
     visibleEntries: visibleEntries,
     showInitialEntries: showInitialEntries,
