@@ -23,6 +23,18 @@ function EditorPage() {
     });
   };
 
+  this.getEntryIdFromUrl = function getEntryIdFromUrl() {
+    return browser.getCurrentUrl().then(function (url) {
+      var match = url.match(/\/editor\/entry\/([0-9a-z_]{6,24})/);
+      var entryId = '';
+      if (match) {
+        entryId = match[1];
+      }
+
+      return entryId;
+    });
+  };
+
   this.browseDiv = element(by.css('#lexAppListView'));
   this.editDiv = element(by.css('#lexAppEditView'));
   this.commentDiv = element(by.css('#lexAppCommentView'));

@@ -334,6 +334,19 @@ describe('Editor List and Entry', function () {
     expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
   });
 
+  it('URL entry id changes with entry', function () {
+    var entry1Id = editorPage.getEntryIdFromUrl();
+    expect(entry1Id).toMatch(/[0-9a-z_]{6,24}/);
+    editorPage.edit.clickEntryByLexeme(constants.testEntry3.lexeme.th.value);
+    expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry3.lexeme.th.value);
+    var entry3Id = editorPage.getEntryIdFromUrl();
+    expect(entry3Id).toMatch(/[0-9a-z_]{6,24}/);
+    expect(entry1Id).not.toEqual(entry3Id);
+    editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.getEntryIdFromUrl()).not.toEqual(entry3Id);
+  });
+
   it('new word is visible in browse page', function () {
     editorPage.edit.toListLink.click();
     editorPage.browse.search.input.sendKeys(constants.testEntry3.senses[0].definition.en.value);
