@@ -271,6 +271,8 @@ angular.module('siteadmin', [
         });
       };
 
+      $scope.queryArchivedProjects();
+
       // Listview Selection
       $scope.selected = [];
       $scope.updateSelection = function (event, item) {

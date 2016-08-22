@@ -102,7 +102,7 @@ function ($q, sessionService, cache, commentsCache,
     api.dbeDtoFull(browserInstanceId, offset, function (result) {
       if (!result.ok) {
         notice.cancelLoading();
-        deferred.error(result);
+        deferred.reject(result);
         return;
       }
 
