@@ -26,7 +26,7 @@
             </div>
             <div class="span2">
                 <button class="btn" data-ng-class="[interfaceConfig.pullToSide, forwardBtnClass]"
-                        id="nextButton" data-ng-click="nextStep()">
+                        id="nextButton" data-ng-click="nextStep()" data-ng-disabled="!show.nextButton">
                     {{nextButtonLabel}}&nbsp;
                     <i class="icon-circle-arrow-right"></i></button>
             </div>

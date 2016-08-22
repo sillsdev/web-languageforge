@@ -13,8 +13,9 @@
             </div>
         </div>
         <div class="dc-multioptionlist-values"
-            data-ng-show="control.state == 'edit' && control.rights.canEditEntry() && isAdding">
-            <select data-ng-change="addValue()" data-ng-model="newValue" 
+            data-ng-show="$state.is('editor.entry') && control.rights.canEditEntry() && isAdding">
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select data-ng-change="addValue()" data-ng-model="newValue"
                 data-ng-options="item.key as item.value for item in items | filter: filterSelectedItems">
                 <option value="">Pick an item</option>
             </select>
@@ -25,8 +26,8 @@
     </div>
 </form>
 <div class="addItem" 
-    data-ng-show="control.rights.canEditEntry() && control.state == 'edit' && showAddButton()">
+    data-ng-show="control.rights.canEditEntry() && $state.is('editor.entry') && showAddButton()">
     <a data-ng-click="isAdding = true">Add {{config.label}}</a>
 </div>
 <div class="spacing-after"
-    data-ng-hide="control.rights.canEditEntry() && control.state == 'edit' && showAddButton()">&nbsp;</div>
+    data-ng-hide="control.rights.canEditEntry() && $state.is('editor.entry') && showAddButton()">&nbsp;</div>

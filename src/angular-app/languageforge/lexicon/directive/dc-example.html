@@ -1,5 +1,5 @@
 <div class="dc-example">
-    <div ng-show="control.rights.canEditEntry() && control.state == 'edit'"
+    <div ng-show="control.rights.canEditEntry() && $state.is('editor.entry')"
         class="deleteX pull-right">
         <i data-ng-click="remove(index)" title="Delete Example"
             class="icon-remove"></i>
