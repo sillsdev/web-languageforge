@@ -13,6 +13,8 @@ function ($q, editorDataService, api) {
     refreshEditorData: editorDataService.refreshEditorData,
     removeEntryFromLists: editorDataService.removeEntryFromLists,
     addEntryToEntryList: editorDataService.addEntryToEntryList,
+    getIndexInEntries: editorDataService.getIndexInEntries,
+    getIndexInVisibleEntries: editorDataService.getIndexInVisibleEntries,
     entries: editorDataService.entries,
     visibleEntries: editorDataService.visibleEntries,
     showInitialEntries: editorDataService.showInitialEntries,

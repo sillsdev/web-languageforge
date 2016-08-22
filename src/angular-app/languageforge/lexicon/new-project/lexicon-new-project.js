@@ -343,9 +343,11 @@ angular.module('lexicon-new-project',
     function gotoNextState() {
       switch ($state.current.name) {
         case 'newProject.sendReceiveCredentials':
+          // For now, this is the point of no return.  We can't cancel an LfMerge clone, and we don't want the user
+          // to go to the project and start editing before the clone has completed.
           $scope.show.backButton = false;
           $scope.show.cloning = true;
-          $scope.nextButtonLabel = $filter('translate')('Go to project');
+          $scope.show.nextButton = false;
           $scope.resetValidateProjectForm();
           if ($scope.project.sendReceive.project.isLinked) {
             var role = 'contributor';
