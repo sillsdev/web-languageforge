@@ -156,7 +156,7 @@ angular.module('palaso.ui.typeahead', [])
   }])
   .directive('typeaheadItem', function () {
     return {
-      require: '^typeahead',
+      require: '^puiTypeahead',
       link: function (scope, element, attrs, controller) {
 
         var item = scope.$eval(attrs.typeaheadItem);
