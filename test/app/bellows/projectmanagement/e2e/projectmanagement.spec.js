@@ -68,7 +68,6 @@ describe('E2E Project Management App', function () {
     expect(managementPage.archiveTab.archiveButton.isEnabled()).toBe(true);
     managementPage.archiveTab.archiveButton.click();
     util.clickModalButton('Archive');
-    projectsPage.get();
     expect(projectsPage.projectsList.count()).toBe(2);
   });
 
@@ -97,7 +96,6 @@ describe('E2E Project Management App', function () {
     expect(managementPage.archiveTab.archiveButton.isEnabled()).toBe(true);
     managementPage.archiveTab.archiveButton.click();
     util.clickModalButton('Archive');
-    projectsPage.get();
     expect(projectsPage.projectsList.count()).toBe(2);
   });
 
