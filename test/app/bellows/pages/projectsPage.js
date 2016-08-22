@@ -35,7 +35,7 @@ var ProjectsPage = function () {
   this.itemsPerPageCtrl = element(by.model('itemsPerPage'));
   this.projectsList = element.all(by.repeater('project in visibleProjects'));
   this.projectNames = element.all(by.repeater('project in visibleProjects')
-    .column('{{project.projectName}}'));
+    .column('project.projectName'));
   this.projectTypes = element.all(by.repeater('project in visibleProjects')
     .column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
 
@@ -111,7 +111,7 @@ var ProjectsPage = function () {
       var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
       var foundUserRow;
       projectMemberRows.map(function (row) {
-        var nameColumn = row.element(by.binding('{{user.username}}'));
+        var nameColumn = row.element(by.binding('user.username'));
         nameColumn.getText().then(function (text) {
           if (text === usersName) {
             foundUserRow = row;
