@@ -644,6 +644,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
     function syncProjectStatusSuccess() {
       editorService.refreshEditorData().then(function () {
+        setCurrentEntry($scope.entries[editorService.getIndexInEntries($scope.currentEntry.id)]);
         sessionService.refresh(lexConfig.refresh);
       });
     }
