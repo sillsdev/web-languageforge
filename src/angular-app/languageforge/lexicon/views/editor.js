@@ -115,8 +115,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     }
 
     function warnOfUnsavedEdits(entry) {
-      notice.push(notice.WARN, 'A synchronise has been started by another user. ' +
-        'When the synchronise has finished, please check your recent edits in entry "' +
+      notice.push(notice.WARN, 'A synchronize has been started by another user. ' +
+        'When the synchronize has finished, please check your recent edits in entry "' +
         $scope.getWordForDisplay(entry) + '".');
     }
 
