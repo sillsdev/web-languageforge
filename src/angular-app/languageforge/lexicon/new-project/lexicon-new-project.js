@@ -342,8 +342,10 @@ angular.module('lexicon-new-project',
     function gotoNextState() {
       switch ($state.current.name) {
         case 'newProject.sendReceiveCredentials':
-          // For now, this is the point of no return.  We can't cancel an LfMerge clone, and we don't want the user
-          // to go to the project and start editing before the clone has completed.
+
+          // For now, this is the point of no return.  We can't cancel an LfMerge clone, and we
+          // don't want the user to go to the project and start editing before the clone has
+          // completed.
           $scope.show.backButton = false;
           $scope.show.cloning = true;
           $scope.show.nextButton = false;
@@ -647,8 +649,8 @@ angular.module('lexicon-new-project',
           $state.go('newProject.sendReceiveClone');
           sendReceive.startCloneStatusTimer();
         } else {
-          notice.push(notice.ERROR, 'The project could not be synced with LanguageDepot.org. ' +
-            'Please try again.');
+          notice.push(notice.ERROR, 'The project could not be synchronized with' +
+            ' LanguageDepot.org. Please try again.');
           gotoLexicon();
         }
       });
