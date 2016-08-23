@@ -2,6 +2,7 @@
 
 namespace Api\Model\Mapper;
 
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\CodeGuard;
 
 class JsonDecoder
@@ -57,6 +58,8 @@ class JsonDecoder
                 $this->decodeMapOf($property, $model->{$property}, $values[$property]);
             } elseif (is_a($value, 'DateTime')) {
                 $this->decodeDateTime($model->{$property}, $values[$property]);
+            } elseif (is_a($value, 'Litipk\Jiffy\UniversalTimestamp')) {
+                $this->decodeUniversalTimestamp($model->{$property}, $values[$property]);
             } elseif (is_a($value, 'Api\Model\Mapper\ReferenceList')) {
                 $this->decodeReferenceList($model->{$property}, $values[$property]);
             } elseif (is_object($value)) {
@@ -213,12 +216,23 @@ class JsonDecoder
     }
 
     /**
-     * @param object $model
+     * @param \DateTime $model
      * @param string $data
      */
     public function decodeDateTime(&$model, $data)
     {
         $model = new \DateTime($data);
+    }
+
+    /**
+     * @param UniversalTimestamp $model
+     * @param string $data
+     */
+    public function decodeUniversalTimestamp(&$model, $data)
+    {
+        if ($data !== null) {
+            $model = UniversalTimestamp::fromWhatever($data);
+        }
     }
 
     /**

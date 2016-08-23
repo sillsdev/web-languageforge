@@ -15,9 +15,10 @@ angular.module('palaso.ui.dc.fieldrepeat', ['palaso.ui.dc.multitext', 'palaso.ui
       model: '=',
       control: '='
     },
-    controller: ['$scope', 'lexConfigService', function ($scope, lexConfigService) {
+    controller: ['$scope', '$state', 'lexConfigService',
+    function ($scope, $state, lexConfigService) {
+      $scope.$state = $state;
       $scope.fieldContainsData = lexConfigService.fieldContainsData;
-
     }],
 
     link: function (scope) {

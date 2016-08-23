@@ -1,0 +1,21 @@
+{% verbatim %}
+<div class="content container" data-ng-cloak data-ng-controller="MainCtrl">
+	<div data-sil-notices></div>
+    <div class="hdrnav" ng-if="rights.canEditProject()">
+        <div class="btn-group" style="margin-top:25px; float:right">
+                <a class="btn dropdown-toggle"
+                    data-toggle="dropdown"
+                    data-tooltip-placement="{{interfaceConfig.placementToSide}}"
+                    data-tooltip="Settings" href="#">
+                    <i class="icon-cog icon-large"></i>
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu" data-ng-class="interfaceConfig.pullToSide">
+                    <li><a ng-href="/app/usermanagement/{{project.id}}" data-translate="User Management"></a></li>
+                    <li><a ui-sref="review"> Review </a></li>
+                    <li><a href="#" ng-click="exportProject()"> Export Project</a></li>
+                </ul>
+        </div>
+    </div>
+    <div ui-view></div> <!-- todo: use ui-router instead -->
+</div>
+{% endverbatim %}

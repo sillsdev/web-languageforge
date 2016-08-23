@@ -2,11 +2,11 @@
     <label class="control-label">{{config.label}}</label>
         <div class="controls">
             <!--suppress HtmlFormInputWithoutLabel -->
-            <select data-ng-show="control.state == 'edit' && control.rights.canEditEntry()" data-ng-model="model.value"
+            <select data-ng-show="$state.is('editor.entry') && control.rights.canEditEntry()" data-ng-model="model.value"
                     data-ng-options="item.key as item.value for item in items">
                 <option value="">Unknown</option>
             </select>
-            <span class="uneditable-input" data-ng-hide="control.state == 'edit' && control.rights.canEditEntry()"
+            <span class="uneditable-input" data-ng-hide="$state.is('editor.entry') && control.rights.canEditEntry()"
                   data-ng-bind="getDisplayName(model.value)"></span>
         </div>
 </form>

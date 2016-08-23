@@ -1,7 +1,6 @@
 <?php
 
 use Api\Model\Languageforge\Lexicon\LiftImport;
-use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\ImportErrorReport;
 use Api\Model\Languageforge\Lexicon\ZipImportNodeError;
@@ -14,18 +13,13 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestLiftImportZip extends UnitTestCase
 {
-
     public function __construct() {
+        parent::__construct();
         $this->environ = new LexiconMongoTestEnvironment();
         $this->environ->clean();
-        parent::__construct();
     }
 
-    /**
-     * Local store of mock test environment
-     *
-     * @var LexiconMongoTestEnvironment
-     */
+    /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private $environ;
 
     /**
@@ -90,9 +84,9 @@ class TestLiftImportZip extends UnitTestCase
         unlink(TestPhpPath . 'common/TestLexProject.tar.gz');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
-        $this->expectException(new \Exception("Sorry, the .tar.gz format isn't allowed"));
+        $this->expectException(new \Exception('Sorry, the .tar.gz format isn\'t allowed'));
         $this->environ->inhibitErrorDisplay();
-        $importer = LiftImport::get()->importZip($zipFilePath, $project);
+        LiftImport::get()->importZip($zipFilePath, $project);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
@@ -143,8 +137,8 @@ class TestLiftImportZip extends UnitTestCase
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         $this->environ->inhibitErrorDisplay();
-        $this->expectException(new \Exception("Uploaded file does not contain any LIFT data"));
-        $importer = LiftImport::get()->importZip($zipFilePath, $project);
+        $this->expectException(new \Exception('Uploaded file does not contain any LIFT data'));
+        LiftImport::get()->importZip($zipFilePath, $project);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }

@@ -226,10 +226,13 @@ class SendReceiveCommands
 
         // If the previousRunTotalMilliseconds is set, estimate percentComplete
         if (array_key_exists('PreviousRunTotalMilliseconds', $status) &&
-            $status['PreviousRunTotalMilliseconds'] != 0 &&
             array_key_exists('StartTimestamp', $status)
         ) {
-            $status['PercentComplete'] = min(99, intval((time() - $status['StartTimestamp']) / ($status['PreviousRunTotalMilliseconds'] / 1000) * 100));
+            $previousRunTotalMilliseconds = $status['PreviousRunTotalMilliseconds'];
+            if ($previousRunTotalMilliseconds <= 0) {
+                $previousRunTotalMilliseconds = 4*60*1000; // 4 minutes
+            }
+            $status['PercentComplete'] = min(99, intval((time() - $status['StartTimestamp']) / ($previousRunTotalMilliseconds / 1000) * 100));
         }
         return $status;
     }

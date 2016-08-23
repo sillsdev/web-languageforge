@@ -25,7 +25,7 @@ class TestProjectPageDto extends UnitTestCase
         $text1->title = "Chapter 3";
         $text1->content = "I opened my eyes upon a strange and weird landscape. I knew that I was on Mars; …";
         $text1->write();
-        $text1->dateCreated->sub(date_interval_create_from_date_string('1 day'));
+        $text1->dateCreated->addSeconds(-date_interval_create_from_date_string('1 day')->s);
         $text1Id = $text1->write();
 
         $text2 = new TextModel($project);
