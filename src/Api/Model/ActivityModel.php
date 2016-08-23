@@ -2,21 +2,17 @@
 
 namespace Api\Model;
 
-use Api\Model\Mapper\ArrayOf;
-
-use Api\Model\Mapper\MongoMapper;
-
-use Api\Model\Mapper\IdReference;
-
 use Api\Model\Mapper\Id;
+use Api\Model\Mapper\IdReference;
+use Api\Model\Mapper\MapperListModel;
+use Api\Model\Mapper\MapperModel;
+use Api\Model\Mapper\MongoMapper;
 use Api\Model\Mapper\MapOf;
 use Palaso\Utilities\CodeGuard;
 
-class ActivityModelMongoMapper extends \Api\Model\Mapper\MongoMapper
+class ActivityModelMongoMapper extends MongoMapper
 {
-    /**
-     * @var ActivityModelMongoMapper[]
-     */
+    /** @var ActivityModelMongoMapper[] */
     private static $_pool = array();
 
     /**
@@ -33,7 +29,7 @@ class ActivityModelMongoMapper extends \Api\Model\Mapper\MongoMapper
     }
 }
 
-class ActivityModel extends \Api\Model\Mapper\MapperModel
+class ActivityModel extends MapperModel
 {
     // constants describing Actions
     const ADD_COMMENT = 'add_comment';
@@ -62,7 +58,6 @@ class ActivityModel extends \Api\Model\Mapper\MapperModel
     const ENTRY = 'entry';
 
     /**
-     *
      * @param ProjectModel $projectModel
      * @param string $id
      */
@@ -84,7 +79,6 @@ class ActivityModel extends \Api\Model\Mapper\MapperModel
     }
 
     /**
-     *
      * @param string $type - this is one of
      * @param string $content
      */
@@ -96,79 +90,51 @@ class ActivityModel extends \Api\Model\Mapper\MapperModel
 
     // TODO add a userFilter ArrayOf type that we can use to query Mongo for activities that only apply to specific users
 
-    /**
-     * @var Id
-     */
+    /** @var Id */
     public $id;
 
-    /**
-     *
-     * @var IdReference
-     */
+    /** @var IdReference */
     public $projectRef;
 
-    /**
-     *
-     * @var IdReference
-     */
+    /** @var IdReference */
     public $textRef;
 
-    /**
-     *
-     * @var IdReference
-     */
+    /** @var IdReference */
     public $questionRef;
 
-    /**
-     *
-     * @var IdReference
-     */
+    /** @var IdReference */
     public $userRef;
 
-    /**
-     *
-     * @var IdReference
-     */
+    /** @var IdReference */
     public $userRef2;
 
-    /**
-     *
-     * @var IdReference
-     */
+    /** @var IdReference */
     public $entryRef;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     // TODO add broadcast_message as an action on a GlobalActivityModel class cjh 2013-08
     public $action;
 
-    /**
-     *
-     * @var MapOf
-     * MapOf<string>
-     */
+    /** @var MapOf<string> */
     public $actionContent;
 
-    /**
-     * @var \DateTime
-     */
+    /** @var \DateTime */
     public $date;
-
 }
 
-class ActivityListModel extends \Api\Model\Mapper\MapperListModel
+class ActivityListModel extends MapperListModel
 {
-
+    /**
+     * ActivityListModel constructor.
+     * @param ProjectModel $projectModel
+     */
     public function __construct($projectModel)
     {
         // hardcoded to limit 100.  TODO implement paging
-        $this->entries = new MapOf(function ($data) use ($projectModel) { return new ActivityModel($projectModel); });
+        $this->entries = new MapOf(function () use ($projectModel) { return new ActivityModel($projectModel); });
         parent::__construct(
             ActivityModelMongoMapper::connect($projectModel->databaseName()),
             array('action' => array('$regex' => '')), array(), array('dateCreated' => -1), 100
         );
     }
-
 }

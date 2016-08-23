@@ -4,9 +4,6 @@ describe('Project Settings page', function () {
   var constants    = require('../../../../testConstants');
   var loginPage    = require('../../../../bellows/pages/loginPage.js');
   var projectsPage = require('../../../../bellows/pages/projectsPage.js');
-  var util         = require('../../../../bellows/pages/util.js');
-  var dbePage             = require('../../pages/dbePage.js');
-  var dbeUtil             = require('../../pages/dbeUtil.js');
   var projectSettingsPage = require('../../pages/projectSettingsPage.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;

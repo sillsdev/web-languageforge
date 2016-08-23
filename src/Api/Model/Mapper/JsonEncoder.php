@@ -2,6 +2,7 @@
 
 namespace Api\Model\Mapper;
 
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\CodeGuard;
 
 class JsonEncoder
@@ -38,17 +39,19 @@ class JsonEncoder
                 continue;
             }
             if (is_a($value, 'Api\Model\Mapper\IdReference')) {
-                $data[$key] = $this->encodeIdReference($key, $model->$key);
+                $data[$key] = $this->encodeIdReference($key, $model->{$key});
             } elseif (is_a($value, 'Api\Model\Mapper\Id')) {
-                $data[$key] = $this->encodeId($key, $model->$key);
+                $data[$key] = $this->encodeId($key, $model->{$key});
             } elseif (is_a($value, 'Api\Model\Mapper\ArrayOf')) {
-                $data[$key] = $this->encodeArrayOf($key, $model->$key);
+                $data[$key] = $this->encodeArrayOf($key, $model->{$key});
             } elseif (is_a($value, 'Api\Model\Mapper\MapOf')) {
-                $data[$key] = $this->encodeMapOf($key, $model->$key);
+                $data[$key] = $this->encodeMapOf($key, $model->{$key});
             } elseif (is_a($value, 'DateTime')) {
-                $data[$key] = $this->encodeDateTime($key, $model->$key);
+                $data[$key] = $this->encodeDateTime($model->{$key});
+            } elseif (is_a($value, 'Litipk\Jiffy\UniversalTimestamp')) {
+                $data[$key] = $this->encodeUniversalTimestamp($model->{$key});
             } elseif (is_a($value, 'Api\Model\Mapper\ReferenceList')) {
-                $data[$key] = $this->encodeReferenceList($key, $model->$key);
+                $data[$key] = $this->encodeReferenceList($key, $model->{$key});
             } else {
                 // Data type protection
                 if (is_array($value)) {
@@ -78,9 +81,10 @@ class JsonEncoder
      * @param IdReference $model
      * @return string
      */
-    public function encodeIdReference($key, $model)
+    public function encodeIdReference(
+        /** @noinspection PhpUnusedParameterInspection $key may be used in derived methods */
+        $key, $model)
     {
-        // Note: $key may be used in derived methods
         $result = $model->id;
 
         return $result;
@@ -91,9 +95,10 @@ class JsonEncoder
      * @param Id $model
      * @return string
      */
-    public function encodeId($key, $model)
+    public function encodeId(
+        /** @noinspection PhpUnusedParameterInspection $key may be used in derived methods */
+        $key, $model)
     {
-        // Note: $key may be used in derived methods
         $result = $model->id;
 
         return $result;
@@ -105,7 +110,9 @@ class JsonEncoder
      * @return array
      * @throws \Exception
      */
-    public function encodeArrayOf($key, $model)
+    public function encodeArrayOf(
+        /** @noinspection PhpUnusedParameterInspection $key may be used in derived methods */
+        $key, $model)
     {
         // Note: $key may be used in derived methods
         $result = array();
@@ -115,7 +122,7 @@ class JsonEncoder
             } else {
                 // Data type protection
                 if (is_array($item)) {
-                    throw new \Exception("Must not encode array in '" . get_class($model) . "->" . $key . "'");
+                    throw new \Exception("Must not encode array in '" . get_class($model) . "'");
                 }
                 // Default encode
                 $result[] = $item;
@@ -131,7 +138,9 @@ class JsonEncoder
      * @return array
      * @throws \Exception
      */
-    public function encodeMapOf($key, $model)
+    public function encodeMapOf(
+        /** @noinspection PhpUnusedParameterInspection $key may be used in derived methods */
+        $key, $model)
     {
         $result = array();
         $count = 0;
@@ -157,7 +166,9 @@ class JsonEncoder
      * @param ReferenceList $model
      * @return array
      */
-    public function encodeReferenceList($key, $model)
+    public function encodeReferenceList(
+        /** @noinspection PhpUnusedParameterInspection $key may be used in derived methods */
+        $key, $model)
     {
         // Note: $key may be used in derived methods
         $result = array_map(
@@ -173,13 +184,21 @@ class JsonEncoder
     }
 
     /**
-     * @param string $key
      * @param \DateTime $model
      * @return string;
      */
-    public function encodeDateTime($key, $model)
+    public function encodeDateTime($model)
     {
         return $model->format(\DateTime::ISO8601);
+    }
+
+    /**
+     * @param UniversalTimestamp $model
+     * @return string;
+     */
+    public function encodeUniversalTimestamp($model)
+    {
+        return $model->asFormattedString(UniversalTimestamp::ISO8601_WITH_MILLISECONDS);
     }
 
 }
