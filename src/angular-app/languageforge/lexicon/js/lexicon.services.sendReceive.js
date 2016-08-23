@@ -64,7 +64,7 @@ angular.module('lexicon.services')
 
       // SRState is CLONING / SYNCING
       this.isInProgress = function isInProgress() {
-        return (_this.isSendReceiveProject &&
+        return (_this.isSendReceiveProject() &&
           angular.isDefined(status) && angular.isDefined(status.SRState) &&
           (status.SRState == 'CLONING' || status.SRState == 'LF_CLONING' ||
           status.SRState == 'SYNCING'));
@@ -72,7 +72,7 @@ angular.module('lexicon.services')
 
       // S/R isInProgress(), SRState is unknown, or SRState is PENDING
       this.isStarted = function isStarted() {
-        return _this.isInProgress() || (angular.isDefined(status) &&
+        return _this.isInProgress() || (_this.isSendReceiveProject() && angular.isDefined(status) &&
           angular.isDefined(status.SRState) &&
           (status.SRState == unknownSRState || status.SRState == 'PENDING'));
       };
@@ -110,14 +110,12 @@ angular.module('lexicon.services')
 
         // TODO: Remove this loading notice and display when we determine the real initial state
         notice.setLoading('If server available, synchronizing with LanguageDepot.org...');
-
-        // Until LfMerge runs and updates the state file, SRState is unknown
-        status.SRState = unknownSRState;
         _this.startSyncStatusTimer();
       };
 
       this.setStateUnsynced = function setStateUnsynced() {
         if (_this.isSendReceiveProject()) {
+          previousSRState = status.SRState;
           status.SRState = 'LF_UNSYNCED';
         }
       };
@@ -132,7 +130,7 @@ angular.module('lexicon.services')
               return;
             }
 
-            // var isInitialCheck = (status.SRState == '');
+            previousSRState = status.SRState;
             status = result.data;
 
             if (status.PercentComplete > 0) {
@@ -171,8 +169,6 @@ angular.module('lexicon.services')
                 break;
             }
           }
-
-          previousSRState = status.SRState;
         });
       }
 
@@ -231,16 +227,17 @@ angular.module('lexicon.services')
               return;
             }
 
+            previousSRState = status.SRState;
             status = result.data;
             if (_this.isInProgress()) {
               (pollProjectStatusSuccessCallback || angular.noop)();
               _this.setSyncStarted();
-            } else {
-              (previousSRState == unknownSRState) && _this.clearState();
+            } else if (previousSRState == 'LF_UNSYNCED' && status.SRState == 'IDLE') {
+              status.SRState = previousSRState;
+            } else if (previousSRState == unknownSRState) {
+              _this.clearState();
             }
           }
-
-          previousSRState = status.SRState;
         });
       }
 
