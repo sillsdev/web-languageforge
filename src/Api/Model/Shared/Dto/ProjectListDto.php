@@ -49,7 +49,7 @@ class ProjectListDto
                 // for legacy projects that don't have an owner
             }
             unset($entry['ownerRef']);
-            $entry['dateModified'] = $project->dateModified->format(\DateTime::RFC2822);
+            $entry['dateModified'] = $project->dateModified->asDateTimeInterface()->format(\DateTime::RFC2822);
             $data['entries'][] = $entry;
             $count++;
         }

@@ -13,10 +13,11 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       pictures: '=',
       control: '='
     },
-    controller: ['$scope', '$upload', '$filter', 'sessionService', 'lexProjectService',
+    controller: ['$scope', '$state', '$upload', '$filter', 'sessionService', 'lexProjectService',
       'lexConfigService', 'silNoticeService', 'modalService',
-    function ($scope, $upload, $filter, ss, lexProjectService,
+    function ($scope, $state, $upload, $filter, sessionService, lexProjectService,
               lexConfigService, notice, modalService) {
+      $scope.$state = $state;
       $scope.upload = {};
       $scope.upload.progress = 0;
       $scope.upload.file = null;
@@ -34,7 +35,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
 
         return 'This picture references an external file (' +
           picture.fileName +
-          ') and therefore cannot be synchronised. ' +
+          ') and therefore cannot be synchronized. ' +
           'To see the picture, link it to an internally referenced file. ' +
           'Replace the file here or in FLEx, move or copy the file to the Linked Files folder.';
       };
@@ -85,7 +86,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         // take the first file only
         var file = files[0];
         $scope.upload.file = file;
-        if (file.size <= ss.fileSizeMax()) {
+        if (file.size <= sessionService.fileSizeMax()) {
           $scope.upload.progress = 0;
           $upload.upload({
 

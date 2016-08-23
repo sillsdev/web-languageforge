@@ -5,8 +5,7 @@ describe('View settings page', function () {
   var loginPage    = require('../../../../bellows/pages/loginPage.js');
   var projectsPage = require('../../../../bellows/pages/projectsPage.js');
   var util         = require('../../../../bellows/pages/util.js');
-  var dbePage      = require('../../pages/dbePage.js');
-  var dbeUtil      = require('../../pages/dbeUtil.js');
+  var editorPage       = require('../../pages/editorPage.js');
   var viewSettingsPage = require('../../pages/viewSettingsPage.js');
 
   it('setup: login, click on test project, go to the View Settings page', function () {
@@ -54,24 +53,24 @@ describe('View settings page', function () {
 
   it('Semantic Domain field is hidden for Manager', function () {
     util.clickBreadcrumb(constants.testProjectName);
-    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.getFields('Semantic Domain').count()).toBe(0);
+    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.edit.getFields('Semantic Domain').count()).toBe(0);
   });
 
   it('Semantic Domain field is visible for Member', function () {
     loginPage.loginAsMember();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
-    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
+    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
   });
 
   it('Semantic Domain field is hidden for admin user', function () {
     loginPage.loginAsAdmin();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
-    dbePage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
-    expect(dbePage.edit.getFields('Semantic Domain').count()).toBe(0);
+    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    expect(editorPage.edit.getFields('Semantic Domain').count()).toBe(0);
   });
 
   it('Return view settings to normal before next test', function () {

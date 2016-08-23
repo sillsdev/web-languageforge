@@ -3,18 +3,19 @@
 angular.module('palaso.ui.dc.multioptionlist', [])
 
 // Palaso UI Multioptionlist
-.directive('dcMultioptionlist', [function() {
+.directive('dcMultioptionlist', [function () {
   return {
     restrict: 'E',
     templateUrl: '/angular-app/languageforge/lexicon/directive/dc-multioptionlist.html',
     scope: {
-      config: "=",
-      model: "=",
-      control: "=",
-      items: "=",
-      selectField: "&"
+      config: '=',
+      model: '=',
+      control: '=',
+      items: '=',
+      selectField: '&'
     },
-    controller: ['$scope', function($scope) {
+    controller: ['$scope', '$state', function ($scope, $state) {
+      $scope.$state = $state;
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
 
@@ -28,13 +29,15 @@ angular.module('palaso.ui.dc.multioptionlist', [])
             }
           }
         }
+
         return displayName;
       };
 
       $scope.orderItemsByListOrder = function orderItemsByListOrder(value) {
         if (angular.isDefined($scope.items)) {
-          return $scope.items.map(function(i) {return i.value;}).indexOf(value);
+          return $scope.items.map(function (i) {return i.value;}).indexOf(value);
         }
+
         return -1;
       };
 
@@ -43,24 +46,26 @@ angular.module('palaso.ui.dc.multioptionlist', [])
       };
 
       $scope.showAddButton = function showAddButton() {
-        if (angular.isDefined($scope.items) && !$scope.isAdding && $scope.model.values.length < $scope.items.length) {
-          return true;
-        }
-        return false;
+        return angular.isDefined($scope.items) && !$scope.isAdding &&
+          $scope.model.values.length < $scope.items.length;
       };
 
       $scope.addValue = function addValue() {
         if (angular.isDefined($scope.newValue)) {
           $scope.model.values.push($scope.newValue);
         }
-        $scope.newValue = "";
+
+        $scope.newValue = '';
         $scope.isAdding = false;
       };
 
       $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
-        if (angular.isDefined($scope.items) && $scope.control.state == 'edit' && $scope.control.rights.canEditEntry()) {
+        if (angular.isDefined($scope.items) && $state.is('editor.entry') &&
+          $scope.control.rights.canEditEntry()
+        ) {
           return valueToBeDeleted == value;
         }
+
         return false;
       };
 
@@ -71,11 +76,11 @@ angular.module('palaso.ui.dc.multioptionlist', [])
 
       $scope.selectValue = function selectValue(value) {
         $scope.selectField({
-          'inputSystem': '',
-          'multioptionValue': $scope.getDisplayName(value)
+          inputSystem: '',
+          multioptionValue: $scope.getDisplayName(value)
         });
       };
-      
+
     }]
   };
 }]);
