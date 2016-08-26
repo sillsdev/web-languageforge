@@ -23,8 +23,12 @@ class LexEntryDecoder extends JsonDecoder
     {
         switch (get_class($model)) {
             case 'Api\Model\Languageforge\Lexicon\LexMultiParagraph':
+                $html = '';
+                if (array_key_exists('paragraphsHtml', $values)) {
+                    $html = $values['paragraphsHtml'];
+                }
                 /** @var LexMultiParagraph $model */
-                $model->fromHtml($values['paragraphsHtml']);
+                $model->fromHtml($html);
                 break;
             default:
                 parent::_decode($model, $values, $id);
