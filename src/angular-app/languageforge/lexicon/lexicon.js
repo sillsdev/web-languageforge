@@ -171,7 +171,6 @@ angular.module('lexicon',
     };
 
     $scope.$on('$destroy', sendReceive.cancelAllStatusTimers);
-    $scope.$on('$locationChangeStart', sendReceive.cancelAllStatusTimers);
 
     // setup offline.js options
     // see https://github.com/hubspot/offline for all options
