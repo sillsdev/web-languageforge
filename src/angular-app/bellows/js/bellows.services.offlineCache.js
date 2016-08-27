@@ -139,18 +139,20 @@ angular.module('bellows.services')
     }
 
     function deleteObjectInStore(storeName, key) {
-      // cjh 2015-03 it seems to me from the spec that we can call "delete" without first checking if the id exists
+      // cjh 2015-03 it seems to me from the spec that we can call "delete" without first checking
+      // if the id exists
       // http://www.w3.org/TR/IndexedDB/#dfn-steps-for-deleting-records-from-an-object-store
       var deferred = $q.defer();
       openDbIfNecessary().then(function () {
-        // we write ['delete'] to satisfy the yui compressor - arg! - time to get a new compressor - cjh 2015-03
+        // we write ['delete'] to satisfy the yui compressor - arg! - time to get a new compressor -
+        // cjh 2015-03
         var request = db.transaction(storeName, 'readwrite').objectStore(storeName)['delete'](key);
         request.onsuccess = function () {
           deferred.resolve(true);
         };
 
-        request.onerror = function (item) {
-          deferred.reject(item.value);
+        request.onerror = function (e) {
+          deferred.reject(e.value);
         };
       }, function (error) {
 
@@ -167,20 +169,22 @@ angular.module('bellows.services')
         var items = [];
         var index = db.transaction(storeName).objectStore(storeName).index('projectId');
         var cursorRequest = index.openCursor(IDBKeyRange.only(projectId));
-        cursorRequest.onsuccess = function (item) {
-          var cursor = item.target.result;
+        cursorRequest.onsuccess = function (e) {
+          var cursor = e.target.result;
           if (cursor) {
+            if (angular.isDefined(cursor.value.projectId)) delete cursor.value.projectId;
             items.push(cursor.value);
 
-            // should be  cursor.continue(); but needed a work around to work with the yui compressor - cjh 2015-03
+            // should be cursor.continue(); but needed a work around to work with the yui
+            // compressor - cjh 2015-03
             cursor['continue']();
           } else {
             deferred.resolve(items);
           }
         };
 
-        cursorRequest.onerror = function (item) {
-          console.log(item.value);
+        cursorRequest.onerror = function (e) {
+          console.log(e.value);
           deferred.reject('Error: cursor failed in getAll' + storeName);
         };
       }, function (error) {
@@ -195,16 +199,17 @@ angular.module('bellows.services')
       var deferred = $q.defer();
       openDbIfNecessary().then(function () {
         var request = db.transaction(storeName).objectStore(storeName).get(key);
-        request.onsuccess = function (item) {
-          if (item.target.result) {
-            deferred.resolve(item.target.result);
+        request.onsuccess = function (e) {
+          if (e.target.result) {
+            if (angular.isDefined(e.target.result.projectId)) delete e.target.result.projectId;
+            deferred.resolve(e.target.result);
           } else {
             deferred.reject();
           }
         };
 
-        request.onerror = function (item) {
-          deferred.reject(item.value);
+        request.onerror = function (e) {
+          deferred.reject(e.value);
         };
       }, function (error) {
 
