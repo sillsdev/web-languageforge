@@ -232,31 +232,31 @@ function ($q, sessionService, cache, commentsCache,
       } else {
 
         // splice updates into entry lists
-        angular.forEach(result.data.entries, function (e) {
+        angular.forEach(result.data.entries, function (entry) {
           var i;
 
           // splice into entries
-          i = getIndexInList(e.id, entries);
+          i = getIndexInList(entry.id, entries);
           if (angular.isDefined(i)) {
-            entries[i] = e;
+            entries[i] = entry;
           } else {
-            addEntryToEntryList(e);
+            addEntryToEntryList(entry);
           }
 
           // splice into visibleEntries
-          i = getIndexInList(e.id, visibleEntries);
+          i = getIndexInList(entry.id, visibleEntries);
           if (angular.isDefined(i)) {
-            visibleEntries[i] = e;
+            visibleEntries[i] = entry;
           }
         });
 
         // splice comment updates into comments list
-        angular.forEach(result.data.comments, function (c) {
-          var i = getIndexInList(c.id, commentService.comments.items.all);
+        angular.forEach(result.data.comments, function (comment) {
+          var i = getIndexInList(comment.id, commentService.comments.items.all);
           if (angular.isDefined(i)) {
-            commentService.comments.items.all[i] = c;
+            commentService.comments.items.all[i] = comment;
           } else {
-            commentService.comments.items.all.push(c);
+            commentService.comments.items.all.push(comment);
           }
         });
 
@@ -274,7 +274,7 @@ function ($q, sessionService, cache, commentsCache,
         isLastRequest = false;
       }
 
-      storeDataInOfflineCache(result.data, isLastRequest).then(function () { deferred.resolve(); });
+      storeDataInOfflineCache(result.data, isLastRequest);
 
       commentService.updateGlobalCommentCounts();
       deferred.resolve(result);
