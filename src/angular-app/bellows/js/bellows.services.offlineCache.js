@@ -108,13 +108,13 @@ angular.module('bellows.services')
         var i = 0;
         function insertNext() {
           if (i < items.length) {
-            //console.log("insert into " + storeName + " item " + (i + 1) + " of " + items.length);
-            items[i].projectId = projectId;
+            var item = angular.copy(items[i]);
+            item.projectId = projectId;
             store.put(items[i]).onsuccess = insertNext;
             if (isAdd) {
-              request = store.add(items[i]);
+              request = store.add(item);
             } else {
-              request = store.put(items[i]);
+              request = store.put(item);
             }
 
             request.onsuccess = insertNext;
