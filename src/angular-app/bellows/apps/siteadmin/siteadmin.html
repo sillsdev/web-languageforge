@@ -20,17 +20,21 @@
             <tr>
                 <th></th>
                 <th>Username</th>
-                <th>Full Name</th>
-                <th>Role</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Projects</th>
             </tr>
             </thead>
             <tbody>
             <tr data-ng-repeat="user in visibleUsers" data-ng-class="{active: isSelected(user)}" >
                 <td width="16px" align="center"><!--suppress HtmlFormInputWithoutLabel -->
                     <input type="checkbox" data-ng-checked="isSelected(user)" data-ng-click="updateSelection($event, user)" /></td>
-                <td><a data-ng-click="selectRow($index, user)" title="Click to edit this user">{{user.username}}</a></td>
-                <td>{{user.name}}</td>
-                <td>{{roleLabel(user.role)}}</td>
+                <td><a ng-style="!user.active && {'text-decoration': 'line-through', 'color':'grey'}" data-ng-click="selectRow($index, user)" title="Click to edit this user">{{user.username}}</a></td>
+                <td>{{user.email}}</td>
+                <td>{{user.name}} <span ng-show="user.role == 'system_admin'">(System Admin)</span></td>
+                <td><span style="font-size:10px; font-weight: bold" ng-show="user.projects.length > 0">({{user.projects.length}} project<span ng-show="user.projects.length > 1">s</span>) </span>
+                    <span style="font-size:10px" ng-repeat="project in user.projects"><a ng-href="http://{{project.siteName}}/app/{{project.appName}}/{{project.id}}">{{project.projectCode}}</a><span ng-show="!$last">, </span></span>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -66,9 +70,12 @@
                 </div>
             </div>
             <div>
-                <label for="_role">Role</label>
+                <label for="_role">System Role</label>
                 <select id="_role" required data-ng-model="record.role"
                         data-ng-options="key as role.name for (key, role) in roles"></select>
+            </div>
+            <div>
+                <label style="margin-bottom:20px">Site Roles: </label> <pre>{{record.siteRole|json}}</pre>
             </div>
             <div>
                 <label style="margin-bottom:20px"><input data-ng-click="checkUniqueUser()" type="checkbox" data-ng-model="record.active"/> Is Active</label>
