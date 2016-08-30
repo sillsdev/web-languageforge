@@ -68,6 +68,18 @@ class UserModelBase extends Mapper\MapperModel
     }
 
     /**
+     * @param string $usernameOrEmail
+     * @return bool - true if we were successful reading by either username or email
+     */
+    public function readByUsernameOrEmail($usernameOrEmail) {
+        if (strpos($usernameOrEmail, '@') !== false) {
+            return $this->readByEmail($usernameOrEmail);
+        } else {
+            return $this->readByUserName($usernameOrEmail);
+        }
+    }
+
+    /**
      * Returns true if the current user has $right to $website.
      * @param int $right
      * @param Website $website
