@@ -26,14 +26,19 @@ class SendReceiveCommands
     const WORK_PATH = '/var/lib/languageforge/lexicon/sendreceive/webwork';
     const STATE_PATH = '/var/lib/languageforge/lexicon/sendreceive/state';
     const LFMERGE_CONF_FILE_PATH = '/etc/languageforge/conf/sendreceive.conf';
-    const LFMERGE_EXE = 'lfmerge';
+    const LFMERGE_EXE = 'lfmergeqm';
 
     // duplicate of data in /test/app/testConstants.json
     const TEST_MEMBER_USERNAME = 'test_runner_normal_user';
     const TEST_SR_USERNAME = 'sr-mock-username';
     const TEST_SR_PASSWORD = 'sr-mock-password';
 
-    private static $lfmergePidFilePaths = ['/tmp/run/lfmerge.pid', '/var/run/lfmerge.pid'];
+    private static $lfmergePidFilePaths = [
+        '/tmp/run/lfmergeqm.pid',
+        '/var/run/lfmergeqm.pid',
+        '/tmp/run/lfmerge.pid',
+        '/var/run/lfmerge.pid'
+    ];
 
     /**
      * @param string $projectId
