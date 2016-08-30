@@ -55,27 +55,21 @@ class Auth extends PublicApp
 
     public function forgotPassword(Request $request, Application $app)
     {
-        $username = $request->request->get('_username');
-        $identityCheck = UserCommands::checkIdentity($username, '', $this->website);
-        if (! $identityCheck->usernameExists) {
+        $usernameOrEmail = $request->request->get('_username');
+        $user = new UserModel();
+        if (!$user->readByUsernameOrEmail($usernameOrEmail)) {
             $app['session']->getFlashBag()->add('errorMessage', 'User not found.');
-
             return $this->view($request, $app, 'forgot_password');
         }
 
-        $user = new UserModel();
-        $user->readByUserName($username);
+        $identityCheck = UserCommands::checkIdentity($user->username, $user->email, $this->website);
 
-        if (! $identityCheck->usernameExistsOnThisSite and $user->role != SystemRoles::SYSTEM_ADMIN) {
-            $app['session']->getFlashBag()->add('errorMessage', sprintf('Username "%s" not available on "%s". Use "Create an Account".', $username, $this->website->domain));
-
-            return $this->view($request, $app, 'forgot_password');
+        if (! $identityCheck->usernameExistsOnThisSite) {
+            $user->siteRole[$this->website->domain] = $this->website->userDefaultSiteRole;
         }
 
         Communicate::sendForgotPasswordVerification($user, $this->website);
-
-        $app['session']->getFlashBag()->add('infoMessage', 'Password Reset email sent for username "'.$username.'"');
-
+        $app['session']->getFlashBag()->add('infoMessage', 'Password Reset email sent for username "'.$usernameOrEmail.'"');
         return $app->redirect('/auth/login');
     }
 
