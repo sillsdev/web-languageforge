@@ -40,14 +40,14 @@ class ApiCrudTestEnvironment
     {
         $params = array('id' => '', 'username' => $username, 'name' => $username, 'email' => 'user@example.com');;
 
-        return UserCommands::updateUser($params);
+        return UserCommands::updateUser($params, $this->e->website);
     }
 
     public function makeSystemAdminUser()
     {
         $params = array('id' => '', 'username' => 'admin', 'name' => 'admin', 'email' => 'admin@example.com', 'role' => SystemRoles::SYSTEM_ADMIN);
 
-        return UserCommands::updateUser($params);
+        return UserCommands::updateUser($params, $this->e->website);
     }
 
     public function makeText($projectId, $textName)
@@ -296,7 +296,7 @@ class TestApiCrud extends UnitTestCase
         // Update
         $result['username'] = 'other';
         $result['email'] = 'other@example.com';
-        $id = UserCommands::updateUser($result);
+        $id = UserCommands::updateUser($result, $e->e->website);
         $this->assertNotNull($id);
         $this->assertEqual($result['id'], $id);
 

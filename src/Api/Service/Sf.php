@@ -140,7 +140,7 @@ class Sf
      */
     public function user_update($params)
     {
-        return UserCommands::updateUser($params);
+        return UserCommands::updateUser($params, $this->website);
     }
 
     /**
