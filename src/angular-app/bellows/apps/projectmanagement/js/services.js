@@ -14,6 +14,10 @@ function(jsonRpc) {
     jsonRpc.call('project_archive', [], callback);
   };
 
+  this.deleteProject = function deleteProject(callback) {
+    jsonRpc.call('project_delete', [], callback);
+  };
+
   this.runReport = function runReport(reportName, params, callback) {
     params = params || [];
     jsonRpc.call('project_management_report_' + reportName, params, callback);

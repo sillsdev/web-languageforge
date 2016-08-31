@@ -71,18 +71,32 @@ class ProjectCommands
     }
 
     /**
-     * Delete a list of projects
-     * @param array $projectIds
+     * Delete a list of projects.  User needs to be site admin or project owner
+     * @param array<string> $projectIds
+     * @param string $userId
      * @return int Total number of projects removed.
+     * @throws UserUnauthorizedException
      */
-    public static function deleteProjects($projectIds)
+    public static function deleteProjects($projectIds, $userId)
     {
         CodeGuard::checkTypeAndThrow($projectIds, 'array');
+        CodeGuard::checkTypeAndThrow($userId, 'string');
+
+        $user = new UserModel($userId);
         $count = 0;
         foreach ($projectIds as $projectId) {
             CodeGuard::checkTypeAndThrow($projectId, 'string');
-            $project = new ProjectModel($projectId);
-            $project = $project->getById($projectId);
+            $project = ProjectModel::getById($projectId);
+            if ($userId != $project->ownerRef->asString() && $user->role != SystemRoles::SYSTEM_ADMIN) {
+                throw new UserUnauthorizedException(
+                    "This $project->appName project '$project->projectName'\n" .
+                    "can only be deleted by project owner or\n " .
+                    "a system administrator\n");
+            }
+            if ($user->lastUsedProjectId == $projectId) {
+                $user->lastUsedProjectId = '';
+                $user->write();
+            }
             $project->remove();
             $count++;
         }
