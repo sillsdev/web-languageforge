@@ -362,7 +362,7 @@ describe('Editor List and Entry', function () {
   it('remove new word to restore original word count', function () {
     editorPage.browse.clickEntryByLexeme(constants.testEntry3.lexeme.th.value);
     editorPage.edit.deleteBtn.click();
-    util.clickModalButton('Delete Word');
+    util.clickModalButton('Delete Entry');
     expect(editorPage.edit.getEntryCount()).toBe(3);
   });
 
