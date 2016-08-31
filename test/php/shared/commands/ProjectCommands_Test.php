@@ -37,14 +37,32 @@ class TestProjectCommands extends UnitTestCase
      */
     private $save;
 
-    public function testDeleteProjects_NoThrow()
+    public function testDeleteProjects_ProjectOwner_NoThrow()
     {
         $this->environ->clean();
+        $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
+        $user1 = new UserModel($user1Id);
 
-        $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $projectId = $project->id->asString();
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP,
+            $user1->id->asString(), $this->environ->website);
 
-        ProjectCommands::deleteProjects(array($projectId));
+        ProjectCommands::deleteProjects(array($projectId), $user1Id);
+    }
+
+    public function testDeleteProjects_NotProjectOwner_Throw()
+    {
+        $this->environ->clean();
+        $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
+        $user2Id = $this->environ->createUser("user2name", "User2 Name", "user2@example.com");
+        $user1 = new UserModel($user1Id);
+        $user2 = new UserModel($user2Id);
+
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP,
+            $user1->id->asString(), $this->environ->website);
+        $project = new ProjectModel($projectId);
+        $project->addUser($user2->id->asString(), ProjectRoles::MANAGER);
+        $this->expectException();
+        ProjectCommands::deleteProjects(array($projectId), $user2Id);
     }
 
     public function testArchiveProjects_PublishedProject_ProjectArchived()

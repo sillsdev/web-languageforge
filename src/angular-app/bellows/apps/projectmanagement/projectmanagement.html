@@ -28,9 +28,17 @@
                 No reports are available at this time.
             </div>
         </tab>
-        <tab heading="Archive" data-ng-show="rights.archive">
+        <!-- Archive tab disabled now that project owners can delete their own projects -->
+        <tab heading="Archive" data-ng-show="false">
             <button class="btn" data-ng-disabled="actionInProgress" ng-click="archiveProject()">Archive this project</button>
             <div class="text-error">Only project owners can archive a project, and this action can only be undone by a site administrator (at this point)</div>
+        </tab>
+        <tab heading="Delete" data-ng-show="rights.remove">
+            <label for="deletebox">Confirm deletion by typing DELETE into the box below</label>
+            <input data-ng-model="deleteBoxText" type="text" id="deletebox" /><br>
+            <button class="btn" data-ng-disabled="actionInProgress || !(deleteBoxText.toLowerCase() == 'delete')"
+                    ng-style="(deleteBoxText.toLowerCase() == 'delete') && {'color':'red', 'font-weight':'bold'}" ng-click="deleteProject()">Delete this project</button>
+            <div class="text-error">Only project owners can delete a project, and this action cannot be undone</div>
         </tab>
     </tabset>
 </div>
