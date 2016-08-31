@@ -14,6 +14,8 @@ angular.module('projectmanagement', ['projectManagement.services', 'bellows.serv
       $scope.rights.archive = (!ss.session.project.isArchived &&
         (ss.session.project.userIsProjectOwner ||
         ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE)));
+      $scope.rights.remove = ss.session.project.userIsProjectOwner ||
+          ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
 
       $scope.report = {
         output: '',
@@ -71,5 +73,29 @@ angular.module('projectmanagement', ['projectManagement.services', 'bellows.serv
         });
       };
 
+      // Delete the project
+      $scope.deleteProject = function() {
+        var message = 'Are you sure you want to delete this project?\n' +
+            'This is a permanent action and cannot be restored.';
+        var modalOptions = {
+          closeButtonText: 'Cancel',
+          actionButtonText: 'Delete',
+          headerText: 'Permanently delete project?',
+          bodyText: message
+        };
+        modalService.showModal({}, modalOptions).then(function () {
+          var projectIds = [];
+          projectIds.push($scope.project.id);
+          $scope.actionInProgress = true;
+          projectService.remove(projectIds, function (result) {
+            if (result.ok) {
+              notice.push(notice.SUCCESS, 'The project was permanently deleted');
+              $window.location.href = '/app/projects';
+            } else {
+              $scope.actionInProgress = false;
+            }
+          });
+        });
+      };
     }
   ]);

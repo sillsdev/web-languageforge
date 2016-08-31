@@ -23,9 +23,15 @@ describe('E2E Project Management App', function () {
     loginPage.loginAsAdmin();
     managementPage.get();
     expect(managementPage.noticeList.count()).toBe(0);
+    // Archive tab currently disabled
+    /*
     managementPage.tabs.archive.click();
     expect(managementPage.archiveTab.archiveButton.isDisplayed()).toBe(true);
     expect(managementPage.archiveTab.archiveButton.isEnabled()).toBe(true);
+    */
+    managementPage.tabs.remove.click();
+    expect(managementPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
+    expect(managementPage.deleteTab.deleteButton.isEnabled()).toBe(false);
   });
 
   it('confirm Manager is not owner of test project', function () {
@@ -46,12 +52,18 @@ describe('E2E Project Management App', function () {
     expect(managementPage.tabs.archive.isPresent()).toBe(false);
   });
 
-  it('confirm Manager is owner of other project', function () {
+  it('Manager cannot view delete tab if not owner', function () {
+    managementPage.get();
+    expect(managementPage.noticeList.count()).toBe(0);
+    expect(managementPage.tabs.remove.isPresent()).toBe(false);
+  });
+
+  it('confirm Manager is owner of fourth project', function () {
     loginPage.loginAsManager();
 
     projectsPage.get();
-    expect(projectsPage.projectsList.count()).toBe(3);
-    projectsPage.clickOnProject(constants.otherProjectName);
+    expect(projectsPage.projectsList.count()).toBe(4);
+    projectsPage.clickOnProject(constants.fourthProjectName);
     managementPage.settings.button.click();
     managementPage.settings.projectSettingsLink.click();
     managementPage.settings.tabs.projectProperties.click();
@@ -60,6 +72,21 @@ describe('E2E Project Management App', function () {
       .toContain(constants.managerUsername);
   });
 
+  it('Manager can delete if owner', function () {
+    managementPage.get();
+    expect(managementPage.noticeList.count()).toBe(0);
+    managementPage.tabs.remove.click();
+    expect(managementPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
+    expect(managementPage.deleteTab.deleteButton.isEnabled()).toBe(false);
+    managementPage.deleteTab.deleteBoxText.sendKeys("DELETE");
+    expect(managementPage.deleteTab.deleteButton.isEnabled()).toBe(true);
+    managementPage.deleteTab.deleteButton.click();
+    util.clickModalButton('Delete');
+    projectsPage.get();
+    expect(projectsPage.projectsList.count()).toBe(3);
+  });
+
+  /* Since Archive tab is now disabled, disabling Archive / re-publish tests
   it('Manager can archive if owner', function () {
     managementPage.get();
     expect(managementPage.noticeList.count()).toBe(0);
@@ -116,5 +143,6 @@ describe('E2E Project Management App', function () {
     projectsPage.get();
     expect(projectsPage.projectsList.count()).toBe(3);
   });
+  */
 
 });

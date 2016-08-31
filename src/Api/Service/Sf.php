@@ -376,14 +376,18 @@ class Sf
     }
 
     /**
-     * Permanently delete selected list of archived projects.
+     * Clear out the session projectId and permanently delete selected list of projects.
      *
-     * @param array<string> $projectIds
+     * @param array<string> $projectIds Default to current projectId
      * @return int Total number of projects removed.
      */
     public function project_delete($projectIds)
     {
-        return ProjectCommands::deleteProjects($projectIds);
+        if (empty($projectIds)) {
+            $projectIds = array($this->projectId);
+        }
+        $this->app['session']->set('projectId', "");
+        return ProjectCommands::deleteProjects($projectIds, $this->userId);
     }
 
     // ---------------------------------------------------------------
