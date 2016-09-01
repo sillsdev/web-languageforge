@@ -12,6 +12,7 @@ use Api\Model\Mapper\ArrayOf;
 use Api\Model\Mapper\Id;
 use Api\Model\Mapper\IdReference;
 use Api\Model\Mapper\MapOf;
+use Api\Model\Mapper\MapperModel;
 use Api\Model\Mapper\MapperUtils;
 use Api\Model\Scriptureforge\Rapuma\RapumaRoles;
 use Api\Model\Scriptureforge\RapumaProjectModel;
@@ -21,102 +22,64 @@ use Api\Model\Shared\Rights\ProjectRoleModel;
 use Palaso\Utilities\CodeGuard;
 use Palaso\Utilities\FileUtilities;
 
-class ProjectModel extends Mapper\MapperModel
+class ProjectModel extends MapperModel
 {
-    /**
-     * @var Id
-     */
+    /** @var Id */
     public $id;
 
-    /**
-     * ID of the user that created the project
-     * @var IdReference
-     */
+    /** @var IdReference ID of the user that created the project */
     public $ownerRef;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $projectName;
 
-    /**
-     * Web app interface language code
-     * @var string
-     */
+    /** @var string Web app interface language code */
     public $interfaceLanguageCode;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     // TODO move this to a subclass cjh 2014-02
     public $language;
 
-    /**
-     * @var MapOf<ProjectRoleModel>
-     */
+    /** @var MapOf<ProjectRoleModel> */
     public $users;
 
-    /**
-     * @var MapOf<ProjectRoleModel>
-     */
+    /** @var MapOf<ProjectRoleModel> */
     public $userJoinRequests;
 
-    /**
-     * A string representing exactly this project from external sources. Typically some part of the URL.
-     * @var string
-     */
+    /** @var string A string representing exactly this project from external sources. Typically some part of the URL. */
     public $projectCode;
 
-    /**
-     * Flag to indicated if this project is featured on the website
-     * @var boolean
-     */
+    /** @var boolean Flag to indicated if this project is featured on the website */
     public $featured;
 
-    /**
-     * Flag to indicate if this project allows users to download audio files
-     * @var boolean
-     */
+    /** @var boolean Flag to indicate if this project allows users to download audio files */
     public $allowAudioDownload;
 
-    /**
-     * Flag to indicate if this project allows users to invite a friend
-     * @var boolean
-     */
+    /** @var boolean Flag to indicate if this project allows users to invite a friend */
     public $allowInviteAFriend;
 
-    /**
-     * Flag to indicate if this project is archived
-     * @var boolean
-     */
+    /** @var boolean Flag to indicate if this project is archived */
     public $isArchived;
 
-    /**
-     * @var ProjectUserPropertiesSettings
-     */
+    /** @var ProjectUserPropertiesSettings */
     public $userProperties;
 
     /**
-     * Specifies which site this project belongs to.  e.g. scriptureforge || languageforge  cf. Website class
+     * Specifies which site this project belongs to e.g. scriptureforge || languageforgen, cf. Website class
      * @var string
      */
     public $siteName;
 
     /**
-     *  specifies the angular app this project is associated with e.g. sfchecks || lexicon  (note: these apps are site specific)
+     * Specifies the angular app this project is associated with e.g. sfchecks || lexicon (note: these apps are site specific)
      * @var string
      */
     public $appName;
 
-    /**
-     *
-     * @var ArrayOf
-     */
+    /** @var ArrayOf */
     public $usersRequestingAccess;
 
-    /**
-     * @var LexRoles|SfchecksRoles|SemDomTransRoles|RapumaRoles
-     */
+    /** @var LexRoles|SfchecksRoles|SemDomTransRoles|RapumaRoles */
     protected $rolesClass;
 
     public function __construct($id = '')
@@ -154,7 +117,6 @@ class ProjectModel extends Mapper\MapperModel
     }
 
     /**
-     *
      * @param Website $website
      * @return ProjectModel
      */
@@ -271,7 +233,6 @@ class ProjectModel extends Mapper\MapperModel
     }
 
     /**
-     *
      * @param string $userId
      * @return bool
      */
@@ -392,7 +353,6 @@ class ProjectModel extends Mapper\MapperModel
     }
 
     /**
-     *
      * @param string $projectId
      * @return ProjectModel
      */
@@ -452,4 +412,3 @@ class ProjectModel extends Mapper\MapperModel
         FileUtilities::removeFolderAndAllContents($this->getAssetsFolderPath());
     }
 }
-

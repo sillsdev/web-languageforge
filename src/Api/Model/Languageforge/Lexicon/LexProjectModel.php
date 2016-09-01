@@ -9,6 +9,7 @@ use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Mapper\MapOf;
+use Api\Model\Mapper\MongoStore;
 use Palaso\Utilities\FileUtilities;
 
 class LexProjectModel extends LfProjectModel
@@ -106,10 +107,10 @@ class LexProjectModel extends LfProjectModel
         // Semantic Domains are delivered to the client as a javascript variable.
 
         $this->createAssetsFolders();
+        $this->createDatabaseIndexes();
     }
 
     /**
-     *
      * @param string $assetsFolderPath
      * @return string
      */
@@ -120,7 +121,6 @@ class LexProjectModel extends LfProjectModel
     }
 
     /**
-     *
      * @param string $assetsFolderPath
      * @return string
      */
@@ -146,6 +146,17 @@ class LexProjectModel extends LfProjectModel
             FileUtilities::createAllFolders($assetImagePath);
             FileUtilities::createAllFolders($assetAudioPath);
         }
+    }
+
+    public function createDatabaseIndexes()
+    {
+        $collectionName = LexEntryModel::mapper($this->databaseName())->getCollectionName();
+        $indexes = LexEntryModel::mapper($this->databaseName())->INDEXES_REQUIRED;
+        MongoStore::addIndexesToCollection($this->databaseName(), $collectionName, $indexes);
+
+        $collectionName = LexOptionListModel::mapper($this->databaseName())->getCollectionName();
+        $indexes = LexOptionListModel::mapper($this->databaseName())->INDEXES_REQUIRED;
+        MongoStore::addIndexesToCollection($this->databaseName(), $collectionName, $indexes);
     }
 
     /**

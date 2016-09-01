@@ -10,51 +10,23 @@ use Api\Model\Mapper\MongoMapper;
 
 class LexOptionListModel extends MapperModel
 {
-    /**
-     * @var Id
-     */
+    /** @var Id */
     public $id;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $name;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $code;
 
-    /**
-     * @var ArrayOf<LexOptionListItem>
-     */
+    /** @var ArrayOf<LexOptionListItem> */
     public $items;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $defaultItemKey;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $canDelete;
-
-    /**
-     * @param string $databaseName
-     * @return MongoMapper
-     */
-    public static function mapper($databaseName)
-    {
-        /** @var MongoMapper $instance */
-        static $instance = null;
-        if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new MongoMapper($databaseName, 'optionlists');
-        }
-
-        return $instance;
-    }
 
     /**
      * @param \Api\Model\ProjectModel $projectModel
@@ -69,6 +41,21 @@ class LexOptionListModel extends MapperModel
         $this->canDelete = true;
         $databaseName = $projectModel->databaseName();
         parent::__construct(self::mapper($databaseName), $id);
+    }
+
+    /**
+     * @param string $databaseName
+     * @return LexOptionListMongoMapper
+     */
+    public static function mapper($databaseName)
+    {
+        /** @var LexOptionListMongoMapper $instance */
+        static $instance = null;
+        if (null === $instance || $instance->databaseName() != $databaseName) {
+            $instance = new LexOptionListMongoMapper($databaseName, 'optionlists');
+        }
+
+        return $instance;
     }
 
     /**
@@ -119,4 +106,11 @@ class LexOptionListModel extends MapperModel
         }
     }
 
+}
+
+class LexOptionListMongoMapper extends MongoMapper
+{
+    public $INDEXES_REQUIRED = [
+        ['key' => ['code' => 1], 'unique' => true]
+    ];
 }
