@@ -173,10 +173,10 @@ class LexEntryModel extends MapperModel
 
     public static function mapper($databaseName)
     {
-        /** @var MongoMapper $instance */
+        /** @var LexEntryMongoMapper $instance */
         static $instance = null;
         if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new MongoMapper($databaseName, 'lexicon');
+            $instance = new LexEntryMongoMapper($databaseName, 'lexicon');
         }
 
         return $instance;
@@ -249,4 +249,12 @@ class LexEntryModel extends MapperModel
         $databaseName = $projectModel->databaseName();
         self::mapper($databaseName)->remove($id);
     }
+}
+
+class LexEntryMongoMapper extends MongoMapper
+{
+    public $INDEXES_REQUIRED = [
+        ['key' => ['guid' => 1], 'unique' => true],
+        ['key' => ['guid' => 1, 'dirtySR' => 1], 'unique' => true]
+    ];
 }

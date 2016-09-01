@@ -1,9 +1,13 @@
 <?php
 
 use Api\Model\Command\ProjectCommands;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\LexOptionListModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Mapper\MongoStore;
 use Api\Model\ProjectModel;
 use Api\Model\ProjectSettingsModel;
+use Api\Model\Scriptureforge\SfchecksProjectModel;
 use Api\Model\Scriptureforge\SfProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\UserModel;
@@ -15,7 +19,6 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestProjectCommands extends UnitTestCase
 {
-
     public function __construct() {
         $this->environ = new MongoTestEnvironment();
         $this->environ->clean();
@@ -23,18 +26,10 @@ class TestProjectCommands extends UnitTestCase
         parent::__construct();
     }
 
-    /**
-     * Local store of mock test environment
-     *
-     * @var MongoTestEnvironment
-     */
+    /** @var MongoTestEnvironment Local store of mock test environment */
     private $environ;
 
-    /**
-     * Data storage between tests
-     *
-     * @var array <unknown>
-     */
+    /** @var array <mixed> Data storage between tests */
     private $save;
 
     public function testDeleteProjects_ProjectOwner_NoThrow()
@@ -96,7 +91,7 @@ class TestProjectCommands extends UnitTestCase
 
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->isArchived = true;
-        $projectId = $project->write();
+        $project->write();
 
         $this->assertTrue($project->isArchived);
         $this->expectException();
@@ -319,7 +314,7 @@ class TestProjectCommands extends UnitTestCase
         $this->assertEqual($sameUser2->listProjects($this->environ->website->domain)->count, 1);
     }
 
-    public function testProjectCodeExists_codeExists_true()
+    public function testProjectCodeExists_CodeExists_True()
     {
         $this->environ->clean();
 
@@ -329,7 +324,7 @@ class TestProjectCommands extends UnitTestCase
         $this->assertTrue(ProjectCommands::projectCodeExists(SF_TESTPROJECTCODE));
     }
 
-    public function testProjectCodeExists_codeDoesNotExist_false()
+    public function testProjectCodeExists_CodeDoesNotExist_False()
     {
         $this->environ->clean();
 
@@ -339,7 +334,7 @@ class TestProjectCommands extends UnitTestCase
         $this->assertFalse(ProjectCommands::projectCodeExists('randomcode'));
     }
 
-    public function testCreateProject_newProject_projectOwnerSet()
+    public function testCreateProject_NewProject_ProjectOwnerSet()
     {
         $this->environ->clean();
         $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
@@ -350,6 +345,222 @@ class TestProjectCommands extends UnitTestCase
 
         $project = new ProjectModel($projectId);
         $this->assertTrue($project->ownerRef->asString() == $user1->id->asString());
+    }
+
+    public function testCreateProject_SfChecksProject_IndexesCreated()
+    {
+        $this->environ->clean();
+        $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
+        $user1 = new UserModel($user1Id);
+
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP,
+            $user1->id->asString(), $this->environ->website);
+
+        $project = new SfchecksProjectModel($projectId);
+        $collectionName = 'activity';
+        $databaseName = $project->databaseName();
+        $indexCount = iterator_count(MongoStore::getCollectionIndexes($databaseName, $collectionName));
+        $this->assertTrue($indexCount >= 1);
+        $index = ['key' => ['_id' => 1]];
+        $this->assertTrue(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName));
+    }
+
+    public function testMongoStoreIsIndexFieldNameInCollection_LexProject_Ok()
+    {
+        // setup
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
+        $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
+        $user1 = new UserModel($user1Id);
+        $srProject = null;
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
+        $project = new LexProjectModel($projectId);
+        $databaseName = $project->databaseName();
+        $collectionName = LexEntryModel::mapper($databaseName)->getCollectionName();
+
+        // is not in collection
+        $index = ['key' => ['code' => 1]];
+        $this->assertFalse(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
+        $this->assertEqual($indexName, '');
+
+        // is not in collection irrespective of field order
+        $index = ['key' => ['code' => -1]];
+        $this->assertFalse(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
+
+        // is in collection
+        $index = ['key' => ['guid' => 1]];
+        $this->assertTrue(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
+        $this->assertEqual($indexName, 'guid_1');
+
+        // is in collection irrespective of field order
+        $index = ['key' => ['guid' => -1]];
+        $this->assertTrue(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
+
+        // is in collection if its not the first key in collection
+        $index = ['key' => ['dirtySR' => 1]];
+        $this->assertTrue(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
+        $this->assertEqual($indexName, 'guid_1_dirtySR_1');
+
+        // is in collection if its not the first key in index
+        $index = ['key' => ['code' => 1, 'dirtySR' => 1]];
+        $this->assertTrue(MongoStore::isIndexFieldNameInCollection($index, $databaseName, $collectionName, $indexName));
+        $this->assertEqual($indexName, 'guid_1_dirtySR_1');
+    }
+
+    public function testMongoStoreIsAllIndexFieldNamesInCollection_LexProject_Ok()
+    {
+        // setup
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
+        $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
+        $user1 = new UserModel($user1Id);
+        $srProject = null;
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
+        $project = new LexProjectModel($projectId);
+        $databaseName = $project->databaseName();
+        $collectionName = LexEntryModel::mapper($databaseName)->getCollectionName();
+
+        // is not in collection
+        $index = ['key' => ['code' => 1]];
+        $this->assertFalse(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
+        $this->assertEqual($indexName, '');
+
+        // is not in collection irrespective of field order
+        $index = ['key' => ['code' => -1]];
+        $this->assertFalse(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
+
+        // is not in collection if only the second field name exists
+        $index = ['key' => ['code' => 1, 'dirtySR' => 1]];
+        $this->assertFalse(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
+        $this->assertEqual($indexName, '');
+
+        // is not in collection if only one field name matches
+        $index = ['key' => ['dirtySR' => 1]];
+        $this->assertFalse(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
+        $this->assertEqual($indexName, '');
+
+        // is in collection
+        $index = ['key' => ['guid' => 1]];
+        $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
+        $this->assertEqual($indexName, 'guid_1');
+
+        // is in collection irrespective of field order
+        $index = ['key' => ['guid' => -1]];
+        $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
+
+        // is in collection if both match
+        $index = ['key' => ['guid' => 1, 'dirtySR' => 1]];
+        $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
+        $this->assertEqual($indexName, 'guid_1_dirtySR_1');
+
+        // is in collection if both match irrespective of field name order
+        $index = ['key' => ['dirtySR' => 1, 'guid' => 1]];
+        $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName));
+        $this->assertEqual($indexName, 'guid_1_dirtySR_1');
+    }
+
+    public function testMongoStoreIsIndexIdenticalInCollection_LexProject_Ok()
+    {
+        // setup
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
+        $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
+        $user1 = new UserModel($user1Id);
+        $srProject = null;
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
+        $project = new LexProjectModel($projectId);
+        $databaseName = $project->databaseName();
+        $collectionName = LexEntryModel::mapper($databaseName)->getCollectionName();
+
+        // is not in collection
+        $index = ['key' => ['code' => 1]];
+        $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
+
+        // is not in collection irrespective of field order
+        $index = ['key' => ['code' => -1]];
+        $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
+
+        // is not in collection if field missing
+        $index = ['key' => ['guid' => 1]];
+        $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
+
+        // is not in collection irrespective of field order and if field missing
+        $index = ['key' => ['guid' => -1]];
+        $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
+
+        // is not in collection if with 2 field names and field missing
+        $index = ['key' => ['guid' => 1, 'dirtySR' => 1]];
+        $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
+
+        // is not in collection if field different
+        $index = ['key' => ['guid' => 1], 'unique' => false];
+        $this->assertFalse(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
+
+        // is in collection
+        $index = ['key' => ['guid' => 1], 'unique' => true];
+        $this->assertTrue(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
+
+        // is in collection if with 2 field names
+        $index = ['key' => ['guid' => 1, 'dirtySR' => 1], 'unique' => true];
+        $this->assertTrue(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName));
+    }
+
+    public function testMongoStoreEnsureIndexesInCollection_LexProject_Ok()
+    {
+        // setup
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
+        $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
+        $user1 = new UserModel($user1Id);
+        $srProject = null;
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
+        $project = new LexProjectModel($projectId);
+        $databaseName = $project->databaseName();
+        $collectionName = LexEntryModel::mapper($databaseName)->getCollectionName();
+        $indexes = LexEntryModel::mapper($databaseName)->INDEXES_REQUIRED;
+        foreach ($indexes as $index) {
+            $this->assertTrue(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName),
+                'index not in lexicon: ' . var_export($index, true));
+        }
+        $additionalIndex = ['key' => ['test' => 1]];
+        $indexes[] = $additionalIndex;
+        $this->assertFalse(MongoStore::isAllIndexFieldNamesInCollection($additionalIndex, $databaseName, $collectionName));
+
+        MongoStore::ensureIndexesInCollection($databaseName, $collectionName, $indexes);
+
+        foreach ($indexes as $index) {
+            $this->assertTrue(MongoStore::isIndexIdenticalInCollection($index, $databaseName, $collectionName),
+                'index not in lexicon: ' . var_export($index, true));
+        }
+    }
+
+    public function testCreateProject_LexProject_IndexesCreated()
+    {
+        $this->environ = new LexiconMongoTestEnvironment();
+        $this->environ->clean();
+        $user1Id = $this->environ->createUser("user1name", "User1 Name", "user1@example.com");
+        $user1 = new UserModel($user1Id);
+        $srProject = null;
+
+        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE,
+            LexProjectModel::LEXICON_APP, $user1->id->asString(), $this->environ->website, $srProject);
+
+        $project = new LexProjectModel($projectId);
+        $databaseName = $project->databaseName();
+        $collectionName = LexEntryModel::mapper($databaseName)->getCollectionName();
+        $indexCount = iterator_count(MongoStore::getCollectionIndexes($databaseName, $collectionName));
+        $this->assertTrue($indexCount >= 3);
+        $index = ['key' => ['guid' => 1]];
+        $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName));
+        $collectionName = LexOptionListModel::mapper($databaseName)->getCollectionName();
+        $indexCount = iterator_count(MongoStore::getCollectionIndexes($databaseName, $collectionName));
+        $this->assertTrue($indexCount >= 2);
+        $index = ['key' => ['code' => 1]];
+        $this->assertTrue(MongoStore::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName));
     }
 
     public function testCreateProject_NoSRProject_NotSRProjectWithNoLinks()
