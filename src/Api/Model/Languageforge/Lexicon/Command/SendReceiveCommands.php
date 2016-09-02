@@ -221,6 +221,8 @@ class SendReceiveCommands
         $statusJson = file_get_contents($projectStatePath);
         $status = json_decode($statusJson, true);
 
+        if (!$status) return false;
+
         // If the project is in a queue and the state is IDLE, override the state to PENDING
         if (array_key_exists('SRState', $status) && $status['SRState'] == "IDLE" &&
             (file_exists(self::getLFMergePaths()->editQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
