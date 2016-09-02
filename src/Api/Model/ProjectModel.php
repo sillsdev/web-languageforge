@@ -23,6 +23,96 @@ use Palaso\Utilities\FileUtilities;
 
 class ProjectModel extends Mapper\MapperModel
 {
+    /**
+     * @var Id
+     */
+    public $id;
+
+    /**
+     * ID of the user that created the project
+     * @var IdReference
+     */
+    public $ownerRef;
+
+    /**
+     * @var string
+     */
+    public $projectName;
+
+    /**
+     * Web app interface language code
+     * @var string
+     */
+    public $interfaceLanguageCode;
+
+    /**
+     * @var string
+     */
+    // TODO move this to a subclass cjh 2014-02
+    public $language;
+
+    /**
+     * @var MapOf<ProjectRoleModel>
+     */
+    public $users;
+
+    /**
+     * @var MapOf<ProjectRoleModel>
+     */
+    public $userJoinRequests;
+
+    /**
+     * A string representing exactly this project from external sources. Typically some part of the URL.
+     * @var string
+     */
+    public $projectCode;
+
+    /**
+     * Flag to indicated if this project is featured on the website
+     * @var boolean
+     */
+    public $featured;
+
+    /**
+     * Flag to indicate if this project allows users to download audio files
+     * @var boolean
+     */
+    public $allowAudioDownload;
+
+    /**
+     * Flag to indicate if this project allows users to invite a friend
+     * @var boolean
+     */
+    public $allowInviteAFriend;
+
+    /**
+     * Flag to indicate if this project is archived
+     * @var boolean
+     */
+    public $isArchived;
+
+    /**
+     * @var ProjectUserPropertiesSettings
+     */
+    public $userProperties;
+
+    /**
+     * Specifies which site this project belongs to.  e.g. scriptureforge || languageforge  cf. Website class
+     * @var string
+     */
+    public $siteName;
+
+    /**
+     *  specifies the angular app this project is associated with e.g. sfchecks || lexicon  (note: these apps are site specific)
+     * @var string
+     */
+    public $appName;
+
+    /**
+     *
+     * @var ArrayOf
+     */
+    public $usersRequestingAccess;
 
     /**
      * @var LexRoles|SfchecksRoles|SemDomTransRoles|RapumaRoles
@@ -46,6 +136,20 @@ class ProjectModel extends Mapper\MapperModel
         $this->allowAudioDownload = true;
         $this->allowInviteAFriend = true;
         $this->interfaceLanguageCode = 'en';
+
+        $this->setReadOnlyProp('id');
+        $this->setReadOnlyProp('ownerRef');
+        $this->setReadOnlyProp('users');
+        $this->setReadOnlyProp('projectCode');
+        $this->setReadOnlyProp('siteName');
+        $this->setReadOnlyProp('appName');
+        $this->setReadOnlyProp('userProperties');
+
+        // There's separate API calls to get/set $userJoinRequests
+        // TODO: Add API calls for $usersRequestingAccess DDW 2016-09
+        $this->setPrivateProp('userJoinRequests');
+        $this->setPrivateProp('usersRequestingAccess');
+
         parent::__construct(ProjectModelMongoMapper::instance(), $id);
     }
 
@@ -347,97 +451,5 @@ class ProjectModel extends Mapper\MapperModel
     {
         FileUtilities::removeFolderAndAllContents($this->getAssetsFolderPath());
     }
-
-    /**
-     * @var Id
-     */
-    public $id;
-
-    /**
-     * ID of the user that created the project
-     * @var IdReference
-     */
-    public $ownerRef;
-
-    /**
-     * @var string
-     */
-    public $projectName;
-
-    /**
-     * Web app interface language code
-     * @var string
-     */
-    public $interfaceLanguageCode;
-
-    /**
-     * @var string
-     */
-    // TODO move this to a subclass cjh 2014-02
-    public $language;
-
-    /**
-     * @var MapOf<ProjectRoleModel>
-     */
-    public $users;
-    
-    /**
-     * @var MapOf<ProjectRoleModel>
-     */
-    public $userJoinRequests;
-
-    /**
-     * A string representing exactly this project from external sources. Typically some part of the URL.
-     * @var string
-     */
-    public $projectCode;
-
-    /**
-     * Flag to indicated if this project is featured on the website
-     * @var boolean
-     */
-    public $featured;
-
-    /**
-     * Flag to indicate if this project allows users to download audio files
-     * @var boolean
-     */
-    public $allowAudioDownload;
-
-    /**
-     * Flag to indicate if this project allows users to invite a friend
-     * @var boolean
-     */
-    public $allowInviteAFriend;
-
-    /**
-     * Flag to indicate if this project is archived
-     * @var boolean
-     */
-    public $isArchived;
-
-    /**
-     * @var ProjectUserPropertiesSettings
-     */
-    public $userProperties;
-
-    /**
-     * Specifies which site this project belongs to.  e.g. scriptureforge || languageforge  cf. Website class
-     * @var string
-     */
-    public $siteName;
-
-    /**
-     *  specifies the angular app this project is associated with e.g. sfchecks || lexicon  (note: these apps are site specific)
-     * @var string
-     */
-    public $appName;
-
-    /**
-     * 
-     * @var ArrayOf
-     */
-    public $usersRequestingAccess;
-
 }
 

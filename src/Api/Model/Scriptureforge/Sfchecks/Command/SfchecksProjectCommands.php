@@ -7,6 +7,7 @@ use Api\Model\Command\ProjectCommands;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Mapper\JsonDecoder;
+use Api\Model\Mapper\JsonEncoder;
 use Api\Model\Mapper\MongoStore;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
 
@@ -44,5 +45,4 @@ class SfchecksProjectCommands
 
         return $projectId;
     }
-
 }

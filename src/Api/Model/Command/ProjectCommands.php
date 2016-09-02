@@ -65,7 +65,7 @@ class ProjectCommands
      */
     public static function readProject($id)
     {
-        $project = new ProjectModel($id);
+        $project = ProjectModel::getById($id);
 
         return JsonEncoder::encode($project);
     }
@@ -246,7 +246,7 @@ class ProjectCommands
     /**
      * Removes users from the project (two-way unlink)
      * @param string $projectId
-     * @param array $userIds array<string>
+     * @param array<string> $userIds
      * @return string $projectId
      * @throws \Exception
      */
@@ -301,6 +301,13 @@ class ProjectCommands
         // TODO: Write this. (Move renaming logic over from sf->project_update). RM 2013-08
     }
 
+    /**
+     * Updates the ProjectSettingsModel which are settings accessible only to site administrators
+     * @param string $projectId
+     * @param array<Api\Model\Sms\SmsSettings> $smsSettingsArray
+     * @param array<Api\Model\EmailSettings> $emailSettingsArray
+     * @return string $result id to the projectSettingsModel
+     */
     public static function updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray)
     {
         $projectSettings = new ProjectSettingsModel($projectId);
