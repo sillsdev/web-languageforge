@@ -48,7 +48,7 @@ class MongoStore
      */
     public static function copyDB($sourceName, $destName)
     {
-        $response = static::$_mongoClient->selectDatabase($sourceName)->command(array(
+        $response = static::$_mongoClient->admin->command(array(
             'copydb' => 1,
             'fromhost' => 'localhost',
             'fromdb' => $sourceName,
