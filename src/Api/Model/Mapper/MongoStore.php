@@ -153,9 +153,10 @@ class MongoStore
      * @param string $databaseName
      * @param string $collectionName
      * @param array $indexes see https://docs.mongodb.com/v2.4/reference/method/db.collection.createIndex/
+     * @param boolean $isDropRequired should an existing index be dropped
      * @return array indexes that don't exist yet
      */
-    public static function getIndexesNotSetInCollection($databaseName, $collectionName, $indexes)
+    public static function getIndexesNotSetInCollection($databaseName, $collectionName, $indexes, $isDropRequired = false)
     {
         $indexesToCreate = [];
         $db = self::connect($databaseName);
@@ -163,7 +164,9 @@ class MongoStore
             foreach($indexes as $index) {
                 if (self::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)) {
                     if (!self::isIndexIdenticalInCollection($index, $databaseName, $collectionName, $indexName)) {
-                        $db->selectCollection($collectionName)->dropIndex($indexName);
+                        if ($isDropRequired) {
+                            $db->selectCollection($collectionName)->dropIndex($indexName);
+                        }
                         $indexesToCreate[] = $index;
                     }
                 } else {
@@ -182,7 +185,7 @@ class MongoStore
      */
     public static function ensureIndexesInCollection($databaseName, $collectionName, $indexes)
     {
-        $indexesToCreate = self::getIndexesNotSetInCollection($databaseName, $collectionName, $indexes);
+        $indexesToCreate = self::getIndexesNotSetInCollection($databaseName, $collectionName, $indexes, true);
         if (count($indexesToCreate) > 0) {
             self::connect($databaseName)->selectCollection($collectionName)->createIndexes($indexesToCreate);
         }
