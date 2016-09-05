@@ -550,12 +550,12 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     };
 
     $scope.deleteEntry = function deleteEntry(entry) {
-      var deletemsg = 'Are you sure you want to delete the word <b>\' ' +
+      var deletemsg = 'Are you sure you want to delete the entry <b>\' ' +
         utils.getLexeme($scope.config.entry, entry) + ' \'</b>';
 
       // var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?",
       // {lexeme:utils.getLexeme($scope.config.entry, entry)});
-      modal.showModalSimple('Delete Word', deletemsg, 'Cancel', 'Delete Word').then(function () {
+      modal.showModalSimple('Delete Entry', deletemsg, 'Cancel', 'Delete Entry').then(function () {
         var iShowList = editorService.getIndexInVisibleEntries(entry.id);
         editorService.removeEntryFromLists(entry.id);
         if ($scope.entries.length > 0) {

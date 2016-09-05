@@ -18,11 +18,17 @@ var ProjectManagementPage = function () {
 
   this.tabs = {
     reports: element(by.linkText('Reports')),
-    archive: element(by.linkText('Archive'))
+    archive: element(by.linkText('Archive')),
+    remove: element(by.linkText('Delete'))
   };
 
   this.archiveTab = {
     archiveButton: this.activePane.element(by.buttonText('Archive this project'))
+  };
+
+  this.deleteTab = {
+    deleteBoxText: this.activePane.element(by.model('deleteBoxText')),
+    deleteButton: this.activePane.element(by.buttonText('Delete this project'))
   };
 
   this.settings = {};
