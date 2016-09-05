@@ -8,24 +8,25 @@ use Api\Model\ProjectModel;
 use Api\Model\UserListModel;
 use Api\Model\UserModel;
 
-class UpdateMongoForDevServer
+class UpdateDBSiteNameForLocalOrDevServer
 {
-    public function run($userId, $mode = 'test') {
+    public function run(
+        /** @noinspection PhpUnusedParameterInspection */
+        $userId, $mode = 'test'
+    ) {
         $testMode = ($mode != 'run');
         $message = '';
 
         $website = Website::get();
-        $onDevMachine = strpos($website->domain, 'dev.') !== FALSE;
-        $onLocalMachine = strrpos($website->domain, '.local') !== FALSE;
+        $onDevMachine = strpos($website->domain, 'dev.') !== false;
+        $onLocalMachine = strrpos($website->domain, '.local') !== false;
         if ($onDevMachine || $onLocalMachine) {
             $siteNameMap = array();
-
             if ($onDevMachine) {
                 $message .= "Script being run on the DEVELOPMENT SERVER khrap\n";
                 $siteNameMap['scriptureforge.org'] = 'dev.scriptureforge.org';
                 $siteNameMap['jamaicanpsalms.com'] = 'jamaicanpsalms.dev.scriptureforge.org';
                 $siteNameMap['languageforge.org'] = 'dev.languageforge.org';
-
             } else { // on local machine
                 $message .= "Script being run on your LOCAL MACHINE khrap\n";
                 $siteNameMap['scriptureforge.org'] = 'scriptureforge.local';
@@ -40,13 +41,11 @@ class UpdateMongoForDevServer
                 $userCount[$from] = 0;
             }
 
-            $projectlist = new ProjectListModel();
-            $projectlist->read();
-
             // loop over every project
-            foreach ($projectlist->entries as $projectParams) {
-                $projectId = $projectParams['id'];
-                $project = new ProjectModel($projectId);
+            $projectList = new ProjectListModel();
+            $projectList->read();
+            foreach ($projectList->entries as $projectParams) {
+                $project = new ProjectModel($projectParams['id']);
                 $siteName = $project->siteName;
                 if (array_key_exists($siteName, $siteNameMap)) {
                     $project->siteName = $siteNameMap[$siteName];
@@ -58,10 +57,9 @@ class UpdateMongoForDevServer
             }
 
             // loop over every user
-            $userlist = new UserListModel();
-            $userlist->read();
-
-            foreach ($userlist->entries as $userParams) {
+            $userList = new UserListModel();
+            $userList->read();
+            foreach ($userList->entries as $userParams) {
                 $user = new UserModel($userParams['id']);
                 $newSiteRole = array();
                 //$message .= $user->username . "\n";

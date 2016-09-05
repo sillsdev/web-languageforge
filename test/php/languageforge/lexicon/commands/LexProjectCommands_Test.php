@@ -1,11 +1,13 @@
 <?php
 
+use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\ProjectRoleModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\UserModel;
 
@@ -53,6 +55,52 @@ class TestLexProjectCommands extends UnitTestCase
         $this->assertFalse($project2->config->tasks['addMeanings']->visible);
         $this->assertEqual($project2->config->entry->fields['lexeme']->inputSystems[0], 'my');
         $this->assertEqual($project2->config->entry->fields['lexeme']->inputSystems[1], 'th');
+    }
+
+    public function testUpdateProject_ReadOnlyProperties_PropertiesNotChanged()
+    {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $userId = $e->createUser("User", "Name", "name@example.com");
+        $user = new UserModel($userId);
+        $user->role = SystemRoles::USER;
+
+        $hackerId = $e->createUser("Hacker", "Hacker", "hacker@example.com");
+        $hacker = new UserModel($hackerId);
+        $hacker->role = SystemRoles::USER;
+        $hacker->write();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $project->addUser($userId, ProjectRoles::MANAGER);
+        $project->ownerRef = $user->id->asString();
+        $user->addProject($projectId);
+        $user->write();
+        $project->write();
+
+        $hackedData = 'hacked';
+        $params = ProjectCommands::readProject($projectId);
+        $params['projectName'] = 'new project name';
+        $params['id'] = $hackedData;
+        $params['ownerRef'] = $hacker->id->asString();
+        $params['users'][$hacker->id->asString()]['role'] = ProjectRoles::MANAGER;
+        $params['projectCode'] = $hackedData;
+        $params['siteName'] = $hackedData;
+        $params['appName'] = $hackedData;
+        $params['userProperties']['userProfilePickLists']['city']['name'] = $hackedData;
+        LexProjectCommands::updateProject($projectId, $userId, $params);
+
+        $updatedProject = ProjectCommands::readProject($projectId);
+        $this->assertEqual($updatedProject['projectName'], 'new project name');
+        $this->assertNotEqual($updatedProject['id'], $hackedData);
+        $this->assertNotEqual($updatedProject['ownerRef'], $hacker->id->asString());
+        $this->assertFalse(isset($updatedProject['users'][$hacker->id->asString()]));
+        $this->assertNotEqual($updatedProject['projectCode'], $hackedData);
+        $this->assertNotEqual($updatedProject['siteName'], $hackedData);
+        $this->assertNotEqual($updatedProject['appName'], $hackedData);
+        $this->assertNotEqual($updatedProject['userProperties']['userProfilePickLists']['city']['name'], $hackedData);
     }
 
     public function testCreateCustomFieldsViews_ProjectDoesNotExist_NoAction()

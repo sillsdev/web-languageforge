@@ -43,7 +43,7 @@
                     <i class="icon-save"></i> {{saveButtonTitle()}} </button>
                 <button data-ng-if="rights.canDeleteEntry()" style="margin-right: 5px" data-ng-click="deleteEntry(currentEntry)"
                         class="btn btn-mini" title="{{ 'Delete Entry' | translate }}">
-                    <i class="icon-remove"></i> {{'Word' | translate}} </button>
+                    <i class="icon-remove"></i> {{'Entry' | translate}} </button>
             </div>
             <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
         </div>
