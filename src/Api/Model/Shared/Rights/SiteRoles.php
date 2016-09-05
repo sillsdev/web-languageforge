@@ -26,7 +26,9 @@ class SiteRoles extends RolesBase
         //$rights[] = Domain::USERS + Operation::DELETE_OWN;
         self::$_rights[self::USER] = $rights;
 
-        // Project Creator (User plus ability to create projects)
+        // Project Creator (User plus ability to create/delete own projects)
+        // Note: will use ProjectModel::isOwner() to determine
+        // ARCHIVE and DELETE of "OWN" projects
         $rights = self::$_rights[self::USER];
         $rights[] = Domain::PROJECTS + Operation::CREATE;
         self::$_rights[self::PROJECT_CREATOR] = $rights;
