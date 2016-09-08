@@ -40,7 +40,7 @@ class TestLiftImportInfo
 
 }
 
-class TestLiftImport extends UnitTestCase
+class TestLiftImportLargeFile extends UnitTestCase
 {
     public function testLiftImportMerge_LargeFile_NoException()
     {
@@ -52,14 +52,19 @@ class TestLiftImport extends UnitTestCase
 
         $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 //         $liftFilePath = '/home/cambell/src/Forge/TestData/Gilaki/Gilaki.lift';
-        $liftFilePath = '/home/cambell/src/Forge/TestData/Webster/Webster.lift';
+//        $liftFilePath = '/home/cambell/src/Forge/TestData/Webster/Webster.lift';
+//        $liftFilePath = '/home/ira/TestData/test-langprojih-flex/test-langprojih-flex.lift';
+        $liftFilePath = '/home/ira/TestData/test-rwr-flex/test-rwr-flex.lift';
         $mergeRule =  LiftMergeRule::IMPORT_WINS;
         $skipSameModTime = false;
 
+        $time1 = new DateTime();
         LiftImport::get()->merge($liftFilePath, $project, $mergeRule, $skipSameModTime);
+        $time2 = new DateTime();
+        $elapsed = $time2->diff($time1);
+        echo $elapsed->format('%I:%S') . '<br/>';
 
         $testInfo->add('post merge');
-
     }
 
 }
