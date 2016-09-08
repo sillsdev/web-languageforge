@@ -6,7 +6,7 @@ then
     exit 1
 fi
 
-for i in {1..158}
+for i in {1..160}
 do
 	php FixEntryGuids.php
 done
