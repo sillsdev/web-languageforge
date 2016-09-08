@@ -2,11 +2,15 @@
 
 namespace Api\Library\Shared\Script\Migration;
 
-use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Mapper\ArrayOf;
+use Api\Model\Mapper\MapperListModel;
+use Api\Model\Mapper\MongoMapper;
 use Api\Model\ProjectListModel;
+use Api\Model\ProjectModel;
+use MongoDB\BSON\UTCDatetime;
 
 (php_sapi_name() == 'cli') or die('this script must be run on the command-line');
 
@@ -55,10 +59,11 @@ class FixEntryGuids
     private static function analyzeProject($project, $testMode)
     {
         $entryModifiedCount = 0;
-        $entryList = LexEntryCommands::listEntries($project->id->asString());
+        $entryList = new LexAllEntryListModel($project);
+        $entryList->read();
         foreach ($entryList->entries as $entryListItem) {
             $entry = new LexEntryModel($project, $entryListItem['id']);
-            if (!$entry->guid || !Guid::isValid($entry->guid)) {
+            if (!isset($entry->guid) || !$entry->guid || !Guid::isValid($entry->guid)) {
                 $entry->guid = Guid::create();
                 $entryModifiedCount++;
 
@@ -73,7 +78,7 @@ class FixEntryGuids
             $project->write();
         }
 
-        print("$entryModifiedCount of $entryList->count entries had sense guids created.\n");
+        print("$entryModifiedCount of $entryList->count entries had guids created.\n");
     }
 }
 
@@ -84,6 +89,40 @@ class FixEntryGuids
  */
 class LexProjectModelForEntryGuidMigration extends LexProjectModel {
     public $hasHadEntryGuidMigrated;
+}
+
+class LexAllEntryListModel extends MapperListModel {
+    /**
+     * Returns all entries (includes deleted entries)
+     *
+     * @param ProjectModel $projectModel
+     * @param int $newerThanTimestamp
+     * @param int $limit
+     * @param int $skip
+     */
+    public function __construct($projectModel, $newerThanTimestamp = null, $limit = 0, $skip = 0)
+    {
+        // for use with read()
+        $this->entries = new ArrayOf(function () use ($projectModel) { return new LexEntryModel($projectModel); });
+
+        if (!is_null($newerThanTimestamp)) {
+            $startDate = new UTCDatetime(1000*$newerThanTimestamp);
+            parent::__construct(self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array(), array(), $limit, $skip);
+        } else {
+            parent::__construct(self::mapper($projectModel->databaseName()), array(), array(), array(), $limit, $skip);
+        }
+    }
+
+    public static function mapper($databaseName)
+    {
+        /** @var MongoMapper $instance */
+        static $instance = null;
+        if (null === $instance || $instance->databaseName() != $databaseName) {
+            $instance = new MongoMapper($databaseName, 'lexicon');
+        }
+
+        return $instance;
+    }
 }
 
 FixEntryGuids::run('run');
