@@ -16,39 +16,28 @@ class FixEntryGuids
 {
     public static function run($mode = 'test')
     {
-        ini_set('max_execution_time', 300); // Sufficient time to update for every project
-        $testMode = ($mode == 'test');
+        $testMode = ($mode != 'run');
         print("Fix Entry guids.\n");
 
         $projectList = new ProjectListModel();
         $projectList->read();
         $totalProjectCount = $projectList->count;
-
-        // Because of the time needed to process projects, we'll limit the
-        // migration script to run in batches of this many projects per run.
-        $maxNumProjects = 1;
-
         $skippedProjects = 0;
-        $lfProjectCount = 0;
-        foreach ($projectList->entries as $projectParams) {
-            $projectId = $projectParams['id'];
-            $project = new LexProjectModelForEntryGuidMigration($projectId);
-            if ($project->appName == 'lexicon' && !$project->hasHadEntryGuidMigrated) {
-                if (!$project->hasSendReceive()) {
-                    print("\n-------------  $project->projectName.\n");
-                    $lfProjectCount++;
-                    self::analyzeProject($project, $projectId, $testMode);
-                } else {
-                    continue;
-                }
+        $projectCount = 0;
+        foreach ($projectList->entries as $projectListItem) {
+            $project = new LexProjectModelForEntryGuidMigration($projectListItem['id']);
+            if ($project->appName == 'lexicon' && !$project->hasHadEntryGuidMigrated && !$project->hasSendReceive()) {
+                print("\n-------------  $project->projectName\n");
+                $projectCount++;
+                self::analyzeProject($project, $testMode);
             } else {
                 $skippedProjects++;
             }
 
             unset($project);
-            if ($lfProjectCount >= $maxNumProjects) {
+            if ($projectCount >= 1) {
                 print("\nProcessed projects " . ($skippedProjects + 1) . " - " .
-                    ($skippedProjects + $lfProjectCount) . " of $totalProjectCount projects\n");
+                    ($skippedProjects + $projectCount) . " of $totalProjectCount projects\n");
                 break;
             }
         }
@@ -60,13 +49,13 @@ class FixEntryGuids
     /**
      * Analyze a lexicon project and create Entry guids.
      * @param LexProjectModelForEntryGuidMigration $project
-     * @param string $projectId
      * @param string $testMode
+     * @internal param string $projectId
      */
-    private static function analyzeProject($project, $projectId, $testMode)
+    private static function analyzeProject($project, $testMode)
     {
         $entryModifiedCount = 0;
-        $entryList = LexEntryCommands::listEntries($projectId);
+        $entryList = LexEntryCommands::listEntries($project->id->asString());
         foreach ($entryList->entries as $entryListItem) {
             $entry = new LexEntryModel($project, $entryListItem['id']);
             if (!$entry->guid || !Guid::isValid($entry->guid)) {
@@ -97,4 +86,4 @@ class LexProjectModelForEntryGuidMigration extends LexProjectModel {
     public $hasHadEntryGuidMigrated;
 }
 
-FixEntryGuids::run('test');
+FixEntryGuids::run('run');
