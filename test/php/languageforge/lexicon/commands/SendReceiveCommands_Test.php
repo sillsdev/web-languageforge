@@ -380,7 +380,7 @@ class TestSendReceiveCommands extends UnitTestCase
         $projectId = $project->write();
         $mockStatePath = sys_get_temp_dir();
         $projectStatePath = $mockStatePath . '/' . $project->projectCode . '.state';
-        file_put_contents($projectStatePath, '{"SRState": "IDLE"}');
+        file_put_contents($projectStatePath, 'intentionally: not_valid_json, SRState: IDLE');
 
         $status = SendReceiveCommands::getProjectStatus($projectId, $mockStatePath);
 

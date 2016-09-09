@@ -29,7 +29,7 @@
                     data-ng-hide="projectSettings.hasSendReceive">
                 Import entries from LIFT</button>
             <button class="btn btn-primary" data-ng-click="syncProject()" data-ng-show="projectSettings.hasSendReceive">
-                Sync project with LanguageDepot.org</button>
+                Synchronize project with LanguageDepot.org</button>
         </div>
         <div class="lexiconListItem" data-ng-repeat="entry in visibleEntries track by entry.id"
              data-ng-click="editEntryAndScroll(entry.id)">

@@ -166,13 +166,12 @@ angular.module('lexicon',
           sendReceive.setSyncStarted();
         } else {
           notice.push(notice.ERROR,
-            'The project could not be synced with LanguageDepot.org. Please try again.');
+            'The project could not be synchronized with LanguageDepot.org. Please try again.');
         }
       });
     };
 
     $scope.$on('$destroy', sendReceive.cancelAllStatusTimers);
-    $scope.$on('$locationChangeStart', sendReceive.cancelAllStatusTimers);
 
     // setup offline.js options
     // see https://github.com/hubspot/offline for all options

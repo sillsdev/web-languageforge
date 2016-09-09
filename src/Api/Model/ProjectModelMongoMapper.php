@@ -3,12 +3,15 @@
 namespace Api\Model;
 
 use Api\Model\Mapper\MongoMapper;
-use Api\Model\Mapper\MongoStore;
 
 require_once APPPATH . 'Api/Model/ProjectModel.php';
 
-class ProjectModelMongoMapper extends \Api\Model\Mapper\MongoMapper
+class ProjectModelMongoMapper extends MongoMapper
 {
+    public $INDEXES_REQUIRED = [
+        ['key' => ['projectCode' => 1], 'unique' => true]
+    ];
+
     public static function instance()
     {
         static $instance = null;
