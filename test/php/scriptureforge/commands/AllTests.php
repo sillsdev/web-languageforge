@@ -11,6 +11,7 @@ class AllScriptureforgeCommandsTests extends TestSuite
         $this->addFile(TestPhpPath . 'scriptureforge/commands/TextCommands_Test.php');
         $this->addFile(TestPhpPath . 'scriptureforge/commands/SessionCommands_Test.php');
         $this->addFile(TestPhpPath . 'scriptureforge/commands/QuestionCommands_Test.php');
+        $this->addFile(TestPhpPath . 'scriptureforge/commands/SfchecksProjectCommands_Test.php');
         $this->addFile(TestPhpPath . 'scriptureforge/commands/SfchecksUploadCommands_Test.php');
     }
 

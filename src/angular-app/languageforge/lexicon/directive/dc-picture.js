@@ -35,7 +35,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
 
         return 'This picture references an external file (' +
           picture.fileName +
-          ') and therefore cannot be synchronised. ' +
+          ') and therefore cannot be synchronized. ' +
           'To see the picture, link it to an internally referenced file. ' +
           'Replace the file here or in FLEx, move or copy the file to the Linked Files folder.';
       };

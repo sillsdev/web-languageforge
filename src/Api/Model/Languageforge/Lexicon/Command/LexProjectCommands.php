@@ -69,17 +69,6 @@ class LexProjectCommands
     }
 
     /**
-     * @param string $id
-     * @return array
-     */
-    public static function readProject($id)
-    {
-        $project = new LexProjectModel($id);
-
-        return JsonEncoder::encode($project);
-    }
-
-    /**
      * @param string $fieldName
      * @return bool
      */

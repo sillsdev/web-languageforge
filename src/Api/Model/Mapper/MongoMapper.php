@@ -335,6 +335,10 @@ class MongoMapper
         $this->_collection->drop();
     }
 
+    public function getCollectionName() {
+        return $this->_collection->getCollectionName();
+    }
+
     public function removeSubDocument($rootId, $property, $id)
     {
         CodeGuard::checkTypeAndThrow($rootId, 'string');

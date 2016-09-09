@@ -82,7 +82,7 @@ class TestLexEntryCommands extends UnitTestCase
         $this->assertEqual($dto->count, 0);
 
         // Clean up after ourselves
-        ProjectCommands::deleteProjects(array($projectId));
+        ProjectCommands::deleteProjects(array($projectId), $project->ownerRef->asString());
     }
 
     public function testReadEntry_ReadBackOk()

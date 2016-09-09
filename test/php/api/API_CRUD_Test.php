@@ -40,14 +40,14 @@ class ApiCrudTestEnvironment
     {
         $params = array('id' => '', 'username' => $username, 'name' => $username, 'email' => 'user@example.com');;
 
-        return UserCommands::updateUser($params);
+        return UserCommands::updateUser($params, $this->e->website);
     }
 
     public function makeSystemAdminUser()
     {
         $params = array('id' => '', 'username' => 'admin', 'name' => 'admin', 'email' => 'admin@example.com', 'role' => SystemRoles::SYSTEM_ADMIN);
 
-        return UserCommands::updateUser($params);
+        return UserCommands::updateUser($params, $this->e->website);
     }
 
     public function makeText($projectId, $textName)
@@ -107,7 +107,7 @@ class TestApiCrud extends UnitTestCase
         $this->assertEqual($result['id'], $id);
 
         // Delete
-        $result = ProjectCommands::deleteProjects(array($id));
+        $result = ProjectCommands::deleteProjects(array($id), $userId);
         $this->assertTrue($result);
     }
 
@@ -117,6 +117,7 @@ class TestApiCrud extends UnitTestCase
 
         // create project
         $projectId = $e->makeProject();
+        $project = new ProjectModel($projectId);
 
         // create an user and add to the project
         $userId = $e->getProjectMember($projectId, 'user1');
@@ -167,7 +168,7 @@ class TestApiCrud extends UnitTestCase
         $this->assertEqual(0, $dto['count']);
 
         // Clean up after ourselves
-        ProjectCommands::deleteProjects(array($projectId));
+        ProjectCommands::deleteProjects(array($projectId), $project->ownerRef->asString());
     }
 
     public function testQuestionTemplateCRUD_CRUDOK()
@@ -220,6 +221,7 @@ class TestApiCrud extends UnitTestCase
     {
         $e = new ApiCrudTestEnvironment();
         $projectId = $e->makeProject();
+        $project = new ProjectModel($projectId);
 
         $userId = $e->getProjectMember($projectId, 'user1');
 
@@ -264,7 +266,7 @@ class TestApiCrud extends UnitTestCase
         $this->assertEqual($count, count($result['texts']));
 
         // Clean up after ourselves
-        ProjectCommands::deleteProjects(array($projectId));
+        ProjectCommands::deleteProjects(array($projectId), $project->ownerRef->asString());
     }
 
     public function testUserCRUD_CRUDOK()
@@ -296,7 +298,7 @@ class TestApiCrud extends UnitTestCase
         // Update
         $result['username'] = 'other';
         $result['email'] = 'other@example.com';
-        $id = UserCommands::updateUser($result);
+        $id = UserCommands::updateUser($result, $e->e->website);
         $this->assertNotNull($id);
         $this->assertEqual($result['id'], $id);
 
