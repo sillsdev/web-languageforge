@@ -115,8 +115,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     }
 
     function warnOfUnsavedEdits(entry) {
-      notice.push(notice.WARN, 'A synchronise has been started by another user. ' +
-        'When the synchronise has finished, please check your recent edits in entry "' +
+      notice.push(notice.WARN, 'A synchronize has been started by another user. ' +
+        'When the synchronize has finished, please check your recent edits in entry "' +
         $scope.getWordForDisplay(entry) + '".');
     }
 
@@ -534,12 +534,12 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
           break;
         case 'multiparagraph':
-          if (angular.isUndefined(data)) {
-            data = {};
-          }
-
           if (angular.isUndefined(data.type)) {
             data.type = 'multiparagraph';
+          }
+
+          if (angular.isUndefined(data.paragraphsHtml)) {
+            data.paragraphsHtml = '';
           }
 
           break;
@@ -550,12 +550,12 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     };
 
     $scope.deleteEntry = function deleteEntry(entry) {
-      var deletemsg = 'Are you sure you want to delete the word <b>\' ' +
+      var deletemsg = 'Are you sure you want to delete the entry <b>\' ' +
         utils.getLexeme($scope.config.entry, entry) + ' \'</b>';
 
       // var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?",
       // {lexeme:utils.getLexeme($scope.config.entry, entry)});
-      modal.showModalSimple('Delete Word', deletemsg, 'Cancel', 'Delete Word').then(function () {
+      modal.showModalSimple('Delete Entry', deletemsg, 'Cancel', 'Delete Entry').then(function () {
         var iShowList = editorService.getIndexInVisibleEntries(entry.id);
         editorService.removeEntryFromLists(entry.id);
         if ($scope.entries.length > 0) {
@@ -644,6 +644,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
     function syncProjectStatusSuccess() {
       editorService.refreshEditorData().then(function () {
+        setCurrentEntry($scope.entries[editorService.getIndexInEntries($scope.currentEntry.id)]);
         sessionService.refresh(lexConfig.refresh);
       });
     }

@@ -6,7 +6,7 @@ angular.module('bellows.services')
  *
  *
  */
-  .factory('offlineCache', ['$window', '$q', function($window, $q) {
+  .factory('offlineCache', ['$window', '$q', function ($window, $q) {
     var indexedDB = $window.indexedDB;
     var dbName = 'xforgeCache';
     var db = null;
@@ -29,7 +29,7 @@ angular.module('bellows.services')
         var request = indexedDB.open(dbName, version);
 
         // migration and database setup
-        request.onupgradeneeded = function(e) {
+        request.onupgradeneeded = function (e) {
           db = e.target.result;
 
           e.target.transaction.onerror = indexedDB.onerror;
@@ -38,161 +38,186 @@ angular.module('bellows.services')
           if (db.objectStoreNames.contains('cached')) {
             db.deleteObjectStore('cached');
           }
+
           if (db.objectStoreNames.contains('offlineActions')) {
             db.deleteObjectStore('offlineActions');
           }
 
-
           if (db.objectStoreNames.contains('entries')) {
             db.deleteObjectStore('entries');
           }
-          var entriesStore = db.createObjectStore('entries', {keyPath: "id"});
+
+          var entriesStore = db.createObjectStore('entries', { keyPath: 'id' });
           entriesStore.createIndex('projectId', 'projectId', { unique: false });
 
           if (db.objectStoreNames.contains('comments')) {
             db.deleteObjectStore('comments');
           }
-          var commentsStore = db.createObjectStore('comments', {keyPath: "id"});
+
+          var commentsStore = db.createObjectStore('comments', { keyPath: 'id' });
           commentsStore.createIndex('projectId', 'projectId', { unique: false });
 
           if (db.objectStoreNames.contains('workingsets')) {
             db.deleteObjectStore('workingsets');
           }
-          var workingsetStore = db.createObjectStore('workingsets', {keyPath: "id"});
+
+          var workingsetStore = db.createObjectStore('workingsets', { keyPath: 'id' });
           workingsetStore.createIndex('projectId', 'projectId', { unique: false });
-          
+
           if (db.objectStoreNames.contains('projects')) {
             db.deleteObjectStore('projects');
           }
-          var projectsStore = db.createObjectStore('projects', {keyPath: "id"});
+
+          db.createObjectStore('projects', { keyPath: 'id' });
         };
 
-        request.onsuccess = function(e) {
+        request.onsuccess = function (e) {
           db = e.target.result;
           deferred.resolve();
         };
 
-        request.onerror = function(e) {
-          deferred.reject("Error: opening database. " + e.value);
-        }
+        request.onerror = function (e) {
+          deferred.reject('Error: opening database. ' + e.value);
+        };
 
       } else {
         deferred.resolve();
       }
+
       return deferred.promise;
     };
 
     /**
      *
-     * @param storeName
-     * @param objects - array of objects to set
-     * @param isAdd
+     * @param {string} storeName
+     * @param {string} projectId
+     * @param {array} items - array of objects to set
+     * @param {boolean} isAdd
      * @returns {*}
      */
     function setObjectsInStore(storeName, projectId, items, isAdd) {
-      var isAdd = isAdd || false;
+      isAdd = isAdd || false;
       var deferred = $q.defer();
-      openDbIfNecessary().then(function() {
+      openDbIfNecessary().then(function () {
         var request;
-        var trans = db.transaction([storeName], "readwrite");
+        var trans = db.transaction([storeName], 'readwrite');
 
         var store = trans.objectStore(storeName);
 
         // inspired by: http://stackoverflow.com/questions/10471759/inserting-large-quantities-in-indexeddbs-objectstore-blocks-ui
         var i = 0;
         function insertNext() {
-          if (i<items.length) {
-            //console.log("insert into " + storeName + " item " + (i + 1) + " of " + items.length);
-            items[i].projectId = projectId;
+          if (i < items.length) {
+            var item = angular.copy(items[i]);
+            item.projectId = projectId;
             store.put(items[i]).onsuccess = insertNext;
             if (isAdd) {
-              request = store.add(items[i]);
+              request = store.add(item);
             } else {
-              request = store.put(items[i]);
+              request = store.put(item);
             }
+
             request.onsuccess = insertNext;
-            request.onerror = function(e) {
-              deferred.reject("Could not persist object in " + storeName);
+            request.onerror = function () {
+              deferred.reject('Could not persist object in ' + storeName);
             };
+
             ++i;
           } else {   // complete
             deferred.resolve(true);
           }
         }
+
         insertNext();
 
-      }, function(error) {
+      }, function (error) {
+
         deferred.reject(error);
       });
+
       return deferred.promise;
     }
 
     function deleteObjectInStore(storeName, key) {
-      // cjh 2015-03 it seems to me from the spec that we can call "delete" without first checking if the id exists
+      // cjh 2015-03 it seems to me from the spec that we can call "delete" without first checking
+      // if the id exists
       // http://www.w3.org/TR/IndexedDB/#dfn-steps-for-deleting-records-from-an-object-store
       var deferred = $q.defer();
-      openDbIfNecessary().then(function() {
-        // we write ['delete'] to satisfy the yui compressor - arg! - time to get a new compressor - cjh 2015-03
-        var request = db.transaction(storeName, "readwrite").objectStore(storeName)['delete'](key);
-        request.onsuccess = function(e) {
+      openDbIfNecessary().then(function () {
+        // we write ['delete'] to satisfy the yui compressor - arg! - time to get a new compressor -
+        // cjh 2015-03
+        var request = db.transaction(storeName, 'readwrite').objectStore(storeName)['delete'](key);
+        request.onsuccess = function () {
           deferred.resolve(true);
         };
-        request.onerror = function(e) {
+
+        request.onerror = function (e) {
           deferred.reject(e.value);
         };
-      }, function(error) {
+      }, function (error) {
+
         deferred.reject(error);
       });
+
       return deferred.promise;
 
     }
 
     function getAllFromStore(storeName, projectId) {
       var deferred = $q.defer();
-      openDbIfNecessary().then(function() {
-        var entries = [];
+      openDbIfNecessary().then(function () {
+        var items = [];
         var index = db.transaction(storeName).objectStore(storeName).index('projectId');
         var cursorRequest = index.openCursor(IDBKeyRange.only(projectId));
-        cursorRequest.onsuccess = function(e) {
+        cursorRequest.onsuccess = function (e) {
           var cursor = e.target.result;
           if (cursor) {
-            entries.push(cursor.value);
-            // should be  cursor.continue(); but needed a work around to work with the yui compressor - cjh 2015-03
-            cursor["continue"]();
+            if (angular.isDefined(cursor.value.projectId)) delete cursor.value.projectId;
+            items.push(cursor.value);
+
+            // should be cursor.continue(); but needed a work around to work with the yui
+            // compressor - cjh 2015-03
+            cursor['continue']();
           } else {
-            deferred.resolve(entries);
+            deferred.resolve(items);
           }
         };
+
         cursorRequest.onerror = function (e) {
           console.log(e.value);
-          deferred.reject("Error: cursor failed in getAll" + storeName);
+          deferred.reject('Error: cursor failed in getAll' + storeName);
         };
-      }, function(error) {
+      }, function (error) {
+
         deferred.reject(error);
       });
+
       return deferred.promise;
     }
 
     function getOneFromStore(storeName, key) {
       var deferred = $q.defer();
-      openDbIfNecessary().then(function() {
+      openDbIfNecessary().then(function () {
         var request = db.transaction(storeName).objectStore(storeName).get(key);
-        request.onsuccess = function(e) {
+        request.onsuccess = function (e) {
           if (e.target.result) {
+            if (angular.isDefined(e.target.result.projectId)) delete e.target.result.projectId;
             deferred.resolve(e.target.result);
           } else {
             deferred.reject();
           }
         };
-        request.onerror = function(e) {
+
+        request.onerror = function (e) {
           deferred.reject(e.value);
         };
-      }, function(error) {
+      }, function (error) {
+
         deferred.reject(error);
       });
+
       return deferred.promise;
     }
-
 
     return {
       setObjectsInStore: setObjectsInStore,

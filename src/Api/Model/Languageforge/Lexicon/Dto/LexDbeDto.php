@@ -20,7 +20,7 @@ class LexDbeDto
      * @return array
      */
 
-    const MAX_ENTRIES_PER_REQUEST = 5000;
+    const MAX_ENTRIES_PER_REQUEST = 2500;
 
     public static function encode($projectId, $userId, $lastFetchTime = null, $offset = 0)
     {

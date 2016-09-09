@@ -22,7 +22,7 @@
 
             <!-- picklist -->
             <dl class="picklists" style="height: 300px; overflow: auto;">
-                <dt translate="Entry Level Fields"></dt>
+                <dt data-translate="Entry Level Fields"></dt>
                 <dd><div class="controls">
                     <div data-ng-repeat="fieldName in configDirty.entry.fieldOrder" 
                         data-ng-class="{selected:currentField.name == fieldName}" data-ng-click="selectField(fieldName)">
@@ -32,7 +32,7 @@
                         </span>
                     </div>
                 </div></dd>
-                <dt translate="Meaning Level Fields"></dt>
+                <dt data-translate="Meaning Level Fields"></dt>
                 <dd><div class="controls">
                     <div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fieldOrder" 
                         data-ng-class="{selected:currentField.name == fieldName}" data-ng-click="selectField(fieldName)">
@@ -42,7 +42,7 @@
                         </span>
                     </div>
                 </div></dd>
-                <dt translate="Example Level Fields"></dt>
+                <dt data-translate="Example Level Fields"></dt>
                 <dd><div class="controls">
                     <div data-ng-repeat="fieldName in configDirty.entry.fields.senses.fields.examples.fieldOrder" 
                         data-ng-class="{selected:currentField.name == fieldName}" data-ng-click="selectField(fieldName)">
@@ -53,7 +53,7 @@
                     </div>
                 </div></dd>
             </dl>
-            <small translate="Custom Fields shown in <i>italics</i>"></small>
+            <small data-translate="Custom Fields shown in <i>italics</i>"></small>
             <div class="control-group">
                 <button class="btn btn-small" data-ng-click="openNewCustomFieldModal()"><i class="icon-plus"></i>{{'New Custom Field' | translate}} </button>
             </div>
@@ -131,7 +131,8 @@
                                 <li data-ng-click="currentField.inputSystems.tag = inputSystemTag"
                                     data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder"
                                     data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
-                                    <div class="checkbox"><input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
+                                    <div class="checkbox"><!--suppress HtmlFormInputWithoutLabel -->
+                                        <input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
                                         {{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
                             </ul>
                             <a href="" data-ng-click="editInputSystems.collapsed = false">{{'Edit input systems' | translate}}</a>
@@ -150,7 +151,7 @@
                     <div data-collapse="editInputSystems.collapsed">
                         <button class="btn btn-primary {{interfaceConfig.pullToSide}}" 
                             data-ng-click="editInputSystems.done()"><i class="icon-ok"></i>{{'Done' | translate}}</button>
-                        <h3 style="font-weight:normal" translate="Edit Input Systems"></h3>
+                        <h3 style="font-weight:normal" data-translate="Edit Input Systems"></h3>
                         <div data-ng-include="'/angular-app/languageforge/lexicon/views/configuration-input-systems.html'"></div>
                     </div>
                 </div>
@@ -166,99 +167,105 @@ configDirty.entry {{configDirty.entry | json}}
  -->
         </div>
     </tab>
+    <!-- hide Tasks tab
     <tab heading="Tasks" class="{{interfaceConfig.pullNormal}}">
         <div data-ng-controller="TaskConfigCtrl">
         <div class="row outer-flex">
 
         <!-- Left column: task list -->
+        <!-- hide Tasks tab
         <div class="span3 control-group">
             <dl class="picklists">
-                <dt translate="Dashboard"></dt>
+                <dt data-translate="Dashboard"></dt>
                 <dd><div class="controls">
-                    <div data-ng-click="selectTask('dashboard')" 
+                    <div data-ng-click="selectTask('dashboard')"
                         data-ng-class="{selected:currentTaskName == 'dashboard'}"
-                        translate="Dashboard">
+                        data-translate="Dashboard">
                     </div>
                 </div></dd>
-                <!-- 
-                <dt translate="Dictionary"></dt>
+                <!--
+                <dt data-translate="Dictionary"></dt>
                 <dd><div class="controls">
-                    <div data-ng-click="selectTask('dbe')" 
-                        data-ng-class="{selected:currentTaskName == 'dbe'}" 
-                        translate="Browse &amp; Edit">
+                    <div data-ng-click="selectTask('dbe')"
+                        data-ng-class="{selected:currentTaskName == 'dbe'}"
+                        data-translate="Browse &amp; Edit">
                     </div>
                 </div></dd>
-                <dt translate="Add Information"></dt>
+                <dt data-translate="Add Information"></dt>
                 <dd><div class="controls">
-                    <div data-ng-click="selectTask('addMeanings')" 
-                        data-ng-class="{selected:currentTaskName == 'addMeanings'}" 
-                        translate="Add Meanings">
+                    <div data-ng-click="selectTask('addMeanings')"
+                        data-ng-class="{selected:currentTaskName == 'addMeanings'}"
+                        data-translate="Add Meanings">
                     </div>
-                    <div data-ng-click="selectTask('addGrammar')" 
-                        data-ng-class="{selected:currentTaskName == 'addGrammar'}" 
-                        translate="Add Parts of Speech">
+                    <div data-ng-click="selectTask('addGrammar')"
+                        data-ng-class="{selected:currentTaskName == 'addGrammar'}"
+                        data-translate="Add Parts of Speech">
                     </div>
-                    <div data-ng-click="selectTask('addExamples')" 
-                        data-ng-class="{selected:currentTaskName == 'addExamples'}" 
-                        translate="Add Example Sentences">
+                    <div data-ng-click="selectTask('addExamples')"
+                        data-ng-class="{selected:currentTaskName == 'addExamples'}"
+                        data-translate="Add Example Sentences">
                     </div>
                 </div></dd>
                  -->
-                <dt translate="Gather Words"></dt>
+                <!-- hide Tasks tab
+                <dt data-translate="Gather Words"></dt>
                 <dd><div class="controls">
                     <!-- 
                     <div data-ng-click="selectTask('gatherTexts')" 
                         data-ng-class="{selected:currentTaskName == 'gatherTexts'}" 
-                        translate="From Texts">
+                        data-translate="From Texts">
                     </div>
                     <div data-ng-click="selectTask('wordlist')" 
                         data-ng-class="{selected:currentTaskName == 'wordlist'}" 
-                        translate="From a Word List">
+                        data-translate="From a Word List">
                     </div>
                      -->
-                    <div data-ng-click="selectTask('semdom')" 
+                    <!-- hide Tasks tab
+                    <div data-ng-click="selectTask('semdom')"
                         data-ng-class="{selected:currentTaskName == 'semdom'}" 
-                        translate="From Semantic Domains">
+                        data-translate="From Semantic Domains">
                     </div>
                 </div></dd>
                 <!-- 
-                <dt translate="Review"></dt>
+                <dt data-translate="Review"></dt>
                 <dd><div class="controls">
                     <div data-ng-click="selectTask('review')" 
                         data-ng-class="{selected:currentTaskName == 'review'}" 
-                        translate="Review">
+                        data-translate="Review">
                     </div>
                 </div></dd>
-                <dt translate="Settings"></dt>
+                <dt data-translate="Settings"></dt>
                 <dd><div class="controls">
                     <div data-ng-click="selectTask('importExport')" 
                         data-ng-class="{selected:currentTaskName == 'importExport'}" 
-                        translate="Import/Export">
+                        data-translate="Import/Export">
                     </div>
                     <div data-ng-click="selectTask('configuration')" 
                         data-ng-class="{selected:currentTaskName == 'configuration'}" 
-                        translate="Dictionary Configuration">
+                        data-translate="Dictionary Configuration">
                     </div>
                 </div></dd>
                  -->
+                <!-- hide Tasks tab
             </dl>
         </div>
 
         <!-- Right column: task setup -->
+        <!-- hide Tasks tab
         <div class="span9">
             <div class="well" data-ng-show="currentTaskName == 'dashboard'">
-                <h3 translate="Dashboard"></h3>
+                <h3 data-translate="Dashboard"></h3>
                 <div class="control-group">
-                    <label class="control-label" for="timeRange" translate="Activity time range"></label>
+                    <label class="control-label" for="timeRange" data-translate="Activity time range"></label>
                     <div class="controls">
                         <select class="form-control" id="timeRange" 
                             data-ng-model="configDirty.tasks['dashboard'].timeRange" 
                             data-ng-options="selects.timeRange.options[key] for key in selects.timeRange.optionsOrder">
-                            <option value="">-- {{'choose a time range' | translate}} --</option></select>
+                            <option value="">-- {{'choose a time range' | data-translate}} --</option></select>
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="wordCount" translate="Target word count"></label>
+                    <label class="control-label" for="wordCount" data-translate="Target word count"></label>
                     <div class="controls">
                         <input type="number" min="0" id="wordCount" 
                             data-ng-model="configDirty.tasks['dashboard'].targetWordCount">
@@ -266,36 +273,36 @@ configDirty.entry {{configDirty.entry | json}}
                 </div>
             </div>
             <div class="well" data-ng-show="currentTaskName == 'semdom'">
-                <h3 translate="Gather Words from Semantic Domains"></h3>
+                <h3 data-translate="Gather Words from Semantic Domains"></h3>
                 <div class="control-group">
-                    <label class="control-label" for="language" translate="Language"></label>
+                    <label class="control-label" for="language" data-translate="Language"></label>
                     <div class="controls">
                         <select class="form-control" id="language" 
                             data-ng-model="configDirty.tasks['semdom'].language" 
                             data-ng-options="key as option for (key, option) in selects.language.options">
-                            <option value="">-- {{'choose a language' | translate}} --</option></select>
+                            <option value="">-- {{'choose a language' | data-translate}} --</option></select>
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="fields" translate="Fields to gather along with the Word"></label>
+                    <label class="control-label" for="fields" data-translate="Fields to gather along with the Word"></label>
                     <dl class="indent1" id="fields">
-                        <dt translate="Meaning"></dt>
+                        <dt data-translate="Meaning"></dt>
                         <dd><div class="controls">
                             <label class="checkbox">
                                 <input type="checkbox" data-ng-model="configDirty.tasks['semdom'].visibleFields.definition">
-                                 {{'Definition' | translate}}</label>
+                                 {{'Definition' | data-translate}}</label>
                             <label class="checkbox">
                                 <input type="checkbox" data-ng-model="configDirty.tasks['semdom'].visibleFields.partOfSpeech">
-                                 {{'Part Of Speech' | translate}}</label>
+                                 {{'Part Of Speech' | data-translate}}</label>
                         </div></dd>
-                        <dt translate="Examples"></dt>
+                        <dt data-translate="Examples"></dt>
                         <dd><div class="controls">
                             <label class="checkbox">
                                 <input type="checkbox" data-ng-model="configDirty.tasks['semdom'].visibleFields.sentence">
-                                 {{'Example Sentence' | translate}}</label>
+                                 {{'Example Sentence' | data-translate}}</label>
                             <label class="checkbox">
                                 <input type="checkbox" data-ng-model="configDirty.tasks['semdom'].visibleFields.translation">
-                                 {{'Example Translation' | translate}}</label>
+                                 {{'Example Translation' | data-translate}}</label>
                         </div></dd>
                     </dl>
                 </div>
@@ -308,8 +315,10 @@ configDirty.entry {{configDirty.entry | json}}
 configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] | json}}
 </pre>
  -->
+        <!-- hide Tasks tab
         </div>
     </tab>
+    hide Tasks tab -->
     <tab heading="Option Lists" class="{{interfaceConfig.pullNormal}}">
         <div data-ng-controller="OptionListCtrl">
         <div class="row outer-flex">
@@ -317,7 +326,7 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
         <!-- Left column: task list -->
         <div class="span3 control-group">
             <dl class="picklists">
-                <dt translate="Select a list" id="editListValuesFieldset"></dt>
+                <dt data-translate="Select a list" id="editListValuesFieldset"></dt>
                 <dd>
                     <div data-ng-repeat="optionList in optionlistDirty" 
                         data-ng-class="{selected:currentListIndex == $index}" data-ng-click="selectList($index)">

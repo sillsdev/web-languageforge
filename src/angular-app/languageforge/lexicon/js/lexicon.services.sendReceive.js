@@ -16,6 +16,7 @@ angular.module('lexicon.services')
       jsonRpc.call('sendReceive_receiveProject', [], callback);
     };
 
+    //noinspection JSUnusedGlobalSymbols
     this.commitProject = function commitProject(callback) {
       jsonRpc.call('sendReceive_commitProject', [], callback);
     };
@@ -36,6 +37,7 @@ angular.module('lexicon.services')
       var pollStatusTimer;
       var cloneStatusTimer;
       var pendingMessageId;
+
       // Constants
       var syncStatusInterval = 3000; // ms
       var pollStatusInterval = 32000; // ms
@@ -62,15 +64,17 @@ angular.module('lexicon.services')
 
       // SRState is CLONING / SYNCING
       this.isInProgress = function isInProgress() {
-        return (_this.isSendReceiveProject &&
+        return (_this.isSendReceiveProject() &&
           angular.isDefined(status) && angular.isDefined(status.SRState) &&
-          (status.SRState == 'CLONING' || status.SRState == 'LF_CLONING' || status.SRState == 'SYNCING'));
+          (status.SRState == 'CLONING' || status.SRState == 'LF_CLONING' ||
+          status.SRState == 'SYNCING'));
       };
 
       // S/R isInProgress(), SRState is unknown, or SRState is PENDING
       this.isStarted = function isStarted() {
-        return (_this.isInProgress() || (angular.isDefined(status) && angular.isDefined(status.SRState) &&
-            (status.SRState == unknownSRState || status.SRState == 'PENDING')));
+        return _this.isInProgress() || (_this.isSendReceiveProject() && angular.isDefined(status) &&
+          angular.isDefined(status.SRState) &&
+          (status.SRState == unknownSRState || status.SRState == 'PENDING'));
       };
 
       this.isSendReceiveProject = function isSendReceiveProject() {
@@ -95,6 +99,7 @@ angular.module('lexicon.services')
             if (status.SRState == unknownSRState) {
               _this.clearState();
             }
+
             _this.startPollStatusTimer();
           }
         }
@@ -104,14 +109,13 @@ angular.module('lexicon.services')
         notice.cancelProgressBar();
 
         // TODO: Remove this loading notice and display when we determine the real initial state
-         notice.setLoading('If server available, syncing with LanguageDepot.org...');
-        // Until LfMerge runs and updates the state file, SRState is unknown
-        status.SRState = unknownSRState;
+        notice.setLoading('If server available, synchronizing with LanguageDepot.org...');
         _this.startSyncStatusTimer();
       };
 
       this.setStateUnsynced = function setStateUnsynced() {
         if (_this.isSendReceiveProject()) {
+          previousSRState = status.SRState;
           status.SRState = 'LF_UNSYNCED';
         }
       };
@@ -126,7 +130,7 @@ angular.module('lexicon.services')
               return;
             }
 
-            // var isInitialCheck = (status.SRState == '');
+            previousSRState = status.SRState;
             status = result.data;
 
             if (status.PercentComplete > 0) {
@@ -142,14 +146,15 @@ angular.module('lexicon.services')
 
             console.log(status);
 
-            switch(status.SRState) {
+            switch (status.SRState) {
               case 'PENDING' :
-                pendingMessageId = notice.push(notice.INFO, 'Please wait while other projects are being synced. ' +
-                    'You may continue to edit this project until it starts to sync.');
+                pendingMessageId = notice.push(notice.INFO,
+                  'Please wait while other projects are being synchronized. ' +
+                  'You may continue to edit this project until it starts to synchronize.');
                 break;
               case 'SYNCING' :
                 notice.removeById(pendingMessageId);
-                notice.setLoading('Syncing with LanguageDepot.org...');
+                notice.setLoading('Synchronizing with LanguageDepot.org...');
                 break;
               case 'HOLD' :
                 notice.push(notice.ERROR, 'Well this is embarrassing. Something went ' +
@@ -157,13 +162,13 @@ angular.module('lexicon.services')
                 break;
               case 'IDLE' :
                 if (previousSRState == 'SYNCING') {
-                  notice.push(notice.SUCCESS, 'The project was successfully synced.');
+                  notice.push(notice.SUCCESS, 'The project was successfully synchronized.');
                 }
+
                 (syncProjectStatusSuccessCallback || angular.noop)();
                 break;
-            };
+            }
           }
-          previousSRState = status.SRState;
         });
       }
 
@@ -202,6 +207,7 @@ angular.module('lexicon.services')
             return 'Un-synced';
           case 'HOLD':
             return 'On hold';
+
           // Undefined initial state
           default:
             return '';
@@ -221,15 +227,17 @@ angular.module('lexicon.services')
               return;
             }
 
+            previousSRState = status.SRState;
             status = result.data;
             if (_this.isInProgress()) {
               (pollProjectStatusSuccessCallback || angular.noop)();
               _this.setSyncStarted();
-            } else {
-              (previousSRState == unknownSRState) && _this.clearState();
+            } else if (previousSRState == 'LF_UNSYNCED' && status.SRState == 'IDLE') {
+              status.SRState = previousSRState;
+            } else if (previousSRState == unknownSRState) {
+              _this.clearState();
             }
           }
-          previousSRState = status.SRState;
         });
       }
 
@@ -276,7 +284,9 @@ angular.module('lexicon.services')
       this.startCloneStatusTimer = function startCloneStatusTimer() {
         _this.cancelPollStatusTimer();
         _this.cancelSyncStatusTimer();
-        // Whether the true SRState is CLONING or PENDING, the user is going to have to wait for CLONING anyways
+
+        // Whether the true SRState is CLONING or PENDING, the user is going to have to wait for
+        // CLONING anyways
         status.SRState = 'LF_CLONING';
         if (angular.isDefined(cloneStatusTimer)) return;
 
