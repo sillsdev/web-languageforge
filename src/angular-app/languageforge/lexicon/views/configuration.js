@@ -278,15 +278,6 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
   setupView();
 
-  // TODO Fix sorting 2014-08 DDW
-  function sortInputSystemsList() {
-    return $filter('orderBy')($filter('orderAsArray')($scope.inputSystemViewModels, 'tag'),
-      'languageName');
-
-    // return $filter('orderBy')($filter('orderAsArray')($scope.configDirty.inputSystems, 'tag'),
-    //  'languageName');
-  }
-
   function setupView() {
     if (!angular.isDefined($scope.configDirty.inputSystems)) {
       return;
@@ -294,12 +285,13 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
     // InputSystemsViewModels
     $scope.inputSystemViewModels = {};
+    $scope.inputSystemsList = [];
     angular.forEach($scope.configDirty.inputSystems, function (item) {
       var vm = new InputSystemsViewModel(item);
       $scope.inputSystemViewModels[vm.uuid] = vm;
+      $scope.inputSystemsList.push(vm);
     });
 
-    $scope.inputSystemsList = sortInputSystemsList();
 
     // select the first items
     $scope.selectInputSystem($scope.inputSystemsList[0].uuid);
@@ -421,7 +413,6 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
   $scope.removeInputSystem = function removeInputSystem(selectedInputSystemId) {
     delete $scope.inputSystemViewModels[selectedInputSystemId];
-    $scope.inputSystemsList = sortInputSystemsList();
     $scope.configForm.$setDirty();
 
     // select the first items
@@ -467,7 +458,6 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
     newValue.buildTag();
     $scope.configForm.$setDirty();
-    $scope.inputSystemsList = sortInputSystemsList();
   });
 
 }])
