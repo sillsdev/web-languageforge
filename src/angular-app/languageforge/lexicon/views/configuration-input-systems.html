@@ -11,7 +11,7 @@
         <dl class="picklists" style="height: 300px; overflow: auto;">
             <dt translate="Language Names"></dt>
             <dd><div class="controls">
-                <div data-ng-click="selectInputSystem(inputSystem.uuid)" data-ng-repeat="inputSystem in inputSystemViewModels | filter:query | orderBy: 'languageName'"
+                <div data-ng-click="selectInputSystem(inputSystem.uuid)" data-ng-repeat="inputSystem in inputSystemsList |orderBy: 'inputSystem.languageName'"
                     data-ng-class="{selected:selectedInputSystemId == inputSystem.uuid}" >
                     <span data-ng-style="{'font-style': (isUnlistedLanguage(inputSystem.language) ? 'italic' : 'normal')}; ">{{inputSystem.languageDisplayName()}}</span>
                 </div>
