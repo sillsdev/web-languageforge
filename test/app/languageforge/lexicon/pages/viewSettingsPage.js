@@ -17,10 +17,7 @@ function ViewSettingsPage() {
   this.getTabByName = function getTabByName(tabName) {
     return $('div.tabbable ul.nav-tabs').element(by.cssContainingText('a', tabName));
   };
-  this.clickTabByName = function clickTabByName(tabName) {
-    return _this.getTabByName(tabName).then(function(elem) { elem.click(); });
-  };
-  
+
   this.tabs = {
       observer: {
         go: function() {
@@ -69,8 +66,7 @@ function ViewSettingsPage() {
     return $('div.tab-pane.active dl.picklists').element(by.elemMatches('div[data-ng-repeat]', fieldRegex));
   };
   this.clickFieldByName = function clickFieldByName(fieldName, treatAsRegex) {
-    // Second parameter just as in getFieldByName()
-    return this.getFieldByName(fieldName, treatAsRegex).then(function(elem) { elem.click(); });
+    return this.getFieldByName(fieldName, treatAsRegex).click();
   };
 
   this.showField = this.activePane.element(by.cssContainingText('label.checkbox', 'Show field')).$('input[type="checkbox"]');
