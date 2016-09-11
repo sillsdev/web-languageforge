@@ -28,13 +28,6 @@ function ProjectSettingsPage() {
     sendReceive: this.getTabByName('Send and Receive Properties')
   };
 
-  this.tabs.project.click = function() {
-    _this.clickTabByName('Project Properties');
-  };
-
-  this.tabs.sendReceive.click = function() {
-    _this.clickTabByName('Send and Receive Properties');
-  };
 
   this.projectTab = {
     saveButton: this.tabDivs.get(0).element(by.buttonText('Save'))
