@@ -13,7 +13,7 @@ describe('Project Settings page', function () {
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
     projectSettingsPage.get();
-    projectSettingsPage.tabs.project.click();
+    expect(projectSettingsPage.tabs.project.isDisplayed());//projectSettingsPage.tabs.project.click();
     expect(projectSettingsPage.projectTab.saveButton.isDisplayed()).toBe(true);
     expect(projectSettingsPage.tabs.sendReceive.isDisplayed()).toBe(false);
   });
@@ -22,7 +22,6 @@ describe('Project Settings page', function () {
     projectsPage.get();
     projectsPage.clickOnProject(constants.srProjectName);
     projectSettingsPage.get();
-    projectSettingsPage.tabs.project.click();
     expect(projectSettingsPage.projectTab.saveButton.isDisplayed()).toBe(true);
     expect(projectSettingsPage.tabs.sendReceive.isDisplayed()).toBe(true);
   });
