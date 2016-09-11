@@ -16,17 +16,13 @@ describe('View settings page', function () {
   });
 
   it('setup: click Manager tab', function () {
-    viewSettingsPage.clickTabByName('Manager');
+    viewSettingsPage.getTabByName('Manager').click();
   });
 
   it('Hide Semantic Domain field for Manager', function () {
     var vsp = viewSettingsPage;
 
-    // Eye icon should be present if "Show field" is checked for that field
-    vsp.getFieldByName('Semantic Domain').then(function (elem) {
-      var icon = elem.$('i');
-      expect(icon.getAttribute('class')).toMatch('icon-eye-open');
-    });
+    expect(vsp.getFieldByName('Semantic Domain').$('i').getAttribute('class')).toMatch('icon-eye-open');
 
     vsp.clickFieldByName('Semantic Domain');
     util.setCheckbox(vsp.showField, false);
@@ -40,7 +36,7 @@ describe('View settings page', function () {
 
   it('Hide Semantic Domain field for specific username of admin user', function () {
     var vsp = viewSettingsPage;
-    vsp.clickTabByName('Member Specific');
+    vsp.getTabByName('Member Specific').click();
     vsp.addViewSettingsForMember(constants.adminUsername);
     vsp.pickMemberWithViewSettings(constants.adminUsername);
     expect(vsp.accordionEnabledFields.getText()).toEqual(
@@ -76,7 +72,7 @@ describe('View settings page', function () {
   it('Return view settings to normal before next test', function () {
     var vsp = viewSettingsPage;
     vsp.get();
-    vsp.clickTabByName('Member Specific');
+    vsp.getTabByName('Member Specific').click();
     vsp.pickMemberWithViewSettings(constants.adminUsername);
     expect(vsp.accordionEnabledFields.getText()).toEqual(
         'Enabled Fields for ' + constants.adminName + ' (' + constants.adminUsername + ')'
@@ -84,7 +80,7 @@ describe('View settings page', function () {
     vsp.clickFieldByName('Semantic Domain');
     util.setCheckbox(vsp.showField, true);
     vsp.applyBtn.click();
-    vsp.clickTabByName('Manager');
+    vsp.getTabByName('Manager').click();
     vsp.clickFieldByName('Semantic Domain');
     util.setCheckbox(vsp.showField, true);
     vsp.applyBtn.click();
