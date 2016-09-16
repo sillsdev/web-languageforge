@@ -68,10 +68,7 @@ var old_clickDropdownByValue = function(dropdownElement, value) {
 
 var clickDropdownByValue = function(dropdownElement, value) {
   // Select an element of the dropdown based on its value (its text)
-  var option = findDropdownByValue(dropdownElement, value);
-  option.then(function(elem) {
-    elem.click();
-  });
+  findDropdownByValue(dropdownElement, value).click();
 };
 
 module.exports.clickDropdownByValue = clickDropdownByValue;

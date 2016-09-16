@@ -34,11 +34,12 @@ afterEach(function() {
           message = message.split('\n').join("\n");
         }
 
+        // Errors we choose to ignore because they are typically not encountered by users, but only in testing
         if (/angular\.js .* TypeError: undefined is not a function/.test(message) ||
             /angular.*\.js .* Error: \[\$compile:tpload]/.test(message) ||
           /angular\.js .* Error: RPC Error - Server Status Code -1/.test(message) ||
-            /next_id/.test(message)) {
-          // we ignore errors of this type caused by Angular being unloaded prematurely on page refreshes (since it's not a real error)
+            /next_id/.test(message) ||
+          /ERR_INTERNET_DISCONNECTED/.test(message)) {
           return;
         } else if (/rangy-1\.3alpha\.772/.test(message)) {
           // we ignore rangy errors because we are lazy and don't want to upgrade to the latest rangy atm (but we really should upgrade at some point) - cjh 2015-02
