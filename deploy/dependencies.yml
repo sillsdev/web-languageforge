@@ -24,6 +24,7 @@
         - postfix
         - unzip
         - p7zip-full
+        - libpcre3-dev
 
     - name: php log folder exists
       file: path={{php_log_folder}} state=directory owner=www-data group=www-data mode=0775 recurse=yes
