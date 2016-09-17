@@ -12,7 +12,6 @@ apt-get update
 apt-get -y install git ansible
 if [ ! -d "/home/vagrant/src/web-languageforge" ]; then
   git clone https://github.com/sillsdev/web-languageforge.git /home/vagrant/src/web-languageforge --recursive
-  cp /home/vagrant/src/web-languageforge/deploy/default_ansible.cfg /home/vagrant/.ansible.cfg
 else
   cd /home/vagrant/src/web-languageforge; git pull --ff-only --recurse-submodules origin
 fi
@@ -21,7 +20,7 @@ if [ ! -d "/home/vagrant/src/web-scriptureforge" ]; then
 else
   cd /home/vagrant/src/web-scriptureforge; git pull --ff-only --recurse-submodules origin
 fi
-cd /home/vagrant/src/web-languageforge/deploy/; git checkout master; ansible-playbook -i hosts playbook_trusty_vagrant.yml
+cd /home/vagrant/src/web-languageforge/deploy/; git checkout master; cp default_ansible.cfg /home/vagrant/.ansible.cfg; ansible-playbook -i hosts playbook_trusty_vagrant.yml
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
