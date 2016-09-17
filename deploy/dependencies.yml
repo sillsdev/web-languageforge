@@ -20,6 +20,7 @@
         - php5-dev
         - php5-cli
         - php-pear
+        - libpcre3-dev
         - mongodb-server
         - postfix
         - unzip
