@@ -117,6 +117,11 @@ sudo npm install -g n
 sudo n stable
 ````
 
+Make sure java is installed
+````
+sudo apt-get install openjdk-7-jre-headless
+````
+
 Install **webdriver-manager** globally (it needs to be installed globally since our local repo is on an NTFS partition and items there are not executable), then install **webdriver**:
 
 ````
