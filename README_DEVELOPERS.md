@@ -47,6 +47,8 @@ ansible-playbook -i hosts dev.yml --limit localhost -K
 
 For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/default_ansible.cfg` into `/etc/ansible/ansible.cfg` or `.ansible.cfg` (in your home folder).
 
+TODO: this is unclear.  We should make a bash script that merges this for you.  Also, /etc/ansible/ansible.cfg does not appear to be present when installed via pip
+
 #### Vagrant VM Setup ####
 
 Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`, i.e. uncomment line 6 and comment line 5. 
@@ -86,6 +88,12 @@ Change the variable *mongo_path: /hddlinux/mongodb* in `deploy/vars_palaso.yml`,
 ````
 cd deploy
 ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
+````
+
+You also need to make sure that the src and test folders has permissions such that www-data can write to it.  e.g.
+````
+chgrp -R www-data src
+chgrp -R www-data test
 ````
 
 ## Testing ##
