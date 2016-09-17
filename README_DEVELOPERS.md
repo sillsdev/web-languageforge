@@ -169,3 +169,19 @@ scripts/tools/factoryReset.php run
 ````
 After a fresh factory reset, there is one user.  username: admin password: password
 
+## Updating dependencies ##
+
+Occasionally developers need to update composer, bower or npm.  If something isn't working after a recent code change, try to update the dependencies:
+
+#### Update bower ####
+
+In src/: `bower install`
+
+#### Update npm packages ####
+
+In the root folder: `npm install`
+
+#### Update composer ####
+
+In src/: `composer install`
+
