@@ -2,7 +2,7 @@
 
 ## Recommended Development Environment ##
 
-Our recommended development environment for web development is Linux Mint.  The easiest way to get setup is to use the Ansible assisted setup [described here](https://github.com/sillsdev/ops-devbox).
+Our recommended development environment for web development is Linux Ubuntu Gnome.  The easiest way to get setup is to use the Ansible assisted setup [described here](https://github.com/sillsdev/ops-devbox).
 
 Among other things this setup will ensure that you have:
 
@@ -25,10 +25,24 @@ We recommend doing development on your development machine directly rather than 
 
 #### Ansible Setup ####
 
-At the moment (2016 Feb 4) Ansible v2.0.0.2 is [broken on local connections](https://github.com/ansible/ansible/issues/13763). Install v1.9 instead:
 ````
 sudo apt-get install python-pip
-sudo pip install ansible==1.9.4
+sudo pip install ansible==2.1.0
+````
+(the old way was `sudo pip install ansible==1.9.4`)
+
+Some installation notes:
+You may need to:
+````
+sudo apt-get install libffi
+sudo pip install markupsafe
+````
+
+#### Install Development Environment Dependencies From ops-devbox ####
+
+````
+wget https://github.com/sillsdev/ops-devbox/blob/master/dev.yml
+ansible-playbook -i hosts dev.yml --limit localhost -K
 ````
 
 For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/default_ansible.cfg` into `/etc/ansible/ansible.cfg` or `.ansible.cfg` (in your home folder).
