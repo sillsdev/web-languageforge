@@ -100,11 +100,22 @@ chgrp -R www-data test
 
 ### PHP Unit Tests ###
 
-Unit testing currently uses [SimpleTest](http://www.simpletest.org/). Browse to [default.local/web-languageforge/test/php](http://default.local/web-languageforge/test/php/) and click [AllTest.php](http://default.local/web-languageforge/test/php/AllTests.php). Browse to sub-folders to narrow tests.
+Unit testing currently uses [SimpleTest](http://www.simpletest.org/).
+
+To run tests, browse to [default.local/web-languageforge/test/php](http://default.local/web-languageforge/test/php/) and click [AllTest.php](http://default.local/web-languageforge/test/php/AllTests.php). If you want to run just a few tests, browse to sub-folders and click on AllTests.php within to narrow tests.
+
+Note: at least one test will fail if the LFMerge (send/receive) program is not installed and available.  This is OK as long as you are not testing Send/Receive functionality.
 
 ### End-to-End (E2E) Tests ###
 
 #### E2E Test Install ####
+
+Make sure npm is up-to-date
+````
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+````
 
 Install **webdriver-manager** globally (it needs to be installed globally since our local repo is on an NTFS partition and items there are not executable), then install **webdriver**:
 
@@ -144,3 +155,12 @@ Install gulp dependencies by running from the repo root (where):
 To install the mongodb databases locally, run:
 
 	gulp copy-prod-db
+
+## Resetting the MongoDB ##
+
+If you want to _start over_ with your mongo database, you can use the factory reset script like so (this will delete all data in the mongodb):
+````
+scripts/tools/factoryReset.php run
+````
+After a fresh factory reset, there is one user.  username: admin password: password
+
