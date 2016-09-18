@@ -26,6 +26,19 @@
         - unzip
         - p7zip-full
         - libpcre3-dev
+        - npm
+
+    - file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
+
+    - name: install Composer
+      shell: php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/local/bin --filename=composer
+      args:
+        creates: /usr/local/bin/composer
+
+    - name: install Bower
+      shell: npm install -g bower
+      args:
+        creates: /usr/local/bin/bower
 
     - name: php log folder exists
       file: path={{php_log_folder}} state=directory owner=www-data group=www-data mode=0775 recurse=yes
