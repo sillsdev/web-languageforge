@@ -9,8 +9,8 @@ if [ ! -d "/home/vagrant/src" ]; then
   mkdir /home/vagrant/src
 fi
 apt-get update
-apt-get -y install git python-pip
-pip install ansible==1.9.4
+apt-get -y install git python-pip python-crypto python-jinja2 python-paramiko python-pkg-resources python-yaml python-httplib2 python-netaddr
+pip install ansible==1.9.6
 if [ ! -d "/home/vagrant/src/web-languageforge" ]; then
   git clone https://github.com/sillsdev/web-languageforge.git /home/vagrant/src/web-languageforge --recursive
 else
