@@ -1,15 +1,15 @@
 <h3>Initial Data</h3>
 
-<label translate="Import a compressed (zipped) folder of the whole project"></label>
+<label data-translate="Import a compressed (zipped) folder of the whole project"></label>
 <div class="row">
     <div class="span4">
         <div class="drop-box" data-ng-file-drop="onFileSelect($files);" 
             data-ng-file-drop-available="dropSupported=true" data-ng-show="dropSupported">
-            <h4 translate="Drop a zipped folder here"></h4>
+            <h4 data-translate="Drop a zipped folder here"></h4>
             <br/>
-            <p translate="or if you prefer..."></p>
+            <p data-translate="or if you prefer..."></p>
             <input type="button" class="btn" id="browseButton" value="{{'Browse...' | translate}}" 
-                onclick="javascript:document.getElementById('importFile').click();">
+                onclick="document.getElementById('importFile').click();">
             <input id="importFile" type="file" style="display:none" 
                 data-ng-file-select="onFileSelect($files)">
             <div data-ng-show="uploadErrorMsg">
@@ -18,7 +18,7 @@
         </div>
         <div data-ng-show="! dropSupported"> <!-- HTML5 Drop File is not supported on this browser -->
             <input type="button" class="btn" value="{{'Browse...' | translate}}" 
-                onclick="javascript:document.getElementById('dataFile').click();">
+                onclick="document.getElementById('dataFile').click();">
             <input id="dataFile" type="file" style="display:none" 
                 data-ng-file-select="onFileSelect($files)">
         </div>
@@ -26,7 +26,7 @@
         <div data-ng-show="datafile != null">
             <p><strong>{{datafile.name}}</strong> ({{datafile.size | bytes }})</p>
             <div class="span4" data-ng-class="interfaceConfig.pullNormal">
-                <progressbar data-value="uploadProgress" data-max="100.0">{{uploadProgress | number:0}}%</progressbar>
+                <progressbar value="uploadProgress" max="100.0">{{uploadProgress | number:0}}%</progressbar>
             </div>
             &nbsp;
         </div>
@@ -51,9 +51,3 @@
         </div>
     </div>
 </div>
-
-<!--
-Used to mock file upload. Assumes file is already in the right location.
-TODO: This should be removed from production code! IJH 2014-11
- -->
-<pui-mock-upload data-pui-do-upload="onFileSelect(filesArray)" />
