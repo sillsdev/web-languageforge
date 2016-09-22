@@ -146,15 +146,23 @@
                 "source": {"en": {"value": "http://www.thai-language.com/id/131403#def1c"}}
               }]
   },
-  
-  "testMockZipImportFile" : {
+
+  "testFolderPath": "../php/common",
+  "testTooLargeImportFile": {
     "lastModified" : 1416986856000,
-    "name" : "TestLexProject.zip",
-    "size" : 28999,
+    "name" : "TestTooLarge.zip",
+    "size" : 67623251,
     "type" : "",
     "webkitRelativePath": ""
   },
-  "testMockJpgImportFile" : {
+  "testZipImportFile": {
+    "lastModified" : 1416986856000,
+    "name" : "TestLexProject.zip",
+    "size" : 29079,
+    "type" : "",
+    "webkitRelativePath": ""
+  },
+  "testJpgImportFile" : {
     "lastModified" : 1416986856000,
     "name" : "TestImage.jpg",
     "size" : 2753,
