@@ -25,7 +25,6 @@
         - postfix
         - unzip
         - p7zip-full
-        - libpcre3-dev
         - npm
 
     - file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
