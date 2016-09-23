@@ -2,7 +2,7 @@
 
 ## Recommended Development Environment ##
 
-Our recommended development environment for web development is Linux Mint.  The easiest way to get setup is to use the Ansible assisted setup [described here](https://github.com/sillsdev/ops-devbox).
+Our recommended development environment for web development is Linux Ubuntu Gnome.  The easiest way to get setup is to use the Ansible assisted setup [described here](https://github.com/sillsdev/ops-devbox).
 
 Among other things this setup will ensure that you have:
 
@@ -25,13 +25,29 @@ We recommend doing development on your development machine directly rather than 
 
 #### Ansible Setup ####
 
-At the moment (2016 Feb 4) Ansible v2.0.0.2 is [broken on local connections](https://github.com/ansible/ansible/issues/13763). Install v1.9 instead:
 ````
 sudo apt-get install python-pip
-sudo pip install ansible==1.9.4
+sudo pip install ansible==2.1.0
+````
+(the old way was `sudo pip install ansible==1.9.4`)
+
+Some installation notes:
+You may need to:
+````
+sudo apt-get install libffi
+sudo pip install markupsafe
+````
+
+#### Install Development Environment Dependencies From ops-devbox ####
+
+````
+wget https://github.com/sillsdev/ops-devbox/blob/master/dev.yml
+ansible-playbook -i hosts dev.yml --limit localhost -K
 ````
 
 For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/default_ansible.cfg` into `/etc/ansible/ansible.cfg` or `.ansible.cfg` (in your home folder).
+
+TODO: this is unclear.  We should make a bash script that merges this for you.  Also, /etc/ansible/ansible.cfg does not appear to be present when installed via pip
 
 #### Vagrant VM Setup ####
 
@@ -74,15 +90,37 @@ cd deploy
 ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
 ````
 
+You also need to make sure that the src and test folders has permissions such that www-data can write to it.  e.g.
+````
+chgrp -R www-data src
+chgrp -R www-data test
+````
+
 ## Testing ##
 
 ### PHP Unit Tests ###
 
-Unit testing currently uses [SimpleTest](http://www.simpletest.org/). Browse to [default.local/web-languageforge/test/php](http://default.local/web-languageforge/test/php/) and click [AllTest.php](http://default.local/web-languageforge/test/php/AllTests.php). Browse to sub-folders to narrow tests.
+Unit testing currently uses [SimpleTest](http://www.simpletest.org/).
+
+To run tests, browse to [default.local/web-languageforge/test/php](http://default.local/web-languageforge/test/php/) and click [AllTest.php](http://default.local/web-languageforge/test/php/AllTests.php). If you want to run just a few tests, browse to sub-folders and click on AllTests.php within to narrow tests.
+
+Note: at least one test will fail if the LFMerge (send/receive) program is not installed and available.  This is OK as long as you are not testing Send/Receive functionality.
 
 ### End-to-End (E2E) Tests ###
 
 #### E2E Test Install ####
+
+Make sure npm is up-to-date
+````
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+````
+
+Make sure java is installed
+````
+sudo apt-get install openjdk-7-jre-headless
+````
 
 Install **webdriver-manager** globally (it needs to be installed globally since our local repo is on an NTFS partition and items there are not executable), then install **webdriver**:
 
@@ -122,3 +160,28 @@ Install gulp dependencies by running from the repo root (where):
 To install the mongodb databases locally, run:
 
 	gulp copy-prod-db
+
+## Resetting the MongoDB ##
+
+If you want to _start over_ with your mongo database, you can use the factory reset script like so (this will delete all data in the mongodb):
+````
+scripts/tools/factoryReset.php run
+````
+After a fresh factory reset, there is one user.  username: admin password: password
+
+## Updating dependencies ##
+
+Occasionally developers need to update composer, bower or npm.  If something isn't working after a recent code change, try to update the dependencies:
+
+#### Update bower ####
+
+In src/: `bower install`
+
+#### Update npm packages ####
+
+In the root folder: `npm install`
+
+#### Update composer ####
+
+In src/: `composer install`
+

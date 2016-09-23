@@ -1,6 +1,7 @@
 'use strict';
 
 describe('E2E testing: New Lex Project wizard app', function () {
+  var path = require('path');
   var constants = require('../../../../testConstants.json');
   var loginPage = require('../../../../bellows/pages/loginPage.js');
   var util      = require('../../../../bellows/pages/util.js');
@@ -388,59 +389,39 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.formStatus.expectHasNoError();
     });
 
-    describe('Mock file upload', function () {
+    it('cannot upload large file', function () {
+      var uploadAbsoluteFilePath = path.resolve(constants.testFolderPath, constants.testTooLargeImportFile.name);
+      expect(page.noticeList.count()).toBe(0);
+      page.initialDataPage.fileInput.sendKeys(uploadAbsoluteFilePath);
+      expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
+      expect(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
+      expect(page.noticeList.count()).toBe(1);
+      expect(page.noticeList.get(0).getText()).toContain('is too large. It must be smaller than');
+      page.formStatus.expectHasNoError();
+      page.firstNoticeCloseButton.click();
+    });
 
-      it('cannot upload large file', function () {
-        page.initialDataPage.mockUpload.enableButton.click();
-        expect(page.initialDataPage.mockUpload.fileNameInput.isPresent()).toBe(true);
-        expect(page.initialDataPage.mockUpload.fileNameInput.isDisplayed()).toBe(true);
-        page.initialDataPage.mockUpload.fileNameInput.sendKeys(
-          constants.testMockZipImportFile.name);
-        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(134217728);
-        expect(page.noticeList.count()).toBe(0);
-        page.initialDataPage.mockUpload.uploadButton.click();
-        expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
-        expect(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
-        expect(page.noticeList.count()).toBe(1);
-        expect(page.noticeList.get(0).getText()).toContain('is too large. It must be smaller than');
-        page.formStatus.expectHasNoError();
-        page.initialDataPage.mockUpload.fileNameInput.clear();
-        page.initialDataPage.mockUpload.fileSizeInput.clear();
-      });
+    it('cannot upload jpg', function () {
+      var uploadAbsoluteFilePath = path.resolve(constants.testFolderPath, constants.testJpgImportFile.name);
+      expect(page.noticeList.count()).toBe(0);
+      page.initialDataPage.fileInput.sendKeys(uploadAbsoluteFilePath);
+      expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
+      expect(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
+      expect(page.noticeList.count()).toBe(1);
+      expect(page.noticeList.get(0).getText()).toContain(constants.testJpgImportFile.name +
+        ' is not an allowed compressed file. Ensure the file is');
+      page.formStatus.expectHasNoError();
+      page.firstNoticeCloseButton.click();
+    });
 
-      it('cannot upload jpg', function () {
-        page.initialDataPage.mockUpload.fileNameInput.sendKeys(
-          constants.testMockJpgImportFile.name);
-        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(
-          constants.testMockJpgImportFile.size);
-        expect(page.noticeList.count()).toBe(1);
-        page.initialDataPage.mockUpload.uploadButton.click();
-        expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
-        expect(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
-        expect(page.noticeList.count()).toBe(2);
-        expect(page.noticeList.get(1).getText()).toContain(constants.testMockJpgImportFile.name +
-          ' is not an allowed compressed file. Ensure the file is');
-        page.formStatus.expectHasNoError();
-        page.initialDataPage.mockUpload.fileNameInput.clear();
-        page.initialDataPage.mockUpload.fileSizeInput.clear();
-        page.firstNoticeCloseButton.click();
-        page.firstNoticeCloseButton.click();
-      });
-
-      it('can upload zip file', function () {
-        page.initialDataPage.mockUpload.fileNameInput.sendKeys(
-          constants.testMockZipImportFile.name);
-        page.initialDataPage.mockUpload.fileSizeInput.sendKeys(
-          constants.testMockZipImportFile.size);
-        expect(page.noticeList.count()).toBe(0);
-        page.initialDataPage.mockUpload.uploadButton.click();
-        expect(page.verifyDataPage.entriesImported.isDisplayed()).toBe(true);
-        expect(page.noticeList.count()).toBe(1);
-        expect(page.noticeList.get(0).getText()).toContain('Successfully imported ' +
-          constants.testMockZipImportFile.name);
-        page.formStatus.expectHasNoError();
-      });
-
+    it('can upload zip file', function () {
+      var uploadAbsoluteFilePath = path.resolve(constants.testFolderPath, constants.testZipImportFile.name);
+      expect(page.noticeList.count()).toBe(0);
+      page.initialDataPage.fileInput.sendKeys(uploadAbsoluteFilePath);
+      expect(page.verifyDataPage.entriesImported.isDisplayed()).toBe(true);
+      expect(page.noticeList.count()).toBe(1);
+      expect(page.noticeList.get(0).getText()).toContain('Successfully imported ' + constants.testZipImportFile.name);
+      page.formStatus.expectHasNoError();
     });
 
   });
