@@ -11,7 +11,7 @@
     "angular-ui-router": "~0.3",
     "angular-translate": "~2",
     "angular-translate-loader-static-files": "~2",
-    "angularjs-file-upload": "~12.0",
+    "ng-file-upload": "~12.0",
     "lodash": "~4.14",
     "angular-truncate-2": "~0.4.2",
     "angular-bootstrap": "~0.8",
