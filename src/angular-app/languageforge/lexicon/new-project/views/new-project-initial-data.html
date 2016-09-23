@@ -3,32 +3,14 @@
 <label data-translate="Import a compressed (zipped) folder of the whole project"></label>
 <div class="row">
     <div class="span4">
-        <div class="drop-box" data-ng-file-drop="onFileSelect($files);" 
-            data-ng-file-drop-available="dropSupported=true" data-ng-show="dropSupported">
+        <div class="drop-box" data-ngf-drop="uploadFile($file)" data-ngf-drag-over-class="'dragover'">
             <h4 data-translate="Drop a zipped folder here"></h4>
             <br/>
             <p data-translate="or if you prefer..."></p>
-            <input type="button" class="btn" id="browseButton" value="{{'Browse...' | translate}}" 
-                onclick="document.getElementById('importFile').click();">
-            <input id="importFile" type="file" style="display:none" 
-                data-ng-file-select="onFileSelect($files)">
-            <div data-ng-show="uploadErrorMsg">
-                <span style="color: red" data-ng-bind="uploadErrorMsg"></span>
-            </div>
+            <div class="btn" id="browseButton" data-ngf-select="uploadFile($file)" data-translate="Browse..."></div>
         </div>
-        <div data-ng-show="! dropSupported"> <!-- HTML5 Drop File is not supported on this browser -->
-            <input type="button" class="btn" value="{{'Browse...' | translate}}" 
-                onclick="document.getElementById('dataFile').click();">
-            <input id="dataFile" type="file" style="display:none" 
-                data-ng-file-select="onFileSelect($files)">
-        </div>
-        <br />
-        <div data-ng-show="datafile != null">
-            <p><strong>{{datafile.name}}</strong> ({{datafile.size | bytes }})</p>
-            <div class="span4" data-ng-class="interfaceConfig.pullNormal">
-                <progressbar value="uploadProgress" max="100.0">{{uploadProgress | number:0}}%</progressbar>
-            </div>
-            &nbsp;
+        <div data-ngf-no-file-drop>
+            <div class="btn" ngf-select="uploadFile($file)" data-translate="Browse..."></div>
         </div>
     </div>
     <div class="span4">
