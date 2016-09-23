@@ -14,8 +14,7 @@ src/assets/*
 src/assets/*/
 !src/assets/index.hmtl
 .idea/*
-test/app/node_modules/protractor/selenium/
-test/app/node_modules/.bin/
+test/app/node_modules/*
 src/vendor_bower/
 docs/semdom/*.xml
 docs/semdom/semdom lists/*.xml
