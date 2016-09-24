@@ -1,22 +1,21 @@
-<h3 translate="Choose a project name"></h3>
+<h3>Choose a project name</h3>
 
 <form ng-submit="addProject()">
 <div class="control-group">
     <div class="controls">
         <input type="text" data-ng-model="newProject.projectName"
             set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name"
-            idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+            data-idle-validate="checkProjectCode()" data-idle-validate-keypress="resetValidateProjectForm()"/>
     </div>
 </div>
 <br />
 <div class="control-group">
-    <label class="control-label muted" translate="Project Code"></label>
+    <label class="control-label muted" for="projectCode">Project Code</label>
     <div class="controls" >
-        <input type="text" data-ng-model="newProject.projectCode" data-ng-show="newProject.editProjectCode"
-               data-ng-trim="false" maxlength="50" required
-               idle-validate="checkProjectCode()" idle-validate-keypress="resetValidateProjectForm()"/>
+        <input type="text" data-ng-model="newProject.projectCode" id="projectCode" data-ng-trim="false"
+               data-ng-show="newProject.editProjectCode" maxlength="50" required
+               data-idle-validate="checkProjectCode()" data-idle-validate-keypress="resetValidateProjectForm()" />
         <div class="uneditable-input" data-ng-hide="newProject.editProjectCode"
-            data-ng-hide="newProject.editProjectCode"
             data-ng-bind="newProject.projectCode"></div>
         <span  data-ng-show="newProject.projectCode.length > 0">
             <span  data-ng-show="projectCodeState == 'loading'">
@@ -35,8 +34,8 @@
     <div class="controls">
         <label class="checkbox">
             <input type="checkbox" data-ng-model="newProject.editProjectCode"/>
-            {{'Edit project code' | translate}}
-            <p class="muted">(Not usually necessary)</p>
+            Edit project code
+            <br /><span class="muted">(Not usually necessary)</span>
         </label>
     </div>
 </div>
