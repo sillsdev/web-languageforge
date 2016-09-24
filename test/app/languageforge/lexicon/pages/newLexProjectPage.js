@@ -73,7 +73,7 @@ function NewLexProjectPage() {
   // step 2: initial data
   this.initialDataPage = {};
   this.initialDataPage.browseButton = element(by.id('browseButton'));
-  this.initialDataPage.fileInput = element(by.id('importFile'));
+  this.initialDataPage.fileInput = element.all(by.css('input[type="file"]')).first();
 
   // step 3: verify data
   this.verifyDataPage = {};
