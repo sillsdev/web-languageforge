@@ -239,9 +239,9 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     };
 
   }])
-  .controller('QuestionsSettingsCtrl', ['$scope', '$upload', 'sessionService', '$routeParams', 'breadcrumbService',
+  .controller('QuestionsSettingsCtrl', ['$scope', 'Upload', 'sessionService', '$routeParams', 'breadcrumbService',
     'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService', 'modalService',
-  function ($scope, $upload, ss, $routeParams, breadcrumbService,
+  function ($scope, Upload, ss, $routeParams, breadcrumbService,
             notice, textService, questionService, sfchecksLinkService, modalService) {
     var Q_TITLE_LIMIT = 50;
     var textId = $routeParams.textId;
@@ -342,12 +342,9 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
       });
     };
 
-    $scope.onUsxFile = function ($files) {
-      if (!$files || $files.length == 0) {
-        return;
-      }
+    $scope.readUsx = function readUsx(file) {
+      if (!file || file.$error) return;
 
-      var file = $files[0];  // Use only first file
       var reader = new FileReader();
       reader.addEventListener('loadend', function () {
         // Basic sanity check: make sure what was uploaded is USX
@@ -369,55 +366,57 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
       reader.readAsText(file);
     };
 
-    $scope.onFileSelect = function ($files) {
+    $scope.uploadAudio = function uploadAudio(file) {
+      if (!file || file.$error) return;
+      if (file.size > ss.fileSizeMax()) {
+        notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
+          $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
+          $filter('bytes')(ss.fileSizeMax()) + '.');
+        return;
+      }
 
-      // take the first file only
-      var file = $files[0];
       $scope.file = file;
-      if (file.size <= ss.fileSizeMax()) {
-        $upload.upload({
-
-          // Upload.php script
-          url: '/upload/sf-checks/audio',
-
-          // headers: {'myHeaderKey': 'myHeaderVal'},
-          data: {
-            filename: file.name,
-            textId: textId
-          },
-          file: file
-        }).progress(function (evt) {
-          $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
-        }).success(function (data) {
-          if (data.result) {
-            $scope.progress = 100.0;
+      notice.setLoading('Uploading ' + file.name + '...');
+      Upload.upload({
+        url: '/upload/sf-checks/audio',
+        data: {
+          file: file,
+          textId: textId
+        }
+      }).then(function (response) {
+          notice.cancelLoading();
+          var isUploadSuccess = response.data.result;
+          if (isUploadSuccess) {
             $scope.uploadResult = 'File uploaded successfully.';
             notice.push(notice.SUCCESS, $scope.uploadResult);
           } else {
-            $scope.progress = 0;
-            notice.push(notice.ERROR, data.data.errorMessage);
-            if (data.data.errorType == 'UserMessage') {
-              $scope.uploadResult = data.data.errorMessage;
+            notice.push(notice.ERROR, response.data.data.errorMessage);
+            if (response.data.data.errorType == 'UserMessage') {
+              $scope.uploadResult = response.data.data.errorMessage;
             }
           }
+        },
 
-          $scope.file = null;
-        }).error(function (data, status) {
-          var errorMessage = $filter('translate')('Import failed.');
-          if (status > 0) {
-            errorMessage += ' Status: ' + status;
-            if (data) {
-              errorMessage += '- ' + data;
+        function (response) {
+          notice.cancelLoading();
+          var errorMessage = 'Import failed.';
+          if (response.status > 0) {
+            errorMessage += ' Status: ' + response.status;
+            if (response.statusText) {
+              errorMessage += ' ' + response.statusText;
+            }
+
+            if (response.data) {
+              errorMessage += '- ' + response.data;
             }
           }
 
           notice.push(notice.ERROR, errorMessage);
+        },
+
+        function (evt) {
+          notice.setPercentComplete(100.0 * evt.loaded / evt.total);
         });
-      } else {
-        $scope.progress = 0;
-        $scope.file = null;
-        $scope.uploadResult = file.name + ' is too large.';
-      }
     };
 
   }])
