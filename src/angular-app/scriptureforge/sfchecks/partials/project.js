@@ -164,12 +164,9 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
       }
     };
 
-    $scope.onUsxFile = function ($files) {
-      if (!$files || $files.length == 0) {
-        return;
-      }
+    $scope.readUsx = function readUsx(file) {
+      if (!file || file.$error) return;
 
-      var file = $files[0];  // Use only first file
       var reader = new FileReader();
       reader.addEventListener('loadend', function () {
         // Basic sanity check: make sure what was uploaded is USX
