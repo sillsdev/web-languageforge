@@ -1,8 +1,12 @@
 'use strict';
 
-angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'ngFileUpload', 'ngRoute'])
-  .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService', 'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService','modalService',
-  function($scope, textService, ss, breadcrumbService, sfchecksLinkService, notice, sfchecksProjectService, messageService, modalService) {
+angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellows.services', 'sfchecks.services',
+  'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte',
+  'ngFileUpload', 'ngRoute'])
+  .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService', 'sfchecksLinkService',
+    'silNoticeService', 'sfchecksProjectService', 'messageService', 'modalService',
+  function ($scope, textService, ss, breadcrumbService, sfchecksLinkService,
+            notice, sfchecksProjectService, messageService, modalService) {
     $scope.finishedLoading = false;
 
     // Rights
@@ -22,7 +26,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
     };
     */
 
-    $scope.markMessageRead = function(id) {
+    $scope.markMessageRead = function (id) {
       for (var i = 0; i < $scope.messages.length; ++i) {
         var m = $scope.messages[i];
         if (m.id == id) {
@@ -36,7 +40,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
     // Listview Selection
     $scope.newTextCollapsed = true;
     $scope.selected = [];
-    $scope.updateSelection = function(event, item) {
+    $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
       if (checkbox.checked && selectedIndex == -1) {
@@ -46,15 +50,15 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
       }
     };
 
-    $scope.isSelected = function(item) {
+    $scope.isSelected = function (item) {
       return item != null && $scope.selected.indexOf(item) >= 0;
     };
 
     $scope.texts = [];
 
     // Page Dto
-    $scope.getPageDto = function() {
-      sfchecksProjectService.pageDto(function(result) {
+    $scope.getPageDto = function () {
+      sfchecksProjectService.pageDto(function (result) {
         if (result.ok) {
           $scope.texts = result.data.texts;
           $scope.textsCount = $scope.texts.length;
@@ -73,8 +77,8 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
           // Breadcrumb
           breadcrumbService.set('top',
               [
-               {href: '/app/projects', label: 'My Projects'},
-               {href: sfchecksLinkService.project(), label: $scope.project.name},
+               { href: '/app/projects', label: 'My Projects' },
+               { href: sfchecksLinkService.project(), label: $scope.project.name }
               ]
           );
 
@@ -90,7 +94,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
     };
 
     // Archive Texts
-    $scope.archiveTexts = function() {
+    $scope.archiveTexts = function () {
       //console.log("archiveTexts()");
       var textIds = [];
       var message = '';
@@ -109,10 +113,10 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
         closeButtonText: 'Cancel',
         actionButtonText: 'Archive',
         headerText: 'Archive Texts?',
-        bodyText: message,
+        bodyText: message
       };
-      modalService.showModal({}, modalOptions).then(function() {
-        textService.archive(textIds, function(result) {
+      modalService.showModal({}, modalOptions).then(function () {
+        textService.archive(textIds, function (result) {
           if (result.ok) {
             $scope.selected = []; // Reset the selection
             $scope.getPageDto();
@@ -127,7 +131,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
     };
 
     // Add Text
-    $scope.addText = function() {
+    $scope.addText = function () {
       //    console.log("addText()");
       var model = {};
       model.id = '';
@@ -138,7 +142,7 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
       model.endCh = $scope.endCh;
       model.endVs = $scope.endVs;
       model.fontfamily = $scope.fontfamily;
-      textService.update(model, function(result) {
+      textService.update(model, function (result) {
         if (result.ok) {
           notice.push(notice.SUCCESS, 'The text \'' + model.title + '\' was added successfully');
         }
@@ -148,35 +152,37 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
     };
 
     $scope.rangeSelectorCollapsed = true;
-    $scope.toggleRangeSelector = function() {
+    $scope.toggleRangeSelector = function () {
       $scope.rangeSelectorCollapsed = !$scope.rangeSelectorCollapsed;
     };
 
-    $scope.enhanceDto = function(items) {
+    $scope.enhanceDto = function (items) {
       for (var i in items) {
-        items[i].url = sfchecksLinkService.text(items[i].id);
+        if (items.hasOwnProperty(i)) {
+          items[i].url = sfchecksLinkService.text(items[i].id);
+        }
       }
     };
 
-    $scope.onUsxFile = function($files) {
+    $scope.onUsxFile = function ($files) {
       if (!$files || $files.length == 0) {
         return;
       }
 
       var file = $files[0];  // Use only first file
       var reader = new FileReader();
-      reader.addEventListener('loadend', function() {
+      reader.addEventListener('loadend', function () {
         // Basic sanity check: make sure what was uploaded is USX
         // First few characters should be optional BOM, optional <?xml ..., then <usx ...
         var startOfText = reader.result.slice(0, 1000);
         var usxIndex = startOfText.indexOf('<usx');
         if (usxIndex != -1) {
-          $scope.$apply(function() {
+          $scope.$apply(function () {
             $scope.content = reader.result;
           });
         } else {
           notice.push(notice.ERROR, 'Error loading USX file. The file doesn\'t appear to be valid USX.');
-          $scope.$apply(function() {
+          $scope.$apply(function () {
             $scope.content = '';
           });
         }
@@ -187,6 +193,6 @@ angular.module('sfchecks.project', ['bellows.services', 'sfchecks.services', 'pa
 
     $scope.getPageDto();
 
-  },])
+  }])
 
   ;
