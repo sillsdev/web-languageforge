@@ -286,7 +286,10 @@ function EditorPage() {
       getFields: editorUtil.getFields,
       getOneField: editorUtil.getOneField,
       getFieldValues: editorUtil.getFieldValues,
-      getOneFieldValue: editorUtil.getOneFieldValue
+      getOneFieldValue: editorUtil.getOneFieldValue,
+      getOneFieldAllInputSystems: function getOneFieldAllInputSystems(searchLabel, idx, rootElem) {
+        return editorUtil.getOneField(searchLabel, idx, rootElem).all(by.css('span.wsid'));
+      }
     },
 
     // Right half of page: comments
