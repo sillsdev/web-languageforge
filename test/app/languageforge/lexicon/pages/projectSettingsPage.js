@@ -3,31 +3,27 @@
 function ProjectSettingsPage() {
   var _this = this;
 
-  this.settingsMenuLink = $('.hdrnav a.btn i.icon-cog');
+  this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
   this.projectSettingsLink = element(by.linkText('Project Settings'));
   this.get = function get() {
     this.settingsMenuLink.click();
     this.projectSettingsLink.click();
   };
 
+  //noinspection JSUnusedGlobalSymbols
   this.backToDictionaryBtn = element(by.buttonText('Dictionary'));
 
   this.tabDivs = element.all(by.repeater('tab in tabs'));
-  this.activePane = $('div.tab-pane.active');
+  this.activePane = element(by.css('div.tab-pane.active'));
 
   this.getTabByName = function getTabByName(tabName) {
-    return $('div.tabbable ul.nav-tabs').element(by.cssContainingText('a', tabName));
-  };
-
-  this.clickTabByName = function clickTabByName(tabName) {
-    return _this.getTabByName(tabName).then(function(elem) { elem.click(); });
+    return element(by.css('div.tabbable ul.nav-tabs')).element(by.cssContainingText('a', tabName));
   };
 
   this.tabs = {
     project: this.getTabByName('Project Properties'),
     sendReceive: this.getTabByName('Send and Receive Properties')
   };
-
 
   this.projectTab = {
     saveButton: this.tabDivs.get(0).element(by.buttonText('Save'))
@@ -75,7 +71,8 @@ function ProjectSettingsPage() {
    */
   this.getFieldByName = function getFieldByName(fieldName, treatAsRegex) {
     var fieldRegex = (treatAsRegex ? fieldName : '^' + fieldName + '$');
-    return $('div.tab-pane.active dl.picklists').element(by.elemMatches('div[data-ng-repeat]', fieldRegex));
+    return element(by.css('div.tab-pane.active dl.picklists'))
+      .element(by.elemMatches('div[data-ng-repeat]', fieldRegex));
   };
 }
 
