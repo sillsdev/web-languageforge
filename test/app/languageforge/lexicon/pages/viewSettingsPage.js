@@ -14,7 +14,7 @@ function ViewSettingsPage() {
   this.backToDictionaryBtn = element(by.buttonText('Dictionary'));
 
   this.tabDivs = element.all(by.repeater('tab in tabs'));
-  this.applyBtn = element(by.buttonText('Apply'));
+  this.applyButton = element(by.buttonText('Apply'));
 
   this.getTabByName = function getTabByName(tabName) {
     return element(by.css('div.tabbable ul.nav-tabs')).element(by.cssContainingText('a', tabName));
@@ -82,8 +82,8 @@ function ViewSettingsPage() {
       .element(by.elemMatches('div[data-ng-repeat]', fieldRegex));
   };
 
-  this.clickFieldByName = function clickFieldByName(fieldName, treatAsRegex) {
-    return this.getFieldByName(fieldName, treatAsRegex).click();
+  this.getFieldByNameIconClass = function getFieldByNameIconClass(fieldName, treatAsRegex) {
+    return this.getFieldByName(fieldName, treatAsRegex).element(by.css('i')).getAttribute('class');
   };
 
   this.showField = this.activePane.element(by.cssContainingText('label.checkbox', 'Show field'))

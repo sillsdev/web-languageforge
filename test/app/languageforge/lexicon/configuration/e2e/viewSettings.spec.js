@@ -20,31 +20,24 @@ describe('View settings page', function () {
   });
 
   it('Hide Semantic Domain field for Manager', function () {
-    var vsp = viewSettingsPage;
-
-    expect(vsp.getFieldByName('Semantic Domain').$('i').getAttribute('class')).toMatch('icon-eye-open');
-
-    vsp.clickFieldByName('Semantic Domain');
-    util.setCheckbox(vsp.showField, false);
-    vsp.getFieldByName('Semantic Domain').then(function (elem) {
-      var icon = elem.$('i');
-      expect(icon.getAttribute('class')).not.toMatch('icon-eye-open');
-    });
-
-    vsp.applyBtn.click();
+    expect(viewSettingsPage.getFieldByNameIconClass('Semantic Domain')).toMatch('icon-eye-open');
+    viewSettingsPage.getFieldByName('Semantic Domain').click();
+    util.setCheckbox(viewSettingsPage.showField, false);
+    expect(viewSettingsPage.getFieldByNameIconClass('Semantic Domain'))
+      .not.toMatch('icon-eye-open');
+    viewSettingsPage.applyButton.click();
   });
 
   it('Hide Semantic Domain field for specific username of admin user', function () {
-    var vsp = viewSettingsPage;
-    vsp.getTabByName('Member Specific').click();
-    vsp.addViewSettingsForMember(constants.adminUsername);
-    vsp.pickMemberWithViewSettings(constants.adminUsername);
-    expect(vsp.accordionEnabledFields.getText()).toEqual(
+    viewSettingsPage.getTabByName('Member Specific').click();
+    viewSettingsPage.addViewSettingsForMember(constants.adminUsername);
+    viewSettingsPage.pickMemberWithViewSettings(constants.adminUsername);
+    expect(viewSettingsPage.accordionEnabledFields.getText()).toEqual(
         'Enabled Fields for ' + constants.adminName + ' (' + constants.adminUsername + ')'
     );
-    vsp.clickFieldByName('Semantic Domain');
-    util.setCheckbox(vsp.showField, false);
-    vsp.applyBtn.click();
+    viewSettingsPage.getFieldByName('Semantic Domain').click();
+    util.setCheckbox(viewSettingsPage.showField, false);
+    viewSettingsPage.applyButton.click();
   });
 
   it('Semantic Domain field is hidden for Manager', function () {
@@ -70,19 +63,18 @@ describe('View settings page', function () {
   });
 
   it('Return view settings to normal before next test', function () {
-    var vsp = viewSettingsPage;
-    vsp.get();
-    vsp.getTabByName('Member Specific').click();
-    vsp.pickMemberWithViewSettings(constants.adminUsername);
-    expect(vsp.accordionEnabledFields.getText()).toEqual(
+    viewSettingsPage.get();
+    viewSettingsPage.getTabByName('Member Specific').click();
+    viewSettingsPage.pickMemberWithViewSettings(constants.adminUsername);
+    expect(viewSettingsPage.accordionEnabledFields.getText()).toEqual(
         'Enabled Fields for ' + constants.adminName + ' (' + constants.adminUsername + ')'
     );
-    vsp.clickFieldByName('Semantic Domain');
-    util.setCheckbox(vsp.showField, true);
-    vsp.applyBtn.click();
-    vsp.getTabByName('Manager').click();
-    vsp.clickFieldByName('Semantic Domain');
-    util.setCheckbox(vsp.showField, true);
-    vsp.applyBtn.click();
+    viewSettingsPage.getFieldByName('Semantic Domain').click();
+    util.setCheckbox(viewSettingsPage.showField, true);
+    viewSettingsPage.applyButton.click();
+    viewSettingsPage.getTabByName('Manager').click();
+    viewSettingsPage.getFieldByName('Semantic Domain').click();
+    util.setCheckbox(viewSettingsPage.showField, true);
+    viewSettingsPage.applyButton.click();
   });
 });
