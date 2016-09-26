@@ -76,12 +76,6 @@ function EditorPage() {
           return (word.indexOf(lexeme) > -1);
         });
       });
-    },
-
-    clickEntryByLexeme: function (lexeme) {
-      this.findEntryByLexeme(lexeme).then(function (matchedRows) {
-        matchedRows[0].click();
-      });
     }
   };
 
@@ -134,22 +128,10 @@ function EditorPage() {
         lexeme));
     },
 
-    clickEntryByLexeme: function (lexeme) {
-      this.findEntryByLexeme(lexeme).then(function (elem) {
-        elem.click();
-      });
-    },
-
     findEntryByDefinition: function (definition) {
       var div = _this.editDiv.element(by.css('#compactEntryListContainer'));
       return div.element(by.cssContainingText('[data-ng-bind-html="getMeaningForDisplay(entry)"',
         definition));
-    },
-
-    clickEntryByDefinition: function (definition) {
-      this.findEntryByDefinition(definition).then(function (elem) {
-        elem.click();
-      });
     },
 
     search: {
@@ -202,12 +184,7 @@ function EditorPage() {
       });
     },
 
-    clickFirstSense: function () {
-      var senses = element.all(by.css('dc-sense'));
-      senses.get(0).then(function (elem) {
-        elem.click();
-      });
-    },
+    senses: element.all(by.css('dc-sense')),
 
     pictures: {
       list: editorUtil.getOneField('Pictures'),

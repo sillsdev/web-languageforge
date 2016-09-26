@@ -42,7 +42,7 @@ describe('View settings page', function () {
 
   it('Semantic Domain field is hidden for Manager', function () {
     util.clickBreadcrumb(constants.testProjectName);
-    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     expect(editorPage.edit.getFields('Semantic Domain').count()).toBe(0);
   });
 
@@ -50,7 +50,7 @@ describe('View settings page', function () {
     loginPage.loginAsMember();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
-    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     expect(editorPage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
   });
 
@@ -58,7 +58,7 @@ describe('View settings page', function () {
     loginPage.loginAsAdmin();
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
-    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     expect(editorPage.edit.getFields('Semantic Domain').count()).toBe(0);
   });
 

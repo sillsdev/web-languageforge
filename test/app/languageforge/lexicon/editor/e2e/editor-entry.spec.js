@@ -33,7 +33,7 @@ describe('Editor List and Entry', function () {
   });
 
   it('click on first word', function () {
-    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
   });
 
   it('refresh returns to entry view', function () {
@@ -72,7 +72,7 @@ describe('Editor List and Entry', function () {
     util.setCheckbox(configPage.hiddenIfEmpty, false);
     configPage.applyButton.click();
     util.clickBreadcrumb(constants.testProjectName);
-    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
   });
 
   it('citation form field overrides lexeme form in dictionary citation view', function () {
@@ -127,7 +127,7 @@ describe('Editor List and Entry', function () {
 
   it('caption is hidden when empty if "Hidden if empty" is set in config', function () {
     util.clickBreadcrumb(constants.testProjectName);
-    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     editorPage.edit.hideUncommonFields();
     expect(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
     editorPage.edit.pictures.captions.first().clear();
@@ -146,7 +146,7 @@ describe('Editor List and Entry', function () {
 
   it('when caption is empty, it is visible if "Hidden if empty" is cleared in config', function () {
     util.clickBreadcrumb(constants.testProjectName);
-    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     expect(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
   });
 
@@ -170,7 +170,7 @@ describe('Editor List and Entry', function () {
 
   it('while Show All Fields has not been clicked, Pictures field is hidden', function () {
     util.clickBreadcrumb(constants.testProjectName);
-    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     expect(editorPage.edit.getFields('Pictures').count()).toBe(0);
     editorPage.edit.showUncommonFields();
     expect(editorPage.edit.pictures.list.isPresent()).toBe(true);
@@ -179,7 +179,8 @@ describe('Editor List and Entry', function () {
   });
 
   it('click on second word (found by definition)', function () {
-    editorPage.edit.clickEntryByDefinition(constants.testEntry2.senses[0].definition.en.value);
+    editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value)
+      .click();
   });
 
   it('word 2: edit page has correct meaning, part of speech', function () {
@@ -193,8 +194,8 @@ describe('Editor List and Entry', function () {
   });
 
   it('setup: click on word with multiple meanings (found by lexeme)', function () {
-    editorPage.edit.clickEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value);
-    editorPage.edit.clickFirstSense();
+    editorPage.edit.findEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value).click();
+    editorPage.edit.senses.first().click();
   });
 
   it('word with multiple meanings: edit page has correct meanings, parts of speech', function () {
@@ -296,7 +297,7 @@ describe('Editor List and Entry', function () {
       util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(2), true);
       configPage.applyButton.click();
       util.clickBreadcrumb(constants.testProjectName);
-      editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+      editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     });
 
     it('Word has "th", "tipa" and "en" visible', function () {
@@ -314,7 +315,7 @@ describe('Editor List and Entry', function () {
       util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(2), false);
       configPage.applyButton.click();
       util.clickBreadcrumb(constants.testProjectName);
-      editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+      editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     });
 
     it('Word has only "th" and "tipa" visible', function () {
@@ -326,7 +327,7 @@ describe('Editor List and Entry', function () {
   });
 
   it('first entry is selected if entryId unknown', function () {
-    editorPage.edit.clickEntryByLexeme(constants.testEntry3.lexeme.th.value);
+    editorPage.edit.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
     editorPage.getProjectIdFromUrl().then(function (projectId) {
       editorPage.get(projectId, '_unknown_id_1234');
     });
@@ -337,12 +338,12 @@ describe('Editor List and Entry', function () {
   it('URL entry id changes with entry', function () {
     var entry1Id = editorPage.getEntryIdFromUrl();
     expect(entry1Id).toMatch(/[0-9a-z_]{6,24}/);
-    editorPage.edit.clickEntryByLexeme(constants.testEntry3.lexeme.th.value);
+    editorPage.edit.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
     expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry3.lexeme.th.value);
     var entry3Id = editorPage.getEntryIdFromUrl();
     expect(entry3Id).toMatch(/[0-9a-z_]{6,24}/);
     expect(entry1Id).not.toEqual(entry3Id);
-    editorPage.edit.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.edit.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
     expect(editorPage.getEntryIdFromUrl()).not.toEqual(entry3Id);
   });
@@ -360,7 +361,7 @@ describe('Editor List and Entry', function () {
   });
 
   it('remove new word to restore original word count', function () {
-    editorPage.browse.clickEntryByLexeme(constants.testEntry3.lexeme.th.value);
+    editorPage.browse.findEntryByLexeme(constants.testEntry3.lexeme.th.value).click();
     editorPage.edit.deleteBtn.click();
     util.clickModalButton('Delete Entry');
     expect(editorPage.edit.getEntryCount()).toBe(3);
