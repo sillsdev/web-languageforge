@@ -46,10 +46,7 @@ describe('Editor Comments', function () {
   it('comments page: add comment about a specific part of the entry', function () {
     editorPage.comment.newComment.textarea.clear();
     editorPage.comment.newComment.textarea.sendKeys('Second comment.');
-    editorPage.comment.entry.getOneField('Word').then(function (elem) {
-      elem.$$('span.wsid').first().click();
-    });
-
+    editorPage.comment.entry.getOneFieldAllInputSystems('Word').first().click();
     editorPage.comment.newComment.postBtn.click();
   });
 
