@@ -18,7 +18,7 @@ describe('Editor Comments', function () {
   });
 
   it('click on first word', function () {
-    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
   });
 
   it('switch to comments page, add one comment', function () {
