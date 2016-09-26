@@ -292,7 +292,6 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
       $scope.inputSystemsList.push(vm);
     });
 
-
     // select the first items
     $scope.selectInputSystem($scope.inputSystemsList[0].uuid);
     $scope.currentTaskName = 'dashboard';
@@ -446,8 +445,11 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
   };
 
-  $scope.$watchCollection('inputSystemViewModels[selectedInputSystemId]', function (newValue) {
-    if (newValue == undefined) {
+  $scope.$watchCollection('inputSystemViewModels[selectedInputSystemId]', function (newValue,
+                                                                                    oldValue) {
+    if (angular.isUndefined(newValue) || angular.isUndefined(oldValue) ||
+      angular.equals(oldValue, newValue)
+    ) {
       return;
     }
 
@@ -675,14 +677,10 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
   };
 
   $scope.showRemoveCustomField = function showRemoveCustomField(fieldName) {
-    if ($scope.isCustomField(fieldName) &&
-        !(fieldName in $scope.projectSettings.config.entry.fields) &&
-        !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields) &&
-        !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields.examples.fields)) {
-      return true;
-    }
-
-    return false;
+    return $scope.isCustomField(fieldName) &&
+      !(fieldName in $scope.projectSettings.config.entry.fields) &&
+      !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields) &&
+      !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields.examples.fields);
   };
 
   $scope.removeSelectedCustomField = function removeSelectedCustomField() {
