@@ -100,9 +100,9 @@
         - path: "{{sf_path}}/src"
           mode: 'u=rwX,g=rX,o=rX'
         - path: "{{lf_path}}/test"
-          mode: 'u=rwX,g=rX,o=rX'
+          mode: 'u=rwX,g=rX,o=rx'
         - path: "{{sf_path}}/test"
-          mode: 'u=rwX,g=rX,o=rX'
+          mode: 'u=rwX,g=rX,o=rx'
         - path: "{{lf_path}}/docs"
           mode: 'u=rwX,g=rX,o=rX'
         - path: "{{sf_path}}/docs"
