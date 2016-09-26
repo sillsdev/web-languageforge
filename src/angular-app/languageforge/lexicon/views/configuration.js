@@ -286,10 +286,10 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
     // InputSystemsViewModels
     $scope.inputSystemViewModels = {};
     $scope.inputSystemsList = [];
-    angular.forEach($scope.configDirty.inputSystems, function (item) {
-      var vm = new InputSystemsViewModel(item);
-      $scope.inputSystemViewModels[vm.uuid] = vm;
-      $scope.inputSystemsList.push(vm);
+    angular.forEach($scope.configDirty.inputSystems, function (inputSystem) {
+      var viewModel = new InputSystemsViewModel(inputSystem);
+      $scope.inputSystemViewModels[viewModel.uuid] = viewModel;
+      $scope.inputSystemsList.push(viewModel);
     });
 
     // select the first items
@@ -379,7 +379,9 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
     viewModel.special = special;
     viewModel.buildTag();
     for (var uuid in $scope.inputSystemViewModels) {
-      if ($scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag) {
+      if ($scope.inputSystemViewModels.hasOwnProperty(uuid) &&
+        $scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag
+      ) {
         return true;
       }
     }
@@ -399,7 +401,9 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
     // Verify newly created tag doesn't already exist before adding it to the list
     for (var uuid in $scope.inputSystemViewModels) {
       if (special != $scope.selects.special.optionsOrder[3] &&
-          $scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag) {
+        $scope.inputSystemViewModels.hasOwnProperty(uuid) &&
+        $scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag
+      ) {
         notice.push(notice.ERROR, 'Input system for ' + viewModel.inputSystem.languageName +
           ' already exists');
         return;
@@ -407,10 +411,18 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
     }
 
     $scope.inputSystemViewModels[viewModel.uuid] = viewModel;
+    $scope.inputSystemsList.push(viewModel);
     $scope.selectedInputSystemId = viewModel.uuid;
+    $scope.configForm.$setDirty();
   };
 
   $scope.removeInputSystem = function removeInputSystem(selectedInputSystemId) {
+    var viewModel = $scope.inputSystemViewModels[selectedInputSystemId];
+    var index = $scope.inputSystemsList.indexOf(viewModel);
+    if (index > -1) {
+      $scope.inputSystemsList.splice(index, 1);
+    }
+
     delete $scope.inputSystemViewModels[selectedInputSystemId];
     $scope.configForm.$setDirty();
 
