@@ -91,12 +91,11 @@
     </target>
 
     <target name="build-npm">
-        <!-- Not working just yet on build server
         <exec executable="npm" dir="." failonerror="true">
             <arg line="install" />
         </exec>
-        -->
     </target>
+
     <target name="build-gulp" depends="build-npm">
         <!-- Not working just yet on build server
         <exec executable="gulp" dir="." failonerror="true">
