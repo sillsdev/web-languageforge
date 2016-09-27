@@ -1,0 +1,6 @@
+<a id="showMockUploadButton" data-ng-click="toggleControls()" style="text-decoration:none; cursor:default">&nbsp;</a>
+<div data-ng-show="showControls">
+    <input type="text" id="mockFileName" data-ng-model="mockFiles[0].name" />
+    <input type="text" id="mockFileSize" data-ng-model="mockFiles[0].size" />
+    <a class="btn" id="mockUploadButton" data-ng-click="doUpload()"></a>
+</div>
