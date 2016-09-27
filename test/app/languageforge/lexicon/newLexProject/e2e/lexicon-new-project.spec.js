@@ -492,6 +492,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
       expect(page.nextButton.isEnabled()).toBe(true);
+
+      // added sleep to ensure state is stable so the next test passes (expectFormIsNotValid)
+      browser.sleep(500);
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(false);
       expect(page.initialDataPage.browseButton.isPresent()).toBe(true);
