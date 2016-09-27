@@ -55,3 +55,11 @@ if ($testProject->appName == LexProjectModel::LEXICON_APP) {
         unlink($stateFilePath);
     }
 }
+
+// cleanup mocked uploaded zip import (jpg file)
+$tmpFilePath = sys_get_temp_dir() . '/' . $constants['testMockJpgImportFile']['name'];
+@unlink($tmpFilePath);
+
+// cleanup mocked uploaded zip import (zip file)
+$tmpFilePath = sys_get_temp_dir() . '/' . $constants['testMockZipImportFile']['name'];
+@unlink($tmpFilePath);
