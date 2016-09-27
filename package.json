@@ -14,12 +14,11 @@
     "alternate-url": "https://github.com/sillsdev/web-scriptureforge.git"
   },
   "devDependencies": {
-    "async": "~1.4.2",
+    "gulp-util": "~3.0.6",
     "gulp": "~3.9.0",
     "gulp-exec": "~2.1.0",
     "gulp-livereload": "~3.8.0",
-    "gulp-util": "~3.0.6",
-    "path": "^0.12.7"
+    "async": "~1.4.2"
   },
   "jscsConfig": {
     "disallowTrailingComma": true

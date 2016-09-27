@@ -27,9 +27,15 @@
                 <li>In the <b>Browse for Folder</b> dialog box, navigate to the folder where you want to save the data.</li>
                 <li>Click <b>OK</b>.</li>
                 <li>Zip the contents of the created folder. We recommend using 
-                    <a href="http://www.7-zip.org/" target="_blank">7-zip</a> 
+                    <a href="http://www.7-zip.org/" target="_blank">7-zip</a>
                     to preserve non-roman filenames.</li>
             </ol>
         </div>
     </div>
 </div>
+
+<!--
+Used to mock file upload. Assumes file is already in the right location.
+TODO: This should be removed from production code! IJH 2014-11
+ -->
+<pui-mock-upload data-pui-do-upload="onFileSelect(filesArray)" />

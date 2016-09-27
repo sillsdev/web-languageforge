@@ -1,6 +1,7 @@
 'use strict';
 
 function NewLexProjectPage() {
+  var mockUpload = require('../../../bellows/pages/mockUploadElement.js');
   var modal      = require('./lexModals.js');
   var _this = this;
 
@@ -73,7 +74,7 @@ function NewLexProjectPage() {
   // step 2: initial data
   this.initialDataPage = {};
   this.initialDataPage.browseButton = element(by.id('browseButton'));
-  this.initialDataPage.fileInput = element.all(by.css('input[type="file"]')).first();
+  this.initialDataPage.mockUpload = mockUpload;
 
   // step 3: verify data
   this.verifyDataPage = {};
