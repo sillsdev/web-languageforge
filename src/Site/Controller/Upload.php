@@ -23,9 +23,24 @@ class Upload extends Base
         $status = 201;
 
         try {
-            $file = $_FILES['file'];
+            // check for mocked E2E upload
+            $filePath = sys_get_temp_dir() . '/' . $_POST['filename'];
+            if (file_exists($filePath) && ! is_dir($filePath)) {
+                $file = array(
+                    'name' => $_POST['filename'],
+                    'error' => UPLOAD_ERR_OK
+                );
+                $tmpFilePath = $filePath;
+                $_FILES['file'] = $file;
+            } else {
+                $file = $_FILES['file'];
+            }
+
             if ($file['error'] == UPLOAD_ERR_OK) {
-                $tmpFilePath = $this->moveUploadedFile();
+                if (! isset($tmpFilePath)) {
+                    $tmpFilePath = $this->moveUploadedFile();
+                }
+
                 if ($appType == 'sf-checks') {
                     $api = new Sf($app);
                     $api->checkPermissions('sfChecks_uploadFile', array(
