@@ -389,7 +389,7 @@ angular.module('lexicon-new-project',
 
           break;
         case 'newProject.name':
-          createProject(makeFormNeutral);
+          createProject();
           $state.go('newProject.initialData');
           $scope.nextButtonLabel = $filter('translate')('Skip');
           $scope.show.backButton = false;
@@ -546,7 +546,8 @@ angular.module('lexicon-new-project',
         notice.cancelLoading();
         var isUploadSuccess = response.data.result;
         if (isUploadSuccess) {
-          notice.push(notice.SUCCESS, $filter('translate')('Successfully imported') + ' ' + file.name);
+          notice.push(notice.SUCCESS, $filter('translate')('Successfully imported') + ' ' +
+            file.name);
           $scope.newProject.entriesImported = response.data.data.stats.importEntries;
           $scope.newProject.importErrors = response.data.data.importErrors;
           gotoNextState();
