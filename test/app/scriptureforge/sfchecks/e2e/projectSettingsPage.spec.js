@@ -76,9 +76,10 @@ describe('the project settings page - project manager', function () {
 
     it('can change the role of a member', function () {
       projectSettingsPage.membersTab.listFilter.sendKeys('dude');
-      util.clickDropdownByValue(projectSettingsPage.membersTab.list.first().element(by.model('user.role')), 'Manager');
-      expect(projectSettingsPage.membersTab.list.first().element(by.model('user.role')).$('option:checked').getText())
-        .toEqual('Manager');
+      util.clickDropdownByValue(projectSettingsPage.membersTab.list.first()
+        .element(by.model('user.role')), 'Manager');
+      expect(projectSettingsPage.membersTab.list.first().element(by.model('user.role'))
+        .element(by.css('option:checked')).getText()).toEqual('Manager');
       projectSettingsPage.membersTab.listFilter.clear();
     });
 
@@ -109,7 +110,8 @@ describe('the project settings page - project manager', function () {
 
     it('can add a template', function () {
       projectSettingsPage.templatesTab.addButton.click();
-      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.templatesTab.editor.title), CONDITION_TIMEOUT);
+      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.templatesTab.editor.title),
+        CONDITION_TIMEOUT);
       projectSettingsPage.templatesTab.editor.title.sendKeys('sound check');
       projectSettingsPage.templatesTab.editor.description
         .sendKeys('What do you think of when I say the words... "boo"');
@@ -120,20 +122,21 @@ describe('the project settings page - project manager', function () {
 
     it('can update an existing template', function () {
       projectSettingsPage.templatesTab.list.last().element(by.linkText('sound check')).click();
-      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.templatesTab.editor.saveButton),
-        CONDITION_TIMEOUT);
+      browser.wait(expectedCondition.visibilityOf(
+        projectSettingsPage.templatesTab.editor.saveButton), CONDITION_TIMEOUT);
       expect(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(true);
       projectSettingsPage.templatesTab.editor.title.clear();
       projectSettingsPage.templatesTab.editor.title.sendKeys('test12');
       projectSettingsPage.templatesTab.editor.saveButton.click();
-      browser.wait(expectedCondition.invisibilityOf(projectSettingsPage.templatesTab.editor.saveButton),
-        CONDITION_TIMEOUT);
+      browser.wait(expectedCondition.invisibilityOf(
+        projectSettingsPage.templatesTab.editor.saveButton), CONDITION_TIMEOUT);
       expect(projectSettingsPage.templatesTab.editor.saveButton.isDisplayed()).toBe(false);
       expect(projectSettingsPage.templatesTab.list.count()).toBe(3);
     });
 
     it('can delete a template', function () {
-      projectSettingsPage.templatesTab.list.last().element(by.css('input[type="checkbox"]')).click();
+      projectSettingsPage.templatesTab.list.last().element(by.css('input[type="checkbox"]'))
+        .click();
       projectSettingsPage.templatesTab.removeButton.click();
       expect(projectSettingsPage.templatesTab.list.count()).toBe(2);
     });
@@ -151,10 +154,12 @@ describe('the project settings page - project manager', function () {
     });
 
     it('can read properties', function () {
-      expect(projectSettingsPage.propertiesTab.name.getAttribute('value')).toBe(constants.testProjectName);
+      expect(projectSettingsPage.propertiesTab.name.getAttribute('value'))
+        .toBe(constants.testProjectName);
 
       //expect(projectSettingsPage.propertiesTab.featured.getAttribute('checked')).toBeFalsy();
-      expect(projectSettingsPage.propertiesTab.allowAudioDownload.getAttribute('checked')).toBeTruthy();
+      expect(projectSettingsPage.propertiesTab.allowAudioDownload.getAttribute('checked'))
+        .toBeTruthy();
     });
 
     it('can change properties and verify they persist', function () {
@@ -169,7 +174,8 @@ describe('the project settings page - project manager', function () {
       expect(projectSettingsPage.propertiesTab.name.getAttribute('value')).toBe(newName);
 
       //expect(projectSettingsPage.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
-      expect(projectSettingsPage.propertiesTab.allowAudioDownload.getAttribute('checked')).toBeFalsy();
+      expect(projectSettingsPage.propertiesTab.allowAudioDownload.getAttribute('checked'))
+        .toBeFalsy();
       projectSettingsPage.propertiesTab.button.click();
       projectListPage.get();
       projectListPage.clickOnProject(newName);
@@ -187,9 +193,10 @@ describe('the project settings page - project manager', function () {
   describe('user profile lists', function () {
     it('setup: click on tab and select the Location list for editing', function () {
       projectSettingsPage.tabs.optionlists.click();
-      util.findRowByText(projectSettingsPage.optionlistsTab.editList, 'Study Group').then(function (row) {
-        row.click();
-      });
+      util.findRowByText(projectSettingsPage.optionlistsTab.editList, 'Study Group')
+        .then(function (row) {
+          row.click();
+        });
     });
 
     it('can add two values to a list', function () {
@@ -201,20 +208,6 @@ describe('the project settings page - project manager', function () {
       projectSettingsPage.optionlistsTab.addButton.click();
       expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(2);
     });
-    /* Skipping this test because testing the drag-and-drop is proving much harder than expected. 2013-06 RM
-     it('can rearrange the values', function() {
-     var foo = util.findRowByText(projectSettingsPage.optionlistsTab.editContentsList, "foo");
-     var bar = util.findRowByText(projectSettingsPage.optionlistsTab.editContentsList, "bar");
-     util.findRowByFunc(projectSettingsPage.optionlistsTab.editContentsList, console.log).then(function() {
-     console.log("That's all, folks.");
-     });
-     foo.then(function(elem) {
-     console.log("Found it.");
-     //browser.actions().dragAndDrop(elem.getWebElement(), { x: 0, y: 30 } ).perform();
-     });
-     browser.sleep(5000);
-     });
-     */
 
     it('can delete values from the list', function () {
       expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(2);
@@ -266,11 +259,16 @@ describe('the project settings page - project manager', function () {
         browser.navigate().refresh();
         projectSettingsPage.tabs.communication.click();
 
-        expect(projectSettingsPage.communicationTab.sms.accountId.getAttribute('value')).toBe(sample.a);
-        expect(projectSettingsPage.communicationTab.sms.authToken.getAttribute('value')).toBe(sample.b);
-        expect(projectSettingsPage.communicationTab.sms.number.getAttribute('value')).toBe(sample.c);
-        expect(projectSettingsPage.communicationTab.email.address.getAttribute('value')).toBe(sample.d);
-        expect(projectSettingsPage.communicationTab.email.name.getAttribute('value')).toBe(sample.e);
+        expect(projectSettingsPage.communicationTab.sms.accountId.getAttribute('value'))
+          .toBe(sample.a);
+        expect(projectSettingsPage.communicationTab.sms.authToken.getAttribute('value'))
+          .toBe(sample.b);
+        expect(projectSettingsPage.communicationTab.sms.number.getAttribute('value'))
+          .toBe(sample.c);
+        expect(projectSettingsPage.communicationTab.email.address.getAttribute('value'))
+          .toBe(sample.d);
+        expect(projectSettingsPage.communicationTab.email.name.getAttribute('value'))
+          .toBe(sample.e);
       });
     });
   });

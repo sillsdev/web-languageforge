@@ -1,6 +1,6 @@
 'use strict';
 
-describe('the question page', function() {
+describe('the question page', function () {
   var constants       = require('../../../testConstants.json');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
   var util            = require('../../../bellows/pages/util.js');
@@ -10,9 +10,9 @@ describe('the question page', function() {
   var textSettingsPage = require('../pages/textSettingsPage.js');
   var questionPage     = require('../pages/questionPage.js');
 
-  describe('a normal user', function() {
+  describe('a normal user', function () {
 
-    it('setup: login as normal user', function() {
+    it('setup: login as normal user', function () {
       loginPage.loginAsMember();
       projectListPage.get();
       projectListPage.clickOnProject(constants.testProjectName);
@@ -20,34 +20,34 @@ describe('the question page', function() {
       textPage.questionLink(constants.testText1Question1Title).click();
     });
 
-    it('cannot edit question settings - NYI', function() {
+    it('cannot edit question settings - NYI', function () {
     });
 
-    it('cannot edit comment - NYI', function() {
+    it('cannot edit comment - NYI', function () {
     });
 
-    it('cannot delete comment - NYI', function() {
+    it('cannot delete comment - NYI', function () {
     });
 
-    it('cannot tag answer - NYI', function() {
+    it('cannot tag answer - NYI', function () {
     });
 
-    it('cannot edit answer - NYI', function() {
+    it('cannot edit answer - NYI', function () {
     });
 
-    it('cannot delete answer - NYI', function() {
+    it('cannot delete answer - NYI', function () {
     });
 
-    it('cannot flag answer for export', function() {
+    it('cannot flag answer for export', function () {
       expect(questionPage.answers.flags.lastButtonSet().isDisplayed()).toBeFalsy();
       expect(questionPage.answers.flags.lastButtonClear().isDisplayed()).toBeFalsy();
     });
 
   });
 
-  describe('a project manager', function() {
+  describe('a project manager', function () {
 
-    it('setup: login as manager', function() {
+    it('setup: login as manager', function () {
       loginPage.loginAsManager();
       projectListPage.get();
       projectListPage.clickOnProject(constants.testProjectName);
@@ -55,25 +55,25 @@ describe('the question page', function() {
       textPage.questionLink(constants.testText1Question1Title).click();
     });
 
-    it('can edit question settings - NYI', function() {
+    it('can edit question settings - NYI', function () {
     });
 
-    it('can edit comment - NYI', function() {
+    it('can edit comment - NYI', function () {
     });
 
-    it('can delete comment - NYI', function() {
+    it('can delete comment - NYI', function () {
     });
 
-    it('can tag answer - NYI', function() {
+    it('can tag answer - NYI', function () {
     });
 
-    it('can edit answer - NYI', function() {
+    it('can edit answer - NYI', function () {
     });
 
-    it('can delete answer - NYI', function() {
+    it('can delete answer - NYI', function () {
     });
 
-    it('can flag answer for export', function() {
+    it('can flag answer for export', function () {
       expect(questionPage.answers.flags.lastButtonSet().isDisplayed()).toBeFalsy();
       expect(questionPage.answers.flags.lastButtonClear().isDisplayed()).toBe(true);
       questionPage.answers.flags.lastButtonClear().click();
@@ -81,18 +81,22 @@ describe('the question page', function() {
       expect(questionPage.answers.flags.lastButtonClear().isDisplayed()).toBeFalsy();
     });
 
-    describe('paratext export of flagged answer', function() {
+    describe('paratext export of flagged answer', function () {
 
-      it('setup: back to Text, click settings, click on tab', function() {
-        browser.navigate().back();    // TODO change to use breadcrumb text link (back has indeterminant finish) IJH 2014-06
+      it('setup: back to Text, click settings, click on tab', function () {
+        // TODO change to use breadcrumb text link (back has indeterminate finish) IJH 2014-06
+        browser.navigate().back();
         textPage.textSettingsBtn.click();
         textSettingsPage.tabs.paratextExport.click();
       });
 
-      it('can prepare export for answers flagged for export without comments', function() {
-        expect(textSettingsPage.paratextExportTab.exportAnswers.getAttribute('checked')).toBeTruthy();
-        expect(textSettingsPage.paratextExportTab.exportComments.getAttribute('checked')).toBeFalsy();
-        expect(textSettingsPage.paratextExportTab.exportFlagged.getAttribute('checked')).toBeTruthy();
+      it('can prepare export for answers flagged for export without comments', function () {
+        expect(textSettingsPage.paratextExportTab.exportAnswers.getAttribute('checked'))
+          .toBeTruthy();
+        expect(textSettingsPage.paratextExportTab.exportComments.getAttribute('checked'))
+          .toBeFalsy();
+        expect(textSettingsPage.paratextExportTab.exportFlagged.getAttribute('checked'))
+          .toBeTruthy();
         expect(textSettingsPage.paratextExportTab.prepareButton.isPresent()).toBe(true);
         textSettingsPage.paratextExportTab.prepareButton.click();
         expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
@@ -101,7 +105,7 @@ describe('the question page', function() {
         expect(textSettingsPage.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
       });
 
-      it('can prepare export for answers flagged for export with comments', function() {
+      it('can prepare export for answers flagged for export with comments', function () {
         textSettingsPage.paratextExportTab.exportComments.click();
         textSettingsPage.paratextExportTab.prepareButton.click();
         expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
@@ -115,8 +119,8 @@ describe('the question page', function() {
 
   });
 
-  describe('a system admin', function() {
-    it('setup: login as admin', function() {
+  describe('a system admin', function () {
+    it('setup: login as admin', function () {
       loginPage.loginAsAdmin();
       projectListPage.get();
       projectListPage.clickOnProject(constants.testProjectName);
@@ -124,25 +128,25 @@ describe('the question page', function() {
       textPage.questionLink(constants.testText1Question1Title).click();
     });
 
-    it('can edit question settings - NYI', function() {
+    it('can edit question settings - NYI', function () {
     });
 
-    it('can edit comment - NYI', function() {
+    it('can edit comment - NYI', function () {
     });
 
-    it('can delete comment - NYI', function() {
+    it('can delete comment - NYI', function () {
     });
 
-    it('can tag answer - NYI', function() {
+    it('can tag answer - NYI', function () {
     });
 
-    it('can edit answer - NYI', function() {
+    it('can edit answer - NYI', function () {
     });
 
-    it('can delete answer - NYI', function() {
+    it('can delete answer - NYI', function () {
     });
 
-    it('can flag answer for export', function() {
+    it('can flag answer for export', function () {
       expect(questionPage.answers.flags.lastButtonSet().isDisplayed()).toBe(true);
       expect(questionPage.answers.flags.lastButtonClear().isDisplayed()).toBeFalsy();
       questionPage.answers.flags.lastButtonSet().click();
