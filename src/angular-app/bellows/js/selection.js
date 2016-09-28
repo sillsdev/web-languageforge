@@ -11,7 +11,7 @@ angular.module('palaso.ui.selection', [])
       },
       controller: function () {
         rangy.init();
-        this.cssApplier = rangy.createCssClassApplier('highlighted');
+        this.cssApplier = rangy.createClassApplier('highlighted');
       },
 
       link: function (scope, element, attrs, controller) {
