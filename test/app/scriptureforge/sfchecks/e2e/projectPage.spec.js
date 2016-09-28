@@ -9,6 +9,8 @@ describe('the project dashboard AKA text list page', function () {
   var projectPage         = require('../pages/projectPage.js');
   var projectSettingsPage = require('../pages/projectSettingsPage.js');
   var questionListPage    = require('../pages/textPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   /*
   describe('project member/user', function() {
@@ -72,13 +74,14 @@ describe('the project dashboard AKA text list page', function () {
 
     it('can click through to a questions page', function () {
       projectPage.textLink(constants.testText1Title).click();
-      expect(questionListPage.questionNames.count()).toBeGreaterThan(0);
+      expect(questionListPage.questionRows.count()).toBeGreaterThan(0);
       browser.navigate().back();
     });
 
     it('can create a new text (input text area)', function () {
       expect(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
       projectPage.newText.showFormButton.click();
+      browser.wait(expectedCondition.visibilityOf(projectPage.newText.title), CONDITION_TIMEOUT);
       projectPage.newText.title.sendKeys(sampleTitle);
       projectPage.newText.usx.sendKeys(projectPage.testData.simpleUsx1);
       projectPage.newText.saveButton.click();
@@ -126,15 +129,18 @@ describe('the project dashboard AKA text list page', function () {
       expect(projectPage.textLink(sampleTitle).isDisplayed()).toBe(true);
     });
 
-    // I am avoiding testing creating a new text using the file dialog for importing a USX file... - cjh
-    // according to http://stackoverflow.com/questions/8851051/selenium-webdriver-and-browsers-select-file-dialog
-    // you can have selenium interact with the file dialog by sending keystrokes but this is highly OS dependent
+    // CJH: I am avoiding testing creating a new text using the file dialog for importing a USX file
+    // according to
+    // http://stackoverflow.com/questions/8851051/selenium-webdriver-and-browsers-select-file-dialog
+    // you can have selenium interact with the file dialog by sending keystrokes but this is highly
+    // OS dependent
     //it('can create a new text (file dialog)', function() {});
 
     it('can use the chapter trimmer to trim the USX when creating a new text', function () {
       var newTextTitle = sampleTitle + '6789'; // Don't re-use title from an existing text
       expect(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
       projectPage.newText.showFormButton.click();
+      browser.wait(expectedCondition.visibilityOf(projectPage.newText.title), CONDITION_TIMEOUT);
       projectPage.newText.title.sendKeys(newTextTitle);
       util.sendText(projectPage.newText.usx, projectPage.testData.longUsx1);
       projectPage.newText.verseRangeLink.click();
