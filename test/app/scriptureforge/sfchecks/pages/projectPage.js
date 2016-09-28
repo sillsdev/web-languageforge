@@ -1,6 +1,12 @@
 'use strict';
 
-var SfProjectPage = function () {
+module.exports = new SfProjectPage();
+
+function SfProjectPage() {
+  var _this = this;
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
+
   this.testData = {
     simpleUsx1: '<usx version="2.0"> <chapter number="1" style="c" /> ' +
       '<verse number="1" style="v" /> <para style="q1">Blessed is the man</para> ' +
@@ -21,7 +27,7 @@ var SfProjectPage = function () {
   // getFirstCheckbox has to be a function because the .first() method will actually resolve the
   // finder
   this.getFirstCheckbox = function () {
-    return this.textList.first().element(by.css('input[type="checkbox"]'));
+    return _this.textList.first().element(by.css('input[type="checkbox"]'));
   };
 
   // Invite-a-friend feature
@@ -49,17 +55,12 @@ var SfProjectPage = function () {
   };
 
   this.addNewText = function (title, usx) {
-    expect(this.newText.showFormButton.isDisplayed()).toBe(true);
-    this.newText.showFormButton.click();
-    this.newText.title.sendKeys(title);
-    this.newText.usx.sendKeys(usx);
-    this.newText.saveButton.click();
+    expect(_this.newText.showFormButton.isDisplayed()).toBe(true);
+    _this.newText.showFormButton.click();
+    browser.wait(expectedCondition.visibilityOf(_this.newText.title), CONDITION_TIMEOUT);
+    _this.newText.title.sendKeys(title);
+    _this.newText.usx.sendKeys(usx);
+    _this.newText.saveButton.click();
   };
 
-  //noinspection JSUnusedGlobalSymbols
-  this.clickOnProjectSettings = function () {
-    element(by.id('projectSettingsButton')).click();
-  };
-};
-
-module.exports = new SfProjectPage();
+}

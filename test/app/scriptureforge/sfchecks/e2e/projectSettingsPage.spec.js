@@ -210,14 +210,11 @@ describe('the project settings page - project manager', function () {
     });
 
     it('can delete values from the list', function () {
+      var firstEditContentsList = projectSettingsPage.optionlistsTab.editContentsList.first();
       expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(2);
-      projectSettingsPage.optionlistsTab.editContentsList.first()
-        .then(function (elem) { projectSettingsPage.optionlistsTab.deleteButton(elem).click(); });
-
+      projectSettingsPage.optionlistsTab.deleteButton(firstEditContentsList).click();
       expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(1);
-      projectSettingsPage.optionlistsTab.editContentsList.first()
-        .then(function (elem) { projectSettingsPage.optionlistsTab.deleteButton(elem).click(); });
-
+      projectSettingsPage.optionlistsTab.deleteButton(firstEditContentsList).click();
       expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(0);
     });
   });
