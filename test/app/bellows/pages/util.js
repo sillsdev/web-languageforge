@@ -122,9 +122,9 @@ function Utils() {
   };
 
   this.clickModalButton = function clickModalButtonfunction(buttonText) {
-    var modalFooter = element(by.css('.modal-footer'));
-    var button = modalFooter.element(by.partialButtonText(buttonText));
+    var button = element(by.css('.modal-footer')).element(by.partialButtonText(buttonText));
 
+    browser.wait(expectedCondition.visibilityOf(button), CONDITION_TIMEOUT);
     browser.wait(expectedCondition.elementToBeClickable(button), CONDITION_TIMEOUT);
     button.click();
   };
