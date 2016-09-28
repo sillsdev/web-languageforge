@@ -1,11 +1,14 @@
 'use strict';
 
-angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.soundmanager', 'sfchecks.services',
-  'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte', 'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice'])
-  .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService', 'utilService',
-    'breadcrumbService', 'silNoticeService', 'sfchecksLinkService', 'modalService', '$rootScope',
-  function ($scope, $routeParams, questionService, ss, util,
-            breadcrumbService, notice, linkService, modalService, $rootScope) {
+angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.soundmanager',
+  'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte', 'palaso.ui.selection',
+  'palaso.ui.tagging', 'palaso.ui.notice'])
+  .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService',
+    'utilService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService', 'modalService',
+    '$rootScope',
+  function ($scope, $routeParams, questionService, ss,
+            util, breadcrumbService, notice, linkService, modalService,
+            $rootScope) {
     var Q_TITLE_LIMIT = 30;
     $scope.getAvatarUrl = util.getAvatarUrl;
     $scope.finishedLoading = false;
@@ -59,7 +62,8 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
         $scope.project = result.data.project;
         $scope.text = result.data.text;
         if ($scope.text.audioFileName != '') {
-          $scope.audioPlayUrl = '/assets/sfchecks/' + $scope.project.slug + '/' + $scope.text.id + '_' + $scope.text.audioFileName;
+          $scope.audioPlayUrl = '/assets/sfchecks/' + $scope.project.slug + '/' + $scope.text.id +
+            '_' + $scope.text.audioFileName;
           $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
         }
 
@@ -96,12 +100,16 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     // Rights: Answers
     $scope.rightsEditResponse = function (userId) {
       if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT) || ((userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
+      return ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT) ||
+        ((userId == ss.currentUserId()) &&
+        ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
     };
 
     $scope.rightsDeleteResponse = function (userId) {
       if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE) || ((userId == ss.currentUserId()) && ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
+      return ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE) ||
+        ((userId == ss.currentUserId()) &&
+        ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
     };
 
     // Rights: Question
@@ -184,7 +192,8 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     $scope.questionTitleCalculated = '';
     $scope.$watch('question.title', function () {
       if ($scope.question) {
-        $scope.questionTitleCalculated = questionService.util.calculateTitle($scope.question.title, $scope.question.description, Q_TITLE_LIMIT);
+        $scope.questionTitleCalculated = questionService.util
+          .calculateTitle($scope.question.title, $scope.question.description, Q_TITLE_LIMIT);
         breadcrumbService.updateCrumb('top', 3, {
           label: $scope.questionTitleCalculated
         });
@@ -193,7 +202,8 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
 
     $scope.$watch('question.description', function () {
       if ($scope.question) {
-        $scope.questionTitleCalculated = questionService.util.calculateTitle($scope.question.title, $scope.question.description, Q_TITLE_LIMIT);
+        $scope.questionTitleCalculated = questionService.util
+          .calculateTitle($scope.question.title, $scope.question.description, Q_TITLE_LIMIT);
         breadcrumbService.updateCrumb('top', 3, {
           label: $scope.questionTitleCalculated
         });
@@ -535,15 +545,17 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
 
     $scope.flagForExport = function (answer) {
       answer.isToBeExported = !answer.isToBeExported;
-      questionService.updateAnswerExportFlag(questionId, answer.id, answer.isToBeExported, function (result) {
-        if (result.ok) {
-          if (answer.isToBeExported) {
-            notice.push(notice.SUCCESS, 'The answer was flagged for export successfully');
-          } else {
-            notice.push(notice.SUCCESS, 'The answer was cleared from export successfully');
+      questionService.updateAnswerExportFlag(questionId, answer.id, answer.isToBeExported,
+        function (result) {
+          if (result.ok) {
+            if (answer.isToBeExported) {
+              notice.push(notice.SUCCESS, 'The answer was flagged for export successfully');
+            } else {
+              notice.push(notice.SUCCESS, 'The answer was cleared from export successfully');
+            }
           }
         }
-      });
+      );
     };
 
   }]);
