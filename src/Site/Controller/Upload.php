@@ -24,12 +24,16 @@ class Upload extends Base
 
         try {
             // check for mocked E2E upload
-            $filePath = sys_get_temp_dir() . '/' . $_POST['file']['name'];
-            if (file_exists($filePath) && ! is_dir($filePath)) {
-                $file = $_POST['file'];
-                $file['error'] = UPLOAD_ERR_OK;
-                $tmpFilePath = $filePath;
-                $_FILES['file'] = $file;
+            if (array_key_exists('file', $_POST)) {
+                $filePath = sys_get_temp_dir() . '/' . $_POST['file']['name'];
+                if (file_exists($filePath) && !is_dir($filePath)) {
+                    $file = $_POST['file'];
+                    $file['error'] = UPLOAD_ERR_OK;
+                    $tmpFilePath = $filePath;
+                    $_FILES['file'] = $file;
+                } else {
+                    $file = $_FILES['file'];
+                }
             } else {
                 $file = $_FILES['file'];
             }
