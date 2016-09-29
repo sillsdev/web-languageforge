@@ -2,6 +2,7 @@
 
 namespace Site\Controller;
 
+use Api\Library\Shared\Palaso\StringUtil;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\SystemRoles;
@@ -230,12 +231,15 @@ class Base
             // process regular JS files
             if (array_key_exists("jsFile", $properties)) {
                 $jsFile = $properties["jsFile"];
-                if (is_array($jsFile)) {
-                    foreach ($jsFile as $file) {
+                if (!is_array($jsFile)) {
+                    $jsFile = [$jsFile];
+                }
+                foreach ($jsFile as $file) {
+                    if (StringUtil::endsWith($file, '.js')) {
+                        $jsFilesToReturn[] = "$path/$file";
+                    } else {
                         $jsFilesToReturn[] = "$path/$file.js";
                     }
-                } else {
-                    $jsFilesToReturn[] = "$path/$jsFile.js";
                 }
             } else {
                 $jsFilesToReturn[] = "$path/$itemName.js";
@@ -244,21 +248,27 @@ class Base
             // process minified JS files
             if (array_key_exists("jsMinFile", $properties)) {
                 $jsMinFile = $properties["jsMinFile"];
-                if (is_array($jsMinFile)) {
-                    foreach ($jsMinFile as $file) {
+                if (!is_array($jsMinFile)) {
+                    $jsMinFile = [$jsMinFile];
+                }
+                foreach ($jsMinFile as $file) {
+                    if (StringUtil::endsWith($file, '.js')) {
+                        $jsMinFilesToReturn[] = "$path/$file";
+                    } else {
                         $jsMinFilesToReturn[] = "$path/$file.min.js";
                     }
-                } else {
-                    $jsMinFilesToReturn[] = "$path/$jsMinFile.min.js";
                 }
             } elseif (array_key_exists("jsFile", $properties)) {
                 $jsMinFile = $properties["jsFile"];
-                if (is_array($jsMinFile)) {
-                    foreach ($jsMinFile as $file) {
+                if (!is_array($jsMinFile)) {
+                    $jsMinFile = [$jsMinFile];
+                }
+                foreach ($jsMinFile as $file) {
+                    if (StringUtil::endsWith($file, '.js')) {
+                        $jsMinFilesToReturn[] = "$path/$file";
+                    } else {
                         $jsMinFilesToReturn[] = "$path/$file.min.js";
                     }
-                } else {
-                    $jsMinFilesToReturn[] = "$path/$jsMinFile.min.js";
                 }
             } else {
                 $jsMinFilesToReturn[] = "$path/$itemName.min.js";
