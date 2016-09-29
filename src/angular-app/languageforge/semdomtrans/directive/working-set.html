@@ -15,7 +15,7 @@
                         <label> Choose Domains in Set: </label>
                     </td>
                     <td>
-                        <typeahead style="margin:0px; width:162px" class="typeahead" placeholder="'Select Domains to Display'" items="control.typeahead.searchResults" term="control.typeahead.searchItemSelected" search="control.typeahead.searchEntries" select="control.typeahead.searchSelect">
+                        <pui-typeahead style="margin:0px; width:162px" class="typeahead" placeholder="'Select Domains to Display'" items="control.typeahead.searchResults" term="control.typeahead.searchItemSelected" search="control.typeahead.searchEntries" select="control.typeahead.searchSelect">
                             <ul style="width: 300px" ng-if="control.typeahead.searchResults.length > 0">
                                 <li data-ng-repeat="e in control.typeahead.searchResults |limitTo: 10" class="control.typeahead-item">
                                     <div class='listItemPrimary'>{{e.key}} {{e.name.source}} 
@@ -27,7 +27,7 @@
                                <button class="btn btn-primary" ng-click="control.setInclusion(control.typeahead.searchResults, false)"> Exclude All </button>
                                 <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="control.typeahead.searchResults.length > 0"><small ><i>{{control.typeahead.searchResults.length}} match(es)</i></small></li>
                             </ul>
-                        </typeahead>
+                        </pui-typeahead>
                     </td>
                 </tr>       
                 <tr>
