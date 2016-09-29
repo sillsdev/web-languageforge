@@ -12,7 +12,7 @@ use Api\Model\Shared\UserGenericVoteModel;
 
 class LexDbeDto
 {
-    const MAX_ENTRIES_PER_REQUEST = 2500;
+    const MAX_ENTRIES_PER_REQUEST = 1000;
 
     /**
      * @param string $projectId
