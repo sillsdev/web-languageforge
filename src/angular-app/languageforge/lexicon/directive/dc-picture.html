@@ -23,20 +23,17 @@
                 <i data-ng-click="upload.showAddPicture = false" title="Cancel Adding Picture" class="icon-remove"
                    id="addCancel"></i>
             </div>
-            <div class="drop-box" data-ng-file-drop="onFileSelect($files)"
-                data-ng-file-drop-available="dropSupported = true">
-                <h4>Drop an image file here</h4>
-                <p>or if you prefer...</p>
-                <input type="button" class="btn" value="Browse..."
-                    onclick="document.getElementById('imagefile').click();">
-                <input id="imagefile" type="file" style="display: none;"
-                    data-ng-file-select="onFileSelect($files)">
+            <div class="drop-box" data-ngf-drop="uploadFile($file)" data-ngf-drag-over-class="'dragover'">
+                <h4 data-translate="Drop an image file here"></h4>
+                <p data-translate="or if you prefer..."></p>
+                <div class="btn" id="browseButton" data-ngf-select="uploadFile($file)" data-translate="Browse..."></div>
             </div>
-            <div data-ng-show="! dropSupported">
-                HTML5 Drop File is not supported on this browser</div>
+            <div data-ngf-no-file-drop>
+                <div class="btn" ngf-select="uploadFile($file)" data-translate="Browse..."></div>
+            </div>
             <div data-ng-show="upload.file != null">
                 <p><strong>{{upload.file.name}}</strong> {{upload.file.size | bytes }}</p>
-                <progressbar value="upload.progress" data-max="100.0"></progressbar>
+                <progressbar value="upload.progress" max="100.0"></progressbar>
             </div>
         </div>
     </div>

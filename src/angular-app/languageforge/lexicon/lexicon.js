@@ -50,6 +50,7 @@ angular.module('lexicon',
       suffix: '.json'
     });
     $translateProvider.preferredLanguage('en');
+      $translateProvider.useSanitizeValueStrategy('escape');
   }])
   .controller('LexiconCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService',
     '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService',

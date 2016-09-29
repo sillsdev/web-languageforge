@@ -16,18 +16,17 @@
             <i class="icon-plus"></i>Add New Question
         </button>
         <a id="text_settings_button" data-ng-show="rights.editOther"
-            class="btn pull-right" href="#/{{textId}}/settings">
+            class="btn pull-right" data-ng-href="#/{{textId}}/settings">
             <i class="icon-cog icon-large" data-tooltip="Text Settings"></i></a>
     </form>
     <div class="new-item" data-collapse="newQuestionCollapsed">
         <form class="well span11" name="newQuestionForm">
             <fieldset class="span4">
                 <label>Question</label>
-                <textarea required data-ng-model="questionDescription"
-                    class="span4" rows="4" placeholder="The Question"></textarea>
+                <textarea required data-ng-model="questionDescription" class="span4" rows="4"
+                          placeholder="The Question"></textarea>
                 <label></label>
-                <input type="text" data-ng-model="questionTitle"
-                    class="span4" maxlength="70"
+                <input type="text" data-ng-model="questionTitle" class="span4" maxlength="70"
                     placeholder="One-line Summary For Title" />
                 <label></label>
                 <label>
@@ -45,8 +44,8 @@
                 </button>
             </fieldset>
             <fieldset class="span4">
-                <label>Templates</label>
-                <select data-ng-model="template"
+                <label for="templates">Templates</label>
+                <select data-ng-model="template" id="templates"
                     data-ng-options="t.title for t in templates"></select>
             </fieldset>
         </form>
@@ -55,11 +54,9 @@
     <div class="row">
         <div class="span5" oncopy="return false;">
             <h2 class="pull-left" data-ng-show="text.audioFileName && audioReady">
-                <a data-sgw-sound-player data-state="state" href="audioPlayUrl">
-                    <i data-ng-class="$parent.audioIcon()"
-                        data-tooltip="Play audio"></i></a>
-                <a data-ng-show="project.allowAudioDownload"
-                    data-ng-href="{{audioDownloadUrl}}">
+                <a data-sgw-sound-player data-state="state" data-href="audioPlayUrl">
+                    <i data-ng-class="$parent.audioIcon()" data-tooltip="Play audio"></i></a>
+                <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
                     <i class="icon-download" data-tooltip="Download audio"></i></a>
             </h2>
             <h2>{{text.title}}</h2>
@@ -73,15 +70,14 @@
                     <ul class="inline"
                         data-ng-class="{active: isSelected(question)}">
                         <li data-ng-show="rights.archive">
-                            <input type="checkbox"
-                                data-ng-click="updateSelection($event, question)" /></li>
-                        <li><a class="span3" href="{{question.url}}">
+                            <label><input type="checkbox"
+                                data-ng-click="updateSelection($event, question)" /></label></li>
+                        <li><a class="span3" data-ng-href="{{question.url}}">
                              <span class="larger-text">{{question.calculatedTitle}}</span>
                         </a></li>
-                        <li><a href="{{question.url}}">
+                        <li><a data-ng-href="{{question.url}}">
                             <div class="attention-block">
-                                <span class="subtitle">{{question.answerCount}}
-                                    answers</span>
+                                <span class="subtitle">{{question.answerCount}} answers</span>
                             </div>
                         </a></li>
                         <li>{{question.responseCount}} responses</li>

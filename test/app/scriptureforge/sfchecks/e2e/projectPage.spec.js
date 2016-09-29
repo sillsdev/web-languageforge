@@ -1,6 +1,6 @@
 'use strict';
 
-describe('the project dashboard AKA text list page', function() {
+describe('the project dashboard AKA text list page', function () {
   var constants       = require('../../../testConstants.json');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
   var util            = require('../../../bellows/pages/util.js');
@@ -9,6 +9,8 @@ describe('the project dashboard AKA text list page', function() {
   var projectPage         = require('../pages/projectPage.js');
   var projectSettingsPage = require('../pages/projectSettingsPage.js');
   var questionListPage    = require('../pages/textPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   /*
   describe('project member/user', function() {
@@ -37,60 +39,61 @@ describe('the project dashboard AKA text list page', function() {
   });
   */
 
-  describe('project manager', function() {
+  describe('project manager', function () {
     var sampleTitle = '111textTitle12345';
 
-    it('setup: logout, login as project manager, go to project dashboard', function() {
+    it('setup: logout, login as project manager, go to project dashboard', function () {
       loginPage.logout();
       loginPage.loginAsManager();
       projectListPage.get();
       projectListPage.clickOnProject(constants.testProjectName);
     });
 
-    it('has access to the invite-a-friend button', function() {
+    it('has access to the invite-a-friend button', function () {
       expect(projectPage.invite.showFormButton.isDisplayed()).toBe(true);
     });
 
-    it('can invite a friend to join the project', function() {
+    it('can invite a friend to join the project', function () {
       projectPage.invite.showFormButton.click();
       projectPage.invite.emailInput.sendKeys('nobody@example.com');
       projectPage.invite.sendButton.click();
 
-      // TODO: Should we expect() a success message to show up? Or an error message to *not* show up?
+      // TODO: Should we expect a success message to show up? Or an error message to *not* show up?
       appFrame.checkMsg('An invitation email has been sent to nobody@example.com', 'success');
     });
 
-    it('can click on settings button', function() {
+    it('can click on settings button', function () {
       expect(projectPage.settingsDropdownLink.isDisplayed()).toBe(true);
       projectSettingsPage.get();
       browser.navigate().back();
     });
 
-    it('lists existing texts', function() {
+    it('lists existing texts', function () {
       expect(projectPage.textNames.count()).toBeGreaterThan(1);
     });
 
-    it('can click through to a questions page', function() {
+    it('can click through to a questions page', function () {
       projectPage.textLink(constants.testText1Title).click();
-      expect(questionListPage.questionNames.count()).toBeGreaterThan(0);
+      expect(questionListPage.questionRows.count()).toBeGreaterThan(0);
       browser.navigate().back();
     });
 
-    it('can create a new text (input text area)', function() {
+    it('can create a new text (input text area)', function () {
       expect(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
       projectPage.newText.showFormButton.click();
+      browser.wait(expectedCondition.visibilityOf(projectPage.newText.title), CONDITION_TIMEOUT);
       projectPage.newText.title.sendKeys(sampleTitle);
       projectPage.newText.usx.sendKeys(projectPage.testData.simpleUsx1);
       projectPage.newText.saveButton.click();
       expect(projectPage.textLink(sampleTitle).isDisplayed()).toBe(true);
     });
 
-    it('can click through to newly created text', function() {
+    it('can click through to newly created text', function () {
       projectPage.textLink(sampleTitle).click();
       browser.navigate().back();
     });
 
-    it('can archive the text that was just created', function() {
+    it('can archive the text that was just created', function () {
       var archiveButton = projectPage.archiveTextButton.getWebElement();
       expect(archiveButton.isDisplayed()).toBe(true);
       expect(archiveButton.isEnabled()).toBe(false);
@@ -100,8 +103,8 @@ describe('the project dashboard AKA text list page', function() {
       util.clickModalButton('Archive');
 
       // Wait for archive button to become disabled again
-      browser.wait(function() {
-        return archiveButton.isEnabled().then(function(bool) {
+      browser.wait(function () {
+        return archiveButton.isEnabled().then(function (bool) {
           return !bool;
         });
       }, 1000);
@@ -110,7 +113,7 @@ describe('the project dashboard AKA text list page', function() {
       expect(projectPage.textLink(sampleTitle).isPresent()).toBe(false);
     });
 
-    it('can re-publish the text that was just archived (Project Settings)', function() {
+    it('can re-publish the text that was just archived (Project Settings)', function () {
       projectSettingsPage.get();
       projectSettingsPage.tabs.archiveTexts.click();
       expect(projectSettingsPage.archivedTextsTab.textLink(sampleTitle).isDisplayed()).toBe(true);
@@ -126,15 +129,18 @@ describe('the project dashboard AKA text list page', function() {
       expect(projectPage.textLink(sampleTitle).isDisplayed()).toBe(true);
     });
 
-    // I am avoiding testing creating a new text using the file dialog for importing a USX file... - cjh
-    // according to http://stackoverflow.com/questions/8851051/selenium-webdriver-and-browsers-select-file-dialog
-    // you can have selenium interact with the file dialog by sending keystrokes but this is highly OS dependent
+    // CJH: I am avoiding testing creating a new text using the file dialog for importing a USX file
+    // according to
+    // http://stackoverflow.com/questions/8851051/selenium-webdriver-and-browsers-select-file-dialog
+    // you can have selenium interact with the file dialog by sending keystrokes but this is highly
+    // OS dependent
     //it('can create a new text (file dialog)', function() {});
 
-    it('can use the chapter trimmer to trim the USX when creating a new text', function() {
+    it('can use the chapter trimmer to trim the USX when creating a new text', function () {
       var newTextTitle = sampleTitle + '6789'; // Don't re-use title from an existing text
       expect(projectPage.newText.showFormButton.isDisplayed()).toBe(true);
       projectPage.newText.showFormButton.click();
+      browser.wait(expectedCondition.visibilityOf(projectPage.newText.title), CONDITION_TIMEOUT);
       projectPage.newText.title.sendKeys(newTextTitle);
       util.sendText(projectPage.newText.usx, projectPage.testData.longUsx1);
       projectPage.newText.verseRangeLink.click();
