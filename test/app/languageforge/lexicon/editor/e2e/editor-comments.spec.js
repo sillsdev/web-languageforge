@@ -57,11 +57,13 @@ describe('Editor Comments', function () {
     // Earlier tests modify the avatar and name of the manager user; don't check those
     //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
     //expect(comment.author.getText()).toEqual(constants.managerName);
+
+    // wait to ensure date is in the past (server time slightly out from browser can make it future)
     browser.sleep(200);
-    expect(comment.date.getText()).toContain('ago');
     expect(comment.score.getText()).toEqual('0');
     expect(comment.plusOne.isPresent()).toBe(true);
     expect(comment.content.getText()).toEqual('Second comment.');
+    expect(comment.date.getText()).toContain('ago');
 
     // This comment should have a "regarding" section
     expect(comment.regarding.fieldLabel.isDisplayed()).toBe(true);
