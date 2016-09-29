@@ -5,27 +5,20 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
   'palaso.ui.tagging', 'palaso.ui.notice'])
   .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService',
     'utilService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService', 'modalService',
-    '$rootScope',
   function ($scope, $routeParams, questionService, ss,
-            util, breadcrumbService, notice, linkService, modalService,
-            $rootScope) {
+            util, breadcrumbService, notice, linkService, modalService) {
     var Q_TITLE_LIMIT = 30;
     $scope.getAvatarUrl = util.getAvatarUrl;
     $scope.finishedLoading = false;
     $scope.state = 'stop';
     $scope.audioReady = false;
     soundManager.setup({
-      url: '/angular-app/scriptureforge/sfchecks/js/vendor/sm2',
+      url: 'vendor_bower/SoundManager2/swf/',
       flashVersion: 9, // optional: shiny features (default = 8)
       // optional: ignore Flash where possible, use 100% HTML5 mode
       // preferFlash : false,
       onready: function () {
         $scope.audioReady = true;
-        if (!$rootScope.$$phase) {
-          $scope.$apply();
-        }
-
-        // Ready to use; soundManager.createSound() etc. can now be called.
       }
     });
 

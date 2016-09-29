@@ -1,28 +1,26 @@
 'use strict';
 
-angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.ui.breadcrumb', 'sfchecks.services',
-  'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'ngFileUpload', 'ngSanitize', 'ngRoute'])
-  .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService', '$routeParams',
-    'sessionService', 'sfchecksLinkService', 'breadcrumbService', 'silNoticeService', 'modalService', '$rootScope',
-  function ($scope, questionService, qts, $routeParams,
-            ss, sfchecksLinkService, breadcrumbService, notice, modalService, $rootScope) {
+angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.ui.breadcrumb',
+  'sfchecks.services', 'ngFileUpload', 'ngSanitize', 'ngRoute', 'sgw.soundmanager',
+  'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice'])
+  .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService',
+    '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService',
+    'silNoticeService', 'modalService',
+  function ($scope, questionService, qts,
+            $routeParams, ss, sfchecksLinkService, breadcrumbService,
+            notice, modalService) {
     var Q_TITLE_LIMIT = 70;
     var textId = $routeParams.textId;
     $scope.textId = textId;
 
     $scope.audioReady = false;
     soundManager.setup({
-      url: '/angular-app/scriptureforge/sfchecks/js/vendor/sm2',
+      url: 'vendor_bower/SoundManager2/swf/',
       flashVersion: 9, // optional: shiny features (default = 8)
       // optional: ignore Flash where possible, use 100% HTML5 mode
       //preferFlash : false,
       onready: function () {
         $scope.audioReady = true;
-        if (!$rootScope.$$phase) {
-          $scope.$apply();
-        }
-
-        // Ready to use; soundManager.createSound() etc. can now be called.
       }
     });
 
@@ -41,7 +39,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.rights.create = false;
     $scope.rights.createTemplate = false;
     $scope.rights.editOther = false; //ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-    $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
+    $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
+      $scope.rights.createTemplate || $scope.rights.editOther;
 
     // Question templates
     $scope.emptyTemplate = {
@@ -112,7 +111,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
           $scope.project = result.data.project;
           $scope.text = result.data.text;
           if ($scope.text.audioFileName != '') {
-            $scope.audioPlayUrl = '/assets/sfchecks/' + $scope.project.slug + '/' + $scope.text.id + '_' + $scope.text.audioFileName;
+            $scope.audioPlayUrl = '/assets/sfchecks/' + $scope.project.slug + '/' + $scope.text.id +
+              '_' + $scope.text.audioFileName;
             $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
           }
 
@@ -131,11 +131,17 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
           );
 
           var rights = result.data.rights;
-          $scope.rights.archive = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE) && !ss.session.project.isArchived;
-          $scope.rights.create = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE) && !ss.session.project.isArchived;
-          $scope.rights.createTemplate = ss.hasRight(rights, ss.domain.TEMPLATES, ss.operation.CREATE) && !ss.session.project.isArchived;
-          $scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) && !ss.session.project.isArchived;
-          $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.createTemplate || $scope.rights.editOther;
+          $scope.rights.archive = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE) &&
+            !ss.session.project.isArchived;
+          $scope.rights.create = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE) &&
+            !ss.session.project.isArchived;
+          $scope.rights.createTemplate =
+            ss.hasRight(rights, ss.domain.TEMPLATES, ss.operation.CREATE) &&
+            !ss.session.project.isArchived;
+          $scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) &&
+            !ss.session.project.isArchived;
+          $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
+            $scope.rights.createTemplate || $scope.rights.editOther;
           if ($scope.rights.create) {
             $scope.queryTemplates();
           }
@@ -157,7 +163,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
       if (questionIds.length == 1) {
         message = 'Are you sure you want to archive the selected question?';
       } else {
-        message = 'Are you sure you want to archive the ' + questionIds.length + ' selected questions?';
+        message = 'Are you sure you want to archive the ' + questionIds.length +
+          ' selected questions?';
       }
 
       var modalOptions = {
@@ -192,11 +199,14 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
       questionService.update(model, function (result) {
         if (result.ok) {
           $scope.queryQuestions();
-          notice.push(notice.SUCCESS, '\'' + questionService.util.calculateTitle(model.title, model.description, Q_TITLE_LIMIT) + '\' was added successfully');
+          notice.push(notice.SUCCESS, '\'' + questionService.util
+              .calculateTitle(model.title, model.description, Q_TITLE_LIMIT) +
+            '\' was added successfully');
           if ($scope.saveAsTemplate) {
             qts.update(model, function (result) {
               if (result.ok) {
-                notice.push(notice.SUCCESS, '\'' + model.title + '\' was added as a template question');
+                notice.push(notice.SUCCESS, '\'' + model.title +
+                  '\' was added as a template question');
               }
             });
           }
@@ -234,15 +244,18 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.enhanceDto = function (items) {
       angular.forEach(items, function (item) {
         item.url = sfchecksLinkService.question(textId, item.id);
-        item.calculatedTitle = questionService.util.calculateTitle(item.title, item.description, Q_TITLE_LIMIT);
+        item.calculatedTitle = questionService.util.calculateTitle(item.title, item.description,
+          Q_TITLE_LIMIT);
       });
     };
 
   }])
-  .controller('QuestionsSettingsCtrl', ['$scope', 'Upload', 'sessionService', '$routeParams', 'breadcrumbService',
-    'silNoticeService', 'textService', 'questionService', 'sfchecksLinkService', 'modalService',
-  function ($scope, Upload, ss, $routeParams, breadcrumbService,
-            notice, textService, questionService, sfchecksLinkService, modalService) {
+  .controller('QuestionsSettingsCtrl', ['$scope', 'Upload', 'sessionService', '$routeParams',
+    'breadcrumbService', 'silNoticeService', 'textService', 'questionService',
+    'sfchecksLinkService', 'modalService',
+  function ($scope, Upload, ss, $routeParams,
+            breadcrumbService, notice, textService, questionService,
+            sfchecksLinkService, modalService) {
     var Q_TITLE_LIMIT = 50;
     var textId = $routeParams.textId;
     $scope.textId = textId;
@@ -288,7 +301,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
               { href: '/app/projects', label: 'My Projects' },
               { href: sfchecksLinkService.project(), label: $scope.dto.bcs.project.crumb },
               { href: sfchecksLinkService.text($routeParams.textId), label: $scope.dto.text.title },
-              { href: sfchecksLinkService.text($routeParams.textId) + '/Settings', label: 'Settings' }
+              { href: sfchecksLinkService.text($routeParams.textId) + '/Settings',
+                label: 'Settings' }
             ]
           );
         }
@@ -314,8 +328,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
 
     $scope.editPreviousText = function () {
       var msg;
-      msg = 'Caution: Editing the USX text can be dangerous. You can easily mess up your text with a typo.' +
-        ' Are you really sure you want to do this?';
+      msg = 'Caution: Editing the USX text can be dangerous. You can easily mess up your text ' +
+        'with a typo. Are you really sure you want to do this?';
       var modalOptions = {
         closeButtonText: 'Cancel',
         actionButtonText: 'Edit',
@@ -325,8 +339,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
       modalService.showModal({}, modalOptions).then(function () {
         if ($scope.editedText.content && $scope.editedText.content != $scope.dto.text.content) {
           // Wait; the user had already entered text. Pop up ANOTHER confirm box.
-          msg = 'Caution: You had previous edits in the USX text box, which will be replaced if you proceed.' +
-            ' Are you really sure you want to throw away your previous edits?';
+          msg = 'Caution: You had previous edits in the USX text box, which will be replaced if ' +
+            'you proceed. Are you really sure you want to throw away your previous edits?';
           var modalOptions = {
             closeButtonText: 'Cancel',
             actionButtonText: 'Replace',
@@ -356,7 +370,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
             $scope.editedText.content = reader.result;
           });
         } else {
-          notice.push(notice.ERROR, 'Error loading USX file. The file doesn\'t appear to be valid USX.');
+          notice.push(notice.ERROR, 'Error loading USX file. The file doesn\'t appear to be ' +
+            'valid USX.');
           $scope.$apply(function () {
             $scope.editedText.content = '';
           });

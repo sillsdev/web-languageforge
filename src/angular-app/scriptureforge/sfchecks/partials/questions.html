@@ -23,11 +23,10 @@
         <form class="well span11" name="newQuestionForm">
             <fieldset class="span4">
                 <label>Question</label>
-                <textarea required data-ng-model="questionDescription"
-                    class="span4" rows="4" placeholder="The Question"></textarea>
+                <textarea required data-ng-model="questionDescription" class="span4" rows="4"
+                          placeholder="The Question"></textarea>
                 <label></label>
-                <input type="text" data-ng-model="questionTitle"
-                    class="span4" maxlength="70"
+                <input type="text" data-ng-model="questionTitle" class="span4" maxlength="70"
                     placeholder="One-line Summary For Title" />
                 <label></label>
                 <label>
@@ -55,11 +54,9 @@
     <div class="row">
         <div class="span5" oncopy="return false;">
             <h2 class="pull-left" data-ng-show="text.audioFileName && audioReady">
-                <a data-sgw-sound-player data-state="state" data-ng-href="audioPlayUrl">
-                    <i data-ng-class="$parent.audioIcon()"
-                        data-tooltip="Play audio"></i></a>
-                <a data-ng-show="project.allowAudioDownload"
-                    data-ng-href="{{audioDownloadUrl}}">
+                <a data-sgw-sound-player data-state="state" data-href="audioPlayUrl">
+                    <i data-ng-class="$parent.audioIcon()" data-tooltip="Play audio"></i></a>
+                <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
                     <i class="icon-download" data-tooltip="Download audio"></i></a>
             </h2>
             <h2>{{text.title}}</h2>
