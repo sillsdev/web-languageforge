@@ -14,13 +14,13 @@ angular.module('palaso.ui.mockUpload', [])
 
         $scope.toggleControls = function toggleControls() {
           $scope.showControls = !$scope.showControls;
-          $scope.mockFiles = [{}];
+          $scope.mockFile = {};
         };
 
         $scope.doUpload = function doUpload() {
 
           // see http://stackoverflow.com/questions/23477859/angularjs-call-function-on-directive-parent-scope-with-directive-scope-argumen
-          $scope.puiDoUpload({ filesArray: $scope.mockFiles });
+          $scope.puiDoUpload({ file: $scope.mockFile });
         };
 
       }]

@@ -121,10 +121,6 @@
                 includes="**/*.js"
                 excludes="**/*.min.js,**/assets/**, **/vendor/**"
             />
-            <fileset dir="src/js/lib"
-                includes="ng-ui-*.js"
-                excludes="ng-ui-*.min.js"
-            />
         </concat>
         <antcall target="build-compress-js" />
         <antcall target="build-nocompress-js" />
