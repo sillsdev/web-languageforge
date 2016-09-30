@@ -50,9 +50,9 @@
                             <input type="number"
                                 data-ng-model="editedText.startCh" min="1"
                                 placeholder="Chap."
-                                style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;
+                                style="width: 4em; text-align: right" />&nbsp;:&nbsp;
                             <input type="number" data-ng-model="editedText.startVs"
-                                min="1" placeholder="Verse" style="width: 4em"></input>
+                                min="1" placeholder="Verse" style="width: 4em" />
                         </td>
                         <td>
                             <a data-ng-click="editedText.startCh = ''; editedText.startVs = ''"
@@ -65,9 +65,9 @@
                             <input type="number"
                                 data-ng-model="editedText.endCh" min="1"
                                 placeholder="Chap."
-                                style="width: 4em; text-align: right"></input>&nbsp;:&nbsp;
+                                style="width: 4em; text-align: right" />&nbsp;:&nbsp;
                             <input type="number" data-ng-model="editedText.endVs"
-                                min="1" placeholder="Verse" style="width: 4em"></input>
+                                min="1" placeholder="Verse" style="width: 4em" />
                         </td>
                         <td>
                             <a data-ng-click="editedText.endCh = ''; editedText.endVs = ''"
@@ -81,82 +81,74 @@
             </button>
         </fieldset>
         <fieldset class="span4">
-            <div class="drop-box" data-ng-file-drop="onUsxFile($files)"
-                data-ng-file-drop-available="dropSupported=true">
+            <div class="drop-box" data-ngf-drop="readUsx($file)" data-ngf-drag-over-class="'dragover'">
                 <h4>or drop a USX file here</h4>
-                <br />
+                <br/>
                 <p>or if you prefer...</p>
-                <input type="button" class="btn" value="Browse..."
-                    onclick="javascript:document.getElementById('usxfile').click();">
-                <input id="usxfile" type="file" style="display: none;"
-                    data-ng-file-select="onUsxFile($files)">
+                <div class="btn" id="browseUsxButton" data-ngf-select="readUsx($file)">Browse...</div>
             </div>
-            <div data-ng-show="!dropSupported">
-                HTML5 Drop File is not supported on this browser</div>
+            <div data-ngf-no-file-drop>
+                <div class="btn" data-ngf-select="readUsx($file)">Browse...</div>
+            </div>
         </fieldset>
         <div style="clear: left"></div>
     </form>
     </tab>
-    <tab heading="Archived Questions" data-ng-controller="TextSettingsArchivedQuestionsCtrl">
-    <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-        <button data-ng-disabled="selected.length == 0"
-            data-ng-show="rights.archive" class="btn"
-            data-ng-click="publishQuestions()">
-            <i class="icon-globe icon-large"></i>Re-publish Questions
-        </button>
-    </form>
-    <hr />
-    <listview hide-if-empty="true" search="queryTextSettings()"
-        items="settings.archivedQuestions"
-        visible-items="visibleArchivedQuestions" select="">
-        <div data-ng-repeat="question in visibleArchivedQuestions"
-            class="details-row">
-            <ul class="inline" data-ng-class="{active: isSelected(question)}">
-                <li data-ng-show="rights.archive">
-                    <input type="checkbox" data-ng-click="updateSelection($event, question)" /></li>
-                <li><a class="span5" href="{{question.url}}">
-                    <span class="larger-text">{{question.calculatedTitle}}</span></a></li>
-                <li><a href="{{question.url}}">
-                    <div class="attention-block">
-                        <span class="subtitle">{{question.answerCount}}
-                            answers</span>
-                    </div></a></li>
-                <li>{{question.responseCount}} responses</li>
-                <li>Archived on {{question.dateModified | date:'fullDate'}}</li>
-            </ul>
-            <hr />
-        </div>
-    </listview>
+    <tab heading="Archived Questions">
+    <div data-ng-controller="TextSettingsArchivedQuestionsCtrl">
+        <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+            <button data-ng-disabled="selected.length == 0"
+                data-ng-show="rights.archive" class="btn"
+                data-ng-click="publishQuestions()">
+                <i class="icon-globe icon-large"></i>Re-publish Questions
+            </button>
+        </form>
+        <hr />
+        <listview hide-if-empty="true" search="queryTextSettings()"
+            items="settings.archivedQuestions"
+            visible-items="visibleArchivedQuestions" select="">
+            <div data-ng-repeat="question in visibleArchivedQuestions"
+                class="details-row">
+                <ul class="inline" data-ng-class="{active: isSelected(question)}">
+                    <li data-ng-show="rights.archive">
+                        <label><input type="checkbox" data-ng-click="updateSelection($event, question)" /></label></li>
+                    <li><a class="span5" data-ng-href="{{question.url}}">
+                        <span class="larger-text">{{question.calculatedTitle}}</span></a></li>
+                    <li><a data-ng-href="{{question.url}}">
+                        <div class="attention-block">
+                            <span class="subtitle">{{question.answerCount}} answers</span>
+                        </div></a></li>
+                    <li>{{question.responseCount}} responses</li>
+                    <li>Archived on {{question.dateModified | date:'fullDate'}}</li>
+                </ul>
+                <hr />
+            </div>
+        </listview>
+    </div>
     </tab>
     <tab heading="Audio File">
     <form class="well " data-ng-submit="updateText(editedText)">
         <label>Upload an Audio File</label>
-        <div class="drop-box" data-ng-file-drop="onFileSelect($files);"
-            data-ng-file-drop-available="dropSupported=true">
+        <div class="drop-box" data-ngf-drop="uploadAudio($file)" data-ngf-drag-over-class="'dragover'">
             <h4>Drop an MP3 file here</h4>
-            <br />
+            <br/>
             <p>or if you prefer...</p>
-            <input type="button" class="btn" value="Browse..."
-                onclick="javascript:document.getElementById('audiofile').click();">
-            <input id="audiofile" type="file" style="display: none;"
-                data-ng-file-select="onFileSelect($files)">
+            <div class="btn" id="browseButton" data-ngf-select="uploadAudio($file)">Browse...</div>
         </div>
-        <div data-ng-show="!dropSupported">
-            HTML5 Drop File is not supported on this browser</div>
+        <div data-ngf-no-file-drop>
+            <div class="btn" data-ngf-select="uploadAudio($file)">Browse...</div>
+        </div>
         <br />
         <div data-ng-show="file != null">
             <p><strong>{{file.name}}</strong> {{file.size | bytes }}</p>
-            <div class="span4">
-                <progressbar data-value="progress" data-max="100.0"></progressbar>
-            </div>
-            &nbsp;
+            <audio controls data-ngf-src="file"></audio>
         </div>
         <label>&nbsp;</label>
         <div data-ng-bind-html="uploadResult"></div>
     </form>
     </tab>
-    <tab heading="ParaTExt Export" data-ng-controller="ParatextExportTextCtrl">
-    <div class="row-fluid outer-flex">
+    <tab heading="ParaTExt Export">
+    <div class="row-fluid outer-flex" data-ng-controller="ParatextExportTextCtrl">
         <h4>Export Text Answers/Comments to a ParaTExt XML file</h4>
         <form class="span4" name="exportForm">
             <label><input type="checkbox" checked name="exportAnswers"

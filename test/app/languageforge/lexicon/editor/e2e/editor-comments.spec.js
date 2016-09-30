@@ -18,7 +18,7 @@ describe('Editor Comments', function () {
   });
 
   it('click on first word', function () {
-    editorPage.browse.clickEntryByLexeme(constants.testEntry1.lexeme.th.value);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
   });
 
   it('switch to comments page, add one comment', function () {
@@ -46,10 +46,7 @@ describe('Editor Comments', function () {
   it('comments page: add comment about a specific part of the entry', function () {
     editorPage.comment.newComment.textarea.clear();
     editorPage.comment.newComment.textarea.sendKeys('Second comment.');
-    editorPage.comment.entry.getOneField('Word').then(function (elem) {
-      elem.$$('span.wsid').first().click();
-    });
-
+    editorPage.comment.entry.getOneFieldAllInputSystems('Word').first().click();
     editorPage.comment.newComment.postBtn.click();
   });
 
@@ -60,11 +57,13 @@ describe('Editor Comments', function () {
     // Earlier tests modify the avatar and name of the manager user; don't check those
     //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
     //expect(comment.author.getText()).toEqual(constants.managerName);
+
+    // wait to ensure date is in the past (server time slightly out from browser can make it future)
     browser.sleep(200);
-    expect(comment.date.getText()).toContain('ago');
     expect(comment.score.getText()).toEqual('0');
     expect(comment.plusOne.isPresent()).toBe(true);
     expect(comment.content.getText()).toEqual('Second comment.');
+    expect(comment.date.getText()).toContain('ago');
 
     // This comment should have a "regarding" section
     expect(comment.regarding.fieldLabel.isDisplayed()).toBe(true);

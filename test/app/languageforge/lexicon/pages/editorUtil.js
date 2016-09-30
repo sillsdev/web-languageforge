@@ -129,9 +129,8 @@ function EditorUtil() {
   };
 
   this.getOneFieldValue = function (searchLabel, idx, multitextStrategy, rootElem) {
-    return _this.getOneField(searchLabel, idx, rootElem).then(function (fieldElem) {
-      return _this.parseDcField(fieldElem, multitextStrategy);
-    });
+    var fieldElement = _this.getOneField(searchLabel, idx, rootElem);
+    return _this.parseDcField(fieldElement, multitextStrategy);
   };
 
   // For convenience in writing test code, since the values in testConstants don't match the

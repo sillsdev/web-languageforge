@@ -45,10 +45,10 @@ exports.config = {
     //isVerbose: true,
   },
 
-  onPrepare: function() {
+  onPrepare: function () {
     if (process.env.TEAMCITY_VERSION) {
-      require('jasmine-reporters');
-      jasmine.getEnv().addReporter(new jasmine.TeamcityReporter());
+      var jasmineReporters = require('jasmine-reporters');
+      jasmine.getEnv().addReporter(new jasmineReporters.TeamCityReporter());
     }
   }
 };
