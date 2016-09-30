@@ -24,14 +24,16 @@ class Upload extends Base
 
         try {
             // check for mocked E2E upload
-            $filePath = sys_get_temp_dir() . '/' . $_POST['filename'];
-            if (file_exists($filePath) && ! is_dir($filePath)) {
-                $file = array(
-                    'name' => $_POST['filename'],
-                    'error' => UPLOAD_ERR_OK
-                );
-                $tmpFilePath = $filePath;
-                $_FILES['file'] = $file;
+            if (array_key_exists('file', $_POST)) {
+                $filePath = sys_get_temp_dir() . '/' . $_POST['file']['name'];
+                if (file_exists($filePath) && !is_dir($filePath)) {
+                    $file = $_POST['file'];
+                    $file['error'] = UPLOAD_ERR_OK;
+                    $tmpFilePath = $filePath;
+                    $_FILES['file'] = $file;
+                } else {
+                    $file = $_FILES['file'];
+                }
             } else {
                 $file = $_FILES['file'];
             }
@@ -89,7 +91,8 @@ class Upload extends Base
                 'result' => false,
                 'data' => array(
                     'errorType' => get_class($e),
-                    'errorMessage' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " . CodeGuard::getStackTrace($e->getTrace())
+                    'errorMessage' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " .
+                        CodeGuard::getStackTrace($e->getTrace())
                 )
             );
             $status = 400;
