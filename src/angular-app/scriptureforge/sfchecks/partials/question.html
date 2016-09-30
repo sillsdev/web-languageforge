@@ -1,16 +1,12 @@
 <div class="span5" oncopy="return false;">
     <h2 class="pull-left" data-ng-show="text.audioFileName && audioReady">
-        <a sgw-sound-player state="state" href="audioPlayUrl">
-            <i data-ng-class="$parent.audioIcon()"
-                data-tooltip="Play audio"></i></a>
-        <a data-ng-show="project.allowAudioDownload"
-            data-ng-href="{{audioDownloadUrl}}">
-            <i class="icon-download"
-                data-tooltip="Download audio"></i></a>
+        <a data-sgw-sound-player data-state="state" data-href="audioPlayUrl">
+            <i data-ng-class="$parent.audioIcon()" data-tooltip="Play audio"></i></a>
+        <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
+            <i class="icon-download" data-tooltip="Download audio"></i></a>
     </h2>
     <h2>{{text.title}}</h2>
-    <div id="text" style="font-family: {{text.fontfamily}}" sil-selection sil-selected-text="selectedText"
-        content="text.content"></div>
+    <div id="text" style="font-family: {{text.fontfamily}}" data-sil-selection data-sil-selected-text="selectedText" content="text.content"></div>
 </div>
 <div id="comments" class="span6" data-ng-show="finishedLoading">
     <div class="question">
@@ -25,16 +21,14 @@
             <form class="well">
                 <fieldset>
                     <label>Question</label>
-                    <textarea required
-                        data-ng-model="editedQuestion.description" class="span4"
+                    <textarea required data-ng-model="editedQuestion.description" class="span4"
                         rows="4" placeholder="The Question"></textarea>
                     <label></label>
-                    <input type="text"
-                        data-ng-model="editedQuestion.title" class="span4"
+                    <input type="text" data-ng-model="editedQuestion.title" class="span4"
                         maxlength="35" placeholder="One-line Summary For Title" />
                     <label></label>
-                    <label>Workflow</label>
-                    <select data-ng-model="editedQuestion.workflowState"
+                    <label for="workflow">Workflow</label>
+                    <select id="workflow" data-ng-model="editedQuestion.workflowState"
                         data-ng-options="s.state as s.label for s in workflowStates"
                         name="workflowState"></select>
                     <label></label>
@@ -52,17 +46,13 @@
         <div data-ng-hide="questionIsClosed()">
             Add your own answer<span data-ng-show="newAnswer.textHighlight">
                 about this part of the text</span>:
-            <div oncopy="return false;" data-ng-show="newAnswer.textHighlight"
-                data-ng-bind-html="newAnswer.textHighlight"
-                class="scripture-quote"></div>
+            <div class="scripture-quote" oncopy="return false;" data-ng-show="newAnswer.textHighlight"
+                data-ng-bind-html="newAnswer.textHighlight"></div>
             <form data-ng-submit="submitAnswer()">
-                <textarea required data-ng-model="newAnswer.content"
-                    class="newAnswer"
+                <textarea required data-ng-model="newAnswer.content" class="newAnswer"
                     placeholder='Type your answer here. Click "Done" when finished.'></textarea>
-                <div data-ng-hide="unreadResponseCount() == 0"
-                    class="right badge badge-important">
-                    {{unreadResponseCount()}} new response<span
-                        data-ng-show="unreadResponseCount() > 1">s</span>
+                <div data-ng-hide="unreadResponseCount() == 0" class="right badge badge-important">
+                    {{unreadResponseCount()}} new response<span data-ng-show="unreadResponseCount() > 1">s</span>
                 </div>
                 <button type="submit" class="btn" id="doneBtn">Done</button>
             </form>
@@ -73,29 +63,24 @@
             <td>
                 <div class="vote" style="display: inline-block;">
                     <a data-ng-class="{disabled: votes[answerId] == true || questionIsClosed()}"
-                        data-ng-click="voteUp(answerId)"><i
-                        class="icon-caret-up"></i></a>
+                        data-ng-click="voteUp(answerId)"><i class="icon-caret-up"></i></a>
                     <span>{{answer.score}}</span>
                     <a data-ng-class="{disabled: votes[answerId] != true || questionIsClosed()}"
-                        data-ng-click="voteDown(answerId)">
-                        <i class="icon-caret-down"></i></a>
+                        data-ng-click="voteDown(answerId)"><i class="icon-caret-down"></i></a>
                 </div>
             </td>
             <td>
                 <div data-ng-class="{unread: isUnreadAnswer(answerId)}" class="answer">
                     <!--<b>DEBUG:</b>answerId = {{answerId}}, answer.id = {{answer.id}}<br/>-->
                     <!--<b>DEBUG:</b>answer = {{answer}}<br/>-->
-                    <div data-ng-show="answer.textHighlight"
-                        data-ng-bind-html="answer.textHighlight"
+                    <div data-ng-show="answer.textHighlight" data-ng-bind-html="answer.textHighlight"
                         class="scripture-quote"></div>
-                    <div class="answerContent"
-                        data-ng-bind-html="answer.content"></div>
-                    <view-tags data-ng-show="$parent.rightsCreateTag()"
-                        tags="answer.tags" on-delete="deletedTags(answer)"
-                        rights-delete="rightsDeleteTag()"></view-tags>
+                    <div class="answerContent" data-ng-bind-html="answer.content"></div>
+                    <div data-view-tags data-ng-show="$parent.rightsCreateTag()"
+                        data-tags="answer.tags" data-on-delete="deletedTags(answer)"
+                        data-rights-delete="rightsDeleteTag()"></div>
                     <div class="by">
-                        <img data-ng-src="{{getAvatarUrl(answer.userRef.avatar_ref)}}"
-                            width="32" height="32" />
+                        <img data-ng-src="{{getAvatarUrl(answer.userRef.avatar_ref)}}" width="32" height="32" />
                         <div>
                             answered {{answer.dateCreated | date:mediumDate}}<br />
                             by {{answer.userRef.username}}
@@ -106,8 +91,7 @@
                             <div class="overlay-bg">
                                 <form
                                     data-ng-submit="addTags(tags, answer);tagEditorVisible=false">
-                                    <label for="inputtagstring">Add tags
-                                        (comma-separated):</label>
+                                    <label>Add tags (comma-separated)</label>
                                     <add-tags tags="tags"></add-tags>
                                     <label></label>
                                     <button type="submit" class="tagBtn">
@@ -116,37 +100,26 @@
                                 </form>
                             </div>
                         </div>
-                        <a data-ng-show="rightsCreateTag() && !questionIsClosed()"
-                            class="btn-link"
+                        <a data-ng-show="rightsCreateTag() && !questionIsClosed()" class="btn-link"
                             data-ng-click="tagEditorVisible=true">tag</a>&nbsp;&nbsp;
                         <a data-ng-show="rightsEditResponse(answer.userRef.userid) && !questionIsClosed()"
-                            class="btn-link"
-                            data-ng-click="showAnswerEditor(answerId)">edit</a>&nbsp;&nbsp;
+                            class="btn-link" data-ng-click="showAnswerEditor(answerId)">edit</a>&nbsp;&nbsp;
                         <a data-ng-show="rightsDeleteResponse(answer.userRef.userid) && !questionIsClosed()"
-                            data-ng-click="answerDelete(answerId)"
-                            class="btn-link">delete</a>&nbsp;&nbsp;
+                            data-ng-click="answerDelete(answerId)" class="btn-link">delete</a>&nbsp;&nbsp;
                         <a data-ng-show="rightsExport() && !questionIsClosed()"
-                            data-ng-click="flagForExport(answer)"
-                            class="btn-link">
-                            <i data-ng-show="answer.isToBeExported"
-                                class="icon-flag" data-tooltip="Flagged for export"
+                            data-ng-click="flagForExport(answer)" class="btn-link">
+                            <i data-ng-show="answer.isToBeExported" class="icon-flag" data-tooltip="Flagged for export"
                                 style="color: red"></i>
-                            <i data-ng-show="!answer.isToBeExported"
-                                class="icon-flag-alt"
+                            <i data-ng-show="!answer.isToBeExported" class="icon-flag-alt"
                                 data-tooltip="Click to flag for export"></i></a>
-                        <ng-switch on="answerEditorVisible(answerId)">
-                        <form data-ng-submit="editAnswer(editedAnswer)"
-                            data-ng-switch-when="true">
-                            <textarea required
-                                data-ng-model="editedAnswer.content"
-                                class="editAnswer"></textarea>
-                            <button type="submit" class="btn answerBtn">
-                                <i class="icon-ok"></i>Save
-                            </button>
-                            <a class="btn-link"
-                                data-ng-click="hideAnswerEditor()">Cancel</a>
+                        <div data-ng-switch data-on="answerEditorVisible(answerId)">
+                        <form data-ng-submit="editAnswer(editedAnswer)" data-ng-switch-when="true">
+                            <label><textarea required data-ng-model="editedAnswer.content" class="editAnswer">
+                            </textarea></label>
+                            <button type="submit" class="btn answerBtn"> <i class="icon-ok"></i>Save </button>
+                            <a class="btn-link" data-ng-click="hideAnswerEditor()">Cancel</a>
                         </form>
-                        </ng-switch>
+                        </div>
                     </div>
                 </div>
                 <table class="comments">
@@ -157,38 +130,30 @@
                             {{comment.userRef.username}} -
                             {{comment.dateCreated | date:mediumdate}}
                             <a data-ng-show="rightsEditResponse(comment.userRef.userid) && !questionIsClosed()"
-                                class="btn-link"
-                                data-ng-click="showCommentEditor(comment.id)">edit</a>&nbsp;
+                                class="btn-link" data-ng-click="showCommentEditor(comment.id)">edit</a>&nbsp;
                             <a data-ng-show="rightsDeleteResponse(comment.userRef.userid) && !questionIsClosed()"
-                                data-ng-click="commentDelete(answer, comment.id)"
-                                class="btn-link">delete</a>
-                            <ng-switch on="commentEditorVisible(comment.id)">
+                                data-ng-click="commentDelete(answer, comment.id)" class="btn-link">delete</a>
+                            <div data-ng-switch data-on="commentEditorVisible(comment.id)">
                             <form data-ng-submit="editComment(answerId, answer, editedComment)"
                                 data-ng-switch-when="true">
-                                <textarea required
-                                    data-ng-model="editedComment.content"></textarea>
+                                <label><textarea required data-ng-model="editedComment.content"></textarea></label>
                                 <button type="submit" class="btn">Save</button>
-                                <a class="btn-link"
-                                    data-ng-click="hideCommentEditor()">Cancel</a>
+                                <a class="btn-link" data-ng-click="hideCommentEditor()">Cancel</a>
                             </form>
-                            </ng-switch>
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td></td>
                         <td>
                             <div data-ng-hide="questionIsClosed()">
-                                <a data-ng-click="collapsed = !collapsed"
-                                    class="btn btn-link addCommentLink">
+                                <a data-ng-click="collapsed = !collapsed" class="btn btn-link addCommentLink">
                                     add comment</a>
                                 <div data-collapse="!collapsed">
                                     <form data-ng-submit="submitComment(answerId, answer); collapsed = !collapsed;">
-                                        <textarea required
-                                            data-ng-model="newComment.content"></textarea>
+                                        <label><textarea required data-ng-model="newComment.content"></textarea></label>
                                         <br />
-                                        <button type="submit"
-                                            class="btn btn-small">
-                                            Add Comment</button>
+                                        <button type="submit" class="btn btn-small">Add Comment</button>
                                     </form>
                                 </div>
                             </div>

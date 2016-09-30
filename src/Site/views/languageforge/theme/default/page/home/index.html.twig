@@ -1,0 +1,180 @@
+<!DOCTYPE HTML>
+<!--
+	Alpha by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+    <title>Language Forge</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!--[if lte IE 8]>
+    <script src="{{ baseDir }}/assets/js/ie/html5shiv.js"></script><![endif]-->
+    <link rel="stylesheet" href="{{ baseDir }}/assets/css/main.css"/>
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="assets/css/ie8.css"/><![endif]-->
+</head>
+<body class="landing">
+<div id="page-wrapper">
+    <!-- Header -->
+    <header id="header" class="alt">
+        <h1><a href="/">Language Forge</a></h1>
+        <nav id="nav">
+            <ul>
+                <li><a href="/">Home</a></li>
+                {% if isLoggedIn %}
+                    <li><a href="/app/projects" class="button special">My Dashboard</a></li>
+                {% else %}
+                    <li><a href="/signup" class="button">Sign Up</a></li>
+                    <li><a href="/auth/login" class="button">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Banner -->
+    <section id="banner">
+        <h2>Language Forge</h2>
+        <p>Your language data, your way. Together you can build a dictionary.</p>
+        <ul class="actions">
+            {% if isLoggedIn %}
+                <li><a href="/app/projects" class="button special">My Dashboard</a></li>
+            {% else %}
+                <li><a href="/signup" class="button special">Sign Up</a></li>
+            {% endif %}
+            <li><a href="#learn" class="button">Learn More</a></li>
+        </ul>
+    </section>
+
+    <!-- Main -->
+    <section id="main" class="container">
+
+        <section class="box special">
+            <header class="major">
+                <h2>Introducing a new way to collaborate
+                    <br/>
+                    on your language data</h2>
+                <p>Open up your data to others while maintaining complete control as to how it is edited.<br/>
+                    Engage a wider audience: researchers, teammates, native speakers. It's up to you.</p>
+            </header>
+            <span class="image featured"><img src="{{ baseDir }}/images/pic01.jpg" alt=""/></span>
+        </section>
+
+        <a name="learn"></a>
+        <section class="box special features">
+            <div class="features-row">
+                <section>
+                    <span class="icon major fa-refresh accent2"></span>
+                    <h3>Sync with FLEx</h3>
+                    <p>Collaborate on Language Forge then sync those changes back into Fieldworks Language Explorer
+                        (FLEx). Make further refinements in FLEx and then Send/Receive those back to Language Forge</p>
+                </section>
+                <section>
+                    <span class="icon major fa-user accent3"></span>
+                    <h3>User Roles and Permissions</h3>
+                    <p>Assign each member of your project a role: observer, commenter, or collaborator. Customize what
+                        other members see down to the field level.</p>
+                </section>
+            </div>
+            <div class="features-row">
+                <section>
+                    <span class="icon major fa-cloud accent4"></span>
+                    <h3>Access Anywhere</h3>
+                    <p>Language Forge is built on web-technology, so it's available on Windows, Mac, Linux, iOS and
+                        Android</p>
+                </section>
+                <section>
+                    <span class="icon major fa-unlock-alt accent5"></span>
+                    <h3>Engage Others<br/>Retain Control</h3>
+                    <p>The commenting feature on Language Forge lets users comment on and suggest changes to individual
+                        fields in the dictionary. As a manager you can review each comment and take action, resolve the
+                        comment or mark it as TODO for later.</p>
+                </section>
+            </div>
+        </section>
+
+        <div class="row">
+            <div class="6u 12u(narrower)">
+
+                <section class="box special">
+                    <span class="image featured"><img src="{{ baseDir }}/images/pic03.jpg" alt=""/></span>
+                    <h3>Help Improve Language Forge</h3>
+                    <p>You can help us by reporting bugs you find on Github (account required) and suggesting features
+                        on our User Voice page. Ask questions from our community of users on our Google Groups
+                        forum.</p>
+                    <ul class="actions">
+                        <li><a href="https://github.com/sillsdev/web-languageforge/issues" class="button alt">Github:
+                                Report a Bug</a></li>
+                        <li><a href="https://groups.google.com/forum/#!forum/languageforge" class="button alt">Google
+                                Groups: Ask a Question</a></li>
+                    </ul>
+                </section>
+
+            </div>
+            <div class="6u 12u(narrower)">
+
+                <section class="box special">
+                    <span class="image featured"><img src="{{ baseDir }}/images/pic02.jpg" alt=""/></span>
+                    <h3>Real-Time Collaboration</h3>
+                    <p>Members of the project will see entries updated as it happens by others in the same project.
+                        Language Forge has dozens of additional features including LIFT import, custom field support,
+                        right-to-left script support, and support for many FLEx fields.</p>
+                    <ul class="actions">
+                        <li><a href="https://languageforge.uservoice.com/" class="button alt">UserVoice: Suggest a
+                                Feature</a></li>
+                    </ul>
+                </section>
+
+            </div>
+        </div>
+
+    </section>
+
+    <!-- CTA -->
+    <section id="cta">
+        <h2>See For Yourself</h2>
+        <p><iframe width="560" height="315" src="https://www.youtube.com/embed/-RMXBYLKpzw" frameborder="0" allowfullscreen></iframe></p>
+        <ul class="actions">
+            {% if isLoggedIn %}
+                <li><a href="/app/projects" class="button special">My Dashboard</a></li>
+            {% else %}
+                <li><a href="/signup" class="button special">Sign Up</a></li>
+                <li><a href="/auth/login" class="button special">Login</a></li>
+            {% endif %}
+        </ul>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <ul class="icons">
+            <li><a href="http://ic.payap.ac.th/"><img src="{{ baseDir }}/images/payap_logo.png"
+                                                      alt="Payap University Logo" width="170" height="50"/></a></li>
+            <li><a href="http://www.sil.org"><img src="{{ baseDir }}/images/sil_logo.png" alt="SIL International Logo"
+                                                  width="56" height="63"/></a></li>
+        </ul>
+
+
+        <ul class="copyright">
+            <li>Copyright {{ "now"|date("Y") }} <a href="http://www.sil.org">SIL International</a>. Use of this site is
+                governed by our <a href="/terms_and_conditions">terms and conditions</a>.
+            </li>
+            <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+            <li>Photo Credit: <a href="https://commons.wikimedia.org/wiki/File%3ABangkok_at_night_01_(MK).jpg">View over Bangkok at night from Baiyoke Tower II</a> By Mathias Krumbholz [<a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>]</li>
+        </ul>
+    </footer>
+
+</div>
+
+<!-- Scripts -->
+<script src="{{ baseDir }}/assets/js/jquery.min.js"></script>
+<script src="{{ baseDir }}/assets/js/jquery.dropotron.min.js"></script>
+<script src="{{ baseDir }}/assets/js/jquery.scrollgress.min.js"></script>
+<script src="{{ baseDir }}/assets/js/skel.min.js"></script>
+<script src="{{ baseDir }}/assets/js/util.js"></script>
+<!--[if lte IE 8]>
+<script src="{{ baseDir }}/assets/js/ie/respond.min.js"></script><![endif]-->
+<script src="{{ baseDir }}/assets/js/main.js"></script>
+
+</body>
+</html>

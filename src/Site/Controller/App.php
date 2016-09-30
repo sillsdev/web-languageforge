@@ -46,7 +46,6 @@ class App extends Base
 
         $this->data['appName'] = $appName;
         $this->data['appFolder'] = $appFolder;
-        $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
 
         $this->_userId = SilexSessionHelper::getUserId($app);
 
@@ -75,7 +74,6 @@ class App extends Base
         }
         $app['session']->set('projectId', $projectId);
         $this->_projectId = $projectId;
-
 
         // determine help menu button visibility
         // placeholder for UI language 'en' to support translation of helps in the future
@@ -118,4 +116,5 @@ class App extends Base
         $this->addCssFiles(NG_BASE_FOLDER . 'bellows');
         $this->addCssFiles(NG_BASE_FOLDER . $appFolder);
     }
+
 }

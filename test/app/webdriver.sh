@@ -10,4 +10,4 @@ fi
 
 NODE=$(which nodejs || which node)
 
-$NODE $REPO_ROOT/test/app/node_modules/protractor/bin/webdriver-manager "$@"
+$NODE $REPO_ROOT/node_modules/protractor/bin/webdriver-manager "$@"

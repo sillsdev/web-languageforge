@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('palaso.ui.typeahead', [])
-  .directive('typeahead', ['$timeout', function ($timeout) {
+  .directive('puiTypeahead', ['$timeout', function ($timeout) {
     return {
       restrict: 'E',
       transclude: true,
@@ -156,7 +156,7 @@ angular.module('palaso.ui.typeahead', [])
   }])
   .directive('typeaheadItem', function () {
     return {
-      require: '^typeahead',
+      require: '^puiTypeahead',
       link: function (scope, element, attrs, controller) {
 
         var item = scope.$eval(attrs.typeaheadItem);
