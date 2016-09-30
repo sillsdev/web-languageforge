@@ -23,7 +23,7 @@
 
             <!-- control buttons -->
             <form class="form-inline">
-                <typeahead class="typeahead" items="typeahead.users" term="typeahead.userName" search="typeahead.searchUsers" select="typeahead.selectUser">
+                <pui-typeahead class="typeahead" items="typeahead.users" term="typeahead.userName" search="typeahead.searchUsers" select="typeahead.selectUser">
                     <ul>
                         <li class="typeahead-item" typeahead-item="user" data-ng-repeat="user in typeahead.users">
                             <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
@@ -31,7 +31,7 @@
                             <p class="email">{{user.email}}</p>
                         </li>
                     </ul>
-                </typeahead>
+                </pui-typeahead>
                 <button class="btn btn-success" data-ng-click="addUser()"><i class="icon-plus"></i>{{'Add Member Specific Settings' | translate}}</button>
                 <br /><br />
             </form>

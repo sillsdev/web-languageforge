@@ -1,22 +1,17 @@
 *~
 .settings
 .externalToolBuilders
-/output
-/node_modules/
-src/vendor/*
-src/vendor/*/
+output
+node_modules/
+src/vendor/
 !src/vendor/lift/
-src/cache/*
-src/cache/*/
+src/vendor_bower/
+src/cache/
 !src/cache/index.html
 !src/cache/.htaccess
-src/assets/*
-src/assets/*/
+src/assets/
 !src/assets/index.hmtl
-.idea/*
-test/app/node_modules/protractor/selenium/
-test/app/node_modules/.bin/
-src/vendor_bower/
+.idea/
 docs/semdom/*.xml
 docs/semdom/semdom lists/*.xml
 .vagrant/
@@ -26,3 +21,4 @@ deploy/site_info/
 deploy/callback_plugins/*.pyc
 src/js/lib/languageforge.min.js
 src/js/lib/scriptureforge.min.js
+src/angular-app/**/helps/**/page/*.html
