@@ -13,17 +13,27 @@
     "url": "https://github.com/sillsdev/web-languageforge.git",
     "alternate-url": "https://github.com/sillsdev/web-scriptureforge.git"
   },
+  "dependencies": {
+    "gulp-markdown": "^1.2.0"
+  },
   "devDependencies": {
     "gulp-util": "~3.0.6",
     "gulp": "~3.9.0",
     "gulp-exec": "~2.1.0",
     "gulp-livereload": "~3.8.0",
-    "async": "~1.4.2"
+    "async": "~1.4.2",
+
+    "protractor": "~4.0",
+    "karma": "~1.1",
+    "phantomjs-prebuilt": "~2.1",
+
+    "jasmine-reporters": "~2.2",
+    "karma-teamcity-reporter": "~1.0",
+    "karma-chrome-launcher": "~1.0",
+    "karma-jasmine": "~1.0",
+    "karma-phantomjs-launcher": "~1.0"
   },
   "jscsConfig": {
     "disallowTrailingComma": true
-  },
-  "dependencies": {
-    "gulp-markdown": "^1.2.0"
   }
 }

@@ -209,7 +209,13 @@
         </copy>
     </target>
 
-    <target name="test-e2e-env" depends="test-e2e-install,test-e2e-copyTest">
+    <target name="test-e2e-copyNodeModules" depends="">
+        <copy todir="${build.installForTestPath}/node_modules">
+            <fileset dir="node_modules"/>
+        </copy>
+    </target>
+
+    <target name="test-e2e-env" depends="test-e2e-install, test-e2e-copyTest, test-e2e-copyNodeModules">
         <replaceregexp
             file="${build.installForTestPath}/htdocs/config.php"
             match="define\('SF_DATABASE', '([^']*)'\);"
@@ -279,9 +285,9 @@
     </target>
 
     <target name="runE2ETests" unless="selenium.server.notfound">
-        <exec dir="${build.installForTestPath}/test/app/" executable="node" failonerror="true">
+        <exec dir="${build.installForTestPath}/" executable="node" failonerror="true">
             <arg value="node_modules/protractor/bin/protractor" />
-            <arg value="${e2etest.protractor.conf}" />
+            <arg value="test/app/${e2etest.protractor.conf}" />
             <arg value="--baseUrl" />
             <arg value="https://${e2etest.webserver.host}" />
             <arg value="--seleniumAddress" />
