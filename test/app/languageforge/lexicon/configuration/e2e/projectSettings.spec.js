@@ -51,8 +51,8 @@ describe('Project Settings page', function () {
       projectSettingsPage.sendReceiveTab.passwordInput.sendKeys(constants.srPassword);
       browser.wait(expectedCondition.visibilityOf(projectSettingsPage.sendReceiveTab.passwordOk),
         CONDITION_TIMEOUT);
-      expect(projectSettingsPage.sendReceiveTab.loginOk.isDisplayed()).toBe(true);
       expect(projectSettingsPage.sendReceiveTab.passwordOk.isDisplayed()).toBe(true);
+      expect(projectSettingsPage.sendReceiveTab.loginOk.isDisplayed()).toBe(true);
       expect(projectSettingsPage.sendReceiveTab.loginInput.isDisplayed()).toBe(true);
       expect(projectSettingsPage.sendReceiveTab.projectUneditable.isDisplayed()).toBe(false);
       browser.sleep(200);
