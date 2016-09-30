@@ -82,7 +82,7 @@ class TestLexEntryCommands extends UnitTestCase
         $this->assertEqual($dto->count, 0);
 
         // Clean up after ourselves
-        ProjectCommands::deleteProjects(array($projectId));
+        ProjectCommands::deleteProjects(array($projectId), $project->ownerRef->asString());
     }
 
     public function testReadEntry_ReadBackOk()
@@ -170,6 +170,28 @@ class TestLexEntryCommands extends UnitTestCase
         $this->assertFalse(array_key_exists('liftId', $newEntry['senses'][0]['examples'][0]), 'example liftId should be private');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['sentence']['th']['value'], 'example1');
         $this->assertEqual($newEntry['senses'][0]['examples'][0]['translation']['en']['value'], 'trans1');
+    }
+
+    public function testUpdateEntry_ClearedData_DataIsCleared() {
+        $e = new LexiconMongoTestEnvironment();
+        $e->clean();
+
+        $project = $e->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $entry = new LexEntryModel($project);
+        $entry->lexeme->form('th', 'apple');
+        $entryId = $entry->write();
+
+        $params = json_decode(json_encode(LexEntryCommands::readEntry($projectId, $entryId)), true);
+        $params['lexeme']['th']['value'] = '';
+
+        $userId = $e->createUser('john', 'john', 'john');
+
+        LexEntryCommands::updateEntry($projectId, $params, $userId);
+
+        $updatedEntry = LexEntryCommands::readEntry($projectId, $entryId);
+        $this->assertEqual($updatedEntry['lexeme']['th']['value'], '');
     }
 /* Ignore test for send receive v1.1 since dirtySR counter is not being incremented on edit. IJH 2015-02
     public function testUpdateEntry_ProjectHasSendReceive_EntryHasGuidAndDirtySRIncremented()
@@ -355,40 +377,5 @@ class TestLexEntryCommands extends UnitTestCase
         $this->assertEqual($result->entries[0]['lexeme']['th']['value'], 'Apfel0');
         $this->assertTrue(!array_key_exists('definition', $result->entries[0]['senses'][0]));
         $this->assertEqual($result->entries[3]['senses'][0]['definition']['en']['value'], 'apple');
-    }
-
-    public function testRecursiveRemoveEmptyFieldValues_3EmptyItemsAnd3NonEmptyItems_NonEmptyItemsRemain()
-    {
-        $params = array(
-            'customFieldsEmpty' => array(
-                'customField_entry_Cust_Single_Line_All' => array(
-                    'en' => array('value' => ''),
-                    'fr' => array('value' => '')
-                )
-            ),
-            'literalMeaningEmpty' => array(
-                'en' => array('value' => '')
-            ),
-            'locationEmpty' => array('value' => ''),
-            'customFields' => array(
-                'customField_entry_Cust_Single_Line_All' => array(
-                    'en' => array('value' => 'english'),
-                    'fr' => array('value' => 'french')
-                )
-            ),
-            'literalMeaning' => array(
-                'en' => array('value' => 'literal')
-            ),
-            'location' => array('value' => 'locale')
-        );
-        $this->assertEqual(count($params), 6);
-
-        $params = LexEntryCommands::recursiveRemoveEmptyFieldValues($params);
-
-        $this->assertEqual(count($params), 3);
-        $this->assertEqual($params['customFields']['customField_entry_Cust_Single_Line_All']['en']['value'], 'english');
-        $this->assertEqual($params['customFields']['customField_entry_Cust_Single_Line_All']['fr']['value'], 'french');
-        $this->assertEqual($params['literalMeaning']['en']['value'], 'literal');
-        $this->assertEqual($params['location']['value'], 'locale');
     }
 }

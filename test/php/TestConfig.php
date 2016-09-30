@@ -20,9 +20,9 @@ define('SourcePath', $rootPath . 'src/');
 define('SF_DATABASE', 'scriptureforge_test');
 define('MONGODB_CONN', 'mongodb://localhost:27017');
 define('SF_TESTPROJECT',      'Test Project');
-define('SF_TESTPROJECTCODE',  'TestCode1');
+define('SF_TESTPROJECTCODE',  'testcode1');
 define('SF_TESTPROJECT2',     'Test Project2');
-define('SF_TESTPROJECTCODE2', 'TestCode2');
+define('SF_TESTPROJECTCODE2', 'testcode2');
 define('BCRYPT_COST', 7);
 
 global $WEBSITE;

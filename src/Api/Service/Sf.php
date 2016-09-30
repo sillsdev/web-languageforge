@@ -140,7 +140,7 @@ class Sf
      */
     public function user_update($params)
     {
-        return UserCommands::updateUser($params);
+        return UserCommands::updateUser($params, $this->website);
     }
 
     /**
@@ -376,14 +376,18 @@ class Sf
     }
 
     /**
-     * Permanently delete selected list of archived projects.
+     * Clear out the session projectId and permanently delete selected list of projects.
      *
-     * @param array<string> $projectIds
+     * @param array<string> $projectIds Default to current projectId
      * @return int Total number of projects removed.
      */
     public function project_delete($projectIds)
     {
-        return ProjectCommands::deleteProjects($projectIds);
+        if (empty($projectIds)) {
+            $projectIds = array($this->projectId);
+        }
+        $this->app['session']->set('projectId', "");
+        return ProjectCommands::deleteProjects($projectIds, $this->userId);
     }
 
     // ---------------------------------------------------------------
@@ -415,10 +419,10 @@ class Sf
     // PROJECT API
     // ---------------------------------------------------------------
     /**
-     * Create/Update a Project
+     * Update an Sfchecks Project
      *
      * @param array $settings
-     * @return string Id of written object
+     * @return string $projectId of written object
      */
     public function project_update($settings)
     {
@@ -463,6 +467,12 @@ class Sf
         return ProjectSettingsDto::encode($this->projectId, $this->userId);
     }
 
+    /**
+     * Updates the ProjectSettingsModel which are settings accessible only to site administrators
+     * @param array<Api\Model\Sms\SmsSettings> $smsSettingsArray
+     * @param array<Api\Model\EmailSettings> $emailSettingsArray
+     * @return string $result id to the projectSettingsModel
+     */
     public function project_updateSettings($smsSettingsArray, $emailSettingsArray)
     {
         return ProjectCommands::updateProjectSettings($this->projectId, $smsSettingsArray, $emailSettingsArray);
@@ -631,8 +641,23 @@ class Sf
     }
 
     /*
-     * --------------------------------------------------------------- LANGUAGEFORGE PROJECT API ---------------------------------------------------------------
+     * --------------------------------------------------------------- LANGUAGEFORGE ----------------------------------------------------------------
      */
+
+    // ---------------------------------------------------------------
+    // PROJECT API
+    // ---------------------------------------------------------------
+    /**
+     * Update a lexicon Project
+     *
+     * @param array $settings
+     * @return string $projectId of written object
+     */
+    public function lex_project_update($settings)
+    {
+        return LexProjectCommands::updateProject($this->projectId, $this->userId, $settings);
+    }
+
     public function lex_baseViewDto()
     {
         return LexBaseViewDto::encode($this->projectId, $this->userId);
@@ -674,17 +699,6 @@ class Sf
             LexOptionListCommands::updateList($this->projectId, $optionlist);
         }
         return;
-    }
-
-    /**
-     * Create/Update a Project
-     *
-     * @param array $settings
-     * @return string $projectId
-     */
-    public function lex_project_update($settings)
-    {
-        return LexProjectCommands::updateProject($this->projectId, $this->userId, $settings);
     }
 
     public function lex_project_removeMediaFile($mediaType, $fileName)

@@ -1,21 +1,22 @@
 
 angular.module('palaso.ui.selection', [])
+
   // Typeahead
-  .directive('silSelection', ["$compile", function($compile) {
+  .directive('silSelection', ['$compile', function ($compile) {
     return {
       restrict: 'A',
       scope: {
-        silSelectedText : "=",
-        content : "=",
+        silSelectedText: '=',
+        content: '='
       },
-      controller: function() {
+      controller: function () {
         rangy.init();
-        this.cssApplier = rangy.createCssClassApplier('highlighted');
-
+        this.cssApplier = rangy.createClassApplier('highlighted');
       },
-      link: function(scope, element, attrs, controller) {
+
+      link: function (scope, element, attrs, controller) {
         scope.$watch('content',
-          function(value) {
+          function (value) {
             // When the "compile" expresison changes, assign it into
             // the current DOM
             element.html(value);
@@ -27,7 +28,7 @@ angular.module('palaso.ui.selection', [])
           }
         );
         scope.oldHighlightedRange = null;
-        scope.$watch('silSelectedText', function(newSelection) {
+        scope.$watch('silSelectedText', function (newSelection) {
           if (!newSelection) {
             // Client code cleared the selection; we should clear
             // the highlight if there is one.
@@ -36,14 +37,17 @@ angular.module('palaso.ui.selection', [])
             }
           }
         });
-        element.bind('mousedown', function(event) {
+
+        element.bind('mousedown', function () {
           if (scope.oldHighlightedRange) {
             controller.cssApplier.undoToRange(scope.oldHighlightedRange);
             scope.oldHighlightedRange = null;
           }
+
           scope.validMouseDown = true;
         });
-        element.bind('mouseup', function(event) {
+
+        element.bind('mouseup', function () {
           // There is a Firefox behavior, which may be a bug, that
           // is making the mouseup event fire even when the mouse
           // button is released *outside* this element. Weirdly,
@@ -67,15 +71,17 @@ angular.module('palaso.ui.selection', [])
             controller.cssApplier.applyToRange(range);
             scope.oldHighlightedRange = range;
 
-            scope.$apply(function() {
+            scope.$apply(function () {
               if (scope.silSelectedText != undefined) {
                 scope.silSelectedText = selectedHtml;
               }
             });
           }
+
           scope.validMouseDown = false;
         });
       }
     };
   }])
+
   ;

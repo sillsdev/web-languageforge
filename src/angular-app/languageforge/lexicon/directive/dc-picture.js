@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.notice', 'ngAnimate',
-  'bellows.services', 'angularFileUpload', 'lexicon.services'])
+  'bellows.services', 'ngFileUpload', 'lexicon.services'])
 
 // Palaso UI Dictionary Control: Picture
 .directive('dcPicture', [function () {
@@ -13,10 +13,11 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       pictures: '=',
       control: '='
     },
-    controller: ['$scope', '$upload', '$filter', 'sessionService', 'lexProjectService',
+    controller: ['$scope', '$state', 'Upload', '$filter', 'sessionService', 'lexProjectService',
       'lexConfigService', 'silNoticeService', 'modalService',
-    function ($scope, $upload, $filter, ss, lexProjectService,
+    function ($scope, $state, Upload, $filter, sessionService, lexProjectService,
               lexConfigService, notice, modalService) {
+      $scope.$state = $state;
       $scope.upload = {};
       $scope.upload.progress = 0;
       $scope.upload.file = null;
@@ -34,7 +35,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
 
         return 'This picture references an external file (' +
           picture.fileName +
-          ') and therefore cannot be synchronised. ' +
+          ') and therefore cannot be synchronized. ' +
           'To see the picture, link it to an internally referenced file. ' +
           'Replace the file here or in FLEx, move or copy the file to the Linked Files folder.';
       };
@@ -80,53 +81,58 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
         }
       };
 
-      $scope.onFileSelect = function onFileSelect(files) {
-
-        // take the first file only
-        var file = files[0];
-        $scope.upload.file = file;
-        if (file.size <= ss.fileSizeMax()) {
+      $scope.uploadFile = function uploadFile(file) {
+        if (!file || file.$error) return;
+        if (file.size > sessionService.fileSizeMax()) {
           $scope.upload.progress = 0;
-          $upload.upload({
+          $scope.upload.file = null;
+          notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
+            $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
+            $filter('bytes')(sessionService.fileSizeMax()) + '.');
+          return;
+        }
 
-            // Upload.php script
-            url: '/upload/lf-lexicon/sense-image',
-
-            // headers: {'myHeaderKey': 'myHeaderVal'},
-            data: {
-              filename: file.name
-            },
-            file: file
-          }).progress(function (evt) {
-            $scope.upload.progress = parseInt(100.0 * evt.loaded / evt.total);
-          }).success(function (data) {
-            if (data.result) {
+        $scope.upload.file = file;
+        $scope.upload.progress = 0;
+        Upload.upload({
+          url: '/upload/lf-lexicon/sense-image',
+          data: { file: file }
+        }).then(function (response) {
+            var isUploadSuccess = response.data.result;
+            if (isUploadSuccess) {
               $scope.upload.progress = 100.0;
-              addPicture(data.data.fileName);
+              addPicture(response.data.data.fileName);
               $scope.upload.showAddPicture = false;
             } else {
               $scope.upload.progress = 0;
-              notice.push(notice.ERROR, data.data.errorMessage);
+              notice.push(notice.ERROR, response.data.data.errorMessage);
             }
 
             $scope.upload.file = null;
-          }).error(function (data, status) {
-            var errorMessage = $filter('translate')('Import failed.');
-            if (status > 0) {
-              errorMessage += ' Status: ' + status;
-              if (data) {
-                errorMessage += '- ' + data;
+          },
+
+          function (response) {
+            var errorMessage = $filter('translate')('Upload failed.');
+            if (response.status > 0) {
+              errorMessage += ' Status: ' + response.status;
+              if (response.statusText) {
+                errorMessage += ' ' + response.statusText;
+              }
+
+              if (response.data) {
+                errorMessage += '- ' + response.data;
               }
             }
 
+            $scope.upload.file = null;
             notice.push(notice.ERROR, errorMessage);
+          },
+
+          function (evt) {
+            $scope.upload.progress = parseInt(100.0 * evt.loaded / evt.total);
           });
-        } else {
-          $scope.upload.progress = 0;
-          $scope.upload.file = null;
-          notice.push(notice.ERROR, file.name + ' is too large.');
-        }
       };
+
     }]
   };
 }]);

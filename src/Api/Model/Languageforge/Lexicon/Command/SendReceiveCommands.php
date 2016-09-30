@@ -26,14 +26,19 @@ class SendReceiveCommands
     const WORK_PATH = '/var/lib/languageforge/lexicon/sendreceive/webwork';
     const STATE_PATH = '/var/lib/languageforge/lexicon/sendreceive/state';
     const LFMERGE_CONF_FILE_PATH = '/etc/languageforge/conf/sendreceive.conf';
-    const LFMERGE_EXE = 'lfmerge';
+    const LFMERGE_EXE = 'lfmergeqm';
 
     // duplicate of data in /test/app/testConstants.json
     const TEST_MEMBER_USERNAME = 'test_runner_normal_user';
     const TEST_SR_USERNAME = 'sr-mock-username';
     const TEST_SR_PASSWORD = 'sr-mock-password';
 
-    private static $lfmergePidFilePaths = ['/tmp/run/lfmerge.pid', '/var/run/lfmerge.pid'];
+    private static $lfmergePidFilePaths = [
+        '/tmp/run/lfmergeqm.pid',
+        '/var/run/lfmergeqm.pid',
+        '/tmp/run/lfmerge.pid',
+        '/var/run/lfmerge.pid'
+    ];
 
     /**
      * @param string $projectId
@@ -216,6 +221,8 @@ class SendReceiveCommands
         $statusJson = file_get_contents($projectStatePath);
         $status = json_decode($statusJson, true);
 
+        if (!$status) return false;
+
         // If the project is in a queue and the state is IDLE, override the state to PENDING
         if (array_key_exists('SRState', $status) && $status['SRState'] == "IDLE" &&
             (file_exists(self::getLFMergePaths()->editQueuePath . DIRECTORY_SEPARATOR . $project->projectCode) ||
@@ -226,10 +233,13 @@ class SendReceiveCommands
 
         // If the previousRunTotalMilliseconds is set, estimate percentComplete
         if (array_key_exists('PreviousRunTotalMilliseconds', $status) &&
-            $status['PreviousRunTotalMilliseconds'] != 0 &&
             array_key_exists('StartTimestamp', $status)
         ) {
-            $status['PercentComplete'] = min(99, intval((time() - $status['StartTimestamp']) / ($status['PreviousRunTotalMilliseconds'] / 1000) * 100));
+            $previousRunTotalMilliseconds = $status['PreviousRunTotalMilliseconds'];
+            if ($previousRunTotalMilliseconds <= 0) {
+                $previousRunTotalMilliseconds = 4*60*1000; // 4 minutes
+            }
+            $status['PercentComplete'] = min(99, intval((time() - $status['StartTimestamp']) / ($previousRunTotalMilliseconds / 1000) * 100));
         }
         return $status;
     }

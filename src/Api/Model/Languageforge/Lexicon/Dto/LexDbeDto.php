@@ -12,16 +12,16 @@ use Api\Model\Shared\UserGenericVoteModel;
 
 class LexDbeDto
 {
+    const MAX_ENTRIES_PER_REQUEST = 1000;
+
     /**
-     * @param  string     $projectId
-     * @param $userId
-     * @param  null       $lastFetchTime
+     * @param string $projectId
+     * @param string $userId
+     * @param null $lastFetchTime
+     * @param int $offset
      * @throws \Exception
      * @return array
      */
-
-    const MAX_ENTRIES_PER_REQUEST = 5000;
-
     public static function encode($projectId, $userId, $lastFetchTime = null, $offset = 0)
     {
         $data = array();

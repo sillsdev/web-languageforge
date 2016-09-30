@@ -14,7 +14,7 @@ function ($q, sessionService, cache, commentsCache,
   var browserInstanceId = Math.floor(Math.random() * 1000);
   var api = undefined;
 
-  var showInitialEntries = function showInitial() {
+  var showInitialEntries = function showInitialEntries() {
     sortList(entries);
     visibleEntries.length = 0; // clear out the array
     visibleEntries.push.apply(visibleEntries, entries.slice(0, 50));
@@ -102,7 +102,7 @@ function ($q, sessionService, cache, commentsCache,
     api.dbeDtoFull(browserInstanceId, offset, function (result) {
       if (!result.ok) {
         notice.cancelLoading();
-        deferred.error(result);
+        deferred.reject(result);
         return;
       }
 
@@ -150,19 +150,17 @@ function ($q, sessionService, cache, commentsCache,
   };
 
   var removeEntryFromLists = function removeEntryFromLists(id) {
-    // todo: make this method async, returning a promise
+    var iFullList = getIndexInList(id, entries);
+    if (angular.isDefined(iFullList)) {
+      entries.splice(iFullList, 1);
+    }
 
-    cache.deleteEntry(id).then(function () {
-      var iFullList = getIndexInList(id, entries);
-      if (angular.isDefined(iFullList)) {
-        entries.splice(iFullList, 1);
-      }
+    var iShowList = getIndexInList(id, visibleEntries);
+    if (angular.isDefined(iShowList)) {
+      visibleEntries.splice(iShowList, 1);
+    }
 
-      var iShowList = getIndexInList(id, visibleEntries);
-      if (angular.isDefined(iShowList)) {
-        visibleEntries.splice(iShowList, 1);
-      }
-    });
+    return cache.deleteEntry(id);
   };
 
   /**
@@ -234,31 +232,31 @@ function ($q, sessionService, cache, commentsCache,
       } else {
 
         // splice updates into entry lists
-        angular.forEach(result.data.entries, function (e) {
+        angular.forEach(result.data.entries, function (entry) {
           var i;
 
           // splice into entries
-          i = getIndexInList(e.id, entries);
+          i = getIndexInList(entry.id, entries);
           if (angular.isDefined(i)) {
-            entries[i] = e;
+            entries[i] = entry;
           } else {
-            addEntryToEntryList(e);
+            addEntryToEntryList(entry);
           }
 
           // splice into visibleEntries
-          i = getIndexInList(e.id, visibleEntries);
+          i = getIndexInList(entry.id, visibleEntries);
           if (angular.isDefined(i)) {
-            visibleEntries[i] = e;
+            visibleEntries[i] = entry;
           }
         });
 
         // splice comment updates into comments list
-        angular.forEach(result.data.comments, function (c) {
-          var i = getIndexInList(c.id, commentService.comments.items.all);
+        angular.forEach(result.data.comments, function (comment) {
+          var i = getIndexInList(comment.id, commentService.comments.items.all);
           if (angular.isDefined(i)) {
-            commentService.comments.items.all[i] = c;
+            commentService.comments.items.all[i] = comment;
           } else {
-            commentService.comments.items.all.push(c);
+            commentService.comments.items.all.push(comment);
           }
         });
 
@@ -276,7 +274,7 @@ function ($q, sessionService, cache, commentsCache,
         isLastRequest = false;
       }
 
-      storeDataInOfflineCache(result.data, isLastRequest).then(function () { deferred.resolve(); });
+      storeDataInOfflineCache(result.data, isLastRequest);
 
       commentService.updateGlobalCommentCounts();
       deferred.resolve(result);
@@ -295,6 +293,14 @@ function ($q, sessionService, cache, commentsCache,
     }
 
     return index;
+  }
+
+  function getIndexInEntries(id) {
+    return getIndexInList(id, entries);
+  }
+
+  function getIndexInVisibleEntries(id) {
+    return getIndexInList(id, visibleEntries);
   }
 
   function sortList(list) {
@@ -328,6 +334,7 @@ function ($q, sessionService, cache, commentsCache,
     });
   }
 
+  //noinspection JSUnusedLocalSymbols
   /**
    * A function useful for debugging (prints out to the console the lexeme values)
    * @param list
@@ -353,6 +360,8 @@ function ($q, sessionService, cache, commentsCache,
     refreshEditorData: refreshEditorData,
     removeEntryFromLists: removeEntryFromLists,
     addEntryToEntryList: addEntryToEntryList,
+    getIndexInEntries: getIndexInEntries,
+    getIndexInVisibleEntries: getIndexInVisibleEntries,
     entries: entries,
     visibleEntries: visibleEntries,
     showInitialEntries: showInitialEntries,
