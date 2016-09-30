@@ -48,7 +48,7 @@ exports.config = {
   onPrepare: function () {
     if (process.env.TEAMCITY_VERSION) {
       var jasmineReporters = require('jasmine-reporters');
-      jasmine.getEnv().addReporter(new jasmineReporters.TeamcityReporter());
+      jasmine.getEnv().addReporter(new jasmineReporters.TeamCityReporter());
     }
   }
 };
