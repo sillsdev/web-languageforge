@@ -278,15 +278,6 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
   setupView();
 
-  // TODO Fix sorting 2014-08 DDW
-  function sortInputSystemsList() {
-    return $filter('orderBy')($filter('orderAsArray')($scope.inputSystemViewModels, 'tag'),
-      'languageName');
-
-    // return $filter('orderBy')($filter('orderAsArray')($scope.configDirty.inputSystems, 'tag'),
-    //  'languageName');
-  }
-
   function setupView() {
     if (!angular.isDefined($scope.configDirty.inputSystems)) {
       return;
@@ -294,12 +285,12 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
     // InputSystemsViewModels
     $scope.inputSystemViewModels = {};
-    angular.forEach($scope.configDirty.inputSystems, function (item) {
-      var vm = new InputSystemsViewModel(item);
-      $scope.inputSystemViewModels[vm.uuid] = vm;
+    $scope.inputSystemsList = [];
+    angular.forEach($scope.configDirty.inputSystems, function (inputSystem) {
+      var viewModel = new InputSystemsViewModel(inputSystem);
+      $scope.inputSystemViewModels[viewModel.uuid] = viewModel;
+      $scope.inputSystemsList.push(viewModel);
     });
-
-    $scope.inputSystemsList = sortInputSystemsList();
 
     // select the first items
     $scope.selectInputSystem($scope.inputSystemsList[0].uuid);
@@ -388,7 +379,9 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
     viewModel.special = special;
     viewModel.buildTag();
     for (var uuid in $scope.inputSystemViewModels) {
-      if ($scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag) {
+      if ($scope.inputSystemViewModels.hasOwnProperty(uuid) &&
+        $scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag
+      ) {
         return true;
       }
     }
@@ -408,7 +401,9 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
     // Verify newly created tag doesn't already exist before adding it to the list
     for (var uuid in $scope.inputSystemViewModels) {
       if (special != $scope.selects.special.optionsOrder[3] &&
-          $scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag) {
+        $scope.inputSystemViewModels.hasOwnProperty(uuid) &&
+        $scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag
+      ) {
         notice.push(notice.ERROR, 'Input system for ' + viewModel.inputSystem.languageName +
           ' already exists');
         return;
@@ -416,12 +411,19 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
     }
 
     $scope.inputSystemViewModels[viewModel.uuid] = viewModel;
+    $scope.inputSystemsList.push(viewModel);
     $scope.selectedInputSystemId = viewModel.uuid;
+    $scope.configForm.$setDirty();
   };
 
   $scope.removeInputSystem = function removeInputSystem(selectedInputSystemId) {
+    var viewModel = $scope.inputSystemViewModels[selectedInputSystemId];
+    var index = $scope.inputSystemsList.indexOf(viewModel);
+    if (index > -1) {
+      $scope.inputSystemsList.splice(index, 1);
+    }
+
     delete $scope.inputSystemViewModels[selectedInputSystemId];
-    $scope.inputSystemsList = sortInputSystemsList();
     $scope.configForm.$setDirty();
 
     // select the first items
@@ -455,8 +457,11 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
   };
 
-  $scope.$watchCollection('inputSystemViewModels[selectedInputSystemId]', function (newValue) {
-    if (newValue == undefined) {
+  $scope.$watchCollection('inputSystemViewModels[selectedInputSystemId]', function (newValue,
+                                                                                    oldValue) {
+    if (angular.isUndefined(newValue) || angular.isUndefined(oldValue) ||
+      angular.equals(oldValue, newValue)
+    ) {
       return;
     }
 
@@ -467,7 +472,6 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
     newValue.buildTag();
     $scope.configForm.$setDirty();
-    $scope.inputSystemsList = sortInputSystemsList();
   });
 
 }])
@@ -685,14 +689,10 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
   };
 
   $scope.showRemoveCustomField = function showRemoveCustomField(fieldName) {
-    if ($scope.isCustomField(fieldName) &&
-        !(fieldName in $scope.projectSettings.config.entry.fields) &&
-        !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields) &&
-        !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields.examples.fields)) {
-      return true;
-    }
-
-    return false;
+    return $scope.isCustomField(fieldName) &&
+      !(fieldName in $scope.projectSettings.config.entry.fields) &&
+      !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields) &&
+      !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields.examples.fields);
   };
 
   $scope.removeSelectedCustomField = function removeSelectedCustomField() {

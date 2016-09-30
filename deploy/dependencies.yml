@@ -20,11 +20,24 @@
         - php5-dev
         - php5-cli
         - php-pear
+        - libpcre3-dev
         - mongodb-server
         - postfix
         - unzip
         - p7zip-full
-        - libpcre3-dev
+        - npm
+
+    - file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
+
+    - name: install Composer
+      shell: php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/local/bin --filename=composer
+      args:
+        creates: /usr/local/bin/composer
+
+    - name: install Bower
+      shell: npm install -g bower
+      args:
+        creates: /usr/local/bin/bower
 
     - name: php log folder exists
       file: path={{php_log_folder}} state=directory owner=www-data group=www-data mode=0775 recurse=yes
@@ -73,6 +86,45 @@
     - name: Ensure default_local link exists (localhost)
       file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/virtual/default_local" state=link group=www-data force=true
       when: inventory_hostname == "localhost"
+
+    - name: Ensure folder permissions
+      # see http://stackoverflow.com/questions/28778738/ansible-mode-755-for-directories-and-644-for-files-recursively
+      file:
+        path: "{{item.path}}"
+        state: directory
+        mode: "{{item.mode}}"
+        recurse: yes
+      with_items:
+        - path: "{{lf_path}}/src"
+          mode: 'u=rwX,g=rX,o=rX'
+        - path: "{{sf_path}}/src"
+          mode: 'u=rwX,g=rX,o=rX'
+        - path: "{{lf_path}}/test"
+          mode: 'u=rwX,g=rX,o=rx'
+        - path: "{{sf_path}}/test"
+          mode: 'u=rwX,g=rX,o=rx'
+        - path: "{{lf_path}}/docs"
+          mode: 'u=rwX,g=rX,o=rX'
+        - path: "{{sf_path}}/docs"
+          mode: 'u=rwX,g=rX,o=rX'
+
+    - name: Ensure www-data has permission to folders
+      # see http://stackoverflow.com/questions/28778738/ansible-mode-755-for-directories-and-644-for-files-recursively
+      file:
+        path: "{{item.path}}"
+        state: directory
+        group: www-data
+        mode: "{{item.mode}}"
+        recurse: yes
+      with_items:
+        - path: "{{lf_path}}/src/assets"
+          mode: 'u=rwX,g=rwX'
+        - path: "{{sf_path}}/src/assets"
+          mode: 'u=rwX,g=rwX'
+        - path: "{{lf_path}}/src/cache"
+          mode: 'u=rwX,g=rwX'
+        - path: "{{sf_path}}/src/cache"
+          mode: 'u=rwX,g=rwX'
 
     - name: Ensure /var/lib/languageforge directory is writeable (for LfMerge)
       file: path="/var/lib/languageforge" state=directory owner=www-data group=www-data mode=0755

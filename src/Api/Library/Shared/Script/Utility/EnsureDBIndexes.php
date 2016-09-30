@@ -33,7 +33,7 @@ class EnsureDBIndexes
         $numberOfIndexesCreated += count($mainIndexesToCreate);
         $message .= count($mainIndexesToCreate) . " main indexes created.\n";
 
-        if ($onDevMachine || $onLocalMachine) {
+        if (($onDevMachine || $onLocalMachine) && MongoStore::hasDB(SF_TEST_DATABASE)) {
             $message .= "\n-------------  Test Database:\n";
             $mainIndexesToCreate = MongoStore::getIndexesNotSetInCollection(SF_TEST_DATABASE, $mainCollectionName, $mainIndexes);
             $numberOfIndexesCreated += count($mainIndexesToCreate);
@@ -42,7 +42,7 @@ class EnsureDBIndexes
 
         if (!$testMode) {
             MongoStore::ensureIndexesInCollection(SF_DATABASE, $mainCollectionName, $mainIndexes);
-            if ($onDevMachine || $onLocalMachine) {
+            if (($onDevMachine || $onLocalMachine) && MongoStore::hasDB(SF_TEST_DATABASE)) {
                 MongoStore::ensureIndexesInCollection(SF_TEST_DATABASE, $mainCollectionName, $mainIndexes);
             }
         }

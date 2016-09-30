@@ -79,9 +79,9 @@ class TestLiftImportZip extends UnitTestCase
 
     public function testLiftImportMerge_ZipFileWrongFormat_Exception()
     {
-        copy(TestPhpPath . 'common/TestLexProject.zip', TestPhpPath . 'common/TestLexProject.tar.gz');
-        $zipFilePath = $this->environ->copyTestUploadFile(TestPhpPath . 'common/TestLexProject.tar.gz');
-        unlink(TestPhpPath . 'common/TestLexProject.tar.gz');
+        copy(TestPhpPath . 'common/TestLexProject.zip', sys_get_temp_dir() . '/TestLexProject.tar.gz');
+        $zipFilePath = $this->environ->copyTestUploadFile(sys_get_temp_dir() . '/TestLexProject.tar.gz');
+        unlink(sys_get_temp_dir() . '/TestLexProject.tar.gz');
         $project = $this->environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         $this->expectException(new \Exception('Sorry, the .tar.gz format isn\'t allowed'));

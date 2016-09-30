@@ -16,6 +16,7 @@ describe('E2E Projects List App', function () {
     it('should list the project of which the user is a member', function () {
       loginPage.loginAsMember();
       projectsPage.get();
+
       expect(projectsPage.projectNames.get(0).getText()).toBe(constants.testProjectName);
     });
 

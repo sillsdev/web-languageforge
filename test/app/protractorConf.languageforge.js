@@ -45,14 +45,14 @@ exports.config = {
     //isVerbose: true,
   },
 
-  onPrepare: function() {
+  onPrepare: function () {
     /* global angular: false, browser: false, jasmine: false */
 
     browser.driver.manage().window().maximize();
 
     // Disable animations so e2e tests run more quickly
-    var disableNgAnimate = function() {
-      angular.module('disableNgAnimate', []).run(['$animate', function($animate) {
+    var disableNgAnimate = function () {
+      angular.module('disableNgAnimate', []).run(['$animate', function ($animate) {
         $animate.enabled(false);
       }]);
     };
@@ -61,8 +61,8 @@ exports.config = {
     //    browser.addMockModule('disableNgAnimate', disableNgAnimate);
 
     if (process.env.TEAMCITY_VERSION) {
-      require('jasmine-reporters');
-      jasmine.getEnv().addReporter(new jasmine.TeamcityReporter());
+      var jasmineReporters = require('jasmine-reporters');
+      jasmine.getEnv().addReporter(new jasmineReporters.TeamCityReporter());
     }
   }
 };

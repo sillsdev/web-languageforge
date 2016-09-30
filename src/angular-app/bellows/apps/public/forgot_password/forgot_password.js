@@ -12,7 +12,8 @@ angular.module('forgot_password', ['bellows.services', 'ui.bootstrap', 'pascalpr
         suffix: '.json'
       });
       $translateProvider.preferredLanguage('en');
-    }
+      $translateProvider.useSanitizeValueStrategy('escape');
+    },
   ])
   .controller('ForgotPasswordCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
     function ($scope, userService, sessionService, notice) {

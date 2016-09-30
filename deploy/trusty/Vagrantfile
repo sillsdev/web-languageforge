@@ -9,10 +9,10 @@ if [ ! -d "/home/vagrant/src" ]; then
   mkdir /home/vagrant/src
 fi
 apt-get update
-apt-get -y install git ansible
+apt-get -y install git python-pip python-crypto python-jinja2 python-paramiko python-pkg-resources python-yaml python-httplib2 python-netaddr
+pip install ansible==1.9.6
 if [ ! -d "/home/vagrant/src/web-languageforge" ]; then
   git clone https://github.com/sillsdev/web-languageforge.git /home/vagrant/src/web-languageforge --recursive
-  cp /home/vagrant/src/web-languageforge/deploy/default_ansible.cfg /home/vagrant/.ansible.cfg
 else
   cd /home/vagrant/src/web-languageforge; git pull --ff-only --recurse-submodules origin
 fi
@@ -20,6 +20,13 @@ if [ ! -d "/home/vagrant/src/web-scriptureforge" ]; then
   git clone https://github.com/sillsdev/web-scriptureforge.git /home/vagrant/src/web-scriptureforge --recursive
 else
   cd /home/vagrant/src/web-scriptureforge; git pull --ff-only --recurse-submodules origin
+fi
+if [ ! -f "/home/vagrant/.ansible.cfg" ]; then
+  cp /home/vagrant/src/web-languageforge/deploy/default_ansible.cfg /home/vagrant/.ansible.cfg
+  chown vagrant.vagrant /home/vagrant/.ansible.cfg
+fi
+if [ ! -f "/root/.ansible.cfg" ]; then
+  cp /home/vagrant/src/web-languageforge/deploy/default_ansible.cfg /root/.ansible.cfg
 fi
 cd /home/vagrant/src/web-languageforge/deploy/; git checkout master; ansible-playbook -i hosts playbook_trusty_vagrant.yml
 SCRIPT
