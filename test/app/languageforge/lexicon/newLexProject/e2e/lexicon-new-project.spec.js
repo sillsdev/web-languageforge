@@ -406,6 +406,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
         page.formStatus.expectHasNoError();
         page.initialDataPage.mockUpload.fileNameInput.clear();
         page.initialDataPage.mockUpload.fileSizeInput.clear();
+        page.firstNoticeCloseButton.click();
       });
 
       it('cannot upload jpg', function () {
@@ -413,17 +414,16 @@ describe('E2E testing: New Lex Project wizard app', function () {
           constants.testMockJpgImportFile.name);
         page.initialDataPage.mockUpload.fileSizeInput.sendKeys(
           constants.testMockJpgImportFile.size);
-        expect(page.noticeList.count()).toBe(1);
+        expect(page.noticeList.count()).toBe(0);
         page.initialDataPage.mockUpload.uploadButton.click();
         expect(page.initialDataPage.browseButton.isDisplayed()).toBe(true);
         expect(page.verifyDataPage.entriesImported.isPresent()).toBe(false);
-        expect(page.noticeList.count()).toBe(2);
-        expect(page.noticeList.get(1).getText()).toContain(constants.testMockJpgImportFile.name +
+        expect(page.noticeList.count()).toBe(1);
+        expect(page.noticeList.get(0).getText()).toContain(constants.testMockJpgImportFile.name +
           ' is not an allowed compressed file. Ensure the file is');
         page.formStatus.expectHasNoError();
         page.initialDataPage.mockUpload.fileNameInput.clear();
         page.initialDataPage.mockUpload.fileSizeInput.clear();
-        page.firstNoticeCloseButton.click();
         page.firstNoticeCloseButton.click();
       });
 
@@ -492,6 +492,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
       expect(page.nextButton.isEnabled()).toBe(true);
+
+      // added sleep to ensure state is stable so the next test passes (expectFormIsNotValid)
+      browser.sleep(500);
       page.nextButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(false);
       expect(page.initialDataPage.browseButton.isPresent()).toBe(true);

@@ -11,7 +11,8 @@ angular.module('reset_password', ['bellows.services', 'ui.bootstrap', 'pascalpre
         suffix: '.json'
       });
       $translateProvider.preferredLanguage('en');
-    }
+      $translateProvider.useSanitizeValueStrategy('escape');
+    },
   ])
   .controller('ResetPasswordCtrl', ['$scope', '$location', '$window', 'userService',
     function ($scope, $location, $window, userService) {

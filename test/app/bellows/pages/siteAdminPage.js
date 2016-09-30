@@ -6,6 +6,7 @@ var SiteAdminPage = function () {
 
   this.url = browser.baseUrl + '/app/siteadmin';
   this.get = function () {
+    // todo: refactor this to be a click recipe (as a user would click on the menu to navigate)
     browser.get(this.url);
   };
 
