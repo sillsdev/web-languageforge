@@ -43,6 +43,7 @@ MongoStore::dropAllCollections(SF_DATABASE);
 $projectArrays = array(
     $constants['testProjectName']  => $constants['testProjectCode'],
     $constants['otherProjectName'] => $constants['otherProjectCode'],
+    $constants['fourthProjectName'] => $constants['fourthProjectCode'],
     $constants['srProjectName'] => $constants['srProjectCode']
 );
 
@@ -163,6 +164,18 @@ $otherProjectModel->projectCode = $constants['otherProjectCode'];
 $otherProjectModel->allowInviteAFriend = $constants['otherProjectAllowInvites'];
 $otherProjectModel->write();
 
+$fourthProjectId = ProjectCommands::createProject(
+    $constants['fourthProjectName'],
+    $constants['fourthProjectCode'],
+    $projectType,
+    $managerUserId,
+    $website
+);
+$fourthProjectModel = new ProjectModel($fourthProjectId);
+$fourthProjectModel->projectCode = $constants['fourthProjectCode'];
+$fourthProjectModel->allowInviteAFriend = $constants['fourthProjectAllowInvites'];
+$fourthProjectModel->write();
+
 $srProject = array(
     'identifier' => $constants['srIdentifier'],
     'name' => $constants['srName'],
@@ -182,6 +195,7 @@ ProjectCommands::updateUserRole($testProjectId, $managerUserId, ProjectRoles::MA
 ProjectCommands::updateUserRole($testProjectId, $memberUserId, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($testProjectId, $resetUserId, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($otherProjectId, $adminUserId, ProjectRoles::MANAGER);
+ProjectCommands::updateUserRole($fourthProjectId, $adminUserId, ProjectRoles::MANAGER);
 ProjectCommands::updateUserRole($srTestProjectId, $adminUserId, ProjectRoles::MANAGER);
 
 if ($site == 'scriptureforge') {

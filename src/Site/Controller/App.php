@@ -5,8 +5,8 @@ namespace Site\Controller;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Model\Command\SessionCommands;
 use Api\Model\ProjectModel;
-use Api\Model\UserModel;
 use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\UserModel;
 use Silex\Application;
 
 class App extends Base
@@ -28,7 +28,9 @@ class App extends Base
         }
 
         $possibleSubFolder = "$siteFolder/$appName/$projectId";
-        if ($projectId != '' && file_exists($possibleSubFolder) && file_exists("$possibleSubFolder/ng-app.html") && file_exists("$possibleSubFolder/views")) {
+        if ($projectId != '' && file_exists($possibleSubFolder) && file_exists("$possibleSubFolder/$appName-$projectId.html") &&
+            file_exists("$possibleSubFolder/views")
+        ) {
             $parentAppFolder = $appFolder;
             $appFolder .= "/$projectId";
             $appName .= "-$projectId";
@@ -44,7 +46,6 @@ class App extends Base
 
         $this->data['appName'] = $appName;
         $this->data['appFolder'] = $appFolder;
-        $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
 
         $this->_userId = SilexSessionHelper::getUserId($app);
 
@@ -74,11 +75,12 @@ class App extends Base
         $app['session']->set('projectId', $projectId);
         $this->_projectId = $projectId;
 
-
         // determine help menu button visibility
         // placeholder for UI language 'en' to support translation of helps in the future
         $helpsFolder = NG_BASE_FOLDER . $appFolder . "/helps/en/page";
-        if (file_exists($helpsFolder) && iterator_count(new \FilesystemIterator($helpsFolder, \FilesystemIterator::SKIP_DOTS)) > 0) {
+        if (file_exists($helpsFolder) &&
+            iterator_count(new \FilesystemIterator($helpsFolder, \FilesystemIterator::SKIP_DOTS)) > 0
+        ) {
             $this->_showHelp = true;
             // there is an implicit dependency on bellows JS here using the jsonRpc module
             $this->addJavascriptFiles(NG_BASE_FOLDER . 'container/js', array('vendor/', 'assets/'));
@@ -113,13 +115,6 @@ class App extends Base
 
         $this->addCssFiles(NG_BASE_FOLDER . 'bellows');
         $this->addCssFiles(NG_BASE_FOLDER . $appFolder);
-    }
-
-    /**
-     * @return bool
-     */
-    private function canShowHelpMenuButton() {
-        return true;
     }
 
 }

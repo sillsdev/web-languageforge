@@ -1,12 +1,9 @@
 'use strict';
 
 describe('Project Settings page', function () {
-  var constants    = require('../../../../testConstants');
+  var constants    = require('../../../../testConstants.json');
   var loginPage    = require('../../../../bellows/pages/loginPage.js');
   var projectsPage = require('../../../../bellows/pages/projectsPage.js');
-  var util         = require('../../../../bellows/pages/util.js');
-  var dbePage             = require('../../pages/dbePage.js');
-  var dbeUtil             = require('../../pages/dbeUtil.js');
   var projectSettingsPage = require('../../pages/projectSettingsPage.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
@@ -16,7 +13,7 @@ describe('Project Settings page', function () {
     projectsPage.get();
     projectsPage.clickOnProject(constants.testProjectName);
     projectSettingsPage.get();
-    projectSettingsPage.tabs.project.click();
+    expect(projectSettingsPage.tabs.project.isDisplayed());
     expect(projectSettingsPage.projectTab.saveButton.isDisplayed()).toBe(true);
     expect(projectSettingsPage.tabs.sendReceive.isDisplayed()).toBe(false);
   });
@@ -25,7 +22,6 @@ describe('Project Settings page', function () {
     projectsPage.get();
     projectsPage.clickOnProject(constants.srProjectName);
     projectSettingsPage.get();
-    projectSettingsPage.tabs.project.click();
     expect(projectSettingsPage.projectTab.saveButton.isDisplayed()).toBe(true);
     expect(projectSettingsPage.tabs.sendReceive.isDisplayed()).toBe(true);
   });
@@ -55,10 +51,11 @@ describe('Project Settings page', function () {
       projectSettingsPage.sendReceiveTab.passwordInput.sendKeys(constants.srPassword);
       browser.wait(expectedCondition.visibilityOf(projectSettingsPage.sendReceiveTab.passwordOk),
         CONDITION_TIMEOUT);
-      expect(projectSettingsPage.sendReceiveTab.loginOk.isDisplayed()).toBe(true);
       expect(projectSettingsPage.sendReceiveTab.passwordOk.isDisplayed()).toBe(true);
+      expect(projectSettingsPage.sendReceiveTab.loginOk.isDisplayed()).toBe(true);
       expect(projectSettingsPage.sendReceiveTab.loginInput.isDisplayed()).toBe(true);
       expect(projectSettingsPage.sendReceiveTab.projectUneditable.isDisplayed()).toBe(false);
+      browser.sleep(200);
       expect(projectSettingsPage.sendReceiveTab.projectSelect().isDisplayed()).toBe(true);
       expect(projectSettingsPage.sendReceiveTab.projectSelectedOption())
         .toContain(constants.srIdentifier);

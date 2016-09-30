@@ -14,6 +14,7 @@ use Api\Model\Mapper\JsonEncoder;
 use Api\Model\ProjectListModel;
 use Api\Model\ProjectModel;
 use Api\Model\ProjectSettingsModel;
+use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Sms\SmsSettings;
 use Api\Model\UserModel;
 use Palaso\Utilities\CodeGuard;
@@ -64,24 +65,38 @@ class ProjectCommands
      */
     public static function readProject($id)
     {
-        $project = new ProjectModel($id);
+        $project = ProjectModel::getById($id);
 
         return JsonEncoder::encode($project);
     }
 
     /**
-     * Delete a list of projects
-     * @param array $projectIds
+     * Delete a list of projects.  User needs to be site admin or project owner
+     * @param array<string> $projectIds
+     * @param string $userId
      * @return int Total number of projects removed.
+     * @throws UserUnauthorizedException
      */
-    public static function deleteProjects($projectIds)
+    public static function deleteProjects($projectIds, $userId)
     {
         CodeGuard::checkTypeAndThrow($projectIds, 'array');
+        CodeGuard::checkTypeAndThrow($userId, 'string');
+
+        $user = new UserModel($userId);
         $count = 0;
         foreach ($projectIds as $projectId) {
             CodeGuard::checkTypeAndThrow($projectId, 'string');
-            $project = new ProjectModel($projectId);
-            $project = $project->getById($projectId);
+            $project = ProjectModel::getById($projectId);
+            if ($userId != $project->ownerRef->asString() && $user->role != SystemRoles::SYSTEM_ADMIN) {
+                throw new UserUnauthorizedException(
+                    "This $project->appName project '$project->projectName'\n" .
+                    "can only be deleted by project owner or\n " .
+                    "a system administrator\n");
+            }
+            if ($user->lastUsedProjectId == $projectId) {
+                $user->lastUsedProjectId = '';
+                $user->write();
+            }
             $project->remove();
             $count++;
         }
@@ -101,14 +116,14 @@ class ProjectCommands
 
         $project = new ProjectModel($projectId);
         $user = new UserModel($userId);
-        if ($userId != $project->ownerRef->asString()) {
+        if ($userId != $project->ownerRef->asString() && $user->role != SystemRoles::SYSTEM_ADMIN) {
             throw new UserUnauthorizedException(
                 "This $project->appName project '$project->projectName'\n" .
                 "can only be archived by project owner or\n " .
-                "a system administrator to re-publish\n");
+                "a system administrator\n");
         }
 
-        $user->lastUsedProjectId = "";
+        $user->lastUsedProjectId = '';
         $user->write();
 
         $project->isArchived = true;
@@ -231,7 +246,7 @@ class ProjectCommands
     /**
      * Removes users from the project (two-way unlink)
      * @param string $projectId
-     * @param array $userIds array<string>
+     * @param array<string> $userIds
      * @return string $projectId
      * @throws \Exception
      */
@@ -286,6 +301,13 @@ class ProjectCommands
         // TODO: Write this. (Move renaming logic over from sf->project_update). RM 2013-08
     }
 
+    /**
+     * Updates the ProjectSettingsModel which are settings accessible only to site administrators
+     * @param string $projectId
+     * @param array<Api\Model\Sms\SmsSettings> $smsSettingsArray
+     * @param array<Api\Model\EmailSettings> $emailSettingsArray
+     * @return string $result id to the projectSettingsModel
+     */
     public static function updateProjectSettings($projectId, $smsSettingsArray, $emailSettingsArray)
     {
         $projectSettings = new ProjectSettingsModel($projectId);

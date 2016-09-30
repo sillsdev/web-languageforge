@@ -19,23 +19,16 @@ use Palaso\Utilities\CodeGuard;
 
 class MongoMapper
 {
-
     const ID_IN_KEY = 0;
     const ID_IN_DOC = 1;
 
-    /**
-     * @var \MongoDB\Database
-     */
+    /** @var \MongoDB\Database */
     protected $_db;
 
-    /**
-     * @var \MongoDB\Collection
-     */
+    /** @var \MongoDB\Collection */
     protected $_collection;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $_idKey;
 
     /**
@@ -73,6 +66,7 @@ class MongoMapper
      */
     public static function makeId()
     {
+        /** @noinspection PhpParamsInspection */
         $id = new \MongoDB\BSON\ObjectID();
         return (string) $id;
     }
@@ -92,6 +86,7 @@ class MongoMapper
         if (!empty($id)) {
             return new \MongoDB\BSON\ObjectID($id);
         }
+        /** @noinspection PhpParamsInspection */
         return new \MongoDB\BSON\ObjectID();
     }
 
@@ -208,7 +203,6 @@ class MongoMapper
     }
 
     /**
-     *
      * @param string $id
      * @return bool
      */
@@ -245,7 +239,6 @@ class MongoMapper
     }
 
     /**
-     *
      * @param mixed $model
      * @param string $property
      * @param string $value
@@ -266,7 +259,6 @@ class MongoMapper
     }
 
     /**
-     *
      * @param mixed $model
      * @param array  $properties
      * @return bool
@@ -304,6 +296,7 @@ class MongoMapper
      * @see ID_IN_KEY
      * @see ID_IN_DOC
      * @return string
+     * @throws \Exception
      */
     public function write($model, $id, $keyStyle = MongoMapper::ID_IN_KEY, $rootId = '', $property = '')
     {
@@ -340,6 +333,10 @@ class MongoMapper
 
     public function dropCollection() {
         $this->_collection->drop();
+    }
+
+    public function getCollectionName() {
+        return $this->_collection->getCollectionName();
     }
 
     public function removeSubDocument($rootId, $property, $id)

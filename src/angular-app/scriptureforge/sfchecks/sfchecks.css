@@ -1,0 +1,23 @@
+.no-margin {
+    /* Fix Bootstrap's margins on checkboxes, etc. */
+    margin: 0 !important;
+}
+
+span.fk { /* TODO: Find a better place for this (partials/questions.css, perhaps?) */
+    /* Used in footnote popups in text display of question page */
+    font-weight: bold;
+}
+
+/* TODO: Find a better place for this as well (perhaps in partials/question.css) */
+textarea.newAnswer, textarea.editAnswer {
+    padding: 10px;
+    background: #ffffff;
+    width: 95%;
+    min-height: 100px;
+    max-height: 900px;
+    overflow: auto;
+    outline: none;
+    word-wrap: break-word;
+    -ms-word-wrap: break-word;
+    resize: vertical
+}
