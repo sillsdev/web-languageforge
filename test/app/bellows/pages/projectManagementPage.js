@@ -18,11 +18,18 @@ var ProjectManagementPage = function () {
 
   this.tabs = {
     reports: element(by.linkText('Reports')),
-    archive: element(by.linkText('Archive'))
+    archive: element(by.linkText('Archive')),
+    remove: element(by.linkText('Delete'))
   };
 
+  //noinspection JSUnusedGlobalSymbols
   this.archiveTab = {
     archiveButton: this.activePane.element(by.buttonText('Archive this project'))
+  };
+
+  this.deleteTab = {
+    deleteBoxText: this.activePane.element(by.model('deleteBoxText')),
+    deleteButton: this.activePane.element(by.buttonText('Delete this project'))
   };
 
   this.settings = {};
@@ -43,25 +50,23 @@ var ProjectManagementPage = function () {
           if (message.indexOf('\n') != -1) {
 
             // place CR between lines
-            message = message.split('\n').join("\n");
+            message = message.split('\n').join('\n');
           }
 
           if (/angular\.js .* TypeError: undefined is not a function/.test(message) ||
             /angular.*\.js .* Error: \[\$compile:tpload]/.test(message) ||
-            /next_id/.test(message)) {
+            /"level":"info"/.test(message) ||
+            /next_id/.test(message)
+          ) {
             // we ignore errors of this type caused by Angular being unloaded prematurely on page
             // refreshes (since it's not a real error)
-            continue;
-          } else if (/rangy-1\.3alpha\.772/.test(message)) {
-            // we ignore rangy errors because we are lazy and don't want to upgrade to the latest
-            // rangy atm (but we really should upgrade at some point) - cjh 2015-02
             continue;
           } else if (/You don't have sufficient privileges\./.test(message)) {
             // this is the console error we expected
             continue;
           }
 
-          message = "\n\nBrowser Console JS Error: \n" + message + "\n\n";
+          message = '\n\nBrowser Console JS Error: \n' + message + '\n\n';
           expect(message).toEqual(''); // fail the test
         }
       } else {

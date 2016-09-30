@@ -4,13 +4,9 @@ namespace Api\Model\Mapper;
 
 use MongoDB\Client;
 
-
-
 class MongoStore
 {
-    /**
-     * @var \MongoDB\Client
-     */
+    /** @var \MongoDB\Client */
     private static $_mongoClient;
 
     /**
@@ -48,7 +44,7 @@ class MongoStore
      */
     public static function copyDB($sourceName, $destName)
     {
-        $response = static::$_mongoClient->selectDatabase($sourceName)->command(array(
+        $response = static::$_mongoClient->admin->command(array(
             'copydb' => 1,
             'fromhost' => 'localhost',
             'fromdb' => $sourceName,
@@ -93,10 +89,10 @@ class MongoStore
     }
 
     /**
-     *
      * @param string $databaseName
      */
-    public static function dropAllCollections($databaseName) {
+    public static function dropAllCollections($databaseName)
+    {
         $db = self::connect($databaseName);
         if (self::hasDB($databaseName)) {
             foreach ($db->listCollections() as $collectionInfo) {
@@ -109,10 +105,11 @@ class MongoStore
     }
 
     /**
-     * @param $databaseName
+     * @param string $databaseName
      * @return integer
      */
-    public static function countCollections($databaseName) {
+    public static function countCollections($databaseName)
+    {
         $count = 0;
         if (self::hasDB($databaseName)) {
             $db = self::connect($databaseName);
@@ -123,5 +120,169 @@ class MongoStore
             }
         }
         return $count;
+    }
+
+    /**
+     * @param string $databaseName
+     * @param string $collectionName
+     * @return \MongoDB\Model\IndexInfoIterator|null
+     */
+    public static function getCollectionIndexes($databaseName, $collectionName)
+    {
+        $db = self::connect($databaseName);
+        if (self::hasDB($databaseName) && $collectionName != 'system.indexes') {
+            return $db->selectCollection($collectionName)->listIndexes();
+        }
+        return null;
+    }
+
+    /**
+     * @param string $databaseName
+     * @param string $collectionName
+     * @param array $indexes see https://docs.mongodb.com/v2.4/reference/method/db.collection.createIndex/
+     */
+    public static function addIndexesToCollection($databaseName, $collectionName, $indexes)
+    {
+        $db = self::connect($databaseName);
+        if (self::hasDB($databaseName) && $collectionName != 'system.indexes') {
+            $db->selectCollection($collectionName)->createIndexes($indexes);
+        }
+    }
+
+    /**
+     * @param string $databaseName
+     * @param string $collectionName
+     * @param array $indexes see https://docs.mongodb.com/v2.4/reference/method/db.collection.createIndex/
+     * @param boolean $isDropRequired should an existing index be dropped
+     * @return array indexes that don't exist yet
+     */
+    public static function getIndexesNotSetInCollection($databaseName, $collectionName, $indexes, $isDropRequired = false)
+    {
+        $indexesToCreate = [];
+        $db = self::connect($databaseName);
+        if (self::hasDB($databaseName) && $collectionName != 'system.indexes') {
+            foreach($indexes as $index) {
+                if (self::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)) {
+                    if (!self::isIndexIdenticalInCollection($index, $databaseName, $collectionName, $indexName)) {
+                        if ($isDropRequired) {
+                            $db->selectCollection($collectionName)->dropIndex($indexName);
+                        }
+                        $indexesToCreate[] = $index;
+                    }
+                } else {
+                    $indexesToCreate[] = $index;
+                }
+            }
+        }
+
+        return $indexesToCreate;
+    }
+
+    /**
+     * @param string $databaseName
+     * @param string $collectionName
+     * @param array $indexes see https://docs.mongodb.com/v2.4/reference/method/db.collection.createIndex/
+     */
+    public static function ensureIndexesInCollection($databaseName, $collectionName, $indexes)
+    {
+        $indexesToCreate = self::getIndexesNotSetInCollection($databaseName, $collectionName, $indexes, true);
+        if (count($indexesToCreate) > 0) {
+            self::connect($databaseName)->selectCollection($collectionName)->createIndexes($indexesToCreate);
+        }
+    }
+
+    /**
+     * @param array $index
+     * @param string $databaseName
+     * @param string $collectionName
+     * @param string $indexName outputs the index name if the field name is found
+     * @return boolean true if the index key field name is in the collection
+     */
+    public static function isIndexFieldNameInCollection($index, $databaseName, $collectionName, &$indexName = '')
+    {
+        $indexName = '';
+        foreach(self::getCollectionIndexes($databaseName, $collectionName) as $indexInfo) {
+            foreach($index['key'] as $fieldName => $order) {
+                if (array_key_exists($fieldName, $indexInfo->getKey())) {
+                    $indexName = $indexInfo->getName();
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $index
+     * @param string $databaseName
+     * @param string $collectionName
+     * @param string $indexName outputs the index name if the field name is found
+     * @return boolean true if all the field names of a single index key is in the collection
+     */
+    public static function isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, &$indexName = '')
+    {
+        $indexName = '';
+        foreach(self::getCollectionIndexes($databaseName, $collectionName) as $indexInfo) {
+            $isAllFieldNamesInIndex = false;
+            if (count($index['key']) == count($indexInfo->getKey())) {
+                $isAllFieldNamesInIndex = true;
+                foreach ($index['key'] as $fieldName => $order) {
+                    if (!array_key_exists($fieldName, $indexInfo->getKey())) {
+                        $isAllFieldNamesInIndex = false;
+                        break;
+                    }
+                }
+            }
+
+            if ($isAllFieldNamesInIndex) {
+                $indexName = $indexInfo->getName();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $index
+     * @param string $databaseName
+     * @param string $collectionName
+     * @param string $indexName expected in collection
+     * @return boolean true if the index key field name is identical in the collection
+     */
+    public static function isIndexIdenticalInCollection($index, $databaseName, $collectionName, $indexName = '')
+    {
+        if (!$indexName &&
+            !self::isAllIndexFieldNamesInCollection($index, $databaseName, $collectionName, $indexName)) return false;
+
+        foreach(self::getCollectionIndexes($databaseName, $collectionName) as $indexInfo) {
+            $isIdentical = false;
+            if ($indexInfo->getName() == $indexName) {
+                $isIdentical = true;
+                foreach ($index as $key => $value) {
+                    if (!$indexInfo->offsetExists($key)) {
+                        $isIdentical = false;
+                        break;
+                    }
+
+                    if ($indexInfo->offsetGet($key) != $value) {
+                        $isIdentical = false;
+                        break;
+                    }
+                }
+
+                if ($indexInfo->isSparse() && !array_key_exists('sparse', $index) ||
+                    $indexInfo->isTtl() && !array_key_exists('expireAfterSeconds', $index) ||
+                    $indexInfo->isUnique() && !array_key_exists('unique', $index)
+                ) {
+                    $isIdentical = false;
+                }
+            }
+
+            if ($isIdentical) return true;
+        }
+
+        return false;
     }
 }

@@ -11,15 +11,10 @@ require_once APPPATH . 'Api/Model/ProjectModel.php';
 
 class TextModelMongoMapper extends MongoMapper
 {
-
-    /**
-     *
-     * @var TextModelMongoMapper[]
-     */
+    /** @var TextModelMongoMapper[] */
     private static $_pool = array();
 
     /**
-     *
      * @param string $databaseName
      * @return TextModelMongoMapper
      */
@@ -34,11 +29,7 @@ class TextModelMongoMapper extends MongoMapper
 
 class TextModel extends MapperModel
 {
-
-    /**
-     *
-     * @var ProjectModel
-     */
+    /** @var ProjectModel */
     private $_projectModel;
 
     /**
@@ -93,10 +84,14 @@ class TextModel extends MapperModel
 
 class TextListModel extends MapperListModel
 {
-    public function __construct($projectModel)
+    /**
+     * TextListModel constructor.
+     * @param ProjectModel $project
+     */
+    public function __construct($project)
     {
         parent::__construct(
-            TextModelMongoMapper::connect($projectModel->databaseName()),
+            TextModelMongoMapper::connect($project->databaseName()),
             array('title' => array('$regex' => '')),
             array('title')
         );

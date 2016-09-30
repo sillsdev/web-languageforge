@@ -10,9 +10,9 @@ module.exports = function(config) {
       'src/vendor_bower/angular-animate/angular-animate.js',
       'src/vendor_bower/angular-sanitize/angular-sanitize.js',
       'test/lib/angular/angular-mocks.js',
-      'src/vendor_bower/angularjs-file-upload/angular-file-upload.js',
-      'src/js/lib/jquery-1.8.3.min.js',
-      'src/js/lib/*ui-bootstrap*.js',
+      'src/vendor_bower/ng-file-upload/ng-file-upload.js',
+      'src/vendor_bower/jquery/jquery.js',
+      'src/vendor_bower/angular-bootstrap/*ui-bootstrap*.js',
       'src/angular-app/**/*.js',
       'test/app/**/unit/*.spec.js'
     ],

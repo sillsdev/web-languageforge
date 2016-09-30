@@ -68,6 +68,33 @@ class TestLexMultiParagraph extends UnitTestCase
         $this->assertClone($multiParagraph, $newMultiParagraph);
     }
 
+    public function testDecode_EmptyMultiParagraph_DecodeOk()
+    {
+        $multiParagraph = new LexMultiParagraph();
+        $params = json_decode(json_encode(LexDbeDtoEntriesEncoder::encode($multiParagraph)), true);
+
+        $newMultiParagraph = new LexMultiParagraph($multiParagraph->guid);
+
+        LexEntryDecoder::decode($newMultiParagraph, $params);
+
+        $this->assertEqual($multiParagraph, $newMultiParagraph);
+        $this->assertClone($multiParagraph->paragraphs, $newMultiParagraph->paragraphs);
+    }
+
+    public function testDecode_CRMultiParagraph_DecodeOk()
+    {
+        $multiParagraph = new LexMultiParagraph();
+        $params = json_decode(json_encode(LexDbeDtoEntriesEncoder::encode($multiParagraph)), true);
+        $params['paragraphsHtml'] = "\r";
+
+        $newMultiParagraph = new LexMultiParagraph($multiParagraph->guid);
+
+        LexEntryDecoder::decode($newMultiParagraph, $params);
+
+        $this->assertEqual($multiParagraph, $newMultiParagraph);
+        $this->assertClone($multiParagraph->paragraphs, $newMultiParagraph->paragraphs);
+    }
+
     public function testDecode_ExistingModelAndMapOf_DecodeOk()
     {
         $multiParagraph = new LexMultiParagraph();

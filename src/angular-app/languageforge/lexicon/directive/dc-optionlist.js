@@ -11,7 +11,8 @@ angular.module('palaso.ui.dc.optionlist', [])
         control: '=',
         items: '='
       },
-      controller: ['$scope', function ($scope) {
+      controller: ['$scope', '$state', function ($scope, $state) {
+        $scope.$state = $state;
         $scope.getDisplayName = function getDisplayName(value) {
           var displayName = value;
           if (angular.isDefined($scope.items)) {

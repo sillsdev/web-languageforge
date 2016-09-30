@@ -1,32 +1,37 @@
 'use strict';
 
 angular.module('sgw.soundmanager', [])
+
 // Sound Manager 2
-  .directive('sgwSoundPlayer', function() {
+  .directive('sgwSoundPlayer', function () {
     return {
       restrict: 'A',
       replace: false,
       scope: {
-        'state': '=?',
-        'href': '='
+        state: '=?',
+        href: '='
       },
-      controller: ["$scope", function($scope) {
+      controller: ['$scope', function ($scope) {
         $scope.state = 'stop';
         var sound = undefined;
-        this.nextState = function() {
+        this.nextState = function () {
           if (sound == undefined) {
+            //noinspection JSUnusedGlobalSymbols
             sound = soundManager.createSound({
               url: $scope.href,
               volume: 50,
               autoLoad: true,
               autoPlay: false,
-              onload: function() {
+              onload: function () {
               },
-              onfinish: function() {
+
+              onfinish: function () {
                 $scope.state = 'stop';
+                $scope.$apply();
               }
             });
           }
+
           if ($scope.state == 'stop') {
             sound.play();
             $scope.state = 'play';
@@ -39,10 +44,11 @@ angular.module('sgw.soundmanager', [])
           }
         };
       }],
-      link: function(scope, element, attrs, controller) {
-        element.bind('click', function(e) {
+
+      link: function (scope, element, attrs, controller) {
+        element.bind('click', function (e) {
           e.preventDefault();
-          scope.$apply(function() {
+          scope.$apply(function () {
             controller.nextState();
           });
         });

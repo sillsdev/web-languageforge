@@ -23,7 +23,7 @@
 
             <!-- control buttons -->
             <form class="form-inline">
-                <typeahead class="typeahead" items="typeahead.users" term="typeahead.userName" search="typeahead.searchUsers" select="typeahead.selectUser">
+                <pui-typeahead class="typeahead" items="typeahead.users" term="typeahead.userName" search="typeahead.searchUsers" select="typeahead.selectUser">
                     <ul>
                         <li class="typeahead-item" typeahead-item="user" data-ng-repeat="user in typeahead.users">
                             <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
@@ -31,7 +31,7 @@
                             <p class="email">{{user.email}}</p>
                         </li>
                     </ul>
-                </typeahead>
+                </pui-typeahead>
                 <button class="btn btn-success" data-ng-click="addUser()"><i class="icon-plus"></i>{{'Add Member Specific Settings' | translate}}</button>
                 <br /><br />
             </form>
@@ -81,7 +81,7 @@
 
                 <!-- select list -->
                 <dl class="picklists" style="height: 200px; overflow: auto;">
-                    <dt translate="Entry Level Fields"></dt>
+                    <dt data-translate="Entry Level Fields"></dt>
                     <dd><div class="controls">
                         <div data-ng-repeat="fieldName in fieldOrder.entry"
                             data-ng-class="{selected:currentField.name == fieldName}"
@@ -109,7 +109,7 @@
                                 </span>
                         </div>
                     </div></dd>
-                    <dt translate="Example Level Fields"></dt>
+                    <dt data-translate="Example Level Fields"></dt>
                     <dd><div class="controls">
                         <div data-ng-repeat="fieldName in fieldOrder.examples"
                             data-ng-class="{selected:currentField.name == fieldName}"
@@ -122,7 +122,7 @@
                         </div>
                     </div></dd>
                 </dl>
-                <small translate="Custom Fields shown in <i>italics</i>"></small>
+                <small data-translate="Custom Fields shown in <i>italics</i>"></small>
             </div>
         
             <!-- Right column: field view settings -->
@@ -160,7 +160,8 @@
                                         <li data-ng-click="currentField.inputSystems.currentTag = inputSystemTag"
                                             data-ng-repeat="inputSystemTag in currentField.inputSystems.order"
                                             data-ng-class="{selected:currentField.inputSystems.currentTag == inputSystemTag}">
-                                            <div class="checkbox"><input data-ng-model="currentField.inputSystems.selected[inputSystemTag]" type="checkbox"/>
+                                            <div class="checkbox"><!--suppress HtmlFormInputWithoutLabel -->
+                                                <input data-ng-model="currentField.inputSystems.selected[inputSystemTag]" type="checkbox"/>
                                                 {{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
                                         </li>
                                     </ul>
@@ -187,24 +188,26 @@ currentField {{currentField | json}}
         
             </div>
         </accordion-group>
+        <!-- hide Tasks group
         <accordion-group>
-            <accordion-heading><h3 translate="Enabled Tasks"></h3></accordion-heading>
+            <accordion-heading><h3 data-translate="Enabled Tasks"></h3></accordion-heading>
             <div class="row outer-flex">
             
             <!-- Left column: task view settings -->
+            <!-- hide Tasks group
             <div class="span4 control-group">
                 <dl>
-                    <dt translate="Dashboard"></dt>
+                    <dt data-translate="Dashboard"></dt>
                     <dd><div class="controls">
                         <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['dashboard']">
                             {{'Dashboard' | translate}}</label>
                     </div></dd>
-                    <dt translate="Dictionary"></dt>
+                    <dt data-translate="Dictionary"></dt>
                     <dd><div class="controls">
                         <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['dbe']">
                             {{'Browse &amp; Edit' | translate}}</label>
                     </div></dd>
-                    <dt translate="Add Information"></dt>
+                    <dt data-translate="Add Information"></dt>
                     <dd><div class="controls">
                         <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['addMeanings']">
                             {{'add Meanings' | translate}}</label>
@@ -213,7 +216,7 @@ currentField {{currentField | json}}
                         <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['addExamples']">
                             {{'add Examples' | translate}}</label>
                     </div></dd>
-                    <dt translate="Gather Words"></dt>
+                    <dt data-translate="Gather Words"></dt>
                     <dd><div class="controls">
                         <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['gatherTexts']">
                             {{'from Texts' | translate}}</label>
@@ -222,7 +225,7 @@ currentField {{currentField | json}}
                         <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['semdom']">
                             {{'from Semantic Domains' | translate}}</label>
                     </div></dd>
-                    <dt translate="Review"></dt>
+                    <dt data-translate="Review"></dt>
                     <dd><div class="controls">
                         <label class="checkbox"><input type="checkbox" data-ng-model="currentView.showTasks['review']">
                             {{'Review' | translate}}</label>
@@ -232,6 +235,7 @@ currentField {{currentField | json}}
                 
             </div>
         </accordion-group>
+        hide Tasks group -->
     </accordion>
     </div>
     </tab>

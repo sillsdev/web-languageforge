@@ -6,6 +6,8 @@ use Api\Library\Shared\Communicate\Communicate;
 use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
+use Api\Model\ProjectList_UserModel;
+use Api\Model\ProjectListModel;
 use Api\Model\Shared\Dto\CreateSimpleDto;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
@@ -43,9 +45,10 @@ class UserCommands
     /**
      * User Create/Update
      * @param array $params - user model fields to update
+     * @param Website $website
      * @return string $userId
      */
-    public static function updateUser($params)
+    public static function updateUser($params, $website)
     {
         $user = new UserModel();
         if ($params['id']) {
@@ -53,6 +56,9 @@ class UserCommands
         }
         UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
         JsonDecoder::decode($user, $params);
+        if (!$user->hasRoleOnSite($website)) {
+            $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+        }
         return $user->write();
     }
 
@@ -110,6 +116,23 @@ class UserCommands
     {
         $list = new UserListModel();
         $list->read();
+
+        $projectListModel = new ProjectListModel();
+        $projectListModel->read();
+        $projectList = array();
+        foreach ($projectListModel->entries as $p) {
+            $projectList[$p['id']] = $p;
+        }
+
+        foreach ($list->entries as $key => $item) {
+            if (array_key_exists('projects', $item)) {
+                $projectIds = $item['projects'];
+                $list->entries[$key]['projects'] = array();
+                foreach ($projectIds as $id) {
+                    $list->entries[$key]['projects'][] = $projectList[(string)$id];
+                }
+            }
+        }
 
         // Default sort on username (currently needed to sort on Site Admin because MongoDB doesn't do case insensitive sorts)
         usort($list->entries, function ($a, $b) {
