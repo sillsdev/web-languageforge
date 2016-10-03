@@ -2,7 +2,7 @@
 
 - name: Linux Mint local webserver
   hosts: all
-  sudo: yes
+  become: yes
   tasks:
 
 - include: dependencies.yml
