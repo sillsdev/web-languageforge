@@ -16,17 +16,29 @@
       apt: name="{{item}}" state=present
       with_items:
         - libapache2-mod-php
-        - php7.0-gd
-        - php7.0-dev
-        - php7.0-cli
         - php-pear
-#        - libpcre3-dev
         - mongodb-server
         - postfix
         - unzip
         - p7zip-full
         - npm
 
+    - name: install PHP5
+      apt: name="{{item}}" state=present
+      with_items:
+        - php5-gd
+        - php5-dev
+        - php5-cli
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
+
+    - name: install PHP7.0
+      apt: name="{{item}}" state=present
+      with_items:
+        - php7.0-gd
+        - php7.0-dev
+        - php7.0-cli
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'xenial'
+     
     - file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
 
     - name: install Composer
