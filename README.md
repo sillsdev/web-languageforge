@@ -2,9 +2,20 @@
 
 Although [web-languageforge](https://github.com/sillsdev/web-languageforge) and [web-scriptureforge](https://github.com/sillsdev/web-scriptureforge) represent different websites, they have the same code base but are stored in seperate repositories for the purpose of  version control and issue tracking. Since they are related repos it is easy to merge from one to the other.
 
-## Installation ##
 
-First clone this repository. From your *home* folder...
+## Recommended Development Environment ##
+
+### Prerequisite - LAMP Stack Setup ###
+Our recommended development environment for web development is Linux Ubuntu Gnome.  Choose either the **Vagrant VM Setup** or the **Local Linux Development Setup**.  The Vagrant Setup is definitely easier as it always installs from a clean slate on a new virtual box.
+
+We recommend doing development on your development machine directly rather than using Vagrant.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
+
+
+Start with the Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure the LAMP stack (Linux, Apache, MongoDB, and PHP).
+
+
+### Installation
+After creating your Ansible-assisted setup, clone this repository from your *home* folder...
 
 ````
 mkdir src
@@ -35,66 +46,10 @@ cd web-languageforge/deploy
 ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
 ````
 
-Install the php packages, this can take awhile. Note that you must have [composer](https://getcomposer.org/) and [bower](http://bower.io/) installed to do this.
-
-```
-cd ../src
-composer install
-bower install
-```
-Install the node packages. We're using [gulp](http://gulpjs.com/) as our build runner which requires node and is available as a node package...
-
-````
-cd ..
-npm install
-````
 ---------------------------------------------------
 # README DEVELOPER Information
 
-## Recommended Development Environment ##
 
-Our recommended development environment for web development is Linux Ubuntu Gnome.  The easiest way to get setup is to use the Ansible assisted setup [described here](https://github.com/sillsdev/ops-devbox).
-
-Among other things this setup will ensure that you have:
-
-* A working *nodejs*, and *npm*.
-* A globally installed *gulp* and *bower*.
-* A globally installed *composer*.
-
-## Development Environment ##
-
-Your development environment can be setup using Ansible.  Ansible Playbooks are provided that will install and configure the LAMP stack; installing and configuring Apache, PHP, and MongoDB.
-
-* The apache virtual host is created.
-* A MongoDB document store created with appropriate user and permissions granted.
-* The */etc/hosts* file is updated to point languageforge.local and scriptureforge.local to localhost.
-
-### LAMP Stack Setup ###
-Choose either the **Vagrant VM Setup** or the **Local Linux Development Setup**.  The Vagrant Setup is definitely easier as it always installs from a clean slate on a new virtual box.
-
-We recommend doing development on your development machine directly rather than using Vagrant.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
-
-#### Ansible Setup ####
-
-````
-sudo apt-get install python-pip
-sudo pip install ansible==2.1.0
-````
-(the old way was `sudo pip install ansible==1.9.4`)
-
-Some installation notes:
-You may need to:
-````
-sudo apt-get install libffi
-sudo pip install markupsafe
-````
-
-#### Install Development Environment Dependencies From ops-devbox ####
-
-````
-wget https://github.com/sillsdev/ops-devbox/blob/master/dev.yml
-ansible-playbook -i hosts dev.yml --limit localhost -K
-````
 
 For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/default_ansible.cfg` into `/etc/ansible/ansible.cfg` or `.ansible.cfg` (in your home folder).
 
@@ -109,15 +64,6 @@ cd deploy/debian
 vagrant up --provision
 ````
 
-You will need to manually edit your `/etc/hosts` file such that *default.local*, *languageforge.local*, *scriptureforge.local*, *jamaicanpsalms.scriptureforge.local* and *demo.scriptureforge.local* map to *192.168.33.10*.
-
-````
-192.168.33.10	default.local
-192.168.33.10	languageforge.local
-192.168.33.10	scriptureforge.local
-192.168.33.10	jamaicanpsalms.scriptureforge.local
-192.168.33.10	demo.scriptureforge.local
-````
 
 The Vagrant configuration uses Ansible to provision the box.
 
