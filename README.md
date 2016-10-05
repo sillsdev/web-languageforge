@@ -6,15 +6,12 @@ Although [web-languageforge](https://github.com/sillsdev/web-languageforge) and 
 ## Recommended Development Environment ##
 
 ### Prerequisite - LAMP Stack Setup ###
-Our recommended development environment for web development is Linux Ubuntu Gnome.  Choose either the **Vagrant VM Setup** or the **Local Linux Development Setup**.  The Vagrant Setup is definitely easier as it always installs from a clean slate on a new virtual box.
-
-We recommend doing development on your development machine directly rather than using Vagrant.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
-
+Our recommended development environment for web development is Linux Ubuntu GNOME.  Choose either the **Vagrant VM Setup** or the **Local Linux Development Setup**.  Even though the Vagrant VM Setup is definitely easier because it always installs from a clean slate on a new virtual box, we recommend doing development on your local development machine.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
 
 Start with the Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure the LAMP stack (Linux, Apache, MongoDB, and PHP).
 
 
-### Installation
+### Installation and Deployment
 After creating your Ansible-assisted setup, clone this repository from your *home* folder...
 
 ````
@@ -24,8 +21,8 @@ mkdir xForge
 cd xForge
 git clone https://github.com/sillsdev/web-languageforge web-languageforge --recurse-submodules
 ````
+The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder
 
-> The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder.
 
 If you want to run an independant repo for scriptureforge, clone its repo also...
 
@@ -39,59 +36,127 @@ Otherwise just create a symbolic link between languageforge and scriptureforge..
 ln -s web-languageforge web-scriptureforge
 ```
 
-Now deploy both sites...
+Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`
+ - **Vagrant VM Setup**: uncomment line 6 and comment line 5
+ - **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have mongo on you HDD rather than SDD). 
+
+Deploy both sites
 
 ````
 cd web-languageforge/deploy
 ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
 ````
 
----------------------------------------------------
-# README DEVELOPER Information
+## Installing IDEs and Debugger ##
 
-
-
-For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/default_ansible.cfg` into `/etc/ansible/ansible.cfg` or `.ansible.cfg` (in your home folder).
-
-TODO: this is unclear.  We should make a bash script that merges this for you.  Also, /etc/ansible/ansible.cfg does not appear to be present when installed via pip
-
-#### Vagrant VM Setup ####
-
-Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`, i.e. uncomment line 6 and comment line 5. 
-
-````
-cd deploy/debian
-vagrant up --provision
-````
-
-
-The Vagrant configuration uses Ansible to provision the box.
-
-Install the php packages, this can take awhile. Note that you must have [composer](https://getcomposer.org/) and [bower](http://bower.io/) installed to do this.
+### Eclipse ###
+Install Oracle Java JDK 8
 
 ```
-cd ../../src
-composer install
-bower install
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer
+sudo apt-get install oracle-java8-set-default
 ```
 
+Install [Eclipse IDE for PHP Developers](http://ubuntuhandbook.org/index.php/2016/01/how-to-install-the-latest-eclipse-in-ubuntu-16-04-15-10/). 
 
-#### Local Linux Development Setup ####
+Create a launcher shortcut from your *home* directory
 
-The Ansible configuration used for the Vagrant setup can also be used to setup your local linux development machine.
+```
+gedit .local/share/applications/eclipse.desktop
+```
 
-Change the variable *mongo_path: /hddlinux/mongodb* in `deploy/vars_palaso.yml`, i.e. uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have mongo on you HDD rather than SDD). 
+Replacing your *USERNAME*, paste the content below and save
 
-````
-cd deploy
-ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
-````
+```
+[Desktop Entry]
+Name=Eclipse
+Type=Application
+Exec=/home/USERNAME/eclipse/php-neon/eclipse/eclipse
+Terminal=false
+Icon=/home/USERNAME/eclipse/php-neon/eclipse/icon.xpm
+Comment=Integrated Development Environment
+NoDisplay=false
+Categories=Development;IDE;
+Name[en]=Eclipse
+```
 
-You also need to make sure that the src and test folders has permissions such that www-data can write to it.  e.g.
-````
-chgrp -R www-data src
-chgrp -R www-data test
-````
+Even though we no longer use Eclipse for web development, we [install](https://marketplace.eclipse.org/content/monjadb) the MonjaDB plugin for browsing and updating MongoDB.
+
+Once the MongaDB plugin is installed, access `MongoDB` from the Eclipse menu and select `Connect`.  Click `OK` and you should see the contents of MongoDB.
+
+### PhpStorm ###
+
+Install [PhpStorm](https://www.jetbrains.com/phpstorm/download/#section=linux-version).
+
+LSDev members can contact their team lead to get the SIL license information.
+
+### Xdebug ###
+
+Paste this output
+
+```
+php -i
+```
+into the [Xdebug wizard](https://xdebug.org/wizard.php) and follow the instructions to install Xdebug
+
+Append the following section to `/etc/php/7.0/version/apache2/php.ini`
+
+```
+zend_extension = /usr/lib/php/20151012/xdebug.so
+
+[Xdebug]
+xdebug.remote_enable = 1
+xdebug.remote_connect_back=1
+xdebug.remote_port = 9000
+xdebug.scream=0
+xdebug.show_local_vars=1
+xdebug.idekey=PHPSTORM
+```
+
+#### Integrating Xdebug with PhpStorm ####
+
+Setting *PHP Interpreter* from PhpStorm
+
+**File** --> **Settings** --> **Languages & Frameworks** --> **PHP**
+
+From the dropdown to *PHP language level*, select `7`
+For *Interpreter*, click "..." to browse, then "+"
+
+```
+Name: PHP 7
+PHP executable: /usr/bin/php
+```
+
+Adding *Servers* from PhpStorm
+
+**File** --> **Settings** --> **Languages & Frameworks** --> **PHP** --> **Servers**
+Click the "+" to add the following Name & Hosts:
+- default.local
+- languageforge.local
+- scriptureforge.local
+
+Restart apache2
+
+```
+sudo service apache2 restart
+```
+
+#### Xdebug helper Chrome extension ####
+Install the [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension which adds a bug icon to the top right area of Chrome extensions.
+
+Right-click to select **Options** and set **IDE key**
+
+```
+PhpStorm PHPSTORM
+```
+
+When it's time to Debug, check that the bug icon is green for **Debug**.  
+
+Then, from PhpStorm, click the telephone icon near the top right for *Start Listening for PHP Connections*.
+
+Additional resource for [Integrating Xdebug with PhpStorm](https://www.jetbrains.com/help/phpstorm/2016.2/configuring-xdebug.html#integrationWithProduct).
 
 ## Testing ##
 
@@ -107,24 +172,15 @@ Note: at least one test will fail if the LFMerge (send/receive) program is not i
 
 #### E2E Test Install ####
 
-Make sure npm is up-to-date
-````
-sudo npm cache clean -f
-sudo npm install -g n
-sudo n stable
-````
+From the `web-languageforge` directory
 
-Make sure java is installed
-````
-sudo apt-get install openjdk-7-jre-headless
-````
-
-Update **webdriver**.  (Old way prior to Angular 1.5 installed **webdriver-manager** ~~globally~~ since our local repo was on an NTFS partition and items there are not executable, then install **webdriver**):
-
-````
+```
+npm install
 cd test/app
+npm install
 ./webdriver.sh update
-````
+./webdriver.sh start
+```
 
 #### E2E Test Run ####
 
