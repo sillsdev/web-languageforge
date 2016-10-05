@@ -88,9 +88,17 @@ Once the MongaDB plugin is installed, access `MongoDB` from the Eclipse menu and
 
 ### PhpStorm ###
 
-Install [PhpStorm](https://www.jetbrains.com/phpstorm/download/#section=linux-version).
+Download [PhpStorm](https://www.jetbrains.com/phpstorm/download/#section=linux-version) , extract the tar file and install
 
-LSDev members can contact their team lead to get the SIL license information.
+```
+tar xvf PhpStorm-2016.2.1.tar.gz
+sudo mv PhpStorm-162.1889.1/  /opt/phpstorm
+sudo ln -s /opt/phpstorm/bin/phpstorm.sh /usr/local/bin/phpstorm
+# launch
+phpstorm
+```
+
+LSDev members can contact their team lead to get the SIL license information.  PhpStorm also has an option *Evaluate for free for 30 days*.
 
 ### Xdebug ###
 
