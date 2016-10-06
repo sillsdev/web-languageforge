@@ -202,6 +202,15 @@
         - "jamaicanpsalms.scriptureforge.local"
         - "demo.scriptureforge.local"
 
+#    - apt_key: url=http://linux.lsdev.sil.org/downloads/sil-testing.gpg state=present
+#    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu trusty main' state=present
+#    - name: install LfMerge package
+#      apt: name="{{item}}" state=present
+#      with_items:
+#        - libcairomm-1.0-1v5
+#        - lfmerge-fdo-7000068
+#        - lfmerge-fdo
+
   handlers:
     - name: restart mongodb
       service: name=mongodb state=restarted
