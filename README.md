@@ -59,7 +59,15 @@ sudo apt-get install oracle-java8-installer
 sudo apt-get install oracle-java8-set-default
 ```
 
-Install [Eclipse IDE for PHP Developers](http://ubuntuhandbook.org/index.php/2016/01/how-to-install-the-latest-eclipse-in-ubuntu-16-04-15-10/). 
+Download [Eclipse](http://www.eclipse.org/downloads/), extract the tar folder and install.
+
+```
+tar xvf eclipse-inst-linux64.tar.gz
+cd eclipse-installer
+./eclipse-inst
+```
+
+From the installer, select **Eclipse IDE for PHP Developers**
 
 Create a launcher shortcut from your *home* directory
 
@@ -88,7 +96,7 @@ Once the MongaDB plugin is installed, access `MongoDB` from the Eclipse menu and
 
 ### PhpStorm ###
 
-Download [PhpStorm](https://www.jetbrains.com/phpstorm/download/#section=linux-version) , extract the tar file and install
+Download [PhpStorm](https://www.jetbrains.com/phpstorm/download/#section=linux-version), extract the tar file and install.  You may need to modify newer version numbers accordingly...
 
 ```
 tar xvf PhpStorm-2016.2.1.tar.gz
