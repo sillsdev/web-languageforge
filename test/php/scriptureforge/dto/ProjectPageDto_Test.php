@@ -88,27 +88,33 @@ class TestProjectPageDto extends UnitTestCase
 
         $dto = ProjectPageDto::encode($projectId, $user1Id);
 
+        $encodedTexts = MongoTestEnvironment::indexItemsBy($dto['texts'], 'id');
+        $encodedText1 = $encodedTexts[$text1Id];
+        $encodedText2 = $encodedTexts[$text2Id];
+
         // Now check that it all looks right
         $this->assertIsA($dto['texts'], 'array');
-        $this->assertEqual($dto['texts'][0]['id'], $text2Id);
-        $this->assertEqual($dto['texts'][1]['id'], $text1Id);
-        $this->assertEqual($dto['texts'][0]['title'], "Chapter 4");
-        $this->assertEqual($dto['texts'][1]['title'], "Chapter 3");
-        $this->assertEqual($dto['texts'][0]['questionCount'], 1);
-        $this->assertEqual($dto['texts'][1]['questionCount'], 2);
-        $this->assertEqual($dto['texts'][0]['responseCount'], 0);
-        $this->assertEqual($dto['texts'][1]['responseCount'], 4);
+        $this->assertEqual($encodedText2['id'], $text2Id);
+        $this->assertEqual($encodedText1['id'], $text1Id);
+        $this->assertEqual($encodedText2['title'], "Chapter 4");
+        $this->assertEqual($encodedText1['title'], "Chapter 3");
+        $this->assertEqual($encodedText2['questionCount'], 1);
+        $this->assertEqual($encodedText1['questionCount'], 2);
+        $this->assertEqual($encodedText2['responseCount'], 0);
+        $this->assertEqual($encodedText1['responseCount'], 4);
 
         // archive 1 Question
         $question2->isArchived = true;
         $question2->write();
 
         $dto = ProjectPageDto::encode($projectId, $user1Id);
+        $encodedTexts = MongoTestEnvironment::indexItemsBy($dto['texts'], 'id');
+        $encodedText1 = $encodedTexts[$text1Id];
+        $encodedText2 = $encodedTexts[$text2Id];
 
-        $this->assertEqual($dto['texts'][0]['questionCount'], 1);
-        $this->assertEqual($dto['texts'][1]['questionCount'], 1);
-        $this->assertEqual($dto['texts'][0]['responseCount'], 0);
-        $this->assertEqual($dto['texts'][1]['responseCount'], 1);
+        $this->assertEqual($encodedText2['questionCount'], 1);
+        $this->assertEqual($encodedText1['questionCount'], 1);
+        $this->assertEqual($encodedText2['responseCount'], 0);
+        $this->assertEqual($encodedText1['responseCount'], 1);
     }
-
 }
