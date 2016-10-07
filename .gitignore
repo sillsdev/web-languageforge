@@ -3,6 +3,7 @@
 .externalToolBuilders
 output
 node_modules/
+deploy/ansible.cfg
 src/vendor/
 !src/vendor/lift/
 src/vendor_bower/
