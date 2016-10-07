@@ -40,10 +40,11 @@ Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`
  - **Vagrant VM Setup**: uncomment line 6 and comment line 5
  - **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have mongo on you HDD rather than SDD). 
 
-Deploy both sites
+Configure ansible.cfg and deploy both sites
 
 ````
 cd web-languageforge/deploy
+ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
 ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
 ````
 
