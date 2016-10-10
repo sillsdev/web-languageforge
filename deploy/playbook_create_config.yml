@@ -1,19 +1,19 @@
 ---
-
+# If needed, copy the default ansible.cfg and modify
 - name: Configure ansible.cfg
   hosts: all
   become: yes
 
   tasks:
-
-   # Copy default ansible.cfg and modify
    - name: Check if ansible.cfg exists
      stat: path="ansible.cfg"
      register: cfg
-   - copy: src=/etc/ansible/ansible.cfg dest=./ansible.cfg mode="u=rw,g=r,o=r"
+
+   - name: Copy default ansible.cfg
+     copy: src=/etc/ansible/ansible.cfg dest=./ansible.cfg mode="u=rw,g=r,o=r"
      when: cfg.stat.exists == False
 
-   - name: Modify ansible.cfg 
+   - name: Modify ansible.cfg
      lineinfile:
        dest: ansible.cfg
        regexp: '^#?{{item.property}}'
@@ -26,4 +26,5 @@
          value: '/etc/ansible/roles:./roles_common:./roles'
        - property: 'ssh_args'
          value: '-o UserKnownHostsFile=.vagrant/known_hosts'
+     when: cfg.stat.exists == False
 
