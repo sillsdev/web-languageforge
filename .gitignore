@@ -4,6 +4,7 @@
 output
 node_modules/
 deploy/ansible.cfg
+**/.bundle/
 src/vendor/
 !src/vendor/lift/
 src/vendor_bower/
@@ -17,6 +18,7 @@ docs/semdom/*.xml
 docs/semdom/semdom lists/*.xml
 .vagrant/
 vagrant_ansible_inventory_*
+deploy/**/*.retry
 deploy/site_files/certificates/
 deploy/site_info/
 deploy/callback_plugins/*.pyc
