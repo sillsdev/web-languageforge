@@ -13,21 +13,23 @@ add-apt-repository ppa:ansible/ansible
 apt-get update
 apt-get -y install git ansible
 if [ ! -d "/home/vagrant/src/ops-devbox" ]; then
-  git clone --recurse-submodules https://github.com/sillsdev/ops-devbox
+  git clone -b feature/xenial --recurse-submodules https://github.com/sillsdev/ops-devbox
   cd ops-devbox
   ansible-playbook -i hosts dev.yml
 fi
+cd /home/vagrant/src
 if [ ! -d "/home/vagrant/src/web-languageforge" ]; then
-  git clone https://github.com/sillsdev/web-languageforge.git /home/vagrant/src/web-languageforge --recursive
+  git clone -b feature/xenial --recurse-submodules https://github.com/sillsdev/web-languageforge 
 else
-  cd /home/vagrant/src/web-languageforge; git pull --ff-only --recurse-submodules origin
+  cd /home/vagrant/src/web-languageforge; git pull --ff-only --recurse-submodules origin/feature/xenial
 fi
-if [ ! -d "/home/vagrant/src/web-scriptureforge" ]; then
-  git clone https://github.com/sillsdev/web-scriptureforge.git /home/vagrant/src/web-scriptureforge --recursive
-else
-  cd /home/vagrant/src/web-scriptureforge; git pull --ff-only --recurse-submodules origin
-fi
-cd /home/vagrant/src/web-languageforge/deploy/; git checkout master; ansible-playbook -i hosts playbook_create.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
+ln -s /home/vagrant/src/web-languageforge /home/vagrant/src/web-scriptureforge
+#if [ ! -d "/home/vagrant/src/web-scriptureforge" ]; then
+#  git clone https://github.com/sillsdev/web-scriptureforge.git /home/vagrant/src/web-scriptureforge --recursive
+#else
+#  cd /home/vagrant/src/web-scriptureforge; git pull --ff-only --recurse-submodules origin
+#fi
+cd /home/vagrant/src/web-languageforge/deploy/; git checkout feature/xenial; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -71,7 +73,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Use VBoxManage to customize the VM. For example to change memory:
     vb.customize ["modifyvm", :id, "--memory", "1024"]
     vb.customize ["modifyvm", :id, "--vram", 64]
-    vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
+    vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
   end
 
   # configure Vagrant's ssh shell to be a non-login one (avoids error "stdin: is not a tty error")
