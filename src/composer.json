@@ -2,7 +2,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/cambell-prince/LazyProperty"
+      "url": "https://github.com/sillsdev/LazyProperty"
     },
     {
       "type": "vcs",
