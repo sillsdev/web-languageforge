@@ -99,6 +99,30 @@
       file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/virtual/default_local" state=link group=www-data force=true
       when: inventory_hostname == "localhost"
 
+    - apt_key: url=http://linux.lsdev.sil.org/downloads/sil-testing.gpg state=present
+    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu xenial main' state=present
+    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu xenial-experimental main' state=present update_cache='yes'
+    - name: install LfMerge package
+      apt: name="{{item}}" state=present
+      with_items:
+        - lfmerge
+
+     # group permissions from LfMerge deploy
+    - name: ensure www-data group exists
+      become: yes
+      group: name=www-data state=present
+
+    - name: make www-data user a member of fieldworks group
+      become: yes
+      user: name=www-data state=present group=www-data home=/var/www shell=/usr/sbin/nologin groups=fieldworks append=yes
+
+      # Could look up home dir of www-data user on remote system, but that turns out to
+      # be a bit complicated. And since we just set it to /var/www, just use that.
+    - name: ensure www-data has setguid, group-writeable .local folder
+      become: yes
+      # mode 02775 is u+rwx, g+rwx, o+rx plus the setgid bit (octal 02000)
+      file: path=/var/www/.local state=directory mode=02775 owner=www-data group=fieldworks
+
     - name: Ensure folder permissions
       # see http://stackoverflow.com/questions/28778738/ansible-mode-755-for-directories-and-644-for-files-recursively
       file:
@@ -201,13 +225,6 @@
         - "scriptureforge.local"
         - "jamaicanpsalms.scriptureforge.local"
         - "demo.scriptureforge.local"
-
-    - apt_key: url=http://linux.lsdev.sil.org/downloads/sil-testing.gpg state=present
-    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu xenial main' state=present
-    - name: install LfMerge package
-      apt: name="{{item}}" state=present
-      with_items:
-        - lfmerge-fdo
 
   handlers:
     - name: restart mongodb
