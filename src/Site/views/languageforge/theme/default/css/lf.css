@@ -130,8 +130,8 @@ p {
 div#header {
     position: relative;
     width: 100%;
-    height: 39px;
-    background: #333 url(/Site/views/languageforge/theme/default/image/lf_header-bar-bkg.png) repeat-x 0 0;
+    height: 55px;
+    background: #104060;
     color: #fff;
     z-index: 10; /* IE6-7 hack for logo */
 }
@@ -149,7 +149,22 @@ div#header-nav {
     width: auto;
     height: 39px;
     padding-left: 130px;
-    border-right: 1px solid #469bc2;
+}
+
+li.header-button-special {
+    box-shadow: inset 0 0 0 2px #999;
+    border-radius: 6px;
+    padding:6px 12px 6px 12px;
+    margin:10px 15px 0 0;
+    color: #fff;
+}
+
+li.header-button-special a {
+    padding: 2px;
+}
+
+.header-button-special a:hover {
+    background-color: rgba(153, 153, 153, 0.25);
 }
 
 div#account {
@@ -259,14 +274,19 @@ div#footer {
     position: relative;
     width: 100%;
     height: auto;
-    padding: 40px 0 40px 0;
+    padding: 40px 0 80px 0;
     background-color: #104060;
-    background: #104060 url(/Site/views/languageforge/theme/default/image/sf_sprite.png) no-repeat center -139px;
     color: #fff;
 }
 
 div#footer, div#footer a, div#footer h4 {
     color: #f4f4f6;
+}
+
+div#footer a {
+    border-bottom: dotted 1px;
+    text-decoration: none;
+    font-weight: normal;
 }
 
 div#footerBaseline {
@@ -670,7 +690,7 @@ div.hdrnav img {
 ul.topNav > li {
     background: #777777;
     display: inline-block;
-    margin-top: 2px;
+    margin-top: 8px;
     margin-right: 7px;
 }
 
