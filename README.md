@@ -8,6 +8,7 @@ Although [web-languageforge](https://github.com/sillsdev/web-languageforge) and 
 ### Prerequisite - LAMP Stack Setup ###
 Our recommended development environment for web development is Linux Ubuntu GNOME.  Choose either the **Vagrant VM Setup** or the **Local Linux Development Setup**.  Even though the Vagrant VM Setup is definitely easier because it always installs from a clean slate on a new virtual box, we recommend doing development on your local development machine.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
 
+** Local Linux Development Setup **
 Start with the Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure the LAMP stack (Linux, Apache, MongoDB, and PHP).
 
 
@@ -45,7 +46,7 @@ Configure ansible.cfg and deploy both sites
 ````
 cd web-languageforge/deploy
 ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
-ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
+ansible-playbook -i hosts playbook_xenial.yml --limit localhost -K
 ````
 
 ## Installing IDEs and Debugger ##
@@ -187,31 +188,27 @@ Note: at least one test will fail if the LFMerge (send/receive) program is not i
 
 ### End-to-End (E2E) Tests ###
 
-#### E2E Test Install ####
+#### Install/Update Webdriver ####
 
 From the `web-languageforge` directory
 
 ```
 npm install
 cd test/app
-npm install
 ./webdriver.sh update
-./webdriver.sh start
 ```
 
 #### E2E Test Run ####
 
-First start **webdriver** in one terminal:
+From the `test/app` directory, start **webdriver** in one terminal:
 
 ````
-cd test/app
 ./webdriver.sh start
 ````
 
 Then run tests in another terminal:
 
 ````
-cd test/app
 sh rune2eLF.sh
 ````
 to test in on the **languageforge** site or run `sh rune2eSF.sh` to test on the **scriptureforge** site. Add a test name argument to the previous or browse to sub-folders to narrow tests.
