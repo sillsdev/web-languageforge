@@ -1,6 +1,6 @@
 ---
 
-- name: Linux Mint local webserver
+- name: Linux Xenial local webserver
   hosts: all
   become: yes
   tasks:

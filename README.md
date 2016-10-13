@@ -49,6 +49,18 @@ ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
 ansible-playbook -i hosts playbook_xenial.yml --limit localhost -K
 ````
 
+Manually edit the languageforge config file
+
+```
+sudo gedit /etc/languageforge/conf/sendreceive.conf
+```
+
+and modify PhpSourcePath to
+
+```
+PhpSourcePath = /var/www/virtual/languageforge.org/htdocs
+```
+
 ## Installing IDEs and Debugger ##
 
 ### Eclipse ###
