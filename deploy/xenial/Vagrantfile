@@ -17,19 +17,24 @@ if [ ! -d "/home/vagrant/src/ops-devbox" ]; then
   cd ops-devbox
   ansible-playbook -i hosts dev.yml
 fi
-cd /home/vagrant/src
-if [ ! -d "/home/vagrant/src/web-languageforge" ]; then
+if [ ! -d "/home/vagrant/src/xForge" ]; then
+  mkdir /home/vagrant/src/xForge
+fi
+cd /home/vagrant/src/xForge
+if [ ! -d "web-languageforge" ]; then
   git clone -b feature/xenial --recurse-submodules https://github.com/sillsdev/web-languageforge 
 else
-  cd /home/vagrant/src/web-languageforge; git pull --ff-only --recurse-submodules origin/feature/xenial
+  cd web-languageforge; git pull --ff-only --recurse-submodules origin/feature/xenial
 fi
-ln -s /home/vagrant/src/web-languageforge /home/vagrant/src/web-scriptureforge
-#if [ ! -d "/home/vagrant/src/web-scriptureforge" ]; then
-#  git clone https://github.com/sillsdev/web-scriptureforge.git /home/vagrant/src/web-scriptureforge --recursive
+ln -s /home/vagrant/src/xForge/web-languageforge /home/vagrant/src/xForge/web-scriptureforge
+#cd /home/vagrant/src/xForge
+#if [ ! -d "web-scriptureforge" ]; then
+#  git clone https://github.com/sillsdev/web-scriptureforge.git /home/vagrant/src/xForge/web-scriptureforge --recursive
 #else
-#  cd /home/vagrant/src/web-scriptureforge; git pull --ff-only --recurse-submodules origin
+#  cd web-scriptureforge; git pull --ff-only --recurse-submodules origin
 #fi
-cd /home/vagrant/src/web-languageforge/deploy/; git checkout feature/xenial; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
+cd /home/vagrant/src/xForge/web-languageforge/deploy/; git checkout feature/xenial; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
+
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
