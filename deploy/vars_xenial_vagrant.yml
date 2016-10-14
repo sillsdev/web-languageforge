@@ -48,7 +48,7 @@ apache_vhosts:
     server_file_name: languageforge_org
     template: vhost_ssl.conf.j2
     document_root: /var/www/virtual/languageforge.org/htdocs
-    link_to: "/home/vagrant/src/web-languageforge/src"
+    link_to: "/home/vagrant/src/xForge/web-languageforge/src"
     directory_extra:
       - RewriteEngine On
     virtual_hosts:
