@@ -1,18 +1,42 @@
 # web-languageforge / web-scriptureforge #
 
-Although [web-languageforge](https://github.com/sillsdev/web-languageforge) and [web-scriptureforge](https://github.com/sillsdev/web-scriptureforge) represent different websites, they have the same code base but are stored in seperate repositories for the purpose of  version control and issue tracking. Since they are related repos it is easy to merge from one to the other.
+[Language Forge](https://github.com/sillsdev/web-languageforge) and [Scripture Forge](https://github.com/sillsdev/web-scriptureforge) represent different websites, but have the same code base stored in seperate repositories for the purpose of  version control and issue tracking. Since they are related repos it is easy to merge from one to the other.
 
 
 ## Recommended Development Environment ##
 
-### Prerequisite - LAMP Stack Setup ###
-Our recommended development environment for web development is Linux Ubuntu GNOME.  Choose either the **Vagrant VM Setup** or the **Local Linux Development Setup**.  Even though the Vagrant VM Setup is definitely easier because it always installs from a clean slate on a new virtual box, we recommend doing development on your local development machine.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
+Our recommended development environment for web development is Linux Ubuntu GNOME.  Choose either the [Vagrant VM Setup](#VagrantSetup) or the [Local Linux Development Setup](#LocalSetup).  Even though the Vagrant VM Setup is definitely easier because it always installs from a clean slate on a new virtual box, we recommend doing development on your local development machine.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
 
-** Local Linux Development Setup **
+---------------------------------
+
+### Vagrant VM Setup <a id="VagrantSetup"></a>
+
+Clone this repository to your host machine and and `vagrant up` the Xenial box. We intentionally postpone provisioning on initial boot so the `Virtualbox guest additions` updates don't interfere with the provisioning process.
+
+```
+git clone https://github.com/sillsdev/web-languageforge web-languageforge --recurse-submodules
+cd deploy/xenial
+vagrant up --no-provision
+```
+
+Once the shell notifies the Virtualbox guest additions have been updated, power down the Xenial box.
+
+Now, vagrant up with provision to install and deploy
+
+```
+vagrant up --provision
+```
+
+Proceed to [Language Forge Configuration File](#LFConfig) and follow the rest of the steps in this README.
+
+-------------------------------
+
+### Local Linux Development Setup <a id="LocalSetup"></a>
+
 Start with the Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure the LAMP stack (Linux, Apache, MongoDB, and PHP).
 
 
-### Installation and Deployment
+#### Installation and Deployment
 After creating your Ansible-assisted setup, clone this repository from your *home* folder...
 
 ````
@@ -49,6 +73,7 @@ ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
 ansible-playbook -i hosts playbook_xenial.yml --limit localhost -K
 ````
 
+### Language Forge Configuration File <a id="LFConfig"></a>
 Manually edit the languageforge config file
 
 ```
