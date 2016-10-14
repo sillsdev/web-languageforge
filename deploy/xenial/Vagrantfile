@@ -22,7 +22,7 @@ if [ ! -d "/home/vagrant/src/xForge" ]; then
 fi
 cd /home/vagrant/src/xForge
 if [ ! -d "web-languageforge" ]; then
-  git clone -b feature/xenial --recurse-submodules https://github.com/sillsdev/web-languageforge 
+  git clone -b feature/xenial --single-branch --recurse-submodules https://github.com/sillsdev/web-languageforge 
 else
   cd web-languageforge; git pull --ff-only --recurse-submodules origin/feature/xenial
 fi
