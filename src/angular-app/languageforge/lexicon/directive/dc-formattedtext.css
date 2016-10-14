@@ -18,9 +18,7 @@
 }
 
 .dc-formattedtext .ta-editor {
-    /* width: 176px; */
     width: 346px;
-    /* height: 72px;*/
     height: 108px;
     overflow: auto;
     font-family: inherit;
@@ -37,12 +35,14 @@
 
 .dc-formattedtext .ta-editor, 
 .dc-formattedtext .ta-scroll-window > .ta-bind {
-    /* min-height: 60px; */
     min-height: 100px;
 }
 
+.dc-formattedtext .ta-scroll-window.form-control {
+    min-height: 100%;
+}
+
 .dc-formattedtext .ta-root textarea {
-    /* width: 165px; */
     width: 335px;
 }
 
