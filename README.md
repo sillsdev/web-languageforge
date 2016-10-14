@@ -74,7 +74,7 @@ ansible-playbook -i hosts playbook_xenial.yml --limit localhost -K
 ````
 
 ### Language Forge Configuration File <a id="LFConfig"></a>
-Manually edit the languageforge config file
+Manually edit the Language Forge config file
 
 ```
 sudo gedit /etc/languageforge/conf/sendreceive.conf

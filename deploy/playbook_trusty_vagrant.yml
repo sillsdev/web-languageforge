@@ -13,4 +13,4 @@
     deploy: trusty_vagrant
 - include: code.yml
   vars:
-    lf_path: /home/vagrant/src/web-languageforge
+    lf_path: /home/vagrant/src/xForge/web-languageforge
