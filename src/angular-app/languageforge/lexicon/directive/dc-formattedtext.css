@@ -28,12 +28,15 @@
     margin-right: 5px;
 }
 
+.dc-formattedtext p {
+    margin: 0;
+}
+
 .dc-formattedtext .ta-editor {
     width: 346px;
     height: 108px;
     overflow: auto;
     font-family: inherit;
-    font-size: 14px;
     white-space: normal;
     border: 1px solid #CCC;
     border-left: 0;
@@ -51,6 +54,7 @@
 
 .dc-formattedtext .ta-scroll-window.form-control {
     min-height: 100%;
+    font-size: 14px;
 }
 
 .dc-formattedtext .ta-root textarea {
