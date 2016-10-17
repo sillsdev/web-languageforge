@@ -132,11 +132,17 @@ class ProjectModel extends MapperModel
 
     /**
      * @param string $projectId
+     * @param Website $website
      * @return bool
      */
-    public static function projectExists($projectId) {
+    public static function projectExistsOnWebsite($projectId, $website) {
+        $projectExists = false;
         $projectModel = new ProjectModel();
-        return $projectModel->exists($projectId);
+        if ($projectModel->exists($projectId)) {
+            $projectModel = ProjectModel::getById($projectId);
+            $projectExists = ($website->domain == $projectModel->siteName);
+        }
+        return $projectExists;
     }
 
     /**

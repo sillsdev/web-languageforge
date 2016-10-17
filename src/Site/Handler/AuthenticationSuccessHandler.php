@@ -46,7 +46,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         $url = '/app/projects';
         if ($referer and strpos($referer, '/app/') !== false) {
             $url = $referer;
-        } elseif ($projectId && ProjectModel::projectExists($projectId)) {
+        } elseif ($projectId && ProjectModel::projectExistsOnWebsite($projectId, $website)) {
             $project = ProjectModel::getById($projectId);
             if ($project->userIsMember($user->id->asString())) {
                 $url = '/app/'.$project->appName.'/'.$projectId;
