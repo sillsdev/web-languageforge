@@ -53,7 +53,7 @@ class App extends Base
         if (!$projectId) {
             $projectId = SilexSessionHelper::getProjectId($app, $this->website);
         }
-        if ($projectId && ProjectModel::projectExists($projectId)) {
+        if ($projectId && ProjectModel::projectExistsOnWebsite($projectId, $this->website)) {
             $projectModel = ProjectModel::getById($projectId);
             if (!$projectModel->userIsMember($this->_userId)) {
                 $projectId = '';
