@@ -11,9 +11,6 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
   function (taRegisterTool, taOptions, taTranslations, taTools,
             ss, $window, $compile, $animate) {
 
-    // remove the built-in insertLink tool
-    //delete taTools.insertLink;
-
     // register the tool with textAngular
     taRegisterTool('lexInsertLink', {
       //      tooltiptext: taTranslations.lexInsertLink.tooltip,
@@ -249,6 +246,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       fteModel: '=',
       fteToolbar: '=',
       fteDisabled: '=',
+      fteMultiline: '=',
       fteDir: '='
     },
     controller: ['$scope', 'sessionService', function ($scope, ss) {
@@ -266,6 +264,22 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
         // disable unfinished link and language span controls
         $scope.fte.toolbar = '[[]]';
       }
+
+      // x gets sanitised so no default wrap
+      $scope.fte.defaultWrap = ($scope.fteMultiline) ? 'p' : 'x';
+      $scope.fte.classMultiline = ($scope.fteMultiline) ? 'dc-multiline' : '';
+
+      $scope.setupTaEditor = function setupTaEditor($element) {
+        if (!$scope.fteMultiline) {
+          $element.on('keydown', function (event) {
+            // ignore the enter key
+            var key = event.which || event.keyCode;
+            if (key === 13) {
+              event.preventDefault();
+            }
+          });
+        }
+      };
     }]
   };
 }]);

@@ -32,9 +32,13 @@
     margin: 0;
 }
 
+.dc-formattedtext .dc-multiline .ta-editor {
+    height: 112px;
+}
+
 .dc-formattedtext .ta-editor {
     width: 346px;
-    height: 108px;
+    height: 16px;
     overflow: auto;
     font-family: inherit;
     white-space: normal;
@@ -47,9 +51,14 @@
     margin-right: 0;
 }
 
-.dc-formattedtext .ta-editor, 
-.dc-formattedtext .ta-scroll-window > .ta-bind {
+.dc-formattedtext .dc-multiline .ta-editor,
+.dc-formattedtext .dc-multiline .ta-scroll-window > .ta-bind {
     min-height: 100px;
+}
+
+.dc-formattedtext .ta-editor,
+.dc-formattedtext .ta-scroll-window > .ta-bind {
+    min-height: 16px;
 }
 
 .dc-formattedtext .ta-scroll-window.form-control {
@@ -63,8 +72,8 @@
 
 .dc-formattedtext .ta-scroll-window > .ta-bind,
 .dc-formattedtext .ta-root textarea {
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: 6px;
+    padding-bottom: 6px;
     padding-left: 6px;
     padding-right: 6px;
 }
