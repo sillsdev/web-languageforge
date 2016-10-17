@@ -77,13 +77,14 @@ describe('Editor List and Entry', function () {
 
   it('citation form field overrides lexeme form in dictionary citation view', function () {
     editorPage.edit.showUncommonFields();
-    editorPage.edit.getMultiTextInputs('Citation Form').first().sendKeys('citation form');
+    var citationFormMultiTextInputs = editorPage.edit.getMultiTextInputs('Citation Form');
+    editorPage.edit.selectElement.sendKeys(citationFormMultiTextInputs.first(), 'citation form');
     expect(editorPage.edit.renderedDiv.getText()).toContain('citation form');
     expect(editorPage.edit.renderedDiv.getText())
       .not.toContain(constants.testEntry1.lexeme.th.value);
     expect(editorPage.edit.renderedDiv.getText())
       .toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-    editorPage.edit.getMultiTextInputs('Citation Form').first().clear();
+    editorPage.edit.selectElement.clear(citationFormMultiTextInputs.first());
     expect(editorPage.edit.renderedDiv.getText()).not.toContain('citation form');
     expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
     expect(editorPage.edit.renderedDiv.getText())
@@ -130,7 +131,7 @@ describe('Editor List and Entry', function () {
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     editorPage.edit.hideUncommonFields();
     expect(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
-    editorPage.edit.pictures.captions.first().clear();
+    editorPage.edit.selectElement.clear(editorPage.edit.pictures.captions.first());
     expect(editorPage.edit.pictures.captions.count()).toBe(0);
   });
 
