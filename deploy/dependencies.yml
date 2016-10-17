@@ -92,8 +92,17 @@
       when: inventory_hostname == "localhost"
 
     - apt_key: url=http://linux.lsdev.sil.org/downloads/sil-testing.gpg state=present
+
+    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu trusty main' state=present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'  
+    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu trusty-experimental main' state=present update_cache='yes'
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'  
+
     - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu xenial main' state=present
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'xenial'  
     - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu xenial-experimental main' state=present update_cache='yes'
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'xenial'  
+
     - name: install LfMerge package
       apt: name="{{item}}" state=present
       with_items:
