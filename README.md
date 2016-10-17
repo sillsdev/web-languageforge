@@ -94,8 +94,7 @@ Install Oracle Java JDK 8
 ```
 sudo add-apt-repository ppa:webupd8team/java
 sudo apt-get update
-sudo apt-get install oracle-java8-installer
-sudo apt-get install oracle-java8-set-default
+sudo apt-get install oracle-java8-installer install oracle-java8-set-default
 ```
 
 Download [Eclipse](http://www.eclipse.org/downloads/), extract the tar folder and install.
@@ -147,6 +146,19 @@ phpstorm
 
 LSDev members can contact their team lead to get the SIL license information.  PhpStorm also has an option *Evaluate for free for 30 days*.
 
+#### Creating the PhpStorm Project ####
+
+Launch PhpStorm.
+
+Click **Create New Project from Existing Files** --> **Next**. 
+
+ From the **Create New Project: Choose Project Directory** dialog,  browse to the `web-languageforge` directory, then mark it as **Project Root** --> **Next**.
+
+From the **Add Local Server** dialog set
+Name: `languageforge.local`
+Web server root URL: `http://languageforge.local`
+--> **Next** --> **Finish**
+
 ### Xdebug ###
 
 Paste this output
@@ -156,7 +168,7 @@ php -i
 ```
 into the [Xdebug wizard](https://xdebug.org/wizard.php) and follow the instructions to install Xdebug
 
-Append the following section to `/etc/php/7.0/version/apache2/php.ini`
+Append the following section to `/etc/php/7.0/apache2/php.ini`
 
 ```
 zend_extension = /usr/lib/php/20151012/xdebug.so
