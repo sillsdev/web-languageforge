@@ -12,7 +12,7 @@ function EditorUtil() {
     var inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
     return inputSystemDivs.map(function (div) {
       var wsidSpan = div.element(by.css('.input-prepend > span.wsid'));
-      var wordElem = div.element(by.css('.input-prepend > input'));
+      var wordElem = div.element(by.css('.input-prepend > .dc-formattedtext input'));
       return wsidSpan.getText().then(function (wsid) {
         return wordElem.getAttribute('value').then(function (word) {
           return {
@@ -153,6 +153,21 @@ function EditorUtil() {
   // appear in the Part of Speech dropdown (for convenience in E2E tests).
   this.expandPartOfSpeech = function (posAbbrev) {
     return _this.partOfSpeechNames[posAbbrev] + ' (' + posAbbrev + ')';
+  };
+
+  // designed for use with Text-Angular controls (i.e. that don't have ordinary input or textarea)
+  this.selectElement = {
+    sendKeys: function sendKeys(element, keys) {
+      element.click();
+      browser.actions().sendKeys(keys).perform();
+    },
+
+    clear: function clear(element) {
+      element.click();
+      var ctrlA = protractor.Key.chord(protractor.Key.CONTROL, 'a');
+      browser.actions().sendKeys(ctrlA).perform();
+      browser.actions().sendKeys(protractor.Key.DELETE).perform();
+    }
   };
 }
 
