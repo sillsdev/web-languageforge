@@ -326,11 +326,7 @@ function ($q, sessionService, cache, commentsCache,
         }
       }
 
-      if (lexemeA > lexemeB) {
-        return 1;
-      } else {
-        return -1;
-      }
+      return Intl.Collator(ws).compare(lexemeA, lexemeB);
     });
   }
 
