@@ -2,7 +2,7 @@
 
 - name: Fix provisioning permissions
   hosts: all
-  sudo: yes
+  become: yes
   tasks:
     - name: chown ~/src
       command: chown -R vagrant.vagrant /home/vagrant/src
@@ -10,7 +10,7 @@
 
 - include: dependencies.yml
   vars:
-    deploy: lxde
+    deploy: xenial_vagrant
 - include: code.yml
   vars:
     lf_path: /home/vagrant/src/xForge/web-languageforge
