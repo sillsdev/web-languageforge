@@ -1,7 +1,4 @@
 
-var specs = ['allspecs/e2e/*.spec.js', 'bellows/**/e2e/*.spec.js'];
-specs.push('languageforge/**/e2e/*.spec.js');
-
 exports.config = {
   // The address of a running selenium server.
   seleniumAddress: 'http://default.local:4444/wd/hub',
@@ -35,7 +32,7 @@ exports.config = {
 
   // Spec patterns are relative to the current working directly when
   // protractor is called.
-  specs: specs,
+  //specs: specs,
 
   // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
@@ -60,9 +57,16 @@ exports.config = {
     // This seemed to make the tests more flaky rather than less. IJH 2014-12
     //    browser.addMockModule('disableNgAnimate', disableNgAnimate);
 
+    var jasmineReporters = require('jasmine-reporters');
     if (process.env.TEAMCITY_VERSION) {
-      var jasmineReporters = require('jasmine-reporters');
       jasmine.getEnv().addReporter(new jasmineReporters.TeamCityReporter());
+    }
+    else {
+      jasmine.getEnv().addReporter(new jasmineReporters.TerminalReporter({
+        verbosity: browser.params.verbosity, // [0 to 3, jasmine default 2]
+        color: true,
+        showStack: true
+      }));
     }
   }
 };
