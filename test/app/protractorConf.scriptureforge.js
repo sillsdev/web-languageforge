@@ -1,6 +1,3 @@
-var constants = require('./testConstants.json');
-constants.siteType = 'scriptureforge'; //TODO: refactor projectsPage.js so this is not necessary
-
 var specs = ['allspecs/e2e/*.spec.js', 'bellows/**/e2e/*.spec.js'];
 specs.push('scriptureforge/**/e2e/*.spec.js');
 
@@ -21,6 +18,8 @@ exports.config = {
       args: ['--start-maximized']
     }
   },
+
+  framework: 'jasmine2',
 
   // To run tests in multiple browsers, uncomment the following
   // multiCapabilities: [{
