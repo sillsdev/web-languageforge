@@ -5,6 +5,10 @@
   become: yes
   pre_tasks:
     - include_vars: "vars_{{ deploy }}.yml"
+    - name: Add PHP7.0 ppa and remove PHP5 for Trusty
+      apt_repository: repo='ppa:ondrej/php' state=present update_cache='yes'
+      apt: name=php5-fpm state=absent
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
   roles:
     - fix
     # locale_install may be needed if locale has been changed away from defaults
@@ -12,10 +16,6 @@
     - ssl_config
     - apache_config
   tasks:
-    - name: Add PHP7.0 ppa for Trusty
-      apt_repository: repo='ppa:ondrej/php'
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
-
     - name: install packages
       apt: name="{{item}}" state=present
       with_items:
