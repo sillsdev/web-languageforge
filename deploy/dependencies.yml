@@ -5,8 +5,10 @@
   become: yes
   pre_tasks:
     - include_vars: "vars_{{ deploy }}.yml"
-    - name: Add PHP7.0 ppa and remove PHP5 for Trusty
+    - name: Add PHP7.0 ppa for Trusty
       apt_repository: repo='ppa:ondrej/php' state=present update_cache='yes'
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
+    - name: Remove PHP5 for Trusty
       apt: name=php5-fpm state=absent
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
   roles:
