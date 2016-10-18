@@ -13,7 +13,7 @@ add-apt-repository ppa:ansible/ansible
 apt-get update
 apt-get -y install git ansible
 if [ ! -d "/home/vagrant/src/ops-devbox" ]; then
-  git clone -b feature/xenial --recurse-submodules https://github.com/sillsdev/ops-devbox
+  git clone --recurse-submodules https://github.com/sillsdev/ops-devbox
   cd ops-devbox
   ansible-playbook -i hosts dev.yml
 fi
@@ -22,9 +22,9 @@ if [ ! -d "/home/vagrant/src/xForge" ]; then
 fi
 cd /home/vagrant/src/xForge
 if [ ! -d "web-languageforge" ]; then
-  git clone -b feature/xenial --single-branch --recurse-submodules https://github.com/sillsdev/web-languageforge 
+  git clone --recurse-submodules https://github.com/sillsdev/web-languageforge 
 else
-  cd web-languageforge; git pull --ff-only --recurse-submodules origin/feature/xenial
+  cd web-languageforge; git pull --ff-only --recurse-submodules 
 fi
 ln -s /home/vagrant/src/xForge/web-languageforge /home/vagrant/src/xForge/web-scriptureforge
 #cd /home/vagrant/src/xForge
@@ -33,7 +33,7 @@ ln -s /home/vagrant/src/xForge/web-languageforge /home/vagrant/src/xForge/web-sc
 #else
 #  cd web-scriptureforge; git pull --ff-only --recurse-submodules origin
 #fi
-cd /home/vagrant/src/xForge/web-languageforge/deploy/; git checkout feature/xenial; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
+cd /home/vagrant/src/xForge/web-languageforge/deploy/; git checkout master; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
 
 SCRIPT
 
@@ -76,7 +76,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.gui = true
   
     # Use VBoxManage to customize the VM. For example to change memory:
-    vb.customize ["modifyvm", :id, "--memory", "1024"]
+    vb.customize ["modifyvm", :id, "--memory", "4096"]
     vb.customize ["modifyvm", :id, "--vram", 64]
     vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
   end
