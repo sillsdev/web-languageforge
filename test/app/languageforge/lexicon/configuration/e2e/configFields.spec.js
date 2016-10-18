@@ -28,7 +28,6 @@ describe('Configuration Fields', function () {
     configPage.getFieldByName('Part of Speech').click();
     expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Part of Speech Field Setup');
     expect(configPage.fieldsTab.hiddenIfEmptyCheckbox.isDisplayed()).toBe(true);
-    expect(configPage.fieldsTab.displayMultilineCheckbox.isPresent()).toBe(false);
     expect(configPage.fieldsTab.widthInput.isPresent()).toBe(false);
     expect(configPage.fieldsTab.captionHiddenIfEmptyCheckbox.isPresent()).toBe(false);
     expect(configPage.fieldsTab.inputSystemTags.count()).toBe(0);
@@ -38,7 +37,6 @@ describe('Configuration Fields', function () {
     configPage.getFieldByName('Word').click();
     expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Word Field Setup');
     expect(configPage.fieldsTab.hiddenIfEmptyCheckbox.isDisplayed()).toBe(true);
-    expect(configPage.fieldsTab.displayMultilineCheckbox.isDisplayed()).toBe(true);
     expect(configPage.fieldsTab.widthInput.isDisplayed()).toBe(true);
     expect(configPage.fieldsTab.captionHiddenIfEmptyCheckbox.isPresent()).toBe(false);
     expect(configPage.fieldsTab.inputSystemTags.count()).toBe(3);
