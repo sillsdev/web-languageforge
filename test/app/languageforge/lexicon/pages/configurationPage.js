@@ -41,14 +41,18 @@ function ConfigurationPage() {
       remove:     this.tabDivs.first().element(by.css('i.icon-remove'))
     },
     getLanguageByName: function getLanguageByName(languageName) {
-      return element(by.css('div.tab-pane.active div.span3 dl.picklists')).element(by.cssContainingText('div[data-ng-repeat] span', languageName));
+      return element(by.css('div.tab-pane.active div.span3 dl.picklists'))
+        .element(by.cssContainingText('div[data-ng-repeat] span', languageName));
     },
 
     selectedInputSystem: {
       displayName:    this.tabDivs.first().element(by.id('languageDisplayName')),
-      tag:            this.tabDivs.first().element(by.binding('inputSystemViewModels[selectedInputSystemId].inputSystem.tag')),
-      abbreviationInput: this.tabDivs.first().element(by.model('inputSystemViewModels[selectedInputSystemId].inputSystem.abbreviation')),
-      rightToLeftCheckbox: this.tabDivs.first().element(by.model('inputSystemViewModels[selectedInputSystemId].inputSystem.isRightToLeft')),
+      tag:            this.tabDivs.first()
+        .element(by.binding('inputSystemViewModels[selectedInputSystemId].inputSystem.tag')),
+      abbreviationInput: this.tabDivs.first()
+        .element(by.model('inputSystemViewModels[selectedInputSystemId].inputSystem.abbreviation')),
+      rightToLeftCheckbox: this.tabDivs.first().element(by
+        .model('inputSystemViewModels[selectedInputSystemId].inputSystem.isRightToLeft')),
       specialDropdown: this.tabDivs.first().element(by.id('special')),
       purposeDropdown: this.tabDivs.first().element(by.id('purpose')),
       ipaVariantInput: this.tabDivs.first().element(by.id('ipaVariant')),
@@ -60,19 +64,22 @@ function ConfigurationPage() {
   };
 
   // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
-  this.inputSystemsTab.newButtonClick = function() {
+  this.inputSystemsTab.newButtonClick = function () {
     _this.inputSystemsTab.newButton.click();
     browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
   };
 
   this.fieldsTab = {
     fieldSetupLabel: this.activePane.element(by.id('fieldSetupLabel')),
-    hiddenIfEmptyCheckbox: this.activePane.element(by.model('fieldConfig[currentField.name].hideIfEmpty')),
-    displayMultilineCheckbox: this.activePane.element(by.model('fieldConfig[currentField.name].displayMultiline')),
+    hiddenIfEmptyCheckbox: this.activePane
+      .element(by.model('fieldConfig[currentField.name].hideIfEmpty')),
     widthInput: this.activePane.element(by.model('fieldConfig[currentField.name].width')),
-    captionHiddenIfEmptyCheckbox: this.activePane.element(by.model('fieldConfig[currentField.name].captionHideIfEmpty')),
-    inputSystemTags: this.activePane.all(by.repeater('inputSystemTag in currentField.inputSystems.fieldOrder')),
-    inputSystemCheckboxes: this.activePane.all(by.model('currentField.inputSystems.selecteds[inputSystemTag]')),
+    captionHiddenIfEmptyCheckbox: this.activePane
+      .element(by.model('fieldConfig[currentField.name].captionHideIfEmpty')),
+    inputSystemTags: this.activePane
+      .all(by.repeater('inputSystemTag in currentField.inputSystems.fieldOrder')),
+    inputSystemCheckboxes: this.activePane
+      .all(by.model('currentField.inputSystems.selecteds[inputSystemTag]')),
     inputSystemUpButton: this.activePane.element(by.id('upButton')),
     inputSystemDownButton: this.activePane.element(by.id('downButton')),
     newCustomFieldButton: this.activePane.element(by.buttonText('New Custom Field')),
@@ -80,7 +87,7 @@ function ConfigurationPage() {
   };
 
   // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
-  this.fieldsTab.newCustomFieldButtonClick = function() {
+  this.fieldsTab.newCustomFieldButtonClick = function () {
     _this.fieldsTab.newCustomFieldButton.click();
     browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
   };
@@ -93,11 +100,12 @@ function ConfigurationPage() {
   this.exampleFields = this.activePane.all(by.repeater('fieldName in fieldOrder.examples'));
 
   this.getFieldByName = function getFieldByName(fieldName) {
-    return element(by.css('div.tab-pane.active > div > div > div.span3 dl.picklists')).element(by.cssContainingText('div[data-ng-repeat] > span', fieldName));
+    return element(by.css('div.tab-pane.active > div > div > div.span3 dl.picklists'))
+      .element(by.cssContainingText('div[data-ng-repeat] > span', fieldName));
   };
 
   this.hiddenIfEmpty = this.activePane.element(by.id('hideIfEmpty'));
-  this.captionHiddenIfEmpty = function() {
+  this.captionHiddenIfEmpty = function () {
     return this.activePane.element(by.id('captionHideIfEmpty'));
   };
 

@@ -7,35 +7,32 @@
                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
                 <span class="add-on wsid"
                     title="{{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
-                <!-- <textarea
-                    data-ng-show="config.displayMultiline && !modelContainsSpan(tag) && $state.is('editor.entry') && control.rights.canEditEntry()"
-                    dir="{{inputSystemDirection(tag)}}"
-                    data-pui-show-overflow
-                    data-ng-model="model[tag].value"></textarea>
-                <div class="uneditable-input multiline"
-                    data-ng-show="config.displayMultiline && modelContainsSpan(tag) && $state.is('editor.entry') && control.rights.canEditEntry()"
-                    dir="{{inputSystemDirection(tag)}}"
-                    data-pui-show-overflow
-                    data-ng-bind-html="model[tag].value"></div>
-                     -->
-                <dc-formattedtext class="dc-formattedtext" 
-                    data-ng-if="config.displayMultiline && $state.is('editor.entry') && control.rights.canEditEntry()"
+                <dc-formattedtext class="dc-formattedtext"
+                    fte-multiline="false"
                     fte-disabled="! ($state.is('editor.entry') && control.rights.canEditEntry()) || modelContainsSpan(tag)"
+                    fte-toolbar="[[]]"
                     fte-model="model[tag].value"
                     fte-dir="inputSystemDirection(tag)"></dc-formattedtext>
+            </div>
+            <!--
+            <div class="input-prepend" data-ng-click="selectInputSystem(tag)"
+                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
+                <span class="add-on wsid"
+                      title="{{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
                 <input
-                    data-ng-show="!config.displayMultiline && !modelContainsSpan(tag) && $state.is('editor.entry') && control.rights.canEditEntry()"
+                    data-ng-show="!modelContainsSpan(tag) && $state.is('editor.entry') && control.rights.canEditEntry()"
                     dir="{{inputSystemDirection(tag)}}" width="{{config.width}}"
                     data-pui-show-overflow
                     placeholder="{{(config.type == 'pictures' ? 'caption' : '')}}"
                     type="text" data-ng-model="model[tag].value" />
                 <div class="uneditable-input"
-                    data-ng-show="(!config.displayMultiline && modelContainsSpan(tag) && $state.is('editor.entry') && control.rights.canEditEntry())
+                    data-ng-show="(modelContainsSpan(tag) && $state.is('editor.entry') && control.rights.canEditEntry())
                         || !($state.is('editor.entry') && control.rights.canEditEntry())"
                     dir="{{inputSystemDirection(tag)}}"
                     data-pui-show-overflow
                     data-ng-bind-html="model[tag].value"></div>
             </div>
+            -->
         </div>
     </div>
 </form>
