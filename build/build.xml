@@ -245,8 +245,6 @@
             <include name="setupTestEnvironment.php" />
             <include name="teardownTestEnvironment.php" />
             <include name="e2eTestConfig.php" />
-            <include name="useTestConfig.sh" />
-            <include name="useLiveConfig.sh" />
             <replacefilter token="src/" value="htdocs/" />
         </replace>
     </target>

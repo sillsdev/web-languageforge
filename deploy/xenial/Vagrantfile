@@ -26,7 +26,10 @@ if [ ! -d "web-languageforge" ]; then
 else
   cd web-languageforge; git pull --ff-only --recurse-submodules 
 fi
-ln -s /home/vagrant/src/xForge/web-languageforge /home/vagrant/src/xForge/web-scriptureforge
+cd /home/vagrant/src/xForge
+if [ ! -d "web-scriptureforge" ]; then
+  ln -s /home/vagrant/src/xForge/web-languageforge /home/vagrant/src/xForge/web-scriptureforge
+fi
 #cd /home/vagrant/src/xForge
 #if [ ! -d "web-scriptureforge" ]; then
 #  git clone https://github.com/sillsdev/web-scriptureforge.git /home/vagrant/src/xForge/web-scriptureforge --recursive
