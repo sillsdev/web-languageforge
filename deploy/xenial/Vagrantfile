@@ -8,34 +8,40 @@ $script = <<SCRIPT
 if [ ! -d "/home/vagrant/src" ]; then
   mkdir /home/vagrant/src
 fi
+cd /home/vagrant/src
+add-apt-repository ppa:ansible/ansible
 apt-get update
-apt-get -y install git python-pip python-crypto python-jinja2 python-paramiko python-pkg-resources python-yaml python-httplib2 python-netaddr
-pip install ansible==1.9.6
-if [ ! -d "/home/vagrant/src/web-languageforge" ]; then
-  git clone https://github.com/sillsdev/web-languageforge.git /home/vagrant/src/web-languageforge --recursive
+apt-get -y install git ansible
+if [ ! -d "/home/vagrant/src/ops-devbox" ]; then
+  git clone --recurse-submodules https://github.com/sillsdev/ops-devbox
+  cd ops-devbox
+  ansible-playbook -i hosts dev.yml
+fi
+if [ ! -d "/home/vagrant/src/xForge" ]; then
+  mkdir /home/vagrant/src/xForge
+fi
+cd /home/vagrant/src/xForge
+if [ ! -d "web-languageforge" ]; then
+  git clone --recurse-submodules https://github.com/sillsdev/web-languageforge 
 else
-  cd /home/vagrant/src/web-languageforge; git pull --ff-only --recurse-submodules origin
+  cd web-languageforge; git pull --ff-only --recurse-submodules 
 fi
-if [ ! -d "/home/vagrant/src/web-scriptureforge" ]; then
-  git clone https://github.com/sillsdev/web-scriptureforge.git /home/vagrant/src/web-scriptureforge --recursive
-else
-  cd /home/vagrant/src/web-scriptureforge; git pull --ff-only --recurse-submodules origin
-fi
-if [ ! -f "/home/vagrant/.ansible.cfg" ]; then
-  cp /home/vagrant/src/web-languageforge/deploy/default_ansible.cfg /home/vagrant/.ansible.cfg
-  chown vagrant.vagrant /home/vagrant/.ansible.cfg
-fi
-if [ ! -f "/root/.ansible.cfg" ]; then
-  cp /home/vagrant/src/web-languageforge/deploy/default_ansible.cfg /root/.ansible.cfg
-fi
-cd /home/vagrant/src/web-languageforge/deploy/; git checkout master; ansible-playbook -i hosts playbook_trusty_vagrant.yml
+ln -s /home/vagrant/src/xForge/web-languageforge /home/vagrant/src/xForge/web-scriptureforge
+#cd /home/vagrant/src/xForge
+#if [ ! -d "web-scriptureforge" ]; then
+#  git clone https://github.com/sillsdev/web-scriptureforge.git /home/vagrant/src/xForge/web-scriptureforge --recursive
+#else
+#  cd web-scriptureforge; git pull --ff-only --recurse-submodules origin
+#fi
+cd /home/vagrant/src/xForge/web-languageforge/deploy/; git checkout master; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
+
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "trusty-desktop-amd64"
+  config.vm.box = "xenial-unity-amd64"
 
-  config.vm.box_url = "http://downloads.sil.org/vagrant/trusty-desktop-amd64.box"
+  config.vm.box_url = "http://downloads.sil.org/vagrant/xenial-unity-amd64.box"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -72,7 +78,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Use VBoxManage to customize the VM. For example to change memory:
     vb.customize ["modifyvm", :id, "--memory", "4096"]
     vb.customize ["modifyvm", :id, "--vram", 64]
-    vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
+    vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
   end
 
   # configure Vagrant's ssh shell to be a non-login one (avoids error "stdin: is not a tty error")
