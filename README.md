@@ -161,14 +161,13 @@ Web server root URL: `http://languageforge.local`
 
 ### Xdebug ###
 
-Paste this output
+Ansible will have installed xdebug, but you still need to manually edit the following files:
 
-```
-php -i
-```
-into the [Xdebug wizard](https://xdebug.org/wizard.php) and follow the instructions to install Xdebug
 
-Append the following section to `/etc/php/7.0/apache2/php.ini`
+Edit **/etc/php/7.0/cli/php.ini** to have this line
+`zend_extension = /usr/lib/php/20151012/xdebug.so`
+
+Append the following section to the end of **/etc/php/7.0/apache2/php.ini**
 
 ```
 zend_extension = /usr/lib/php/20151012/xdebug.so
@@ -181,6 +180,8 @@ xdebug.scream=0
 xdebug.show_local_vars=1
 xdebug.idekey=PHPSTORM
 ```
+
+Reference [Xdebug wizard](https://xdebug.org/wizard.php)
 
 #### Integrating Xdebug with PhpStorm ####
 
@@ -223,7 +224,7 @@ When it's time to Debug, check that the bug icon is green for **Debug**.
 
 Then, from PhpStorm, click the telephone icon near the top right for *Start Listening for PHP Connections*.
 
-Additional resource for [Integrating Xdebug with PhpStorm](https://www.jetbrains.com/help/phpstorm/2016.2/configuring-xdebug.html#integrationWithProduct).
+Reference for [Integrating Xdebug with PhpStorm](https://www.jetbrains.com/help/phpstorm/2016.2/configuring-xdebug.html#integrationWithProduct).
 
 ## Testing ##
 
