@@ -1,5 +1,5 @@
 ---
-# vars_trusty_vagrant
+# vars_xenial_vagrant
 
 # mongo_path: /hddlinux/mongodb
 mongo_path: /var/lib/mongodb
