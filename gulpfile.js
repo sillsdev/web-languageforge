@@ -5,21 +5,13 @@ var gutil = require('gulp-util');
 var exec = require('child_process').exec;
 var async = require('async');
 var markdown = require('gulp-markdown');
-
-// livereload
 var livereload = require('gulp-livereload');
 
 var reloadPatterns = [
-  'src/**/*.php',
-  'src/**/*.html',
-  'src/**/*.css',
-  'src/**/*.js',
-  'src/**/*.twig',
-  '!src/vendor*',
-  'test/**/*.php',
-  'test/**/*.js',
-  'test/**/*.json',
-  '!test/app/node_modules'
+  'src/angular-app/**',
+  'src/Api/**',
+  'src/Site/**',
+  'test/**'
 ];
 
 var execute = function (command, callback) {
