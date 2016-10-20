@@ -2,7 +2,7 @@
 
 namespace Api\Model\Shared\Dto;
 
-use Api\Model\ProjectModel;
+use Api\Model\Shared\ProjectModel;
 
 class ManageUsersDto
 {

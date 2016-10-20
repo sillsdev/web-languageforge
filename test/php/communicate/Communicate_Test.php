@@ -4,10 +4,10 @@ use Api\Library\Shared\Communicate\DeliveryInterface;
 use Api\Library\Shared\Communicate\Communicate;
 use Api\Library\Shared\Communicate\Sms\SmsModel;
 use Api\Library\Shared\Website;
-use Api\Model\MessageModel;
-use Api\Model\UserModel;
-use Api\Model\UserProfileModel;
-use Api\Model\UnreadMessageModel;
+use Api\Model\Shared\MessageModel;
+use Api\Model\Shared\UserModel;
+use Api\Model\Shared\UserProfileModel;
+use Api\Model\Shared\UnreadMessageModel;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';

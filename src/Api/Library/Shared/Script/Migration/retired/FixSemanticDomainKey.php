@@ -1,13 +1,12 @@
 <?php
+
 namespace Api\Library\Shared\Script\Migration;
 
-    use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
-    use Api\Model\Languageforge\Lexicon\LexEntryListModel;
-    use Api\Model\Languageforge\Lexicon\LexEntryModel;
-    use Api\Model\Languageforge\Lexicon\LexProjectModel;
-    use Api\Model\Languageforge\Lexicon\LexSense;
-    use Api\Model\ProjectListModel;
-    use Api\Model\ProjectModel;
+use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Languageforge\Lexicon\LexSense;
+use Api\Model\Shared\ProjectListModel;
 
 class FixSemanticDomainKey
 {

@@ -1,6 +1,6 @@
 <?php
-use Api\Model\ProjectModel;
-use Api\Model\UserVoteModel;
+
+use Api\Model\Shared\UserVoteModel;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -8,7 +8,6 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestUserUserVoteModel extends UnitTestCase
 {
-
     public function testCRUD_Works()
     {
         $e = new MongoTestEnvironment();

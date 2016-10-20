@@ -1,10 +1,10 @@
 <?php
 
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\MapOf;
-use Api\Model\Mapper\ObjectForEncoding;
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\Mapper\JsonDecoder;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\MapOf;
+use Api\Model\Shared\Mapper\ObjectForEncoding;
+use Api\Model\Shared\Mapper\JsonDecoder;
+use Api\Model\Shared\Mapper\JsonEncoder;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -35,9 +35,7 @@ class PropertyObjectInArray
 
     public $name;
 
-    /**
-     * @var ArrayOf ArrayOf<PropertyObject>
-     */
+    /** @var ArrayOf<PropertyObject> */
     public $data;
 }
 
@@ -52,9 +50,7 @@ class PropertyObjectInArray2
 
     public $name;
 
-    /**
-     * @var ArrayOf ArrayOf<PropertyObjectInArray>
-     */
+    /** @var ArrayOf<PropertyObjectInArray> */
     public $data2;
 }
 
@@ -69,9 +65,7 @@ class PropertyObjectInMap
 
     public $name;
 
-    /**
-     * @var MapOf MapOf<PropertyObject>
-     */
+    /** @var MapOf<PropertyObject> */
     public $data;
 }
 
@@ -86,15 +80,12 @@ class PropertyObjectInMap2
 
     public $name;
 
-    /**
-     * @var MapOf MapOf<PropertyObjectInArray>
-     */
+    /** @var MapOf<PropertyObjectInArray> */
     public $data2;
 }
 
 class TestJsonEncoderDecoder extends UnitTestCase
 {
-
     public function testEncode_PrivateProperties_NotVisible()
     {
         $object = new PropertyObject();
@@ -253,5 +244,4 @@ class TestJsonEncoderDecoder extends UnitTestCase
         $this->assertEqual($object->data2[$key]->data[$key]->name, 'different name');
         $this->assertEqual($object->data2[$key]->data[$key]->shouldBeReadOnly, 'cannot change this');
     }
-
 }

@@ -1,17 +1,15 @@
 <?php
-use Api\Model\Mapper\MongoStore;
-use Api\Model\ProjectModel;
-use Api\Model\TextListModel;
-use Api\Model\TextModel;
+
+use Api\Model\Scriptureforge\Sfchecks\TextListModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\Mapper\MongoStore;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPhpPath . 'common/MongoTestEnvironment.php';
-require_once SourcePath . "Api/Model/TextModel.php";
 
 class TestTextModel extends UnitTestCase
 {
-
     public function testCRUD_Works()
     {
         $e = new MongoTestEnvironment();

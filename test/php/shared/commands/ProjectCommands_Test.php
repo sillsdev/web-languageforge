@@ -1,16 +1,16 @@
 <?php
 
-use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
-use Api\Model\Mapper\MongoStore;
-use Api\Model\ProjectModel;
-use Api\Model\ProjectSettingsModel;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
 use Api\Model\Scriptureforge\SfProjectModel;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Mapper\MongoStore;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\ProjectSettingsModel;
 use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 use Palaso\Utilities\FileUtilities;
 
 require_once __DIR__ . '/../../TestConfig.php';

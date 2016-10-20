@@ -3,13 +3,13 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\Id;
-use Api\Model\Mapper\IdReference;
-use Api\Model\Mapper\MapOf;
-use Api\Model\Mapper\MapperModel;
-use Api\Model\Mapper\MongoMapper;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\Id;
+use Api\Model\Shared\Mapper\IdReference;
+use Api\Model\Shared\Mapper\MapOf;
+use Api\Model\Shared\Mapper\MapperModel;
+use Api\Model\Shared\Mapper\MongoMapper;
+use Api\Model\Shared\ProjectModel;
 use LazyProperty\LazyPropertiesTrait;
 use Palaso\Utilities\CodeGuard;
 
@@ -44,7 +44,49 @@ class LexEntryModel extends MapperModel
 {
     use LazyPropertiesTrait;
 
-    /** @var bool */
+    /**
+     * @param ProjectModel $projectModel
+     * @param string $id
+     */
+    public function __construct($projectModel, $id = '')
+    {
+        $this->setPrivateProp('guid');
+        $this->setPrivateProp('dirtySR');
+        $this->setPrivateProp('mercurialSha');
+        $this->setReadOnlyProp('authorInfo');
+
+        $this->initLazyProperties([
+            'lexeme',
+            'senses',
+            'authorInfo',
+            'citationForm',
+            'customFields',
+            'entryBibliography',
+            'entryRestrictions',
+            'environments',
+            'etymology',
+            'etymologyGloss',
+            'etymologyComment',
+            'etymologySource',
+            'literalMeaning',
+            'location',
+            'morphologyType',
+            'note',
+            'morphType',
+            'pronunciation',
+            'cvPattern',
+            'tone',
+            'summaryDefinition'
+        ], false);
+
+        $this->isDeleted = false;
+        $this->id = new Id();
+
+        $databaseName = $projectModel->databaseName();
+        parent::__construct(self::mapper($databaseName), $id);
+    }
+
+    /** @var boolean */
     public $isDeleted;
 
     /** @var IdReference */
@@ -128,48 +170,6 @@ class LexEntryModel extends MapperModel
 
     /** @var LexMultiText */
     public $summaryDefinition;
-
-    /**
-     * @param ProjectModel $projectModel
-     * @param string $id
-     */
-    public function __construct($projectModel, $id = '')
-    {
-        $this->setPrivateProp('guid');
-        $this->setPrivateProp('dirtySR');
-        $this->setPrivateProp('mercurialSha');
-        $this->setReadOnlyProp('authorInfo');
-
-        $this->initLazyProperties([
-            'lexeme',
-            'senses',
-            'authorInfo',
-            'citationForm',
-            'customFields',
-            'entryBibliography',
-            'entryRestrictions',
-            'environments',
-            'etymology',
-                'etymologyGloss',
-                'etymologyComment',
-                'etymologySource',
-            'literalMeaning',
-            'location',
-            'morphologyType',
-            'note',
-            'morphType',
-            'pronunciation',
-                'cvPattern',
-                'tone',
-            'summaryDefinition'
-        ], false);
-
-        $this->isDeleted = false;
-        $this->id = new Id();
-
-        $databaseName = $projectModel->databaseName();
-        parent::__construct(self::mapper($databaseName), $id);
-    }
 
     public static function mapper($databaseName)
     {

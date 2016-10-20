@@ -4,13 +4,9 @@ namespace Api\Model\Languageforge\Lexicon;
 
 class ZipImportNodeError extends ImportNodeError
 {
+   const FILE = 'file';
 
-    const FILE = 'file';
-
-    /**
-     *
-     * @var array <LiftImportNodeError>
-     */
+    /** @var LiftImportNodeError[] */
     protected $subnodeErrors;
 
     public function addUnhandledLiftFile($fileName)

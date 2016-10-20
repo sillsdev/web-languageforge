@@ -1,7 +1,7 @@
 <?php
 
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\Mapper\JsonDecoder;
+use Api\Model\Shared\Mapper\JsonDecoder;
+use Api\Model\Shared\Mapper\JsonEncoder;
 use Litipk\Jiffy\UniversalTimestamp;
 
 require_once __DIR__ . '/../../TestConfig.php';

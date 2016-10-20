@@ -1,7 +1,7 @@
 <?php
 
-use Api\Model\Mapper\MongoEncoder;
-use Api\Model\Mapper\MongoDecoder;
+use Api\Model\Shared\Mapper\MongoDecoder;
+use Api\Model\Shared\Mapper\MongoEncoder;
 use Litipk\Jiffy\UniversalTimestamp;
 
 require_once __DIR__ . '/../../TestConfig.php';
@@ -51,5 +51,4 @@ class TestMongoDateMapper extends UnitTestCase
 //        $iso8601 = $decodedModel->universalTimestamp->asFormattedString(UniversalTimestamp::ISO8601_WITH_MILLISECONDS);
 //        var_dump($iso8601);
     }
-
 }

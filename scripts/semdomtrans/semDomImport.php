@@ -4,9 +4,9 @@ require_once('../scriptsConfig.php');
 
 use Api\Library\Languageforge\Semdomtrans\SemDomXMLImporter;
 use Api\Library\Shared\Website;
-use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Languageforge\SemDomTransProjectModel;
+use Api\Model\Shared\Command\ProjectCommands;
 use Palaso\Utilities\FileUtilities;
 
 $xmlFilePath = $argv[1];

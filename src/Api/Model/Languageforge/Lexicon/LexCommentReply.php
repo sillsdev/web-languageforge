@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Mapper\ObjectForEncoding;
+use Api\Model\Shared\Mapper\ObjectForEncoding;
 
 class LexCommentReply extends ObjectForEncoding
 {
@@ -13,20 +13,12 @@ class LexCommentReply extends ObjectForEncoding
         $this->authorInfo = new LexAuthorInfo();
     }
 
-    /**
-     * @var LexAuthorInfo
-     */
+    /** @var LexAuthorInfo */
     public $authorInfo;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $content;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $id;
 }

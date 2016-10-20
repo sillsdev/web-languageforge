@@ -3,16 +3,16 @@
 namespace Api\Model\Scriptureforge\Dto;
 
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
-use Api\Model\Shared\Dto\RightsHelper;
-use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextListModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
-use Api\Model\MessageModel;
-use Api\Model\QuestionModel;
-use Api\Model\TextListModel;
-use Api\Model\TextModel;
-use Api\Model\UnreadActivityModel;
-use Api\Model\UnreadMessageModel;
-use Api\Model\UserModel;
+use Api\Model\Shared\Dto\RightsHelper;
+use Api\Model\Shared\MessageModel;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\UnreadActivityModel;
+use Api\Model\Shared\UnreadMessageModel;
+use Api\Model\Shared\UserModel;
 
 class ProjectPageDto
 {

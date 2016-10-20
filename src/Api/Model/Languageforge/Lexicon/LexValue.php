@@ -9,9 +9,7 @@ class LexValue
         $this->value = $value;
     }
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $value;
 
     /**
@@ -27,5 +25,4 @@ class LexValue
     public function __toString() {
         return $this->value;
     }
-
 }

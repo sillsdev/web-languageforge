@@ -3,7 +3,7 @@
 use Api\Model\Shared\Rights\SystemRoles;
 
 use Api\Model\Shared\Dto\ManageUsersDto;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 
 require_once __DIR__ . '/../../TestConfig.php';

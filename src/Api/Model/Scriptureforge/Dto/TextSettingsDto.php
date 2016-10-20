@@ -2,13 +2,13 @@
 
 namespace Api\Model\Scriptureforge\Dto;
 
-use Api\Model\Shared\Dto\RightsHelper;
-use Api\Model\Mapper\JsonEncoder;
+use Api\Model\Scriptureforge\Sfchecks\QuestionAnswersListModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
-use Api\Model\QuestionAnswersListModel;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
-use Api\Model\UserModel;
+use Api\Model\Shared\Dto\RightsHelper;
+use Api\Model\Shared\Mapper\JsonEncoder;
+use Api\Model\Shared\UserModel;
 
 class TextSettingsDto
 {

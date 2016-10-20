@@ -1,15 +1,14 @@
 <?php
 
 use Api\Model\Scriptureforge\Dto\QuestionCommentDto;
-use Api\Model\Command\ActivityCommands;
-use Api\Model\Command\QuestionCommands;
-use Api\Model\ProjectModel;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
-use Api\Model\UserModel;
-use Api\Model\UnreadActivityModel;
-use Api\Model\UnreadAnswerModel;
-use Api\Model\UnreadQuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\Command\ActivityCommands;
+use Api\Model\Shared\UserModel;
+use Api\Model\Shared\UnreadActivityModel;
+use Api\Model\Shared\UnreadAnswerModel;
+use Api\Model\Shared\UnreadQuestionModel;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -17,10 +16,6 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestUserUnreadModel extends UnitTestCase
 {
-    public function __construct()
-    {
-    }
-
     public function testUnreadActivityModel_MarkUnreadForProjectMembers_noExistingRead_allMarkedUnread()
     {
         $e = new MongoTestEnvironment();
@@ -161,7 +156,7 @@ class TestUserUnreadModel extends UnitTestCase
 
         $project = $e->createProject("unread_test", "unreadCode");
         $userId1 = $e->createUser('user1', 'user1', 'user1');
-        $userId2 = $e->createUser('user2', 'user2', 'user2');
+        $e->createUser('user2', 'user2', 'user2');
         $q1 = new QuestionModel($project);
         $q1->title = "Question 1";
         $qId1 = $q1->write();
@@ -270,12 +265,8 @@ class TestUserUnreadModel extends UnitTestCase
         $question->title = "test question";
         $question->textRef->id = $textId;
         $questionId = $question->write();
-        $answer1Dto = QuestionCommands::updateAnswer($projectId, $questionId, $answer1, $userId1);
-        $answer2Dto = QuestionCommands::updateAnswer($projectId, $questionId, $answer2, $userId2);
-        $answer1 = array_pop($answer1Dto);
-        $answer1Id = $answer1['id'];
-        $answer2 = array_pop($answer2Dto);
-        $answer2Id = $answer2['id'];
+        QuestionCommands::updateAnswer($projectId, $questionId, $answer1, $userId1);
+        QuestionCommands::updateAnswer($projectId, $questionId, $answer2, $userId2);
 
         // the answer author does NOT get their answer marked as unread
         $unreadModel = new UnreadAnswerModel($userId1, $projectId, $questionId);
@@ -289,7 +280,7 @@ class TestUserUnreadModel extends UnitTestCase
         $this->assertEqual(count($unreadModel->unreadItems()), 2);
 
         // user1 visits question page
-        $pageDto = QuestionCommentDto::encode($projectId, $questionId, $userId1);
+        QuestionCommentDto::encode($projectId, $questionId, $userId1);
         $unreadModel = new UnreadAnswerModel($userId1, $projectId, $questionId);
         $this->assertEqual(count($unreadModel->unreadItems()), 0);
         $unreadModel = new UnreadAnswerModel($userId2, $projectId, $questionId);
@@ -298,7 +289,7 @@ class TestUserUnreadModel extends UnitTestCase
         $this->assertEqual(count($unreadModel->unreadItems()), 2);
 
         // user2 visits question page
-        $pageDto = QuestionCommentDto::encode($projectId, $questionId, $userId2);
+        QuestionCommentDto::encode($projectId, $questionId, $userId2);
         $unreadModel = new UnreadAnswerModel($userId1, $projectId, $questionId);
         $this->assertEqual(count($unreadModel->unreadItems()), 0);
         $unreadModel = new UnreadAnswerModel($userId2, $projectId, $questionId);
@@ -307,7 +298,7 @@ class TestUserUnreadModel extends UnitTestCase
         $this->assertEqual(count($unreadModel->unreadItems()), 2);
 
         // user2 visits question page
-        $pageDto = QuestionCommentDto::encode($projectId, $questionId, $userId3);
+        QuestionCommentDto::encode($projectId, $questionId, $userId3);
         $unreadModel = new UnreadAnswerModel($userId1, $projectId, $questionId);
         $this->assertEqual(count($unreadModel->unreadItems()), 0);
         $unreadModel = new UnreadAnswerModel($userId2, $projectId, $questionId);

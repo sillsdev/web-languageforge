@@ -1,10 +1,10 @@
 <?php
 
-use Api\Model\Command\ProjectCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';

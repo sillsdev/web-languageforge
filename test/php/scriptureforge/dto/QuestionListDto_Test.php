@@ -1,11 +1,11 @@
 <?php
 
-use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Scriptureforge\Dto\QuestionListDto;
-use Api\Model\AnswerModel;
-use Api\Model\CommentModel;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
+use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\CommentModel;
+use Api\Model\Shared\Rights\ProjectRoles;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -13,18 +13,13 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestQuestionListDto extends UnitTestCase
 {
-
     public function __construct() {
         $this->environ = new MongoTestEnvironment();
         $this->environ->clean();
         parent::__construct();
     }
 
-    /**
-     * Local store of mock test environment
-     *
-     * @var MongoTestEnvironment
-     */
+    /** @var MongoTestEnvironment Local store of mock test environment */
     private $environ;
 
     /**
@@ -97,7 +92,7 @@ class TestQuestionListDto extends UnitTestCase
 
         // Now check that it all looks right, 1 Text & 2 Questions
         $this->assertEqual($dto['count'], 2);
-        $this->assertIsa($dto['entries'], 'array');
+        $this->assertIsA($dto['entries'], 'array');
         $entriesById = $this->environ->indexItemsBy($dto['entries'], 'id');
         $entry0 = $entriesById[$question1Id];
         $entry1 = $entriesById[$question2Id];

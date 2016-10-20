@@ -1,11 +1,10 @@
 <?php
 
-use Api\Model\ProjectModel;
-
 use Api\Model\Shared\Dto\RightsHelper;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -13,18 +12,13 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestRightsHelper extends UnitTestCase
 {
-
     public function __construct() {
         $this->environ = new MongoTestEnvironment();
         $this->environ->clean();
         parent::__construct();
     }
 
-    /**
-     * Local store of mock test environment
-     *
-     * @var MongoTestEnvironment
-     */
+    /** @var MongoTestEnvironment Local store of mock test environment */
     private $environ;
 
     /**

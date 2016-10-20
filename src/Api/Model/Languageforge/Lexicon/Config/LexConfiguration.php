@@ -3,8 +3,8 @@
 namespace Api\Model\Languageforge\Lexicon\Config;
 
 use Api\Model\Languageforge\Lexicon\LexRoles;
-use Api\Model\Mapper\MapOf;
-use Api\Model\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\MapOf;
 
 class LexConfiguration
 {

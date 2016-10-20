@@ -1,12 +1,13 @@
 <?php
+
 namespace Api\Library\Shared\Script\Migration;
 
 use Api\Model\Scriptureforge\SfchecksProjectModel;
-use Api\Model\ProjectListModel;
-use Api\Model\TextListModel;
-use Api\Model\TextModel;
+use Api\Model\Shared\ProjectListModel;
+use Api\Model\Scriptureforge\Sfchecks\TextListModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Library\Shared\Script\Migration\models\TextModel_sf_v0_9_18;
-require_once APPPATH . 'Api/Model/TextModel.php';
+//require_once APPPATH . 'Api/Model/TextModel.php';
 
 class FixTextAudio
 {

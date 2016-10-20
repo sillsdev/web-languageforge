@@ -4,12 +4,12 @@ namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\CodeGuard;
-use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\LexCommentModel;
 use Api\Model\Languageforge\Lexicon\LexCommentReply;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
-use Api\Model\Mapper\JsonDecoder;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Dto\RightsHelper;
+use Api\Model\Shared\Mapper\JsonDecoder;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\UserGenericVoteModel;

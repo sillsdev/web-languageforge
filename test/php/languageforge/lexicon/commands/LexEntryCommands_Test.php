@@ -1,6 +1,5 @@
 <?php
 
-use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\LexExample;
@@ -8,7 +7,8 @@ use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexPicture;
 use Api\Model\Languageforge\Lexicon\LexSense;
-use Api\Model\Mapper\JsonEncoder;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Mapper\JsonEncoder;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';

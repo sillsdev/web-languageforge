@@ -2,27 +2,23 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\ArrayOf;
 
 class LexMultiValue
 {
+    public function __construct()
+    {
+        $this->values = new ArrayOf();
+    }
+
+    /** @var ArrayOf */
+    public $values;
 
     public static function createFromArray($values) {
         $field = new LexMultiValue();
         $field->values = new ArrayOf();
         $field->values->exchangeArray($values);
         return $field;
-    }
-
-    /**
-     *
-     * @var ArrayOf
-     */
-    public $values;
-
-    public function __construct()
-    {
-        $this->values = new ArrayOf();
     }
 
     /**

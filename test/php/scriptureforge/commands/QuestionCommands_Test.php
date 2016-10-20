@@ -1,10 +1,11 @@
 <?php
 
-use Api\Model\Command\QuestionCommands;
-use Api\Model\AnswerModel;
-use Api\Model\CommentModel;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
+use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\CommentModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -12,34 +13,22 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class UserVoteTestEnvironment
 {
-    /**
-     * @var ProjectModel
-     */
+    /** @var ProjectModel */
     public $project;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $projectId;
 
-    /**
-     * @var TextModel
-     */
+    /** @var TextModel */
     public $text;
 
-    /**
-     * @var QuestionModel
-     */
+    /** @var QuestionModel */
     public $question;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $answerId;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $questionId;
 
     public function create()
@@ -179,7 +168,7 @@ class TestQuestionCommands extends UnitTestCase
 
     public function testVoteUp_TwoVotes_NoChange()
     {
-        $mte = new MongoTestEnvironment();
+        new MongoTestEnvironment();
         $e = new UserVoteTestEnvironment();
         $e->create();
 
