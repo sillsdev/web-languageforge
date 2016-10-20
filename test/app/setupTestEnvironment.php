@@ -4,22 +4,22 @@ require_once('e2eTestConfig.php');
 
 // use commands go here (after the e2eTestConfig)
 use Api\Library\Shared\Website;
-use Api\Model\Command\ProjectCommands;
-use Api\Model\Command\UserCommands;
-use Api\Model\Command\TextCommands;
-use Api\Model\Command\QuestionCommands;
-use Api\Model\Command\QuestionTemplateCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\TextCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionTemplateCommands;
+use Api\Model\Scriptureforge\SfProjectModel;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
-use Api\Model\Mapper\MongoStore;
-use Api\Model\ProjectModel;
-use Api\Model\Scriptureforge\SfProjectModel;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\Mapper\MongoStore;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 
 $constants = json_decode(file_get_contents(TestPath . 'app/testConstants.json'), true);
 

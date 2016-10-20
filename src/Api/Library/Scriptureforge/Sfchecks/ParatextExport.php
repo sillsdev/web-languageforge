@@ -3,10 +3,10 @@
 namespace Api\Library\Scriptureforge\Sfchecks;
 
 use Api\Model\Scriptureforge\Dto\UsxHelper;
-use Api\Model\ProjectModel;
-use Api\Model\QuestionAnswersListModel;
-use Api\Model\TextModel;
-use Api\Model\UserModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionAnswersListModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\UserModel;
 
 class ParatextExport
 {

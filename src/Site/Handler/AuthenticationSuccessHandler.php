@@ -3,10 +3,10 @@
 namespace Site\Handler;
 
 use Api\Library\Shared\Website;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
@@ -16,7 +16,6 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 {
     /**
      * Constructor.
-     *
      * @param HttpUtils $httpUtils
      * @param array     $options   Options for processing a successful authentication attempt.
      * @param string|null $providerKey

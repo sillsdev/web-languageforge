@@ -2,12 +2,12 @@
 
 namespace Api\Model\Scriptureforge\Dto;
 
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\Shared\Dto\RightsHelper;
+use Api\Model\Scriptureforge\Sfchecks\TextListModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
-use Api\Model\TextListModel;
-use Api\Model\TextModel;
-use Api\Model\UserModel;
+use Api\Model\Shared\Dto\RightsHelper;
+use Api\Model\Shared\Mapper\JsonEncoder;
+use Api\Model\Shared\UserModel;
 
 class ProjectSettingsDtoEncoder extends JsonEncoder
 {

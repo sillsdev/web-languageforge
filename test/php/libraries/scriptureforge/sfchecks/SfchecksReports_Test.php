@@ -1,12 +1,11 @@
 <?php
 
-
 use Api\Library\Scriptureforge\Sfchecks\SfchecksReports;
-use Api\Model\AnswerModel;
-use Api\Model\Command\ProjectCommands;
-use Api\Model\CommentModel;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
+use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\CommentModel;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -54,12 +53,12 @@ class TestSfchecksReports extends UnitTestCase
         $comment1 = new CommentModel();
         $comment1->content = "first comment";
         $comment1->userRef->id = $user1Id;
-        $comment1Id = QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment1);
+        QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment1);
 
         $comment2 = new CommentModel();
         $comment2->content = "second comment";
         $comment2->userRef->id = $user2Id;
-        $comment2Id = QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment2);
+        QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment2);
 
         $data = SfchecksReports::UserEngagementReport($project->id->asString());
         $this->assertTrue($data['output']);

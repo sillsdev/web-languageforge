@@ -1,15 +1,14 @@
 <?php
 
-use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\Shared\Rights\ProjectRoleModel;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';

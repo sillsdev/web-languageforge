@@ -1,10 +1,10 @@
 <?php
 
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\Dto\ProjectListDto;
-use Api\Model\TextModel;
-use Api\Model\UserModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\Shared\UserModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -30,12 +30,12 @@ class TestProjectListDto extends UnitTestCase
         $text1 = new TextModel($project);
         $text1->title = "Chapter 3";
         $text1->content = "I opened my eyes upon a strange and weird landscape. I knew that I was on Mars; …";
-        $text1Id = $text1->write();
+        $text1->write();
 
         $text2 = new TextModel($project);
         $text2->title = "Chapter 4";
         $text2->content = "We had gone perhaps ten miles when the ground began to rise very rapidly. …";
-        $text2Id = $text2->write();
+        $text2->write();
 
         $dto = ProjectListDto::encode($userId, $e->website);
 

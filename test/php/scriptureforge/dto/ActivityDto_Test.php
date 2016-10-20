@@ -1,13 +1,13 @@
 <?php
 
-use Api\Model\Command\ActivityCommands;
+use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\Command\ActivityCommands;
+use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\Dto\ActivityListDto;
 use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\AnswerModel;
-use Api\Model\CommentModel;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -45,7 +45,7 @@ class TestActivityDto extends UnitTestCase
         $answer->score = 10;
         $answer->userRef->id = $userId;
         $answer->textHightlight = "text highlight";
-        $answerId = $question->writeAnswer($answer);
+        $question->writeAnswer($answer);
         $activityid = ActivityCommands::addAnswer($project, $questionId, $answer);
 
         // now delete the user
@@ -183,13 +183,13 @@ class TestActivityDto extends UnitTestCase
         $text->title = "Text 1";
         $text->content = "text content";
         $textId = $text->write();
-        $a1 = ActivityCommands::addText($project1, $textId, $text);
+        ActivityCommands::addText($project1, $textId, $text);
 
         $text = new TextModel($project2);
         $text->title = "Text 2";
         $text->content = "text content";
         $textId = $text->write();
-        $a2 = ActivityCommands::addText($project2, $textId, $text);
+        ActivityCommands::addText($project2, $textId, $text);
 
         $dto = ActivityListDto::getActivityForUser($project1->siteName, $userId);
 
@@ -243,7 +243,7 @@ class TestActivityDto extends UnitTestCase
         $comment2 = new CommentModel();
         $comment2->content = "second comment";
         $comment2->userRef->id = $user2Id;
-        $comment2Id = QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment2);
+        QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment2);
         $a8 = ActivityCommands::addComment($project, $questionId, $answerId, $comment2);
 
         // updated answer

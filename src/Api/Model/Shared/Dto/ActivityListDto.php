@@ -2,97 +2,19 @@
 
 namespace Api\Model\Shared\Dto;
 
-use Api\Model\ActivityListModel;
-use Api\Model\GlobalUnreadActivityModel;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\ProjectList_UserModel;
-use Api\Model\ProjectModel;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
-use Api\Model\UserModel;
-use Api\Model\UnreadActivityModel;
-
-require_once APPPATH . 'Api/Model/ActivityModel.php';
-
-class ActivityListDtoEncoder extends JsonEncoder
-{
-    private $_project;
-
-    /**
-     * @param ProjectModel $projectModel
-     */
-    public function __construct($projectModel)
-    {
-        $this->_project = $projectModel;
-    }
-
-    public function encodeIdReference($key, $model)
-    {
-        if ($model->asString() == '') {
-            return '';
-        }
-        if ($key == 'userRef' || $key == 'userRef2') {
-            $user = new UserModel();
-            if ($user->exists($model->asString())) {
-                $user->read($model->asString());
-
-                return array(
-                    'id' => $user->id->asString(),
-                    'avatar_ref' => $user->avatar_ref,
-                    'username' => $user->username
-                );
-            } else {
-                return '';
-            }
-        } elseif ($key == 'projectRef') {
-            $project = new ProjectModel($model->asString());
-            return array(
-                'id' => $project->id->asString(),
-                'type' => $project->appName,
-            );
-        } elseif ($key == 'textRef') {
-            $text = new TextModel($this->_project);
-            if ($text->exists($model->asString())) {
-                return $model->asString();
-            } else {
-                return '';
-            }
-        } elseif ($key == 'questionRef') {
-            $question = new QuestionModel($this->_project);
-            if ($question->exists($model->asString())) {
-                return $model->asString();
-            } else {
-                return '';
-            }
-        } elseif ($key == 'entryRef') {
-            $entry = new LexEntryModel($this->_project);
-            if ($entry->exists($model->asString())) {
-                return $model->asString();
-            } else {
-                return '';
-            }
-        } else {
-            return $model->asString();
-        }
-    }
-
-    /**
-     * @param ActivityListModel $model - the model to encode
-     * @param ProjectModel $projectModel
-     * @return array
-     */
-    public static function encodeModel($model, $projectModel)
-    {
-        /* Note: I had to change the name of this static method to something else besides 'encode' because
-         * PHP complained about the signature not being the same as the parent class JsonEncoder
-         * cjh 2013-08
-         */
-        $e = new ActivityListDtoEncoder($projectModel);
-
-        return $e->_encode($model);
-    }
-}
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\ActivityModel;
+use Api\Model\Shared\ActivityModelMongoMapper;
+use Api\Model\Shared\GlobalUnreadActivityModel;
+use Api\Model\Shared\Mapper\JsonEncoder;
+use Api\Model\Shared\Mapper\MapperListModel;
+use Api\Model\Shared\Mapper\MapOf;
+use Api\Model\Shared\ProjectList_UserModel;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\UserModel;
+use Api\Model\Shared\UnreadActivityModel;
 
 class ActivityListDto
 {
@@ -169,5 +91,101 @@ class ActivityListDto
             $item['type'] = 'project';
             unset($item['actionContent']);
         }
+    }
+}
+
+class ActivityListDtoEncoder extends JsonEncoder
+{
+    /**
+     * @param ProjectModel $projectModel
+     */
+    public function __construct($projectModel)
+    {
+        $this->_project = $projectModel;
+    }
+
+    private $_project;
+
+    public function encodeIdReference($key, $model)
+    {
+        if ($model->asString() == '') {
+            return '';
+        }
+        if ($key == 'userRef' || $key == 'userRef2') {
+            $user = new UserModel();
+            if ($user->exists($model->asString())) {
+                $user->read($model->asString());
+
+                return array(
+                    'id' => $user->id->asString(),
+                    'avatar_ref' => $user->avatar_ref,
+                    'username' => $user->username
+                );
+            } else {
+                return '';
+            }
+        } elseif ($key == 'projectRef') {
+            $project = new ProjectModel($model->asString());
+            return array(
+                'id' => $project->id->asString(),
+                'type' => $project->appName,
+            );
+        } elseif ($key == 'textRef') {
+            $text = new TextModel($this->_project);
+            if ($text->exists($model->asString())) {
+                return $model->asString();
+            } else {
+                return '';
+            }
+        } elseif ($key == 'questionRef') {
+            $question = new QuestionModel($this->_project);
+            if ($question->exists($model->asString())) {
+                return $model->asString();
+            } else {
+                return '';
+            }
+        } elseif ($key == 'entryRef') {
+            $entry = new LexEntryModel($this->_project);
+            if ($entry->exists($model->asString())) {
+                return $model->asString();
+            } else {
+                return '';
+            }
+        } else {
+            return $model->asString();
+        }
+    }
+
+    /**
+     * @param ActivityListModel $model - the model to encode
+     * @param ProjectModel $projectModel
+     * @return array
+     */
+    public static function encodeModel($model, $projectModel)
+    {
+        /* Note: I had to change the name of this static method to something else besides 'encode' because
+         * PHP complained about the signature not being the same as the parent class JsonEncoder
+         * cjh 2013-08
+         */
+        $e = new ActivityListDtoEncoder($projectModel);
+
+        return $e->_encode($model);
+    }
+}
+
+class ActivityListModel extends MapperListModel
+{
+    /**
+     * ActivityListModel constructor.
+     * @param ProjectModel $projectModel
+     */
+    public function __construct($projectModel)
+    {
+        // hardcoded to limit 100.  TODO implement paging
+        $this->entries = new MapOf(function () use ($projectModel) { return new ActivityModel($projectModel); });
+        parent::__construct(
+            ActivityModelMongoMapper::connect($projectModel->databaseName()),
+            array('action' => array('$regex' => '')), array(), array('dateCreated' => -1), 100
+        );
     }
 }

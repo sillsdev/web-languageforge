@@ -5,12 +5,12 @@ namespace Api\Library\Shared\Communicate;
 use Api\Library\Shared\Communicate\Sms\SmsModel;
 use Api\Library\Shared\Communicate\Sms\SmsQueue;
 use Api\Library\Shared\Website;
-use Api\Model\MessageModel;
-use Api\Model\ProjectModel;
-use Api\Model\ProjectSettingsModel;
-use Api\Model\UserModel;
-use Api\Model\UserProfileModel;
-use Api\Model\UnreadMessageModel;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\ProjectSettingsModel;
+use Api\Model\Shared\MessageModel;
+use Api\Model\Shared\UserModel;
+use Api\Model\Shared\UserProfileModel;
+use Api\Model\Shared\UnreadMessageModel;
 use Palaso\Utilities\CodeGuard;
 
 class Communicate

@@ -2,25 +2,23 @@
 
 use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\UserModel;
-use Api\Model\UserTypeaheadModel;
+use Api\Model\Shared\UserModel;
+use Api\Model\Shared\UserTypeaheadModel;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPhpPath . 'common/MongoTestEnvironment.php';
-require_once SourcePath . "Api/Model/ProjectModel.php";
-require_once SourcePath . "Api/Model/UserModel.php";
 
 class TestUserModel extends UnitTestCase
 {
-    private $_someUserId;
-
     public function __construct()
     {
         $e = new MongoTestEnvironment();
         $e->clean();
         parent::__construct();
     }
+
+    private $_someUserId;
 
     public function testWrite_ReadBackSame()
     {
@@ -320,5 +318,5 @@ class TestUserModel extends UnitTestCase
         $this->assertEqual(0, $list->count);
         $this->assertEqual(null, $list->entries);
     }
-    */
+*/
 }

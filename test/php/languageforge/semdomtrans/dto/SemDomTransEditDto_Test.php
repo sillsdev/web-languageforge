@@ -1,14 +1,12 @@
 <?php
 
-use Api\Model\Languageforge\Semdomtrans\SemDomTransItemModel;
-use Api\Model\Languageforge\SemDomTransProjectModel;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransItemListModel;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransItemModel;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransQuestion;
-use Api\Model\Mapper\ArrayOf;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransItemCommands;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
+use Api\Model\Shared\Mapper\ArrayOf;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -16,12 +14,11 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestSemDomTransEditDto extends UnitTestCase
 {
-
     public function __construct() {
         $e = new SemDomMongoTestEnvironment();
         $e->clean();
+        parent::__construct();
     }
-
 
     public function testEncode_SourceProjectFromXmlTargetProjectPreFilled_DtoAsExpected()
     {
@@ -37,7 +34,6 @@ class TestSemDomTransEditDto extends UnitTestCase
         $this->assertEqual($result["entries"][10]["name"]["source"], "Cloud");
         $this->assertEqual($result["entries"][1]["questions"][1]["question"]["source"], "(2) What words refer to the air around the earth?");
     }
-
 
     public function testEncode_SourceProjectAndTargetProjectHaveItems_DtoAsExpected()
     {
@@ -72,7 +68,7 @@ class TestSemDomTransEditDto extends UnitTestCase
         $targetItemModel->name = new SemDomTransTranslatedForm("wszechswiat");
         $targetItemModel->description = new SemDomTransTranslatedForm("Opis wszechswiata");
         $tq = new SemDomTransQuestion("Pytanie wszechswiata", "Termin zwiazany z wszechswiatem");
-        $targetItemModel->questions = new ArrayOf(function ($data) {
+        $targetItemModel->questions = new ArrayOf(function () {
             return new SemDomTransQuestion();
         });
         $targetItemModel->questions[] = $tq;
@@ -87,11 +83,11 @@ class TestSemDomTransEditDto extends UnitTestCase
 
         // print_r($result);
         // check dto returns expected results
-         $entries = $result["entries"];
-         $this->assertTrue($entries != null); 
-         $this->assertTrue(count($entries) > 0);
+        $entries = $result["entries"];
+        $this->assertTrue($entries != null);
+        $this->assertTrue(count($entries) > 0);
 
-         $firstObject = $entries[0];
+        $firstObject = $entries[0];
 
         $this->assertNotEqual($firstObject["key"], null);
         $this->assertEqual($firstObject["key"], "1");

@@ -3,10 +3,9 @@
 namespace Site\Provider;
 
 use Api\Library\Shared\Website;
-use Api\Model\Command\UserCommands;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModelWithPassword;
+use Api\Model\Shared\UserModelWithPassword;
 use Site\Model\UserWithId;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -20,9 +19,7 @@ class AuthUserProvider implements UserProviderInterface
         $this->website = $website;
     }
 
-    /**
-     * @var Website
-     */
+    /** @var Website */
     private $website;
 
     public function loadUserByUsername($usernameOrEmail) {

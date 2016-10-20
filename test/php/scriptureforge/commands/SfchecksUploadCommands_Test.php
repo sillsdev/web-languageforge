@@ -1,7 +1,8 @@
 <?php
+
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
-use Api\Model\TextModel;
-use Api\Model\Mapper\Id;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\Mapper\Id;
 use Palaso\Utilities\FileUtilities;
 
 require_once (__DIR__ . '/../../TestConfig.php');
@@ -92,7 +93,7 @@ class TestSfchecksUploadCommands extends UnitTestCase
         $environ->clean();
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        $projectId = $project->write();
+        $project->write();
         $text = new TextModel($project);
         $textId = $text->write();
         $fakeId  = new Id();

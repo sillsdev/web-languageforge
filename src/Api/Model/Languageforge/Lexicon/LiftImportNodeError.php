@@ -4,7 +4,6 @@ namespace Api\Model\Languageforge\Lexicon;
 
 class LiftImportNodeError extends ImportNodeError
 {
-
     const FILE = 'file';
     const ENTRY = 'entry';
     const SENSE = 'sense';
@@ -12,10 +11,7 @@ class LiftImportNodeError extends ImportNodeError
     const MULTITEXT = 'multitext';
     const MULTIPARAGRAPH = 'multiparagraph';
 
-    /**
-     *
-     * @var array <LiftImportNodeError>
-     */
+    /** @var LiftImportNodeError[] */
     protected $subnodeErrors;
 
     public function addUnhandledField($typeName)

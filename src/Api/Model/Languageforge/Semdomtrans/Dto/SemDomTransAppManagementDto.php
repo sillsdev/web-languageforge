@@ -4,7 +4,7 @@ namespace Api\Model\Languageforge\Semdomtrans\Dto;
 
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Languageforge\SemDomTransProjectModel;
-use Api\Model\ProjectListModel;
+use Api\Model\Shared\ProjectListModel;
 
 class SemDomTransAppManagementDto {
 

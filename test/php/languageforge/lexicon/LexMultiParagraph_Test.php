@@ -4,7 +4,7 @@ use Api\Model\Languageforge\Lexicon\Command\LexEntryDecoder;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDtoEntriesEncoder;
 use Api\Model\Languageforge\Lexicon\LexMultiParagraph;
 use Api\Model\Languageforge\Lexicon\LexParagraph;
-use Api\Model\Mapper\MapOf;
+use Api\Model\Shared\Mapper\MapOf;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';

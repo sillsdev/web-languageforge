@@ -1,17 +1,17 @@
 <?php
 
-use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
 use Api\Model\Scriptureforge\Dto\ProjectPageDto;
 use Api\Model\Scriptureforge\Dto\QuestionListDto;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionTemplateCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\TextCommands;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\Command\UserCommands;
-use Api\Model\Command\QuestionTemplateCommands;
-use Api\Model\Command\QuestionCommands;
-use Api\Model\Command\TextCommands;
-use Api\Model\Command\ProjectCommands;
-use Api\Model\UserModel;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\UserModel;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -19,13 +19,13 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class ApiCrudTestEnvironment
 {
-    public $e;
-
     public function __construct()
     {
         $this->e = new MongoTestEnvironment();
         $this->e->clean();
     }
+
+    public $e;
 
     public function makeProject($userId = '')
     {
@@ -81,7 +81,6 @@ class ApiCrudTestEnvironment
 
         return $userId;
     }
-
 }
 
 class TestApiCrud extends UnitTestCase
@@ -283,7 +282,7 @@ class TestApiCrud extends UnitTestCase
         $this->assertNotNull($someUser);
         $this->assertEqual(24, strlen($someUser->id->asString()));
         // create project
-        $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, 'sfchecks', $someUser->id->asString(), $e->e->website);
+        ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, 'sfchecks', $someUser->id->asString(), $e->e->website);
 
         // list
         $result = $e->json(UserCommands::listUsers());

@@ -2,13 +2,13 @@
 
 namespace Api\Model\Scriptureforge\Sfchecks\Command;
 
-use Api\Model\Command\ProjectCommands;
-use Palaso\Utilities\FileUtilities;
-use Api\Model\Shared\Command\UploadResponse;
-use Api\Model\Shared\Command\MediaResult;
-use Api\Model\Shared\Command\ErrorResult;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
-use Api\Model\TextModel;
+use Api\Model\Shared\Command\ErrorResult;
+use Api\Model\Shared\Command\MediaResult;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Command\UploadResponse;
+use Palaso\Utilities\FileUtilities;
 
 class SfchecksUploadCommands
 {
@@ -20,7 +20,7 @@ class SfchecksUploadCommands
      * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
-     * @return \Api\Model\Shared\Command\UploadResponse
+     * @return UploadResponse
      */
     public static function uploadFile($projectId, $mediaType, $tmpFilePath)
     {

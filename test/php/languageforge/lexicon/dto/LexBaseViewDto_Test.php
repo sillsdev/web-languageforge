@@ -4,7 +4,7 @@ use Api\Model\Shared\Rights\SystemRoles;
 
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\UserProfileModel;
+use Api\Model\Shared\UserProfileModel;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';

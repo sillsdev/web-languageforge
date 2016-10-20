@@ -1,10 +1,10 @@
 <?php
 
+use Api\Model\Scriptureforge\Sfchecks\SfchecksUserProfile;
 use Api\Model\Shared\Dto\UserProfileDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SiteRoles;
-use Api\Model\SfchecksUserProfile;
-use Api\Model\UserProfileModel;
+use Api\Model\Shared\UserProfileModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -91,5 +91,4 @@ class TestUserProfileDto extends UnitTestCase
         $this->assertIsA($dto['projectsSettings'], 'array');
         $this->assertEqual(count($dto['projectsSettings']), 0);
     }
-
 }

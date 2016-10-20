@@ -1,7 +1,8 @@
 <?php
-use Api\Model\AnswerModel;
-use Api\Model\CommentModel;
-use Api\Model\QuestionModel;
+
+use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Shared\CommentModel;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';

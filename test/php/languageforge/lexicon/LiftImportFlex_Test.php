@@ -1,15 +1,14 @@
 <?php
+
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\LexExample;
+use Api\Model\Languageforge\Lexicon\LexMultiValue;
+use Api\Model\Languageforge\Lexicon\LexPicture;
+use Api\Model\Languageforge\Lexicon\LexSense;
+use Api\Model\Languageforge\Lexicon\LexValue;
 use Api\Model\Languageforge\Lexicon\LiftImport;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
-use Api\Model\Languageforge\Lexicon\LexEntryModel;
-use Api\Model\Languageforge\Lexicon\LexSense;
-use Api\Model\Languageforge\Lexicon\LexExample;
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Languageforge\Lexicon\LexMultiValue;
-use Api\Model\Languageforge\Lexicon\LexValue;
-use Api\Model\Languageforge\Lexicon\LexPicture;
-use Api\Model\Languageforge\Lexicon\LexMultiText;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -17,16 +16,13 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestLiftImportFlex extends UnitTestCase
 {
-
     public function __construct() {
         $this->environ = new LexiconMongoTestEnvironment();
         $this->environ->clean();
         parent::__construct();
     }
 
-    /**
-     * @var LexiconMongoTestEnvironment
-     */
+    /** @var LexiconMongoTestEnvironment */
     private $environ;
 
     /**
@@ -248,7 +244,7 @@ EOD;
         $entriesByGuid = $this->environ->indexItemsBy($entries, 'guid');
 
         $entry0 = new LexEntryModel($project, $entriesByGuid['0a18bb95-0eb2-422e-bf7e-c1fd90274670']['id']);
-        $entry1 = new LexEntryModel($project, $entriesByGuid['dc4106ac-13fd-4ae0-a32b-b737f413d515']['id']);
+        new LexEntryModel($project, $entriesByGuid['dc4106ac-13fd-4ae0-a32b-b737f413d515']['id']);
 
         $this->assertEqual($entry0->guid, '0a18bb95-0eb2-422e-bf7e-c1fd90274670');
         $this->assertEqual($entry0->lexeme['th'], 'คาม');
@@ -298,5 +294,4 @@ EOD;
         $this->assertEqual($example000->translation['en']->value, 'A Translation');
 
     }
-
 }

@@ -3,12 +3,11 @@
 namespace Api\Model\Scriptureforge\Sfchecks\Command;
 
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
-use Api\Model\Command\ProjectCommands;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\Domain;
-use Api\Model\Mapper\JsonDecoder;
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\Mapper\MongoStore;
+use Api\Model\Shared\Mapper\JsonDecoder;
+use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
 
 class SfchecksProjectCommands

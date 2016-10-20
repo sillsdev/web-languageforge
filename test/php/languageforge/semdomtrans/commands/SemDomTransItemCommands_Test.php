@@ -1,14 +1,11 @@
 <?php
 
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransItemModel;
-use Api\Model\Languageforge\SemDomTransProjectModel;
-use Api\Model\Mapper\JsonEncoder;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransItemCommands;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransItemModel;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransQuestion;
-use Api\Model\Mapper\ArrayOf;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
+use Api\Model\Shared\Mapper\JsonEncoder;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -16,9 +13,6 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class SemdomTransItemCommands_Test extends UnitTestCase
 {
-    public function __construct() {
-    }
-
     public function testSemdomItemCommand_UpdateSemDomItem_AddItemUpdateItem()
     {
         $e = new SemDomMongoTestEnvironment();

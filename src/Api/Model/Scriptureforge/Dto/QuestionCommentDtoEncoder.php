@@ -2,8 +2,8 @@
 
 namespace Api\Model\Scriptureforge\Dto;
 
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\UserModel;
+use Api\Model\Shared\Mapper\JsonEncoder;
+use Api\Model\Shared\UserModel;
 
 class QuestionCommentDtoEncoder extends JsonEncoder
 {

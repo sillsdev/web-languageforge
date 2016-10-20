@@ -2,9 +2,9 @@
 
 namespace Api\Library\Shared;
 
-
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 use Silex\Application;
+use Site\Model\UserWithId;
 
 class SilexSessionHelper
 {
@@ -12,6 +12,7 @@ class SilexSessionHelper
         $userId = '';
         $silexUser = $app['security.token_storage']->getToken()->getUser();
         if (is_object($silexUser) && get_class($silexUser) == 'Site\Model\UserWithId') {
+            /** @var UserWithId $silexUser */
             $userId = $silexUser->getUserId();
         }
         return $userId;
@@ -26,5 +27,4 @@ class SilexSessionHelper
         }
         return $projectId;
     }
-
 }

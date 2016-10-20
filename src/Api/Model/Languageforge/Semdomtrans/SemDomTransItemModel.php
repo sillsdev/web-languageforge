@@ -2,28 +2,17 @@
 
 namespace Api\Model\Languageforge\Semdomtrans;
 
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\Id;
-use Api\Model\Mapper\MapperModel;
-use Api\Model\Mapper\MongoMapper;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\Id;
+use Api\Model\Shared\Mapper\MapperModel;
+use Api\Model\Shared\Mapper\MongoMapper;
+use Api\Model\Shared\ProjectModel;
 
 class SemDomTransItemModel extends MapperModel
 {
-    public static function mapper($databaseName)
-    {
-        /** @var MongoMapper $instance */
-        static $instance = null;
-        if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new MongoMapper($databaseName, 'semDomTransItems');
-        }
-
-        return $instance;
-    }
-
     /**
      * @param ProjectModel $projectModel
-     * @param string       $id
+     * @param string $id
      */
     public function __construct($projectModel, $id = '')
     {
@@ -62,4 +51,15 @@ class SemDomTransItemModel extends MapperModel
     public $questions;
     
     public $xmlGuid;
- }
+
+    public static function mapper($databaseName)
+    {
+        /** @var MongoMapper $instance */
+        static $instance = null;
+        if (null === $instance || $instance->databaseName() != $databaseName) {
+            $instance = new MongoMapper($databaseName, 'semDomTransItems');
+        }
+
+        return $instance;
+    }
+}

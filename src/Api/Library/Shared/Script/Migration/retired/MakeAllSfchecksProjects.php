@@ -2,8 +2,8 @@
 namespace Api\Library\Shared\Script\Migration;
 
 use Api\Model\Scriptureforge\SfchecksProjectModel;
-use Api\Model\ProjectListModel;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\ProjectListModel;
+use Api\Model\Shared\ProjectModel;
 
 class MakeAllSfchecksProjects
 {

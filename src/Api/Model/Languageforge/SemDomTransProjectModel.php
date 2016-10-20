@@ -8,8 +8,8 @@ use Api\Model\Languageforge\Semdomtrans\SemDomTransItemModel;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransQuestion;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
-use Api\Model\Mapper\IdReference;
-use Api\Model\Mapper\Id;
+use Api\Model\Shared\Mapper\IdReference;
+use Api\Model\Shared\Mapper\Id;
 
 class SemDomTransProjectModel extends LfProjectModel {
 

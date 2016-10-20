@@ -4,7 +4,6 @@ namespace Api\Model\Languageforge\Lexicon;
 
 class LiftImportStats
 {
-
     public function __construct($existingEntries = 0)
     {
         $this->existingEntries = $existingEntries;
@@ -15,39 +14,21 @@ class LiftImportStats
         $this->entriesDeleted = 0;
     }
 
-    /**
-     *
-     * @var integer
-     */
+    /** @var integer */
     public $existingEntries;
 
-    /**
-     *
-     * @var integer
-     */
+    /** @var integer */
     public $importEntries;
 
-    /**
-     *
-     * @var integer
-     */
+    /** @var integer */
     public $newEntries;
 
-    /**
-     *
-     * @var integer
-     */
+    /** @var integer */
     public $entriesMerged;
 
-    /**
-     *
-     * @var integer
-     */
+    /** @var integer */
     public $entriesDuplicated;
 
-    /**
-     *
-     * @var integer
-     */
+    /** @var integer */
     public $entriesDeleted;
 }

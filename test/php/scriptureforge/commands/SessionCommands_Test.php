@@ -1,10 +1,10 @@
 <?php
 
-use Api\Model\Command\SessionCommands;
-use Api\Model\Command\ProjectCommands;
-//use models\AnswerModel;
-//use models\CommentModel;
-use Api\Model\QuestionModel;
+use Api\Library\Shared\Website;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Shared\Command\SessionCommands;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\ProjectModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -12,31 +12,22 @@ require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class SessionTestEnvironment
 {
-    /**
-     * @var ProjectModel
-     */
+    /** @var ProjectModel */
     public $project;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $projectId;
 
-    /**
-     * @var QuestionModel
-     */
+    /** @var QuestionModel */
     public $question;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $questionId;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $userId;
 
+    /** @var Website */
     public $website;
 
     public function create()
@@ -55,7 +46,6 @@ class SessionTestEnvironment
         $this->projectId = $this->project->id->asString();
         $this->questionId = $this->question->id->asString();
     }
-
 }
 
 class TestSessionCommands extends UnitTestCase
@@ -116,4 +106,4 @@ class TestSessionCommands extends UnitTestCase
         $this->assertFalse(empty($data['userProjectRights']));
         $this->assertTrue(is_integer($data['userProjectRights'][0]));
     }
-};
+}

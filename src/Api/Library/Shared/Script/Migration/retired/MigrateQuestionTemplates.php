@@ -4,9 +4,9 @@ namespace Api\Library\Shared\Script\Migration;
 
 use Api\Model\Scriptureforge\Sfchecks\QuestionTemplateModel;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
-use Api\Model\GlobalQuestionTemplateListModel;
-use Api\Model\GlobalQuestionTemplateModel;
-use Api\Model\ProjectListModel;
+use Api\Library\Shared\Script\Migration\retired\models\GlobalQuestionTemplateListModel;
+use Api\Library\Shared\Script\Migration\retired\models\GlobalQuestionTemplateModel;
+use Api\Model\Shared\ProjectListModel;
 
 require_once 'Api/Model/GlobalQuestionTemplateModel.php';
 
