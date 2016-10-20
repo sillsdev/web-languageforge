@@ -2,12 +2,13 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
-use Api\Model\Command\ProjectCommands;
+use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModelWithIdentifier;
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\JsonEncoder;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\JsonEncoder;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -168,7 +169,7 @@ class SendReceiveCommands
      * @param string $pidFilePath
      * @param string $command
      * @return bool true if process started or already running, otherwise false
-     * @throws \Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException
+     * @throws ResourceNotAvailableException
      * @throws \Exception
      */
     public static function startLFMergeIfRequired($projectId, $pidFilePath = null, $command = null)
@@ -533,39 +534,25 @@ class SendReceiveCommands
 
 class SendReceivePaths
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $mergeQueuePath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $receiveQueuePath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $sendQueuePath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $editQueuePath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $syncQueuePath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $workPath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $statePath;
 }
 
@@ -581,23 +568,15 @@ class SendReceiveGetUserProjectResult
         });
     }
 
-    /**
-     * @var bool true if the username exists, false otherwise
-     */
+    /** @var boolean true if the username exists, false otherwise */
     public $isKnownUser;
 
-    /**
-     * @var bool true if the username and password are valid, false otherwise
-     */
+    /** @var boolean true if the username and password are valid, false otherwise */
     public $hasValidCredentials;
 
-    /**
-     * @var ArrayOf <SendReceiveProjectModel>
-     */
+    /** @var ArrayOf<SendReceiveProjectModel> */
     public $projects;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $errorMessage;
 }

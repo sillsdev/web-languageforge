@@ -1,7 +1,7 @@
 <?php
 
-use Api\Model\Command\TextCommands;
-use Api\Model\TextModel;
+use Api\Model\Scriptureforge\Sfchecks\Command\TextCommands;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';

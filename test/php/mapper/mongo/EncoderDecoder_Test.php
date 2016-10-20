@@ -1,10 +1,8 @@
 <?php
 
-use Api\Model\Mapper\ArrayOf;
-
-use Api\Model\Mapper\MapOf;
-
-use Api\Model\UserModel;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\MapOf;
+use Api\Model\Shared\UserModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -66,6 +64,7 @@ class TestMongoEncoderDecoder extends UnitTestCase
     {
         $e = new MongoTestEnvironment();
         $e->clean();
+        parent::__construct();
     }
 
     public function testMapOf_OneClass_Works()
@@ -84,7 +83,6 @@ class TestMongoEncoderDecoder extends UnitTestCase
         $this->assertTrue(array_key_exists('apple2', $codecTest2->fruitsMap));
         $this->assertEqual($codecTest2->fruitsMap['apple1']->numOfSlices, 1);
         $this->assertEqual($codecTest2->fruitsMap['apple2']->numOfSlices, 2);
-
     }
 
     public function testMapOf_TwoClasses_Works()
@@ -103,7 +101,6 @@ class TestMongoEncoderDecoder extends UnitTestCase
         $this->assertTrue(array_key_exists('orange', $codecTest2->fruitsMap));
         $this->assertEqual($codecTest2->fruitsMap['apple']->numOfSlices, 5);
         $this->assertEqual($codecTest2->fruitsMap['orange']->peelThickness, 'thick');
-
     }
 
     public function testArrayOf_OneClass_Works()
@@ -140,7 +137,5 @@ class TestMongoEncoderDecoder extends UnitTestCase
         $this->assertTrue(is_a($codecTest2->fruitsArray[1], 'Orange'));
         $this->assertEqual($codecTest2->fruitsArray[0]->numOfSlices, 5);
         $this->assertEqual($codecTest2->fruitsArray[1]->peelThickness, 'thick');
-
     }
-
 }

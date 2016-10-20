@@ -2,27 +2,12 @@
 
 namespace Api\Model\Shared;
 
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\IdReference;
-use Api\Model\Mapper\MongoMapper;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\IdReference;
+use Api\Model\Shared\Mapper\MongoMapper;
 
-class Vote
+class UserGenericVoteModel extends UserRelationModel
 {
-    public function __construct()
-    {
-        $this->ref = new IdReference();
-    }
-
-    public $ref;
-}
-
-class UserGenericVoteModel extends \Api\Model\UserRelationModel
-{
-    /**
-     * @var string
-     */
-    public $namespace;
-
     /**
      * @param string $userId
      * @param string $projectId
@@ -30,11 +15,17 @@ class UserGenericVoteModel extends \Api\Model\UserRelationModel
      */
     public function __construct($userId, $projectId, $namespace)
     {
-        $this->votes = new ArrayOf(function ($data) { return new Vote(); } );
+        $this->votes = new ArrayOf(function () { return new GenericVote(); } );
         $this->namespace = $namespace;
         parent::__construct('vote', $userId, $projectId);
         $this->read();
     }
+
+    /**@var ArrayOf GenericVote */
+    public $votes;
+
+    /** @var string */
+    public $namespace;
 
     public function read($id = '')
     {
@@ -53,7 +44,7 @@ class UserGenericVoteModel extends \Api\Model\UserRelationModel
      */
     public function addVote($id)
     {
-        $vote = new Vote();
+        $vote = new GenericVote();
         $vote->ref->id = $id;
         if (in_array($vote, (array) $this->votes)) {
             return;
@@ -82,7 +73,7 @@ class UserGenericVoteModel extends \Api\Model\UserRelationModel
      */
     public function hasVote($id)
     {
-        $vote = new Vote();
+        $vote = new GenericVote();
         $vote->ref->id = $id;
         if (in_array($vote, (array) $this->votes)) {
             return true;
@@ -90,10 +81,14 @@ class UserGenericVoteModel extends \Api\Model\UserRelationModel
 
         return false;
     }
+}
 
-    /**
-     * @var ArrayOf IdReference
-     */
-    public $votes;
+class GenericVote
+{
+    public function __construct()
+    {
+        $this->ref = new IdReference();
+    }
 
+    public $ref;
 }

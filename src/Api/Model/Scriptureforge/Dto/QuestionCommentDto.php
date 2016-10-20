@@ -3,17 +3,19 @@
 namespace Api\Model\Scriptureforge\Dto;
 
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
-use Api\Model\Shared\Dto\RightsHelper;
-use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Scriptureforge\SfchecksProjectModel;
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
-use Api\Model\UnreadActivityModel;
-use Api\Model\UnreadAnswerModel;
-use Api\Model\UnreadCommentModel;
-use Api\Model\UserModel;
-use Api\Model\UserVoteModel;
+use Api\Model\Shared\CommentModel;
+use Api\Model\Shared\Dto\RightsHelper;
+use Api\Model\Shared\Mapper\JsonEncoder;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\UnreadActivityModel;
+use Api\Model\Shared\UnreadAnswerModel;
+use Api\Model\Shared\UnreadCommentModel;
+use Api\Model\Shared\UserModel;
+use Api\Model\Shared\UserVoteModel;
 
 class QuestionCommentDto
 {
@@ -23,6 +25,7 @@ class QuestionCommentDto
      * @param string $questionId
      * @param string $userId
      * @return array - The DTO.
+     * @throws ResourceNotAvailableException
      */
     public static function encode($projectId, $questionId, $userId)
     {

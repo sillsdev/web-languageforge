@@ -5,11 +5,11 @@ namespace Site\Controller;
 use Api\Library\Shared\Palaso\StringUtil;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
+use Api\Model\Shared\FeaturedProjectListModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\Domain;
-use Api\Model\FeaturedProjectListModel;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -40,41 +40,25 @@ class Base
         $this->addCssFiles($this->getThemePath()."/css");
     }
 
-    /**
-     * data used to render templates
-     * @var array
-     */
+    /** @var array data used to render templates */
     public $data;
 
-    /**
-     * @var Website
-     */
+    /** @var Website */
     public $website;
 
-    /**
-     * Variable used to control visibility of help button in header menu bar
-     * @var bool
-     */
+    /** @var boolean Variable used to control visibility of help button in header menu bar */
     protected $_showHelp;
 
-    /**
-     * @var bool
-     */
+    /** @var boolean */
     protected $_isLoggedIn;
 
-    /**
-     * @var UserModel
-     */
+    /** @var UserModel */
     protected $_user;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $_userId;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $_projectId;
 
     // all child classes should use this method to render their pages
@@ -204,7 +188,6 @@ class Base
             }
         }
     }
-
 
     /**
      * Reads the js_dependencies.json file and creates a structure for use in the controller above

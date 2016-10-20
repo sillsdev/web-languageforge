@@ -15,8 +15,8 @@ class TestLexSenseModel extends UnitTestCase
 
         $this->assertIsA($model->partOfSpeech, 'Api\Model\Languageforge\Lexicon\LexValue');
         $this->assertIsA($model->semanticDomain, 'Api\Model\Languageforge\Lexicon\LexMultiValue');
-        $this->assertIsA($model->examples, 'Api\Model\Mapper\ArrayOf');
-        $this->assertIsA($model->customFields, 'Api\Model\Mapper\MapOf');
+        $this->assertIsA($model->examples, 'Api\Model\Shared\Mapper\ArrayOf');
+        $this->assertIsA($model->customFields, 'Api\Model\Shared\Mapper\MapOf');
         $this->assertIsA($model->authorInfo, 'Api\Model\Languageforge\Lexicon\LexAuthorInfo');
         $this->assertIsA($model->definition, 'Api\Model\Languageforge\Lexicon\LexMultiText');
         $this->assertIsA($model->gloss, 'Api\Model\Languageforge\Lexicon\LexMultiText');

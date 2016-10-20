@@ -1,12 +1,12 @@
 <?php
 
 use Api\Library\Shared\Communicate\DeliveryInterface;
-use Api\Model\Command\UserCommands;
+use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\PasswordModel;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\PasswordModel;
-use Api\Model\ProjectModel;
-use Api\Model\UserModel;
-use Api\Model\UserProfileModel;
+use Api\Model\Shared\UserModel;
+use Api\Model\Shared\UserProfileModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
@@ -38,7 +38,6 @@ class MockUserCommandsDelivery implements DeliveryInterface
 
 class TestUserCommands extends UnitTestCase
 {
-
     public function __construct() {
         $this->environ = new MongoTestEnvironment();
         $this->environ->clean();
@@ -46,18 +45,10 @@ class TestUserCommands extends UnitTestCase
         parent::__construct();
     }
 
-    /**
-     * Local store of mock test environment
-     *
-     * @var MongoTestEnvironment
-     */
+    /** @var MongoTestEnvironment Local store of mock test environment */
     private $environ;
 
-    /**
-     * Data storage between tests
-     *
-     * @var array <unknown>
-     */
+    /** @var array <unknown> Data storage between tests */
     private $save;
 
     public function testDeleteUsers_NoThrow()
@@ -144,7 +135,7 @@ class TestUserCommands extends UnitTestCase
         $zedUser = new UserModel($user1Id);
         $originalWebsite = clone $this->environ->website;
         $this->environ->website->domain = 'default.local';
-        $user2Id = $this->environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $this->environ->createUser('jsmith', 'joe smith','joe@smith.com');
 
         $identityCheck = UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'zed@example.com', $originalWebsite);
 
@@ -214,7 +205,7 @@ class TestUserCommands extends UnitTestCase
         $this->environ->clean();
 
         $user1Id = $this->environ->createUser('jsmith', 'joe smith','joe@smith.com');
-        $joeUser = new UserModel($user1Id);
+        new UserModel($user1Id);
         $user2Id = $this->environ->createUser('zedUser', 'zed user','zed@example.com');
         $zedUser = new UserModel($user2Id);
 
@@ -444,11 +435,11 @@ class TestUserCommands extends UnitTestCase
     {
         $this->environ->clean();
 
-        $adminModel = new Api\Model\UserModel();
+        $adminModel = new UserModel();
         $adminModel->username = 'admin';
         $adminModel->role = SystemRoles::SYSTEM_ADMIN;
         $adminId = $adminModel->write();
-        $userModel = new Api\Model\UserModel();
+        $userModel = new UserModel();
         $userModel->username = 'user';
         $userModel->role = SystemRoles::NONE;
         $userId = $userModel->write();

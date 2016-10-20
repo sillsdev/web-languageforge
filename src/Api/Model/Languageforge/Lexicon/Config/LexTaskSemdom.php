@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-use Api\Model\Mapper\MapOf;
+use Api\Model\Shared\Mapper\MapOf;
 
 class LexTaskSemdom extends LexTask
 {

@@ -1,11 +1,11 @@
 <?php
 
 use Api\Model\Scriptureforge\Dto\TextSettingsDto;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';

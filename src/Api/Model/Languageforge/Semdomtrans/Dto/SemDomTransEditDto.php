@@ -22,7 +22,7 @@ class SemDomTransEditDto
      * @param string $userId
      * @param string $lastFetchTime
      * @param number $offset
-     * @return multitype:boolean number multitype: multitype:string  Ambigous <\Api\Model\Mapper\string;, multitype:, string, Ambigous <multitype:, multitype:multitype: unknown >, Ambigous <multitype:, \stdClass, multitype:multitype: unknown >, Ambigous <string, multitype:NULL string >>
+     * @return multitype:boolean number multitype: multitype:string  Ambigous <\Api\Model\Shared\Mapper\string;, multitype:, string, Ambigous <multitype:, multitype:multitype: unknown >, Ambigous <multitype:, \stdClass, multitype:multitype: unknown >, Ambigous <string, multitype:NULL string >>
      */
     public static function encode($projectId, $userId, $lastFetchTime = null, $offset = 0)
     {

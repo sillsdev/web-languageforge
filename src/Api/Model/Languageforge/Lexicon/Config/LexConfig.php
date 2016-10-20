@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-use Api\Model\Mapper\ObjectForEncoding;
+use Api\Model\Shared\Mapper\ObjectForEncoding;
 
 class LexConfig extends ObjectForEncoding
 {

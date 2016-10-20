@@ -3,19 +3,11 @@
 namespace Api\Model\Shared;
 
 use Api\Library\Shared\Palaso\DbScriptLogger;
-use Api\Model\Mapper\MongoStore;
-use Api\Model\ProjectModel;
-use Api\Model\UserModel;
+use Api\Model\Shared\Mapper\MongoStore;
 
-class DbIntegrityHelper extends DbScriptLogger {
-    
-    public $projectsChecked;
-    public $projectsFixed;
-    public $usersChecked;
-    public $usersFixed;
-
+class DbIntegrityHelper extends DbScriptLogger
+{
     /**
-     * 
      * @param boolean $makeChanges
      */
     public function __construct($makeChanges = false) {
@@ -26,8 +18,12 @@ class DbIntegrityHelper extends DbScriptLogger {
         $this->usersChecked = 0;
         $this->usersFixed = 0;
     }
-    
-    
+
+    public $projectsChecked;
+    public $projectsFixed;
+    public $usersChecked;
+    public $usersFixed;
+
     public function checkProject($projectId) {
         $project = new ProjectModel($projectId);
         $this->projectsChecked++;
@@ -100,8 +96,8 @@ class DbIntegrityHelper extends DbScriptLogger {
     }
 }
 
-class DbIntegrityHelperResult {
-    
+class DbIntegrityHelperResult
+{
     const OK = 'ok';
     const DEGRADED = 'degraded';
     

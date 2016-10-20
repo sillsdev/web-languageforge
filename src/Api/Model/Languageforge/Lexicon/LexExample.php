@@ -2,8 +2,8 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Mapper\MapOf;
-use Api\Model\Mapper\ObjectForEncoding;
+use Api\Model\Shared\Mapper\MapOf;
+use Api\Model\Shared\Mapper\ObjectForEncoding;
 use LazyProperty\LazyPropertiesTrait;
 
 class LexExample extends ObjectForEncoding

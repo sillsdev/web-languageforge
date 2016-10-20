@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge;
 
-use Api\Model\ProjectModel;
+use Api\Model\Shared\ProjectModel;
 
 class LfProjectModel extends ProjectModel
 {
@@ -15,9 +15,6 @@ class LfProjectModel extends ProjectModel
         parent::__construct($id);
     }
 
-    /**
-     * The ISO 639 language code
-     * @var string
-     */
+    /** @var string The ISO 639 language code */
     public $languageCode;
 }

@@ -3,10 +3,10 @@
 namespace Site\Controller;
 
 use Api\Library\Shared\SilexSessionHelper;
-use Api\Model\Command\SessionCommands;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\Command\SessionCommands;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 use Silex\Application;
 
 class App extends Base

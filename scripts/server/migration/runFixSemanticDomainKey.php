@@ -7,7 +7,7 @@ require_once('../../scriptsConfig.php');
 class RunFixSemanticDomainKey {
 
     public static function run() {
-        $user = new \Api\Model\UserModel();
+        $user = new \Api\Model\Shared\UserModel();
         $user->readByUserName('chris');
         $userId = $user->id->asString();
 

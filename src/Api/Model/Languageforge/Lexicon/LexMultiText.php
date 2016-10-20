@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Mapper\MapOf;
+use Api\Model\Shared\Mapper\MapOf;
 
 function generateLexValue()
 {

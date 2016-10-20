@@ -4,7 +4,7 @@ require_once ('e2eTestConfig.php');
 
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\ProjectModel;
 use Palaso\Utilities\FileUtilities;
 
 $constants = json_decode(file_get_contents(TestPath . 'app/testConstants.json'), true);

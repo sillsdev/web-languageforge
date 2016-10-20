@@ -2,10 +2,7 @@
 
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
-use Api\Model\ProjectModel;
-use Api\Model\Shared\Rights\Operation;
-use Api\Model\Shared\Rights\Domain;
-use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\ProjectModel;
 use Palaso\Utilities\FileUtilities;
 
 require_once __DIR__ . '/../../TestConfig.php';
@@ -97,5 +94,4 @@ class TestLexProjectModel extends UnitTestCase
         FileUtilities::removeFolderAndAllContents($project->getAssetsFolderPath());
         FileUtilities::removeFolderAndAllContents($projectWorkPath);
     }
-
 }

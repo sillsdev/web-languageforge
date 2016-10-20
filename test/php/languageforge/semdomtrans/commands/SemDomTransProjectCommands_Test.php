@@ -1,20 +1,14 @@
 <?php
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransItemListModel;
-use Api\Model\Languageforge\SemDomTransProjectModel;
+
 use Api\Library\Languageforge\Semdomtrans\SemDomXMLExporter;
-use Api\Model\ProjectListModel;
-use Api\Library\Languageforge\Semdomtrans;
-use Api\Model\ProjectModel;
-use Api\Library\Shared\Website;
-use Api\Library\Languageforge\Semdomtrans\SemDomXMLImporter;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransItemListModel;
 
 require_once __DIR__ . '/../../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
-class SemDomTransProjectCommands_Test extends UnitTestCase {
-
+class SemDomTransProjectCommands_Test extends UnitTestCase
+{
     public function testCreateProject_englishProjectExists_newProjectCreatedAndPrefilledFromSourceProject()
     {
         $e = new SemDomMongoTestEnvironment();

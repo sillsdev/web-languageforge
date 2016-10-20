@@ -2,9 +2,9 @@
 
 namespace Api\Model\Scriptureforge\Dto;
 
-use Api\Model\ProjectModel;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\ProjectModel;
 
 class BreadCrumbHelper
 {

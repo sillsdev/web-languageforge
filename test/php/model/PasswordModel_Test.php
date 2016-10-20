@@ -1,9 +1,9 @@
 <?php
-use Api\Model\PasswordModel;
+
+use Api\Model\Shared\PasswordModel;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-
 require_once TestPhpPath . 'common/MongoTestEnvironment.php';
 
 class TestPasswordModel extends UnitTestCase
@@ -12,6 +12,7 @@ class TestPasswordModel extends UnitTestCase
     {
         $e = new MongoTestEnvironment();
         $e->clean();
+        parent::__construct();
     }
 
     public function testChangePassword_PasswordChanged()

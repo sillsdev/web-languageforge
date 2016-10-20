@@ -4,7 +4,7 @@ namespace Api\Model\Languageforge\Semdomtrans\Command;
 
 use Api\Model\Languageforge\Semdomtrans\SemDomTransWorkingSetModel;
 use Api\Model\Languageforge\SemDomTransProjectModel;
-use Api\Model\Mapper\JsonDecoder;
+use Api\Model\Shared\Mapper\JsonDecoder;
 
 class SemDomTransWorkingSetCommands
 {

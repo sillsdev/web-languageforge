@@ -1,28 +1,26 @@
 <?php
+
+use Api\Model\Shared\ProjectListModel;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\Mapper\Id;
-use Api\Model\UserModel;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\UserModel;
 
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-
 require_once TestPhpPath . 'common/MongoTestEnvironment.php';
-
-require_once SourcePath . "Api/Model/UserModel.php";
-require_once SourcePath . "Api/Model/ProjectModel.php";
 
 class TestProjectModel extends UnitTestCase
 {
-    private $_someProjectId;
-
     public function __construct()
     {
         $e = new MongoTestEnvironment();
         $e->clean();
+        parent::__construct();
     }
+
+    private $_someProjectId;
 
     public function testWrite_ReadBackSame()
     {
@@ -46,7 +44,7 @@ class TestProjectModel extends UnitTestCase
 
     public function testProjectList_HasCountAndEntries()
     {
-        $model = new Api\Model\ProjectListModel();
+        $model = new ProjectListModel();
         $model->read();
 
         $this->assertNotEqual(0, $model->count);
@@ -107,7 +105,7 @@ class TestProjectModel extends UnitTestCase
         $this->assertFalse(array_key_exists($userId, $projectModel->users), "'$userId' not found in project.");
         $otherProject = new ProjectModel($this->_someProjectId);
         $this->assertFalse(array_key_exists($userId, $otherProject->users), "'$userId' not found in other project.");
-        $project = new ProjectModel($this->_someProjectId);
+        new ProjectModel($this->_someProjectId);
     }
 
     public function testProjectAddUser_TwiceToSameProject_AddedOnce()
@@ -176,7 +174,7 @@ class TestProjectModel extends UnitTestCase
 
     public function testRemove_RemovesProject()
     {
-        $e = new MongoTestEnvironment();
+        new MongoTestEnvironment();
         $project = new ProjectModel($this->_someProjectId);
 
         $this->assertTrue($project->exists($this->_someProjectId));
@@ -247,5 +245,4 @@ class TestProjectModel extends UnitTestCase
 
         $this->assertFalse($user->isMemberOfProject($projectId));
     }
-
 }

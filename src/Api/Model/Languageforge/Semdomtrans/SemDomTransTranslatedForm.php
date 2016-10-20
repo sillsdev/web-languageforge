@@ -10,13 +10,9 @@ class SemDomTransTranslatedForm
         $this->status = SemDomTransStatus::Draft;
     }
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $translation;
 
-    /**
-     * @var Status
-     */
+    /** @var Status */
     public $status;
 }

@@ -2,12 +2,12 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\Id;
-use Api\Model\Mapper\IdReference;
-use Api\Model\Mapper\MapperModel;
-use Api\Model\Mapper\MongoMapper;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\Id;
+use Api\Model\Shared\Mapper\IdReference;
+use Api\Model\Shared\Mapper\MapperModel;
+use Api\Model\Shared\Mapper\MongoMapper;
+use Api\Model\Shared\ProjectModel;
 
 class LexCommentModel extends MapperModel
 {
@@ -15,17 +15,6 @@ class LexCommentModel extends MapperModel
     const STATUS_OPEN = 'open';
     const STATUS_RESOLVED = 'resolved';
     const STATUS_TODO = 'todo';
-
-    public static function mapper($databaseName)
-    {
-        /** @var MongoMapper $instance */
-        static $instance = null;
-        if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new MongoMapper($databaseName, 'lexiconComments');
-        }
-
-        return $instance;
-    }
 
     /**
      * @param ProjectModel|LexProjectModel $projectModel
@@ -55,6 +44,44 @@ class LexCommentModel extends MapperModel
         parent::__construct(self::mapper($databaseName), $id);
     }
 
+    /** @var Id */
+    public $id;
+
+    /** @var IdReference */
+    public $entryRef;
+
+    /** @var LexCommentFieldReference */
+    public $regarding;
+
+    /** @var int */
+    public $score;
+
+    /** @var ArrayOf<LexCommentReply> */
+    public $replies;
+
+    /** @var string - see status constants above */
+    public $status;
+
+    /** @var boolean */
+    public $isDeleted;
+
+    /** @var LexAuthorInfo */
+    public $authorInfo;
+
+    /** @var string */
+    public $content;
+
+    public static function mapper($databaseName)
+    {
+        /** @var MongoMapper $instance */
+        static $instance = null;
+        if (null === $instance || $instance->databaseName() != $databaseName) {
+            $instance = new MongoMapper($databaseName, 'lexiconComments');
+        }
+
+        return $instance;
+    }
+
     public static function remove($projectModel, $commentId)
     {
         // old method self:mapper($projectModel->databaseName())->remove($commentId);
@@ -64,58 +91,9 @@ class LexCommentModel extends MapperModel
     }
 
     /**
-     * @var Id
-     */
-    public $id;
-
-    /**
-     * @var IdReference
-     */
-    public $entryRef;
-
-    /**
-     *
-     * @var LexCommentFieldReference
-     */
-    public $regarding;
-
-    /**
-     *
-     * @var int
-     */
-    public $score;
-
-    /**
-     *
-     * @var ArrayOf <LexCommentReply>
-     */
-    public $replies;
-
-    /**
-     *
-     * @var string - see status constants above
-     */
-    public $status;
-
-    /**
-     * @var bool
-     */
-    public $isDeleted;
-
-    /**
-     * @var LexAuthorInfo
-     */
-    public $authorInfo;
-
-    /**
-     * @var string
-     */
-    public $content;
-
-    /**
      *
      * @param string $id
-     * @return LexCommentReply
+     * @return false|LexCommentReply
      */
     public function getReply($id)
     {

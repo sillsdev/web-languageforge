@@ -4,31 +4,6 @@ namespace Api\Model\Scriptureforge\Dto;
 
 class UsxHelper
 {
-    private $_parser;
-
-    private $_usx;
-
-    private $_out;
-
-    private $_capturedOutput;
-
-    private $_tagStack;
-
-    private $_footnoteNumber;
-    private $_footnoteCaller;
-    private $_footnoteStyle;
-    private $_footnotes;
-
-    /**
-     *
-     * @var array
-     */
-    private $_info;
-
-    // States
-    private $_stateCData;
-    private $_stateCapturing;
-
     public function __construct($usx)
     {
         $this->_usx = $usx;
@@ -46,6 +21,28 @@ class UsxHelper
         $this->_footnotes = array();
         $this->_tagStack = array();
     }
+
+    private $_parser;
+
+    private $_usx;
+
+    private $_out;
+
+    private $_capturedOutput;
+
+    private $_tagStack;
+
+    private $_footnoteNumber;
+    private $_footnoteCaller;
+    private $_footnoteStyle;
+    private $_footnotes;
+
+    /** @var array */
+    private $_info;
+
+    // States
+    private $_stateCData;
+    private $_stateCapturing;
 
     public function toHtml()
     {
@@ -277,5 +274,4 @@ class UsxHelper
     {
         $this->_info['bookCode'] = $code;
     }
-
 }

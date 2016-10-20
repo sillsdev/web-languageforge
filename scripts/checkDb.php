@@ -3,7 +3,7 @@
 require_once('scriptsConfig.php');
 
 use Api\Model\Shared\DbIntegrityHelper;
-use Api\Model\ProjectListModel;
+use Api\Model\Shared\ProjectListModel;
 
 (php_sapi_name() == 'cli') or die('this script must be run on the command-line');
 

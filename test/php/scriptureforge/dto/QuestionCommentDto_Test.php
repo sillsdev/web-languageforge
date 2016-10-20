@@ -1,33 +1,25 @@
 <?php
 
 use Api\Model\Scriptureforge\Dto\QuestionCommentDto;
+use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\AnswerModel;
-use Api\Model\CommentModel;
-use Api\Model\ProjectModel;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
 require_once TestPhpPath . 'common/MongoTestEnvironment.php';
-require_once SourcePath . "Api/Model/ProjectModel.php";
-require_once SourcePath . "Api/Model/QuestionModel.php";
 
 class TestQuestionCommentDto extends UnitTestCase
 {
-
-    public function __construct() {
+   public function __construct() {
         $this->environ = new MongoTestEnvironment();
         $this->environ->clean();
         parent::__construct();
     }
 
-    /**
-     * Local store of mock test environment
-     *
-     * @var MongoTestEnvironment
-     */
+    /** @var MongoTestEnvironment Local store of mock test environment */
     private $environ;
 
     /**
@@ -131,7 +123,7 @@ class TestQuestionCommentDto extends UnitTestCase
         // Contributor cannot view Question of archived Text, throw Exception
         $this->environ->inhibitErrorDisplay();
         $this->expectException();
-        $dto = QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
+        QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
@@ -172,7 +164,7 @@ class TestQuestionCommentDto extends UnitTestCase
         // Contributor cannot view Question of archived Text, throw Exception
         $this->environ->inhibitErrorDisplay();
         $this->expectException();
-        $dto = QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
+        QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }

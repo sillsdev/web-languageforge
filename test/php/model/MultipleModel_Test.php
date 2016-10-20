@@ -1,15 +1,13 @@
 <?php
 
+use Api\Model\Shared\ProjectListModel;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\UserListModel;
+use Api\Model\Shared\UserModel;
+
 require_once __DIR__ . '/../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';
-
 require_once TestPhpPath . 'common/MongoTestEnvironment.php';
-
-require_once SourcePath . "Api/Model/ProjectModel.php";
-require_once SourcePath . "Api/Model/UserModel.php";
-
-use Api\Model\UserModel;
-use Api\Model\ProjectModel;
 
 class TestMultipleModel extends UnitTestCase
 {
@@ -17,6 +15,7 @@ class TestMultipleModel extends UnitTestCase
     {
         $e = new MongoTestEnvironment();
         $e->clean();
+        parent::__construct();
     }
 
     public function testWrite_TwoModels_ReadBackBothModelsOk()
@@ -46,7 +45,7 @@ class TestMultipleModel extends UnitTestCase
 
     public function testUserList_HadOnlyUsers()
     {
-        $model = new Api\Model\UserListModel();
+        $model = new UserListModel();
         $model->read();
 
         foreach ($model->entries as $entry) {
@@ -56,7 +55,7 @@ class TestMultipleModel extends UnitTestCase
 
     public function testProjectList_HadOnlyProjects()
     {
-        $model = new Api\Model\ProjectListModel();
+        $model = new ProjectListModel();
         $model->read();
 
         foreach ($model->entries as $entry) {
