@@ -6,8 +6,6 @@ use Api\Model\Shared\Mapper\MapperListModel;
 use Api\Model\Shared\Mapper\MapperModel;
 use Api\Model\Shared\Mapper\MongoMapper;
 
-require_once 'QuestionModel.php';
-
 class QuestionAnswersListModel extends MapperListModel
 {
     /**
