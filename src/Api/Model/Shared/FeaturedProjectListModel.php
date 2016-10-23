@@ -4,8 +4,6 @@ namespace Api\Model\Shared;
 
 use Api\Model\Shared\Mapper\MapperListModel;
 
-require_once APPPATH . 'Api/Model/Shared/ProjectModel.php';
-
 class FeaturedProjectListModel extends MapperListModel
 {
     public function __construct()
