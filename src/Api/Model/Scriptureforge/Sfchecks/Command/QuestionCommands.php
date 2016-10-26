@@ -2,8 +2,8 @@
 
 namespace Api\Model\Scriptureforge\Sfchecks\Command;
 
-use Api\Model\Scriptureforge\Dto\QuestionCommentDto;
 use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
+use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionCommentDto;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Shared\Command\ActivityCommands;
 use Api\Model\Shared\Command\ProjectCommands;

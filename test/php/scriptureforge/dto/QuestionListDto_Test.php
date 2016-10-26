@@ -1,7 +1,7 @@
 <?php
 
-use Api\Model\Scriptureforge\Dto\QuestionListDto;
 use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
+use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionListDto;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\CommentModel;

@@ -1,12 +1,12 @@
 <?php
 
-namespace Api\Model\Scriptureforge\Dto;
+namespace Api\Model\Scriptureforge\Sfchecks\Dto;
 
 use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextListModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
-use Api\Model\Scriptureforge\SfchecksProjectModel;
 use Api\Model\Shared\Dto\RightsHelper;
 use Api\Model\Shared\MessageModel;
 use Api\Model\Shared\Rights\ProjectRoles;

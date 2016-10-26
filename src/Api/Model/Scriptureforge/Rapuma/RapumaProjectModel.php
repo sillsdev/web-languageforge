@@ -1,6 +1,8 @@
 <?php
 
-namespace Api\Model\Scriptureforge;
+namespace Api\Model\Scriptureforge\Rapuma;
+
+use Api\Model\Scriptureforge\SfProjectModel;
 
 class RapumaProjectModel extends SfProjectModel
 {

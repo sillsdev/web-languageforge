@@ -1,9 +1,9 @@
 <?php
+
 namespace Api\Library\Shared\Script\Migration;
 
+use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Shared\Rights\ProjectRoleModel;
-
-use Api\Model\Scriptureforge\SfchecksProjectModel;
 use Api\Model\Shared\ProjectListModel;
 
 class FixProjectRoles

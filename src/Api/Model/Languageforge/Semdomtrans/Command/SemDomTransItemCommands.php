@@ -3,8 +3,8 @@
 namespace Api\Model\Languageforge\Semdomtrans\Command;
 
 use Api\Model\Languageforge\Semdomtrans\SemDomTransItemModel;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
-use Api\Model\Languageforge\SemDomTransProjectModel;
 
 class SemDomTransItemCommands
 {

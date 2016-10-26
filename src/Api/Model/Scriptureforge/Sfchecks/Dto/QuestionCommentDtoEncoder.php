@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Model\Scriptureforge\Dto;
+namespace Api\Model\Scriptureforge\Sfchecks\Dto;
 
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\UserModel;

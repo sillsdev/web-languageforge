@@ -2,8 +2,8 @@
 
 namespace Api\Model\Scriptureforge\Sfchecks\Command;
 
+use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
-use Api\Model\Scriptureforge\SfchecksProjectModel;
 use Api\Model\Shared\Command\ErrorResult;
 use Api\Model\Shared\Command\MediaResult;
 use Api\Model\Shared\Command\ProjectCommands;
@@ -12,7 +12,6 @@ use Palaso\Utilities\FileUtilities;
 
 class SfchecksUploadCommands
 {
-
     /**
      * Upload a file
      *
