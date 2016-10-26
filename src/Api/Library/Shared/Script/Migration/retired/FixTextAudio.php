@@ -2,8 +2,8 @@
 
 namespace Api\Library\Shared\Script\Migration;
 
-use Api\Model\Scriptureforge\SfchecksProjectModel;
 use Api\Model\Shared\ProjectListModel;
+use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextListModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Library\Shared\Script\Migration\models\TextModel_sf_v0_9_18;

@@ -5,7 +5,7 @@ namespace Api\Library\Shared\Script\Migration;
 use Api\Library\Shared\LanguageData;
 use Api\Library\Shared\Website;
 use Api\Model\Languageforge\LfProjectModel;
-use Api\Model\Languageforge\SemDomTransProjectModel;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\ProjectModel;
 

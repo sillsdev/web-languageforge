@@ -1,6 +1,8 @@
 <?php
 
-namespace Api\Model\Scriptureforge;
+namespace Api\Model\Scriptureforge\Sfchecks;
+
+use Api\Model\Scriptureforge\SfProjectModel;
 
 class SfchecksProjectModel extends SfProjectModel
 {
@@ -20,5 +22,4 @@ class SfchecksProjectModel extends SfProjectModel
 
         return $settings;
     }
-
 }

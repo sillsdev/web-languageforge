@@ -2,7 +2,7 @@
 
 namespace Api\Library\Scriptureforge\Sfchecks;
 
-use Api\Model\Scriptureforge\Dto\UsxHelper;
+use Api\Model\Scriptureforge\Sfchecks\Dto\UsxHelper;
 use Api\Model\Scriptureforge\Sfchecks\QuestionAnswersListModel;
 use Api\Model\Scriptureforge\Sfchecks\TextListModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
