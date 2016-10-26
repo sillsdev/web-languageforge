@@ -1,18 +1,14 @@
 <?php
 
-namespace Api\Model\Languageforge;
+namespace Api\Model\Languageforge\Semdomtrans;
 
 use Api\Library\Languageforge\Semdomtrans\SemDomXMLImporter;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransItemListModel;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransItemModel;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransQuestion;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
-use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
+use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Shared\Mapper\IdReference;
 use Api\Model\Shared\Mapper\Id;
 
-class SemDomTransProjectModel extends LfProjectModel {
-
+class SemDomTransProjectModel extends LfProjectModel
+{
     const SEMDOM_VERSION = 4;
 
     public function __construct($id = '')
@@ -25,43 +21,25 @@ class SemDomTransProjectModel extends LfProjectModel {
         parent::__construct($id);
     }
 
-    /**
-     * 
-     * @var boolean
-     */
+    /** @var boolean */
     public $isSourceLanguage;
     
-    /**
-     * 
-     * @var Id
-     */
+    /** @var Id */
     public $sourceLanguageProjectId;
     
-    /**
-     * 
-     * @var string
-     */
+    /** @var string */
     public $languageName;
     
-    /**
-     * 
-     * @var string
-     */
+    /** @var string */
     public $languageIsoCode;
     
-    /**
-     * The semantic domain version number of this language set
-     * @var string
-     */
+    /** @var string The semantic domain version number of this language set */
     public $semdomVersion;
     
-    /**
-     * The path for the source XML file from which the project was imported
-     * @var string
-     */
+    /** @var string The path for the source XML file from which the project was imported */
     public $xmlFilePath;
     
-    private function _copyXmlToAssets($xmlFilePath) {
+    private function copyXmlToAssets($xmlFilePath) {
         $newXmlFilePath = $this->getAssetsFolderPath() . '/' . basename($xmlFilePath);
         if (!file_exists($this->getAssetsFolderPath())) {
             mkdir($this->getAssetsFolderPath());
@@ -76,7 +54,7 @@ class SemDomTransProjectModel extends LfProjectModel {
         $existingItems = new SemDomTransItemListModel($this);
         $existingItems->deleteAll();
 
-        $this->_copyXmlToAssets($xmlFilePath);
+        $this->copyXmlToAssets($xmlFilePath);
 
         $importer = new SemDomXMLImporter($this->xmlFilePath, $this, false, $isEnglish);
         $importer->run();
@@ -100,7 +78,7 @@ class SemDomTransProjectModel extends LfProjectModel {
         // cjh review: we may actually want to only prefill from English, if in the future we allow creating projects from incomplete source projects        
         $sourceProject = new SemDomTransProjectModel($this->sourceLanguageProjectId->asString());
 
-        $this->_copyXmlToAssets($sourceProject->xmlFilePath);
+        $this->copyXmlToAssets($sourceProject->xmlFilePath);
 
         $sourceItems = new SemDomTransItemListModel($sourceProject);
         $sourceItems->read();

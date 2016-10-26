@@ -2,7 +2,7 @@
 
 namespace Api\Model\Scriptureforge\Sfchecks\Command;
 
-use Api\Model\Scriptureforge\Dto\UsxTrimHelper;
+use Api\Model\Scriptureforge\Sfchecks\Dto\UsxTrimHelper;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\Command\ActivityCommands;
 use Api\Model\Shared\Command\ProjectCommands;

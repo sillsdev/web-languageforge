@@ -1,48 +1,13 @@
 <?php
 
-namespace Api\Model\Scriptureforge\Dto;
+namespace Api\Model\Scriptureforge\Sfchecks\Dto;
 
+use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextListModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
-use Api\Model\Scriptureforge\SfchecksProjectModel;
 use Api\Model\Shared\Dto\RightsHelper;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\UserModel;
-
-class ProjectSettingsDtoEncoder extends JsonEncoder
-{
-    public function encodeIdReference($key, $model)
-    {
-        if ($key == 'ownerRef') {
-            $user = new UserModel();
-            if ($user->exists($model->asString())) {
-                $user->read($model->asString());
-
-                return array(
-                        'id' => $user->id->asString(),
-                        'username' => $user->username);
-            } else {
-                return '';
-            }
-        } else {
-            return $model->asString();
-        }
-    }
-
-    public static function encode($model)
-    {
-        $encoder = new ProjectSettingsDtoEncoder();
-        $data = $encoder->_encode($model);
-        if (method_exists($model, 'getPrivateProperties')) {
-            $privateProperties = (array) $model->getPrivateProperties();
-            foreach ($privateProperties as $prop) {
-                unset($data[$prop]);
-            }
-        }
-
-        return $data;
-    }
-}
 
 class ProjectSettingsDto
 {
@@ -77,7 +42,7 @@ class ProjectSettingsDto
                 foreach ($questionList->entries as $q) {
                     foreach ($q['answers'] as $a) {
                         $commentCount = count($a['comments']);
-                        $responseCount += ($commentCount+1); // +1 for this answer
+                        $responseCount += ($commentCount + 1); // +1 for this answer
                     }
                 }
                 $entry['responseCount'] = $responseCount;
@@ -89,6 +54,41 @@ class ProjectSettingsDto
 
         $data['rights'] = RightsHelper::encode($userModel, $projectModel);
         $data['bcs'] = BreadCrumbHelper::encode('settings', $projectModel, null, null);
+
+        return $data;
+    }
+}
+
+class ProjectSettingsDtoEncoder extends JsonEncoder
+{
+    public function encodeIdReference($key, $model)
+    {
+        if ($key == 'ownerRef') {
+            $user = new UserModel();
+            if ($user->exists($model->asString())) {
+                $user->read($model->asString());
+
+                return array(
+                        'id' => $user->id->asString(),
+                        'username' => $user->username);
+            } else {
+                return '';
+            }
+        } else {
+            return $model->asString();
+        }
+    }
+
+    public static function encode($model)
+    {
+        $encoder = new ProjectSettingsDtoEncoder();
+        $data = $encoder->_encode($model);
+        if (method_exists($model, 'getPrivateProperties')) {
+            $privateProperties = (array) $model->getPrivateProperties();
+            foreach ($privateProperties as $prop) {
+                unset($data[$prop]);
+            }
+        }
 
         return $data;
     }

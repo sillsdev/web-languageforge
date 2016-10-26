@@ -3,8 +3,8 @@
 use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
-use Api\Model\Languageforge\SemDomTransProjectModel;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\ProjectModel;

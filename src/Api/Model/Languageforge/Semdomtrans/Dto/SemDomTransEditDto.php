@@ -5,14 +5,14 @@ namespace Api\Model\Languageforge\Semdomtrans\Dto;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDtoCommentsEncoder;
 use Api\Model\Languageforge\Lexicon\LexCommentListModel;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransItemListModel;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransWorkingSetListModel;
-use Api\Model\Languageforge\SemDomTransProjectModel;
 
 class SemDomTransEditDto
 {
     const MAX_ENTRIES_PER_REQUEST = 5000;
-    
+
     /**
      * Returns encoded Semantic Domain Editor Dto:
      * 1) Loads all items of target project (langauge we are translating into)
@@ -21,8 +21,8 @@ class SemDomTransEditDto
      * @param string $projectId
      * @param string $userId
      * @param string $lastFetchTime
-     * @param number $offset
-     * @return multitype:boolean number multitype: multitype:string  Ambigous <\Api\Model\Shared\Mapper\string;, multitype:, string, Ambigous <multitype:, multitype:multitype: unknown >, Ambigous <multitype:, \stdClass, multitype:multitype: unknown >, Ambigous <string, multitype:NULL string >>
+     * @param int $offset
+     * @return array multitype:boolean number multitype: multitype:string  Ambigous <string;, multitype:, string, Ambigous <multitype:, multitype:multitype: unknown >, Ambigous <multitype:, \stdClass, multitype:multitype: unknown >, Ambigous <string, multitype:NULL string >>
      */
     public static function encode($projectId, $userId, $lastFetchTime = null, $offset = 0)
     {
@@ -131,7 +131,6 @@ class SemDomTransEditDto
         $data["workingSets"] = $workingSets->entries;
         
        /*  if (!is_null($lastFetchTime)) {
-        	
             $deletedCommentsModel = new LexDeletedCommentListModel($project, $lastFetchTime);
             $deletedCommentsModel->read();
             $data['deletedCommentIds'] = array_map(function ($c) {return $c['id']; }, $deletedCommentsModel->entries);

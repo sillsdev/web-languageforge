@@ -3,7 +3,7 @@
 namespace Api\Library\Shared\Script\Migration;
 
 use Api\Model\Scriptureforge\Sfchecks\QuestionTemplateModel;
-use Api\Model\Scriptureforge\SfchecksProjectModel;
+use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Library\Shared\Script\Migration\retired\models\GlobalQuestionTemplateListModel;
 use Api\Library\Shared\Script\Migration\retired\models\GlobalQuestionTemplateModel;
 use Api\Model\Shared\ProjectListModel;

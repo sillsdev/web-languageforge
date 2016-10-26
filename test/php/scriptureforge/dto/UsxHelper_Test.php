@@ -1,6 +1,6 @@
 <?php
 
-use Api\Model\Scriptureforge\Dto\UsxHelper;
+use Api\Model\Scriptureforge\Sfchecks\Dto\UsxHelper;
 
 require_once __DIR__ . '/../../TestConfig.php';
 require_once SimpleTestPath . 'autorun.php';

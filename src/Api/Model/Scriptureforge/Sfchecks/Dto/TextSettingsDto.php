@@ -1,11 +1,11 @@
 <?php
 
-namespace Api\Model\Scriptureforge\Dto;
+namespace Api\Model\Scriptureforge\Sfchecks\Dto;
 
 use Api\Model\Scriptureforge\Sfchecks\QuestionAnswersListModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
-use Api\Model\Scriptureforge\SfchecksProjectModel;
 use Api\Model\Shared\Dto\RightsHelper;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\UserModel;
