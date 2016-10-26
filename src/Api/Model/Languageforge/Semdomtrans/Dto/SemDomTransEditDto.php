@@ -33,9 +33,9 @@ class SemDomTransEditDto
         
         // load source project - if source language is not specified, set it to english
         if ($project->sourceLanguageProjectId == null) {
-       		$sourceProject = new SemDomTransProjectModel();
-       		$sourceProject->projectCode="semdom-en-$project->semdomVersion";
-       		$sourceProject->readByProperty("projectCode", $sourceProject->projectCode);
+           $sourceProject = new SemDomTransProjectModel();
+           $sourceProject->projectCode="semdom-en-$project->semdomVersion";
+           $sourceProject->readByProperty("projectCode", $sourceProject->projectCode);
         } else {
             $sourceProject = new SemDomTransProjectModel($project->sourceLanguageProjectId->asString());
         }
@@ -51,7 +51,7 @@ class SemDomTransEditDto
         //print_r($sourceItems);
         $sourceItemsByKey = array();
         foreach ($sourceItems as $item) {
-        	$sourceItemsByKey[$item['key']] = $item;
+            $sourceItemsByKey[$item['key']] = $item;
         }
         
         // suplement the target language data with source language values
@@ -60,61 +60,61 @@ class SemDomTransEditDto
         // loop over all target items
         foreach ($targetItems as $i => $item) {
             // loop over all properties of target item
-        	foreach ($item as $outerProp => $outerValue) {
-        	    // make sure that the outer value is an array and that the translation for it exists
-				if (is_array($outerValue) && key_exists('translation', $outerValue)) {
-				    // source item has translation that is non empty, than set it as source of arget item
-        			if ($sourceItemsByKey[$item['key']][$outerProp]['translation'] != '') {
-			        	$targetItems[$i][$outerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp]['translation'];
-        			} else {
-       					$sourceLanguageIsIncomplete = true;
-        			}
-        		};
-        		// handle special case of search keys
-        		if ($outerProp == 'searchKeys') {
-        		    // iterate over all search keys
-        			foreach ($outerValue as $innerProp => $innerValue) {
-        			    // check if corresponding source item has search keys
-        				if (array_key_exists($innerProp, $sourceItemsByKey[$item['key']][$outerProp]))
-        				{
-        				    // if source item has search keys, and given search key has translation set on it
-        				    // use that translation as source of target item search key
-	        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'] != '') {
-					        	$targetItems[$i][$outerProp][$innerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'];
-	        				} else {
-	       						$sourceLanguageIsIncomplete = true;
-	        				}
-        				}
-        			}
-        		}
-        		// handle special case of questions
-        		else if ($outerProp == 'questions') {
-        		    // iterate over all questions
-        			foreach ($outerValue as $innerProp => $innerValue) {
-        			    // check that 'questions' property exists on source item
-        				if (array_key_exists($innerProp, $sourceItemsByKey[$item['key']][$outerProp])) {
-        				    // if source item has questions, and given question has translation set on it
-        				    // use that translation as source of target item question
-	        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'] != '') {
-					        	$targetItems[$i][$outerProp][$innerProp]['question']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'];
-	        				} else {
-	       						$sourceLanguageIsIncomplete = true;
-	        				}
-	        				
-	        				// if source item has questions, and given question term has translation set on it
-	        				// use that translation as source of target item question term
-	        				if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'] != '') {
-	        					$targetItems[$i][$outerProp][$innerProp]['terms']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'];
-	        				} else {
-	        					$sourceLanguageIsIncomplete = true;
-	        				}
-        				}
-        				else {
-        					$sourceLanguageIsIncomplete = true;
-        				}
-        			}
-        		}
-        	}
+            foreach ($item as $outerProp => $outerValue) {
+                // make sure that the outer value is an array and that the translation for it exists
+                if (is_array($outerValue) && key_exists('translation', $outerValue)) {
+                    // source item has translation that is non empty, than set it as source of arget item
+                    if ($sourceItemsByKey[$item['key']][$outerProp]['translation'] != '') {
+                        $targetItems[$i][$outerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp]['translation'];
+                    } else {
+                        $sourceLanguageIsIncomplete = true;
+                    }
+                };
+                // handle special case of search keys
+                if ($outerProp == 'searchKeys') {
+                    // iterate over all search keys
+                    foreach ($outerValue as $innerProp => $innerValue) {
+                        // check if corresponding source item has search keys
+                        if (array_key_exists($innerProp, $sourceItemsByKey[$item['key']][$outerProp]))
+                        {
+                            // if source item has search keys, and given search key has translation set on it
+                            // use that translation as source of target item search key
+                            if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'] != '') {
+                                $targetItems[$i][$outerProp][$innerProp]['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['translation'];
+                            } else {
+                                $sourceLanguageIsIncomplete = true;
+                            }
+                        }
+                    }
+                }
+                // handle special case of questions
+                else if ($outerProp == 'questions') {
+                    // iterate over all questions
+                    foreach ($outerValue as $innerProp => $innerValue) {
+                        // check that 'questions' property exists on source item
+                        if (array_key_exists($innerProp, $sourceItemsByKey[$item['key']][$outerProp])) {
+                            // if source item has questions, and given question has translation set on it
+                            // use that translation as source of target item question
+                            if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'] != '') {
+                                $targetItems[$i][$outerProp][$innerProp]['question']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['question']['translation'];
+                            } else {
+                                $sourceLanguageIsIncomplete = true;
+                            }
+
+                            // if source item has questions, and given question term has translation set on it
+                            // use that translation as source of target item question term
+                            if ($sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'] != '') {
+                                $targetItems[$i][$outerProp][$innerProp]['terms']['source'] = $sourceItemsByKey[$item['key']][$outerProp][$innerProp]['terms']['translation'];
+                            } else {
+                                $sourceLanguageIsIncomplete = true;
+                            }
+                        }
+                        else {
+                            $sourceLanguageIsIncomplete = true;
+                        }
+                    }
+                }
+            }
         }
         $data['sourceLanguageIsIncomplete'] = $sourceLanguageIsIncomplete;
         
