@@ -5,7 +5,6 @@ namespace Api\Model\Scriptureforge\Sfchecks;
 use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;
-use Api\Model\Shared\Mapper\MapperListModel;
 use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\Mapper\MapperModel;
 use Api\Model\Shared\Mapper\MongoMapper;
@@ -199,21 +198,5 @@ class QuestionModel extends MapperModel
             }
         }
         return $title;
-    }
-}
-
-class QuestionListModel extends MapperListModel
-{
-    /**
-     * @param ProjectModel $projectModel
-     * @param string $textId
-     */
-    public function __construct($projectModel, $textId)
-    {
-        parent::__construct(
-            QuestionModelMongoMapper::connect($projectModel->databaseName()),
-            array('description' => array('$regex' => ''), 'textRef' => MongoMapper::mongoID($textId)),
-            array('description')
-        );
     }
 }
