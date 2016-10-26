@@ -1,7 +1,12 @@
 'use strict';
 
-var SfTextPage = function () {
+module.exports = new SfTextPage();
+
+function SfTextPage() {
   // currently this page is called questions.html but will be refactored. IJH 2014-06
+
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   this.archiveButton = element(by.partialButtonText('Archive Questions'));
   this.makeTemplateBtn = element(by.partialButtonText('Make Template'));
@@ -47,6 +52,7 @@ var SfTextPage = function () {
   this.addNewQuestion = function (description, summary) {
     expect(this.newQuestion.showFormButton.isDisplayed()).toBe(true);
     this.newQuestion.showFormButton.click();
+    browser.wait(expectedCondition.visibilityOf(this.newQuestion.description), CONDITION_TIMEOUT);
     this.newQuestion.description.sendKeys(description);
     this.newQuestion.summary.sendKeys(summary);
     this.newQuestion.saveButton.click();
@@ -60,6 +66,4 @@ var SfTextPage = function () {
   };
 
   this.textContent = element(by.id('text'));
-};
-
-module.exports = new SfTextPage();
+}
