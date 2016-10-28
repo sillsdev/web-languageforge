@@ -257,32 +257,40 @@ From the `web-languageforge` directory
 
 ```
 npm install
-cd test/app
-./webdriver.sh update
+gulp test-e2e-webdriver_update
 ```
 
 #### E2E Test Run ####
 
-From the `test/app` directory, start **webdriver** in one terminal:
+From the *web-languageforge* directory, start **webdriver** in one terminal:
 
 ````
-./webdriver.sh start
+gulp test-e2e-webdriver_standalone
 ````
 
-Then run tests in another terminal:
+Then to run **languageforge** tests in another terminal:
 
 ````
-sh rune2eLF.sh
+./rune2e.sh lf
 ````
-to test in on the **languageforge** site or run `sh rune2eSF.sh` to test on the **scriptureforge** site. Add a test name argument to the previous or browse to sub-folders to narrow tests.
+
+To run **scriptureforge** tests:
+
+```
+./rune2e.sh sf
+```
+
+To test a certain test spec, add a parameter `--specs [spec name]`.  For example, 
+```
+./rune2e.sh lf --specs lexicon-new-project
+``` 
+will run the  the *lexicon-new-project.spec.js* tests on **languageforge**.
+
+To add more verbosity during E2E tests, add a parameter `--verbosity true`
 
 ## Building with gulp ##
 
 (For installation of npm see https://github.com/nodesource/distributions)
-
-Install **gulp** globally (it needs to be installed globally since our local repo is on an NTFS partition and items there are not executable):
-
-	sudo npm install -g gulp
 
 Install gulp dependencies by running from the repo root (where):
 
@@ -290,7 +298,9 @@ Install gulp dependencies by running from the repo root (where):
 
 To install the mongodb databases locally, run:
 
-	gulp copy-prod-db
+```
+gulp mongodb-copy-prod-db
+```
 
 ## Resetting the MongoDB ##
 
