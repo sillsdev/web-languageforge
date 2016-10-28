@@ -17,21 +17,25 @@
     "gulp-markdown": "^1.2.0"
   },
   "devDependencies": {
-    "gulp-util": "~3.0.6",
-    "gulp": "~3.9.0",
-    "gulp-exec": "~2.1.0",
-    "gulp-livereload": "~3.8.0",
     "async": "~1.4.2",
-
-    "protractor": "~4.0",
-    "karma": "~1.1",
-    "phantomjs-prebuilt": "~2.1",
-
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-exec": "~2.1.0",
+    "gulp-jshint": "^2.0.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-protractor": "^3.0.0",
+    "gulp-util": "~3.0.6",
+    "jasmine-core": "^2.5.2",
     "jasmine-reporters": "~2.2",
-    "karma-teamcity-reporter": "~1.0",
+    "jshint": "^2.9.3",
+    "jshint-stylish": "^2.2.1",
+    "karma": "^1.1.2",
     "karma-chrome-launcher": "~1.0",
-    "karma-jasmine": "~1.0",
-    "karma-phantomjs-launcher": "~1.0"
+    "karma-jasmine": "^1.0.2",
+    "karma-phantomjs-launcher": "~1.0",
+    "karma-teamcity-reporter": "^1.0.0",
+    "phantomjs-prebuilt": "~2.1",
+    "protractor": "~4.0",
+    "yargs": "^6.3.0"
   },
   "jscsConfig": {
     "disallowTrailingComma": true

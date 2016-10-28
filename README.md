@@ -212,6 +212,7 @@ sudo service apache2 restart
 ```
 
 #### Xdebug helper Chrome extension ####
+
 Install the [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension which adds a bug icon to the top right area of Chrome extensions.
 
 Right-click to select **Options** and set **IDE key**
@@ -225,6 +226,18 @@ When it's time to Debug, check that the bug icon is green for **Debug**.
 Then, from PhpStorm, click the telephone icon near the top right for *Start Listening for PHP Connections*.
 
 Reference for [Integrating Xdebug with PhpStorm](https://www.jetbrains.com/help/phpstorm/2016.2/configuring-xdebug.html#integrationWithProduct).
+
+### LiveReload ###
+
+#### LiveReload Chrome extension
+
+Install the [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en-US) extension.
+
+Then from PhpStorm, click
+**View**->**Tool Windows** -> **Gulp**
+
+When you want LiveReload running, double-click the **reload** Gulp task.
+Then in the LiveReload chrome extension, left click to enable it.  A solid dot in the circle means the plugin is connected. Now when an applicable source file is changed and saved, it should trigger an automate page reload in the browser.
 
 ## Testing ##
 
