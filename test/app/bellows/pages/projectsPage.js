@@ -24,9 +24,9 @@ var ProjectsPage = function () {
 
   this.settings = {};
   this.settings.button = element(by.css('a.btn i.icon-cog'));
-  if (constants.siteType == 'scriptureforge') {
+  if (browser.baseUrl.includes('scriptureforge')) {
     this.settings.userManagementLink = element(by.linkText('Project Settings'));
-  } else if (constants.siteType == 'languageforge') {
+  } else if (browser.baseUrl.includes('languageforge')) {
     this.settings.userManagementLink = element(by.linkText('User Management'));
   }
 
