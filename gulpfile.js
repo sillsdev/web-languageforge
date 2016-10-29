@@ -300,7 +300,8 @@ gulp.task('test-e2e-webdriver_standalone', webdriverStandalone);
 gulp.task('test-e2e-parseArgs', function (cb) {
   var options = require('yargs')
       .usage(
-        'Usage: $0 test-e2e-parseArgs --hostname [hostname] --specs [testSpecs] --verbosity [bool]')
+        'Usage: $0 test-e2e-parseArgs --hostname [hostname] ' +
+        '--specs [testSpecs] --seleniumAddress [address] --verbosity [bool]')
       .option('hostname', {
         demand: true,
         describe: "local hostname is 'languageforge.local' or " +
@@ -309,6 +310,10 @@ gulp.task('test-e2e-parseArgs', function (cb) {
       .option('specs', {
         demand: false,
         describe: 'testSpecs are the names of the e2e test specs to run',
+        type: 'string' })
+      .option('seleniumAddress', {
+        demand: false,
+        describe: 'address of a running selenium server. default http://default.local:4444/wd/hub',
         type: 'string' })
       .option('verbosity', {
         demand: false,
@@ -342,6 +347,11 @@ gulp.task('test-e2e-parseArgs', function (cb) {
   } else {
     specs.push('test/app/bellows/**/e2e/' + specString + '.spec.js',
       'test/app/scriptureforge/**/e2e/' + specString + '.spec.js');
+  }
+
+  // Get the selenium server address
+  if (options.seleniumAddress && options.seleniumAddress.length > 0) {
+    protractorOptions.args.push('--seleniumAddress', options.seleniumAddress);
   }
 
   if (options.verbosity) {
@@ -415,8 +425,6 @@ gulp.task('test-e2e-run',
     'test-e2e-useTestConfig',
     'test-e2e-setupTestEnvironment',
     'test-e2e-doTest',
-    'test-e2e-teardownTestEnvironment',
-    'test-e2e-useLiveConfig',
     function (cb) {
       cb(null);
     }
