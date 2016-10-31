@@ -7,9 +7,9 @@ use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\Rights\ProjectRoles;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class QuestionCommentDtoTest extends TestCase
+class QuestionCommentDtoTest extends PHPUnit_Framework_TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;

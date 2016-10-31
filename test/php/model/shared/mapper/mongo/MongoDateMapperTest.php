@@ -4,7 +4,7 @@ use Api\Model\Shared\Mapper\MongoDecoder;
 use Api\Model\Shared\Mapper\MongoEncoder;
 use Litipk\Jiffy\UniversalTimestamp;
 use MongoDB\BSON\UTCDateTime;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
 class TestMongoDateModel
 {
@@ -19,7 +19,7 @@ class TestMongoDateModel
     public $universalTimestamp;
 }
 
-class MongoDateMapperTest extends TestCase
+class MongoDateMapperTest extends PHPUnit_Framework_TestCase
 {
     public function testEncodeDecodeDateTime_HistoricalDate_Same()
     {

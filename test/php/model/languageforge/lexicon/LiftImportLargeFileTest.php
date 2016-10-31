@@ -2,7 +2,7 @@
 
 use Api\Model\Languageforge\Lexicon\LiftImport;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
 class TestLiftImportInfo
 {
@@ -41,7 +41,7 @@ class TestLiftImportInfo
  * It is intended to be run manually (explicitly)
  * @group explicit
  */
-class LiftImportLargeFileTest extends TestCase
+class LiftImportLargeFileTest extends PHPUnit_Framework_TestCase
 {
     public function testLiftImportMerge_LargeFile_NoException()
     {

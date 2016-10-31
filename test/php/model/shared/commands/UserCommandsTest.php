@@ -7,7 +7,7 @@ use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserProfileModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
 class MockUserCommandsDelivery implements DeliveryInterface
 {
@@ -33,7 +33,7 @@ class MockUserCommandsDelivery implements DeliveryInterface
     }
 }
 
-class UserCommandsTest extends TestCase
+class UserCommandsTest extends PHPUnit_Framework_TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;

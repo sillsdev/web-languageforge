@@ -3,9 +3,9 @@
 use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Shared\CommentModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class CommentModelTest extends TestCase
+class CommentModelTest extends PHPUnit_Framework_TestCase
 {
     public function testAnswerCRUD_Works()
     {

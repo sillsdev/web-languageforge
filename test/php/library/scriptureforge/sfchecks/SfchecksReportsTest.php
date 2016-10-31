@@ -6,9 +6,9 @@ use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\CommentModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class SfchecksReportsTest extends TestCase
+class SfchecksReportsTest extends PHPUnit_Framework_TestCase
 {
     public function testUserEngagementReport_simpleProjectWithQuestionsAndAnswers_AsExpected()
     {

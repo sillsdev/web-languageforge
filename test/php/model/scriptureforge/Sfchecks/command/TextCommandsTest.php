@@ -2,9 +2,9 @@
 
 use Api\Model\Scriptureforge\Sfchecks\Command\TextCommands;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class TextCommandsTest extends TestCase
+class TextCommandsTest extends PHPUnit_Framework_TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;

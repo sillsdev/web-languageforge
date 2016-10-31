@@ -6,9 +6,9 @@ use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\UserModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class ProjectModelTest extends TestCase
+class ProjectModelTest extends PHPUnit_Framework_TestCase
 {
     private static $savedProjectId;
 

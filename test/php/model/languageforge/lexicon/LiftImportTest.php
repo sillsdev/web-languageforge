@@ -7,9 +7,9 @@ use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListModel;
 use Api\Model\Languageforge\Lexicon\LiftImport;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class LiftImportTest extends TestCase
+class LiftImportTest extends PHPUnit_Framework_TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;

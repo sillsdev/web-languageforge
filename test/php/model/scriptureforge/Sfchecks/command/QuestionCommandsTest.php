@@ -6,7 +6,7 @@ use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\CommentModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
 class UserVoteTestEnvironment
 {
@@ -66,7 +66,7 @@ class UserVoteTestEnvironment
     }
 }
 
-class QuestionCommandsTest extends TestCase
+class QuestionCommandsTest extends PHPUnit_Framework_TestCase
 {
     public function testDeleteQuestions_NoThrow()
     {

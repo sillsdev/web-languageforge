@@ -3,7 +3,7 @@
 use Api\Model\Shared\Mapper\JsonDecoder;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Litipk\Jiffy\UniversalTimestamp;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
 class TestJsonDateModel
 {
@@ -18,7 +18,7 @@ class TestJsonDateModel
     public $universalTimestamp;
 }
 
-class JsonDateMapperTest extends TestCase
+class JsonDateMapperTest extends PHPUnit_Framework_TestCase
 {
     const StringTimestamp = '2001-01-01 12:01:01';
     const StringTimestampWithMilliseconds = '2001-01-01 12:01:01.321';

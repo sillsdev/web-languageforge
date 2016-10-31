@@ -5,9 +5,9 @@ use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class SfchecksRolesTest extends TestCase
+class SfchecksRolesTest extends PHPUnit_Framework_TestCase
 {
     public function testHasRight_SfchecksProject_Ok()
     {

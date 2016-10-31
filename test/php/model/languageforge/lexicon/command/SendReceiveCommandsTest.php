@@ -9,9 +9,9 @@ use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\Mock;
 use Palaso\Utilities\FileUtilities;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class SendReceiveCommandsTest extends TestCase
+class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;

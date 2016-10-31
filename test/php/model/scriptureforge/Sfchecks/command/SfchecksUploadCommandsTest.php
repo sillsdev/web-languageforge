@@ -4,9 +4,9 @@ use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\Mapper\Id;
 use Palaso\Utilities\FileUtilities;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class SfchecksUploadCommandsTest extends TestCase
+class SfchecksUploadCommandsTest extends PHPUnit_Framework_TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;

@@ -5,9 +5,9 @@ use Api\Model\Scriptureforge\Sfchecks\Dto\ProjectPageDto;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\CommentModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class ProjectPageDtoTest extends TestCase
+class ProjectPageDtoTest extends PHPUnit_Framework_TestCase
 {
     public function testEncode_TextWithQuestions_DtoReturnsExpectedData()
     {
