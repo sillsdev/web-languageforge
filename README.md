@@ -306,7 +306,8 @@ gulp mongodb-copy-prod-db
 
 If you want to _start over_ with your mongo database, you can use the factory reset script like so (this will delete all data in the mongodb):
 ````
-scripts/tools/factoryReset.php run
+cd scripts/tools
+./factoryReset.php run
 ````
 After a fresh factory reset, there is one user.  username: admin password: password
 
