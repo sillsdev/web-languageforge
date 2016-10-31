@@ -8,9 +8,9 @@ use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\Dto\ActivityListDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\UserModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class ActivityListDtoTest extends TestCase
+class ActivityListDtoTest extends PHPUnit_Framework_TestCase
 {
     public function testGetActivityForProject_DeletedUser_DtoAsExpected()
     {

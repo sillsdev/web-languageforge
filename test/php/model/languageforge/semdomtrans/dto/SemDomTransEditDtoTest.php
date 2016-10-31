@@ -7,9 +7,9 @@ use Api\Model\Languageforge\Semdomtrans\SemDomTransQuestion;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
 use Api\Model\Shared\Mapper\ArrayOf;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class SemDomTransEditDtoTest extends TestCase
+class SemDomTransEditDtoTest extends PHPUnit_Framework_TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;

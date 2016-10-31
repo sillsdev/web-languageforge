@@ -2,9 +2,9 @@
 
 use Api\Library\Languageforge\Semdomtrans\SemDomXMLExporter;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransItemListModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class SemDomTransProjectCommandsTest extends TestCase
+class SemDomTransProjectCommandsTest extends PHPUnit_Framework_TestCase
 {
     public function testCreateProject_englishProjectExists_newProjectCreatedAndPrefilledFromSourceProject()
     {

@@ -1,9 +1,9 @@
 <?php
 
 use Api\Model\Scriptureforge\Sfchecks\Dto\UsxHelper;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class UsxHelperTest extends TestCase
+class UsxHelperTest extends PHPUnit_Framework_TestCase
 {
     public function testAsHtml_works()
     {

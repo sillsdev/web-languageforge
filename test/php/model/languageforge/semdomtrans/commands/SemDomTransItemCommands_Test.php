@@ -6,9 +6,9 @@ use Api\Model\Languageforge\Semdomtrans\SemDomTransQuestion;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
 use Api\Model\Shared\Mapper\JsonEncoder;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class SemDomTransItemCommands_Test extends TestCase
+class SemDomTransItemCommands_Test extends PHPUnit_Framework_TestCase
 {
     public function testSemDomItemCommand_UpdateSemDomItem_AddItemUpdateItem()
     {

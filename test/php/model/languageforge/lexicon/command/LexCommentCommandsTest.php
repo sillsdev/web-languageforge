@@ -3,9 +3,9 @@
 use Api\Model\Languageforge\Lexicon\Command\LexCommentCommands;
 use Api\Model\Languageforge\Lexicon\LexCommentModel;
 use Api\Model\Languageforge\Lexicon\LexCommentListModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class LexCommentCommandsTest extends TestCase
+class LexCommentCommandsTest extends PHPUnit_Framework_TestCase
 {
     /** @var mixed[] Data storage between tests */
     private static $save;

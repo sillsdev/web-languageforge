@@ -4,9 +4,9 @@ use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\ProjectRoles;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class SfchecksProjectModelTest extends TestCase
+class SfchecksProjectModelTest extends PHPUnit_Framework_TestCase
 {
     public function testGetRightsArray_Ok()
     {

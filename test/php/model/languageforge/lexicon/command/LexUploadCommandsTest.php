@@ -5,9 +5,9 @@ use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class LexUploadCommandsTest extends TestCase
+class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;

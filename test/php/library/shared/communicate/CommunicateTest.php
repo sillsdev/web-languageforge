@@ -8,7 +8,7 @@ use Api\Model\Shared\MessageModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserProfileModel;
 use Api\Model\Shared\UnreadMessageModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
 class MockCommunicateDelivery implements DeliveryInterface
 {
@@ -34,7 +34,7 @@ class MockCommunicateDelivery implements DeliveryInterface
     }
 }
 
-class CommunicateTest extends TestCase
+class CommunicateTest extends PHPUnit_Framework_TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;

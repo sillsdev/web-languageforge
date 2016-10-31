@@ -1,9 +1,9 @@
 <?php
 
 use Api\Model\Scriptureforge\Sfchecks\Dto\UsxTrimHelper;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class UsxTrimHelperTest extends TestCase
+class UsxTrimHelperTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @param SimpleXMLElement $xml

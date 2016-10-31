@@ -9,9 +9,9 @@ use Api\Model\Languageforge\Lexicon\LexPicture;
 use Api\Model\Languageforge\Lexicon\LexSense;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Mapper\JsonEncoder;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class LexEntryCommandsTest extends TestCase
+class LexEntryCommandsTest extends PHPUnit_Framework_TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;

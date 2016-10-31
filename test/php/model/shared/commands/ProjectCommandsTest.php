@@ -14,9 +14,9 @@ use Api\Model\Shared\ProjectSettingsModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\UserModel;
 use Palaso\Utilities\FileUtilities;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class ProjectCommandsTest extends TestCase
+class ProjectCommandsTest extends PHPUnit_Framework_TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;

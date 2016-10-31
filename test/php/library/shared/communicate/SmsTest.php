@@ -2,14 +2,14 @@
 
 use Api\Library\Shared\Communicate\Sms\SmsModel;
 use Api\Library\Shared\Communicate\Sms\SmsQueue;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
 /**
  * This test is intentionally EXCLUDED from PHP unit tests.
  * It is intended to be run manually (explicitly)
  * @group explicit
  */
-class SmsTest extends TestCase
+class SmsTest extends PHPUnit_Framework_TestCase
 {
     public function testSmsDeliver_Works()
     {
