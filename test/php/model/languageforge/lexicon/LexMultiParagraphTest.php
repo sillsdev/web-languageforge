@@ -5,7 +5,7 @@ use Api\Model\Languageforge\Lexicon\Dto\LexDbeDtoEntriesEncoder;
 use Api\Model\Languageforge\Lexicon\LexMultiParagraph;
 use Api\Model\Languageforge\Lexicon\LexParagraph;
 use Api\Model\Shared\Mapper\MapOf;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
 class MultiParagraphInMap
 {
@@ -20,7 +20,7 @@ class MultiParagraphInMap
     public $data;
 }
 
-class LexMultiParagraphTest extends TestCase
+class LexMultiParagraphTest extends PHPUnit_Framework_TestCase
 {
     public function testToHTMLAndFromHTML_ExistingModel_RoundTripDataIdentical()
     {

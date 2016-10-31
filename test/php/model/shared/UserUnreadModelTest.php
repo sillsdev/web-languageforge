@@ -9,9 +9,9 @@ use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UnreadActivityModel;
 use Api\Model\Shared\UnreadAnswerModel;
 use Api\Model\Shared\UnreadQuestionModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class UserUnreadModelTest extends TestCase
+class UserUnreadModelTest extends PHPUnit_Framework_TestCase
 {
     /** @var MongoTestEnvironment */
     private static $environ;

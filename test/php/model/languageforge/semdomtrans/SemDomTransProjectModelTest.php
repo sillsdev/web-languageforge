@@ -1,9 +1,9 @@
 <?php
 
 use Api\Model\Languageforge\Semdomtrans\SemDomTransItemListModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class SemDomTransProjectModelTest extends TestCase
+class SemDomTransProjectModelTest extends PHPUnit_Framework_TestCase
 {
     public function testPreFillFromSourceLanguage_englishProjectExists_newProjectPrefilled()
     {

@@ -3,9 +3,9 @@
 use Api\Model\Shared\Dto\ProjectManagementDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\UserModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class ProjectManagementDtoTest extends TestCase
+class ProjectManagementDtoTest extends PHPUnit_Framework_TestCase
 {
     public function testEncode_ProjectWithUser_DtoCorrect()
     {

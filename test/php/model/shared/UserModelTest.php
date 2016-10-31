@@ -4,9 +4,9 @@ use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserTypeaheadModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class UserModelTest extends TestCase
+class UserModelTest extends PHPUnit_Framework_TestCase
 {
     public function testWrite_ReadBackSame()
     {

@@ -1,9 +1,9 @@
 <?php
 
 use Api\Library\Shared\Website;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class WebsiteTest extends TestCase
+class WebsiteTest extends PHPUnit_Framework_TestCase
 {
     public function testGet_Works()
     {

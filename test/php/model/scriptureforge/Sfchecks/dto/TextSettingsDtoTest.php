@@ -6,9 +6,9 @@ use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class TextSettingsDtoTest extends TestCase
+class TextSettingsDtoTest extends PHPUnit_Framework_TestCase
 {
     public function testEncode_2Questions1Archived_DtoCorrect1ArchivedQuestion()
     {

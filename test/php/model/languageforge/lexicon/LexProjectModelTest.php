@@ -4,9 +4,9 @@ use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Shared\ProjectModel;
 use Palaso\Utilities\FileUtilities;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class LexProjectModelTest extends TestCase
+class LexProjectModelTest extends PHPUnit_Framework_TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;

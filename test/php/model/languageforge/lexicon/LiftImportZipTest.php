@@ -6,9 +6,9 @@ use Api\Model\Languageforge\Lexicon\ImportErrorReport;
 use Api\Model\Languageforge\Lexicon\ZipImportNodeError;
 use Api\Model\Languageforge\Lexicon\LiftRangeImportNodeError;
 use Api\Model\Languageforge\Lexicon\LiftImportNodeError;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class LiftImportZipTest extends TestCase
+class LiftImportZipTest extends PHPUnit_Framework_TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;

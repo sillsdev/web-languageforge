@@ -4,9 +4,9 @@ use Api\Model\Shared\ProjectListModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserListModel;
 use Api\Model\Shared\UserModel;
-use PHPUnit\Framework\TestCase;
+//use PHPUnit\Framework\TestCase;
 
-class MultipleModelTest extends TestCase
+class MultipleModelTest extends PHPUnit_Framework_TestCase
 {
     public function testWrite_TwoModels_ReadBackBothModelsOk()
     {
