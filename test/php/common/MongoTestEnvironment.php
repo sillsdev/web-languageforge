@@ -422,7 +422,7 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
             $projectModel->isSourceLanguage = true;
             $projectModel->semdomVersion = self::TESTVERSION;
 
-            $englishXmlFilePath = TestPhpPath . "languageforge/semdomtrans/testFiles/SemDom_en_sample.xml";
+            $englishXmlFilePath = TestPhpPath . 'model/languageforge/semdomtrans/testFiles/SemDom_en_sample.xml';
             $projectModel->importFromFile($englishXmlFilePath, true);
             $projectModel->write();
             self::$englishProject = $projectModel;
