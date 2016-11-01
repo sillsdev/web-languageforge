@@ -4,7 +4,7 @@ use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Api\Library\Shared\Website;
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 require_once 'config.php';
 
 // The name of THIS file
@@ -79,7 +79,7 @@ $application_folder = realpath(__DIR__);
 
 // The path to the "application" folder
 if (is_dir($application_folder)) {
-    define('APPPATH', $application_folder.'/');
+    define('APPPATH', $application_folder . DIRECTORY_SEPARATOR);
 } else {
     exit('Error: Your application folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF);
 }

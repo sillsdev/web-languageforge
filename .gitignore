@@ -2,9 +2,18 @@
 *.swp
 .settings
 .externalToolBuilders
-output
+.idea/
+.vagrant/
+output/
 node_modules/
 deploy/ansible.cfg
+deploy/**/*.retry
+deploy/site_files/certificates/
+deploy/site_info/
+deploy/callback_plugins/*.pyc
+vagrant_ansible_inventory_*
+docs/semdom/*.xml
+docs/semdom/semdom lists/*.xml
 **/.bundle/
 src/vendor/
 !src/vendor/lift/
@@ -14,15 +23,7 @@ src/cache/
 !src/cache/.htaccess
 src/assets/
 !src/assets/index.hmtl
-.idea/
-docs/semdom/*.xml
-docs/semdom/semdom lists/*.xml
-.vagrant/
-vagrant_ansible_inventory_*
-deploy/**/*.retry
-deploy/site_files/certificates/
-deploy/site_info/
-deploy/callback_plugins/*.pyc
 src/js/lib/languageforge.min.js
 src/js/lib/scriptureforge.min.js
 src/angular-app/**/helps/**/page/*.html
+test/CodeCoverage/php/

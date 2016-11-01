@@ -25,6 +25,7 @@
         - php7.0-gd
         - php7.0-dev
         - php7.0-cli
+        - php7.0-mbstring
         - php-pear
         - php-xdebug
         - mongodb-server

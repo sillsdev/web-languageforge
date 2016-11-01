@@ -243,9 +243,21 @@ Then in the LiveReload chrome extension, left click to enable it.  A solid dot i
 
 ### PHP Unit Tests ###
 
-Unit testing currently uses [SimpleTest](http://www.simpletest.org/).
+Unit testing currently uses [PHPUnit](https://phpunit.de/) which was already installed by composer.
 
-To run tests, browse to [default.local/web-languageforge/test/php](http://default.local/web-languageforge/test/php/) and click [AllTest.php](http://default.local/web-languageforge/test/php/AllTests.php). If you want to run just a few tests, browse to sub-folders and click on AllTests.php within to narrow tests.
+#### Integrating PHPUnit with PhpStorm ####
+
+**File** -> **Settings** -> **Languages & Frameworks** -> **PHPUnit**
+
+Under PHPUnit Library, select `Use Composer autoloader` option
+For `Path to script` browse to `web-languageforge/src/vendor/autoload.php`
+
+Under Test Runner
+Select *Default configuration file* and browse to `web-languageforge/test/php/phpunit.xml`
+
+Select *Default boostrap file* and browse to `web-languageforge/test/php/TestConfig.php`
+
+To run tests, browse to the project view, right-click `test/php` and select `Run php`.
 
 Note: at least one test will fail if the LFMerge (send/receive) program is not installed and available.  This is OK as long as you are not testing Send/Receive functionality.
 
