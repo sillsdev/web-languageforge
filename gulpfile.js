@@ -75,6 +75,13 @@ var srcPatterns = [
   'test/**'
 ];
 
+var phpPatterns = [
+  'src/angular-app/**/*.php',
+  'src/Api/**/*.php',
+  'src/Site/**/*.php',
+  'test/**/*.php'
+];
+
 // -------------------------------------
 //   Task: Do Reload
 // -------------------------------------
@@ -97,21 +104,6 @@ gulp.task('lint', function () {
   return gulp.src(srcPatterns)
       .pipe(jshint())
       .pipe(jshint.reporter(stylish));
-});
-
-// -------------------------------------
-//   Task: Upload
-// -------------------------------------
-gulp.task('upload', function () {
-  var options = {
-    silent: false,
-    src: 'htdocs',
-    dest: 'root@saygoweb.com:/var/www/virtual/saygoweb.com/bms/htdocs/',
-    key: '~/ssh/dev-cp-private.key'
-  };
-  gulp.src('htdocs').pipe(exec('rsync.exe -rzlt --chmod=Dug=rwx,Fug=rw,o-rwx --delete ' +
-    '--exclude-from="upload-exclude.txt" --stats --rsync-path="sudo -u vu2006 rsync" ' +
-    '--rsh="ssh -i <%= options.key %>" <%= options.src %>/ <%= options.dest %>', options));
 });
 
 //region MongoDB
@@ -189,72 +181,44 @@ gulp.task('mongodb-copy-prod-db',
 //   Task: test-php
 // -------------------------------------
 gulp.task('test-php', function (cb) {
-  execute('php test/php/languageforge/lexicon/AllTests.php', function (err) {
-    cb(err);
-  });
+  execute('/usr/bin/env php -d xdebug.show_exception_trace=0 src/vendor/bin/phpunit ' +
+    '-c test/php/phpunit.xml', function () {
+      cb(null); // Swallow the error propagation so that gulp doesn't display a nodejs backtrace.
+    });
 });
 
 // -------------------------------------
-//   Task: test-php-coverage-open
+//   Task: test-php with debugging info
 // -------------------------------------
-gulp.task('test-php-coverage-open', function (cb) {
-  var options = {
-    includes: [
-      'src/Api/Library/.*\.php$',
-      'src/Api/Model/.*\.php$'
-    ],
-    excludes: [
-      'src/vendor/.*',
-      'src/config/.*',
-      'src/errors/.*',
-      'src/helpers/.*',
-      'lib/.*'
-    ]
-  };
-  var coverageFolder = 'src/vendor/simpletest/simpletest/extensions/coverage/';
-  var args = '--';
-  var command = function (commandName, args) {
-    return 'php ' + coverageFolder + commandName + ' ' + args;
-  };
-
-  options.includes.forEach(function (regEx) {
-    args = args + ' \\ \'--include=' + regEx + '\'';
-  });
-
-  options.excludes.forEach(function (regEx) {
-    args = args + ' \\ \'--exclude=' + regEx + '\'';
-  });
-
-  execute(command('bin/php-coverage-open.php', args), function (err) {
-    cb(err);
-  });
-
+gulp.task('test-php-debug', function (cb) {
+  execute('/usr/bin/env php -d xdebug.show_exception_trace=0 src/vendor/bin/phpunit ' +
+    '--debug -c test/php/phpunit.xml', function () {
+      cb(null); // Swallow the error propagation so that gulp doesn't display a nodejs backtrace.
+    });
 });
 
 // -------------------------------------
-//   Task: test-php-coverage-close
+//   Task: test-php-coverage
 // -------------------------------------
-gulp.task('test-php-coverage-close', function (cb) {
-  var command = function (commandName, args) {
-    return 'php ' + coverageFolder + commandName + ' ' + args;
-  };
+gulp.task('test-php-coverage', function (cb) {
+  execute('/usr/bin/env php -d xdebug.show_exception_trace=0 src/vendor/bin/phpunit ' +
+    '-c test/php/phpunit.xml --coverage-html test/CodeCoverage/php/', function () {
+      cb(null); // Swallow the error propagation so that gulp doesn't display a nodejs backtrace.
+    });
+});
 
-  async.series([
-    function (callback) {
-      execute(command('bin/php-coverage-close.php', ''), function (err) {
-        callback(err);
-      });
-    },
+// -------------------------------------
+//   Task: test-php-watch
+// -------------------------------------
+gulp.task('test-php-watch', function () {
+  gulp.watch(phpPatterns, ['test-php']);
+});
 
-    function (callback) {
-      execute(command('bin/php-coverage-report.php', ''), function (err) {
-        callback(err);
-      });
-    }
-  ], function (err) {
-    cb(err);
-  });
-
+// -------------------------------------
+//   Task: test-php-watch with debugging info
+// -------------------------------------
+gulp.task('test-php-debug-watch', function () {
+  gulp.watch(phpPatterns, ['test-php-debug']);
 });
 
 //endregion
