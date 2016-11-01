@@ -1,0 +1,5 @@
+.htaccess
+angular-app/**/*.min.js
+angular-app/**/assets
+angular-app/**/vendor
+Site/**
