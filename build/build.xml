@@ -74,9 +74,9 @@
         <replace file="src/config.php">
             <replacefilter token="define('MONGODB_CONN', 'mongodb://localhost:27017');" value="define('MONGODB_CONN', 'mongodb://${mongodb.connection}');" />
         </replace>
-        <echo>##teamcity[importData type='junit' path='${build.output}/AllTests.xml']</echo>
-        <exec executable="php" output="${build.output}/AllTests.xml"  error="${build.output}/error.log" failonerror="true">
-            <arg line="src/vendor/bin/phpunit -c test/php/phpunit.xml" />
+        <echo>##teamcity[importData type='junit' path='${build.output}/PhpUnitTests.xml']</echo>
+        <exec executable="php" output="${build.output}/phpUnitConsole.txt"  error="${build.output}/error.log" failonerror="true">
+            <arg line="src/vendor/bin/phpunit -c test/php/phpunit.xml --log-junit ${build.output}/PhpUnitTests.xml" />
             <arg value="-d xdebug.show_exception_trace=0" />
         </exec>
      </target>
