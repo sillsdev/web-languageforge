@@ -2,15 +2,15 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
-use Api\Model\Command\ActivityCommands;
-use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\Command\ActivityCommands;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Mapper\JsonEncoder;
+use Api\Model\Shared\ProjectModel;
 use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\CodeGuard;
 
@@ -89,7 +89,7 @@ class LexEntryCommands
     /**
      * @param string $projectId
      * @param string $missingInfo - if empty, returns all entries.
-     *                                 if matches one of LexConfig constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
+     *          if matches one of LexConfig constants (e.g. POS, DEFINITION, etc), then return a subset of entries that have one or more senses missing the specified field
      * @return LexEntryListModel
      */
     public static function listEntries($projectId, $missingInfo = '')
@@ -127,5 +127,4 @@ class LexEntryCommands
         }
         return ''; // TODO: Decide what to return for "not found", if empty string is not suitable.
     }
-
 }

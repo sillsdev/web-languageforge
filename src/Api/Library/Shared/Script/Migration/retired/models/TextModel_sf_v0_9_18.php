@@ -1,21 +1,18 @@
 <?php
+
 namespace Api\Library\Shared\Script\Migration\models;
 
-use Api\Model\Mapper\Id;
+use Api\Model\Scriptureforge\Sfchecks\QuestionAnswersListModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionListModel;
+use Api\Model\Shared\Mapper\Id;
+use Api\Model\Shared\Mapper\MapperListModel;
+use Api\Model\Shared\ProjectModel;
 
-require_once APPPATH . 'Api/Model/ProjectModel.php';
+require_once APPPATH . 'Api/Model/Shared/ProjectModel.php';
 
-class TextModelMongoMapper_sf_v0_9_18 extends \Api\Model\Mapper\MongoMapper
+class TextModelMongoMapper_sf_v0_9_18 extends \Api\Model\Shared\Mapper\MongoMapper
 {
-
     /**
-     *
-     * @var TextModelMongoMapper_sf_v0_9_18[]
-     */
-    private static $_pool = array();
-
-    /**
-     *
      * @param string $databaseName
      * @return TextModelMongoMapper_sf_v0_9_18
      */
@@ -26,17 +23,13 @@ class TextModelMongoMapper_sf_v0_9_18 extends \Api\Model\Mapper\MongoMapper
         }
         return static::$_pool[$databaseName];
     }
+
+    /** @var TextModelMongoMapper_sf_v0_9_18[] */
+    private static $_pool = array();
 }
 
-class TextModel_sf_v0_9_18 extends \Api\Model\Mapper\MapperModel
+class TextModel_sf_v0_9_18 extends \Api\Model\Shared\Mapper\MapperModel
 {
-
-    /**
-     *
-     * @var ProjectModel;
-     */
-    private $_projectModel;
-
     public function __construct($projectModel, $id = '')
     {
         $this->id = new Id();
@@ -45,6 +38,19 @@ class TextModel_sf_v0_9_18 extends \Api\Model\Mapper\MapperModel
         $databaseName = 'sf_jamaican_psalms';
         parent::__construct(TextModelMongoMapper_sf_v0_9_18::connect($databaseName), $id);
     }
+
+    public $id;
+
+    public $title;
+
+    public $audioUrl;
+
+    public $content;
+
+    public $isArchived;
+
+    /** @var ProjectModel */
+    private $_projectModel;
 
     public static function remove($databaseName, $id)
     {
@@ -70,21 +76,10 @@ class TextModel_sf_v0_9_18 extends \Api\Model\Mapper\MapperModel
 
         return $questionList;
     }
-
-    public $id;
-
-    public $title;
-
-    public $audioUrl;
-
-    public $content;
-
-    public $isArchived;
 }
 
-class TextListModel_sf_v0_9_18 extends \Api\Model\Mapper\MapperListModel
+class TextListModel_sf_v0_9_18 extends MapperListModel
 {
-
     public function __construct($projectModel)
     {
         parent::__construct(

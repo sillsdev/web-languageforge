@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\ArrayOf;
 
 class LiftRangeError {
     public function __construct($msg, $rangeId)
@@ -29,23 +29,18 @@ class LiftRangeElementError {
     public $rangeElementId;
 }
 
-class LiftRangeDecoder {
+class LiftRangeDecoder
+{
     public function __construct($projectModel)
     {
         $this->_projectModel = $projectModel;
         $this->_errors = array();
     }
 
-    /**
-     *
-     * @var LexProjectModel
-     */
+    /** @var LexProjectModel */
     private $_projectModel;
 
-    /**
-     *
-     * @var array<LiftRangeError | LiftRangeElementError>
-     */
+    /** @var LiftRangeError[] | LiftRangeElementError[] */
     private $_errors;
 
     /**

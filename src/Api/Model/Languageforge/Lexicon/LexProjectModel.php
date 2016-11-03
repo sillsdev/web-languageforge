@@ -8,8 +8,8 @@ use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\LfProjectModel;
-use Api\Model\Mapper\MapOf;
-use Api\Model\Mapper\MongoStore;
+use Api\Model\Shared\Mapper\MapOf;
+use Api\Model\Shared\Mapper\MongoStore;
 use Palaso\Utilities\FileUtilities;
 
 class LexProjectModel extends LfProjectModel

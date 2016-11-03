@@ -2,8 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
-use Palaso\Utilities\FileUtilities;
-use Api\Model\Command\ProjectCommands;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\ErrorResult;
 use Api\Model\Shared\Command\ImportResult;
 use Api\Model\Shared\Command\MediaResult;
@@ -12,6 +11,7 @@ use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LiftImport;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
+use Palaso\Utilities\FileUtilities;
 
 class LexUploadCommands
 {
@@ -27,7 +27,7 @@ class LexUploadCommands
      * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
-     * @return \Api\Model\Shared\Command\UploadResponse
+     * @return UploadResponse
      */
     public static function uploadAudioFile($projectId, $mediaType, $tmpFilePath)
     {
@@ -120,7 +120,7 @@ class LexUploadCommands
      * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
-     * @return \Api\Model\Shared\Command\UploadResponse
+     * @return UploadResponse
      */
     public static function uploadImageFile($projectId, $mediaType, $tmpFilePath)
     {
@@ -204,7 +204,7 @@ class LexUploadCommands
      * @param string $mediaType, options are 'image'.
      * @param string $fileName
      * @throws \Exception
-     * @return \Api\Model\Shared\Command\UploadResponse
+     * @return UploadResponse
      */
     public static function deleteMediaFile($projectId, $mediaType, $fileName) {
         $response = new UploadResponse();
@@ -277,7 +277,7 @@ class LexUploadCommands
      * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
-     * @return \Api\Model\Shared\Command\UploadResponse
+     * @return UploadResponse
      */
     public static function importProjectZip($projectId, $mediaType, $tmpFilePath)
     {
@@ -401,7 +401,7 @@ class LexUploadCommands
      * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
-     * @return \Api\Model\Shared\Command\UploadResponse
+     * @return UploadResponse
      */
     public static function importLiftFile($projectId, $mediaType, $tmpFilePath)
     {

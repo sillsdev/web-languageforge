@@ -2,64 +2,11 @@
 
 namespace Api\Library\Shared;
 
-use Api\Model\Mapper\MapOf;
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\JsonDecoder;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\JsonDecoder;
+use Api\Model\Shared\Mapper\MapOf;
 
-class LanguageCode
-{
-    public function __construct($codeThree = '')
-    {
-        $this->three = $codeThree;
-    }
-
-    /**
-     * three letter language code
-     * @var string
-     */
-    public $three;
-
-    /**
-     * two letter language code
-     * @var string
-     */
-    public $two;
-
-}
-
-class Language
-{
-    public function __construct($name = '', $codeThree = '')
-    {
-        $this->name = $name;
-        $this->code = new LanguageCode($codeThree);
-        $this->country = new ArrayOf();
-        $this->altNames = new ArrayOf();
-    }
-
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var LanguageCode
-     */
-    public $code;
-
-    /**
-     * @var ArrayOf <string>
-     */
-    public $country;
-
-    /**
-     * @var ArrayOf <string>
-     */
-    public $altNames;
-
-}
-
-function _LanguageFunctor($data)
+function _LanguageFunctor()
 {
     return new Language();
 }
@@ -131,5 +78,41 @@ class LanguageData extends MapOf
         $code = self::getCode($tag);
         return $this[$code];
     }
+}
 
+class LanguageCode
+{
+    public function __construct($codeThree = '')
+    {
+        $this->three = $codeThree;
+    }
+
+    /** @var string three letter language code */
+    public $three;
+
+    /** @var string two letter language code */
+    public $two;
+}
+
+class Language
+{
+    public function __construct($name = '', $codeThree = '')
+    {
+        $this->name = $name;
+        $this->code = new LanguageCode($codeThree);
+        $this->country = new ArrayOf();
+        $this->altNames = new ArrayOf();
+    }
+
+    /** @var string */
+    public $name;
+
+    /** @var LanguageCode */
+    public $code;
+
+    /** @var ArrayOf<string> */
+    public $country;
+
+    /** @var ArrayOf<string> */
+    public $altNames;
 }

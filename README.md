@@ -1,10 +1,43 @@
 # web-languageforge / web-scriptureforge #
 
-Although [web-languageforge](https://github.com/sillsdev/web-languageforge) and [web-scriptureforge](https://github.com/sillsdev/web-scriptureforge) represent different websites, they have the same code base but are stored in seperate repositories for the purpose of  version control and issue tracking. Since they are related repos it is easy to merge from one to the other.
+[Language Forge](https://github.com/sillsdev/web-languageforge) and [Scripture Forge](https://github.com/sillsdev/web-scriptureforge) represent different websites, but have the same code base stored in seperate repositories for the purpose of  version control and issue tracking. Since they are related repos it is easy to merge from one to the other.
 
-## Installation ##
 
-First clone this repository. From your *home* folder...
+## Recommended Development Environment ##
+
+Our recommended development environment for web development is Linux Ubuntu GNOME.  Choose either the [Vagrant VM Setup](#VagrantSetup) or the [Local Linux Development Setup](#LocalSetup).  Even though the Vagrant VM Setup is definitely easier because it always installs from a clean slate on a new virtual box, we recommend doing development on your local development machine.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
+
+---------------------------------
+
+### Vagrant VM Setup <a id="VagrantSetup"></a>
+
+Clone this repository to your host machine and and `vagrant up` the Xenial box. We intentionally postpone provisioning on initial boot so the `Virtualbox guest additions` updates don't interfere with the provisioning process.
+
+```
+git clone https://github.com/sillsdev/web-languageforge web-languageforge --recurse-submodules
+cd deploy/xenial
+vagrant up --no-provision
+```
+
+Once the shell notifies the Virtualbox guest additions have been updated, power down the Xenial box.
+
+Now, vagrant up with provision to install and deploy
+
+```
+vagrant up --provision
+```
+
+Proceed to [Language Forge Configuration File](#LFConfig) and follow the rest of the steps in this README.
+
+-------------------------------
+
+### Local Linux Development Setup <a id="LocalSetup"></a>
+
+Start with the Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure the LAMP stack (Linux, Apache, MongoDB, and PHP).
+
+
+#### Installation and Deployment
+After creating your Ansible-assisted setup, clone this repository from your *home* folder...
 
 ````
 mkdir src
@@ -13,8 +46,8 @@ mkdir xForge
 cd xForge
 git clone https://github.com/sillsdev/web-languageforge web-languageforge --recurse-submodules
 ````
+The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder
 
-> The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder.
 
 If you want to run an independant repo for scriptureforge, clone its repo also...
 
@@ -28,182 +61,248 @@ Otherwise just create a symbolic link between languageforge and scriptureforge..
 ln -s web-languageforge web-scriptureforge
 ```
 
-Now deploy both sites...
+Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`
+ - **Vagrant VM Setup**: uncomment line 6 and comment line 5
+ - **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have mongo on you HDD rather than SDD). 
+
+Configure ansible.cfg and deploy both sites
 
 ````
 cd web-languageforge/deploy
-ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
+ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
+ansible-playbook -i hosts playbook_xenial.yml --limit localhost -K
 ````
 
-Install the php packages, this can take awhile. Note that you must have [composer](https://getcomposer.org/) and [bower](http://bower.io/) installed to do this.
+### Language Forge Configuration File <a id="LFConfig"></a>
+Manually edit the Language Forge config file
 
 ```
-cd ../src
-composer install
-bower install
-```
-Install the node packages. We're using [gulp](http://gulpjs.com/) as our build runner which requires node and is available as a node package...
-
-````
-cd ..
-npm install
-````
----------------------------------------------------
-# README DEVELOPER Information
-
-## Recommended Development Environment ##
-
-Our recommended development environment for web development is Linux Ubuntu Gnome.  The easiest way to get setup is to use the Ansible assisted setup [described here](https://github.com/sillsdev/ops-devbox).
-
-Among other things this setup will ensure that you have:
-
-* A working *nodejs*, and *npm*.
-* A globally installed *gulp* and *bower*.
-* A globally installed *composer*.
-
-## Development Environment ##
-
-Your development environment can be setup using Ansible.  Ansible Playbooks are provided that will install and configure the LAMP stack; installing and configuring Apache, PHP, and MongoDB.
-
-* The apache virtual host is created.
-* A MongoDB document store created with appropriate user and permissions granted.
-* The */etc/hosts* file is updated to point languageforge.local and scriptureforge.local to localhost.
-
-### LAMP Stack Setup ###
-Choose either the **Vagrant VM Setup** or the **Local Linux Development Setup**.  The Vagrant Setup is definitely easier as it always installs from a clean slate on a new virtual box.
-
-We recommend doing development on your development machine directly rather than using Vagrant.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
-
-#### Ansible Setup ####
-
-````
-sudo apt-get install python-pip
-sudo pip install ansible==2.1.0
-````
-(the old way was `sudo pip install ansible==1.9.4`)
-
-Some installation notes:
-You may need to:
-````
-sudo apt-get install libffi
-sudo pip install markupsafe
-````
-
-#### Install Development Environment Dependencies From ops-devbox ####
-
-````
-wget https://github.com/sillsdev/ops-devbox/blob/master/dev.yml
-ansible-playbook -i hosts dev.yml --limit localhost -K
-````
-
-For either **Vagrant VM Setup** or **Local Linux Development Setup**, merge the contents of `deploy/default_ansible.cfg` into `/etc/ansible/ansible.cfg` or `.ansible.cfg` (in your home folder).
-
-TODO: this is unclear.  We should make a bash script that merges this for you.  Also, /etc/ansible/ansible.cfg does not appear to be present when installed via pip
-
-#### Vagrant VM Setup ####
-
-Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`, i.e. uncomment line 6 and comment line 5. 
-
-````
-cd deploy/debian
-vagrant up --provision
-````
-
-You will need to manually edit your `/etc/hosts` file such that *default.local*, *languageforge.local*, *scriptureforge.local*, *jamaicanpsalms.scriptureforge.local* and *demo.scriptureforge.local* map to *192.168.33.10*.
-
-````
-192.168.33.10	default.local
-192.168.33.10	languageforge.local
-192.168.33.10	scriptureforge.local
-192.168.33.10	jamaicanpsalms.scriptureforge.local
-192.168.33.10	demo.scriptureforge.local
-````
-
-The Vagrant configuration uses Ansible to provision the box.
-
-Install the php packages, this can take awhile. Note that you must have [composer](https://getcomposer.org/) and [bower](http://bower.io/) installed to do this.
-
-```
-cd ../../src
-composer install
-bower install
+sudo gedit /etc/languageforge/conf/sendreceive.conf
 ```
 
+and modify PhpSourcePath to
 
-#### Local Linux Development Setup ####
+```
+PhpSourcePath = /var/www/virtual/languageforge.org/htdocs
+```
 
-The Ansible configuration used for the Vagrant setup can also be used to setup your local linux development machine.
+## Installing IDEs and Debugger ##
 
-Change the variable *mongo_path: /hddlinux/mongodb* in `deploy/vars_palaso.yml`, i.e. uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have mongo on you HDD rather than SDD). 
+### Eclipse ###
+Install Oracle Java JDK 8
 
-````
-cd deploy
-ansible-playbook -i hosts playbook_mint.yml --limit localhost -K
-````
+```
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer install oracle-java8-set-default
+```
 
-You also need to make sure that the src and test folders has permissions such that www-data can write to it.  e.g.
-````
-chgrp -R www-data src
-chgrp -R www-data test
-````
+Download [Eclipse](http://www.eclipse.org/downloads/), extract the tar folder and install.
+
+```
+tar xvf eclipse-inst-linux64.tar.gz
+cd eclipse-installer
+./eclipse-inst
+```
+
+From the installer, select **Eclipse IDE for PHP Developers**
+
+Create a launcher shortcut from your *home* directory
+
+```
+gedit .local/share/applications/eclipse.desktop
+```
+
+Replacing your *USERNAME*, paste the content below and save
+
+```
+[Desktop Entry]
+Name=Eclipse
+Type=Application
+Exec=/home/USERNAME/eclipse/php-neon/eclipse/eclipse
+Terminal=false
+Icon=/home/USERNAME/eclipse/php-neon/eclipse/icon.xpm
+Comment=Integrated Development Environment
+NoDisplay=false
+Categories=Development;IDE;
+Name[en]=Eclipse
+```
+
+Even though we no longer use Eclipse for web development, we [install](https://marketplace.eclipse.org/content/monjadb) the MonjaDB plugin for browsing and updating MongoDB.
+
+Once the MongaDB plugin is installed, access `MongoDB` from the Eclipse menu and select `Connect`.  Click `OK` and you should see the contents of MongoDB.
+
+### PhpStorm ###
+
+Download [PhpStorm](https://www.jetbrains.com/phpstorm/download/#section=linux-version), extract the tar file and install.  You may need to modify newer version numbers accordingly...
+
+```
+tar xvf PhpStorm-2016.2.1.tar.gz
+sudo mv PhpStorm-162.1889.1/  /opt/phpstorm
+sudo ln -s /opt/phpstorm/bin/phpstorm.sh /usr/local/bin/phpstorm
+# launch
+phpstorm
+```
+
+LSDev members can contact their team lead to get the SIL license information.  PhpStorm also has an option *Evaluate for free for 30 days*.
+
+#### Creating the PhpStorm Project ####
+
+Launch PhpStorm.
+
+Click **Create New Project from Existing Files** --> **Next**. 
+
+ From the **Create New Project: Choose Project Directory** dialog,  browse to the `web-languageforge` directory, then mark it as **Project Root** --> **Next**.
+
+From the **Add Local Server** dialog set
+Name: `languageforge.local`
+Web server root URL: `http://languageforge.local`
+--> **Next** --> **Finish**
+
+### Xdebug ###
+
+Ansible will have installed xdebug, but you still need to manually edit the following files:
+
+
+Edit **/etc/php/7.0/cli/php.ini** to have this line
+`zend_extension = /usr/lib/php/20151012/xdebug.so`
+
+Append the following section to the end of **/etc/php/7.0/apache2/php.ini**
+
+```
+zend_extension = /usr/lib/php/20151012/xdebug.so
+
+[Xdebug]
+xdebug.remote_enable = 1
+xdebug.remote_connect_back=1
+xdebug.remote_port = 9000
+xdebug.scream=0
+xdebug.show_local_vars=1
+xdebug.idekey=PHPSTORM
+```
+
+Reference [Xdebug wizard](https://xdebug.org/wizard.php)
+
+#### Integrating Xdebug with PhpStorm ####
+
+Setting *PHP Interpreter* from PhpStorm
+
+**File** --> **Settings** --> **Languages & Frameworks** --> **PHP**
+
+From the dropdown to *PHP language level*, select `7`
+For *Interpreter*, click "..." to browse, then "+"
+
+```
+Name: PHP 7
+PHP executable: /usr/bin/php
+```
+
+Adding *Servers* from PhpStorm
+
+**File** --> **Settings** --> **Languages & Frameworks** --> **PHP** --> **Servers**
+Click the "+" to add the following Name & Hosts:
+- default.local
+- languageforge.local
+- scriptureforge.local
+
+Restart apache2
+
+```
+sudo service apache2 restart
+```
+
+#### Xdebug helper Chrome extension ####
+
+Install the [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension which adds a bug icon to the top right area of Chrome extensions.
+
+Right-click to select **Options** and set **IDE key**
+
+```
+PhpStorm PHPSTORM
+```
+
+When it's time to Debug, check that the bug icon is green for **Debug**.  
+
+Then, from PhpStorm, click the telephone icon near the top right for *Start Listening for PHP Connections*.
+
+Reference for [Integrating Xdebug with PhpStorm](https://www.jetbrains.com/help/phpstorm/2016.2/configuring-xdebug.html#integrationWithProduct).
+
+### LiveReload ###
+
+#### LiveReload Chrome extension
+
+Install the [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en-US) extension.
+
+Then from PhpStorm, click
+**View**->**Tool Windows** -> **Gulp**
+
+When you want LiveReload running, double-click the **reload** Gulp task.
+Then in the LiveReload chrome extension, left click to enable it.  A solid dot in the circle means the plugin is connected. Now when an applicable source file is changed and saved, it should trigger an automate page reload in the browser.
 
 ## Testing ##
 
 ### PHP Unit Tests ###
 
-Unit testing currently uses [SimpleTest](http://www.simpletest.org/).
+Unit testing currently uses [PHPUnit](https://phpunit.de/) which was already installed by composer.
 
-To run tests, browse to [default.local/web-languageforge/test/php](http://default.local/web-languageforge/test/php/) and click [AllTest.php](http://default.local/web-languageforge/test/php/AllTests.php). If you want to run just a few tests, browse to sub-folders and click on AllTests.php within to narrow tests.
+#### Integrating PHPUnit with PhpStorm ####
+
+**File** -> **Settings** -> **Languages & Frameworks** -> **PHPUnit**
+
+Under PHPUnit Library, select `Use Composer autoloader` option
+For `Path to script` browse to `web-languageforge/src/vendor/autoload.php`
+
+Under Test Runner
+Select *Default configuration file* and browse to `web-languageforge/test/php/phpunit.xml`
+
+Select *Default boostrap file* and browse to `web-languageforge/test/php/TestConfig.php`
+
+To run tests, browse to the project view, right-click `test/php` and select `Run php`.
 
 Note: at least one test will fail if the LFMerge (send/receive) program is not installed and available.  This is OK as long as you are not testing Send/Receive functionality.
 
 ### End-to-End (E2E) Tests ###
 
-#### E2E Test Install ####
+#### Install/Update Webdriver ####
 
-Make sure npm is up-to-date
-````
-sudo npm cache clean -f
-sudo npm install -g n
-sudo n stable
-````
+From the `web-languageforge` directory
 
-Make sure java is installed
-````
-sudo apt-get install openjdk-7-jre-headless
-````
-
-Update **webdriver**.  (Old way prior to Angular 1.5 installed **webdriver-manager** ~~globally~~ since our local repo was on an NTFS partition and items there are not executable, then install **webdriver**):
-
-````
-cd test/app
-./webdriver.sh update
-````
+```
+npm install
+gulp test-e2e-webdriver_update
+```
 
 #### E2E Test Run ####
 
-First start **webdriver** in one terminal:
+From the *web-languageforge* directory, start **webdriver** in one terminal:
 
 ````
-cd test/app
-./webdriver.sh start
+gulp test-e2e-webdriver_standalone
 ````
 
-Then run tests in another terminal:
+Then to run **languageforge** tests in another terminal:
 
 ````
-cd test/app
-sh rune2eLF.sh
+./rune2e.sh lf
 ````
-to test in on the **languageforge** site or run `sh rune2eSF.sh` to test on the **scriptureforge** site. Add a test name argument to the previous or browse to sub-folders to narrow tests.
+
+To run **scriptureforge** tests:
+
+```
+./rune2e.sh sf
+```
+
+To test a certain test spec, add a parameter `--specs [spec name]`.  For example, 
+```
+./rune2e.sh lf --specs lexicon-new-project
+``` 
+will run the  the *lexicon-new-project.spec.js* tests on **languageforge**.
+
+To add more verbosity during E2E tests, add a parameter `--verbosity true`
 
 ## Building with gulp ##
 
 (For installation of npm see https://github.com/nodesource/distributions)
-
-Install **gulp** globally (it needs to be installed globally since our local repo is on an NTFS partition and items there are not executable):
-
-	sudo npm install -g gulp
 
 Install gulp dependencies by running from the repo root (where):
 
@@ -211,13 +310,16 @@ Install gulp dependencies by running from the repo root (where):
 
 To install the mongodb databases locally, run:
 
-	gulp copy-prod-db
+```
+gulp mongodb-copy-prod-db
+```
 
 ## Resetting the MongoDB ##
 
 If you want to _start over_ with your mongo database, you can use the factory reset script like so (this will delete all data in the mongodb):
 ````
-scripts/tools/factoryReset.php run
+cd scripts/tools
+./factoryReset.php run
 ````
 After a fresh factory reset, there is one user.  username: admin password: password
 

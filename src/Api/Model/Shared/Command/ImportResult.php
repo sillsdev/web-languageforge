@@ -2,31 +2,19 @@
 
 namespace Api\Model\Shared\Command;
 
+use Api\Model\Languageforge\Lexicon\LiftImportStats;
+
 class ImportResult
 {
-
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $path;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $fileName;
 
-    /**
-     *
-     * @var LiftImportStats
-     */
+    /** @var LiftImportStats */
     public $stats;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $importErrors;
-
 }

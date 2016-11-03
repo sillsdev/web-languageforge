@@ -2,17 +2,17 @@
 
 namespace Api\Library\Scriptureforge\Sfchecks;
 
-use Api\Model\ProjectModel;
-use Api\Model\QuestionAnswersListModel;
-use Api\Model\Scriptureforge\Dto\UsxHelper;
+use Api\Model\Scriptureforge\Sfchecks\Dto\UsxHelper;
+use Api\Model\Scriptureforge\Sfchecks\QuestionAnswersListModel;
+use Api\Model\Scriptureforge\Sfchecks\TextListModel;
+use Api\Model\Scriptureforge\Sfchecks\TextModel;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\TextListModel;
-use Api\Model\TextModel;
-use Api\Model\UserList_ProjectModel;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserListProjectModel;
+use Api\Model\Shared\UserModel;
 
-class SfchecksReports {
-
+class SfchecksReports
+{
     public static function TopContributorsWithTextReport($projectId) {
         $project = ProjectModel::getById($projectId);
         $output = str_pad('**** Top Responders With Responses Report ****', 120, " ", STR_PAD_BOTH) . "\n";
@@ -20,7 +20,7 @@ class SfchecksReports {
         $data = array();
         $contributors = array();
 
-        $listModel = new UserList_ProjectModel($projectId);
+        $listModel = new UserListProjectModel($projectId);
         $listModel->read();
         if ($listModel->count > 0) {
             $textListModel = new TextListModel($project);
@@ -155,6 +155,7 @@ class SfchecksReports {
                 foreach ($text['questions'] as $question) {
                     $output .= "\n\tIn reference to the question '" . $question['content'] . "'\n";
                     foreach ($question['answers'] as $answer) {
+                        /** @var \DateTime $date */
                         $date = $answer['timestamp'];
 
                         if ($answer['selectedText']) {
@@ -222,8 +223,10 @@ class SfchecksReports {
     }
 
 
-
-
+    /**
+     * @param $responses
+     * @param \DateTime $epochTime
+     */
     private static function _addResponseOnEpoch(&$responses, $epochTime) {
         $dateObj = $epochTime;
         $dateString = $dateObj->format('M d, Y');
@@ -319,7 +322,7 @@ class SfchecksReports {
         $invalidUsers = array();
 
 
-        $listModel = new UserList_ProjectModel($projectId);
+        $listModel = new UserListProjectModel($projectId);
         $listModel->read();
         if ($listModel->count > 0) {
             $textListModel = new TextListModel($project);

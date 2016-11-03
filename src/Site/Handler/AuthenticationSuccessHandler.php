@@ -3,10 +3,10 @@
 namespace Site\Handler;
 
 use Api\Library\Shared\Website;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
@@ -16,7 +16,6 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 {
     /**
      * Constructor.
-     *
      * @param HttpUtils $httpUtils
      * @param array     $options   Options for processing a successful authentication attempt.
      * @param string|null $providerKey
@@ -46,7 +45,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         $url = '/app/projects';
         if ($referer and strpos($referer, '/app/') !== false) {
             $url = $referer;
-        } elseif ($projectId && ProjectModel::projectExists($projectId)) {
+        } elseif ($projectId && ProjectModel::projectExistsOnWebsite($projectId, $website)) {
             $project = ProjectModel::getById($projectId);
             if ($project->userIsMember($user->id->asString())) {
                 $url = '/app/'.$project->appName.'/'.$projectId;

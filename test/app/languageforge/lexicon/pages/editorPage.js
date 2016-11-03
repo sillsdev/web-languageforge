@@ -189,7 +189,8 @@ function EditorPage() {
     pictures: {
       list: editorUtil.getOneField('Pictures'),
       images: editorUtil.getOneField('Pictures').all(by.css('img')),
-      captions: editorUtil.getOneField('Pictures').all(by.css('.input-prepend > input')),
+      captions: editorUtil.getOneField('Pictures')
+        .all(by.css('.input-prepend > .dc-formattedtext .ta-bind')),
       removeImages: editorUtil.getOneField('Pictures').all(by.css('.icon-remove')),
       getFileName: function (index) {
         return editorUtil.getOneFieldValue('Pictures').then(function (pictures) {
@@ -209,13 +210,15 @@ function EditorPage() {
     },
 
     getMultiTextInputs: function getMultiTextInputs(searchLabel) {
-      return editorUtil.getOneField(searchLabel).all(by.css('.input-prepend > input'));
+      return editorUtil.getOneField(searchLabel)
+        .all(by.css('.input-prepend > .dc-formattedtext .ta-bind'));
     },
 
     getMultiTextInputSystems: function getMultiTextInputSystems(searchLabel) {
       return editorUtil.getOneField(searchLabel).all(by.css('.input-prepend > span.wsid'));
     },
 
+    selectElement: editorUtil.selectElement,
     getFields: editorUtil.getFields,
     getOneField: editorUtil.getOneField,
     getFieldValues: editorUtil.getFieldValues,

@@ -2,12 +2,12 @@
 
 namespace Api\Library\Languageforge\Semdomtrans;
 
-use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransItemModel;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransQuestion;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
-use Api\Model\Languageforge\SemDomTransProjectModel;
-use Api\Model\Mapper\ArrayOf;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
+use Api\Model\Shared\Mapper\ArrayOf;
 
 class SemDomXMLExporter {
     

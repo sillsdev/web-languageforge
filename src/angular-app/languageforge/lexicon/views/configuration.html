@@ -88,16 +88,6 @@
                     </div>
                     <br />
                 </div>
-                <div class="control-group">
-                    <div class="controls"
-                        data-ng-if="fieldConfigItemExists('displayMultiline') && fieldConfig[currentField.name].type != 'pictures'">
-                        <label class="checkbox {{interfaceConfig.pullNormal}}">
-                            <input type="checkbox" 
-                                data-ng-model="fieldConfig[currentField.name].displayMultiline"/>
-                            {{'Display as multi-line text' | translate}}</label>
-                        <br />
-                    </div>
-                </div>
                 <div class="control-group"
                     data-ng-if="fieldConfigItemExists('width') && fieldConfig[currentField.name].type != 'pictures'">
                     <label class="control-label" for="width">{{'Width' | translate}}</label>

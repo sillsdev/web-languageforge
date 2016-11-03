@@ -3,8 +3,8 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Library\Shared\Palaso\StringUtil;
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\ObjectForEncoding;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\ObjectForEncoding;
 use LazyProperty\LazyPropertiesTrait;
 
 function generateParagraph() {

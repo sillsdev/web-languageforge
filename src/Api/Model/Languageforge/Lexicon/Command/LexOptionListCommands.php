@@ -2,11 +2,11 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
-use Palaso\Utilities\CodeGuard;
-use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\LexOptionListModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
-use Api\Model\Mapper\JsonDecoder;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Mapper\JsonDecoder;
+use Palaso\Utilities\CodeGuard;
 
 class LexOptionListCommands
 {

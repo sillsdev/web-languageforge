@@ -2,32 +2,24 @@
 
 namespace Api\Model\Languageforge\Semdomtrans;
 
-class SemDomTransFieldReference {
-	public function __construct($fieldName = '', $sourceVal = '', $translationVal = '', $status = SemDomTransStatus::Draft) {
+class SemDomTransFieldReference
+{
+    public function __construct($fieldName = '', $sourceVal = '', $translationVal = '', $status = SemDomTransStatus::Draft) {
         $this->fieldName = $fieldName;
         $this->sourceVal = $sourceVal;
         $this->translationVal = $translationVal;
         $this->status = $status;
     }
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $fieldName;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $sourceVal;
     
-    /**
-     * @var string
-     */
+    /** @var string */
     public $translationVal;
     
-    
-    /**
-     * @var SemDomTransStatus
-     */
+    /** @var SemDomTransStatus */
     public $status;   
 }

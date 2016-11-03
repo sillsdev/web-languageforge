@@ -2,7 +2,7 @@
 
 namespace Site\Controller;
 
-use Api\Model\UserModelBase;
+use Api\Model\Shared\UserModelBase;
 use Silex\Application;
 
 class Validate extends Base

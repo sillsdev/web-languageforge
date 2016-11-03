@@ -2,7 +2,7 @@
 
 - name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
   hosts: all
-  sudo: no
+  become: no
   tasks:
     - name: composer install
       command: composer install
