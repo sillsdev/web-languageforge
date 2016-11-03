@@ -16,66 +16,6 @@ class Website
     const SITEROLE_SITE_MANAGER = 'site_manager';
 
     /**
-     *
-     * @var string - the domain / hostname of the website
-     */
-    public $domain;
-
-    /**
-     *
-     * @var string
-     */
-    public $name;
-
-    /**
-     *
-     * @var string - the theme name of this website
-     */
-    public $theme;
-
-    /**
-     *
-     * @var bool - whether or not to force HTTPS for this website
-     */
-    public $ssl;
-
-    /**
-     *
-     * @var string - the base site for this website: either scriptureforge or languageforge
-     */
-    public $base;
-
-    /**
-     *
-     * @var string - the name of the default project for this site, if any
-     */
-    public $defaultProjectCode;
-
-    /**
-     *
-     * @var string - a role constant from SiteRoles
-     */
-    public $userDefaultSiteRole;
-
-    /**
-     *
-     * @var bool
-     */
-    public $allowSignupFromOtherSites;
-
-    /**
-     *
-     * @var array<Website>
-     */
-    private static $_sites;
-
-    /**
-     *
-     * @var array
-     */
-    private static $_redirect;
-
-    /**
      * @param string $domain
      * @param string $base
      * @throws \Exception
@@ -92,6 +32,36 @@ class Website
         $this->userDefaultSiteRole = self::SITEROLE_USER; // must match SiteRoles::USER;
         $this->allowSignupFromOtherSites = true;
     }
+
+    /** @var string - the domain / hostname of the website */
+    public $domain;
+
+    /** @var string */
+    public $name;
+
+    /** @var string - the theme name of this website */
+    public $theme;
+
+    /** @var boolean - whether or not to force HTTPS for this website */
+    public $ssl;
+
+    /** @var string - the base site for this website: either scriptureforge or languageforge */
+    public $base;
+
+    /** @var string - the name of the default project for this site, if any */
+    public $defaultProjectCode;
+
+    /** @var string - a role constant from SiteRoles */
+    public $userDefaultSiteRole;
+
+    /** @var boolean */
+    public $allowSignupFromOtherSites;
+
+    /** @var array<Website> */
+    private static $_sites;
+
+    /** @var array */
+    private static $_redirect;
 
     /**
      * @param string $hostname
@@ -159,7 +129,6 @@ class Website
     }
 
     /**
-
      * Convenience function to get the website object or redirect based upon ssl setting or a redirect list
      * FYI Not testable  because of the inclusion of the header() method : test get() and getRedirect() instead
      * @param string $hostname

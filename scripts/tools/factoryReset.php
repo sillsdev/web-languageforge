@@ -4,11 +4,12 @@
 
 require_once('../scriptsConfig.php');
 
-use Api\Model\Command\UserCommands;
-use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\ProjectModel;
 use Api\Library\Shared\Website;
-use Api\Model\ProjectListModel;
+use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\Mapper\MongoStore;
+use Api\Model\Shared\ProjectListModel;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\Rights\SystemRoles;
 
 (php_sapi_name() == 'cli') or die('this script must be run on the command-line');
 
@@ -43,7 +44,7 @@ foreach ($projectList->entries as $p) {
 // start with a fresh database
 print "\nDropping main database...\n";
 if ($runForReal) {
-    \Api\Model\Mapper\MongoStore::dropAllCollections(SF_DATABASE);
+    MongoStore::dropAllCollections(SF_DATABASE);
 }
 
 print "\nDropping other dbs on the server (like test dbs)\n";

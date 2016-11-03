@@ -3,13 +3,11 @@
 namespace Api\Library\Shared\Script\Migration;
 
 use Api\Library\Shared\Website;
-
 use Api\Model\Shared\Rights\SiteRoles;
-
-use Api\Model\ProjectListModel;
-use Api\Model\ProjectModel;
-use Api\Model\UserModel;
-use Api\Model\UserListModel;
+use Api\Model\Shared\ProjectListModel;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\UserListModel;
+use Api\Model\Shared\UserModel;
 
 class FixSiteRolesIntegrity
 {

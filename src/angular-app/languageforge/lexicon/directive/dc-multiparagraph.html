@@ -8,13 +8,14 @@
                     title="{{inputSystems[model.inputSystem].languageName}}">{{inputSystems[model.inputSystem].abbreviation}}</span>
                 <!--
                 <dc-formattedtext class="dc-formattedtext"
-                    data-ng-if="$state.is('editor.entry') && control.rights.canEditEntry()"
                     fte-disabled="!($state.is('editor.entry') && control.rights.canEditEntry())"
+                    fte-multiline="true"
                     fte-model="model.paragraphsHtml"
                     fte-dir="inputSystemDirection(model.inputSystem)"></dc-formattedtext>
                     -->
                 <dc-formattedtext class="dc-formattedtext"
                     fte-disabled="true"
+                    fte-multiline="true"
                     fte-model="model.paragraphsHtml"
                     fte-dir="inputSystemDirection(model.inputSystem)"></dc-formattedtext>
             </div>

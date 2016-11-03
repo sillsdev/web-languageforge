@@ -7,32 +7,21 @@ use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\ProjectModel;
-use Api\Model\UserModel;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\UserModel;
 
 class RightsHelper
 {
-
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     private $_userId;
 
-    /**
-     *
-     * @var ProjectModel
-     */
+    /** @var ProjectModel */
     private $_projectModel;
 
-    /**
-     *
-     * @var Website
-     */
+    /** @var Website */
     private $_website;
 
     /**
-     *
      * @param UserModel $userModel
      * @param ProjectModel $projectModel
      * @return mixed
@@ -42,7 +31,6 @@ class RightsHelper
     }
 
     /**
-     *
      * @param string $userId
      * @param int $right
      * @return boolean
@@ -56,7 +44,6 @@ class RightsHelper
     }
 
     /**
-     *
      * @param int $right
      * @return bool
      */
@@ -70,7 +57,6 @@ class RightsHelper
     }
 
     /**
-     *
      * @param string $userId
      * @param ProjectModel $projectModel
      * @param Website $website
@@ -82,7 +68,6 @@ class RightsHelper
     }
 
     /**
-     *
      * @param int $right
      * @return bool
      */
@@ -94,7 +79,6 @@ class RightsHelper
 
 
     /**
-     *
      * @param int $right
      * @return bool
      */
@@ -104,8 +88,7 @@ class RightsHelper
 
     /**
      * @param string $methodName
-     * @param array $params
-     *            - parameters passed to the method
+     * @param array $params parameters passed to the method
      * @return bool
      * @throws \Exception
      */
@@ -132,11 +115,11 @@ class RightsHelper
             case 'semdom_does_googletranslatedata_exist':
                 return true;
             case 'project_acceptJoinRequest':
-                return $this->userHasProjectRight(Domain::USERS + OPERATION::EDIT);
+                return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case 'project_denyJoinRequest':
-                return $this->userHasProjectRight(Domain::USERS + OPERATION::EDIT); 
+                return $this->userHasProjectRight(Domain::USERS + Operation::EDIT);
             case 'semdom_export_project':
-                return $this->userHasProjectRight(DOMAIN::PROJECTS + Operation::EDIT );
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT );
 
             case 'user_sendInvite':
             case 'message_markRead':

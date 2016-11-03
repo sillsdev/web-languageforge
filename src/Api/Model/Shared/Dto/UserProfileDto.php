@@ -3,7 +3,7 @@
 namespace Api\Model\Shared\Dto;
 
 use Api\Library\Shared\Website;
-use Api\Model\UserProfileModel;
+use Api\Model\Shared\UserProfileModel;
 
 class UserProfileDto
 {

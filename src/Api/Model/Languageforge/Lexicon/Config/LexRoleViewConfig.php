@@ -2,8 +2,8 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\MapOf;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\MapOf;
 
 class LexRoleViewConfig
 {
@@ -40,7 +40,7 @@ class LexViewFieldConfig
         $this->type = 'basic';
     }
 
-    /** @var bool */
+    /** @var boolean */
     public $show;
 
     /** @var string */
@@ -57,7 +57,7 @@ class LexViewMultiTextFieldConfig extends LexViewFieldConfig
         $this->inputSystems = new ArrayOf();
     }
 
-    /** @var bool */
+    /** @var boolean */
     public $overrideInputSystems;
 
     /** @var ArrayOf */

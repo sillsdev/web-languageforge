@@ -4,7 +4,7 @@ use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Api\Library\Shared\Website;
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 require_once 'config.php';
 
 // The name of THIS file
@@ -79,7 +79,7 @@ $application_folder = realpath(__DIR__);
 
 // The path to the "application" folder
 if (is_dir($application_folder)) {
-    define('APPPATH', $application_folder.'/');
+    define('APPPATH', $application_folder . DIRECTORY_SEPARATOR);
 } else {
     exit('Error: Your application folder path does not appear to be set correctly. Please open the following file and correct this: '.SELF);
 }
@@ -151,29 +151,29 @@ $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\SecurityServiceProvider());
 $app->register(new Silex\Provider\RememberMeServiceProvider());
 $app['security.firewalls'] = array(
-	'site' => array(
-		'pattern' => '^.*$',
-		'anonymous' => true,
-		'form' => array('login_path' => '/auth/login', 'check_path' => '/app/login_check'),
+    'site' => array(
+        'pattern' => '^.*$',
+        'anonymous' => true,
+        'form' => array('login_path' => '/auth/login', 'check_path' => '/app/login_check'),
         'remember_me' => array('key' => REMEMBER_ME_SECRET),
-		'logout' => array('logout_path' => '/app/logout', 'target_url' => '/auth/login', 'invalidate_session' => true),
-		'users' => $app->share(function() use ($WEBSITE) {
-			return new \Site\Provider\AuthUserProvider($WEBSITE);
-		}),
-	),
+        'logout' => array('logout_path' => '/app/logout', 'target_url' => '/auth/login', 'invalidate_session' => true),
+        'users' => $app->share(function() use ($WEBSITE) {
+            return new \Site\Provider\AuthUserProvider($WEBSITE);
+        }),
+    ),
 );
 $app['security.role_hierarchy'] = array(
-	'ROLE_system_admin' => array('ROLE_SITE_project_creator'),
-	'ROLE_SITE_project_creator' => array('ROLE_user', 'ROLE_ALLOWED_TO_SWITCH'),
+    'ROLE_system_admin' => array('ROLE_SITE_project_creator'),
+    'ROLE_SITE_project_creator' => array('ROLE_user', 'ROLE_ALLOWED_TO_SWITCH'),
 );
 $app['security.access_rules'] = array(
-	array('^/app', 'ROLE_user'),
+    array('^/app', 'ROLE_user'),
     array('^/upload', 'ROLE_user'),
     array('^/script', 'ROLE_system_admin'),
 );
 // BCrypt needs PHP 5.5 on server, so instead have added "composer require ircmaxell/password-compat". IJH 2015-09
 $app['security.encoder.digest'] = $app->share(function() {
-	return new \Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder(BCRYPT_COST);
+    return new \Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder(BCRYPT_COST);
 });
 $app['security.authentication.success_handler.site'] = $app->share(function() use ($app) {
     return new \Site\Handler\AuthenticationSuccessHandler($app['security.http_utils'], array(

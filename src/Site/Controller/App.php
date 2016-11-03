@@ -3,10 +3,10 @@
 namespace Site\Controller;
 
 use Api\Library\Shared\SilexSessionHelper;
-use Api\Model\Command\SessionCommands;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\Command\SessionCommands;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 use Silex\Application;
 
 class App extends Base
@@ -53,7 +53,7 @@ class App extends Base
         if (!$projectId) {
             $projectId = SilexSessionHelper::getProjectId($app, $this->website);
         }
-        if ($projectId && ProjectModel::projectExists($projectId)) {
+        if ($projectId && ProjectModel::projectExistsOnWebsite($projectId, $this->website)) {
             $projectModel = ProjectModel::getById($projectId);
             if (!$projectModel->userIsMember($this->_userId)) {
                 $projectId = '';

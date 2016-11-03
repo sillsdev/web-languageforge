@@ -5,12 +5,12 @@ namespace Api\Library\Shared\Script\Migration;
 use Api\Model\Languageforge\Lexicon\Guid;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\MapperListModel;
-use Api\Model\Mapper\MongoMapper;
-use Api\Model\ProjectListModel;
-use Api\Model\ProjectModel;
-use MongoDB\BSON\UTCDatetime;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\MapperListModel;
+use Api\Model\Shared\Mapper\MongoMapper;
+use Api\Model\Shared\ProjectListModel;
+use Api\Model\Shared\ProjectModel;
+use MongoDB\BSON\UTCDateTime;
 
 (php_sapi_name() == 'cli') or die('this script must be run on the command-line');
 
@@ -106,7 +106,7 @@ class LexAllEntryListModel extends MapperListModel {
         $this->entries = new ArrayOf(function () use ($projectModel) { return new LexEntryModel($projectModel); });
 
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new UTCDatetime(1000*$newerThanTimestamp);
+            $startDate = new UTCDateTime(1000*$newerThanTimestamp);
             parent::__construct(self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array(), array(), $limit, $skip);
         } else {
             parent::__construct(self::mapper($projectModel->databaseName()), array(), array(), array(), $limit, $skip);

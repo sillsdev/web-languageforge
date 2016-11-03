@@ -5,8 +5,8 @@ namespace Api\Model\Languageforge\Lexicon\Dto;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\UserProfileModel;
+use Api\Model\Shared\Mapper\JsonEncoder;
+use Api\Model\Shared\UserProfileModel;
 
 class LexBaseViewDto
 {
