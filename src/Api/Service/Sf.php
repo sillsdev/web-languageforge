@@ -18,67 +18,44 @@ use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexProjectDto;
+use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransItemCommands;
+use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
+use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransAppManagementDto;
-use Api\Model\Scriptureforge\Dto\ProjectPageDto;
-use Api\Model\Scriptureforge\Dto\QuestionCommentDto;
-use Api\Model\Scriptureforge\Dto\QuestionListDto;
-use Api\Model\Scriptureforge\Dto\TextSettingsDto;
+use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
-use Api\Model\Scriptureforge\Dto\ProjectSettingsDto;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionTemplateCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\TextCommands;
+use Api\Model\Scriptureforge\Sfchecks\Dto\ProjectPageDto;
+use Api\Model\Scriptureforge\Sfchecks\Dto\ProjectSettingsDto;
+use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionCommentDto;
+use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionListDto;
+use Api\Model\Scriptureforge\Sfchecks\Dto\TextSettingsDto;
+use Api\Model\Shared\Command\MessageCommands;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Command\SessionCommands;
+use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\Communicate\EmailSettings;
+use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ActivityListDto;
 use Api\Model\Shared\Dto\CreateSimpleDto;
 use Api\Model\Shared\Dto\ProjectListDto;
 use Api\Model\Shared\Dto\ProjectManagementDto;
 use Api\Model\Shared\Dto\RightsHelper;
 use Api\Model\Shared\Dto\UserProfileDto;
-use Api\Model\Command\MessageCommands;
-use Api\Model\Command\ProjectCommands;
-use Api\Model\Command\SessionCommands;
-use Api\Model\Command\QuestionCommands;
-use Api\Model\Command\QuestionTemplateCommands;
-use Api\Model\Command\TextCommands;
-use Api\Model\Command\UserCommands;
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\ProjectModel;
-use Api\Model\UserModel;
-use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransItemCommands;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
+use Api\Model\Shared\Mapper\JsonEncoder;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\UserListModel;
+use Api\Model\Shared\UserModel;
 use Silex\Application;
 use Site\Controller\Auth;
 
 require_once APPPATH . 'vendor/autoload.php';
-require_once APPPATH . 'Api/Model/ProjectModel.php';
-require_once APPPATH . 'Api/Model/QuestionModel.php';
-require_once APPPATH . 'Api/Model/TextModel.php';
-require_once APPPATH . 'Api/Model/UserModel.php';
 
 class Sf
 {
-    /**
-     *
-     * @var string
-     */
-    private $userId;
-
-    /**
-     *
-     * @var string
-     */
-    private $projectId;
-
-    /**
-     * @var Application
-     */
-    private $app;
-
-    /**
-     * @var Website
-     */
-    private $website;
-
     public function __construct(Application $app)
     {
         $this->app = $app;
@@ -92,6 +69,18 @@ class Sf
         // TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
         ini_set('display_errors', 0);
     }
+
+    /** @var Application */
+    private $app;
+
+    /** @var Website */
+    private $website;
+
+    /** @var string */
+    private $userId;
+
+    /** @var string */
+    private $projectId;
 
     // ---------------------------------------------------------------
     // IMPORTANT NOTE TO THE DEVELOPERS
@@ -177,8 +166,7 @@ class Sf
 
     // TODO Pretty sure this is going to want some paging params
     /**
-     *
-     * @return \Api\Model\UserListModel
+     * @return UserListModel
      */
     public function user_list()
     {
@@ -469,8 +457,8 @@ class Sf
 
     /**
      * Updates the ProjectSettingsModel which are settings accessible only to site administrators
-     * @param array<Api\Model\Sms\SmsSettings> $smsSettingsArray
-     * @param array<Api\Model\EmailSettings> $emailSettingsArray
+     * @param SmsSettings[] $smsSettingsArray
+     * @param EmailSettings[] $emailSettingsArray
      * @return string $result id to the projectSettingsModel
      */
     public function project_updateSettings($smsSettingsArray, $emailSettingsArray)
@@ -838,9 +826,7 @@ class Sf
             return SemDomTransEditDto::encode($this->projectId, $this->userId);
         }
     }
-    
-    
-    
+
     public function semdom_get_open_projects() {
         return SemDomTransProjectCommands::getOpenSemdomProjects($this->userId);
     }
@@ -886,8 +872,6 @@ class Sf
     public function project_management_report_sfchecks_responsesOverTimeReport() {
         return SfchecksReports::ResponsesOverTimeReport($this->projectId);
     }
-
-
 
     // -------------------------------- Semdomtrans App Management Api ----------------------------------
     public function semdomtrans_app_management_dto() {

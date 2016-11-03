@@ -4,7 +4,7 @@ require_once('../scriptsConfig.php');
 
 use Api\Library\Languageforge\Semdomtrans;
 use Api\Library\Languageforge\Semdomtrans\SemDomXMLExporter;
-use Api\Model\Languageforge\SemDomTransProjectModel;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
 
 $lang = $argv[1];
 $version = SemDomTransProjectModel::SEMDOM_VERSION;

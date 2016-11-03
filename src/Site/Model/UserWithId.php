@@ -2,33 +2,10 @@
 
 namespace Site\Model;
 
-
-
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserWithId implements UserInterface
 {
-
-    /**
-     * @var string
-     */
-    private $username;
-
-    /**
-     * @var string
-     */
-    private $password;
-
-    /**
-     * @var string
-     */
-    private $id;
-
-    /**
-     * @var array
-     */
-    private $roles;
-
     public function __construct($username, $password, $id, array $roles = array())
     {
         if ('' === $username || null === $username) {
@@ -41,6 +18,17 @@ class UserWithId implements UserInterface
         $this->roles = $roles;
     }
 
+    /** @var string */
+    private $username;
+
+    /** @var string */
+    private $password;
+
+    /** @var string */
+    private $id;
+
+    /** @var array */
+    private $roles;
 
     public function getRoles()
     {

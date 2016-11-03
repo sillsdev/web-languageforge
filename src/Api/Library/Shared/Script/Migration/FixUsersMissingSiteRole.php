@@ -2,12 +2,11 @@
 
 namespace Api\Library\Shared\Script\Migration;
 
-use Api\Model\Mapper\MapperListModel;
+use Api\Model\Shared\Mapper\MapperListModel;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
-use Api\Model\UserListModel;
-use Api\Model\UserModelMongoMapper;
-//use Api\Model\UserProfileModel;
+use Api\Model\Shared\UserListModel;
+use Api\Model\Shared\UserModel;
+use Api\Model\Shared\UserModelMongoMapper;
 
 (php_sapi_name() == 'cli') or exit('this script must be run on the command-line');
 

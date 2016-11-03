@@ -1,9 +1,7 @@
 'use strict';
 
 /**
- *  TODO: refactor tests so that constants.siteType doesn't need to be specified in
- *  protractorConf.scriptureforge.js and protractorConf.languageforge.js as used in projectsPage.js.
- *  Perhaps User Management needs to be its own app. IJH 2015-01
+ *  TODO: Perhaps User Management needs to be its own app. IJH 2015-01
  */
 describe('E2E Projects List App', function () {
   var constants     = require('../../../testConstants.json');

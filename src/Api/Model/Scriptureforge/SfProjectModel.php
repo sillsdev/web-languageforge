@@ -2,7 +2,7 @@
 
 namespace Api\Model\Scriptureforge;
 
-use Api\Model\ProjectModel;
+use Api\Model\Shared\ProjectModel;
 
 class SfProjectModel extends ProjectModel
 {

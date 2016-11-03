@@ -4,14 +4,10 @@ namespace Api\Model\Languageforge\Lexicon;
 
 class LiftRangeImportNodeError extends ImportNodeError
 {
-
     const FILE = 'file';
     const RANGE = 'lift range';
 
-    /**
-     *
-     * @var array <LiftRangeImportNodeError>
-     */
+    /** @var LiftRangeImportNodeError[] */
     protected $subnodeErrors;
 
     public function addRangeFileNotFound($liftFilename)

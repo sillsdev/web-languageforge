@@ -2,8 +2,8 @@
 
 namespace Api\Library\Shared\Script\Migration;
 
-use Api\Model\UserListModel;
-use Api\Model\UserProfileModel;
+use Api\Model\Shared\UserListModel;
+use Api\Model\Shared\UserProfileModel;
 
 class FixAvatarRefs
 {

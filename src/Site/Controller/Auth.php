@@ -3,10 +3,10 @@
 namespace Site\Controller;
 
 use Api\Library\Shared\Communicate\Communicate;
-use Api\Model\Command\UserCommands;
-use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
-use Api\Model\UserModelBase;
+use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
+use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\UserModel;
+use Api\Model\Shared\UserModelBase;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -92,7 +92,7 @@ class Auth extends PublicApp
      * @param Application $app
      * @param string $resetPasswordKey
      * @param string $newPassword
-     * @throws \Api\Library\Shared\Palaso\Exception\UserUnauthorizedException
+     * @throws UserUnauthorizedException
      * @return string $userId
      */
     public static function resetPassword(Application $app, $resetPasswordKey = '', $newPassword = '')

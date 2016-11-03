@@ -3,7 +3,7 @@
 namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Model\Languageforge\Lexicon\LexMultiParagraph;
-use Api\Model\Mapper\JsonDecoder;
+use Api\Model\Shared\Mapper\JsonDecoder;
 
 class LexEntryDecoder extends JsonDecoder
 {

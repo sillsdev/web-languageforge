@@ -3,7 +3,6 @@
 namespace Api\Model\Languageforge\Lexicon\Command;
 
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
-use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexRoleViewConfig;
 use Api\Model\Languageforge\Lexicon\Config\LexUserViewConfig;
@@ -11,9 +10,9 @@ use Api\Model\Languageforge\Lexicon\Config\LexViewFieldConfig;
 use Api\Model\Languageforge\Lexicon\Config\LexViewMultiTextFieldConfig;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\Mapper\JsonDecoder;
-use Api\Model\Mapper\MongoStore;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Mapper\JsonDecoder;
+use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 

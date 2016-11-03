@@ -2,15 +2,10 @@
 
 namespace Api\Library\Shared\Communicate\Sms;
 
-use Api\Model\Mapper\MongoMapper;
+use Api\Model\Shared\Mapper\MongoMapper;
 
 class SmsMongoMapper extends MongoMapper
 {
-    /**
-     * @var SmsMongoMapper[]
-     */
-    private static $_pool = array();
-
     /**
      * @param string $databaseName
      * @return SmsMongoMapper
@@ -23,4 +18,7 @@ class SmsMongoMapper extends MongoMapper
 
         return static::$_pool[$databaseName];
     }
+
+    /** @var SmsMongoMapper[] */
+    private static $_pool = array();
 }

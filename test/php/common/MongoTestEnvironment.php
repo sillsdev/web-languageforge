@@ -3,50 +3,38 @@
 use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
-use Api\Model\Languageforge\SemDomTransProjectModel;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
-use Api\Model\Mapper\Id;
-use Api\Model\ProjectModel;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
+use Api\Model\Shared\Mapper\Id;
+use Api\Model\Shared\Mapper\MongoStore;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\ProjectSettingsModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 use Palaso\Utilities\FileUtilities;
 
 class MongoTestEnvironment
 {
-
     public function __construct($domain = 'scriptureforge.org')
     {
-        $this->db = \Api\Model\Mapper\MongoStore::connect(SF_DATABASE);
+        $this->db = MongoStore::connect(SF_DATABASE);
         $this->website = Website::get($domain);
         if (! isset($this->uploadFilePaths)) {
             $this->uploadFilePaths = array();
         }
     }
 
-    /**
-     *
-     * @var MongoDB
-     */
+    /** @var MongoDB */
     private $db;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     protected $displayErrors;
 
-    /**
-     * Local store of 'uploaded' filepaths
-     *
-     * @var array
-     */
+    /** @var array Local store of 'uploaded' filepaths */
     protected $uploadFilePaths;
 
-    /**
-     *
-     * @var Website
-     */
+    /** @var Website */
     public $website;
 
     /**
@@ -89,7 +77,7 @@ class MongoTestEnvironment
      */
     public function createUser($username, $name, $email, $role = SystemRoles::USER)
     {
-        $userModel = new Api\Model\UserModel();
+        $userModel = new UserModel();
         $userModel->username = $username;
         $userModel->name = $name;
         $userModel->email = $email;
@@ -133,7 +121,7 @@ class MongoTestEnvironment
 
     public function createProjectSettings($code)
     {
-        $projectModel = new Api\Model\ProjectSettingsModel();
+        $projectModel = new ProjectSettingsModel();
         $projectModel->projectCode = $code;
         $projectModel->siteName = $this->website->domain;
         $this->cleanProjectEnvironment($projectModel);
@@ -148,7 +136,7 @@ class MongoTestEnvironment
     protected function cleanProjectEnvironment($project)
     {
         // clean out old db if it is present
-        $projectDb = \Api\Model\Mapper\MongoStore::connect($project->databaseName());
+        $projectDb = MongoStore::connect($project->databaseName());
 
         foreach ($projectDb->listCollections() as $collectionInfo) {
             if ($collectionInfo->getName() != 'system.indexes') {
@@ -313,10 +301,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
         parent::__construct('languageforge.org');
     }
 
-    /**
-     *
-     * @var LexProjectModel
-     */
+    /** @var LexProjectModel */
     public $project;
 
     /**
@@ -383,7 +368,7 @@ class LexiconMongoTestEnvironment extends MongoTestEnvironment
      */
     public function createTestLiftFile($liftXml, $fileName)
     {
-        $liftFilePath = sys_get_temp_dir() . '/' . $fileName;
+        $liftFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
         file_put_contents($liftFilePath, $liftXml);
         if (! array_key_exists($liftFilePath, $this->uploadFilePaths)) {
             $this->uploadFilePaths[] = $liftFilePath;
@@ -404,23 +389,15 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
 
     const TESTVERSION = 1000;
 
-     /**
-     * @var UserModel
-     */
+    /** @var UserModel */
     public $userId;
 
     public $semdomVersion;
 
-    /**
-     *
-     * @var SemDomProjectModel
-     */
+    /** @var SemDomTransProjectModel */
     public static $englishProject;
 
-    /**
-     *
-     * @var SemDomProjectModel
-     */
+    /** @var SemDomTransProjectModel */
     public $targetProject;
 
     private static function _englishProjectExists() {
@@ -445,7 +422,7 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
             $projectModel->isSourceLanguage = true;
             $projectModel->semdomVersion = self::TESTVERSION;
 
-            $englishXmlFilePath = TestPhpPath . "languageforge/semdomtrans/testFiles/SemDom_en_sample.xml";
+            $englishXmlFilePath = TestPhpPath . 'model/languageforge/semdomtrans/testFiles/SemDom_en_sample.xml';
             $projectModel->importFromFile($englishXmlFilePath, true);
             $projectModel->write();
             self::$englishProject = $projectModel;
@@ -477,5 +454,4 @@ class SemDomMongoTestEnvironment extends MongoTestEnvironment
         $projectId = SemDomTransProjectCommands::createProject($languageCode, $languageName, false, $userId, $this->website, self::TESTVERSION);
         return new SemDomTransProjectModel($projectId);
     }
-
 }
