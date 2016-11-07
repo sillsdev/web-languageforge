@@ -42,7 +42,6 @@
 //   'build-e2e'
 //   'build-php'
 //   'markdown'
-//   'tasks'
 //   'default'
 
 // -------------------------------------
@@ -90,9 +89,7 @@ var execute = function (command, options, callback) {
     options = {};
   }
 
-  if (options.cwd == undefined) {
-    options.cwd = './';
-  }
+  options.maxBuffer = 1024 * 500; // byte
 
   var template = _template(command);
   command = template(options);
@@ -101,19 +98,11 @@ var execute = function (command, options, callback) {
   }
 
   if (!options.dryRun) {
-    if (options.env == undefined) {
-      _execute(command, { cwd: options.cwd }, function (err, stdout, stderr) {
-        gutil.log(stdout);
-        gutil.log(gutil.colors.yellow(stderr));
-        callback(err);
-      });
-    } else {
-      _execute(command, { env: options.env, cwd: options.cwd }, function (err, stdout, stderr) {
-        gutil.log(stdout);
-        gutil.log(gutil.colors.yellow(stderr));
-        callback(err);
-      });
-    }
+    _execute(command, options, function (err, stdout, stderr) {
+      gutil.log(stdout);
+      gutil.log(gutil.colors.yellow(stderr));
+      callback(err);
+    });
   } else {
     callback(null);
   }
@@ -219,6 +208,9 @@ gulp.task('mongodb-restore-local-db', function (cb) {
     cb
   );
 });
+
+gulp.task('mongodb-restore-local-db').description =
+  'Restore mongodb from a local archive file';
 
 // -------------------------------------
 //   Task: MongoDB: Copy Production
@@ -628,18 +620,19 @@ gulp.task('build-changeGroup').description =
 //   Task: Build Production Config
 // -------------------------------------
 gulp.task('build-productionConfig', function () {
+  var defaultMongodbConnection = 'localhost:27017';
   var params = require('yargs')
   .option('mongodbConnection', {
     demand: false,
-    default: 'localhost:27017',
+    default: defaultMongodbConnection,
     type: 'string' })
   .option('secret', {
     demand: false,
     default: 'not_a_secret',
     type: 'string' }).argv;
-  var defaultMongodbConnection = 'localhost:27017';
   var configSrc = [
     './src/config.php',
+    './scripts/scriptsConfig.php',
     './test/php/TestConfig.php'];
 
   return gulp.src(configSrc, { base: './' })
@@ -768,14 +761,9 @@ gulp.task('markdown').description = 'Generate helps markdown files';
 
 // -------------------------------------
 //   Task: Display Tasks
+// gulp -T                 Print the task dependency tree
+// gulp --tasks-simple     Print a list of gulp task names
 // -------------------------------------
-gulp.task('tasks', function (cb) {
-  execute('' +
-    'grep gulp\.task gulpfile.js',
-    null,
-    cb // Swallow the error propagation so that gulp doesn't display a nodejs backtrace.
-  );
-});
 
 gulp.task('default', gulp.series('build'));
 
