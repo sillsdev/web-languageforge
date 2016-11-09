@@ -51,13 +51,6 @@
       args:
         creates: /usr/local/bin/gulp
 
-    - name: install npm dependencies
-      become: no
-      shell: npm install
-      args:
-        chdir: "{{lf_path}}"
-        creates: "{{lf_path}}/node_modules/"
- 
     - name: php log folder exists
       file: path={{php_log_folder}} state=directory owner=www-data group=www-data mode=0775 recurse=yes
 
@@ -237,6 +230,13 @@
         - "jamaicanpsalms.scriptureforge.local"
         - "demo.scriptureforge.local"
 
+    - name: install npm dependencies
+      become: no
+      shell: npm install
+      args:
+        chdir: "{{lf_path}}"
+        creates: "{{lf_path}}/node_modules/"
+ 
   handlers:
     - name: restart mongodb
       service: name=mongodb state=restarted
