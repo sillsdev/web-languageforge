@@ -195,9 +195,13 @@ describe('E2E testing: New Lex Project wizard app', function () {
   });
 
   describe('Send Receive Verify page', function () {
+    var expectedCondition = protractor.ExpectedConditions;
+    var CONDITION_TIMEOUT = 5000;
 
     it('can clone project', function () {
       page.nextButton.click();
+      browser.wait(expectedCondition.visibilityOf(page.srClonePage.cloning),
+        CONDITION_TIMEOUT);
       expect(page.srClonePage.cloning.isDisplayed()).toBe(true);
     });
 
