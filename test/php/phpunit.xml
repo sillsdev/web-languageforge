@@ -24,6 +24,9 @@
     timeoutForLargeTests="60"
     verbose="true"
 >
+    <php>
+        <ini name="xdebug.show_exception_trace" value="0"/>
+    </php>
     <testsuites>
         <testsuite name="xForge all PHP unit tests">
             <directory>./</directory>
