@@ -4,11 +4,12 @@
 .externalToolBuilders
 .idea/
 .vagrant/
-output/
+PhpUnitTests.xml
+phpUnitConsole.txt
 node_modules/
 deploy/ansible.cfg
 deploy/**/*.retry
-deploy/site_files/certificates/
+deploy/site_files/
 deploy/site_info/
 deploy/callback_plugins/*.pyc
 vagrant_ansible_inventory_*
