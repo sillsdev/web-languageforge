@@ -54,7 +54,7 @@ describe('Configuration Input Systems', function () {
     expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addIpa).getAttribute('class'))
       .toContain('disabled');
     expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVoice).getAttribute('class'))
-      .not.toContain('disabled');
+      .toContain('disabled');
     expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVariant).getAttribute('class'))
       .not.toContain('disabled');
   });

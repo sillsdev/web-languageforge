@@ -7,7 +7,6 @@ use Api\Model\Shared\Command\ErrorResult;
 use Api\Model\Shared\Command\ImportResult;
 use Api\Model\Shared\Command\MediaResult;
 use Api\Model\Shared\Command\UploadResponse;
-use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LiftImport;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
@@ -15,7 +14,6 @@ use Palaso\Utilities\FileUtilities;
 
 class LexUploadCommands
 {
-
     private static $allowedLiftExtensions = array(
         ".lift"
     );
@@ -33,16 +31,16 @@ class LexUploadCommands
     {
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
-        if ($mediaType != 'entry-audio') {
+        if ($mediaType != 'audio') {
             throw new \Exception("Unsupported upload type.");
         }
         if (! $tmpFilePath) {
             throw new \Exception("Upload controller did not move the uploaded file.");
         }
 
-        $entryId = $_POST['entryId'];
         $file = $_FILES['file'];
         $fileName = $file['name'];
+        $fileNamePrefix = date("YmdHis");
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);
@@ -54,10 +52,12 @@ class LexUploadCommands
 
         $allowedTypes = array(
             "audio/mpeg",
-            "audio/mp3"
+            "audio/mp3",
+            "audio/x-wav"
         );
         $allowedExtensions = array(
-            ".mp3"
+            ".mp3",
+            ".wav"
         );
 
         $response = new UploadResponse();
@@ -67,28 +67,22 @@ class LexUploadCommands
             $project->createAssetsFolders();
             $folderPath = $project->getAudioFolderPath();
 
-            // cleanup previous files of any allowed extension
-            self::cleanupFiles($folderPath, $entryId, $allowedExtensions);
-
             // move uploaded file from tmp location to assets
-            $filePath = self::mediaFilePath($folderPath, $entryId, $fileName);
+            $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
             $moveOk = copy($tmpFilePath, $filePath);
             @unlink($tmpFilePath);
-
-            // update database with file location
-            $entry = new LexEntryModel($project, $entryId);
-            $entry->audioFileName = '';
-            if ($moveOk) {
-                $entry->audioFileName = $fileName;
-            }
-            $entry->write();
 
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
                 $data->path = $project->getAudioFolderPath($project->getAssetsRelativePath());
-                $data->fileName = $fileName;
+                $data->fileName = $fileNamePrefix . '_' . $fileName;
                 $response->result = true;
+
+                if (array_key_exists('previousFilename', $_POST)) {
+                    $previousFilename = $_POST['previousFilename'];
+                    self::deleteMediaFile($projectId, $mediaType, $previousFilename);
+                }
             } else {
                 $data = new ErrorResult();
                 $data->errorType = 'UserMessage';
@@ -212,6 +206,9 @@ class LexUploadCommands
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
         switch ($mediaType) {
+            case 'audio':
+                $folderPath = $project->getAudioFolderPath();
+                break;
             case 'sense-image':
                 $folderPath = $project->getImageFolderPath();
                 break;
@@ -225,9 +222,9 @@ class LexUploadCommands
         }
         $filePath = $folderPath . '/' . $fileName;
         if (file_exists($filePath) and ! is_dir($filePath)) {
-            if (@unlink($filePath)) {
+            if (unlink($filePath)) {
                 $data = new MediaResult();
-                $data->path = $project->getImageFolderPath();
+                $data->path = $folderPath;
                 $data->fileName = $fileName;
                 $response->result = true;
             } else {
