@@ -27,6 +27,10 @@
   "resetName"       : "Test ResetUser",
   "resetEmail"      : "test_runner_reset_normal_user@example.com",
   "resetPasswordKey": "122240670b5136bdb260d02feaff098280c33bd4",
+  "observerUsername": "test_runner_observer_normal_user",
+  "observerPassword": "normaluser4",
+  "observerName"    : "Test ObserverUser",
+  "observerEmail"   : "test_runner_observer_normal_user@example.com",
   "notUsedUsername" : "not_used_user",
   "notUsedEmail"    : "not_used_user@example.com",
   "notUsedName"     : "Test NotAUser",
@@ -91,7 +95,8 @@
   "Entries added during setup" : "",
   "testEntry1" : {
     "lexeme": {"th":        {"value": "ข้าวผัดหมู"},
-               "th-fonipa": {"value": "khâaw phàt mǔu"}},
+               "th-fonipa": {"value": "khâaw phàt mǔu"},
+               "th-Zxxx-x-audio": {"value": "TestAudio.mp3"}},
     "senses": [{"definition": {"en": {"value": "fried rice with pork"}},
                 "pictures": [{"fileName": "FriedRiceWithPork.jpg",
                               "caption": {"en": {"value": "fried rice with pork"}}}],
@@ -161,7 +166,21 @@
     "type" : "",
     "webkitRelativePath": ""
   },
-  
+  "testMockPngUploadFile" : {
+    "lastModified" : 1416986856000,
+    "name" : "TestImage.png",
+    "size" : 5652,
+    "type" : "",
+    "webkitRelativePath": ""
+  },
+  "testMockMp3UploadFile" : {
+    "lastModified" : 1416986856000,
+    "name" : "TestAudio.mp3",
+    "size" : 21064,
+    "type" : "",
+    "webkitRelativePath": ""
+  },
+
   "End_of_constants" : ""
 
 }

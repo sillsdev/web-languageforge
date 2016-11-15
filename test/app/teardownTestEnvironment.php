@@ -57,9 +57,17 @@ if ($testProject->appName == LexProjectModel::LEXICON_APP) {
 }
 
 // cleanup mocked uploaded zip import (jpg file)
-$tmpFilePath = sys_get_temp_dir() . '/' . $constants['testMockJpgImportFile']['name'];
+$tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $constants['testMockJpgImportFile']['name'];
 @unlink($tmpFilePath);
 
 // cleanup mocked uploaded zip import (zip file)
-$tmpFilePath = sys_get_temp_dir() . '/' . $constants['testMockZipImportFile']['name'];
+$tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $constants['testMockZipImportFile']['name'];
+@unlink($tmpFilePath);
+
+// cleanup mock uploaded audio (png file)
+$tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $constants['testMockPngUploadFile']['name'];
+@unlink($tmpFilePath);
+
+// cleanup mock uploaded audio (mp3 file)
+$tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $constants['testMockMp3UploadFile']['name'];
 @unlink($tmpFilePath);
