@@ -1,6 +1,9 @@
 'use strict';
 
+module.exports = new EditorPage();
+
 function EditorPage() {
+  var mockUpload = require('../../../bellows/pages/mockUploadElement.js');
   var util = require('../../../bellows/pages/util.js');
   var editorUtil = require('./editorUtil.js');
   var _this = this;
@@ -34,6 +37,9 @@ function EditorPage() {
       return entryId;
     });
   };
+
+  this.noticeList = element.all(by.repeater('notice in notices()'));
+  this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
 
   this.browseDiv = element(by.css('#lexAppListView'));
   this.editDiv = element(by.css('#lexAppEditView'));
@@ -182,6 +188,65 @@ function EditorPage() {
       return editorUtil.dcMultitextToObject(lexeme).then(function (lexemes) {
         return lexemes[searchWsid];
       });
+    },
+
+    audio: {
+      players: function (searchLabel) {
+        return editorUtil.getOneField(searchLabel).all(by.css('.player > a'));
+      },
+
+      playerIcons: function (searchLabel) {
+        return editorUtil.getOneField(searchLabel).all(by.css('.player > a > i'));
+      },
+
+      moreControls: function (searchLabel) {
+        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio a.dropdown-toggle'));
+      },
+
+      moreGroups: function (searchLabel, index) {
+        var allMoreGroups = editorUtil.getOneField(searchLabel).all(by.css('.dc-audio .btn-group'));
+        if (index !== undefined) {
+          if (index < 0) index = 0;
+          return allMoreGroups.get(index);
+        }
+
+        return allMoreGroups;
+      },
+
+      moreDownload: function (searchLabel, index) {
+        return this.moreGroups(searchLabel, index).element(by.partialLinkText('Download'));
+      },
+
+      moreDelete: function (searchLabel, index) {
+        return this.moreGroups(searchLabel, index).element(by.partialLinkText('Delete'));
+      },
+
+      moreUpload: function (searchLabel, index) {
+        return this.moreGroups(searchLabel, index).element(by.partialLinkText('Upload'));
+      },
+
+      uploadButtons: function (searchLabel) {
+        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio button.buttonAppend'));
+      },
+
+      uploadDropBoxes: function (searchLabel) {
+        return editorUtil.getOneField(searchLabel).all(by.css('.drop-box'));
+      },
+
+      uploadCancelButtons: function (searchLabel) {
+        return editorUtil.getOneField(searchLabel).all(by.id('audioAddCancel'));
+      },
+
+      downloadButtons: function (searchLabel) {
+        return editorUtil.getOneField(searchLabel).all(by.css('.dc-audio a.buttonAppend'));
+      },
+
+      control: function (searchLabel, index) {
+        var mockUploadElement = editorUtil.getOneField(searchLabel).all(by.css('.dc-audio'))
+          .get(index);
+        mockUploadElement.mockUpload = mockUpload;
+        return mockUploadElement;
+      }
     },
 
     senses: element.all(by.css('dc-sense')),
@@ -397,5 +462,3 @@ function EditorPage() {
   };
 
 }
-
-module.exports = new EditorPage();

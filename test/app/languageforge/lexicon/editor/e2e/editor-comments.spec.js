@@ -34,10 +34,10 @@ describe('Editor Comments', function () {
     // Earlier tests modify the avatar and name of the manager user; don't check those
     //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
     //expect(comment.author.getText()).toEqual(constants.managerName);
-    expect(comment.date.getText()).toContain('ago');
     expect(comment.score.getText()).toEqual('0');
     expect(comment.plusOne.isPresent()).toBe(true);
     expect(comment.content.getText()).toEqual('First comment on this word.');
+    expect(comment.date.getText()).toContain('ago');
 
     // This comment should have no "regarding" section
     expect(comment.regarding.fieldLabel.isDisplayed()).toBe(false);
