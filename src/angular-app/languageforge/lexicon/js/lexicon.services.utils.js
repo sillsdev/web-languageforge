@@ -3,6 +3,7 @@
 angular.module('lexicon.services')
 
   .service('lexUtils', [function () {
+    var _this = this;
 
     function getFirstField(config, node, fieldName) {
       var result = '';
@@ -53,6 +54,7 @@ angular.module('lexicon.services')
       return getFirstField(config, entry, 'lexeme');
     };
 
+    //noinspection JSUnusedGlobalSymbols
     this.getWords = function getWords(config, entry) {
       return getFields(config, entry, 'lexeme');
     };
@@ -61,25 +63,30 @@ angular.module('lexicon.services')
       if (!angular.isDefined(entry.lexeme)) {
         return '';
       }
+
       var citation = '';
       var citationFormByInputSystem = {};
       if (angular.isDefined(config.fields.citationForm)) {
-        angular.forEach(config.fields.citationForm.inputSystems, function (inputSystem) {
+        angular.forEach(config.fields.citationForm.inputSystems, function (inputSystemTag) {
           if (angular.isDefined(entry.citationForm)) {
-            var field = entry.citationForm[inputSystem];
-            if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '') {
-              citationFormByInputSystem[inputSystem] = field.value;
+            var field = entry.citationForm[inputSystemTag];
+            if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '' &&
+                !_this.isAudio(inputSystemTag)
+            ) {
+              citationFormByInputSystem[inputSystemTag] = field.value;
             }
           }
         });
       }
 
-      angular.forEach(config.fields.lexeme.inputSystems, function (inputSystem) {
-        var field = entry.lexeme[inputSystem];
+      angular.forEach(config.fields.lexeme.inputSystems, function (inputSystemTag) {
+        var field = entry.lexeme[inputSystemTag];
         var valueToAppend = '';
-        if (angular.isDefined(citationFormByInputSystem[inputSystem])) {
-          valueToAppend = citationFormByInputSystem[inputSystem];
-        } else if (angular.isDefined(field) && angular.isDefined(field.value)) {
+        if (angular.isDefined(citationFormByInputSystem[inputSystemTag])) {
+          valueToAppend = citationFormByInputSystem[inputSystemTag];
+        } else if (angular.isDefined(field) && angular.isDefined(field.value) &&
+          !_this.isAudio(inputSystemTag)
+        ) {
           valueToAppend = field.value;
         }
 
@@ -156,6 +163,11 @@ angular.module('lexicon.services')
       }
 
       return '';
+    };
+
+    this.isAudio = function isAudio(tag) {
+      var tagAudioPattern = /^\w{2,3}-Zxxx-x(-\w{2,3})*-audio$/;
+      return tagAudioPattern.test(tag);
     };
 
   }]);

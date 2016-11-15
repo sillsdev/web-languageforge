@@ -744,15 +744,21 @@ class Sf
         return LexOptionListCommands::updateList($this->projectId, $params);
     }
 
-    public function lex_upload_importProjectZip($mediaType, $tmpFilePath)
+    public function lex_uploadAudioFile($mediaType, $tmpFilePath)
     {
-        $response = LexUploadCommands::importProjectZip($this->projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($this->projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
     public function lex_uploadImageFile($mediaType, $tmpFilePath)
     {
         $response = LexUploadCommands::uploadImageFile($this->projectId, $mediaType, $tmpFilePath);
+        return JsonEncoder::encode($response);
+    }
+
+    public function lex_upload_importProjectZip($mediaType, $tmpFilePath)
+    {
+        $response = LexUploadCommands::importProjectZip($this->projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 

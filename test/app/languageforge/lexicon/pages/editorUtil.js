@@ -12,13 +12,19 @@ function EditorUtil() {
     var inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
     return inputSystemDivs.map(function (div) {
       var wsidSpan = div.element(by.css('.input-prepend > span.wsid'));
-      var wordElem = div.element(by.css('.input-prepend > .dc-formattedtext input'));
+      var wordInput = div.element(by.css('.input-prepend > .dc-formattedtext input'));
       return wsidSpan.getText().then(function (wsid) {
-        return wordElem.getAttribute('value').then(function (word) {
-          return {
-            wsid: wsid,
-            value: word
-          };
+        return wordInput.isPresent().then(function (isWordPresent) {
+          if (isWordPresent) {
+            return wordInput.getAttribute('value').then(function (word) {
+              return {
+                wsid: wsid,
+                value: word
+              };
+            });
+          } else {
+            return { wsid: wsid, value: '' };
+          }
         });
       });
     });

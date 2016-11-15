@@ -284,7 +284,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
       util.setCheckbox(page.namePage.editProjectCodeCheckbox, true);
       expect(page.namePage.projectCodeInput.isDisplayed()).toBe(true);
       page.namePage.projectCodeInput.clear();
-      page.namePage.projectCodeInput.sendKeys('changed_new_project' + protractor.Key.TAB);
+      page.namePage.projectCodeInput.sendKeys('changed_new_project');
+      page.namePage.projectNameInput.sendKeys(protractor.Key.TAB);     // trigger project code check
       expect(page.namePage.projectCodeInput.getAttribute('value')).toEqual('changed_new_project');
       page.formStatus.expectHasNoError();
     });
@@ -305,7 +306,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
 
     it('project code can be one character', function () {
       page.namePage.projectCodeInput.clear();
-      page.namePage.projectCodeInput.sendKeys('a' + protractor.Key.TAB);
+      page.namePage.projectCodeInput.sendKeys('a');
+      page.namePage.projectNameInput.sendKeys(protractor.Key.TAB);     // trigger project code check
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
