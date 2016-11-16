@@ -26,7 +26,6 @@
 //   'test-e2e-useLiveConfig'
 //   'test-e2e-setupTestEnvironment'
 //   'test-e2e-teardownTestEnvironment'
-//   'test-fixGroupPermission'
 //   'test-restart-webserver'
 //   'test-e2e-env'
 //   'test-e2e-doTest'
@@ -34,6 +33,7 @@
 //   'build-composer'
 //   'build-bower'
 //   'build-minify'
+//   'build-changeGroup'
 //   'build-version'
 //   'build-productionConfig'
 //   'build-upload'
@@ -240,7 +240,7 @@ gulp.task('mongodb-copy-prod-db').description =
 // -------------------------------------
 //   Task: test-php
 // -------------------------------------
-gulp.task('test-php', function (cb) {
+gulp.task('test-php', function () {
   var src = 'test/php/phpunit.xml';
   var options = {
     dryRun: false,
@@ -254,7 +254,7 @@ gulp.task('test-php', function (cb) {
 // -------------------------------------
 //   Task: test-php with debugging info
 // -------------------------------------
-gulp.task('test-php-debug', function (cb) {
+gulp.task('test-php-debug', function () {
   var src = 'test/php/phpunit.xml';
   var options = {
     dryRun: false,
@@ -267,7 +267,7 @@ gulp.task('test-php-debug', function (cb) {
 // -------------------------------------
 //   Task: test-php-coverage
 // -------------------------------------
-gulp.task('test-php-coverage', function (cb) {
+gulp.task('test-php-coverage', function () {
   var src = 'test/php/phpunit.xml';
   var options = {
     dryRun: false,
@@ -318,7 +318,7 @@ function copy(src, dest) {
   return gulp.src(src)
     .pipe(rename(dest.file))
     .pipe(gulp.dest(dest.path));
-};
+}
 
 // -------------------------------------
 //   Task: E2E Test: Use Test Config
@@ -389,30 +389,6 @@ gulp.task('test-e2e-teardownTestEnvironment', function (cb) {
 });
 
 // -------------------------------------
-//   Task: Test Fix Group Permission
-// -------------------------------------
-gulp.task('test-fixGroupPermission', function (cb) {
-  var params = require('yargs')
-    .option('dest', {
-      demand: false,
-      type: 'string' }).argv;
-  var options = {
-    dryRun: false,
-    silent: false,
-    dest: (params.dest) ? params.dest + '/test/app' : './test'
-  };
-
-  execute(
-    'sudo chown -R :www-data <%= dest %>',
-    options,
-    cb
-  );
-});
-
-gulp.task('test-fixGroupPermission').description =
-  'Ensure group www=data has permissions to local test/app directory';
-
-// -------------------------------------
 //   Task: Test Restart Webserver
 // -------------------------------------
 gulp.task('test-restart-webserver', function (cb) {
@@ -426,7 +402,7 @@ gulp.task('test-restart-webserver', function (cb) {
 // -------------------------------------
 //   Task: E2E Test: Modify Environment
 // -------------------------------------
-gulp.task('test-e2e-env', function (cb) {
+gulp.task('test-e2e-env', function () {
   var params = require('yargs')
     .option('applicationName', {
       demand: true,
@@ -588,7 +564,7 @@ gulp.task('build-bower', function (cb) {
 // -------------------------------------
 //   Task: Build (Concat and ) Minify
 // -------------------------------------
-gulp.task('build-minify', function (cb) {
+gulp.task('build-minify', function () {
   var params = require('yargs')
     .option('applicationName', {
       demand: true,
@@ -618,7 +594,7 @@ gulp.task('build-minify', function (cb) {
 // -------------------------------------
 //   Task: Build Version
 // -------------------------------------
-gulp.task('build-version', function (cb) {
+gulp.task('build-version', function () {
   var params = require('yargs')
     .option('buildNumber', {
       demand: true,
@@ -632,9 +608,23 @@ gulp.task('build-version', function (cb) {
 });
 
 // -------------------------------------
+//   Task: Change Group to www-data
+// -------------------------------------
+gulp.task('build-changeGroup', function (cb) {
+  execute(
+    'sudo chgrp -R www-data src; sudo chgrp -R www-data test',
+    null,
+    cb
+  );
+});
+
+gulp.task('build-changeGroup').description =
+  'Ensure www-data is the group for src and test folder';
+
+// -------------------------------------
 //   Task: Build Production Config
 // -------------------------------------
-gulp.task('build-productionConfig', function (cb) {
+gulp.task('build-productionConfig', function () {
   var params = require('yargs')
   .option('mongodbConnection', {
     demand: false,
@@ -684,7 +674,7 @@ gulp.task('build-upload', function (cb) {
   };
 
   execute(
-    'rsync -rzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
+    'rsync -rzlt --chmod=Dug=rwx,Fug=rw,o-rwx --group ' +
     '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
     '--include-from="<%= includeFile %>" --exclude-from="<%= excludeFile %>" ' +
     '<%= src %> <%= dest %>',
@@ -698,8 +688,9 @@ gulp.task('build-upload', function (cb) {
     options.dest = params.dest + '/test/app';
 
     execute(
-      'rsync -rzlt --chmod=Dug=rwx,Fug=rw,o-rwx --rsync-path="sudo rsync" ' +
-      '--delete-during --stats --exclude="htdocs/" ' +
+      'rsync -rzlt --chmod=Dug=rwx,Fug=rw,o-rwx --group ' +
+      '--delete-during --stats --rsync-path="sudo rsync" ' +
+      '--exclude="htdocs/" ' +
       '<%= src %> <%= dest %>',
       options,
       cb
@@ -717,7 +708,8 @@ gulp.task('build',
       'build-bower',
       'build-version',
       'build-productionConfig'),
-    'build-minify')
+    'build-minify',
+    'build-changeGroup')
 );
 
 // -------------------------------------
@@ -727,7 +719,6 @@ gulp.task('build-and-upload',
   gulp.series(
     'build',
     'build-upload',
-    'test-fixGroupPermission',
     'test-restart-webserver')
 );
 
