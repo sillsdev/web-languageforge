@@ -166,7 +166,7 @@ angular.module('lexicon.services')
     };
 
     this.isAudio = function isAudio(tag) {
-      var tagAudioPattern = /^\w{2,3}-Zxxx-x(-\w{2,3})*-audio$/;
+      var tagAudioPattern = /^\w{2,3}-Zxxx-x(-\w{2,3})*-[aA][uU][dD][iI][oO]$/;
       return tagAudioPattern.test(tag);
     };
 
