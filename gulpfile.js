@@ -247,7 +247,7 @@ gulp.task('test-php', function () {
     debug: false,
     logjunit: 'PhpUnitTests.xml'
   };
-  gutil.log("##teamcity[importData type='junit' path='${build.output}/PhpUnitTests.xml']");
+  gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
   return gulp.src(src)
     .pipe(phpunit('src/vendor/bin/phpunit', options));
 });
@@ -273,9 +273,10 @@ gulp.task('test-php-coverage', function () {
   var options = {
     dryRun: false,
     debug: false,
+    logjunit: 'PhpUnitTests.xml',
     coverageHtml: 'test/CodeCoverage/php/'
   };
-  gutil.log("##teamcity[importData type='junit' path='${build.output}/PhpUnitTests.xml']");
+  gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
   return gulp.src(src)
     .pipe(phpunit('src/vendor/bin/phpunit', options));
 });
