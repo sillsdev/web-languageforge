@@ -245,7 +245,7 @@ gulp.task('test-php', function () {
   var options = {
     dryRun: false,
     debug: false,
-    logjunit: 'PhpUnitTests.xml'
+    logJunit: 'PhpUnitTests.xml'
   };
   gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
   return gulp.src(src)
@@ -273,7 +273,7 @@ gulp.task('test-php-coverage', function () {
   var options = {
     dryRun: false,
     debug: false,
-    logjunit: 'PhpUnitTests.xml',
+    logJunit: 'PhpUnitTests.xml',
     coverageHtml: 'test/CodeCoverage/php/'
   };
   gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
