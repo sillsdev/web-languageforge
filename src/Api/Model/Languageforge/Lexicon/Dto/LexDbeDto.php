@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon\Dto;
 
+use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\LexCommentListModel;
 use Api\Model\Languageforge\Lexicon\LexDeletedEntryListModel;
@@ -96,6 +97,11 @@ class LexDbeDto
         $data['entries'] = $entries;
 
         $data['timeOnServer'] = time(); // for offline syncing
+
+        if ($project->hasSendReceive()) {
+            $data['sendReceive'] = array();
+            $data['sendReceive']['status'] = SendReceiveCommands::getProjectStatus($projectId);
+        }
 
         return $data;
     }
