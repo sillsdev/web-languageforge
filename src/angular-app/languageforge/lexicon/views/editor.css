@@ -349,9 +349,9 @@ legend.override-bootstrap {
 /*  TODO: review this in light of animation and the footer staying at the bottom. IJH 2014-09
     The view is used in edit and comment view */
 
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
-    height: 580px;
+    min-height: 580px;
     padding-right:5px;
     margin-right: 5px;
 }
@@ -364,6 +364,10 @@ legend.override-bootstrap {
 .flex100 {
     display:flex;
     width:100%;
+}
+
+#lexAppCommentView .entryItemView {
+    height: 580px;
 }
 
 #lexAppCommentView .commentCount {
