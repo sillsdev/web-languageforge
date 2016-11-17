@@ -631,14 +631,18 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       $state.go('editor.comments', { entryId: $scope.currentEntry.id });
     };
 
-    sendReceive.setPollProjectStatusSuccessCallback(pollProjectStatusSuccess);
+    sendReceive.setPollUpdateSuccessCallback(pollUpdateSuccess);
     sendReceive.setSyncProjectStatusSuccessCallback(syncProjectStatusSuccess);
 
-    function pollProjectStatusSuccess() {
+    function pollUpdateSuccess() {
       if ($scope.currentEntryIsDirty()) {
-        cancelAutoSaveTimer();
-        warnOfUnsavedEdits($scope.currentEntry);
-        resetEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
+        if (sendReceive.isInProgress()) {
+          cancelAutoSaveTimer();
+          warnOfUnsavedEdits($scope.currentEntry);
+          resetEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
+        }
+      } else {
+        setCurrentEntry($scope.entries[editorService.getIndexInEntries($scope.currentEntry.id)]);
       }
     }
 
