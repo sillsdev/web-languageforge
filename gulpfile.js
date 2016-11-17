@@ -247,6 +247,7 @@ gulp.task('test-php', function () {
     debug: false,
     logjunit: 'PhpUnitTests.xml'
   };
+  gutil.log("##teamcity[importData type='junit' path='${build.output}/PhpUnitTests.xml']");
   return gulp.src(src)
     .pipe(phpunit('src/vendor/bin/phpunit', options));
 });
@@ -274,6 +275,7 @@ gulp.task('test-php-coverage', function () {
     debug: false,
     coverageHtml: 'test/CodeCoverage/php/'
   };
+  gutil.log("##teamcity[importData type='junit' path='${build.output}/PhpUnitTests.xml']");
   return gulp.src(src)
     .pipe(phpunit('src/vendor/bin/phpunit', options));
 });
@@ -743,7 +745,7 @@ gulp.task('build-e2e').description =
 gulp.task('build-php',
   gulp.series(
     'build',
-    'test-php',
+    'test-php-coverage',
     'build-upload',
     'test-restart-webserver')
 );
