@@ -51,8 +51,11 @@ angular.module('sgw.soundmanager', [])
           // without specifying these at play time, a reload of the sound does not fire them. IJH
           var playOptions = { onplay: onPlay, whileplaying: whilePlaying, onfinish: onFinish };
           if ($scope.sgwState == 'stop') {
-            if (angular.isDefined($scope.sgwSound)) $scope.sgwSound.play(playOptions);
             $scope.sgwState = 'play';
+            if (angular.isDefined($scope.sgwSound)) {
+              soundManager.pauseAll();
+              $scope.sgwSound.play(playOptions);
+            }
           } else if ($scope.sgwState == 'play') {
             if (angular.isDefined($scope.sgwSound)) $scope.sgwSound.pause();
             $scope.sgwState = 'pause';
