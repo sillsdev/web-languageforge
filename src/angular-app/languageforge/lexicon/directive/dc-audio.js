@@ -102,6 +102,7 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
 
         $scope.$watch('dcFilename', function (newValue, oldValue) {
           if (newValue !== oldValue && hasAudio()) {
+            $scope.state = 'stop';
             $scope.sound = createSound();
           }
         });
