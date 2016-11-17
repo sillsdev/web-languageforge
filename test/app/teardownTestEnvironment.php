@@ -21,6 +21,10 @@ FileUtilities::removeFolderAndAllContents($assetsFolderPath);
 // cleanup other assets folders
 $otherAssetsFolderPath = str_replace($constants['testProjectCode'], $constants['otherProjectCode'], $assetsFolderPath);
 FileUtilities::removeFolderAndAllContents($otherAssetsFolderPath);
+$otherAssetsFolderPath = str_replace($constants['testProjectCode'], $constants['thirdProjectCode'], $assetsFolderPath);
+FileUtilities::removeFolderAndAllContents($otherAssetsFolderPath);
+$otherAssetsFolderPath = str_replace($constants['testProjectCode'], $constants['fourthProjectCode'], $assetsFolderPath);
+FileUtilities::removeFolderAndAllContents($otherAssetsFolderPath);
 $otherAssetsFolderPath = str_replace($constants['testProjectCode'], $constants['newProjectCode'], $assetsFolderPath);
 FileUtilities::removeFolderAndAllContents($otherAssetsFolderPath);
 $otherAssetsFolderPath = str_replace($constants['testProjectCode'], $constants['emptyProjectCode'], $assetsFolderPath);
