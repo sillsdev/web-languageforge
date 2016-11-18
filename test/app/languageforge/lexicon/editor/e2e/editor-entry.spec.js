@@ -47,10 +47,9 @@ describe('Editor List and Entry', function () {
     expect(editorPage.edit.getEntryCount()).toBe(3);
   });
 
-  it('word 1: edit page has correct meaning, part of speech', function () {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
-      { en: constants.testEntry1.senses[0].definition.en.value }, ''
+  it('word 1: edit page has correct definition, part of speech', function () {
+    expect(editorPage.edit.getFieldValues('Definition')).toEqual([
+      { en: constants.testEntry1.senses[0].definition.en.value }
     ]);
     expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
       editorUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value)
@@ -371,26 +370,25 @@ describe('Editor List and Entry', function () {
       .click();
   });
 
-  it('word 2: edit page has correct meaning, part of speech', function () {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
-      { en: constants.testEntry2.senses[0].definition.en.value }, ''
+  it('word 2: edit page has correct definition, part of speech', function () {
+    expect(editorPage.edit.getFieldValues('Definition')).toEqual([
+      { en: constants.testEntry2.senses[0].definition.en.value }
     ]);
     expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
       editorUtil.expandPartOfSpeech(constants.testEntry2.senses[0].partOfSpeech.value)
     ]);
   });
 
-  it('setup: click on word with multiple meanings (found by lexeme)', function () {
+  it('setup: click on word with multiple definitions (found by lexeme)', function () {
     editorPage.edit.findEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value).click();
     editorPage.edit.senses.first().click();
   });
 
-  it('word with multiple meanings: edit page has correct meanings, parts of speech', function () {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
-      { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value }, '',
-      { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value }, ''
+  it('word with multiple definitions: edit page has correct definitions, parts of speech',
+    function () {
+    expect(editorPage.edit.getFieldValues('Definition')).toEqual([
+      { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value },
+      { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value }
     ]);
     expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
       editorUtil
@@ -400,11 +398,14 @@ describe('Editor List and Entry', function () {
     ]);
   });
 
-  it('word with multiple meanings: edit page has correct examples, translations', function () {
-    expect(editorPage.edit.getFieldValues('Example')).toEqual([
-      { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
+  it('word with multiple meanings: edit page has correct example sentences, translations',
+    function () {
+
+    // Empty array elements are a work-around for getFieldValues after SemDom directive added. DDW
+    expect(editorPage.edit.getFieldValues('Sentence')).toEqual([
+      '', { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value },
-      { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
+      '', { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value }
     ]);
     expect(editorPage.edit.getFieldValues('Translation')).toEqual([
@@ -451,9 +452,9 @@ describe('Editor List and Entry', function () {
 
   it('modify new word', function () {
     var word    = constants.testEntry3.lexeme.th.value;
-    var meaning = constants.testEntry3.senses[0].definition.en.value;
+    var definition = constants.testEntry3.senses[0].definition.en.value;
     editorPage.edit.getMultiTextInputs('Word').first().sendKeys(word);
-    editorPage.edit.getMultiTextInputs('Meaning').first().sendKeys(meaning);
+    editorPage.edit.getMultiTextInputs('Definition').first().sendKeys(definition);
     util.clickDropdownByValue(editorPage.edit.getOneField('Part of Speech').$('select'),
       'Noun \\(n\\)');
     editorPage.edit.saveBtn.click();
@@ -469,7 +470,7 @@ describe('Editor List and Entry', function () {
       expect(editorPage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
     });
 
-  describe('Dictionary Configuration check', function () {
+  describe('Configuration check', function () {
 
     it('Word has only "th", "tipa" and "taud" visible', function () {
       expect(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(3);
