@@ -330,7 +330,7 @@ describe('Configuration Input Systems', function () {
     expect(configPage.noticeList.count()).toBe(0);
     configPage.applyButton.click();
     expect(configPage.noticeList.count()).toBe(1);
-    expect(configPage.noticeList.get(0).getText()).toContain('configuration updated successfully');
+    expect(configPage.noticeList.get(0).getText()).toContain('Configuration updated successfully');
   });
 
 });
