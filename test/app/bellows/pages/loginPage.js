@@ -5,8 +5,6 @@ var constants = require('../../testConstants');
 module.exports = new BellowsLoginPage();
 
 function BellowsLoginPage() {
-  var _this = this;
-
   this.get = function get() {
     browser.get(browser.baseUrl + '/auth/login');
   };
@@ -20,28 +18,28 @@ function BellowsLoginPage() {
   this.submit   = element(by.xpath('//button[@type="submit"]'));
 
   this.login = function login(username, password) {
-    _this.get();
-    _this.username.sendKeys(username);
-    _this.password.sendKeys(password);
-    _this.submit.click();
+    this.get();
+    this.username.sendKeys(username);
+    this.password.sendKeys(password);
+    this.submit.click();
   };
 
   this.loginAsAdmin = function loginAsAdmin() {
-    _this.login(constants.adminUsername, constants.adminPassword);
+    this.login(constants.adminUsername, constants.adminPassword);
   };
 
   this.loginAsManager = function loginAsManager() {
-    _this.login(constants.managerUsername, constants.managerPassword);
+    this.login(constants.managerUsername, constants.managerPassword);
   };
 
   this.loginAsUser = function loginAsUser() {
-    _this.login(constants.memberUsername, constants.memberPassword);
+    this.login(constants.memberUsername, constants.memberPassword);
   };
 
   this.loginAsMember = this.loginAsUser;
 
   this.loginAsObserver = function loginAsObserver() {
-    _this.login(constants.observerUsername, constants.observerPassword);
+    this.login(constants.observerUsername, constants.observerPassword);
   };
 
   this.logout = function logout() {

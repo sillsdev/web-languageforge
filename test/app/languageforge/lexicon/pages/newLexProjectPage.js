@@ -1,9 +1,10 @@
 'use strict';
 
+module.exports = new NewLexProjectPage();
+
 function NewLexProjectPage() {
   var mockUpload = require('../../../bellows/pages/mockUploadElement.js');
   var modal      = require('./lexModals.js');
-  var _this = this;
 
   this.get = function get() {
     browser.get(browser.baseUrl + '/app/lexicon/new-project');
@@ -21,23 +22,23 @@ function NewLexProjectPage() {
   this.backButton = element(by.id('backButton'));
   this.nextButton = element(by.id('nextButton'));
   this.expectFormIsValid = function expectFormIsValid() {
-    expect(_this.nextButton.getAttribute('class')).toMatch(/btn-success(?:\s|$)/);
+    expect(this.nextButton.getAttribute('class')).toMatch(/btn-success(?:\s|$)/);
   };
 
   this.expectFormIsNotValid = function expectFormIsNotValid() {
-    expect(_this.nextButton.getAttribute('class')).not.toMatch(/btn-success(?:\s|$)/);
+    expect(this.nextButton.getAttribute('class')).not.toMatch(/btn-success(?:\s|$)/);
   };
 
   this.formStatus = element(by.id('form-status'));
-  this.formStatus.expectHasNoError = function expectHasNoError() {
-    expect(_this.formStatus.getAttribute('class')).not.toContain('alert');
-  };
+  this.formStatus.expectHasNoError = function () {
+    expect(this.formStatus.getAttribute('class')).not.toContain('alert');
+  }.bind(this);
 
-  this.formStatus.expectContainsError = function expectContainsError(partialMsg) {
+  this.formStatus.expectContainsError = function (partialMsg) {
     if (!partialMsg) partialMsg = '';
-    expect(_this.formStatus.getAttribute('class')).toContain('alert-error');
-    expect(_this.formStatus.getText()).toContain(partialMsg);
-  };
+    expect(this.formStatus.getAttribute('class')).toContain('alert-error');
+    expect(this.formStatus.getText()).toContain(partialMsg);
+  }.bind(this);
 
   // step 0: chooser
   this.chooserPage = {};
@@ -93,12 +94,10 @@ function NewLexProjectPage() {
 
   // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
   this.primaryLanguagePage.selectButtonClick = function () {
-    _this.primaryLanguagePage.selectButton.click();
+    this.primaryLanguagePage.selectButton.click();
     browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
-  };
+  }.bind(this);
 
   // select language modal
   this.modal = modal;
 }
-
-module.exports = new NewLexProjectPage();

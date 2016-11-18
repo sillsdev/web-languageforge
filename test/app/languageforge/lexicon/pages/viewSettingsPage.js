@@ -1,8 +1,8 @@
 'use strict';
 
-function ViewSettingsPage() {
-  var _this = this;
+module.exports = new ViewSettingsPage();
 
+function ViewSettingsPage() {
   this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
   this.viewSettingsLink = element(by.linkText('View Settings'));
   this.get = function get() {
@@ -23,19 +23,19 @@ function ViewSettingsPage() {
   this.tabs = {
     observer: {
       go: function () {
-        _this.getTabByName('Observer').click();
-      }
+        this.getTabByName('Observer').click();
+      }.bind(this)
     },
     contributor: {
       go: function () {
-        _this.getTabByName('Contributor').click();
-      }
+        this.getTabByName('Contributor').click();
+      }.bind(this)
     },
     manager: {
       showAllFieldsBtn: this.tabDivs.get(3).element(by.buttonText('Show All Fields')),
       go: function () {
-        _this.getTabByName('Manager').click();
-      }
+        this.getTabByName('Manager').click();
+      }.bind(this)
     }
   };
 
@@ -114,5 +114,3 @@ function ViewSettingsPage() {
   this.removeMemberViewSettingsBtn = this.activePane
     .element(by.buttonText('Remove Member Specific Settings'));
 }
-
-module.exports = new ViewSettingsPage();

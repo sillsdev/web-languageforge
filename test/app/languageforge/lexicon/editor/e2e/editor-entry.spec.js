@@ -385,7 +385,7 @@ describe('Editor List and Entry', function () {
   });
 
   it('word with multiple definitions: edit page has correct definitions, parts of speech',
-    function () {
+  function () {
     expect(editorPage.edit.getFieldValues('Definition')).toEqual([
       { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value },
       { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value }
@@ -399,7 +399,7 @@ describe('Editor List and Entry', function () {
   });
 
   it('word with multiple meanings: edit page has correct example sentences, translations',
-    function () {
+  function () {
 
     // Empty array elements are a work-around for getFieldValues after SemDom directive added. DDW
     expect(editorPage.edit.getFieldValues('Sentence')).toEqual([

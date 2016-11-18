@@ -3,7 +3,6 @@
 angular.module('lexicon.services')
 
   .service('lexUtils', [function () {
-    var _this = this;
 
     function getFirstField(config, node, fieldName) {
       var result = '';
@@ -59,7 +58,7 @@ angular.module('lexicon.services')
       return getFields(config, entry, 'lexeme');
     };
 
-    this.getCitationForms = function (config, entry) {
+    this.getCitationForms = function getCitationForms(config, entry) {
       if (!angular.isDefined(entry.lexeme)) {
         return '';
       }
@@ -71,12 +70,12 @@ angular.module('lexicon.services')
           if (angular.isDefined(entry.citationForm)) {
             var field = entry.citationForm[inputSystemTag];
             if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '' &&
-                !_this.isAudio(inputSystemTag)
+                !this.isAudio(inputSystemTag)
             ) {
               citationFormByInputSystem[inputSystemTag] = field.value;
             }
           }
-        });
+        }.bind(this));
       }
 
       angular.forEach(config.fields.lexeme.inputSystems, function (inputSystemTag) {
@@ -85,7 +84,7 @@ angular.module('lexicon.services')
         if (angular.isDefined(citationFormByInputSystem[inputSystemTag])) {
           valueToAppend = citationFormByInputSystem[inputSystemTag];
         } else if (angular.isDefined(field) && angular.isDefined(field.value) &&
-          !_this.isAudio(inputSystemTag)
+          !this.isAudio(inputSystemTag)
         ) {
           valueToAppend = field.value;
         }
@@ -97,7 +96,7 @@ angular.module('lexicon.services')
             citation += valueToAppend;
           }
         }
-      });
+      }.bind(this));
 
       return citation;
     };
