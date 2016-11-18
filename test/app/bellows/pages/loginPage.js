@@ -7,7 +7,7 @@ module.exports = new BellowsLoginPage();
 function BellowsLoginPage() {
   var _this = this;
 
-  this.get = function () {
+  this.get = function get() {
     browser.get(browser.baseUrl + '/auth/login');
   };
 
@@ -19,30 +19,32 @@ function BellowsLoginPage() {
   this.forgotPasswordLink = element(by.id('forgot_password'));
   this.submit   = element(by.xpath('//button[@type="submit"]'));
 
-  this.login = function (username, password) {
+  this.login = function login(username, password) {
     _this.get();
     _this.username.sendKeys(username);
     _this.password.sendKeys(password);
     _this.submit.click();
   };
 
-  this.loginAsAdmin = function () {
+  this.loginAsAdmin = function loginAsAdmin() {
     _this.login(constants.adminUsername, constants.adminPassword);
   };
 
-  this.loginAsManager = function () {
+  this.loginAsManager = function loginAsManager() {
     _this.login(constants.managerUsername, constants.managerPassword);
   };
 
-  this.loginAsUser = this.loginAsMember = function () {
+  this.loginAsUser = function loginAsUser() {
     _this.login(constants.memberUsername, constants.memberPassword);
   };
 
-  this.loginAsObserver = function () {
+  this.loginAsMember = this.loginAsUser;
+
+  this.loginAsObserver = function loginAsObserver() {
     _this.login(constants.observerUsername, constants.observerPassword);
   };
 
-  this.logout = function () {
+  this.logout = function logout() {
     browser.get(browser.baseUrl + '/app/logout');
   };
 }
