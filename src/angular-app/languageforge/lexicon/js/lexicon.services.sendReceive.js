@@ -26,23 +26,22 @@ angular.module('lexicon.services')
     };
   }])
   .service('lexSendReceive', ['sessionService', 'silNoticeService', 'lexSendReceiveApi',
-    '$interval',
-    function (sessionService, notice, sendReceiveApi, $interval) {
+    '$interval', 'lexEditorDataService',
+    function (sessionService, notice, sendReceiveApi, $interval, editorData) {
+      const syncStatusInterval = 3000; // ms
+      const pollUpdateInterval = 32000; // ms
+      const cloneStatusInterval = 3000; // ms
+      const unknownSRState = 'LF_CHECK';
+
       var _this = this;
       var projectSettings = sessionService.session.projectSettings;
       var syncProjectStatusSuccessCallback = angular.noop;
-      var pollProjectStatusSuccessCallback = angular.noop;
+      var pollUpdateSuccessCallback = angular.noop;
       var cloneProjectStatusSuccessCallback = angular.noop;
       var syncStatusTimer;
-      var pollStatusTimer;
+      var pollUpdateTimer;
       var cloneStatusTimer;
       var pendingMessageId;
-
-      // Constants
-      var syncStatusInterval = 3000; // ms
-      var pollStatusInterval = 32000; // ms
-      var cloneStatusInterval = 3000; // ms
-      var unknownSRState = 'LF_CHECK';
 
       var status = undefined;
       var previousSRState = unknownSRState;
@@ -100,8 +99,10 @@ angular.module('lexicon.services')
               _this.clearState();
             }
 
-            _this.startPollStatusTimer();
+            _this.startPollUpdateTimer();
           }
+        } else {
+          _this.startPollUpdateTimer();
         }
       };
 
@@ -125,7 +126,7 @@ angular.module('lexicon.services')
           if (result.ok) {
             if (!result.data) {
               _this.clearState();
-              _this.startPollStatusTimer();
+              _this.startPollUpdateTimer();
               notice.cancelLoading();
               return;
             }
@@ -140,7 +141,7 @@ angular.module('lexicon.services')
             }
 
             if (!_this.isInProgress()) {
-              _this.startPollStatusTimer();
+              _this.startPollUpdateTimer();
               notice.cancelLoading();
             }
 
@@ -173,7 +174,7 @@ angular.module('lexicon.services')
       }
 
       this.startSyncStatusTimer = function startSyncStatusTimer() {
-        _this.cancelPollStatusTimer();
+        _this.cancelPollUpdateTimer();
         _this.cancelCloneStatusTimer();
         if (angular.isDefined(syncStatusTimer)) return;
 
@@ -214,45 +215,51 @@ angular.module('lexicon.services')
         }
       };
 
-      this.setPollProjectStatusSuccessCallback =
-        function setPollProjectStatusSuccessCallback(callback) {
-          pollProjectStatusSuccessCallback = callback;
-        };
+      this.setPollUpdateSuccessCallback = function setPollUpdateSuccessCallback(callback) {
+        pollUpdateSuccessCallback = callback;
+      };
 
-      function getPollProjectStatus() {
-        sendReceiveApi.getProjectStatus(function (result) {
+      function getPollUpdate() {
+        editorData.refreshEditorData().then(function (result) {
           if (result.ok) {
-            if (!result.data) {
-              _this.clearState();
-              return;
-            }
+            if (_this.isSendReceiveProject()) {
+              if (angular.isUndefined(result.data) ||
+                angular.isUndefined(result.data.sendReceive) ||
+                angular.isUndefined(result.data.sendReceive.status)
+              ) {
+                _this.clearState();
+                return;
+              }
 
-            previousSRState = status.SRState;
-            status = result.data;
-            if (_this.isInProgress()) {
-              (pollProjectStatusSuccessCallback || angular.noop)();
-              _this.setSyncStarted();
-            } else if (previousSRState == 'LF_UNSYNCED' && status.SRState == 'IDLE') {
-              status.SRState = previousSRState;
-            } else if (previousSRState == unknownSRState) {
-              _this.clearState();
+              previousSRState = status.SRState;
+              status = result.data.sendReceive.status;
+              if (_this.isInProgress()) {
+                (pollUpdateSuccessCallback || angular.noop)();
+                _this.setSyncStarted();
+              } else if (previousSRState == 'LF_UNSYNCED' && status.SRState == 'IDLE') {
+                status.SRState = previousSRState;
+              } else if (previousSRState == unknownSRState) {
+                _this.clearState();
+              }
+            } else {
+              (pollUpdateSuccessCallback || angular.noop)();
             }
           }
         });
       }
 
-      this.startPollStatusTimer = function startPollStatusTimer() {
+      this.startPollUpdateTimer = function startPollUpdateTimer() {
         _this.cancelSyncStatusTimer();
         _this.cancelCloneStatusTimer();
-        if (angular.isDefined(pollStatusTimer)) return;
+        if (angular.isDefined(pollUpdateTimer)) return;
 
-        pollStatusTimer = $interval(getPollProjectStatus, pollStatusInterval);
+        pollUpdateTimer = $interval(getPollUpdate, pollUpdateInterval);
       };
 
-      this.cancelPollStatusTimer = function cancelPollStatusTimer() {
-        if (angular.isDefined(pollStatusTimer)) {
-          $interval.cancel(pollStatusTimer);
-          pollStatusTimer = undefined;
+      this.cancelPollUpdateTimer = function cancelPollUpdateTimer() {
+        if (angular.isDefined(pollUpdateTimer)) {
+          $interval.cancel(pollUpdateTimer);
+          pollUpdateTimer = undefined;
         }
       };
 
@@ -282,7 +289,7 @@ angular.module('lexicon.services')
       }
 
       this.startCloneStatusTimer = function startCloneStatusTimer() {
-        _this.cancelPollStatusTimer();
+        _this.cancelPollUpdateTimer();
         _this.cancelSyncStatusTimer();
 
         // Whether the true SRState is CLONING or PENDING, the user is going to have to wait for
@@ -305,7 +312,7 @@ angular.module('lexicon.services')
 
       this.cancelAllStatusTimers = function cancelAllStatusTimers() {
         _this.cancelSyncStatusTimer();
-        _this.cancelPollStatusTimer();
+        _this.cancelPollUpdateTimer();
         _this.cancelCloneStatusTimer();
       };
 
