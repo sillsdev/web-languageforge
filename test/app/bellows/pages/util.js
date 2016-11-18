@@ -24,7 +24,6 @@ by.addLocator('elemMatches', function (selector, regexOrString, parentElem) {
 module.exports = new Utils();
 
 function Utils() {
-  var _this = this;
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
@@ -45,7 +44,7 @@ function Utils() {
 
   this.clickDropdownByValue = function clickDropdownByValue(dropdownElement, value) {
     // Select an element of the dropdown based on its value (its text)
-    _this.findDropdownByValue(dropdownElement, value).click();
+    this.findDropdownByValue(dropdownElement, value).click();
   };
 
   this.findRowByFunc = function findRowByFunc(repeater, searchFunc) {
@@ -82,7 +81,7 @@ function Utils() {
       searchText = new RegExp(searchText, regExpFlags);
     }
 
-    return _this.findRowByFunc(repeater, function (rowText) {
+    return this.findRowByFunc(repeater, function (rowText) {
       return searchText.test(rowText);
     });
   };

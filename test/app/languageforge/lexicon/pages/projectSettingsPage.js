@@ -1,8 +1,8 @@
 'use strict';
 
-function ProjectSettingsPage() {
-  var _this = this;
+module.exports = new ProjectSettingsPage();
 
+function ProjectSettingsPage() {
   this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
   this.projectSettingsLink = element(by.linkText('Project Settings'));
   this.get = function get() {
@@ -43,23 +43,23 @@ function ProjectSettingsPage() {
     saveButton:             this.tabDivs.get(1).element(by.buttonText('Save'))
   };
 
-  this.sendReceiveTab.projectSelect = function projectSelect() {
-    return _this.tabDivs.get(1).element(by.id('srProjectSelect'));
+  this.sendReceiveTab.projectSelect = function () {
+    return this.tabDivs.get(1).element(by.id('srProjectSelect'));
+  }.bind(this);
+
+  this.sendReceiveTab.projectSelectedOption = function () {
+    return this.projectSelect().element(by.css('option:checked')).getText();
   };
 
-  this.sendReceiveTab.projectSelectedOption = function projectSelectedOption() {
-    return _this.sendReceiveTab.projectSelect().element(by.css('option:checked')).getText();
-  };
+  this.sendReceiveTab.formStatus.expectHasNoError = function () {
+    expect(this.sendReceiveTab.formStatus.getAttribute('class')).not.toContain('alert');
+  }.bind(this);
 
-  this.sendReceiveTab.formStatus.expectHasNoError = function expectHasNoError() {
-    expect(_this.sendReceiveTab.formStatus.getAttribute('class')).not.toContain('alert');
-  };
-
-  this.sendReceiveTab.formStatus.expectContainsError = function expectContainsError(partialMsg) {
+  this.sendReceiveTab.formStatus.expectContainsError = function (partialMsg) {
     if (!partialMsg) partialMsg = '';
-    expect(_this.sendReceiveTab.formStatus.getAttribute('class')).toContain('alert-error');
-    expect(_this.sendReceiveTab.formStatus.getText()).toContain(partialMsg);
-  };
+    expect(this.sendReceiveTab.formStatus.getAttribute('class')).toContain('alert-error');
+    expect(this.sendReceiveTab.formStatus.getText()).toContain(partialMsg);
+  }.bind(this);
 
   this.communicationTab = {
     saveButton: this.tabDivs.get(2).element(by.buttonText('Save'))
@@ -75,5 +75,3 @@ function ProjectSettingsPage() {
       .element(by.elemMatches('div[data-ng-repeat]', fieldRegex));
   };
 }
-
-module.exports = new ProjectSettingsPage();
