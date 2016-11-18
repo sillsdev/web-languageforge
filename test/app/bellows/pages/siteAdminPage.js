@@ -4,7 +4,6 @@ module.exports = new SiteAdminPage();
 
 function SiteAdminPage() {
   var util = require('./util.js');
-  var _this = this;
 
   this.url = browser.baseUrl + '/app/siteadmin';
   this.get = function get() {
@@ -26,11 +25,11 @@ function SiteAdminPage() {
     this.activePane.element(by.buttonText('Delete Projects'));
   this.tabs.archivedProjects.projectsList =
     element.all(by.repeater('project in visibleProjects'));
-  this.tabs.archivedProjects.setCheckbox = function setCheckbox(row, value) {
-    var projectRow = _this.tabs.archivedProjects.projectsList.get(row);
+  this.tabs.archivedProjects.setCheckbox = function (row, value) {
+    var projectRow = this.tabs.archivedProjects.projectsList.get(row);
     var rowCheckbox = projectRow.element(by.css('input[type="checkbox"]'));
     util.setCheckbox(rowCheckbox, value);
-  };
+  }.bind(this);
 
   //noinspection JSUnusedGlobalSymbols
   this.addBtn = element(by.partialButtonText('Add New'));

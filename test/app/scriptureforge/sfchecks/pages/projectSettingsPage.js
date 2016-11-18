@@ -3,7 +3,6 @@
 module.exports = new SfProjectSettingsPage();
 
 function SfProjectSettingsPage() {
-  var _this = this;
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
@@ -33,17 +32,17 @@ function SfProjectSettingsPage() {
   this.settingsDropdownLink = element(by.css('#settingsDropdownButton a.btn i.icon-cog'));
   this.projectSettingsLink = element(by.linkText('Project Settings'));
   this.get = function get() {
-    _this.settingsDropdownLink.click();
-    _this.projectSettingsLink.click();
+    this.settingsDropdownLink.click();
+    this.projectSettingsLink.click();
   };
 
   this.addNewMember = function (name) {
-    _this.tabs.members.click();
-    _this.membersTab.addButton.click();
-    browser.wait(expectedCondition.visibilityOf(_this.membersTab.newMember.input),
+    this.tabs.members.click();
+    this.membersTab.addButton.click();
+    browser.wait(expectedCondition.visibilityOf(this.membersTab.newMember.input),
       CONDITION_TIMEOUT);
-    _this.membersTab.newMember.input.sendKeys(name);
-    _this.membersTab.newMember.button.click();
+    this.membersTab.newMember.input.sendKeys(name);
+    this.membersTab.newMember.button.click();
   };
 
   this.templatesTab = {

@@ -6,7 +6,6 @@ function EditorPage() {
   var mockUpload = require('../../../bellows/pages/mockUploadElement.js');
   var util = require('../../../bellows/pages/util.js');
   var editorUtil = require('./editorUtil.js');
-  var _this = this;
 
   this.get = function get(projectId, entryId) {
     var extra = projectId ? ('/' + projectId) : '';
@@ -49,8 +48,8 @@ function EditorPage() {
   this.browse = {
 
     // Top row UI elements
-    newWordBtn: _this.browseDiv.element(by.partialButtonText('New Word')),
-    entryCountElem: _this.browseDiv.element(by.binding('entries.length')),
+    newWordBtn: this.browseDiv.element(by.partialButtonText('New Word')),
+    entryCountElem: this.browseDiv.element(by.binding('entries.length')),
     getEntryCount: function () {
       return this.entryCountElem.getText().then(function (s) {
         return parseInt(s, 10);
@@ -59,15 +58,14 @@ function EditorPage() {
 
     // Search typeahead
     search: {
-      input: _this.browseDiv.element(by.css('div.typeahead')).element(by.css('input')),
-      clearBtn: _this.browseDiv.element(by.css('div.typeahead')).element(by.css('i.icon-remove')),
-      results: _this.browseDiv.element(by.css('div.typeahead'))
+      input: this.browseDiv.element(by.css('div.typeahead')).element(by.css('input')),
+      clearBtn: this.browseDiv.element(by.css('div.typeahead')).element(by.css('i.icon-remove')),
+      results: this.browseDiv.element(by.css('div.typeahead'))
         .all(by.repeater('e in typeahead.searchResults')),
-      matchCountElem: _this.browseDiv.element(by.css('div.typeahead'))
+      matchCountElem: this.browseDiv.element(by.css('div.typeahead'))
         .element(by.binding('typeahead.matchCountCaption')),
       getMatchCount: function () {
-
-        // Inside this function, "this" == _this.browse.search
+        // Inside this function, "this" ==  EditorPage.browse.search
         return this.matchCountElem.getText().then(function (s) {
           return parseInt(s, 10);
         });
@@ -75,7 +73,7 @@ function EditorPage() {
     },
 
     // Entries list (main body of view)
-    entriesList: _this.browseDiv.all(by.repeater('entry in visibleEntries')),
+    entriesList: this.browseDiv.all(by.repeater('entry in visibleEntries')),
     findEntryByLexeme: function (lexeme) {
       return this.entriesList.filter(function (row) {
         return row.element(by.binding('entry.word')).getText().then(function (word) {
@@ -88,67 +86,65 @@ function EditorPage() {
   // --- Edit view ---
   //noinspection JSUnusedGlobalSymbols
   this.edit = {
-    fields: _this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
+    fields: this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
     toListLink: element(by.css('#toListLink')),
     toCommentsLink: element(by.css('#toCommentsLink')),
 
     // Show/Hide fields button and associated functions
-    toggleHiddenFieldsBtn: _this.editDiv.element(by.css('#toggleHiddenFieldsBtn')),
+    toggleHiddenFieldsBtn: this.editDiv.element(by.css('#toggleHiddenFieldsBtn')),
     toggleHiddenFieldsBtnText: {
       show: 'Show Hidden Fields',
       hide: 'Hide Hidden Fields'
     },
     showHiddenFields: function () {
-
       // Only click the button if it will result in fields being shown
       this.toggleHiddenFieldsBtn.getText().then(function (text) {
-        if (text == _this.edit.toggleHiddenFieldsBtnText.show) {
-          _this.edit.toggleHiddenFieldsBtn.click();
+        if (text == this.toggleHiddenFieldsBtnText.show) {
+          this.toggleHiddenFieldsBtn.click();
         }
-      });
+      }.bind(this));
     },
 
     hideHiddenFields: function () {
-
       // Only click the button if it will result in fields being hidden
       this.toggleHiddenFieldsBtn.getText().then(function (text) {
-        if (text == _this.edit.toggleHiddenFieldsBtnText.hide) {
-          _this.edit.toggleHiddenFieldsBtn.click();
+        if (text == this.toggleHiddenFieldsBtnText.hide) {
+          this.toggleHiddenFieldsBtn.click();
         }
-      });
+      }.bind(this));
     },
 
     // Left sidebar UI elements
-    newWordBtn: _this.editDiv.element(by.css('button[data-ng-click="newEntry()')),
-    entryCountElem: _this.editDiv.element(by.binding('entries.length')),
+    newWordBtn: this.editDiv.element(by.css('button[data-ng-click="newEntry()')),
+    entryCountElem: this.editDiv.element(by.binding('entries.length')),
     getEntryCount: function () {
       return this.entryCountElem.getText().then(function (s) {
         return parseInt(s, 10);
       });
     },
 
-    entriesList: _this.editDiv.all(by.repeater('entry in visibleEntries')),
+    entriesList: this.editDiv.all(by.repeater('entry in visibleEntries')),
     findEntryByLexeme: function (lexeme) {
-      var div = _this.editDiv.element(by.css('#compactEntryListContainer'));
+      var div = this.editDiv.element(by.css('#compactEntryListContainer'));
       return div.element(by.cssContainingText('[data-ng-bind-html="getWordForDisplay(entry)"',
         lexeme));
-    },
+    }.bind(this),
 
     findEntryByDefinition: function (definition) {
-      var div = _this.editDiv.element(by.css('#compactEntryListContainer'));
+      var div = this.editDiv.element(by.css('#compactEntryListContainer'));
       return div.element(by.cssContainingText('[data-ng-bind-html="getMeaningForDisplay(entry)"',
         definition));
-    },
+    }.bind(this),
 
     search: {
-      input: _this.editDiv.element(by.css('div.typeahead')).element(by.css('input')),
-      clearBtn: _this.editDiv.element(by.css('div.typeahead')).element(by.css('i.icon-remove')),
-      results: _this.editDiv.element(by.css('div.typeahead'))
+      input: this.editDiv.element(by.css('div.typeahead')).element(by.css('input')),
+      clearBtn: this.editDiv.element(by.css('div.typeahead')).element(by.css('i.icon-remove')),
+      results: this.editDiv.element(by.css('div.typeahead'))
         .all(by.repeater('e in typeahead.searchResults')),
-      matchCountElem: _this.editDiv.element(by.css('div.typeahead'))
+      matchCountElem: this.editDiv.element(by.css('div.typeahead'))
         .element(by.binding('typeahead.matchCountCaption')),
       getMatchCount: function () {
-        // Inside this function, "this" == _this.edit.search
+        // Inside this function, "this" == EditorPage.edit.search
         return this.matchCountElem.getText().then(function (s) {
           return parseInt(s, 10);
         });
@@ -156,9 +152,9 @@ function EditorPage() {
     },
 
     // Top-row UI elements
-    renderedDiv: _this.editDiv.element(by.css('dc-rendered')),
-    deleteBtn: _this.editDiv.element(by.css('button[data-ng-click="deleteEntry(currentEntry)"]')),
-    saveBtn: _this.editDiv.element(by.css('button[data-ng-click="saveCurrentEntry(true)"]')),
+    renderedDiv: this.editDiv.element(by.css('dc-rendered')),
+    deleteBtn: this.editDiv.element(by.css('button[data-ng-click="deleteEntry(currentEntry)"]')),
+    saveBtn: this.editDiv.element(by.css('button[data-ng-click="saveCurrentEntry(true)"]')),
 
     // Helper functions for retrieving various field values
     getLexemes: function () {
@@ -296,11 +292,11 @@ function EditorPage() {
     toEditLink: element(by.css('#toEditLink')),
 
     // Top-row UI elements
-    renderedDiv: _this.commentDiv.element(by.css('dc-rendered')),
+    renderedDiv: this.commentDiv.element(by.css('dc-rendered')),
     filter: {
-      byTextElem: _this.commentDiv.element(by.model('commentFilter.text')),
-      byStatusElem: _this.commentDiv.element(by.model('commentFilter.status')),
-      clearElem: _this.commentDiv.element(by.css('[title="Clear Filter] > i.icon-remove')),
+      byTextElem: this.commentDiv.element(by.model('commentFilter.text')),
+      byStatusElem: this.commentDiv.element(by.model('commentFilter.status')),
+      clearElem: this.commentDiv.element(by.css('[title="Clear Filter] > i.icon-remove')),
       byText: function (textToFilterBy) {
         this.byTextElem.sendKeys(textToFilterBy);
       },
@@ -317,7 +313,7 @@ function EditorPage() {
         this.byStatus('Show All');
       }
     },
-    commentCountElem: _this.commentDiv.element(by.binding('currentEntryCommentCounts.total')),
+    commentCountElem: this.commentDiv.element(by.binding('currentEntryCommentCounts.total')),
     getCommentCount: function () {
       return this.commentCountElem.getText().then(function (s) {
         return parseInt(s, 10);
@@ -339,25 +335,25 @@ function EditorPage() {
 
     // Right half of page: comments
     newComment: {
-      textarea: _this.commentDiv.element(by.css('.newCommentForm')).element(by.css('textarea')),
-      postBtn: _this.commentDiv.element(by.css('.newCommentForm')).element(by.buttonText('Post')),
-      regardingDiv: _this.commentDiv.element(by.css('.newCommentForm'))
+      textarea: this.commentDiv.element(by.css('.newCommentForm')).element(by.css('textarea')),
+      postBtn: this.commentDiv.element(by.css('.newCommentForm')).element(by.buttonText('Post')),
+      regardingDiv: this.commentDiv.element(by.css('.newCommentForm'))
         .element(by.css('.commentRegarding')),
       regarding: {
-        clearBtn: _this.commentDiv.element(by.css('.newCommentForm'))
+        clearBtn: this.commentDiv.element(by.css('.newCommentForm'))
           .element(by.css('.commentRegarding')).element(by.css('i.icon-remove')),
-        fieldLabel: _this.commentDiv.element(by.css('.newCommentForm'))
+        fieldLabel: this.commentDiv.element(by.css('.newCommentForm'))
           .element(by.css('.commentRegarding')).element(by.css('.regardingFieldName')),
-        fieldWsid: _this.commentDiv.element(by.css('.newCommentForm'))
+        fieldWsid: this.commentDiv.element(by.css('.newCommentForm'))
           .element(by.css('.commentRegarding')).element(by.css('.regardingInputSystem')),
-        fieldValue: _this.commentDiv.element(by.css('.newCommentForm'))
+        fieldValue: this.commentDiv.element(by.css('.newCommentForm'))
           .element(by.css('.commentRegarding')).element(by.css('.regardingFieldValue'))
       }
     },
-    commentsList: _this.commentDiv.all(by.repeater('comment in currentEntryCommentsFiltered')),
+    commentsList: this.commentDiv.all(by.repeater('comment in currentEntryCommentsFiltered')),
     getComment: function (commentNum) {
-      return _this.getComment(this.commentsList, commentNum);
-    }
+      return this.getComment(this.comment.commentsList, commentNum);
+    }.bind(this)
   };
 
   // Allow access by either name
@@ -366,7 +362,7 @@ function EditorPage() {
   // Gets a specific comment from the list and returns its parts (via
   // partsOfComment() below)
   // the specified comment. Usage example:
-  // expect(_this.comments.getComment(0).regarding.inputSystem).toBe("th")
+  // expect(this.comments.getComment(0).regarding.inputSystem).toBe("th")
   // commentNum can be -1 to get the last comment, any other number is a 0-based
   // index
   this.getComment = function (commentsList, commentNum) {
@@ -375,7 +371,7 @@ function EditorPage() {
     }
 
     var comment = (commentNum == -1 ? commentsList.last() : commentsList.get(commentNum));
-    return _this.partsOfComment(comment);
+    return this.partsOfComment(comment);
   };
 
   // Like getComment, gets a specific reply from the list and returns its parts
@@ -388,7 +384,7 @@ function EditorPage() {
     }
 
     var reply = (replyNum == -1 ? repliesList.last() : repliesList.get(replyNum));
-    return _this.partsOfReply(reply);
+    return this.partsOfReply(reply);
   };
 
   // Returns a Javascript object that can be used to access the parts (avatar,
@@ -431,8 +427,8 @@ function EditorPage() {
       // Replies (below content but above bottom controls)
       replies: replies,
       getReply: function (replyNum) {
-        return _this.getReply(replies, replyNum);
-      },
+        return this.getReply(replies, replyNum);
+      }.bind(this),
 
       // Bottom controls (below replies)
       markOpenLink: div.element(by.css('.commentBottomBar i.icon-chevron-sign-up')),

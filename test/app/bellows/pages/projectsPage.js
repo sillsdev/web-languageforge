@@ -1,17 +1,16 @@
 'use strict';
 
-var projectTypes = {
-  sf: 'Community Scripture Checking', // ScriptureForge
-  lf: 'Web Dictionary' // LanguageForge
-};
+module.exports = new ProjectsPage();
 
-var util = require('./util');
-var constants = require('../../testConstants.json');
+function ProjectsPage() {
+  var util = require('./util');
+  var projectTypes = {
+    sf: 'Community Scripture Checking', // ScriptureForge
+    lf: 'Web Dictionary' // LanguageForge
+  };
 
-var ProjectsPage = function () {
-  var _this = this;
   this.url = '/app/projects';
-  this.get = function () {
+  this.get = function get() {
     browser.get(browser.baseUrl + this.url);
   };
 
@@ -36,16 +35,19 @@ var ProjectsPage = function () {
   this.projectsList = element.all(by.repeater('project in visibleProjects'));
   this.projectNames = element.all(by.repeater('project in visibleProjects')
     .column('project.projectName'));
+
+  //noinspection JSUnusedGlobalSymbols
   this.projectTypes = element.all(by.repeater('project in visibleProjects')
     .column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
 
-  this.select100ItemsPerPage = function () {
+  //noinspection JSUnusedGlobalSymbols
+  this.select100ItemsPerPage = function select100ItemsPerPage() {
     util.clickDropdownByValue(this.itemsPerPageCtrl, '100');
     expect(element(by.model('itemsPerPage')).element(by.css('option:checked'))
       .getText()).toEqual('100');
   };
 
-  this.findProject = function (projectName) {
+  this.findProject = function findProject(projectName) {
     var foundRow = undefined;
     var result = protractor.promise.defer();
     var searchName = new RegExp(projectName);
@@ -66,14 +68,15 @@ var ProjectsPage = function () {
     return result;
   };
 
-  this.addNewProject = function (nameToAdd) {
+  //noinspection JSUnusedGlobalSymbols
+  this.addNewProject = function addNewProject(nameToAdd) {
     this.createBtn.click();
     this.newProjectNameInput.sendKeys(nameToAdd);
     util.clickDropdownByValue(this.newProjectTypeSelect, projectTypes.sf);
     this.saveBtn.click();
   };
 
-  this.clickOnProject = function (projectName) {
+  this.clickOnProject = function clickOnProject(projectName) {
     this.findProject(projectName).then(function (projectRow) {
       var projectLink = projectRow.element(by.css('a'));
       projectLink.getAttribute('href').then(function (url) {
@@ -82,13 +85,13 @@ var ProjectsPage = function () {
     });
   };
 
-  this.addUserToProject = function (projectName, usersName, roleText) {
+  this.addUserToProject = function addUserToProject(projectName, usersName, roleText) {
     this.findProject(projectName).then(function (projectRow) {
       var projectLink = projectRow.element(by.css('a'));
       projectLink.click();
 
-      _this.settings.button.click();
-      _this.settings.userManagementLink.click();
+      this.settings.button.click();
+      this.settings.userManagementLink.click();
 
       var addMembersBtn = element(by.partialButtonText('Add Members'));
       var newMembersDiv = element(by.css('#newMembersDiv'));
@@ -124,25 +127,26 @@ var ProjectsPage = function () {
         }
       });
 
-      _this.get(); // After all is finished, reload projects _this
-    });
+      this.get(); // After all is finished, reload projects page
+    }.bind(this));
   };
 
-  this.addManagerToProject = function (projectName, usersName) {
+  //noinspection JSUnusedGlobalSymbols
+  this.addManagerToProject = function addManagerToProject(projectName, usersName) {
     this.addUserToProject(projectName, usersName, 'Manager');
   };
 
-  this.addMemberToProject = function (projectName, usersName) {
+  this.addMemberToProject = function addMemberToProject(projectName, usersName) {
     this.addUserToProject(projectName, usersName, 'Contributor');
   };
 
-  this.removeUserFromProject = function (projectName, userName) {
+  this.removeUserFromProject = function removeUserFromProject(projectName, userName) {
     this.findProject(projectName).then(function (projectRow) {
       var projectLink = projectRow.element(by.css('a'));
       projectLink.click();
 
-      _this.settings.button.click();
-      _this.settings.userManagementLink.click();
+      this.settings.button.click();
+      this.settings.userManagementLink.click();
 
       var userFilter = element(by.model('userFilter'));
       userFilter.sendKeys(userName);
@@ -153,9 +157,7 @@ var ProjectsPage = function () {
       var removeMembersBtn = element(by.partialButtonText('Remove Members'));
       removeMembersBtn.click();
 
-      _this.get(); // After all is finished, reload projects page
-    });
+      this.get(); // After all is finished, reload projects page
+    }.bind(this));
   };
-};
-
-module.exports = new ProjectsPage();
+}
