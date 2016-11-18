@@ -68,9 +68,9 @@ describe('Editor Comments', function () {
     // This comment should have a "regarding" section
     expect(comment.regarding.fieldLabel.isDisplayed()).toBe(true);
     var word    = constants.testEntry1.lexeme.th.value;
-    var meaning = constants.testEntry1.senses[0].definition.en.value;
+    var definition = constants.testEntry1.senses[0].definition.en.value;
     expect(comment.regarding.word.getText()).toEqual(word);
-    expect(comment.regarding.meaning.getText()).toEqual(meaning);
+    expect(comment.regarding.definition.getText()).toEqual(definition);
     expect(comment.regarding.fieldLabel.getText()).toEqual('Word');
     expect(comment.regarding.fieldWsid .getText()).toEqual('th');
     expect(comment.regarding.fieldValue.getText()).toEqual(word);

@@ -67,11 +67,11 @@ msgstr "Delete Word"
 msgid "Dictionary Browse and Edit"
 msgstr "Dictionary Browse and Edit"
 
-msgid "Dictionary Configuration"
-msgstr "Dictionary Configuration"
+msgid "Configuration"
+msgstr "Configuration"
 
-msgid "Dictionary configuration updated successfully"
-msgstr "Dictionary configuration updated successfully"
+msgid "Configuration updated successfully"
+msgstr "Configuration updated successfully"
 
 msgid "Display Name"
 msgstr "Display Name"

@@ -422,7 +422,7 @@ function EditorPage() {
         // NOTE: Any or all of these may be absent in a given comment. Use
         // isPresent() before calling expect().
         word: div.element(by.binding('comment.regarding.word')),
-        meaning: div.element(by.binding('comment.regarding.meaning')),
+        definition: div.element(by.binding('comment.regarding.meaning')),
         fieldLabel: div.element(by.binding('comment.regarding.fieldNameForDisplay')),
         fieldWsid: div.element(by.binding('comment.regarding.inputSystem')),
         fieldValue: div.element(by.css('.regardingFieldValue'))
