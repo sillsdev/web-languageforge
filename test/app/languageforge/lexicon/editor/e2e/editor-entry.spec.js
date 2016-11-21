@@ -75,7 +75,7 @@ describe('Editor List and Entry', function () {
   });
 
   it('citation form field overrides lexeme form in dictionary citation view', function () {
-    editorPage.edit.showUncommonFields();
+    editorPage.edit.showHiddenFields();
     var citationFormMultiTextInputs = editorPage.edit.getMultiTextInputs('Citation Form');
     editorPage.edit.selectElement.sendKeys(citationFormMultiTextInputs.first(), 'citation form');
     expect(editorPage.edit.renderedDiv.getText()).toContain('citation form');
@@ -88,7 +88,7 @@ describe('Editor List and Entry', function () {
     expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
     expect(editorPage.edit.renderedDiv.getText())
       .toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-    editorPage.edit.hideUncommonFields();
+    editorPage.edit.hideHiddenFields();
   });
 
   it('one picture and caption is present', function () {
@@ -128,7 +128,7 @@ describe('Editor List and Entry', function () {
   it('caption is hidden when empty if "Hidden if empty" is set in config', function () {
     util.clickBreadcrumb(constants.testProjectName);
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
-    editorPage.edit.hideUncommonFields();
+    editorPage.edit.hideHiddenFields();
     expect(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
     editorPage.edit.selectElement.clear(editorPage.edit.pictures.captions.first());
     expect(editorPage.edit.pictures.captions.count()).toBe(0);
@@ -168,13 +168,13 @@ describe('Editor List and Entry', function () {
     configPage.applyButton.click();
   });
 
-  it('while Show All Fields has not been clicked, Pictures field is hidden', function () {
+  it('while Show Hidden Fields has not been clicked, Pictures field is hidden', function () {
     util.clickBreadcrumb(constants.testProjectName);
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     expect(editorPage.edit.getFields('Pictures').count()).toBe(0);
-    editorPage.edit.showUncommonFields();
+    editorPage.edit.showHiddenFields();
     expect(editorPage.edit.pictures.list.isPresent()).toBe(true);
-    editorPage.edit.hideUncommonFields();
+    editorPage.edit.hideHiddenFields();
     expect(editorPage.edit.getFields('Pictures').count()).toBe(0);
   });
 
@@ -416,11 +416,11 @@ describe('Editor List and Entry', function () {
     ]);
   });
 
-  it('while Show All Fields has not been clicked, uncommon fields are hidden if they are empty',
+  it('while Show Hidden Fields has not been clicked, hidden fields are hidden if they are empty',
   function () {
     expect(editorPage.edit.getFields('Semantics Note').count()).toBe(0);
     expect(editorPage.edit.getOneField('General Note').isPresent()).toBe(true);
-    editorPage.edit.showUncommonFields();
+    editorPage.edit.showHiddenFields();
     expect(editorPage.edit.getOneField('Semantics Note').isPresent()).toBe(true);
     expect(editorPage.edit.getOneField('General Note').isPresent()).toBe(true);
   });

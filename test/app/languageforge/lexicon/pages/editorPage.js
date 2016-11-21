@@ -93,27 +93,27 @@ function EditorPage() {
     toCommentsLink: element(by.css('#toCommentsLink')),
 
     // Show/Hide fields button and associated functions
-    toggleUncommonFieldsBtn: _this.editDiv.element(by.css('#toggleUncommonFieldsBtn')),
-    toggleUncommonFieldsBtnText: {
-      show: 'Show All Fields',
-      hide: 'Hide Uncommon Fields'
+    toggleHiddenFieldsBtn: _this.editDiv.element(by.css('#toggleHiddenFieldsBtn')),
+    toggleHiddenFieldsBtnText: {
+      show: 'Show Hidden Fields',
+      hide: 'Hide Hidden Fields'
     },
-    showUncommonFields: function () {
+    showHiddenFields: function () {
 
       // Only click the button if it will result in fields being shown
-      this.toggleUncommonFieldsBtn.getText().then(function (text) {
-        if (text == _this.edit.toggleUncommonFieldsBtnText.show) {
-          _this.edit.toggleUncommonFieldsBtn.click();
+      this.toggleHiddenFieldsBtn.getText().then(function (text) {
+        if (text == _this.edit.toggleHiddenFieldsBtnText.show) {
+          _this.edit.toggleHiddenFieldsBtn.click();
         }
       });
     },
 
-    hideUncommonFields: function () {
+    hideHiddenFields: function () {
 
       // Only click the button if it will result in fields being hidden
-      this.toggleUncommonFieldsBtn.getText().then(function (text) {
-        if (text == _this.edit.toggleUncommonFieldsBtnText.hide) {
-          _this.edit.toggleUncommonFieldsBtn.click();
+      this.toggleHiddenFieldsBtn.getText().then(function (text) {
+        if (text == _this.edit.toggleHiddenFieldsBtnText.hide) {
+          _this.edit.toggleHiddenFieldsBtn.click();
         }
       });
     },
