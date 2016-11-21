@@ -10,7 +10,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, util) {
   var inputSystemSelected = true;
   lexProjectService.setBreadcrumbs('configuration',
-    $filter('translate')('Dictionary Configuration'));
+    $filter('translate')('Configuration'));
   $scope.configDirty = angular.copy(ss.session.projectSettings.config);
   $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
   $scope.optionlistPristine = angular.copy(ss.session.projectSettings.optionlists);
@@ -352,7 +352,7 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
       function (result) {
         if (result.ok) {
           notice.push(notice.SUCCESS,
-            $filter('translate')('Dictionary configuration updated successfully'));
+            $filter('translate')('Configuration updated successfully'));
           $scope.configForm.$setPristine();
           $scope.projectSettings.config = angular.copy($scope.configDirty);
           $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);

@@ -4,6 +4,7 @@
         <i data-ng-click="remove(index)" title="Delete Meaning"
             class="icon-remove"></i>
     </div>
+    <label class="meaning-label">Meaning {{index+1}}</label>
     <dc-fieldrepeat config="config" model="model" control="control"></dc-fieldrepeat>
     <div data-ng-if="config.fields.examples.fieldOrder.length > 0">
         <div data-ng-repeat="example in model.examples">
