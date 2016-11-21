@@ -47,10 +47,9 @@ describe('Editor List and Entry', function () {
     expect(editorPage.edit.getEntryCount()).toBe(3);
   });
 
-  it('word 1: edit page has correct meaning, part of speech', function () {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
-      { en: constants.testEntry1.senses[0].definition.en.value }, ''
+  it('word 1: edit page has correct definition, part of speech', function () {
+    expect(editorPage.edit.getFieldValues('Definition')).toEqual([
+      { en: constants.testEntry1.senses[0].definition.en.value }
     ]);
     expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
       editorUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value)
@@ -76,7 +75,7 @@ describe('Editor List and Entry', function () {
   });
 
   it('citation form field overrides lexeme form in dictionary citation view', function () {
-    editorPage.edit.showUncommonFields();
+    editorPage.edit.showHiddenFields();
     var citationFormMultiTextInputs = editorPage.edit.getMultiTextInputs('Citation Form');
     editorPage.edit.selectElement.sendKeys(citationFormMultiTextInputs.first(), 'citation form');
     expect(editorPage.edit.renderedDiv.getText()).toContain('citation form');
@@ -89,7 +88,7 @@ describe('Editor List and Entry', function () {
     expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
     expect(editorPage.edit.renderedDiv.getText())
       .toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-    editorPage.edit.hideUncommonFields();
+    editorPage.edit.hideHiddenFields();
   });
 
   it('one picture and caption is present', function () {
@@ -129,7 +128,7 @@ describe('Editor List and Entry', function () {
   it('caption is hidden when empty if "Hidden if empty" is set in config', function () {
     util.clickBreadcrumb(constants.testProjectName);
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
-    editorPage.edit.hideUncommonFields();
+    editorPage.edit.hideHiddenFields();
     expect(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
     editorPage.edit.selectElement.clear(editorPage.edit.pictures.captions.first());
     expect(editorPage.edit.pictures.captions.count()).toBe(0);
@@ -169,13 +168,13 @@ describe('Editor List and Entry', function () {
     configPage.applyButton.click();
   });
 
-  it('while Show All Fields has not been clicked, Pictures field is hidden', function () {
+  it('while Show Hidden Fields has not been clicked, Pictures field is hidden', function () {
     util.clickBreadcrumb(constants.testProjectName);
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     expect(editorPage.edit.getFields('Pictures').count()).toBe(0);
-    editorPage.edit.showUncommonFields();
+    editorPage.edit.showHiddenFields();
     expect(editorPage.edit.pictures.list.isPresent()).toBe(true);
-    editorPage.edit.hideUncommonFields();
+    editorPage.edit.hideHiddenFields();
     expect(editorPage.edit.getFields('Pictures').count()).toBe(0);
   });
 
@@ -371,26 +370,25 @@ describe('Editor List and Entry', function () {
       .click();
   });
 
-  it('word 2: edit page has correct meaning, part of speech', function () {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
-      { en: constants.testEntry2.senses[0].definition.en.value }, ''
+  it('word 2: edit page has correct definition, part of speech', function () {
+    expect(editorPage.edit.getFieldValues('Definition')).toEqual([
+      { en: constants.testEntry2.senses[0].definition.en.value }
     ]);
     expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
       editorUtil.expandPartOfSpeech(constants.testEntry2.senses[0].partOfSpeech.value)
     ]);
   });
 
-  it('setup: click on word with multiple meanings (found by lexeme)', function () {
+  it('setup: click on word with multiple definitions (found by lexeme)', function () {
     editorPage.edit.findEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value).click();
     editorPage.edit.senses.first().click();
   });
 
-  it('word with multiple meanings: edit page has correct meanings, parts of speech', function () {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
-      { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value }, '',
-      { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value }, ''
+  it('word with multiple definitions: edit page has correct definitions, parts of speech',
+    function () {
+    expect(editorPage.edit.getFieldValues('Definition')).toEqual([
+      { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value },
+      { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value }
     ]);
     expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
       editorUtil
@@ -400,11 +398,14 @@ describe('Editor List and Entry', function () {
     ]);
   });
 
-  it('word with multiple meanings: edit page has correct examples, translations', function () {
-    expect(editorPage.edit.getFieldValues('Example')).toEqual([
-      { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
+  it('word with multiple meanings: edit page has correct example sentences, translations',
+    function () {
+
+    // Empty array elements are a work-around for getFieldValues after SemDom directive added. DDW
+    expect(editorPage.edit.getFieldValues('Sentence')).toEqual([
+      '', { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value },
-      { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
+      '', { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value }
     ]);
     expect(editorPage.edit.getFieldValues('Translation')).toEqual([
@@ -415,11 +416,11 @@ describe('Editor List and Entry', function () {
     ]);
   });
 
-  it('while Show All Fields has not been clicked, uncommon fields are hidden if they are empty',
+  it('while Show Hidden Fields has not been clicked, hidden fields are hidden if they are empty',
   function () {
     expect(editorPage.edit.getFields('Semantics Note').count()).toBe(0);
     expect(editorPage.edit.getOneField('General Note').isPresent()).toBe(true);
-    editorPage.edit.showUncommonFields();
+    editorPage.edit.showHiddenFields();
     expect(editorPage.edit.getOneField('Semantics Note').isPresent()).toBe(true);
     expect(editorPage.edit.getOneField('General Note').isPresent()).toBe(true);
   });
@@ -451,9 +452,9 @@ describe('Editor List and Entry', function () {
 
   it('modify new word', function () {
     var word    = constants.testEntry3.lexeme.th.value;
-    var meaning = constants.testEntry3.senses[0].definition.en.value;
+    var definition = constants.testEntry3.senses[0].definition.en.value;
     editorPage.edit.getMultiTextInputs('Word').first().sendKeys(word);
-    editorPage.edit.getMultiTextInputs('Meaning').first().sendKeys(meaning);
+    editorPage.edit.getMultiTextInputs('Definition').first().sendKeys(definition);
     util.clickDropdownByValue(editorPage.edit.getOneField('Part of Speech').$('select'),
       'Noun \\(n\\)');
     editorPage.edit.saveBtn.click();
@@ -469,7 +470,7 @@ describe('Editor List and Entry', function () {
       expect(editorPage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
     });
 
-  describe('Dictionary Configuration check', function () {
+  describe('Configuration check', function () {
 
     it('Word has only "th", "tipa" and "taud" visible', function () {
       expect(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(3);
