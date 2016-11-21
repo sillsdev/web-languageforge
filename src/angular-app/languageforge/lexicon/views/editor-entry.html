@@ -49,9 +49,9 @@
         </div>
         <div style="margin-top:5px">
             <div class="entryItemView" data-ng-if="entryLoaded()">
-                <button id="toggleUncommonFieldsBtn" class="pull-right btn btn-mini" style="margin:10px"
+                <button id="toggleHiddenFieldsBtn" class="pull-right btn btn-mini" style="margin:10px"
                         data-ng-click="show.emptyFields = !show.emptyFields">
-                    {{show.emptyFields ? 'Hide Uncommon Fields' : 'Show All Fields' |translate}}</button>
+                    {{show.emptyFields ? 'Hide Hidden Fields' : 'Show Hidden Fields' | translate}}</button>
                 <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
             </div>
         </div>

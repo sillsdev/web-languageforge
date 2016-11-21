@@ -94,7 +94,7 @@ describe('Configuration Fields', function () {
     expect(configPage.noticeList.count()).toBe(0);
     configPage.applyButton.click();
     expect(configPage.noticeList.count()).toBe(1);
-    expect(configPage.noticeList.get(0).getText()).toContain('configuration updated successfully');
+    expect(configPage.noticeList.get(0).getText()).toContain('Configuration updated successfully');
   });
 
   describe('Add a new Custom Field modal', function () {
@@ -210,8 +210,8 @@ describe('Configuration Fields', function () {
   // this regression test added because the code has been fixed at least once before. IJH 2016-05
   it('does not regress Input System selection', function () {
     configPage.showAllFieldsButton.click();
-    configPage.getFieldByName('Example').click();
-    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Example Field Setup');
+    configPage.getFieldByName('Sentence').click();
+    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Sentence Field Setup');
     configPage.getFieldByName('Translation').click();
     expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Translation Field Setup');
     configPage.getFieldByName('Literal Meaning').click();
@@ -223,8 +223,8 @@ describe('Configuration Fields', function () {
     expect(configPage.fieldsTab.inputSystemCheckboxes.first().isSelected()).toBe(true);
     expect(configPage.fieldsTab.inputSystemCheckboxes.get(1).isSelected()).toBe(false);
     expect(configPage.fieldsTab.inputSystemCheckboxes.last().isSelected()).toBe(false);
-    configPage.getFieldByName('Example').click();
-    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Example Field Setup');
+    configPage.getFieldByName('Sentence').click();
+    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Sentence Field Setup');
     configPage.getFieldByName('Literal Meaning').click();
     expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Literal Meaning Field Setup');
     expect(configPage.fieldsTab.inputSystemTags.first().getText()).toEqual('en');

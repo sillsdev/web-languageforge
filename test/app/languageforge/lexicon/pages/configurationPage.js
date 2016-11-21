@@ -8,7 +8,7 @@ function ConfigurationPage() {
   this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
 
   this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
-  this.configurationLink = element(by.linkText('Dictionary Configuration'));
+  this.configurationLink = element(by.linkText('Configuration'));
   this.get = function get() {
     this.settingsMenuLink.click();
     this.configurationLink.click();
