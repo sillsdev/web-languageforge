@@ -16,14 +16,14 @@ vagrant_ansible_inventory_*
 docs/semdom/*.xml
 docs/semdom/semdom lists/*.xml
 **/.bundle/
-src/vendor/
 !src/vendor/lift/
+src/vendor/
 src/vendor_bower/
-src/cache/
 !src/cache/index.html
 !src/cache/.htaccess
+src/cache/
+!src/assets/index.html
 src/assets/
-!src/assets/index.hmtl
 src/js/lib/languageforge.min.js
 src/js/lib/scriptureforge.min.js
 src/angular-app/**/helps/**/page/*.html
