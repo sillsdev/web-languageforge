@@ -89,7 +89,7 @@ var execute = function (command, options, callback) {
     options = {};
   }
 
-  options.maxBuffer = 1024 * 500; // byte
+  options.maxBuffer = 1024 * 1000; // byte
 
   var template = _template(command);
   command = template(options);
@@ -662,7 +662,6 @@ gulp.task('build-upload', function (cb) {
   var options = {
     dryRun: false,
     silent: false,
-    filesFile: 'upload-files.txt',      // read list of source-file names from FILE
     includeFile: 'upload-include.txt',  // read include patterns from FILE
     excludeFile: 'upload-exclude.txt',  // read exclude patterns from FILE
     rsh: (params.uploadCredentials) ? '--rsh=ssh -v -i ' + params.uploadCredentials : '',
@@ -673,7 +672,7 @@ gulp.task('build-upload', function (cb) {
   execute(
     'rsync -rzlt --chmod=Dug=rwx,Fug=rw,o-rwx --group ' +
     '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
-    '--files-from="<%= filesFile %>" --include-from="<%= includeFile %>" ' +
+    '--include-from="<%= includeFile %>" ' +
     '--exclude-from="<%= excludeFile %>" ' +
     '<%= src %> <%= dest %>',
     options,
