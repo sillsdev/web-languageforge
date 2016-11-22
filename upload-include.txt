@@ -1,5 +1,4 @@
 # specific files to include
-/.htaccess
 assets/index.html
 
 # patterns to include
