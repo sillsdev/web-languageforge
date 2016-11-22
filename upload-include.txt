@@ -1,5 +1,9 @@
+# specific files to include
+/.htaccess
+assets/index.html
+
+# patterns to include
 angular-app/**/*.min.js
 angular-app/**/assets
 angular-app/**/vendor
-angular-app/**/vendor_bower
-Site/**
+Site/**/assets
