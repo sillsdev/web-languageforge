@@ -36,6 +36,7 @@
 //   'build-changeGroup'
 //   'build-version'
 //   'build-productionConfig'
+//   'build-clearCache'
 //   'build-upload'
 //   'build'
 //   'build-and-upload'
@@ -649,6 +650,25 @@ gulp.task('build-productionConfig', function () {
 });
 
 // -------------------------------------
+//   Task: Build Clear Cache
+// -------------------------------------
+gulp.task('build-clearCache', function (cb) {
+  var options = {
+    dryRun: false,
+    silent: false,
+    cwd: 'src/cache/'
+  };
+  execute(
+    'git clean -d -x -f',
+    options,
+    cb
+  );
+});
+
+gulp.task('build-clearCache').description =
+  'Remove all subdirectories of src/cache/';
+
+// -------------------------------------
 //   Task: Build Upload to destination
 // -------------------------------------
 gulp.task('build-upload', function (cb) {
@@ -704,7 +724,8 @@ gulp.task('build',
       'build-composer',
       'build-bower',
       'build-version',
-      'build-productionConfig'),
+      'build-productionConfig',
+      'build-clearCache'),
     'build-minify',
     'build-changeGroup')
 );
