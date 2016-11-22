@@ -37,7 +37,7 @@ describe('Editor Comments', function () {
     expect(comment.score.getText()).toEqual('0');
     expect(comment.plusOne.isPresent()).toBe(true);
     expect(comment.content.getText()).toEqual('First comment on this word.');
-    expect(comment.date.getText()).toContain('ago');
+    expect(comment.date.getText()).toMatch(/ago|in a few seconds/);
 
     // This comment should have no "regarding" section
     expect(comment.regarding.fieldLabel.isDisplayed()).toBe(false);
@@ -58,12 +58,10 @@ describe('Editor Comments', function () {
     //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
     //expect(comment.author.getText()).toEqual(constants.managerName);
 
-    // wait to ensure date is in the past (server time slightly out from browser can make it future)
-    browser.sleep(200);
     expect(comment.score.getText()).toEqual('0');
     expect(comment.plusOne.isPresent()).toBe(true);
     expect(comment.content.getText()).toEqual('Second comment.');
-    expect(comment.date.getText()).toContain('ago');
+    expect(comment.date.getText()).toMatch(/ago|in a few seconds/);
 
     // This comment should have a "regarding" section
     expect(comment.regarding.fieldLabel.isDisplayed()).toBe(true);
