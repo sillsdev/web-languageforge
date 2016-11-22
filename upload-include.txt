@@ -1,4 +1,5 @@
 angular-app/**/*.min.js
 angular-app/**/assets
 angular-app/**/vendor
+angular-app/**/vendor_bower
 Site/**
