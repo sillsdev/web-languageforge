@@ -121,7 +121,7 @@ angular.module('lexicon.services')
         }
       };
 
-      function getSyncProjectStatus() {
+      var getSyncProjectStatus = function () {
         sendReceiveApi.getProjectStatus(function (result) {
           if (result.ok) {
             if (!result.data) {
@@ -171,14 +171,14 @@ angular.module('lexicon.services')
             }
           }
         }.bind(this));
-      }
+      }.bind(this);
 
       this.startSyncStatusTimer = function startSyncStatusTimer() {
         this.cancelPollUpdateTimer();
         this.cancelCloneStatusTimer();
         if (angular.isDefined(syncStatusTimer)) return;
 
-        syncStatusTimer = $interval(getSyncProjectStatus.bind(this), syncStatusInterval);
+        syncStatusTimer = $interval(getSyncProjectStatus, syncStatusInterval);
       };
 
       this.cancelSyncStatusTimer = function cancelSyncStatusTimer() {
@@ -219,7 +219,7 @@ angular.module('lexicon.services')
         pollUpdateSuccessCallback = callback;
       };
 
-      function getPollUpdate() {
+      var getPollUpdate = function () {
         editorData.refreshEditorData().then(function (result) {
           if (result.ok) {
             if (this.isSendReceiveProject()) {
@@ -246,14 +246,14 @@ angular.module('lexicon.services')
             }
           }
         }.bind(this));
-      }
+      }.bind(this);
 
       this.startPollUpdateTimer = function startPollUpdateTimer() {
         this.cancelSyncStatusTimer();
         this.cancelCloneStatusTimer();
         if (angular.isDefined(pollUpdateTimer)) return;
 
-        pollUpdateTimer = $interval(getPollUpdate.bind(this), pollUpdateInterval);
+        pollUpdateTimer = $interval(getPollUpdate, pollUpdateInterval);
       };
 
       this.cancelPollUpdateTimer = function cancelPollUpdateTimer() {
@@ -268,7 +268,7 @@ angular.module('lexicon.services')
           cloneProjectStatusSuccessCallback = callback;
         };
 
-      function getCloneProjectStatus() {
+      var getCloneProjectStatus = function () {
         sendReceiveApi.getProjectStatus(function (result) {
           if (result.ok) {
             if (!result.data) {
@@ -286,7 +286,7 @@ angular.module('lexicon.services')
             }
           }
         }.bind(this));
-      }
+      }.bind(this);
 
       this.startCloneStatusTimer = function startCloneStatusTimer() {
         this.cancelPollUpdateTimer();
@@ -297,7 +297,7 @@ angular.module('lexicon.services')
         status.SRState = 'LF_CLONING';
         if (angular.isDefined(cloneStatusTimer)) return;
 
-        cloneStatusTimer = $interval(getCloneProjectStatus.bind(this), cloneStatusInterval);
+        cloneStatusTimer = $interval(getCloneProjectStatus, cloneStatusInterval);
       };
 
       this.cancelCloneStatusTimer = function cancelCloneStatusTimer() {
