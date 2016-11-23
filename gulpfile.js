@@ -112,7 +112,7 @@ var execute = function (command, options, callback) {
 // Determine the path to test/app from a given destination.
 // Truncate the remote prefix of the destination
 function getTestCwd(dest) {
-  var cwd =  (dest) ? params.replace(/^(.)*:/, '') + '/test/app' : './test/app';
+  var cwd =  (dest) ? dest.replace(/^(.)*:/, '') + '/test/app' : './test/app';
   return cwd;
 }
 
