@@ -78,6 +78,10 @@ class LexProjectModel extends LfProjectModel
         }
     }
 
+    /**
+     * @param string $userId
+     * @return array
+     */
     public function getPublicSettings($userId)
     {
         $settings = parent::getPublicSettings($userId);
@@ -171,11 +175,20 @@ class LexProjectModel extends LfProjectModel
     }
 
     /**
-     * @param $targetPath
-     * @param $linkPath
+     * @param string $targetPath
+     * @param string $linkPath
      */
     private function moveExistingFilesAndCreateSymlink($targetPath, $linkPath)
     {
+        // target must be a folder (or link to folder)
+        if (file_exists($targetPath)) {
+            if (!is_dir($targetPath)) {
+                unlink($targetPath);
+            }
+        } else {
+            FileUtilities::createAllFolders($targetPath);
+        }
+
         if (file_exists($linkPath)) {
             if (is_dir($linkPath) && !is_link($linkPath)) {
                 FileUtilities::copyFolderTree($linkPath, $targetPath);
