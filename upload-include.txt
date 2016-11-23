@@ -1,9 +1,5 @@
 # specific files to include
-assets/index.html
+/assets/index.html
 
 # patterns to include
-angular-app/**/*.min.js
-angular-app/**/assets
-angular-app/**/vendor
-cache/
-Site/**/assets
+/angular-app/**/*.min.js

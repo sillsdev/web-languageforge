@@ -36,7 +36,7 @@
 //   'build-changeGroup'
 //   'build-version'
 //   'build-productionConfig'
-//   'build-clearCache'
+//   'build-clearLocalCache'
 //   'build-upload'
 //   'build'
 //   'build-and-upload'
@@ -650,9 +650,9 @@ gulp.task('build-productionConfig', function () {
 });
 
 // -------------------------------------
-//   Task: Build Clear Cache
+//   Task: Build Clear Local Cache
 // -------------------------------------
-gulp.task('build-clearCache', function (cb) {
+gulp.task('build-clearLocalCache', function (cb) {
   var options = {
     dryRun: false,
     silent: false,
@@ -665,8 +665,8 @@ gulp.task('build-clearCache', function (cb) {
   );
 });
 
-gulp.task('build-clearCache').description =
-  'Remove all subdirectories of src/cache/';
+gulp.task('build-clearLocalCache').description =
+  'Clear all subdirectories of local cache/';
 
 // -------------------------------------
 //   Task: Build Upload to destination
@@ -677,20 +677,20 @@ gulp.task('build-upload', function (cb) {
       demand: true,
       type: 'string' })
     .option('uploadCredentials', {
-      demand: false,
+      demand: true,
       type: 'string' }).argv;
   var options = {
     dryRun: false,
     silent: false,
     includeFile: 'upload-include.txt',  // read include patterns from FILE
     excludeFile: 'upload-exclude.txt',  // read exclude patterns from FILE
-    rsh: (params.uploadCredentials) ? '--rsh=ssh -v -i ' + params.uploadCredentials : '',
+    rsh: '--rsh=ssh -v -i ' + params.uploadCredentials,
     src: 'src/',
     dest: params.dest + '/htdocs'
   };
 
   execute(
-    'rsync -rzlt --chmod=Dug=rwx,Fug=rw,o-rwx --group ' +
+    'rsync -rzlt --chown=root:www-data --chmod=Dug=rwx,Fug=rw,o-rwx --group ' +
     '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
     '--include-from="<%= includeFile %>" ' +
     '--exclude-from="<%= excludeFile %>" ' +
@@ -705,9 +705,8 @@ gulp.task('build-upload', function (cb) {
     options.dest = params.dest + '/test/app';
 
     execute(
-      'rsync -rzlt --chmod=Dug=rwx,Fug=rw,o-rwx --group ' +
-      '--delete-during --stats --rsync-path="sudo rsync" ' +
-      '--exclude="htdocs/" ' +
+      'rsync -rzlt --chown=root:www-data --chmod=Dug=rwx,Fug=rw,o-rwx --group ' +
+      '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
       '<%= src %> <%= dest %>',
       options,
       cb
@@ -725,7 +724,7 @@ gulp.task('build',
       'build-bower',
       'build-version',
       'build-productionConfig',
-      'build-clearCache'),
+      'build-clearLocalCache'),
     'build-minify',
     'build-changeGroup')
 );
