@@ -615,14 +615,15 @@ gulp.task('build-version', function () {
 // -------------------------------------
 gulp.task('build-changeGroup', function (cb) {
   execute(
-    'sudo chgrp -R www-data src; sudo chgrp -R www-data test',
+    'sudo chgrp -R www-data src; sudo chgrp -R www-data test; ' +
+    'sudo chmod -R g+w src; sudo chmod -R g+w test',
     null,
     cb
   );
 });
 
 gulp.task('build-changeGroup').description =
-  'Ensure www-data is the group for src and test folder';
+  'Ensure www-data is the group and can write for src and test folder';
 
 // -------------------------------------
 //   Task: Build Production Config
@@ -691,13 +692,13 @@ gulp.task('build-upload', function (cb) {
     silent: false,
     includeFile: 'upload-include.txt',  // read include patterns from FILE
     excludeFile: 'upload-exclude.txt',  // read exclude patterns from FILE
-    rsh: '--rsh=ssh -v -i ' + params.uploadCredentials,
+    rsh: '--rsh="ssh -v -i ' + params.uploadCredentials + '"',
     src: 'src/',
     dest: params.dest + '/htdocs'
   };
 
   execute(
-    'rsync -rzlt --chown=root:www-data --chmod=Dug=rwx,Fug=rw,o-rwx --group ' +
+    'rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
     '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
     '--include-from="<%= includeFile %>" ' +
     '--exclude-from="<%= excludeFile %>" ' +
@@ -712,7 +713,7 @@ gulp.task('build-upload', function (cb) {
     options.dest = params.dest + '/test/app';
 
     execute(
-      'rsync -rzlt --chown=root:www-data --chmod=Dug=rwx,Fug=rw,o-rwx --group ' +
+      'rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
       '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
       '<%= src %> <%= dest %>',
       options,
