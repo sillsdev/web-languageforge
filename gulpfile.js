@@ -109,6 +109,13 @@ var execute = function (command, options, callback) {
   }
 };
 
+// Determine the path to test/app from a given destination.
+// Truncate the remote prefix of the destination
+function getTestCwd(dest) {
+  var cwd =  (dest) ? params.replace(/^(.)*:/, '') + '/test/app' : './test/app';
+  return cwd;
+}
+
 // Globals
 var srcPatterns = [
   'src/angular-app/**',
@@ -354,7 +361,7 @@ gulp.task('test-e2e-setupTestEnvironment', function (cb) {
   var options = {
     dryRun: false,
     silent: false,
-    cwd: (params.dest) ? params.dest + '/test/app' : './test/app'
+    cwd: getTestCwd(params.dest)
   };
   execute(
     'sudo -u www-data php setupTestEnvironment.php ' + params.webserverHost,
@@ -375,7 +382,7 @@ gulp.task('test-e2e-teardownTestEnvironment', function (cb) {
   var options = {
     dryRun: false,
     silent: false,
-    cwd: (params.dest) ? params.dest + '/test/app' : './test/app'
+    cwd: getTestCwd(params.dest)
   };
   execute(
     'sudo -u www-data php teardownTestEnvironment.php',
@@ -410,14 +417,14 @@ gulp.task('test-e2e-env', function () {
       demand: false,
       default: 'languageforge.local',
       type: 'string' }).argv;
-  var base = (params.dest) ? params.dest + '/test/app' : './test/app';
+  var cwd = getTestCwd(params.dest);
   var src = [
     'setupTestEnvironment.php',
     'teardownTestEnvironment.php',
     'e2eTestConfig.php',
     'testConstants.json'];
 
-  return gulp.src(src, { cwd: base })
+  return gulp.src(src, { cwd: cwd })
 
     // e2eTestConfig.php
     .pipe(replace('src/', 'htdocs/'))
@@ -432,7 +439,7 @@ gulp.task('test-e2e-env', function () {
     .pipe(replace(
       /(\s*\"baseUrl\"\s*:\s*\").*$/m,
       '$1http://' + params.webserverHost + '",'))
-    .pipe(gulp.dest(base));
+    .pipe(gulp.dest(cwd));
 });
 
 // -------------------------------------
