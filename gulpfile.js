@@ -65,6 +65,7 @@
 // lodash.template   : The lodash method `_.template` exported as a module
 // karma             : Spectacular Test Runner for JavaScript
 // jshint-stylish    : Stylish reporter for JSHint
+// path              : Node.JS path module
 // yargs             : yargs the modern, pirate-themed, successor to optimist
 var async = require('async');
 var _execute = require('child_process').exec;
@@ -83,6 +84,7 @@ var uglify = require('gulp-uglify');
 var gutil = require('gulp-util');
 var _template = require('lodash.template');
 var Server = require('karma').Server;
+var path = require('path');
 var stylish = require('jshint-stylish');
 
 var execute = function (command, options, callback) {
@@ -112,7 +114,7 @@ var execute = function (command, options, callback) {
 // Determine the path to test/app from a given destination.
 // Truncate the remote prefix of the destination
 function getTestCwd(dest) {
-  var cwd =  (dest) ? dest.replace(/^(.)*:/, '') + '/test/app' : './test/app';
+  var cwd =  (dest) ? path.join(dest.replace(/^(.)*:/, ''), 'test/app') : './test/app';
   return cwd;
 }
 
@@ -694,7 +696,7 @@ gulp.task('build-upload', function (cb) {
     excludeFile: 'upload-exclude.txt',  // read exclude patterns from FILE
     rsh: '--rsh="ssh -v -i ' + params.uploadCredentials + '"',
     src: 'src/',
-    dest: params.dest + '/htdocs'
+    dest: path.join(params.dest, 'htdocs')
   };
 
   execute(
@@ -710,7 +712,7 @@ gulp.task('build-upload', function (cb) {
   // For E2E tests, upload test dir to destination
   if (params.dest.includes('e2etest')) {
     options.src = 'test/app/';
-    options.dest = params.dest + '/test/app';
+    options.dest = path.join(params.dest, '/test/app');
 
     execute(
       'rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
