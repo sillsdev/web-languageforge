@@ -2,69 +2,74 @@
 
 angular.module('semdomtrans.services', ['jsonRpc'])
   .service('semdomtransSetupService', ['jsonRpc',
-  function(jsonRpc) {
+  function (jsonRpc) {
     jsonRpc.connect('/api/sf');
 
-    this.createProject = function createProject(languageCode, languageName, useGoogleTranslateData, callback) {
-      jsonRpc.call('semdom_create_project', [languageCode, languageName, useGoogleTranslateData], function(result) {
-        callback(result);
-      });
-    };
+    this.createProject =
+      function createProject(languageCode, languageName, useGoogleTranslateData, callback) {
+        jsonRpc.call('semdom_create_project', [languageCode, languageName, useGoogleTranslateData],
+          function (result) {
+            callback(result);
+          });
+      };
 
     this.getOpenProjects = function getOpenProjects(callback) {
-      jsonRpc.call('semdom_get_open_projects', [], function(result) {
+      jsonRpc.call('semdom_get_open_projects', [], function (result) {
         callback(result);
       });
     };
 
     this.doesProjectExist = function doesProjectExist(languageCode, callback) {
-      jsonRpc.call('semdom_project_exists', [languageCode], function(result) {
+      jsonRpc.call('semdom_project_exists', [languageCode], function (result) {
         callback(result);
       });
     };
 
-    this.doesGoogleTranslateDataExist = function doesGoogleTranslateDataExist(languageCode, callback) {
-      jsonRpc.call('semdom_does_googletranslatedata_exist', [languageCode], function(result) {
-        callback(result);
-      });
-    };
+    this.doesGoogleTranslateDataExist =
+      function doesGoogleTranslateDataExist(languageCode, callback) {
+        jsonRpc.call('semdom_does_googletranslatedata_exist', [languageCode], function (result) {
+          callback(result);
+        });
+      };
+
   }])
   .service('semdomtransEditService', ['jsonRpc',
-  function(jsonRpc) {
+  function (jsonRpc) {
     jsonRpc.connect('/api/sf');
 
     this.dbeDtoFull = function dbeDtoFull(browserInstanceId, offset, callback) {
-      jsonRpc.call('semdom_editor_dto', [browserInstanceId, null], function(result) {
+      jsonRpc.call('semdom_editor_dto', [browserInstanceId, null], function (result) {
         callback(result);
       });
     };
 
     this.dbeDtoUpdatesOnly = function dbeDtoUpdatesOnly(browserInstanceId, timestamp, callback) {
-      jsonRpc.call('semdom_editor_dto', [browserInstanceId, timestamp], function(result) {
+      jsonRpc.call('semdom_editor_dto', [browserInstanceId, timestamp], function (result) {
         callback(result);
       });
     };
 
     this.updateTerm = function updateTerm(term, callback) {
-      jsonRpc.call('semdom_item_update', [term], function(result) {
+      jsonRpc.call('semdom_item_update', [term], function (result) {
         callback(result);
       });
     };
 
     this.updateWorkingSet = function updateWorkingSet(workingSet, callback) {
-      jsonRpc.call('semdom_workingset_update', [workingSet], function(result) {
+      jsonRpc.call('semdom_workingset_update', [workingSet], function (result) {
         callback(result);
       });
     };
 
     this.exportProject = function exportProject(callback) {
-      jsonRpc.call('semdom_export_project', [], function(result) {
+      jsonRpc.call('semdom_export_project', [], function (result) {
         callback(result);
       });
     };
   }])
-  .factory('semdomtransEditorDataService', ['$q', 'editorDataService', 'semdomtransEditService', 'sessionService', 'semdomtransOfflineCache',
-  function($q, editorDataService, api, ss, semdomCache) {
+  .factory('semdomtransEditorDataService', ['$q', 'editorDataService', 'semdomtransEditService',
+    'sessionService', 'semdomtransOfflineCache',
+  function ($q, editorDataService, api, ss, semdomCache) {
 
     editorDataService.registerEntryApi(api);
     var workingSets = [];
@@ -75,7 +80,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     function constructSemdomTree(items) {
       for (var i in items) {
         var item = items[i];
-        itemsTree[item.key] = {'content': item, 'children': [], 'parent': ''};
+        itemsTree[item.key] = { content: item, children: [], parent: '' };
         if (item.key.length >= 3) {
           itemsTree[item.key.substring(0, item.key.length - 2)].children.push(item.key);
           itemsTree[item.key].parent = item.key.substring(0, item.key.length - 2);
@@ -98,7 +103,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
      */
     function storeDataInOfflineCache(data) {
       var deferred = $q.defer();
-      semdomCache.updateWorkingSets(data).then(function() {
+      semdomCache.updateWorkingSets(data).then(function () {
         deferred.resolve();
       });
 
@@ -110,7 +115,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
      */
     function loadDataFromOfflineCache() {
       var deferred = $q.defer();
-      semdomCache.getAllWorkingSets().then(function(result) {
+      semdomCache.getAllWorkingSets().then(function (result) {
         deferred.resolve(result);
       });
 
@@ -120,10 +125,10 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     function processEditorDto(dtoResult) {
       var deferred = $q.defer();
       if (semdomCache.canCache() && workingSets.length == 0) {
-        loadDataFromOfflineCache().then(function(cacheResult) {
+        loadDataFromOfflineCache().then(function (cacheResult) {
           processWholeDto(cacheResult, dtoResult);
           deferred.resolve();
-        }, function() {
+        }, function () {
 
           processWholeDto(dtoResult);
           deferred.resolve();
@@ -191,20 +196,20 @@ angular.module('semdomtrans.services', ['jsonRpc'])
 
   }])
   .factory('semdomtransOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache',
-  function($window, $q, sessionService, offlineCache) {
+  function ($window, $q, sessionService, offlineCache) {
     var projectId = sessionService.session.project.id;
 
-    var getAllWorkingSets = function getAllWorkingSets() {
+    function getAllWorkingSets() {
       return offlineCache.getAllFromStore('workingsets', projectId);
-    };
+    }
 
-    var deleteWorkingSet = function deleteWorkingSet(id) {
+    function deleteWorkingSet(id) {
       return offlineCache.deleteObjectInStore('workingsets', id);
-    };
+    }
 
-    var updateWorkingSets = function updateWorkingSets(workingSets) {
+    function updateWorkingSets(workingSets) {
       return offlineCache.setObjectsInStore('workingsets', projectId, workingSets);
-    };
+    }
 
     return {
       canCache: offlineCache.canCache,
