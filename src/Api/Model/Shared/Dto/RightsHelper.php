@@ -311,6 +311,7 @@ class RightsHelper
             case 'lex_optionlist_update':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
+            case 'lex_uploadAudioFile':
             case 'lex_uploadImageFile':
             case 'lex_project_removeMediaFile':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);

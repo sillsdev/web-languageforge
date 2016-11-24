@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOverflow',
-  'palaso.ui.dc.formattedtext'])
+  'palaso.ui.dc.formattedtext', 'palaso.ui.dc.audio', 'lexicon.services'])
 
 // Dictionary Control Multitext
 .directive('dcMultitext', [function () {
@@ -14,8 +14,10 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
       control: '=',
       selectField: '&'
     },
-    controller: ['$scope', '$state', 'sessionService', function ($scope, $state, sessionService) {
+    controller: ['$scope', '$state', 'sessionService', 'lexUtils',
+    function ($scope, $state, sessionService, lexUtils) {
       $scope.$state = $state;
+      $scope.isAudio = lexUtils.isAudio;
       $scope.inputSystems = sessionService.session.projectSettings.config.inputSystems;
 
       $scope.inputSystemDirection = function inputSystemDirection(tag) {

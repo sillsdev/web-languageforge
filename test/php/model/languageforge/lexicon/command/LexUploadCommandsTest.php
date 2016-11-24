@@ -27,6 +27,111 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         self::$environ->cleanupTestFiles(self::$environ->project->getAssetsFolderPath());
     }
 
+    public function testUploadAudioFile_Mp3File_UploadAllowed()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $fileName = 'TestAudio.mp3';
+        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+
+        $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
+
+        $folderPath = $project->getAudioFolderPath();
+        $filePath = $folderPath . '/' . $response->data->fileName;
+        $projectSlug = $project->databaseName();
+
+        $this->assertTrue($response->result, 'Upload should succeed');
+        $this->assertRegExp("/lexicon\/$projectSlug\/audio/", $response->data->path, 'Uploaded audio file path should be in the right location');
+        $this->assertRegExp("/$fileName/", $response->data->fileName, 'Uploaded audio fileName should contain the original fileName');
+        $this->assertTrue(file_exists($filePath), 'Uploaded audio file should exist');
+    }
+
+    public function testUploadAudioFile_Mp3FileUpperCaseExt_UploadAllowed()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $fileName = 'TestAudio.MP3';
+        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . 'common/TestAudio.mp3', $fileName);
+
+        $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
+
+        $folderPath = $project->getAudioFolderPath();
+        $filePath = $folderPath . '/' . $response->data->fileName;
+
+        $this->assertTrue($response->result, 'Upload should succeed');
+        $this->assertRegExp("/$fileName/", $response->data->fileName, 'Uploaded audio fileName should contain the original fileName');
+        $this->assertRegExp("/(?<!\d)\d{14}(?!\d)/", $response->data->fileName, 'Uploaded audio fileName should have a timestamp fileName prefix');
+        $this->assertTrue(file_exists($filePath), 'Uploaded audio file should exist');
+    }
+
+    public function testUploadAudioFile_WavFile_UploadAllowed()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $fileName = 'TestAudio.wav';
+        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+
+        $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
+
+        $folderPath = $project->getAudioFolderPath();
+        $filePath = $folderPath . '/' . $response->data->fileName;
+        $projectSlug = $project->databaseName();
+
+        $this->assertTrue($response->result, 'Upload should succeed');
+        $this->assertRegExp("/lexicon\/$projectSlug\/audio/", $response->data->path, 'Uploaded audio file path should be in the right location');
+        $this->assertRegExp("/$fileName/", $response->data->fileName, 'Uploaded audio fileName should contain the original fileName');
+        $this->assertTrue(file_exists($filePath), 'Uploaded audio file should exist');
+    }
+
+    public function testUploadAudioFile_TifFile_UploadDisallowed()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . 'common/TestImage.tif', 'TestAudio.mp3');
+
+        $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
+
+        $this->assertFalse($response->result, 'Upload should fail');
+        $this->assertEquals('UserMessage', $response->data->errorType, 'Error response should be a user message');
+        $this->assertRegExp('/not an allowed audio file/', $response->data->errorMessage, 'Error message should match the error');
+
+        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . 'common/TestAudio.mp3', 'TestImage.tif');
+
+        $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
+
+        $this->assertFalse($response->result, 'Upload should fail');
+        $this->assertEquals('UserMessage', $response->data->errorType, 'Error response should be a user message');
+        $this->assertRegExp('/not an allowed audio file/', $response->data->errorMessage, 'Error message should match the error');
+    }
+
+    public function testUploadAudioFile_PreviousFile_PreviousFileDeleted()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $fileName = 'TestAudio.wav';
+        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+
+        $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
+
+        $this->assertTrue($response->result, 'Upload should succeed');
+        $_POST['previousFilename'] = $fileName;
+        $fileName = 'TestAudio.mp3';
+        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+
+        $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
+
+        $folderPath = $project->getAudioFolderPath();
+        $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
+        $projectSlug = $project->databaseName();
+        $previousFilePath = $folderPath . DIRECTORY_SEPARATOR . $_POST['previousFilename'];
+
+        $this->assertTrue($response->result, 'Upload should succeed');
+        $this->assertRegExp("/lexicon\/$projectSlug\/audio/", $response->data->path, 'Uploaded audio file path should be in the right location');
+        $this->assertRegExp("/$fileName/", $response->data->fileName, 'Uploaded audio fileName should contain the original fileName');
+        $this->assertTrue(file_exists($filePath), 'Uploaded audio file should exist');
+        $this->assertFalse(file_exists($previousFilePath), 'Previous audio file should be deleted');
+    }
+
     public function testUploadImageFile_JpgFile_UploadAllowed()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -40,10 +145,10 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $filePath = $folderPath . '/' . $response->data->fileName;
         $projectSlug = $project->databaseName();
 
-        $this->assertTrue($response->result, 'Import should succeed');
-        $this->assertRegExp("/lexicon\/$projectSlug\/pictures/", $response->data->path, 'Imported LIFT file path should be in the right location');
-        $this->assertRegExp("/$fileName/", $response->data->fileName, 'Imported LIFT fileName should contain the original fileName');
-        $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
+        $this->assertTrue($response->result, 'Upload should succeed');
+        $this->assertRegExp("/lexicon\/$projectSlug\/pictures/", $response->data->path, 'Uploaded image file path should be in the right location');
+        $this->assertRegExp("/$fileName/", $response->data->fileName, 'Uploaded image fileName should contain the original fileName');
+        $this->assertTrue(file_exists($filePath), 'Uploaded image file should exist');
     }
 
     public function testUploadImageFile_JpgFileUpperCaseExt_UploadAllowed()
@@ -58,10 +163,10 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $folderPath = $project->getImageFolderPath();
         $filePath = $folderPath . '/' . $response->data->fileName;
 
-        $this->assertTrue($response->result, 'Import should succeed');
-        $this->assertRegExp("/$fileName/", $response->data->fileName, 'Imported LIFT fileName should contain the original fileName');
-        $this->assertRegExp("/(?<!\d)\d{14}(?!\d)/", $response->data->fileName, 'Imported LIFT fileName should have a timestamp fileName prefix');
-        $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
+        $this->assertTrue($response->result, 'Upload should succeed');
+        $this->assertRegExp("/$fileName/", $response->data->fileName, 'Uploaded image fileName should contain the original fileName');
+        $this->assertRegExp("/(?<!\d)\d{14}(?!\d)/", $response->data->fileName, 'Uploaded image fileName should have a timestamp fileName prefix');
+        $this->assertTrue(file_exists($filePath), 'Uploaded image file should exist');
     }
 
     public function testUploadImageFile_TifFile_UploadDisallowed()
@@ -72,7 +177,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $this->assertFalse($response->result, 'Import should fail');
+        $this->assertFalse($response->result, 'Upload should fail');
         $this->assertEquals('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertRegExp('/not an allowed image file/', $response->data->errorMessage, 'Error message should match the error');
 
@@ -80,12 +185,35 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $this->assertFalse($response->result, 'Import should fail');
+        $this->assertFalse($response->result, 'Upload should fail');
         $this->assertEquals('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertRegExp('/not an allowed image file/', $response->data->errorMessage, 'Error message should match the error');
     }
 
-    public function testDeleteImageFile_JpgFile_FileDeleted()
+    public function testDeleteMediaFile_Mp3File_FileDeleted()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $fileName = 'TestAudio.mp3';
+        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+
+        $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
+
+        $this->assertTrue($response->result, 'Upload should succeed');
+
+        $folderPath = $project->getAudioFolderPath();
+        $fileName = $response->data->fileName;
+        $filePath = $folderPath . '/' . $fileName;
+
+        $this->assertTrue(file_exists($filePath), 'Uploaded audio file should exist');
+
+        $response = LexUploadCommands::deleteMediaFile($projectId, 'audio', $fileName);
+
+        $this->assertTrue($response->result, 'Delete should succeed');
+        $this->assertFalse(file_exists($filePath), 'Audio file should be deleted');
+    }
+
+    public function testDeleteMediaFile_JpgFile_FileDeleted()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
@@ -94,24 +222,24 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
-        $this->assertTrue($response->result, 'Import should succeed');
+        $this->assertTrue($response->result, 'Upload should succeed');
 
         $folderPath = $project->getImageFolderPath();
         $fileName = $response->data->fileName;
         $filePath = $folderPath . '/' . $fileName;
 
-        $this->assertTrue(file_exists($filePath), 'Imported LIFT file should exist');
+        $this->assertTrue(file_exists($filePath), 'Uploaded image file should exist');
 
         $response = LexUploadCommands::deleteMediaFile($projectId, 'sense-image', $fileName);
 
-        $this->assertTrue($response->result, 'Import should succeed');
-        $this->assertFalse(file_exists($filePath), 'Imported LIFT file should be deleted');
+        $this->assertTrue($response->result, 'Delete should succeed');
+        $this->assertFalse(file_exists($filePath), 'Image file should be deleted');
     }
 
     /**
      * @expectedException Exception
      */
-    public function testDeleteImageFile_UnsupportedMediaType_Exception()
+    public function testDeleteMediaFile_UnsupportedMediaType_Exception()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
@@ -121,8 +249,10 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
-    // this test is designed to finish testDeleteImageFile_UnsupportedMediaType_Exception
-    public function testDeleteImageFile_UnsupportedMediaType_RestoreErrorDisplay()
+    /**
+     * @depends testDeleteMediaFile_UnsupportedMediaType_Exception
+     */
+    public function testDeleteMediaFile_UnsupportedMediaType_RestoreErrorDisplay()
     {
         // restore error display after last test
         self::$environ->restoreErrorDisplay();

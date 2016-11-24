@@ -3,7 +3,6 @@
 module.exports = new SfProjectPage();
 
 function SfProjectPage() {
-  var _this = this;
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
@@ -27,7 +26,7 @@ function SfProjectPage() {
   // getFirstCheckbox has to be a function because the .first() method will actually resolve the
   // finder
   this.getFirstCheckbox = function () {
-    return _this.textList.first().element(by.css('input[type="checkbox"]'));
+    return this.textList.first().element(by.css('input[type="checkbox"]'));
   };
 
   // Invite-a-friend feature
@@ -55,12 +54,12 @@ function SfProjectPage() {
   };
 
   this.addNewText = function (title, usx) {
-    expect(_this.newText.showFormButton.isDisplayed()).toBe(true);
-    _this.newText.showFormButton.click();
-    browser.wait(expectedCondition.visibilityOf(_this.newText.title), CONDITION_TIMEOUT);
-    _this.newText.title.sendKeys(title);
-    _this.newText.usx.sendKeys(usx);
-    _this.newText.saveButton.click();
+    expect(this.newText.showFormButton.isDisplayed()).toBe(true);
+    this.newText.showFormButton.click();
+    browser.wait(expectedCondition.visibilityOf(this.newText.title), CONDITION_TIMEOUT);
+    this.newText.title.sendKeys(title);
+    this.newText.usx.sendKeys(usx);
+    this.newText.saveButton.click();
   };
 
 }

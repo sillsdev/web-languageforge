@@ -20,8 +20,9 @@ elif [ "$1" = "jp" ]
 else
     E2EHOSTNAME="languageforge.local"
 fi
-gulp test-e2e-run --hostname $E2EHOSTNAME ${@:2}
+gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 
 # Ensure cleanup
 gulp test-e2e-teardownTestEnvironment
 gulp test-e2e-useLiveConfig
+gulp test-restart-webserver

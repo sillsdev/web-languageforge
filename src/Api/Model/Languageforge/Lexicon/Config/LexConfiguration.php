@@ -118,7 +118,7 @@ class LexConfiguration
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::EXAMPLES_LIST;
 
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DEFINITION] = new LexConfigMultiText();
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DEFINITION]->label = 'Meaning';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DEFINITION]->label = 'Definition';
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::DEFINITION]->inputSystems[] = 'en';
 
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::POS] = new LexConfigOptionList();
@@ -138,7 +138,7 @@ class LexConfiguration
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::EXAMPLEPUBLISHIN;
 
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_SENTENCE] = new LexConfigMultiText();
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_SENTENCE]->label = 'Example';
+        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_SENTENCE]->label = 'Sentence';
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_SENTENCE]->inputSystems[] = 'th';
 
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_TRANSLATION] = new LexConfigMultiText();

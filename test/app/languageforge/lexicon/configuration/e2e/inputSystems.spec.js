@@ -54,7 +54,7 @@ describe('Configuration Input Systems', function () {
     expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addIpa).getAttribute('class'))
       .toContain('disabled');
     expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVoice).getAttribute('class'))
-      .not.toContain('disabled');
+      .toContain('disabled');
     expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVariant).getAttribute('class'))
       .not.toContain('disabled');
   });
@@ -330,7 +330,7 @@ describe('Configuration Input Systems', function () {
     expect(configPage.noticeList.count()).toBe(0);
     configPage.applyButton.click();
     expect(configPage.noticeList.count()).toBe(1);
-    expect(configPage.noticeList.get(0).getText()).toContain('configuration updated successfully');
+    expect(configPage.noticeList.get(0).getText()).toContain('Configuration updated successfully');
   });
 
 });

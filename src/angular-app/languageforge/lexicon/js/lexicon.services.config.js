@@ -4,12 +4,10 @@ angular.module('lexicon.services')
 
 // Lexicon Configuration Service
 .service('lexConfigService', ['sessionService', function (sessionService) {
-  var _this = this;
-
   this.configForUser = getConfigForUser();
 
   this.refresh = function refresh() {
-    _this.configForUser = getConfigForUser();
+    this.configForUser = getConfigForUser();
   };
 
   function getConfigForUser() {

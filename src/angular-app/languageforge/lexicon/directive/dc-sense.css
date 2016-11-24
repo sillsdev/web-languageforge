@@ -9,6 +9,12 @@
     clear:both;
 }
 
+.dc-sense label.meaning-label {
+    font-size: 120%;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
 .dc-item {
     width: 100%;
 }

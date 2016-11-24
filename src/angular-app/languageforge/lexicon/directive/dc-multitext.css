@@ -15,8 +15,12 @@ form.dc-multitext textarea {
     width: 165px;
 }
 
-form.dc-multitext label, 
-form.dc-optionlist label, 
+#lexAppCommentView form.dc-multitext .ta-editor {
+    width: 175px;
+}
+
+form.dc-multitext label,
+form.dc-optionlist label,
 form.dc-multioptionlist label,
 form.dc-semanticdomain label {
     font-weight:bold;
@@ -34,7 +38,7 @@ form.dc-multitext .uneditable-input {
     overflow: auto;
 }
 
-form.dc-multitext .uneditable-input.multiline, 
+form.dc-multitext .uneditable-input.multiline,
 form.dc-multitext textarea {
     height: 60px;
 }
@@ -69,8 +73,8 @@ form.dc-multitext .wsid {
     border: 0;
 }
 
-form.dc-multitext input[type="text"], 
-form.dc-multitext textarea, 
+form.dc-multitext input[type="text"],
+form.dc-multitext textarea,
 form.dc-multitext .uneditable-input {
     margin-top: -1px;
     margin-bottom: -1px;

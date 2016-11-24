@@ -1,6 +1,6 @@
 <div class="span5" oncopy="return false;">
     <h2 class="pull-left" data-ng-show="text.audioFileName && audioReady">
-        <a data-sgw-sound-player data-state="state" data-href="audioPlayUrl">
+        <a data-sgw-sound-player data-href="audioPlayUrl" data-sgw-state="state">
             <i data-ng-class="$parent.audioIcon()" data-tooltip="Play audio"></i></a>
         <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
             <i class="icon-download" data-tooltip="Download audio"></i></a>

@@ -4,6 +4,7 @@ require_once('e2eTestConfig.php');
 
 // use commands go here (after the e2eTestConfig)
 use Api\Library\Shared\Website;
+use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Scriptureforge\Sfchecks\Command\TextCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\QuestionTemplateCommands;
@@ -116,6 +117,16 @@ $resetUserId = UserCommands::createUser(array(
     'email' => $constants['resetEmail'],
     'username' => $constants['resetUsername'],
     'password' => $constants['memberPassword'], // intentionally set wrong password
+    'active' => true,
+    'role' => SystemRoles::USER),
+    $website
+);
+$observerUserId = UserCommands::createUser(array(
+    'id' => '',
+    'name' => $constants['observerName'],
+    'email' => $constants['observerEmail'],
+    'username' => $constants['observerUsername'],
+    'password' => $constants['observerPassword'],
     'active' => true,
     'role' => SystemRoles::USER),
     $website
@@ -256,10 +267,33 @@ if ($site == 'scriptureforge') {
         $managerUserId);
 } elseif ($site == 'languageforge') {
     // Set up LanguageForge E2E test envrionment here
+    ProjectCommands::updateUserRole($testProjectId, $observerUserId, LexRoles::OBSERVER);
     $testProjectModel = new LexProjectModel($testProjectId);
-    $testProjectModel->addInputSystem("th-fonipa", "tipa", "Thai");
+    $testProjectModel->addInputSystem('th-fonipa', 'tipa', 'Thai');
     $testProjectModel->config->entry->fields[LexConfig::LEXEME]->inputSystems[] = 'th-fonipa';
+    $testProjectModel->addInputSystem('th-Zxxx-x-audio', 'taud', 'Thai Voice');
+    $testProjectModel->config->entry->fields[LexConfig::LEXEME]->inputSystems[] = 'th-Zxxx-x-audio';
     $testProjectId = $testProjectModel->write();
+
+    // setup to mimic file upload
+    $fileName = $constants['testEntry1']['lexeme']['th-Zxxx-x-audio']['value'];
+    $file = array();
+    $file['name'] = $fileName;
+    $_FILES['file'] = $file;
+
+    // put a copy of the test file in tmp
+    $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
+    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+
+    $response = LexUploadCommands::uploadAudioFile($testProjectId, 'audio', $tmpFilePath);
+
+    // cleanup tmp file if it still exists
+    if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
+        @unlink($tmpFilePath);
+    }
+
+    // put uploaded file into entry1
+    $constants['testEntry1']['lexeme']['th-Zxxx-x-audio']['value'] = $response->data->fileName;
 
     // setup to mimic file upload
     $fileName = $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'];
@@ -302,11 +336,21 @@ if ($site == 'scriptureforge') {
 
     // put mock uploaded zip import (jpg file)
     $fileName = $constants['testMockJpgImportFile']['name'];
-    $tmpFilePath = sys_get_temp_dir() . '/' . $fileName;
+    $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
     copy(TestPath . "php/common/$fileName", $tmpFilePath);
 
     // put mock uploaded zip import (zip file)
     $fileName = $constants['testMockZipImportFile']['name'];
-    $tmpFilePath = sys_get_temp_dir() . '/' . $fileName;
+    $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+
+    // put mock uploaded audio (png file)
+    $fileName = $constants['testMockPngUploadFile']['name'];
+    $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+
+    // put mock uploaded audio (mp3 file)
+    $fileName = $constants['testMockMp3UploadFile']['name'];
+    $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
     copy(TestPath . "php/common/$fileName", $tmpFilePath);
 }
