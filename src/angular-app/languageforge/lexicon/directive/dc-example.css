@@ -6,3 +6,8 @@
 
 }
 
+.dc-example label.example-label {
+    font-size: 120%;
+    margin-left: 10px;
+    font-weight: bold;
+}

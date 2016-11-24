@@ -1,0 +1,61 @@
+<div class="dc-audio">
+    <!-- playback control -->
+    <div class="player" data-ng-show="hasAudio() && audioReady && !show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">
+        <a data-sgw-sound-player data-href="audioPlayUrl()" data-sgw-state="state" data-sgw-sound="sound">
+            <i data-ng-class="audioIcon()"></i></a>
+        <span class="audioProgress muted">{{formatTimestamp(sound.position)}} / {{formatTimestamp(sound.duration)}}</span>
+    </div>
+
+    <!-- more control -->
+    <div class="control-group" data-ng-hide="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullToSide">
+        <div data-ng-show="hasAudio()">
+            <div class="btn-group" data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()">
+                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                    data-ng-class="dcControl.interfaceConfig.pullToSide">
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu" data-ng-class="dcControl.interfaceConfig.pullToSide">
+                    <li><a data-ng-href="{{audioDownloadUrl()}}">
+                        <i class="fa fa-download"></i>{{'Download' | translate}} '{{displayFilename()}}'</a></li>
+                    <li><a data-ng-click="deleteAudio()">
+                        <i class="fa fa-remove"></i>{{'Delete' | translate}} '{{displayFilename()}}'</a></li>
+                    <li class="divider"></li>
+                    <li><a data-ng-click="show.audioUpload = true">
+                        <i class="fa fa-cloud-upload"></i>{{'Upload a replacement' | translate}}</a></li>
+                </ul>
+            </div>
+            <div data-ng-hide="$state.is('editor.entry') && dcControl.rights.canEditEntry() || !$state.is('editor.entry')">
+                <a class="btn btn-default buttonAppend" data-ng-href="{{audioDownloadUrl()}}" title="Download audio">
+                    <i class="fa fa-download"></i></a>
+            </div>
+        </div>
+        <div data-ng-hide="hasAudio()">
+            <button class="btn btn-default buttonAppend" data-ng-click="show.audioUpload = true"
+                data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()"
+                title="{{'Upload an audio file' | translate}}">
+                <i class="fa fa-cloud-upload"></i></button>
+        </div>
+    </div>
+
+    <!-- upload control -->
+    <div data-ng-show="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">
+        <div class="deleteX pull-right">
+            <i data-ng-click="show.audioUpload = false" title="Cancel Uploading Audio" class="icon-remove"
+               id="audioAddCancel"></i>
+        </div>
+        <div class="drop-box" data-ngf-drop="uploadAudio($file)" data-ngf-drag-over-class="'dragover'">
+            <h4 data-translate="Drop an audio file here"></h4>
+            <p data-translate="or if you prefer..."></p>
+            <div class="btn" id="browseButton" data-ngf-select="uploadAudio($file)" data-translate="Browse..."></div>
+        </div>
+        <div data-ngf-no-file-drop>
+            <div class="btn" ngf-select="uploadAudio($file)" data-translate="Browse..."></div>
+        </div>
+    </div>
+
+    <!-- built-in html5 playback control -->
+    <!--<div class="player" data-ng-show="hasAudio() && audioReady && !show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">-->
+        <!--<audio controls data-ngf-src="audioPlayUrl()"></audio>-->
+    <!--</div>-->
+
+    <pui-mock-upload data-pui-do-upload="uploadAudio(file)"></pui-mock-upload><!-- Used to mock file upload. Assumes file is already in the right location. TODO: This should be removed from production code! IJH 2016-11 -->
+</div>

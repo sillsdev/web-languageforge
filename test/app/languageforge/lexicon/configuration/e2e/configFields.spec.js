@@ -39,15 +39,17 @@ describe('Configuration Fields', function () {
     expect(configPage.fieldsTab.hiddenIfEmptyCheckbox.isDisplayed()).toBe(true);
     expect(configPage.fieldsTab.widthInput.isDisplayed()).toBe(true);
     expect(configPage.fieldsTab.captionHiddenIfEmptyCheckbox.isPresent()).toBe(false);
-    expect(configPage.fieldsTab.inputSystemTags.count()).toBe(3);
+    expect(configPage.fieldsTab.inputSystemTags.count()).toBe(4);
   });
 
   it('can move an Input System upwards', function () {
     expect(configPage.fieldsTab.inputSystemTags.first().getText()).toEqual('th');
     expect(configPage.fieldsTab.inputSystemTags.get(1).getText()).toEqual('tipa');
+    expect(configPage.fieldsTab.inputSystemTags.get(2).getText()).toEqual('taud');
     expect(configPage.fieldsTab.inputSystemTags.last().getText()).toEqual('en');
     expect(configPage.fieldsTab.inputSystemCheckboxes.first().isSelected()).toBe(true);
     expect(configPage.fieldsTab.inputSystemCheckboxes.get(1).isSelected()).toBe(true);
+    expect(configPage.fieldsTab.inputSystemCheckboxes.get(2).isSelected()).toBe(true);
     expect(configPage.fieldsTab.inputSystemCheckboxes.last().isSelected()).toBe(false);
     expect(configPage.fieldsTab.inputSystemUpButton.isDisplayed()).toBe(true);
     expect(configPage.fieldsTab.inputSystemUpButton.isEnabled()).toBe(false);
@@ -60,14 +62,16 @@ describe('Configuration Fields', function () {
     configPage.fieldsTab.inputSystemUpButton.click();
     expect(configPage.fieldsTab.inputSystemUpButton.isEnabled()).toBe(true);
     expect(configPage.fieldsTab.inputSystemDownButton.isEnabled()).toBe(true);
-    expect(configPage.fieldsTab.inputSystemTags.get(1).getText()).toEqual('en');
+    expect(configPage.fieldsTab.inputSystemTags.get(2).getText()).toEqual('en');
     expect(configPage.applyButton.isEnabled()).toBe(true);
+    configPage.fieldsTab.inputSystemUpButton.click();
     configPage.fieldsTab.inputSystemUpButton.click();
     expect(configPage.fieldsTab.inputSystemUpButton.isEnabled()).toBe(false);
     expect(configPage.fieldsTab.inputSystemDownButton.isEnabled()).toBe(true);
     expect(configPage.fieldsTab.inputSystemTags.first().getText()).toEqual('en');
     expect(configPage.fieldsTab.inputSystemTags.get(1).getText()).toEqual('th');
-    expect(configPage.fieldsTab.inputSystemTags.last().getText()).toEqual('tipa');
+    expect(configPage.fieldsTab.inputSystemTags.get(2).getText()).toEqual('tipa');
+    expect(configPage.fieldsTab.inputSystemTags.last().getText()).toEqual('taud');
   });
 
   it('can move an Input System downwards', function () {
@@ -77,10 +81,12 @@ describe('Configuration Fields', function () {
     expect(configPage.fieldsTab.inputSystemTags.get(1).getText()).toEqual('en');
     expect(configPage.applyButton.isEnabled()).toBe(true);
     configPage.fieldsTab.inputSystemDownButton.click();
+    configPage.fieldsTab.inputSystemDownButton.click();
     expect(configPage.fieldsTab.inputSystemUpButton.isEnabled()).toBe(true);
     expect(configPage.fieldsTab.inputSystemDownButton.isEnabled()).toBe(false);
     expect(configPage.fieldsTab.inputSystemTags.first().getText()).toEqual('th');
     expect(configPage.fieldsTab.inputSystemTags.get(1).getText()).toEqual('tipa');
+    expect(configPage.fieldsTab.inputSystemTags.get(2).getText()).toEqual('taud');
     expect(configPage.fieldsTab.inputSystemTags.last().getText()).toEqual('en');
   });
 
@@ -88,7 +94,7 @@ describe('Configuration Fields', function () {
     expect(configPage.noticeList.count()).toBe(0);
     configPage.applyButton.click();
     expect(configPage.noticeList.count()).toBe(1);
-    expect(configPage.noticeList.get(0).getText()).toContain('configuration updated successfully');
+    expect(configPage.noticeList.get(0).getText()).toContain('Configuration updated successfully');
   });
 
   describe('Add a new Custom Field modal', function () {
@@ -204,25 +210,27 @@ describe('Configuration Fields', function () {
   // this regression test added because the code has been fixed at least once before. IJH 2016-05
   it('does not regress Input System selection', function () {
     configPage.showAllFieldsButton.click();
-    configPage.getFieldByName('Example').click();
-    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Example Field Setup');
+    configPage.getFieldByName('Sentence').click();
+    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Sentence Field Setup');
     configPage.getFieldByName('Translation').click();
     expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Translation Field Setup');
     configPage.getFieldByName('Literal Meaning').click();
     expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Literal Meaning Field Setup');
     expect(configPage.fieldsTab.inputSystemTags.first().getText()).toEqual('en');
     expect(configPage.fieldsTab.inputSystemTags.get(1).getText()).toEqual('th');
-    expect(configPage.fieldsTab.inputSystemTags.last().getText()).toEqual('tipa');
+    expect(configPage.fieldsTab.inputSystemTags.get(2).getText()).toEqual('tipa');
+    expect(configPage.fieldsTab.inputSystemTags.last().getText()).toEqual('taud');
     expect(configPage.fieldsTab.inputSystemCheckboxes.first().isSelected()).toBe(true);
     expect(configPage.fieldsTab.inputSystemCheckboxes.get(1).isSelected()).toBe(false);
     expect(configPage.fieldsTab.inputSystemCheckboxes.last().isSelected()).toBe(false);
-    configPage.getFieldByName('Example').click();
-    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Example Field Setup');
+    configPage.getFieldByName('Sentence').click();
+    expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Sentence Field Setup');
     configPage.getFieldByName('Literal Meaning').click();
     expect(configPage.fieldsTab.fieldSetupLabel.getText()).toEqual('Literal Meaning Field Setup');
     expect(configPage.fieldsTab.inputSystemTags.first().getText()).toEqual('en');
     expect(configPage.fieldsTab.inputSystemTags.get(1).getText()).toEqual('th');
-    expect(configPage.fieldsTab.inputSystemTags.last().getText()).toEqual('tipa');
+    expect(configPage.fieldsTab.inputSystemTags.get(2).getText()).toEqual('tipa');
+    expect(configPage.fieldsTab.inputSystemTags.last().getText()).toEqual('taud');
     expect(configPage.fieldsTab.inputSystemCheckboxes.first().isSelected()).toBe(true);
     expect(configPage.fieldsTab.inputSystemCheckboxes.get(1).isSelected()).toBe(false);
     expect(configPage.fieldsTab.inputSystemCheckboxes.last().isSelected()).toBe(false);

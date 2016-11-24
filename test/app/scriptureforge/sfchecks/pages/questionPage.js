@@ -10,7 +10,6 @@ module.exports = new SfQuestionPage;
  */
 function SfQuestionPage() {
   var util = require('../../../bellows/pages/util.js');
-  var _this = this;
 
   this.answers  = {};
   this.comments = {};
@@ -20,13 +19,13 @@ function SfQuestionPage() {
 
   // Return the handle to the last answer in the list
   this.answers.last = function () {
-    return _this.answers.list.last();
-  };
+    return this.answers.list.last();
+  }.bind(this);
 
   // Return the handle to the last comment in the list
   this.comments.last = function () {
-    return _this.comments.list.last();
-  };
+    return this.comments.list.last();
+  }.bind(this);
 
   // Add new answer to the end of the answers list
   this.answers.add = function (answer) {
@@ -43,52 +42,52 @@ function SfQuestionPage() {
 
   // Edit last answer
   this.answers.edit = function (answer) {
-    this.editCtrl     = _this.answers.last().$('.answer').element(by.linkText('edit'));
+    this.editCtrl = this.answers.last().$('.answer').element(by.linkText('edit'));
 
     // Clicking 'edit' changes the DOM so these handles are updated here
     this.editCtrl.click();
-    var answersField = _this.answers.last().$('.answer').$('textarea.editAnswer');
-    var saveCtrl     = _this.answers.last().$('.answerBtn');
+    var answersField = this.answers.last().$('.answer').$('textarea.editAnswer');
+    var saveCtrl = this.answers.last().$('.answerBtn');
 
     answersField.sendKeys(protractor.Key.CONTROL, 'a');
     answersField.sendKeys(answer);
     answersField.sendKeys(protractor.Key.TAB);
 
     saveCtrl.click();
-  };
+  }.bind(this);
 
   // Delete the answer at index.  If no index given, delete the last answer.
   // Note: "delete" is a reserved word, and
   // the functionality will be moved to "archive" at a later time
   this.answers.archive = function (index) {
     if (index === '') {
-      _this.answers.last().$('.answer').element(by.linkText('delete')).click();
+      this.answers.last().$('.answer').element(by.linkText('delete')).click();
     } else {
       //console.log('should delete answer at index ' + index);
-      _this.answers.list.get(index).$('.answer').element(by.linkText('delete')).click();
+      this.answers.list.get(index).$('.answer').element(by.linkText('delete')).click();
     }
 
     util.clickModalButton('Delete');
-  };
+  }.bind(this);
 
   // Flag for Export
   this.answers.flags = {};
   this.answers.flags.lastButtonSet = function () {
-    return _this.answers.last().$('.answer').element(by.css('.icon-flag'));
-  };
+    return this.answers.last().$('.answer').element(by.css('.icon-flag'));
+  }.bind(this);
 
   this.answers.flags.lastButtonClear = function () {
-    return _this.answers.last().$('.answer').element(by.css('.icon-flag-alt'));
-  };
+    return this.answers.last().$('.answer').element(by.css('.icon-flag-alt'));
+  }.bind(this);
 
   // Private method to handle the upvote or downvote of an answer.
   // index: index of the answers.list to vote
   // direction: 0=upvote, 1=downvote
   var vote = function (index, direction) {
-    _this.answers.list.get(index).$('.vote').$$('a').then(function (voteCtrls) {
+    this.answers.list.get(index).$('.vote').$$('a').then(function (voteCtrls) {
       voteCtrls[direction].click();
     });
-  };
+  }.bind(this);
 
   // Upvote the answer at the index of answers.list
   this.answers.upvote = function (index) {
@@ -102,9 +101,9 @@ function SfQuestionPage() {
 
   // Add a comment to the last (most recent) Answer on the page
   this.comments.addToLastAnswer = function (comment) {
-    this.addCommentCtrl = _this.answers.last().$('table.comments').$('a.addCommentLink');
-    this.commentField   = _this.answers.last().element(by.model('newComment.content'));
-    this.submit         = _this.answers.last().$('button.btn-small');
+    this.addCommentCtrl = SfQuestionPage.answers.last().$('table.comments').$('a.addCommentLink');
+    this.commentField   = SfQuestionPage.answers.last().element(by.model('newComment.content'));
+    this.submit         = SfQuestionPage.answers.last().$('button.btn-small');
 
     // Click "add comment" at the end of the Answers list to un-collapse the comment text area.
     this.addCommentCtrl.click();
@@ -121,13 +120,13 @@ function SfQuestionPage() {
 
   // Edit the last comment.  Comments are interspersed with the answers
   this.comments.edit = function (comment) {
-    this.editCtrl     = _this.comments.last().element(by.linkText('edit'));
+    this.editCtrl     = SfQuestionPage.comments.last().element(by.linkText('edit'));
 
     this.editCtrl.click();
 
     // Clicking 'edit' changes the DOM so these handles are updated here
-    var commentsField = _this.comments.last().$('textarea');
-    var saveCtrl      = _this.comments.last().element(by.partialButtonText('Save'));
+    var commentsField = SfQuestionPage.comments.last().$('textarea');
+    var saveCtrl      = SfQuestionPage.comments.last().element(by.partialButtonText('Save'));
 
     commentsField.sendKeys(protractor.Key.CONTROL, 'a');
     commentsField.sendKeys(comment);
@@ -142,10 +141,10 @@ function SfQuestionPage() {
   // the functionality will be moved to "archive" at a later time
   this.comments.archive = function (index) {
     if (index === '') {
-      _this.comments.last().element(by.linkText('delete')).click();
+      SfQuestionPage.comments.last().element(by.linkText('delete')).click();
     } else {
       //console.log('should delete comment at index ' + index);
-      _this.comments.list.get(index).element(by.linkText('delete')).click();
+      SfQuestionPage.comments.list.get(index).element(by.linkText('delete')).click();
     }
 
     util.clickModalButton('Delete');

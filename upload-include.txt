@@ -1,0 +1,5 @@
+# specific files to include
+/assets/index.html
+
+# patterns to include
+/angular-app/**/*.min.js

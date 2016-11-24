@@ -53,12 +53,12 @@ class Upload extends Base
                 } elseif ($appType == 'lf-lexicon') {
                     $api = new Sf($app);
                     switch ($mediaType) {
-                        case 'import-zip':
-                            $api->checkPermissions('lex_upload_importProjectZip', array(
+                        case 'audio':
+                            $api->checkPermissions('lex_uploadAudioFile', array(
                                 $mediaType,
                                 $tmpFilePath
                             ));
-                            $response = $api->lex_upload_importProjectZip($mediaType, $tmpFilePath);
+                            $response = $api->lex_uploadAudioFile($mediaType, $tmpFilePath);
                             break;
                         case 'sense-image':
                             $api->checkPermissions('lex_uploadImageFile', array(
@@ -66,6 +66,13 @@ class Upload extends Base
                                 $tmpFilePath
                             ));
                             $response = $api->lex_uploadImageFile($mediaType, $tmpFilePath);
+                            break;
+                        case 'import-zip':
+                            $api->checkPermissions('lex_upload_importProjectZip', array(
+                                $mediaType,
+                                $tmpFilePath
+                            ));
+                            $response = $api->lex_upload_importProjectZip($mediaType, $tmpFilePath);
                             break;
                         case 'import-lift':
                             $api->checkPermissions('lex_upload_importLift', array(

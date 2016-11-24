@@ -47,10 +47,9 @@ describe('Editor List and Entry', function () {
     expect(editorPage.edit.getEntryCount()).toBe(3);
   });
 
-  it('word 1: edit page has correct meaning, part of speech', function () {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
-      { en: constants.testEntry1.senses[0].definition.en.value }, ''
+  it('word 1: edit page has correct definition, part of speech', function () {
+    expect(editorPage.edit.getFieldValues('Definition')).toEqual([
+      { en: constants.testEntry1.senses[0].definition.en.value }
     ]);
     expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
       editorUtil.expandPartOfSpeech(constants.testEntry1.senses[0].partOfSpeech.value)
@@ -76,7 +75,7 @@ describe('Editor List and Entry', function () {
   });
 
   it('citation form field overrides lexeme form in dictionary citation view', function () {
-    editorPage.edit.showUncommonFields();
+    editorPage.edit.showHiddenFields();
     var citationFormMultiTextInputs = editorPage.edit.getMultiTextInputs('Citation Form');
     editorPage.edit.selectElement.sendKeys(citationFormMultiTextInputs.first(), 'citation form');
     expect(editorPage.edit.renderedDiv.getText()).toContain('citation form');
@@ -89,7 +88,7 @@ describe('Editor List and Entry', function () {
     expect(editorPage.edit.renderedDiv.getText()).toContain(constants.testEntry1.lexeme.th.value);
     expect(editorPage.edit.renderedDiv.getText())
       .toContain(constants.testEntry1.lexeme['th-fonipa'].value);
-    editorPage.edit.hideUncommonFields();
+    editorPage.edit.hideHiddenFields();
   });
 
   it('one picture and caption is present', function () {
@@ -129,7 +128,7 @@ describe('Editor List and Entry', function () {
   it('caption is hidden when empty if "Hidden if empty" is set in config', function () {
     util.clickBreadcrumb(constants.testProjectName);
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
-    editorPage.edit.hideUncommonFields();
+    editorPage.edit.hideHiddenFields();
     expect(editorPage.edit.pictures.captions.first().isDisplayed()).toBe(true);
     editorPage.edit.selectElement.clear(editorPage.edit.pictures.captions.first());
     expect(editorPage.edit.pictures.captions.count()).toBe(0);
@@ -169,14 +168,45 @@ describe('Editor List and Entry', function () {
     configPage.applyButton.click();
   });
 
-  it('while Show All Fields has not been clicked, Pictures field is hidden', function () {
+  it('while Show Hidden Fields has not been clicked, Pictures field is hidden', function () {
     util.clickBreadcrumb(constants.testProjectName);
     editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     expect(editorPage.edit.getFields('Pictures').count()).toBe(0);
-    editorPage.edit.showUncommonFields();
+    editorPage.edit.showHiddenFields();
     expect(editorPage.edit.pictures.list.isPresent()).toBe(true);
-    editorPage.edit.hideUncommonFields();
+    editorPage.edit.hideHiddenFields();
     expect(editorPage.edit.getFields('Pictures').count()).toBe(0);
+  });
+
+  it('audio Input System is present, playable and has "more" control (manager)', function () {
+    expect(editorPage.edit.audio.playerIcons('Word').count()).toEqual(1);
+    expect(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.playerIcons('Word').first().getAttribute('class'))
+      .toContain('fa-play');
+    expect(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.players('Word').first().isEnabled()).toBe(true);
+    expect(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.moreControls('Word').first().isEnabled()).toBe(true);
+    expect(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(false);
+  });
+
+  it('file upload drop box is displayed when Upload is clicked', function () {
+    expect(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(false);
+    editorPage.edit.audio.moreControls('Word').first().click();
+    editorPage.edit.audio.moreUpload('Word', 0).click();
+    expect(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(true);
+  });
+
+  it('file upload drop box is not displayed when Cancel Uploading Audio is clicked', function () {
+    expect(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(true);
+    editorPage.edit.audio.uploadCancelButtons('Word').first().click();
+    expect(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(false);
   });
 
   it('click on second word (found by definition)', function () {
@@ -184,26 +214,181 @@ describe('Editor List and Entry', function () {
       .click();
   });
 
-  it('word 2: edit page has correct meaning, part of speech', function () {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
-      { en: constants.testEntry2.senses[0].definition.en.value }, ''
+  it('word 2: audio Input System is not playable but has "upload" button (manager)', function () {
+    expect(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.uploadButtons('Word').first().isEnabled()).toBe(true);
+    expect(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(false);
+  });
+
+  it('login as member, click on first word', function () {
+    loginPage.loginAsMember();
+    projectsPage.get();
+    projectsPage.clickOnProject(constants.testProjectName);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+  });
+
+  it('audio Input System is present, playable and has "more" control (member)', function () {
+    expect(editorPage.edit.audio.playerIcons('Word').count()).toEqual(1);
+    expect(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.playerIcons('Word').first().getAttribute('class'))
+      .toContain('fa-play');
+    expect(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.players('Word').first().isEnabled()).toBe(true);
+    expect(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.moreControls('Word').first().isEnabled()).toBe(true);
+    expect(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(false);
+  });
+
+  it('click on second word (found by definition)', function () {
+    editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value)
+      .click();
+  });
+
+  it('word 2: audio Input System is not playable but has "upload" button (member)', function () {
+    expect(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.uploadButtons('Word').first().isEnabled()).toBe(true);
+    expect(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(false);
+  });
+
+  it('login as observer, click on first word', function () {
+    loginPage.loginAsObserver();
+    projectsPage.get();
+    projectsPage.clickOnProject(constants.testProjectName);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+  });
+
+  it('audio Input System is playable but does not have "more" control (observer)', function () {
+    expect(editorPage.edit.audio.playerIcons('Word').count()).toEqual(1);
+    expect(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.playerIcons('Word').first().getAttribute('class'))
+      .toContain('fa-play');
+    expect(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.players('Word').first().isEnabled()).toBe(true);
+    expect(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(true);
+  });
+
+  it('click on second word (found by definition)', function () {
+    editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value)
+      .click();
+  });
+
+  it('word 2: audio Input System is not playable and does not have "upload" button (observer)',
+    function () {
+      expect(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(false);
+      expect(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(false);
+      expect(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(false);
+      expect(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(false);
+      expect(editorPage.edit.audio.downloadButtons('Word').first().isDisplayed()).toBe(false);
+    });
+
+  it('login as manager, click on first word', function () {
+    loginPage.loginAsManager();
+    projectsPage.get();
+    projectsPage.clickOnProject(constants.testProjectName);
+    editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
+  });
+
+  it('can delete audio Input System', function () {
+    expect(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
+    editorPage.edit.audio.moreControls('Word').first().click();
+    editorPage.edit.audio.moreDelete('Word', 0).click();
+    util.clickModalButton('Delete Audio');
+    expect(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(true);
+  });
+
+  it('file upload drop box is displayed when Upload is clicked', function () {
+    expect(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(false);
+    editorPage.edit.audio.uploadButtons('Word').first().click();
+    expect(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(true);
+  });
+
+  it('file upload drop box is not displayed when Cancel Uploading Audio is clicked', function () {
+    expect(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(true);
+    editorPage.edit.audio.uploadCancelButtons('Word').first().click();
+    expect(editorPage.edit.audio.uploadButtons('Word').first().isDisplayed()).toBe(true);
+    expect(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(false);
+    expect(editorPage.edit.audio.uploadCancelButtons('Word').first().isDisplayed()).toBe(false);
+  });
+
+  describe('Mock file upload', function () {
+
+    it('can\'t upload a non-audio file', function () {
+      expect(editorPage.noticeList.count()).toBe(0);
+      editorPage.edit.audio.uploadButtons('Word').first().click();
+      editorPage.edit.audio.control('Word', 0).mockUpload.enableButton.click();
+      expect(editorPage.edit.audio.control('Word', 0).mockUpload.fileNameInput.isDisplayed())
+        .toBe(true);
+      editorPage.edit.audio.control('Word', 0).mockUpload.fileNameInput
+        .sendKeys(constants.testMockPngUploadFile.name);
+      editorPage.edit.audio.control('Word', 0).mockUpload.fileSizeInput
+        .sendKeys(constants.testMockPngUploadFile.size);
+      editorPage.edit.audio.control('Word', 0).mockUpload.uploadButton.click();
+      expect(editorPage.noticeList.count()).toBe(1);
+      expect(editorPage.noticeList.first().getText())
+        .toContain(constants.testMockPngUploadFile.name +
+          ' is not an allowed audio file. Ensure the file is');
+      expect(editorPage.edit.audio.uploadDropBoxes('Word').first().isDisplayed()).toBe(true);
+      editorPage.edit.audio.control('Word', 0).mockUpload.fileNameInput.clear();
+      editorPage.edit.audio.control('Word', 0).mockUpload.fileSizeInput.clear();
+      editorPage.firstNoticeCloseButton.click();
+    });
+
+    it('can upload an audio file', function () {
+      expect(editorPage.noticeList.count()).toBe(0);
+      editorPage.edit.audio.control('Word', 0).mockUpload.fileNameInput
+        .sendKeys(constants.testMockMp3UploadFile.name);
+      editorPage.edit.audio.control('Word', 0).mockUpload.fileSizeInput
+        .sendKeys(constants.testMockMp3UploadFile.size);
+      editorPage.edit.audio.control('Word', 0).mockUpload.uploadButton.click();
+      editorPage.edit.audio.control('Word', 0).mockUpload.enableButton.click();
+      expect(editorPage.noticeList.count()).toBe(1);
+      expect(editorPage.noticeList.first().getText()).toContain('File uploaded successfully');
+      expect(editorPage.edit.audio.playerIcons('Word').first().isDisplayed()).toBe(true);
+      expect(editorPage.edit.audio.playerIcons('Word').first().getAttribute('class'))
+        .toContain('fa-play');
+      expect(editorPage.edit.audio.players('Word').first().isDisplayed()).toBe(true);
+      expect(editorPage.edit.audio.players('Word').first().isEnabled()).toBe(true);
+      expect(editorPage.edit.audio.moreControls('Word').first().isDisplayed()).toBe(true);
+    });
+
+  });
+
+  it('click on second word (found by definition)', function () {
+    editorPage.edit.findEntryByDefinition(constants.testEntry2.senses[0].definition.en.value)
+      .click();
+  });
+
+  it('word 2: edit page has correct definition, part of speech', function () {
+    expect(editorPage.edit.getFieldValues('Definition')).toEqual([
+      { en: constants.testEntry2.senses[0].definition.en.value }
     ]);
     expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
       editorUtil.expandPartOfSpeech(constants.testEntry2.senses[0].partOfSpeech.value)
     ]);
   });
 
-  it('setup: click on word with multiple meanings (found by lexeme)', function () {
+  it('setup: click on word with multiple definitions (found by lexeme)', function () {
     editorPage.edit.findEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value).click();
     editorPage.edit.senses.first().click();
   });
 
-  it('word with multiple meanings: edit page has correct meanings, parts of speech', function () {
-    // Empty array elements are a work-around for getFieldValues after SemDom directive added. IJH
-    expect(editorPage.edit.getFieldValues('Meaning')).toEqual([
-      { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value }, '',
-      { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value }, ''
+  it('word with multiple definitions: edit page has correct definitions, parts of speech',
+  function () {
+    expect(editorPage.edit.getFieldValues('Definition')).toEqual([
+      { en: constants.testMultipleMeaningEntry1.senses[0].definition.en.value },
+      { en: constants.testMultipleMeaningEntry1.senses[1].definition.en.value }
     ]);
     expect(editorPage.edit.getFieldValues('Part of Speech')).toEqual([
       editorUtil
@@ -213,11 +398,14 @@ describe('Editor List and Entry', function () {
     ]);
   });
 
-  it('word with multiple meanings: edit page has correct examples, translations', function () {
-    expect(editorPage.edit.getFieldValues('Example')).toEqual([
-      { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
+  it('word with multiple meanings: edit page has correct example sentences, translations',
+  function () {
+
+    // Empty array elements are a work-around for getFieldValues after SemDom directive added. DDW
+    expect(editorPage.edit.getFieldValues('Sentence')).toEqual([
+      '', { th: constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value },
-      { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
+      '', { th: constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value },
       { th: constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value }
     ]);
     expect(editorPage.edit.getFieldValues('Translation')).toEqual([
@@ -228,11 +416,11 @@ describe('Editor List and Entry', function () {
     ]);
   });
 
-  it('while Show All Fields has not been clicked, uncommon fields are hidden if they are empty',
+  it('while Show Hidden Fields has not been clicked, hidden fields are hidden if they are empty',
   function () {
     expect(editorPage.edit.getFields('Semantics Note').count()).toBe(0);
     expect(editorPage.edit.getOneField('General Note').isPresent()).toBe(true);
-    editorPage.edit.showUncommonFields();
+    editorPage.edit.showHiddenFields();
     expect(editorPage.edit.getOneField('Semantics Note').isPresent()).toBe(true);
     expect(editorPage.edit.getOneField('General Note').isPresent()).toBe(true);
   });
@@ -264,9 +452,9 @@ describe('Editor List and Entry', function () {
 
   it('modify new word', function () {
     var word    = constants.testEntry3.lexeme.th.value;
-    var meaning = constants.testEntry3.senses[0].definition.en.value;
+    var definition = constants.testEntry3.senses[0].definition.en.value;
     editorPage.edit.getMultiTextInputs('Word').first().sendKeys(word);
-    editorPage.edit.getMultiTextInputs('Meaning').first().sendKeys(meaning);
+    editorPage.edit.getMultiTextInputs('Definition').first().sendKeys(definition);
     util.clickDropdownByValue(editorPage.edit.getOneField('Part of Speech').$('select'),
       'Noun \\(n\\)');
     editorPage.edit.saveBtn.click();
@@ -282,47 +470,50 @@ describe('Editor List and Entry', function () {
       expect(editorPage.edit.getOneField('Semantic Domain').isPresent()).toBeTruthy();
     });
 
-  describe('Dictionary Configuration check', function () {
+  describe('Configuration check', function () {
 
-    it('Word has only "th" and "tipa" visible', function () {
-      expect(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(2);
+    it('Word has only "th", "tipa" and "taud" visible', function () {
+      expect(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(3);
       expect(editorPage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
       expect(editorPage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
+      expect(editorPage.edit.getMultiTextInputSystems('Word').get(2).getText()).toEqual('taud');
     });
 
     it('make "en" input system visible for "Word" field', function () {
       configPage.get();
       configPage.getTabByName('Fields').click();
       configPage.getFieldByName('Word').click();
-      expect(configPage.fieldsTab.inputSystemTags.get(2).getText()).toEqual('en');
-      util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(2), true);
+      expect(configPage.fieldsTab.inputSystemTags.get(3).getText()).toEqual('en');
+      util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(3), true);
       configPage.applyButton.click();
       util.clickBreadcrumb(constants.testProjectName);
       editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     });
 
-    it('Word has "th", "tipa" and "en" visible', function () {
-      expect(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(3);
+    it('Word has "th", "tipa", "taud" and "en" visible', function () {
+      expect(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(4);
       expect(editorPage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
       expect(editorPage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
-      expect(editorPage.edit.getMultiTextInputSystems('Word').get(2).getText()).toEqual('en');
+      expect(editorPage.edit.getMultiTextInputSystems('Word').get(2).getText()).toEqual('taud');
+      expect(editorPage.edit.getMultiTextInputSystems('Word').get(3).getText()).toEqual('en');
     });
 
     it('make "en" input system invisible for "Word" field', function () {
       configPage.get();
       configPage.getTabByName('Fields').click();
       configPage.getFieldByName('Word').click();
-      expect(configPage.fieldsTab.inputSystemTags.get(2).getText()).toEqual('en');
-      util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(2), false);
+      expect(configPage.fieldsTab.inputSystemTags.get(3).getText()).toEqual('en');
+      util.setCheckbox(configPage.fieldsTab.inputSystemCheckboxes.get(3), false);
       configPage.applyButton.click();
       util.clickBreadcrumb(constants.testProjectName);
       editorPage.browse.findEntryByLexeme(constants.testEntry1.lexeme.th.value).click();
     });
 
-    it('Word has only "th" and "tipa" visible', function () {
-      expect(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(2);
+    it('Word has only "th", "tipa" and "taud" visible', function () {
+      expect(editorPage.edit.getMultiTextInputSystems('Word').count()).toEqual(3);
       expect(editorPage.edit.getMultiTextInputSystems('Word').get(0).getText()).toEqual('th');
       expect(editorPage.edit.getMultiTextInputSystems('Word').get(1).getText()).toEqual('tipa');
+      expect(editorPage.edit.getMultiTextInputSystems('Word').get(2).getText()).toEqual('taud');
     });
 
   });
@@ -372,4 +563,3 @@ describe('Editor List and Entry', function () {
     expect(editorPage.edit.getFirstLexeme()).toEqual(constants.testEntry1.lexeme.th.value);
   });
 });
-
