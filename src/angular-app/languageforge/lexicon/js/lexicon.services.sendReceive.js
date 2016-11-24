@@ -26,29 +26,28 @@ angular.module('lexicon.services')
     };
   }])
   .service('lexSendReceive', ['sessionService', 'silNoticeService', 'lexSendReceiveApi',
-    '$interval',
-    function (sessionService, notice, sendReceiveApi, $interval) {
-      var _this = this;
-      var projectSettings = sessionService.session.projectSettings;
-      var syncProjectStatusSuccessCallback = angular.noop;
-      var pollProjectStatusSuccessCallback = angular.noop;
-      var cloneProjectStatusSuccessCallback = angular.noop;
-      var syncStatusTimer;
-      var pollStatusTimer;
-      var cloneStatusTimer;
-      var pendingMessageId;
-
-      // Constants
-      var syncStatusInterval = 3000; // ms
-      var pollStatusInterval = 32000; // ms
-      var cloneStatusInterval = 3000; // ms
-      var unknownSRState = 'LF_CHECK';
+    '$interval', 'lexEditorDataService',
+    function (sessionService, notice, sendReceiveApi, $interval, editorData) {
+      const syncStatusInterval = 3000; // ms
+      const pollUpdateInterval = 32000; // ms
+      const cloneStatusInterval = 3000; // ms
+      const unknownSRState = 'LF_CHECK';
 
       var status = undefined;
       var previousSRState = unknownSRState;
+      var projectSettings = sessionService.session.projectSettings;
+      var syncProjectStatusSuccessCallback = angular.noop;
+      var pollUpdateSuccessCallback = angular.noop;
+      var cloneProjectStatusSuccessCallback = angular.noop;
+      var syncStatusTimer;
+      var pollUpdateTimer;
+      var cloneStatusTimer;
+      var pendingMessageId;
+
       if (angular.isDefined(projectSettings) &&
-          angular.isDefined(projectSettings.sendReceive) &&
-          angular.isDefined(projectSettings.sendReceive.status)) {
+        angular.isDefined(projectSettings.sendReceive) &&
+        angular.isDefined(projectSettings.sendReceive.status)
+      ) {
         status = projectSettings.sendReceive.status;
         previousSRState = status.SRState;
       }
@@ -64,7 +63,7 @@ angular.module('lexicon.services')
 
       // SRState is CLONING / SYNCING
       this.isInProgress = function isInProgress() {
-        return (_this.isSendReceiveProject() &&
+        return (this.isSendReceiveProject() &&
           angular.isDefined(status) && angular.isDefined(status.SRState) &&
           (status.SRState == 'CLONING' || status.SRState == 'LF_CLONING' ||
           status.SRState == 'SYNCING'));
@@ -72,7 +71,7 @@ angular.module('lexicon.services')
 
       // S/R isInProgress(), SRState is unknown, or SRState is PENDING
       this.isStarted = function isStarted() {
-        return _this.isInProgress() || (_this.isSendReceiveProject() && angular.isDefined(status) &&
+        return this.isInProgress() || (this.isSendReceiveProject() && angular.isDefined(status) &&
           angular.isDefined(status.SRState) &&
           (status.SRState == unknownSRState || status.SRState == 'PENDING'));
       };
@@ -88,20 +87,22 @@ angular.module('lexicon.services')
 
       // Called after a lexicon project page is done loading
       this.checkInitialState = function checkInitialState() {
-        if (_this.isSendReceiveProject()) {
+        if (this.isSendReceiveProject()) {
           if (!status || angular.isUndefined(status)) {
-            _this.clearState();
+            this.clearState();
             getSyncProjectStatus();
-            _this.startSyncStatusTimer();
-          } else if (_this.isInProgress()) {
-            _this.setSyncStarted();
+            this.startSyncStatusTimer();
+          } else if (this.isInProgress()) {
+            this.setSyncStarted();
           } else {
             if (status.SRState == unknownSRState) {
-              _this.clearState();
+              this.clearState();
             }
 
-            _this.startPollStatusTimer();
+            this.startPollUpdateTimer();
           }
+        } else {
+          this.startPollUpdateTimer();
         }
       };
 
@@ -110,22 +111,22 @@ angular.module('lexicon.services')
 
         // TODO: Remove this loading notice and display when we determine the real initial state
         notice.setLoading('If server available, synchronizing with LanguageDepot.org...');
-        _this.startSyncStatusTimer();
+        this.startSyncStatusTimer();
       };
 
       this.setStateUnsynced = function setStateUnsynced() {
-        if (_this.isSendReceiveProject()) {
+        if (this.isSendReceiveProject()) {
           previousSRState = status.SRState;
           status.SRState = 'LF_UNSYNCED';
         }
       };
 
-      function getSyncProjectStatus() {
+      var getSyncProjectStatus = function () {
         sendReceiveApi.getProjectStatus(function (result) {
           if (result.ok) {
             if (!result.data) {
-              _this.clearState();
-              _this.startPollStatusTimer();
+              this.clearState();
+              this.startPollUpdateTimer();
               notice.cancelLoading();
               return;
             }
@@ -139,8 +140,8 @@ angular.module('lexicon.services')
               notice.cancelProgressBar();
             }
 
-            if (!_this.isInProgress()) {
-              _this.startPollStatusTimer();
+            if (!this.isInProgress()) {
+              this.startPollUpdateTimer();
               notice.cancelLoading();
             }
 
@@ -169,12 +170,12 @@ angular.module('lexicon.services')
                 break;
             }
           }
-        });
-      }
+        }.bind(this));
+      }.bind(this);
 
       this.startSyncStatusTimer = function startSyncStatusTimer() {
-        _this.cancelPollStatusTimer();
-        _this.cancelCloneStatusTimer();
+        this.cancelPollUpdateTimer();
+        this.cancelCloneStatusTimer();
         if (angular.isDefined(syncStatusTimer)) return;
 
         syncStatusTimer = $interval(getSyncProjectStatus, syncStatusInterval);
@@ -214,45 +215,51 @@ angular.module('lexicon.services')
         }
       };
 
-      this.setPollProjectStatusSuccessCallback =
-        function setPollProjectStatusSuccessCallback(callback) {
-          pollProjectStatusSuccessCallback = callback;
-        };
-
-      function getPollProjectStatus() {
-        sendReceiveApi.getProjectStatus(function (result) {
-          if (result.ok) {
-            if (!result.data) {
-              _this.clearState();
-              return;
-            }
-
-            previousSRState = status.SRState;
-            status = result.data;
-            if (_this.isInProgress()) {
-              (pollProjectStatusSuccessCallback || angular.noop)();
-              _this.setSyncStarted();
-            } else if (previousSRState == 'LF_UNSYNCED' && status.SRState == 'IDLE') {
-              status.SRState = previousSRState;
-            } else if (previousSRState == unknownSRState) {
-              _this.clearState();
-            }
-          }
-        });
-      }
-
-      this.startPollStatusTimer = function startPollStatusTimer() {
-        _this.cancelSyncStatusTimer();
-        _this.cancelCloneStatusTimer();
-        if (angular.isDefined(pollStatusTimer)) return;
-
-        pollStatusTimer = $interval(getPollProjectStatus, pollStatusInterval);
+      this.setPollUpdateSuccessCallback = function setPollUpdateSuccessCallback(callback) {
+        pollUpdateSuccessCallback = callback;
       };
 
-      this.cancelPollStatusTimer = function cancelPollStatusTimer() {
-        if (angular.isDefined(pollStatusTimer)) {
-          $interval.cancel(pollStatusTimer);
-          pollStatusTimer = undefined;
+      var getPollUpdate = function () {
+        editorData.refreshEditorData().then(function (result) {
+          if (result.ok) {
+            if (this.isSendReceiveProject()) {
+              if (angular.isUndefined(result.data) ||
+                angular.isUndefined(result.data.sendReceive) ||
+                angular.isUndefined(result.data.sendReceive.status)
+              ) {
+                this.clearState();
+                return;
+              }
+
+              previousSRState = status.SRState;
+              status = result.data.sendReceive.status;
+              if (this.isInProgress()) {
+                (pollUpdateSuccessCallback || angular.noop)();
+                this.setSyncStarted();
+              } else if (previousSRState == 'LF_UNSYNCED' && status.SRState == 'IDLE') {
+                status.SRState = previousSRState;
+              } else if (previousSRState == unknownSRState) {
+                this.clearState();
+              }
+            } else {
+              (pollUpdateSuccessCallback || angular.noop)();
+            }
+          }
+        }.bind(this));
+      }.bind(this);
+
+      this.startPollUpdateTimer = function startPollUpdateTimer() {
+        this.cancelSyncStatusTimer();
+        this.cancelCloneStatusTimer();
+        if (angular.isDefined(pollUpdateTimer)) return;
+
+        pollUpdateTimer = $interval(getPollUpdate, pollUpdateInterval);
+      };
+
+      this.cancelPollUpdateTimer = function cancelPollUpdateTimer() {
+        if (angular.isDefined(pollUpdateTimer)) {
+          $interval.cancel(pollUpdateTimer);
+          pollUpdateTimer = undefined;
         }
       };
 
@@ -261,12 +268,12 @@ angular.module('lexicon.services')
           cloneProjectStatusSuccessCallback = callback;
         };
 
-      function getCloneProjectStatus() {
+      var getCloneProjectStatus = function () {
         sendReceiveApi.getProjectStatus(function (result) {
           if (result.ok) {
             if (!result.data) {
-              _this.clearState();
-              _this.cancelCloneStatusTimer();
+              this.clearState();
+              this.cancelCloneStatusTimer();
               return;
             }
 
@@ -274,16 +281,16 @@ angular.module('lexicon.services')
             console.log(status);
             if (status.SRState == 'IDLE' ||
               status.SRState == 'HOLD') {
-              _this.cancelCloneStatusTimer();
+              this.cancelCloneStatusTimer();
               (cloneProjectStatusSuccessCallback || angular.noop)();
             }
           }
-        });
-      }
+        }.bind(this));
+      }.bind(this);
 
       this.startCloneStatusTimer = function startCloneStatusTimer() {
-        _this.cancelPollStatusTimer();
-        _this.cancelSyncStatusTimer();
+        this.cancelPollUpdateTimer();
+        this.cancelSyncStatusTimer();
 
         // Whether the true SRState is CLONING or PENDING, the user is going to have to wait for
         // CLONING anyways
@@ -304,9 +311,9 @@ angular.module('lexicon.services')
       this.cloneNotice = this.syncNotice;
 
       this.cancelAllStatusTimers = function cancelAllStatusTimers() {
-        _this.cancelSyncStatusTimer();
-        _this.cancelPollStatusTimer();
-        _this.cancelCloneStatusTimer();
+        this.cancelSyncStatusTimer();
+        this.cancelPollUpdateTimer();
+        this.cancelCloneStatusTimer();
       };
 
     }])

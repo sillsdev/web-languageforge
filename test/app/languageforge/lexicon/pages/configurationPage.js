@@ -1,14 +1,15 @@
 'use strict';
 
+module.exports = new ConfigurationPage();
+
 function ConfigurationPage() {
   var modal = require('./lexModals.js');
-  var _this = this;
 
   this.noticeList = element.all(by.repeater('notice in notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
 
   this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
-  this.configurationLink = element(by.linkText('Dictionary Configuration'));
+  this.configurationLink = element(by.linkText('Configuration'));
   this.get = function get() {
     this.settingsMenuLink.click();
     this.configurationLink.click();
@@ -65,9 +66,9 @@ function ConfigurationPage() {
 
   // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
   this.inputSystemsTab.newButtonClick = function () {
-    _this.inputSystemsTab.newButton.click();
+    this.inputSystemsTab.newButton.click();
     browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
-  };
+  }.bind(this);
 
   this.fieldsTab = {
     fieldSetupLabel: this.activePane.element(by.id('fieldSetupLabel')),
@@ -88,9 +89,9 @@ function ConfigurationPage() {
 
   // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
   this.fieldsTab.newCustomFieldButtonClick = function () {
-    _this.fieldsTab.newCustomFieldButton.click();
+    this.fieldsTab.newCustomFieldButton.click();
     browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
-  };
+  }.bind(this);
 
   this.showAllFieldsButton = element(by.buttonText('Show All Fields'));
   this.showCommonFieldsButton = element(by.buttonText('Show Only Common Fields'));
@@ -113,5 +114,3 @@ function ConfigurationPage() {
   this.modal = modal;
 
 }
-
-module.exports = new ConfigurationPage();

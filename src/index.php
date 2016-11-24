@@ -221,7 +221,8 @@ $app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bin
 
 $app->get('/validate/{validateKey}', 'Site\Controller\Validate::check');
 $app->get('/auth/reset_password/{resetPasswordKey}', 'Site\Controller\Auth::view')->value('appName', 'reset_password');
-$app->get('/download/assets/{appName}/{projectSlug}/{file}', 'Site\Controller\Download::assets');
+$app->get('/download/assets/{appName}/{projectSlug}/audio/{filename}', 'Site\Controller\Download::assets');
+$app->get('/download/assets/{appName}/{projectSlug}/{filename}', 'Site\Controller\Download::assets');
 $app->get('/signup',            'Site\Controller\PublicApp::view')->value('appName', 'signup');
 $app->get('/registration',      'Site\Controller\PublicApp::view')->value('appName', 'registration');
 $app->get('/login',             'Site\Controller\Auth::view')->value('appName', 'login');

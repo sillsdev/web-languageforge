@@ -2,10 +2,10 @@
 
 // module definition
 angular.module('bellows.services.comments')
-//Lexicon Comment Service
-  .service('lexCommentService', ['jsonRpc', 'commentsOfflineCache', '$filter', function(jsonRpc, offlineCache, $filter) {
-    var _this = this;
 
+//Lexicon Comment Service
+  .service('lexCommentService', ['jsonRpc', 'commentsOfflineCache', '$filter',
+  function (jsonRpc, offlineCache, $filter) {
     this.comments = {
       items: {
         currentEntry: [],
@@ -22,19 +22,17 @@ angular.module('bellows.services.comments')
       }
     };
 
-
     /*
      * currentEntryCommentCounts has the following structure: { 'total': int total
      * count 'fields': { 'lexeme': int count of comments for lexeme field,
      * 'definition': int count of comments for definition field, } }
      */
-    this.comments.counts.currentEntry = { total: 0, fields: {}};
-
+    this.comments.counts.currentEntry = { total: 0, fields: {} };
 
     /**
-     * This should be called whenever the entry context changes (to update the comments and comment counts)
-     * @param allComments
-     * @param currentEntryId
+     * This should be called whenever the entry context changes (to update the comments and comment
+     * counts)
+     * @param entryId
      */
     this.loadEntryComments = function loadEntryComments(entryId) {
       this.comments.counts.currentEntry.total = 0;
@@ -44,9 +42,12 @@ angular.module('bellows.services.comments')
         var comment = this.comments.items.all[i];
         var fieldName = comment.regarding.field;
         if (comment.entryRef == entryId) {
-          if (fieldName && angular.isUndefined(this.comments.counts.currentEntry.fields[fieldName])) {
+          if (fieldName &&
+            angular.isUndefined(this.comments.counts.currentEntry.fields[fieldName])
+          ) {
             this.comments.counts.currentEntry.fields[fieldName] = 0;
           }
+
           this.comments.items.currentEntry.push(comment);
 
           // update the appropriate count for this field and update the total count
@@ -54,12 +55,12 @@ angular.module('bellows.services.comments')
             if (fieldName) {
               this.comments.counts.currentEntry.fields[fieldName]++;
             }
+
             this.comments.counts.currentEntry.total++;
           }
         }
       }
     };
-
 
     /**
      * this should be called whenever new data is received
@@ -72,17 +73,18 @@ angular.module('bellows.services.comments')
         if (angular.isUndefined(this.comments.counts.byEntry[comment.entryRef])) {
           this.comments.counts.byEntry[comment.entryRef] = 0;
         }
+
         if (comment.status != 'resolved') {
           this.comments.counts.byEntry[comment.entryRef]++;
         }
       }
     };
 
-
     this.getFieldCommentCount = function getFieldCommentCount(fieldName) {
       if (angular.isDefined(this.comments.counts.currentEntry.fields[fieldName])) {
         return this.comments.counts.currentEntry.fields[fieldName];
       }
+
       return 0;
     };
 
@@ -90,38 +92,40 @@ angular.module('bellows.services.comments')
       if (angular.isDefined(this.comments.counts.byEntry[entryId])) {
         return this.comments.counts.byEntry[entryId];
       }
+
       return 0;
     };
 
     this.removeCommentFromLists = function removeCommentFromLists(commentId, replyId) {
       if (replyId) {
         // just delete the replyId but don't delete the entire comment
-        _deleteCommentInList(commentId, replyId, _this.comments.items.all);
-        _deleteCommentInList(commentId, replyId, _this.comments.items.currentEntry);
-        _deleteCommentInList(commentId, replyId, _this.comments.items.currentEntryFiltered);
+        deleteCommentInList(commentId, replyId, this.comments.items.all);
+        deleteCommentInList(commentId, replyId, this.comments.items.currentEntry);
+        deleteCommentInList(commentId, replyId, this.comments.items.currentEntryFiltered);
 
       } else {
         // delete the entire comment
-        offlineCache.deleteComment(commentId).then(function() {
-          _deleteCommentInList(commentId, null, _this.comments.items.all);
-          _deleteCommentInList(commentId, null, _this.comments.items.currentEntry);
-          _deleteCommentInList(commentId, null, _this.comments.items.currentEntryFiltered);
-        });
+        offlineCache.deleteComment(commentId).then(function () {
+          deleteCommentInList(commentId, null, this.comments.items.all);
+          deleteCommentInList(commentId, null, this.comments.items.currentEntry);
+          deleteCommentInList(commentId, null, this.comments.items.currentEntryFiltered);
+        }.bind(this));
       }
     };
 
     this.refreshFilteredComments = function refreshFilteredComments(filter) {
-      _this.comments.items.currentEntryFiltered.length = 0;
-      var comments = $filter('filter')(_this.comments.items.currentEntry, filter.byText);
-      var arr = _this.comments.items.currentEntryFiltered;
+      this.comments.items.currentEntryFiltered.length = 0;
+      var comments = $filter('filter')(this.comments.items.currentEntry, filter.byText);
+      var arr = this.comments.items.currentEntryFiltered;
       arr.push.apply(arr, $filter('filter')(comments, filter.byStatus));
     };
 
-    function _deleteCommentInList(commentId, replyId, list) {
+    function deleteCommentInList(commentId, replyId, list) {
       var deleteComment = true;
       if (replyId) {
         deleteComment = false;
       }
+
       for (var i = list.length - 1; i >= 0; i--) {
         var c = list[i];
         if (deleteComment) {
@@ -141,20 +145,17 @@ angular.module('bellows.services.comments')
       }
     }
 
-
-    function getCurrentEntryComment(id) {
-      var comments = _this.comments.items.currentEntry;
-      for (var i=0; i<comments.length; i++) {
+    var getCurrentEntryComment = function (id) {
+      var comments = this.comments.items.currentEntry;
+      for (var i = 0; i < comments.length; i++) {
         var comment = comments[i];
         if (comment.id == id) {
           return comment;
         }
       }
-    }
+    }.bind(this);
 
     jsonRpc.connect('/api/sf');
-
-
 
     this.update = function updateComment(comment, callback) {
       this.comments.items.currentEntry.push(comment);
@@ -188,4 +189,4 @@ angular.module('bellows.services.comments')
       jsonRpc.call('lex_comment_updateStatus', [commentId, status], callback);
     };
 
-  }])
+  }]);

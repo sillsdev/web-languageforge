@@ -83,7 +83,7 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'pa
             modalInstance.result.then()['finally'](function () {
               sessionService.refresh(function () {
                 notice.push(notice.SUCCESS, $filter('translate')('Import completed successfully'));
-                notice.push(notice.INFO, $filter('translate')('Your project was successfully imported.  Carefully review the dictionary configuration below before continuing, especially the input systems and fields tabs'));
+                notice.push(notice.INFO, $filter('translate')('Your project was successfully imported.  Carefully review the configuration below before continuing, especially the input systems and fields tabs'));
                 $location.path('/configuration');
               });
             });
