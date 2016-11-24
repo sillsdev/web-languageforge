@@ -197,10 +197,9 @@ angular.module('semdomtrans.services', ['jsonRpc'])
   }])
   .factory('semdomtransOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache',
   function ($window, $q, sessionService, offlineCache) {
-    var projectId = sessionService.session.project.id;
 
     function getAllWorkingSets() {
-      return offlineCache.getAllFromStore('workingsets', projectId);
+      return offlineCache.getAllFromStore('workingsets', sessionService.getProjectId());
     }
 
     function deleteWorkingSet(id) {
@@ -208,7 +207,8 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     }
 
     function updateWorkingSets(workingSets) {
-      return offlineCache.setObjectsInStore('workingsets', projectId, workingSets);
+      return offlineCache.setObjectsInStore('workingsets', sessionService.getProjectId(),
+        workingSets);
     }
 
     return {

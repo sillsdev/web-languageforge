@@ -110,6 +110,16 @@ angular.module('bellows.services')
       jsonRpc.call('get_captcha_data', [], callback);
     };
 
+    this.getProjectId = function getProjectId() {
+      if (angular.isDefined(this.session.project) &&
+        angular.isDefined(this.session.project.id)
+      ) {
+        return this.session.project.id;
+      }
+
+      return '';
+    };
+
     this.refresh = function refresh(callback) {
       jsonRpc.connect('/api/sf');
       jsonRpc.call('session_getSessionData', [], function (result) {

@@ -7,10 +7,9 @@ angular.module('bellows.services')
   .factory('editorOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache',
     'offlineCacheUtils',
   function ($window, $q, sessionService, offlineCache, offlineCacheUtils) {
-    var projectId = sessionService.session.project.id;
 
     function getAllEntries() {
-      return offlineCache.getAllFromStore('entries', projectId);
+      return offlineCache.getAllFromStore('entries', sessionService.getProjectId());
     }
 
     function deleteEntry(id) {
@@ -22,7 +21,7 @@ angular.module('bellows.services')
      * @returns {promise}
      */
     function updateEntries(entries) {
-      return offlineCache.setObjectsInStore('entries', projectId, entries);
+      return offlineCache.setObjectsInStore('entries', sessionService.getProjectId(), entries);
     }
 
     return {
