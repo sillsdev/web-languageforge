@@ -4,10 +4,9 @@ angular.module('bellows.services.comments')
   .factory('commentsOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache',
     'offlineCacheUtils',
   function ($window, $q, sessionService, offlineCache, offlineCacheUtils) {
-    var projectId = sessionService.session.project.id;
 
     function getAllComments() {
-      return offlineCache.getAllFromStore('comments', projectId);
+      return offlineCache.getAllFromStore('comments', sessionService.getProjectId());
     }
 
     function deleteComment(id) {
@@ -15,7 +14,7 @@ angular.module('bellows.services.comments')
     }
 
     function updateComments(comments) {
-      return offlineCache.setObjectsInStore('comments', projectId, comments);
+      return offlineCache.setObjectsInStore('comments', sessionService.getProjectId(), comments);
     }
 
     return {
