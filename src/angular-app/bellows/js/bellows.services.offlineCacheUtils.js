@@ -5,7 +5,7 @@ angular.module('bellows.services')
   function ($window, $q, sessionService, offlineCache) {
     var projectId = sessionService.session.project.id;
 
-    var updateProjectData = function updateProject(timestamp, commentsUserPlusOne, isComplete) {
+    function updateProjectData(timestamp, commentsUserPlusOne, isComplete) {
       var obj = {
         id: projectId,
         commentsUserPlusOne: commentsUserPlusOne,
@@ -13,11 +13,11 @@ angular.module('bellows.services')
         isComplete: isComplete
       };
       return offlineCache.setObjectsInStore('projects', projectId, [obj]);
-    };
+    }
 
-    var getProjectData = function getProjectData() {
+    function getProjectData() {
       return offlineCache.getOneFromStore('projects', projectId);
-    };
+    }
 
     return {
       getProjectData: getProjectData,
