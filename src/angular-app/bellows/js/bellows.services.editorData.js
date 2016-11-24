@@ -7,8 +7,6 @@ angular.module('bellows.services')
   'silNoticeService', 'lexCommentService',
 function ($q, sessionService, cache, commentsCache,
           notice, commentService) {
-
-  var config = sessionService.session.projectSettings.config;
   var entries = [];
   var visibleEntries = [];
   var browserInstanceId = Math.floor(Math.random() * 1000);
@@ -304,6 +302,7 @@ function ($q, sessionService, cache, commentsCache,
   }
 
   function sortList(list) {
+    var config = sessionService.session.projectSettings.config;
     var inputSystems = config.entry.fields.lexeme.inputSystems;
     var lexemeA = '';
     var lexemeB = '';
@@ -336,6 +335,7 @@ function ($q, sessionService, cache, commentsCache,
    * @param list
    */
   function printLexemesInList(list) {
+    var config = sessionService.session.projectSettings.config;
     var ws = config.entry.fields.lexeme.inputSystems[1];
     var arr = [];
     for (var i = 0; i < list.length; i++) {

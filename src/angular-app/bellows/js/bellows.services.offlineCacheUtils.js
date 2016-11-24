@@ -3,20 +3,19 @@
 angular.module('bellows.services')
   .factory('offlineCacheUtils', ['$window', '$q', 'sessionService', 'offlineCache',
   function ($window, $q, sessionService, offlineCache) {
-    var projectId = sessionService.session.project.id;
 
     function updateProjectData(timestamp, commentsUserPlusOne, isComplete) {
       var obj = {
-        id: projectId,
+        id: sessionService.getProjectId(),
         commentsUserPlusOne: commentsUserPlusOne,
         timestamp: timestamp,
         isComplete: isComplete
       };
-      return offlineCache.setObjectsInStore('projects', projectId, [obj]);
+      return offlineCache.setObjectsInStore('projects', sessionService.getProjectId(), [obj]);
     }
 
     function getProjectData() {
-      return offlineCache.getOneFromStore('projects', projectId);
+      return offlineCache.getOneFromStore('projects', sessionService.getProjectId());
     }
 
     return {
