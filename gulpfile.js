@@ -32,6 +32,7 @@
 //   'test-e2e-run'
 //   'build-composer'
 //   'build-bower'
+//   'build-remove-test-fixtures'
 //   'build-minify'
 //   'build-changeGroup'
 //   'build-version'
@@ -110,6 +111,48 @@ var execute = function (command, options, callback) {
     callback(null);
   }
 };
+
+if (!String.prototype.endsWith) {
+  /**
+   * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
+   * @param searchString
+   * @param position
+   * @returns {boolean}
+   */
+  String.prototype.endsWith = function (searchString, position) {
+    var subjectString = this.toString();
+    if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position ||
+      position > subjectString.length
+    ) {
+      position = subjectString.length;
+    }
+
+    position -= searchString.length;
+    var lastIndex = subjectString.lastIndexOf(searchString, position);
+    return lastIndex !== -1 && lastIndex === position;
+  };
+}
+
+if (!String.prototype.includes) {
+  /**
+   * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/includes
+   * @param search
+   * @param start
+   * @returns {boolean}
+   */
+  String.prototype.includes = function (search, start) {
+    'use strict';
+    if (typeof start !== 'number') {
+      start = 0;
+    }
+
+    if (start + search.length > this.length) {
+      return false;
+    } else {
+      return this.indexOf(search, start) !== -1;
+    }
+  };
+}
 
 // Determine the path to test/app from a given destination.
 // Truncate the remote prefix of the destination
@@ -570,6 +613,27 @@ gulp.task('build-bower', function (cb) {
 });
 
 // -------------------------------------
+//   Task: Build Remove test fixtures (directives) in HTML only on live build
+// -------------------------------------
+gulp.task('build-remove-test-fixtures', function () {
+  var params = require('yargs')
+    .option('dest', {
+      demand: false,
+      default: 'root@localhost:/var/www/virtual/languageforge.org',
+      type: 'string' })
+    .argv;
+  var base = './src/angular-app';
+  var glob = path.join(base, '**/*.html');
+
+  if (!params.dest.includes('/var/www/virtual/') &&
+    (params.dest.endsWith('forge.org') || params.dest.endsWith('forge.org/'))) {
+    return gulp.src(glob, { base: base })
+      .pipe(replace(/^.*<pui-mock-upload.*$/m, '\n'))
+      .pipe(gulp.dest(base));
+  }
+});
+
+// -------------------------------------
 //   Task: Build (Concat and ) Minify
 // -------------------------------------
 gulp.task('build-minify', function () {
@@ -741,7 +805,8 @@ gulp.task('build',
       'build-bower',
       'build-version',
       'build-productionConfig',
-      'build-clearLocalCache'),
+      'build-clearLocalCache',
+      'build-remove-test-fixtures'),
     'build-minify',
     'build-changeGroup')
 );
