@@ -7,6 +7,8 @@ php_log_folder: /var/log/php
 lf_path: /home/vagrant/src/xForge/web-languageforge
 sf_path: /home/vagrant/src/xForge/web-languageforge
 
+ssl_letsencrypt_install: false
+
 ssl_items:
   - name: scriptureforge
     state: selfsign
