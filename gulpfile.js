@@ -114,8 +114,7 @@ var execute = function (command, options, callback) {
 // Determine the path to test/app from a given destination.
 // Truncate the remote prefix of the destination
 function getTestCwd(dest) {
-  var cwd =  (dest) ? path.join(dest.replace(/^(.)*:/, ''), 'test/app') : './test/app';
-  return cwd;
+  return (dest) ? path.join(dest.replace(/^(.)*:/, ''), 'test/app') : './test/app';
 }
 
 // Globals
@@ -359,7 +358,8 @@ gulp.task('test-e2e-setupTestEnvironment', function (cb) {
     .option('dest', {
       demand: false,
       describe: 'destination of test environment',
-      type: 'string' }).argv;
+      type: 'string' })
+    .argv;
   var options = {
     dryRun: false,
     silent: false,
@@ -380,7 +380,8 @@ gulp.task('test-e2e-teardownTestEnvironment', function (cb) {
     .option('dest', {
       demand: false,
       describe: 'destination of test environment',
-      type: 'string' }).argv;
+      type: 'string' })
+    .argv;
   var options = {
     dryRun: false,
     silent: false,
@@ -418,7 +419,8 @@ gulp.task('test-e2e-env', function () {
     .option('webserverHost', {
       demand: false,
       default: 'languageforge.local',
-      type: 'string' }).argv;
+      type: 'string' })
+    .argv;
   var cwd = getTestCwd(params.dest);
   var src = [
     'setupTestEnvironment.php',
@@ -473,7 +475,8 @@ gulp.task('test-e2e-doTest', function (cb) {
     .example('$0 test-e2e-run --webserverHost languageforge.local',
       'Runs all the E2E tests for languageforge')
     .example('$0 test-e2e-run --webserverHost scriptureforge.local --specs projectSettingsPage',
-      'Runs the scriptureforge E2E test for projectSettingsPage').argv;
+      'Runs the scriptureforge E2E test for projectSettingsPage')
+    .argv;
 
   var protocol =
     (params.webserverHost == 'jamaicanpsalms.scriptureforge.local') ? 'https://' : 'http://';
@@ -576,7 +579,8 @@ gulp.task('build-minify', function () {
       type: 'string' })
     .option('doNoCompression', {
       demand: false,
-      type: 'boolean' }).argv;
+      type: 'boolean' })
+    .argv;
   var minifySrc = [
     'src/angular-app/**/*.js',
     '!src/angular-app/**/*.min.js',
@@ -603,7 +607,8 @@ gulp.task('build-version', function () {
   var params = require('yargs')
     .option('buildNumber', {
       demand: true,
-      type: 'string' }).argv;
+      type: 'string' })
+    .argv;
   console.log('version =', params.buildNumber);
   return gulp.src('src/version.php')
     .pipe(replace(
@@ -633,14 +638,15 @@ gulp.task('build-changeGroup').description =
 gulp.task('build-productionConfig', function () {
   var defaultMongodbConnection = 'localhost:27017';
   var params = require('yargs')
-  .option('mongodbConnection', {
-    demand: false,
-    default: defaultMongodbConnection,
-    type: 'string' })
-  .option('secret', {
-    demand: false,
-    default: 'not_a_secret',
-    type: 'string' }).argv;
+    .option('mongodbConnection', {
+      demand: false,
+      default: defaultMongodbConnection,
+      type: 'string' })
+    .option('secret', {
+      demand: false,
+      default: 'not_a_secret',
+      type: 'string' })
+    .argv;
   var configSrc = [
     './src/config.php',
     './scripts/scriptsConfig.php',
@@ -688,7 +694,8 @@ gulp.task('build-upload', function (cb) {
       type: 'string' })
     .option('uploadCredentials', {
       demand: true,
-      type: 'string' }).argv;
+      type: 'string' })
+    .argv;
   var options = {
     dryRun: false,
     silent: false,
@@ -797,4 +804,3 @@ gulp.task('markdown').description = 'Generate helps markdown files';
 // -------------------------------------
 
 gulp.task('default', gulp.series('build'));
-
