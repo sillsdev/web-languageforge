@@ -36,7 +36,7 @@ function SfProjectSettingsPage() {
     this.projectSettingsLink.click();
   };
 
-  this.addNewMember = function (name) {
+  this.addNewMember = function addNewMember(name) {
     this.tabs.members.click();
     this.membersTab.addButton.click();
     browser.wait(expectedCondition.visibilityOf(this.membersTab.newMember.input),
@@ -60,14 +60,14 @@ function SfProjectSettingsPage() {
     textNames: element.all(by.repeater('text in visibleTexts').column('title')),
     textList: element.all(by.repeater('text in visibleTexts')),
     publishButton: element(by.partialButtonText('Re-publish Texts')),
-    textLink: function (title) {
+    textLink: function textLink(title) {
       return element(by.linkText(title));
     }
   };
 
   // getFirstCheckbox has to be a function because the .first() method will actually resolve the
   // finder
-  this.archivedTextsTabGetFirstCheckbox = function () {
+  this.archivedTextsTabGetFirstCheckbox = function archivedTextsTabGetFirstCheckbox() {
     return this.archivedTextsTab.textList.first().element(by.css('input[type="checkbox"]'));
   };
 
@@ -91,7 +91,7 @@ function SfProjectSettingsPage() {
     addButton: element(by.id('picklistEditorFieldset')).element(by.css('input[type="text"] + a')),
     saveButton: element(by.id('user_profile_lists_save_button')),
     unsavedWarning: element(by.css('span.unsaved-warning')),
-    deleteButton: function (repeaterRow) {
+    deleteButton: function deleteButton(repeaterRow) {
       // Given a single repeater row in the picklist, return the delete button for that row
       return repeaterRow.element(by.css('a:first-of-type'));
     }
