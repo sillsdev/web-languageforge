@@ -2,6 +2,7 @@
 
 use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserTypeaheadModel;
 //use PHPUnit\Framework\TestCase;
@@ -200,11 +201,134 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('', $user->email);
     }
 
+    public function testUserSetProperties_PublicAccessible_NamesAndEmailSet_RoleNotSet()
+    {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+        $userId = $environ->createUser('user1', 'User1', 'user1@example.com');
+        $user = new UserModel($userId);
+        $params =
+            ['username' => 'user2',
+             'name' => 'user2',
+             'email' => 'user2@example.com',
+             'role' => SystemRoles::SYSTEM_ADMIN
+            ];
+        $this->assertNotEquals($params['username'], $user->username);
+        $this->assertNotEquals($params['name'], $user->name);
+        $this->assertNotEquals($params['email'], $user->email);
+        $this->assertEquals(SystemRoles::USER, $user->role);
+
+        $user->setProperties(UserModel::PUBLIC_ACCESSIBLE, $params);
+        $user->write();
+
+        $this->assertEquals($params['username'], $user->username);
+        $this->assertEquals($params['name'], $user->name);
+        $this->assertEquals($params['email'], $user->email);
+        $this->assertNotEquals($params['role'], $user->role);
+    }
+
+    public function testUserSetProperties_UserProfileAccessible_ProfileSet_Role_NotSet()
+    {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+        $userId = $environ->createUser('user1', 'User1', 'user1@example.com');
+        $user = new UserModel($userId);
+        $params =
+            ['avatar_color' => 'pink',
+             'avatar_shape' => 'bat',
+             'avatar_ref' => 'Site/views/shared/image/avatar/pinkbat.png',
+             'mobile_phone' => '555-5555',
+             'communicate_via' => UserModel::COMMUNICATE_VIA_BOTH,
+             'name' => 'user2',
+             'age' => '21',
+             'gender' => UserModel::GENDER_MALE,
+             'interfaceLanguageCode' => 'th',
+             'role' => SystemRoles::SYSTEM_ADMIN
+            ];
+        $this->assertNotEquals($params['avatar_color'], $user->avatar_color);
+        $this->assertNotEquals($params['avatar_shape'], $user->avatar_shape);
+        $this->assertNotEquals($params['avatar_ref'], $user->avatar_ref);
+        $this->assertNotEquals($params['mobile_phone'], $user->mobile_phone);
+        $this->assertNotEquals($params['communicate_via'], $user->communicate_via);
+        $this->assertNotEquals($params['name'], $user->name);
+        $this->assertNotEquals($params['age'], $user->age);
+        $this->assertNotEquals($params['gender'], $user->gender);
+        $this->assertNotEquals($params['interfaceLanguageCode'], $user->interfaceLanguageCode);
+        $this->assertEquals(SystemRoles::USER, $user->role);
+
+        $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
+        $user->write();
+
+        $this->assertEquals($params['avatar_color'], $user->avatar_color);
+        $this->assertEquals($params['avatar_shape'], $user->avatar_shape);
+        $this->assertEquals($params['avatar_ref'], $user->avatar_ref);
+        $this->assertEquals($params['mobile_phone'], $user->mobile_phone);
+        $this->assertEquals($params['communicate_via'], $user->communicate_via);
+        $this->assertEquals($params['name'], $user->name);
+        $this->assertEquals($params['age'], $user->age);
+        $this->assertEquals($params['gender'], $user->gender);
+        $this->assertEquals($params['interfaceLanguageCode'], $user->interfaceLanguageCode);
+        $this->assertNotEquals($params['role'], $user->role);
+    }
+
+    public function testUserSetProperties_AdminAccessible_AllPropertiesSet()
+    {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+        $userId = $environ->createUser('user1', 'User1', 'user1@example.com');
+        $user = new UserModel($userId);
+        $params =
+            ['username' => 'user2',
+             'name' => 'User2',
+             'email' => 'user2@example.com',
+             'role' => SystemRoles::SYSTEM_ADMIN,
+             'active' => false,
+             'avatar_color' => 'pink',
+             'avatar_shape' => 'bat',
+             'avatar_ref' => 'Site/views/shared/image/avatar/pinkbat.png',
+             'mobile_phone' => '555-5555',
+             'communicate_via' => UserModel::COMMUNICATE_VIA_BOTH,
+             'age' => '21',
+             'gender' => UserModel::GENDER_MALE,
+             'interfaceLanguageCode' => 'th'
+            ];
+        $this->assertNotEquals($params['username'], $user->username);
+        $this->assertNotEquals($params['name'], $user->name);
+        $this->assertNotEquals($params['email'], $user->email);
+        $this->assertNotEquals($params['role'], $user->role);
+        $this->assertNotEquals($params['active'], $user->active);
+        $this->assertNotEquals($params['avatar_color'], $user->avatar_color);
+        $this->assertNotEquals($params['avatar_shape'], $user->avatar_shape);
+        $this->assertNotEquals($params['avatar_ref'], $user->avatar_ref);
+        $this->assertNotEquals($params['mobile_phone'], $user->mobile_phone);
+        $this->assertNotEquals($params['communicate_via'], $user->communicate_via);
+        $this->assertNotEquals($params['age'], $user->age);
+        $this->assertNotEquals($params['gender'], $user->gender);
+        $this->assertNotEquals($params['interfaceLanguageCode'], $user->interfaceLanguageCode);
+
+        $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
+        $user->write();
+
+        $this->assertEquals($params['username'], $user->username);
+        $this->assertEquals($params['name'], $user->name);
+        $this->assertEquals($params['email'], $user->email);
+        $this->assertEquals($params['role'], $user->role);
+        $this->assertEquals($params['active'], $user->active);
+        $this->assertEquals($params['avatar_color'], $user->avatar_color);
+        $this->assertEquals($params['avatar_shape'], $user->avatar_shape);
+        $this->assertEquals($params['avatar_ref'], $user->avatar_ref);
+        $this->assertEquals($params['mobile_phone'], $user->mobile_phone);
+        $this->assertEquals($params['communicate_via'], $user->communicate_via);
+        $this->assertEquals($params['age'], $user->age);
+        $this->assertEquals($params['gender'], $user->gender);
+        $this->assertEquals($params['interfaceLanguageCode'], $user->interfaceLanguageCode);
+    }
+
     public function testUserRemove_UserMemberOfProject_ProjectLinkRemovedAsWell()
     {
         $environ = new MongoTestEnvironment();
         $environ->clean();
-        $userId = $environ->createUser('user1', 'user1', 'user1');
+        $userId = $environ->createUser('user1', 'user1', 'user1@example.com');
         $user = new UserModel($userId);
         $project = $environ->createProject('testProject', 'testProjectCode');
         $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
@@ -226,7 +350,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
     {
         $environ = new MongoTestEnvironment();
         $environ->clean();
-        $userId = $environ->createUser('user1', 'User1', 'user1');
+        $userId = $environ->createUser('user1', 'User1', 'user1@example.com');
         $user = new UserModel($userId);
 
         $hasForgottenPassword = $user->hasForgottenPassword(false);
@@ -240,7 +364,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
     {
         $environ = new MongoTestEnvironment();
         $environ->clean();
-        $userId = $environ->createUser('user1', 'User1', 'user1');
+        $userId = $environ->createUser('user1', 'User1', 'user1@example.com');
         $user = new UserModel($userId);
         $user->setForgotPassword(7);
         $user->write();
@@ -260,7 +384,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
     {
         $environ = new MongoTestEnvironment();
         $environ->clean();
-        $userId = $environ->createUser('user1', 'User1', 'user1');
+        $userId = $environ->createUser('user1', 'User1', 'user1@example.com');
         $user = new UserModel($userId);
         $user->setForgotPassword(7);
         $user->write();
