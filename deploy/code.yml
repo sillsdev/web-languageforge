@@ -10,9 +10,7 @@
         chdir: "{{item}}"
       changed_when: false
       when: inventory_hostname == "localhost"
-      with_items:
-        - /var/www/virtual/languageforge.org/htdocs
-        - /var/www/virtual/scriptureforge.org/htdocs
+      with_items: "{{site_src_paths}}"
 
     - name: bower install
       command: bower install --allow-root
@@ -20,9 +18,7 @@
         chdir: "{{item}}"
       changed_when: false
       when: inventory_hostname == "localhost"
-      with_items:
-        - /var/www/virtual/languageforge.org/htdocs
-        - /var/www/virtual/scriptureforge.org/htdocs
+      with_items: "{{site_src_paths}}"
 
     - name: factory reset mongodb to empty with admin user
       shell: php FactoryReset.php run
