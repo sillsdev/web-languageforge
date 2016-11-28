@@ -233,7 +233,7 @@
 
     - name: install npm dependencies
       become: no
-      shell: npm install
+      shell: npm install --no-bin-links
       args:
         chdir: "{{lf_path}}"
         creates: "{{lf_path}}/node_modules/"
