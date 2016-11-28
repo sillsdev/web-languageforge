@@ -5,8 +5,11 @@ module.exports = new SfTextPage();
 function SfTextPage() {
   // currently this page is called questions.html but will be refactored. IJH 2014-06
 
+  var util = require('../../../bellows/pages/util.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
+
+  this.notice = util.notice;
 
   this.archiveButton = element(by.partialButtonText('Archive Questions'));
   this.makeTemplateBtn = element(by.partialButtonText('Make Template'));

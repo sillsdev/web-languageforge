@@ -113,6 +113,23 @@ function Utils() {
     }, timeout);
   };
 
+  this.notice = {
+    list: element.all(by.repeater('notice in notices()'))
+  };
+  this.notice.firstCloseButton = this.notice.list.first().element(by.buttonText('×'));
+  this.notice.waitToInclude = function (includedText) {
+    browser.wait(function () {
+      return this.notice.list.count().then(function (count) {
+        return count >= 1;
+      });
+    }.bind(this), CONDITION_TIMEOUT);
+    browser.wait(function () {
+      return this.notice.list.first().getText().then(function (text) {
+        return text.includes(includedText);
+      });
+    }.bind(this), CONDITION_TIMEOUT);
+  }.bind(this);
+
   this.checkModalTextMatches = function checkModalTextMatchesfunction(expectedText) {
     var modalBody = element(by.css('.modal-body'));
 

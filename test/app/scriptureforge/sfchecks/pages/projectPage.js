@@ -3,8 +3,11 @@
 module.exports = new SfProjectPage();
 
 function SfProjectPage() {
+  var util = require('../../../bellows/pages/util.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
+
+  this.notice = util.notice;
 
   this.testData = {
     simpleUsx1: '<usx version="2.0"> <chapter number="1" style="c" /> ' +
