@@ -195,7 +195,6 @@ describe('E2E testing: New Lex Project wizard app', function () {
   });
 
   describe('Send Receive Verify page', function () {
-    var expectedCondition = protractor.ExpectedConditions;
     var CONDITION_TIMEOUT = 5000;
 
     it('can clone project', function () {
