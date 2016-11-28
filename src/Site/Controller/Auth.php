@@ -6,7 +6,6 @@ use Api\Library\Shared\Communicate\Communicate;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\UserModel;
-use Api\Model\Shared\UserModelBase;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -27,7 +26,7 @@ class Auth extends PublicApp
         switch ($appName) {
             /** @noinspection PhpMissingBreakStatementInspection */
             case 'reset_password':
-                $user = new UserModelBase();
+                $user = new UserModel();
                 if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
                     $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
 
@@ -97,7 +96,7 @@ class Auth extends PublicApp
      */
     public static function resetPassword(Application $app, $resetPasswordKey = '', $newPassword = '')
     {
-        $user = new UserModelBase();
+        $user = new UserModel();
         if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
             $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
             return false;
