@@ -6,7 +6,6 @@ use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-use Api\Model\Shared\UserProfileModel;
 //use PHPUnit\Framework\TestCase;
 
 class MockUserCommandsDelivery implements DeliveryInterface
@@ -71,7 +70,7 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $newUserId = UserCommands::updateUserProfile($params, $userId);
 
         // user profile updated
-        $user = new UserProfileModel($newUserId);
+        $user = new UserModel($newUserId);
         $this->assertEquals('th', $user->interfaceLanguageCode);
         $this->assertEquals($newUserId, $userId);
     }

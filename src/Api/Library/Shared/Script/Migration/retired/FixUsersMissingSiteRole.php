@@ -27,10 +27,9 @@ class FixUsersMissingSiteRole
         $usersMissingSiteRole = 0;
         $now = new \DateTime();
         foreach ($userlist->entries as $userParams) { // foreach user from the custom list
-            // if last_login has any valid meaning, we need UserProfileModel.  Otherwise, can use UserModel
             $user = new UserModel($userParams['id']);
 
-            // Since UserProfileModel::last_login isn't being populated, we use the following criteria that a user never logged in:
+            // Since UserModel::last_login isn't being populated, we use the following criteria that a user never logged in:
             // emailPending (account never activated), no username, and validationExpirationDate expired
             if (($user->role != SystemRoles::SYSTEM_ADMIN) &&
                 (count(array_keys($user->siteRole->getArrayCopy())) == 0) &&
