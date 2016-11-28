@@ -10,6 +10,10 @@ module.exports = new SfQuestionPage;
  */
 function SfQuestionPage() {
   var util = require('../../../bellows/pages/util.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
+
+  this.notice = util.notice;
 
   this.answers  = {};
   this.comments = {};
@@ -31,12 +35,10 @@ function SfQuestionPage() {
   this.answers.add = function (answer) {
     // Using ID "Comments" contains Answers and Comments
     this.answerCtrl = browser.element(by.id('comments'));
-    this.answerCtrl.element(by.css('textarea.newAnswer')).sendKeys(answer);
-
-    // TODO: Currently Chrome browser has issues and separates the string.
-    // Firefox 28.0 correctly sends the string, but Firefox 29.0.1 does not
-    // TODO: Currently sending this extra "TAB" key appears to help sendKeys send the entire answer
-    this.answerCtrl.element(by.css('textarea.newAnswer')).sendKeys(protractor.Key.TAB);
+    var newAnswer = this.answerCtrl.element(by.css('textarea.newAnswer'));
+    newAnswer.sendKeys(answer);
+    browser.wait(expectedCondition.textToBePresentInElementValue(newAnswer, answer),
+      CONDITION_TIMEOUT);
     this.answerCtrl.element(by.id('doneBtn')).click();
   };
 
@@ -44,17 +46,17 @@ function SfQuestionPage() {
   this.answers.edit = function (answer) {
     this.answers.editCtrl = this.answers.last().element(by.css('.answer'))
       .element(by.linkText('edit'));
+    this.answers.editCtrl.click();
 
     // Clicking 'edit' changes the DOM so these handles are updated here
-    this.answers.editCtrl.click();
     var answersField = this.answers.last().element(by.css('.answer'))
       .element(by.css('textarea.editAnswer'));
     var saveCtrl = this.answers.last().element(by.css('.answerBtn'));
 
-    answersField.sendKeys(protractor.Key.CONTROL, 'a');
+    answersField.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
     answersField.sendKeys(answer);
-    answersField.sendKeys(protractor.Key.TAB);
-
+    browser.wait(expectedCondition.textToBePresentInElementValue(answersField, answer),
+      CONDITION_TIMEOUT);
     saveCtrl.click();
   }.bind(this);
 
@@ -103,6 +105,10 @@ function SfQuestionPage() {
     vote(index, 1);
   };
 
+  this.answers.votes = function (index) {
+    return this.answers.list.get(index).element(by.css('.vote > span'));
+  }.bind(this);
+
   // Add a comment to the last (most recent) Answer on the page
   this.comments.addToLastAnswer = function (comment) {
     this.comments.addCommentCtrl = this.answers.last().element(by.css('table.comments'))
@@ -112,31 +118,26 @@ function SfQuestionPage() {
 
     // Click "add comment" at the end of the Answers list to un-collapse the comment text area.
     this.comments.addCommentCtrl.click();
-
-    // TODO: Currently Chrome browser has issues and separates the string.
-    // Firefox 28.0 correctly sends the string, but Firefox 29.0.1 does not
-    // TODO: Currently sending this extra "TAB" key appears to help sendKeys send the entire comment
-    //this.commentCtrl.element(by.css(".jqte_editor")).sendKeys(protractor.Key.TAB);
-    //this.commentCtrl.element(by.id('doneBtn')).click();
+    browser.wait(expectedCondition.visibilityOf(this.comments.commentField), CONDITION_TIMEOUT);
     this.comments.commentField.sendKeys(comment);
-    this.comments.commentField.sendKeys(protractor.Key.TAB);
+    browser.wait(expectedCondition.textToBePresentInElementValue(this.comments.commentField,
+      comment), CONDITION_TIMEOUT);
     this.comments.submit.click();
   }.bind(this);
 
   // Edit the last comment.  Comments are interspersed with the answers
   this.comments.edit = function (comment) {
     this.comments.editCtrl = this.comments.last().element(by.linkText('edit'));
-
     this.comments.editCtrl.click();
 
     // Clicking 'edit' changes the DOM so these handles are updated here
     var commentsField = this.comments.last().element(by.css('textarea'));
     var saveCtrl = this.comments.last().element(by.partialButtonText('Save'));
 
-    commentsField.sendKeys(protractor.Key.CONTROL, 'a');
+    commentsField.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
     commentsField.sendKeys(comment);
-    commentsField.sendKeys(protractor.Key.TAB);
-
+    browser.wait(expectedCondition.textToBePresentInElementValue(commentsField, comment),
+      CONDITION_TIMEOUT);
     saveCtrl.click();
   }.bind(this);
 

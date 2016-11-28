@@ -6,6 +6,13 @@ function SfProjectSettingsPage() {
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
+  this.settingsDropdownLink = element(by.css('#settingsDropdownButton a.btn i.icon-cog'));
+  this.projectSettingsLink = element(by.linkText('Project Settings'));
+  this.get = function get() {
+    this.settingsDropdownLink.click();
+    this.projectSettingsLink.click();
+  };
+
   this.tabs = {
     members: element(by.linkText('Members')),
     templates: element(by.linkText('Question Templates')),
@@ -29,21 +36,24 @@ function SfProjectSettingsPage() {
     }
   };
 
-  this.settingsDropdownLink = element(by.css('#settingsDropdownButton a.btn i.icon-cog'));
-  this.projectSettingsLink = element(by.linkText('Project Settings'));
-  this.get = function get() {
-    this.settingsDropdownLink.click();
-    this.projectSettingsLink.click();
-  };
-
-  this.addNewMember = function addNewMember(name) {
+  this.membersTab.addNewMember = function (name) {
     this.tabs.members.click();
     this.membersTab.addButton.click();
     browser.wait(expectedCondition.visibilityOf(this.membersTab.newMember.input),
       CONDITION_TIMEOUT);
     this.membersTab.newMember.input.sendKeys(name);
+    browser.wait(expectedCondition.textToBePresentInElementValue(this.membersTab.newMember.input,
+      name), CONDITION_TIMEOUT);
     this.membersTab.newMember.button.click();
-  };
+  }.bind(this);
+
+  this.membersTab.waitForNewUserToLoad = function (memberCount) {
+    browser.wait(function () {
+      return this.membersTab.list.count().then(function (count) {
+        return count >= memberCount + 1;
+      });
+    }.bind(this));
+  }.bind(this);
 
   this.templatesTab = {
     list: element.all(by.repeater('template in visibleTemplates')),
