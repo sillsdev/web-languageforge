@@ -26,7 +26,7 @@ else
   cd web-languageforge; git pull origin master-taylor --ff-only --recurse-submodules 
 fi
 
-cd /home/vagrant/src/xForge/web-languageforge/deploy/; git checkout master-taylor; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
+cd /home/vagrant/src/web-languageforge/deploy/; git checkout master-taylor; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
 
 SCRIPT
 
