@@ -236,12 +236,16 @@
         - "jamaicanpsalms.scriptureforge.local"
         - "demo.scriptureforge.local"
 
-    - name: install npm dependencies
-      become: no
-      shell: npm install --no-bin-links
-      args:
-        chdir: "{{lf_path}}"
-        creates: "{{lf_path}}/node_modules/"
+    # node_modules are not a dependency for the product, rather it is a dependency
+    # for the developer to run the build tools, gulp, e2e, and so on.
+    # This does not install well across an NTFS share, so is not included
+    # here. CP 2016-11
+    #- name: install npm dependencies
+    #  become: no
+    #  shell: npm install
+    #  args:
+    #    chdir: "{{lf_path}}"
+    #    creates: "{{lf_path}}/node_modules/"
 
   handlers:
     - name: restart mongodb
