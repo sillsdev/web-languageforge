@@ -575,7 +575,7 @@ gulp.task('build-bower', function (cb) {
 // -------------------------------------
 //   Task: Build Remove test fixtures (directives) in HTML only on live build
 // -------------------------------------
-gulp.task('build-remove-test-fixtures', function () {
+gulp.task('build-remove-test-fixtures', function (done) {
   var params = require('yargs')
     .option('dest', {
       demand: false,
@@ -585,11 +585,14 @@ gulp.task('build-remove-test-fixtures', function () {
   var base = './src/angular-app';
   var glob = path.join(base, '**/*.html');
 
+  // only on live
   if (!params.dest.includes('/var/www/virtual/') &&
     (params.dest.endsWith('forge.org') || params.dest.endsWith('forge.org/'))) {
-    return gulp.src(glob, { base: base })
+    return gulp.src(glob)
       .pipe(replace(/^.*<pui-mock-upload.*$/m, '\n'))
       .pipe(gulp.dest(base));
+  } else {
+    done();
   }
 });
 
