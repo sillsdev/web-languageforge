@@ -55,14 +55,7 @@ describe('the project settings page - project manager', function () {
       // sendKeys is split to force correct button behaviour. IJH 2015-10
       projectSettingsPage.membersTab.newMember.input.sendKeys('de');
       projectSettingsPage.membersTab.newMember.button.click();
-
-      // wait for new user to load
-      browser.wait(function () {
-        return projectSettingsPage.membersTab.list.count().then(function (count) {
-          return count >= memberCount + 1;
-        });
-      });
-
+      projectSettingsPage.membersTab.waitForNewUserToLoad(memberCount);
       expect(projectSettingsPage.membersTab.list.count()).toBe(memberCount + 1);
     });
 
