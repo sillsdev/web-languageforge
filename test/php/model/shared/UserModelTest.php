@@ -218,7 +218,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $this->assertNotEquals($params['email'], $user->email);
         $this->assertEquals(SystemRoles::USER, $user->role);
 
-        $user->setProperties(UserModel::PUBLIC_ACCESSIBLE, $params);
+        $user->setProperties(UserModel::$PUBLIC_ACCESSIBLE, $params);
         $user->write();
 
         $this->assertEquals($params['username'], $user->username);
@@ -256,7 +256,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $this->assertNotEquals($params['interfaceLanguageCode'], $user->interfaceLanguageCode);
         $this->assertEquals(SystemRoles::USER, $user->role);
 
-        $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
+        $user->setProperties(UserModel::$USER_PROFILE_ACCESSIBLE, $params);
         $user->write();
 
         $this->assertEquals($params['avatar_color'], $user->avatar_color);
@@ -306,7 +306,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $this->assertNotEquals($params['gender'], $user->gender);
         $this->assertNotEquals($params['interfaceLanguageCode'], $user->interfaceLanguageCode);
 
-        $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
+        $user->setProperties(UserModel::$ADMIN_ACCESSIBLE, $params);
         $user->write();
 
         $this->assertEquals($params['username'], $user->username);
