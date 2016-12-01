@@ -53,7 +53,7 @@ class UserCommands
         }
 
         UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
-        $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
+        $user->setProperties(UserModel::$ADMIN_ACCESSIBLE, $params);
 
         if (!$user->hasRoleOnSite($website)) {
             $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
@@ -83,7 +83,7 @@ class UserCommands
         if (array_key_exists('username', $params)) {
             unset($params['username']);
         }
-        $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
+        $user->setProperties(UserModel::$USER_PROFILE_ACCESSIBLE, $params);
         $result = $user->write();
         return $result;
     }
@@ -409,7 +409,7 @@ class UserCommands
         }
 
         $user = new UserModel();
-        $user->setProperties(UserModel::PUBLIC_ACCESSIBLE, $params);
+        $user->setProperties(UserModel::$PUBLIC_ACCESSIBLE, $params);
         UserCommands::assertUniqueIdentity($user, $params['username'], $params['email'], $website);
         $user->active = false;
         $user->role = SystemRoles::USER;
@@ -642,7 +642,7 @@ class UserCommands
         }
 
         $params['id'] = $user->id->asString();
-        $user->setProperties(UserModel::PUBLIC_ACCESSIBLE, $params);
+        $user->setProperties(UserModel::$PUBLIC_ACCESSIBLE, $params);
         $user->setPassword($params['password']);
         $user->validate();
         $user->role = SystemRoles::USER;
