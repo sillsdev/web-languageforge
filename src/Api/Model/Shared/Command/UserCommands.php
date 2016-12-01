@@ -346,7 +346,7 @@ class UserCommands
     public static function createUser($params, $website)
     {
         $user = new UserModelWithPassword();
-        $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
+        $user->setProperties(UserModel::$ADMIN_ACCESSIBLE, $params);
         UserCommands::assertUniqueIdentity($user, $params['username'], $params['email'], $website);
         $user->setPassword($params['password']);
         $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
