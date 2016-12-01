@@ -135,7 +135,7 @@ class Sf
     /**
      * Create/Update a User Profile
      *
-     * @param array $params (encoded UserProfileModel)
+     * @param array $params (encoded UserModel)
      * @return string Id of written object
      */
     public function user_updateProfile($params)
