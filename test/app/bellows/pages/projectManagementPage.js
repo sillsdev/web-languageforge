@@ -1,8 +1,10 @@
 'use strict';
 
-var util = require('./util.js');
+module.exports = new ProjectManagementPage();
 
-var ProjectManagementPage = function () {
+function ProjectManagementPage() {
+  var util = require('./util.js');
+
   this.url = '/app/projectmanagement';
   this.get = function () {
     browser.get(browser.baseUrl + this.url);
@@ -53,13 +55,7 @@ var ProjectManagementPage = function () {
             message = message.split('\n').join('\n');
           }
 
-          if (/angular\.js .* TypeError: undefined is not a function/.test(message) ||
-            /angular.*\.js .* Error: \[\$compile:tpload]/.test(message) ||
-            /"level":"info"/.test(message) ||
-            /next_id/.test(message)
-          ) {
-            // we ignore errors of this type caused by Angular being unloaded prematurely on page
-            // refreshes (since it's not a real error)
+          if (util.isErrorToIgnore(message)) {
             continue;
           } else if (/You don't have sufficient privileges\./.test(message)) {
             // this is the console error we expected
@@ -75,6 +71,4 @@ var ProjectManagementPage = function () {
     });
   };
 
-};
-
-module.exports = new ProjectManagementPage();
+}
