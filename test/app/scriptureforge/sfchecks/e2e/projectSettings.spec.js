@@ -1,14 +1,5 @@
 'use strict';
 
-afterEach(function () {
-  var appFrame = require('../../../bellows/pages/appFrame.js');
-  appFrame.errorMessage.isPresent().then(function (isPresent) {
-    if (isPresent) {
-      expect(appFrame.errorMessage.getText()).toEqual(''); // fail the test
-    }
-  });
-});
-
 describe('the project settings page - project manager', function () {
   var constants       = require('../../../testConstants.json');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
