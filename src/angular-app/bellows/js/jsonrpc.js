@@ -77,7 +77,7 @@ json_rpc.factory('jsonRpc', ['$http', '$window', 'error', function($http, $windo
             type = "You're not currently signed in.";
             // redirect to login page with message
             error.error("You will now be redirected to the login page.");
-            $window.location.href = "/login";
+            $window.location.href = "/auth/login";
             return;
             break;
           case 'UserUnauthorizedException':

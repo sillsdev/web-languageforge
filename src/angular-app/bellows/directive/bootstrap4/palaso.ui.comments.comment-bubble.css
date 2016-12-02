@@ -1,0 +1,16 @@
+a.commentBubble:hover {
+    text-decoration: none;
+}
+a.commentBubble {
+    color: #faa732;
+    padding: 0 20px 0 20px;
+    position:relative;
+    top: -3px;
+}
+
+a.commentBubble .commentCount {
+    color:white;
+    position:relative;
+    right:32px;
+    bottom:5px;
+}

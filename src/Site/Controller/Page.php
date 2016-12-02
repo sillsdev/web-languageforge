@@ -3,10 +3,11 @@
 namespace Site\Controller;
 
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 class Page extends Base
 {
-    public function view(Application $app, $pageName) {
+    public function view(Request $request, Application $app, string $pageName) {
 
         // special case for "brochure" HTML5 homepage
         if ($pageName == 'home') {

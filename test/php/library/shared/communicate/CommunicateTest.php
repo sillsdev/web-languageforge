@@ -253,7 +253,7 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp('/account signup validation/', $delivery->subject);
         $this->assertRegExp('/Inviter User/', $delivery->content);
-        $this->assertRegExp('/' . self::$environ->website->domain . '\/registration/', $delivery->content);
+        $this->assertRegExp('/' . self::$environ->website->domain . '\/app\/registration/', $delivery->content);
     }
 
     public function testSendNewUserInProject_PropertiesFromToBodyOk()

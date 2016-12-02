@@ -2,11 +2,16 @@
 
 {% block content %}
     <div id="app-container-for-bootstrap">
-        {% include appFolder~'/'~appName~'.html' %}
+        {% include bootstrapFolder~'/'~appName~'.html' %}
     </div>
 
     <script type="text/javascript">
         window.session = {{ jsonSession|raw }};
+        {% if isBootstrap4 %}
+            var bootstrapVersion = "bootstrap4";
+        {% else %}
+            var bootstrapVersion = "bootstrap2";
+        {% endif %}
     </script>
 
     {% if useMinifiedJs %}
@@ -32,7 +37,5 @@
         <script src="/{{ filename }}"></script>
     {% endfor %}
 
-    {# this is necessary to fix an IE 10 bug where documentReady fires before all JS resources are loaded.
-        see: http://stackoverflow.com/questions/12988506/angularjs-fail-to-load-module #}
     <script>angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);</script>
 {% endblock %}

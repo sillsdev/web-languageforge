@@ -14,14 +14,14 @@ use Symfony\Component\Security\Core\SecurityContextInterface;
 
 defined('ENVIRONMENT') or exit('No direct script access allowed');
 
-class Auth extends PublicApp
+class Auth extends App
 {
     // return status
     const LOGIN_FAIL = 'loginFail';
     const LOGIN_FAIL_USER_UNAUTHORIZED = 'loginFailUserUnauthorized';
     const LOGIN_SUCCESS = 'loginSuccess';
 
-    public function view(Request $request, Application $app, $appName, $resetPasswordKey = '')
+    public function view(Request $request, Application $app, string $appName, string $resetPasswordKey = '')
     {
         switch ($appName) {
             /** @noinspection PhpMissingBreakStatementInspection */
