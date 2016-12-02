@@ -4,8 +4,6 @@ describe('the project settings page - project manager', function () {
   var constants       = require('../../../testConstants.json');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
   var util            = require('../../../bellows/pages/util.js');
-  var projectListPage = require('../../../bellows/pages/projectsPage.js');
-  var projectPage         = require('../pages/projectPage.js');
   var projectSettingsPage = require('../pages/projectSettingsPage.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
@@ -13,9 +11,7 @@ describe('the project settings page - project manager', function () {
   it('setup: logout, login as project manager, go to project settings', function () {
     loginPage.logout();
     loginPage.loginAsManager();
-    projectListPage.get();
-    projectListPage.clickOnProject(constants.testProjectName);
-    projectSettingsPage.get();
+    projectSettingsPage.get(constants.testProjectName);
   });
 
   describe('members tab', function () {
@@ -133,43 +129,42 @@ describe('the project settings page - project manager', function () {
     var newName = constants.thirdProjectName;
 
     it('setup: click on tab', function () {
-      expect(projectSettingsPage.tabs.projectProperties.isPresent()).toBe(true);
-      projectSettingsPage.tabs.projectProperties.click();
+      loginPage.loginAsManager();
+      projectSettingsPage.get(constants.testProjectName);
+      expect(projectSettingsPage.tabs.project.isPresent()).toBe(true);
+      projectSettingsPage.tabs.project.click();
     });
 
     it('can read properties', function () {
-      expect(projectSettingsPage.propertiesTab.name.getAttribute('value'))
+      expect(projectSettingsPage.projectTab.name.getAttribute('value'))
         .toBe(constants.testProjectName);
 
-      //expect(projectSettingsPage.propertiesTab.featured.getAttribute('checked')).toBeFalsy();
-      expect(projectSettingsPage.propertiesTab.allowAudioDownload.getAttribute('checked'))
+      //expect(projectSettingsPage.projectTab.featured.getAttribute('checked')).toBeFalsy();
+      expect(projectSettingsPage.projectTab.allowAudioDownload.getAttribute('checked'))
         .toBeTruthy();
     });
 
     it('can change properties and verify they persist', function () {
-      projectSettingsPage.propertiesTab.name.clear();
-      projectSettingsPage.propertiesTab.name.sendKeys(newName);
+      projectSettingsPage.projectTab.name.clear();
+      projectSettingsPage.projectTab.name.sendKeys(newName);
 
-      //projectSettingsPage.propertiesTab.featured.click();
-      projectSettingsPage.propertiesTab.allowAudioDownload.click();
-      projectSettingsPage.propertiesTab.button.click();
+      //projectSettingsPage.projectTab.featured.click();
+      projectSettingsPage.projectTab.allowAudioDownload.click();
+      projectSettingsPage.projectTab.saveButton.click();
       browser.navigate().refresh();
-      projectSettingsPage.tabs.projectProperties.click();
-      expect(projectSettingsPage.propertiesTab.name.getAttribute('value')).toBe(newName);
+      projectSettingsPage.tabs.project.click();
+      expect(projectSettingsPage.projectTab.name.getAttribute('value')).toBe(newName);
 
-      //expect(projectSettingsPage.propertiesTab.featured.getAttribute('checked')).toBeTruthy();
-      expect(projectSettingsPage.propertiesTab.allowAudioDownload.getAttribute('checked'))
+      //expect(projectSettingsPage.projectTab.featured.getAttribute('checked')).toBeTruthy();
+      expect(projectSettingsPage.projectTab.allowAudioDownload.getAttribute('checked'))
         .toBeFalsy();
-      projectSettingsPage.propertiesTab.button.click();
-      projectListPage.get();
-      projectListPage.clickOnProject(newName);
-      projectSettingsPage.get();
-      projectSettingsPage.tabs.projectProperties.click();
-      projectSettingsPage.propertiesTab.name.clear();
-      projectSettingsPage.propertiesTab.name.sendKeys(constants.testProjectName);
+      projectSettingsPage.get(newName);
+      projectSettingsPage.tabs.project.click();
+      projectSettingsPage.projectTab.name.clear();
+      projectSettingsPage.projectTab.name.sendKeys(constants.testProjectName);
 
-      //projectSettingsPage.propertiesTab.featured.click();
-      projectSettingsPage.propertiesTab.button.click();
+      //projectSettingsPage.projectTab.featured.click();
+      projectSettingsPage.projectTab.saveButton.click();
     });
 
   });
@@ -212,9 +207,7 @@ describe('the project settings page - project manager', function () {
       it('setup: logout, login as system admin, go to project settings', function () {
         loginPage.logout();
         loginPage.loginAsAdmin();
-        projectListPage.get();
-        projectListPage.clickOnProject(constants.testProjectName);
-        projectSettingsPage.get();
+        projectSettingsPage.get(constants.testProjectName);
       });
 
       it('the communication settings tab is visible', function () {
@@ -229,7 +222,7 @@ describe('the project settings page - project manager', function () {
         expect(projectSettingsPage.communicationTab.email.address.getAttribute('value')).toBe('');
         expect(projectSettingsPage.communicationTab.email.name.getAttribute('value')).toBe('');
 
-        var sample = { a:'12345', b:'78', c:'90', d:'email@me.com', e:'John Smith' };
+        var sample = { a: '12345', b: '78', c: '90', d: 'email@me.com', e: 'John Smith' };
         projectSettingsPage.communicationTab.sms.accountId.sendKeys(sample.a);
         projectSettingsPage.communicationTab.sms.authToken.sendKeys(sample.b);
         projectSettingsPage.communicationTab.sms.number.sendKeys(sample.c);
