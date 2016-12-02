@@ -1,17 +1,23 @@
 'use strict';
 
-module.exports = new ProjectManagementPage();
+module.exports = new BellowsProjectSettingsPage();
 
-function ProjectManagementPage() {
+function BellowsProjectSettingsPage() {
   var util = require('./util.js');
+  var projectsPage   = require('./projectsPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
-  this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
-  this.projectManagementLink = element(by.linkText('Manage Project'));
+  this.settingsMenuLink = element(by.className('btn dropdown-toggle'));
+  this.projectSettingsLink = element(by.linkText('Project Settings'));
 
-  this.get = function get() {
-    expect(this.settingsMenuLink.isDisplayed()).toBe(true);
+  // Get the projectSettings for project projectName
+  this.get = function get(projectName) {
+    projectsPage.get();
+    projectsPage.clickOnProject(projectName);
+    browser.wait(expectedCondition.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
     this.settingsMenuLink.click();
-    this.projectManagementLink.click();
+    this.projectSettingsLink.click();
   };
 
   this.noticeList = element.all(by.repeater('notice in notices()'));
@@ -23,12 +29,25 @@ function ProjectManagementPage() {
   this.activePane = element(by.css('div.tab-pane.active'));
 
   this.tabs = {
+    project: element(by.linkText('Project Properties')),
     reports: element(by.linkText('Reports')),
     archive: element(by.linkText('Archive')),
     remove: element(by.linkText('Delete'))
   };
 
-  //noinspection JSUnusedGlobalSymbols
+  this.projectTab = {
+    name: element(by.model('project.projectName')),
+    code: element(by.model('project.projectCode')),
+    projectOwner: element(by.binding('project.ownerRef.username')),
+    saveButton: this.tabDivs.get(0).element(by.buttonText('Save'))
+    //button: element(by.id('project_properties_save_button'))
+  };
+
+  // placeholder since we don't have Reports tests
+  this.reportsTab = {
+  };
+
+  // Archive tab currently disabled
   this.archiveTab = {
     archiveButton: this.activePane.element(by.buttonText('Archive this project'))
   };
@@ -36,16 +55,6 @@ function ProjectManagementPage() {
   this.deleteTab = {
     deleteBoxText: this.activePane.element(by.model('deleteBoxText')),
     deleteButton: this.activePane.element(by.buttonText('Delete this project'))
-  };
-
-  this.settings = {};
-  this.settings.button = element(by.css('a.btn i.icon-cog'));
-  this.settings.projectSettingsLink = element(by.linkText('Project Settings'));
-  this.settings.tabs = {
-    projectProperties: element(by.linkText('Project Properties'))
-  };
-  this.settings.projectPropertiesTab = {
-    projectOwner: element(by.binding('project.ownerRef.username'))
   };
 
   this.expectConsoleError = function () {
@@ -76,3 +85,4 @@ function ProjectManagementPage() {
   };
 
 }
+
