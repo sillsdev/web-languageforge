@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Page extends Base
 {
-    public function view(Request $request, Application $app, string $pageName) {
+    public function view(Request $request, Application $app, $pageName) {
 
         // special case for "brochure" HTML5 homepage
         if ($pageName == 'home') {

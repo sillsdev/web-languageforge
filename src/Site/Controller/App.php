@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class App extends Base
 {
-    public function view(Request $request, Application $app, string $appName, string $projectId = '') {
+    public function view(Request $request, Application $app, $appName, $projectId = '') {
         $this->setupBaseVariables($app);
         $retVal = $this->setupNgView($app, $appName, $projectId);
         return $this->renderPage($app, 'angular-app');
