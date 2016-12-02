@@ -3,21 +3,29 @@
 module.exports = new SfProjectSettingsPage();
 
 function SfProjectSettingsPage() {
+  var projectsPage = require('../../../bellows/pages/projectsPage.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
-  this.settingsDropdownLink = element(by.css('#settingsDropdownButton a.btn i.icon-cog'));
+  this.settingsMenuLink = element(by.className('btn dropdown-toggle'));
   this.projectSettingsLink = element(by.linkText('Project Settings'));
-  this.get = function get() {
-    this.settingsDropdownLink.click();
+
+  // Get the projectSettings for project projectName
+  this.get = function get(projectName) {
+    projectsPage.get();
+    projectsPage.clickOnProject(projectName);
+    browser.wait(expectedCondition.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
+    this.settingsMenuLink.click();
     this.projectSettingsLink.click();
   };
+
+  this.tabDivs = element.all(by.repeater('tab in tabs'));
 
   this.tabs = {
     members: element(by.linkText('Members')),
     templates: element(by.linkText('Question Templates')),
     archiveTexts: element(by.linkText('Archived Texts')),
-    projectProperties: element(by.linkText('Project Properties')),
+    project: element(by.linkText('Project Properties')),
     optionlists: element(by.linkText('User Profile Lists')),
     communication: element(by.linkText('Communication Settings'))
   };
@@ -81,12 +89,12 @@ function SfProjectSettingsPage() {
     return this.archivedTextsTab.textList.first().element(by.css('input[type="checkbox"]'));
   };
 
-  this.propertiesTab = {
+  this.projectTab = {
     name: element(by.model('project.projectName')),
     code: element(by.model('project.projectCode')),
     featured: element(by.model('project.featured')),
     allowAudioDownload: element(by.model('project.allowAudioDownload')),
-    button: element(by.id('project_properties_save_button'))
+    saveButton: element(by.id('project_properties_save_button'))
   };
 
   this.optionlistsTab = {

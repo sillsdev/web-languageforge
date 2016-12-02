@@ -1,18 +1,23 @@
 'use strict';
 
 angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.ui.listview',
-  'palaso.ui.typeahead', 'palaso.ui.sendReceiveCredentials', 'palaso.ui.notice',
-  'palaso.ui.textdrop'])
+  'palaso.ui.typeahead', 'palaso.ui.sendReceiveCredentials',
+  'palaso.ui.archiveProject', 'palaso.ui.deleteProject', 'palaso.ui.notice', 'palaso.ui.textdrop'])
   .controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService',
     'silNoticeService', 'lexProjectService', 'lexSendReceiveApi',
-  function ($scope, $filter, userService, sessionService,
+  function ($scope, $filter, userService, ss,
             notice, lexProjectService, sendReceiveApi) {
     lexProjectService.setBreadcrumbs('settings', $filter('translate')('Project Settings'));
 
-    $scope.rights.canViewSendReceiveProperties = sessionService
-      .hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.VIEW);
-    $scope.rights.canEditSendReceiveProperties = sessionService
-      .hasProjectRight(sessionService.domain.PROJECTS, sessionService.operation.EDIT);
+    $scope.rights.canViewSendReceiveProperties = ss
+      .hasProjectRight(ss.domain.PROJECTS, ss.operation.VIEW);
+    $scope.rights.canEditSendReceiveProperties = ss
+      .hasProjectRight(ss.domain.PROJECTS, ss.operation.EDIT);
+    $scope.rights.archive = (!ss.session.project.isArchived &&
+      (ss.session.project.userIsProjectOwner ||
+      ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE)));
+    $scope.rights.remove = ss.session.project.userIsProjectOwner ||
+      ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
 
     $scope.readProject = function () {
       lexProjectService.readProject(function (result) {
@@ -21,7 +26,7 @@ angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.
           $scope.sendReceive.showTab =
             ($scope.project.sendReceive && $scope.project.sendReceive.project) ? true : false;
           if ($scope.sendReceive.showTab && !$scope.project.sendReceive.username) {
-            $scope.project.sendReceive.username = sessionService.session.username;
+            $scope.project.sendReceive.username = ss.session.username;
           }
         }
       });
@@ -47,6 +52,7 @@ angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.
     $scope.sendReceive = {};
     $scope.project = $scope.project || {};
     $scope.project.sendReceive = {};
+    $scope.actionInProgress = false;
 
     $scope.resetValidateForm = function resetValidateForm() {
       $scope.project.sendReceive.isUnchecked = true;

@@ -4,7 +4,7 @@
     <tabset>
         <tab heading="{{'Project Properties' | translate}}">
             <form class="well" data-ng-submit="updateProject()">
-                <fieldset>
+                <fieldset data-ng-disabled="!rights.remove">
                     <div class="control-group">
                         <label class="control-label" for="projName" data-translate="Project Name"></label>
                         <div class="controls">
@@ -21,8 +21,8 @@
                         <label class="control-label"><b>{{'Project Owner' | translate}}:</b>&nbsp;&nbsp;{{project.ownerRef.username}}</label>
                         <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> {{'Featured On Website' | translate}}</label>
                     </div>
+                    <button type="submit" class="btn"><i class="fa fa-check"></i>{{'Save' | translate}}</button>
                 </fieldset>
-                <button type="submit" class="btn"><i class="fa fa-check"></i>{{'Save' | translate}}</button>
             </form>
         </tab>
         <tab heading="{{'Send and Receive Properties' | translate}}" data-ng-show="sendReceive.showTab" disabled="!rights.canEditSendReceiveProperties">
@@ -39,6 +39,19 @@
                             <i class="fa fa-check"></i>{{'Save' | translate}}</button>
                     </div>
                 </div>
+            </form>
+        </tab>
+        <!-- Archive tab disabled now that project owners can delete their own projects -->
+        <tab heading="{{'Archive' | translate}}" data-ng-show="false">
+            <form class="well">
+                <pui-archive-project pui-actionInProgress="actionInProgress">
+                </pui-archive-project>
+            </form>
+        </tab>
+        <tab heading="{{'Delete' | translate}}" data-ng-show="rights.remove">
+            <form class="well">
+                <pui-delete-project>
+                </pui-delete-project>
             </form>
         </tab>
     </tabset>

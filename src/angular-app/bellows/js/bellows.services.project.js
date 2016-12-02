@@ -18,10 +18,6 @@ angular.module('bellows.services')
       jsonRpc.call('project_join_switchSession', [srIdentifier, role], callback);
     };
 
-    this.archive = function (callback) {
-      jsonRpc.call('project_archive', [], callback);
-    };
-
     this.archivedList = function (callback) {
       jsonRpc.call('project_archivedList', [], callback);
     };
@@ -86,6 +82,23 @@ angular.module('bellows.services')
       jsonRpc.call('project_getJoinRequests', [], callback);
     };
 
+    this.getDto = function getDto(callback) {
+      jsonRpc.call('project_management_dto', [], callback);
+    };
+
+    this.runReport = function runReport(reportName, params, callback) {
+      params = params || [];
+      jsonRpc.call('project_management_report_' + reportName, params, callback);
+    };
+
+    this.archiveProject = function archiveProject(callback) {
+      jsonRpc.call('project_archive', [], callback);
+    };
+
+    this.deleteProject = function deleteProject(callback) {
+      jsonRpc.call('project_delete', [], callback);
+    };
+
     // data constants
     this.data = {};
     this.data.projectTypeNames = {
@@ -97,6 +110,7 @@ angular.module('bellows.services')
     this.data.projectTypesBySite = function () {
       var types = {
         scriptureforge: ['sfchecks'],
+
         //languageforge: ['lexicon', 'semdomtrans']
         languageforge: ['lexicon']
       };
