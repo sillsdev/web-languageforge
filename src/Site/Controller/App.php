@@ -69,6 +69,7 @@ class App extends Base
         // Other session data
         $this->data['jsonSession'] = json_encode(SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $appName), JSON_UNESCAPED_SLASHES);
 
+        $this->addJavascriptFiles($appModel->bellowsFolder . '/_js_module_definitions');
         $this->addJavascriptFiles($appModel->bellowsFolder . '/js', array('vendor', 'assets'));
         $this->addJavascriptFiles($appModel->bellowsFolder . '/directive');
         $this->addJavascriptFiles($appModel->siteFolder . '/js', array('vendor', 'assets'));
