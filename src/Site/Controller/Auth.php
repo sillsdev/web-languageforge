@@ -21,7 +21,7 @@ class Auth extends App
     const LOGIN_FAIL_USER_UNAUTHORIZED = 'loginFailUserUnauthorized';
     const LOGIN_SUCCESS = 'loginSuccess';
 
-    public function view(Request $request, Application $app, string $appName, string $resetPasswordKey = '')
+    public function view(Request $request, Application $app, $appName, $resetPasswordKey = '')
     {
         switch ($appName) {
             /** @noinspection PhpMissingBreakStatementInspection */
