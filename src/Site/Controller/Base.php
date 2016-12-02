@@ -13,6 +13,7 @@ use Api\Model\Shared\UserModel;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Acl\Exception\Exception;
 
 require_once APPPATH."version.php";
 
@@ -281,6 +282,9 @@ class Base
                         $jsMinFilesToReturn[] = "$path/$file.min.js";
                     }
                 }
+            } elseif (array_key_exists("cssFile", $properties)) {
+                // don't add any min files because this contains a css key
+
             } else {
                 $jsMinFilesToReturn[] = "$path/$itemName.min.js";
             }
@@ -299,8 +303,11 @@ class Base
                     }
                 }
             }
-
-
+        }
+        foreach (array_merge($jsFilesToReturn, $jsMinFilesToReturn, $cssFilesToReturn) as $file) {
+            if (!file_exists($file)) {
+                throw new Exception("This app depends upon $file and the file doesn't exist!");
+            }
         }
         return array("js" => $jsFilesToReturn, "min" => $jsMinFilesToReturn, "css" => $cssFilesToReturn);
     }
