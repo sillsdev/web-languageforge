@@ -8,7 +8,7 @@
         <div class="page-header" align="center">
             <h1>Login</h1>
             <p>Please login with your <b>Username / Email</b> and <b>Password</b> below.</p>
-            <p>Don't have an account? <a href="/signup">Register now.</a></p>
+            <p>Don't have an account? <a href="/public/signup">Register now.</a></p>
             {% for infoMessage in app.session.getFlashBag.get('infoMessage') %}
                 <div class="alert alert-info">{{ infoMessage }}</div>
             {% endfor %}

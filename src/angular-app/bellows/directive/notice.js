@@ -121,7 +121,7 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
   function (noticeService, sessionService) {
     return {
       restrict: 'EA',
-      templateUrl: '/angular-app/bellows/directive/notice.html',
+      templateUrl : '/angular-app/bellows/directive/' + bootstrapVersion + '/notice.html',
       replace: true,
       compile: function () {
         return function ($scope) {

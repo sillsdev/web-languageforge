@@ -7,7 +7,7 @@ angular.module('bellows.services')
       backdrop: true,
       keyboard: true,
       modalFade: true,
-      templateUrl: '/angular-app/bellows/js/modal.html'
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/modal.html'
     };
 
     var modalOptions = {
