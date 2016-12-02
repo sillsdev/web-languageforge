@@ -1,0 +1,14 @@
+<div class="pui-captcha">
+    <div class="control-group">
+        <div class="controls">
+            <p>{{'If you are a person (not a computer), select the' | translate}}
+                <strong id="expectedItemName">{{puiExpectedItemName}}</strong>:</p>
+            <div class="btn-group">
+                <label class="btn btn-default" data-ng-repeat="item in puiItems" data-btn-radio="$index"
+                       data-ng-model="record.selected" data-ng-required="!record.selected" id="captcha{{$index}}">
+                    <img data-ng-src="{{item.imgSrc}}" />
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,142 @@
+{% verbatim %}
+<div class="content container" data-ng-cloak>
+<h1>Site Administration</h1>
+<sil-notices></sil-notices>
+
+<tabset>
+    <tab heading="Users">
+    <div class="row" data-ng-controller="UserCtrl" style="overflow:hidden">
+    <div class="span8">
+        <fieldset>
+        <legend>Users (total: {{users.length}})</legend>
+        <form class="control-bar form-inline">
+        <button class="btn" data-ng-disabled="selected.length == 0" data-ng-click="removeUsers()"><i class="icon-remove"></i>Remove Users</button>
+        <button class="btn" data-ng-click="addRecord()"><i class="icon-plus"></i>Add New</button>
+        <div class="pull-right"><input type="text" data-ng-model="filterUsers" placeholder="Filter user list"><a data-ng-show="filterUsers != ''" title="Clear Filter" data-ng-click="filterUsers = ''"><i class="icon-remove" style="color:gray"></i></a></div>
+        </form>
+        <listview search="queryUsers()" items="users" items-filter="filterUsers" visible-items="visibleUsers" select="">
+        <table class="table" style="width: 100%">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Projects</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="user in visibleUsers" data-ng-class="{active: isSelected(user)}" >
+                <td width="16px" align="center"><!--suppress HtmlFormInputWithoutLabel -->
+                    <input type="checkbox" data-ng-checked="isSelected(user)" data-ng-click="updateSelection($event, user)" /></td>
+                <td><a ng-style="!user.active && {'text-decoration': 'line-through', 'color':'grey'}" data-ng-click="selectRow($index, user)" title="Click to edit this user">{{user.username}}</a></td>
+                <td>{{user.email}}</td>
+                <td>{{user.name}} <span ng-show="user.role == 'system_admin'">(System Admin)</span></td>
+                <td><span style="font-size:10px; font-weight: bold" ng-show="user.projects.length > 0">({{user.projects.length}} project<span ng-show="user.projects.length > 1">s</span>) </span>
+                    <span style="font-size:10px" ng-repeat="project in user.projects"><a ng-href="http://{{project.siteName}}/app/{{project.appName}}/{{project.id}}">{{project.projectCode}}</a><span ng-show="!$last">, </span></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </listview>
+        </fieldset>
+    </div>
+                
+    <div class="span4">
+        <form data-ng-submit="updateRecord(record)" data-ng-hide="(vars.editButtonName=='')" name="userForm">
+        <fieldset>
+            <legend>User data</legend>
+            <div class="well">
+                <div>
+                    <label>User Name</label>
+                    <input data-idle-validate="checkUniqueUser()" data-idle-validate-keypress="resetValidateUserForm()" required type="text" placeholder="(username)" data-ng-model="record.username"/>
+                    <span  data-ng-show="record.username.length > 0">
+                    <span  data-ng-show="uniqueUserState == 'loading'"><img id="userNameLoading" src="/Site/views/shared/image/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+                    <span  data-ng-show="uniqueUserState == 'ok'"><img id="userNameOk" src="/Site/views/shared/image/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                    <span  data-ng-show="(uniqueUserState == 'usernameExists') || (uniqueUserState == 'usernameAndEmailExists')"><img id="userNameExists" src="/Site/views/shared/image/exclamation.png" title="User name already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                    </span>
+                </div>
+                <div>
+                    <label>Name</label>
+                    <input data-idle-validate="checkUniqueUser()" data-idle-validate-keypress="resetValidateUserForm()" data-idle-validate-msec="500" required type="text" placeholder="(your name here)" data-ng-model="record.name"/>
+                </div>
+                <div>
+                    <label>Email</label>
+                    <input data-idle-validate="checkUniqueUser()" data-idle-validate-keypress="resetValidateUserForm()" data-idle-validate-msec="300" required type="text" placeholder="(no email)" data-ng-model="record.email"/>
+                    <span  data-ng-show="record.email.length > 0"></span>
+                    <span  data-ng-show="uniqueUserState == 'loading'"><img id="userEmailLoading" src="/Site/views/shared/image/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
+                    <span  data-ng-show="uniqueUserState == 'ok'"><img id="userEmailOk" src="/Site/views/shared/image/tick.png" title="User email is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                    <span  data-ng-show="(uniqueUserState == 'emailExists') || (uniqueUserState == 'usernameAndEmailExists')"><img id="userEmailExists" src="/Site/views/shared/image/exclamation.png" title="User email already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
+                </div>
+            </div>
+            <div>
+                <label for="_role">System Role</label>
+                <select id="_role" required data-ng-model="record.role"
+                        data-ng-options="key as role.name for (key, role) in roles"></select>
+            </div>
+            <div>
+                <label style="margin-bottom:20px">Site Roles: </label> <pre>{{record.siteRole|json}}</pre>
+            </div>
+            <div>
+                <label style="margin-bottom:20px"><input data-ng-click="checkUniqueUser()" type="checkbox" data-ng-model="record.active"/> Is Active</label>
+            </div>
+            <a data-ng-show="vars.state == 'update'" href="" data-ng-click="togglePasswordForm(); vars.inputfocus = vars.showPasswordForm">Change {{record.username}}'s password</a>
+            <div data-ng-show="vars.showPasswordForm">
+                <label for="_password">Password</label>
+                <input id="_password" data-idle-validate="checkUniqueUser()"
+                       data-idle-validate-keypress="resetValidateUserForm()" data-idle-validate-msec="500" type="text"
+                       data-ng-model="record.password" data-focus-me="vars.inputfocus" name="password"/>
+            </div>
+            <table class="table">
+            <tr data-ng-show="record.created_on"><td><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></td></tr>
+            <tr data-ng-show="record.last_login"><td><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></td></tr>
+            </table>
+            <button class="btn btn-small" type="submit" data-ng-disabled="userForm.$invalid || !(uniqueUserState == 'ok')">
+                <i class="icon-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
+            </button>
+        </fieldset>
+        </form>
+                
+    </div>
+    </div>
+    </tab>
+    <!-- 
+    <tab heading="Projects">
+        <div class="row" data-ng-controller="ProjectCtrl" style="overflow:hidden">
+        <div class="span8"><project-list/></div>
+        <div class="span4"><project-data/></div>
+        </div>
+    </tab>
+    -->
+
+    <tab heading="Archived Projects">
+        <div data-ng-controller="ArchivedProjectsCtrl">
+            <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+                <button data-ng-disabled="selected.length == 0" data-ng-show="rights.publish" class="btn" data-ng-click="publishProjects()"><i class="icon-globe icon-large" style="color:black"></i>Re-publish Projects</button>
+                <button data-ng-disabled="selected.length == 0" data-ng-show="rights.remove" class="btn" data-ng-click="deleteProjects()" style="color:black">Delete Projects</button>
+            </form>
+            <hr />
+            <listview hide-if-empty="true" items="list.archivedProjects" visible-items="visibleProjects" select="">
+                <div data-ng-repeat="project in visibleProjects" class="details-row">
+                    <ul class="inline" data-ng-class="{active: isSelected(project)}">
+                    <li data-ng-show="rights.publish" ><!--suppress HtmlFormInputWithoutLabel -->
+                        <input type="checkbox" data-ng-checked="isSelected(project)" data-ng-click="updateSelection($event, project)" /></li>
+                        <li>
+                    <span class="span5">
+                        <a href="/app/{{project.appName}}/{{project.id}}/">
+                            <span class="larger-text">{{project.projectName}}</span>
+                        </a>
+                        <br />
+                        <small class="muted">{{projectTypeNames[project.appName]}}</small>
+                    </span>
+                        </li>
+                        <li>Archived on {{project.dateModified | date:'fullDate'}}</li>
+                    </ul>
+                    <hr />
+                </div>
+            </listview>
+        </div>
+    </tab>
+</tabset>
+</div>
+{% endverbatim %}

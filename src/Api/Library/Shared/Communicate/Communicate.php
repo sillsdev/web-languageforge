@@ -141,7 +141,7 @@ class Communicate
         $vars = array(
             'user' => $inviterUserModel,
             'project' => $projectModel,
-            'link' => $website->baseUrl() . '/registration#/?v=' . $toUserModel->validationKey,
+            'link' => $website->baseUrl() . '/app/registration#/?v=' . $toUserModel->validationKey,
         );
 
         self::sendTemplateEmail($to, $subject, 'InvitationValidate', $vars, $website, $delivery);

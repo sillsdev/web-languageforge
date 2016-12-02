@@ -9,25 +9,30 @@
                 <link rel=stylesheet href="/{{ cssFile }}" />
             {% endfor %}
 
+            {% for cssFile in vendorFilesCss %}
+                <link rel=stylesheet href="/{{ cssFile }}" />
+            {% endfor %}
+
             <link rel="icon" href="/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico" type="image/x-icon" />
 
             <!-- jquery must be the first js to be loaded -->
             {%  if useMinifiedJs %}
-                <script src="/vendor_bower/jquery/jquery.min.js"></script>
+                <script src="/vendor_bower/jquery/dist/jquery.min.js"></script>
                 <script src="/vendor_bower/angular/angular.min.js"></script>
-                <link rel="stylesheet" href="/vendor_bower/font-awesome/css/font-awesome.min.css" />
             {%  else %}
-                <script src="/vendor_bower/jquery/jquery.js"></script>
+                <script src="/vendor_bower/jquery/dist/jquery.js"></script>
                 <script src="/vendor_bower/angular/angular.js"></script>
-                <link rel="stylesheet" href="/vendor_bower/font-awesome/css/font-awesome.css" />
             {% endif %}
-            <link rel="stylesheet" href="/vendor_bower/textAngular/dist/textAngular.css" />
 
         {% endblock %}
     </head>
     <body>
         <div id="maincontainer">
-            {% block header %}{% endblock %}
+            {% if isBootstrap4 %}
+                {% block headerBootstrap4 %}{% endblock %}
+            {% else %}
+                {% block headerBootstrap2 %}{% endblock %}
+            {% endif %}
             {% block content %}{% endblock %}
             {% block script %}{% endblock %}
             <div class="clearfooter"></div>

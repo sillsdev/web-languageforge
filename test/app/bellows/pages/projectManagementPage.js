@@ -5,9 +5,13 @@ module.exports = new ProjectManagementPage();
 function ProjectManagementPage() {
   var util = require('./util.js');
 
-  this.url = '/app/projectmanagement';
-  this.get = function () {
-    browser.get(browser.baseUrl + this.url);
+  this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
+  this.projectManagementLink = element(by.linkText('Manage Project'));
+
+  this.get = function get() {
+    expect(this.settingsMenuLink.isDisplayed()).toBe(true);
+    this.settingsMenuLink.click();
+    this.projectManagementLink.click();
   };
 
   this.noticeList = element.all(by.repeater('notice in notices()'));

@@ -1,0 +1,5 @@
+<div ng-show="getCount() > 0 && $state.is('editor.entry')">
+    <a ng-click="control.showComments()" title="Show Comments" class="commentBubble">
+        <i class="icon-2x icon-comment"></i><span class="commentCount" style="">{{getCountForDisplay()}}</span>
+    </a>
+</div>

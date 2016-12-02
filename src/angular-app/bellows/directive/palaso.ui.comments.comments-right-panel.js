@@ -6,7 +6,7 @@ angular.module('palaso.ui.comments')
   .directive('commentsRightPanel', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.comments-right-panel.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/palaso.ui.comments.comments-right-panel.html',
       scope: {
         entry: '=',
         control: '=',
