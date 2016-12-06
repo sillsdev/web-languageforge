@@ -2,7 +2,7 @@
 
 // input systems common functions
 var InputSystems = {
-  'languages': function(dataType) {
+  'languages': function (dataType) {
     var unlisted = {
       'name': 'Unlisted Language',
       'code': {
@@ -11,16 +11,16 @@ var InputSystems = {
       'country': ['?'],
       'altNames': []
     };
-    
+
     var languages = [];
-    switch(dataType) {
+    switch (dataType) {
       case 'debug':
         languages = _inputSystems_languagesSmall;
         break;
       default:
         languages = _inputSystems_languages;
     }
-    
+
     var unlistedExists = false;
     angular.forEach(languages, function (language){
       if (language.code.three == unlisted.code.three){
@@ -28,20 +28,25 @@ var InputSystems = {
         return;
       }
     });
-    if (! unlistedExists) {
+
+    if (!unlistedExists) {
       languages.push(unlisted);
     }
-    
+
     return languages;
   },
-  'scripts': function() {
+
+  'scripts': function () {
     return _inputSystems_scripts;
   },
-  'regions': function() {
+
+  'regions': function () {
     return _inputSystems_regions;
   },
-  'isRightToLeft': function(code) {
-    var rtlCodes = ['fa', 'fas'];  // TODO. Enhance. find a source for this list; manually update for now. IJH 2014-04
+
+  'isRightToLeft': function (code) {
+    // TODO. Enhance. find a source for this list; manually update for now. IJH 2014-04
+    var rtlCodes = ['fa', 'fas'];
     return (rtlCodes.indexOf(code) >= 0);
   }
 
