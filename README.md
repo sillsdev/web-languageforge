@@ -33,7 +33,7 @@ Proceed to [Language Forge Configuration File](#LFConfig) and follow the rest of
 
 ### Local Linux Development Setup <a id="LocalSetup"></a>
 
-Start with the Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure the LAMP stack (Linux, Apache, MongoDB, and PHP).
+Start with the Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure a basic development environment.
 
 
 #### Installation and Deployment
@@ -61,11 +61,11 @@ Otherwise just create a symbolic link between languageforge and scriptureforge..
 ln -s web-languageforge web-scriptureforge
 ```
 
-Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`
+Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`. Set it to a location where MongoDB should store its databases.
  - **Vagrant VM Setup**: uncomment line 6 and comment line 5
- - **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have mongo on you HDD rather than SDD). 
+ - **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on you HDD rather than SSD). Make sure the `mongodb` user has permission to read and write to the path you specify.
 
-Configure ansible.cfg and deploy both sites
+Run the following Ansible playbooks to configure Ansible and run both sites.
 
 ````
 cd web-languageforge/deploy
@@ -94,10 +94,10 @@ Install Oracle Java JDK 8
 ```
 sudo add-apt-repository ppa:webupd8team/java
 sudo apt-get update
-sudo apt-get install oracle-java8-installer install oracle-java8-set-default
+sudo apt-get install oracle-java8-installer oracle-java8-set-default
 ```
 
-Download [Eclipse](http://www.eclipse.org/downloads/), extract the tar folder and install.
+Download the [Eclipse](http://www.eclipse.org/downloads/) installer, extract the tar folder and run the installer.
 
 ```
 tar xvf eclipse-inst-linux64.tar.gz
@@ -130,7 +130,7 @@ Name[en]=Eclipse
 
 Even though we no longer use Eclipse for web development, we [install](https://marketplace.eclipse.org/content/monjadb) the MonjaDB plugin for browsing and updating MongoDB.
 
-Once the MongaDB plugin is installed, access `MongoDB` from the Eclipse menu and select `Connect`.  Click `OK` and you should see the contents of MongoDB.
+Once the MonjaDB plugin is installed, access `MonjaDB` from the Eclipse menu and select `Connect`. Set the database name to `scriptureforge` (both sites use the same database). Keep the other default settings and click `OK` and you should see the contents of the database.
 
 ### PhpStorm ###
 
@@ -164,16 +164,16 @@ Set *JSCS package* to `/usr/local/bin/jscs`
 Set *Search for config(s)* radio button to `.jscsrc or .jscs.json`
 Set the *Code style preset* dropdown to `Airbnb`
 
-Modify `/usr/local/lib/node_modules/jscs/presets/airbnb.json` and set the line 
+Modify `/usr/local/lib/node_modules/jscs/presets/airbnb.json` and change `"requireTrailingComma"` to
 `"disallowTrailingComma": true,`
 
 #### Creating the PhpStorm Project ####
 
 Launch PhpStorm.
 
-Click **Create New Project from Existing Files** --> **Next**. 
+Click **Create New Project from Existing Files**. Leave the default option (Web server is installed locally, source files are located under its document root) and click **Next**.
 
- From the **Create New Project: Choose Project Directory** dialog,  browse to the `web-languageforge` directory, then mark it as **Project Root** --> **Next**.
+ From the **Create New Project: Choose Project Directory** dialog,  browse to the `web-languageforge` directory, then mark it as **Project Root** (using the `Project Root` button in the toolbar) and click **Next**.
 
 From the **Add Local Server** dialog set
 Name: `languageforge.local`
@@ -201,7 +201,7 @@ xdebug.scream=0
 xdebug.idekey=PHPSTORM
 ```
 
-Reference [Xdebug wizard](https://xdebug.org/wizard.php)
+For more detailed installation instructions, reference the [Xdebug wizard](https://xdebug.org/wizard.php)
 
 #### Integrating Xdebug with PhpStorm ####
 
@@ -267,7 +267,7 @@ Unit testing currently uses [PHPUnit](https://phpunit.de/) which was already ins
 
 #### Integrating PHPUnit with PhpStorm ####
 
-**File** -> **Settings** -> **Languages & Frameworks** -> **PHPUnit**
+**File** -> **Settings** -> **Languages & Frameworks** -> **PHP** -> **PHPUnit**
 
 Under PHPUnit Library, select `Use Composer autoloader` option
 For `Path to script` browse to `web-languageforge/src/vendor/autoload.php`
@@ -312,10 +312,10 @@ To run **scriptureforge** tests:
 ./rune2e.sh sf
 ```
 
-To test a certain test spec, add a parameter `--specs [spec name]`.  For example, 
+To test a certain test spec, add a parameter `--specs [spec name]`.  For example,
 ```
 ./rune2e.sh lf --specs lexicon-new-project
-``` 
+```
 will run the  the *lexicon-new-project.spec.js* tests on **languageforge**.
 
 To add more verbosity during E2E tests, add a parameter `--verbosity true`
