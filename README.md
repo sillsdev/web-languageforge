@@ -46,7 +46,7 @@ mkdir xForge
 cd xForge
 git clone https://github.com/sillsdev/web-languageforge web-languageforge --recurse-submodules
 ````
-The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder
+The `--recurse-submodules` is used to fetch many of the Ansible roles used by the Ansible playbooks in the deploy folder. If you've already cloned the repo without `--recurse-submodules`, run `git submodule update --init --recursive` to pull and initialize them.
 
 
 If you want to run an independant repo for scriptureforge, clone its repo also...
@@ -72,6 +72,7 @@ cd web-languageforge/deploy
 ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
 ansible-playbook -i hosts playbook_xenial.yml --limit localhost -K
 ````
+If you run into an error on the `ssl_config : LetsEncrypt: Install packages` task, run the playbook again and that task should succeed the second time it is run.
 
 ### Language Forge Configuration File <a id="LFConfig"></a>
 Manually edit the Language Forge config file
