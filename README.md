@@ -146,6 +146,27 @@ phpstorm
 
 LSDev members can contact their team lead to get the SIL license information.  PhpStorm also has an option *Evaluate for free for 30 days*.
 
+#### Coding Standard and Style ####
+
+[Download](https://plugins.jetbrains.com/plugin/7294) the PhpStorm plugin for EditorConfig and then install:
+
+**File** --> **Settings** --> **Plugins** --> **Install plugin from disk**
+
+This uses the `.editorconfig` file at the root folder to enforce coding standards.
+
+Also enable JSCS:
+
+**File** -> **Settings** -> **Languages & Frameworks** -> **JavaScript** --> **Code Quality Tools**  --> **JSCS**
+
+Set the *Enable* checkbox
+Set *Node interpreter* to `usr/local/bin/node`
+Set *JSCS package* to `/usr/local/bin/jscs`
+Set *Search for config(s)* radio button to `.jscsrc or .jscs.json`
+Set the *Code style preset* dropdown to `Airbnb`
+
+Modify `/usr/local/lib/node_modules/jscs/presets/airbnb.json` and set the line 
+`"disallowTrailingComma": true,`
+
 #### Creating the PhpStorm Project ####
 
 Launch PhpStorm.
@@ -177,7 +198,6 @@ xdebug.remote_enable = 1
 xdebug.remote_connect_back=1
 xdebug.remote_port = 9000
 xdebug.scream=0
-xdebug.show_local_vars=1
 xdebug.idekey=PHPSTORM
 ```
 
@@ -319,7 +339,7 @@ gulp mongodb-copy-prod-db
 If you want to _start over_ with your mongo database, you can use the factory reset script like so (this will delete all data in the mongodb):
 ````
 cd scripts/tools
-./factoryReset.php run
+./FactoryReset.php run
 ````
 After a fresh factory reset, there is one user.  username: admin password: password
 
@@ -338,5 +358,3 @@ In the root folder: `npm install`
 #### Update composer ####
 
 In src/: `composer install`
-
-
