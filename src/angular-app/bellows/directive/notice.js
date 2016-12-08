@@ -1,26 +1,28 @@
 'use strict';
 
 angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnimate', 'ngSanitize'])
-  .factory('silNoticeService', ['$interval', 'utilService', '$sce', function($interval, util, $sce) {
+  .factory('silNoticeService', ['$interval', 'utilService', function ($interval, util) {
     var notices = [];
     var timers = {};
-    var loadingMessage, isLoading = false;
-    var percentComplete = 0, showProgressBar = false;
+    var percentComplete = 0;
+    var showProgressBar = false;
+    var isLoading = false;
+    var loadingMessage;
 
-    var getIndexById = function(id) {
-      for (var i=0; i<notices.length; i++) {
+    var getIndexById = function (id) {
+      for (var i = 0; i < notices.length; i++) {
         if (notices[i].id == id) {
           return i;
         }
       }
     };
+
     return {
-      push: function(type, message, details, cannotClose) {
+      push: function (type, message, details, cannotClose) {
         var id = util.uuid();
         if (type() == this.SUCCESS()) {
           // success alert messages will auto-close after 10 seconds
-          var localFactory = this;
-          timers[id] = $interval(function() {localFactory.removeById(id); }, 4 * 1000, 1);
+          timers[id] = $interval(function () {this.removeById(id);}.bind(this), 4 * 1000, 1);
         }
 
         var obj = {
@@ -29,14 +31,14 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
           id: id,
           details: details,
           showDetails: false,
-          toggleDetails: function() {this.showDetails = !this.showDetails;}
+          toggleDetails: function () {this.showDetails = !this.showDetails;}
         };
 
         if (details) {
-          details = details.replace(/<p>/gm, "\n");
-          details = details.replace(/<pre>/gm, "\n");
-          details = details.replace(/<\/p>/gm, "\n");
-          details = details.replace(/<\/pre>/gm, "\n");
+          details = details.replace(/<p>/gm, '\n');
+          details = details.replace(/<pre>/gm, '\n');
+          details = details.replace(/<\/p>/gm, '\n');
+          details = details.replace(/<\/pre>/gm, '\n');
           details = details.replace(/<[^>]+>/gm, ''); // remove HTML
           details = details.replace(/\\\//g, '/');
           obj.details = details;
@@ -49,71 +51,93 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
         notices.push(obj);
         return id;
       },
-      removeById: function(id) {
+
+      removeById: function (id) {
         this.remove(getIndexById(id));
         if (id in timers) {
           $interval.cancel(timers[id]);
         }
       },
-      remove: function(index) {
+
+      remove: function (index) {
         if (!angular.isUndefined(index)) {
           notices.splice(index, 1);
         }
       },
-      get: function() {
+
+      get: function () {
         return notices;
       },
-      getLoadingMessage: function() {
+
+      getLoadingMessage: function () {
         return loadingMessage;
       },
-      setLoading: function(message) {
+
+      setLoading: function (message) {
         loadingMessage = message;
         isLoading = true;
       },
-      getPercentComplete: function() {
+
+      getPercentComplete: function () {
         return percentComplete;
       },
-      setPercentComplete: function(percent) {
+
+      setPercentComplete: function (percent) {
         percentComplete = percent;
         showProgressBar = true;
       },
-      cancelProgressBar: function() {
+
+      cancelProgressBar: function () {
         showProgressBar = false;
       },
-      showProgressBar: function() {
+
+      showProgressBar: function () {
         return showProgressBar;
       },
-      cancelLoading: function() {
+
+      cancelLoading: function () {
         loadingMessage = '';
         isLoading = false;
       },
-      isLoading: function() {
+
+      isLoading: function () {
         return isLoading;
       },
-      ERROR:   function() { return 'error'; },
-      WARN:    function() { return 'warn'; },
-      INFO:    function() { return 'info'; },
-      SUCCESS: function() { return 'success'; }
+
+      /** @return {string} */
+      ERROR:   function () { return 'error'; },
+
+      /** @return {string} */
+      WARN:    function () { return 'warn'; },
+
+      /** @return {string} */
+      INFO:    function () { return 'info'; },
+
+      /** @return {string} */
+      SUCCESS: function () { return 'success'; }
     };
   }])
-  .directive('silNotices', ['silNoticeService', 'sessionService', function(noticeService, sessionService) {
+  .directive('silNotices', ['silNoticeService', 'sessionService',
+  function (noticeService, sessionService) {
     return {
-      restrict : 'EA',
-      templateUrl : '/angular-app/bellows/directive/notice.html',
-      replace : true,
-      compile : function(tElement, tAttrs) {
-        return function($scope, $elem, $attr) {
+      restrict: 'EA',
+      templateUrl: '/angular-app/bellows/directive/notice.html',
+      replace: true,
+      compile: function () {
+        return function ($scope) {
           $scope.githubRepo = 'web-scriptureforge';
           if (sessionService.baseSite() === 'languageforge') {
             $scope.githubRepo = 'web-languageforge';
           }
 
-          $scope.closeNotice = function(id) {
+          $scope.closeNotice = function (id) {
             noticeService.removeById(id);
           };
-          $scope.notices = function() {
+
+          $scope.notices = function () {
             return noticeService.get();
           };
+
           $scope.getLoadingMessage = noticeService.getLoadingMessage;
           $scope.isLoading = noticeService.isLoading;
           $scope.showProgressBar = noticeService.showProgressBar;
