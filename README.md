@@ -63,7 +63,7 @@ ln -s web-languageforge web-scriptureforge
 
 Change the variable *mongo_path: /var/lib/mongodb* in `deploy/vars_palaso.yml`. Set it to a location where MongoDB should store its databases.
  - **Vagrant VM Setup**: uncomment line 6 and comment line 5
- - **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on you HDD rather than SSD). Make sure the `mongodb` user has permission to read and write to the path you specify.
+ - **Local Linux Development Setup**: uncomment line 5 and comment line 6 (or whatever is appropriate on your system, its best to have Mongo store databases on your HDD rather than SSD). Make sure the `mongodb` user has permission to read and write to the path you specify.
 
 Run the following Ansible playbooks to configure Ansible and run both sites.
 
