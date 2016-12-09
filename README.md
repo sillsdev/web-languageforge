@@ -183,22 +183,12 @@ Web server root URL: `http://languageforge.local`
 
 ### Xdebug ###
 
-Ansible will have installed xdebug, but you still need to manually edit the following files:
-
-
-Edit **/etc/php/7.0/cli/php.ini** to have this line
-`zend_extension = /usr/lib/php/20151012/xdebug.so`
-
-Append the following section to the end of **/etc/php/7.0/apache2/php.ini**
+Ansible will have installed Xdebug, but you still need to manually edit `/etc/php/7.0/apache2/php.ini` and append the following lines:
 
 ```
-zend_extension = /usr/lib/php/20151012/xdebug.so
-
 [Xdebug]
 xdebug.remote_enable = 1
-xdebug.remote_connect_back=1
 xdebug.remote_port = 9000
-xdebug.scream=0
 xdebug.idekey=PHPSTORM
 ```
 
