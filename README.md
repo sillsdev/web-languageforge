@@ -165,7 +165,7 @@ Set *JSCS package* to `/usr/local/bin/jscs`
 Set *Search for config(s)* radio button to `.jscsrc or .jscs.json`
 Set the *Code style preset* dropdown to `Airbnb`
 
-Modify `/usr/local/lib/node_modules/jscs/presets/airbnb.json` and change `"requireTrailingComma"` to
+Modify `/usr/local/lib/node_modules/jscs/presets/airbnb.json` and change `"requireTrailingComma": { "ignoreSingleLine": true }` to
 `"disallowTrailingComma": true,`
 
 #### Creating the PhpStorm Project ####
