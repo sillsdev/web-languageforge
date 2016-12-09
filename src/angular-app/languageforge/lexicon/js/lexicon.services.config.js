@@ -8,7 +8,7 @@ angular.module('lexicon.services')
 
   this.refresh = function refresh() {
     this.configForUser = getConfigForUser();
-  };
+  }.bind(this);
 
   function getConfigForUser() {
     var config = angular.copy(sessionService.session.projectSettings.config);
