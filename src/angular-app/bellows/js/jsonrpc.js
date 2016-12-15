@@ -112,9 +112,9 @@ angular.module('jsonRpc', ['sf.error'])
       };
 
       this.requesterror = function (data, status, headers, config) {
-        // only report error if the browser/network is not OFFLINE
+        // only report error if the browser/network is not OFFLINE and not timeout (status -1)
         // otherwise fail silently (the browser will console log a failed connection anyway)
-        if (status != 0 && status != '0') {
+        if (status > 0 && status != '0') {
           error.error('RPC Error', 'Server Status Code ' + status);
           result.ok = false;
           result.data = data;
