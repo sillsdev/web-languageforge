@@ -10,6 +10,7 @@ use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\Mapper\MongoStore;
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\FileUtilities;
 
 class LexProjectModel extends LfProjectModel
@@ -26,6 +27,11 @@ class LexProjectModel extends LfProjectModel
 
         $this->config = new LexConfiguration();
         $this->sendReceiveProject = new SendReceiveProjectModel();
+
+        $this->lastSyncedDate = UniversalTimestamp::fromSecondsTimestamp(0);
+        $this->setReadOnlyProp('lastSyncedDate');
+        $this->lastEntryModifiedDate = UniversalTimestamp::fromSecondsTimestamp(1);
+        $this->setReadOnlyProp('lastEntryModifiedDate');
 
         // default values
         $this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
@@ -50,6 +56,12 @@ class LexProjectModel extends LfProjectModel
 
     /** @var SendReceiveProjectModel */
     public $sendReceiveProject;
+
+    /** @var UniversalTimestamp */
+    public $lastSyncedDate;
+
+    /** @var UniversalTimestamp */
+    public $lastEntryModifiedDate;
 
     /**
      * Adds an input system if it doesn't already exist
