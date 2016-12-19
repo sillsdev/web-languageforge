@@ -33,11 +33,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       ;
   }])
   .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService',
-    '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils',
+    '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'lexRightsService',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
     'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService',
   function ($scope, userService, sessionService, lexService,
-            $state, $window, $interval, $filter, linkService, utils,
+            $state, $window, $interval, $filter, linkService, utils, rights,
             notice, $rootScope, $location, lexConfig, commentService,
             editorService, lexProjectService, sendReceive, modal) {
 
@@ -45,6 +45,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
     $scope.$state = $state;
     $scope.config = lexConfig.configForUser;
+    $scope.rights = rights;
     $scope.lastSavedDate = new Date();
     $scope.currentEntry = {};
     $scope.commentService = commentService;
@@ -687,37 +688,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
     // hack to pass down the parent scope down into all child directives (i.e. entry, sense, etc)
     $scope.control = $scope;
-
-    // permissions stuff
-    $scope.rights = {
-      canEditProject: function canEditProject() {
-        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-        return sessionService.hasProjectRight(sessionService.domain.PROJECTS,
-          sessionService.operation.EDIT);
-      },
-
-      canEditEntry: function canEditEntry() {
-        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-        return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
-          sessionService.operation.EDIT);
-      },
-
-      canDeleteEntry: function canDeleteEntry() {
-        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-        return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
-          sessionService.operation.DELETE);
-      },
-
-      canComment: function canComment() {
-        if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-        return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
-          sessionService.operation.CREATE);
-      }
-    };
 
     // conditionally register watch
     if ($scope.rights.canEditEntry()) {
