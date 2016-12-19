@@ -50,51 +50,21 @@ angular.module('lexicon',
       suffix: '.json'
     });
     $translateProvider.preferredLanguage('en');
-      $translateProvider.useSanitizeValueStrategy('escape');
+    $translateProvider.useSanitizeValueStrategy('escape');
   }])
   .controller('LexiconCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService',
     '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService',
-    'lexSendReceiveApi', 'lexSendReceive',
+    'lexSendReceiveApi', 'lexSendReceive', 'lexRightsService',
   function ($scope, sessionService, lexConfig, lexProjectService,
             $translate, $location, $interval, notice, editorService,
-            sendReceiveApi, sendReceive) {
+            sendReceiveApi, sendReceive, rights) {
     var pristineLanguageCode;
 
     $scope.project = sessionService.session.project;
     $scope.projectSettings = sessionService.session.projectSettings;
     $scope.syncNotice = sendReceive.syncNotice;
 
-    $scope.rights = {};
-    $scope.rights.canRemoveUsers = function canRemoveUsers() {
-      if (sendReceive.isInProgress()) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-        sessionService.operation.DELETE);
-    };
-
-    $scope.rights.canCreateUsers = function canCreateUsers() {
-      if (sendReceive.isInProgress()) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-          sessionService.operation.CREATE);
-    };
-
-    $scope.rights.canEditUsers = function canEditUsers() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-          sessionService.operation.EDIT);
-    };
-
-    $scope.rights.canArchiveProject = function canArchiveProject() {
-      if (sendReceive.isInProgress() || !angular.isDefined(sessionService.session.project))
-        return false;
-
-      return (sessionService.session.project.userIsProjectOwner ||
-        sessionService.hasSiteRight(sessionService.domain.PROJECTS,
-          sessionService.operation.ARCHIVE));
-    };
-
+    $scope.rights = rights;
     $scope.rights.showControlBar = function showControlBar() {
       return $scope.rights.canRemoveUsers() || $scope.rights.canCreateUsers() ||
         $scope.rights.canEditUsers();
