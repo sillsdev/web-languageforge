@@ -4,13 +4,12 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
   'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor', 'lexicon.services',
   'palaso.util.model.transform'])
 
-// Configuation Controller
+// Configuration Controller
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService',
   '$filter', '$modal', 'lexConfigService', 'utilService',
 function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, util) {
   var inputSystemSelected = true;
-  lexProjectService.setBreadcrumbs('configuration',
-    $filter('translate')('Configuration'));
+  lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Configuration'));
   $scope.configDirty = angular.copy(ss.session.projectSettings.config);
   $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
   $scope.optionlistPristine = angular.copy(ss.session.projectSettings.optionlists);
@@ -21,7 +20,7 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
    * References: http://en.wikipedia.org/wiki/IETF_language_tag
    *             http://tools.ietf.org/html/rfc5646#page-15
    *
-   * @param {InputSystem} inputSystem
+   * @param inputSystem
    */
   function InputSystemsViewModel(inputSystem) {
     if (inputSystem == undefined) {
@@ -135,7 +134,9 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
         // Script
         // scripts would be better obtained from a service CP 2014-08
-        if ((/^[a-zA-Z]{4}$/.test(tokens[i])) && (tokens[i] in _inputSystems_scripts)) {
+        if ((/^[a-zA-Z]{4}$/.test(tokens[i])) &&
+          (tokens[i] in _inputSystems_scripts) // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+        ) {
           this.script = tokens[i];
           this.special = specialOptionsOrder[3];
           continue;
@@ -144,7 +145,8 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
         // Region
         // scripts would be better obtained from a service CP 2014-08
         if ((/^[a-zA-Z]{2}$/.test(tokens[i]) || /^[0-9]{3}$/.test(tokens[i])) &&
-            (tokens[i] in _inputSystems_regions)) {
+          (tokens[i] in _inputSystems_regions) // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+        ) {
           this.region = tokens[i];
           this.special = specialOptionsOrder[3];
           continue;
@@ -315,13 +317,19 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
       }
     });
 
-    angular.forEach($scope.configDirty.entry.fields.senses.fields.examples.fieldOrder, function (fieldName) {
-      if (angular.isDefined($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName])) {
-        if ($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName].type !== 'fields') {
-          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName];
+    angular.forEach($scope.configDirty.entry.fields.senses.fields.examples.fieldOrder,
+      function (fieldName) {
+        if (angular.isDefined($scope.configDirty.entry.fields.senses.fields.examples.
+            fields[fieldName])
+        ) {
+          if ($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName].type !==
+            'fields'
+          ) {
+            $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.
+              fields[fieldName];
+          }
         }
-      }
-    });
+      });
 
     // suggested languages from lexical data
     $scope.suggestedLanguageCodes = [];
@@ -354,8 +362,8 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
           notice.push(notice.SUCCESS,
             $filter('translate')('Configuration updated successfully'));
           $scope.configForm.$setPristine();
-          $scope.projectSettings.config = angular.copy($scope.configDirty);
-          $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
+          ss.session.projectSettings.config = angular.copy($scope.configDirty);
+          ss.session.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
           $scope.optionlistPristine = angular.copy($scope.optionlistDirty);
           lexConfig.refresh();
         }
@@ -370,7 +378,7 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
   $scope.isInputSystemInUse = function isInputSystemInUse() {
     return ($scope.inputSystemViewModels[$scope.selectedInputSystemId].inputSystem.tag in
-      $scope.projectSettings.config.inputSystems);
+      ss.session.projectSettings.config.inputSystems);
   };
 
   $scope.newExists = function newExists(special) {
@@ -477,7 +485,8 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 }])
 
 // Field Configuration Controller
-.controller('FieldConfigCtrl', ['$scope', '$modal', function ($scope, $modal) {
+.controller('FieldConfigCtrl', ['$scope', '$modal', 'sessionService',
+function ($scope, $modal, ss) {
   $scope.showAllFields = false;
 
   $scope.currentField = {
@@ -690,9 +699,9 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
   $scope.showRemoveCustomField = function showRemoveCustomField(fieldName) {
     return $scope.isCustomField(fieldName) &&
-      !(fieldName in $scope.projectSettings.config.entry.fields) &&
-      !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields) &&
-      !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields.examples.fields);
+      !(fieldName in ss.session.projectSettings.config.entry.fields) &&
+      !(fieldName in ss.session.projectSettings.config.entry.fields.senses.fields) &&
+      !(fieldName in ss.session.projectSettings.config.entry.fields.senses.fields.examples.fields);
   };
 
   $scope.removeSelectedCustomField = function removeSelectedCustomField() {
