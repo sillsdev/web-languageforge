@@ -16,6 +16,7 @@ angular.module('lexicon',
     'lexicon.view.settings',
     'lexicon.import-export',
     'lexicon.settings',
+    'lexicon.sync',
     'lexicon.services',
     'lexicon.filters',
     'pascalprecht.translate'
@@ -42,6 +43,10 @@ angular.module('lexicon',
         url: '/settings',
         templateUrl: '/angular-app/languageforge/lexicon/views/settings.html'
       })
+      .state('sync', {
+        url: '/sync',
+        templateUrl: '/angular-app/languageforge/lexicon/views/sync.html'
+      })
       ;
 
     // configure interface language file path
@@ -61,7 +66,6 @@ angular.module('lexicon',
     var pristineLanguageCode;
 
     $scope.project = sessionService.session.project;
-    $scope.projectSettings = sessionService.session.projectSettings;
     $scope.syncNotice = sendReceive.syncNotice;
 
     $scope.rights = rights;
@@ -119,26 +123,9 @@ angular.module('lexicon',
       }
     });
 
-    $scope.showSyncButton = function showSyncButton() {
-      var isEditorView = ($location.path().indexOf('/editor/') == 0);
-      return !$scope.project.isArchived && $scope.rights.canEditUsers() &&
-        $scope.projectSettings.hasSendReceive && isEditorView;
-    };
-
-    $scope.disableSyncButton = function disableSyncButton() {
-      return sendReceive.isStarted();
-    };
-
-    // Called when Send/Receive button clicked
-    $scope.syncProject = function syncProject() {
-      sendReceiveApi.receiveProject(function (result) {
-        if (result.ok) {
-          sendReceive.setSyncStarted();
-        } else {
-          notice.push(notice.ERROR,
-            'The project could not be synchronized with LanguageDepot.org. Please try again.');
-        }
-      });
+    $scope.showSync = function showSync() {
+      return !$scope.project.isArchived && rights.canEditUsers() &&
+        sessionService.session.projectSettings.hasSendReceive;
     };
 
     $scope.$on('$destroy', sendReceive.cancelAllStatusTimers);

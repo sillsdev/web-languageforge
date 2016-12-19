@@ -41,6 +41,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       this.selected[tag] = true;
     };
 
+    //noinspection JSUnusedGlobalSymbols
     InputSystemsViewModel.prototype.deselect = function deselect(tag) {
       this.selected[tag] = false;
     };
@@ -86,7 +87,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       //      $scope.viewSettingForm.$setDirty();
     };
 
-    $scope.configDirty = angular.copy($scope.projectSettings.config);
+    $scope.configDirty = angular.copy(ss.session.projectSettings.config);
 
     // Typeahead for user selection
     $scope.typeahead = {};
@@ -211,7 +212,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         if (result.ok) {
           notice.push(notice.SUCCESS, $filter('translate')('View settings updated successfully'));
           $scope.viewSettingForm.$setPristine();
-          $scope.projectSettings.config = angular.copy($scope.configDirty);
+          ss.session.projectSettings.config = angular.copy($scope.configDirty);
           lexConfig.refresh();
         }
 
