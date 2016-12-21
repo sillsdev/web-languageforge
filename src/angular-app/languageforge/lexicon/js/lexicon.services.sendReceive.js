@@ -64,9 +64,10 @@ angular.module('lexicon.services')
       // SRState is CLONING or SYNCING
       // logic should match PHP SendReceiveCommands::isInProgress
       this.isInProgress = function isInProgress() {
-        return (this.isSendReceiveProject() &&
+        return this.isSendReceiveProject() &&
           angular.isDefined(status) && angular.isDefined(status.SRState) &&
-          (status.SRState == 'CLONING' || status.SRState == 'LF_CLONING' || status.SRState == 'SYNCING'));
+          (status.SRState == 'CLONING' || status.SRState == 'LF_CLONING' ||
+          status.SRState == 'SYNCING');
       };
 
       // S/R isInProgress(), SRState is unknown, or SRState is PENDING
@@ -240,6 +241,8 @@ angular.module('lexicon.services')
                 status.SRState = previousSRState;
               } else if (previousSRState == unknownSRState) {
                 this.clearState();
+              } else {
+                (pollUpdateSuccessCallback || angular.noop)();
               }
             } else {
               (pollUpdateSuccessCallback || angular.noop)();
