@@ -42,6 +42,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
             editorService, lexProjectService, sendReceive, modal) {
 
     var pristineEntry = {};
+    var warnOfUnsavedEditsId;
 
     $scope.$state = $state;
     $scope.config = lexConfig.configForUser;
@@ -116,8 +117,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     }
 
     function warnOfUnsavedEdits(entry) {
-      notice.push(notice.WARN, 'A synchronize has been started by another user. ' +
-        'When the synchronize has finished, please check your recent edits in entry "' +
+      warnOfUnsavedEditsId = notice.push(notice.WARN, 'A synchronize has been started by another ' +
+        'user. When the synchronize has finished, please check your recent edits in entry "' +
         $scope.getWordForDisplay(entry) + '".');
     }
 
@@ -651,6 +652,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       editorService.refreshEditorData().then(function () {
         setCurrentEntry($scope.entries[editorService.getIndexInEntries($scope.currentEntry.id)]);
         sessionService.refresh(lexConfig.refresh);
+        notice.removeById(warnOfUnsavedEditsId);
       });
     }
 
