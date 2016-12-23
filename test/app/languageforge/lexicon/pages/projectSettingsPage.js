@@ -30,45 +30,12 @@ function ProjectSettingsPage() {
   };
 
   this.tabs = {
-    project: this.getTabByName('Project Properties'),
-    sendReceive: this.getTabByName('Send and Receive Properties')
+    project: this.getTabByName('Project Properties')
   };
 
   this.projectTab = {
     saveButton: this.tabDivs.get(0).element(by.buttonText('Save'))
   };
-
-  this.sendReceiveTab = {
-    formStatus:             this.tabDivs.get(1).element(by.id('form-status')),
-    loginInput:             this.tabDivs.get(1).element(by.id('srUsername')),
-    loginUnknown:           this.tabDivs.get(1).element(by.id('usernameUnknown')),
-    loginOk:                this.tabDivs.get(1).element(by.id('usernameOk')),
-    passwordInput:          this.tabDivs.get(1).element(by.id('srPassword')),
-    passwordUnknown:        this.tabDivs.get(1).element(by.id('passwordUnknown')),
-    passwordOk:             this.tabDivs.get(1).element(by.id('passwordOk')),
-    visiblePasswordInput:   this.tabDivs.get(1).element(by.id('srVisiblePassword')),
-    showCharactersCheckbox: this.tabDivs.get(1).element(by.model('showPassword')),
-    projectUneditable:      this.tabDivs.get(1).element(by.id('srProject')),
-    saveButton:             this.tabDivs.get(1).element(by.buttonText('Save'))
-  };
-
-  this.sendReceiveTab.projectSelect = function () {
-    return this.tabDivs.get(1).element(by.id('srProjectSelect'));
-  }.bind(this);
-
-  this.sendReceiveTab.projectSelectedOption = function () {
-    return this.projectSelect().element(by.css('option:checked')).getText();
-  };
-
-  this.sendReceiveTab.formStatus.expectHasNoError = function () {
-    expect(this.sendReceiveTab.formStatus.getAttribute('class')).not.toContain('alert');
-  }.bind(this);
-
-  this.sendReceiveTab.formStatus.expectContainsError = function (partialMsg) {
-    if (!partialMsg) partialMsg = '';
-    expect(this.sendReceiveTab.formStatus.getAttribute('class')).toContain('alert-error');
-    expect(this.sendReceiveTab.formStatus.getText()).toContain(partialMsg);
-  }.bind(this);
 
   /** Second parameter is optional, default false. If true, fieldName will be considered
    * a regular expression that should not be touched. If false or unspecified, fieldName
