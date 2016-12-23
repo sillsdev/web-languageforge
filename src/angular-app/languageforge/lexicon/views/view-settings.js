@@ -2,9 +2,13 @@
 
 angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
   'palaso.ui.language', 'ngAnimate', 'lexicon.services'])
-  .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService',
-    'lexProjectService', 'sessionService', '$filter', '$modal', 'lexConfigService',
-  function ($scope, notice, userService, lexProjectService, ss, $filter, $modal, lexConfig) {
+  .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService', 'lexProjectService',
+    'sessionService', '$filter', '$modal', 'lexConfigService', 'lexSendReceive',
+  function ($scope, notice, userService, lexProjectService,
+            sessionService, $filter, $modal, lexConfig, sendReceive) {
+    var currentTabIndex = 0;
+    var warnOfUnsavedEditsId;
+
     lexProjectService.setBreadcrumbs('viewSettings', $filter('translate')('View Settings'));
 
     // ViewModel for input systems selectors
@@ -87,7 +91,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       //      $scope.viewSettingForm.$setDirty();
     };
 
-    $scope.configDirty = angular.copy(ss.session.projectSettings.config);
+    $scope.configDirty = angular.copy(sessionService.session.projectSettings.config);
 
     // Typeahead for user selection
     $scope.typeahead = {};
@@ -97,7 +101,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       $scope.typeahead.users = $filter('filter')($scope.usersWithoutSettings, query);
     };
 
-    $scope.typeahead.selectUser = function selectuser(user) {
+    $scope.typeahead.selectUser = function selectUser(user) {
       $scope.typeahead.user = user;
       $scope.typeahead.userName = user.name;
     };
@@ -116,24 +120,13 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       }$scope.currentField.inputSystems = {};
     };
 
-    $scope.tabs = [
-      { byRole: true, byUser: false, name: $filter('translate')('Observer'),
-        role: 'observer', view: $scope.configDirty.roleViews.observer, active: true },
-      { byRole: true, byUser: false, name: $filter('translate')('Commenter'),
-        role: 'observer_with_comment', view: $scope.configDirty.roleViews.observer_with_comment },
-      { byRole: true, byUser: false, name: $filter('translate')('Contributor'),
-        role: 'contributor', view: $scope.configDirty.roleViews.contributor },
-      { byRole: true, byUser: false, name: $filter('translate')('Manager'),
-        role: 'project_manager', view: $scope.configDirty.roleViews.project_manager },
-      { byRole: false, byUser: true, name: $filter('translate')('Member Specific'),
-        role: undefined, view: undefined }
-    ];
     $scope.state = 'userSelectList';
     $scope.isSaving = false;
     $scope.list = {};
 
-    $scope.selectTab = function (idx) {
-      $scope.currentTab = $scope.tabs[idx];
+    $scope.selectTab = function (index) {
+      currentTabIndex = index;
+      $scope.currentTab = $scope.tabs[index];
       if ($scope.currentTab.byRole) {
         $scope.forWhom = $scope.currentTab.name;
         $scope.currentView = $scope.currentTab.view;
@@ -204,21 +197,88 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       };
     };
 
-    $scope.getFieldConfig($scope.configDirty);
+    function setupView() {
+      $scope.tabs = [
+        { byRole: true, byUser: false, name: $filter('translate')('Observer'),
+          role: 'observer', view: $scope.configDirty.roleViews.observer, active: true },
+        { byRole: true, byUser: false, name: $filter('translate')('Commenter'),
+          role: 'observer_with_comment', view: $scope.configDirty.roleViews.observer_with_comment },
+        { byRole: true, byUser: false, name: $filter('translate')('Contributor'),
+          role: 'contributor', view: $scope.configDirty.roleViews.contributor },
+        { byRole: true, byUser: false, name: $filter('translate')('Manager'),
+          role: 'project_manager', view: $scope.configDirty.roleViews.project_manager },
+        { byRole: false, byUser: true, name: $filter('translate')('Member Specific'),
+          role: undefined, view: undefined }
+      ];
+
+      $scope.getFieldConfig($scope.configDirty);
+    }
+
+    setupView();
+
+    function warnOfUnsavedEdits() {
+      if (angular.isUndefined(warnOfUnsavedEditsId)) {
+        warnOfUnsavedEditsId = notice.push(notice.WARN, 'A synchronize has been started by ' +
+          'another user. Please make your view settings changes when the synchronize has ' +
+          'finished.');
+      }
+    }
 
     $scope.settingsApply = function settingsApply() {
       $scope.isSaving = true;
       lexProjectService.updateConfiguration($scope.configDirty, [], function (result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS, $filter('translate')('View settings updated successfully'));
+          var isSuccess = result.data;
+          if (isSuccess) {
+            notice.push(notice.SUCCESS, $filter('translate')('View settings updated successfully'));
+            sessionService.session.projectSettings.config = angular.copy($scope.configDirty);
+            lexConfig.refresh();
+          } else {
+            warnOfUnsavedEdits();
+            $scope.configDirty = angular.copy(sessionService.session.projectSettings.config);
+            setupView();
+            $scope.selectTab(currentTabIndex);
+            $scope.selectField($scope.currentField.name, $scope.currentView);
+            $scope.selectUser($scope.currentUserId);
+            sendReceive.startSyncStatusTimer();
+          }
+
           $scope.viewSettingForm.$setPristine();
-          ss.session.projectSettings.config = angular.copy($scope.configDirty);
-          lexConfig.refresh();
         }
 
         $scope.isSaving = false;
       });
     };
+
+    sendReceive.setPollUpdateSuccessCallback(pollUpdateSuccess);
+    sendReceive.setSyncProjectStatusSuccessCallback(syncProjectStatusSuccess);
+
+    function pollUpdateSuccess() {
+      if ($scope.viewSettingForm.$dirty) {
+        if (sendReceive.isInProgress()) {
+          warnOfUnsavedEdits();
+          $scope.configDirty = angular.copy(sessionService.session.projectSettings.config);
+          setupView();
+          $scope.selectTab(currentTabIndex);
+          $scope.selectField($scope.currentField.name, $scope.currentView);
+          $scope.selectUser($scope.currentUserId);
+          $scope.viewSettingForm.$setPristine();
+        }
+      }
+    }
+
+    function syncProjectStatusSuccess() {
+      sessionService.refresh(function () {
+        $scope.configDirty = angular.copy(sessionService.session.projectSettings.config);
+        setupView();
+        $scope.selectTab(currentTabIndex);
+        $scope.selectField($scope.currentField.name, $scope.currentView);
+        $scope.selectUser($scope.currentUserId);
+        $scope.viewSettingForm.$setPristine();
+        notice.removeById(warnOfUnsavedEditsId);
+        warnOfUnsavedEditsId = undefined;
+      });
+    }
 
     $scope.currentField = {
       name: '',
@@ -227,6 +287,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         selecteds: {}
       }
     };
+
     $scope.selectField = function selectField(fieldName, view) {
       $scope.currentField.name = fieldName;
       if (angular.isDefined(view) &&
@@ -246,7 +307,8 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       }
     };
 
-    $scope.selectField('lexeme', $scope.tabs[0].view);
+    $scope.selectTab(0);
+    $scope.selectField('lexeme', $scope.currentView);
 
     $scope.moveUp = function moveUp(currentTag, view) {
       $scope.currentField.inputSystems.moveTagUp(currentTag);
