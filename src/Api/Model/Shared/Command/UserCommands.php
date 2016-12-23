@@ -183,6 +183,16 @@ class UserCommands
     }
 
     /**
+     * Utility to lowercase the characters in a username and replace spaces with periods.
+     * @param $username
+     * @return string
+     */
+    public static function standardizedUsername($username)
+    {
+        return strtolower(str_replace(' ', '.', $username));
+    }
+
+    /**
      * Utility to check if user is updating to a unique set of username and email.
      * @param UserModel|UserModelWithPassword $user
      * @param string $updatedUsername
@@ -258,7 +268,8 @@ class UserCommands
         $identityCheck = new IdentityCheck();
         $user = new UserModel();
         $emailUser = new UserModel();
-        $identityCheck->usernameExists = $user->readByUserName($username);
+        $identityCheck->usernameExists = $user->readByUserName(
+            UserCommands::standardizedUsername($username));
         // This utility assumes username matches the account
         $identityCheck->usernameMatchesAccount = true;
         if ($website) {
@@ -338,7 +349,7 @@ class UserCommands
     }
 
     /**
-     * System Admin: Create a user with only username and default site role.
+     * System Admin: Create a user with default site role.
      * @param string $params
      * @param Website $website
      * @return boolean|string
@@ -357,17 +368,19 @@ class UserCommands
     /**
      * Project Manager: Create a user with only username, add user to project if in context,
      * creating user gets email of new user credentials
-     * @param string $userName
+     * @param string $username
      * @param string $projectId
      * @param string $currentUserId
      * @param Website $website
      * @return CreateSimpleDto
      */
-    public static function createSimple($userName, $projectId, $currentUserId, $website)
+    public static function createSimple($username, $projectId, $currentUserId, $website)
     {
         $user = new UserModel();
-        $user->name = $userName;
-        $user->username = strtolower(str_replace(' ', '.', $user->name));
+        $user->name = $username;
+        $updatedUsername = UserCommands::standardizedUsername($username);
+        UserCommands::assertUniqueIdentity($user, $updatedUsername, '', $website);
+        $user->username = $updatedUsername;
         $user->role = SystemRoles::USER;
         $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
         $user->active = true;
