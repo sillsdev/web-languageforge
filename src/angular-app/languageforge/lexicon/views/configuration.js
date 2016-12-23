@@ -373,9 +373,11 @@ function ($scope, notice, lexProjectService, sessionService,
   }
 
   function warnOfUnsavedEdits() {
-    warnOfUnsavedEditsId = notice.push(notice.WARN, 'A synchronize has been started by ' +
-      'another user. Please make your configuration changes when the synchronize has ' +
-      'finished.');
+    if (angular.isUndefined(warnOfUnsavedEditsId)) {
+      warnOfUnsavedEditsId = notice.push(notice.WARN, 'A synchronize has been started by ' +
+        'another user. Please make your configuration changes when the synchronize has ' +
+        'finished.');
+    }
   }
 
   $scope.configurationApply = function configurationApply() {
@@ -454,6 +456,7 @@ function ($scope, notice, lexProjectService, sessionService,
       $scope.selectField($scope.currentField.name, true);
       $scope.configForm.$setPristine();
       notice.removeById(warnOfUnsavedEditsId);
+      warnOfUnsavedEditsId = undefined;
     });
   }
 
