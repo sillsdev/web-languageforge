@@ -25,33 +25,16 @@
                 </fieldset>
             </form>
         </tab>
-        <tab heading="{{'Send and Receive Properties' | translate}}" data-ng-show="sendReceive.showTab" disabled="!rights.canEditSendReceiveProperties">
-            <form class="form-horizontal well" data-ng-submit="updateSendReceiveCredentials()" novalidate>
-                <div class="row" align="center">
-                    <div class="span8" id="form-status" data-ng-class="formStatusClass">{{formStatus | translate}}&nbsp;</div>
-                </div>
-                <h4 data-translate="Send and Receive with LanguageDepot.org"></h4>
-                <pui-send-receive-credentials pui-project="project" pui-validate="isFormValid()" pui-reset="resetValidateForm()">
-                </pui-send-receive-credentials>
-                <div class="control-group" data-ng-show="rights.canEditSendReceiveProperties">
-                    <div class="controls">
-                        <button class="btn" type="submit">
-                            <i class="fa fa-check"></i>{{'Save' | translate}}</button>
-                    </div>
-                </div>
-            </form>
-        </tab>
         <!-- Archive tab disabled now that project owners can delete their own projects -->
         <tab heading="{{'Archive' | translate}}" data-ng-show="false">
             <form class="well">
-                <pui-archive-project pui-actionInProgress="actionInProgress">
+                <pui-archive-project pui-action-in-progress="actionInProgress">
                 </pui-archive-project>
             </form>
         </tab>
         <tab heading="{{'Delete' | translate}}" data-ng-show="rights.remove">
             <form class="well">
-                <pui-delete-project>
-                </pui-delete-project>
+                <pui-delete-project></pui-delete-project>
             </form>
         </tab>
     </tabset>
