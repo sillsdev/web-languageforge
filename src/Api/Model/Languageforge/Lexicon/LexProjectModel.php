@@ -99,6 +99,7 @@ class LexProjectModel extends LfProjectModel
         $settings = parent::getPublicSettings($userId);
         $settings['currentUserRole'] = $this->users[$userId]->role;
         $settings['hasSendReceive'] = $this->hasSendReceive();
+        $settings['lastSyncedDate'] = $this->lastSyncedDate->asDateTimeInterface()->format(\DateTime::RFC2822);
 
         return array_merge($settings, LexBaseViewDto::encode($this->id->asString(), $userId));
     }

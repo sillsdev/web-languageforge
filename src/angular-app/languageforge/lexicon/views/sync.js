@@ -8,6 +8,7 @@ angular.module('lexicon.sync', ['ui.bootstrap', 'bellows.services', 'palaso.ui.n
     lexProjectService.setBreadcrumbs('sync', 'Synchronize');
 
     $scope.syncNotice = sendReceive.syncNotice;
+    $scope.projectSettings = sessionService.session.projectSettings;
 
     $scope.showSyncButton = function showSyncButton() {
       return !sessionService.session.project.isArchived && rights.canEditUsers() &&

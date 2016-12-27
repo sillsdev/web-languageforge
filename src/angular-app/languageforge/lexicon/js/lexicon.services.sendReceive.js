@@ -26,8 +26,8 @@ angular.module('lexicon.services')
     };
   }])
   .service('lexSendReceive', ['sessionService', 'silNoticeService', 'lexSendReceiveApi',
-    '$interval', 'lexEditorDataService',
-    function (sessionService, notice, sendReceiveApi, $interval, editorData) {
+    '$interval', 'lexEditorDataService', '$filter',
+    function (sessionService, notice, sendReceiveApi, $interval, editorData, $filter) {
       const syncStatusInterval = 3000; // ms
       const pollUpdateInterval = 32000; // ms
       const cloneStatusInterval = 3000; // ms
@@ -191,7 +191,7 @@ angular.module('lexicon.services')
 
       // UI strings corresponding to SRState in the LfMerge state file.
       // SRStates with an "LF_" prefix are languageforge overrides
-      this.syncNotice = function syncNotice() {
+      this.syncNotice = function syncNotice(projectSettings) {
         if (angular.isUndefined(status)) return;
 
         switch (status.SRState) {
@@ -204,7 +204,14 @@ angular.module('lexicon.services')
             return 'Pending';
           case 'IDLE':
           case 'SYNCED':
-            return 'Synced';
+            if (angular.isDefined(projectSettings) &&
+              angular.isDefined(projectSettings.lastSyncedDate)
+            ) {
+              return 'Last sync: ' + $filter('relativetime')(projectSettings.lastSyncedDate);
+            } else {
+              return 'Synced';
+            }
+
           case 'LF_UNSYNCED':
             return 'Un-synced';
           case 'HOLD':
