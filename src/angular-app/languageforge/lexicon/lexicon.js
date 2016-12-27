@@ -18,7 +18,6 @@ angular.module('lexicon',
     'lexicon.settings',
     'lexicon.sync',
     'lexicon.services',
-    'lexicon.filters',
     'pascalprecht.translate'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
@@ -66,7 +65,6 @@ angular.module('lexicon',
     var pristineLanguageCode;
 
     $scope.project = sessionService.session.project;
-    $scope.syncNotice = sendReceive.syncNotice;
 
     $scope.rights = rights;
     $scope.rights.showControlBar = function showControlBar() {
