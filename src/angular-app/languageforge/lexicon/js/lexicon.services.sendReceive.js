@@ -191,7 +191,7 @@ angular.module('lexicon.services')
 
       // UI strings corresponding to SRState in the LfMerge state file.
       // SRStates with an "LF_" prefix are languageforge overrides
-      this.syncNotice = function syncNotice(projectSettings) {
+      this.syncStateNotice = function syncStateNotice() {
         if (angular.isUndefined(status)) return;
 
         switch (status.SRState) {
@@ -204,18 +204,38 @@ angular.module('lexicon.services')
             return 'Pending';
           case 'IDLE':
           case 'SYNCED':
-            if (angular.isDefined(projectSettings) &&
-              angular.isDefined(projectSettings.lastSyncedDate)
-            ) {
-              return 'Last sync: ' + $filter('relativetime')(projectSettings.lastSyncedDate);
-            } else {
-              return 'Synced';
-            }
-
+            return 'Synced';
           case 'LF_UNSYNCED':
             return 'Un-synced';
           case 'HOLD':
             return 'On hold';
+
+          // Undefined initial state
+          default:
+            return '';
+        }
+      };
+
+      this.lastSyncNotice = function lastSyncNotice() {
+        if (angular.isUndefined(status)) return;
+
+        switch (status.SRState) {
+          case 'SYNCING':
+          case 'PENDING':
+          case 'IDLE':
+          case 'SYNCED':
+          case 'LF_UNSYNCED':
+          case 'HOLD':
+            if (angular.isDefined(projectSettings) &&
+              angular.isDefined(projectSettings.lastSyncedDate)
+            ) {
+              return 'Last sync was ' + $filter('relativetime')(projectSettings.lastSyncedDate);
+            } else {
+              return '';
+            }
+
+          case 'CLONING':
+          case 'LF_CLONING':
 
           // Undefined initial state
           default:
@@ -318,7 +338,7 @@ angular.module('lexicon.services')
       };
 
       // For now, we generate the same S/R string based on the SRState
-      this.cloneNotice = this.syncNotice;
+      this.cloneNotice = this.syncStateNotice;
 
       this.cancelAllStatusTimers = function cancelAllStatusTimers() {
         this.cancelSyncStatusTimer();

@@ -7,7 +7,8 @@
                     data-ng-disabled="disableSyncButton()"
                     data-ng-click="syncProject()">
                 <i class="fa fa-cloud-upload fa-lg text-info"></i>{{'Send/Receive' | translate}}</button>
-            <div class="muted" style="margin-right: 10px">{{syncNotice(projectSettings)}}</div>
+            <div class="muted" style="margin-right: 10px">{{syncStateNotice()}}</div>
+            <div class="muted" style="margin-right: 10px">{{lastSyncNotice()}}</div>
         </div>
     </div>
 </div>
