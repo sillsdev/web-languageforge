@@ -16,15 +16,9 @@
                 <li><a ui-sref="importExport" data-translate="Import/Export"></a></li>
                 <li><a data-ng-href="/app/usermanagement/{{project.id}}" data-translate="User Management"></a></li>
                 <li><a ui-sref="settings" data-translate="Project Settings"></a></li>
+                <li class="divider" data-ng-show="showSync()"></li>
+                <li><a ui-sref="sync" data-ng-show="showSync()" data-translate="Synchronize"></a></li>
             </ul>
-        </div>
-        <div data-ng-class="interfaceConfig.pullToSide" data-ng-show="showSyncButton()">
-            <span class="muted" style="margin-right: 10px">{{syncNotice()}}</span>
-            <button class="btn" data-tooltip="Send and Receive with LanguageDepot.org"
-                    data-tooltip-placement="bottom"
-                    data-ng-disabled="disableSyncButton()"
-                    data-ng-click="syncProject()">
-                <i class="fa fa-cloud-upload fa-lg text-info"></i>{{'Send/Receive' | translate}}</button>
         </div>
         <div>
             <button class="btn" data-tooltip="View the dictionary"

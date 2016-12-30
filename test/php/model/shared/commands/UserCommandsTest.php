@@ -242,6 +242,27 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(SF_TESTPROJECT, $userProject['projectName']);
     }
 
+    /**
+     * @expectedException Exception
+     */
+    public function testCreateSimple_UsernameExist_Exception()
+    {
+        self::$environ->clean();
+
+        // setup parameters: name and project
+        $name = 'User Name';
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $currentUserId = self::$environ->createUser('test1', 'test1', 'test@test.com');
+
+        // create user
+        $dto = UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
+
+        // create user again
+        $dto = UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
+    }
+
     public function testRegister_WithProjectCode_UserInProjectAndProjectHasUser()
     {
         // todo: implement this - register within a project context

@@ -609,7 +609,9 @@ gulp.task('build-minify', function () {
       type: 'boolean' })
     .argv;
   var minifySrc = [
-    'src/angular-app/**/*.js',
+    'src/angular-app/bellows/**/*.js',
+    'src/angular-app/container/**/*.js',
+    'src/angular-app/' + params.applicationName + '/**/*.js',
     '!src/angular-app/**/*.min.js',
     '!src/angular-app/**/assets/**',
     '!src/angular-app/**/vendor/**'];

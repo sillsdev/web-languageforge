@@ -158,7 +158,6 @@ function Utils() {
   this.isErrorToIgnore = function isErrorToIgnore(message) {
     return /angular.*\.js .* TypeError: undefined is not a function/.test(message) ||
       /angular.*\.js .* Error: \[\$compile:tpload]/.test(message) ||
-      /angular.*\.js .*Error: RPC Error - Server Status Code -1/.test(message) ||
       /"level":"info"/.test(message) ||
       /next_id/.test(message) ||
       /ERR_INTERNET_DISCONNECTED/.test(message);

@@ -33,7 +33,7 @@
         - unzip
         - p7zip-full
         - npm
-     
+
     - file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
 
     - name: install Composer
@@ -50,6 +50,11 @@
       shell: npm install -g gulp-cli
       args:
         creates: /usr/local/bin/gulp
+
+    - name: install JSCS
+      shell: npm install -g jscs
+      args:
+        creates: /usr/local/bin/jscs
 
     - name: php log folder exists
       file: path={{php_log_folder}} state=directory owner=www-data group=www-data mode=0775 recurse=yes
@@ -241,7 +246,7 @@
     #  args:
     #    chdir: "{{lf_path}}"
     #    creates: "{{lf_path}}/node_modules/"
- 
+
   handlers:
     - name: restart mongodb
       service: name=mongodb state=restarted

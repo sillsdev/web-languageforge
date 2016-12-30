@@ -26,8 +26,8 @@ angular.module('lexicon.services')
     };
   }])
   .service('lexSendReceive', ['sessionService', 'silNoticeService', 'lexSendReceiveApi',
-    '$interval', 'lexEditorDataService',
-    function (sessionService, notice, sendReceiveApi, $interval, editorData) {
+    '$interval', 'lexEditorDataService', '$filter',
+    function (sessionService, notice, sendReceiveApi, $interval, editorData, $filter) {
       const syncStatusInterval = 3000; // ms
       const pollUpdateInterval = 32000; // ms
       const cloneStatusInterval = 3000; // ms
@@ -61,12 +61,13 @@ angular.module('lexicon.services')
         previousSRState = unknownSRState;
       };
 
-      // SRState is CLONING / SYNCING
+      // SRState is CLONING or SYNCING
+      // logic should match PHP SendReceiveCommands::isInProgress
       this.isInProgress = function isInProgress() {
-        return (this.isSendReceiveProject() &&
+        return this.isSendReceiveProject() &&
           angular.isDefined(status) && angular.isDefined(status.SRState) &&
           (status.SRState == 'CLONING' || status.SRState == 'LF_CLONING' ||
-          status.SRState == 'SYNCING'));
+          status.SRState == 'SYNCING');
       };
 
       // S/R isInProgress(), SRState is unknown, or SRState is PENDING
@@ -190,7 +191,7 @@ angular.module('lexicon.services')
 
       // UI strings corresponding to SRState in the LfMerge state file.
       // SRStates with an "LF_" prefix are languageforge overrides
-      this.syncNotice = function syncNotice() {
+      this.syncStateNotice = function syncStateNotice() {
         if (angular.isUndefined(status)) return;
 
         switch (status.SRState) {
@@ -208,6 +209,33 @@ angular.module('lexicon.services')
             return 'Un-synced';
           case 'HOLD':
             return 'On hold';
+
+          // Undefined initial state
+          default:
+            return '';
+        }
+      };
+
+      this.lastSyncNotice = function lastSyncNotice() {
+        if (angular.isUndefined(status)) return;
+
+        switch (status.SRState) {
+          case 'SYNCING':
+          case 'PENDING':
+          case 'IDLE':
+          case 'SYNCED':
+          case 'LF_UNSYNCED':
+          case 'HOLD':
+            if (angular.isDefined(projectSettings) &&
+              angular.isDefined(projectSettings.lastSyncedDate)
+            ) {
+              return 'Last sync was ' + $filter('relativetime')(projectSettings.lastSyncedDate);
+            } else {
+              return '';
+            }
+
+          case 'CLONING':
+          case 'LF_CLONING':
 
           // Undefined initial state
           default:
@@ -240,6 +268,8 @@ angular.module('lexicon.services')
                 status.SRState = previousSRState;
               } else if (previousSRState == unknownSRState) {
                 this.clearState();
+              } else {
+                (pollUpdateSuccessCallback || angular.noop)();
               }
             } else {
               (pollUpdateSuccessCallback || angular.noop)();
@@ -308,7 +338,7 @@ angular.module('lexicon.services')
       };
 
       // For now, we generate the same S/R string based on the SRState
-      this.cloneNotice = this.syncNotice;
+      this.cloneNotice = this.syncStateNotice;
 
       this.cancelAllStatusTimers = function cancelAllStatusTimers() {
         this.cancelSyncStatusTimer();
