@@ -93,14 +93,15 @@
           value: 'retry:no outbound email allowed'
       notify: restart postfix
 
-    - name: Ensure default_local folder does not exist (localhost)
+    # This stanza ensures that the /var/www/virtual/default_local links to wherever your source actually is.
+    - name: "Ensure Source Link: default_local folder does not exist (localhost)"
       file: path="/var/www/virtual/default_local" state=absent force=true
       when: inventory_hostname == "localhost"
-    - name: Get local dir (localhost)
+    - name: "Ensure Source Link: Get current location of the source code (localhost)"
       local_action: shell pwd
       register: local_dir
       when: inventory_hostname == "localhost"
-    - name: Ensure default_local link exists (localhost)
+    - name: "Ensure Source Link: default_local link exists (localhost)"
       file: src="{{local_dir.stdout | dirname | dirname | realpath}}" dest="/var/www/virtual/default_local" state=link group=www-data force=true
       when: inventory_hostname == "localhost"
 
@@ -235,12 +236,16 @@
         - "jamaicanpsalms.scriptureforge.local"
         - "demo.scriptureforge.local"
 
-    - name: install npm dependencies
-      become: no
-      shell: npm install
-      args:
-        chdir: "{{lf_path}}"
-        creates: "{{lf_path}}/node_modules/"
+    # node_modules are not a dependency for the product, rather it is a dependency
+    # for the developer to run the build tools, gulp, e2e, and so on.
+    # This does not install well across an NTFS share, so is not included
+    # here. CP 2016-11
+    #- name: install npm dependencies
+    #  become: no
+    #  shell: npm install
+    #  args:
+    #    chdir: "{{lf_path}}"
+    #    creates: "{{lf_path}}/node_modules/"
 
   handlers:
     - name: restart mongodb
