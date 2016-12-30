@@ -8,6 +8,8 @@ function ProjectsPage() {
     sf: 'Community Scripture Checking', // ScriptureForge
     lf: 'Web Dictionary' // LanguageForge
   };
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   this.url = '/app/projects';
   this.get = function get() {
@@ -94,9 +96,10 @@ function ProjectsPage() {
       this.settings.userManagementLink.click();
 
       var addMembersBtn = element(by.partialButtonText('Add Members'));
+      addMembersBtn.click();
       var newMembersDiv = element(by.css('#newMembersDiv'));
       var userNameInput = newMembersDiv.element(by.css('input[type="text"]'));
-      addMembersBtn.click();
+      browser.wait(expectedCondition.visibilityOf(userNameInput), CONDITION_TIMEOUT);
       userNameInput.sendKeys(usersName);
 
       var typeaheadDiv = element(by.css('.typeahead'));

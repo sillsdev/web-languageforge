@@ -8,7 +8,6 @@ use Api\Library\Shared\Website;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Shared\Dto\CreateSimpleDto;
 use Api\Model\Shared\Mapper\IdReference;
-use Api\Model\Shared\Mapper\JsonDecoder;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectListModel;
@@ -20,9 +19,7 @@ use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserListModel;
 use Api\Model\Shared\UserModel;
-use Api\Model\Shared\UserModelBase;
 use Api\Model\Shared\UserModelWithPassword;
-use Api\Model\Shared\UserProfileModel;
 use Api\Model\Shared\UserTypeaheadModel;
 use Palaso\Utilities\CodeGuard;
 use Silex\Application;
@@ -43,7 +40,7 @@ class UserCommands
     }
 
     /**
-     * User Create/Update
+     * System Admin: User Create/Update
      * @param array $params - user model fields to update
      * @param Website $website
      * @return string $userId
@@ -54,8 +51,10 @@ class UserCommands
         if ($params['id']) {
             $user->read($params['id']);
         }
+
         UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
-        JsonDecoder::decode($user, $params);
+        $user->setProperties(UserModel::$ADMIN_ACCESSIBLE, $params);
+
         if (!$user->hasRoleOnSite($website)) {
             $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
         }
@@ -63,7 +62,7 @@ class UserCommands
     }
 
     /**
-     * User Profile Update
+     * User Profile: Update User Profile
      * @param array $params - user model fields to update
      * @param string $userId
      * @return string $userId
@@ -71,7 +70,7 @@ class UserCommands
     public static function updateUserProfile($params, $userId)
     {
         $params['id'] = $userId;
-        $user = new UserProfileModel($userId);
+        $user = new UserModel($userId);
 
         // don't allow the following keys to be persisted
         if (array_key_exists('role', $params)) {
@@ -84,9 +83,8 @@ class UserCommands
         if (array_key_exists('username', $params)) {
             unset($params['username']);
         }
-        JsonDecoder::decode($user, $params);
+        $user->setProperties(UserModel::$USER_PROFILE_ACCESSIBLE, $params);
         $result = $user->write();
-
         return $result;
     }
 
@@ -340,7 +338,7 @@ class UserCommands
     }
 
     /**
-     * Create a user with only username and default site role.
+     * System Admin: Create a user with only username and default site role.
      * @param string $params
      * @param Website $website
      * @return boolean|string
@@ -348,7 +346,7 @@ class UserCommands
     public static function createUser($params, $website)
     {
         $user = new UserModelWithPassword();
-        JsonDecoder::decode($user, $params);
+        $user->setProperties(UserModel::$ADMIN_ACCESSIBLE, $params);
         UserCommands::assertUniqueIdentity($user, $params['username'], $params['email'], $website);
         $user->setPassword($params['password']);
         $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
@@ -357,7 +355,8 @@ class UserCommands
     }
 
     /**
-     * Create a user with only username, add user to project if in context, creating user gets email of new user credentials
+     * Project Manager: Create a user with only username, add user to project if in context,
+     * creating user gets email of new user credentials
      * @param string $userName
      * @param string $projectId
      * @param string $currentUserId
@@ -395,7 +394,7 @@ class UserCommands
     }
 
     /**
-     * Register a new user
+     * Public: Register a new user
      * @param array $params
      * @param string $captcha_info
      * @param Website $website
@@ -410,7 +409,7 @@ class UserCommands
         }
 
         $user = new UserModel();
-        JsonDecoder::decode($user, $params);
+        $user->setProperties(UserModel::$PUBLIC_ACCESSIBLE, $params);
         UserCommands::assertUniqueIdentity($user, $params['username'], $params['email'], $website);
         $user->active = false;
         $user->role = SystemRoles::USER;
@@ -612,7 +611,7 @@ class UserCommands
      */
     public static function readForRegistration($validationKey)
     {
-        $user = new UserModelBase();
+        $user = new UserModel();
         if (!$user->readByProperty('validationKey', $validationKey)) {
             return array();
         }
@@ -624,6 +623,7 @@ class UserCommands
     }
 
     /**
+     * Public: Update user from registration email
      * @param string $validationKey
      * @param array $params
      * @param Website $website
@@ -642,7 +642,7 @@ class UserCommands
         }
 
         $params['id'] = $user->id->asString();
-        JsonDecoder::decode($user, $params);
+        $user->setProperties(UserModel::$PUBLIC_ACCESSIBLE, $params);
         $user->setPassword($params['password']);
         $user->validate();
         $user->role = SystemRoles::USER;

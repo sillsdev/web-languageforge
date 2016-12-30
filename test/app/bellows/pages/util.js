@@ -113,6 +113,23 @@ function Utils() {
     }, timeout);
   };
 
+  this.notice = {
+    list: element.all(by.repeater('notice in notices()'))
+  };
+  this.notice.firstCloseButton = this.notice.list.first().element(by.buttonText('×'));
+  this.notice.waitToInclude = function (includedText) {
+    browser.wait(function () {
+      return this.notice.list.count().then(function (count) {
+        return count >= 1;
+      });
+    }.bind(this), CONDITION_TIMEOUT);
+    browser.wait(function () {
+      return this.notice.list.first().getText().then(function (text) {
+        return text.includes(includedText);
+      });
+    }.bind(this), CONDITION_TIMEOUT);
+  }.bind(this);
+
   this.checkModalTextMatches = function checkModalTextMatchesfunction(expectedText) {
     var modalBody = element(by.css('.modal-body'));
 
@@ -134,6 +151,17 @@ function Utils() {
 
   this.parent = function parent(child) {
     return child.element(by.xpath('..'));
+  };
+
+  // Errors we choose to ignore because they are typically not encountered by users, but only
+  // in testing
+  this.isErrorToIgnore = function isErrorToIgnore(message) {
+    return /angular.*\.js .* TypeError: undefined is not a function/.test(message) ||
+      /angular.*\.js .* Error: \[\$compile:tpload]/.test(message) ||
+      /angular.*\.js .*Error: RPC Error - Server Status Code -1/.test(message) ||
+      /"level":"info"/.test(message) ||
+      /next_id/.test(message) ||
+      /ERR_INTERNET_DISCONNECTED/.test(message);
   };
 
 }

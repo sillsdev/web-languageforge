@@ -43,6 +43,6 @@ function BellowsLoginPage() {
   };
 
   this.logout = function logout() {
-    browser.get(browser.baseUrl + '/app/logout');
+    browser.get(browser.baseUrl + '/auth/logout');
   };
 }

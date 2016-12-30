@@ -16,8 +16,6 @@
                 <li><a ui-sref="importExport" data-translate="Import/Export"></a></li>
                 <li><a data-ng-href="/app/usermanagement/{{project.id}}" data-translate="User Management"></a></li>
                 <li><a ui-sref="settings" data-translate="Project Settings"></a></li>
-                <li><a data-ng-href="/app/projectmanagement/{{project.id}}" data-ng-show="rights.canArchiveProject()"
-                       data-translate="Manage Project"></a></li>
             </ul>
         </div>
         <div data-ng-class="interfaceConfig.pullToSide" data-ng-show="showSyncButton()">

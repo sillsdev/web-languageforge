@@ -39,7 +39,6 @@ class LexSenseModelTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(LexMultiValue::class, $sense->reversalEntries);
         $this->assertInstanceOf(LexValue::class, $sense->senseType);
         $this->assertInstanceOf(LexMultiValue::class, $sense->academicDomains);
-        $this->assertInstanceOf(LexMultiValue::class, $sense->sensePublishIn);
         $this->assertInstanceOf(LexMultiValue::class, $sense->anthropologyCategories);
         $this->assertInstanceOf(LexMultiValue::class, $sense->status);
     }

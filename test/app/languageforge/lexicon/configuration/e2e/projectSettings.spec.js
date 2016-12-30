@@ -10,18 +10,14 @@ describe('Project Settings page', function () {
 
   it('cannot see Send and Receive on test project for manager', function () {
     loginPage.loginAsManager();
-    projectsPage.get();
-    projectsPage.clickOnProject(constants.testProjectName);
-    projectSettingsPage.get();
+    projectSettingsPage.get(constants.testProjectName);
     expect(projectSettingsPage.tabs.project.isDisplayed());
     expect(projectSettingsPage.projectTab.saveButton.isDisplayed()).toBe(true);
     expect(projectSettingsPage.tabs.sendReceive.isDisplayed()).toBe(false);
   });
 
   it('can see Send and Receive on SR project for manager', function () {
-    projectsPage.get();
-    projectsPage.clickOnProject(constants.srProjectName);
-    projectSettingsPage.get();
+    projectSettingsPage.get(constants.srProjectName);
     expect(projectSettingsPage.projectTab.saveButton.isDisplayed()).toBe(true);
     expect(projectSettingsPage.tabs.sendReceive.isDisplayed()).toBe(true);
   });

@@ -1,0 +1,36 @@
+table.tableform input,
+table.tableform textarea {
+    margin-bottom: 0px;
+}
+
+table.tableform td {
+    padding-bottom: 8px;
+}
+
+/* Link hover override for links with icons */
+a:hover i {
+    text-decoration: none;
+}
+
+form fieldset legend {
+    border: 0;
+    width: auto;
+    margin-bottom: 0px;
+    background-color: #f5f5f5;
+    font-size: 1.2em;
+    padding: 0 0.4em;
+}
+
+fieldset.picklists li {
+    cursor: pointer;
+}
+fieldset.picklists li:hover {
+    background-color: #EEE;
+}
+fieldset.picklists li.selected {
+    background-color: #DDD;
+}
+
+a:hover {
+    cursor: pointer;
+}

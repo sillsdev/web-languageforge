@@ -50,6 +50,7 @@
 //   Modules
 // -------------------------------------
 //
+// es6-shim          : ECMAScript 6 (Harmony) compatibility for legacy JavaScript engines
 // async             : Higher-order functions and common patterns for asynchronous code
 // child_process     : Call a child process with the ease of exec and safety of spawn
 // gulp              : The streaming build system
@@ -68,6 +69,7 @@
 // jshint-stylish    : Stylish reporter for JSHint
 // path              : Node.JS path module
 // yargs             : yargs the modern, pirate-themed, successor to optimist
+require('es6-shim');
 var async = require('async');
 var _execute = require('child_process').exec;
 var gulp = require('gulp');
@@ -111,48 +113,6 @@ var execute = function (command, options, callback) {
     callback(null);
   }
 };
-
-if (!String.prototype.endsWith) {
-  /**
-   * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
-   * @param searchString
-   * @param position
-   * @returns {boolean}
-   */
-  String.prototype.endsWith = function (searchString, position) {
-    var subjectString = this.toString();
-    if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position ||
-      position > subjectString.length
-    ) {
-      position = subjectString.length;
-    }
-
-    position -= searchString.length;
-    var lastIndex = subjectString.lastIndexOf(searchString, position);
-    return lastIndex !== -1 && lastIndex === position;
-  };
-}
-
-if (!String.prototype.includes) {
-  /**
-   * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/includes
-   * @param search
-   * @param start
-   * @returns {boolean}
-   */
-  String.prototype.includes = function (search, start) {
-    'use strict';
-    if (typeof start !== 'number') {
-      start = 0;
-    }
-
-    if (start + search.length > this.length) {
-      return false;
-    } else {
-      return this.indexOf(search, start) !== -1;
-    }
-  };
-}
 
 // Determine the path to test/app from a given destination.
 // Truncate the remote prefix of the destination
@@ -615,7 +575,7 @@ gulp.task('build-bower', function (cb) {
 // -------------------------------------
 //   Task: Build Remove test fixtures (directives) in HTML only on live build
 // -------------------------------------
-gulp.task('build-remove-test-fixtures', function () {
+gulp.task('build-remove-test-fixtures', function (done) {
   var params = require('yargs')
     .option('dest', {
       demand: false,
@@ -625,11 +585,14 @@ gulp.task('build-remove-test-fixtures', function () {
   var base = './src/angular-app';
   var glob = path.join(base, '**/*.html');
 
+  // only on live
   if (!params.dest.includes('/var/www/virtual/') &&
     (params.dest.endsWith('forge.org') || params.dest.endsWith('forge.org/'))) {
-    return gulp.src(glob, { base: base })
+    return gulp.src(glob)
       .pipe(replace(/^.*<pui-mock-upload.*$/m, '\n'))
       .pipe(gulp.dest(base));
+  } else {
+    done();
   }
 });
 

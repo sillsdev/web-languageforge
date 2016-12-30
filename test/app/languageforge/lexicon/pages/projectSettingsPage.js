@@ -3,9 +3,18 @@
 module.exports = new ProjectSettingsPage();
 
 function ProjectSettingsPage() {
-  this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
+  var projectsPage = require('../../../bellows/pages/projectsPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
+
+  this.settingsMenuLink = element(by.className('btn dropdown-toggle'));
   this.projectSettingsLink = element(by.linkText('Project Settings'));
-  this.get = function get() {
+
+  // Get the projectSettings for project projectName
+  this.get = function get(projectName) {
+    projectsPage.get();
+    projectsPage.clickOnProject(projectName);
+    browser.wait(expectedCondition.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
     this.settingsMenuLink.click();
     this.projectSettingsLink.click();
   };
@@ -60,10 +69,6 @@ function ProjectSettingsPage() {
     expect(this.sendReceiveTab.formStatus.getAttribute('class')).toContain('alert-error');
     expect(this.sendReceiveTab.formStatus.getText()).toContain(partialMsg);
   }.bind(this);
-
-  this.communicationTab = {
-    saveButton: this.tabDivs.get(2).element(by.buttonText('Save'))
-  };
 
   /** Second parameter is optional, default false. If true, fieldName will be considered
    * a regular expression that should not be touched. If false or unspecified, fieldName
