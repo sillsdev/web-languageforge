@@ -5,7 +5,7 @@
         <div class="controls">
             <div class="input-prepend" data-ng-click="selectInputSystem(tag)"
                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
-                <span class="add-on wsid"
+                <span class="add-on wsid" tabindex="-1"
                     title="{{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
                 <dc-formattedtext class="dc-formattedtext" data-ng-if="!isAudio(tag)"
                     fte-multiline="false"
