@@ -271,7 +271,7 @@ gulp.task('mongodb-copy-prod-db').description =
 // -------------------------------------
 //   Task: test-php
 // -------------------------------------
-gulp.task('test-php', function () {
+gulp.task('test-php', function (cb) {
   var src = 'test/php/phpunit.xml';
   var options = {
     dryRun: false,
@@ -279,8 +279,14 @@ gulp.task('test-php', function () {
     logJunit: 'PhpUnitTests.xml'
   };
   gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
-  return gulp.src(src)
-    .pipe(phpunit('src/vendor/bin/phpunit', options));
+  execute(
+    '/usr/bin/env php src/vendor/phpunit/phpunit/phpunit -c test/php/phpunit.xml',
+    options,
+    cb
+  );
+  
+  // return gulp.src(src)
+  //   .pipe(phpunit('src/vendor/bin/phpunit', options));
 });
 
 // -------------------------------------
