@@ -83,7 +83,7 @@ class Base
     protected function renderPage(Application $app, $viewName) {
 
         if ($this->data['isBootstrap4']) {
-            $this->addCssFiles($this->getThemePath()."/cssBootstrap4", false);
+            $this->addCssFiles($this->getThemePath()."/cssBootstrap4", array(), false);
             array_unshift($this->data['cssFiles'], "vendor_bower/bootstrap/dist/css/bootstrap.css");
             array_unshift($this->data['cssFiles'], "vendor_bower/bootstrap/dist/css/bootstrap-flex.css");
         } else {
