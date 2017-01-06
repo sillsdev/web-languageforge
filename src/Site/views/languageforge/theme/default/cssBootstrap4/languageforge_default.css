@@ -1,0 +1,31 @@
+li.header-button-rounded {
+    box-shadow: inset 0 0 0 2px #999;
+    border-radius: 6px;
+    padding:0px 12px 0px 12px;
+}
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 1);
+}
+
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
+    font-size: 80%;
+    background-color: #104060;
+    color: white;
+}

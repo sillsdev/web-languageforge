@@ -205,15 +205,9 @@ class AppModel {
             }
         }
 
-        // todo: implement this in the app controller
-        $appName = "$appName-$projectId";
-
-        // check to see if the appName is a child-app of any of valid locations
-
-        if ($isBootstrap4 && file_exists("$appFolder/bootstrap4")) {
-            $bootstrapFolder = "$appFolder/bootstrap4";
-        } elseif (file_exists("$appFolder/bootstrap2")) {
-            $bootstrapFolder = "$appFolder/bootstrap2";
+        $bootstrapNumber = ($isBootstrap4) ? 4 : 2;
+        if (file_exists("$appFolder/bootstrap$bootstrapNumber")) {
+            $bootstrapFolder = "$appFolder/bootstrap$bootstrapNumber";
         } else {
             $bootstrapFolder = $appFolder;
         }
@@ -248,11 +242,11 @@ class AppModel {
         // replace "appName" with the name of the angular app that has been migrated to bootstrap 4
         // Note that this will affect both the angular app and the app frame
 
-        $sharedAppsInBoostrap4 = array("bellowsApp1", "bellowsApp2");
+        $sharedAppsInBoostrap4 = array("sharedApp1", "sharedApp2");
 
         $siteAppsInBootstrap4 = array(
             "scriptureforge" => array("appName"),
-            "languageforge" => array(),
+            "languageforge" => array("appName"),
             "waaqwiinaagiwritings" => array(),
             "jamaicanpsalms.scriptureforge" => array(),
             "demo.scriptureforge" => array(),
