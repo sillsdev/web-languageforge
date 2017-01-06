@@ -1,10 +1,7 @@
 {
-  "name": "angular-seed",
-  "version": "0.0.0",
-  "description": "Modular starter project for Angular 2 (and beyond) with statically typed build and AoT compilation",
-  "repository": {
-    "url": "https://github.com/mgechev/angular-seed"
-  },
+  "name": "rapid-words",
+  "version": "0.0.1",
+  "description": "Rapid Words application for Language Forge",
   "scripts": {
     "build.dev": "gulp build.dev --color --env-config dev",
     "build.dev.watch": "gulp build.dev.watch --color",
@@ -40,7 +37,7 @@
     "compodoc": "node_modules/.bin/compodoc -p src/client/tsconfig.json",
     "serve.compodoc": "node_modules/.bin/compodoc -s"
   },
-  "author": "Minko Gechev <mgechev>",
+  "author": "SIL International",
   "license": "MIT",
   "devDependencies": {
     "@angular/compiler-cli": "~2.4.0",
