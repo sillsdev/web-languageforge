@@ -1,0 +1,21 @@
+<span ng-if="(contentArr.length == 1)">
+    <span class="uneditable-input regardingFieldValue"
+             data-ng-class="{'dc-multioptionlist-value': (fieldConfig.type == 'multioptionlist')}"
+             data-ng-bind-html="contentArr[0]"
+             data-pui-show-overflow></span>
+</span>
+<span ng-if="(contentArr.length == 2)">
+    <br/>
+    <br/>
+    <b>Source: </b>
+    <span class="uneditable-input regardingFieldValue"
+             data-ng-class="{'dc-multioptionlist-value': (fieldConfig.type == 'multioptionlist')}"
+             data-ng-bind-html="contentArr[0]"
+             data-pui-show-overflow></span>
+    <br/>
+    <b>Translation:</b>
+    <span class="uneditable-input regardingFieldValue"
+         data-ng-class="{'dc-multioptionlist-value': (fieldConfig.type == 'multioptionlist')}"
+         data-ng-bind-html="contentArr[1]"
+         data-pui-show-overflow></span>
+</span>

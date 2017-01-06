@@ -6,7 +6,6 @@ use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-use Api\Model\Shared\UserProfileModel;
 //use PHPUnit\Framework\TestCase;
 
 class MockUserCommandsDelivery implements DeliveryInterface
@@ -71,7 +70,7 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $newUserId = UserCommands::updateUserProfile($params, $userId);
 
         // user profile updated
-        $user = new UserProfileModel($newUserId);
+        $user = new UserModel($newUserId);
         $this->assertEquals('th', $user->interfaceLanguageCode);
         $this->assertEquals($newUserId, $userId);
     }
@@ -241,6 +240,27 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('username', $projectUser['username']);
         $userProject = $user->listProjects(self::$environ->website->domain)->entries[0];
         $this->assertEquals(SF_TESTPROJECT, $userProject['projectName']);
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testCreateSimple_UsernameExist_Exception()
+    {
+        self::$environ->clean();
+
+        // setup parameters: name and project
+        $name = 'User Name';
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+
+        $currentUserId = self::$environ->createUser('test1', 'test1', 'test@test.com');
+
+        // create user
+        $dto = UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
+
+        // create user again
+        $dto = UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
     }
 
     public function testRegister_WithProjectCode_UserInProjectAndProjectHasUser()

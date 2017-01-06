@@ -11,7 +11,9 @@ use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Acl\Exception\Exception;
 
 require_once APPPATH."version.php";
 
@@ -19,9 +21,7 @@ class Base
 {
     public function __construct() {
         $this->website = Website::get();
-        $this->_isLoggedIn = false;
         $this->_showHelp = false;
-        $this->data['isLoggedIn'] = $this->_isLoggedIn;
         $this->data['isAdmin'] = false;
         $this->data['projects'] = array();
         $this->data['smallAvatarUrl'] = '';
@@ -35,9 +35,8 @@ class Base
         $this->data['cssFiles'] = array();
         $this->data['vendorFilesJs'] = array();
         $this->data['vendorFilesMinJs'] = array();
+        $this->data['isBootstrap4'] = false;
 
-        $this->addCssFiles("Site/views/shared/css");
-        $this->addCssFiles($this->getThemePath()."/css");
     }
 
     /** @var array data used to render templates */
@@ -61,35 +60,48 @@ class Base
     /** @var string */
     protected $_projectId;
 
-    // all child classes should use this method to render their pages
-    protected function renderPage(Application $app, $viewName) {
-        if ($viewName == 'favicon.ico') {
-            $viewName = 'container';
-        }
-
+    // all child classes should call this method first to setup base variables
+    protected function setupBaseVariables(Application $app) {
         $this->_isLoggedIn = $this->isLoggedIn($app);
+        $this->data['isLoggedIn'] = $this->_isLoggedIn;
         if ($this->_isLoggedIn) {
             try {
-                if (!$this->_userId) {
-                    $this->_userId = SilexSessionHelper::getUserId($app);
-                }
-                $this->_user = new UserModel($this->_userId);
-                if (!$this->_projectId) {
-                    $this->_projectId = SilexSessionHelper::getProjectId($app, $this->website);
+                $this->_userId = SilexSessionHelper::getUserId($app);
+
+                if ($this->_userId) {
+                    $this->_user = new UserModel($this->_userId);
+                } else {
+                    //TODO: load anonymous user here
                 }
             } catch (\Exception $e) {
-//                error_log("User $userId not found, logged out.\n" . $e->getMessage());
-                return $app->redirect('/app/logout');
+                return $app->redirect('/auth/logout');
             }
+        }
+    }
+
+    // all child classes should use this method to render their pages
+    protected function renderPage(Application $app, $viewName) {
+
+        if ($this->data['isBootstrap4']) {
+            $this->addCssFiles($this->getThemePath()."/cssBootstrap4", array(), false);
+            array_unshift($this->data['cssFiles'], "vendor_bower/bootstrap/dist/css/bootstrap.css");
+            array_unshift($this->data['cssFiles'], "vendor_bower/bootstrap/dist/css/bootstrap-flex.css");
+        } else {
+            $this->addCssFiles($this->getThemePath()."/cssBootstrap2", array(), false);
+            $this->addCssFiles("Site/views/shared/cssBootstrap2", array('bootstrap.css'), false);
+            array_unshift($this->data['cssFiles'], "Site/views/shared/cssBootstrap2/bootstrap.css");
         }
 
         // Add general Angular app dependencies
-        $dependencies = $this->getAngularAppJsDependencies();
+        $dependencies = $this->getAngularAppDependencies();
         foreach ($dependencies["js"] as $dependencyFilePath) {
             $this->data['vendorFilesJs'][] = $dependencyFilePath;
         }
         foreach ($dependencies["min"] as $dependencyFilePath) {
             $this->data['vendorFilesMinJs'][] = $dependencyFilePath;
+        }
+        foreach ($dependencies["css"] as $dependencyFilePath) {
+            $this->data['vendorFilesCss'][] = $dependencyFilePath;
         }
 
         $this->populateHeaderMenuViewdata();
@@ -102,7 +114,7 @@ class Base
         try {
             return $app['twig']->render($viewName.'.html.twig', $this->data);
         } catch (\Twig_Error_Loader $e) {
-            $app->abort(404, "Page not found: $viewName.twig");
+            $app->abort(404, "Page not found: $viewName.twig\n" . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
 
         return new Response('Should not get here', 500);
@@ -151,23 +163,31 @@ class Base
         return 'Site/views/'.$this->website->base.'/theme/'.$theme;
     }
 
-    protected function addJavascriptFiles($dir, $exclude = array()) {
-        self::addFiles('js', $dir, $this->data['jsFiles'], $exclude);
+    protected function addJavascriptFilesToBeMinified($folder, $exclude = array()) {
+        self::addFiles('js', $folder, $this->data['jsFiles'], $exclude, true);
     }
 
-    protected function addJavascriptNotMinifiedFiles($dir, $exclude = array()) {
-        self::addFiles('js', $dir, $this->data['jsNotMinifiedFiles'], $exclude);
+    protected function addJavascriptFilesNotMinified($folder, $exclude = array()) {
+        self::addFiles('js', $folder, $this->data['jsNotMinifiedFiles'], $exclude, true);
     }
 
-    protected function addCssFiles($dir) {
-        self::addFiles('css', $dir, $this->data['cssFiles'], array());
+    protected function addJavascriptFiles($folder, $excludedFromMinification = array()) {
+        $this->addJavascriptFilesToBeMinified($folder, $excludedFromMinification);
+        foreach ($excludedFromMinification as $excludeFolder) {
+            $notMinifiedPath = "$folder/$excludeFolder";
+            $this->addJavascriptFilesNotMinified($notMinifiedPath);
+        }
+    }
+
+    protected function addCssFiles($dir, $exclude = array(), $atEnd = true) {
+        self::addFiles('css', $dir, $this->data['cssFiles'], $exclude, $atEnd);
     }
 
     private static function ext($filename) {
         return pathinfo($filename, PATHINFO_EXTENSION);
     }
 
-    private static function addFiles($ext, $dir, &$result, $exclude) {
+    private static function addFiles($ext, $dir, &$result, $exclude, $atEnd) {
         array_push($exclude, 'excluded/');
         if (is_dir($dir)) {
             $files = scandir($dir);
@@ -180,17 +200,21 @@ class Base
                 }
                 if (is_file($filepath)) {
                     if (self::ext($file) == $ext) {
-                        $result[] = $filepath;
+                        if ($atEnd) {
+                            array_push($result, $filepath);
+                        } else {
+                            array_unshift($result, $filepath);
+                        }
                     }
                 } elseif ($file != '..' && $file != '.') {
-                    self::addFiles($ext, $filepath, $result, $exclude);
+                    self::addFiles($ext, $filepath, $result, $exclude, $atEnd);
                 }
             }
         }
     }
 
     /**
-     * Reads the js_dependencies.json file and creates a structure for use in the controller above
+     * Reads the app_dependencies.json file and creates a structure for use in the controller above
      *
      * The format of a line in the JSON is expected to be:
      * "itemName": {"path": "folderPath"}
@@ -204,10 +228,12 @@ class Base
      *
      * @return array
      */
-    protected function getAngularAppJsDependencies() {
-        $jsonData = json_decode(file_get_contents(APPPATH . "js_dependencies.json"), true);
+    protected function getAngularAppDependencies() {
+        $jsonData = json_decode(file_get_contents(APPPATH . "app_dependencies.json"), true);
         $jsFilesToReturn = array();
         $jsMinFilesToReturn = array();
+        $cssFilesToReturn = array();
+
         foreach ($jsonData as $itemName => $properties) {
             $path = $properties["path"];
 
@@ -219,12 +245,15 @@ class Base
                 }
                 foreach ($jsFile as $file) {
                     if (StringUtil::endsWith($file, '.js')) {
-                        $jsFilesToReturn[] = "$path/$file";
+                        $file = "$path/$file";
                     } else {
-                        $jsFilesToReturn[] = "$path/$file.js";
+                        $file = "$path/$file.js";
+                    }
+                    if (file_exists($file)) {
+                        $jsFilesToReturn[] = $file;
                     }
                 }
-            } else {
+            } elseif (file_exists("$path/$itemName.js")) {
                 $jsFilesToReturn[] = "$path/$itemName.js";
             }
 
@@ -253,11 +282,34 @@ class Base
                         $jsMinFilesToReturn[] = "$path/$file.min.js";
                     }
                 }
+            } elseif (array_key_exists("cssFile", $properties)) {
+                // don't add any min files because this contains a css key
+
             } else {
                 $jsMinFilesToReturn[] = "$path/$itemName.min.js";
             }
 
+            // process CSS Files
+            if (array_key_exists("cssFile", $properties)) {
+                $cssFile = $properties["cssFile"];
+                if (!is_array($cssFile)) {
+                    $cssFile = [$cssFile];
+                }
+                foreach ($cssFile as $file) {
+                    if (StringUtil::endsWith($file, '.css')) {
+                        $cssFilesToReturn[] = "$path/$file";
+                    } else {
+                        $cssFilesToReturn[] = "$path/$file.css";
+                    }
+                }
+            }
         }
-        return array("js" => $jsFilesToReturn, "min" => $jsMinFilesToReturn);
+        foreach (array_merge($jsFilesToReturn, $jsMinFilesToReturn, $cssFilesToReturn) as $file) {
+            if (!file_exists($file)) {
+                throw new Exception("This app depends upon $file and the file doesn't exist!");
+            }
+        }
+        return array("js" => $jsFilesToReturn, "min" => $jsMinFilesToReturn, "css" => $cssFilesToReturn);
     }
+
 }

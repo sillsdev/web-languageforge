@@ -1,0 +1,222 @@
+
+/* Typeahead */
+div.typeahead {
+    z-index: 51;
+    margin-top: 0px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+div.typeahead > div {
+    z-index: 10;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+div.typeahead ul {
+    margin: 0 0 2px 2px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 300px;
+}
+
+li.typeahead-item {
+    display: block;
+    padding: 5px;
+    color: #000;
+    xtext-decoration: none;
+    xfont-weight: bold;
+    cursor: pointer;
+    line-height: 1.0em;
+    margin: 0 0 4px 0;
+}
+
+li.typeahead-item.active {
+    background-color: #ffc;
+}
+
+li.typeahead-item p {
+    line-height: 1.2em;
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 2px;
+    margin-left: 36px;
+}
+
+li.typeahead-item p.name {
+    font-size: 1.0em;
+}
+
+li.typeahead-item p.email {
+    font-size: 0.8em;
+    color: #666666;
+}
+
+/* listview */
+div.listview {
+    margin-top: 8px;
+}
+
+div.listview div.paginationblock div {
+    display: inline-block;
+}
+
+div.listview .active {
+    background-color: #ffc;
+}
+
+div.listview div.pagination select {
+    width: 70px;
+}
+
+/* Listview for projects, questions, answers views */
+div.listview div.attention-block {
+    text-align: center;
+    background-color: #d3d3d3; /* lightgray */
+    color: #dc143c; /* crimson */
+    padding: 10px;
+}
+
+div.listview div.attention-block .count {
+    font-size: 1.8em;
+}
+
+div.listview div.attention-block .subtitle {
+    font-size: 1.0em;
+}
+
+span.larger-text {
+    font-size: 1.5em;
+}
+
+/* Control bar for use at top of listview */
+form.control-bar {
+    margin-bottom: 0px;
+}
+
+/* use for user signup password strength meter */
+input.ng-pristine + ul#strength {
+    display:none;
+}
+ul#strength {
+    display:inline;
+    list-style:none;
+    margin:0;
+    margin-left:15px;
+    padding:0;
+    vertical-align:6px;
+}
+.point:last {
+    margin:0 !important;
+}
+.point {
+    background:#DDD;
+    border-radius:2px;
+    display:inline-block;
+    height:5px;
+    margin-right:1px;
+    width:10px;
+}
+
+
+
+/* Highlighted text in text selection directive */
+.highlighted {
+    background-color: yellow;
+}
+
+/* Styles for the two tagging directives (view-tags and add-tags) */
+.tag-list ul li {
+    position: relative;
+    color: #3E6D8E;
+    background-color: #E0EAF1;
+    border-bottom: 1px solid #b3cee1;
+    border-right: 1px solid #b3cee1;
+    padding: 3px 4px 3px 4px;
+    margin: 2px 2px 2px 5px;
+    text-decoration: none;
+    font-size: 90%;
+    line-height: 1.4;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.tag-list ul li img.closeicon {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    color: red;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.entryItemView i.icon-remove:hover {
+    color:red;
+}
+
+
+.deleteX {
+    margin-right: 20px;
+}
+
+form.new-tags i.icon-plus {
+    color: green;
+}
+
+.addItem {
+    text-align:right;
+    font-size:12px;
+    margin-right:20px;
+    cursor: pointer;
+}
+    
+/* Style for file upload */
+.drop-box {
+    width: 320px;
+    height: 170px;
+    border: 4px dashed #0088cc;
+    background-color: white;
+    text-align: center;
+    padding-top: 30px;
+}
+
+/* style for notice messages */
+div.notices {
+    position: fixed;
+    top: 7px;
+    left: 50%;
+    margin-left: -200px;
+    z-index: 100;
+    min-width: 400px;
+    width: auto;
+}
+
+/* overrides definitions in sf.css and bootstrap.css */
+div.notices .alert {
+    padding: 2px 5px 2px 35px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+div.notices .animate-repeat {
+    line-height: inherit;
+}
+div.notices .alert-success, div.notices .alert-error, div.notices .alert-warn, div.notices .alert-info {
+    background-position: 6px 4px;
+}
+
+/* Select language directive */
+pui-select-language div.scroll-table {
+    max-height: 330px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+pui-select-language div.scroll-table table {
+    margin-bottom: 0px;
+}
+

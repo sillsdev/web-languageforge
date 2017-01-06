@@ -30,7 +30,7 @@ angular.module('palaso.ui.picklistEditor', ['angular-sortable-view'])
 .directive('picklistEditor', function() {
   return {
     restrict: 'AE',
-    templateUrl: '/angular-app/bellows/directive/picklist-editor.html',
+    templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/picklist-editor.html',
     scope: {
       items: '=',
       defaultKey: '=?',

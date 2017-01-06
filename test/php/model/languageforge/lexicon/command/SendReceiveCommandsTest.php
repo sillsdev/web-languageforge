@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\Mock;
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\FileUtilities;
 //use PHPUnit\Framework\TestCase;
 
@@ -387,7 +388,7 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
         unlink($projectStatePath);
     }
 
-    public function testGetProjectStatus_HasSendReceiveAndIdleStateFile_IdleState()
+    public function testGetProjectStatus_HasSendReceiveAndIdleStateFile_UnsyncedAndIdleState()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->sendReceiveProjectIdentifier = 'sr_id';
@@ -396,6 +397,13 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
         $mockStatePath = sys_get_temp_dir();
         $projectStatePath = $mockStatePath . DIRECTORY_SEPARATOR . strtolower($project->projectCode) . '.state';
         file_put_contents($projectStatePath, '{"SRState": "IDLE"}');
+
+        $status = SendReceiveCommands::getProjectStatus($projectId, $mockStatePath);
+
+        $this->assertEquals('LF_UNSYNCED', $status['SRState']);
+
+        $project->lastSyncedDate = UniversalTimestamp::now();
+        $project->write();
 
         $status = SendReceiveCommands::getProjectStatus($projectId, $mockStatePath);
 

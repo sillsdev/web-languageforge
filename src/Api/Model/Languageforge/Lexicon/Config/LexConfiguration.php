@@ -111,7 +111,6 @@ class LexConfiguration
         //$this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::REVERSALENTRIES; // Disabled 05-2016
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SENSETYPE;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::ACADEMICDOMAINS;
-        $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SENSEPUBLISHIN;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::ANTHROPOLOGYCATEGORIES;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::SENSEIMPORTRESIDUE;
         $this->entry->fields[LexConfig::SENSES_LIST]->fieldOrder[] = LexConfig::STATUS;
@@ -135,7 +134,6 @@ class LexConfiguration
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::EXAMPLE_SENTENCE;
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::EXAMPLE_TRANSLATION;
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::REFERENCE;
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fieldOrder[] = LexConfig::EXAMPLEPUBLISHIN;
 
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_SENTENCE] = new LexConfigMultiText();
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLE_SENTENCE]->label = 'Sentence';
@@ -335,12 +333,6 @@ class LexConfiguration
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ACADEMICDOMAINS]->listCode = $listCode;
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ACADEMICDOMAINS]->hideIfEmpty = true;
 
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEPUBLISHIN] = new LexConfigMultiOptionList();
-        $listCode = LexConfig::flexOptionlistCode(LexConfig::SENSEPUBLISHIN);
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEPUBLISHIN]->label = LexConfig::flexOptionlistName($listCode);
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEPUBLISHIN]->listCode = $listCode;
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::SENSEPUBLISHIN]->hideIfEmpty = true;
-
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ANTHROPOLOGYCATEGORIES] = new LexConfigMultiOptionList();
         $listCode = LexConfig::flexOptionlistCode(LexConfig::ANTHROPOLOGYCATEGORIES);
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::ANTHROPOLOGYCATEGORIES]->label = LexConfig::flexOptionlistName($listCode);
@@ -362,12 +354,6 @@ class LexConfiguration
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::REFERENCE]->label = 'Reference';
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::REFERENCE]->hideIfEmpty = true;
         $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::REFERENCE]->inputSystems[] = 'en';
-
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLEPUBLISHIN] = new LexConfigMultiOptionList();
-        $listCode = LexConfig::flexOptionlistCode(LexConfig::EXAMPLEPUBLISHIN);
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLEPUBLISHIN]->label = LexConfig::flexOptionlistName($listCode);
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLEPUBLISHIN]->listCode = $listCode;
-        $this->entry->fields[LexConfig::SENSES_LIST]->fields[LexConfig::EXAMPLES_LIST]->fields[LexConfig::EXAMPLEPUBLISHIN]->hideIfEmpty = true;
 
         // default role views values
         $this->roleViews[LexRoles::OBSERVER] = new LexRoleViewConfig();
@@ -417,12 +403,10 @@ class LexConfiguration
         //$this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::REVERSALENTRIES] = new LexViewFieldConfig(true); // Disabled 05-2016
         $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SENSETYPE] = new LexViewFieldConfig(true);
         $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ACADEMICDOMAINS] = new LexViewFieldConfig(true);
-        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SENSEPUBLISHIN] = new LexViewFieldConfig(true);
         $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::ANTHROPOLOGYCATEGORIES] = new LexViewFieldConfig(true);
         $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::SENSEIMPORTRESIDUE] = new LexViewMultiTextFieldConfig(true);
         $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::STATUS] = new LexViewFieldConfig(true);
         $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::REFERENCE] = new LexViewMultiTextFieldConfig(true);
-        $this->roleViews[LexRoles::OBSERVER]->fields[LexConfig::EXAMPLEPUBLISHIN] = new LexViewFieldConfig(true);
 
         $this->roleViews[LexRoles::OBSERVER_WITH_COMMENT]->fields = clone $this->roleViews[LexRoles::OBSERVER]->fields;
         $this->roleViews[LexRoles::CONTRIBUTOR]->fields = clone $this->roleViews[LexRoles::OBSERVER]->fields;
