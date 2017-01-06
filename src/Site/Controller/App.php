@@ -190,9 +190,11 @@ class AppModel {
                 $parentAppFolder = "$siteFolder/$appName";
                 $appFolder = "$parentAppFolder/$projectId";
                 $isChildApp = true;
+                $appName = "$appName-$projectId";
             } elseif ($this->isChildApp($bellowsAppFolder, $appName, $projectId)) {
                 $parentAppFolder = "$bellowsAppFolder/$appName";
                 $appFolder = "$parentAppFolder/$projectId";
+                $appName = "$appName-$projectId";
                 $isChildApp = true;
                 $isBellows = true;
             } elseif ($this->appExists($siteFolder, $appName)) {
@@ -228,7 +230,6 @@ class AppModel {
             case "sfchecks":
             case "lexicon":
             case "semdomtrans":
-
             case "projectmanagement":
             case "usermanagement":
                 return true;
