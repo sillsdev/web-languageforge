@@ -172,10 +172,12 @@ class AppModel {
                 $parentAppFolder = "$sitePublicFolder/$appName";
                 $appFolder = "$parentAppFolder/$projectId";
                 $isChildApp = true;
+                $appName = "$appName-$projectId";
             } elseif ($this->isChildApp($bellowsPublicAppFolder, $appName, $projectId)) {
                 $parentAppFolder = "$bellowsPublicAppFolder/$appName";
                 $appFolder = "$parentAppFolder/$projectId";
                 $isChildApp = true;
+                $appName = "$appName-$projectId";
                 $isBellows = true;
             } elseif ($this->appExists($sitePublicFolder, $appName)) {
                 $appFolder = "$sitePublicFolder/$appName";
