@@ -3,6 +3,8 @@
 - name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
   hosts: all
   become: yes
+  vars:
+    node_version: 6.9.3
   pre_tasks:
     - include_vars: "vars_{{ deploy }}.yml"
     - name: Add PHP7.0 ppa for Trusty
@@ -41,6 +43,14 @@
     - name: symlink node to nodejs
       file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
       when: node_binary.stat.exists == False
+
+    - name: install n
+      shell: npm install -g n
+      args:
+        creates: /usr/local/bin/n
+
+    - name: change node version
+      shell: "n {{node_version}}"
 
     - name: install Composer
       shell: php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/local/bin --filename=composer
