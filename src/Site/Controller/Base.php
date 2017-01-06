@@ -36,7 +36,7 @@ class Base
         $this->data['vendorFilesJs'] = array();
         $this->data['vendorFilesMinJs'] = array();
         $this->data['isBootstrap4'] = false;
-
+        $this->data['isAngular2'] = false;
     }
 
     /** @var array data used to render templates */
@@ -234,6 +234,7 @@ class Base
      * @return array
      */
     protected function getAngularAppDependencies() {
+        /* TODO: This is an Angular1 function; rename appropriately. */
         $jsonData = json_decode(file_get_contents(APPPATH . "app_dependencies.json"), true);
         $jsFilesToReturn = array();
         $jsMinFilesToReturn = array();
