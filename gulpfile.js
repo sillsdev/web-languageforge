@@ -9,6 +9,7 @@
 //   'do-reload'
 //   'reload'
 //   'lint'
+//   'generate-language-picker-assets'
 //   'mongodb-backup-prod-db'
 //   'mongodb-copy-backup-to-local'
 //   'mongodb-cleanup-backup-prod-db'
@@ -158,6 +159,32 @@ gulp.task('lint', function () {
     .pipe(jshint())
     .pipe(jshint.reporter(stylish));
 });
+
+// -------------------------------------
+//   Task: Auto-generate language picker asset files
+// -------------------------------------
+gulp.task('generate-language-picker-assets', function (cb) {
+
+  // Manual prerequisite:
+  // copy from libpalaso:palaso-trusty64-master/SIL.WritingSystems/Resources/*.txt
+  // into scripts/language picker/
+
+  var options = {
+    dryRun: false,
+    silent: false,
+    cwd: './scripts/language picker/'
+  };
+
+  // auto-generated files written to src/angular-app/bellows/js/assets/
+  execute(
+    './build-json-language-data.py',
+    options,
+    cb
+  );
+});
+
+gulp.task('generate-language-picker-assets').description =
+  'Update asset files used for language picker';
 
 //region MongoDB
 
