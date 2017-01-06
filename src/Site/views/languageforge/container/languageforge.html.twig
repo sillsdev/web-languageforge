@@ -1,6 +1,7 @@
 {% extends 'container.html.twig' %}
 
-{% block headerBootstrap2 %}
+{% block header %}
+<div id="maincontainer">
     <div id="header">
         <div>
             <div class="pull-left" style="padding-top:19px; padding-left: 22px">
@@ -42,101 +43,9 @@
     </div>
 {% endblock %}
 
-{% block headerBootstrap4 %}
-<div id="header">
-    <div>
-        <div class="pull-left" style="padding-top:19px; padding-left: 22px">
-            <a href="/" style="font-weight: normal; font-size: 16px">Language Forge</a>
-            {% if app.website.domain == "languageforge.local" %} (Bootstrap 4){% endif %}
-        </div>
-        <div id="header-nav" class="pull-right">
-            <ul class="sf-menu">
-                <li><a href="/">Home</a></li>
-                {% if showHelpButton %}
-                    <li ng-app="xforge.helpButton" ng-controller="helpButtonController" ng-show="showButton"><a ng-click="showHelpContent()">Help</a></li>
-                {% endif %}
-                {% if isLoggedIn %}
-                    <li id="myProjects"><a href="/app/projects">My Projects</a>
-                        <ul>
-                            {% for project in projects %}
-                                <li><a href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><img src="{{ smallAvatarUrl }}" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px" id="smallAvatarURL" />Hi, {{ userName }}</a>
-                        <ul>
-                            {% if isAdmin %}
-                                <li><a href="/app/siteadmin">Site Administration</a></li>
-                            {% endif %}
-                            <li><a href="/app/userprofile">My Profile</a></li>
-                            <li><a href="/app/changepassword">Change Password</a></li>
-                            <li><a href="/auth/logout">Logout</a></li>
-                        </ul>
-                    </li>
-                {% else %}
-                    <li class="header-button-special"><a href="/public/signup">Sign Up</a></li>
-                    <li class="header-button-special"><a href="/auth/login">Login</a></li>
-                {% endif %}
-            </ul>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block script %}
-
-    <!-- assuming that these are all not needed anymore since the front page redesign -->
-    <!--
-    <script src="/js/lib/jquery-ui-1.10.3.custom.min.js"></script>
-    <script src="/js/lib/superfish/superfish.js"></script>
-    <script src="/js/lib/superfish/hoverIntent.js"></script>
-    <script src="/js/lib/slides.min.jquery.js"></script>
-    <script src="/js/lib/jquery.iframe-transport.js"></script>
-    -->
-
-    <!-- is the jquery fileupload necessary?
-    <script src="/js/lib/jquery.fileupload.js"></script>
-    <script src="/js/lib/jquery.fileupload-process.js"></script>
-    <script src="/js/lib/jquery.fileupload-validate.js"></script>
-    -->
-
-    <!-- seems to me to be unused - cjh 2016-07
-    <script src="/js/lib/jquery.jsonrpc.js"></script>
-    <script>
-
-        $(document).ready(function () {
-            // Superfish menu delay
-            $("ul.sf-menu").superfish({
-                delay: 500
-            });
-
-            // Slideshow
-            $('#slides').slides({
-                preload: false,
-                preloadImage: 'Site/views/shared/image/loading.gif',
-                play: 5000,
-                pause: 2500,
-                hoverPause: true,
-                prependPagination: true,
-                paginationClass: 'slide_pagination'
-            });
-
-            /* Workaround for IE image loading with black edges */
-            if ($.browser.msie) {
-                if (parseInt($.browser.version, 10) != 6) {
-                    setTimeout(function () { $('.slides_container img').css('visibility','visible') }, 400);
-                }
-            } else {
-                $('.slides_container img').css('visibility','visible');
-            }
-
-        });
-    </script>
-    -->
-{% endblock %}
-
 {% block footer %}
+    <div class="clearfooter"></div>
+</div>
     <div id="footercontainer">
 
         <div id="footer">
@@ -156,8 +65,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 {% endblock %}
 
@@ -175,3 +82,5 @@
         </script>
     {% endif %}
 {% endblock %}
+
+
