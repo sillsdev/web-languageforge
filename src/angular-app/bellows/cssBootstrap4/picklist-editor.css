@@ -1,0 +1,53 @@
+@charset "UTF-8";
+
+.sv-helper {
+    -webkit-transform: rotate(4deg);
+    transform: rotate(4deg);
+}
+
+/*
+[data-ng-repeat-reorder].dragging-before {
+    -webkit-transform: translateX(10px);
+    transform: translateX(10px);
+}
+[data-ng-repeat-reorder].dragging-before input.picklist-row {
+    background-color: #e5e5e5;
+}
+*/
+
+/*
+[data-ng-repeat-reorder].dragging-after {
+    -webkit-transform: translateX(10px);
+    transform: translateX(10px);
+}
+[data-ng-repeat-reorder].dragging-after input.picklist-row {
+    background-color: #e5e5e5;
+}
+*/
+
+.ng-repeat-reorder-parent {
+    z-index: 10;
+    position: relative;
+    border: 1px solid #f5f5f5; /* Same color as background so it's "invisible"... but it needs to be 1px solid, else bugs happen. */
+}
+
+.active-drag-below {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+[sv-element] input.picklist-row {
+    margin-bottom: 2px;
+    magin-top: 0;
+    border: none;
+    width: auto;
+    background-color: #f5f5f5;
+}
+
+[sv-placeholder] {
+    border: 1px dashed black !important;
+    backgrond-color: #e5e5e5;
+    opacity: 0.4;
+}

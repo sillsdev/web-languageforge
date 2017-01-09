@@ -5,6 +5,8 @@ describe('Editor Comments', function () {
   var loginPage    = require('../../../../bellows/pages/loginPage.js');
   var projectsPage = require('../../../../bellows/pages/projectsPage.js');
   var editorPage   = require('../../pages/editorPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   it('setup: login, click on test project', function () {
     loginPage.loginAsManager();
@@ -91,6 +93,7 @@ describe('Editor Comments', function () {
   it('comments page: refresh returns to comment', function () {
     var comment = editorPage.comment.getComment(0);
     browser.refresh();
+    browser.wait(expectedCondition.visibilityOf(comment.content), CONDITION_TIMEOUT);
     expect(comment.content.getText()).toEqual('First comment on this word.');
   });
 

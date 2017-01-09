@@ -9,7 +9,6 @@ use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\ProjectSettingsModel;
 use Api\Model\Shared\MessageModel;
 use Api\Model\Shared\UserModel;
-use Api\Model\Shared\UserProfileModel;
 use Api\Model\Shared\UnreadMessageModel;
 use Palaso\Utilities\CodeGuard;
 
@@ -47,7 +46,7 @@ class Communicate
 
     /**
      *
-     * @param UserProfileModel $user
+     * @param UserModel $user
      * @param ProjectSettingsModel $project
      * @param string $subject
      * @param string $smsTemplate
@@ -142,7 +141,7 @@ class Communicate
         $vars = array(
             'user' => $inviterUserModel,
             'project' => $projectModel,
-            'link' => $website->baseUrl() . '/registration#/?v=' . $toUserModel->validationKey,
+            'link' => $website->baseUrl() . '/app/registration#/?v=' . $toUserModel->validationKey,
         );
 
         self::sendTemplateEmail($to, $subject, 'InvitationValidate', $vars, $website, $delivery);

@@ -63,14 +63,12 @@ class LexConfig extends ObjectForEncoding
     const REVERSALENTRIES = 'reversalEntries';
     const SENSETYPE = 'senseType';
     const ACADEMICDOMAINS = 'academicDomains';
-    const SENSEPUBLISHIN = 'sensePublishIn';
     const ANTHROPOLOGYCATEGORIES = 'anthropologyCategories';
     const SENSEIMPORTRESIDUE = 'senseImportResidue';
     const STATUS = 'status';
 
 
     const REFERENCE = 'reference';
-    const EXAMPLEPUBLISHIN = 'examplePublishIn';
 
     // field lists
     const SENSES_LIST = 'senses';
@@ -106,10 +104,8 @@ class LexConfig extends ObjectForEncoding
         self::REVERSALENTRIES => 'reversal-type',
         self::SENSETYPE => 'sense-type',
         self::ACADEMICDOMAINS => 'domain-type',
-        self::SENSEPUBLISHIN => 'do-not-publish-in',
         self::ANTHROPOLOGYCATEGORIES => 'anthro-code',
         self::STATUS => 'status',
-        self::EXAMPLEPUBLISHIN => 'do-not-publish-in'
     );
 
     /**

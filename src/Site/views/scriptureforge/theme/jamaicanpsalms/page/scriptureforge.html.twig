@@ -5,7 +5,7 @@
     <link href="//fonts.googleapis.com/css?family=Dosis:300" rel="stylesheet" type="text/css">
 {% endblock %}
 
-{% block header %}
+{% block headerBootstrap2 %}
     <!--[if lte IE 8]>
     <div style="text-align:center">Your browser may not work so well. Please consider <a href="learn_faq">upgrading</a> to a modern standards compliant browser.</div>
     <![endif]-->
@@ -47,14 +47,14 @@
                                 <li><a href="/app/userprofile">My Profile</a></li>
                                 <li><a href="/app/activity">My Activity</a></li>
                                 <li><a href="/app/changepassword">Change Password</a></li>
-                                <li><a href="/app/logout">Logout</a></li>
+                                <li><a href="/auth/logout">Logout</a></li>
                             </ul>
                         </li>
                     </ul>
                 </div>
             {% else %}
                 <div id="account" class="pull-right">
-                    <input type="button" value="Login" style="position:relative; top:-3px" class="login-btn pull-left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/signup">Create an Account</a>
+                    <input type="button" value="Login" style="position:relative; top:-3px" class="login-btn pull-left" onclick="window.location='/auth/login'"/> &nbsp; or &nbsp; <a href="/public/signup">Create an Account</a>
                 </div>
             {% endif %}
 
