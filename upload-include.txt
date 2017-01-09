@@ -1,5 +1,6 @@
 # specific files to include
 /assets/index.html
+/angular-app/bellows/js/assets/*.js
 
 # patterns to include
 /angular-app/**/*.min.js
