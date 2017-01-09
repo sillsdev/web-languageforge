@@ -1,9 +1,13 @@
+
 <h1>Rapid Words Collection</h1>
-<h3>Semantic Domains</h3>
+
+<h3>Semantic Domain</h3>
+
 <select [(ngModel)]="simpleValue"> // value is a string or number
-    <option *ngFor="let semanticDomain of semanticDomains">{{semanticDomain}}</option>
+    <option *ngFor="let semanticDomain of semanticDomains" placeholder="Semantic Domain"></option>
 </select>
-<ul><li *ngFor="let word of words">{{word}}</li></ul>
+
+
 
 <p>Howdy! Here's a list of awesome computer scientists. Do you know any others? Add to the list yourself.</p>
 
