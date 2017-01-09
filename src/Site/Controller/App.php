@@ -39,6 +39,7 @@ class App extends Base
             $projectId = '';
         }
 
+        $this->data['isAngular2'] = $appModel->isAppAngular2();
         $this->data['isBootstrap4'] = $appModel->isBootstrap4;
         $this->data['appName'] = $appName;
         $this->data['appFolder'] = $appModel->appFolder;
@@ -73,7 +74,13 @@ class App extends Base
         $this->addJavascriptFiles($appModel->bellowsFolder . '/js', array('vendor', 'assets'));
         $this->addJavascriptFiles($appModel->bellowsFolder . '/directive');
         $this->addJavascriptFiles($appModel->siteFolder . '/js', array('vendor', 'assets'));
-        $this->addJavascriptFiles($appModel->appFolder , array('js/vendor', 'js/assets'));
+
+        if ($this->data['isAngular2']) {
+            $this->addJavascriptFiles($appModel->appFolder . '/dist');
+        } else {
+            $this->addJavascriptFiles($appModel->appFolder, array('js/vendor', 'js/assets'));
+        }
+
         if ($appModel->parentAppFolder) {
             $this->addJavascriptFiles($appModel->parentAppFolder, array('js/vendor', 'js/assets'));
         }
@@ -91,13 +98,18 @@ class App extends Base
             $this->addCssFiles(NG_BASE_FOLDER . 'bellows/cssBootstrap2');
             $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive/bootstrap2');
         }
-        $this->addCssFiles($appModel->bootstrapFolder);
+        $this->addCssFiles($appModel->bootstrapFolder, array('node_modules'));
     }
 }
 
 class AppNotFoundException extends \Exception { }
 
 class AppModel {
+
+    /**
+     * @var string
+     */
+    public $appName;
 
     /**
      * @var string
@@ -153,6 +165,7 @@ class AppModel {
      */
     public function __construct($appName, $projectId, $website, $isPublicApp)
     {
+        $this->appName = $appName;
         $this->determineFolderPaths($appName, $projectId, $website, $isPublicApp);
     }
 
@@ -240,6 +253,14 @@ class AppModel {
         }
     }
 
+    public function isAppAngular2() {
+        $siteAppsInAngular2 = array(
+            "rapid-words",
+            "review-suggest"
+        );
+        return in_array($this->appName, $siteAppsInAngular2);
+    }
+
     private function isAppBootstrap4($appName, $website) {
 
         // replace "appName" with the name of the angular app that has been migrated to bootstrap 4
@@ -249,11 +270,12 @@ class AppModel {
 
         $siteAppsInBootstrap4 = array(
             "scriptureforge" => array("appName"),
-            "languageforge" => array("login"),
-            "m.languageforge" => array("appName"),
+            "languageforge" => array("login", "rapid-words"),
+            "m.languageforge" => array("review-suggest"),
             "waaqwiinaagiwritings" => array(),
             "jamaicanpsalms.scriptureforge" => array(),
             "demo.scriptureforge" => array(),
+            "rapid-words" => array(),
         );
 
         $siteLookup = preg_replace('/^(dev\.)?(\S+)\.(org|local|com)$/', '$2', $website->domain);
