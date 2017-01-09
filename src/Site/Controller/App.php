@@ -256,6 +256,7 @@ class AppModel {
             "waaqwiinaagiwritings" => array(),
             "jamaicanpsalms.scriptureforge" => array(),
             "demo.scriptureforge" => array(),
+            "rapid-words" => array(),
         );
 
         $siteLookup = preg_replace('/^(dev\.)?(\S+)\.(org|local|com)$/', '$2', $website->domain);
