@@ -172,10 +172,12 @@ class AppModel {
                 $parentAppFolder = "$sitePublicFolder/$appName";
                 $appFolder = "$parentAppFolder/$projectId";
                 $isChildApp = true;
+                $appName = "$appName-$projectId";
             } elseif ($this->isChildApp($bellowsPublicAppFolder, $appName, $projectId)) {
                 $parentAppFolder = "$bellowsPublicAppFolder/$appName";
                 $appFolder = "$parentAppFolder/$projectId";
                 $isChildApp = true;
+                $appName = "$appName-$projectId";
                 $isBellows = true;
             } elseif ($this->appExists($sitePublicFolder, $appName)) {
                 $appFolder = "$sitePublicFolder/$appName";
@@ -190,9 +192,11 @@ class AppModel {
                 $parentAppFolder = "$siteFolder/$appName";
                 $appFolder = "$parentAppFolder/$projectId";
                 $isChildApp = true;
+                $appName = "$appName-$projectId";
             } elseif ($this->isChildApp($bellowsAppFolder, $appName, $projectId)) {
                 $parentAppFolder = "$bellowsAppFolder/$appName";
                 $appFolder = "$parentAppFolder/$projectId";
+                $appName = "$appName-$projectId";
                 $isChildApp = true;
                 $isBellows = true;
             } elseif ($this->appExists($siteFolder, $appName)) {
@@ -205,15 +209,9 @@ class AppModel {
             }
         }
 
-        // todo: implement this in the app controller
-        $appName = "$appName-$projectId";
-
-        // check to see if the appName is a child-app of any of valid locations
-
-        if ($isBootstrap4 && file_exists("$appFolder/bootstrap4")) {
-            $bootstrapFolder = "$appFolder/bootstrap4";
-        } elseif (file_exists("$appFolder/bootstrap2")) {
-            $bootstrapFolder = "$appFolder/bootstrap2";
+        $bootstrapNumber = ($isBootstrap4) ? 4 : 2;
+        if (file_exists("$appFolder/bootstrap$bootstrapNumber")) {
+            $bootstrapFolder = "$appFolder/bootstrap$bootstrapNumber";
         } else {
             $bootstrapFolder = $appFolder;
         }
@@ -234,7 +232,6 @@ class AppModel {
             case "sfchecks":
             case "lexicon":
             case "semdomtrans":
-
             case "projectmanagement":
             case "usermanagement":
                 return true;
@@ -248,14 +245,16 @@ class AppModel {
         // replace "appName" with the name of the angular app that has been migrated to bootstrap 4
         // Note that this will affect both the angular app and the app frame
 
-        $sharedAppsInBoostrap4 = array("bellowsApp1", "bellowsApp2");
+        $sharedAppsInBoostrap4 = array("sharedApp1", "sharedApp2");
 
         $siteAppsInBootstrap4 = array(
             "scriptureforge" => array("appName"),
-            "languageforge" => array(),
+            "languageforge" => array("appName"),
+            "m.languageforge" => array(),
             "waaqwiinaagiwritings" => array(),
             "jamaicanpsalms.scriptureforge" => array(),
             "demo.scriptureforge" => array(),
+            "rapid-words" => array(),
         );
 
         $siteLookup = preg_replace('/^(dev\.)?(\S+)\.(org|local|com)$/', '$2', $website->domain);

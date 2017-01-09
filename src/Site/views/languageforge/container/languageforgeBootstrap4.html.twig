@@ -1,0 +1,73 @@
+{% extends 'container.html.twig' %}
+
+{% block header %}
+    <nav class="navbar navbar-fixed-top navbar-dark" style="background-color: #104060">
+        <a class="navbar-brand" href="/">Language Forge
+            {% if app.website.domain == "languageforge.local" %} (Bootstrap 4){% endif %}
+        </a>
+
+        <ul class="nav navbar-nav float-sm-right">
+            {% if isLoggedIn %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="supportedContentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Projects</a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="supportedContentDropdown">
+                        <a class="dropdown-item" href="/app/projects">List All Projects</a>
+                        {% for project in projects %}
+                            <a class="dropdown-item" href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
+                        {% endfor %}
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="supportedContentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="{{ smallAvatarUrl }}" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px" id="smallAvatarURL" />Hi, {{ userName }}</a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="supportedContentDropdown">
+                        {% if isAdmin %}
+                            <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
+                        {% endif %}
+                        <a class="dropdown-item" href="/app/userprofile">My Profile</a>
+                        <a class="dropdown-item" href="/app/changepassword">Change Password</a>
+                        <a class="dropdown-item" href="/auth/logout">Logout</a>
+                    </div>
+                </li>
+            {% else %}
+                <li class="nav-item header-button-rounded">
+                    <a class="nav-link" href="/public/signup">Sign Up</a>
+                </li>
+                <li class="nav-item header-button-rounded">
+                    <a class="nav-link" href="/auth/login">Login</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block footer %}
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs">
+                    <a href="http://ic.payap.ac.th/"><img src="/Site/views/shared/image/payap_logo.png" alt="Payap University Logo" width="170" height="50" style="margin-top: 5px; margin-right: 20px; float: left;" /></a>
+                    <a href="http://www.sil.org"><img src="/Site/views/shared/image/sil_logo_small.png" alt="SIL International Logo" width="50" height="60" /></a>
+                    <span style="color: #404040"><small>v {{ version }}</small></span>
+                    <span>
+                        Copyright {{ "now"|date("Y") }} <a href="http://www.sil.org">SIL International</a>. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+{% endblock %}
+
+{% block analytics %}
+    {% if 'languageforge.org' in http_host %}
+        <script>
+            (function (i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function () {
+                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-22170471-11', 'auto');
+            ga('send', 'pageview');
+
+        </script>
+    {% endif %}
+{% endblock %}
