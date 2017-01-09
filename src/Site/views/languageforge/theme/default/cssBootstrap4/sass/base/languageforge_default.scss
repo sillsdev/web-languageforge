@@ -1,0 +1,13 @@
+// Setup other variables
+
+
+// Overwrite variables - see vendor_bower/bootstrap/sass/_variables.scss
+
+
+// Pull in Bootstrap files - by default this loads ALL features of Bootstrap which we may not need
+@import '../../../../../../../../vendor_bower/bootstrap/scss/bootstrap.scss';
+
+// Write other custom CSS - this could go into another scss file
+body{
+  background: yellow;
+}
