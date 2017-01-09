@@ -205,9 +205,6 @@ class LiftImport
         }
 
         $this->report->nodeErrors[] = $this->liftImportNodeError;
-        if ($this->report->hasError()) {
-            error_log($this->report->toString());
-        }
 
         return $this;
     }
@@ -239,9 +236,6 @@ class LiftImport
         } catch (\Exception $e) {
             $this->liftImportNodeError->addSubnodeError($this->liftDecoder->getImportNodeError());
             $this->report->nodeErrors[] = $this->liftImportNodeError;
-            if ($this->report->hasError()) {
-                error_log($this->report->toString());
-            }
             throw new \Exception($e->getMessage(), $e->getCode());
         }
     }
@@ -350,18 +344,12 @@ class LiftImport
             $this->liftFilePath = $liftFilePaths[0];
             $this->merge($this->liftFilePath, $projectModel, $mergeRule, $skipSameModTime, $deleteMatchingEntry);
 
-            if ($zipNodeError->hasError()) {
-                error_log($zipNodeError->toString() . "\n");
-            }
             foreach ($this->report->nodeErrors as $subnodeError) {
                 $zipNodeError->addSubnodeError($subnodeError);
             }
             $this->report = new ImportErrorReport();
             $this->report->nodeErrors[] = $zipNodeError;
         } catch (\Exception $e) {
-            if ($zipNodeError->hasError()) {
-                error_log($zipNodeError->toString() . "\n");
-            }
             foreach ($this->report->nodeErrors as $subnodeError) {
                 $zipNodeError->addSubnodeError($subnodeError);
             }

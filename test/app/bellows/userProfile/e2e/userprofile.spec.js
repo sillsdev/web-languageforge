@@ -29,8 +29,7 @@ describe('User Profile E2E Test', function () {
       it('Verify initial "My Account" settings created from setupTestEnvironment.php', function () {
         userProfile.getMyAccount();
 
-        expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(browser.baseUrl +
-          constants.avatar);
+        expect(userProfile.myAccountTab.avatar.getAttribute('src')).toContain(constants.avatar);
         expect(userProfile.myAccountTab.avatarColor.$('option:checked').getText())
           .toBe('Select a Color...');
         expect(userProfile.myAccountTab.avatarShape.$('option:checked').getText())
@@ -68,12 +67,12 @@ describe('User Profile E2E Test', function () {
           newColor         = 'Blue';
           newShape         = 'Elephant';
           newMobilePhone   = '+1876 5555555';
-          expectedAvatar   = userProfile.blueElephantAvatarURL;
+          expectedAvatar   = userProfile.blueElephantAvatarUri;
         } else if (expectedUsername == constants.managerUsername) {
           newColor         = 'Gold';
           newShape         = 'Pig';
           newMobilePhone   = '+1876 911';
-          expectedAvatar   = userProfile.goldPigAvatarURL;
+          expectedAvatar   = userProfile.goldPigAvatarUri;
         }
 
         // Ensure "Blue" won't match "Steel Blue", etc.
@@ -92,7 +91,7 @@ describe('User Profile E2E Test', function () {
         });
 
         // Verify values.
-        expect(userProfile.myAccountTab.avatar.getAttribute('src')).toBe(expectedAvatar);
+        expect(userProfile.myAccountTab.avatar.getAttribute('src')).toContain(expectedAvatar);
         expect(userProfile.myAccountTab.avatarColor.$('option:checked').getText()).toBe(newColor);
         expect(userProfile.myAccountTab.avatarShape.$('option:checked').getText()).toBe(newShape);
         expect(userProfile.myAccountTab.mobilePhoneInput.getAttribute('value'))

@@ -9,6 +9,7 @@
 //   'do-reload'
 //   'reload'
 //   'lint'
+//   'generate-language-picker-assets'
 //   'mongodb-backup-prod-db'
 //   'mongodb-copy-backup-to-local'
 //   'mongodb-cleanup-backup-prod-db'
@@ -32,6 +33,7 @@
 //   'test-e2e-run'
 //   'build-composer'
 //   'build-bower'
+//   'build-remove-test-fixtures'
 //   'build-minify'
 //   'build-changeGroup'
 //   'build-version'
@@ -49,6 +51,7 @@
 //   Modules
 // -------------------------------------
 //
+// es6-shim          : ECMAScript 6 (Harmony) compatibility for legacy JavaScript engines
 // async             : Higher-order functions and common patterns for asynchronous code
 // child_process     : Call a child process with the ease of exec and safety of spawn
 // gulp              : The streaming build system
@@ -67,6 +70,7 @@
 // jshint-stylish    : Stylish reporter for JSHint
 // path              : Node.JS path module
 // yargs             : yargs the modern, pirate-themed, successor to optimist
+require('es6-shim');
 var async = require('async');
 var _execute = require('child_process').exec;
 var gulp = require('gulp');
@@ -114,8 +118,7 @@ var execute = function (command, options, callback) {
 // Determine the path to test/app from a given destination.
 // Truncate the remote prefix of the destination
 function getTestCwd(dest) {
-  var cwd =  (dest) ? path.join(dest.replace(/^(.)*:/, ''), 'test/app') : './test/app';
-  return cwd;
+  return (dest) ? path.join(dest.replace(/^(.)*:/, ''), 'test/app') : './test/app';
 }
 
 // Globals
@@ -156,6 +159,32 @@ gulp.task('lint', function () {
     .pipe(jshint())
     .pipe(jshint.reporter(stylish));
 });
+
+// -------------------------------------
+//   Task: Auto-generate language picker asset files
+// -------------------------------------
+gulp.task('generate-language-picker-assets', function (cb) {
+
+  // Manual prerequisite:
+  // copy from libpalaso:palaso-trusty64-master/SIL.WritingSystems/Resources/*.txt
+  // into scripts/language picker/
+
+  var options = {
+    dryRun: false,
+    silent: false,
+    cwd: './scripts/language picker/'
+  };
+
+  // auto-generated files written to src/angular-app/bellows/js/assets/
+  execute(
+    './build-json-language-data.py',
+    options,
+    cb
+  );
+});
+
+gulp.task('generate-language-picker-assets').description =
+  'Update asset files used for language picker';
 
 //region MongoDB
 
@@ -359,7 +388,8 @@ gulp.task('test-e2e-setupTestEnvironment', function (cb) {
     .option('dest', {
       demand: false,
       describe: 'destination of test environment',
-      type: 'string' }).argv;
+      type: 'string' })
+    .argv;
   var options = {
     dryRun: false,
     silent: false,
@@ -380,7 +410,8 @@ gulp.task('test-e2e-teardownTestEnvironment', function (cb) {
     .option('dest', {
       demand: false,
       describe: 'destination of test environment',
-      type: 'string' }).argv;
+      type: 'string' })
+    .argv;
   var options = {
     dryRun: false,
     silent: false,
@@ -418,7 +449,8 @@ gulp.task('test-e2e-env', function () {
     .option('webserverHost', {
       demand: false,
       default: 'languageforge.local',
-      type: 'string' }).argv;
+      type: 'string' })
+    .argv;
   var cwd = getTestCwd(params.dest);
   var src = [
     'setupTestEnvironment.php',
@@ -473,7 +505,8 @@ gulp.task('test-e2e-doTest', function (cb) {
     .example('$0 test-e2e-run --webserverHost languageforge.local',
       'Runs all the E2E tests for languageforge')
     .example('$0 test-e2e-run --webserverHost scriptureforge.local --specs projectSettingsPage',
-      'Runs the scriptureforge E2E test for projectSettingsPage').argv;
+      'Runs the scriptureforge E2E test for projectSettingsPage')
+    .argv;
 
   var protocol =
     (params.webserverHost == 'jamaicanpsalms.scriptureforge.local') ? 'https://' : 'http://';
@@ -567,6 +600,30 @@ gulp.task('build-bower', function (cb) {
 });
 
 // -------------------------------------
+//   Task: Build Remove test fixtures (directives) in HTML only on live build
+// -------------------------------------
+gulp.task('build-remove-test-fixtures', function (done) {
+  var params = require('yargs')
+    .option('dest', {
+      demand: false,
+      default: 'root@localhost:/var/www/virtual/languageforge.org',
+      type: 'string' })
+    .argv;
+  var base = './src/angular-app';
+  var glob = path.join(base, '**/*.html');
+
+  // only on live
+  if (!params.dest.includes('/var/www/virtual/') &&
+    (params.dest.endsWith('forge.org') || params.dest.endsWith('forge.org/'))) {
+    return gulp.src(glob)
+      .pipe(replace(/^.*<pui-mock-upload.*$/m, '\n'))
+      .pipe(gulp.dest(base));
+  } else {
+    done();
+  }
+});
+
+// -------------------------------------
 //   Task: Build (Concat and ) Minify
 // -------------------------------------
 gulp.task('build-minify', function () {
@@ -576,9 +633,12 @@ gulp.task('build-minify', function () {
       type: 'string' })
     .option('doNoCompression', {
       demand: false,
-      type: 'boolean' }).argv;
+      type: 'boolean' })
+    .argv;
   var minifySrc = [
-    'src/angular-app/**/*.js',
+    'src/angular-app/bellows/**/*.js',
+    'src/angular-app/container/**/*.js',
+    'src/angular-app/' + params.applicationName + '/**/*.js',
     '!src/angular-app/**/*.min.js',
     '!src/angular-app/**/assets/**',
     '!src/angular-app/**/vendor/**'];
@@ -603,7 +663,8 @@ gulp.task('build-version', function () {
   var params = require('yargs')
     .option('buildNumber', {
       demand: true,
-      type: 'string' }).argv;
+      type: 'string' })
+    .argv;
   console.log('version =', params.buildNumber);
   return gulp.src('src/version.php')
     .pipe(replace(
@@ -633,14 +694,15 @@ gulp.task('build-changeGroup').description =
 gulp.task('build-productionConfig', function () {
   var defaultMongodbConnection = 'localhost:27017';
   var params = require('yargs')
-  .option('mongodbConnection', {
-    demand: false,
-    default: defaultMongodbConnection,
-    type: 'string' })
-  .option('secret', {
-    demand: false,
-    default: 'not_a_secret',
-    type: 'string' }).argv;
+    .option('mongodbConnection', {
+      demand: false,
+      default: defaultMongodbConnection,
+      type: 'string' })
+    .option('secret', {
+      demand: false,
+      default: 'not_a_secret',
+      type: 'string' })
+    .argv;
   var configSrc = [
     './src/config.php',
     './scripts/scriptsConfig.php',
@@ -688,7 +750,8 @@ gulp.task('build-upload', function (cb) {
       type: 'string' })
     .option('uploadCredentials', {
       demand: true,
-      type: 'string' }).argv;
+      type: 'string' })
+    .argv;
   var options = {
     dryRun: false,
     silent: false,
@@ -734,7 +797,8 @@ gulp.task('build',
       'build-bower',
       'build-version',
       'build-productionConfig',
-      'build-clearLocalCache'),
+      'build-clearLocalCache',
+      'build-remove-test-fixtures'),
     'build-minify',
     'build-changeGroup')
 );
@@ -797,4 +861,3 @@ gulp.task('markdown').description = 'Generate helps markdown files';
 // -------------------------------------
 
 gulp.task('default', gulp.series('build'));
-

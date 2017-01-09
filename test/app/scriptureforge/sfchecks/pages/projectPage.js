@@ -3,8 +3,11 @@
 module.exports = new SfProjectPage();
 
 function SfProjectPage() {
+  var util = require('../../../bellows/pages/util.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
+
+  this.notice = util.notice;
 
   this.testData = {
     simpleUsx1: '<usx version="2.0"> <chapter number="1" style="c" /> ' +
@@ -16,7 +19,7 @@ function SfProjectPage() {
 
   this.settingsDropdownLink = element(by.css('#settingsDropdownButton a.btn i.icon-cog'));
 
-  this.textLink = function (title) {
+  this.textLink = function textLink(title) {
     return element(by.linkText(title));
   };
 
@@ -25,7 +28,7 @@ function SfProjectPage() {
 
   // getFirstCheckbox has to be a function because the .first() method will actually resolve the
   // finder
-  this.getFirstCheckbox = function () {
+  this.getFirstCheckbox = function getFirstCheckbox() {
     return this.textList.first().element(by.css('input[type="checkbox"]'));
   };
 
@@ -53,7 +56,7 @@ function SfProjectPage() {
     toVerse: element(by.model('endVs'))
   };
 
-  this.addNewText = function (title, usx) {
+  this.addNewText = function addNewText(title, usx) {
     expect(this.newText.showFormButton.isDisplayed()).toBe(true);
     this.newText.showFormButton.click();
     browser.wait(expectedCondition.visibilityOf(this.newText.title), CONDITION_TIMEOUT);

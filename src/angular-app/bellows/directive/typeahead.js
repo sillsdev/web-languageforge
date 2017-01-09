@@ -6,7 +6,7 @@ angular.module('palaso.ui.typeahead', [])
       restrict: 'E',
       transclude: true,
       replace: true,
-      templateUrl: '/angular-app/bellows/directive/typeahead.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/typeahead.html',
       scope: {
         search: '=',
         select: '=',

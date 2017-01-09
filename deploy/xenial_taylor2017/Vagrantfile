@@ -1,0 +1,90 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+$script = <<SCRIPT
+if [ ! -f "/usr/bin/unattended-upgrade-org" ]; then
+  killall unattended-upgrade
+  cp /usr/bin/unattended-upgrade /usr/bin/unattended-upgrade-org
+  > /usr/bin/unattended-upgrade
+  killall unattended-upgrade
+  rm -f /var/lib/apt/lists/lock
+  rm -f /var/lib/apt/lists/*
+fi
+add-apt-repository ppa:ansible/ansible
+apt-get update
+apt-get -y install git ansible
+if [ ! -d "/home/vagrant/src" ]; then
+  mkdir /home/vagrant/src
+fi
+cd /home/vagrant/src
+if [ ! -d "web-languageforge" ]; then
+  git clone --depth=100 --recurse-submodules https://github.com/sil-student-projects/web-languageforge.git 
+else
+  cd web-languageforge; git pull origin master-taylor --ff-only --recurse-submodules 
+fi
+
+cd /home/vagrant/src/web-languageforge/deploy/; git checkout master-taylor; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
+
+SCRIPT
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = "xenial-gnome-amd64"
+  # Less secure but will work on NTFS which doesn't understand permissions / owner very well
+  config.ssh.insert_key = false
+  
+  config.vm.box_url = "http://downloads.sil.org/vagrant/xenial-gnome-amd64.box"
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # config.vm.network :forwarded_port, guest: 80, host: 8080
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network :private_network, ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network :public_network
+
+  # If true, then any SSH connections made will enable agent forwarding.
+  # Default value: false
+  # config.ssh.forward_agent = true
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  # config.vm.synced_folder "../data", "/vagrant_data"
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  config.vm.provider :virtualbox do |vb|
+    # Don't boot with headless mode
+    vb.gui = true
+  
+    # Use VBoxManage to customize the VM. For example to change memory:
+    vb.customize ["modifyvm", :id, "--memory", "4096"]
+    vb.customize ["modifyvm", :id, "--vram", 64]
+    vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
+  end
+
+  # configure Vagrant's ssh shell to be a non-login one (avoids error "stdin: is not a tty error")
+  config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+
+  config.vm.provision "shell", inline: $script
+  
+  #config.vm.provision :ansible do |ansible|
+  #  ansible.playbook = '../playbook_lxde.yml'
+  #  ansible.extra_vars = { ansible_ssh_user: 'vagrant', vagrant: true }
+  # 
+  #  ansible.verbose = 'v'
+  #end
+end

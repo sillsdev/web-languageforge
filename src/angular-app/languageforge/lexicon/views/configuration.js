@@ -4,16 +4,17 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
   'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor', 'lexicon.services',
   'palaso.util.model.transform'])
 
-// Configuation Controller
+// Configuration Controller
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService',
-  '$filter', '$modal', 'lexConfigService', 'utilService',
-function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, util) {
+  '$filter', '$modal', 'lexConfigService', 'utilService', 'lexSendReceive',
+function ($scope, notice, lexProjectService, sessionService,
+          $filter, $modal, lexConfig, util, sendReceive) {
   var inputSystemSelected = true;
-  lexProjectService.setBreadcrumbs('configuration',
-    $filter('translate')('Configuration'));
-  $scope.configDirty = angular.copy(ss.session.projectSettings.config);
-  $scope.optionlistDirty = angular.copy(ss.session.projectSettings.optionlists);
-  $scope.optionlistPristine = angular.copy(ss.session.projectSettings.optionlists);
+  var warnOfUnsavedEditsId;
+  lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Configuration'));
+  $scope.configDirty = angular.copy(sessionService.session.projectSettings.config);
+  $scope.optionlistDirty = angular.copy(sessionService.session.projectSettings.optionlists);
+  $scope.optionlistPristine = angular.copy(sessionService.session.projectSettings.optionlists);
   $scope.isSaving = false;
 
   /**
@@ -21,7 +22,7 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
    * References: http://en.wikipedia.org/wiki/IETF_language_tag
    *             http://tools.ietf.org/html/rfc5646#page-15
    *
-   * @param {InputSystem} inputSystem
+   * @param inputSystem
    */
   function InputSystemsViewModel(inputSystem) {
     if (inputSystem == undefined) {
@@ -135,7 +136,9 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
         // Script
         // scripts would be better obtained from a service CP 2014-08
-        if ((/^[a-zA-Z]{4}$/.test(tokens[i])) && (tokens[i] in _inputSystems_scripts)) {
+        if ((/^[a-zA-Z]{4}$/.test(tokens[i])) &&
+          (tokens[i] in _inputSystems_scripts) // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+        ) {
           this.script = tokens[i];
           this.special = specialOptionsOrder[3];
           continue;
@@ -144,7 +147,8 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
         // Region
         // scripts would be better obtained from a service CP 2014-08
         if ((/^[a-zA-Z]{2}$/.test(tokens[i]) || /^[0-9]{3}$/.test(tokens[i])) &&
-            (tokens[i] in _inputSystems_regions)) {
+          (tokens[i] in _inputSystems_regions) // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+        ) {
           this.region = tokens[i];
           this.special = specialOptionsOrder[3];
           continue;
@@ -278,6 +282,41 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
   setupView();
 
+  $scope.currentField = {
+    name: '',
+    inputSystems: {
+      fieldOrder: [],
+      selecteds: {}
+    }
+  };
+
+  $scope.selectField = function selectField(fieldName, isReload) {
+    isReload = isReload || false;
+    if ($scope.currentField.name !== fieldName || isReload) {
+      var inputSystems = angular.copy($scope.fieldConfig[fieldName].inputSystems);
+
+      $scope.currentField.name = fieldName;
+
+      $scope.currentField.inputSystems.fieldOrder = [];
+      $scope.currentField.inputSystems.selecteds = {};
+      angular.forEach(inputSystems, function (tag) {
+        $scope.currentField.inputSystems.selecteds[tag] = true;
+      });
+
+      // if the field uses input systems, add the selected systems first then
+      // the unselected systems
+      if (inputSystems) {
+        $scope.currentField.inputSystems.fieldOrder = inputSystems;
+        angular.forEach($scope.configDirty.inputSystems, function (inputSystem, tag) {
+          if (!(tag in $scope.currentField.inputSystems.selecteds) &&
+            $scope.currentField.inputSystems.fieldOrder.indexOf(tag) == -1) {
+            $scope.currentField.inputSystems.fieldOrder.push(tag);
+          }
+        });
+      }
+    }
+  };
+
   function setupView() {
     if (!angular.isDefined($scope.configDirty.inputSystems)) {
       return;
@@ -315,16 +354,30 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
       }
     });
 
-    angular.forEach($scope.configDirty.entry.fields.senses.fields.examples.fieldOrder, function (fieldName) {
-      if (angular.isDefined($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName])) {
-        if ($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName].type !== 'fields') {
-          $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName];
+    angular.forEach($scope.configDirty.entry.fields.senses.fields.examples.fieldOrder,
+      function (fieldName) {
+        if (angular.isDefined($scope.configDirty.entry.fields.senses.fields.examples.
+            fields[fieldName])
+        ) {
+          if ($scope.configDirty.entry.fields.senses.fields.examples.fields[fieldName].type !==
+            'fields'
+          ) {
+            $scope.fieldConfig[fieldName] = $scope.configDirty.entry.fields.senses.fields.examples.
+              fields[fieldName];
+          }
         }
-      }
-    });
+      });
 
     // suggested languages from lexical data
     $scope.suggestedLanguageCodes = [];
+  }
+
+  function warnOfUnsavedEdits() {
+    if (angular.isUndefined(warnOfUnsavedEditsId)) {
+      warnOfUnsavedEditsId = notice.push(notice.WARN, 'A synchronize has been started by ' +
+        'another user. Please make your configuration changes when the synchronize has ' +
+        'finished.');
+    }
   }
 
   $scope.configurationApply = function configurationApply() {
@@ -351,13 +404,26 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
     lexProjectService.updateConfiguration($scope.configDirty, $scope.optionlistDirty,
       function (result) {
         if (result.ok) {
-          notice.push(notice.SUCCESS,
-            $filter('translate')('Configuration updated successfully'));
+          var isSuccess = result.data;
+          if (isSuccess) {
+            notice.push(notice.SUCCESS,
+              $filter('translate')('Configuration updated successfully'));
+            sessionService.session.projectSettings.config = angular.copy($scope.configDirty);
+            sessionService.session.projectSettings.optionlist =
+              angular.copy($scope.optionlistDirty);
+            $scope.optionlistPristine = angular.copy($scope.optionlistDirty);
+            lexConfig.refresh();
+          } else {
+            warnOfUnsavedEdits();
+            $scope.configDirty = angular.copy(sessionService.session.projectSettings.config);
+            $scope.optionlistDirty =
+              angular.copy(sessionService.session.projectSettings.optionlists);
+            setupView();
+            $scope.selectField($scope.currentField.name, true);
+            sendReceive.startSyncStatusTimer();
+          }
+
           $scope.configForm.$setPristine();
-          $scope.projectSettings.config = angular.copy($scope.configDirty);
-          $scope.projectSettings.optionlist = angular.copy($scope.optionlistDirty);
-          $scope.optionlistPristine = angular.copy($scope.optionlistDirty);
-          lexConfig.refresh();
         }
 
         $scope.isSaving = false;
@@ -366,11 +432,39 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
   };
 
+  sendReceive.setPollUpdateSuccessCallback(pollUpdateSuccess);
+  sendReceive.setSyncProjectStatusSuccessCallback(syncProjectStatusSuccess);
+
+  function pollUpdateSuccess() {
+    if ($scope.configForm.$dirty) {
+      if (sendReceive.isInProgress()) {
+        warnOfUnsavedEdits();
+        $scope.configDirty = angular.copy(sessionService.session.projectSettings.config);
+        $scope.optionlistDirty = angular.copy(sessionService.session.projectSettings.optionlists);
+        setupView();
+        $scope.selectField($scope.currentField.name, true);
+        $scope.configForm.$setPristine();
+      }
+    }
+  }
+
+  function syncProjectStatusSuccess() {
+    sessionService.refresh(function () {
+      $scope.configDirty = angular.copy(sessionService.session.projectSettings.config);
+      $scope.optionlistDirty = angular.copy(sessionService.session.projectSettings.optionlists);
+      setupView();
+      $scope.selectField($scope.currentField.name, true);
+      $scope.configForm.$setPristine();
+      notice.removeById(warnOfUnsavedEditsId);
+      warnOfUnsavedEditsId = undefined;
+    });
+  }
+
   // InputSystemsConfigCtrl
 
   $scope.isInputSystemInUse = function isInputSystemInUse() {
     return ($scope.inputSystemViewModels[$scope.selectedInputSystemId].inputSystem.tag in
-      $scope.projectSettings.config.inputSystems);
+      sessionService.session.projectSettings.config.inputSystems);
   };
 
   $scope.newExists = function newExists(special) {
@@ -477,41 +571,9 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 }])
 
 // Field Configuration Controller
-.controller('FieldConfigCtrl', ['$scope', '$modal', function ($scope, $modal) {
+.controller('FieldConfigCtrl', ['$scope', '$modal', 'sessionService',
+function ($scope, $modal, sessionService) {
   $scope.showAllFields = false;
-
-  $scope.currentField = {
-    name: '',
-    inputSystems: {
-      fieldOrder: [],
-      selecteds: {}
-    }
-  };
-  $scope.selectField = function selectField(fieldName) {
-    if ($scope.currentField.name !== fieldName) {
-      var inputSystems = angular.copy($scope.fieldConfig[fieldName].inputSystems);
-
-      $scope.currentField.name = fieldName;
-
-      $scope.currentField.inputSystems.fieldOrder = [];
-      $scope.currentField.inputSystems.selecteds = {};
-      angular.forEach(inputSystems, function (tag) {
-        $scope.currentField.inputSystems.selecteds[tag] = true;
-      });
-
-      // if the field uses input systems, add the selected systems first then
-      // the unselected systems
-      if (inputSystems) {
-        $scope.currentField.inputSystems.fieldOrder = inputSystems;
-        angular.forEach($scope.configDirty.inputSystems, function (inputSystem, tag) {
-          if (!(tag in $scope.currentField.inputSystems.selecteds) &&
-              $scope.currentField.inputSystems.fieldOrder.indexOf(tag) == -1) {
-            $scope.currentField.inputSystems.fieldOrder.push(tag);
-          }
-        });
-      }
-    }
-  };
 
   $scope.selectField('lexeme');
 
@@ -690,9 +752,10 @@ function ($scope, notice, lexProjectService, ss, $filter, $modal, lexConfig, uti
 
   $scope.showRemoveCustomField = function showRemoveCustomField(fieldName) {
     return $scope.isCustomField(fieldName) &&
-      !(fieldName in $scope.projectSettings.config.entry.fields) &&
-      !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields) &&
-      !(fieldName in $scope.projectSettings.config.entry.fields.senses.fields.examples.fields);
+      !(fieldName in sessionService.session.projectSettings.config.entry.fields) &&
+      !(fieldName in sessionService.session.projectSettings.config.entry.fields.senses.fields) &&
+      !(fieldName in
+        sessionService.session.projectSettings.config.entry.fields.senses.fields.examples.fields);
   };
 
   $scope.removeSelectedCustomField = function removeSelectedCustomField() {

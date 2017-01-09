@@ -3,7 +3,7 @@
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\Shared\UserProfileModel;
+use Api\Model\Shared\UserModel;
 //use PHPUnit\Framework\TestCase;
 
 class LexBaseViewDtoTest extends PHPUnit_Framework_TestCase
@@ -14,7 +14,7 @@ class LexBaseViewDtoTest extends PHPUnit_Framework_TestCase
         $environ->clean();
 
         $userId = $environ->createUser('User', 'Name', 'name@example.com');
-        $user = new UserProfileModel($userId);
+        $user = new UserModel($userId);
         $user->role = SystemRoles::USER;
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);

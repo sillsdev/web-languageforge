@@ -1,0 +1,12 @@
+<div class="control-group">
+    <div ng-show="reports.length > 0">
+        <div>
+            <select data-ng-model="report.currentId" data-ng-options="report.id as report.name for report in reports"><option value="">Select a Report...</option></select>
+            <button style="position:relative; top:-5px" ng-show="report.output" class="btn" ng-click="runReport()">Run Again</button>
+        </div>
+        <pre ng-show="report.output" data-ng-bind="report.output"></pre>
+    </div>
+    <div ng-hide="reports.length > 0">
+        No reports are available at this time.
+    </div>
+</div>

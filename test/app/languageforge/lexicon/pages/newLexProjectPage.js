@@ -10,10 +10,6 @@ function NewLexProjectPage() {
     browser.get(browser.baseUrl + '/app/lexicon/new-project');
   };
 
-  this.getChooser = function getChooser() {
-    browser.get(browser.baseUrl + '/app/lexicon/new-project/#/chooser');
-  };
-
   // form controls
   this.noticeList = element.all(by.repeater('notice in notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
