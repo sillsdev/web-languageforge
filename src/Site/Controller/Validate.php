@@ -2,14 +2,14 @@
 
 namespace Site\Controller;
 
-use Api\Model\Shared\UserModelBase;
+use Api\Model\Shared\UserModel;
 use Silex\Application;
 
 class Validate extends Base
 {
     public function check(Application $app, $validateKey = '') {
         $userActivated = false;
-        $userModel = new UserModelBase();
+        $userModel = new UserModel();
         if ($userModel->readByProperty('validationKey', $validateKey)) {
             if ($userModel->validate()) {
                 $userModel->active = true;

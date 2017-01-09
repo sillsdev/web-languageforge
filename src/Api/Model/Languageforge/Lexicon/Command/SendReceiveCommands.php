@@ -242,7 +242,28 @@ class SendReceiveCommands
             }
             $status['PercentComplete'] = min(99, intval((time() - $status['StartTimestamp']) / ($previousRunTotalMilliseconds / 1000) * 100));
         }
+
+        // if project is modified since last sync, set state as un-synced
+        if (array_key_exists('SRState', $status) && $status['SRState'] == "IDLE" &&
+            $project->lastEntryModifiedDate && $project->lastSyncedDate &&
+            ($project->lastEntryModifiedDate > $project->lastSyncedDate)
+        ) {
+            $status['SRState'] = 'LF_UNSYNCED';
+        }
+
         return $status;
+    }
+
+    /**
+     * logic should match JavaScript service lexSendReceive.isInProgress()
+     * @param $projectId
+     * @return bool true if SRState is CLONING or SYNCING, false otherwise
+     */
+    public static function isInProgress($projectId)
+    {
+        $status = self::getProjectStatus($projectId);
+        return $status && array_key_exists('SRState', $status) &&
+            ($status['SRState'] == 'CLONING' || $status['SRState'] == 'LF_CLONING' || $status['SRState'] == 'SYNCING');
     }
 
     /**

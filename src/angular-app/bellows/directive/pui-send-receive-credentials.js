@@ -4,7 +4,7 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
   .directive('puiSendReceiveCredentials', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/pui-send-receive-credentials.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/pui-send-receive-credentials.html',
       scope: {
         puiProject: '=',
         puiValidate: '&',

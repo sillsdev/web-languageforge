@@ -4,7 +4,7 @@
     <tabset>
         <tab heading="{{'Project Properties' | translate}}">
             <form class="well" data-ng-submit="updateProject()">
-                <fieldset>
+                <fieldset data-ng-disabled="!rights.remove">
                     <div class="control-group">
                         <label class="control-label" for="projName" data-translate="Project Name"></label>
                         <div class="controls">
@@ -21,24 +21,20 @@
                         <label class="control-label"><b>{{'Project Owner' | translate}}:</b>&nbsp;&nbsp;{{project.ownerRef.username}}</label>
                         <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> {{'Featured On Website' | translate}}</label>
                     </div>
+                    <button type="submit" class="btn"><i class="fa fa-check"></i>{{'Save' | translate}}</button>
                 </fieldset>
-                <button type="submit" class="btn"><i class="fa fa-check"></i>{{'Save' | translate}}</button>
             </form>
         </tab>
-        <tab heading="{{'Send and Receive Properties' | translate}}" data-ng-show="sendReceive.showTab" disabled="!rights.canEditSendReceiveProperties">
-            <form class="form-horizontal well" data-ng-submit="updateSendReceiveCredentials()" novalidate>
-                <div class="row" align="center">
-                    <div class="span8" id="form-status" data-ng-class="formStatusClass">{{formStatus | translate}}&nbsp;</div>
-                </div>
-                <h4 data-translate="Send and Receive with LanguageDepot.org"></h4>
-                <pui-send-receive-credentials pui-project="project" pui-validate="isFormValid()" pui-reset="resetValidateForm()">
-                </pui-send-receive-credentials>
-                <div class="control-group" data-ng-show="rights.canEditSendReceiveProperties">
-                    <div class="controls">
-                        <button class="btn" type="submit">
-                            <i class="fa fa-check"></i>{{'Save' | translate}}</button>
-                    </div>
-                </div>
+        <!-- Archive tab disabled now that project owners can delete their own projects -->
+        <tab heading="{{'Archive' | translate}}" data-ng-show="false">
+            <form class="well">
+                <pui-archive-project pui-action-in-progress="actionInProgress">
+                </pui-archive-project>
+            </form>
+        </tab>
+        <tab heading="{{'Delete' | translate}}" data-ng-show="rights.remove">
+            <form class="well">
+                <pui-delete-project></pui-delete-project>
             </form>
         </tab>
     </tabset>

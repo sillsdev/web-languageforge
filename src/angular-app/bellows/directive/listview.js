@@ -7,7 +7,7 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
       restrict: 'EA',
       transclude: true,
       replace: true,
-      templateUrl: '/angular-app/bellows/directive/listview.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/listview.html',
       scope: {
         search: '&',
         select: '&',

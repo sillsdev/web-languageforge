@@ -1,0 +1,785 @@
+/**
+ * Scripture Forge
+ *
+ * Version      Version 2.0
+ * Date            17th October 2013
+ * File Info    Homepage template CSS sheet to fit bootstrap 2 grid
+ */
+
+/* Non bootstrap resets */
+html, body {
+    height: 100%;
+}
+
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+/* Scripture Forge */
+
+body { 
+    font-family: "Open Sans", Arial, Helvetica, Verdana, sans-serif;
+    font-weight: 400;
+    color: #404040;
+    background: url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_j_body_bkg_tile.png) repeat 0 0;
+}
+
+h2, h3 {
+    font-family: "Dosis", sans-serif;
+    font-weight: 300;
+}
+
+.lifted-text {
+    text-shadow: 0px 1px 1px #fff;
+}
+
+.sf-jamaican-yellow {
+    color: #F0BA13;
+}
+
+.sf-jamaican-green {
+    color: #6DA251;
+}
+
+/* Layout */
+div#header {
+    position: relative;
+    height: 39px;
+    background: #333 url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_header-bar-bkg.png) repeat-x 0 0;
+    border-bottom: 1px solid #222;
+    color: #fff;
+    z-index: 10; /* IE6-7 hack for logo */
+}
+
+div#header, div#header a {
+    color: #eeeff0;
+}
+
+div#header-nav {
+    width: auto;
+    height: 39px;
+    padding-left: 130px;
+    border-right: 1px solid #434242;
+}
+
+div#account{
+    padding-top: 7px;
+    font-size: 0.85em; 
+    line-height: 24px;
+}
+
+div.sf-logo-large {
+    position: absolute;
+    width: 96px;
+    height: 165px;
+    top: 7px;
+    z-index: 10;
+}
+
+div.sf-logo-medium {
+    position: absolute;
+    width: 92px;
+    height: 114px;
+    top: 7px;
+    z-index: 10;
+}
+
+div.darkTextLogo {
+    width: 166px;
+    height: 14px;
+    margin-top: 14px;
+    background: transparent url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_sprite_jamaica.png) no-repeat 0 -22px;
+}
+
+div#sf-promotion-outer-wrap {
+    width: 100%;
+    border-bottom: 8px solid #fff;
+    background: url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_promo_bkg_jamaica.png) repeat-x 0 0;
+}
+
+div#sf-promotion-inner-wrap {
+    width: auto;
+    max-width: 1280px;
+    min-width: 940px;
+    margin: 0 auto;
+    background: #333 url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/photo-4.jpg) no-repeat center 0;
+    overflow: hidden;
+}
+
+div#sf-promotion-wrap-shadow {
+    display: block;
+    height: 30px;
+    background: transparent url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_sprite_jamaica.png) no-repeat center -74px;
+}
+
+div.promotionWing {
+    position: relative;
+    width: 229px;
+    height: 400px;
+    z-index: 2;
+}
+
+div.promotionWingLeft {
+    background: url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_promo_wings_left_jamaica.png) no-repeat 0 0;
+}
+
+div.promotionWingRight {
+    background: url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_promo_wings_right_jamaica.png) no-repeat 0 0;
+}
+
+div#sf-promotion {
+    width: 938px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+div.sf-3up {
+    margin: 40px 0;
+    background-color: #fff;
+    border: 1px solid #D9D9D9;
+}
+
+div.sf-3up .span4 {
+    width: 262px;
+    margin: 0;
+    padding: 5px 25px 10px 25px;
+}
+
+div.sf-3up-1 {
+    border-top: 8px solid #F0BA13; 
+}
+
+div.sf-3up-2 {
+    border-top: 8px solid #595959; 
+    border-right: 1px dashed #ccc;
+    border-left: 1px dashed #ccc;
+}
+
+div.sf-3up-3 {
+    border-top: 8px solid #6DA251; 
+}
+
+div.sub-foot-detailing {
+    width: auto;
+    height: 7px;
+    background: url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_j_sub-foot-detailing.png) repeat-x 0 0;
+}
+
+div#sub-foot {
+    padding: 20px 0;
+    background: url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_j_dark_bkg_tile.png) repeat 0 0;
+}
+
+div#footer {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 20px 0 24px 0;
+    background-color: #3a3a3a;
+    background: #3a3a3a url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_sprite_jamaica.png) no-repeat center -139px;
+}
+
+div#footer small {
+    line-height: auto;
+}
+
+div#footer, div#footer a {
+    color: #f4f4f6;
+}
+
+div#footer div#sponsor {
+    text-align: center;
+}
+
+div#footerBaseline {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    background-color: #202020;
+    color: #aaa;
+    text-align: right;
+}
+
+div#footerBaseline a {
+    color: #404040;
+    text-decoration: underline;  
+}
+
+a {  
+    color: #6DA251;  
+    text-decoration: none;  
+    xfont-weight: bold;
+}
+
+a.arrowed {
+    background: url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_sprite_jamaica.png) no-repeat top right;
+    *background: url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_sprite_jamaica.gif) no-repeat top right;
+    padding-right: 12px;
+}
+  
+a:hover {  
+    text-decoration: underline; 
+    color: #6DA251; 
+}
+
+.login-btn {
+    width: auto;
+    height: auto;
+    padding: 0.3em 1.2em 0.4em 1.2em;
+    color: #eee;
+    font-size: 1.0em;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid #191919;
+    -webkit-border-radius: 4px 4px 4px 4px;
+    -moz-border-radius: 4px 4px 4px 4px;
+    border-radius: 4px 4px 4px 4px;
+    -webkit-box-shadow: 0 0 3px #494949, inset 0 0 1px #aaa;
+    -moz-box-shadow: 0 0 3px #494949, inset 0 0 1px #aaa;
+    box-shadow: 0 0 3px #494949, inset 0 0 1px #aaa;
+    background: #555454; /* Old browsers */
+    background: -moz-linear-gradient(top, #555454 0%, #070707 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#555454), color-stop(100%,#070707));
+    background: -webkit-linear-gradient(top, #555454 0%,#070707 100%);
+    background: -o-linear-gradient(top, #555454 0%,#070707 100%);
+    background: -ms-linear-gradient(top, #555454 0%,#070707 100%);
+    background: linear-gradient(to bottom, #555454 0%,#070707 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#555454', endColorstr='#070707',GradientType=0 );
+}
+
+.login-btn:hover {
+    color: #fff;
+    border: 1px solid #000;
+    -webkit-box-shadow: 0 0 3px #494949, inset 0 0 1px #777;
+    -moz-box-shadow: 0 0 3px #494949, inset 0 0 1px #777;
+    box-shadow: 0 0 3px #494949, inset 0 0 1px #777;
+}
+
+.sf-btnJ {
+    padding: 6px 12px;
+    margin: 10px 0 5px 0;
+}
+
+.sf-btnJ1 {
+  background-color: #F0BA13;
+  border-color: #F0BA13;
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+  background-color: #deac10;
+  background-image: -moz-linear-gradient(top,#F0BA13,#c4970c);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#F0BA13),to(#c4970c));
+  background-image: -webkit-linear-gradient(top,#F0BA13,#c4970c);
+  background-image: -o-linear-gradient(top,#F0BA13,#c4970c);
+  background-image: linear-gradient(to bottom,#F0BA13,#c4970c);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff0ba13', endColorstr='#ffc3960c', GradientType=0);
+  border-color: #c4970c #c4970c #7c5f08;
+  border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+}
+.sf-btnJ1:hover,
+.sf-btnJ1:focus {
+  text-decoration: none;
+  background-position: 0 -15px;
+  -webkit-transition: background-position .1s linear;
+  -moz-transition: background-position .1s linear;
+  -o-transition: background-position .1s linear;
+  transition: background-position .1s linear;
+}
+.sf-btnJ1:hover,
+.sf-btnJ1:focus {
+  background-color: #c4970c;
+}
+.sf-btnJ1:active,
+.sf-btnJ1.active,
+.sf-btnJ1.active:hover {
+  background-color: #dca90e;
+  border-color: #c4970c;
+}
+.sf-btnJ1.disabled:hover,
+.sf-btnJ1.disabled:focus,
+.sf-btnJ1.disabled:active,
+.sf-btnJ1.disabled.active,
+.sf-btnJ1[disabled] .sf-btnJ1:hover,
+.sf-btnJ1[disabled] .sf-btnJ1:focus,
+.sf-btnJ1[disabled] .sf-btnJ1:active,
+.sf-btnJ1[disabled] .sf-btnJ1.active {
+  background-color: #F0BA13;
+  border-color: #F0BA13;
+}
+
+
+.sf-btnJ2 {
+  background-color: #595959;
+  border-color: #595959;
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+  background-color: #4f4f4f;
+  background-image: -moz-linear-gradient(top,#595959,#404040);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#595959),to(#404040));
+  background-image: -webkit-linear-gradient(top,#595959,#404040);
+  background-image: -o-linear-gradient(top,#595959,#404040);
+  background-image: linear-gradient(to bottom,#595959,#404040);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff595959', endColorstr='#ff3f3f3f', GradientType=0);
+  border-color: #404040 #404040 #191919;
+  border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+}
+.sf-btnJ2:hover,
+.sf-btnJ2:focus {
+  color: #ccc;
+  text-decoration: none;
+  background-position: 0 -15px;
+  -webkit-transition: background-position .1s linear;
+  -moz-transition: background-position .1s linear;
+  -o-transition: background-position .1s linear;
+  transition: background-position .1s linear;
+}
+.sf-btnJ2:hover,
+.sf-btnJ2:focus {
+  background-color: #404040;
+}
+.sf-btnJ2:active,
+.sf-btnJ2.active,
+.sf-btnJ2.active:hover {
+  background-color: #4c4c4c;
+  border-color: #404040;
+}
+.sf-btnJ2.disabled:hover,
+.sf-btnJ2.disabled:focus,
+.sf-btnJ2.disabled:active,
+.sf-btnJ2.disabled.active,
+.sf-btnJ2[disabled] .sf-btnJ2:hover,
+.sf-btnJ2[disabled] .sf-btnJ2:focus,
+.sf-btnJ2[disabled] .sf-btnJ2:active,
+.sf-btnJ2[disabled] .sf-btnJ2.active {
+  background-color: #595959;
+  border-color: #595959;
+}
+
+.sf-btnJ3 {
+  background-color: #6DA251;
+  border-color: #6DA251;
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+  background-color: #64944a;
+  background-image: -moz-linear-gradient(top,#6DA251,#568040);
+  background-image: -webkit-gradient(linear,0 0,0 100%,from(#6DA251),to(#568040));
+  background-image: -webkit-linear-gradient(top,#6DA251,#568040);
+  background-image: -o-linear-gradient(top,#6DA251,#568040);
+  background-image: linear-gradient(to bottom,#6DA251,#568040);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff6da251', endColorstr='#ff567f40', GradientType=0);
+  border-color: #568040 #568040 #344d27;
+  border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+}
+.sf-btnJ3:hover,
+.sf-btnJ3:focus {
+  text-decoration: none;
+  background-position: 0 -15px;
+  -webkit-transition: background-position .1s linear;
+  -moz-transition: background-position .1s linear;
+  -o-transition: background-position .1s linear;
+  transition: background-position .1s linear;
+}
+.sf-btnJ3:hover,
+.sf-btnJ3:focus {
+  background-color: #568040;
+}
+.sf-btnJ3:active,
+.sf-btnJ3.active,
+.sf-btnJ3.active:hover {
+  background-color: #629149;
+  border-color: #568040;
+}
+.sf-btnJ3.disabled:hover,
+.sf-btnJ3.disabled:focus,
+.sf-btnJ3.disabled:active,
+.sf-btnJ3.disabled.active,
+.sf-btnJ3[disabled] .sf-btnJ3:hover,
+.sf-btnJ3[disabled] .sf-btnJ3:focus,
+.sf-btnJ3[disabled] .sf-btnJ3:active,
+.sf-btnJ3[disabled] .sf-btnJ3.active {
+  background-color: #6DA251;
+  border-color: #6DA251;
+}
+
+.content {
+    background: white;
+    padding: 0 20px 0 20px;
+}
+
+/* added from sf.css as referenced in template */
+#maincontainer {
+    min-height: 100%;
+    margin-bottom: -224px;
+    position: relative;
+    
+}
+
+#footercontainer {
+    height: 184px;
+    position: relative;
+    
+}
+
+.clearfooter {
+    height: 224px;
+    clear: both;
+}
+
+
+/* Application Styles */
+/* Header offset for logo */
+div.content h1 {
+    margin-left: 132px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+
+/* icons */
+button i, a i {
+    margin-right: 8px;
+}
+
+i.icon-remove {
+    color: #f66
+}
+
+/* Top navigation */
+div.hdrnav {
+    margin-left: 122px;
+    padding-top: 20px;
+    position: relative;
+}
+
+div#inviteAFriend .overlay {
+    top: 52px;
+    right: 0px;
+}
+
+div.hdrnav img {
+    margin-right: 12px;
+}
+
+ul.topNav {
+    margin: 0;
+}
+
+ul.topNav > li {
+    background: #777777;
+    display: inline-block;
+    margin-top: 2px;
+    margin-right: 7px;
+}
+
+ul.topNav li:hover, div.hdrnav li.here {
+    background: #0088cc;
+}
+
+ul.topNav a {
+    color: #fff;
+    display: block;
+    padding: 6px 12px 6px 12px;
+    text-decoration: none;
+}
+
+div#logo-small {
+    width: 27px;
+    height: 36px;
+    background: url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_logo_small.png) no-repeat;
+}
+
+/* Breadcrumbs */
+.breadcrumb > li .divider {
+    padding: 0 5px;
+    xcolor: #ccc;
+}
+
+ul.topCrumbs {
+    margin: 5px 0 0 0;
+    font-weight:bold;
+    color: gray;
+    padding: 0 0;
+    list-style: none;
+    background-color: #fff;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+}
+
+ul.topCrumbs a {
+    color: gray;
+}
+
+ul.topCrumbs .active {
+    color: #202020;
+}
+
+/* jqte fixes and overrides */
+.jqte_placeholder {
+    display: block; 
+}
+
+.jqte {
+    margin: 20px 0;
+}
+
+.jqte_toolbar {
+    visibility: hidden;
+    height: 0px;
+}
+
+/* Question Page */
+h2 a:hover {
+    text-decoration: none;
+}
+
+table#answers tbody tr:hover, table tbody tr.altrow:hover {
+    background-color: #fff;
+}
+
+div#text {
+    overflow: auto;
+    min-height: 400px;
+    max-height: 600px;
+}
+
+div#text p, div.scripture-quote p {
+    line-height: 1.2em;
+}
+
+div#text p.q1, div.scripture-quote p.q1 {
+    margin-bottom: 0em;
+}
+
+div#text p.q2, div.scripture-quote p.q2 {
+    margin-bottom: 0em;
+    margin-left: 1.5em;
+}
+
+div#answerControls {
+    position: relative;
+}
+
+.overlay {
+    position: absolute;
+    z-index: 9999;
+}
+
+div#answerControls .overlay {
+    top: 20px;
+}
+
+div.overlay form {
+    margin-bottom: 0px;
+}
+
+.overlay-bg {
+    padding: 18px;
+    background-color: rgba(0, 0, 0, 0.80);
+    background: url(data:;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAABl0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuNUmK/OAAAAATSURBVBhXY2RgYNgHxGAAYuwDAA78AjwwRoQYAAAAAElFTkSuQmCC)    repeat scroll transparent\9;
+    color: white;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+
+
+div#comments {
+    width: 512px;
+    min-height: 400px;
+}
+
+div#comments table {
+    width: 100%;
+}
+
+div#comments table td {
+    border: 0;
+    padding: 0;
+    vertical-align: top;
+}
+
+div.scripture-quote {
+    background-color: #dddddd;
+    padding: 5px;
+    font-size: 90%;
+}
+
+div.vote {
+    text-align: center;
+    line-height: 1.0em;
+    margin-right: 16px;
+    margin-top: -8px;
+}
+
+div.vote a {
+    display: block;
+    font-size: 42px;
+    color: #999;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+div.vote a.disabled {
+    color: #eee;
+}
+
+div.vote span {
+    font-size: 24px;
+    font-weight: bold;
+    color: #999;
+}
+/*
+div.answer {
+    vertical-align: top;
+    margin: 12px 0 0 18px;
+}
+*/
+div.answer div.by {
+    background: #eee;
+    margin: 8px 0 0 0;
+    vertical-align: top;
+    width: 260px;
+}
+
+div.answer div.by img {
+    xdisplay: inline-block;
+    border: 2px solid white;
+    margin: 4px;
+    vertical-align: top;
+}
+
+div.answer div.by div {
+    display: inline-block;
+    margin: 6px 0 4px 4px;
+    vertical-align: middle;
+    line-height: 1.2em;
+    color: #666;
+}
+
+div#comments table.comments textarea {
+    width: 95%;
+}
+
+div#comments table.comments td {
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+/* New Item under ribbon bar */
+div.new-item {
+    margin: 20px 0 20px 0;
+}
+
+div.new-item.collapse.in {
+    overflow: visible;
+}
+
+.activity-date {
+    font-size:12px;
+}
+
+.activity-icon {
+    text-align:center;
+}
+
+.activity-content i.icon-quote-left {
+    font-size: 12px;
+    margin-left:5px;
+    position:relative;
+    top: -5px;
+}
+
+ .activity-content i.icon-quote-right {
+    font-size: 12px;
+    position:relative;
+    margin-right: 5px;
+    top: -5px;
+}
+
+.activity-content p {
+    margin-top:10px;
+}
+
+.activity-content hr {
+    margin: 5px 0 5px 0;
+}
+
+.activity-content .indented {
+    margin-left:20px;
+}
+
+
+/* Table / Grid styles */
+table select {
+    margin-bottom: 0px;
+}
+
+label {
+    cursor: default;
+}
+
+.nav-tabs li {
+    cursor: pointer;
+}
+
+.unread {
+    background-color: #E1F2E1;
+    margin-top:10px;
+    padding: 5px;
+    border: #C1DBC1 2px solid;
+}
+
+.termsofservice li {
+    font-size: 0.9em;
+    line-height: 1.4em;
+}
+
+/* Notifications */
+.alert {
+    margin-top: 8px;
+    margin-bottom: 4px;
+    padding: 7px 10px 7px 35px;
+}
+
+.alert .close {
+    top: 0px;
+    right: 0px;
+}
+
+.notification {
+    position: relative;
+    margin: 0 0 10px;
+    padding: 7px 10px 7px 35px;
+    line-height: 15px;
+    font-size: 0.9em;
+}
+
+.alert-error {
+    background: url(/Site/views/shared/image/exclamation.png) no-repeat scroll 8px 8px #ffeeee;
+    border: 1px solid #e47b7b;
+}
+
+.alert-warn {
+    background: url(/Site/views/shared/image/error.png) no-repeat scroll 8px 8px #FFFDF1;
+    border: 1px solid #FFE578;
+}
+
+.alert-success {
+    background: url(/Site/views/shared/image/tick.png) no-repeat scroll 8px 8px #f4fff2;
+    border: 1px solid #81ca76;
+}
+
+.alert-info {
+    background: url(/Site/views/shared/image/information.png) no-repeat scroll 8px 8px #F4FAFF;
+    border: 1px solid #AECEEF;
+}
+

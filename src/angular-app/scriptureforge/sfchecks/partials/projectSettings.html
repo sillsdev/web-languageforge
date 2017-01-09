@@ -162,17 +162,23 @@
     <div data-ng-controller="ProjectSettingsPropertiesCtrl">
         <form class="well" data-ng-submit="updateProject()">
         <fieldset>
-            <label><B>Project Name</B></label>
-            <input type="text" placeholder="project name" data-ng-model="project.projectName"/>
-            <label><B>Project Code:</B> {{project.projectCode}}</label>
-            <label><B>Project Owner:</B> {{project.ownerRef.username}}</label>
+            <div class="control-group">
+                <label class="control-label" for="projName" data-translate="Project Name"></label>
+                <div class="controls">
+                    <input id="projName" type="text" placeholder="project name" data-ng-model="project.projectName"/>
+                </div>
+            </div>
+            <label class="control-label"><B>Project Code:</B> {{project.projectCode}}</label>
+            <label class="control-label"><B>Project Owner:</B> {{project.ownerRef.username}}</label>
             <!-- <label class="checkbox"><input type="checkbox" data-ng-model="project.featured" /> Featured on website</label> -->
             <label class="checkbox"><input type="checkbox" data-ng-model="project.allowAudioDownload" />
                 Allow downloading audio files</label>
             <label class="checkbox"><input type="checkbox" data-ng-model="project.allowInviteAFriend" />
                 Allow contributors to use "Invite a Friend" feature (managers can always use it)</label>
+            <button class="btn" type="submit" id="project_properties_save_button">
+                <i class="fa fa-check"></i>Save
+            </button>
         </fieldset>
-        <button id="project_properties_save_button" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
         </form>
     </div>
 </tab>
@@ -226,6 +232,18 @@
         <button id="communication_settings_save_button" type="submit" class="btn"><i class="icon-ok"></i>Save</button>
         </form>
     </div>
+</tab>
+<tab heading="Reports"">
+    <form class="well">
+        <pui-run-report>
+        </pui-run-report>
+    </form>
+</tab>
+<tab heading="Delete" data-ng-show="rights.remove">
+    <form class="well">
+        <pui-delete-project>
+        </pui-delete-project>
+    </form>
 </tab>
 </tabset>
 </div>

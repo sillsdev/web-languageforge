@@ -6,7 +6,7 @@ use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 use Api\Model\Shared\Mapper\JsonEncoder;
-use Api\Model\Shared\UserProfileModel;
+use Api\Model\Shared\UserModel;
 
 class LexBaseViewDto
 {
@@ -18,7 +18,7 @@ class LexBaseViewDto
     public static function encode($projectId, $userId)
     {
         $data = array();
-        $user = new UserProfileModel($userId);
+        $user = new UserModel($userId);
         $project = new LexProjectModel($projectId);
 
         $config = JsonEncoder::encode($project->config);

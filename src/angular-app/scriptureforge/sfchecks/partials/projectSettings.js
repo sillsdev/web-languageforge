@@ -3,7 +3,7 @@
 angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb',
   'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'palaso.ui.picklistEditor',
-  'ngFileUpload', 'ngRoute'])
+  'palaso.ui.runReport', 'palaso.ui.deleteProject', 'ngFileUpload', 'ngRoute'])
   .controller('ProjectSettingsCtrl', ['$scope', 'breadcrumbService', 'userService',
     'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
     'sfchecksLinkService',
@@ -43,6 +43,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
           $scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
           $scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create ||
             $scope.rights.editOther;
+          $scope.rights.remove = ss.session.project.userIsProjectOwner ||
+            ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
 
           // Breadcrumb
           breadcrumbService.set('top',
@@ -253,11 +255,10 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     };
 
   }])
-  .controller('ProjectSettingsPropertiesCtrl', ['$scope', 'userService', 'sfchecksProjectService',
+  .controller('ProjectSettingsPropertiesCtrl', ['$scope', 'sfchecksProjectService',
     'sessionService', 'silNoticeService',
-  function ($scope, userService, sfchecksProjectService,
+  function ($scope, sfchecksProjectService,
             ss, notice) {
-
     // TODO This can be moved to the page level controller, it is common with the Setup tab.
     $scope.updateProject = function () {
       var project = angular.copy($scope.project);

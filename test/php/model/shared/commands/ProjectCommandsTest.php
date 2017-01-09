@@ -623,4 +623,36 @@ class ProjectCommandsTest extends PHPUnit_Framework_TestCase
         FileUtilities::removeFolderAndAllContents($project->getAssetsFolderPath());
         FileUtilities::removeFolderAndAllContents($projectWorkPath);
     }
+
+    public function testDeleteProjectSecondProject_multipleProjectsWithUserMembers_firstProjectShowsUserMembers() {
+        self::$environ->clean();
+
+        // create two users and two projects
+        $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
+        $user2Id = self::$environ->createUser("user2name", "User2 Name", "user2@example.com");
+        $user1 = new UserModel($user1Id);
+        $user2 = new UserModel($user2Id);
+        $project1Id = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP, $user1Id, self::$environ->website);
+        $project2Id = ProjectCommands::createProject(SF_TESTPROJECT2, SF_TESTPROJECTCODE2, SfProjectModel::SFCHECKS_APP, $user1Id, self::$environ->website);
+
+        // user1 is already a manager of both projects
+        // make user2 a manager of both projects as well
+        ProjectCommands::updateUserRole($project1Id, $user2Id, ProjectRoles::MANAGER);
+        ProjectCommands::updateUserRole($project2Id, $user2Id, ProjectRoles::MANAGER);
+
+        // list members of project1 - there should be two members
+        $usersDto = ProjectCommands::usersDto($project1Id);
+        $this->assertEquals(2, $usersDto['userCount']);
+
+        // list members of project2 - there should be two members
+        $usersDto = ProjectCommands::usersDto($project2Id);
+        $this->assertEquals(2, $usersDto['userCount']);
+
+        // user1 deletes project1
+        ProjectCommands::deleteProjects(array($project1Id), $user1Id);
+
+        // list members of project2 - there should be two members
+        $usersDto = ProjectCommands::usersDto($project2Id);
+        $this->assertEquals(2, $usersDto['userCount']);
+    }
 }

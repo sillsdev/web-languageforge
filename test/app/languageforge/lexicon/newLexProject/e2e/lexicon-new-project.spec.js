@@ -10,22 +10,16 @@ describe('E2E testing: New Lex Project wizard app', function () {
   var CONDITION_TIMEOUT = 3000;
   var CHECK_PAUSE = 1000;
 
-  it('admin can get to each wizard', function () {
+  it('admin can get to wizard', function () {
     loginPage.loginAsAdmin();
     page.get();
-    expect(page.newLexProjectForm).toBeDefined();
-    expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
-    page.getChooser();
     expect(page.newLexProjectForm).toBeDefined();
     expect(page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
 
-  it('manager can get to each wizard', function () {
+  it('manager can get to wizard', function () {
     loginPage.loginAsManager();
     page.get();
-    expect(page.newLexProjectForm).toBeDefined();
-    expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
-    page.getChooser();
     expect(page.newLexProjectForm).toBeDefined();
     expect(page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
@@ -33,9 +27,6 @@ describe('E2E testing: New Lex Project wizard app', function () {
   it('setup: user login and page contains a form', function () {
     loginPage.loginAsUser();
     page.get();
-    expect(page.newLexProjectForm).toBeDefined();
-    expect(page.namePage.projectNameInput.isDisplayed()).toBe(true);
-    page.getChooser();
     expect(page.newLexProjectForm).toBeDefined();
     expect(page.chooserPage.createButton.isDisplayed()).toBe(true);
   });
@@ -195,7 +186,6 @@ describe('E2E testing: New Lex Project wizard app', function () {
   });
 
   describe('Send Receive Verify page', function () {
-    var expectedCondition = protractor.ExpectedConditions;
     var CONDITION_TIMEOUT = 5000;
 
     it('can clone project', function () {
@@ -217,8 +207,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
 
     it('can create a new project', function () {
       page.get();
-
-      //page.chooserPage.createButton.click();  // removed while the Chooser page is hidden
+      page.chooserPage.createButton.click();
       expect(page.namePage.projectNameInput.isPresent()).toBe(true);
     });
 
@@ -490,8 +479,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
 
     it('create: new empty project', function () {
       page.get();
-
-      //page.chooserPage.createButton.click();  // removed while the Chooser page is hidden
+      page.chooserPage.createButton.click();
       page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + protractor.Key.TAB);
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
