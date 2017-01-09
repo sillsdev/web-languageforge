@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NameListService } from '../shared/name-list/name-list.service';
+import { SemanticDomainListService } from '../shared/main-view/main-view.service';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -14,43 +15,64 @@ export class HomeComponent implements OnInit {
 
   newName: string = '';
   errorMessage: string;
-  names: any[] = [];
+  // names: any[] = [];
+  semanticDomains: any[] = [];
+  words: any[] = [];
+  numberOfEntries: number = 0;
 
   /**
    * Creates an instance of the HomeComponent with the injected
    * NameListService.
    *
-   * @param {NameListService} nameListService - The injected NameListService.
+   * 
+   * @param {SemanticDomainListService} semanticDomainListService
    */
-  constructor(public nameListService: NameListService) {}
+  // constructor(public nameListService: NameListService) {}
+  constructor(public semanticDomainListService: SemanticDomainListService) {}
 
   /**
    * Get the names OnInit
    */
   ngOnInit() {
     // this.getNames();
+    this.getSemanticDomains();
+    this.getWords();
+    this.getNumberOfEntries();
   }
 
   /**
    * Handle the nameListService observable
    */
-  getNames() {
-    this.nameListService.get()
-      .subscribe(
-        names => this.names = names,
+  getNumberOfEntries() {
+    this.numberOfEntries = this.words.length;
+  }
+  getWords() {
+    this.words = ["lemon", "grape", "carrot", "dragon eye", "jicama"];
+  }
+  getSemanticDomains() {
+    this.semanticDomainListService.get()
+    .subscribe(
+        semanticDomains => this.semanticDomains = semanticDomains,
         error => this.errorMessage = <any>error
       );
   }
+  // getNames() {
+  //   this.nameListService.get()
+  //     .subscribe(
+  //       names => this.names = names,
+  //       error => this.errorMessage = <any>error
+  //     );
+  // }
 
   /**
    * Pushes a new name onto the names array
    * @return {boolean} false to prevent default form submit behavior to refresh the page.
    */
-  addName(): boolean {
-    // TODO: implement nameListService.post
-    this.names.push(this.newName);
-    this.newName = '';
-    return false;
-  }
+  // addName(): boolean {
+  //   // TODO: implement nameListService.post
+  //   this.names.push(this.newName);
+  //   this.newName = '';
+  //   return false;
+  // }
 
 }
