@@ -1,4 +1,4 @@
-{% extends app.website.base~'.html.twig' %}
+{% extends isBootstrap4 ? app.website.base~'Bootstrap4.html.twig': app.website.base~'.html.twig' %}
 
 {% block content %}
     <div id="app-container-for-bootstrap">
