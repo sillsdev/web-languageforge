@@ -1,43 +1,40 @@
 <!DOCTYPE html>
-<html lang="en-GB">
-    <head>
-        {% block meta %}
-            <meta charset="utf-8" />
-            <title>{{ app.website.name }}</title>
+<html lang="en">
+<head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    {% if isBootstrap4 %}
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+    {% endif %}
 
-            {% for cssFile in cssFiles %}
-                <link rel=stylesheet href="/{{ cssFile }}" />
-            {% endfor %}
+    <title>{{ app.website.name }}</title>
 
-            {% for cssFile in vendorFilesCss %}
-                <link rel=stylesheet href="/{{ cssFile }}" />
-            {% endfor %}
+    {% for cssFile in cssFiles %}
+        <link rel=stylesheet href="/{{ cssFile }}" />
+    {% endfor %}
 
-            <link rel="icon" href="/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico" type="image/x-icon" />
+    {% for cssFile in vendorFilesCss %}
+        <link rel=stylesheet href="/{{ cssFile }}" />
+    {% endfor %}
 
-            <!-- jquery must be the first js to be loaded -->
-            {%  if useMinifiedJs %}
-                <script src="/vendor_bower/jquery/dist/jquery.min.js"></script>
-                <script src="/vendor_bower/angular/angular.min.js"></script>
-            {%  else %}
-                <script src="/vendor_bower/jquery/dist/jquery.js"></script>
-                <script src="/vendor_bower/angular/angular.js"></script>
-            {% endif %}
+    <link rel="icon" href="/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico" type="image/x-icon" />
 
-        {% endblock %}
-    </head>
-    <body>
-        <div id="maincontainer">
-            {% if isBootstrap4 %}
-                {% block headerBootstrap4 %}{% endblock %}
-            {% else %}
-                {% block headerBootstrap2 %}{% endblock %}
-            {% endif %}
-            {% block content %}{% endblock %}
-            {% block script %}{% endblock %}
-            <div class="clearfooter"></div>
-        </div>
-        {% block footer %}{% endblock %}
-        {% block analytics %}{% endblock %}
-    </body>
+    <!-- jquery must be the first js to be loaded -->
+    {%  if useMinifiedJs %}
+        <script src="/vendor_bower/jquery/dist/jquery.min.js"></script>
+        <script src="/vendor_bower/angular/angular.min.js"></script>
+    {%  else %}
+        <script src="/vendor_bower/jquery/dist/jquery.js"></script>
+        <script src="/vendor_bower/angular/angular.js"></script>
+    {% endif %}
+</head>
+
+<body>
+{% block header %}{% endblock %}
+{% block content %}{% endblock %}
+{% block script %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block analytics %}{% endblock %}
+</body>
 </html>
