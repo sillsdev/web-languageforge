@@ -9,20 +9,21 @@
   <div class="row">
   <div class="col-4">
     <h3>Semantic Domains</h3>
-    <p >{{numberOfEntries}} entries</p>
-    <button type="button" onclick="alert('Hello world!')">+ New Word</button>
+    <div class="row">
+      <div class="col">
+        <p>{{numberOfEntries}} entries</p>
+      </div>
+      <div class="col">
+        <button type="button" class="btn-success" onclick="alert('Hello world!')">+ New Word</button>
+      </div>
+      </div>
     <select [(ngModel)]="simpleValue"> // value is a string or number
         <option *ngFor="let semanticDomain of semanticDomains" >{{semanticDomain}}</option>
     </select>
-    <ul><li *ngFor="let word of words"><h5><strong>{{word}}</strong></h5><h6>this is the definition</h6></li></ul>
+    <ul><li *ngFor="let word of words"><h6><strong>{{word}}</strong></h6><p>this is the definition</p></li></ul>
   </div>
   <div class="col-8">
-    <br>
-     <p>word: this is the definition</p>
-     <br>
-     <button type="button" onclick="alert('Hello world!')">Show Hidden Fields</button><br>
-     Word <input type="text" name="word" value="Lemon"><br>
-
+    <meaningdetails></meaningdetails>
   </div>
   </div>
 </div>

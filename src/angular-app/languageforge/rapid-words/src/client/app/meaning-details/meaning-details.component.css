@@ -1,0 +1,17 @@
+:host {
+  display: block;
+  padding: 0 16px;
+}
+
+input {
+  width: 250px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0 0 0 8px;
+}
+
+.languageBox {
+    border:1px solid mediumblue;
+}
