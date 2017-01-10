@@ -1,6 +1,6 @@
-# Rapid Words
+# Review Suggest
 
-This is the _Rapid Words_ application.
+This is the _Review Suggest_ application.
 It was seeded from
 [Angular Seed](https://mgechev.github.io/angular-seed/)
 (source on [Github](https://github.com/mgechev/angular-seed)).
