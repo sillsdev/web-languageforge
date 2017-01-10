@@ -1,6 +1,25 @@
 body{
-  background: #fff;
+  background: white;
 }
 #app-container-for-bootstrap {
   margin-top: 60px;
 }
+
+.footer{ 
+  background-color:#104060; 
+  color: white;
+  padding: 60px 0;
+
+  .links{
+    color: white;
+    border-bottom: 1px dotted white;
+    text-decoration: none;
+  }
+
+  .footerimages {
+    padding-bottom: 10px;
+  }
+
+}
+
+
