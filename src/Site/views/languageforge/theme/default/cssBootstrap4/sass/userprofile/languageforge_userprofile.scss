@@ -1,0 +1,26 @@
+@media (max-width: 576px){    /* TODO This is for components only used on phone sized screen */
+
+}
+
+div.intl-tel-input{
+    display: block;
+}
+
+.btn-group-justified {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  .btn,
+  .btn-group {
+    float: none;
+    display: table-cell;
+    width: 33.3333%;
+    .btn {
+      width: 100%;
+    }
+    .dropdown-menu {
+      left: auto;
+    }
+  }
+}
