@@ -71,9 +71,7 @@ class App extends Base
         $this->data['jsonSession'] = json_encode(SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $appName), JSON_UNESCAPED_SLASHES);
 
 
-        if ($this->data['isAngular2']) {
-            $this->addJavascriptFiles($appModel->appFolder . '/dist');
-        } else {
+        if (!$this->data['isAngular2']) {
             $this->addJavascriptFiles($appModel->bellowsFolder . '/_js_module_definitions');
             $this->addJavascriptFiles($appModel->bellowsFolder . '/js', array('vendor', 'assets'));
             $this->addJavascriptFiles($appModel->bellowsFolder . '/directive');

@@ -8,10 +8,13 @@ It was seeded from
 # Getting Started
 
 1. Run `npm install` to install node modules.
-2. Run `npm start` to fire up the application.
+2. Where will you run it?
+    - Run `npm start` to fire up the application locally
+    - Run `npm build.prod` and load it in browser from vm
+        - http://m.languageforge.local/app/review-suggest/
 
-# More Commands
+# Comments
 
-Refer to the
+- Refer to the
 [Angular Seed](https://mgechev.github.io/angular-seed/)
 for additional commands.

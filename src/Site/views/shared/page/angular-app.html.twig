@@ -33,17 +33,8 @@
         {% endfor %}
     {% endif %}
 
-    {% if isAngular2 %}
-        <h1>angular-app.html.twig</h1>
-        <p>Here's where we should bootstrap the Angular2 application.</p>
-        <script>
-            System.import('/{{bootstrapFolder}}/dist/dev/app/main')
-                .catch(function (e) {
-                console.error(e.stack || e,
-                    'Not expecting this error? Report it at https://github.com/mgechev/angular-seed/issues');
-                });
-        </script>
-    {% else %}
+    {% if not isAngular2 %}
+
         {% for filename in jsNotMinifiedFiles %}
             <script src="/{{ filename }}"></script>
         {% endfor %}

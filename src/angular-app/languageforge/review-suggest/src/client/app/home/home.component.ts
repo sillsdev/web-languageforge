@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
    * Get the names OnInit
    */
   ngOnInit() {
-    this.getNames();
+    //this.getNames();
   }
 
   /**

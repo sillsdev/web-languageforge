@@ -14,7 +14,7 @@ import { SharedModule } from './shared/shared.module';
   declarations: [AppComponent],
   providers: [{
     provide: APP_BASE_HREF,
-    useValue: '<%= APP_BASE %>'
+    useValue: '/app/review-suggest'
   }],
   bootstrap: [AppComponent]
 
