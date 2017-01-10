@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
   // names: any[] = [];
   semanticDomains: any[] = [];
   words: any[] = [];
+  numberOfEntries: number = 0;
 
   /**
    * Creates an instance of the HomeComponent with the injected
@@ -36,11 +37,15 @@ export class HomeComponent implements OnInit {
     // this.getNames();
     this.getSemanticDomains();
     this.getWords();
+    this.getNumberOfEntries();
   }
 
   /**
    * Handle the nameListService observable
    */
+  getNumberOfEntries() {
+    this.numberOfEntries = this.words.length;
+  }
   getWords() {
     this.words = ["lemon", "grape", "carrot", "dragon eye", "jicama"];
   }
