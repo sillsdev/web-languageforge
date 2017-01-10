@@ -270,7 +270,7 @@ class AppModel {
 
         $siteAppsInBootstrap4 = array(
             "scriptureforge" => array("appName"),
-            "languageforge" => array("login", "rapid-words"),
+            "languageforge" => array("login", "rapid-words", "userprofile"),
             "m.languageforge" => array("review-suggest"),
             "waaqwiinaagiwritings" => array(),
             "jamaicanpsalms.scriptureforge" => array(),
