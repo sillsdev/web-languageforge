@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NameListService } from '../shared/name-list/name-list.service';
 import { SemanticDomainListService } from '../shared/main-view/main-view.service';
 
-/**
- * This class represents the lazy loaded HomeComponent.
- */
 @Component({
   moduleId: module.id,
   selector: 'sd-home',
@@ -13,36 +10,25 @@ import { SemanticDomainListService } from '../shared/main-view/main-view.service
 })
 export class HomeComponent implements OnInit {
 
-  newName: string = '';
-  errorMessage: string;
-  // names: any[] = [];
   semanticDomains: any[] = [];
   words: any[] = [];
   numberOfEntries: number = 0;
 
   /**
    * Creates an instance of the HomeComponent with the injected
-   * NameListService.
+   * SemanticDomainListService.
    *
    * 
    * @param {SemanticDomainListService} semanticDomainListService
    */
-  // constructor(public nameListService: NameListService) {}
-  constructor(public semanticDomainListService: SemanticDomainListService) {}
 
-  /**
-   * Get the names OnInit
-   */
+  constructor(public semanticDomainListService: SemanticDomainListService) { }
+
   ngOnInit() {
-    // this.getNames();
     this.getSemanticDomains();
     this.getWords();
     this.getNumberOfEntries();
   }
-
-  /**
-   * Handle the nameListService observable
-   */
   getNumberOfEntries() {
     this.numberOfEntries = this.words.length;
   }
@@ -51,28 +37,9 @@ export class HomeComponent implements OnInit {
   }
   getSemanticDomains() {
     this.semanticDomainListService.get()
-    .subscribe(
-        semanticDomains => this.semanticDomains = semanticDomains,
-        error => this.errorMessage = <any>error
-      );
+      .subscribe(
+      semanticDomains => this.semanticDomains = semanticDomains,
+
+    );
   }
-  // getNames() {
-  //   this.nameListService.get()
-  //     .subscribe(
-  //       names => this.names = names,
-  //       error => this.errorMessage = <any>error
-  //     );
-  // }
-
-  /**
-   * Pushes a new name onto the names array
-   * @return {boolean} false to prevent default form submit behavior to refresh the page.
-   */
-  // addName(): boolean {
-  //   // TODO: implement nameListService.post
-  //   this.names.push(this.newName);
-  //   this.newName = '';
-  //   return false;
-  // }
-
 }
