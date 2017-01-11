@@ -5,10 +5,10 @@ import { HomeRoutingModule } from './home-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { NameListService } from '../shared/name-list/name-list.service';
 import { SemanticDomainListService } from '../shared/main-view/main-view.service';
-import { MeaningDetailsModule } from '../meaning-details/meaning-details.module';
+import { MultitextModule } from '../multitext/multitext.module';
 
 @NgModule({
-  imports: [CommonModule, HomeRoutingModule, SharedModule, MeaningDetailsModule],
+  imports: [CommonModule, HomeRoutingModule, SharedModule, MultitextModule],
   declarations: [HomeComponent],
   exports: [HomeComponent],
   providers: [SemanticDomainListService]

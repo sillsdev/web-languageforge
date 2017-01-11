@@ -7,11 +7,11 @@ import { Component, OnInit } from '@angular/core';
  */
 @Component({
   moduleId: module.id,
-  selector: 'meaningdetails',
-  templateUrl: 'meaning-details.component.html',
-  styleUrls: ['meaning-details.component.css'],
+  selector: 'multitext',
+  templateUrl: 'multitext.component.html',
+  styleUrls: ['multitext.component.css'],
 })
-export class MeaningDetailsComponent {
+export class MultitextComponent {
 
 //   newName: string = '';
   errorMessage: string;
