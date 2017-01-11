@@ -39,5 +39,6 @@
             <script src="/{{ filename }}"></script>
         {% endfor %}
 
-    <script>angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);</script>
+        <script>angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);</script>
+    {% endif %}
 {% endblock %}
