@@ -39,5 +39,7 @@
             <script src="/{{ filename }}"></script>
         {% endfor %}
 
+    {% endif %}
+
     <script>angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);</script>
 {% endblock %}
