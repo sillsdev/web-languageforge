@@ -37,10 +37,5 @@
         <script src="/{{ filename }}"></script>
     {% endfor %}
 
-    {% if isAngular2 %}
-        <h1>angular-app.html.twig</h1>
-        <p>Here's where we should bootstrap the Angular2 application.</p>
-    {% else %}
-        <script>angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);</script>
-    {% endif %}
+    <script>angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);</script>
 {% endblock %}
