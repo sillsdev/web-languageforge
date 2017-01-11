@@ -1,0 +1,44 @@
+{% extends isBootstrap4 ? app.website.base~'Bootstrap4.html.twig': app.website.base~'.html.twig' %}
+
+{% block content %}
+    <div id="app-container-for-bootstrap">
+        {% include bootstrapFolder~'/'~appName~'.html' %}
+    </div>
+
+    <script type="text/javascript">
+        window.session = {{ jsonSession|raw }};
+        {% if isBootstrap4 %}
+            var bootstrapVersion = "bootstrap4";
+        {% else %}
+            var bootstrapVersion = "bootstrap2";
+        {% endif %}
+    </script>
+
+    {% if useMinifiedJs %}
+
+        {% for filename in vendorFilesMinJs %}
+            <script src="/{{ filename }}"></script>
+        {% endfor %}
+
+        <script src="/js/lib/{{ app.website.base }}.min.js"></script>
+
+    {% else %}
+
+        {% for filename in vendorFilesJs %}
+            <script src="/{{ filename }}"></script>
+        {% endfor %}
+
+        {% for filename in jsFiles %}
+            <script src="/{{ filename }}"></script>
+        {% endfor %}
+    {% endif %}
+
+    {% if not isAngular2 %}
+
+        {% for filename in jsNotMinifiedFiles %}
+            <script src="/{{ filename }}"></script>
+        {% endfor %}
+
+        <script>angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);</script>
+    {% endif %}
+{% endblock %}

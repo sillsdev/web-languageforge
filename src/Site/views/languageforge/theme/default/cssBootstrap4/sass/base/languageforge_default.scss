@@ -1,0 +1,11 @@
+// Setup other variables
+@import '_variables.scss';
+
+// Overwrite variables - see vendor_bower/bootstrap/sass/_variables.scss
+$brand-primary: $lf-blue;
+
+// Pull in Bootstrap files - by default this loads ALL features of Bootstrap which we may not need
+@import '../../../../../../../../vendor_bower/bootstrap/scss/bootstrap.scss';
+
+// Pull in  default global styles to be used sitewide
+@import '_global.scss';

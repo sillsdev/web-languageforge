@@ -36,7 +36,7 @@ class Base
         $this->data['vendorFilesJs'] = array();
         $this->data['vendorFilesMinJs'] = array();
         $this->data['isBootstrap4'] = false;
-
+        $this->data['isAngular2'] = false;
     }
 
     /** @var array data used to render templates */
@@ -98,15 +98,21 @@ class Base
         }
 
         // Add general Angular app dependencies
-        $dependencies = $this->getAngularAppDependencies();
-        foreach ($dependencies["js"] as $dependencyFilePath) {
-            $this->data['vendorFilesJs'][] = $dependencyFilePath;
-        }
-        foreach ($dependencies["min"] as $dependencyFilePath) {
-            $this->data['vendorFilesMinJs'][] = $dependencyFilePath;
-        }
-        foreach ($dependencies["css"] as $dependencyFilePath) {
-            $this->data['vendorFilesCss'][] = $dependencyFilePath;
+        if (!$this->data['isAngular2']) {
+            $dependencies = $this->getAngularAppDependencies();
+            foreach ($dependencies["js"] as $dependencyFilePath) {
+                $this->data['vendorFilesJs'][] = $dependencyFilePath;
+            }
+            foreach ($dependencies["min"] as $dependencyFilePath) {
+                $this->data['vendorFilesMinJs'][] = $dependencyFilePath;
+            }
+            foreach ($dependencies["css"] as $dependencyFilePath) {
+                $this->data['vendorFilesCss'][] = $dependencyFilePath;
+            }
+        } else {
+                $this->data['vendorFilesJs'] = array();
+                $this->data['vendorFilesMinJs'] = array();
+                $this->data['vendorFilesCss'] = array();
         }
 
         $this->populateHeaderMenuViewdata();
@@ -234,6 +240,7 @@ class Base
      * @return array
      */
     protected function getAngularAppDependencies() {
+        /* TODO: This is an Angular1 function; rename appropriately. */
         $jsonData = json_decode(file_get_contents(APPPATH . "app_dependencies.json"), true);
         $jsFilesToReturn = array();
         $jsMinFilesToReturn = array();

@@ -15,7 +15,11 @@ h1 {
 }
 
 .more {
+<<<<<<< HEAD
   background: url("./assets/svg/more.svg");
+=======
+  /*background: url("./assets/svg/more.svg");*/
+>>>>>>> master-taylor
   float: right;
   height: 24px;
   margin-top: 12px;
