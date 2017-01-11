@@ -1,10 +1,27 @@
-<p>Howdy! Here's a list of awesome computer scientists. Do you know any others? Add to the list yourself.</p>
-
-<form (submit)="addName()">
-  <input [(ngModel)]="newName" name="newName" placeholder="Awesome Computer Scientist">
-  <button type="submit">Add</button>
-</form>
-
-<ul>
-  <li *ngFor="let name of names">{{name}}</li>
-</ul>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script></head>
+<body>
+<div class="container">
+  <div class="row justify-content-center">
+    <h1>Rapid Words Collection</h1>
+  </div>
+  <div class="row">
+  <div class="col-4">
+    <h3>Semantic Domains</h3>
+    <div class="row">
+      <div class="col">
+        <p>{{numberOfEntries}} entries</p>
+      </div>
+    </div>
+    <select [(ngModel)]="simpleValue"> // value is a string or number
+        <option *ngFor="let semanticDomain of semanticDomains" >{{semanticDomain}}</option>
+    </select>
+    <ul><li *ngFor="let word of words"><h6><strong>{{word}}</strong></h6><p>this is the definition</p></li></ul>
+  </div>
+  <div class="col-8">
+    <multitext></multitext>
+  </div>
+  </div>
+</div>
+</body>

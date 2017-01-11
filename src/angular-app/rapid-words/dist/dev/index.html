@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Welcome to angular-seed!</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="assets/favicon/favicon-DEV.ico" type="image/x-icon">
+
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/css/main.css?1483942901308">
+  <!-- endinject -->
+</head>
+<body>
+
+  <sd-app>Loading...</sd-app>
+
+  <script>
+  // Fixes undefined module function in SystemJS bundle
+  function module() {}
+  </script>
+
+  <!-- shims:js -->
+  <script src="/node_modules/core-js/client/shim.min.js?1483942901305"></script>
+  <script src="/node_modules/intl/dist/Intl.min.js?1483942901306"></script>
+  <script src="/node_modules/systemjs/dist/system.src.js?1483942901306"></script>
+  <!-- endinject -->
+
+  
+  <script src="/app/system-config.js"></script>
+  
+
+  <!-- libs:js -->
+  <script src="/node_modules/zone.js/dist/zone.js?1483942901307"></script>
+  <script src="/node_modules/.tmp/Rx.min.js?1483942901307"></script>
+  <!-- endinject -->
+
+  <!-- inject:js -->
+  <!-- endinject -->
+
+  
+  <script>
+  System.import('app/main')
+    .catch(function (e) {
+      console.error(e.stack || e,
+        'Not expecting this error? Report it at https://github.com/mgechev/angular-seed/issues');
+    });
+  </script>
+  
+
+</body>
+</html>

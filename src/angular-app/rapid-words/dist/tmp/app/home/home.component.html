@@ -1,0 +1,21 @@
+
+<h1>Rapid Words Collection</h1>
+
+<h3>Semantic Domain</h3>
+
+<select [(ngModel)]="simpleValue"> // value is a string or number
+    <option *ngFor="let semanticDomain of semanticDomains" placeholder="Semantic Domain"></option>
+</select>
+
+
+
+<p>Howdy! Here's a list of awesome computer scientists. Do you know any others? Add to the list yourself.</p>
+
+<form (submit)="addName()">
+  <input [(ngModel)]="newName" name="newName" placeholder="Awesome Computer Scientist">
+  <button type="submit">Add</button>
+</form>
+
+<ul>
+  <li *ngFor="let name of names">{{name}}</li>
+</ul>
