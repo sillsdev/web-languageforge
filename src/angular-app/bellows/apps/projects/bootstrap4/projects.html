@@ -1,10 +1,10 @@
 {% verbatim %}
-<div class="content container" data-ng-controller="ProjectsCtrl" data-ng-cloak>
-    <div id="sfchecks-hmenu" class="hdrnav">
-        <ul class="topNav">
-            <li class="here"><a href="/app/projects">My Projects</a></li>
-            <li><a href="/app/activity">Activity</a></li>
-        </ul>
+<div class="content container fluid" data-ng-controller="ProjectsCtrl" data-ng-cloak>
+    <div id="sfchecks-hmenu" class="list-group">
+        <br/>
+        <br/>
+        <a href="/app/projects" class="btn btn-info" role="button">My Projects</a>
+        <a href="/app/activity" class="btn btn-info" role="button">Activity</a>
         <br />
     </div>
     <div style="padding-top:10px">
@@ -13,17 +13,14 @@
 
             <h2 style="font-weight:normal">My Projects</h2>
             <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-                <button data-ng-show="rights.create" class="btn" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Start or Join a New Project</button>
+                <button type="button" data-ng-show="rights.create" class="btn btn-primary" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Start or Join a New Project</button>
             </form>
+            <br/>
             <div class="new-item" data-collapse="newProjectCollapsed">
                 <form class="form-horizontal well" name="newProjectForm">
-                    <div data-ng-repeat="appName in projectTypesBySite()" class="span3">
-                        <a data-ng-href="/app/{{appName}}/new-project">
-                            <figure>
-                                <img data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                <figcaption>{{projectTypeNames[appName]}}</figcaption>
-                            </figure>
-                        </a>
+                    <div data-ng-repeat="appName in projectTypesBySite()" class="col-md-3">
+                           <a class="btn btn-default btn-sm" href="/app/{{appName}}/new-project">
+                           <i class="fa fa-book fa-5x" aria-hidden="true"></i><br/>{{projectTypeNames[appName]}}</a>
                     </div>
                     <div class="clearfix"></div>
                 </form>
@@ -32,19 +29,19 @@
         <hr />
         <listview hide-if-empty="true" search="queryProjectsForUser()" items="projects" visible-items="visibleProjects" select="">
             <div data-ng-repeat="project in visibleProjects" class="details-row">
-                <ul class="inline" data-ng-class="{active: isSelected(project)}">
-                    <li style="width: 70%">
+                <ul class="unstyled" data-ng-class="{active: isSelected(project)}">
+                    <ul style="width: 70%" >
                         <a data-ng-show="isInProject(project)" href="/app/{{project.appName}}/{{project.id}}">
                             <span class="larger-text">{{project.projectName}}</span>
                         </a>
                         <span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectName}}</span>
                         <br />
                         <small class="muted">{{projectTypeNames[project.appName]}}</small>
-                    </li>
-                    <li data-ng-show="rights.edit" style="width: 20%">
-                        <button class="btn" data-ng-show="!isManager(project)" data-ng-click="addManagerToProject(project)"><i class="icon-plus"></i>Add me as Manager</button>
-                        <button class="btn" data-ng-show="!isInProject(project)" data-ng-click="addMemberToProject(project)"><i class="icon-plus"></i>Add me as Contributor</button>
-                    </li>
+                    </ul>
+                    <ul data-ng-show="rights.edit" style="width: 20%">
+                        <button class="btn btn-secondary" data-ng-show="!isManager(project)" data-ng-click="addManagerToProject(project)"><i class="icon-plus"></i>Add me as Manager</button>
+                        <button class="btn btn-secondary" data-ng-show="!isInProject(project)" data-ng-click="addMemberToProject(project)"><i class="icon-plus"></i>Add me as Contributor</button>
+                    </ul>
                 </ul>
                 <hr />
             </div>
