@@ -10,8 +10,10 @@
 
 - include: dependencies.yml
   vars:
-    deploy: xenial_vagrant
+    deploy: lf_only
 - include: code.yml
   vars:
-    lf_path: /home/vagrant/src/xForge/web-languageforge
+    site_src_paths:
+      - /home/vagrant/src/web-languageforge/src
+    lf_path: /home/vagrant/src/web-languageforge
 - include: dev.yml

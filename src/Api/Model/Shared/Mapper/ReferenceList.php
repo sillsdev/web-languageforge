@@ -62,7 +62,7 @@ class ReferenceList
     public function _removeRef($id)
     {
         if (in_array($id, $this->refs)) {
-            $this->refs = array_diff($this->refs, array($id));
+            $this->refs = array_values(array_diff($this->refs, array($id)));
         }
         // TODO Log if ref doesn't exist?
     }

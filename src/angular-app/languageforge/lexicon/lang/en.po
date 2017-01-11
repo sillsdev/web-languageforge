@@ -43,6 +43,9 @@ msgstr "Add Voice for {languageName}"
 msgid "Apply"
 msgstr "Apply"
 
+msgid "Archive"
+msgstr "Archive"
+
 msgid "Are you sure you want to delete '{lexeme}'?"
 msgstr "Are you sure you want to delete '{lexeme}'?"
 
@@ -51,6 +54,12 @@ msgstr "Browse..."
 
 msgid "Comment"
 msgstr "Comment"
+
+msgid "Configuration"
+msgstr "Configuration"
+
+msgid "Configuration updated successfully"
+msgstr "Configuration updated successfully"
 
 msgid "Create New User"
 msgstr "Create New User"
@@ -61,17 +70,14 @@ msgstr "Default Interface Language"
 msgid "Delete matching entry if deleted in import."
 msgstr "Delete matching entry if deleted in import."
 
+msgid "Delete"
+msgstr "Delete"
+
 msgid "Delete Word"
 msgstr "Delete Word"
 
 msgid "Dictionary Browse and Edit"
 msgstr "Dictionary Browse and Edit"
-
-msgid "Configuration"
-msgstr "Configuration"
-
-msgid "Configuration updated successfully"
-msgstr "Configuration updated successfully"
 
 msgid "Display Name"
 msgstr "Display Name"
@@ -219,6 +225,9 @@ msgstr "Remove {languageName}"
 
 msgid "Remove Members"
 msgstr "Remove Members"
+
+msgid "Reports"
+msgstr "Reports"
 
 msgid "Right to left language"
 msgstr "Right to left language"

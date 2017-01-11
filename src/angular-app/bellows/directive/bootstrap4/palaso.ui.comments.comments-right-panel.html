@@ -1,0 +1,52 @@
+<div style="margin-bottom: 5px; border-bottom: solid black 1px; display:flex; justify-content: space-between">
+    <div style="position:relative;">
+        <input dir="auto" style="width: 140px; margin-left:12px; padding-right:25px" placeholder="Filter Comments" ng-model="commentFilter.text" type="text" />&nbsp;<span style="position:absolute; right:13px; top:5px" ng-show="commentFilter.text != ''" title="Clear Filter" ng-click="commentFilter.text = ''">
+        <i class="icon-remove" style="color:#808080; cursor: pointer"></i>
+        </span>
+    </div>
+    <div><select ng-show="rights.canUpdateCommentStatus()" style="width:110px" data-ng-model="commentFilter.status"><option value="all">Show All</option><option value="unresolved">Unresolved</option><option ng-if="rights.canUpdateCommentStatus()" value="todo">Todo</option></select></div>
+    <div>
+        <div class="commentCount">
+            <span ng-if="numberOfComments !== 1">
+                {{numberOfComments()}} {{'Comments'|translate}}
+            </span>
+            <span ng-if="numberOfComments === 1">
+                {{numberOfComments()}} {{'Comment'|translate}}
+            </span>
+        </div>
+    </div>
+</div>
+<div class="commentListView">
+    <div ng-show="rights.canComment()" class="newCommentForm">
+        <div style="display:flex; flex-direction: column">
+            <form ng-submit="postNewComment()">
+                <div class="commentRegarding">
+                    <i class="icon-remove" style="float:right; color:#808080; cursor: pointer" ng-click="newComment.regarding.field = ''" ng-show="newComment.regarding.field"></i>
+                    <span class="muted"><em>This comment is regarding</em></span>
+                    <div ng-show="newComment.regarding.field">
+                        <div class="regardingContext"><b>{{newComment.regarding.word}}</b> <em>{{newComment.regarding.meaning}}</em></div>
+                        <span class="regardingFieldName">{{newComment.regarding.fieldNameForDisplay}}</span>
+                        <div data-ng-class="(newComment.regarding.inputSystem) ? 'input-prepend' : ''"
+                             data-ng-hide="newComment.isRegardingPicture">
+                            <span data-ng-show="newComment.regarding.inputSystem" class="add-on wsid regardingInputSystem" title="{{newComment.regarding.inputSystem}}">{{newComment.regarding.inputSystemAbbreviation}}</span>
+                            <regarding-field content="newComment.regarding.fieldValue" field-config="newComment.regardingFieldConfig"> </regarding-field>
+                        </div>
+                        <div data-ng-if="newComment.isRegardingPicture">
+                            <img data-ng-src="{{newComment.regarding.fieldValue}}" />
+                        </div>
+                    </div>
+                    <div ng-hide="newComment.regarding.field" style="text-align:center; color: #e67345;margin-bottom: 8px"><em data-translate="Click on a field to the left and give context to your comment"></em></div>
+                </div>
+                <textarea required data-ng-model="newComment.content"  placeholder="{{getNewCommentPlaceholderText()}}"  ></textarea>
+                <div style="text-align: right; margin-right:10px">
+                    <input type="submit" class="btn btn-sm" value="Post" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="commentListContainer">
+        <div ng-repeat="comment in currentEntryCommentsFiltered">
+            <dc-comment></dc-comment>
+        </div>
+    </div>
+</div>

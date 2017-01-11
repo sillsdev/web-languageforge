@@ -19,13 +19,14 @@ class SessionCommands
     public static function getSessionData($projectId, $userId, $website, $appName = '')
     {
         $sessionData = array();
-        $sessionData['userId'] = (string) $userId;
         $sessionData['baseSite'] = $website->base;
 
-        // Rights
-        $user = new UserModel($userId);
-        $sessionData['userSiteRights'] = $user->getRightsArray($website);
-        $sessionData['username'] = $user->username;
+        if ($userId) {
+            $sessionData['userId'] = (string) $userId;
+            $user = new UserModel($userId);
+            $sessionData['userSiteRights'] = $user->getRightsArray($website);
+            $sessionData['username'] = $user->username;
+        }
 
         if ($projectId) {
             $project = ProjectModel::getById($projectId);

@@ -90,8 +90,7 @@ angular.module('lexicon-new-project',
     $urlRouterProvider
       .when('', ['$state', function ($state) {
         if (!$state.$current.navigable) {
-          //$state.go('newProject.chooser');
-          $state.go('newProject.name');
+          $state.go('newProject.chooser');
         }
       }]);
 

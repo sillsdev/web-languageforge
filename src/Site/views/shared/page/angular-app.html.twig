@@ -1,12 +1,17 @@
-{% extends app.website.base~'.html.twig' %}
+{% extends isBootstrap4 ? app.website.base~'Bootstrap4.html.twig': app.website.base~'.html.twig' %}
 
 {% block content %}
     <div id="app-container-for-bootstrap">
-        {% include appFolder~'/'~appName~'.html' %}
+        {% include bootstrapFolder~'/'~appName~'.html' %}
     </div>
 
     <script type="text/javascript">
         window.session = {{ jsonSession|raw }};
+        {% if isBootstrap4 %}
+            var bootstrapVersion = "bootstrap4";
+        {% else %}
+            var bootstrapVersion = "bootstrap2";
+        {% endif %}
     </script>
 
     {% if useMinifiedJs %}
@@ -28,11 +33,12 @@
         {% endfor %}
     {% endif %}
 
-    {% for filename in jsNotMinifiedFiles %}
-        <script src="/{{ filename }}"></script>
-    {% endfor %}
+    {% if not isAngular2 %}
 
-    {# this is necessary to fix an IE 10 bug where documentReady fires before all JS resources are loaded.
-        see: http://stackoverflow.com/questions/12988506/angularjs-fail-to-load-module #}
+        {% for filename in jsNotMinifiedFiles %}
+            <script src="/{{ filename }}"></script>
+        {% endfor %}
+
     <script>angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);</script>
+  {% endif %}
 {% endblock %}

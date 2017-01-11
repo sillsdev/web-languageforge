@@ -52,6 +52,7 @@ class LexEntryCommands
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
         $now = UniversalTimestamp::now();
+        $project->lastEntryModifiedDate = $now;
         if (array_key_exists('id', $params) && $params['id'] != '') {
             $entry = new LexEntryModel($project, $params['id']);
             $action = 'update';
@@ -71,13 +72,13 @@ class LexEntryCommands
         if ($project->hasSendReceive()) {
 //            $entry->dirtySR++;
             $entry->dirtySR = 0;
-            $status = SendReceiveCommands::getProjectStatus($projectId);
-            if ($status && $status['SRState'] != 'IDLE') return false;
+            if (SendReceiveCommands::isInProgress($projectId)) return false;
         }
 
         LexEntryDecoder::decode($entry, $params);
 
         $entry->write();
+        $project->write();
         ActivityCommands::writeEntry($project, $userId, $entry, $action);
 
 //        SendReceiveCommands::queueProjectForUpdate($project, $mergeQueuePath);

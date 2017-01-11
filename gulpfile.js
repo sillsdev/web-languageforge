@@ -9,6 +9,7 @@
 //   'do-reload'
 //   'reload'
 //   'lint'
+//   'generate-language-picker-assets'
 //   'mongodb-backup-prod-db'
 //   'mongodb-copy-backup-to-local'
 //   'mongodb-cleanup-backup-prod-db'
@@ -45,11 +46,14 @@
 //   'build-php'
 //   'markdown'
 //   'default'
+//   'sass',
+//   'sass:watch'
 
 // -------------------------------------
 //   Modules
 // -------------------------------------
 //
+// es6-shim          : ECMAScript 6 (Harmony) compatibility for legacy JavaScript engines
 // async             : Higher-order functions and common patterns for asynchronous code
 // child_process     : Call a child process with the ease of exec and safety of spawn
 // gulp              : The streaming build system
@@ -61,6 +65,7 @@
 // gulp-protractor   : A helper for protactor and gulp
 // gulp-rename       : Rename files
 // gulp-replace      : A string replace plugin for gulp
+// gulp-sass         : Sass plugin for Gulp
 // gulp-uglify       : Minify files with UglifyJS
 // gulp-util         : Utility functions for gulp plugins
 // lodash.template   : The lodash method `_.template` exported as a module
@@ -68,6 +73,7 @@
 // jshint-stylish    : Stylish reporter for JSHint
 // path              : Node.JS path module
 // yargs             : yargs the modern, pirate-themed, successor to optimist
+require('es6-shim');
 var async = require('async');
 var _execute = require('child_process').exec;
 var gulp = require('gulp');
@@ -87,6 +93,7 @@ var _template = require('lodash.template');
 var Server = require('karma').Server;
 var path = require('path');
 var stylish = require('jshint-stylish');
+var sass = require('gulp-sass');
 
 var execute = function (command, options, callback) {
   if (options == undefined) {
@@ -111,48 +118,6 @@ var execute = function (command, options, callback) {
     callback(null);
   }
 };
-
-if (!String.prototype.endsWith) {
-  /**
-   * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
-   * @param searchString
-   * @param position
-   * @returns {boolean}
-   */
-  String.prototype.endsWith = function (searchString, position) {
-    var subjectString = this.toString();
-    if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position ||
-      position > subjectString.length
-    ) {
-      position = subjectString.length;
-    }
-
-    position -= searchString.length;
-    var lastIndex = subjectString.lastIndexOf(searchString, position);
-    return lastIndex !== -1 && lastIndex === position;
-  };
-}
-
-if (!String.prototype.includes) {
-  /**
-   * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/includes
-   * @param search
-   * @param start
-   * @returns {boolean}
-   */
-  String.prototype.includes = function (search, start) {
-    'use strict';
-    if (typeof start !== 'number') {
-      start = 0;
-    }
-
-    if (start + search.length > this.length) {
-      return false;
-    } else {
-      return this.indexOf(search, start) !== -1;
-    }
-  };
-}
 
 // Determine the path to test/app from a given destination.
 // Truncate the remote prefix of the destination
@@ -198,6 +163,32 @@ gulp.task('lint', function () {
     .pipe(jshint())
     .pipe(jshint.reporter(stylish));
 });
+
+// -------------------------------------
+//   Task: Auto-generate language picker asset files
+// -------------------------------------
+gulp.task('generate-language-picker-assets', function (cb) {
+
+  // Manual prerequisite:
+  // copy from libpalaso:palaso-trusty64-master/SIL.WritingSystems/Resources/*.txt
+  // into scripts/language picker/
+
+  var options = {
+    dryRun: false,
+    silent: false,
+    cwd: './scripts/language picker/'
+  };
+
+  // auto-generated files written to src/angular-app/bellows/js/assets/
+  execute(
+    './build-json-language-data.py',
+    options,
+    cb
+  );
+});
+
+gulp.task('generate-language-picker-assets').description =
+  'Update asset files used for language picker';
 
 //region MongoDB
 
@@ -284,7 +275,7 @@ gulp.task('mongodb-copy-prod-db').description =
 // -------------------------------------
 //   Task: test-php
 // -------------------------------------
-gulp.task('test-php', function () {
+gulp.task('test-php', function (cb) {
   var src = 'test/php/phpunit.xml';
   var options = {
     dryRun: false,
@@ -292,8 +283,14 @@ gulp.task('test-php', function () {
     logJunit: 'PhpUnitTests.xml'
   };
   gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
-  return gulp.src(src)
-    .pipe(phpunit('src/vendor/bin/phpunit', options));
+  execute(
+    '/usr/bin/env php src/vendor/phpunit/phpunit/phpunit -c test/php/phpunit.xml',
+    options,
+    cb
+  );
+
+  // return gulp.src(src)
+  //   .pipe(phpunit('src/vendor/bin/phpunit', options));
 });
 
 // -------------------------------------
@@ -615,7 +612,7 @@ gulp.task('build-bower', function (cb) {
 // -------------------------------------
 //   Task: Build Remove test fixtures (directives) in HTML only on live build
 // -------------------------------------
-gulp.task('build-remove-test-fixtures', function () {
+gulp.task('build-remove-test-fixtures', function (done) {
   var params = require('yargs')
     .option('dest', {
       demand: false,
@@ -625,11 +622,14 @@ gulp.task('build-remove-test-fixtures', function () {
   var base = './src/angular-app';
   var glob = path.join(base, '**/*.html');
 
+  // only on live
   if (!params.dest.includes('/var/www/virtual/') &&
     (params.dest.endsWith('forge.org') || params.dest.endsWith('forge.org/'))) {
-    return gulp.src(glob, { base: base })
+    return gulp.src(glob)
       .pipe(replace(/^.*<pui-mock-upload.*$/m, '\n'))
       .pipe(gulp.dest(base));
+  } else {
+    done();
   }
 });
 
@@ -646,7 +646,9 @@ gulp.task('build-minify', function () {
       type: 'boolean' })
     .argv;
   var minifySrc = [
-    'src/angular-app/**/*.js',
+    'src/angular-app/bellows/**/*.js',
+    'src/angular-app/container/**/*.js',
+    'src/angular-app/' + params.applicationName + '/**/*.js',
     '!src/angular-app/**/*.min.js',
     '!src/angular-app/**/assets/**',
     '!src/angular-app/**/vendor/**'];
@@ -869,3 +871,131 @@ gulp.task('markdown').description = 'Generate helps markdown files';
 // -------------------------------------
 
 gulp.task('default', gulp.series('build'));
+
+
+// -------------------------------------
+//   Task: Compile all the sass files into a single css file
+// -------------------------------------
+gulp.task('sass:base', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/base/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/Site/views/languageforge/theme/default/cssBootstrap4/'));
+});
+
+gulp.task('sass:activity', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/activity/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/public/activity/bootstrap4/'));
+});
+
+gulp.task('sass:changepassword', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/changepassword/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/public/changepassword/bootstrap4/'));
+});
+
+gulp.task('sass:forgot_password', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/forgot_password/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/forgot_password/bootstrap4/'));
+});
+
+gulp.task('sass:home', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/home/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/Site/views/languageforge/theme/default/page/home/bootstrap4/'));
+});
+
+gulp.task('sass:lexicon', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/languageforge/lexicon/bootstrap4/'));
+});
+
+gulp.task('sass:login', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/login/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/public/login/bootstrap4/'));
+});
+
+gulp.task('sass:registration', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/public/registration/bootstrap4/'));
+});
+
+gulp.task('sass:new-project', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/new-project/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/languageforge/lexicon/new-project/bootstrap4/'));
+});
+
+gulp.task('sass:projects', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/projects/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/projects/bootstrap4/'));
+});
+
+gulp.task('sass:reset_password', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/reset_password/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/public/reset_password/bootstrap4/'));
+});
+
+gulp.task('sass:signup', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/rsignup/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/public/signup/bootstrap4/'));
+});
+
+gulp.task('sass:siteadmin', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/siteadmin/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/siteadmin/bootstrap4/'));
+});
+
+gulp.task('sass:usermanagement', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/usermanagement/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/usermanagement/bootstrap4'));
+});
+
+gulp.task('sass:terms_and_conditions', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/terms_and_conditions/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/Site/views/shared/cssBootstrap4/'));
+});
+
+gulp.task('sass:userprofile', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/userprofile/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/userprofile/bootstrap4/'));
+});
+
+gulp.task('sass:registration', function () {
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/userprofile/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('src/angular-app/bellows/apps/userprofile/bootstrap4/'));
+});
+// -------------------------------------
+//   Task: Watch the primary sass folder for any changes and recompile via the sass task
+// -------------------------------------
+gulp.task('sass:watch', function () {
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/base/*.scss', gulp.series('sass:base'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/activity/*.scss', gulp.series('sass:activity'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/changepassword/*.scss', gulp.series('sass:changepassword'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/forgot_password/*.scss', gulp.series('sass:forgot_password'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/home/*.scss', gulp.series('sass:home'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/*.scss', gulp.series('sass:lexicon'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/login/*.scss', gulp.series('sass:login'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/new-project/*.scss', gulp.series('sass:new-project'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/projects/*.scss', gulp.series('sass:projects'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/reset_password/*.scss', gulp.series('sass:reset_password'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss', gulp.series('sass:registration'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/signup/*.scss', gulp.series('sass:signup'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/siteadmin/*.scss', gulp.series('sass:siteadmin'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/terms_and_conditions/*.scss', gulp.series('sass:terms_and_conditions'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/usermanagement/*.scss', gulp.series('sass:usermanagement'));
+  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/userprofile/*.scss', gulp.series('sass:userprofile'));
+
+});

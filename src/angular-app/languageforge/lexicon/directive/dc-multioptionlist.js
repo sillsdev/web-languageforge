@@ -10,12 +10,12 @@ angular.module('palaso.ui.dc.multioptionlist', [])
     scope: {
       config: '=',
       model: '=',
-      control: '=',
       items: '=',
       selectField: '&'
     },
-    controller: ['$scope', '$state', function ($scope, $state) {
+    controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rights) {
       $scope.$state = $state;
+      $scope.rights = rights;
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
 
@@ -60,9 +60,7 @@ angular.module('palaso.ui.dc.multioptionlist', [])
       };
 
       $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
-        if (angular.isDefined($scope.items) && $state.is('editor.entry') &&
-          $scope.control.rights.canEditEntry()
-        ) {
+        if (angular.isDefined($scope.items) && $state.is('editor.entry') && rights.canEditEntry()) {
           return valueToBeDeleted == value;
         }
 

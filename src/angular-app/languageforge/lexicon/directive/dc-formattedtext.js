@@ -227,6 +227,22 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
 
     // add the button to the default toolbar definition
     taOptions.toolbar[0].push('lexInsertLink', 'languageSpan');
+
+    // disable textAngular indent/outdent so user can tab to next/prev fields
+    taOptions.keyMappings = [
+      {
+        commandKeyCode: 'TabKey',
+        testForKey: function () {
+          return false;
+        }
+      },
+      {
+        commandKeyCode: 'ShiftTabKey',
+        testForKey: function () {
+          return false;
+        }
+      }
+    ];
     return taOptions;
   }]);
 
