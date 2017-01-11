@@ -13,10 +13,7 @@
       <div class="col">
         <p>{{numberOfEntries}} entries</p>
       </div>
-      <div class="col">
-        <button type="button" class="btn-success" onclick="alert('Hello world!')">+ New Word</button>
-      </div>
-      </div>
+    </div>
     <select [(ngModel)]="simpleValue"> // value is a string or number
         <option *ngFor="let semanticDomain of semanticDomains" >{{semanticDomain}}</option>
     </select>
