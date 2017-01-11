@@ -19,7 +19,7 @@
                 <div class="input-prepend">
                     <input class="span3" id="username"
                         disabled type="text" name="username"
-                        placeholder="{{'pick a username' | translate}}" 
+                        placeholder="{{'pick a username' | translate}}"
                         data-ng-model="record.username" />
                     <span data-ng-show="usernameLoading"><img id="usernameLoading" src="/Site/views/shared/image/loading-small.gif" style="position: absolute; padding-left: 5px; padding-top: 8px;" /></span>
                     <span data-ng-show="usernameOk"><img id="usernameOk" src="/Site/views/shared/image/tick.png" title="User name is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
@@ -45,7 +45,7 @@
                 <div class="input-prepend">
                     <input class="span3" id="name" autofocus
                         required type="text" name="name"
-                        placeholder="{{'your name' | translate}}" 
+                        placeholder="{{'your name' | translate}}"
                         data-ng-model="record.name" />
                 </div>
             </div>
@@ -93,7 +93,7 @@
                             type="password" name="confirmPassword"
                             title="Passwords must be at least 7 characters"
                             data-ng-required="!showPassword"
-                            data-ng-disabled="showPassword" 
+                            data-ng-disabled="showPassword"
                             data-ng-model="confirmPassword" />
                         <span data-ng-show='record.password && record.password != confirmPassword'><img src="/Site/views/shared/image/exclamation.png" title="Passwords do not match!" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
                         <span data-ng-show='record.password && record.password == confirmPassword'><img src="/Site/views/shared/image/tick.png" title="Passwords match" style="position: absolute; padding-left: 5px; padding-top: 8px;"/></span>
