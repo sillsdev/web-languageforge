@@ -647,6 +647,8 @@ gulp.task('build-minify', function () {
     .argv;
   var minifySrc = [
     'src/angular-app/**/*.js',
+    '!src/angular-app/languageforge/rapid-words/**', // ng2
+    '!src/angular-app/languageforge/review-suggest/**', // ng2
     '!src/angular-app/**/*.min.js',
     '!src/angular-app/**/assets/**',
     '!src/angular-app/**/vendor/**'];
