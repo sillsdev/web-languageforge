@@ -17,6 +17,7 @@ import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { ToolbarComponent } from './shared/toolbar/toolbar.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
+import { WordDetailsComponent } from './word-details/word-details.component';
 
 export function main() {
 
