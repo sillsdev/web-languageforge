@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit {
     this.detailToggle.toggleShowDetails();
   }
   ngOnInit() {
-    this.getSemanticDomains();
+    // this.getSemanticDomains();
     this.getWords();
     this.getNumberOfEntries();
     this.getFullDbeDto(); 
