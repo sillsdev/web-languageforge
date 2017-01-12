@@ -16,7 +16,7 @@ class SessionCommands
      * @param string $appName - refers to the application being used by the user
      * @return array
      */
-    public static function getSessionData($projectId, $userId, $website, $appName = '')
+    public static function getSessionData($projectId, $userId, $website, $appName = '', $mockFilename = null)
     {
         $sessionData = array();
         $sessionData['baseSite'] = $website->base;
@@ -61,7 +61,43 @@ class SessionCommands
         $sessionData['fileSizeMax'] = $fileSizeMax;
 
         //return JsonEncoder::encode($sessionData);  // This is handled elsewhere
+        self::write($sessionData, $mockFilename);
+        
         return $sessionData;
+    }
+
+    public static function getSessionFilePath($mockFilename = null)
+    {
+        $sessionId = session_id();
+        if(!is_null($mockFilename)){
+            $sessionId = $mockFilename;
+        }
+        if($sessionId == ""){
+            return false;
+        }
+        
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $sessionId;
+    }
+
+    private static function write($data, $mockFilename = null)
+    {
+        $jsonData = json_encode($data);
+        //May pose a possible security risk to save with ID as filename.
+        
+        $filePath = self::getSessionFilePath($mockFilename);
+        if(!$filePath){
+            return false;
+        }
+        $isWritten = file_put_contents($filePath, $jsonData);
+        // $SessionFile = fopen($filePath, "w") or die("Unable to open file!");
+        // $isWritten = fwrite($SessionFile, $jsonData, strlen($jsonData));
+        // fclose($SessionFile);
+        
+        if($isWritten){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
