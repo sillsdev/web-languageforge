@@ -174,7 +174,7 @@ form.new-tags i.icon-plus {
     margin-right:20px;
     cursor: pointer;
 }
-    
+
 /* Style for file upload */
 .drop-box {
     width: 320px;
@@ -191,22 +191,14 @@ div.notices {
     top: 7px;
     left: 50%;
     margin-left: -200px;
-    z-index: 100;
+    z-index: 1100;
     min-width: 400px;
     width: auto;
 }
 
 /* overrides definitions in sf.css and bootstrap.css */
-div.notices .alert {
-    padding: 2px 5px 2px 35px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-}
 div.notices .animate-repeat {
     line-height: inherit;
-}
-div.notices .alert-success, div.notices .alert-error, div.notices .alert-warn, div.notices .alert-info {
-    background-position: 6px 4px;
 }
 
 /* Select language directive */

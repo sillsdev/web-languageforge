@@ -1,0 +1,68 @@
+<fieldset>
+    <div class="text-xs-center">
+        <ul id="progress-indicator">
+            <li><i class="fa fa-square-o muted"></i>
+                <span>{{'Register' | translate}}</span></li>
+            <li>&gt;</li>
+            <li><i class="fa fa-square-o muted"></i>
+                <span>{{'Validate' | translate}}</span></li>
+            <li>&gt;</li>
+            <li><i class="fa fa-square-o muted"></i>
+                <span>{{'Login' | translate}}</span></li>
+        </ul>
+        <h3 translate="Let's get started..."></h3>
+    </div>
+    <div class="card card-default">
+        <div class="card-block">
+            <div class="form-group row">
+                <label class="control-label col-md-4 text-md-right" for="username" translate="Username"></label>
+                <div class="controls col-md-8">
+                    <div class="input-group">
+                        <input class="form-control" id="username" autofocus
+                               required type="text" name="username"
+                               placeholder="{{'pick a username' | translate}}"
+                               data-ng-model="record.username" data-ng-trim="false" model-transform-limit="25"
+                               model-transform-no-space/>
+                        <span class="input-group-addon" data-ng-show="record.username.length > 0 && usernameLoading">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </span>
+                    </div>
+                    <span data-ng-show="record.username.length > 0">
+                        <div data-ng-show="usernameExists && signupForm.username.$pristine">
+                            <div id="usernameExists" class="alert alert-danger"
+                                 translate="Someone already has that username.  Please try another."></div>
+                        </div>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group form-group-last row">
+                <label class="control-label text-md-right col-md-4" for="email" translate="Email Address"></label>
+                <div class="controls col-md-8">
+                    <div class="input-group">
+                        <input class="form-control" id="email"
+                               required type="email" name="email"
+                               placeholder="{{'your email' | translate}}" data-ng-model="record.email"/>
+                        <span class="input-group-addon" data-ng-show="record.email.length > 0 && usernameLoading">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </span>
+                    </div>
+                    <div data-ng-show="signupForm.email.$dirty && signupForm.$error.email">
+                        <div class="alert alert-danger"
+                             translate="Please enter a valid email address.  An example of an email address: john@doe.com"></div>
+                    </div>
+                    <div data-ng-show="!signupForm.$error.email && emailExists && signupForm.email.$pristine">
+                        <div class="alert alert-danger"
+                             translate="This email is already associated with an existing account.  Please try another."></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-xs-center">
+        <button class="btn btn-info" type="submit" id="identify"
+                data-ng-disabled="signupForm.$invalid">
+            {{'Next' | translate}} <i class="fa fa-arrow-circle-right"></i>
+        </button>
+    </div>
+</fieldset>
+
