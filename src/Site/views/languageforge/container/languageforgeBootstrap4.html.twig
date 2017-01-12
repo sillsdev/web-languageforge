@@ -1,12 +1,15 @@
 {% extends 'container.html.twig' %}
 
 {% block header %}
-    <nav class="navbar navbar-fixed-top navbar-dark" style="background-color: #104060">
-        <a class="navbar-brand" href="/">Language Forge
+    <nav class="navbar navbar-toggleable-xs navbar-dark" style="background-color: #104060">
+      <a class="navbar-brand hidden-sm-down" href="/">Language Forge
             {% if app.website.domain == "languageforge.local" %} (Bootstrap 4){% endif %}
         </a>
-
-        <ul class="nav navbar-nav float-sm-right">
+        <button class="navbar-toggler hidden-md-up pull-left" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+ <div class="collapse navbar-toggleable-sm pull-right" id="navbarNavDropdown">
+        <ul class="nav navbar-nav">
             {% if isLoggedIn %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="supportedContentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Projects</a>
@@ -37,6 +40,7 @@
                 </li>
             {% endif %}
         </ul>
+      </div>
     </nav>
 {% endblock %}
 
