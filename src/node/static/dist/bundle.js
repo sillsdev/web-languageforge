@@ -27,6 +27,8 @@ doc.subscribe(function(err) {
   if (err) throw err;
   var editor = document.getElementById("realTime");
   var quill = new Quill(editor);
+	var clipboard = document.getElementsByClassName("ql-clipboard");
+	clipboard[0].hidden = true;
   quill.setContents(doc.data);
   quill.on('text-change', function(delta, oldDelta, source) {
     if (source !== 'user') return;
