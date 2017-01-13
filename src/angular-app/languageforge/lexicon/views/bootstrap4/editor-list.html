@@ -35,7 +35,7 @@
         <div class="list-group" data-ng-show="entries.length > 0 && rights.canEditProject() && finishedLoading">
             <div class="lexiconListItem list-group-item list-group-item-action flex-column active">
                 <small class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
-                <h5>{{ 'Words in dictronary' | translate }}</h5>
+                <h5>{{ 'Words in dictionary' | translate }}</h5>
             </div>
             <div class="lexiconListItem list-group-item list-group-item-action flex-column" data-ng-repeat="entry in visibleEntries track by entry.id"
                  data-ng-click="editEntryAndScroll(entry.id)">
