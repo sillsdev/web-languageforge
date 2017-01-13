@@ -5,18 +5,14 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
-import { AboutModule } from './about/about.module';
-import { HomeModule } from './home/home.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { AuthModule } from './auth/auth.module';
 import { DefinitionModule } from './definition/definition.module'
 import { SharedModule } from './shared/shared.module';
 
-import { MaterializeDirective } from 'angular2-materialize/dist/index';
-
 @NgModule({
-  imports: [BrowserModule, HttpModule, AppRoutingModule, AboutModule, HomeModule, DashboardModule, AuthModule, DefinitionModule, SharedModule.forRoot()],
-  declarations: [AppComponent, MaterializeDirective],
+  imports: [BrowserModule, HttpModule, AppRoutingModule, DashboardModule, AuthModule, DefinitionModule, SharedModule.forRoot()],
+  declarations: [AppComponent],
   providers: [{
     provide: APP_BASE_HREF,
     useValue: '/app/review-suggest'
