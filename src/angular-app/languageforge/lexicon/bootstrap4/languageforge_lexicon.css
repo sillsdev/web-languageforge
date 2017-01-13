@@ -1,0 +1,38 @@
+.dc-rendered-word {
+  font-weight: bold; }
+
+.dc-rendered-senseContainer {
+  margin: 0 3px 0 3px; }
+
+.dc-rendered-partOfSpeech {
+  font-style: italic; }
+
+.dc-rendered-definition {
+  margin: 0 3px 0 3px; }
+
+.dc-rendered-exampleSentence {
+  margin: 0 3px 0 3px;
+  font-style: italic; }
+
+#lexAppListView .lexiconListItem {
+  cursor: pointer; }
+  #lexAppListView .lexiconListItem h5 {
+    margin: 0; }
+
+#lexAppListView .lexiconListItem.active {
+  cursor: default; }
+
+.hdrnav .hdrnav-container {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+  float: left;
+  width: 100%; }
+  .hdrnav .hdrnav-container .btn-group {
+    margin-left: 10px; }
+
+@media (max-width: 767px) {
+  .dc-rendered-word {
+    display: block; }
+  .hdrnav .return-button {
+    float: left; } }
