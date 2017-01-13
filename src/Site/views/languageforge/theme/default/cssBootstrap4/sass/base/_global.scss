@@ -11,8 +11,8 @@ body{
   background: #f5f5f5;
   border: 1px solid #e3e3e3;
 }
-.footer{ 
-  background-color:#104060; 
+.footer{
+  background-color: $lf-blue;
   color: white;
   padding: 60px 0;
 
@@ -27,4 +27,14 @@ body{
   }
 
   
+}
+// TODO: Remove hack for modal box issue as a result of ui.bootstrap
+.modal.in {
+  display: block;
+}
+.breadcrumb {
+  background-color: #fff;
+  padding: 6px 0 0;
+  margin-bottom: 0;
+  border-radius: 0;
 }
