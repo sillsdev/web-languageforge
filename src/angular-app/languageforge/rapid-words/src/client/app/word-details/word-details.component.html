@@ -1,0 +1,7 @@
+<multitext label="Word"></multitext>
+<div *ngIf="showDetails">
+    <div *ngFor="let detailLabel of detailLabels">
+        <multitext [label]=detailLabel></multitext>
+    </div>
+</div>
+<multitext label="Definition"></multitext>

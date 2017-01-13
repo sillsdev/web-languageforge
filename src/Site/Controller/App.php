@@ -3,81 +3,62 @@
 namespace Site\Controller;
 
 use Api\Library\Shared\SilexSessionHelper;
+use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\SessionCommands;
-use Api\Model\Shared\ProjectModel;
-use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\Shared\UserModel;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 class App extends Base
 {
-    public function view(Application $app, $appName, $projectId = '') {
-        $this->setupNgView($app, $appName, $projectId);
-
+    public function view(Request $request, Application $app, $appName, $projectId = '') {
+        $this->setupBaseVariables($app);
+        $retVal = $this->setupNgView($app, $appName, $projectId);
         return $this->renderPage($app, 'angular-app');
     }
 
     public function setupNgView(Application $app, $appName, $projectId = '')
     {
-        $siteFolder = NG_BASE_FOLDER . $this->website->base;
-        $parentAppFolder = '';
-        $appFolder = $this->website->base . '/' . $appName;
+        /**
+         * authentication is handled by the security policy set in index.php
+         *
+         * both /app/[appName] and /public/[appName] are handled by this controller
+         * /public/[appName] does not require authentication whereas /app/[appName] requires a user to be logged in
+         *
+         */
 
         if ($projectId == 'favicon.ico') {
             $projectId = '';
         }
 
-        $possibleSubFolder = "$siteFolder/$appName/$projectId";
-        if ($projectId != '' && file_exists($possibleSubFolder) && file_exists("$possibleSubFolder/$appName-$projectId.html") &&
-            file_exists("$possibleSubFolder/views")
-        ) {
-            $parentAppFolder = $appFolder;
-            $appFolder .= "/$projectId";
-            $appName .= "-$projectId";
+        $isPublicApp = (preg_match('@^/(public|auth|app\/review\-suggest)/@', $app['request']->getRequestUri()) == 1);
+
+        $appModel = new AppModel($appName, $projectId, $this->website, $isPublicApp);
+
+        if ($appModel->isChildApp) {
+            $appName = "$appName-$projectId";
             $projectId = '';
         }
 
-        if (!file_exists(NG_BASE_FOLDER . $appFolder)) {
-            $appFolder = 'bellows/apps/' . $appName;
-            if (!file_exists(NG_BASE_FOLDER . $appFolder)) {
-                $app->abort(404, $this->website->base); // this terminates PHP
-            }
-        }
-
+        $this->data['isAngular2'] = $appModel->isAppAngular2();
+        $this->data['isBootstrap4'] = $appModel->isBootstrap4;
         $this->data['appName'] = $appName;
-        $this->data['appFolder'] = $appFolder;
+        $this->data['appFolder'] = $appModel->appFolder;
+        $this->data['bootstrapFolder'] = $appModel->bootstrapFolder;
 
-        $this->_userId = SilexSessionHelper::getUserId($app);
-
-        // update the projectId in the session if it is not empty
-        if (!$projectId) {
-            $projectId = SilexSessionHelper::getProjectId($app, $this->website);
-        }
-        if ($projectId && ProjectModel::projectExistsOnWebsite($projectId, $this->website)) {
-            $projectModel = ProjectModel::getById($projectId);
-            if (!$projectModel->userIsMember($this->_userId)) {
-                $projectId = '';
+        if ($appModel->requireProject) {
+            if ($isPublicApp) {
+                $projectId = SilexSessionHelper::requireValidProjectIdForThisWebsite($app, $this->website, $projectId);
             } else {
-                $user = new UserModel($this->_userId);
-                $user->lastUsedProjectId = $projectId;
-                $user->write();
-                if (($projectModel->isArchived) and ($user->role != SystemRoles::SYSTEM_ADMIN)) {
-                    // Forbidden access to archived projects
-                    $projectId = '';
-                    $user->lastUsedProjectId = $projectId;
-                    $user->write();
-                    $app->abort(403, "Forbidden access to archived project");
-                }
+                $projectId = SilexSessionHelper::requireValidProjectIdForThisWebsiteAndValidateUserMembership($app, $this->website, $projectId);
             }
-        } else {
-            $projectId = '';
         }
+
         $app['session']->set('projectId', $projectId);
         $this->_projectId = $projectId;
 
         // determine help menu button visibility
         // placeholder for UI language 'en' to support translation of helps in the future
-        $helpsFolder = NG_BASE_FOLDER . $appFolder . "/helps/en/page";
+        $helpsFolder = $appModel->appFolder . "/helps/en/page";
         if (file_exists($helpsFolder) &&
             iterator_count(new \FilesystemIterator($helpsFolder, \FilesystemIterator::SKIP_DOTS)) > 0
         ) {
@@ -87,34 +68,243 @@ class App extends Base
         }
 
         // Other session data
-        $sessionData = SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $appName);
-        $this->data['jsonSession'] = json_encode($sessionData, JSON_UNESCAPED_SLASHES);
+        $this->data['jsonSession'] = json_encode(SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $appName), JSON_UNESCAPED_SLASHES);
 
-        $this->addJavascriptFiles(NG_BASE_FOLDER . 'bellows/js', array('vendor/', 'assets/'));
-        $this->addJavascriptFiles(NG_BASE_FOLDER . 'bellows/directive');
-        $this->addJavascriptFiles($siteFolder . '/js', array('vendor/', 'assets/'));
-        if ($parentAppFolder) {
-            $this->addJavascriptFiles(NG_BASE_FOLDER . $parentAppFolder, array('vendor/', 'assets/'));
-            $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . $parentAppFolder . '/js/vendor');
-            $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . $parentAppFolder . '/js/assets');
+
+        if (!$this->data['isAngular2']) {
+            $this->addJavascriptFiles($appModel->bellowsFolder . '/_js_module_definitions');
+            $this->addJavascriptFiles($appModel->bellowsFolder . '/js', array('vendor', 'assets'));
+            $this->addJavascriptFiles($appModel->bellowsFolder . '/directive');
+            $this->addJavascriptFiles($appModel->siteFolder . '/js', array('vendor', 'assets'));
+            $this->addJavascriptFiles($appModel->appFolder, array('js/vendor', 'js/assets'));
         }
-        $this->addJavascriptFiles(NG_BASE_FOLDER . $appFolder, array('vendor/', 'assets/'));
+
+        if ($appModel->parentAppFolder) {
+            $this->addJavascriptFiles($appModel->parentAppFolder, array('js/vendor', 'js/assets'));
+        }
 
         if ($appName == 'semdomtrans' || $appName == 'semdomtrans-new-project') {
             // special case for semdomtrans app
             // add lexicon JS files since the semdomtrans app depends upon these JS files
-            $this->addJavascriptFiles($siteFolder . '/lexicon', array('vendor/', 'assets/'));
+            $this->addJavascriptFiles($appModel->siteFolder . '/lexicon', array('js/vendor', 'js/assets'));
         }
 
-        $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . 'bellows/js/vendor');
-        $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . 'bellows/js/assets');
-        $this->addJavascriptNotMinifiedFiles($siteFolder . '/js/vendor');
-        $this->addJavascriptNotMinifiedFiles($siteFolder . '/js/assets');
-        $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . $appFolder . '/js/vendor');
-        $this->addJavascriptNotMinifiedFiles(NG_BASE_FOLDER . $appFolder . '/js/assets');
+        if ($appModel->isBootstrap4) {
+            $this->addCssFiles(NG_BASE_FOLDER . 'bellows/cssBootstrap4');
+            $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive/bootstrap4');
+        } else {
+            $this->addCssFiles(NG_BASE_FOLDER . 'bellows/cssBootstrap2');
+            $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive/bootstrap2');
+        }
+        $this->addCssFiles($appModel->bootstrapFolder, array('node_modules'));
+    }
+}
 
-        $this->addCssFiles(NG_BASE_FOLDER . 'bellows');
-        $this->addCssFiles(NG_BASE_FOLDER . $appFolder);
+class AppNotFoundException extends \Exception { }
+
+class AppModel {
+
+    /**
+     * @var string
+     */
+    public $appName;
+
+    /**
+     * @var string
+     */
+    public $parentAppFolder;
+
+    /**
+     * @var string
+     */
+    public $appFolder;
+
+    /**
+     * @var bool
+     */
+    public $isBellows;
+
+    /**
+     * @var bool
+     */
+    public $isChildApp;
+
+    /**
+     * @var string
+     */
+    public $siteFolder;
+
+    /**
+     * @var string
+     */
+    public $bootstrapFolder;
+
+    /**
+     * @var bool
+     */
+    public $isBootstrap4;
+
+    /**
+     * @var string
+     */
+    public $bellowsFolder;
+
+    /**
+     * @var bool
+     */
+    public $requireProject;
+
+    /**
+     * AppModel constructor
+     * @param $appName string
+     * @param $projectId string
+     * @param $website Website
+     * @param $isPublicApp bool
+     */
+    public function __construct($appName, $projectId, $website, $isPublicApp)
+    {
+        $this->appName = $appName;
+        $this->determineFolderPaths($appName, $projectId, $website, $isPublicApp);
     }
 
+    private function determineFolderPaths($appName, $projectId, $website, $isPublic) {
+        $isBootstrap4 = $this->isAppBootstrap4($appName, $website);
+        $siteFolder = NG_BASE_FOLDER . $website->base;
+        $sitePublicFolder = "$siteFolder/public";
+        $bellowsFolder = NG_BASE_FOLDER . "bellows";
+        $bellowsAppFolder = "$bellowsFolder/apps";
+        $bellowsPublicAppFolder = "$bellowsAppFolder/public";
+        $parentAppFolder = '';
+        $isChildApp = false;
+        $isBellows = false;
+
+        if ($isPublic) {
+            if ($this->isChildApp($sitePublicFolder, $appName, $projectId)) {
+                $parentAppFolder = "$sitePublicFolder/$appName";
+                $appFolder = "$parentAppFolder/$projectId";
+                $isChildApp = true;
+                $appName = "$appName-$projectId";
+            } elseif ($this->isChildApp($bellowsPublicAppFolder, $appName, $projectId)) {
+                $parentAppFolder = "$bellowsPublicAppFolder/$appName";
+                $appFolder = "$parentAppFolder/$projectId";
+                $isChildApp = true;
+                $appName = "$appName-$projectId";
+                $isBellows = true;
+            } elseif ($this->appExists($sitePublicFolder, $appName)) {
+                $appFolder = "$sitePublicFolder/$appName";
+            } elseif ($this->appExists($bellowsPublicAppFolder, $appName)) {
+                $appFolder = "$bellowsPublicAppFolder/$appName";
+                $isBellows = true;
+            } elseif ($this->appExists($siteFolder, $appName)) {
+                $appFolder = "$siteFolder/$appName";
+            } else {
+                throw new AppNotFoundException();
+            }
+        } else {
+            if ($this->isChildApp($siteFolder, $appName, $projectId)) {
+                $parentAppFolder = "$siteFolder/$appName";
+                $appFolder = "$parentAppFolder/$projectId";
+                $isChildApp = true;
+                $appName = "$appName-$projectId";
+            } elseif ($this->isChildApp($bellowsAppFolder, $appName, $projectId)) {
+                $parentAppFolder = "$bellowsAppFolder/$appName";
+                $appFolder = "$parentAppFolder/$projectId";
+                $appName = "$appName-$projectId";
+                $isChildApp = true;
+                $isBellows = true;
+            } elseif ($this->appExists($siteFolder, $appName)) {
+                $appFolder = "$siteFolder/$appName";
+            } elseif ($this->appExists($bellowsAppFolder, $appName)) {
+                $appFolder = "$bellowsAppFolder/$appName";
+                $isBellows = true;
+            } else {
+                throw new AppNotFoundException();
+            }
+        }
+
+        $bootstrapNumber = ($isBootstrap4) ? 4 : 2;
+        if (file_exists("$appFolder/bootstrap$bootstrapNumber")) {
+            $bootstrapFolder = "$appFolder/bootstrap$bootstrapNumber";
+        } else {
+            $bootstrapFolder = $appFolder;
+        }
+
+        $this->siteFolder = $siteFolder;
+        $this->appFolder = $appFolder;
+        $this->parentAppFolder = $parentAppFolder;
+        $this->bootstrapFolder = $bootstrapFolder;
+        $this->isBootstrap4 = $isBootstrap4;
+        $this->isChildApp = $isChildApp;
+        $this->isBellows = $isBellows;
+        $this->bellowsFolder = $bellowsFolder;
+        $this->requireProject = $this->isProjectContextRequired($appName);
+    }
+
+    private function isProjectContextRequired($appName) {
+        switch ($appName) {
+            case "sfchecks":
+            case "lexicon":
+            case "semdomtrans":
+            case "projectmanagement":
+            case "usermanagement":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public function isAppAngular2() {
+        $siteAppsInAngular2 = array(
+            "rapid-words",
+            "review-suggest"
+        );
+        return in_array($this->appName, $siteAppsInAngular2);
+    }
+
+    private function isAppBootstrap4($appName, $website) {
+
+        // replace "appName" with the name of the angular app that has been migrated to bootstrap 4
+        // Note that this will affect both the angular app and the app frame
+
+        $sharedAppsInBoostrap4 = array("sharedApp1", "sharedApp2");
+
+        $siteAppsInBootstrap4 = array(
+            "scriptureforge" => array("appName"),
+            "languageforge" => array("login", "rapid-words", "userprofile", "changepassword", "forgot_password", "activity", "projects", "signup"),
+            "m.languageforge" => array("review-suggest"),
+            "waaqwiinaagiwritings" => array(),
+            "jamaicanpsalms.scriptureforge" => array(),
+            "demo.scriptureforge" => array(),
+            "rapid-words" => array(),
+        );
+
+        $siteLookup = preg_replace('/^(dev\.)?(\S+)\.(org|local|com)$/', '$2', $website->domain);
+
+        if (in_array($appName, $sharedAppsInBoostrap4)) {
+            return true;
+        }
+
+        if (array_key_exists($siteLookup, $siteAppsInBootstrap4)) {
+            if (in_array($appName, $siteAppsInBootstrap4[$siteLookup])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isChildApp($location, $parentAppName, $appName) {
+        $appFolder = "$location/$parentAppName/$appName";
+        return (
+            $appName != '' &&
+            file_exists($appFolder) &&
+            file_exists("$appFolder/$parentAppName-$appName.html") &&
+            file_exists("$appFolder/views")
+        );
+    }
+
+    private function appExists($location, $appName) {
+        $appFolder = "$location/$appName";
+        return file_exists($appFolder);
+    }
 }

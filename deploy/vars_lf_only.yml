@@ -44,3 +44,5 @@ apache_vhosts:
         port: 80
         server_alias:
           - languageforge.local
+          - m.languageforge.local
+          - m.languageforge.org

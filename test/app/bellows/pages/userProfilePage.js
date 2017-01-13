@@ -33,9 +33,8 @@ function SfUserProfilePage() {
     this.tabs.aboutMe.click();
   };
 
-  this.blueElephantAvatarURL = browser.baseUrl +
-    '/Site/views/shared/image/avatar/DodgerBlue-elephant-128x128.png';
-  this.goldPigAvatarURL = browser.baseUrl + '/Site/views/shared/image/avatar/gold-pig-128x128.png';
+  this.blueElephantAvatarUri = '/Site/views/shared/image/avatar/DodgerBlue-elephant-128x128.png';
+  this.goldPigAvatarUri = '/Site/views/shared/image/avatar/gold-pig-128x128.png';
 
   this.myAccountTab = {
     avatarColor:      element(by.model('user.avatar_color')),

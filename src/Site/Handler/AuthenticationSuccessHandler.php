@@ -35,7 +35,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
             (($user->role != SystemRoles::SYSTEM_ADMIN) and
             !($user->siteRole->offsetExists($website->domain) and
                 ($user->siteRole[$website->domain] != SiteRoles::NONE)))) {
-            return $this->httpUtils->createRedirectResponse($request, '/app/logout');
+            return $this->httpUtils->createRedirectResponse($request, '/auth/logout');
         }
 
         $projectId = $user->getCurrentProjectId($website->domain);

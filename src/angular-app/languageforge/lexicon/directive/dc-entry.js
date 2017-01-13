@@ -29,6 +29,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
           modal.showModalSimple('Delete Meaning', deletemsg, 'Cancel', 'Delete Meaning')
             .then(function () {
               $scope.model.senses.splice(index, 1);
+              $scope.control.saveCurrentEntry();
             });
         };
 

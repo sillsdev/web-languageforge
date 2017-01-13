@@ -6,7 +6,7 @@ describe('E2E testing: Change password', function () {
   var header             = require('../../pages/pageHeader');
   var changePasswordPage = require('../../pages/changePasswordPage');
   var expectedCondition = protractor.ExpectedConditions;
-  var CONDITION_TIMEOUT = 5000;
+  var CONDITION_TIMEOUT = 3000;
   var newPassword = '12345678';
 
   it('setup: login as user, go to change password page', function () {

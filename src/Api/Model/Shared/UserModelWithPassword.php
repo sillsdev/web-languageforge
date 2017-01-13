@@ -4,7 +4,7 @@ namespace Api\Model\Shared;
 
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 
-class UserModelWithPassword extends UserModelBase
+class UserModelWithPassword extends UserModel
 {
     public function setPassword($newPassword)
     {

@@ -3,7 +3,7 @@
 namespace Api\Model\Shared\Dto;
 
 use Api\Library\Shared\Website;
-use Api\Model\Shared\UserProfileModel;
+use Api\Model\Shared\UserModel;
 
 class UserProfileDto
 {
@@ -17,8 +17,8 @@ class UserProfileDto
     {
         $dto = array();
 
-        $userProfileModel = new UserProfileModel($userId);
-        $userProfile = UserProfileEncoder::encodeModel($userProfileModel, $website);
+        $userModel = new UserModel($userId);
+        $userProfile = UserProfileEncoder::encodeModel($userModel, $website);
         $dto['projectsSettings'] = $userProfile['projects'];
 
         unset($userProfile['projects']);

@@ -1,0 +1,30 @@
+<div class="container">
+  <h2>{{title}}</h2>
+  <div class="card">
+    <div *ngIf="currentWord == null" class="card-content">
+      <div class="progress orange">
+        <div class="indeterminate purple"></div>
+      </div>
+    </div>
+    <div *ngIf="currentWord" class="card-content">
+      <span class="card-title">Is the definition of {{currentWord.value}} correct?</span>
+      <div class="input-field col s12">
+        <input type="text" id="testWord" [(ngModel)]="currentWord.definition" placeholder="Definition">
+        <!-- Label of the currentWord's ID for development purposes -->
+        <label class="active" for="testWord">Word: {{currentWord.id}}</label>
+      </div>
+
+      <div class="card-action center">
+        <div class="row">
+          <a (click)="decreaementWord()" class="btn grey darken-1 waves-effect waves-light"><i class="material-icons">chevron_left</i></a>
+          <a (click)="incrementWord()" class="btn grey darken-1 waves-effect waves-light"><i class="material-icons">chevron_right</i></a>
+        </div>
+        <div class="row">
+          <a (click)="upVote()" class="btn green darken-1 waves-effect waves-light">Yes</a>
+          <a (click)="unsureVote()" class="btn orange darken-1 waves-effect waves-light">IDK</a>
+          <a (click)="downVote()" class="btn red darken-1 waves-effect waves-light">No</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -9,6 +9,7 @@ use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Service\Sf;
 use Palaso\Utilities\CodeGuard;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 class Upload extends Base
 {

@@ -1,0 +1,58 @@
+{% verbatim %}
+{% endverbatim %}
+
+<div class="content container" data-ng-controller="LoginCtrl">
+    <div class="row">
+        <div class="col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+            <div id="form-container">
+                <div class="text-xs-center">
+                    <h1>Login</h1>
+                    <p>Please login with your <b>Username / Email</b> and <b>Password</b> below.</p>
+                    <p>Don't have an account? <a href="/public/signup">Register now.</a></p>
+                    {% for infoMessage in app.session.getFlashBag.get('infoMessage') %}
+                    <div class="alert alert-info">{{ infoMessage }}</div>
+                    {% endfor %}
+                    {% for errorMessage in app.session.getFlashBag.get('errorMessage') %}
+                    <div class="alert alert-error">{{ errorMessage }}</div>
+                    {% endfor %}
+                </div>
+
+                <form class="form-horizontal" action="{{ path('app_login_check') }}" method="post"
+                      accept-charset="utf-8" name="loginForm" novalidate>
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="control-label" for="username" data-translate="Username or Email"></label>
+                            <div class="controls">
+                                <input class="form-control form-control-lg" id="username"
+                                       required type="text" name="_username"
+                                       value="{{ last_username }}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="password" data-translate="Password"></label>
+                            <div class="controls">
+                                <input class="form-control form-control-lg" id="password"
+                                       required type="password" name="_password"
+                                       value=""/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="controls">
+                                <label class="checkbox">
+                                    <input type="checkbox" id="remember" checked name="_remember_me"/>
+                                    Remember me on this device
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-last">
+                            <div class="controls">
+                                <button type="submit" class="btn btn-primary" name="submit">Login</button>
+                                <a href="forgot_password" id="forgot_password">Forgot your password?</a>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
