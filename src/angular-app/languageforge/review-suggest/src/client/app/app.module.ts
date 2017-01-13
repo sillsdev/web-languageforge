@@ -7,11 +7,13 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AboutModule } from './about/about.module';
 import { HomeModule } from './home/home.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { SharedModule } from './shared/shared.module';
+
 import { MaterializeDirective } from 'angular2-materialize/dist/index';
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, AppRoutingModule, AboutModule, HomeModule, SharedModule.forRoot()],
+  imports: [BrowserModule, HttpModule, AppRoutingModule, AboutModule, HomeModule, DashboardModule, SharedModule.forRoot()],
   declarations: [AppComponent, MaterializeDirective],
   providers: [{
     provide: APP_BASE_HREF,
