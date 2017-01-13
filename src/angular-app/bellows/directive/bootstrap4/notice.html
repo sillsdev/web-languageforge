@@ -21,12 +21,12 @@
             <div style="max-width: 500px; padding-right: 30px" ng-hide="notice.details" ng-bind-html="notice.message"></div>
         </alert>
     </div>
-    <div class="alert" style="padding:0; display:flex; min-height: 50px; " ng-show="isLoading()">
-        <div style="margin:auto; max-width: 420px;">
-            <div style="margin:10px">
-                <img src="/Site/views/shared/image/loading-small.gif" style="margin-right:10px" /> <b>Please wait.  {{getLoadingMessage()}}</b>
+    <div class="alert alert-warning" ng-show="isLoading()">
+        <div>
+            <div>
+                <i class="fa fa-spin fa-spinner"></i> <b>Please wait.  {{getLoadingMessage()}}</b>
             </div>
-            <div style="margin:10px" ng-show="showProgressBar()">
+            <div ng-show="showProgressBar()">
                 <progressbar value="getPercentComplete()" max="100.0">{{getPercentComplete() | number:0}}%</progressbar>
             </div>
         </div>
