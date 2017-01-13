@@ -76,28 +76,25 @@ class SessionCommands
             return false;
         }
         
-        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $sessionId;
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData" . DIRECTORY_SEPARATOR . $sessionId . ".json";
     }
 
     private static function write($data, $mockFilename = null)
     {
         $jsonData = json_encode($data);
-        //May pose a possible security risk to save with ID as filename.
         
+        if(!file_exists(sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData")){
+            mkdir(sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData");
+        }
+        
+        //May pose a possible security risk to save with ID as filename.
         $filePath = self::getSessionFilePath($mockFilename);
         if(!$filePath){
             return false;
         }
         $isWritten = file_put_contents($filePath, $jsonData);
-        // $SessionFile = fopen($filePath, "w") or die("Unable to open file!");
-        // $isWritten = fwrite($SessionFile, $jsonData, strlen($jsonData));
-        // fclose($SessionFile);
         
-        if($isWritten){
-            return true;
-        } else {
-            return false;
-        }
+        return $isWritten !== false;
     }
 
     /**
