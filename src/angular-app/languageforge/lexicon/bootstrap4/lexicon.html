@@ -1,36 +1,43 @@
 {% verbatim %}
 <div class="content container"
-    data-ng-cloak data-ng-controller="LexiconCtrl" dir="{{interfaceConfig.direction}}">
-    <div class="hdrnav">
-        <div class="btn-group" data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.canEditUsers()">
-            <a style="margin-right:13px" class="btn dropdown-toggle" data-ng-class="interfaceConfig.pullToSide"
-                data-toggle="dropdown"
-                data-tooltip-placement="{{interfaceConfig.placementToSide}}"
-                data-tooltip="Settings" href="#">
-                <i class="icon-cog icon-large"></i>
-                <span class="caret"></span></a>
-            <ul class="dropdown-menu" data-ng-class="interfaceConfig.pullToSide">
-                <li><a ui-sref="configuration" data-translate="Configuration"></a></li>
-                <li><a ui-sref="viewSettings" data-translate="View Settings"></a></li>
-                <li class="divider"></li>
-                <li><a ui-sref="importExport" data-translate="Import/Export"></a></li>
-                <li><a data-ng-href="/app/usermanagement/{{project.id}}" data-translate="User Management"></a></li>
-                <li><a ui-sref="settings" data-translate="Project Settings"></a></li>
-                <li class="divider" data-ng-show="showSync()"></li>
-                <li><a ui-sref="sync" data-ng-show="showSync()" data-translate="Synchronize"></a></li>
-            </ul>
-        </div>
-        <div>
-            <button class="btn" data-tooltip="View the dictionary"
-                data-tooltip-placement="{{interfaceConfig.placementNormal}}"
-                data-ng-show="showDictionaryButton()"
-                data-ng-click="gotoDictionary()">
-                <i class="icon-reply"></i>{{'Dictionary' | translate}}</button>
-            <ul id="top" class="topCrumbs" breadcrumbs></ul>
+     data-ng-cloak data-ng-controller="LexiconCtrl" dir="{{interfaceConfig.direction}}">
+    <div class="hdrnav row">
+        <div class="col-xs-12">
+            <div class="hdrnav-container">
+                <div class="btn-group" data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.canEditUsers()">
+                    <a class="btn btn-secondary dropdown-toggle" data-ng-class="interfaceConfig.pullToSide"
+                       data-toggle="dropdown"
+                       data-tooltip-placement="{{interfaceConfig.placementToSide}}"
+                       data-tooltip="Settings" href="#">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" data-ng-class="interfaceConfig.pullToSide">
+                        <a class="dropdown-item" ui-sref="configuration" data-translate="Configuration"></a>
+                        <a class="dropdown-item" ui-sref="viewSettings" data-translate="View Settings"></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" ui-sref="importExport" data-translate="Import/Export"></a>
+                        <a class="dropdown-item" data-ng-href="/app/usermanagement/{{project.id}}"
+                           data-translate="User Management"></a>
+                        <a class="dropdown-item" ui-sref="settings" data-translate="Project Settings"></a>
+                        <div class="dropdown-divider" data-ng-show="showSync()"></div>
+                        <a class="dropdown-item" ui-sref="sync" data-ng-show="showSync()"
+                           data-translate="Synchronize"></a>
+                    </div>
+                </div>
+                <div class="pull-right return-button">
+                    <button class="btn btn-secondary" data-tooltip="View the dictionary"
+                            data-tooltip-placement="{{interfaceConfig.placementNormal}}"
+                            data-ng-show="showDictionaryButton()"
+                            data-ng-click="gotoDictionary()">
+                        <i class="fa fa-arrow-circle-left"></i> {{'Dictionary' | translate}}
+                    </button>
+                </div>
+                <ol id="top" class="breadcrumb hidden-sm-down" breadcrumbs></ol>
+            </div>
         </div>
     </div>
 
-    <div id="lexicon-hmenu" style="clear: both">
+    <div id="lexicon-hmenu">
         <div class="lexnav control-group"></div>
     </div>
 
