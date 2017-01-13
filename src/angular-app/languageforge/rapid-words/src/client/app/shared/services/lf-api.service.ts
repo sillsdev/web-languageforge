@@ -84,4 +84,16 @@ export class LfApiService {
             return result;
         });
     }
+
+
+// project_readSettings
+// project_settings
+// text_settings_dto
+
+    getSettings(){
+        return this.callApi('project_readSettings').map(result => {
+            result.data = result.data;
+            return result;
+        });
+    }
 }

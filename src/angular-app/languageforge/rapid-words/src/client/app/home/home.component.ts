@@ -17,7 +17,8 @@ export class HomeComponent implements OnInit {
     selectedDomain: string = "None";
     words: any[] = [];
     numberOfEntries: number = 0;
-  allEntries: LexEntry[];
+    languageSettings: any;
+    allEntries: LexEntry[];
     @ViewChild(WordDetailsComponent)
     private detailToggle: WordDetailsComponent;
 
@@ -46,6 +47,13 @@ export class HomeComponent implements OnInit {
       this.allEntries = LexEntry.mapEntriesResponse(response.data.entries);
     });
   }
+
+  // getSettings(){
+  //   console.log("getting there");
+  //   this.lfApiService.getSettings().subscribe(
+  //     languageSettings => console.log(languageSettings),
+  //   );
+  // }
 
     getNumberOfEntries() {
         this.numberOfEntries = this.words.length;

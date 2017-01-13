@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   moduleId: module.id,
@@ -8,27 +8,29 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class MultitextComponent implements OnInit {
 
-  @Input() label: string = "";
-  language: string = "";
-  content: string = "";
+  // @Input('label') public label: string = "";
+  @Input('languages') public languages: string[] = [];
+  @Input('content') public content: string = "";
+  @Input('label') label: string;
 
-  constructor() { }
+  constructor() {
+
+   }
 
   ngOnInit() {
-    this.getLanguage();
+    this.getLanguages();
+    this.getLabel();
     this.getContent();
   }
 
-  getLanguage() {
-    //placeholder to be switched for real data
-    this.language = "en";
+  getLanguages() {
+    console.log(this.languages);
   }
   getLabel() {
-    //placeholder to be switched for real data
-    this.label = "Word";
+    // this.label = "Word";
+    console.log(this.label);
   }
   getContent() {
-    //placeholder to be switched for real data
     this.content = "bacon";
   }
   
