@@ -7,8 +7,7 @@ import { NameListService } from '../shared/name-list/name-list.service';
 @Component({
   moduleId: module.id,
   selector: 'sd-home',
-  templateUrl: 'home.component.html',
-  styleUrls: ['home.component.css'],
+  templateUrl: 'home.component.html'
 })
 export class HomeComponent implements OnInit {
 
