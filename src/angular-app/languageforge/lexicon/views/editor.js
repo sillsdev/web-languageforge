@@ -12,22 +12,22 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         // Need quotes around Javascript keywords like 'abstract' so YUI compressor won't complain
         'abstract': true, // jscs:ignore
         url: '/editor',
-        templateUrl: '/angular-app/languageforge/lexicon/views/editor-abstract.html',
+        templateUrl: '/angular-app/languageforge/lexicon/views/' + bootstrapVersion + '/editor-abstract.html',
         controller: 'EditorCtrl'
       })
       .state('editor.list', {
         url: '/list',
-        templateUrl: '/angular-app/languageforge/lexicon/views/editor-list.html',
+        templateUrl: '/angular-app/languageforge/lexicon/views/' + bootstrapVersion + '/editor-list.html',
         controller: 'EditorListCtrl'
       })
       .state('editor.entry', {
         url: '/entry/{entryId:[0-9a-z_]{6,24}}',
-        templateUrl: '/angular-app/languageforge/lexicon/views/editor-entry.html',
+        templateUrl: '/angular-app/languageforge/lexicon/views/' + bootstrapVersion + '/editor-entry.html',
         controller: 'EditorEntryCtrl'
       })
       .state('editor.comments', {
         url: '/entry/{entryId:[0-9a-z_]{6,24}}/comments',
-        templateUrl: '/angular-app/languageforge/lexicon/views/editor-comments.html',
+        templateUrl: '/angular-app/languageforge/lexicon/views/' + bootstrapVersion + '/editor-comments.html',
         controller: 'EditorCommentsCtrl'
       })
       ;
