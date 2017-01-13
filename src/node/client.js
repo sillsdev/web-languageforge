@@ -21,19 +21,36 @@ window.connect = function() {
   connection.bindToSocket(socket);
 };
 
-// Create local Doc instance mapped to 'examples' collection document with id 'richtext'
-var doc = connection.get('examples', 'richtext');
-doc.subscribe(function(err) {
-  if (err) throw err;
-  var editor = document.getElementById("realTime");
-  var quill = new Quill(editor);
-  quill.setContents(doc.data);
-  quill.on('text-change', function(delta, oldDelta, source) {
-    if (source !== 'user') return;
-    doc.submitOp(delta, {source: quill});
+// Connect to both text field
+connectDoc('example', 'realTime1');
+connectDoc('example', 'realTime2');
+
+// Create local Doc instance mapped to collection document with id
+// Potentially, collection could be the dictionary id (not necessary if we use entry id as collection)
+// But I don't know if having a collection will make any difference such as reducing computing complexity
+function connectDoc(collection, id) {
+  var doc = connection.get(collection, id);
+  doc.subscribe(function(err) {
+    if (err) throw err;
+
+    var textEditorElement = document.getElementById(id);
+    if (textEditorElement === null) return;
+    var quill = new Quill(textEditorElement);
+    var clipboard = textEditorElement.getElementsByClassName("ql-clipboard");
+    if (clipboard.length != 0) {
+      clipboard[0].hidden = true;
+    }
+
+    quill.setContents(doc.data);
+
+    quill.on('text-change', function(delta, oldDelta, source) {
+      if (source !== 'user') return;
+      doc.submitOp(delta, {source: quill});
+    });
+
+    doc.on('op', function(op, source) {
+      if (source === quill) return;
+      quill.updateContents(op);
+    });
   });
-  doc.on('op', function(op, source) {
-    if (source === quill) return;
-    quill.updateContents(op);
-  });
-});
+}
