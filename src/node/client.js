@@ -25,7 +25,8 @@ window.connect = function() {
 var doc = connection.get('examples', 'richtext');
 doc.subscribe(function(err) {
   if (err) throw err;
-  var quill = new Quill('#editor', {theme: 'snow'});
+  var editor = document.getElementById("realTime");
+  var quill = new Quill(editor);
   quill.setContents(doc.data);
   quill.on('text-change', function(delta, oldDelta, source) {
     if (source !== 'user') return;
