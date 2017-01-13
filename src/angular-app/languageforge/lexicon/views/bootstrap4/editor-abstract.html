@@ -1,0 +1,21 @@
+<div data-ng-cloak id="lexAppContainer">
+    <div class="pull-left">
+        <span data-ng-show="$state.is('editor.list')"></span>
+        <a id="toListLink" data-ng-show="$state.is('editor.entry')" class="btn btn-secondary" data-ng-click="returnToList()"
+           tooltip="{{'Back to List'|translate}}">
+            <i class="fa fa-arrow-circle-left"></i>
+            {{'List'|translate}}</a>
+        <a id="toEditLink" data-ng-show="$state.is('editor.comments')" class="btn"
+           data-ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}">
+            <i class="fa fa-arrow-circle-left"></i>
+            {{'Edit'|translate}}</a>
+    </div>
+    <div class="pull-right">
+        <a id="toCommentsLink" data-ng-show="$state.is('editor.entry')"
+           class="btn btn-warning" data-ng-click="showComments()" tooltip="{{'Show Comments'|translate}}">
+            <current-entry-comment-count></current-entry-comment-count>
+            <i class="fa fa-comments"></i></a>
+    </div>
+
+    <div data-ui-view></div>
+</div>
