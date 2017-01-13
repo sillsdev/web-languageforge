@@ -43,3 +43,19 @@ function startServer() {
   server.listen(8080);
   console.log('Listening on http://localhost:8080');
 }
+
+function getJsonObjFromFile(sessionId){
+  if(sessionId == null || sessionId == ""){
+    return false;
+  }
+  var tmpDir = "/tmp";
+  var filePath = tmpDir.concat("/jsonSessionData/", sessionId, ".json");
+  try{
+    var jsonObj = require(filePath);
+  } catch (e) {
+      return false;
+  }
+  return jsonObj;
+} 
+
+//getJsonObjFromFile("t8vcdm2gb2235a88ps696liv35");
