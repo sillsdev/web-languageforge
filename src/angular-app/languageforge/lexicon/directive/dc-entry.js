@@ -42,6 +42,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
           $scope.control.deleteEntry($scope.control.currentEntry);
         }
 
+        $.getScript("/node/static/dist/bundle.js");
       }],
 
       link: function (scope, element, attrs, controller) {
