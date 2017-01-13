@@ -14,6 +14,7 @@ startServer();
 // Set up documents for listening
 createDoc('example', 'realTime1');
 createDoc('example', 'realTime2');
+createDoc('example', 'realTime3');
 
 // Create initial document then fire callback
 function createDoc(collection, id) {

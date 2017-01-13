@@ -293,8 +293,10 @@ class Base
                 foreach ($jsMinFile as $file) {
                     if (StringUtil::endsWith($file, '.js')) {
                         $jsMinFilesToReturn[] = "$path/$file";
-                    } else {
+                    } elseif (file_exists("$path/$file.min.js")) {
                         $jsMinFilesToReturn[] = "$path/$file.min.js";
+                    } else {
+                        $jsMinFilesToReturn[] = "$path/$file.js";
                     }
                 }
             } elseif (array_key_exists("cssFile", $properties)) {
