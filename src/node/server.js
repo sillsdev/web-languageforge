@@ -7,19 +7,22 @@ var WebSocketJSONStream = require('websocket-json-stream');
 
 ShareDB.types.register(richText.type);
 var backend = new ShareDB();
-createDoc(startServer);
+var connection = backend.connect();
+
+
+createDoc('realTime');
+createDoc('realTime1');
+startServer();
 
 // Create initial document then fire callback
-function createDoc(callback) {
-  var connection = backend.connect();
-  var doc = connection.get('examples', 'richtext');
+function createDoc(docName) {
+  var doc = connection.get(docName);
   doc.fetch(function(err) {
     if (err) throw err;
     if (doc.type === null) {
-      doc.create([{insert: 'Hi!'}], 'rich-text', callback);
+      doc.create([{insert: ""}], 'rich-text');
       return;
     }
-    callback();
   });
 }
 
@@ -29,14 +32,12 @@ function startServer() {
   app.use(express.static('static'));
   app.use(express.static('node_modules/quill/dist'));
   var server = http.createServer(app);
-
   // Connect any incoming WebSocket connection to ShareDB
   var wss = new WebSocket.Server({server: server});
   wss.on('connection', function(ws, req) {
     var stream = new WebSocketJSONStream(ws);
     backend.listen(stream);
   });
-
   server.listen(8080);
-  console.log('Listening on http://0.0.0.0:8080');
+  console.log('Listening on http://localhost:8000');
 }
