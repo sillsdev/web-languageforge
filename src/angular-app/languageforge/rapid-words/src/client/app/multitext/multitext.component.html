@@ -7,7 +7,7 @@
       <div class="input-group">
         <span class="input-group-addon" id="basic-addon1">{{languages[0]}}</span>
         <!--TODO: if editing, add placeholder to input placeholder={{content}}-->
-        <input type="text" class="form-control" aria-describedby="basic-addon1">
+        <input type="text" class="form-control" [(ngModel)]="content" aria-describedby="basic-addon1">
       </div>
     </div>
     <div *ngFor="let language of languages | slice:1">
