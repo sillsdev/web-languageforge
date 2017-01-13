@@ -357,3 +357,18 @@ In the root folder: `npm install`
 #### Update composer ####
 
 In src/: `composer install`
+
+## Running the Node Server ##
+
+To run the node server to get real time updating:
+
+In src/node/: `node server.js`
+
+## Browserify the client.js file ##
+
+After editting the client.js file you have to use browserify to get put all of the dependencies into one file so that the client.js file has access to them.
+
+To browserify the client.js file from the root folder:
+````
+./node_modules/.bin/browserify src/node/client.js -o src/node/static/dist/bundle.js
+````
