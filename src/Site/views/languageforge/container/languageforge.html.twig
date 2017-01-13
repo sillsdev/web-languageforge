@@ -42,6 +42,13 @@
     </div>
 {% endblock %}
 
+{% block script %}
+    <script type="text/javascript" src="//cdn.quilljs.com/1.1.5/quill.js"></script>
+    <link rel="stylesheet" href="//cdn.quilljs.com/1.1.5/quill.snow.css">
+    <link rel="stylesheet" href="//cdn.quilljs.com/1.1.5/quill.bubble.css">
+    {{ parent() }}
+{% endblock %}
+
 {% block footer %}
     <div class="clearfooter"></div>
 </div>
