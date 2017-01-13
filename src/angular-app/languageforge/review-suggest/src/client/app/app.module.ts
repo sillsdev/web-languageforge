@@ -8,12 +8,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AboutModule } from './about/about.module';
 import { HomeModule } from './home/home.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
 
 import { MaterializeDirective } from 'angular2-materialize/dist/index';
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, AppRoutingModule, AboutModule, HomeModule, DashboardModule, SharedModule.forRoot()],
+  imports: [BrowserModule, HttpModule, AppRoutingModule, AboutModule, HomeModule, DashboardModule, AuthModule, SharedModule.forRoot()],
   declarations: [AppComponent, MaterializeDirective],
   providers: [{
     provide: APP_BASE_HREF,
