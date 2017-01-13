@@ -53,7 +53,7 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'pa
           if (isUploadSuccess) {
             $scope.upload.progress = 100.0;
             var modalInstance = $modal.open({
-              templateUrl: '/angular-app/languageforge/lexicon/views/import-results.html',
+              templateUrl: '/angular-app/languageforge/lexicon/views/' + bootstrapVersion + '/import-results.html',
               controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
                 $scope.show = {};
                 $scope.show.importErrors = false;
@@ -128,4 +128,8 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'pa
       return a.pop().toLowerCase();
     }
 
+    
   }]);
+
+
+  
