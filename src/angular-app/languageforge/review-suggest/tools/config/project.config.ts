@@ -21,9 +21,18 @@ export class ProjectConfig extends SeedConfig {
     // Add `NPM` third-party libraries to be injected/bundled.
     this.NPM_DEPENDENCIES = [
       ...this.NPM_DEPENDENCIES,
-      // {src: 'jquery/dist/jquery.min.js', inject: 'libs'},
+      { src: 'jquery/dist/jquery.min.js', inject: 'libs' },
+      { src: 'materialize-css/bin/materialize.js', inject: 'libs' },
+      { src: 'materialize-css/bin/materialize.css', inject: true }
       // {src: 'lodash/lodash.min.js', inject: 'libs'},
     ];
+
+    this.SYSTEM_CONFIG_DEV.paths['angular2-materialize'] =
+      `${this.APP_BASE }node_modules/angular2-materialize/dist/index.d`;
+    this.SYSTEM_BUILDER_CONFIG.packages['angular2-materialize'] = {
+      main: 'index.js',
+      defaultExtension: 'js'
+    }
 
     // Add `local` third-party libraries to be injected/bundled.
     this.APP_ASSETS = [
