@@ -1,0 +1,52 @@
+@import '../base/_variables.scss';
+@import '../../../../../../../../vendor_bower/bootstrap/scss/variables';
+@import '../../../../../../../../vendor_bower/bootstrap/scss/mixins';
+
+.dc-rendered-word {
+  font-weight: bold;
+
+}
+.dc-rendered-senseContainer {
+  margin: 0 3px 0 3px;
+}
+.dc-rendered-partOfSpeech {
+  font-style: italic;
+}
+.dc-rendered-senseNumber {}
+.dc-rendered-definition {
+  margin: 0 3px 0 3px;
+}
+.dc-rendered-exampleContainer {}
+.dc-rendered-exampleSentence {
+  margin: 0 3px 0 3px;
+  font-style: italic;
+}
+#lexAppListView {
+  .lexiconListItem {
+    cursor: pointer;
+    h5 {
+      margin: 0;
+    }
+  }
+  .lexiconListItem.active {
+    cursor: default;
+  }
+}
+.hdrnav .hdrnav-container {
+  padding-bottom: 10px;
+  border-bottom: 1px solid $lf-lines;
+  margin-bottom: 20px;
+  float: left;
+  width: 100%;
+  .btn-group {
+    margin-left: 10px;
+  }
+}
+@include media-breakpoint-down(sm) {
+  .dc-rendered-word {
+    display: block;
+  }
+  .hdrnav .return-button {
+    float: left;
+  }
+}
