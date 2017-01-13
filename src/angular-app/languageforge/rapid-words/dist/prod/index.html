@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <base href="<%= APP_BASE %>">
+  <base href="/">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title><%= APP_TITLE %></title>
+  <title>Welcome to angular-seed!</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="assets/favicon/favicon-<%= ENV_CONFIG.ENV %>.ico" type="image/x-icon">
+  <link rel="icon" href="assets/favicon/favicon-PROD.ico" type="image/x-icon">
 
   <!-- inject:css -->
+  <link rel="stylesheet" href="/css/main.css?1484209118130">
   <!-- endinject -->
 </head>
 <body>
@@ -24,25 +25,17 @@
   <!-- shims:js -->
   <!-- endinject -->
 
-  <% if (BUILD_TYPE === 'dev') { %>
-  <script src="<%= APP_BASE %>app/system-config.js"></script>
-  <% } %>
+  
 
   <!-- libs:js -->
   <!-- endinject -->
 
   <!-- inject:js -->
+  <script src="/js/shims.js?1484209118127"></script>
+  <script src="/js/app.js?1484209118128"></script>
   <!-- endinject -->
 
-  <% if (BUILD_TYPE === 'dev') { %>
-  <script>
-  System.import('<%= BOOTSTRAP_MODULE %>')
-    .catch(function (e) {
-      console.error(e.stack || e,
-        'Not expecting this error? Report it at https://github.com/mgechev/angular-seed/issues');
-    });
-  </script>
-  <% } %>
+  
 
 </body>
 </html>

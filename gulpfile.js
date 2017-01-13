@@ -664,6 +664,8 @@ gulp.task('build-minify', function () {
     'src/angular-app/bellows/**/*.js',
     'src/angular-app/container/**/*.js',
     'src/angular-app/' + params.applicationName + '/**/*.js',
+    '!src/angular-app/languageforge/rapid-words/**', // ng2
+    '!src/angular-app/languageforge/review-suggest/**', // ng2
     '!src/angular-app/**/*.min.js',
     '!src/angular-app/**/assets/**',
     '!src/angular-app/**/vendor/**'];
