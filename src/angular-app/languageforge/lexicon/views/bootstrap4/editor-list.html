@@ -21,15 +21,18 @@
         </span>
     </div>
     <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-        <div data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading" style="text-align: center;margin-top:50px">
+        <div class="text-xs-center no-entries" data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading">
             <h4>Looks like there are no entries yet.</h4>
             <button class="btn btn-primary" data-ng-click="navigateToLiftImport()"
                     data-ng-hide="projectSettings.hasSendReceive">
-                Import entries from LIFT</button>
+                <i class="fa fa-upload"></i> Import entries from LIFT</button>
             <button class="btn btn-primary" data-ng-click="syncProject()" data-ng-show="projectSettings.hasSendReceive">
-                Synchronize project with LanguageDepot.org</button>
+                <i class="fa fa-refresh"></i> Synchronize project with LanguageDepot.org</button>
+            <button class="btn btn-success" data-ng-if="rights.canEditEntry()"
+                    data-ng-click="newEntry()"><i class="fa fa-plus"></i> {{'New Word' | translate}}
+            </button>
         </div>
-        <div class="list-group">
+        <div class="list-group" data-ng-show="entries.length > 0 && rights.canEditProject() && finishedLoading">
             <div class="lexiconListItem list-group-item list-group-item-action flex-column active">
                 <small class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
                 <h5>{{ 'Words in dictronary' | translate }}</h5>
