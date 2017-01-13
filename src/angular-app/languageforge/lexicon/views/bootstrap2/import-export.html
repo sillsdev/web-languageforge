@@ -31,6 +31,7 @@
                             <input type="radio" value="createDuplicates" data-ng-model="upload.mergeRule"/>
                             {{'Import the conflicting data into a new lexical entry or meaning and I will make decisions myself later.' | translate}}</label>
                     </div>
+           
                     <div class="controls">
                         <label class="checkbox">
                             <input type="checkbox" data-ng-model="upload.skipSameModTime"/>
@@ -40,7 +41,6 @@
                             {{'Delete matching entry if deleted in import.' | translate}}</label>
                     </div>
                 </div>
-             
                 <button data-ng-disabled="upload.importStarted" class="btn btn-primary" data-ng-click="importLift()">
                     <i class="icon-upload"></i>{{'Import' | translate}}</button>
                 <strong> {{upload.file.name}}</strong> ({{upload.file.size | bytes}})

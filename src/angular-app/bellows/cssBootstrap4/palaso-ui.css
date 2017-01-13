@@ -177,13 +177,14 @@ form.new-tags i.icon-plus {
 
 /* Style for file upload */
 .drop-box {
-    width: 320px;
-    height: 170px;
-    border: 4px dashed #0088cc;
+    border: 4px dashed #e67345;
     background-color: white;
     text-align: center;
     padding-top: 30px;
+    padding-bottom: 30px;
 }
+
+
 
 /* style for notice messages */
 div.notices {
