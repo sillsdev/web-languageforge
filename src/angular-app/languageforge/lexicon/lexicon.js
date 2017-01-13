@@ -36,7 +36,7 @@ angular.module('lexicon',
       })
       .state('importExport', {
         url: '/importExport',
-        templateUrl: '/angular-app/languageforge/lexicon/views/import-export.html'
+        templateUrl: '/angular-app/languageforge/lexicon/views/' + bootstrapVersion + '/import-export.html'
       })
       .state('settings', {
         url: '/settings',
