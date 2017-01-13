@@ -25,16 +25,23 @@ window.connect = function() {
 // Connect to both text field
 connectDoc('example', 'realTime1');
 connectDoc('example', 'realTime2');
+connectDoc('example', 'realTime3', true);
 
 // Create local Doc instance mapped to collection document with id
 // Potentially, collection could be the dictionary id (not necessary if we use entry id as collection)
 // But I don't know if having a collection will make any difference such as reducing computing complexity
-function connectDoc(collection, id) {
+function connectDoc(collection, id, isNgQuill) {
+  isNgQuill = isNgQuill || false;
   var doc = connection.get(collection, id);
   doc.subscribe(function(err) {
     if (err) throw err;
 
-    var textEditorElement = document.getElementById(id);
+    if (isNgQuill) {
+      var textEditorElement = document.querySelector("#" + id + " .ql-container");
+    } else {
+      var textEditorElement = document.getElementById(id);
+    }
+
     if (textEditorElement === null) return;
     var quill = new Quill(textEditorElement);
     var clipboard = textEditorElement.getElementsByClassName("ql-clipboard");
