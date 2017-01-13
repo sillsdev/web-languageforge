@@ -21,24 +21,31 @@ window.connect = function() {
   var socket = new WebSocket(getWebSocketUrl());
   connection.bindToSocket(socket);
 };
-// Create local Doc instance mapped to 'examples' collection document with id 'richtext'
-var doc = connection.get('examples', 'richtext');
-doc.subscribe(function(err) {
-  if (err) throw err;
-  var editor = document.getElementById("realTime");
-  var quill = new Quill(editor);
-	var clipboard = document.getElementsByClassName("ql-clipboard");
-	clipboard[0].hidden = true;
-  quill.setContents(doc.data);
-  quill.on('text-change', function(delta, oldDelta, source) {
-    if (source !== 'user') return;
-    doc.submitOp(delta, {source: quill});
+
+function docSubs(id){
+  // Create local Doc instance mapped to 'examples' collection document with id 'richtext'
+  var doc = connection.get(id);
+  doc.subscribe(function(err) {
+    if (err) throw err;
+    var editor = document.getElementById(id);
+    var quill = new Quill(editor);
+  	var clipboard = document.getElementsByClassName("ql-clipboard");
+  	clipboard[0].hidden = true;
+    quill.setContents(doc.data);
+    quill.on('text-change', function(delta, oldDelta, source) {
+      if (source !== 'user') return;
+      doc.submitOp(delta, {source: quill});
+    });
+    doc.on('op', function(op, source) {
+      if (source === quill) return;
+      quill.updateContents(op);
+    });
   });
-  doc.on('op', function(op, source) {
-    if (source === quill) return;
-    quill.updateContents(op);
-  });
-});
+}
+
+docSubs('realTime');
+docSubs('realTime1');
+
 },{"quill":20,"rich-text":21,"sharedb/lib/client":25}],2:[function(require,module,exports){
 'use strict'
 
