@@ -21,6 +21,7 @@
         <select [(ngModel)]="simpleValue"> // value is a string or number
         <option *ngFor="let semanticDomain of semanticDomains" >{{semanticDomain}}</option>
     </select>
+    <word-list [entries]="allEntries"></word-list>
         <ul>
           <li *ngFor="let word of words">
             <h6><strong>{{word}}</strong></h6>

@@ -8,8 +8,6 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class LfApiService {
     private apiUrl: string;
-    private loginUrl: string;
-    private phpSessionCookie: string;
 
     constructor(private http: Http, private baseApiUrl: string) {
         this.apiUrl = baseApiUrl + '/api/sf';
@@ -77,6 +75,12 @@ export class LfApiService {
     getUserProfile() {
         return this.callApi('user_readProfile').map(result => {
             result.data = result.data.userProfile;
+            return result;
+        });
+    }
+
+    getFullDbeDto() {
+        return this.callApi('lex_dbeDtoFull', [1, 0]).map(result => {
             return result;
         });
     }
