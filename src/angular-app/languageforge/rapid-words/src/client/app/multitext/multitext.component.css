@@ -19,3 +19,7 @@ ul {
 }
 
 .input-group{
+
+.input-group-addon{
+  background-color: #eceeef;
+}

@@ -4,6 +4,8 @@ import { Component, OnInit } from '@angular/core';
   moduleId: module.id,
   selector: 'worddetails',
   templateUrl: 'word-details.component.html',
+  styleUrls: ['word-details.component.css'],
+
 })
 export class WordDetailsComponent implements OnInit {
 
