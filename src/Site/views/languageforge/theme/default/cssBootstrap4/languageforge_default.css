@@ -6770,6 +6770,8 @@ body {
   .footer .footerimages {
     padding-bottom: 10px; }
 
+.formspacing {
+  line-height: 25px; }
 .modal.in {
   display: block; }
 
