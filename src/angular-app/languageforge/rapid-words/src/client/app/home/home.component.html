@@ -10,6 +10,14 @@
     <div class="row justify-content-center">
       <h1>Rapid Words Collection</h1>
     </div>
+
+    <div>
+      <p>
+        <sem-dom-search (domainSelected)="userChoseDomain($event)"></sem-dom-search>
+      </p>
+      <p>Selected domain: {{ selectedDomain }}</p>
+    </div>
+
     <div class="row">
       <div class="col-4">
         <h3>Semantic Domains</h3>
