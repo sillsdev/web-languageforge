@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { AuthModule } from './auth/auth.module';
 import { DefinitionModule } from './definition/definition.module';
+import { ReviewModule } from './review/review.module'
 import { TestServicesModule } from './test-services/test-services.module';
 import { SharedModule } from './shared/shared.module';
 import { LfApiService } from './shared/services/lf-api.service';
@@ -15,7 +16,7 @@ import { MaterializeModule } from './shared/materialize.module';
 import { Constants } from './shared/constants';
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, AppRoutingModule, DashboardModule, AuthModule, DefinitionModule, TestServicesModule, SharedModule.forRoot(), MaterializeModule],
+  imports: [BrowserModule, HttpModule, AppRoutingModule, DashboardModule, AuthModule, DefinitionModule, TestServicesModule, SharedModule.forRoot(), MaterializeModule, ReviewModule],
   declarations: [AppComponent],
   providers: [{
     provide: APP_BASE_HREF,

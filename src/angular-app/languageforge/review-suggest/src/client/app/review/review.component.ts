@@ -7,12 +7,12 @@ import { MaterializeDirective, MaterializeAction } from 'angular2-materialize';
 
 @Component({
   moduleId: module.id,
-  selector: 'definition',
-  templateUrl: 'definition.component.html'
+  selector: 'review',
+  templateUrl: 'review.component.html'
 })
-export class DefinitionComponent implements OnInit {
+export class ReviewComponent implements OnInit {
 
-  title = 'Definition';
+  title = 'Review';
   idx = 0;
   currentWord: Dictionary;
   deck: Dictionary[];
@@ -71,7 +71,8 @@ export class DefinitionComponent implements OnInit {
   closeModal(){
     this.modalActions.emit({ action:"modal", params:['close'] });
     this.downVote();
-    console.log(this.comment);
+    console.log(document.getElementById("placeholderForComment").value);
+    document.getElementById("placeholderForComment").value="";
   }
 
 }

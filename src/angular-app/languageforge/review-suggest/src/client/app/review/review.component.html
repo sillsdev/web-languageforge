@@ -36,7 +36,7 @@
 <div id="commentModal" class="modal sheet" materialize="modal" [materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions">
   <div class="modal-content">
     <h4>Suggestion</h4>
-    <textarea class="materialize-textarea" value="{{comment}}" placeholder="Enter text here"></textarea>
+    <textarea id="placeholderForComment" class="materialize-textarea" placeholder="Enter text here"></textarea>
   </div>
   <div class="modal-footer">
     <span style="font-size:1.6em;"><a class="btn blue darken-1 waves-effect waves-light" (click)="closeModal()">Send <i class="material-icons">send</i></a></span>
