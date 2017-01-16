@@ -1,0 +1,41 @@
+<div class="container" data-ng-cloak data-ng-controller="SettingsCtrl">
+    <br><h2 style="font-weight:normal" >{{project.projectName}} <span data-translate="Settings"></span></h2>
+    <!-- <h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2> -->
+    <tabset>
+        <tab heading="{{'Project Properties' | translate}}">
+            <form class="well" data-ng-submit="updateProject()">
+                <fieldset data-ng-disabled="!rights.remove">
+                    <div class="control-group">
+                        <label class="control-label" for="projName" data-translate="Project Name"></label>
+                        <div class="controls">
+                            <input id="projName" type="text" placeholder="project name" data-ng-model="project.projectName" />
+                        </div>
+                        <label class="control-label" for="language" data-translate="Default Interface Language"></label>
+                        <div class="controls">
+                            <select class="form-control" id="language" 
+                                data-ng-model="project.interfaceLanguageCode" 
+                                data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder">
+                                <option value="">-- choose a language --</option></select>
+                        </div>
+                        <label class="control-label"><b>{{'Project Code' | translate}}:</b>&nbsp;&nbsp;{{project.projectCode}}</label>
+                        <label class="control-label"><b>{{'Project Owner' | translate}}:</b>&nbsp;&nbsp;{{project.ownerRef.username}}</label>
+                        <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> {{'Featured On Website' | translate}}</label>
+                    </div>
+                    <button type="submit" class="btn"><i class="fa fa-check"></i>{{'Save' | translate}}</button>
+                </fieldset>
+            </form>
+        </tab>
+        <!-- Archive tab disabled now that project owners can delete their own projects -->
+        <tab heading="{{'Archive' | translate}}" data-ng-show="false">
+            <form class="well">
+                <pui-archive-project pui-action-in-progress="actionInProgress">
+                </pui-archive-project>
+            </form>
+        </tab>
+        <tab heading="{{'Delete' | translate}}" data-ng-show="rights.remove">
+            <form class="well">
+                <pui-delete-project></pui-delete-project>
+            </form>
+        </tab>
+    </tabset>
+</div>
