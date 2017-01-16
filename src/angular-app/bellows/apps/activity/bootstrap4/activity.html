@@ -1,12 +1,11 @@
 {% verbatim %}
 <div class="content container" ng-controller="ActivityCtrl" ng-cloak>
     <div id="sfchecks-hmenu" class="hdrnav">
-        <ul class="topNav">
-          <div><br/><br/></div>
-            <button class="btn btn-primary"><a href="/app/projects">My Projects</a></button>
-            <button class="here btn btn-primary"><a href="/app/activity">Activity2<span ng-hide="unread.length == 0" style="margin-left:10px" class="badge badge-important">{{unread.length}}</span></a></button>
-
-        </ul>
+        <a class="btn btn-info" href="/app/projects">My Projects</a>
+        <a class="btn btn-info" href="/app/activity">Activity<span ng-hide="unread.length == 0" style="margin-left:10px" class="badge badge-important">{{unread.length}}</span></a>
+        <a class="btn btn-info" href="/app/rapid-words">Rapid Words</a>
+        <br>
+        <br>
         <!-- Bootstrap 2 version -->
         <!--<ul id="top" class="topCrumbs" breadcrumbs></ul>-->
 
