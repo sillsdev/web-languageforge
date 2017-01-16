@@ -1,3 +1,5 @@
+// TODO: Delete this file and use the lf-api.service in the shared js directory
+
 import { Injectable } from '@angular/core';
 
 import { Response, Headers, Http, RequestOptions, RequestOptionsArgs } from '@angular/http';
