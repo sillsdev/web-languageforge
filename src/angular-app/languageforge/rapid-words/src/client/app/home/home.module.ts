@@ -5,7 +5,7 @@ import { WordListComponent } from '../word-list/word-list.component';
 import {HomeRoutingModule} from './home-routing.module';
 import {SharedModule} from '../shared/shared.module';
 import {MultitextModule} from '../multitext/multitext.module';
-import { WordDetailsModule } from '../word-details/word-details.module';
+import {WordDetailsModule} from '../word-details/word-details.module';
 import {SemanticDomainSearchModule} from "../sem-dom-search/sem-dom-search.module";
 
 @NgModule({
@@ -14,6 +14,7 @@ import {SemanticDomainSearchModule} from "../sem-dom-search/sem-dom-search.modul
         HomeRoutingModule,
         SharedModule,
         MultitextModule,
+        WordDetailsModule,
         SemanticDomainSearchModule],
     declarations: [HomeComponent, WordListComponent],
     exports: [HomeComponent]

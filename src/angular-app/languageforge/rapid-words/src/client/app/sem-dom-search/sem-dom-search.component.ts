@@ -16,8 +16,8 @@ const sem_doms = require('./sem-dom-data.js');
 export class SemanticDomainSearchComponent {
     @Output() domainSelected: EventEmitter<SemanticDomain> = new EventEmitter();
 
-    searchResults: Array<SemanticDomain> = [];
     searchText: FormControl = new FormControl();
+    searchResults: Array<SemanticDomain> = [];
 
     constructor() {
         this.searchText.valueChanges
@@ -42,6 +42,7 @@ export class SemanticDomainSearchComponent {
     // the associated details.
     emitDomain(sem_dom_key: string) {
         this.domainSelected.emit(sem_doms[sem_dom_key]);
+        this.clearSearchResults();
     }
 
     // Clear the search results in preparation for a new query.
