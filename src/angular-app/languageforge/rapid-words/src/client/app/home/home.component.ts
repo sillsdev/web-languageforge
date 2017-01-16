@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild} from '@angular/core';
 import { Http } from '@angular/http';
 import { NameListService } from '../shared/name-list/name-list.service';
-import { SemanticDomainListService } from '../shared/main-view/main-view.service';
+import {SemanticDomain} from '../shared/models/semantic-domain.model';
 import { LfApiService } from '../shared/services/lf-api.service';
 import { WordDetailsComponent } from '../word-details/word-details.component';
 import { Constants } from '../shared/constants';
@@ -14,10 +14,9 @@ import { LexEntry } from '../shared/models/lex-entry';
   styleUrls: ['home.component.css'],
 })
 export class HomeComponent implements OnInit {
-
-  semanticDomains: any[] = [];
-  words: any[] = [];
-  numberOfEntries: number = 0;
+    semantic_domain: SemanticDomain;
+    words: any[] = [];
+    numberOfEntries: number = 0;
   allEntries: LexEntry[];
   @ViewChild(WordDetailsComponent)
   private detailToggle: WordDetailsComponent;
@@ -30,7 +29,7 @@ export class HomeComponent implements OnInit {
    * @param {SemanticDomainListService} semanticDomainListService
    */
 
-  constructor(public semanticDomainListService: SemanticDomainListService, private lfApiService: LfApiService) { }
+  constructor(private lfApiService: LfApiService) { }
   multitextShowDetails(){
     this.detailToggle.toggleShowDetails();
   }
@@ -53,12 +52,10 @@ export class HomeComponent implements OnInit {
 
   getWords() {
     this.words = ["Nysha", "grape", "carrot", "dragon eye", "jicama"];
-  }
+    }
 
-  getSemanticDomains() {
-    this.semanticDomainListService.get()
-      .subscribe(
-      semanticDomains => this.semanticDomains = semanticDomains,
-    );
-  }
+    userChoseDomain(semantic_domain: SemanticDomain) {
+        this.semantic_domain = semantic_domain;
+        console.log("User chose domain", semantic_domain);
+    }
 }

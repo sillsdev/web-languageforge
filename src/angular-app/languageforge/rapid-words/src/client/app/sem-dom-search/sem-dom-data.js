@@ -1,7 +1,7 @@
 'use strict';
 
 // This was copied from languageforge/js/assets/semanticDomains_en.js,
-// and then made more friendly for import.
+// and then made more friendly for import using CommonJS convention.
 
 // TODO: Do this a better way.
 

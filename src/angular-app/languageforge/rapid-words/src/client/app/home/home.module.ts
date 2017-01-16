@@ -4,10 +4,9 @@ import {HomeComponent} from './home.component';
 import { WordListComponent } from '../word-list/word-list.component';
 import {HomeRoutingModule} from './home-routing.module';
 import {SharedModule} from '../shared/shared.module';
-import {SemanticDomainListService} from '../shared/main-view/main-view.service';
 import {MultitextModule} from '../multitext/multitext.module';
 import { WordDetailsModule } from '../word-details/word-details.module';
-import {TypeAheadModule} from '../type-ahead/type-ahead.module';
+import {SemanticDomainSearchModule} from "../sem-dom-search/sem-dom-search.module";
 
 @NgModule({
     imports: [
@@ -15,10 +14,9 @@ import {TypeAheadModule} from '../type-ahead/type-ahead.module';
         HomeRoutingModule,
         SharedModule,
         MultitextModule,
-        TypeAheadModule],
+        SemanticDomainSearchModule],
     declarations: [HomeComponent, WordListComponent],
-    exports: [HomeComponent],
-    providers: [SemanticDomainListService]
+    exports: [HomeComponent]
 })
 export class HomeModule {
 }

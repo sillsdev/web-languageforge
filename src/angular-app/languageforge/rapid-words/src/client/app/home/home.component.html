@@ -10,9 +10,13 @@
     <div class="row justify-content-center">
       <h1>Rapid Words Collection</h1>
     </div>
+
+    <div>
+        <sem-dom-search (domainSelected)="userChoseDomain($event)"></sem-dom-search>
+    </div>
+
     <div class="row">
       <div class="col-4">
-            <type-ahead></type-ahead>
         <h3>Semantic Domains</h3>
         <div class="row">
           <div class="col">
