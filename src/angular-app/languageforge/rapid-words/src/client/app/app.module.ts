@@ -1,15 +1,13 @@
 import { NgModule, OpaqueToken } from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-import {APP_BASE_HREF} from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
+import { APP_BASE_HREF } from '@angular/common';
 import { HttpModule, Http } from '@angular/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-
-import {AppRoutingModule} from './app-routing.module';
-import {AboutModule} from './about/about.module';
-import {HomeModule} from './home/home.module';
-import {SharedModule} from './shared/shared.module';
-import {MultitextModule} from './multitext/multitext.module';
+import { AboutModule } from './about/about.module';
+import { HomeModule } from './home/home.module';
+import { SharedModule } from './shared/shared.module';
+import { MultitextModule } from './multitext/multitext.module';
 import { LfApiService } from './shared/services/lf-api.service';
 import { Constants } from './shared/constants';
 

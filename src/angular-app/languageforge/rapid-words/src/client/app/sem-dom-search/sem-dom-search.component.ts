@@ -6,7 +6,25 @@ import 'rxjs/add/operator/distinctUntilChanged';
 
 import {SemanticDomain} from '../shared/models/semantic-domain.model';
 
-const sem_doms = require('./sem-dom-data.js');
+//const sem_doms = require('sem-dom-data.js'); // TODO Turn this into a value service CP 2017-01
+const sem_doms: any = {
+    "1" : {
+        "guid" : "63403699-07c1-43f3-a47c-069d6e4316e5",
+        "key" : "1",
+        "abbr" : "1",
+        "name" : "Universe, creation",
+        "description" : "Use this domain for general words referring to the physical universe. Some languages may not have a single word for the universe and may have to use a phrase such as 'rain, soil, and things of the sky' or 'sky, land, and water' or a descriptive phrase such as 'everything you can see' or 'everything that exists'.",
+        "value" : "1 Universe, creation"
+    },
+    "1.1" : {
+        "guid" : "999581c4-1611-4acb-ae1b-5e6c1dfe6f0c",
+        "key" : "1.1",
+        "abbr" : "1.1",
+        "name" : "Sky",
+        "description" : "Use this domain for words related to the sky.",
+        "value" : "1.1 Sky"
+    }
+};
 
 @Component({
     moduleId: module.id,
