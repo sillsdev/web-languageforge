@@ -26,7 +26,12 @@ body{
     padding-bottom: 10px;
   }
 
+ 
   
+}
+
+ .newline {
+    display: block;
 }
 // TODO: Remove hack for modal box issue as a result of ui.bootstrap
 .modal.in {
@@ -37,4 +42,4 @@ body{
   padding: 6px 0 0;
   margin-bottom: 0;
   border-radius: 0;
-}
+  }
