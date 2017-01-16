@@ -1,6 +1,6 @@
 import { OpaqueToken } from '@angular/core';
 import { Http } from '@angular/http';
-import { LfApiService } from  './services/lf-api.service';
+import { LfApiService } from  './../../../../../js/services/lf-api.service';
 
 export namespace Constants {
     export module Api {
