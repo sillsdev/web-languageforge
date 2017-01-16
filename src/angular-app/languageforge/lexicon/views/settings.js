@@ -7,7 +7,7 @@ angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.
     'silNoticeService', 'lexProjectService',
   function ($scope, $filter, userService, sessionService,
             notice, lexProjectService) {
-    lexProjectService.setBreadcrumbs('settings', $filter('translate')('Project Settings'));
+    // lexProjectService.setBreadcrumbs('settings', $filter('translate')('Project Settings'));
 
     $scope.rights.archive = (!sessionService.session.project.isArchived &&
       (sessionService.session.project.userIsProjectOwner ||
