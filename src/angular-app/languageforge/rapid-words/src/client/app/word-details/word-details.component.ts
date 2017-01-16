@@ -32,12 +32,32 @@ export class WordDetailsComponent implements OnInit {
   }
   getAllMultitextBoxes() {
     let rtn: any = [];
+    let count: number = 0;
     if(this.id){
       rtn.push({id: this.id
     })}
     this.multitextBoxes.forEach(function(multitextBox) {
-      rtn.push({label: multitextBox.label,
-        content: multitextBox.content});
+      if (count == 0){
+        rtn.push({"lexeme": {
+          "th":{
+            "value": multitextBox.content
+          }
+        },
+        })
+      }
+      else{
+        rtn.push({"senses": [
+          {
+            "guid": "5f4b0cd9-a6da-4c71-9e3b-eff03aacd61d",
+            "definition":{
+              "en":{
+                "value": multitextBox.content
+              }
+            }
+          }
+        ]
+      })}
+      count+=1;
     });
     return rtn;
   }
