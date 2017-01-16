@@ -16,7 +16,7 @@ angular.module('usermanagement',
           {
             url: '/members',
             views: {
-              '@': { templateUrl: '/angular-app/bellows/apps/usermanagement/views/members.html' }
+              '@': { templateUrl: '/angular-app/bellows/apps/usermanagement/views/' + bootstrapVersion + '/members.html' }
             }
           })
           .state('joinRequests',
@@ -24,7 +24,7 @@ angular.module('usermanagement',
               url: '/joinRequests',
               views: {
                 '@': { templateUrl:
-                  '/angular-app/bellows/apps/usermanagement/views/joinRequests.html' }
+                  '/angular-app/bellows/apps/usermanagement/views/' + bootstrapVersion + '/joinRequests.html' }
               }
             });
   }])
