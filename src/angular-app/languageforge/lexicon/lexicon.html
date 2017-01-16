@@ -1,6 +1,12 @@
 {% verbatim %}
 <div class="content container"
     data-ng-cloak data-ng-controller="LexiconCtrl" dir="{{interfaceConfig.direction}}">
+    <div id="sfchecks-hmenu" class="list-group">
+        <br>
+        <a href="/app/projects" class="btn btn-info" role="button">My Projects</a>
+        <a href="/app/activity" class="btn btn-info" role="button">Activity</a>
+        <a href="/app/rapid-words" class="btn btn-info" role="button">Rapid Words</a>
+    </div>
     <div class="hdrnav">
         <div class="btn-group" data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.canEditUsers()">
             <a style="margin-right:13px" class="btn dropdown-toggle" data-ng-class="interfaceConfig.pullToSide"
