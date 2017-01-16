@@ -9,11 +9,14 @@ class Page extends Base
 {
     public function view(Request $request, Application $app, $pageName) {
 
+        $this->setupBaseVariables($app);
+        $this->setupPageVariables($app);
+
         // special case for "brochure" HTML5 homepage
         if ($pageName == 'home') {
             $homepageInAFolder = $this->getThemePath() . '/page/home';
             if (is_dir($homepageInAFolder)) {
-                $this->loadTemplateVariablesForHomepageInAFolder($app);
+                $this->data['baseDir'] = $this->getThemePath() . '/page/home';
                 try {
                     return $app['twig']->render('home/index.html.twig', $this->data);
                 } catch (\Twig_Error_Loader $e) {
@@ -25,8 +28,7 @@ class Page extends Base
         return $this->renderPage($app, $pageName);
     }
 
-    private function loadTemplateVariablesForHomepageInAFolder($app) {
-        $this->data['isLoggedIn'] = $this->isLoggedIn($app);
-        $this->data['baseDir'] = $this->getThemePath() . '/page/home';
+    private function setupPageVariables(Application $app) {
+        $this->data['isBootstrap4'] = (preg_match('@languageforge@', $app['request']->getHost()) == 1) ? true : false;
     }
 }
