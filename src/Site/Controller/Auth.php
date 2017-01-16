@@ -42,7 +42,7 @@ class Auth extends App
                 // no break; - intentional fall through to next case
             case 'forgot_password':
             case 'login':
-                $this->setupNgView($app, $appName);
+                $this->setupAngularAppVariables($app, $appName);
                 $this->setupAuthView($request, $app);
 
                 return $this->renderPage($app, 'angular-app');
