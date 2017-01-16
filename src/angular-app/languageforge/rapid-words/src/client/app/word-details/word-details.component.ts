@@ -28,21 +28,27 @@ export class WordDetailsComponent implements OnInit {
       this.showDetails=true;
     }
   }
+
   sendEntry() {
     console.log(this.getAllMultitextBoxes())
-    this.lfApiService.addEntry(this.getAllMultitextBoxes());
+    this.lfApiService.addEntry(this.getAllMultitextBoxes()).subscribe( response => {
+      console.log(response);
+    });
   }
+
   getAllMultitextBoxes() {
     let rtn: any = [];
     let count: number = 0;
     let multitextBoxContentArray: any = [];
     let entryObject = new LexEntry();
-    if (this.id){
+    if (this.id!=""){
       entryObject.id=this.id;
     }
     this.multitextBoxes.forEach(function(multitextBox) {
+      let language=multitextBox.language;
+      console.log("language:"+language);
       if (count == 0){
-        entryObject.lexeme=multitextBox.content;
+        entryObject.lexeme={[language]: {value: multitextBox.content}};
       }
       else{
         multitextBoxContentArray.push(multitextBox.content);
@@ -51,34 +57,5 @@ export class WordDetailsComponent implements OnInit {
       count+=1;
     })
     return entryObject;
-    //where do I add language?
-    
-    // if(this.id){
-    //   rtn.push({id: this.id
-    // })}
-    // this.multitextBoxes.forEach(function(multitextBox) {
-    //   if (count == 0){
-    //     rtn.push({"lexeme": {
-    //       "th":{
-    //         "value": multitextBox.content
-    //       }
-    //     },
-    //     })
-    //   }
-    //   else{
-    //     rtn.push({"senses": [
-    //       {
-    //         "guid": "5f4b0cd9-a6da-4c71-9e3b-eff03aacd61d",
-    //         "definition":{
-    //           "en":{
-    //             "value": multitextBox.content
-    //           }
-    //         }
-    //       }
-    //     ]
-    //   })}
-    //   count+=1;
-    // });
-    // return rtn;
   }
 }

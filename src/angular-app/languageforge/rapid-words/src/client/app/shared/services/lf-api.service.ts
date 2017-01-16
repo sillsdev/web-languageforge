@@ -49,22 +49,22 @@ export class LfApiService {
         };
 
         return this.sendRequest(this.apiUrl, body)
-        .map(res => {
-            let data = res.ok ? res.json() : null;
-            let success = res.ok && !data.error;
-            let message: string;
-            if(!res.ok) message = `Error ${res.status} ({res.statusText})`;
-            else if(data.error) {
-                message = 'API error'
-                console.error(`API error:\n` +
-                    `Type: ${data.error.type}\n` +
-                    `${data.error.message}`
-                );
-            }
-            else data = data.result;
+            .map(res => {
+                let data = res.ok ? res.json() : null;
+                let success = res.ok && !data.error;
+                let message: string;
+                if (!res.ok) message = `Error ${res.status} ({res.statusText})`;
+                else if (data.error) {
+                    message = 'API error'
+                    console.error(`API error:\n` +
+                        `Type: ${data.error.type}\n` +
+                        `${data.error.message}`
+                    );
+                }
+                else data = data.result;
 
-            return {success, data, message}
-       });
+                return { success, data, message }
+            });
     }
 
     /**
@@ -80,8 +80,12 @@ export class LfApiService {
         });
     }
     addEntry(lexEntry: LexEntry) {
-        return this.callApi('lex_entry_update', [lexEntry]).map(result => {
+        if (! lexEntry.id ) {
+            lexEntry.id = '';
+        }
+        return this.callApi('lex_entry_update', [JSON.stringify(lexEntry)]).map(result => {
             result.data = result.data.addEntry;
+            console.log(result.data);
             return result;
         });
     }

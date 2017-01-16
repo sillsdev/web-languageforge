@@ -3,7 +3,7 @@ class LexSense {
 
     /**
      * This is an object containing key-value pairs where the key is the
-     * language code and the value is another objecting containing a single
+     * language code and the value is another object containing a single
      * key-value pair where the key is "value" and that key's value is 
      * a string containing the definition.
      * Ex:
