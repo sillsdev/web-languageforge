@@ -7,6 +7,7 @@
       </div>
     </div>
     <div *ngIf="currentWord" class="card-content">
+
       <span class="card-title">Is the definition of {{currentWord.value}} correct?</span>
       <div class="input-field col s12">
         <input type="text" id="testWord" [(ngModel)]="currentWord.definition" placeholder="Definition">
@@ -15,16 +16,30 @@
       </div>
 
       <div class="card-action center">
+
         <div class="row">
-          <a (click)="decreaementWord()" class="btn grey darken-1 waves-effect waves-light"><i class="material-icons">chevron_left</i></a>
-          <a (click)="incrementWord()" class="btn grey darken-1 waves-effect waves-light"><i class="material-icons">chevron_right</i></a>
+          <a (click)="upVote()" class="btn-large green darken-1 waves-effect waves-light"><i class="large material-icons">check_circle</i></a>
+
+          <a (click)="openModal()" class="btn-large blue darken-1 waves-effect waves-light"><i class="material-icons">message</i></a>
         </div>
-        <div class="row">
-          <a (click)="upVote()" class="btn green darken-1 waves-effect waves-light">Yes</a>
-          <a (click)="unsureVote()" class="btn orange darken-1 waves-effect waves-light">IDK</a>
-          <a (click)="downVote()" class="btn red darken-1 waves-effect waves-light">No</a>
-        </div>
+        <!-- END .row -->
       </div>
+      <!-- END .card-action .center -->
+
     </div>
+    <!-- END .card-content -->
   </div>
+  <!-- END .card -->
+
 </div>
+
+<div id="commentModal" class="modal sheet" materialize="modal" [materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions">
+  <div class="modal-content">
+    <h4>Suggestion</h4>
+    <textarea class="materialize-textarea" value="{{comment}}" placeholder="Enter text here"></textarea>
+  </div>
+  <div class="modal-footer">
+    <span style="font-size:1.6em;"><a class="btn blue darken-1 waves-effect waves-light" (click)="closeModal()">Send <i class="material-icons">send</i></a></span>
+</div>
+</div>
+
