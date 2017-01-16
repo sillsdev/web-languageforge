@@ -21,7 +21,7 @@ export class LfApiService {
      */
     private sendRequest(url: string, body: any) {
         let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        let options = new RequestOptions({ headers: headers, withCredentials: true });
         return this.http.post(url, body, options);
     }
 
