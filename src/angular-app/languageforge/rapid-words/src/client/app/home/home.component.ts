@@ -38,7 +38,7 @@ export class HomeComponent implements OnInit {
     this.getSemanticDomains();
     this.getWords();
     this.getNumberOfEntries();
-    this.getFullDbeDto();
+    this.getFullDbeDto(); 
   }
 
   getFullDbeDto() {
