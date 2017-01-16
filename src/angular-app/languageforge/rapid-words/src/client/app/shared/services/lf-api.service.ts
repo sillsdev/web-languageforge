@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Response, Headers, Http, RequestOptions, RequestOptionsArgs } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
+import { LexEntry } from '../models/lex-entry';
 
 
 @Injectable()
@@ -75,6 +76,12 @@ export class LfApiService {
     getUserProfile() {
         return this.callApi('user_readProfile').map(result => {
             result.data = result.data.userProfile;
+            return result;
+        });
+    }
+    addEntry(lexEntry: LexEntry) {
+        return this.callApi('lex_entry_update', [lexEntry]).map(result => {
+            result.data = result.data.addEntry;
             return result;
         });
     }
