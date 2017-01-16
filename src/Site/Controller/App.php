@@ -270,7 +270,6 @@ class AppModel {
 
         $siteAppsInBootstrap4 = array(
             "scriptureforge" => array("appName"),
-            "languageforge" => array("login", "rapid-words", "userprofile", "changepassword", "forgot_password", "activity", "projects", "signup", "lexicon", "siteadmin", "usermanagement"),
             "languageforge" => array(
                 "login",
                 "rapid-words",
