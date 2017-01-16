@@ -991,7 +991,7 @@ gulp.task('sass:userprofile', function () {
 });
 
 gulp.task('sass:registration', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/userprofile/*.scss')
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest('src/angular-app/bellows/apps/userprofile/bootstrap4/'));
 });
