@@ -65,6 +65,15 @@ export class LexEntry {
         }
     }
 
+    asJsonObject() {
+        return {
+            id: this.id,
+            lexeme: this.lexeme,
+            isDeleted: this.isDeleted,
+            senses: this.senses
+        }
+    }
+
     static mapEntriesResponse(entries: any[]) {
         var arrayOfLexEntries: any = [];
         for (let entry of entries) {

@@ -83,7 +83,7 @@ export class LfApiService {
         if (! lexEntry.id ) {
             lexEntry.id = '';
         }
-        return this.callApi('lex_entry_update', [JSON.stringify(lexEntry)]).map(result => {
+        return this.callApi('lex_entry_update', [lexEntry.asJsonObject()]).map(result => {
             result.data = result.data.addEntry;
             console.log(result.data);
             return result;
