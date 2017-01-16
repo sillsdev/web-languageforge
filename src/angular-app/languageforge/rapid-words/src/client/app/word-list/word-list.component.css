@@ -1,0 +1,10 @@
+.word-list-container {
+    height: 400px;
+    overflow-y: scroll;
+}
+
+.word-block {
+    border-bottom: 1px;
+    border-style: solid;
+    padding: .5rem 1.25rem .5rem .5rem;
+}
