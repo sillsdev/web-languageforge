@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LfApiService } from '../../../../../../js/services/lf-api.service';
+import { LfApiService } from '../../shared/services/lf-api.service';
 import { Http } from '@angular/http';
 
 import { OnInit } from '@angular/core';

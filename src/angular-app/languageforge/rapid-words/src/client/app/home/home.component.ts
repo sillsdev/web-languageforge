@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, ViewChild} from '@angular/core
 import { Http } from '@angular/http';
 import { NameListService } from '../shared/name-list/name-list.service';
 import { SemanticDomainListService } from '../shared/main-view/main-view.service';
+import { LfApiService } from '../shared/services/lf-api.service';
 import { WordDetailsComponent } from '../word-details/word-details.component';
 import { Constants } from '../shared/constants';
 import { LexEntry } from '../shared/models/lex-entry';
