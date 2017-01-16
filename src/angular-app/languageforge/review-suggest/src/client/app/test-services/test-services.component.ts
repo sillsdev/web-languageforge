@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import { LfApiService } from '../shared/services/lf-api.service';
+
 @Component({
   moduleId: module.id,
   selector: 'test-services',
@@ -9,7 +11,11 @@ import { Component } from '@angular/core';
 export class TestServicesComponent {
   private result: any;
 
-  constructor() {
-    this.result = "your mom";
+  constructor(private lfApiService: LfApiService) {
+    this.lfApiService.getUserProfile().subscribe (response => {
+      this.result = response.data;
+      console.log(this.result);
+    });
+    
   }
 }

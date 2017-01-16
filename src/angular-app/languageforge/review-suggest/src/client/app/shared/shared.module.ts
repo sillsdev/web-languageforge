@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
 import { DictionaryService } from './services/dictionary.service';
 import { AuthService } from './services/auth.service';
-import { LfApiService } from './services/lf-api.service';
 
 import { MaterializeDirective } from 'angular2-materialize/dist/index';
 
@@ -24,7 +23,7 @@ export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
-      providers: [DictionaryService, AuthService, LfApiService]
+      providers: [DictionaryService, AuthService]
     };
   }
 }
