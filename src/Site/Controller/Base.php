@@ -85,8 +85,6 @@ class Base
         if ($this->data['isBootstrap4']) {
             // TODO: move to app_dependencies once bootstrap4 migration is complete
             $this->addCssFiles($this->getThemePath()."/cssBootstrap4", array(), false);
-            array_unshift($this->data['cssFiles'], "vendor_bower/bootstrap/dist/css/bootstrap-flex.css");
-            array_unshift($this->data['cssFiles'], "vendor_bower/bootstrap/dist/css/bootstrap.css");
         } else {
             $this->addCssFiles($this->getThemePath()."/cssBootstrap2", array(), false);
             $this->addCssFiles("Site/views/shared/cssBootstrap2", array('bootstrap.css'), false);
