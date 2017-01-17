@@ -11,24 +11,20 @@
       <h1>Rapid Words Collection</h1>
     </div>
 
-    <div>
-      <p>
-        <sem-dom-search (domainSelected)="userChoseDomain($event)"></sem-dom-search>
-      </p>
-      <p>Selected domain: {{ selectedDomain }}</p>
-    </div>
-
     <div class="row">
-      <div class="col-4">
+      <div class="col-3">
         <h3>Semantic Domains</h3>
-        <div class="row">
+        <div>
+          <p>
+            <sem-dom-search (domainSelected)="userChoseDomain($event)"></sem-dom-search>
+          </p>
+          <p class="sem-dom-description" *ngIf="selectedDomain">{{ selectedDomain.description }}</p>
+        </div>
+        <div *ngIf="all" class="row">
           <div class="col">
-            <p>{{numberOfEntries}} entries</p>
+            <p>{{allEntries.length}} entries</p>
           </div>
         </div>
-        <select [(ngModel)]="simpleValue"> // value is a string or number
-        <option *ngFor="let semanticDomain of semanticDomains" >{{semanticDomain}}</option>
-    </select>
         <word-list [entries]="allEntries"></word-list>
         <ul>
           <li *ngFor="let word of words">
@@ -37,7 +33,7 @@
           </li>
         </ul>
       </div>
-      <div class="col-4">
+      <div class="col-6">
         <!--<div class="row justify-content-end">
           <button type="button" class="btn btn-secondary btn-sm" (click)="multitextShowDetails()">Show Hidden Fields</button>
         </div>-->
@@ -45,11 +41,11 @@
           <worddetails></worddetails>
         </div>
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <div class="row justify-content-center">
           <h3>Comment Stuff</h3>
         </div>
-        </div>
+      </div>
     </div>
   </div>
 </body>

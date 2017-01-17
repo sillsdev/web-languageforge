@@ -1,0 +1,23 @@
+/*
+Using .sem-dom-picker instead of relying on Angular 2's CSS encapsulation
+because at time of writing all files were loaded into the page, effectively
+circumventing Angular's encapsulation.
+*/
+
+.sem-dom-picker ul {
+    position: absolute;
+    z-index: 1;
+    background-color: white;
+    padding-left: 0;
+    border: 1px solid gray;
+    border-radius: 0.5em;
+    width: 250px;
+}
+
+.sem-dom-picker ul, li {
+    list-style-type: none;
+}
+
+.sem-dom-picker li {
+    margin: 0.5em;
+}
