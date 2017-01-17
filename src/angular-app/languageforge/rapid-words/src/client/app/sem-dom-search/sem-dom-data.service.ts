@@ -1,11 +1,20 @@
-'use strict';
+import { Injectable } from '@angular/core';
+
+import { SemanticDomainCollection } from '../shared/models/semantic-domain.model';
+
+@Injectable()
+export class SemanticDomainDataService {
+    getSemanticDomains() : SemanticDomainCollection {
+        return semanticDomains;
+    }
+}
 
 // This was copied from languageforge/js/assets/semanticDomains_en.js,
 // and then made more friendly for import using CommonJS convention.
 
 // TODO: Do this a better way.
 
-module.exports = {
+const semanticDomains: SemanticDomainCollection = {
     "1" : {
         "guid" : "63403699-07c1-43f3-a47c-069d6e4316e5",
         "key" : "1",
