@@ -38,8 +38,16 @@ angular.module('lexicon',
         url: '/importExport',
         templateUrl: '/angular-app/languageforge/lexicon/views/' + bootstrapVersion + '/import-export.html'
       })
-      .state('settings', {
-        url: '/settings',
+      .state('settings-project', {
+        url: '/settings-project',
+        templateUrl: '/angular-app/languageforge/lexicon/views/' + bootstrapVersion + '/settings.html'
+      })
+      .state('settings-archive', {
+        url: '/settings-archive',
+        templateUrl: '/angular-app/languageforge/lexicon/views/' + bootstrapVersion + '/settings.html'
+      })
+      .state('settings-delete', {
+        url: '/settings-delete',
         templateUrl: '/angular-app/languageforge/lexicon/views/' + bootstrapVersion + '/settings.html'
       })
       .state('sync', {
