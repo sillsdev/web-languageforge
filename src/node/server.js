@@ -18,8 +18,7 @@ function createDoc(collection, id) {
   doc.fetch(function(err) {
     if (err) throw err;
     if (doc.type === null) {
-      doc.create([{insert: ""}], 'rich-text');
-      return;
+      doc.create([{insert: ''}], 'rich-text');
     }
   });
 }
@@ -52,7 +51,6 @@ function startServer() {
     var stream = new WebSocketJSONStream(ws);
     backend.listen(stream);
   });
-
 
   docServer.listen(8080);
   messageServer.listen(8079);
