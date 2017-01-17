@@ -1,69 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var sharedb = require('sharedb/lib/client');
-var richText = require('rich-text');
-var Quill = require('quill');
-sharedb.types.register(richText.type);
-
-function getWebSocketUrl() {
-  var url = 'ws://' + window.location.host;
-  return (url.endsWith(':8080')) ? url : url + ':8080';
-}
-
-// Open WebSocket connection to ShareDB server
-var socket = new WebSocket(getWebSocketUrl());
-var connection = new sharedb.Connection(socket);
-
-// For testing reconnection
-window.disconnect = function() {
-  connection.close();
-};
-window.connect = function() {
-  var socket = new WebSocket(getWebSocketUrl());
-  connection.bindToSocket(socket);
-};
-
-// Connect to both text field
-connectDoc('example', 'realTime1');
-connectDoc('example', 'realTime2');
-connectDoc('example', 'realTime3', true);
-
-// Create local Doc instance mapped to collection document with id
-// Potentially, collection could be the dictionary id (not necessary if we use entry id as collection)
-// But I don't know if having a collection will make any difference such as reducing computing complexity
-function connectDoc(collection, id, isNgQuill) {
-  isNgQuill = isNgQuill || false;
-  var doc = connection.get(collection, id);
-  doc.subscribe(function(err) {
-    if (err) throw err;
-
-    if (isNgQuill) {
-      var textEditorElement = document.querySelector("#" + id + " .ql-container");
-    } else {
-      var textEditorElement = document.getElementById(id);
-    }
-
-    if (textEditorElement === null) return;
-    var quill = new Quill(textEditorElement);
-    var clipboard = textEditorElement.getElementsByClassName("ql-clipboard");
-    if (clipboard.length != 0) {
-      clipboard[0].hidden = true;
-    }
-
-    quill.setContents(doc.data);
-
-    quill.on('text-change', function(delta, oldDelta, source) {
-      if (source !== 'user') return;
-      doc.submitOp(delta, {source: quill});
-    });
-
-    doc.on('op', function(op, source) {
-      if (source === quill) return;
-      quill.updateContents(op);
-    });
-  });
-}
-
-},{"quill":20,"rich-text":21,"sharedb/lib/client":25}],2:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -179,7 +114,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -1972,7 +1907,7 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":2,"ieee754":10,"isarray":11}],4:[function(require,module,exports){
+},{"base64-js":1,"ieee754":9,"isarray":10}],3:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
@@ -2068,7 +2003,7 @@ function objEquiv(a, b, opts) {
   return typeof a === typeof b;
 }
 
-},{"./lib/is_arguments.js":5,"./lib/keys.js":6}],5:[function(require,module,exports){
+},{"./lib/is_arguments.js":4,"./lib/keys.js":5}],4:[function(require,module,exports){
 var supportsArgumentsClass = (function(){
   return Object.prototype.toString.call(arguments)
 })() == '[object Arguments]';
@@ -2090,7 +2025,7 @@ function unsupported(object){
     false;
 };
 
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 exports = module.exports = typeof Object.keys === 'function'
   ? Object.keys : shim;
 
@@ -2101,7 +2036,7 @@ function shim (obj) {
   return keys;
 }
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2405,7 +2340,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 var hasOwn = Object.prototype.hasOwnProperty;
@@ -2493,7 +2428,7 @@ module.exports = function extend() {
 };
 
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /**
  * This library modifies the diff-patch-match library by Neil Fraser
  * by removing the patch and match functionality and certain advanced
@@ -3193,7 +3128,7 @@ function merge_tuples (diffs, start, length) {
   return diffs;
 }
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -3279,14 +3214,14 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // ISC @ Julien Fontanet
 
 'use strict'
@@ -3430,7 +3365,7 @@ function makeError (constructor, super_) {
 exports = module.exports = makeError
 exports.BaseError = BaseError
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 // These methods let you build a transform function from a transformComponent
 // function for OT types like JSON0 in which operations are lists of components
 // and transforming them requires N^2 work. I find it kind of nasty that I need
@@ -3510,7 +3445,7 @@ function bootstrapTransform(type, transformComponent, checkValidOp, append) {
   };
 };
 
-},{}],14:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 // Only the JSON type is exported, because the text type is deprecated
 // otherwise. (If you want to use it somewhere, you're welcome to pull it out
 // into a separate module that json0 can depend on).
@@ -3519,7 +3454,7 @@ module.exports = {
   type: require('./json0')
 };
 
-},{"./json0":15}],15:[function(require,module,exports){
+},{"./json0":14}],14:[function(require,module,exports){
 /*
  This is the implementation of the JSON OT type.
 
@@ -4186,7 +4121,7 @@ json.registerSubtype(text);
 module.exports = json;
 
 
-},{"./bootstrapTransform":13,"./text0":16}],16:[function(require,module,exports){
+},{"./bootstrapTransform":12,"./text0":15}],15:[function(require,module,exports){
 // DEPRECATED!
 //
 // This type works, but is not exported. Its included here because the JSON0
@@ -4444,7 +4379,7 @@ text.invert = function(op) {
 
 require('./bootstrapTransform')(text, transformComponent, checkValidOp, append);
 
-},{"./bootstrapTransform":13}],17:[function(require,module,exports){
+},{"./bootstrapTransform":12}],16:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -4626,7 +4561,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var diff = require('fast-diff');
 var equal = require('deep-equal');
 var extend = require('extend');
@@ -4938,7 +4873,7 @@ Delta.prototype.transformPosition = function (index, priority) {
 
 module.exports = Delta;
 
-},{"./op":19,"deep-equal":4,"extend":8,"fast-diff":9}],19:[function(require,module,exports){
+},{"./op":18,"deep-equal":3,"extend":7,"fast-diff":8}],18:[function(require,module,exports){
 var equal = require('deep-equal');
 var extend = require('extend');
 
@@ -5079,7 +5014,7 @@ Iterator.prototype.peekType = function () {
 
 module.exports = lib;
 
-},{"deep-equal":4,"extend":8}],20:[function(require,module,exports){
+},{"deep-equal":3,"extend":7}],19:[function(require,module,exports){
 (function (Buffer){
 /*!
  * Quill Editor v1.1.9
@@ -15658,10 +15593,10 @@ return /******/ (function(modules) { // webpackBootstrap
 });
 ;
 }).call(this,require("buffer").Buffer)
-},{"buffer":3}],21:[function(require,module,exports){
+},{"buffer":2}],20:[function(require,module,exports){
 module.exports = require('./lib/type');
 
-},{"./lib/type":22}],22:[function(require,module,exports){
+},{"./lib/type":21}],21:[function(require,module,exports){
 var Delta = require('quill-delta');
 
 
@@ -15718,7 +15653,7 @@ module.exports = {
   }
 };
 
-},{"quill-delta":18}],23:[function(require,module,exports){
+},{"quill-delta":17}],22:[function(require,module,exports){
 (function (process){
 var Doc = require('./doc');
 var Query = require('./query');
@@ -16300,7 +16235,7 @@ Connection.prototype._firstQuery = function(fn) {
 };
 
 }).call(this,require('_process'))
-},{"../emitter":27,"../error":28,"../types":29,"../util":30,"./doc":24,"./query":26,"_process":17}],24:[function(require,module,exports){
+},{"../emitter":26,"../error":27,"../types":28,"../util":29,"./doc":23,"./query":25,"_process":16}],23:[function(require,module,exports){
 (function (process){
 var emitter = require('../emitter');
 var ShareDBError = require('../error');
@@ -17214,14 +17149,14 @@ function callEach(callbacks, err) {
 }
 
 }).call(this,require('_process'))
-},{"../emitter":27,"../error":28,"../types":29,"_process":17}],25:[function(require,module,exports){
+},{"../emitter":26,"../error":27,"../types":28,"_process":16}],24:[function(require,module,exports){
 exports.Connection = require('./connection');
 exports.Doc = require('./doc');
 exports.Error = require('../error');
 exports.Query = require('./query');
 exports.types = require('../types');
 
-},{"../error":28,"../types":29,"./connection":23,"./doc":24,"./query":26}],26:[function(require,module,exports){
+},{"../error":27,"../types":28,"./connection":22,"./doc":23,"./query":25}],25:[function(require,module,exports){
 (function (process){
 var emitter = require('../emitter');
 
@@ -17424,7 +17359,7 @@ Query.prototype._handleExtra = function(extra) {
 };
 
 }).call(this,require('_process'))
-},{"../emitter":27,"_process":17}],27:[function(require,module,exports){
+},{"../emitter":26,"_process":16}],26:[function(require,module,exports){
 var EventEmitter = require('events').EventEmitter;
 
 exports.EventEmitter = EventEmitter;
@@ -17436,7 +17371,7 @@ function mixin(Constructor) {
   }
 }
 
-},{"events":7}],28:[function(require,module,exports){
+},{"events":6}],27:[function(require,module,exports){
 var makeError = require('make-error');
 
 function ShareDBError(code, message) {
@@ -17448,7 +17383,7 @@ makeError(ShareDBError);
 
 module.exports = ShareDBError;
 
-},{"make-error":12}],29:[function(require,module,exports){
+},{"make-error":11}],28:[function(require,module,exports){
 
 exports.defaultType = require('ot-json0').type;
 
@@ -17461,7 +17396,7 @@ exports.register = function(type) {
 
 exports.register(exports.defaultType);
 
-},{"ot-json0":14}],30:[function(require,module,exports){
+},{"ot-json0":13}],29:[function(require,module,exports){
 
 exports.doNothing = doNothing;
 function doNothing() {}
@@ -17471,4 +17406,109 @@ exports.hasKeys = function(object) {
   return false;
 };
 
-},{}]},{},[1]);
+},{}],30:[function(require,module,exports){
+var sharedb = require('sharedb/lib/client');
+var richText = require('rich-text');
+var Quill = require('quill');
+sharedb.types.register(richText.type);
+
+function getWebSocketUrl() {
+  var url = 'ws://' + window.location.host;
+  return (url.endsWith(':8080')) ? url : url + ':8080';
+}
+
+// Open WebSocket connection to ShareDB server
+var socket = new WebSocket(getWebSocketUrl());
+var connection = new sharedb.Connection(socket);
+
+// For testing reconnection
+window.disconnect = function() {
+  connection.close();
+};
+window.connect = function() {
+  var socket = new WebSocket(getWebSocketUrl());
+  connection.bindToSocket(socket);
+};
+
+function sendCollectionId(message) {
+  waitForConnection(function () {
+    socket.send(message);
+  }, 100);
+}
+
+function waitForConnection(callback) {
+  if (socket.readyState === 1) {
+    callback();
+  } else {
+    setTimeout(function () {
+      waitForConnection(callback);
+    });
+  }
+}
+
+function WordFieldConcat(word, id){
+  var a = word.concat('~',id);
+  return a;
+}
+
+function GetIDfromWordFieldConcat(con){
+  var a = con.split('~');
+  return a[1];
+}
+
+window.createAndSubscribeDoc = function createAndSubscribeDoc(id, isNgQuill){
+  // Connect to both text field
+  var wordID = id;
+  if (!isNgQuill) {
+    var word = document.getElementById(id).parentNode.childNodes[1].innerHTML;
+    wordID = WordFieldConcat(word, id);
+    document.getElementById(id).id = wordID;
+  }
+  sendCollectionId(JSON.stringify({"b": wordID, "a": "bs", "c": "collection"}));
+  connectDoc("collection", wordID, isNgQuill);
+}
+
+function getWordIDTest(id){
+
+}
+
+function getWordIDReal(id){
+
+}
+
+// Create local Doc instance mapped to collection document with id
+// Potentially, collection could be the dictionary id (not necessary if we use entry id as collection)
+// But I don't know if having a collection will make any difference such as reducing computing complexity
+function connectDoc(collection, id, isNgQuill) {
+  isNgQuill = isNgQuill || false;
+  var doc = connection.get(collection, id);
+  doc.subscribe(function(err) {
+    if (err) throw err;
+
+    if (isNgQuill) {
+      var textEditorElement = document.querySelector("#" + id + " .ql-container");
+    } else {
+      var textEditorElement = document.getElementById(id);
+    }
+
+    if (textEditorElement === null) return;
+    var quill = new Quill(textEditorElement);
+    var clipboard = textEditorElement.getElementsByClassName("ql-clipboard");
+    if (clipboard.length != 0) {
+      clipboard[0].hidden = true;
+    }
+
+    quill.setContents(doc.data);
+
+    quill.on('text-change', function(delta, oldDelta, source) {
+      if (source !== 'user') return;
+      doc.submitOp(delta, {source: quill});
+    });
+
+    doc.on('op', function(op, source) {
+      if (source === quill) return;
+      quill.updateContents(op);
+    });
+  });
+}
+},{"quill":19,"rich-text":20,"sharedb/lib/client":24}]},{},[30]);
