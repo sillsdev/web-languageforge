@@ -71,8 +71,6 @@ export class ReviewComponent implements OnInit {
   closeModal(){
     this.modalActions.emit({ action:"modal", params:['close'] });
     this.downVote();
-    console.log(document.getElementById("placeholderForComment").value);
-    document.getElementById("placeholderForComment").value="";
   }
 
 }

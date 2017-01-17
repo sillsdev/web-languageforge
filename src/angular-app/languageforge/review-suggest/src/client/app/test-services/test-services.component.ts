@@ -16,6 +16,5 @@ export class TestServicesComponent {
       this.result = response.data;
       console.log(this.result);
     });
-    
   }
 }
