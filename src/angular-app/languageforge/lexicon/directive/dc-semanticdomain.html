@@ -1,33 +1,35 @@
 <form class="form-horizontal dc-semanticdomain">
-    <label class="control-label">{{config.label}}</label>
-    <div class="controls">
-        <div class="dc-semanticdomain-values" 
-            data-ng-repeat="value in model.values | orderBy: orderItemsByListOrder">
-            <div data-ng-mouseover="valueToBeDeleted = value" data-ng-mouseleave="valueToBeDeleted = ''">
-                <div class="dc-semanticdomain-value"
-                    data-ng-click="selectValue(value)">
-                    {{getDisplayName(value)}}</div>
-                <img class="closeicon" src="/Site/views/shared/image/closeicon.svg" width="15" height="15"
-                    title="Delete {{config.label}}" 
-                    data-ng-show="showDeleteButton(valueToBeDeleted, value)" data-ng-click="deleteValue(value)" />
+    <div class="form-group row">
+        <label class="control-label col-md-4 text-md-right">{{config.label}}</label>
+        <div class="controls col-md-8">
+            <div class="dc-semanticdomain-values"
+                 data-ng-repeat="value in model.values | orderBy: orderItemsByListOrder">
+                <div data-ng-mouseover="valueToBeDeleted = value" data-ng-mouseleave="valueToBeDeleted = ''">
+                    <div class="dc-semanticdomain-value"
+                         data-ng-click="selectValue(value)">
+                        {{getDisplayName(value)}}
+                    </div>
+                    <i class="fa fa-times closeicon" title="Delete {{config.label}}"
+                       data-ng-show="showDeleteButton(valueToBeDeleted, value)" data-ng-click="deleteValue(value)"></i>
+                </div>
             </div>
-        </div>
-        <div class="dc-semanticdomain-values"
-            data-ng-show="$state.is('editor.entry') && rights.canEditEntry() && isAdding">
-            <!--suppress HtmlFormInputWithoutLabel -->
-            <select data-ng-change="addValue()" data-ng-model="newValue"
-                data-ng-options="option.key as option.value for option in options | orderBy: 'key' | filter: filterSelectedOptions">
-                <option value="">Pick an item</option>
-            </select>
-            <div class="deleteX">
-                <i class="icon-remove" data-ng-click="isAdding = false" title="Cancel adding {{config.label}}"></i>
+            <div class="dc-semanticdomain-values"
+                 data-ng-show="$state.is('editor.entry') && rights.canEditEntry() && isAdding">
+                <!--suppress HtmlFormInputWithoutLabel -->
+                <select class="form-control" data-ng-change="addValue()" data-ng-model="newValue"
+                        data-ng-options="option.key as option.value for option in options | orderBy: 'key' | filter: filterSelectedOptions">
+                    <option value="">Pick an item</option>
+                </select>
+                <div class="deleteX">
+                    <i class="icon-remove" data-ng-click="isAdding = false" title="Cancel adding {{config.label}}"></i>
+                </div>
             </div>
         </div>
     </div>
 </form>
-<div class="addItem" 
-    data-ng-show="rights.canEditEntry() && $state.is('editor.entry') && showAddButton()">
-    <a data-ng-click="isAdding = true">Add {{config.label}}</a>
+<div class="addItem"
+     data-ng-show="rights.canEditEntry() && $state.is('editor.entry') && showAddButton()">
+    <a class="btn btn-sm btn-secondary" data-ng-click="isAdding = true"><i class="fa fa-plus"></i> Add {{config.label}}</a>
 </div>
 <div class="spacing-after"
-    data-ng-hide="rights.canEditEntry() && $state.is('editor.entry') && showAddButton()">&nbsp;</div>
+     data-ng-hide="rights.canEditEntry() && $state.is('editor.entry') && showAddButton()">&nbsp;</div>
