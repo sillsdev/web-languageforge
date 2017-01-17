@@ -10,7 +10,7 @@ export class MultitextComponent implements OnInit {
 
   // @Input('label') public label: string = "";
   @Input('languages') public languages: string[] = [];
-  @Input('content') public content: string = "";
+  @Input('content') public content: string[] = [];
   @Input('label') label: string;
 
   constructor() {
@@ -24,14 +24,11 @@ export class MultitextComponent implements OnInit {
   }
 
   getLanguages() {
-    console.log(this.languages);
   }
+
   getLabel() {
-    // this.label = "Word";
-    console.log(this.label);
   }
+
   getContent() {
-    this.content = "bacon";
   }
-  
 }
