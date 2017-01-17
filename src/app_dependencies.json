@@ -6,6 +6,7 @@
   "angular-translate": { "path": "vendor_bower/angular-translate" },
   "angular-translate-loader-static-files": { "path": "vendor_bower/angular-translate-loader-static-files" },
   "ng-quill": { "path": "vendor_bower/ng-quill/src" },
+  "bundle": { "path": "node/static/dist", "jsFile": "bundle"},
   "angular-truncate-2": { "path": "vendor_bower/angular-truncate-2/dist" },
   "angular-ui-router": { "path": "vendor_bower/angular-ui-router/release" },
   "angular-ui-validate": { "path": "vendor_bower/angular-ui-validate/dist", "jsFile": "validate" },

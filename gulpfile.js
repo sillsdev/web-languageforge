@@ -46,6 +46,7 @@
 //   'build-and-upload'
 //   'build-e2e'
 //   'build-php'
+//   'build-node'
 //   'markdown'
 //   'default'
 
@@ -932,6 +933,20 @@ gulp.task('build-php',
 );
 gulp.task('build-php').description =
   'Build and Run PHP tests on CI server; Deploy to dev site';
+
+// -------------------------------------
+//   Task: build-node
+// -------------------------------------
+gulp.task('build-node', function(cb){
+  var options = {
+    dryRun: false,
+    debug: false,
+  };
+  execute('/bin/sh ./node_modules/.bin/browserify src/node/client.js -o src/node/static/dist/bundle.js',
+    options,
+    cb);
+}
+);
 
 gulp.task('build-php-coverage',
   gulp.series(

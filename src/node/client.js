@@ -21,19 +21,67 @@ window.connect = function() {
   connection.bindToSocket(socket);
 };
 
-// Connect to both text field
-connectDoc('example', 'realTime1');
-connectDoc('example', 'realTime2');
+function sendCollectionId(message) {
+  waitForConnection(function () {
+    socket.send(message);
+  }, 100);
+}
+
+function waitForConnection(callback) {
+  if (socket.readyState === 1) {
+    callback();
+  } else {
+    setTimeout(function () {
+      waitForConnection(callback);
+    });
+  }
+}
+
+function WordFieldConcat(word, id){
+  var a = word.concat('~',id);
+  return a;
+}
+
+function GetIDfromWordFieldConcat(con){
+  var a = con.split('~');
+  return a[1];
+}
+
+window.createAndSubscribeDoc = function createAndSubscribeDoc(id, isNgQuill){
+  // Connect to both text field
+  var wordID = id;
+  if (!isNgQuill) {
+    var word = document.getElementById(id).parentNode.childNodes[1].innerHTML;
+    wordID = WordFieldConcat(word, id);
+    document.getElementById(id).id = wordID;
+  }
+  sendCollectionId(JSON.stringify({"b": wordID, "a": "bs", "c": "collection"}));
+  connectDoc("collection", wordID, isNgQuill);
+}
+
+function getWordIDTest(id){
+
+}
+
+function getWordIDReal(id){
+
+}
 
 // Create local Doc instance mapped to collection document with id
 // Potentially, collection could be the dictionary id (not necessary if we use entry id as collection)
 // But I don't know if having a collection will make any difference such as reducing computing complexity
-function connectDoc(collection, id) {
+function connectDoc(collection, id, isNgQuill) {
+  isNgQuill = isNgQuill || false;
   var doc = connection.get(collection, id);
   doc.subscribe(function(err) {
     if (err) throw err;
 
-    var textEditorElement = document.getElementById(id);
+    if (isNgQuill) {
+      var textEditorElement = document.querySelector("#" + id + " .ql-container");
+    } else {
+      var textEditorElement = document.getElementById(id);
+    }
+
     if (textEditorElement === null) return;
     var quill = new Quill(textEditorElement);
     var clipboard = textEditorElement.getElementsByClassName("ql-clipboard");
