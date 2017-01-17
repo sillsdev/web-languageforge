@@ -1,10 +1,10 @@
 <form class="form-horizontal dc-multiparagraph">
-    <div class="control-group">
-        <label class="control-label">{{config.label}}</label>
-        <div class="controls">
-            <div class="input-prepend" data-ng-click="selectInputSystem(model.inputSystem)"
+    <div class="form-group row">
+        <label class="control-label col-md-4 text-md-right">{{config.label}}</label>
+        <div class="controls col-md-8">
+            <div class="input-group" data-ng-click="selectInputSystem(model.inputSystem)"
                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
-                <span class="add-on wsid"
+                <span class="add-on wsid input-group-addon"
                     title="{{inputSystems[model.inputSystem].languageName}}">{{inputSystems[model.inputSystem].abbreviation}}</span>
                 <!--
                 <dc-formattedtext class="dc-formattedtext"

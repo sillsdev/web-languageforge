@@ -1,9 +1,13 @@
-<div class="dc-example">
-    <div ng-show="control.rights.canEditEntry() && $state.is('editor.entry')"
-        class="deleteX pull-right">
-        <i data-ng-click="remove(index)" title="Delete Example"
-            class="icon-remove"></i>
+<div class="dc-example card">
+    <div class="card-header">
+        <div ng-show="control.rights.canEditEntry() && $state.is('editor.entry')"
+             class="deleteX pull-right">
+            <i data-ng-click="remove(index)" title="Delete Example"
+               class="fa fa-times"></i>
+        </div>
+        Example {{index+1}}
     </div>
-    <label class="example-label">Example {{index+1}}</label>
-    <dc-fieldrepeat config="config" model="model" control="control"></dc-fieldrepeat>
+    <div class="card-block">
+        <dc-fieldrepeat config="config" model="model" control="control"></dc-fieldrepeat>
+    </div>
 </div>
