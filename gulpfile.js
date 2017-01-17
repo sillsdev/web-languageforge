@@ -525,6 +525,10 @@ gulp.task('test-e2e-doTest', function (cb) {
       demand: false,
       describe: 'bool for jasmine reporter verbosity.  true for more detail',
       type: 'boolean' })
+    .option('dictionary', {
+      demand: false,
+      describe: 'temporary bool for only running dictionary E2E tests',
+      type: 'boolean' })
     .help('?')
     .alias('?', 'help')
     .example('$0 test-e2e-run --webserverHost languageforge.local',
@@ -552,6 +556,13 @@ gulp.task('test-e2e-doTest', function (cb) {
     specs.push('test/app/languageforge/**/e2e/' + specString + '.spec.js');
   } else {
     specs.push('test/app/scriptureforge/**/e2e/' + specString + '.spec.js');
+  }
+
+  if (params.dictionary) {
+    specs = [
+      'test/app/allspecs/e2e/*.spec.js',
+      'test/app/languageforge/**/e2e/editor-entry.spec.js',
+      'test/app/languageforge/**/e2e/editor-comments.spec.js'];
   }
 
   // Get the selenium server address
@@ -1005,6 +1016,8 @@ gulp.task('sass:watch', function () {
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/forgot_password/*.scss', gulp.series('sass:forgot_password'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/home/*.scss', gulp.series('sass:home'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/*.scss', gulp.series('sass:lexicon'));
+  gulp.watch('src/angular-app/languageforge/lexicon/directive/**/*.scss', gulp.series('sass:lexicon'));
+  gulp.watch('src/angular-app/languageforge/lexicon/views/**/*.scss', gulp.series('sass:lexicon'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/login/*.scss', gulp.series('sass:login'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/new-project/*.scss', gulp.series('sass:new-project'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/projects/*.scss', gulp.series('sass:projects'));

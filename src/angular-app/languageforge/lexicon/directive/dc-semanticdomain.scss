@@ -20,21 +20,31 @@ form.dc-semanticdomain .controls > div {
 }
 
 .dc-semanticdomain-value {
-    line-height: normal;
-    border: 2px solid gray;
-    padding: 3px;
-    border-radius: 0;
+    border: 1px solid $lf-lines;
+    padding: $input-padding-y $input-padding-x;
+    border-radius: $border-radius;
 }
 
-form.dc-semanticdomain img.closeicon {
+form.dc-semanticdomain i.closeicon {
     position: absolute;
     top: -6px;
     right: 0;
-    padding-right: 2px;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid $lf-lines;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    text-align: center;
+}
+form.dc-semanticdomain i.closeicon:hover {
+  background: $brand-danger;
+  color: #fff;
 }
 
 .dc-semanticdomain-value select, dc-semanticdomain .addItem {
-    margin-bottom: 20px;
+    margin: 0 0 20px;
 }
 
 dc-semanticdomain .spacing-after {
