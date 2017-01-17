@@ -370,5 +370,5 @@ After editting the client.js file you have to use browserify to get put all of t
 
 To browserify the client.js file from the root folder:
 ````
-./node_modules/.bin/browserify src/node/client.js -o src/node/static/dist/bundle.js
+gulp build-node
 ````

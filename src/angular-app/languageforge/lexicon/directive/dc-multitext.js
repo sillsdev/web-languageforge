@@ -46,6 +46,11 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
         return languageSpanPattern.test($scope.model[tag].value);
       };
 
+      $scope.getFieldId = function getFieldId(entryId, tag) {
+        if (!entryId) return '';
+
+        return entryId + ((tag) ? '~' + tag : '');
+      }
     }]
   };
 }]);

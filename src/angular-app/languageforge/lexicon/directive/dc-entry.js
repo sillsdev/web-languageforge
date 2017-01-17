@@ -42,7 +42,11 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
           $scope.control.deleteEntry($scope.control.currentEntry);
         };
 
-        $.getScript("/node/static/dist/bundle.js");
+        window.createAndSubscribeDoc("realTime1");
+        window.createAndSubscribeDoc("realTime2");
+        window.createAndSubscribeDoc("realTime1");
+        window.createAndSubscribeDoc("realTime2");
+        window.createAndSubscribeDoc("realTime3", true);
       }],
 
       link: function (scope, element, attrs, controller) {

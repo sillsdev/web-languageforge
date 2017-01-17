@@ -9,12 +9,17 @@ ShareDB.types.register(richText.type);
 var backend = new ShareDB();
 var connection = backend.connect();
 
-startServer();
+function WordFieldConcat(word, id){
+  var a = word.concat('~',id);
+  return a;
+}
 
-// Set up documents for listening
-createDoc('example', 'realTime1');
-createDoc('example', 'realTime2');
-createDoc('example', 'realTime3');
+function GetIDfromWordFieldConcat(con){
+  var a = con.split('~');
+  return a[1];
+}
+
+startServer();
 
 // Create initial document then fire callback
 function createDoc(collection, id) {
@@ -37,6 +42,28 @@ function startServer() {
   // Connect any incoming WebSocket connection to ShareDB
   var wss = new WebSocket.Server({server: server});
   wss.on('connection', function(ws, req) {
+    ws.on('message', function(msg) {
+      // console.log(wss);
+      var JSONMsg = JSON.parse(msg);
+      if (typeof(JSONMsg.b) == "string") {
+        createDoc(JSONMsg.c,JSONMsg.b);
+        console.log("hello!" + JSONMsg.b);
+        //ws.send(JSON.stringify({"status": "success", "id": JSONMsg.b, "collection": JSONMsg.c}));
+        ws.send(JSON.stringify({"a": "bs", "b": JSONMsg.b, "c": JSONMsg.c, "d": "success"}));
+      } else if (typeof(JSONMsg.b) == "object") {
+        for (var i = 0; i<JSONMsg.b.length; i++) {      
+          createDoc(JSONMsg.c,JSONMsg.b[i]);
+          console.log("hello2");
+          ws.send(JSON.stringify({"status": "success", "id": JSONMsg.b[i], "collection": JSONMsg.c, "d": "success"}));
+        }
+      } else {
+        // console.log("not here");
+      }
+      //  else {
+      //   throw "unknown type of id";
+      // }
+    // console.log("the message is",msg);
+    });
     var stream = new WebSocketJSONStream(ws);
     backend.listen(stream);
   });
@@ -57,6 +84,6 @@ function getJsonObjFromFile(sessionId){
       return false;
   }
   return jsonObj;
-} 
+}
 
 //getJsonObjFromFile("t8vcdm2gb2235a88ps696liv35");
