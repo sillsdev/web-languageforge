@@ -24,7 +24,7 @@
             <div data-ng-switch-when="multitext">
                 <dc-multitext class="dc-item" control="control"
                     config="config.fields[fieldName]"
-                    model="model[fieldName]"
+                    model="model[fieldName]" field-name="fieldName"
                     select-field="control.selectFieldForComment(fieldName, model[fieldName], inputSystem)"></dc-multitext>
                 <comment-bubble control="control" field="fieldName"></comment-bubble>
             </div>

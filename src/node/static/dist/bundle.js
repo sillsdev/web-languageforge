@@ -17418,7 +17418,7 @@ function getWebSocketUrl() {
 }
 
 function getWebSocketMsgUrl() {
-	var url = 'ws://' + window.location.host;
+  var url = 'ws://' + window.location.host;
   return (url.endsWith(':8079')) ? url : url + ':8079';
 }
 
@@ -17426,6 +17426,7 @@ function getWebSocketMsgUrl() {
 var socket = new WebSocket(getWebSocketUrl());
 var msgSocket = new WebSocket(getWebSocketMsgUrl());
 var connection = new sharedb.Connection(socket);
+var quillEditors = [];
 
 // For testing reconnection
 window.disconnect = function() {
@@ -17453,8 +17454,7 @@ function waitForConnection(callback) {
 }
 
 function WordFieldConcat(word, id){
-  var a = word.concat('~',id);
-  return a;
+  return word.concat('~',id);
 }
 
 function GetIDfromWordFieldConcat(con){
@@ -17463,6 +17463,36 @@ function GetIDfromWordFieldConcat(con){
 }
 
 window.realTime = {};
+window.realTime.createAndSubscribeRichTextDoc = function createAndSubscribeRichTextDoc(id, quill){
+  quillEditors[id] = quill;
+  sendCollectionId(JSON.stringify({"b": id, "a": "bs", "c": "collection"}));
+  msgSocket.onmessage = function(event) {
+    var msg = JSON.parse(event.data);
+    if (msg.e == "success") {
+      connectRichTextDoc(msg.c, msg.b, quillEditors[msg.b]);
+    }
+  }
+};
+
+function connectRichTextDoc(collection, id, quill) {
+  var doc = connection.get(collection, id);
+  doc.subscribe(function(err) {
+    if (err) throw err;
+
+    quill.setContents(doc.data);
+
+    quill.on('text-change', function(delta, oldDelta, source) {
+      if (source !== 'user') return;
+      doc.submitOp(delta, {source: quill});
+    });
+
+    doc.on('op', function(op, source) {
+      if (source === quill) return;
+      quill.updateContents(op);
+    });
+  });
+}
+
 window.realTime.createAndSubscribeDoc = function createAndSubscribeDoc(id, isNgQuill){
   // Connect to both text field
   var wordID = id;
@@ -17471,16 +17501,16 @@ window.realTime.createAndSubscribeDoc = function createAndSubscribeDoc(id, isNgQ
     wordID = WordFieldConcat(word, id);
     document.getElementById(id).id = wordID;
   }
-	// console.log(wordID);
+
   sendCollectionId(JSON.stringify({"b": wordID, "a": "bs", "c": "collection","d": isNgQuill}));
-	msgSocket.onmessage = function(event) {
-		// console.log("receive message");
-		var msg = JSON.parse(event.data);
-		if (msg.e == "success") {
-  		connectDoc(msg.c, msg.b, msg.d);
-		}
-	}
-}
+  msgSocket.onmessage = function(event) {
+    // console.log("receive message");
+    var msg = JSON.parse(event.data);
+    if (msg.e == "success") {
+      connectDoc(msg.c, msg.b, msg.d);
+    }
+  }
+};
 
 // Create local Doc instance mapped to collection document with id
 // Potentially, collection could be the dictionary id (not necessary if we use entry id as collection)
@@ -17488,16 +17518,16 @@ window.realTime.createAndSubscribeDoc = function createAndSubscribeDoc(id, isNgQ
 function connectDoc(collection, id, isNgQuill) {
   isNgQuill = isNgQuill || false;
   var doc = connection.get(collection, id);
-	var textEditorElement;
+  var textEditorElement;
   doc.subscribe(function(err) {
     if (err) throw err;
-		console.log(collection,":",id,":",isNgQuill);
+
     if (isNgQuill) {
-			textEditorElement = document.getElementById(id).getElementsByClassName('ql-container')[0];
+      textEditorElement = document.getElementById(id).getElementsByClassName('ql-container')[0];
     } else {
       textEditorElement = document.getElementById(id);
     }
-		console.log(textEditorElement);
+
     if (textEditorElement === null) return;
     var quill = new Quill(textEditorElement);
     var clipboard = textEditorElement.getElementsByClassName("ql-clipboard");
@@ -17518,4 +17548,5 @@ function connectDoc(collection, id, isNgQuill) {
     });
   });
 }
+
 },{"quill":19,"rich-text":20,"sharedb/lib/client":24}]},{},[30]);
