@@ -17,7 +17,7 @@
                     <li><a data-ng-href="{{audioDownloadUrl()}}">
                         <i class="fa fa-download"></i>{{'Download' | translate}} '{{displayFilename()}}'</a></li>
                     <li><a data-ng-click="deleteAudio()">
-                        <i class="fa fa-remove"></i>{{'Delete' | translate}} '{{displayFilename()}}'</a></li>
+                        <i class="fa fa-times"></i>{{'Delete' | translate}} '{{displayFilename()}}'</a></li>
                     <li class="divider"></li>
                     <li><a data-ng-click="show.audioUpload = true">
                         <i class="fa fa-cloud-upload"></i>{{'Upload a replacement' | translate}}</a></li>
@@ -39,16 +39,16 @@
     <!-- upload control -->
     <div data-ng-show="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">
         <div class="deleteX pull-right">
-            <i data-ng-click="show.audioUpload = false" title="Cancel Uploading Audio" class="icon-remove"
+            <i data-ng-click="show.audioUpload = false" title="Cancel Uploading Audio" class="fa fa-times"
                id="audioAddCancel"></i>
         </div>
         <div class="drop-box" data-ngf-drop="uploadAudio($file)" data-ngf-drag-over-class="'dragover'">
             <h4 data-translate="Drop an audio file here"></h4>
             <p data-translate="or if you prefer..."></p>
-            <div class="btn" id="browseButton" data-ngf-select="uploadAudio($file)" data-translate="Browse..."></div>
+            <div class="btn btn-secondary" id="browseButton" data-ngf-select="uploadAudio($file)" data-translate="Browse..."></div>
         </div>
         <div data-ngf-no-file-drop>
-            <div class="btn" ngf-select="uploadAudio($file)" data-translate="Browse..."></div>
+            <div class="btn btn-secondary" ngf-select="uploadAudio($file)" data-translate="Browse..."></div>
         </div>
     </div>
 
