@@ -14,9 +14,8 @@ import { AuthService } from '../shared/services/auth.service';
 })
 export class AuthComponent implements OnInit {
 
-  currentUser = new User(null, '', '', '', '', 'vistor');
-  submitted = false;
-  authForm: NgModel;
+  private currentUser: User = new User();
+  private authForm: NgModel;
   @ViewChild('authForm') currentForm: NgModel;
 
   constructor(
@@ -25,11 +24,13 @@ export class AuthComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      this.goToDashboard();
+    }
   }
 
   onSubmit() {
-    this.submitted = true;
-    this.authService.login(this.currentUser).then(response => {
+    this.authService.login(this.currentUser.username, this.currentUser.password).subscribe(response => {
       if (response) {
         this.goToDashboard();
       } else {

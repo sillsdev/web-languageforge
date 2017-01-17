@@ -1,7 +1,7 @@
 import { User } from '../models/user';
 
 export const USER = [
-    new User(0, 'admin@example.com', 'pass', 'admin', 'admin', 'admin'),
-    new User(1, 'editor@example.com', 'pass', 'Editor', 'Last', 'editor'),
-    new User(1, 'reviewer@example.com', 'pass', 'Reviewer', 'Last', 'reviewer')
+    new User('1', 'admin', 'pass'),
+    new User('2', 'editor', 'pass'),
+    new User('3', 'reviewer@example.com', 'pass')
 ];

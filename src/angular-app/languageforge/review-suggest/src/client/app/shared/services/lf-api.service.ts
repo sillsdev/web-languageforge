@@ -23,7 +23,7 @@ export class LfApiService {
      */
     private sendRequest(url: string, body: any) {
         let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        let options = new RequestOptions({ headers: headers, withCredentials: true });
         return this.http.post(url, body, options);
     }
 
@@ -79,6 +79,12 @@ export class LfApiService {
     getUserProfile() {
         return this.callApi('user_readProfile').map(result => {
             result.data = result.data.userProfile;
+            return result;
+        });
+    }
+
+    user_authenticate(username: string, password: string) {
+        return this.callApi('user_authenticate', [username, password]).map(result => {
             return result;
         });
     }

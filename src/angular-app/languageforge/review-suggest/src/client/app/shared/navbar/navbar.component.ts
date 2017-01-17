@@ -21,4 +21,8 @@ export class NavbarComponent {
     var toastContent = '<span><b>You have been logged out!</b></span>';
     Materialize.toast(toastContent, 3000, 'orange');
   }
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
 }
