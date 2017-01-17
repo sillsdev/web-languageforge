@@ -1,8 +1,12 @@
 body{
   background: white;
+    display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 #app-container-for-bootstrap {
   margin-top: 60px;
+  flex: 1;
 }
 .card .form-group-last {
   margin-bottom: 0;
@@ -15,6 +19,7 @@ body{
   background-color: $lf-blue;
   color: white;
   padding: 60px 0;
+  margin-top: 50px;
 
   .links{
     color: white;
@@ -43,3 +48,4 @@ body{
   margin-bottom: 0;
   border-radius: 0;
   }
+
