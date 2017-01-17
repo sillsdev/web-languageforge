@@ -175,4 +175,17 @@ class LexProjectCommands
         }
     }
 
+        /**
+        * @param string $projectId
+        * @throws \Exception
+        * @return A JSON object of the configuration settings
+        *
+        */
+       public static function readConfig($projectId)
+    {
+        $project = new LexProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
+        return $project->config;
+    }
+
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, Input } from '@angular/core';
 import { MultitextComponent } from '../multitext/multitext.component';
 import { LexEntry } from '../shared/models/lex-entry';
 import { LfApiService } from '../shared/services/lf-api.service';
@@ -14,7 +14,10 @@ import { Constants } from '../shared/constants';
 
 export class WordDetailsComponent implements OnInit {
 
+  @Input('wordMultitextLanguages') public wordMultitextLanguages: string[] = [];
+  @Input('definitionMultitextLanguages') public definitionMultitextLanguages: string[] = [];
   @ViewChildren(MultitextComponent) multitextBoxes: QueryList<MultitextComponent>;
+
   showDetails: Boolean=false;
   detailLabels: any[] = ["Citation Form", "Pronunciation", "CV Pattern", "Tone"];
   id=""

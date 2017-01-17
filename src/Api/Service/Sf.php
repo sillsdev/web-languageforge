@@ -694,6 +694,10 @@ class Sf
         return true;
     }
 
+    public function lex_configuration_read() {
+        return LexProjectCommands::readConfig($this->projectId);
+    }
+
     public function lex_project_removeMediaFile($mediaType, $fileName)
     {
         return LexUploadCommands::deleteMediaFile($this->projectId, $mediaType, $fileName);
