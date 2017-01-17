@@ -87,10 +87,6 @@ class Base
             $this->addCssFiles($this->getThemePath()."/cssBootstrap4", array(), false);
             array_unshift($this->data['cssFiles'], "vendor_bower/bootstrap/dist/css/bootstrap-flex.css");
             array_unshift($this->data['cssFiles'], "vendor_bower/bootstrap/dist/css/bootstrap.css");
-            array_unshift($this->data['vendorFilesJs'], "vendor_bower/bootstrap/dist/js/bootstrap.js");
-            array_unshift($this->data['vendorFilesMinJs'], "vendor_bower/bootstrap/dist/js/bootstrap.min.js");
-            array_unshift($this->data['vendorFilesJs'], "vendor_bower/tether/dist/js/tether.js");
-            array_unshift($this->data['vendorFilesMinJs'], "vendor_bower/tether/dist/js/tether.min.js");
         } else {
             $this->addCssFiles($this->getThemePath()."/cssBootstrap2", array(), false);
             $this->addCssFiles("Site/views/shared/cssBootstrap2", array('bootstrap.css'), false);
