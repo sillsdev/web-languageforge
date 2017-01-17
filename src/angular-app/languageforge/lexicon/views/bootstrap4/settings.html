@@ -3,13 +3,13 @@
     <!-- <h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2> -->
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#project" role="tab">{{'Project Properties' | translate}}</a>
+            <a class="nav-link active" data-toggle="tab" href="#settings-project" role="tab">{{'Project Properties' | translate}}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" data-toggle="tab" href="#archive" role="tab">{{'Archive' | translate}}</a>
+            <a class="nav-link disabled" data-toggle="tab" href="#settings-archive" role="tab">{{'Archive' | translate}}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#delete" role="tab">{{'Delete' | translate}}</a>
+            <a class="nav-link" data-toggle="tab" href="#settings-delete" role="tab">{{'Delete' | translate}}</a>
         </li>
     </ul>
 
@@ -17,7 +17,7 @@
     <!--Tab Content-->
     <div class="tab-content">
         <!--Project Settings-->
-            <div role="tabpanel" class="tab-pane fade in active" id="project">
+            <div role="tabpanel" class="tab-pane fade in active" id="settings-project">
                     <div class="control-group">
                         <br>
                         <div class="controls col-xs-12">
@@ -47,12 +47,12 @@
             </div>
 
         <!--Archive (Currently Inactive)-->
-            <div role="tabpanel" class="tab-pane fade" id="archive">
+            <div role="tabpanel" class="tab-pane fade" id="settings-archive">
                 <br><pui-archive-project pui-action-in-progress="actionInProgress">
                 </pui-archive-project><br><br>
             </div>
         <!--Delete-->
-            <div role="tabpanel" class="tab-pane fade" id="delete">
+            <div role="tabpanel" class="tab-pane fade" id="settings-delete">
                 <br><pui-delete-project></pui-delete-project><br><br>
             </div>
     </div>
