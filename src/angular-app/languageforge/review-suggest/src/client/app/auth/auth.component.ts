@@ -30,7 +30,6 @@ export class AuthComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.currentUser);
     this.authService.login(this.currentUser.username, this.currentUser.password).subscribe(response => {
       if (response) {
         this.goToDashboard();
