@@ -3,13 +3,13 @@ form.dc-multitext .control-group {
 }
 
 /* TODO Review when doing the Bootstrap 3 upgrade. Bootstrap seems to overly constrain input sizes artificially. */
-form.dc-multitext .controls input[type="text"], 
+form.dc-multitext .controls input[type="text"],
 form.dc-multitext .uneditable-input,
 form.dc-multitext textarea {
     width: 335px;
 }
 
-#lexAppCommentView form.dc-multitext .controls input[type="text"], 
+#lexAppCommentView form.dc-multitext .controls input[type="text"],
 #lexAppCommentView form.dc-multitext .uneditable-input,
 #lexAppCommentView form.dc-multitext textarea {
     width: 165px;
@@ -25,12 +25,6 @@ form.dc-multioptionlist label,
 form.dc-semanticdomain label {
     font-weight:bold;
     cursor: default;
-}
-
-form.dc-multitext .wsid {
-    width: 30px;
-    color: #777;
-    text-align: right;
 }
 
 form.dc-multitext .uneditable-input {

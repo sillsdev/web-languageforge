@@ -3,10 +3,9 @@ form.dc-multiparagraph .control-group {
 }
 
 /* TODO Review when doing the Bootstrap 3 upgrade. Bootstrap seems to overly constrain input sizes artificially. */
-form.dc-multiparagraph .controls input[type="text"], 
+form.dc-multiparagraph .controls input[type="text"],
 form.dc-multiparagraph .uneditable-input,
 form.dc-multiparagraph textarea {
-    width: 335px;
 }
 
 #lexAppCommentView form.dc-multiparagraph .ta-editor {
@@ -16,12 +15,6 @@ form.dc-multiparagraph textarea {
 form.dc-multiparagraph label {
     font-weight:bold;
     cursor: default;
-}
-
-form.dc-multiparagraph .wsid {
-    width: 30px;
-    color: #777;
-    text-align: right;
 }
 
 form.dc-multiparagraph .uneditable-input {
@@ -39,11 +32,7 @@ form.dc-multiparagraph .uneditable-input:hover {
 }
 
 form.dc-multiparagraph textarea {
-    border-radius: 0 4px 4px 0;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    padding-left: 6px;
-    padding-right: 6px;
+    border-radius: 0 $border-radius $border-radius 0 !important;
 }
 
 form.dc-multiparagraph textarea:focus {
@@ -64,8 +53,8 @@ form.dc-multiparagraph .wsid {
     border: 0;
 }
 
-form.dc-multiparagraph input[type="text"], 
-form.dc-multiparagraph textarea, 
+form.dc-multiparagraph input[type="text"],
+form.dc-multiparagraph textarea,
 form.dc-multiparagraph .uneditable-input {
     margin-top: -1px;
     margin-bottom: -1px;
