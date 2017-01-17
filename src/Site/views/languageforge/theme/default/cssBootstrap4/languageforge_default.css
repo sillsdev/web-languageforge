@@ -2692,7 +2692,8 @@ tbody.collapse.in {
   margin-left: 1rem; }
 
 .nav-tabs {
-  border-bottom: 1px solid #ddd; }
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px; }
   .nav-tabs::after {
     content: "";
     display: table;
