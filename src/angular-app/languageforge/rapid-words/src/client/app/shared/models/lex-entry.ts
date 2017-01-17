@@ -1,4 +1,4 @@
-class LexSense {
+export class LexSense {
     guid: string;
 
     /**
@@ -26,6 +26,10 @@ class LexSense {
             this.guid = jsonSense.guid;
             this.definition = jsonSense.definition;
             this.semanticDomain = jsonSense.semanticDomain;
+        } else {
+            this.guid = '';
+            this.definition = {};
+            this.semanticDomain = {};
         }
     }
 
@@ -62,6 +66,11 @@ export class LexEntry {
             this.isDeleted = jsonResponse.isDeleted;
             this.lexeme = jsonResponse.lexeme;
             this.senses = LexSense.mapSensesResponse(jsonResponse.senses);
+        } else {
+            this.id = '';
+            this.isDeleted = false;
+            this.lexeme = {};
+            this.senses = [];
         }
     }
 

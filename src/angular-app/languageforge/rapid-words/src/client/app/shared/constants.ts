@@ -8,4 +8,9 @@ export namespace Constants {
             return new LfApiService(http, 'http://languageforge.local');
         }
     }
+
+    export module MultitextEntry {
+        export const WORD_COMPONENT = 'Word';
+        export const MEANING_COMPONENT = 'Meaning';
+    }
 }

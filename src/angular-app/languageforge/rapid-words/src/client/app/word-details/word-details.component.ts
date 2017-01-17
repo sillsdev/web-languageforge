@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { MultitextComponent } from '../multitext/multitext.component';
 import { LexEntry } from '../shared/models/lex-entry';
 import { LfApiService } from '../shared/services/lf-api.service';
+import { Constants } from '../shared/constants';
+
 @Component({
   moduleId: module.id,
   selector: 'worddetails',
@@ -30,32 +32,16 @@ export class WordDetailsComponent implements OnInit {
   }
 
   sendEntry() {
-    console.log(this.getAllMultitextBoxes())
-    this.lfApiService.addEntry(this.getAllMultitextBoxes()).subscribe( response => {
-      console.log(response);
+    this.lfApiService.addEntry(this.constructLexEntryFromMultitexts()).subscribe( response => {
     });
   }
 
-  getAllMultitextBoxes() {
-    let rtn: any = [];
-    let count: number = 0;
-    let multitextBoxContentArray: any = [];
-    let entryObject = new LexEntry();
-    if (this.id!=""){
-      entryObject.id=this.id;
-    }
-    this.multitextBoxes.forEach(function(multitextBox) {
-      let language=multitextBox.language;
-      console.log("language:"+language);
-      if (count == 0){
-        entryObject.lexeme={[language]: {value: multitextBox.content}};
-      }
-      else{
-        multitextBoxContentArray.push(multitextBox.content);
-        entryObject.senses=multitextBoxContentArray;
-      }
-      count+=1;
-    })
-    return entryObject;
+  constructLexEntryFromMultitexts() {
+    var lexEntry = new LexEntry();
+    this.multitextBoxes.forEach( multitextBox => {
+      multitextBox.addLexemeOrSenseToLexEntry(lexEntry);
+    });
+
+    return lexEntry;
   }
 }
