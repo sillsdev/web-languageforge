@@ -20,17 +20,27 @@ form.dc-multioptionlist .controls > div {
 }
 
 .dc-multioptionlist-value {
-    line-height: normal;
-    border: 2px solid gray;
-    padding: 3px;
-    border-radius: 0;
+    border: 1px solid $lf-lines;
+    padding: $input-padding-y $input-padding-x;
+    border-radius: $border-radius;
 }
 
-form.dc-multioptionlist img.closeicon {
-    position: absolute;
-    top: -6px;
-    right: 0;
-    padding-right: 2px;
+form.dc-multioptionlist i.closeicon {
+  position: absolute;
+  top: -6px;
+  right: 0;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid $lf-lines;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  text-align: center;
+}
+form.dc-multioptionlist i.closeicon:hover {
+  background: $brand-danger;
+  color: #fff;
 }
 
 .dc-multioptionlist-value select, dc-multioptionlist .addItem {
