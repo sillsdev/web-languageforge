@@ -29,7 +29,7 @@
         <select [(ngModel)]="simpleValue"> // value is a string or number
         <option *ngFor="let semanticDomain of semanticDomains" >{{semanticDomain}}</option>
     </select>
-    <word-list [entries]="allEntries"></word-list>
+        <word-list [entries]="allEntries"></word-list>
         <ul>
           <li *ngFor="let word of words">
             <h6><strong>{{word}}</strong></h6>
@@ -48,6 +48,7 @@
       <div class="col-4">
         <div class="row justify-content-center">
           <h3>Comment Stuff</h3>
+        </div>
         </div>
     </div>
   </div>

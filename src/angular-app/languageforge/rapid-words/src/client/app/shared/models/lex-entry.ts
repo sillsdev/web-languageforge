@@ -1,9 +1,9 @@
-class LexSense {
+export class LexSense {
     guid: string;
 
     /**
      * This is an object containing key-value pairs where the key is the
-     * language code and the value is another objecting containing a single
+     * language code and the value is another object containing a single
      * key-value pair where the key is "value" and that key's value is 
      * a string containing the definition.
      * Ex:
@@ -26,6 +26,10 @@ class LexSense {
             this.guid = jsonSense.guid;
             this.definition = jsonSense.definition;
             this.semanticDomain = jsonSense.semanticDomain;
+        } else {
+            this.guid = '';
+            this.definition = {};
+            this.semanticDomain = {};
         }
     }
 
@@ -62,6 +66,20 @@ export class LexEntry {
             this.isDeleted = jsonResponse.isDeleted;
             this.lexeme = jsonResponse.lexeme;
             this.senses = LexSense.mapSensesResponse(jsonResponse.senses);
+        } else {
+            this.id = '';
+            this.isDeleted = false;
+            this.lexeme = {};
+            this.senses = [];
+        }
+    }
+
+    asJsonObject() {
+        return {
+            id: this.id,
+            lexeme: this.lexeme,
+            isDeleted: this.isDeleted,
+            senses: this.senses
         }
     }
 

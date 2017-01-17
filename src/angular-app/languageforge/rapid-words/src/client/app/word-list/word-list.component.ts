@@ -31,7 +31,7 @@ export class WordListComponent {
      */
     getPreviewDefinition(entry: LexEntry) {
         let firstSenseDefinition = entry.senses[0].definition;
-        if (firstSenseDefinition) {
+        if (Object.keys(firstSenseDefinition).length > 0) {
             return firstSenseDefinition[Object.keys(firstSenseDefinition)[0]].value;
         } else {
             return "";

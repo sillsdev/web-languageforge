@@ -1,4 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Constants } from '../shared/constants';
+import { LexEntry, LexSense } from '../shared/models/lex-entry';
 
 @Component({
   moduleId: module.id,
@@ -31,4 +34,20 @@ export class MultitextComponent implements OnInit {
 
   getContent() {
   }
+
+  addLexemeOrSenseToLexEntry(lexEntry: LexEntry) {
+    if (this.label == Constants.MultitextEntry.WORD_COMPONENT) { //lexeme
+      for (let langIndex in this.languages) {
+        lexEntry.lexeme[this.languages[langIndex]] = { value: this.content[langIndex] };
+      }
+    } else {
+      var lexSense = new LexSense();
+
+      for (let langIndex in this.languages) {
+        lexSense.definition[this.languages[langIndex]] =  { value: this.content[langIndex] };
+      }
+      lexEntry.senses.push(lexSense);
+    }
+  }
+
 }
