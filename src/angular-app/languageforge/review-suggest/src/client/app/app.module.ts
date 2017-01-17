@@ -20,7 +20,15 @@ import { Constants } from './shared/constants';
 import { LoggedInGuard } from './shared/logged-in.guard';
 
 @NgModule({
-  imports: [BrowserModule, HttpModule, AppRoutingModule, DashboardModule, AuthModule, TestServicesModule, SharedModule.forRoot(), MaterializeModule, ReviewModule],
+  imports: [BrowserModule, 
+  HttpModule, 
+  AppRoutingModule, 
+  DashboardModule, 
+  AuthModule, 
+  TestServicesModule, 
+  SharedModule.forRoot(), 
+  MaterializeModule, 
+  ReviewModule],
   declarations: [AppComponent],
   providers: [{
     provide: APP_BASE_HREF,
