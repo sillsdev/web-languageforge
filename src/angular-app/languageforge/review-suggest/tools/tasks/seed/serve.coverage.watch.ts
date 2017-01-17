@@ -14,6 +14,7 @@ export = () => {
     },
     port: Config.COVERAGE_PORT,
     files: watchedFiles,
-    logFileChanges: false
+    logFileChanges: false,
+    cors: true
   });
 };

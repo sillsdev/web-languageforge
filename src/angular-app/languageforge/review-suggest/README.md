@@ -10,7 +10,7 @@ It was seeded from
 1. Run `npm install` to install node modules.
 2. Where will you run it?
     - Run `npm start` to fire up the application locally
-    - Run `npm build.prod` and load it in browser from vm
+    - Run `npm run build.prod` and load it in browser from vm
         - http://m.languageforge.local/app/review-suggest/
 
 # Comments
