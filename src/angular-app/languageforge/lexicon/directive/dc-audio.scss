@@ -7,10 +7,7 @@ div.dc-audio {
 }
 
 div.dc-audio {
-    width: 346px;
     min-height: 28px;
-    border-left: 1px solid #CCC;
-    margin-left: 1px;
 }
 
 #lexAppCommentView div.dc-audio {
@@ -34,7 +31,6 @@ div.dc-audio {
 }
 
 .dc-audio .audioProgress {
-    font-size: 9pt;
     font-weight: normal;
 }
 
@@ -54,17 +50,15 @@ div.dc-audio {
 }
 
 .dc-audio .drop-box {
-    padding-top: 10px;
-    height: 120px;
+  padding: 14px;
+  margin-bottom: 20px;
 }
 
 .dc-audio p {
-    font-size: initial;
 }
 
 .dc-audio .deleteX {
-    font-size: initial;
-    margin-right: -20px;
+    margin-right: 7px;
 }
 
 .dc-audio .buttonAppend {
@@ -86,5 +80,4 @@ div.dc-audio {
 }
 
 .dc-audio a {
-    font-size: initial;
 }
