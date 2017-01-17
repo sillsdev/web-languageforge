@@ -5,7 +5,7 @@ import { ReviewComponent } from './review.component';
 @NgModule({
   imports: [
     RouterModule.forChild([
-      { path: 'definition', component: ReviewComponent }
+      { path: 'review', component: ReviewComponent }
     ])
   ],
   exports: [RouterModule]
