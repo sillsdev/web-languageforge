@@ -6748,10 +6748,14 @@ Pagination styling for page indexing
   content: ""; }
 
 body {
-  background: white; }
+  background: white;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column; }
 
 #app-container-for-bootstrap {
-  margin-top: 60px; }
+  margin-top: 60px;
+  flex: 1; }
 
 .card .form-group-last {
   margin-bottom: 0; }
@@ -6763,7 +6767,8 @@ body {
 .footer {
   background-color: #104060;
   color: white;
-  padding: 60px 0; }
+  padding: 60px 0;
+  margin-top: 50px; }
   .footer .links {
     color: white;
     border-bottom: 1px dotted white;
@@ -6773,8 +6778,7 @@ body {
 
 .newline {
   display: block; }
-.formspacing {
-  line-height: 25px; }
+
 .modal.in {
   display: block; }
 
