@@ -1,19 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Dictionary } from '../shared/models/dictionary';
 
 import { DictionaryService } from '../shared/services/dictionary.service';
 
+import { MaterializeDirective, MaterializeAction } from 'angular2-materialize';
+
 @Component({
   moduleId: module.id,
-  selector: 'definition',
-  templateUrl: 'definition.component.html'
+  selector: 'review',
+  templateUrl: 'review.component.html'
 })
-export class DefinitionComponent implements OnInit {
+export class ReviewComponent implements OnInit {
 
-  title = 'Definition';
+  title = 'Review';
   idx = 0;
   currentWord: Dictionary;
   deck: Dictionary[];
+  comment: String;
 
   constructor(public dictionaryService: DictionaryService) { }
 
@@ -59,4 +62,17 @@ export class DefinitionComponent implements OnInit {
     this.incrementWord();
     console.log("I downvoted " + this.currentWord.id);
   }
+
+  public modalActions = new EventEmitter<string|MaterializeAction>();
+  openModal(){
+    this.modalActions.emit({ action:"modal", params:['open'] });
+  }
+
+  closeModal(){
+    this.modalActions.emit({ action:"modal", params:['close'] });
+    this.downVote();
+    console.log(document.getElementById("placeholderForComment").value);
+    document.getElementById("placeholderForComment").value="";
+  }
+
 }

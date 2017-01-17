@@ -6,16 +6,16 @@ import { RouterModule } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
 import { DictionaryService } from './services/dictionary.service';
 import { AuthService } from './services/auth.service';
+import { MaterializeModule } from './materialize.module';
 
-import { MaterializeDirective } from 'angular2-materialize/dist/index';
 
 /**
  * Do not specify providers for modules that might be imported by a lazy loaded module.
  */
 
 @NgModule({
-  imports: [CommonModule, RouterModule],
-  declarations: [NavbarComponent, MaterializeDirective],
+  imports: [CommonModule, RouterModule, MaterializeModule],
+  declarations: [NavbarComponent],
   exports: [NavbarComponent,
     CommonModule, FormsModule, RouterModule]
 })
