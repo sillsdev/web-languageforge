@@ -12,6 +12,7 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
       config: '=',
       model: '=',
       control: '=',
+      fieldName: '=',
       selectField: '&'
     },
     controller: ['$scope', '$state', 'sessionService', 'lexUtils',
@@ -46,11 +47,16 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
         return languageSpanPattern.test($scope.model[tag].value);
       };
 
-      $scope.getFieldId = function getFieldId(entryId, tag) {
-        if (!entryId) return '';
+      $scope.getFieldId = function getFieldId(fieldName, tag) {
+        if (!$scope.control.currentEntry.id || !fieldName) return '';
 
-        return entryId + ((tag) ? '~' + tag : '');
-      }
+        return 'entry:' + $scope.control.currentEntry.id + ':' + fieldName + ((tag) ? ':' + tag : '');
+      };
+      
+      $scope.editorCreated = function editorCreated(editor, fieldName, tag) {
+        var fieldId = $scope.getFieldId(fieldName, tag)
+        window.realTime.createAndSubscribeRichTextDoc(fieldId, editor);
+      };
     }]
   };
 }]);
