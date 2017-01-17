@@ -6,14 +6,13 @@
 			<div class="card-content">
 				<span class="card-title">Select Project</span>
 				<div class="row">
-					<div *ngFor="let project of projects" class="col">
-						<div class="card-panel">
-							<span routerLink="/review">{{project.name}}</span>
-						</div>
+					<div class="col-12">
+						<ul class="collection">
+							<li *ngFor="let project of projects" >
+								<a href="app/review-suggest/review" class="collection-item">{{project.name}}</a>
+							</li>
+						</ul>
 					</div>
-				</div>
-				<div class="card-action center-align">
-					<a (click)="openModal()" class="btn-large blue darken-1 waves-effect waves-light"><i class="large material-icons">create_new_folder</i><br>Join project</a>
 				</div>
 			</div>
 		</div>
