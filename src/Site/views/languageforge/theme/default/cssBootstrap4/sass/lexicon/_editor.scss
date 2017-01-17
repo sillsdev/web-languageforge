@@ -1,26 +1,18 @@
 @import '../base/_variables.scss';
 @import '../../../../../../../../vendor_bower/bootstrap/scss/variables';
 @import '../../../../../../../../vendor_bower/bootstrap/scss/mixins';
+@import '../../../../../../../../angular-app/languageforge/lexicon/views/editor.scss';
+@import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-audio.scss';
+@import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-example.scss';
+@import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-formattedtext.scss';
+@import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-multioptionlist.scss';
+@import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-multiparagraph.scss';
+@import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-multitext.scss';
+@import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-picture.scss';
+@import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-rendered.scss';
+@import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-semanticdomain.scss';
+@import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-sense.scss';
 
-.dc-rendered-word {
-  font-weight: bold;
-
-}
-.dc-rendered-senseContainer {
-  margin: 0 3px 0 3px;
-}
-.dc-rendered-partOfSpeech {
-  font-style: italic;
-}
-.dc-rendered-senseNumber {}
-.dc-rendered-definition {
-  margin: 0 3px 0 3px;
-}
-.dc-rendered-exampleContainer {}
-.dc-rendered-exampleSentence {
-  margin: 0 3px 0 3px;
-  font-style: italic;
-}
 #lexAppListView {
   .lexiconListItem {
     cursor: pointer;
@@ -38,16 +30,27 @@
     margin-right: 0;
   }
 }
+.lexAppToolbar {
+  border: 1px solid $lf-lines;
+  margin: 10px 0 20px;
+  padding: 4px;
+  width: 100%;
+  float: left;
+  background-color: #f6f6f6;
+  border-radius: $border-radius;
+}
 .hdrnav .hdrnav-container {
-  padding-bottom: 10px;
-  border-bottom: 1px solid $lf-lines;
-  margin-bottom: 20px;
   float: left;
   width: 100%;
   .btn-group {
     margin-left: 10px;
   }
 }
+form .wsid {
+  width: 50px;
+  text-align: right;
+}
+
 @include media-breakpoint-down(sm) {
   .dc-rendered-word {
     display: block;
