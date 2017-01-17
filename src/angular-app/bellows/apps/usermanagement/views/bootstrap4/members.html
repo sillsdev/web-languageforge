@@ -7,7 +7,8 @@
         </div>
     </form>
     <div id="newMembersDiv" class=" new-item" data-collapse="!newUserCollapsed">
-        <form class="form-group row  form-inline">
+        <form >
+            <div class="form-control row">
         <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
             <ul>
                 <li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
@@ -19,6 +20,7 @@
         </pui-typeahead>
         <button data-ng-model="addMode" class="btn btn-primary" data-ng-disabled="disableAddButton" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
         <span class="warning" data-ng-show="warningText">{{warningText}}</span>
+        </div>
         </form>
     </div>
   <listview search="queryUserList()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
