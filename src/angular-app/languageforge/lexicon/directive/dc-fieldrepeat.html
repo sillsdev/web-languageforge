@@ -3,7 +3,7 @@
         (config.fields[fieldName].hideIfEmpty && fieldContainsData(config.fields[fieldName].type, model[fieldName]))"
         data-ng-class="{selectableFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
         <div data-ng-switch data-on="config.fields[fieldName].type">
-            <div class="flex100" data-ng-switch-when="optionlist">
+            <div data-ng-switch-when="optionlist">
                 <dc-optionlist class="dc-item" control="control"
                     data-ng-click="control.selectFieldForComment(fieldName, model[fieldName])"
                     config="config.fields[fieldName]"
@@ -11,7 +11,7 @@
                     items="optionlists[config.fields[fieldName].listCode].items"></dc-optionlist>
                 <comment-bubble control="control" field="fieldName"></comment-bubble>
             </div>
-            <div class="flex100" data-ng-switch-when="multioptionlist">
+            <div data-ng-switch-when="multioptionlist">
                 <dc-multioptionlist data-ng-if="fieldName != 'semanticDomain'" class="dc-item"
                     config="config.fields[fieldName]" model="model[fieldName]"
                     items="optionlists[config.fields[fieldName].listCode].items"
@@ -21,20 +21,20 @@
                     select-field="control.selectFieldForComment(fieldName, model[fieldName], inputSystem, multioptionValue)"></dc-semanticdomain>
                 <comment-bubble control="control" field="fieldName"></comment-bubble>
             </div>
-            <div class="flex100" data-ng-switch-when="multitext">
+            <div data-ng-switch-when="multitext">
                 <dc-multitext class="dc-item" control="control"
                     config="config.fields[fieldName]"
                     model="model[fieldName]"
                     select-field="control.selectFieldForComment(fieldName, model[fieldName], inputSystem)"></dc-multitext>
                 <comment-bubble control="control" field="fieldName"></comment-bubble>
             </div>
-            <div class="flex100" data-ng-switch-when="multiparagraph">
+            <div data-ng-switch-when="multiparagraph">
                 <dc-multiparagraph class="dc-item" control="control"
                     config="config.fields[fieldName]" model="model[fieldName]"
                     select-field="control.selectFieldForComment(fieldName, model[fieldName], inputSystem)"></dc-multiparagraph>
                 <comment-bubble control="control" field="fieldName"></comment-bubble>
             </div>
-            <div class="flex100" data-ng-switch-when="pictures">
+            <div data-ng-switch-when="pictures">
                 <dc-picture class="dc-item" control="control"
                     config="config.fields[fieldName]"
                     pictures="model[fieldName]"></dc-picture>
