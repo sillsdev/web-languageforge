@@ -2,7 +2,10 @@
 	<h1>Test Services</h1>
 	<h2>Projects:</h2>
 	<ul>
-		<button *ngFor="let project of projects" (click)="setProject(project.id, project.projectName)" >{{ project.projectName }}</button>
+		<li *ngFor="let project of projects">
+			<button (click)="setProject(project.id, project.projectName)">{{ project.projectName }}</button>
+			<button (click)="getProjectSettings(project.id)">Get Project Settings</button>
+		</li>
 	</ul>
 	<h2>Words from {{ currentProjectName }}:</h2>
 	<ul>

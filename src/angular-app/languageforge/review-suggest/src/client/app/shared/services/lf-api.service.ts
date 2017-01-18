@@ -102,8 +102,8 @@ export class LfApiService {
         });
     }
 
-    project_settings_by_id(projectId: string) {
-        return this.callApi('project_settings_by_id', [projectId]).map(result =>{
+    project_read_by_id(projectId: string) {
+        return this.callApi('project_read', [projectId]).map(result =>{
             return result;
         })
     }

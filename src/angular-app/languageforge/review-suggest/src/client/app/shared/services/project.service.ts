@@ -26,9 +26,13 @@ export class ProjectService {
       return response.data;
     });
   }
-
-  selectProject(id: string){
-    
-  }
   
+  getProjectSettings(projectId: string) {
+    return this.lfApiService.project_read_by_id(projectId).map(response => {
+      if (response.success) {
+        localStorage.setItem('current_user_project_settings', response.data.entries);
+      }
+      return response.data;
+    });
+  }
 }
