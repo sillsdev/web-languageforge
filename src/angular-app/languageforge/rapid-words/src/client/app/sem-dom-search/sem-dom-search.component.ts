@@ -11,11 +11,13 @@ import {SemanticDomainCollection} from '../shared/models/semantic-domain.model';
 @Component({
     moduleId: module.id,
     selector: 'sem-dom-search',
-    templateUrl: 'sem-dom-search.component.html'
+    templateUrl: 'sem-dom-search.component.html',
+    styleUrls: ['sem-dom-search.component.css']
 })
 export class SemanticDomainSearchComponent {
     @Output() domainSelected: EventEmitter<SemanticDomain> = new EventEmitter();
 
+    selectedDomain: SemanticDomain;
     searchText: FormControl = new FormControl();
     searchResults: Array<SemanticDomain> = [];
     semanticDomains: SemanticDomainCollection = {};
@@ -44,8 +46,15 @@ export class SemanticDomainSearchComponent {
     // Domain was selected from the select box. Look it up and emit
     // the associated details.
     emitDomain(sem_dom_key: string) {
-        this.domainSelected.emit(this.semanticDomains[sem_dom_key]);
+        this.selectedDomain = this.semanticDomains[sem_dom_key];
+        this.domainSelected.emit(this.selectedDomain);
         this.clearSearchResults();
+    }
+
+    // Set the user's selection
+    selectSuggestion(event: MouseEvent) {
+        let value = (event.target as any).getAttribute('data-value');
+        this.emitDomain(value);
     }
 
     // Clear the search results in preparation for a new query.

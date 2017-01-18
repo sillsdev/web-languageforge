@@ -1,6 +1,5 @@
 :host {
   display: block;
-  padding: 0 16px;
 }
 
 input {
@@ -13,4 +12,9 @@ ul {
 }
 .input-group-addon{
   background-color: red;
+}
+
+.sem-dom-description {
+  overflow-y: auto;
+  max-height: 50pt;
 }

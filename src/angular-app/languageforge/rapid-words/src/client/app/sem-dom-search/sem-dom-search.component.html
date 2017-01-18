@@ -1,9 +1,11 @@
-<div>
-    <input type="text" [formControl]="searchText">
-    <select *ngIf="showResults()"
-            (change)="emitDomain($event.target.value)">
-        <option *ngFor="let result of searchResults" value="{{ result.key }}">
-            {{ result.key }}&mdash;{{ result.name}}&mdash;{{ result.description }}
-        </option>
-    </select>
+<div class="sem-dom-picker">
+    <input type="text" [formControl]="searchText"
+            value="{{ selectedDomain ? selectedDomain.name + ' ' + selectedDomain.key : '' }}">
+    <ul *ngIf="showResults()">
+        <li *ngFor="let result of searchResults">
+            <a href="#" attr.data-value="{{ result.key }}" (click)="selectSuggestion($event)">
+              {{ result.name }}<span class="float-right">{{ result.key }}</span>
+            </a>
+        </li>
+    </ul>
 </div>

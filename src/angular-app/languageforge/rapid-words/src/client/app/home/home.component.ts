@@ -14,9 +14,8 @@ import { LexEntry } from '../shared/models/lex-entry';
     styleUrls: ['home.component.css'],
 })
 export class HomeComponent implements OnInit {
-    selectedDomain: string = "None";
+    selectedDomain: SemanticDomain;
     words: any[] = [];
-    numberOfEntries: number = 0;
     languageSettings: any;
     allEntries: LexEntry[];
     @ViewChild(WordDetailsComponent)
@@ -26,7 +25,7 @@ export class HomeComponent implements OnInit {
    * Creates an instance of the HomeComponent with the injected
    * SemanticDomainListService.
    *
-   * 
+   *
    * @param {SemanticDomainListService} semanticDomainListService
    */
 
@@ -36,10 +35,8 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        // this.getSemanticDomains();
-        this.getWords();
         this.getNumberOfEntries();
-    this.getFullDbeDto(); 
+        this.getFullDbeDto();
     }
 
   getFullDbeDto() {
@@ -56,14 +53,10 @@ export class HomeComponent implements OnInit {
   // }
 
     getNumberOfEntries() {
-        this.numberOfEntries = this.words.length;
-    }
-
-    getWords() {
-        this.words = ["Nysha", "grape", "carrot", "dragon eye", "jicama"];
+        return this.words.length;
     }
 
     userChoseDomain(semanticDomain: SemanticDomain) {
-        this.selectedDomain = semanticDomain.value;
+        this.selectedDomain = semanticDomain;
     }
 }
