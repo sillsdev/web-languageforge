@@ -1,9 +1,7 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 
-//Fake Data
 import { Project } from '../shared/models/project';
 import { ProjectService } from '../shared/services/project.service';
-//Fake Data
 
 import { MaterializeDirective, MaterializeAction } from 'angular2-materialize';
 
@@ -15,13 +13,7 @@ import { MaterializeDirective, MaterializeAction } from 'angular2-materialize';
 
 export class DashboardComponent {
 
-  projects = [
-    new Project(0, "Greek"),
-    new Project(1, "Latin"),
-    new Project(2, "Thai"),
-    new Project(3, "Russian"),
-  ];
-
+  private projects: any[];
 
   public modalActions = new EventEmitter<string | MaterializeAction>();
   openModal() {
@@ -33,19 +25,18 @@ export class DashboardComponent {
   }
 
 
-  /* EXPERIMENTING WITH THE services
-    constructor(public projectService: ProjectService) { }
-  
-    ngOnInit(): void {
-      this.getProject();
-      
-    }
-  
-    getProject() : void{
-      this.projectService.getProjects().then(projects => {
-        this.projects = projects;
-  
-      });
-    }
-  */
+  constructor(public projectService: ProjectService) { }
+
+  ngOnInit(): void {
+    this.getProjects();
+
+  }
+
+  getProjects(): void {
+    var rawProjects: any[];
+    this.projectService.getProjectList().subscribe(projects => {
+      this.projects = projects.entries;
+      console.log(this.projects);
+    });
+  }
 }

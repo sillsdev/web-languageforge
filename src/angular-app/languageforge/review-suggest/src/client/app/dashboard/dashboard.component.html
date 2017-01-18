@@ -9,7 +9,7 @@
 					<div class="col-12">
 						<ul class="collection">
 							<li *ngFor="let project of projects">
-								<a href="app/review-suggest/review" class="collection-item">{{project.name}}</a>
+								<a [routerLink]="['/review', project.id]" class="collection-item">{{project.projectName}}</a>
 							</li>
 						</ul>
 					</div>
