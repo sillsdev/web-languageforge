@@ -32,7 +32,7 @@
                     data-ng-click="newEntry()"><i class="fa fa-plus"></i> {{'New Word' | translate}}
             </button>
         </div>
-        <div class="list-group" data-ng-show="entries.length > 0 && rights.canEditProject() && finishedLoading">
+        <div class="list-group" data-ng-show="entries.length > 0 && finishedLoading">
             <div class="lexiconListItem list-group-item list-group-item-action active">
                 <small class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
                 <h5>{{ 'Words in dictionary' | translate }}</h5>

@@ -8,7 +8,7 @@ function ConfigurationPage() {
   this.noticeList = element.all(by.repeater('notice in notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
 
-  this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
+  this.settingsMenuLink = element(by.className('fa-cog'));
   this.configurationLink = element(by.linkText('Configuration'));
   this.get = function get() {
     this.settingsMenuLink.click();
@@ -38,8 +38,7 @@ function ConfigurationPage() {
     moreButtonGroup: {
       addIpa:     this.tabDivs.first().element(by.partialLinkText('Add IPA')),
       addVoice:   this.tabDivs.first().element(by.partialLinkText('Add Voice')),
-      addVariant: this.tabDivs.first().element(by.partialLinkText('Add a variant')),
-      remove:     this.tabDivs.first().element(by.css('i.icon-remove'))
+      addVariant: this.tabDivs.first().element(by.partialLinkText('Add a variant'))
     },
     getLanguageByName: function getLanguageByName(languageName) {
       return element(by.css('div.tab-pane.active div.span3 dl.picklists'))

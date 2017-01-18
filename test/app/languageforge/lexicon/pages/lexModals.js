@@ -9,7 +9,7 @@ function LexModals() {
     firstLanguageName: element.all(by.repeater('language in languages').column('name')).first(),
     lastLanguageName: element.all(by.repeater('language in languages').column('name')).last(),
     addButton: element(by.partialButtonText('Add')),
-    clearSearchButton: element(by.css('span .icon-remove')),
+    clearSearchButton: element(by.className('fa-times')),
   };
   this.selectLanguage.firstLanguageRow = this.selectLanguage.languageRows.first();
   this.selectLanguage.lastLanguageRow = this.selectLanguage.languageRows.last();
