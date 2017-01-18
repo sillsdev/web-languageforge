@@ -147,7 +147,7 @@ angular.module('lexicon-new-project',
       $scope.formValidated = true;
       $scope.formStatus = msg;
       $scope.formStatusClass = 'alert alert-info';
-      if (!msg) $scope.formStatusClass = 'neutral';
+      if (!msg) $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
       $scope.forwardBtnClass = 'btn-success';
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
@@ -157,8 +157,8 @@ angular.module('lexicon-new-project',
       if (!msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = 'neutral';
-      $scope.forwardBtnClass = '';
+      $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
+      $scope.forwardBtnClass = (bootstrapVersion == 'bootstrap4' ? 'btn-secondary' : '');
       $scope.formValidationDefer = $q.defer();
       return $scope.formValidationDefer.promise;
     }
@@ -167,8 +167,8 @@ angular.module('lexicon-new-project',
       if (!msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = 'alert alert-error';
-      if (!msg) $scope.formStatusClass = 'neutral';
+      $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? 'alert alert-danger' : 'alert alert-error');
+      if (!msg) $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
       $scope.forwardBtnClass = '';
       $scope.formValidationDefer.resolve(false);
       return $scope.formValidationDefer.promise;
@@ -181,7 +181,6 @@ angular.module('lexicon-new-project',
 
     $scope.iconForStep = function iconForStep(step) {
       var classes = [];
-      console.log($state.current.data.step, step);
       if ($state.current.data.step > step) {
           classes.push((bootstrapVersion =='bootstrap4' ? "fa fa-check-square":'icon-check-sign'));
       }
@@ -190,7 +189,7 @@ angular.module('lexicon-new-project',
           classes.push((bootstrapVersion =='bootstrap4' ? "fa fa-square-o":'icon-check-empty'));
       }
       else if ($state.current.data.step < step) {
-          classes.push((bootstrapVersion =='bootstrap4' ? "fa fa-square-o muted":'muted'));
+          classes.push((bootstrapVersion =='bootstrap4' ? "fa fa-square-o muted":'icon-check-empty muted'));
       }
 
       return classes;
@@ -260,6 +259,7 @@ angular.module('lexicon-new-project',
         }
       });
     };
+
 
     // Form validation requires API calls, so it return a promise rather than a value.
     function validateForm() {
