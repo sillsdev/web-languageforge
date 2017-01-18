@@ -29,6 +29,63 @@
   }
 }
 
-#nextButton{}
+#sendReceiveButton{
+    margin-top: 60px;
+    margin-bottom: 20px;
+    font-size: 1em;
+    white-space: normal;
 
-#backButton{}
+}
+
+#createButton{
+    margin-bottom: 20px;
+    font-size: 1em;
+    white-space: normal;
+}
+
+.fa-check{
+    color: green;
+}
+.fa-times{
+    color: red;
+}
+
+a#flexHelpLink {
+   text-decoration: none;
+   color: #e67345
+}
+
+a{
+    color: #0088cc;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#flexHelpLink:hover {
+    color: #0088cc !important;
+}
+
+.centerBlock {
+  margin: auto;
+}
+
+.select-language-input {
+  height: calc(100vh - 405px);
+  overflow: auto;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  display: block;
+  width: 80%;
+  height: 75%;
+  margin: auto;
+  overflow: hidden;
+  outline: 0;
+  background-color: white;
+}
