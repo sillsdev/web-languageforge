@@ -4,9 +4,10 @@ var ShareDB = require('sharedb');
 var richText = require('rich-text');
 var WebSocket = require('ws');
 var WebSocketJSONStream = require('websocket-json-stream');
+var db = require('sharedb-mongo')('mongodb://localhost:27017/operations');
 
 ShareDB.types.register(richText.type);
-var backend = new ShareDB();
+var backend = new ShareDB({db: db});
 var connection = backend.connect();
 
 startServer();
