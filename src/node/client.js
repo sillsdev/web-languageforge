@@ -8,8 +8,14 @@ function getWebSocketUrl() {
   return (url.endsWith(':8080')) ? url : url + ':8080';
 }
 
+function getWebSocketMsgUrl() {
+	var url = 'ws://' + window.location.host;
+  return (url.endsWith(':8079')) ? url : url + ':8079';
+}
+
 // Open WebSocket connection to ShareDB server
 var socket = new WebSocket(getWebSocketUrl());
+var msgSocket = new WebSocket(getWebSocketMsgUrl());
 var connection = new sharedb.Connection(socket);
 
 // For testing reconnection
@@ -23,17 +29,17 @@ window.connect = function() {
 
 function sendCollectionId(message) {
   waitForConnection(function () {
-    socket.send(message);
-  }, 100);
+    msgSocket.send(message);
+  });
 }
 
 function waitForConnection(callback) {
-  if (socket.readyState === 1) {
+  if (msgSocket.readyState === 1) {
     callback();
   } else {
     setTimeout(function () {
       waitForConnection(callback);
-    });
+    }, 100);
   }
 }
 
@@ -47,7 +53,8 @@ function GetIDfromWordFieldConcat(con){
   return a[1];
 }
 
-window.createAndSubscribeDoc = function createAndSubscribeDoc(id, isNgQuill){
+window.realTime = {};
+window.realTime.createAndSubscribeDoc = function createAndSubscribeDoc(id, isNgQuill){
   // Connect to both text field
   var wordID = id;
   if (!isNgQuill) {
@@ -55,16 +62,15 @@ window.createAndSubscribeDoc = function createAndSubscribeDoc(id, isNgQuill){
     wordID = WordFieldConcat(word, id);
     document.getElementById(id).id = wordID;
   }
-  sendCollectionId(JSON.stringify({"b": wordID, "a": "bs", "c": "collection"}));
-  connectDoc("collection", wordID, isNgQuill);
-}
-
-function getWordIDTest(id){
-
-}
-
-function getWordIDReal(id){
-
+	// console.log(wordID);
+  sendCollectionId(JSON.stringify({"b": wordID, "a": "bs", "c": "collection","d": isNgQuill}));
+	msgSocket.onmessage = function(event) {
+		// console.log("receive message");
+		var msg = JSON.parse(event.data);
+		if (msg.e == "success") {
+  		connectDoc(msg.c, msg.b, msg.d);
+		}
+	}
 }
 
 // Create local Doc instance mapped to collection document with id
@@ -73,15 +79,16 @@ function getWordIDReal(id){
 function connectDoc(collection, id, isNgQuill) {
   isNgQuill = isNgQuill || false;
   var doc = connection.get(collection, id);
+	var textEditorElement;
   doc.subscribe(function(err) {
     if (err) throw err;
-
+		console.log(collection,":",id,":",isNgQuill);
     if (isNgQuill) {
-      var textEditorElement = document.querySelector("#" + id + " .ql-container");
+			textEditorElement = document.getElementById(id).getElementsByClassName('ql-container')[0];
     } else {
-      var textEditorElement = document.getElementById(id);
+      textEditorElement = document.getElementById(id);
     }
-
+		console.log(textEditorElement);
     if (textEditorElement === null) return;
     var quill = new Quill(textEditorElement);
     var clipboard = textEditorElement.getElementsByClassName("ql-clipboard");
