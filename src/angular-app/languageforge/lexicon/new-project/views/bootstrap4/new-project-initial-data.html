@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="text-xs-center">
+                <h3 class ="no-space-break" data-translate="Initial Data"></h3>
+            </div>
+            <div class="card card-default">
+                <div class="card-header">
+                    <label data-translate="Import a compressed (zipped) folder of the whole project"></label>
+                </div>
+                <div class="card-block">
+                    <div class="form-group row">
+                            <div class="drop-box centerBlock" data-ngf-drop="uploadFile($file)" data-ngf-drag-over-class="'dragover'">
+                                <h4 data-translate="Drop a zipped folder here"></h4>
+                                <br/>
+                                <p data-translate="or if you prefer..."></p>
+                                <div class="btn btn-secondary btn-sm" id="browseButton" data-ngf-select="uploadFile($file)" data-translate="Browse...">
+                                </div>
+                            </div>
+                            <div data-ngf-no-file-drop>
+                                <div class="btn" data-ngf-select="uploadFile($file)" data-translate="Browse...">
+                                </div>
+                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <a id="flexHelpLink" data-ng-click="show.flexHelp = !show.flexHelp">
+                              <i class="fa fa-question-circle text-info"></i>
+                              {{'How to export a project from FLEx' | translate}}
+                        </a>
+                        <div data-collapse="! show.flexHelp">In FLEx v8 (SIL FieldWorks Language Explorer)
+                            <ol>
+                                <li>On the <b>File</b> menu, click <b>Export</b>.</li>
+                                <li>In the <b>Export</b> dialog box, select <i>Full Lexicon LIFT 0.13 XML</i>.</li>
+                                <li>Ensure <b>Copy pictures and media files to the export folder</b> is checked.</li>
+                                <li>Click <b>Export</b>.</li>
+                                <li>In the <b>Browse for Folder</b> dialog box, navigate to the folder where you want to save the data.</li>
+                                <li>Click <b>OK</b>.</li>
+                                <li>Zip the contents of the created folder. We recommend using
+                                    <a href="http://www.7-zip.org/" target="_blank">7-zip</a>
+                                    to preserve non-roman filenames.
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<pui-mock-upload data-pui-do-upload="uploadFile(file)"></pui-mock-upload><!-- Used to mock file upload. Assumes file is already in the right location. This should be removed from production code! IJH 2016-11 -->

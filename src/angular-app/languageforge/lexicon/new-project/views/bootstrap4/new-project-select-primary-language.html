@@ -1,0 +1,29 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="text-xs-center">
+                <h4 class ="no-space-break" data-translate="Select Primary Language"></h4>
+            </div>
+            <div class="card card-default">
+                <div class="card-block">
+                    <div class="form-group row">
+                        <label class="control-label col-md-4 text-md-right" translate="Primary language"></label>
+                        <div class="controls col-md-8">
+                            <fieldset disabled>
+                                <div class="input-group">
+                                    <input type="text"
+                                           class="form-control"
+                                           placeholder="Select Language"
+                                           data-ng-model="primaryLanguage()" />
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <a class="btn btn-secondary centerBlock" id="selectLanguageButton" data-ng-click="openNewLanguageModal()" translate="Select"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

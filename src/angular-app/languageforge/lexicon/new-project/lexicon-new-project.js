@@ -34,54 +34,54 @@ angular.module('lexicon-new-project',
         // Need quotes around Javascript keywords like 'abstract' so YUI compressor won't complain
         'abstract': true, // jscs:ignore
         templateUrl:
-          '/angular-app/languageforge/lexicon/new-project/views/new-project-abstract.html',
+          '/angular-app/languageforge/lexicon/new-project/views/' + bootstrapVersion + '/new-project-abstract.html',
         controller: 'NewLexProjectCtrl'
       })
       .state('newProject.chooser', {
         url: '/chooser',
         templateUrl:
-          '/angular-app/languageforge/lexicon/new-project/views/new-project-chooser.html',
+          '/angular-app/languageforge/lexicon/new-project/views/' + bootstrapVersion + '/new-project-chooser.html',
         data: {
           step: 0
         }
       })
       .state('newProject.name', {
-        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-name.html',
+        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/' + bootstrapVersion + '/new-project-name.html',
         data: {
           step: 1
         }
       })
       .state('newProject.sendReceiveCredentials', {
         templateUrl:
-          '/angular-app/languageforge/lexicon/new-project/views/new-project-sr-credentials.html',
+          '/angular-app/languageforge/lexicon/new-project/views/' + bootstrapVersion + '/new-project-sr-credentials.html',
         data: {
           step: 1 // This is not a typo. There are two possible step 2 templates.
         }
       })
       .state('newProject.initialData', {
         templateUrl:
-          '/angular-app/languageforge/lexicon/new-project/views/new-project-initial-data.html',
+          '/angular-app/languageforge/lexicon/new-project/views/' + bootstrapVersion + '/new-project-initial-data.html',
         data: {
           step: 2
         }
       })
       .state('newProject.sendReceiveClone', {
         templateUrl:
-          '/angular-app/languageforge/lexicon/new-project/views/new-project-sr-clone.html',
+          '/angular-app/languageforge/lexicon/new-project/views/' + bootstrapVersion + '/new-project-sr-clone.html',
         data: {
           step: 2 // This is not a typo. There are two possible step 2 templates.
         }
       })
       .state('newProject.verifyData', {
         templateUrl:
-          '/angular-app/languageforge/lexicon/new-project/views/new-project-verify-data.html',
+          '/angular-app/languageforge/lexicon/new-project/views/' + bootstrapVersion + '/new-project-verify-data.html',
         data: {
           step: 3
         }
       })
       .state('newProject.selectPrimaryLanguage', {
-        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/' +
-          'new-project-select-primary-language.html',
+        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/' + bootstrapVersion +
+          '/new-project-select-primary-language.html',
         data: {
           step: 3 // This is not a typo. There are two possible step 3 templates.
         }
@@ -147,7 +147,7 @@ angular.module('lexicon-new-project',
       $scope.formValidated = true;
       $scope.formStatus = msg;
       $scope.formStatusClass = 'alert alert-info';
-      if (!msg) $scope.formStatusClass = 'neutral';
+      if (!msg) $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
       $scope.forwardBtnClass = 'btn-success';
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
@@ -157,8 +157,8 @@ angular.module('lexicon-new-project',
       if (!msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = 'neutral';
-      $scope.forwardBtnClass = '';
+      $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
+      $scope.forwardBtnClass = (bootstrapVersion == 'bootstrap4' ? 'btn-secondary' : '');
       $scope.formValidationDefer = $q.defer();
       return $scope.formValidationDefer.promise;
     }
@@ -167,8 +167,8 @@ angular.module('lexicon-new-project',
       if (!msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = 'alert alert-error';
-      if (!msg) $scope.formStatusClass = 'neutral';
+      $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? 'alert alert-danger' : 'alert alert-error');
+      if (!msg) $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
       $scope.forwardBtnClass = '';
       $scope.formValidationDefer.resolve(false);
       return $scope.formValidationDefer.promise;
@@ -182,13 +182,14 @@ angular.module('lexicon-new-project',
     $scope.iconForStep = function iconForStep(step) {
       var classes = [];
       if ($state.current.data.step > step) {
-        classes.push('icon-check-sign');
-      } else {
-        classes.push('icon-check-empty');
+          classes.push((bootstrapVersion =='bootstrap4' ? "fa fa-check-square":'icon-check-sign'));
       }
 
-      if ($state.current.data.step < step) {
-        classes.push('muted');
+      if ($state.current.data.step == step) {
+          classes.push((bootstrapVersion =='bootstrap4' ? "fa fa-square-o":'icon-check-empty'));
+      }
+      else if ($state.current.data.step < step) {
+          classes.push((bootstrapVersion =='bootstrap4' ? "fa fa-square-o muted":'icon-check-empty muted'));
       }
 
       return classes;
@@ -258,6 +259,7 @@ angular.module('lexicon-new-project',
         }
       });
     };
+
 
     // Form validation requires API calls, so it return a promise rather than a value.
     function validateForm() {

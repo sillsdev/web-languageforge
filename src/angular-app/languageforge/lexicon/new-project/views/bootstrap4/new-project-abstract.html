@@ -1,0 +1,52 @@
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div id="form-container">
+            <div class="text-xs-center">
+
+                <h2 data-translate="Start or join a Web Dictionary Project"></h2>
+                <div class="row" data-ng-show="show.nextButton">
+                    <div class="col-md-8 offset-md-2">
+                        <ul id="progress-indicator">
+                            <li><i data-ng-class="iconForStep(1)"></i>
+                                <span data-ng-bind="progressIndicatorStep1Label"></span></li>
+                            <li>&gt;</li>
+                            <li><i data-ng-class="iconForStep(2)"></i>
+                                <span data-ng-bind="progressIndicatorStep2Label"></span></li>
+                            <li data-ng-show="show.step3">&gt;</li>
+                            <li data-ng-show="show.step3"><i data-ng-class="iconForStep(3)"></i>
+                                <span data-ng-bind="progressIndicatorStep3Label"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- use ng-submit to catch the form submission and use our Angular function -->
+            <form class="form-horizontal" id="newLexProjectForm" name="newLexProjectForm" novalidate>
+                <div class="row">
+                    <div class="col-md-8 offset-md-2" id="form-status" data-ng-class="formStatusClass">{{formStatus | translate}}&nbsp;</div>
+                </div>
+
+                <!-- our nested state views will be injected here -->
+                <div id="form-views" data-ui-view></div>
+            </form>
+
+            <div class="row" data-ng-show="show.nextButton">
+                <div class="col-md-8 offset-md-2">
+
+                    <a class="btn btn-secondary pull-left" data-ng-class="interfaceConfig.pullNormal"
+                        id="backButton" data-ng-click="prevStep()" data-ng-show="show.backButton">
+                        <i class="fa fa-arrow-circle-left"></i>
+                        {{'Back' | translate}}
+                    </a>
+
+                    <button class="btn pull-right" data-ng-class="[interfaceConfig.pullToSide, forwardBtnClass]" href="#"
+                        id="nextButton" data-ng-click="nextStep()" data-ng-disabled="!show.nextButton">
+                        {{nextButtonLabel}}&nbsp;
+                        <i class="fa fa-arrow-circle-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
