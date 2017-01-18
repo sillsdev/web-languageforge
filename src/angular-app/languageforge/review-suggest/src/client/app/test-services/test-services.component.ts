@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 import { LfApiService } from '../shared/services/lf-api.service';
 import { ProjectService } from '../shared/services/project.service';
+import { CommentService } from '../shared/services/comment.service';
 
 @Component({
   moduleId: module.id,
@@ -17,7 +18,7 @@ export class TestServicesComponent {
   private currentProjectId: string;
   private currentProjectName: string;
 
-  constructor(private lfApiService: LfApiService, private ProjectService: ProjectService) {
+  constructor(private lfApiService: LfApiService, private projectService: ProjectService, private commentService: CommentService) {
     this.lfApiService.getUserProfile().subscribe (response => {
       this.result = response.data;
       console.log(this.result);
@@ -26,16 +27,18 @@ export class TestServicesComponent {
   }
 
   getProjects() {
-    this.ProjectService.getProjectList().subscribe(response =>{
+    this.projectService.getProjectList().subscribe(response =>{
       this.projects = response.entries; 
       this.currentProjectId = this.projects[0].id;
       this.currentProjectName = this.projects[0].projectName;
+      console.log("projects");
+      console.log(this.projects);
       this.getWords();
     });
   }
 
   getWords() {
-    this.ProjectService.getWordList(this.currentProjectId).subscribe(response =>{
+    this.projectService.getWordList(this.currentProjectId).subscribe(response =>{
       this.words = response.entries;
       console.log(this.words);
     });
@@ -47,5 +50,10 @@ export class TestServicesComponent {
     this.getWords();
   }
 
-
+  sendComment(comment: string, wordId: string) {
+    this.commentService.sendComment(comment, wordId).subscribe(response => {
+      console.log("--Comment Response--");
+      console.log(response);
+    });
+  }
 }

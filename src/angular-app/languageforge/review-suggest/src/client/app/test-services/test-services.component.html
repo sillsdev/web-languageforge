@@ -6,6 +6,9 @@
 	</ul>
 	<h2>Words from {{ currentProjectName }}:</h2>
 	<ul>
-		<li *ngFor="let word of words">{{ word.lexeme.th.value }} - {{ word.senses[0].definition.en.value }}</li>
+		<li *ngFor="let word of words">
+			{{ word.lexeme.th.value }} - {{ word.senses[0].definition.en.value }}
+			<button (click)="sendComment('Testing', word.id)">Send Comment "Testing"</button>
+		</li>
 	</ul>
 </div>

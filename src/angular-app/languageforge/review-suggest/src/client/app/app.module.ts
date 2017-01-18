@@ -15,6 +15,7 @@ import { MaterializeModule } from './shared/materialize.module';
 
 import { LfApiService } from './shared/services/lf-api.service';
 import { ProjectService } from './shared/services/project.service';
+import { CommentService } from './shared/services/comment.service';
 
 import { Constants } from './shared/constants';
 
@@ -41,7 +42,8 @@ import { LoggedInGuard } from './shared/logged-in.guard';
     deps: [Http]
   },
   LoggedInGuard,
-  ProjectService],
+  ProjectService,
+  CommentService],
   bootstrap: [AppComponent]
 
 })

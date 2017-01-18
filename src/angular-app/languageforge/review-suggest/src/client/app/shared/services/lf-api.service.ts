@@ -102,6 +102,11 @@ export class LfApiService {
         });
     }
 
+    project_settings_by_id(projectId: string) {
+        return this.callApi('project_settings_by_id', [projectId]).map(result =>{
+            return result;
+        })
+    }
 
     user_authenticate(username: string, password: string) {
         let body = '_username='+username+'&_password='+password+'&_remember_me=on&_json_request=on';
@@ -130,5 +135,11 @@ export class LfApiService {
 
                 return {success, data, message};
             });
+    }
+
+    sendComment(comment: string, wordId: string) {
+        return this.callApi('lex_comment_update', [{id: "", content: comment, entryRef: wordId}]).map(result => {
+            return result;
+        })
     }
 }
