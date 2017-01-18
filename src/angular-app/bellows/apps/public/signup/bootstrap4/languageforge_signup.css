@@ -11,6 +11,10 @@
     #progress-indicator li i {
       display: block;
       font-size: 55px; }
+    #progress-indicator li i.fa-check-square {
+      color: green;
+      font-size: 50px;
+      height: 56px; }
     #progress-indicator li i.fa-check-square-o {
       color: green;
       font-size: 50px;
@@ -19,3 +23,9 @@
       color: #999999; }
   #progress-indicator a:hover {
     text-decoration: none; }
+
+.fa-check {
+  color: green; }
+
+.fa-times {
+  color: red; }
