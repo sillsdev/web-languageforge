@@ -12,8 +12,10 @@
 @import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-rendered.scss';
 @import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-semanticdomain.scss';
 @import '../../../../../../../../angular-app/languageforge/lexicon/directive/dc-sense.scss';
+@import '../../../../../../../../angular-app/bellows/directive/bootstrap4/palaso.ui.comments.dc-comment.scss';
 
 #lexAppListView {
+  margin-top: 20px;
   .lexiconListItem {
     cursor: pointer;
     h5 {
@@ -57,5 +59,9 @@ form .wsid {
   }
   .hdrnav .return-button {
     float: left;
+  }
+  #lexAppCommentView .entryItemView, #lexAppCommentView .commentListView {
+    max-height: none ;
+    height: auto;
   }
 }
