@@ -90,8 +90,8 @@ export class LfApiService {
         });
     }
 
-    lex_dbeDtoFull() {
-        return this.callApi('lex_dbeDtoFull', [1, 0]).map(result => {
+    lex_dbeDtoFull_by_id(id: string) {
+        return this.callApi('lex_dbeDtoFull_by_id', [id]).map(result => {
             return result;
         });
     }

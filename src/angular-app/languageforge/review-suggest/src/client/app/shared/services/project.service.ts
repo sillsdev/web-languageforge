@@ -18,13 +18,17 @@ export class ProjectService {
     });
   }
 
-  getWordList() {
-    return this.lfApiService.lex_dbeDtoFull().map(response => {
+  getWordList(id: string) {
+    return this.lfApiService.lex_dbeDtoFull_by_id(id).map(response => {
       if (response.success) {
         localStorage.setItem('current_user_words', response.data.entries);
       }
       return response.data;
     });
+  }
+
+  selectProject(id: string){
+    
   }
   
 }

@@ -14,6 +14,9 @@ export class TestServicesComponent {
   private projects: any[];
   private words: any[];
 
+  private currentProjectId: string;
+  private currentProjectName: string;
+
   constructor(private lfApiService: LfApiService, private ProjectService: ProjectService) {
     this.lfApiService.getUserProfile().subscribe (response => {
       this.result = response.data;
@@ -24,16 +27,25 @@ export class TestServicesComponent {
 
   getProjects() {
     this.ProjectService.getProjectList().subscribe(response =>{
-      this.projects = response.entries;
-      console.log(this.projects);
+      this.projects = response.entries; 
+      this.currentProjectId = this.projects[0].id;
+      this.currentProjectName = this.projects[0].projectName;
       this.getWords();
     });
   }
 
   getWords() {
-    this.ProjectService.getWordList().subscribe(response =>{
+    this.ProjectService.getWordList(this.currentProjectId).subscribe(response =>{
       this.words = response.entries;
       console.log(this.words);
     });
   }
+
+  setProject(id: string, name: string){
+    this.currentProjectId = id;
+    this.currentProjectName = name;
+    this.getWords();
+  }
+
+
 }
