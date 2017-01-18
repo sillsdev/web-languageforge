@@ -17,5 +17,14 @@ export class ProjectService {
       return response.data;
     });
   }
+
+  getWordList() {
+    return this.lfApiService.lex_dbeDtoFull().map(response => {
+      if (response.success) {
+        localStorage.setItem('current_user_words', response.data.entries);
+      }
+      return response.data;
+    });
+  }
   
 }

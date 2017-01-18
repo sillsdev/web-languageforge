@@ -3,4 +3,8 @@
 	<ul>
 		<li *ngFor="let project of projects">{{ project.projectName }}</li>
 	</ul>
+	<h2>Words!</h2>
+	<ul>
+		<li *ngFor="let word of words">{{ word.lexeme.th.value}}</li>
+	</ul>
 </div>

@@ -12,6 +12,7 @@ import { ProjectService } from '../shared/services/project.service';
 export class TestServicesComponent {
   private result: any;
   private projects: any[];
+  private words: any[];
 
   constructor(private lfApiService: LfApiService, private ProjectService: ProjectService) {
     this.lfApiService.getUserProfile().subscribe (response => {
@@ -25,6 +26,14 @@ export class TestServicesComponent {
     this.ProjectService.getProjectList().subscribe(response =>{
       this.projects = response.entries;
       console.log(this.projects);
+      this.getWords();
+    });
+  }
+
+  getWords() {
+    this.ProjectService.getWordList().subscribe(response =>{
+      this.words = response.entries;
+      console.log(this.words);
     });
   }
 }

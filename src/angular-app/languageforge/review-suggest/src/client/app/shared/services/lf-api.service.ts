@@ -83,6 +83,12 @@ export class LfApiService {
         });
     }
 
+    lex_dbeDtoFull() {
+        return this.callApi('lex_dbeDtoFull', [1, 0]).map(result => {
+            return result;
+        });
+    }
+
     project_list() {
         return this.callApi('project_list').map(result => {
             return result;
