@@ -83,6 +83,12 @@ export class LfApiService {
         });
     }
 
+    project_list() {
+        return this.callApi('project_list').map(result => {
+            return result;
+        });
+    }
+
     user_authenticate(username: string, password: string) {
         return this.callApi('user_authenticate', [username, password]).map(result => {
             return result;

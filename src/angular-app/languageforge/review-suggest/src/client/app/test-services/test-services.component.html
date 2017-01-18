@@ -1,4 +1,6 @@
 <div class="container">
 	<h1>Test Services</h1>
-	<p>Result: {{result}}</p>
+	<ul>
+		<li *ngFor="let project of projects">{{ project.projectName }}</li>
+	</ul>
 </div>

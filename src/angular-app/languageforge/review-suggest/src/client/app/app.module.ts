@@ -14,6 +14,7 @@ import { SharedModule } from './shared/shared.module';
 import { MaterializeModule } from './shared/materialize.module';
 
 import { LfApiService } from './shared/services/lf-api.service';
+import { ProjectService } from './shared/services/project.service';
 
 import { Constants } from './shared/constants';
 
@@ -39,7 +40,8 @@ import { LoggedInGuard } from './shared/logged-in.guard';
     useFactory: Constants.Api.API_SERVICE_FACTORY,
     deps: [Http]
   },
-  LoggedInGuard],
+  LoggedInGuard,
+  ProjectService],
   bootstrap: [AppComponent]
 
 })
