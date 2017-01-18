@@ -1,0 +1,51 @@
+body{
+  background: white;
+    display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+#app-container-for-bootstrap {
+  margin-top: 60px;
+  flex: 1;
+}
+.card .form-group-last {
+  margin-bottom: 0;
+}
+.card.card-default {
+  background: #f5f5f5;
+  border: 1px solid #e3e3e3;
+}
+.footer{
+  background-color: $lf-blue;
+  color: white;
+  padding: 60px 0;
+  margin-top: 50px;
+
+  .links{
+    color: white;
+    border-bottom: 1px dotted white;
+    text-decoration: none;
+  }
+
+  .footerimages {
+    padding-bottom: 10px;
+  }
+
+ 
+  
+}
+
+ .newline {
+    display: block;
+}
+// TODO: Remove hack for modal box issue as a result of ui.bootstrap
+.modal.in {
+  display: block;
+}
+.breadcrumb {
+  background-color: #fff;
+  padding: 6px 0 0;
+  margin-bottom: 0;
+  border-radius: 0;
+  }
+

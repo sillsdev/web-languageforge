@@ -6,7 +6,6 @@ use Api\Library\Shared\Communicate\Communicate;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\UserModel;
-use Api\Model\Shared\UserModelBase;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -15,7 +14,7 @@ use Symfony\Component\Security\Core\SecurityContextInterface;
 
 defined('ENVIRONMENT') or exit('No direct script access allowed');
 
-class Auth extends PublicApp
+class Auth extends App
 {
     // return status
     const LOGIN_FAIL = 'loginFail';
@@ -27,7 +26,7 @@ class Auth extends PublicApp
         switch ($appName) {
             /** @noinspection PhpMissingBreakStatementInspection */
             case 'reset_password':
-                $user = new UserModelBase();
+                $user = new UserModel();
                 if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
                     $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
 
@@ -43,7 +42,7 @@ class Auth extends PublicApp
                 // no break; - intentional fall through to next case
             case 'forgot_password':
             case 'login':
-                $this->setupNgView($app, $appName);
+                $this->setupAngularAppVariables($app, $appName);
                 $this->setupAuthView($request, $app);
 
                 return $this->renderPage($app, 'angular-app');
@@ -97,7 +96,7 @@ class Auth extends PublicApp
      */
     public static function resetPassword(Application $app, $resetPasswordKey = '', $newPassword = '')
     {
-        $user = new UserModelBase();
+        $user = new UserModel();
         if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
             $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
             return false;

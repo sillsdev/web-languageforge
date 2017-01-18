@@ -48,7 +48,7 @@ describe('E2E Projects List App', function () {
 
   describe('for System Admin User', function () {
 
-    it('should list all projects for ScriptureForge', function () {
+    it('should list all projects', function () {
       loginPage.loginAsAdmin();
       projectsPage.get();
       expect(projectsPage.projectsList.count()).toBeGreaterThan(0);

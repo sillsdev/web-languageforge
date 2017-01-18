@@ -22,17 +22,20 @@ class LexProjectCommands
      * @param string $projectId
      * @param array $config
      * @throws \Exception
+     * @return bool|string $projectId
      */
     public static function updateConfig($projectId, $config)
     {
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
+        if ($project->hasSendReceive() && SendReceiveCommands::isInProgress($projectId)) return false;
+
         $configModel = new LexConfiguration();
         JsonDecoder::decode($configModel, $config);
         $project->config = $configModel;
         $decoder = new JsonDecoder();
         $decoder->decodeMapOf('', $project->inputSystems, $config['inputSystems']);
-        $project->write();
+        return $project->write();
     }
 
     /**

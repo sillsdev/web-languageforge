@@ -125,6 +125,13 @@ class WebsiteInstances
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
         $sites['languageforge.local'] = $w;
 
+        $w = new Website('m.languageforge.local', Website::LANGUAGEFORGE);
+        $w->name = 'Language Forge Mobile';
+        $w->ssl = false;
+        $w->theme = 'mobile';
+        $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
+        $sites['m.languageforge.local'] = $w;
+
         $w = new Website('e2etest.languageforge.local', Website::LANGUAGEFORGE);
         $w->name = 'Language Forge';
         $w->ssl = false;
@@ -144,6 +151,13 @@ class WebsiteInstances
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
         $w->ssl = true;
         $sites['languageforge.org'] = $w;
+
+        $w = new Website('m.languageforge.org', Website::LANGUAGEFORGE);
+        $w->name = 'Language Forge Mobile';
+        $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
+        $w->ssl = true;
+        $w->theme = 'mobile';
+        $sites['m.languageforge.org'] = $w;
 
         return $sites;
     }

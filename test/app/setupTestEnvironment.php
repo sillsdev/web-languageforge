@@ -37,15 +37,21 @@ if (is_null($website)) {
 }
 $site = $website->base;
 
+if (strpos(SF_DATABASE, '_test') === false ) {
+    exit("Error: SF_DATABASE '" . SF_DATABASE . "' is not a test database");
+}
 // start with a fresh database
 MongoStore::dropAllCollections(SF_DATABASE);
 
 // Also empty out databases for the test projects
 $projectArrays = array(
-    $constants['testProjectName']  => $constants['testProjectCode'],
-    $constants['otherProjectName'] => $constants['otherProjectCode'],
+    $constants['testProjectName']   => $constants['testProjectCode'],
+    $constants['otherProjectName']  => $constants['otherProjectCode'],
+    $constants['thirdProjectName']  => $constants['thirdProjectCode'],
     $constants['fourthProjectName'] => $constants['fourthProjectCode'],
-    $constants['srProjectName'] => $constants['srProjectCode']
+    $constants['newProjectName']    => $constants['newProjectCode'],
+    $constants['emptyProjectName']  => $constants['emptyProjectCode'],
+    $constants['srProjectName']     => $constants['srProjectCode']
 );
 
 foreach ($projectArrays as $projectName => $projectCode) {
@@ -53,23 +59,8 @@ foreach ($projectArrays as $projectName => $projectCode) {
     $projectModel->projectName = $projectName;
     $projectModel->projectCode = $projectCode;
     MongoStore::dropAllCollections($projectModel->databaseName());
+    MongoStore::dropDB($projectModel->databaseName());
 }
-
-// drop the third database because it is used in a rename test
-$projectModel = new ProjectModel();
-$projectModel->projectName = $constants['thirdProjectName'];
-$projectModel->projectCode = $constants['thirdProjectCode'];
-MongoStore::dropDB($projectModel->databaseName());
-
-// drop the 'new' and 'empty' database because it is used in a 'create new project' test
-$projectModel = new ProjectModel();
-$projectModel->projectName = $constants['newProjectName'];
-$projectModel->projectCode = $constants['newProjectCode'];
-MongoStore::dropDB($projectModel->databaseName());
-$projectModel = new ProjectModel();
-$projectModel->projectName = $constants['emptyProjectName'];
-$projectModel->projectCode = $constants['emptyProjectCode'];
-MongoStore::dropDB($projectModel->databaseName());
 
 $adminUserId = UserCommands::createUser(array(
     'id' => '',

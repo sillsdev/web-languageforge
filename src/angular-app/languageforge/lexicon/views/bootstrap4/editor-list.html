@@ -1,0 +1,50 @@
+<div id="lexAppListView" class="animate-switch">
+    <div data-ng-hide="visibleEntries.length === 0" class="input-group">
+        <pui-typeahead class="typeahead" placeholder="'Search Entries'"
+                   items="typeahead.searchResults" term="typeahead.searchItemSelected"
+                   search="typeahead.searchEntries" select="typeahead.searchSelect">
+            <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
+                <li data-typeahead-item="e" class="typeahead-item list-group-item"
+                    data-ng-repeat="e in typeahead.searchResults | limitTo: typeahead.limit">
+                    <div class="listItemPrimary" data-ng-bind-html="getWordForDisplay(e)"></div>
+                    <small class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(e)"></small>
+                </li>
+            </ul>
+            <div style="text-align:center; background-color: #d3d3d3; color:black; margin-top:5px"
+                 data-ng-if="typeahead.searchResults.length > 0">
+                <small><i>{{typeahead.matchCountCaption}}</i></small></div>
+        </pui-typeahead>
+        <span class="input-group-btn">
+            <button class="btn btn-success btn-small pull-right" data-ng-if="rights.canEditEntry()"
+                data-ng-click="newEntry()"><i class="fa fa-plus"></i><span class="hidden-sm-down"> {{'New Word' | translate}}</span>
+            </button>
+        </span>
+    </div>
+    <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
+        <div class="text-xs-center no-entries" data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading">
+            <h4>Looks like there are no entries yet.</h4>
+            <button class="btn btn-primary" data-ng-click="navigateToLiftImport()"
+                    data-ng-hide="projectSettings.hasSendReceive">
+                <i class="fa fa-upload"></i> Import entries from LIFT</button>
+            <button class="btn btn-primary" data-ng-click="syncProject()" data-ng-show="projectSettings.hasSendReceive">
+                <i class="fa fa-refresh"></i> Synchronize project with LanguageDepot.org</button>
+            <button class="btn btn-success" data-ng-if="rights.canEditEntry()"
+                    data-ng-click="newEntry()"><i class="fa fa-plus"></i> {{'New Word' | translate}}
+            </button>
+        </div>
+        <div class="list-group" data-ng-show="entries.length > 0 && rights.canEditProject() && finishedLoading">
+            <div class="lexiconListItem list-group-item list-group-item-action active">
+                <small class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
+                <h5>{{ 'Words in dictionary' | translate }}</h5>
+            </div>
+            <div class="lexiconListItem list-group-item list-group-item-action" data-ng-repeat="entry in visibleEntries track by entry.id"
+                 data-ng-click="editEntryAndScroll(entry.id)">
+                    <dc-rendered config="config.entry" model="entry"></dc-rendered>
+                    <div data-ng-show="commentService.getEntryCommentCount(entry.id) > 0"
+                         style="position:absolute; right:5px;top:3px">
+                        <i style="color: #faa732;" class="fa fa-comment"></i>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>

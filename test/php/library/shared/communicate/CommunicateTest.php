@@ -6,7 +6,6 @@ use Api\Library\Shared\Communicate\Sms\SmsModel;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\MessageModel;
 use Api\Model\Shared\UserModel;
-use Api\Model\Shared\UserProfileModel;
 use Api\Model\Shared\UnreadMessageModel;
 //use PHPUnit\Framework\TestCase;
 
@@ -52,7 +51,7 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
     {
         self::$environ->clean();
         $userId = self::$environ->createUser('User', 'Name', 'name@example.com');
-        $user = new UserProfileModel($userId);
+        $user = new UserModel($userId);
         $user->communicate_via = UserModel::COMMUNICATE_VIA_EMAIL;
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
         $project->emailSettings->fromAddress = '';
@@ -83,7 +82,7 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
     {
         self::$environ->clean();
         $userId = self::$environ->createUser('User', 'Name', '');
-        $user = new UserProfileModel($userId);
+        $user = new UserModel($userId);
         $user->communicate_via = UserModel::COMMUNICATE_VIA_EMAIL;
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
         $project->emailSettings->fromAddress = 'from@example.com';
@@ -110,7 +109,7 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
     {
         self::$environ->clean();
         $userId = self::$environ->createUser('User', 'Name', 'name@example.com');
-        $user = new UserProfileModel($userId);
+        $user = new UserModel($userId);
         $user->communicate_via = UserModel::COMMUNICATE_VIA_EMAIL;
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
         $project->emailSettings->fromAddress = 'projectName@scriptureforge.org';
@@ -135,7 +134,7 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
     {
         self::$environ->clean();
         $userId = self::$environ->createUser('User', 'Name', 'name@example.com');
-        $user = new UserProfileModel($userId);
+        $user = new UserModel($userId);
         $user->communicate_via = UserModel::COMMUNICATE_VIA_SMS;
         $user->mobile_phone = '+66837610205';
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
@@ -254,7 +253,7 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp('/account signup validation/', $delivery->subject);
         $this->assertRegExp('/Inviter User/', $delivery->content);
-        $this->assertRegExp('/' . self::$environ->website->domain . '\/registration/', $delivery->content);
+        $this->assertRegExp('/' . self::$environ->website->domain . '\/app\/registration/', $delivery->content);
     }
 
     public function testSendNewUserInProject_PropertiesFromToBodyOk()

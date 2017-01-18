@@ -3,7 +3,7 @@ angular.module('palaso.ui.comments')
   .directive('commentBubble', [function() {
     return {
       restrict : 'E',
-      templateUrl : '/angular-app/bellows/directive/palaso.ui.comments.comment-bubble.html',
+      templateUrl : '/angular-app/bellows/directive/' + bootstrapVersion + '/palaso.ui.comments.comment-bubble.html',
       scope : {
         field : "=",
         control : "="

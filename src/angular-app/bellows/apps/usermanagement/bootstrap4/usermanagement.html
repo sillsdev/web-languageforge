@@ -1,0 +1,49 @@
+{% verbatim %}
+<div class="content container" ng-cloak>
+    <div id="sfchecks-hmenu" class="hdrnav">
+        <div class="topNav">
+            <a class="btn btn-info here" href="/app/projects">My Projects</a>
+            <a class="btn btn-info" href="/app/activity">Activity</a>
+        </div>
+    </div>
+    <div style="padding-top:10px" ng-controller="MainCtrl">
+    <sil-notices></sil-notices>
+    
+    <div style="margin-top:30px">
+    
+        <a class="btn" ng-href="{{project.appLink}}" data-tooltip="Back to the project"
+                data-tooltip-placement="{{interfaceConfig.placementNormal}}">
+            <i class="icon-reply"></i>Back
+        </a>
+    </div>
+    <h2 style="font-weight:normal">{{project.name}} User Management</h2>
+    
+    <!-- this is a hack - for some reason active can only bind to a variable,
+     so we create this variable using ng-init -->
+    <div ng-init="isMembers = isActive('/members')"></div>
+    <div ng-init="isJoinRequests = isActive('/joinRequests')"></div>
+    
+    
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" role="tab" data-toggle="tab" ui-sref="members" href="#MembersTab">Members</a>
+        </li>
+        <li class="nav-item"> 
+            <a class="nav-link" role="tab" data-toggle="tab" ui-sref="joinRequests" href="#JoinRequestTab">Join Requests</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="MembersTab" ng-if="isActive('/members')" ui-view></div>
+    <div class="tab-content" id="JoinRequestsTab" ng-if="(isActive('/joinRequests'))" ui-view></div>
+    
+  <!--  <tabset >
+        <tab  active="isMembers" heading="Members" ui-sref="members">
+             <div ng-if="isActive('/members')" ui-view></div>
+        </tab>
+        <tab  active="isJoinRequests" heading="Join Requests" ui-sref="joinRequests">     
+            <div ng-if="(isActive('/joinRequests'))" ui-view></div>
+        </tab>  
+    </tabset> -->
+    
+    </div>
+</div>
+{% endverbatim %}

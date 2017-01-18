@@ -1,0 +1,50 @@
+<div id="lexAppEditView" class="animate-switch row">
+    <div class="col-md-4">
+        <div class="input-group">
+            <pui-typeahead class="typeahead" placeholder="'Search Entries'"
+                       items="typeahead.searchResults" term="typeahead.searchItemSelected"
+                       search="typeahead.searchEntries" select="typeahead.searchSelect">
+                <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
+                    <li data-typeahead-item="e" class="typeahead-item list-group-item"
+                        data-ng-repeat="e in typeahead.searchResults | limitTo: typeahead.limit">
+                        <div class="listItemPrimary" data-ng-bind-html="getWordForDisplay(e)"></div>
+                        <small class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(e)"></small>
+                    </li>
+                </ul>
+                <div style="text-align:center; background-color: #d3d3d3; color:black; margin-top:5px"
+                     data-ng-if="typeahead.searchResults.length > 0">
+                    <small><i>{{typeahead.matchCountCaption}}</i></small></div>
+            </pui-typeahead>
+            <span class="input-group-btn">
+                <button class="btn btn-success" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()">
+                    <i class="fa fa-plus"></i><span class="hidden-md-down"> {{'New Word' | translate}}</span></button>
+            </span>
+        </div>
+        <div class="hidden-sm-down">
+            <div id="compactEntryListContainer" class="list-group lexiconItemListContainer" data-pui-when-scrolled="show.more()">
+                <div class="list-group-item list-group-item-action active">
+                    <small class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
+                    <h5>{{ 'Words in dictionary' | translate }}</h5>
+                </div>
+                <div id="entryId_{{entry.id}}" class="list-group-item"
+                     data-ng-class="{selected: entry.id == currentEntry.id, listItemHasComment: commentService.getEntryCommentCount(entry.id) > 0}"
+                     title="{{getCompactItemListOverlay(entry)}}" class="lexiconListItemCompact"
+                     data-ng-repeat="entry in visibleEntries track by entry.id" data-ng-click="editEntry(entry.id)">
+                    <div dir="auto" class="listItemPrimary" data-ng-bind-html="getWordForDisplay(entry)"></div>
+                    <div dir="auto" class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(entry)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="word-definition-title">
+            <dc-rendered config="config.entry" model="currentEntry"></dc-rendered>
+        </div>
+        <div>
+            <div class="entryItemView" data-ng-if="entryLoaded()">
+                <dc-entry config="config.entry" model="currentEntry" control="control"></dc-entry>
+            </div>
+        </div>
+    </div>
+</div>

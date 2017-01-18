@@ -40,6 +40,7 @@
                             {{'Delete matching entry if deleted in import.' | translate}}</label>
                     </div>
                 </div>
+             
                 <button data-ng-disabled="upload.importStarted" class="btn btn-primary" data-ng-click="importLift()">
                     <i class="icon-upload"></i>{{'Import' | translate}}</button>
                 <strong> {{upload.file.name}}</strong> ({{upload.file.size | bytes}})

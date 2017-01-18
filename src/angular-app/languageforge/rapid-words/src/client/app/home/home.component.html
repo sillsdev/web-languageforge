@@ -1,0 +1,55 @@
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+    crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row justify-content-center">
+      <h1>Rapid Words Collection</h1>
+    </div>
+
+    <div>
+      <p>
+        <sem-dom-search (domainSelected)="userChoseDomain($event)"></sem-dom-search>
+      </p>
+      <p>Selected domain: {{ selectedDomain }}</p>
+    </div>
+
+    <div class="row">
+      <div class="col-4">
+        <h3>Semantic Domains</h3>
+        <div class="row">
+          <div class="col">
+            <p>{{numberOfEntries}} entries</p>
+          </div>
+        </div>
+        <select [(ngModel)]="simpleValue"> // value is a string or number
+        <option *ngFor="let semanticDomain of semanticDomains" >{{semanticDomain}}</option>
+    </select>
+        <word-list [entries]="allEntries"></word-list>
+        <ul>
+          <li *ngFor="let word of words">
+            <h6><strong>{{word}}</strong></h6>
+            <p>this is the definition</p>
+          </li>
+        </ul>
+      </div>
+      <div class="col-4">
+        <!--<div class="row justify-content-end">
+          <button type="button" class="btn btn-secondary btn-sm" (click)="multitextShowDetails()">Show Hidden Fields</button>
+        </div>-->
+        <div class="row">
+          <worddetails></worddetails>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="row justify-content-center">
+          <h3>Comment Stuff</h3>
+        </div>
+        </div>
+    </div>
+  </div>
+</body>

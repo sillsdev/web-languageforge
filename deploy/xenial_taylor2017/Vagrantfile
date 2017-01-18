@@ -13,28 +13,20 @@ if [ ! -f "/usr/bin/unattended-upgrade-org" ]; then
   rm -f /var/lib/apt/lists/lock
   rm -f /var/lib/apt/lists/*
 fi
+add-apt-repository ppa:ansible/ansible
+apt-get update
+apt-get -y install git ansible
 if [ ! -d "/home/vagrant/src" ]; then
   mkdir /home/vagrant/src
 fi
 cd /home/vagrant/src
-add-apt-repository ppa:ansible/ansible
-apt-get update
-apt-get -y install git ansible
-if [ ! -d "/home/vagrant/src/xForge" ]; then
-  mkdir /home/vagrant/src/xForge
-fi
-cd /home/vagrant/src/xForge
 if [ ! -d "web-languageforge" ]; then
-  git clone --recurse-submodules https://github.com/sil-student-projects/web-languageforge.git 
+  git clone --depth=100 --recurse-submodules https://github.com/sil-student-projects/web-languageforge.git 
 else
-  cd web-languageforge; git pull --ff-only --recurse-submodules 
-fi
-cd /home/vagrant/src/xForge
-if [ ! -d "web-scriptureforge" ]; then
-  ln -s /home/vagrant/src/xForge/web-languageforge /home/vagrant/src/xForge/web-scriptureforge
+  cd web-languageforge; git pull origin master-taylor --ff-only --recurse-submodules 
 fi
 
-cd /home/vagrant/src/xForge/web-languageforge/deploy/; git checkout master-taylor; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
+cd /home/vagrant/src/web-languageforge/deploy/; git checkout master-taylor; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_vagrant.yml
 
 SCRIPT
 

@@ -114,7 +114,7 @@ class Sf
     /**
      * Read the user profile from $id
      *
-     * @return UserProfileDto
+     * @return array
      */
     public function user_readProfile()
     {
@@ -135,7 +135,7 @@ class Sf
     /**
      * Create/Update a User Profile
      *
-     * @param array $params (encoded UserProfileModel)
+     * @param array $params (encoded UserModel)
      * @return string Id of written object
      */
     public function user_updateProfile($params)
@@ -215,6 +215,11 @@ class Sf
     public function user_activate($username, $password, $email)
     {
         return UserCommands::activate($username, $password, $email, $this->website, $this->app);
+    }
+
+    public function user_authenticate($username, $password)
+    {
+        return UserCommands::authenticate($username, $password);
     }
 
     /**
@@ -682,11 +687,11 @@ class Sf
 
     public function lex_configuration_update($config, $optionlists)
     {
-        LexProjectCommands::updateConfig($this->projectId, $config);
+        if (!LexProjectCommands::updateConfig($this->projectId, $config)) return false;
         foreach ($optionlists as $optionlist) {
             LexOptionListCommands::updateList($this->projectId, $optionlist);
         }
-        return;
+        return true;
     }
 
     public function lex_project_removeMediaFile($mediaType, $fileName)
@@ -902,6 +907,7 @@ class Sf
             'sendReceive_notification_receiveRequest',
             'sendReceive_notification_sendRequest',
             'user_activate',
+            'user_authenticate',
             'user_readForRegistration',
             'user_register',
             'user_updateFromRegistration'

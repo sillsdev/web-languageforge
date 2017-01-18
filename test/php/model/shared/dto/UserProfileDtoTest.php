@@ -4,7 +4,7 @@ use Api\Model\Scriptureforge\Sfchecks\SfchecksUserProfile;
 use Api\Model\Shared\Dto\UserProfileDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SiteRoles;
-use Api\Model\Shared\UserProfileModel;
+use Api\Model\Shared\UserModel;
 //use PHPUnit\Framework\TestCase;
 
 class UserProfileDtoTest extends PHPUnit_Framework_TestCase
@@ -15,7 +15,7 @@ class UserProfileDtoTest extends PHPUnit_Framework_TestCase
         $environ->clean();
 
         $userId = $environ->createUser("User", "Name", "name@example.com");
-        $user = new UserProfileModel($userId);
+        $user = new UserModel($userId);
         $user->role = SiteRoles::USER;
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -58,7 +58,7 @@ class UserProfileDtoTest extends PHPUnit_Framework_TestCase
         $environ->clean();
 
         $userId = $environ->createUser("User", "Name", "name@example.com");
-        $user = new UserProfileModel($userId);
+        $user = new UserModel($userId);
         $user->role = SiteRoles::USER;
 
         $project = $environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);

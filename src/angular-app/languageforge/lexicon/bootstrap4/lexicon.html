@@ -1,0 +1,54 @@
+{% verbatim %}
+<div class="content container"
+     data-ng-cloak data-ng-controller="LexiconCtrl" dir="{{interfaceConfig.direction}}">
+     <div id="sfchecks-hmenu" class="list-group">
+        <a href="/app/projects" class="btn btn-info" role="button">My Projects</a>
+        <a href="/app/activity" class="btn btn-info" role="button">Activity</a>
+        <a href="/app/rapid-words" class="btn btn-info" role="button">Rapid Words</a>
+        <br>
+        <br>
+    </div>
+    <div class="hdrnav row">
+        <div class="col-xs-12">
+            <div class="hdrnav-container">
+                <div class="btn-group" data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.canEditUsers()">
+                    <a class="btn btn-secondary dropdown-toggle" data-ng-class="interfaceConfig.pullToSide"
+                       data-toggle="dropdown"
+                       data-tooltip-placement="{{interfaceConfig.placementToSide}}"
+                       data-tooltip="Settings" href="#">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" data-ng-class="interfaceConfig.pullToSide">
+                        <a class="dropdown-item" ui-sref="configuration" data-translate="Configuration"></a>
+                        <a class="dropdown-item" ui-sref="viewSettings" data-translate="View Settings"></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" ui-sref="importExport" data-translate="Import/Export"></a>
+                        <a class="dropdown-item" data-ng-href="/app/usermanagement/{{project.id}}"
+                           data-translate="User Management"></a>
+                        <a class="dropdown-item" ui-sref="settings-project" data-translate="Project Settings"></a>
+                        <div class="dropdown-divider" data-ng-show="showSync()"></div>
+                        <a class="dropdown-item" ui-sref="sync" data-ng-show="showSync()"
+                           data-translate="Synchronize"></a>
+                    </div>
+                </div>
+                <div class="pull-right return-button">
+                    <button class="btn btn-secondary" data-tooltip="View the dictionary"
+                            data-tooltip-placement="{{interfaceConfig.placementNormal}}"
+                            data-ng-show="showDictionaryButton()"
+                            data-ng-click="gotoDictionary()">
+                        <i class="fa fa-arrow-circle-left"></i> {{'Dictionary' | translate}}
+                    </button>
+                </div>
+                <ol id="top" class="breadcrumb hidden-sm-down" breadcrumbs></ol>
+            </div>
+        </div>
+    </div>
+
+    <div id="lexicon-hmenu">
+        <div class="lexnav control-group"></div>
+    </div>
+
+    <sil-notices></sil-notices>
+    <div data-ui-view></div>
+</div>
+{% endverbatim %}

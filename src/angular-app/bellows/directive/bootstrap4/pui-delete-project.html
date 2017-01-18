@@ -1,0 +1,8 @@
+<div class="controls col-xs-12">
+<label for="deletebox">Confirm deletion by typing DELETE into the box below</label><br>
+<input data-ng-model="deleteBoxText" type="text" id="deletebox" /><br>
+<button class="btn" data-ng-disabled="actionInProgress || !(deleteBoxText.toLowerCase() == 'delete')"
+        ng-style="(deleteBoxText.toLowerCase() == 'delete') && {'color':'red', 'font-weight':'bold'}"
+        ng-click="deleteProject()">Delete this project</button>
+<div class="text-error">Only project owners can delete a project, and this action cannot be undone</div>
+</div><br><br>

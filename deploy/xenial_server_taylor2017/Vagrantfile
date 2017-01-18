@@ -22,14 +22,10 @@ apt-get -y install git ansible
 
 cd /home/vagrant/src
 if [ ! -d "web-languageforge" ]; then
-  git clone --recurse-submodules https://github.com/sil-student-projects/web-languageforge.git 
+  git clone --depth=100 --recurse-submodules https://github.com/sil-student-projects/web-languageforge.git 
 else
   cd web-languageforge; git pull --ff-only --recurse-submodules 
 fi
-#cd /home/vagrant/src
-#if [ ! -d "web-scriptureforge" ]; then
-#  ln -sf /home/vagrant/src/web-languageforge /home/vagrant/src/web-scriptureforge
-#fi
 
 cd /home/vagrant/src/web-languageforge/deploy/; git checkout master-taylor; ansible-playbook -i hosts playbook_create_config.yml; chown vagrant.vagrant ansible.cfg; ansible-playbook -i hosts playbook_xenial_server_vagrant.yml
 
