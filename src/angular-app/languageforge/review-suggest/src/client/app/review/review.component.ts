@@ -1,7 +1,12 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
 import { Dictionary } from '../shared/models/dictionary';
 
 import { DictionaryService } from '../shared/services/dictionary.service';
+
+import { ProjectService } from '../shared/services/project.service';
+import { CommentService } from '../shared/services/comment.service';
 
 import { MaterializeDirective, MaterializeAction } from 'angular2-materialize';
 declare var Materialize:any;
@@ -11,41 +16,49 @@ declare var Materialize:any;
   selector: 'review',
   templateUrl: 'review.component.html'
 })
-export class ReviewComponent implements OnInit {
+export class ReviewComponent implements OnInit, OnDestroy {
 
-  title = 'Review';
-  idx = 0;
-  currentWord: Dictionary;
-  deck: Dictionary[];
-  comment: String;
-
-  constructor(public dictionaryService: DictionaryService) { }
+  private id: string;
+  private sub: any;
+  private words: any[];
+  private currentWord: any;
+  private currentIdx = 0;
+  
+  constructor(public dictionaryService: DictionaryService, 
+              private route: ActivatedRoute,
+              private projectService: ProjectService,
+              private commentService: CommentService) { }
 
   ngOnInit(): void {
-    this.getDeck();
+    this.sub = this.route.params.subscribe(params => {
+       this.id = params['id'];
+       this.getWords(this.id);
+    });
   }
 
-  getDeck(): void {
-    this.dictionaryService.getWords().then(deck => {
-      this.deck = deck;
-      this.currentWord = this.deck[this.idx];
+  getWords(projectId: string) {
+    this.projectService.getWordList(projectId).subscribe(response => {
+      console.log("--Words--");
+      console.log(response.entries);
+      this.words = response.entries;
+      this.currentWord = this.words[this.currentIdx];
     });
   }
 
   public incrementWord = () => {
-    this.idx += 1;
-    if (this.idx > this.deck.length - 1) {
-      this.idx = 0;
+    this.currentIdx += 1;
+    if (this.currentIdx > this.words.length - 1) {
+      this.currentIdx = 0;
     }
-    this.currentWord = this.deck[this.idx]
+    this.currentWord = this.words[this.currentIdx]
   }
 
   public decreaementWord = () => {
-    this.idx -= 1;
-    if (this.idx < 0) {
-      this.idx = this.deck.length - 1;
+    this.currentIdx -= 1;
+    if (this.currentIdx < 0) {
+      this.currentIdx = this.words.length - 1;
     }
-    this.currentWord = this.deck[this.idx];
+    this.currentWord = this.words[this.currentIdx];
   }
 
 
@@ -89,4 +102,7 @@ export class ReviewComponent implements OnInit {
     */
   }
 
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
 }

@@ -6,7 +6,7 @@ import { LoggedInGuard } from '../shared/logged-in.guard';
 @NgModule({
   imports: [
     RouterModule.forChild([
-      { path: 'review', component: ReviewComponent, canActivate: [LoggedInGuard] }
+      { path: 'review/:id', component: ReviewComponent, canActivate: [LoggedInGuard] }
     ])
   ],
   exports: [RouterModule]
