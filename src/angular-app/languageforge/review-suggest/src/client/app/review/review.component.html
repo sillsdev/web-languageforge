@@ -18,11 +18,11 @@
       <div class="card-action center">
 
         <div class="row">
-          <a (click)="upVote()" class="btn-large green darken-1 waves-effect waves-light"><i class="large material-icons">check_circle</i></a>
+          <a (click)="upVote()" class="btn-large green darken-1 waves-effect waves-light"><i class="large material-icons">thumb_up</i></a>
 
           <a (click)="openModal()" class="btn-large blue darken-1 waves-effect waves-light"><i class="material-icons">message</i></a>
 
-          <a (click)="downVote()" class="btn-large red darken-1 waves-effect waves-light"><i class="material-icons">cancel</i></a>
+          <a (click)="downVote()" class="btn-large red darken-1 waves-effect waves-light"><i class="material-icons">thumb_down</i></a>
         </div>
         <!-- END .row -->
       </div>
@@ -35,13 +35,20 @@
 
 </div>
 
-<div id="commentModal" class="modal sheet" materialize="modal" [materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions">
+<div id="commentModal" class="modal sheet modal-fixed-footer" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
   <div class="modal-content">
-    <h4>Suggestion</h4>
+    <div class="row darken-1">
+      <div class="col s6">
+        <h4 class="left-align">Suggestion </h4> 
+      </div>
+      <div class="col s6 right-align">
+        <a class="btn-flat darken-1 waves-light waves-effect" (click)="closeModal()"><i class="material-icons">close</i></a>
+      </div>
+    </div>
     <textarea id="placeholderForComment" class="materialize-textarea" placeholder="Enter text here"></textarea>
   </div>
   <div class="modal-footer">
-    <span style="font-size:1.6em;"><a class="btn blue darken-1 waves-effect waves-light" (click)="closeModal()">Send <i class="material-icons">send</i></a></span>
+    <span style="font-size:1.6em;"><a class="btn blue darken-1 waves-effect waves-light" (click)="submitComment()">Post <i class="material-icons">send</i></a></span>
 </div>
 </div>
 
