@@ -37,10 +37,14 @@
 
 <div id="commentModal" class="modal sheet modal-fixed-footer" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
   <div class="modal-content">
-    <div class="right-align">
-      <a class="btn grey darken-1 waves-light waves-effect right-align" (click)="closeModal()"><i class="material-icons">close</i></a>
+    <div class="row darken-1">
+      <div class="col s6">
+        <h4 class="left-align">Suggestion </h4> 
+      </div>
+      <div class="col s6 right-align">
+        <a class="btn-flat darken-1 waves-light waves-effect" (click)="closeModal()"><i class="material-icons">close</i></a>
+      </div>
     </div>
-    <h4>Suggestion</h4>
     <textarea id="placeholderForComment" class="materialize-textarea" placeholder="Enter text here"></textarea>
   </div>
   <div class="modal-footer">

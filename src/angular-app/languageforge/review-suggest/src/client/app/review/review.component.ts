@@ -81,6 +81,7 @@ export class ReviewComponent implements OnInit {
     //if success
     var toastContentSuccess = '<span><b>Your comment has been sent!</b></span>';
     Materialize.toast(toastContentSuccess, 1000, 'green');
+    this.incrementWord();
     //if failed
     /*
     var toastContentFailed = '<span><b>Your comment failed to send!</b></span>';
