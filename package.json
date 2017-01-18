@@ -14,6 +14,7 @@
     "alternate-url": "https://github.com/sillsdev/web-scriptureforge.git"
   },
   "dependencies": {},
+    "sharedb-mongo": "1.0.0-beta",
   "devDependencies": {
     "async": "~1.4.2",
     "browserify": "^13.0.1",
