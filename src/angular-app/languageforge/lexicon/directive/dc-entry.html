@@ -1,6 +1,10 @@
 <div class="dc-entry">
     <div class="card card-outline-info">
         <div class="card-header card-info">
+            <button data-ng-if="rights.canDeleteEntry() && $state.is('editor.entry')" data-ng-click="deleteEntry(currentEntry)"
+                    class="btn btn-danger pull-right btn-sm" title="{{ 'Delete Entry' | translate }}">
+                <i class="fa fa-times"></i> <span class="hidden-sm-down">{{'Delete' | translate}}</span>
+            </button>
             &nbsp;{{'Entry' | translate}}
         </div>
         <div class="card-block">
