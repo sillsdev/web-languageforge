@@ -13,8 +13,25 @@ import { LexEntry } from '../shared/models/lex-entry';
 
 export class WordListComponent {
     @Input() entries: LexEntry[];
+    currentPage: number;
 
     constructor() {
+        this.currentPage = 1;
+    }
+
+    getEntriesForPage() {
+        if (this.entries) {
+            return this.entries.slice((this.currentPage-1) * 50, this.currentPage * 50);
+        }
+        return null;
+    }
+
+    incrementCurrentPage() {
+        this.currentPage++;
+    }
+
+    decrementCurrentPage() {
+        this.currentPage--;
     }
 
     /**
