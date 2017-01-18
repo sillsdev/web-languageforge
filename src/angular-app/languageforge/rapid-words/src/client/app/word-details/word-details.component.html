@@ -1,9 +1,9 @@
 <div class="col-12">
     <div class="card" style="  background-color: #f8fafa; margin:10px;">
-        <multitext label="Word" [languages]="wordMultitextLanguages" [content]="['','']"></multitext>
+        <multitext label="Word" [selectedEntry]="selectedEntry" [languages]="wordMultitextLanguages" [content]="['','']"></multitext>
     </div>
     <div class="card" style="background-color: #f8fafa; margin:10px;">
-        <multitext label="Meaning" [languages]="definitionMultitextLanguages" [content]="['','','']"></multitext>
+        <multitext label="Meaning" [selectedEntry]="selectedEntry" [languages]="definitionMultitextLanguages" [content]="['','','']"></multitext>
     </div>
 <!--Replace the above arrays with arrays of languages obtained from the back end
     (get the settings from the back end and extract the settings about languages for definitions and lexemes-->

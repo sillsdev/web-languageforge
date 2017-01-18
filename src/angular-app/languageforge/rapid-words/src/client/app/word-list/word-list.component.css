@@ -22,6 +22,10 @@
     display: block;
 }
 
+.rw-group-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
 .list-item-primary {
     z-index: 2;
     font-size: 1.0em;
@@ -42,4 +46,8 @@
 
 .page-button:not(.disabled) {
     color: #0275d8;
+}
+
+.rw-group-item.selected {
+    background-color: rgba(0, 0, 0, 0.15);
 }

@@ -23,14 +23,14 @@
             <p>{{allEntries.length}} entries</p>
           </div>
         </div>
-        <word-list [entries]="allEntries"></word-list>
+        <word-list [entries]="allEntries" [wordLanguages]="wordLanguageSettings" [definitionLanguages]="definitionLanguageSettings" (onEntrySelected)="onEntrySelectedInList($event)"></word-list>
       </div>
       <div class="col-6">
         <!--<div class="row justify-content-end">
           <button type="button" class="btn btn-secondary btn-sm" (click)="multitextShowDetails()">Show Hidden Fields</button>
         </div>-->
         <div class="row">
-          <worddetails [wordMultitextLanguages]="wordLanguageSettings" [definitionMultitextLanguages]="definitionLanguageSettings"></worddetails>
+          <worddetails [wordMultitextLanguages]="wordLanguageSettings" [definitionMultitextLanguages]="definitionLanguageSettings" [selectedEntry]="selectedEntry"></worddetails>
         </div>
       </div>
       <div class="col-3">

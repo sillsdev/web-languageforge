@@ -10,11 +10,18 @@ import { LexEntry, LexSense } from '../shared/models/lex-entry';
   styleUrls: ['multitext.component.css'],
 })
 export class MultitextComponent implements OnInit {
+  private _selectedEntry: LexEntry;
 
   // @Input('label') public label: string = "";
   @Input('languages') public languages: string[] = [];
   @Input('content') public content: string[] = [];
   @Input('label') label: string;
+
+  @Input('selectedEntry')
+  set selectedEntry(entry: LexEntry) {
+    this._selectedEntry = entry;
+    this.updateContentFromLexEntry(entry);
+  }
 
   constructor() {
 
@@ -47,6 +54,34 @@ export class MultitextComponent implements OnInit {
         lexSense.definition[this.languages[langIndex]] =  { value: this.content[langIndex] };
       }
       lexEntry.senses.push(lexSense);
+    }
+  }
+
+  updateContentFromLexEntry(lexEntry: LexEntry) {
+    if (!lexEntry) {
+      return;
+    }
+
+    if (this.label == Constants.MultitextEntry.WORD_COMPONENT) {
+      for (let langIndex in this.languages) {
+        let wordForLang = lexEntry.lexeme[this.languages[langIndex]];
+        if (wordForLang) {
+          this.content[langIndex] = wordForLang.value;
+        } else {
+          this.content[langIndex] = '';
+        }
+      }
+    } else {
+      for (let lexSense of lexEntry.senses) {
+        for (let langIndex in this.languages) {
+          let definitionForLang = lexSense.definition[this.languages[langIndex]];
+          if (definitionForLang) {
+            this.content[langIndex] = definitionForLang.value;
+          } else {
+            this.content[langIndex] = '';
+          }
+        }
+      }
     }
   }
 

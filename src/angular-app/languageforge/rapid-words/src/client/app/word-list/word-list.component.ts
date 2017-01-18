@@ -1,19 +1,23 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input, Output, EventEmitter } from '@angular/core'
 import { Http } from '@angular/http';
 
 import { LfApiService } from '../shared/services/lf-api.service';
 import { LexEntry } from '../shared/models/lex-entry';
 
 @Component({
-  moduleId: module.id,
-  selector: 'word-list',
-  templateUrl: 'word-list.component.html',
-  styleUrls: ['word-list.component.css']
+    moduleId: module.id,
+    selector: 'word-list',
+    templateUrl: 'word-list.component.html',
+    styleUrls: ['word-list.component.css']
 })
 
 export class WordListComponent {
     @Input() entries: LexEntry[];
+    @Input() wordLanguages: string[];
+    @Input() definitionLanguages: string[];
+    @Output() onEntrySelected = new EventEmitter<LexEntry>();
     currentPage: number;
+    selectedEntry: LexEntry;
 
     constructor() {
         this.currentPage = 1;
@@ -21,7 +25,7 @@ export class WordListComponent {
 
     getEntriesForPage() {
         if (this.entries) {
-            return this.entries.slice((this.currentPage-1) * 50, this.currentPage * 50);
+            return this.entries.slice((this.currentPage - 1) * 50, this.currentPage * 50);
         }
         return null;
     }
@@ -35,16 +39,16 @@ export class WordListComponent {
     }
 
     /**
-     * Because of the nature of lexemes having multiple keys representing different languages,
-     * here we get a preview word for the word list using whatever the first one is that we can grab.
+     * This function tries to find a matching word for the languages in settings, and if it can't find a match or
+     * if the only matches are empty strings, it returns '[Empty]'
      */
     getPreviewWord(entry: LexEntry) {
-        let word = entry.lexeme[Object.keys(entry.lexeme)[0]].value;
-
-        if (word == '') {
-            return '[Empty]';
+        for (let language of this.wordLanguages) {
+            if (entry.lexeme[language] && entry.lexeme[language].value != '') {
+                return entry.lexeme[language].value;
+            }
         }
-        return word;
+        return '[Empty]';
     }
 
     /**
@@ -52,15 +56,27 @@ export class WordListComponent {
      * the fact that the definition is a level deeper than the word.
      */
     getPreviewDefinition(entry: LexEntry) {
-        let firstSenseDefinition = entry.senses[0].definition;
-        if (Object.keys(firstSenseDefinition).length > 0) {
-            let definition = firstSenseDefinition[Object.keys(firstSenseDefinition)[0]].value;
-            if (definition == '') {
-                return '[Empty]';
+        for (let sense of entry.senses) {
+            for (let language of this.definitionLanguages) {
+                if (sense.definition[language] && sense.definition[language].value != '') {
+                    return sense.definition[language].value;
+                }
             }
-            return firstSenseDefinition[Object.keys(firstSenseDefinition)[0]].value;
-        } else {
-            return '[Empty]';
         }
+        return '[Empty]';
+    }
+
+    selectEntry(entry: LexEntry) {
+        this.selectedEntry = entry;
+        this.onEntrySelected.emit(entry);
+    }
+
+    getMatchingWordForLanguageSettings(entry: LexEntry) {
+        for (let language of this.wordLanguages) {
+            if (entry.lexeme[language]) {
+                return entry.lexeme[language].value;
+            }
+        }
+        return '[Empty]';
     }
 }
