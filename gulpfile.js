@@ -1018,6 +1018,7 @@ gulp.task('sass:watch', function () {
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/*.scss', gulp.series('sass:lexicon'));
   gulp.watch('src/angular-app/languageforge/lexicon/directive/**/*.scss', gulp.series('sass:lexicon'));
   gulp.watch('src/angular-app/languageforge/lexicon/views/**/*.scss', gulp.series('sass:lexicon'));
+  gulp.watch('src/angular-app/bellows/directive/bootstrap4/**/*.scss', gulp.series('sass:lexicon'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/login/*.scss', gulp.series('sass:login'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/new-project/*.scss', gulp.series('sass:new-project'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/projects/*.scss', gulp.series('sass:projects'));
