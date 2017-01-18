@@ -942,7 +942,7 @@ gulp.task('build-node', function(cb){
     dryRun: false,
     debug: false,
   };
-  execute('/bin/sh ./node_modules/.bin/browserify src/node/client.js -o src/node/static/dist/bundle.js',
+  execute('node node_modules/browserify/bin/cmd.js src/node/client.js -o src/node/static/dist/bundle.js',
     options,
     cb);
 }
