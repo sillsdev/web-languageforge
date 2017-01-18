@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { NavbarComponent } from './navbar/navbar.component';
-import { DictionaryService } from './services/dictionary.service';
 import { AuthService } from './services/auth.service';
 import { MaterializeModule } from './materialize.module';
 
@@ -23,7 +22,7 @@ export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: SharedModule,
-      providers: [DictionaryService, AuthService]
+      providers: [AuthService]
     };
   }
 }

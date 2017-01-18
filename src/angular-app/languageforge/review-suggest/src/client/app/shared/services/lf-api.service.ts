@@ -13,10 +13,12 @@ export class LfApiService {
     private apiUrl: string;
     private loginUrl: string;
     private phpSessionCookie: string;
+    private id: number;
 
     constructor(private http: Http, private baseApiUrl: string) {
         this.apiUrl = baseApiUrl + '/api/sf';
         this.loginUrl = baseApiUrl + '/app/login_check';
+        this.id = 1;
     }
 
     /**
@@ -55,7 +57,7 @@ export class LfApiService {
             method: method,
             params: params || [],
             // TODO determine whether id needs to be incremented
-            id: 1
+            id: this.id
         };
 
         return this.sendRequest(this.apiUrl, body)
@@ -73,7 +75,9 @@ export class LfApiService {
             }
             else data = data.result;
 
-            return {success, data, message}
+            this.id += 1;
+
+            return {success, data, message};
        });
     }
 

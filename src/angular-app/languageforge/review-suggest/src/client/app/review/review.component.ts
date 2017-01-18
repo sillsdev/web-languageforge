@@ -1,10 +1,6 @@
 import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Dictionary } from '../shared/models/dictionary';
-
-import { DictionaryService } from '../shared/services/dictionary.service';
-
 import { ProjectService } from '../shared/services/project.service';
 import { CommentService } from '../shared/services/comment.service';
 
@@ -22,26 +18,32 @@ export class ReviewComponent implements OnInit, OnDestroy {
   private sub: any;
   private words: any[];
   private currentWord: any;
+  private currentLanguageCode: string;
+  private currentInterfaceLanguageCode: string;
   private currentIdx = 0;
 
   private isClicked = false;
 
-  constructor(public dictionaryService: DictionaryService,
-    private route: ActivatedRoute,
-    private projectService: ProjectService,
-    private commentService: CommentService) { }
+  constructor(private route: ActivatedRoute,
+              private projectService: ProjectService,
+              private commentService: CommentService) { }
 
   ngOnInit(): void {
     this.sub = this.route.params.subscribe(params => {
       this.id = params['id'];
+      this.setLanguageSettings();
       this.getWords(this.id);
     });
   }
 
+  setLanguageSettings() {
+    let projectSettings = this.projectService.getSelectedProjectSettings();
+    this.currentLanguageCode = projectSettings.languageCode;
+    this.currentInterfaceLanguageCode = projectSettings.interfaceLanguageCode;
+  }
+
   getWords(projectId: string) {
     this.projectService.getWordList(projectId).subscribe(response => {
-      console.log("--Words--");
-      console.log(response.entries);
       this.words = response.entries;
       this.currentWord = this.words[this.currentIdx];
     });
@@ -62,7 +64,6 @@ export class ReviewComponent implements OnInit, OnDestroy {
     }
     this.currentWord = this.words[this.currentIdx];
   }
-
 
   public upVote = () => {
     this.sendComment('I upvoted this word through the Review & Suggest app', this.currentWord.id);
