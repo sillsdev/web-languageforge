@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { Response, Headers, Http, RequestOptions, RequestOptionsArgs } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
+import {Observable} from 'rxjs/Observable';
 
 
 @Injectable()
@@ -15,6 +16,7 @@ export class LfApiService {
 
     constructor(private http: Http, private baseApiUrl: string) {
         this.apiUrl = baseApiUrl + '/api/sf';
+        this.loginUrl = baseApiUrl + '/app/login_check';
     }
 
     /**
@@ -23,6 +25,11 @@ export class LfApiService {
      */
     private sendRequest(url: string, body: any) {
         let headers = new Headers({ 'Content-Type': 'application/json' });
+
+        if (url == this.loginUrl) {
+            headers = new Headers({ 'Content-type': 'application/x-www-form-urlencoded' });
+        }
+
         let options = new RequestOptions({ headers: headers, withCredentials: true });
         return this.http.post(url, body, options);
     }
@@ -95,9 +102,33 @@ export class LfApiService {
         });
     }
 
+
     user_authenticate(username: string, password: string) {
-        return this.callApi('user_authenticate', [username, password]).map(result => {
-            return result;
-        });
+        let body = '_username='+username+'&_password='+password+'&_remember_me=on&_json_request=on';
+        return this.sendRequest(this.loginUrl, body)
+            .map(res => {
+
+                let data = res.ok ? res.json() : null;
+                let success = res.ok && !data.error;
+                let message: string;
+                let result: number;
+
+                if(!res.ok) {
+                    message = `Error ${res.status} ({res.statusText})`;
+                } else if(data.error) {
+                    message = 'API error';
+                    console.error(`API error:\n` +
+                        `Type: ${data.error.type}\n` +
+                        `${data.error.message}`
+                    );
+                } else {
+                    result = data.result;
+                    console.log(data);
+                }
+
+                success = success && (result == 1);
+
+                return {success, data, message};
+            });
     }
 }
