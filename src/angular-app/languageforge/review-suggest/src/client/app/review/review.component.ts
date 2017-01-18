@@ -4,6 +4,7 @@ import { Dictionary } from '../shared/models/dictionary';
 import { DictionaryService } from '../shared/services/dictionary.service';
 
 import { MaterializeDirective, MaterializeAction } from 'angular2-materialize';
+declare var Materialize:any;
 
 @Component({
   moduleId: module.id,
@@ -77,6 +78,14 @@ export class ReviewComponent implements OnInit {
     console.log("My commment is :" + inputValue);
     this.closeModal();
     (<HTMLInputElement>document.getElementById("placeholderForComment")).value='';
+    //if success
+    var toastContentSuccess = '<span><b>Your comment has been sent!</b></span>';
+    Materialize.toast(toastContentSuccess, 1000, 'green');
+    //if failed
+    /*
+    var toastContentFailed = '<span><b>Your comment failed to send!</b></span>';
+    Materialize.toast(toastContentFailed, 1000, 'red');
+    */
   }
 
 }
