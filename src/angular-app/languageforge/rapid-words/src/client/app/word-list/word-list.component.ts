@@ -13,8 +13,25 @@ import { LexEntry } from '../shared/models/lex-entry';
 
 export class WordListComponent {
     @Input() entries: LexEntry[];
+    currentPage: number;
 
-    constructor(private lfApiService: LfApiService) {
+    constructor() {
+        this.currentPage = 1;
+    }
+
+    getEntriesForPage() {
+        if (this.entries) {
+            return this.entries.slice((this.currentPage-1) * 50, this.currentPage * 50);
+        }
+        return null;
+    }
+
+    incrementCurrentPage() {
+        this.currentPage++;
+    }
+
+    decrementCurrentPage() {
+        this.currentPage--;
     }
 
     /**
@@ -22,7 +39,12 @@ export class WordListComponent {
      * here we get a preview word for the word list using whatever the first one is that we can grab.
      */
     getPreviewWord(entry: LexEntry) {
-        return entry.lexeme[Object.keys(entry.lexeme)[0]].value;
+        let word = entry.lexeme[Object.keys(entry.lexeme)[0]].value;
+
+        if (word == '') {
+            return '[Empty]';
+        }
+        return word;
     }
 
     /**
@@ -32,9 +54,13 @@ export class WordListComponent {
     getPreviewDefinition(entry: LexEntry) {
         let firstSenseDefinition = entry.senses[0].definition;
         if (Object.keys(firstSenseDefinition).length > 0) {
+            let definition = firstSenseDefinition[Object.keys(firstSenseDefinition)[0]].value;
+            if (definition == '') {
+                return '[Empty]';
+            }
             return firstSenseDefinition[Object.keys(firstSenseDefinition)[0]].value;
         } else {
-            return "";
+            return '[Empty]';
         }
     }
 }

@@ -2,6 +2,7 @@
     height: 400px;
     overflow-y: scroll;
     overflow-x: hidden;
+    margin-bottom: 0px;
 }
 
 .word-block {
@@ -14,4 +15,30 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.rw-group-item {
+    display: block;
+}
+
+.list-item-primary {
+    z-index: 2;
+    font-size: 1.0em;
+    font-weight: bold;
+    overflow: hidden;
+}
+
+.list-item-secondary {
+    z-index: 2;
+    font-size: 0.8em;
+    overflow: hidden;
+}
+
+.wl-pagination {
+    display: inline-block;
+    margin-top: 0px;
+}
+
+.page-button:not(.disabled) {
+    color: #0275d8;
 }

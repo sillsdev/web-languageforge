@@ -1,6 +1,27 @@
-<div class="card word-list-container">
-    <div class="card-block word-block" *ngFor="let entry of entries">
-        <h6 class="card-title">{{getPreviewWord(entry)}}</h6>
-        <p class="card-text">{{getPreviewDefinition(entry)}}</p>
+<div class="w-75">
+    <div class="card word-list-container">
+        <div class="list-group-item rw-group-item" *ngFor="let entry of getEntriesForPage()">
+            <div class="list-item-primary">{{getPreviewWord(entry)}}</div>
+            <div class="list-item-secondary">{{getPreviewDefinition(entry)}}</div>
+        </div>
+    </div>
+    <div class="text-xs-center">
+        <ul class="pagination pagination-sm wl-pagination">
+            <li class="page-item" [ngClass]="{disabled: currentPage == 1}">
+                <a (click)="decrementCurrentPage()" class="page-link page-button" tabindex="-1">Previous</a>
+            </li>
+            <li *ngIf="currentPage > 1" class="page-item">
+                <a (click)="decrementCurrentPage()" class="page-link page-button">{{currentPage-1}}</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link">{{currentPage}}</a>
+            </li>
+            <li *ngIf="entries && currentPage * 50 <= entries.length" class="page-item">
+                <a (click)="incrementCurrentPage()" class="page-link page-button">{{currentPage+1}}</a>
+            </li>
+            <li class="page-item" [ngClass]="{disabled: entries && currentPage * 50 >= entries.length}">
+                <a (click)="incrementCurrentPage()" class="page-link page-button">Next</a>
+            </li>
+        </ul>
     </div>
 </div>
