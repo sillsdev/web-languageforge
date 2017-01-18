@@ -15,9 +15,7 @@
       <div class="col-3">
         <h3>Semantic Domains</h3>
         <div>
-          <p>
-            <sem-dom-search (domainSelected)="userChoseDomain($event)"></sem-dom-search>
-          </p>
+          <sem-dom-search (domainSelected)="userChoseDomain($event)"></sem-dom-search>
           <p class="sem-dom-description" *ngIf="selectedDomain">{{ selectedDomain.description }}</p>
         </div>
         <div *ngIf="all" class="row">

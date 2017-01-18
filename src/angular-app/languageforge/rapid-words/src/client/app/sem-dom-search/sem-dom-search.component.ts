@@ -21,14 +21,16 @@ export class SemanticDomainSearchComponent {
     searchText: FormControl = new FormControl();
     searchResults: Array<SemanticDomain> = [];
     semanticDomains: SemanticDomainCollection = {};
+    searchEnabled = false;
 
     constructor(private semanticDomainDataService: SemanticDomainDataService) {
         this.semanticDomains = semanticDomainDataService.getSemanticDomains();
 
         this.searchText.valueChanges
-            .debounceTime(500)
+            .debounceTime(100)
             .distinctUntilChanged()
             .subscribe(search_text => {
+                if(!this.searchEnabled) return;
                 this.clearSearchResults();
 
                 Object.keys(this.semanticDomains).forEach((key: string) => {
@@ -49,6 +51,7 @@ export class SemanticDomainSearchComponent {
         this.selectedDomain = this.semanticDomains[sem_dom_key];
         this.domainSelected.emit(this.selectedDomain);
         this.clearSearchResults();
+        this.updateInputValue();
     }
 
     // Set the user's selection
@@ -60,11 +63,32 @@ export class SemanticDomainSearchComponent {
     // Clear the search results in preparation for a new query.
     clearSearchResults() {
         // TODO: Is this the right way to do this without leaking memory?
+        // TODO Should clear results when the input loses focus.
         this.searchResults = [];
     }
 
     // Should we show the results list?
     showResults() {
-        return (this.searchText.value !== "" && this.searchResults.length > 0);
+        return this.searchResults.length > 0;
     }
+
+    private semdomText() {
+        return this.selectedDomain ?
+                this.selectedDomain.name + ' ' + this.selectedDomain.key : '';
+    }
+
+    updateInputValue() {
+        this.searchText.setValue(this.semdomText());
+    }
+
+    onInputBlur() {
+        this.searchEnabled = false;
+        this.updateInputValue();
+    }
+
+    onInputFocus() {
+        this.searchText.setValue('');
+        this.searchEnabled = true;
+    }
+
 }

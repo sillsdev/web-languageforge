@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
      * Creates an instance of the HomeComponent with the injected
      * SemanticDomainListService.
      *
-     * 
+     *
      * @param {SemanticDomainListService} semanticDomainListService
      */
 

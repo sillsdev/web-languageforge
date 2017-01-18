@@ -17,4 +17,6 @@ ul {
 .sem-dom-description {
   overflow-y: auto;
   max-height: 50pt;
+  margin-top: 5pt;
+  margin-bottom: 0;
 }
