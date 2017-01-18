@@ -146,7 +146,7 @@ function Utils() {
   };
 
   this.clickBreadcrumb = function clickBreadcrumb(breadcrumbText) {
-    element(by.elemMatches('ul.topCrumbs > li', breadcrumbText)).click();
+    element(by.elemMatches('.breadcrumb > li', breadcrumbText)).click();
   };
 
   this.parent = function parent(child) {

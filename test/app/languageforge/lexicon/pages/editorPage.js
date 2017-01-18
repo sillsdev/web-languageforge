@@ -6,6 +6,8 @@ function EditorPage() {
   var mockUpload = require('../../../bellows/pages/mockUploadElement.js');
   var util = require('../../../bellows/pages/util.js');
   var editorUtil = require('./editorUtil.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   this.get = function get(projectId, entryId) {
     var extra = projectId ? ('/' + projectId) : '';
@@ -40,9 +42,10 @@ function EditorPage() {
   this.noticeList = element.all(by.repeater('notice in notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
 
-  this.browseDiv = element(by.css('#lexAppListView'));
-  this.editDiv = element(by.css('#lexAppEditView'));
-  this.commentDiv = element(by.css('#lexAppCommentView'));
+  this.browseDiv = element(by.id('lexAppListView'));
+  this.editDiv = element(by.id('lexAppEditView'));
+  this.editToolbarDiv = element(by.className('lexAppToolbar'));
+  this.commentDiv = element(by.id('lexAppCommentView'));
 
   // --- Browse view ---
   this.browse = {
@@ -51,6 +54,7 @@ function EditorPage() {
     newWordBtn: this.browseDiv.element(by.partialButtonText('New Word')),
     entryCountElem: this.browseDiv.element(by.binding('entries.length')),
     getEntryCount: function () {
+      browser.wait(expectedCondition.visibilityOf(this.entryCountElem), CONDITION_TIMEOUT);
       return this.entryCountElem.getText().then(function (s) {
         return parseInt(s, 10);
       });
@@ -59,7 +63,7 @@ function EditorPage() {
     // Search typeahead
     search: {
       input: this.browseDiv.element(by.css('div.typeahead')).element(by.css('input')),
-      clearBtn: this.browseDiv.element(by.css('div.typeahead')).element(by.css('i.icon-remove')),
+      clearBtn: this.browseDiv.element(by.css('div.typeahead')).element(by.className('fa-times')),
       results: this.browseDiv.element(by.css('div.typeahead'))
         .all(by.repeater('e in typeahead.searchResults')),
       matchCountElem: this.browseDiv.element(by.css('div.typeahead'))
@@ -73,7 +77,7 @@ function EditorPage() {
     },
 
     // Entries list (main body of view)
-    entriesList: this.browseDiv.all(by.repeater('entry in visibleEntries')),
+    entriesList: this.browseDiv.all(by.repeater('entry in visibleEntries track by entry.id')),
     findEntryByLexeme: function (lexeme) {
       return this.entriesList.filter(function (row) {
         return row.element(by.binding('entry.word')).getText().then(function (word) {
@@ -86,12 +90,13 @@ function EditorPage() {
   // --- Edit view ---
   //noinspection JSUnusedGlobalSymbols
   this.edit = {
-    fields: this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
-    toListLink: element(by.css('#toListLink')),
-    toCommentsLink: element(by.css('#toCommentsLink')),
+    // Top row UI elements
+    toListLink: this.editToolbarDiv.element(by.id('toListLink')),
+    saveBtn: this.editToolbarDiv.element(by.className('btn-success')),
+    toggleHiddenFieldsBtn: this.editToolbarDiv.element(by.id('toggleHiddenFieldsBtn')),
+    toCommentsLink: this.editToolbarDiv.element(by.id('toCommentsLink')),
 
-    // Show/Hide fields button and associated functions
-    toggleHiddenFieldsBtn: this.editDiv.element(by.css('#toggleHiddenFieldsBtn')),
+    // Show/Hide fields functions
     toggleHiddenFieldsBtnText: {
       show: 'Show Hidden Fields',
       hide: 'Hide Hidden Fields'
@@ -125,20 +130,20 @@ function EditorPage() {
 
     entriesList: this.editDiv.all(by.repeater('entry in visibleEntries')),
     findEntryByLexeme: function (lexeme) {
-      var div = this.editDiv.element(by.css('#compactEntryListContainer'));
+      var div = this.editDiv.element(by.id('compactEntryListContainer'));
       return div.element(by.cssContainingText('[data-ng-bind-html="getWordForDisplay(entry)"',
         lexeme));
     }.bind(this),
 
     findEntryByDefinition: function (definition) {
-      var div = this.editDiv.element(by.css('#compactEntryListContainer'));
+      var div = this.editDiv.element(by.id('compactEntryListContainer'));
       return div.element(by.cssContainingText('[data-ng-bind-html="getMeaningForDisplay(entry)"',
         definition));
     }.bind(this),
 
     search: {
       input: this.editDiv.element(by.css('div.typeahead')).element(by.css('input')),
-      clearBtn: this.editDiv.element(by.css('div.typeahead')).element(by.css('i.icon-remove')),
+      clearBtn: this.editDiv.element(by.css('div.typeahead')).element(by.className('fa-times')),
       results: this.editDiv.element(by.css('div.typeahead'))
         .all(by.repeater('e in typeahead.searchResults')),
       matchCountElem: this.editDiv.element(by.css('div.typeahead'))
@@ -151,12 +156,12 @@ function EditorPage() {
       }
     },
 
-    // Top-row UI elements
-    renderedDiv: this.editDiv.element(by.css('dc-rendered')),
-    deleteBtn: this.editDiv.element(by.css('button[data-ng-click="deleteEntry(currentEntry)"]')),
-    saveBtn: this.editDiv.element(by.css('button[data-ng-click="saveCurrentEntry(true)"]')),
+    // Top-row
+    renderedDiv: this.editDiv.element(by.className('dc-rendered-entryContainer')),
+    deleteBtn: this.editDiv.element(by.partialButtonText('Delete')),
 
     // Helper functions for retrieving various field values
+    fields: this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
     getLexemes: function () {
 
       // Returns lexemes in the format [{wsid: 'en', value: 'word'}, {wsid:
@@ -173,6 +178,7 @@ function EditorPage() {
     },
 
     getFirstLexeme: function () {
+      browser.wait(expectedCondition.visibilityOf(this.fields.get(0)), CONDITION_TIMEOUT);
 
       // Returns the first (topmost) lexeme regardless of its wsid
       var lexeme = this.fields.get(0);
@@ -251,8 +257,8 @@ function EditorPage() {
       list: editorUtil.getOneField('Pictures'),
       images: editorUtil.getOneField('Pictures').all(by.css('img')),
       captions: editorUtil.getOneField('Pictures')
-        .all(by.css('.input-prepend > .dc-formattedtext .ta-bind')),
-      removeImages: editorUtil.getOneField('Pictures').all(by.css('.icon-remove')),
+        .all(by.css('.input-group > .dc-formattedtext .ta-bind')),
+      removeImages: editorUtil.getOneField('Pictures').all(by.className('fa-times')),
       getFileName: function (index) {
         return editorUtil.getOneFieldValue('Pictures').then(function (pictures) {
           return pictures[index].fileName;
@@ -272,11 +278,11 @@ function EditorPage() {
 
     getMultiTextInputs: function getMultiTextInputs(searchLabel) {
       return editorUtil.getOneField(searchLabel)
-        .all(by.css('.input-prepend > .dc-formattedtext .ta-bind'));
+        .all(by.css('.input-group > .dc-formattedtext .ta-bind'));
     },
 
     getMultiTextInputSystems: function getMultiTextInputSystems(searchLabel) {
-      return editorUtil.getOneField(searchLabel).all(by.css('.input-prepend > span.wsid'));
+      return editorUtil.getOneField(searchLabel).all(by.css('.input-group > span.wsid'));
     },
 
     selectElement: editorUtil.selectElement,
