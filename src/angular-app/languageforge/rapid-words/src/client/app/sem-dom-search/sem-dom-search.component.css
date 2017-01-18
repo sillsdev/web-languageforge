@@ -4,20 +4,48 @@ because at time of writing all files were loaded into the page, effectively
 circumventing Angular's encapsulation.
 */
 
-.sem-dom-picker ul {
-    position: absolute;
-    z-index: 1;
-    background-color: white;
-    padding-left: 0;
-    border: 1px solid gray;
-    border-radius: 0.5em;
-    width: 250px;
+.sem-dom-picker {
+    position: relative;
 }
 
-.sem-dom-picker ul, li {
-    list-style-type: none;
+.sem-dom-picker input[type='text'] {
+    width: 100%;
+}
+
+.sem-dom-picker input[type='text']:not(:focus) {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.sem-dom-picker ul {
+    /* Hide the semdom menu by default */
+    display: none;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    padding-left: 0;
+    border-radius: 0.5em;
+
+    background-color: white;
+    border: 1px solid gray;
+    color: #373a3c;
+
+    max-height: 400pt;
+    overflow-y: auto;
+}
+
+/* Show the semdom menu when the input is focused, or the menu is hovered */
+.sem-dom-picker ul:hover, .sem-dom-picker input:focus + ul {
+    display: block;
+}
+
+.sem-dom-picker li:hover {
+    background-color: #104060;
+    color: white;
 }
 
 .sem-dom-picker li {
-    margin: 0.5em;
+    padding: 0.5em;
+    cursor: pointer;
+    margin: 0;
 }
