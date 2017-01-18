@@ -96,13 +96,8 @@ export class LfApiService {
         });
     }
 
-
-// project_readSettings
-// project_settings
-// text_settings_dto
-
     getSettings(){
-        return this.callApi('project_readSettings').map(result => {
+        return this.callApi('lex_configuration_read').map(result => {
             result.data = result.data;
             return result;
         });

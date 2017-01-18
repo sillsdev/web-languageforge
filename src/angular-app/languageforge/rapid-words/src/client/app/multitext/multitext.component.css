@@ -22,6 +22,7 @@ ul {
 
 .multitext-label{
   margin:16px;
+  min-width: 100px;
 }
 
 .input-group{
