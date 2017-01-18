@@ -34,7 +34,7 @@ export class AuthComponent implements OnInit {
       if (response) {
         this.goToDashboard();
       } else {
-        var toastContent = '<span><b>Invalid email or password!</b></span>';
+        var toastContent = '<span><b>Invalid username or password!</b></span>';
         Materialize.toast(toastContent, 5000, 'red');
       }
     });
