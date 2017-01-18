@@ -23,8 +23,8 @@
 
             <!-- use ng-submit to catch the form submission and use our Angular function -->
             <form class="form-horizontal" id="newLexProjectForm" name="newLexProjectForm" novalidate>
-                <div class="row" align="center">
-                    <div class="span8" id="form-status" data-ng-class="formStatusClass">{{formStatus | translate}}&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-8 offset-md-2" id="form-status" data-ng-class="formStatusClass">{{formStatus | translate}}&nbsp;</div>
                 </div>
 
                 <!-- our nested state views will be injected here -->
@@ -33,14 +33,18 @@
 
             <div class="row" data-ng-show="show.nextButton">
                 <div class="col-md-8 offset-md-2">
+
                     <a class="btn btn-secondary pull-left" data-ng-class="interfaceConfig.pullNormal"
-                       id="backButton" data-ng-click="prevStep()" data-ng-show="show.backButton">
-                       <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
-                        {{'Back' | translate}}</a>
-                    <a class="btn btn-secondary pull-right" data-ng-class="[interfaceConfig.pullToSide, forwardBtnClass]"
-                            id="nextButton" data-ng-click="nextStep()" data-ng-disabled="!show.nextButton">
+                        id="backButton" data-ng-click="prevStep()" data-ng-show="show.backButton">
+                        <i class="fa fa-arrow-circle-left"></i>
+                        {{'Back' | translate}}
+                    </a>
+
+                    <button class="btn pull-right" data-ng-class="[interfaceConfig.pullToSide, forwardBtnClass]" href="#"
+                        id="nextButton" data-ng-click="nextStep()" data-ng-disabled="!show.nextButton">
                         {{nextButtonLabel}}&nbsp;
-                        <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
+                        <i class="fa fa-arrow-circle-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
