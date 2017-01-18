@@ -9,7 +9,7 @@ import { ProjectService } from '../shared/services/project.service';
 import { CommentService } from '../shared/services/comment.service';
 
 import { MaterializeDirective, MaterializeAction } from 'angular2-materialize';
-declare var Materialize:any;
+declare var Materialize: any;
 
 @Component({
   moduleId: module.id,
@@ -23,16 +23,18 @@ export class ReviewComponent implements OnInit, OnDestroy {
   private words: any[];
   private currentWord: any;
   private currentIdx = 0;
-  
-  constructor(public dictionaryService: DictionaryService, 
-              private route: ActivatedRoute,
-              private projectService: ProjectService,
-              private commentService: CommentService) { }
+
+  private isClicked = false;
+
+  constructor(public dictionaryService: DictionaryService,
+    private route: ActivatedRoute,
+    private projectService: ProjectService,
+    private commentService: CommentService) { }
 
   ngOnInit(): void {
     this.sub = this.route.params.subscribe(params => {
-       this.id = params['id'];
-       this.getWords(this.id);
+      this.id = params['id'];
+      this.getWords(this.id);
     });
   }
 
@@ -63,43 +65,47 @@ export class ReviewComponent implements OnInit, OnDestroy {
 
 
   public upVote = () => {
-    this.incrementWord();
+    this.sendComment('I upvoted this word through the Review & Suggest app', this.currentWord.id);
     console.log("I upvoted " + this.currentWord.id);
   }
 
-  public unsureVote = () => {
-    this.incrementWord();
-    console.log("I voted IDK " + this.currentWord.id);
-  }
-
   public downVote = () => {
-    this.incrementWord();
+    this.sendComment('I downvoted this word through the Review & Suggest app', this.currentWord.id);
     console.log("I downvoted " + this.currentWord.id);
   }
 
-  public modalActions = new EventEmitter<string|MaterializeAction>();
-  openModal(){
-    this.modalActions.emit({ action:"modal", params:['open'] });
+  public modalActions = new EventEmitter<string | MaterializeAction>();
+  openModal() {
+    this.modalActions.emit({ action: "modal", params: ['open'] });
   }
 
-  closeModal(){
-    this.modalActions.emit({ action:"modal", params:['close'] });
+  closeModal() {
+    this.modalActions.emit({ action: "modal", params: ['close'] });
   }
 
-  submitComment(){
+  sendComment(comment: string, id: string){
+    this.isClicked = true;
+    this.commentService.sendComment(comment, id).subscribe(response => {
+      let success = response;
+      if (success) {
+        let toastContentSuccess = '<span><b>Your response has been sent!</b></span>';
+        Materialize.toast(toastContentSuccess, 1000, 'green');
+        this.incrementWord();
+      }
+      else {
+        let toastContentFailed = '<span><b>Your response failed to send!</b></span>';
+        Materialize.toast(toastContentFailed, 1000, 'red');
+      }
+      this.isClicked = false;
+    });
+  }
+
+  submitComment() {
     var inputValue = (<HTMLInputElement>document.getElementById("placeholderForComment")).value;
     console.log("My commment is :" + inputValue);
     this.closeModal();
-    (<HTMLInputElement>document.getElementById("placeholderForComment")).value='';
-    //if success
-    var toastContentSuccess = '<span><b>Your comment has been sent!</b></span>';
-    Materialize.toast(toastContentSuccess, 1000, 'green');
-    this.incrementWord();
-    //if failed
-    /*
-    var toastContentFailed = '<span><b>Your comment failed to send!</b></span>';
-    Materialize.toast(toastContentFailed, 1000, 'red');
-    */
+    (<HTMLInputElement>document.getElementById("placeholderForComment")).value = '';
+    this.sendComment(inputValue, this.currentWord.id);
   }
 
   ngOnDestroy() {

@@ -9,7 +9,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { AuthModule } from './auth/auth.module';
 import { ReviewModule } from './review/review.module'
-import { TestServicesModule } from './test-services/test-services.module';
 import { SharedModule } from './shared/shared.module';
 import { MaterializeModule } from './shared/materialize.module';
 
@@ -26,8 +25,7 @@ import { LoggedInGuard } from './shared/logged-in.guard';
   HttpModule, 
   AppRoutingModule, 
   DashboardModule, 
-  AuthModule, 
-  TestServicesModule, 
+  AuthModule,  
   SharedModule.forRoot(), 
   MaterializeModule, 
   ReviewModule],

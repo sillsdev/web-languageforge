@@ -20,11 +20,11 @@
       <div class="card-action center">
 
         <div class="row">
-          <a (click)="upVote()" class="btn-large green darken-1 waves-effect waves-light col s4"><i class="large material-icons">thumb_up</i></a>
+          <button (click)="upVote()" [disabled]="isClicked" class="btn-large green darken-1 waves-effect waves-light col s4"><i class="large material-icons">thumb_up</i></button>
 
-          <a (click)="openModal()" class="btn-large blue darken-1 waves-effect waves-light col s4"><i class="material-icons">message</i></a>
+          <button (click)="openModal()" [disabled]="isClicked" class="btn-large blue darken-1 waves-effect waves-light col s4"><i class="material-icons">message</i></button>
 
-          <a (click)="downVote()" class="btn-large red darken-1 waves-effect waves-light col s4"><i class="material-icons">thumb_down</i></a>
+          <button (click)="downVote()" [disabled]="isClicked" class="btn-large red darken-1 waves-effect waves-light col s4"><i class="material-icons">thumb_down</i></button>
         </div>
         <!-- END .row -->
       </div>

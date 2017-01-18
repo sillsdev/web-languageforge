@@ -7,14 +7,12 @@
         <li *ngIf="!isLoggedIn()" routerLinkActive="active"><a routerLink="/auth">Logon</a></li>
         <li *ngIf="isLoggedIn()" routerLinkActive="active"><a routerLink="/dashboard">Dashboard</a></li>
         <li *ngIf="isLoggedIn()" routerLinkActive="active"><a routerLink="/review">Review</a></li>
-        <li *ngIf="isLoggedIn()" routerLinkActive="active"><a routerLink="/test-services">Test Services</a></li>
         <li *ngIf="isLoggedIn()"><a (click)="logout()">Logout</a></li>
       </ul>
       <ul id="nav-mobile" class="side-nav">
         <li *ngIf="!isLoggedIn()" routerLinkActive="active"><a routerLink="/auth">Logon</a></li>
         <li *ngIf="isLoggedIn()" routerLinkActive="active"><a routerLink="/dashboard">Dashboard</a></li>
         <li *ngIf="isLoggedIn()" routerLinkActive="active"><a routerLink="/review">Review</a></li>
-        <li *ngIf="isLoggedIn()" routerLinkActive="active"><a routerLink="/test-services">Test Services</a></li>
         <li *ngIf="isLoggedIn()"><a (click)="logout()">Logout</a></li>
       </ul>
     </div>
