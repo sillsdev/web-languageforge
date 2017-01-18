@@ -35,13 +35,16 @@
 
 </div>
 
-<div id="commentModal" class="modal sheet" materialize="modal" [materializeParams]="[{dismissible: false}]" [materializeActions]="modalActions">
+<div id="commentModal" class="modal sheet" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
+  <div class="modal-header">
+    <a class="btn red darken-1 waves-light waves-effect" (click)="closeModal()"><i class="material-icons">close</i></a>
+  </div>
   <div class="modal-content">
     <h4>Suggestion</h4>
     <textarea id="placeholderForComment" class="materialize-textarea" placeholder="Enter text here"></textarea>
   </div>
   <div class="modal-footer">
-    <span style="font-size:1.6em;"><a class="btn blue darken-1 waves-effect waves-light" (click)="closeModal()">Send <i class="material-icons">send</i></a></span>
+    <span style="font-size:1.6em;"><a class="btn blue darken-1 waves-effect waves-light" (click)="submitComment()">Send <i class="material-icons">send</i></a></span>
 </div>
 </div>
 
