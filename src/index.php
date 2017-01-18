@@ -183,6 +183,9 @@ $app['security.authentication.success_handler.site'] = $app->share(function() us
         'login_path' => '/auth/login',
     ), 'site');
 });
+$app['security.authentication.failure_handler.site'] = $app->share(function() use ($app) {
+    return new \Site\Handler\AuthenticationFailureHandler($app['kernel'], $app['security.http_utils']);
+});
 $app['security.authentication.logout_handler.site'] = $app->share(function() use ($app) {
     return new \Site\Handler\LogoutSuccessHandler($app['security.http_utils'], '/', $app['session']);
 });
