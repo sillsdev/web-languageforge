@@ -1,6 +1,6 @@
 <div class="card word-list-container">
-    <div class="card-block word-block" *ngFor="let entry of entries">
-        <h6 class="card-title">{{getPreviewWord(entry)}}</h6>
-        <p class="card-text">{{getPreviewDefinition(entry)}}</p>
+    <div class="list-group-item rw-group-item" *ngFor="let entry of entries">
+        <div class="list-item-primary">{{getPreviewWord(entry)}}</div>
+        <div class="list-item-secondary">{{getPreviewDefinition(entry)}}</div>
     </div>
 </div>
