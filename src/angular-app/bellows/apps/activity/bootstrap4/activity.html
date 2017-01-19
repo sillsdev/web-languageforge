@@ -1,16 +1,5 @@
 {% verbatim %}
 <div class="content container" ng-controller="ActivityCtrl" ng-cloak>
-    <div id="sfchecks-hmenu" class="hdrnav">
-        <a class="btn btn-info" href="/app/projects">My Projects</a>
-        <a class="btn btn-info" href="/app/activity">Activity<span ng-hide="unread.length == 0" style="margin-left:10px" class="badge badge-important">{{unread.length}}</span></a>
-        <a class="btn btn-info" href="/app/rapid-words">Rapid Words</a>
-        <br>
-        <br>
-        <!-- Bootstrap 2 version -->
-        <!--<ul id="top" class="topCrumbs" breadcrumbs></ul>-->
-
-        <ul id="top" class="breadcrumb" breadcrumbs></ul>
-    </div>
     <sil-notices></sil-notices>
     <!-- <div data-wc-overlay="" data-wc-overlay-delay="6000">
     <img src="/Site/views/shared/image/shared/loading.gif" />&nbsp; Loading...
@@ -18,20 +7,20 @@
     <div >
         <div ng-show="activities.length > 0" style="margin-top:20px"><button class="btn" ng-disabled="showAllActivity" ng-click="filterAllActivity()">All Activity</button> <button class="btn" ng-disabled="!showAllActivity" ng-click="filterMyActivity()">Show Only My Activity</button></div>
 
-        <div ng-show="filteredActivities.length > 0" ng-repeat="item in filteredActivities">
+        <div class="row" ng-show="filteredActivities.length > 0" ng-repeat="item in filteredActivities">
             <ng-switch on="item.action + '-' + item.type">
 
                 <div ng-switch-when="add_comment-project" class="col-sm-12 activity-row">
                     <hr>
-                    <div class="col-sm-12" ng-class="{unread: isUnread(item.id)}">
-                    <div class="col-md-1 activity-icon">
+                    <div class="col-sm-1" ng-class="{unread: isUnread(item.id)}">
+                    <div class="col-sm-3 col-md-1 activity-icon">
                         <!--<i class="fa fa-user-o" aria-hidden="true"></i>-->
                         <img width="50px" height="50px" ng-src="{{getAvatarUrl(item.userRef.avatar_ref)}}"/>
                     </div>
-                    <div class="col-sm-1 activity-date">
+                    <div class="col-sm-3 activity-date">
                         {{item.date|relativetime}}
                     </div>
-                    <div class="col-sm-8 activity-content">i]
+                    <div class="col-sm-5 activity-content">i]
                         <span>{{item.userRef.username}} commented on {{item.userRef2.username}}'s answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                         <p class="indented" ng-bind-html="item.content.answer"></p>
                         <hr />
@@ -176,16 +165,16 @@
                     </div>
                 </div>
 
-                <div ng-switch-when="add_entry-project" class="span12 activity-row">
+                <div ng-switch-when="add_entry-project" class="col-sm-12 activity-row">
                     <hr>
                     <div class="col-sm-12" ng-class="{unread: isUnread(item.id)}">
                     <div class="col-sm-1 activity-icon">
                         <img width="50px" height="50px" ng-src="{{getAvatarUrl(item.userRef.avatar_ref)}}" />
                     </div>
-                    <div class="col-sm-1 activity-date">
+                    <div class="col-sm-2 activity-date">
                         {{item.date|relativetime}}
                     </div>
-                    <div class="col-sm-8 activity-content">
+                    <div class="col-sm-9 activity-content">
                         <span>{{item.userRef.username}} created the entry &ldquo;<a href="{{item.entryHref}}">{{item.content.entry}}</a>&rdquo; in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                     </div>
                     </div>
@@ -197,10 +186,10 @@
                     <div class="col-sm-1 activity-icon">
                         <img width="50px" height="50px" ng-src="{{getAvatarUrl(item.userRef.avatar_ref)}}" />
                     </div>
-                    <div class="col-sm-1 activity-date">
+                    <div class="col-sm-2 activity-date">
                         {{item.date|relativetime}}
                     </div>
-                    <div class="col-sm-8 activity-content">
+                    <div class="col-sm-9 activity-content">
                         <span>{{item.userRef.username}} updated the entry for &ldquo;<a href="{{item.entryHref}}">{{item.content.entry}}</a>&rdquo; in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                     </div>
                     </div>
@@ -212,16 +201,16 @@
                     <div class="col-sm-1 activity-icon">
                         <img width="50px" height="50px" ng-src="{{getAvatarUrl(item.userRef.avatar_ref)}}" />
                     </div>
-                    <div class="col-sm-1 activity-date">
+                    <div class="col-sm-2 activity-date">
                         {{item.date|relativetime}}
                     </div>
-                    <div class="col-sm-8 activity-content">
+                    <div class="col-sm-9 activity-content">
                         <span>{{item.userRef.username}} deleted the entry &ldquo;{{item.content.entry}}&rdquo; in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                     </div>
                     </div>
                 </div>
 
-                <div class="col-sm-12 activity-row" ng-switch-default>
+                <div class="col-sm-12" ng-switch-default>
                     <hr>
                     The {{item.action + '-' + item.type}} activity type is unimplemented
                 </div>
