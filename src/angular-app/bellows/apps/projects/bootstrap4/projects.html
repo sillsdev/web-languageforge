@@ -2,7 +2,7 @@
 <div class="content container fluid" data-ng-controller="ProjectsCtrl" data-ng-cloak>
     <div class="container">
         <div class="row list-group" id="sfchecks-hmenu">
-            <div class="col-xs-8 col-sm-11 col-md-8 col-lg-6 col-xl-6" align="center">
+            <div class="col-xs-8 col-sm-11 col-md-8 col-lg-8 col-xl-8" align="center">
                 <div class="row">
                     <div class="col-xs-10 col-sm-4"><a href="/app/projects" class="btn btn-info btn-block" role="button">My Projects</a></div>
                     <div class="col-xs-10 col-sm-4"><a href="/app/activity" class="btn btn-info btn-block" role="button">Activity</a></div>
@@ -11,7 +11,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-8">
+            <div class="col-xs-12">
                 <div style="padding-top:10px">
                     <sil-notices></sil-notices>
                     <div data-ng-show="finishedLoading">
@@ -21,7 +21,7 @@
                         </form>
                         <br/>
                         <div class="new-item" data-collapse="newProjectCollapsed">
-                            <form class="form-horizontal well" name="newProjectForm">
+                            <form class="form-horizontal card card-background" name="newProjectForm">
                                 <div data-ng-repeat="appName in projectTypesBySite()" class="col-xs-3">
                                     <a class="btn btn-default btn-sm" href="/app/{{appName}}/new-project">
                                         <!--figure out where this should be pointing!-->
