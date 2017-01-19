@@ -1,48 +1,136 @@
 {% extends 'container.html.twig' %}
 
 {% block header %}
-    <nav class="fixed-nav-bar navbar navbar-toggleable-xs navbar-dark" style="background-color: #104060">
-      <a class="navbar-brand hidden-sm-down" href="/">Language Forge
-            {% if app.website.domain == "languageforge.local" %} (Bootstrap 4){% endif %}
-        </a>
-        <button class="navbar-toggler hidden-md-up pull-left" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
- <div class="collapse navbar-toggleable-sm pull-right" id="navbarNavDropdown">
-        <ul class="nav navbar-nav">
-            {% if isLoggedIn %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="supportedContentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Projects</a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="supportedContentDropdown">
-                        <a class="dropdown-item" href="/app/projects">List All Projects</a>
-                        {% for project in projects %}
-                            <a class="dropdown-item" href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
-                        {% endfor %}
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="supportedContentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="{{ smallAvatarUrl }}" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px" id="smallAvatarURL" />Hi, {{ userName }}</a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="supportedContentDropdown">
-                        {% if isAdmin %}
-                            <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
-                        {% endif %}
-                        <a class="dropdown-item" href="/app/userprofile">My Profile</a>
-                        <a class="dropdown-item" href="/app/changepassword">Change Password</a>
-                        <a class="dropdown-item" href="/auth/logout">Logout</a>
-                    </div>
-                </li>
-            {% else %}
-                <li class="nav-item header-button-rounded">
-                    <a class="nav-link" href="/public/signup">Sign Up</a>
-                </li>
-                <li class="nav-item header-button-rounded">
-                    <a class="nav-link" href="/auth/login">Login</a>
-                </li>
-            {% endif %}
+
+    {% if isLoggedIn %}
+ 
+<!--
+        <script>
+            $(document).ready(function () {
+                $(".hh_sf").next().addClass("collapsed").hide();
+
+                $(".hh_main").on('click', '.hh_sf', function (event) {
+                    event.preventDefault();
+                    var currentClass = $(this).next().prop('class');
+                    if (currentClass == "hh_inner expanded") {
+                        $(this).next().removeClass("expanded");
+                        $(this).next().addClass("collapsed");
+                        $(this).next().hide();
+                    } else {
+                        $(".expanded").hide().addClass("collapsed").removeClass("expanded");
+
+                        $(this).next().removeClass("collapsed");
+                        $(this).next().addClass("expanded");
+                        $(this).next().show();
+                    }
+
+                });
+            });
+        </script>
+-->
+    <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060">
+        
+        
+        <a class="navbar-brand hidden-sm-down" href="/">Language Forge
+                {% if app.website.domain == "languageforge.local" %} (Bootstrap 4){% endif %}
+            </a>
+            
+        <div class="hh_main">
+                    <button id="mobile-left-menu" class="hh_sf navbar-toggler hidden-md-up pull-left" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    </button>
+                
+                    <div class="dropdown-menu dropdown-menu-left hidden-md-up"  id="navbarNavDropdown">
+                                                    <a class="dropdown-item" href="/app/activity">Activity</a>
+                                                    <a class="dropdown-item" href="/app/rapid-words">Rapid Words</a>
+                                                    <hr>
+                                                    <a class="dropdown-item" href="/app/projects">List All Projects</a>
+                                                    {% for project in projects %}
+                                                        <a class="dropdown-item" href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
+                                                    {% endfor %}
+                                            </div>
+
+                    <button id="mobile-right-menu" class="hh_sf navbar-toggler hidden-md-up pull-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown2" aria-controls="navbarNavDropdown2" aria-expanded="false" aria-label="Toggle navigation">
+                <img src="{{ smallAvatarUrl }}" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px" id="smallAvatarURL" />
+                    </button>
+                
+                    <div class="dropdown-menu dropdown-menu-right hidden-md-up"  id="navbarNavDropdown2">
+                                                {% if isAdmin %}
+                                                    <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
+                                                {% endif %}
+                                                <a class="dropdown-item" href="/app/userprofile">My Profile</a>
+                                                <a class="dropdown-item" href="/app/changepassword">Change Password</a>
+                                                <a class="dropdown-item" href="/auth/logout">Logout</a>
+                                            </div>
+        </div> 
+
+
+
+    <div class="collapse navbar-toggleable-sm pull-right  ">
+            <ul class="nav navbar-nav">
+                
+                             <li class="nav-item dropdown">
+                                  <a class="nav-link " href="/app/activity" id="supportedContentDropdown" >
+                                Activity</a>
+                             </li>
+                               <li class="nav-item dropdown">
+                                  <a class="nav-link " href="/app/rapid-words" id="supportedContentDropdown" >
+                                Rapid Words</a>
+                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="supportedContentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                My Projects</a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="supportedContentDropdown">
+                                        <a class="dropdown-item" href="/app/projects">List All Projects</a>
+                                        {% for project in projects %}
+                                            <a class="dropdown-item" href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
+                                        {% endfor %}
+                                </div>
+                            </li>
+                    
+                        <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="supportedContentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="{{ smallAvatarUrl }}" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px" id="smallAvatarURL" />Hi, {{ userName }}</a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="supportedContentDropdown">
+                                    {% if isAdmin %}
+                                        <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
+                                    {% endif %}
+                                    <a class="dropdown-item" href="/app/userprofile">My Profile</a>
+                                    <a class="dropdown-item" href="/app/changepassword">Change Password</a>
+                                    <a class="dropdown-item" href="/auth/logout">Logout</a>
+                                </div>
+                        </li>
+    
+            </ul>
+        </div>
+        
+        </nav>
+
+
+    {% else %}
+        <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060">
+            
+            
+            <a class="navbar-brand hidden-sm-down" href="/">Language Forge
+                    {% if app.website.domain == "languageforge.local" %} (Bootstrap 4){% endif %}
+                </a>
+
+            <button class=" hidden-md-up pull-left" type="button">
+                <a href="https://languageforge.org/"><i class="fa fa-home fa-2x" aria-hidden="true"></i></a>
+            </button>
+
+
+        <ul class="nav navbar-nav pull-right">
+            <li class="nav-item header-button-rounded">
+                <a class="nav-link" href="/public/signup">Sign Up</a>
+            </li>
+            <li class="nav-item header-button-rounded">
+                <a class="nav-link" href="/auth/login">Login</a>
+            </li>
         </ul>
-      </div>
     </nav>
-{% endblock %}
+
+    {% endif %}
+ {% endblock %}
 
 {% block footer %}
     <footer class="footer" >
