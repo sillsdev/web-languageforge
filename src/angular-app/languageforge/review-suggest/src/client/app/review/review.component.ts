@@ -46,6 +46,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
     this.projectService.getWordList(projectId).subscribe(response => {
       this.words = response.entries;
       this.currentWord = this.words[this.currentIdx];
+      this.currentLanguageCode = Object.keys(this.currentWord.lexeme)[0];
     });
   }
 
