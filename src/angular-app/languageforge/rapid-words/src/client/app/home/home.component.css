@@ -20,3 +20,8 @@ ul {
   margin-top: 5pt;
   margin-bottom: 0;
 }
+
+button.new-word-btn {
+  margin-top: 5pt;
+  width: 100%;
+}

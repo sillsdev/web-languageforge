@@ -23,6 +23,7 @@
             <p>{{allEntries.length}} entries</p>
           </div>
         </div>
+        <button type="button" class="btn btn-success btn-sm new-word-btn" (click)="newEntry()">New Word</button>
         <word-list [selectedEntry]="selectedEntry" [entries]="allEntries" [wordLanguages]="wordLanguageSettings" [definitionLanguages]="definitionLanguageSettings" (onEntrySelected)="onEntrySelectedInList($event)"></word-list>
       </div>
       <div class="col-6">
