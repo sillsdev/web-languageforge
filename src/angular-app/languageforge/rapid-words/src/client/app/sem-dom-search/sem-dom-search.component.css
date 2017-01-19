@@ -54,6 +54,10 @@ circumventing Angular's encapsulation.
     padding: 0.5em;
     cursor: pointer;
     margin: 0;
+
+    /* Fixes longer semantic domain names that semi-break layout */
+    overflow: auto;
+    clear: all;
 }
 
 .sem-dom-picker em {
