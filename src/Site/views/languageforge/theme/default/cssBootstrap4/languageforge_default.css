@@ -6786,3 +6786,35 @@ body {
   padding: 6px 0 0;
   margin-bottom: 0;
   border-radius: 0; }
+
+.formspacing {
+  line-height: 25px; }
+
+.form-styling {
+  padding-left: 80px; }
+
+.form-group-styling {
+  display: block;
+  background-color: #f5f5f5; }
+
+.form-pre-styling {
+  display: block;
+  background-color: #f5f5f5; }
+
+.iconPadding {
+  padding-right: 15px; }
+
+.username-styling {
+  font-weight: bold;
+  color: #e67345; }
+
+.username-styling:hover {
+  color: #0088cc;
+  text-decoration: underline; }
+
+.tab-font-color {
+  color: #e67345; }
+
+@media (max-width: 500px) {
+  .filter-list {
+    float: left; } }
