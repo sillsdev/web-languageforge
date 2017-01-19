@@ -680,7 +680,7 @@ class Sf
         $this->app['session']->set($sessionLabel, time());
 
         $this->app['session']->set('projectId', $projectId);
-        return LexDbeDto::encode($this->projectId, $this->userId, null, 0);
+        return LexDbeDto::encode($projectId, $this->userId, null, 0);
     }
 
     public function lex_dbeDtoUpdatesOnly($browserId, $lastFetchTime = null)
