@@ -62,6 +62,7 @@
 //   'sass:usermanagement',
 //   'sass:terms_and_conditions',
 //   'sass:userprofile',
+//   'sass:buildAll',
 //   'sass:watch'
 
 // -------------------------------------
@@ -1025,6 +1026,27 @@ gulp.task('sass:registration', function () {
     .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/userprofile/bootstrap4/'));
 });
+// -------------------------------------
+//   Task: Run all sass tasks to compile all CSS files - useful for the build tool
+// -------------------------------------
+gulp.task('sass:buildAll', gulp.series(
+  'sass:base',
+  'sass:activity',
+  'sass:changepassword',
+  'sass:forgot_password',
+  'sass:home',
+  'sass:lexicon',
+  'sass:login',
+  'sass:new-project',
+  'sass:projects',
+  'sass:reset_password',
+  'sass:registration',
+  'sass:signup',
+  'sass:siteadmin',
+  'sass:terms_and_conditions',
+  'sass:usermanagement',
+  'sass:userprofile'
+));
 // -------------------------------------
 //   Task: Watch the primary sass folder for any changes and recompile via the sass task
 // -------------------------------------
