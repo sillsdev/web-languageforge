@@ -1,9 +1,13 @@
 .word-list-container {
-    margin-top: 5pt;
+    margin-top: 0;
     height: 400pt;
-    overflow-y: scroll;
+    overflow-y: hidden;
     overflow-x: hidden;
     margin-bottom: 0px;
+}
+.pagination-upper-container {
+    display: flex;
+    flex-direction: row-reverse;
 }
 
 .word-block div {
@@ -35,7 +39,13 @@
 
 .wl-pagination {
     display: inline-block;
-    margin-top: 0px;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    
+}
+.wl-pagination.lower-controls {
+    margin-top: 0;
+    
 }
 
 .page-button:not(.disabled) {
