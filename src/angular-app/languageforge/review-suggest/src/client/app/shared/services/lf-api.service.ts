@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { Response, Headers, Http, RequestOptions, RequestOptionsArgs } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
+import {Observable} from 'rxjs/Observable';
 
 
 @Injectable()
@@ -12,9 +13,12 @@ export class LfApiService {
     private apiUrl: string;
     private loginUrl: string;
     private phpSessionCookie: string;
+    private id: number;
 
     constructor(private http: Http, private baseApiUrl: string) {
         this.apiUrl = baseApiUrl + '/api/sf';
+        this.loginUrl = baseApiUrl + '/app/login_check';
+        this.id = 1;
     }
 
     /**
@@ -23,6 +27,11 @@ export class LfApiService {
      */
     private sendRequest(url: string, body: any) {
         let headers = new Headers({ 'Content-Type': 'application/json' });
+
+        if (url == this.loginUrl) {
+            headers = new Headers({ 'Content-type': 'application/x-www-form-urlencoded' });
+        }
+
         let options = new RequestOptions({ headers: headers, withCredentials: true });
         return this.http.post(url, body, options);
     }
@@ -48,7 +57,7 @@ export class LfApiService {
             method: method,
             params: params || [],
             // TODO determine whether id needs to be incremented
-            id: 1
+            id: this.id
         };
 
         return this.sendRequest(this.apiUrl, body)
@@ -66,7 +75,9 @@ export class LfApiService {
             }
             else data = data.result;
 
-            return {success, data, message}
+            this.id += 1;
+
+            return {success, data, message};
        });
     }
 
@@ -83,9 +94,56 @@ export class LfApiService {
         });
     }
 
-    user_authenticate(username: string, password: string) {
-        return this.callApi('user_authenticate', [username, password]).map(result => {
+    lex_dbeDtoFull_by_id(id: string) {
+        return this.callApi('lex_dbeDtoFull_by_id', [id]).map(result => {
             return result;
         });
+    }
+
+    project_list() {
+        return this.callApi('project_list').map(result => {
+            return result;
+        });
+    }
+
+    project_read_by_id(projectId: string) {
+        return this.callApi('project_read', [projectId]).map(result =>{
+            return result;
+        })
+    }
+
+    user_authenticate(username: string, password: string) {
+        let body = '_username='+username+'&_password='+password+'&_remember_me=on&_json_request=on';
+        return this.sendRequest(this.loginUrl, body)
+            .map(res => {
+
+                let data = res.ok ? res.json() : null;
+                let success = res.ok && !data.error;
+                let message: string;
+                let result: number;
+
+                if(!res.ok) {
+                    message = `Error ${res.status} ({res.statusText})`;
+                } else if(data.error) {
+                    message = 'API error';
+                    console.error(`API error:\n` +
+                        `Type: ${data.error.type}\n` +
+                        `${data.error.message}`
+                    );
+                } else {
+                    result = data.result;
+                    console.log(data);
+                }
+
+                success = success && (result == 1);
+
+                return {success, data, message};
+            });
+    }
+
+    sendComment(comment: string, wordId: string) {
+        return this.callApi('lex_comment_update', [{id: "", content: comment, entryRef: wordId}]).map(result => {
+            return result;
+        })
     }
 }

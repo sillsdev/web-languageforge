@@ -460,6 +460,11 @@ class Sf
         return ProjectSettingsDto::encode($this->projectId, $this->userId);
     }
 
+    public function project_settings_by_id($projectId)
+    {
+        return ProjectSettingsDto::encode($projectId, $this->userId);
+    }
+
     /**
      * Updates the ProjectSettingsModel which are settings accessible only to site administrators
      * @param SmsSettings[] $smsSettingsArray
@@ -667,6 +672,15 @@ class Sf
         $this->app['session']->set($sessionLabel, time());
 
         return LexDbeDto::encode($this->projectId, $this->userId, null, $offset);
+    }
+
+    public function lex_dbeDtoFull_by_id($projectId)
+    {
+        $sessionLabel = 'lexDbeFetch_' . 1;
+        $this->app['session']->set($sessionLabel, time());
+
+        $this->app['session']->set('projectId', $projectId);
+        return LexDbeDto::encode($projectId, $this->userId, null, 0);
     }
 
     public function lex_dbeDtoUpdatesOnly($browserId, $lastFetchTime = null)

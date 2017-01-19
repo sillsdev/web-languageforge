@@ -1,92 +1,115 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
-import { Dictionary } from '../shared/models/dictionary';
+import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
-import { DictionaryService } from '../shared/services/dictionary.service';
+import { ProjectService } from '../shared/services/project.service';
+import { CommentService } from '../shared/services/comment.service';
 
 import { MaterializeDirective, MaterializeAction } from 'angular2-materialize';
-declare var Materialize:any;
+declare var Materialize: any;
 
 @Component({
   moduleId: module.id,
   selector: 'review',
   templateUrl: 'review.component.html'
 })
-export class ReviewComponent implements OnInit {
+export class ReviewComponent implements OnInit, OnDestroy {
 
-  title = 'Review';
-  idx = 0;
-  currentWord: Dictionary;
-  deck: Dictionary[];
-  comment: String;
+  private id: string;
+  private sub: any;
+  private words: any[];
+  private currentWord: any;
+  private currentLanguageCode: string;
+  private currentInterfaceLanguageCode: string;
+  private currentIdx = 0;
 
-  constructor(public dictionaryService: DictionaryService) { }
+  private isClicked = false;
+
+  constructor(private route: ActivatedRoute,
+              private projectService: ProjectService,
+              private commentService: CommentService) { }
 
   ngOnInit(): void {
-    this.getDeck();
+    this.sub = this.route.params.subscribe(params => {
+      this.id = params['id'];
+      this.setLanguageSettings();
+      this.getWords(this.id);
+    });
   }
 
-  getDeck(): void {
-    this.dictionaryService.getWords().then(deck => {
-      this.deck = deck;
-      this.currentWord = this.deck[this.idx];
+  setLanguageSettings() {
+    let projectSettings = this.projectService.getSelectedProjectSettings();
+    this.currentLanguageCode = projectSettings.languageCode;
+    this.currentInterfaceLanguageCode = projectSettings.interfaceLanguageCode;
+  }
+
+  getWords(projectId: string) {
+    this.projectService.getWordList(projectId).subscribe(response => {
+      this.words = response.entries;
+      this.currentWord = this.words[this.currentIdx];
     });
   }
 
   public incrementWord = () => {
-    this.idx += 1;
-    if (this.idx > this.deck.length - 1) {
-      this.idx = 0;
+    this.currentIdx += 1;
+    if (this.currentIdx > this.words.length - 1) {
+      this.currentIdx = 0;
     }
-    this.currentWord = this.deck[this.idx]
+    this.currentWord = this.words[this.currentIdx]
   }
 
   public decreaementWord = () => {
-    this.idx -= 1;
-    if (this.idx < 0) {
-      this.idx = this.deck.length - 1;
+    this.currentIdx -= 1;
+    if (this.currentIdx < 0) {
+      this.currentIdx = this.words.length - 1;
     }
-    this.currentWord = this.deck[this.idx];
+    this.currentWord = this.words[this.currentIdx];
   }
 
-
   public upVote = () => {
-    this.incrementWord();
+    this.sendComment('I upvoted this word through the Review & Suggest app', this.currentWord.id);
     console.log("I upvoted " + this.currentWord.id);
   }
 
-  public unsureVote = () => {
-    this.incrementWord();
-    console.log("I voted IDK " + this.currentWord.id);
-  }
-
   public downVote = () => {
-    this.incrementWord();
+    this.sendComment('I downvoted this word through the Review & Suggest app', this.currentWord.id);
     console.log("I downvoted " + this.currentWord.id);
   }
 
-  public modalActions = new EventEmitter<string|MaterializeAction>();
-  openModal(){
-    this.modalActions.emit({ action:"modal", params:['open'] });
+  public modalActions = new EventEmitter<string | MaterializeAction>();
+  openModal() {
+    this.modalActions.emit({ action: "modal", params: ['open'] });
   }
 
-  closeModal(){
-    this.modalActions.emit({ action:"modal", params:['close'] });
+  closeModal() {
+    this.modalActions.emit({ action: "modal", params: ['close'] });
   }
 
-  submitComment(){
+  sendComment(comment: string, id: string){
+    this.isClicked = true;
+    this.commentService.sendComment(comment, id).subscribe(response => {
+      let success = response;
+      if (success) {
+        let toastContentSuccess = '<span><b>Your response has been sent!</b></span>';
+        Materialize.toast(toastContentSuccess, 1000, 'green');
+        this.incrementWord();
+      }
+      else {
+        let toastContentFailed = '<span><b>Your response failed to send!</b></span>';
+        Materialize.toast(toastContentFailed, 1000, 'red');
+      }
+      this.isClicked = false;
+    });
+  }
+
+  submitComment() {
     var inputValue = (<HTMLInputElement>document.getElementById("placeholderForComment")).value;
     console.log("My commment is :" + inputValue);
     this.closeModal();
-    (<HTMLInputElement>document.getElementById("placeholderForComment")).value='';
-    //if success
-    var toastContentSuccess = '<span><b>Your comment has been sent!</b></span>';
-    Materialize.toast(toastContentSuccess, 1000, 'green');
-    this.incrementWord();
-    //if failed
-    /*
-    var toastContentFailed = '<span><b>Your comment failed to send!</b></span>';
-    Materialize.toast(toastContentFailed, 1000, 'red');
-    */
+    (<HTMLInputElement>document.getElementById("placeholderForComment")).value = '';
+    this.sendComment(inputValue, this.currentWord.id);
   }
 
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
 }

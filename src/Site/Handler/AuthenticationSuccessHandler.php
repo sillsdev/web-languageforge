@@ -7,6 +7,7 @@ use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
@@ -51,6 +52,19 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
                 $url = '/app/'.$project->appName.'/'.$projectId;
             }
         }
+
+        $json_request = $request->request->get('_json_request');
+
+        if ($json_request == 'on') {
+            $data = array(
+                'jsonrpc' => '2.0',
+                'result' => 1,
+                'error' => NULL
+            );
+
+            return new JsonResponse($data);
+        }
+
         return $this->httpUtils->createRedirectResponse($request, $url);
     }
 }

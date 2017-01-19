@@ -30,10 +30,11 @@
 	- Add the following lines to headers.load
 	
 		```
-		Header always set Access-Control-Allow-Origin "*"
-		Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
-		Header always set Access-Control-Max-Age "1000"
-		Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
+		Header always set Access-Control-Allow-Origin "http://localhost:5555"
+        Header always set Access-Control-Allow-Credentials "true"
+        Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
+        Header always set Access-Control-Max-Age "1000"
+        Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
 		```
 
 - Configure languageforge (by way of apache directives) how to handle preflight OPTION requests

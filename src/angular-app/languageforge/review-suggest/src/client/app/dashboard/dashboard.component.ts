@@ -1,11 +1,7 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 
-//Fake Data
-import { Project } from '../shared/models/project';
 import { ProjectService } from '../shared/services/project.service';
-//Fake Data
-
-import { MaterializeDirective, MaterializeAction } from 'angular2-materialize';
 
 @Component({
   moduleId: module.id,
@@ -15,37 +11,23 @@ import { MaterializeDirective, MaterializeAction } from 'angular2-materialize';
 
 export class DashboardComponent {
 
-  projects = [
-    new Project(0, "Greek"),
-    new Project(1, "Latin"),
-    new Project(2, "Thai"),
-    new Project(3, "Russian"),
-  ];
+  private projects: any[];
 
+  constructor(private projectService: ProjectService, 
+              private router: Router) { }
 
-  public modalActions = new EventEmitter<string | MaterializeAction>();
-  openModal() {
-    this.modalActions.emit({ action: "modal", params: ['open'] });
+  ngOnInit(): void {
+    this.getProjects();
   }
 
-  closeModal() {
-    this.modalActions.emit({ action: "modal", params: ['close'] });
+  getProjects(): void {
+    this.projectService.getProjectList().subscribe(projects => {
+      this.projects = projects.entries;
+    });
   }
 
-
-  /* EXPERIMENTING WITH THE services
-    constructor(public projectService: ProjectService) { }
-  
-    ngOnInit(): void {
-      this.getProject();
-      
-    }
-  
-    getProject() : void{
-      this.projectService.getProjects().then(projects => {
-        this.projects = projects;
-  
-      });
-    }
-  */
+  onSelect(project: any) {
+    this.projectService.setProjectId(project.id);
+    this.router.navigate(['/review', project.id]);
+  }
 }
