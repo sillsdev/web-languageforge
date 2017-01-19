@@ -56,10 +56,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       more: editorService.showMoreEntries,
       emptyFields: false
     };
+
     // hack to pass down the parent scope down into all child directives (i.e. entry, sense, etc)
     $scope.control = $scope;
 
-    lexConfig.refresh().then(function(config) {
+    lexConfig.refresh().then(function (config) {
       $scope.config = config;
 
       $scope.currentEntryIsDirty = function currentEntryIsDirty() {
@@ -216,9 +217,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           }
         };
 
-      function normalizeStrings(obj) {
-        return JSON.parse(JSON.stringify(obj).normalize());
-      }
+        function normalizeStrings(obj) {
+          return JSON.parse(JSON.stringify(obj).normalize());
+        }
 
         // conditionally register watch
         if ($scope.rights.canEditEntry()) {
@@ -572,7 +573,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
             break;
         }
 
-        // console.log('end data: ', data);
         return data;
       };
 
@@ -669,7 +669,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
             resetEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
           }
         } else {
-          setCurrentEntry($scope.entries[editorService.getIndexInEntries($scope.currentEntry.id)]);
+          //setCurrentEntry($scope.entries[editorService.getIndexInEntries($scope.currentEntry.id)]);
         }
       }
 
@@ -717,9 +717,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         angular.forEach(startAt, function (value, key) {
           var deleted = false;
           angular.forEach(properties, function (propName) {
-            // console.log ("key = " + key + " && propName = " + propName);
             if (!deleted && key === propName) {
-              // console.log("deleted " + key + " (" + startAt[key] + ")");
               delete startAt[key];
               deleted = true;
             }
