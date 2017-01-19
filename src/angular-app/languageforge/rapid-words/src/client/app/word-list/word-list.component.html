@@ -10,10 +10,10 @@
             <li class="page-item">
                 <a class="page-link">{{currentPage}}</a>
             </li>
-            <li *ngIf="entries && currentPage * 50 <= entries.length" class="page-item">
+            <li *ngIf="entries && currentPage * entriesPerPage <= entries.length" class="page-item">
                 <a (click)="incrementCurrentPage()" class="page-link page-button">{{currentPage+1}}</a>
             </li>
-            <li class="page-item" [ngClass]="{disabled: entries && currentPage * 50 >= entries.length}">
+            <li class="page-item" [ngClass]="{disabled: entries && currentPage * entriesPerPage >= entries.length}">
                 <a (click)="incrementCurrentPage()" class="page-link page-button">Next</a>
             </li>
         </ul>
@@ -38,10 +38,10 @@
             <li class="page-item">
                 <a class="page-link">{{currentPage}}</a>
             </li>
-            <li *ngIf="entries && currentPage * 50 <= entries.length" class="page-item">
+            <li *ngIf="entries && currentPage * entriesPerPage <= entries.length" class="page-item">
                 <a (click)="incrementCurrentPage()" class="page-link page-button">{{currentPage+1}}</a>
             </li>
-            <li class="page-item" [ngClass]="{disabled: entries && currentPage * 50 >= entries.length}">
+            <li class="page-item" [ngClass]="{disabled: entries && currentPage * entriesPerPage >= entries.length}">
                 <a (click)="incrementCurrentPage()" class="page-link page-button">Next</a>
             </li>
         </ul>
