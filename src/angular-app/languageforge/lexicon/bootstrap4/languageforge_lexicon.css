@@ -901,3 +901,6 @@ form .wsid {
   #lexAppCommentView .entryItemView, #lexAppCommentView .commentListView {
     max-height: none;
     height: auto; } }
+
+#lexAppSettingsView .control-label {
+  font-weight: bold; }
