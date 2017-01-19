@@ -19,6 +19,7 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
     function ($scope, $state, sessionService, lexUtils) {
       $scope.$state = $state;
       $scope.isAudio = lexUtils.isAudio;
+      $scope.savedFieldID = 'placeHolder';
 
       sessionService.getSession().then(function(session) {
         $scope.inputSystems = session.projectSettings().config.inputSystems;
@@ -50,11 +51,20 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
       $scope.getFieldId = function getFieldId(fieldName, tag) {
         if (!$scope.control.currentEntry.id || !fieldName) return '';
 
-        return 'entry:' + $scope.control.currentEntry.id + ':' + fieldName + ((tag) ? ':' + tag : '');
+        return 'entry:' + $scope.control.currentEntry.id + ':' + fieldName +
+          ((tag) ? ':' + tag : '');
       };
-      
+
+      $scope.editorChanged = function editorChanged(editor, fieldName, tag) {
+        if ($scope.savedFieldID !== $scope.getFieldId(fieldName, tag)){
+          window.realTime.disconnectRichTextDoc($scope.savedFieldID);
+          $scope.editorCreated(editor, fieldName, tag);
+        }
+      };
+
       $scope.editorCreated = function editorCreated(editor, fieldName, tag) {
-        var fieldId = $scope.getFieldId(fieldName, tag)
+        var fieldId = $scope.getFieldId(fieldName, tag);
+        $scope.savedFieldID = fieldId;
         window.realTime.createAndSubscribeRichTextDoc(fieldId, editor);
       };
     }]

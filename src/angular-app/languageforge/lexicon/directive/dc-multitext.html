@@ -6,10 +6,7 @@
                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
                 <span class="add-on wsid input-group-addon" tabindex="-1"
                     title="{{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
-                <ng-quill-editor id="{{getFieldId(fieldName, tag)}}"
-                    data-on-editor-created="editorCreated(editor, fieldName, tag)"
-                    data-theme="bubble" data-ng-model="model[tag].value">
-                </ng-quill-editor>
+
                 <dc-formattedtext class="dc-formattedtext" data-ng-if="!isAudio(tag)"
                     fte-multiline="false"
                     fte-disabled="! ($state.is('editor.entry') && control.rights.canEditEntry()) || modelContainsSpan(tag)"

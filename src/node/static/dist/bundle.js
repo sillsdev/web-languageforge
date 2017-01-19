@@ -17427,6 +17427,7 @@ var socket = new WebSocket(getWebSocketUrl());
 var msgSocket = new WebSocket(getWebSocketMsgUrl());
 var connection = new sharedb.Connection(socket);
 var quillEditors = [];
+var docSubs = [];
 
 // For testing reconnection
 window.disconnect = function() {
@@ -17457,11 +17458,6 @@ function WordFieldConcat(word, id){
   return word.concat('~',id);
 }
 
-function GetIDfromWordFieldConcat(con){
-  var a = con.split('~');
-  return a[1];
-}
-
 window.realTime = {};
 window.realTime.createAndSubscribeRichTextDoc = function createAndSubscribeRichTextDoc(id, quill){
   quillEditors[id] = quill;
@@ -17475,7 +17471,14 @@ window.realTime.createAndSubscribeRichTextDoc = function createAndSubscribeRichT
 };
 
 function connectRichTextDoc(collection, id, quill) {
-  var doc = connection.get(collection, id);
+  var doc;
+  if(id in docSubs){
+    doc = docSubs[id];
+  } else {
+    doc = connection.get(collection, id);
+    docSubs[id] = doc;
+  }
+
   doc.subscribe(function(err) {
     if (err) throw err;
 
@@ -17493,6 +17496,11 @@ function connectRichTextDoc(collection, id, quill) {
   });
 }
 
+window.realTime.disconnectRichTextDoc = function disconnectRichTextDoc(id){
+  docSubs[id].destroy();
+  delete docSubs[id];
+};
+
 window.realTime.createAndSubscribeDoc = function createAndSubscribeDoc(id, isNgQuill){
   // Connect to both text field
   var wordID = id;
@@ -17504,7 +17512,6 @@ window.realTime.createAndSubscribeDoc = function createAndSubscribeDoc(id, isNgQ
 
   sendCollectionId(JSON.stringify({"b": wordID, "a": "bs", "c": "collection","d": isNgQuill}));
   msgSocket.onmessage = function(event) {
-    // console.log("receive message");
     var msg = JSON.parse(event.data);
     if (msg.e == "success") {
       connectDoc(msg.c, msg.b, msg.d);
