@@ -25,7 +25,6 @@ use Palaso\Utilities\CodeGuard;
 use Silex\Application;
 use Site\Controller\Auth;
 use Symfony\Component\HttpFoundation\Session\Session;
-use GuzzleHttp;
 
 class UserCommands
 {
@@ -288,53 +287,6 @@ class UserCommands
         }
 
         return $identityCheck;
-    }
-
-    /**
-     * Authentication user
-     * @param string $username
-     * @param string $password
-    */
-    public static function authenticate($username, $password) {
-
-        if (!preg_match('/^[\S]{2,64}$/', $username) || !preg_match('/^[\S]{2,64}$/', $password)) {
-            throw new \InvalidArgumentException('Invalid credentials');
-        }
-
-        $localhost_http_client = new GuzzleHttp\Client();
-        $cookie_storage = new GuzzleHttp\Cookie\CookieJar();
-
-        $options = [
-            'body' => [
-                '_username' => $username,
-                '_password' => $password,
-                '_remember_me' => 'on'
-            ],
-            'allow_redirects' => false,
-            'cookies' => $cookie_storage
-        ];
-
-        try {
-            $localhost_http_client->post('http://'.$_SERVER['HTTP_HOST'].'/app/login_check', $options); //init session
-            $http_response = $localhost_http_client->post('http://'.$_SERVER['HTTP_HOST'].'/app/login_check', $options);
-
-            if (preg_match("/REMEMBERME=([^;]*)/", $http_response->getHeader('set-cookie'), $match_array)) {
-                $remember_me_token = $match_array[1];
-            } else {
-                throw new \InvalidArgumentException("Incorrect credentials");
-            }
-
-        }catch (\Exception $e) {
-            throw $e;
-        }
-
-        if ($remember_me_token) {
-            setcookie('REMEMBERME', $remember_me_token, time()+60*60*24*365);
-            return $remember_me_token;
-        } else {
-            return false;
-        }
-
     }
 
     /**

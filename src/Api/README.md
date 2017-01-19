@@ -52,15 +52,21 @@
 
 ### User Authenticate
 
-1. Get an authentication token
+1. Get PHP session token (if you don't have one yet). To do this, just run the next command twice. It will set the PHPSESSID cookie in your cookie jar.
+
+2. Authenticate
+
+	- Note the addition of a form variable: `_json_request=on` which overrides LF default browser/html behavior
+	
+	```
+	curl 'http://m.languageforge.local/app/login_check' --cookie-jar /tmp/cookies.txt -i -H 'Content-Type: application/x-www-form-urlencoded' -d '_username=admin&_password=password&_remember_me=on&_json_request=on' --cookie /tmp/cookies.txt 
+	```
+	
+	- Your cookie jar should have two cookies at this point PHPSESSID and REMEMBERME
+
+3. Use authentication tokens (cookies)
 
 	```
-	curl 'http://m.languageforge.local/api/sf' -i -H 'Content-Type: application/json' -d '{"version":"2.0","method":"user_authenticate","params":["admin","password"],"id":1}'
-	```
-
-2. Use authentication token
-
-	```
-	curl 'http://m.languageforge.local/api/sf' -i -H 'Content-Type: application/json' -d '{"version":"2.0","method":"user_readProfile","params":[],"id":1}' --cookie 'REMEMBERME=U2l0ZVxNb2RlbFxVc2VyV2l0aElkOllXUnRhVzQ9OjE1MTYwODc4MDk6NDQ3MDIwOTUxZTY3YTE0MTY2MDI5NzI5OTM5NjBhYThlNGY0NWY0N2VlNmUyN2M4YmQ1NDc4NTA4YTgyZGU3Yw%3D%3D'
+	curl 'http://m.languageforge.local/api/sf' --cookie-jar /tmp/cookies.txt -i -H 'Content-Type: application/json' -d '{"version":"2.0","method":"user_readProfile","params":[],"id":1}' --cookie /tmp/cookies.txt
 	```
 
