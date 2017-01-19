@@ -21,6 +21,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
   private currentLanguageCode: string;
   private currentInterfaceLanguageCode: string;
   private currentIdx = 0;
+  private currentProjectName: string;
 
   private isClicked = false;
 
@@ -40,6 +41,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
     let projectSettings = this.projectService.getSelectedProjectSettings();
     this.currentLanguageCode = projectSettings.languageCode;
     this.currentInterfaceLanguageCode = projectSettings.interfaceLanguageCode;
+    this.currentProjectName = projectSettings.projectName;
   }
 
   getWords(projectId: string) {
@@ -68,12 +70,10 @@ export class ReviewComponent implements OnInit, OnDestroy {
 
   public upVote = () => {
     this.sendComment('I upvoted this word through the Review & Suggest app', this.currentWord.id);
-    console.log("I upvoted " + this.currentWord.id);
   }
 
   public downVote = () => {
     this.sendComment('I downvoted this word through the Review & Suggest app', this.currentWord.id);
-    console.log("I downvoted " + this.currentWord.id);
   }
 
   public modalActions = new EventEmitter<string | MaterializeAction>();
@@ -104,7 +104,6 @@ export class ReviewComponent implements OnInit, OnDestroy {
 
   submitComment() {
     var inputValue = (<HTMLInputElement>document.getElementById("placeholderForComment")).value;
-    console.log("My commment is :" + inputValue);
     this.closeModal();
     (<HTMLInputElement>document.getElementById("placeholderForComment")).value = '';
     this.sendComment(inputValue, this.currentWord.id);

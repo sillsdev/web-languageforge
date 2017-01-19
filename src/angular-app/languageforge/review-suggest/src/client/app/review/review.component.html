@@ -1,5 +1,6 @@
 <div class="container">
-  <h2>Review</h2>
+  <!-- REVIEW Inline style CP 2017-01 -->
+  <h2 style="font-size: 2.5em;">{{ currentProjectName }}</h2>
   <div class="card">
     <div *ngIf="currentWord == null" class="card-content">
       <div class="progress orange">
@@ -9,7 +10,7 @@
     <div *ngIf="currentWord" class="card-content">
 
       <span *ngIf="currentWord.lexeme[currentLanguageCode]" class="card-title">
-        Is the definition of {{currentWord.lexeme[currentLanguageCode].value}} correct?
+        <h3><b>{{currentWord.lexeme[currentLanguageCode].value}}</b></h3>
       </span>
       <div class="col s12">
         <h4 *ngFor="let sense of currentWord.senses" id="testWord" placeholder="Definition">
