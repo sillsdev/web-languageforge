@@ -85,7 +85,6 @@ export class LfApiService {
         }
         return this.callApi('lex_entry_update', [lexEntry.asJsonObject()]).map(result => {
             result.data = result.data.addEntry;
-            console.log(result.data);
             return result;
         });
     }
