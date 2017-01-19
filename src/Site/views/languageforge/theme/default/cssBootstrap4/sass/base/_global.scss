@@ -6,6 +6,7 @@ body{
 }
 #app-container-for-bootstrap {
   margin-top: 60px;
+  padding-top: 30px;
   flex: 1;
 }
 .card .form-group-last {
@@ -56,6 +57,21 @@ body{
   margin-bottom: 0;
   border-radius: 0;
   }
+
+
+.fixed-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 50px;
+  background-color: #00a087;
+}
+
+nav {
+  border-radius: 0 !important;
+}
 
 .formspacing{
   line-height: 25px;
