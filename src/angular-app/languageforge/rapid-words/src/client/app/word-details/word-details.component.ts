@@ -9,13 +9,14 @@ import { Constants } from '../shared/constants';
   selector: 'worddetails',
   templateUrl: 'word-details.component.html',
   styleUrls: ['word-details.component.css'],
-
 })
 
 export class WordDetailsComponent implements OnInit {
 
   @Input('wordMultitextLanguages') public wordMultitextLanguages: string[] = [];
   @Input('definitionMultitextLanguages') public definitionMultitextLanguages: string[] = [];
+  @Input('selectedEntry') selectedEntry: LexEntry;
+
   @ViewChildren(MultitextComponent) multitextBoxes: QueryList<MultitextComponent>;
 
   showDetails: Boolean=false;

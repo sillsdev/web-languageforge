@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
     allEntries: LexEntry[];
     @ViewChild(WordDetailsComponent)
     private detailToggle: WordDetailsComponent;
+    selectedEntry = new LexEntry();
 
     /**
      * Creates an instance of the HomeComponent with the injected
@@ -38,16 +39,13 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.getNumberOfEntries();
-        this.getFullDbeDto();
+        this.getFullDbeDto(); 
         this.getSettings();
     }
 
     getFullDbeDto() {
-        console.log('getFullDbeDto start');
-        
         this.lfApiService.getFullDbeDto().subscribe(response => {
             this.allEntries = LexEntry.mapEntriesResponse(response.data.entries);
-            console.log('getFullDbeDto end');
             
         });
     }
@@ -57,19 +55,14 @@ export class HomeComponent implements OnInit {
             configurationSettings => {
                 this.wordLanguageSettings = this.extractLanguagesFromJSON(configurationSettings.data.entry.fields.lexeme.inputSystems);
                 this.definitionLanguageSettings = this.extractLanguagesFromJSON(configurationSettings.data.entry.fields.senses.fields.definition.inputSystems);
-                console.log('word languages:', this.wordLanguageSettings);
-                console.log('definition languages', this.definitionLanguageSettings);
             });
     }
 
     extractLanguagesFromJSON(inputSystems: any) {
-        console.log('enter the extraction', inputSystems, "again");
         var languageList: string[] = [];
         for (var i in inputSystems) {
             var language :string = inputSystems[i];
-            console.log('language',language);
             languageList.push(language);
-            console.log('languageList',languageList);
         }
         return languageList;
     }
@@ -80,5 +73,14 @@ export class HomeComponent implements OnInit {
 
     userChoseDomain(semanticDomain: SemanticDomain) {
         this.selectedDomain = semanticDomain;
+    }
+
+    /**
+     * This fires whenever an entry is selected from the word list.
+     * The selected entry trickles down to the word-details child and multitext grandchild
+     * (see: multitext.component and word-details.component)
+     */
+    onEntrySelectedInList(entry: LexEntry) {
+        this.selectedEntry = entry;
     }
 }
