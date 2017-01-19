@@ -17,9 +17,9 @@ export class WordListComponent {
     @Input() entries: LexEntry[];
     @Input() wordLanguages: string[];
     @Input() definitionLanguages: string[];
+    @Input() selectedEntry: LexEntry;
     @Output() onEntrySelected = new EventEmitter<LexEntry>();
     currentPage: number;
-    selectedEntry: LexEntry;
     entriesPerPage: number = Constants.PaginationEntriesPerPage.ENTRIES_PER_PAGE;
 
     constructor() {

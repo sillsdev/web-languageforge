@@ -17,4 +17,12 @@ export namespace Constants {
     export module PaginationEntriesPerPage {
         export const ENTRIES_PER_PAGE = 8;
     }
+
+    export module WordDetails {
+        export const SAVE_BUTTON_TEXT_UPDATE = 'Update Entry';
+        export const SAVE_BUTTON_TEXT_UPDATING = 'Updating...';
+        export const SAVE_BUTTON_TEXT_SAVING = 'Saving...';
+        export const SAVE_BUTTON_TEXT_SAVED = 'Entry Saved!';
+        export const SAVE_BUTTON_TEXT_NEW = 'Add New Entry';
+    }
 }

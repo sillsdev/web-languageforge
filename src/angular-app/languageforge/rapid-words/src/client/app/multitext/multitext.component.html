@@ -6,7 +6,7 @@
     <div class="row">
       <div *ngIf="languages && languages.length > 0" class="input-group">
         <span class="input-group-addon" id="basic-addon1">{{languages[0]}}</span>
-        <input type="text" [(ngModel)]="content[0]" class="form-control" aria-describedby="basic-addon1">
+        <input type="text" (ngModelChange)="contentChanged($event)" [(ngModel)]="content[0]" class="form-control" aria-describedby="basic-addon1">
       </div>
     </div>
     <div *ngFor="let language of languages | slice:1; let i=index">
