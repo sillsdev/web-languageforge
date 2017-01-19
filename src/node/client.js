@@ -52,11 +52,13 @@ function WordFieldConcat(word, id){
 window.realTime = {};
 window.realTime.createAndSubscribeRichTextDoc = function createAndSubscribeRichTextDoc(id, quill){
   quillEditors[id] = quill;
-  sendCollectionId(JSON.stringify({"b": id, "a": "bs", "c": "collection"}));
-  msgSocket.onmessage = function(event) {
-    var msg = JSON.parse(event.data);
-    if (msg.e == "success") {
-      connectRichTextDoc(msg.c, msg.b, quillEditors[msg.b]);
+  if (!(id in docSubs)) {
+    sendCollectionId(JSON.stringify({"b": id, "a": "bs", "c": "collection", "d": quill.getText()}));
+    msgSocket.onmessage = function (event) {
+      var msg = JSON.parse(event.data);
+      if (msg.e == "success") {
+        connectRichTextDoc(msg.c, msg.b, quillEditors[msg.b]);
+      }
     }
   }
 };
