@@ -17,25 +17,31 @@ circumventing Angular's encapsulation.
     font-size: 1.1em;
 }
 
-.sem-dom-picker ul {
+.sem-dom-menu {
     /* Hide the semdom menu by default */
     display: none;
     position: absolute;
     z-index: 1;
-    width: 100%;
-    padding-left: 0;
+    overflow: hidden;
+
     border-radius: 0.5em;
+    width: 100%;
 
     background-color: white;
     border: 1px solid gray;
     color: #373a3c;
+}
+
+.sem-dom-picker ul {
+    padding-left: 0;
 
     max-height: 400pt;
     overflow-y: auto;
+    margin-bottom: 0;
 }
 
 /* Show the semdom menu when the input is focused, or the menu is hovered */
-.sem-dom-picker ul:hover, .sem-dom-picker input:focus + ul {
+.sem-dom-picker .sem-dom-menu:hover, .sem-dom-picker input:focus + .sem-dom-menu {
     display: block;
 }
 
@@ -48,4 +54,9 @@ circumventing Angular's encapsulation.
     padding: 0.5em;
     cursor: pointer;
     margin: 0;
+}
+
+.sem-dom-picker em {
+    display: inline-block;
+    padding: 0.5em;
 }

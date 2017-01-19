@@ -29,20 +29,22 @@ export class SemanticDomainSearchComponent {
         this.searchText.valueChanges
             .debounceTime(100)
             .distinctUntilChanged()
-            .subscribe(search_text => {
-                if(!this.searchEnabled) return;
-                this.clearSearchResults();
+            .subscribe(search_results => this.updateSearchResults(search_results));
+    }
 
-                Object.keys(this.semanticDomains).forEach((key: string) => {
-                    let sem_dom: SemanticDomain = this.semanticDomains[key];
+    updateSearchResults(search_text: string) {
+        if (!this.searchEnabled) return;
+        this.clearSearchResults();
 
-                    if (sem_dom.key.indexOf(search_text) >= 0 ||
-                        sem_dom.name.indexOf(search_text) >= 0 ||
-                        sem_dom.description.indexOf(search_text) >= 0) {
-                        this.searchResults.push(sem_dom);
-                    }
-                });
-            });
+        Object.keys(this.semanticDomains).forEach((key: string) => {
+            let sem_dom: SemanticDomain = this.semanticDomains[key];
+
+            if (sem_dom.key.indexOf(search_text) >= 0 ||
+                sem_dom.name.indexOf(search_text) >= 0 ||
+                sem_dom.description.indexOf(search_text) >= 0) {
+                this.searchResults.push(sem_dom);
+            }
+        });
     }
 
     // Domain was selected from the select box. Look it up and emit
@@ -69,12 +71,12 @@ export class SemanticDomainSearchComponent {
 
     // Should we show the results list?
     showResults() {
-        return this.searchResults.length > 0;
+        return this.getResults().length > 0;
     }
 
     private semdomText() {
         return this.selectedDomain ?
-                this.selectedDomain.name + ' ' + this.selectedDomain.key : '';
+            this.selectedDomain.name + ' ' + this.selectedDomain.key : '';
     }
 
     updateInputValue() {
@@ -89,6 +91,14 @@ export class SemanticDomainSearchComponent {
     onInputFocus() {
         this.searchText.setValue('');
         this.searchEnabled = true;
+    }
+
+    // Fetches the search results. If current input is empty and the search results have
+    // not been updated for that, updates results and returns them.
+    getResults() {
+        if(this.searchResults.length > 0) return this.searchResults;
+        else if(this.searchText.value === '') this.updateSearchResults('');
+        return this.searchResults;
     }
 
 }
