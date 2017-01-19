@@ -11,6 +11,9 @@ ShareDB.types.register(richText.type);
 var backend = new ShareDB();
 var connection = backend.connect();
 
+// Client connection time allowed without editing in minutes
+var connectionTime = 20;
+
 startServer();
 
 // Create initial document then fire callback
@@ -19,10 +22,50 @@ function createDoc(collection, id, value) {
   var doc = connection.get(collection, id);
   doc.fetch(function(err) {
     if (err) throw err;
+
     if (doc.type === null) {
       doc.create([{insert: value}], 'rich-text');
     }
   });
+}
+
+// Check if object is empty
+function isEmpty(object) {
+  for(var key in object) {
+    if(object.hasOwnProperty(key))
+      return false;
+  }
+  return true;
+}
+
+// Disconnect document
+function docDisconnect(docIds, receivedBytes, agent) {
+  if (receivedBytes == agent.stream.ws.bytesReceived) {
+    var streams = backend.pubsub.streams;
+    for (var fieldId in streams) {
+      if (streams.hasOwnProperty(fieldId)) {
+        for (var docId in docIds) {
+          if (docIds.hasOwnProperty(docId) && streams[fieldId].hasOwnProperty(docId)) {
+            delete streams[fieldId][docId];
+          }
+        }
+        if (isEmpty(streams[fieldId])) {
+          if (streams.hasOwnProperty(fieldId)) {
+            delete streams[fieldId];
+          }
+          var sub = backend.pubsub.subscribed;
+          if (sub.hasOwnProperty(fieldId)) {
+            delete sub[fieldId];
+          }
+        }
+      }
+    }
+  } else {
+    receivedBytes = agent.stream.ws.bytesReceived;
+    setTimeout(function () {
+      docDisconnect(docIds, receivedBytes, agent);
+    }, connectionTime*1000);
+  }
 }
 
 function startServer() {
@@ -32,26 +75,38 @@ function startServer() {
   app.use(express.static('node_modules/quill/dist'));
   var docServer = http.createServer(app);
   var messageServer = http.createServer(app);
+
   // Connect any incoming WebSocket connection to ShareDB
-  var wss = new WebSocket.Server({server: docServer});
-  var wss2 = new WebSocket.Server({server: messageServer});
-  wss2.on('connection', function(ws, req) {
+  var docWss = new WebSocket.Server({server: docServer});
+  var messageWss = new WebSocket.Server({server: messageServer});
+  messageWss.on('connection', function(ws, req) {
     ws.on('message', function(msg) {
-      var JSONMsg = JSON.parse(msg);
-      if (typeof(JSONMsg.b) == "string") {
-        createDoc(JSONMsg.c,JSONMsg.b,JSONMsg.d);
-        ws.send(JSON.stringify({"a": "bs", "b": JSONMsg.b, "c": JSONMsg.c, "d": JSONMsg.d, "e": "success"}));
-      } else if (typeof(JSONMsg.b) == "object") {
-        for (var i = 0; i<JSONMsg.b.length; i++) {      
-          createDoc(JSONMsg.c,JSONMsg.b[i],JSONMsg.d);
-          ws.send(JSON.stringify({"a": "bs", "b": JSONMsg.b, "c": JSONMsg.c, "d": JSONMsg.d, "e": "success"}));
+      var JsonMsg = JSON.parse(msg);
+      if (typeof(JsonMsg.b) == 'string') {
+        createDoc(JsonMsg.c, JsonMsg.b, JsonMsg.d);
+        ws.send(JSON.stringify({'a': 'bs', 'b': JsonMsg.b, 'c': JsonMsg.c, 'd': JsonMsg.d, 'e': 'success'}));
+      } else if (typeof(JsonMsg.b) == 'object') {
+        for (var i = 0; i<JsonMsg.b.length; i++) {
+          createDoc(JsonMsg.c, JsonMsg.b[i], JsonMsg.d);
+          ws.send(JSON.stringify({'a': 'bs', 'b': JsonMsg.b, 'c': JsonMsg.c, 'd': JsonMsg.d, 'e': 'success'}));
         }
       }
     });
   });
-  wss.on('connection', function(ws, req) {
+
+  docWss.on('connection', function(ws, req) {
     var stream = new WebSocketJSONStream(ws);
-    backend.listen(stream);
+    var agent = backend.listen(stream);
+    setTimeout(function(){
+      var collection = agent.subscribedDocs.collection;
+      var docIds = [];
+      for (var key in collection) {
+        if (collection.hasOwnProperty(key)) {
+          docIds.push(collection[key].id);
+        }
+      }
+      docDisconnect(docIds, -1, agent);
+    }, 1500);
   });
 
   docServer.listen(8080);
@@ -61,12 +116,11 @@ function startServer() {
 }
 
 function getJsonObjFromFile(sessionId){
-  if(sessionId == null || sessionId == ""){
-    return false;
-  }
-  var tmpDir = "/tmp";
-  var filePath = tmpDir.concat("/jsonSessionData/", sessionId, ".json");
-  try{
+  if (sessionId == null || sessionId == '') return false;
+
+  var tmpDir = '/tmp';
+  var filePath = tmpDir + '/jsonSessionData/' + sessionId + '.json';
+  try {
     var jsonObj = require(filePath);
   } catch (e) {
       return false;
@@ -74,4 +128,4 @@ function getJsonObjFromFile(sessionId){
   return jsonObj;
 }
 
-//getJsonObjFromFile("t8vcdm2gb2235a88ps696liv35");
+// getJsonObjFromFile('t8vcdm2gb2235a88ps696liv35');
