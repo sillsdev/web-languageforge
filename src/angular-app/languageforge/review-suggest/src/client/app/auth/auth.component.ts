@@ -34,8 +34,17 @@ export class AuthComponent implements OnInit {
       if (response) {
         this.goToDashboard();
       } else {
-        var toastContent = '<span><b>Invalid username or password!</b></span>';
-        Materialize.toast(toastContent, 5000, 'red');
+
+        // try a second time, if there is no PHPSESSID cookie the first request will fail but set it
+        this.authService.login(this.currentUser.username, this.currentUser.password).subscribe(response2 => {
+          console.log(response2);
+          if (response2) {
+            this.goToDashboard();
+          } else {
+            var toastContent = '<span><b>Invalid email or password!</b></span>';
+            Materialize.toast(toastContent, 5000, 'red');
+          }
+        });
       }
     });
   }
