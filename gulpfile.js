@@ -73,6 +73,7 @@
 // child_process     : Call a child process with the ease of exec and safety of spawn
 // gulp              : The streaming build system
 // gulp-concat       : Concatenates files
+// gulp-clean-css    : Minifies CSS - useful after using sass to compile everything
 // gulp-jshint       : JSHint plugin for gulp
 // gulp-livereload   : Gulp plugin for livereload
 // gulp-markdown     : Markdown to HTML
@@ -109,6 +110,7 @@ var Server = require('karma').Server;
 var path = require('path');
 var stylish = require('jshint-stylish');
 var sass = require('gulp-sass');
+var cleanCSS = require('gulp-clean-css');
 
 var execute = function (command, options, callback) {
   if (options == undefined) {
@@ -907,30 +909,35 @@ gulp.task('default', gulp.series('build'));
 gulp.task('sass:base', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/base/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/Site/views/languageforge/theme/default/cssBootstrap4/'));
 });
 
 gulp.task('sass:activity', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/activity/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/public/activity/bootstrap4/'));
 });
 
 gulp.task('sass:changepassword', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/changepassword/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/public/changepassword/bootstrap4/'));
 });
 
 gulp.task('sass:forgot_password', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/forgot_password/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/forgot_password/bootstrap4/'));
 });
 
 gulp.task('sass:home', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/home/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/Site/views/languageforge/theme/default/page/home/bootstrap4/'));
 });
 
@@ -938,72 +945,84 @@ gulp.task('sass:lexicon', function () {
   // TODO: Change back to *.scss once everyone has stopped working on their individual parts
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/languageforge_lexicon.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/languageforge/lexicon/bootstrap4/'));
 });
 
 gulp.task('sass:login', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/login/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/public/login/bootstrap4/'));
 });
 
 gulp.task('sass:registration', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/public/registration/bootstrap4/'));
 });
 
 gulp.task('sass:new-project', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/new-project/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/languageforge/lexicon/new-project/bootstrap4/'));
 });
 
 gulp.task('sass:projects', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/projects/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/projects/bootstrap4/'));
 });
 
 gulp.task('sass:reset_password', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/reset_password/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/public/reset_password/bootstrap4/'));
 });
 
 gulp.task('sass:signup', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/signup/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/public/signup/bootstrap4/'));
 });
 
 gulp.task('sass:siteadmin', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/siteadmin/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/siteadmin/bootstrap4/'));
 });
 
 gulp.task('sass:usermanagement', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/usermanagement/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/usermanagement/bootstrap4'));
 });
 
 gulp.task('sass:terms_and_conditions', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/terms_and_conditions/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/Site/views/shared/cssBootstrap4/'));
 });
 
 gulp.task('sass:userprofile', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/userprofile/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/userprofile/bootstrap4/'));
 });
 
 gulp.task('sass:registration', function () {
   return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/bellows/apps/userprofile/bootstrap4/'));
 });
 // -------------------------------------
