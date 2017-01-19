@@ -12,7 +12,6 @@ import { LexEntry, LexSense } from '../shared/models/lex-entry';
 export class MultitextComponent implements OnInit {
   private _selectedEntry: LexEntry;
 
-  // @Input('label') public label: string = "";
   @Input('languages') public languages: string[] = [];
   @Input('content') public content: string[] = [];
   @Input('label') label: string;

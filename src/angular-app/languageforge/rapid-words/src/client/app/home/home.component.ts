@@ -46,7 +46,6 @@ export class HomeComponent implements OnInit {
     getFullDbeDto() {
         this.lfApiService.getFullDbeDto().subscribe(response => {
             this.allEntries = LexEntry.mapEntriesResponse(response.data.entries);
-            
         });
     }
 
