@@ -14,12 +14,13 @@ var connection = backend.connect();
 startServer();
 
 // Create initial document then fire callback
-function createDoc(collection, id) {
+function createDoc(collection, id, value) {
+  value = value || '';
   var doc = connection.get(collection, id);
   doc.fetch(function(err) {
     if (err) throw err;
     if (doc.type === null) {
-      doc.create([{insert: ''}], 'rich-text');
+      doc.create([{insert: value}], 'rich-text');
     }
   });
 }
@@ -38,11 +39,11 @@ function startServer() {
     ws.on('message', function(msg) {
       var JSONMsg = JSON.parse(msg);
       if (typeof(JSONMsg.b) == "string") {
-        createDoc(JSONMsg.c,JSONMsg.b);
+        createDoc(JSONMsg.c,JSONMsg.b,JSONMsg.d);
         ws.send(JSON.stringify({"a": "bs", "b": JSONMsg.b, "c": JSONMsg.c, "d": JSONMsg.d, "e": "success"}));
       } else if (typeof(JSONMsg.b) == "object") {
         for (var i = 0; i<JSONMsg.b.length; i++) {      
-          createDoc(JSONMsg.c,JSONMsg.b[i]);
+          createDoc(JSONMsg.c,JSONMsg.b[i],JSONMsg.d);
           ws.send(JSON.stringify({"a": "bs", "b": JSONMsg.b, "c": JSONMsg.c, "d": JSONMsg.d, "e": "success"}));
         }
       }
