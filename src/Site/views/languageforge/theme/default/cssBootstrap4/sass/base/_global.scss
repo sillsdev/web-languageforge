@@ -32,6 +32,14 @@ body{
   }
 
 }
+.progress {
+  height: auto;
+  .bar {
+    background-color: #0275d8;
+    text-align: center;
+    color: #fff;
+  }
+}
 .nav.nav-tabs {
   margin-bottom: 20px;
 }

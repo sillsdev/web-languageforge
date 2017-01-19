@@ -20,12 +20,12 @@
                     <i class="fa fa-plus"></i><span class="hidden-md-down"> {{'New Word' | translate}}</span></button>
             </span>
         </div>
-        <div class="hidden-sm-down">
-            <div id="compactEntryListContainer" class="list-group lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-                <div class="list-group-item list-group-item-action active">
-                    <small class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
-                    <h5>{{ 'Words in dictionary' | translate }}</h5>
-                </div>
+        <div class="hidden-sm-down list-group">
+            <div class="list-group-item list-group-item-action active">
+                <small class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
+                <h5>{{ 'Words in dictionary' | translate }}</h5>
+            </div>
+            <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
                 <div id="entryId_{{entry.id}}" class="list-group-item"
                      data-ng-class="{selected: entry.id == currentEntry.id, listItemHasComment: commentService.getEntryCommentCount(entry.id) > 0}"
                      title="{{getCompactItemListOverlay(entry)}}" class="lexiconListItemCompact"
