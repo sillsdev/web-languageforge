@@ -217,10 +217,11 @@ class Sf
         return UserCommands::activate($username, $password, $email, $this->website, $this->app);
     }
 
-    public function user_authenticate($username, $password)
-    {
-        return UserCommands::authenticate($username, $password);
-    }
+    // public function user_authenticate($username, $password)
+    // - This should exist but symfony routing and session management bedazzled us
+    // - See commit b5550599793a73e8a29d058477bdbb365eed75ba for a proxied but broken version
+    //   (no easy way to bind new phpsessid to rememberme token that is bound to a proxied phpsessid)
+    // - Commit dcb565a91b9ff0d3e7c96bc0cb5802f9599d13f8 overrides existing behavior of /app/login_check to return JSON
 
     /**
      * Register a new user with password and optionally add them to a project if allowed by permissions
@@ -925,7 +926,6 @@ class Sf
             'sendReceive_notification_receiveRequest',
             'sendReceive_notification_sendRequest',
             'user_activate',
-            'user_authenticate',
             'user_readForRegistration',
             'user_register',
             'user_updateFromRegistration'
