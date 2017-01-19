@@ -4,10 +4,11 @@ var ShareDB = require('sharedb');
 var richText = require('rich-text');
 var WebSocket = require('ws');
 var WebSocketJSONStream = require('websocket-json-stream');
-// var db = require('sharedb-mongo')('mongodb://localhost:27017/operations');
+// var database = require('sharedb-mongo')('mongodb://localhost:27017/operations');
+var MongoClient = require('mongodb').MongoClient;
 
 ShareDB.types.register(richText.type);
-// var backend = new ShareDB({db: db});
+// var backend = new ShareDB({db: database});
 var backend = new ShareDB();
 var connection = backend.connect();
 
@@ -15,6 +16,17 @@ var connection = backend.connect();
 var connectionTime = 20;
 
 startServer();
+
+MongoClient.connect('mongodb://localhost:27017/operations', function(err, db) {
+  if(!err) {
+    console.log('Connected to MongoDB');
+  }
+
+  //Example code getting collections out of a database
+  db.collection('collection').find({}).toArray(function(err, docs) {
+    // console.log('Found the following records', docs);
+  });
+});
 
 // Create initial document then fire callback
 function createDoc(collection, id, value) {
