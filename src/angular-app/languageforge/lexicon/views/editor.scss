@@ -300,7 +300,7 @@ legend.override-bootstrap {
 }
 
 .lexiconItemListContainer .listItemHasComment {
-    border-right: solid 5px #faa732;
+    border-right: solid 5px $lf-comments;
 }
 
 .entryItemView {
@@ -322,7 +322,7 @@ legend.override-bootstrap {
 }
 
 #lexAppCommentView .commentCount {
-    color: #faa732;
+    color: $lf-comments;
     font-weight: bold;
     padding: 5px;
     width: 120px;
