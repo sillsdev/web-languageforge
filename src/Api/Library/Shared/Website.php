@@ -90,11 +90,6 @@ class Website
             }
         }
 
-        $pos = strpos($_SERVER['HTTP_HOST'], 'm.');
-        if ($pos === 0) {
-            return substr($_SERVER['HTTP_HOST'], 2);
-        }
-
         return $_SERVER['HTTP_HOST'];
     }
 
