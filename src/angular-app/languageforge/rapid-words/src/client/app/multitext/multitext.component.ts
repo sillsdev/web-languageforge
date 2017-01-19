@@ -69,11 +69,11 @@ export class MultitextComponent implements OnInit {
   }
 
   updateContentFromLexEntry(lexEntry: LexEntry) {
-    if (!lexEntry) {
-      return;
+    if (lexEntry == null) {
+      this.clearWordDetailsContents();
     }
 
-    if (this.label == Constants.MultitextEntry.WORD_COMPONENT) {
+    else if (this.label == Constants.MultitextEntry.WORD_COMPONENT) {
       for (let langIndex in this.languages) {
         let wordForLang = lexEntry.lexeme[this.languages[langIndex]];
         if (wordForLang) {
@@ -98,6 +98,10 @@ export class MultitextComponent implements OnInit {
 
   contentChanged(newValue: any) {
     this.entryEdited.emit();
+  }
+  
+  clearWordDetailsContents() {
+    this.content = Array(this.languages.length).fill('');
   }
 
 }

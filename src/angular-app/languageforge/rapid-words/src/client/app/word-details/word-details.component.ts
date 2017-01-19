@@ -52,14 +52,19 @@ export class WordDetailsComponent implements OnInit {
   }
 
   saveEntry() {
-    this.saving = true;
-    this.lfApiService.addEntry(this.constructLexEntryFromMultitexts()).subscribe( response => {
+    // Necessary in order to get Angular to refresh the view
+    this.selectedEntry = this.constructLexEntryFromMultitexts()
+    this.lfApiService.addEntry(this.selectedEntry).subscribe( response => {
       if (response.success) {
         this.selectedEntry = new LexEntry(response.data);
         this.entryUpdated.emit(this.selectedEntry);
       }
       this.saving = false;
     });
+    // Clear input fields
+    // TODO setTimeout lets Angular run the event loop so it will noticce a change.
+    // It would be much better to update this.selectedEntry on every edit.
+    setTimeout(() => this.selectedEntry = null, 0);
   }
 
   constructLexEntryFromMultitexts() {

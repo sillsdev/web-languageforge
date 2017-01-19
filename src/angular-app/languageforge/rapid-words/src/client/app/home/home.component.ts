@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.getNumberOfEntries();
-        this.getFullDbeDto(); 
+        this.getFullDbeDto();
         this.getSettings();
     }
 
@@ -81,5 +81,11 @@ export class HomeComponent implements OnInit {
      */
     onEntrySelectedInList(entry: LexEntry) {
         this.selectedEntry = entry;
+    }
+
+    newEntry(){
+        this.selectedEntry = null;
+        // Focus the first field of the first multitext
+        (document.querySelector('multitext input[type="text"]') as HTMLElement).focus();
     }
 }
