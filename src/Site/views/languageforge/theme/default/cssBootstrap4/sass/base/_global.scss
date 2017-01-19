@@ -31,10 +31,18 @@ body{
     padding-bottom: 10px;
   }
 
- 
-  
 }
-
+.progress {
+  height: auto;
+  .bar {
+    background-color: #0275d8;
+    text-align: center;
+    color: #fff;
+  }
+}
+.nav.nav-tabs {
+  margin-bottom: 20px;
+}
  .newline {
     display: block;
 }
