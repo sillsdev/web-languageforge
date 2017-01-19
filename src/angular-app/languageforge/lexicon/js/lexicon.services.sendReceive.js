@@ -281,7 +281,7 @@ angular.module('lexicon.services')
         this.cancelCloneStatusTimer();
         if (angular.isDefined(pollUpdateTimer)) return;
 
-        pollUpdateTimer = $interval(getPollUpdate, pollUpdateInterval);
+        // pollUpdateTimer = $interval(getPollUpdate, pollUpdateInterval);
       };
 
       this.cancelPollUpdateTimer = function cancelPollUpdateTimer() {
