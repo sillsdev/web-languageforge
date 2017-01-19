@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
     allEntries: LexEntry[];
     @ViewChild(WordDetailsComponent)
     private detailToggle: WordDetailsComponent;
-    selectedEntry = new LexEntry();
+    selectedEntry: LexEntry;
 
     /**
      * Creates an instance of the HomeComponent with the injected

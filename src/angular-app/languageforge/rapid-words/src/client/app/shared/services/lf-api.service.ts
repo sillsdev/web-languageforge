@@ -80,11 +80,7 @@ export class LfApiService {
         });
     }
     addEntry(lexEntry: LexEntry) {
-        if (! lexEntry.id ) {
-            lexEntry.id = '';
-        }
         return this.callApi('lex_entry_update', [lexEntry.asJsonObject()]).map(result => {
-            result.data = result.data.addEntry;
             return result;
         });
     }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Constants } from '../shared/constants';
 import { LexEntry, LexSense } from '../shared/models/lex-entry';
@@ -11,9 +11,17 @@ import { LexEntry, LexSense } from '../shared/models/lex-entry';
 })
 export class MultitextComponent implements OnInit {
   private _selectedEntry: LexEntry;
+  private _languages: string[];
 
-  @Input('languages') public languages: string[] = [];
-  @Input('content') public content: string[] = [];
+  @Input('languages')
+  get languages(): string[] {
+    return this._languages;
+  }
+  set languages(languages: string[]) {
+    this._languages = languages;
+    this.content = Array(languages.length).fill('');
+  }
+
   @Input('label') label: string;
 
   @Input('selectedEntry')
@@ -21,6 +29,10 @@ export class MultitextComponent implements OnInit {
     this._selectedEntry = entry;
     this.updateContentFromLexEntry(entry);
   }
+
+  @Output('entryEdited') entryEdited = new EventEmitter<boolean>();
+
+  content: string[];
 
   constructor() {
 
@@ -82,6 +94,10 @@ export class MultitextComponent implements OnInit {
         }
       }
     }
+  }
+
+  contentChanged(newValue: any) {
+    this.entryEdited.emit();
   }
 
 }
