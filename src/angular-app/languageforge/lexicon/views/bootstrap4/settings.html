@@ -1,12 +1,12 @@
-<div class="container-fluid col-md-10 offset-md-1" data-ng-cloak data-ng-controller="SettingsCtrl">
-    <br><h2 style="font-weight:normal" >{{project.projectName}} <span data-translate="Settings"></span></h2>
+<div data-ng-cloak data-ng-controller="SettingsCtrl" id="lexAppSettingsView">
+    <h2>{{project.projectName}} <span data-translate="Settings"></span></h2>
     <!-- <h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2> -->
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" data-toggle="tab" href="#settings-project" role="tab">{{'Project Properties' | translate}}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link disabled" data-ng-show="false" data-toggle="tab" href="#settings-archive" role="tab">{{'Archive' | translate}}</a>
+            <a class="nav-link disabled" data-toggle="tab" href="#settings-archive" role="tab">{{'Archive' | translate}}</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#settings-delete" role="tab">{{'Delete' | translate}}</a>
@@ -17,49 +17,58 @@
     <!--Tab Content-->
     <div class="tab-content">
         <!--Project Settings-->
-            <div role="tabpanel" class="tab-pane fade in active col-xs-12" id="settings-project">
-                    <div class="control-group">
-                        <br>
-                        <div class="controls row">
-                        <label class="control-label" for="projName" data-translate="Project Name"></label>
-                        <div class="controls">
-                            <input id="projName" type="text" placeholder="project name" data-ng-model="project.projectName" />
-                        </div>
-                        </div>
-                        <div class="row">
-                        <label class="control-label" for="language" data-translate="Default Interface Language"></label>
-                        <div>
-                            <select class="form-control col-xs-6" id="language" 
-                                data-ng-model="project.interfaceLanguageCode" 
-                                data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder">
-                                <option value="">-- choose a language --</option></select>
-                        </div>
-                        </div>
-                        <div class="controls">
-                        <div class="row">
-                        <label class="control-label"><b>{{'Project Code' | translate}}:</b>&nbsp;&nbsp;{{project.projectCode}}</label>
-                        </div>
-                        <div class="row">
-                        <label class="control-label"><b>{{'Project Owner' | translate}}:</b>&nbsp;&nbsp;{{project.ownerRef.username}}</label>
-                        </div>
-                        <div class="row">
+        <div role="tabpanel" class="tab-pane fade in active" id="settings-project">
+            <form class="well ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="updateProject()" style="">
+                <div class="form-group row">
+                    <label class="control-label col-xs-12" for="projName" data-translate="Project Name"></label>
+                    <div class="controls col-xs-12">
+                        <input id="projName" type="text" class="form-control" placeholder="project name" data-ng-model="project.projectName" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="control-label col-xs-12" for="language" data-translate="Default Interface Language"></label>
+                    <div class="controls col-xs-12">
+                        <select class="form-control" id="language"
+                            data-ng-model="project.interfaceLanguageCode"
+                            data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder">
+                            <option value="">-- choose a language --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="control-label col-xs-12">{{'Project Code' | translate}}</label>
+                    <div class="controls col-xs-12">
+                        {{project.projectCode}}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="control-label col-xs-12">{{'Project Owner' | translate}}</label>
+                    <div class="controls col-xs-12">
+                        {{project.ownerRef.username}}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="controls col-xs-12">
                         <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> {{'Featured On Website' | translate}}</label>
-                        </div>
-                        </div>
                     </div>
-                    <div class="controls row">
-                    <button type="submit" class="btn"><i class="fa fa-check"></i>{{'Save' | translate}}</button>
+                </div>
+                <div class="form-group row">
+                    <div class="controls col-xs-12">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> {{'Save' | translate}}</button>
                     </div>
-            </div>
+                </div>
+            </form>
+        </div>
 
-        <!--Archive (Currently Inactive)-->
-            <div role="tabpanel" class="tab-pane fade row" id="settings-archive">
-                <br><pui-archive-project pui-action-in-progress="actionInProgress">
-                </pui-archive-project>
-            </div>
-        <!--Delete-->
-            <div role="tabpanel" class="tab-pane fade row" id="settings-delete">
-                <br><pui-delete-project></pui-delete-project>
+    <!--Archive (Currently Inactive)-->
+        <div role="tabpanel" class="tab-pane fade" id="settings-archive">
+            <br><pui-archive-project pui-action-in-progress="actionInProgress">
+            </pui-archive-project><br><br>
+        </div>
+    <!--Delete-->
+        <div role="tabpanel" class="tab-pane fade" id="settings-delete">
+            <br><pui-delete-project></pui-delete-project><br><br>
+        </div>
     </div>
 
 </div>
