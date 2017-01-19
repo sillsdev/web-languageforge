@@ -13,4 +13,8 @@ export namespace Constants {
         export const WORD_COMPONENT = 'Word';
         export const MEANING_COMPONENT = 'Meaning';
     }
+
+    export module PaginationEntriesPerPage {
+        export const ENTRIES_PER_PAGE = 8;
+    }
 }

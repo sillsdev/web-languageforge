@@ -3,12 +3,14 @@ import { Http } from '@angular/http';
 
 import { LfApiService } from '../shared/services/lf-api.service';
 import { LexEntry } from '../shared/models/lex-entry';
+import { Constants } from '../shared/constants';
 
 @Component({
     moduleId: module.id,
     selector: 'word-list',
     templateUrl: 'word-list.component.html',
     styleUrls: ['word-list.component.css']
+
 })
 
 export class WordListComponent {
@@ -18,6 +20,7 @@ export class WordListComponent {
     @Output() onEntrySelected = new EventEmitter<LexEntry>();
     currentPage: number;
     selectedEntry: LexEntry;
+    entriesPerPage: number = Constants.PaginationEntriesPerPage.ENTRIES_PER_PAGE;
 
     constructor() {
         this.currentPage = 1;
@@ -25,7 +28,7 @@ export class WordListComponent {
 
     getEntriesForPage() {
         if (this.entries) {
-            return this.entries.slice((this.currentPage - 1) * 50, this.currentPage * 50);
+            return this.entries.slice((this.currentPage - 1) * this.entriesPerPage, this.currentPage * this.entriesPerPage);
         }
         return null;
     }
