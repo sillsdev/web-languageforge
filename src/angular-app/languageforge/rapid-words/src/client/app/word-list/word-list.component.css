@@ -18,6 +18,7 @@
 
 .rw-group-item {
     display: block;
+    cursor: pointer;
 }
 
 .rw-group-item:hover {
@@ -41,15 +42,16 @@
     display: inline-block;
     margin-top: 20px;
     margin-bottom: 0px;
-    
+
 }
 .wl-pagination.lower-controls {
     margin-top: 0;
-    
+
 }
 
 .page-button:not(.disabled) {
     color: #0275d8;
+    cursor: pointer;
 }
 
 .rw-group-item.selected {

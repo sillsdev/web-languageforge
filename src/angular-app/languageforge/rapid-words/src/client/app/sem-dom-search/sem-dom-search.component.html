@@ -1,9 +1,11 @@
 <div class="sem-dom-picker">
-    <input type="text" [formControl]="searchText" class="form-control"
-            (focus)="onInputFocus()" (blur)="onInputBlur()">
-    <ul *ngIf="showResults()">
-        <li *ngFor="let result of searchResults" attr.data-value="{{ result.key }}" (click)="selectSuggestion($event)">
-            {{ result.name }}<span class="float-right">{{ result.key }}</span>
-        </li>
-    </ul>
+    <input type="text" placeholder="Select a semantic domain" [formControl]="searchText" class="form-control" (focus)="onInputFocus()" (blur)="onInputBlur()">
+    <div class="sem-dom-menu">
+        <ul *ngIf="showResults()">
+            <li *ngFor="let result of getResults()" attr.data-value="{{ result.key }}" (click)="selectSuggestion($event)">
+                {{ result.name }}<span class="float-right">{{ result.key }}</span>
+            </li>
+        </ul>
+        <em *ngIf="!showResults()">No results</em>
+    </div>
 </div>
