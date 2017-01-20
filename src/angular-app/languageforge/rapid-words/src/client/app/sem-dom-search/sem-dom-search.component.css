@@ -12,9 +12,15 @@ circumventing Angular's encapsulation.
     width: 100%;
 }
 
-.sem-dom-picker input[type='text']:not(:focus) {
+.sem-dom-picker input:not(:focus):not(:placeholder-shown) {
     font-weight: bold;
     font-size: 1.1em;
+}
+
+.sem-dom-picker input::placeholder {
+    font-weight: normal !important;
+    font-size: 1em !important;
+    font-style: italic;
 }
 
 .sem-dom-menu {
