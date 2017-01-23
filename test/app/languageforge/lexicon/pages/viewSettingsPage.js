@@ -3,7 +3,7 @@
 module.exports = new ViewSettingsPage();
 
 function ViewSettingsPage() {
-  this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
+  this.settingsMenuLink = element(by.css('.hdrnav a.btn i.fa-cog'));
   this.viewSettingsLink = element(by.linkText('View Settings'));
   this.get = function get() {
     this.settingsMenuLink.click();
