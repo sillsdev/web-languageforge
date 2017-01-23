@@ -25,7 +25,7 @@ function BellowsProjectSettingsPage() {
 
   this.backButton = element(by.linkText('Back'));
 
-  this.tabDivs = element.all(by.repeater('tab in tabs'));
+  this.tabDivs = element.all(by.className('tab-pane'));
   this.activePane = element(by.css('div.tab-pane.active'));
 
   this.tabs = {
@@ -40,6 +40,7 @@ function BellowsProjectSettingsPage() {
     code: element(by.model('project.projectCode')),
     projectOwner: element(by.binding('project.ownerRef.username')),
     saveButton: this.tabDivs.get(0).element(by.buttonText('Save'))
+
     //button: element(by.id('project_properties_save_button'))
   };
 
