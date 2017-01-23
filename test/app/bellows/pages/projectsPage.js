@@ -24,7 +24,7 @@ function ProjectsPage() {
   this.saveBtn = element(by.partialButtonText('Save'));
 
   this.settings = {};
-  this.settings.button = element(by.css('a.btn i.icon-cog'));
+  this.settings.button = element(by.css('a.btn i.fa-cog'));
   if (browser.baseUrl.includes('scriptureforge')) {
     this.settings.userManagementLink = element(by.linkText('Project Settings'));
   } else if (browser.baseUrl.includes('languageforge')) {
