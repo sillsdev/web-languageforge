@@ -302,7 +302,7 @@ function EditorPage() {
     filter: {
       byTextElem: this.commentDiv.element(by.model('commentFilter.text')),
       byStatusElem: this.commentDiv.element(by.model('commentFilter.status')),
-      clearElem: this.commentDiv.element(by.css('[title="Clear Filter] > i.icon-remove')),
+      clearElem: this.commentDiv.element(by.css('[title="Clear Filter] > i.fa-times')),
       byText: function (textToFilterBy) {
         this.byTextElem.sendKeys(textToFilterBy);
       },
@@ -347,7 +347,7 @@ function EditorPage() {
         .element(by.css('.commentRegarding')),
       regarding: {
         clearBtn: this.commentDiv.element(by.css('.newCommentForm'))
-          .element(by.css('.commentRegarding')).element(by.css('i.icon-remove')),
+          .element(by.css('.commentRegarding')).element(by.css('i.fa-times')),
         fieldLabel: this.commentDiv.element(by.css('.newCommentForm'))
           .element(by.css('.commentRegarding')).element(by.css('.regardingFieldName')),
         fieldWsid: this.commentDiv.element(by.css('.newCommentForm'))
@@ -411,7 +411,7 @@ function EditorPage() {
       author: div.element(by.binding('comment.authorInfo.createdByUserRef.name')),
       date: div.element(by.binding('comment.authorInfo.createdDate | relativetime')),
       score: div.element(by.binding('comment.score')),
-      plusOne: div.element(by.css('.commentLeftSide i.icon-thumbs-up-alt:not(.ng-hide)')),
+      plusOne: div.element(by.css('.commentLeftSide i.fa-thumbs-o-up:not(.ng-hide)')),
 
       // Right side content
       content: div.element(by.binding('comment.content')),
@@ -437,9 +437,9 @@ function EditorPage() {
       }.bind(this),
 
       // Bottom controls (below replies)
-      markOpenLink: div.element(by.css('.commentBottomBar i.icon-chevron-sign-up')),
-      markResolvedLink: div.element(by.css('.commentBottomBar i.icon-ok')),
-      markTodoLink: div.element(by.css('.commentBottomBar i.icon-edit')),
+      markOpenLink: div.element(by.css('.commentBottomBar i.fa-chevron-sign-up')),
+      markResolvedLink: div.element(by.css('.commentBottomBar i.fa-check')),
+      markTodoLink: div.element(by.css('.commentBottomBar i.fa-edit')),
       editBtn: div.element(by.buttonText('Edit')),
       replyBtn: div.element(by.buttonText('Reply'))
     };
@@ -453,12 +453,12 @@ function EditorPage() {
       content: div.element(by.model('reply.content')),
       author: div.element(by.model('reply.authorInfo.createdByUserRef.name')),
       date: div.element(by.model('reply.authorInfo.createdDate | relativetime')),
-      editLink: div.element(by.css('editReplyLink i.icon-chevron-sign-up')),
-      deleteLink: div.element(by.css('deleteReplyLink i.icon-remove')),
+      editLink: div.element(by.css('editReplyLink i.fa-chevron-sign-up')),
+      deleteLink: div.element(by.css('deleteReplyLink i.fa-times')),
       edit: {
         input: div.element(by.css('form input')),
         submit: div.element(by.css('form button[type="submit"]')),
-        cancel: div.element(by.css('form a i.icon-remove'))
+        cancel: div.element(by.css('form a i.fa-times'))
       }
     };
   };
