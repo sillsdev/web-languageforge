@@ -22,11 +22,11 @@ function ProjectSettingsPage() {
   //noinspection JSUnusedGlobalSymbols
   this.backToDictionaryBtn = element(by.buttonText('Dictionary'));
 
-  this.tabDivs = element.all(by.repeater('tab in tabs'));
+  this.tabDivs = element.all(by.className('tab-pane'));
   this.activePane = element(by.css('div.tab-pane.active'));
 
   this.getTabByName = function getTabByName(tabName) {
-    return element(by.css('div.tabbable ul.nav-tabs')).element(by.cssContainingText('a', tabName));
+    return element(by.css('ul.nav-tabs')).element(by.cssContainingText('a', tabName));
   };
 
   this.tabs = {
