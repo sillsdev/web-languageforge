@@ -5,6 +5,7 @@
         <div class="col-sm-12">
             <div data-ng-controller="userProfileCtrl">
                 <h1>{{user.name}}'s User Profile</h1>
+                <sil-notices></sil-notices>
                 <form class="form-horizontal" data-ng-submit="updateUser()">
                     <fieldset>
                         <div data-ng-show="notify.error" class="notification errorMessage">Error: {{notify.error}}</div>
