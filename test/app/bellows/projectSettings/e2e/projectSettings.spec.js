@@ -7,6 +7,8 @@ describe('Bellows E2E Project Settings App', function () {
   var projectsPage   = require('../../pages/projectsPage.js');
   var siteAdminPage  = require('../../pages/siteAdminPage.js');
   var settingsPage = require('../../pages/projectSettingsPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   it('Normal user cannot access projectSettings to a project of which the user is a member',
     function () {
@@ -28,6 +30,8 @@ describe('Bellows E2E Project Settings App', function () {
     expect(managementPage.archiveTab.archiveButton.isEnabled()).toBe(true);
     */
     settingsPage.tabs.remove.click();
+    browser.wait(expectedCondition.visibilityOf(settingsPage.deleteTab.deleteButton),
+      CONDITION_TIMEOUT);
     expect(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
     expect(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
   });
@@ -63,11 +67,13 @@ describe('Bellows E2E Project Settings App', function () {
   it('Manager can delete if owner', function () {
     if (!browser.baseUrl.startsWith('http://jamaicanpsalms') &&
       !browser.baseUrl.startsWith('https://jamaicanpsalms')
-  ) {
+    ) {
       loginPage.loginAsManager();
       settingsPage.get(constants.fourthProjectName);
       expect(settingsPage.noticeList.count()).toBe(0);
       settingsPage.tabs.remove.click();
+      browser.wait(expectedCondition.visibilityOf(settingsPage.deleteTab.deleteButton),
+        CONDITION_TIMEOUT);
       expect(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
       expect(settingsPage.deleteTab.deleteButton.isEnabled()).toBe(false);
       settingsPage.deleteTab.deleteBoxText.sendKeys('DELETE');
