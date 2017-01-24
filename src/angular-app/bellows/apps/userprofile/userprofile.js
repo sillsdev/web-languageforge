@@ -71,11 +71,13 @@ function ($scope, userService, ss, util, notice, $window) {
 
     userService.updateProfile($scope.user, function (result) {
       if (result.ok) {
-        notice.push(notice.SUCCESS, 'Profile updated successfully');
         if ($scope.user.avatar_color != initColor || $scope.user.avatar_shape != initShape) {
-          notice.push(notice.SUCCESS, 'Now refreshing avatar image');
-          $window.location.href = '/app/userprofile';
+          var newAvatarUrl = $scope.getAvatarUrl($scope.user.avatar_ref);
+          ['mobileSmallAvatarURL', 'smallAvatarURL'].forEach(function (id) {
+            $window.document.getElementById(id).src = newAvatarUrl;
+          })
         }
+        notice.push(notice.SUCCESS, 'Profile updated successfully');
       }
     });
   };
