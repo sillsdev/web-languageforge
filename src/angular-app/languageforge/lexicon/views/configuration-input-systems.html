@@ -4,7 +4,7 @@
     <div class="span3">
         <!-- control buttons -->
         <div class="control-group">
-            <button class="btn btn-success" data-ng-click="openNewLanguageModal(suggestedLanguageCodes)"><i class="icon-plus"></i>{{'New' | translate}} </button>
+            <button class="btn btn-success" data-ng-click="openNewLanguageModal(suggestedLanguageCodes)"><i class="fa fa-plus"></i>{{'New' | translate}} </button>
         </div>
 
         <!-- picklist -->
@@ -26,22 +26,22 @@
         <!-- control buttons -->
         <div class="control-group">
             <div class="btn-group">
-                <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#" style="font-weight:normal"> 
+                <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#" style="font-weight:normal">
                     {{'More' | translate}}&nbsp;&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li data-ng-class="{disabled: newExists(selects.special.optionsOrder[1])}">
                         <a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[1])">
-                        <i class="icon-plus"></i> {{'Add IPA for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
+                        <i class="fa fa-plus"></i> {{'Add IPA for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
                     <li data-ng-class="{disabled: newExists(selects.special.optionsOrder[2])}">
                         <a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[2])">
-                        <i class="icon-plus"></i> {{'Add Voice for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
+                        <i class="fa fa-plus"></i> {{'Add Voice for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
                     <li>
                         <a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[3])">
-                        <i class="icon-plus"></i> {{'Add a variant of' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
+                        <i class="fa fa-plus"></i> {{'Add a variant of' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
                     <li class="divider" data-ng-show="! isInputSystemInUse()"></li>
                     <li data-ng-show="! isInputSystemInUse()">
                         <a tabindex="-1" data-ng-click="removeInputSystem(selectedInputSystemId)">
-                        <i class="icon-remove"></i> {{'Remove' | translate}} {{inputSystemViewModels[selectedInputSystemId].languageDisplayName()}}</a></li>
+                        <i class="fa fa-times"></i> {{'Remove' | translate}} {{inputSystemViewModels[selectedInputSystemId].languageDisplayName()}}</a></li>
                 </ul>
             </div>
         </div>
@@ -75,7 +75,7 @@
             <div class="control-group">
                 <label class="control-label" for="special" translate="Special"></label>
                 <div class="controls">
-                    <select class="form-control" id="special" 
+                    <select class="form-control" id="special"
                         data-ng-model="inputSystemViewModels[selectedInputSystemId].special"
                         data-ng-disabled="isInputSystemInUse()"
                         data-ng-options="selects.special.options[key] for key in selects.special.optionsOrder"></select>
@@ -86,7 +86,7 @@
             <div class="control-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[1]">    <!-- IPA transcription -->
                 <label class="control-label" for="purpose" translate="Purpose"></label>
                 <div class="controls">
-                    <select class="form-control" id="purpose" 
+                    <select class="form-control" id="purpose"
                         data-ng-model="inputSystemViewModels[selectedInputSystemId].purpose"
                         data-ng-disabled="isInputSystemInUse()"
                         data-ng-options="selects.purpose.options[key] for key in selects.purpose.optionsOrder">
@@ -112,7 +112,7 @@
             <div class="control-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[3]">    <!-- Script / Region / Variant -->
                 <label class="control-label" for="script" translate="Script"></label>
                 <div class="controls">
-                    <select class="form-control" id="script" 
+                    <select class="form-control" id="script"
                         data-ng-model="inputSystemViewModels[selectedInputSystemId].script"
                         data-ng-disabled="isInputSystemInUse()"
                         data-ng-options="key as option.join(', ') for (key, option) in selects.script.options">
@@ -120,7 +120,7 @@
                 </div>
                 <label class="control-label" for="region" translate="Region"></label>
                 <div class="controls">
-                    <select class="form-control" id="region" 
+                    <select class="form-control" id="region"
                         data-ng-model="inputSystemViewModels[selectedInputSystemId].region"
                         data-ng-disabled="isInputSystemInUse()"
                         data-ng-options="key as option for (key, option) in selects.region.options">
@@ -150,7 +150,7 @@
         </div>
     </div>
 </div>
-<!-- 
+<!--
 <pre data-ng-show="false">
 inputSystemViewModels['{{selectedInputSystemId}}'] {{inputSystemViewModels[selectedInputSystemId] | json}}
 </pre>
