@@ -139,12 +139,12 @@ ul#strength {
     cursor: pointer;
 }
 
-/* TODO: BS4 remove? */
-.entryItemView i.icon-remove:hover {
+/* TODO: Convert to sass? */
+.entryItemView i.fa-times:hover {
     color:red;
 }
 
-form.new-tags i.icon-plus {
+form.new-tags i.fa-plus {
     color: green;
 }
 

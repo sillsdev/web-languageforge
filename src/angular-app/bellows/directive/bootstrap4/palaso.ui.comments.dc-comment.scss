@@ -91,10 +91,10 @@
     width: 100%;
     padding-right: 20px;
 }
-.commentContentContainer i.icon-remove:hover, .commentRepliesContainer i.icon-remove:hover {
+.commentContentContainer i.fa-times:hover, .commentRepliesContainer i.fa-times:hover {
     color: #ed364f;
 }
-.commentContentContainer i.icon-remove, .commentRepliesContainer i.icon-remove {
+.commentContentContainer i.fa-times, .commentRepliesContainer i.fa-times {
     cursor: pointer;
     color: #7c7c7c;
 }
@@ -149,7 +149,7 @@
   }
 }
 
-.commentPlusOne .icon-thumbs-up-alt {
+.commentPlusOne .fa-thumbs-o-up {
     color: darkblue;
     margin-left: 5px;
 }

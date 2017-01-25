@@ -1,9 +1,9 @@
 <div data-ng-cloak data-ng-controller="MembersCtrl">
     <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
         <div class="form-group row">
-        <button class="btn btn-primary" data-ng-disabled="selected.length == 0" data-ng-show="rights.remove"  data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Members</button>
-        <button data-ng-show="rights.add" class="btn btn-primary" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
-        <input class="form-control" type="text" ng-model="userFilter" placeholder="Member List Filter"/> <a ng-show="userFilter != ''" title="Clear Filter" ng-click="userFilter = ''"><i class="icon-remove" style="color:gray"></i></a>
+        <button class="btn btn-primary" data-ng-disabled="selected.length == 0" data-ng-show="rights.remove"  data-ng-click="removeProjectUsers()"><i class="fa fa-times"></i>Remove Members</button>
+        <button data-ng-show="rights.add" class="btn btn-primary" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="fa fa-plus"></i>Add Members</button>
+        <input class="form-control" type="text" ng-model="userFilter" placeholder="Member List Filter"/> <a ng-show="userFilter != ''" title="Clear Filter" ng-click="userFilter = ''"><i class="fa fa-times" style="color:gray"></i></a>
         </div>
     </form>
     <div id="newMembersDiv" class=" new-item" data-collapse="!newUserCollapsed">
@@ -44,6 +44,6 @@
             </tbody>
         </table>
     </listview>
-    
+
 </div>
 
