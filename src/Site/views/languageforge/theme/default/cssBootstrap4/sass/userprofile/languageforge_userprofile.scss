@@ -4,6 +4,11 @@
 
 div.intl-tel-input{
     display: block;
+
+    ul.country-list {
+      /* Render country list above Bootstrap buttons */
+      z-index: 3;
+    }
 }
 
 .btn-group-justified {
