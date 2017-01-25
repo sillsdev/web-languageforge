@@ -1,15 +1,17 @@
 'use strict';
 
 function LexModals() {
+  this.modalBodyDiv = element(by.className('modal-body'));
+  this.modalFooterDiv = element(by.className('modal-footer'));
 
   // select language modal
   this.selectLanguage = {
-    searchLanguageInput: element(by.model('searchText')),
-    languageRows: element.all(by.repeater('language in languages')),
-    firstLanguageName: element.all(by.repeater('language in languages').column('name')).first(),
-    lastLanguageName: element.all(by.repeater('language in languages').column('name')).last(),
-    addButton: element(by.partialButtonText('Add')),
-    clearSearchButton: element(by.className('fa-times')),
+    searchLanguageInput: this.modalBodyDiv.element(by.model('searchText')),
+    languageRows: this.modalBodyDiv.all(by.repeater('language in languages')),
+    firstLanguageName: this.modalBodyDiv.all(by.repeater('language in languages').column('name')).first(),
+    lastLanguageName: this.modalBodyDiv.all(by.repeater('language in languages').column('name')).last(),
+    clearSearchButton: this.modalBodyDiv.element(by.id('clearSearch')),
+    addButton: this.modalFooterDiv.element(by.partialButtonText('Add'))
   };
   this.selectLanguage.firstLanguageRow = this.selectLanguage.languageRows.first();
   this.selectLanguage.lastLanguageRow = this.selectLanguage.languageRows.last();
@@ -21,7 +23,7 @@ function LexModals() {
     levelDropdown: element(by.model('newCustomData.level')),
     typeDropdown: element(by.model('newCustomData.type')),
     listCodeDropdown: element(by.model('newCustomData.listCode')),
-    addButton: element(by.partialButtonText('Add')),
+    addButton: element(by.partialButtonText('Add'))
   };
 
 }

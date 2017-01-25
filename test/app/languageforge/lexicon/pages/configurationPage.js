@@ -38,7 +38,8 @@ function ConfigurationPage() {
     moreButtonGroup: {
       addIpa:     this.tabDivs.first().element(by.partialLinkText('Add IPA')),
       addVoice:   this.tabDivs.first().element(by.partialLinkText('Add Voice')),
-      addVariant: this.tabDivs.first().element(by.partialLinkText('Add a variant'))
+      addVariant: this.tabDivs.first().element(by.partialLinkText('Add a variant')),
+      remove:     this.tabDivs.first().element(by.className('fa fa-times'))
     },
     getLanguageByName: function getLanguageByName(languageName) {
       return element(by.css('div.tab-pane.active div.span3 dl.picklists'))
