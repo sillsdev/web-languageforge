@@ -1,6 +1,6 @@
 <form name="languageSearch">
     <a class="btn pull-right"
-        data-ng-show="!showSuggestions && puiSuggestedLanguageCodes.length > 0" 
+        data-ng-show="!showSuggestions && puiSuggestedLanguageCodes.length > 0"
         data-ng-click="suggest()"
         style="font-weight:normal">
         Suggest Languages from Lexical Data</a>
@@ -12,11 +12,11 @@
         <span>&nbsp;</span>
     </div>
     <div data-ng-hide="showSuggestions">
-        <input width="4" placeholder="search" type="text" 
+        <input width="4" placeholder="search" type="text"
             class="input-medium search-query" data-ng-model="searchText" />
         <button class="btn btn-success" data-ng-click="search()" data-ng-show="searchText && searchText != ''">
             <i class="icon-search"></i>Search</button>
-        <span style="margin-left:10px" title="Clear Search" data-ng-click="clearSearch()" 
+        <span style="margin-left:10px" title="Clear Search" data-ng-click="clearSearch()"
             data-ng-show="searchText && searchText != ''">
             <i class="icon-remove" style="color:black; cursor: pointer"></i></span>
     </div>
@@ -30,8 +30,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr data-ng-class="{info: currentCode == language.code.three}" class="animate-repeat" 
-                data-ng-click="selectLanguage(language)" 
+            <tr data-ng-class="{info: currentCode == language.code.three}" class="animate-repeat"
+                data-ng-click="selectLanguage(language)"
                 data-ng-repeat="language in languages | filter:filterText track by language.code.three">
                 <td class="primary"><div>{{language.name}}</div></td>
                 <td>{{(language.code.two) ? language.code.two : language.code.three}}</td>
@@ -41,7 +41,7 @@
         </tbody>
     </table>
 </div>
-    
+
 <div class="pull-right" data-ng-transclude></div>
 <p data-ng-show="puiShowLinks">
     <a href="http://www.infoterm.info/standardization/iso_639_1_2002.php" target="_blank">
