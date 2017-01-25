@@ -45,7 +45,7 @@ a.btn {
 }
 
 a#flexHelpLink {
-   text-decoration: none; 
+   text-decoration: none;
 }
 
 #importErrors {
@@ -69,7 +69,7 @@ a#flexHelpLink {
     display: block;
     font-size: 55px;
 }
-#progress-indicator i.icon-check-sign {
+#progress-indicator i.fa-check-square {
     color: green;
     font-size: 50px;
     height: 56px;

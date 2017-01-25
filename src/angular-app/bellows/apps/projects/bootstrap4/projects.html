@@ -8,7 +8,7 @@
                     <div data-ng-show="finishedLoading">
                         <h2 style="font-weight:normal">My Projects</h2>
                         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-                            <button type="button" data-ng-show="rights.create" class="btn btn-primary" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="icon-plus"></i>Start or Join a New Project</button>
+                            <button type="button" data-ng-show="rights.create" class="btn btn-primary" data-ng-click="newProjectCollapsed = !newProjectCollapsed"><i class="fa fa-plus"></i>Start or Join a New Project</button>
                         </form>
                         <br/>
                         <div class="new-item" data-collapse="newProjectCollapsed">
@@ -42,8 +42,8 @@
                                 <small class="muted">{{projectTypeNames[project.appName]}}</small>
                             </ul>
                             <ul data-ng-show="rights.edit" style="width: 20%">
-                                <button class="btn btn-secondary" data-ng-show="!isManager(project)" data-ng-click="addManagerToProject(project)"><i class="icon-plus"></i>Add me as Manager</button>
-                                <button class="btn btn-secondary" data-ng-show="!isInProject(project)" data-ng-click="addMemberToProject(project)"><i class="icon-plus"></i>Add me as Contributor</button>
+                                <button class="btn btn-secondary" data-ng-show="!isManager(project)" data-ng-click="addManagerToProject(project)"><i class="fa fa-plus"></i>Add me as Manager</button>
+                                <button class="btn btn-secondary" data-ng-show="!isInProject(project)" data-ng-click="addMemberToProject(project)"><i class="fa fa-plus"></i>Add me as Contributor</button>
                             </ul>
                         </ul>
                         <hr />
