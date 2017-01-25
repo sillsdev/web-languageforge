@@ -69,23 +69,3 @@ a{
   margin: auto;
 }
 
-.select-language-input {
-  height: calc(100vh - 405px);
-  overflow: auto;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1050;
-  display: block;
-  width: 80%;
-  height: 75%;
-  margin: auto;
-  overflow: hidden;
-  outline: 0;
-  background-color: white;
-}

@@ -47,16 +47,35 @@ body{
     display: block;
 }
 // TODO: Remove hack for modal box issue as a result of ui.bootstrap
-.modal.in {
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
   display: block;
+  width: 80%;
+  height: 75%;
+  margin: auto;
+  overflow: hidden;
+  outline: 0;
+  background-color: white;
 }
+
+.modal-body {
+  position: relative;
+  max-height: 400px;
+  padding: 15px;
+  overflow-y: auto;
+}
+
 .breadcrumb {
   background-color: #fff;
   padding: 6px 0 0;
   margin-bottom: 0;
   border-radius: 0;
   }
-
 
 .fixed-nav-bar {
   position: fixed;

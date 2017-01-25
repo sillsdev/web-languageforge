@@ -139,6 +139,7 @@ ul#strength {
     cursor: pointer;
 }
 
+/* TODO: BS4 remove? */
 .entryItemView i.icon-remove:hover {
     color:red;
 }
@@ -193,4 +194,3 @@ pui-select-language div.scroll-table {
 pui-select-language div.scroll-table table {
     margin-bottom: 0px;
 }
-
