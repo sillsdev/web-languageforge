@@ -1,13 +1,13 @@
 'use strict';
 
 var SfAppFrame = function() {
-  
+
   // TODO: this will likely change when we refactor the display of notifications - cjh 2014-06
   this.message = {
     success: element(by.css('.alert-success')),
     info:    element(by.css('.alert-info')),
     warn:    element(by.css('.alert-warn')),
-    error:   element(by.css('.alert-error')),
+    error:   element(by.css('.alert-danger')),
   };
   // Alternate names for the above
   this.successMessage = this.message.success;
