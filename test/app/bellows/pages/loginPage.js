@@ -11,7 +11,7 @@ function BellowsLoginPage() {
 
   this.form = element(by.tagName('form'));
   this.infoMessages = element.all(by.css('.alert-info'));
-  this.errors = element.all(by.css('.alert-error'));
+  this.errors = element.all(by.css('.alert-danger'));
   this.username = element(by.id('username'));
   this.password = element(by.id('password'));
   this.forgotPasswordLink = element(by.id('forgot_password'));
