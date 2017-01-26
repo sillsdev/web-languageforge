@@ -79,6 +79,7 @@ function EditorPage() {
     // Entries list (main body of view)
     entriesList: this.browseDiv.all(by.repeater('entry in visibleEntries track by entry.id')),
     findEntryByLexeme: function (lexeme) {
+      browser.wait(expectedCondition.visibilityOf(element(by.id('lexAppListView'))), CONDITION_TIMEOUT);
       return this.entriesList.filter(function (row) {
         return row.element(by.binding('entry.word')).getText().then(function (word) {
           return (word.indexOf(lexeme) > -1);
