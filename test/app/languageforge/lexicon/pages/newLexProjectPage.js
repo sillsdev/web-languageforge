@@ -32,7 +32,7 @@ function NewLexProjectPage() {
 
   this.formStatus.expectContainsError = function (partialMsg) {
     if (!partialMsg) partialMsg = '';
-    expect(this.formStatus.getAttribute('class')).toContain('alert-error');
+    expect(this.formStatus.getAttribute('class')).toContain('alert-danger');
     expect(this.formStatus.getText()).toContain(partialMsg);
   }.bind(this);
 
