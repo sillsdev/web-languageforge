@@ -308,7 +308,7 @@ class AppModel {
         return (
             $appName != '' &&
             file_exists($appFolder) &&
-            file_exists("$appFolder/$parentAppName-$appName.html") &&
+            file_exists("$appFolder/$parentAppName-$appName.js") &&
             file_exists("$appFolder/views")
         );
     }
