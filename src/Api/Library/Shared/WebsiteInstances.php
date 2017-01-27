@@ -135,6 +135,12 @@ class WebsiteInstances
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
         $sites['languageforge.local'] = $w;
 
+        $w = new Website('cat.languageforge.local', Website::LANGUAGEFORGE);
+        $w->name = 'Language Forge';
+        $w->ssl = false;
+        $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
+        $sites['cat.languageforge.local'] = $w;
+
         $w = new Website('e2etest.languageforge.local', Website::LANGUAGEFORGE);
         $w->name = 'Language Forge';
         $w->ssl = false;
@@ -154,6 +160,13 @@ class WebsiteInstances
         $w->ssl = true;
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
         $sites['qa.languageforge.org'] = $w;
+
+        // cat.languageforge.org
+        $w = new Website('cat.languageforge.org', Website::LANGUAGEFORGE);
+        $w->name = 'Language Forge';
+        $w->ssl = true;
+        $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
+        $sites['cat.languageforge.org'] = $w;
 
         // languageforge.org
         $w = new Website('languageforge.org', Website::LANGUAGEFORGE);
@@ -183,7 +196,6 @@ class WebsiteInstances
         $redirects['jamaicanpsalms.com'] = 'jamaicanpsalms.scriptureforge.org';
 
         return $redirects;
-
     }
 
 }

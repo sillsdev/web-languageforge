@@ -285,7 +285,7 @@ class AppModel {
             "demo.scriptureforge" => array("sfchecks"),
         );
 
-        $siteLookup = preg_replace('/^(dev|e2etest|qa)?(\.)?(\S+)\.(org|local|com)$/', '$3', $website->domain);
+        $siteLookup = preg_replace('/^(dev|e2etest|qa|cat)?(\.)?(\S+)\.(org|local|com)$/', '$3', $website->domain);
 
         if (in_array($appName, $sharedAppsInBoostrap4)) {
             return true;
