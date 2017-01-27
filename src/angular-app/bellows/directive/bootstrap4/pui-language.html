@@ -1,38 +1,32 @@
 <div class="container">
-    <form name="languageSearch">
-        <div class="row">
-            <div class="col-xs-12">
-                <a class="btn btn-primary pull-right"
-                   data-ng-show="!showSuggestions && puiSuggestedLanguageCodes.length > 0"
-                   data-ng-click="suggest()"
-                   style="font-weight:normal">
-                   Suggest Languages from Lexical Data
-                </a>
-                <div data-ng-show="showSuggestions">
-                    <div class="input-group">
-                        <a class="btn btn-primary pull-right"
-                           data-ng-click="clearSearch()"
-                           style="font-weight:normal">
-                           <i class="fa fa-times" aria-hidden="true"></i> Clear Suggestions
-                       </a>
-                       <span>&nbsp;</span>
-                    </div>
-                </div>
-                <div data-ng-hide="showSuggestions">
-                    <div class="input-group">
-                        <input width="4" placeholder="search" type="text"
-                               class="input-medium search-query" data-ng-model="searchText" />
-                        <button class="btn btn-success" data-ng-click="search()" data-ng-show="searchText && searchText != ''">
-                            <i class="fa fa-search"></i>Search</button>
-                        <span style="margin-left:10px" title="Clear Search" data-ng-click="clearSearch()"
-                            data-ng-show="searchText && searchText != ''">
-                            <i class="fa fa-times" id="clearSearch" style="color:black; cursor: pointer"></i>
-                        </span>
-                    </div>
+        <div class="row no-gutters">
+            <div class="col-xs-5">
+                <div class="input-group">
+                    <input type="text" class="form-control input-medium search-query" placeholder="Search" data-ng-model="searchText">
+                    <span class="input-group-btn">
+                        <button class="btn btn-secondary" type="button" data-ng-show="searchText && searchText != ''" data-ng-click="search()"><i class="fa fa-search"></i> Search</button>
+                    </span>
                 </div>
             </div>
+            <div class="col-xs-1">
+                <span style="margin-left:10px" title="Clear Search" data-ng-click="clearSearch()"
+                    data-ng-show="searchText && searchText != ''">
+                    <i class="fa fa-times" id="clearSearch" style="color:black; cursor: pointer; line-height: 28pt;"></i>
+                </span>
+            </div>
+            <div class="col-xs-6">
+                <button class="btn btn-primary pull-right"
+                    data-ng-show="!showSuggestions && puiSuggestedLanguageCodes.length > 0"
+                    data-ng-click="suggest()">
+                    Suggest Languages from Lexical Data
+                </button>
+                <button class="btn btn-primary pull-right"
+                    data-ng-show="showSuggestions"
+                    data-ng-click="clearSearch()"
+                    <i class="fa fa-times" aria-hidden="true"></i> Clear Suggestions
+                </button>
+            </div>
         </div>
-    </form>
     <div class="row">
         <div class="table table-responsive table-hover table-sm">
             <table class="table table-bordered">
