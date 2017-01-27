@@ -1,2 +1,6 @@
 [all]
 localhost ansible_connection=local
+
+[languageforge_production]
+languageforge.org
+qa.languageforge.org
