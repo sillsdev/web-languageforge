@@ -15,7 +15,7 @@
                 <small><i>{{typeahead.matchCountCaption}}</i></small></div>
         </pui-typeahead>
         <span class="input-group-btn">
-            <button class="btn btn-success btn-small pull-right" data-ng-if="rights.canEditEntry()"
+            <button class="btn btn-success btn-small pull-right" id="newWord" data-ng-if="rights.canEditEntry()"
                 data-ng-click="newEntry()"><i class="fa fa-plus"></i><span class="hidden-sm-down"> {{'New Word' | translate}}</span>
             </button>
         </span>
@@ -28,7 +28,7 @@
                 <i class="fa fa-upload"></i> Import entries from LIFT</button>
             <button class="btn btn-primary" data-ng-click="syncProject()" data-ng-show="projectSettings.hasSendReceive">
                 <i class="fa fa-refresh"></i> Synchronize project with LanguageDepot.org</button>
-            <button class="btn btn-success" data-ng-if="rights.canEditEntry()"
+            <button class="btn btn-success" id="noEntriesNewWord" data-ng-if="rights.canEditEntry()"
                     data-ng-click="newEntry()"><i class="fa fa-plus"></i> {{'New Word' | translate}}
             </button>
         </div>
