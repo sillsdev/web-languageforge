@@ -51,9 +51,12 @@ function EditorPage() {
   this.browse = {
 
     // Top row UI elements
-    newWordBtn: this.browseDiv.element(by.partialButtonText('New Word')),
+    noEntriesElem: this.browseDiv.element(by.className('no-entries')),
+    noEntriesNewWordBtn: element(by.id('noEntriesNewWord')),
+    newWordBtn: element(by.id('newWord')),
     entryCountElem: this.browseDiv.element(by.binding('entries.length')),
     getEntryCount: function () {
+      // assumption is entry count > 0
       browser.wait(expectedCondition.visibilityOf(this.entryCountElem), CONDITION_TIMEOUT);
       return this.entryCountElem.getText().then(function (s) {
         return parseInt(s, 10);

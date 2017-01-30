@@ -47,9 +47,8 @@ function NewLexProjectPage() {
   this.srCredentialsPage.loginUnknown = element(by.id('usernameUnknown'));
   this.srCredentialsPage.loginOk = element(by.id('usernameOk'));
   this.srCredentialsPage.passwordInput = element(by.id('srPassword'));
-  this.srCredentialsPage.passwordUnknown = element(by.id('passwordUnknown'));
+  this.srCredentialsPage.passwordInvalid = element(by.id('passwordInvalid'));
   this.srCredentialsPage.passwordOk = element(by.id('passwordOk'));
-  this.srCredentialsPage.projectUneditable = element(by.id('srProject'));
   this.srCredentialsPage.projectSelect = function () {
     return element(by.id('srProjectSelect'));
   };
