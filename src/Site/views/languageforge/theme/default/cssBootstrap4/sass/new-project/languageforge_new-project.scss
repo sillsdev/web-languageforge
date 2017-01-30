@@ -90,3 +90,12 @@ pui-select-language {
   }
 
 }
+
+.modal {
+  display: flex;
+  flex-flow: column;
+}
+
+.modal-body {
+  max-height: initial;
+}
