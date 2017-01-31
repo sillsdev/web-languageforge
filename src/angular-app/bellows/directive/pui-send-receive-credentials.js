@@ -21,14 +21,16 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
               $scope.puiProject.sendReceive.isUnchecked = false;
               $scope.puiProject.sendReceive.projects = result.data.projects;
               if (result.ok) {
-                $scope.puiProject.sendReceive.usernameStatus = 'unknown';
-                if (result.data.isKnownUser) {
+                // Temporary fix because API nolonger exposes whether username
+                // is correct or not. If one is wrong, consider both wrong, but
+                // in the UI tell the user the combination is wrong.
+                if(result.data.hasValidCredentials) {
                   $scope.puiProject.sendReceive.usernameStatus = 'known';
-                }
-
-                $scope.puiProject.sendReceive.passwordStatus = 'invalid';
-                if (result.data.hasValidCredentials) {
                   $scope.puiProject.sendReceive.passwordStatus = 'valid';
+                }
+                else {
+                  $scope.puiProject.sendReceive.usernameStatus = 'unknown';
+                  $scope.puiProject.sendReceive.passwordStatus = 'invalid';
                 }
               } else {
                 $scope.puiProject.sendReceive.usernameStatus = 'failed';
