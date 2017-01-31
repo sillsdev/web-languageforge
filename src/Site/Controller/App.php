@@ -10,9 +10,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class App extends Base
 {
-    public function view(Request $request, Application $app, $appName, $projectId = '') {
+    public function view(
+        /** @noinspection PhpUnusedParameterInspection */
+        Request $request, Application $app, $appName, $projectId = ''
+    ) {
         $this->setupBaseVariables($app);
-        $retVal = $this->setupAngularAppVariables($app, $appName, $projectId);
+        $this->setupAngularAppVariables($app, $appName, $projectId);
         return $this->renderPage($app, 'angular-app');
     }
 
@@ -308,7 +311,6 @@ class AppModel {
         return (
             $appName != '' &&
             file_exists($appFolder) &&
-            file_exists("$appFolder/$parentAppName-$appName.js") &&
             file_exists("$appFolder/views")
         );
     }
