@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('bellows.services')
-  .service('projectService', ['apiService', 'sessionService', 'offlineCache', '$q', function (api, ss, offlineCache, $q) {
+  .service('projectService', ['apiService', 'sessionService', 'offlineCache', '$q',
+  function (api, sessionService, offlineCache, $q) {
 
     this.create = api.method('project_create');
     this.createSwitchSession = api.method('project_create_switchSession');
@@ -42,8 +43,8 @@ angular.module('bellows.services')
       api.call('project_management_report_' + reportName, params, callback);
     };
 
-    this.archiveProject = api.method('project_archive')
-    this.deleteProject = api.method('project_delete')
+    this.archiveProject = api.method('project_archive');
+    this.deleteProject = api.method('project_delete');
 
     // data constants
     this.data = {};
@@ -51,7 +52,8 @@ angular.module('bellows.services')
       sfchecks: 'Community Scripture Checking',
       webtypesetting: 'Typesetting',
       semdomtrans: 'Semantic Domain Translation',
-      lexicon: 'Dictionary'
+      lexicon: 'Dictionary',
+      translate: 'Translation'
     };
 
     var projectTypesBySite;
@@ -59,11 +61,12 @@ angular.module('bellows.services')
       return projectTypesBySite;
     };
 
-    ss.getSession().then(function(session) {
+    sessionService.getSession().then(function (session) {
       var types = {
         scriptureforge: ['sfchecks'],
+
         //languageforge: ['lexicon', 'semdomtrans']
-        languageforge: ['lexicon']
+        languageforge: ['lexicon', 'translate']
       };
       projectTypesBySite = types[session.baseSite()];
     });

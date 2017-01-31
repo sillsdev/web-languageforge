@@ -3,6 +3,7 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Library\Shared\LanguageData;
+use Api\Model\Languageforge\InputSystem;
 use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;

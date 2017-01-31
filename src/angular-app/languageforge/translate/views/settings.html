@@ -1,0 +1,74 @@
+<div data-ng-cloak data-ng-controller="SettingsCtrl" id="translateAppSettingsView">
+    <h2>{{project.projectName}} <span data-translate="Settings"></span></h2>
+    <!-- <h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2> -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#settings-project" role="tab">{{'Project Properties' | translate}}</a>
+        </li>
+        <!-- Archive tab disabled now that project owners can delete their own projects -->
+        <li class="nav-item" data-ng-show="false">
+            <a class="nav-link disabled" data-toggle="tab" href="#settings-archive" role="tab">{{'Archive' | translate}}</a>
+        </li>
+        <li class="nav-item" data-ng-show="rights.remove">
+            <a class="nav-link" data-toggle="tab" href="#settings-delete" role="tab">{{'Delete' | translate}}</a>
+        </li>
+    </ul>
+
+    <!--Tab Content-->
+    <div class="tab-content">
+        <!--Project Settings-->
+        <div role="tabpanel" class="tab-pane fade in active" id="settings-project">
+            <form class="well ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="updateProject()" style="">
+                <div class="form-group row">
+                    <label class="control-label col-xs-12" for="projName" data-translate="Project Name"></label>
+                    <div class="controls col-xs-12">
+                        <input id="projName" type="text" class="form-control" placeholder="project name" data-ng-model="project.projectName" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="control-label col-xs-12" for="language" data-translate="Default Interface Language"></label>
+                    <div class="controls col-xs-12">
+                        <select class="form-control" id="language"
+                            data-ng-model="project.interfaceLanguageCode"
+                            data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder">
+                            <option value="">-- choose a language --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="control-label col-xs-12">{{'Project Code' | translate}}</label>
+                    <div class="controls col-xs-12">
+                        {{project.projectCode}}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="control-label col-xs-12">{{'Project Owner' | translate}}</label>
+                    <div class="controls col-xs-12">
+                        {{project.ownerRef.username}}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="controls col-xs-12">
+                        <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> {{'Featured On Website' | translate}}</label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="controls col-xs-12">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> {{'Save' | translate}}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    <!--Archive (Currently Inactive)-->
+        <div role="tabpanel" class="tab-pane fade" id="settings-archive">
+            <br><pui-archive-project pui-action-in-progress="actionInProgress">
+            </pui-archive-project><br><br>
+        </div>
+    <!--Delete-->
+        <div role="tabpanel" class="tab-pane fade" id="settings-delete">
+            <br><pui-delete-project></pui-delete-project><br><br>
+        </div>
+    </div>
+
+</div>

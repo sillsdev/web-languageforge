@@ -1,8 +1,8 @@
 <?php
 
+use Api\Model\Languageforge\InputSystem;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\Guid;
-use Api\Model\Languageforge\Lexicon\InputSystem;
 use Api\Model\Languageforge\Lexicon\Import\LiftImport;
 use Api\Model\Languageforge\Lexicon\Import\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
