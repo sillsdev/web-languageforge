@@ -239,6 +239,7 @@ class AppModel {
         switch ($appName) {
             case "sfchecks":
             case "lexicon":
+            case "translate":
             case "semdomtrans":
             case "projectmanagement":
             case "usermanagement":
@@ -278,7 +279,8 @@ class AppModel {
             "scriptureforge" => array("sfchecks"),
             "languageforge" => array(
                 "rapid-words",
-                "lexicon"
+                "lexicon",
+                "translate"
             ),
             "waaqwiinaagiwritings" => array("sfchecks"),
             "jamaicanpsalms.scriptureforge" => array("sfchecks"),

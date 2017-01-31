@@ -125,6 +125,7 @@ class RightsHelper
             case 'message_markRead':
             case 'project_pageDto':
             case 'lex_projectDto':
+            case 'translate_projectDto':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
             case 'answer_vote_up':
@@ -166,6 +167,7 @@ class RightsHelper
 
             case 'project_update':
             case 'lex_project_update':
+            case 'translate_projectUpdate':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case 'project_updateUserRole':
