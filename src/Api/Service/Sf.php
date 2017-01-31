@@ -23,6 +23,8 @@ use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransAppManagementDto;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
+use Api\Model\Languageforge\Translate\Command\TranslateProjectCommands;
+use Api\Model\Languageforge\Translate\Dto\TranslateProjectDto;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
@@ -260,7 +262,6 @@ class Sf
 
 
     /**
-     *
      * @param string $projectName
      * @param string $projectCode
      * @param string $appName
@@ -811,6 +812,24 @@ class Sf
 
     public function xforge_frame_can_show_page_help_button($urlPath, $hashPath) {
         return HelpContentCommands::canShowPageHelpButton($this->website, $urlPath, $hashPath);
+    }
+
+
+    /*
+     * --------------------------------------------------------------- TRANSLATION MANAGER API ---------------------------------------------------------------
+     */
+    /**
+     * @param array $settings
+     * @return string $projectId
+     */
+    public function translate_projectUpdate($settings)
+    {
+        return TranslateProjectCommands::updateProject($this->projectId, $this->userId, $settings);
+    }
+
+    public function translate_projectDto()
+    {
+        return TranslateProjectDto::encode($this->projectId);
     }
 
 

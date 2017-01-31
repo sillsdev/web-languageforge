@@ -7,6 +7,7 @@ use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransRoles;
+use Api\Model\Languageforge\Translate\TranslateProjectModel;
 use Api\Model\Scriptureforge\Rapuma\RapumaProjectModel;
 use Api\Model\Scriptureforge\Rapuma\RapumaRoles;
 use Api\Model\Scriptureforge\Sfchecks\ProjectUserPropertiesSettings;
@@ -365,14 +366,16 @@ class ProjectModel extends MapperModel
      */
     public static function getById($projectId)
     {
-        $m = new ProjectModel($projectId);
-        switch ($m->appName) {
+        $project = new ProjectModel($projectId);
+        switch ($project->appName) {
             case 'sfchecks':
                 return new SfchecksProjectModel($projectId);
             case 'rapuma':
                 return new RapumaProjectModel($projectId);
             case 'lexicon':
                 return new LexProjectModel($projectId);
+            case 'translate':
+                return new TranslateProjectModel($projectId);
             case 'semdomtrans':
                 return new SemDomTransProjectModel($projectId);
             default:
