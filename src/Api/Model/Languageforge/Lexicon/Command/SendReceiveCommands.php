@@ -96,11 +96,7 @@ class SendReceiveCommands
             }
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
-        if ($response->getStatusCode() == 403) $result->isKnownUser = true;
-
         if ($response->getStatusCode() == 200) {
-            $result->isKnownUser = true;
             $result->hasValidCredentials = true;
             foreach ($response->json() as $index => $srProject) {
                 $result->projects[] = new SendReceiveProjectModelWithIdentifier(
@@ -581,16 +577,12 @@ class SendReceiveGetUserProjectResult
 {
     public function __construct()
     {
-        $this->isKnownUser = false;
         $this->errorMessage = '';
         $this->hasValidCredentials = false;
         $this->projects = new ArrayOf(function() {
             return new SendReceiveProjectModel();
         });
     }
-
-    /** @var boolean true if the username exists, false otherwise */
-    public $isKnownUser;
 
     /** @var boolean true if the username and password are valid, false otherwise */
     public $hasValidCredentials;
