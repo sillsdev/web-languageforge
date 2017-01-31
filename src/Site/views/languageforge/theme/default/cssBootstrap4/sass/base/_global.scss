@@ -15,6 +15,17 @@ body{
   background: #f5f5f5;
   border: 1px solid #e3e3e3;
 }
+
+.fa-check{
+  color: green;
+}
+.fa-exclamation-circle{
+  color: darkred;
+}
+.fa-times{
+  color: darkred;
+}
+
 .footer{
   background-color: $lf-blue;
   color: white;

@@ -11,13 +11,13 @@
 <!--         data-ng-click="selectField(currentField.name, currentView)"> -->
         <tab-heading>{{tab.name | translate}}
             <span data-ng-hide="tab.byUser || isAtLeastOneSense(tab.view)">
-                <img src="/Site/views/shared/image/exclamation.png"
+                <i class="fa fa-exclamation-circle"
                     title="{{'At least one role Meaning field must be enabled!' | translate}}"
-                    style="padding-left: 5px;"/></span>
+                   style="padding-left: 5px;"></i></span>
             <span data-ng-hide="tab.byRole || allUsersHaveAtLeastOneSense()">
-                <img src="/Site/views/shared/image/exclamation.png"
+                <i class="fa fa-exclamation-circle"
                     title="{{'At least one user Meaning field must be enabled!' | translate}}"
-                    style="padding-left: 5px;"/></span>
+                   style="padding-left: 5px;"></i></span>
         </tab-heading>
         <div data-ng-show="tab.byUser && state === 'userSelectList'">
 
@@ -45,9 +45,9 @@
                                 data-ng-class="{selected:currentUserId == userId}">
                                 {{usersWithSettings[userId].name}} ({{usersWithSettings[userId].username}})
                                 <span data-ng-hide="isAtLeastOneSense(userView)">
-                                    <img src="/Site/views/shared/image/exclamation.png"
+                                    <i class="fa fa-exclamation-circle"
                                         title="{{'At least one Meaning field must be enabled!' | translate}}"
-                                        style="padding-left: 5px;"/></span>
+                                       style="padding-left: 5px;"></i></span>
                             </li>
                         </ul>
                 </div>
@@ -95,9 +95,9 @@
                     </div></dd>
                     <dt>{{'Meaning Level Fields' | translate}}
                         <span data-ng-hide="isAtLeastOneSense(currentView)">
-                        <img src="/Site/views/shared/image/exclamation.png"
+                        <i class="fa fa-exclamation-circle"
                             title="{{'At least one Meaning field must be enabled!' | translate}}"
-                            style="position: absolute; padding-left: 5px;"/></span></dt>
+                           style="position: absolute; padding-left: 5px;"></i></span></dt>
                     <dd><div class="controls">
                         <div data-ng-repeat="fieldName in fieldOrder.senses"
                             data-ng-class="{selected:currentField.name == fieldName}"
