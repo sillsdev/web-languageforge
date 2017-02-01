@@ -6,7 +6,6 @@
                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
                 <span class="add-on wsid input-group-addon" tabindex="-1"
                     title="{{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
-
                 <dc-formattedtext class="dc-formattedtext" data-ng-if="!isAudio(tag)"
                     fte-multiline="false"
                     fte-disabled="! ($state.is('editor.entry') && control.rights.canEditEntry()) || modelContainsSpan(tag)"

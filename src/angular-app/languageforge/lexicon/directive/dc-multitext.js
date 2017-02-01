@@ -12,7 +12,6 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
       config: '=',
       model: '=',
       control: '=',
-      fieldName: '=',
       selectField: '&'
     },
     controller: ['$scope', '$state', 'sessionService', 'lexUtils',
@@ -21,7 +20,7 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
       $scope.isAudio = lexUtils.isAudio;
       $scope.savedFieldID = 'placeHolder';
 
-      sessionService.getSession().then(function(session) {
+      sessionService.getSession().then(function (session) {
         $scope.inputSystems = session.projectSettings().config.inputSystems;
 
         $scope.inputSystemDirection = function inputSystemDirection(tag) {
@@ -48,25 +47,6 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
         return languageSpanPattern.test($scope.model[tag].value);
       };
 
-      $scope.getFieldId = function getFieldId(fieldName, tag) {
-        if (!$scope.control.currentEntry.id || !fieldName) return '';
-
-        return 'entry:' + $scope.control.currentEntry.id + ':' + fieldName +
-          ((tag) ? ':' + tag : '');
-      };
-
-      $scope.editorChanged = function editorChanged(editor, fieldName, tag) {
-        if ($scope.savedFieldID !== $scope.getFieldId(fieldName, tag)){
-          window.realTime.disconnectRichTextDoc($scope.savedFieldID);
-          $scope.editorCreated(editor, fieldName, tag);
-        }
-      };
-
-      $scope.editorCreated = function editorCreated(editor, fieldName, tag) {
-        var fieldId = $scope.getFieldId(fieldName, tag);
-        $scope.savedFieldID = fieldId;
-        window.realTime.createAndSubscribeRichTextDoc(fieldId, editor);
-      };
     }]
   };
 }]);
