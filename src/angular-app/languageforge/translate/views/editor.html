@@ -1,5 +1,31 @@
+<h2>Translate</h2>
 <div class="row">
-    <div class="col-xs-12">
-        <h2>Translate</h2>
+    <div class="col-xs-5">
+        <label>{{left.label}}</label>
+    </div>
+    <div class="col-xs-1">
+        <button type="button" class="btn btn-secondary" data-ng-click="swapEditors()">
+            <i class="fa fa-exchange"></i></button>
+    </div>
+    <div class="col-xs-5">
+        <label>{{right.label}}</label>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6">
+        <ng-quill-editor id="{{getFieldId(left.key)}}"
+            data-on-editor-created="editorCreated(editor, left.key, 'left')"
+            data-on-content-changed="editorChanged(editor, left.key, 'left')"
+            data-theme="bubble" data-ng-model="left.data"
+            data-read-only="false"
+            data-placeholder="&#8203;enter text here"></ng-quill-editor>
+    </div>
+    <div class="col-xs-6">
+        <ng-quill-editor id="{{getFieldId(right.key)}}"
+            data-on-editor-created="editorCreated(editor, right.key, 'right')"
+            data-on-content-changed="editorChanged(editor, right.key, 'right')"
+            data-theme="bubble" data-ng-model="right.data"
+            data-read-only="false"
+            data-placeholder="&#8203;enter text here"></ng-quill-editor>
     </div>
 </div>
