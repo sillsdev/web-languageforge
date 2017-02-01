@@ -59,8 +59,6 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
         $scope.showProjectSelect = function showProjectSelect() {
           var show = $scope.puiProject.sendReceive.usernameStatus == 'known' &&
             $scope.puiProject.sendReceive.passwordStatus == 'valid';
-          $scope.puiProject.sendReceive.projectLabel =
-            $scope.projectOption($scope.puiProject.sendReceive.project);
           if (show && angular.isDefined($scope.puiProject.sendReceive.project) &&
             angular.isDefined($scope.puiProject.sendReceive.project.identifier) &&
             angular.isDefined($scope.puiProject.sendReceive.projects)) {
