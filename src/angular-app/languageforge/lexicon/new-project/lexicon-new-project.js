@@ -466,8 +466,7 @@ angular.module('lexicon-new-project',
       $scope.projectCodeStateDefer = $q.defer();
       $scope.projectCodeStateDefer.resolve('unchecked');
       $scope.project.sendReceive.isUnchecked = true;
-      $scope.project.sendReceive.usernameStatus = 'unchecked';
-      $scope.project.sendReceive.passwordStatus = 'unchecked';
+      $scope.project.sendReceive.credentialsStatus = 'unchecked';
     }
 
     $scope.resetValidateProjectForm = resetValidateProjectForm;
@@ -614,12 +613,8 @@ angular.module('lexicon-new-project',
         return neutral();
       }
 
-      if ($scope.project.sendReceive.usernameStatus == 'unknown') {
-        return error('The Login dosen\'t exist on LanguageDepot.org. Enter a Login.');
-      }
-
-      if ($scope.project.sendReceive.passwordStatus == 'invalid') {
-        return error('The Password isn\'t valid on LanguageDepot.org. Enter the Password.');
+      if ($scope.project.sendReceive.credentialsStatus == 'invalid') {
+        return error('The username or password isn\'t valid on LanguageDepot.org.');
       }
 
       $scope.project.sendReceive.projectStatus = 'no_access';
@@ -629,7 +624,7 @@ angular.module('lexicon-new-project',
 
       if (!$scope.project.sendReceive.project.isLinked &&
           $scope.project.sendReceive.project.role != 'manager') {
-        return error('Please select a Project that you are the Manager on LanguageDepot.org.');
+        return error('Please select a Project that you are the Manager of on LanguageDepot.org.');
       }
 
       $scope.project.sendReceive.projectStatus = 'ok';
