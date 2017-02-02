@@ -31,7 +31,8 @@ src/js/lib/scriptureforge.min.js
 src/angular-app/**/helps/**/page/*.html
 test/CodeCoverage/php/
 .DS_Store
-src/node/static/
+src/node/static/dist/
+src/node/serverConfig.js
 
 # CSS files generated from Sass
 src/Site/views/**/*.css
