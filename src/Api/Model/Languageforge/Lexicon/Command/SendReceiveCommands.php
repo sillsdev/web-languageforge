@@ -76,7 +76,7 @@ class SendReceiveCommands
 
         self::mockE2ETestingData($username, $password, $client);
 
-        $url = 'http://admin.languagedepot.org/api/user/'.$username.'/projects';
+        $url = 'https://admin.languagedepot.org/api/user/'.$username.'/projects';
         $postData = ['json' => ['password' => $password]];
 
         $tryCounter = 1;
