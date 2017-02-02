@@ -13,28 +13,21 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
       },
       controller: ['$scope', 'lexSendReceiveApi', function ($scope, sendReceiveApi) {
         $scope.checkSRProject = function checkSRProject() {
-          $scope.puiProject.sendReceive.usernameStatus = 'loading';
-          $scope.puiProject.sendReceive.passwordStatus = 'loading';
+          $scope.puiProject.sendReceive.credentialsStatus = 'loading';
           sendReceiveApi.getUserProjects($scope.puiProject.sendReceive.username,
             $scope.puiProject.sendReceive.password,
             function (result) {
               $scope.puiProject.sendReceive.isUnchecked = false;
               $scope.puiProject.sendReceive.projects = result.data.projects;
               if (result.ok) {
-                // Temporary fix because API nolonger exposes whether username
-                // is correct or not. If one is wrong, consider both wrong, but
-                // in the UI tell the user the combination is wrong.
                 if(result.data.hasValidCredentials) {
-                  $scope.puiProject.sendReceive.usernameStatus = 'known';
-                  $scope.puiProject.sendReceive.passwordStatus = 'valid';
+                  $scope.puiProject.sendReceive.credentialsStatus = 'valid';
                 }
                 else {
-                  $scope.puiProject.sendReceive.usernameStatus = 'unknown';
-                  $scope.puiProject.sendReceive.passwordStatus = 'invalid';
+                  $scope.puiProject.sendReceive.credentialsStatus = 'invalid';
                 }
               } else {
-                $scope.puiProject.sendReceive.usernameStatus = 'failed';
-                $scope.puiProject.sendReceive.passwordStatus = 'failed';
+                $scope.puiProject.sendReceive.credentialsStatus = 'failed';
               }
             }
           );
@@ -57,8 +50,7 @@ angular.module('palaso.ui.sendReceiveCredentials', [])
         };
 
         $scope.showProjectSelect = function showProjectSelect() {
-          var show = $scope.puiProject.sendReceive.usernameStatus == 'known' &&
-            $scope.puiProject.sendReceive.passwordStatus == 'valid';
+          var show = $scope.puiProject.sendReceive.credentialsStatus === 'valid';
           if (show && angular.isDefined($scope.puiProject.sendReceive.project) &&
             angular.isDefined($scope.puiProject.sendReceive.project.identifier) &&
             angular.isDefined($scope.puiProject.sendReceive.projects)) {
