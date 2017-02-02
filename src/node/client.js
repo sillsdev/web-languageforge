@@ -1,35 +1,34 @@
+//noinspection JSUnusedLocalSymbols used by Angular client
+var Quill = require('quill');
 var sharedb = require('sharedb/lib/client');
 var richText = require('rich-text');
-var Quill = require('quill');
 sharedb.types.register(richText.type);
 
-function getWebSocketUrl() {
-  var url = 'ws://' + window.location.host;
-  return (url.endsWith(':8080')) ? url : url + ':8080';
+function getWebSocketDocUrl() {
+  var url = 'wss://' + window.location.host;
+  return (url.endsWith(':8443')) ? url : url + ':8443';
 }
 
 function getWebSocketMsgUrl() {
-  var url = 'ws://' + window.location.host;
-  return (url.endsWith(':8079')) ? url : url + ':8079';
+  var url = 'wss://' + window.location.host;
+  return (url.endsWith(':8442')) ? url : url + ':8442';
 }
 
 // Open WebSocket connection to ShareDB server
-var socket = new WebSocket(getWebSocketUrl());
+var socket = new WebSocket(getWebSocketDocUrl());
 var msgSocket = new WebSocket(getWebSocketMsgUrl());
 var connection = new sharedb.Connection(socket);
 var quillEditors = [];
 var docSubs = [];
 
-// For testing reconnection
-window.disconnect = function() {
-  connection.close();
-};
-window.connect = function() {
-  var socket = new WebSocket(getWebSocketUrl());
-  connection.bindToSocket(socket);
+msgSocket.onmessage = function (event) {
+  var msg = JSON.parse(event.data);
+  if (msg.result == 'docReady') {
+    connectRichTextDoc(msg.collection, msg.docId, quillEditors[msg.docId]);
+  }
 };
 
-function sendCollectionId(message) {
+function sendServerMessage(message) {
   waitForConnection(function () {
     msgSocket.send(message);
   });
@@ -45,106 +44,43 @@ function waitForConnection(callback) {
   }
 }
 
-function WordFieldConcat(word, id){
-  return word.concat('~',id);
-}
-
 window.realTime = {};
-window.realTime.createAndSubscribeRichTextDoc = function createAndSubscribeRichTextDoc(id, quill){
+window.realTime.createAndSubscribeRichTextDoc = function createAndSubscribeRichTextDoc(id, quill) {
   quillEditors[id] = quill;
   if (!(id in docSubs)) {
-    sendCollectionId(JSON.stringify({"b": id, "a": "bs", "c": "collection", "d": quill.getText()}));
-    msgSocket.onmessage = function (event) {
-      var msg = JSON.parse(event.data);
-      if (msg.e == "success") {
-        connectRichTextDoc(msg.c, msg.b, quillEditors[msg.b]);
-      }
-    }
+    sendServerMessage(JSON.stringify({
+      collection: 'collection', docId: id, initialValue: quill.getText()
+    }));
   }
 };
 
 function connectRichTextDoc(collection, id, quill) {
   var doc;
-  if(id in docSubs){
+  if (id in docSubs) {
     doc = docSubs[id];
   } else {
     doc = connection.get(collection, id);
     docSubs[id] = doc;
   }
 
-  doc.subscribe(function(err) {
+  doc.subscribe(function (err) {
     if (err) throw err;
 
     quill.setContents(doc.data);
 
-    quill.on('text-change', function(delta, oldDelta, source) {
+    quill.on('text-change', function (delta, oldDelta, source) {
       if (source !== 'user') return;
-      doc.submitOp(delta, {source: quill});
+      doc.submitOp(delta, { source: quill });
     });
 
-    doc.on('op', function(op, source) {
+    doc.on('op', function (op, source) {
       if (source === quill) return;
       quill.updateContents(op);
     });
   });
 }
 
-window.realTime.disconnectRichTextDoc = function disconnectRichTextDoc(id){
+window.realTime.disconnectRichTextDoc = function disconnectRichTextDoc(id) {
   docSubs[id].destroy();
   delete docSubs[id];
 };
-
-window.realTime.createAndSubscribeDoc = function createAndSubscribeDoc(id, isNgQuill){
-  // Connect to both text field
-  var wordID = id;
-  if (!isNgQuill) {
-    var word = document.getElementById(id).parentNode.childNodes[1].innerHTML;
-    wordID = WordFieldConcat(word, id);
-    document.getElementById(id).id = wordID;
-  }
-
-  sendCollectionId(JSON.stringify({"b": wordID, "a": "bs", "c": "collection","d": isNgQuill}));
-  msgSocket.onmessage = function(event) {
-    var msg = JSON.parse(event.data);
-    if (msg.e == "success") {
-      connectDoc(msg.c, msg.b, msg.d);
-    }
-  }
-};
-
-// Create local Doc instance mapped to collection document with id
-// Potentially, collection could be the dictionary id (not necessary if we use entry id as collection)
-// But I don't know if having a collection will make any difference such as reducing computing complexity
-function connectDoc(collection, id, isNgQuill) {
-  isNgQuill = isNgQuill || false;
-  var doc = connection.get(collection, id);
-  var textEditorElement;
-  doc.subscribe(function(err) {
-    if (err) throw err;
-
-    if (isNgQuill) {
-      textEditorElement = document.getElementById(id).getElementsByClassName('ql-container')[0];
-    } else {
-      textEditorElement = document.getElementById(id);
-    }
-
-    if (textEditorElement === null) return;
-    var quill = new Quill(textEditorElement);
-    var clipboard = textEditorElement.getElementsByClassName("ql-clipboard");
-    if (clipboard.length != 0) {
-      clipboard[0].hidden = true;
-    }
-
-    quill.setContents(doc.data);
-
-    quill.on('text-change', function(delta, oldDelta, source) {
-      if (source !== 'user') return;
-      doc.submitOp(delta, {source: quill});
-    });
-
-    doc.on('op', function(op, source) {
-      if (source === quill) return;
-      quill.updateContents(op);
-    });
-  });
-}

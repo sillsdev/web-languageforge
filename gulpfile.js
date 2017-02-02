@@ -47,6 +47,7 @@
 //   'build-e2e'
 //   'build-php'
 //   'build-node'
+//   'build-node-watch'
 //   'markdown'
 //   'default'
 
@@ -937,16 +938,18 @@ gulp.task('build-php').description =
 // -------------------------------------
 //   Task: build-node
 // -------------------------------------
-gulp.task('build-node', function(cb){
+gulp.task('build-node', function (cb) {
   var options = {
     dryRun: false,
-    debug: false,
+    debug: false
   };
-  execute('node node_modules/browserify/bin/cmd.js src/node/client.js -o src/node/static/dist/bundle.js',
-    options,
-    cb);
-}
-);
+  execute('node node_modules/browserify/bin/cmd.js src/node/client.js' +
+    ' -o src/node/static/dist/bundle.js', options, cb);
+});
+
+gulp.task('build-node-watch', function () {
+  gulp.watch('src/node/**/client.js', gulp.series('build-node'));
+});
 
 gulp.task('build-php-coverage',
   gulp.series(
