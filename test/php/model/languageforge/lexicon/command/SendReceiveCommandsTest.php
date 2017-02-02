@@ -176,9 +176,9 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
         $password = 'mock_pass';
         $client = new Client();
         $body = Stream::factory('[{"identifier": "identifier", "name": "name2", '.
-            '"repository": "http://public.languagedepot.org", "role": ""}, '.
+            '"repository": "https://public.languagedepot.org", "role": ""}, '.
             '{"identifier": "identifier", "name": "name1", "repository": '.
-            '"http://private.languagedepot.org", "role": ""}]');
+            '"https://private.languagedepot.org", "role": ""}]');
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
         $mock = new Mock([$response]);
         $client->getEmitter()->attach($mock);
@@ -200,9 +200,9 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
         $password = 'mock_pass';
         $client = new Client();
         $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": '.
-            '"http://private.languagedepot.org", "role": ""}, '.
+            '"https://private.languagedepot.org", "role": ""}, '.
             '{"identifier": "identifier", "name": "name1", '.
-            '"repository": "http://public.languagedepot.org", "role": ""}]');
+            '"repository": "https://public.languagedepot.org", "role": ""}]');
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
         $mock = new Mock([$response]);
         $client->getEmitter()->attach($mock);
