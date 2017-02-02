@@ -14,7 +14,7 @@ class LanguageDataTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('English', $languages['en']->name);
         $this->assertEquals('Maori', $languages['mri']->name);
         $this->assertEquals('Maori', $languages['mi']->name);
-        $this->assertEquals('Unlisted Language', $languages['qaa']->name);
+        $this->assertEquals('Language Not Listed', $languages['qaa']->name);
     }
 
     // From SIL.WritingSystems.Tests/LanguageLookupTests.cs

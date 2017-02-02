@@ -97,12 +97,11 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertEquals(false, $result['isKnownUser']);
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
     }
 
-    public function testGetUserProjects_KnownUserInvalidPass_UserKnownPassInvalid()
+    public function testGetUserProjects_KnownUserInvalidPass_UserNotValidCredeentials()
     {
         $username = 'mock_user';
         $password = 'mock_pass';
@@ -112,7 +111,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
     }
@@ -127,7 +125,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertEquals(false, $result['isKnownUser']);
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
     }
@@ -144,7 +141,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(1, $result['projects']);
     }
@@ -162,7 +158,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
         $this->assertEquals('name1', $result['projects'][0]['name']);
@@ -185,7 +180,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
         $this->assertEquals('name1', $result['projects'][0]['name']);
@@ -209,7 +203,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
         $this->assertEquals('name1', $result['projects'][0]['name']);
@@ -231,7 +224,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
         $this->assertEquals(false, $result['projects'][0]['isLinked']);
