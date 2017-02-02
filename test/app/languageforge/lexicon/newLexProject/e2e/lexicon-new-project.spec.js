@@ -96,7 +96,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
-      page.formStatus.expectContainsError('The Login dosen\'t exist on LanguageDepot.org.');
+      page.formStatus.expectContainsError('The username or password isn\'t valid on LanguageDepot.org.');
     });
 
     it('can go back to Chooser page, user and pass preserved', function () {
@@ -156,7 +156,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
     it('cannot move on if not a manager of the project', function () {
       util.clickDropdownByValue(page.srCredentialsPage.projectSelect(), 'mock-name2');
       expect(page.srCredentialsPage.projectNoAccess.isDisplayed()).toBe(true);
-      page.formStatus.expectContainsError('select a Project that you are the Manager');
+      page.formStatus.expectContainsError('select a Project that you are the Manager of');
     });
 
     it('can move on when a managed project is selected', function () {
