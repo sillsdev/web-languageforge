@@ -445,13 +445,13 @@ class SendReceiveCommands
         if ($username == self::TEST_SR_USERNAME) {
             if ($password == self::TEST_SR_PASSWORD) {
                 $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository":'.
-                    ' "http://public.languagedepot.org", "role": "manager", "isLinked": false}, '.
+                    ' "https://public.languagedepot.org", "role": "manager", "isLinked": false}, '.
                     '{"identifier": "mock-id2", "name": "mock-name2", "repository": '.
-                    '"http://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
+                    '"https://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
                     '{"identifier": "mock-id3", "name": "mock-name3", "repository": '.
-                    '"http://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
+                    '"https://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
                     '{"identifier": "mock-id4", "name": "mock-name4", "repository": '.
-                    '"http://private.languagedepot.org", "role": "manager", "isLinked": false}]');
+                    '"https://private.languagedepot.org", "role": "manager", "isLinked": false}]');
                 $response = new Response(200, ['Content-Type' => 'application/json'], $body);
                 $mock = new Mock([$response]);
                 $client->getEmitter()->attach($mock);
