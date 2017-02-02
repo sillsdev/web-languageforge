@@ -99,3 +99,7 @@ pui-select-language {
 .modal-body {
   max-height: initial;
 }
+
+table.language-picker tr {
+  cursor: pointer;
+}
