@@ -7,25 +7,14 @@
             <div class="card card-default">
                 <div class="card-block">
                     <div class="form-group row">
-                        <label class="control-label col-md-4 text-md-right" translate="Primary language"></label>
-                        <div class="controls col-md-8">
-                            <fieldset>
-                                <div class="input-group">
-                                    <input type="text"
-                                           class="form-control"
-                                           placeholder="Select Language"
-                                           data-ng-value="primaryLanguage()"
-                                           disabled>
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-secondary d-block mx-auto"
-                                            id="selectLanguageButton"
-                                            data-ng-click="openNewLanguageModal()"
-                                            translate="Select">
-                                            Select
-                                        </button>
-                                    </span>
-                                </div>
-                            </fieldset>
+                        <div class="input-group">
+                            <label class="col-md-4 text-md-right" translate="Primary language"></label>
+                            <div class="uneditable-input col-md-8" data-ng-bind="primaryLanguage()"></div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-5 offset-md-4">
+                                <a class="btn btn-secondary d-block mx-auto" id="selectLanguageButton" data-ng-click="openNewLanguageModal()" translate="Select"></a>
+                            </div>
                         </div>
                     </div>
                 </div>

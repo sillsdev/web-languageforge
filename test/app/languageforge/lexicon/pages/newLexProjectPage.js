@@ -44,12 +44,10 @@ function NewLexProjectPage() {
   // step 1: send receive credentials
   this.srCredentialsPage = {};
   this.srCredentialsPage.loginInput = element(by.id('srUsername'));
-  this.srCredentialsPage.loginUnknown = element(by.id('usernameUnknown'));
   this.srCredentialsPage.loginOk = element(by.id('usernameOk'));
   this.srCredentialsPage.passwordInput = element(by.id('srPassword'));
-  this.srCredentialsPage.passwordUnknown = element(by.id('passwordUnknown'));
+  this.srCredentialsPage.credentialsInvalid = element(by.id('credentialsInvalid'));
   this.srCredentialsPage.passwordOk = element(by.id('passwordOk'));
-  this.srCredentialsPage.projectUneditable = element(by.id('srProject'));
   this.srCredentialsPage.projectSelect = function () {
     return element(by.id('srProjectSelect'));
   };

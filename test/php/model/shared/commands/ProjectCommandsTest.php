@@ -605,7 +605,7 @@ class ProjectCommandsTest extends PHPUnit_Framework_TestCase
         $srProject = array(
             'identifier' => 'srIdentifier',
             'name' => 'srName',
-            'repository' => 'http://public.languagedepot.org',
+            'repository' => 'https://public.languagedepot.org',
             'role' => 'manager'
         );
 

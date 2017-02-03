@@ -22,10 +22,10 @@
                                 <span class="input-group-addon ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'loading'">
                                     <i id="projectCodeLoading" class="fa fa-spinner fa-spin"></i>
                                 </span>
-                                <span class="input-group-addon alert-danger ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'exists'">
+                                <span class="input-group-addon ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'exists'">
                                     <i id="projectCodeExists" class="fa fa-times" title="Project Code already exists!" ></i>
                                 </span>
-                                <span class="input-group-addon alert-danger ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'invalid'">
+                                <span class="input-group-addon ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'invalid'">
                                     <i id="projectCodeAlphanumeric" class="fa fa-times" title="Project Code must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores!" ></i>
                                 </span>
                                 <span class="input-group-addon alert-success ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'ok'">
@@ -38,27 +38,16 @@
                         <label class="control-label col-md-4 text-md-right" translate="Project Code"></label>
                         <div class="controls col-md-8">
                             <div class="input-group" data-ng-show="newProject.editProjectCode">
-                                <input type="text"
-                                       class="form-control"
-                                       data-ng-model="newProject.projectCode" id="projectCode"
-                                       data-ng-trim="false"
-                                       maxlength="50"
-                                       required placeholder="eg: My_Dictionary"
-                                       required data-ng-blur="checkProjectCode()"
+                                <input type="text" data-ng-model="newProject.projectCode" id="projectCode"
+                                       data-ng-trim="false" maxlength="50" required data-ng-blur="checkProjectCode()"
                                        data-idle-validate="checkProjectCode()"
                                        data-idle-validate-keypress="resetValidateProjectForm()" />
                             </div>
                             <div class="input-group" data-ng-hide="newProject.editProjectCode">
-                                <div class="uneditable-input">
-                                    <input type="text"
-                                           class="form-control"
-                                           required placeholder="eg: My_Dictionary"
-                                           placeholder="Project Code"
-                                           data-ng-model="newProject.projectCode"
-                                           data-ng-hide="newProject.editProjectCode"
-                                           data-ng-bind="newProject.projectCode"
-                                           data-translate="Project Code"
-                                           readonly>
+                                <div class="uneditable-input"
+                                    data-ng-hide="newProject.editProjectCode"
+                                    data-ng-bind="newProject.projectCode"
+                                          readonly>
                                 </div>
                             </div>
                             <div class="input-group" data-ng-hide="isSRProject">
