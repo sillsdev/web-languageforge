@@ -66,7 +66,7 @@ angular.module('bellows.services')
         scriptureforge: ['sfchecks'],
 
         //languageforge: ['lexicon', 'semdomtrans']
-        languageforge: ['lexicon', 'translate']
+        languageforge: ['translate']
       };
       projectTypesBySite = types[session.baseSite()];
     });
