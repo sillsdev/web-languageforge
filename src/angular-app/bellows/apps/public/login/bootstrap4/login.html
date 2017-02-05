@@ -10,10 +10,10 @@
                     <p>Please login with your <b>Username / Email</b> and <b>Password</b> below.</p>
                     <p>Don't have an account? <a href="/public/signup">Register now.</a></p>
                     {% for infoMessage in app.session.getFlashBag.get('infoMessage') %}
-                    <div class="alert alert-info">{{ infoMessage }}</div>
+                        <div uib-alert data-ng-class="'alert-info'">{{ infoMessage }}</div>
                     {% endfor %}
                     {% for errorMessage in app.session.getFlashBag.get('errorMessage') %}
-                    <div class="alert alert-danger">{{ errorMessage }}</div>
+                        <div uib-alert data-ng-class="'alert-danger'">{{ errorMessage }}</div>
                     {% endfor %}
                 </div>
 

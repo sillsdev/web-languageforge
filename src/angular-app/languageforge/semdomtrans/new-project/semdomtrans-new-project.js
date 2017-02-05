@@ -30,7 +30,7 @@ angular.module('semdomtrans-new-project',
 
   }])
   .controller('projectSetupCtrl', ['$scope', '$state', '$location', '$window',
-    'semdomtransSetupService', 'projectService',  'sessionService', '$modal', 'modalService',
+    'semdomtransSetupService', 'projectService',  'sessionService', '$uibModal', 'modalService',
     'silNoticeService',
   function ($scope, $state, $location, $window,
             semdomSetupApi, projectService, sessionService, $modal, modalService,
@@ -48,7 +48,7 @@ angular.module('semdomtrans-new-project',
     $scope.openNewLanguageModal = function openNewLanguageModal() {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
-        controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+        controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
           $scope.selected = {
             code: '',
             language: {}
