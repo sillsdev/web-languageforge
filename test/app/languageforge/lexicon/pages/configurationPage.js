@@ -4,14 +4,18 @@ module.exports = new ConfigurationPage();
 
 function ConfigurationPage() {
   var modal = require('./lexModals.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   this.noticeList = element.all(by.repeater('notice in notices()'));
-  this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
+  this.firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
 
   this.settingsMenuLink = element(by.className('fa-cog'));
   this.configurationLink = element(by.linkText('Configuration'));
   this.get = function get() {
+    browser.wait(expectedCondition.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
     this.settingsMenuLink.click();
+    browser.wait(expectedCondition.visibilityOf(this.configurationLink), CONDITION_TIMEOUT);
     this.configurationLink.click();
   };
 
