@@ -16,6 +16,7 @@ function ProjectSettingsPage() {
     projectsPage.clickOnProject(projectName);
     browser.wait(expectedCondition.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
     this.settingsMenuLink.click();
+    browser.wait(expectedCondition.visibilityOf(this.projectSettingsLink), CONDITION_TIMEOUT);
     this.projectSettingsLink.click();
   };
 
