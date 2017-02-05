@@ -1,22 +1,21 @@
 {% verbatim %}
 <div class="content container fluid" data-ng-controller="ProjectsCtrl" data-ng-cloak>
-    <div class="container">
         <div class="row">
             <div class="col-xs-12">
                 <div style="padding-top:10px">
                     <sil-notices></sil-notices>
                     <div data-ng-show="finishedLoading">
+
                         <h2 style="font-weight:normal">My Projects</h2>
                         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
                             <button type="button" data-ng-show="rights.create" class="btn btn-primary"
                                     data-ng-click="newProjectCollapsed = !newProjectCollapsed">
                                 <i class="fa fa-plus"></i> Start or Join a New Project</button>
                         </form>
-                        <br/>
-                        <div class="new-item" data-collapse="newProjectCollapsed">
+                        <div class="new-item" uib-collapse="newProjectCollapsed">
                             <form class="form-horizontal card card-background" name="newProjectForm">
                                 <div data-ng-repeat="appName in projectTypesBySite()" class="col-xs-3">
-                                    <a class="btn btn-default btn-sm" data-ng-href="/app/{{appName}}/new-project">
+                                    <a data-ng-href="/app/{{appName}}/new-project">
                                         <figure>
                                             <img data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
                                             <figcaption>{{projectTypeNames[appName]}}</figcaption>
@@ -60,6 +59,5 @@
                 </listview>
             </div>
         </div>
-    </div>
 </div>
 {% endverbatim %}

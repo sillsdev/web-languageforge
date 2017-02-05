@@ -5,11 +5,11 @@
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="configurationApply()"
     data-ng-disabled="configForm.$pristine || isSaving">
     <i class="fa fa-check"></i>{{'Apply' | translate}}</button>
-<tabset>
-    <tab heading="Input Systems" class="{{interfaceConfig.pullNormal}}">
+<uib-tabset>
+    <uib-tab heading="Input Systems" class="{{interfaceConfig.pullNormal}}">
         <div data-ng-include="'/angular-app/languageforge/lexicon/views/configuration-input-systems.html'"></div>
-    </tab>
-    <tab heading="Fields" class="{{interfaceConfig.pullNormal}}">
+    </uib-tab>
+    <uib-tab heading="Fields" class="{{interfaceConfig.pullNormal}}">
         <div data-ng-controller="FieldConfigCtrl">
         <div class="row outer-flex">
 
@@ -138,7 +138,7 @@
                                 &nbsp;&nbsp;<i class="fa fa-arrow-down"></i></button>
                         </div>
                     </div>
-                    <div data-collapse="editInputSystems.collapsed">
+                    <div uib-collapse="editInputSystems.collapsed">
                         <button class="btn btn-primary {{interfaceConfig.pullToSide}}"
                             data-ng-click="editInputSystems.done()"><i class="fa fa-check"></i>{{'Done' | translate}}</button>
                         <h3 style="font-weight:normal" data-translate="Edit Input Systems"></h3>
@@ -156,9 +156,9 @@ configDirty.entry {{configDirty.entry | json}}
 </pre>
  -->
         </div>
-    </tab>
+    </uib-tab>
     <!-- hide Tasks tab
-    <tab heading="Tasks" class="{{interfaceConfig.pullNormal}}">
+    <uib-tab heading="Tasks" class="{{interfaceConfig.pullNormal}}">
         <div data-ng-controller="TaskConfigCtrl">
         <div class="row outer-flex">
 
@@ -307,42 +307,41 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
  -->
         <!-- hide Tasks tab
         </div>
-    </tab>
+    </uib-tab>
     hide Tasks tab -->
-    <tab heading="Option Lists" class="{{interfaceConfig.pullNormal}}">
+    <uib-tab heading="Option Lists" class="{{interfaceConfig.pullNormal}}">
         <div data-ng-controller="OptionListCtrl">
-        <div class="row outer-flex">
+            <div class="row outer-flex">
 
-        <!-- Left column: task list -->
-        <div class="span3 control-group">
-            <dl class="picklists">
-                <dt data-translate="Select a list" id="editListValuesFieldset"></dt>
-                <dd>
-                    <div data-ng-repeat="optionList in optionlistDirty"
-                        data-ng-class="{selected:currentListIndex == $index}" data-ng-click="selectList($index)">
-                        {{optionList.name}}
-                    </div>
-                </dd>
-                <!-- future lists go here -->
-            </dl>
-        </div>
-
-        <!-- Right column: task setup -->
-        <div class="span9">
-            <div class="well" id="picklistEditorFieldset">
-                <h3 class="control-label">{{optionlistDirty[currentListIndex].name}}</h3>
-                <div class="controls">
-                    <picklist-editor items="optionlistDirty[currentListIndex].items"
-                        pristine-items="optionlistPristine[currentListIndex].items"></picklist-editor>
+                <!-- Left column: task list -->
+                <div class="span3 control-group">
+                    <dl class="picklists">
+                        <dt data-translate="Select a list" id="editListValuesFieldset"></dt>
+                        <dd>
+                            <div data-ng-repeat="optionList in optionlistDirty"
+                                data-ng-class="{selected:currentListIndex == $index}" data-ng-click="selectList($index)">
+                                {{optionList.name}}
+                            </div>
+                        </dd>
+                        <!-- future lists go here -->
+                    </dl>
                 </div>
+
+                <!-- Right column: task setup -->
+                <div class="span9">
+                    <div class="well" id="picklistEditorFieldset">
+                        <h3 class="control-label">{{optionlistDirty[currentListIndex].name}}</h3>
+                        <div class="controls">
+                            <picklist-editor items="optionlistDirty[currentListIndex].items"
+                                pristine-items="optionlistPristine[currentListIndex].items"></picklist-editor>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-
         </div>
-
-        </div>
-        </div>
-    </tab>
-</tabset>
+    </uib-tab>
+</uib-tabset>
 </fieldset>
 </form>
 </div>

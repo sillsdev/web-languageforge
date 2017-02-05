@@ -10,10 +10,10 @@
     <div class="control-group" data-ng-hide="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullToSide">
         <div data-ng-show="hasAudio()">
             <div class="btn-group" data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()">
-                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                <a class="btn btn-default dropdown-toggle" uib-dropdown-toggle
                     data-ng-class="dcControl.interfaceConfig.pullToSide">
                     <span class="caret"></span></a>
-                <ul class="dropdown-menu" data-ng-class="dcControl.interfaceConfig.pullToSide">
+                <ul class="dropdown-menu" uib-dropdown-menu data-ng-class="dcControl.interfaceConfig.pullToSide">
                     <li><a data-ng-href="{{audioDownloadUrl()}}">
                         <i class="fa fa-download"></i>{{'Download' | translate}} '{{displayFilename()}}'</a></li>
                     <li><a data-ng-click="deleteAudio()">
