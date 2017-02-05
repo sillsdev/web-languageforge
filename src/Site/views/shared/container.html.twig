@@ -24,17 +24,9 @@
     {%  if useMinifiedJs %}
         <script src="/vendor_bower/jquery/dist/jquery.min.js"></script>
         <script src="/vendor_bower/angular/angular.min.js"></script>
-        {% if isBootstrap4 %}
-            <script src="/vendor_bower/tether/dist/js/tether.min.js"></script>
-            <script src="/vendor_bower/bootstrap/dist/js/bootstrap.min.js"></script>
-        {% endif %}
     {%  else %}
         <script src="/vendor_bower/jquery/dist/jquery.js"></script>
         <script src="/vendor_bower/angular/angular.js"></script>
-        {% if isBootstrap4 %}
-            <script src="/vendor_bower/tether/dist/js/tether.js"></script>
-            <script src="/vendor_bower/bootstrap/dist/js/bootstrap.js"></script>
-        {% endif %}
     {% endif %}
 </head>
 
