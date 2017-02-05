@@ -5,11 +5,11 @@
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="settingsApply()"
     data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense() || !allUsersHaveAtLeastOneSense() || isSaving">
     <i ng-class="{'icon-ok': !isSaving, 'icon-spinner': isSaving, 'icon-spin': isSaving}"></i> {{'Apply' | translate}}</button>
-<tabset>
-    <tab data-ng-repeat="tab in tabs" class="{{interfaceConfig.pullNormal}}" active="tab.active"
+<uib-tabset>
+    <uib-tab data-ng-repeat="tab in tabs" class="{{interfaceConfig.pullNormal}}" active="tab.active"
         select="selectTab($index)">
 <!--         data-ng-click="selectField(currentField.name, currentView)"> -->
-        <tab-heading>{{tab.name | translate}}
+        <uib-tab-heading>{{tab.name | translate}}
             <span data-ng-hide="tab.byUser || isAtLeastOneSense(tab.view)">
                 <i class="fa fa-exclamation-circle"
                     title="{{'At least one role Meaning field must be enabled!' | translate}}"
@@ -18,7 +18,7 @@
                 <i class="fa fa-exclamation-circle"
                     title="{{'At least one user Meaning field must be enabled!' | translate}}"
                    style="padding-left: 5px;"></i></span>
-        </tab-heading>
+        </uib-tab-heading>
         <div data-ng-show="tab.byUser && state === 'userSelectList'">
 
             <!-- control buttons -->
@@ -39,7 +39,7 @@
             <div class="row outer-flex">
 
                 <!-- Left column: user select list -->
-                <div class="span3 control-group picklists" id="userSelectList">
+                <div class="span3 form-group picklists" id="userSelectList">
                         <ul class="unstyled">
                             <li data-ng-click="selectUser(userId)" data-ng-repeat="(userId, userView) in configDirty.userViews"
                                 data-ng-class="{selected:currentUserId == userId}">
@@ -57,25 +57,25 @@
         <div data-ng-hide="tab.byUser && state === 'userSelectList'">
             <!-- control buttons for member-specific views -->
             <div class="row-fluid outer-flex" data-ng-show="tab.byUser && state === 'userSettings'">
-                <div class="span3 control-group">
+                <div class="span3 form-group">
                     <button class="btn" data-ng-click="goSelectUser()"><i class="fa fa-chevron-left"></i> {{'Select Member' | translate}}</button>
                 </div>
-                <div class="span9 control-group" style="height: 30px">
+                <div class="span9 form-group" style="height: 30px">
                     <button class="btn" data-ng-click="removeSelectedMemberSettings()">
                         <i class="fa fa-times"></i> {{'Remove Member Specific Settings' | translate}} </button>
                 </div>
             </div>
-        <accordion close-others="true">
-        <accordion-group is-open="true">
-        <accordion-heading><h3>{{'Enabled Fields for' | translate}} {{forWhom | translate}}</h3></accordion-heading>
+        <uib-accordion close-others="true">
+        <uib-accordian-group uib-accordion-group is-open="true">
+        <uib-accordion-heading><h3>{{'Enabled Fields for' | translate}} {{forWhom | translate}}</h3></uib-accordion-heading>
             <div class="row-fluid outer-flex">
 
             <!-- Left column: field view select list -->
-            <div class="span3 control-group">
+            <div class="col-md-4 form-group">
 
 
                 <!-- control buttons -->
-                <div class="control-group">
+                <div class="form-group">
                     <button data-ng-click="showAllFields = ! showAllFields" class="btn btn-small">{{showAllFields ? 'Show Only Common Fields' : 'Show All Fields' | translate}}</button>
                 </div>
 
@@ -126,15 +126,15 @@
             </div>
 
             <!-- Right column: field view settings -->
-            <div class="span9 control-group">
+            <div class="col-md-8 form-group">
 
                 <!-- settings -->
                 <div class="well">
                     <h3 style="font-weight:normal">{{fieldConfig[currentField.name].label}} {{'Field View Settings' | translate}}</h3>
-                    <div class="control-group">
+                    <div class="form-group">
                         <div class="controls">
                             <label class="checkbox {{interfaceConfig.pullNormal}}">
-                                <input type="checkbox"
+                                <input type="checkbox" id="showFieldCheckbox"
                                     data-ng-disabled="currentField.name == 'lexeme'"
                                     data-ng-model="currentView.fields[currentField.name].show"/>
                                 {{'Show field' | translate}}</label>
@@ -142,10 +142,10 @@
                         <br />
                     </div>
                     <div data-ng-show="currentView.fields[currentField.name].type === 'multitext'">
-                        <div class="control-group">
+                        <div class="form-group">
                             <div class="controls">
                                 <label class="checkbox {{interfaceConfig.pullNormal}}">
-                                    <input type="checkbox"
+                                    <input type="checkbox" id="overrideInputSsystemsCheckbox"
                                         data-ng-model="currentView.fields[currentField.name].overrideInputSystems"/>
                                     {{'Override Input Systems' | translate}}</label>
                                 <br />
@@ -153,7 +153,7 @@
                         </div>
                         <div data-ng-show="currentView.fields[currentField.name].overrideInputSystems">
                             <hr />
-                            <div class="row outer-flex control-group">
+                            <div class="row outer-flex form-group">
                                 <div class="span3 picklists">
                                     <label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
                                     <ul class="unstyled indent1"  id="inputSystem">
@@ -187,15 +187,15 @@ currentField {{currentField | json}}
             </div>
 
             </div>
-        </accordion-group>
+        </uib-accordian-group>
         <!-- hide Tasks group
-        <accordion-group>
-            <accordion-heading><h3 data-translate="Enabled Tasks"></h3></accordion-heading>
+        <uib-accordion-group>
+            <uib-accordion-heading><h3 data-translate="Enabled Tasks"></h3></uib-accordion-heading>
             <div class="row outer-flex">
 
             <!-- Left column: task view settings -->
             <!-- hide Tasks group
-            <div class="span4 control-group">
+            <div class="span4 form-group">
                 <dl>
                     <dt data-translate="Dashboard"></dt>
                     <dd><div class="controls">
@@ -234,12 +234,12 @@ currentField {{currentField | json}}
             </div>
 
             </div>
-        </accordion-group>
+        </uib-accordion-group>
         hide Tasks group -->
-    </accordion>
+    </uib-accordion>
     </div>
-    </tab>
-</tabset>
+    </uib-tab>
+</uib-tabset>
 </fieldset>
 </form>
 <!--

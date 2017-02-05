@@ -4,7 +4,7 @@
 
     {% if isLoggedIn %}
 
-        <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060">
+        <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060" data-ng-app="xforge.navbarApp" data-ng-controller="navbarController">
             <a class="navbar-brand hidden-sm-down" href="/">Language Forge
             </a>
             <div class="hidden-md-up">
@@ -47,11 +47,11 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link " href="/app/activity">Activity</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="myProjectDropdown"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <li class="nav-item" uib-dropdown>
+                        <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdown"
+                           aria-haspopup="true" aria-expanded="false">
                             My Projects</a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="myProjectDropdown">
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="myProjectDropdown">
                             <a class="dropdown-item" href="/app/projects">List All Projects</a>
                             {% for project in projects %}
                                 <a class="dropdown-item"
@@ -59,14 +59,14 @@
                             {% endfor %}
                         </div>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <li class="nav-item dropdown" uib-dropdown>
+                        <a class="nav-link" uib-dropdown-toggle href id="userDropdown"
+                            aria-haspopup="true" aria-expanded="false">
                             <img src="{{ smallAvatarUrl }}"
                                  style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px"
                                  class="rounded-circle"
                                  id="smallAvatarURL" />Hi, {{ userName }}</a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="userDropdown">
                             {% if isAdmin %}
                                 <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
                             {% endif %}
