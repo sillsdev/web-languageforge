@@ -1,42 +1,30 @@
 {% verbatim %}
 <div class="content container" ng-cloak>
     <div ng-controller="MainCtrl">
-    <sil-notices></sil-notices>
+        <sil-notices></sil-notices>
 
-    <div>
+        <div>
 
-        <a class="btn btn-secondary" ng-href="{{project.appLink}}" data-tooltip="Back to the project"
-                data-tooltip-placement="{{interfaceConfig.placementNormal}}">
-            <i class="fa fa-arrow-circle-left"></i>Back
-        </a>
-    </div>
-    <h2 style="font-weight:normal">{{project.name}} User Management</h2>
+            <a class="btn btn-secondary" ng-href="{{project.appLink}}" data-tooltip="Back to the project"
+                    data-tooltip-placement="{{interfaceConfig.placementNormal}}">
+                <i class="fa fa-arrow-circle-left"></i>Back
+            </a>
+        </div>
+        <h2 style="font-weight:normal">{{project.name}} User Management</h2>
 
-    <!-- this is a hack - for some reason active can only bind to a variable,
-     so we create this variable using ng-init -->
-    <div ng-init="isMembers = isActive('/members')"></div>
-    <div ng-init="isJoinRequests = isActive('/joinRequests')"></div>
+        <!-- this is a hack - for some reason active can only bind to a variable,
+         so we create this variable using ng-init -->
+        <div ng-init="isMembers = isActive('/members')"></div>
+        <div ng-init="isJoinRequests = isActive('/joinRequests')"></div>
 
-
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" role="tab" data-toggle="tab" ui-sref="members" href="#MembersTab">Members</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" role="tab" data-toggle="tab" ui-sref="joinRequests" href="#JoinRequestTab">Join Requests</a>
-        </li>
-    </ul>
-    <div class="tab-content" id="MembersTab" ng-if="isActive('/members')" ui-view></div>
-    <div class="tab-content" id="JoinRequestsTab" ng-if="(isActive('/joinRequests'))" ui-view></div>
-
-  <!--  <tabset >
-        <tab  active="isMembers" heading="Members" ui-sref="members">
-             <div ng-if="isActive('/members')" ui-view></div>
-        </tab>
-        <tab  active="isJoinRequests" heading="Join Requests" ui-sref="joinRequests">
-            <div ng-if="(isActive('/joinRequests'))" ui-view></div>
-        </tab>
-    </tabset> -->
+        <uib-tabset>
+            <uib-tab active="isMembers" heading="Members" ui-sref="members">
+                <div ng-if="isActive('/members')" ui-view></div>
+            </uib-tab>
+            <uib-tab active="isJoinRequests" heading="Join Requests" ui-sref="joinRequests">
+                <div ng-if="isActive('joinRequest')" ui-view></div>
+            </uib-tab>
+        </uib-tabset>
 
     </div>
 </div>
