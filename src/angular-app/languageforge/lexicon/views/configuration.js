@@ -6,7 +6,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
 
 // Configuration Controller
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService',
-  '$filter', '$modal', 'lexConfigService', 'utilService', 'lexSendReceive',
+  '$filter', '$uibModal', 'lexConfigService', 'utilService', 'lexSendReceive',
 function ($scope, notice, lexProjectService, sessionService,
           $filter, $modal, lexConfig, util, sendReceive) {
   var inputSystemSelected = true;
@@ -531,7 +531,7 @@ function ($scope, notice, lexProjectService, sessionService,
   $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes) {
     var modalInstance = $modal.open({
       templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
-      controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+      controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
         $scope.selected = {
           code: '',
           language: {}
@@ -571,7 +571,7 @@ function ($scope, notice, lexProjectService, sessionService,
 }])
 
 // Field Configuration Controller
-.controller('FieldConfigCtrl', ['$scope', '$modal', 'sessionService',
+.controller('FieldConfigCtrl', ['$scope', '$uibModal', 'sessionService',
 function ($scope, $modal, sessionService) {
   $scope.showAllFields = false;
 
@@ -624,7 +624,7 @@ function ($scope, $modal, sessionService) {
     var modalInstance = $modal.open({
       scope: $scope,
       templateUrl: '/angular-app/languageforge/lexicon/views/new-custom-field.html',
-      controller: ['$scope', '$filter', '$modalInstance',
+      controller: ['$scope', '$filter', '$uibModalInstance',
         function ($scope, $filter, $modalInstance) {
           $scope.selects = {};
           $scope.selects.level = {

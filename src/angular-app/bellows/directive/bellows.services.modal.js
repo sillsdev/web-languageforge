@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bellows.services')
-  .service('modalService', ['$modal', function ($modal) {
+  .service('modalService', ['$uibModal', function ($modal) {
     // Taken from http://weblogs.asp.net/dwahlin/archive/2013/09/18/building-an-angularjs-modal-service.aspx
     var modalDefaults = {
       backdrop: true,
@@ -55,7 +55,7 @@ angular.module('bellows.services')
       angular.extend(tempModalOptions, modalOptions, customModalOptions);
 
       if (!tempModalDefaults.controller) {
-        tempModalDefaults.controller = ['$scope', '$modalInstance',
+        tempModalDefaults.controller = ['$scope', '$uibModalInstance',
           function ($scope, $modalInstance) {
           $scope.modalOptions = tempModalOptions;
           $scope.modalOptions.ok = function (result) {

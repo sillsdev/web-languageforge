@@ -28,7 +28,7 @@
                                 <span class="input-group-addon ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'invalid'">
                                     <i id="projectCodeAlphanumeric" class="fa fa-times" title="Project Code must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores!" ></i>
                                 </span>
-                                <span class="input-group-addon alert-success ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'ok'">
+                                <span uib-alert class="input-group-addon" data-ng-class="'alert-success'" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'ok'">
                                     <i id="projectCodeOk" class="fa fa-check" title="Project Code is available!" ></i>
                                 </span>
                             </div>
