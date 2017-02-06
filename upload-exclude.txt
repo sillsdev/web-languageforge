@@ -2,3 +2,5 @@
 /assets/**
 /js/lib/languageforge.js
 /js/lib/scriptureforge.js
+/node/serverConfig.js
+/node/node_modules/

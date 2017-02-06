@@ -12,11 +12,11 @@ ShareDB.types.register(richText.type);
 var backend = new ShareDB({ db: database });
 var connection = backend.connect();
 
-var config = require('./serverConfig');
-var defaultKey = '/etc/letsencrypt/live/cat.languageforge.org/privKey.pem';
-var defaultCert = '/etc/letsencrypt/live/cat.languageforge.org/cert.pem';
-var sslKeyPath = config.sslKeyPath || defaultKey;
-var sslCertPath = config.sslCertPath || defaultCert;
+var config = (fs.existsSync('./serverConfig.js')) ? require('./serverConfig') : {};
+var defaultSslKey = '/etc/letsencrypt/live/cat.languageforge.org/privkey.pem';
+var defaultSslCert = '/etc/letsencrypt/live/cat.languageforge.org/cert.pem';
+var sslKeyPath = config.sslKeyPath || defaultSslKey;
+var sslCertPath = config.sslCertPath || defaultSslCert;
 var webSocketDocServerPort = 8443;
 var webSocketMessageServerPort = 8442;
 
@@ -98,7 +98,6 @@ function startServer() {
   var options = { key: privateKey, cert: certificate };
   var app = express();
   app.use(express.static('static'));
-  app.use(express.static('node_modules/quill/dist'));
   var docServer = https.createServer(options, app);
   var messageServer = https.createServer(options, app);
 

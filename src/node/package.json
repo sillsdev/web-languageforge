@@ -1,0 +1,16 @@
+{
+  "name": "xForgeRTDocClient",
+  "version": "0.1.0",
+  "description": "xForge Real-Time Doc Client - Languageforge and Scriptureforge",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "quill": "^1.0"
+  },
+  "devDependencies": {
+  }
+}

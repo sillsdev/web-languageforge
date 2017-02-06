@@ -13,8 +13,15 @@
     "url": "https://github.com/sillsdev/web-languageforge.git",
     "alternate-url": "https://github.com/sillsdev/web-scriptureforge.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.14.0",
+    "quill": "^1.0",
+    "rich-text": "^3.0.1",
+    "sharedb": "^1.0.0-beta",
     "sharedb-mongo": "1.0.0-beta",
+    "websocket-json-stream": "^0.0.1",
+    "ws": "^1.1.0"
+  },
   "devDependencies": {
     "async": "~1.4.2",
     "browserify": "^13.0.1",
