@@ -6,7 +6,7 @@
         <input class="form-control" type="text" ng-model="userFilter" placeholder="Member List Filter"/> <a ng-show="userFilter != ''" title="Clear Filter" ng-click="userFilter = ''"><i class="fa fa-times" style="color:gray"></i></a>
         </div>
     </form>
-    <div id="newMembersDiv" class=" new-item" data-collapse="!newUserCollapsed">
+    <div id="newMembersDiv" class=" new-item" uib-collapse="!newUserCollapsed">
         <form >
             <div class="form-control row">
         <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">

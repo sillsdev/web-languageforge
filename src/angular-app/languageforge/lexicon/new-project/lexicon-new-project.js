@@ -94,7 +94,7 @@ angular.module('lexicon-new-project',
       }]);
 
   }])
-  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$modal', '$window',
+  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$uibModal', '$window',
     'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate',
     '$state', 'Upload', 'lexProjectService', 'lexSendReceiveApi',  'lexSendReceive',
   function ($scope, $q, $filter, $modal, $window,
@@ -666,7 +666,7 @@ angular.module('lexicon-new-project',
     $scope.openNewLanguageModal = function openNewLanguageModal() {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
-        controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+        controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
           $scope.selected = {
             code: '',
             language: {}
