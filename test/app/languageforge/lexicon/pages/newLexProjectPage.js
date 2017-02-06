@@ -12,7 +12,7 @@ function NewLexProjectPage() {
 
   // form controls
   this.noticeList = element.all(by.repeater('notice in notices()'));
-  this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
+  this.firstNoticeCloseButton = this.noticeList.first().element(by.partialButtonText('×'));
   this.newLexProjectForm = element(by.tagName('form'));
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
   this.backButton = element(by.id('backButton'));
