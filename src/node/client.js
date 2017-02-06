@@ -1,8 +1,8 @@
 // used by Angular client
 require('quill');
-var sharedb = require('sharedb/lib/client');
+var ShareDB = require('sharedb/lib/client');
 var richText = require('rich-text');
-sharedb.types.register(richText.type);
+ShareDB.types.register(richText.type);
 
 function getWebSocketDocUrl() {
   var url = 'wss://' + window.location.host;
@@ -17,7 +17,7 @@ function getWebSocketMsgUrl() {
 // Open WebSocket connection to ShareDB server
 var socket = new WebSocket(getWebSocketDocUrl());
 var msgSocket = new WebSocket(getWebSocketMsgUrl());
-var connection = new sharedb.Connection(socket);
+var connection = new ShareDB.Connection(socket);
 var quillEditors = {};
 var docSubs = {};
 var onTextChanges = {};
@@ -47,14 +47,16 @@ function waitForConnection(callback) {
 }
 
 window.realTime = {};
-window.realTime.createAndSubscribeRichTextDoc = function createAndSubscribeRichTextDoc(id, quill) {
-  quillEditors[id] = quill;
-  if (!(id in docSubs)) {
-    sendServerMessage(JSON.stringify({
-      collection: 'collection', docId: id, initialValue: quill.getText()
-    }));
-  }
-};
+window.realTime.createAndSubscribeRichTextDoc =
+  function createAndSubscribeRichTextDoc(projectCollection, id, quill) {
+    projectCollection = projectCollection || 'collection';
+    quillEditors[id] = quill;
+    if (!(id in docSubs)) {
+      sendServerMessage(JSON.stringify({
+        collection: projectCollection, docId: id, initialValue: quill.getText()
+      }));
+    }
+  };
 
 function connectRichTextDoc(collection, id, quill) {
   if (!(id in docSubs)) {

@@ -13,7 +13,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     ;
   }])
   .controller('EditorCtrl', ['$scope', function ($scope) {
-    var currentFieldIds = [];
+    var currentDocIds = [];
     var editors = {};
     var source = {
       key: 'source',
@@ -27,29 +27,28 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.left = source;
     $scope.right = target;
 
-    $scope.getFieldId = function getFieldId(key) {
+    function docId(key) {
       return $scope.project.id + ':' + key;
-    };
+    }
 
     $scope.editorChanged = function editorChanged(editor, key, side) {
-      if (currentFieldIds[key] != $scope.getFieldId(key)) {
-        window.realTime.disconnectRichTextDoc(currentFieldIds[key]);
-        delete currentFieldIds[key];
+      if (currentDocIds[key] != docId(key)) {
+        window.realTime.disconnectRichTextDoc(currentDocIds[key]);
+        delete currentDocIds[key];
         $scope.editorCreated(editor, key, side);
       }
     };
 
     $scope.editorCreated = function editorCreated(editor, key, side) {
       editors[side] = editor;
-      var fieldId = $scope.getFieldId(key);
-      currentFieldIds[key] = fieldId;
-      window.realTime.createAndSubscribeRichTextDoc(fieldId, editor);
+      currentDocIds[key] = docId(key);
+      window.realTime.createAndSubscribeRichTextDoc($scope.project.slug, docId(key), editor);
     };
 
     $scope.swapEditors = function swapEditors() {
-      window.realTime.disconnectRichTextDoc(currentFieldIds[$scope.left.key]);
-      window.realTime.disconnectRichTextDoc(currentFieldIds[$scope.right.key]);
-      currentFieldIds = [];
+      window.realTime.disconnectRichTextDoc(currentDocIds[$scope.left.key]);
+      window.realTime.disconnectRichTextDoc(currentDocIds[$scope.right.key]);
+      currentDocIds = [];
 
       var newLeft = $scope.right;
       var newRight = $scope.left;

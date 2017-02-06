@@ -13,7 +13,7 @@
 </div>
 <div class="row">
     <div class="col-xs-6">
-        <ng-quill-editor id="{{getFieldId(left.key)}}"
+        <ng-quill-editor id="editorLeft"
             data-on-editor-created="editorCreated(editor, left.key, 'left')"
             data-on-content-changed="editorChanged(editor, left.key, 'left')"
             data-theme="bubble" data-ng-model="left.data"
@@ -21,7 +21,7 @@
             data-placeholder="&#8203;enter text here"></ng-quill-editor>
     </div>
     <div class="col-xs-6">
-        <ng-quill-editor id="{{getFieldId(right.key)}}"
+        <ng-quill-editor id="editorRight"
             data-on-editor-created="editorCreated(editor, right.key, 'right')"
             data-on-content-changed="editorChanged(editor, right.key, 'right')"
             data-theme="bubble" data-ng-model="right.data"

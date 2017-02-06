@@ -17,6 +17,7 @@ var defaultSslKey = '/etc/letsencrypt/live/cat.languageforge.org/privkey.pem';
 var defaultSslCert = '/etc/letsencrypt/live/cat.languageforge.org/cert.pem';
 var sslKeyPath = config.sslKeyPath || defaultSslKey;
 var sslCertPath = config.sslCertPath || defaultSslCert;
+var hostname = '0.0.0.0';
 var webSocketDocServerPort = 8443;
 var webSocketMessageServerPort = 8442;
 
@@ -131,13 +132,13 @@ function startServer() {
     }, 1500);
   });
 
-  docServer.listen(webSocketDocServerPort, function () {
-    console.log((new Date()) + ' Doc Server is listening on port ' + webSocketDocServerPort);
+  docServer.listen(webSocketDocServerPort, hostname, function () {
+    console.log('Doc Server is listening at https://' + hostname + ':' + webSocketDocServerPort);
   });
 
-  messageServer.listen(webSocketMessageServerPort, function () {
-    console.log((new Date()) + ' Message Server is listening on port ' +
-      webSocketMessageServerPort);
+  messageServer.listen(webSocketMessageServerPort, hostname, function () {
+    console.log(
+      'Message Server is listening at https://' + hostname + ':' + webSocketMessageServerPort);
   });
 }
 
