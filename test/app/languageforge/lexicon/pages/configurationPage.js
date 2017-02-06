@@ -26,7 +26,7 @@ function ConfigurationPage() {
   this.activePane = element(by.css('div.tab-pane.active'));
 
   this.getTabByName = function getTabByName(tabName) {
-    return element(by.css('div.tabbable ul.nav-tabs')).element(by.cssContainingText('a', tabName));
+    return element(by.className('uib-tab')).element(by.cssContainingText('a', tabName));
   };
 
   this.tabs = {
