@@ -163,4 +163,8 @@ function Utils() {
       /ERR_INTERNET_DISCONNECTED/.test(message);
   };
 
+  this.scrollTop = function () {
+    browser.executeScript('window.scroll(0,0)');
+  }
+
 }

@@ -109,6 +109,7 @@ function EditorPage() {
       // Only click the button if it will result in fields being shown
       this.toggleHiddenFieldsBtn.getText().then(function (text) {
         if (text == this.toggleHiddenFieldsBtnText.show) {
+          util.scrollTop();
           this.toggleHiddenFieldsBtn.click();
         }
       }.bind(this));
