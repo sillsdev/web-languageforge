@@ -29,7 +29,7 @@
                     </div>
                     <span data-ng-show="record.username.length > 0">
                         <div data-ng-show="usernameExists && signupForm.username.$pristine">
-                            <div uib-alert id="usernameExists" data-ng-class="'alert-danger'">
+                            <div class="alert alert-danger" id="usernameExists">
                                 {{translate="Someone already has that username.  Please try another."}}
                             </div>
                         </div>
@@ -48,12 +48,12 @@
                         </span>
                     </div>
                     <div data-ng-show="signupForm.email.$dirty && signupForm.$error.email">
-                        <div uib-alert data-ng-class="'alert-danger'">
+                        <div class="alert alert-danger">
                              {{translate="Please enter a valid email address.  An example of an email address: john@doe.com"}}
                         </div>
                     </div>
                     <div data-ng-show="!signupForm.$error.email && emailExists && signupForm.email.$pristine">
-                        <div uib-alert data-ng-class="'alert-danger'">
+                        <div class="alert alert-danger">
                              {{translate="This email is already associated with an existing account.  Please try another."}}
                         </div>
                     </div>

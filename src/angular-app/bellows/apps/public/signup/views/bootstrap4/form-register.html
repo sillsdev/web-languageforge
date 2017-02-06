@@ -22,7 +22,7 @@
                                disabled type="text" name="username"
                                placeholder="{{'pick a username' | translate}}"
                                data-ng-model="record.username"/>
-                        <span uib-alert class="input-group-addon" data-ng-class="'alert-success'" data-ng-show="usernameOk">
+                        <span class="input-group-addon alert-success" data-ng-show="usernameOk">
                             <i id="usernameOk" class="fa fa-check" title="User name is available!"></i>
                         </span>
                     </div>
@@ -36,7 +36,7 @@
                         <input class="form-control" id="email"
                                disabled type="email" name="email"
                                placeholder="{{'your email' | translate}}" data-ng-model="record.email"/>
-                        <span uib-alert class="input-group-addon" data-ng-class="'alert-success'" data-ng-show="!emailExists">
+                        <span class="input-group-addon alert-success" data-ng-show="!emailExists">
                             <i class="fa fa-check" id="emailOk" title="Email address is available!"></i>
                         </span>
                     </div>
@@ -62,7 +62,7 @@
                                    required type="text" name="visiblePassword"
                                    title="Passwords must be at least 7 characters"
                                    data-ng-model="record.password"/>
-                            <span uib-alert class="input-group-addon" data-ng-class="'alert-danger'" data-ng-show='record.password && record.password.length < 7'>
+                            <span class="input-group-addon alert-danger" data-ng-show='record.password && record.password.length < 7'>
                                 <i class="fa fa-warning" title="Passwords must be at least 7 characters!"></i>
                             </span>
                         </div>
@@ -86,7 +86,7 @@
                                    required type="password" name="password"
                                    title="Passwords must be at least 7 characters"
                                    data-ng-model="record.password"/>
-                            <span uib-alert class="input-group-addon" data-ng-class="'alert-danger'" data-ng-show='record.password && record.password.length < 7'>
+                            <span class="input-group-addon alert-danger" data-ng-show='record.password && record.password.length < 7'>
                                 <i class="fa fa-warning" title="Passwords must be at least 7 characters!"></i>
                             </span>
                         </div>
@@ -102,10 +102,10 @@
                                    data-ng-required="!showPassword"
                                    data-ng-disabled="showPassword"
                                    data-ng-model="confirmPassword"/>
-                            <span uib-alert class="input-group-addon" data-ng-class="'alert-danger'" data-ng-show='record.password && record.password != confirmPassword'>
+                            <span class="input-group-addon alert-danger" data-ng-show='record.password && record.password != confirmPassword'>
                                 <i class="fa fa-warning" title="Passwords do not match!"></i>
                             </span>
-                            <span uib-alert class="input-group-addon" data-ng-class="'alert-success'" data-ng-show='record.password && record.password == confirmPassword'>
+                            <span class="input-group-addon alert-success" data-ng-show='record.password && record.password == confirmPassword'>
                                 <i class="fa fa-check" title="Passwords match"></i>
                             </span>
                         </div>
