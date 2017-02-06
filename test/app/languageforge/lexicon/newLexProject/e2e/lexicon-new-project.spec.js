@@ -521,7 +521,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
     describe('Select Language modal', function () {
 
       it('can search, select and add language', function () {
-        var language = 'French';
+        var language = 'Spanish';
+        var foundLanguage = 'español';
 
         page.modal.selectLanguage.searchLanguageInput.sendKeys(language + protractor.Key.ENTER);
         expect(page.modal.selectLanguage.firstLanguageRow.isPresent()).toBe(true);
@@ -530,7 +531,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
         expect(page.modal.selectLanguage.addButton.isEnabled()).toBe(false);
         page.modal.selectLanguage.firstLanguageRow.click();
         expect(page.modal.selectLanguage.addButton.isEnabled()).toBe(true);
-        expect(page.modal.selectLanguage.addButton.getText()).toEqual('Add ' + language);
+        expect(page.modal.selectLanguage.addButton.getText()).toEqual('Add ' + foundLanguage);
 
         page.modal.selectLanguage.addButton.click();
         browser.wait(expectedCondition.stalenessOf(page.modal.selectLanguage.searchLanguageInput),
@@ -548,7 +549,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(editorPage.browse.noEntriesElem.isDisplayed()).toBe(true);
       editorPage.browse.noEntriesNewWordBtn.click();
       expect(editorPage.edit.getEntryCount()).toBe(1);
-      expect(editorPage.edit.getLexemesAsObject()).toEqual({ fr: '' });
+      expect(editorPage.edit.getLexemesAsObject()).toEqual({ es: '' });
     });
 
   });
