@@ -35,6 +35,8 @@
 //   'sass:watch'
 //   'build-composer'
 //   'build-bower'
+//   'build-node-bundle'
+//   'build-node-bundle-watch'
 //   'build-remove-test-fixtures'
 //   'build-minify'
 //   'build-changeGroup'
@@ -46,8 +48,6 @@
 //   'build-and-upload'
 //   'build-e2e'
 //   'build-php'
-//   'build-node'
-//   'build-node-watch'
 //   'markdown'
 //   'default'
 
@@ -692,6 +692,25 @@ gulp.task('build-bower', function (cb) {
 });
 
 // -------------------------------------
+//   Task: build-node-bundle
+// -------------------------------------
+gulp.task('build-node-bundle', function (cb) {
+  var options = {
+    dryRun: false,
+    debug: false
+  };
+  execute('node node_modules/browserify/bin/cmd.js src/node/client.js' +
+    ' -o src/node/static/dist/bundle.js', options, cb);
+});
+
+// -------------------------------------
+//   Task: build-node-bundle-watch
+// -------------------------------------
+gulp.task('build-node-bundle-watch', function () {
+  gulp.watch('src/node/**/client.js', gulp.series('build-node-bundle'));
+});
+
+// -------------------------------------
 //   Task: Build Remove test fixtures (directives) in HTML only on live build
 // -------------------------------------
 gulp.task('build-remove-test-fixtures', function (done) {
@@ -887,6 +906,7 @@ gulp.task('build',
     gulp.parallel(
       'build-composer',
       'build-bower',
+      'build-node-bundle',
       'build-version',
       'build-productionConfig',
       'build-clearLocalCache',
@@ -934,22 +954,6 @@ gulp.task('build-php',
 );
 gulp.task('build-php').description =
   'Build and Run PHP tests on CI server; Deploy to dev site';
-
-// -------------------------------------
-//   Task: build-node
-// -------------------------------------
-gulp.task('build-node', function (cb) {
-  var options = {
-    dryRun: false,
-    debug: false
-  };
-  execute('node node_modules/browserify/bin/cmd.js src/node/client.js' +
-    ' -o src/node/static/dist/bundle.js', options, cb);
-});
-
-gulp.task('build-node-watch', function () {
-  gulp.watch('src/node/**/client.js', gulp.series('build-node'));
-});
 
 gulp.task('build-php-coverage',
   gulp.series(
