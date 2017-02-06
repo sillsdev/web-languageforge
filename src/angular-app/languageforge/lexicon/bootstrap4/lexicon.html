@@ -6,8 +6,8 @@
             <div class="hdrnav-container">
                 <div class="btn-group" uib-dropdown data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.canEditUsers()">
                     <a class="btn btn-secondary" uib-dropdown-toggle data-ng-class="interfaceConfig.pullToSide"
-                       data-tooltip-placement="{{interfaceConfig.placementToSide}}"
-                       data-tooltip="Settings" href="#">
+                       tooltip-placement="{{interfaceConfig.placementToSide}}"
+                       uib-tooltip="Settings" href="#">
                         <i class="fa fa-cog"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="interfaceConfig.pullToSide">
@@ -24,8 +24,8 @@
                     </div>
                 </div>
                 <div class="pull-right return-button">
-                    <button class="btn btn-secondary" data-tooltip="View the dictionary"
-                            data-tooltip-placement="{{interfaceConfig.placementNormal}}"
+                    <button class="btn btn-secondary" uib-tooltip="View the dictionary"
+                            tooltip-placement="{{interfaceConfig.placementNormal}}"
                             data-ng-show="showDictionaryButton()"
                             data-ng-click="gotoDictionary()">
                         <i class="fa fa-arrow-circle-left"></i> {{'Dictionary' | translate}}
