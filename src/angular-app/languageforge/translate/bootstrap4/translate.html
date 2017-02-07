@@ -4,21 +4,20 @@
     <div class="hdrnav row">
         <div class="col-xs-12">
             <div class="hdrnav-container">
-                <div class="btn-group" data-ng-class="interfaceConfig.pullToSide" data-ng-show="true">
-                    <a class="btn btn-secondary dropdown-toggle" data-ng-class="interfaceConfig.pullToSide"
-                       data-toggle="dropdown"
-                       data-tooltip-placement="{{interfaceConfig.placementToSide}}"
-                       data-tooltip="Settings" href="#">
+                <div class="btn-group" uib-dropdown data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.canEditUsers()">
+                    <a class="btn btn-secondary" uib-dropdown-toggle data-ng-class="interfaceConfig.pullToSide"
+                       tooltip-placement="{{interfaceConfig.placementToSide}}"
+                       uib-tooltip="Settings" href="#">
                         <i class="fa fa-cog"></i>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right" data-ng-class="interfaceConfig.pullToSide">
-                        <a class="dropdown-item" ui-sref="settings-project" data-translate="Project Settings"></a>
+                    <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="interfaceConfig.pullToSide">
+                        <a class="dropdown-item" ui-sref="settings" data-translate="Project Settings"></a>
                         <a class="dropdown-item" data-ng-href="/app/usermanagement/{{project.id}}"
                            data-translate="User Management"></a>
                     </div>
                 </div>
                 <div class="pull-right return-button">
-                    <button class="btn btn-secondary" data-tooltip="View the translation"
+                    <button class="btn btn-secondary" uib-tooltip="View the translation"
                             data-tooltip-placement="{{interfaceConfig.placementNormal}}"
                             data-ng-show="showTranslationButton()"
                             data-ng-click="gotoTranslation()">

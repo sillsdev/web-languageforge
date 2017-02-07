@@ -1,74 +1,63 @@
 <div data-ng-cloak data-ng-controller="SettingsCtrl" id="translateAppSettingsView">
     <h2>{{project.projectName}} <span data-translate="Settings"></span></h2>
     <!-- <h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2> -->
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#settings-project" role="tab">{{'Project Properties' | translate}}</a>
-        </li>
-        <!-- Archive tab disabled now that project owners can delete their own projects -->
-        <li class="nav-item" data-ng-show="false">
-            <a class="nav-link disabled" data-toggle="tab" href="#settings-archive" role="tab">{{'Archive' | translate}}</a>
-        </li>
-        <li class="nav-item" data-ng-show="rights.remove">
-            <a class="nav-link" data-toggle="tab" href="#settings-delete" role="tab">{{'Delete' | translate}}</a>
-        </li>
-    </ul>
-
-    <!--Tab Content-->
-    <div class="tab-content">
-        <!--Project Settings-->
-        <div role="tabpanel" class="tab-pane fade in active" id="settings-project">
+    <uib-tabset>
+        <uib-tab heading="{{'Project Properties' | translate}}">
             <form class="well ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="updateProject()" style="">
-                <div class="form-group row">
-                    <label class="control-label col-xs-12" for="projName" data-translate="Project Name"></label>
-                    <div class="controls col-xs-12">
-                        <input id="projName" type="text" class="form-control" placeholder="project name" data-ng-model="project.projectName" />
+                <fieldset data-ng-disabled="!rights.remove">
+                    <div class="form-group row">
+                        <label class="control-label col-xs-12" for="projName" data-translate="Project Name"></label>
+                        <div class="controls col-xs-12">
+                            <input id="projName" type="text" class="form-control" placeholder="project name" data-ng-model="project.projectName" />
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label class="control-label col-xs-12" for="language" data-translate="Default Interface Language"></label>
-                    <div class="controls col-xs-12">
-                        <select class="form-control" id="language"
-                            data-ng-model="project.interfaceLanguageCode"
-                            data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder">
-                            <option value="">-- choose a language --</option>
-                        </select>
+                    <div class="form-group row">
+                        <label class="control-label col-xs-12" for="language" data-translate="Default Interface Language"></label>
+                        <div class="controls col-xs-12">
+                            <select class="form-control" id="language"
+                                data-ng-model="project.interfaceLanguageCode"
+                                data-ng-options="interfaceConfig.selectLanguages.options[code] for code in interfaceConfig.selectLanguages.optionsOrder">
+                                <option value="">-- choose a language --</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label class="control-label col-xs-12">{{'Project Code' | translate}}</label>
-                    <div class="controls col-xs-12">
-                        {{project.projectCode}}
+                    <div class="form-group row">
+                        <label class="control-label col-xs-12">{{'Project Code' | translate}}</label>
+                        <div class="controls col-xs-12">
+                            {{project.projectCode}}
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label class="control-label col-xs-12">{{'Project Owner' | translate}}</label>
-                    <div class="controls col-xs-12">
-                        {{project.ownerRef.username}}
+                    <div class="form-group row">
+                        <label class="control-label col-xs-12">{{'Project Owner' | translate}}</label>
+                        <div class="controls col-xs-12">
+                            {{project.ownerRef.username}}
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="controls col-xs-12">
-                        <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> {{'Featured On Website' | translate}}</label>
+                    <div class="form-group row">
+                        <div class="controls col-xs-12">
+                            <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> {{'Featured On Website' | translate}}</label>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="controls col-xs-12">
-                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> {{'Save' | translate}}</button>
+                    <div class="form-group row">
+                        <div class="controls col-xs-12">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> {{'Save' | translate}}</button>
+                        </div>
                     </div>
-                </div>
+                </fieldset>
             </form>
-        </div>
+        </uib-tab>
 
-    <!--Archive (Currently Inactive)-->
-        <div role="tabpanel" class="tab-pane fade" id="settings-archive">
-            <br><pui-archive-project pui-action-in-progress="actionInProgress">
-            </pui-archive-project><br><br>
-        </div>
-    <!--Delete-->
-        <div role="tabpanel" class="tab-pane fade" id="settings-delete">
-            <br><pui-delete-project></pui-delete-project><br><br>
-        </div>
-    </div>
-
+        <!-- Archive tab disabled now that project owners can delete their own projects -->
+        <uib-tab heading="{{'Archive' | translate}}" data-ng-show="false">
+            <form class="well">
+                <pui-archive-project pui-action-in-progress="actionInProgress">
+                </pui-archive-project>
+            </form>
+        </uib-tab>
+        <uib-tab heading="{{'Delete' | translate}}" data-ng-show="rights.remove">
+            <form class="well">
+                <pui-delete-project></pui-delete-project>
+            </form>
+        </uib-tab>
+    </uib-tabset>
 </div>
