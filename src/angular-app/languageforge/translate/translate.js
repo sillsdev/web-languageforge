@@ -17,6 +17,14 @@ angular.module('translate',
     function ($stateProvider, $urlRouterProvider, $translateProvider) {
       $urlRouterProvider.otherwise('/editor');
 
+      // State machine from ui.router
+      $stateProvider
+        .state('settings', {
+          url: '/settings',
+          templateUrl: '/angular-app/languageforge/translate/views/settings.html'
+        })
+      ;
+
       // configure interface language file path
       $translateProvider.useStaticFilesLoader({
         prefix: '/angular-app/languageforge/lexicon/lang/',
@@ -28,6 +36,12 @@ angular.module('translate',
   .controller('TranslateCtrl', ['$scope', '$location', 'sessionService',
     function ($scope, $location, sessionService) {
       $scope.project = sessionService.session.project;
+      $scope.rights = {
+        canEditUsers: function canEditUsers() {
+          return sessionService.hasProjectRight(sessionService.domain.USERS,
+            sessionService.operation.EDIT);
+        }
+      };
 
       // $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
       $scope.interfaceConfig = {};
