@@ -9,7 +9,7 @@
     <!-- more control -->
     <div class="control-group" data-ng-hide="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullToSide">
         <div data-ng-show="hasAudio()">
-            <div class="btn-group" data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()">
+            <div class="btn-group" uib-dropdown data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()">
                 <a class="btn btn-default dropdown-toggle" uib-dropdown-toggle
                     data-ng-class="dcControl.interfaceConfig.pullToSide">
                     <span class="caret"></span></a>
