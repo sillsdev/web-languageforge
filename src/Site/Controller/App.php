@@ -66,9 +66,9 @@ class App extends Base
             iterator_count(new \FilesystemIterator($helpsFolder, \FilesystemIterator::SKIP_DOTS)) > 0
         ) {
             $this->_showHelp = true;
-            // there is an implicit dependency on bellows JS here using the jsonRpc module
-            $this->addJavascriptFiles(NG_BASE_FOLDER . 'container/js', array('vendor/', 'assets/'));
         }
+        // there is an implicit dependency on bellows JS here using the jsonRpc module
+        $this->addJavascriptFiles(NG_BASE_FOLDER . 'container/js', array('vendor/', 'assets/'));
 
         // Other session data
         $this->data['jsonSession'] = json_encode(SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $appName), JSON_UNESCAPED_SLASHES);
@@ -269,29 +269,31 @@ class AppModel {
         // replace "appName" with the name of the angular app that has been migrated to bootstrap 4
         // Note that this will affect both the angular app and the app frame
 
-        $sharedAppsInBoostrap4 = array("sharedApp1", "sharedApp2");
+        $sharedAppsInBoostrap4 = array(
+            "activity",
+            "changepassword",
+            "forgot_password",
+            "login",
+            "projects",
+            "reset_password",
+            "signup",
+            "siteadmin",
+            "usermanagement",
+            "userprofile"
+        );
 
         $siteAppsInBootstrap4 = array(
             "scriptureforge" => array("appName"),
             "languageforge" => array(
-                "login",
                 "rapid-words",
-                "userprofile",
-                "changepassword",
-                "forgot_password",
-                "activity",
-                "projects",
-                "signup",
-                "lexicon",
-                "siteadmin",
-                "usermanagement"
+                "lexicon"
             ),
             "waaqwiinaagiwritings" => array(),
             "jamaicanpsalms.scriptureforge" => array(),
             "demo.scriptureforge" => array(),
         );
 
-        $siteLookup = preg_replace('/^(dev\.)?(\S+)\.(org|local|com)$/', '$2', $website->domain);
+        $siteLookup = preg_replace('/^(dev|e2etest)?(\.)?(\S+)\.(org|local|com)$/', '$3', $website->domain);
 
         if (in_array($appName, $sharedAppsInBoostrap4)) {
             return true;
