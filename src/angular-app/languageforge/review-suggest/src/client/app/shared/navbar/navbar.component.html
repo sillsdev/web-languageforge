@@ -1,0 +1,19 @@
+<nav class="deep-purple">
+    <div class="nav-wrapper">
+      <a href="/" class="brand-logo">{{title}}</a>
+      <a href="#" data-activates="nav-mobile" class="button-collapse" materialize="sideNav" [materializeParams]="[{menuWidth: 300,edge: 'left', closeOnClick: true, draggable: true}]"><i class="material-icons">menu</i>
+      </a>
+      <ul class="right hide-on-med-and-down">
+        <li routerLinkActive="active"><a routerLink="/auth">Logon</a></li>
+        <li routerLinkActive="active"><a routerLink="/dashboard">Dashboard</a></li>
+        <li routerLinkActive="active"><a routerLink="/definition">Definition</a></li>
+        <li><a (click)="logout()">Logout</a></li>
+      </ul>
+      <ul id="nav-mobile" class="side-nav">
+        <li routerLinkActive="active"><a routerLink="/auth">Logon</a></li>
+        <li routerLinkActive="active"><a routerLink="/dashboard">Dashboard</a></li>
+        <li routerLinkActive="active"><a routerLink="/definition">Definition</a></li>
+        <li><a (click)="logout()">Logout</a></li>
+      </ul>
+    </div>
+  </nav>

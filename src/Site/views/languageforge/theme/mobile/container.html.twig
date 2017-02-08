@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    {% if isBootstrap4 %}
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+    {% endif %}
+
+    <title>{{ app.website.name }}</title>
+
+</head>
+
+<body>
+{% block header %}{% endblock %}
+{% block content %}{% endblock %}
+{% block script %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block analytics %}{% endblock %}
+</body>
+</html>

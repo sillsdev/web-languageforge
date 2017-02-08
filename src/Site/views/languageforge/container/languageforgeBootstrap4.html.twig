@@ -1,12 +1,15 @@
 {% extends 'container.html.twig' %}
 
 {% block header %}
-    <nav class="navbar navbar-fixed-top navbar-dark" style="background-color: #104060">
-        <a class="navbar-brand" href="/">Language Forge
+    <nav class="navbar navbar-toggleable-xs navbar-dark" style="background-color: #104060">
+      <a class="navbar-brand hidden-sm-down" href="/">Language Forge
             {% if app.website.domain == "languageforge.local" %} (Bootstrap 4){% endif %}
         </a>
-
-        <ul class="nav navbar-nav float-sm-right">
+        <button class="navbar-toggler hidden-md-up pull-left" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+ <div class="collapse navbar-toggleable-sm pull-right" id="navbarNavDropdown">
+        <ul class="nav navbar-nav">
             {% if isLoggedIn %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="supportedContentDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Projects</a>
@@ -37,22 +40,24 @@
                 </li>
             {% endif %}
         </ul>
+      </div>
     </nav>
 {% endblock %}
 
 {% block footer %}
-    <footer class="footer">
+    <footer class="footer" >
         <div class="container">
             <div class="row">
-                <div class="col-xs">
-                    <a href="http://ic.payap.ac.th/"><img src="/Site/views/shared/image/payap_logo.png" alt="Payap University Logo" width="170" height="50" style="margin-top: 5px; margin-right: 20px; float: left;" /></a>
+                <div class="col-xs-12 text-xs-center footerimages">
+                    <a href="http://ic.payap.ac.th/"><img src="/Site/views/shared/image/payap_logo.png" alt="Payap University Logo" width="170" height="50" /></a>
                     <a href="http://www.sil.org"><img src="/Site/views/shared/image/sil_logo_small.png" alt="SIL International Logo" width="50" height="60" /></a>
-                    <span style="color: #404040"><small>v {{ version }}</small></span>
-                    <span>
-                        Copyright {{ "now"|date("Y") }} <a href="http://www.sil.org">SIL International</a>. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.
-                    </span>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-xs-12 text-xs-center">   
+                        Copyright {{ "now"|date("Y") }} <a href="http://www.sil.org" class="links">SIL International</a>. Use of this site is governed by our <a href="/terms_and_conditions" class="links">terms and conditions</a> of use. 
+                </div>
+
         </div>
     </footer>
 {% endblock %}

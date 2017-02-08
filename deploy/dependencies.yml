@@ -232,6 +232,7 @@
       with_items:
         - "default.local"
         - "languageforge.local"
+        - "m.languageforge.local"
         - "scriptureforge.local"
         - "jamaicanpsalms.scriptureforge.local"
         - "demo.scriptureforge.local"
