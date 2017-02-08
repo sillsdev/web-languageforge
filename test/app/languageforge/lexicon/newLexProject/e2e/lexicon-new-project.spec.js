@@ -96,7 +96,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);
       expect(page.srCredentialsPage.projectSelect().isPresent()).toBe(false);
-      page.formStatus.expectContainsError('The username or password isn\'t valid on LanguageDepot.org.');
+      page.formStatus.expectContainsError(
+        'The username or password isn\'t valid on LanguageDepot.org.');
     });
 
     it('can go back to Chooser page, user and pass preserved', function () {
@@ -521,17 +522,16 @@ describe('E2E testing: New Lex Project wizard app', function () {
     describe('Select Language modal', function () {
 
       it('can search, select and add language', function () {
-        var language = 'Spanish';
-        var foundLanguage = 'español';
-
-        page.modal.selectLanguage.searchLanguageInput.sendKeys(language + protractor.Key.ENTER);
+        page.modal.selectLanguage.searchLanguageInput.sendKeys(
+          constants.searchLanguage + protractor.Key.ENTER);
         expect(page.modal.selectLanguage.firstLanguageRow.isPresent()).toBe(true);
 
         expect(page.modal.selectLanguage.addButton.isPresent()).toBe(true);
         expect(page.modal.selectLanguage.addButton.isEnabled()).toBe(false);
         page.modal.selectLanguage.firstLanguageRow.click();
         expect(page.modal.selectLanguage.addButton.isEnabled()).toBe(true);
-        expect(page.modal.selectLanguage.addButton.getText()).toEqual('Add ' + foundLanguage);
+        expect(page.modal.selectLanguage.addButton.getText()).toEqual(
+          'Add ' + constants.foundLanguage);
 
         page.modal.selectLanguage.addButton.click();
         browser.wait(expectedCondition.stalenessOf(page.modal.selectLanguage.searchLanguageInput),
