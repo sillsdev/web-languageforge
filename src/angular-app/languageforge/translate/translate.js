@@ -33,14 +33,12 @@ angular.module('translate',
       $translateProvider.preferredLanguage('en');
       $translateProvider.useSanitizeValueStrategy('escape');
     }])
-  .controller('TranslateCtrl', ['$scope', '$location', 'sessionService',
-    function ($scope, $location, sessionService) {
+  .controller('TranslateCtrl', ['$scope', '$location', 'sessionService', 'translateRightsService',
+    function ($scope, $location, sessionService, rights) {
       $scope.project = sessionService.session.project;
-      $scope.rights = {
-        canEditUsers: function canEditUsers() {
-          return sessionService.hasProjectRight(sessionService.domain.USERS,
-            sessionService.operation.EDIT);
-        }
+      $scope.rights = rights;
+      $scope.rights.showSettingsDropdown = function showSettingsDropdown() {
+        return $scope.rights.canEditProject() || $scope.rights.canEditUsers();
       };
 
       // $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
