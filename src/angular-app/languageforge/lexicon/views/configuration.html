@@ -14,7 +14,7 @@
         <div class="row outer-flex">
 
         <!-- Left column: field list -->
-        <div class="span3 control-group">
+        <div class="col-md-3 control-group">
             <!-- control buttons -->
             <div class="control-group">
                 <button data-ng-click="showAllFields = ! showAllFields" class="btn btn-small">{{showAllFields ? 'Show Only Common Fields' : 'Show All Fields' | translate}}</button>
@@ -60,7 +60,7 @@
         </div>
 
         <!-- Right column: field setup -->
-        <div class="span9">
+        <div class="col-md-9">
             <!-- control buttons -->
             <div class="control-group" style="height: 30px">
                 <button class="btn" data-ng-click="removeSelectedCustomField()"
@@ -115,7 +115,7 @@
                 <div data-ng-if="fieldConfigItemExists('inputSystems')">
                     <hr />
                     <div class="row outer-flex control-group" data-ng-show="editInputSystems.collapsed">
-                        <div class="span3 picklists">
+                        <div class="col-md-3 picklists">
                             <label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
                             <ul class="unstyled indent1"  id="inputSystem">
                                 <li data-ng-click="currentField.inputSystems.tag = inputSystemTag"
@@ -164,7 +164,7 @@ configDirty.entry {{configDirty.entry | json}}
 
         <!-- Left column: task list -->
         <!-- hide Tasks tab
-        <div class="span3 control-group">
+        <div class="col-md-3 control-group">
             <dl class="picklists">
                 <dt data-translate="Dashboard"></dt>
                 <dd><div class="controls">
@@ -242,7 +242,7 @@ configDirty.entry {{configDirty.entry | json}}
 
         <!-- Right column: task setup -->
         <!-- hide Tasks tab
-        <div class="span9">
+        <div class="col-md-9">
             <div class="well" data-ng-show="currentTaskName == 'dashboard'">
                 <h3 data-translate="Dashboard"></h3>
                 <div class="control-group">
@@ -314,7 +314,7 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
             <div class="row outer-flex">
 
                 <!-- Left column: task list -->
-                <div class="span3 control-group">
+                <div class="col-md-3 control-group">
                     <dl class="picklists">
                         <dt data-translate="Select a list" id="editListValuesFieldset"></dt>
                         <dd>
@@ -328,7 +328,7 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
                 </div>
 
                 <!-- Right column: task setup -->
-                <div class="span9">
+                <div class="col-md-9">
                     <div class="well" id="picklistEditorFieldset">
                         <h3 class="control-label">{{optionlistDirty[currentListIndex].name}}</h3>
                         <div class="controls">
