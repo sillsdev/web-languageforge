@@ -46,7 +46,7 @@ function ConfigurationPage() {
       remove:     this.tabDivs.first().element(by.className('fa fa-times'))
     },
     getLanguageByName: function getLanguageByName(languageName) {
-      return element(by.css('div.tab-pane.active div.span3 dl.picklists'))
+      return element(by.css('div.tab-pane.active div.col-md-3 dl.picklists'))
         .element(by.cssContainingText('div[data-ng-repeat] span', languageName));
     },
 
@@ -105,7 +105,7 @@ function ConfigurationPage() {
   this.exampleFields = this.activePane.all(by.repeater('fieldName in fieldOrder.examples'));
 
   this.getFieldByName = function getFieldByName(fieldName) {
-    return element(by.css('div.tab-pane.active > div > div > div.span3 dl.picklists'))
+    return element(by.css('div.tab-pane.active > div > div > div.col-md-3 dl.picklists'))
       .element(by.cssContainingText('div[data-ng-repeat] > span', fieldName));
   };
 
