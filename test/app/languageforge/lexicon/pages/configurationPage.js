@@ -4,6 +4,7 @@ module.exports = new ConfigurationPage();
 
 function ConfigurationPage() {
   var modal = require('./lexModals.js');
+  var util = require('../../../bellows/pages/util.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
@@ -13,9 +14,8 @@ function ConfigurationPage() {
   this.settingsMenuLink = element(by.className('fa-cog'));
   this.configurationLink = element(by.linkText('Configuration'));
   this.get = function get() {
-    browser.wait(expectedCondition.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
+    util.scrollTop();
     this.settingsMenuLink.click();
-    browser.wait(expectedCondition.visibilityOf(this.configurationLink), CONDITION_TIMEOUT);
     this.configurationLink.click();
   };
 
@@ -26,7 +26,7 @@ function ConfigurationPage() {
   this.activePane = element(by.css('div.tab-pane.active'));
 
   this.getTabByName = function getTabByName(tabName) {
-    return element(by.className('uib-tab')).element(by.cssContainingText('a', tabName));
+    return element(by.cssContainingText('.uib-tab a', tabName));
   };
 
   this.tabs = {
