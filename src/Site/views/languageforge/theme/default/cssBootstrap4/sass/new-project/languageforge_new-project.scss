@@ -61,38 +61,3 @@ a{
 .centerBlock {
   margin: auto;
 }
-
-/* Taken from Bootstrap4-alpha6. TODO Remove after Bootstrap upgrade to alpha6 or later */
-.no-gutters {
-  // disabled because they conflict with a preexisting fix that used negative margins
-  // margin-right: 0;
-  // margin-left: 0;
-
-  > .col,
-  > [class*="col-"] {
-    padding-right: 0;
-    padding-left: 0;
-  }
-}
-
-pui-select-language {
-
-  td div {
-    height: 1.5rem;
-    overflow: hidden;
-  }
-
-}
-
-.modal {
-  display: flex;
-  flex-flow: column;
-}
-
-.modal-body {
-  max-height: initial;
-}
-
-table.language-picker tr {
-  cursor: pointer;
-}

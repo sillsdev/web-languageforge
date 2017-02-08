@@ -6805,12 +6805,25 @@ body {
   left: 0;
   z-index: 1050;
   display: block;
-  width: 80%;
-  height: 75%;
   margin: auto;
   overflow: hidden;
-  outline: 0;
-  background-color: white; }
+  outline: 0; }
+
+.modal-dialog {
+  width: 80%;
+  height: 75%;
+  background-color: white;
+  max-width: unset;
+  margin-top: auto;
+  margin-bottom: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+
+.modal-content {
+  height: 100%; }
 
 .modal-body {
   position: relative;
@@ -6893,3 +6906,22 @@ nav {
 @media (max-width: 500px) {
   .filter-list {
     float: left; } }
+
+.language-picker {
+  height: 100%;
+  display: flex;
+  flex-flow: column; }
+  .language-picker pui-select-language table tr {
+    cursor: pointer; }
+  .language-picker pui-select-language td div {
+    height: 1.5rem;
+    overflow: hidden; }
+  .language-picker .modal-body {
+    max-height: initial;
+    flex: 2; }
+
+/* Taken from Bootstrap4-alpha6. TODO Remove after Bootstrap upgrade to alpha6 or later */
+.no-gutters > .col,
+.no-gutters > [class*="col-"] {
+  padding-right: 0;
+  padding-left: 0; }

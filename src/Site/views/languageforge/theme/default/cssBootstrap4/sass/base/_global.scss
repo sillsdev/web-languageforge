@@ -66,12 +66,27 @@ body{
   left: 0;
   z-index: 1050;
   display: block;
-  width: 80%;
-  height: 75%;
   margin: auto;
   overflow: hidden;
   outline: 0;
+}
+
+.modal-dialog {
+  width: 80%;
+  height: 75%;
   background-color: white;
+  max-width: unset;
+  margin-top: auto;
+  margin-bottom: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.modal-content {
+  height: 100%;
 }
 
 .modal-body {
@@ -175,4 +190,40 @@ nav {
  .filter-list {
   float: left;
 }
+}
+
+.language-picker {
+
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+
+  pui-select-language {
+    table tr {
+      cursor: pointer;
+    }
+
+    td div {
+      height: 1.5rem;
+      overflow: hidden;
+    }
+  }
+
+  .modal-body {
+    max-height: initial;
+    flex: 2;
+  }
+}
+
+/* Taken from Bootstrap4-alpha6. TODO Remove after Bootstrap upgrade to alpha6 or later */
+.no-gutters {
+  // disabled because they conflict with a preexisting fix that used negative margins
+  // margin-right: 0;
+  // margin-left: 0;
+
+  > .col,
+  > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
 }
