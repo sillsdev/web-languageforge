@@ -40,7 +40,7 @@ function EditorPage() {
   };
 
   this.noticeList = element.all(by.repeater('notice in notices()'));
-  this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
+  this.firstNoticeCloseButton = this.noticeList.first().element(by.partialButtonText('×'));
 
   this.browseDiv = element(by.id('lexAppListView'));
   this.editDiv = element(by.id('lexAppEditView'));
@@ -82,7 +82,8 @@ function EditorPage() {
     // Entries list (main body of view)
     entriesList: this.browseDiv.all(by.repeater('entry in visibleEntries track by entry.id')),
     findEntryByLexeme: function (lexeme) {
-      browser.wait(expectedCondition.visibilityOf(element(by.id('lexAppListView'))), CONDITION_TIMEOUT);
+      browser.wait(expectedCondition.visibilityOf(
+        element(by.id('lexAppListView'))), CONDITION_TIMEOUT);
       return this.entriesList.filter(function (row) {
         return row.element(by.binding('entry.word')).getText().then(function (word) {
           return (word.indexOf(lexeme) > -1);
