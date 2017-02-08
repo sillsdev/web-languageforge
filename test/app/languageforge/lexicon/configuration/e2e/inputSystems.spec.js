@@ -214,6 +214,7 @@ describe('Configuration Input Systems', function () {
 
   it('can not add unspecified Variant', function () {
     expect(configPage.noticeList.count()).toBe(0);
+    util.scrollTop();
     configPage.applyButton.click();
     expect(configPage.noticeList.count()).toBe(1);
     expect(configPage.noticeList.get(0).getText())
@@ -251,6 +252,7 @@ describe('Configuration Input Systems', function () {
   });
 
   it('can add IPA variation', function () {
+    util.scrollTop();
     configPage.inputSystemsTab.moreButton.click();
     configPage.inputSystemsTab.moreButtonGroup.addIpa.click();
     expect(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed()).toBe(true);
