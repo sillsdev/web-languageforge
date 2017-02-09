@@ -6797,7 +6797,7 @@ body {
 .newline {
   display: block; }
 
-.modal {
+.modal-select-language .modal {
   position: fixed;
   top: 0;
   right: 0;
@@ -6809,7 +6809,7 @@ body {
   overflow: hidden;
   outline: 0; }
 
-.modal-dialog {
+.modal-select-language .modal-dialog {
   width: 80%;
   height: 75%;
   background-color: white;
@@ -6822,10 +6822,23 @@ body {
   left: 0;
   right: 0; }
 
-.modal-content {
+.modal-select-language .modal-content {
+  height: 100%;
+  display: flex;
+  flex-flow: column; }
+  .modal-select-language .modal-content pui-select-language table tr {
+    cursor: pointer; }
+  .modal-select-language .modal-content pui-select-language td div {
+    height: 1.5rem;
+    overflow: hidden; }
+  .modal-select-language .modal-content .modal-body {
+    max-height: initial;
+    flex: 2; }
+
+.modal-select-language .modal-content {
   height: 100%; }
 
-.modal-body {
+.modal-select-language .modal-body {
   position: relative;
   max-height: 400px;
   padding: 15px;
@@ -6841,7 +6854,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 9999;
+  z-index: 1000;
   width: 100%;
   height: 50px;
   background-color: #104060; }
@@ -6906,19 +6919,6 @@ nav {
 @media (max-width: 500px) {
   .filter-list {
     float: left; } }
-
-.language-picker {
-  height: 100%;
-  display: flex;
-  flex-flow: column; }
-  .language-picker pui-select-language table tr {
-    cursor: pointer; }
-  .language-picker pui-select-language td div {
-    height: 1.5rem;
-    overflow: hidden; }
-  .language-picker .modal-body {
-    max-height: initial;
-    flex: 2; }
 
 /* Taken from Bootstrap4-alpha6. TODO Remove after Bootstrap upgrade to alpha6 or later */
 .no-gutters > .col,
