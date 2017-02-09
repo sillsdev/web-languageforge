@@ -1,0 +1,144 @@
+<fieldset>
+    <div class="text-xs-center">
+        <ul id="progress-indicator">
+            <li><i class="fa fa-square-o"></i>
+                <span>{{'Register' | translate}}</span></li>
+            <li>&gt;</li>
+            <li><i class="fa fa-square-o muted"></i>
+                <span>{{'Validate' | translate}}</span></li>
+            <li>&gt;</li>
+            <li><i class="fa fa-square-o muted"></i>
+                <span>{{'Login' | translate}}</span></li>
+        </ul>
+        <h3 translate="Register your details..."></h3>
+    </div>
+    <div class="card card-default">
+        <div class="card-block">
+            <div class="form-group row">
+                <label class="control-label col-md-4 text-md-right" for="username" translate="Username"></label>
+                <div class="controls col-md-8">
+                    <div class="input-group">
+                        <input class="form-control" id="username"
+                               disabled type="text" name="username"
+                               placeholder="{{'pick a username' | translate}}"
+                               data-ng-model="record.username"/>
+                        <span class="input-group-addon alert-success" data-ng-show="usernameOk">
+                            <i id="usernameOk" class="fa fa-check" title="User name is available!"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="control-label col-md-4 text-md-right" for="email" translate="Email"></label>
+                <div class="controls col-md-8">
+                    <div class="input-group">
+                        <input class="form-control" id="email"
+                               disabled type="email" name="email"
+                               placeholder="{{'your email' | translate}}" data-ng-model="record.email"/>
+                        <span class="input-group-addon alert-success" data-ng-show="!emailExists">
+                            <i class="fa fa-check" id="emailOk" title="Email address is available!"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-4 text-md-right" for="name" translate="Name"></label>
+                <div class="controls col-md-8">
+                    <div class="input-group">
+                        <input class="form-control" id="name" autofocus
+                               required type="text" name="name"
+                               placeholder="{{'your name' | translate}}"
+                               data-ng-model="record.name"/>
+                    </div>
+                </div>
+            </div>
+            <div data-ng-show="showPassword">
+                <div class="form-group row">
+                    <label class="control-label col-md-4 text-md-right" for="visiblePassword" translate="Password"></label>
+                    <div class="controls col-md-8">
+                        <div class="input-group">
+                            <input class="form-control" id="visiblePassword"
+                                   required type="text" name="visiblePassword"
+                                   title="Passwords must be at least 7 characters"
+                                   data-ng-model="record.password"/>
+                            <span class="input-group-addon alert-danger" data-ng-show='record.password && record.password.length < 7'>
+                                <i class="fa fa-warning" title="Passwords must be at least 7 characters!"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="control-label col-md-4 text-md-right muted" for="disabledConfirm" translate="Confirm Password"></label>
+                    <div class="controls col-md-8">
+                        <div class="input-group">
+                            <input class="form-control" id="disabledConfirm" disabled type="text"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-ng-hide="showPassword">
+                <div class="form-group row">
+                    <label class="control-label col-md-4 text-md-right" for="password" translate="Password"></label>
+                    <div class="controls col-md-8">
+                        <div class="input-group">
+                            <input class="form-control" id="password"
+                                   required type="password" name="password"
+                                   title="Passwords must be at least 7 characters"
+                                   data-ng-model="record.password"/>
+                            <span class="input-group-addon alert-danger" data-ng-show='record.password && record.password.length < 7'>
+                                <i class="fa fa-warning" title="Passwords must be at least 7 characters!"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="control-label col-md-4 text-md-right" for="confirmPassword" translate="Confirm Password"></label>
+                    <div class="controls col-md-8">
+                        <div class="input-group">
+                            <input class="form-control" id="confirmPassword"
+                                   type="password" name="confirmPassword"
+                                   title="Passwords must be at least 7 characters"
+                                   data-ng-required="!showPassword"
+                                   data-ng-disabled="showPassword"
+                                   data-ng-model="confirmPassword"/>
+                            <span class="input-group-addon alert-danger" data-ng-show='record.password && record.password != confirmPassword'>
+                                <i class="fa fa-warning" title="Passwords do not match!"></i>
+                            </span>
+                            <span class="input-group-addon alert-success" data-ng-show='record.password && record.password == confirmPassword'>
+                                <i class="fa fa-check" title="Passwords match"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="controls col-md-8 offset-md-4">
+                    <label class="checkbox"><input type="checkbox" data-ng-model="showPassword"/> {{'Show password' |
+                        translate}}</label>
+                </div>
+            </div>
+            <div class="form-group form-group-last row">
+                <div class="controls col-md-8 offset-md-4">
+                    <pui-captcha data-pui-items="captchaData.items" data-pui-expected-item-name="captchaData.expectedItemName"
+                         data-pui-selected="record.captcha"></pui-captcha>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <a class="btn btn-secondary pull-left" data-ui-sref="form.identify" id="back">
+            <i class="fa fa-arrow-circle-left"></i>
+            {{'Back' | translate}}</a>
+        <button class="btn btn-primary pull-right" type="submit" id="submit"
+                data-ng-disabled="submissionInProgress || signupForm.$invalid || (!showPassword && record.password != confirmPassword) || record.password.length < 7">
+            {{'Sign Up' | translate}}
+            <span data-ng-show="submissionInProgress">
+                <i class="fa fa-spinner fa-spin"></i>
+            </span>
+            <span data-ng-show="!submissionInProgress">
+                <i class="fa fa-thumbs-o-up"></i>
+            </span>
+        </button>
+    </div>
+</fieldset>

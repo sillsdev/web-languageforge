@@ -181,7 +181,7 @@ $fourthProjectModel->write();
 $srProject = array(
     'identifier' => $constants['srIdentifier'],
     'name' => $constants['srName'],
-    'repository' => 'http://public.languagedepot.org',
+    'repository' => 'https://public.languagedepot.org',
     'role' => 'manager'
 );
 $srTestProjectId = ProjectCommands::createProject(

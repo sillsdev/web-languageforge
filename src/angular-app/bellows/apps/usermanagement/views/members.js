@@ -84,9 +84,9 @@ angular.module('usermanagement.members',
        * ---------------------------------------------------------- */
       $scope.users = [];
       $scope.addModes = {
-        addNew: { en: 'Create New User', icon: 'icon-user' },
-        addExisting: { en: 'Add Existing User', icon: 'icon-user' },
-        invite: { en: 'Send Email Invite', icon: 'icon-envelope' }
+        addNew: { en: 'Create New User', icon: 'fa fa-user' },
+        addExisting: { en: 'Add Existing User', icon: 'fa fa-user' },
+        invite: { en: 'Send Email Invite', icon: 'fa fa-envelope' }
       };
       $scope.addMode = 'addNew';
       $scope.disableAddButton = true;

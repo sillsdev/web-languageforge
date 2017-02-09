@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    {% if isBootstrap4 %}
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+    {% endif %}
+
+    <title>{{ app.website.name }}</title>
+
+    {% for cssFile in cssFiles %}
+        <link rel=stylesheet href="/{{ cssFile }}" />
+    {% endfor %}
+
+    {% for cssFile in vendorFilesCss %}
+        <link rel=stylesheet href="/{{ cssFile }}" />
+    {% endfor %}
+
+    <link rel="icon" href="/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico" type="image/x-icon" />
+
+    <!-- jquery must be the first js to be loaded -->
+    {%  if useMinifiedJs %}
+        <script src="/vendor_bower/jquery/dist/jquery.min.js"></script>
+        <script src="/vendor_bower/angular/angular.min.js"></script>
+        <script src="/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    {%  else %}
+        <script src="/vendor_bower/jquery/dist/jquery.js"></script>
+        <script src="/vendor_bower/angular/angular.js"></script>
+        <script src="/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    {% endif %}
+    <script src="/Site/views/shared/container/xforge.helpButton.js"></script>
+    <script src="/Site/views/shared/container/xforge.navbarApp.js"></script>
+</head>
+
+<body>
+{% block header %}{% endblock %}
+{% block content %}{% endblock %}
+{% block script %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block analytics %}{% endblock %}
+</body>
+</html>
