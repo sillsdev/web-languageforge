@@ -674,7 +674,8 @@ angular.module('lexicon-new-project',
           $scope.add = function () {
             $modalInstance.close($scope.selected);
           };
-        }]
+        }],
+        windowTopClass: 'modal-select-language'
       });
       modalInstance.result.then(function (selected) {
         $scope.newProject.languageCode = selected.code;
