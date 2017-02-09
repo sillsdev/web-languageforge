@@ -541,7 +541,8 @@ function ($scope, notice, lexProjectService, sessionService,
         };
 
         $scope.suggestedLanguageCodes = suggestedLanguageCodes;
-      }]
+      }],
+      windowTopClass: 'modal-select-language'
     });
 
     modalInstance.result.then(function (selected) {
