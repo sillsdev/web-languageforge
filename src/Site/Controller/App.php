@@ -67,8 +67,6 @@ class App extends Base
         ) {
             $this->_showHelp = true;
         }
-        // there is an implicit dependency on bellows JS here using the jsonRpc module
-        $this->addJavascriptFiles(NG_BASE_FOLDER . 'container/js', array('vendor/', 'assets/'));
 
         // Other session data
         $this->data['jsonSession'] = json_encode(SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $appName), JSON_UNESCAPED_SLASHES);

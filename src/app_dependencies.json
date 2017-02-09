@@ -9,7 +9,6 @@
   "rangy": { "path": "vendor_bower/rangy", "jsFile": ["rangy-core", "rangy-selectionsaverestore", "rangy-highlighter", "rangy-classapplier", "rangy-serializer", "rangy-textrange"] },
   "textAngular": { "path": "vendor_bower/textAngular/dist", "jsFile": ["textAngular-sanitize", "textAngularSetup", "textAngular"], "jsMinFile": ["textAngular-sanitize", "textAngular"], "cssFile": "textAngular" },
   "angular-truncate-2": { "path": "vendor_bower/angular-truncate-2/dist" },
-  "angular-bootstrap": { "path": "vendor_bower/angular-bootstrap", "jsFile": "ui-bootstrap-tpls" },
   "angular-ui-validate": { "path": "vendor_bower/angular-ui-validate/dist", "jsFile": "validate" },
   "intl-tel-input": { "path": "vendor_bower/intl-tel-input/build", "jsFile": "js/intlTelInput", "cssFile": "css/intlTelInput" },
   "font-awesome": { "path": "vendor_bower/font-awesome/css", "cssFile": "font-awesome" },
