@@ -15,7 +15,7 @@ describe('E2E testing: Signup app', function () {
     expect(page.nextButton.isEnabled()).toBe(true);
     page.nextButton.click();
     expect(page.usernameExists.isDisplayed()).toBe(true);
-    expect(page.usernameOk.isDisplayed()).toBe(false);
+    expect(page.usernameOk.isPresent()).toBe(false);
     page.usernameInput.clear();
     page.emailInput.clear();
   });
@@ -32,7 +32,7 @@ describe('E2E testing: Signup app', function () {
     page.emailInput.sendKeys(constants.notUsedEmail);
     expect(page.nextButton.isEnabled()).toBe(true);
     page.nextButton.click();
-    expect(page.usernameExists.isDisplayed()).toBe(false);
+    expect(page.usernameExists.isPresent()).toBe(false);
     expect(page.usernameOk.isDisplayed()).toBe(true);
   });
 

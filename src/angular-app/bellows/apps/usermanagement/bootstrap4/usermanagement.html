@@ -1,0 +1,31 @@
+{% verbatim %}
+<div class="content container" ng-cloak>
+    <div ng-controller="MainCtrl">
+        <sil-notices></sil-notices>
+
+        <div>
+
+            <a class="btn btn-secondary" ng-href="{{project.appLink}}" uib-tooltip="Back to the project"
+                    tooltip-placement="right">
+                <i class="fa fa-arrow-circle-left"></i>Back
+            </a>
+        </div>
+        <h2 style="font-weight:normal">{{project.name}} User Management</h2>
+
+        <!-- this is a hack - for some reason active can only bind to a variable,
+         so we create this variable using ng-init -->
+        <div ng-init="isMembers = isActive('/members')"></div>
+        <div ng-init="isJoinRequests = isActive('/joinRequests')"></div>
+
+        <uib-tabset>
+            <uib-tab active="isMembers" heading="Members" ui-sref="members">
+                <div ng-if="isActive('/members')" ui-view></div>
+            </uib-tab>
+            <uib-tab active="isJoinRequests" heading="Join Requests" ui-sref="joinRequests">
+                <div ng-if="isActive('joinRequest')" ui-view></div>
+            </uib-tab>
+        </uib-tabset>
+
+    </div>
+</div>
+{% endverbatim %}

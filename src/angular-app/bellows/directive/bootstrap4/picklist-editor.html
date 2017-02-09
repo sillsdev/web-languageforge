@@ -7,15 +7,15 @@
     </div>
     <div>
         <input data-ng-model="newValue" data-on-enter="pickAddItem()" name="newValue" type="text" placeholder="new value" no-dirty-check />
-        <a data-ng-click="pickAddItem()"><i class="icon-plus"></i></a>
+        <a data-ng-click="pickAddItem()"><i class="fa fa-plus"></i></a>
     </div>
     <div sv-root sv-part="items">
         <div data-ng-repeat="item in items" class="picklist-group" sv-element>
-            <a data-ng-show="showRemove($index)" data-ng-click="pickRemoveItem($index)"><i class="icon-remove"></i></a>
+            <a data-ng-show="showRemove($index)" data-ng-click="pickRemoveItem($index)"><i class="fa fa-times"></i></a>
             <span data-ng-hide="showRemove($index)" style="padding-left: 15px">&nbsp;</span>
             <input type="text" data-ng-model="item.value" data-on-enter="blur(thisElement)" class="picklist-row"></input>
             <input disabled type="text" data-ng-model="item.value" class="picklist-row" sv-placeholder></input>
-            <i class="icon-align-justify" sv-handle></i><!-- In Font Awesome 4 we would use fa-bars instead -->
+            <i class="fa fa-bars" sv-handle></i>
         </div>
     </div>
 </div>

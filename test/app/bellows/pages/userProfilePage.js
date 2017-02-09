@@ -8,6 +8,8 @@ module.exports = new SfUserProfilePage();
  */
 function SfUserProfilePage() {
   var util = require('./util');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   this.userProfileURL = '/app/userprofile';
   this.activitiesList = element.all(by.repeater('item in filteredActivities'));
@@ -31,6 +33,7 @@ function SfUserProfilePage() {
   this.getAboutMe = function getAboutMe() {
     this.get();
     this.tabs.aboutMe.click();
+    browser.wait(expectedCondition.visibilityOf(this.aboutMeTab.fullName), CONDITION_TIMEOUT);
   };
 
   this.blueElephantAvatarUri = '/Site/views/shared/image/avatar/DodgerBlue-elephant-128x128.png';
@@ -64,14 +67,14 @@ function SfUserProfilePage() {
   // Reverting to sendKeys for now...
 
   this.myAccountTab.updateEmail = function (newEmail) {
-    // Modify email address
-    //util.sendText(this.myAccountTab.emailInput, newEmail);
-    this.myAccountTab.emailInput.sendKeys(protractor.Key.CONTROL, 'a');
+    browser.wait(expectedCondition.visibilityOf(this.myAccountTab.emailInput), CONDITION_TIMEOUT);
+    this.myAccountTab.emailInput.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
     this.myAccountTab.emailInput.sendKeys(newEmail);
   }.bind(this);
 
   this.myAccountTab.updateMobilePhone = function (newPhone) {
-    //util.sendText(this.myAccountTab.mobilePhoneInput, newPhone);
+    browser.wait(expectedCondition.visibilityOf(this.myAccountTab.mobilePhoneInput),
+      CONDITION_TIMEOUT);
     this.myAccountTab.mobilePhoneInput.sendKeys(newPhone);
   }.bind(this);
 
@@ -87,14 +90,14 @@ function SfUserProfilePage() {
   };
 
   this.aboutMeTab.updateFullName = function (newFullName) {
-    //util.sendText(this.aboutMeTab.fullName, newFullName);
-    this.aboutMeTab.fullName.sendKeys(protractor.Key.CONTROL, 'a');
+    browser.wait(expectedCondition.visibilityOf(this.aboutMeTab.fullName), CONDITION_TIMEOUT);
+    this.aboutMeTab.fullName.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
     this.aboutMeTab.fullName.sendKeys(newFullName);
   }.bind(this);
 
   this.aboutMeTab.updateAge = function (newAge) {
-    //util.sendText(this.aboutMeTab.age, newAge);
-    this.aboutMeTab.age.sendKeys(protractor.Key.CONTROL, 'a');
+    browser.wait(expectedCondition.visibilityOf(this.aboutMeTab.age), CONDITION_TIMEOUT);
+    this.aboutMeTab.age.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
     this.aboutMeTab.age.sendKeys(newAge);
   }.bind(this);
 

@@ -34,7 +34,7 @@ angular.module('sgw.ui.breadcrumb', [])
 .directive('breadcrumbs', ['breadcrumbService', '$log', function(breadcrumbService, $log) {
   return {
     restrict : 'A',
-    template : '<ul class="breadcrumb"><li ng-repeat="bc in breadcrumbs" ng-class="{active: $last}" ng-switch="$last"><span ng-switch-when="false"><a ng-click="unregisterBreadCrumb( $index )" ng-href="{{bc.href}}">{{bc.label}}</a><span class="divider">/</span></span><span ng-switch-default>{{bc.label}}</span></li></ul>',
+    template : '<ol class="breadcrumb"><li class="breadcrumb-item" ng-repeat="bc in breadcrumbs" ng-class="{active: $last}" ng-switch="$last"><span ng-switch-when="false"><a ng-click="unregisterBreadCrumb( $index )" ng-href="{{bc.href}}">{{bc.label}}</a></span><span ng-switch-default>{{bc.label}}</span></li></ol>',
     replace : true,
     compile : function(tElement, tAttrs) {
       return function($scope, $elem, $attr) {

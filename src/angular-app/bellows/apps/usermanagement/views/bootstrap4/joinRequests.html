@@ -1,0 +1,24 @@
+<div data-ng-cloak data-ng-controller="JoinRequestsCtrl">
+      <table class="table table-hover table-bordered" >
+            <thead class="thead-inverse">
+            <tr>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Role</th>
+                <th> Approve/Reject </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="request in joinRequests" data-ng-class="{active: isSelected(user)}" >
+                <td>{{request.user.username}}</td>
+                <td>{{request.user.name}}</td>
+                <td><select data-ng-model="request.role.role" data-ng-disabled="!rights.changeRole" data-ng-options="roleKey as roleName for (roleKey, roleName) in roles"></select></td>
+
+                <td>
+                    <button class="btn btn-primary" ng-click="acceptJoinRequest(request.user.id, request.role.role)" > Accept </button> 
+                    <button class="btn btn-danger"  ng-click="denyJoinRequest(request.user.id)" > Reject </button> 
+                </td>
+            </tr>
+            </tbody>
+        </table>
+</div>

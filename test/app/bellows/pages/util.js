@@ -146,7 +146,7 @@ function Utils() {
   };
 
   this.clickBreadcrumb = function clickBreadcrumb(breadcrumbText) {
-    element(by.elemMatches('ul.topCrumbs > li', breadcrumbText)).click();
+    element(by.elemMatches('.breadcrumb > li', breadcrumbText)).click();
   };
 
   this.parent = function parent(child) {
@@ -162,5 +162,9 @@ function Utils() {
       /next_id/.test(message) ||
       /ERR_INTERNET_DISCONNECTED/.test(message);
   };
+
+  this.scrollTop = function () {
+    browser.executeScript('window.scroll(0,0)');
+  }
 
 }
