@@ -10,13 +10,16 @@ use Symfony\Component\HttpFoundation\Request;
 
 class App extends Base
 {
-    public function view(Request $request, Application $app, $appName, $projectId = '') {
+    public function view(
+        /** @noinspection PhpUnusedParameterInspection */
+        Request $request, Application $app, $appName, $projectId = ''
+    ) {
         $this->setupBaseVariables($app);
-        $retVal = $this->setupNgView($app, $appName, $projectId);
+        $this->setupAngularAppVariables($app, $appName, $projectId);
         return $this->renderPage($app, 'angular-app');
     }
 
-    public function setupNgView(Application $app, $appName, $projectId = '')
+    public function setupAngularAppVariables(Application $app, $appName, $projectId = '')
     {
         /**
          * authentication is handled by the security policy set in index.php
@@ -39,6 +42,7 @@ class App extends Base
             $projectId = '';
         }
 
+        $this->data['isAngular2'] = $appModel->isAppAngular2();
         $this->data['isBootstrap4'] = $appModel->isBootstrap4;
         $this->data['appName'] = $appName;
         $this->data['appFolder'] = $appModel->appFolder;
@@ -62,8 +66,6 @@ class App extends Base
             iterator_count(new \FilesystemIterator($helpsFolder, \FilesystemIterator::SKIP_DOTS)) > 0
         ) {
             $this->_showHelp = true;
-            // there is an implicit dependency on bellows JS here using the jsonRpc module
-            $this->addJavascriptFiles(NG_BASE_FOLDER . 'container/js', array('vendor/', 'assets/'));
         }
 
         // Other session data
@@ -73,7 +75,13 @@ class App extends Base
         $this->addJavascriptFiles($appModel->bellowsFolder . '/js', array('vendor', 'assets'));
         $this->addJavascriptFiles($appModel->bellowsFolder . '/directive');
         $this->addJavascriptFiles($appModel->siteFolder . '/js', array('vendor', 'assets'));
-        $this->addJavascriptFiles($appModel->appFolder , array('js/vendor', 'js/assets'));
+
+        if ($this->data['isAngular2']) {
+            $this->addJavascriptFiles($appModel->appFolder . '/dist');
+        } else {
+            $this->addJavascriptFiles($appModel->appFolder, array('js/vendor', 'js/assets'));
+        }
+
         if ($appModel->parentAppFolder) {
             $this->addJavascriptFiles($appModel->parentAppFolder, array('js/vendor', 'js/assets'));
         }
@@ -91,13 +99,18 @@ class App extends Base
             $this->addCssFiles(NG_BASE_FOLDER . 'bellows/cssBootstrap2');
             $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive/bootstrap2');
         }
-        $this->addCssFiles($appModel->bootstrapFolder);
+        $this->addCssFiles($appModel->bootstrapFolder, array('node_modules'));
     }
 }
 
 class AppNotFoundException extends \Exception { }
 
 class AppModel {
+
+    /**
+     * @var string
+     */
+    public $appName;
 
     /**
      * @var string
@@ -153,6 +166,7 @@ class AppModel {
      */
     public function __construct($appName, $projectId, $website, $isPublicApp)
     {
+        $this->appName = $appName;
         $this->determineFolderPaths($appName, $projectId, $website, $isPublicApp);
     }
 
@@ -240,22 +254,44 @@ class AppModel {
         }
     }
 
+    public function isAppAngular2() {
+        $siteAppsInAngular2 = array(
+            "rapid-words",
+            "review-suggest"
+        );
+        return in_array($this->appName, $siteAppsInAngular2);
+    }
+
     private function isAppBootstrap4($appName, $website) {
 
         // replace "appName" with the name of the angular app that has been migrated to bootstrap 4
         // Note that this will affect both the angular app and the app frame
 
-        $sharedAppsInBoostrap4 = array("sharedApp1", "sharedApp2");
+        $sharedAppsInBoostrap4 = array(
+            "activity",
+            "changepassword",
+            "forgot_password",
+            "login",
+            "projects",
+            "reset_password",
+            "signup",
+            "siteadmin",
+            "usermanagement",
+            "userprofile"
+        );
 
         $siteAppsInBootstrap4 = array(
             "scriptureforge" => array("appName"),
-            "languageforge" => array("appName"),
+            "languageforge" => array(
+                "rapid-words",
+                "lexicon"
+            ),
             "waaqwiinaagiwritings" => array(),
             "jamaicanpsalms.scriptureforge" => array(),
             "demo.scriptureforge" => array(),
         );
 
-        $siteLookup = preg_replace('/^(dev\.)?(\S+)\.(org|local|com)$/', '$2', $website->domain);
+        $siteLookup = preg_replace('/^(dev|e2etest)?(\.)?(\S+)\.(org|local|com)$/', '$3', $website->domain);
 
         if (in_array($appName, $sharedAppsInBoostrap4)) {
             return true;
@@ -275,7 +311,6 @@ class AppModel {
         return (
             $appName != '' &&
             file_exists($appFolder) &&
-            file_exists("$appFolder/$parentAppName-$appName.html") &&
             file_exists("$appFolder/views")
         );
     }

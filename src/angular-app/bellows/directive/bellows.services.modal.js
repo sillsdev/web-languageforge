@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bellows.services')
-  .service('modalService', ['$modal', function ($modal) {
+  .service('modalService', ['$uibModal', function ($modal) {
     // Taken from http://weblogs.asp.net/dwahlin/archive/2013/09/18/building-an-angularjs-modal-service.aspx
     var modalDefaults = {
       backdrop: true,
@@ -23,7 +23,8 @@ angular.module('bellows.services')
       return this.show(customModalDefaults, customModalOptions);
     };
 
-    this.showModalSimple = function showModalSimple(headerText, messageText, closeButtonText, actionButtonText) {
+    this.showModalSimple = function showModalSimple(
+      headerText, messageText, closeButtonText, actionButtonText) {
       var opts = {
         headerText: headerText,
         bodyText: messageText
@@ -33,11 +34,13 @@ angular.module('bellows.services')
       return this.showModal({}, opts);
     };
 
-    this.showModalSimpleWithCustomTemplate = function showModalSimpleWithCustomTemplate(customTemplateUrl) {
+    this.showModalSimpleWithCustomTemplate =
+      function showModalSimpleWithCustomTemplate(customTemplateUrl) {
       var opts = {
         customTemplateUrl: customTemplateUrl
       };
-      return this.show({ templateUrl: '/angular-app/bellows/js/modalCustomTemplate.html', backdrop: true}, opts);
+      return this.show({
+        templateUrl: '/angular-app/bellows/js/modalCustomTemplate.html', backdrop: true }, opts);
     };
 
     this.show = function (customModalDefaults, customModalOptions) {
@@ -52,11 +55,13 @@ angular.module('bellows.services')
       angular.extend(tempModalOptions, modalOptions, customModalOptions);
 
       if (!tempModalDefaults.controller) {
-        tempModalDefaults.controller = ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+        tempModalDefaults.controller = ['$scope', '$uibModalInstance',
+          function ($scope, $modalInstance) {
           $scope.modalOptions = tempModalOptions;
           $scope.modalOptions.ok = function (result) {
             $modalInstance.close(result);
           };
+
           $scope.modalOptions.close = function (result) {
             $modalInstance.dismiss('cancel');
           };

@@ -28,3 +28,4 @@ src/js/lib/languageforge.min.js
 src/js/lib/scriptureforge.min.js
 src/angular-app/**/helps/**/page/*.html
 test/CodeCoverage/php/
+.DS_Store

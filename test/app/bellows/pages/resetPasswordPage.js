@@ -7,7 +7,7 @@ var BellowsResetPasswordPage = function() {
 
   this.form = element(by.tagName('form'));
   this.infoMessages = element.all(by.css('.alert-info'));
-  this.errors = element.all(by.css('.alert-error'));
+  this.errors = element.all(by.css('.alert-danger'));
   this.passwordInput = element(by.model('record.password'));
   this.confirmPasswordInput = element(by.model('confirmPassword'));
   this.resetButton = element(by.partialButtonText('Reset Password'));

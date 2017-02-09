@@ -11,8 +11,8 @@ function EditorUtil() {
   this.dcMultitextToArray = function dcMultitextToArray(elem) {
     var inputSystemDivs = elem.all(by.repeater('tag in config.inputSystems'));
     return inputSystemDivs.map(function (div) {
-      var wsidSpan = div.element(by.css('.input-prepend > span.wsid'));
-      var wordInput = div.element(by.css('.input-prepend > .dc-formattedtext input'));
+      var wsidSpan = div.element(by.css('.input-group > span.wsid'));
+      var wordInput = div.element(by.css('.input-group > .dc-formattedtext input'));
       return wsidSpan.getText().then(function (wsid) {
         return wordInput.isPresent().then(function (isWordPresent) {
           if (isWordPresent) {
@@ -111,7 +111,7 @@ function EditorUtil() {
 
   this.getFields = function getFields(searchLabel, rootElem) {
     if (typeof (rootElem) === 'undefined') {
-      rootElem = element(by.css('dc-entry'));
+      rootElem = element(by.className('dc-entry'));
     }
 
     return rootElem.all(by.cssContainingText('div[data-ng-repeat="fieldName in config.fieldOrder"]',

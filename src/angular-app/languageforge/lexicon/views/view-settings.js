@@ -3,7 +3,7 @@
 angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
   'palaso.ui.language', 'ngAnimate', 'lexicon.services'])
   .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService', 'lexProjectService',
-    'sessionService', '$filter', '$modal', 'lexConfigService', 'lexSendReceive',
+    'sessionService', '$filter', '$uibModal', 'lexConfigService', 'lexSendReceive',
   function ($scope, notice, userService, lexProjectService,
             sessionService, $filter, $modal, lexConfig, sendReceive) {
     var currentTabIndex = 0;

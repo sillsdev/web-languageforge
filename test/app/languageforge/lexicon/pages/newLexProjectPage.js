@@ -12,7 +12,7 @@ function NewLexProjectPage() {
 
   // form controls
   this.noticeList = element.all(by.repeater('notice in notices()'));
-  this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
+  this.firstNoticeCloseButton = this.noticeList.first().element(by.partialButtonText('×'));
   this.newLexProjectForm = element(by.tagName('form'));
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
   this.backButton = element(by.id('backButton'));
@@ -32,7 +32,7 @@ function NewLexProjectPage() {
 
   this.formStatus.expectContainsError = function (partialMsg) {
     if (!partialMsg) partialMsg = '';
-    expect(this.formStatus.getAttribute('class')).toContain('alert-error');
+    expect(this.formStatus.getAttribute('class')).toContain('alert-danger');
     expect(this.formStatus.getText()).toContain(partialMsg);
   }.bind(this);
 
@@ -44,12 +44,10 @@ function NewLexProjectPage() {
   // step 1: send receive credentials
   this.srCredentialsPage = {};
   this.srCredentialsPage.loginInput = element(by.id('srUsername'));
-  this.srCredentialsPage.loginUnknown = element(by.id('usernameUnknown'));
   this.srCredentialsPage.loginOk = element(by.id('usernameOk'));
   this.srCredentialsPage.passwordInput = element(by.id('srPassword'));
-  this.srCredentialsPage.passwordUnknown = element(by.id('passwordUnknown'));
+  this.srCredentialsPage.credentialsInvalid = element(by.id('credentialsInvalid'));
   this.srCredentialsPage.passwordOk = element(by.id('passwordOk'));
-  this.srCredentialsPage.projectUneditable = element(by.id('srProject'));
   this.srCredentialsPage.projectSelect = function () {
     return element(by.id('srProjectSelect'));
   };

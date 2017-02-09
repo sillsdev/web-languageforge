@@ -63,7 +63,7 @@ angular.module('siteadmin', [
       } else {
         $scope.vars.record = record;
         $scope.vars.editButtonName = 'Save';
-        $scope.vars.editButtonIcon = 'ok';
+        $scope.vars.editButtonIcon = 'check';
         $scope.vars.state = 'update';
         $scope.hidePasswordForm();
       }

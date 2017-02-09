@@ -1,18 +1,22 @@
-<div class="dc-sense">
-    <div data-ng-if="control.rights.canEditEntry() && $state.is('editor.entry')"
-        class="deleteX pull-right">
-        <i data-ng-click="remove(index)" title="Delete Meaning"
-            class="icon-remove"></i>
-    </div>
-    <label class="meaning-label">Meaning {{index+1}}</label>
-    <dc-fieldrepeat config="config" model="model" control="control"></dc-fieldrepeat>
-    <div data-ng-if="config.fields.examples.fieldOrder.length > 0">
-        <div data-ng-repeat="example in model.examples">
-            <dc-example control="control" remove="deleteExample" index="$index"
-                config="config.fields.examples" model="example"></dc-example>
+<div class="dc-sense card">
+    <div class="meaning-label card-header">
+        <div data-ng-if="control.rights.canEditEntry() && $state.is('editor.entry')"
+             class="deleteX pull-right">
+            <i data-ng-click="remove(index)" title="Delete Meaning"
+               class="fa fa-times"></i>
         </div>
-        <div data-ng-if="control.rights.canEditEntry() && $state.is('editor.entry')" class="addItem">
-            <a data-ng-click="addExample()">Add Example</a>
+        Meaning {{index+1}}
+    </div>
+    <div class="card-block">
+        <dc-fieldrepeat config="config" model="model" control="control"></dc-fieldrepeat>
+        <div data-ng-if="config.fields.examples.fieldOrder.length > 0">
+            <div data-ng-repeat="example in model.examples">
+                <dc-example control="control" remove="deleteExample" index="$index"
+                            config="config.fields.examples" model="example"></dc-example>
+            </div>
+            <div data-ng-if="control.rights.canEditEntry() && $state.is('editor.entry')" class="addItem">
+                <a class="btn btn-sm btn-secondary" data-ng-click="addExample()"><i class="fa fa-plus"></i> Add Example</a>
+            </div>
         </div>
     </div>
 </div>

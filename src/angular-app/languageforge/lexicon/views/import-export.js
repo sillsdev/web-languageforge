@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice', 'palaso.ui.language',
-  'ngAnimate', 'ngFileUpload', 'lexicon.upload'])
-  .controller('LiftImportCtrl', ['$scope', 'Upload', '$modal', 'silNoticeService', 'lexProjectService', '$filter',
-    '$location', 'sessionService',
+angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services',
+    'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'ngFileUpload', 'lexicon.upload'])
+  .controller('LiftImportCtrl', ['$scope', 'Upload', '$uibModal', 'silNoticeService',
+    'lexProjectService', '$filter', '$location', 'sessionService',
   function ($scope, Upload, $modal, notice, lexProjectService, $filter,
             $location, sessionService) {
     lexProjectService.setBreadcrumbs('importExport', 'Import/export');
@@ -53,8 +53,8 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'pa
           if (isUploadSuccess) {
             $scope.upload.progress = 100.0;
             var modalInstance = $modal.open({
-              templateUrl: '/angular-app/languageforge/lexicon/views/import-results.html',
-              controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+              templateUrl: '/angular-app/languageforge/lexicon/views/' + bootstrapVersion + '/import-results.html',
+              controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
                 $scope.show = {};
                 $scope.show.importErrors = false;
                 $scope.result = {
@@ -128,4 +128,8 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services', 'pa
       return a.pop().toLowerCase();
     }
 
+
   }]);
+
+
+

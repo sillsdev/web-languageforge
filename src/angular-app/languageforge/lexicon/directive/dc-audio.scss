@@ -1,0 +1,76 @@
+div.dc-audio, .dc-audio > div {
+    display: inline-block;
+}
+
+div.dc-audio {
+    background-color: #f9f9f9;
+}
+
+div.dc-audio {
+    min-height: 28px;
+}
+
+.dc-audio .player {
+    font-size: initial;
+    margin-top: 6px;
+}
+
+.dc-audio .player a {
+    padding-left: 6px;
+}
+
+.dc-audio .player i {
+    margin-right: 3px;
+}
+
+.dc-audio .audioProgress {
+    font-weight: normal;
+}
+
+.dc-audio .btn.dropdown-toggle, .dc-audio .btn.buttonAppend {
+    margin-top: -1px;
+    margin-bottom: -1px;
+    border-radius: 0 4px 4px 0;
+    color: #e67345;
+}
+
+.dc-audio .caret {
+    /*border-top: 4px solid #e67345;*/
+}
+
+.dc-audio div.control-group.pull-right, .dc-audio div.control-group.pull-left {
+    margin-bottom: 0;
+}
+
+.dc-audio .drop-box {
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.dc-audio p {
+}
+
+.dc-audio .deleteX {
+    margin-right: 7px;
+}
+
+.dc-audio .buttonAppend {
+    font-size: initial;
+    margin-top: 6px;
+}
+
+.dc-audio .buttonAppend i {
+    margin-right: 0;
+}
+
+.dc-audio > div > a {
+    margin-left: 5px;
+}
+
+/* mock upload */
+.dc-audio input {
+    display: block;
+}
+
+.dc-audio a {
+}
