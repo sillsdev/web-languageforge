@@ -51,6 +51,11 @@ body{
     color: #fff;
   }
 }
+
+.nav, .pagination, .carousel, .panel-title a {
+  cursor: pointer;
+}
+
 .nav.nav-tabs {
   margin-bottom: 20px;
 }

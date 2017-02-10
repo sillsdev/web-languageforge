@@ -4920,11 +4920,11 @@ Pagination styling for page indexing
   -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
 
-.pagination ul > li {
+.pagination > li {
   display: inline; }
 
-.pagination ul > li > a,
-.pagination ul > li > span {
+.pagination > li > a,
+.pagination > li > span {
   float: left;
   padding: 4px 12px;
   line-height: 20px;
@@ -4933,27 +4933,27 @@ Pagination styling for page indexing
   border: 1px solid #dddddd;
   border-left-width: 0; }
 
-.pagination ul > li > a:hover,
-.pagination ul > li > a:focus,
-.pagination ul > .active > a,
-.pagination ul > .active > span {
+.pagination > li > a:hover,
+.pagination > li > a:focus,
+.pagination > .active > a,
+.pagination > .active > span {
   background-color: #f5f5f5; }
 
-.pagination ul > .active > a,
-.pagination ul > .active > span {
+.pagination > .active > a,
+.pagination > .active > span {
   color: #999999;
   cursor: default; }
 
-.pagination ul > .disabled > span,
-.pagination ul > .disabled > a,
-.pagination ul > .disabled > a:hover,
-.pagination ul > .disabled > a:focus {
+.pagination > .disabled > span,
+.pagination > .disabled > a,
+.pagination > .disabled > a:hover,
+.pagination > .disabled > a:focus {
   color: #999999;
   cursor: default;
   background-color: transparent; }
 
-.pagination ul > li:first-child > a,
-.pagination ul > li:first-child > span {
+.pagination > li:first-child > a,
+.pagination > li:first-child > span {
   border-left-width: 1px;
   -webkit-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
@@ -4962,8 +4962,8 @@ Pagination styling for page indexing
   -moz-border-radius-bottomleft: 4px;
   -moz-border-radius-topleft: 4px; }
 
-.pagination ul > li:last-child > a,
-.pagination ul > li:last-child > span {
+.pagination > li:last-child > a,
+.pagination > li:last-child > span {
   -webkit-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
@@ -4977,13 +4977,13 @@ Pagination styling for page indexing
 .pagination-right {
   text-align: right; }
 
-.pagination-large ul > li > a,
-.pagination-large ul > li > span {
+.pagination-large > li > a,
+.pagination-large > li > span {
   padding: 11px 19px;
   font-size: 17.5px; }
 
-.pagination-large ul > li:first-child > a,
-.pagination-large ul > li:first-child > span {
+.pagination-large > li:first-child > a,
+.pagination-large > li:first-child > span {
   -webkit-border-bottom-left-radius: 6px;
   border-bottom-left-radius: 6px;
   -webkit-border-top-left-radius: 6px;
@@ -6790,6 +6790,9 @@ body {
     background-color: #0275d8;
     text-align: center;
     color: #fff; }
+
+.nav, .pagination, .carousel, .panel-title a {
+  cursor: pointer; }
 
 .nav.nav-tabs {
   margin-bottom: 20px; }
