@@ -40,7 +40,8 @@ angular.module('bellows.services')
         customTemplateUrl: customTemplateUrl
       };
       return this.show({
-        templateUrl: '/angular-app/bellows/js/modalCustomTemplate.html', backdrop: true }, opts);
+        templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion +
+          '/modalCustomTemplate.html', backdrop: true }, opts);
     };
 
     this.show = function (customModalDefaults, customModalOptions) {
