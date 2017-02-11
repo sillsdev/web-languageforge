@@ -74,6 +74,13 @@ ansible-playbook -i hosts playbook_xenial.yml --limit localhost -K
 ````
 If you run into an error on the `ssl_config : LetsEncrypt: Install packages` task, run the playbook again and that task should succeed the second time it is run.
 
+Install node_modules used to build sass files and run E2E tests
+```
+cd web-languageforge
+npm install
+gulp sass:buildAll
+```
+
 ### Language Forge Configuration File <a id="LFConfig"></a>
 Manually edit the Language Forge config file
 
