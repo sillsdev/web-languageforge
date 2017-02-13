@@ -699,7 +699,8 @@ gulp.task('build-node-bundle', function (cb) {
     dryRun: false,
     debug: false
   };
-  execute('node node_modules/browserify/bin/cmd.js src/node/client.js' +
+  execute('node node_modules/browserify/bin/cmd.js' +
+    ' src/angular-app/languageforge/translate/views/editor.node' +
     ' -o src/node/static/dist/bundle.js', options, cb);
 });
 
@@ -707,7 +708,7 @@ gulp.task('build-node-bundle', function (cb) {
 //   Task: build-node-bundle-watch
 // -------------------------------------
 gulp.task('build-node-bundle-watch', function () {
-  gulp.watch('src/node/**/client.js', gulp.series('build-node-bundle'));
+  gulp.watch('src/angular-app/**/*.node', gulp.series('build-node-bundle'));
 });
 
 // -------------------------------------

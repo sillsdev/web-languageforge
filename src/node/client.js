@@ -22,6 +22,7 @@ var quillEditors = {};
 var docSubs = {};
 var onTextChanges = {};
 var onOps = {};
+var realTime = {};
 
 msgSocket.onmessage = function (event) {
   var msg = JSON.parse(event.data);
@@ -46,8 +47,7 @@ function waitForConnection(callback) {
   }
 }
 
-window.realTime = {};
-window.realTime.createAndSubscribeRichTextDoc =
+realTime.createAndSubscribeRichTextDoc =
   function createAndSubscribeRichTextDoc(projectCollection, id, quill) {
     projectCollection = projectCollection || 'collection';
     quillEditors[id] = quill;
@@ -89,7 +89,7 @@ function connectRichTextDoc(collection, id, quill) {
   }
 }
 
-window.realTime.disconnectRichTextDoc = function disconnectRichTextDoc(id) {
+realTime.disconnectRichTextDoc = function disconnectRichTextDoc(id) {
   quillEditors[id].off('text-change', onTextChanges[id]);
   delete onTextChanges[id];
 
@@ -98,3 +98,5 @@ window.realTime.disconnectRichTextDoc = function disconnectRichTextDoc(id) {
   docSubs[id].destroy();
   delete docSubs[id];
 };
+
+exports.realTime = realTime;

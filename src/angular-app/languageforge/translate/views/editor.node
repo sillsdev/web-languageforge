@@ -1,5 +1,7 @@
 'use strict';
 
+var realTime = require('../../../../node/client').realTime;
+
 angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.services', 'ngQuill'])
   .config(['$stateProvider', function ($stateProvider) {
 
