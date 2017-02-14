@@ -3004,7 +3004,7 @@ tbody.collapse.in {
     color: white; }
 
 .navbar-dark .navbar-nav .nav-link {
-  color: rgba(255, 255, 255, 0.5); }
+  color: white; }
   .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
     color: rgba(255, 255, 255, 0.75); }
 
@@ -3021,7 +3021,7 @@ tbody.collapse.in {
   color: white; }
 
 .navbar-dark .navbar-toggler {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
   border-color: rgba(255, 255, 255, 0.1); }
 
 .navbar-dark .navbar-divider {
@@ -6752,6 +6752,13 @@ body {
   min-height: 100vh;
   flex-direction: column; }
 
+h1.mobile-title {
+  font-size: 16pt;
+  padding-top: 0.3em;
+  text-align: center; }
+  h1.mobile-title a {
+    color: white; }
+
 #app-container-for-bootstrap {
   margin-top: 60px;
   flex: 1; }
@@ -6873,7 +6880,8 @@ nav {
   #mobileMenu .nav-user {
     float: right; }
   #mobileMenu .nav-link {
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid white;
+    border-radius: 3px;
     padding: 5px;
     width: 40px;
     height: 40px;
