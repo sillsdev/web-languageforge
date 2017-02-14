@@ -236,9 +236,6 @@ legend.override-bootstrap {
 #lexAppEditView .deleteX i:hover {
   color: #d9534f; }
 
-#lexAppEditView .dc-example.card .card-header {
-  background: #cfcfcf; }
-
 .lexiconListItemCompact {
   position: relative;
   overflow-y: hidden;
@@ -262,7 +259,10 @@ legend.override-bootstrap {
 
 .entryItemView i.fa-times {
   cursor: pointer;
-  color: #CCC; }
+  color: #888; }
+
+.entryItemView button i.fa-times {
+  color: inherit; }
 
 #lexAppCommentView .entryItemView {
   max-height: 580px; }

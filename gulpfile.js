@@ -635,8 +635,7 @@ gulp.task('sass:home', function () {
 });
 
 gulp.task('sass:lexicon', function () {
-  // TODO: Change back to *.scss once everyone has stopped working on their individual parts
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/languageforge_lexicon.scss')
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/*.scss')
     .pipe(sass().on('error', sass.logError))
     //.pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/languageforge/lexicon/bootstrap4/'));
@@ -742,7 +741,7 @@ gulp.task('sass:buildAll', gulp.series(
 // -------------------------------------
 //   Task: Watch the primary sass folder for any changes and recompile via the sass task
 // -------------------------------------
-gulp.task('sass:watch', function () {
+gulp.task('sass:watch', gulp.series('sass:buildAll', function watchSass () {
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/base/*.scss', gulp.series('sass:base'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/activity/*.scss', gulp.series('sass:activity'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/changepassword/*.scss', gulp.series('sass:changepassword'));
@@ -762,7 +761,7 @@ gulp.task('sass:watch', function () {
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/terms_and_conditions/*.scss', gulp.series('sass:terms_and_conditions'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/usermanagement/*.scss', gulp.series('sass:usermanagement'));
   gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/userprofile/*.scss', gulp.series('sass:userprofile'));
-});
+}));
 
 // endregion
 
