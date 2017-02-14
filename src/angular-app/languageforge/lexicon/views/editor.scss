@@ -278,9 +278,6 @@ legend.override-bootstrap {
       color: $brand-danger;
     }
   }
-  .dc-example.card .card-header {
-    background: #cfcfcf;
-  }
 }
 
 
@@ -312,9 +309,14 @@ legend.override-bootstrap {
     min-height: 580px;
 }
 
-.entryItemView i.fa-times {
-    cursor: pointer;
-    color: #CCC;
+.entryItemView {
+    i.fa-times {
+        cursor: pointer;
+        color: #888;
+    }
+    button i.fa-times {
+        color: inherit;
+    }
 }
 
 #lexAppCommentView .entryItemView {
