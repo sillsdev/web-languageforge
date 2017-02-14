@@ -5,6 +5,7 @@ namespace Site\Controller;
 use Api\Library\Shared\Palaso\StringUtil;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
+use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\FeaturedProjectListModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Rights\Operation;
@@ -22,6 +23,7 @@ class Base
     public function __construct() {
         $this->website = Website::get();
         $this->_showHelp = false;
+        $this->_appName = '';
         $this->data['isAdmin'] = false;
         $this->data['projects'] = array();
         $this->data['smallAvatarUrl'] = '';
@@ -60,6 +62,9 @@ class Base
     /** @var string */
     protected $_projectId;
 
+    /** @var string */
+    protected $_appName;
+
     // all child classes should call this method first to setup base variables
     protected function setupBaseVariables(Application $app) {
         $this->_isLoggedIn = $this->isLoggedIn($app);
@@ -90,6 +95,15 @@ class Base
             $this->addCssFiles("Site/views/shared/cssBootstrap2", array('bootstrap.css'), false);
             array_unshift($this->data['cssFiles'], "Site/views/shared/cssBootstrap2/bootstrap.css");
         }
+
+        // Other session data
+        $this->data['jsonSession'] = json_encode(SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $this->_appName), JSON_UNESCAPED_SLASHES);
+
+        // Add bellows JS for every page because top container menubar needs it for helps
+        $bellowsFolder = NG_BASE_FOLDER . "bellows";
+        $this->addJavascriptFiles($bellowsFolder . '/_js_module_definitions');
+        $this->addJavascriptFiles($bellowsFolder . '/js', array('vendor', 'assets'));
+        $this->addJavascriptFiles($bellowsFolder . '/directive');
 
         // Add general Angular app dependencies
         $dependencies = $this->getAngularAppDependencies();
