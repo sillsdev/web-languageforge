@@ -4,7 +4,6 @@ namespace Site\Controller;
 
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
-use Api\Model\Shared\Command\SessionCommands;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -42,6 +41,7 @@ class App extends Base
             $projectId = '';
         }
 
+        $this->_appName = $appName;
         $this->data['isAngular2'] = $appModel->isAppAngular2();
         $this->data['isBootstrap4'] = $appModel->isBootstrap4;
         $this->data['appName'] = $appName;
@@ -68,12 +68,6 @@ class App extends Base
             $this->_showHelp = true;
         }
 
-        // Other session data
-        $this->data['jsonSession'] = json_encode(SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $appName), JSON_UNESCAPED_SLASHES);
-
-        $this->addJavascriptFiles($appModel->bellowsFolder . '/_js_module_definitions');
-        $this->addJavascriptFiles($appModel->bellowsFolder . '/js', array('vendor', 'assets'));
-        $this->addJavascriptFiles($appModel->bellowsFolder . '/directive');
         $this->addJavascriptFiles($appModel->siteFolder . '/js', array('vendor', 'assets'));
 
         if ($this->data['isAngular2']) {
