@@ -635,8 +635,7 @@ gulp.task('sass:home', function () {
 });
 
 gulp.task('sass:lexicon', function () {
-  // TODO: Change back to *.scss once everyone has stopped working on their individual parts
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/languageforge_lexicon.scss')
+  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/*.scss')
     .pipe(sass().on('error', sass.logError))
     //.pipe(cleanCSS())
     .pipe(gulp.dest('src/angular-app/languageforge/lexicon/bootstrap4/'));
