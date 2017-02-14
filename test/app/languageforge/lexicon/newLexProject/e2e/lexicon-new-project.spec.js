@@ -546,6 +546,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
       expect(page.nextButton.isEnabled()).toBe(true);
       page.expectFormIsValid();
       page.nextButton.click();
+      browser.wait(expectedCondition.visibilityOf(editorPage.browse.noEntriesElem),
+        CONDITION_TIMEOUT);
       expect(editorPage.browse.noEntriesElem.isDisplayed()).toBe(true);
       editorPage.browse.noEntriesNewWordBtn.click();
       expect(editorPage.edit.getEntryCount()).toBe(1);
