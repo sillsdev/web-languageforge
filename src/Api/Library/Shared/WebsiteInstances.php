@@ -131,12 +131,19 @@ class WebsiteInstances
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
         $sites['e2etest.languageforge.local'] = $w;
 
-        // dev.languageforge.org sites
+        // dev.languageforge.org
         $w = new Website('dev.languageforge.org', Website::LANGUAGEFORGE);
         $w->name = 'Language Forge';
         $w->ssl = true;
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
         $sites['dev.languageforge.org'] = $w;
+
+        // qa.languageforge.org
+        $w = new Website('qa.languageforge.org', Website::LANGUAGEFORGE);
+        $w->name = 'Language Forge';
+        $w->ssl = true;
+        $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
+        $sites['qa.languageforge.org'] = $w;
 
         // languageforge.org
         $w = new Website('languageforge.org', Website::LANGUAGEFORGE);

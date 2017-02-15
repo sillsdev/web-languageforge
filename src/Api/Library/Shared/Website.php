@@ -85,8 +85,12 @@ class Website
             // special exception for reverse proxy on dev.scriptureforge.org
             $forwardedServer = $_SERVER['HTTP_X_FORWARDED_SERVER'];
             $forwardedHost = $_SERVER['HTTP_X_FORWARDED_HOST'];
-            if ($forwardedServer == 'dev.scriptureforge.org' || $forwardedServer == 'dev.languageforge.org') {
-                return $forwardedHost;
+            switch ($forwardedServer) {
+                case 'dev.scriptureforge.org' :
+                case 'dev.languageforge.org' :
+                case 'qa.languageforge.org' :
+                    return $forwardedHost;
+                    break;
             }
         }
 
@@ -120,7 +124,7 @@ class Website
             return '';
         }
     }
-    
+
     public static function getRawRedirect($hostname) {
         if (array_key_exists($hostname, self::$_redirect)) {
             return self::$_redirect[$hostname];
