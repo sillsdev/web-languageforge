@@ -53,7 +53,7 @@ angular.module('translate-new-project',
       }]);
 
   }])
-  .controller('NewTranslateProjectCtrl', ['$scope', '$q', '$filter', '$modal', '$window',
+  .controller('NewTranslateProjectCtrl', ['$scope', '$q', '$filter', '$uibModal', '$window',
     'sessionService', 'silNoticeService', '$translate', '$state', 'Upload',
     'translateProjectService', 'sfchecksLinkService',
     function ($scope, $q, $filter, $modal, $window,

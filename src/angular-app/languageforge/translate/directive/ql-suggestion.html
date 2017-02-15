@@ -1,0 +1,14 @@
+<table class="table table-responsive table-sm">
+    <tr data-scope="row">
+        <!--<td><a class="btn" data-ng-click="$ctrl.selectAll()">All</a></td>-->
+        <td><a class="btn" data-ng-click="$ctrl.selectAll()">{{$ctrl.wordCombine($ctrl.qlSuggestions)}}</a></td>
+    </tr>
+    <tr data-scope="row">
+        <!--<td style="padding-top: 0;">Ctrl +</td>-->
+        <td style="padding-top: 0;">
+            <a class="btn" data-ng-repeat="suggestion in $ctrl.qlSuggestions track by $index"
+               data-ng-click="$ctrl.selectWord($index)" data-ng-style="$ctrl.wordWidthStyle(suggestion, $last)">
+                {{$index + 1}}</a>
+        </td>
+    </tr>
+</table>

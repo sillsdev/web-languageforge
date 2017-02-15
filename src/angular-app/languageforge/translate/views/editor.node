@@ -1,8 +1,7 @@
 'use strict';
 
-var realTime = require('../../../../node/client').realTime;
-
-angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.services', 'ngQuill'])
+angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.services', 'ngQuill',
+  'translate.suggest'])
   .config(['$stateProvider', function ($stateProvider) {
 
     // State machine from ui.router
@@ -14,7 +13,9 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       })
     ;
   }])
-  .controller('EditorCtrl', ['$scope', 'translateAssistant', function ($scope, assistant) {
+  .controller('EditorCtrl', ['$scope', 'translateAssistant', 'wordParser',
+  function ($scope, assistant, wordParser) {
+    var realTime = require('../../../../node/client').realTime;
     var currentDocIds = [];
     var editors = {};
     var source = {
@@ -33,29 +34,36 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
 
     $scope.left = source;
     $scope.right = target;
+    $scope.modulesConfig = {
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'],      // toggled buttons
+        [{ script: 'sub' }, { script: 'super' }],       // superscript/subscript
+        [{ indent: '-1' }, { indent: '+1' }],           // outdent/indent
+        [{ align: [] }],
+
+        [{ size: ['small', false, 'large', 'huge'] }],  // custom dropdown
+        [{ font: [] }],
+        [{ color: [] }, { background: [] }],            // dropdown with defaults from theme
+        [{ direction: 'rtl' }],                         // text direction
+        ['clean']                                       // remove formatting button
+      ],
+
+      suggestions: {
+        container: '.ql-suggestions'
+      }
+    };
 
     $scope.getLabel = function getLabel(label, languageTag) {
       return label + ((languageTag) ? ' (' + languageTag + ')' : '');
     };
 
-    $scope.editorChanged = function editorChanged(editor, key, side) {
-      if (key == 'target' && source.data && target.data) {
-        var segmentIndex = getLastSegmentIndex(target.data);
-        assistant.setPrefix(
-          wordBreak(currentSegment(source.data, segmentIndex)),
-          target.confidenceThreshold,
-          wordBreak(currentSegment(target.data, segmentIndex)),
-          isLastWordComplete(currentSegment(target.data, segmentIndex)),
-          function (suggestions) {
-            target.suggestions = suggestions;
-          }
-        );
-      }
-
+    $scope.editorChanged = function editorChanged(editor, html, text, key, side) {
       if (currentDocIds[key] != docId(key)) {
         realTime.disconnectRichTextDoc(currentDocIds[key]);
         delete currentDocIds[key];
         $scope.editorCreated(editor, key, side);
+      } else {
+        getSuggestions(editor, key);
       }
     };
 
@@ -63,6 +71,14 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       editors[side] = editor;
       currentDocIds[key] = docId(key);
       realTime.createAndSubscribeRichTextDoc($scope.project.slug, docId(key), editor);
+      getSuggestions(editor, key);
+      editor.on('selection-change', function (range) {
+        if (key == 'target') {
+          showAndPositionTooltip(editor.theme.suggestTooltip, range, editor);
+        } else {
+          editor.theme.suggestTooltip.hide();
+        }
+      });
     };
 
     $scope.swapEditors = function swapEditors() {
@@ -80,16 +96,77 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       $scope.editorCreated(editors.right, newRight.key, 'right');
     };
 
+    $scope.insertSuggestion = function insertSuggestion(side, text) {
+      var editor = editors[side];
+      var range = editor.selection.lastRange;
+      var currentText = removeTrailingCarriageReturn(editor.getText());
+      var words = wordParser.wordBreak(currentText);
+      if (hasNoSelectionAtCursor(range)) {
+        var index = range.index;
+        var wordStartIndex = wordParser.startIndexOfWordAt(index, words);
+        var wordLength = wordParser.lengthOfWordAt(index, words);
+        setTimeout(function () {
+          if (index < (currentText.length) ||
+            (index == (currentText.length) && !wordParser.isWordComplete(currentText[index - 1]))
+          ) {
+            editor.deleteText(wordStartIndex, wordLength + 1, 'user');
+            index = wordStartIndex;
+          }
+
+          editor.insertText(index, text + wordParser.charSpace(), 'user');
+        }, 1);
+      }
+    };
+
     function docId(key) {
       return $scope.project.id + ':' + key;
     }
 
     /**
-     * @param data
-     * @returns {number}
+     * @param {string} text
+     * @returns {string}
      */
-    function getLastSegmentIndex(data) {
-      return getSegments(data).length - 1;
+    function removeTrailingCarriageReturn(text) {
+      return (text.endsWith('\n')) ? text.substr(0, text.length - 1) : text;
+    }
+
+    function getSuggestions(editor, key) {
+      if (key == 'target' && source.data && target.data) {
+        var segmentIndex = getLastSegmentIndex(target.data);
+        assistant.setPrefix(
+          wordParser.wordBreak(currentSegment(source.data, segmentIndex)),
+          target.confidenceThreshold,
+          wordParser.wordBreak(currentSegment(target.data, segmentIndex)),
+          wordParser.isWordComplete(currentSegment(target.data, segmentIndex)),
+          function (suggestions) {
+            $scope.$apply(function () {
+              target.suggestions = suggestions;
+              setTimeout(function () {
+                showAndPositionTooltip(editor.theme.suggestTooltip, editor.getSelection(), editor);
+              }, 1);
+            });
+          }
+        );
+      } else {
+        editor.theme.suggestTooltip.hide();
+      }
+    }
+
+    function showAndPositionTooltip(tooltip, range, editor) {
+      if (hasNoSelectionAtCursor(range) && hasSuggestion()) {
+        tooltip.show();
+        tooltip.position(editor.getBounds(range));
+      } else {
+        tooltip.hide();
+      }
+    }
+
+    function hasNoSelectionAtCursor(range) {
+      return range && range.length == 0;
+    }
+
+    function hasSuggestion() {
+      return target.suggestions && target.suggestions.length > 0;
     }
 
     /**
@@ -98,7 +175,19 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
      * @returns {string}
      */
     function currentSegment(data, index) {
+      if (index > getLastSegmentIndex(data)) {
+        index = getLastSegmentIndex(data);
+      }
+
       return getSegments(data)[index];
+    }
+
+    /**
+     * @param data
+     * @returns {number}
+     */
+    function getLastSegmentIndex(data) {
+      return getSegments(data).length - 1;
     }
 
     /**
@@ -112,13 +201,92 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       return data.split('</p><p>');
     }
 
-    function wordBreak(text) {
-      return text.split(' ');
+    // -----------------------------------------------------------------
+    // Add a suggest tooltip to Quill
+    // -----------------------------------------------------------------
+
+    var Tooltip = Quill.import('ui/tooltip');
+    function SuggestTooltip(quill, boundsContainer) {
+      //noinspection JSUnusedGlobalSymbols
+      this.boundsContainer = boundsContainer || document.body;
+      this.quill = quill;
+      this.root = quill.addContainer('ql-suggest-tooltip');
+      this.root.innerHTML = this.constructor.TEMPLATE;
+      var offset = parseInt(window.getComputedStyle(this.root).marginTop);
+      this.quill.root.addEventListener('scroll', function () {
+        this.root.style.marginTop = (-1 * this.quill.root.scrollTop) + offset + 'px';
+      }.bind(this));
+      this.hide();
     }
 
-    function isLastWordComplete(text) {
-      text = text || '';
-      return text.endsWith(' ') || text.endsWith('.') || text.endsWith(',');
+    SuggestTooltip.TEMPLATE = '<span class="ql-suggest-tooltip-arrow"></span>';
+    SuggestTooltip.prototype = Object.create(Tooltip.prototype);
+    SuggestTooltip.prototype.constructor = SuggestTooltip;
+    SuggestTooltip.prototype.position = function (reference) {
+      var shift = getSuper(SuggestTooltip, 'position', this).call(this, reference);
+      var top = reference.bottom + this.quill.root.scrollTop + 10;
+      this.root.style.top = top + 'px';
+      var arrow = this.root.querySelector('.ql-suggest-tooltip-arrow');
+      arrow.style.marginLeft = '';
+      if (shift === 0) return shift;
+      arrow.style.marginLeft = (-1 * shift - arrow.offsetWidth / 2) + 'px';
+    };
+
+    var BubbleTheme = Quill.import('themes/bubble');
+    function SuggestBubbleTheme(quill, options) {
+      BubbleTheme.call(this, quill, options);
+      this.suggestTooltip = new SuggestTooltip(this.quill, this.options.bounds);
+    }
+
+    SuggestBubbleTheme.prototype = Object.create(BubbleTheme.prototype);
+    SuggestBubbleTheme.prototype.constructor = SuggestBubbleTheme;
+    SuggestBubbleTheme.prototype._super = BubbleTheme;
+
+    var Module = Quill.import('core/module');
+    function Suggestions(quill, options) {
+      Module.call(this, quill, options);
+
+      // initially container is sibling of <ng-quill-editor>
+      this.container = quill.container.parentNode.parentNode.querySelector(options.container);
+      quill.theme.suggestTooltip.root.appendChild(this.container);
+    }
+
+    Suggestions.prototype = Object.create(Module.prototype);
+    Suggestions.prototype.constructor = Suggestions;
+
+    Quill.register('ui/suggest-tooltip', SuggestTooltip);
+    Quill.register('themes/bubble-suggest', SuggestBubbleTheme);
+    Quill.register('modules/suggestions', Suggestions);
+
+    /**
+     * Gets the parent (super class) function to call
+     * from quill.js _get
+     * @param objectClass
+     * @param property
+     * @param receiver
+     * @returns {*}
+     */
+    function getSuper(objectClass, property, receiver) {
+      var object = objectClass.prototype.__proto__ || Object.getPrototypeOf(objectClass.prototype);
+      return get(object, property, receiver);
+    }
+
+    function get(object, property, receiver) {
+      if (object === null) object = Function.prototype;
+      var desc = Object.getOwnPropertyDescriptor(object, property);
+      if (desc === undefined) {
+        var parent = Object.getPrototypeOf(object);
+        if (parent === null) return undefined;
+
+        return get(parent, property, receiver);
+      } else if ('value' in desc) {
+        return desc.value;
+      } else {
+        var getter = desc.get;
+        if (getter === undefined) return undefined;
+
+        return getter.call(receiver);
+      }
     }
 
   }])
