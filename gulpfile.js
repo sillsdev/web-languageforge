@@ -31,23 +31,7 @@
 //   'test-e2e-env'
 //   'test-e2e-doTest'
 //   'test-e2e-run'
-//   'sass:base',
-//   'sass:activity',
-//   'sass:changepassword',
-//   'sass:forgot_password',
-//   'sass:home',
-//   'sass:lexicon',
-//   'sass:login',
-//   'sass:registration',
-//   'sass:new-project',
-//   'sass:projects',
-//   'sass:reset_password',
-//   'sass:signup',
-//   'sass:siteadmin',
-//   'sass:usermanagement',
-//   'sass:terms_and_conditions',
-//   'sass:userprofile',
-//   'sass:buildAll',
+//   'sass'
 //   'sass:watch'
 //   'build-composer'
 //   'build-bower'
@@ -112,9 +96,10 @@ var path = require('path');
 var stylish = require('jshint-stylish');
 var sass = require('gulp-sass');
 var cleanCSS = require('gulp-clean-css');
+var merge = require('merge-stream');
 
 var execute = function (command, options, callback) {
-  if (options == undefined) {
+  if (!options) {
     options = {};
   }
 
@@ -170,7 +155,7 @@ gulp.task('do-reload', function () {
 // -------------------------------------
 gulp.task('reload', function () {
   livereload.listen();
-  gulp.watch(srcPatterns, gulp.series('do-reload'));
+  gulp.watch(srcPatterns, {delay: 500}, gulp.series('do-reload'));
 });
 
 // -------------------------------------
@@ -594,174 +579,77 @@ gulp.task('test-e2e-run').description = 'Run the E2E test on local developer env
 //endregion
 
 // region sass
-// TODO: re-enable calls to cleanCSS() DDW 02-2017
 
-// -------------------------------------
-//   Task: Compile all the sass files into a single css file
-// -------------------------------------
-gulp.task('sass:base', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/base/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/Site/views/languageforge/theme/default/cssBootstrap4/'));
+var sassPaths = [
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/base/*.scss",
+     "dest": "src/Site/views/languageforge/theme/default/cssBootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/activity/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/activity/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/changepassword/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/changepassword/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/forgot_password/*.scss",
+     "dest": "src/angular-app/bellows/apps/forgot_password/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/home/*.scss",
+     "dest": "src/Site/views/languageforge/theme/default/page/home/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/*.scss",
+     "dest": "src/angular-app/languageforge/lexicon/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/login/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/login/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/registration/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/new-project/*.scss",
+     "dest": "src/angular-app/languageforge/lexicon/new-project/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/projects/*.scss",
+     "dest": "src/angular-app/bellows/apps/projects/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/reset_password/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/reset_password/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/signup/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/signup/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/siteadmin/*.scss",
+     "dest": "src/angular-app/bellows/apps/siteadmin/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/usermanagement/*.scss",
+     "dest": "src/angular-app/bellows/apps/usermanagement/bootstrap4"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/terms_and_conditions/*.scss",
+     "dest": "src/Site/views/shared/cssBootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/userprofile/*.scss",
+     "dest": "src/angular-app/bellows/apps/userprofile/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss",
+     "dest": "src/angular-app/bellows/apps/userprofile/bootstrap4/"}
+];
+
+gulp.task('sass', function() {
+  var tasks = sassPaths.map(path => {
+    return gulp.src(path.src)
+      .pipe(sass().on('error', sass.logError))
+      .pipe(cleanCSS())
+      .pipe(gulp.dest(path.dest));
+  });
+  return merge(tasks);
 });
 
-gulp.task('sass:activity', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/activity/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/public/activity/bootstrap4/'));
-});
+gulp.task('sass:watch', done => {
+  var sourceComments = process.argv.indexOf('--comments') !== -1;
+  if(!sourceComments) console.info('Tip: run with --comments to generate source comments.');
 
-gulp.task('sass:changepassword', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/changepassword/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/public/changepassword/bootstrap4/'));
-});
+  function compileSass(path){
+    gulp.src(path.src)
+      .pipe(sass({sourceComments}).on('error', sass.logError))
+      .pipe(gulp.dest(path.dest));
+  }
 
-gulp.task('sass:forgot_password', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/forgot_password/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/forgot_password/bootstrap4/'));
+  sassPaths.map(path => {
+    gulp.watch(path.src, {ignoreInitial: false})
+      .on('change', changedFile => {
+        console.log('File changed: ' + changedFile);
+        compileSass(path);
+      })
+      .on('add', function() {
+        compileSass(path);
+      });
+    return done();
+  });
+  return done();
 });
-
-gulp.task('sass:home', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/home/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/Site/views/languageforge/theme/default/page/home/bootstrap4/'));
-});
-
-gulp.task('sass:lexicon', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/languageforge/lexicon/bootstrap4/'));
-});
-
-gulp.task('sass:login', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/login/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/public/login/bootstrap4/'));
-});
-
-gulp.task('sass:registration', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/public/registration/bootstrap4/'));
-});
-
-gulp.task('sass:new-project', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/new-project/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/languageforge/lexicon/new-project/bootstrap4/'));
-});
-
-gulp.task('sass:projects', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/projects/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/projects/bootstrap4/'));
-});
-
-gulp.task('sass:reset_password', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/reset_password/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/public/reset_password/bootstrap4/'));
-});
-
-gulp.task('sass:signup', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/signup/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/public/signup/bootstrap4/'));
-});
-
-gulp.task('sass:siteadmin', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/siteadmin/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/siteadmin/bootstrap4/'));
-});
-
-gulp.task('sass:usermanagement', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/usermanagement/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/usermanagement/bootstrap4'));
-});
-
-gulp.task('sass:terms_and_conditions', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/terms_and_conditions/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/Site/views/shared/cssBootstrap4/'));
-});
-
-gulp.task('sass:userprofile', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/userprofile/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/userprofile/bootstrap4/'));
-});
-
-gulp.task('sass:registration', function () {
-  return gulp.src('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    //.pipe(cleanCSS())
-    .pipe(gulp.dest('src/angular-app/bellows/apps/userprofile/bootstrap4/'));
-});
-// -------------------------------------
-//   Task: Run all sass tasks to compile all CSS files - useful for the build tool
-// -------------------------------------
-gulp.task('sass:buildAll', gulp.series(
-  'sass:base',
-  'sass:activity',
-  'sass:changepassword',
-  'sass:forgot_password',
-  'sass:home',
-  'sass:lexicon',
-  'sass:login',
-  'sass:new-project',
-  'sass:projects',
-  'sass:reset_password',
-  'sass:registration',
-  'sass:signup',
-  'sass:siteadmin',
-  'sass:terms_and_conditions',
-  'sass:usermanagement',
-  'sass:userprofile'
-));
-// -------------------------------------
-//   Task: Watch the primary sass folder for any changes and recompile via the sass task
-// -------------------------------------
-gulp.task('sass:watch', gulp.series('sass:buildAll', function watchSass () {
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/base/*.scss', gulp.series('sass:base'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/activity/*.scss', gulp.series('sass:activity'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/changepassword/*.scss', gulp.series('sass:changepassword'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/forgot_password/*.scss', gulp.series('sass:forgot_password'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/home/*.scss', gulp.series('sass:home'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/*.scss', gulp.series('sass:lexicon'));
-  gulp.watch('src/angular-app/languageforge/lexicon/directive/**/*.scss', gulp.series('sass:lexicon'));
-  gulp.watch('src/angular-app/languageforge/lexicon/views/**/*.scss', gulp.series('sass:lexicon'));
-  gulp.watch('src/angular-app/bellows/directive/bootstrap4/**/*.scss', gulp.series('sass:lexicon'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/login/*.scss', gulp.series('sass:login'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/new-project/*.scss', gulp.series('sass:new-project'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/projects/*.scss', gulp.series('sass:projects'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/reset_password/*.scss', gulp.series('sass:reset_password'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss', gulp.series('sass:registration'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/signup/*.scss', gulp.series('sass:signup'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/siteadmin/*.scss', gulp.series('sass:siteadmin'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/terms_and_conditions/*.scss', gulp.series('sass:terms_and_conditions'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/usermanagement/*.scss', gulp.series('sass:usermanagement'));
-  gulp.watch('src/Site/views/languageforge/theme/default/cssBootstrap4/sass/userprofile/*.scss', gulp.series('sass:userprofile'));
-}));
 
 // endregion
 
@@ -999,7 +887,7 @@ gulp.task('build',
       'build-productionConfig',
       'build-clearLocalCache',
       'build-remove-test-fixtures'),
-    'sass:buildAll',
+    'sass',
     'build-minify',
     'build-changeGroup')
 );
