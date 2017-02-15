@@ -1,5 +1,3 @@
-// used by Angular client
-require('quill');
 var ShareDB = require('sharedb/lib/client');
 var richText = require('rich-text');
 ShareDB.types.register(richText.type);

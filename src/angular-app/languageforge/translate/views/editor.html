@@ -13,23 +13,29 @@
 </div>
 <div class="row">
     <div class="col-xs-6" lang="{{left.languageTag}}">
-        <ng-quill-editor id="editorLeft"
+        <ng-quill-editor
+            id="editorLeft" data-modules="modulesConfig" data-theme="bubble-suggest"
             data-on-editor-created="editorCreated(editor, left.key, 'left')"
-            data-on-content-changed="editorChanged(editor, left.key, 'left')"
-            data-theme="bubble" data-ng-model="left.data"
-            data-read-only="false"
+            data-on-content-changed="editorChanged(editor, html, text, left.key, 'left')"
+            data-ng-model="left.data" data-read-only="false"
             data-placeholder="&#8203;enter text here"></ng-quill-editor>
-        <pre>{{left.suggestions}}</pre>
+        <div class="ql-suggestions">
+            <ql-suggestion data-ql-suggestions="left.suggestions"
+                           data-ql-insert-suggestion="insertSuggestion('left', text)"></ql-suggestion>
+        </div>
         <!--<pre>left {{left | json}}</pre>-->
     </div>
     <div class="col-xs-6" lang="{{right.languageTag}}">
-        <ng-quill-editor id="editorRight"
+        <ng-quill-editor
+            id="editorRight" data-modules="modulesConfig" data-theme="bubble-suggest"
             data-on-editor-created="editorCreated(editor, right.key, 'right')"
-            data-on-content-changed="editorChanged(editor, right.key, 'right')"
-            data-theme="bubble" data-ng-model="right.data"
-            data-read-only="false"
+            data-on-content-changed="editorChanged(editor, html, text, right.key, 'right')"
+            data-ng-model="right.data" data-read-only="false"
             data-placeholder="&#8203;enter text here"></ng-quill-editor>
-        <pre>{{right.suggestions}}</pre>
+        <div class="ql-suggestions">
+            <ql-suggestion data-ql-suggestions="right.suggestions"
+                           data-ql-insert-suggestion="insertSuggestion('right', text)"></ql-suggestion>
+        </div>
         <!--<pre>right {{right | json}}</pre>-->
     </div>
 </div>
