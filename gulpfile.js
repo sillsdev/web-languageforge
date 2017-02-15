@@ -997,9 +997,9 @@ gulp.task('build',
       'build-bower',
       'build-version',
       'build-productionConfig',
-      'sass:buildAll',
       'build-clearLocalCache',
       'build-remove-test-fixtures'),
+    'sass:buildAll',
     'build-minify',
     'build-changeGroup')
 );
