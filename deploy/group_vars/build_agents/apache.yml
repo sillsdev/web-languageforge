@@ -29,13 +29,7 @@ apache_vhosts:
       - has_ssl: true
         port: 443
         server_alias: []
-        copy_mode: link
-        ssl_store: /etc/letsencrypt/live/dev.languageforge.org
-        store_key_file: "privkey.pem"
-        store_certificate_file: "cert.pem"
-        store_chain_file: "chain.pem"
         certificate_file: "languageforge_org_dev.pem"
-        chain_file: "languageforge_org_dev.pem"
         key_file: "languageforge_org_dev.key"
   - server_name: dev.scriptureforge.org
     server_admin: webmaster@palaso.org
@@ -49,16 +43,11 @@ apache_vhosts:
           - jamaicanpsalms.dev.scriptureforge.org
       - has_ssl: true
         port: 443
-        server_alias: []
-        copy_mode: link
-        ssl_store: /etc/letsencrypt/live/dev.scriptureforge.org
-        store_key_file: "privkey.pem"
-        store_certificate_file: "cert.pem"
-        store_chain_file: "chain.pem"
+        server_alias:
+          - jamaicanpsalms.dev.scriptureforge.org
         certificate_file: "scriptureforge_org_dev.pem"
-        chain_file: "scriptureforge_org_dev.pem"
         key_file: "scriptureforge_org_dev.key"
-  - server_name: e2etest.languageforge.org
+  - server_name: e2etest.languageforge.local
     server_admin: webmaster@palaso.org
     server_file_name: languageforge_org_e2etest
     document_root: /var/www/languageforge.org_e2etest/htdocs
@@ -66,19 +55,15 @@ apache_vhosts:
     virtual_hosts:
       - has_ssl: false
         port: 80
-        server_alias: []
+        server_alias:
+          - e2etest.languageforge.org
       - has_ssl: true
         port: 443
-        server_alias: []
-        copy_mode: link
-        ssl_store: /etc/letsencrypt/live/e2etest.languageforge.org
-        store_key_file: "privkey.pem"
-        store_certificate_file: "cert.pem"
-        store_chain_file: "chain.pem"
+        server_alias:
+          - e2etest.languageforge.org
         certificate_file: "languageforge_org_e2etest.pem"
-        chain_file: "languageforge_org_e2etest.pem"
         key_file: "languageforge_org_e2etest.key"
-  - server_name: e2etest.scriptureforge.org
+  - server_name: e2etest.scriptureforge.local
     server_admin: webmaster@palaso.org
     server_file_name: scriptureforge_org_e2etest
     document_root: /var/www/scriptureforge.org_e2etest/htdocs
@@ -86,16 +71,13 @@ apache_vhosts:
     virtual_hosts:
       - has_ssl: false
         port: 80
-        server_alias: [] 
+        server_alias:
+          - jamaicanpsalms.e2etest.scriptureforge.org
+          - e2etest.scriptureforge.org
       - has_ssl: true
         port: 443
         server_alias:
           - jamaicanpsalms.e2etest.scriptureforge.org
-        copy_mode: link
-        ssl_store: /etc/letsencrypt/live/e2etest.scriptureforge.org
-        store_key_file: "privkey.pem"
-        store_certificate_file: "cert.pem"
-        store_chain_file: "chain.pem"
+          - e2etest.scriptureforge.org
         certificate_file: "scriptureforge_org_e2etest.pem"
-        chain_file: "scriptureforge_org_e2etest.pem"
         key_file: "scriptureforge_org_e2etest.key"
