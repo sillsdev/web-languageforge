@@ -32,7 +32,6 @@
         - postfix
         - unzip
         - p7zip-full
-        - npm
 
     - file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
 
