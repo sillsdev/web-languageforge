@@ -293,6 +293,19 @@ gulp.task('mongodb-copy-prod-db').description =
 // -------------------------------------
 //   Task: test-php
 // -------------------------------------
+gulp.task('test-php', function () {
+  var src = 'test/php/phpunit.xml';
+  var options = {
+    dryRun: false,
+    debug: false,
+    logJunit: 'PhpUnitTests.xml'
+  };
+  gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
+  return gulp.src(src)
+    .pipe(phpunit('src/vendor/bin/phpunit', options));
+});
+
+/*
 gulp.task('test-php', function (cb) {
   var src = 'test/php/phpunit.xml';
   var options = {
@@ -310,6 +323,7 @@ gulp.task('test-php', function (cb) {
   // return gulp.src(src)
   //   .pipe(phpunit('src/vendor/bin/phpunit', options));
 });
+*/
 
 // -------------------------------------
 //   Task: test-php with debugging info
@@ -1035,13 +1049,18 @@ gulp.task('build-e2e').description =
 gulp.task('build-php',
   gulp.series(
     'build',
-    'test-php-coverage',
+    'test-php',
     'build-upload',
     'test-restart-webserver')
 );
 gulp.task('build-php').description =
   'Build and Run PHP tests on CI server; Deploy to dev site';
 
+gulp.task('build-php-coverage',
+  gulp.series(
+    'build',
+    'test-php-coverage')
+);
 //endregion
 
 // -------------------------------------
