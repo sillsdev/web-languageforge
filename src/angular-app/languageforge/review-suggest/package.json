@@ -1,7 +1,7 @@
 {
-  "name": "rapid-words",
+  "name": "review-suggest",
   "version": "0.0.1",
-  "description": "Rapid Words application for Language Forge",
+  "description": "Review Suggest application for Language Forge",
   "scripts": {
     "build.dev": "gulp build.dev --color --env-config dev",
     "build.dev.watch": "gulp build.dev.watch --color",

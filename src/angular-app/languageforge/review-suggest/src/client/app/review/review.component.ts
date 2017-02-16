@@ -18,12 +18,10 @@ export class ReviewComponent implements OnInit, OnDestroy {
   private sub: any;
   private words: any[];
   private currentWord: any;
+  private projectSettings: any;
   private currentLanguageCode: string;
-  private currentInterfaceLanguageCode: string;
-  private currentIdx = 0;
-  private currentProjectName: string;
-
-  private isClicked = false;
+  private currentWordIdx: number = 0;
+  private isClicked: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private projectService: ProjectService,
@@ -32,60 +30,61 @@ export class ReviewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.sub = this.route.params.subscribe(params => {
       this.id = params['id'];
-      this.setLanguageSettings();
+      this.getProjectSettings();
       this.getWords(this.id);
     });
   }
 
-  setLanguageSettings() {
-    let projectSettings = this.projectService.getSelectedProjectSettings();
-    this.currentLanguageCode = projectSettings.languageCode;
-    this.currentInterfaceLanguageCode = projectSettings.interfaceLanguageCode;
-    this.currentProjectName = projectSettings.projectName;
+  private getProjectSettings(): void {
+    this.projectSettings = this.projectService.getSelectedProjectSettings();
   }
 
-  getWords(projectId: string) {
+  private getWords(projectId: string): void {
     this.projectService.getWordList(projectId).subscribe(response => {
       this.words = response.entries;
-      this.currentWord = this.words[this.currentIdx];
-      this.currentLanguageCode = Object.keys(this.currentWord.lexeme)[0];
+      this.updateCurrentWord();
     });
   }
 
-  public incrementWord = () => {
-    this.currentIdx += 1;
-    if (this.currentIdx > this.words.length - 1) {
-      this.currentIdx = 0;
+  private incrementWord(): void {
+    this.currentWordIdx += 1;
+    if (this.currentWordIdx > this.words.length - 1) {
+      this.currentWordIdx = 0;
     }
-    this.currentWord = this.words[this.currentIdx]
+    this.updateCurrentWord();
   }
 
-  public decreaementWord = () => {
-    this.currentIdx -= 1;
-    if (this.currentIdx < 0) {
-      this.currentIdx = this.words.length - 1;
+  private decreaementWord(): void {
+    this.currentWordIdx -= 1;
+    if (this.currentWordIdx < 0) {
+      this.currentWordIdx = this.words.length - 1;
     }
-    this.currentWord = this.words[this.currentIdx];
+    this.updateCurrentWord();
   }
 
-  public upVote = () => {
+  private updateCurrentWord(): void {
+    this.currentWord = this.words[this.currentWordIdx];
+    this.currentLanguageCode = Object.keys(this.currentWord.lexeme)[0];
+  }
+
+  private upVote(): void {
     this.sendComment('I upvoted this word through the Review & Suggest app', this.currentWord.id);
   }
 
-  public downVote = () => {
+  private downVote(): void {
     this.sendComment('I downvoted this word through the Review & Suggest app', this.currentWord.id);
   }
 
-  public modalActions = new EventEmitter<string | MaterializeAction>();
-  openModal() {
+  private modalActions = new EventEmitter<string | MaterializeAction>();
+  private openModal(): void {
     this.modalActions.emit({ action: "modal", params: ['open'] });
   }
 
-  closeModal() {
+  private closeModal(): void {
     this.modalActions.emit({ action: "modal", params: ['close'] });
   }
 
-  sendComment(comment: string, id: string){
+  private sendComment(comment: string, id: string): void{
     this.isClicked = true;
     this.commentService.sendComment(comment, id).subscribe(response => {
       let success = response;
@@ -102,14 +101,14 @@ export class ReviewComponent implements OnInit, OnDestroy {
     });
   }
 
-  submitComment() {
+  private submitComment(): void {
     var inputValue = (<HTMLInputElement>document.getElementById("placeholderForComment")).value;
     this.closeModal();
     (<HTMLInputElement>document.getElementById("placeholderForComment")).value = '';
     this.sendComment(inputValue, this.currentWord.id);
   }
 
-  ngOnDestroy() {
+  private ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
 }
