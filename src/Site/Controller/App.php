@@ -271,7 +271,8 @@ class AppModel {
             "signup",
             "siteadmin",
             "usermanagement",
-            "userprofile"
+            "userprofile",
+            "registration"
         );
 
         $siteAppsInBootstrap4 = array(
