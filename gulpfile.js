@@ -876,13 +876,13 @@ gulp.task('build-upload', function (cb) {
 
   // For E2E tests, upload test dir to destination
   if (params.dest.includes('e2etest')) {
-    options.src = 'test/app/';
-    options.dest = path.join(params.dest, '/test/app');
+    options.src = 'test/';
+    options.dest = path.join(params.dest, '/test');
 
     execute(
       'rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
       '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
-      '<%= src %> <%= dest %>',
+      '<%= src %> <%= dest %> --exclude php',
       options,
       cb
     );

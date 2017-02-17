@@ -32,7 +32,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestAudio.mp3';
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
         $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
 
@@ -51,7 +51,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestAudio.MP3';
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . 'common/TestAudio.mp3', $fileName);
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . 'TestAudio.mp3', $fileName);
 
         $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
 
@@ -69,7 +69,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestAudio.wav';
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
         $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
 
@@ -87,7 +87,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . 'common/TestImage.tif', 'TestAudio.mp3');
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . 'TestImage.tif', 'TestAudio.mp3');
 
         $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
 
@@ -95,7 +95,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertRegExp('/not an allowed audio file/', $response->data->errorMessage, 'Error message should match the error');
 
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . 'common/TestAudio.mp3', 'TestImage.tif');
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . 'TestAudio.mp3', 'TestImage.tif');
 
         $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
 
@@ -109,14 +109,14 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestAudio.wav';
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
         $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
 
         $this->assertTrue($response->result, 'Upload should succeed');
         $_POST['previousFilename'] = $fileName;
         $fileName = 'TestAudio.mp3';
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
         $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
 
@@ -137,7 +137,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestImage.jpg';
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -156,7 +156,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestImage.JPG';
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/TestImage.jpg", $fileName);
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "TestImage.jpg", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -173,7 +173,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . 'common/TestImage.tif', 'TestImage.jpg');
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . 'TestImage.tif', 'TestImage.jpg');
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -181,7 +181,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertRegExp('/not an allowed image file/', $response->data->errorMessage, 'Error message should match the error');
 
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . 'common/TestImage.jpg', 'TestImage.tif');
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . 'TestImage.jpg', 'TestImage.tif');
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -195,7 +195,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestAudio.mp3';
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
         $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
 
@@ -218,7 +218,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestImage.jpg';
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
@@ -263,7 +263,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestLexProject.zip';
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
 
         $this->assertArrayHasKey('en', $project->inputSystems);
         $this->assertArrayHasKey('th', $project->inputSystems);
@@ -293,7 +293,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         $fileName = 'TestLangProj.7z';  // Ken Zook's test data
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . "common/$fileName", $fileName);
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . "$fileName", $fileName);
         $userId = self::$environ->createUser('bob', 'bob', 'bob@example.com');
         $project->addUser($userId, LexRoles::OBSERVER);
         $project->config->userViews[$userId] = clone $project->config->roleViews[LexRoles::OBSERVER];
@@ -370,7 +370,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . 'common/TestImage.jpg', 'TestLexProject.zip');
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . 'TestImage.jpg', 'TestLexProject.zip');
 
         $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
 
@@ -378,7 +378,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertRegExp('/not an allowed compressed file/', $response->data->errorMessage, 'Error message should match the error');
 
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . 'common/TestLexProject.zip', 'TestImage.jpg');
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . 'TestLexProject.zip', 'TestImage.jpg');
 
         $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
 
@@ -518,7 +518,7 @@ EOD;
         $this->assertEquals('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertRegExp('/not an allowed LIFT file/', $response->data->errorMessage, 'Error message should match the error');
 
-        $tmpFilePath = self::$environ->uploadFile(TestPhpPath . 'common/TestImage.jpg', 'TestImage.lift');
+        $tmpFilePath = self::$environ->uploadFile(TestCommonPath . 'TestImage.jpg', 'TestImage.lift');
 
         $response = LexUploadCommands::importLiftFile($projectId, 'import-lift', $tmpFilePath);
 
