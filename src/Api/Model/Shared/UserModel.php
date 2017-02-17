@@ -22,18 +22,17 @@ class UserModel extends MapperModel
     const GENDER_FEMALE = 'Female';
 
     /**
-     * List of properties accessible by context.
-     * In PHP7, these can be declared as const array
+     * List of properties accessible by context
      */
-    public static $PUBLIC_ACCESSIBLE =
-        array('username', 'name', 'email');
-    public static $USER_PROFILE_ACCESSIBLE =
-        array('avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
-         'name', 'age', 'gender', 'interfaceLanguageCode');
-    public static $ADMIN_ACCESSIBLE =
-        array('username', 'name', 'email', 'role', 'active',
+    const PUBLIC_ACCESSIBLE =
+        ['username', 'name', 'email'];
+    const USER_PROFILE_ACCESSIBLE =
+        ['avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
+         'name', 'age', 'gender', 'interfaceLanguageCode'];
+    const ADMIN_ACCESSIBLE =
+        ['username', 'name', 'email', 'role', 'active',
          'avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
-         'name', 'age', 'gender', 'interfaceLanguageCode');
+         'name', 'age', 'gender', 'interfaceLanguageCode'];
 
     public function __construct($id = '')
     {
