@@ -1,16 +1,18 @@
 {
   "angular-animate": { "path": "vendor_bower/angular-animate" },
   "angular-route": { "path": "vendor_bower/angular-route" },
-  "angular-ui-router": { "path": "vendor_bower/angular-ui-router/release" },
+  "angular-sortable-view": { "path": "vendor_bower/angular-sortable-view/src" },
   "angular-translate": { "path": "vendor_bower/angular-translate" },
   "angular-translate-loader-static-files": { "path": "vendor_bower/angular-translate-loader-static-files" },
-  "ng-file-upload": { "path": "vendor_bower/ng-file-upload", "jsFile": ["ng-file-upload", "ng-file-upload-shim"] },
-  "lodash": { "path": "vendor_bower/lodash/dist" },
-  "rangy": { "path": "vendor_bower/rangy", "jsFile": ["rangy-core", "rangy-selectionsaverestore", "rangy-highlighter", "rangy-classapplier", "rangy-serializer", "rangy-textrange"] },
-  "textAngular": { "path": "vendor_bower/textAngular/dist", "jsFile": ["textAngular-sanitize", "textAngularSetup", "textAngular"], "jsMinFile": ["textAngular-sanitize", "textAngular"], "cssFile": "textAngular" },
   "angular-truncate-2": { "path": "vendor_bower/angular-truncate-2/dist" },
+  "angular-ui-router": { "path": "vendor_bower/angular-ui-router/release" },
   "angular-ui-validate": { "path": "vendor_bower/angular-ui-validate/dist", "jsFile": "validate" },
-  "intl-tel-input": { "path": "vendor_bower/intl-tel-input/build", "jsFile": "js/intlTelInput", "cssFile": "css/intlTelInput" },
   "font-awesome": { "path": "vendor_bower/font-awesome/css", "cssFile": "font-awesome" },
-  "soundmanager2": { "path": "vendor_bower/SoundManager2/script", "jsFile": "soundmanager2", "jsMinFile": "soundmanager2-nodebug-jsmin.js" }
+  "intl-tel-input": { "path": "vendor_bower/intl-tel-input/build", "jsFile": "js/intlTelInput", "cssFile": "css/intlTelInput" },
+  "lodash": { "path": "vendor_bower/lodash/dist" },
+  "moment": { "path": "vendor_bower/moment", "jsFile": ["moment"], "jsMinFile": ["min/moment"]},
+  "ng-file-upload": { "path": "vendor_bower/ng-file-upload", "jsFile": ["ng-file-upload", "ng-file-upload-shim"] },
+  "rangy": { "path": "vendor_bower/rangy", "jsFile": ["rangy-core", "rangy-selectionsaverestore", "rangy-highlighter", "rangy-classapplier", "rangy-serializer", "rangy-textrange"] },
+  "soundmanager2": { "path": "vendor_bower/SoundManager2/script", "jsFile": "soundmanager2", "jsMinFile": "soundmanager2-nodebug-jsmin.js" },
+  "textAngular": { "path": "vendor_bower/textAngular/dist", "jsFile": ["textAngular-sanitize", "textAngularSetup", "textAngular"], "jsMinFile": ["textAngular-sanitize", "textAngular"], "cssFile": "textAngular" }
 }

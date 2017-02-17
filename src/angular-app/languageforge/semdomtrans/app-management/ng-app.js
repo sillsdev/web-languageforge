@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('semdomtrans-app-management', ['semDomTransAppManagement.services', 'bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.utils', 'wc.Directives'])
+angular.module('semdomtrans-app-management', ['semDomTransAppManagement.services', 'bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.utils'])
   .controller('semDomTransAppManagementCtrl', ['$scope', 'semDomTransAppManagementService', 'sessionService', 'silNoticeService', '$window',
     function($scope, appService, ss, notice, $window) {
 
