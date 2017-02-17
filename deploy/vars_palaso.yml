@@ -7,6 +7,9 @@ mongo_path: /var/lib/mongodb
 php_log_folder: /var/log/php
 lf_path: /var/www/virtual/default_local/web-languageforge
 sf_path: /var/www/virtual/default_local/web-scriptureforge
+site_src_paths:
+  - "{{lf_path}}/src"
+  - "{{sf_path}}/src"
 
 ssl_letsencrypt_install: false
 
