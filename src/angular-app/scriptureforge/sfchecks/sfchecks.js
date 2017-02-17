@@ -12,8 +12,7 @@ angular.module('sfchecks',
      'sfchecks.filters',
      'bellows.filters',
      'palaso.ui.notice',
-     'sf.ui.invitefriend',
-     'wc.Directives'
+     'sf.ui.invitefriend'
     ])
   .config(['$routeProvider', function ($routeProvider) {
     // the "projects" route is a hack to redirect to the /app/projects URL.
