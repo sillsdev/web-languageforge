@@ -18,9 +18,9 @@ require_once APPPATH . 'vendor/autoload.php';
 define('TestMode', true);
 
 define('TestPath', $rootPath . 'test/');
+define('TestCommonPath', $rootPath . 'test/common/');
 define('TestPhpPath', $rootPath . 'test/php/');
 define('TestLibPath', $rootPath . 'test/lib/');
-define('SimpleTestPath', $rootPath . 'src/vendor/simpletest/simpletest/');
 define('SourcePath', $rootPath . 'src/');
 
 define('SF_DATABASE', 'scriptureforge_test');
@@ -34,4 +34,4 @@ define('BCRYPT_COST', 7);
 global $WEBSITE;
 $WEBSITE = Website::get('dev.scriptureforge.org');
 
-require_once TestPhpPath . 'common/MongoTestEnvironment.php';
+require_once TestCommonPath . 'MongoTestEnvironment.php';

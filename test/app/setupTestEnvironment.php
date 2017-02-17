@@ -274,7 +274,7 @@ if ($site == 'scriptureforge') {
 
     // put a copy of the test file in tmp
     $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
-    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "common/$fileName", $tmpFilePath);
 
     $response = LexUploadCommands::uploadAudioFile($testProjectId, 'audio', $tmpFilePath);
 
@@ -294,7 +294,7 @@ if ($site == 'scriptureforge') {
 
     // put a copy of the test file in tmp
     $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
-    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "common/$fileName", $tmpFilePath);
 
     $response = LexUploadCommands::uploadImageFile($testProjectId, 'sense-image', $tmpFilePath);
 
@@ -328,20 +328,20 @@ if ($site == 'scriptureforge') {
     // put mock uploaded zip import (jpg file)
     $fileName = $constants['testMockJpgImportFile']['name'];
     $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
-    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "common/$fileName", $tmpFilePath);
 
     // put mock uploaded zip import (zip file)
     $fileName = $constants['testMockZipImportFile']['name'];
     $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
-    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "common/$fileName", $tmpFilePath);
 
     // put mock uploaded audio (png file)
     $fileName = $constants['testMockPngUploadFile']['name'];
     $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
-    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "common/$fileName", $tmpFilePath);
 
     // put mock uploaded audio (mp3 file)
     $fileName = $constants['testMockMp3UploadFile']['name'];
     $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
-    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "common/$fileName", $tmpFilePath);
 }
