@@ -4,7 +4,7 @@
     <div class="col-md-3">
         <!-- control buttons -->
         <div class="control-group">
-            <button class="btn btn-success" data-ng-click="openNewLanguageModal(suggestedLanguageCodes)"><i class="fa fa-plus"></i>{{'New' | translate}} </button>
+            <button class="btn btn-sm btn-success" data-ng-click="openNewLanguageModal(suggestedLanguageCodes)"><i class="fa fa-plus iconPadding"></i>{{'New' | translate}} </button>
         </div>
 
         <!-- picklist -->
@@ -26,7 +26,7 @@
         <!-- control buttons -->
         <div class="control-group">
             <div class="btn-group" uib-dropdown>
-                <a class="btn btn-info" uib-dropdown-toggle href style="font-weight:normal">
+                <a class="btn btn-sm btn-info" uib-dropdown-toggle href style="font-weight:normal">
                     {{'More' | translate}}&nbsp;&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu" uib-dropdown-menu>
                     <li data-ng-class="{disabled: newExists(selects.special.optionsOrder[1])}">
