@@ -7,7 +7,7 @@
     </div>
     <div>
         <input data-ng-model="newValue" data-on-enter="pickAddItem()" name="newValue" type="text" placeholder="new value" no-dirty-check />
-        <a data-ng-click="pickAddItem()"><i class="fa fa-plus"></i></a>
+        <button class="btn btn-sm btn-success" data-ng-click="pickAddItem()"><i class="fa fa-plus iconPadding" aria-hidden="true"></i>Add to List</button>
     </div>
     <div sv-root sv-part="items">
         <div data-ng-repeat="item in items" class="picklist-group" sv-element>

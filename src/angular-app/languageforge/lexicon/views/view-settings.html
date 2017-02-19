@@ -32,7 +32,7 @@
                         </li>
                     </ul>
                 </pui-typeahead>
-                <button class="btn btn-success" data-ng-click="addUser()"><i class="fa fa-plus"></i>{{'Add Member Specific Settings' | translate}}</button>
+                <button class="btn btn-sm btn-success" data-ng-click="addUser()"><i class="fa fa-plus iconPadding"></i>{{'Add Member Specific Settings' | translate}}</button>
                 <br /><br />
             </form>
 
@@ -76,7 +76,12 @@
 
                 <!-- control buttons -->
                 <div class="form-group">
-                    <button data-ng-click="showAllFields = ! showAllFields" class="btn btn-small">{{showAllFields ? 'Show Only Common Fields' : 'Show All Fields' | translate}}</button>
+                    <button data-ng-click="showAllFields = ! showAllFields" class="btn btn-sm">
+                        <i class="fa fa-{{ showAllFields ? 'minus-square-o' : 'plus-square-o' }}"></i>
+                        <span class="hidden-sm-down">
+                            {{showAllFields ? 'Show Only Common Fields' : 'Show All Fields' | translate}}
+                        </span>
+                    </button>
                 </div>
 
                 <!-- select list -->

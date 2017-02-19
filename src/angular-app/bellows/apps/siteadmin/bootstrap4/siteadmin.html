@@ -14,7 +14,7 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-9 col-lg-8">
                         <button class="btn" data-ng-disabled="selected.length == 0" data-ng-click="removeUsers()"><i class="fa fa-times iconPadding" aria-hidden="true" style="color:red"></i>Remove Users</button>
-                        <button class="btn" data-ng-click="addRecord()"><i class="fa fa-plus iconPadding" aria-hidden="true"></i>Add New</button>
+                        <button class="btn btn-success" data-ng-click="addRecord()"><i class="fa fa-plus iconPadding" aria-hidden="true"></i>Add New</button>
                     </div>
                     <div class="col-xs-8 col-sm-4 col-md-2 col-lg-1">
                         <div><input class="form-control" type="text" data-ng-model="filterUsers" placeholder="Filter user list"><a data-ng-show="filterUsers != ''" title="Clear Filter" data-ng-click="filterUsers = ''"><i class="fa fa-times" style="color:gray"></i></a></div>
@@ -122,7 +122,7 @@
                         <tr data-ng-show="record.created_on"><td><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></td></tr>
                         <tr data-ng-show="record.last_login"><td><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></td></tr>
                     </table>
-                    <button class="btn btn-small" type="submit" data-ng-disabled="userForm.$invalid || !(uniqueUserState == 'ok')">
+                    <button class="btn btn-sm" type="submit" data-ng-disabled="userForm.$invalid || !(uniqueUserState == 'ok')">
                         <i class="fa fa-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
                     </button>
                 </fieldset>
