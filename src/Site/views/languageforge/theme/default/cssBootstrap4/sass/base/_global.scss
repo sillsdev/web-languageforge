@@ -66,6 +66,10 @@ h1.mobile-title {
   cursor: pointer;
 }
 
+.nav-tabs .nav-link {
+  color: #e67345;
+}
+
 .nav.nav-tabs {
   margin-bottom: 20px;
 }
@@ -223,10 +227,6 @@ nav {
 .username-styling:hover{
   color: #0088cc;
   text-decoration: underline;
-}
-
-.tab-font-color{
-  color: #e67345;
 }
 
 @media (max-width: 500px) {
