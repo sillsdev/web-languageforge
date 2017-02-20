@@ -40,7 +40,7 @@
 
                 <!-- Left column: user select list -->
                 <div class="span3 form-group picklists" id="userSelectList">
-                        <ul class="unstyled">
+                        <ul class="list-unstyled">
                             <li data-ng-click="selectUser(userId)" data-ng-repeat="(userId, userView) in configDirty.userViews"
                                 data-ng-class="{selected:currentUserId == userId}">
                                 {{usersWithSettings[userId].name}} ({{usersWithSettings[userId].username}})
@@ -56,19 +56,24 @@
         </div>
         <div data-ng-hide="tab.byUser && state === 'userSelectList'">
             <!-- control buttons for member-specific views -->
-            <div class="row-fluid outer-flex" data-ng-show="tab.byUser && state === 'userSettings'">
-                <div class="span3 form-group">
-                    <button class="btn" data-ng-click="goSelectUser()"><i class="fa fa-chevron-left"></i> {{'Select Member' | translate}}</button>
+            <div class="row" data-ng-show="tab.byUser && state === 'userSettings'">
+                <div class="col-md-3">
+                    <button class="btn" data-ng-click="goSelectUser()"><i class="fa fa-arrow-circle-left"></i> {{'Select Member' | translate}}</button>
                 </div>
-                <div class="span9 form-group" style="height: 30px">
+                <div class="col-md-9">
                     <button class="btn" data-ng-click="removeSelectedMemberSettings()">
                         <i class="fa fa-times"></i> {{'Remove Member Specific Settings' | translate}} </button>
                 </div>
             </div>
+            <br />
         <uib-accordion close-others="true">
         <uib-accordian-group uib-accordion-group is-open="true">
-        <uib-accordion-heading><h3>{{'Enabled Fields for' | translate}} {{forWhom | translate}}</h3></uib-accordion-heading>
-            <div class="row-fluid outer-flex">
+        <uib-accordion-heading>
+            <div class="card">
+                <h3>{{'Enabled Fields for' | translate}} {{forWhom | translate}}</h3>
+            </div>
+        </uib-accordion-heading>
+            <div class="row">
 
             <!-- Left column: field view select list -->
             <div class="col-md-4 form-group">
@@ -161,7 +166,7 @@
                             <div class="row outer-flex form-group">
                                 <div class="span3 picklists">
                                     <label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
-                                    <ul class="unstyled indent1"  id="inputSystem">
+                                    <ul class="list-unstyled indent1"  id="inputSystem">
                                         <li data-ng-click="currentField.inputSystems.currentTag = inputSystemTag"
                                             data-ng-repeat="inputSystemTag in currentField.inputSystems.order"
                                             data-ng-class="{selected:currentField.inputSystems.currentTag == inputSystemTag}">
