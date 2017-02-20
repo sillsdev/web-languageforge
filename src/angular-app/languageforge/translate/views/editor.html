@@ -15,8 +15,8 @@
     <div class="col-xs-6" lang="{{left.languageTag}}">
         <ng-quill-editor
             id="editorLeft" data-modules="modulesConfig" data-theme="bubble-suggest"
-            data-on-editor-created="editorCreated(editor, left.key, 'left')"
-            data-on-content-changed="editorChanged(editor, html, text, left.key, 'left')"
+            data-on-editor-created="editorCreated(editor, left.docType, 'left')"
+            data-on-content-changed="contentChanged(editor, html, text, left.docType, 'left')"
             data-ng-model="left.data" data-read-only="false"
             data-placeholder="&#8203;enter text here"></ng-quill-editor>
         <div class="ql-suggestions">
@@ -28,8 +28,8 @@
     <div class="col-xs-6" lang="{{right.languageTag}}">
         <ng-quill-editor
             id="editorRight" data-modules="modulesConfig" data-theme="bubble-suggest"
-            data-on-editor-created="editorCreated(editor, right.key, 'right')"
-            data-on-content-changed="editorChanged(editor, html, text, right.key, 'right')"
+            data-on-editor-created="editorCreated(editor, right.docType, 'right')"
+            data-on-content-changed="contentChanged(editor, html, text, right.docType, 'right')"
             data-ng-model="right.data" data-read-only="false"
             data-placeholder="&#8203;enter text here"></ng-quill-editor>
         <div class="ql-suggestions">
