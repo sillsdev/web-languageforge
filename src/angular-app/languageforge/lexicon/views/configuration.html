@@ -122,13 +122,14 @@
                     <div class="row outer-flex control-group" data-ng-show="editInputSystems.collapsed">
                         <div class="col-md-3 picklists">
                             <label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
-                            <ul class="unstyled indent1"  id="inputSystem">
+                            <ul class="list-unstyled indent1"  id="inputSystem">
                                 <li data-ng-click="currentField.inputSystems.tag = inputSystemTag"
                                     data-ng-repeat="inputSystemTag in currentField.inputSystems.fieldOrder"
                                     data-ng-class="{selected:currentField.inputSystems.tag == inputSystemTag}">
                                     <div class="checkbox"><!--suppress HtmlFormInputWithoutLabel -->
                                         <input data-ng-model="currentField.inputSystems.selecteds[inputSystemTag]" type="checkbox"/>
                                         {{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
+                                </li>
                             </ul>
                             <a href="" data-ng-click="editInputSystems.collapsed = false">{{'Edit input systems' | translate}}</a>
                         </div>
