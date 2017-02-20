@@ -104,7 +104,7 @@ function ViewSettingsPage() {
 
   this.pickMemberWithViewSettings = function pickMemberWithViewSettings(memberName) {
     this.usersWithViewSettings
-      .element(by.elemMatches('div.picklists > ul.unstyled > li', memberName)).click();
+      .element(by.elemMatches('div.picklists > ul.list-unstyled > li', memberName)).click();
   };
 
   //noinspection JSUnusedGlobalSymbols
