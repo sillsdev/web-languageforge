@@ -36,24 +36,24 @@
             <div class="col-xs-12">
                 <listview hide-if-empty="true" search="queryProjectsForUser()" items="projects" visible-items="visibleProjects" select="">
                     <div data-ng-repeat="project in visibleProjects">
-                        <ul class="list-inline" data-ng-class="{active: isSelected(project)}">
-                            <li class="list-inline-item" style="width: 70%">
+                        <div class="row" data-ng-class="{active: isSelected(project)}">
+                            <div class="col-xs-12 col-sm-6">
                                 <a data-ng-show="isInProject(project)" data-ng-href="/app/{{project.appName}}/{{project.id}}">
                                     <span class="larger-text">{{project.projectName}}</span>
                                 </a>
                                 <span data-ng-show="!isInProject(project)" class="larger-text">{{project.projectName}}</span>
                                 <br />
                                 <small class="muted">{{projectTypeNames[project.appName]}}</small>
-                            </li>
-                            <li class="list-inline-item" style="width: 20%" data-ng-show="rights.edit">
+                            </div>
+                            <div class="col-xs-12 col-sm-6" data-ng-show="rights.edit">
                                 <button class="btn btn-secondary" data-ng-show="!isManager(project)"
                                         data-ng-click="addManagerToProject(project)">
                                     <i class="fa fa-plus"></i> Add me as Manager</button>
                                 <button class="btn btn-secondary" data-ng-show="!isInProject(project)"
                                         data-ng-click="addMemberToProject(project)">
                                     <i class="fa fa-plus"></i> Add me as Contributor</button>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                         <hr />
                     </div>
                 </listview>
