@@ -18,7 +18,7 @@ use Api\Model\Shared\UserModel;
 
 /*
  * Description: Restore live site data (mongodb, lf assets and sf assets, and lfmerge projects)
- * to local or dev site
+ * to local, dev, or qa site
  * Parameters:
  * @param string $argv[1]     [run or test]. Defaults to test
  * @param string $argv[2]     Optional path to .tgz files. If a path is not given, a local admin
@@ -35,12 +35,15 @@ class FactoryReset
     const DEV_LFPATH = '/var/www/languageforge.org_dev';
     const DEV_SFPATH = '/var/www/scriptureforge.org_dev';
 
+    const QA_LFPATH = '/var/www/languageforge.org_qa';
+    const QA_SFPATH = '/var/www/scriptureforge.org_qa';
+
     const LOCAL_LFPATH = '/var/www/virtual/languageforge.org';
     const LOCAL_SFPATH = '/var/www/virtual/scriptureforge.org';
 
     const LFMERGE_SENDRECEIVE_PATH = '/var/lib/languageforge/lexicon/sendreceive/';
 
-    /** @var string - local or dev */
+    /** @var string - local, dev, or qa */
     public $environment;
 
     /** @var string - path to languageforge assets */
@@ -57,15 +60,28 @@ class FactoryReset
 
     /**
      * Based on pwd, determine the environment of local or dev.
+     * Edit $override to true for qa environment.
      * If live server detected, immediately exit
      */
     public function DetermineEnvironment() {
+        /** @var boolean - manual override if set to true, restores to qa site instead of dev
+         */
+        $override = false;
+
         if (strpos(getcwd(), 'TeamCity') !== false) {
-            print "Script being run on the DEVELOPMENT SERVER khrap\n";
-            $this->environment = "dev";
-            $this->lfAssetsPath = $this::DEV_LFPATH;
-            $this->sfAssetsPath = $this::DEV_SFPATH;
-            $this->hostOption = "--host " . str_replace("mongodb://", "", MONGODB_CONN);
+            if (!$override) {
+                print "Script being run on the DEVELOPMENT SERVER khrap\n";
+                $this->environment = "dev";
+                $this->lfAssetsPath = $this::DEV_LFPATH;
+                $this->sfAssetsPath = $this::DEV_SFPATH;
+                $this->hostOption = "--host " . str_replace("mongodb://", "", MONGODB_CONN);
+            } else {
+                print "Script being run on the QA SERVER khrap\n";
+                $this->environment = "qa";
+                $this->lfAssetsPath = $this::QA_LFPATH;
+                $this->sfAssetsPath = $this::QA_SFPATH;
+                $this->hostOption = "--host " . str_replace("mongodb://", "", MONGODB_CONN);
+            }
         } else if (strpos(getcwd(), '/var/www/') !== true) {
             print "Script being run on your LOCAL MACHINE khrap\n";
             $this->environment = "local";
@@ -88,7 +104,7 @@ class FactoryReset
     }
 
     /**
-     * UpdateDBSiteName: for dev or local site, migrate the mongodb sitename according to the mapping
+     * UpdateDBSiteName: for dev, qa, or local site, migrate the mongodb sitename according to the mapping
      * @param bool $runForReal
      */
     public function UpdateDBSiteName($runForReal = false) {
@@ -98,6 +114,11 @@ class FactoryReset
             $siteNameMap['scriptureforge.org'] = 'dev.scriptureforge.org';
             $siteNameMap['jamaicanpsalms.scriptureforge.org'] = 'jamaicanpsalms.dev.scriptureforge.org';
             $siteNameMap['languageforge.org'] = 'dev.languageforge.org';
+        } else if ($this->environment == "qa") {
+            print "Site names being converted for QA SERVER khrap\n";
+            $siteNameMap['scriptureforge.org'] = 'qa.scriptureforge.org';
+            $siteNameMap['jamaicanpsalms.scriptureforge.org'] = 'jamaicanpsalms.qa.scriptureforge.org';
+            $siteNameMap['languageforge.org'] = 'qa.languageforge.org';
         } else if ($this->environment == "local") {
             print "Site names being converted for LOCAL MACHINE khrap\n";
             $siteNameMap['scriptureforge.org'] = 'scriptureforge.local';
