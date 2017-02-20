@@ -19,12 +19,12 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     var currentDocIds = [];
     var editors = {};
     var source = {
-      key: 'source',
+      docType: 'source',
       label: 'Source',
       languageTag: 'es'
     };
     var target = {
-      key: 'target',
+      docType: 'target',
       label: 'Target',
       languageTag: 'en',
       confidenceThreshold: 0.2
@@ -57,24 +57,25 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       return label + ((languageTag) ? ' (' + languageTag + ')' : '');
     };
 
-    $scope.editorChanged = function editorChanged(editor, html, text, key, side) {
-      if (currentDocIds[key] != docId(key)) {
-        realTime.disconnectRichTextDoc(currentDocIds[key]);
-        delete currentDocIds[key];
-        $scope.editorCreated(editor, key, side);
-      } else {
-        getSuggestions(editor, key);
-      }
-    };
+    $scope.contentChanged =
+      function contentChanged(editor, html, text, docType, side) {
+        if (currentDocIds[docType] != docId(docType)) {
+          realTime.disconnectRichTextDoc(currentDocIds[docType]);
+          delete currentDocIds[docType];
+          $scope.editorCreated(editor, docType, side);
+        } else {
+          getSuggestions(editor, docType);
+        }
+      };
 
-    $scope.editorCreated = function editorCreated(editor, key, side) {
+    $scope.editorCreated = function editorCreated(editor, docType, side) {
       editors[side] = editor;
-      currentDocIds[key] = docId(key);
-      realTime.createAndSubscribeRichTextDoc($scope.project.slug, docId(key), editor);
-      getSuggestions(editor, key);
-      editor.on('selection-change', function (range) {
-        if (key == 'target') {
-          showAndPositionTooltip(editor.theme.suggestTooltip, range, editor);
+      currentDocIds[docType] = docId(docType);
+      realTime.createAndSubscribeRichTextDoc($scope.project.slug, docId(docType), editor);
+      getSuggestions(editor, docType);
+      editor.on('selection-change', function () {
+        if (docType == 'target') {
+          $scope.contentChanged(editor, null, null, docType, side);
         } else {
           editor.theme.suggestTooltip.hide();
         }
@@ -82,8 +83,8 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     };
 
     $scope.swapEditors = function swapEditors() {
-      realTime.disconnectRichTextDoc(currentDocIds[$scope.left.key]);
-      realTime.disconnectRichTextDoc(currentDocIds[$scope.right.key]);
+      realTime.disconnectRichTextDoc(currentDocIds[$scope.left.docType]);
+      realTime.disconnectRichTextDoc(currentDocIds[$scope.right.docType]);
       currentDocIds = [];
 
       var newLeft = $scope.right;
@@ -92,8 +93,8 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       delete $scope.left;
       $scope.right = newRight;
       $scope.left = newLeft;
-      $scope.editorCreated(editors.left, newLeft.key, 'left');
-      $scope.editorCreated(editors.right, newRight.key, 'right');
+      $scope.editorCreated(editors.left, newLeft.docType, 'left');
+      $scope.editorCreated(editors.right, newRight.docType, 'right');
     };
 
     $scope.insertSuggestion = function insertSuggestion(side, text) {
@@ -118,8 +119,8 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       }
     };
 
-    function docId(key) {
-      return $scope.project.id + ':' + key;
+    function docId(docKey) {
+      return $scope.project.id + ':' + docKey;
     }
 
     /**
@@ -130,9 +131,9 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       return (text.endsWith('\n')) ? text.substr(0, text.length - 1) : text;
     }
 
-    function getSuggestions(editor, key) {
-      if (key == 'target' && source.data && target.data) {
-        var segmentIndex = getLastSegmentIndex(target.data);
+    function getSuggestions(editor, docType) {
+      if (docType == 'target' && source.data && target.data) {
+        var segmentIndex = getCurrentSegmentIndex(target.data, editor.getSelection());
         assistant.setPrefix(
           wordParser.wordBreak(currentSegment(source.data, segmentIndex)),
           target.confidenceThreshold,
@@ -183,11 +184,33 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     }
 
     /**
-     * @param data
+     * @param {string} data
      * @returns {number}
      */
     function getLastSegmentIndex(data) {
       return getSegments(data).length - 1;
+    }
+
+    /**
+     * @param {string} data
+     * @param {Range} range
+     * @returns {number}
+     */
+    function getCurrentSegmentIndex(data, range) {
+      if (hasNoSelectionAtCursor(range)) {
+        var segmentIndex = 0;
+        var nextSegmentIndex = 0;
+        angular.forEach(getSegments(data), function (segment) {
+          nextSegmentIndex += segment.length + '\n'.length;
+          if (range.index < nextSegmentIndex) return;
+
+          segmentIndex++;
+        });
+
+        return segmentIndex;
+      } else {
+        return getLastSegmentIndex(data);
+      }
     }
 
     /**
