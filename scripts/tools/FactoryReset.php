@@ -244,7 +244,7 @@ class FactoryReset
             $this->Execute($runForReal, $cmd);
 
             print "\nRestoring mongodb...\n";
-            $mongodbBackup = $archivePath . "/mongo_backup";
+            $mongodbBackup = $archivePath . "/backup/mongo_backup";
             $cmd = "mongorestore $this->hostOption $mongodbBackup";
             $this->Execute($runForReal, $cmd);
 
@@ -278,7 +278,7 @@ class FactoryReset
             print "\nCleanup extracted files...\n";
             $cmd = "sudo rm -R $archivePath/var";
             $this->Execute($runForReal, $cmd);
-            $cmd = "sudo rm -R $archivePath/mongo_backup";
+            $cmd = "sudo rm -R $archivePath/backup/mongo_backup";
             $this->Execute($runForReal, $cmd);
         } else {
             print "\nCreating local user: admin password: password\n";
