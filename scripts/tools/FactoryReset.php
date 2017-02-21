@@ -21,7 +21,8 @@ use Api\Model\Shared\UserModel;
  * to local, dev, or qa site
  * Parameters:
  * @param string $argv[1]     [run or test]. Defaults to test
- * @param string $argv[2]     Optional path to .tgz files. If a path is not given, a local admin
+ * @param string $argv[2]     Path to ssh keys
+ * @param string $argv[3]     Optional path to .tgz files. If a path is not given, a local admin
  *                            account is created.
  *
  * Assumptions: user running the script has sudo privileges
@@ -32,25 +33,26 @@ class FactoryReset
         $this->DetermineEnvironment();
     }
 
-    const DEV_LFPATH = '/var/www/languageforge.org_dev';
-    const DEV_SFPATH = '/var/www/scriptureforge.org_dev';
+    // Destination paths for rsync
+    const DEV_LFPATH = 'root@localhost:/var/www/languageforge.org_dev';
+    const DEV_SFPATH = 'root@localhost:/var/www/scriptureforge.org_dev';
 
-    const QA_LFPATH = '/var/www/languageforge.org_qa';
-    const QA_SFPATH = '/var/www/scriptureforge.org_qa';
+    const QA_LFPATH = 'root@localhost:/var/www/languageforge.org_qa';
+    const QA_SFPATH = 'root@localhost:/var/www/scriptureforge.org_qa';
 
-    const LOCAL_LFPATH = '/var/www/virtual/languageforge.org';
-    const LOCAL_SFPATH = '/var/www/virtual/scriptureforge.org';
+    const LOCAL_LFPATH = 'root@localhost:/var/www/virtual/languageforge.org';
+    const LOCAL_SFPATH = 'root@localhost:/var/www/virtual/scriptureforge.org';
 
-    const LFMERGE_SENDRECEIVE_PATH = '/var/lib/languageforge/lexicon/sendreceive/';
+    const LFMERGE_SENDRECEIVE_PATH = 'root@localhost:/var/lib/languageforge/lexicon/sendreceive/';
 
     /** @var string - local, dev, or qa */
     public $environment;
 
-    /** @var string - path to languageforge assets */
-    public $lfAssetsPath;
+    /** @var string - path to languageforge site */
+    public $lfSitePath;
 
-    /** @var string - path to scriptureforge assets */
-    public $sfAssetsPath;
+    /** @var string - path to scriptureforge site */
+    public $sfSitePath;
 
     /** @var  string - path to lfmerge sendreceive folder */
     public $lfmergeSendReceivePath;
@@ -72,21 +74,21 @@ class FactoryReset
             if (!$override) {
                 print "Script being run on the DEVELOPMENT SERVER khrap\n";
                 $this->environment = "dev";
-                $this->lfAssetsPath = $this::DEV_LFPATH;
-                $this->sfAssetsPath = $this::DEV_SFPATH;
+                $this->lfSitePath = $this::DEV_LFPATH;
+                $this->sfSitePath = $this::DEV_SFPATH;
                 $this->hostOption = "--host " . str_replace("mongodb://", "", MONGODB_CONN);
             } else {
                 print "Script being run on the QA SERVER khrap\n";
                 $this->environment = "qa";
-                $this->lfAssetsPath = $this::QA_LFPATH;
-                $this->sfAssetsPath = $this::QA_SFPATH;
+                $this->lfSitePath = $this::QA_LFPATH;
+                $this->sfSitePath = $this::QA_SFPATH;
                 $this->hostOption = "--host " . str_replace("mongodb://", "", MONGODB_CONN);
             }
         } else if (strpos(getcwd(), '/var/www/') !== true) {
             print "Script being run on your LOCAL MACHINE khrap\n";
             $this->environment = "local";
-            $this->lfAssetsPath = $this::LOCAL_LFPATH;
-            $this->sfAssetsPath = $this::LOCAL_SFPATH;
+            $this->lfSitePath = $this::LOCAL_LFPATH;
+            $this->sfSitePath = $this::LOCAL_SFPATH;
             $this->hostOption = "";
         } else {
             exit("Cannot be run on LIVE SERVER.  EXITING\n");
@@ -193,11 +195,13 @@ class FactoryReset
         if (count($argv) > 1 && $argv[1] == 'run') {
             $runForReal = true;
         } else {
-            print "\nUsage: FactoryReset.php <run> <DIRECTORY>\n";
+            print "\nUsage: FactoryReset.php <run> <SSH Key file> <DIRECTORY>\n";
             print "Run factory reset and restore mongodb and assets from DIRECTORY\n";
             print "\nTest Mode - no data will be changed\n--------------------------------\n\n";
         }
-        $archivePath = (count($argv) > 2 ? $argv[2] : "");
+        $keys = count($argv) > 2 ? $argv[2]: '';
+        file_exists($keys) or die('SSH key file ' . $keys . ' does not exist');
+        $archivePath = count($argv) > 3 ? $argv[3] : '';
 
         $projectList = new ProjectListModel();
         $projectList->read();
@@ -231,7 +235,7 @@ class FactoryReset
 
         if (is_dir($archivePath)) {
             print "\nExtracting archives...\n";
-            foreach (glob("$archivePath/*.tgz") as $filename) {
+            foreach (glob("$archivePath/*tgz*") as $filename) {
                 print "Extracting $filename\n";
                 $cmd = "tar -xzf $filename -C $archivePath";
                 $this->Execute($runForReal, $cmd);
@@ -239,6 +243,8 @@ class FactoryReset
 
             print "\nEnsure www-data has permissions...\n";
             $cmd = "sudo chgrp -R www-data $archivePath/var/www";
+            $this->Execute($runForReal, $cmd);
+            $cmd = "sudo chmod -R g+w $archivePath/var/www";
             $this->Execute($runForReal, $cmd);
             $cmd = "sudo chown -R www-data:fieldworks $archivePath/var/lib";
             $this->Execute($runForReal, $cmd);
@@ -252,47 +258,60 @@ class FactoryReset
             $this->UpdateDBSiteName($runForReal);
 
             print "\nRestoring assets...\n";
-            $cmd = "rsync -rzlt --chmod=Dug=rwx,Fug=rw,o-rwx --group " .
+            $rsyncCmd = "rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx " .
                 "--delete-during --stats --rsync-path='sudo rsync' " .
+                "--rsh='ssh -v -i " . $keys . "' ";
+            $cmd = $rsyncCmd .
                 "--exclude=sfchecks " .
-                "$archivePath/var/www/languageforge.org/htdocs/assets/ " .
-                "$this->lfAssetsPath/htdocs/assets/";
+                $archivePath . "/var/www/languageforge.org/htdocs/assets/ " .
+                $this->lfSitePath . "/htdocs/assets/";
             $this->Execute($runForReal, $cmd);
 
-            $cmd = "rsync -rzlt --chmod=Dug=rwx,Fug=rw,o-rwx --group " .
-                "--delete-during --stats --rsync-path='sudo rsync' " .
+            $cmd = $rsyncCmd .
                 "--exclude=lexicon --exclude=semdomtrans " .
-                "$archivePath/var/www/scriptureforge.org/htdocs/assets/ " .
-                "$this->sfAssetsPath/htdocs/assets/";
+                $archivePath . "/var/www/scriptureforge.org/htdocs/assets/ " .
+                $this->sfSitePath . "/htdocs/assets/";
             $this->Execute($runForReal, $cmd);
 
-            $cmd = "sudo rm -R $this->lfmergeSendReceivePath/state/*";
+            $cmd = $rsyncCmd .
+                $archivePath . "/var/lib/languageforge/lexicon/sendreceive/ " .
+                $this->lfmergeSendReceivePath;
             $this->Execute($runForReal, $cmd);
-            $cmd = "sudo rm -R $this->lfmergeSendReceivePath/webwork/*";
+
+            print "\nCleanup cache...\n";
+            $cmd = 'gulp build-clearLocalCache';
             $this->Execute($runForReal, $cmd);
-            $cmd = "rsync -rzlt --chmod=Dug=rwx,Fug=rw,o-rwx --group " .
-                "--delete-during --stats --rsync-path='sudo rsync' " .
-                "$archivePath$this->lfmergeSendReceivePath $this->lfmergeSendReceivePath";
-            $this->Execute($runForReal, $cmd);
+
+            if ($this->environment == "dev" ||
+                $this->environment == "qa") {
+                $cmd = $rsyncCmd .
+                    "../../src/cache/ " .
+                    $this->lfSitePath . "/htdocs/cache/";
+                $this->Execute($runForReal, $cmd);
+
+                $cmd = $rsyncCmd .
+                    "../../src/cache/ " .
+                    $this->sfSitePath . "/htdocs/cache/";
+                $this->Execute($runForReal, $cmd);
+            }
 
             print "\nCleanup extracted files...\n";
             $cmd = "sudo rm -R $archivePath/var";
             $this->Execute($runForReal, $cmd);
-            $cmd = "sudo rm -R $archivePath/backup/mongo_backup";
+            $cmd = "sudo rm -R $archivePath/backup";
             $this->Execute($runForReal, $cmd);
         } else {
+            // No assets to restore so just create an account
             print "\nCreating local user: admin password: password\n";
             if ($runForReal) {
-                $scriptureforgeWebsite = Website::get('scriptureforge.org');
                 $languageforgeWebsite = Website::get('languageforge.org');
                 $adminUser = UserCommands::createUser(array(
-                    'id' => '',
+                    'username' => 'admin',
                     'name' => 'Admin',
                     'email' => 'admin@admin.com',
-                    'username' => 'admin',
                     'password' => 'password',
-                    'active' => true,
-                    'role' => SystemRoles::SYSTEM_ADMIN),
+                    'role' => SystemRoles::SYSTEM_ADMIN,
+                    'active' => true),
                     $languageforgeWebsite
                 );
             }
