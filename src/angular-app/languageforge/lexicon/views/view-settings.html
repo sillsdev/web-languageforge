@@ -65,11 +65,10 @@
                         <i class="fa fa-times"></i> {{'Remove Member Specific Settings' | translate}} </button>
                 </div>
             </div>
-            <br />
         <uib-accordion close-others="true">
         <uib-accordian-group uib-accordion-group is-open="true">
         <uib-accordion-heading>
-            <div class="card">
+            <div class="card card-block">
                 <h3>{{'Enabled Fields for' | translate}} {{forWhom | translate}}</h3>
             </div>
         </uib-accordion-heading>
@@ -139,7 +138,7 @@
             <div class="col-md-8 form-group">
 
                 <!-- settings -->
-                <div class="well">
+                <div class="card card-block bg-faded">
                     <h3 style="font-weight:normal">{{fieldConfig[currentField.name].label}} {{'Field View Settings' | translate}}</h3>
                     <div class="form-group">
                         <div class="controls">
