@@ -700,7 +700,7 @@ gulp.task('build-node-bundle', function (cb) {
     debug: false
   };
   execute('node node_modules/browserify/bin/cmd.js' +
-    ' src/angular-app/languageforge/translate/views/editor.node' +
+    ' src/angular-app/languageforge/translate/js/realTime.node' +
     ' -o src/node/static/dist/bundle.js', options, cb);
 });
 
