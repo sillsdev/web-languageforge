@@ -2,11 +2,11 @@
 
 The aim of this visual design interation was to provide a Bootstrap 3 upgrade to key views in LanguageForge.
 
-* The home page
-* A general content page
-* The lexicon editor view
-* The comment edit view
-* A general lexicon read-only view
+* The [home](http://htmlpreview.github.io/?https://github.com/sillsdev/web-languageforge/blob/master/docs/webdesign/LanguageForgeV2/main.html) page
+* A [general content](http://htmlpreview.github.io/?https://github.com/sillsdev/web-languageforge/blob/master/docs/webdesign/LanguageForgeV2/learn.html) page
+* The [lexicon editor](http://htmlpreview.github.io/?https://github.com/sillsdev/web-languageforge/blob/master/docs/webdesign/LanguageForgeV2/edit-list.html) view
+* The [comment edit](http://htmlpreview.github.io/?https://github.com/sillsdev/web-languageforge/blob/master/docs/webdesign/LanguageForgeV2/comments-list.html) view
+* A general [lexicon read-only](http://htmlpreview.github.io/?https://github.com/sillsdev/web-languageforge/blob/master/docs/webdesign/LanguageForgeV2/view-list.html) view
 
 There are five html files in this folder that provide the markup for sample pages in the LanguageForge visual redesign November 2014.
 

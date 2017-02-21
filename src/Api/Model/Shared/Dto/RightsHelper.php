@@ -160,6 +160,7 @@ class RightsHelper
             case 'message_send':
             case 'project_read':
             case 'project_settings':
+            case 'project_settings_by_id':
             case 'project_updateSettings':
             case 'project_readSettings':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
@@ -276,6 +277,7 @@ class RightsHelper
 
             // LanguageForge (lexicon)
             case 'lex_configuration_update':
+            case 'lex_configuration_read':
             case 'lex_upload_importLift':
             case 'lex_upload_importProjectZip':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
@@ -284,6 +286,7 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
             case 'lex_dbeDtoFull':
+            case 'lex_dbeDtoFull_by_id':
             case 'lex_dbeDtoUpdatesOnly':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
 

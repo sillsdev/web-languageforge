@@ -105,10 +105,10 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
       },
 
       /** @return {string} */
-      ERROR:   function () { return 'error'; },
+      ERROR:   function () { return (bootstrapVersion == 'bootstrap4' ? 'danger' : 'error'); },
 
       /** @return {string} */
-      WARN:    function () { return 'warn'; },
+      WARN:    function () { return (bootstrapVersion == 'bootstrap4' ? 'warning' : 'warn'); },
 
       /** @return {string} */
       INFO:    function () { return 'info'; },
@@ -121,7 +121,7 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
   function (noticeService, sessionService) {
     return {
       restrict: 'EA',
-      templateUrl: '/angular-app/bellows/directive/notice.html',
+      templateUrl : '/angular-app/bellows/directive/' + bootstrapVersion + '/notice.html',
       replace: true,
       compile: function () {
         return function ($scope) {

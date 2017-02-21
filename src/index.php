@@ -117,6 +117,11 @@ if (defined('ENVIRONMENT')) {
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => array(
 
+        __DIR__,
+
+        // angular-app
+        __DIR__.'/angular-app',
+
         // pages
         __DIR__.'/Site/views/'.$WEBSITE->base.'/theme/'.$WEBSITE->theme.'/page',
         __DIR__.'/Site/views/'.$WEBSITE->base.'/theme/'.$WEBSITE->theme,
@@ -126,9 +131,6 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
         __DIR__.'/Site/views/'.$WEBSITE->base,
         __DIR__.'/Site/views/shared/page',
         __DIR__.'/Site/views/shared',
-
-        // angular-app
-        __DIR__.'/angular-app',
 
         // errors
         __DIR__.'/Site/views/'.$WEBSITE->base.'/error',
@@ -156,7 +158,7 @@ $app['security.firewalls'] = array(
         'anonymous' => true,
         'form' => array('login_path' => '/auth/login', 'check_path' => '/app/login_check'),
         'remember_me' => array('key' => REMEMBER_ME_SECRET),
-        'logout' => array('logout_path' => '/app/logout', 'target_url' => '/auth/login', 'invalidate_session' => true),
+        'logout' => array('logout_path' => '/auth/logout', 'target_url' => '/auth/login', 'invalidate_session' => true),
         'users' => $app->share(function() use ($WEBSITE) {
             return new \Site\Provider\AuthUserProvider($WEBSITE);
         }),
@@ -167,7 +169,7 @@ $app['security.role_hierarchy'] = array(
     'ROLE_SITE_project_creator' => array('ROLE_user', 'ROLE_ALLOWED_TO_SWITCH'),
 );
 $app['security.access_rules'] = array(
-    array('^/app', 'ROLE_user'),
+    array('^/app(?!\/review-suggest)', 'ROLE_user'),
     array('^/upload', 'ROLE_user'),
     array('^/script', 'ROLE_system_admin'),
 );
@@ -180,6 +182,9 @@ $app['security.authentication.success_handler.site'] = $app->share(function() us
         'default_target_path' => '/app',
         'login_path' => '/auth/login',
     ), 'site');
+});
+$app['security.authentication.failure_handler.site'] = $app->share(function() use ($app) {
+    return new \Site\Handler\AuthenticationFailureHandler($app['kernel'], $app['security.http_utils']);
 });
 $app['security.authentication.logout_handler.site'] = $app->share(function() use ($app) {
     return new \Site\Handler\LogoutSuccessHandler($app['security.http_utils'], '/', $app['session']);
@@ -209,24 +214,28 @@ $app->get('/app/{appName}/{projectId}/',    'Site\Controller\App::view');
 $app->get('/app/{appName}/{projectId}',     'Site\Controller\App::view');
 $app->get('/app/{appName}/',    'Site\Controller\App::view')->value('appName', 'projects');
 $app->get('/app/{appName}',     'Site\Controller\App::view')->value('appName', 'projects');
-$app->get('/script/{folder}/{scriptName}/{runType}', 'Site\Controller\Script::view');
-$app->get('/script/{folder}/{scriptName}/', 'Site\Controller\Script::view');
-$app->get('/script/{folder}/{scriptName}',  'Site\Controller\Script::view');
-$app->get('/script/',  'Site\Controller\Script::view');
-$app->get('/script',  'Site\Controller\Script::view');
+$app->get('/script/{folder}/{scriptName}/{runType}', 'Site\Controller\Script::run');
+$app->get('/script/{folder}/{scriptName}/', 'Site\Controller\Script::run');
+$app->get('/script/{folder}/{scriptName}',  'Site\Controller\Script::run');
+$app->get('/script/',  'Site\Controller\Script::run');
+$app->get('/script',  'Site\Controller\Script::run');
 
 //public
 $app->post('/api/{apiName}',    'Site\Controller\Api::service');
-$app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bind('auth_forgot_password');
+
+$app->get('/public/{appName}/{projectId}/', 'Site\Controller\App::view');
+$app->get('/public/{appName}/{projectId}', 'Site\Controller\App::view');
+$app->get('/public/{appName}/', 'Site\Controller\App::view');
+$app->get('/public/{appName}', 'Site\Controller\App::view');
 
 $app->get('/validate/{validateKey}', 'Site\Controller\Validate::check');
 $app->get('/auth/reset_password/{resetPasswordKey}', 'Site\Controller\Auth::view')->value('appName', 'reset_password');
+$app->get('/auth/{appName}',    'Site\Controller\Auth::view')->value('appName', 'login');
+$app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bind('auth_forgot_password');
+
 $app->get('/download/assets/{appName}/{projectSlug}/audio/{filename}', 'Site\Controller\Download::assets');
 $app->get('/download/assets/{appName}/{projectSlug}/{filename}', 'Site\Controller\Download::assets');
-$app->get('/signup',            'Site\Controller\PublicApp::view')->value('appName', 'signup');
-$app->get('/registration',      'Site\Controller\PublicApp::view')->value('appName', 'registration');
-$app->get('/login',             'Site\Controller\Auth::view')->value('appName', 'login');
-$app->get('/auth/{appName}',    'Site\Controller\Auth::view')->value('appName', 'login');
+$app->get('/{pageName}/',        'Site\Controller\Page::view')->value('pageName', 'home');
 $app->get('/{pageName}',        'Site\Controller\Page::view')->value('pageName', 'home');
 
 /*--------------------------------------------------------------------

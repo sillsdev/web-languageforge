@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="text-xs-center">
+                <h3>Verify Data</h3>
+                <p>{{newProject.entriesImported}} entries were found in the initial data.</p>
+                <div data-ng-hide="hasImportErrors()" translate="There were no non-critical import errors"></div>
+                <div data-ng-show="hasImportErrors()">
+                    <button class="btn btn-secondary" id="nonCriticalErrorsButton" data-ng-click="show.importErrors = !show.importErrors">
+                        {{showImportErrorsButtonLabel()}}</button>
+                    <div data-collapse="! show.importErrors">
+                        <pre id="importErrors">{{newProject.importErrors}}</pre>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>

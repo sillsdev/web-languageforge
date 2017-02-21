@@ -1,0 +1,909 @@
+fieldset.comment-filter {
+  margin: 20px;
+  border: 2px groove threedface; }
+
+legend.override-bootstrap {
+  width: auto;
+  margin: inherit;
+  margin-left: 20px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: inherit;
+  padding-bottom: inherit;
+  border: 0;
+  font-size: inherit;
+  line-height: inherit; }
+
+.override-bootstrap.filter-controls {
+  margin-bottom: 5px; }
+
+.filter-controls-inner {
+  margin: 0 5px 5px 5px; }
+
+.filter-controls-inner.collapse.in {
+  /* When div is not collapsed, and ONLY when it is not collapsed, override "overflow: hidden".
+    This is required so that the date picker popup can be shown. */
+  overflow: inherit; }
+
+/*animate*/
+.animate-switch-container {
+  position: relative;
+  height: 665px;
+  overflow: hidden; }
+
+.animate-switch.ng-animate {
+  -webkit-transition: all cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s;
+  -moz-transition: all cubic-bezier(0.25, 0.46, 0.45, 0.04) 0.5s;
+  transition: all ease-in 0.5s;
+  position: relative;
+  display: block; }
+
+.animate-switch.ng-leave.ng-leave-active,
+.animate-switch.ng-enter {
+  /*animation: moveToLeft .5s ease-in;*/
+  right: 721px; }
+
+.animate-switch.ng-leave,
+.animate-switch.ng-enter.ng-enter-active {
+  /*animation: moveToRight .5s ease-in;*/
+  right: 0; }
+
+/* This is TODO for getting the scroll bars to line up in the animation
+.animate-switch.moveToLeft {
+    -webkit-animation: moveToLeft .5s ease both;
+    animation: moveToLeft .5s ease both;
+}
+
+.animate-switch.moveToRight {
+    -webkit-animation: moveToRight .5s ease both;
+    animation: moveToRight .5s ease both;
+}
+
+******************** keyframes ***************************************
+
+@-webkit-keyframes moveToLeft {
+    from { margin-right: 100%; width: 100%; }
+    to { margin-right: 22%; width:22%; }
+}
+@keyframes moveToLeft {
+    from { margin-right: 100%; width: 100%; }
+    to { margin-right: 22%; width:22%; }
+}
+
+@-webkit-keyframes moveToRight {
+    from { margin-right: 22%; width: 22%; }
+    to { margin-right: 100%; width:100%; }
+}
+@keyframes moveToRight {
+    from { margin-right: 22%; width: 22%; }
+    to { margin-right: 100%; width:100%; }
+}
+
+@-webkit-keyframes moveToLeft {
+    from { }
+    to { -webkit-transform: translateX(-100%); }
+}
+@keyframes moveToLeft {
+    from { }
+    to { -webkit-transform: translateX(-100%); transform: translateX(-100%); }
+}
+
+@-webkit-keyframes moveToRight {
+    from { }
+    to { -webkit-transform: translateX(100%); }
+}
+@keyframes moveToRight {
+    from { }
+    to { -webkit-transform: translateX(100%); transform: translateX(100%); }
+}
+
+
+
+/*********************************************************/
+.override-bootstrap input[type="checkbox"] {
+  text-align: center;
+  margin-top: 0;
+  margin-right: 4px; }
+
+.datepicker input {
+  text-align: center;
+  margin-bottom: 0; }
+
+.datepicker label {
+  display: inline; }
+
+.text-center {
+  /* Date picker uses this class for its week numbers */
+  text-align: center; }
+
+.datepicker table th, .datepicker table td {
+  /* Override lf.css */
+  padding: 1px; }
+
+.datepicker table th button.pull-left, .datepicker table th button.pull-right {
+  padding: 2px 13px; }
+
+.datepicker button i {
+  /* Override ls.css */
+  margin-right: 0; }
+
+.datepicker table tbody tr:hover, .datepicker table tbody tr.altrow:hover {
+  /* Override lf.css */
+  background-color: inherit; }
+
+.datepicker th button, .datepicker td button {
+  /* Override bootstrap.css */
+  background: #fff; }
+
+.datepicker th button.btn-info, .datepicker td button.btn-info {
+  /* Un-override bootstrap.css for btn-info */
+  background-color: #49afcd; }
+
+.filter-controls button i {
+  /* Override lf.css */
+  margin-right: 0; }
+
+.filter-controls .horiz-controls {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  /* Or try space-between */
+  margin-bottom: 10px; }
+
+.filter-controls .horiz-controls.flex-center {
+  justify-content: center;
+  /* Or try space-between */ }
+
+.filter-controls .horiz-controls .horiz-flex-element {
+  margin: 0 10px; }
+
+.filter-controls .horiz-controls {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  /* Or try space-between */ }
+
+.filter-controls .horiz-controls .self-flex-end {
+  align-self: flex-end; }
+
+.filter-controls .top-right-corner {
+  position: absolute;
+  top: 0;
+  /* Might need to increase this once the "For the demo, these do NOT work" text goes away */
+  right: 10px; }
+
+#entryList {
+  /* Override palaso-ui.css */
+  /*    height: auto !important;*/
+  height: 550px;
+  margin-bottom: 20px; }
+
+#entryList .table {
+  margin-bottom: 0; }
+
+.outer-flex {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch; }
+
+.lexiconHeaderContainer {
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between; }
+
+#lexAppListView .lexiconItemListContainer {
+  height: 560px;
+  overflow: auto;
+  margin-bottom: 15px; }
+
+.uneditable-input {
+  cursor: auto;
+  color: inherit;
+  background-color: white; }
+
+#lexAppEditView .lexiconItemListContainer {
+  max-height: 560px;
+  overflow: auto; }
+
+#lexAppEditView .word-definition-title {
+  margin-bottom: 5px;
+  padding: 8px 0 24px; }
+
+#lexAppEditView .card-block .addItem {
+  margin-right: 0; }
+
+#lexAppEditView .topAddMeaning {
+  margin-bottom: 14px; }
+
+#lexAppEditView .list-group-item:not(.list-group-item-action) {
+  cursor: pointer; }
+
+#lexAppEditView .listItemPrimary {
+  z-index: 2;
+  font-size: 1.0em;
+  font-weight: bold;
+  overflow: hidden; }
+
+#lexAppEditView .listItemSecondary {
+  z-index: 2;
+  font-size: 0.8em;
+  overflow: hidden; }
+
+#lexAppEditView .deleteX i {
+  cursor: pointer; }
+
+#lexAppEditView .deleteX i:hover {
+  color: #d9534f; }
+
+#lexAppEditView .dc-example.card .card-header {
+  background: #cfcfcf; }
+
+.lexiconListItemCompact {
+  position: relative;
+  overflow-y: hidden;
+  min-height: 40px;
+  height: 40px;
+  border-bottom: solid 1px darkgrey;
+  width: 100%; }
+
+.lexiconItemListContainer .selected {
+  background-color: #e4e5ff; }
+
+.lexiconItemListContainer .listItemHasComment {
+  border-right: solid 5px #faa732; }
+
+.entryItemView {
+  /*  TODO: review this in light of animation and the footer staying at the bottom. IJH 2014-09
+        The view is used in edit and comment view */
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 580px; }
+
+.entryItemView i.icon-remove {
+  cursor: pointer;
+  color: #CCC; }
+
+#lexAppCommentView .entryItemView {
+  max-height: 580px; }
+
+#lexAppCommentView .commentCount {
+  color: #faa732;
+  font-weight: bold;
+  padding: 5px;
+  width: 120px;
+  text-align: right; }
+
+#lexAppCommentView form.dc-multitext .uneditable-input {
+  height: 20px;
+  overflow: hidden; }
+
+#lexAppCommentView form.dc-multitext .uneditable-input:hover {
+  cursor: pointer; }
+
+#lexAppCommentView .dc-multioptionlist-value,
+.commentRegarding .dc-multioptionlist-value {
+  background-color: inherit;
+  width: inherit; }
+
+#lexAppCommentView .commentListView img,
+.commentRegarding img {
+  width: 50px; }
+
+form.submitted .ng-invalid {
+  border: 1px solid #f00; }
+
+div.dc-audio, .dc-audio > div {
+  display: inline-block; }
+
+div.dc-audio {
+  background-color: #f9f9f9; }
+
+div.dc-audio {
+  min-height: 28px; }
+
+.dc-audio .player {
+  font-size: initial;
+  margin-top: 6px; }
+
+.dc-audio .player a {
+  padding-left: 6px; }
+
+.dc-audio .player i {
+  margin-right: 3px; }
+
+.dc-audio .audioProgress {
+  font-weight: normal; }
+
+.dc-audio .btn.dropdown-toggle, .dc-audio .btn.buttonAppend {
+  margin-top: -1px;
+  margin-bottom: -1px;
+  border-radius: 0 4px 4px 0;
+  color: #e67345; }
+
+.dc-audio .caret {
+  /*border-top: 4px solid #e67345;*/ }
+
+.dc-audio div.control-group.pull-right, .dc-audio div.control-group.pull-left {
+  margin-bottom: 0; }
+
+.dc-audio .drop-box {
+  padding: 14px;
+  margin-bottom: 20px; }
+
+.dc-audio .deleteX {
+  margin-right: 7px; }
+
+.dc-audio .buttonAppend {
+  font-size: initial;
+  margin-top: 6px; }
+
+.dc-audio .buttonAppend i {
+  margin-right: 0; }
+
+.dc-audio > div > a {
+  margin-left: 5px; }
+
+/* mock upload */
+.dc-audio input {
+  display: block; }
+
+.dc-formattedtext .ta-root {
+  display: block; }
+
+.dc-formattedtext .ta-toolbar {
+  float: right;
+  margin-top: -1px;
+  margin-bottom: -1px;
+  margin-left: 5px;
+  margin-right: 5px; }
+
+.dc-formattedtext p {
+  margin: 0; }
+
+.dc-formattedtext .dc-multiline .ta-editor {
+  height: 112px; }
+
+.dc-formattedtext .ta-editor {
+  min-height: 38px;
+  height: auto;
+  overflow: auto;
+  white-space: normal;
+  border-radius: 0 4px 4px 0; }
+
+.dc-formattedtext .dc-multiline .ta-scroll-window.form-control {
+  min-height: 112px; }
+
+.dc-formattedtext .ta-scroll-window.form-control {
+  min-height: 38px;
+  border-radius: 0 0.25rem 0.25rem 0 !important; }
+
+.dc-formattedtext .ta-editor,
+.dc-formattedtext .ta-scroll-window > .ta-bind,
+.dc-formattedtext .ta-root textarea {
+  min-height: 38px; }
+
+.dc-formattedtext .dc-multiline .ta-editor,
+.dc-formattedtext .dc-multiline .ta-scroll-window > .ta-bind,
+.dc-formattedtext .dc-multiline .ta-root textarea {
+  min-height: 100px; }
+
+.dc-formattedtext .ta-scroll-window > .ta-readonly:hover {
+  cursor: not-allowed; }
+
+/* language span highlight */
+.dc-formattedtext .ta-editor span {
+  /*border: 1px solid transparent;*/
+  border-radius: 9px;
+  padding-left: 5px;
+  padding-right: 5px; }
+
+.dc-formattedtext .ta-editor span:hover {
+  /*border: 1px solid #ADDDDD;*/
+  background-color: #ADDDDD; }
+
+/* auto hide the toolbar when not selected (focused) */
+.ta-root .ta-toolbar {
+  display: none; }
+
+.ta-root.focussed .ta-toolbar {
+  display: block; }
+
+form.dc-multioptionlist {
+  margin: 0;
+  margin-right: -4px; }
+
+form.dc-multioptionlist .controls div {
+  display: inline-block; }
+
+form.dc-multioptionlist .controls > div {
+  margin-bottom: 10px; }
+
+.dc-multioptionlist-values {
+  position: relative; }
+
+.dc-multioptionlist-values > div {
+  padding-right: 9px; }
+
+.dc-multioptionlist-value {
+  border: 1px solid #ddd;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem; }
+
+form.dc-multioptionlist i.closeicon {
+  position: absolute;
+  top: -6px;
+  right: 0;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  text-align: center; }
+
+form.dc-multioptionlist i.closeicon:hover {
+  background: #d9534f;
+  color: #fff; }
+
+.dc-multioptionlist-value select, dc-multioptionlist .addItem {
+  margin-bottom: 20px; }
+
+dc-multioptionlist .spacing-after {
+  line-height: 0;
+  margin-bottom: 10px; }
+
+form.dc-multiparagraph .control-group {
+  margin-bottom: 10px; }
+
+/* TODO Review when doing the Bootstrap 3 upgrade. Bootstrap seems to overly constrain input sizes artificially. */
+form.dc-multiparagraph label {
+  font-weight: bold;
+  cursor: default; }
+
+form.dc-multiparagraph .uneditable-input {
+  height: 38px;
+  overflow: auto; }
+
+form.dc-multiparagraph .uneditable-input.multiline,
+form.dc-multiparagraph textarea {
+  height: 60px; }
+
+form.dc-multiparagraph .uneditable-input:hover {
+  cursor: not-allowed; }
+
+form.dc-multiparagraph textarea {
+  border-radius: 0 0.25rem 0.25rem 0 !important; }
+
+form.dc-multiparagraph textarea:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6); }
+
+/* input prepend sized to input and textarea */
+form.dc-multiparagraph .input-prepend {
+  line-height: normal;
+  background-color: #EEE;
+  border: 1px solid #CCC;
+  border-radius: 4px; }
+
+form.dc-multiparagraph .wsid {
+  border: 0; }
+
+form.dc-multiparagraph input[type="text"],
+form.dc-multiparagraph textarea,
+form.dc-multiparagraph .uneditable-input {
+  margin-top: -1px;
+  margin-bottom: -1px;
+  margin-left: 0;
+  margin-right: -1px; }
+
+/* language span highlight */
+form.dc-multiparagraph .uneditable-input span {
+  border-radius: 9px;
+  padding-left: 5px;
+  padding-right: 5px; }
+
+form.dc-multiparagraph .uneditable-input span:hover {
+  background-color: #ADDDDD; }
+
+form.dc-multitext .control-group {
+  margin-bottom: 10px; }
+
+form.dc-multitext label,
+form.dc-optionlist label,
+form.dc-multioptionlist label,
+form.dc-semanticdomain label {
+  font-weight: bold;
+  cursor: default; }
+
+form.dc-multitext .uneditable-input {
+  height: 38px;
+  overflow: auto; }
+
+form.dc-multitext .uneditable-input.multiline,
+form.dc-multitext textarea {
+  height: 60px; }
+
+form.dc-multitext .uneditable-input:hover {
+  cursor: not-allowed; }
+
+form.dc-multitext textarea:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6); }
+
+form.dc-multitext .wsid {
+  border: 0; }
+
+form.dc-multitext input[type="text"],
+form.dc-multitext textarea,
+form.dc-multitext .uneditable-input {
+  margin-top: -1px;
+  margin-bottom: -1px;
+  margin-left: 0;
+  margin-right: -1px; }
+
+/* language span highlight */
+form.dc-multitext .uneditable-input span {
+  border-radius: 9px;
+  padding-left: 5px;
+  padding-right: 5px; }
+
+form.dc-multitext .uneditable-input span:hover {
+  background-color: #ADDDDD; }
+
+.dc-pictures {
+  margin-bottom: 0px; }
+
+.dc-pictures label {
+  font-weight: bold; }
+
+.addItem.addPicture {
+  margin-bottom: 20px; }
+
+.dc-picture {
+  position: relative;
+  display: block;
+  vertical-align: top; }
+
+.dc-picture .dc-multitext .controls {
+  margin-left: 0px; }
+
+.dc-picture img {
+  height: 150px;
+  margin: 0 0 14px; }
+
+.dc-picture .pictureX {
+  position: absolute;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  right: 0;
+  line-height: 28px;
+  text-align: center; }
+  .dc-picture .pictureX i {
+    vertical-align: top; }
+
+form.dc-pictures form.dc-multitext .controls input[type="text"] {
+  width: 95px; }
+
+form.dc-pictures .dc-drop-box {
+  width: 100%;
+  display: block; }
+  form.dc-pictures .dc-drop-box .drop-box {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 20px; }
+  form.dc-pictures .dc-drop-box .deleteX {
+    margin-right: 10px; }
+  form.dc-pictures .dc-drop-box .progress {
+    width: 150px; }
+
+@media (max-width: 767px) {
+  .dc-picture img {
+    max-width: 100%;
+    height: auto; } }
+
+.dc-rendered-word {
+  font-weight: bold; }
+
+.dc-rendered-senseContainer {
+  margin: 0 3px 0 3px; }
+
+.dc-rendered-partOfSpeech {
+  font-style: italic; }
+
+.dc-rendered-definition {
+  margin: 0 3px 0 3px; }
+
+.dc-rendered-exampleSentence {
+  margin: 0 3px 0 3px;
+  font-style: italic; }
+
+form.dc-semanticdomain {
+  margin: 0;
+  margin-right: -4px; }
+
+form.dc-semanticdomain .controls div {
+  display: inline-block; }
+
+form.dc-semanticdomain .controls > div {
+  margin-bottom: 10px; }
+
+.dc-semanticdomain-values {
+  position: relative; }
+
+.dc-semanticdomain-values > div {
+  padding-right: 9px; }
+
+.dc-semanticdomain-value {
+  border: 1px solid #ddd;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem; }
+
+form.dc-semanticdomain i.closeicon {
+  position: absolute;
+  top: -6px;
+  right: 0;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  text-align: center; }
+
+form.dc-semanticdomain i.closeicon:hover {
+  background: #d9534f;
+  color: #fff; }
+
+.dc-semanticdomain-value select, dc-semanticdomain .addItem {
+  margin: 0 0 20px; }
+
+dc-semanticdomain .spacing-after {
+  line-height: 0;
+  margin-bottom: 10px; }
+
+/* Comments css */
+#lexAppCommentView .dc-rendered-entryContainer {
+  margin-bottom: 27px;
+  padding: 6px 0; }
+
+.comments-search-container {
+  position: relative; }
+  .comments-search-container input {
+    padding-right: 160px; }
+  .comments-search-container select {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 150px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0; }
+
+.regardingFieldName {
+  font-weight: bold; }
+
+.regardingContext {
+  font-weight: bold; }
+
+.regardingInputSystem.add-on {
+  font-size: 12px;
+  width: 30px;
+  height: 15px; }
+
+.regardingFieldValue.uneditable-input {
+  font-size: 12px;
+  height: 15px; }
+
+.commentContainer {
+  margin: 5px 0 14px 0;
+  position: relative; }
+
+.commentContentContainer {
+  display: flex;
+  width: 100%; }
+  .commentContentContainer .deleteX {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    position: absolute;
+    z-index: 1;
+    right: 5px;
+    cursor: pointer; }
+  .commentContentContainer .deleteX:hover {
+    color: #d9534f; }
+  .commentContentContainer .commentRegarding .row {
+    margin-bottom: 2px; }
+  .commentContentContainer .commentRegarding .card-block {
+    padding: 11px; }
+    .commentContentContainer .commentRegarding .card-block label, .commentContentContainer .commentRegarding .card-block .input-group-addon, .commentContentContainer .commentRegarding .card-block .form-control, .commentContentContainer .commentRegarding .card-block em {
+      font-size: 12px; }
+
+.comment-replies {
+  position: relative;
+  line-height: 14px;
+  margin-bottom: 6px; }
+  .comment-replies .comment-inline-reply {
+    right: 0;
+    position: absolute;
+    top: 0;
+    z-index: 1; }
+  .comment-replies .replyContent {
+    font-size: 12px;
+    color: #808080; }
+
+.commentContent {
+  float: left;
+  width: 100%;
+  padding-right: 20px; }
+
+.commentContentContainer i.icon-remove:hover, .commentRepliesContainer i.icon-remove:hover {
+  color: #ed364f; }
+
+.commentContentContainer i.icon-remove, .commentRepliesContainer i.icon-remove {
+  cursor: pointer;
+  color: #7c7c7c; }
+
+.commentBottomBar {
+  background-color: #f4f4f4;
+  padding: 3px 6px;
+  border-radius: 0.25rem;
+  width: 100%;
+  float: left; }
+  .commentBottomBar i.fa-edit, .commentBottomBar i.fa-check, .commentBottomBar i.fa-chevron-sign-up {
+    cursor: pointer;
+    color: #7c7c7c;
+    padding-left: 10px; }
+  .commentBottomBar i.fa-edit:hover {
+    color: #247aff; }
+  .commentBottomBar i.fa-check:hover {
+    color: #8be25c; }
+
+.commentLeftSide {
+  text-align: center;
+  flex: 1; }
+
+.commentRightSide {
+  flex: 5;
+  padding: 0px 10px; }
+  .commentRightSide .commentEditing {
+    width: 100%; }
+    .commentRightSide .commentEditing .btn {
+      margin-top: 14px; }
+
+.comment-status .comment-status-resolved {
+  height: 25px; }
+
+.comment-status .comment-status-todo {
+  font-size: 12px;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 3px;
+  margin-bottom: 3px; }
+  .comment-status .comment-status-todo i {
+    color: #247aff; }
+
+.commentPlusOne .icon-thumbs-up-alt {
+  color: darkblue;
+  margin-left: 5px; }
+
+.commentPlusOne {
+  font-weight: bold; }
+
+.commentAuthor {
+  font-size: small;
+  color: #808080; }
+
+.commentRepliesContainer .commentAuthor {
+  font-style: italic; }
+
+.commentDate {
+  font-size: x-small;
+  color: #808080;
+  line-height: 1.2em;
+  margin: 5px; }
+
+.editReplyLink {
+  padding-right: 10px;
+  cursor: pointer; }
+
+.deleteReplyLink {
+  cursor: pointer; }
+
+.resolvedComment {
+  opacity: .5; }
+
+.commentCount {
+  color: #faa732;
+  font-weight: bold;
+  padding: 5px;
+  width: 120px;
+  text-align: right; }
+
+.newCommentForm {
+  padding-bottom: 10px; }
+  .newCommentForm textarea {
+    height: 90px; }
+  .newCommentForm button {
+    margin-top: 10px; }
+  .newCommentForm .muted {
+    font-style: italic;
+    padding-bottom: 5px; }
+
+.commentListView {
+  overflow-y: scroll;
+  height: 588px; }
+
+.selectableFieldForComment:hover {
+  background-color: #eee;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem; }
+
+.selectableFieldForComment, .selectableInputSystemFieldForComment {
+  cursor: pointer;
+  border: 1px solid transparent; }
+
+.selectableInputSystemFieldForComment:hover {
+  background-color: rgba(170, 255, 0, 0.1);
+  border: 1px solid #ddd;
+  border-radius: 0.25rem; }
+
+.selectableInputSystemFieldForComment:hover .input-group-addon {
+  background-color: rgba(170, 255, 0, 0.1); }
+
+.selectableInputSystemFieldForComment .uneditable-input, .selectableFieldForComment .uneditable-input {
+  cursor: pointer; }
+
+#lexAppListView {
+  margin-top: 20px; }
+  #lexAppListView .lexiconListItem {
+    cursor: pointer; }
+    #lexAppListView .lexiconListItem h5 {
+      margin: 0; }
+  #lexAppListView .lexiconListItem.active {
+    cursor: default; }
+  #lexAppListView .no-entries .btn {
+    margin: 0 20px 10px 0; }
+  #lexAppListView .no-entries .btn:last-child {
+    margin-right: 0; }
+
+#lexAppEditView h5 {
+  margin: 0; }
+
+.lexAppToolbar {
+  border: 1px solid #ddd;
+  margin: 10px 0 20px;
+  padding: 4px;
+  width: 100%;
+  float: left;
+  background-color: #f6f6f6;
+  border-radius: 0.25rem; }
+
+.hdrnav .hdrnav-container {
+  float: left;
+  width: 100%; }
+  .hdrnav .hdrnav-container .btn-group {
+    margin-left: 10px; }
+
+form .wsid {
+  width: 50px;
+  text-align: right; }
+
+@media (max-width: 767px) {
+  .dc-rendered-word {
+    display: block; }
+  .hdrnav .return-button {
+    float: left; }
+  #lexAppCommentView .entryItemView, #lexAppCommentView .commentListView {
+    max-height: none;
+    height: auto; } }
+
+#lexAppSettingsView .control-label {
+  font-weight: bold; }

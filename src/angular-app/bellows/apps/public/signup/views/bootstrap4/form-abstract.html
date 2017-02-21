@@ -1,0 +1,45 @@
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+
+        <div id="form-container">
+
+            <div class="text-xs-center">
+                <h1>Create an account for {{location.hostname}}</h1>
+                <sil-notices></sil-notices>
+            </div>
+
+            <!-- use ng-submit to catch the form submission and use our Angular function -->
+            <form class="form-horizontal" data-ng-submit="processForm()" id="signupForm" name="signupForm" novalidate>
+
+                <!-- our nested state views will be injected here -->
+                <div id="form-views" data-ui-view></div>
+            </form>
+
+            <!-- the links to our nested states using relative paths
+            <div id="status-buttons" align="center">
+                <a data-ui-sref-active="active" data-ui-sref=".identify">
+                    <span class="btn btn-success" translate="1"></span>
+                    {{'Identify' | translate}}</a>
+                <a data-ui-sref-active="active" data-ui-sref=".register">
+                    <span class="btn" translate="2"></span>
+                    {{'Register' | translate}}</a>
+                <a data-ui-sref-active="active" data-ui-sref=".activate" >
+                    <span class="btn" translate="2"></span>
+                    {{'Activate' | translate}}</a>
+                <a data-ui-sref-active="active" data-ui-sref="validate" >
+                    <span class="btn" translate="3"></span>
+                    {{'Validate' | translate}}</a>
+                <a data-ui-sref-active="active" data-ui-sref=".login" >
+                    <span class="btn" translate="4"></span>
+                    {{'Login' | translate}}</a>
+            </div>
+             -->
+        </div>
+
+        <!-- show our form data as it is being typed
+        <pre>
+        record = {{record | json}}
+        </pre>
+         -->
+    </div>
+</div>

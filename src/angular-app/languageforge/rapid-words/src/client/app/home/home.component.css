@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+
+input {
+  width: 250px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0 0 0 8px;
+}
+.input-group-addon{
+  background-color: red;
+}
+
+.sem-dom-description {
+  overflow-y: auto;
+  max-height: 50pt;
+  margin-top: 5pt;
+  margin-bottom: 0;
+}
+
+button.new-word-btn {
+  margin-top: 5pt;
+  width: 100%;
+}

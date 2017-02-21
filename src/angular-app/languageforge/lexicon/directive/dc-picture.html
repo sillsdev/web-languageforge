@@ -1,44 +1,47 @@
 <form class="form-horizontal dc-pictures">
-    <label class="control-label">{{config.label}}</label>
-    <div>
-        <div class="dc-picture" data-ng-repeat="picture in pictures">
-            <div data-ng-if="control.rights.canEditEntry() && $state.is('editor.entry')"
-                class="deleteX pull-right">
-                <i data-ng-click="deletePicture($index)" title="Delete Picture"
-                    class="icon-remove"></i>
-            </div>
-            <img data-ng-src="{{getPictureUrl(picture)}}" data-ng-attr-title="{{getPictureDescription(picture)}}"
-                 data-ng-click="control.selectFieldForComment('pictures', picture, '', '', getPictureUrl(picture))" />
-            <div data-ng-if="!config.captionHideIfEmpty || control.show.emptyFields ||
+    <div class="form-group row">
+        <label class="control-label col-md-4 text-md-right">{{config.label}}</label>
+        <div class="col-md-8">
+            <div class="dc-picture" data-ng-repeat="picture in pictures">
+                <div data-ng-if="control.rights.canEditEntry() && $state.is('editor.entry')"
+                     class="deleteX pictureX pull-right">
+                    <i data-ng-click="deletePicture($index)" title="Delete Picture"
+                       class="fa fa-times"></i>
+                </div>
+                <img class="img-fluid" data-ng-src="{{getPictureUrl(picture)}}" data-ng-attr-title="{{getPictureDescription(picture)}}"
+                     data-ng-click="control.selectFieldForComment('pictures', picture, '', '', getPictureUrl(picture))"/>
+                <div data-ng-if="!config.captionHideIfEmpty || control.show.emptyFields ||
                  (config.captionHideIfEmpty && fieldContainsData('multitext', picture.caption))">
-                <dc-multitext control="control"
-                    config="config"
-                    model="picture.caption"
-                    select-field="control.selectFieldForComment('pictures', picture.caption, inputSystem)">
-                </dc-multitext>
+                    <dc-multitext control="control"
+                                  config="config"
+                                  model="picture.caption"
+                                  select-field="control.selectFieldForComment('pictures', picture.caption, inputSystem)">
+                    </dc-multitext>
+                </div>
             </div>
-        </div>
-        <div class="dc-picture" data-ng-show="upload.showAddPicture">
-            <div class="deleteX pull-right">
-                <i data-ng-click="upload.showAddPicture = false" title="Cancel Adding Picture" class="icon-remove"
-                   id="addCancel"></i>
-            </div>
-            <div class="drop-box" data-ngf-drop="uploadFile($file)" data-ngf-drag-over-class="'dragover'">
-                <h4 data-translate="Drop an image file here"></h4>
-                <p data-translate="or if you prefer..."></p>
-                <div class="btn" id="browseButton" data-ngf-select="uploadFile($file)" data-translate="Browse..."></div>
-            </div>
-            <div data-ngf-no-file-drop>
-                <div class="btn" ngf-select="uploadFile($file)" data-translate="Browse..."></div>
-            </div>
-            <div data-ng-show="upload.file != null">
-                <p><strong>{{upload.file.name}}</strong> {{upload.file.size | bytes }}</p>
-                <progressbar value="upload.progress" max="100.0"></progressbar>
+            <div class="dc-picture dc-drop-box" data-ng-show="upload.showAddPicture">
+                <div class="deleteX pull-right">
+                    <i data-ng-click="upload.showAddPicture = false" title="Cancel Adding Picture" class="fa fa-times"
+                       id="addCancel"></i>
+                </div>
+                <div class="drop-box" data-ngf-drop="uploadFile($file)" data-ngf-drag-over-class="'dragover'">
+                    <h4 data-translate="Drop an image file here"></h4>
+                    <p data-translate="or if you prefer..."></p>
+                    <button class="btn btn-secondary" id="browseButton" data-ngf-select="uploadFile($file)"
+                         data-translate="Browse..."></button>
+                </div>
+                <div data-ngf-no-file-drop>
+                    <button class="btn btn-secondary" ngf-select="uploadFile($file)" data-translate="Browse..."></button>
+                </div>
+                <div data-ng-show="upload.file != null">
+                    <p><strong>{{upload.file.name}}</strong> {{upload.file.size | bytes }}</p>
+                    <progressbar value="upload.progress" max="100.0"></progressbar>
+                </div>
             </div>
         </div>
     </div>
 </form>
 <div data-ng-show="control.rights.canEditEntry() && $state.is('editor.entry') && ! upload.showAddPicture"
-    class="addItem">
-    <a data-ng-click="upload.showAddPicture = true; upload.progress = 0">Add Picture</a>
+     class="addItem addPicture">
+    <a class="btn btn-sm btn-secondary" data-ng-click="upload.showAddPicture = true; upload.progress = 0"><i class="fa fa-plus"></i> Add Picture</a>
 </div>

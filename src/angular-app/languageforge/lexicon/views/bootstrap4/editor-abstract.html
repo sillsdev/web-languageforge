@@ -1,0 +1,48 @@
+<div data-ng-cloak id="lexAppContainer">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="lexAppToolbar" data-ng-show="!$state.is('editor.list')">
+                <div class="pull-left">
+                    <a id="toListLink" data-ng-show="$state.is('editor.entry')" class="btn btn-secondary"
+                       data-ng-click="returnToList()"
+                       tooltip="{{'Back to List'|translate}}">
+                        <i class="fa fa-arrow-circle-left"></i>
+                        <span class="hidden-sm-down">{{'List'|translate}}</span></a>
+                    <a id="toEditLink" data-ng-show="$state.is('editor.comments')" class="btn btn-secondary"
+                       data-ng-click="editEntry(currentEntry.id)" tooltip="{{'Return to Edit Entry'|translate}}">
+                        <i class="fa fa-arrow-circle-left"></i>
+                        {{'Edit'|translate}}</a>
+                </div>
+                <div class="pull-right" data-ng-show="$state.is('editor.entry')">
+                    <span data-ng-if="rights.canEditEntry()">
+                        <span class="muted" {{saveNotice()}}</span>
+                        <button class="btn btn-success" data-ng-click="saveCurrentEntry(true)"
+                                data-ng-disabled="!currentEntryIsDirty()">
+                            <i class="fa fa-save"></i> <span class="hidden-sm-down">{{saveButtonTitle()}}</span>
+                        </button>
+                    </span>
+                    <span data-ng-if="entryLoaded()">
+                        <button id="toggleHiddenFieldsBtn" class="btn btn-secondary"
+                                data-ng-click="show.emptyFields = !show.emptyFields">
+                            <i class="fa fa-{{ show.emptyFields ? 'minus-square-o' : 'plus-square-o' }}"></i> <span class="hidden-sm-down">{{show.emptyFields ? 'Hide Hidden Fields' : 'Show Hidden Fields' | translate}}</span></button>
+                    </span>
+                    <a id="toCommentsLink"
+                       class="btn btn-warning" data-ng-click="showComments()" tooltip="{{'Show Comments'|translate}}">
+                        <current-entry-comment-count></current-entry-comment-count>
+                        <i class="fa fa-comments"></i>
+                    </a>
+                </div>
+                <div class="pull-right" data-ng-show="$state.is('editor.comments')">
+                    <a id="toCommentsLink"
+                       class="btn btn-warning disabled" data-ng-click="showComments()" tooltip="{{'Show Comments'|translate}}">
+                        <current-entry-comment-count></current-entry-comment-count>
+                        <i class="fa fa-comments"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div data-ui-view></div>
+</div>

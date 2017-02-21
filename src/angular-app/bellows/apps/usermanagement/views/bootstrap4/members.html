@@ -1,0 +1,49 @@
+<div data-ng-cloak data-ng-controller="MembersCtrl">
+    <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+        <div class="form-group row">
+        <button class="btn btn-primary" data-ng-disabled="selected.length == 0" data-ng-show="rights.remove"  data-ng-click="removeProjectUsers()"><i class="icon-remove"></i>Remove Members</button>
+        <button data-ng-show="rights.add" class="btn btn-primary" data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="icon-plus"></i>Add Members</button>
+        <input class="form-control" type="text" ng-model="userFilter" placeholder="Member List Filter"/> <a ng-show="userFilter != ''" title="Clear Filter" ng-click="userFilter = ''"><i class="icon-remove" style="color:gray"></i></a>
+        </div>
+    </form>
+    <div id="newMembersDiv" class=" new-item" data-collapse="!newUserCollapsed">
+        <form >
+            <div class="form-control row">
+        <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
+            <ul>
+                <li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
+                    <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
+                    <p class="name">{{user.name}}</p>
+                    <p class="email">{{user.email}}</p>
+                </li>
+            </ul>
+        </pui-typeahead>
+        <button data-ng-model="addMode" class="btn btn-primary" data-ng-disabled="disableAddButton" data-ng-click="addProjectUser()"><i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+        <span class="warning" data-ng-show="warningText">{{warningText}}</span>
+        </div>
+        </form>
+    </div>
+  <listview search="queryUserList()" items="list.users" items-filter="userFilter" visible-items="list.visibleUsers" select="">
+    <table class="table table-hover table-bordered table-responsive" >
+            <thead class="thead-inverse">
+            <tr>
+                <th></th>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Role</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="user in list.visibleUsers" data-ng-class="{active: isSelected(user)}" >
+                <td width="16px" align="center"><input data-ng-show="rights.remove" type="checkbox" data-ng-checked="isSelected(user)" data-ng-click="updateSelection($event, user)" /></td>
+                <td>{{user.username}}</td>
+                <td>{{user.name}}</td>
+                <td ng-show="user.id == project.ownerRef.id"><select class="custom-select" disabled="true"><option>Manager and Project Owner</option></select></td>
+                <td ng-hide="user.id == project.ownerRef.id"><select class="custom-select" data-ng-model="user.role" data-ng-disabled="!rights.changeRole" data-ng-change="onRoleChange(user)" data-ng-options="roleKey as roleName for (roleKey, roleName) in roles"></select></td>
+            </tr>
+            </tbody>
+        </table>
+    </listview>
+    
+</div>
+

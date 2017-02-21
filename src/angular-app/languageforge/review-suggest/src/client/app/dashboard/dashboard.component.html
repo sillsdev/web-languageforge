@@ -1,0 +1,19 @@
+<div class="container">
+	<h3>My Projects</h3>
+	<div class="container">
+
+		<div class="card">
+			<div class="card-content">
+				<span class="card-title">Select Project</span>
+				<div class="row">
+					<div class="col-12">
+						<ul class="collection">
+							<li *ngFor="let project of projects">
+								<a (click)="onSelect(project)" class="collection-item" style="cursor: pointer;">{{project.projectName}}</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>

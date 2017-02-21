@@ -1,0 +1,65 @@
+<div class="container">
+  <!-- REVIEW Inline style CP 2017-01 -->
+  <h2 *ngIf="projectSettings" style="font-size: 2.5em;">{{ projectSettings.projectName }}</h2>
+  <div class="card">
+    <div *ngIf="currentWord == null" class="card-content">
+      <div class="progress orange">
+        <div class="indeterminate purple"></div>
+      </div>
+    </div>
+    <div *ngIf="currentWord" class="card-content">
+
+      <span *ngIf="currentWord.lexeme[currentLanguageCode]" class="card-title">
+        <h3><b>{{currentWord.lexeme[currentLanguageCode].value}}</b></h3>
+      </span>
+      <div class="col s12">
+        <h4 *ngFor="let sense of currentWord.senses" id="testWord" placeholder="Definition">
+          <span *ngIf="sense.definition && sense.definition[currentInterfaceLanguageCode]">
+            {{sense.definition[currentInterfaceLanguageCode].value}}
+          </span>
+        </h4>
+        <!-- Label of the currentWord's ID for development purposes -->
+        <label class="active" for="testWord">Word: {{currentWord.id}}</label>
+      </div>
+
+      <div class="card-action center">
+
+        <div class="row">
+          <button (click)="upVote()" [disabled]="isClicked" class="btn-large green darken-1 waves-effect waves-light col s4"><i class="large material-icons">thumb_up</i></button>
+
+          <button (click)="openModal()" [disabled]="isClicked" class="btn-large blue darken-1 waves-effect waves-light col s4"><i class="material-icons">message</i></button>
+
+          <button (click)="downVote()" [disabled]="isClicked" class="btn-large red darken-1 waves-effect waves-light col s4"><i class="material-icons">thumb_down</i></button>
+        </div>
+        <!-- END .row -->
+      </div>
+      <!-- END .card-action .center -->
+
+    </div>
+    <!-- END .card-content -->
+  </div>
+  <!-- END .card -->
+
+</div>
+
+<div id="commentModal" class="modal sheet " materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
+  <div class="modal-content">
+    <div class="row darken-1">
+      <div class="col s6">
+        <h4 class="left-align">Suggestion </h4> 
+      </div>
+      <div class="col s6 right-align">
+        <a class="btn-flat darken-1 waves-light waves-effect" (click)="closeModal()"><i class="material-icons">close</i></a>
+      </div>
+    </div>
+    <div class="row"> 
+      <div class="col s12">
+        <textarea [(ngModel)]="textComment" class="materialize-textarea" placeholder="Enter text here"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <span style="font-size:1.6em;"><a class="btn blue darken-1 waves-effect waves-light" (click)="submitComment()">Post <i class="material-icons">send</i></a></span>
+  </div>
+</div>
+

@@ -1,0 +1,16 @@
+<div class="col-12">
+    <div class="card">
+        <multitext (entryEdited)="onEntryEdit()" label="Word" [selectedEntry]="selectedEntry" [languages]="wordMultitextLanguages"></multitext>
+    </div>
+    <div class="card">
+        <multitext (entryEdited)="onEntryEdit()" label="Meaning" [selectedEntry]="selectedEntry" [languages]="definitionMultitextLanguages"></multitext>
+    </div>
+    <div *ngIf="showDetails">
+        <div *ngFor="let detailLabel of detailLabels">
+            <multitext [label]=detailLabel></multitext>
+        </div>
+    </div>
+    <div>
+        <button type="button" [ngClass]="{'disabled': selectedEntry && !editing}" class="btn btn-sm float-right" (click)="saveButtonClicked()">{{getSaveButtonText()}}</button>
+    </div>
+</div>

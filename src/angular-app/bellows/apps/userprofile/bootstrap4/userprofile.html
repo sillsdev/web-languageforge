@@ -1,0 +1,132 @@
+{% verbatim %}
+
+<div class="content container" data-ng-cloak>
+    <div class="row">
+        <div class="col-sm-12">
+            <div data-ng-controller="userProfileCtrl">
+                <h1>{{user.name}}'s User Profile</h1>
+                <form class="form-horizontal" data-ng-submit="updateUser()">
+                    <fieldset>
+                        <div data-ng-show="notify.error" class="notification errorMessage">Error: {{notify.error}}</div>
+                        <div data-ng-show="notify.message" class="notification informationMessage">{{notify.message}}</div>
+
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#myAccount" role="tab" data-toggle="tab">My Account</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#AboutMeTab" role="tab" data-toggle="tab">About Me</a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-ng-repeat="project in projectsSettings" class="nav-link" href="#{{project.name}}" role="tab" data-toggle="tab" disabled="project.userProperties.userProfilePropertiesEnabled.length == 0">{{project.name}}</a>
+                            </li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="myAccount">
+                                <div class="row">
+                                    <div class="col-sm-6 col-md-5 col-lg-4">
+                                        <div class="form-group">
+                                            <label>Username: <b style="margin-left:10px">{{user.username}}</b></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Picture</label>
+                                            <div style="margin-bottom:10px"><img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{getAvatarUrl(user.avatar_ref)}}" title="Use the dropdown selections below to change your avatar's color and shape" /></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div><select data-ng-model="user.avatar_color" class="form-control" data-ng-options="c.value as c.label for c in dropdown.avatarColors"><option value="">Select a Color...</option></select></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div><select data-ng-model="user.avatar_shape" class="form-control" data-ng-options="s.value as s.label for s in dropdown.avatarShapes"><option value="">Choose an animal...</option></select></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Email Address: <b style="margin-left:10px">{{user.email}}</b></label>
+                                            <label>Mobile Phone Number</label>
+                                            <input type="tel" data-pui-intl-tel-input placeholder="###-####" class="form-control" data-ng-model="user.mobile_phone"/>
+                                            <label style="margin-top:10px" >Receive updates via</label>
+                                            <div class="btn-group btn-group-justified" role="group">
+                                                <button type="button" class="btn btn-secondary" data-ng-model="user.communicate_via" btn-radio="'email'" id="EmailButton">Email</button>
+                                                <button type="button" class="btn btn-secondary" data-ng-model="user.communicate_via" btn-radio="'sms'"   id="SMSButton">SMS</button>
+                                                <button type="button" class="btn btn-secondary" data-ng-model="user.communicate_via" btn-radio="'both'"  id="BothButton">Both</button>
+                                            </div>
+                                            <label style="margin-top:20px"><a href="/app/changepassword">Change Password</a></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                          <div role="tabpanel" class="tab-pane fade" id="AboutMeTab">
+                              <div class="row">
+                                  <div class="col-sm-6 col-md-5 col-lg-4">
+                                      <h5>Tell us about yourself...</h5>
+                                      <div class="form-group">
+                                          <label>Full Name</label>
+                                          <input class="form-control" type="text" placeholder="(full name)" data-ng-model="user.name">
+                                      </div>
+                                      <div class="form-group">
+                                          <label>Age</label>
+                                          <input class="form-control" type="text" placeholder="(age)" data-ng-model="user.age"/>
+                                      </div>
+                                      <div class="form-group">
+                                          <label>Gender</label>
+                                          <select class="form-control" data-ng-model="user.gender">
+                                              <option>Male</option>
+                                              <option>Female</option>
+                                          </select>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div role="tabpanel" class="tab-pane fade" id="{{project.name}}">
+                              <div class="container">
+                                  <div class="row">
+                                      <div class="col-sm-6 col-md-5 col-lg-4">
+                                          <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('city') >= 0">
+                                              <label>{{project.userProperties.userProfilePickLists['city'].name}}</label>
+                                              <select data-ng-class="" data-ng-model="project.userProperties.userProfilePickLists['city'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['city'].items"></select>
+                                          </div>
+                                          <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('preferredBibleVersion') >= 0">
+                                              <label>{{project.userProperties.userProfilePickLists['preferredBibleVersion'].name}}</label>
+                                              <select data-ng-model="project.userProperties.userProfilePickLists['preferredBibleVersion'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['preferredBibleVersion'].items"></select>
+                                          </div>
+                                          <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('religiousAffiliation') >= 0">
+                                              <label>{{project.userProperties.userProfilePickLists['religiousAffiliation'].name}}</label>
+                                              <select data-ng-model="project.userProperties.userProfilePickLists['religiousAffiliation'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['religiousAffiliation'].items"></select>
+                                          </div>
+                                          <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('studyGroup') >= 0">
+                                              <label>{{project.userProperties.userProfilePickLists['studyGroup'].name}}</label>
+                                              <select data-ng-model="project.userProperties.userProfilePickLists['studyGroup'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['studyGroup'].items"></select>
+                                          </div>
+                                          <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('feedbackGroup') >= 0">
+                                              <label>{{project.userProperties.userProfilePickLists['feedbackGroup'].name}}</label>
+                                              <select data-ng-model="project.userProperties.userProfilePickLists['feedbackGroup'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['feedbackGroup'].items"></select>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-5 col-lg-4">
+                                    <button type="submit" class="btn btn-primary " id="saveBtn"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-block">
+                                        <span class="card-text">Last Login:  {{user.last_login * 1000 | date:shortDate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endverbatim %}

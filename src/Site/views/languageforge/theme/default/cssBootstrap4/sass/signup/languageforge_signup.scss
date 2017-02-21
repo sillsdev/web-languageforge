@@ -1,0 +1,43 @@
+@import '../base/_variables.scss';
+/* progress indicator */
+#progress-indicator {
+  padding: 0 0 30px 0;
+  border-bottom: 1px solid #eeeeee;
+  margin-left: 0;
+  list-style: none;
+  li {
+
+    display: inline-block;
+    padding-right: 5px;
+    padding-left: 5px;
+
+    i {
+      display: block;
+      font-size: 55px;
+    }
+    i.fa-check-square {
+      color: green;
+      font-size: 50px;
+      height: 56px;
+    }
+    
+    i.fa-check-square-o {
+      color: green;
+      font-size: 50px;
+      height: 56px;
+    }
+    i.muted {
+      color: $lf-disabled;
+    }
+  }
+  a:hover {
+    text-decoration: none;
+  }
+}
+
+.fa-check{
+    color: green;
+}
+.fa-times{
+    color: red;
+}

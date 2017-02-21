@@ -15,7 +15,7 @@ describe('E2E testing: Reset Forgotten Password', function () {
     expect(loginPage.errors.first().getText()).toContain('expired');
 
     // clear errors so that afterEach appFrame error check doesn't fail,
-    // see projectSettingsPage.spec.js
+    // see projectSettings.spec.js
     browser.refresh();
     expect(loginPage.errors.count()).toBe(0);
   });
@@ -39,7 +39,7 @@ describe('E2E testing: Reset Forgotten Password', function () {
       forgotPasswordPage.usernameInput.clear();
 
       // clear errors so that afterEach appFrame error check doesn't fail,
-      // see projectSettingsPage.spec.js
+      // see projectSettings.spec.js
       browser.refresh();
       expect(forgotPasswordPage.errors.count()).toBe(0);
     });

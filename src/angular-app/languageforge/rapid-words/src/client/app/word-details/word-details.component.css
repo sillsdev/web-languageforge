@@ -1,0 +1,11 @@
+:host {
+    width: 100%;
+}
+
+host > div {
+    margin: 8pt;
+}
+
+.card {
+    background-color: #f8fafa;
+}

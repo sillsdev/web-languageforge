@@ -1,0 +1,117 @@
+/*
+    Slideshow
+*/
+
+#slides {
+    position: absolute;
+}
+
+/*
+    Slides container
+    Important:
+    Set the width of your slides container
+    Set to display none, prevents content flash
+*/
+
+.slides_container {
+    width: 936px;
+    overflow:hidden;
+    position:relative;
+    display:none;
+    z-index: 1;
+}
+
+/*
+    Each slide
+    Important:
+    Set the width of your slides
+    If height not specified height will be set by the slide content
+    Set to display block
+*/
+
+.slides_container a, .slides_container div {
+    width: 936px;
+    height: 400px;
+    display: block;
+}
+
+.slides_container img { /* Workaround for IE image loading with black edges */
+    visibility: hidden;
+}
+
+.slides_container h2, .slides_content h3 {
+    width: auto;
+    display: block;
+    margin-left: 360px;
+    padding: 5px 20px 10px 20px;
+    color: #fff;
+    opacity: 0.9;
+    text-align: left;
+}
+
+.slides_container h2 {
+    background: #000;
+    margin-top: 80px;
+}
+
+.slides_container h3 {
+    width: 350px;
+    background: #6DA251;
+}
+
+/*
+    Next/prev buttons
+*/
+
+#slides .next,#slides .prev {
+    position:absolute;
+    top:107px;
+    left:-39px;
+    width:24px;
+    height:43px;
+    display:none;
+}
+
+#slides .next {
+    left:585px;
+}
+
+/*
+    Pagination
+*/
+
+.slide_pagination {
+    position: absolute;
+    display: block;
+    width: 64px;
+    bottom: 10px;
+    *bottom: -21px; /* IE6-7 hack */
+    left: 50%;
+    margin-left: -32px;
+    z-index: 5;
+}
+
+.slide_pagination li {
+    float:left;
+    margin:0 1px;
+    list-style:none;
+}
+
+.slide_pagination li a {
+    display: block;
+    width: 13px;
+    height: 0;
+    padding-top: 12px;
+    margin-right: 6px;
+    _margin-right: 1px;
+    background-image:url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_sprite_jamaica.png);
+    _background-image:url(/Site/views/scriptureforge/theme/jamaicanpsalms/image/sf_sprite_jamaica.gif);
+    background-position: 0 0;
+    float: left;
+    overflow: hidden;
+    outline: 0;
+}
+
+.slide_pagination li.current a {
+    background-position: -12px 0;
+}

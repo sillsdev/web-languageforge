@@ -1,0 +1,77 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="text-xs-center">
+                <h3 class ="no-space-break" data-translate="Choose a project name"></h3>
+            </div>
+            <div class="card card-default">
+                <div class="card-block">
+                    <div class="form-group row">
+                        <label class="control-label col-md-4 text-md-right" translate="Project Name"></label>
+                        <div class="controls col-md-8">
+                            <div class="input-group">
+                                <input class="form-control"
+                                       type="text"
+                                       data-ng-model="newProject.projectName"
+                                       data-ng-blur="checkProjectCode()"
+                                       data-set-focus="{{isSRProject ? '' : true}}"
+                                       maxlength="50"
+                                       required placeholder="eg: My Dictionary"
+                                       data-idle-validate="checkProjectCode()"
+                                       data-idle-validate-keypress="resetValidateProjectForm()"  />
+                                <span class="input-group-addon ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'loading'">
+                                    <i id="projectCodeLoading" class="fa fa-spinner fa-spin"></i>
+                                </span>
+                                <span class="input-group-addon alert-danger ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'exists'">
+                                    <i id="projectCodeExists" class="fa fa-times" title="Project Code already exists!" ></i>
+                                </span>
+                                <span class="input-group-addon alert-danger ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'invalid'">
+                                    <i id="projectCodeAlphanumeric" class="fa fa-times" title="Project Code must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores!" ></i>
+                                </span>
+                                <span class="input-group-addon alert-success ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'ok'">
+                                    <i id="projectCodeOk" class="fa fa-check" title="Project Code is available!" ></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-4 text-md-right" translate="Project Code"></label>
+                        <div class="controls col-md-8">
+                            <div class="input-group" data-ng-show="newProject.editProjectCode">
+                                <input type="text"
+                                       class="form-control"
+                                       data-ng-model="newProject.projectCode" id="projectCode"
+                                       data-ng-trim="false"
+                                       maxlength="50"
+                                       required placeholder="eg: My_Dictionary"
+                                       required data-ng-blur="checkProjectCode()"
+                                       data-idle-validate="checkProjectCode()"
+                                       data-idle-validate-keypress="resetValidateProjectForm()" />
+                            </div>
+                            <div class="input-group" data-ng-hide="newProject.editProjectCode">
+                                <div class="uneditable-input">
+                                    <input type="text"
+                                           class="form-control"
+                                           required placeholder="eg: My_Dictionary"
+                                           placeholder="Project Code"
+                                           data-ng-model="newProject.projectCode"
+                                           data-ng-hide="newProject.editProjectCode"
+                                           data-ng-bind="newProject.projectCode"
+                                           data-translate="Project Code"
+                                           readonly>
+                                </div>
+                            </div>
+                            <div class="input-group" data-ng-hide="isSRProject">
+                                <label class="checkbox">
+                                    <input type="checkbox" data-ng-model="newProject.editProjectCode" />
+                                        {{'Edit project code' | translate}}
+                                    <span class="text-muted">(You'll almost never need to check this)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

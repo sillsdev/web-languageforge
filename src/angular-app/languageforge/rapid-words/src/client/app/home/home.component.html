@@ -1,0 +1,47 @@
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+    crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div>
+    <div class="row justify-content-center">
+      <h1>Rapid Words</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-3">
+        <h3>Semantic Domains</h3>
+        <div>
+          <sem-dom-search (domainSelected)="userChoseDomain($event)"></sem-dom-search>
+          <p class="sem-dom-description" *ngIf="selectedDomain">{{ selectedDomain.description }}</p>
+        </div>
+        <div *ngIf="all" class="row">
+          <div class="col">
+            <p>{{allEntries.length}} entries</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-success btn-sm new-word-btn" (click)="newEntry()">New Word</button>
+        <word-list [selectedEntry]="selectedEntry" [entries]="allEntries" [wordLanguages]="wordLanguageSettings" [definitionLanguages]="definitionLanguageSettings" (onEntrySelected)="onEntrySelectedInList($event)"></word-list>
+      </div>
+      <div class="col-6">
+        <!--<div class="row justify-content-end">
+          <button type="button" class="btn btn-secondary btn-sm" (click)="multitextShowDetails()">Show Hidden Fields</button>
+        </div>-->
+        <div class="row">
+          <worddetails [wordMultitextLanguages]="wordLanguageSettings" 
+          [definitionMultitextLanguages]="definitionLanguageSettings" 
+          [selectedEntry]="selectedEntry"
+          (entryUpdated)="selectedEntry = $event"></worddetails>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="row justify-content-center">
+          <h3>Comments</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

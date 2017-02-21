@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="card">
+    <div class="card-content">
+      <span class="card-title">Log In</span>
+      <form materialize #authForm="ngForm" class="col s12">
+
+        <div class="input-field col s12">
+          <input required class="validate" id="username" type="text" name="username" [(ngModel)]="currentUser.username" #username="ngModel">
+          <label for="username" data-error="Invalid Username">Username</label>
+        </div>
+
+        <div class="input-field col s12">
+          <input required class="validate" id="password" type="password" name="password" [(ngModel)]="currentUser.password" #password="ngModel">
+          <label for="password" data-error="Invalid Password">Password</label>
+        </div>
+
+        <div class="card-action">
+          <button [disabled]="!authForm.form.valid" (click)="onSubmit()" class="btn orange darken-1 waves-effect waves-light" type="submit">Log In
+            <i class="material-icons right">send</i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
