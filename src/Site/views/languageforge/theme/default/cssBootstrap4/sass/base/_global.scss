@@ -26,6 +26,39 @@ h1.mobile-title {
   border: 1px solid #e3e3e3;
 }
 
+div.picklists li {
+  cursor: pointer;
+  padding-left: 5px;
+}
+
+div.picklists li:hover {
+  background-color: #EEE;
+}
+
+div.picklists li.selected {
+  background-color: #DDD;
+}
+
+dl.picklists {
+  margin-top: 0px;
+}
+
+dl.picklists div {
+  curosr: pointer;
+}
+
+dl.picklists div div:hover {
+  background-color: #EEE;
+}
+
+dl.picklists div.selected {
+  background-color: #DDD;
+}
+
+dl.picklists dd {
+  padding-left: 5px;
+}
+
 .fa-check{
   color: green;
 }
@@ -220,10 +253,6 @@ nav {
 .form-pre-styling{
   display: block;
   background-color: #f5f5f5;
-}
-
-dl.picklists div.selected {
-  background-color: #DDD;
 }
 
 .indent1{

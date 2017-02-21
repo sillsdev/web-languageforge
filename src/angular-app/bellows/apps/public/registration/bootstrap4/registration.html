@@ -2,7 +2,7 @@
 <div ng-controller="UserCtrl" class="content container" ng-cloak>
     <h1>Thanks for joining</h1>
     <sil-notices></sil-notices>
-    <div class="well" ng-hide="showForm || errorState">
+    <div class="card card-block" ng-hide="showForm || errorState">
         <i id="userJoinedLoading" class="fa fa-spinner fa-spin"></i>Loading...
     </div>
     <div ng-show="showForm">
@@ -11,7 +11,7 @@
         <form ng-submit="registerUser(record)" id="userForm" name="registrationForm" novalidate>
             <p>We just need a few more details. Please fill out the details below, and click Join when you're done.</p>
             <fieldset>
-            <div class="well">
+            <div class="card card-block">
                 <h5>{{record.email}}</h5>
                 <label>User Name</label>
                 <input required type="text"
@@ -54,6 +54,6 @@
     </div>
     </div>
     </div>
-    <div class="well" ng-show="errorState">We cannot complete the registration process for you at this time.  Please <a href='/public/signup'>sign up here</a> instead.</div>
+    <div class="card card-block" ng-show="errorState">We cannot complete the registration process for you at this time.  Please <a href='/public/signup'>sign up here</a> instead.</div>
 </div>
 {% endverbatim %}

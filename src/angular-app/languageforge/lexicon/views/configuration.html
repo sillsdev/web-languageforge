@@ -74,7 +74,7 @@
             </div>
 
             <!-- settings -->
-            <div class="well">
+            <div class="card card-block bg-faded">
                 <h3 id="fieldSetupLabel">{{fieldConfig[currentField.name].label}} {{'Field Setup' | translate}}</h3>
                 <div class="control-group"
                     data-ng-show="isCustomField(currentField.name)">
@@ -335,7 +335,7 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
 
                 <!-- Right column: task setup -->
                 <div class="col-md-9">
-                    <div class="well" id="picklistEditorFieldset">
+                    <div class="card card-block bg-faded" id="picklistEditorFieldset">
                         <h3 class="control-label">{{optionlistDirty[currentListIndex].name}}</h3>
                         <div class="controls">
                             <picklist-editor items="optionlistDirty[currentListIndex].items"
