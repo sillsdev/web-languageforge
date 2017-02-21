@@ -10,7 +10,7 @@
     <div class="control-group" data-ng-hide="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullToSide">
         <div data-ng-show="hasAudio()">
             <div class="btn-group" uib-dropdown data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()">
-                <a class="btn btn-default dropdown-toggle" uib-dropdown-toggle
+                <a class="btn btn-secondary dropdown-toggle" uib-dropdown-toggle
                     data-ng-class="dcControl.interfaceConfig.pullToSide">
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu" uib-dropdown-menu data-ng-class="dcControl.interfaceConfig.pullToSide">
@@ -24,12 +24,12 @@
                 </ul>
             </div>
             <div data-ng-hide="$state.is('editor.entry') && dcControl.rights.canEditEntry() || !$state.is('editor.entry')">
-                <a class="btn btn-default buttonAppend" data-ng-href="{{audioDownloadUrl()}}" title="Download audio">
+                <a class="btn btn-secondary buttonAppend" data-ng-href="{{audioDownloadUrl()}}" title="Download audio">
                     <i class="fa fa-download"></i></a>
             </div>
         </div>
         <div data-ng-hide="hasAudio()">
-            <button class="btn btn-default buttonAppend" data-ng-click="show.audioUpload = true"
+            <button class="btn btn-secondary buttonAppend" data-ng-click="show.audioUpload = true"
                 data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()"
                 title="{{'Upload an audio file' | translate}}">
                 <i class="fa fa-cloud-upload"></i></button>
