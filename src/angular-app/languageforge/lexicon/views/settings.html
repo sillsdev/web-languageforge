@@ -3,7 +3,7 @@
     <!-- <h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2> -->
     <uib-tabset>
         <uib-tab heading="{{'Project Properties' | translate}}">
-            <form class="well ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="updateProject()" style="">
+            <form class="card card-block bg-faded ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="updateProject()" style="">
                 <fieldset data-ng-disabled="!rights.remove">
                     <div class="form-group row">
                         <label class="control-label col-xs-12" for="projName" data-translate="Project Name"></label>
@@ -49,13 +49,13 @@
 
         <!-- Archive tab disabled now that project owners can delete their own projects -->
         <uib-tab heading="{{'Archive' | translate}}" data-ng-show="false">
-            <form class="well">
+            <form class="card card-block bg-faded">
                 <pui-archive-project pui-action-in-progress="actionInProgress">
                 </pui-archive-project>
             </form>
         </uib-tab>
         <uib-tab heading="{{'Delete' | translate}}" data-ng-show="rights.remove">
-            <form class="well">
+            <form class="card card-block bg-faded">
                 <pui-delete-project></pui-delete-project>
             </form>
         </uib-tab>
