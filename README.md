@@ -364,11 +364,11 @@ To run the node server to get real time updating:
 
 In src/node/: `node server.js`
 
-## Browserify the editor.node file ##
+## Browserify the realTime.node file ##
 
-After editting the `editor.node` file you have to use browserify to get put all of the dependencies into one file so that the `editor.node` file has access to them.
+After editing the `realTime.node` file you have to use browserify to get put all of the dependencies into one file so that the `realTime.node` file has access to them.
 
-To browserify the `editor.node` file from the root folder:
+To browserify the `realTime.node` file from the root folder:
 ````
 gulp build-node-bundle
 ````

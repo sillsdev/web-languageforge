@@ -2,7 +2,7 @@
 
 angular.module('translate.suggest', [])
   .component('qlSuggestion', {
-    templateUrl: '/angular-app/languageforge/translate/directive/ql-suggestion.html',
+    templateUrl: '/angular-app/languageforge/translate/component/ql-suggestion.html',
     bindings: {
       qlSuggestions: '<',
       qlInsertSuggestion: '&'
