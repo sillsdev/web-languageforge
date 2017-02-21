@@ -55,61 +55,64 @@
                 <fieldset>
                     <legend>User data</legend>
                     <hr/>
-                        <div class="card form-group-styling"> <!-- Gray box here -->
-                            <div class="form-group">
-                                <div class="formspacing"><label>User Name</label></div>
-
-                                <div class="formspacing">
-                                    <input data-idle-validate="checkUniqueUser()"
-                                         class="form-control"
-                                         data-idle-validate-keypress="resetValidateUserForm()"
-                                         required type="text" placeholder="(username)"
-                                         data-ng-model="record.username"/>
-                                    <span  data-ng-show="record.username.length > 0">
-                                        <span  data-ng-show="uniqueUserState == 'loading'"><i id="userNameLoading" class="fa fa-spinner fa-spin" style="position: absolute; padding-left: 5px; padding-top: 8px;"></i></span>
-                                        <span  data-ng-show="(uniqueUserState == 'usernameExists') || (uniqueUserState == 'usernameAndEmailExists')"><i id="userNameExists" class="fa fa-exclamation-circle" title="User name already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"></i></span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="formspacing"><label>Name</label></div>
-                                <div class="formspacing">
-                                    <input data-idle-valid
-                                         class="form-control"
-                                         ate="checkUniqueUser()"
-                                         data-idle-validate-keypress="resetValidateUserForm()"
-                                         data-idle-validate-msec="500"
-                                         required type="text" placeholder="(your name here)"
-                                         data-ng-model="record.name"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="formspacing"><label>Email</label></div>
-                                <div class="formspacing">
-                                    <input data-idle-validate="checkUniqueUser()"
-                                         class="form-control"
-                                         data-idle-validate-keypress="resetValidateUserForm()"
-                                         data-idle-validate-msec="300"
-                                         required type="text" placeholder="(no email)"
-                                         data-ng-model="record.email"/>
-                                    <span  data-ng-show="record.email.length > 0"></span>
-                                    <span  data-ng-show="uniqueUserState == 'loading'"><i id="userEmailLoading" class="fa fa-spinner fa-spin" style="position: absolute; padding-left: 5px; padding-top: 8px;"></i></span>
-                                    <span  data-ng-show="uniqueUserState == 'ok'"><i id="userEmailOk" class="fa fa-check" title="User email is available!" style="position: absolute; padding-left: 5px; padding-top: 8px;"></i></span>
-                                    <span  data-ng-show="(uniqueUserState == 'emailExists') || (uniqueUserState == 'usernameAndEmailExists')"><i id="userEmailExists" class="fa fa-exclamation-circle" title="User email already exist!" style="position: absolute; padding-left: 5px; padding-top: 8px;"></i></span>
-                                </div>
-                            </div>
-                        </div> <!-- End gray box -->
-                    <div class="form-group">
-                        <div class="formspacing"><label for="_role">System Role</label></div>
+                    <div class="card card-block bg-faded">
+                        <label>User Name</label>
+                        <div class="input-group">
+                            <input data-idle-validate="checkUniqueUser()"
+                                 class="form-control"
+                                 data-idle-validate-keypress="resetValidateUserForm()"
+                                 required type="text" placeholder="(username)"
+                                 data-ng-model="record.username"/>
+                            <span class="input-group-addon" data-ng-show="uniqueUserState == 'loading'">
+                                <i id="userNameLoading" class="fa fa-spinner fa-spin"></i>
+                            </span>
+                            <span class="input-group-addon" data-ng-show="(uniqueUserState == 'usernameExists') || (uniqueUserState == 'usernameAndEmailExists')">
+                                <i id="userNameExists" class="fa fa-times" title="User name already exist!"></i>
+                            </span>
+                        </div>
+                        <div>
+                            <label>Name</label>
+                            <input data-idle-valid
+                                 class="form-control"
+                                 ate="checkUniqueUser()"
+                                 data-idle-validate-keypress="resetValidateUserForm()"
+                                 data-idle-validate-msec="500"
+                                 required type="text" placeholder="(your name here)"
+                                 data-ng-model="record.name"/>
+                        </div>
+                        <label>Email</label>
+                        <div class="input-group">
+                            <input data-idle-validate="checkUniqueUser()"
+                                 class="form-control"
+                                 data-idle-validate-keypress="resetValidateUserForm()"
+                                 data-idle-validate-msec="300"
+                                 required type="text" placeholder="(no email)"
+                                 data-ng-model="record.email"/>
+                            <span class="input-group-addon" data-ng-show="uniqueUserState == 'loading'">
+                                <i id="userEmailLoading" class="fa fa-spinner fa-spin"></i>
+                            </span>
+                            <span class="input-group-addon alert-success" data-ng-show="uniqueUserState == 'ok'">
+                                <i id="userEmailOk" class="fa fa-check" title="User email is available!"></i>
+                            </span>
+                            <span class="input-group-addon " data-ng-show="(uniqueUserState == 'emailExists') || (uniqueUserState == 'usernameAndEmailExists')">
+                                <i id="userEmailExists" class="fa fa-times" title="User email already exist!"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="_role">System Role</label>
                         <select class="form-control" id="_role" required data-ng-model="record.role"
                               data-ng-options="key as role.name for (key, role) in roles"></select>
                     </div>
-
-                    <div class="form-group">
-                        <label style="margin-bottom:20px">Site Roles: </label><pre class="card form-group-styling">{{record.siteRole|json}}</pre>
+                    <br />
+                    <div>
+                        <label style="margin-bottom:20px">Site Roles: </label>
+                        <pre class="card card-block bg-faded"><code>{{record.siteRole|json}}</code></pre>
                     </div>
-                    <div class="form-group">
-                        <label style="margin-bottom:20px"><input data-ng-click="checkUniqueUser()" type="checkbox" data-ng-model="record.active"/> Is Active</label>
+                    <div>
+                        <label style="margin-bottom:20px">
+                            <input data-ng-click="checkUniqueUser()" type="checkbox" data-ng-model="record.active"/> Is Active
+                        </label>
                     </div>
                     <a data-ng-show="vars.state == 'update'" href="" data-ng-click="togglePasswordForm(); vars.inputfocus = vars.showPasswordForm">Change {{record.username}}'s password</a>
                     <div data-ng-show="vars.showPasswordForm">
