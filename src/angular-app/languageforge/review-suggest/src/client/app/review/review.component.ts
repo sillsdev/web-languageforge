@@ -22,6 +22,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
   currentLanguageCode: string;
   currentWordIdx: number = 0;
   isClicked: boolean = false;
+  textComment: string;
 
   constructor(private route: ActivatedRoute,
               private projectService: ProjectService,
@@ -105,12 +106,12 @@ export class ReviewComponent implements OnInit, OnDestroy {
     this.commentService.sendComment(comment, id).subscribe(response => {
       let success = response;
       if (success) {
-        let toastContentSuccess = '<span><b>Your response has been sent!</b></span>';
+        let toastContentSuccess = '<b>Your response has been sent!</b>';
         Materialize.toast(toastContentSuccess, 2000, 'green');
         this.incrementWord();
       }
       else {
-        let toastContentFailed = '<span><b>Your response failed to send!</b></span>';
+        let toastContentFailed = '<b>Your response failed to send!</b>';
         Materialize.toast(toastContentFailed, 2000, 'red');
       }
       this.isClicked = false;
@@ -120,10 +121,9 @@ export class ReviewComponent implements OnInit, OnDestroy {
   }
 
   submitComment() {
-    var inputValue = (<HTMLInputElement>document.getElementById("placeholderForComment")).value;
+    this.sendComment(this.textComment, this.currentWord.id);
+    this.textComment = null;
     this.closeModal();
-    (<HTMLInputElement>document.getElementById("placeholderForComment")).value = '';
-    this.sendComment(inputValue, this.currentWord.id);
   }
 
   handleError(error: any) {

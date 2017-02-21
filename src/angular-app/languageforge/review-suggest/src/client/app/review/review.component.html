@@ -42,7 +42,7 @@
 
 </div>
 
-<div id="commentModal" class="modal sheet modal-fixed-footer" materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
+<div id="commentModal" class="modal sheet " materialize="modal" [materializeParams]="[{dismissible: true}]" [materializeActions]="modalActions">
   <div class="modal-content">
     <div class="row darken-1">
       <div class="col s6">
@@ -52,10 +52,14 @@
         <a class="btn-flat darken-1 waves-light waves-effect" (click)="closeModal()"><i class="material-icons">close</i></a>
       </div>
     </div>
-    <textarea id="placeholderForComment" class="materialize-textarea" placeholder="Enter text here"></textarea>
+    <div class="row"> 
+      <div class="col s12">
+        <textarea [(ngModel)]="textComment" class="materialize-textarea" placeholder="Enter text here"></textarea>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <span style="font-size:1.6em;"><a class="btn blue darken-1 waves-effect waves-light" (click)="submitComment()">Post <i class="material-icons">send</i></a></span>
-</div>
+  </div>
 </div>
 
