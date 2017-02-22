@@ -213,7 +213,14 @@ class SendReceiveCommands
         }
 
         $projectStatePath = $statePath . DIRECTORY_SEPARATOR . strtolower($project->projectCode) . '.state';
-        if (!file_exists($projectStatePath) || !is_file($projectStatePath)) return false;
+        if (!file_exists($projectStatePath) || !is_file($projectStatePath)) {
+            // Generate default state file of "IDLE" if it doesn't exist.
+            $status['SRState'] = "IDLE";
+            $status['ProjectCode'] = $project->projectCode;
+            if (!is_writeable($statePath)) return false;
+
+            file_put_contents($projectStatePath, json_encode($status, JSON_PRETTY_PRINT));
+        }
 
         $statusJson = file_get_contents($projectStatePath);
         $status = json_decode($statusJson, true);
