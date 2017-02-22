@@ -350,7 +350,7 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($status);
     }
 
-    public function testGetProjectStatus_HasSendReceiveNoStateFile_NoState()
+    public function testGetProjectStatus_HasSendReceiveNoStateFile_StateUnsynced()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->sendReceiveProjectIdentifier = 'sr_id';
@@ -359,8 +359,7 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
         $mockStatePath = sys_get_temp_dir();
 
         $status = SendReceiveCommands::getProjectStatus($projectId, $mockStatePath);
-
-        $this->assertFalse($status);
+        $this->assertEquals('LF_UNSYNCED', $status['SRState']);
     }
 
     public function testGetProjectStatus_HasSendReceiveAndStateFileNotJson_NoException()
