@@ -103,8 +103,8 @@ function EditorPage() {
 
     // Show/Hide fields functions
     toggleHiddenFieldsBtnText: {
-      show: 'Show Hidden Fields',
-      hide: 'Hide Hidden Fields'
+      show: 'Show Extra Fields',
+      hide: 'Hide Extra Fields'
     },
     showHiddenFields: function () {
       // Only click the button if it will result in fields being shown
