@@ -24,7 +24,7 @@
                     <span data-ng-if="entryLoaded()">
                         <button id="toggleHiddenFieldsBtn" class="btn btn-secondary"
                                 data-ng-click="show.emptyFields = !show.emptyFields">
-                            <i class="fa fa-{{ show.emptyFields ? 'minus-square-o' : 'plus-square-o' }}"></i> <span class="hidden-sm-down">{{show.emptyFields ? 'Hide Hidden Fields' : 'Show Hidden Fields' | translate}}</span></button>
+                            <i class="fa fa-{{ show.emptyFields ? 'minus-square-o' : 'plus-square-o' }}"></i> <span class="hidden-sm-down">{{show.emptyFields ? 'Hide Extra Fields' : 'Show Extra Fields' | translate}}</span></button>
                     </span>
                     <a id="toCommentsLink"
                        class="btn btn-warning" data-ng-click="showComments()" uib-tooltip="{{'Show Comments'|translate}}">
