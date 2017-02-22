@@ -6,10 +6,10 @@
             <div class="hdrnav-container">
                 <div class="btn-group" uib-dropdown data-ng-class="interfaceConfig.pullToSide"
                      data-ng-show="rights.showSettingsDropdown()">
-                    <a class="btn btn-secondary" uib-dropdown-toggle data-ng-class="interfaceConfig.pullToSide"
-                       tooltip-placement="{{interfaceConfig.placementToSide}}"
+                    <a class="btn btn-secondary pui-no-caret" uib-dropdown-toggle data-ng-class="interfaceConfig.pullToSide"
+                       data-tooltip-placement="{{interfaceConfig.placementToSide}}"
                        uib-tooltip="Settings" href="#">
-                        <i class="fa fa-cog"></i>
+                        <i class="fa fa-ellipsis-v"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="interfaceConfig.pullToSide">
                         <a class="dropdown-item" ui-sref="settings" data-translate="Project Settings"

@@ -38,6 +38,15 @@ angular.module('translate.services')
           sessionService.operation.ARCHIVE));
     };
 
+    this.canDeleteProject = function canDeleteProject() {
+      if (sendReceive.isInProgress() || !angular.isDefined(sessionService.session.project))
+        return false;
+
+      return (sessionService.session.project.userIsProjectOwner ||
+        sessionService.hasSiteRight(sessionService.domain.PROJECTS,
+          sessionService.operation.DELETE));
+    };
+
     this.canEditProject = function canEditProject() {
       if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
 

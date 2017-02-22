@@ -1,0 +1,11 @@
+.hdrnav .hdrnav-container .btn-group {
+    margin-left: 10px;
+}
+
+#translateAppSettingsView .control-label {
+    font-weight: 700;
+}
+
+.dropdown .pui-no-caret::after {
+    display: none;
+}

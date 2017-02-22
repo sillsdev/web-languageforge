@@ -13,23 +13,39 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       })
     ;
   }])
-  .controller('EditorCtrl', ['$scope', 'translateAssistant', 'wordParser', 'realTime',
-  function ($scope, assistant, wordParser, realTime) {
+  .controller('EditorCtrl', ['$scope', 'translateAssistant', 'translateProjectService',
+    'wordParser', 'realTime',
+  function ($scope, assistant, projectService,
+            wordParser, realTime) {
+    $scope.project = $scope.project || {};
+    $scope.project.config = $scope.project.config || {};
     var currentDocIds = [];
     var editors = {};
     var source = {
       docType: 'source',
       label: 'Source',
-      languageTag: 'es'
+      inputSystem: {
+        tag: 'es'
+      }
     };
     var target = {
       docType: 'target',
       label: 'Target',
-      languageTag: 'en',
+      inputSystem: {
+        tag: 'en'
+      },
       confidenceThreshold: 0.2
     };
 
-    assistant.initialise(source.languageTag, target.languageTag);
+    projectService.readProject(function (result) {
+      if (result.ok) {
+        angular.merge($scope.project, result.data.project);
+        source.inputSystem = $scope.project.config.source.inputSystem;
+        target.inputSystem = $scope.project.config.target.inputSystem;
+      }
+
+      assistant.initialise(source.inputSystem.tag, target.inputSystem.tag);
+    });
 
     $scope.left = source;
     $scope.right = target;

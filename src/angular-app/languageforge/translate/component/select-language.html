@@ -1,0 +1,24 @@
+<div class="modal-header">
+    <h3>{{'Select the ' + typeName + ' Language' | translate}}</h3>
+</div>
+<div class="modal-body">
+    <pui-select-language pui-code="selected.code" pui-language="selected.language"
+        pui-add-disabled="selectDisabled"
+        pui-suggested-language-codes="suggestedLanguageCodes">
+    </pui-select-language>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success"
+        data-ng-click="select()"
+        data-ng-disabled="selectDisabled">
+        {{(selected.language.name) ? 'Select ' + typeName + ' Language as' : 'Select' | translate}}
+        {{selected.language.name}}</button>
+    <div class="pull-left">
+        <a href="http://www.infoterm.info/standardization/iso_639_1_2002.php" target="_blank">
+            <small><i class="fa fa-globe" aria-hidden="true"></i> {{'About Language 639-1 Codes' | translate}}</small></a>
+    </div>
+    <div class="pull-left" style="clear:both">
+        <a href="http://www.sil.org/iso639-3/" target="_blank">
+            <small><i class="fa fa-globe" aria-hidden="true"></i> {{'About Language 639-3 Codes' | translate}}</small></a>
+    </div>
+</div>

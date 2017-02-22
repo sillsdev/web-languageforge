@@ -125,7 +125,6 @@ class RightsHelper
             case 'message_markRead':
             case 'project_pageDto':
             case 'lex_projectDto':
-            case 'translate_projectDto':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
             case 'answer_vote_up':
@@ -167,7 +166,6 @@ class RightsHelper
 
             case 'project_update':
             case 'lex_project_update':
-            case 'translate_projectUpdate':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case 'project_updateUserRole':
@@ -327,6 +325,16 @@ class RightsHelper
             case 'sendReceive_receiveProject':
             case 'sendReceive_commitProject':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+
+            // LanguageForge (translate)
+            case 'translate_projectUpdate':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+
+            case 'translate_updateConfig':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+
+            case 'translate_projectDto':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
             // project management app
             case 'project_management_dto':
