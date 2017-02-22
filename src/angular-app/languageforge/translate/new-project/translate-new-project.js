@@ -8,7 +8,6 @@ angular.module('translate-new-project',
     'ngAnimate',
     'ui.router',
     'palaso.ui.utils',
-    'palaso.ui.language',
     'palaso.ui.sendReceiveCredentials',
     'palaso.ui.mockUpload',
     'palaso.util.model.transform',
@@ -381,33 +380,6 @@ angular.module('translate-new-project',
     }
 
     // ----- Step 3: Verify initial data -OR- select primary language -----
-
-    $scope.primaryLanguage = function primaryLanguage() {
-      if ($scope.newProject.languageCode) {
-        return $scope.newProject.language.name + ' (' + $scope.newProject.languageCode + ')';
-      }
-
-      return '';
-    };
-
-    $scope.openNewLanguageModal = function openNewLanguageModal() {
-      var modalInstance = $modal.open({
-        templateUrl: '/angular-app/languageforge/translate/views/select-new-language.html',
-        controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
-          $scope.selected = {
-            code: '',
-            language: {}
-          };
-          $scope.add = function () {
-            $modalInstance.close($scope.selected);
-          };
-        }]
-      });
-      modalInstance.result.then(function (selected) {
-        $scope.newProject.languageCode = selected.code;
-        $scope.newProject.language = selected.language;
-      });
-    };
 
     function savePrimaryLanguage(callback) {
       var config = { inputSystems: [] };

@@ -827,6 +827,11 @@ class Sf
         return TranslateProjectCommands::updateProject($this->projectId, $this->userId, $settings);
     }
 
+    public function translate_updateConfig($config)
+    {
+        return TranslateProjectCommands::updateConfig($this->projectId, $config);
+    }
+
     public function translate_projectDto()
     {
         return TranslateProjectDto::encode($this->projectId);

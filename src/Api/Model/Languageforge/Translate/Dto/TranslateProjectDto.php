@@ -61,6 +61,7 @@ class TranslateProjectDto
         $data['project']['ownerRef'] = $projectDto['ownerRef'];
         $data['project']['projectCode'] = $projectDto['projectCode'];
         $data['project']['featured'] = $projectDto['featured'];
+        $data['project']['config'] = $projectDto['config'];
 
         return $data;
     }

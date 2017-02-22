@@ -4,7 +4,7 @@
     <uib-tabset>
         <uib-tab heading="{{'Project Properties' | translate}}">
             <form class="well ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="updateProject()" style="">
-                <fieldset data-ng-disabled="!rights.remove">
+                <fieldset data-ng-disabled="!rights.canEditProject()">
                     <div class="form-group row">
                         <label class="control-label col-xs-12" for="projName" data-translate="Project Name"></label>
                         <div class="controls col-xs-12">
@@ -46,6 +46,21 @@
                 </fieldset>
             </form>
         </uib-tab>
+        <uib-tab heading="{{'Languages' | translate}}">
+            <form class="well ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="updateConfig()">
+                <fieldset data-ng-disabled="!rights.canEditProject()">
+                    <languages-picker data-tlp-project="project"
+                                      data-tlp-update-language="updateLanguage(docType, code, language)">
+                    </languages-picker>
+                    <div class="form-group row">
+                        <div class="controls col-xs-12">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>
+                                {{'Save' | translate}}</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </uib-tab>
 
         <!-- Archive tab disabled now that project owners can delete their own projects -->
         <uib-tab heading="{{'Archive' | translate}}" data-ng-show="false">
@@ -54,7 +69,7 @@
                 </pui-archive-project>
             </form>
         </uib-tab>
-        <uib-tab heading="{{'Delete' | translate}}" data-ng-show="rights.remove">
+        <uib-tab heading="{{'Delete' | translate}}" data-ng-show="rights.canDeleteProject()">
             <form class="well">
                 <pui-delete-project></pui-delete-project>
             </form>

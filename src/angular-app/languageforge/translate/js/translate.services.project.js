@@ -8,12 +8,16 @@ angular.module('translate.services')
 
     angular.extend(this, projectService);
 
-    this.readProject = function readProject(callback) {
-      jsonRpc.call('translate_projectDto', [], callback);
-    };
-
     this.updateProject = function updateProject(project, callback) {
       jsonRpc.call('translate_projectUpdate', [project], callback);
+    };
+
+    this.updateConfig = function updateProject(config, callback) {
+      jsonRpc.call('translate_updateConfig', [config], callback);
+    };
+
+    this.readProject = function readProject(callback) {
+      jsonRpc.call('translate_projectDto', [], callback);
     };
 
     this.users = function users(callback) {
