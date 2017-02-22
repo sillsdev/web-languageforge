@@ -1,18 +1,18 @@
 <h2>Translate</h2>
 <div class="row">
     <div class="col-xs-5">
-        <label>{{getLabel(left.label, left.languageTag)}}</label>
+        <label>{{getLabel(left.label, left.inputSystem.tag)}}</label>
     </div>
     <div class="col-xs-1">
         <button type="button" class="btn btn-secondary" data-ng-click="swapEditors()">
             <i class="fa fa-exchange"></i></button>
     </div>
     <div class="col-xs-5">
-        <label>{{getLabel(right.label, right.languageTag)}}</label>
+        <label>{{getLabel(right.label, right.inputSystem.tag)}}</label>
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-6" lang="{{left.languageTag}}">
+    <div class="col-xs-6" lang="{{left.inputSystem.tag}}">
         <ng-quill-editor
             id="editorLeft" data-modules="modulesConfig" data-theme="bubble-suggest"
             data-on-editor-created="editorCreated(editor, left.docType, 'left')"
@@ -25,7 +25,7 @@
         </div>
         <!--<pre>left {{left | json}}</pre>-->
     </div>
-    <div class="col-xs-6" lang="{{right.languageTag}}">
+    <div class="col-xs-6" lang="{{right.inputSystem.tag}}">
         <ng-quill-editor
             id="editorRight" data-modules="modulesConfig" data-theme="bubble-suggest"
             data-on-editor-created="editorCreated(editor, right.docType, 'right')"

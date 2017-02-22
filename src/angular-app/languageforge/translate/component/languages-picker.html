@@ -1,0 +1,45 @@
+<h3 data-translate="Source Language"></h3>
+<div class="row">
+    <div class="form-group col-sm-6">
+        <label class="control-label" for="sourceTag" data-translate="Language Tag"></label>
+        <input class="form-control" type="text" id="sourceTag" required
+               data-ng-model="$ctrl.tlpProject.config.source.inputSystem.tag" />
+        <!--<div class="uneditable-input col-xs-8"
+             data-ng-bind="$ctrl.displayLanguage($ctrl.tlpProject.config.source.inputSystem.tag,
+              $ctrl.tlpProject.config.source.inputSystem.languageName)"></div>
+        <div class="form-group row">
+            <div class="col-xs-5 offset-xs-4">
+                <a class="btn btn-secondary d-block mx-auto" id="selectSourceLanguageButton"
+                   data-ng-click="$ctrl.openLanguageModal('source')" data-translate="Select"></a>
+            </div>
+        </div>-->
+    </div>
+    <div class="form-group col-sm-6">
+        <label class="control-label" for="sourceName" data-translate="Language Name"></label>
+        <input class="form-control" type="text" id="sourceName"
+               data-ng-model="$ctrl.tlpProject.config.source.inputSystem.languageName" />
+    </div>
+</div>
+<br />
+<h3 data-translate="Target Language"></h3>
+<div class="row">
+    <div class="form-group col-sm-6">
+        <label class="control-label" for="targetTag" data-translate="Language Tag"></label>
+        <input class="form-control" type="text" id="targetTag" required
+               data-ng-model="$ctrl.tlpProject.config.target.inputSystem.tag" />
+        <!--<div class="uneditable-input col-xs-8"
+             data-ng-bind="$ctrl.displayLanguage($ctrl.tlpProject.config.target.inputSystem.tag,
+              $ctrl.tlpProject.config.target.inputSystem.languageName)"></div>
+        <div class="form-group row">
+            <div class="col-xs-5 offset-xs-4">
+                <a class="btn btn-secondary d-block mx-auto" id="selectTargetLanguageButton"
+                   data-ng-click="$ctrl.openLanguageModal('target')" data-translate="Select"></a>
+            </div>
+        </div>-->
+    </div>
+    <div class="form-group col-sm-6">
+        <label class="control-label" for="targetName" data-translate="Language Name"></label>
+        <input class="form-control" type="text" id="targetName"
+               data-ng-model="$ctrl.tlpProject.config.target.inputSystem.languageName" />
+    </div>
+</div>
