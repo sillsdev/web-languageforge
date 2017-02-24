@@ -8,9 +8,16 @@
                 <div data-ng-show="hasImportErrors()">
                     <button class="btn btn-secondary" id="nonCriticalErrorsButton" data-ng-click="show.importErrors = !show.importErrors">
                         {{showImportErrorsButtonLabel()}}</button>
-                    <div uib-collapse="! show.importErrors">
-                        <pre id="importErrors">{{newProject.importErrors}}</pre>
-                    </div>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div uib-collapse="! show.importErrors">
+            <div class="card bg-faded text-xs-left">
+                <pre id="importErrors">{{newProject.importErrors}}</pre>
             </div>
         </div>
     </div>
