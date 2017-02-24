@@ -21,6 +21,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.project.config = $scope.project.config || {};
     var currentDocIds = [];
     var editors = {};
+    var onSelectionChanges = {};
     var source = {
       docType: 'source',
       label: 'Source',
@@ -88,16 +89,20 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       currentDocIds[docType] = docId(docType);
       realTime.createAndSubscribeRichTextDoc($scope.project.slug, docId(docType), editor);
       getSuggestions(editor, docType);
-      editor.on('selection-change', function () {
+      onSelectionChanges[side] = function () {
         if (docType == 'target') {
           $scope.contentChanged(editor, null, null, docType, side);
         } else {
           editor.theme.suggestTooltip.hide();
         }
-      });
+      };
+
+      editor.on('selection-change', onSelectionChanges[side]);
     };
 
     $scope.swapEditors = function swapEditors() {
+      editors.left.off('selection-change', onSelectionChanges.left);
+      editors.right.off('selection-change', onSelectionChanges.right);
       realTime.disconnectRichTextDoc(currentDocIds[$scope.left.docType]);
       realTime.disconnectRichTextDoc(currentDocIds[$scope.right.docType]);
       currentDocIds = [];
