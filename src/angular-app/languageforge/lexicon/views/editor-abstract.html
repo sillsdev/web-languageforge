@@ -8,6 +8,12 @@
                        uib-tooltip="{{'Back to List'|translate}}">
                         <i class="fa fa-arrow-circle-left"></i>
                         <span class="hidden-sm-down">{{'List'|translate}}</span></a>
+
+                    <button id="editorNewWordBtn" class="btn btn-success"
+                            data-ng-show="$state.is('editor.entry')" data-ng-if="rights.canEditEntry()"
+                            data-ng-click="newEntry()">
+                    <i class="fa fa-plus"></i><span class="hidden-md-down"> {{'New Word' | translate}}</span></button>
+
                     <a id="toEditLink" data-ng-show="$state.is('editor.comments')" class="btn btn-secondary"
                        data-ng-click="editEntry(currentEntry.id)" uib-tooltip="{{'Return to Edit Entry'|translate}}">
                         <i class="fa fa-arrow-circle-left"></i>
@@ -16,7 +22,7 @@
                 <div class="pull-right" data-ng-show="$state.is('editor.entry')">
                     <span data-ng-if="rights.canEditEntry()">
                         <span class="muted" {{saveNotice()}}</span>
-                        <button class="btn btn-success" data-ng-click="saveCurrentEntry(true)"
+                        <button id="saveEntryBtn" class="btn btn-success" data-ng-click="saveCurrentEntry(true)"
                                 data-ng-disabled="!currentEntryIsDirty()">
                             <i class="fa fa-save"></i> <span class="hidden-sm-down">{{saveButtonTitle()}}</span>
                         </button>
