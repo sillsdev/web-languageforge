@@ -84,15 +84,13 @@ dl.picklists dd {
   .footerimages {
     padding-bottom: 10px;
   }
-
 }
-.progress {
+
+.progress-bar {
   height: auto;
-  .bar {
-    background-color: #0275d8;
-    text-align: center;
-    color: #fff;
-  }
+  background-color: #0275d8;
+  text-align: center;
+  color: #fff;
 }
 
 .nav, .pagination, .carousel, .panel-title a {
