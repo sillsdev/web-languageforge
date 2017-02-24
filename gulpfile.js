@@ -708,7 +708,7 @@ gulp.task('build-node-bundle', function (cb) {
 //   Task: build-node-bundle-watch
 // -------------------------------------
 gulp.task('build-node-bundle-watch', function () {
-  gulp.watch('src/angular-app/**/*.node', gulp.series('build-node-bundle'));
+  gulp.watch(['src/angular-app/**/*.node', 'src/node/**/client.js'], gulp.series('build-node-bundle'));
 });
 
 // -------------------------------------
