@@ -21,7 +21,7 @@
             <uib-tab active="isMembers" heading="Members" ui-sref="members">
                 <div ng-if="isActive('/members')" ui-view></div>
             </uib-tab>
-            <uib-tab active="isJoinRequests" heading="Join Requests" ui-sref="joinRequests">
+            <uib-tab data-ng-show="false" active="isJoinRequests" heading="Join Requests" ui-sref="joinRequests">
                 <div ng-if="isActive('joinRequest')" ui-view></div>
             </uib-tab>
         </uib-tabset>
