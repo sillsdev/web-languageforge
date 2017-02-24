@@ -97,7 +97,7 @@ function EditorPage() {
   this.edit = {
     // Top row UI elements
     toListLink: this.editToolbarDiv.element(by.id('toListLink')),
-    saveBtn: this.editToolbarDiv.element(by.className('btn-success')),
+    saveBtn: this.editToolbarDiv.element(by.id('saveEntryBtn')),
     toggleHiddenFieldsBtn: this.editToolbarDiv.element(by.id('toggleHiddenFieldsBtn')),
     toCommentsLink: this.editToolbarDiv.element(by.id('toCommentsLink')),
 
@@ -126,7 +126,7 @@ function EditorPage() {
     },
 
     // Left sidebar UI elements
-    newWordBtn: this.editDiv.element(by.css('button[data-ng-click="newEntry()')),
+    newWordBtn: this.editDiv.element(by.css('editorNewWordBtn')),
     entryCountElem: this.editDiv.element(by.binding('entries.length')),
     getEntryCount: function () {
       return this.entryCountElem.getText().then(function (s) {
