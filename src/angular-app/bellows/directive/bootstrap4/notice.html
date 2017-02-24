@@ -27,7 +27,6 @@
                 <i class="fa fa-spin fa-spinner"></i> <b>Please wait.  {{getLoadingMessage()}}</b>
             </div>
             <div data-ng-show="showProgressBar()">
-                <!-- TODO: Fix progressbar animation 02-2017 DDW -->
                 <uib-progressbar type="'info'" value="getPercentComplete()" max="100">{{getPercentComplete()}}%</uib-progressbar>
             </div>
         </div>
