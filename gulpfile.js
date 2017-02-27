@@ -631,38 +631,35 @@ var sassPaths = [
      "dest": "src/angular-app/bellows/apps/userprofile/bootstrap4/"}
 ];
 
-gulp.task('sass', function() {
-  var tasks = sassPaths.map(path => {
-    return gulp.src(path.src)
-      .pipe(sass().on('error', sass.logError))
-      .pipe(cleanCSS())
-      .pipe(gulp.dest(path.dest));
+function compileAllSass(sourceComments, cleanCss) {
+  var tasks = sassPaths.map(function(path) {
+    var task = gulp.src(path.src)
+      .pipe(sass({sourceComments: sourceComments}).on('error', sass.logError));
+
+    if(cleanCss) task.pipe(cleanCSS());
+    task.pipe(gulp.dest(path.dest));
+    return task;
   });
   return merge(tasks);
+}
+
+gulp.task('sass', function() {
+  return compileAllSass(false, true);
 });
 
-gulp.task('sass:watch', done => {
+gulp.task('sass:watch', function() {
   var sourceComments = process.argv.indexOf('--comments') !== -1;
   if(!sourceComments) console.info('Tip: run with --comments to generate source comments.');
 
-  function compileSass(path){
-    gulp.src(path.src)
-      .pipe(sass({sourceComments}).on('error', sass.logError))
-      .pipe(gulp.dest(path.dest));
-  }
+  gulp.watch('src/Site/views/languageforge/theme/default/**/*.scss', {ignoreInitial: false})
+    .on('change', function(changedFile) {
+      console.log('File changed: ' + changedFile);
+      compileAllSass(sourceComments, false);
+    })
+    .on('add', function(file) {
+      compileAllSass(sourceComments, false);
+    });
 
-  sassPaths.map(path => {
-    gulp.watch(path.src, {ignoreInitial: false})
-      .on('change', changedFile => {
-        console.log('File changed: ' + changedFile);
-        compileSass(path);
-      })
-      .on('add', function() {
-        compileSass(path);
-      });
-    return done();
-  });
-  return done();
 });
 
 // endregion
