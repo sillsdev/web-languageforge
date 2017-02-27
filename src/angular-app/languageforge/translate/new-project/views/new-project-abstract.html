@@ -25,31 +25,32 @@
             </div>
 
             <!-- use ng-submit to catch the form submission and use our Angular function -->
-            <form class="form-horizontal" id="newLexProjectForm" name="newLexProjectForm" novalidate>
+            <form class="form" id="newLexProjectForm" name="newLexProjectForm" data-ng-pristine data-ng-valid
+                  data-ng-scope data-ng-submit="nextStep()">
                 <div class="row">
                     <div class="col-md-10 offset-md-1" id="form-status" data-ng-class="formStatusClass">{{formStatus | translate}}&nbsp;</div>
                 </div>
 
                 <!-- our nested state views will be injected here -->
                 <div id="form-views" data-ui-view></div>
-            </form>
 
-            <div class="row" data-ng-show="show.nextButton">
-                <div class="col-md-10 offset-md-1">
+                <div class="row" data-ng-show="show.nextButton">
+                    <div class="col-md-10 offset-md-1">
 
-                    <a class="btn btn-secondary pull-left" data-ng-class="interfaceConfig.pullNormal"
-                        id="backButton" data-ng-click="prevStep()" data-ng-show="show.backButton">
-                        <i class="fa fa-arrow-circle-left"></i>
-                        {{'Back' | translate}}
-                    </a>
+                        <a class="btn btn-secondary pull-left" data-ng-class="interfaceConfig.pullNormal"
+                           id="backButton" data-ng-click="prevStep()" data-ng-show="show.backButton">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            {{'Back' | translate}}
+                        </a>
 
-                    <button class="btn pull-right" data-ng-class="[interfaceConfig.pullToSide, forwardBtnClass]" href="#"
-                        id="nextButton" data-ng-click="nextStep()" data-ng-disabled="!show.nextButton">
-                        {{nextButtonLabel}}&nbsp;
-                        <i class="fa fa-arrow-circle-right"></i>
-                    </button>
+                        <button type="submit" class="btn pull-right" data-ng-class="[interfaceConfig.pullToSide, forwardBtnClass]" href="#"
+                                id="nextButton" data-ng-disabled="!show.nextButton">
+                            {{nextButtonLabel}}&nbsp;
+                            <i class="fa fa-arrow-circle-right"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
