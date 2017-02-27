@@ -13,7 +13,8 @@ angular.module('translate-new-project',
     'palaso.util.model.transform',
     'pascalprecht.translate',
     'ngFileUpload',
-    'translate.services'
+    'translate.services',
+    'translate.languages'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
   function ($stateProvider, $urlRouterProvider, $translateProvider) {
@@ -29,9 +30,7 @@ angular.module('translate-new-project',
     // State machine from ui.router
     $stateProvider
       .state('newProject', {
-
-        // Need quotes around Javascript keywords like 'abstract' so YUI compressor won't complain
-        'abstract': true, // jscs:ignore
+        abstract: true,
         templateUrl:
           '/angular-app/languageforge/translate/new-project/views/new-project-abstract.html',
         controller: 'NewTranslateProjectCtrl'
@@ -40,6 +39,13 @@ angular.module('translate-new-project',
         templateUrl: '/angular-app/languageforge/translate/new-project/views/new-project-name.html',
         data: {
           step: 1
+        }
+      })
+      .state('newProject.languages', {
+        templateUrl:
+          '/angular-app/languageforge/translate/new-project/views/new-project-languages.html',
+        data: {
+          step: 2
         }
       })
     ;
@@ -84,9 +90,8 @@ angular.module('translate-new-project',
     $scope.newProject = {};
     $scope.newProject.appName = 'translate';
     $scope.project = {};
-    $scope.project.sendReceive = {};
+    $scope.project.config = {};
 
-    $scope.isSRProject = false;
     $scope.show = {};
     $scope.show.nextButton = true;
     $scope.show.backButton = false;
@@ -95,7 +100,7 @@ angular.module('translate-new-project',
     $scope.show.step3 = false;
     $scope.nextButtonLabel = $filter('translate')('Next');
     $scope.progressIndicatorStep1Label = $filter('translate')('Name');
-    $scope.progressIndicatorStep2Label = $filter('translate')('Initial Data');
+    $scope.progressIndicatorStep2Label = $filter('translate')('Languages');
     $scope.progressIndicatorStep3Label = $filter('translate')('Verify');
     resetValidateProjectForm();
 
@@ -151,23 +156,6 @@ angular.module('translate-new-project',
       }
 
       return classes;
-    };
-
-    $scope.getProjectFromInternet = function getProjectFromInternet() {
-      $state.go('newProject.sendReceiveCredentials');
-      $scope.isSRProject = true;
-      $scope.show.nextButton = true;
-      $scope.show.backButton = true;
-      $scope.show.step3 = false;
-      $scope.nextButtonLabel = $filter('translate')('Get Started');
-      $scope.progressIndicatorStep1Label = $filter('translate')('Connect');
-      $scope.progressIndicatorStep2Label = $filter('translate')('Verify');
-      $scope.resetValidateProjectForm();
-      if (!$scope.project.sendReceive.username) {
-        $scope.project.sendReceive.username = sessionService.session.username;
-      }
-
-      validateForm();
     };
 
     $scope.createNew = function createNew() {
@@ -260,15 +248,16 @@ angular.module('translate-new-project',
     function gotoNextState() {
       switch ($state.current.name) {
         case 'newProject.name':
-          createProject(gotoEditor);
-
-          // $state.go('newProject.initialData');
-          $scope.nextButtonLabel = $filter('translate')('Skip');
+          createProject();
+          $state.go('newProject.languages');
           $scope.show.backButton = false;
           $scope.projectCodeState = 'empty';
           $scope.projectCodeStateDefer = $q.defer();
           $scope.projectCodeStateDefer.resolve('empty');
           makeFormNeutral();
+          break;
+        case 'newProject.languages':
+          updateConfig(gotoEditor);
           break;
       }
     }
@@ -319,9 +308,6 @@ angular.module('translate-new-project',
       $scope.projectCodeState = 'unchecked';
       $scope.projectCodeStateDefer = $q.defer();
       $scope.projectCodeStateDefer.resolve('unchecked');
-      $scope.project.sendReceive.isUnchecked = true;
-      $scope.project.sendReceive.usernameStatus = 'unchecked';
-      $scope.project.sendReceive.passwordStatus = 'unchecked';
     }
 
     $scope.resetValidateProjectForm = resetValidateProjectForm;
@@ -367,70 +353,37 @@ angular.module('translate-new-project',
       }
 
       projectService.createSwitchSession($scope.newProject.projectName,
-        $scope.newProject.projectCode, $scope.newProject.appName,
-        $scope.project.sendReceive.project, function (result) {
-        if (result.ok) {
-          $scope.newProject.id = result.data;
-          sessionService.refresh(callback);
-        } else {
-          notice.push(notice.ERROR, 'The ' + $scope.newProject.projectName +
-            ' project could not be created. Please try again.');
-        }
-      });
+        $scope.newProject.projectCode, $scope.newProject.appName, false, function (result) {
+          if (result.ok) {
+            $scope.newProject.id = result.data;
+            $scope.project = $scope.newProject;
+            sessionService.refresh(callback);
+          } else {
+            notice.push(notice.ERROR, 'The ' + $scope.newProject.projectName +
+              ' project could not be created. Please try again.');
+          }
+        });
     }
 
-    // ----- Step 3: Verify initial data -OR- select primary language -----
+    // ----- Step 2: select source and target languages -----
 
-    function savePrimaryLanguage(callback) {
-      var config = { inputSystems: [] };
-      var optionlist = {};
-      var inputSystem = {};
-      notice.setLoading('Configuring project for first use...');
-      if (angular.isDefined(sessionService.session.projectSettings)) {
-        config = sessionService.session.projectSettings.config;
-        optionlist = sessionService.session.projectSettings.optionlists;
-      }
-
-      inputSystem.abbreviation = $scope.newProject.languageCode;
-      inputSystem.tag = $scope.newProject.languageCode;
-      inputSystem.languageName = $scope.newProject.language.name;
-      config.inputSystems[$scope.newProject.languageCode] = inputSystem;
-      if ('th' in config.inputSystems) {
-        delete config.inputSystems.th;
-        replaceFieldInputSystem(config.entry, 'th', $scope.newProject.languageCode);
-      }
-
-      projectService.updateConfiguration(config, optionlist, function (result) {
-        notice.cancelLoading();
+    function updateConfig(callback) {
+      projectService.updateConfig($scope.project.config, function (result) {
         if (result.ok) {
+          notice.push(notice.SUCCESS,
+            $scope.project.projectName + ' configuration updated successfully.');
           (callback || angular.noop)();
         } else {
-          makeFormInvalid('Could not add ' + $scope.newProject.language.name + ' to project.');
+          makeFormInvalid('Could not save languages for ' + $scope.project.projectName);
         }
       });
     }
 
-    function replaceFieldInputSystem(item, existingTag, replacementTag) {
-      if (item.type === 'fields') {
-        angular.forEach(item.fields, function (field) {
-          replaceFieldInputSystem(field, existingTag, replacementTag);
-        });
-      } else {
-        if (angular.isDefined(item.inputSystems)) {
-          angular.forEach(item.inputSystems, function (inputSystemTag, index) {
-            if (inputSystemTag === existingTag) {
-              item.inputSystems[index] = replacementTag;
-            }
-          });
-        }
-      }
-    }
-
-    $scope.$watch('newProject.languageCode', function (newval) {
-      if (angular.isDefined(newval)) {
-        validateForm();
-      }
-    });
+    $scope.updateLanguage = function updateLanguage(docType, code, language) {
+      $scope.project.config[docType] = $scope.project.config[docType] || {};
+      $scope.project.config[docType].inputSystem.tag = code;
+      $scope.project.config[docType].inputSystem.languageName = language.name;
+    };
 
   }])
 
