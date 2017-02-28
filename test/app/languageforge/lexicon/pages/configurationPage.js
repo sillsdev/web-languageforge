@@ -38,7 +38,7 @@ function ConfigurationPage() {
 
   this.inputSystemsTab = {
     newButton:    this.tabDivs.first().element(by.partialButtonText('New')),
-    moreButton:   this.tabDivs.first().element(by.css('.btn-group a.btn')),
+    moreButton:   this.tabDivs.first().element(by.css('.btn-group button')),
     moreButtonGroup: {
       addIpa:     this.tabDivs.first().element(by.partialLinkText('Add IPA')),
       addVoice:   this.tabDivs.first().element(by.partialLinkText('Add Voice')),

@@ -24,26 +24,26 @@
     <!-- Right column: input system setup -->
     <div class="col-md-9">
         <!-- control buttons -->
-        <div class="control-group">
-            <div class="btn-group" uib-dropdown>
-                <a class="btn btn-sm btn-info" uib-dropdown-toggle href style="font-weight:normal">
-                    {{'More' | translate}}&nbsp;&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu" uib-dropdown-menu>
-                    <li data-ng-class="{disabled: newExists(selects.special.optionsOrder[1])}">
-                        <a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[1])">
-                        <i class="fa fa-plus"></i> {{'Add IPA for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
-                    <li data-ng-class="{disabled: newExists(selects.special.optionsOrder[2])}">
-                        <a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[2])">
-                        <i class="fa fa-plus"></i> {{'Add Voice for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
-                    <li>
-                        <a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[3])">
-                        <i class="fa fa-plus"></i> {{'Add a variant of' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
-                    <li class="divider" data-ng-show="! isInputSystemInUse()"></li>
-                    <li data-ng-show="! isInputSystemInUse()">
-                        <a tabindex="-1" data-ng-click="removeInputSystem(selectedInputSystemId)">
-                        <i class="fa fa-times"></i> {{'Remove' | translate}} {{inputSystemViewModels[selectedInputSystemId].languageDisplayName()}}</a></li>
-                </ul>
-            </div>
+        <div uib-dropdown class="dropdown form-group btn-group">
+            <button uib-dropdown-toggle class="btn btn-sm btn-info">
+                {{'More' | translate}}
+            </button>
+            <ul class="dropdown-menu" uib-dropdown-menu>
+                <a href class="dropdown-item" tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[1])"
+                    data-ng-class="{disabled: newExists(selects.special.optionsOrder[1])}">
+                    <i class="fa fa-plus"></i> {{'Add IPA for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a>
+
+                <a href class="dropdown-item" data-ng-class="{disabled: newExists(selects.special.optionsOrder[2])}" tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[2])">
+                    <i class="fa fa-plus"></i> {{'Add Voice for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a>
+
+                <a href class="dropdown-item" tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[3])">
+                    <i class="fa fa-plus"></i> {{'Add a variant of' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a>
+
+                <div class="dropdown-divider" data-ng-show="! isInputSystemInUse()"></div>
+
+                <a href class="dropdown-item" data-ng-show="! isInputSystemInUse()" tabindex="-1" data-ng-click="removeInputSystem(selectedInputSystemId)">
+                    <i class="fa fa-times"></i> {{'Remove' | translate}} {{inputSystemViewModels[selectedInputSystemId].languageDisplayName()}}</a>
+            </ul>
         </div>
 
         <!-- settings -->
