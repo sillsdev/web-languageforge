@@ -44,7 +44,7 @@ dl.picklists {
 }
 
 dl.picklists div {
-  curosr: pointer;
+  cursor: pointer;
 }
 
 dl.picklists div div:hover {
@@ -93,8 +93,10 @@ dl.picklists dd {
   color: #fff;
 }
 
-.nav, .pagination, .carousel, .panel-title a {
-  cursor: pointer;
+.nav, .pagination, .carousel, .panel-title {
+  a {
+    cursor: pointer;
+  }
 }
 
 .uib-tab a {
