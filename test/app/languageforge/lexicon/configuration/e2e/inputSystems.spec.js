@@ -51,11 +51,11 @@ describe('Configuration Input Systems', function () {
 
   it('cannot add another IPA variation, but can add Voice and Variant', function () {
     configPage.inputSystemsTab.moreButton.click();
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addIpa).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addIpa.getAttribute('class'))
       .toContain('disabled');
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVoice).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addVoice.getAttribute('class'))
       .toContain('disabled');
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVariant).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addVariant.getAttribute('class'))
       .not.toContain('disabled');
   });
 
@@ -265,7 +265,7 @@ describe('Configuration Input Systems', function () {
 
   it('cannot add another IPA variation', function () {
     configPage.inputSystemsTab.moreButton.click();
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addIpa).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addIpa.getAttribute('class'))
       .toContain('disabled');
   });
 
@@ -289,7 +289,7 @@ describe('Configuration Input Systems', function () {
 
   it('cannot add another Voice variation', function () {
     configPage.inputSystemsTab.moreButton.click();
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVoice).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addVoice.getAttribute('class'))
       .toContain('disabled');
   });
 
@@ -318,7 +318,7 @@ describe('Configuration Input Systems', function () {
 
   it('can always add another Variant variation', function () {
     configPage.inputSystemsTab.moreButton.click();
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVariant).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addVariant.getAttribute('class'))
       .not.toContain('disabled');
   });
 
