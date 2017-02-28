@@ -52,6 +52,17 @@
         <a class="btn-flat darken-1 waves-light waves-effect" (click)="closeModal()"><i class="material-icons">close</i></a>
       </div>
     </div>
+    <div class="row">
+      <div class="col s12 m6">
+        <label>Select suggestion type</label>
+        <select class="browser-default">
+          <option value="" disabled selected>Choose your option</option>
+          <option value="1">Incorrect spelling</option>
+          <option value="2">Incorrect meaning</option>
+          <option value="3">Incorrect meaning spelling</option>
+        </select>
+      </div>
+    </div>
     <textarea id="placeholderForComment" class="materialize-textarea" placeholder="Enter text here"></textarea>
   </div>
   <div class="modal-footer">
