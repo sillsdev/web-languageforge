@@ -330,11 +330,20 @@ class RightsHelper
             case 'translate_projectUpdate':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
-            case 'translate_updateConfig':
-                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-
             case 'translate_projectDto':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
+
+            case 'translate_configUpdate':
+                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
+
+            case 'translate_documentSetUpdate':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
+
+            case 'translate_documentSetListDto':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
+
+            case 'translate_documentSetRemove':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::DELETE);
 
             // project management app
             case 'project_management_dto':

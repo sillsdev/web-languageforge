@@ -23,7 +23,9 @@ use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
 use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransAppManagementDto;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
+use Api\Model\Languageforge\Translate\Command\TranslateDocumentSetCommands;
 use Api\Model\Languageforge\Translate\Command\TranslateProjectCommands;
+use Api\Model\Languageforge\Translate\Dto\TranslateDocumentSetDto;
 use Api\Model\Languageforge\Translate\Dto\TranslateProjectDto;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
@@ -828,20 +830,35 @@ class Sf
     }
 
     /**
-     * @param array $configData
-     * @return string $projectId
-     */
-    public function translate_updateConfig($configData)
-    {
-        return TranslateProjectCommands::updateConfig($this->projectId, $configData);
-    }
-
-    /**
      * @return array
      */
     public function translate_projectDto()
     {
         return TranslateProjectDto::encode($this->projectId);
+    }
+
+    /**
+     * @param array $configData
+     * @return string $projectId
+     */
+    public function translate_configUpdate($configData)
+    {
+        return TranslateProjectCommands::updateConfig($this->projectId, $configData);
+    }
+
+    public function translate_documentSetUpdate($documentSetData)
+    {
+        return TranslateDocumentSetCommands::updateDocumentSet($this->projectId, $documentSetData);
+    }
+
+    public function translate_documentSetListDto()
+    {
+        return TranslateDocumentSetDto::encode($this->projectId);
+    }
+
+    public function translate_documentSetRemove($documentId)
+    {
+        return TranslateDocumentSetCommands::removeDocumentSet($this->projectId, $documentId);
     }
 
 

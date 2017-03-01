@@ -1,0 +1,16 @@
+<form name="docSetFieldForm" class="ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="move()">
+    <div class="modal-header">
+        <h3 data-translate="Move Document Set"></h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="control-label" for="positionSelect" data-translate="Position"></label>
+            <select class=custom-select id="positionSelect" autofocus data-ng-model="newIndex"
+                    data-ng-options="index as option for (index, option) in positionOptions"></select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="submit">
+            <i class="fa fa-arrows-v"></i> {{'Move' | translate}} {{documentSet.name}}</button>
+    </div>
+</form>
