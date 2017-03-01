@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('translate.services')
-  .service('translateProjectService',
+  .service('translateProjectApi',
     ['jsonRpc', 'sessionService', 'projectService',
   function (jsonRpc, sessionService, projectService) {
     jsonRpc.connect('/api/sf');
@@ -12,12 +12,12 @@ angular.module('translate.services')
       jsonRpc.call('translate_projectUpdate', [project], callback);
     };
 
-    this.updateConfig = function updateConfig(config, callback) {
-      jsonRpc.call('translate_updateConfig', [config], callback);
-    };
-
     this.readProject = function readProject(callback) {
       jsonRpc.call('translate_projectDto', [], callback);
+    };
+
+    this.updateConfig = function updateConfig(config, callback) {
+      jsonRpc.call('translate_configUpdate', [config], callback);
     };
 
     this.users = function users(callback) {

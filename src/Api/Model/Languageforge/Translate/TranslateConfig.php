@@ -3,26 +3,31 @@
 namespace Api\Model\Languageforge\Translate;
 
 use Api\Model\Languageforge\InputSystem;
+use Api\Model\Shared\Mapper\ArrayOf;
 
 class TranslateConfig
 {
     public function __construct()
     {
-        $this->source = new TranslateConfigDocument();
-        $this->target = new TranslateConfigDocument();
+        $this->source = new TranslateConfigDocType();
+        $this->target = new TranslateConfigDocType();
+        $this->documentSets = new TranslateConfigDocumentSets();
     }
 
-    /** @var TranslateConfigDocument */
+    /** @var TranslateConfigDocType */
     public $source;
 
-    /** @var TranslateConfigDocument */
+    /** @var TranslateConfigDocType */
     public $target;
 
     /** @var boolean */
     public $isTranslationDataShared;
+
+    /** @var TranslateConfigDocumentSets */
+    public $documentSets;
 }
 
-class TranslateConfigDocument
+class TranslateConfigDocType
 {
     public function __construct($tag = 'qaa', $name = '')
     {
@@ -31,4 +36,17 @@ class TranslateConfigDocument
 
     /** @var InputSystem */
     public $inputSystem;
+}
+
+class TranslateConfigDocumentSets
+{
+//    const COLLECTION = 'realtime';
+
+    public function __construct()
+    {
+        $this->idsOrdered = new ArrayOf();
+    }
+
+    /** @var ArrayOf<string $documentSetId> */
+    public $idsOrdered;
 }

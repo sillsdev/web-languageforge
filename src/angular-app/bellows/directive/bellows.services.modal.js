@@ -2,7 +2,9 @@
 
 angular.module('bellows.services')
   .service('modalService', ['$uibModal', function ($modal) {
-    // Taken from http://weblogs.asp.net/dwahlin/archive/2013/09/18/building-an-angularjs-modal-service.aspx
+    angular.extend(this, $modal);
+
+    // http://weblogs.asp.net/dwahlin/archive/2013/09/18/building-an-angularjs-modal-service.aspx
     var modalDefaults = {
       backdrop: true,
       keyboard: true,
@@ -63,13 +65,13 @@ angular.module('bellows.services')
             $modalInstance.close(result);
           };
 
-          $scope.modalOptions.close = function (result) {
+          $scope.modalOptions.close = function () {
             $modalInstance.dismiss('cancel');
           };
         }];
       }
 
-      return $modal.open(tempModalDefaults).result;
+      return this.open(tempModalDefaults).result;
     };
 
   }]);
