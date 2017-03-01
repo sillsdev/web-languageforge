@@ -60,10 +60,10 @@ angular.module('translate-new-project',
   }])
   .controller('NewTranslateProjectCtrl', ['$scope', '$q', '$filter', '$uibModal', '$window',
     'sessionService', 'silNoticeService', '$translate', '$state', 'Upload',
-    'translateProjectService', 'sfchecksLinkService',
-    function ($scope, $q, $filter, $modal, $window,
+    'translateProjectApi', 'sfchecksLinkService',
+  function ($scope, $q, $filter, $modal, $window,
             sessionService, notice, $translate, $state, Upload,
-            projectService, linkService) {
+            projectApi, linkService) {
     $scope.interfaceConfig = {};
     $scope.interfaceConfig.userLanguageCode = 'en';
     if (angular.isDefined(sessionService.session.projectSettings) &&
@@ -278,13 +278,13 @@ angular.module('translate-new-project',
 
     $scope.checkProjectCode = function checkProjectCode() {
       $scope.projectCodeStateDefer = $q.defer();
-      if (!projectService.isValidProjectCode($scope.newProject.projectCode)) {
+      if (!projectApi.isValidProjectCode($scope.newProject.projectCode)) {
         $scope.projectCodeState = 'invalid';
         $scope.projectCodeStateDefer.resolve('invalid');
       } else {
         $scope.projectCodeState = 'loading';
         $scope.projectCodeStateDefer.notify('loading');
-        projectService.projectCodeExists($scope.newProject.projectCode, function (result) {
+        projectApi.projectCodeExists($scope.newProject.projectCode, function (result) {
           if (result.ok) {
             if (result.data) {
               $scope.projectCodeState = 'exists';
@@ -352,7 +352,7 @@ angular.module('translate-new-project',
         return;
       }
 
-      projectService.createSwitchSession($scope.newProject.projectName,
+      projectApi.createSwitchSession($scope.newProject.projectName,
         $scope.newProject.projectCode, $scope.newProject.appName, false, function (result) {
           if (result.ok) {
             $scope.newProject.id = result.data;
@@ -368,7 +368,7 @@ angular.module('translate-new-project',
     // ----- Step 2: select source and target languages -----
 
     function updateConfig(callback) {
-      projectService.updateConfig($scope.project.config, function (result) {
+      projectApi.updateConfig($scope.project.config, function (result) {
         if (result.ok) {
           notice.push(notice.SUCCESS,
             $scope.project.projectName + ' configuration updated successfully.');

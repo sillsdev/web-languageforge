@@ -1,23 +1,41 @@
-<h2>Translate</h2>
+<h2>{{'Translate' | translate}} {{project.projectName}}</h2>
 <div class="row">
-    <div class="col-xs-5">
+    <div class="col-sm-2">
+        <label data-translate="Document"></label>
+        <br />
+        <button type="button" class="btn btn-success btn-sm" data-ng-click="modalUpdateDocumentSet()">
+            <i class="fa fa-plus iconPadding"></i>{{'New' | translate}}</button>
+        <div class="picklist">
+            <div data-ng-repeat="documentSet in documentSets" data-ng-class="{ selected: selectedDocumentSetIndex == $index }">
+                <div class="btn-group" uib-dropdown data-ng-class="interfaceConfig.pullToSide">
+                    <a class="pui-no-caret" uib-dropdown-toggle id="dropdownMenuLink">
+                        <i class="fa fa-ellipsis-v"></i></a>
+                    <div class="dropdown-menu dropdown-menu-sm-left" uib-dropdown-menu aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" data-ng-click="modalUpdateDocumentSet($index)">
+                            <i class="fa fa-pencil iconPadding"></i>{{'Edit Name' | translate}}</a>
+                        <a class="dropdown-item" data-ng-click="modalMoveDocumentSet($index)">
+                            <i class="fa fa-arrows-v iconPadding"></i>{{'Move' | translate}}</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" data-ng-click="modalDeleteDocumentSet($index)">
+                            <i class="fa fa-times iconPadding"></i>{{'Delete' | translate}}</a>
+                    </div>
+                </div>
+                <div class="picklistLabel" data-ng-click="selectDocumentSet($index)"
+                     data-pui-show-overflow data-ng-bind="documentSet.name">
+                </div>
+            </div>
+        </div>
+        <br />
+    </div>
+    <div class="col-sm-5 clearfix" lang="{{left.inputSystem.tag}}" data-ng-show="hasDocumentSets()">
         <label>{{getLabel(left.label, left.inputSystem.tag)}}</label>
-    </div>
-    <div class="col-xs-1">
-        <button type="button" class="btn btn-secondary" data-ng-click="swapEditors()">
+        <button type="button" class="btn btn-secondary btn-sm hidden-xs-down float-sm-right" data-ng-click="swapEditors()">
             <i class="fa fa-exchange"></i></button>
-    </div>
-    <div class="col-xs-5">
-        <label>{{getLabel(right.label, right.inputSystem.tag)}}</label>
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-6" lang="{{left.inputSystem.tag}}">
         <ng-quill-editor
             id="editorLeft" data-modules="modulesConfig" data-theme="bubble-suggest"
             data-on-editor-created="editorCreated(editor, left.docType, 'left')"
             data-on-content-changed="contentChanged(editor, html, text, left.docType, 'left')"
-            data-ng-model="left.data" data-read-only="false"
+            data-ng-model="left.data" data-read-only="!hasDocumentSets()"
             data-placeholder="&#8203;enter text here"></ng-quill-editor>
         <div class="ql-suggestions">
             <ql-suggestion data-ql-suggestions="left.suggestions"
@@ -25,12 +43,17 @@
         </div>
         <!--<pre>left {{left | json}}</pre>-->
     </div>
-    <div class="col-xs-6" lang="{{right.inputSystem.tag}}">
+    <div class="col-sm-5 hidden-sm-up" data-ng-show="hasDocumentSets()">
+        <button type="button" class="btn btn-secondary btn-sm" data-ng-click="swapEditors()">
+            <i class="fa fa-exchange fa-rotate-90"></i></button>
+    </div>
+    <div class="col-sm-5" lang="{{right.inputSystem.tag}}" data-ng-show="hasDocumentSets()">
+        <label>{{getLabel(right.label, right.inputSystem.tag)}}</label>
         <ng-quill-editor
             id="editorRight" data-modules="modulesConfig" data-theme="bubble-suggest"
             data-on-editor-created="editorCreated(editor, right.docType, 'right')"
             data-on-content-changed="contentChanged(editor, html, text, right.docType, 'right')"
-            data-ng-model="right.data" data-read-only="false"
+            data-ng-model="right.data" data-read-only="!hasDocumentSets()"
             data-placeholder="&#8203;enter text here"></ng-quill-editor>
         <div class="ql-suggestions">
             <ql-suggestion data-ql-suggestions="right.suggestions"

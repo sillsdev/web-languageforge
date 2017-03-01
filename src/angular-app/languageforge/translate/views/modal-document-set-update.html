@@ -1,0 +1,18 @@
+<form name="docSetFieldForm" class="ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="update()">
+    <div class="modal-header">
+        <h3>{{titleLabel | translate}}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="control-label" for="name" data-translate="Display Name"></label>
+            <input class="form-control" id="name" autofocus
+                required type="text" name="name"
+                placeholder="{{'name' | translate}}"
+                data-ng-model="documentSet.name" />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="submit">
+            <i class="fa fa-plus"></i> {{buttonLabel | translate}} {{documentSet.name}}</button>
+    </div>
+</form>

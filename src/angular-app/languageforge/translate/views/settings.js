@@ -4,32 +4,37 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
   'palaso.ui.typeahead', 'palaso.ui.archiveProject', 'palaso.ui.deleteProject', 'palaso.ui.notice',
   'palaso.ui.textdrop', 'translate.languages'])
   .controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService',
-    'silNoticeService', 'translateRightsService', 'translateProjectService', 'translateAssistant',
+    'silNoticeService', 'translateRightsService', 'translateProjectApi', 'translateAssistant',
   function ($scope, $filter, userService, sessionService,
-            notice, rights, projectService, assistant) {
+            notice, rights, projectApi, assistant) {
     $scope.rights = rights;
     $scope.project = $scope.project || {};
     $scope.project.config = $scope.project.config || {};
     $scope.actionInProgress = false;
+    var pristineProject;
 
-    projectService.readProject(function (result) {
+    projectApi.readProject(function (result) {
       if (result.ok) {
         angular.merge($scope.project, result.data.project);
+        pristineProject = angular.copy($scope.project);
       }
     });
 
     $scope.updateProject = function () {
-      var settings = {
+      var projectData = {
+        id: $scope.project.id,
         projectName: $scope.project.projectName,
         interfaceLanguageCode: $scope.project.interfaceLanguageCode,
         featured: $scope.project.featured,
         config: $scope.project.config
       };
 
-      projectService.updateProject(settings, function (result) {
+      projectApi.updateProject(projectData, function (result) {
         if (result.ok) {
+          $scope.project.id = result.data;
           assistant.initialise($scope.project.config.source.inputSystem.tag,
             $scope.project.config.target.inputSystem.tag, $scope.project.slug);
+          pristineProject = angular.copy($scope.project);
           notice.push(notice.SUCCESS,
             $scope.project.projectName + ' settings updated successfully.');
         }
@@ -37,10 +42,11 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
     };
 
     $scope.updateConfig = function () {
-      projectService.updateConfig($scope.project.config, function (result) {
+      projectApi.updateConfig($scope.project.config, function (result) {
         if (result.ok) {
           assistant.initialise($scope.project.config.source.inputSystem.tag,
             $scope.project.config.target.inputSystem.tag, $scope.project.slug);
+          pristineProject = angular.copy($scope.project);
           notice.push(notice.SUCCESS,
             $scope.project.projectName + ' configuration updated successfully.');
         }
@@ -52,6 +58,10 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
       $scope.project.config[docType].inputSystem.tag = code;
       $scope.project.config[docType].inputSystem.languageName = language.name;
     };
+
+    $scope.$on('$destroy', function () {
+      angular.copy(pristineProject, $scope.project);
+    });
   }])
 
   ;

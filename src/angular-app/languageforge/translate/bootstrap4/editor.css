@@ -1,5 +1,58 @@
+.picklist {
+    cursor: pointer;
+}
+
+.picklist .dropdown-toggle {
+    display: block;
+    min-width: 20px;
+    text-align: center;
+}
+
+.picklist .picklistLabel {
+    padding-left: 5px;
+    padding-right: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    max-height: 24px;
+}
+
+.picklist > *:not(.selected):hover {
+    background-color: #EEE;
+}
+
+.picklist .selected {
+    background-color: #DDD;
+}
+
+.picklist .dropdown-item i {
+    min-width: 29px;
+    text-align: center;
+}
+
+.picklist .dropdown-menu-sm-left {
+    /* @extend .dropdown-menu-right */
+    right: 0;
+    left: auto;
+}
+
+@media (min-width: 576px) {
+    /* sm and above */
+    .picklist .dropdown-menu-sm-left {
+        /* @extend .dropdown-menu-left */
+        right: auto;
+        left: 0;
+    }
+}
+
 [ng-quill-editor] {
     display: block;
+}
+
+ng-quill-editor .ql-editor {
+    margin-left: -15px;
+    margin-right: -15px;
+    /*padding-left: 0;*/
+    /*padding-right: 0;*/
 }
 
 ng-quill-editor .ql-container {
