@@ -14,9 +14,9 @@
         <div class="row outer-flex">
 
         <!-- Left column: field list -->
-        <div class="col-md-3 control-group">
+        <div class="col-md-3 form-group">
             <!-- control buttons -->
-            <div class="control-group">
+            <div class="form-group">
                 <button data-ng-click="showAllFields = ! showAllFields" class="btn btn-sm">
                     <i class="fa fa-{{ showAllFields ? 'minus-square-o' : 'plus-square-o' }}"></i>
                     <span class="hidden-sm-down">
@@ -59,7 +59,7 @@
                 </div></dd>
             </dl>
             <small data-translate="Custom Fields shown in <i>italics</i>"></small>
-            <div class="control-group">
+            <div class="form-group">
                 <button class="btn btn-sm btn-success" data-ng-click="openNewCustomFieldModal()"><i class="fa fa-plus iconPadding"></i>{{'New Custom Field' | translate}} </button>
             </div>
         </div>
@@ -67,24 +67,24 @@
         <!-- Right column: field setup -->
         <div class="col-md-9">
             <!-- control buttons -->
-            <div class="control-group" style="height: 30px">
+            <div class="form-group" style="height: 30px">
                 <button class="btn" data-ng-click="removeSelectedCustomField()"
                     data-ng-show="showRemoveCustomField(currentField.name)">
                     <i class="fa fa-times"></i>{{'Remove Custom Field' | translate}} </button>
             </div>
 
             <!-- settings -->
-            <div class="card card-block bg-faded">
+            <div class="card card-block bg-faded settings-panel">
                 <h3 id="fieldSetupLabel">{{fieldConfig[currentField.name].label}} {{'Field Setup' | translate}}</h3>
-                <div class="control-group"
+                <div class="form-group"
                     data-ng-show="isCustomField(currentField.name)">
                     <label class="control-label" for="displayName">{{'Display Name' | translate}}</label>
                     <div class="controls">
-                        <input type="text" id="displayName"
+                        <input type="text" class="form-control" id="displayName"
                             data-ng-model="fieldConfig[currentField.name].label"/>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="form-group clearfix">
                     <div class="controls">
                         <label class="checkbox {{interfaceConfig.pullNormal}}">
                             <input type="checkbox" id="hideIfEmpty"
@@ -93,11 +93,11 @@
                     </div>
                     <br />
                 </div>
-                <div class="control-group"
+                <div class="form-group"
                     data-ng-if="fieldConfigItemExists('width') && fieldConfig[currentField.name].type != 'pictures'">
                     <label class="control-label" for="width">{{'Width' | translate}}</label>
                     <div class="controls">
-                        <input type="number" id="width" min="20" max="40"
+                        <input class="form-control" type="number" id="width" min="20" max="40"
                             data-ng-model="fieldConfig[currentField.name].width"/>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
                     <hr />
                     <h3>{{fieldConfig[currentField.name].captionLabel}} {{'Field Setup' | translate}}</h3>
                 </div>
-                <div class="control-group"
+                <div class="form-group"
                     data-ng-if="fieldConfigItemExists('captionHideIfEmpty')">
                     <div class="controls">
                         <label class="checkbox {{interfaceConfig.pullNormal}}">
@@ -119,7 +119,7 @@
 
                 <div data-ng-if="fieldConfigItemExists('inputSystems')">
                     <hr />
-                    <div class="row outer-flex control-group" data-ng-show="editInputSystems.collapsed">
+                    <div class="row outer-flex form-group" data-ng-show="editInputSystems.collapsed">
                         <div class="col-md-3 picklists">
                             <label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
                             <ul class="list-unstyled indent1"  id="inputSystem">
@@ -133,15 +133,15 @@
                             </ul>
                             <a href="" data-ng-click="editInputSystems.collapsed = false">{{'Edit input systems' | translate}}</a>
                         </div>
-                        <div class="span1 btn-group btn-group-vertical">
+                        <div class="span1 btn-group-vertical">
                             <button class="btn" id="upButton"
                                 data-ng-click="moveUp(currentField.inputSystems.tag)"
                                 data-ng-disabled="currentField.inputSystems.fieldOrder[0] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
-                                &nbsp;&nbsp;<i class="fa fa-arrow-up"></i></button>
+                                <i class="fa fa-arrow-up"></i></button>
                             <button class="btn" id="downButton"
                                 data-ng-click="moveDown(currentField.inputSystems.tag)"
                                 data-ng-disabled="currentField.inputSystems.fieldOrder[currentField.inputSystems.fieldOrder.length - 1] == currentField.inputSystems.tag || !currentField.inputSystems.tag">
-                                &nbsp;&nbsp;<i class="fa fa-arrow-down"></i></button>
+                                <i class="fa fa-arrow-down"></i></button>
                         </div>
                     </div>
                     <div uib-collapse="editInputSystems.collapsed">
@@ -335,7 +335,7 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
 
                 <!-- Right column: task setup -->
                 <div class="col-md-9">
-                    <div class="card card-block bg-faded" id="picklistEditorFieldset">
+                    <div class="card card-block bg-faded settings-panel" id="picklistEditorFieldset">
                         <h3 class="control-label">{{optionlistDirty[currentListIndex].name}}</h3>
                         <div class="controls">
                             <picklist-editor items="optionlistDirty[currentListIndex].items"
