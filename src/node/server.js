@@ -19,7 +19,6 @@ var sslKeyPath = config.sslKeyPath || defaultSslKey;
 var sslCertPath = config.sslCertPath || defaultSslCert;
 var hostname = '0.0.0.0';
 var webSocketDocServerPort = 8443;
-var webSocketMessageServerPort = 8442;
 
 // Client connection time allowed without editing in minutes
 var connectionTime = 20;
@@ -36,19 +35,6 @@ MongoClient.connect('mongodb://localhost:27017/realtime', function (err, db) {
     // console.log('Found the following records', docs);
   });
 });
-
-// Create initial document then fire callback
-function createDoc(collection, id, value) {
-  value = value || '';
-  var doc = connection.get(collection, id);
-  doc.fetch(function (err) {
-    if (err) throw err;
-
-    if (doc.type === null) {
-      doc.create([{ insert: value }], 'rich-text');
-    }
-  });
-}
 
 // Check if object is empty
 function isEmpty(object) {
@@ -100,22 +86,9 @@ function startServer() {
   var app = express();
   app.use(express.static('static'));
   var docServer = https.createServer(options, app);
-  var messageServer = https.createServer(options, app);
 
   // Connect any incoming WebSocket connection to ShareDB
   var docWss = new WebSocket.Server({ server: docServer });
-  var messageWss = new WebSocket.Server({ server: messageServer });
-  messageWss.on('connection', function (ws) {
-    ws.on('message', function (jsonMsg) {
-      var msg = JSON.parse(jsonMsg);
-      if (typeof (msg.docId) == 'string') {
-        createDoc(msg.collection, msg.docId, msg.initialValue);
-        msg.result = 'docReady';
-        ws.send(JSON.stringify(msg));
-      }
-    });
-  });
-
   docWss.on('connection', function (ws) {
     var stream = new WebSocketJSONStream(ws);
     var agent = backend.listen(stream);
@@ -134,11 +107,6 @@ function startServer() {
 
   docServer.listen(webSocketDocServerPort, hostname, function () {
     console.log('Doc Server is listening at https://' + hostname + ':' + webSocketDocServerPort);
-  });
-
-  messageServer.listen(webSocketMessageServerPort, hostname, function () {
-    console.log(
-      'Message Server is listening at https://' + hostname + ':' + webSocketMessageServerPort);
   });
 }
 
