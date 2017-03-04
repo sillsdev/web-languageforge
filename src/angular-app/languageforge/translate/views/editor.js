@@ -76,7 +76,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.contentChanged =
       function contentChanged(editor, html, text, docType, side) {
         if (currentDocIds[docType] != docId(docType)) {
-          realTime.disconnectRichTextDoc(currentDocIds[docType]);
+          realTime.disconnectRichTextDoc(currentDocIds[docType], editor);
           delete currentDocIds[docType];
           $scope.editorCreated(editor, docType, side);
         } else {
@@ -103,8 +103,8 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.swapEditors = function swapEditors() {
       editors.left.off('selection-change', onSelectionChanges.left);
       editors.right.off('selection-change', onSelectionChanges.right);
-      realTime.disconnectRichTextDoc(currentDocIds[$scope.left.docType]);
-      realTime.disconnectRichTextDoc(currentDocIds[$scope.right.docType]);
+      realTime.disconnectRichTextDoc(currentDocIds[$scope.left.docType], editors.left);
+      realTime.disconnectRichTextDoc(currentDocIds[$scope.right.docType], editors.right);
       currentDocIds = [];
 
       var newLeft = $scope.right;

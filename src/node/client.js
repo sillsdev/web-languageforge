@@ -2,106 +2,79 @@ var ShareDB = require('sharedb/lib/client');
 var richText = require('rich-text');
 ShareDB.types.register(richText.type);
 
-function getWebSocketDocUrl() {
-  var url = 'wss://' + window.location.host;
-  return (url.endsWith(':8443')) ? url : url + ':8443';
-}
-
-function getWebSocketMsgUrl() {
-  var url = 'wss://' + window.location.host;
-  return (url.endsWith(':8442')) ? url : url + ':8442';
-}
-
 // Open WebSocket connection to ShareDB server
 var socket = new WebSocket(getWebSocketDocUrl());
-var msgSocket = new WebSocket(getWebSocketMsgUrl());
 var connection = new ShareDB.Connection(socket);
-var quillEditors = {};
+
 var docSubs = {};
 var onTextChanges = {};
 var onOps = {};
 var realTime = {};
 
-msgSocket.onmessage = function (event) {
-  var msg = JSON.parse(event.data);
-  if (msg.result == 'docReady') {
-    connectRichTextDoc(msg.collection, msg.docId, quillEditors[msg.docId]);
-  }
-};
-
-function sendServerMessage(message) {
-  waitForConnection(function () {
-    msgSocket.send(message);
-  });
-}
-
-function waitForConnection(callback) {
-  if (msgSocket.readyState === 1) {
-    callback();
-  } else {
-    setTimeout(function () {
-      waitForConnection(callback);
-    }, 100);
-  }
+function getWebSocketDocUrl() {
+  var url = 'wss://' + window.location.host;
+  return (url.endsWith(':8443')) ? url : url + ':8443';
 }
 
 realTime.createAndSubscribeRichTextDoc =
-  function createAndSubscribeRichTextDoc(projectCollection, id, quill) {
-    projectCollection = projectCollection || 'collection';
-    quillEditors[id] = quill;
-    if (!(id in docSubs)) {
-      sendServerMessage(JSON.stringify({
-        collection: projectCollection, docId: id, initialValue: quill.getText()
-      }));
+  function createAndSubscribeRichTextDoc(collection, id, quill) {
+    var doc;
+    if (id in docSubs) {
+      doc = docSubs[id];
+      realTime.disconnectRichTextDoc(id, quill);
     } else {
-      connectRichTextDoc(projectCollection, id, quill);
+      collection = collection || 'collection';
+      doc = connection.get(collection, id);
+      doc.fetch(function (err) {
+        if (err) throw err;
+
+        if (doc.type === null) {
+          doc.create([{ insert: '' }], 'rich-text');
+        }
+      });
     }
+
+    docSubs[id] = doc;
+    doc.subscribe(function (err) {
+      if (err) throw err;
+
+      quill.setContents(doc.data);
+
+      onTextChanges[id] = function (delta, oldDelta, source) {
+        if (source !== 'user') return;
+        doc.submitOp(delta, { source: quill });
+
+        // console.log('onTextChange: docId', id, 'data', quill.getText());
+      };
+
+      quill.on('text-change', onTextChanges[id]);
+
+      onOps[id] = function (op, source) {
+        if (source === quill) return;
+        quill.updateContents(op);
+
+        // console.log('onOp: docId', id, 'data', quill.getText());
+      };
+
+      doc.on('op', onOps[id]);
+    });
   };
 
-function connectRichTextDoc(collection, id, quill) {
-  var doc;
-  if (!(id in docSubs)) {
-    doc = connection.get(collection, id);
-    docSubs[id] = doc;
-  } else {
-    doc = docSubs[id];
-    realTime.disconnectRichTextDoc(id);
-    docSubs[id] = doc;
+realTime.disconnectRichTextDoc = function disconnectRichTextDoc(id, quill) {
+  if (id in onTextChanges) {
+    quill.off('text-change', onTextChanges[id]);
+    delete onTextChanges[id];
   }
 
-  doc.subscribe(function (err) {
-    if (err) throw err;
+  if (id in docSubs) {
+    if (id in onOps) {
+      docSubs[id].removeListener('op', onOps[id]);
+      delete onOps[id];
+    }
 
-    quill.setContents(doc.data);
-
-    onTextChanges[id] = function (delta, oldDelta, source) {
-      if (source !== 'user') return;
-      doc.submitOp(delta, { source: quill });
-
-      // console.log('onTextChange: docId', id, 'data', quillEditors[id].getText());
-    };
-
-    quill.on('text-change', onTextChanges[id]);
-
-    onOps[id] = function (op, source) {
-      if (source === quill) return;
-      quill.updateContents(op);
-
-      // console.log('onOp: docId', id, 'data', quillEditors[id].getText());
-    };
-
-    doc.on('op', onOps[id]);
-  });
-}
-
-realTime.disconnectRichTextDoc = function disconnectRichTextDoc(id) {
-  quillEditors[id].off('text-change', onTextChanges[id]);
-  delete onTextChanges[id];
-
-  docSubs[id].removeListener('op', onOps[id]);
-  delete onOps[id];
-  docSubs[id].destroy();
-  delete docSubs[id];
+    docSubs[id].destroy();
+    delete docSubs[id];
+  }
 };
 
 exports.realTime = realTime;
