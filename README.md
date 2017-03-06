@@ -78,7 +78,7 @@ Install node_modules used to build Sass files and run E2E tests
 ```
 cd web-languageforge
 npm install
-gulp sass
+gulp build
 ```
 To watch Sass files for changes, run `gulp sass:watch`. The output will also be in a more readable format (rather than compressed as it is with `gulp sass`). You can also pass the `--debug` flag to enable source comments and source maps in comments in the output files.
 
@@ -358,17 +358,52 @@ In the root folder: `npm install`
 
 In src/: `composer install`
 
-## Running the Node Server ##
+## Setting up and running the Node Server ##
 
-To run the node server to get real time updating:
+To setup the node server, from the repo root folder...
+````
+cd src/node
+npm install
+````
 
-In src/node/: `node server.js`
+To run the node server to get real time updating...
+
+````
+sudo node server.js
+````
 
 ## Browserify the realTime.node file ##
 
-After editing the `realTime.node` file you have to use browserify to get put all of the dependencies into one file so that the `realTime.node` file has access to them.
+After editing the `realTime.node` or `client.js` files, use browserify to get put all of the dependencies into one file so that the `realTime.node` file has access to them.
 
-To browserify the `realTime.node` file from the root folder:
+To browserify the `realTime.node` file from the repo root folder:
 ````
 gulp build-node-bundle
 ````
+
+If you're making several changes use:
+````
+gulp build-node-bundle-watch
+````
+## Setting up and running the Machine Web Server ##
+
+### Installation and Deployment
+From the **web-languageforge** repo root folder...
+````
+cd ..
+git clone git@github.com:sillsdev/machine-web-api.git
+````
+
+To deploy the machine server...
+````
+cd machine-web-api/build
+./deploy-developer.sh
+````
+
+### Running
+To run the machine server...
+
+````
+./run-developer.sh
+````
+
