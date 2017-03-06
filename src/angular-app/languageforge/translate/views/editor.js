@@ -20,6 +20,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.project = $scope.project || {};
     $scope.project.config = $scope.project.config || {};
     var currentDocIds = [];
+    var previousSegmentIndex = -1;
     var editors = {};
     var onSelectionChanges = {};
     var source = {
@@ -45,7 +46,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         target.inputSystem = $scope.project.config.target.inputSystem;
       }
 
-      assistant.initialise(source.inputSystem.tag, target.inputSystem.tag);
+      assistant.initialise(source.inputSystem.tag, target.inputSystem.tag, $scope.project.slug);
     });
 
     $scope.left = source;
@@ -151,23 +152,33 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       return (text.endsWith('\n')) ? text.substr(0, text.length - 1) : text;
     }
 
+    function updatePrefix(editor, segmentIndex) {
+      assistant.updatePrefix(currentSegment(target.data, segmentIndex), function (suggestions) {
+        $scope.$apply(function () {
+          target.suggestions = suggestions;
+          setTimeout(function () {
+            showAndPositionTooltip(editor.theme.suggestTooltip, editor.getSelection(), editor);
+          }, 1);
+        });
+      });
+    }
+
     function getSuggestions(editor, docType) {
       if (docType == 'target' && source.data && target.data) {
         var segmentIndex = getCurrentSegmentIndex(target.data, editor.getSelection());
-        assistant.setPrefix(
-          wordParser.wordBreak(currentSegment(source.data, segmentIndex)),
-          target.confidenceThreshold,
-          wordParser.wordBreak(currentSegment(target.data, segmentIndex)),
-          wordParser.isWordComplete(currentSegment(target.data, segmentIndex)),
-          function (suggestions) {
-            $scope.$apply(function () {
-              target.suggestions = suggestions;
-              setTimeout(function () {
-                showAndPositionTooltip(editor.theme.suggestTooltip, editor.getSelection(), editor);
-              }, 1);
-            });
-          }
-        );
+        if (segmentIndex != previousSegmentIndex) {
+          assistant.translateInteractively(currentSegment(source.data, segmentIndex),
+            target.confidenceThreshold,
+            function () {
+              previousSegmentIndex = segmentIndex;
+              updatePrefix(editor, segmentIndex);
+            }
+          );
+        } else {
+          setTimeout(function () {
+            updatePrefix(editor, segmentIndex);
+          }, 1);
+        }
       } else {
         editor.theme.suggestTooltip.hide();
       }

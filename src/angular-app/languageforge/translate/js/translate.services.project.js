@@ -12,7 +12,7 @@ angular.module('translate.services')
       jsonRpc.call('translate_projectUpdate', [project], callback);
     };
 
-    this.updateConfig = function updateProject(config, callback) {
+    this.updateConfig = function updateConfig(config, callback) {
       jsonRpc.call('translate_updateConfig', [config], callback);
     };
 

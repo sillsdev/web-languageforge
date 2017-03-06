@@ -819,19 +819,26 @@ class Sf
      * --------------------------------------------------------------- TRANSLATION MANAGER API ---------------------------------------------------------------
      */
     /**
-     * @param array $settings
+     * @param array $projectData
      * @return string $projectId
      */
-    public function translate_projectUpdate($settings)
+    public function translate_projectUpdate($projectData)
     {
-        return TranslateProjectCommands::updateProject($this->projectId, $this->userId, $settings);
+        return TranslateProjectCommands::updateProject($this->projectId, $this->userId, $projectData);
     }
 
-    public function translate_updateConfig($config)
+    /**
+     * @param array $configData
+     * @return string $projectId
+     */
+    public function translate_updateConfig($configData)
     {
-        return TranslateProjectCommands::updateConfig($this->projectId, $config);
+        return TranslateProjectCommands::updateConfig($this->projectId, $configData);
     }
 
+    /**
+     * @return array
+     */
     public function translate_projectDto()
     {
         return TranslateProjectDto::encode($this->projectId);

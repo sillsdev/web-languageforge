@@ -3,16 +3,31 @@
 - name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
   hosts: all
   become: yes
+  vars_files:
+    - "vars_{{deploy}}.yml"
+    # conditional import
+    -
+      - "vars/{{ansible_distribution}}-{{ansible_distribution_major_version | int}}.yml"
+      - "vars/{{ansible_distribution}}.yml"
+      - "vars/{{ansible_os_family}}.yml"
+      - "vars/os_defaults.yml"
   vars:
     node_version: 6.9.3
   pre_tasks:
-    - include_vars: "vars_{{ deploy }}.yml"
+    - name: "Add .NET Core | add source"
+      apt_repository:
+        repo: "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ {{base_distribution_release}} main"
+        state: present
+      when: base_distribution == 'ubuntu'
+    - name: "Add .NET Core | add key"
+      apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=417A0893 state=present
+      when: base_distribution == 'ubuntu'
     - name: Add PHP7.0 ppa for Trusty
-      apt_repository: repo='ppa:ondrej/php' state=present update_cache='yes'
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
+      apt_repository: repo='ppa:ondrej/php' state=present
+      when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
     - name: Remove PHP5 for Trusty
       apt: name=php5-fpm state=absent
-      when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
+      when: base_distribution == 'ubuntu' and base_distribution_release == 'trusty'
   roles:
     - fix
     # locale_install may be needed if locale has been changed away from defaults
@@ -21,10 +36,12 @@
     - apache_config
   tasks:
     - name: install packages
-      apt: name="{{item}}" state=present
+      apt: name="{{item}}" state=present update_cache='yes'
       with_items:
+        - dotnet-dev-1.0.1
         - libapache2-mod-php
         - mongodb-server
+        - nodejs
         - p7zip-full
         - php7.0-cli
         - php7.0-dev
@@ -43,6 +60,9 @@
     - name: symlink node to nodejs
       file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
       when: node_binary.stat.exists == False
+        - p7zip-full
+        - unzip
+        - dotnet-dev-1.0.1
 
     - name: install n
       shell: npm install -g n
@@ -124,10 +144,10 @@
 
     - apt_key: url=http://linux.lsdev.sil.org/downloads/sil-testing.gpg state=present
 
-    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu {{ansible_distribution_release}} main' state=present
-      when: ansible_distribution == 'Ubuntu'
-    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu {{ansible_distribution_release}}-experimental main' state=present update_cache='yes'
-      when: ansible_distribution == 'Ubuntu'
+    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu {{base_distribution_release}} main' state=present
+      when: base_distribution == 'ubuntu'
+    - apt_repository: repo='deb http://linux.lsdev.sil.org/ubuntu {{base_distribution_release}}-experimental main' state=present update_cache='yes'
+      when: base_distribution == 'ubuntu'
 
     - name: install LfMerge package
       apt: name="{{item}}" state=present
@@ -250,16 +270,19 @@
         - "demo.scriptureforge.local"
       when: inventory_hostname == "localhost"
 
-    # node_modules are not a dependency for the product, rather it is a dependency
-    # for the developer to run the build tools, gulp, e2e, and so on.
-    # This does not install well across an NTFS share, so is not included
-    # here. CP 2016-11
-    #- name: install npm dependencies
-    #  become: no
-    #  shell: npm install
-    #  args:
-    #    chdir: "{{lf_path}}"
-    #    creates: "{{lf_path}}/node_modules/"
+    - name: install npm dependencies
+      become: no
+      shell: npm install
+      args:
+        chdir: "{{lf_path}}"
+        creates: "{{lf_path}}/node_modules/"
+
+    - name: install node server npm dependencies
+      become: no
+      shell: npm install
+      args:
+        chdir: "{{lf_path}}/src/node"
+        creates: "{{lf_path}}/src/node/node_modules/"
 
   handlers:
     - name: restart mongodb
