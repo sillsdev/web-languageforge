@@ -7,7 +7,7 @@ var SfAppFrame = function() {
     success: element(by.css('.alert-success')),
     info:    element(by.css('.alert-info')),
     warn:    element(by.css('.alert-warn')),
-    error:   element(by.css('.alert-danger')),
+    error:   element.all(by.css('.alert-danger')).first(),
   };
   // Alternate names for the above
   this.successMessage = this.message.success;
