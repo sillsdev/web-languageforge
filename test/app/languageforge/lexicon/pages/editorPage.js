@@ -97,14 +97,14 @@ function EditorPage() {
   this.edit = {
     // Top row UI elements
     toListLink: this.editToolbarDiv.element(by.id('toListLink')),
-    saveBtn: this.editToolbarDiv.element(by.className('btn-success')),
+    saveBtn: this.editToolbarDiv.element(by.id('saveEntryBtn')),
     toggleHiddenFieldsBtn: this.editToolbarDiv.element(by.id('toggleHiddenFieldsBtn')),
     toCommentsLink: this.editToolbarDiv.element(by.id('toCommentsLink')),
 
     // Show/Hide fields functions
     toggleHiddenFieldsBtnText: {
-      show: 'Show Hidden Fields',
-      hide: 'Hide Hidden Fields'
+      show: 'Show Extra Fields',
+      hide: 'Hide Extra Fields'
     },
     showHiddenFields: function () {
       // Only click the button if it will result in fields being shown
@@ -126,7 +126,7 @@ function EditorPage() {
     },
 
     // Left sidebar UI elements
-    newWordBtn: this.editDiv.element(by.css('button[data-ng-click="newEntry()')),
+    newWordBtn: this.editDiv.element(by.css('editorNewWordBtn')),
     entryCountElem: this.editDiv.element(by.binding('entries.length')),
     getEntryCount: function () {
       return this.entryCountElem.getText().then(function (s) {
