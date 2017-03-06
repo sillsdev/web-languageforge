@@ -41,10 +41,10 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
         templateUrl: '/angular-app/bellows/apps/public/signup/views/' + bootstrapVersion + '/form-activate.html'
       })
 
-      // url will be /validate
-      .state('validate', {
-        // url: '/validate',
-        templateUrl: '/angular-app/bellows/apps/public/signup/views/' + bootstrapVersion + '/validate.html'
+      // url will be /registration_complete
+      .state('registration_complete', {
+        // url: '/registration_complete',
+        templateUrl: '/angular-app/bellows/apps/public/signup/views/' + bootstrapVersion + '/registration_complete.html'
       })
 
       // url will be /form/login
@@ -122,13 +122,13 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
           break;
         case 'form.register':
           registerUser(function () {
-            $state.go('validate');
+            $state.go('registration_complete');
           });
 
           break;
         case 'form.activate':
           activateUser(function () {
-            $state.go('validate');
+            $state.go('registration_complete');
           });
 
           break;
