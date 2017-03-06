@@ -3,7 +3,7 @@
     <!-- Left column: input system list -->
     <div class="col-md-3">
         <!-- control buttons -->
-        <div class="control-group">
+        <div class="form-group">
             <button class="btn btn-sm btn-success" data-ng-click="openNewLanguageModal(suggestedLanguageCodes)"><i class="fa fa-plus iconPadding"></i>{{'New' | translate}} </button>
         </div>
 
@@ -22,28 +22,28 @@
     </div>
 
     <!-- Right column: input system setup -->
-    <div class="col-md-9">
+    <div class="col-md-9 settings-panel">
         <!-- control buttons -->
-        <div class="control-group">
-            <div class="btn-group" uib-dropdown>
-                <a class="btn btn-sm btn-info" uib-dropdown-toggle href style="font-weight:normal">
-                    {{'More' | translate}}&nbsp;&nbsp;<span class="caret"></span></a>
-                <ul class="dropdown-menu" uib-dropdown-menu>
-                    <li data-ng-class="{disabled: newExists(selects.special.optionsOrder[1])}">
-                        <a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[1])">
-                        <i class="fa fa-plus"></i> {{'Add IPA for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
-                    <li data-ng-class="{disabled: newExists(selects.special.optionsOrder[2])}">
-                        <a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[2])">
-                        <i class="fa fa-plus"></i> {{'Add Voice for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
-                    <li>
-                        <a tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[3])">
-                        <i class="fa fa-plus"></i> {{'Add a variant of' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a></li>
-                    <li class="divider" data-ng-show="! isInputSystemInUse()"></li>
-                    <li data-ng-show="! isInputSystemInUse()">
-                        <a tabindex="-1" data-ng-click="removeInputSystem(selectedInputSystemId)">
-                        <i class="fa fa-times"></i> {{'Remove' | translate}} {{inputSystemViewModels[selectedInputSystemId].languageDisplayName()}}</a></li>
-                </ul>
-            </div>
+        <div uib-dropdown class="dropdown form-group btn-group">
+            <button uib-dropdown-toggle class="btn btn-sm btn-info">
+                {{'More' | translate}}
+            </button>
+            <ul class="dropdown-menu" uib-dropdown-menu>
+                <a href class="dropdown-item" tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[1])"
+                    data-ng-class="{disabled: newExists(selects.special.optionsOrder[1])}">
+                    <i class="fa fa-plus"></i> {{'Add IPA for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a>
+
+                <a href class="dropdown-item" data-ng-class="{disabled: newExists(selects.special.optionsOrder[2])}" tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[2])">
+                    <i class="fa fa-plus"></i> {{'Add Voice for' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a>
+
+                <a href class="dropdown-item" tabindex="-1" data-ng-click="addInputSystem(inputSystemViewModels[selectedInputSystemId].language, inputSystemViewModels[selectedInputSystemId].inputSystem.languageName, selects.special.optionsOrder[3])">
+                    <i class="fa fa-plus"></i> {{'Add a variant of' | translate}} {{inputSystemViewModels[selectedInputSystemId].inputSystem.languageName}}</a>
+
+                <div class="dropdown-divider" data-ng-show="! isInputSystemInUse()"></div>
+
+                <a href class="dropdown-item" data-ng-show="! isInputSystemInUse()" tabindex="-1" data-ng-click="removeInputSystem(selectedInputSystemId)">
+                    <i class="fa fa-times"></i> {{'Remove' | translate}} {{inputSystemViewModels[selectedInputSystemId].languageDisplayName()}}</a>
+            </ul>
         </div>
 
         <!-- settings -->
@@ -59,10 +59,10 @@
             <input type="text" id="languageName" style="font-size: 1.35em; color: black; font-weight: 700; border: 0px; height: 32px; width: 365px"
                 data-ng-model="inputSystemViewModels[selectedInputSystemId].inputSystem.languageName"
                 data-ng-show="isUnlistedLanguage(inputSystemViewModels[selectedInputSystemId].language)">
-            <div class="control-group">
+            <div class="form-group">
                 <label class="control-label" for="abbrev" translate="Display Abbreviation (limited to 4 lowercase characters)"></label>
                 <div class="controls">
-                    <input type="text" id="abbrev" model-transform-limit="4" data-ng-model="inputSystemViewModels[selectedInputSystemId].inputSystem.abbreviation">
+                    <input type="text" class="form-control" id="abbrev" model-transform-limit="4" data-ng-model="inputSystemViewModels[selectedInputSystemId].inputSystem.abbreviation">
                 </div>
                 <label class="checkbox {{interfaceConfig.pullNormal}}">
                     <input type="checkbox" data-ng-model="inputSystemViewModels[selectedInputSystemId].inputSystem.isRightToLeft"/>
@@ -72,7 +72,7 @@
             <p class="text-warning" data-ng-show="isInputSystemInUse()">
                 <small translate="Some settings are disabled because the Input System may already be in use."></small>
             </p>
-            <div class="control-group">
+            <div class="form-group">
                 <label class="control-label" for="special" translate="Special"></label>
                 <div class="controls">
                     <select class="form-control" id="special"
@@ -83,7 +83,7 @@
             </div>
 
             <div class="offset1">
-            <div class="control-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[1]">    <!-- IPA transcription -->
+            <div class="form-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[1]">    <!-- IPA transcription -->
                 <label class="control-label" for="purpose" translate="Purpose"></label>
                 <div class="controls">
                     <select class="form-control" id="purpose"
@@ -94,22 +94,22 @@
                 </div>
                 <label class="control-label" for="ipaVariant" translate="Variant (limited to letters or numbers, no spaces)"></label>
                 <div class="controls">
-                    <input type="text" id="ipaVariant" size="25"
-                           model-transform-limit="35" model-transform-no-space data-ng-trim="false"
+                    <input type="text" class="form-control" id="ipaVariant" size="25"
+                          model-transform-limit="35" model-transform-no-space data-ng-trim="false"
                            data-ng-model="inputSystemViewModels[selectedInputSystemId].variantString"
                            data-ng-disabled="isInputSystemInUse()">
                 </div>
             </div>
-            <div class="control-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[2]">    <!-- Voice -->
+            <div class="form-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[2]">    <!-- Voice -->
                 <label class="control-label" for="voiceVariant" translate="Variant (limited to letters or numbers, no spaces)"></label>
                 <div class="controls">
-                    <input type="text" id="voiceVariant" size="25"
+                    <input type="text" class="form-control" id="voiceVariant" size="25"
                            model-transform-limit="35" model-transform-no-space data-ng-trim="false"
                            data-ng-model="inputSystemViewModels[selectedInputSystemId].variantString"
                            data-ng-disabled="isInputSystemInUse()">
                 </div>
             </div>
-            <div class="control-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[3]">    <!-- Script / Region / Variant -->
+            <div class="form-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[3]">    <!-- Script / Region / Variant -->
                 <label class="control-label" for="script" translate="Script"></label>
                 <div class="controls">
                     <select class="form-control" id="script"
@@ -128,7 +128,7 @@
                 </div>
                 <label class="control-label" for="variant" translate="Variant (limited to letters or numbers, no spaces)"></label>
                 <div class="controls">
-                    <input type="text" id="variant" size="25"
+                    <input type="text" class="form-control" id="variant" size="25"
                         model-transform-limit="35" model-transform-no-space data-ng-trim="false"
                         data-ng-model="inputSystemViewModels[selectedInputSystemId].variantString"
                         data-ng-disabled="isInputSystemInUse()">
@@ -136,14 +136,14 @@
             </div>
             </div>
 
-            <div class="control-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[1]">    <!-- IPA transcription -->
+            <div class="form-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[1]">    <!-- IPA transcription -->
                 <a href="http://en.wikipedia.org/wiki/International_Phonetic_Alphabet" target="_blank">
                     <i class="fa fa-globe"></i> {{'Read more about IPA transcriptions' | translate}}</a>
             </div>
-            <div class="control-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[2]">    <!-- Voice -->
+            <div class="form-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[2]">    <!-- Voice -->
                 <small translate="In applications which support this option, fields with this input system will able to play and record voice."></small>
             </div>
-            <div class="control-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[3]">    <!-- Script / Region / Variant -->
+            <div class="form-group" data-ng-show="inputSystemViewModels[selectedInputSystemId].special == selects.special.optionsOrder[3]">    <!-- Script / Region / Variant -->
                 <a href="http://www.w3.org/International/questions/qa-choosing-language-tags" target="_blank">
                     <i class="fa fa-globe"></i> {{'Read more about language identifiers' | translate}}</a>
             </div>
