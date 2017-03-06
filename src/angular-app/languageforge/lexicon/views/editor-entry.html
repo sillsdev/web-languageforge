@@ -1,6 +1,6 @@
 <div id="lexAppEditView" class="animate-switch row">
     <div class="col-md-4">
-        <div class="input-group">
+        <div>
             <pui-typeahead class="typeahead" placeholder="'Search Entries'"
                        items="typeahead.searchResults" term="typeahead.searchItemSelected"
                        search="typeahead.searchEntries" select="typeahead.searchSelect">
@@ -11,14 +11,10 @@
                         <small class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(e)"></small>
                     </li>
                 </ul>
-                <div style="text-align:center; background-color: #d3d3d3; color:black; margin-top:5px"
+                <div style="text-align:center; background-color: #d3d3d3; color:black;"
                      data-ng-if="typeahead.searchResults.length > 0">
                     <small><i>{{typeahead.matchCountCaption}}</i></small></div>
             </pui-typeahead>
-            <span class="input-group-btn">
-                <button class="btn btn-success" data-ng-if="rights.canEditEntry()" data-ng-click="newEntry()">
-                    <i class="fa fa-plus"></i><span class="hidden-md-down"> {{'New Word' | translate}}</span></button>
-            </span>
         </div>
         <div class="hidden-sm-down list-group">
             <div class="list-group-item list-group-item-action active">

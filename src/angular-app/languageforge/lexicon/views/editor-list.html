@@ -1,6 +1,6 @@
 <div id="lexAppListView" class="animate-switch">
-    <div data-ng-hide="visibleEntries.length === 0" class="input-group">
-        <pui-typeahead class="typeahead" placeholder="'Search Entries'"
+    <div data-ng-hide="visibleEntries.length === 0" class="row no-gutters gutter-fix">
+        <pui-typeahead class="typeahead col-xs-10 col-md-6" placeholder="'Search Entries'"
                    items="typeahead.searchResults" term="typeahead.searchItemSelected"
                    search="typeahead.searchEntries" select="typeahead.searchSelect">
             <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
@@ -10,15 +10,15 @@
                     <small class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(e)"></small>
                 </li>
             </ul>
-            <div style="text-align:center; background-color: #d3d3d3; color:black; margin-top:5px"
+            <div style="text-align:center; background-color: #d3d3d3; color:black;"
                  data-ng-if="typeahead.searchResults.length > 0">
                 <small><i>{{typeahead.matchCountCaption}}</i></small></div>
         </pui-typeahead>
-        <span class="input-group-btn">
+        <div class="col-xs-2 offset-md-4">
             <button class="btn btn-success pull-right" id="newWord" data-ng-if="rights.canEditEntry()"
-                data-ng-click="newEntry()"><i class="fa fa-plus"></i><span class="hidden-sm-down"> {{'New Word' | translate}}</span>
+                    data-ng-click="newEntry()"><i class="fa fa-plus"></i><span class="hidden-sm-down"> {{'New Word' | translate}}</span>
             </button>
-        </span>
+        </div>
     </div>
     <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
         <div class="text-xs-center no-entries" data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading">
