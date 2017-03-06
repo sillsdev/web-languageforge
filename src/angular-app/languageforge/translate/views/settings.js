@@ -29,7 +29,7 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
       projectService.updateProject(settings, function (result) {
         if (result.ok) {
           assistant.initialise($scope.project.config.source.inputSystem.tag,
-            $scope.project.config.target.inputSystem.tag);
+            $scope.project.config.target.inputSystem.tag, $scope.project.slug);
           notice.push(notice.SUCCESS,
             $scope.project.projectName + ' settings updated successfully.');
         }
@@ -40,7 +40,7 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
       projectService.updateConfig($scope.project.config, function (result) {
         if (result.ok) {
           assistant.initialise($scope.project.config.source.inputSystem.tag,
-            $scope.project.config.target.inputSystem.tag);
+            $scope.project.config.target.inputSystem.tag, $scope.project.slug);
           notice.push(notice.SUCCESS,
             $scope.project.projectName + ' configuration updated successfully.');
         }

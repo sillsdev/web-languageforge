@@ -1,45 +1,45 @@
 'use strict';
 
 angular.module('translate.services')
-  .service('translateAssistant',
-    [
-  function () {
-    var engine = {};
+  .service('translateAssistant', [function () {
+    var engine;
+    var session;
 
-    // SIL.Machine.Translation.TranslationEngine.ctor(sourceLanguageTag, targetLanguageTag)
-    this.initialise = function initialise(sourceLanguageTag, targetLanguageTag) {
-      engine = new SIL.Machine.Translation.TranslationEngine(
-        'https://cat.languageforge.org/machine', sourceLanguageTag, targetLanguageTag);
+    // SIL.Machine.Translation.TranslationEngine.ctor(baseUrl, sourceLanguageTag, targetLanguageTag,
+    //    projectId)
+    this.initialise = function initialise(sourceLanguageTag, targetLanguageTag, projectId) {
+      engine = new SIL.Machine.Translation.TranslationEngine(location.origin + '/machine',
+        sourceLanguageTag, targetLanguageTag, projectId);
     };
 
     // SIL.Machine.Translation.TranslationEngine.translateInteractively(sourceSegment,
     //    confidenceThreshold, onFinished)
-    this.translateInteractively = engine.translateInteractively;
+    this.translateInteractively = function translateInteractively(sourceSegment,
+                                                                  confidenceThreshold, callback) {
+      if (angular.isUndefined(engine)) return;
 
-    // SIL.Machine.Translation.InteractiveTranslationSession.setPrefix$1(prefix, isLastWordComplete)
-    this.setPrefix = function setPrefix(sourceSegment, confidenceThreshold, prefixWords,
-                                        isLastWordComplete, callback) {
-      engine.translateInteractively(sourceSegment, confidenceThreshold, function (session) {
-        if (!session) {
-          (callback || angular.noop)('');
-          return;
+      engine.translateInteractively(sourceSegment, confidenceThreshold, function (newSession) {
+        if (newSession) {
+          session = newSession;
         }
 
-        // setPrefix$1 returns suggestions array
-        (callback || angular.noop)(session.setPrefix$1(prefixWords, isLastWordComplete));
+        (callback || angular.noop)();
       });
     };
 
-    this.getCurrentSuggestion = function getCurrentSuggestion(sourceSegment, confidenceThreshold,
-                                                              callback) {
-      engine.translateInteractively(sourceSegment, confidenceThreshold, function (session) {
-        if (!session) {
-          (callback || angular.noop)('');
-          return;
-        }
+    // SIL.Machine.Translation.InteractiveTranslationSession.updatePrefix(prefix)
+    this.updatePrefix = function updatePrefix(prefix, callback) {
+      if (angular.isUndefined(engine) || angular.isUndefined(session)) return;
 
-        (callback || angular.noop)(session.getCurrentSuggestion());
-      });
+      var suggestions = session.updatePrefix(prefix);
+      (callback || angular.noop)(suggestions);
+    };
+
+    this.getCurrentSuggestion = function getCurrentSuggestion(callback) {
+      if (angular.isUndefined(engine) || angular.isUndefined(session)) return;
+
+      var suggestions = session.getCurrentSuggestion();
+      (callback || angular.noop)(suggestions);
     };
 
   }])

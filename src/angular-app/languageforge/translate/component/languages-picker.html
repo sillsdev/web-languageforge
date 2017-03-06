@@ -43,3 +43,22 @@
                data-ng-model="$ctrl.tlpProject.config.target.inputSystem.languageName" />
     </div>
 </div>
+<br />
+<h3 data-translate="Share Translation Data"></h3>
+<div class="row">
+    <div class="form-group col-sm-12">
+        <div class="radio">
+            <label>
+                <input type="radio" data-ng-value="true" ng-model="$ctrl.tlpProject.config.isTranslationDataShared" />
+                {{'Share other project\'s translation data (improve suggestions) and share this project\'s ' +
+                'translation data (improve other\'s suggestions)' | translate}}
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" data-ng-value="false" ng-model="$ctrl.tlpProject.config.isTranslationDataShared" />
+                {{'No thanks, this project\'s translation data is private' | translate}}
+            </label>
+        </div>
+    </div>
+</div>

@@ -6,6 +6,256 @@
 Bridge.assembly("SIL.Machine", function ($asm, globals) {
     "use strict";
 
+    Bridge.define("SIL.Machine.Annotations.SpanFactory$1", function (TOffset) { return {
+        _includeEndpoint: false,
+        _comparer: null,
+        _equalityComparer: null,
+        ctor: function () {
+            SIL.Machine.Annotations.SpanFactory$1(TOffset).$ctor1.call(this, false);
+        },
+        $ctor1: function (includeEndpoint) {
+            SIL.Machine.Annotations.SpanFactory$1(TOffset).$ctor2.call(this, includeEndpoint, new (System.Collections.Generic.Comparer$1(TOffset))(System.Collections.Generic.Comparer$1.$default.fn), System.Collections.Generic.EqualityComparer$1(TOffset).def);
+        },
+        $ctor2: function (includeEndpoint, comparer, equalityComparer) {
+            this.$initialize();
+            this._includeEndpoint = includeEndpoint;
+            this._comparer = comparer;
+            this._equalityComparer = equalityComparer;
+        },
+        getIncludeEndpoint: function () {
+            return this._includeEndpoint;
+        },
+        getComparer: function () {
+            return this._comparer;
+        },
+        getEqualityComparer: function () {
+            return this._equalityComparer;
+        },
+        calcLength$1: function (start, end, dir) {
+            var actualStart;
+            var actualEnd;
+            if (dir === SIL.Machine.DataStructures.Direction.LeftToRight) {
+                actualStart = start;
+                actualEnd = end;
+            } else {
+                actualStart = end;
+                actualEnd = start;
+            }
+
+            return this.calcLength(actualStart, actualEnd);
+        },
+        isValidSpan: function (start, end) {
+            return this.isValidSpan$1(start, end, SIL.Machine.DataStructures.Direction.LeftToRight);
+        },
+        isValidSpan$1: function (start, end, dir) {
+            var actualStart;
+            var actualEnd;
+            if (dir === SIL.Machine.DataStructures.Direction.LeftToRight) {
+                actualStart = start;
+                actualEnd = end;
+            } else {
+                actualStart = end;
+                actualEnd = start;
+            }
+
+            var compare = this._comparer["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare"](actualStart, actualEnd);
+            return this._includeEndpoint ? compare <= 0 : compare < 0;
+        },
+        isRange$1: function (start, end, dir) {
+            var actualStart;
+            var actualEnd;
+            if (dir === SIL.Machine.DataStructures.Direction.LeftToRight) {
+                actualStart = start;
+                actualEnd = end;
+            } else {
+                actualStart = end;
+                actualEnd = start;
+            }
+
+            return this.isRange(actualStart, actualEnd);
+        },
+        create$1: function (start, end) {
+            return this.create$2(start, end, SIL.Machine.DataStructures.Direction.LeftToRight);
+        },
+        create$2: function (start, end, dir) {
+            var actualStart;
+            var actualEnd;
+            if (dir === SIL.Machine.DataStructures.Direction.LeftToRight) {
+                actualStart = start;
+                actualEnd = end;
+            } else {
+                actualStart = end;
+                actualEnd = start;
+            }
+
+            if (!this.isValidSpan(actualStart, actualEnd)) {
+                throw new System.ArgumentException("The start offset is greater than the end offset.", "start");
+            }
+
+            return new (SIL.Machine.Annotations.Span$1(TOffset)).$ctor2(this, actualStart, actualEnd);
+        },
+        create: function (offset) {
+            return this.create$3(offset, SIL.Machine.DataStructures.Direction.LeftToRight);
+        }
+    }; });
+
+    Bridge.define("SIL.Machine.Annotations.Span$1", function (TOffset) { return {
+        inherits: function () { return [System.IComparable$1(SIL.Machine.Annotations.Span$1(TOffset)),System.IComparable,System.IEquatable$1(SIL.Machine.Annotations.Span$1(TOffset))]; },
+        $kind: "struct",
+        statics: {
+            op_Equality: function (x, y) {
+                return x.equalsT(y);
+            },
+            op_Inequality: function (x, y) {
+                return !(SIL.Machine.Annotations.Span$1(TOffset).op_Equality(x, y));
+            },
+            getDefaultValue: function () { return new (SIL.Machine.Annotations.Span$1(TOffset))(); }
+        },
+        _spanFactory: null,
+        _start: Bridge.getDefaultValue(TOffset),
+        _end: Bridge.getDefaultValue(TOffset),
+        config: {
+            alias: [
+            "compareTo", "System$IComparable$1$SIL$Machine$Annotations$Span$1$" + Bridge.getTypeAlias(TOffset) + "$compareTo",
+            "compareTo$1", "System$IComparable$compareTo",
+            "equalsT", "System$IEquatable$1$SIL$Machine$Annotations$Span$1$" + Bridge.getTypeAlias(TOffset) + "$equalsT"
+            ]
+        },
+        $ctor2: function (spanFactory, start, end) {
+            this.$initialize();
+            this._spanFactory = spanFactory;
+            this._start = start;
+            this._end = end;
+        },
+        $ctor1: function (span) {
+            SIL.Machine.Annotations.Span$1(TOffset).$ctor2.call(this, span._spanFactory, span._start, span._end);
+        },
+        ctor: function () {
+            this.$initialize();
+        },
+        getSpanFactory: function () {
+            return this._spanFactory;
+        },
+        getIsEmpty: function () {
+            return SIL.Machine.Annotations.Span$1(TOffset).op_Equality(this._spanFactory.getEmpty(), this);
+        },
+        getStart: function () {
+            return this._start;
+        },
+        getEnd: function () {
+            return this._end;
+        },
+        getLength: function () {
+            return this._spanFactory.calcLength(this._start, this._end);
+        },
+        getIsRange: function () {
+            return this._spanFactory.isRange(this._start, this._end);
+        },
+        getStart$1: function (dir) {
+            return dir === SIL.Machine.DataStructures.Direction.LeftToRight ? this._start : this._end;
+        },
+        getEnd$1: function (dir) {
+            return dir === SIL.Machine.DataStructures.Direction.LeftToRight ? this._end : this._start;
+        },
+        overlaps$2: function (other) {
+            return (this._spanFactory.getIncludeEndpoint() ? this._spanFactory.getComparer()["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare"](this._start, other._end) <= 0 : this._spanFactory.getComparer()["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare"](this._start, other._end) < 0) && (this._spanFactory.getIncludeEndpoint() ? this._spanFactory.getComparer()["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare"](this._end, other._start) >= 0 : this._spanFactory.getComparer()["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare"](this._end, other._start) > 0);
+        },
+        overlaps: function (start, end) {
+            return this.overlaps$1(start, end, SIL.Machine.DataStructures.Direction.LeftToRight);
+        },
+        overlaps$1: function (start, end, dir) {
+            return this.overlaps$2(this._spanFactory.create$2(start, end, dir));
+        },
+        contains$4: function (other) {
+            return this._spanFactory.getComparer()["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare"](this._start, other._start) <= 0 && this._spanFactory.getComparer()["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare"](this._end, other._end) >= 0;
+        },
+        contains: function (offset) {
+            return this.contains$3(offset, SIL.Machine.DataStructures.Direction.LeftToRight);
+        },
+        contains$3: function (offset, dir) {
+            return this.contains$4(this._spanFactory.create$3(offset, dir));
+        },
+        contains$1: function (start, end) {
+            return this.contains$2(start, end, SIL.Machine.DataStructures.Direction.LeftToRight);
+        },
+        contains$2: function (start, end, dir) {
+            return this.contains$4(this._spanFactory.create$2(start, end, dir));
+        },
+        compareTo: function (other) {
+            var res = this._spanFactory.getComparer()["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare"](this._start, other._start);
+            if (res === 0) {
+                res = (-this._spanFactory.getComparer()["System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare"](this._end, other._end)) | 0;
+            }
+            return res;
+        },
+        compareTo$1: function (other) {
+            if (!(Bridge.is(other, SIL.Machine.Annotations.Span$1(TOffset)))) {
+                throw new System.ArgumentException();
+            }
+            return this.compareTo(System.Nullable.getValue(Bridge.cast(other, SIL.Machine.Annotations.Span$1(TOffset))));
+        },
+        getHashCode: function () {
+            var code = 23;
+            code = (((code * 31) | 0) + (this._start == null ? 0 : this._spanFactory.getEqualityComparer()["System$Collections$Generic$IEqualityComparer$1$" + Bridge.getTypeAlias(TOffset) + "$getHashCode2"](this._start))) | 0;
+            code = (((code * 31) | 0) + (this._end == null ? 0 : this._spanFactory.getEqualityComparer()["System$Collections$Generic$IEqualityComparer$1$" + Bridge.getTypeAlias(TOffset) + "$getHashCode2"](this._end))) | 0;
+            return code;
+        },
+        equals: function (obj) {
+            return Bridge.is(obj, SIL.Machine.Annotations.Span$1(TOffset)) && this.equalsT(System.Nullable.getValue(Bridge.cast(obj, SIL.Machine.Annotations.Span$1(TOffset))));
+        },
+        equalsT: function (other) {
+            return this._spanFactory.getEqualityComparer()["System$Collections$Generic$IEqualityComparer$1$" + Bridge.getTypeAlias(TOffset) + "$equals2"](this._start, other._start) && this._spanFactory.getEqualityComparer()["System$Collections$Generic$IEqualityComparer$1$" + Bridge.getTypeAlias(TOffset) + "$equals2"](this._end, other._end);
+        },
+        toString: function () {
+            return System.String.format("[{0}, {1}]", this._start, this._end);
+        },
+        $clone: function (to) {
+            var s = to || new (SIL.Machine.Annotations.Span$1(TOffset))();
+            s._spanFactory = this._spanFactory;
+            s._start = this._start;
+            s._end = this._end;
+            return s;
+        }
+    }; });
+
+    Bridge.define("SIL.Machine.DataStructures.Direction", {
+        $kind: "enum",
+        statics: {
+            LeftToRight: 0,
+            RightToLeft: 1
+        }
+    });
+
+    Bridge.define("SIL.Machine.Tokenization.DetokenizeOperation", {
+        $kind: "enum",
+        statics: {
+            NoOperation: 0,
+            MergeLeft: 1,
+            MergeRight: 2,
+            MergeRightFirstLeftSecond: 3
+        }
+    });
+
+    Bridge.definei("SIL.Machine.Tokenization.IDetokenizer$2", function (TData, TToken) { return {
+        $kind: "interface",
+        $variance: [1,2]
+    }; });
+
+    Bridge.definei("SIL.Machine.Tokenization.ITokenizer$2", function (TData, TOffset) { return {
+        $kind: "interface",
+        $variance: [2,0]
+    }; });
+
+    Bridge.define("SIL.Machine.Tokenization.TokenizationExtensions", {
+        statics: {
+            tokenizeToStrings: function (tokenizer, str) {
+                return System.Linq.Enumerable.from(tokenizer.SIL$Machine$Tokenization$ITokenizer$2$String$System$Int32$tokenize(str)).select(function (span) {
+                        return str.substr(span.getStart(), span.getLength());
+                    });
+            }
+        }
+    });
+
     Bridge.define("SIL.Machine.Translation.AlignmentType", {
         $kind: "enum",
         statics: {
@@ -838,7 +1088,7 @@ Bridge.assembly("SIL.Machine", function ($asm, globals) {
             this.setSmtWordGraph(smtWordGraph);
 
             this._wordGraphProcessor = new SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor(this._engine.getErrorCorrectionModel(), this.getSmtWordGraph());
-            this.setPrefix$1(System.Array.init(0, null, String), true);
+            this.updatePrefix("");
         },
         getConfidenceThreshold: function () {
             return this._confidenceThreshold;
@@ -849,9 +1099,12 @@ Bridge.assembly("SIL.Machine", function ($asm, globals) {
                 this.updateSuggestion();
             }
         },
-        setPrefix$1: function (prefix, isLastWordComplete) {
-            this.setPrefix(prefix);
-            this.setIsLastWordComplete(isLastWordComplete);
+        updatePrefix: function (prefix) {
+            var tokenSpans = System.Linq.Enumerable.from(this._engine.getTargetTokenizer().SIL$Machine$Tokenization$ITokenizer$2$String$System$Int32$tokenize(prefix)).toArray();
+            this.setPrefix(System.Linq.Enumerable.from(tokenSpans).select(function (s) {
+                    return prefix.substr(s.getStart(), s.getLength());
+                }).toArray());
+            this.setIsLastWordComplete(tokenSpans.length === 0 || tokenSpans[((tokenSpans.length - 1) | 0)].getEnd() !== prefix.length);
 
             var correction = System.Linq.Enumerable.from(this._wordGraphProcessor.correct(this.getPrefix(), this.getIsLastWordComplete(), 1)).firstOrDefault(null, null);
             var smtResult = this.createResult(correction);
@@ -877,7 +1130,7 @@ Bridge.assembly("SIL.Machine", function ($asm, globals) {
             this.setCurrentSuggestion(suggestions);
         },
         approve: function (onFinished) {
-            var url = System.String.format("{0}/translation/engines/{1}/{2}/actions/train-segment", this._engine.getBaseUrl(), this._engine.getSourceLanguageTag(), this._engine.getTargetLanguageTag());
+            var url = System.String.format("{0}/translation/engines/{1}/{2}/projects/{3}/actions/train-segment", this._engine.getBaseUrl(), this._engine.getSourceLanguageTag(), this._engine.getTargetLanguageTag(), this._engine.getProjectId());
             var body = JSON.stringify(new $asm.$AnonymousType$1(this.getSourceSegment(), this.getPrefix()));
             this._engine.getWebClient().SIL$Machine$Web$IWebClient$send("POST", url, body, "application/json", function (responseText) {
                 onFinished(true);
@@ -967,27 +1220,40 @@ Bridge.assembly("SIL.Machine", function ($asm, globals) {
             properties: {
                 SourceLanguageTag: null,
                 TargetLanguageTag: null,
+                ProjectId: null,
                 BaseUrl: null,
                 WebClient: null,
+                SourceTokenizer: null,
+                TargetTokenizer: null,
                 ErrorCorrectionModel: null
             }
         },
-        ctor: function (baseUrl, sourceLanguageTag, targetLanguageTag) {
-            SIL.Machine.Translation.TranslationEngine.$ctor1.call(this, baseUrl, sourceLanguageTag, targetLanguageTag, new SIL.Machine.Web.AjaxWebClient());
+        ctor: function (baseUrl, sourceLanguageTag, targetLanguageTag, projectId) {
+            SIL.Machine.Translation.TranslationEngine.$ctor1.call(this, baseUrl, sourceLanguageTag, targetLanguageTag, projectId, new SIL.Machine.Tokenization.LatinWordTokenizer.ctor());
         },
-        $ctor1: function (baseUrl, sourceLanguageTag, targetLanguageTag, webClient) {
+        $ctor1: function (baseUrl, sourceLanguageTag, targetLanguageTag, projectId, tokenizer) {
+            SIL.Machine.Translation.TranslationEngine.$ctor2.call(this, baseUrl, sourceLanguageTag, targetLanguageTag, projectId, tokenizer, tokenizer);
+        },
+        $ctor2: function (baseUrl, sourceLanguageTag, targetLanguageTag, projectId, sourceTokenizer, targetTokenizer) {
+            SIL.Machine.Translation.TranslationEngine.$ctor3.call(this, baseUrl, sourceLanguageTag, targetLanguageTag, projectId, sourceTokenizer, targetTokenizer, new SIL.Machine.Web.AjaxWebClient());
+        },
+        $ctor3: function (baseUrl, sourceLanguageTag, targetLanguageTag, projectId, sourceTokenizer, targetTokenizer, webClient) {
             this.$initialize();
             this.setBaseUrl(baseUrl);
             this.setSourceLanguageTag(sourceLanguageTag);
             this.setTargetLanguageTag(targetLanguageTag);
+            this.setProjectId(projectId);
+            this.setSourceTokenizer(sourceTokenizer);
+            this.setTargetTokenizer(targetTokenizer);
             this.setWebClient(webClient);
             this.setErrorCorrectionModel(new SIL.Machine.Translation.ErrorCorrectionModel());
         },
         translateInteractively: function (sourceSegment, confidenceThreshold, onFinished) {
-            var url = System.String.format("{0}/translation/engines/{1}/{2}/actions/interactive-translate", this.getBaseUrl(), this.getSourceLanguageTag(), this.getTargetLanguageTag());
-            var body = JSON.stringify(sourceSegment);
+            var tokens = System.Linq.Enumerable.from(SIL.Machine.Tokenization.TokenizationExtensions.tokenizeToStrings(this.getSourceTokenizer(), sourceSegment)).toArray();
+            var url = System.String.format("{0}/translation/engines/{1}/{2}/projects/{3}/actions/interactive-translate", this.getBaseUrl(), this.getSourceLanguageTag(), this.getTargetLanguageTag(), this.getProjectId());
+            var body = JSON.stringify(tokens);
             this.getWebClient().SIL$Machine$Web$IWebClient$send("POST", url, body, "application/json", Bridge.fn.bind(this, function (responseText) {
-                onFinished(this.createSession(sourceSegment, confidenceThreshold, JSON.parse(responseText)));
+                onFinished(this.createSession(tokens, confidenceThreshold, JSON.parse(responseText)));
             }), function (status) {
                 onFinished(null);
             });
@@ -1731,6 +1997,157 @@ Bridge.assembly("SIL.Machine", function ($asm, globals) {
         $kind: "interface"
     });
 
+    Bridge.define("SIL.Machine.Annotations.IntegerSpanFactory", {
+        inherits: [SIL.Machine.Annotations.SpanFactory$1(System.Int32)],
+        config: {
+            init: function () {
+                this._empty = new (SIL.Machine.Annotations.Span$1(System.Int32))();
+            }
+        },
+        ctor: function () {
+            this.$initialize();
+            SIL.Machine.Annotations.SpanFactory$1(System.Int32).ctor.call(this);
+            this._empty = new (SIL.Machine.Annotations.Span$1(System.Int32)).$ctor2(this, -1, -1);
+        },
+        getEmpty: function () {
+            return this._empty;
+        },
+        calcLength: function (start, end) {
+            return ((end - start) | 0);
+        },
+        isRange: function (start, end) {
+            return start !== end;
+        },
+        create$3: function (offset, dir) {
+            return this.create$2(offset, ((offset + (dir === SIL.Machine.DataStructures.Direction.LeftToRight ? 1 : -1)) | 0), dir);
+        }
+    });
+
+    Bridge.define("SIL.Machine.Tokenization.WhitespaceTokenizer", {
+        inherits: [SIL.Machine.Tokenization.ITokenizer$2(String,System.Int32)],
+        config: {
+            properties: {
+                SpanFactory: null
+            },
+            alias: [
+            "tokenize", "SIL$Machine$Tokenization$ITokenizer$2$String$System$Int32$tokenize"
+            ]
+        },
+        ctor: function () {
+            SIL.Machine.Tokenization.WhitespaceTokenizer.$ctor1.call(this, new SIL.Machine.Annotations.IntegerSpanFactory());
+        },
+        $ctor1: function (spanFactory) {
+            this.$initialize();
+            this.setSpanFactory(spanFactory);
+        },
+        tokenize: function (data) {
+            var $yield = [];
+            var startIndex = -1;
+            for (var i = 0; i < data.length; i = (i + 1) | 0) {
+                if (System.Char.isWhiteSpace(String.fromCharCode(data.charCodeAt(i)))) {
+                    if (startIndex !== -1) {
+                        $yield.push(this.getSpanFactory().create$1(startIndex, i));
+                    }
+                    startIndex = -1;
+                } else if (startIndex === -1) {
+                    startIndex = i;
+                }
+            }
+
+            if (startIndex !== -1) {
+                $yield.push(this.getSpanFactory().create$1(startIndex, data.length));
+            }
+            return System.Array.toEnumerable($yield);
+        }
+    });
+
+    Bridge.define("SIL.Machine.Tokenization.RegexTokenizer", {
+        inherits: [SIL.Machine.Tokenization.ITokenizer$2(String,System.Int32)],
+        _spanFactory: null,
+        _regex: null,
+        config: {
+            alias: [
+            "tokenize", "SIL$Machine$Tokenization$ITokenizer$2$String$System$Int32$tokenize"
+            ]
+        },
+        $ctor1: function (regexPattern) {
+            SIL.Machine.Tokenization.RegexTokenizer.ctor.call(this, new SIL.Machine.Annotations.IntegerSpanFactory(), regexPattern);
+        },
+        ctor: function (spanFactory, regexPattern) {
+            this.$initialize();
+            this._spanFactory = spanFactory;
+            this._regex = new System.Text.RegularExpressions.Regex.ctor(regexPattern);
+        },
+        tokenize: function (data) {
+            return System.Linq.Enumerable.from(this._regex.matches(data)).select(function(x) { return Bridge.cast(x, System.Text.RegularExpressions.Match); }).select(Bridge.fn.bind(this, $asm.$.SIL.Machine.Tokenization.RegexTokenizer.f1));
+        }
+    });
+
+    Bridge.ns("SIL.Machine.Tokenization.RegexTokenizer", $asm.$);
+
+    Bridge.apply($asm.$.SIL.Machine.Tokenization.RegexTokenizer, {
+        f1: function (m) {
+            return this._spanFactory.create$1(m.getIndex(), ((m.getIndex() + m.getLength()) | 0));
+        }
+    });
+
+    Bridge.define("SIL.Machine.Tokenization.SimpleStringDetokenizer", {
+        inherits: [SIL.Machine.Tokenization.IDetokenizer$2(String,String)],
+        _operationSelector: null,
+        config: {
+            alias: [
+            "detokenize", "SIL$Machine$Tokenization$IDetokenizer$2$String$String$detokenize"
+            ]
+        },
+        ctor: function (operationSelector) {
+            this.$initialize();
+            this._operationSelector = operationSelector;
+        },
+        detokenize: function (tokens) {
+            var $t;
+            var currentRightLeftTokens = new (System.Collections.Generic.HashSet$1(String)).ctor();
+            var sb = new System.Text.StringBuilder();
+            var nextMergeLeft = true;
+            $t = Bridge.getEnumerator(tokens, String);
+            while ($t.moveNext()) {
+                var token = $t.getCurrent();
+                var mergeRight = false;
+                switch (this._operationSelector(token)) {
+                    case SIL.Machine.Tokenization.DetokenizeOperation.MergeLeft: 
+                        nextMergeLeft = true;
+                        break;
+                    case SIL.Machine.Tokenization.DetokenizeOperation.MergeRight: 
+                        mergeRight = true;
+                        break;
+                    case SIL.Machine.Tokenization.DetokenizeOperation.MergeRightFirstLeftSecond: 
+                        if (currentRightLeftTokens.contains(token)) {
+                            nextMergeLeft = true;
+                            currentRightLeftTokens.remove(token);
+                        } else {
+                            mergeRight = true;
+                            currentRightLeftTokens.add(token);
+                        }
+                        break;
+                    case SIL.Machine.Tokenization.DetokenizeOperation.NoOperation: 
+                        break;
+                }
+
+                if (!nextMergeLeft) {
+                    sb.append(" ");
+                } else {
+                    nextMergeLeft = false;
+                }
+
+                sb.append(token);
+
+                if (mergeRight) {
+                    nextMergeLeft = true;
+                }
+            }
+            return sb.toString();
+        }
+    });
+
     Bridge.define("SIL.Machine.Translation.SegmentEditDistance", {
         inherits: [SIL.Machine.Translation.EditDistance$2(System.Collections.Generic.IReadOnlyList$1(String),String)],
         statics: {
@@ -1978,6 +2395,88 @@ Bridge.assembly("SIL.Machine", function ($asm, globals) {
             } else {
                 request.send(body);
             }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Tokenization.LatinWordTokenizer", {
+        inherits: [SIL.Machine.Tokenization.WhitespaceTokenizer],
+        _innerWordPunctRegex: null,
+        _abbreviations: null,
+        config: {
+            alias: [
+            "tokenize", "SIL$Machine$Tokenization$ITokenizer$2$String$System$Int32$tokenize"
+            ],
+            init: function () {
+                this._innerWordPunctRegex = new System.Text.RegularExpressions.Regex.ctor("\\G[&'\\-.:=?@­·‐‑’‧]|_+");
+            }
+        },
+        ctor: function () {
+            SIL.Machine.Tokenization.LatinWordTokenizer.$ctor1.call(this, new SIL.Machine.Annotations.IntegerSpanFactory());
+        },
+        $ctor3: function (abbreviations) {
+            SIL.Machine.Tokenization.LatinWordTokenizer.$ctor2.call(this, new SIL.Machine.Annotations.IntegerSpanFactory(), abbreviations);
+        },
+        $ctor1: function (spanFactory) {
+            SIL.Machine.Tokenization.LatinWordTokenizer.$ctor2.call(this, spanFactory, System.Linq.Enumerable.empty());
+        },
+        $ctor2: function (spanFactory, abbreviations) {
+            this.$initialize();
+            SIL.Machine.Tokenization.WhitespaceTokenizer.$ctor1.call(this, spanFactory);
+            this._abbreviations = new (System.Collections.Generic.HashSet$1(String)).$ctor1(System.Linq.Enumerable.from(abbreviations).select(Bridge.fn.cacheBind(this, this.toLower)));
+        },
+        tokenize: function (data) {
+            var $t;
+            var $yield = [];
+            $t = Bridge.getEnumerator(SIL.Machine.Tokenization.WhitespaceTokenizer.prototype.tokenize.call(this, data), SIL.Machine.Annotations.Span$1(System.Int32));
+            while ($t.moveNext()) {
+                var span = $t.getCurrent();
+                var wordStart = -1;
+                var innerWordPunct = -1;
+                var i = span.getStart();
+                while (i < span.getEnd()) {
+                    if (System.Char.isPunctuation(data.charCodeAt(i)) || System.Char.isSymbol(data.charCodeAt(i)) || System.Char.isControl(data.charCodeAt(i))) {
+                        if (wordStart === -1) {
+                            $yield.push(this.getSpanFactory().create(i));
+                        } else if (innerWordPunct !== -1) {
+                            $yield.push(this.getSpanFactory().create$1(wordStart, innerWordPunct));
+                            $yield.push(this.getSpanFactory().create$1(innerWordPunct, i));
+                        } else {
+                            var match = this._innerWordPunctRegex.match$1(data, i);
+                            if (match.getSuccess()) {
+                                innerWordPunct = i;
+                                i = (i + match.getLength()) | 0;
+                                continue;
+                            }
+
+                            $yield.push(this.getSpanFactory().create$1(wordStart, i));
+                            $yield.push(this.getSpanFactory().create(i));
+                        }
+                        wordStart = -1;
+                    } else if (wordStart === -1) {
+                        wordStart = i;
+                    }
+
+                    innerWordPunct = -1;
+                    i = (i + 1) | 0;
+                }
+
+                if (wordStart !== -1) {
+                    if (innerWordPunct !== -1) {
+                        if (Bridge.referenceEquals(data.substr(innerWordPunct, ((span.getEnd() - innerWordPunct) | 0)), ".") && this._abbreviations.contains(this.toLower(data.substr(wordStart, ((innerWordPunct - wordStart) | 0))))) {
+                            $yield.push(this.getSpanFactory().create$1(wordStart, span.getEnd()));
+                        } else {
+                            $yield.push(this.getSpanFactory().create$1(wordStart, innerWordPunct));
+                            $yield.push(this.getSpanFactory().create$1(innerWordPunct, span.getEnd()));
+                        }
+                    } else {
+                        $yield.push(this.getSpanFactory().create$1(wordStart, span.getEnd()));
+                    }
+                }
+            }
+            return System.Array.toEnumerable($yield);
+        },
+        toLower: function (str) {
+            return str.toLowerCase();
         }
     });
 });

@@ -17,6 +17,9 @@ class TranslateConfig
 
     /** @var TranslateConfigDocument */
     public $target;
+
+    /** @var boolean */
+    public $isTranslationDataShared;
 }
 
 class TranslateConfigDocument

@@ -6,6 +6,9 @@ use Api\Model\Languageforge\Translate\TranslateProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
+use GuzzleHttp\Client;
+use GuzzleHttp\Message\Response;
+use GuzzleHttp\Subscriber\Mock;
 //use PHPUnit\Framework\TestCase;
 
 class TranslateProjectCommandsTest extends PHPUnit_Framework_TestCase
@@ -35,7 +38,11 @@ class TranslateProjectCommandsTest extends PHPUnit_Framework_TestCase
         $config['source']['inputSystem']['tag'] = 'es';
         $config['target']['inputSystem']['tag'] = 'en';
 
-        TranslateProjectCommands::updateConfig($projectId, $config);
+        $client = new Client();
+        $mock = new Mock([new Response(200), new Response(200)]);
+        $client->getEmitter()->attach($mock);
+
+        TranslateProjectCommands::updateConfig($projectId, $config, $client);
 
         $project2 = new TranslateProjectModel($projectId);
 
@@ -70,7 +77,11 @@ class TranslateProjectCommandsTest extends PHPUnit_Framework_TestCase
         $config['target']['inputSystem']['tag'] = 'en';
         $data['config'] = $config;
 
-        TranslateProjectCommands::updateProject($projectId, $userId, $data);
+        $client = new Client();
+        $mock = new Mock([new Response(200)]);
+        $client->getEmitter()->attach($mock);
+
+        TranslateProjectCommands::updateProject($projectId, $userId, $data, $client);
 
         $project2 = new TranslateProjectModel($projectId);
 

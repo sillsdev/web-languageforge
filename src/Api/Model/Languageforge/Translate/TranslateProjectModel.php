@@ -3,6 +3,8 @@
 namespace Api\Model\Languageforge\Translate;
 
 use Api\Model\Languageforge\LfProjectModel;
+use Api\Model\Languageforge\Translate\Command\TranslateProjectCommands;
+use Api\Model\Shared\Mapper\MongoStore;
 
 class TranslateProjectModel extends LfProjectModel
 {
@@ -35,6 +37,18 @@ class TranslateProjectModel extends LfProjectModel
         ];
 
         return $settings;
+    }
+
+    /**
+     * Drop this projects 'realtime' MongoDB database collections
+     * Remove this project from the Machine Translation Engine
+     */
+    public function remove()
+    {
+        MongoStore::dropCollection('realtime', $this->databaseName());
+        MongoStore::dropCollection('realtime', 'o_' . $this->databaseName());
+        TranslateProjectCommands::removeMachineTranslationProject($this);
+        parent::remove();
     }
 
     /**
