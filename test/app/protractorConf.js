@@ -67,6 +67,15 @@ exports.config = {
         color: true,
         showStack: true
       }));
+      var pauseOnFailure = {
+        specDone: function (spec) {
+          if (spec.status === 'failed') {
+            browser.pause();
+          }
+        }
+      }
+      // Uncomment to pause tests on first failure
+      // jasmine.getEnv().addReporter(pauseOnFailure);
     }
   }
 };

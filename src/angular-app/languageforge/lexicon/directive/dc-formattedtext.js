@@ -53,7 +53,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
           container.append(link);
           var buttonGroup = angular.element('<div class="btn-group pull-right">');
           var reLinkButton = angular.element('<button type="button" ' +
-            'class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on">' +
+            'class="btn btn-default btn-sm" tabindex="-1" unselectable="on">' +
             '<i class="fa fa-edit icon-edit"></i></button>');
           reLinkButton.on('click', function (event) {
             event.preventDefault();
@@ -69,7 +69,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
 
           buttonGroup.append(reLinkButton);
           var unLinkButton = angular.element('<button type="button" ' +
-            'class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on">' +
+            'class="btn btn-default btn-sm" tabindex="-1" unselectable="on">' +
             '<i class="fa fa-unlink icon-unlink"></i></button>');
 
           // directly before this click event is fired a digest is fired off whereby the reference
@@ -83,7 +83,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
 
           buttonGroup.append(unLinkButton);
           var targetToggle = angular.element('<button type="button" ' +
-            'class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on">' +
+            'class="btn btn-default btn-sm" tabindex="-1" unselectable="on">' +
             'Open in New Window</button>');
           if ($element.attr('target') === '_blank') {
             targetToggle.addClass('active');
@@ -187,7 +187,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
           container.append(langSelect);
           var buttonGroup = angular.element('<div class="btn-group pull-right">');
           var unLinkButton = angular.element('<button type="button" ' +
-            'class="btn btn-default btn-sm btn-small" tabindex="-1" unselectable="on">' +
+            'class="btn btn-default btn-sm" tabindex="-1" unselectable="on">' +
             '<i class="fa fa-unlink icon-unlink"></i></button>');
 
           // directly before this click event is fired a digest is fired off whereby the reference

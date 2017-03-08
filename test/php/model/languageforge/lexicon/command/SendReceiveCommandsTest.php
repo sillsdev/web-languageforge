@@ -97,12 +97,11 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertEquals(false, $result['isKnownUser']);
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
     }
 
-    public function testGetUserProjects_KnownUserInvalidPass_UserKnownPassInvalid()
+    public function testGetUserProjects_KnownUserInvalidPass_UserNotValidCredeentials()
     {
         $username = 'mock_user';
         $password = 'mock_pass';
@@ -112,7 +111,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
     }
@@ -127,7 +125,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertEquals(false, $result['isKnownUser']);
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
     }
@@ -144,7 +141,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(1, $result['projects']);
     }
@@ -162,7 +158,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
         $this->assertEquals('name1', $result['projects'][0]['name']);
@@ -176,16 +171,15 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
         $password = 'mock_pass';
         $client = new Client();
         $body = Stream::factory('[{"identifier": "identifier", "name": "name2", '.
-            '"repository": "http://public.languagedepot.org", "role": ""}, '.
+            '"repository": "https://public.languagedepot.org", "role": ""}, '.
             '{"identifier": "identifier", "name": "name1", "repository": '.
-            '"http://private.languagedepot.org", "role": ""}]');
+            '"https://private.languagedepot.org", "role": ""}]');
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
         $mock = new Mock([$response]);
         $client->getEmitter()->attach($mock);
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
         $this->assertEquals('name1', $result['projects'][0]['name']);
@@ -200,16 +194,15 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
         $password = 'mock_pass';
         $client = new Client();
         $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": '.
-            '"http://private.languagedepot.org", "role": ""}, '.
+            '"https://private.languagedepot.org", "role": ""}, '.
             '{"identifier": "identifier", "name": "name1", '.
-            '"repository": "http://public.languagedepot.org", "role": ""}]');
+            '"repository": "https://public.languagedepot.org", "role": ""}]');
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
         $mock = new Mock([$response]);
         $client->getEmitter()->attach($mock);
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
         $this->assertEquals('name1', $result['projects'][0]['name']);
@@ -231,7 +224,6 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
 
         $result = SendReceiveCommands::getUserProjects($username, $password, $client);
 
-        $this->assertTrue($result['isKnownUser']);
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
         $this->assertEquals(false, $result['projects'][0]['isLinked']);
@@ -358,7 +350,7 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($status);
     }
 
-    public function testGetProjectStatus_HasSendReceiveNoStateFile_NoState()
+    public function testGetProjectStatus_HasSendReceiveNoStateFile_StateUnsynced()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->sendReceiveProjectIdentifier = 'sr_id';
@@ -367,8 +359,7 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
         $mockStatePath = sys_get_temp_dir();
 
         $status = SendReceiveCommands::getProjectStatus($projectId, $mockStatePath);
-
-        $this->assertFalse($status);
+        $this->assertEquals('LF_UNSYNCED', $status['SRState']);
     }
 
     public function testGetProjectStatus_HasSendReceiveAndStateFileNotJson_NoException()

@@ -1,13 +1,15 @@
-<div style="flex: 10;padding:5px;display: flex; flex-direction: column">
-    <div style="margin: 20px 0 5px; border-bottom: solid black 1px">
-        <dc-rendered config="entryConfig" model="entry"></dc-rendered>
-    </div>
-    <div style="margin-top:5px">
-        <div class="entryItemView">
-            <dc-entry config="entryConfig" model="entry" control="control"></dc-entry>
+<div class="row">
+    <div class="col-md-6">
+        <div>
+            <dc-rendered config="entryConfig" model="entry"></dc-rendered>
+        </div>
+        <div>
+            <div class="entryItemView">
+                <dc-entry config="entryConfig" model="entry" control="control"></dc-entry>
+            </div>
         </div>
     </div>
-</div>
-<div style="flex: 9;padding:5px;display: flex; flex-direction: column">
-    <comments-right-panel entry="entry" control="control" new-comment="newComment"></comments-right-panel>
+    <div class="col-md-6">
+        <comments-right-panel entry="entry" control="control" new-comment="newComment"></comments-right-panel>
+    </div>
 </div>

@@ -11,3 +11,6 @@
 - include: code.yml
   vars:
     lf_path: /var/www/virtual/default_local/web-languageforge
+    site_src_paths:
+      - /var/www/virtual/default_local/web-languageforge/src
+      

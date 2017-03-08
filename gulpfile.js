@@ -31,6 +31,8 @@
 //   'test-e2e-env'
 //   'test-e2e-doTest'
 //   'test-e2e-run'
+//   'sass'
+//   'sass:watch'
 //   'build-composer'
 //   'build-bower'
 //   'build-remove-test-fixtures'
@@ -56,6 +58,7 @@
 // child_process     : Call a child process with the ease of exec and safety of spawn
 // gulp              : The streaming build system
 // gulp-concat       : Concatenates files
+// gulp-clean-css    : Minifies CSS - useful after using sass to compile everything
 // gulp-jshint       : JSHint plugin for gulp
 // gulp-livereload   : Gulp plugin for livereload
 // gulp-markdown     : Markdown to HTML
@@ -63,6 +66,7 @@
 // gulp-protractor   : A helper for protactor and gulp
 // gulp-rename       : Rename files
 // gulp-replace      : A string replace plugin for gulp
+// gulp-sass         : Sass plugin for Gulp
 // gulp-uglify       : Minify files with UglifyJS
 // gulp-util         : Utility functions for gulp plugins
 // lodash.template   : The lodash method `_.template` exported as a module
@@ -90,9 +94,12 @@ var _template = require('lodash.template');
 var Server = require('karma').Server;
 var path = require('path');
 var stylish = require('jshint-stylish');
+var sass = require('gulp-sass');
+var cleanCSS = require('gulp-clean-css');
+var merge = require('merge-stream');
 
 var execute = function (command, options, callback) {
-  if (options == undefined) {
+  if (!options) {
     options = {};
   }
 
@@ -148,7 +155,7 @@ gulp.task('do-reload', function () {
 // -------------------------------------
 gulp.task('reload', function () {
   livereload.listen();
-  gulp.watch(srcPatterns, gulp.series('do-reload'));
+  gulp.watch(srcPatterns, {delay: 500}, gulp.series('do-reload'));
 });
 
 // -------------------------------------
@@ -282,6 +289,26 @@ gulp.task('test-php', function () {
   return gulp.src(src)
     .pipe(phpunit('src/vendor/bin/phpunit', options));
 });
+
+/*
+gulp.task('test-php', function (cb) {
+  var src = 'test/php/phpunit.xml';
+  var options = {
+    dryRun: false,
+    debug: false,
+    logJunit: 'PhpUnitTests.xml'
+  };
+  gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
+  execute(
+    '/usr/bin/env php src/vendor/phpunit/phpunit/phpunit -c test/php/phpunit.xml',
+    options,
+    cb
+  );
+
+  // return gulp.src(src)
+  //   .pipe(phpunit('src/vendor/bin/phpunit', options));
+});
+*/
 
 // -------------------------------------
 //   Task: test-php with debugging info
@@ -565,6 +592,78 @@ gulp.task('test-e2e-run').description = 'Run the E2E test on local developer env
 
 //endregion
 
+// region sass
+
+var sassPaths = [
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/base/*.scss",
+     "dest": "src/Site/views/languageforge/theme/default/cssBootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/activity/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/activity/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/changepassword/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/changepassword/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/forgot_password/*.scss",
+     "dest": "src/angular-app/bellows/apps/forgot_password/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/home/*.scss",
+     "dest": "src/Site/views/languageforge/theme/default/page/home/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/*.scss",
+     "dest": "src/angular-app/languageforge/lexicon/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/login/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/login/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/registration/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/new-project/*.scss",
+     "dest": "src/angular-app/languageforge/lexicon/new-project/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/projects/*.scss",
+     "dest": "src/angular-app/bellows/apps/projects/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/reset_password/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/reset_password/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/signup/*.scss",
+     "dest": "src/angular-app/bellows/apps/public/signup/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/siteadmin/*.scss",
+     "dest": "src/angular-app/bellows/apps/siteadmin/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/usermanagement/*.scss",
+     "dest": "src/angular-app/bellows/apps/usermanagement/bootstrap4"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/terms_and_conditions/*.scss",
+     "dest": "src/Site/views/shared/cssBootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/userprofile/*.scss",
+     "dest": "src/angular-app/bellows/apps/userprofile/bootstrap4/"},
+    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss",
+     "dest": "src/angular-app/bellows/apps/userprofile/bootstrap4/"}
+];
+
+function compileAllSass(sourceComments, cleanCss) {
+  var tasks = sassPaths.map(function(path) {
+    var task = gulp.src(path.src)
+      .pipe(sass({sourceComments: sourceComments}).on('error', sass.logError));
+
+    if(cleanCss) task.pipe(cleanCSS());
+    task.pipe(gulp.dest(path.dest));
+    return task;
+  });
+  return merge(tasks);
+}
+
+gulp.task('sass', function() {
+  return compileAllSass(false, true);
+});
+
+gulp.task('sass:watch', function() {
+  var sourceComments = process.argv.indexOf('--comments') !== -1;
+  if(!sourceComments) console.info('Tip: run with --comments to generate source comments.');
+
+  gulp.watch('src/Site/views/languageforge/theme/default/**/*.scss', {ignoreInitial: false})
+    .on('change', function(changedFile) {
+      console.log('File changed: ' + changedFile);
+      compileAllSass(sourceComments, false);
+    })
+    .on('add', function(file) {
+      compileAllSass(sourceComments, false);
+    });
+
+});
+
+// endregion
+
 //region build
 
 // -------------------------------------
@@ -774,13 +873,13 @@ gulp.task('build-upload', function (cb) {
 
   // For E2E tests, upload test dir to destination
   if (params.dest.includes('e2etest')) {
-    options.src = 'test/app/';
-    options.dest = path.join(params.dest, '/test/app');
+    options.src = 'test/';
+    options.dest = path.join(params.dest, '/test');
 
     execute(
       'rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
       '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
-      '<%= src %> <%= dest %>',
+      '<%= src %> <%= dest %> --exclude php',
       options,
       cb
     );
@@ -799,6 +898,7 @@ gulp.task('build',
       'build-productionConfig',
       'build-clearLocalCache',
       'build-remove-test-fixtures'),
+    'sass',
     'build-minify',
     'build-changeGroup')
 );
@@ -834,13 +934,18 @@ gulp.task('build-e2e').description =
 gulp.task('build-php',
   gulp.series(
     'build',
-    'test-php-coverage',
+    'test-php',
     'build-upload',
     'test-restart-webserver')
 );
 gulp.task('build-php').description =
   'Build and Run PHP tests on CI server; Deploy to dev site';
 
+gulp.task('build-php-coverage',
+  gulp.series(
+    'build',
+    'test-php-coverage')
+);
 //endregion
 
 // -------------------------------------

@@ -23,16 +23,15 @@ angular.module('reset_password', ['bellows.services', 'ui.bootstrap', 'pascalpre
       $scope.record = {};
 
       $scope.resetPassword = function resetPassword() {
-        $scope.submissionInProgress = true;
         if ($scope.record.password == $scope.confirmPassword && forgotPasswordKey) {
+          $scope.submissionInProgress = true;
           userService.resetPassword(forgotPasswordKey, $scope.record.password, function (result) {
             if (result.ok) {
               $window.location.href = '/auth/login';
             }
+            else $scope.submissionInProgress = false;
           });
         }
-
-        $scope.submissionInProgress = false;
       };
 
     }

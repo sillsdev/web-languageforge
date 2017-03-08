@@ -11,7 +11,7 @@ class Validate extends Base
         $userActivated = false;
         $userModel = new UserModel();
         if ($userModel->readByProperty('validationKey', $validateKey)) {
-            if ($userModel->validate()) {
+            if ($userModel->validate(true)) {
                 $userModel->active = true;
                 $userModel->write();
                 $userActivated = true;
@@ -19,10 +19,8 @@ class Validate extends Base
         }
 
         if ($userActivated) {
-            return $this->renderPage($app, 'validate');
-        } else {
-            // if the validation has expired, chances are they have already validated.  Redirect to login
-            return $app->redirect('/auth/login');
+            $app['session']->getFlashBag()->add('infoMessage', 'Congratulations!  You email has been validated and you\'re ready to login.');
         }
+        return $app->redirect('/auth/login');
     }
 }

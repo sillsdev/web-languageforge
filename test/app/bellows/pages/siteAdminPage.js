@@ -11,7 +11,7 @@ function SiteAdminPage() {
     browser.get(this.url);
   };
 
-  this.tabDivs = element.all(by.repeater('tab in tabs'));
+  this.tabDivs = element.all(by.className('tab-pane'));
   this.activePane = element(by.css('div.tab-pane.active'));
 
   this.tabs = {

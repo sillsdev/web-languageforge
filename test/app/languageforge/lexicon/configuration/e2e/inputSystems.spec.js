@@ -51,11 +51,11 @@ describe('Configuration Input Systems', function () {
 
   it('cannot add another IPA variation, but can add Voice and Variant', function () {
     configPage.inputSystemsTab.moreButton.click();
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addIpa).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addIpa.getAttribute('class'))
       .toContain('disabled');
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVoice).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addVoice.getAttribute('class'))
       .toContain('disabled');
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVariant).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addVariant.getAttribute('class'))
       .not.toContain('disabled');
   });
 
@@ -214,6 +214,7 @@ describe('Configuration Input Systems', function () {
 
   it('can not add unspecified Variant', function () {
     expect(configPage.noticeList.count()).toBe(0);
+    util.scrollTop();
     configPage.applyButton.click();
     expect(configPage.noticeList.count()).toBe(1);
     expect(configPage.noticeList.get(0).getText())
@@ -251,6 +252,7 @@ describe('Configuration Input Systems', function () {
   });
 
   it('can add IPA variation', function () {
+    util.scrollTop();
     configPage.inputSystemsTab.moreButton.click();
     configPage.inputSystemsTab.moreButtonGroup.addIpa.click();
     expect(configPage.inputSystemsTab.selectedInputSystem.specialDropdown.isDisplayed()).toBe(true);
@@ -263,7 +265,7 @@ describe('Configuration Input Systems', function () {
 
   it('cannot add another IPA variation', function () {
     configPage.inputSystemsTab.moreButton.click();
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addIpa).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addIpa.getAttribute('class'))
       .toContain('disabled');
   });
 
@@ -287,7 +289,7 @@ describe('Configuration Input Systems', function () {
 
   it('cannot add another Voice variation', function () {
     configPage.inputSystemsTab.moreButton.click();
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVoice).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addVoice.getAttribute('class'))
       .toContain('disabled');
   });
 
@@ -316,7 +318,7 @@ describe('Configuration Input Systems', function () {
 
   it('can always add another Variant variation', function () {
     configPage.inputSystemsTab.moreButton.click();
-    expect(util.parent(configPage.inputSystemsTab.moreButtonGroup.addVariant).getAttribute('class'))
+    expect(configPage.inputSystemsTab.moreButtonGroup.addVariant.getAttribute('class'))
       .not.toContain('disabled');
   });
 

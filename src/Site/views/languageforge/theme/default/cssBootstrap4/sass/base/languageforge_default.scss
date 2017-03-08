@@ -1,0 +1,14 @@
+// Setup other variables
+@import '_variables.scss';
+
+// Pull in Bootstrap files - by default this loads ALL features of Bootstrap which we may not need
+@import '../../../../../../../../vendor_bower/bootstrap/scss/bootstrap.scss';
+
+// Pull in bootstrap2 styles for angular ui.bootstrap dependency
+@import '_bootstrap2.scss';
+
+// Pull in Font Awesome
+@import '../../../../../../../../vendor_bower/font-awesome/scss/font-awesome.scss';
+
+// Pull in  default global styles to be used sitewide
+@import '_global.scss';

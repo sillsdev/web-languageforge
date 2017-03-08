@@ -10,7 +10,7 @@
     </div>
     <sil-notices></sil-notices>
     <!-- <div data-wc-overlay="" data-wc-overlay-delay="6000">
-    <img src="/Site/views/shared/image/shared/loading.gif" />&nbsp; Loading...
+    <i class="fa fa-spinner fa-spin"></i>&nbsp; Loading...
     </div> -->
     <div >
         <div ng-show="activities.length > 0" style="margin-top:20px"><button class="btn" ng-disabled="showAllActivity" ng-click="filterAllActivity()">All Activity</button> <button class="btn" ng-disabled="!showAllActivity" ng-click="filterMyActivity()">Show Only My Activity</button></div>
@@ -60,7 +60,7 @@
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
                     <div class="span1 activity-icon">
-                        <i class="icon-warning-sign" style="font-size:3em"></i>
+                        <i class="fa fa-exclamation-triangle" style="font-size:3em"></i>
                     </div>
                     <div class="span1 activity-date">
                         {{item.date|relativetime}}
@@ -76,7 +76,7 @@
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
                     <div class="span1 activity-icon">
-                        <i class="icon-question-sign" style="font-size:3em"></i>
+                        <i class="fa fa-question-circle" style="font-size:3em"></i>
                     </div>
                     <div class="span1 activity-date">
                         {{item.date|relativetime}}
@@ -93,7 +93,7 @@
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
                     <div class="span1 activity-icon">
-                        <i class="icon-user" style="font-size:3em"></i>
+                        <i class="fa fa-user" style="font-size:3em"></i>
                     </div>
                     <div class="span1 activity-date">
                         {{item.date|relativetime}}
@@ -109,7 +109,7 @@
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
                     <div class="span1 activity-icon">
-                        <i class="icon-file-text" style="font-size:3em"></i>
+                        <i class="fa fa-file-text" style="font-size:3em"></i>
                     </div>
                     <div class="span1 activity-date">
                         {{item.date|relativetime}}
@@ -159,7 +159,7 @@
                     <hr>
                     <div class="span12" ng-class="{unread: isUnread(item.id)}">
                     <div class="span1 activity-icon">
-                        <i class="icon-thumbs-up" style="font-size:3em"></i>
+                        <i class="fa fa-thumbs-up" style="font-size:3em"></i>
                     </div>
                     <div class="span1 activity-date">
                         {{item.date|relativetime}}
