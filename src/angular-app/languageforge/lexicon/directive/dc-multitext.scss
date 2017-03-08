@@ -1,0 +1,54 @@
+form.dc-multitext .control-group {
+    margin-bottom: 10px;
+}
+
+form.dc-multitext label,
+form.dc-optionlist label,
+form.dc-multioptionlist label,
+form.dc-semanticdomain label {
+    font-weight:bold;
+    cursor: default;
+}
+
+form.dc-multitext .uneditable-input {
+    height: 38px;
+    overflow: auto;
+}
+
+form.dc-multitext .uneditable-input.multiline,
+form.dc-multitext textarea {
+    height: 60px;
+}
+
+form.dc-multitext .uneditable-input:hover {
+    cursor: not-allowed;
+}
+
+form.dc-multitext textarea:focus {
+    border-color: rgba(82, 168, 236, 0.8);
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+form.dc-multitext .wsid {
+    border: 0;
+}
+
+form.dc-multitext input[type="text"],
+form.dc-multitext textarea,
+form.dc-multitext .uneditable-input {
+    margin-top: -1px;
+    margin-bottom: -1px;
+    margin-left: 0;
+    margin-right: -1px;
+}
+
+/* language span highlight */
+form.dc-multitext .uneditable-input span {
+    border-radius: 9px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+form.dc-multitext .uneditable-input span:hover {
+    background-color: #ADDDDD;
+}

@@ -76,7 +76,7 @@ class SendReceiveCommands
 
         self::mockE2ETestingData($username, $password, $client);
 
-        $url = 'http://admin.languagedepot.org/api/user/'.$username.'/projects';
+        $url = 'https://admin.languagedepot.org/api/user/'.$username.'/projects';
         $postData = ['json' => ['password' => $password]];
 
         $tryCounter = 1;
@@ -96,11 +96,7 @@ class SendReceiveCommands
             }
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
-        if ($response->getStatusCode() == 403) $result->isKnownUser = true;
-
         if ($response->getStatusCode() == 200) {
-            $result->isKnownUser = true;
             $result->hasValidCredentials = true;
             foreach ($response->json() as $index => $srProject) {
                 $result->projects[] = new SendReceiveProjectModelWithIdentifier(
@@ -217,7 +213,14 @@ class SendReceiveCommands
         }
 
         $projectStatePath = $statePath . DIRECTORY_SEPARATOR . strtolower($project->projectCode) . '.state';
-        if (!file_exists($projectStatePath) || !is_file($projectStatePath)) return false;
+        if (!file_exists($projectStatePath) || !is_file($projectStatePath)) {
+            // Generate default state file of "IDLE" if it doesn't exist.
+            $status['SRState'] = "IDLE";
+            $status['ProjectCode'] = $project->projectCode;
+            if (!is_writeable($statePath)) return false;
+
+            file_put_contents($projectStatePath, json_encode($status, JSON_PRETTY_PRINT));
+        }
 
         $statusJson = file_get_contents($projectStatePath);
         $status = json_decode($statusJson, true);
@@ -449,13 +452,13 @@ class SendReceiveCommands
         if ($username == self::TEST_SR_USERNAME) {
             if ($password == self::TEST_SR_PASSWORD) {
                 $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository":'.
-                    ' "http://public.languagedepot.org", "role": "manager", "isLinked": false}, '.
+                    ' "https://public.languagedepot.org", "role": "manager", "isLinked": false}, '.
                     '{"identifier": "mock-id2", "name": "mock-name2", "repository": '.
-                    '"http://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
+                    '"https://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
                     '{"identifier": "mock-id3", "name": "mock-name3", "repository": '.
-                    '"http://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
+                    '"https://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
                     '{"identifier": "mock-id4", "name": "mock-name4", "repository": '.
-                    '"http://private.languagedepot.org", "role": "manager", "isLinked": false}]');
+                    '"https://private.languagedepot.org", "role": "manager", "isLinked": false}]');
                 $response = new Response(200, ['Content-Type' => 'application/json'], $body);
                 $mock = new Mock([$response]);
                 $client->getEmitter()->attach($mock);
@@ -581,16 +584,12 @@ class SendReceiveGetUserProjectResult
 {
     public function __construct()
     {
-        $this->isKnownUser = false;
         $this->errorMessage = '';
         $this->hasValidCredentials = false;
         $this->projects = new ArrayOf(function() {
             return new SendReceiveProjectModel();
         });
     }
-
-    /** @var boolean true if the username exists, false otherwise */
-    public $isKnownUser;
 
     /** @var boolean true if the username and password are valid, false otherwise */
     public $hasValidCredentials;

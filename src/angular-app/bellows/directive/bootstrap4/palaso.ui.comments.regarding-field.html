@@ -1,7 +1,7 @@
 <span ng-if="(contentArr.length == 1)">
     <span class="uneditable-input regardingFieldValue"
              data-ng-class="{'dc-multioptionlist-value': (fieldConfig.type == 'multioptionlist')}"
-             data-ng-bind-html="contentArr[0]"
+             data-ng-bind-html="contentArr[0] || '&nbsp;'"
              data-pui-show-overflow></span>
 </span>
 <span ng-if="(contentArr.length == 2)">

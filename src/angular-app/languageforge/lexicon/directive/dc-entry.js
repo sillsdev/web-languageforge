@@ -11,8 +11,9 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
         model: '=',
         control: '='
       },
-      controller: ['$scope', '$state', function ($scope, $state) {
+      controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rights) {
         $scope.$state = $state;
+        $scope.rights = rights;
         $scope.addSense = function ($position) {
           var newSense = {};
           $scope.control.makeValidModelRecursive($scope.config.fields.senses, newSense, 'examples');
@@ -32,6 +33,10 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
               $scope.control.saveCurrentEntry();
             });
         };
+
+        $scope.deleteEntry = function() {
+          $scope.control.deleteEntry($scope.control.currentEntry);
+        }
 
       }],
 

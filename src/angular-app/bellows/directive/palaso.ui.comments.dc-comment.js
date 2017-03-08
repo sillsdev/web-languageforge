@@ -5,7 +5,8 @@ angular.module('palaso.ui.comments')
   .directive('dcComment', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/palaso.ui.comments.dc-comment.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion +
+        '/palaso.ui.comments.dc-comment.html',
       controller: ['$scope', 'lexCommentService', 'sessionService', 'utilService', 'modalService',
       function ($scope, commentService, sessionService, util, modal) {
         $scope.getAvatarUrl = util.getAvatarUrl;
@@ -14,7 +15,7 @@ angular.module('palaso.ui.comments')
 
         $scope.showNewReplyForm = false;
 
-        $scope.newReply = { id:'', editingContent:'' };
+        $scope.newReply = { id: '', editingContent: '' };
 
         $scope.editingCommentContent = '';
 
@@ -42,13 +43,13 @@ angular.module('palaso.ui.comments')
           reply.content = angular.copy(reply.editingContent);
           delete reply.editingContent;
           updateReply($scope.comment.id, reply);
-          $scope.newReply = { id:'', editingContent:'' };
+          $scope.newReply = { id: '', editingContent: '' };
         };
 
         function updateReply(commentId, reply) {
           commentService.updateReply(commentId, reply, function (result) {
             if (result.ok) {
-              $scope.control.editorDataService.refreshEditorData().then(function () {
+              $scope.control.editorService.refreshEditorData().then(function () {
                 $scope.loadComments();
               });
             }
@@ -58,7 +59,7 @@ angular.module('palaso.ui.comments')
         $scope.updateCommentStatus = function updateCommentStatus(commentId, status) {
           commentService.updateStatus(commentId, status, function (result) {
             if (result.ok) {
-              $scope.control.editorDataService.refreshEditorData().then(function () {
+              $scope.control.editorService.refreshEditorData().then(function () {
                 $scope.loadComments();
               });
             }
@@ -78,7 +79,7 @@ angular.module('palaso.ui.comments')
             .then(function () {
               commentService.remove(comment.id, function (result) {
                 if (result.ok) {
-                  $scope.control.editorDataService.refreshEditorData().then(function () {
+                  $scope.control.editorService.refreshEditorData().then(function () {
                     $scope.loadComments();
                   });
                 }
@@ -101,7 +102,7 @@ angular.module('palaso.ui.comments')
             .then(function () {
               commentService.deleteReply(commentId, reply.id, function (result) {
                 if (result.ok) {
-                  $scope.control.editorDataService.refreshEditorData().then(function () {
+                  $scope.control.editorService.refreshEditorData().then(function () {
                     $scope.loadComments();
                   });
                 }
@@ -123,7 +124,7 @@ angular.module('palaso.ui.comments')
 
           commentService.update($scope.comment, function (result) {
             if (result.ok) {
-              $scope.control.editorDataService.refreshEditorData().then(function () {
+              $scope.control.editorService.refreshEditorData().then(function () {
                 $scope.loadComments();
               });
             }

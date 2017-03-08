@@ -130,7 +130,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
         __DIR__.'/Site/views/'.$WEBSITE->base.'/container',
         __DIR__.'/Site/views/'.$WEBSITE->base,
         __DIR__.'/Site/views/shared/page',
-        __DIR__.'/Site/views/shared',
+        __DIR__.'/Site/views/shared/container',
 
         // errors
         __DIR__.'/Site/views/'.$WEBSITE->base.'/error',

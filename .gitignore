@@ -28,3 +28,8 @@ src/js/lib/languageforge.min.js
 src/js/lib/scriptureforge.min.js
 src/angular-app/**/helps/**/page/*.html
 test/CodeCoverage/php/
+.DS_Store
+
+# CSS files generated from Sass
+src/Site/views/**/*ootstrap4/languageforge_*.css
+src/angular-app/**/bootstrap4/languageforge_*.css

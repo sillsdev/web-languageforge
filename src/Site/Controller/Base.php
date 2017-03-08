@@ -5,6 +5,7 @@ namespace Site\Controller;
 use Api\Library\Shared\Palaso\StringUtil;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
+use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\FeaturedProjectListModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Rights\Operation;
@@ -22,6 +23,7 @@ class Base
     public function __construct() {
         $this->website = Website::get();
         $this->_showHelp = false;
+        $this->_appName = '';
         $this->data['isAdmin'] = false;
         $this->data['projects'] = array();
         $this->data['smallAvatarUrl'] = '';
@@ -36,7 +38,7 @@ class Base
         $this->data['vendorFilesJs'] = array();
         $this->data['vendorFilesMinJs'] = array();
         $this->data['isBootstrap4'] = false;
-
+        $this->data['isAngular2'] = false;
     }
 
     /** @var array data used to render templates */
@@ -59,6 +61,9 @@ class Base
 
     /** @var string */
     protected $_projectId;
+
+    /** @var string */
+    protected $_appName;
 
     // all child classes should call this method first to setup base variables
     protected function setupBaseVariables(Application $app) {
@@ -85,17 +90,20 @@ class Base
         if ($this->data['isBootstrap4']) {
             // TODO: move to app_dependencies once bootstrap4 migration is complete
             $this->addCssFiles($this->getThemePath()."/cssBootstrap4", array(), false);
-            array_unshift($this->data['cssFiles'], "vendor_bower/bootstrap/dist/css/bootstrap-flex.css");
-            array_unshift($this->data['cssFiles'], "vendor_bower/bootstrap/dist/css/bootstrap.css");
-            array_unshift($this->data['vendorFilesJs'], "vendor_bower/bootstrap/dist/js/bootstrap.js");
-            array_unshift($this->data['vendorFilesMinJs'], "vendor_bower/bootstrap/dist/js/bootstrap.min.js");
-            array_unshift($this->data['vendorFilesJs'], "vendor_bower/tether/dist/js/tether.js");
-            array_unshift($this->data['vendorFilesMinJs'], "vendor_bower/tether/dist/js/tether.min.js");
         } else {
             $this->addCssFiles($this->getThemePath()."/cssBootstrap2", array(), false);
             $this->addCssFiles("Site/views/shared/cssBootstrap2", array('bootstrap.css'), false);
             array_unshift($this->data['cssFiles'], "Site/views/shared/cssBootstrap2/bootstrap.css");
         }
+
+        // Other session data
+        $this->data['jsonSession'] = json_encode(SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $this->_appName), JSON_UNESCAPED_SLASHES);
+
+        // Add bellows JS for every page because top container menubar needs it for helps
+        $bellowsFolder = NG_BASE_FOLDER . "bellows";
+        $this->addJavascriptFiles($bellowsFolder . '/_js_module_definitions');
+        $this->addJavascriptFiles($bellowsFolder . '/js', array('vendor', 'assets'));
+        $this->addJavascriptFiles($bellowsFolder . '/directive');
 
         // Add general Angular app dependencies
         $dependencies = $this->getAngularAppDependencies();
@@ -234,6 +242,7 @@ class Base
      * @return array
      */
     protected function getAngularAppDependencies() {
+        /* TODO: This is an Angular1 function; rename appropriately. */
         $jsonData = json_decode(file_get_contents(APPPATH . "app_dependencies.json"), true);
         $jsFilesToReturn = array();
         $jsMinFilesToReturn = array();

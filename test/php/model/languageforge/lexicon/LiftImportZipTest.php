@@ -30,7 +30,7 @@ class LiftImportZipTest extends PHPUnit_Framework_TestCase
 
     public function testLiftImportMerge_ZipFile_CorrectValues()
     {
-        $zipFilePath = self::$environ->copyTestUploadFile(TestPhpPath . 'common/TestLexProject.zip');
+        $zipFilePath = self::$environ->copyTestUploadFile(TestCommonPath . 'TestLexProject.zip');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         $this->assertArrayHasKey('en', $project->inputSystems);
@@ -80,7 +80,7 @@ class LiftImportZipTest extends PHPUnit_Framework_TestCase
      */
     public function testLiftImportMerge_ZipFileWrongFormat_Exception()
     {
-        copy(TestPhpPath . 'common/TestLexProject.zip', sys_get_temp_dir() . '/TestLexProject.tar.gz');
+        copy(TestCommonPath . 'TestLexProject.zip', sys_get_temp_dir() . '/TestLexProject.tar.gz');
         $zipFilePath = self::$environ->copyTestUploadFile(sys_get_temp_dir() . '/TestLexProject.tar.gz');
         unlink(sys_get_temp_dir() . '/TestLexProject.tar.gz');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -101,7 +101,7 @@ class LiftImportZipTest extends PHPUnit_Framework_TestCase
 
     public function testLiftImportMerge_ZipFileWithDir_CorrectValues()
     {
-        $zipFilePath = self::$environ->copyTestUploadFile(TestPhpPath . 'common/TestLexProjectWithDir.zip');
+        $zipFilePath = self::$environ->copyTestUploadFile(TestCommonPath . 'TestLexProjectWithDir.zip');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         $importer = LiftImport::get()->importZip($zipFilePath, $project);
@@ -139,7 +139,7 @@ class LiftImportZipTest extends PHPUnit_Framework_TestCase
      */
     public function testLiftImportMerge_ZipFileNoLift_Exception()
     {
-        $zipFilePath = self::$environ->copyTestUploadFile(TestPhpPath . 'common/TestLexNoProject.zip');
+        $zipFilePath = self::$environ->copyTestUploadFile(TestCommonPath . 'TestLexNoProject.zip');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         self::$environ->inhibitErrorDisplay();
 
@@ -158,7 +158,7 @@ class LiftImportZipTest extends PHPUnit_Framework_TestCase
 
     public function testLiftImportMerge_ZipFile2LiftAndOddFolder_Error()
     {
-        $zipFilePath = self::$environ->copyTestUploadFile(TestPhpPath . 'common/TestLex2ProjectsOddFolder.zip');
+        $zipFilePath = self::$environ->copyTestUploadFile(TestCommonPath . 'TestLex2ProjectsOddFolder.zip');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         $importer = LiftImport::get()->importZip($zipFilePath, $project);
