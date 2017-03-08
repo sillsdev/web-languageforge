@@ -1,0 +1,83 @@
+@import '../base/_variables.scss';
+/* progress indicator */
+#progress-indicator {
+  padding: 0 0 30px 0;
+  border-bottom: 1px solid #eeeeee;
+  margin-left: 0;
+  list-style: none;
+  li {
+
+    display: inline-block;
+    padding-right: 5px;
+    padding-left: 5px;
+
+    i {
+      display: block;
+      font-size: 55px;
+    }
+    i.fa-check-square{
+      color: green;
+      font-size: 50px;
+      height: 56px;
+    }
+    i.muted {
+      color: $lf-disabled;
+    }
+  }
+  a:hover {
+    text-decoration: none;
+  }
+}
+
+#sendReceiveButton{
+    margin-top: 60px;
+    margin-bottom: 20px;
+    font-size: 1em;
+    white-space: normal;
+
+}
+
+#createButton{
+    margin-bottom: 20px;
+    font-size: 1em;
+    white-space: normal;
+}
+
+a#flexHelpLink {
+   text-decoration: none;
+   color: #e67345
+}
+
+a{
+    color: #0088cc;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#flexHelpLink:hover {
+    color: #0088cc !important;
+}
+
+.centerBlock {
+  margin: auto;
+}
+
+#importErrors {
+  height: 300px;
+  overflow-y: scroll;
+}
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 20px;
+  word-break: break-all;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  background-color: #f5f5f5;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}

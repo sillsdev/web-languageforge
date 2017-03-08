@@ -4,13 +4,17 @@ module.exports = new ConfigurationPage();
 
 function ConfigurationPage() {
   var modal = require('./lexModals.js');
+  var util = require('../../../bellows/pages/util.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   this.noticeList = element.all(by.repeater('notice in notices()'));
-  this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
+  this.firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
 
-  this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
+  this.settingsMenuLink = element(by.className('fa-cog'));
   this.configurationLink = element(by.linkText('Configuration'));
   this.get = function get() {
+    util.scrollTop();
     this.settingsMenuLink.click();
     this.configurationLink.click();
   };
@@ -22,7 +26,7 @@ function ConfigurationPage() {
   this.activePane = element(by.css('div.tab-pane.active'));
 
   this.getTabByName = function getTabByName(tabName) {
-    return element(by.css('div.tabbable ul.nav-tabs')).element(by.cssContainingText('a', tabName));
+    return element(by.cssContainingText('.uib-tab a', tabName));
   };
 
   this.tabs = {
@@ -34,15 +38,15 @@ function ConfigurationPage() {
 
   this.inputSystemsTab = {
     newButton:    this.tabDivs.first().element(by.partialButtonText('New')),
-    moreButton:   this.tabDivs.first().element(by.css('.btn-group a.btn')),
+    moreButton:   this.tabDivs.first().element(by.css('.btn-group button')),
     moreButtonGroup: {
       addIpa:     this.tabDivs.first().element(by.partialLinkText('Add IPA')),
       addVoice:   this.tabDivs.first().element(by.partialLinkText('Add Voice')),
       addVariant: this.tabDivs.first().element(by.partialLinkText('Add a variant')),
-      remove:     this.tabDivs.first().element(by.css('i.icon-remove'))
+      remove:     this.tabDivs.first().element(by.className('fa fa-times'))
     },
     getLanguageByName: function getLanguageByName(languageName) {
-      return element(by.css('div.tab-pane.active div.span3 dl.picklists'))
+      return element(by.css('div.tab-pane.active div.col-md-3 dl.picklists'))
         .element(by.cssContainingText('div[data-ng-repeat] span', languageName));
     },
 
@@ -101,7 +105,7 @@ function ConfigurationPage() {
   this.exampleFields = this.activePane.all(by.repeater('fieldName in fieldOrder.examples'));
 
   this.getFieldByName = function getFieldByName(fieldName) {
-    return element(by.css('div.tab-pane.active > div > div > div.span3 dl.picklists'))
+    return element(by.css('div.tab-pane.active > div > div > div.col-md-3 dl.picklists'))
       .element(by.cssContainingText('div[data-ng-repeat] > span', fieldName));
   };
 

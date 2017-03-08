@@ -106,9 +106,11 @@ angular.module('bellows.services.comments')
       } else {
         // delete the entire comment
         offlineCache.deleteComment(commentId).then(function () {
-          deleteCommentInList(commentId, null, this.comments.items.all);
-          deleteCommentInList(commentId, null, this.comments.items.currentEntry);
-          deleteCommentInList(commentId, null, this.comments.items.currentEntryFiltered);
+          if (angular.isDefined(this) && angular.isDefined(this.comments)) {
+            deleteCommentInList(commentId, null, this.comments.items.all);
+            deleteCommentInList(commentId, null, this.comments.items.currentEntry);
+            deleteCommentInList(commentId, null, this.comments.items.currentEntryFiltered);
+          }
         }.bind(this));
       }
     };

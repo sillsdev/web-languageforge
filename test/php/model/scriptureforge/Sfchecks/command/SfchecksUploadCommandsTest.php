@@ -24,7 +24,7 @@ class SfchecksUploadCommandsTest extends PHPUnit_Framework_TestCase
         $text = new TextModel($project);
         $textId = $text->write();
         $fileName = 'TestAudio.mp3';
-        $tmpFilePath = self::$environ->uploadTextAudioFile(TestPhpPath . "common/$fileName", $fileName, $textId);
+        $tmpFilePath = self::$environ->uploadTextAudioFile(TestCommonPath . "$fileName", $fileName, $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
@@ -49,7 +49,7 @@ class SfchecksUploadCommandsTest extends PHPUnit_Framework_TestCase
         $text = new TextModel($project);
         $textId = $text->write();
         $fileName = 'TestAudio.MP3';
-        $tmpFilePath = self::$environ->uploadTextAudioFile(TestPhpPath . 'common/TestAudio.mp3', $fileName, $textId);
+        $tmpFilePath = self::$environ->uploadTextAudioFile(TestCommonPath . 'TestAudio.mp3', $fileName, $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
@@ -65,7 +65,7 @@ class SfchecksUploadCommandsTest extends PHPUnit_Framework_TestCase
         $projectId = $project->write();
         $text = new TextModel($project);
         $textId = $text->write();
-        $tmpFilePath = self::$environ->uploadTextAudioFile(TestPhpPath . 'common/TestAudio.wav', 'TestAudio.mp3', $textId);
+        $tmpFilePath = self::$environ->uploadTextAudioFile(TestCommonPath . 'TestAudio.wav', 'TestAudio.mp3', $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
@@ -73,7 +73,7 @@ class SfchecksUploadCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('UserMessage', $response->data->errorType, 'Error response should be a user message');
         $this->assertRegExp('/Ensure the file is a .mp3/', $response->data->errorMessage, 'Error message should match the error');
 
-        $tmpFilePath = self::$environ->uploadTextAudioFile(TestPhpPath . 'common/TestAudio.mp3', 'TestAudio.wav', $textId);
+        $tmpFilePath = self::$environ->uploadTextAudioFile(TestCommonPath . 'TestAudio.mp3', 'TestAudio.wav', $textId);
 
         $response = SfchecksUploadCommands::uploadFile($projectId, 'audio', $tmpFilePath);
 
@@ -104,16 +104,16 @@ class SfchecksUploadCommandsTest extends PHPUnit_Framework_TestCase
         // put a copy of the test files in the folderPath
         $fileName1 = 'TestAudio1.mp1';
         $filePath1 = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName1);
-        copy(TestPhpPath . 'common/TestAudio.mp3', $filePath1);
+        copy(TestCommonPath . 'TestAudio.mp3', $filePath1);
         $fileName2 = 'TestAudio2.mp2';
         $filePath2 = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName2);
-        copy(TestPhpPath . 'common/TestAudio.mp3', $filePath2);
+        copy(TestCommonPath . 'TestAudio.mp3', $filePath2);
         $fileName3 = 'TestAudio3.mp3';
         $filePath3 = SfchecksUploadCommands::mediaFilePath($folderPath, $textId, $fileName3);
-        copy(TestPhpPath . 'common/TestAudio.mp3', $filePath3);
+        copy(TestCommonPath . 'TestAudio.mp3', $filePath3);
         $fileName4 = 'TestAudio4.mp3';
         $filePath4 = SfchecksUploadCommands::mediaFilePath($folderPath, $fakeTextId, $fileName4);
-        copy(TestPhpPath . 'common/TestAudio.mp3', $filePath4);
+        copy(TestCommonPath . 'TestAudio.mp3', $filePath4);
 
         $this->assertTrue(file_exists($filePath1), 'File should exist before cleanup');
         $this->assertTrue(file_exists($filePath2), 'File should exist before cleanup');

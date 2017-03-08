@@ -1,9 +1,9 @@
 <div style="position:relative">
-    <input dir="auto" style="margin:0px" placeholder="{{placeholder}}" composition-input data-ng-model="term" data-ng-change="query()"
+    <input dir="auto" class="form-control" placeholder="{{placeholder}}" composition-input data-ng-model="term" data-ng-change="query()"
            type="text" autocomplete="off"/>&nbsp;
-    <span style="position:absolute; right:13px; top:5px" title="Clear" data-ng-click="clearSearch()"
+    <span style="position:absolute; right:13px; top:5px; z-index: 10;" title="Clear" data-ng-click="clearSearch()"
           data-ng-show="term && term != ''">
-        <i class="icon-remove" style="color:#808080; cursor: pointer"></i>
+        <i class="fa fa-times" style="color:#808080; cursor: pointer"></i>
     </span>
-    <div data-ng-transclude></div>
+    <div data-ng-transclude class="typeahead-results"></div>
 </div>

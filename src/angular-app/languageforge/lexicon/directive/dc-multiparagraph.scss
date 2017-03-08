@@ -1,0 +1,69 @@
+form.dc-multiparagraph .control-group {
+    margin-bottom: 10px;
+}
+
+/* TODO Review when doing the Bootstrap 3 upgrade. Bootstrap seems to overly constrain input sizes artificially. */
+form.dc-multiparagraph .controls input[type="text"],
+form.dc-multiparagraph .uneditable-input,
+form.dc-multiparagraph textarea {
+}
+
+form.dc-multiparagraph label {
+    font-weight:bold;
+    cursor: default;
+}
+
+form.dc-multiparagraph .uneditable-input {
+    height: 38px;
+    overflow: auto;
+}
+
+form.dc-multiparagraph .uneditable-input.multiline,
+form.dc-multiparagraph textarea {
+    height: 60px;
+}
+
+form.dc-multiparagraph .uneditable-input:hover {
+    cursor: not-allowed;
+}
+
+form.dc-multiparagraph textarea {
+    border-radius: 0 $border-radius $border-radius 0 !important;
+}
+
+form.dc-multiparagraph textarea:focus {
+    border-color: rgba(82, 168, 236, 0.8);
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+/* input prepend sized to input and textarea */
+form.dc-multiparagraph .input-prepend {
+    line-height: normal;
+    background-color: #EEE;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+}
+
+form.dc-multiparagraph .wsid {
+    border: 0;
+}
+
+form.dc-multiparagraph input[type="text"],
+form.dc-multiparagraph textarea,
+form.dc-multiparagraph .uneditable-input {
+    margin-top: -1px;
+    margin-bottom: -1px;
+    margin-left: 0;
+    margin-right: -1px;
+}
+
+/* language span highlight */
+form.dc-multiparagraph .uneditable-input span {
+    border-radius: 9px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+form.dc-multiparagraph .uneditable-input span:hover {
+    background-color: #ADDDDD;
+}

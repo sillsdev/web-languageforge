@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sfchecks-new-project', ['ui.router', 'ui.bootstrap', 'bellows.services',
-  'palaso.ui.listview', 'palaso.ui.notice', 'palaso.ui.utils', 'wc.Directives'])
+  'palaso.ui.listview', 'palaso.ui.notice', 'palaso.ui.utils'])
   .config(['$stateProvider', '$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
       // State machine from ui.router

@@ -11,6 +11,7 @@ class LexCommentReply extends ObjectForEncoding
         $this->content = $content;
         $this->id = uniqid();
         $this->authorInfo = new LexAuthorInfo();
+        $this->isDeleted = false;
     }
 
     /** @var LexAuthorInfo */
@@ -21,4 +22,7 @@ class LexCommentReply extends ObjectForEncoding
 
     /** @var string */
     public $id;
+
+    /** @var boolean */
+    public $isDeleted;
 }

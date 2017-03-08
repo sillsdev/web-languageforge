@@ -146,7 +146,7 @@ function Utils() {
   };
 
   this.clickBreadcrumb = function clickBreadcrumb(breadcrumbText) {
-    element(by.elemMatches('ul.topCrumbs > li', breadcrumbText)).click();
+    element(by.elemMatches('.breadcrumb > li', breadcrumbText)).click();
   };
 
   this.parent = function parent(child) {
@@ -160,7 +160,12 @@ function Utils() {
       /angular.*\.js .* Error: \[\$compile:tpload]/.test(message) ||
       /"level":"info"/.test(message) ||
       /next_id/.test(message) ||
+      message.indexOf('password or credit card input in a non-secure context.') !== -1 ||
       /ERR_INTERNET_DISCONNECTED/.test(message);
   };
+
+  this.scrollTop = function () {
+    browser.executeScript('window.scroll(0,0)');
+  }
 
 }

@@ -30,6 +30,7 @@
     <testsuites>
         <testsuite name="xForge all PHP unit tests">
             <directory>./</directory>
+            <exclude>./library/shared/LanguageDataTest.php</exclude>
         </testsuite>
     </testsuites>
     <groups>
