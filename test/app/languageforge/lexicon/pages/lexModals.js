@@ -23,7 +23,7 @@ function LexModals() {
     levelDropdown: element(by.model('newCustomData.level')),
     typeDropdown: element(by.model('newCustomData.type')),
     listCodeDropdown: element(by.model('newCustomData.listCode')),
-    addButton: element(by.partialButtonText('Add'))
+    addButton: element(by.css('.modal-footer')).element(by.partialButtonText('Add'))
   };
 
 }
