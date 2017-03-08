@@ -229,6 +229,12 @@ legend.override-bootstrap {
 .flexColumnContainer {
 }
 
+#lexAppListView .lexiconItemListContainer {
+    height: 560px;
+    overflow: auto;
+    margin-bottom: 15px;
+}
+
 .uneditable-input {
     cursor: auto;
     color: inherit;
