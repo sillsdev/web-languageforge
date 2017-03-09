@@ -10,7 +10,11 @@
 .sf-menu ul {
     position:        absolute;
     top:            -999em;
-    width:            15em; /* left offset of submenus need to match (see below) */
+    width:            100%;
+}
+/* apply minimum width to projects and user menus */
+.sf-menu li:nth-child(n+3) {
+    min-width: 14em;
 }
 .sf-menu ul li {
     width:            100%;
@@ -28,7 +32,6 @@
 }
 .sf-menu li:hover ul,
 .sf-menu li.sfHover ul {
-    left:            -53px;
     top:            3.3em; /* match top ul list item height */
     z-index:        99;
 }

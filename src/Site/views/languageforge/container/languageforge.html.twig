@@ -8,20 +8,20 @@
                 <a href="/" style="font-weight: normal; font-size: 16px">Language Forge</a>
             </div>
             <div id="header-nav" class="pull-right">
-                <ul class="sf-menu">
+                <ul class="sf-menu sf-arrows">
                     <li><a href="/">Home</a></li>
                     {% if showHelpButton %}
                         <li ng-app="xforge.helpButton" ng-controller="helpButtonController" ng-show="showButton"><a ng-click="showHelpContent()">Help</a></li>
                     {% endif %}
                     {% if isLoggedIn %}
-                        <li id="myProjects"><a href="/app/projects">My Projects</a>
+                        <li id="myProjects"><a href="/app/projects" class="sf-with-ul">My Projects</a>
                             <ul>
                                 {% for project in projects %}
                                     <li><a href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a></li>
                                 {% endfor %}
                             </ul>
                         </li>
-                        <li>
+                        <li class="sf-with-ul">
                             <a href="#"><img src="{{ smallAvatarUrl }}" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px" id="smallAvatarURL" />Hi, {{ userName }}</a>
                             <ul>
                                 {% if isAdmin %}
