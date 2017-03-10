@@ -12,6 +12,7 @@ use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\RequestException;
 use Palaso\Utilities\CodeGuard;
 
 class TranslateProjectCommands
@@ -133,7 +134,14 @@ class TranslateProjectCommands
         $url .= $project->config->source->inputSystem->tag . '/';
         $url .= $project->config->target->inputSystem->tag . '/projects/';
         $url .= $project->databaseName();
-        $client->delete($url);
+        try {
+            $client->delete($url);
+        } catch (RequestException $e) {
+            // if the project didn't exist don't throw exception
+            if ($e->getCode() != 404) {
+                throw $e;
+            }
+        }
     }
 
     /**
