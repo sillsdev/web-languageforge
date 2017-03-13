@@ -24,7 +24,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.selectedDocumentSetIndex = 0;
     $scope.documentSets = [];
     var currentDocIds = [];
-    var previousSegmentIndex = -1;
+    var selectedSegmentIndex = -1;
     var editors = {};
     var onSelectionChanges = {};
     var source = {
@@ -317,23 +317,32 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     }
 
     function getSuggestions(editor, docType) {
+      var newSourceSegmentText;
       if (docType == 'target' && source.data && target.data) {
-        var segmentIndex = getCurrentSegmentIndex(target.data, editor.getSelection());
-        if (segmentIndex != previousSegmentIndex) {
-          assistant.translateInteractively(currentSegment(source.data, segmentIndex),
-            target.confidenceThreshold,
+        var newSegmentIndex = getCurrentSegmentIndex(target.data, editor.getSelection());
+        newSourceSegmentText = currentSegment(source.data, newSegmentIndex);
+        if (newSegmentIndex != selectedSegmentIndex || newSourceSegmentText != source.segmentText) {
+          selectedSegmentIndex = newSegmentIndex;
+          source.segmentText = newSourceSegmentText;
+          assistant.translateInteractively(source.segmentText, $scope.confidenceThreshold,
             function () {
-              previousSegmentIndex = segmentIndex;
-              updatePrefix(editor, segmentIndex);
+              updatePrefix(editor, selectedSegmentIndex);
             }
           );
         } else {
           setTimeout(function () {
-            updatePrefix(editor, segmentIndex);
+            updatePrefix(editor, selectedSegmentIndex);
           }, 1);
         }
       } else {
         editor.theme.suggestTooltip.hide();
+        if (docType == 'source' && source.data) {
+          newSourceSegmentText = currentSegment(source.data, selectedSegmentIndex);
+          if (newSourceSegmentText != source.segmentText) {
+            source.segmentText = newSourceSegmentText;
+            assistant.translateInteractively(source.segmentText, $scope.confidenceThreshold);
+          }
+        }
       }
     }
 
@@ -368,6 +377,8 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
      * @returns {string}
      */
     function currentSegment(data, index) {
+      if (!data) return '';
+
       if (index > getLastSegmentIndex(data)) {
         index = getLastSegmentIndex(data);
       }
