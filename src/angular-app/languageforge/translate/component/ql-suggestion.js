@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('translate.suggest', [])
+angular.module('translate.quill')
   .component('qlSuggestion', {
     templateUrl: '/angular-app/languageforge/translate/component/ql-suggestion.html',
     bindings: {

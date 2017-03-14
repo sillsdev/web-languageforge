@@ -1,0 +1,11 @@
+<div class="picklist btn-group" uib-dropdown>
+    <a class="pui-no-caret" uib-dropdown-toggle id="dropdownMenuLink"><i class="fa fa-ellipsis-v"></i></a>
+    <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-item form-group">
+            <label class="control-label" for="statusSelect" data-translate="Status"></label>
+            <select class=custom-select id="statusSelect" autofocus data-ng-model="$ctrl.qlStatus"
+                    data-ng-change="$ctrl.selectChange($ctrl.qlStatus)"
+                    data-ng-options="option.key as option.name for option in $ctrl.qlStatusOptions"></select>
+        </div>
+    </div>
+</div>
