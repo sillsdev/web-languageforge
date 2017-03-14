@@ -59,6 +59,23 @@ ng-quill-editor .ql-container {
     /*border: 1px solid dimgray;*/
 }
 
+.ql-more-tooltip {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    color: #373a3c;
+    position: absolute;
+}
+
+.ql-more-tooltip:hover {
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+.ql-more-tooltip .picklist > *:not(.selected):hover {
+    background-color: inherit;
+}
+
 .ql-suggest-tooltip {
     background-color: lightgrey;
     border-radius: 12px;

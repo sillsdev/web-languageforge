@@ -19,16 +19,16 @@
                                        required placeholder="eg: My Translation"
                                        data-idle-validate="checkProjectCode()"
                                        data-idle-validate-keypress="resetValidateProjectForm()"  />
-                                <span class="input-group-addon ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'loading'">
+                                <span class="input-group-addon ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState === 'loading'">
                                     <i id="projectCodeLoading" class="fa fa-spinner fa-spin"></i>
                                 </span>
-                                <span class="input-group-addon alert-danger ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'exists'">
+                                <span class="input-group-addon alert-danger ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState === 'exists'">
                                     <i id="projectCodeExists" class="fa fa-times" title="Project Code already exists!" ></i>
                                 </span>
-                                <span class="input-group-addon alert-danger ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'invalid'">
+                                <span class="input-group-addon alert-danger ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState === 'invalid'">
                                     <i id="projectCodeAlphanumeric" class="fa fa-times" title="Project Code must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores!" ></i>
                                 </span>
-                                <span class="input-group-addon alert-success ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState == 'ok'">
+                                <span class="input-group-addon alert-success ng-hide" data-ng-show="newProject.projectCode.length > 0 && projectCodeState === 'ok'">
                                     <i id="projectCodeOk" class="fa fa-check" title="Project Code is available!" ></i>
                                 </span>
                             </div>

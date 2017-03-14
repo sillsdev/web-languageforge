@@ -28,18 +28,24 @@ angular.module('translate.services')
     };
 
     // SIL.Machine.Translation.InteractiveTranslationSession.updatePrefix(prefix)
-    this.updatePrefix = function updatePrefix(prefix, callback) {
+    this.updatePrefix = function updatePrefix(prefix) {
       if (angular.isUndefined(engine) || angular.isUndefined(session)) return;
 
-      var suggestions = session.updatePrefix(prefix);
-      (callback || angular.noop)(suggestions);
+      // returns suggestions
+      return session.updatePrefix(prefix);
     };
 
-    this.getCurrentSuggestion = function getCurrentSuggestion(callback) {
+    this.getCurrentSuggestion = function getCurrentSuggestion() {
       if (angular.isUndefined(engine) || angular.isUndefined(session)) return;
 
-      var suggestions = session.getCurrentSuggestion();
-      (callback || angular.noop)(suggestions);
+      return session.getCurrentSuggestion();
+    };
+
+    // SIL.Machine.Translation.InteractiveTranslationSession.approve(onFinished)
+    this.approveSegment = function approveSegment(callback) {
+      if (angular.isUndefined(engine) || angular.isUndefined(session)) return;
+
+      session.approve(callback);
     };
 
   }])
