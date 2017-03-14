@@ -54,7 +54,7 @@ angular.module('translate',
       };
 
       $scope.showTranslationButton = function showTranslationButton() {
-        return !($location.path().indexOf('/editor') == 0);
+        return !($location.path().indexOf('/editor') === 0);
       };
 
     }])

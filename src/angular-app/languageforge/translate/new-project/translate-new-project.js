@@ -109,7 +109,7 @@ angular.module('translate-new-project',
       $scope.formValidated = true;
       $scope.formStatus = msg;
       $scope.formStatusClass = 'alert alert-info';
-      if (!msg) $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
+      if (!msg) $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
       $scope.forwardBtnClass = 'btn-success';
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
@@ -119,8 +119,8 @@ angular.module('translate-new-project',
       if (!msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
-      $scope.forwardBtnClass = (bootstrapVersion == 'bootstrap4' ? 'btn-secondary' : '');
+      $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
+      $scope.forwardBtnClass = (bootstrapVersion === 'bootstrap4' ? 'btn-secondary' : '');
       $scope.formValidationDefer = $q.defer();
       return $scope.formValidationDefer.promise;
     }
@@ -130,8 +130,8 @@ angular.module('translate-new-project',
       $scope.formValidated = false;
       $scope.formStatus = msg;
       $scope.formStatusClass =
-        (bootstrapVersion == 'bootstrap4' ? 'alert alert-danger' : 'alert alert-error');
-      if (!msg) $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
+        (bootstrapVersion === 'bootstrap4' ? 'alert alert-danger' : 'alert alert-error');
+      if (!msg) $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
       $scope.forwardBtnClass = '';
       $scope.formValidationDefer.resolve(false);
       return $scope.formValidationDefer.promise;
@@ -145,14 +145,15 @@ angular.module('translate-new-project',
     $scope.iconForStep = function iconForStep(step) {
       var classes = [];
       if ($state.current.data.step > step) {
-        classes.push((bootstrapVersion == 'bootstrap4' ? 'fa fa-check-square' : 'icon-check-sign'));
+        classes.push(
+          (bootstrapVersion === 'bootstrap4' ? 'fa fa-check-square' : 'icon-check-sign'));
       }
 
-      if ($state.current.data.step == step) {
-        classes.push((bootstrapVersion == 'bootstrap4' ? 'fa fa-square-o' : 'icon-check-empty'));
+      if ($state.current.data.step === step) {
+        classes.push((bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o' : 'icon-check-empty'));
       } else if ($state.current.data.step < step) {
         classes.push(
-          (bootstrapVersion == 'bootstrap4' ? 'fa fa-square-o muted' : 'icon-check-empty muted'));
+          (bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o muted' : 'icon-check-empty muted'));
       }
 
       return classes;
@@ -205,7 +206,7 @@ angular.module('translate-new-project',
             return error('Please select a project type.');
           }
 
-          if ($scope.projectCodeState == 'unchecked') {
+          if ($scope.projectCodeState === 'unchecked') {
             $scope.checkProjectCode();
           }
 
@@ -313,15 +314,15 @@ angular.module('translate-new-project',
     $scope.resetValidateProjectForm = resetValidateProjectForm;
 
     $scope.$watch('projectCodeState', function (newval, oldval) {
-      if (!newval || newval == oldval) { return; }
+      if (!newval || newval === oldval) { return; }
 
-      if (newval == 'unchecked') {
+      if (newval === 'unchecked') {
         // User just typed in the project name box.
         // Need to wait just a bit for the idle-validate to kick in.
         return;
       }
 
-      if (oldval == 'loading') {
+      if (oldval === 'loading') {
         // Project code state just resolved. Validate rest of form so Forward button can activate.
         validateForm();
       }
@@ -339,7 +340,7 @@ angular.module('translate-new-project',
       if (!$scope.isSRProject) {
         if (angular.isUndefined(newval)) {
           $scope.newProject.projectCode = '';
-        } else if (newval != oldval) {
+        } else if (newval !== oldval) {
           $scope.newProject.projectCode = newval.toLowerCase().replace(/ /g, '_');
         }
       }

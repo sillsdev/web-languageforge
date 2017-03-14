@@ -29,7 +29,7 @@ realTime.createAndSubscribeRichTextDoc =
         if (err) throw err;
 
         if (doc.type === null) {
-          doc.create([{ insert: '' }], 'rich-text');
+          doc.create([{ insert: '' }], richText.type.name);
         }
       });
     }
@@ -41,13 +41,13 @@ realTime.createAndSubscribeRichTextDoc =
       quill.setContents(doc.data);
 
       onTextChanges[id] = function (delta, oldDelta, source) {
-        if (source !== 'user') return;
+        if (source !== Quill.sources.USER) return;
         doc.submitOp(delta, { source: quill });
 
         // console.log('onTextChange: docId', id, 'data', quill.getText());
       };
 
-      quill.on('text-change', onTextChanges[id]);
+      quill.on(Quill.events.TEXT_CHANGE, onTextChanges[id]);
 
       onOps[id] = function (op, source) {
         if (source === quill) return;
@@ -62,7 +62,7 @@ realTime.createAndSubscribeRichTextDoc =
 
 realTime.disconnectRichTextDoc = function disconnectRichTextDoc(id, quill) {
   if (id in onTextChanges) {
-    quill.off('text-change', onTextChanges[id]);
+    quill.off(Quill.events.TEXT_CHANGE, onTextChanges[id]);
     delete onTextChanges[id];
   }
 
