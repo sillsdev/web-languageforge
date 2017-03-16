@@ -25,12 +25,12 @@ class UserModel extends MapperModel
      * List of properties accessible by context
      */
     const PUBLIC_ACCESSIBLE =
-        ['username', 'name', 'email'];
+        ['username', 'displayName', 'name', 'email'];
     const USER_PROFILE_ACCESSIBLE =
         ['avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
-         'name', 'age', 'gender', 'interfaceLanguageCode'];
+         'displayName', 'name', 'age', 'gender', 'interfaceLanguageCode'];
     const ADMIN_ACCESSIBLE =
-        ['username', 'name', 'email', 'role', 'active',
+        ['username', 'displayName', 'name', 'email', 'role', 'active',
          'avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
          'name', 'age', 'gender', 'interfaceLanguageCode'];
 
@@ -68,8 +68,13 @@ class UserModel extends MapperModel
     /** @var string */
     public $username;
 
-    /** @var string Full Name */
+    /** @var string Full Name (this is optional profile information) */
     public $name;
+
+    /**
+     * @var string - this is displayed on the website as a handle (replaces username)
+     */
+    public $displayName;
 
     /** @var string An unconfirmed email address for this user */
     public $emailPending;
@@ -261,6 +266,22 @@ class UserModel extends MapperModel
             $default_avatar = "anonymoose.png";
             $this->avatar_ref = $default_avatar;
         }
+    }
+
+
+    /**
+     * Returns true of the email already exists in an user account (either email field or username field)
+     * @param $email
+     * @return bool
+     */
+    public static function userExists($email) {
+        $user = new UserModel();
+        if (!$user->readByEmail($email)) {
+            if (!$user->readByUserName($email)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

@@ -93,13 +93,15 @@ function ProjectsPage() {
       projectLink.click();
       browser.wait(expectedCondition.visibilityOf(this.settings.button), CONDITION_TIMEOUT);
       this.settings.button.click();
-      browser.wait(expectedCondition.visibilityOf(this.settings.userManagementLink), CONDITION_TIMEOUT);
+      browser.wait(expectedCondition.visibilityOf(this.settings.userManagementLink),
+        CONDITION_TIMEOUT);
       this.settings.userManagementLink.click();
 
-      var addMembersBtn = element(by.partialButtonText('Add Members'));
+      var addMembersBtn = element(by.id('addMembersButton'));
+      browser.wait(expectedCondition.visibilityOf(addMembersBtn), CONDITION_TIMEOUT);
       addMembersBtn.click();
       var newMembersDiv = element(by.css('#newMembersDiv'));
-      var userNameInput = newMembersDiv.element(by.css('input[type="text"]'));
+      var userNameInput = newMembersDiv.element(by.id('typeaheadInput'));
       browser.wait(expectedCondition.visibilityOf(userNameInput), CONDITION_TIMEOUT);
       userNameInput.sendKeys(usersName);
 
@@ -110,7 +112,7 @@ function ProjectsPage() {
       });
 
       // This should be unique no matter what
-      var addToProjectBtn = newMembersDiv.element(by.css('button'));
+      var addToProjectBtn = newMembersDiv.element(by.id('addUserButton'));
       expect(addToProjectBtn.getText()).toContain('Add Existing User');
       addToProjectBtn.click();
 

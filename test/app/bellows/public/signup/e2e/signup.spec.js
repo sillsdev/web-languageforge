@@ -3,84 +3,122 @@
 describe('E2E testing: Signup app', function () {
   var constants = require('../../../../testConstants.json');
   var page      = require('../../../pages/signupPage.js');
+  var loginPage = require('../../../pages/loginPage.js');
+  var projectsPage = require('../../../pages/projectsPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   it('setup and contains a user form', function () {
     page.get();
     expect(page.signupForm).toBeDefined();
   });
 
-  it('finds the admin user already exists', function () {
-    page.usernameInput.sendKeys(constants.adminUsername);
-    page.emailInput.sendKeys(constants.adminEmail);
-    expect(page.nextButton.isEnabled()).toBe(true);
-    page.nextButton.click();
-    expect(page.usernameExists.isDisplayed()).toBe(true);
-    expect(page.usernameOk.isPresent()).toBe(false);
-    page.usernameInput.clear();
-    page.emailInput.clear();
+  it('can verify required information filled', function () {
+    page.get();
+    expect(page.signupButton.isEnabled()).toBe(false);
+    page.emailInput.sendKeys(constants.unusedEmail);
+    page.nameInput.sendKeys(constants.unusedName);
+    page.passwordInput.sendKeys(constants.passwordValid);
+    page.captcha.setInvalidCaptcha();
+    expect(page.signupButton.isEnabled()).toBe(true);
   });
 
-  it('cannot move on if email is invalid', function () {
-    page.usernameInput.sendKeys(constants.notUsedUsername);
+  it('cannot submit if email is invalid', function () {
     page.emailInput.clear();
     page.emailInput.sendKeys(constants.emailNoAt);
-    expect(page.nextButton.isEnabled()).toBe(false);
-    page.emailInput.clear();
+    page.captcha.setInvalidCaptcha();
+    expect(page.emailInvalid.isDisplayed()).toBe(true);
+    expect(page.signupButton.isEnabled()).toBe(false);
   });
 
-  it('can verify that an unused username is available', function () {
-    page.emailInput.sendKeys(constants.notUsedEmail);
-    expect(page.nextButton.isEnabled()).toBe(true);
-    page.nextButton.click();
-    expect(page.usernameExists.isPresent()).toBe(false);
-    expect(page.usernameOk.isDisplayed()).toBe(true);
+  it('cannot submit if password too short', function () {
+    page.emailInput.clear();
+    page.emailInput.sendKeys(constants.unusedEmail);
+    expect(page.signupButton.isEnabled()).toBe(true);
+    page.passwordInput.clear();
+    page.passwordInput.sendKeys(constants.passwordTooShort);
+    page.captcha.setInvalidCaptcha();
+    expect(page.passwordInvalid.isDisplayed()).toBe(true);
+    expect(page.signupButton.isEnabled()).toBe(false);
+  });
+
+  it('can submit if password long enough', function () {
+    page.passwordInput.clear();
+    page.passwordInput.sendKeys(constants.passwordValid);
+    page.captcha.setInvalidCaptcha();
+    expect(page.signupButton.isEnabled()).toBe(true);
+  });
+
+  it('can submit if password is showing and long enough', function () {
+    page.showPassword.click();
+    page.captcha.setInvalidCaptcha();
+    expect(page.signupButton.isEnabled()).toBe(true);
   });
 
   it('cannot submit if captcha not selected', function () {
-    page.nameInput.sendKeys(constants.notUsedName);
+    page.get();
+    page.emailInput.sendKeys(constants.unusedEmail);
+    page.nameInput.sendKeys(constants.unusedName);
     page.passwordInput.sendKeys(constants.passwordValid);
-    page.confirmPasswordInput.sendKeys(constants.passwordValid);
     expect(page.signupButton.isEnabled()).toBe(false);
-  });
-
-  it('cannot submit if passwords don\'t match', function () {
-    page.confirmPasswordInput.clear();
-    page.captcha1Button.click();
-    expect(page.signupButton.isEnabled()).toBe(false);
-  });
-
-  it('cannot submit if passwords match but are too short', function () {
-    page.passwordInput.clear();
-    page.passwordInput.sendKeys(constants.passwordTooShort);
-    page.confirmPasswordInput.sendKeys(constants.passwordTooShort);
-    expect(page.signupButton.isEnabled()).toBe(false);
-  });
-
-  it('can submit if passwords match and long enough', function () {
-    page.passwordInput.clear();
-    page.passwordInput.sendKeys(constants.passwordValid);
-    page.confirmPasswordInput.clear();
-    page.confirmPasswordInput.sendKeys(constants.passwordValid);
-    expect(page.signupButton.isEnabled()).toBe(true);
-  });
-
-  it('can submit if password is showing, matching and long enough', function () {
-    page.confirmPasswordInput.clear();
-    page.showPassword.click();
-    expect(page.signupButton.isEnabled()).toBe(true);
   });
 
   it('can submit a user registration request and captcha is invalid', function () {
-    page.expectedItemName.getText().then(function (result) {
-      if (result == 'Blue Square') {
-        page.captcha2Button.click();
-      }
-    });
-
-    expect(page.noticeList.count()).toBe(0);
+    page.get();
+    page.emailInput.sendKeys(constants.unusedEmail);
+    page.nameInput.sendKeys(constants.unusedName);
+    page.passwordInput.sendKeys(constants.passwordValid);
+    page.captcha.setInvalidCaptcha();
     page.signupButton.click();
-    expect(page.noticeList.count()).toBe(1);
-    expect(page.noticeList.first().getText()).toContain('image verification failed');
+    expect(page.captchaInvalid.isDisplayed()).toBe(true);
   });
 
+  it('finds the admin user (case insensitive) already exists', function () {
+    page.get();
+    page.emailInput.sendKeys(constants.adminEmail.toUpperCase());
+    page.nameInput.sendKeys(constants.unusedName);
+    page.passwordInput.sendKeys(constants.passwordValid);
+    page.captcha.setValidCaptcha();
+    expect(page.signupButton.isEnabled()).toBe(true);
+    page.signupButton.click();
+    expect(page.emailTaken.isDisplayed()).toBe(true);
+  });
+
+  it('can prefill email address that can\'t be changed', function () {
+    page.getPrefilledEmail(constants.unusedEmail);
+    expect(page.emailInput.isEnabled()).toBe(false);
+  });
+
+  it('can prefill email address that already exists', function () {
+    page.getPrefilledEmail(constants.adminEmail);
+    page.nameInput.sendKeys(constants.unusedName);
+    page.passwordInput.sendKeys(constants.passwordValid);
+    page.captcha.setValidCaptcha();
+    page.signupButton.click();
+    expect(page.emailTaken.isDisplayed()).toBe(true);
+  });
+
+  it('can signup a new user', function () {
+    page.get();
+    page.emailInput.sendKeys(constants.unusedEmail);
+    page.nameInput.sendKeys(constants.unusedName);
+    page.passwordInput.sendKeys(constants.passwordValid);
+    page.captcha.setValidCaptcha();
+    expect(page.signupButton.isEnabled()).toBe(true);
+    page.signupButton.click();
+
+    // Verify new user logged in and redirected to projects page
+    browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn),
+      CONDITION_TIMEOUT);
+    expect(projectsPage.createBtn.isDisplayed()).toBe(true);
+  });
+
+  it('redirects to projects page if already logged in', function () {
+    loginPage.logout();
+    loginPage.loginAsUser();
+    page.get();
+    browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn),
+      CONDITION_TIMEOUT);
+    expect(projectsPage.createBtn.isDisplayed()).toBe(true);
+  });
 });
