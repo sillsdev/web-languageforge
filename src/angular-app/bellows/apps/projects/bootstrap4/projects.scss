@@ -1,5 +1,14 @@
+.listview {
+  ul {
+    margin-bottom: 0;
+  }
+  hr {
+    margin-top: 0;
+  }
+}
+
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-    display: none !important;
+  display: none !important;
 }
 
 .card-background{
