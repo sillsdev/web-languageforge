@@ -103,12 +103,12 @@ class Communicate
      * @param Website $website
      * @param DeliveryInterface $delivery
      */
-    public static function sendSignup($userModel, $website, DeliveryInterface $delivery = null)
+    public static function sendVerifyEmail($userModel, $website, DeliveryInterface $delivery = null)
     {
         $userModel->setValidation(7);
         $userModel->write();
 
-        $to = array($userModel->emailPending => $userModel->name);
+        $to = array($userModel->email => $userModel->name);
 
         $subject = $website->name . ' account signup validation';
 
@@ -119,6 +119,21 @@ class Communicate
         );
 
         self::sendTemplateEmail($to, $subject, 'SignupValidate', $vars, $website, $delivery);
+    }
+
+    public static function sendWelcomeToWebsite($userModel, $website, DeliveryInterface $delivery = null)
+    {
+        $to = array($userModel->email => $userModel->name);
+
+        $subject = 'Welcome to ' . $website->name;
+
+        $vars = array(
+            'user' => $userModel,
+            'link' => $website->baseUrl(),
+            'website' => $website,
+        );
+
+        self::sendTemplateEmail($to, $subject, 'WelcomeToWebsite', $vars, $website, $delivery);
     }
 
     /**
@@ -134,14 +149,15 @@ class Communicate
         $toUserModel->setValidation(7);
         $toUserModel->write();
 
-        $to = array($toUserModel->emailPending => $toUserModel->name);
+        $to = array($toUserModel->email => $toUserModel->name);
 
-        $subject = $website->name . ' account signup validation';
+        $subject = $website->name . ' invitation';
 
         $vars = array(
             'user' => $inviterUserModel,
             'project' => $projectModel,
-            'link' => $website->baseUrl() . '/app/registration#/?v=' . $toUserModel->validationKey,
+            'link' => $website->baseUrl() . '/public/signup#/?e=' . $toUserModel->email,
+            'website' => $website,
         );
 
         self::sendTemplateEmail($to, $subject, 'InvitationValidate', $vars, $website, $delivery);
@@ -239,6 +255,7 @@ class Communicate
         $vars = array(
             'user' => $user,
             'project' => $projectModel,
+            'website' => $website
         );
 
         self::sendTemplateEmail($to, $subject, 'JoinRequestConfirmation', $vars, $website, $delivery);
@@ -258,19 +275,20 @@ class Communicate
         $user->write();
 
         $to = array($admin->email => $admin->name);
-    
+
         $subject = $user->name . ' join request';
-    
+
         $vars = array(
             'user' => $user,
             'admin' => $admin,
             'project' => $projectModel,
             'link' => $website->baseUrl() . '/app/usermanagement/' . $projectModel->id->asString() . '#/joinRequests',
+            'website' => $website
         );
 
         self::sendTemplateEmail($to, $subject, 'JoinRequest', $vars, $website, $delivery);
     }
-    
+
     /**
      *
      * @param UserModel $user
@@ -283,10 +301,12 @@ class Communicate
         $to = array($user->email => $user->name);
         $subject = 'You\'ve submitted a join request to the project ' . $projectModel->projectName . ' on ' . $website->name;
 
+
         $vars = array(
             'user' => $user,
             'project' => $projectModel,
-            'link' => $website->baseUrl() . '/app/semdomtrans/' . $projectModel->id->asString() . '#/edit',
+            'link' => $website->baseUrl() . "/app/{$projectModel->appName}/" . $projectModel->id->asString(),
+            'website' => $website
         );
 
         self::sendTemplateEmail($to, $subject, 'JoinRequestAccepted', $vars, $website, $delivery);
@@ -297,23 +317,20 @@ class Communicate
         $senderEmail = 'no-reply@' . $website->domain;
         $from = array($senderEmail => $website->name);
 
-        $templateFile = $website->base . '/theme/' . $website->theme . '/email/en/' . $templateName . '.twig';
-        if (! file_exists(APPPATH . 'Site/views/' . $templateFile)) {
-            $templateFile = $website->base . '/theme/default/email/en/' . $templateName . '.twig';
-        }
-        $template = CommunicateHelper::templateFromFile($templateFile);
-        $content = $template->render($vars);
-
-        $templateFile = $website->base . '/theme/' . $website->theme . '/email/en/' . $templateName . '.html.twig';
-        if (! file_exists(APPPATH . 'Site/views/' . $templateFile)) {
-            $templateFile = $website->base . '/theme/default/email/en/' . $templateName . '.html.twig';
-            if (! file_exists(APPPATH . 'Site/views/' . $templateFile)) {
-                $templateFile = '';
+        $templatePath = $website->base . '/theme/' . $website->theme . '/email/en';
+        if (! file_exists(APPPATH . 'Site/views/' . "$templatePath/$templateName.twig" )) {
+            $templatePath = $website->base . '/theme/default/email/en';
+            if (! file_exists(APPPATH . 'Site/views/' . "$templatePath/$templateName.twig" )) {
+                $templatePath = 'shared/email/en';
             }
         }
+
+        $template = CommunicateHelper::templateFromFile("$templatePath/$templateName.twig");
+        $content = $template->render($vars);
+
         $htmlContent = '';
-        if ($templateFile) {
-            $template = CommunicateHelper::templateFromFile($templateFile);
+        if (file_exists(APPPATH . 'Site/views/' . "$templatePath/$templateName.html.twig")) {
+            $template = CommunicateHelper::templateFromFile("$templatePath/$templateName.html.twig");
             $htmlContent = $template->render($vars);
         }
 

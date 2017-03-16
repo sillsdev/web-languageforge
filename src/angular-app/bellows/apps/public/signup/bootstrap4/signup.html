@@ -1,16 +1,106 @@
 {% verbatim %}
 <div data-ng-controller="SignupCtrl" class="content container" data-ng-cloak>
-    <!-- views will be injected here -->
-    <div data-ui-view></div>
-
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="text-xs-center">
-                <br/>
-                <small data-translate="powered by"></small>
-                <p>{{'Sign-on Identification List' | translate}}</p>
-            </div>
-        </div>
+    <div class="text-xs-center">
+        <h1>Create an account for {{hostname}}</h1>
+        <sil-notices></sil-notices>
+        <hr />
     </div>
+
+    <form class="form-horizontal" data-ng-submit="processForm()" id="signupForm" name="signupForm">
+        <fieldset>
+            <div class="text-xs-center">
+                <h3 translate="Register your details..."></h3>
+            </div>
+            <div class="card card-default col-md-6 offset-md-3">
+                <div class="card-block">
+                    <div class="form-group row">
+                        <label class="control-label col-md-4 text-md-right" for="email" translate="Email Address"></label>
+                        <div class="controls col-md-8">
+                            <div class="input-group">
+                                <input class="form-control" id="email" autofocus
+                                   required type="email" name="email"
+                                   placeholder="{{'your email' | translate}}"
+                                   data-ng-blur="validateForm()"
+                                   data-ng-disabled="emailProvided"
+                                   data-ng-model="record.email"/>
+                                <span class="input-group-addon alert-danger" data-ng-show="!emailValid || emailExists">
+                                    <i class="fa fa-times"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-4 text-md-right" for="name" translate="Name"></label>
+                        <div class="controls col-md-8">
+                            <div class="input-group">
+                                <input class="form-control" id="name"
+                                       required type="text" name="name"
+                                       placeholder="{{'your name' | translate}}"
+                                       data-ng-model="record.name"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-4 text-md-right" for="password" translate="Password"></label>
+                            <div class="controls col-md-8">
+                                <div class="input-group">
+                                    <input class="form-control" id="password"
+                                           required type="{{ showPassword ? 'text' : 'password' }}" name="password"
+                                           placeholder="minimum 7 characters"
+                                           data-ng-change="validateForm()"
+                                           zxcvbn="passwordStrength"
+                                           data-ng-model="record.password"/>
+                                    <span class="input-group-addon alert-danger" data-ng-show="!passwordValid">
+                                        <i class="fa fa-times"></i>
+                                    </span>
+                                    <span class="input-group-addon" title="Password Strength" ng-class="{'alert-danger': (passwordStrength.score < 2), 'alert-warning': (passwordStrength.score == 2), 'alert-info': passwordStrength.score == 3, 'alert-success': passwordStrength.score == 4 }" data-ng-show="record.password.length >= 7">
+                                        <i class="fa fa-key"></i> {{ ['Too Weak', 'Too Weak', 'Fair', 'Good', 'Strong'][passwordStrength.score]}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="controls col-md-8 offset-md-4">
+                            <label class="checkbox"><input type="checkbox" data-ng-model="showPassword"/> {{'Show password' |
+                                translate}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-last row">
+                        <div class="controls col-md-8 offset-md-4">
+                            <pui-captcha data-pui-items="captchaData.items" data-pui-expected-item-name="captchaData.expectedItemName"
+                                         data-pui-selected="record.captcha"></pui-captcha>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <button class="btn btn-primary pull-right" type="submit" id="submit"
+                            data-ng-disabled="signupForm.$invalid || !passwordValid || passwordIsWeak">
+                        {{'Sign Up' | translate}}
+                        <span data-ng-show="submissionInProgress">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </span>
+                        <span data-ng-show="!submissionInProgress">
+                            <i class="fa fa-thumbs-o-up"></i>
+                        </span>
+                    </button>
+                    <span role="alert" class="text-danger" id="captchaInvalid" ng-show="captchaFailed">The shape verification failed.  Please try again.<br></span>
+                    <span role="alert" class="text-danger" id="emailInvalid" data-ng-show="!emailValid">Please enter a valid email address. An example of an email address: john@doe.com<br></span>
+                    <span role="alert" class="text-danger" id="emailTaken" data-ng-show="emailExists">{{takenEmail}} is taken. Please try another<br></span>
+                    <span role="alert" class="text-danger" id="passwordInvalid" data-ng-show="!passwordValid">Passwords must be at least 7 characters<br></span>
+                    <span role="alert" class="text-danger" id="passwordIsWeak" data-ng-show="passwordIsWeak">Passwords is too weak.<br></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="text-xs-center">
+                    <br/>
+                    <small data-translate="powered by"></small>
+                    <p>{{'Sign-on Identification List' | translate}}</p>
+                </div>
+            </div>
+        </fieldset>
+    </form>
 </div>
 {% endverbatim %}

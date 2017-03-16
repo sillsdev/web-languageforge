@@ -16,6 +16,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $user = new UserModel();
         $user->email = "user@example.com";
         $user->username = "SomeUser";
+        $user->displayName = "someuser";
         $user->name = "Some User";
         $user->avatar_ref = "Site/views/shared/image/avatar/pinkbat.png";
         $id = $user->write();
@@ -26,6 +27,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($id, $otherModel->id);
         $this->assertEquals('user@example.com', $otherModel->email);
         $this->assertEquals('SomeUser', $otherModel->username);
+        $this->assertEquals('someuser', $otherModel->displayName);
         $this->assertEquals('Some User', $otherModel->name);
         $this->assertEquals('Site/views/shared/image/avatar/pinkbat.png', $otherModel->avatar_ref);
     }
@@ -174,6 +176,40 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testUserExists_usernameFound_UserExists()
+    {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+
+        $environ->createUser('jsmith', 'joe smith', 'joe@smith.com');
+
+        $user = new UserModel();
+        $this->assertTrue($user->userExists('jsmith'));
+    }
+
+    public function testUserExists_emailFound_UserExists()
+    {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+
+        $environ->createUser('jsmith', 'joe smith', 'joe@smith.com');
+
+        $user = new UserModel();
+        $this->assertTrue($user->userExists('joe@smith.com'));
+    }
+
+    public function testUserExists_emailUsernameNotFound_UserNoExists()
+    {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+
+        $environ->createUser('jsmith', 'joe smith', 'joe@smith.com');
+
+        $user = new UserModel();
+        $this->assertFalse($user->userExists('anotheruser'));
+        $this->assertFalse($user->userExists('another@example.com'));
+    }
+
     public function testReadByUserName_userFound_UserModelPopulated()
     {
         $environ = new MongoTestEnvironment();
@@ -209,11 +245,13 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $user = new UserModel($userId);
         $params =
             ['username' => 'user2',
-             'name' => 'user2',
+             'displayName' => 'user2',
+             'name' => 'User 2',
              'email' => 'user2@example.com',
              'role' => SystemRoles::SYSTEM_ADMIN
             ];
         $this->assertNotEquals($params['username'], $user->username);
+        $this->assertNotEquals($params['displayName'], $user->displayName);
         $this->assertNotEquals($params['name'], $user->name);
         $this->assertNotEquals($params['email'], $user->email);
         $this->assertEquals(SystemRoles::USER, $user->role);
@@ -222,6 +260,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $user->write();
 
         $this->assertEquals($params['username'], $user->username);
+        $this->assertEquals($params['displayName'], $user->displayName);
         $this->assertEquals($params['name'], $user->name);
         $this->assertEquals($params['email'], $user->email);
         $this->assertNotEquals($params['role'], $user->role);
@@ -239,7 +278,8 @@ class UserModelTest extends PHPUnit_Framework_TestCase
              'avatar_ref' => 'Site/views/shared/image/avatar/pinkbat.png',
              'mobile_phone' => '555-5555',
              'communicate_via' => UserModel::COMMUNICATE_VIA_BOTH,
-             'name' => 'user2',
+             'displayName' => 'user2',
+             'name' => 'User 2',
              'age' => '21',
              'gender' => UserModel::GENDER_MALE,
              'interfaceLanguageCode' => 'th',
@@ -250,6 +290,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $this->assertNotEquals($params['avatar_ref'], $user->avatar_ref);
         $this->assertNotEquals($params['mobile_phone'], $user->mobile_phone);
         $this->assertNotEquals($params['communicate_via'], $user->communicate_via);
+        $this->assertNotEquals($params['displayName'], $user->displayName);
         $this->assertNotEquals($params['name'], $user->name);
         $this->assertNotEquals($params['age'], $user->age);
         $this->assertNotEquals($params['gender'], $user->gender);
@@ -264,6 +305,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($params['avatar_ref'], $user->avatar_ref);
         $this->assertEquals($params['mobile_phone'], $user->mobile_phone);
         $this->assertEquals($params['communicate_via'], $user->communicate_via);
+        $this->assertEquals($params['displayName'], $user->displayName);
         $this->assertEquals($params['name'], $user->name);
         $this->assertEquals($params['age'], $user->age);
         $this->assertEquals($params['gender'], $user->gender);
@@ -279,7 +321,8 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $user = new UserModel($userId);
         $params =
             ['username' => 'user2',
-             'name' => 'User2',
+             'displayName' => 'user2',
+             'name' => 'User 2',
              'email' => 'user2@example.com',
              'role' => SystemRoles::SYSTEM_ADMIN,
              'active' => false,
@@ -293,6 +336,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
              'interfaceLanguageCode' => 'th'
             ];
         $this->assertNotEquals($params['username'], $user->username);
+        $this->assertNotEquals($params['displayName'], $user->displayName);
         $this->assertNotEquals($params['name'], $user->name);
         $this->assertNotEquals($params['email'], $user->email);
         $this->assertNotEquals($params['role'], $user->role);
@@ -310,6 +354,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $user->write();
 
         $this->assertEquals($params['username'], $user->username);
+        $this->assertEquals($params['displayName'], $user->displayName);
         $this->assertEquals($params['name'], $user->name);
         $this->assertEquals($params['email'], $user->email);
         $this->assertEquals($params['role'], $user->role);
