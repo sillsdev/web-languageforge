@@ -79,6 +79,7 @@ class MongoTestEnvironment
     {
         $userModel = new UserModel();
         $userModel->username = $username;
+        $userModel->displayName = $name;
         $userModel->name = $name;
         $userModel->email = $email;
         $userModel->avatar_ref = $username . ".png";
@@ -144,7 +145,7 @@ class MongoTestEnvironment
                 $collection->drop();
             }
         }
-        
+
         // clean up assets folder
         $folderPath = $project->getAssetsFolderPath();
         $cleanupFiles = glob($folderPath . '/*');

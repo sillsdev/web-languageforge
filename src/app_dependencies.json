@@ -2,6 +2,8 @@
   "angular-animate": { "path": "vendor_bower/angular-animate" },
   "angular-route": { "path": "vendor_bower/angular-route" },
   "angular-sortable-view": { "path": "vendor_bower/angular-sortable-view/src" },
+  "zxcvbn": { "path": "vendor_bower/zxcvbn/dist", "jsFile": "zxcvbn", "jsMinFile": "zxcvbn.js"},
+  "angular-zxcvbn": { "path": "vendor_bower/angular-zxcvbn/dist" },
   "angular-translate": { "path": "vendor_bower/angular-translate" },
   "angular-translate-loader-static-files": { "path": "vendor_bower/angular-translate-loader-static-files" },
   "angular-truncate-2": { "path": "vendor_bower/angular-truncate-2/dist" },
