@@ -35,6 +35,9 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         }
         $website = Website::get();
 
+        $user->last_login = time();
+        $user->write();
+
         $projectId = $user->getCurrentProjectId($website->domain);
 
         // redirect to page before the login screen was presented, or to the default project for this user
