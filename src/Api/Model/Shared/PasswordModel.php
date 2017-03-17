@@ -51,4 +51,14 @@ class PasswordModel extends MapperModel
         $bcrypt = new BCryptPasswordEncoder(BCRYPT_COST);
         return $bcrypt->isPasswordValid($this->password, $passwordToVerify, null);
     }
+
+    /**
+     * A utility function to verify if the password in the db exists (non-blank)
+     * This is primarily used to determine if an invited user's email is available for signup
+     * @return bool true if the password exists, false if not
+     */
+    public function passwordExists()
+    {
+        return !empty($this->password);
+    }
 }

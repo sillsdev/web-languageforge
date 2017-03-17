@@ -84,11 +84,10 @@ angular.module('usermanagement.members',
        * ---------------------------------------------------------- */
       $scope.users = [];
       $scope.addModes = {
-        addNew: { en: 'Create New User', icon: 'fa fa-user' },
         addExisting: { en: 'Add Existing User', icon: 'fa fa-user' },
         invite: { en: 'Send Email Invite', icon: 'fa fa-envelope' }
       };
-      $scope.addMode = 'addNew';
+      $scope.addMode = 'addExisting';
       $scope.disableAddButton = true;
       $scope.typeahead = {};
       $scope.typeahead.userName = '';
@@ -152,7 +151,7 @@ angular.module('usermanagement.members',
         // TODO This isn't adequate.  Need to watch the
         // 'typeahead.userName' and 'selection' also. CP 2013-07
         if (!$scope.typeahead.userName) {
-          $scope.addMode = 'addNew';
+          $scope.addMode = 'addExisting';
           $scope.disableAddButton = true;
           $scope.warningText = '';
         } else if ($scope.isExcludedUser($scope.typeahead.userName)) {
@@ -167,36 +166,15 @@ angular.module('usermanagement.members',
           $scope.addMode = 'invite';
           $scope.disableAddButton = false;
           $scope.warningText = '';
-        } else if ($scope.users.length == 0) {
-          $scope.addMode = 'addNew';
-          $scope.disableAddButton = false;
-          $scope.warningText = '';
         } else {
           $scope.addMode = 'addExisting';
-          $scope.disableAddButton = false;
+          $scope.disableAddButton = true;
           $scope.warningText = '';
         }
       };
 
       $scope.addProjectUser = function addProjectUser() {
-        if ($scope.addMode == 'addNew') {
-
-          var userName = $scope.typeahead.userName.replace(' ', '.').toLowerCase();
-          userService.identityCheck(userName, '', function (result) {
-            if ((result.ok) && !result.data.usernameExists) {
-              userService.createSimple($scope.typeahead.userName, function (result) {
-                if (result.ok) {
-                  notice.push(notice.INFO, 'User created.  Username: ' + userName +
-                    '    Password: ' + result.data.password);
-                  $scope.queryUserList();
-                }
-              });
-            } else {
-              notice.push(notice.WARN, 'Username: \'' + userName + '\' already exists.');
-              return;
-            }
-          });
-        } else if ($scope.addMode == 'addExisting') {
+        if ($scope.addMode == 'addExisting') {
           var model = {};
           model.id = $scope.user.id;
 
@@ -213,6 +191,7 @@ angular.module('usermanagement.members',
                 if (thisUser.id == model.id) {
                   notice.push(notice.WARN, '\'' + $scope.user.name + '\' is already a member of '
                     + $scope.project.projectName + '.');
+                  $scope.disableAddButton = true;
                   return;
                 }
               }
@@ -227,6 +206,8 @@ angular.module('usermanagement.members',
             }
           });
         } else if ($scope.addMode == 'invite') {
+          $scope.queryUserList();
+
           userService.sendInvite($scope.typeahead.userName, function (result) {
             if (result.ok) {
               notice.push(notice.SUCCESS, '\'' + $scope.typeahead.userName +
@@ -240,8 +221,11 @@ angular.module('usermanagement.members',
       $scope.selectUser = function selectUser(item) {
         if (item) {
           $scope.user = item;
-          $scope.typeahead.userName = item.name;
+
+          // Name may be blank, so fill with username for now
+          $scope.typeahead.userName = item.username;
           $scope.updateAddMode('addExisting');
+          $scope.disableAddButton = false;
         }
       };
 

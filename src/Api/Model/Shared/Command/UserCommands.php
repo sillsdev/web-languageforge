@@ -183,13 +183,15 @@ class UserCommands
     }
 
     /**
-     * Utility to lowercase the characters in a username and replace spaces with periods.
-     * @param $username
+     * Utility to sanitize user input:
+     * - lowercase the characters
+     * - replace spaces with periods.
+     * @param $field
      * @return string
      */
-    public static function standardizedUsername($username)
+    public static function sanitizeInput($field)
     {
-        return strtolower(str_replace(' ', '.', $username));
+        return strtolower(str_replace(' ', '.', $field));
     }
 
     /**
@@ -265,11 +267,15 @@ class UserCommands
      */
     public static function checkIdentity($username, $email = '', $website = null)
     {
+        CodeGuard::checkEmptyAndThrow($username, 'username');
+
+        $username = UserCommands::sanitizeInput($username);
+        $email = UserCommands::sanitizeInput($email);
+
         $identityCheck = new IdentityCheck();
         $user = new UserModel();
         $emailUser = new UserModel();
-        $identityCheck->usernameExists = $user->readByUserName(
-            UserCommands::standardizedUsername($username));
+        $identityCheck->usernameExists = $user->readByUserName($username);
         // This utility assumes username matches the account
         $identityCheck->usernameMatchesAccount = true;
         if ($website) {
@@ -289,64 +295,6 @@ class UserCommands
         return $identityCheck;
     }
 
-    /**
-     * Activate a user on the specified site and validate email if it was empty, otherwise login
-     * @param string $username
-     * @param string $password
-     * @param string $email
-     * @param Website $website
-     * @param Application $app
-     * @param DeliveryInterface $delivery
-     * @return string|boolean $userId|false otherwise
-     */
-    public static function activate($username, $password, $email, $website, $app, DeliveryInterface $delivery = null)
-    {
-        CodeGuard::checkEmptyAndThrow($username, 'username');
-        CodeGuard::checkEmptyAndThrow($password, 'password');
-        CodeGuard::checkEmptyAndThrow($email, 'email');
-        CodeGuard::checkNullAndThrow($website, 'website');
-        $identityCheck = self::checkIdentity($username, $email, $website);
-        if ($website->allowSignupFromOtherSites &&
-            $identityCheck->usernameExists && !$identityCheck->usernameExistsOnThisSite &&
-            ($identityCheck->emailIsEmpty || $identityCheck->emailMatchesAccount)
-        ) {
-            $user = new PasswordModel();
-            if ($user->readByProperty('username', $username)) {
-                if ($user->verifyPassword($password)) {
-                    $user = new UserModel($user->id->asString());
-                    $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
-                    if ($identityCheck->emailIsEmpty) {
-                        $user->emailPending = $email;
-                    }
-                    $user->write();
-
-                    // if website has a default project then add them to that project
-                    $project = ProjectModel::getDefaultProject($website);
-                    $url = '/app';
-                    if ($project) {
-                        $project->addUser($user->id->asString(), ProjectRoles::CONTRIBUTOR);
-                        $user->addProject($project->id->asString());
-                        $project->write();
-                        $user->write();
-                        $url = '/app/' . $project->appName . '/' . $project->id->asString();
-                    }
-
-                    if ($identityCheck->emailIsEmpty) {
-                        Communicate::sendSignup($user, $website, $delivery);
-                    }
-                    if ($identityCheck->emailMatchesAccount) {
-                        Auth::login($app, $username, $password);
-
-                        return Auth::result(Auth::LOGIN_SUCCESS, $url, 'location');
-                    }
-
-                    return Auth::result(Auth::LOGIN_FAIL_USER_UNAUTHORIZED, '', 'location');
-                }
-            }
-        }
-
-        return false;
-    }
 
     /**
      * System Admin: Create a user with default site role.
@@ -377,19 +325,19 @@ class UserCommands
     public static function createSimple($username, $projectId, $currentUserId, $website)
     {
         $user = new UserModel();
+        $username = UserCommands::sanitizeInput($username);
         $user->name = $username;
-        $updatedUsername = UserCommands::standardizedUsername($username);
-        UserCommands::assertUniqueIdentity($user, $updatedUsername, '', $website);
-        $user->username = $updatedUsername;
+        UserCommands::assertUniqueIdentity($user, $username, '', $website);
+        $user->username = $username;
         $user->role = SystemRoles::USER;
         $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
         $user->active = true;
         $userId = $user->write();
 
-        // Make 4 digit password
+        // Make 7 digit password
         $characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
         $password = '';
-        while (strlen($password) < 4) {
+        while (strlen($password) < 7) {
             $password .= substr($characters, rand() % (strlen($characters)), 1);
         }
         $userWithPassword = new UserModelWithPassword($userId);
@@ -407,33 +355,65 @@ class UserCommands
     }
 
     /**
-     * Public: Register a new user
-     * @param array $params
-     * @param string $captcha_info
+     * Public: Register a new user and activate them if they already exist on a new site.
+     *
+     * @param array $params (email, name, password, captcha)
      * @param Website $website
+     * @param string $captchaInfo
      * @param DeliveryInterface $delivery
      * @throws \Exception
-     * @return string $userId
+     * @return string {captchaFail, login, emailNotAvailable}
      */
-    public static function register($params, $captcha_info, $website, DeliveryInterface $delivery = null)
+    public static function register($params, $website, $captchaInfo, DeliveryInterface $delivery = null)
     {
-        if (strtolower($captcha_info['code']) != strtolower($params['captcha'])) {
-            return false;  // captcha does not match
+        $email = self::sanitizeInput($params['email']);
+        $username = $email;
+        CodeGuard::checkEmptyAndThrow($email, 'email');
+
+        if (strtolower($captchaInfo['code']) != strtolower($params['captcha'])) {
+            return "captchaFail";
+        }
+
+        if (UserModel::userExists($email)) {
+            $user = new PasswordModel();
+            $user->readByProperty('email', $email);
+            if (!$user->passwordExists()) {
+                // Write the password and names for invited users
+                $userPassword = new UserModelWithPassword($user->id->asString());
+                $userPassword->setPassword($params['password']);
+                $userId = $userPassword->write();
+
+                $user = new UserModel($userId);
+                $user->name = $user->displayName = $params['name'];
+                $userId = $user->write();
+
+                Communicate::sendWelcomeToWebsite($user, $website, $delivery);
+                return "login";
+            } else if ($user->verifyPassword($params['password'])) {
+                $userId = $user->id->asString();
+                $user = new UserModel($userId);
+                if ($user->hasRoleOnSite($website)) {
+                    return "login";
+                } else {
+                    if ($website->allowSignupFromOtherSites) {
+                        $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+                        $user->write();
+
+                        UserCommands::addUserToDefaultProject($user->id->asString(), $website);
+                        Communicate::sendWelcomeToWebsite($user, $website, $delivery);
+                        return "login";
+                    }
+                }
+            }
+            return "emailNotAvailable";
         }
 
         $user = new UserModel();
-        $user->setProperties(UserModel::PUBLIC_ACCESSIBLE, $params);
-        UserCommands::assertUniqueIdentity($user, $params['username'], $params['email'], $website);
-        $user->active = false;
+        $user->email = $user->emailPending = $user->username = $email;
+        $user->active = true;
+        $user->name = $user->displayName = $params['name'];
         $user->role = SystemRoles::USER;
         $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
-        if (!$user->emailPending) {
-            if (!$user->email) {
-                throw new \Exception("Error: no email set for user signup.");
-            }
-            $user->emailPending = $user->email;
-            $user->email = '';
-        }
         $userId = $user->write();
 
         // Write the password
@@ -441,7 +421,18 @@ class UserCommands
         $userPassword->setPassword($params['password']);
         $userPassword->write();
 
-        // if website has a default project then add them to that project
+        UserCommands::addUserToDefaultProject($userId, $website);
+        Communicate::sendWelcomeToWebsite($user, $website, $delivery);
+        Communicate::sendVerifyEmail($user, $website, $delivery);
+        return "login";
+    }
+
+    /**
+     * @param string $userId
+     * @param Website $website
+     */
+    public static function addUserToDefaultProject($userId, Website $website) {
+        $user = new UserModel($userId);
         $project = ProjectModel::getDefaultProject($website);
         if ($project) {
             $project->addUser($user->id->asString(), ProjectRoles::CONTRIBUTOR);
@@ -449,11 +440,8 @@ class UserCommands
             $project->write();
             $user->write();
         }
-
-        Communicate::sendSignup($user, $website, $delivery);
-
-        return $userId;
     }
+
 
     public static function getCaptchaData(Session $session)
     {
@@ -490,7 +478,7 @@ class UserCommands
     }
 
     /**
-     * Sends an email to invite emailee to join the project
+     * Sends an email to $toEmail to join the site.
      * @param string $projectId
      * @param string $inviterUserId
      * @param Website $website
@@ -509,10 +497,15 @@ class UserCommands
         $newUser = new UserModel();
         $inviterUser = new UserModel($inviterUserId);
         $project = new ProjectModel($projectId);
+        $toEmail = UserCommands::sanitizeInput($toEmail);
+
+        $newUser->username = $toEmail;
+        $newUser->email = $toEmail;
         $newUser->emailPending = $toEmail;
+        $newUser->role = SystemRoles::USER;
 
         // Check if email already exists in an account
-        $identityCheck = UserCommands::checkIdentity('', $toEmail, $website);
+        $identityCheck = UserCommands::checkIdentity($newUser->username, $newUser->email, $website);
         if ($identityCheck->emailExists) {
             $newUser->readByProperty('email', $toEmail);
         }
@@ -615,54 +608,6 @@ class UserCommands
         }
 
         return $admin;
-    }
-
-    /**
-     * @param string $validationKey
-     * @return array
-     * @throws \Exception
-     */
-    public static function readForRegistration($validationKey)
-    {
-        $user = new UserModel();
-        if (!$user->readByProperty('validationKey', $validationKey)) {
-            return array();
-        }
-        if (!$user->validate(false)) {
-            throw new \Exception("Sorry, your registration link has expired.");
-        }
-
-        return JsonEncoder::encode($user);
-    }
-
-    /**
-     * Public: Update user from registration email
-     * @param string $validationKey
-     * @param array $params
-     * @param Website $website
-     * @throws \Exception
-     * @return string $userId
-     */
-    public static function updateFromRegistration($validationKey, $params, $website)
-    {
-        $user = new UserModelWithPassword();
-        if (!$user->readByProperty('validationKey', $validationKey)) {
-            return false;
-        }
-
-        if (!$user->validate()) {
-            throw new \Exception("Sorry, your registration link has expired.");
-        }
-
-        $params['id'] = $user->id->asString();
-        $user->setProperties(UserModel::PUBLIC_ACCESSIBLE, $params);
-        $user->setPassword($params['password']);
-        $user->validate();
-        $user->role = SystemRoles::USER;
-        $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
-        $user->active = true;
-
-        return $user->write();
     }
 }
 
