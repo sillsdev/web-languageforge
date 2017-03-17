@@ -156,7 +156,7 @@ class Communicate
         $vars = array(
             'user' => $inviterUserModel,
             'project' => $projectModel,
-            'link' => $website->baseUrl() . '/public/signup#/?e=' . $toUserModel->email,
+            'link' => $website->baseUrl() . '/public/signup#/?e=' . urlencode($toUserModel->email),
             'website' => $website,
         );
 

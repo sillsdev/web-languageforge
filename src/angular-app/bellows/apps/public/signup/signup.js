@@ -30,7 +30,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     // Parse for email if given
     var email = $location.search().e;
     if (email != undefined && email.length > 0) {
-      $scope.record.email = email;
+      $scope.record.email = decodeURIComponent(email);
       $scope.emailProvided = true;
     }
 
