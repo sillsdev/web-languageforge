@@ -9,6 +9,7 @@ describe('E2E testing: Signup app', function () {
   var CONDITION_TIMEOUT = 3000;
 
   it('setup and contains a user form', function () {
+    loginPage.logout();
     page.get();
     expect(page.signupForm).toBeDefined();
   });
