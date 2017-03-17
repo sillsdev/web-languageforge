@@ -65,6 +65,7 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
 
         // nothing runs in the current test function after an exception. IJH 2016-07
     }
+
     /**
      * @depends testCommunicateToUser_NoFromAddress_Exception
      */
@@ -96,6 +97,7 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
 
         // nothing runs in the current test function after an exception. IJH 2016-07
     }
+
     /**
      * @depends testCommunicateToUser_NoToAddress_Exception
      */
@@ -193,12 +195,12 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         $delivery = new MockCommunicateDelivery();
         $website = Website::get('scriptureforge.org');
 
-        Communicate::sendSignup($user, $website, $delivery);
+        Communicate::sendVerifyEmail($user, $website, $delivery);
 
         // What's in the delivery?
         $senderEmail = 'no-reply@' . self::$environ->website->domain;
         $expectedFrom = array($senderEmail => self::$environ->website->name);
-        $expectedTo = array($user->emailPending => $user->name);
+        $expectedTo = array($user->email => $user->name);
         $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertNotRegExp('/' . SF_TESTPROJECT . '/', $delivery->subject);
@@ -219,11 +221,11 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         $website = Website::get('scriptureforge.org');
         $website->defaultProjectCode = 'test_project';
 
-        Communicate::sendSignup($user, $website, $delivery);
+        Communicate::sendVerifyEmail($user, $website, $delivery);
 
         // What's in the delivery?
         $senderEmail = 'no-reply@' . self::$environ->website->domain;
-        $expectedTo = array($user->emailPending => $user->name);
+        $expectedTo = array($user->email => $user->name);
         $this->assertRegExp('/' . self::$environ->website->name . '/', $delivery->from[$senderEmail]);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp('/' . self::$environ->website->name . '/', $delivery->subject);
@@ -238,7 +240,7 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         $inviterUser = new UserModel($inviterUserId);
         $toUserId = self::$environ->createUser('touser', 'To Name', '');
         $toUser = new UserModel($toUserId);
-        $toUser->emailPending = 'toname@example.com';
+        $toUser->email = 'toname+test@example.com';
         $toUser->write();
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
         $delivery = new MockCommunicateDelivery();
@@ -248,12 +250,14 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         // What's in the delivery?
         $senderEmail = 'no-reply@' . self::$environ->website->domain;
         $expectedFrom = array($senderEmail => self::$environ->website->name);
-        $expectedTo = array($toUser->emailPending => $toUser->name);
+        $expectedTo = array($toUser->email => $toUser->name);
         $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp('/account signup validation/', $delivery->subject);
+        $this->assertRegExp('/' . self::$environ->website->name . ' invitation/', $delivery->subject);
         $this->assertRegExp('/Inviter User/', $delivery->content);
-        $this->assertRegExp('/' . self::$environ->website->domain . '\/app\/registration/', $delivery->content);
+        $this->assertRegExp('/' . self::$environ->website->domain . '\/public\/signup#\/\?e=' .
+            urlencode($toUser->email) . '/', $delivery->content);
+        $this->assertRegExp('/The ' . self::$environ->website->name . ' Team/', $delivery->content);
     }
 
     public function testSendNewUserInProject_PropertiesFromToBodyOk()
@@ -393,12 +397,13 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         $senderEmail = 'no-reply@' . self::$environ->website->domain;
         $expectedFrom = array($senderEmail => self::$environ->website->name);
         $expectedTo = array($user->email => $user->name);
+        $expectedLink = self::$environ->website->domain . '\/app\/' . self::$environ->project->appName;
         $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp('/' . SF_TESTPROJECT . '/', $delivery->subject);
         $this->assertRegExp('/' . self::$environ->website->name . '/', $delivery->subject);
         $this->assertRegExp('/' . SF_TESTPROJECT . '/', $delivery->content);
         $this->assertRegExp('/has been accepted/', $delivery->content);
-        $this->assertRegExp('/' . self::$environ->website->domain . '\/app\/semdomtrans/', $delivery->content);
+        $this->assertRegExp("/$expectedLink/", $delivery->content);
     }
 }
