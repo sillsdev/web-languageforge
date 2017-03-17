@@ -135,6 +135,9 @@ class UserModel extends MapperModel
     /** @var string */
     public $gender;
 
+    /**
+     * @var int timestamp, see time()
+     */
     public $last_login; // read only field
 
     /*
