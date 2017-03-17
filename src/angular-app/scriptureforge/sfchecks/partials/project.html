@@ -4,18 +4,20 @@
         <alert data-ng-repeat="message in messages" type="info" close="markMessageRead(message.id)">
             <b>{{message.subject}}</b><br /><span data-ng-bind-html="message.content"></span></alert>
     </div>
-    <div id="settingsDropdownButton" class="btn-group pull-right" data-ng-show="rights.edit">
-        <a class="btn dropdown-toggle"
-           data-toggle="dropdown"
-           data-tooltip-placement="right"
-           data-tooltip="Settings" href="#">
-            <i class="icon-cog icon-large"></i>
-            <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-            <li><a data-ng-href="#/settings">Project Settings</a></li>
-            <!-- <li><a ng-href="/app/usermanagement/{{project.id}}" translate="User Management"></a></li> -->
-        </ul>
+
+    <div id="settingsDropdownButton" class="pull-right" uib-dropdown data-ng-show="rights.edit">
+        <a class="btn btn-secondary"
+           uib-dropdown-toggle
+           tooltip-placement="left"
+           uib-tooltip="Settings">
+            <i class="fa fa-cog"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+            <a class="dropdown-item" data-ng-href="#/settings">Project Settings</a>
+            <!--<a class="dropdown-item" ng-href="/app/usermanagement/{{project.id}}" translate="User Management"></a>-->
+        </div>
     </div>
+
     <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
         <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn btn-warning" data-ng-click="archiveTexts()">
             <i class="icon-archive icon-large" style="color:black"></i>Archive Texts</button>
