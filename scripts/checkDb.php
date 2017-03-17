@@ -21,7 +21,17 @@ foreach ($projectList->entries as $p) {
     print $helper->flushOutput();
 }
 
+$userList = new \Api\Model\Shared\UserListModel();
+$userList->read();
+foreach ($userList->entries as $u) {
+    $helper->checkUser($u['id']);
+    print $helper->flushOutput();
+}
+
+$helper->generateSummary();
+
 print $helper->flushOutput();
+
 
 // verify integrity of all users
 
