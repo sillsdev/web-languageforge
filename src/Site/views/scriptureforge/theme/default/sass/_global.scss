@@ -1,0 +1,320 @@
+body{
+  background: white;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+h1.mobile-title {
+  font-size: 16pt;
+  padding-top: 0.3em;
+  text-align: center;
+  a {
+    color: white;
+  }
+}
+
+#app-container-for-bootstrap {
+  margin-top: 60px;
+  flex: 1;
+}
+.card .form-group-last {
+  margin-bottom: 0;
+}
+.card.card-default {
+  background: #f5f5f5;
+  border: 1px solid #e3e3e3;
+}
+
+div.picklists li {
+  cursor: pointer;
+  padding-left: 5px;
+}
+
+div.picklists li:hover {
+  background-color: #EEE;
+}
+
+div.picklists li.selected {
+  background-color: #DDD;
+}
+
+dl.picklists {
+  margin-top: 0px;
+}
+
+dl.picklists div {
+  cursor: pointer;
+}
+
+dl.picklists div div:hover {
+  background-color: #EEE;
+}
+
+dl.picklists div.selected {
+  background-color: #DDD;
+}
+
+dl.picklists dd {
+  padding-left: 5px;
+}
+
+.fa-check{
+  color: green;
+}
+.fa-exclamation-circle{
+  color: darkred;
+}
+.fa-times {
+  color: initial;
+}
+
+.footer{
+  background-color: $lf-blue;
+  color: white;
+  padding: 60px 0;
+  margin-top: 50px;
+
+  .links{
+    color: white;
+    border-bottom: 1px dotted white;
+    text-decoration: none;
+  }
+
+  .footerimages {
+    padding-bottom: 10px;
+  }
+}
+
+.progress-bar {
+  height: auto;
+  background-color: #0275d8;
+  text-align: center;
+  color: #fff;
+}
+
+.nav, .pagination, .carousel, .panel-title {
+  a {
+    cursor: pointer;
+  }
+}
+
+.uib-tab a {
+  color: #e67345;
+}
+
+.uib-tab.active a {
+  color: #555555;
+  cursor: default;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+}
+
+.nav.nav-tabs {
+  margin-bottom: 20px;
+}
+.newline {
+  display: block;
+}
+// TODO: Remove hack for modal box issue as a result of ui.bootstrap
+.modal-select-language {
+
+  .modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    display: block;
+    margin: auto;
+    overflow: hidden;
+    outline: 0;
+  }
+
+  .modal-dialog {
+    width: 80%;
+    height: 75%;
+    background-color: white;
+    max-width: unset;
+    margin-top: auto;
+    margin-bottom: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .modal-content {
+
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+
+    pui-select-language {
+      table tr {
+        cursor: pointer;
+      }
+
+      td div {
+        height: 1.5rem;
+        overflow: hidden;
+      }
+    }
+
+    .modal-body {
+      max-height: initial;
+      flex: 2;
+    }
+  }
+
+
+  .modal-content {
+    height: 100%;
+  }
+
+  .modal-body {
+    position: relative;
+    max-height: 400px;
+    padding: 15px;
+    overflow-y: auto;
+  }
+}
+
+.breadcrumb {
+  background-color: #fff;
+  padding: 6px 0 0;
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+.fixed-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 50px;
+  background-color: #104060;
+}
+
+nav {
+  border-radius: 0 !important;
+}
+#mobileMenu {
+  float: left;
+  width: 100%;
+  .nav-projects {
+    float: left;
+  }
+  .nav-user {
+    float: right;
+  }
+  .nav-link {
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    margin-top: -3px;
+    i {
+      vertical-align: top;
+      margin-top: 7px;
+    }
+    img {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #39537c;
+      vertical-align: top;
+    }
+  }
+  .dropdown-toggle::after {
+    display: none;
+  }
+}
+
+.formspacing{
+  line-height: 25px;
+}
+
+.form-styling{
+  padding-left: 80px;
+}
+
+.form-group-styling{
+  display: block;
+  background-color: #f5f5f5;
+}
+
+.form-pre-styling{
+  display: block;
+  background-color: #f5f5f5;
+}
+
+.indent1{
+  padding-left: 20px;
+}
+
+.iconPadding{
+  padding-right: 15px;
+}
+
+.username-styling{
+  font-weight: bold;
+  color: #e67345;
+}
+
+.username-styling:hover{
+  color: #0088cc;
+  text-decoration: underline;
+}
+
+@media (max-width: 500px) {
+  .filter-list {
+    float: left;
+  }
+}
+
+/* Taken from Bootstrap4-alpha6. TODO Remove after Bootstrap upgrade to alpha6 or later */
+.no-gutters {
+  // disabled because they conflict with a preexisting fix that used negative margins
+  // margin-right: 0;
+  // margin-left: 0;
+
+  > .col,
+  > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.gutter-fix {
+  margin: 0;
+}
+
+.typeahead input {
+  padding-right: 25pt;
+}
+
+.typeahead-item {
+  cursor: pointer;
+}
+
+#inviteAFriend {
+  height: 0;
+
+  .overlay-bg {
+    padding: 18px;
+    box-shadow: 0 1pt 5px 3px #d0d0d0;
+    border-radius: 4px;
+
+    .heading {
+      font-size: 1.2em;
+      margin-bottom: 1em;
+    }
+  }
+}

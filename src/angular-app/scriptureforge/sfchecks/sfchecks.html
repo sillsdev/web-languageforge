@@ -2,22 +2,26 @@
 <div class="content container" ng-cloak>
     <div id="sfchecks-hmenu" class="hdrnav">
         <div ng-controller="inviteAFriend" id="inviteAFriend" class="pull-right" ng-show="showInviteDiv">
-        <div class="overlay" ng-show="showInviteForm">
-        <div class="overlay-bg">
-            <form ng-submit="sendInvite();showInviteForm=false">
-                <input required type="email" ng-model="email" placeholder="email@address"/>
-                <label></label>
-                <button class="btn" type="submit">Send Now</button>
-                <a ng-click="showInviteForm=false">Cancel</a>
-            </form>
+            <div class="overlay-bg" ng-show="showInviteForm">
+                <form class="form-inline" ng-submit="sendInvite();showInviteForm=false">
+                    <div class="heading">
+                        <span>Invite a friend to Scripture Forge</span>
+                        <span><a href class="pull-right" ng-click="showInviteForm=false"><i class="fa fa-times"></i></a></span>
+                    </div>
+                    <div class="input-group">
+                        <input required type="email" class="form-control" ng-model="email" placeholder="email@address"/>
+                        <span class="input-group-btn">
+                            <button class="btn btn-success" type="submit">Send Invitation</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            <button class="btn btn-primary" ng-click="showInviteForm = !showInviteForm" ng-show="!showInviteForm"><i class="fa fa-envelope"></i> Invite a Friend</button>
         </div>
+        <div class="topNav">
+            <a class="btn btn-sm btn-info" href="/app/projects">My Projects</a>
+            <a class="btn btn-sm btn-info" href="/app/activity">Activity</a>
         </div>
-        <button class="btn" ng-click="showInviteForm = !showInviteForm"><i class="icon-envelope"></i>Invite a Friend</button>
-        </div>
-        <ul class="topNav">
-            <li class="here"><a href="/app/projects">My Projects</a></li>
-            <li><a href="/app/activity">Activity</a></li>
-        </ul>
         <ul id="top" class="topCrumbs" breadcrumbs></ul>
     </div>
     <div style="padding-top:10px" ng-controller="MainCtrl">
