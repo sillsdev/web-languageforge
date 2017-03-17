@@ -6,7 +6,7 @@ var SignupPage = function () {
   };
 
   this.getPrefilledEmail = function (email) {
-    browser.get(browser.baseUrl + '/public/signup#/?e=' + email);
+    browser.get(browser.baseUrl + '/public/signup#/?e=' + encodeURIComponent(email));
   };
 
   this.signupForm = element(by.tagName('form'));
