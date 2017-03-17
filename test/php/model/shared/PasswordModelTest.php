@@ -25,4 +25,29 @@ class PasswordModelTest extends PHPUnit_Framework_TestCase
         $passwordModel2 = new PasswordModel($userId);
         $this->assertTrue($passwordModel2->verifyPassword($password));
     }
+
+    public function testPasswordExists_NoPassword_False()
+    {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+        $userId = $environ->createUser('test', 'test user', 'user@me.com');
+        $passwordModel = new PasswordModel($userId);
+        $passwordModel->write();
+
+        $this->assertFalse($passwordModel->passwordExists());
+    }
+
+    public function testPasswordExists_Password_True()
+    {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+        $userId = $environ->createUser('test', 'test user', 'user@me.com');
+        $passwordModel = new PasswordModel($userId);
+        $someRandomPassword = '$2a$07$zLvg2ereYSEPMGoGttzxrenCCUykFpp6eNTAc.C/NDQPx7WkvUvWa'; // bcrypt for 'blahblah'
+        $passwordModel->password = $someRandomPassword;
+        $passwordModel->write();
+
+        $this->assertTrue($passwordModel->passwordExists());
+
+    }
 }
