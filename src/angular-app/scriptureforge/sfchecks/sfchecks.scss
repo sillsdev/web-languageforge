@@ -21,3 +21,21 @@ textarea.newAnswer, textarea.editAnswer {
     -ms-word-wrap: break-word;
     resize: vertical
 }
+
+table.texts {
+  width: 100%;
+  //border-collapse: separate;
+
+  td {
+    text-align: center;
+    vertical-align: middle;
+
+    label {
+      margin: 0;
+      input {
+        margin: 1em;
+      }
+    }
+  }
+
+}
