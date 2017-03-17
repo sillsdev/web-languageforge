@@ -40,7 +40,7 @@
   "unusedUsername"     : "test_runner_unused_user",
   "unusedDisplayName"  : "unused",
   "unusedName"         : "Test UnusedUser",
-  "unusedEmail"        : "test_runner_unused_user@example.com",
+  "unusedEmail"        : "test_runner_unused_user+test@example.com",
 
   "passwordTooShort": "123456",
   "passwordValid"   : "1234567",
