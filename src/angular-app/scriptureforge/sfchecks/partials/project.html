@@ -22,7 +22,7 @@
         <button data-ng-show="rights.create" class="btn btn-success" data-ng-click="newTextCollapsed = !newTextCollapsed">
             <i class="icon-plus"></i>Add New Text</button>
     </form>
-    <div class="new-item" data-collapse="newTextCollapsed">
+    <div class="new-item" uib-collapse="newTextCollapsed">
         <form class="well" name="newTextForm">
             <div>
                 <div>
@@ -76,23 +76,22 @@
     </div>
     <hr />
     <listview hide-if-empty="true" items="texts" visible-items="visibleTexts" select="">
-        <div data-ng-repeat="text in visibleTexts" class="details-row">
-            <ul class="inline" data-ng-class="{active: isSelected(text)}">
-                <li data-ng-show="rights.archive" ><label>
-                    <input type="checkbox" data-ng-checked="isSelected(text)" data-ng-click="updateSelection($event, text)" />
-                </label></li>
-                <li>
-                    <a class="span5" data-ng-href="{{text.url}}"><span class="larger-text">{{text.title}}</span></a>
-                </li>
-                <li><a data-ng-href="{{text.url}}">
-                    <div class="attention-block">
-                        <span class="subtitle">{{text.questionCount}} questions</span>
-                    </div>
-                </a></li>
-                <li><span class="span2">{{text.responseCount}} responses</span></li>
-                <li class="muted"><small>Added {{text.dateCreated | relativetime}}</small></li>
-            </ul>
-            <hr />
-        </div>
+        <table class="texts table">
+            <tr data-ng-repeat="text in visibleTexts" data-ng-class="{active: isSelected(text)}">
+                <td>
+                    <label data-ng-show="rights.archive">
+                        <input type="checkbox" data-ng-checked="isSelected(text)" data-ng-click="updateSelection($event, text)">
+                    </label>
+                </td>
+                <td>
+                    <span class="larger-text"><a data-ng-href="{{text.url}}"><span>{{text.title}}</span></a></span>
+                </td>
+                <td>
+                    <div class="attention-block"><a data-ng-href="{{text.url}}">{{text.questionCount}} questions</a></div>
+                </td>
+                <td>{{text.responseCount}} responses</td>
+                <td><small class="text-muted">Added {{text.dateCreated | relativetime}}</small></td>
+            </tr>
+        </table>
     </listview>
 </div>

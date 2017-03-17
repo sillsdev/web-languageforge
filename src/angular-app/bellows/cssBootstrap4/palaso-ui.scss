@@ -48,7 +48,7 @@ div.listview div.paginationblock div {
     display: inline-block;
 }
 
-div.listview .active {
+.listview .active {
     background-color: #ffc;
 }
 
@@ -57,11 +57,14 @@ div.listview div.pagination select {
 }
 
 /* Listview for projects, questions, answers views */
-div.listview div.attention-block {
+.listview .attention-block {
     text-align: center;
     background-color: #d3d3d3; /* lightgray */
     color: #dc143c; /* crimson */
     padding: 10px;
+    a {
+      color: #dc143c;
+    }
 }
 
 div.listview div.attention-block .count {
@@ -73,7 +76,7 @@ div.listview div.attention-block .subtitle {
 }
 
 span.larger-text {
-    font-size: 1.5em;
+    font-size: 1.25em;
 }
 
 /* Control bar for use at top of listview */
