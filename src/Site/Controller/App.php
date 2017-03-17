@@ -276,7 +276,7 @@ class AppModel {
         );
 
         $siteAppsInBootstrap4 = array(
-            "scriptureforge" => array("appName"),
+            "scriptureforge" => array("sfchecks"),
             "languageforge" => array(
                 "rapid-words",
                 "lexicon"
