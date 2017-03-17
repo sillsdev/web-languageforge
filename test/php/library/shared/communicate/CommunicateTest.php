@@ -240,7 +240,7 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         $inviterUser = new UserModel($inviterUserId);
         $toUserId = self::$environ->createUser('touser', 'To Name', '');
         $toUser = new UserModel($toUserId);
-        $toUser->email = 'toname@example.com';
+        $toUser->email = 'toname+test@example.com';
         $toUser->write();
         $project = self::$environ->createProjectSettings(SF_TESTPROJECTCODE);
         $delivery = new MockCommunicateDelivery();
@@ -255,7 +255,8 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp('/' . self::$environ->website->name . ' invitation/', $delivery->subject);
         $this->assertRegExp('/Inviter User/', $delivery->content);
-        $this->assertRegExp('/' . self::$environ->website->domain . '\/public\/signup#\/\?e=' . $toUser->email . '/', $delivery->content);
+        $this->assertRegExp('/' . self::$environ->website->domain . '\/public\/signup#\/\?e=' .
+            urlencode($toUser->email) . '/', $delivery->content);
         $this->assertRegExp('/The ' . self::$environ->website->name . ' Team/', $delivery->content);
     }
 
