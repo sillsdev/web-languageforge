@@ -445,6 +445,38 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($joeUser->hasRoleOnSite($website));
     }
 
+    public function testSendInvite_Register_UserActive()
+    {
+        self::$environ->clean();
+
+        $inviterUserId = self::$environ->createUser("inviteruser", "Inviter Name", "inviter@example.com");
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->projectCode = 'someProjectCode';
+        $project->write();
+        $delivery = new MockUserCommandsDelivery();
+
+        $validCode = 'validCode';
+        $captcha_info = array('code' => $validCode);
+        $params = array(
+            'id' => '',
+            'username' => 'jsmith',
+            'name' => 'joe smith',
+            'email' => 'joe@smith.com',
+            'password' => 'somepassword',
+            'captcha' => $validCode
+        );
+
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $inviterUserId, self::$environ->website, $params['email'], $delivery);
+        $joeUser = new UserModel($toUserId);
+        $this->assertEquals($joeUser->active, null);
+        $this->assertNull($joeUser->active);
+
+        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+
+        $joeUser = new UserModel($toUserId);
+        $this->assertTrue($joeUser->active);
+    }
+
     public function testSendInvite_SendInvite_PropertiesFromToBodyOk()
     {
         self::$environ->clean();
