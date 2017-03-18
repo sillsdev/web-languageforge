@@ -385,6 +385,7 @@ class UserCommands
 
                 $user = new UserModel($userId);
                 $user->name = $user->displayName = $params['name'];
+                $user->active = true;
                 $userId = $user->write();
 
                 Communicate::sendWelcomeToWebsite($user, $website, $delivery);
