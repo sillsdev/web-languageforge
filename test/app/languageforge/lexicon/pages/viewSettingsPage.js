@@ -96,9 +96,14 @@ function ViewSettingsPage() {
 
   this.usersWithViewSettings = this.activePane.element(by.css('#userSelectList'));
   this.addViewSettingsForMember = function addViewSettingsForMember(memberName) {
+
     this.activePane.element(by.css('div.typeahead input')).sendKeys(memberName);
-    this.activePane.element(by.css('div.typeahead')).all(by.repeater('user in typeahead.users'))
-      .first().click();
+    this.activePane.element(by.css('div.typeahead input')).sendKeys(protractor.Key.ENTER);
+
+    // Trying to click by name in the typeahead is flaky because the list visibility depends
+    // where the mouse happens to be hovering.  Just directly add the name
+    //this.activePane.element(by.css('div.typeahead')).all(by.repeater('user in typeahead.users'))
+    //  .first().click();
     this.activePane.element(by.buttonText('Add Member Specific Settings')).click();
   };
 
