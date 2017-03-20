@@ -38,3 +38,19 @@ table.texts {
   }
 
 }
+
+.new-text {
+  margin-top: 1em;
+  
+  label {
+    display: block;
+  }
+
+  input[type='text'], textarea {
+    width: 100%;
+  }
+  
+  input[type='number'] {
+    display: inline;
+  }
+}
