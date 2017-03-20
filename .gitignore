@@ -34,5 +34,7 @@ test/CodeCoverage/php/
 src/Site/views/**/*.css
 src/angular-app/bellows/apps/**/*.css
 src/angular-app/languageforge/**/*.css
+src/angular-app/scriptureforge/**/*.css
 src/Site/views/scriptureforge/theme/default/cssBootstrap4/**/.css
 src/angular-app/bellows/cssBootstrap4/**/*.css
+
