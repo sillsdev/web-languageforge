@@ -39,9 +39,9 @@ table.texts {
 
 }
 
-.new-text {
+.card {
   margin-top: 1em;
-  
+
   label {
     display: block;
   }
@@ -49,7 +49,7 @@ table.texts {
   input[type='text'], textarea {
     width: 100%;
   }
-  
+
   input[type='number'] {
     display: inline;
   }
