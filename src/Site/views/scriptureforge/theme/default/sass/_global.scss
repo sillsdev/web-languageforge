@@ -297,6 +297,10 @@ nav {
 #inviteAFriend {
   height: 0;
 
+  .fa-times {
+    color: black;
+  }
+
   .overlay-bg {
     padding: 18px;
     box-shadow: 0 1pt 5px 3px #d0d0d0;
