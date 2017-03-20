@@ -389,6 +389,7 @@ class UserCommands
                 $userId = $user->write();
 
                 Communicate::sendWelcomeToWebsite($user, $website, $delivery);
+                Communicate::sendVerifyEmail($user, $website, $delivery);
                 return "login";
             } else if ($user->verifyPassword($params['password'])) {
                 $userId = $user->id->asString();
