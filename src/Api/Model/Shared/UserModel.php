@@ -25,12 +25,12 @@ class UserModel extends MapperModel
      * List of properties accessible by context
      */
     const PUBLIC_ACCESSIBLE =
-        ['username', 'displayName', 'name', 'email'];
+        ['username', 'name', 'email'];
     const USER_PROFILE_ACCESSIBLE =
         ['avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
-         'displayName', 'name', 'age', 'gender', 'interfaceLanguageCode'];
+         'name', 'age', 'gender', 'interfaceLanguageCode'];
     const ADMIN_ACCESSIBLE =
-        ['username', 'displayName', 'name', 'email', 'role', 'active',
+        ['username', 'name', 'email', 'role', 'active',
          'avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
          'name', 'age', 'gender', 'interfaceLanguageCode'];
 
@@ -71,10 +71,6 @@ class UserModel extends MapperModel
     /** @var string Full Name (this is optional profile information) */
     public $name;
 
-    /**
-     * @var string - this is displayed on the website as a handle (replaces username)
-     */
-    public $displayName;
 
     /** @var string An unconfirmed email address for this user */
     public $emailPending;
