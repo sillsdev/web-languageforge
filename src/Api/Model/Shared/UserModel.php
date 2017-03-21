@@ -428,6 +428,28 @@ class UserModel extends MapperModel
 
         return $this->resetPasswordKey;
     }
+
+    /**
+     * @param $usernameBase - a string which the username should be based on
+     */
+    public function setUniqueUsernameFromString($usernameBase) {
+        if (strpos($usernameBase, '@') !== FALSE) {
+            $usernameBase = substr($usernameBase, 0, strpos($usernameBase, '@'));
+        }
+        $usernameBase = strtolower($usernameBase);
+        // remove unwanted characters from username
+        $usernameBase = preg_replace('/[-.,;+=_\/"\'# ]+/', '', $usernameBase);
+        $usernameBase = rtrim($usernameBase, '0..9');
+        $potentialUsername = $usernameBase;
+        for ($i=1; $i<1000; $i++) {
+            $u = new UserModel();
+            if (!$u->readByUserName($potentialUsername)) {
+                break;
+            }
+            $potentialUsername = $usernameBase . $i;
+        }
+        $this->username = $potentialUsername;
+    }
 }
 
 class ProjectProperties

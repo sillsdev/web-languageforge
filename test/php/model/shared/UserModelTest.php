@@ -431,6 +431,28 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $hourMargin = 60;
         $this->assertEquals($user->resetPasswordExpirationDate->getTimestamp(), $today->getTimestamp(), '', $hourMargin);
     }
+
+    public function testSetUniqueUsernameFromString_ExistingUsernameSelf_SetsUniqueUsername() {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+        $userId = $environ->createUser('user1', 'User1', 'user1@example.com');
+        $user = new UserModel($userId);
+        $user->setUniqueUsernameFromString('User1');
+        $this->assertEquals($user->username, 'user');
+    }
+
+    public function testSetUniqueUsernameFromString_3ExistingUsernames_SetsUniqueUsername() {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+        $environ->createUser('user', 'User1', 'user1@example.com');
+        $environ->createUser('user1', 'User1', 'user1@example.com');
+        $environ->createUser('user2', 'User2', 'user1@example.com');
+        $environ->createUser('user3', 'User3', 'user1@example.com');
+
+        $user = new UserModel();
+        $user->setUniqueUsernameFromString('USER');
+        $this->assertEquals($user->username, 'user4');
+    }
 /*
     function testWriteRemove_ListCorrect()
     {

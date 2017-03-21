@@ -385,6 +385,7 @@ class UserCommands
 
                 $user = new UserModel($userId);
                 $user->name = $params['name'];
+                $user->setUniqueUsernameFromString($params['name']);
                 $user->active = true;
                 $userId = $user->write();
 
@@ -411,9 +412,10 @@ class UserCommands
         }
 
         $user = new UserModel();
-        $user->email = $user->emailPending = $user->username = $email;
+        $user->email = $user->emailPending = $email;
         $user->active = true;
         $user->name = $params['name'];
+        $user->setUniqueUsernameFromString($params['name']);
         $user->role = SystemRoles::USER;
         $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
         $userId = $user->write();
@@ -501,7 +503,6 @@ class UserCommands
         $project = new ProjectModel($projectId);
         $toEmail = UserCommands::sanitizeInput($toEmail);
 
-        $newUser->username = $toEmail;
         $newUser->email = $toEmail;
         $newUser->emailPending = $toEmail;
         $newUser->role = SystemRoles::USER;
