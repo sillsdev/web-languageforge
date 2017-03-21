@@ -55,14 +55,13 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     $scope.validateForm = function () {
       $scope.emailValid = ($scope.signupForm.email.$dirty || $scope.emailProvided) &&
         !$scope.signupForm.$error.email;
-
-      $scope.passwordValid = ($scope.record.password) ? $scope.signupForm.password.$dirty && $scope.record.password.length >= 7 : false;
-      if ($scope.passwordStrength.score) {
-        $scope.passwordIsWeak = $scope.passwordStrength.score < 2;
-        console.log('passwordIsWeak = ', $scope.passwordIsWeak);
-        console.log('passwordStrength = ', $scope.passwordStrength.score);
-      }
     };
+
+    // we need to watch the passwordStrength score because zxcvbn seems to be changing the score after the ng-change event.  Only after zxcvbn changes should we validate the form
+    $scope.$watch('passwordStrength.score', function(newValue, oldValue) {
+      $scope.passwordValid = ($scope.record.password) ? $scope.signupForm.password.$dirty && $scope.record.password.length >= 7 : false;
+      $scope.passwordIsWeak = newValue < 2;
+    });
 
     $scope.getCaptchaData();
 

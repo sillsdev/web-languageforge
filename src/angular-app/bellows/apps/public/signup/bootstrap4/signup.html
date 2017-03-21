@@ -47,7 +47,6 @@
                                     <input class="form-control" id="password"
                                            required type="{{ showPassword ? 'text' : 'password' }}" name="password"
                                            placeholder="minimum 7 characters"
-                                           data-ng-change="validateForm()"
                                            zxcvbn="passwordStrength"
                                            data-ng-model="record.password"/>
                                     <span class="input-group-addon alert-danger" data-ng-show="!passwordValid">
