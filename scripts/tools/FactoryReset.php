@@ -307,7 +307,6 @@ class FactoryReset
                 $languageforgeWebsite = Website::get('languageforge.org');
                 $adminUser = UserCommands::createUser(array(
                     'username' => 'admin@example.com',
-                    'displayName' => 'admin',
                     'name' => 'Admin',
                     'email' => 'admin@example.com',
                     'password' => 'password',

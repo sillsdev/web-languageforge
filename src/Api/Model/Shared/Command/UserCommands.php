@@ -384,7 +384,7 @@ class UserCommands
                 $userId = $userPassword->write();
 
                 $user = new UserModel($userId);
-                $user->name = $user->displayName = $params['name'];
+                $user->name = $params['name'];
                 $user->active = true;
                 $userId = $user->write();
 
@@ -413,7 +413,7 @@ class UserCommands
         $user = new UserModel();
         $user->email = $user->emailPending = $user->username = $email;
         $user->active = true;
-        $user->name = $user->displayName = $params['name'];
+        $user->name = $params['name'];
         $user->role = SystemRoles::USER;
         $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
         $userId = $user->write();
