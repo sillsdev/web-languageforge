@@ -88,13 +88,7 @@ class DbIntegrityHelper extends DbScriptLogger
         $user = new UserModel($userId);
         $userFixed = false;
 
-        if ($user->displayName == '') {
-            $user->displayName = $user->username;
-            $userFixed = true;
-            $this->info("{$user->username} has no displayName set.  Setting to {$user->username}");
-        }
-
-        if ($user->email == '' && $user->emailPending == '') {
+        if (empty($user->email) && empty($user->emailPending)) {
             $this->usersNoEmail[] = $user->username;
         }
 
@@ -105,7 +99,7 @@ class DbIntegrityHelper extends DbScriptLogger
             $userFixed = true;
         }
 
-        if ($user->emailPending != '') {
+        if (!empty($user->emailPending)) {
 
             if (count($user->projects->refs) == 0 && empty($user->last_login) && $user->created_on < (time() - 31557600)) {
                 // user has no projects and never validated their email and never logged in and created over a year ago
@@ -118,6 +112,16 @@ class DbIntegrityHelper extends DbScriptLogger
             $this->usersNeverValidated[] = $user->username;
         }
 
+        if (empty($user->username) && $user->created_on < (time() - 31557600)) {
+            // user record has no username and was created over a year ago (invited via email but user record never completed)
+            // delete
+            $this->usersDeleted[] = $user->id->asString();
+            if ($this->makeChanges) {
+                $user->remove();
+            }
+            return;
+        }
+
         if (!$user->active) {
             $this->inactiveUsers++;
         }
@@ -126,7 +130,7 @@ class DbIntegrityHelper extends DbScriptLogger
             $this->usersFixed++;
         }
         
-        if ($user->email != '') {
+        if (!empty($user->email)) {
             $this->emails[] = $user->email;
         }
         $this->usernames[] = UserCommands::sanitizeInput($user->username);
@@ -137,23 +141,6 @@ class DbIntegrityHelper extends DbScriptLogger
     }
     
     public function generateSummary() {
-        $this->info("\nPROJECT REPORT\n");
-        $this->info("{$this->projectsChecked} projects checked");
-        if ($this->projectsFixed > 0) {
-            $this->info("{$this->projectsFixed} projects fixed");
-        } else {
-            $this->info("No projects needed to be fixed");
-        }
-        $this->info("\nUSER REPORT\n");
-        $this->info(($this->usersChecked - $this->inactiveUsers) . " active users");
-        $this->info("{$this->inactiveUsers} inactive users");
-        if (count($this->usersNeverValidated) > 0) {
-            $this->info(count($this->usersNeverValidated) . " users have never validated their email address.");
-        }
-        if ($this->usersFixed > 0) {
-            $this->info("{$this->usersFixed} users fixed");
-        }
-
         $duplicateEmails = self::_getDuplicates($this->emails);
         $duplicateEmailsCount = count($duplicateEmails);
         if ($duplicateEmailsCount > 0) {
@@ -170,8 +157,29 @@ class DbIntegrityHelper extends DbScriptLogger
         }
 
         if (count($this->usersDeleted) > 0) {
-            $this->warn(count($this->usersDeleted) . " users were deleted.  They had never logged in, had no projects, were created over a year ago, and had never validated their email address:\n" . join(", ", $this->usersDeleted));
+            $this->warn(count($this->usersDeleted) . " users were deleted:\n" . join(", ", $this->usersDeleted));
         }
+
+        $this->info("\nPROJECT REPORT\n");
+        $this->info("{$this->projectsChecked} projects checked");
+        if ($this->projectsFixed > 0) {
+            $this->info("{$this->projectsFixed} projects fixed");
+        } else {
+            $this->info("No projects needed to be fixed");
+        }
+        $this->info("\nUSER REPORT\n");
+        $this->info(($this->usersChecked - $this->inactiveUsers) . " active users");
+        $this->info("{$this->inactiveUsers} inactive users");
+        if (count($this->usersNeverValidated) > 0) {
+            $this->info(count($this->usersNeverValidated) . " users have never validated their email address.");
+        }
+        if ($this->usersFixed > 0) {
+            $this->info("{$this->usersFixed} users fixed");
+        }
+        if (count($this->usersDeleted) > 0) {
+            $this->info(count($this->usersDeleted) . " users deleted");
+        }
+
     }
 
     /**
