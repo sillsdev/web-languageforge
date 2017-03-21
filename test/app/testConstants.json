@@ -36,7 +36,7 @@
   "unusedEmail"        : "test_runner_unused_user+test@example.com",
 
   "passwordTooShort": "123456",
-  "passwordValid"   : "1234567",
+  "passwordValid"   : "languageforge",
   "emailNoAt"       : "email",
   "emailValid"      : "email@example.com",
 
