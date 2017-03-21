@@ -48,11 +48,9 @@
                                            required type="{{ showPassword ? 'text' : 'password' }}" name="password"
                                            placeholder="minimum 7 characters"
                                            zxcvbn="passwordStrength"
+                                           ng-change="validateForm()"
                                            data-ng-model="record.password"/>
-                                    <span class="input-group-addon alert-danger" data-ng-show="!passwordValid">
-                                        <i class="fa fa-times"></i>
-                                    </span>
-                                    <span class="input-group-addon" title="Password Strength" ng-class="{'alert-danger': (passwordStrength.score < 2), 'alert-warning': (passwordStrength.score == 2), 'alert-info': passwordStrength.score == 3, 'alert-success': passwordStrength.score == 4 }" data-ng-show="record.password.length >= 7">
+                                    <span class="input-group-addon" title="Password Strength" ng-class="{'alert-danger': (passwordStrength.score < 2 || record.password.length < 7), 'alert-warning': (passwordStrength.score == 2), 'alert-info': passwordStrength.score == 3, 'alert-success': passwordStrength.score == 4 }">
                                         <i class="fa fa-key"></i> {{ ['Too Weak', 'Too Weak', 'Fair', 'Good', 'Strong'][passwordStrength.score]}}
                                     </span>
                                 </div>
@@ -76,7 +74,7 @@
             <div class="row">
                 <div class="col-md-6 offset-md-3">
                     <button class="btn btn-primary pull-right" type="submit" id="submit"
-                            data-ng-disabled="signupForm.$invalid || !passwordValid || passwordIsWeak">
+                            data-ng-disabled="signupForm.$invalid || passwordIsWeak">
                         {{'Sign Up' | translate}}
                         <span data-ng-show="submissionInProgress">
                             <i class="fa fa-spinner fa-spin"></i>
@@ -88,8 +86,7 @@
                     <span role="alert" class="text-danger" id="captchaInvalid" ng-show="captchaFailed">The shape verification failed.  Please try again.<br></span>
                     <span role="alert" class="text-danger" id="emailInvalid" data-ng-show="!emailValid">Please enter a valid email address. An example of an email address: john@doe.com<br></span>
                     <span role="alert" class="text-danger" id="emailTaken" data-ng-show="emailExists">{{takenEmail}} is taken. Please try another<br></span>
-                    <span role="alert" class="text-danger" id="passwordInvalid" data-ng-show="!passwordValid">Passwords must be at least 7 characters<br></span>
-                    <span role="alert" class="text-danger" id="passwordIsWeak" data-ng-show="passwordIsWeak">Passwords is too weak.<br></span>
+                    <span role="alert" class="text-danger" id="passwordIsWeak" data-ng-show="passwordIsWeak">Password is too weak.<br></span>
                 </div>
             </div>
             <div class="row">
