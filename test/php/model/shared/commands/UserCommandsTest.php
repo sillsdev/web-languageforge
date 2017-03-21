@@ -500,7 +500,6 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp('/Inviter Name/', $delivery->content);
         $this->assertRegExp('/Test Project/', $delivery->content);
-        $this->assertRegExp('/' . self::$environ->website->domain . '\/public\/signup/', $delivery->content);
     }
 
     public function testChangePassword_SystemAdminChangeOtherUser_Succeeds()
