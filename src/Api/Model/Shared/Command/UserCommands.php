@@ -498,19 +498,16 @@ class UserCommands
         $toEmail,
         DeliveryInterface $delivery = null
     ) {
-        $newUser = new UserModel();
         $inviterUser = new UserModel($inviterUserId);
         $project = new ProjectModel($projectId);
         $toEmail = UserCommands::sanitizeInput($toEmail);
 
-        $newUser->email = $toEmail;
-        $newUser->emailPending = $toEmail;
-        $newUser->role = SystemRoles::USER;
-
-        // Check if email already exists in an account
-        $identityCheck = UserCommands::checkIdentity($newUser->username, $newUser->email, $website);
-        if ($identityCheck->emailExists) {
-            $newUser->readByProperty('email', $toEmail);
+        $newUser = new UserModel();
+        if (!$newUser->readByEmail($toEmail)) {
+            $newUser->email = $toEmail;
+            $newUser->emailPending = $toEmail;
+            $newUser->role = SystemRoles::USER;
+            Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
         }
 
         // Make sure the user exists on the site
@@ -518,26 +515,16 @@ class UserCommands
             $newUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
         }
 
-        // Determine if user is already a member of the project
-        if ($project->userIsMember($newUser->id->asString())) {
-            return $newUser->id;
-        }
-
-        // Add the user to the project
-        $newUser->addProject($project->id->asString());
-        $userId = $newUser->write();
-        $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
-        $project->write();
-
-        if (!$identityCheck->emailExists) {
-            // Email communication with new user
-            Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
-        } else {
-            // Tell existing user they're now part of the project
+        // Add the user to the project, if they are not already a member
+        if (!$project->userIsMember($newUser->id->asString())) {
+            $newUser->addProject($project->id->asString());
+            $userId = $newUser->write();
+            $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+            $project->write();
             Communicate::sendAddedToProject($inviterUser, $newUser, $project, $website, $delivery);
         }
 
-        return $userId;
+        return $newUser->write();
     }
 
 
