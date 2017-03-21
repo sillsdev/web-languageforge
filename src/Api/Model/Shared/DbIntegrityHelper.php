@@ -141,23 +141,6 @@ class DbIntegrityHelper extends DbScriptLogger
     }
     
     public function generateSummary() {
-        $this->info("\nPROJECT REPORT\n");
-        $this->info("{$this->projectsChecked} projects checked");
-        if ($this->projectsFixed > 0) {
-            $this->info("{$this->projectsFixed} projects fixed");
-        } else {
-            $this->info("No projects needed to be fixed");
-        }
-        $this->info("\nUSER REPORT\n");
-        $this->info(($this->usersChecked - $this->inactiveUsers) . " active users");
-        $this->info("{$this->inactiveUsers} inactive users");
-        if (count($this->usersNeverValidated) > 0) {
-            $this->info(count($this->usersNeverValidated) . " users have never validated their email address.");
-        }
-        if ($this->usersFixed > 0) {
-            $this->info("{$this->usersFixed} users fixed");
-        }
-
         $duplicateEmails = self::_getDuplicates($this->emails);
         $duplicateEmailsCount = count($duplicateEmails);
         if ($duplicateEmailsCount > 0) {
@@ -176,6 +159,27 @@ class DbIntegrityHelper extends DbScriptLogger
         if (count($this->usersDeleted) > 0) {
             $this->warn(count($this->usersDeleted) . " users were deleted:\n" . join(", ", $this->usersDeleted));
         }
+
+        $this->info("\nPROJECT REPORT\n");
+        $this->info("{$this->projectsChecked} projects checked");
+        if ($this->projectsFixed > 0) {
+            $this->info("{$this->projectsFixed} projects fixed");
+        } else {
+            $this->info("No projects needed to be fixed");
+        }
+        $this->info("\nUSER REPORT\n");
+        $this->info(($this->usersChecked - $this->inactiveUsers) . " active users");
+        $this->info("{$this->inactiveUsers} inactive users");
+        if (count($this->usersNeverValidated) > 0) {
+            $this->info(count($this->usersNeverValidated) . " users have never validated their email address.");
+        }
+        if ($this->usersFixed > 0) {
+            $this->info("{$this->usersFixed} users fixed");
+        }
+        if (count($this->usersDeleted) > 0) {
+            $this->info(count($this->usersDeleted) . " users deleted");
+        }
+
     }
 
     /**
