@@ -15,8 +15,8 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     $translateProvider.useSanitizeValueStrategy('escape');
 
   }])
-  .controller('SignupCtrl', ['$scope', '$location', '$state', '$window', 'userService', 'sessionService',
-    'silNoticeService',
+  .controller('SignupCtrl', ['$scope', '$location', '$state', '$window',
+    'userService', 'sessionService', 'silNoticeService',
   function ($scope, $location, $state, $window, userService, sessionService, notice) {
     $scope.showPassword = false;
     $scope.emailValid = true;
@@ -52,15 +52,19 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     }
 
     $scope.validateForm = function () {
-      $scope.emailValid = ($scope.signupForm.email.$dirty || $scope.emailProvided) &&
-        !$scope.signupForm.$error.email;
+      $scope.emailValid = $scope.signupForm.email.$pristine ||
+        (($scope.signupForm.email.$dirty || $scope.emailProvided) &&
+          !$scope.signupForm.$error.email);
+
       if (angular.isDefined($scope.record.password)) {
-        $scope.passwordIsWeak = $scope.passwordStrength.score < 2 || $scope.record.password.length < 7;
+        $scope.passwordIsWeak = $scope.passwordStrength.score < 2 ||
+          $scope.record.password.length < 7;
       }
     };
 
-    // we need to watch the passwordStrength score because zxcvbn seems to be changing the score after the ng-change event.  Only after zxcvbn changes should we validate the form
-    $scope.$watch('passwordStrength.score', function() {
+    // we need to watch the passwordStrength score because zxcvbn seems to be changing the score
+    // after the ng-change event.  Only after zxcvbn changes should we validate the form
+    $scope.$watch('passwordStrength.score', function () {
       $scope.validateForm();
     });
 
