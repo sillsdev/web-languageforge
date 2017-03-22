@@ -43,14 +43,56 @@ table.texts {
   margin-top: 1em;
 
   label {
-    display: block;
-  }
-
-  input[type='text'], textarea {
     width: 100%;
   }
 
   input[type='number'] {
     display: inline;
   }
+}
+
+.form-group, card {
+  &, input[type='text'], textarea {
+    width: 100%;
+  }
+}
+
+.answer {
+  .answer-footer {
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    border-bottom: 1px solid #b0b0b0;
+
+    .tag-list {
+      width: 100%;
+    }
+    .author, .answerControls {
+      width: 50%;
+      padding-left: 0.5em;
+    }
+    .answerControls {
+      text-align: right;
+    }
+
+    > div {
+      width: 100%;
+      label {
+        width: 100%;
+      }
+    }
+
+    .author {
+      background-color: #eee;
+      padding: 0.2em 0.5em;
+      img {
+        float: right;
+      }
+    }
+  }
+}
+
+.tag-list ul {
+  padding: 0;
 }
