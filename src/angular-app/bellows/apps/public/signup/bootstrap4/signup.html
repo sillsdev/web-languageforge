@@ -50,7 +50,7 @@
                                            zxcvbn="passwordStrength"
                                            ng-change="validateForm()"
                                            data-ng-model="record.password"/>
-                                    <span class="input-group-addon" title="Password Strength" ng-class="{'alert-danger': (passwordStrength.score < 2 || record.password.length < 7), 'alert-warning': (passwordStrength.score == 2), 'alert-info': passwordStrength.score == 3, 'alert-success': passwordStrength.score == 4 }">
+                                    <span class="input-group-addon" title="Password Strength" data-ng-show="record.password.length > 0" data-ng-class="{'alert-danger': (passwordStrength.score < 2 || record.password.length < 7), 'alert-warning': (passwordStrength.score == 2), 'alert-info': passwordStrength.score == 3, 'alert-success': passwordStrength.score == 4 }">
                                         <i class="fa fa-key"></i> {{ ['Too Weak', 'Too Weak', 'Fair', 'Good', 'Strong'][passwordStrength.score]}}
                                     </span>
                                 </div>
