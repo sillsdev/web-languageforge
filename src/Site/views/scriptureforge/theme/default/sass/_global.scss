@@ -305,10 +305,63 @@ nav {
     padding: 18px;
     box-shadow: 0 1pt 5px 3px #d0d0d0;
     border-radius: 4px;
+    z-index: 2;
+    background-color: white;
+    position: relative;
 
     .heading {
       font-size: 1.2em;
       margin-bottom: 1em;
     }
   }
+}
+
+.scripture-quote {
+  background-color: #dddddd;
+  padding: 0.5em;
+  font-size: 0.9em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  border-radius: 0.25em;
+}
+
+#answers {
+  width: 100%;
+
+  margin-top: 2em;
+
+  &> :first-child {
+    vertical-align: top;
+  }
+}
+
+.answer {
+  background-color: $light-background-color;
+}
+
+$vote-width: 2em;
+#answers {
+  .vote {
+    text-align: center;
+    float: left;
+    width: $vote-width;
+
+    .disabled {
+      color: #ddd;
+    }
+
+    .vote-count {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+  }
+  .answer {
+    margin-left: $vote-width + 0.5em;
+  }
+}
+
+.answer, .question {
+  padding: 0.5em;
+  @extend .card;
+  display: block;
 }

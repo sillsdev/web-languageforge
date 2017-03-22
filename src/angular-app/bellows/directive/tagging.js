@@ -33,7 +33,7 @@ angular.module('palaso.ui.tagging', ['ui.bootstrap'])
 
   .directive('addTags', ["$timeout", function($timeout) {
     return {
-      template: '<input type="text" name="inputtagstring" ng-model="inputtagstring"></input>',
+      template: '<input type="text" class="form-control" name="inputtagstring" ng-model="inputtagstring"></input>',
       restrict: "EA",
       replace: true,
       scope: {
