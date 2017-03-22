@@ -10,7 +10,6 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\SecurityContextInterface;
 
 defined('ENVIRONMENT') or exit('No direct script access allowed');
 
@@ -61,9 +60,7 @@ class Auth extends App
             return $this->view($request, $app, 'forgot_password');
         }
 
-        $identityCheck = UserCommands::checkIdentity($user->username, $user->email, $this->website);
-
-        if (! $identityCheck->usernameExistsOnThisSite) {
+        if (!$user->hasRoleOnSite($this->website)) {
             $user->siteRole[$this->website->domain] = $this->website->userDefaultSiteRole;
         }
 
@@ -83,8 +80,8 @@ class Auth extends App
         if($errorMsg == 'Bad credentials.') $errorMsg = 'Invalid username or password.';
         if ($errorMsg) {
             $app['session']->getFlashBag()->add('errorMessage', $errorMsg);
-            if ($app['session']->has(SecurityContextInterface::AUTHENTICATION_ERROR)) {
-                $app['session']->remove(SecurityContextInterface::AUTHENTICATION_ERROR);
+            if ($app['session']->has(Security::AUTHENTICATION_ERROR)) {
+                $app['session']->remove(Security::AUTHENTICATION_ERROR);
             }
         }
     }
