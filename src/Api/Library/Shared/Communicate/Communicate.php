@@ -206,7 +206,8 @@ class Communicate
         $vars = array(
             'toUser' => $toUserModel,
             'inviterUser' => $inviterUserModel,
-            'project' => $projectModel
+            'project' => $projectModel,
+            'website' => $website
         );
 
         self::sendTemplateEmail($to, $subject, 'AddedToProject', $vars, $website, $delivery);
