@@ -39,7 +39,7 @@ describe('E2E testing: Signup app', function () {
     page.passwordInput.clear();
     page.passwordInput.sendKeys(constants.passwordTooShort);
     page.captcha.setInvalidCaptcha();
-    expect(page.passwordInvalid.isDisplayed()).toBe(true);
+    expect(page.passwordIsWeak.isDisplayed()).toBe(true);
     expect(page.signupButton.isEnabled()).toBe(false);
   });
 
