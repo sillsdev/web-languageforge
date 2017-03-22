@@ -32,7 +32,7 @@ describe('E2E testing: Signup app', function () {
     expect(page.signupButton.isEnabled()).toBe(false);
   });
 
-  it('cannot submit if password too short', function () {
+  it('cannot submit if password is weak', function () {
     page.emailInput.clear();
     page.emailInput.sendKeys(constants.unusedEmail);
     expect(page.signupButton.isEnabled()).toBe(true);
@@ -43,16 +43,18 @@ describe('E2E testing: Signup app', function () {
     expect(page.signupButton.isEnabled()).toBe(false);
   });
 
-  it('can submit if password long enough', function () {
+  it('can submit if password not weak', function () {
     page.passwordInput.clear();
     page.passwordInput.sendKeys(constants.passwordValid);
     page.captcha.setInvalidCaptcha();
+    expect(page.passwordIsWeak.isDisplayed()).toBe(false);
     expect(page.signupButton.isEnabled()).toBe(true);
   });
 
-  it('can submit if password is showing and long enough', function () {
+  it('can submit if password is showing and not weak', function () {
     page.showPassword.click();
     page.captcha.setInvalidCaptcha();
+    expect(page.passwordIsWeak.isDisplayed()).toBe(false);
     expect(page.signupButton.isEnabled()).toBe(true);
   });
 
