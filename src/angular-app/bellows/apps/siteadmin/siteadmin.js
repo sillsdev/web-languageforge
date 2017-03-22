@@ -124,23 +124,12 @@ angular.module('siteadmin', [
 
     // Check for unique username and email
     $scope.checkUniqueUser = function () {
-      if (($scope.record.username) &&
-        ($scope.record.email)) {
+      if (($scope.record.username) && ($scope.record.email)) {
         $scope.uniqueUserState = 'loading';
         userService.checkUniqueIdentity($scope.record.id, $scope.record.username,
           $scope.record.email, function (result) {
             if (result.ok) {
-              if (result.data.usernameExists &&
-                !result.data.usernameMatchesAccount) {
-                $scope.uniqueUserState = 'usernameExists';
-                if (result.data.emailExists && !result.data.emailMatchesAccount) {
-                  $scope.uniqueUserState = 'usernameAndEmailExists';
-                }
-              } else if (result.data.emailExists && !result.data.emailMatchesAccount) {
-                $scope.uniqueUserState = 'emailExists';
-              } else {
-                $scope.uniqueUserState = 'ok';
-              }
+              $scope.uniqueUserState = result.data;
             }
           }
         );

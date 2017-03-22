@@ -269,14 +269,14 @@ class UserModel extends MapperModel
 
 
     /**
-     * Returns true of the email already exists in an user account (either email field or username field)
-     * @param $email
+     * Returns true if the email or username already exists in a user account
+     * @param string $emailOrUsername
      * @return bool
      */
-    public static function userExists($email) {
+    public static function userExists($emailOrUsername) {
         $user = new UserModel();
-        if (!$user->readByEmail($email)) {
-            if (!$user->readByUserName($email)) {
+        if (!$user->readByEmail($emailOrUsername)) {
+            if (!$user->readByUserName($emailOrUsername)) {
                 return false;
             }
         }
