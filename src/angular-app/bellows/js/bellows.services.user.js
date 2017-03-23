@@ -12,6 +12,10 @@ angular.module('bellows.services')
       jsonRpc.call('user_readProfile', [], callback);
     };
 
+    this.ban = function (id, callback) {
+      jsonRpc.call('user_ban', [id], callback);
+    };
+
     this.update = function (model, callback) {
       jsonRpc.call('user_update', [model], callback);
     };
