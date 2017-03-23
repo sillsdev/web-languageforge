@@ -55,12 +55,12 @@
 
                 <div class="form-group">
                     <textarea required data-ng-model="newAnswer.content" class="newAnswer form-control"
-                        placeholder='Type your answer here. Click "Add Answer" when finished.'></textarea>
+                        placeholder='Type your answer here. Click "Save Answer" when finished.'></textarea>
                 </div>
                 <div data-ng-hide="unreadResponseCount() == 0" class="right badge badge-important">
                     {{unreadResponseCount()}} new response<span data-ng-show="unreadResponseCount() > 1">s</span>
                 </div>
-                <button type="submit" class="btn btn-success" id="doneBtn">Add Answer</button>
+                <button type="submit" class="btn btn-success" id="doneBtn">Save Answer</button>
             </form>
         </div>
     </div>
@@ -140,9 +140,11 @@
                                 <div data-ng-switch data-on="commentEditorVisible(comment.id)">
                                     <form data-ng-submit="editComment(answerId, answer, editedComment)"
                                           data-ng-switch-when="true">
-                                        <label><textarea required data-ng-model="editedComment.content"></textarea></label>
-                                        <button type="submit" class="btn">Save</button>
-                                        <a href data-ng-click="hideCommentEditor()">Cancel</a>
+                                        <div class="form-group">
+                                            <label><textarea class="form-control" required data-ng-model="editedComment.content"></textarea></label>
+                                            <button type="submit" class="btn btn-sm btn-success">Save</button>
+                                            <a href data-ng-click="hideCommentEditor()">Cancel</a>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -153,7 +155,7 @@
                             <div uib-collapse="!collapsed">
                                 <form data-ng-submit="submitComment(answerId, answer); collapsed = !collapsed;">
                                     <label class="form-group"><textarea class="form-control" required data-ng-model="newComment.content"></textarea></label>
-                                    <button type="submit" class="btn btn-sm btn-success">Add Comment</button>
+                                    <button type="submit" class="btn btn-sm btn-success">Save Comment</button>
                                 </form>
                             </div>
                         </div>

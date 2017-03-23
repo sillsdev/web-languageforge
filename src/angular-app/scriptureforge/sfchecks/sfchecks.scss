@@ -46,18 +46,24 @@ table.texts {
     width: 100%;
   }
 
-  input[type='number'] {
+  .verse-range [type='number'] {
     display: inline;
+    width: 5em;
   }
 }
 
 .form-group, card {
-  &, input[type='text'], textarea {
+  &, input[type='text'], textarea, label {
     width: 100%;
   }
 }
 
 .answer {
+  &.unread {
+    background-color: #fffcd0;
+    border-color: #ffeb3b;
+  }
+
   .answer-footer {
     display: flex;
     flex-wrap: wrap;
@@ -67,6 +73,10 @@ table.texts {
 
     .tag-list {
       width: 100%;
+      .fa:hover {
+        color: #d93a06;
+        cursor: pointer;
+      }
     }
     .author, .answerControls {
       width: 50%;

@@ -44,27 +44,27 @@
                                 <input class="form-control" data-ng-model="fontfamily" type="text" placeholder="Title" />
                             </label>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <a href data-ng-click="toggleRangeSelector()">Select limited verse range</a>
                         </div>
-                        <div>
+                        <div class="form-group">
                             <span class="text-info"><a data-ng-href="/sfchecks_usersguide#exportusx" target="_blank">
                                   How can I export a USX file from ParaTExt?</a></span>
                         </div>
                     </div>
-                    <div uib-collapse="rangeSelectorCollapsed">
+                    <div class="verse-range" uib-collapse="rangeSelectorCollapsed">
                         <div class="form-group">
                             <label>From
-                                <div><input type="number" class="form-control" data-ng-model="startCh" min="1" placeholder="Chap." style="width: 4em; text-align: right" />
-                                    &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="startVs" min="1" placeholder="Verse" style="width: 4em" />
+                                <div><input type="number" class="form-control" data-ng-model="startCh" min="1" placeholder="Chap." />
+                                    &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="startVs" min="1" placeholder="Verse" />
                                     <button data-ng-click="startCh = ''; startVs = ''" class="btn btn-link">reset</button>
                                 </div>
                             </label>
                         </div>
                         <div class="form-group">
                             <label>To
-                                <div><input type="number" class="form-control" data-ng-model="endCh" min="1" placeholder="Chap." style="width: 4em; text-align: right" />
-                                    &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="endVs" min="1" placeholder="Verse" style="width: 4em" />
+                                <div><input type="number" class="form-control" data-ng-model="endCh" min="1" placeholder="Chap." />
+                                    &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="endVs" min="1" placeholder="Verse" />
                                     <button data-ng-click="endCh = ''; endVs = ''" class="btn btn-link">reset</button>
                                 </div>
                             </label>
@@ -77,7 +77,7 @@
                     <div class="drop-box" data-ngf-drop="readUsx($file)" data-ngf-drag-over-class="'dragover'">
                         <h4>or drop a USX file here</h4>
                         <p>or if you prefer...</p>
-                        <button class="btn btn-secondary" id="browseUsxButton" data-ngf-select="readUsx($file)">Browse...</button>
+                        <button class="btn btn-success" id="browseUsxButton" data-ngf-select="readUsx($file)">Browse...</button>
                     </div>
                     <div data-ngf-no-file-drop>
                         <div class="btn" data-ngf-select="readUsx($file)">Browse...</div>
@@ -97,10 +97,10 @@
                     </label>
                 </td>
                 <td>
-                    <span class="larger-text"><a data-ng-href="{{text.url}}"><span>{{text.title}}</span></a></span>
+                    <a data-ng-href="{{text.url}}"><div class="larger-text">{{text.title}}</div></a>
                 </td>
                 <td>
-                    <div class="attention-block"><a data-ng-href="{{text.url}}">{{text.questionCount}} questions</a></div>
+                    <a class="attention-block" data-ng-href="{{text.url}}">{{text.questionCount}} questions</a>
                 </td>
                 <td>{{text.responseCount}} responses</td>
                 <td><small class="text-muted">Added {{text.dateCreated | relativetime}}</small></td>

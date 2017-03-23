@@ -62,6 +62,7 @@ div.listview div.pagination select {
     background-color: #d3d3d3; /* lightgray */
     color: #dc143c; /* crimson */
     padding: 10px;
+    display: block;
     a {
       color: #dc143c;
     }
@@ -75,7 +76,7 @@ div.listview div.attention-block .subtitle {
     font-size: 1.0em;
 }
 
-span.larger-text {
+.larger-text {
     font-size: 1.25em;
 }
 
