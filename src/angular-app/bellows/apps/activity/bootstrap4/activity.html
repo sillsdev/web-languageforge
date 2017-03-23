@@ -12,15 +12,15 @@
 
                 <div ng-switch-when="add_comment-project" class="col-sm-12 activity-row">
                     <hr>
-                    <div class="col-sm-1" ng-class="{unread: isUnread(item.id)}">
-                    <div class="col-sm-3 col-md-1 activity-icon">
+                    <div class="col-sm-12" ng-class="{unread: isUnread(item.id)}">
+                    <div class="col-md-1 col-md-1 activity-icon">
                         <!--<i class="fa fa-user-o" aria-hidden="true"></i>-->
                         <img width="50px" height="50px" ng-src="{{getAvatarUrl(item.userRef.avatar_ref)}}"/>
                     </div>
-                    <div class="col-sm-3 activity-date">
+                    <div class="col-md-1 activity-date">
                         {{item.date|relativetime}}
                     </div>
-                    <div class="col-sm-5 activity-content">i]
+                    <div class="col-md-8 activity-content">i]
                         <span>{{item.userRef.username}} commented on {{item.userRef2.username}}'s answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo; on <a href="{{item.textHref}}">{{item.content.text}}</a> in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                         <p class="indented" ng-bind-html="item.content.answer"></p>
                         <hr />
@@ -33,7 +33,7 @@
                 <div ng-switch-when="update_comment-project" class="col-sm-12 activity-row">
                     <hr>
                     <div class="col-sm-12" ng-class="{unread: isUnread(item.id)}">
-                    <div class="col-sm-1 activity-icon">
+                    <div class="col-md-1 activity-icon">
                         <img width="50px" height="50px" ng-src="{{getAvatarUrl(item.userRef.avatar_ref)}}" />
                     </div>
                     <div class="col-md-1 activity-date">
