@@ -1,19 +1,19 @@
 <div data-ng-show="finishedLoading">
     <h2 style="font-weight: normal">Questions for {{text.title}}</h2>
     <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-        <button data-ng-show="rights.archive" class="btn"
+        <button data-ng-show="rights.archive" class="btn btn-warning"
             data-ng-disabled="selected.length == 0"
             data-ng-click="archiveQuestions()">
-            <i class="icon-archive icon-large"></i>Archive Questions
+            <i class="fa fa-archive fa-lg"></i> Archive Questions
         </button>
         <button data-ng-show="rights.createTemplate"
             data-ng-disabled="selected.length == 0 || selected.length > 1"
-            class="btn" data-ng-click="makeQuestionIntoTemplate()">
-            <i class="icon-pushpin"></i>Make Template
+            class="btn btn-secondary" data-ng-click="makeQuestionIntoTemplate()">
+            <i class="fa fa-thumb-tack"></i> Make Template
         </button>
-        <button data-ng-show="rights.create" class="btn"
+        <button data-ng-show="rights.create" class="btn btn-success"
             data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">
-            <i class="icon-plus"></i>Add New Question
+            <i class="fa fa-plus"></i> Add New Question
         </button>
         <a id="text_settings_button" data-ng-show="rights.editOther"
             class="btn pull-right" data-ng-href="#/{{textId}}/settings">
@@ -39,10 +39,10 @@
                         Also save as template</label>
                     <a href class="pull-right"
                         data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">Cancel</a>
-                    <button type="submit" class="btn btn-secondary"
+                    <button type="submit" class="btn btn-success"
                         data-ng-disabled="newQuestionForm.$invalid"
                         data-ng-click="addQuestion()">
-                        <i class="fa fa-check"></i> Save
+                        <i class="fa fa-check"></i> Add Question
                     </button>
                 </fieldset>
                 <fieldset class="col-md-4">
@@ -76,10 +76,10 @@
                             </label>
                         </td>
                         <td>
-                            <span class="larger-text"><a data-ng-href="{{question.url}}">{{question.calculatedTitle}}</a></span>
+                            <a data-ng-href="{{question.url}}"><div class="larger-text">{{question.calculatedTitle}}</div></a>
                         </td>
                         <td>
-                            <div class="attention-block"><a data-ng-href="{{question.url}}">{{question.answerCount}} answers</a></div>
+                            <a class="attention-block" data-ng-href="{{question.url}}">{{question.answerCount}} answers</a>
                         </td>
                         <td>{{question.responseCount}} responses</td>
                     </tr>
