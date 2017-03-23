@@ -58,6 +58,41 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         UserCommands::deleteUsers(array($userId));
     }
 
+    /**
+     * @expectedException Exception
+     */
+    public function testBanUser_NoId_Exception()
+    {
+        self::$environ->clean();
+
+        $userId = UserCommands::banUser(null);
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testBanUser_BadId_Exception()
+    {
+        self::$environ->clean();
+
+        $userId = UserCommands::banUser('notAnId');
+    }
+
+    public function testBanUser_UserNotActive()
+    {
+        self::$environ->clean();
+
+        // setup parameters
+        $userId = self::$environ->createUser('username', 'name', 'name@example.com');
+        $user = new UserModel($userId);
+        $this->assertTrue($user->active);
+
+        $userId = UserCommands::banUser($userId, '');
+
+        $user = new UserModel($userId);
+        $this->assertFalse($user->active);
+    }
+
     public function testUpdateUserProfile_SetLangCode_LangCodeSet()
     {
         self::$environ->clean();

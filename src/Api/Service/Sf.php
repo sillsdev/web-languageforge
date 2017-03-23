@@ -122,6 +122,17 @@ class Sf
     }
 
     /**
+     * Ban a User from the given $id
+     *
+     * @params string $id
+     * @return string Id of banned user
+     */
+    public function user_ban($id)
+    {
+        return UserCommands::banUser($id);
+    }
+
+    /**
      * Create/Update a User
      *
      * @param array $params (encoded UserModel)

@@ -25,19 +25,14 @@ class AuthUserProvider implements UserProviderInterface
     public function loadUserByUsername($usernameOrEmail) {
 
         $user = new UserModelWithPassword();
-
-        // try to load user by email address
-        if (strpos($usernameOrEmail, '@') !== false) {
-            $user->readByEmail($usernameOrEmail);
-        } else {
-            $user->readByUserName($usernameOrEmail);
-        }
+        $user->readByUsernameOrEmail($usernameOrEmail);
 
         if ($user->id->asString() == '') {
             throw new UsernameNotFoundException();
         }
         if (!$user->active) {
-            throw new AccessDeniedException();
+            // TODO: Get this error msg to propogate to Auth::setupAuthView
+            throw new UsernameNotFoundException(sprintf('Username "%s" access denied on "%s".', $usernameOrEmail, $this->website->domain));
         }
 
         if (!$user->hasRoleOnSite($this->website) and $user->role != SystemRoles::SYSTEM_ADMIN) {
@@ -48,7 +43,8 @@ class AuthUserProvider implements UserProviderInterface
             $sisterSiteMap = array(
                 'scriptureforge.org' => 'languageforge.org',
                 'scriptureforge.local' => 'languageforge.local',
-                'dev.scriptureforge.org' => 'dev.languageforge.org'
+                'dev.scriptureforge.org' => 'dev.languageforge.org',
+                'qa.scriptureforge.org' => 'qa.languageforge.org'
             );
             $sisterSiteMap = array_merge($sisterSiteMap, array_flip($sisterSiteMap));
             if (array_key_exists($this->website->domain, $sisterSiteMap)) {

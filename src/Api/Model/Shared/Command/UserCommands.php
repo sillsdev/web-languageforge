@@ -22,7 +22,6 @@ use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
 use Api\Model\Shared\UserTypeaheadModel;
 use Palaso\Utilities\CodeGuard;
-use Silex\Application;
 use Site\Controller\Auth;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -37,6 +36,21 @@ class UserCommands
         $user = new UserModel($id);
 
         return JsonEncoder::encode($user);
+    }
+
+    /**
+     * System Admin: Ban User
+     * @param $id
+     * @throws \Exception
+     * @return string $userId of banned user
+     */
+    public static function banUser($id)
+    {
+        CodeGuard::checkEmptyAndThrow($id, 'id');
+
+        $user = new UserModel($id);
+        $user->active = false;
+        return $user->write();
     }
 
     /**
