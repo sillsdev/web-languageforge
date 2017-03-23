@@ -53,10 +53,13 @@ class Auth extends App
 
     public function forgotPassword(Request $request, Application $app)
     {
-        $usernameOrEmail = $request->request->get('_username');
+        $usernameOrEmail = UserCommands::sanitizeInput($request->request->get('_username'));
         $user = new UserModel();
         if (!$user->readByUsernameOrEmail($usernameOrEmail)) {
             $app['session']->getFlashBag()->add('errorMessage', 'User not found.');
+            return $this->view($request, $app, 'forgot_password');
+        } else if (!$user->active) {
+            $app['session']->getFlashBag()->add('errorMessage', 'Access denied.');
             return $this->view($request, $app, 'forgot_password');
         }
 
@@ -96,6 +99,10 @@ class Auth extends App
     public static function resetPassword(Application $app, $resetPasswordKey = '', $newPassword = '')
     {
         $user = new UserModel();
+        if (!$user->active) {
+            $app['session']->getFlashbag()->add('errorMessage', 'Access denied');
+            return false;
+        }
         if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
             $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
             return false;
