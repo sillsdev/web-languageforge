@@ -102,7 +102,7 @@
                                 data-ng-click="flagForExport(answer)">
                                 <i data-ng-show="answer.isToBeExported" class="fa fa-flag" data-tooltip="Flagged for export"
                                     style="color: red"></i>
-                                <i data-ng-show="!answer.isToBeExported" class="fa fa-flag-alt"
+                                <i data-ng-show="!answer.isToBeExported" class="fa fa-flag-o"
                                     data-tooltip="Click to flag for export"></i></a>
                         </div>
                         <div data-ng-switch data-on="answerEditorVisible(answerId)">
@@ -155,7 +155,7 @@
                             <div uib-collapse="!collapsed">
                                 <form data-ng-submit="submitComment(answerId, answer); collapsed = !collapsed;">
                                     <label class="form-group"><textarea class="form-control" required data-ng-model="newComment.content"></textarea></label>
-                                    <button type="submit" class="btn btn-sm btn-success">Save Comment</button>
+                                    <button type="submit" class="btn btn-sm btn-success save-new-comment">Save Comment</button>
                                 </form>
                             </div>
                         </div>
