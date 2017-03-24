@@ -105,7 +105,8 @@ angular.module('translate.services')
       Module.call(this, quill, options);
 
       // initially container is sibling of <ng-quill-editor>
-      this.container = quill.container.parentNode.parentNode.querySelector(options.container);
+      this.container = quill.container.parentNode.parentNode.parentNode
+        .querySelector(options.container);
       quill.theme.moreTooltip.root.appendChild(this.container);
     }
 
@@ -224,7 +225,8 @@ angular.module('translate.services')
       Module.call(this, quill, options);
 
       // initially container is sibling of <ng-quill-editor>
-      this.container = quill.container.parentNode.parentNode.querySelector(options.container);
+      this.container = quill.container.parentNode.parentNode.parentNode
+        .querySelector(options.container);
       quill.theme.suggestTooltip.root.appendChild(this.container);
     }
 
