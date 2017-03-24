@@ -144,7 +144,7 @@ class MongoTestEnvironment
                 $collection->drop();
             }
         }
-        
+
         // clean up assets folder
         $folderPath = $project->getAssetsFolderPath();
         $cleanupFiles = glob($folderPath . '/*');

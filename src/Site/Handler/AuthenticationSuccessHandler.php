@@ -28,15 +28,15 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     public function onAuthenticationSuccess(Request $request, TokenInterface $token) {
         $username = $token->getUser()->getUsername();
         $user = new UserModel();
+        if (strpos($username, '@') !== false) {
+            $user->readByEmail($username);
+        } else {
+            $user->readByUserName($username);
+        }
         $website = Website::get();
 
-        // automatically logout if 1) the user doesn't exist or 2) the user is not a system admin and has no site rights on the current site
-        if (! $user->readByUserName($username) or
-            (($user->role != SystemRoles::SYSTEM_ADMIN) and
-            !($user->siteRole->offsetExists($website->domain) and
-                ($user->siteRole[$website->domain] != SiteRoles::NONE)))) {
-            return $this->httpUtils->createRedirectResponse($request, '/auth/logout');
-        }
+        $user->last_login = time();
+        $user->write();
 
         $projectId = $user->getCurrentProjectId($website->domain);
 

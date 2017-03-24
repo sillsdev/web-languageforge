@@ -34,7 +34,10 @@ class AuthUserProvider implements UserProviderInterface
         }
 
         if ($user->id->asString() == '') {
-            throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $usernameOrEmail));
+            throw new UsernameNotFoundException();
+        }
+        if (!$user->active) {
+            throw new AccessDeniedException();
         }
 
         if (!$user->hasRoleOnSite($this->website) and $user->role != SystemRoles::SYSTEM_ADMIN) {

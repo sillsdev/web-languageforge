@@ -1,12 +1,12 @@
 <?php
 
 use Api\Library\Shared\Communicate\DeliveryInterface;
+use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
 
 class MockUserCommandsDelivery implements DeliveryInterface
 {
@@ -39,6 +39,8 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
 
     /** @var mixed[] Data storage between tests */
     private static $save;
+
+    const CROSS_SITE_DOMAIN = 'languageforge.org';
 
     public static function setUpBeforeClass()
     {
@@ -75,17 +77,12 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($newUserId, $userId);
     }
 
-    public function testCheckIdentity_userDoesNotExistNoEmail_defaults()
+    /**
+     * @expectedException Exception
+     */
+    public function testCheckIdentity_userDoesNotExist_Exception()
     {
         $identityCheck = UserCommands::checkIdentity('', '', null);
-
-        $this->assertFalse($identityCheck->usernameExists);
-        $this->assertFalse($identityCheck->usernameExistsOnThisSite);
-        $this->assertTrue($identityCheck->usernameMatchesAccount);
-        $this->assertFalse($identityCheck->allowSignupFromOtherSites);
-        $this->assertFalse($identityCheck->emailExists);
-        $this->assertTrue($identityCheck->emailIsEmpty);
-        $this->assertFalse($identityCheck->emailMatchesAccount);
     }
 
     public function testCheckUniqueIdentity_userExistsNoEmail_UsernameExistsEmailEmpty()
@@ -201,11 +198,30 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         self::$environ->clean();
 
         $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
-        new UserModel($user1Id);
+        $joeUser = new UserModel($user1Id);
         $user2Id = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
         $zedUser = new UserModel($user2Id);
 
         $identityCheck = UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'joe@smith.com', self::$environ->website);
+
+        $this->assertTrue($identityCheck->usernameExists);
+        $this->assertTrue($identityCheck->usernameExistsOnThisSite);
+        $this->assertFalse($identityCheck->usernameMatchesAccount);
+        $this->assertTrue($identityCheck->emailExists);
+        $this->assertFalse($identityCheck->emailIsEmpty);
+        $this->assertFalse($identityCheck->emailMatchesAccount);
+    }
+
+    public function testCheckUniqueIdentity_caseInsensitiveEmail_userExist()
+    {
+        self::$environ->clean();
+
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $joeUser = new UserModel($user1Id);
+        $user2Id = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $zedUser = new UserModel($user2Id);
+
+        $identityCheck = UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'ZED@example.com', self::$environ->website);
 
         $this->assertTrue($identityCheck->usernameExists);
         $this->assertTrue($identityCheck->usernameExistsOnThisSite);
@@ -235,7 +251,7 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
 
         // user created and password created, user joined to project
         $this->assertEquals('username', $user->username);
-        $this->assertEquals(4, strlen($dto['password']));
+        $this->assertEquals(7, strlen($dto['password']));
         $projectUser = $sameProject->listUsers()->entries[0];
         $this->assertEquals('username', $projectUser['username']);
         $userProject = $user->listProjects(self::$environ->website->domain)->entries[0];
@@ -282,151 +298,183 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
                 'captcha' => $validCode
         );
         $captcha_info = array('code' => $validCode);
+
+        $this->assertFalse(UserModel::userExists($params['email']));
+
         $delivery = new MockUserCommandsDelivery();
+        UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
 
-        $userId = UserCommands::register($params, $captcha_info, self::$environ->website, $delivery);
-
-        $user = new UserModel($userId);
-        $this->assertEquals($params['username'], $user->username);
+        $user = new UserModel();
+        $user->readByEmail($params['email']);
+        $this->assertEquals($params['email'], $user->email);
         $this->assertEquals(0, $user->listProjects(self::$environ->website->domain)->count);
     }
 
-    public function testReadForRegistration_ValidKey_ValidUserModel()
+    public function testRegister_InvalidCaptcha_CaptchaFail()
     {
         self::$environ->clean();
 
-        $user = new UserModel();
-        $user->emailPending = 'user@user.com';
-        $key = $user->setValidation(7);
+        $validCode = 'validCode';
+        $invalidCode = 'invalidCode';
+        $params = array(
+            'id' => '',
+            'username' => 'someusername',
+            'name' => 'Some Name',
+            'email' => 'someone@example.com',
+            'password' => 'somepassword',
+            'captcha' => $invalidCode
+        );
+        $captcha_info = array('code' => $validCode);
+
+        $delivery = new MockUserCommandsDelivery();
+        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+
+        $this->assertEquals($result, 'captchaFail');
+    }
+
+    public function testRegister_EmailInUsePasswordExists_EmailNotAvailable()
+    {
+        self::$environ->clean();
+
+        // setup parameters: user 'test1'
+        $userName = 'username';
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $projectId = $project->id->asString();
+        $currentUserId = self::$environ->createUser('test1', 'test1', 'test@test.com');
+
+        // create user 'username' with password, and assign an email address
+        $dto = UserCommands::createSimple($userName, $projectId, $currentUserId, self::$environ->website);
+        $user = new UserModel($dto['id']);
+        $takenEmail = 'username@test.com';
+        $user->email = $takenEmail;
         $user->write();
-        $params = UserCommands::readForRegistration($key);
-        $this->assertEquals('user@user.com', $params['email']);
-    }
 
-    /**
-     * @expectedException Exception
-     */
-    public function testReadForRegistration_KeyExpired_Exception()
-    {
-        self::$environ->clean();
-
-        $user = new UserModel();
-        $user->emailPending = 'user@user.com';
-        $key = $user->setValidation(1);
-        $date = $user->validationExpirationDate;
-        $date->sub(new DateInterval('P2D'));
-        $user->validationExpirationDate = $date;
-        $user->write();
-        self::$environ->inhibitErrorDisplay();
-
-        UserCommands::readForRegistration($key);
-
-        // nothing runs in the current test function after an exception. IJH 2014-11
-    }
-    // this test was designed to finish testReadForRegistration_KeyExpired_Exception
-    public function testReadForRegistration_KeyExpired_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-    }
-
-    public function testReadForRegistration_invalidKey_noValidUser()
-    {
-        self::$environ->clean();
-
-        $params = UserCommands::readForRegistration('bogus key');
-        $this->assertEquals([], $params);
-    }
-
-    public function testUpdateFromRegistration_ValidKey_UserUpdatedAndKeyConsumed()
-    {
-        self::$environ->clean();
-
-        $user = new UserModel();
-        $user->emailPending = 'user@user.com';
-        $key = $user->setValidation(1);
-        $userId = $user->write();
-
-        $userArray = array(
-            'id'       => '',
-            'username' => 'joe',
-            'name'     => 'joe user',
-            'password' => 'password'
+        $validCode = 'validCode';
+        $params = array(
+            'id' => '',
+            'username' => 'someusername',
+            'name' => 'Some Name',
+            'email' => $takenEmail,
+            'password' => 'somepassword',
+            'captcha' => $validCode
         );
-        UserCommands::updateFromRegistration($key, $userArray, self::$environ->website);
+        $captcha_info = array('code' => $validCode);
+        $delivery = new MockUserCommandsDelivery();
 
-        $user = new UserModel($userId);
+        // Attempt to register
+        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
 
-        $this->assertEquals('joe', $user->username);
-        $this->assertEquals('user@user.com', $user->email);
-        $this->assertNotEquals('user@user.com', $user->emailPending);
-        $this->assertEquals('', $user->validationKey);
+        $this->assertEquals($result, 'emailNotAvailable');
     }
 
-    public function testUpdateFromRegistration_InvalidKey_UserNotUpdatedAndKeyNotConsumed()
+    public function testRegister_EmailInUseNoPassword_Login()
     {
         self::$environ->clean();
 
-        $user = new UserModel();
-        $user->emailPending = 'user@user.com';
-        $key = $user->setValidation(1);
-        $userId = $user->write();
+        // setup parameters: user 'test1'
+        $takenEmail = 'test@test.com';
+        $currentUserId = self::$environ->createUser('test1', 'test1', $takenEmail);
 
-        $userArray = array(
-            'id'       => '',
-            'username' => 'joe',
-            'name'     => 'joe user',
-            'password' => 'password'
+        $validCode = 'validCode';
+        $params = array(
+            'id' => '',
+            'username' => 'someusername',
+            'name' => 'Some Name',
+            'email' => $takenEmail,
+            'password' => 'somepassword',
+            'captcha' => $validCode
         );
-        UserCommands::updateFromRegistration('bogus key', $userArray, self::$environ->website);
+        $captcha_info = array('code' => $validCode);
+        $delivery = new MockUserCommandsDelivery();
 
-        $user = new UserModel($userId);
+        // Attempt to register
+        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
 
-        $this->assertNotEquals('joe', $user->username);
-        $this->assertEquals($key, $user->validationKey);
+        $this->assertEquals($result, 'login');
     }
 
-    /**
-     * @expectedException Exception
-     */
-    public function testUpdateFromRegistration_ExpiredKey_UserNotUpdatedAndKeyConsumed()
+    public function testRegister_NewUser_Login()
     {
         self::$environ->clean();
 
-        $user = new UserModel();
-        $user->emailPending = 'user@user.com';
-        $key = $user->setValidation(1);
-        $date = $user->validationExpirationDate;
-        $date->sub(new DateInterval('P2D'));
-        $user->validationExpirationDate = $date;
-        $userId = $user->write();
-
-        // save data for rest of this test
-        self::$save['userId'] = $userId;
-
-        $userArray = array(
-            'id'       => '',
-            'username' => 'joe',
-            'name'     => 'joe user',
-            'password' => 'password'
+        $validCode = 'validCode';
+        $params = array(
+            'id' => '',
+            'username' => 'anotherusername',
+            'name' => 'Another Name',
+            'email' => 'another@example.com',
+            'password' => 'anotherpassword',
+            'captcha' => $validCode
         );
-        self::$environ->inhibitErrorDisplay();
+        $captcha_info = array('code' => $validCode);
+        $userId = self::$environ->createUser('someusername', 'Some Name', 'someone@example.com');
 
-        UserCommands::updateFromRegistration($key, $userArray, self::$environ->website);
+        $delivery = new MockUserCommandsDelivery();
+        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
 
-        // nothing runs in the current test function after an exception. IJH 2014-11
+        $this->assertEquals($result, 'login');
+
     }
-    /**
-     * @depends testUpdateFromRegistration_ExpiredKey_UserNotUpdatedAndKeyConsumed
-     */
-    public function testUpdateFromRegistration_ExpiredKey_UserNotUpdatedAndKeyConsumed_RestoreErrorDisplay()
+
+    public function testRegister_CrossSiteEnabled_UserHasSiteRole()
     {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
+        self::$environ->clean();
+        $validCode = 'validCode';
+        $params = array(
+            'id' => '',
+            'username' => 'jsmith',
+            'name' => 'joe smith',
+            'email' => 'joe@smith.com',
+            'password' => 'somepassword',
+            'captcha' => $validCode
+        );
+        $website = Website::get(self::CROSS_SITE_DOMAIN);
+        $captcha_info = array('code' => $validCode);
+        $delivery = new MockUserCommandsDelivery();
+        // Register user to default website
+        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+        $joeUser = new UserModel();
+        $joeUser->readByEmail('joe@smith.com');
+        $this->assertFalse($joeUser->hasRoleOnSite($website));
 
-        $user = new UserModel(self::$save['userId']);
+        // Register user to cross-site
+        $result = UserCommands::register($params, $website, $captcha_info, $delivery);
 
-        $this->assertEquals('', $user->username);
+        $joeUser->readByEmail('joe@smith.com');
+        $this->assertEquals($result, 'login');
+        $this->assertTrue($joeUser->hasRoleOnSite($website));
+    }
+
+    public function testSendInvite_Register_UserActive()
+    {
+        self::$environ->clean();
+
+        $inviterUserId = self::$environ->createUser("inviteruser", "Inviter Name", "inviter@example.com");
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->projectCode = 'someProjectCode';
+        $project->write();
+        $delivery = new MockUserCommandsDelivery();
+
+        $validCode = 'validCode';
+        $captcha_info = array('code' => $validCode);
+        $params = array(
+            'id' => '',
+            'username' => 'jsmith',
+            'name' => 'joe smith',
+            'email' => 'joe@smith.com',
+            'password' => 'somepassword',
+            'captcha' => $validCode
+        );
+
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $inviterUserId, self::$environ->website, $params['email'], $delivery);
+        $joeUser = new UserModel($toUserId);
+        $this->assertEquals($joeUser->active, null);
+        $this->assertNull($joeUser->active);
+
+        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+
+        $joeUser = new UserModel($toUserId);
+        $this->assertTrue($joeUser->active);
     }
 
     public function testSendInvite_SendInvite_PropertiesFromToBodyOk()
@@ -452,7 +500,6 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp('/Inviter Name/', $delivery->content);
         $this->assertRegExp('/Test Project/', $delivery->content);
-        $this->assertRegExp('/' . $toUser->validationKey . '/', $delivery->content);
     }
 
     public function testChangePassword_SystemAdminChangeOtherUser_Succeeds()
