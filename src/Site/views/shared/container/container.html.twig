@@ -11,47 +11,47 @@
     <title>{{ app.website.name }}</title>
 
     {% for cssFile in cssFiles %}
-        <link rel=stylesheet href="/{{ cssFile }}" />
+        <link rel=stylesheet href="/{{ cssFile }}?v={{ version }}" />
     {% endfor %}
 
     {% for cssFile in vendorFilesCss %}
-        <link rel=stylesheet href="/{{ cssFile }}" />
+        <link rel=stylesheet href="/{{ cssFile }}?v={{ version }}" />
     {% endfor %}
 
     <link rel="icon" href="/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico" type="image/x-icon" />
 
     <!-- jquery must be the first js to be loaded -->
     {%  if useMinifiedJs %}
-        <script src="/vendor_bower/jquery/dist/jquery.min.js"></script>
-        <script src="/vendor_bower/angular/angular.min.js"></script>
-        <script src="/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+        <script src="/vendor_bower/jquery/dist/jquery.min.js?v={{ version }}"></script>
+        <script src="/vendor_bower/angular/angular.min.js?v={{ version }}"></script>
+        <script src="/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.min.js?v={{ version }}"></script>
 
         {% for filename in vendorFilesMinJs %}
-        <script src="/{{ filename }}"></script>
+        <script src="/{{ filename }}?v={{ version }}"></script>
         {% endfor %}
 
-        <script src="/js/lib/{{ app.website.base }}.min.js"></script>
+        <script src="/js/lib/{{ app.website.base }}.min.js?v={{ version }}"></script>
 
     {%  else %}
-        <script src="/vendor_bower/jquery/dist/jquery.js"></script>
-        <script src="/vendor_bower/angular/angular.js"></script>
-        <script src="/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+        <script src="/vendor_bower/jquery/dist/jquery.js?v={{ version }}"></script>
+        <script src="/vendor_bower/angular/angular.js?v={{ version }}"></script>
+        <script src="/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.js?v={{ version }}"></script>
 
         {% for filename in vendorFilesJs %}
-        <script src="/{{ filename }}"></script>
+        <script src="/{{ filename }}?v={{ version }}"></script>
         {% endfor %}
 
         {% for filename in jsFiles %}
-        <script src="/{{ filename }}"></script>
+        <script src="/{{ filename }}?v={{ version }}"></script>
         {% endfor %}
 
     {% endif %}
 
     {% for filename in jsNotMinifiedFiles %}
-        <script src="/{{ filename }}"></script>
+        <script src="/{{ filename }}?v={{ version }}"></script>
     {% endfor %}
 
-    <script src="/Site/views/shared/container/xforge.navbarApp.js"></script>
+    <script src="/Site/views/shared/container/xforge.navbarApp.js?v={{ version }}"></script>
 
     <script type="text/javascript">
         window.session = {{ jsonSession|raw }};

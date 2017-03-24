@@ -174,6 +174,40 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testUserExists_usernameFound_UserExists()
+    {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+
+        $environ->createUser('jsmith', 'joe smith', 'joe@smith.com');
+
+        $user = new UserModel();
+        $this->assertTrue($user->userExists('jsmith'));
+    }
+
+    public function testUserExists_emailFound_UserExists()
+    {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+
+        $environ->createUser('jsmith', 'joe smith', 'joe@smith.com');
+
+        $user = new UserModel();
+        $this->assertTrue($user->userExists('joe@smith.com'));
+    }
+
+    public function testUserExists_emailUsernameNotFound_UserNoExists()
+    {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+
+        $environ->createUser('jsmith', 'joe smith', 'joe@smith.com');
+
+        $user = new UserModel();
+        $this->assertFalse($user->userExists('anotheruser'));
+        $this->assertFalse($user->userExists('another@example.com'));
+    }
+
     public function testReadByUserName_userFound_UserModelPopulated()
     {
         $environ = new MongoTestEnvironment();
@@ -209,7 +243,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $user = new UserModel($userId);
         $params =
             ['username' => 'user2',
-             'name' => 'user2',
+             'name' => 'User 2',
              'email' => 'user2@example.com',
              'role' => SystemRoles::SYSTEM_ADMIN
             ];
@@ -239,7 +273,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
              'avatar_ref' => 'Site/views/shared/image/avatar/pinkbat.png',
              'mobile_phone' => '555-5555',
              'communicate_via' => UserModel::COMMUNICATE_VIA_BOTH,
-             'name' => 'user2',
+             'name' => 'User 2',
              'age' => '21',
              'gender' => UserModel::GENDER_MALE,
              'interfaceLanguageCode' => 'th',
@@ -279,7 +313,7 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $user = new UserModel($userId);
         $params =
             ['username' => 'user2',
-             'name' => 'User2',
+             'name' => 'User 2',
              'email' => 'user2@example.com',
              'role' => SystemRoles::SYSTEM_ADMIN,
              'active' => false,
@@ -396,6 +430,28 @@ class UserModelTest extends PHPUnit_Framework_TestCase
         $today = new \DateTime();
         $hourMargin = 60;
         $this->assertEquals($user->resetPasswordExpirationDate->getTimestamp(), $today->getTimestamp(), '', $hourMargin);
+    }
+
+    public function testSetUniqueUsernameFromString_ExistingUsernameSelf_SetsUniqueUsername() {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+        $userId = $environ->createUser('user1', 'User1', 'user1@example.com');
+        $user = new UserModel($userId);
+        $user->setUniqueUsernameFromString('User1');
+        $this->assertEquals($user->username, 'user');
+    }
+
+    public function testSetUniqueUsernameFromString_3ExistingUsernames_SetsUniqueUsername() {
+        $environ = new MongoTestEnvironment();
+        $environ->clean();
+        $environ->createUser('user', 'User1', 'user1@example.com');
+        $environ->createUser('user1', 'User1', 'user1@example.com');
+        $environ->createUser('user2', 'User2', 'user1@example.com');
+        $environ->createUser('user3', 'User3', 'user1@example.com');
+
+        $user = new UserModel();
+        $user->setUniqueUsernameFromString('USER');
+        $this->assertEquals($user->username, 'user4');
     }
 /*
     function testWriteRemove_ListCorrect()
