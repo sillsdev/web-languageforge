@@ -76,6 +76,11 @@ ng-quill-editor .ql-container {
     background-color: inherit;
 }
 
+.ql-container.ql-bubble:not(.ql-disabled) .ql-more-tooltip a:hover::before,
+.ql-container.ql-bubble:not(.ql-disabled) .ql-more-tooltip a:hover::after {
+    visibility: hidden;
+}
+
 .ql-suggest-tooltip {
     background-color: lightgrey;
     border-radius: 12px;
@@ -112,4 +117,9 @@ ng-quill-editor .ql-container {
 .ql-suggestions .table a {
     padding: 0;
     font-size: inherit;
+}
+
+.ql-container.ql-bubble:not(.ql-disabled) .ql-suggest-tooltip a:hover::before,
+.ql-container.ql-bubble:not(.ql-disabled) .ql-suggest-tooltip a:hover::after {
+    visibility: hidden;
 }
