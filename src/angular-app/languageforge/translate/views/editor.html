@@ -35,14 +35,14 @@
             id="editorLeft" data-modules="left.modulesConfig" data-theme="bubble-custom"
             data-on-editor-created="editorCreated(editor, left.docType)"
             data-on-content-changed="contentChanged(editor, left.docType)"
-            data-ng-model="left.data" data-read-only="!hasDocumentSets()"
+            data-ng-model="left.html" data-read-only="!hasDocumentSets()"
             data-placeholder="&#8203;enter text here"></ng-quill-editor>
         <div class="ql-suggestions">
             <ql-suggestion data-ql-suggestions="left.suggestions"
                            data-ql-insert-suggestion="insertSuggestion(left.docType, text)"></ql-suggestion>
         </div>
         <div class="ql-more">
-            <ql-more data-ql-status="left.currentSegmentStatus" data-ql-status-options="statusOptions"
+            <ql-more data-ql-status="left.segment.state.status" data-ql-status-options="statusOptions"
                      data-ql-change-status="changeStatus(left.docType, optionKey)"></ql-more>
         </div>
     </div>
@@ -56,14 +56,14 @@
             id="editorRight" data-modules="right.modulesConfig" data-theme="bubble-custom"
             data-on-editor-created="editorCreated(editor, right.docType)"
             data-on-content-changed="contentChanged(editor, right.docType)"
-            data-ng-model="right.data" data-read-only="!hasDocumentSets()"
+            data-ng-model="right.html" data-read-only="!hasDocumentSets()"
             data-placeholder="&#8203;enter text here"></ng-quill-editor>
         <div class="ql-suggestions">
             <ql-suggestion data-ql-suggestions="right.suggestions"
                            data-ql-insert-suggestion="insertSuggestion(right.docType, text)"></ql-suggestion>
         </div>
         <div class="ql-more">
-            <ql-more data-ql-status="right.currentSegmentStatus" data-ql-status-options="statusOptions"
+            <ql-more data-ql-status="right.segment.state.status" data-ql-status-options="statusOptions"
                      data-ql-change-status="changeStatus(right.docType, optionKey)"></ql-more>
         </div>
     </div>

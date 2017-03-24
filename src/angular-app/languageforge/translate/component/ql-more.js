@@ -9,6 +9,8 @@ angular.module('translate.quill')
       qlChangeStatus: '&'
     },
     controller: [function () {
+      this.qlStatus = this.qlStatus || 0;
+
       this.selectChange = function selectChange(optionKey) {
         (this.qlChangeStatus || angular.noop)({ optionKey: optionKey });
       };

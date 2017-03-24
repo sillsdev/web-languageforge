@@ -14,21 +14,15 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     ;
   }])
   .controller('EditorCtrl', ['$scope', 'silNoticeService', 'translateAssistant',
-    'translateProjectApi', 'translateDocumentApi', 'wordParser', 'realTime', 'modalService',
+    'translateProjectApi', 'translateDocumentApi', 'translateDocumentService', 'wordParser',
+    'realTime', 'modalService',
   function ($scope, notice, assistant,
-            projectApi, documentApi, wordParser, realTime, modal) {
+            projectApi, documentApi, Document, wordParser, realTime, modal) {
     var currentDocIds = [];
     var selectedSegmentIndex = -1;
     var onSelectionChanges = {};
-    var source = {
-      docType: 'source',
-      label: 'Source'
-    };
-    var target = {
-      docType: 'target',
-      label: 'Target',
-      currentSegmentStatus: 0
-    };
+    var source = new Document.Data('source', 'Source');
+    var target = new Document.Data('target', 'Target');
     var modulesConfig = {
       toolbar: [
         ['bold', 'italic', 'underline', 'strike'],      // toggled buttons
@@ -69,9 +63,6 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       { key: 1, name: 'draft' },
       { key: 2, name: 'approved' }
     ];
-    var approvalStatusOptionKey = 2;
-    var approvalStatusOptionKeyIndex = findKeyValueIndex($scope.statusOptions, 'key',
-      approvalStatusOptionKey);
 
     documentApi.listDocumentSetsDto(function (result) {
       if (result.ok) {
@@ -93,11 +84,8 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         }
 
         if (angular.isDefined($scope.project.config.userPreferences.selectedDocumentSetId)) {
-          angular.forEach($scope.documentSets, function (documentSet, index) {
-            if (documentSet.id === $scope.project.config.userPreferences.selectedDocumentSetId) {
-              $scope.selectedDocumentSetIndex = index;
-            }
-          });
+          $scope.selectedDocumentSetIndex =  getDocumentSetIndexById($scope.documentSets,
+            $scope.project.config.userPreferences.selectedDocumentSetId);
         }
 
         if (angular.isDefined($scope.project.config.userPreferences
@@ -278,9 +266,9 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         realTime.disconnectRichTextDoc(currentDocIds[docType], editor);
         delete currentDocIds[docType];
         $scope.editorCreated(editor, docType);
-      } else {
-        updateContent(editor, docType);
       }
+
+      updateContent(editor, docType);
     };
 
     $scope.editorCreated = function editorCreated(editor, docType) {
@@ -293,8 +281,6 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
 
       currentDocIds[docType] = docId(docType);
       realTime.createAndSubscribeRichTextDoc($scope.project.slug, docId(docType), editor);
-
-      updateContent(editor, docType);
 
       onSelectionChanges[docType] = function () {
         if (docType === target.docType) {
@@ -335,9 +321,9 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.insertSuggestion = function insertSuggestion(docType, text) {
       var editor = $scope[docType].editor;
       var range = editor.selection.lastRange;
-      var currentText = removeTrailingCarriageReturn(editor.getText());
+      var currentText = Quill.removeTrailingCarriageReturn(editor.getText());
       var words = wordParser.wordBreak(currentText);
-      if (hasNoSelectionAtCursor(range)) {
+      if (Quill.hasNoSelectionAtCursor(range)) {
         var index = range.index;
         var wordStartIndex = wordParser.startIndexOfWordAt(index, words);
         var wordLength = wordParser.lengthOfWordAt(index, words);
@@ -357,217 +343,140 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.changeStatus = function changeStatus(docType, optionKey) {
       if (docType !== target.docType) return;
 
-      var editor = $scope[docType].editor;
-      var range = editor.selection.lastRange;
-      if (hasNoSelectionAtCursor(range)) {
-        var line = 0;
-        var block = editor.getLine(range.index);
-        var blockStartIndex = editor.getIndex(block[line]);
-        setTimeout(function () {
-          editor.formatLine(blockStartIndex, 1, { state: { status: optionKey } },
-            Quill.sources.USER);
-        }, 1);
-      }
+      target.formatSegmentStateStatus(optionKey, target.editor.selection.lastRange);
     };
 
+    function docId(docKey, documentSetId) {
+      if (!($scope.selectedDocumentSetIndex in $scope.documentSets)) return false;
+
+      if (angular.isUndefined(documentSetId)) {
+        documentSetId = $scope.documentSets[$scope.selectedDocumentSetIndex].id;
+      }
+
+      return documentSetId + ':' + docKey;
+    }
+
     function updateContent(editor, docType) {
-      var newSourceSegmentText;
       if (docType === target.docType) {
-        showAndPositionTooltip(editor.theme.moreTooltip, editor.getSelection(), editor);
-        updateSegmentStatus(docType, editor);
-        if (!isTextEmpty(source.editor.getText()) && !isTextEmpty(editor.getText())) {
-          var newSegmentIndex = getCurrentSegmentIndex(editor.getText(), editor.getSelection());
-          newSourceSegmentText = currentSegment(source.editor.getText(), newSegmentIndex);
-          if (newSegmentIndex !== selectedSegmentIndex ||
-            newSourceSegmentText !== source.segmentText
-          ) {
-            selectedSegmentIndex = newSegmentIndex;
-            source.segmentText = newSourceSegmentText;
-            assistant.translateInteractively(source.segmentText, $scope.confidenceThreshold,
-              function () {
-                updatePrefix(editor, selectedSegmentIndex);
-              }
-            );
-          } else {
-            setTimeout(function () {
-              updatePrefix(editor, selectedSegmentIndex);
-            }, 1);
-          }
-        }
+        showAndPositionTooltip(target.editor.theme.moreTooltip, target.editor);
+        var newSegmentIndex = target.getSegmentIndex();
+        learnSegment(newSegmentIndex);
+        getSuggestions(newSegmentIndex);
+        selectedSegmentIndex = newSegmentIndex;
       } else {
         editor.theme.moreTooltip.hide();
         editor.theme.suggestTooltip.hide();
-        if (docType === source.docType && !isTextEmpty(editor.getText())) {
-          newSourceSegmentText = currentSegment(editor.getText(), selectedSegmentIndex);
-          if (newSourceSegmentText !== source.segmentText) {
-            source.segmentText = newSourceSegmentText;
-            assistant.translateInteractively(source.segmentText, $scope.confidenceThreshold);
+        if (docType === source.docType && !editor.isTextEmpty()) {
+          var newSourceSegmentText = source.getSegment(selectedSegmentIndex);
+          if (newSourceSegmentText !== source.segment.text) {
+            source.segment.text = newSourceSegmentText;
+            assistant.translateInteractively(source.segment.text, $scope.confidenceThreshold);
           }
         }
       }
     }
 
-    function docId(docKey) {
-      if (!($scope.selectedDocumentSetIndex in $scope.documentSets)) return false;
+    function learnSegment(newSegmentIndex) {
+      if (selectedSegmentIndex >= 0 && !target.editor.hasNoSelectionAtCursor()) return;
 
-      return $scope.documentSets[$scope.selectedDocumentSetIndex].id + ':' + docKey;
+      var targetSegmentText = target.getSegment(selectedSegmentIndex);
+      var selectedDocumentSetId = $scope.documentSets[$scope.selectedDocumentSetIndex].id;
+      if (selectedSegmentIndex < 0) {
+        target.updateSegmentLearntData(newSegmentIndex, selectedDocumentSetId);
+      } else if (newSegmentIndex !== selectedSegmentIndex
+        || selectedDocumentSetId !== target.segment.learnt.documentSetId
+      ) {
+        if (selectedDocumentSetId !== target.segment.learnt.documentSetId) {
+          targetSegmentText = target.segment.text;
+        }
+
+        if (!Quill.isTextEmpty(targetSegmentText) &&
+          Quill.hasNoSelectionAtCursor(target.segment.learnt.previousRange) &&
+          !target.segment.hasLearntText(targetSegmentText)
+        ) {
+          assistant.learnSegment(function () {
+            if (selectedDocumentSetId === target.segment.learnt.documentSetId) {
+              notice.push(notice.SUCCESS, 'The line was successfully learnt.');
+              target.formatSegmentStateMachineHasLearnt(true, target.segment.learnt.previousRange);
+            } else {
+              var documentSetIndex = getDocumentSetIndexById($scope.documentSets,
+                target.segment.learnt.documentSetId);
+              var documentSetName = $scope.documentSets[documentSetIndex].name;
+              notice.push(notice.SUCCESS, 'The modified line from the \'' + documentSetName +
+                '\' document set was successfully learnt.');
+              var formatDelta = target.createDeltaSegmentStateMachineHasLearnt(true,
+                target.segment.blockEndIndex, target.segment.state);
+              realTime.updateRichTextDoc($scope.project.slug,
+                docId(target.docType, target.segment.learnt.documentSetId), formatDelta,
+                Quill.sources.USER);
+            }
+
+            target.updateSegmentLearntData(newSegmentIndex, selectedDocumentSetId);
+          });
+        } else {
+          target.updateSegmentLearntData(newSegmentIndex, selectedDocumentSetId);
+        }
+      } else {
+        var machineHasLearnt = target.segment.hasLearntText(targetSegmentText);
+        target.segment.text = targetSegmentText;
+        target.updateSegmentState();
+        target.updateSegmentBlockEndIndex();
+        if (target.segment.state.machineHasLearnt !== machineHasLearnt) {
+          target.formatSegmentStateMachineHasLearnt(machineHasLearnt);
+        }
+      }
     }
 
-    function updatePrefix(editor, segmentIndex) {
+    function updatePrefix(segmentIndex) {
       $scope.$apply(function () {
-        target.suggestions = assistant.updatePrefix(currentSegment(editor.getText(), segmentIndex));
+        target.suggestions = assistant.updatePrefix(target.getSegment(segmentIndex));
         setTimeout(function () {
-          showAndPositionTooltip(editor.theme.suggestTooltip, editor.getSelection(), editor,
-            hasSuggestion());
+          showAndPositionTooltip(target.editor.theme.suggestTooltip, target.editor,
+            target.hasSuggestion());
         }, 1);
       });
     }
 
-    function learnSegment() {
-      var segmentIndex = -1;
-      var range = target.editor.selection.lastRange;
-      if (hasNoSelectionAtCursor(range)) {
-        segmentIndex = getCurrentSegmentIndex(target.editor.getText(), range);
-      }
-
-      if (segmentIndex === selectedSegmentIndex) {
-        assistant.approveSegment(segmentLearnt);
-      } else if (segmentIndex >= 0) {
-        var sourceSegmentText = currentSegment(source.editor.getText(), segmentIndex);
-        assistant.translateInteractively(sourceSegmentText, $scope.confidenceThreshold,
-          function () {
-            assistant.updatePrefix(currentSegment(target.editor.getText(), segmentIndex));
-            assistant.approveSegment(segmentLearnt);
-            assistant.translateInteractively(source.segmentText, $scope.confidenceThreshold);
-          }
-        );
-      }
-    }
-
-    function segmentLearnt() {
-      notice.push(notice.SUCCESS, 'Segment was successfully incorporated.');
-    }
-
-    function updateSegmentStatus(docType, editor) {
-      if (hasNoSelectionAtCursor(editor.getSelection())) {
-        var formats = editor.getFormat();
-        if (angular.isDefined(formats.state)) {
-          if (angular.isUndefined(formats.state.status)) {
-            formats.state.status = 0;
-          }
-
-          $scope[docType].currentSegmentStatus = Number(formats.state.status);
+    function getSuggestions(newSegmentIndex) {
+      if (!source.editor.isTextEmpty() && !target.editor.isTextEmpty()) {
+        var newSourceSegmentText = source.getSegment(newSegmentIndex);
+        if (newSegmentIndex !== selectedSegmentIndex || newSourceSegmentText !== source.segment.text
+        ) {
+          source.segment.text = newSourceSegmentText;
+          assistant.translateInteractively(source.segment.text, $scope.confidenceThreshold,
+            function () {
+              updatePrefix(newSegmentIndex);
+            }
+          );
+        } else {
+          setTimeout(function () {
+            updatePrefix(newSegmentIndex);
+          }, 1);
         }
       }
     }
 
-    function showAndPositionTooltip(tooltip, range, editor, hasCondition) {
+    function showAndPositionTooltip(tooltip, editor, hasCondition) {
       hasCondition = angular.isDefined(hasCondition) ? hasCondition : true;
-      if (hasNoSelectionAtCursor(range) && hasCondition) {
+      if (editor.hasNoSelectionAtCursor() && hasCondition) {
         tooltip.show();
-        tooltip.position(editor.getBounds(range));
+        tooltip.position(editor.getBounds(editor.getSelection()));
       } else {
         tooltip.hide();
       }
     }
 
-    function hasNoSelectionAtCursor(range) {
-      return range && range.length === 0;
-    }
-
-    function hasSuggestion() {
-      return target.suggestions && target.suggestions.length > 0;
-    }
-
-    /**
-     * @param {string} text
-     * @param {number} index
-     * @returns {string}
-     */
-    function currentSegment(text, index) {
-      if (!text) return '';
-
-      if (index > getLastSegmentIndex(text)) {
-        index = getLastSegmentIndex(text);
-      }
-
-      return getSegments(text)[index];
-    }
-
-    /**
-     * @param {string} text
-     * @returns {number}
-     */
-    function getLastSegmentIndex(text) {
-      return getNumberOfSegments(text) - 1;
-    }
-
-    /**
-     * @param {string} text
-     * @returns {number}
-     */
-    function getNumberOfSegments(text) {
-      return getSegments(text).length;
-    }
-
-    /**
-     * @param {string} text
-     * @param {Range} range
-     * @returns {number}
-     */
-    function getCurrentSegmentIndex(text, range) {
-      if (hasNoSelectionAtCursor(range)) {
-        var segmentIndex = 0;
-        var nextSegmentIndex = 0;
-        angular.forEach(getSegments(text), function (segment) {
-          nextSegmentIndex += segment.length + '\n'.length;
-          if (range.index < nextSegmentIndex) return;
-
-          segmentIndex++;
-        });
-
-        return segmentIndex;
-      } else {
-        return getLastSegmentIndex(text);
-      }
-    }
-
-    /**
-     * @param {string} text
-     * @returns {Array|*}
-     */
-    function getSegments(text) {
-      return removeTrailingCarriageReturn(text).split('\n');
-    }
-
-    /**
-     * @param {string} text
-     * @returns {boolean}
-     */
-    function isTextEmpty(text) {
-      return !removeTrailingCarriageReturn(text);
-    }
-
-    /**
-     * @param {string} text
-     * @returns {string}
-     */
-    function removeTrailingCarriageReturn(text) {
-      return (text.endsWith('\n')) ? text.substr(0, text.length - 1) : text;
-    }
-
-    /**
-     * @param {Array} array
-     * @param {string} property
-     * @param {*} value
-     * @returns {*|number}
-     */
-    function findKeyValueIndex(array, property, value) {
-      return array.findIndex(function (object) {
-          return object[property] === value;
+    function getDocumentSetIndexById(documentSets, documentSetId) {
+      var documentSetIndex = -1;
+      angular.forEach(documentSets, function (documentSet, index) {
+        if (documentSet.id === documentSetId) {
+          documentSetIndex = index;
         }
-      );
+      });
+
+      return documentSetIndex;
     }
+
   }])
 
   ;

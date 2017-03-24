@@ -19,6 +19,45 @@ angular.module('translate.services')
     CustomBubbleTheme.prototype = Object.create(BubbleTheme.prototype);
     CustomBubbleTheme.prototype.constructor = CustomBubbleTheme;
     Quill.register('themes/bubble-custom', CustomBubbleTheme);
+
+    /**
+     * @param {string} text
+     * @returns {string}
+     */
+    Quill.removeTrailingCarriageReturn = function removeTrailingCarriageReturn(text) {
+      return (text.endsWith('\n')) ? text.substr(0, text.length - 1) : text;
+    };
+
+    /**
+     * @param {string} text
+     * @returns {boolean}
+     */
+    Quill.isTextEmpty = function (text) {
+      return !Quill.removeTrailingCarriageReturn(text);
+    };
+
+    /**
+     * @returns {boolean}
+     */
+    Quill.prototype.isTextEmpty = function isTextEmpty() {
+      return !Quill.removeTrailingCarriageReturn(this.getText());
+    };
+
+    /**
+     * @param range
+     * @returns {boolean}
+     */
+    Quill.hasNoSelectionAtCursor = function (range) {
+      return range && range.length === 0;
+    };
+
+    /**
+     * @returns {boolean}
+     */
+    Quill.prototype.hasNoSelectionAtCursor = function hasNoSelectionAtCursor() {
+      var range = this.getSelection();
+      return range && range.length === 0;
+    };
   }])
 
   // Add a 'more' control to Quill
@@ -89,12 +128,14 @@ angular.module('translate.services')
     StateBlock.defaultChild = Block.defaultChild;
     StateBlock.create = function (value) {
       var node = es5Super.getStatic(Block, 'create', this).call(this);
-      if (value && value.status) {
-        node.setAttribute('data-status', value.status);
-      }
+      if (value) {
+        if (value.status) {
+          node.setAttribute('data-status', value.status);
+        }
 
-      if (value && value.catHasLearnt) {
-        node.setAttribute('data-cat-has-learnt', value.catHasLearnt);
+        if (value.machineHasLearnt) {
+          node.setAttribute('data-machine-has-learnt', value.machineHasLearnt);
+        }
       }
 
       return node;
@@ -106,8 +147,8 @@ angular.module('translate.services')
         format.status = node.getAttribute('data-status');
       }
 
-      if (node.hasAttribute('data-cat-has-learnt')) {
-        format.catHasLearnt = node.getAttribute('data-cat-has-learnt');
+      if (node.hasAttribute('data-machine-has-learnt')) {
+        format.machineHasLearnt = node.getAttribute('data-machine-has-learnt');
       }
 
       return format;
@@ -118,10 +159,10 @@ angular.module('translate.services')
     };
 
     StateBlock.prototype.format = function (name, value) {
-      if (name === 'status' || name === 'catHasLearnt') {
+      if (name === 'status' || name === 'machineHasLearnt') {
         var attributeName = 'data-' + name;
-        if (name === 'catHasLearnt') {
-          attributeName = 'data-cat-has-learnt';
+        if (name === 'machineHasLearnt') {
+          attributeName = 'data-machine-has-learnt';
         }
 
         this.domNode.setAttribute(attributeName, value);
