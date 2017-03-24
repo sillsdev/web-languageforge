@@ -14,7 +14,8 @@ use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserListModel;
 use Api\Model\Shared\UserModel;
 
-(php_sapi_name() == 'cli') or die('this script must be run on the command-line');
+(php_sapi_name() == 'cli') or die("this script must be run on the command-line");
+(posix_getuid() == 0) or die("this script must be run as root\n");
 
 /*
  * Description: Restore live site data (mongodb, lf assets and sf assets, and lfmerge projects)
@@ -195,13 +196,11 @@ class FactoryReset
         if (count($argv) > 1 && $argv[1] == 'run') {
             $runForReal = true;
         } else {
-            print "\nUsage: FactoryReset.php <run> <SSH Key file> <DIRECTORY>\n";
+            print "\nUsage: FactoryReset.php <run> <DIRECTORY>\n";
             print "Run factory reset and restore mongodb and assets from DIRECTORY\n";
             print "\nTest Mode - no data will be changed\n--------------------------------\n\n";
         }
-        $keys = count($argv) > 2 ? $argv[2]: '';
-        file_exists($keys) or die('SSH key file ' . $keys . ' does not exist');
-        $archivePath = count($argv) > 3 ? $argv[3] : '';
+        $archivePath = count($argv) > 2 ? $argv[2] : '';
 
         $projectList = new ProjectListModel();
         $projectList->read();
@@ -237,8 +236,14 @@ class FactoryReset
             print "\nExtracting archives...\n";
             foreach (glob("$archivePath/*tgz*") as $filename) {
                 print "Extracting $filename\n";
-                $cmd = "tar -xzf $filename -C $archivePath";
-                $this->Execute($runForReal, $cmd);
+                if (strpos($filename, 'lf_assets') || strpos($filename, 'sf_assets')) {
+                    $cmd = "sudo tar -xzf $filename --strip-components=2 -C /var/www/virtual/";
+                    $this->Execute($runForReal, $cmd);
+                }
+                if (strpos($filename, 'mongo')) {
+                    $cmd = "tar -xzf $filename -C $archivePath";
+                    $this->Execute($runForReal, $cmd);
+                }
             }
 
             print "\nEnsure www-data has permissions...\n";
@@ -257,44 +262,6 @@ class FactoryReset
             print "\nUpdating DB site names...\n";
             $this->UpdateDBSiteName($runForReal);
 
-            print "\nRestoring assets...\n";
-            $rsyncCmd = "rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx " .
-                "--delete-during --stats --rsync-path='sudo rsync' " .
-                "--rsh='ssh -v -i " . $keys . "' ";
-            $cmd = $rsyncCmd .
-                "--exclude=sfchecks " .
-                $archivePath . "/var/www/languageforge.org/htdocs/assets/ " .
-                $this->lfSitePath . "/htdocs/assets/";
-            $this->Execute($runForReal, $cmd);
-
-            $cmd = $rsyncCmd .
-                "--exclude=lexicon --exclude=semdomtrans " .
-                $archivePath . "/var/www/scriptureforge.org/htdocs/assets/ " .
-                $this->sfSitePath . "/htdocs/assets/";
-            $this->Execute($runForReal, $cmd);
-
-            $cmd = $rsyncCmd .
-                $archivePath . "/var/lib/languageforge/lexicon/sendreceive/ " .
-                $this->lfmergeSendReceivePath;
-            $this->Execute($runForReal, $cmd);
-
-            print "\nCleanup cache...\n";
-            $cmd = 'gulp build-clearLocalCache';
-            $this->Execute($runForReal, $cmd);
-
-            if ($this->environment == "dev" ||
-                $this->environment == "qa") {
-                $cmd = $rsyncCmd .
-                    "../../src/cache/ " .
-                    $this->lfSitePath . "/htdocs/cache/";
-                $this->Execute($runForReal, $cmd);
-
-                $cmd = $rsyncCmd .
-                    "../../src/cache/ " .
-                    $this->sfSitePath . "/htdocs/cache/";
-                $this->Execute($runForReal, $cmd);
-            }
-
             print "\nCleanup extracted files...\n";
             $cmd = "sudo rm -R $archivePath/var";
             $this->Execute($runForReal, $cmd);
@@ -302,13 +269,13 @@ class FactoryReset
             $this->Execute($runForReal, $cmd);
         } else {
             // No assets to restore so just create an account
-            print "\nCreating local user: admin password: password\n";
+            print "\nCreating local user: admin, password: password\n";
             if ($runForReal) {
                 $languageforgeWebsite = Website::get('languageforge.org');
                 $adminUser = UserCommands::createUser(array(
                     'username' => 'admin',
                     'name' => 'Admin',
-                    'email' => 'admin@admin.com',
+                    'email' => 'admin@example.com',
                     'password' => 'password',
                     'role' => SystemRoles::SYSTEM_ADMIN,
                     'active' => true),

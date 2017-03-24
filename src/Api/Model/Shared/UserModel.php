@@ -68,8 +68,9 @@ class UserModel extends MapperModel
     /** @var string */
     public $username;
 
-    /** @var string Full Name */
+    /** @var string Full Name (this is optional profile information) */
     public $name;
+
 
     /** @var string An unconfirmed email address for this user */
     public $emailPending;
@@ -130,6 +131,9 @@ class UserModel extends MapperModel
     /** @var string */
     public $gender;
 
+    /**
+     * @var int timestamp, see time()
+     */
     public $last_login; // read only field
 
     /*
@@ -261,6 +265,22 @@ class UserModel extends MapperModel
             $default_avatar = "anonymoose.png";
             $this->avatar_ref = $default_avatar;
         }
+    }
+
+
+    /**
+     * Returns true of the email already exists in an user account (either email field or username field)
+     * @param $email
+     * @return bool
+     */
+    public static function userExists($email) {
+        $user = new UserModel();
+        if (!$user->readByEmail($email)) {
+            if (!$user->readByUserName($email)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -407,6 +427,28 @@ class UserModel extends MapperModel
         $this->resetPasswordExpirationDate = $today->add(new \DateInterval("P${days}D"));
 
         return $this->resetPasswordKey;
+    }
+
+    /**
+     * @param $usernameBase - a string which the username should be based on
+     */
+    public function setUniqueUsernameFromString($usernameBase) {
+        if (strpos($usernameBase, '@') !== FALSE) {
+            $usernameBase = substr($usernameBase, 0, strpos($usernameBase, '@'));
+        }
+        $usernameBase = strtolower($usernameBase);
+        // remove unwanted characters from username
+        $usernameBase = preg_replace('/[-.,;+=_\/"\'# ]+/', '', $usernameBase);
+        $usernameBase = rtrim($usernameBase, '0..9');
+        $potentialUsername = $usernameBase;
+        for ($i=1; $i<1000; $i++) {
+            $u = new UserModel();
+            if (!$u->readByUserName($potentialUsername)) {
+                break;
+            }
+            $potentialUsername = $usernameBase . $i;
+        }
+        $this->username = $potentialUsername;
     }
 }
 

@@ -214,7 +214,7 @@ $app->get('/app/{appName}',     'Site\Controller\App::view')->value('appName', '
 $app->get('/script/{folder}/{scriptName}/{runType}', 'Site\Controller\Script::run');
 $app->get('/script/{folder}/{scriptName}/', 'Site\Controller\Script::run');
 $app->get('/script/{folder}/{scriptName}',  'Site\Controller\Script::run');
-$app->get('/script/',  'Site\Controller\Script::run');
+$app->get('/script/', 'Site\Controller\Script::run');
 $app->get('/script',  'Site\Controller\Script::run');
 
 //public
@@ -232,7 +232,7 @@ $app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bin
 
 $app->get('/download/assets/{appName}/{projectSlug}/audio/{filename}', 'Site\Controller\Download::assets');
 $app->get('/download/assets/{appName}/{projectSlug}/{filename}', 'Site\Controller\Download::assets');
-$app->get('/{pageName}/',        'Site\Controller\Page::view')->value('pageName', 'home');
+$app->get('/{pageName}/',       'Site\Controller\Page::view')->value('pageName', 'home');
 $app->get('/{pageName}',        'Site\Controller\Page::view')->value('pageName', 'home');
 
 /*--------------------------------------------------------------------
