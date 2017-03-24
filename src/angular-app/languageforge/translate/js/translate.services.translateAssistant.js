@@ -42,10 +42,12 @@ angular.module('translate.services')
     };
 
     // SIL.Machine.Translation.InteractiveTranslationSession.approve(onFinished)
-    this.approveSegment = function approveSegment(callback) {
+    this.learnSegment = function learnSegment(callback) {
       if (angular.isUndefined(engine) || angular.isUndefined(session)) return;
 
-      session.approve(callback);
+      // TODO: enable learning
+      // session.approve(callback);
+      (callback || angular.noop)();
     };
 
   }])
