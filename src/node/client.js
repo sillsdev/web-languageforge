@@ -60,6 +60,26 @@ realTime.createAndSubscribeRichTextDoc =
     });
   };
 
+realTime.updateRichTextDoc = function updateRichTextDoc(collection, id, delta, source) {
+  var doc;
+  if (id in docSubs) {
+    doc = docSubs[id];
+    doc.submitOp(delta, { source: source });
+  } else {
+    collection = collection || 'collection';
+    doc = connection.get(collection, id);
+    doc.fetch(function (err) {
+      if (err) throw err;
+
+      if (doc.type === null) {
+        doc.create([{ insert: '' }], richText.type.name);
+      } else {
+        doc.submitOp(delta, { source: source });
+      }
+    });
+  }
+};
+
 realTime.disconnectRichTextDoc = function disconnectRichTextDoc(id, quill) {
   if (id in onTextChanges) {
     quill.off(Quill.events.TEXT_CHANGE, onTextChanges[id]);
