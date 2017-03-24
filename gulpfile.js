@@ -463,6 +463,30 @@ gulp.task('test-restart-webserver', function (cb) {
 });
 
 // -------------------------------------
+//   Task: Remote Restart PHP-FPM
+// -------------------------------------
+gulp.task('remote-restart-php-fpm', function (cb) {
+  var params = require('yargs')
+    .option('dest', {
+      demand: true,
+      type: 'string' })
+    .option('uploadCredentials', {
+      demand: true,
+      type: 'string' })
+    .argv;
+  var options = {
+    credentials: params.uploadCredentials,
+    destination: params.dest.slice(0, params.dest.indexOf(':'))
+  };
+
+  execute(
+    "ssh -i <%= credentials %> <%= destination %> 'service php7.0-fpm restart'",
+    options,
+    cb
+  );
+});
+
+// -------------------------------------
 //   Task: E2E Test: Modify Environment
 // -------------------------------------
 gulp.task('test-e2e-env', function () {
@@ -910,7 +934,7 @@ gulp.task('build-and-upload',
   gulp.series(
     'build',
     'build-upload',
-    'test-restart-webserver')
+    'remote-restart-php-fpm')
 );
 
 // -------------------------------------
