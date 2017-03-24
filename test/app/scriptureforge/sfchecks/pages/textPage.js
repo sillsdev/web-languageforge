@@ -49,7 +49,7 @@ function SfTextPage() {
     description: element(by.model('questionDescription')),
     summary: element(by.model('questionTitle')),
     saveButton: element(by.css('form[name="newQuestionForm"]'))
-      .element(by.partialButtonText('Save'))
+      .element(by.css('.save-new-question'))
   };
 
   this.addNewQuestion = function addNewQuestion(description, summary) {

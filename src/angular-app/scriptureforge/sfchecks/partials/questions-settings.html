@@ -1,7 +1,7 @@
 <h2 style="font-weight: normal">Update {{textTitle}}</h2>
 <div data-ng-show="rights.editOther">
-    <tabset>
-    <tab heading="Edit Text">
+    <uib-tabset>
+    <uib-tab heading="Edit Text">
     <form class="well " data-ng-submit="updateText(editedText)">
         <fieldset class="span4">
             <table class="tableform">
@@ -93,8 +93,8 @@
         </fieldset>
         <div style="clear: left"></div>
     </form>
-    </tab>
-    <tab heading="Archived Questions">
+    </uib-tab>
+    <uib-tab heading="Archived Questions">
     <div data-ng-controller="TextSettingsArchivedQuestionsCtrl">
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
             <button data-ng-disabled="selected.length == 0"
@@ -125,8 +125,8 @@
             </div>
         </listview>
     </div>
-    </tab>
-    <tab heading="Audio File">
+    </uib-tab>
+    <uib-tab heading="Audio File">
     <form class="well " data-ng-submit="updateText(editedText)">
         <label>Upload an Audio File</label>
         <div class="drop-box" data-ngf-drop="uploadAudio($file)" data-ngf-drag-over-class="'dragover'">
@@ -146,8 +146,8 @@
         <label>&nbsp;</label>
         <div data-ng-bind-html="uploadResult"></div>
     </form>
-    </tab>
-    <tab heading="ParaTExt Export">
+    </uib-tab>
+    <uib-tab heading="ParaTExt Export">
     <div class="row-fluid outer-flex" data-ng-controller="ParatextExportTextCtrl">
         <h4>Export Text Answers/Comments to a ParaTExt XML file</h4>
         <form class="span4" name="exportForm">
@@ -183,7 +183,7 @@
                 Download ParaTExt XML File</button>
         </div>
     </div>
-    </tab>
+    </uib-tab>
     </tabset>
 </div>
 <div data-ng-hide="rights.editOther">
