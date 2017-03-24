@@ -4,7 +4,7 @@
 <fieldset data-ng-disabled="isSaving">
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="settingsApply()"
     data-ng-disabled="viewSettingForm.$pristine || !allRolesHaveAtLeastOneSense() || !allUsersHaveAtLeastOneSense() || isSaving">
-    <i ng-class="{'icon-ok': !isSaving, 'icon-spinner': isSaving, 'icon-spin': isSaving}"></i> {{'Apply' | translate}}</button>
+    <i ng-class="{'fa fa-ok': !isSaving, 'fa fa-spinner fa-spin': isSaving}"></i> {{'Apply' | translate}}</button>
 <uib-tabset>
     <uib-tab data-ng-repeat="tab in tabs" class="{{interfaceConfig.pullNormal}}" active="tab.active"
         select="selectTab($index)">
@@ -261,4 +261,3 @@ configDirty.userViews {{configDirty.userViews | json}}
 </pre>
  -->
 </div>
-

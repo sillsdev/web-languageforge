@@ -17,7 +17,7 @@
         </button>
         <a id="text_settings_button" data-ng-show="rights.editOther"
             class="btn pull-right" data-ng-href="#/{{textId}}/settings">
-            <i class="icon-cog icon-large" data-tooltip="Text Settings"></i></a>
+            <i class="fa fa-cog fa-lg" uib-tooltip="Text Settings"></i></a>
     </form>
     <div class="new-item" uib-collapse="newQuestionCollapsed">
         <form class="card span11" name="newQuestionForm">
@@ -58,9 +58,9 @@
         <div class="col-md-5" oncopy="return false;">
             <h2 class="pull-left" data-ng-show="text.audioFileName && audioReady">
                 <a data-sgw-sound-player data-href="audioPlayUrl" data-sgw-state="state">
-                    <i data-ng-class="$parent.audioIcon()" data-tooltip="Play audio"></i></a>
+                    <i data-ng-class="$parent.audioIcon()" uib-tooltip="Play audio"></i></a>
                 <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
-                    <i class="icon-download" data-tooltip="Download audio"></i></a>
+                    <i class="fa fa-download" uib-tooltip="Download audio"></i></a>
             </h2>
             <h2>{{text.title}}</h2>
             <div id="text" style="font-family: {{text.fontfamily}}" data-ng-bind-html="text.content"></div>

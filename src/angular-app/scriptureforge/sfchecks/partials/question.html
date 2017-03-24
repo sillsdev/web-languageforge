@@ -1,9 +1,9 @@
 <div class="col-md-5" oncopy="return false;">
     <h2 class="pull-left" data-ng-show="text.audioFileName && audioReady">
         <a data-sgw-sound-player data-href="audioPlayUrl" data-sgw-state="state">
-            <i data-ng-class="$parent.audioIcon()" data-tooltip="Play audio"></i></a>
+            <i data-ng-class="$parent.audioIcon()" uib-tooltip="Play audio"></i></a>
         <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
-            <i class="fa fa-download" data-tooltip="Download audio"></i></a>
+            <i class="fa fa-download" uib-tooltip="Download audio"></i></a>
     </h2>
     <h2>{{text.title}}</h2>
     <div id="text" style="font-family: {{text.fontfamily}}" data-sil-selection data-sil-selected-text="selectedText" content="text.content"></div>
@@ -100,10 +100,10 @@
                                 data-ng-click="answerDelete(answerId)">delete</a>&nbsp;&nbsp;
                             <a href data-ng-show="rightsExport() && !questionIsClosed()"
                                 data-ng-click="flagForExport(answer)">
-                                <i data-ng-show="answer.isToBeExported" class="fa fa-flag" data-tooltip="Flagged for export"
+                                <i data-ng-show="answer.isToBeExported" class="fa fa-flag" uib-tooltip="Flagged for export"
                                     style="color: red"></i>
                                 <i data-ng-show="!answer.isToBeExported" class="fa fa-flag-o"
-                                    data-tooltip="Click to flag for export"></i></a>
+                                    uib-tooltip="Click to flag for export"></i></a>
                         </div>
                         <div data-ng-switch data-on="answerEditorVisible(answerId)">
                             <form data-ng-submit="editAnswer(editedAnswer)" data-ng-switch-when="true">
