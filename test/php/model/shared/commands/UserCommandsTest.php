@@ -58,6 +58,11 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         UserCommands::deleteUsers(array($userId));
     }
 
+    // TODO: When we upgrade PHPUnit, also migrate @expectedException calls to
+    // $this->expectException(InvalidArgumentException::class);
+    // See https://phpunit.de/manual/current/en/writing-tests-for-phpunit.html#writing-tests-for-phpunit.exceptions.examples.ExceptionTest.php
+    // 2017-03-27
+
     /**
      * @expectedException Exception
      */

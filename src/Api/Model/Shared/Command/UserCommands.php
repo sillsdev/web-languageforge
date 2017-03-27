@@ -61,10 +61,7 @@ class UserCommands
      */
     public static function updateUser($params, $website)
     {
-        $user = new UserModel();
-        if ($params['id']) {
-            $user->read($params['id']);
-        }
+        $user = new UserModel($params['id']);
 
         if (array_key_exists('username', $params)) {
             $params['username'] = UserCommands::sanitizeInput($params['username']);
@@ -255,25 +252,13 @@ class UserCommands
      * System Admin: Create a user with default site role.
      * @param string $params
      * @param Website $website
-     * @return boolean|string userId of the new user
+     * @return string {captchaFail, login, emailNotAvailable}
      */
     public static function createUser($params, $website)
     {
-        $user = new UserModelWithPassword();
-        if (array_key_exists('username', $params)) {
-            $params['username'] = UserCommands::sanitizeInput($params['username']);
-        }
-        if (array_key_exists('email', $params)) {
-            $params['email'] = UserCommands::sanitizeInput($params['email']);
-        }
-
-        $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
-        if (UserCommands::checkUniqueIdentity($user, $params['username'], $params['email']) == 'ok') {
-            $user->setPassword($params['password']);
-            $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
-            return $user->write();
-        }
-        return false;
+        $captchaInfo = array();
+        $captchaInfo['code'] = $params['captcha'] = 'captcha';
+        return self::register($params, $website, $captchaInfo);
     }
 
     /**
