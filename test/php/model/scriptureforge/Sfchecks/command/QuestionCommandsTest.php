@@ -6,7 +6,7 @@ use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\CommentModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class UserVoteTestEnvironment
 {
@@ -66,9 +66,9 @@ class UserVoteTestEnvironment
     }
 }
 
-class QuestionCommandsTest extends PHPUnit_Framework_TestCase
+class QuestionCommandsTest extends TestCase
 {
-    public function testDeleteQuestions_NoThrow()
+    public function testDeleteQuestions_1Question_1Deleted()
     {
         $environ = new MongoTestEnvironment();
         $environ->clean();
@@ -85,7 +85,7 @@ class QuestionCommandsTest extends PHPUnit_Framework_TestCase
         $question->write();
 
         $questionId = $question->id->asString();
-        QuestionCommands::deleteQuestions($projectId, array($questionId));
+        $this->assertEquals(1, QuestionCommands::deleteQuestions($projectId, array($questionId)));
     }
 
     public function testArchiveQuestions_2Questions_1Archived()

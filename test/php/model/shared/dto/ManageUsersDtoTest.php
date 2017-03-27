@@ -4,9 +4,9 @@ use Api\Model\Shared\Dto\ManageUsersDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ManageUsersDtoTest extends PHPUnit_Framework_TestCase
+class ManageUsersDtoTest extends TestCase
 {
     public function testEncode_ProjectWithUser_DtoCorrect()
     {

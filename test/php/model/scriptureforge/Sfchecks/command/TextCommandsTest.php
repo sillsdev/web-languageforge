@@ -2,9 +2,9 @@
 
 use Api\Model\Scriptureforge\Sfchecks\Command\TextCommands;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class TextCommandsTest extends PHPUnit_Framework_TestCase
+class TextCommandsTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -15,14 +15,14 @@ class TextCommandsTest extends PHPUnit_Framework_TestCase
         self::$environ->clean();
     }
 
-    public function testDeleteTexts_NoThrow()
+    public function testDeleteTexts_1Text_1Delete()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $text = new TextModel($project);
         $text->title = 'Some Title';
         $text->write();
 
-        TextCommands::deleteTexts($project->id->asString(), array($text->id->asString()));
+        $this->assertEquals(1, TextCommands::deleteTexts($project->id->asString(), array($text->id->asString())));
     }
 
     public function testArchiveTexts_1Text_1Removed()

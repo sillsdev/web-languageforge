@@ -3,7 +3,7 @@
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class TestCodec extends UserModel
 {
@@ -55,7 +55,7 @@ class Orange extends Fruit
     public $peelThickness;
 }
 
-class MongoEncoderDecoderTest extends PHPUnit_Framework_TestCase
+class MongoEncoderDecoderTest extends TestCase
 {
     public function testMapOf_OneClass_Works()
     {

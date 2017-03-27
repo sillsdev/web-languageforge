@@ -7,7 +7,7 @@ use Api\Library\Shared\Website;
 use Api\Model\Shared\MessageModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UnreadMessageModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class MockCommunicateDelivery implements DeliveryInterface
 {
@@ -33,7 +33,7 @@ class MockCommunicateDelivery implements DeliveryInterface
     }
 }
 
-class CommunicateTest extends PHPUnit_Framework_TestCase
+class CommunicateTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -43,12 +43,11 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         self::$environ = new MongoTestEnvironment();
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage 'email from address' should not evaluate to false
-     */
     public function testCommunicateToUser_NoFromAddress_Exception()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('\'email from address\' should not evaluate to false');
+
         self::$environ->clean();
         $userId = self::$environ->createUser('User', 'Name', 'name@example.com');
         $user = new UserModel($userId);
@@ -73,14 +72,14 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
     {
         // restore error display after last test
         self::$environ->restoreErrorDisplay();
+        $this->assertEquals(1, ini_get('display_errors'));
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage 'email to address' should not evaluate to false
-     */
     public function testCommunicateToUser_NoToAddress_Exception()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('\'email to address\' should not evaluate to false');
+
         self::$environ->clean();
         $userId = self::$environ->createUser('User', 'Name', '');
         $user = new UserModel($userId);
@@ -105,6 +104,7 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
     {
         // restore error display after last test
         self::$environ->restoreErrorDisplay();
+        $this->assertEquals(1, ini_get('display_errors'));
     }
 
     public function testCommunicateToUser_SendEmail_PropertiesToFromMessageOk()

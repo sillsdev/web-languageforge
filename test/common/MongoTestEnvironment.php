@@ -28,9 +28,6 @@ class MongoTestEnvironment
     /** @var MongoDB */
     private $db;
 
-    /** @var string */
-    protected $displayErrors;
-
     /** @var array Local store of 'uploaded' filepaths */
     protected $uploadFilePaths;
 
@@ -279,13 +276,12 @@ class MongoTestEnvironment
 
     public function inhibitErrorDisplay()
     {
-        $this->displayErrors = ini_get('display_errors');
-        ini_set('display_errors', false);
+        ini_set('display_errors', 0);
     }
 
     public function restoreErrorDisplay()
     {
-        ini_set('display_errors', $this->displayErrors);
+        ini_set('display_errors', 1);
     }
 
     public function fixJson($input)

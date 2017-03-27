@@ -3,9 +3,9 @@
 use Api\Model\Languageforge\Lexicon\Command\LexCommentCommands;
 use Api\Model\Languageforge\Lexicon\LexCommentModel;
 use Api\Model\Languageforge\Lexicon\LexCommentListModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LexCommentCommandsTest extends PHPUnit_Framework_TestCase
+class LexCommentCommandsTest extends TestCase
 {
     /** @var mixed[] Data storage between tests */
     private static $save;
@@ -290,11 +290,10 @@ class LexCommentCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(LexCommentModel::STATUS_RESOLVED, $comment->status);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testUpdateCommentStatus_InvalidStatus_Exception()
     {
+        $this->expectException(Exception::class);
+
         $environ = new LexiconMongoTestEnvironment();
         $environ->clean();
 

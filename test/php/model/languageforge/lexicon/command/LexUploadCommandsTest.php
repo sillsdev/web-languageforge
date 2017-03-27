@@ -5,9 +5,9 @@ use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
 use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
+class LexUploadCommandsTest extends TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -236,11 +236,10 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(file_exists($filePath), 'Image file should be deleted');
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testDeleteMediaFile_UnsupportedMediaType_Exception()
     {
+        $this->expectException(Exception::class);
+
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
         self::$environ->inhibitErrorDisplay();
@@ -256,6 +255,7 @@ class LexUploadCommandsTest extends PHPUnit_Framework_TestCase
     {
         // restore error display after last test
         self::$environ->restoreErrorDisplay();
+        $this->assertEquals(1, ini_get('display_errors'));
     }
 
     public function testImportProjectZip_ZipFile_StatsOkInputSystemsImported()
