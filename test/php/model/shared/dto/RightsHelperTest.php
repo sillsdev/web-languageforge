@@ -5,9 +5,9 @@ use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class RightsHelperTest extends PHPUnit_Framework_TestCase
+class RightsHelperTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -26,11 +26,10 @@ class RightsHelperTest extends PHPUnit_Framework_TestCase
         self::$environ->clean();
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testuserCanAccessMethod_unknownMethodName_Exception()
     {
+        $this->expectException(Exception::class);
+
         $userId = self::$environ->createUser('user', 'user', 'user@user.com', SystemRoles::USER);
         $rh = new RightsHelper($userId, null, self::$environ->website);
         self::$environ->inhibitErrorDisplay();
@@ -46,6 +45,7 @@ class RightsHelperTest extends PHPUnit_Framework_TestCase
     {
         // restore error display after last test
         self::$environ->restoreErrorDisplay();
+        $this->assertEquals(1, ini_get('display_errors'));
     }
 
     public function testUserCanAccessMethod_projectSettings_projectManager_true()
