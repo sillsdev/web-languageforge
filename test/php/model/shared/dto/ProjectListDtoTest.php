@@ -5,9 +5,9 @@ use Api\Model\Shared\Dto\ProjectListDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ProjectListDtoTest extends PHPUnit_Framework_TestCase
+class ProjectListDtoTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;

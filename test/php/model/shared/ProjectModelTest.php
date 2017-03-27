@@ -6,9 +6,9 @@ use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ProjectModelTest extends PHPUnit_Framework_TestCase
+class ProjectModelTest extends TestCase
 {
     private static $savedProjectId;
 
@@ -183,11 +183,10 @@ class ProjectModelTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('sf_some_project', $result);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testHasRight_Exception()
     {
+        $this->expectException(Exception::class);
+
         $userId = MongoTestEnvironment::mockId();
         $project = new ProjectModel();
         $project->addUser($userId, ProjectRoles::MANAGER);
@@ -196,11 +195,10 @@ class ProjectModelTest extends PHPUnit_Framework_TestCase
         $project->hasRight($userId, Domain::QUESTIONS + Operation::CREATE);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testGetRolesList_Exception()
     {
+        $this->expectException(Exception::class);
+
         $userId = MongoTestEnvironment::mockId();
         $project = new ProjectModel();
         $project->addUser($userId, ProjectRoles::MANAGER);
@@ -209,15 +207,14 @@ class ProjectModelTest extends PHPUnit_Framework_TestCase
         $project->getRolesList();
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testGetRightsArray_Exception()
     {
+        $this->expectException(Exception::class);
+
         $userId = MongoTestEnvironment::mockId();
         $project = new ProjectModel();
         $project->addUser($userId, ProjectRoles::MANAGER);
-        
+
         // rolesClass undefined in base ProjectModel
         $project->getRightsArray($userId);
     }

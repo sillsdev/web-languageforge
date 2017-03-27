@@ -12,7 +12,7 @@ use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class ApiCrudTestEnvironment extends MongoTestEnvironment
 {
@@ -68,11 +68,11 @@ class ApiCrudTestEnvironment extends MongoTestEnvironment
     }
 }
 
-class ApiCrudTest extends PHPUnit_Framework_TestCase
+class ApiCrudTest extends TestCase
 {
     /** @var ApiCrudTestEnvironment */
     public static $environ;
-    
+
     public function setUp()
     {
         self::$environ = new ApiCrudTestEnvironment();
