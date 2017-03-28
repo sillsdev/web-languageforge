@@ -108,10 +108,7 @@ class Auth extends App
     public static function resetPassword(Application $app, $resetPasswordKey = '', $newPassword = '')
     {
         $user = new UserModel();
-        if (!$user->active) {
-            $app['session']->getFlashbag()->add('errorMessage', 'Access denied');
-            return false;
-        }
+
         if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
             $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
             return false;
