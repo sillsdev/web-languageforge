@@ -101,7 +101,7 @@
                     <div>
                         <label for="_role">System Role</label>
                         <select class="form-control" id="_role" required data-ng-model="record.role"
-                              data-ng-options="key as role.name for (key, role) in roles"></select>
+                              data-ng-disabled="vars.state=='add'" data-ng-options="key as role.name for (key, role) in roles"></select>
                     </div>
                     <br />
                     <div>
