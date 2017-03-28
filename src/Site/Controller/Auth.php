@@ -82,12 +82,14 @@ class Auth extends App
         $errorMsg = $app['security.last_error']($request);
         if ($errorMsg == 'Bad credentials.') {
             $user = new UserModel();
-            if (!$user->active) {
+            if ($user->readByUsernameOrEmail($this->data['last_username']) &&
+                !$user->active) {
                 $errorMsg = 'Your account has been deactivated';
             } else {
                 $errorMsg = 'Invalid username or password.';
             }
         }
+
         if ($errorMsg) {
             $app['session']->getFlashBag()->add('errorMessage', $errorMsg);
             if ($app['session']->has(Security::AUTHENTICATION_ERROR)) {
