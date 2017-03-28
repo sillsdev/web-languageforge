@@ -4,8 +4,8 @@ angular.module('siteadmin', [
   'ngRoute', 'sfAdmin.filters', 'sfAdmin.services', 'sfAdmin.directives', 'bellows.services',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'ui.bootstrap', 'palaso.ui.utils'
 ])
-  .controller('UserCtrl', ['$scope', 'userService', 'silNoticeService',
-  function ($scope, userService, notice) {
+  .controller('UserCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
+  function ($scope, userService, sessionService, notice) {
     $scope.filterUsers = '';
     $scope.vars = {
       selectedIndex: -1,
@@ -15,6 +15,8 @@ angular.module('siteadmin', [
       showPasswordForm: false,
       state: 'add' // can be either "add" or "update"
     };
+
+    $scope.userId = sessionService.session.userId;
 
     $scope.focusInput = function () {
       $scope.vars.inputfocus = true;
@@ -63,7 +65,7 @@ angular.module('siteadmin', [
       } else {
         $scope.vars.record = record;
         $scope.vars.editButtonName = 'Save';
-        $scope.vars.editButtonIcon = 'check';
+        $scope.vars.editButtonIcon = 'floppy-o';
         $scope.vars.state = 'update';
         $scope.hidePasswordForm();
       }
@@ -124,23 +126,12 @@ angular.module('siteadmin', [
 
     // Check for unique username and email
     $scope.checkUniqueUser = function () {
-      if (($scope.record.username) &&
-        ($scope.record.email)) {
+      if (($scope.record.username) && ($scope.record.email)) {
         $scope.uniqueUserState = 'loading';
         userService.checkUniqueIdentity($scope.record.id, $scope.record.username,
           $scope.record.email, function (result) {
             if (result.ok) {
-              if (result.data.usernameExists &&
-                !result.data.usernameMatchesAccount) {
-                $scope.uniqueUserState = 'usernameExists';
-                if (result.data.emailExists && !result.data.emailMatchesAccount) {
-                  $scope.uniqueUserState = 'usernameAndEmailExists';
-                }
-              } else if (result.data.emailExists && !result.data.emailMatchesAccount) {
-                $scope.uniqueUserState = 'emailExists';
-              } else {
-                $scope.uniqueUserState = 'ok';
-              }
+              $scope.uniqueUserState = result.data;
             }
           }
         );
@@ -214,6 +205,25 @@ angular.module('siteadmin', [
         }
 
         // Whether result was OK or error, wipe selected list and reload data
+        $scope.selected = [];
+        $scope.vars.selectedIndex = -1;
+        $scope.vars.editButtonName = [];
+        $scope.record = {};
+        $scope.queryUsers(true);
+      });
+    };
+
+    $scope.banUser = function (record) {
+      userService.ban(record.id, function (result) {
+        if (result.ok) {
+          if (result.data != false) {
+            notice.push(notice.SUCCESS, 'The user ' + record.username + ' was banned');
+          } else {
+            notice.push(notice.ERROR, 'Error banning ' + record.username);
+          }
+        }
+
+        // wipe selected list and reload data
         $scope.selected = [];
         $scope.vars.selectedIndex = -1;
         $scope.vars.editButtonName = [];

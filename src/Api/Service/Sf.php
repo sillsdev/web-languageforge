@@ -122,6 +122,17 @@ class Sf
     }
 
     /**
+     * Ban a User from the given $id
+     *
+     * @params string $id
+     * @return string Id of banned user
+     */
+    public function user_ban($id)
+    {
+        return UserCommands::banUser($id);
+    }
+
+    /**
      * Create/Update a User
      *
      * @param array $params (encoded UserModel)
@@ -194,13 +205,6 @@ class Sf
         return Auth::resetPassword($this->app, $resetPasswordKey, $newPassword);
     }
 
-    public function identity_check($username, $email)
-    {
-        // intentionally we have no security here: people can see what users exist by trial and error
-        $identityCheck = UserCommands::checkIdentity($username, $email, $this->website);
-        return JsonEncoder::encode($identityCheck);
-    }
-
     public function check_unique_identity($userId, $updatedUsername, $updatedEmail)
     {
         if ($userId) {
@@ -208,8 +212,7 @@ class Sf
         } else {
             $user = new UserModel();
         }
-        $identityCheck = UserCommands::checkUniqueIdentity($user, $updatedUsername, $updatedEmail);
-        return JsonEncoder::encode($identityCheck);
+        return UserCommands::checkUniqueIdentity($user, $updatedUsername, $updatedEmail);
     }
 
     /**

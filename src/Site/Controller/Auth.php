@@ -10,7 +10,6 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\SecurityContextInterface;
 
 defined('ENVIRONMENT') or exit('No direct script access allowed');
 
@@ -54,16 +53,17 @@ class Auth extends App
 
     public function forgotPassword(Request $request, Application $app)
     {
-        $usernameOrEmail = $request->request->get('_username');
+        $usernameOrEmail = UserCommands::sanitizeInput($request->request->get('_username'));
         $user = new UserModel();
         if (!$user->readByUsernameOrEmail($usernameOrEmail)) {
             $app['session']->getFlashBag()->add('errorMessage', 'User not found.');
             return $this->view($request, $app, 'forgot_password');
+        } else if (!$user->active) {
+            $app['session']->getFlashBag()->add('errorMessage', 'Access denied.');
+            return $this->view($request, $app, 'forgot_password');
         }
 
-        $identityCheck = UserCommands::checkIdentity($user->username, $user->email, $this->website);
-
-        if (! $identityCheck->usernameExistsOnThisSite) {
+        if (!$user->hasRoleOnSite($this->website)) {
             $user->siteRole[$this->website->domain] = $this->website->userDefaultSiteRole;
         }
 
@@ -80,11 +80,20 @@ class Auth extends App
     {
         $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
         $errorMsg = $app['security.last_error']($request);
-        if($errorMsg == 'Bad credentials.') $errorMsg = 'Invalid username or password.';
+        if ($errorMsg == 'Bad credentials.') {
+            $user = new UserModel();
+            if ($user->readByUsernameOrEmail($this->data['last_username']) &&
+                !$user->active) {
+                $errorMsg = 'Your account has been deactivated';
+            } else {
+                $errorMsg = 'Invalid username or password.';
+            }
+        }
+
         if ($errorMsg) {
             $app['session']->getFlashBag()->add('errorMessage', $errorMsg);
-            if ($app['session']->has(SecurityContextInterface::AUTHENTICATION_ERROR)) {
-                $app['session']->remove(SecurityContextInterface::AUTHENTICATION_ERROR);
+            if ($app['session']->has(Security::AUTHENTICATION_ERROR)) {
+                $app['session']->remove(Security::AUTHENTICATION_ERROR);
             }
         }
     }
@@ -99,6 +108,10 @@ class Auth extends App
     public static function resetPassword(Application $app, $resetPasswordKey = '', $newPassword = '')
     {
         $user = new UserModel();
+        if (!$user->active) {
+            $app['session']->getFlashbag()->add('errorMessage', 'Access denied');
+            return false;
+        }
         if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
             $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
             return false;
