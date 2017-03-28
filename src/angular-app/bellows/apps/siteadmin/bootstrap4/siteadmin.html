@@ -56,7 +56,7 @@
                     <legend>User data</legend>
                     <hr/>
                     <div class="card card-block bg-faded">
-                        <label>User Name</label>
+                        <label>Username</label>
                         <div class="input-group">
                             <input data-idle-validate="checkUniqueUser()"
                                  class="form-control"
@@ -71,10 +71,9 @@
                             </span>
                         </div>
                         <div>
-                            <label>Name</label>
-                            <input data-idle-valid
+                            <label>Full Name</label>
+                            <input data-idle-validate="checkUniqueUser()"
                                  class="form-control"
-                                 ate="checkUniqueUser()"
                                  data-idle-validate-keypress="resetValidateUserForm()"
                                  data-idle-validate-msec="500"
                                  required type="text" placeholder="(your name here)"
@@ -102,35 +101,52 @@
                     <div>
                         <label for="_role">System Role</label>
                         <select class="form-control" id="_role" required data-ng-model="record.role"
-                              data-ng-options="key as role.name for (key, role) in roles"></select>
+                              data-ng-disabled="vars.state=='add'" data-ng-options="key as role.name for (key, role) in roles"></select>
                     </div>
                     <br />
                     <div>
                         <label style="margin-bottom:20px">Site Roles: </label>
                         <pre class="card card-block bg-faded"><code>{{record.siteRole|json}}</code></pre>
                     </div>
-                    <div>
-                        <label style="margin-bottom:20px">
-                            <input data-ng-click="checkUniqueUser()" type="checkbox" data-ng-model="record.active"/> Is Active
-                        </label>
-                    </div>
                     <a data-ng-show="vars.state == 'update'" href="" data-ng-click="togglePasswordForm(); vars.inputfocus = vars.showPasswordForm">Change {{record.username}}'s password</a>
                     <div data-ng-show="vars.showPasswordForm">
                         <label for="_password">Password</label>
                         <input id="_password" data-idle-validate="checkUniqueUser()"
-                             data-idle-validate-keypress="resetValidateUserForm()" data-idle-validate-msec="500" type="text"
-                             data-ng-model="record.password" data-focus-me="vars.inputfocus" name="password"/>
+                               data-idle-validate-keypress="resetValidateUserForm()" data-idle-validate-msec="500" type="text"
+                               data-ng-model="record.password" data-focus-me="vars.inputfocus" name="password"/>
                     </div>
-                    <table class="table table-hover">
-                        <tr data-ng-show="record.created_on"><td><label style="cursor:default">Created On: {{ record.created_on * 1000 | date:shortDate }}</label></td></tr>
-                        <tr data-ng-show="record.last_login"><td><label style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label></td></tr>
-                    </table>
-                    <button class="btn btn-sm" type="submit" data-ng-disabled="userForm.$invalid || !(uniqueUserState == 'ok')">
-                        <i class="fa fa-{{vars.editButtonIcon}}"></i> {{vars.editButtonName}}
+                    <hr/>
+                    <div>
+                        <label style="cursor:default">User Created On: {{ record.dateCreated | date:shortDate }}</label>
+                        <label data-ng-show="record.last_login" style="cursor:default">Last Login: {{record.last_login * 1000 | date:shortDate}}</label>
+                    </div>
+                    <div>
+                        <button class="btn btn-success" data-ng-disabled="record.active" data-ng-click="checkUniqueUser();record.active = true">
+                            <div class="fa fa-stack">
+                                <i class="fa fa-user fa-lg "></i>
+                            </div>
+                            Activate
+                        </button>
+                        <!--Ban button has a separate API so don't submit the form -->
+                        <button class="btn btn-danger" type="button" data-ng-disabled="vars.record.id==userId || !record.active" data-ng-click="checkUniqueUser();banUser(record)">
+                            <div class="fa fa-stack">
+                                <i class="fa fa-user fa-stack-1x"></i>
+                                <i class="fa fa-ban fa-stack-2x"></i>
+                            </div>
+                            Ban
+                        </button>
+                    </div>
+                    <br />
+                    <button class="btn btn-success" type="submit" data-ng-disabled="userForm.$invalid || !(uniqueUserState == 'ok')">
+                        <div class="fa fa-stack">
+                            <i class="fa fa-lg fa-{{vars.editButtonIcon}}"></i>
+                        </div>
+                        {{vars.editButtonName}}
                     </button>
                 </fieldset>
             </form>
-
+            <br />
+            <hr>
         </div>
         </div>
     </uib-tab>

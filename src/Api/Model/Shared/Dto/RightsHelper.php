@@ -212,6 +212,7 @@ class RightsHelper
             case 'user_list':
                 return $this->userHasSiteRight(Domain::USERS + Operation::VIEW);
 
+            case 'user_ban':
             case 'user_update':
             case 'user_create':
                 return $this->userHasSiteRight(Domain::USERS + Operation::EDIT);
@@ -340,7 +341,7 @@ class RightsHelper
             // xforge frame
             case 'xforge_frame_can_show_page_help_button':
                 return true;
-            
+
             default:
                 throw new \Exception("API method '$methodName' has no security policy defined in RightsHelper::userCanAccessMethod()");
         }
