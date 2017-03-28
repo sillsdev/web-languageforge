@@ -32,7 +32,7 @@ describe('E2E testing: Reset Forgotten Password', function () {
       forgotPasswordPage.get();
       expect(forgotPasswordPage.infoMessages.count()).toBe(0);
       expect(forgotPasswordPage.errors.count()).toBe(0);
-      forgotPasswordPage.usernameInput.sendKeys(constants.notUsedUsername);
+      forgotPasswordPage.usernameInput.sendKeys(constants.unusedUsername);
       forgotPasswordPage.submitButton.click();
       expect(forgotPasswordPage.errors.count()).toBe(1);
       expect(forgotPasswordPage.errors.first().getText()).toContain('User not found');
