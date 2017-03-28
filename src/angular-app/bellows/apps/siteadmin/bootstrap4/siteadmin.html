@@ -61,7 +61,8 @@
                             <input data-idle-validate="checkUniqueUser()"
                                  class="form-control"
                                  data-idle-validate-keypress="resetValidateUserForm()"
-                                 required type="text" placeholder="(username)"
+                                 type="text" placeholder="(username)"
+                                 data-ng-disabled="vars.state=='add'"
                                  data-ng-model="record.username"/>
                             <span class="input-group-addon" data-ng-show="uniqueUserState == 'loading'">
                                 <i id="userNameLoading" class="fa fa-spinner fa-spin"></i>

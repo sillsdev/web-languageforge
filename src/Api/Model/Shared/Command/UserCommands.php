@@ -252,13 +252,18 @@ class UserCommands
      * System Admin: Create a user with default site role.
      * @param string $params
      * @param Website $website
-     * @return string {captchaFail, login, emailNotAvailable}
+     * @return bool|string userId of the new user
      */
     public static function createUser($params, $website)
     {
         $captchaInfo = array();
         $captchaInfo['code'] = $params['captcha'] = 'captcha';
-        return self::register($params, $website, $captchaInfo);
+        if (self::register($params, $website, $captchaInfo) == 'login') {
+          $user = new UserModel();
+          $user->readByUsernameOrEmail($params['email']);
+          return $user->id->asString();
+        }
+        return false;
     }
 
     /**
