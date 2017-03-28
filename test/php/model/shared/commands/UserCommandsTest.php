@@ -209,6 +209,45 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('emailExists', UserCommands::checkUniqueIdentity($zedUser, 'zedUser', 'JOE@SMITH.COM', null));
     }
 
+    public function testCreateUser_NewUser_NotFalse()
+    {
+        self::$environ->clean();
+
+        // setup parameters
+        $params = array(
+            'name' => 'user 1',
+            'email' => 'name@example.com',
+            'password' => 'password');
+
+        $this->assertNotFalse('login', UserCommands::createUser($params, self::$environ->website));
+    }
+
+    public function testCreateUser_SameUser_SameID()
+    {
+        self::$environ->clean();
+        $params = array(
+            'name' => 'user 1',
+            'email' => 'name@example.com',
+            'password' => 'password');
+        $userId = UserCommands::createUser($params, self::$environ->website);
+        $this->assertEquals($userId, UserCommands::createUser($params, self::$environ->website));
+    }
+
+    public function testCreateUser_EmailInUse_False()
+    {
+        self::$environ->clean();
+
+        // setup parameters
+        $params = array(
+            'name' => 'user 1',
+            'email' => 'name@example.com',
+            'password' => 'password');
+        UserCommands::createUser($params, self::$environ->website);
+        $params['password'] = 'differentPassword';
+
+        $this->assertFalse(UserCommands::createUser($params, self::$environ->website));
+    }
+
     public function testCreateSimple_CreateUser_PasswordAndJoinProject()
     {
         self::$environ->clean();

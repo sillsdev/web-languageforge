@@ -126,7 +126,7 @@ angular.module('siteadmin', [
 
     // Check for unique username and email
     $scope.checkUniqueUser = function () {
-      if (($scope.record.username) && ($scope.record.email)) {
+      if ($scope.record.email) {
         $scope.uniqueUserState = 'loading';
         userService.checkUniqueIdentity($scope.record.id, $scope.record.username,
           $scope.record.email, function (result) {
@@ -146,7 +146,7 @@ angular.module('siteadmin', [
         userService.create(record, function (result) {
           if (result.ok) {
             if (result.data) {
-              notice.push(notice.SUCCESS, 'The user ' + record.username +
+              notice.push(notice.SUCCESS, 'The user ' + record.email +
                 ' was successfully added');
             } else {
               notice.push(notice.ERROR, 'API Error: the username/email already exists!' +
