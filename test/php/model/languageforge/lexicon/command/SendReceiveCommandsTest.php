@@ -303,20 +303,10 @@ class SendReceiveCommandsTest extends TestCase
         $projectId = $project->write();
         $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
         $mockCommand = 'mockLFMerge.exe';
-        self::$environ->inhibitErrorDisplay();
 
         SendReceiveCommands::startLFMergeIfRequired($projectId, $mockPidFilePath, $mockCommand);
 
         // nothing runs in the current test function after an exception. IJH 2015-12
-    }
-    /**
-     * @depends testStartLFMergeIfRequired_HasSendReceiveButNoLFMergeExe_Exception
-     */
-    public function testStartLFMergeIfRequired_HasSendReceiveButNoLFMergeExe_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-        $this->assertEquals(1, ini_get('display_errors'));
     }
 
     public function testStartLFMergeIfRequired_HasSendReceiveButNoPidFile_Started()

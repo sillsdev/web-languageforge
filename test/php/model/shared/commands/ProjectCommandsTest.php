@@ -267,7 +267,7 @@ class ProjectCommandsTest extends TestCase
         $this->assertEquals(0, $sameUser3->listProjects(self::$environ->website->domain)->count);
     }
 
-    public function testRemoveUsers_ProjectOwner_NotRemovedFromProject()
+    public function testRemoveUsers_ProjectOwner_NotRemovedFromProject_Exception()
     {
         $this->expectException(Exception::class);
 
@@ -296,7 +296,6 @@ class ProjectCommandsTest extends TestCase
 
         // remove users from project.  user1 still remains as project owner
         $userIds = array($user1->id->asString(), $user2->id->asString());
-        self::$environ->inhibitErrorDisplay();
 
         ProjectCommands::removeUsers($projectId, $userIds);
 
@@ -305,11 +304,8 @@ class ProjectCommandsTest extends TestCase
     /**
      * @depends testRemoveUsers_ProjectOwner_NotRemovedFromProject
      */
-    public function testRemoveUsers_ProjectOwner_NotRemovedFromProject_RestoreErrorDisplay()
+    public function testRemoveUsers_ProjectOwner_NotRemovedFromProject()
     {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-
         // read from disk
         $sameProject = new ProjectModel(self::$save['projectId']);
         $sameUser1 = new UserModel(self::$save['user1Id']);
