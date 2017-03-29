@@ -4,6 +4,7 @@ namespace Api\Model\Languageforge\Translate;
 
 use Api\Model\Languageforge\InputSystem;
 use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\MapOf;
 
 class TranslateConfig
 {
@@ -12,6 +13,9 @@ class TranslateConfig
         $this->source = new TranslateConfigDocType();
         $this->target = new TranslateConfigDocType();
         $this->documentSets = new TranslateConfigDocumentSets();
+        $this->usersPreferences = new MapOf(function () {
+            return new TranslateUserPreferences();
+        });
     }
 
     /** @var TranslateConfigDocType */
@@ -25,6 +29,9 @@ class TranslateConfig
 
     /** @var TranslateConfigDocumentSets */
     public $documentSets;
+
+    /** @var MapOf <TranslateUserPreferences> key is userId */
+    public $usersPreferences;
 }
 
 class TranslateConfigDocType
@@ -49,4 +56,19 @@ class TranslateConfigDocumentSets
 
     /** @var ArrayOf<string $documentSetId> */
     public $idsOrdered;
+}
+
+class TranslateUserPreferences
+{
+    public function __construct()
+    {
+        $this->selectedDocumentSetId = '';
+        $this->isDocumentOrientationTargetRight = false;
+    }
+
+    /** @var string */
+    public $selectedDocumentSetId;
+
+    /** @var boolean */
+    public $isDocumentOrientationTargetRight;
 }
