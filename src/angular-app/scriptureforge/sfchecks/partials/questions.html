@@ -68,7 +68,7 @@
         <div class="col-md-7">
             <listview hide-if-empty="true" search="queryQuestions()"
                 items="questions" visible-items="visibleQuestions" select="">
-                <table class="texts table">
+                <table class="questions table">
                     <tr data-ng-repeat="question in visibleQuestions" data-ng-class="{active: isSelected(question)}">
                         <td>
                             <label data-ng-show="rights.archive">
