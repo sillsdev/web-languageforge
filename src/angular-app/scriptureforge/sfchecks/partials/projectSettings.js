@@ -3,7 +3,16 @@
 angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.services',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'sgw.ui.breadcrumb',
   'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte', 'palaso.ui.picklistEditor',
-  'palaso.ui.runReport', 'palaso.ui.deleteProject', 'ngFileUpload', 'ngRoute'])
+  'palaso.ui.runReport', 'palaso.ui.deleteProject', 'ngFileUpload', 'ngRoute', 'pascalprecht.translate'])
+  .config(['$translateProvider', function($translateProvider) {
+    // configure interface language filepath
+    $translateProvider.useStaticFilesLoader({
+      prefix: '/angular-app/bellows/lang/',
+      suffix: '.json'
+    });
+    $translateProvider.preferredLanguage('en');
+    $translateProvider.useSanitizeValueStrategy('escape');
+  }])
   .controller('ProjectSettingsCtrl', ['$scope', 'breadcrumbService', 'userService',
     'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
     'sfchecksLinkService',

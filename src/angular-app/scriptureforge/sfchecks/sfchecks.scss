@@ -28,15 +28,14 @@ table.texts, table.questions {
   td {
     text-align: center;
     vertical-align: middle;
-
-    label {
-      margin: 0;
-      input {
-        margin: 1em;
-      }
-    }
   }
+}
 
+table label {
+  margin: 0;
+  input {
+    margin: 1em;
+  }
 }
 
 .card {
