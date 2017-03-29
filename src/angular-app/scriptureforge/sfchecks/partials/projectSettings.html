@@ -198,33 +198,37 @@
 </uib-tab>
 <uib-tab heading="User Profile Lists">
     <div data-ng-controller="ProjectSettingsSetupCtrl">
-        <form class="well" data-ng-submit="updateProject()">
-        <div class="row">
-        <div class="span4">
-        <fieldset class="well picklists" id="showInProfileFieldset">
-            <legend>Show in the User's Profile</legend>
-            <ul class="unstyled">
-                <li data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists">
-                    <div class="checkbox"><!--suppress HtmlFormInputWithoutLabel -->
-                        <input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>
-                        {{list.name}}</div></li>
-            </ul>
-        </fieldset>
-        <fieldset class="well picklists" id="editListValuesFieldset">
-            <legend>Edit list values</legend>
-            <ul class="unstyled">
-                <li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists" data-ng-class="{selected:currentListId == listId}">{{list.name}}</li>
-            </ul>
-        </fieldset>
-        <button id="user_profile_lists_save_button" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
-        <span data-ng-show="unsavedChanges" class="unsaved-warning" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
-        </div><div class="span4">
-        <fieldset class="well" id="picklistEditorFieldset">
-            <legend style="width:auto;">{{project.userProperties.userProfilePickLists[currentListId].name}}</legend>
-            <picklist-editor items="project.userProperties.userProfilePickLists[currentListId].items" default-key="project.userProperties.userProfilePickLists[currentListId].defaultKey"></picklist-editor>
-        </fieldset>
-        </div>
-        </div>
+        <form data-ng-submit="updateProject()">
+            <div class="col-md-4">
+                <fieldset class="card fieldset picklists" id="showInProfileFieldset">
+                    <legend>Show in the User's Profile</legend>
+                    <ul class="list-unstyled indent1">
+                        <li data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists">
+                            <label class="checkbox"><!--suppress HtmlFormInputWithoutLabel -->
+                                <input data-ng-model="currentListsEnabled[listId]" type="checkbox"/>
+                                {{list.name}}</label></li>
+                    </ul>
+                </fieldset>
+                <fieldset class="card fieldset picklists" id="editListValuesFieldset">
+                    <legend>Edit list values</legend>
+                    <ul class="list-unstyled indent1">
+                        <li data-ng-click="selectList(listId)" data-ng-repeat="(listId, list) in project.userProperties.userProfilePickLists"
+                            data-ng-class="{selected:currentListId == listId}">
+                            <a href>{{list.name}}</a>
+                        </li>
+                    </ul>
+                </fieldset>
+                <button id="user_profile_lists_save_button" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                <span data-ng-show="unsavedChanges" class="unsaved-warning" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
+            </div>
+            <div class="col-md-4">
+                <fieldset class="card fieldset" id="picklistEditorFieldset">
+                    <legend>{{project.userProperties.userProfilePickLists[currentListId].name}}</legend>
+                    <div class="card-block">
+                        <picklist-editor items="project.userProperties.userProfilePickLists[currentListId].items" default-key="project.userProperties.userProfilePickLists[currentListId].defaultKey"></picklist-editor>
+                    </div>
+                </fieldset>
+            </div>
         </form>
     </div>
 </uib-tab>

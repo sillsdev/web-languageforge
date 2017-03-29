@@ -369,3 +369,12 @@ $vote-width: 2em;
 .audio-buttons {
   margin-right: 0.5em;
 }
+
+.fieldset {
+  legend {
+    width: auto;
+    padding-right: 0.25em;
+    padding-left: 0.25em;
+    margin-left: 1em;
+  }
+}
