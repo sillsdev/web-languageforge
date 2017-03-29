@@ -16,7 +16,7 @@
             <i class="fa fa-plus"></i> Add New Question
         </button>
         <a id="text_settings_button" data-ng-show="rights.editOther"
-            class="btn pull-right" data-ng-href="#/{{textId}}/settings">
+            class="btn btn-secondary pull-right" data-ng-href="#/{{textId}}/settings">
             <i class="fa fa-cog fa-lg" uib-tooltip="Text Settings"></i></a>
     </form>
     <div class="new-item" uib-collapse="newQuestionCollapsed">
@@ -56,7 +56,7 @@
     <hr />
     <div class="row">
         <div class="col-md-5" oncopy="return false;">
-            <h2 class="pull-left" data-ng-show="text.audioFileName && audioReady">
+            <h2 class="pull-left audio-buttons" data-ng-show="text.audioFileName && audioReady">
                 <a data-sgw-sound-player href="audioPlayUrl" data-sgw-state="state">
                     <i data-ng-class="audioIcon()" uib-tooltip="Play audio"></i></a>
                 <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
