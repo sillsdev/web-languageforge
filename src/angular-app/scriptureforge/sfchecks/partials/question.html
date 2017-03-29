@@ -1,9 +1,9 @@
 <div class="col-md-5" oncopy="return false;">
-    <h2 class="pull-left" data-ng-show="text.audioFileName && audioReady">
-        <a data-sgw-sound-player data-href="audioPlayUrl" data-sgw-state="state">
-            <i data-ng-class="$parent.audioIcon()" uib-tooltip="Play audio"></i></a>
+    <h2 class="pull-left audio-buttons" data-ng-show="text.audioFileName && audioReady">
+        <a data-sgw-sound-player href="audioPlayUrl" data-sgw-state="state">
+            <i data-ng-class="audioIcon()" uib-tooltip="Play audio"></i></a>
         <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
-            <i class="fa fa-download" uib-tooltip="Download audio"></i></a>
+            <i class="fa fa-arrow-circle-o-down" uib-tooltip="Download audio"></i></a>
     </h2>
     <h2>{{text.title}}</h2>
     <div id="text" style="font-family: {{text.fontfamily}}" data-sil-selection data-sil-selected-text="selectedText" content="text.content"></div>

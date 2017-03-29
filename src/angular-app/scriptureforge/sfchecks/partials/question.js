@@ -24,9 +24,9 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
 
     $scope.audioIcon = function () {
       var map = {
-        stop: 'icon-volume-up',
-        play: 'icon-pause',
-        pause: 'icon-play'
+        stop: 'fa fa-volume-up',
+        play: 'fa fa-pause',
+        pause: 'fa fa-play'
       };
       return map[$scope.state];
     };
