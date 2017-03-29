@@ -101,6 +101,79 @@ class UserCommandsTest extends TestCase
         $this->assertFalse($user->active);
     }
 
+    public function testUpdateUserProfile_OtherUsername_FalseNoUpdate()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'jsmith',
+            'email' => 'zed@example.com',
+            'avatar_ref' => 'joe.png'
+        );
+        $zed = new UserModel($zedId);
+        $this->assertEquals($zed->avatar_ref, $zed->username . '.png');
+
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $zed = new UserModel($zedId);
+        $this->assertNotEquals($params['avatar_ref'], $zed->avatar_ref);
+    }
+
+    public function testUpdateUserProfile_OtherEmail_FalseNoUpdate()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'zedUser',
+            'email' => 'joe@smith.com');
+        $zed = new UserModel($zedId);
+        $this->assertEquals('zed@example.com', $zed->email);
+
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $zed = new UserModel($zedId);
+        $this->assertNotEquals($params['email'], $zed->email);
+    }
+
+    public function testUpdateUserProfile_OtherUsernameOtherEmail_False()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $user2Id = self::$environ->createUser('janedoe', 'jane doe', 'jane@doe.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'janedoe',
+            'email' => 'joe@smith.com'
+        );
+
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $zed = new UserModel($zedId);
+        $this->assertNotEquals($params['username'], $zed->username);
+        $this->assertNotEquals($params['email'], $zed->email);
+    }
+
+    public function testUpdateUserProfile_NewUsernameEmail_UsernameEmailChanged()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'jsmith',
+            'email' => 'joe@smith.com'
+        );
+        $this->assertEquals('login', UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $zed = new UserModel($zedId);
+        $this->assertEquals('jsmith', $zed->username);
+        $this->assertEquals('joe@smith.com', $zed->email);
+    }
+
     public function testUpdateUserProfile_SetLangCode_LangCodeSet()
     {
         self::$environ->clean();
@@ -108,11 +181,13 @@ class UserCommandsTest extends TestCase
         // setup parameters
         $userId = self::$environ->createUser('username', 'name', 'name@example.com');
         $params = array(
-            'id' => '',
+            'id' => $userId,
+            'username' => 'username',
+            'email' => 'name@example.com',
             'interfaceLanguageCode' => 'th'
         );
 
-        $newUserId = UserCommands::updateUserProfile($params, $userId);
+        $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
 
         // user profile updated
         $user = new UserModel($newUserId);
