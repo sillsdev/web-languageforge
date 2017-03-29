@@ -68,32 +68,32 @@
         <uib-tab heading="Archived Questions">
             <div data-ng-controller="TextSettingsArchivedQuestionsCtrl">
                 <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-                    <button data-ng-disabled="selected.length == 0"
+                    <button class="btn btn-success"
+                            data-ng-disabled="selected.length == 0"
                             data-ng-show="rights.archive" class="btn"
                             data-ng-click="publishQuestions()">
-                        <i class="fa fa-globe fa-lg"></i>Re-publish Questions
+                        <i class="fa fa-globe fa-lg"></i> Re-publish Questions
                     </button>
                 </form>
                 <hr />
                 <listview hide-if-empty="true" search="queryTextSettings()"
                           items="settings.archivedQuestions"
                           visible-items="visibleArchivedQuestions" select="">
-                    <div data-ng-repeat="question in visibleArchivedQuestions"
-                         class="details-row">
-                        <ul class="inline" data-ng-class="{active: isSelected(question)}">
-                            <li data-ng-show="rights.archive">
-                                <label><input type="checkbox" data-ng-click="updateSelection($event, question)" /></label></li>
-                            <li><a class="span5" data-ng-href="{{question.url}}">
-                                <span class="larger-text">{{question.calculatedTitle}}</span></a></li>
-                            <li><a data-ng-href="{{question.url}}">
-                                <div class="attention-block">
-                                    <span class="subtitle">{{question.answerCount}} answers</span>
-                                </div></a></li>
-                            <li>{{question.responseCount}} responses</li>
-                            <li>Archived on {{question.dateModified | date:'fullDate'}}</li>
-                        </ul>
-                        <hr />
-                    </div>
+                    <table class="questions">
+                        <tr data-ng-repeat="question in visibleArchivedQuestions"
+                             class="details-row" data-ng-class="{active: isSelected(question)}">
+                                <td data-ng-show="rights.archive">
+                                    <label><input type="checkbox" data-ng-click="updateSelection($event, question)" /></label></td>
+                                <td><a class="span5" data-ng-href="{{question.url}}">
+                                    <span class="larger-text">{{question.calculatedTitle}}</span></a></td>
+                                <td><a class="attention-block" data-ng-href="{{question.url}}">
+                                        {{question.answerCount}} answers
+                                    </a></td>
+                                <td>{{question.responseCount}} responses</td>
+                                <td>Archived on {{question.dateModified | date:'fullDate'}}</td>
+                            <hr />
+                        </tr>
+                    </table>
                 </listview>
             </div>
         </uib-tab>
@@ -104,7 +104,7 @@
                     <h4>Drop an MP3 file here</h4>
                     <br/>
                     <p>or if you prefer...</p>
-                    <div class="btn" id="browseButton" data-ngf-select="uploadAudio($file)">Browse...</div>
+                    <button class="btn btn-success" id="browseButton" data-ngf-select="uploadAudio($file)">Browse...</button>
                 </div>
                 <div data-ngf-no-file-drop>
                     <div class="btn" data-ngf-select="uploadAudio($file)">Browse...</div>
@@ -129,7 +129,8 @@
                     <label><input type="checkbox" name="exportFlagged"
                                   data-ng-model="exportConfig.exportFlagged" />
                         Only export flagged Answers</label>
-                    <button data-ng-disabled="exportForm.$invalid || download.inprogress"
+                    <button class="btn btn-success"
+                            data-ng-disabled="exportForm.$invalid || download.inprogress"
                             data-ng-click="startExport()" class="btn">
                         Prepare Export</button>
                     <span data-ng-show="download.inprogress">
