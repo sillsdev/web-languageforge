@@ -272,15 +272,15 @@ class FactoryReset
             print "\nCreating local user: admin, password: password\n";
             if ($runForReal) {
                 $languageforgeWebsite = Website::get('languageforge.org');
-                $adminUser = UserCommands::createUser(array(
+                $params = array(
                     'username' => 'admin',
                     'name' => 'Admin',
                     'email' => 'admin@example.com',
                     'password' => 'password',
-                    'role' => SystemRoles::SYSTEM_ADMIN,
-                    'active' => true),
-                    $languageforgeWebsite
-                );
+                    'role' => SystemRoles::SYSTEM_ADMIN);
+                $adminUserId = UserCommands::createUser($params,$languageforgeWebsite);
+                $params['id'] = $adminUserId;
+                UserCommands::updateUser($params, $languageforgeWebsite);
             }
         }
     }
