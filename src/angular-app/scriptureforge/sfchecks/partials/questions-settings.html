@@ -75,7 +75,6 @@
                         <i class="fa fa-globe fa-lg"></i> Re-publish Questions
                     </button>
                 </form>
-                <hr />
                 <listview hide-if-empty="true" search="queryTextSettings()"
                           items="settings.archivedQuestions"
                           visible-items="visibleArchivedQuestions" select="">
@@ -124,11 +123,14 @@
                 <form class="span4" name="exportForm">
                     <label><input type="checkbox" checked name="exportAnswers"
                                   id="exportAnswers" disabled /> Export Answers</label>
+                    <br>
                     <label><input type="checkbox" name="exportComments"
                                   data-ng-model="exportConfig.exportComments" /> Export Comments</label>
+                    <br>
                     <label><input type="checkbox" name="exportFlagged"
                                   data-ng-model="exportConfig.exportFlagged" />
                         Only export flagged Answers</label>
+                    <br>
                     <button class="btn btn-success"
                             data-ng-disabled="exportForm.$invalid || download.inprogress"
                             data-ng-click="startExport()" class="btn">
