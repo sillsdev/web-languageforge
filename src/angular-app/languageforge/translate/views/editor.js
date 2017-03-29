@@ -20,6 +20,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.project = $scope.project || {};
     $scope.project.config = $scope.project.config || {};
     $scope.project.config.documentSets = $scope.project.config.documentSets || {};
+    $scope.project.config.userPreferences = $scope.project.config.userPreferences || {};
     $scope.confidenceThreshold = 0.2;
     $scope.selectedDocumentSetIndex = 0;
     $scope.documentSets = [];
@@ -55,13 +56,33 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
           });
         }
 
+        if (angular.isDefined($scope.project.config.userPreferences.selectedDocumentSetId)) {
+          angular.forEach($scope.documentSets, function (documentSet, index) {
+            if (documentSet.id === $scope.project.config.userPreferences.selectedDocumentSetId) {
+              $scope.selectedDocumentSetIndex = index;
+            }
+          });
+        }
+
+        if (angular.isDefined($scope.project.config.userPreferences
+            .isDocumentOrientationTargetRight) &&
+          $scope.project.config.userPreferences.isDocumentOrientationTargetRight
+        ) {
+          var newLeft = $scope.right;
+          var newRight = $scope.left;
+          delete $scope.right;
+          delete $scope.left;
+          $scope.right = newRight;
+          $scope.left = newLeft;
+        }
+
         $scope.editorCreated(editors.left, $scope.left.docType, 'left');
         $scope.editorCreated(editors.right, $scope.right.docType, 'right');
       }
     });
 
-    $scope.left = source;
-    $scope.right = target;
+    $scope.right = source;
+    $scope.left = target;
     $scope.modulesConfig = {
       toolbar: [
         ['bold', 'italic', 'underline', 'strike'],      // toggled buttons
@@ -82,12 +103,18 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     };
 
     $scope.selectDocumentSet = function selectDocumentSet(index) {
-      if ($scope.selectedDocumentSetIndex != index) {
+      if ($scope.selectedDocumentSetIndex !== index) {
         $scope.selectedDocumentSetIndex = index;
         setTimeout(function () {
           $scope.contentChanged(editors.left, null, null, $scope.left.docType, 'left');
           $scope.contentChanged(editors.right, null, null, $scope.right.docType, 'right');
         }, 1);
+
+        if (($scope.selectedDocumentSetIndex in $scope.documentSets)) {
+          $scope.project.config.userPreferences.selectedDocumentSetId =
+            $scope.documentSets[$scope.selectedDocumentSetIndex].id;
+          projectApi.updateUserPreferences($scope.project.config.userPreferences);
+        }
       }
     };
 
@@ -170,7 +197,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
           $scope.positionOptions = [];
           angular.forEach($scope.documentSets, function (documentSet, index) {
             $scope.positionOptions.push((index + 1) +
-              ((index == currentIndex) ? ' (current)' : ''));
+              ((index === currentIndex) ? ' (current)' : ''));
           });
 
           $scope.move = function move() {
@@ -180,13 +207,13 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       });
 
       modalInstance.result.then(function (newIndex) {
-        if (newIndex == currentIndex) return;
+        if (newIndex === currentIndex) return;
 
         $scope.documentSets.splice(currentIndex, 1);
         $scope.documentSets.splice(newIndex, 0, documentSet);
 
         var selectedIndex = angular.copy($scope.selectedDocumentSetIndex);
-        if (currentIndex == selectedIndex) {
+        if (currentIndex === selectedIndex) {
           selectedIndex = newIndex;
         } else {
           if (currentIndex < selectedIndex) {
@@ -199,7 +226,12 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         }
 
         $scope.selectDocumentSet(selectedIndex);
-        $scope.project.config.documentSets.idsOrdered = _.map($scope.documentSets, 'id');
+        $scope.project.config.documentSets.idsOrdered = $scope.documentSets.map(
+          function (documentSet) {
+            return documentSet.id;
+          }
+        );
+
         projectApi.updateConfig($scope.project.config, function (result) {
           if (result.ok) {
             notice.push(notice.SUCCESS,
@@ -275,6 +307,10 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       $scope.left = newLeft;
       $scope.editorCreated(editors.left, newLeft.docType, 'left');
       $scope.editorCreated(editors.right, newRight.docType, 'right');
+
+      $scope.project.config.userPreferences.isDocumentOrientationTargetRight =
+        ($scope.right.docType === target.docType);
+      projectApi.updateUserPreferences($scope.project.config.userPreferences);
     };
 
     $scope.insertSuggestion = function insertSuggestion(side, text) {
@@ -287,14 +323,14 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         var wordStartIndex = wordParser.startIndexOfWordAt(index, words);
         var wordLength = wordParser.lengthOfWordAt(index, words);
         setTimeout(function () {
-          if (index < (currentText.length) ||
-            (index == (currentText.length) && !wordParser.isWordComplete(currentText[index - 1]))
+          if (index < currentText.length ||
+            (index === currentText.length && !wordParser.isWordComplete(currentText[index - 1]))
           ) {
-            editor.deleteText(wordStartIndex, wordLength + 1, 'user');
+            editor.deleteText(wordStartIndex, wordLength + 1, Quill.sources.USER);
             index = wordStartIndex;
           }
 
-          editor.insertText(index, text + wordParser.charSpace(), 'user');
+          editor.insertText(index, text + wordParser.charSpace(), Quill.sources.USER);
         }, 1);
       }
     };

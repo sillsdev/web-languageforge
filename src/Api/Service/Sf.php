@@ -834,7 +834,7 @@ class Sf
      */
     public function translate_projectDto()
     {
-        return TranslateProjectDto::encode($this->projectId);
+        return TranslateProjectDto::encode($this->projectId, $this->userId);
     }
 
     /**
@@ -846,6 +846,15 @@ class Sf
         return TranslateProjectCommands::updateConfig($this->projectId, $configData);
     }
 
+    /**
+     * @param array $userPreferenceData
+     * @return string $projectId
+     */
+    public function translate_configUpdateUserPreferences($userPreferenceData)
+    {
+        return TranslateProjectCommands::updateUserPreferences($this->projectId, $this->userId, $userPreferenceData);
+    }
+
     public function translate_documentSetUpdate($documentSetData)
     {
         return TranslateDocumentSetCommands::updateDocumentSet($this->projectId, $documentSetData);
@@ -853,7 +862,7 @@ class Sf
 
     public function translate_documentSetListDto()
     {
-        return TranslateDocumentSetDto::encode($this->projectId);
+        return TranslateDocumentSetDto::encode($this->projectId, $this->userId);
     }
 
     public function translate_documentSetRemove($documentId)
