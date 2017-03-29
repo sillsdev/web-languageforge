@@ -5,6 +5,7 @@ namespace Api\Model\Languageforge\Translate\Command;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Model\Languageforge\Translate\TranslateConfig;
 use Api\Model\Languageforge\Translate\TranslateProjectModel;
+use Api\Model\Languageforge\Translate\TranslateUserPreferences;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Mapper\JsonDecoder;
 use Api\Model\Shared\Mapper\MongoStore;
@@ -54,9 +55,7 @@ class TranslateProjectCommands
             $project->featured = $data['featured'];
         }
         if (array_key_exists('config', $data)) {
-            $config = new TranslateConfig();
-            JsonDecoder::decode($config, $data['config']);
-            $project->config = $config;
+            self::decodeConfig($project->config, $data['config']);
         }
 
         if (self::isNewProject($data)) {
@@ -82,13 +81,41 @@ class TranslateProjectCommands
         ProjectCommands::checkIfArchivedAndThrow($project);
 
         $hasMachineTranslationProjectChanged = self::hasMachineTranslationProjectChanged($project, ['config' => $configData]);
-        $config = new TranslateConfig();
-        JsonDecoder::decode($config, $configData);
-        $project->config = $config;
+        self::decodeConfig($project->config, $configData);
 
         if ($hasMachineTranslationProjectChanged) {
             self::removeMachineTranslationProject($project, $client);
             self::createMachineTranslationProject($project, $client);
+        }
+
+        return $project->write();
+    }
+
+    /**
+     * @param string $projectId
+     * @param string $userId
+     * @param array<TranslateUserPreferences> $data
+     * @return string $projectId
+     */
+    public static function updateUserPreferences($projectId, $userId, $data)
+    {
+        $project = new TranslateProjectModel($projectId);
+        ProjectCommands::checkIfArchivedAndThrow($project);
+
+        if (array_key_exists('selectedDocumentSetId', $data) ||
+            array_key_exists('isDocumentOrientationTargetRight', $data)
+        ) {
+            if (!array_key_exists($userId, $project->config->usersPreferences)) {
+                $project->config->usersPreferences[$userId] = new TranslateUserPreferences();
+            }
+
+            if (array_key_exists('selectedDocumentSetId', $data)) {
+                $project->config->usersPreferences[$userId]->selectedDocumentSetId = $data['selectedDocumentSetId'];
+            }
+
+            if (array_key_exists('isDocumentOrientationTargetRight', $data)) {
+                $project->config->usersPreferences[$userId]->isDocumentOrientationTargetRight = $data['isDocumentOrientationTargetRight'];
+            }
         }
 
         return $project->write();
@@ -183,5 +210,18 @@ class TranslateProjectCommands
         }
 
         return false;
+    }
+
+    /**
+     * @param TranslateConfig $config
+     * @param array $configData
+     * @return TranslateConfig
+     */
+    private static function decodeConfig($config, $configData): TranslateConfig
+    {
+        if (array_key_exists('userPreferences', $configData)) unset($configData['userPreferences']);
+
+        JsonDecoder::decode($config, $configData);
+        return $config;
     }
 }

@@ -336,6 +336,9 @@ class RightsHelper
             case 'translate_configUpdate':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
+            case 'translate_configUpdateUserPreferences':
+                return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
+
             case 'translate_documentSetUpdate':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 

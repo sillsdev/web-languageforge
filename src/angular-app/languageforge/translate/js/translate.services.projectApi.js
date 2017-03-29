@@ -20,6 +20,10 @@ angular.module('translate.services')
       jsonRpc.call('translate_configUpdate', [config], callback);
     };
 
+    this.updateUserPreferences = function updateUserPreferences(UserPreferences, callback) {
+      jsonRpc.call('translate_configUpdateUserPreferences', [UserPreferences], callback);
+    };
+
     this.users = function users(callback) {
       jsonRpc.call('project_usersDto', [], callback);
     };

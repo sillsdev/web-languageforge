@@ -48,12 +48,17 @@ class TranslateProjectDto
 {
     /**
      * @param string $projectId
+     * @param string $userId
      * @returns array - the DTO array
      */
-    public static function encode($projectId)
+    public static function encode($projectId, $userId)
     {
         $project = new TranslateProjectModel($projectId);
         $projectDto = TranslateProjectDtoEncoder::encode($project);
+        if (array_key_exists($userId, $projectDto['config']['usersPreferences'])) {
+            $projectDto['config']['userPreferences'] = $projectDto['config']['usersPreferences'][$userId];
+        }
+        unset($projectDto['config']['usersPreferences']);
 
         $data = [];
         $data['project'] = [];
