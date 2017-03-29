@@ -32,20 +32,10 @@ class RightsHelperTest extends TestCase
 
         $userId = self::$environ->createUser('user', 'user', 'user@user.com', SystemRoles::USER);
         $rh = new RightsHelper($userId, null, self::$environ->website);
-        self::$environ->inhibitErrorDisplay();
 
         $rh->userCanAccessMethod('bogusMethodName', array());
 
         // nothing runs in the current test function after an exception. IJH 2014-11
-    }
-    /**
-     * @depends testuserCanAccessMethod_unknownMethodName_Exception
-     */
-    public function testuserCanAccessMethod_unknownMethodName_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-        $this->assertEquals(1, ini_get('display_errors'));
     }
 
     public function testUserCanAccessMethod_projectSettings_projectManager_true()

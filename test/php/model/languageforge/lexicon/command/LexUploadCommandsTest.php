@@ -242,20 +242,10 @@ class LexUploadCommandsTest extends TestCase
 
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
-        self::$environ->inhibitErrorDisplay();
 
         LexUploadCommands::deleteMediaFile($projectId, 'bogusMediaType', '');
 
         // nothing runs in the current test function after an exception. IJH 2014-11
-    }
-    /**
-     * @depends testDeleteMediaFile_UnsupportedMediaType_Exception
-     */
-    public function testDeleteMediaFile_UnsupportedMediaType_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-        $this->assertEquals(1, ini_get('display_errors'));
     }
 
     public function testImportProjectZip_ZipFile_StatsOkInputSystemsImported()

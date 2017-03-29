@@ -146,19 +146,8 @@ class QuestionListDtoTest extends TestCase
         $this->assertEquals('Chapter 3', $dto['text']['title']);
 
         // Contributor cannot view archived Text, throw Exception
-        self::$environ->inhibitErrorDisplay();
-
         QuestionListDto::encode($projectId, $textId, $contributorId);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
-    }
-    /**
-     * @depends testEncode_ArchivedText_ManagerCanViewContributorCannot
-     */
-    public function testEncode_ArchivedText_ManagerCanViewContributorCannot_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-        $this->assertEquals(1, ini_get('display_errors'));
     }
 }

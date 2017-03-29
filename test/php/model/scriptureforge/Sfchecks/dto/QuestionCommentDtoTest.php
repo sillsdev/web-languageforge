@@ -121,20 +121,9 @@ class QuestionCommentDtoTest extends TestCase
         $this->assertEquals('the question', $dto['question']['title']);
 
         // Contributor cannot view Question of archived Text, throw Exception
-        self::$environ->inhibitErrorDisplay();
-
         QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
-    }
-    /**
-     * @depends testEncode_ArchivedQuestion_ManagerCanViewContributorCannot
-     */
-    public function testEncode_ArchivedQuestion_ManagerCanViewContributorCannot_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-        $this->assertEquals(1, ini_get('display_errors'));
     }
 
     public function testEncode_ArchivedText_ManagerCanViewContributorCannot()
@@ -167,19 +156,8 @@ class QuestionCommentDtoTest extends TestCase
         $this->assertEquals('the question', $dto['question']['title']);
 
         // Contributor cannot view Question of archived Text, throw Exception
-        self::$environ->inhibitErrorDisplay();
-
         QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
-    }
-    /**
-     * @depends testEncode_ArchivedText_ManagerCanViewContributorCannot
-     */
-    public function testEncode_ArchivedText_ManagerCanViewContributorCannot_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-        $this->assertEquals(1, ini_get('display_errors'));
     }
 }
