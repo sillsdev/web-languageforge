@@ -1,7 +1,19 @@
 'use strict';
 
 angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
-  'palaso.ui.intlTelInput'])
+  'pascalprecht.translate', 'palaso.ui.intlTelInput'])
+  .config(['$translateProvider',
+  function ($translateProvider) {
+
+    // configure interface language filepath
+    $translateProvider.useStaticFilesLoader({
+      prefix: '/angular-app/bellows/lang/',
+      suffix: '.json'
+    });
+    $translateProvider.preferredLanguage('en');
+    $translateProvider.useSanitizeValueStrategy('escape');
+
+  }])
 .controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'utilService',
   'silNoticeService', '$window',
 function ($scope, userService, ss, util, notice, $window) {
@@ -16,6 +28,8 @@ function ($scope, userService, ss, util, notice, $window) {
   }
 
   var initColor = ''; var initShape = '';
+  $scope.emailValid = true;
+  $scope.usernameValid = true;
 
   $scope.user = { avatar_color: '', avatar_shape: '' };
   $scope.user.avatar_ref = getAvatarRef('', '');
@@ -27,6 +41,44 @@ function ($scope, userService, ss, util, notice, $window) {
   $scope.$watch('user.avatar_shape', function () {
     $scope.user.avatar_ref = getAvatarRef($scope.user.avatar_color, $scope.user.avatar_shape);
   });
+
+  $scope.validateForm = function () {
+    $scope.emailValid = $scope.userprofileForm.email.$pristine ||
+      ($scope.userprofileForm.email.$dirty && !$scope.userprofileForm.$error.email);
+
+    $scope.usernameValid = $scope.userprofileForm.username.$pristine ||
+      ($scope.userprofileForm.username.$dirty && !$scope.userprofileForm.$error.username);
+
+    userService.checkUniqueIdentity($scope.user.id, $scope.user.username, $scope.user.email, function (result) {
+      if (result.ok) {
+        switch (result.data) {
+          case 'usernameExists' :
+            $scope.usernameExists = true;
+            $scope.emailExists = false;
+            $scope.takenUsername = $scope.user.username.toLowerCase();
+            $scope.userprofileForm.username.$setPristine();
+            break;
+          case 'emailExists' :
+            $scope.usernameExists = false;
+            $scope.emailExists = true;
+            $scope.takenEmail = $scope.user.email.toLowerCase();
+            $scope.userprofileForm.email.$setPristine();
+            break;
+          case 'usernameAndEmailExists' :
+            $scope.usernameExists = true;
+            $scope.emailExists = true;
+            $scope.takenUsername = $scope.user.username.toLowerCase();
+            $scope.takenEmail = $scope.user.email.toLowerCase();
+            $scope.userprofileForm.username.$setPristine();
+            $scope.userprofileForm.email.$setPristine();
+            break;
+          default:
+            $scope.usernameExists = false;
+            $scope.emailExists = false;
+        }
+      }
+    })
+  };
 
   var loadUser = function () {
     userService.readProfile(function (result) {
@@ -56,6 +108,7 @@ function ($scope, userService, ss, util, notice, $window) {
   };
 
   $scope.updateUser = function () {
+
     // populate the userProfile picked values from the project pickLists
     for (var i = 0; i < $scope.projectsSettings.length; i++) {
       var project = $scope.projectsSettings[i];
@@ -77,7 +130,12 @@ function ($scope, userService, ss, util, notice, $window) {
             $window.document.getElementById(id).src = newAvatarUrl;
           })
         }
-        notice.push(notice.SUCCESS, 'Profile updated successfully');
+        if (result.data == 'login') {
+          notice.push(notice.SUCCESS, 'Changed username/email. Login again');
+          $window.location.href = '/auth/logout';
+        } else {
+          notice.push(notice.SUCCESS, 'Profile updated successfully');
+        }
       }
     });
   };

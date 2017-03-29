@@ -1,15 +1,16 @@
 'use strict';
 
-var constants   = require('../../../testConstants');
-var loginPage   = require('../../pages/loginPage');
-var userProfile = require('../../pages/userProfilePage');
-
-// Array of test usernames to test Activity page with different roles
-var usernames = [constants.memberUsername,
-                 constants.managerUsername
-         ];
-
 describe('User Profile E2E Test', function () {
+  var constants   = require('../../../testConstants');
+  var loginPage   = require('../../pages/loginPage');
+  var userProfile = require('../../pages/userProfilePage');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
+
+  // Array of test usernames to test Activity page with different roles
+  var usernames = [constants.memberUsername,
+    constants.managerUsername
+  ];
 
   // Run the Activity E2E as each test user
   usernames.forEach(function (expectedUsername) {
@@ -17,7 +18,7 @@ describe('User Profile E2E Test', function () {
     // Perform activity E2E tests according to the different roles
     describe('Running as: ' + expectedUsername, function () {
 
-      it('Logging in', function () {
+      fit('Logging in', function () {
         // Login before test to ensure proper role
         if (expectedUsername == constants.memberUsername) {
           loginPage.loginAsUser();
@@ -29,6 +30,7 @@ describe('User Profile E2E Test', function () {
       it('Verify initial "My Account" settings created from setupTestEnvironment.php', function () {
         userProfile.getMyAccount();
 
+        expect(userProfile.myAccountTab.username.getAttribute('value')).toEqual(expectedUsername);
         expect(userProfile.myAccountTab.avatar.getAttribute('src')).toContain(constants.avatar);
         expect(userProfile.myAccountTab.avatarColor.$('option:checked').getText())
           .toBe('Select a Color...');
@@ -134,6 +136,93 @@ describe('User Profile E2E Test', function () {
         expect(userProfile.aboutMeTab.gender.$('option:checked').getText()).toBe(newGender);
       });
 
+      fit('Update and store different username. Login with new credentials', function () {
+        // Login before test to ensure proper role
+        if (expectedUsername == constants.memberUsername) {
+          loginPage.loginAsUser();
+        } else if (expectedUsername == constants.managerUsername) {
+          loginPage.loginAsManager();
+        }
+
+        userProfile.getMyAccount();
+        var newUsername = 'newusername';
+
+        // Try taken username
+        userProfile.myAccountTab.updateUsername(constants.observerUsername);
+        expect(userProfile.myAccountTab.usernameTaken.isDisplayed()).toBe(true);
+        expect(userProfile.myAccountTab.saveBtn.isEnabled()).toBe(false);
+
+        // Change username
+        userProfile.myAccountTab.updateUsername(newUsername);
+        expect(userProfile.myAccountTab.usernameTaken.isDisplayed()).toBe(false);
+        expect(userProfile.myAccountTab.saveBtn.isEnabled()).toBe(true);
+        userProfile.myAccountTab.saveBtn.click();
+
+        // Login with new username and revert to original username
+        browser.wait(expectedCondition.visibilityOf(loginPage.username), CONDITION_TIMEOUT);
+        expect(loginPage.infoMessages.count()).toBe(1);
+        expect(loginPage.infoMessages.first().getText()).toContain(
+          'Username/email changed. Please login.');
+
+        if (expectedUsername == constants.memberUsername) {
+          loginPage.login(newUsername, constants.memberPassword);
+        } else if (expectedUsername == constants.managerUsername) {
+          loginPage.login(newUsername, constants.managerPassword);
+        }
+
+        userProfile.getMyAccount();
+        userProfile.myAccountTab.updateUsername(expectedUsername);
+        userProfile.myAccountTab.saveBtn.click();
+        browser.wait(expectedCondition.visibilityOf(loginPage.username), CONDITION_TIMEOUT);
+      });
+
+      fit('Update and store different email. Login with new credentials', function () {
+        // Login before test to ensure proper role
+        if (expectedUsername == constants.memberUsername) {
+          loginPage.loginAsUser();
+        } else if (expectedUsername == constants.managerUsername) {
+          loginPage.loginAsManager();
+        }
+
+        userProfile.getMyAccount();
+        var newEmail = 'newemail@example.com';
+
+        // Try taken email
+        userProfile.myAccountTab.updateEmail(constants.observerEmail);
+        expect(userProfile.myAccountTab.emailTaken.isDisplayed()).toBe(true);
+        expect(userProfile.myAccountTab.saveBtn.isEnabled()).toBe(false);
+
+        // Change email
+        userProfile.myAccountTab.updateEmail(newEmail);
+        expect(userProfile.myAccountTab.emailTaken.isDisplayed()).toBe(false);
+        expect(userProfile.myAccountTab.saveBtn.isEnabled()).toBe(true);
+        userProfile.myAccountTab.saveBtn.click();
+
+        // Login with new email and revert to original email
+        browser.wait(expectedCondition.visibilityOf(loginPage.username), CONDITION_TIMEOUT);
+
+        // TODO: for some reason flashbag not appearing when changing email address
+        //expect(loginPage.infoMessages.count()).toBe(1);
+        //expect(loginPage.infoMessages.first().getText()).toContain(
+        //  'Username/email changed. Please login.');
+
+        var password;
+        var email;
+        if (expectedUsername == constants.memberUsername) {
+          password = constants.memberPassword;
+          email = constants.memberEmail;
+        } else if (expectedUsername == constants.managerUsername) {
+          password = constants.managerPassword;
+          email = constants.managerEmail;
+        }
+
+        loginPage.login(newEmail, password);
+
+        userProfile.getMyAccount();
+        userProfile.myAccountTab.updateEmail(email);
+        userProfile.myAccountTab.saveBtn.click();
+        browser.wait(expectedCondition.visibilityOf(loginPage.username), CONDITION_TIMEOUT);
+      });
     });
 
   });

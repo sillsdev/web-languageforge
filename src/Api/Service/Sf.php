@@ -144,14 +144,21 @@ class Sf
     }
 
     /**
-     * Create/Update a User Profile
+     * Update a User Profile
+     * Changing username/email will notify client to signout
      *
      * @param array $params (encoded UserModel)
-     * @return string Id of written object
+     * @return  bool|string False if update failed; $userId on update; 'login' on
+     *  username/email change to notify client to signout
      */
     public function user_updateProfile($params)
     {
-        return UserCommands::updateUserProfile($params, $this->userId);
+        $result = UserCommands::updateUserProfile($params, $this->userId, $this->website);
+        if ($result == 'login') {
+            // Username/email changed
+            $this->app['session']->getFlashBag()->add('infoMessage', 'Username/email changed. Please login.');
+        }
+        return $result;
     }
 
     /**
