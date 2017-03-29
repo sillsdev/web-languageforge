@@ -83,20 +83,10 @@ class LiftImportZipTest extends TestCase
         $zipFilePath = self::$environ->copyTestUploadFile(sys_get_temp_dir() . '/TestLexProject.tar.gz');
         unlink(sys_get_temp_dir() . '/TestLexProject.tar.gz');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        self::$environ->inhibitErrorDisplay();
 
         LiftImport::get()->importZip($zipFilePath, $project);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
-    }
-    /**
-     * @depends testLiftImportMerge_ZipFileWrongFormat_Exception
-     */
-    public function testLiftImportMerge_ZipFileWrongFormat_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-        $this->assertEquals(1, ini_get('display_errors'));
     }
 
     public function testLiftImportMerge_ZipFileWithDir_CorrectValues()
@@ -140,20 +130,10 @@ class LiftImportZipTest extends TestCase
 
         $zipFilePath = self::$environ->copyTestUploadFile(TestCommonPath . 'TestLexNoProject.zip');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        self::$environ->inhibitErrorDisplay();
 
         LiftImport::get()->importZip($zipFilePath, $project);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
-    }
-    /**
-     * @depends testLiftImportMerge_ZipFileNoLift_Exception
-     */
-    public function testLiftImportMerge_ZipFileNoLift_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-        $this->assertEquals(1, ini_get('display_errors'));
     }
 
     public function testLiftImportMerge_ZipFile2LiftAndOddFolder_Error()

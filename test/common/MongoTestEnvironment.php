@@ -274,16 +274,6 @@ class MongoTestEnvironment
         $this->uploadFilePaths = array();
     }
 
-    public function inhibitErrorDisplay()
-    {
-        ini_set('display_errors', 0);
-    }
-
-    public function restoreErrorDisplay()
-    {
-        ini_set('display_errors', 1);
-    }
-
     public function fixJson($input)
     {
         return json_decode(json_encode($input), true);

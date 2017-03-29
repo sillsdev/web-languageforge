@@ -321,7 +321,6 @@ class LexCommentCommandsTest extends TestCase
         self::$save['environ'] = $environ;
         self::$save['commentId'] = $commentId;
         self::$save['comment'] = $comment;
-        $environ->inhibitErrorDisplay();
 
         LexCommentCommands::updateCommentStatus($project->id->asString(), $commentId, 'malicious code; rm -rf');
 
@@ -330,10 +329,8 @@ class LexCommentCommandsTest extends TestCase
     /**
      * @depends testUpdateCommentStatus_InvalidStatus_Exception
      */
-    public function testUpdateCommentStatus_InvalidStatus_RestoreErrorDisplay()
+    public function testUpdateCommentStatus_InvalidStatus()
     {
-        // restore error display after last test
-        self::$save['environ']->restoreErrorDisplay();
         self::$save['comment']->read(self::$save['commentId']);
 
         $this->assertEquals(LexCommentModel::STATUS_OPEN, self::$save['comment']->status);

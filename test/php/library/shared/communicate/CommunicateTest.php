@@ -58,21 +58,10 @@ class CommunicateTest extends TestCase
         $smsTemplate = '';
         $emailTemplate = 'TestMessage';
         $delivery = new MockCommunicateDelivery();
-        self::$environ->inhibitErrorDisplay();
 
         Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, '', $delivery);
 
         // nothing runs in the current test function after an exception. IJH 2016-07
-    }
-
-    /**
-     * @depends testCommunicateToUser_NoFromAddress_Exception
-     */
-    public function testCommunicateToUser_NoFromAddress_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-        $this->assertEquals(1, ini_get('display_errors'));
     }
 
     public function testCommunicateToUser_NoToAddress_Exception()
@@ -90,21 +79,10 @@ class CommunicateTest extends TestCase
         $smsTemplate = '';
         $emailTemplate = 'TestMessage';
         $delivery = new MockCommunicateDelivery();
-        self::$environ->inhibitErrorDisplay();
 
         Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, '', $delivery);
 
         // nothing runs in the current test function after an exception. IJH 2016-07
-    }
-
-    /**
-     * @depends testCommunicateToUser_NoToAddress_Exception
-     */
-    public function testCommunicateToUser_NoToAddress_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-        $this->assertEquals(1, ini_get('display_errors'));
     }
 
     public function testCommunicateToUser_SendEmail_PropertiesToFromMessageOk()
