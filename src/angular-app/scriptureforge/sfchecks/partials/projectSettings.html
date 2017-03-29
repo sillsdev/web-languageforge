@@ -33,33 +33,35 @@
             </form>
         </div>
         <div id="newMessageDiv" uib-collapse="newMessageCollapsed">
-            <div class="well" data-ng-hide="show.messaging()">
-                <p>Click <b>Communication Settings</b> to setup messaging.</p>
+            <div class="card">
+                <div class="card-block" data-ng-hide="show.messaging()">
+                    <p>Click <b>Communication Settings</b> to setup messaging.</p>
+                </div>
+                <form class="card-block" data-ng-submit="sendMessageToSelectedUsers()" data-ng-show="show.messaging()">
+                    <fieldset>
+                        <p style="color:red">All fields are required to message selected users</p>
+                        <label class="form-group">Email Subject
+                            <input class="form-control" name="emailSubject" required type="text" placeholder="Subject"
+                                   data-ng-model="message.subject" style="width:400px"/>
+                        </label>
+                        <label class="form-group">Email Message
+                            <textarea class="form-control" required name="emailTemplate" placeholder="Email Message"
+                                      data-ng-model="message.emailTemplate" style="width:400px; height:200px"></textarea>
+                        </label>
+                        <label class="form-group">SMS Message <i>({{160 - message.smsTemplate.length}} characters remaining)</i>
+                            <textarea class="form-control" required name="smsTemplate" placeholder="SMS Message" data-ng-model="message.smsTemplate"
+                                      style="width:400px; height:80px" maxlength="160"></textarea>
+                        </label>
+                    </fieldset>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Send Message Now</button>
+                    <span class="alert alert-error" data-ng-show="messagingWarning">{{messagingWarning}}</span>
+                </form>
             </div>
-            <form class="well" data-ng-submit="sendMessageToSelectedUsers()" data-ng-show="show.messaging()">
-                <fieldset>
-                    <p style="color:red">All fields are required to message selected users</p>
-                    <label class="form-group">Email Subject
-                        <input class="form-control" name="emailSubject" required type="text" placeholder="Subject"
-                               data-ng-model="message.subject" style="width:400px"/>
-                    </label>
-                    <label class="form-group">Email Message
-                        <textarea class="form-control" required name="emailTemplate" placeholder="Email Message"
-                                  data-ng-model="message.emailTemplate" style="width:400px; height:200px"></textarea>
-                    </label>
-                    <label class="form-group">SMS Message <i>({{160 - message.smsTemplate.length}} characters remaining)</i>
-                        <textarea class="form-control" required name="smsTemplate" placeholder="SMS Message" data-ng-model="message.smsTemplate"
-                                  style="width:400px; height:80px" maxlength="160"></textarea>
-                    </label>
-                </fieldset>
-                <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Send Message Now</button>
-                <span class="alert alert-error" data-ng-show="messagingWarning">{{messagingWarning}}</span>
-            </form>
         </div>
         <listview search="queryProjectSettings()" items="list.users" items-filter="userFilter"
                   visible-items="list.visibleUsers" select="">
-        <table class="table" style="width: 100%">
-            <thead>
+        <table class="table">
+            <thead class="thead-inverse">
             <tr>
                 <th></th>
                 <th>Username</th>
@@ -69,7 +71,7 @@
             </thead>
             <tbody>
             <tr data-ng-repeat="user in list.visibleUsers" data-ng-class="{active: isSelected(user)}" >
-                <td width="16px" align="center">
+                <td align="center">
                     <label><input data-ng-show="rights.deleteOther" type="checkbox" data-ng-checked="isSelected(user)"
                                   data-ng-click="updateSelection($event, user)"/></label>
                 </td>
@@ -94,31 +96,35 @@
             <button class="btn btn-success" data-ng-click="toggleTemplateEditor()"><i class="fa fa-plus"></i> Add New Template</button>
         </form>
         <div class="new-item" uib-collapse="!templateEditorVisible">
-            <form class="well">
-            <fieldset>
-            <label>Question Template</label>
-            <textarea class="span4" required data-ng-model="editedTemplate.description" rows="4"
-                      placeholder="The Question"></textarea>
-            <label></label>
-            <input class="span4" type="text" maxlength="35" required data-ng-model="editedTemplate.title"
-                   placeholder="One Line Summary for Title" />
-            <label></label>
-            <button id="question_templates_save_button" type="submit" class="btn" data-ng-click="editTemplate()">
-                <i class="fa fa-check"></i> Save</button>
-            <a data-ng-click="hideTemplateEditor()">Cancel</a>
-            </fieldset>
+            <form class="card">
+                <fieldset class="card-block">
+                    <label>Question Template
+                        <textarea class="form-control" required data-ng-model="editedTemplate.description" rows="4"
+                                  placeholder="The Question"></textarea>
+                    </label>
+                    <label>
+                        Title
+                        <input class="form-control" type="text" maxlength="35" required data-ng-model="editedTemplate.title"
+                               placeholder="One Line Summary for Title" />
+                    </label>
+                    <button id="question_templates_save_button" type="submit" class="btn btn-success" data-ng-click="editTemplate()">
+                        <i class="fa fa-check"></i> Save</button>
+                    <a href data-ng-click="hideTemplateEditor()">Cancel</a>
+                </fieldset>
             </form>
         </div>
         <listview search="queryTemplates()" items="templates" visible-items="visibleTemplates" select="">
-        <table style="width: 100%">
-            <tr>
-                <th></th>
-                <th class="span3">Question title</th>
-                <th>Question contents</th>
-            </tr>
+        <table class="table">
+            <thead class="thead-inverse">
+                <tr>
+                    <th></th>
+                    <th class="span3">Question title</th>
+                    <th>Question contents</th>
+                </tr>
+            </thead>
             <tr data-ng-repeat="template in visibleTemplates" data-ng-class="{active: isSelected(template)}"
                 data-ng-click="selectRow($index, template)">
-                <td width="16px" align="center">
+                <td align="center">
                     <label><input type="checkbox" data-ng-checked="isSelected(template)"
                                   data-ng-click="updateSelection($event, template)" /></label></td>
                 <td><a title="Click to edit this template" data-ng-click="showTemplateEditor(template)">
@@ -132,32 +138,31 @@
 <uib-tab heading="Archived Texts">
     <div data-ng-controller="ProjectSettingsArchiveTextsCtrl">
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-            <button class="btn btn-info republish-texts" data-ng-disabled="selected.length == 0" data-ng-show="rights.archive"
+            <button class="btn btn-success republish-texts" data-ng-disabled="selected.length == 0" data-ng-show="rights.archive"
                     data-ng-click="publishTexts()"><i class="fa fa-globe fa-lg">
                 </i> Re-publish Selected Texts</button>
         </form>
         <hr />
         <listview hide-if-empty="true" items="list.archivedTexts" visible-items="visibleTexts" select="">
-            <div data-ng-repeat="text in visibleTexts" class="details-row">
-                <ul class="inline" data-ng-class="{active: isSelected(text)}">
-                    <li data-ng-show="rights.archive">
+            <table class="questions">
+                <tr data-ng-repeat="text in visibleTexts" class="details-row" data-ng-class="{active: isSelected(text)}">
+                    <td data-ng-show="rights.archive">
                         <label><input type="checkbox" data-ng-checked="isSelected(text)"
-                                      data-ng-click="updateSelection($event, text)" /></label></li>
-                    <li>
+                                      data-ng-click="updateSelection($event, text)" /></label></td>
+                    <td>
                         <a class="span5" data-ng-href="{{text.url}}">
                             <span class="larger-text">{{text.title}}</span>
                         </a>
-                    </li>
-                    <li><a data-ng-href="{{text.url}}">
+                    </td>
+                    <td><a data-ng-href="{{text.url}}">
                         <div class="attention-block">
                             <span class="subtitle">{{text.questionCount}} questions</span>
                         </div>
-                    </a></li>
-                    <li>{{text.responseCount}} responses</li>
-                    <li>Archived on {{text.dateModified | date:'fullDate'}}</li>
-                </ul>
-                <hr />
-            </div>
+                    </a></td>
+                    <td>{{text.responseCount}} responses</td>
+                    <td>Archived on {{text.dateModified | date:'fullDate'}}</td>
+                </tr>
+            </table>
         </listview>
     </div>
 </uib-tab>
@@ -166,18 +171,24 @@
         <form class="well" data-ng-submit="updateProject()">
         <fieldset>
             <div class="control-group">
-                <label class="control-label" for="projName" data-translate="Project Name"></label>
-                <div class="controls">
-                    <input id="projName" class="form-control" type="text" placeholder="project name" data-ng-model="project.projectName"/>
-                </div>
+                <label class="control-label" for="projName">
+                    <strong data-translate="Project Name"></strong>
+                    <div class="controls">
+                        <input id="projName" class="form-control" type="text" placeholder="project name" data-ng-model="project.projectName"/>
+                    </div>
+                </label>
             </div>
             <label class="control-label"><B>Project Code:</B> {{project.projectCode}}</label>
+            <br>
             <label class="control-label"><B>Project Owner:</B> {{project.ownerRef.username}}</label>
             <!-- <label class="checkbox"><input type="checkbox" data-ng-model="project.featured" /> Featured on website</label> -->
-            <label class="checkbox"><input class="form-control" type="checkbox" data-ng-model="project.allowAudioDownload" />
+            <br>
+            <label class="checkbox"><input type="checkbox" data-ng-model="project.allowAudioDownload" />
                 Allow downloading audio files</label>
+            <br>
             <label class="checkbox"><input type="checkbox" data-ng-model="project.allowInviteAFriend" />
                 Allow contributors to use "Invite a Friend" feature (managers can always use it)</label>
+            <br>
             <button class="btn btn-success" type="submit" id="project_properties_save_button">
                 <i class="fa fa-check"></i> Save
             </button>
