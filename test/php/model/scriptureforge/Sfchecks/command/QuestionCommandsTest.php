@@ -85,7 +85,9 @@ class QuestionCommandsTest extends TestCase
         $question->write();
 
         $questionId = $question->id->asString();
-        $this->assertEquals(1, QuestionCommands::deleteQuestions($projectId, array($questionId)));
+        $count = QuestionCommands::deleteQuestions($projectId, array($questionId));
+
+        $this->assertEquals(1, $count);
     }
 
     public function testArchiveQuestions_2Questions_1Archived()
