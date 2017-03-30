@@ -1,0 +1,111 @@
+.no-margin {
+    /* Fix Bootstrap's margins on checkboxes, etc. */
+    margin: 0 !important;
+}
+
+span.fk { /* TODO: Find a better place for this (partials/questions.css, perhaps?) */
+    /* Used in footnote popups in text display of question page */
+    font-weight: bold;
+}
+
+/* TODO: Find a better place for this as well (perhaps in partials/question.css) */
+textarea.newAnswer, textarea.editAnswer {
+    padding: 10px;
+    background: #ffffff;
+    width: 95%;
+    min-height: 100px;
+    max-height: 900px;
+    overflow: auto;
+    outline: none;
+    word-wrap: break-word;
+    -ms-word-wrap: break-word;
+    resize: vertical
+}
+
+table.texts, table.questions {
+  width: 100%;
+
+  td {
+    text-align: center;
+    vertical-align: middle;
+  }
+}
+
+table label {
+  margin: 0;
+  input {
+    margin: 1em;
+  }
+}
+
+.card {
+  margin-top: 1em;
+
+  label {
+    width: 100%;
+  }
+
+  .verse-range [type='number'] {
+    display: inline;
+    width: 5em;
+  }
+}
+
+.form-group, card {
+  &, input[type='text'], textarea, label {
+    width: 100%;
+  }
+}
+
+.answer {
+  &.unread {
+    background-color: #fffcd0;
+    border-color: #ffeb3b;
+  }
+
+  .answer-footer {
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    border-bottom: 1px solid #e6e6e6;
+
+    .tag-list {
+      width: 100%;
+      .fa:hover {
+        color: #d93a06;
+        cursor: pointer;
+      }
+    }
+    .author, .answerControls {
+      width: 50%;
+      padding-left: 0.5em;
+    }
+    .answerControls {
+      text-align: right;
+    }
+
+    > div {
+      width: 100%;
+      label {
+        width: 100%;
+      }
+    }
+
+    .author {
+      background-color: #f0f0f0;
+      padding: 0.2em 0.5em;
+      img {
+        float: right;
+      }
+    }
+  }
+}
+
+.comment {
+  margin-bottom: 0.5em;
+}
+
+.tag-list ul {
+  padding: 0;
+}
