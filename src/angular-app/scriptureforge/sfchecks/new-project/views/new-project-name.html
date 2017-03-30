@@ -19,16 +19,16 @@
             data-ng-bind="newProject.projectCode"></div>
         <span  data-ng-show="newProject.projectCode.length > 0">
             <span  data-ng-show="projectCodeState == 'loading'">
-                <img id="projectCodeLoading" class="validator" src="/Site/views/shared/image/loading-small.gif" /></span>
+                <i id="projectCodeLoading" class="validator fa fa-spinner fa-spin"></i></span>
             <span  data-ng-show="projectCodeState == 'exists'">
-                <img id="projectCodeExists" class="validator" src="/Site/views/shared/image/exclamation.png"
-                     title="Project Code already exists!" /></span>
+                <i id="projectCodeExists" class="validator fa fa-exclamation"
+                     title="Project Code already exists!"></i></span>
             <span  data-ng-show="projectCodeState == 'invalid'">
-                <img id="projectCodeAlphanumeric" class="validator" src="/Site/views/shared/image/exclamation.png"
-                     title="" /></span>
+                <i id="projectCodeAlphanumeric" class="validator fa fa-exclamation"
+                     title=""></i></span>
             <span  data-ng-show="projectCodeState == 'ok'">
-                <img id="projectCodeOk" class="validator" src="/Site/views/shared/image/tick.png"
-                     title="Project Code is available!" /></span>
+                <i id="projectCodeOk" class="validator fa fa-check"
+                     title="Project Code is available!"></i></span>
         </span>
     </div>
     <div class="controls">
