@@ -53,7 +53,19 @@ angular.module('sgw.soundmanager', [])
           if ($scope.sgwState == 'stop') {
             $scope.sgwState = 'play';
             if (angular.isDefined($scope.sgwSound)) {
-              soundManager.pauseAll();
+
+              // This is a carefuller version of soundManager.pauseAll()
+              // Pausing has some unfortunate side effects that, in a roundabout way causes the
+              // onfinish callback to not ever be called on that sound object. By skipping pausing
+              // when playState == 1 we seem to avoid this. -- @Nateowami with @megahirt, Mar 2017
+
+              for (var i = soundManager.soundIDs.length - 1; i >= 0; i--) {
+                var sound = soundManager.sounds[soundManager.soundIDs[i]];
+                if (sound.playState == 1) {
+                  sound.pause();
+                }
+              }
+
               $scope.sgwSound.play(playOptions);
             }
           } else if ($scope.sgwState == 'play') {

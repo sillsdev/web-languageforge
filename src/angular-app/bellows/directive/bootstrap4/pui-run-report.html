@@ -1,10 +1,15 @@
 <div class="control-group">
     <div ng-show="reports.length > 0">
-        <div>
-            <select data-ng-model="report.currentId" data-ng-options="report.id as report.name for report in reports"><option value="">Select a Report...</option></select>
-            <button style="position:relative; top:-5px" ng-show="report.output" class="btn" ng-click="runReport()">Run Again</button>
+        <div class="col-xs-12 col-sm-9 col-md-4">
+            <select class="form-control" data-ng-model="report.currentId" data-ng-options="report.id as report.name for report in reports"><option value="">Select a Report...</option></select>
         </div>
-        <pre ng-show="report.output" data-ng-bind="report.output"></pre>
+        <div class="col-md-3">
+            <button ng-show="report.output" class="btn btn-secondary" ng-click="runReport()">Run Again</button>
+        </div>
+        <div class="clearfix"></div>
+        <div class="card" ng-show="report.output">
+            <pre class="card-block" ng-show="report.output" data-ng-bind="report.output"></pre>
+        </div>
     </div>
     <div ng-hide="reports.length > 0">
         No reports are available at this time.
