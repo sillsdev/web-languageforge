@@ -14,9 +14,9 @@ use Api\Model\Shared\ProjectSettingsModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\UserModel;
 use Palaso\Utilities\FileUtilities;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ProjectCommandsTest extends PHPUnit_Framework_TestCase
+class ProjectCommandsTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -31,7 +31,7 @@ class ProjectCommandsTest extends PHPUnit_Framework_TestCase
         self::$save = [];
     }
 
-    public function testDeleteProjects_ProjectOwner_NoThrow()
+    public function testDeleteProjects_ProjectOwner_1Delete()
     {
         self::$environ->clean();
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
@@ -40,14 +40,13 @@ class ProjectCommandsTest extends PHPUnit_Framework_TestCase
         $projectId = ProjectCommands::createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE, SfProjectModel::SFCHECKS_APP,
             $user1->id->asString(), self::$environ->website);
 
-        ProjectCommands::deleteProjects(array($projectId), $user1Id);
+        $this->assertEquals(1, ProjectCommands::deleteProjects(array($projectId), $user1Id));
     }
 
-    /**
-     * @expectedException Api\Library\Shared\Palaso\Exception\UserUnauthorizedException
-     */
     public function testDeleteProjects_NotProjectOwner_Throw()
     {
+        $this->expectException(UserUnauthorizedException::class);
+
         self::$environ->clean();
         $user1Id = self::$environ->createUser("user1name", "User1 Name", "user1@example.com");
         $user2Id = self::$environ->createUser("user2name", "User2 Name", "user2@example.com");
@@ -84,14 +83,13 @@ class ProjectCommandsTest extends PHPUnit_Framework_TestCase
 
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         // Project not archived, no throw expected
-        ProjectCommands::checkIfArchivedAndThrow($project);
+        $this->assertNotFalse(ProjectCommands::checkIfArchivedAndThrow($project));
     }
 
-    /**
-     * @expectedException Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException
-     */
     public function testCheckIfArchivedAndThrow_ArchivedProject_Throw()
     {
+        $this->expectException(ResourceNotAvailableException::class);
+
         self::$environ->clean();
 
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -269,11 +267,10 @@ class ProjectCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, $sameUser3->listProjects(self::$environ->website->domain)->count);
     }
 
-    /**
-     * @expectedException Exception
-     */
-    public function testRemoveUsers_ProjectOwner_NotRemovedFromProject()
+    public function testRemoveUsers_ProjectOwner_NotRemovedFromProject_Exception()
     {
+        $this->expectException(Exception::class);
+
         self::$environ->clean();
 
         // setup project and users.  user1 is the project owner
@@ -299,7 +296,6 @@ class ProjectCommandsTest extends PHPUnit_Framework_TestCase
 
         // remove users from project.  user1 still remains as project owner
         $userIds = array($user1->id->asString(), $user2->id->asString());
-        self::$environ->inhibitErrorDisplay();
 
         ProjectCommands::removeUsers($projectId, $userIds);
 
@@ -308,11 +304,8 @@ class ProjectCommandsTest extends PHPUnit_Framework_TestCase
     /**
      * @depends testRemoveUsers_ProjectOwner_NotRemovedFromProject
      */
-    public function testRemoveUsers_ProjectOwner_NotRemovedFromProject_RestoreErrorDisplay()
+    public function testRemoveUsers_ProjectOwner_NotRemovedFromProject()
     {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-
         // read from disk
         $sameProject = new ProjectModel(self::$save['projectId']);
         $sameUser1 = new UserModel(self::$save['user1Id']);

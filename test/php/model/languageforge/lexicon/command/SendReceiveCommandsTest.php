@@ -10,9 +10,9 @@ use GuzzleHttp\Stream\Stream;
 use GuzzleHttp\Subscriber\Mock;
 use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\FileUtilities;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
+class SendReceiveCommandsTest extends TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -292,31 +292,21 @@ class SendReceiveCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($isRunning);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage LFMerge is not installed. Contact the website administrator.
-     */
     public function testStartLFMergeIfRequired_HasSendReceiveButNoLFMergeExe_Exception()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('LFMerge is not installed. Contact the website administrator');
+
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->sendReceiveProjectIdentifier = 'sr_id';
         $project->sendReceiveProject = new SendReceiveProjectModel('sr_name', '', 'manager');
         $projectId = $project->write();
         $mockPidFilePath = sys_get_temp_dir() . '/mockLFMerge.pid';
         $mockCommand = 'mockLFMerge.exe';
-        self::$environ->inhibitErrorDisplay();
 
         SendReceiveCommands::startLFMergeIfRequired($projectId, $mockPidFilePath, $mockCommand);
 
         // nothing runs in the current test function after an exception. IJH 2015-12
-    }
-    /**
-     * @depends testStartLFMergeIfRequired_HasSendReceiveButNoLFMergeExe_Exception
-     */
-    public function testStartLFMergeIfRequired_HasSendReceiveButNoLFMergeExe_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
     }
 
     public function testStartLFMergeIfRequired_HasSendReceiveButNoPidFile_Started()

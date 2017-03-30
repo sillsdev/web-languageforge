@@ -3,9 +3,9 @@
 use Api\Model\Languageforge\Lexicon\Command\LexCommentCommands;
 use Api\Model\Languageforge\Lexicon\LexCommentModel;
 use Api\Model\Languageforge\Lexicon\LexCommentListModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LexCommentCommandsTest extends PHPUnit_Framework_TestCase
+class LexCommentCommandsTest extends TestCase
 {
     /** @var mixed[] Data storage between tests */
     private static $save;
@@ -290,11 +290,10 @@ class LexCommentCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(LexCommentModel::STATUS_RESOLVED, $comment->status);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testUpdateCommentStatus_InvalidStatus_Exception()
     {
+        $this->expectException(Exception::class);
+
         $environ = new LexiconMongoTestEnvironment();
         $environ->clean();
 
@@ -322,7 +321,6 @@ class LexCommentCommandsTest extends PHPUnit_Framework_TestCase
         self::$save['environ'] = $environ;
         self::$save['commentId'] = $commentId;
         self::$save['comment'] = $comment;
-        $environ->inhibitErrorDisplay();
 
         LexCommentCommands::updateCommentStatus($project->id->asString(), $commentId, 'malicious code; rm -rf');
 
@@ -331,10 +329,8 @@ class LexCommentCommandsTest extends PHPUnit_Framework_TestCase
     /**
      * @depends testUpdateCommentStatus_InvalidStatus_Exception
      */
-    public function testUpdateCommentStatus_InvalidStatus_RestoreErrorDisplay()
+    public function testUpdateCommentStatus_InvalidStatus()
     {
-        // restore error display after last test
-        self::$save['environ']->restoreErrorDisplay();
         self::$save['comment']->read(self::$save['commentId']);
 
         $this->assertEquals(LexCommentModel::STATUS_OPEN, self::$save['comment']->status);
