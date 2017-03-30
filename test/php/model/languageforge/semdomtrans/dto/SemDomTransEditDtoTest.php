@@ -7,9 +7,9 @@ use Api\Model\Languageforge\Semdomtrans\SemDomTransQuestion;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransStatus;
 use Api\Model\Languageforge\Semdomtrans\SemDomTransTranslatedForm;
 use Api\Model\Shared\Mapper\ArrayOf;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class SemDomTransEditDtoTest extends PHPUnit_Framework_TestCase
+class SemDomTransEditDtoTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -62,7 +62,7 @@ class SemDomTransEditDtoTest extends PHPUnit_Framework_TestCase
         $targetItemsModel = new SemDomTransItemListModel($targetProject);
         $targetItemsModel->read();
         $targetItems = $targetItemsModel->entries;
-        
+
         $targetItemModel = new SemDomTransItemModel($targetProject);
         $targetItemModel->readByProperty('xmlGuid', $targetItems[0]['xmlGuid']);
         $targetItemModel->key = '1';
@@ -74,7 +74,7 @@ class SemDomTransEditDtoTest extends PHPUnit_Framework_TestCase
         });
         $targetItemModel->questions[] = $tq;
         $targetItemModel->write();
-        
+
         // call dto
         //$loadTargetProject = new SemDomTransProjectModel($prId->asString());
         //$loadSourceProject = new SemDomTransProjectModel($loadTargetProject->sourceLanguageProjectId);

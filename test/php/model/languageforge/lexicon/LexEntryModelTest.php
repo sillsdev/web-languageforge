@@ -7,9 +7,9 @@ use Api\Model\Languageforge\Lexicon\LexMultiValue;
 use Api\Model\Languageforge\Lexicon\LexValue;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\MapOf;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LexEntryModelTest extends PHPUnit_Framework_TestCase
+class LexEntryModelTest extends TestCase
 {
     public function testGetProperties_ConstructsCorrectTypes()
     {
