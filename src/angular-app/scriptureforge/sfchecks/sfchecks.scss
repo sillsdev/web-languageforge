@@ -68,7 +68,7 @@ table label {
     flex-wrap: wrap;
     padding-bottom: 1em;
     margin-bottom: 1em;
-    border-bottom: 1px solid #b0b0b0;
+    border-bottom: 1px solid #e6e6e6;
 
     .tag-list {
       width: 100%;
@@ -93,13 +93,17 @@ table label {
     }
 
     .author {
-      background-color: #eee;
+      background-color: #f0f0f0;
       padding: 0.2em 0.5em;
       img {
         float: right;
       }
     }
   }
+}
+
+.comment {
+  margin-bottom: 0.5em;
 }
 
 .tag-list ul {
