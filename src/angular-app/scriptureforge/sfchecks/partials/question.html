@@ -129,7 +129,7 @@
                     </div>
                     <div class="comments">
                         <div data-ng-repeat="comment in answer.comments">
-                            <div data-ng-class="{unread: isUnreadComment(comment.id)}">
+                            <div class="comment" data-ng-class="{unread: isUnreadComment(comment.id)}">
                                 {{comment.content}} -
                                 {{comment.userRef.username}} -
                                 {{comment.dateCreated | date:mediumdate}}
