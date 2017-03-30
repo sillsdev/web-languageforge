@@ -7,7 +7,7 @@ use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class MockUserCommandsDelivery implements DeliveryInterface
 {
@@ -33,7 +33,7 @@ class MockUserCommandsDelivery implements DeliveryInterface
     }
 }
 
-class UserCommandsTest extends PHPUnit_Framework_TestCase
+class UserCommandsTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -50,35 +50,37 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         self::$save = [];
     }
 
-    public function testDeleteUsers_NoThrow()
+    public function testDeleteUsers_1User_1Deleted()
     {
         self::$environ->clean();
 
         $userId = self::$environ->createUser('somename', 'Some Name', 'somename@example.com');
+        $count = UserCommands::deleteUsers(array($userId));
 
-        UserCommands::deleteUsers(array($userId));
+        $this->assertEquals(1, $count);
     }
 
-    // TODO: When we upgrade PHPUnit, also migrate @expectedException calls to
-    // $this->expectException(InvalidArgumentException::class);
-    // See https://phpunit.de/manual/current/en/writing-tests-for-phpunit.html#writing-tests-for-phpunit.exceptions.examples.ExceptionTest.php
-    // 2017-03-27
+    public function testDeleteUsers_NoId_Exception()
+    {
+        $this->expectException(Exception::class);
 
-    /**
-     * @expectedException Exception
-     */
+        self::$environ->clean();
+        UserCommands::deleteUsers(null);
+    }
+
     public function testBanUser_NoId_Exception()
     {
+        $this->expectException(Exception::class);
+
         self::$environ->clean();
 
         $userId = UserCommands::banUser(null);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testBanUser_BadId_Exception()
     {
+        $this->expectException(Exception::class);
+
         self::$environ->clean();
 
         $userId = UserCommands::banUser('notAnId');
@@ -275,11 +277,10 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(SF_TESTPROJECT, $userProject['projectName']);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testCreateSimple_UsernameExist_Exception()
     {
+        $this->expectException(Exception::class);
+
         self::$environ->clean();
 
         // setup parameters: name and project
@@ -296,9 +297,10 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $dto = UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
     }
 
+    // TODO: Register within a project context
     public function testRegister_WithProjectCode_UserInProjectAndProjectHasUser()
     {
-        // todo: implement this - register within a project context
+        $this->markTestIncomplete('TODO: implement this');
     }
 
     public function testRegister_NoProjectCode_UserInNoProjects()

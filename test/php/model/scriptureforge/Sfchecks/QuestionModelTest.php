@@ -3,9 +3,9 @@
 use Api\Model\Scriptureforge\Sfchecks\QuestionListModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Shared\Mapper\MongoMapper;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class QuestionModelTest extends PHPUnit_Framework_TestCase
+class QuestionModelTest extends TestCase
 {
     public function testCRUD_Works()
     {

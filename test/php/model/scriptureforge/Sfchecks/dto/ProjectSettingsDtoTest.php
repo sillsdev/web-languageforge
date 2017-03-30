@@ -5,9 +5,9 @@ use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ProjectSettingsDtoTest extends PHPUnit_Framework_TestCase
+class ProjectSettingsDtoTest extends TestCase
 {
     public function testEncode_ProjectWith2Users1Unvalidated_DtoCorrect1User()
     {

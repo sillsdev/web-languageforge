@@ -1,9 +1,9 @@
 <?php
 
 use Api\Library\Shared\LanguageData;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LanguageDataTest extends PHPUnit_Framework_TestCase
+class LanguageDataTest extends TestCase
 {
     public function testLanguageData_DataExists()
     {
