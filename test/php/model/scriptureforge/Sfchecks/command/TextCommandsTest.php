@@ -22,7 +22,9 @@ class TextCommandsTest extends TestCase
         $text->title = 'Some Title';
         $text->write();
 
-        $this->assertEquals(1, TextCommands::deleteTexts($project->id->asString(), array($text->id->asString())));
+        $count = TextCommands::deleteTexts($project->id->asString(), array($text->id->asString()));
+
+        $this->assertEquals(1, $count);
     }
 
     public function testArchiveTexts_1Text_1Removed()
