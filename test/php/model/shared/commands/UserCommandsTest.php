@@ -55,8 +55,9 @@ class UserCommandsTest extends TestCase
         self::$environ->clean();
 
         $userId = self::$environ->createUser('somename', 'Some Name', 'somename@example.com');
+        $count = UserCommands::deleteUsers(array($userId));
 
-        $this->assertEquals(1, UserCommands::deleteUsers(array($userId)));
+        $this->assertEquals(1, $count);
     }
 
     public function testDeleteUsers_NoId_Exception()
