@@ -86,7 +86,7 @@ class UserCommands
      * @param string $userId
      * @param Website $website
      * @param DeliveryInterface $delivery
-     * @return bool|string False if update failed; $userId on update; 'login' on username/email change
+     * @return bool|string False if update failed; $userId on update; 'login' on username change
      */
     public static function updateUserProfile($params, $userId, $website, DeliveryInterface $delivery = null)
     {
@@ -107,11 +107,14 @@ class UserCommands
 
         $result =  UserCommands::checkUniqueIdentity($user, $params['username'], $params['email']);
         if ($result == 'ok') {
-            $newCredential = (($user->username != $params['username']) || ($user->email != $params['email']));
+            $newUsername = $user->username != $params['username'];
+            $newEmail = $user->email != $params['email'];
             $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
             $userId = $user->write();
-            if ($newCredential) {
+            if ($newEmail) {
                 Communicate::sendVerifyEmail($user, $website, $delivery);
+            }
+            if ($newUsername) {
                 return 'login';
             }
             return $userId;
