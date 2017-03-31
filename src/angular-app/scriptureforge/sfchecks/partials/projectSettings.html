@@ -7,7 +7,7 @@
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
             <button class="btn btn-warning" data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther"
                     data-ng-click="removeProjectUsers()"><i class="fa fa-remove"></i> Remove Members</button>
-            <button class="btn btn-success" data-ng-show="rights.create" data-ng-click="newUserCollapsed = !newUserCollapsed">
+            <button id="addMembersButton" class="btn btn-success" data-ng-show="rights.create" data-ng-click="newUserCollapsed = !newUserCollapsed">
                 <i class="fa fa-plus"></i> Add Members</button>
             <button class="btn btn-info" data-ng-show="rights.create" data-ng-click="newMessageCollapsed = !newMessageCollapsed">
                 <i class="fa fa-envelope"></i> Message Selected Users</button>
@@ -26,7 +26,7 @@
                     </li>
                 </ul>
             </pui-typeahead>
-            <button data-ng-model="addMode" class="btn" data-ng-disabled="disableAddButton"
+            <button id="addUserButton" data-ng-model="addMode" class="btn" data-ng-disabled="disableAddButton"
                     data-ng-click="addProjectUser()">
                 <i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
             <span class="warning" data-ng-show="warningText">{{warningText}}</span>
