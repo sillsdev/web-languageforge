@@ -481,7 +481,7 @@ gulp.task('remote-restart-php-fpm', function (cb) {
   };
 
   execute(
-    "ssh -i <%= credentials %> <%= destination %> 'service php7.0-fpm restart'",
+    "ssh -i <%= credentials %> <%= destination %> 'if service --status-all | grep -Fq php7.0-fpm; then service php7.0-fpm restart; echo restarted PHP-FPM successfully; fi'",
     options,
     cb
   );
