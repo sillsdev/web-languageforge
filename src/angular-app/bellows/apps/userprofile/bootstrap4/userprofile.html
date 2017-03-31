@@ -15,7 +15,6 @@
                                 <div class="form-group row">
                                     <div class="card bg-faded col-md-6">
                                         <div class="card-block">
-                                            <label><b>Changing Email Address or Username will force a new login</b></label>
                                             <div class="form-group row">
                                                 <label class="control-label col-md-4 text-md-right" for="email" translate="Email Address"></label>
                                                 <div class="controls col-md-8">
@@ -35,7 +34,7 @@
                                                     <div class="input-group">
                                                         <input class="form-control" id="username"
                                                                type="text" name="username"
-                                                               data-ng-blur="validateForm()"
+                                                               data-ng-blur="usernameConfirm();"
                                                                data-ng-model="user.username"/>
                                                         <span class="input-group-addon alert-danger" data-ng-show="!usernameValid || usernameExists">
                                                             <i class="fa fa-times"></i></span>
@@ -67,6 +66,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <select data-ng-model="user.avatar_color" class="form-control" data-ng-options="c.value as c.label for c in dropdown.avatarColors"><option value="">Select a Color...</option></select>
+                                                    <br/>
                                                     <select data-ng-model="user.avatar_shape" class="form-control" data-ng-options="s.value as s.label for s in dropdown.avatarShapes"><option value="">Choose an animal...</option></select>
                                                 </div>
                                             </div>

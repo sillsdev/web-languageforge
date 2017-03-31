@@ -14,9 +14,9 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'p
     $translateProvider.useSanitizeValueStrategy('escape');
 
   }])
-.controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'utilService',
-  'silNoticeService', '$window',
-function ($scope, userService, ss, util, notice, $window) {
+  .controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'utilService',
+  'silNoticeService', 'modalService', '$window',
+function ($scope, userService, ss, util, notice, modalService, $window) {
   $scope.getAvatarUrl = util.getAvatarUrl;
 
   function getAvatarRef(color, shape) {
@@ -25,6 +25,26 @@ function ($scope, userService, ss, util, notice, $window) {
     }
 
     return color + '-' + shape + '-128x128.png';
+  }
+
+  $scope.usernameConfirm = function () {
+    var message = 'Saving username change will force you to login.  Do you want to continue?\n';
+    var modalOptions = {
+      closeButtonText: 'Cancel',
+      actionButtonText: 'Continue',
+      headerText: 'Change username?',
+      bodyText: message
+    };
+    if ($scope.currentUsername != $scope.user.username) {
+      modalService.showModal({}, modalOptions).then(function () {
+      });
+      if (result.ok) {
+        $scope.validateForm();
+      } else {
+        // Restore username
+        $scope.user.username = $scope.currentUsername;
+      }
+    }
   }
 
   var initColor = ''; var initShape = '';
@@ -84,6 +104,7 @@ function ($scope, userService, ss, util, notice, $window) {
     userService.readProfile(function (result) {
       if (result.ok) {
         $scope.user = result.data.userProfile;
+        $scope.currentUsername = $scope.user.username;
         initColor = $scope.user.avatar_color;
         initShape = $scope.user.avatar_shape;
         $scope.projectsSettings = result.data.projectsSettings;
@@ -131,7 +152,7 @@ function ($scope, userService, ss, util, notice, $window) {
           })
         }
         if (result.data == 'login') {
-          notice.push(notice.SUCCESS, 'Changed username/email. Login again');
+          notice.push(notice.SUCCESS, 'Username changed. Please login.');
           $window.location.href = '/auth/logout';
         } else {
           notice.push(notice.SUCCESS, 'Profile updated successfully');
