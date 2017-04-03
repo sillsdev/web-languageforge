@@ -1,34 +1,37 @@
-<h3>Choose a project name</h3>
+<form class="col-md-6 offset-md-3 col-lg-4 offset-lg-3" ng-submit="addProject()">
+    <h3>Choose a project name</h3>
 
-<form ng-submit="addProject()">
-<div class="control-group">
+    <div class="alert alert-danger" ng-show="projectCodeState == 'invalid'">Project Code must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores!</div>
+    <div class="alert alert-danger" ng-show="projectCodeState == 'exists'">Project Code already exists!</div>
+    <div class="alert alert-danger" ng-show="projectCodeState == 'empty'">The Project Code cannot be empty</div>
+
+    <div class="control-group">
     <div class="controls">
-        <input type="text" data-ng-model="newProject.projectName"
+        <label>Project Name
+        <input class="form-control" type="text" data-ng-model="newProject.projectName"
             set-focus="!newProjectCollapsed" maxlength="50" required placeholder="Project Name"
             data-idle-validate="checkProjectCode()" data-idle-validate-keypress="resetValidateProjectForm()"/>
+        </label>
     </div>
 </div>
 <br />
 <div class="control-group">
-    <label class="control-label muted" for="projectCode">Project Code</label>
-    <div class="controls" >
-        <input type="text" data-ng-model="newProject.projectCode" id="projectCode" data-ng-trim="false"
-               data-ng-show="newProject.editProjectCode" maxlength="50" required
+    <label class="control-label text-muted" for="projectCode">Project Code</label>
+    <div class="controls input-group">
+        <input class="form-control" type="text" data-ng-model="newProject.projectCode" id="projectCode" data-ng-trim="false"
+               data-ng-disabled="!newProject.editProjectCode" maxlength="50" required
                data-idle-validate="checkProjectCode()" data-idle-validate-keypress="resetValidateProjectForm()" />
-        <div class="uneditable-input" data-ng-hide="newProject.editProjectCode"
-            data-ng-bind="newProject.projectCode"></div>
-        <span  data-ng-show="newProject.projectCode.length > 0">
-            <span  data-ng-show="projectCodeState == 'loading'">
-                <i id="projectCodeLoading" class="validator fa fa-spinner fa-spin"></i></span>
-            <span  data-ng-show="projectCodeState == 'exists'">
-                <i id="projectCodeExists" class="validator fa fa-exclamation"
-                     title="Project Code already exists!"></i></span>
-            <span  data-ng-show="projectCodeState == 'invalid'">
-                <i id="projectCodeAlphanumeric" class="validator fa fa-exclamation"
-                     title=""></i></span>
-            <span  data-ng-show="projectCodeState == 'ok'">
-                <i id="projectCodeOk" class="validator fa fa-check"
-                     title="Project Code is available!"></i></span>
+        <span class="input-group-addon ng-hide" data-ng-show="projectCodeState == 'loading'">
+            <i class="validator fa fa-spin fa-spinner" id="projectCodeLoading"></i>
+        </span>
+        <span class="input-group-addon ng-hide" data-ng-show="projectCodeState == 'exists'">
+            <i class="validator fa fa-exclamation-triangle" id="projectCodeExists"></i>
+        </span>
+        <span class="input-group-addon ng-hide" data-ng-show="projectCodeState == 'invalid'">
+            <i class="validator fa fa-exclamation-triangle" id="projectCodeAlphanumeric"></i>
+        </span>
+        <span class="input-group-addon ng-hide" data-ng-show="projectCodeState == 'ok'">
+            <i class="validator fa fa-check" id="projectCodeOk"></i>
         </span>
     </div>
     <div class="controls">
@@ -40,7 +43,4 @@
     </div>
 </div>
 <button type="submit" class="btn btn-primary" data-ng-disabled="isSubmitting">Create Project</button>
-<div class="alert alert-error" ng-show="projectCodeState == 'invalid'">Project Code must begin with a letter, and only contain lower-case letters, numbers, dashes and underscores!</div>
-<div class="alert alert-error" ng-show="projectCodeState == 'exists'">Project Code already exists!</div>
-    <div class="alert alert-error" ng-show="projectCodeState == 'empty'">The Project Code cannot be empty</div>
 </form>
