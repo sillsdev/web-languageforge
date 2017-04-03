@@ -27,26 +27,6 @@ function ($scope, userService, ss, util, notice, modalService, $window) {
     return color + '-' + shape + '-128x128.png';
   }
 
-  $scope.usernameConfirm = function () {
-    var message = 'Saving username change will force you to login.  Do you want to continue?\n';
-    var modalOptions = {
-      closeButtonText: 'Cancel',
-      actionButtonText: 'Continue',
-      headerText: 'Change username?',
-      bodyText: message
-    };
-    if ($scope.currentUsername != $scope.user.username) {
-      modalService.showModal({}, modalOptions).then(function () {
-      });
-      if (result.ok) {
-        $scope.validateForm();
-      } else {
-        // Restore username
-        $scope.user.username = $scope.currentUsername;
-      }
-    }
-  }
-
   var initColor = ''; var initShape = '';
   $scope.emailValid = true;
   $scope.usernameValid = true;
@@ -69,7 +49,8 @@ function ($scope, userService, ss, util, notice, modalService, $window) {
     $scope.usernameValid = $scope.userprofileForm.username.$pristine ||
       ($scope.userprofileForm.username.$dirty && !$scope.userprofileForm.$error.username);
 
-    userService.checkUniqueIdentity($scope.user.id, $scope.user.username, $scope.user.email, function (result) {
+    userService.checkUniqueIdentity($scope.user.id, $scope.user.username, $scope.user.email,
+      function (result) {
       if (result.ok) {
         switch (result.data) {
           case 'usernameExists' :
@@ -104,7 +85,7 @@ function ($scope, userService, ss, util, notice, modalService, $window) {
     userService.readProfile(function (result) {
       if (result.ok) {
         $scope.user = result.data.userProfile;
-        $scope.currentUsername = $scope.user.username;
+        $scope.originalUsername = $scope.user.username;
         initColor = $scope.user.avatar_color;
         initShape = $scope.user.avatar_shape;
         $scope.projectsSettings = result.data.projectsSettings;
@@ -127,6 +108,26 @@ function ($scope, userService, ss, util, notice, modalService, $window) {
       }
     });
   };
+
+  $scope.submit = function () {
+    if ($scope.user.username != $scope.originalUsername) {
+      // Confirmation for username change
+      var message = 'Changing Username from <b>' + $scope.originalUsername + '</b> to <b>' +
+        $scope.user.username + '</b> will force you to login again.<br /><br />' +
+        'Do you want to save changes?';
+      var modalOptions = {
+        closeButtonText: 'Cancel',
+        actionButtonText: 'Save changes',
+        headerText: 'Changing username?',
+        bodyText: message
+      };
+      modalService.showModal({}, modalOptions).then(function () {
+        $scope.updateUser();
+      });
+    } else {
+      $scope.updateUser();
+    }
+  }
 
   $scope.updateUser = function () {
 
