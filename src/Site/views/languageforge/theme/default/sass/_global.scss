@@ -161,6 +161,18 @@ dl.picklists dd {
     .modal-body {
       max-height: initial;
       flex: 2;
+
+      .search-wrapper {
+        position: relative;
+
+        #clearSearch {
+          position: absolute;
+          right: 0.6em;
+          z-index: 10;
+          cursor: pointer;
+          line-height: 28pt;
+        }
+      }
     }
   }
 
