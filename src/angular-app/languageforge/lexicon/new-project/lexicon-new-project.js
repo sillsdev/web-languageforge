@@ -674,6 +674,7 @@ angular.module('lexicon-new-project',
           $scope.add = function () {
             $modalInstance.close($scope.selected);
           };
+          $scope.close = $modalInstance.dismiss;
         }],
         windowTopClass: 'modal-select-language'
       });
