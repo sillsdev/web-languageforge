@@ -132,8 +132,6 @@ dl.picklists dd {
     height: 75%;
     background-color: white;
     max-width: unset;
-    margin-top: auto;
-    margin-bottom: auto;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -187,6 +185,31 @@ dl.picklists dd {
     padding: 15px;
     overflow-y: auto;
   }
+}
+
+@include media-breakpoint-down(sm) {
+  .modal-select-language {
+    width: initial;
+    height: initial;
+
+    h3 {
+      margin-bottom: 0;
+    }
+
+    .modal-dialog {
+      width: initial;
+      height: initial;
+    }
+  }
+}
+
+.close-modal {
+  font-size: 1.2em;
+  position: absolute;
+  right: 1em;
+  top: 1em;
+  cursor: pointer;
+  top: 1em;
 }
 
 .breadcrumb {
