@@ -40,10 +40,15 @@ function SfUserProfilePage() {
   this.goldPigAvatarUri = '/Site/views/shared/image/avatar/gold-pig-128x128.png';
 
   this.myAccountTab = {
+    emailInput:       element(by.id('email')),
+    username:         element(by.id('username')),
+
+    emailTaken:  element(by.id('emailTaken')),
+    usernameTaken: element(by.id('usernameTaken')),
+
     avatarColor:      element(by.model('user.avatar_color')),
     avatarShape:      element(by.model('user.avatar_shape')),
     avatar:           element(by.id('avatarRef')),
-    emailInput:       element(by.model('user.email')),
 
     // Jamaican mobile phone number will move to Project scope
     mobilePhoneInput: element(by.model('user.mobile_phone')),
@@ -70,6 +75,18 @@ function SfUserProfilePage() {
     browser.wait(expectedCondition.visibilityOf(this.myAccountTab.emailInput), CONDITION_TIMEOUT);
     this.myAccountTab.emailInput.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
     this.myAccountTab.emailInput.sendKeys(newEmail);
+
+    // click another field to force validation
+    this.myAccountTab.username.click();
+  }.bind(this);
+
+  this.myAccountTab.updateUsername = function (newUsername) {
+    browser.wait(expectedCondition.visibilityOf(this.myAccountTab.username), CONDITION_TIMEOUT);
+    this.myAccountTab.username.sendKeys(protractor.Key.chord(protractor.Key.CONTROL, 'a'));
+    this.myAccountTab.username.sendKeys(newUsername);
+
+    // click another field to force validation
+    this.myAccountTab.emailInput.click();
   }.bind(this);
 
   this.myAccountTab.updateMobilePhone = function (newPhone) {

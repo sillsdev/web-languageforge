@@ -54,7 +54,7 @@ class UserCommands
     }
 
     /**
-     * System Admin: User Create/Update
+     * System Admin: Update User
      * @param array $params - user model fields to update
      * @param Website $website
      * @return string $userId
@@ -84,27 +84,43 @@ class UserCommands
      * User Profile: Update User Profile
      * @param array $params - user model fields to update
      * @param string $userId
-     * @return string $userId
+     * @param Website $website
+     * @param DeliveryInterface $delivery
+     * @return bool|string False if update failed; $userId on update; 'login' on username change
      */
-    public static function updateUserProfile($params, $userId)
+    public static function updateUserProfile($params, $userId, $website, DeliveryInterface $delivery = null)
     {
         $params['id'] = $userId;
+        if (array_key_exists('username', $params)) {
+            $params['username'] = UserCommands::sanitizeInput($params['username']);
+        }
+        if (array_key_exists('email', $params)) {
+            $params['email'] = UserCommands::sanitizeInput($params['email']);
+        }
+
         $user = new UserModel($userId);
 
         // don't allow the following keys to be persisted
         if (array_key_exists('role', $params)) {
             unset($params['role']);
         }
-        // TODO 07-2014 DDW Need to revalidate any email updates
-        if (array_key_exists('email', $params)) {
-            unset($params['email']);
+
+        $result =  UserCommands::checkUniqueIdentity($user, $params['username'], $params['email']);
+        if ($result == 'ok') {
+            $newUsername = $user->username != $params['username'];
+            $newEmail = $user->email != $params['email'];
+            $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
+            $userId = $user->write();
+            if ($newEmail) {
+                Communicate::sendVerifyEmail($user, $website, $delivery);
+            }
+            if ($newUsername) {
+                return 'login';
+            }
+            return $userId;
         }
-        if (array_key_exists('username', $params)) {
-            unset($params['username']);
-        }
-        $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
-        $result = $user->write();
-        return $result;
+
+        return false;
     }
 
     /**
