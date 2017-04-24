@@ -4,7 +4,7 @@
 
     {% if isLoggedIn %}
 
-        <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060" data-ng-app="xforge.navbarApp" data-ng-controller="navbarController">
+        <nav class="fixed-nav-bar navbar navbar-dark" data-ng-app="xforge.navbarApp" data-ng-controller="navbarController">
             <a class="navbar-brand hidden-sm-down" href="/">Scripture Forge
             </a>
             <div class="hidden-md-up">
@@ -85,7 +85,7 @@
         </nav>
 
     {% else %}
-        <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060">
+        <nav class="fixed-nav-bar navbar navbar-dark">
             <a class="navbar-brand hidden-sm-down" href="/">Scripture Forge
                 {% if app.website.domain == "languageforge.local" %} (Bootstrap 4){% endif %}
             </a>
