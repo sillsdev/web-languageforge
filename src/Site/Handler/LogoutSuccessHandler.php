@@ -18,8 +18,9 @@ class LogoutSuccessHandler extends DefaultLogoutSuccessHandler
     protected $session = null;
 
     public function onLogoutSuccess(Request $request) {
-        $this->session->getFlashBag()->add('infoMessage', 'Logged Out Successfully');
-
+        if (!$this->session->getFlashBag()->has('infoMessage')) {
+            $this->session->getFlashBag()->add('infoMessage', 'Logged Out Successfully');
+        }
         return $this->httpUtils->createRedirectResponse($request, '/auth/login');
     }
 }
