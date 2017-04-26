@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+{% if app.website.name == "Language Forge" %}
+  <html lang="en" manifest="/cache.manifest">
+{% else %}
+  <html lang="en">
+{% endif %}
 <head>
     <!-- Required meta tags always come first -->
     <meta charset="utf-8">
