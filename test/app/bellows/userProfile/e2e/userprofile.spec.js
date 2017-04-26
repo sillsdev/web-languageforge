@@ -181,7 +181,7 @@ describe('User Profile E2E Test', function () {
         util.clickModalButton('Save changes');
 
         // Login with new username and revert to original username
-        browser.wait(expectedCondition.visibilityOf(loginPage.username), CONDITION_TIMEOUT);
+        loginPage.get();
         expect(loginPage.infoMessages.count()).toBe(1);
         expect(loginPage.infoMessages.first().getText()).toContain(
           'Username changed. Please login.');
@@ -196,10 +196,17 @@ describe('User Profile E2E Test', function () {
         expect(userProfile.myAccountTab.username.getAttribute('value')).toEqual(newUsername);
         userProfile.myAccountTab.updateUsername(expectedUsername);
         userProfile.myAccountTab.saveBtn.click();
-        browser.wait(expectedCondition.visibilityOf(loginPage.username), CONDITION_TIMEOUT);
+        util.clickModalButton('Save changes');
+        loginPage.get();
       });
 
       it('Update and store "About Me" settings', function () {
+        if (expectedUsername == constants.memberUsername) {
+          loginPage.loginAsUser();
+        } else if (expectedUsername == constants.managerUsername) {
+          loginPage.loginAsManager();
+        }
+
         userProfile.getAboutMe();
 
         // New user profile to put in
