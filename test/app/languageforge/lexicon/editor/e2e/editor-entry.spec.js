@@ -384,6 +384,25 @@ describe('Editor List and Entry', function () {
     editorPage.edit.senses.first().click();
   });
 
+  it('dictionary citation reflects example sentences and translations', function () {
+    expect(editorPage.edit.renderedDiv.getText()).toContain(
+      constants.testMultipleMeaningEntry1.senses[0].examples[0].sentence.th.value);
+    expect(editorPage.edit.renderedDiv.getText()).toContain(
+      constants.testMultipleMeaningEntry1.senses[0].examples[0].translation.en.value);
+    expect(editorPage.edit.renderedDiv.getText()).toContain(
+      constants.testMultipleMeaningEntry1.senses[0].examples[1].sentence.th.value);
+    expect(editorPage.edit.renderedDiv.getText()).toContain(
+      constants.testMultipleMeaningEntry1.senses[0].examples[1].translation.en.value);
+    expect(editorPage.edit.renderedDiv.getText()).toContain(
+      constants.testMultipleMeaningEntry1.senses[1].examples[0].sentence.th.value);
+    expect(editorPage.edit.renderedDiv.getText()).toContain(
+      constants.testMultipleMeaningEntry1.senses[1].examples[0].translation.en.value);
+    expect(editorPage.edit.renderedDiv.getText()).toContain(
+      constants.testMultipleMeaningEntry1.senses[1].examples[1].sentence.th.value);
+    expect(editorPage.edit.renderedDiv.getText()).toContain(
+      constants.testMultipleMeaningEntry1.senses[1].examples[1].translation.en.value);
+  });
+
   it('word with multiple definitions: edit page has correct definitions, parts of speech',
   function () {
     expect(editorPage.edit.getFieldValues('Definition')).toEqual([
