@@ -1,9 +1,9 @@
 <?php
 
 use Api\Model\Languageforge\Semdomtrans\SemDomTransItemListModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class SemDomTransProjectModelTest extends PHPUnit_Framework_TestCase
+class SemDomTransProjectModelTest extends TestCase
 {
     public function testPreFillFromSourceLanguage_englishProjectExists_newProjectPrefilled()
     {
@@ -12,6 +12,7 @@ class SemDomTransProjectModelTest extends PHPUnit_Framework_TestCase
         $user1Id = $environ->createUser('u', 'u', 'u');
         $environ->getEnglishProjectAndCreateIfNecessary();
         $environ->createSemDomProject('es', 'Spanish', $user1Id);
+        $this->markTestIncomplete('TODO: assert semdom project prefilled');
     }
 
     public function testImportFromFile_nonEnglishProject_importsOk() {

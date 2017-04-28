@@ -7,7 +7,7 @@ use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class MockUserCommandsDelivery implements DeliveryInterface
 {
@@ -33,7 +33,7 @@ class MockUserCommandsDelivery implements DeliveryInterface
     }
 }
 
-class UserCommandsTest extends PHPUnit_Framework_TestCase
+class UserCommandsTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -50,35 +50,37 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         self::$save = [];
     }
 
-    public function testDeleteUsers_NoThrow()
+    public function testDeleteUsers_1User_1Deleted()
     {
         self::$environ->clean();
 
         $userId = self::$environ->createUser('somename', 'Some Name', 'somename@example.com');
+        $count = UserCommands::deleteUsers(array($userId));
 
-        UserCommands::deleteUsers(array($userId));
+        $this->assertEquals(1, $count);
     }
 
-    // TODO: When we upgrade PHPUnit, also migrate @expectedException calls to
-    // $this->expectException(InvalidArgumentException::class);
-    // See https://phpunit.de/manual/current/en/writing-tests-for-phpunit.html#writing-tests-for-phpunit.exceptions.examples.ExceptionTest.php
-    // 2017-03-27
+    public function testDeleteUsers_NoId_Exception()
+    {
+        $this->expectException(Exception::class);
 
-    /**
-     * @expectedException Exception
-     */
+        self::$environ->clean();
+        UserCommands::deleteUsers(null);
+    }
+
     public function testBanUser_NoId_Exception()
     {
+        $this->expectException(Exception::class);
+
         self::$environ->clean();
 
         $userId = UserCommands::banUser(null);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testBanUser_BadId_Exception()
     {
+        $this->expectException(Exception::class);
+
         self::$environ->clean();
 
         $userId = UserCommands::banUser('notAnId');
@@ -99,6 +101,97 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($user->active);
     }
 
+    public function testUpdateUserProfile_OtherUsername_FalseNoUpdate()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'jsmith',
+            'email' => 'zed@example.com',
+            'avatar_ref' => 'joe.png'
+        );
+        $zed = new UserModel($zedId);
+        $this->assertEquals($zed->avatar_ref, $zed->username . '.png');
+
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $zed = new UserModel($zedId);
+        $this->assertNotEquals($params['avatar_ref'], $zed->avatar_ref);
+    }
+
+    public function testUpdateUserProfile_OtherEmail_FalseNoUpdate()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'zedUser',
+            'email' => 'joe@smith.com');
+        $zed = new UserModel($zedId);
+        $this->assertEquals('zed@example.com', $zed->email);
+
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $zed = new UserModel($zedId);
+        $this->assertNotEquals($params['email'], $zed->email);
+    }
+
+    public function testUpdateUserProfile_OtherUsernameOtherEmail_False()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $user2Id = self::$environ->createUser('janedoe', 'jane doe', 'jane@doe.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'janedoe',
+            'email' => 'joe@smith.com'
+        );
+
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $zed = new UserModel($zedId);
+        $this->assertNotEquals($params['username'], $zed->username);
+        $this->assertNotEquals($params['email'], $zed->email);
+    }
+
+    public function testUpdateUserProfile_NewEmail_IdEmailChanged()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zeduser', 'zed user','zed@example.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'zeduser',
+            'email' => 'joe@smith.com'
+        );
+        $status = UserCommands::updateUserProfile($params, $zedId, self::$environ->website);
+        $this->assertEquals($zedId, $status );
+        $zed = new UserModel($zedId);
+        $this->assertEquals('zeduser', $zed->username);
+        $this->assertEquals('joe@smith.com', $zed->email);
+    }
+
+    public function testUpdateUserProfile_NewUsernameEmail_LoginUsernameEmailChanged()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'jsmith',
+            'email' => 'joe@smith.com'
+        );
+        $status = UserCommands::updateUserProfile($params, $zedId, self::$environ->website);
+        $this->assertEquals('login', $status );
+        $zed = new UserModel($zedId);
+        $this->assertEquals('jsmith', $zed->username);
+        $this->assertEquals('joe@smith.com', $zed->email);
+    }
+
     public function testUpdateUserProfile_SetLangCode_LangCodeSet()
     {
         self::$environ->clean();
@@ -106,11 +199,13 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         // setup parameters
         $userId = self::$environ->createUser('username', 'name', 'name@example.com');
         $params = array(
-            'id' => '',
+            'id' => $userId,
+            'username' => 'username',
+            'email' => 'name@example.com',
             'interfaceLanguageCode' => 'th'
         );
 
-        $newUserId = UserCommands::updateUserProfile($params, $userId);
+        $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
 
         // user profile updated
         $user = new UserModel($newUserId);
@@ -275,11 +370,10 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(SF_TESTPROJECT, $userProject['projectName']);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testCreateSimple_UsernameExist_Exception()
     {
+        $this->expectException(Exception::class);
+
         self::$environ->clean();
 
         // setup parameters: name and project
@@ -296,9 +390,10 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $dto = UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
     }
 
+    // TODO: Register within a project context
     public function testRegister_WithProjectCode_UserInProjectAndProjectHasUser()
     {
-        // todo: implement this - register within a project context
+        $this->markTestIncomplete('TODO: implement this');
     }
 
     public function testRegister_NoProjectCode_UserInNoProjects()
