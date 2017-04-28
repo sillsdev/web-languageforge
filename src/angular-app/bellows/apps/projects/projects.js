@@ -35,13 +35,13 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
     // Listview Data
     $scope.projects = [];
     $scope.queryProjectsForUser = function () {
-      projectService.list(function (result) {
-        if (result.ok) {
-          $scope.projects = result.data.entries;
-          $scope.projectCount = result.data.count;
-          $scope.finishedLoading = true;
-        }
-      });
+      projectService.list().then(function (projects) {
+        $scope.projects = projects;
+        // Is this perhaps wrong? Maybe not all projects are included in the JSONRPC response?
+        // That might explain the existance of the previous result.data.count
+        $scope.projectCount = projects.length;
+        $scope.finishedLoading = true;
+      }).catch(console.error);
     };
 
     $scope.isInProject = function (project) {
