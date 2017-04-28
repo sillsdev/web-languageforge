@@ -28,7 +28,7 @@ class UserModel extends MapperModel
         ['username', 'name', 'email'];
     const USER_PROFILE_ACCESSIBLE =
         ['avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',
-         'name', 'age', 'gender', 'interfaceLanguageCode'];
+         'name', 'email', 'username', 'age', 'gender', 'interfaceLanguageCode'];
     const ADMIN_ACCESSIBLE =
         ['username', 'name', 'email', 'role', 'active',
          'avatar_color', 'avatar_shape', 'avatar_ref', 'mobile_phone', 'communicate_via',

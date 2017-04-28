@@ -77,7 +77,7 @@ function SfProjectSettingsPage() {
   this.archivedTextsTab = {
     textNames: element.all(by.repeater('text in visibleTexts').column('title')),
     textList: element.all(by.repeater('text in visibleTexts')),
-    publishButton: element(by.partialButtonText('Re-publish Texts')),
+    publishButton: element(by.css('.republish-texts')),
     textLink: function textLink(title) {
       return element(by.linkText(title));
     }
@@ -106,7 +106,7 @@ function SfProjectSettingsPage() {
     editContentsList: element(by.id('picklistEditorFieldset')).all(by.repeater('item in items')),
     defaultValue: element(by.id('picklistEditorFieldset')).element(by.model('defaultKey')),
     addInput: element(by.id('picklistEditorFieldset')).element(by.model('newValue')),
-    addButton: element(by.id('picklistEditorFieldset')).element(by.css('input[type="text"] + a')),
+    addButton: element(by.id('picklistEditorFieldset')).element(by.css('.add-item-to-list')),
     saveButton: element(by.id('user_profile_lists_save_button')),
     unsavedWarning: element(by.css('span.unsaved-warning')),
     deleteButton: function deleteButton(repeaterRow) {

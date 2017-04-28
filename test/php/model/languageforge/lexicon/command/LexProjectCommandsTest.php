@@ -9,9 +9,9 @@ use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LexProjectCommandsTest extends PHPUnit_Framework_TestCase
+class LexProjectCommandsTest extends TestCase
 {
     public function testUpdateConfig_ConfigPersists()
     {

@@ -2,30 +2,21 @@
 
 }
 
-div.intl-tel-input{
-    display: block;
+#userprofileForm {
+  input {
+    background-color: #e3e3e3;
 
-    ul.country-list {
-      /* Render country list above Bootstrap buttons */
-      z-index: 3;
+    &:focus {
+      background-color: white;
     }
-}
+  }
 
-.btn-group-justified {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: separate;
-  .btn,
-  .btn-group {
-    float: none;
-    display: table-cell;
-    width: 33.3333%;
-    .btn {
-      width: 100%;
-    }
-    .dropdown-menu {
-      left: auto;
+  select.form-control {
+    background-color: #e3e3e3;
+
+    &:focus {
+      background-color: white;
     }
   }
 }
+

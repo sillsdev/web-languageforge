@@ -41,8 +41,11 @@ angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
           angular.forEach(senseModel.examples, function (exampleModel) {
             sense.examples.push({
               sentence:
-                utils.getExampleSentence($scope.config.fields.senses.fields.examples, exampleModel)
-            });
+                utils.getExample($scope.config.fields.senses.fields.examples,
+                  exampleModel, 'sentence') }, {
+              sentenceTranslation:
+                utils.getExample($scope.config.fields.senses.fields.examples,
+                  exampleModel, 'translation') });
           });
 
           $scope.entry.senses.push(sense);

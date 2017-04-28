@@ -4,9 +4,9 @@ use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LexBaseViewDtoTest extends PHPUnit_Framework_TestCase
+class LexBaseViewDtoTest extends TestCase
 {
     public function testEncode_Project_DtoCorrect()
     {

@@ -4,110 +4,106 @@
         <alert data-ng-repeat="message in messages" type="info" close="markMessageRead(message.id)">
             <b>{{message.subject}}</b><br /><span data-ng-bind-html="message.content"></span></alert>
     </div>
-    <div id="settingsDropdownButton" class="btn-group pull-right" data-ng-show="rights.edit">
-        <a class="btn dropdown-toggle"
-           data-toggle="dropdown"
-           data-tooltip-placement="right"
-           data-tooltip="Settings" href="#">
-            <i class="icon-cog icon-large"></i>
-            <span class="caret"></span></a>
-        <ul class="dropdown-menu">
-            <li><a data-ng-href="#/settings">Project Settings</a></li>
-            <!-- <li><a ng-href="/app/usermanagement/{{project.id}}" translate="User Management"></a></li> -->
-        </ul>
-    </div>
-    <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-        <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn" data-ng-click="archiveTexts()">
-            <i class="icon-archive icon-large" style="color:black"></i>Archive Texts</button>
-        <button data-ng-show="rights.create" class="btn" data-ng-click="newTextCollapsed = !newTextCollapsed">
-            <i class="icon-plus"></i>Add New Text</button>
-    </form>
-    <div class="new-item" data-collapse="newTextCollapsed">
-        <form class="well" name="newTextForm">
-            <fieldset class="span4">
-                <table class="tableform">
-                    <tr>
-                        <td>
-                            <label>Title</label>
-                            <input required data-ng-model="title" type="text" placeholder="Title"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Text</label>
-                            <textarea textdrop data-ng-model="content" rows="4" placeholder="Paste the USX text here"></textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Font Name (optional)</label>
-                            <input data-ng-model="fontfamily" type="text" placeholder="Title" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a data-ng-click="toggleRangeSelector()">Select limited verse range</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="text-info"><a data-ng-href="/sfchecks_usersguide#exportusx" target="_blank">
-                                How can I export a USX file from ParaTExt?</a></span>
-                        </td>
-                    </tr>
-                </table>
-                <div data-collapse="rangeSelectorCollapsed">
-                    <table>
-                        <tr>
-                            <td>From</td>
-                            <td><input type="number" data-ng-model="startCh" min="1" placeholder="Chap." style="width: 4em; text-align: right" />
-                                &nbsp;:&nbsp;<input type="number" data-ng-model="startVs" min="1" placeholder="Verse" style="width: 4em" /></td>
-                            <td><a data-ng-click="startCh = ''; startVs = ''" class="btn-link">reset</a></td>
-                        </tr>
-                        <tr>
-                            <td>To</td>
-                            <td><input type="number" data-ng-model="endCh" min="1" placeholder="Chap." style="width: 4em; text-align: right" />
-                                &nbsp;:&nbsp;<input type="number" data-ng-model="endVs" min="1" placeholder="Verse" style="width: 4em" /></td>
-                            <td><a data-ng-click="endCh = ''; endVs = ''" class="btn-link">reset</a></td>
-                        </tr>
-                    </table>
-                </div>
-                <button type="submit" class="btn" data-ng-disabled="newTextForm.$invalid"
-                        data-ng-click="addText(); newTextCollapsed = true"><i class="icon-ok"></i>Save</button>
-            </fieldset>
-            <fieldset class="span4">
-                <div class="drop-box" data-ngf-drop="readUsx($file)" data-ngf-drag-over-class="'dragover'">
-                    <h4>or drop a USX file here</h4>
-                    <br/>
-                    <p>or if you prefer...</p>
-                    <div class="btn" id="browseUsxButton" data-ngf-select="readUsx($file)">Browse...</div>
-                </div>
-                <div data-ngf-no-file-drop>
-                    <div class="btn" data-ngf-select="readUsx($file)">Browse...</div>
-                </div>
-            </fieldset>
-            <div style="clear: left"></div>
-        </form>
-    </div>
-    <hr />
-    <listview hide-if-empty="true" items="texts" visible-items="visibleTexts" select="">
-        <div data-ng-repeat="text in visibleTexts" class="details-row">
-            <ul class="inline" data-ng-class="{active: isSelected(text)}">
-                <li data-ng-show="rights.archive" ><label>
-                    <input type="checkbox" data-ng-checked="isSelected(text)" data-ng-click="updateSelection($event, text)" />
-                </label></li>
-                <li>
-                    <a class="span5" data-ng-href="{{text.url}}"><span class="larger-text">{{text.title}}</span></a>
-                </li>
-                <li><a data-ng-href="{{text.url}}">
-                    <div class="attention-block">
-                        <span class="subtitle">{{text.questionCount}} questions</span>
-                    </div>
-                </a></li>
-                <li><span class="span2">{{text.responseCount}} responses</span></li>
-                <li class="muted"><small>Added {{text.dateCreated | relativetime}}</small></li>
-            </ul>
-            <hr />
+
+    <div id="settingsDropdownButton" class="pull-right" uib-dropdown data-ng-show="rights.edit">
+        <a class="btn btn-secondary"
+           uib-dropdown-toggle
+           tooltip-placement="left"
+           uib-tooltip="Settings">
+            <i class="fa fa-cog"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+            <a class="dropdown-item" data-ng-href="#/settings">Project Settings</a>
+            <!--<a class="dropdown-item" ng-href="/app/usermanagement/{{project.id}}" translate="User Management"></a>-->
         </div>
+    </div>
+
+    <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
+        <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn btn-warning" data-ng-click="archiveTexts()">
+            <i class="fa fa-archive fa-lg"></i> Archive Texts</button>
+        <button data-ng-show="rights.create" class="btn btn-success" data-ng-click="newTextCollapsed = !newTextCollapsed">
+            <i class="fa fa-plus"></i> Add New Text</button>
+    </form>
+    <div uib-collapse="newTextCollapsed">
+        <div class="card new-text">
+            <form class="card-block" name="newTextForm">
+                <div class="col-md-4">
+                    <div>
+                        <div class="form-group">
+                            <label>Title
+                                <input class="form-control" required data-ng-model="title" type="text" placeholder="Title"/>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Text
+                                <textarea class="form-control" textdrop data-ng-model="content" rows="4" placeholder="Paste the USX text here"></textarea>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Font Name (optional)
+                                <input class="form-control" data-ng-model="fontfamily" type="text" placeholder="Title" />
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <a href data-ng-click="toggleRangeSelector()">Select limited verse range</a>
+                        </div>
+                        <div class="form-group">
+                            <span class="text-info"><a data-ng-href="/sfchecks_usersguide#exportusx" target="_blank">
+                                  How can I export a USX file from ParaTExt?</a></span>
+                        </div>
+                    </div>
+                    <div class="verse-range" uib-collapse="rangeSelectorCollapsed">
+                        <div class="form-group">
+                            <label>From
+                                <div><input type="number" class="form-control" data-ng-model="startCh" min="1" placeholder="Chap." />
+                                    &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="startVs" min="1" placeholder="Verse" />
+                                    <button data-ng-click="startCh = ''; startVs = ''" class="btn btn-link">reset</button>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>To
+                                <div><input type="number" class="form-control" data-ng-model="endCh" min="1" placeholder="Chap." />
+                                    &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="endVs" min="1" placeholder="Verse" />
+                                    <button data-ng-click="endCh = ''; endVs = ''" class="btn btn-link">reset</button>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success" data-ng-disabled="newTextForm.$invalid"
+                            data-ng-click="addText(); newTextCollapsed = true"><i class="fa fa-check"></i> Save</button>
+                </div>
+                <fieldset class="col-md-4">
+                    <div class="drop-box" data-ngf-drop="readUsx($file)" data-ngf-drag-over-class="'dragover'">
+                        <h4>or drop a USX file here</h4>
+                        <p>or if you prefer...</p>
+                        <button class="btn btn-success" id="browseUsxButton" data-ngf-select="readUsx($file)">Browse...</button>
+                    </div>
+                    <div data-ngf-no-file-drop>
+                        <div class="btn" data-ngf-select="readUsx($file)">Browse...</div>
+                    </div>
+                </fieldset>
+                <div style="clear: left"></div>
+            </form>
+        </div>
+    </div>
+    <listview hide-if-empty="true" items="texts" visible-items="visibleTexts" select="">
+        <table class="texts table">
+            <tr data-ng-repeat="text in visibleTexts" data-ng-class="{active: isSelected(text)}">
+                <td>
+                    <label data-ng-show="rights.archive">
+                        <input type="checkbox" data-ng-checked="isSelected(text)" data-ng-click="updateSelection($event, text)">
+                    </label>
+                </td>
+                <td>
+                    <a data-ng-href="{{text.url}}"><div class="larger-text">{{text.title}}</div></a>
+                </td>
+                <td>
+                    <a class="attention-block" data-ng-href="{{text.url}}">{{text.questionCount}} questions</a>
+                </td>
+                <td>{{text.responseCount}} responses</td>
+                <td><small class="text-muted">Added {{text.dateCreated | relativetime}}</small></td>
+            </tr>
+        </table>
     </listview>
 </div>

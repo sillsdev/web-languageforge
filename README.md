@@ -80,6 +80,7 @@ cd web-languageforge
 npm install
 gulp sass
 ```
+To watch Sass files for changes, run `gulp sass:watch`. The output will also be in a more readable format (rather than compressed as it is with `gulp sass`). You can also pass the `--debug` flag to enable source comments and source maps in comments in the output files.
 
 ### Language Forge Configuration File <a id="LFConfig"></a>
 Manually edit the Language Forge config file
