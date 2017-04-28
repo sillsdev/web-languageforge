@@ -539,6 +539,7 @@ function ($scope, notice, lexProjectService, sessionService,
         $scope.add = function () {
           $modalInstance.close($scope.selected);
         };
+        $scope.close = $modalInstance.dismiss;
 
         $scope.suggestedLanguageCodes = suggestedLanguageCodes;
       }],
