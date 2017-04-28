@@ -7,7 +7,7 @@ use Api\Library\Shared\Website;
 use Api\Model\Shared\MessageModel;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UnreadMessageModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class MockCommunicateDelivery implements DeliveryInterface
 {
@@ -33,7 +33,7 @@ class MockCommunicateDelivery implements DeliveryInterface
     }
 }
 
-class CommunicateTest extends PHPUnit_Framework_TestCase
+class CommunicateTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -43,12 +43,11 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         self::$environ = new MongoTestEnvironment();
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage 'email from address' should not evaluate to false
-     */
     public function testCommunicateToUser_NoFromAddress_Exception()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('\'email from address\' should not evaluate to false');
+
         self::$environ->clean();
         $userId = self::$environ->createUser('User', 'Name', 'name@example.com');
         $user = new UserModel($userId);
@@ -59,28 +58,17 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         $smsTemplate = '';
         $emailTemplate = 'TestMessage';
         $delivery = new MockCommunicateDelivery();
-        self::$environ->inhibitErrorDisplay();
 
         Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, '', $delivery);
 
         // nothing runs in the current test function after an exception. IJH 2016-07
     }
 
-    /**
-     * @depends testCommunicateToUser_NoFromAddress_Exception
-     */
-    public function testCommunicateToUser_NoFromAddress_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-    }
-
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage 'email to address' should not evaluate to false
-     */
     public function testCommunicateToUser_NoToAddress_Exception()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('\'email to address\' should not evaluate to false');
+
         self::$environ->clean();
         $userId = self::$environ->createUser('User', 'Name', '');
         $user = new UserModel($userId);
@@ -91,20 +79,10 @@ class CommunicateTest extends PHPUnit_Framework_TestCase
         $smsTemplate = '';
         $emailTemplate = 'TestMessage';
         $delivery = new MockCommunicateDelivery();
-        self::$environ->inhibitErrorDisplay();
 
         Communicate::communicateToUser($user, $project, $subject, $smsTemplate, $emailTemplate, '', $delivery);
 
         // nothing runs in the current test function after an exception. IJH 2016-07
-    }
-
-    /**
-     * @depends testCommunicateToUser_NoToAddress_Exception
-     */
-    public function testCommunicateToUser_NoToAddress_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
     }
 
     public function testCommunicateToUser_SendEmail_PropertiesToFromMessageOk()

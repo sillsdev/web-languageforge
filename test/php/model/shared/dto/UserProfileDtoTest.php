@@ -5,9 +5,9 @@ use Api\Model\Shared\Dto\UserProfileDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class UserProfileDtoTest extends PHPUnit_Framework_TestCase
+class UserProfileDtoTest extends TestCase
 {
     public function testEncode_UserProjectHasUserProfileProperties_ReturnsProjectProperties()
     {

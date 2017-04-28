@@ -5,7 +5,7 @@ use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\Mapper\ObjectForEncoding;
 use Api\Model\Shared\Mapper\JsonDecoder;
 use Api\Model\Shared\Mapper\JsonEncoder;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class PropertyObject extends ObjectForEncoding
 {
@@ -82,7 +82,7 @@ class PropertyObjectInMap2
     public $data2;
 }
 
-class JsonEncoderDecoderTest extends PHPUnit_Framework_TestCase
+class JsonEncoderDecoderTest extends TestCase
 {
     public function testEncode_PrivateProperties_NotVisible()
     {

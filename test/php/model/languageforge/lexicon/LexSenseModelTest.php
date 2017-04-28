@@ -7,9 +7,9 @@ use Api\Model\Languageforge\Lexicon\LexSense;
 use Api\Model\Languageforge\Lexicon\LexValue;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\MapOf;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LexSenseModelTest extends PHPUnit_Framework_TestCase
+class LexSenseModelTest extends TestCase
 {
     public function testGetProperties_ConstructsCorrectTypes()
     {
