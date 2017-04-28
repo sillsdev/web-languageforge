@@ -363,6 +363,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
             ss, notice, messageService) {
     $scope.userFilter = '';
     $scope.message = {};
+    $scope.addMembersCollapsed = true;
     $scope.newMessageCollapsed = true;
 
     $scope.readCommunicationSettings();
@@ -388,6 +389,16 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
         ['p', 'Normal'],
         ['h4', 'Large']
       ]
+    };
+
+    $scope.toggleAddMembers = function () {
+      $scope.addMembersCollapsed = !$scope.addMembersCollapsed;
+      $scope.newMessageCollapsed = true;
+    };
+
+    $scope.toggleMessageUsers = function () {
+      $scope.newMessageCollapsed = !$scope.newMessageCollapsed;
+      $scope.addMembersCollapsed = true;
     };
 
     $scope.show.messaging = function showMessaging() {
