@@ -7,15 +7,15 @@
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
             <button class="btn btn-warning" data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther"
                     data-ng-click="removeProjectUsers()"><i class="fa fa-remove"></i> Remove Members</button>
-            <button id="addMembersButton" class="btn btn-success" data-ng-show="rights.create" data-ng-click="newUserCollapsed = !newUserCollapsed">
+            <button id="addMembersButton" class="btn btn-success" data-ng-show="rights.create" data-ng-click="toggleAddMembers()">
                 <i class="fa fa-plus"></i> Add Members</button>
-            <button class="btn btn-info" data-ng-show="rights.create" data-ng-click="newMessageCollapsed = !newMessageCollapsed">
+            <button class="btn btn-info" data-ng-show="rights.create" data-ng-click="toggleMessageUsers()">
                 <i class="fa fa-envelope"></i> Message Selected Users</button>
             <input class="form-control" type="text" data-ng-model="userFilter" placeholder="Member List Filter"/>
             <a data-ng-show="userFilter != ''" title="Clear Filter" data-ng-click="userFilter = ''">
                 <i class="fa fa-remove" style="color:gray"></i></a>
         </form>
-        <div id="newMembersDiv" class="new-item" uib-collapse="!newUserCollapsed">
+        <div id="newMembersDiv" class="new-item" uib-collapse="addMembersCollapsed">
             <form class="card form-inline">
                 <div class="card-block">
                     <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
