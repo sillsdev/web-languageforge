@@ -220,8 +220,6 @@
                         </li>
                     </ul>
                 </fieldset>
-                <button id="user_profile_lists_save_button" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
-                <span data-ng-show="unsavedChanges" class="unsaved-warning" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
             </div>
             <div class="col-md-4">
                 <fieldset class="card fieldset" id="picklistEditorFieldset">
@@ -230,6 +228,10 @@
                         <picklist-editor items="project.userProperties.userProfilePickLists[currentListId].items" default-key="project.userProperties.userProfilePickLists[currentListId].defaultKey"></picklist-editor>
                     </div>
                 </fieldset>
+            </div>
+            <div class="col-md-4">
+                <button id="user_profile_lists_save_button" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                <span data-ng-show="unsavedChanges" class="unsaved-warning" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
             </div>
         </form>
     </div>
