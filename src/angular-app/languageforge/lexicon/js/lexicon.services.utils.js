@@ -127,8 +127,15 @@ angular.module('lexicon.services')
       return meaning;
     };
 
-    this.getExampleSentence = function getExampleSentence(config, example) {
-      return getFields(config, example, 'sentence');
+    /**
+     * @param config example config obj
+     * @param example
+     * @field string 'sentence' or 'translation'
+     */
+    this.getExample = function getExampleSentence(config, example, field) {
+      if (field == 'sentence' || field == 'translation') {
+        return getFields(config, example, field);
+      }
     };
 
     this.getPartOfSpeechAbbreviation = function getPartOfSpeechAbbreviation(posModel, optionlists) {
