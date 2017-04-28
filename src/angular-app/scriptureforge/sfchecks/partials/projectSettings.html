@@ -16,20 +16,22 @@
                 <i class="fa fa-remove" style="color:gray"></i></a>
         </form>
         <div id="newMembersDiv" class="new-item" uib-collapse="!newUserCollapsed">
-            <form class="well form-inline">
-            <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
-                <ul>
-                    <li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
-                        <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
-                        <p class="name">{{user.name}}</p>
-                        <p class="email">{{user.email}}</p>
-                    </li>
-                </ul>
-            </pui-typeahead>
-            <button id="addUserButton" data-ng-model="addMode" class="btn" data-ng-disabled="disableAddButton"
-                    data-ng-click="addProjectUser()">
-                <i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
-            <span class="warning" data-ng-show="warningText">{{warningText}}</span>
+            <form class="card form-inline">
+                <div class="card-block">
+                    <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
+                        <ul ng-hide="users.length == 0">
+                            <li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
+                                <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
+                                <span class="name">{{user.name}}</span>
+                                <span class="email">{{user.email}}</span>
+                            </li>
+                        </ul>
+                    </pui-typeahead>
+                    <button id="addUserButton" data-ng-model="addMode" class="btn btn-success" data-ng-disabled="disableAddButton"
+                            data-ng-click="addProjectUser()">
+                        <i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+                    <span class="warning" data-ng-show="warningText">{{warningText}}</span>
+                </div>
             </form>
         </div>
         <div id="newMessageDiv" uib-collapse="newMessageCollapsed">
