@@ -48,8 +48,6 @@
                                 </label>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success" data-ng-disabled="newTextForm.$invalid"
-                                data-ng-click="addText(); newTextCollapsed = true"><i class="fa fa-check"></i> Save</button>
                     </div>
                     <fieldset class="col-md-4">
                         <div class="drop-box" data-ngf-drop="readUsx($file)" data-ngf-drag-over-class="'dragover'">
@@ -61,8 +59,12 @@
                             <div class="btn" data-ngf-select="readUsx($file)">Browse...</div>
                         </div>
                     </fieldset>
-                    <div style="clear: left"></div>
                 </form>
+            </div>
+            <div class="clearfix"></div>
+            <div>
+                <button type="submit" class="btn btn-success save-text" data-ng-disabled="newTextForm.$invalid"
+                        data-ng-click="addText(); newTextCollapsed = true"><i class="fa fa-check"></i> Save</button>
             </div>
         </uib-tab>
         <uib-tab heading="Archived Questions">
