@@ -29,19 +29,20 @@ afterEach(function () {
   browser.manage().logs().get('browser').then(function (browserLog) {
     if (browserLog.length > 0) {
       for (var i = 0; i < browserLog.length; i++) {
-        var message = browserLog[i].message;
-        if (message.indexOf('\n') != -1) {
+        var message = browserLog[i];
+        var text = message.message;
+        if (text.indexOf('\n') != -1) {
 
           // place CR between lines
-          message = message.split('\n').join('\n');
+          text = text.split('\n').join('\n');
         }
 
-        if (util.isErrorToIgnore(message)) {
+        if (util.isMessageToIgnore(message)) {
           return;
         }
 
-        message = '\n\nBrowser Console JS Error: \n' + message + '\n\n';
-        expect(message).toEqual(''); // fail the test
+        text = '\n\nBrowser Console JS Error: \n' + text + '\n\n';
+        expect(text).toEqual(''); // fail the test
       }
     }
   });
