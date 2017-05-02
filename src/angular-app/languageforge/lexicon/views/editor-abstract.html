@@ -21,7 +21,7 @@
                 </div>
                 <div class="pull-right" data-ng-show="$state.is('editor.entry')">
                     <span data-ng-if="rights.canEditEntry()">
-                        <span class="muted">{{saveNotice()}}</span>
+                        <span class="text-muted">{{saveNotice()}}</span>
                         <button id="saveEntryBtn" class="btn btn-success" data-ng-click="saveCurrentEntry(true)"
                                 data-ng-disabled="!currentEntryIsDirty()">
                             <i class="fa fa-save"></i> <span class="hidden-sm-down">{{saveButtonTitle()}}</span>
