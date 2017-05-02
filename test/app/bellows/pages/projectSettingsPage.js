@@ -59,32 +59,5 @@ function BellowsProjectSettingsPage() {
     deleteButton: this.activePane.element(by.buttonText('Delete this project'))
   };
 
-  this.expectConsoleError = function () {
-    browser.manage().logs().get('browser').then(function (browserLog) {
-      if (browserLog.length > 1) {
-        for (var i = 0; i < browserLog.length; i++) {
-          var message = browserLog[i].message;
-          if (message.indexOf('\n') != -1) {
-
-            // place CR between lines
-            message = message.split('\n').join('\n');
-          }
-
-          if (util.isErrorToIgnore(message)) {
-            continue;
-          } else if (/You don't have sufficient privileges\./.test(message)) {
-            // this is the console error we expected
-            continue;
-          }
-
-          message = '\n\nBrowser Console JS Error: \n' + message + '\n\n';
-          expect(message).toEqual(''); // fail the test
-        }
-      } else {
-        expect(browserLog.length).toEqual(1);
-      }
-    });
-  };
-
 }
 
