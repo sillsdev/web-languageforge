@@ -28,6 +28,7 @@ class Website
         $this->base = $base;
         $this->theme = 'default';
         $this->ssl = false;
+        $this->isProduction = false;
         $this->defaultProjectCode = '';
         $this->userDefaultSiteRole = self::SITEROLE_USER; // must match SiteRoles::USER;
         $this->allowSignupFromOtherSites = true;
@@ -56,6 +57,9 @@ class Website
 
     /** @var boolean */
     public $allowSignupFromOtherSites;
+
+    /** @var boolean */
+    public $isProduction;
 
     /** @var array<Website> */
     private static $_sites;
