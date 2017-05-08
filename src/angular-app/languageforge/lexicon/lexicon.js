@@ -20,8 +20,11 @@ angular.module('lexicon',
     'lexicon.services',
     'pascalprecht.translate'
   ])
-  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
-  function ($stateProvider, $urlRouterProvider, $translateProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$compileProvider',
+  function ($stateProvider, $urlRouterProvider, $translateProvider, $compileProvider) {
+    $compileProvider.debugInfoEnabled(!window.session.isProduction);
+    $compileProvider.commentDirectivesEnabled(!window.session.isProduction);
+
     $urlRouterProvider.otherwise('/editor/list');
 
     // State machine from ui.router

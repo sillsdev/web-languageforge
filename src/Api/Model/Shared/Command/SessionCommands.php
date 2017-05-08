@@ -21,6 +21,8 @@ class SessionCommands
         $sessionData = array();
         $sessionData['baseSite'] = $website->base;
 
+        $sessionData['isProduction'] = $website->isProduction;
+
         if ($userId) {
             $sessionData['userId'] = (string) $userId;
             $user = new UserModel($userId);
