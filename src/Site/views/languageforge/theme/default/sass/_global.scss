@@ -332,3 +332,21 @@ nav {
 .typeahead-item {
   cursor: pointer;
 }
+
+.alert {
+  padding: 0.2em 1em;
+  text-align: center;
+}
+
+@include media-breakpoint-only(xs) {
+  .alert {
+    position: fixed;
+    z-index: 100;
+    bottom: 0;
+    left: 0;
+    right: 90;
+    margin-bottom: 0;
+    border-radius: 0;
+    width: 100%;
+  }
+}
