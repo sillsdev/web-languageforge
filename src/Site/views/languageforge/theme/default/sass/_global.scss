@@ -350,3 +350,15 @@ nav {
     width: 100%;
   }
 }
+
+nav.navbar {
+  transition: background-color 1s ease;
+
+  .nav-user.nav-item {
+    margin-left: 0;
+  }
+}
+
+.notices button.close {
+  margin-right: 0.5em;
+}
