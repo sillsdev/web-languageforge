@@ -338,7 +338,11 @@ nav {
   text-align: center;
 }
 
-@include media-breakpoint-only(xs) {
+@include media-breakpoint-down(sm) {
+  nav.navbar {
+    position: initial;
+  }
+
   .alert {
     position: fixed;
     z-index: 100;
