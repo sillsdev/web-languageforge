@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bellows.services')
-  .service('projectService', ['jsonRpc', 'sessionService', function (jsonRpc, ss) {
+  .service('projectService', ['jsonRpc', 'sessionService', 'offlineCache', '$q', function (jsonRpc, ss, offlineCache, $q) {
     // Note this doesn't actually 'connect', it simply sets the connection url.
     jsonRpc.connect('/api/sf');
 
@@ -30,8 +30,17 @@ angular.module('bellows.services')
       jsonRpc.call('project_publish', [projectIds], callback);
     };
 
-    this.list = function (callback) {
-      jsonRpc.call('project_list_dto', [], callback);
+    this.list = function () {
+      if (navigator.onLine /* TODO use Offline.state */) {
+        var deferred = $q.defer();
+
+        jsonRpc.call('project_list_dto', [], function (response) {
+          if (response.ok) deferred.resolve(response.data.entries);
+          else deferred.reject();
+        });
+
+        return deferred.promise;
+      } else return offlineCache.getAllFromStore('projects');
     };
 
     this.users = function (callback) {
