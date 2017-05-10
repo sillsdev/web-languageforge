@@ -18,6 +18,10 @@ angular.module('bellows.services')
       return offlineCache.getOneFromStore('projects', sessionService.getProjectId());
     }
 
+    function getProjects() {
+      return offlineCache.getAllFromStore('projects');
+    }
+
     return {
       getProjectData: getProjectData,
       updateProjectData: updateProjectData,
