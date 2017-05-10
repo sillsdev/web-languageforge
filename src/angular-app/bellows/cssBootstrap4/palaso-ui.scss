@@ -188,6 +188,10 @@ div.notices {
     margin: auto;
 }
 
+.notices pre {
+  text-align: left;
+}
+
 /* overrides definitions in sf.css and bootstrap.css */
 div.notices .animate-repeat {
     line-height: inherit;

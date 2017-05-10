@@ -138,8 +138,21 @@ angular.module('lexicon',
     Offline.options.checkOnLoad = true;
     Offline.options.checks = { xhr: { url: '/offlineCheck.txt' } };
 
+    // Set the page's Language Forge title, font size, and nav's background color
+    function setTitle(text, fontSize, backgroundColor) {
+      var title = document.querySelector('nav .mobile-title a');
+      title.textContent = text;
+      title.style.fontSize = fontSize;
+
+      document.querySelector('nav a.navbar-brand').textContent = text;
+
+      document.querySelector('nav.navbar').style.backgroundColor = backgroundColor;
+    }
+
     var offlineMessageId;
     Offline.on('up', function () {
+      setTitle('Language Forge', '', '');
+
       if ($scope.online == false) {
         notice.removeById(offlineMessageId);
         notice.push(notice.SUCCESS, 'You are back online!');
@@ -150,8 +163,10 @@ angular.module('lexicon',
     });
 
     Offline.on('down', function () {
+      setTitle('Language Forge Offline', '0.8em', '#555')
+
       offlineMessageId = notice.push(notice.ERROR,
-        'You are offline.  Some features are not available', null, true);
+        'You are offline. Some features are not available', null, true, 5 * 1000);
       $scope.online = false;
       if (!/^\/editor\//.test($location.path())) {
         // redirect to the editor
