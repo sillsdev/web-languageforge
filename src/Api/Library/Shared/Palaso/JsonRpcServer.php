@@ -64,7 +64,7 @@ class JsonRpcServer
             // TODO: refactor to use an error dto
             $object->checkPermissions($request->request->get('method'), $request->request->get('params'));
             if (method_exists($object, $request->request->get('method'))) {
-                $result = call_user_func_array(array($object, $request->request->get('method')), $request->request->get('params'));
+                $result = call_user_func_array(array($object, $request->request->get('method')), $request->request->get('params')['orderedParams']);
                 $response = array(
                     'jsonrpc' => '2.0',
                     'id' => $request->request->get('id'),
