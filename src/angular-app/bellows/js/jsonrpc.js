@@ -49,7 +49,7 @@ angular.module('jsonRpc', ['sf.error'])
       var jsonRequest = {
         version: this.params.version,
         method: remoteFunction,
-        params: remoteParams,
+        params: {orderedParams:remoteParams, projectId: this.params.projectId},
         id: id
       };
       var httpRequest = {
