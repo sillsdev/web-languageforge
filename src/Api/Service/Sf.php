@@ -908,24 +908,19 @@ class Sf
         return in_array($methodName, $methods);
     }
 
-    public function checkPermissions($methodName, $jsonResult)
+    public function checkPermissions($methodName, $params)
     {
         if (! self::isAnonymousMethod($methodName)) {
             if (! $this->userId) {
                 throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
             }
             try {
-                if (array_key_exists('projectId', $jsonResult)) {
-                    $projectModel = ProjectModel::getById($jsonResult['projectId']);
-                    $this->projectId = $jsonResult['projectId'];
-                } else {
-                    $projectModel = ProjectModel::getById($this->projectId);
-                }
+                $projectModel = ProjectModel::getById($this->projectId);
             } catch (\Exception $e) {
                 $projectModel = null;
             }
             $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
-            if (! $rightsHelper->userCanAccessMethod($methodName, $jsonResult['orderedParams'])) {
+            if (! $rightsHelper->userCanAccessMethod($methodName, $params)) {
                 throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
             }
         }
