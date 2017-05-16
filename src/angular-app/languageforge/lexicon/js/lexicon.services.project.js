@@ -3,7 +3,12 @@
 angular.module('lexicon.services')
   .service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService',
   function (jsonRpc, ss, breadcrumbService, linkService) {
-    jsonRpc.connect('/api/sf');
+
+    var project = ss.session.project;
+    jsonRpc.connect({
+      url: '/api/sf',
+      projectId: project ? project.id : undefined
+    });
 
     this.setBreadcrumbs = function setBreadcrumbs(view, label) {
       breadcrumbService.set('top', [{

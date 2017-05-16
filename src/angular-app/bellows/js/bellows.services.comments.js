@@ -4,8 +4,8 @@
 angular.module('bellows.services.comments')
 
 //Lexicon Comment Service
-  .service('lexCommentService', ['jsonRpc', 'commentsOfflineCache', '$filter',
-  function (jsonRpc, offlineCache, $filter) {
+  .service('lexCommentService', ['jsonRpc', 'commentsOfflineCache', '$filter', 'sessionService',
+  function (jsonRpc, offlineCache, $filter, ss) {
     this.comments = {
       items: {
         currentEntry: [],
@@ -157,7 +157,11 @@ angular.module('bellows.services.comments')
       }
     }.bind(this);
 
-    jsonRpc.connect('/api/sf');
+    var project = ss.session.project;
+    jsonRpc.connect({
+      url: '/api/sf',
+      projectId: project ? project.id : undefined
+    });
 
     this.update = function updateComment(comment, callback) {
       this.comments.items.currentEntry.push(comment);
