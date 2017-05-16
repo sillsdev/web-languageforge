@@ -54,5 +54,11 @@ CACHE:
 
 /Site/views/shared/container/xforge.navbarApp.js?v={{ version }}
 
-# Hard coded as a hack
+# Hard coded because for some reason not everything needed is included above
 /angular-app/bellows/js/bellows.services.project.js?v={{ version }}
+
+# User's projects
+
+{% for project in projects %}
+/app/{{ project.appName }}/{{ project.id }}
+{% endfor %}
