@@ -41,6 +41,9 @@ class Auth extends App
                 // no break; - intentional fall through to next case
             case 'forgot_password':
             case 'login':
+                if($this->isLoggedIn($app)) {
+                    return $app->redirect('/app/projects');
+                }
                 $this->setupAngularAppVariables($app, $appName);
                 $this->setupAuthView($request, $app);
 
