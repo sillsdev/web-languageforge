@@ -1,8 +1,13 @@
 'use strict';
 
 angular.module('lexicon.services')
-  .service('lexSendReceiveApi', ['jsonRpc', function (jsonRpc) {
-    jsonRpc.connect('/api/sf');
+  .service('lexSendReceiveApi', ['jsonRpc', 'sessionService', function (jsonRpc, ss) {
+
+    var project = ss.session.project;
+    jsonRpc.connect({
+      url: '/api/sf',
+      projectId: project ? project.id : undefined
+    });
 
     this.getUserProjects = function getUserProjects(username, password, callback) {
       jsonRpc.call('sendReceive_getUserProjects', [username, password], callback);
