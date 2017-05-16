@@ -925,7 +925,7 @@ class Sf
                 $projectModel = null;
             }
             $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
-            if (! $rightsHelper->userCanAccessMethod($methodName, $jsonResult['orderedParams'])) {
+            if (! $rightsHelper->userCanAccessMethod($methodName)) {
                 throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
             }
         }
