@@ -2,9 +2,9 @@ CACHE MANIFEST
 # Version {{ version }}
 
 NETWORK:
-/offlineCheck.txt
-/app/projects
 *
+
+{% if isLoggedIn %}
 
 FALLBACK:
 
@@ -62,3 +62,6 @@ CACHE:
 {% for project in projects %}
 /app/{{ project.appName }}/{{ project.id }}
 {% endfor %}
+
+
+{% endif %}
