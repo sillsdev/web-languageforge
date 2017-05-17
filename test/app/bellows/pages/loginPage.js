@@ -18,6 +18,8 @@ function BellowsLoginPage() {
   this.submit   = element(by.xpath('//button[@type="submit"]'));
 
   this.login = function login(username, password) {
+    browser.get(browser.baseUrl + '/auth/logout');
+
     this.get();
     this.username.sendKeys(username);
     this.password.sendKeys(password);
