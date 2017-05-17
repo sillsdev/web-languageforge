@@ -3,7 +3,13 @@
 angular.module('bellows.services')
   .service('projectService', ['jsonRpc', 'sessionService', 'offlineCache', '$q', function (jsonRpc, ss, offlineCache, $q) {
     // Note this doesn't actually 'connect', it simply sets the connection url.
-    jsonRpc.connect('/api/sf');
+
+    var project = ss.session.project;
+    jsonRpc.connect({
+      url: '/api/sf',
+      projectId: project ? project.id : undefined
+    });
+
 
     this.create = function (projectName, projectCode, appName, callback) {
       jsonRpc.call('project_create', [projectName, projectCode, appName], callback);

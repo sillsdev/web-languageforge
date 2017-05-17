@@ -1,9 +1,15 @@
 'use strict';
 
 angular.module('bellows.services')
-  .service('userService', ['jsonRpc', function (jsonRpc) {
+  .service('userService', ['jsonRpc', 'sessionService', function (jsonRpc, ss) {
     // Note this doesn't actually 'connect', it simply sets the connection url.
-    jsonRpc.connect('/api/sf');
+
+    var project = ss.session.project;
+    jsonRpc.connect({
+      url: '/api/sf',
+      projectId: project ? project.id : undefined
+    });
+
     this.read = function (id, callback) {
       jsonRpc.call('user_read', [id], callback);
     };
