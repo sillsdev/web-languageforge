@@ -8,6 +8,7 @@ describe('E2E testing: Reset Forgotten Password', function () {
   var forgotPasswordPage = require('../../../pages/forgotPasswordPage');
 
   it('with expired reset key routes to login with warning', function () {
+    browser.get(browser.baseUrl + '/auth/logout');
     resetPasswordPage.get(constants.expiredPasswordKey);
     expect(loginPage.form).toBeDefined();
     expect(loginPage.infoMessages.count()).toBe(0);
