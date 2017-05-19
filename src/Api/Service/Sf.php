@@ -910,6 +910,7 @@ class Sf
 
     public function checkPermissions($methodName, $jsonResult)
     {
+        if(!array_key_exists('projectId', $jsonResult)) throw new \Exception('Client request must contain projectId');
         if (! self::isAnonymousMethod($methodName)) {
             if (! $this->userId) {
                 throw new UserNotAuthenticatedException("Your session has timed out.  Please login again.");
