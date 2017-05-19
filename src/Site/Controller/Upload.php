@@ -57,9 +57,11 @@ class Upload extends Base
                         'orderedParams' => array(
                             $mediaType,
                             $tmpFilePath
-                        ),
-                        'projectId' => $_POST['projectId']
+                        )
                     );
+                    if (array_key_exists('projectId', $_POST)) {
+                        $jsonResult['projectId'] = $_POST['projectId'];
+                    }
                     switch ($mediaType) {
                         case 'audio':
                             $api->checkPermissions('lex_uploadAudioFile', $jsonResult);
