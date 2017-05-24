@@ -78,6 +78,9 @@ Install node_modules used to build Sass files and run E2E tests
 ```
 cd web-languageforge
 npm install
+cd src
+bower install
+cd ..
 gulp sass
 ```
 To watch Sass files for changes, run `gulp sass:watch`. The output will also be in a more readable format (rather than compressed as it is with `gulp sass`). You can also pass the `--debug` flag to enable source comments and source maps in comments in the output files.
@@ -240,7 +243,7 @@ Right-click to select **Options** and set **IDE key**
 PhpStorm PHPSTORM
 ```
 
-When it's time to Debug, check that the bug icon is green for **Debug**.  
+When it's time to Debug, check that the bug icon is green for **Debug**.
 
 Then, from PhpStorm, click the telephone icon near the top right for *Start Listening for PHP Connections*.
 
