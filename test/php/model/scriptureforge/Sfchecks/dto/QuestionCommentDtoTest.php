@@ -7,9 +7,9 @@ use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\Rights\ProjectRoles;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class QuestionCommentDtoTest extends PHPUnit_Framework_TestCase
+class QuestionCommentDtoTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -91,11 +91,10 @@ class QuestionCommentDtoTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('user2.png', $dto['question']['answers'][$aid]['comments'][$cid2]['userRef']['avatar_ref']);
     }
 
-    /**
-     * @expectedException Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException
-     */
     public function testEncode_ArchivedQuestion_ManagerCanViewContributorCannot()
     {
+        $this->expectException(ResourceNotAvailableException::class);
+
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         $managerId = self::$environ->createUser("manager", "manager", "manager@email.com");
@@ -122,26 +121,15 @@ class QuestionCommentDtoTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('the question', $dto['question']['title']);
 
         // Contributor cannot view Question of archived Text, throw Exception
-        self::$environ->inhibitErrorDisplay();
-
         QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
-    /**
-     * @depends testEncode_ArchivedQuestion_ManagerCanViewContributorCannot
-     */
-    public function testEncode_ArchivedQuestion_ManagerCanViewContributorCannot_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
-    }
 
-    /**
-     * @expectedException Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException
-     */
     public function testEncode_ArchivedText_ManagerCanViewContributorCannot()
     {
+        $this->expectException(ResourceNotAvailableException::class);
+
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
 
         $managerId = self::$environ->createUser("manager", "manager", "manager@email.com");
@@ -168,18 +156,8 @@ class QuestionCommentDtoTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('the question', $dto['question']['title']);
 
         // Contributor cannot view Question of archived Text, throw Exception
-        self::$environ->inhibitErrorDisplay();
-
         QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
-    }
-    /**
-     * @depends testEncode_ArchivedText_ManagerCanViewContributorCannot
-     */
-    public function testEncode_ArchivedText_ManagerCanViewContributorCannot_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
     }
 }

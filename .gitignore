@@ -31,5 +31,10 @@ test/CodeCoverage/php/
 .DS_Store
 
 # CSS files generated from Sass
-src/Site/views/**/*ootstrap4/languageforge_*.css
-src/angular-app/**/bootstrap4/languageforge_*.css
+src/Site/views/**/*.css
+src/angular-app/bellows/apps/**/*.css
+src/angular-app/languageforge/**/*.css
+src/angular-app/scriptureforge/**/*.css
+src/Site/views/scriptureforge/theme/default/cssBootstrap4/**/.css
+src/angular-app/bellows/cssBootstrap4/**/*.css
+

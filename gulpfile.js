@@ -94,8 +94,6 @@ var _template = require('lodash.template');
 var Server = require('karma').Server;
 var path = require('path');
 var stylish = require('jshint-stylish');
-var sass = require('gulp-sass');
-var cleanCSS = require('gulp-clean-css');
 var merge = require('merge-stream');
 
 var execute = function (command, options, callback) {
@@ -112,11 +110,16 @@ var execute = function (command, options, callback) {
   }
 
   if (!options.dryRun) {
-    _execute(command, options, function (err, stdout, stderr) {
-      gutil.log(stdout);
-      gutil.log(gutil.colors.yellow(stderr));
-      callback(err);
+    var process = _execute(command, options, callback || undefined);
+
+    process.stdout.on('data', function (data) {
+      gutil.log(data.slice(0, -1)); // remove trailing \n
     });
+
+    process.stderr.on('data', function (data) {
+      gutil.log(gutil.colors.yellow(data.slice(0, -1))); // remove trailing \n
+    });
+
   } else {
     callback(null);
   }
@@ -480,7 +483,8 @@ gulp.task('remote-restart-php-fpm', function (cb) {
   };
 
   execute(
-    "ssh -i <%= credentials %> <%= destination %> 'service php7.0-fpm restart'",
+    "ssh -i <%= credentials %> <%= destination %> 'if service --status-all | grep -Fq php7.0-fpm;" +
+    " then service php7.0-fpm restart; echo restarted PHP-FPM successfully; fi'",
     options,
     cb
   );
@@ -560,7 +564,7 @@ gulp.task('test-e2e-doTest', function (cb) {
     .argv;
 
   var protocol =
-    (params.webserverHost == 'jamaicanpsalms.scriptureforge.local') ? 'https://' : 'http://';
+    (params.webserverHost === 'jamaicanpsalms.scriptureforge.local') ? 'https://' : 'http://';
 
   // vars for configuring protractor
   var protractorOptions = {
@@ -618,71 +622,35 @@ gulp.task('test-e2e-run').description = 'Run the E2E test on local developer env
 
 // region sass
 
-var sassPaths = [
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/base/*.scss",
-     "dest": "src/Site/views/languageforge/theme/default/cssBootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/activity/*.scss",
-     "dest": "src/angular-app/bellows/apps/public/activity/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/changepassword/*.scss",
-     "dest": "src/angular-app/bellows/apps/public/changepassword/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/forgot_password/*.scss",
-     "dest": "src/angular-app/bellows/apps/forgot_password/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/home/*.scss",
-     "dest": "src/Site/views/languageforge/theme/default/page/home/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/lexicon/*.scss",
-     "dest": "src/angular-app/languageforge/lexicon/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/login/*.scss",
-     "dest": "src/angular-app/bellows/apps/public/login/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss",
-     "dest": "src/angular-app/bellows/apps/public/registration/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/new-project/*.scss",
-     "dest": "src/angular-app/languageforge/lexicon/new-project/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/projects/*.scss",
-     "dest": "src/angular-app/bellows/apps/projects/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/reset_password/*.scss",
-     "dest": "src/angular-app/bellows/apps/public/reset_password/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/signup/*.scss",
-     "dest": "src/angular-app/bellows/apps/public/signup/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/siteadmin/*.scss",
-     "dest": "src/angular-app/bellows/apps/siteadmin/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/usermanagement/*.scss",
-     "dest": "src/angular-app/bellows/apps/usermanagement/bootstrap4"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/terms_and_conditions/*.scss",
-     "dest": "src/Site/views/shared/cssBootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/userprofile/*.scss",
-     "dest": "src/angular-app/bellows/apps/userprofile/bootstrap4/"},
-    {"src": "src/Site/views/languageforge/theme/default/cssBootstrap4/sass/registration/*.scss",
-     "dest": "src/angular-app/bellows/apps/userprofile/bootstrap4/"}
-];
+var sassCommand = './node_modules/.bin/node-sass';
 
-function compileAllSass(sourceComments, cleanCss) {
-  var tasks = sassPaths.map(function(path) {
-    var task = gulp.src(path.src)
-      .pipe(sass({sourceComments: sourceComments}).on('error', sass.logError));
+gulp.task('sass', gulp.parallel(function buildSiteDir(done) {
+    execute(sassCommand + ' src/Site/ -o src/Site/ --output-style compressed', null, done);
+  },
 
-    if(cleanCss) task.pipe(cleanCSS());
-    task.pipe(gulp.dest(path.dest));
-    return task;
-  });
-  return merge(tasks);
-}
+  function buildAngularAppDir(done) {
+    execute(sassCommand  + ' src/angular-app/ -o src/angular-app/ --output-style compressed', null, done);
+  }
+));
 
-gulp.task('sass', function() {
-  return compileAllSass(false, true);
-});
+gulp.task('sass:watch', function (done) {
+  var debug = process.argv.indexOf('--debug') !== -1;
+  if (!debug) console.info('Tip: run with --debug to generate source comments and source maps.');
 
-gulp.task('sass:watch', function() {
-  var sourceComments = process.argv.indexOf('--comments') !== -1;
-  if(!sourceComments) console.info('Tip: run with --comments to generate source comments.');
+  var watch = ' --watch --recursive';
+  var debugArgs = debug ? ' --source-comments --source-map-embed --source-map-contents' : '';
 
-  gulp.watch('src/Site/views/languageforge/theme/default/**/*.scss', {ignoreInitial: false})
-    .on('change', function(changedFile) {
-      console.log('File changed: ' + changedFile);
-      compileAllSass(sourceComments, false);
-    })
-    .on('add', function(file) {
-      compileAllSass(sourceComments, false);
+  var a = sassCommand + ' src/Site -o src/Site' + debugArgs;
+  var b = sassCommand + ' src/angular-app -o src/angular-app' + debugArgs;
+
+  return new Promise(function (resolve, reject) {
+    execute(b, null, function () {
+      execute(b + watch, null, reject);
     });
+    execute(a, null, function () {
+      execute(a + watch, null, reject);
+    });
+  });
 
 });
 

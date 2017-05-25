@@ -7,8 +7,7 @@ angular.module('palaso.ui.tagging', ['ui.bootstrap'])
 <div class="tag-list">\
   <ul>\
     <li ng-repeat="tag in tags" ng-mouseenter="show = true && rightsDelete()" ng-mouseleave="show = false">\
-      {{tag}}\
-      <img class="closeicon" src="/Site/views/shared/image/closeicon.svg" width="20" height="20" ng-show="show" ng-click="removeTag($index)"></img>\
+      {{tag}} <i class="fa fa-times closeicon" ng-click="removeTag($index)"></i>\
     </li>\
   </ul>\
 </div>\
@@ -33,7 +32,7 @@ angular.module('palaso.ui.tagging', ['ui.bootstrap'])
 
   .directive('addTags', ["$timeout", function($timeout) {
     return {
-      template: '<input type="text" name="inputtagstring" ng-model="inputtagstring"></input>',
+      template: '<input type="text" class="form-control" name="inputtagstring" ng-model="inputtagstring"></input>',
       restrict: "EA",
       replace: true,
       scope: {
