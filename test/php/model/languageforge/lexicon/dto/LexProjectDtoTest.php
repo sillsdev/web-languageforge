@@ -5,9 +5,9 @@ use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LexProjectDtoTest extends PHPUnit_Framework_TestCase
+class LexProjectDtoTest extends TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;

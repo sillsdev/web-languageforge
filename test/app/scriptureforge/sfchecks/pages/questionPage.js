@@ -44,7 +44,7 @@ function SfQuestionPage() {
 
   // Edit last answer
   this.answers.edit = function (answer) {
-    this.answers.editCtrl = this.answers.last().element(by.css('.answer'))
+    this.answers.editCtrl = this.answers.last().element(by.css('.answer .answer-footer'))
       .element(by.linkText('edit'));
     this.answers.editCtrl.click();
 
@@ -78,11 +78,11 @@ function SfQuestionPage() {
   // Flag for Export
   this.answers.flags = {};
   this.answers.flags.lastButtonSet = function () {
-    return this.answers.last().element(by.css('.answer')).element(by.css('.icon-flag'));
+    return this.answers.last().element(by.css('.answer')).element(by.css('.fa-flag'));
   }.bind(this);
 
   this.answers.flags.lastButtonClear = function () {
-    return this.answers.last().element(by.css('.answer')).element(by.css('.icon-flag-alt'));
+    return this.answers.last().element(by.css('.answer')).element(by.css('.fa-flag-o'));
   }.bind(this);
 
   // Private method to handle the upvote or downvote of an answer.
@@ -111,10 +111,10 @@ function SfQuestionPage() {
 
   // Add a comment to the last (most recent) Answer on the page
   this.comments.addToLastAnswer = function (comment) {
-    this.comments.addCommentCtrl = this.answers.last().element(by.css('table.comments'))
+    this.comments.addCommentCtrl = this.answers.last().element(by.css('.comments'))
       .element(by.css('a.addCommentLink'));
     this.comments.commentField = this.answers.last().element(by.model('newComment.content'));
-    this.comments.submit = this.answers.last().element(by.css('button.btn-small'));
+    this.comments.submit = this.answers.last().element(by.css('.save-new-comment'));
 
     // Click "add comment" at the end of the Answers list to un-collapse the comment text area.
     this.comments.addCommentCtrl.click();

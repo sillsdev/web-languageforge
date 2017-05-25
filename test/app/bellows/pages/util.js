@@ -116,7 +116,7 @@ function Utils() {
   this.notice = {
     list: element.all(by.repeater('notice in notices()'))
   };
-  this.notice.firstCloseButton = this.notice.list.first().element(by.buttonText('×'));
+  this.notice.firstCloseButton = this.notice.list.first().element(by.partialButtonText('×'));
   this.notice.waitToInclude = function (includedText) {
     browser.wait(function () {
       return this.notice.list.count().then(function (count) {

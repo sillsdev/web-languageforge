@@ -212,7 +212,7 @@ function EditorPage() {
       },
 
       moreGroups: function (searchLabel, index) {
-        var allMoreGroups = editorUtil.getOneField(searchLabel).all(by.css('.dc-audio .btn-group'));
+        var allMoreGroups = editorUtil.getOneField(searchLabel).all(by.css('.dc-audio .dropdown'));
         if (index !== undefined) {
           if (index < 0) index = 0;
           return allMoreGroups.get(index);

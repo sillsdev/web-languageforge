@@ -7,6 +7,7 @@ use Api\Model\Shared\PasswordModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
+use PHPUnit\Framework\TestCase;
 
 class MockUserCommandsDelivery implements DeliveryInterface
 {
@@ -32,7 +33,7 @@ class MockUserCommandsDelivery implements DeliveryInterface
     }
 }
 
-class UserCommandsTest extends PHPUnit_Framework_TestCase
+class UserCommandsTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -49,13 +50,146 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         self::$save = [];
     }
 
-    public function testDeleteUsers_NoThrow()
+    public function testDeleteUsers_1User_1Deleted()
     {
         self::$environ->clean();
 
         $userId = self::$environ->createUser('somename', 'Some Name', 'somename@example.com');
+        $count = UserCommands::deleteUsers(array($userId));
 
-        UserCommands::deleteUsers(array($userId));
+        $this->assertEquals(1, $count);
+    }
+
+    public function testDeleteUsers_NoId_Exception()
+    {
+        $this->expectException(Exception::class);
+
+        self::$environ->clean();
+        UserCommands::deleteUsers(null);
+    }
+
+    public function testBanUser_NoId_Exception()
+    {
+        $this->expectException(Exception::class);
+
+        self::$environ->clean();
+
+        $userId = UserCommands::banUser(null);
+    }
+
+    public function testBanUser_BadId_Exception()
+    {
+        $this->expectException(Exception::class);
+
+        self::$environ->clean();
+
+        $userId = UserCommands::banUser('notAnId');
+    }
+
+    public function testBanUser_UserNotActive()
+    {
+        self::$environ->clean();
+
+        // setup parameters
+        $userId = self::$environ->createUser('username', 'name', 'name@example.com');
+        $user = new UserModel($userId);
+        $this->assertTrue($user->active);
+
+        $userId = UserCommands::banUser($userId, '');
+
+        $user = new UserModel($userId);
+        $this->assertFalse($user->active);
+    }
+
+    public function testUpdateUserProfile_OtherUsername_FalseNoUpdate()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'jsmith',
+            'email' => 'zed@example.com',
+            'avatar_ref' => 'joe.png'
+        );
+        $zed = new UserModel($zedId);
+        $this->assertEquals($zed->avatar_ref, $zed->username . '.png');
+
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $zed = new UserModel($zedId);
+        $this->assertNotEquals($params['avatar_ref'], $zed->avatar_ref);
+    }
+
+    public function testUpdateUserProfile_OtherEmail_FalseNoUpdate()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'zedUser',
+            'email' => 'joe@smith.com');
+        $zed = new UserModel($zedId);
+        $this->assertEquals('zed@example.com', $zed->email);
+
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $zed = new UserModel($zedId);
+        $this->assertNotEquals($params['email'], $zed->email);
+    }
+
+    public function testUpdateUserProfile_OtherUsernameOtherEmail_False()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $user2Id = self::$environ->createUser('janedoe', 'jane doe', 'jane@doe.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'janedoe',
+            'email' => 'joe@smith.com'
+        );
+
+        $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
+        $zed = new UserModel($zedId);
+        $this->assertNotEquals($params['username'], $zed->username);
+        $this->assertNotEquals($params['email'], $zed->email);
+    }
+
+    public function testUpdateUserProfile_NewEmail_IdEmailChanged()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zeduser', 'zed user','zed@example.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'zeduser',
+            'email' => 'joe@smith.com'
+        );
+        $status = UserCommands::updateUserProfile($params, $zedId, self::$environ->website);
+        $this->assertEquals($zedId, $status );
+        $zed = new UserModel($zedId);
+        $this->assertEquals('zeduser', $zed->username);
+        $this->assertEquals('joe@smith.com', $zed->email);
+    }
+
+    public function testUpdateUserProfile_NewUsernameEmail_LoginUsernameEmailChanged()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $params = array(
+            'id' => $zedId,
+            'username' => 'jsmith',
+            'email' => 'joe@smith.com'
+        );
+        $status = UserCommands::updateUserProfile($params, $zedId, self::$environ->website);
+        $this->assertEquals('login', $status );
+        $zed = new UserModel($zedId);
+        $this->assertEquals('jsmith', $zed->username);
+        $this->assertEquals('joe@smith.com', $zed->email);
     }
 
     public function testUpdateUserProfile_SetLangCode_LangCodeSet()
@@ -65,11 +199,13 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         // setup parameters
         $userId = self::$environ->createUser('username', 'name', 'name@example.com');
         $params = array(
-            'id' => '',
+            'id' => $userId,
+            'username' => 'username',
+            'email' => 'name@example.com',
             'interfaceLanguageCode' => 'th'
         );
 
-        $newUserId = UserCommands::updateUserProfile($params, $userId);
+        $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
 
         // user profile updated
         $user = new UserModel($newUserId);
@@ -77,158 +213,134 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($newUserId, $userId);
     }
 
-    /**
-     * @expectedException Exception
-     */
-    public function testCheckIdentity_userDoesNotExist_Exception()
-    {
-        $identityCheck = UserCommands::checkIdentity('', '', null);
-    }
-
-    public function testCheckUniqueIdentity_userExistsNoEmail_UsernameExistsEmailEmpty()
-    {
-        self::$environ->clean();
-
-        $userId = self::$environ->createUser('jsmith', 'joe smith','');
-        $joeUser = new UserModel($userId);
-
-        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'jsmith', '', self::$environ->website);
-
-        $this->assertTrue($identityCheck->usernameExists);
-        $this->assertTrue($identityCheck->usernameExistsOnThisSite);
-        $this->assertTrue($identityCheck->usernameMatchesAccount);
-        $this->assertTrue($identityCheck->allowSignupFromOtherSites);
-        $this->assertFalse($identityCheck->emailExists);
-        $this->assertTrue($identityCheck->emailIsEmpty);
-        $this->assertTrue($identityCheck->emailMatchesAccount);
-    }
-
-    public function testCheckUniqueIdentity_userExistsWithEmail_UsernameExistsEmailMatches()
+    public function testCheckUniqueIdentity_selfUsername_OK()
     {
         self::$environ->clean();
 
         $userId = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
         $joeUser = new UserModel($userId);
 
-        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'jsmith', 'joe@smith.com', null);
-
-        $this->assertTrue($identityCheck->usernameExists);
-        $this->assertFalse($identityCheck->usernameExistsOnThisSite);
-        $this->assertTrue($identityCheck->usernameMatchesAccount);
-        $this->assertTrue($identityCheck->emailExists);
-        $this->assertFalse($identityCheck->emailIsEmpty);
-        $this->assertTrue($identityCheck->emailMatchesAccount);
+        $this->assertEquals('ok', UserCommands::checkUniqueIdentity($joeUser, 'jsmith', '', null));
     }
 
-    public function testCheckUniqueIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatch()
-    {
-        self::$environ->clean();
-
-        $user1Id = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $zedUser = new UserModel($user1Id);
-        $originalWebsite = clone self::$environ->website;
-        self::$environ->website->domain = 'default.local';
-        self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
-
-        $identityCheck = UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'zed@example.com', $originalWebsite);
-
-        $this->assertTrue($identityCheck->usernameExists);
-        $this->assertFalse($identityCheck->usernameExistsOnThisSite);
-        $this->assertFalse($identityCheck->usernameMatchesAccount);
-        $this->assertTrue($identityCheck->emailExists);
-        $this->assertFalse($identityCheck->emailIsEmpty);
-        $this->assertTrue($identityCheck->emailMatchesAccount);
-
-        // cleanup so following tests are OK
-        self::$environ->website->domain = $originalWebsite->domain;
-    }
-
-    public function testCheckUniqueIdentity_userExistsWithEmail_UsernameExistsEmailDoesNotMatchEmpty()
+    public function testCheckUniqueIdentity_selfEmail_OK()
     {
         self::$environ->clean();
 
         $userId = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
         $joeUser = new UserModel($userId);
 
-        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'jsmith', '', self::$environ->website);
-
-        $this->assertTrue($identityCheck->usernameExists);
-        $this->assertTrue($identityCheck->usernameExistsOnThisSite);
-        $this->assertTrue($identityCheck->usernameMatchesAccount);
-        $this->assertFalse($identityCheck->emailExists);
-        $this->assertFalse($identityCheck->emailIsEmpty);
-        $this->assertFalse($identityCheck->emailMatchesAccount);
+        $this->assertEquals('ok', UserCommands::checkUniqueIdentity($joeUser, '', 'joe@smith.com', null));
     }
 
-    public function testCheckUniqueIdentity_doesNotExist_UsernameDoesNotExist()
+    public function testCheckUniqueIdentity_selfUsernameWithEmail_OK()
     {
         self::$environ->clean();
 
         $userId = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
         $joeUser = new UserModel($userId);
 
-        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'zedUser', 'zed@example.com', self::$environ->website);
-        $this->assertFalse($identityCheck->usernameExists);
-        $this->assertFalse($identityCheck->usernameExistsOnThisSite);
-        $this->assertFalse($identityCheck->usernameMatchesAccount);
-        $this->assertFalse($identityCheck->emailExists);
-        $this->assertTrue($identityCheck->emailIsEmpty);
-        $this->assertFalse($identityCheck->emailMatchesAccount);
+        $this->assertEquals('ok', UserCommands::checkUniqueIdentity($joeUser, 'jsmith', 'joe@smith.com', null));
     }
 
-    public function testCheckUniqueIdentity_emailExist_UsernameDoesNotExist()
+    public function testCheckUniqueIdentity_otherUsername_UsernameExists()
     {
         self::$environ->clean();
 
-        $userId = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
-        $joeUser = new UserModel($userId);
-
-        $identityCheck = UserCommands::checkUniqueIdentity($joeUser, 'zedUser', 'joe@smith.com', self::$environ->website);
-
-        $this->assertFalse($identityCheck->usernameExists);
-        $this->assertFalse($identityCheck->usernameExistsOnThisSite);
-        $this->assertFalse($identityCheck->usernameMatchesAccount);
-        $this->assertTrue($identityCheck->emailExists);
-        $this->assertTrue($identityCheck->emailIsEmpty);
-        $this->assertTrue($identityCheck->emailMatchesAccount);
-    }
-
-    public function testCheckUniqueIdentity_userExist()
-    {
-        self::$environ->clean();
-
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
         $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
-        $joeUser = new UserModel($user1Id);
-        $user2Id = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $zedUser = new UserModel($user2Id);
 
-        $identityCheck = UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'joe@smith.com', self::$environ->website);
+        $zedUser = new UserModel($zedId);
 
-        $this->assertTrue($identityCheck->usernameExists);
-        $this->assertTrue($identityCheck->usernameExistsOnThisSite);
-        $this->assertFalse($identityCheck->usernameMatchesAccount);
-        $this->assertTrue($identityCheck->emailExists);
-        $this->assertFalse($identityCheck->emailIsEmpty);
-        $this->assertFalse($identityCheck->emailMatchesAccount);
+        $this->assertEquals('usernameExists', UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'zed@example.com', null));
     }
 
-    public function testCheckUniqueIdentity_caseInsensitiveEmail_userExist()
+    public function testCheckUniqueIdentity_otherEmail_EmailExists()
     {
         self::$environ->clean();
 
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
         $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
-        $joeUser = new UserModel($user1Id);
-        $user2Id = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $zedUser = new UserModel($user2Id);
 
-        $identityCheck = UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'ZED@example.com', self::$environ->website);
+        $zedUser = new UserModel($zedId);
 
-        $this->assertTrue($identityCheck->usernameExists);
-        $this->assertTrue($identityCheck->usernameExistsOnThisSite);
-        $this->assertFalse($identityCheck->usernameMatchesAccount);
-        $this->assertTrue($identityCheck->emailExists);
-        $this->assertFalse($identityCheck->emailIsEmpty);
-        $this->assertFalse($identityCheck->emailMatchesAccount);
+        $this->assertEquals('emailExists', UserCommands::checkUniqueIdentity($zedUser, 'zedUser', 'joe@smith.com', null));
+    }
+
+    public function testCheckUniqueIdentity_otherUsernameEmail_UsernameAndEmailExists()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $user2Id = self::$environ->createUser('janedoe', 'jane doe', 'jane@doe.com');
+
+        $zedUser = new UserModel($zedId);
+
+        $this->assertEquals('usernameAndEmailExists', UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'jane@doe.com', null));
+    }
+
+    public function testCheckUniqueIdentity_otherCaseUsername_UsernameExists()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+
+        $zedUser = new UserModel($zedId);
+
+        $this->assertEquals('usernameExists', UserCommands::checkUniqueIdentity($zedUser, 'JSMITH', 'zed@example.com', null));
+    }
+
+    public function testCheckUniqueIdentity_otherCaseEmail_EmailExists()
+    {
+        self::$environ->clean();
+
+        $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
+        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+
+        $zedUser = new UserModel($zedId);
+
+        $this->assertEquals('emailExists', UserCommands::checkUniqueIdentity($zedUser, 'zedUser', 'JOE@SMITH.COM', null));
+    }
+
+    public function testCreateUser_NewUser_NotFalse()
+    {
+        self::$environ->clean();
+
+        // setup parameters
+        $params = array(
+            'name' => 'user 1',
+            'email' => 'name@example.com',
+            'password' => 'password');
+
+        $this->assertNotFalse('login', UserCommands::createUser($params, self::$environ->website));
+    }
+
+    public function testCreateUser_SameUser_SameID()
+    {
+        self::$environ->clean();
+        $params = array(
+            'name' => 'user 1',
+            'email' => 'name@example.com',
+            'password' => 'password');
+        $userId = UserCommands::createUser($params, self::$environ->website);
+        $this->assertEquals($userId, UserCommands::createUser($params, self::$environ->website));
+    }
+
+    public function testCreateUser_EmailInUse_False()
+    {
+        self::$environ->clean();
+
+        // setup parameters
+        $params = array(
+            'name' => 'user 1',
+            'email' => 'name@example.com',
+            'password' => 'password');
+        UserCommands::createUser($params, self::$environ->website);
+        $params['password'] = 'differentPassword';
+
+        $this->assertFalse(UserCommands::createUser($params, self::$environ->website));
     }
 
     public function testCreateSimple_CreateUser_PasswordAndJoinProject()
@@ -258,11 +370,10 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(SF_TESTPROJECT, $userProject['projectName']);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testCreateSimple_UsernameExist_Exception()
     {
+        $this->expectException(Exception::class);
+
         self::$environ->clean();
 
         // setup parameters: name and project
@@ -279,9 +390,10 @@ class UserCommandsTest extends PHPUnit_Framework_TestCase
         $dto = UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
     }
 
+    // TODO: Register within a project context
     public function testRegister_WithProjectCode_UserInProjectAndProjectHasUser()
     {
-        // todo: implement this - register within a project context
+        $this->markTestIncomplete('TODO: implement this');
     }
 
     public function testRegister_NoProjectCode_UserInNoProjects()

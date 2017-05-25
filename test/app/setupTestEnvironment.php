@@ -63,7 +63,13 @@ foreach ($projectArrays as $projectName => $projectCode) {
 }
 
 $adminUserId = UserCommands::createUser(array(
-    'id' => '',
+    'name' => $constants['adminName'],
+    'email' => $constants['adminEmail'],
+    'password' => $constants['adminPassword']),
+    $website
+);
+$adminUserId = UserCommands::updateUser(array(
+    'id' => $adminUserId,
     'name' => $constants['adminName'],
     'email' => $constants['adminEmail'],
     'username' => $constants['adminUsername'],
@@ -73,7 +79,13 @@ $adminUserId = UserCommands::createUser(array(
     $website
 );
 $managerUserId = UserCommands::createUser(array(
-    'id' => '',
+    'name' => $constants['managerName'],
+    'email' => $constants['managerEmail'],
+    'password' => $constants['managerPassword']),
+    $website
+);
+$managerUserId = UserCommands::updateUser(array(
+    'id' => $managerUserId,
     'name' => $constants['managerName'],
     'email' => $constants['managerEmail'],
     'username' => $constants['managerUsername'],
@@ -83,7 +95,13 @@ $managerUserId = UserCommands::createUser(array(
     $website
 );
 $memberUserId = UserCommands::createUser(array(
-    'id' => '',
+    'name' => $constants['memberName'],
+    'email' => $constants['memberEmail'],
+    'password' => $constants['memberPassword']),
+    $website
+);
+$memberUserId = UserCommands::updateUser(array(
+    'id' => $memberUserId,
     'name' => $constants['memberName'],
     'email' => $constants['memberEmail'],
     'username' => $constants['memberUsername'],
@@ -93,7 +111,13 @@ $memberUserId = UserCommands::createUser(array(
     $website
 );
 $expiredUserId = UserCommands::createUser(array(
-    'id' => '',
+    'name' => $constants['expiredName'],
+    'email' => $constants['expiredEmail'],
+    'password' => $constants['memberPassword']), // intentionally set wrong password
+    $website
+);
+$expiredUserId = UserCommands::updateUser(array(
+    'id' => $expiredUserId,
     'name' => $constants['expiredName'],
     'email' => $constants['expiredEmail'],
     'username' => $constants['expiredUsername'],
@@ -103,7 +127,13 @@ $expiredUserId = UserCommands::createUser(array(
     $website
 );
 $resetUserId = UserCommands::createUser(array(
-    'id' => '',
+    'name' => $constants['resetName'],
+    'email' => $constants['resetEmail'],
+    'password' => $constants['memberPassword']), // intentionally set wrong password
+    $website
+);
+$resetUserId = UserCommands::updateUser(array(
+    'id' => $resetUserId,
     'name' => $constants['resetName'],
     'email' => $constants['resetEmail'],
     'username' => $constants['resetUsername'],
@@ -113,7 +143,13 @@ $resetUserId = UserCommands::createUser(array(
     $website
 );
 $observerUserId = UserCommands::createUser(array(
-    'id' => '',
+    'name' => $constants['observerName'],
+    'email' => $constants['observerEmail'],
+    'password' => $constants['observerPassword']),
+    $website
+);
+$observerUserId = UserCommands::updateUser(array(
+    'id' => $observerUserId,
     'name' => $constants['observerName'],
     'email' => $constants['observerEmail'],
     'username' => $constants['observerUsername'],

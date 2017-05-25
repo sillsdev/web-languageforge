@@ -28,7 +28,7 @@
     "gulp-protractor": "^3.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
-    "gulp-sass": "^3.0.0",
+    "node-sass": "git+https://github.com/sillsdev/node-sass#bug/css-build-fix",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "~3.0.6",
     "jasmine-core": "^2.5.2",

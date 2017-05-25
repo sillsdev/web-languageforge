@@ -1,9 +1,9 @@
 <?php
 
 use Api\Model\Shared\UserVoteModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class UserVoteModelTest extends PHPUnit_Framework_TestCase
+class UserVoteModelTest extends TestCase
 {
     public function testCRUD_Works()
     {

@@ -9,9 +9,9 @@ use Api\Model\Languageforge\Lexicon\LexValue;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LexDbeDtoTest extends PHPUnit_Framework_TestCase
+class LexDbeDtoTest extends TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;

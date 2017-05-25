@@ -7,21 +7,19 @@
     </div>
 
     <!-- more control -->
-    <div class="control-group" data-ng-hide="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullToSide">
+    <div data-ng-hide="show.audioUpload">
         <div data-ng-show="hasAudio()">
-            <div class="btn-group" uib-dropdown data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()">
-                <a class="btn btn-secondary dropdown-toggle" uib-dropdown-toggle
-                    data-ng-class="dcControl.interfaceConfig.pullToSide">
-                    <span class="caret"></span></a>
-                <ul class="dropdown-menu" uib-dropdown-menu data-ng-class="dcControl.interfaceConfig.pullToSide">
-                    <li><a data-ng-href="{{audioDownloadUrl()}}">
-                        <i class="fa fa-download"></i>{{'Download' | translate}} '{{displayFilename()}}'</a></li>
-                    <li><a data-ng-click="deleteAudio()">
-                        <i class="fa fa-times"></i>{{'Delete' | translate}} '{{displayFilename()}}'</a></li>
-                    <li class="divider"></li>
-                    <li><a data-ng-click="show.audioUpload = true">
-                        <i class="fa fa-cloud-upload"></i>{{'Upload a replacement' | translate}}</a></li>
-                </ul>
+            <div class="dropdown" uib-dropdown data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()">
+                <a class="btn btn-secondary dropdown-toggle" uib-dropdown-toggle><span class="caret"></span></a>
+                <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="dcControl.interfaceConfig.pullToSide">
+                    <a class="dropdown-item" data-ng-href="{{audioDownloadUrl()}}">
+                        <i class="fa fa-download"></i> {{'Download' | translate}} '{{displayFilename()}}'</a>
+                    <a class="dropdown-item" data-ng-click="deleteAudio()">
+                        <i class="fa fa-times"></i> {{'Delete' | translate}} '{{displayFilename()}}'</a>
+                    <div class="divider"></div>
+                    <a class="dropdown-item" data-ng-click="show.audioUpload = true">
+                        <i class="fa fa-cloud-upload"></i> {{'Upload a replacement' | translate}}</a>
+                </div>
             </div>
             <div data-ng-hide="$state.is('editor.entry') && dcControl.rights.canEditEntry() || !$state.is('editor.entry')">
                 <a class="btn btn-secondary buttonAppend" data-ng-href="{{audioDownloadUrl()}}" title="Download audio">
