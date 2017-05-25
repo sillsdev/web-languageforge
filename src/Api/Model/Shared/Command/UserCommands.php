@@ -22,7 +22,6 @@ use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
 use Api\Model\Shared\UserTypeaheadModel;
 use Palaso\Utilities\CodeGuard;
-use Silex\Application;
 use Site\Controller\Auth;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -40,52 +39,88 @@ class UserCommands
     }
 
     /**
-     * System Admin: User Create/Update
+     * System Admin: Ban User
+     * @param $id
+     * @throws \Exception
+     * @return string $userId of banned user
+     */
+    public static function banUser($id)
+    {
+        CodeGuard::checkEmptyAndThrow($id, 'id');
+
+        $user = new UserModel($id);
+        $user->active = false;
+        return $user->write();
+    }
+
+    /**
+     * System Admin: Update User
      * @param array $params - user model fields to update
      * @param Website $website
      * @return string $userId
      */
     public static function updateUser($params, $website)
     {
-        $user = new UserModel();
-        if ($params['id']) {
-            $user->read($params['id']);
+        $user = new UserModel($params['id']);
+
+        if (array_key_exists('username', $params)) {
+            $params['username'] = UserCommands::sanitizeInput($params['username']);
+        }
+        if (array_key_exists('email', $params)) {
+            $params['email'] = UserCommands::sanitizeInput($params['email']);
         }
 
-        UserCommands::assertUniqueIdentity($user, $params['username'], $params['email']);
-        $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
+        if (UserCommands::checkUniqueIdentity($user, $params['username'], $params['email']) == 'ok') {
+            $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
 
-        if (!$user->hasRoleOnSite($website)) {
-            $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+            if (!$user->hasRoleOnSite($website) && $website->allowSignupFromOtherSites) {
+                $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+            }
+            return $user->write();
         }
-        return $user->write();
     }
 
     /**
      * User Profile: Update User Profile
      * @param array $params - user model fields to update
      * @param string $userId
-     * @return string $userId
+     * @param Website $website
+     * @param DeliveryInterface $delivery
+     * @return bool|string False if update failed; $userId on update; 'login' on username change
      */
-    public static function updateUserProfile($params, $userId)
+    public static function updateUserProfile($params, $userId, $website, DeliveryInterface $delivery = null)
     {
         $params['id'] = $userId;
+        if (array_key_exists('username', $params)) {
+            $params['username'] = UserCommands::sanitizeInput($params['username']);
+        }
+        if (array_key_exists('email', $params)) {
+            $params['email'] = UserCommands::sanitizeInput($params['email']);
+        }
+
         $user = new UserModel($userId);
 
         // don't allow the following keys to be persisted
         if (array_key_exists('role', $params)) {
             unset($params['role']);
         }
-        // TODO 07-2014 DDW Need to revalidate any email updates
-        if (array_key_exists('email', $params)) {
-            unset($params['email']);
+
+        $result =  UserCommands::checkUniqueIdentity($user, $params['username'], $params['email']);
+        if ($result == 'ok') {
+            $newUsername = $user->username != $params['username'];
+            $newEmail = $user->email != $params['email'];
+            $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
+            $userId = $user->write();
+            if ($newEmail) {
+                Communicate::sendVerifyEmail($user, $website, $delivery);
+            }
+            if ($newUsername) {
+                return 'login';
+            }
+            return $userId;
         }
-        if (array_key_exists('username', $params)) {
-            unset($params['username']);
-        }
-        $user->setProperties(UserModel::USER_PROFILE_ACCESSIBLE, $params);
-        $result = $user->write();
-        return $result;
+
+        return false;
     }
 
     /**
@@ -195,122 +230,56 @@ class UserCommands
     }
 
     /**
-     * Utility to check if user is updating to a unique set of username and email.
+     * Utility to check if user is updating to a unique set of username and email
      * @param UserModel|UserModelWithPassword $user
      * @param string $updatedUsername
      * @param string $updatedEmail
-     * @param Website $website
-     * @return IdentityCheck
+     * @return string
      */
-    public static function checkUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = null)
+    public static function checkUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '')
     {
-        $identityCheck = self::checkIdentity($updatedUsername, $updatedEmail, $website);
-
-        // Check for new username or unique non-blank updated username
-        /*if ((!$identityCheck->usernameExists) ||
-
-            (($identityCheck->usernameExists) &&
-            ($updatedUsername) &&
-            ($user->username != $updatedUsername))) {
-            $identityCheck->usernameMatchesAccount = false;
-        }*/
-        if ($user->username == $updatedUsername) {
-            $identityCheck->usernameMatchesAccount = true;
-        } else {
-            $identityCheck->usernameMatchesAccount = false;
-        }
-
-        // Override if emails match.  checkIdentity doesn't have enough information to
-        // know current user email and updated email are the same
-        if ($user->email == $updatedEmail) {
-            $identityCheck->emailMatchesAccount = true;
-        } else {
-            $identityCheck->emailMatchesAccount = false;
-        }
-
-        return $identityCheck;
-    }
-
-    /**
-     * Utility to assert user is updating to a unique set of username and email
-     * @param UserModel|UserModelWithPassword $user
-     * @param string $updatedUsername
-     * @param string $updatedEmail
-     * @param Website $website
-     * @throws \Exception
-     */
-    private static function assertUniqueIdentity($user, $updatedUsername = '', $updatedEmail = '', $website = null)
-    {
-        $identityCheck = self::checkUniqueIdentity($user, $updatedUsername, $updatedEmail, $website);
+        $result = 'ok';
+        $updatedUsername = UserCommands::sanitizeInput($updatedUsername);
+        $updatedEmail = UserCommands::sanitizeInput($updatedEmail);
+        $anotherUser = new UserModel();
 
         // Check for unique non-blank updated username
-        if (($identityCheck->usernameExists) &&
-            (!$identityCheck->usernameMatchesAccount)
-        ) {
-            throw new \Exception('This username is already associated with another account');
+        if (!empty($updatedUsername) &&
+            ($user->username != $updatedUsername) &&
+            $anotherUser->readByUserName($updatedUsername)) {
+            $result = 'usernameExists';
         }
 
         // Check for unique updated email address
-        if (($identityCheck->emailExists) &&
-            (!$identityCheck->emailMatchesAccount)
-        ) {
-            throw new \Exception('This email is already associated with another account');
-        }
-    }
-
-    /**
-     * Utility to check if a username already exists and if an email address matches the account
-     * @param string $username
-     * @param string $email
-     * @param Website $website
-     * @return IdentityCheck
-     */
-    public static function checkIdentity($username, $email = '', $website = null)
-    {
-        CodeGuard::checkEmptyAndThrow($username, 'username');
-
-        $username = UserCommands::sanitizeInput($username);
-        $email = UserCommands::sanitizeInput($email);
-
-        $identityCheck = new IdentityCheck();
-        $user = new UserModel();
-        $emailUser = new UserModel();
-        $identityCheck->usernameExists = $user->readByUserName($username);
-        // This utility assumes username matches the account
-        $identityCheck->usernameMatchesAccount = true;
-        if ($website) {
-            $identityCheck->allowSignupFromOtherSites = $website->allowSignupFromOtherSites;
-            if ($identityCheck->usernameExists) {
-                $identityCheck->usernameExistsOnThisSite = $user->hasRoleOnSite($website);
+        if (!empty($updatedEmail) &&
+            ($user->email != $updatedEmail) &&
+            $anotherUser->readByEmail($updatedEmail)) {
+            if ($result == 'usernameExists') {
+                $result = 'usernameAndEmailExists';
+            } else {
+                $result = 'emailExists';
             }
         }
-        if ($email) {
-            $identityCheck->emailExists = $emailUser->readByProperty('email', $email);
-        }
-        $identityCheck->emailIsEmpty = empty($user->email);
-        if (!$identityCheck->emailIsEmpty && !empty($email)) {
-            $identityCheck->emailMatchesAccount = ($user->email === $email);
-        }
 
-        return $identityCheck;
+        return $result;
     }
-
 
     /**
      * System Admin: Create a user with default site role.
      * @param string $params
      * @param Website $website
-     * @return boolean|string
+     * @return bool|string userId of the new user
      */
     public static function createUser($params, $website)
     {
-        $user = new UserModelWithPassword();
-        $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
-        UserCommands::assertUniqueIdentity($user, $params['username'], $params['email'], $website);
-        $user->setPassword($params['password']);
-        $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
-
-        return $user->write();
+        $captchaInfo = array();
+        $captchaInfo['code'] = $params['captcha'] = 'captcha';
+        if (self::register($params, $website, $captchaInfo) == 'login') {
+          $user = new UserModel();
+          $user->readByUsernameOrEmail($params['email']);
+          return $user->id->asString();
+        }
+        return false;
     }
 
     /**
@@ -320,6 +289,7 @@ class UserCommands
      * @param string $projectId
      * @param string $currentUserId
      * @param Website $website
+     * @throws \Exception
      * @return CreateSimpleDto
      */
     public static function createSimple($username, $projectId, $currentUserId, $website)
@@ -327,31 +297,35 @@ class UserCommands
         $user = new UserModel();
         $username = UserCommands::sanitizeInput($username);
         $user->name = $username;
-        UserCommands::assertUniqueIdentity($user, $username, '', $website);
-        $user->username = $username;
-        $user->role = SystemRoles::USER;
-        $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
-        $user->active = true;
-        $userId = $user->write();
+        if (UserCommands::checkUniqueIdentity($user, $username, '', $website) == 'ok') {
+            $user->username = $username;
+            $user->role = SystemRoles::USER;
+            $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+            $user->active = true;
+            $userId = $user->write();
 
-        // Make 7 digit password
-        $characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-        $password = '';
-        while (strlen($password) < 7) {
-            $password .= substr($characters, rand() % (strlen($characters)), 1);
+            // Make 7 digit password
+            $characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+            $password = '';
+            while (strlen($password) < 7) {
+                $password .= substr($characters, rand() % (strlen($characters)), 1);
+            }
+            $userWithPassword = new UserModelWithPassword($userId);
+            $userWithPassword->setPassword($password);
+            $userWithPassword->write();
+
+            ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::CONTRIBUTOR);
+            $toUser = new UserModel($currentUserId);
+            $project = new ProjectModel($projectId);
+            Communicate::sendNewUserInProject($toUser, $user->username, $password, $project, $website);
+
+            $dto = new CreateSimpleDto($userId, $password);
+
+            return $dto->encode();
         }
-        $userWithPassword = new UserModelWithPassword($userId);
-        $userWithPassword->setPassword($password);
-        $userWithPassword->write();
-
-        ProjectCommands::updateUserRole($projectId, $userId, ProjectRoles::CONTRIBUTOR);
-        $toUser = new UserModel($currentUserId);
-        $project = new ProjectModel($projectId);
-        Communicate::sendNewUserInProject($toUser, $user->username, $password, $project, $website);
-
-        $dto = new CreateSimpleDto($userId, $password);
-
-        return $dto->encode();
+        else {
+            throw new \Exception('This username is already associated with another account');
+        }
     }
 
     /**
@@ -367,7 +341,6 @@ class UserCommands
     public static function register($params, $website, $captchaInfo, DeliveryInterface $delivery = null)
     {
         $email = self::sanitizeInput($params['email']);
-        $username = $email;
         CodeGuard::checkEmptyAndThrow($email, 'email');
 
         if (strtolower($captchaInfo['code']) != strtolower($params['captcha'])) {
@@ -599,39 +572,4 @@ class UserCommands
 
         return $admin;
     }
-}
-
-class IdentityCheck
-{
-    public function __construct()
-    {
-        $this->usernameExists = false;
-        $this->usernameExistsOnThisSite = false;
-        $this->usernameMatchesAccount = false;
-        $this->allowSignupFromOtherSites = false;
-        $this->emailExists = false;
-        $this->emailIsEmpty = true;
-        $this->emailMatchesAccount = false;
-    }
-
-    /** @var boolean true if the username exists, false otherwise */
-    public $usernameExists;
-
-    /** @var boolean true if username exists on the supplied website */
-    public $usernameExistsOnThisSite;
-
-    /** @var boolean true if the username matches the account username */
-    public $usernameMatchesAccount;
-
-    /** @var boolean true if the supplied website allows signup from other sites */
-    public $allowSignupFromOtherSites;
-
-    /** @var boolean true if account email exists */
-    public $emailExists;
-
-    /** @var boolean true if account email is empty */
-    public $emailIsEmpty;
-
-    /** @var boolean true if email matches the account email */
-    public $emailMatchesAccount;
 }

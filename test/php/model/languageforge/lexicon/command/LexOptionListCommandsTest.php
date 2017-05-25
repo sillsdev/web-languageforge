@@ -2,9 +2,9 @@
 
 use Api\Model\Languageforge\Lexicon\Command\LexOptionListCommands;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LexOptionListCommandsTest extends PHPUnit_Framework_TestCase
+class LexOptionListCommandsTest extends TestCase
 {
     public function testUpdateList_newList_createsOK()
     {

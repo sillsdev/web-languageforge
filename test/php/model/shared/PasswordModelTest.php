@@ -1,9 +1,9 @@
 <?php
 
 use Api\Model\Shared\PasswordModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class PasswordModelTest extends PHPUnit_Framework_TestCase
+class PasswordModelTest extends TestCase
 {
     public function testChangePassword_PasswordChanged()
     {

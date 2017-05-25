@@ -6,9 +6,9 @@ use Api\Model\Languageforge\Lexicon\ImportErrorReport;
 use Api\Model\Languageforge\Lexicon\ZipImportNodeError;
 use Api\Model\Languageforge\Lexicon\LiftRangeImportNodeError;
 use Api\Model\Languageforge\Lexicon\LiftImportNodeError;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class LiftImportZipTest extends PHPUnit_Framework_TestCase
+class LiftImportZipTest extends TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -74,29 +74,19 @@ class LiftImportZipTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, $importer->stats->entriesDeleted);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Sorry, the .tar.gz format isn't allowed
-     */
     public function testLiftImportMerge_ZipFileWrongFormat_Exception()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Sorry, the .tar.gz format isn\'t allowed');
+
         copy(TestCommonPath . 'TestLexProject.zip', sys_get_temp_dir() . '/TestLexProject.tar.gz');
         $zipFilePath = self::$environ->copyTestUploadFile(sys_get_temp_dir() . '/TestLexProject.tar.gz');
         unlink(sys_get_temp_dir() . '/TestLexProject.tar.gz');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        self::$environ->inhibitErrorDisplay();
 
         LiftImport::get()->importZip($zipFilePath, $project);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
-    }
-    /**
-     * @depends testLiftImportMerge_ZipFileWrongFormat_Exception
-     */
-    public function testLiftImportMerge_ZipFileWrongFormat_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
     }
 
     public function testLiftImportMerge_ZipFileWithDir_CorrectValues()
@@ -133,27 +123,17 @@ class LiftImportZipTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, $importer->getReport()->hasError());
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Uploaded file does not contain any LIFT data
-     */
     public function testLiftImportMerge_ZipFileNoLift_Exception()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Uploaded file does not contain any LIFT data');
+
         $zipFilePath = self::$environ->copyTestUploadFile(TestCommonPath . 'TestLexNoProject.zip');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
-        self::$environ->inhibitErrorDisplay();
 
         LiftImport::get()->importZip($zipFilePath, $project);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
-    }
-    /**
-     * @depends testLiftImportMerge_ZipFileNoLift_Exception
-     */
-    public function testLiftImportMerge_ZipFileNoLift_RestoreErrorDisplay()
-    {
-        // restore error display after last test
-        self::$environ->restoreErrorDisplay();
     }
 
     public function testLiftImportMerge_ZipFile2LiftAndOddFolder_Error()

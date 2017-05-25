@@ -59,7 +59,7 @@ class ProjectPageDto
                     }
                 }
                 $entry['responseCount'] = $responseCount;
-                $entry['dateCreated'] = $text->dateCreated->asDateTimeInterface()->format(\DateTime::RFC2822);
+                $entry['dateCreated'] = $text->dateCreated->asDateTimeInterface()->format(\DateTime::ISO8601);
 
                 $data['texts'][] = $entry;
             }

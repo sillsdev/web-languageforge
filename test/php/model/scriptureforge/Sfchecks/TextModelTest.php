@@ -3,9 +3,9 @@
 use Api\Model\Scriptureforge\Sfchecks\TextListModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\Mapper\MongoStore;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class TextModelTest extends PHPUnit_Framework_TestCase
+class TextModelTest extends TestCase
 {
     public function testCRUD_Works()
     {

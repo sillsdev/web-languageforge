@@ -5,7 +5,7 @@ use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\ProjectModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class SessionTestEnvironment
 {
@@ -45,7 +45,7 @@ class SessionTestEnvironment
     }
 }
 
-class SessionCommandsTest extends PHPUnit_Framework_TestCase
+class SessionCommandsTest extends TestCase
 {
     public function testSessionData_userIsNotPartOfProject()
     {
