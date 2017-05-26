@@ -20,6 +20,14 @@
       when: inventory_hostname == "localhost"
       with_items: "{{site_src_paths}}"
 
+    - name: npm install
+      command: npm install
+      args:
+        chdir: "{{item}}"
+      changed_when: false
+      when: inventory_hostname == "localhost"
+      with_items: "{{site_src_paths}}"
+
     - name: factory reset mongodb to empty with admin user
       shell: php FactoryReset.php run
       args:
