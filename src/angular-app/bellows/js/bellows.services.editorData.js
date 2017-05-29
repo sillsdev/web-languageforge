@@ -134,11 +134,15 @@ function ($q, sessionService, cache, commentsCache,
     var deferred = $q.defer();
 
     // get data from the server
-    api.dbeDtoUpdatesOnly(browserInstanceId, timestamp, function (result) {
-      processEditorDto(result, true).then(function (result) {
-        deferred.resolve(result);
+    if (Offline.state == 'up') {
+      api.dbeDtoUpdatesOnly(browserInstanceId, timestamp, function (result) {
+        processEditorDto(result, true).then(function (result) {
+          deferred.resolve(result);
+        });
       });
-    });
+    } else {
+      return $q.when();
+    }
 
     return deferred.promise;
   };
