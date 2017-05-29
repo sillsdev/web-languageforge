@@ -9,9 +9,9 @@ use Api\Model\Shared\UserModel;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\Response;
 use GuzzleHttp\Subscriber\Mock;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class TranslateProjectCommandsTest extends PHPUnit_Framework_TestCase
+class TranslateProjectCommandsTest extends TestCase
 {
     public function testUpdateConfig_UpdatedConfig_ConfigPersists()
     {
