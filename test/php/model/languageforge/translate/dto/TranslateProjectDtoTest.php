@@ -4,9 +4,9 @@ use Api\Model\Languageforge\Translate\Dto\TranslateProjectDto;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class TranslateProjectDtoTest extends PHPUnit_Framework_TestCase
+class TranslateProjectDtoTest extends TestCase
 {
     /** @var MongoTestEnvironment Local store of mock test environment */
     private static $environ;
