@@ -18,11 +18,12 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
     };
 
     return {
-      push: function (type, message, details, cannotClose) {
+      push: function (type, message, details, cannotClose, time) {
         var id = util.uuid();
-        if (type() == this.SUCCESS()) {
-          // success alert messages will auto-close after 10 seconds
-          timers[id] = $interval(function () {this.removeById(id);}.bind(this), 4 * 1000, 1);
+
+        if (!time && type() == this.SUCCESS()) time = 4 * 1000;
+        if (time) {
+          timers[id] = $interval(function () {this.removeById(id);}.bind(this), time, 1);
         }
 
         var obj = {

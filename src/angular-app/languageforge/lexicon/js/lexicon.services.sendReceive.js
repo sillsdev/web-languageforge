@@ -66,15 +66,15 @@ angular.module('lexicon.services')
       this.isInProgress = function isInProgress() {
         return this.isSendReceiveProject() &&
           angular.isDefined(status) && angular.isDefined(status.SRState) &&
-          (status.SRState == 'CLONING' || status.SRState == 'LF_CLONING' ||
-          status.SRState == 'SYNCING');
+          (status.SRState === 'CLONING' || status.SRState === 'LF_CLONING' ||
+          status.SRState === 'SYNCING');
       };
 
       // S/R isInProgress(), SRState is unknown, or SRState is PENDING
       this.isStarted = function isStarted() {
         return this.isInProgress() || (this.isSendReceiveProject() && angular.isDefined(status) &&
           angular.isDefined(status.SRState) &&
-          (status.SRState == unknownSRState || status.SRState == 'PENDING'));
+          (status.SRState === unknownSRState || status.SRState === 'PENDING'));
       };
 
       this.isSendReceiveProject = function isSendReceiveProject() {
@@ -96,7 +96,7 @@ angular.module('lexicon.services')
           } else if (this.isInProgress()) {
             this.setSyncStarted();
           } else {
-            if (status.SRState == unknownSRState) {
+            if (status.SRState === unknownSRState) {
               this.clearState();
             }
 
@@ -163,7 +163,7 @@ angular.module('lexicon.services')
                     'wrong and your project is now on hold. Contact an administrator.');
                 break;
               case 'IDLE' :
-                if (previousSRState == 'SYNCING') {
+                if (previousSRState === 'SYNCING') {
                   notice.push(notice.SUCCESS, 'The project was successfully synchronized.');
                 }
 
@@ -229,7 +229,11 @@ angular.module('lexicon.services')
             if (angular.isDefined(projectSettings) &&
               angular.isDefined(projectSettings.lastSyncedDate)
             ) {
-              return 'Last sync was ' + $filter('relativetime')(projectSettings.lastSyncedDate);
+              if (Date.parse(projectSettings.lastSyncedDate) <= 0) {
+                return 'Never been synced';
+              } else {
+                return 'Last sync was ' + $filter('relativetime')(projectSettings.lastSyncedDate);
+              }
             } else {
               return '';
             }
@@ -264,9 +268,9 @@ angular.module('lexicon.services')
               if (this.isInProgress()) {
                 (pollUpdateSuccessCallback || angular.noop)();
                 this.setSyncStarted();
-              } else if (previousSRState == 'LF_UNSYNCED' && status.SRState == 'IDLE') {
+              } else if (previousSRState === 'LF_UNSYNCED' && status.SRState === 'IDLE') {
                 status.SRState = previousSRState;
-              } else if (previousSRState == unknownSRState) {
+              } else if (previousSRState === unknownSRState) {
                 this.clearState();
               } else {
                 (pollUpdateSuccessCallback || angular.noop)();
@@ -309,8 +313,8 @@ angular.module('lexicon.services')
 
             status = result.data;
             console.log(status);
-            if (status.SRState == 'IDLE' ||
-              status.SRState == 'HOLD') {
+            if (status.SRState === 'IDLE' ||
+              status.SRState === 'HOLD') {
               this.cancelCloneStatusTimer();
               (cloneProjectStatusSuccessCallback || angular.noop)();
             }
