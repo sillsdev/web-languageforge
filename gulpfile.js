@@ -910,7 +910,8 @@ gulp.task('build-and-upload',
 gulp.task('build-e2e',
   gulp.series(
     'test-e2e-useTestConfig',
-    'build-and-upload',
+    'build',
+    'build-upload',
     'test-e2e-env',
     'test-e2e-setupTestEnvironment',
     'test-e2e-doTest'
