@@ -3,7 +3,7 @@
     <div class="player" data-ng-show="hasAudio() && audioReady && !show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">
         <a data-sgw-sound-player data-href="audioPlayUrl()" data-sgw-state="state" data-sgw-sound="sound">
             <i data-ng-class="audioIcon()"></i></a>
-        <span class="audioProgress muted">{{formatTimestamp(sound.position)}} / {{formatTimestamp(sound.duration)}}</span>
+        <span class="audioProgress text-muted">{{formatTimestamp(sound.position)}} / {{formatTimestamp(sound.duration)}}</span>
     </div>
 
     <!-- more control -->

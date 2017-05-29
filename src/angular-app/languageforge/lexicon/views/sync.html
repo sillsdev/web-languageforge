@@ -3,12 +3,12 @@
     <div class="card card-block bg-faded" data-ng-controller="SyncCtrl">
         <div align="center">
             <button class="btn" uib-tooltip="Send and Receive with LanguageDepot.org" data-ng-show="showSyncButton()"
-                    tooltip-placement="bottom"
+                    data-tooltip-placement="bottom"
                     data-ng-disabled="disableSyncButton()"
                     data-ng-click="syncProject()">
                 <i class="fa fa-cloud-upload fa-lg text-info"></i>{{'Send/Receive' | translate}}</button>
-            <div class="muted" style="margin-right: 10px">{{syncStateNotice()}}</div>
-            <div class="muted" style="margin-right: 10px">{{lastSyncNotice()}}</div>
+            <div class="text-muted" style="margin-right: 10px">{{syncStateNotice()}}</div>
+            <div class="text-muted" style="margin-right: 10px">{{lastSyncNotice()}}</div>
         </div>
     </div>
 </div>

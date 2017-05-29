@@ -7,29 +7,31 @@
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
             <button class="btn btn-warning" data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther"
                     data-ng-click="removeProjectUsers()"><i class="fa fa-remove"></i> Remove Members</button>
-            <button id="addMembersButton" class="btn btn-success" data-ng-show="rights.create" data-ng-click="newUserCollapsed = !newUserCollapsed">
+            <button id="addMembersButton" class="btn btn-success" data-ng-show="rights.create" data-ng-click="toggleAddMembers()">
                 <i class="fa fa-plus"></i> Add Members</button>
-            <button class="btn btn-info" data-ng-show="rights.create" data-ng-click="newMessageCollapsed = !newMessageCollapsed">
+            <button class="btn btn-info" data-ng-show="rights.create" data-ng-click="toggleMessageUsers()">
                 <i class="fa fa-envelope"></i> Message Selected Users</button>
             <input class="form-control" type="text" data-ng-model="userFilter" placeholder="Member List Filter"/>
             <a data-ng-show="userFilter != ''" title="Clear Filter" data-ng-click="userFilter = ''">
                 <i class="fa fa-remove" style="color:gray"></i></a>
         </form>
-        <div id="newMembersDiv" class="new-item" uib-collapse="!newUserCollapsed">
-            <form class="well form-inline">
-            <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
-                <ul>
-                    <li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
-                        <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
-                        <p class="name">{{user.name}}</p>
-                        <p class="email">{{user.email}}</p>
-                    </li>
-                </ul>
-            </pui-typeahead>
-            <button id="addUserButton" data-ng-model="addMode" class="btn" data-ng-disabled="disableAddButton"
-                    data-ng-click="addProjectUser()">
-                <i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
-            <span class="warning" data-ng-show="warningText">{{warningText}}</span>
+        <div id="newMembersDiv" class="new-item" uib-collapse="addMembersCollapsed">
+            <form class="card form-inline">
+                <div class="card-block">
+                    <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
+                        <ul ng-hide="users.length == 0">
+                            <li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
+                                <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
+                                <span class="name">{{user.name}}</span>
+                                <span class="email">{{user.email}}</span>
+                            </li>
+                        </ul>
+                    </pui-typeahead>
+                    <button id="addUserButton" data-ng-model="addMode" class="btn btn-success" data-ng-disabled="disableAddButton"
+                            data-ng-click="addProjectUser()">
+                        <i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
+                    <span class="warning" data-ng-show="warningText">{{warningText}}</span>
+                </div>
             </form>
         </div>
         <div id="newMessageDiv" uib-collapse="newMessageCollapsed">
@@ -218,8 +220,6 @@
                         </li>
                     </ul>
                 </fieldset>
-                <button id="user_profile_lists_save_button" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
-                <span data-ng-show="unsavedChanges" class="unsaved-warning" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
             </div>
             <div class="col-md-4">
                 <fieldset class="card fieldset" id="picklistEditorFieldset">
@@ -228,6 +228,10 @@
                         <picklist-editor items="project.userProperties.userProfilePickLists[currentListId].items" default-key="project.userProperties.userProfilePickLists[currentListId].defaultKey"></picklist-editor>
                     </div>
                 </fieldset>
+            </div>
+            <div class="col-md-4">
+                <button id="user_profile_lists_save_button" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                <span data-ng-show="unsavedChanges" class="unsaved-warning" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
             </div>
         </form>
     </div>
