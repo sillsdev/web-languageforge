@@ -4,9 +4,9 @@ use Api\Model\Languageforge\Translate\Command\TranslateDocumentSetCommands;
 use Api\Model\Languageforge\Translate\TranslateDocumentSetModel;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Mapper\JsonEncoder;
-//use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class TranslateDocumentCommandsTest extends PHPUnit_Framework_TestCase
+class TranslateDocumentCommandsTest extends TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;
