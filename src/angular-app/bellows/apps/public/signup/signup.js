@@ -3,8 +3,7 @@
 // Declare app level module which depends on filters, and services
 angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'pascalprecht.translate',
   'palaso.util.model.transform', 'palaso.ui.captcha', 'zxcvbn'])
-  .config(['$translateProvider', '$locationProvider',
-  function ($translateProvider, $locationProvider) {
+  .config(['$translateProvider', function ($translateProvider) {
     // configure interface language filepath
     $translateProvider.useStaticFilesLoader({
       prefix: '/angular-app/bellows/lang/',
@@ -12,8 +11,6 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'pasc
     });
     $translateProvider.preferredLanguage('en');
     $translateProvider.useSanitizeValueStrategy('escape');
-
-    $locationProvider.hashPrefix('');
   }])
   .controller('SignupCtrl', ['$scope', '$location', '$window', 'userService', 'sessionService',
   function ($scope, $location, $window, userService, sessionService) {
