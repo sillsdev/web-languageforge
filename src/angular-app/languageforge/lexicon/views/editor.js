@@ -66,7 +66,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     };
 
     function entryIsNew(entry) {
-      return (entry.id && entry.id.indexOf('_new_') == 0);
+      return (entry.id && entry.id.indexOf('_new_') === 0);
     }
 
     /*
@@ -301,7 +301,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     }
 
     function scrollListToEntry(id, position) {
-      var posOffset = (position == 'top') ? 274 : 487;
+      var posOffset = (position === 'top') ? 274 : 487;
       var entryDivId = '#entryId_' + id;
       var listDivId = '#compactEntryListContainer';
       var index;
@@ -386,7 +386,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           data.customFields[key] = item;
         }
 
-        if (key == 'senses' || key == 'examples') {
+        if (key === 'senses' || key === 'examples') {
           data[key] = prepCustomFieldsForUpdate(item);
         }
       });
@@ -396,7 +396,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     }
 
     $scope.editEntry = function editEntry(id) {
-      if ($scope.currentEntry.id != id) {
+      if ($scope.currentEntry.id !== id) {
         $scope.saveCurrentEntry();
         setCurrentEntry($scope.entries[editorService.getIndexInEntries(id)]);
         commentService.loadEntryComments(id);
@@ -454,8 +454,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         case 'fields':
           angular.forEach(config.fieldOrder, function (fieldName) {
             if (angular.isUndefined(data[fieldName])) {
-              if (config.fields[fieldName].type == 'fields' ||
-                  config.fields[fieldName].type == 'pictures') {
+              if (config.fields[fieldName].type === 'fields' ||
+                  config.fields[fieldName].type === 'pictures') {
                 data[fieldName] = [];
               } else {
                 data[fieldName] = {};
@@ -463,9 +463,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
             }
 
             // only recurse if the field is not in our node stop list or if it contains data
-            if (stopAtNodes.indexOf(fieldName) == -1 || data[fieldName].length != 0) {
-              if (config.fields[fieldName].type == 'fields') {
-                if (data[fieldName].length == 0) {
+            if (stopAtNodes.indexOf(fieldName) === -1 || data[fieldName].length !== 0) {
+              if (config.fields[fieldName].type === 'fields') {
+                if (data[fieldName].length === 0) {
                   data[fieldName].push({});
                 }
 
@@ -502,7 +502,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
           break;
         case 'optionlist':
-          if (angular.isUndefined(data.value) || data.value == null) {
+          if (angular.isUndefined(data.value) || data.value === null) {
             data.value = '';
             if (angular.isDefined($scope.config.optionlists) &&
                 angular.isDefined(config.listCode) &&
@@ -561,7 +561,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         var iShowList = editorService.getIndexInVisibleEntries(entry.id);
         editorService.removeEntryFromLists(entry.id);
         if ($scope.entries.length > 0) {
-          if (iShowList != 0)
+          if (iShowList !== 0)
             iShowList--;
           setCurrentEntry($scope.visibleEntries[iShowList]);
           $state.go('.', { entryId: $scope.visibleEntries[iShowList].id }, { notify: false });
@@ -680,8 +680,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     });
 
     $scope.$on('$locationChangeStart', function (event, next, current) {
-      if (~current.indexOf('#/editor/list') && ~next.indexOf('#/editor/list') &&
-        ~next.indexOf('#/editor/entry')
+      if (~current.indexOf('#!/editor/list') && ~next.indexOf('#!/editor/list') &&
+        ~next.indexOf('#!/editor/entry')
       ) {
         cancelAutoSaveTimer();
         $scope.saveCurrentEntry();
@@ -694,7 +694,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     // conditionally register watch
     if ($scope.rights.canEditEntry()) {
       $scope.$watch('currentEntry', function (newValue) {
-        if (newValue != undefined) {
+        if (newValue !== undefined) {
           cancelAutoSaveTimer();
           if ($scope.currentEntryIsDirty()) {
             startAutoSaveTimer();
@@ -708,7 +708,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         var deleted = false;
         angular.forEach(properties, function (propName) {
           // console.log ("key = " + key + " && propName = " + propName);
-          if (!deleted && key == propName) {
+          if (!deleted && key === propName) {
             // console.log("deleted " + key + " (" + startAt[key] + ")");
             delete startAt[key];
             deleted = true;
@@ -751,7 +751,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           $scope.typeahead.limit + ' of ' + numMatches + ' matches';
       } else if (numMatches > 1) {
         $scope.typeahead.matchCountCaption = numMatches + ' matches';
-      } else if (numMatches == 1) {
+      } else if (numMatches === 1) {
         $scope.typeahead.matchCountCaption = numMatches + ' match';
       }
     };
