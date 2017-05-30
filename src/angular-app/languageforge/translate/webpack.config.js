@@ -5,7 +5,7 @@ var webpackMerge = require('webpack-merge');
 // Webpack Config
 var webpackConfig = {
   entry: {
-    'main': './home/main.ts',
+    'main': './main.ts',
   },
 
   output: {
@@ -55,7 +55,7 @@ var defaultConfig = {
 
   resolve: {
     extensions: [ '.ts', '.js' ],
-    modules: [ path.resolve(__dirname, '..', '..', '..', 'node_modules') ]
+    modules: [ path.resolve(__dirname, '..', '..', '..', '..', 'node_modules') ]
   },
 
   devServer: {
