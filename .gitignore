@@ -38,3 +38,6 @@ src/angular-app/scriptureforge/**/*.css
 src/Site/views/scriptureforge/theme/default/cssBootstrap4/**/.css
 src/angular-app/bellows/cssBootstrap4/**/*.css
 
+# webpack build artifacts
+**/dist/*.bundle.js
+**/dist/*.map
