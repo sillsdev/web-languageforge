@@ -1,3 +1,5 @@
+'use strict';
+
 // Simple Angular factory for making JSON-RPC easier from the client side
 
 // Inspired by https://github.com/0xAX/angularjs-json-rpc/, but rewritten
@@ -15,7 +17,7 @@ angular.module('jsonRpc', ['sf.error'])
     };
 
     this.connect = function (params) {
-      if (typeof (params) == 'string') {
+      if (typeof (params) === 'string') {
         // We were called as connect("http://url/goes/here")
         params = { url: params };
       }
@@ -62,22 +64,22 @@ angular.module('jsonRpc', ['sf.error'])
       };
       var result = {};
       var request = $http(httpRequest);
-      this.requestsuccess = function (data, status, headers, config) {
-        if (data == null) {
+      this.requestSuccess = function (response) {
+        if (response.data === null) {
           // TODO error handling for jsonRpc CP 2013-07
           error.error('RPC Error', 'data is null');
 
           return;
         }
 
-        if (typeof data == 'string') {
-          error.error('RPC Error', data);
+        if (typeof response.data === 'string') {
+          error.error('RPC Error', response.data);
           return;
         }
 
-        if (data.error != null) {
+        if (response.data.error !== null) {
           var type = '';
-          switch (data.error.type) {
+          switch (response.data.error.type) {
             case 'ResourceNotAvailableException':
               type = 'The requested resource is not available.';
               break;
@@ -95,38 +97,38 @@ angular.module('jsonRpc', ['sf.error'])
             default:
               type = 'Exception';
           }
-          error.error(type, data.error.message);
+          error.error(type, response.data.error.message);
 
           return;
         }
 
-        if (data.error == null) {
+        if (response.data.error === null) {
           result.ok = true;
-          result.data = data.result;
-          result.status = status;
-          result.headers = headers;
-          result.config = config;
+          result.data = response.data.result;
+          result.status = response.status;
+          result.headers = response.headers;
+          result.config = response.config;
           (callback || angular.noop)(result);
         }
 
       };
 
-      this.requesterror = function (data, status, headers, config) {
+      this.requestError = function (response) {
         // only report error if the browser/network is not OFFLINE and not timeout (status -1)
         // otherwise fail silently (the browser will console log a failed connection anyway)
-        if (status > 0 && status != '0') {
-          error.error('RPC Error', 'Server Status Code ' + status);
+        if (response.status > 0 && response.status !== '0') {
+          error.error('RPC Error', 'Server Status Code ' + response.status);
           result.ok = false;
-          result.data = data;
-          result.status = status;
-          result.headers = headers;
-          result.config = config;
+          result.data = response.data;
+          result.status = response.status;
+          result.headers = response.headers;
+          result.config = response.config;
           (callback || angular.noop)(result);
         }
       };
 
-      request.success(this.requestsuccess);
-      request.error(this.requesterror);
+      request.then(this.requestSuccess, this.requestError);
+
       return request;
     };
 
