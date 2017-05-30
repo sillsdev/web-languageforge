@@ -30,5 +30,6 @@
 
     - name: factory reset mongodb to empty with admin user
       shell: php FactoryReset.php run
+      become: true
       args:
         chdir: "{{lf_path}}/scripts/tools/"
