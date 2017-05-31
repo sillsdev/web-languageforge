@@ -33,7 +33,13 @@
         - unzip
         - p7zip-full
 
-    - file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
+    - name: check for node binary
+      stat: path=/usr/local/bin/node
+      register: node_binary
+
+    - name: symlink node to nodejs
+      file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
+      when: node_binary.stat.exists == False
 
     - name: install Composer
       shell: php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/local/bin --filename=composer
