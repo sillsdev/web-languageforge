@@ -8,7 +8,7 @@ describe('E2E testing: Reset Forgotten Password', function () {
   var forgotPasswordPage = require('../../../pages/forgotPasswordPage');
 
   it('with expired reset key routes to login with warning', function () {
-    browser.get(browser.baseUrl + '/auth/logout');
+    loginPage.logout();
     resetPasswordPage.get(constants.expiredPasswordKey);
     expect(loginPage.form).toBeDefined();
     expect(loginPage.infoMessages.count()).toBe(0);
@@ -95,7 +95,20 @@ describe('E2E testing: Reset Forgotten Password', function () {
       resetPasswordPage.passwordInput.sendKeys(constants.resetPassword);
       resetPasswordPage.confirmPasswordInput.sendKeys(constants.resetPassword);
       resetPasswordPage.resetButton.click();
-      expect(loginPage.form).toBeDefined();
+
+      // Dear next person who tries to get the tests to consistently pass
+      // without this ugly browser.sleep():
+      // When the button is clicked the user service sends a request to reset
+      // the password. Only after the password reset is successful is the
+      // user redirected to the login page.
+      // Using expected conditions is not as straightforward as one would immagine. Since the page
+      // navigates away following the click, it will result in a
+      // 'document unloaded while waiting for result' error (sometimes). I suggest running the tests
+      // in a loop to ensure the results are consistent.
+      // - NLP (@Nateowami)
+      browser.sleep(1000);
+
+      expect(loginPage.form.isPresent()).toBe(true);
       expect(loginPage.infoMessages.count()).toBe(1);
       expect(loginPage.infoMessages.first().getText()).toContain('password has been reset');
       expect(loginPage.errors.count()).toBe(0);
