@@ -5,7 +5,7 @@
 // simple code anyway.
 
 angular.module('jsonRpc', ['sf.error'])
-  .factory('jsonRpc', ['$http', '$window', 'error', function ($http, $window, error) {
+  .service('jsonRpc', ['$http', '$window', 'error', function ($http, $window, error) {
     this.lastId = 0;
 
     this.nextId = function () {
@@ -76,7 +76,6 @@ angular.module('jsonRpc', ['sf.error'])
               error.error('You will now be redirected to the login page.');
               $window.location.href = '/auth/login';
               return;
-              break;
             case 'UserUnauthorizedException':
               type = "You don't have sufficient privileges.";
               break;
@@ -118,5 +117,4 @@ angular.module('jsonRpc', ['sf.error'])
       return request;
     };
 
-    return this;
   }]);
