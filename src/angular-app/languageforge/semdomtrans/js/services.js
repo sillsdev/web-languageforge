@@ -1,71 +1,24 @@
 'use strict';
 
-angular.module('semdomtrans.services', ['jsonRpc'])
-  .service('semdomtransSetupService', ['jsonRpc',
-  function (jsonRpc) {
-    jsonRpc.connect('/api/sf');
+angular.module('semdomtrans.services', ['bellows.services'])
+  .service('semdomtransSetupService', ['apiService',
+  function (api) {
 
-    this.createProject =
-      function createProject(languageCode, languageName, useGoogleTranslateData, callback) {
-        jsonRpc.call('semdom_create_project', [languageCode, languageName, useGoogleTranslateData],
-          function (result) {
-            callback(result);
-          });
-      };
-
-    this.getOpenProjects = function getOpenProjects(callback) {
-      jsonRpc.call('semdom_get_open_projects', [], function (result) {
-        callback(result);
-      });
-    };
-
-    this.doesProjectExist = function doesProjectExist(languageCode, callback) {
-      jsonRpc.call('semdom_project_exists', [languageCode], function (result) {
-        callback(result);
-      });
-    };
-
-    this.doesGoogleTranslateDataExist =
-      function doesGoogleTranslateDataExist(languageCode, callback) {
-        jsonRpc.call('semdom_does_googletranslatedata_exist', [languageCode], function (result) {
-          callback(result);
-        });
-      };
+    this.createProject = api.method('semdom_create_project');
+    this.getOpenProjects = api.method('semdom_get_open_projects');
+    this.doesProjectExist = api.method('semdom_project_exists');
+    this.doesGoogleTranslateDataExist = api.method('semdom_does_googletranslatedata_exist');
 
   }])
-  .service('semdomtransEditService', ['jsonRpc',
-  function (jsonRpc) {
-    jsonRpc.connect('/api/sf');
+  .service('semdomtransEditService', ['apiService',
+  function (api) {
 
-    this.dbeDtoFull = function dbeDtoFull(browserInstanceId, offset, callback) {
-      jsonRpc.call('semdom_editor_dto', [browserInstanceId, null], function (result) {
-        callback(result);
-      });
-    };
+    this.dbeDtoFull = api.method('semdom_editor_dto');
+    this.dbeDtoUpdatesOnly = api.method('semdom_editor_dto');
+    this.updateTerm = api.method('semdom_item_update');
+    this.updateWorkingSet = api.method('semdom_workingset_update');
+    this.exportProject = api.method('semdom_export_project');
 
-    this.dbeDtoUpdatesOnly = function dbeDtoUpdatesOnly(browserInstanceId, timestamp, callback) {
-      jsonRpc.call('semdom_editor_dto', [browserInstanceId, timestamp], function (result) {
-        callback(result);
-      });
-    };
-
-    this.updateTerm = function updateTerm(term, callback) {
-      jsonRpc.call('semdom_item_update', [term], function (result) {
-        callback(result);
-      });
-    };
-
-    this.updateWorkingSet = function updateWorkingSet(workingSet, callback) {
-      jsonRpc.call('semdom_workingset_update', [workingSet], function (result) {
-        callback(result);
-      });
-    };
-
-    this.exportProject = function exportProject(callback) {
-      jsonRpc.call('semdom_export_project', [], function (result) {
-        callback(result);
-      });
-    };
   }])
   .factory('semdomtransEditorDataService', ['$q', 'editorDataService', 'semdomtransEditService',
     'sessionService', 'semdomtransOfflineCache',
