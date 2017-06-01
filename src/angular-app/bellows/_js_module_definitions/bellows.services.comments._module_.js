@@ -1,4 +1,4 @@
 'use strict';
 
-angular.module('bellows.services.comments', ['jsonRpc', 'bellows.services']);
+angular.module('bellows.services.comments', ['bellows.services']);
 

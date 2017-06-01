@@ -2,7 +2,7 @@
 
 /* Directives */
 
-angular.module('sfAdmin.directives', ["jsonRpc", "sfAdmin.filters"])
+angular.module('sfAdmin.directives', ["bellows.services", "sfAdmin.filters"])
 .directive("requireEqual", function() {
   return {
     restrict: "A",

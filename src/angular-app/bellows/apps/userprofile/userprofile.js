@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
+angular.module('userprofile', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
   'pascalprecht.translate', 'palaso.ui.intlTelInput'])
   .config(['$translateProvider',
   function ($translateProvider) {
