@@ -4,8 +4,8 @@
 angular.module('bellows.services.comments')
 
 //Lexicon Comment Service
-  .service('lexCommentService', ['jsonRpc', 'commentsOfflineCache', '$filter', 'sessionService',
-  function (jsonRpc, offlineCache, $filter, ss) {
+  .service('lexCommentService', ['apiService', 'commentsOfflineCache', '$filter', 'sessionService',
+  function (api, offlineCache, $filter, ss) {
     this.comments = {
       items: {
         currentEntry: [],
@@ -157,42 +157,29 @@ angular.module('bellows.services.comments')
       }
     }.bind(this);
 
-    var project = ss.session.project;
-    jsonRpc.connect({
-      url: '/api/sf',
-      projectId: project ? project.id : undefined
-    });
-
-    this.update = function updateComment(comment, callback) {
-      this.comments.items.currentEntry.push(comment);
-      jsonRpc.call('lex_comment_update', [comment], callback);
-    };
+    this.update = api.method('lex_comment_update');
 
     this.updateReply = function updateReply(commentId, reply, callback) {
       var comment = getCurrentEntryComment(commentId);
       comment.replies.push(reply);
-      jsonRpc.call('lex_commentReply_update', [commentId, reply], callback);
+      api.call('lex_commentReply_update', [commentId, reply], callback);
     };
 
-    this.remove = function deleteComment(commentId, callback) {
-      jsonRpc.call('lex_comment_delete', [commentId], callback);
-    };
+    this.remove = api.method('lex_comment_delete');
 
-    this.deleteReply = function deleteReply(commentId, replyId, callback) {
-      jsonRpc.call('lex_commentReply_delete', [commentId, replyId], callback);
-    };
+    this.deleteReply = api.method('lex_commentReply_delete');
 
     this.plusOne = function plusOne(commentId, callback) {
       var comment = getCurrentEntryComment(commentId);
       comment.score++;
       this.comments.counts.userPlusOne[commentId] = 1;
-      jsonRpc.call('lex_comment_plusOne', [commentId], callback);
+      api.call('lex_comment_plusOne', [commentId], callback);
     };
 
     this.updateStatus = function updateStatus(commentId, status, callback) {
       var comment = getCurrentEntryComment(commentId);
       comment.status = status;
-      jsonRpc.call('lex_comment_updateStatus', [commentId, status], callback);
+      api.call('lex_comment_updateStatus', [commentId, status], callback);
     };
 
   }]);
