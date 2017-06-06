@@ -91,7 +91,7 @@ angular.module('lexicon',
     };
 
     $scope.showDictionaryButton = function showDictionaryButton() {
-      return !($location.path().indexOf('/editor') == 0);
+      return !($location.path().indexOf('/editor') === 0);
     };
 
     function changeInterfaceLanguage(code) {
@@ -114,7 +114,7 @@ angular.module('lexicon',
     }
 
     $scope.$watch('interfaceConfig.userLanguageCode', function (newVal) {
-      if (newVal && newVal != pristineLanguageCode) {
+      if (newVal && newVal !== pristineLanguageCode) {
         var user = {};
         user.interfaceLanguageCode = newVal;
 
@@ -153,7 +153,7 @@ angular.module('lexicon',
     Offline.on('up', function () {
       setTitle('Language Forge', '', '');
 
-      if ($scope.online == false) {
+      if ($scope.online === false) {
         notice.removeById(offlineMessageId);
         notice.push(notice.SUCCESS, 'You are back online!');
       }
@@ -163,7 +163,7 @@ angular.module('lexicon',
     });
 
     Offline.on('down', function () {
-      setTitle('Language Forge Offline', '0.8em', '#555')
+      setTitle('Language Forge Offline', '0.8em', '#555');
 
       offlineMessageId = notice.push(notice.ERROR,
         'You are offline. Some features are not available', null, true, 5 * 1000);

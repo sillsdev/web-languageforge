@@ -80,7 +80,8 @@ angular.module('lexicon-new-project',
         }
       })
       .state('newProject.selectPrimaryLanguage', {
-        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/new-project-select-primary-language.html',
+        templateUrl: '/angular-app/languageforge/lexicon/new-project/views/' +
+        'new-project-select-primary-language.html',
         data: {
           step: 3 // This is not a typo. There are two possible step 3 templates.
         }
@@ -130,7 +131,7 @@ angular.module('lexicon-new-project',
 
     $scope.isSRProject = false;
     $scope.show = {};
-    $scope.show.nextButton = ($state.current.name != 'newProject.chooser');
+    $scope.show.nextButton = ($state.current.name !== 'newProject.chooser');
     $scope.show.backButton = false;
     $scope.show.flexHelp = false;
     $scope.show.cloning = true;
@@ -146,7 +147,7 @@ angular.module('lexicon-new-project',
       $scope.formValidated = true;
       $scope.formStatus = msg;
       $scope.formStatusClass = 'alert alert-info';
-      if (!msg) $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
+      if (!msg) $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
       $scope.forwardBtnClass = 'btn-success';
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
@@ -156,8 +157,8 @@ angular.module('lexicon-new-project',
       if (!msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
-      $scope.forwardBtnClass = (bootstrapVersion == 'bootstrap4' ? 'btn-secondary' : '');
+      $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
+      $scope.forwardBtnClass = (bootstrapVersion === 'bootstrap4' ? 'btn-secondary' : '');
       $scope.formValidationDefer = $q.defer();
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
@@ -167,8 +168,9 @@ angular.module('lexicon-new-project',
       if (!msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? 'alert alert-danger' : 'alert alert-error');
-      if (!msg) $scope.formStatusClass = (bootstrapVersion == 'bootstrap4' ? '' : 'neutral');
+      $scope.formStatusClass =
+        (bootstrapVersion === 'bootstrap4' ? 'alert alert-danger' : 'alert alert-error');
+      if (!msg) $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
       $scope.forwardBtnClass = '';
       $scope.formValidationDefer.resolve(false);
       return $scope.formValidationDefer.promise;
@@ -182,14 +184,15 @@ angular.module('lexicon-new-project',
     $scope.iconForStep = function iconForStep(step) {
       var classes = [];
       if ($state.current.data.step > step) {
-          classes.push((bootstrapVersion =='bootstrap4' ? "fa fa-check-square":'icon-check-sign'));
+        classes.push(
+          (bootstrapVersion === 'bootstrap4' ? 'fa fa-check-square' : 'icon-check-sign'));
       }
 
-      if ($state.current.data.step == step) {
-          classes.push((bootstrapVersion =='bootstrap4' ? "fa fa-square-o":'icon-check-empty'));
-      }
-      else if ($state.current.data.step < step) {
-          classes.push((bootstrapVersion =='bootstrap4' ? "fa fa-square-o muted":'icon-check-empty muted'));
+      if ($state.current.data.step === step) {
+        classes.push((bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o' : 'icon-check-empty'));
+      } else if ($state.current.data.step < step) {
+        classes.push(
+          (bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o muted' : 'icon-check-empty muted'));
       }
 
       return classes;
@@ -260,7 +263,6 @@ angular.module('lexicon-new-project',
       });
     };
 
-
     // Form validation requires API calls, so it return a promise rather than a value.
     function validateForm() {
       $scope.formValidationDefer = $q.defer();
@@ -290,7 +292,7 @@ angular.module('lexicon-new-project',
             return error('Please select a project type.');
           }
 
-          if ($scope.projectCodeState == 'unchecked') {
+          if ($scope.projectCodeState === 'unchecked') {
             $scope.checkProjectCode();
           }
 
@@ -352,7 +354,7 @@ angular.module('lexicon-new-project',
           $scope.resetValidateProjectForm();
           if ($scope.project.sendReceive.project.isLinked) {
             var role = 'contributor';
-            if ($scope.project.sendReceive.project.role == 'manager') {
+            if ($scope.project.sendReceive.project.role === 'manager') {
               role = 'project_manager';
             }
 
@@ -471,15 +473,15 @@ angular.module('lexicon-new-project',
     $scope.resetValidateProjectForm = resetValidateProjectForm;
 
     $scope.$watch('projectCodeState', function (newval, oldval) {
-      if (!newval || newval == oldval) { return; }
+      if (!newval || newval === oldval) { return; }
 
-      if (newval == 'unchecked') {
+      if (newval === 'unchecked') {
         // User just typed in the project name box.
         // Need to wait just a bit for the idle-validate to kick in.
         return;
       }
 
-      if (oldval == 'loading') {
+      if (oldval === 'loading') {
         // Project code state just resolved. Validate rest of form so Forward button can activate.
         validateForm();
       }
@@ -497,7 +499,7 @@ angular.module('lexicon-new-project',
       if (!$scope.isSRProject) {
         if (angular.isUndefined(newval)) {
           $scope.newProject.projectCode = '';
-        } else if (newval != oldval) {
+        } else if (newval !== oldval) {
           $scope.newProject.projectCode = newval.toLowerCase().replace(/ /g, '_');
         }
       }
@@ -612,7 +614,7 @@ angular.module('lexicon-new-project',
         return neutral();
       }
 
-      if ($scope.project.sendReceive.credentialsStatus == 'invalid') {
+      if ($scope.project.sendReceive.credentialsStatus === 'invalid') {
         return error('The username or password isn\'t valid on LanguageDepot.org.');
       }
 
@@ -622,7 +624,7 @@ angular.module('lexicon-new-project',
       }
 
       if (!$scope.project.sendReceive.project.isLinked &&
-          $scope.project.sendReceive.project.role != 'manager') {
+          $scope.project.sendReceive.project.role !== 'manager') {
         return error('Please select a Project that you are the Manager of on LanguageDepot.org.');
       }
 
@@ -673,8 +675,10 @@ angular.module('lexicon-new-project',
           $scope.add = function () {
             $modalInstance.close($scope.selected);
           };
+
           $scope.close = $modalInstance.dismiss;
         }],
+
         windowTopClass: 'modal-select-language'
       });
       modalInstance.result.then(function (selected) {
@@ -697,7 +701,7 @@ angular.module('lexicon-new-project',
       inputSystem.tag = $scope.newProject.languageCode;
       inputSystem.languageName = $scope.newProject.language.name;
       config.inputSystems[$scope.newProject.languageCode] = inputSystem;
-      if ('th' in config.inputSystems) {
+      if ($scope.newProject.languageCode !== 'th' && 'th' in config.inputSystems) {
         delete config.inputSystems.th;
         replaceFieldInputSystem(config.entry, 'th', $scope.newProject.languageCode);
       }

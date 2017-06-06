@@ -11,7 +11,7 @@ function EditorPage() {
 
   this.get = function get(projectId, entryId) {
     var extra = projectId ? ('/' + projectId) : '';
-    extra += (projectId && entryId) ? ('#/editor/entry/' + entryId) : '';
+    extra += (projectId && entryId) ? ('#!/editor/entry/' + entryId) : '';
     browser.get(browser.baseUrl + '/app/lexicon' + extra);
   };
 
@@ -109,7 +109,7 @@ function EditorPage() {
     showHiddenFields: function () {
       // Only click the button if it will result in fields being shown
       this.toggleHiddenFieldsBtn.getText().then(function (text) {
-        if (text == this.toggleHiddenFieldsBtnText.show) {
+        if (text === this.toggleHiddenFieldsBtnText.show) {
           util.scrollTop();
           this.toggleHiddenFieldsBtn.click();
         }
@@ -119,7 +119,7 @@ function EditorPage() {
     hideHiddenFields: function () {
       // Only click the button if it will result in fields being hidden
       this.toggleHiddenFieldsBtn.getText().then(function (text) {
-        if (text == this.toggleHiddenFieldsBtnText.hide) {
+        if (text === this.toggleHiddenFieldsBtnText.hide) {
           this.toggleHiddenFieldsBtn.click();
         }
       }.bind(this));
@@ -382,7 +382,7 @@ function EditorPage() {
       commentNum = 0;
     }
 
-    var comment = (commentNum == -1 ? commentsList.last() : commentsList.get(commentNum));
+    var comment = (commentNum === -1 ? commentsList.last() : commentsList.get(commentNum));
     return this.partsOfComment(comment);
   };
 
@@ -395,7 +395,7 @@ function EditorPage() {
       replyNum = 0;
     }
 
-    var reply = (replyNum == -1 ? repliesList.last() : repliesList.get(replyNum));
+    var reply = (replyNum === -1 ? repliesList.last() : repliesList.get(replyNum));
     return this.partsOfReply(reply);
   };
 
