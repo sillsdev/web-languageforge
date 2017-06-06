@@ -1,11 +1,9 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.router',
-  'pascalprecht.translate', 'palaso.util.model.transform', 'palaso.ui.captcha', 'zxcvbn'])
-  .config(['$urlRouterProvider', '$translateProvider',
-  function ($urlRouterProvider, $translateProvider) {
-
+angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'pascalprecht.translate',
+  'palaso.util.model.transform', 'palaso.ui.captcha', 'zxcvbn'])
+  .config(['$translateProvider', function ($translateProvider) {
     // configure interface language filepath
     $translateProvider.useStaticFilesLoader({
       prefix: '/angular-app/bellows/lang/',
@@ -13,11 +11,9 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
     });
     $translateProvider.preferredLanguage('en');
     $translateProvider.useSanitizeValueStrategy('escape');
-
   }])
-  .controller('SignupCtrl', ['$scope', '$location', '$state', '$window',
-    'userService', 'sessionService', 'silNoticeService',
-  function ($scope, $location, $state, $window, userService, sessionService, notice) {
+  .controller('SignupCtrl', ['$scope', '$location', '$window', 'userService', 'sessionService',
+  function ($scope, $location, $window, userService, sessionService) {
     $scope.showPassword = false;
     $scope.emailValid = true;
     $scope.emailProvided = false;
@@ -28,7 +24,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'ui.r
 
     // Parse for email if given
     var email = $location.search().e;
-    if (email != undefined && email.length > 0) {
+    if (email !== undefined && email.length > 0) {
       $scope.record.email = decodeURIComponent(email);
       $scope.emailProvided = true;
     }

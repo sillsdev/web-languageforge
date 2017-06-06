@@ -6,11 +6,15 @@ describe('E2E testing: Reset Forgotten Password', function () {
   var loginPage          = require('../../../pages/loginPage');
   var resetPasswordPage  = require('../../../pages/resetPasswordPage');
   var forgotPasswordPage = require('../../../pages/forgotPasswordPage');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   it('with expired reset key routes to login with warning', function () {
     loginPage.logout();
     resetPasswordPage.get(constants.expiredPasswordKey);
-    expect(loginPage.form).toBeDefined();
+    browser.wait(expectedCondition.visibilityOf(loginPage.errors.get(0)),
+      CONDITION_TIMEOUT);
+    expect(loginPage.username.isDisplayed()).toBe(true);
     expect(loginPage.infoMessages.count()).toBe(0);
     expect(loginPage.errors.count()).toBe(1);
     expect(loginPage.errors.first().getText()).toContain('expired');
@@ -25,8 +29,11 @@ describe('E2E testing: Reset Forgotten Password', function () {
 
     it('can navigate to request page', function () {
       loginPage.forgotPasswordLink.click();
-      expect(forgotPasswordPage.form).toBeDefined();
-      expect(forgotPasswordPage.usernameInput.isPresent()).toBe(true);
+      browser.wait(expectedCondition.stalenessOf(loginPage.forgotPasswordLink),
+        CONDITION_TIMEOUT);
+      browser.wait(expectedCondition.visibilityOf(forgotPasswordPage.usernameInput),
+        CONDITION_TIMEOUT);
+      expect(forgotPasswordPage.usernameInput.isDisplayed()).toBe(true);
     });
 
     it('cannot request for non-existent user', function () {
@@ -35,6 +42,8 @@ describe('E2E testing: Reset Forgotten Password', function () {
       expect(forgotPasswordPage.errors.count()).toBe(0);
       forgotPasswordPage.usernameInput.sendKeys(constants.unusedUsername);
       forgotPasswordPage.submitButton.click();
+      browser.wait(expectedCondition.visibilityOf(forgotPasswordPage.errors.get(0)),
+        CONDITION_TIMEOUT);
       expect(forgotPasswordPage.errors.count()).toBe(1);
       expect(forgotPasswordPage.errors.first().getText()).toContain('User not found');
       forgotPasswordPage.usernameInput.clear();
@@ -49,7 +58,11 @@ describe('E2E testing: Reset Forgotten Password', function () {
       forgotPasswordPage.usernameInput.sendKeys(constants.expiredUsername);
       forgotPasswordPage.submitButton.click();
       expect(forgotPasswordPage.errors.count()).toBe(0);
-      expect(loginPage.form).toBeDefined();
+      browser.wait(expectedCondition.stalenessOf(resetPasswordPage.confirmPasswordInput),
+        CONDITION_TIMEOUT);
+      browser.wait(expectedCondition.visibilityOf(loginPage.infoMessages.get(0)),
+        CONDITION_TIMEOUT);
+      expect(loginPage.username.isDisplayed()).toBe(true);
       expect(loginPage.errors.count()).toBe(0);
       expect(loginPage.infoMessages.count()).toBe(1);
       expect(loginPage.infoMessages.first().getText()).toContain('email sent');
@@ -61,7 +74,7 @@ describe('E2E testing: Reset Forgotten Password', function () {
 
     it('with valid reset key routes reset page', function () {
       resetPasswordPage.get(constants.resetPasswordKey);
-      expect(resetPasswordPage.form).toBeDefined();
+      expect(resetPasswordPage.confirmPasswordInput.isDisplayed()).toBe(true);
       expect(resetPasswordPage.errors.count()).toBe(0);
       expect(loginPage.infoMessages.count()).toBe(0);
     });
@@ -96,18 +109,14 @@ describe('E2E testing: Reset Forgotten Password', function () {
       resetPasswordPage.confirmPasswordInput.sendKeys(constants.resetPassword);
       resetPasswordPage.resetButton.click();
 
-      // Dear next person who tries to get the tests to consistently pass
-      // without this ugly browser.sleep():
-      // When the button is clicked the user service sends a request to reset
-      // the password. Only after the password reset is successful is the
-      // user redirected to the login page.
-      // Using expected conditions is not as straightforward as one would immagine. Since the page
-      // navigates away following the click, it will result in a
-      // 'document unloaded while waiting for result' error (sometimes). I suggest running the tests
-      // in a loop to ensure the results are consistent.
-      // - NLP (@Nateowami)
-      browser.sleep(1000);
-
+      // browser.wait(expectedCondition.stalenessOf(resetPasswordPage.confirmPasswordInput),
+      //   CONDITION_TIMEOUT);
+      // 'stalenessOf' occasionally failed with
+      // WebDriverError: javascript error: document unloaded while waiting for result
+      browser.sleep(100);
+      browser.wait(expectedCondition.visibilityOf(loginPage.infoMessages.get(0)),
+        CONDITION_TIMEOUT);
+      expect(loginPage.username.isDisplayed()).toBe(true);
       expect(loginPage.form.isPresent()).toBe(true);
       expect(loginPage.infoMessages.count()).toBe(1);
       expect(loginPage.infoMessages.first().getText()).toContain('password has been reset');

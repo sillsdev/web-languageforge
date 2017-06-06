@@ -6,4 +6,4 @@ languageforge.org
 qa.languageforge.org
 
 [build_agents]
-ba-xenial64weba ansible_connection=local
+ba_xenial_web_s2_138 ansible_ssh_host=lf-dev

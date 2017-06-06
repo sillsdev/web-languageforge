@@ -25,7 +25,7 @@ function ($scope, notice, lexProjectService, sessionService,
    * @param inputSystem
    */
   function InputSystemsViewModel(inputSystem) {
-    if (inputSystem == undefined) {
+    if (inputSystem === undefined) {
       inputSystem = {};
     }
 
@@ -55,7 +55,7 @@ function ($scope, notice, lexProjectService, sessionService,
 
     this.inputSystem = inputSystem;
 
-    if (inputSystem.tag != undefined) {
+    if (inputSystem.tag !== undefined) {
       this.parseTag(inputSystem.tag);
     }
   }
@@ -157,7 +157,7 @@ function ($scope, notice, lexProjectService, sessionService,
         // Variant
         if (/^[a-zA-Z]{5,}$/.test(tokens[i]) || /^[0-9][0-9a-zA-Z]{3,}$/.test(tokens[i])) {
           this.variant = tokens[i];
-          if (tokens[i] == 'fonipa') {
+          if (tokens[i] === 'fonipa') {
             this.special = specialOptionsOrder[1];
           }
 
@@ -165,7 +165,7 @@ function ($scope, notice, lexProjectService, sessionService,
         }
 
         // Special marker for private usage
-        if (tokens[i] == 'x') {
+        if (tokens[i] === 'x') {
           lookForPrivateUsage = true;
         }
 
@@ -195,7 +195,7 @@ function ($scope, notice, lexProjectService, sessionService,
 
               // If Special hasn't been set, presence of a token here means
               // Special must have been set to Script/Region/Variant
-              if (this.special == specialOptionsOrder[0]) {
+              if (this.special === specialOptionsOrder[0]) {
                 this.special = specialOptionsOrder[3];
               }
 
@@ -223,15 +223,15 @@ function ($scope, notice, lexProjectService, sessionService,
     var name = this.inputSystem.languageName;
     var specialOptions = $scope.selects.special.optionsOrder;
 
-    if (this.special == specialOptions[1]) {
+    if (this.special === specialOptions[1]) {
       name += ' (IPA';
       name += (this.variantString) ? '-' + this.variantString : '';
       name += ')';
-    } else if (this.special == specialOptions[2]) {
+    } else if (this.special === specialOptions[2]) {
       name += ' (Voice';
       name += (this.variantString) ? '-' + this.variantString : '';
       name += ')';
-    } else if (this.special == specialOptions[3]) {
+    } else if (this.special === specialOptions[3]) {
       name += ' (';
       if (this.variantString) {
         name += this.variantString;
@@ -309,7 +309,7 @@ function ($scope, notice, lexProjectService, sessionService,
         $scope.currentField.inputSystems.fieldOrder = inputSystems;
         angular.forEach($scope.configDirty.inputSystems, function (inputSystem, tag) {
           if (!(tag in $scope.currentField.inputSystems.selecteds) &&
-            $scope.currentField.inputSystems.fieldOrder.indexOf(tag) == -1) {
+            $scope.currentField.inputSystems.fieldOrder.indexOf(tag) === -1) {
             $scope.currentField.inputSystems.fieldOrder.push(tag);
           }
         });
@@ -474,7 +474,7 @@ function ($scope, notice, lexProjectService, sessionService,
     viewModel.buildTag();
     for (var uuid in $scope.inputSystemViewModels) {
       if ($scope.inputSystemViewModels.hasOwnProperty(uuid) &&
-        $scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag
+        $scope.inputSystemViewModels[uuid].inputSystem.tag === viewModel.inputSystem.tag
       ) {
         return true;
       }
@@ -494,9 +494,9 @@ function ($scope, notice, lexProjectService, sessionService,
 
     // Verify newly created tag doesn't already exist before adding it to the list
     for (var uuid in $scope.inputSystemViewModels) {
-      if (special != $scope.selects.special.optionsOrder[3] &&
+      if (special !== $scope.selects.special.optionsOrder[3] &&
         $scope.inputSystemViewModels.hasOwnProperty(uuid) &&
-        $scope.inputSystemViewModels[uuid].inputSystem.tag == viewModel.inputSystem.tag
+        $scope.inputSystemViewModels[uuid].inputSystem.tag === viewModel.inputSystem.tag
       ) {
         notice.push(notice.ERROR, 'Input system for ' + viewModel.inputSystem.languageName +
           ' already exists');
@@ -525,7 +525,7 @@ function ($scope, notice, lexProjectService, sessionService,
   };
 
   $scope.isUnlistedLanguage = function isUnlistedLanguage(code) {
-    return (code == 'qaa');
+    return (code === 'qaa');
   };
 
   $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes) {
@@ -539,10 +539,12 @@ function ($scope, notice, lexProjectService, sessionService,
         $scope.add = function () {
           $modalInstance.close($scope.selected);
         };
+
         $scope.close = $modalInstance.dismiss;
 
         $scope.suggestedLanguageCodes = suggestedLanguageCodes;
       }],
+
       windowTopClass: 'modal-select-language'
     });
 
@@ -749,7 +751,7 @@ function ($scope, $modal, sessionService) {
 
       $scope.selectField(customFieldName);
       $scope.configForm.$setDirty();
-    });
+    }, angular.noop);
   };
 
   $scope.showRemoveCustomField = function showRemoveCustomField(fieldName) {
@@ -852,8 +854,8 @@ function ($scope, $modal, sessionService) {
   };
 
   $scope.$watch('optionlistDirty[currentListIndex].items', function (newval, oldval) {
-    if (angular.isDefined(newval) && newval != oldval) {
-      if ($scope.currentListIndex == oldListIndex) {
+    if (angular.isDefined(newval) && newval !== oldval) {
+      if ($scope.currentListIndex === oldListIndex) {
         $scope.configForm.$setDirty();
       }
 
