@@ -1,29 +1,15 @@
 'use strict';
 
 angular.module('lexicon.services')
-  .service('lexSendReceiveApi', ['jsonRpc', function (jsonRpc) {
-    jsonRpc.connect('/api/sf');
+  .service('lexSendReceiveApi', ['apiService', 'sessionService', function (api, ss) {
 
-    this.getUserProjects = function getUserProjects(username, password, callback) {
-      jsonRpc.call('sendReceive_getUserProjects', [username, password], callback);
-    };
-
-    this.updateSRProject = function updateSRProject(srProject, callback) {
-      jsonRpc.call('sendReceive_updateSRProject', [srProject], callback);
-    };
-
-    this.receiveProject = function receiveProject(callback) {
-      jsonRpc.call('sendReceive_receiveProject', [], callback);
-    };
-
+    this.getUserProjects = api.method('sendReceive_getUserProjects');
+    this.updateSRProject = api.method('sendReceive_updateSRProject');
+    this.receiveProject = api.method('sendReceive_receiveProject');
     //noinspection JSUnusedGlobalSymbols
-    this.commitProject = function commitProject(callback) {
-      jsonRpc.call('sendReceive_commitProject', [], callback);
-    };
+    this.commitProject = api.method('sendReceive_commitProject');
+    this.getProjectStatus = api.method('sendReceive_getProjectStatus');
 
-    this.getProjectStatus = function getProjectStatus(callback) {
-      jsonRpc.call('sendReceive_getProjectStatus', [], callback);
-    };
   }])
   .service('lexSendReceive', ['sessionService', 'silNoticeService', 'lexSendReceiveApi',
     '$interval', 'lexEditorDataService', '$filter',

@@ -7,55 +7,44 @@
 // simple code anyway.
 
 angular.module('jsonRpc', ['sf.error'])
-  .factory('jsonRpc', ['$http', '$window', 'error', function ($http, $window, error) {
-    this.params = {};
-    this.last_id = 0;
+  .service('jsonRpc', ['$http', '$window', 'error', function ($http, $window, error) {
+    this.lastId = 0;
 
-    this.next_id = function () {
-      this.last_id = this.last_id + 1;
-      return this.last_id;
+    this.nextId = function () {
+      return ++this.lastId
     };
 
-    this.connect = function (params) {
-      if (typeof (params) === 'string') {
-        // We were called as connect("http://url/goes/here")
-        params = { url: params };
-      }
+    /**
+     * @param {string} url - The endpoint to send the request to
+     * @param {string} method - The remote method to call
+     * @param {Object} options - All properties on options are passed as
+     * attributes to the params property of the request object.
+     * @param {Array} remoteParams - Ordered prameters to send to remote procedure call
+     * @param {function} callback - The callback will be called with an object
+     * with the following properties:
+     *   {boolean} ok - true for a 2xx code and false for a 3xx, 4xx or 5xx code
+     *   The rest are the same as AngularJS's $http:
+     *   - {string|Object} data
+     *   - {number} - status
+     *   - {function([headerName])} - headers
+     *   - {Object} config
+     */
+    this.call = function (url, method, options, remoteParams, callback) {
 
-      if (params.url === undefined || params.url === '') {
-        throw 'Valid URL required';
-      }
-
-      if (params.version === undefined) {
-        params.version = '2.0';
-      }
-
-      this.params = params;
-    };
-
-    this.call = function (remoteFunction, remoteParams, callback, id) {
-      // remoteFunction should be a string
-      // remoteParams should be an object (e.g., {"paramName": "value"})
-      // callback is the function that will be called on success or failure. It
-      // should take a single parameter, a result object with five attributes:
-      //   ok = boolean, true for a 2xx code and false for a 3xx, 4xx or 5xx code
-      //   data, status, headers, config = as described in Angular's $http docs
-      if (this.params.url === undefined) {
-        throw 'No URL: should use connect() before using call()';
-      }
-
-      if (id === undefined) {
-        id = this.next_id();
-      }
+      var params = {};
+      Object.keys(options).forEach(function(prop) {
+        params[prop] = options[prop];
+      });
+      params.orderedParams = remoteParams;
 
       var jsonRequest = {
-        version: this.params.version,
-        method: remoteFunction,
-        params: remoteParams,
-        id: id
+        version: '2.0',
+        method: method,
+        params: params,
+        id: this.nextId()
       };
       var httpRequest = {
-        url: this.params.url,
+        url: url,
         method: 'POST',
         data: JSON.stringify(jsonRequest),
 
@@ -68,7 +57,6 @@ angular.module('jsonRpc', ['sf.error'])
         if (response.data === null) {
           // TODO error handling for jsonRpc CP 2013-07
           error.error('RPC Error', 'data is null');
-
           return;
         }
 
@@ -90,7 +78,6 @@ angular.module('jsonRpc', ['sf.error'])
               error.error('You will now be redirected to the login page.');
               $window.location.href = '/auth/login';
               return;
-              break;
             case 'UserUnauthorizedException':
               type = "You don't have sufficient privileges.";
               break;
@@ -132,5 +119,4 @@ angular.module('jsonRpc', ['sf.error'])
       return request;
     };
 
-    return this;
   }]);

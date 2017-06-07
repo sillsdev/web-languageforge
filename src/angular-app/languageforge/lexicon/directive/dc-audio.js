@@ -152,7 +152,8 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
             url: '/upload/lf-lexicon/audio',
             data: {
               file: file,
-              previousFilename: $scope.dcFilename
+              previousFilename: $scope.dcFilename,
+              projectId: sessionService.session.project.id
             }
           }).then(function (response) {
               notice.cancelLoading();
