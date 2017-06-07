@@ -1,9 +1,8 @@
 'use strict';
 
 angular.module('lexicon.services')
-  .service('lexProjectService', ['jsonRpc', 'sessionService', 'breadcrumbService', 'lexLinkService',
-  function (jsonRpc, ss, breadcrumbService, linkService) {
-    jsonRpc.connect('/api/sf');
+  .service('lexProjectService', ['apiService', 'sessionService', 'breadcrumbService', 'lexLinkService',
+  function (api, ss, breadcrumbService, linkService) {
 
     this.setBreadcrumbs = function setBreadcrumbs(view, label) {
       breadcrumbService.set('top', [{
@@ -20,7 +19,7 @@ angular.module('lexicon.services')
 
     this.baseViewDto = function baseViewDto(view, label, callback) {
       var setBreadcrumbs = this.setBreadcrumbs;
-      jsonRpc.call('lex_baseViewDto', [], function (result) {
+      api.call('lex_baseViewDto', [], function (result) {
         if (result.ok) {
           setBreadcrumbs(view, label);
         }
@@ -29,49 +28,15 @@ angular.module('lexicon.services')
       });
     };
 
-    this.updateConfiguration = function updateConfiguration(config, optionlist, callback) {
-      jsonRpc.call('lex_configuration_update', [config, optionlist], callback);
-    };
-
-    this.updateOptionList = function updateOptionList(optionList, callback) {
-      jsonRpc.call('lex_optionlist_update', [optionList], callback);
-    };
-
-    this.readProject = function readProject(callback) {
-      jsonRpc.call('lex_projectDto', [], callback);
-    };
-
-    this.updateProject = function updateProject(project, callback) {
-      jsonRpc.call('lex_project_update', [project], callback);
-    };
-
-    this.updateSettings = function updateSettings(smsSettings, emailSettings, callback) {
-      jsonRpc.call('project_updateSettings', [smsSettings, emailSettings], callback);
-    };
-
-    this.readSettings = function readSettings(callback) {
-      jsonRpc.call('project_readSettings', [], callback);
-    };
-
-    this.users = function users(callback) {
-      jsonRpc.call('project_usersDto', [], callback);
-    };
-
-    this.updateUserProfile = function updateUserProfile(user, callback) {
-      jsonRpc.call('user_updateProfile', [user], callback);
-    };
-
-    this.removeMediaFile = function removeMediaFile(mediaType, fileName, callback) {
-      jsonRpc.call('lex_project_removeMediaFile', [mediaType, fileName], callback);
-    };
-
-    this.getProjectId = function getProjectId() {
-      return ss.session.project.id;
-    };
-
-    this.hasSendReceive = function hasSendReceive() {
-      return ss.session.projectSettings.hasSendReceive;
-    };
+    this.updateConfiguration = api.method('lex_configuration_update');
+    this.updateOptionList = api.method('lex_optionlist_update');
+    this.readProject = api.method('lex_projectDto');
+    this.updateProject = api.method('lex_project_update');
+    this.updateSettings = api.method('project_updateSettings');
+    this.readSettings = api.method('project_readSettings');
+    this.users = api.method('project_usersDto');
+    this.updateUserProfile = api.method('user_updateProfile');
+    this.removeMediaFile = api.method('lex_project_removeMediaFile');
 
     this.isValidProjectCode = function isValidProjectCode(code) {
       if (angular.isUndefined(code)) return false;

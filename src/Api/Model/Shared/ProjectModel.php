@@ -216,7 +216,7 @@ class ProjectModel extends MapperModel
         $model->role = $role;
         $this->userJoinRequests[$userId] = $model;
     }
-    
+
     /**
      * Removes the $userId from this project.
      * @param string $userId
@@ -227,7 +227,7 @@ class ProjectModel extends MapperModel
             unset($this->users[$userId]);
         }
     }
-    
+
     /**
      * Removes the $userId from this project.
      * @param string $userId
@@ -261,7 +261,7 @@ class ProjectModel extends MapperModel
         }
          return $userList;
     }
-    
+
     public function listRequests()
     {
         $allUserList = UserCommands::listUsers();
@@ -376,7 +376,7 @@ class ProjectModel extends MapperModel
             case 'semdomtrans':
                 return new SemDomTransProjectModel($projectId);
             default:
-                return new ProjectModel($projectId);
+                throw new \Exception("projectId '$projectId' could not be found when calling ProjectModel::getById()");
         }
     }
 

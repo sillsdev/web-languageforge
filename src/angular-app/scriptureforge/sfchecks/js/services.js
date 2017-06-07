@@ -2,122 +2,40 @@
 
 // Services
 // ScriptureForge common services
-angular.module('sfchecks.services', ['jsonRpc'])
-  .service('sfchecksProjectService', ['jsonRpc', function (jsonRpc) {
-    jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
-    this.read = function (callback) {
-      jsonRpc.call('project_read', [], callback);
-    };
-
-    this.update = function (model, callback) {
-      jsonRpc.call('project_update', [model], callback);
-    };
-
-    this.projectSettings = function (callback) {
-      jsonRpc.call('project_settings', [], callback);
-    };
-
-    this.updateSettings = function (smsSettings, emailSettings, callback) {
-      jsonRpc.call('project_updateSettings', [smsSettings, emailSettings], callback);
-    };
-
-    this.readSettings = function (callback) {
-      jsonRpc.call('project_readSettings', [], callback);
-    };
-
-    this.pageDto = function (callback) {
-      jsonRpc.call('project_pageDto', [], callback);
-    };
+angular.module('sfchecks.services', ['bellows.services'])
+  .service('sfchecksProjectService', ['apiService', function (api) {
+    this.read = api.method('project_read');
+    this.update = api.method('project_update');
+    this.projectSettings = api.method('project_settings');
+    this.updateSettings = api.method('project_updateSettings');
+    this.readSettings = api.method('project_readSettings');
+    this.pageDto = api.method('project_pageDto');
   }])
-  .service('messageService', ['jsonRpc', function (jsonRpc) {
-    jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
-    this.markRead = function (textId) {
-      jsonRpc.call('message_markRead', [textId], function () {});
-    };
-
-    this.send = function (userIds, subject, emailTemplate, smsTemplate, callback) {
-      jsonRpc.call('message_send', [userIds, subject, emailTemplate, smsTemplate], callback);
-    };
+  .service('messageService', ['apiService', function (api) {
+    this.markRead = api.method('message_markRead');
+    this.send = api.method('message_send');
   }])
-  .service('textService', ['jsonRpc', function (jsonRpc) {
-    jsonRpc.connect('/api/sf'); // Note this doesn't actually 'connect', it simply sets the connection url.
-    this.read = function (textId, callback) {
-      jsonRpc.call('text_read', [textId], callback);
-    };
-
-    this.update = function (model, callback) {
-      jsonRpc.call('text_update', [model], callback);
-    };
-
-    this.archive = function (textIds, callback) {
-      jsonRpc.call('text_archive', [textIds], callback);
-    };
-
-    this.publish = function (textIds, callback) {
-      jsonRpc.call('text_publish', [textIds], callback);
-    };
-
-    this.settingsDto = function (textId, callback) {
-      jsonRpc.call('text_settings_dto', [textId], callback);
-    };
-
-    this.exportComments = function (params, callback) {
-      jsonRpc.call('text_exportComments', [params], callback);
-    };
-  }])
-  .service('questionService', ['jsonRpc', function (jsonRpc) {
-    jsonRpc.connect('/api/sf');
-    this.read = function (questionId, callback) {
-      jsonRpc.call('question_comment_dto', [questionId], callback);
-    };
-
-    this.update = function (model, callback) {
-      jsonRpc.call('question_update', [model], callback);
-    };
-
-    this.archive = function (questionIds, callback) {
-      jsonRpc.call('question_archive', [questionIds], callback);
-    };
-
-    this.publish = function (questionIds, callback) {
-      jsonRpc.call('question_publish', [questionIds], callback);
-    };
-
-    this.list = function (textId, callback) {
-      jsonRpc.call('question_list_dto', [textId], callback);
-    };
-
-    this.updateAnswer = function (questionId, model, callback) {
-      jsonRpc.call('question_update_answer', [questionId, model], callback);
-    };
-
-    this.updateAnswerExportFlag = function (questionId, answerId, isToBeExported, callback) {
-      jsonRpc.call('question_update_answerExportFlag', [questionId, answerId, isToBeExported], callback);
-    };
-
-    this.updateAnswerTags = function (questionId, answerId, tags, callback) {
-      jsonRpc.call('question_update_answerTags', [questionId, answerId, tags], callback);
-    };
-
-    this.removeAnswer = function (questionId, answerId, callback) {
-      jsonRpc.call('question_remove_answer', [questionId, answerId], callback);
-    };
-
-    this.updateComment = function (questionId, answerId, model, callback) {
-      jsonRpc.call('question_update_comment', [questionId, answerId, model], callback);
-    };
-
-    this.removeComment = function (questionId, answerId, commentId, callback) {
-      jsonRpc.call('question_remove_comment', [questionId, answerId, commentId], callback);
-    };
-
-    this.answerVoteUp = function (questionId, answerId, callback) {
-      jsonRpc.call('answer_vote_up', [questionId, answerId], callback);
-    };
-
-    this.answerVoteDown = function (questionId, answerId, callback) {
-      jsonRpc.call('answer_vote_down', [questionId, answerId], callback);
-    };
+  .service('textService', ['apiService', function (api) {
+    this.read = api.method('text_read');
+    this.update = api.method('text_update');
+    this.archive = api.method('text_archive');
+    this.publish = api.method('text_publish');
+    this.settingsDto = api.method('text_settings_dto');
+    this.exportComments = api.method('text_exportComments');  }])
+  .service('questionService', ['apiService', function (api) {
+    this.read = api.method('question_comment_dto');
+    this.update = api.method('question_update');
+    this.archive = api.method('question_archive');
+    this.publish = api.method('question_publish');
+    this.list = api.method('question_list_dto');
+    this.updateAnswer = api.method('question_update_answer');
+    this.updateAnswerExportFlag = api.method('question_update_answerExportFlag');
+    this.updateAnswerTags = api.method('question_update_answerTags');
+    this.removeAnswer = api.method('question_remove_answer');
+    this.updateComment = api.method('question_update_comment');
+    this.removeComment = api.method('question_remove_comment');
+    this.answerVoteUp = api.method('answer_vote_up');
+    this.answerVoteDown = api.method('answer_vote_down');
 
     // Utility functions
     this.util = {};
@@ -141,23 +59,9 @@ angular.module('sfchecks.services', ['jsonRpc'])
       return questionTitleCalculated;
     };
   }])
-  .service('questionTemplateService', ['jsonRpc', function (jsonRpc) {
-    jsonRpc.connect('/api/sf');
-    this.read = function (questionTemplateId, callback) {
-      jsonRpc.call('questionTemplate_read', [questionTemplateId], callback);
-    };
-
-    this.update = function (questionTemplate, callback) {
-      jsonRpc.call('questionTemplate_update', [questionTemplate], callback);
-    };
-
-    this.remove = function (questionTemplateIds, callback) {
-      jsonRpc.call('questionTemplate_delete', [questionTemplateIds], callback);
-    };
-
-    this.list = function (callback) {
-      jsonRpc.call('questionTemplate_list', [], callback);
-    };
-  }])
-
-  ;
+  .service('questionTemplateService', ['apiService', function (api) {
+    this.read = api.method('questionTemplate_read');
+    this.update = api.method('questionTemplate_update');
+    this.remove = api.method('questionTemplate_delete');
+    this.list = api.method('questionTemplate_list');
+  }]);

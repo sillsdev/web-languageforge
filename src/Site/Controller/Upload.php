@@ -53,33 +53,30 @@ class Upload extends Base
                     $response = $api->sfChecks_uploadFile($mediaType, $tmpFilePath);
                 } elseif ($appType == 'lf-lexicon') {
                     $api = new Sf($app);
+                    $jsonResult = array(
+                        'orderedParams' => array(
+                            $mediaType,
+                            $tmpFilePath
+                        )
+                    );
+                    if (array_key_exists('projectId', $_POST)) {
+                        $jsonResult['projectId'] = $_POST['projectId'];
+                    }
                     switch ($mediaType) {
                         case 'audio':
-                            $api->checkPermissions('lex_uploadAudioFile', array(
-                                $mediaType,
-                                $tmpFilePath
-                            ));
+                            $api->checkPermissions('lex_uploadAudioFile', $jsonResult);
                             $response = $api->lex_uploadAudioFile($mediaType, $tmpFilePath);
                             break;
                         case 'sense-image':
-                            $api->checkPermissions('lex_uploadImageFile', array(
-                                $mediaType,
-                                $tmpFilePath
-                            ));
+                            $api->checkPermissions('lex_uploadImageFile', $jsonResult);
                             $response = $api->lex_uploadImageFile($mediaType, $tmpFilePath);
                             break;
                         case 'import-zip':
-                            $api->checkPermissions('lex_upload_importProjectZip', array(
-                                $mediaType,
-                                $tmpFilePath
-                            ));
+                            $api->checkPermissions('lex_upload_importProjectZip', $jsonResult);
                             $response = $api->lex_upload_importProjectZip($mediaType, $tmpFilePath);
                             break;
                         case 'import-lift':
-                            $api->checkPermissions('lex_upload_importLift', array(
-                                $mediaType,
-                                $tmpFilePath
-                            ));
+                            $api->checkPermissions('lex_upload_importLift', $jsonResult);
                             $response = $api->lex_upload_importLift($mediaType, $tmpFilePath);
                             break;
                         default:

@@ -160,6 +160,7 @@ angular.module('lexicon-new-project',
       $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
       $scope.forwardBtnClass = (bootstrapVersion === 'bootstrap4' ? 'btn-secondary' : '');
       $scope.formValidationDefer = $q.defer();
+      $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
     }
 
@@ -269,10 +270,8 @@ angular.module('lexicon-new-project',
       switch ($state.current.name) {
         case 'newProject.chooser':
           return error();
-          break;
         case 'newProject.sendReceiveCredentials':
           return validateSendReceiveCredentialsForm();
-          break;
         case 'newProject.sendReceiveClone':
           if (sendReceive.isInProgress()) {
             return error();
@@ -326,10 +325,10 @@ angular.module('lexicon-new-project',
             }
           });
 
-          break;
         case 'newProject.initialData':
+          return neutral();
         case 'newProject.verifyData':
-          break;
+          return neutral();
         case 'newProject.selectPrimaryLanguage':
           if (!$scope.newProject.languageCode) {
             return error('Please select a primary language for the project.');
