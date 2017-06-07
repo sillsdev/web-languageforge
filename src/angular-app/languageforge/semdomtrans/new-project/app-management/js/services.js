@@ -1,17 +1,11 @@
 'use strict';
 
-angular.module('semDomTransAppManagement.services', ['jsonRpc'])
+angular.module('semDomTransAppManagement.services', ['bellows.services'])
 
-.service('semDomTransAppManagementService', ['jsonRpc',
-function(jsonRpc) {
-  jsonRpc.connect('/api/sf');
+.service('semDomTransAppManagementService', ['apiService',
+function(api) {
 
-  this.getDto = function getDto(callback) {
-    jsonRpc.call('semdomtrans_app_management_dto', [], callback);
-  };
-
-  this.doExport = function doExport(callback) {
-    jsonRpc.call('semdomtrans_export_all_projects', [], callback);
-  };
+  this.getDto = api.method('semdomtrans_app_management_dto');
+  this.doExport = api.method('semdomtrans_export_all_projects');
 
 }]);

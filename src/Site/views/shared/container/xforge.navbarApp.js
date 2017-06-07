@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('xforge.navbarApp', ['jsonRpc', 'ui.bootstrap', 'pascalprecht.translate',
+angular.module('xforge.navbarApp', ['bellows.services', 'ui.bootstrap', 'pascalprecht.translate',
   'bellows.services'])
   /*
   .service('helpButtonService', ['jsonRpc', function(jsonRpc) {

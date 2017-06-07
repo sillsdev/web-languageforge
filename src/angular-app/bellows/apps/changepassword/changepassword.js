@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('changepassword', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'ui.validate',
+angular.module('changepassword', ['ui.bootstrap', 'bellows.services', 'ui.validate',
   'palaso.ui.notice', 'palaso.ui.utils'
 ])
   .controller('changePasswordCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',

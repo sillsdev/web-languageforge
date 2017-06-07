@@ -9,7 +9,7 @@ function BellowsLoginPage() {
     browser.get(browser.baseUrl + '/auth/login');
   };
 
-  this.form = element(by.tagName('form'));
+  this.form = element(by.css('form[name="loginForm"]'));
   this.infoMessages = element.all(by.className('alert-info'));
   this.errors = element.all(by.css('.alert-danger'));
   this.username = element(by.id('username'));
@@ -18,6 +18,8 @@ function BellowsLoginPage() {
   this.submit   = element(by.xpath('//button[@type="submit"]'));
 
   this.login = function login(username, password) {
+    browser.get(browser.baseUrl + '/auth/logout');
+
     this.get();
     this.username.sendKeys(username);
     this.password.sendKeys(password);

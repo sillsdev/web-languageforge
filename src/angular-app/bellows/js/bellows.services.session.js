@@ -1,7 +1,10 @@
 'use strict';
 
 angular.module('bellows.services')
-  .service('sessionService', ['jsonRpc', '$window', function (jsonRpc, $window) {
+  .service('sessionService', ['apiService', '$window', function (api, $window) {
+
+    var projectId = window.location.pathname.match(/^\/app\/[a-z]+\/([a-z0-9]{24,})$/i);
+    projectId = projectId == null ? undefined : projectId[1];
 
     this.currentUserId = function () {
       return $window.session.userId;
@@ -106,9 +109,7 @@ angular.module('bellows.services')
 
     this.session = $window.session;
 
-    this.getCaptchaData = function (callback) {
-      jsonRpc.call('get_captcha_data', [], callback);
-    };
+    this.getCaptchaData = api.method('get_captcha_data');
 
     this.getProjectId = function getProjectId() {
       if (angular.isDefined(this.session.project) &&
@@ -121,8 +122,7 @@ angular.module('bellows.services')
     };
 
     this.refresh = function refresh(callback) {
-      jsonRpc.connect('/api/sf');
-      jsonRpc.call('session_getSessionData', [], function (result) {
+      api.call('session_getSessionData', [], function (result) {
         this.session = result.data;
         /*
          angular.forEach(result.data, function(value, key) {

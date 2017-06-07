@@ -10,6 +10,7 @@ describe('E2E testing: Reset Forgotten Password', function () {
   var CONDITION_TIMEOUT = 3000;
 
   it('with expired reset key routes to login with warning', function () {
+    loginPage.logout();
     resetPasswordPage.get(constants.expiredPasswordKey);
     browser.wait(expectedCondition.visibilityOf(loginPage.errors.get(0)),
       CONDITION_TIMEOUT);
@@ -116,6 +117,7 @@ describe('E2E testing: Reset Forgotten Password', function () {
       browser.wait(expectedCondition.visibilityOf(loginPage.infoMessages.get(0)),
         CONDITION_TIMEOUT);
       expect(loginPage.username.isDisplayed()).toBe(true);
+      expect(loginPage.form.isPresent()).toBe(true);
       expect(loginPage.infoMessages.count()).toBe(1);
       expect(loginPage.infoMessages.first().getText()).toContain('password has been reset');
       expect(loginPage.errors.count()).toBe(0);
