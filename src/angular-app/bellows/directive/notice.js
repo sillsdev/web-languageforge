@@ -118,7 +118,7 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
       SUCCESS: function () { return 'success'; }
     };
   }])
-  .directive('silNotices', ['silNoticeService', 'sessionService',
+  .directive('silNotices', ['silNoticeService', 'asyncSession',
   function (noticeService, sessionService) {
     return {
       restrict: 'EA',
@@ -126,10 +126,9 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
       replace: true,
       compile: function () {
         return function ($scope) {
-          $scope.githubRepo = 'web-scriptureforge';
-          if (sessionService.baseSite() === 'languageforge') {
-            $scope.githubRepo = 'web-languageforge';
-          }
+          sessionService.getSession().then(function(session) {
+            $scope.githubRepo = 'web-' + session.baseSite();
+          });
 
           $scope.closeNotice = function (id) {
             noticeService.removeById(id);
