@@ -10,7 +10,7 @@ angular.module('bellows.services')
   var projectId = window.location.pathname.match(/^\/app\/[a-z]+\/([a-z0-9]{24,})$/i);
   projectId = projectId == null ? undefined : projectId[1];
 
-  this.getProjectId = function () {
+  this.projectId = function () {
     return projectId;
   };
 

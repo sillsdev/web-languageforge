@@ -9,7 +9,7 @@ angular.module('lexicon.services')
         href: '/app/projects',
         label: 'My Projects'
       }, {
-        href: linkService.project(),
+        href: linkService.projectUrl(),
         label: ss.session.project.projectName
       }, {
         href: linkService.projectView(view),
