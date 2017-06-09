@@ -903,7 +903,8 @@ class Sf
             'user_activate',
             'user_readForRegistration',
             'user_register',
-            'user_updateFromRegistration'
+            'user_updateFromRegistration',
+            'session_getSessionData'
         );
         return in_array($methodName, $methods);
     }
