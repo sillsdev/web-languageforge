@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bellows.services')
-  .service('projectService', ['apiService', 'sessionService', 'offlineCache', '$q', function (api, ss, offlineCache, $q) {
+  .service('projectService', ['apiService', 'asyncSession', 'offlineCache', '$q', function (api, ss, offlineCache, $q) {
 
     this.create = api.method('project_create');
     this.createSwitchSession = api.method('project_create_switchSession');
@@ -53,14 +53,19 @@ angular.module('bellows.services')
       semdomtrans: 'Semantic Domain Translation',
       lexicon: 'Dictionary'
     };
-    this.data.projectTypesBySite = function () {
+
+    var projectTypesBySite;
+    this.data.projectTypesBySite = function() {
+      return projectTypesBySite;
+    };
+
+    ss.getSession().then(function(session) {
       var types = {
         scriptureforge: ['sfchecks'],
-
         //languageforge: ['lexicon', 'semdomtrans']
         languageforge: ['lexicon']
       };
-      return types[ss.baseSite()];
-    };
+      projectTypesBySite = types[session.baseSite()];
+    });
 
   }]);
