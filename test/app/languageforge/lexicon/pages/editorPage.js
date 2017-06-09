@@ -164,7 +164,7 @@ function EditorPage() {
 
     // Top-row
     renderedDiv: this.editDiv.element(by.className('dc-rendered-entryContainer')),
-    deleteBtn: this.editDiv.element(by.partialButtonText('Delete')),
+    deleteBtn: this.editDiv.element(by.id('deleteEntry')),
 
     // Helper functions for retrieving various field values
     fields: this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
