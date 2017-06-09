@@ -3,7 +3,7 @@
         <div class="card-header">
             <div data-ng-if="rights.canDeleteEntry() && $state.is('editor.entry')"
                  class="deleteX pull-right">
-                <i data-ng-click="deleteEntry()" title="Delete this entry"
+                <i data-ng-click="deleteEntry()" id="deleteEntry" title="Delete this entry"
                    class="fa fa-trash"></i>
             </div>
             &nbsp;{{'Entry' | translate}}
