@@ -293,11 +293,11 @@ legend.override-bootstrap {
 }
 
 .lexiconItemListContainer .selected {
-    background-color: #e4e5ff;
+    background-color: $lf-highlight;
 }
 
 .lexiconItemListContainer .listItemHasComment {
-    border-right: solid 5px $lf-comments;
+    border-right: solid 5px $lf-blue;
 }
 
 .entryItemView {
