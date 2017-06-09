@@ -3,17 +3,18 @@
 angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootstrap',
   'palaso.ui.notice', 'palaso.ui.utils'
 ])
-  .controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService',
+  .controller('ProjectsCtrl', ['$scope', 'projectService', 'asyncSession', 'silNoticeService',
   function ($scope, projectService, ss, notice) {
     $scope.finishedLoading = false;
 
-    // Rights
     $scope.rights = {};
-    $scope.rights.edit = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-    $scope.rights.create = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.CREATE);
-    $scope.rights.showControlBar = $scope.rights.create;
 
-    $scope.siteName = ss.baseSite();
+    ss.getSession().then(function(session) {
+      $scope.rights.edit = session.hasSiteRight(session.domain.PROJECTS, session.operation.EDIT);
+      $scope.rights.create = session.hasSiteRight(session.domain.PROJECTS, session.operation.CREATE);
+      $scope.rights.showControlBar = $scope.rights.create;
+      $scope.siteName = session.baseSite();
+    });
 
     // Listview Selection
     $scope.newProjectCollapsed = true;
