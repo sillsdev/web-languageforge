@@ -99,25 +99,32 @@ angular.module('bellows.services')
     }
     callback = callback || angular.noop;
 
-    return $q(function(resolve, reject) {
-      if(sessionData && !forceRefresh) {
-        callback(Session);
-        resolve(Session);
-        return;
-      }
+    if(sessionData && !forceRefresh) {
+      callback(Session);
+      return $q.when(Session); // Wrap Session in a promise
+    }
 
-      // TODO Consider whether errors should result in a retry rather than
-      // making them the responsibility of the caller
-      api.call('session_getSessionData').then(function(response) {
-        sessionData = response.data;
-        callback(Session);
-        resolve(Session);
-      }).catch(function(response) {
-        callback(response);
-        reject(response);
-      });
+    return fetchSessionData(forceRefresh).then(function(data) {
+      sessionData = data;
+      callback(Session);
+      return Session;
     });
   };
+
+  var promiseForSession;
+  function fetchSessionData(forceRefresh) {
+    if(promiseForSession && !forceRefresh) return promiseForSession;
+
+    var promise = api.call('session_getSessionData').then(function(response) {
+      return response.data;
+    }).catch(function(response) {
+      console.error(response); // TODO decide whether to show to user or just retry
+      return fetchSessionData(forceRefresh); // retry
+    });
+
+    if(!promiseForSession) promiseForSession = promise;
+    return promise;
+  }
 
 }]);
 
