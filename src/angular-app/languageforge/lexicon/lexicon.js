@@ -64,16 +64,24 @@ angular.module('lexicon',
     'lexSendReceiveApi', 'lexSendReceive', 'lexRightsService',
   function ($scope, sessionService, lexConfig, lexProjectService,
             $translate, $location, $interval, notice, editorService,
-            sendReceiveApi, sendReceive, rights) {
+            sendReceiveApi, sendReceive, rightsService) {
     var pristineLanguageCode;
 
     $scope.project = sessionService.session.project;
 
-    $scope.rights = rights;
-    $scope.rights.showControlBar = function showControlBar() {
-      return $scope.rights.canRemoveUsers() || $scope.rights.canCreateUsers() ||
-        $scope.rights.canEditUsers();
-    };
+    rightsService.getRights().then(function(rights) {
+      $scope.rights = rights;
+
+      $scope.rights.showControlBar = function showControlBar() {
+        return $scope.rights.canRemoveUsers() || $scope.rights.canCreateUsers() ||
+          $scope.rights.canEditUsers();
+      };
+
+      $scope.showSync = function showSync() {
+        return !$scope.project.isArchived && rights.canEditUsers() &&
+          sessionService.session.projectSettings.hasSendReceive;
+      };
+    });
 
     $scope.finishedLoading = false;
     editorService.loadEditorData().then(function () {
@@ -123,11 +131,6 @@ angular.module('lexicon',
         changeInterfaceLanguage(newVal);
       }
     });
-
-    $scope.showSync = function showSync() {
-      return !$scope.project.isArchived && rights.canEditUsers() &&
-        sessionService.session.projectSettings.hasSendReceive;
-    };
 
     $scope.$on('$destroy', sendReceive.cancelAllStatusTimers);
 
