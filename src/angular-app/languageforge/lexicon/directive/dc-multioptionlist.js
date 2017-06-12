@@ -13,11 +13,22 @@ angular.module('palaso.ui.dc.multioptionlist', [])
       items: '=',
       selectField: '&'
     },
-    controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rights) {
+    controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rightsService) {
       $scope.$state = $state;
-      $scope.rights = rights;
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
+
+      rightsService.getRights().then(function(rights) {
+        $scope.rights = rights;
+
+        $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
+          if (angular.isDefined($scope.items) && $state.is('editor.entry') && rights.canEditEntry()) {
+            return valueToBeDeleted == value;
+          }
+
+          return false;
+        };
+      });
 
       $scope.getDisplayName = function getDisplayName(value) {
         var displayName = value;
@@ -57,14 +68,6 @@ angular.module('palaso.ui.dc.multioptionlist', [])
 
         $scope.newValue = '';
         $scope.isAdding = false;
-      };
-
-      $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
-        if (angular.isDefined($scope.items) && $state.is('editor.entry') && rights.canEditEntry()) {
-          return valueToBeDeleted == value;
-        }
-
-        return false;
       };
 
       $scope.deleteValue = function deleteValue(value) {
