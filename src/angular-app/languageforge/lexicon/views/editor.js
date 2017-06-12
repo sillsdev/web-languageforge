@@ -37,7 +37,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
     'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService',
   function ($scope, userService, sessionService, lexService,
-            $state, $window, $interval, $filter, linkService, utils, rights,
+            $state, $window, $interval, $filter, linkService, utils, rightsService,
             notice, $rootScope, $location, lexConfig, commentService,
             editorService, lexProjectService, sendReceive, modal) {
 
@@ -46,7 +46,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
     $scope.$state = $state;
     $scope.config = lexConfig.configForUser;
-    $scope.rights = rights;
     $scope.lastSavedDate = new Date();
     $scope.currentEntry = {};
     $scope.commentService = commentService;
@@ -122,91 +121,107 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         $scope.getWordForDisplay(entry) + '".');
     }
 
-    $scope.saveCurrentEntry = function saveCurrentEntry(doSetEntry, successCallback, failCallback) {
-      var isNewEntry = false;
-      var newEntryTempId;
-      if (angular.isUndefined(doSetEntry)) {
-        // doSetEntry is mainly used for when the save button is pressed,
-        // that is when the user is saving the current entry and is NOT going to a
-        // different entry (as is the case with editing another entry
-        doSetEntry = false;
-      }
+    rightsService.getRights().then(function(rights) {
+      $scope.rights = rights;
 
-      if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
-        cancelAutoSaveTimer();
-        sendReceive.setStateUnsynced();
-        saveStatus = 'saving';
-        var entryToSave = angular.copy($scope.currentEntry);
-        if (entryIsNew(entryToSave)) {
-          isNewEntry = true;
-          newEntryTempId = entryToSave.id;
-          entryToSave.id = ''; // send empty id to indicate "create new"
+      $scope.saveCurrentEntry = function saveCurrentEntry(doSetEntry, successCallback, failCallback) {
+        var isNewEntry = false;
+        var newEntryTempId;
+        if (angular.isUndefined(doSetEntry)) {
+          // doSetEntry is mainly used for when the save button is pressed,
+          // that is when the user is saving the current entry and is NOT going to a
+          // different entry (as is the case with editing another entry
+          doSetEntry = false;
         }
 
-        lexService.update(prepEntryForUpdate(entryToSave), function (result) {
-          if (result.ok) {
-            var entry = result.data;
-            if (!entry && sendReceive.isSendReceiveProject()) {
-              warnOfUnsavedEdits(entryToSave);
-              sendReceive.startSyncStatusTimer();
-            }
-
-            if (!entry) {
-              resetEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
-            }
-
-            if (isNewEntry) {
-              // note: we have to reset the show window, because we don't know
-              // where the new entry will show up in the list
-              // we can solve this problem by implementing a sliding "scroll
-              // window" that only shows a few entries at a time (say 30?)
-              editorService.showInitialEntries();
-            }
-
-            /*
-             * Reviewed CP 2014-08: It seems that currently the setCurrentEntry
-             * will never do anything. Currently it has the side effect of causing
-             * the focus to be lost. Given that we save the entire model We will
-             * never get data returned other than what we just caused to be saved.
-             *
-             * One day we hope to send deltas which will fix this problem and give
-             * a better real time experience.
-             */
-
-            /* Reviewed CJH 2015-03: setCurrentEntry is useful in the case when the entry being
-             * saved is a new entry. In this case the new entry is replaced entirely by the one
-             * returned from the server (with a proper id, etc).
-             * I'm currently unclear on whether the doSetEntry parameter is still necessary
-             */
-
-            if (entry) {
-              pristineEntry = angular.copy(entryToSave);
-              $scope.lastSavedDate = new Date();
-            }
-
-            // refresh data will add the new entry to the entries list
-            editorService.refreshEditorData().then(function () {
-              if (entry && isNewEntry) {
-                setCurrentEntry($scope.entries[editorService.getIndexInEntries(entry.id)]);
-                editorService.removeEntryFromLists(newEntryTempId);
-                if (doSetEntry) {
-                  $state.go('.', { entryId: entry.id }, { notify: false });
-                  scrollListToEntry(entry.id, 'top');
-                }
-              }
-            });
-
-            saveStatus = 'saved';
-            (successCallback || angular.noop)(result);
-          } else {
-            saveStatus = 'unsaved';
-            (failCallback || angular.noop)(result);
+        if ($scope.currentEntryIsDirty() && $scope.rights.canEditEntry()) {
+          cancelAutoSaveTimer();
+          sendReceive.setStateUnsynced();
+          saveStatus = 'saving';
+          var entryToSave = angular.copy($scope.currentEntry);
+          if (entryIsNew(entryToSave)) {
+            isNewEntry = true;
+            newEntryTempId = entryToSave.id;
+            entryToSave.id = ''; // send empty id to indicate "create new"
           }
-        });
-      } else {
-        (successCallback || angular.noop)();
+
+          lexService.update(prepEntryForUpdate(entryToSave), function (result) {
+            if (result.ok) {
+              var entry = result.data;
+              if (!entry && sendReceive.isSendReceiveProject()) {
+                warnOfUnsavedEdits(entryToSave);
+                sendReceive.startSyncStatusTimer();
+              }
+
+              if (!entry) {
+                resetEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
+              }
+
+              if (isNewEntry) {
+                // note: we have to reset the show window, because we don't know
+                // where the new entry will show up in the list
+                // we can solve this problem by implementing a sliding "scroll
+                // window" that only shows a few entries at a time (say 30?)
+                editorService.showInitialEntries();
+              }
+
+              /*
+               * Reviewed CP 2014-08: It seems that currently the setCurrentEntry
+               * will never do anything. Currently it has the side effect of causing
+               * the focus to be lost. Given that we save the entire model We will
+               * never get data returned other than what we just caused to be saved.
+               *
+               * One day we hope to send deltas which will fix this problem and give
+               * a better real time experience.
+               */
+
+              /* Reviewed CJH 2015-03: setCurrentEntry is useful in the case when the entry being
+               * saved is a new entry. In this case the new entry is replaced entirely by the one
+               * returned from the server (with a proper id, etc).
+               * I'm currently unclear on whether the doSetEntry parameter is still necessary
+               */
+
+              if (entry) {
+                pristineEntry = angular.copy(entryToSave);
+                $scope.lastSavedDate = new Date();
+              }
+
+              // refresh data will add the new entry to the entries list
+              editorService.refreshEditorData().then(function () {
+                if (entry && isNewEntry) {
+                  setCurrentEntry($scope.entries[editorService.getIndexInEntries(entry.id)]);
+                  editorService.removeEntryFromLists(newEntryTempId);
+                  if (doSetEntry) {
+                    $state.go('.', { entryId: entry.id }, { notify: false });
+                    scrollListToEntry(entry.id, 'top');
+                  }
+                }
+              });
+
+              saveStatus = 'saved';
+              (successCallback || angular.noop)(result);
+            } else {
+              saveStatus = 'unsaved';
+              (failCallback || angular.noop)(result);
+            }
+          });
+        } else {
+          (successCallback || angular.noop)();
+        }
+      };
+
+      // conditionally register watch
+      if ($scope.rights.canEditEntry()) {
+        $scope.$watch('currentEntry', function (newValue) {
+          if (newValue !== undefined) {
+            cancelAutoSaveTimer();
+            if ($scope.currentEntryIsDirty()) {
+              startAutoSaveTimer();
+            }
+          }
+        }, true);
       }
-    };
+    });
 
     function prepEntryForUpdate(entry) {
       var entryForUpdate = recursiveRemoveProperties(angular.copy(entry), ['guid', 'mercurialSha',
@@ -691,18 +706,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     // hack to pass down the parent scope down into all child directives (i.e. entry, sense, etc)
     $scope.control = $scope;
 
-    // conditionally register watch
-    if ($scope.rights.canEditEntry()) {
-      $scope.$watch('currentEntry', function (newValue) {
-        if (newValue !== undefined) {
-          cancelAutoSaveTimer();
-          if ($scope.currentEntryIsDirty()) {
-            startAutoSaveTimer();
-          }
-        }
-      }, true);
-    }
-
     function recursiveRemoveProperties(startAt, properties) {
       angular.forEach(startAt, function (value, key) {
         var deleted = false;
@@ -743,7 +746,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           $filter('filter')($scope.entries, query));
 
       // Set function to return unique results
-      $scope.typeahead.searchResults = Array.from(new Set(results));
+      $scope.typeahead.searchResults = Array.from(new Set(results)); // TODO Set is not available until ES2015
       $scope.typeahead.matchCountCaption = '';
       var numMatches = $scope.typeahead.searchResults.length;
       if (numMatches > $scope.typeahead.limit) {

@@ -11,9 +11,13 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
         model: '=',
         control: '='
       },
-      controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rights) {
+      controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rightsService) {
         $scope.$state = $state;
-        $scope.rights = rights;
+
+        rightsService.getRights().then(function(rights) {
+          $scope.rights = rights;
+        });
+
         $scope.addSense = function ($position) {
           var newSense = {};
           $scope.control.makeValidModelRecursive($scope.config.fields.senses, newSense, 'examples');
