@@ -4,7 +4,7 @@ angular.module('siteadmin', [
   'ngRoute', 'sfAdmin.filters', 'sfAdmin.services', 'sfAdmin.directives', 'bellows.services',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'ui.bootstrap', 'palaso.ui.utils'
 ])
-  .controller('UserCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
+  .controller('UserCtrl', ['$scope', 'userService', 'asyncSession', 'silNoticeService',
   function ($scope, userService, sessionService, notice) {
     $scope.filterUsers = '';
     $scope.vars = {
@@ -16,7 +16,9 @@ angular.module('siteadmin', [
       state: 'add' // can be either "add" or "update"
     };
 
-    $scope.userId = sessionService.session.userId;
+    sessionService.getSession().then(function(session) {
+      $scope.userId = session.currentUserId();
+    })
 
     $scope.focusInput = function () {
       $scope.vars.inputfocus = true;
@@ -253,7 +255,7 @@ angular.module('siteadmin', [
     };
 
   }])
-  .controller('ArchivedProjectsCtrl', ['$scope', 'projectService', 'sessionService',
+  .controller('ArchivedProjectsCtrl', ['$scope', 'projectService', 'asyncSession',
     'silNoticeService', 'modalService',
     function ($scope, projectService, ss, notice, modalService) {
       $scope.finishedLoading = false;
@@ -263,10 +265,12 @@ angular.module('siteadmin', [
 
       // Rights
       $scope.rights = {};
-      $scope.rights.remove = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
-      $scope.rights.publish = $scope.rights.remove;
-      $scope.rights.showControlBar = $scope.rights.remove;
-
+      ss.getSession().then(function(session) {
+        var hasRight = session.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
+        $scope.rights.remove = hasRight;
+        $scope.rights.publish = hasRight;
+        $scope.rights.showControlBar = hasRight;
+      });
       $scope.queryArchivedProjects = function () {
         projectService.archivedList(function (result) {
           if (result.ok) {

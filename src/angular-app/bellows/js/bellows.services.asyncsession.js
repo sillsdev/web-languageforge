@@ -47,6 +47,9 @@ angular.module('bellows.services')
   this.domain = domain;
   this.operation = operation;
 
+  var getCaptchaData = api.method('get_captcha_data');
+  this.getCaptchaData = getCaptchaData;
+
   var sessionData;
 
   // session instance (singleton) that references the data
@@ -85,7 +88,7 @@ angular.module('bellows.services')
       return sessionData.projectSettings[setting];
     }
 
-    this.getCaptchaData = api.method('get_captcha_data');
+    this.getCaptchaData = getCaptchaData;
 
   })();
 

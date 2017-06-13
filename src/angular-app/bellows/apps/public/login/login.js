@@ -14,7 +14,7 @@ angular.module('login', ['bellows.services', 'ui.bootstrap', 'pascalprecht.trans
       $translateProvider.useSanitizeValueStrategy('escape');
     },
   ])
-  .controller('LoginCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
+  .controller('LoginCtrl', ['$scope', 'userService', 'asyncSession', 'silNoticeService',
     function ($scope, userService, sessionService, notice) {
     }
   ])
