@@ -22,9 +22,10 @@ angular.module('bellows.services')
       return function() {
         // convert to array
         var args = [].slice.call(arguments);
-        var callback = args.pop();
-        if (typeof callback !== 'function') throw new Error('Last argument is not a callback');
-        this.call(method, args, callback);
+        if(typeof args[args.length-1] == 'function') {
+          var callback = args.pop();
+        }
+        return this.call(method, args, callback);
       }.bind(this);
     };
   }]);
