@@ -182,7 +182,7 @@ describe('User Profile E2E Test', function () {
 
         // Login with new username and revert to original username
         loginPage.get();
-        expect(loginPage.infoMessages.count()).toBe(1);
+        expect(loginPage.infoMessages.count()).toBe(1); // flaky assertion?
         expect(loginPage.infoMessages.first().getText()).toContain(
           'Username changed. Please login.');
 

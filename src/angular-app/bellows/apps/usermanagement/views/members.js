@@ -4,16 +4,17 @@ angular.module('usermanagement.members',
   ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead',
     'ui.bootstrap', 'palaso.ui.notice', 'ngRoute'])
   .controller('MembersCtrl', ['$scope', 'userService', 'projectService',
-    'sessionService', 'silNoticeService', '$window',
+    'asyncSession', 'silNoticeService', '$window',
     function ($scope, userService, projectService, ss, notice, $window) {
       $scope.userFilter = '';
 
       $scope.rights = {};
-      $scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE);
-      $scope.rights.add = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE);
-      $scope.rights.changeRole = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
-      $scope.rights.showControlBar =
-        $scope.rights.add || $scope.rights.remove || $scope.rights.changeRole;
+      ss.getSession().then(function(session) {
+        $scope.rights.remove = session.hasProjectRight(ss.domain.USERS, ss.operation.DELETE);
+        $scope.rights.add = session.hasProjectRight(ss.domain.USERS, ss.operation.CREATE);
+        $scope.rights.changeRole = session.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
+        $scope.rights.showControlBar = $scope.rights.add || $scope.rights.remove || $scope.rights.changeRole;
+      });
 
       /* ----------------------------------------------------------
        * List
@@ -51,9 +52,9 @@ angular.module('usermanagement.members',
           return;
         }
 
-        projectService.removeUsers(userIds, function (result) {
-          if (result.ok) {
-            if (userIds.indexOf(ss.currentUserId()) != -1) {
+        projectService.removeUsers(userIds).then(function () {
+          ss.getSession().then(function(session) {
+            if (userIds.indexOf(session.currentUserId()) != -1) {
               // redirect if you just removed yourself from the project
               notice.push(notice.SUCCESS, 'You have been removed from this project');
               $window.location.href = '/app/projects';
@@ -67,7 +68,7 @@ angular.module('usermanagement.members',
                   ' users were removed from this project');
               }
             }
-          }
+          });
         });
       };
 

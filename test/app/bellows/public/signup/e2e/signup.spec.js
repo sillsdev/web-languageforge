@@ -112,7 +112,7 @@ describe('E2E testing: Signup app', function () {
 
     // Verify new user logged in and redirected to projects page
     browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn),
-      CONDITION_TIMEOUT);
+      CONDITION_TIMEOUT); // flaky wait (can cause "document unloaded while waiting for result")
     expect(projectsPage.createBtn.isDisplayed()).toBe(true);
   });
 

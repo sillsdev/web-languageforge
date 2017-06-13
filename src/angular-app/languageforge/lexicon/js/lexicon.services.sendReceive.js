@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('lexicon.services')
-  .service('lexSendReceiveApi', ['apiService', 'sessionService', function (api, ss) {
+  .service('lexSendReceiveApi', ['apiService', function (api) {
 
     this.getUserProjects = api.method('sendReceive_getUserProjects');
     this.updateSRProject = api.method('sendReceive_updateSRProject');
