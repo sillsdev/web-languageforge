@@ -61,7 +61,8 @@ angular.module('bellows.services')
       }
     }
 
-    this.currentUserId = fnFor('userId');
+    this.userId = fnFor('userId');
+    this.currentUserId = this.userId; // deprecated
     this.fileSizeMax = fnFor('fileSizeMax');
     this.baseSite = fnFor('baseSite');
     this.projectSettings = fnFor('projectSettings');
