@@ -10,7 +10,7 @@ angular.module('activity',
      'sgw.ui.breadcrumb',
     ])
   .controller('ActivityCtrl', ['$scope', '$sce', 'activityPageService', 'sfchecksLinkService',
-    'sessionService', 'utilService', 'breadcrumbService',
+    'asyncSession', 'utilService', 'breadcrumbService',
   function ($scope, $sce, activityService, sfchecksLinkService,
             sessionService, util, breadcrumbService) {
     $scope.getAvatarUrl = util.getAvatarUrl;
@@ -85,16 +85,16 @@ angular.module('activity',
     };
 
     $scope.filterMyActivity = function () {
-      $scope.showAllActivity = false;
-      $scope.filteredActivities = [];
-      angular.forEach($scope.activities, function (activity) {
-        if (activity.userRef && activity.userRef.id == sessionService.currentUserId() ||
-          activity.userRef2 && activity.userRef2.id == sessionService.currentUserId()
-        ) {
-          $scope.filteredActivities.push(activity);
-        }
+      sessionService.getSession().then(function (session) {
+        $scope.showAllActivity = false;
+        $scope.filteredActivities = [];
+        angular.forEach($scope.activities, function (activity) {
+          if (activity.userRef && activity.userRef.id == session.currentUserId() ||
+            activity.userRef2 && activity.userRef2.id == session.currentUserId()
+          ) {
+            $scope.filteredActivities.push(activity);
+          }
+        });
       });
     };
-  }])
-
-  ;
+  }]);
