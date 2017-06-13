@@ -371,7 +371,7 @@ class Sf
     public function project_delete($projectIds)
     {
         if (empty($projectIds)) {
-            $projectIds = array($this->projectId);
+            $projectIds = [$this->projectId];
         }
         $this->app['session']->set('projectId', "");
         return ProjectCommands::deleteProjects($projectIds, $this->userId);
@@ -885,7 +885,7 @@ class Sf
 
     public function semdomtrans_export_all_projects() {
         // TODO: implement this
-        return array('exportUrl' => '/sampledownload.zip');
+        return ['exportUrl' => '/sampledownload.zip'];
     }
 
     // ---------------------------------------------------------------
@@ -893,7 +893,7 @@ class Sf
     // ---------------------------------------------------------------
     private static function isAnonymousMethod($methodName)
     {
-        $methods = array(
+        $methods = [
             'identity_check',
             'get_captcha_data',
             'reset_password',
@@ -904,11 +904,11 @@ class Sf
             'user_readForRegistration',
             'user_register',
             'user_updateFromRegistration'
-        );
+        ];
         return in_array($methodName, $methods);
     }
 
-    public function checkPermissions($methodName, $params)
+    public function checkPermissions($methodName)
     {
         if (! self::isAnonymousMethod($methodName)) {
             if (! $this->userId) {
