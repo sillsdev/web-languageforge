@@ -121,7 +121,7 @@ describe('E2E testing: Signup app', function () {
     loginPage.loginAsUser();
     page.get();
     browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn),
-      CONDITION_TIMEOUT);
+      CONDITION_TIMEOUT); // flaky wait (can cause "document unloaded while waiting for result")
     expect(projectsPage.createBtn.isDisplayed()).toBe(true);
   });
 });
