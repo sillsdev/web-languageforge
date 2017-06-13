@@ -15,7 +15,7 @@ angular.module('forgot_password', ['bellows.services', 'ui.bootstrap', 'pascalpr
       $translateProvider.useSanitizeValueStrategy('escape');
     },
   ])
-  .controller('ForgotPasswordCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
+  .controller('ForgotPasswordCtrl', ['$scope', 'userService', 'asyncSession', 'silNoticeService',
     function ($scope, userService, sessionService, notice) {
     }
   ])
