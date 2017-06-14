@@ -6,7 +6,8 @@ angular.module('palaso.ui.comments')
   .directive('commentsRightPanel', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/palaso.ui.comments.comments-right-panel.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion +
+        '/palaso.ui.comments.comments-right-panel.html',
       scope: {
         entry: '=',
         control: '=',
@@ -47,20 +48,20 @@ angular.module('palaso.ui.comments')
             // Convert entire comment object to a big string and search for filter.
             // Note: This has a slight side effect of ID and avatar information
             // matching the filter.
-            return (JSON.stringify(comment).toLowerCase()
-              .indexOf($scope.commentFilter.text.toLowerCase()) != -1);
+            return (JSON.stringify(comment).normalize().toLowerCase()
+              .indexOf($scope.commentFilter.text.normalize().toLowerCase()) !== -1);
           },
 
           byStatus: function byStatus(comment) {
             if (angular.isDefined(comment)) {
-              if ($scope.commentFilter.status == 'all') {
+              if ($scope.commentFilter.status === 'all') {
                 return true;
-              } else if ($scope.commentFilter.status == 'todo') {
-                if (comment.status == 'todo') {
+              } else if ($scope.commentFilter.status === 'todo') {
+                if (comment.status === 'todo') {
                   return true;
                 }
               } else { // show unresolved comments
-                if (comment.status != 'resolved') {
+                if (comment.status !== 'resolved') {
                   return true;
                 }
               }
@@ -79,7 +80,7 @@ angular.module('palaso.ui.comments')
 
           canDeleteComment: function canDeleteComment(commentAuthorId) {
             if (sessionService.session.project.isArchived) return false;
-            if (sessionService.session.userId == commentAuthorId) {
+            if (sessionService.session.userId === commentAuthorId) {
               return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
                 sessionService.operation.DELETE_OWN);
             } else {
@@ -90,7 +91,7 @@ angular.module('palaso.ui.comments')
 
           canEditComment: function canEditComment(commentAuthorId) {
             if (sessionService.session.project.isArchived) return false;
-            if (sessionService.session.userId == commentAuthorId) {
+            if (sessionService.session.userId === commentAuthorId) {
               return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
                 sessionService.operation.EDIT_OWN);
             } else {
@@ -142,7 +143,7 @@ angular.module('palaso.ui.comments')
 
         $scope.getNewCommentPlaceholderText = function getNewCommentPlaceholderText() {
           var label;
-          if (commentService.comments.items.currentEntry.length == 0) {
+          if (commentService.comments.items.currentEntry.length === 0) {
             label = $filter('translate')('Your comment goes here.  Be the first to share!');
           } else if (commentService.comments.items.currentEntry.length < 3) {
             label = $filter('translate')('Start a conversation.  Enter your comment here.');
@@ -161,14 +162,14 @@ angular.module('palaso.ui.comments')
         });
 
         $scope.$watch('commentFilter.text', function (newVal, oldVal) {
-          if (newVal != oldVal) {
+          if (newVal !== oldVal) {
             commentService.refreshFilteredComments($scope.commentFilter);
           }
 
         });
 
         $scope.$watch('commentFilter.status', function (newVal, oldVal) {
-          if (newVal != oldVal) {
+          if (newVal !== oldVal) {
             commentService.refreshFilteredComments($scope.commentFilter);
           }
 
