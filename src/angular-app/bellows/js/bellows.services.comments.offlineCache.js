@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('bellows.services.comments')
-  .factory('commentsOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache',
+  .factory('commentsOfflineCache', ['$window', '$q', 'asyncSession', 'offlineCache',
     'offlineCacheUtils',
   function ($window, $q, sessionService, offlineCache, offlineCacheUtils) {
 
     function getAllComments() {
-      return offlineCache.getAllFromStore('comments', sessionService.getProjectId());
+      return offlineCache.getAllFromStore('comments', sessionService.projectId());
     }
 
     function deleteComment(id) {
@@ -14,7 +14,7 @@ angular.module('bellows.services.comments')
     }
 
     function updateComments(comments) {
-      return offlineCache.setObjectsInStore('comments', sessionService.getProjectId(), comments);
+      return offlineCache.setObjectsInStore('comments', sessionService.projectId(), comments);
     }
 
     return {
