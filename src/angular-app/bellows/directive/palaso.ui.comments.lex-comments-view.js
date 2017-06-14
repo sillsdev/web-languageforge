@@ -12,26 +12,22 @@ angular.module('palaso.ui.comments')
         entryConfig: '=',
         control: '='
       },
-      controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService',
+      controller: ['$scope', '$filter', 'lexCommentService', 'asyncSession', 'modalService',
         'lexConfigService',
       function ($scope, $filter, commentService, sessionService, modal, lexConfig) {
         lexConfig.refresh();
         $scope.config = lexConfig.configForUser;
-
-        function canComment() {
-          return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
-            sessionService.operation.CREATE);
-        }
 
         // notes by cjh 2015-03
         // define this method on the control (which happens to be an ancestor scope) because it is
         // used by a sibling directive (dc-entry)
         // an alternative implementation to this would be to use the commentService to contain this
         // method (but then the comment service would become lex specific which is a downside
-        $scope.control.selectFieldForComment =
-        function selectFieldForComment(fieldName, model, inputSystem, multioptionValue,
-                                       pictureFilePath) {
-          if (canComment()) {
+        sessionService.getSession().then(function(session) {
+          $scope.control.selectFieldForComment =
+          function selectFieldForComment(fieldName, model, inputSystem, multioptionValue, pictureFilePath) {
+            var canComment = session.hasProjectRight(session.domain.COMMENTS, session.operation.CREATE);
+            if(!canComment) return;
             $scope.newComment.regardingFieldConfig = lexConfig.getFieldConfig(fieldName);
             $scope.newComment.regarding.field = fieldName;
             $scope.newComment.regarding.fieldNameForDisplay =
@@ -53,8 +49,8 @@ angular.module('palaso.ui.comments')
             } else {
               $scope.newComment.regarding.fieldValue = getFieldValue(model);
             }
-          }
-        };
+          };
+        });
 
         function getFieldValue(model, inputSystem) {
 
