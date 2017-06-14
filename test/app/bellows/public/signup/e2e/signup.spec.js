@@ -2,8 +2,8 @@
 
 describe('E2E testing: Signup app', function () {
   var constants = require('../../../../testConstants.json');
-  var page      = require('../../../pages/signupPage.js');
-  var loginPage = require('../../../pages/loginPage.js');
+  var page         = require('../../../pages/signupPage.js');
+  var loginPage    = require('../../../pages/loginPage.js');
   var projectsPage = require('../../../pages/projectsPage.js');
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
@@ -110,9 +110,12 @@ describe('E2E testing: Signup app', function () {
     expect(page.signupButton.isEnabled()).toBe(true);
     page.signupButton.click();
 
+    // added to stop intermittent error
+    // "Failed: javascript error: document unloaded while waiting for result"
+    browser.wait(expectedCondition.urlContains('projects'), CONDITION_TIMEOUT);
+
     // Verify new user logged in and redirected to projects page
-    browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn),
-      CONDITION_TIMEOUT);
+    browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn), CONDITION_TIMEOUT);
     expect(projectsPage.createBtn.isDisplayed()).toBe(true);
   });
 
@@ -120,8 +123,7 @@ describe('E2E testing: Signup app', function () {
     loginPage.logout();
     loginPage.loginAsUser();
     page.get();
-    browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn),
-      CONDITION_TIMEOUT);
+    browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn), CONDITION_TIMEOUT);
     expect(projectsPage.createBtn.isDisplayed()).toBe(true);
   });
 });

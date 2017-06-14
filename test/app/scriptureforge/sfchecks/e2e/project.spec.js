@@ -144,6 +144,8 @@ describe('the project dashboard AKA text list page', function () {
       projectPage.newText.title.sendKeys(newTextTitle);
       util.sendText(projectPage.newText.usx, projectPage.testData.longUsx1);
       projectPage.newText.verseRangeLink.click();
+      browser.wait(expectedCondition.visibilityOf(projectPage.newText.fromChapter),
+        CONDITION_TIMEOUT);
       projectPage.newText.fromChapter.sendKeys('1');
       projectPage.newText.fromVerse.sendKeys('1');
       projectPage.newText.toChapter.sendKeys('1');
