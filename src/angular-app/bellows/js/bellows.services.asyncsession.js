@@ -81,6 +81,7 @@ angular.module('bellows.services')
     };
 
     this.hasRight = function (rights, domain, operation) {
+      if(!rights) return false;
       var right = domain() + operation();
       return rights.indexOf(right) != -1;
     };
