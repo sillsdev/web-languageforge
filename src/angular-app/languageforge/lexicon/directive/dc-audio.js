@@ -14,7 +14,7 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
         dcFilename: '=',
         dcControl: '='
       },
-      controller: ['$scope', 'Upload', 'sessionService', 'silNoticeService', 'lexProjectService',
+      controller: ['$scope', 'Upload', 'asyncSession', 'silNoticeService', 'lexProjectService',
         'modalService', '$state',
       function ($scope, Upload, sessionService, notice, lexProjectService,
                 modalService, $state) {
@@ -140,56 +140,58 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
 
         $scope.uploadAudio = function uploadAudio(file) {
           if (!file || file.$error) return;
-          if (file.size > sessionService.fileSizeMax()) {
-            notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
-              $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
-              $filter('bytes')(sessionService.fileSizeMax()) + '.');
-            return;
-          }
 
-          notice.setLoading('Uploading ' + file.name + '...');
-          Upload.upload({
-            url: '/upload/lf-lexicon/audio',
-            data: {
-              file: file,
-              previousFilename: $scope.dcFilename,
-              projectId: sessionService.session.project.id
+          sessionService.getSession().then(function(session) {
+            if (file.size > session.fileSizeMax()) {
+              notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
+                $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
+                $filter('bytes')(session.fileSizeMax()) + '.');
+              return;
             }
-          }).then(function (response) {
-              notice.cancelLoading();
-              var isUploadSuccess = response.data.result;
-              if (isUploadSuccess) {
-                $scope.dcFilename = response.data.data.fileName;
-                $scope.show.audioUpload = false;
-                $scope.sound = createSound();
-                notice.push(notice.SUCCESS, 'File uploaded successfully.');
-              } else {
-                notice.push(notice.ERROR, response.data.data.errorMessage);
-              }
-            },
 
-            function (response) {
-              notice.cancelLoading();
-              var errorMessage = 'Upload failed.';
-              if (response.status > 0) {
-                errorMessage += ' Status: ' + response.status;
-                if (response.statusText) {
-                  errorMessage += ' ' + response.statusText;
+            notice.setLoading('Uploading ' + file.name + '...');
+            Upload.upload({
+              url: '/upload/lf-lexicon/audio',
+              data: {
+                file: file,
+                previousFilename: $scope.dcFilename,
+                projectId: session.project().id
+              }
+            }).then(function (response) {
+                notice.cancelLoading();
+                var isUploadSuccess = response.data.result;
+                if (isUploadSuccess) {
+                  $scope.dcFilename = response.data.data.fileName;
+                  $scope.show.audioUpload = false;
+                  $scope.sound = createSound();
+                  notice.push(notice.SUCCESS, 'File uploaded successfully.');
+                } else {
+                  notice.push(notice.ERROR, response.data.data.errorMessage);
+                }
+              },
+
+              function (response) {
+                notice.cancelLoading();
+                var errorMessage = 'Upload failed.';
+                if (response.status > 0) {
+                  errorMessage += ' Status: ' + response.status;
+                  if (response.statusText) {
+                    errorMessage += ' ' + response.statusText;
+                  }
+
+                  if (response.data) {
+                    errorMessage += '- ' + response.data;
+                  }
                 }
 
-                if (response.data) {
-                  errorMessage += '- ' + response.data;
-                }
-              }
+                notice.push(notice.ERROR, errorMessage);
+              },
 
-              notice.push(notice.ERROR, errorMessage);
-            },
-
-            function (evt) {
-              notice.setPercentComplete(100.0 * evt.loaded / evt.total);
-            });
+              function (evt) {
+                notice.setPercentComplete(100.0 * evt.loaded / evt.total);
+              });
+          });
         };
-
       }]
     };
   }]);
