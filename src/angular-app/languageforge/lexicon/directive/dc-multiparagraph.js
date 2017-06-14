@@ -14,17 +14,20 @@ angular.module('palaso.ui.dc.multiparagraph', ['bellows.services', 'palaso.ui.sh
       control: '=',
       selectField: '&'
     },
-    controller: ['$scope', '$state', 'sessionService', function ($scope, $state, sessionService) {
+    controller: ['$scope', '$state', 'asyncSession', function ($scope, $state, sessionService) {
       $scope.$state = $state;
-      $scope.inputSystems = sessionService.session.projectSettings.config.inputSystems;
 
-      $scope.inputSystemDirection = function inputSystemDirection(tag) {
-        if (!(tag in $scope.inputSystems)) {
-          return 'ltr';
-        }
+      sessionService.getSession().then(function(session) {
+        $scope.inputSystems = session.projectSettings().config.inputSystems;
 
-        return ($scope.inputSystems[tag].isRightToLeft) ? 'rtl' : 'ltr';
-      };
+        $scope.inputSystemDirection = function inputSystemDirection(tag) {
+          if (!(tag in $scope.inputSystems)) {
+            return 'ltr';
+          }
+
+          return ($scope.inputSystems[tag].isRightToLeft) ? 'rtl' : 'ltr';
+        };
+      });
 
       $scope.modelContainsSpan = function modelContainsSpan() {
         if (angular.isUndefined($scope.model)) {

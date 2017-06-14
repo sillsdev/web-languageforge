@@ -4,12 +4,12 @@ angular.module('bellows.services')
 /**
  * implements an offline cache storage system
  */
-  .factory('editorOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache',
+  .factory('editorOfflineCache', ['$window', '$q', 'asyncSession', 'offlineCache',
     'offlineCacheUtils',
   function ($window, $q, sessionService, offlineCache, offlineCacheUtils) {
 
     function getAllEntries() {
-      return offlineCache.getAllFromStore('entries', sessionService.getProjectId());
+      return offlineCache.getAllFromStore('entries', sessionService.projectId());
     }
 
     function deleteEntry(id) {
@@ -21,7 +21,7 @@ angular.module('bellows.services')
      * @returns {promise}
      */
     function updateEntries(entries) {
-      return offlineCache.setObjectsInStore('entries', sessionService.getProjectId(), entries);
+      return offlineCache.setObjectsInStore('entries', sessionService.projectId(), entries);
     }
 
     return {
