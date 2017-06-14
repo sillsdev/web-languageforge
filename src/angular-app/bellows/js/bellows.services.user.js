@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bellows.services')
-  .service('userService', ['apiService', 'sessionService', function (api, ss) {
+  .service('userService', ['apiService', function (api) {
 
     this.read = api.method('user_read');
     this.readProfile = api.method('user_readProfile');
