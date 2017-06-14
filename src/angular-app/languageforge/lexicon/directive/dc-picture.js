@@ -13,7 +13,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       pictures: '=',
       control: '='
     },
-    controller: ['$scope', '$state', 'Upload', '$filter', 'sessionService', 'lexProjectService',
+    controller: ['$scope', '$state', 'Upload', '$filter', 'asyncSession', 'lexProjectService',
       'lexConfigService', 'silNoticeService', 'modalService',
     function ($scope, $state, Upload, $filter, sessionService, lexProjectService,
               lexConfigService, notice, modalService) {
@@ -83,21 +83,23 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
 
       $scope.uploadFile = function uploadFile(file) {
         if (!file || file.$error) return;
-        if (file.size > sessionService.fileSizeMax()) {
-          $scope.upload.progress = 0;
-          $scope.upload.file = null;
-          notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
-            $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
-            $filter('bytes')(sessionService.fileSizeMax()) + '.');
-          return;
-        }
 
-        $scope.upload.file = file;
-        $scope.upload.progress = 0;
-        Upload.upload({
-          url: '/upload/lf-lexicon/sense-image',
-          data: { file: file }
-        }).then(function (response) {
+        sessionService.getSession().then(function(session) {
+          if (file.size > session.fileSizeMax()) {
+            $scope.upload.progress = 0;
+            $scope.upload.file = null;
+            notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
+              $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
+              $filter('bytes')(session.fileSizeMax()) + '.');
+            return;
+          }
+
+          $scope.upload.file = file;
+          $scope.upload.progress = 0;
+          Upload.upload({
+            url: '/upload/lf-lexicon/sense-image',
+            data: { file: file }
+          }).then(function (response) {
             var isUploadSuccess = response.data.result;
             if (isUploadSuccess) {
               $scope.upload.progress = 100.0;
@@ -131,6 +133,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
           function (evt) {
             $scope.upload.progress = parseInt(100.0 * evt.loaded / evt.total);
           });
+        });
       };
 
     }]
