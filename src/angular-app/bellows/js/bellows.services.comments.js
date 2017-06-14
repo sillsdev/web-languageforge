@@ -4,8 +4,8 @@
 angular.module('bellows.services.comments')
 
 //Lexicon Comment Service
-  .service('lexCommentService', ['apiService', 'commentsOfflineCache', '$filter', 'sessionService',
-  function (api, offlineCache, $filter, ss) {
+  .service('lexCommentService', ['apiService', 'commentsOfflineCache', '$filter',
+  function (api, offlineCache, $filter) {
     this.comments = {
       items: {
         currentEntry: [],
@@ -41,7 +41,7 @@ angular.module('bellows.services.comments')
       for (var i = 0; i < this.comments.items.all.length; i++) {
         var comment = this.comments.items.all[i];
         var fieldName = comment.regarding.field;
-        if (comment.entryRef == entryId) {
+        if (comment.entryRef === entryId) {
           if (fieldName &&
             angular.isUndefined(this.comments.counts.currentEntry.fields[fieldName])
           ) {
@@ -51,7 +51,7 @@ angular.module('bellows.services.comments')
           this.comments.items.currentEntry.push(comment);
 
           // update the appropriate count for this field and update the total count
-          if (comment.status != 'resolved') {
+          if (comment.status !== 'resolved') {
             if (fieldName) {
               this.comments.counts.currentEntry.fields[fieldName]++;
             }
@@ -74,7 +74,7 @@ angular.module('bellows.services.comments')
           this.comments.counts.byEntry[comment.entryRef] = 0;
         }
 
-        if (comment.status != 'resolved') {
+        if (comment.status !== 'resolved') {
           this.comments.counts.byEntry[comment.entryRef]++;
         }
       }
@@ -131,7 +131,7 @@ angular.module('bellows.services.comments')
       for (var i = list.length - 1; i >= 0; i--) {
         var c = list[i];
         if (deleteComment) {
-          if (c.id == commentId) {
+          if (c.id === commentId) {
             list.splice(i, 1);
           }
         } else {
@@ -139,7 +139,7 @@ angular.module('bellows.services.comments')
           // delete Reply
           for (var j = c.replies.length - 1; j >= 0; j--) {
             var r = c.replies[j];
-            if (r.id == replyId) {
+            if (r.id === replyId) {
               c.replies.splice(j, 1);
             }
           }
@@ -151,7 +151,7 @@ angular.module('bellows.services.comments')
       var comments = this.comments.items.currentEntry;
       for (var i = 0; i < comments.length; i++) {
         var comment = comments[i];
-        if (comment.id == id) {
+        if (comment.id === id) {
           return comment;
         }
       }
