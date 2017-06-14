@@ -1,10 +1,12 @@
 'use strict';
 
 angular.module('semdomtrans-app-management', ['semDomTransAppManagement.services', 'bellows.services', 'palaso.ui.listview', 'ui.bootstrap', 'palaso.ui.notice', 'palaso.ui.utils'])
-  .controller('semDomTransAppManagementCtrl', ['$scope', 'semDomTransAppManagementService', 'sessionService', 'silNoticeService', '$window',
+  .controller('semDomTransAppManagementCtrl', ['$scope', 'semDomTransAppManagementService', 'asyncSession', 'silNoticeService', '$window',
     function($scope, appService, ss, notice, $window) {
 
-      $scope.project = ss.session.project;
+      ss.getSession().then(function(session) {
+        $scope.project = session.project();
+      });
 
       $scope.loadDto = function loadDto() {
         appService.getDto(function(result) {

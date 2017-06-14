@@ -3,10 +3,10 @@
 angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellows.services', 'sfchecks.services',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte',
   'ngFileUpload', 'ngRoute'])
-  .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService', 'sfchecksLinkService',
-    'silNoticeService', 'sfchecksProjectService', 'messageService', 'modalService',
+  .controller('ProjectCtrl', ['$scope', 'textService', 'asyncSession', 'breadcrumbService', 'sfchecksLinkService',
+    'silNoticeService', 'sfchecksProjectService', 'messageService', 'modalService', '$q',
   function ($scope, textService, ss, breadcrumbService, sfchecksLinkService,
-            notice, sfchecksProjectService, messageService, modalService) {
+            notice, sfchecksProjectService, messageService, modalService, $q) {
     $scope.finishedLoading = false;
 
     // Rights
@@ -57,39 +57,39 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     $scope.texts = [];
 
     // Page Dto
+    // Page Dto
     $scope.getPageDto = function () {
-      sfchecksProjectService.pageDto(function (result) {
-        if (result.ok) {
-          $scope.texts = result.data.texts;
-          $scope.textsCount = $scope.texts.length;
-          $scope.enhanceDto($scope.texts);
+      $q.all([ss.getSession(), sfchecksProjectService.pageDto()]).then(function(data) {
+        var session = data[0], result = data[1];
+        $scope.texts = result.data.texts;
+        $scope.textsCount = $scope.texts.length;
+        $scope.enhanceDto($scope.texts);
 
-          $scope.messages = result.data.broadcastMessages;
+        $scope.messages = result.data.broadcastMessages;
 
-          // update activity count service
-          $scope.activityUnreadCount = result.data.activityUnreadCount;
+        // update activity count service
+        $scope.activityUnreadCount = result.data.activityUnreadCount;
 
-          $scope.members = result.data.members;
+        $scope.members = result.data.members;
 
-          $scope.project = result.data.project;
-          $scope.project.url = sfchecksLinkService.project();
+        $scope.project = result.data.project;
+        $scope.project.url = sfchecksLinkService.project();
 
-          // Breadcrumb
-          breadcrumbService.set('top',
-              [
-               { href: '/app/projects', label: 'My Projects' },
-               { href: sfchecksLinkService.project(), label: $scope.project.name }
-              ]
-          );
+        // Breadcrumb
+        breadcrumbService.set('top',
+        [
+        { href: '/app/projects', label: 'My Projects' },
+        { href: sfchecksLinkService.project(), label: $scope.project.name }
+        ]
+        );
 
-          var rights = result.data.rights;
-          $scope.rights.archive = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE) && !ss.session.project.isArchived;
-          $scope.rights.create = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE) && !ss.session.project.isArchived;
-          $scope.rights.edit = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) && !ss.session.project.isArchived;
-          $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.edit;
+        var rights = result.data.rights;
+        $scope.rights.archive = session.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE) && !session.project().isArchived;
+        $scope.rights.create = session.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE) && !session.project().isArchived;
+        $scope.rights.edit = session.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) && !session.project().isArchived;
+        $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.edit;
 
-          $scope.finishedLoading = true;
-        }
+        $scope.finishedLoading = true;
       });
     };
 
@@ -192,4 +192,4 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
 
   }])
 
-  ;
+;
