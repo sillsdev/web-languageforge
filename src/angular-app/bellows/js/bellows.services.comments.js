@@ -4,8 +4,8 @@
 angular.module('bellows.services.comments')
 
 //Lexicon Comment Service
-  .service('lexCommentService', ['apiService', 'commentsOfflineCache', '$filter', 'sessionService',
-  function (api, offlineCache, $filter, ss) {
+  .service('lexCommentService', ['apiService', 'commentsOfflineCache', '$filter',
+  function (api, offlineCache, $filter) {
     this.comments = {
       items: {
         currentEntry: [],
