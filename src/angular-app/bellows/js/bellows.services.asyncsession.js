@@ -67,6 +67,7 @@ angular.module('bellows.services')
     this.baseSite = fnFor('baseSite');
     this.projectSettings = fnFor('projectSettings');
     this.project = fnFor('project');
+    this.username = fnFor('username');
 
     // TODO Is it really necessary to have these on the instance as well?
     this.domain = domain;
