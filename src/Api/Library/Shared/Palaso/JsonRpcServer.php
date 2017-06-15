@@ -44,53 +44,60 @@ class JsonRpcServer
      * This function handle a request binding it to a given object
      *
      * @param Request $request
-     * @param object $object
+     * @param object $api
      * @return array|null
      * @throws \Exception
      */
-    public static function handle(Request $request, $object) {
+    public static function handle(Request $request, $api) {
         // user-defined error handler to catch annoying php errors and throw them as exceptions
-        set_error_handler(function ($errno, $errstr, $errfile, $errline) { throw new ErrorHandler($errstr, 0, $errno, $errfile, $errline); } , E_ALL);
+        set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+            throw new ErrorHandler($errstr, 0, $errno, $errfile, $errline);
+        }, E_ALL);
 
         // checks if a JSON-RPC request has been received
         if ($_SERVER['REQUEST_METHOD'] != 'POST' ||
             empty($_SERVER['CONTENT_TYPE']) ||
-             (strrpos($_SERVER['CONTENT_TYPE'], "application/json") === false && strrpos($_SERVER['CONTENT_TYPE'], "application/xml") === false)) {
+             (strrpos($_SERVER['CONTENT_TYPE'], "application/json") === false &&
+                 strrpos($_SERVER['CONTENT_TYPE'], "application/xml") === false)
+        ) {
             throw new \Exception("Not a JSON-RPC request: ct: '" . @$_SERVER['CONTENT_TYPE'] . "'");
         }
 
         // executes the task on local object
         try {
             // TODO: refactor to use an error dto
-            $object->checkPermissions($request->request->get('method'), $request->request->get('params'));
-            if (method_exists($object, $request->request->get('method'))) {
-                $result = call_user_func_array(array($object, $request->request->get('method')), $request->request->get('params')['orderedParams']);
-                $response = array(
+            $api->checkPermissions($request->request->get('method'));
+            if (method_exists($api, $request->request->get('method'))) {
+                $orderedParams = InternationalUtility::arrayNormalize($request->request->get('params')['orderedParams']);
+                $result = call_user_func_array([$api, $request->request->get('method')], $orderedParams);
+                $response = [
                     'jsonrpc' => '2.0',
                     'id' => $request->request->get('id'),
                     'result' => $result,
                     'error' => NULL
-                );
+                ];
             } else {
-                $response = array(
+                $response = [
                     'jsonrpc' => '2.0',
                     'id' => $request->request->get('id'),
                     'result' => NULL,
-                    'error' => array(
+                    'error' => [
                         'type' => 'UnknownMethod',
-                        'message' => sprintf("unknown method '%s' on class '%s'", $request->request->get('method'), get_class($object))
-                    )
-                );
+                        'message' => sprintf("unknown method '%s' on class '%s'",
+                            $request->request->get('method'), get_class($api))
+                    ]
+                ];
             }
         } catch (\Exception $e) {
-            $response = array(
+            $response = [
                 'id' => $request->request->get('id'),
                 'result' => NULL,
-                'error' => array(
+                'error' => [
                     'type' => get_class($e),
-                    'message' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " . CodeGuard::getStackTrace($e->getTrace())
-                )
-            );
+                    'message' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " .
+                        CodeGuard::getStackTrace($e->getTrace())
+                ]
+            ];
             if ($e instanceof ResourceNotAvailableException) {
                 $response['error']['type'] = 'ResourceNotAvailableException';
                 $response['error']['message'] = $e->getMessage();
