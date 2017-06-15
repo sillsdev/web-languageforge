@@ -125,7 +125,7 @@ class LiftDecoder
                 case 'trait':
                     switch ($element['name']) {
                         case 'morph-type':
-                            $entry->morphologyType = (string)$element['value'];
+                            $entry->morphologyType = \Normalizer::normalize((string)$element['value']);
                             break;
                         case 'do-not-publish-in':
                         case 'DoNotUseForParsing':
@@ -217,11 +217,11 @@ class LiftDecoder
                     break;
                 case 'grammatical-info':
                     // Part Of Speech
-                    $sense->partOfSpeech->value = (string) $element['value'];
+                    $sense->partOfSpeech->value = \Normalizer::normalize((string) $element['value']);
                     break;
                 case 'illustration':
                     $picture = new LexPicture();
-                    $picture->fileName = (string) $element['href'];
+                    $picture->fileName = \Normalizer::normalize((string) $element['href']);
                     /** @var \SimpleXMLElement $child */
                     foreach ($element as $child) {
                         switch($child->getName()) {
@@ -347,7 +347,7 @@ class LiftDecoder
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'form':
-                    $inputSystemTag = (string) $element['lang'];
+                    $inputSystemTag = \Normalizer::normalize((string) $element['lang']);
                     $value = self::sanitizeSpans(dom_import_simplexml($element->{'text'}[0]), $inputSystemTag,
                         $this->currentNodeError());
                     $multiText->form($inputSystemTag, $value);
@@ -381,7 +381,7 @@ class LiftDecoder
         if ($sxeNode->getName() != 'gloss') {
             throw new \Exception("'" . $sxeNode->getName() . "' is not a gloss");
         }
-        $inputSystemTag = (string) $sxeNode['lang'];
+        $inputSystemTag = \Normalizer::normalize((string) $sxeNode['lang']);
         $multiText->form($inputSystemTag, (string) $sxeNode->{'text'});
 
         $this->project->addInputSystem($inputSystemTag);
@@ -406,7 +406,7 @@ class LiftDecoder
         foreach ($sxeNode as $element) {
             switch ($element->getName()) {
                 case 'form':
-                    $inputSystemTag = (string) $element['lang'];
+                    $inputSystemTag = \Normalizer::normalize((string) $element['lang']);
                     $multiParagraph->inputSystem = $inputSystemTag;
                     $value = self::sanitizeSpans(dom_import_simplexml($element->{'text'}[0]), $inputSystemTag,
                         $this->currentNodeError());
@@ -442,7 +442,7 @@ class LiftDecoder
         $textStr = '';
         foreach ($textDom->childNodes as $child) {
             if ($child->nodeType == XML_TEXT_NODE) {
-                $childTextStr = $child->textContent;
+                $childTextStr = \Normalizer::normalize($child->textContent);
             } else {
                 if ($currentNodeError && $child->nodeName != 'span') {
                     $currentNodeError->addUnhandledElement($child->nodeName);
@@ -594,12 +594,12 @@ class LiftDecoder
      */
     private function addCustomField($sxeNode, $nodeId, $customFieldNamePrefix, $levelConfig, $item)
     {
-        $fieldType = FileUtilities::replaceSpecialCharacters($nodeId);
+        $fieldType = \Normalizer::normalize(FileUtilities::replaceSpecialCharacters($nodeId));
         $customFieldSpecs = $this->getCustomFieldSpecs($fieldType);
         $customFieldName = $this->createCustomField($fieldType, $customFieldNamePrefix, $customFieldSpecs, $levelConfig);
         if ($customFieldSpecs['Type'] == 'ReferenceAtom') {
             $item->customFields[$customFieldName] = new LexValue();
-            $item->customFields[$customFieldName]->value = (string) $sxeNode['value'];
+            $item->customFields[$customFieldName]->value((string) $sxeNode['value']);
         } elseif ($customFieldSpecs['Type'] == 'ReferenceCollection') {
             if (! array_key_exists($customFieldName, $item->customFields)) {
                 $item->customFields[$customFieldName] = new LexMultiValue();

@@ -337,7 +337,7 @@ class LiftImport
                     case 'WritingSystems':
                         $assetsPath = $assetsFolderPath . "/" . $folderName;
                         if (file_exists($folderPath) && is_dir($folderPath)) {
-                            FileUtilities::copyFolderTree($folderPath, $assetsPath);
+                            FileUtilities::copyFolderTreeNormalize($folderPath, $assetsPath);
                         }
                         break;
                     default:

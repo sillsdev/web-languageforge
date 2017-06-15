@@ -19,7 +19,7 @@ class LexMultiText extends MapOf
     public function form($inputSystem, $value)
     {
         if (array_key_exists($inputSystem, $this)) {
-            $this[$inputSystem]->value = $value;
+            $this[$inputSystem]->value($value);
         } else {
             $this[$inputSystem] = new LexValue($value);
         }
