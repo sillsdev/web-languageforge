@@ -22,16 +22,17 @@
       apt: name="{{item}}" state=present
       with_items:
         - libapache2-mod-php
-        - php7.0-gd
-        - php7.0-dev
+        - mongodb-server
+        - p7zip-full
         - php7.0-cli
+        - php7.0-dev
+        - php7.0-gd
+        - php7.0-intl
         - php7.0-mbstring
         - php-pear
         - php-xdebug
-        - mongodb-server
         - postfix
         - unzip
-        - p7zip-full
 
     - name: check for node binary
       stat: path=/usr/local/bin/node
