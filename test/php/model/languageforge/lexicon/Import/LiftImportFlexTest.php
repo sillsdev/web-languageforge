@@ -1,5 +1,7 @@
 <?php
 
+use Api\Model\Languageforge\Lexicon\Import\LiftImport;
+use Api\Model\Languageforge\Lexicon\Import\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexExample;
@@ -7,8 +9,6 @@ use Api\Model\Languageforge\Lexicon\LexMultiValue;
 use Api\Model\Languageforge\Lexicon\LexPicture;
 use Api\Model\Languageforge\Lexicon\LexSense;
 use Api\Model\Languageforge\Lexicon\LexValue;
-use Api\Model\Languageforge\Lexicon\LiftImport;
-use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 use PHPUnit\Framework\TestCase;
 
 class LiftImportFlexTest extends TestCase

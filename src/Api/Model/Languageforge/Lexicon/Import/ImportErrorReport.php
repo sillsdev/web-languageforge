@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Model\Languageforge\Lexicon;
+namespace Api\Model\Languageforge\Lexicon\Import;
 
 class ImportErrorReport
 {
