@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Model\Languageforge\Lexicon;
+namespace Api\Model\Languageforge\Lexicon\Import;
 
 use Api\Model\Languageforge\Lexicon\Command\LexProjectCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
@@ -9,6 +9,17 @@ use Api\Model\Languageforge\Lexicon\Config\LexConfigMultiOptionList;
 use Api\Model\Languageforge\Lexicon\Config\LexConfigMultiText;
 use Api\Model\Languageforge\Lexicon\Config\LexConfigOptionList;
 use Api\Model\Languageforge\Lexicon\Config\LexConfigMultiParagraph;
+use Api\Model\Languageforge\Lexicon\Guid;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\LexExample;
+use Api\Model\Languageforge\Lexicon\LexMultiParagraph;
+use Api\Model\Languageforge\Lexicon\LexMultiText;
+use Api\Model\Languageforge\Lexicon\LexMultiValue;
+use Api\Model\Languageforge\Lexicon\LexParagraph;
+use Api\Model\Languageforge\Lexicon\LexPicture;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
+use Api\Model\Languageforge\Lexicon\LexSense;
+use Api\Model\Languageforge\Lexicon\LexValue;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
 use Litipk\Jiffy\UniversalTimestamp;

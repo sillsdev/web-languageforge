@@ -1,11 +1,11 @@
 <?php
 
-use Api\Model\Languageforge\Lexicon\LiftImport;
+use Api\Model\Languageforge\Lexicon\Import\ImportErrorReport;
+use Api\Model\Languageforge\Lexicon\Import\LiftImport;
+use Api\Model\Languageforge\Lexicon\Import\LiftImportNodeError;
+use Api\Model\Languageforge\Lexicon\Import\LiftRangeImportNodeError;
+use Api\Model\Languageforge\Lexicon\Import\ZipImportNodeError;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
-use Api\Model\Languageforge\Lexicon\ImportErrorReport;
-use Api\Model\Languageforge\Lexicon\ZipImportNodeError;
-use Api\Model\Languageforge\Lexicon\LiftRangeImportNodeError;
-use Api\Model\Languageforge\Lexicon\LiftImportNodeError;
 use PHPUnit\Framework\TestCase;
 
 class LiftImportZipTest extends TestCase

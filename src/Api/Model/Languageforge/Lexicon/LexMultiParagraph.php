@@ -3,6 +3,7 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Library\Shared\Palaso\StringUtil;
+use Api\Model\Languageforge\Lexicon\Import\LiftDecoder;
 use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\ObjectForEncoding;
 use LazyProperty\LazyPropertiesTrait;

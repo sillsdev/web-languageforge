@@ -1,8 +1,9 @@
 <?php
 
-namespace Api\Model\Languageforge\Lexicon;
+namespace Api\Model\Languageforge\Lexicon\Import;
 
-class LiftRange {
+class LiftRange
+{
     // This is basically just a struct: no constructor, no methods.
     public $id;
 
@@ -15,7 +16,8 @@ class LiftRange {
     public $abbrev;
 }
 
-class LiftRangeElement {
+class LiftRangeElement
+{
     // This basically just a struct: no constructor, no methods.
     public $id;
 
