@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bellows.services')
-.service('asyncSession', ['apiService', '$window', '$q', function (api, $window, $q) {
+.service('asyncSession', ['apiService', '$window', '$q', 'sessionService', function (api, $window, $q, syncSession) {
   // Because session data is asynchronously loaded, it is not possible to synchronously
   // obtain a reference to the session instance. getSession() must be called, which returns
   // a promise (callbacks also accepted) that resolves to the session instance, which can
@@ -122,6 +122,10 @@ angular.module('bellows.services')
     if(promiseForSession && !forceRefresh) return promiseForSession;
 
     var promise = api.call('session_getSessionData').then(function(response) {
+      // TODO remove this writing to the sync session
+      // This is so that refreshing the async session also updates the sync session
+      // some parts of the front end expect changes to the session to propagate
+      syncSession.session = response.data;
       return response.data;
     }).catch(function(response) {
       console.error(response); // TODO decide whether to show to user or just retry
