@@ -47,7 +47,7 @@ class LiftImportZipTest extends TestCase
         $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']); //NFC
         $this->assertEquals('ฉู่ฉี่หมูกรอบ', $entry0['lexeme']['th']['value']);
         $this->assertCount(1, $entry0['senses']);
         $this->assertEquals('incorrect definition', $entry0['senses'][0]['definition']['en']['value']);
@@ -61,7 +61,7 @@ class LiftImportZipTest extends TestCase
         $this->assertEquals('sentence 2', $entry0['senses'][0]['examples'][1]['sentence']['th-fonipa']['value']);
         $this->assertEquals('translation 2', $entry0['senses'][0]['examples'][1]['translation']['en']['value']);
         $this->assertEquals('05473cb0-4165-4923-8d81-02f8b8ed3f26', $entry1['guid']);
-        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals('ข้าวไก่ทอด', $entry1['lexeme']['th']['value']);
         $this->assertArrayHasKey('th-fonipa', $project->inputSystems);
         $this->assertEquals(1, $importer->getReport()->hasError());
@@ -104,7 +104,7 @@ class LiftImportZipTest extends TestCase
         $entry0 = $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da'];
         $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals('ฉู่ฉี่หมูกรอบ', $entry0['lexeme']['th']['value']);
         $this->assertCount(1, $entry0['senses']);
         $this->assertEquals('incorrect definition', $entry0['senses'][0]['definition']['en']['value']);
@@ -118,7 +118,7 @@ class LiftImportZipTest extends TestCase
         $this->assertEquals('sentence 2', $entry0['senses'][0]['examples'][1]['sentence']['th-fonipa']['value']);
         $this->assertEquals('translation 2', $entry0['senses'][0]['examples'][1]['translation']['en']['value']);
         $this->assertEquals('05473cb0-4165-4923-8d81-02f8b8ed3f26', $entry1['guid']);
-        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals('ข้าวไก่ทอด', $entry1['lexeme']['th']['value']);
         $this->assertEquals(false, $importer->getReport()->hasError());
     }

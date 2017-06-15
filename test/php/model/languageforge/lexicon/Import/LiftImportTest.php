@@ -169,7 +169,7 @@ EOD;
 
         $this->assertEquals(2, $entryList->count);
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals('ฉู่ฉี่หมูกรอบ', $entry0['lexeme']['th']['value']);
         $this->assertCount(1, $entry0['senses']);
         $this->assertEquals('9d50e072-0206-4776-9ee6-bddf89b96aed', $entry0['senses'][0]['guid']);
@@ -184,7 +184,7 @@ EOD;
         $this->assertEquals('sentence 2', $entry0['senses'][0]['examples'][1]['sentence']['th-fonipa']['value']);
         $this->assertEquals('translation 2', $entry0['senses'][0]['examples'][1]['translation']['en']['value']);
         $this->assertEquals('05473cb0-4165-4923-8d81-02f8b8ed3f26', $entry1['guid']);
-        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals('ข้าวไก่ทอด', $entry1['lexeme']['th']['value']);
         $this->assertArrayHasKey('th-fonipa', $project->inputSystems);
         $this->assertEquals(false, $importer->getReport()->hasError());
@@ -284,7 +284,7 @@ EOD;
         $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEquals(2, $entryList->count);
-        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertCount(1, $entry0['senses']);
         $this->assertEquals('9d50e072-0206-4776-9ee6-bddf89b96aed', $entry0['senses'][0]['guid']);
         $this->assertEquals('A kind of curry fried with crispy pork', $entry0['senses'][0]['definition']['en']['value']);
@@ -292,7 +292,7 @@ EOD;
         $this->assertCount(1, $entry0['senses'][0]['examples']);
         $this->assertEquals('sentence 1', $entry0['senses'][0]['examples'][0]['sentence']['th-fonipa']['value']);
         $this->assertEquals('translation 1 changed', $entry0['senses'][0]['examples'][0]['translation']['en']['value']);
-        $this->assertEquals('khâaw kài thɔ̂ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̂ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(false, $importer->getReport()->hasError());
         $this->assertEquals(2, $importer->stats->existingEntries);
         $this->assertEquals(2, $importer->stats->importEntries);
@@ -324,12 +324,12 @@ EOD;
 
         $this->assertEquals(2, $entryList->count);
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertCount(1, $entry0['senses']);
         $this->assertEquals('incorrect definition', $entry0['senses'][0]['definition']['en']['value']);
         $this->assertEquals('Adjective', $entry0['senses'][0]['partOfSpeech']['value']);
         $this->assertEquals('05473cb0-4165-4923-8d81-02f8b8ed3f26', $entry1['guid']);
-        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(false, $importer->getReport()->hasError());
         $this->assertEquals(2, $importer->stats->existingEntries);
         $this->assertEquals(2, $importer->stats->importEntries);
@@ -414,14 +414,14 @@ EOD;
 
         $this->assertEquals(2, $entryList->count);
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertCount(2, $entry0['senses']);
         $this->assertEquals('incorrect definition', $entry0['senses'][0]['definition']['en']['value']);
         $this->assertEquals('Adjective', $entry0['senses'][0]['partOfSpeech']['value']);
         $this->assertEquals('A kind of curry fried with crispy pork', $entry0['senses'][1]['definition']['en']['value']);
         $this->assertEquals('Noun', $entry0['senses'][1]['partOfSpeech']['value']);
         $this->assertEquals('05473cb0-4165-4923-8d81-02f8b8ed3f26', $entry1['guid']);
-        $this->assertEquals('khâaw kài thɔ̂ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̂ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(false, $importer->getReport()->hasError());
         $this->assertEquals(2, $importer->stats->existingEntries);
         $this->assertEquals(2, $importer->stats->importEntries);
@@ -496,7 +496,7 @@ EOD;
 
         $this->assertEquals(1, $entryList->count);
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(false, $importer->getReport()->hasError());
         $this->assertEquals(2, $importer->stats->existingEntries);
         $this->assertEquals(2, $importer->stats->importEntries);
@@ -528,7 +528,7 @@ EOD;
 
         $this->assertEquals(1, $entryList->count);
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(false, $importer->getReport()->hasError());
         $this->assertEquals(2, $importer->stats->existingEntries);
         $this->assertEquals(2, $importer->stats->importEntries);
@@ -560,8 +560,8 @@ EOD;
         $entry1 = $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26'];
 
         $this->assertEquals(2, $entryList->count);
-        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']);
-        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
+        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(false, $importer->getReport()->hasError());
         $this->assertEquals(2, $importer->stats->existingEntries);
         $this->assertEquals(2, $importer->stats->importEntries);
@@ -589,13 +589,13 @@ EOD;
 
         $this->assertEquals(2, $entryList->count);
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertCount(1, $entry0['senses']);
         $this->assertEquals('9d50e072-0206-4776-9ee6-bddf89b96aed', $entry0['senses'][0]['guid']);
         $this->assertEquals('A kind of curry fried with crispy pork', $entry0['senses'][0]['definition']['en']['value']);
         $this->assertEquals('Noun', $entry0['senses'][0]['partOfSpeech']['value']);
         $this->assertEquals('05473cb0-4165-4923-8d81-02f8b8ed3f26', $entry1['guid']);
-        $this->assertEquals('khâaw kài thɔ̂ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̂ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(false, $importer->getReport()->hasError());
         $this->assertEquals(0, $importer->stats->existingEntries);
         $this->assertEquals(2, $importer->stats->importEntries);
@@ -627,13 +627,13 @@ EOD;
 
         $this->assertEquals(2, $entryList->count);
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertCount(1, $entry0['senses']);
         $this->assertEquals('9d50e072-0206-4776-9ee6-bddf89b96aed', $entry0['senses'][0]['guid']);
         $this->assertEquals('incorrect definition', $entry0['senses'][0]['definition']['en']['value']);
         $this->assertEquals('Adjective', $entry0['senses'][0]['partOfSpeech']['value']);
         $this->assertEquals('05473cb0-4165-4923-8d81-02f8b8ed3f26', $entry1['guid']);
-        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(false, $importer->getReport()->hasError());
         $this->assertEquals(2, $importer->stats->existingEntries);
         $this->assertEquals(2, $importer->stats->importEntries);
@@ -661,12 +661,12 @@ EOD;
 
         $this->assertEquals(2, $entryList->count);
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertCount(1, $entry0['senses']);
         $this->assertEquals('A kind of curry fried with crispy pork', $entry0['senses'][0]['definition']['en']['value']);
         $this->assertEquals('Noun', $entry0['senses'][0]['partOfSpeech']['value']);
         $this->assertEquals('05473cb0-4165-4923-8d81-02f8b8ed3f26', $entry1['guid']);
-        $this->assertEquals('khâaw kài thɔ̂ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̂ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(false, $importer->getReport()->hasError());
         $this->assertEquals(0, $importer->stats->existingEntries);
         $this->assertEquals(2, $importer->stats->importEntries);
@@ -698,19 +698,19 @@ EOD;
 
         $this->assertEquals(4, $entryList->count);
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertCount(1, $entry0['senses']);
         $this->assertEquals('incorrect definition', $entry0['senses'][0]['definition']['en']['value']);
         $this->assertEquals('Adjective', $entry0['senses'][0]['partOfSpeech']['value']);
         $this->assertEquals('05473cb0-4165-4923-8d81-02f8b8ed3f26', $entry1['guid']);
-        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals('', $entries[2]['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entries[2]['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entries[2]['lexeme']['th-fonipa']['value']); // NFC
         $this->assertCount(1, $entries[2]['senses']);
         $this->assertEquals('A kind of curry fried with crispy pork', $entries[2]['senses'][0]['definition']['en']['value']);
         $this->assertEquals('Noun', $entries[2]['senses'][0]['partOfSpeech']['value']);
         $this->assertEquals('', $entries[3]['guid']);
-        $this->assertEquals('khâaw kài thɔ̂ɔt', $entries[3]['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̂ɔt', $entries[3]['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(false, $importer->getReport()->hasError());
         $this->assertEquals(2, $importer->stats->existingEntries);
         $this->assertEquals(2, $importer->stats->importEntries);
@@ -742,12 +742,12 @@ EOD;
 
         $this->assertEquals(2, $entryList->count);
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̂ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertCount(1, $entry0['senses']);
         $this->assertEquals('incorrect definition', $entry0['senses'][0]['definition']['en']['value']);
         $this->assertEquals('Adjective', $entry0['senses'][0]['partOfSpeech']['value']);
         $this->assertEquals('05473cb0-4165-4923-8d81-02f8b8ed3f26', $entry1['guid']);
-        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̀ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(false, $importer->getReport()->hasError());
         $this->assertEquals(2, $importer->stats->existingEntries);
         $this->assertEquals(2, $importer->stats->importEntries);
@@ -833,7 +833,7 @@ EOD;
 
         $this->assertEquals(2, $entryList->count);
         $this->assertEquals('dd15cbc4-9085-4d66-af3d-8428f078a7da', $entry0['guid']);
-        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entry0['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals('ฉู่ฉี่หมูกรอบ', $entry0['lexeme']['th']['value']);
         $this->assertCount(1, $entry0['senses']);
         $this->assertEquals('text before <span lang="th">ฉู่ฉี่หมูกรอบ</span> is a kind of curry fried with crispy pork',
@@ -842,7 +842,7 @@ EOD;
             $entry0['senses'][0]['definition']['th']['value']);
         $this->assertEquals('Noun', $entry0['senses'][0]['partOfSpeech']['value']);
         $this->assertEquals('05473cb0-4165-4923-8d81-02f8b8ed3f26', $entry1['guid']);
-        $this->assertEquals('khâaw kài thɔ̂ɔt', $entry1['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̂ɔt', $entry1['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals('ข้าวไก่ทอด', $entry1['lexeme']['th']['value']);
         $this->assertEquals(true, $report->hasError());
         $this->assertRegExp("/processing multitext 'definition', unhandled element 'i', unhandled element 'b', unhandled element 'i', unhandled element 'b'/", $reportStr);
@@ -1134,11 +1134,11 @@ EOD;
         $reportStr = $report->toString();
 
         $this->assertEquals(2, $entryList->count);
-        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('chùuchìi mǔu krɔ̀ɔp', $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['lexeme']['th-fonipa']['value']); // NFC
         $this->assertEquals(1, count($entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses']));
         $this->assertEquals('A kind of curry fried with crispy pork', $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['definition']['en']['value']);
         $this->assertEquals('Noun', $entriesByGuid['dd15cbc4-9085-4d66-af3d-8428f078a7da']['senses'][0]['partOfSpeech']['value']);
-        $this->assertEquals('khâaw kài thɔ̂ɔt', $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value']);
+        $this->assertEquals('khâaw kài thɔ̂ɔt', $entriesByGuid['05473cb0-4165-4923-8d81-02f8b8ed3f26']['lexeme']['th-fonipa']['value']); // NFC
         $this->assertCount(1, $report->nodeErrors);
         $this->assertTrue($report->nodeErrors[0]->getSubnodeError(0)->hasError(), 'should have phony and bogus tag entry errors');
         $this->assertRegExp("/unhandled element 'bogus'/", $reportStr);
