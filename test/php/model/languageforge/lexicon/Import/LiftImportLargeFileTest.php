@@ -1,7 +1,7 @@
 <?php
 
-use Api\Model\Languageforge\Lexicon\LiftImport;
-use Api\Model\Languageforge\Lexicon\LiftMergeRule;
+use Api\Model\Languageforge\Lexicon\Import\LiftImport;
+use Api\Model\Languageforge\Lexicon\Import\LiftMergeRule;
 use PHPUnit\Framework\TestCase;
 
 class TestLiftImportInfo

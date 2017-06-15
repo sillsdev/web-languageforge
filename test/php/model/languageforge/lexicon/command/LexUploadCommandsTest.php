@@ -1,9 +1,9 @@
 <?php
 
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
+use Api\Model\Languageforge\Lexicon\Import\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
-use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 use PHPUnit\Framework\TestCase;
 
