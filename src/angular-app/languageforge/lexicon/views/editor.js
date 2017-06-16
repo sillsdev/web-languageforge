@@ -32,7 +32,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       })
       ;
   }])
-  .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService',
+  .controller('EditorCtrl', ['$scope', 'userService', 'asyncSession', 'lexEntryApiService',
     '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'lexRightsService',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
     'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService',
@@ -671,7 +671,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     function syncProjectStatusSuccess() {
       editorService.refreshEditorData().then(function () {
         setCurrentEntry($scope.entries[editorService.getIndexInEntries($scope.currentEntry.id)]);
-        sessionService.refresh(lexConfig.refresh);
+        sessionService.getSession(true).then(lexConfig.refresh);
         notice.removeById(warnOfUnsavedEditsId);
       });
     }
