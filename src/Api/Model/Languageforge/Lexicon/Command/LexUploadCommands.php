@@ -7,9 +7,9 @@ use Api\Model\Shared\Command\ErrorResult;
 use Api\Model\Shared\Command\ImportResult;
 use Api\Model\Shared\Command\MediaResult;
 use Api\Model\Shared\Command\UploadResponse;
+use Api\Model\Languageforge\Lexicon\Import\LiftImport;
+use Api\Model\Languageforge\Lexicon\Import\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
-use Api\Model\Languageforge\Lexicon\LiftImport;
-use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 use Palaso\Utilities\FileUtilities;
 
 class LexUploadCommands

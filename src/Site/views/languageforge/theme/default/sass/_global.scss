@@ -46,7 +46,7 @@ div.picklists li.selected {
 }
 
 dl.picklists {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 dl.picklists div {
@@ -211,7 +211,6 @@ dl.picklists dd {
   right: 1em;
   top: 1em;
   cursor: pointer;
-  top: 1em;
 }
 
 .breadcrumb {
@@ -354,7 +353,7 @@ nav {
     z-index: 100;
     bottom: 0;
     left: 0;
-    right: 90;
+    right: 90px;
     margin-bottom: 0;
     border-radius: 0;
     width: 100%;
@@ -376,4 +375,8 @@ nav.navbar {
 footer.footer {
   margin-top: 0.5em;
   padding: 1em;
+}
+
+.dropdown .pui-no-caret::after {
+  display: none;
 }

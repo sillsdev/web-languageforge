@@ -42,7 +42,8 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
           return false;
         }
 
-        return $scope.model[tag].value.indexOf('</span>') > -1;
+        var languageSpanPattern = /<span.* lang="/;
+        return languageSpanPattern.test($scope.model[tag].value);
       };
 
     }]

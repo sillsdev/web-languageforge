@@ -8,6 +8,8 @@ describe('the questions settings page - project manager', function () {
   var projectPage = require('../pages/projectPage.js');
   var textPage    = require('../pages/textPage.js');
   var page        = require('../pages/textSettingsPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   it('setup: logout, login as project manager, go to text settings', function () {
     loginPage.logout();
@@ -66,12 +68,16 @@ describe('the questions settings page - project manager', function () {
       expect(page.paratextExportTab.downloadButton.isDisplayed()).toBe(false);
       expect(page.paratextExportTab.prepareButton.isPresent()).toBe(true);
       page.paratextExportTab.prepareButton.click();
+      browser.wait(expectedCondition.visibilityOf(page.paratextExportTab.noExportMsg),
+        CONDITION_TIMEOUT);
       expect(page.paratextExportTab.noExportMsg.isDisplayed()).toBe(true);
     });
 
     it('can prepare export for all answers without comments', function () {
       page.paratextExportTab.exportFlagged.click();
       page.paratextExportTab.prepareButton.click();
+      browser.wait(expectedCondition.visibilityOf(page.paratextExportTab.answerCount),
+        CONDITION_TIMEOUT);
       expect(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect(page.paratextExportTab.answerCount.getText()).toEqual('2 answer(s)');
       expect(page.paratextExportTab.commentCount.isDisplayed()).toBe(false);
@@ -81,6 +87,8 @@ describe('the questions settings page - project manager', function () {
     it('can prepare export for all answers with comments', function () {
       page.paratextExportTab.exportComments.click();
       page.paratextExportTab.prepareButton.click();
+      browser.wait(expectedCondition.visibilityOf(page.paratextExportTab.answerCount),
+        CONDITION_TIMEOUT);
       expect(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
       expect(page.paratextExportTab.answerCount.getText()).toEqual('2 answer(s)');
       expect(page.paratextExportTab.commentCount.isDisplayed()).toBe(true);

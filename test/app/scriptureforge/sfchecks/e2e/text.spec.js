@@ -8,6 +8,8 @@ describe('the questions list page (AKA the text page)', function () {
   var projectPage      = require('../pages/projectPage.js');
   var textPage         = require('../pages/textPage.js');
   var textSettingsPage = require('../pages/textSettingsPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   describe('a normal user', function () {
 
@@ -25,7 +27,7 @@ describe('the questions list page (AKA the text page)', function () {
       util.findRowByText(textPage.questionRows, constants.testText1Question1Title)
         .then(function (row) {
           // This seems to be the best way to check that the row exists
-          expect(typeof row == 'undefined').toBeFalsy();
+          expect(typeof row === 'undefined').toBeFalsy();
           var answerCount = row.element(by.binding('question.answerCount'));
           var responseCount = row.element(by.binding('question.responseCount'));
           expect(answerCount.getText()).toBe('1 answers');
@@ -35,7 +37,7 @@ describe('the questions list page (AKA the text page)', function () {
       util.findRowByText(textPage.questionRows, constants.testText1Question2Title)
         .then(function (row) {
           // This seems to be the best way to check that the row exists
-          expect(typeof row == 'undefined').toBeFalsy();
+          expect(typeof row === 'undefined').toBeFalsy();
           var answerCount = row.element(By.binding('question.answerCount'));
           var responseCount = row.element(By.binding('question.responseCount'));
           expect(answerCount.getText()).toBe('1 answers');
@@ -93,8 +95,8 @@ describe('the questions list page (AKA the text page)', function () {
 
       // Wait for archive button to become disabled again
       browser.wait(function () {
-        return archiveButton.isEnabled().then(function (bool) {
-          return !bool;
+        return archiveButton.isEnabled().then(function (isEnabled) {
+          return !isEnabled;
         });
       }, 1000);
 
@@ -103,7 +105,11 @@ describe('the questions list page (AKA the text page)', function () {
 
     it('can re-publish the question that was just archived (Text Settings)', function () {
       textPage.textSettingsBtn.click();
+      browser.wait(expectedCondition.visibilityOf(textSettingsPage.tabs.archiveQuestions),
+        CONDITION_TIMEOUT);
       textSettingsPage.tabs.archiveQuestions.click();
+      browser.wait(expectedCondition.visibilityOf(textSettingsPage.archivedQuestionsTab
+          .questionLink(questionTitle)), CONDITION_TIMEOUT);
       expect(textSettingsPage.archivedQuestionsTab.questionLink(questionTitle).isDisplayed())
         .toBe(true);
       var publishButton = textSettingsPage.archivedQuestionsTab.publishButton.getWebElement();

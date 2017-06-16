@@ -1,10 +1,13 @@
 <?php
 
-namespace Api\Model\Languageforge\Lexicon;
+namespace Api\Model\Languageforge\Lexicon\Import;
 
+use Api\Model\Languageforge\Lexicon\LexMultiText;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Shared\Mapper\ArrayOf;
 
-class LiftRangeError {
+class LiftRangeError
+{
     public function __construct($msg, $rangeId)
     {
         $this->msg = $msg;
@@ -15,7 +18,8 @@ class LiftRangeError {
     public $rangeId;
 }
 
-class LiftRangeElementError {
+class LiftRangeElementError
+{
     // This is basically a glorified struct with a constructor. Variables are deliberately public.
     public function __contruct($msg, $rangeId, $rangeElementId)
     {
@@ -71,12 +75,12 @@ class LiftRangeDecoder
         } else {
             $range = new LiftRange();
         }
-        $range->id = (string) $sxeNode['id'];
+        $range->id = (string)$sxeNode['id'];
         if (isset($sxeNode['guid'])) {
-            $range->guid = (string) $sxeNode['guid'];
+            $range->guid = (string)$sxeNode['guid'];
         }
         if (isset($sxeNode['href'])) {
-            $range->href = (string) $sxeNode['href'];
+            $range->href = (string)$sxeNode['href'];
         }
         foreach (array('description', 'label', 'abbrev') as $name) {
             if (isset($sxeNode->{$name})) {
@@ -118,12 +122,12 @@ class LiftRangeDecoder
     {
         //CodeGuard::assertKeyExistsOrThrow('id', $sxeNode, 'range-element attributes');
         $rangeElement = new LiftRangeElement();
-        $rangeElement->id = (string) $sxeNode['id'];
+        $rangeElement->id = (string)$sxeNode['id'];
         if (isset($sxeNode['guid'])) {
-            $rangeElement->guid = (string) $sxeNode['guid'];
+            $rangeElement->guid = (string)$sxeNode['guid'];
         }
         if (isset($sxeNode['parent'])) {
-            $rangeElement->parent = (string) $sxeNode['parent'];
+            $rangeElement->parent = (string)$sxeNode['parent'];
             // $rangeElement->parentRef will be set later
         }
         foreach (array('description', 'label', 'abbrev') as $name) {
@@ -136,7 +140,7 @@ class LiftRangeDecoder
 
     /**
      * Reads a MultiText from the XmlNode $sxeNode
-     * @param \SimpleXMLElement $sxeNode
+     * @param \SimpleXMLElement|\SimpleXMLElement[] $sxeNode
      * @param LexMultiText $existingMultiText
      * @param ArrayOf $inputSystems
      * @return LexMultiText
@@ -152,8 +156,8 @@ class LiftRangeDecoder
         }
         if (isset($sxeNode->form)) {
             foreach ($sxeNode->form as $form) {
-                $inputSystemTag = (string) $form['lang'];
-                $multiText->form($inputSystemTag, (string) $form->text);
+                $inputSystemTag = (string)$form['lang'];
+                $multiText->form($inputSystemTag, (string)$form->text);
                 // TODO: Do we need to count input systems found in LIFT ranges? I think no, because
                 // the input systems found in ranges are ones for which an interface translation has
                 // been defined, which is not the same concept as "ones for which data exists". 2014-09 RM
