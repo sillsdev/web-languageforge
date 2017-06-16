@@ -51,12 +51,23 @@ class LexUploadCommands
         $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
 
         $allowedTypes = array(
+            "application/octet-stream",
             "audio/mpeg",
+            "audio/x-mpeg",
             "audio/mp3",
-            "audio/x-wav"
+            "audio/x-mp3",
+            "audio/mpeg3",
+            "audio/x-mpeg3",
+            "audio/mpg",
+            "audio/x-mpg",
+            "audio/x-mpegaudio",
+            "audio/x-wav",
+            "audio/wav"
         );
         $allowedExtensions = array(
             ".mp3",
+            ".mpa",
+            ".mpg",
             ".wav"
         );
 
