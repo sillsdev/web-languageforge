@@ -9,7 +9,6 @@ use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Service\Sf;
 use Palaso\Utilities\CodeGuard;
 use Silex\Application;
-use Symfony\Component\HttpFoundation\Request;
 
 class Upload extends Base
 {
@@ -20,7 +19,7 @@ class Upload extends Base
             throw new ErrorHandler($errstr, 0, $errno, $errfile, $errline);
         }, E_ALL);
 
-        $response = array();
+        $response = [];
         $status = 201;
 
         try {
@@ -46,37 +45,25 @@ class Upload extends Base
 
                 if ($appType == 'sf-checks') {
                     $api = new Sf($app);
-                    $api->checkPermissions('sfChecks_uploadFile', array(
-                        $mediaType,
-                        $tmpFilePath
-                    ));
+                    $api->checkPermissions('sfChecks_uploadFile');
                     $response = $api->sfChecks_uploadFile($mediaType, $tmpFilePath);
                 } elseif ($appType == 'lf-lexicon') {
                     $api = new Sf($app);
-                    $jsonResult = array(
-                        'orderedParams' => array(
-                            $mediaType,
-                            $tmpFilePath
-                        )
-                    );
-                    if (array_key_exists('projectId', $_POST)) {
-                        $jsonResult['projectId'] = $_POST['projectId'];
-                    }
                     switch ($mediaType) {
                         case 'audio':
-                            $api->checkPermissions('lex_uploadAudioFile', $jsonResult);
+                            $api->checkPermissions('lex_uploadAudioFile');
                             $response = $api->lex_uploadAudioFile($mediaType, $tmpFilePath);
                             break;
                         case 'sense-image':
-                            $api->checkPermissions('lex_uploadImageFile', $jsonResult);
+                            $api->checkPermissions('lex_uploadImageFile');
                             $response = $api->lex_uploadImageFile($mediaType, $tmpFilePath);
                             break;
                         case 'import-zip':
-                            $api->checkPermissions('lex_upload_importProjectZip', $jsonResult);
+                            $api->checkPermissions('lex_upload_importProjectZip');
                             $response = $api->lex_upload_importProjectZip($mediaType, $tmpFilePath);
                             break;
                         case 'import-lift':
-                            $api->checkPermissions('lex_upload_importLift', $jsonResult);
+                            $api->checkPermissions('lex_upload_importLift');
                             $response = $api->lex_upload_importLift($mediaType, $tmpFilePath);
                             break;
                         default:
@@ -92,14 +79,14 @@ class Upload extends Base
                 }
             }
         } catch (\Exception $e) {
-            $response = array(
+            $response = [
                 'result' => false,
-                'data' => array(
+                'data' => [
                     'errorType' => get_class($e),
                     'errorMessage' => $e->getMessage() . " line " . $e->getLine() . " " . $e->getFile() . " " .
                         CodeGuard::getStackTrace($e->getTrace())
-                )
-            );
+                ]
+            ];
             $status = 400;
             if ($e instanceof ResourceNotAvailableException) {
                 $response['data']['errorType'] = 'ResourceNotAvailableException';

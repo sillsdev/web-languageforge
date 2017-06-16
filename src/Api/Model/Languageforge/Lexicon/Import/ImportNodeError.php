@@ -1,9 +1,16 @@
 <?php
 
-namespace Api\Model\Languageforge\Lexicon;
+namespace Api\Model\Languageforge\Lexicon\Import;
 
 class ImportNodeError
 {
+    public function __construct($type, $identifier)
+    {
+        $this->type = $type;
+        $this->identifier = $identifier;
+        $this->errors = array();
+        $this->subnodeErrors = array();
+    }
 
     /** @var string guid of lift entry, sense lift id, or attribute name */
     protected $identifier;
@@ -16,14 +23,6 @@ class ImportNodeError
 
     /** @var string */
     protected $type;
-
-    public function __construct($type, $identifier)
-    {
-        $this->type = $type;
-        $this->identifier = $identifier;
-        $this->errors = array();
-        $this->subnodeErrors = array();
-    }
 
     public function hasError()
     {
