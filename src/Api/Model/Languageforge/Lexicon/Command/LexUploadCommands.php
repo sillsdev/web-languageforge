@@ -287,18 +287,9 @@ class LexUploadCommands
 
         $file = $_FILES['file'];
         $fileName = $file['name'];
-        $mergeRule = LiftMergeRule::IMPORT_WINS;
-        if (array_key_exists('mergeRule', $_POST)) {
-            $mergeRule = $_POST['mergeRule'];
-        }
-        $skipSameModTime = false;
-        if (array_key_exists('skipSameModTime', $_POST)) {
-            $skipSameModTime = $_POST['skipSameModTime'];
-        }
-        $deleteMatchingEntry = false;
-        if (array_key_exists('deleteMatchingEntry', $_POST)) {
-            $deleteMatchingEntry = $_POST['deleteMatchingEntry'];
-        }
+        $mergeRule = self::extractStringFromArray($_POST, 'mergeRule', LiftMergeRule::IMPORT_WINS);
+        $skipSameModTime = self::extractBooleanFromArray($_POST, 'skipSameModTime');
+        $deleteMatchingEntry = self::extractBooleanFromArray($_POST, 'deleteMatchingEntry');
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);
@@ -411,9 +402,9 @@ class LexUploadCommands
 
         $file = $_FILES['file'];
         $fileName = $file['name'];
-        $mergeRule = $_POST['mergeRule'];
-        $skipSameModTime = $_POST['skipSameModTime'];
-        $deleteMatchingEntry = $_POST['deleteMatchingEntry'];
+        $mergeRule = self::extractStringFromArray($_POST, 'mergeRule', LiftMergeRule::IMPORT_WINS);
+        $skipSameModTime = self::extractBooleanFromArray($_POST, 'skipSameModTime');
+        $deleteMatchingEntry = self::extractBooleanFromArray($_POST, 'deleteMatchingEntry');
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);
@@ -485,5 +476,39 @@ class LexUploadCommands
 
         $response->data = $data;
         return $response;
+    }
+
+    /**
+     * @param array $array
+     * @param string $key
+     * @param string $defaultValue
+     * @return string
+     */
+    private static function extractStringFromArray($array, $key, $defaultValue): string
+    {
+        $result = $defaultValue;
+        if (array_key_exists($key, $array)) {
+            $result = $array[$key];
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $array
+     * @param string $key
+     * @param bool $defaultValue
+     * @return bool
+     */
+    private static function extractBooleanFromArray($array, $key, $defaultValue = false): bool
+    {
+        $result = $defaultValue;
+        if (array_key_exists($key, $array)) {
+            if (is_bool($array[$key])) {
+                $result = $array[$key];
+            } else {
+                $result = (strtolower($array[$key]) == 'true');
+            }
+        }
+        return $result;
     }
 }
