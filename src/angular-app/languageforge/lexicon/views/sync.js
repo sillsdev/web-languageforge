@@ -1,19 +1,20 @@
 'use strict';
 
 angular.module('lexicon.sync', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice'])
-  .controller('SyncCtrl', ['$scope', 'silNoticeService', 'sessionService', 'lexProjectService',
-    'lexRightsService', 'lexSendReceiveApi', 'lexSendReceive',
+  .controller('SyncCtrl', ['$scope', 'silNoticeService', 'asyncSession', 'lexProjectService',
+    'lexRightsService', 'lexSendReceiveApi', 'lexSendReceive', '$q',
   function ($scope, notice, sessionService, lexProjectService,
-            rightsService, sendReceiveApi, sendReceive) {
+            rightsService, sendReceiveApi, sendReceive, $q) {
     lexProjectService.setBreadcrumbs('sync', 'Synchronize');
 
     $scope.syncStateNotice = sendReceive.syncStateNotice;
     $scope.lastSyncNotice = sendReceive.lastSyncNotice;
 
-    rightsService.getRights().then(function(rights) {
+    $q.all([sessionService.getSession(), rightsService.getRights()]).then(function(data) {
+      var session = data[0], rights = data[1];
       $scope.showSyncButton = function showSyncButton() {
-        return !sessionService.session.project.isArchived && rights.canEditUsers() &&
-          sessionService.session.projectSettings.hasSendReceive;
+        return !session.project().isArchived && rights.canEditUsers() &&
+          session.projectSettings().hasSendReceive;
       };
     });
 
