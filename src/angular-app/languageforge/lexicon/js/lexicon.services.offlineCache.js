@@ -4,7 +4,7 @@ angular.module('lexicon.services')
 /**
  * implements an offline cache storage system
  */
-  .factory('lexiconOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache',
+  .factory('lexiconOfflineCache', ['$window', '$q', 'asyncSession', 'offlineCache',
     'offlineCacheUtils',
   function ($window, $q, sessionService, offlineCache, offlineCacheUtils) {
 
@@ -21,7 +21,7 @@ angular.module('lexicon.services')
      * @returns {promise}
      */
     function updateEntries(entries) {
-      return offlineCache.setObjectsInStore('entries', sessionService.getProjectId(), entries);
+      return offlineCache.setObjectsInStore('entries', sessionService.projectId(), entries);
     }
 
     return {
