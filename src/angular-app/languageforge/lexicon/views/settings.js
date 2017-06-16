@@ -3,18 +3,19 @@
 angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.ui.listview',
   'palaso.ui.typeahead', 'palaso.ui.archiveProject', 'palaso.ui.deleteProject', 'palaso.ui.notice',
   'palaso.ui.textdrop'])
-  .controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService',
+  .controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'asyncSession',
     'silNoticeService', 'lexProjectService',
-  function ($scope, $filter, userService, sessionService,
+  function ($scope, $filter, userService, ss,
             notice, lexProjectService) {
     // lexProjectService.setBreadcrumbs('settings', $filter('translate')('Project Settings'));
 
-    $scope.rights.archive = (!sessionService.session.project.isArchived &&
-      (sessionService.session.project.userIsProjectOwner ||
-      sessionService.hasSiteRight(sessionService.domain.PROJECTS,
-        sessionService.operation.ARCHIVE)));
-    $scope.rights.remove = sessionService.session.project.userIsProjectOwner ||
-      sessionService.hasSiteRight(sessionService.domain.PROJECTS, sessionService.operation.DELETE);
+    ss.getSession().then(function(session) {
+      $scope.rights.archive = (!session.project().isArchived &&
+        (session.project().userIsProjectOwner ||
+        session.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE)));
+      $scope.rights.remove = session.project().userIsProjectOwner ||
+        session.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
+    })
 
     readProject();
 
