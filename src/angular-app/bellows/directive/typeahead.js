@@ -51,7 +51,7 @@ angular.module('palaso.ui.typeahead', [])
         $scope.query = function () {
           if ($scope.term) {
             $scope.hide = false;
-            $scope.search($scope.term);
+            $scope.search($scope.term.normalize());
           } else {
             // Hide when no search term
             $scope.hide = true;

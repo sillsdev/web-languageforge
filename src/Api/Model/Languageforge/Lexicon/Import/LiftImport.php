@@ -1,8 +1,13 @@
 <?php
 
-namespace Api\Model\Languageforge\Lexicon;
+namespace Api\Model\Languageforge\Lexicon\Import;
 
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
+use Api\Model\Languageforge\Lexicon\LexEntryListModel;
+use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\LexOptionListItem;
+use Api\Model\Languageforge\Lexicon\LexOptionListModel;
+use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\FileUtilities;
 
@@ -332,7 +337,7 @@ class LiftImport
                     case 'WritingSystems':
                         $assetsPath = $assetsFolderPath . "/" . $folderName;
                         if (file_exists($folderPath) && is_dir($folderPath)) {
-                            FileUtilities::copyFolderTree($folderPath, $assetsPath);
+                            FileUtilities::copyFolderTreeNormalize($folderPath, $assetsPath);
                         }
                         break;
                     default:

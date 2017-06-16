@@ -3,11 +3,15 @@ div.dc-audio, .dc-audio > div {
 }
 
 div.dc-audio {
-    background-color: #f9f9f9;
+    min-height: 28px;
+    width: 100%;
+    background-color: #f6f6f6;
+    border: 1px solid #ccc;
+    border-radius: 0 4px 4px 0;
 }
 
-div.dc-audio {
-    min-height: 28px;
+.dc-audio .uploadCtl {
+    width: 100%;
 }
 
 .dc-audio .player {
@@ -30,8 +34,9 @@ div.dc-audio {
 .dc-audio .btn.dropdown-toggle, .dc-audio .btn.buttonAppend {
     margin-top: -1px;
     margin-bottom: -1px;
+    margin-right: -1px;
     border-radius: 0 4px 4px 0;
-    color: #e67345;
+    color: $lf-blue;
 }
 
 .dc-audio .caret {
@@ -43,8 +48,7 @@ div.dc-audio {
 }
 
 .dc-audio .drop-box {
-  padding: 14px;
-  margin-bottom: 20px;
+    padding: 14px;
 }
 
 .dc-audio p {

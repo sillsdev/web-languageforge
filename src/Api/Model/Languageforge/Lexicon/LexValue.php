@@ -6,7 +6,7 @@ class LexValue
 {
     public function __construct($value = '')
     {
-        $this->value = $value;
+        $this->value($value);
     }
 
     /** @var string */
@@ -19,7 +19,7 @@ class LexValue
      */
     public function value($value)
     {
-        $this->value = $value;
+        $this->value = \Normalizer::normalize($value);
     }
 
     public function __toString() {

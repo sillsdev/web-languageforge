@@ -138,6 +138,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           cancelAutoSaveTimer();
           sendReceive.setStateUnsynced();
           saveStatus = 'saving';
+        $scope.currentEntry = normalizeStrings($scope.currentEntry);
           var entryToSave = angular.copy($scope.currentEntry);
           if (entryIsNew(entryToSave)) {
             isNewEntry = true;
@@ -209,6 +210,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           (successCallback || angular.noop)();
         }
       };
+
+    function normalizeStrings(obj) {
+      return JSON.parse(JSON.stringify(obj).normalize());
+    }
 
       // conditionally register watch
       if ($scope.rights.canEditEntry()) {
