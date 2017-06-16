@@ -280,9 +280,9 @@ class AppModel {
                 "rapid-words",
                 "lexicon"
             ),
-            "waaqwiinaagiwritings" => array(),
-            "jamaicanpsalms.scriptureforge" => array(),
-            "demo.scriptureforge" => array(),
+            "waaqwiinaagiwritings" => array("sfchecks"),
+            "jamaicanpsalms.scriptureforge" => array("sfchecks"),
+            "demo.scriptureforge" => array("sfchecks"),
         );
 
         $siteLookup = preg_replace('/^(dev|e2etest|qa)?(\.)?(\S+)\.(org|local|com)$/', '$3', $website->domain);
