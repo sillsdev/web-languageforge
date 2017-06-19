@@ -167,14 +167,8 @@ angular.module('bellows.services')
       var deferred = $q.defer();
       openDbIfNecessary().then(function () {
         var items = [];
-        var index = db.transaction(storeName).objectStore(storeName);
-        var cursorRequest;
-
-        if (projectId) {
-          cursorRequest = index.openCursor(IDBKeyRange.only(projectId));
-        } else {
-          cursorRequest = index.openCursor();
-        }
+        var index = db.transaction(storeName).objectStore(storeName).index('projectId');
+        var cursorRequest = index.openCursor(IDBKeyRange.only(projectId));
 
         cursorRequest.onsuccess = function (e) {
           var cursor = e.target.result;
