@@ -3,7 +3,7 @@
 angular.module('bellows.services')
 
 // Lexicon Entry Service
-.factory('editorDataService', ['$q', 'sessionService', 'editorOfflineCache', 'commentsOfflineCache',
+.factory('editorDataService', ['$q', 'asyncSession', 'editorOfflineCache', 'commentsOfflineCache',
   'silNoticeService', 'lexCommentService',
 function ($q, sessionService, cache, commentsCache,
           notice, commentService) {
@@ -13,9 +13,10 @@ function ($q, sessionService, cache, commentsCache,
   var api = undefined;
 
   var showInitialEntries = function showInitialEntries() {
-    sortList(entries);
-    visibleEntries.length = 0; // clear out the array
-    visibleEntries.push.apply(visibleEntries, entries.slice(0, 50));
+    return sortList(entries).then(function(){
+      visibleEntries.length = 0; // clear out the array
+      visibleEntries.push.apply(visibleEntries, entries.slice(0, 50));
+    });
   };
 
   var showMoreEntries = function showMoreEntries() {
@@ -45,10 +46,11 @@ function ($q, sessionService, cache, commentsCache,
             // data found in cache
             console.log('data successfully loaded from the cache.  Downloading updates...');
             notice.setLoading('Downloading Updates to Dictionary.');
-            showInitialEntries();
-            refreshEditorData(projectObj.timestamp).then(function (result) {
-              deferred.resolve(result);
-              notice.cancelLoading();
+            showInitialEntries().then(function() {
+              refreshEditorData(projectObj.timestamp).then(function (result) {
+                deferred.resolve(result);
+                notice.cancelLoading();
+              });
             });
 
           } else {
@@ -306,30 +308,32 @@ function ($q, sessionService, cache, commentsCache,
   }
 
   function sortList(list) {
-    var config = sessionService.session.projectSettings.config;
-    var inputSystems = config.entry.fields.lexeme.inputSystems;
-    var lexemeA = '';
-    var lexemeB = '';
-    list.sort(function (a, b) {
-      var x;
-      var ws;
-      for (x = 0; x < inputSystems.length; x++) {
-        ws = inputSystems[x];
-        if (angular.isDefined(a.lexeme) && angular.isDefined(a.lexeme[ws])) {
-          lexemeA = a.lexeme[ws].value;
-          break;
+    return sessionService.getSession().then(function(session) {
+      var config = session.projectSettings().config;
+      var inputSystems = config.entry.fields.lexeme.inputSystems;
+      var lexemeA = '';
+      var lexemeB = '';
+      list.sort(function (a, b) {
+        var x;
+        var ws;
+        for (x = 0; x < inputSystems.length; x++) {
+          ws = inputSystems[x];
+          if (angular.isDefined(a.lexeme) && angular.isDefined(a.lexeme[ws])) {
+            lexemeA = a.lexeme[ws].value;
+            break;
+          }
         }
-      }
 
-      for (x = 0; x < inputSystems.length; x++) {
-        ws = inputSystems[x];
-        if (angular.isDefined(b.lexeme) && angular.isDefined(b.lexeme[ws])) {
-          lexemeB = b.lexeme[ws].value;
-          break;
+        for (x = 0; x < inputSystems.length; x++) {
+          ws = inputSystems[x];
+          if (angular.isDefined(b.lexeme) && angular.isDefined(b.lexeme[ws])) {
+            lexemeB = b.lexeme[ws].value;
+            break;
+          }
         }
-      }
 
-      return Intl.Collator(ws).compare(lexemeA, lexemeB);
+        return Intl.Collator(ws).compare(lexemeA, lexemeB);
+      });
     });
   }
 
@@ -339,16 +343,18 @@ function ($q, sessionService, cache, commentsCache,
    * @param list
    */
   function printLexemesInList(list) {
-    var config = sessionService.session.projectSettings.config;
-    var ws = config.entry.fields.lexeme.inputSystems[1];
-    var arr = [];
-    for (var i = 0; i < list.length; i++) {
-      if (angular.isDefined(list[i].lexeme[ws])) {
-        arr.push(list[i].lexeme[ws].value);
+    sessionService.getSession().then(function(session) {
+      var config = session.projectSettings().config;
+      var ws = config.entry.fields.lexeme.inputSystems[1];
+      var arr = [];
+      for (var i = 0; i < list.length; i++) {
+        if (angular.isDefined(list[i].lexeme[ws])) {
+          arr.push(list[i].lexeme[ws].value);
+        }
       }
-    }
 
-    console.log(arr);
+      console.log(arr);
+    })
   }
 
   return {
