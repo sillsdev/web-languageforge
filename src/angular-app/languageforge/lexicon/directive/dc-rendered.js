@@ -12,9 +12,8 @@ angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
       model: '=',
       hideIfEmpty: '=?'
     },
-    controller: ['$scope', 'sessionService', 'lexUtils', function ($scope, ss, utils) {
+    controller: ['$scope', 'asyncSession', 'lexUtils', function ($scope, ss, utils) {
       $scope.render = function () {
-        var optionlists = ss.session.projectSettings.optionlists;
         var sense;
         var lastPos;
         var pos;
@@ -23,32 +22,35 @@ angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
           senses: []
         };
         $scope.entry.word = utils.getCitationForms($scope.config, $scope.model);
-        angular.forEach($scope.model.senses, function (senseModel) {
-          pos = utils.getPartOfSpeechAbbreviation(senseModel.partOfSpeech, optionlists);
+        ss.getSession().then(function(session) {
+          var optionlists = session.projectSettings().optionlists;
+          angular.forEach($scope.model.senses, function (senseModel) {
+            pos = utils.getPartOfSpeechAbbreviation(senseModel.partOfSpeech, optionlists);
 
-          // do not repeat parts of speech
-          if (lastPos == pos) {
-            pos = '';
-          } else {
-            lastPos = pos;
-          }
+            // do not repeat parts of speech
+            if (lastPos == pos) {
+              pos = '';
+            } else {
+              lastPos = pos;
+            }
 
-          sense = {
-            meaning: utils.getMeanings($scope.config.fields.senses, senseModel),
-            partOfSpeech: pos,
-            examples: []
-          };
-          angular.forEach(senseModel.examples, function (exampleModel) {
-            sense.examples.push({
-              sentence:
-                utils.getExample($scope.config.fields.senses.fields.examples,
-                  exampleModel, 'sentence') }, {
-              sentenceTranslation:
-                utils.getExample($scope.config.fields.senses.fields.examples,
-                  exampleModel, 'translation') });
+            sense = {
+              meaning: utils.getMeanings($scope.config.fields.senses, senseModel),
+              partOfSpeech: pos,
+              examples: []
+            };
+            angular.forEach(senseModel.examples, function (exampleModel) {
+              sense.examples.push({
+                sentence:
+                  utils.getExample($scope.config.fields.senses.fields.examples,
+                    exampleModel, 'sentence') }, {
+                sentenceTranslation:
+                  utils.getExample($scope.config.fields.senses.fields.examples,
+                    exampleModel, 'translation') });
+            });
+
+            $scope.entry.senses.push(sense);
           });
-
-          $scope.entry.senses.push(sense);
         });
       };
 
