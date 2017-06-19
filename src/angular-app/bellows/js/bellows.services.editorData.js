@@ -35,25 +35,23 @@ function ($q, sessionService, cache, commentsCache,
    * Called when loading the controller
    * @return promise
    */
-  var loadEditorData = function loadEditorData() {
+  var loadEditorData = function loadEditorData(lexiconScope) {
     var deferred = $q.defer();
     if (entries.length == 0) { // first page load
       if (cache.canCache()) {
         notice.setLoading('Loading Dictionary');
         loadDataFromOfflineCache().then(function (projectObj) {
           if (projectObj.isComplete) {
-            // data found in cache
-            console.log('data successfully loaded from the cache.  Downloading updates...');
-            notice.setLoading('Downloading Updates to Dictionary.');
             showInitialEntries();
+            lexiconScope.finishedLoading = true;
+            notice.cancelLoading();
             refreshEditorData(projectObj.timestamp).then(function (result) {
               deferred.resolve(result);
-              notice.cancelLoading();
             });
 
           } else {
             entries = [];
-            console.log('cached data was found to be incomplete. Full download started...');
+            console.log('Editor: cached data was found to be incomplete. Full download started...');
             notice.setLoading('Downloading Full Dictionary.');
             notice.setPercentComplete(0);
             doFullRefresh().then(function (result) {
@@ -65,7 +63,7 @@ function ($q, sessionService, cache, commentsCache,
 
         }, function () {
           // no data found in cache
-          console.log('no data found in cache. Full download started...');
+          console.log('Editor: no data found in cache. Full download started...');
           notice.setLoading('Downloading Full Dictionary.');
           notice.setPercentComplete(0);
           doFullRefresh().then(function (result) {
@@ -75,7 +73,7 @@ function ($q, sessionService, cache, commentsCache,
           });
         });
       } else {
-        console.log('caching not enabled. Full download started...');
+        console.log('Editor: caching not enabled. Full download started...');
         notice.setLoading('Downloading Full Dictionary.');
         notice.setPercentComplete(0);
         doFullRefresh().then(function (result) {
@@ -137,6 +135,9 @@ function ($q, sessionService, cache, commentsCache,
     if (Offline.state == 'up') {
       api.dbeDtoUpdatesOnly(browserInstanceId, timestamp, function (result) {
         processEditorDto(result, true).then(function (result) {
+          if (result.data.itemCount > 0) {
+            console.log("Editor: processed " + result.data.itemCount + " entries from server.");
+          }
           deferred.resolve(result);
         });
       });
@@ -206,7 +207,7 @@ function ($q, sessionService, cache, commentsCache,
           cache.getProjectData().then(function (result) {
             commentService.comments.counts.userPlusOne = result.commentsUserPlusOne;
             endTime = performance.now();
-            console.log('Loaded ' + numOfEntries + ' entries from the cache in ' +
+            console.log('Editor: Loaded ' + numOfEntries + ' entries from cache in ' +
               ((endTime - startTime) / 1000).toFixed(2) + ' seconds');
             deferred.resolve(result);
 
