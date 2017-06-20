@@ -123,7 +123,9 @@ function ($scope, userService, util, notice, modalService, $window) {
       };
       modalService.showModal({}, modalOptions).then(function () {
         $scope.updateUser();
-      });
+
+        // catch is necessary to properly implement promise API, which angular 1.6 complains if we don't have a catch
+      }).catch(function (error) {});
     } else {
       $scope.updateUser();
     }

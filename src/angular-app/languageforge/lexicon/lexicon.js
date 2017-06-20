@@ -68,7 +68,7 @@ angular.module('lexicon',
     var pristineLanguageCode;
 
     $scope.finishedLoading = false;
-    editorService.loadEditorData().then(function () {
+    editorService.loadEditorData($scope).then(function () {
       $scope.finishedLoading = true;
       sendReceive.checkInitialState();
     });

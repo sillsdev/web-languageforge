@@ -6,7 +6,7 @@
                 <div data-ng-if="control.rights.canEditEntry() && $state.is('editor.entry')"
                      class="deleteX pictureX pull-right">
                     <i data-ng-click="deletePicture($index)" title="Delete Picture"
-                       class="fa fa-times"></i>
+                       class="fa fa-trash"></i>
                 </div>
                 <img class="img-fluid" data-ng-src="{{getPictureUrl(picture)}}" data-ng-attr-title="{{getPictureDescription(picture)}}"
                      data-ng-click="control.selectFieldForComment('pictures', picture, '', '', getPictureUrl(picture))"/>
