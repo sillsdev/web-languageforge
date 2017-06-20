@@ -34,7 +34,7 @@ angular.module('lexicon.services')
       this.configForUser = config;
       return config;
     }.bind(this));
-  }
+  }.bind(this);
 
   this.isTaskEnabled = function isTaskEnabled(taskName) {
     sessionService.getSession().then(function(session) {
