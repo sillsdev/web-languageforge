@@ -117,20 +117,13 @@ angular.module('bellows.services')
   };
 
   var promiseForSession;
-  var sessionFetched = false;
   function fetchSessionData(forceRefresh) {
-    if(!forceRefresh && !sessionFetched) {
-      // return a promise for the session embedded in the page if it's the only
-      // session already instantly available
-      return $q.when($window.session);
-    }
-    if (promiseForSession && !forceRefresh) return promiseForSession;
+    if(promiseForSession && !forceRefresh) return promiseForSession;
 
     var promise = api.call('session_getSessionData').then(function(response) {
       // TODO remove this writing to the sync session
       // This is so that refreshing the async session also updates the sync session
       // some parts of the front end expect changes to the session to propagate
-      sessionFetched = true;
       syncSession.session = response.data;
       return response.data;
     }).catch(function(response) {
