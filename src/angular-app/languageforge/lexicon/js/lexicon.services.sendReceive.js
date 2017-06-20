@@ -6,22 +6,20 @@ angular.module('lexicon.services')
     this.getUserProjects = api.method('sendReceive_getUserProjects');
     this.updateSRProject = api.method('sendReceive_updateSRProject');
     this.receiveProject = api.method('sendReceive_receiveProject');
-    //noinspection JSUnusedGlobalSymbols
     this.commitProject = api.method('sendReceive_commitProject');
     this.getProjectStatus = api.method('sendReceive_getProjectStatus');
 
   }])
-  .service('lexSendReceive', ['sessionService', 'silNoticeService', 'lexSendReceiveApi',
-    '$interval', 'lexEditorDataService', '$filter',
-    function (sessionService, notice, sendReceiveApi, $interval, editorData, $filter) {
-      const syncStatusInterval = 3000; // ms
-      const pollUpdateInterval = 32000; // ms
-      const cloneStatusInterval = 3000; // ms
-      const unknownSRState = 'LF_CHECK';
+  .service('lexSendReceive', ['asyncSession', 'silNoticeService', 'lexSendReceiveApi',
+    '$interval', 'lexEditorDataService', '$filter', '$q',
+    function (sessionService, notice, sendReceiveApi, $interval, editorData, $filter, $q) {
+      var syncStatusInterval = 3000; // ms
+      var pollUpdateInterval = 32000; // ms
+      var cloneStatusInterval = 3000; // ms
+      var unknownSRState = 'LF_CHECK';
 
       var status = undefined;
       var previousSRState = unknownSRState;
-      var projectSettings = sessionService.session.projectSettings;
       var syncProjectStatusSuccessCallback = angular.noop;
       var pollUpdateSuccessCallback = angular.noop;
       var cloneProjectStatusSuccessCallback = angular.noop;
@@ -29,14 +27,19 @@ angular.module('lexicon.services')
       var pollUpdateTimer;
       var cloneStatusTimer;
       var pendingMessageId;
+      var projectSettings;
 
-      if (angular.isDefined(projectSettings) &&
-        angular.isDefined(projectSettings.sendReceive) &&
-        angular.isDefined(projectSettings.sendReceive.status)
-      ) {
-        status = projectSettings.sendReceive.status;
-        previousSRState = status.SRState;
-      }
+      sessionService.getSession().then(function(session) {
+        projectSettings = session.projectSettings();
+
+        if (angular.isDefined(projectSettings) &&
+          angular.isDefined(projectSettings.sendReceive) &&
+          angular.isDefined(projectSettings.sendReceive.status)
+        ) {
+          status = projectSettings.sendReceive.status;
+          previousSRState = status.SRState;
+        }
+      });
 
       this.clearState = function clearState() {
         if (!status || angular.isUndefined(status)) {
@@ -50,21 +53,22 @@ angular.module('lexicon.services')
       // SRState is CLONING or SYNCING
       // logic should match PHP SendReceiveCommands::isInProgress
       this.isInProgress = function isInProgress() {
-        return this.isSendReceiveProject() &&
-          angular.isDefined(status) && angular.isDefined(status.SRState) &&
-          (status.SRState === 'CLONING' || status.SRState === 'LF_CLONING' ||
-          status.SRState === 'SYNCING');
+        return angular.isDefined(status) && angular.isDefined(status.SRState) &&
+            (status.SRState === 'CLONING' || status.SRState === 'LF_CLONING' ||
+            status.SRState === 'SYNCING');
       };
 
       // S/R isInProgress(), SRState is unknown, or SRState is PENDING
       this.isStarted = function isStarted() {
-        return this.isInProgress() || (this.isSendReceiveProject() && angular.isDefined(status) &&
+        return this.isInProgress() || (angular.isDefined(status) &&
           angular.isDefined(status.SRState) &&
           (status.SRState === unknownSRState || status.SRState === 'PENDING'));
       };
 
       this.isSendReceiveProject = function isSendReceiveProject() {
-        return projectSettings.hasSendReceive;
+        return sessionService.getSession().then(function(session) {
+          return session.projectSettings().hasSendReceive;
+        });
       };
 
       this.setSyncProjectStatusSuccessCallback =
@@ -74,24 +78,26 @@ angular.module('lexicon.services')
 
       // Called after a lexicon project page is done loading
       this.checkInitialState = function checkInitialState() {
-        if (this.isSendReceiveProject()) {
-          if (!status || angular.isUndefined(status)) {
-            this.clearState();
-            getSyncProjectStatus();
-            this.startSyncStatusTimer();
-          } else if (this.isInProgress()) {
-            this.setSyncStarted();
-          } else {
-            if (status.SRState === unknownSRState) {
+        this.isSendReceiveProject().then(function(isSR) {
+          if (isSR) {
+            if (!status || angular.isUndefined(status)) {
               this.clearState();
-            }
+              getSyncProjectStatus();
+              this.startSyncStatusTimer();
+            } else if (this.isInProgress()) {
+              this.setSyncStarted();
+            } else {
+              if (status.SRState === unknownSRState) {
+                this.clearState();
+              }
 
+              this.startPollUpdateTimer();
+            }
+          } else {
             this.startPollUpdateTimer();
           }
-        } else {
-          this.startPollUpdateTimer();
-        }
-      };
+        }.bind(this))
+      }.bind(this);
 
       this.setSyncStarted = function setSyncStarted() {
         notice.cancelProgressBar();
@@ -102,60 +108,60 @@ angular.module('lexicon.services')
       };
 
       this.setStateUnsynced = function setStateUnsynced() {
-        if (this.isSendReceiveProject()) {
-          previousSRState = status.SRState;
-          status.SRState = 'LF_UNSYNCED';
-        }
+        return this.isSendReceiveProject().then(function(isSR) {
+          if (isSR) {
+            previousSRState = status.SRState;
+            status.SRState = 'LF_UNSYNCED';
+          }
+        })
       };
 
       var getSyncProjectStatus = function () {
-        sendReceiveApi.getProjectStatus(function (result) {
-          if (result.ok) {
-            if (!result.data) {
-              this.clearState();
-              this.startPollUpdateTimer();
-              notice.cancelLoading();
-              return;
-            }
+        sendReceiveApi.getProjectStatus().then(function(result) {
+          if (!result.data) {
+            this.clearState();
+            this.startPollUpdateTimer();
+            notice.cancelLoading();
+            return;
+          }
 
-            previousSRState = status.SRState;
-            status = result.data;
+          previousSRState = status.SRState;
+          status = result.data;
 
-            if (status.PercentComplete > 0) {
-              notice.setPercentComplete(status.PercentComplete);
-            } else {
-              notice.cancelProgressBar();
-            }
+          if (status.PercentComplete > 0) {
+            notice.setPercentComplete(status.PercentComplete);
+          } else {
+            notice.cancelProgressBar();
+          }
 
-            if (!this.isInProgress()) {
-              this.startPollUpdateTimer();
-              notice.cancelLoading();
-            }
+          if (!this.isInProgress()) {
+            this.startPollUpdateTimer();
+            notice.cancelLoading();
+          }
 
-            console.log(status);
+          console.log(status);
 
-            switch (status.SRState) {
-              case 'PENDING' :
-                pendingMessageId = notice.push(notice.INFO,
-                  'Please wait while other projects are being synchronized. ' +
-                  'You may continue to edit this project until it starts to synchronize.');
-                break;
-              case 'SYNCING' :
-                notice.removeById(pendingMessageId);
-                notice.setLoading('Synchronizing with LanguageDepot.org...');
-                break;
-              case 'HOLD' :
-                notice.push(notice.ERROR, 'Well this is embarrassing. Something went ' +
-                    'wrong and your project is now on hold. Contact an administrator.');
-                break;
-              case 'IDLE' :
-                if (previousSRState === 'SYNCING') {
-                  notice.push(notice.SUCCESS, 'The project was successfully synchronized.');
-                }
+          switch (status.SRState) {
+            case 'PENDING' :
+              pendingMessageId = notice.push(notice.INFO,
+                'Please wait while other projects are being synchronized. ' +
+                'You may continue to edit this project until it starts to synchronize.');
+              break;
+            case 'SYNCING' :
+              notice.removeById(pendingMessageId);
+              notice.setLoading('Synchronizing with LanguageDepot.org...');
+              break;
+            case 'HOLD' :
+              notice.push(notice.ERROR, 'Well this is embarrassing. Something went ' +
+                  'wrong and your project is now on hold. Contact an administrator.');
+              break;
+            case 'IDLE' :
+              if (previousSRState === 'SYNCING') {
+                notice.push(notice.SUCCESS, 'The project was successfully synchronized.');
+              }
 
-                (syncProjectStatusSuccessCallback || angular.noop)();
-                break;
-            }
+              (syncProjectStatusSuccessCallback || angular.noop)();
+              break;
           }
         }.bind(this));
       }.bind(this);
@@ -203,7 +209,7 @@ angular.module('lexicon.services')
       };
 
       this.lastSyncNotice = function lastSyncNotice() {
-        if (angular.isUndefined(status)) return;
+        if (angular.isUndefined(status) || angular.isUndefined(projectSettings)) return;
 
         switch (status.SRState) {
           case 'SYNCING':
@@ -238,33 +244,36 @@ angular.module('lexicon.services')
       };
 
       var getPollUpdate = function () {
-        editorData.refreshEditorData().then(function (result) {
-          if (result.ok) {
-            if (this.isSendReceiveProject()) {
-              if (angular.isUndefined(result.data) ||
-                angular.isUndefined(result.data.sendReceive) ||
-                angular.isUndefined(result.data.sendReceive.status)
-              ) {
-                this.clearState();
-                return;
-              }
+        return $q.all({
+          editorData: editorData.refreshEditorData(),
+          isSR: this.isSendReceiveProject()
+        }).then(function(data) {
+          if (data.isSR) {
+            var editorData = data.editorData.data;
+            if (angular.isUndefined(editorData) ||
+              angular.isUndefined(editorData.sendReceive) ||
+              angular.isUndefined(editorData.sendReceive.status)
+            ) {
+              this.clearState();
+              return;
+            }
 
-              previousSRState = status.SRState;
-              status = result.data.sendReceive.status;
-              if (this.isInProgress()) {
-                (pollUpdateSuccessCallback || angular.noop)();
-                this.setSyncStarted();
-              } else if (previousSRState === 'LF_UNSYNCED' && status.SRState === 'IDLE') {
-                status.SRState = previousSRState;
-              } else if (previousSRState === unknownSRState) {
-                this.clearState();
-              } else {
-                (pollUpdateSuccessCallback || angular.noop)();
-              }
+            previousSRState = status.SRState;
+            status = editorData.sendReceive.status;
+            if (this.isInProgress()) {
+              (pollUpdateSuccessCallback || angular.noop)();
+              this.setSyncStarted();
+            } else if (previousSRState === 'LF_UNSYNCED' && status.SRState === 'IDLE') {
+              status.SRState = previousSRState;
+            } else if (previousSRState === unknownSRState) {
+              this.clearState();
             } else {
               (pollUpdateSuccessCallback || angular.noop)();
             }
+          } else {
+            (pollUpdateSuccessCallback || angular.noop)();
           }
+
         }.bind(this));
       }.bind(this);
 
