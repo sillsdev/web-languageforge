@@ -35,7 +35,7 @@ angular.module('bellows.services')
     this.listUsers = api.method('project_usersDto');
     this.sendJoinRequest = api.method('project_sendJoinRequest');
     this.getJoinRequests = api.method('project_getJoinRequests');
-    this.getDto = api.method('project_management_dto'); // TODO this is just for names of reports right? If so rename
+    this.getDto = api.method('project_management_dto');
 
     this.runReport = function runReport(reportName, params, callback) {
       params = params || [];

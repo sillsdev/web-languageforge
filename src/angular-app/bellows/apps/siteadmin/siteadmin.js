@@ -17,7 +17,7 @@ angular.module('siteadmin', [
     };
 
     sessionService.getSession().then(function(session) {
-      $scope.userId = session.currentUserId();
+      $scope.userId = session.userId();
     })
 
     $scope.focusInput = function () {

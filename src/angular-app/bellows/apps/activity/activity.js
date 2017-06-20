@@ -89,8 +89,8 @@ angular.module('activity',
         $scope.showAllActivity = false;
         $scope.filteredActivities = [];
         angular.forEach($scope.activities, function (activity) {
-          if (activity.userRef && activity.userRef.id == session.currentUserId() ||
-            activity.userRef2 && activity.userRef2.id == session.currentUserId()
+          if (activity.userRef && activity.userRef.id == session.userId() ||
+            activity.userRef2 && activity.userRef2.id == session.userId()
           ) {
             $scope.filteredActivities.push(activity);
           }

@@ -54,7 +54,7 @@ angular.module('usermanagement.members',
 
         projectService.removeUsers(userIds).then(function () {
           ss.getSession().then(function(session) {
-            if (userIds.indexOf(session.currentUserId()) != -1) {
+            if (userIds.indexOf(session.userId()) != -1) {
               // redirect if you just removed yourself from the project
               notice.push(notice.SUCCESS, 'You have been removed from this project');
               $window.location.href = '/app/projects';
