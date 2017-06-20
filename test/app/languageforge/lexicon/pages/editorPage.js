@@ -264,7 +264,7 @@ function EditorPage() {
       images: editorUtil.getOneField('Pictures').all(by.css('img')),
       captions: editorUtil.getOneField('Pictures')
         .all(by.css('.input-group > .dc-formattedtext .ta-bind')),
-      removeImages: editorUtil.getOneField('Pictures').all(by.className('fa-times')),
+      removeImages: editorUtil.getOneField('Pictures').all(by.className('fa-trash')),
       getFileName: function (index) {
         return editorUtil.getOneFieldValue('Pictures').then(function (pictures) {
           return pictures[index].fileName;
@@ -353,7 +353,7 @@ function EditorPage() {
         .element(by.css('.commentRegarding')),
       regarding: {
         clearBtn: this.commentDiv.element(by.css('.newCommentForm'))
-          .element(by.css('.commentRegarding')).element(by.css('i.fa-times')),
+          .element(by.css('.commentRegarding')).element(by.css('i.fa-trash')),
         fieldLabel: this.commentDiv.element(by.css('.newCommentForm'))
           .element(by.css('.commentRegarding')).element(by.css('.regardingFieldName')),
         fieldWsid: this.commentDiv.element(by.css('.newCommentForm'))
@@ -460,7 +460,7 @@ function EditorPage() {
       author: div.element(by.model('reply.authorInfo.createdByUserRef.name')),
       date: div.element(by.model('reply.authorInfo.createdDate | relativetime')),
       editLink: div.element(by.css('editReplyLink i.fa-chevron-sign-up')),
-      deleteLink: div.element(by.css('deleteReplyLink i.fa-times')),
+      deleteLink: div.element(by.css('deleteReplyLink i.fa-trash')),
       edit: {
         input: div.element(by.css('form input')),
         submit: div.element(by.css('form button[type="submit"]')),
