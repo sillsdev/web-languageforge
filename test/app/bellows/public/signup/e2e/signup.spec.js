@@ -115,15 +115,20 @@ describe('E2E testing: Signup app', function () {
     browser.wait(expectedCondition.urlContains('projects'), CONDITION_TIMEOUT);
 
     // Verify new user logged in and redirected to projects page
-    browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn), CONDITION_TIMEOUT); // flaky wait (can cause "document unloaded while waiting for result")
-    expect(projectsPage.createBtn.isDisplayed()).toBe(true);
+    browser.getCurrentUrl().then(function(){
+      expect(browser.getCurrentUrl())
+        .toContain('/app/projects');
+    });
   });
 
   it('redirects to projects page if already logged in', function () {
     loginPage.logout();
     loginPage.loginAsUser();
     page.get();
-    browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn), CONDITION_TIMEOUT); // flaky wait (can cause "document unloaded while waiting for result")
-    expect(projectsPage.createBtn.isDisplayed()).toBe(true);
+    browser.wait(expectedCondition.urlContains('projects'), CONDITION_TIMEOUT);
+    browser.getCurrentUrl().then(function(){
+      expect(browser.getCurrentUrl())
+        .toContain('/app/projects');
+    });
   });
 });

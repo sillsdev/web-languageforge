@@ -381,3 +381,13 @@ if ($site == 'scriptureforge') {
     $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
     copy(TestPath . "common/$fileName", $tmpFilePath);
 }
+
+if ($website->domain == 'jamaicanpsalms.scriptureforge.local') {
+    $jpProject = ProjectCommands::createProject(
+        "The Jamaican Psalms Project",
+        "jamaican_psalms",
+        SfProjectModel::SFCHECKS_APP,
+        $adminUserId,
+        $website
+    );
+}

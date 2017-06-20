@@ -35,15 +35,14 @@
                     <button id="toCommentsLink"
                        class="btn btn-primary" data-ng-click="showComments()" uib-tooltip="{{'Show Comments'|translate}}">
                         <current-entry-comment-count></current-entry-comment-count>
-                        <i class="fa fa-comments"></i>
+                        <i class="fa fa-comments commentColor"></i>
                     </button>
                 </div>
                 <div class="pull-right" data-ng-show="$state.is('editor.comments')">
-                    <a id="commentsCount"
-                       class="btn btn-warning disabled" data-ng-click="showComments()" uib-tooltip="{{'Show Comments'|translate}}">
+                    <div id="commentsCount" class="btn">
                         <current-entry-comment-count></current-entry-comment-count>
-                        <i class="fa fa-comments"></i>
-                    </a>
+                        <i class="fa fa-comments commentColor"></i>
+                    </div>
                 </div>
             </div>
         </div>
