@@ -43,7 +43,7 @@ function ConfigurationPage() {
       addIpa:     this.tabDivs.first().element(by.partialLinkText('Add IPA')),
       addVoice:   this.tabDivs.first().element(by.partialLinkText('Add Voice')),
       addVariant: this.tabDivs.first().element(by.partialLinkText('Add a variant')),
-      remove:     this.tabDivs.first().element(by.className('fa fa-times'))
+      remove:     this.tabDivs.first().element(by.className('fa fa-trash'))
     },
     getLanguageByName: function getLanguageByName(languageName) {
       return element(by.css('div.tab-pane.active div.col-md-3 dl.picklists'))
