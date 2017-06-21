@@ -14,18 +14,18 @@ angular.module('palaso.ui.comments')
       },
       controller: ['$scope', '$filter', 'lexCommentService', 'asyncSession', 'modalService',
         'lexConfigService', '$q',
-      function ($scope, $filter, commentService, sessionService, modal, lexConfig, $q) {
+      function ($scope, $filter, commentService, ss, modal, lexConfig, $q) {
         // notes by cjh 2015-03
         // define this method on the control (which happens to be an ancestor scope) because it is
         // used by a sibling directive (dc-entry)
         // an alternative implementation to this would be to use the commentService to contain this
         // method (but then the comment service would become lex specific which is a downside
-        $q.all([lexConfig.refresh(), sessionService.getSession()]).then(function(data) {
+        $q.all([lexConfig.refresh(), ss.getSession()]).then(function(data) {
           var config = data[0], session = data[1];
           $scope.config = config;
           $scope.control.selectFieldForComment =
           function selectFieldForComment(fieldName, model, inputSystem, multioptionValue, pictureFilePath) {
-            var canComment = session.hasProjectRight(session.domain.COMMENTS, session.operation.CREATE);
+            var canComment = session.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE);
             if(!canComment) return;
 
             lexConfig.getFieldConfig(fieldName).then(function(fieldConfig){
