@@ -4,17 +4,19 @@ angular.module('lexicon.services')
   .service('lexProjectService', ['apiService', 'sessionService', 'breadcrumbService', 'lexLinkService',
   function (api, ss, breadcrumbService, linkService) {
 
-    this.setBreadcrumbs = function setBreadcrumbs(view, label) {
-      breadcrumbService.set('top', [{
-        href: '/app/projects',
-        label: 'My Projects'
-      }, {
-        href: linkService.project(),
-        label: ss.session.project.projectName
-      }, {
-        href: linkService.projectView(view),
-        label: label
-      }]);
+    this.setBreadcrumbs = function (view, label) {
+      ss.getSession().then(function(session) {
+        breadcrumbService.set('top', [{
+          href: '/app/projects',
+          label: 'My Projects'
+        }, {
+          href: linkService.projectUrl(),
+          label: session.project().projectName
+        }, {
+          href: linkService.projectView(view),
+          label: label
+        }]);
+      });
     };
 
     this.baseViewDto = function baseViewDto(view, label, callback) {

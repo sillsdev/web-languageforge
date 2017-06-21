@@ -22,15 +22,15 @@ angular.module('palaso.ui.deleteProject', ['bellows.services'])
               bodyText: message
             };
             modalService.showModal({}, modalOptions).then(function () {
-              var projectIds = [ss.session.project.id];
-              $scope.actionInProgress = true;
-              projectService.remove(projectIds, function (result) {
-                if (result.ok) {
+              ss.getSession().then(function(session) {
+                var projectIds = [session.project().id];
+                $scope.actionInProgress = true;
+                projectService.remove(projectIds).then(function() {
                   notice.push(notice.SUCCESS, 'The project was permanently deleted');
                   $window.location.href = '/app/projects';
-                } else {
+                }).catch(function() {
                   $scope.actionInProgress = false;
-                }
+                });
               });
             });
           };

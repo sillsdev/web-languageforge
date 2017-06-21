@@ -4,16 +4,16 @@ angular.module('lexicon.services')
 
 // Lexicon Link Service
 .service('lexLinkService', ['$location', 'sessionService', function ($location, ss) {
-  this.project = function project() {
+  this.projectUrl = function projectUrl() {
     return '/app/lexicon/' + this.getProjectId() + '#!/';
   };
 
   this.projectView = function projectView(view) {
-    return this.project() + view;
+    return this.projectUrl() + view;
   };
 
   this.getProjectId = function getProjectId() {
-    return ss.session.project.id;
+    return ss.projectId();
   };
 }]);
 

@@ -3,7 +3,7 @@
 angular.module('lexicon.services')
 
 // Lexicon Entry Service
-.service('lexEntryApiService', ['apiService', 'sessionService', function (api, ss) {
+.service('lexEntryApiService', ['apiService', function (api) {
 
   this.update = api.method('lex_entry_update');
   this.remove = api.method('lex_entry_remove');

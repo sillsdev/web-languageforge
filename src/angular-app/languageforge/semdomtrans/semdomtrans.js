@@ -50,10 +50,6 @@ angular.module('semdomtrans',
     'sessionService', 'lexCommentService', 'offlineCache', '$q', 'silNoticeService',
   function ($scope, editorDataService, editorApi,
             ss, commentsSerivce, offlineCache, $q, notice) {
-    $scope.rights = {};
-    $scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE);
-    $scope.rights.create = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE);
-    $scope.rights.edit = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
 
     $scope.items = editorDataService.entries;
     $scope.workingSets = editorDataService.workingSets;
@@ -66,61 +62,61 @@ angular.module('semdomtrans',
     }
 
     $scope.exportProject = function exportProject() {
-     notice.setLoading('Exporting Semantic Domain Data to XML File');
-     editorApi.exportProject(function (result) {
-       notice.cancelLoading();
-       if (result.ok) {
-         window.location = 'http://' + result.data;
-       }
-     });
-   };
+      notice.setLoading('Exporting Semantic Domain Data to XML File');
+      editorApi.exportProject(function (result) {
+        notice.cancelLoading();
+        if (result.ok) {
+          window.location = 'http://' + result.data;
+        }
+      });
+    };
 
     $scope.includedItems = {};
     $scope.loadingDto = false;
 
     // permissions stuff
-    $scope.rights = {
-     canEditProject: function canEditProject() {
-       return ss.hasProjectRight(ss.domain.PROJECTS, ss.operation.EDIT);
-     },
+    ss.getSession().then(function(session) {
+      $scope.rights = {
+        canEditProject: function canEditProject() {
+          return session.hasProjectRight(ss.domain.PROJECTS, ss.operation.EDIT);
+        },
 
-     canEditEntry: function canEditEntry() {
-       return ss.hasProjectRight(ss.domain.ENTRIES, ss.operation.EDIT);
-     },
+        canEditEntry: function canEditEntry() {
+          return session.hasProjectRight(ss.domain.ENTRIES, ss.operation.EDIT);
+        },
 
-     canDeleteEntry: function canDeleteEntry() {
-       return ss.hasProjectRight(ss.domain.ENTRIES, ss.operation.DELETE);
-     },
+        canDeleteEntry: function canDeleteEntry() {
+          return session.hasProjectRight(ss.domain.ENTRIES, ss.operation.DELETE);
+        },
 
-     canComment: function canComment() {
-       return ss.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE);
-     },
+        canComment: function canComment() {
+          return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE);
+        },
 
-     canDeleteComment: function canDeleteComment(commentAuthorId) {
-       if (ss.session.userId == commentAuthorId) {
-         return ss.hasProjectRight(ss.domain.COMMENTS, ss.operation.DELETE_OWN);
-       } else {
-         return ss.hasProjectRight(ss.domain.COMMENTS, ss.operation.DELETE);
-       }
-     },
+        canDeleteComment: function canDeleteComment(commentAuthorId) {
+          if (session.userId() == commentAuthorId) {
+            return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.DELETE_OWN);
+          } else {
+            return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.DELETE);
+          }
+        },
 
-     canEditComment: function canEditComment(commentAuthorId) {
-       if (ss.session.userId == commentAuthorId) {
-         return ss.hasProjectRight(ss.domain.COMMENTS, ss.operation.EDIT_OWN);
-       } else {
-         return false;
-       }
-     },
+        canEditComment: function canEditComment(commentAuthorId) {
+          if (session.userId() == commentAuthorId) {
+            return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.EDIT_OWN);
+          } else {
+            return false;
+          }
+        },
 
-     canUpdateCommentStatus: function canUpdateCommentStatus() {
-       return ss.hasProjectRight(ss.domain.COMMENTS, ss.operation.EDIT);
-     }
-   };
-    $scope.project = ss.session.project;
-    $scope.projectSettings = ss.session.projectSettings;
-
-    $scope.currentUserRole = ss.session.projectSettings.currentUserRole;
-
+        canUpdateCommentStatus: function canUpdateCommentStatus() {
+          return session.hasProjectRight(ss.domain.COMMENTS, ss.operation.EDIT);
+        }
+      };
+      $scope.project = session.project();
+      $scope.projectSettings = session.projectSettings();
+      $scope.currentUserRole = session.projectSettings().currentUserRole;
+      });
   }])
 
 // not sure if we need breadcrumbs for this app

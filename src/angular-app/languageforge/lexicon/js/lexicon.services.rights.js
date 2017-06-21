@@ -4,64 +4,56 @@ angular.module('lexicon.services')
   .service('lexRightsService', ['sessionService',  'lexSendReceive',
   function (sessionService, sendReceive) {
 
-    this.canRemoveUsers = function canRemoveUsers() {
-      if (sendReceive.isInProgress()) return false;
+    var session;
 
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-        sessionService.operation.DELETE);
-    };
+    /**
+     * This helper returns a function with a boolean return type indicating whether an
+     * operation is permitted.
+     * @param {boolean} allowArchived - When false, the resulting function will always return false
+     * if the project is archived.
+     * @param {number} domain - An enum value from sessionService.domain indicating the domain of
+     * the operation.
+     * @param {number} operation - An enum value from sessionService.operation indicating the
+     * operation for which the user's permissions should be checked.
+     * @param {projectOwnerAllowed} - When this is true and the current project is owned by the
+     * current user, the user will be considered to always have permission.
+     * @return {Function<boolean>} - A function that will indicate whether the user is
+     * allowed to perform the given operation.
+     */
+    function condition(allowArchived, domain, operation, projectOwnerAllowed) {
+      return function() {
+        if(sendReceive.isInProgress()) return false;
+        else if(!session.project()) return false;
+        else if(!allowArchived && session.project().isArchived) return false;
+        else {
+          var hasRight = session.hasProjectRight(domain, operation);
+          // The case where user does not explicitly have a right, but does because user is owner
+          if(projectOwnerAllowed) hasRight = hasRight || session.project().userIsProjectOwner;
+          return hasRight;
+        }
+      };
+    }
 
-    this.canCreateUsers = function canCreateUsers() {
-      if (sendReceive.isInProgress()) return false;
+    var Rights = (new function () {
+      // domain and operation
+      var d = sessionService.domain;
+      var o = sessionService.operation;
 
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-        sessionService.operation.CREATE);
-    };
+      this.canRemoveUsers = condition(true, d.USERS, o.DELETE);
+      this.canCreateUsers = condition(true, d.USERS, o.CREATE)
+      this.canEditUsers = condition(false, d.USERS, o.EDIT);
+      this.canArchiveProject = condition(true, d.PROJECTS, o.ARCHIVE, true);
+      this.canEditProject = condition(false, d.PROJECTS, o.EDIT);
+      this.canEditEntry = condition(false, d.ENTRIES, o.EDIT);
+      this.canDeleteEntry = condition(false, d.ENTRIES, o.DELETE);
+      this.canComment = condition(false, d.COMMENTS, o.CREATE);
+    });
 
-    this.canEditUsers = function canEditUsers() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-        sessionService.operation.EDIT);
-    };
-
-    this.canArchiveProject = function canArchiveProject() {
-      if (sendReceive.isInProgress() || !angular.isDefined(sessionService.session.project))
-        return false;
-
-      return (sessionService.session.project.userIsProjectOwner ||
-        sessionService.hasSiteRight(sessionService.domain.PROJECTS,
-          sessionService.operation.ARCHIVE));
-    };
-
-    this.canEditProject = function canEditProject() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.PROJECTS,
-        sessionService.operation.EDIT);
-    };
-
-    this.canEditEntry = function canEditEntry() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
-        sessionService.operation.EDIT);
-    };
-
-    this.canDeleteEntry = function canDeleteEntry() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
-        sessionService.operation.DELETE);
-    };
-
-    this.canComment = function canComment() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
-        sessionService.operation.CREATE);
-    };
-
-  }])
-
-  ;
+    // Promise<Rights>
+    this.getRights = function() {
+      return sessionService.getSession().then(function(sessionData) {
+        session = sessionData;
+        return Rights;
+      });
+    }
+  }]);

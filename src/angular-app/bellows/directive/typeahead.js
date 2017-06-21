@@ -126,6 +126,7 @@ angular.module('palaso.ui.typeahead', [])
         });
 
         scope.$watch('items', function (items) {
+          if(!items) return;
           controller.activate(items.length ? items[0] : null);
         });
 
