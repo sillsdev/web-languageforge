@@ -4,7 +4,7 @@ angular.module('usermanagement.members',
   ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead',
     'ui.bootstrap', 'palaso.ui.notice', 'ngRoute'])
   .controller('MembersCtrl', ['$scope', 'userService', 'projectService',
-    'asyncSession', 'silNoticeService', '$window',
+    'sessionService', 'silNoticeService', '$window',
     function ($scope, userService, projectService, ss, notice, $window) {
       $scope.userFilter = '';
 

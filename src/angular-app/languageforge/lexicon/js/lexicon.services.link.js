@@ -3,7 +3,7 @@
 angular.module('lexicon.services')
 
 // Lexicon Link Service
-.service('lexLinkService', ['$location', 'asyncSession', function ($location, ss) {
+.service('lexLinkService', ['$location', 'sessionService', function ($location, ss) {
   this.projectUrl = function projectUrl() {
     return '/app/lexicon/' + this.getProjectId() + '#!/';
   };

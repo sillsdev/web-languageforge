@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sf.ui.invitefriend', ['bellows.services', 'palaso.ui.notice'])
-  .controller('inviteAFriend', ['$scope', 'userService', 'asyncSession', 'silNoticeService', '$location', '$rootScope', '$routeParams',
+  .controller('inviteAFriend', ['$scope', 'userService', 'sessionService', 'silNoticeService', '$location', '$rootScope', '$routeParams',
   function($scope, userService, ss, notice, $location, $rootScope, $routeParams) {
 
     $scope.showInviteForm = false;

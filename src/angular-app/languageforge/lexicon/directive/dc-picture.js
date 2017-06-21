@@ -13,7 +13,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       pictures: '=',
       control: '='
     },
-    controller: ['$scope', '$state', 'Upload', '$filter', 'asyncSession', 'lexProjectService',
+    controller: ['$scope', '$state', 'Upload', '$filter', 'sessionService', 'lexProjectService',
       'lexConfigService', 'silNoticeService', 'modalService',
     function ($scope, $state, Upload, $filter, sessionService, lexProjectService,
               lexConfigService, notice, modalService) {

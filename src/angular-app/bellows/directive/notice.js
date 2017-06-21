@@ -118,7 +118,7 @@ angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnima
       SUCCESS: function () { return 'success'; }
     };
   }])
-  .directive('silNotices', ['silNoticeService', 'asyncSession',
+  .directive('silNotices', ['silNoticeService', 'sessionService',
   function (noticeService, sessionService) {
     return {
       restrict: 'EA',

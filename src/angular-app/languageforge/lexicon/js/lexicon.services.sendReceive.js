@@ -10,7 +10,7 @@ angular.module('lexicon.services')
     this.getProjectStatus = api.method('sendReceive_getProjectStatus');
 
   }])
-  .service('lexSendReceive', ['asyncSession', 'silNoticeService', 'lexSendReceiveApi',
+  .service('lexSendReceive', ['sessionService', 'silNoticeService', 'lexSendReceiveApi',
     '$interval', 'lexEditorDataService', '$filter', '$q',
     function (sessionService, notice, sendReceiveApi, $interval, editorData, $filter, $q) {
       var syncStatusInterval = 3000; // ms

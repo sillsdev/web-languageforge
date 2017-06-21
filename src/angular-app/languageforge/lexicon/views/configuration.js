@@ -5,7 +5,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'pa
   'palaso.util.model.transform'])
 
 // Configuration Controller
-.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'asyncSession',
+.controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService',
   '$filter', '$uibModal', 'lexConfigService', 'utilService', 'lexSendReceive',
 function ($scope, notice, lexProjectService, sessionService,
           $filter, $modal, lexConfig, util, sendReceive) {
@@ -577,7 +577,7 @@ function ($scope, notice, lexProjectService, sessionService,
 }])
 
 // Field Configuration Controller
-.controller('FieldConfigCtrl', ['$scope', '$uibModal', 'asyncSession',
+.controller('FieldConfigCtrl', ['$scope', '$uibModal', 'sessionService',
 function ($scope, $modal, sessionService) {
   $scope.showAllFields = false;
 

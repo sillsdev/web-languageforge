@@ -3,7 +3,7 @@
 angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootstrap',
   'palaso.ui.notice', 'palaso.ui.utils'
 ])
-  .controller('ProjectsCtrl', ['$scope', 'projectService', 'asyncSession', 'silNoticeService',
+  .controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService',
   function ($scope, projectService, ss, notice) {
     $scope.finishedLoading = false;
 

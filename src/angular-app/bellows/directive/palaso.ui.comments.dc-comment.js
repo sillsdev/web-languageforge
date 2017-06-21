@@ -7,7 +7,7 @@ angular.module('palaso.ui.comments')
       restrict: 'E',
       templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion +
         '/palaso.ui.comments.dc-comment.html',
-      controller: ['$scope', 'lexCommentService', 'asyncSession', 'utilService', 'modalService',
+      controller: ['$scope', 'lexCommentService', 'sessionService', 'utilService', 'modalService',
       function ($scope, commentService, sessionService, util, modal) {
         $scope.getAvatarUrl = util.getAvatarUrl;
 

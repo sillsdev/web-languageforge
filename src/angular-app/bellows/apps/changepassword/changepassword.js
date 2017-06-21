@@ -3,7 +3,7 @@
 angular.module('changepassword', ['ui.bootstrap', 'bellows.services', 'ui.validate',
   'palaso.ui.notice', 'palaso.ui.utils'
 ])
-  .controller('changePasswordCtrl', ['$scope', 'userService', 'asyncSession', 'silNoticeService',
+  .controller('changePasswordCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
     function ($scope, userService, sessionService, notice) {
       $scope.notify = {};
 
