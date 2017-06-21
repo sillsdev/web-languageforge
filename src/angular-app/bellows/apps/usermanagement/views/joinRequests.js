@@ -2,7 +2,7 @@
 
 angular.module('usermanagement.joinRequests', ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap', 'palaso.ui.notice', 'ngRoute'])
 
-  .controller('JoinRequestsCtrl', ['$scope', 'userService', 'projectService', 'asyncSession',
+  .controller('JoinRequestsCtrl', ['$scope', 'userService', 'projectService', 'sessionService',
     function($scope, userService, projectService, ss) {
 
       $scope.acceptJoinRequest = function acceptJoinRequest(userId, role) {

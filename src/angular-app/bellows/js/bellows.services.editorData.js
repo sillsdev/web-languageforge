@@ -3,7 +3,7 @@
 angular.module('bellows.services')
 
 // Lexicon Entry Service
-.factory('editorDataService', ['$q', 'asyncSession', 'editorOfflineCache', 'commentsOfflineCache',
+.factory('editorDataService', ['$q', 'sessionService', 'editorOfflineCache', 'commentsOfflineCache',
   'silNoticeService', 'lexCommentService',
 function ($q, sessionService, cache, commentsCache,
           notice, commentService) {

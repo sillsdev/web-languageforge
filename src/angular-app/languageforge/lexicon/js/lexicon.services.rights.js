@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('lexicon.services')
-  .service('lexRightsService', ['asyncSession',  'lexSendReceive',
+  .service('lexRightsService', ['sessionService',  'lexSendReceive',
   function (sessionService, sendReceive) {
 
     var session;

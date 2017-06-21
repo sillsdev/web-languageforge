@@ -59,7 +59,7 @@ angular.module('lexicon',
     $translateProvider.preferredLanguage('en');
     $translateProvider.useSanitizeValueStrategy('escape');
   }])
-  .controller('LexiconCtrl', ['$scope', 'asyncSession', 'lexConfigService', 'lexProjectService',
+  .controller('LexiconCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService',
     '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService',
     'lexSendReceiveApi', 'lexSendReceive', 'lexRightsService', '$q',
   function ($scope, sessionService, lexConfig, lexProjectService,

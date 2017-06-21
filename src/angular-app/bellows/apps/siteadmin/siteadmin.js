@@ -4,7 +4,7 @@ angular.module('siteadmin', [
   'ngRoute', 'sfAdmin.filters', 'sfAdmin.services', 'sfAdmin.directives', 'bellows.services',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'ui.bootstrap', 'palaso.ui.utils'
 ])
-  .controller('UserCtrl', ['$scope', 'userService', 'asyncSession', 'silNoticeService',
+  .controller('UserCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
   function ($scope, userService, sessionService, notice) {
     $scope.filterUsers = '';
     $scope.vars = {
@@ -255,7 +255,7 @@ angular.module('siteadmin', [
     };
 
   }])
-  .controller('ArchivedProjectsCtrl', ['$scope', 'projectService', 'asyncSession',
+  .controller('ArchivedProjectsCtrl', ['$scope', 'projectService', 'sessionService',
     'silNoticeService', 'modalService',
     function ($scope, projectService, ss, notice, modalService) {
       $scope.finishedLoading = false;

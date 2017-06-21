@@ -14,7 +14,7 @@ angular.module('palaso.ui.dc.multiparagraph', ['bellows.services', 'palaso.ui.sh
       control: '=',
       selectField: '&'
     },
-    controller: ['$scope', '$state', 'asyncSession', function ($scope, $state, sessionService) {
+    controller: ['$scope', '$state', 'sessionService', function ($scope, $state, sessionService) {
       $scope.$state = $state;
 
       sessionService.getSession().then(function(session) {

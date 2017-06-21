@@ -13,7 +13,7 @@ angular.module('palaso.ui.comments')
         control: '=',
         newComment: '='
       },
-      controller: ['$scope', '$filter', 'lexCommentService', 'asyncSession',
+      controller: ['$scope', '$filter', 'lexCommentService', 'sessionService',
       function ($scope, $filter, commentService, ss) {
 
         /*  $scope.newComment has the following initial structure

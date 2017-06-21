@@ -3,7 +3,7 @@
 angular.module('lexicon.services')
 
 // Lexicon Configuration Service
-.service('lexConfigService', ['asyncSession', function (sessionService) {
+.service('lexConfigService', ['sessionService', function (sessionService) {
 
   this.refresh = function () {
     return sessionService.getSession().then(function(session) {

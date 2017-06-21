@@ -10,7 +10,7 @@ angular.module('xforge.navbarApp', ['bellows.services', 'ui.bootstrap', 'pascalp
     };
   }])
   */
-  .controller('navbarController', ['$scope', 'modalService', '$location', 'asyncSession', '$window',
+  .controller('navbarController', ['$scope', 'modalService', '$location', 'sessionService', '$window',
   function ($scope, modalService, $location, ss, $window) {
 
     $scope.helpFilePath = '';

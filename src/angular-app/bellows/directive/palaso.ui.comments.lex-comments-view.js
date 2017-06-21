@@ -12,7 +12,7 @@ angular.module('palaso.ui.comments')
         entryConfig: '=',
         control: '='
       },
-      controller: ['$scope', '$filter', 'lexCommentService', 'asyncSession', 'modalService',
+      controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService',
         'lexConfigService', '$q',
       function ($scope, $filter, commentService, ss, modal, lexConfig, $q) {
         // notes by cjh 2015-03

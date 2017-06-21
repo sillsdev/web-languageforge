@@ -8,7 +8,7 @@ angular.module('palaso.ui.comments')
         field : "=",
         control : "="
       },
-      controller: ['$scope', 'lexCommentService', 'asyncSession', function($scope, commentService, ss) {
+      controller: ['$scope', 'lexCommentService', 'sessionService', function($scope, commentService, ss) {
 
         ss.getSession().then(function(session) {
           $scope.getCount = function getCount() {

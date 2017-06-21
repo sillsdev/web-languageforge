@@ -10,7 +10,7 @@ angular.module('activity',
      'sgw.ui.breadcrumb',
     ])
   .controller('ActivityCtrl', ['$scope', '$sce', 'activityPageService', 'sfchecksLinkService',
-    'asyncSession', 'utilService', 'breadcrumbService',
+    'sessionService', 'utilService', 'breadcrumbService',
   function ($scope, $sce, activityService, sfchecksLinkService,
             sessionService, util, breadcrumbService) {
     $scope.getAvatarUrl = util.getAvatarUrl;

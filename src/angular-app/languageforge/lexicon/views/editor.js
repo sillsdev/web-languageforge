@@ -32,7 +32,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       })
       ;
   }])
-  .controller('EditorCtrl', ['$scope', 'userService', 'asyncSession', 'lexEntryApiService',
+  .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService',
     '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'lexRightsService',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
     'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService', '$q',

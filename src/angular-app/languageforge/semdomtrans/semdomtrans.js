@@ -47,7 +47,7 @@ angular.module('semdomtrans',
         });
   }])
   .controller('MainCtrl', ['$scope', 'semdomtransEditorDataService', 'semdomtransEditService',
-    'asyncSession', 'lexCommentService', 'offlineCache', '$q', 'silNoticeService',
+    'sessionService', 'lexCommentService', 'offlineCache', '$q', 'silNoticeService',
   function ($scope, editorDataService, editorApi,
             ss, commentsSerivce, offlineCache, $q, notice) {
 
