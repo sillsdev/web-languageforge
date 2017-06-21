@@ -7,11 +7,8 @@ angular.module('bellows.services')
   // a promise (callbacks also accepted) that resolves to the session instance, which can
   // then be used synchronously.
 
-  var projectId = window.location.pathname.match(/^\/app\/[a-z]+\/([a-z0-9]{24,})$/i);
-  projectId = projectId == null ? undefined : projectId[1];
-
   this.projectId = function () {
-    return projectId;
+    return api.projectId;
   };
 
   function fn(val) {
