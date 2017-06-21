@@ -4,7 +4,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
   'sfchecks.services', 'ngFileUpload', 'ngSanitize', 'ngRoute', 'sgw.soundmanager',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice'])
   .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService',
-    '$routeParams', 'asyncSession', 'sfchecksLinkService', 'breadcrumbService',
+    '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService',
     'silNoticeService', 'modalService', '$q',
   function ($scope, questionService, qts,
             $routeParams, ss, sfchecksLinkService, breadcrumbService,
@@ -249,7 +249,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     };
 
   }])
-  .controller('QuestionsSettingsCtrl', ['$scope', 'Upload', 'asyncSession', '$routeParams',
+  .controller('QuestionsSettingsCtrl', ['$scope', 'Upload', 'sessionService', '$routeParams',
     'breadcrumbService', 'silNoticeService', 'textService', 'questionService',
     'sfchecksLinkService', 'modalService', '$q',
   function ($scope, Upload, ss, $routeParams,

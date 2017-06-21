@@ -12,7 +12,7 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'pasc
     $translateProvider.preferredLanguage('en');
     $translateProvider.useSanitizeValueStrategy('escape');
   }])
-  .controller('SignupCtrl', ['$scope', '$location', '$window', 'userService', 'asyncSession',
+  .controller('SignupCtrl', ['$scope', '$location', '$window', 'userService', 'sessionService',
   function ($scope, $location, $window, userService, sessionService) {
     $scope.showPassword = false;
     $scope.emailValid = true;

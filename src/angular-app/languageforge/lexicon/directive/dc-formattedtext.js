@@ -7,7 +7,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
 
   // add custom tools. Note: $delegate is the taOptions we are decorating
   $provide.decorator('taOptions', ['taRegisterTool', '$delegate',  'taTranslations', 'taTools',
-    'asyncSession', '$window', '$compile', '$animate',
+    'sessionService', '$window', '$compile', '$animate',
   function (taRegisterTool, taOptions, taTranslations, taTools,
             ss, $window, $compile, $animate) {
 
@@ -267,7 +267,7 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       fteMultiline: '=',
       fteDir: '='
     },
-    controller: ['$scope', 'asyncSession', function ($scope, ss) {
+    controller: ['$scope', 'sessionService', function ($scope, ss) {
       $scope.fte = {};
       if (angular.isDefined($scope.fteToolbar)) {
         $scope.fte.toolbar = $scope.fteToolbar;

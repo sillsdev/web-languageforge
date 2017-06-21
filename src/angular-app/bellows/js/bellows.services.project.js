@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bellows.services')
-  .service('projectService', ['apiService', 'asyncSession', 'offlineCache', '$q', function (api, ss, offlineCache, $q) {
+  .service('projectService', ['apiService', 'sessionService', 'offlineCache', '$q', function (api, ss, offlineCache, $q) {
 
     this.create = api.method('project_create');
     this.createSwitchSession = api.method('project_create_switchSession');

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bellows.services.comments')
-  .factory('commentsOfflineCache', ['$window', '$q', 'asyncSession', 'offlineCache',
+  .factory('commentsOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache',
     'offlineCacheUtils',
   function ($window, $q, sessionService, offlineCache, offlineCacheUtils) {
 

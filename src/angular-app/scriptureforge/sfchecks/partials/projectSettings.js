@@ -14,7 +14,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     $translateProvider.useSanitizeValueStrategy('escape');
   }])
   .controller('ProjectSettingsCtrl', ['$scope', 'breadcrumbService', 'userService',
-    'sfchecksProjectService', 'asyncSession', 'silNoticeService', 'messageService',
+    'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
     'sfchecksLinkService', '$q',
   function ($scope, breadcrumbService, userService,
             sfchecksProjectService, ss, notice, messageService,

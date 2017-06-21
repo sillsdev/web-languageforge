@@ -3,7 +3,7 @@
 angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellows.services', 'sfchecks.services',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte',
   'ngFileUpload', 'ngRoute'])
-  .controller('ProjectCtrl', ['$scope', 'textService', 'asyncSession', 'breadcrumbService', 'sfchecksLinkService',
+  .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService', 'sfchecksLinkService',
     'silNoticeService', 'sfchecksProjectService', 'messageService', 'modalService', '$q',
   function ($scope, textService, ss, breadcrumbService, sfchecksLinkService,
             notice, sfchecksProjectService, messageService, modalService, $q) {

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('lexicon.sync', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice'])
-  .controller('SyncCtrl', ['$scope', 'silNoticeService', 'asyncSession', 'lexProjectService',
+  .controller('SyncCtrl', ['$scope', 'silNoticeService', 'sessionService', 'lexProjectService',
     'lexRightsService', 'lexSendReceiveApi', 'lexSendReceive', '$q',
   function ($scope, notice, sessionService, lexProjectService,
             rightsService, sendReceiveApi, sendReceive, $q) {

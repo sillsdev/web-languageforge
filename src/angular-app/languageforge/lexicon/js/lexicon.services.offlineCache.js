@@ -4,7 +4,7 @@ angular.module('lexicon.services')
 /**
  * implements an offline cache storage system
  */
-  .factory('lexiconOfflineCache', ['$window', '$q', 'asyncSession', 'offlineCache',
+  .factory('lexiconOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache',
     'offlineCacheUtils',
   function ($window, $q, sessionService, offlineCache, offlineCacheUtils) {
 

@@ -14,7 +14,7 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
       control: '=',
       selectField: '&'
     },
-    controller: ['$scope', '$state', 'asyncSession', 'lexUtils',
+    controller: ['$scope', '$state', 'sessionService', 'lexUtils',
     function ($scope, $state, sessionService, lexUtils) {
       $scope.$state = $state;
       $scope.isAudio = lexUtils.isAudio;

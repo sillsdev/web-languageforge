@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('lexicon.services')
-  .service('lexProjectService', ['apiService', 'asyncSession', 'breadcrumbService', 'lexLinkService',
+  .service('lexProjectService', ['apiService', 'sessionService', 'breadcrumbService', 'lexLinkService',
   function (api, ss, breadcrumbService, linkService) {
 
     this.setBreadcrumbs = function (view, label) {

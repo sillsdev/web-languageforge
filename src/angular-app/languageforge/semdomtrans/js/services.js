@@ -135,7 +135,7 @@ angular.module('semdomtrans.services', ['bellows.services'])
     };
 
   }])
-  .factory('semdomtransOfflineCache', ['$window', '$q', 'asyncSession', 'offlineCache',
+  .factory('semdomtransOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache',
   function ($window, $q, sessionService, offlineCache) {
 
     function getAllWorkingSets() {

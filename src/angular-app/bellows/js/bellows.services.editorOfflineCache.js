@@ -4,7 +4,7 @@ angular.module('bellows.services')
 /**
  * implements an offline cache storage system
  */
-  .factory('editorOfflineCache', ['$window', '$q', 'asyncSession', 'offlineCache',
+  .factory('editorOfflineCache', ['$window', '$q', 'sessionService', 'offlineCache',
     'offlineCacheUtils',
   function ($window, $q, sessionService, offlineCache, offlineCacheUtils) {
 

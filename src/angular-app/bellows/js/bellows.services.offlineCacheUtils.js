@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bellows.services')
-  .factory('offlineCacheUtils', ['$window', '$q', 'asyncSession', 'offlineCache',
+  .factory('offlineCacheUtils', ['$window', '$q', 'sessionService', 'offlineCache',
   function ($window, $q, sessionService, offlineCache) {
 
     function updateProjectData(timestamp, commentsUserPlusOne, isComplete) {

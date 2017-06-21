@@ -14,7 +14,7 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
         dcFilename: '=',
         dcControl: '='
       },
-      controller: ['$scope', 'Upload', 'asyncSession', 'silNoticeService', 'lexProjectService',
+      controller: ['$scope', 'Upload', 'sessionService', 'silNoticeService', 'lexProjectService',
         'modalService', '$state',
       function ($scope, Upload, sessionService, notice, lexProjectService,
                 modalService, $state) {

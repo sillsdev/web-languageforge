@@ -12,7 +12,7 @@ angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
       model: '=',
       hideIfEmpty: '=?'
     },
-    controller: ['$scope', 'asyncSession', 'lexUtils', function ($scope, ss, utils) {
+    controller: ['$scope', 'sessionService', 'lexUtils', function ($scope, ss, utils) {
       $scope.render = function () {
         var sense;
         var lastPos;
