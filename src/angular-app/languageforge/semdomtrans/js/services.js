@@ -139,9 +139,7 @@ angular.module('semdomtrans.services', ['bellows.services'])
   function ($window, $q, sessionService, offlineCache) {
 
     function getAllWorkingSets() {
-      return sessionService.getSession().then(function(session) {
-        return offlineCache.getAllFromStore('workingsets', session.projectId());
-      });
+      return offlineCache.getAllFromStore('workingsets', sessionService.projectId());
     }
 
     function deleteWorkingSet(id) {
@@ -149,9 +147,7 @@ angular.module('semdomtrans.services', ['bellows.services'])
     }
 
     function updateWorkingSets(workingSets) {
-      sessionService.getSession().then(function(session) {
-        return offlineCache.setObjectsInStore('workingsets', session.projectId(), workingSets);
-      });
+      return offlineCache.setObjectsInStore('workingsets', sessionService.projectId(), workingSets);
     }
 
     return {
