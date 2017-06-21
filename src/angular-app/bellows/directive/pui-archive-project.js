@@ -8,9 +8,9 @@ angular.module('palaso.ui.archiveProject', ['bellows.services'])
       scope: {
         puiActionInProgress: '='
       },
-      controller: ['$scope', 'projectService', 'sessionService',
+      controller: ['$scope', 'projectService',
         'silNoticeService', 'modalService', '$window',
-        function ($scope, projectService, ss, notice, modalService, $window) {
+        function ($scope, projectService, notice, modalService, $window) {
 
           // Archive the project
           $scope.archiveProject = function () {

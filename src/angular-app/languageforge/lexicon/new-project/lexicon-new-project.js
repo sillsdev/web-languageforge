@@ -103,10 +103,12 @@ angular.module('lexicon-new-project',
             $state, Upload, lexProjectService, sendReceiveApi, sendReceive) {
     $scope.interfaceConfig = {};
     $scope.interfaceConfig.userLanguageCode = 'en';
-    if (angular.isDefined(sessionService.session.projectSettings) &&
-        angular.isDefined(sessionService.session.projectSettings.interfaceConfig)) {
-      $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
-    }
+    sessionService.getSession().then(function(session) {
+      if (angular.isDefined(session.projectSettings()) &&
+          angular.isDefined(session.projectSettings().interfaceConfig)) {
+        $scope.interfaceConfig = session.projectSettings().interfaceConfig;
+      }
+    });
 
     $scope.interfaceConfig.direction = 'ltr';
     $scope.interfaceConfig.pullToSide = 'pull-right';
@@ -208,11 +210,12 @@ angular.module('lexicon-new-project',
       $scope.progressIndicatorStep1Label = $filter('translate')('Connect');
       $scope.progressIndicatorStep2Label = $filter('translate')('Verify');
       $scope.resetValidateProjectForm();
-      if (!$scope.project.sendReceive.username) {
-        $scope.project.sendReceive.username = sessionService.session.username;
-      }
-
-      validateForm();
+      sessionService.getSession().then(function (session){
+        if (!$scope.project.sendReceive.username) {
+          $scope.project.sendReceive.username = session.username();
+        }
+        validateForm();
+      });
     };
 
     $scope.createNew = function createNew() {
@@ -362,7 +365,7 @@ angular.module('lexicon-new-project',
               function (result) {
                 if (result.ok) {
                   $scope.newProject.id = result.data;
-                  sessionService.refresh(gotoLexicon);
+                  sessionService.getSession(true).then(gotoLexicon);
                 } else {
                   notice.push(notice.ERROR, 'Well this is embarrassing. ' +
                     'We couldn\'t join you to the project. Sorry about that.');
@@ -517,7 +520,7 @@ angular.module('lexicon-new-project',
         $scope.project.sendReceive.project, function (result) {
         if (result.ok) {
           $scope.newProject.id = result.data;
-          sessionService.refresh(callback);
+          sessionService.getSession(true).then(callback);
         } else {
           notice.push(notice.ERROR, 'The ' + $scope.newProject.projectName +
             ' project could not be created. Please try again.');
@@ -531,51 +534,54 @@ angular.module('lexicon-new-project',
 
     $scope.uploadFile = function uploadFile(file) {
       if (!file || file.$error) return;
-      if (file.size > sessionService.fileSizeMax()) {
-        notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
-          $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
-          $filter('bytes')(sessionService.fileSizeMax()) + '.');
-        return;
-      }
 
-      notice.setLoading('Importing ' + file.name + '...');
-      Upload.upload({
-        url: '/upload/lf-lexicon/import-zip',
-        data: { file: file }
-      }).then(function (response) {
-        notice.cancelLoading();
-        var isUploadSuccess = response.data.result;
-        if (isUploadSuccess) {
-          notice.push(notice.SUCCESS, $filter('translate')('Successfully imported') + ' ' +
-            file.name);
-          $scope.newProject.entriesImported = response.data.data.stats.importEntries;
-          $scope.newProject.importErrors = response.data.data.importErrors;
-          gotoNextState();
-        } else {
-          $scope.newProject.entriesImported = 0;
-          notice.push(notice.ERROR, response.data.data.errorMessage);
-        }
-      },
-
-      function (response) {
-        notice.cancelLoading();
-        var errorMessage = $filter('translate')('Import failed.');
-        if (response.status > 0) {
-          errorMessage += ' Status: ' + response.status;
-          if (response.statusText) {
-            errorMessage += ' ' + response.statusText;
-          }
-
-          if (response.data) {
-            errorMessage += '- ' + response.data;
-          }
+      sessionService.getSession().then(function(session) {
+        if (file.size > session.fileSizeMax()) {
+          notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
+            $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
+            $filter('bytes')(session.fileSizeMax()) + '.');
+          return;
         }
 
-        notice.push(notice.ERROR, errorMessage);
-      },
+        notice.setLoading('Importing ' + file.name + '...');
+        Upload.upload({
+          url: '/upload/lf-lexicon/import-zip',
+          data: { file: file }
+        }).then(function (response) {
+          notice.cancelLoading();
+          var isUploadSuccess = response.data.result;
+          if (isUploadSuccess) {
+            notice.push(notice.SUCCESS, $filter('translate')('Successfully imported') + ' ' +
+              file.name);
+            $scope.newProject.entriesImported = response.data.data.stats.importEntries;
+            $scope.newProject.importErrors = response.data.data.importErrors;
+            gotoNextState();
+          } else {
+            $scope.newProject.entriesImported = 0;
+            notice.push(notice.ERROR, response.data.data.errorMessage);
+          }
+        },
 
-      function (evt) {
-        notice.setPercentComplete(100.0 * evt.loaded / evt.total);
+        function (response) {
+          notice.cancelLoading();
+          var errorMessage = $filter('translate')('Import failed.');
+          if (response.status > 0) {
+            errorMessage += ' Status: ' + response.status;
+            if (response.statusText) {
+              errorMessage += ' ' + response.statusText;
+            }
+
+            if (response.data) {
+              errorMessage += '- ' + response.data;
+            }
+          }
+
+          notice.push(notice.ERROR, errorMessage);
+        },
+
+        function (evt) {
+          notice.setPercentComplete(100.0 * evt.loaded / evt.total);
+        });
       });
     };
 
@@ -692,27 +698,29 @@ angular.module('lexicon-new-project',
       var optionlist = {};
       var inputSystem = {};
       notice.setLoading('Configuring project for first use...');
-      if (angular.isDefined(sessionService.session.projectSettings)) {
-        config = sessionService.session.projectSettings.config;
-        optionlist = sessionService.session.projectSettings.optionlists;
-      }
-
-      inputSystem.abbreviation = $scope.newProject.languageCode;
-      inputSystem.tag = $scope.newProject.languageCode;
-      inputSystem.languageName = $scope.newProject.language.name;
-      config.inputSystems[$scope.newProject.languageCode] = inputSystem;
-      if ($scope.newProject.languageCode !== 'th' && 'th' in config.inputSystems) {
-        delete config.inputSystems.th;
-        replaceFieldInputSystem(config.entry, 'th', $scope.newProject.languageCode);
-      }
-
-      lexProjectService.updateConfiguration(config, optionlist, function (result) {
-        notice.cancelLoading();
-        if (result.ok) {
-          (callback || angular.noop)();
-        } else {
-          makeFormInvalid('Could not add ' + $scope.newProject.language.name + ' to project.');
+      sessionService.getSession().then(function(session) {
+        if (angular.isDefined(session.projectSettings())) {
+          config = session.projectSettings().config;
+          optionlist = session.projectSettings().optionlists;
         }
+
+        inputSystem.abbreviation = $scope.newProject.languageCode;
+        inputSystem.tag = $scope.newProject.languageCode;
+        inputSystem.languageName = $scope.newProject.language.name;
+        config.inputSystems[$scope.newProject.languageCode] = inputSystem;
+        if ($scope.newProject.languageCode !== 'th' && 'th' in config.inputSystems) {
+          delete config.inputSystems.th;
+          replaceFieldInputSystem(config.entry, 'th', $scope.newProject.languageCode);
+        }
+
+        lexProjectService.updateConfiguration(config, optionlist, function (result) {
+          notice.cancelLoading();
+          if (result.ok) {
+            (callback || angular.noop)();
+          } else {
+            makeFormInvalid('Could not add ' + $scope.newProject.language.name + ' to project.');
+          }
+        });
       });
     }
 

@@ -14,7 +14,7 @@ angular.module('palaso.ui.comments')
         newComment: '='
       },
       controller: ['$scope', '$filter', 'lexCommentService', 'sessionService',
-      function ($scope, $filter, commentService, sessionService) {
+      function ($scope, $filter, commentService, ss) {
 
         /*  $scope.newComment has the following initial structure
          {
@@ -71,40 +71,42 @@ angular.module('palaso.ui.comments')
           }
         };
 
-        $scope.rights = {
-          canComment: function canComment() {
-            if (sessionService.session.project.isArchived) return false;
-            return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
-              sessionService.operation.CREATE);
-          },
+        ss.getSession().then(function(session) {
+          $scope.rights = {
+            canComment: function canComment() {
+              if (session.project().isArchived) return false;
+              return session.hasProjectRight(ss.domain.COMMENTS,
+                ss.operation.CREATE);
+            },
 
-          canDeleteComment: function canDeleteComment(commentAuthorId) {
-            if (sessionService.session.project.isArchived) return false;
-            if (sessionService.session.userId === commentAuthorId) {
-              return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
-                sessionService.operation.DELETE_OWN);
-            } else {
-              return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
-                sessionService.operation.DELETE);
+            canDeleteComment: function canDeleteComment(commentAuthorId) {
+              if (session.project().isArchived) return false;
+              if (session.userId() === commentAuthorId) {
+                return session.hasProjectRight(ss.domain.COMMENTS,
+                  ss.operation.DELETE_OWN);
+              } else {
+                return session.hasProjectRight(ss.domain.COMMENTS,
+                  ss.operation.DELETE);
+              }
+            },
+
+            canEditComment: function canEditComment(commentAuthorId) {
+              if (session.project().isArchived) return false;
+              if (session.userId === commentAuthorId) {
+                return session.hasProjectRight(ss.domain.COMMENTS,
+                  ss.operation.EDIT_OWN);
+              } else {
+                return false;
+              }
+            },
+
+            canUpdateCommentStatus: function canUpdateCommentStatus() {
+              if (session.project().isArchived) return false;
+              return session.hasProjectRight(ss.domain.COMMENTS,
+                ss.operation.EDIT);
             }
-          },
-
-          canEditComment: function canEditComment(commentAuthorId) {
-            if (sessionService.session.project.isArchived) return false;
-            if (sessionService.session.userId === commentAuthorId) {
-              return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
-                sessionService.operation.EDIT_OWN);
-            } else {
-              return false;
-            }
-          },
-
-          canUpdateCommentStatus: function canUpdateCommentStatus() {
-            if (sessionService.session.project.isArchived) return false;
-            return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
-              sessionService.operation.EDIT);
-          }
-        };
+          };
+        });
 
         commentService.refreshFilteredComments($scope.commentFilter);
 

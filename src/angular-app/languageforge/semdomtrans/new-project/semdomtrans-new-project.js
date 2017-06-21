@@ -30,10 +30,10 @@ angular.module('semdomtrans-new-project',
 
   }])
   .controller('projectSetupCtrl', ['$scope', '$state', '$location', '$window',
-    'semdomtransSetupService', 'projectService',  'sessionService', '$uibModal', 'modalService',
+    'semdomtransSetupService', 'projectService', '$uibModal', 'modalService',
     'silNoticeService',
   function ($scope, $state, $location, $window,
-            semdomSetupApi, projectService, sessionService, $modal, modalService,
+            semdomSetupApi, projectService, $modal, modalService,
             notice) {
     $scope.languageCode = '';
     $scope.canCreate = false;

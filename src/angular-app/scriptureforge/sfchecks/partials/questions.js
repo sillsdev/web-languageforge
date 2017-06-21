@@ -5,10 +5,10 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice'])
   .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService',
     '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService',
-    'silNoticeService', 'modalService',
+    'silNoticeService', 'modalService', '$q',
   function ($scope, questionService, qts,
             $routeParams, ss, sfchecksLinkService, breadcrumbService,
-            notice, modalService) {
+            notice, modalService, $q) {
     var Q_TITLE_LIMIT = 70;
     var textId = $routeParams.textId;
     $scope.textId = textId;
@@ -101,53 +101,52 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.questions = [];
     $scope.queryQuestions = function () {
       //console.log("queryQuestions()");
-      questionService.list(textId, function (result) {
-        if (result.ok) {
-          $scope.selected = [];
-          $scope.questions = result.data.entries;
-          $scope.questionsCount = result.data.count;
+      $q.all([ss.getSession(), questionService.list(textId)]).then(function(data) {
+        var session = data[0], result = data[1];
+        $scope.selected = [];
+        $scope.questions = result.data.entries;
+        $scope.questionsCount = result.data.count;
 
-          $scope.enhanceDto($scope.questions);
-          $scope.project = result.data.project;
-          $scope.text = result.data.text;
-          if ($scope.text.audioFileName != '') {
-            $scope.audioPlayUrl = '/assets/sfchecks/' + $scope.project.slug + '/' + $scope.text.id +
-              '_' + $scope.text.audioFileName;
-            $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
-          }
-
-          $scope.text.url = sfchecksLinkService.text(textId);
-
-          //console.log($scope.project.name);
-          //console.log($scope.text.title);
-
-          // Breadcrumb
-          breadcrumbService.set('top',
-            [
-              { href: '/app/projects', label: 'My Projects' },
-              { href: sfchecksLinkService.project(), label: $scope.project.name },
-              { href: sfchecksLinkService.text($routeParams.textId), label: $scope.text.title }
-            ]
-          );
-
-          var rights = result.data.rights;
-          $scope.rights.archive = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE) &&
-            !ss.session.project.isArchived;
-          $scope.rights.create = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE) &&
-            !ss.session.project.isArchived;
-          $scope.rights.createTemplate =
-            ss.hasRight(rights, ss.domain.TEMPLATES, ss.operation.CREATE) &&
-            !ss.session.project.isArchived;
-          $scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) &&
-            !ss.session.project.isArchived;
-          $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
-            $scope.rights.createTemplate || $scope.rights.editOther;
-          if ($scope.rights.create) {
-            $scope.queryTemplates();
-          }
-
-          $scope.finishedLoading = true;
+        $scope.enhanceDto($scope.questions);
+        $scope.project = result.data.project;
+        $scope.text = result.data.text;
+        if ($scope.text.audioFileName != '') {
+          $scope.audioPlayUrl = '/assets/sfchecks/' + $scope.project.slug + '/' + $scope.text.id +
+            '_' + $scope.text.audioFileName;
+          $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
         }
+
+        $scope.text.url = sfchecksLinkService.text(textId);
+
+        //console.log($scope.project.name);
+        //console.log($scope.text.title);
+
+        // Breadcrumb
+        breadcrumbService.set('top',
+          [
+            { href: '/app/projects', label: 'My Projects' },
+            { href: sfchecksLinkService.project(), label: $scope.project.name },
+            { href: sfchecksLinkService.text($routeParams.textId), label: $scope.text.title }
+          ]
+        );
+
+        var rights = result.data.rights;
+        $scope.rights.archive = session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE) &&
+          !session.project().isArchived;
+        $scope.rights.create = session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE) &&
+          !session.project().isArchived;
+        $scope.rights.createTemplate =
+          session.hasRight(rights, ss.domain.TEMPLATES, ss.operation.CREATE) &&
+          !session.project().isArchived;
+        $scope.rights.editOther = session.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) &&
+          !session.project().isArchived;
+        $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
+          $scope.rights.createTemplate || $scope.rights.editOther;
+        if ($scope.rights.create) {
+          $scope.queryTemplates();
+        }
+
+        $scope.finishedLoading = true;
       });
     };
 
@@ -252,10 +251,10 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
   }])
   .controller('QuestionsSettingsCtrl', ['$scope', 'Upload', 'sessionService', '$routeParams',
     'breadcrumbService', 'silNoticeService', 'textService', 'questionService',
-    'sfchecksLinkService', 'modalService',
+    'sfchecksLinkService', 'modalService', '$q',
   function ($scope, Upload, ss, $routeParams,
             breadcrumbService, notice, textService, questionService,
-            sfchecksLinkService, modalService) {
+            sfchecksLinkService, modalService, $q) {
     var Q_TITLE_LIMIT = 50;
     var textId = $routeParams.textId;
     $scope.textId = textId;
@@ -271,41 +270,40 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.uploadResult = '';
 
     $scope.queryTextSettings = function () {
-      textService.settingsDto($scope.textId, function (result) {
-        if (result.ok) {
-          $scope.dto = result.data;
-          $scope.textTitle = $scope.dto.text.title;
-          $scope.editedText.title = $scope.dto.text.title;
-          $scope.editedText.fontfamily = $scope.dto.text.fontfamily;
-          $scope.settings.archivedQuestions = result.data.archivedQuestions;
-          for (var i = 0; i < $scope.settings.archivedQuestions.length; i++) {
-            $scope.settings.archivedQuestions[i].url = sfchecksLinkService.question($scope.textId,
-              $scope.settings.archivedQuestions[i].id);
-            $scope.settings.archivedQuestions[i].calculatedTitle =
-              questionService.util.calculateTitle($scope.settings.archivedQuestions[i].title,
-                $scope.settings.archivedQuestions[i].description, Q_TITLE_LIMIT);
-            $scope.settings.archivedQuestions[i].dateModified =
-              new Date($scope.settings.archivedQuestions[i].dateModified);
-          }
-
-          // Rights
-          var rights = result.data.rights;
-          $scope.rights = {};
-          $scope.rights.archive = ss.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE);
-          $scope.rights.editOther = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT);
-          $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.editOther;
-
-          // Breadcrumb
-          breadcrumbService.set('top',
-            [
-              { href: '/app/projects', label: 'My Projects' },
-              { href: sfchecksLinkService.project(), label: $scope.dto.bcs.project.crumb },
-              { href: sfchecksLinkService.text($routeParams.textId), label: $scope.dto.text.title },
-              { href: sfchecksLinkService.text($routeParams.textId) + '/Settings',
-                label: 'Settings' }
-            ]
-          );
+      $q.all([ss.getSession(), textService.settingsDto($scope.textId)]).then(function(data) {
+        var session = data[0], result = data[1];
+        $scope.dto = result.data;
+        $scope.textTitle = $scope.dto.text.title;
+        $scope.editedText.title = $scope.dto.text.title;
+        $scope.editedText.fontfamily = $scope.dto.text.fontfamily;
+        $scope.settings.archivedQuestions = result.data.archivedQuestions;
+        for (var i = 0; i < $scope.settings.archivedQuestions.length; i++) {
+          $scope.settings.archivedQuestions[i].url = sfchecksLinkService.question($scope.textId,
+            $scope.settings.archivedQuestions[i].id);
+          $scope.settings.archivedQuestions[i].calculatedTitle =
+            questionService.util.calculateTitle($scope.settings.archivedQuestions[i].title,
+              $scope.settings.archivedQuestions[i].description, Q_TITLE_LIMIT);
+          $scope.settings.archivedQuestions[i].dateModified =
+            new Date($scope.settings.archivedQuestions[i].dateModified);
         }
+
+        // Rights
+        var rights = result.data.rights;
+        $scope.rights = {};
+        $scope.rights.archive = session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE);
+        $scope.rights.editOther = session.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT);
+        $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.editOther;
+
+        // Breadcrumb
+        breadcrumbService.set('top',
+          [
+            { href: '/app/projects', label: 'My Projects' },
+            { href: sfchecksLinkService.project(), label: $scope.dto.bcs.project.crumb },
+            { href: sfchecksLinkService.text($routeParams.textId), label: $scope.dto.text.title },
+            { href: sfchecksLinkService.text($routeParams.textId) + '/Settings',
+              label: 'Settings' }
+          ]
+        );
       });
     };
 
@@ -383,55 +381,59 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
 
     $scope.uploadAudio = function uploadAudio(file) {
       if (!file || file.$error) return;
-      if (file.size > ss.fileSizeMax()) {
-        notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
-          $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
-          $filter('bytes')(ss.fileSizeMax()) + '.');
-        return;
-      }
 
-      $scope.file = file;
-      notice.setLoading('Uploading ' + file.name + '...');
-      Upload.upload({
-        url: '/upload/sf-checks/audio',
-        data: {
-          file: file,
-          textId: textId
+      ss.getSession().then(function(session) {
+        if (file.size > session.fileSizeMax()) {
+          notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
+            $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
+            $filter('bytes')(session.fileSizeMax()) + '.');
+          return;
         }
-      }).then(function (response) {
-          notice.cancelLoading();
-          var isUploadSuccess = response.data.result;
-          if (isUploadSuccess) {
-            $scope.uploadResult = 'File uploaded successfully.';
-            notice.push(notice.SUCCESS, $scope.uploadResult);
-          } else {
-            notice.push(notice.ERROR, response.data.data.errorMessage);
-            if (response.data.data.errorType == 'UserMessage') {
-              $scope.uploadResult = response.data.data.errorMessage;
-            }
+
+        $scope.file = file;
+        notice.setLoading('Uploading ' + file.name + '...');
+        Upload.upload({
+          url: '/upload/sf-checks/audio',
+          data: {
+            file: file,
+            textId: textId
           }
-        },
+        }).then(function (response) {
+            notice.cancelLoading();
+            var isUploadSuccess = response.data.result;
+            if (isUploadSuccess) {
+              $scope.uploadResult = 'File uploaded successfully.';
+              notice.push(notice.SUCCESS, $scope.uploadResult);
+            } else {
+              notice.push(notice.ERROR, response.data.data.errorMessage);
+              if (response.data.data.errorType == 'UserMessage') {
+                $scope.uploadResult = response.data.data.errorMessage;
+              }
+            }
+          },
 
-        function (response) {
-          notice.cancelLoading();
-          var errorMessage = 'Import failed.';
-          if (response.status > 0) {
-            errorMessage += ' Status: ' + response.status;
-            if (response.statusText) {
-              errorMessage += ' ' + response.statusText;
+          function (response) {
+            notice.cancelLoading();
+            var errorMessage = 'Import failed.';
+            if (response.status > 0) {
+              errorMessage += ' Status: ' + response.status;
+              if (response.statusText) {
+                errorMessage += ' ' + response.statusText;
+              }
+
+              if (response.data) {
+                errorMessage += '- ' + response.data;
+              }
             }
 
-            if (response.data) {
-              errorMessage += '- ' + response.data;
-            }
+            notice.push(notice.ERROR, errorMessage);
+          },
+
+          function (evt) {
+            notice.setPercentComplete(100.0 * evt.loaded / evt.total);
           }
-
-          notice.push(notice.ERROR, errorMessage);
-        },
-
-        function (evt) {
-          notice.setPercentComplete(100.0 * evt.loaded / evt.total);
-        });
+        );
+      });
     };
 
   }])
