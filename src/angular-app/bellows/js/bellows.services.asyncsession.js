@@ -65,10 +65,6 @@ angular.module('bellows.services')
     this.project = fnFor('project');
     this.username = fnFor('username');
 
-    // TODO Is it really necessary to have these on the instance as well?
-    this.domain = domain;
-    this.operation = operation;
-
     this.hasSiteRight = function (domain, operation) {
       return this.hasRight(sessionData.userSiteRights, domain, operation);
     };

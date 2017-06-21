@@ -8,11 +8,11 @@ angular.module('palaso.ui.comments')
         field : "=",
         control : "="
       },
-      controller: ['$scope', 'lexCommentService', 'asyncSession', function($scope, commentService, sessionService) {
+      controller: ['$scope', 'lexCommentService', 'asyncSession', function($scope, commentService, ss) {
 
-        sessionService.getSession().then(function(session) {
+        ss.getSession().then(function(session) {
           $scope.getCount = function getCount() {
-            if (session.hasProjectRight(session.domain.COMMENTS, session.operation.CREATE)) {
+            if (session.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE)) {
               return commentService.getFieldCommentCount($scope.field);
             }
           };

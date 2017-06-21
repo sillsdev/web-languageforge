@@ -14,7 +14,7 @@ angular.module('palaso.ui.comments')
         newComment: '='
       },
       controller: ['$scope', '$filter', 'lexCommentService', 'asyncSession',
-      function ($scope, $filter, commentService, sessionService) {
+      function ($scope, $filter, commentService, ss) {
 
         /*  $scope.newComment has the following initial structure
          {
@@ -71,30 +71,30 @@ angular.module('palaso.ui.comments')
           }
         };
 
-        sessionService.getSession().then(function(session) {
+        ss.getSession().then(function(session) {
           $scope.rights = {
             canComment: function canComment() {
               if (session.project().isArchived) return false;
-              return session.hasProjectRight(session.domain.COMMENTS,
-                session.operation.CREATE);
+              return session.hasProjectRight(ss.domain.COMMENTS,
+                ss.operation.CREATE);
             },
 
             canDeleteComment: function canDeleteComment(commentAuthorId) {
               if (session.project().isArchived) return false;
               if (session.userId() === commentAuthorId) {
-                return session.hasProjectRight(session.domain.COMMENTS,
-                  session.operation.DELETE_OWN);
+                return session.hasProjectRight(ss.domain.COMMENTS,
+                  ss.operation.DELETE_OWN);
               } else {
-                return session.hasProjectRight(session.domain.COMMENTS,
-                  session.operation.DELETE);
+                return session.hasProjectRight(ss.domain.COMMENTS,
+                  ss.operation.DELETE);
               }
             },
 
             canEditComment: function canEditComment(commentAuthorId) {
               if (session.project().isArchived) return false;
               if (session.userId === commentAuthorId) {
-                return session.hasProjectRight(session.domain.COMMENTS,
-                  session.operation.EDIT_OWN);
+                return session.hasProjectRight(ss.domain.COMMENTS,
+                  ss.operation.EDIT_OWN);
               } else {
                 return false;
               }
@@ -102,8 +102,8 @@ angular.module('palaso.ui.comments')
 
             canUpdateCommentStatus: function canUpdateCommentStatus() {
               if (session.project().isArchived) return false;
-              return session.hasProjectRight(session.domain.COMMENTS,
-                session.operation.EDIT);
+              return session.hasProjectRight(ss.domain.COMMENTS,
+                ss.operation.EDIT);
             }
           };
         });
