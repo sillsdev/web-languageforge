@@ -90,47 +90,51 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
       }
     });
 
-    // Rights: Answers
-    $scope.rightsEditResponse = function (userId) {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT) ||
-        ((userId == ss.currentUserId()) &&
-        ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
-    };
+    ss.getSession().then(function(session) {
 
-    $scope.rightsDeleteResponse = function (userId) {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE) ||
-        ((userId == ss.currentUserId()) &&
-        ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
-    };
+      // Rights: Answers
+      $scope.rightsEditResponse = function (userId) {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT) ||
+          ((userId == session.userId()) &&
+          session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
+      };
 
-    // Rights: Question
-    $scope.rightsCloseQuestion = function () {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
-    };
+      $scope.rightsDeleteResponse = function (userId) {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE) ||
+          ((userId == session.userId()) &&
+          session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
+      };
 
-    $scope.rightsEditQuestion = function () {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
-    };
+      // Rights: Question
+      $scope.rightsCloseQuestion = function () {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
+      };
 
-    // Rights: Tags
-    $scope.rightsCreateTag = function () {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.CREATE);
-    };
+      $scope.rightsEditQuestion = function () {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
+      };
 
-    $scope.rightsDeleteTag = function () {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.DELETE);
-    };
+      // Rights: Tags
+      $scope.rightsCreateTag = function () {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.TAGS, ss.operation.CREATE);
+      };
 
-    // Rights: Export
-    $scope.rightsExport = function () {
-      return ss.hasRight($scope.rights, ss.domain.TEXTS, ss.operation.EDIT);
-    };
+      $scope.rightsDeleteTag = function () {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.TAGS, ss.operation.DELETE);
+      };
+
+      // Rights: Export
+      $scope.rightsExport = function () {
+        return session.hasRight($scope.rights, ss.domain.TEXTS, ss.operation.EDIT);
+      };
+
+    });
 
     $scope.workflowStates = [{
       state: 'open',

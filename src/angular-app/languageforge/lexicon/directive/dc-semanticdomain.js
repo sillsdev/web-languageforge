@@ -12,9 +12,8 @@ angular.module('palaso.ui.dc.semanticdomain', [])
       model: '=',
       selectField: '&'
     },
-    controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rights) {
+    controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rightsService) {
       $scope.$state = $state;
-      $scope.rights = rights;
       $scope.isAdding = false;
       $scope.valueToBeDeleted = '';
 
@@ -60,15 +59,18 @@ angular.module('palaso.ui.dc.semanticdomain', [])
         $scope.isAdding = false;
       };
 
-      $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
-        if (angular.isDefined(semanticDomains_en) && $state.is('editor.entry')
-          && rights.canEditEntry()
-        ) {
-          return valueToBeDeleted == value;
-        }
+      rightsService.getRights().then(function(rights) {
+        $scope.rights = rights
 
-        return false;
-      };
+        $scope.showDeleteButton = function showDeleteButton(valueToBeDeleted, value) {
+          if (angular.isDefined(semanticDomains_en) && $state.is('editor.entry')
+            && rights.canEditEntry()
+          ) {
+            return valueToBeDeleted == value;
+          }
+          return false;
+        };
+      });
 
       $scope.deleteValue = function deleteValue(value) {
         var index = $scope.model.values.indexOf(value);

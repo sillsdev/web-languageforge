@@ -1,137 +1,128 @@
 'use strict';
 
 angular.module('bellows.services')
-  .service('sessionService', ['apiService', '$window', function (api, $window) {
+.service('sessionService', ['apiService', '$window', '$q', function (api, $window, $q) {
+  // Because session data is asynchronously loaded, it is not possible to synchronously
+  // obtain a reference to the session instance. getSession() must be called, which returns
+  // a promise (callbacks also accepted) that resolves to the session instance, which can
+  // then be used synchronously.
 
-    var projectId = window.location.pathname.match(/^\/app\/[a-z]+\/([a-z0-9]{24,})$/i);
-    projectId = projectId == null ? undefined : projectId[1];
+  this.projectId = function () {
+    return api.projectId;
+  };
 
-    this.currentUserId = function () {
-      return $window.session.userId;
-    };
+  function fn(val) {
+    return function() {
+      return val;
+    }
+  }
 
-    this.fileSizeMax = function () {
-      return $window.session.fileSizeMax;
-    };
+  var domain = {
+    ANY:       fn(1000),
+    USERS:     fn(1100),
+    PROJECTS:  fn(1200),
+    TEXTS:     fn(1300),
+    QUESTIONS: fn(1400),
+    ANSWERS:   fn(1500),
+    COMMENTS:  fn(1600),
+    TEMPLATES: fn(1700),
+    TAGS:      fn(1800),
+    ENTRIES:   fn(1900)
+  };
+  var operation = {
+    CREATE:       fn(1),
+    EDIT:         fn(2),
+    DELETE:       fn(3),
+    LOCK:         fn(4),
+    VIEW:         fn(5),
+    VIEW_OWN:     fn(6),
+    EDIT_OWN:     fn(7),
+    DELETE_OWN:   fn(8),
+    ARCHIVE:      fn(9)
+  };
 
-    this.baseSite = function () {
-      return $window.session.baseSite;
-    };
+  this.domain = domain;
+  this.operation = operation;
 
-    this.domain = {
-      /** @return {number} */
-      ANY:       function () { return 1000;},
+  var getCaptchaData = api.method('get_captcha_data');
+  this.getCaptchaData = getCaptchaData;
 
-      /** @return {number} */
-      USERS:     function () { return 1100;},
+  var sessionData;
 
-      /** @return {number} */
-      PROJECTS:  function () { return 1200;},
+  // session instance (singleton) that references the data
+  var Session = new (function () {
+    // Helper function
+    function fnFor(key) {
+      return function() {
+        return sessionData[key];
+      }
+    }
 
-      /** @return {number} */
-      TEXTS:     function () { return 1300;},
-
-      /** @return {number} */
-      QUESTIONS: function () { return 1400;},
-
-      /** @return {number} */
-      ANSWERS:   function () { return 1500;},
-
-      /** @return {number} */
-      COMMENTS:  function () { return 1600;},
-
-      /** @return {number} */
-      TEMPLATES: function () { return 1700;},
-
-      /** @return {number} */
-      TAGS:      function () { return 1800;},
-
-      /** @return {number} */
-      ENTRIES:   function () { return 1900;}
-    };
-    this.operation = {
-      /** @return {number} */
-      CREATE:       function () { return 1;},
-
-      /** @return {number} */
-      EDIT:         function () { return 2;},
-
-      /** @return {number} */
-      DELETE:       function () { return 3;},
-
-      /** @return {number} */
-      LOCK:         function () { return 4;},
-
-      /** @return {number} */
-      VIEW:         function () { return 5;},
-
-      /** @return {number} */
-      VIEW_OWN:     function () { return 6;},
-
-      /** @return {number} */
-      EDIT_OWN:     function () { return 7;},
-
-      /** @return {number} */
-      DELETE_OWN:   function () { return 8;},
-
-      /** @return {number} */
-      ARCHIVE:      function () { return 9;}
-    };
+    this.userId = fnFor('userId');
+    this.fileSizeMax = fnFor('fileSizeMax');
+    this.baseSite = fnFor('baseSite');
+    this.projectSettings = fnFor('projectSettings');
+    this.project = fnFor('project');
+    this.username = fnFor('username');
 
     this.hasSiteRight = function (domain, operation) {
-      return this.hasRight($window.session.userSiteRights, domain, operation);
+      return this.hasRight(sessionData.userSiteRights, domain, operation);
     };
 
     this.hasProjectRight = function (domain, operation) {
-      return this.hasRight($window.session.userProjectRights, domain, operation);
+      return this.hasRight(sessionData.userProjectRights, domain, operation);
     };
 
     this.hasRight = function (rights, domain, operation) {
-      if (rights) {
-        var right = domain() + operation();
-        return rights.indexOf(right) != -1;
-      }
-
-      return false;
+      if(!rights) return false;
+      var right = domain() + operation();
+      return rights.indexOf(right) != -1;
     };
 
-    this.getSetting = function (settings, key) {
-      if (settings) {
-        return settings[key];
-      } else {
-        return null; // Or undefined? Or false?
-      }
-    };
+    this.getProjectSetting = function (setting) {
+      return sessionData.projectSettings[setting];
+    }
 
-    this.getProjectSetting = function (key) {
-      return this.getSetting($window.session.projectSettings, key);
-    };
+    this.getCaptchaData = getCaptchaData;
 
-    this.session = $window.session;
+  })();
 
-    this.getCaptchaData = api.method('get_captcha_data');
+  // forceRefresh and callback are both optional (a Promise is returned)
+  // Can be called as (boolean, function), (boolean), (function), or ()
+  this.getSession = function(forceRefresh, callback) {
+    // handle the one edge case (called as getSession(function))
+    if(typeof forceRefresh === 'function') {
+      callback = forceRefresh;
+      forceRefresh = false;
+    }
+    callback = callback || angular.noop;
 
-    this.getProjectId = function getProjectId() {
-      if (angular.isDefined(this.session.project) &&
-        angular.isDefined(this.session.project.id)
-      ) {
-        return this.session.project.id;
-      }
+    if(sessionData && !forceRefresh) {
+      callback(Session);
+      return $q.when(Session); // Wrap Session in a promise
+    }
 
-      return '';
-    };
+    return fetchSessionData(forceRefresh).then(function(data) {
+      sessionData = data;
+      callback(Session);
+      return Session;
+    });
+  };
 
-    this.refresh = function refresh(callback) {
-      api.call('session_getSessionData', [], function (result) {
-        this.session = result.data;
-        /*
-         angular.forEach(result.data, function(value, key) {
-         ref.session[key] = value;
-         });
-         */
-        (callback || angular.noop)();
-      }.bind(this));
-    };
+  var promiseForSession;
+  function fetchSessionData(forceRefresh) {
+    if(promiseForSession && !forceRefresh) return promiseForSession;
 
-  }]);
+    var promise = api.call('session_getSessionData').then(function(response) {
+      return response.data;
+    }).catch(function(response) {
+      console.error(response); // TODO decide whether to show to user or just retry
+      return fetchSessionData(forceRefresh); // retry
+    });
+
+    if(!promiseForSession) promiseForSession = promise;
+    return promise;
+  }
+
+}]);
 

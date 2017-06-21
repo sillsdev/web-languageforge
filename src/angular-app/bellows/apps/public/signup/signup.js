@@ -42,10 +42,12 @@ angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'pasc
       });
     };
 
-    // signup app should only show when no user is present (not logged in)
-    if (angular.isDefined(sessionService.currentUserId())) {
-      $window.location.href = '/app/projects';
-    }
+    sessionService.getSession().then(function(session) {
+      // signup app should only show when no user is present (not logged in)
+      if (angular.isDefined(session.userId())) {
+        $window.location.href = '/app/projects';
+      }
+    });
 
     $scope.validateForm = function () {
       $scope.emailValid = $scope.signupForm.email.$pristine ||

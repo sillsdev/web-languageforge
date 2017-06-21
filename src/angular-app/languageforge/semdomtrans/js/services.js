@@ -20,14 +20,12 @@ angular.module('semdomtrans.services', ['bellows.services'])
     this.exportProject = api.method('semdom_export_project');
 
   }])
-  .factory('semdomtransEditorDataService', ['$q', 'editorDataService', 'semdomtransEditService',
-    'sessionService', 'semdomtransOfflineCache',
-  function ($q, editorDataService, api, ss, semdomCache) {
+  .factory('semdomtransEditorDataService', ['$q', 'editorDataService', 'semdomtransEditService', 'semdomtransOfflineCache',
+  function ($q, editorDataService, api, semdomCache) {
 
     editorDataService.registerEntryApi(api);
     var workingSets = [];
     var itemsTree = {};
-    var loadingDto = false;
     var entries = editorDataService.entries;
 
     function constructSemdomTree(items) {
@@ -55,24 +53,14 @@ angular.module('semdomtrans.services', ['bellows.services'])
      * Persists the Lexical data in the offline cache store
      */
     function storeDataInOfflineCache(data) {
-      var deferred = $q.defer();
-      semdomCache.updateWorkingSets(data).then(function () {
-        deferred.resolve();
-      });
-
-      return deferred.promise;
+      return semdomCache.updateWorkingSets(data);
     }
 
     /**
      * Persists the Lexical data in the offline cache store
      */
     function loadDataFromOfflineCache() {
-      var deferred = $q.defer();
-      semdomCache.getAllWorkingSets().then(function (result) {
-        deferred.resolve(result);
-      });
-
-      return deferred.promise;
+      return semdomCache.getAllWorkingSets();
     }
 
     function processEditorDto(dtoResult) {
@@ -119,7 +107,6 @@ angular.module('semdomtrans.services', ['bellows.services'])
       workingSets.push.apply(workingSets, cacheResult);
       spliceInDto(dtoResult);
       constructSemdomTree(entries);
-      loadingDto = false;
       storeDataInOfflineCache(workingSets);
     }
 
@@ -152,7 +139,7 @@ angular.module('semdomtrans.services', ['bellows.services'])
   function ($window, $q, sessionService, offlineCache) {
 
     function getAllWorkingSets() {
-      return offlineCache.getAllFromStore('workingsets', sessionService.getProjectId());
+      return offlineCache.getAllFromStore('workingsets', sessionService.projectId());
     }
 
     function deleteWorkingSet(id) {
@@ -160,8 +147,7 @@ angular.module('semdomtrans.services', ['bellows.services'])
     }
 
     function updateWorkingSets(workingSets) {
-      return offlineCache.setObjectsInStore('workingsets', sessionService.getProjectId(),
-        workingSets);
+      return offlineCache.setObjectsInStore('workingsets', sessionService.projectId(), workingSets);
     }
 
     return {

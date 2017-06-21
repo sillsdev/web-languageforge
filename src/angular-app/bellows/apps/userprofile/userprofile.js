@@ -14,9 +14,9 @@ angular.module('userprofile', ['ui.bootstrap', 'bellows.services', 'palaso.ui.no
     $translateProvider.useSanitizeValueStrategy('escape');
 
   }])
-  .controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'utilService',
+  .controller('userProfileCtrl', ['$scope', 'userService', 'utilService',
   'silNoticeService', 'modalService', '$window',
-function ($scope, userService, ss, util, notice, modalService, $window) {
+function ($scope, userService, util, notice, modalService, $window) {
   $scope.getAvatarUrl = util.getAvatarUrl;
 
   function getAvatarRef(color, shape) {
