@@ -253,9 +253,9 @@ class FactoryReset
             }
 
             print "\nEnsure www-data has permissions...\n";
-            $cmd = "sudo chown -R www-data:www-data {$this->lfSitePath}/htdocs/assets {$this->sfSitePath}/htdocs/assets";
+            $cmd = "sudo chgrp -R www-data {$this->lfSitePath}/htdocs/assets {$this->sfSitePath}/htdocs/assets";
             $this->Execute($runForReal, $cmd);
-            $cmd = "sudo chmod -R u+w {$this->lfSitePath}/htdocs/assets {$this->sfSitePath}/htdocs/assets";
+            $cmd = "sudo chmod -R g+w {$this->lfSitePath}/htdocs/assets {$this->sfSitePath}/htdocs/assets";
             $this->Execute($runForReal, $cmd);
             $cmd = "sudo chown -R www-data:fieldworks {$this->lfmergeSendReceivePath}";
             $this->Execute($runForReal, $cmd);
