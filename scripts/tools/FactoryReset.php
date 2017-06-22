@@ -71,7 +71,7 @@ class FactoryReset
          */
         $override = false;
 
-        if (strpos(getcwd(), 'TeamCity') !== false) {
+        if (strpos(gethostname(), 'ba-') !== false) {
             if (!$override) {
                 print "Script being run on the DEVELOPMENT SERVER khrap\n";
                 $this->environment = "dev";
@@ -239,7 +239,7 @@ class FactoryReset
                 $cmd = "rm -r {$this->lfSitePath}/htdocs/assets/lexicon";
                 $this->Execute($runForReal, $cmd);
                 print "\nExtracting LF assets into place...\n";
-                $cmd = "tar -xzf $archivePath/lf_assets_backup.tgz --strip-components=2 -C /var/www/virtual/";
+                $cmd = "tar -xzf $archivePath/lf_assets_backup.tgz --strip-components=3 -C {$this->lfSitePath}/";
                 $this->Execute($runForReal, $cmd);
             }
 
@@ -248,7 +248,7 @@ class FactoryReset
                 $cmd = "rm -r {$this->sfSitePath}/htdocs/assets/sfchecks";
                 $this->Execute($runForReal, $cmd);
                 print "\nExtracting SF assets into place...\n";
-                $cmd = "tar -xzf $archivePath/sf_assets_backup.tgz --strip-components=2 -C /var/www/virtual/";
+                $cmd = "tar -xzf $archivePath/sf_assets_backup.tgz --strip-components=3 -C {$this->sfSitePath}/";
                 $this->Execute($runForReal, $cmd);
             }
 
