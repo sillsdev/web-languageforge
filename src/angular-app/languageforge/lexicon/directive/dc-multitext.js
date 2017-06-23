@@ -18,15 +18,18 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
     function ($scope, $state, sessionService, lexUtils) {
       $scope.$state = $state;
       $scope.isAudio = lexUtils.isAudio;
-      $scope.inputSystems = sessionService.session.projectSettings.config.inputSystems;
 
-      $scope.inputSystemDirection = function inputSystemDirection(tag) {
-        if (!(tag in $scope.inputSystems)) {
-          return 'ltr';
-        }
+      sessionService.getSession().then(function(session) {
+        $scope.inputSystems = session.projectSettings().config.inputSystems;
 
-        return ($scope.inputSystems[tag].isRightToLeft) ? 'rtl' : 'ltr';
-      };
+        $scope.inputSystemDirection = function inputSystemDirection(tag) {
+          if (!(tag in $scope.inputSystems)) {
+            return 'ltr';
+          }
+
+          return ($scope.inputSystems[tag].isRightToLeft) ? 'rtl' : 'ltr';
+        };
+      });
 
       $scope.selectInputSystem = function selectInputSystem(tag) {
         $scope.selectField({
@@ -39,7 +42,8 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
           return false;
         }
 
-        return $scope.model[tag].value.indexOf('</span>') > -1;
+        var languageSpanPattern = /<span.* lang="/;
+        return languageSpanPattern.test($scope.model[tag].value);
       };
 
     }]

@@ -9,9 +9,9 @@ angular.module('bellows.services')
     this.project = function (projectId, projectType) {
       projectType = projectType || 'sfchecks';
       if (angular.isDefined(projectId)) {
-        return '/app/' + projectType + '/' + projectId + '#/';
+        return '/app/' + projectType + '/' + projectId + '#!/';
       } else {
-        return '#/';
+        return '#!/';
       }
     };
 
@@ -36,7 +36,7 @@ angular.module('bellows.services')
         // TODO: Replace hardcoded 'lexicon' below
         return this.project(projectId, 'lexicon') + '/editor/entry/' + entryId;
       } else {
-        return '#/editor/entry/' + entryId;
+        return '#!/editor/entry/' + entryId;
       }
     };
 

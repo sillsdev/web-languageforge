@@ -1,5 +1,9 @@
 {% extends 'container.html.twig' %}
 
+{%  block appcache %}
+<iframe src="/include-cache-manifest" width="0" height="0"></iframe>
+{% endblock %}
+
 {% block header %}
 
     {% if isLoggedIn %}
@@ -50,7 +54,7 @@
                         <a class="nav-link " href="/app/activity">Activity</a>
                     </li> -->
                     <li class="nav-item" data-ng-show="showButton">
-                        <a ng-click="showHelpContent()">Help</a>
+                        <a class="nav-link" ng-click="showHelpContent()">Help</a>
                     </li>
                     <li class="nav-item" uib-dropdown>
                         <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdown"
@@ -86,9 +90,7 @@
 
     {% else %}
         <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060">
-            <a class="navbar-brand hidden-sm-down" href="/">Language Forge
-                {% if app.website.domain == "languageforge.local" %} (Bootstrap 4){% endif %}
-            </a>
+            <a class="navbar-brand hidden-sm-down" href="/">Language Forge</a>
 
             <h1 class="mobile-title pull-left hidden-md-up"><a href="/">Language Forge</a></h1>
 

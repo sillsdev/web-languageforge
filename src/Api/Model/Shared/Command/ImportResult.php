@@ -2,7 +2,7 @@
 
 namespace Api\Model\Shared\Command;
 
-use Api\Model\Languageforge\Lexicon\LiftImportStats;
+use Api\Model\Languageforge\Lexicon\Import\LiftImportStats;
 
 class ImportResult
 {

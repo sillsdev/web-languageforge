@@ -92,7 +92,7 @@ class RightsHelper
      * @return bool
      * @throws \Exception
      */
-    public function userCanAccessMethod($methodName, $params) {
+    public function userCanAccessMethod($methodName) {
         switch ($methodName) {
 
             // User Role (Project Context)

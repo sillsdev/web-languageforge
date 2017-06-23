@@ -9,7 +9,7 @@
                         <i class="fa fa-arrow-circle-left"></i>
                         <span class="hidden-sm-down">{{'List'|translate}}</span></a>
 
-                    <button id="editorNewWordBtn" class="btn btn-success"
+                    <button id="editorNewWordBtn" class="btn btn-primary"
                             data-ng-show="$state.is('editor.entry')" data-ng-if="rights.canEditEntry()"
                             data-ng-click="newEntry()">
                     <i class="fa fa-plus"></i><span class="hidden-md-down"> {{'New Word' | translate}}</span></button>
@@ -21,8 +21,8 @@
                 </div>
                 <div class="pull-right" data-ng-show="$state.is('editor.entry')">
                     <span data-ng-if="rights.canEditEntry()">
-                        <span class="muted">{{saveNotice()}}</span>
-                        <button id="saveEntryBtn" class="btn btn-success" data-ng-click="saveCurrentEntry(true)"
+                        <span class="text-muted">{{saveNotice()}}</span>
+                        <button id="saveEntryBtn" class="btn btn-primary" data-ng-click="saveCurrentEntry(true)"
                                 data-ng-disabled="!currentEntryIsDirty()">
                             <i class="fa fa-save"></i> <span class="hidden-sm-down">{{saveButtonTitle()}}</span>
                         </button>
@@ -32,18 +32,17 @@
                                 data-ng-click="show.emptyFields = !show.emptyFields">
                             <i class="fa fa-{{ show.emptyFields ? 'minus-square-o' : 'plus-square-o' }}"></i> <span class="hidden-sm-down">{{show.emptyFields ? 'Hide Extra Fields' : 'Show Extra Fields' | translate}}</span></button>
                     </span>
-                    <a id="toCommentsLink"
-                       class="btn btn-warning" data-ng-click="showComments()" uib-tooltip="{{'Show Comments'|translate}}">
+                    <button id="toCommentsLink"
+                       class="btn btn-primary" data-ng-click="showComments()" uib-tooltip="{{'Show Comments'|translate}}">
                         <current-entry-comment-count></current-entry-comment-count>
-                        <i class="fa fa-comments"></i>
-                    </a>
+                        <i class="fa fa-comments commentColor"></i>
+                    </button>
                 </div>
                 <div class="pull-right" data-ng-show="$state.is('editor.comments')">
-                    <a id="commentsCount"
-                       class="btn btn-warning disabled" data-ng-click="showComments()" uib-tooltip="{{'Show Comments'|translate}}">
+                    <div id="commentsCount" class="btn">
                         <current-entry-comment-count></current-entry-comment-count>
-                        <i class="fa fa-comments"></i>
-                    </a>
+                        <i class="fa fa-comments commentColor"></i>
+                    </div>
                 </div>
             </div>
         </div>

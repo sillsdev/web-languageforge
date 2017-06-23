@@ -24,12 +24,8 @@
         <nav id="nav">
             <ul>
                 <li><a href="/">Home</a></li>
-                {% if isLoggedIn %}
-                    <li><a href="/app/projects" class="button special">My Projects</a></li>
-                {% else %}
-                    <li><a href="/public/signup" class="button">Sign Up</a></li>
-                    <li><a href="/auth/login" class="button">Login</a></li>
-                {% endif %}
+                <li><a href="/public/signup" class="button">Sign Up</a></li>
+                <li><a href="/auth/login" class="button">Login</a></li>
             </ul>
         </nav>
     </header>
@@ -37,13 +33,10 @@
     <!-- Banner -->
     <section id="banner">
         <h2>Language Forge</h2>
-        <p>Your language data, your way. Together you can build a dictionary.</p>
+        <p>Collaborative web-based dictionary building that syncs with FLEx</p>
         <ul class="actions">
-            {% if isLoggedIn %}
-                <li><a href="/app/projects" class="button special">My Projects</a></li>
-            {% else %}
-                <li><a href="/public/signup" class="button special">Sign Up</a></li>
-            {% endif %}
+            <li><a href="/public/signup" class="button special">Sign Up</a></li>
+            <li><a href="/auth/login" class="button">Login</a></li>
             <li><a href="#learn" class="button">Learn More</a></li>
         </ul>
     </section>
@@ -53,10 +46,8 @@
 
         <section class="box special">
             <header class="major">
-                <h2>Introducing a new way to collaborate
-                    <br/>
-                    on your language data</h2>
-                <p>Open up your data to others while maintaining complete control as to how it is edited.<br/>
+                <h2>Build together and be more productive!</h2>
+                <p>Open up your data to others. Maintain control as to who edits. Review comments.<br/>
                     Engage a wider audience: researchers, teammates, native speakers. It's up to you.</p>
             </header>
             <span class="image featured"><img src="{{ baseDir }}/images/pic01.jpg" alt=""/></span>
@@ -101,14 +92,13 @@
                 <section class="box special">
                     <span class="image featured"><img src="{{ baseDir }}/images/pic03.jpg" alt=""/></span>
                     <h3>Help Improve Language Forge</h3>
-                    <p>You can help us by reporting bugs you find on Github (account required) and suggesting features
-                        on our User Voice page. Ask questions from our community of users on our Google Groups
-                        forum.</p>
+                    <p>You can help us by reporting bugs you find on Github (account required).  You can discuss Language Forge, suggest features and get community help
+                        on our SIL Software Community page.</p>
                     <ul class="actions">
                         <li><a href="https://github.com/sillsdev/web-languageforge/issues" class="button alt">Github:
                                 Report a Bug</a></li>
-                        <li><a href="https://groups.google.com/forum/#!forum/languageforge" class="button alt">Google
-                                Groups: Ask a Question</a></li>
+                        <li><a href="https://community.software.sil.org/c/language-forge" class="button alt">SIL Software:
+                                Get Help, Discuss Features</a></li>
                     </ul>
                 </section>
 
@@ -121,10 +111,6 @@
                     <p>Members of the project will see entries updated as it happens by others in the same project.
                         Language Forge has dozens of additional features including LIFT import, custom field support,
                         right-to-left script support, and support for many FLEx fields.</p>
-                    <ul class="actions">
-                        <li><a href="https://languageforge.uservoice.com/" class="button alt">UserVoice: Suggest a
-                                Feature</a></li>
-                    </ul>
                 </section>
 
             </div>
@@ -141,12 +127,8 @@
             </div>
         </div>
         <ul class="actions">
-            {% if isLoggedIn %}
-                <li><a href="/app/projects" class="button special">My Projects</a></li>
-            {% else %}
-                <li><a href="/public/signup" class="button special">Sign Up</a></li>
-                <li><a href="/auth/login" class="button special">Login</a></li>
-            {% endif %}
+            <li><a href="/public/signup" class="button special">Sign Up</a></li>
+            <li><a href="/auth/login" class="button special">Login</a></li>
         </ul>
     </section>
 

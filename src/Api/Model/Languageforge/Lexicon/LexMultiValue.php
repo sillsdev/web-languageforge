@@ -22,12 +22,13 @@ class LexMultiValue
     }
 
     /**
-     * Ensures that the value $value is set
+     * Ensures that the normalized (NFC) value $value is set
      * @param string $value
      */
     public function value($value)
     {
-        if ($this->values->array_search($value) === FALSE) {
+        $value = \Normalizer::normalize($value);
+        if ($this->values->array_search($value) === false) {
             $this->values[] = $value;
         }
     }

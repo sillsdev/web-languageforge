@@ -1,0 +1,67 @@
+CACHE MANIFEST
+# Version {{ version }}
+
+NETWORK:
+*
+
+{% if isLoggedIn %}
+
+FALLBACK:
+
+/ /offline.html
+
+CACHE:
+
+{% for cssFile in cssFiles %}
+/{{ cssFile }}?v={{ version }}
+{% endfor %}
+
+{% for cssFile in vendorFilesCss %}
+/{{ cssFile }}?v={{ version }}
+{% endfor %}
+
+/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico
+
+{%  if useMinifiedJs %}
+/vendor_bower/jquery/dist/jquery.min.js?v={{ version }}
+/vendor_bower/angular/angular.min.js?v={{ version }}
+/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.min.js?v={{ version }}
+
+{% for filename in vendorFilesMinJs %}
+/{{ filename }}?v={{ version }}
+{% endfor %}
+
+/js/lib/{{ app.website.base }}.min.js?v={{ version }}
+
+{%  else %}
+/vendor_bower/jquery/dist/jquery.js?v={{ version }}
+/vendor_bower/angular/angular.js?v={{ version }}
+/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.js?v={{ version }}
+
+{% for filename in vendorFilesJs %}
+/{{ filename }}?v={{ version }}
+{% endfor %}
+
+{% for filename in jsFiles %}
+/{{ filename }}?v={{ version }}
+{% endfor %}
+
+{% endif %}
+
+{% for filename in jsNotMinifiedFiles %}
+/{{ filename }}?v={{ version }}
+{% endfor %}
+
+/Site/views/shared/container/xforge.navbarApp.js?v={{ version }}
+
+# Hard coded because for some reason not everything needed is included above
+/angular-app/bellows/js/bellows.services.project.js?v={{ version }}
+
+# User's projects
+
+{% for project in projects %}
+/app/{{ project.appName }}/{{ project.id }}
+{% endfor %}
+
+
+{% endif %}

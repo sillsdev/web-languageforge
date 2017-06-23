@@ -21,6 +21,8 @@ class SessionCommands
         $sessionData = array();
         $sessionData['baseSite'] = $website->base;
 
+        $sessionData['isProduction'] = $website->isProduction;
+
         if ($userId) {
             $sessionData['userId'] = (string) $userId;
             $user = new UserModel($userId);
@@ -30,20 +32,22 @@ class SessionCommands
 
         if ($projectId) {
             $project = ProjectModel::getById($projectId);
-            $sessionData['project'] = array();
-            $sessionData['project']['id'] = (string) $projectId;
-            $sessionData['project']['projectName'] = $project->projectName;
-            if ($project->isArchived) {
-                $sessionData['project']['projectName'] .= " [ARCHIVED]";
+            if (array_key_exists($userId, $project->users)) {
+                $sessionData['project'] = array();
+                $sessionData['project']['id'] = (string) $projectId;
+                $sessionData['project']['projectName'] = $project->projectName;
+                if ($project->isArchived) {
+                    $sessionData['project']['projectName'] .= " [ARCHIVED]";
+                }
+                $sessionData['project']['appName'] = $project->appName;
+                $sessionData['project']['appLink'] = "/app/{$project->appName}/$projectId/";
+                $sessionData['project']['ownerRef'] = $project->ownerRef->asString();
+                $sessionData['project']['userIsProjectOwner'] = $project->isOwner($userId);
+                $sessionData['project']['slug'] = $project->databaseName();
+                $sessionData['project']['isArchived'] = $project->isArchived;
+                $sessionData['userProjectRights'] = $project->getRightsArray($userId);
+                $sessionData['projectSettings'] = $project->getPublicSettings($userId);
             }
-            $sessionData['project']['appName'] = $project->appName;
-            $sessionData['project']['appLink'] = "/app/{$project->appName}/$projectId/";
-            $sessionData['project']['ownerRef'] = $project->ownerRef->asString();
-            $sessionData['project']['userIsProjectOwner'] = $project->isOwner($userId);
-            $sessionData['project']['slug'] = $project->databaseName();
-            $sessionData['project']['isArchived'] = $project->isArchived;
-            $sessionData['userProjectRights'] = $project->getRightsArray($userId);
-            $sessionData['projectSettings'] = $project->getPublicSettings($userId);
         }
 
         if ($appName) {
