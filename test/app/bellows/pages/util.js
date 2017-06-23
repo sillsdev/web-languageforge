@@ -31,7 +31,7 @@ function Utils() {
     // Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of
     // what its current value is
     checkboxElement.isSelected().then(function (checked) {
-      if (checked != value) {
+      if (checked !== value) {
         checkboxElement.click();
       }
     });
@@ -155,17 +155,19 @@ function Utils() {
 
   // Errors we choose to ignore because they are typically not encountered by users, but only
   // in testing
-  this.isErrorToIgnore = function isErrorToIgnore(message) {
-    return /angular.*\.js .* TypeError: undefined is not a function/.test(message) ||
-      /angular.*\.js .* Error: \[\$compile:tpload]/.test(message) ||
-      /"level":"info"/.test(message) ||
-      /next_id/.test(message) ||
-      message.indexOf('password or credit card input in a non-secure context.') !== -1 ||
-      /ERR_INTERNET_DISCONNECTED/.test(message);
+  this.isMessageToIgnore = function isMessageToIgnore(message) {
+    if (message.level.name === 'WARNING') return true;
+
+    var text = message.message;
+
+    return /angular.*\.js .* TypeError: undefined is not a function/.test(text) ||
+      /angular.*\.js .* Error: \[\$compile:tpload]/.test(text) ||
+      text.includes('password or credit card input in a non-secure context.') ||
+      text.includes('ERR_INTERNET_DISCONNECTED');
   };
 
   this.scrollTop = function () {
     browser.executeScript('window.scroll(0,0)');
-  }
+  };
 
 }

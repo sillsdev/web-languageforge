@@ -158,7 +158,7 @@ gulp.task('do-reload', function () {
 // -------------------------------------
 gulp.task('reload', function () {
   livereload.listen();
-  gulp.watch(srcPatterns, {delay: 500}, gulp.series('do-reload'));
+  gulp.watch(srcPatterns, { delay: 500 }, gulp.series('do-reload'));
 });
 
 // -------------------------------------
@@ -483,8 +483,7 @@ gulp.task('remote-restart-php-fpm', function (cb) {
   };
 
   execute(
-    "ssh -i <%= credentials %> <%= destination %> 'if service --status-all | grep -Fq php7.0-fpm;" +
-    " then service php7.0-fpm restart; echo restarted PHP-FPM successfully; fi'",
+    "ssh -i <%= credentials %> <%= destination %> 'service php7.0-fpm restart'",
     options,
     cb
   );
@@ -629,11 +628,12 @@ gulp.task('sass', gulp.parallel(function buildSiteDir(done) {
   },
 
   function buildAngularAppDir(done) {
-    execute(sassCommand  + ' src/angular-app/ -o src/angular-app/ --output-style compressed', null, done);
+    execute(sassCommand  + ' src/angular-app/ -o src/angular-app/ --output-style compressed',
+      null, done);
   }
 ));
 
-gulp.task('sass:watch', function (done) {
+gulp.task('sass:watch', function () {
   var debug = process.argv.indexOf('--debug') !== -1;
   if (!debug) console.info('Tip: run with --debug to generate source comments and source maps.');
 
@@ -647,6 +647,7 @@ gulp.task('sass:watch', function (done) {
     execute(b, null, function () {
       execute(b + watch, null, reject);
     });
+
     execute(a, null, function () {
       execute(a + watch, null, reject);
     });
@@ -911,7 +912,8 @@ gulp.task('build-and-upload',
 gulp.task('build-e2e',
   gulp.series(
     'test-e2e-useTestConfig',
-    'build-and-upload',
+    'build',
+    'build-upload',
     'test-e2e-env',
     'test-e2e-setupTestEnvironment',
     'test-e2e-doTest'
@@ -938,6 +940,7 @@ gulp.task('build-php-coverage',
     'build',
     'test-php-coverage')
 );
+
 //endregion
 
 // -------------------------------------

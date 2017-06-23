@@ -1,12 +1,12 @@
 <div class="listview" ng-hide="hideIfEmpty && items.length == 0">
     <div ng-transclude></div>
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-8 col-lg-10">
             <ul uib-pagination total-items="filteredItems.length" data-ng-model="currentPage" boundary-links="true"
                 items-per-page="itemsPerPage" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
             </ul>
         </div>
-        <div class="right col-md-2" >Items per page:
+        <div class="right col-md-4 col-lg-2" >Items per page:
             <select ng-model="itemsPerPage" class="form-control">
                 <option value="10" ng-selected="true">10</option>
                 <option value="25">25</option>

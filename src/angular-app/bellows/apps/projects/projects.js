@@ -7,13 +7,14 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
   function ($scope, projectService, ss, notice) {
     $scope.finishedLoading = false;
 
-    // Rights
     $scope.rights = {};
-    $scope.rights.edit = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-    $scope.rights.create = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.CREATE);
-    $scope.rights.showControlBar = $scope.rights.create;
 
-    $scope.siteName = ss.baseSite();
+    ss.getSession().then(function(session) {
+      $scope.rights.edit = session.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
+      $scope.rights.create = session.hasSiteRight(ss.domain.PROJECTS, ss.operation.CREATE);
+      $scope.rights.showControlBar = $scope.rights.create;
+      $scope.siteName = session.baseSite();
+    });
 
     // Listview Selection
     $scope.newProjectCollapsed = true;
@@ -35,13 +36,13 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
     // Listview Data
     $scope.projects = [];
     $scope.queryProjectsForUser = function () {
-      projectService.list(function (result) {
-        if (result.ok) {
-          $scope.projects = result.data.entries;
-          $scope.projectCount = result.data.count;
-          $scope.finishedLoading = true;
-        }
-      });
+      projectService.list().then(function (projects) {
+        $scope.projects = projects;
+        // Is this perhaps wrong? Maybe not all projects are included in the JSONRPC response?
+        // That might explain the existance of the previous result.data.count
+        $scope.projectCount = projects.length;
+        $scope.finishedLoading = true;
+      }).catch(console.error);
     };
 
     $scope.isInProject = function (project) {

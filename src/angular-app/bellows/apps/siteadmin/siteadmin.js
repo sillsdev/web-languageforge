@@ -16,7 +16,9 @@ angular.module('siteadmin', [
       state: 'add' // can be either "add" or "update"
     };
 
-    $scope.userId = sessionService.session.userId;
+    sessionService.getSession().then(function(session) {
+      $scope.userId = session.userId();
+    })
 
     $scope.focusInput = function () {
       $scope.vars.inputfocus = true;
@@ -263,10 +265,12 @@ angular.module('siteadmin', [
 
       // Rights
       $scope.rights = {};
-      $scope.rights.remove = ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
-      $scope.rights.publish = $scope.rights.remove;
-      $scope.rights.showControlBar = $scope.rights.remove;
-
+      ss.getSession().then(function(session) {
+        var hasRight = session.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
+        $scope.rights.remove = hasRight;
+        $scope.rights.publish = hasRight;
+        $scope.rights.showControlBar = hasRight;
+      });
       $scope.queryArchivedProjects = function () {
         projectService.archivedList(function (result) {
           if (result.ok) {

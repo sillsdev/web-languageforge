@@ -128,7 +128,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       browser.wait(expectedCondition.visibilityOf(page.srCredentialsPage.credentialsInvalid),
         CONDITION_TIMEOUT);
       expect(page.srCredentialsPage.loginOk.isDisplayed()).toBe(false);
-      expect(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true);
+      expect(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true); // flaky assertion
       page.formStatus.expectHasNoError();
       page.nextButton.click();
       expect(page.srCredentialsPage.loginInput.isDisplayed()).toBe(true);

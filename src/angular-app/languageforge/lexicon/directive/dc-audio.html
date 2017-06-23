@@ -1,21 +1,14 @@
 <div class="dc-audio">
-    <!-- playback control -->
-    <div class="player" data-ng-show="hasAudio() && audioReady && !show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">
-        <a data-sgw-sound-player data-href="audioPlayUrl()" data-sgw-state="state" data-sgw-sound="sound">
-            <i data-ng-class="audioIcon()"></i></a>
-        <span class="audioProgress muted">{{formatTimestamp(sound.position)}} / {{formatTimestamp(sound.duration)}}</span>
-    </div>
-
     <!-- more control -->
-    <div data-ng-hide="show.audioUpload">
+    <div data-ng-hide="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullToSide">
         <div data-ng-show="hasAudio()">
             <div class="dropdown" uib-dropdown data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()">
-                <a class="btn btn-secondary dropdown-toggle" uib-dropdown-toggle><span class="caret"></span></a>
+                <a class="btn btn-secondary dropdown-toggle pui-no-caret" uib-dropdown-toggle><i class="fa fa-ellipsis-v"></i></a>
                 <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="dcControl.interfaceConfig.pullToSide">
                     <a class="dropdown-item" data-ng-href="{{audioDownloadUrl()}}">
                         <i class="fa fa-download"></i> {{'Download' | translate}} '{{displayFilename()}}'</a>
                     <a class="dropdown-item" data-ng-click="deleteAudio()">
-                        <i class="fa fa-times"></i> {{'Delete' | translate}} '{{displayFilename()}}'</a>
+                        <i class="fa fa-trash"></i> {{'Delete' | translate}} '{{displayFilename()}}'</a>
                     <div class="divider"></div>
                     <a class="dropdown-item" data-ng-click="show.audioUpload = true">
                         <i class="fa fa-cloud-upload"></i> {{'Upload a replacement' | translate}}</a>
@@ -35,7 +28,7 @@
     </div>
 
     <!-- upload control -->
-    <div data-ng-show="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">
+    <div class="uploadCtl" data-ng-show="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">
         <div class="deleteX pull-right">
             <i data-ng-click="show.audioUpload = false" title="Cancel Uploading Audio" class="fa fa-times"
                id="audioAddCancel"></i>
@@ -48,6 +41,13 @@
         <div data-ngf-no-file-drop>
             <div class="btn btn-secondary" ngf-select="uploadAudio($file)" data-translate="Browse..."></div>
         </div>
+    </div>
+
+    <!-- playback control -->
+    <div class="player" data-ng-show="hasAudio() && audioReady && !show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">
+        <a data-sgw-sound-player data-href="audioPlayUrl()" data-sgw-state="state" data-sgw-sound="sound">
+            <i data-ng-class="audioIcon()"></i></a>
+        <span class="audioProgress text-muted">{{formatTimestamp(sound.position)}} / {{formatTimestamp(sound.duration)}}</span>
     </div>
 
     <!-- built-in html5 playback control -->

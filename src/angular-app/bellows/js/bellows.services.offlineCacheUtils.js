@@ -6,16 +6,20 @@ angular.module('bellows.services')
 
     function updateProjectData(timestamp, commentsUserPlusOne, isComplete) {
       var obj = {
-        id: sessionService.getProjectId(),
+        id: sessionService.projectId(),
         commentsUserPlusOne: commentsUserPlusOne,
         timestamp: timestamp,
         isComplete: isComplete
       };
-      return offlineCache.setObjectsInStore('projects', sessionService.getProjectId(), [obj]);
+      return offlineCache.setObjectsInStore('projects', sessionService.projectId(), [obj]);
     }
 
     function getProjectData() {
-      return offlineCache.getOneFromStore('projects', sessionService.getProjectId());
+      return offlineCache.getOneFromStore('projects', sessionService.projectId());
+    }
+
+    function getProjects() {
+      return offlineCache.getAllFromStore('projects');
     }
 
     return {
