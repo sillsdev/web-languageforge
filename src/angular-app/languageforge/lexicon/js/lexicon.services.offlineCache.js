@@ -21,7 +21,7 @@ angular.module('lexicon.services')
      * @returns {promise}
      */
     function updateEntries(entries) {
-      return offlineCache.setObjectsInStore('entries', sessionService.getProjectId(), entries);
+      return offlineCache.setObjectsInStore('entries', sessionService.projectId(), entries);
     }
 
     return {

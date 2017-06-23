@@ -36,9 +36,9 @@ class WebsiteInstances
 
         $w = new Website('jamaicanpsalms.scriptureforge.local', Website::SCRIPTUREFORGE);
         $w->name = 'The Jamaican Psalms Project';
-        $w->ssl = true;
+        $w->ssl = false;
         $w->theme = 'jamaicanpsalms';
-        $w->defaultProjectCode = 'jamaicanpsalms';
+        $w->defaultProjectCode = 'jamaican_psalms';
         $sites['jamaicanpsalms.scriptureforge.local'] = $w;
 
         $w = new Website('jamaicanpsalms.e2etest.scriptureforge.local', Website::SCRIPTUREFORGE);
@@ -81,6 +81,7 @@ class WebsiteInstances
         $w->name = 'Scripture Forge';
         $w->ssl = true;
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
+        $w->isProduction = true;
         $sites['scriptureforge.org'] = $w;
 
         // jamaicanpsalms.com
@@ -89,6 +90,7 @@ class WebsiteInstances
         $w->ssl = true;
         $w->theme = 'jamaicanpsalms';
         $w->defaultProjectCode = 'jamaican_psalms';
+        $w->isProduction = true;
         $sites['jamaicanpsalms.scriptureforge.org'] = $w;
 
         // waaqwiinaagiwritings.org
@@ -97,6 +99,7 @@ class WebsiteInstances
         $w->ssl = true;
         $w->theme = 'simple';
         $w->defaultProjectCode = 'waaqwiinaagiwritings';
+        $w->isProduction = true;
         $sites['waaqwiinaagiwritings.org'] = $w;
 
         return $sites;
@@ -150,7 +153,9 @@ class WebsiteInstances
         $w->name = 'Language Forge';
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
         $w->ssl = true;
+        $w->isProduction = true;
         $sites['languageforge.org'] = $w;
+
 
         return $sites;
     }

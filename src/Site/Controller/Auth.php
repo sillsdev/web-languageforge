@@ -29,18 +29,21 @@ class Auth extends App
                 if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
                     $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
 
-                    return $app->redirect('/auth/login');
+                    return $app->redirect($this->isLoggedIn($app) ? '/auth/logout' : '/auth/login');
                 }
 
                 if (!$user->hasForgottenPassword(false)) {
                     $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. It may have expired. Please try again.');
 
-                    return $app->redirect('/auth/login');
+                    return $app->redirect($this->isLoggedIn($app) ? '/auth/logout' : '/auth/login');
                 }
 
                 // no break; - intentional fall through to next case
             case 'forgot_password':
             case 'login':
+                if($this->isLoggedIn($app)) {
+                    return $app->redirect('/app/projects');
+                }
                 $this->setupAngularAppVariables($app, $appName);
                 $this->setupAuthView($request, $app);
 

@@ -4,7 +4,7 @@ angular.module('usermanagement.joinRequests', ['bellows.services', 'palaso.ui.li
 
   .controller('JoinRequestsCtrl', ['$scope', 'userService', 'projectService', 'sessionService',
     function($scope, userService, projectService, ss) {
-      
+
       $scope.acceptJoinRequest = function acceptJoinRequest(userId, role) {
         projectService.acceptJoinRequest(userId, role, function(result) {
           if (result.ok) {
@@ -14,7 +14,7 @@ angular.module('usermanagement.joinRequests', ['bellows.services', 'palaso.ui.li
           }
         })
       }
-      
+
       $scope.denyJoinRequest = function denyJoinRequest(userId) {
         projectService.denyJoinRequest(userId, function(result) {
           if (result.ok) {
@@ -24,16 +24,18 @@ angular.module('usermanagement.joinRequests', ['bellows.services', 'palaso.ui.li
           }
         })
       }
-      
+
       // load roles if they have not been loaded yet
       if (Object.keys($scope.roles).length == 0) {
         $scope.queryUserList();
       }
-      
+
       $scope.rights = {};
-      $scope.rights.remove = ss.hasProjectRight(ss.domain.USERS, ss.operation.DELETE);
-      $scope.rights.add = ss.hasProjectRight(ss.domain.USERS, ss.operation.CREATE);
-      $scope.rights.changeRole = ss.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
+      ss.getSession().then(function(session) {
+        $scope.rights.remove = session.hasProjectRight(ss.domain.USERS, ss.operation.DELETE);
+        $scope.rights.add = session.hasProjectRight(ss.domain.USERS, ss.operation.CREATE);
+        $scope.rights.changeRole = session.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
+      });
     }
   ])
 ;

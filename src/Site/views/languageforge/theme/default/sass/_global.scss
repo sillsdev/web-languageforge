@@ -1,3 +1,5 @@
+$navbar-height: 50px;
+
 a {
   cursor: pointer;
 }
@@ -19,7 +21,7 @@ h1.mobile-title {
 }
 
 #app-container-for-bootstrap {
-  margin-top: 60px;
+  margin-top: $navbar-height + 10px;
   flex: 1;
 }
 .card .form-group-last {
@@ -44,7 +46,7 @@ div.picklists li.selected {
 }
 
 dl.picklists {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 dl.picklists div {
@@ -209,7 +211,6 @@ dl.picklists dd {
   right: 1em;
   top: 1em;
   cursor: pointer;
-  top: 1em;
 }
 
 .breadcrumb {
@@ -225,7 +226,7 @@ dl.picklists dd {
   left: 0;
   z-index: 1000;
   width: 100%;
-  height: 50px;
+  height: $navbar-height;
   background-color: #104060;
 }
 
@@ -331,4 +332,51 @@ nav {
 
 .typeahead-item {
   cursor: pointer;
+}
+
+.alert {
+  padding: 0.2em 1em;
+  text-align: center;
+}
+
+@include media-breakpoint-down(sm) {
+  nav.navbar {
+    position: initial;
+  }
+
+  #app-container-for-bootstrap {
+    margin-top: 10px;
+  }
+
+  .alert {
+    position: fixed;
+    z-index: 100;
+    bottom: 0;
+    left: 0;
+    right: 90px;
+    margin-bottom: 0;
+    border-radius: 0;
+    width: 100%;
+  }
+}
+
+nav.navbar {
+  transition: background-color 1s ease;
+
+  .nav-user.nav-item {
+    margin-left: 0;
+  }
+}
+
+.notices button.close {
+  margin-right: 0.5em;
+}
+
+footer.footer {
+  margin-top: 0.5em;
+  padding: 1em;
+}
+
+.dropdown .pui-no-caret::after {
+  display: none;
 }

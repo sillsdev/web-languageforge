@@ -53,14 +53,10 @@ class SessionCommandsTest extends TestCase
         $environ->create();
         $data = SessionCommands::getSessionData($environ->projectId, $environ->userId, $environ->website);
 
-        // Session data should contain a userId and projectId
+        // Session data should contain a userId but not a projectId
         $this->assertArrayHasKey('userId', $data);
         $this->assertTrue(is_string($data['userId']));
         $this->assertEquals($environ->userId, $data['userId']);
-        $this->assertArrayHasKey('project', $data);
-        $this->assertArrayHasKey('id', $data['project']);
-        $this->assertTrue(is_string($data['project']['id']));
-        $this->assertEquals($environ->projectId, $data['project']['id']);
 
         // Session data should also contain "site", a string...
         $this->assertArrayHasKey('baseSite', $data);
@@ -69,11 +65,9 @@ class SessionCommandsTest extends TestCase
         $this->assertArrayHasKey('fileSizeMax', $data);
         $this->assertTrue(is_integer($data['fileSizeMax']));
 
-        // Session data should contain project settings, an associative array
-        $this->assertArrayHasKey('projectSettings', $data);
-        $this->assertTrue(is_array($data['projectSettings']));
-        // ... which should not be empty
-        $this->assertFalse(empty($data['projectSettings']));
+        // Session data should not contain project or projectSettings, an associative array
+        $this->assertArrayNotHasKey('project', $data);
+        $this->assertArrayNotHasKey('projectSettings', $data);
 
         // Session data should contain user site rights, an array of integers
         $this->assertArrayHasKey('userSiteRights', $data);
@@ -83,10 +77,7 @@ class SessionCommandsTest extends TestCase
         $this->assertTrue(is_integer($data['userSiteRights'][0]));
 
         // Session data should contain user project rights, an array of integers
-        $this->assertArrayHasKey('userProjectRights', $data);
-        $this->assertTrue(is_array($data['userProjectRights']));
-        // ... which should be empty at first when the user is not part of the project
-        $this->assertTrue(empty($data['userProjectRights']));
+        $this->assertArrayNotHasKey('userProjectRights', $data);
     }
 
     public function testSessionData_userIsPartOfProject()

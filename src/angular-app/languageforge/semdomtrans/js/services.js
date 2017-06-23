@@ -1,80 +1,31 @@
 'use strict';
 
-angular.module('semdomtrans.services', ['jsonRpc'])
-  .service('semdomtransSetupService', ['jsonRpc',
-  function (jsonRpc) {
-    jsonRpc.connect('/api/sf');
+angular.module('semdomtrans.services', ['bellows.services'])
+  .service('semdomtransSetupService', ['apiService',
+  function (api) {
 
-    this.createProject =
-      function createProject(languageCode, languageName, useGoogleTranslateData, callback) {
-        jsonRpc.call('semdom_create_project', [languageCode, languageName, useGoogleTranslateData],
-          function (result) {
-            callback(result);
-          });
-      };
-
-    this.getOpenProjects = function getOpenProjects(callback) {
-      jsonRpc.call('semdom_get_open_projects', [], function (result) {
-        callback(result);
-      });
-    };
-
-    this.doesProjectExist = function doesProjectExist(languageCode, callback) {
-      jsonRpc.call('semdom_project_exists', [languageCode], function (result) {
-        callback(result);
-      });
-    };
-
-    this.doesGoogleTranslateDataExist =
-      function doesGoogleTranslateDataExist(languageCode, callback) {
-        jsonRpc.call('semdom_does_googletranslatedata_exist', [languageCode], function (result) {
-          callback(result);
-        });
-      };
+    this.createProject = api.method('semdom_create_project');
+    this.getOpenProjects = api.method('semdom_get_open_projects');
+    this.doesProjectExist = api.method('semdom_project_exists');
+    this.doesGoogleTranslateDataExist = api.method('semdom_does_googletranslatedata_exist');
 
   }])
-  .service('semdomtransEditService', ['jsonRpc',
-  function (jsonRpc) {
-    jsonRpc.connect('/api/sf');
+  .service('semdomtransEditService', ['apiService',
+  function (api) {
 
-    this.dbeDtoFull = function dbeDtoFull(browserInstanceId, offset, callback) {
-      jsonRpc.call('semdom_editor_dto', [browserInstanceId, null], function (result) {
-        callback(result);
-      });
-    };
+    this.dbeDtoFull = api.method('semdom_editor_dto');
+    this.dbeDtoUpdatesOnly = api.method('semdom_editor_dto');
+    this.updateTerm = api.method('semdom_item_update');
+    this.updateWorkingSet = api.method('semdom_workingset_update');
+    this.exportProject = api.method('semdom_export_project');
 
-    this.dbeDtoUpdatesOnly = function dbeDtoUpdatesOnly(browserInstanceId, timestamp, callback) {
-      jsonRpc.call('semdom_editor_dto', [browserInstanceId, timestamp], function (result) {
-        callback(result);
-      });
-    };
-
-    this.updateTerm = function updateTerm(term, callback) {
-      jsonRpc.call('semdom_item_update', [term], function (result) {
-        callback(result);
-      });
-    };
-
-    this.updateWorkingSet = function updateWorkingSet(workingSet, callback) {
-      jsonRpc.call('semdom_workingset_update', [workingSet], function (result) {
-        callback(result);
-      });
-    };
-
-    this.exportProject = function exportProject(callback) {
-      jsonRpc.call('semdom_export_project', [], function (result) {
-        callback(result);
-      });
-    };
   }])
-  .factory('semdomtransEditorDataService', ['$q', 'editorDataService', 'semdomtransEditService',
-    'sessionService', 'semdomtransOfflineCache',
-  function ($q, editorDataService, api, ss, semdomCache) {
+  .factory('semdomtransEditorDataService', ['$q', 'editorDataService', 'semdomtransEditService', 'semdomtransOfflineCache',
+  function ($q, editorDataService, api, semdomCache) {
 
     editorDataService.registerEntryApi(api);
     var workingSets = [];
     var itemsTree = {};
-    var loadingDto = false;
     var entries = editorDataService.entries;
 
     function constructSemdomTree(items) {
@@ -102,24 +53,14 @@ angular.module('semdomtrans.services', ['jsonRpc'])
      * Persists the Lexical data in the offline cache store
      */
     function storeDataInOfflineCache(data) {
-      var deferred = $q.defer();
-      semdomCache.updateWorkingSets(data).then(function () {
-        deferred.resolve();
-      });
-
-      return deferred.promise;
+      return semdomCache.updateWorkingSets(data);
     }
 
     /**
      * Persists the Lexical data in the offline cache store
      */
     function loadDataFromOfflineCache() {
-      var deferred = $q.defer();
-      semdomCache.getAllWorkingSets().then(function (result) {
-        deferred.resolve(result);
-      });
-
-      return deferred.promise;
+      return semdomCache.getAllWorkingSets();
     }
 
     function processEditorDto(dtoResult) {
@@ -166,7 +107,6 @@ angular.module('semdomtrans.services', ['jsonRpc'])
       workingSets.push.apply(workingSets, cacheResult);
       spliceInDto(dtoResult);
       constructSemdomTree(entries);
-      loadingDto = false;
       storeDataInOfflineCache(workingSets);
     }
 
@@ -199,7 +139,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
   function ($window, $q, sessionService, offlineCache) {
 
     function getAllWorkingSets() {
-      return offlineCache.getAllFromStore('workingsets', sessionService.getProjectId());
+      return offlineCache.getAllFromStore('workingsets', sessionService.projectId());
     }
 
     function deleteWorkingSet(id) {
@@ -207,8 +147,7 @@ angular.module('semdomtrans.services', ['jsonRpc'])
     }
 
     function updateWorkingSets(workingSets) {
-      return offlineCache.setObjectsInStore('workingsets', sessionService.getProjectId(),
-        workingSets);
+      return offlineCache.setObjectsInStore('workingsets', sessionService.projectId(), workingSets);
     }
 
     return {

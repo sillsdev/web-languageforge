@@ -4,52 +4,52 @@ angular.module('lexicon.services')
 
 // Lexicon Configuration Service
 .service('lexConfigService', ['sessionService', function (sessionService) {
-  this.configForUser = getConfigForUser();
 
-  this.refresh = function refresh() {
-    this.configForUser = getConfigForUser();
+  this.refresh = function () {
+    return sessionService.getSession().then(function(session) {
+      var config = angular.copy(session.projectSettings().config);
+      var userId = session.userId();
+      var role = session.projectSettings().currentUserRole;
+      var fieldsConfig;
+
+      // copy option lists to config object
+      config.optionlists = {};
+      angular.forEach(session.projectSettings().optionlists, function (optionlist) {
+        config.optionlists[optionlist.code] = optionlist;
+      });
+
+      // use an user-based field config if defined
+      if (angular.isDefined(config.userViews[userId])) {
+        fieldsConfig = config.userViews[userId];
+      } else {
+
+        // fallback to role-based field config
+        fieldsConfig = config.roleViews[role];
+      }
+
+      removeDisabledConfigFields(config.entry, fieldsConfig);
+      removeDisabledConfigFields(config.entry.fields.senses, fieldsConfig);
+      removeDisabledConfigFields(config.entry.fields.senses.fields.examples, fieldsConfig);
+
+      this.configForUser = config;
+      return config;
+    }.bind(this));
   }.bind(this);
 
-  function getConfigForUser() {
-    var config = angular.copy(sessionService.session.projectSettings.config);
-    var userId = sessionService.session.userId;
-    var role = sessionService.session.projectSettings.currentUserRole;
-    var fieldsConfig;
-
-    // copy option lists to config object
-    config.optionlists = {};
-    angular.forEach(sessionService.session.projectSettings.optionlists, function (optionlist) {
-      config.optionlists[optionlist.code] = optionlist;
-    });
-
-    // use an user-based field config if defined
-    if (angular.isDefined(config.userViews[userId])) {
-      fieldsConfig = config.userViews[userId];
-    } else {
-
-      // fallback to role-based field config
-      fieldsConfig = config.roleViews[role];
-    }
-
-    removeDisabledConfigFields(config.entry, fieldsConfig);
-    removeDisabledConfigFields(config.entry.fields.senses, fieldsConfig);
-    removeDisabledConfigFields(config.entry.fields.senses.fields.examples, fieldsConfig);
-
-    return config;
-  }
-
   this.isTaskEnabled = function isTaskEnabled(taskName) {
-    var config = sessionService.session.projectSettings.config;
-    var role = sessionService.session.projectSettings.currentUserRole;
-    var userId = sessionService.session.userId;
+    sessionService.getSession().then(function(session) {
+      var config = session.projectSettings().config;
+      var role = session.projectSettings().currentUserRole;
+      var userId = session.userId();
 
-    if (angular.isDefined(config.userViews[userId])) {
-      return config.userViews[userId].showTasks[taskName];
-    } else {
+      if (angular.isDefined(config.userViews[userId])) {
+        return config.userViews[userId].showTasks[taskName];
+      } else {
 
-      // fallback to role-based field config
-      return config.roleViews[role].showTasks[taskName];
-    }
+        // fallback to role-based field config
+        return config.roleViews[role].showTasks[taskName];
+      }
+    });
   };
 
   this.fieldContainsData = function fieldContainsData(type, model) {
@@ -118,24 +118,26 @@ angular.module('lexicon.services')
   };
 
   this.getFieldConfig = function getFieldConfig(fieldName) {
-    var config = sessionService.session.projectSettings.config;
-    var search = config.entry.fields;
+    return sessionService.getSession().then(function(session) {
+      var config = session.projectSettings().config;
+      var search = config.entry.fields;
 
-    if (angular.isDefined(search[fieldName])) {
-      return search[fieldName];
-    }
+      if (angular.isDefined(search[fieldName])) {
+        return search[fieldName];
+      }
 
-    search = config.entry.fields.senses.fields;
-    if (angular.isDefined(search[fieldName])) {
-      return search[fieldName];
-    }
+      search = config.entry.fields.senses.fields;
+      if (angular.isDefined(search[fieldName])) {
+        return search[fieldName];
+      }
 
-    search = config.entry.fields.senses.fields.examples.fields;
-    if (angular.isDefined(search[fieldName])) {
-      return search[fieldName];
-    }
+      search = config.entry.fields.senses.fields.examples.fields;
+      if (angular.isDefined(search[fieldName])) {
+        return search[fieldName];
+      }
 
-    return undefined;
+      return undefined;
+    });
   };
 
   /*

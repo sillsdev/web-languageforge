@@ -85,16 +85,16 @@ angular.module('activity',
     };
 
     $scope.filterMyActivity = function () {
-      $scope.showAllActivity = false;
-      $scope.filteredActivities = [];
-      angular.forEach($scope.activities, function (activity) {
-        if (activity.userRef && activity.userRef.id == sessionService.currentUserId() ||
-          activity.userRef2 && activity.userRef2.id == sessionService.currentUserId()
-        ) {
-          $scope.filteredActivities.push(activity);
-        }
+      sessionService.getSession().then(function (session) {
+        $scope.showAllActivity = false;
+        $scope.filteredActivities = [];
+        angular.forEach($scope.activities, function (activity) {
+          if (activity.userRef && activity.userRef.id == session.userId() ||
+            activity.userRef2 && activity.userRef2.id == session.userId()
+          ) {
+            $scope.filteredActivities.push(activity);
+          }
+        });
       });
     };
-  }])
-
-  ;
+  }]);

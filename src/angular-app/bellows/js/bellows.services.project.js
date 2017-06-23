@@ -1,103 +1,49 @@
 'use strict';
 
 angular.module('bellows.services')
-  .service('projectService', ['jsonRpc', 'sessionService', function (jsonRpc, ss) {
-    // Note this doesn't actually 'connect', it simply sets the connection url.
-    jsonRpc.connect('/api/sf');
+  .service('projectService', ['apiService', 'sessionService', 'offlineCache', '$q', function (api, ss, offlineCache, $q) {
 
-    this.create = function (projectName, projectCode, appName, callback) {
-      jsonRpc.call('project_create', [projectName, projectCode, appName], callback);
+    this.create = api.method('project_create');
+    this.createSwitchSession = api.method('project_create_switchSession');
+    this.joinSwitchSession = api.method('project_join_switchSession');
+    this.archivedList = api.method('project_archivedList');
+    this.remove = api.method('project_delete');
+    this.publish = api.method('project_publish');
+
+    this.list = function () {
+      if (navigator.onLine /* TODO use Offline.state */) {
+        var deferred = $q.defer();
+
+        api.call('project_list_dto', [], function (response) {
+          if (response.ok) deferred.resolve(response.data.entries);
+          else deferred.reject();
+        });
+
+        return deferred.promise;
+      } else return offlineCache.getAllFromStore('projects');
     };
 
-    this.createSwitchSession = function (projectName, projectCode, appName, srProject, callback) {
-      jsonRpc.call('project_create_switchSession',
-        [projectName, projectCode, appName, srProject], callback);
-    };
-
-    this.joinSwitchSession = function (srIdentifier, role, callback) {
-      jsonRpc.call('project_join_switchSession', [srIdentifier, role], callback);
-    };
-
-    this.archivedList = function (callback) {
-      jsonRpc.call('project_archivedList', [], callback);
-    };
-
-    this.remove = function (projectIds, callback) {
-      jsonRpc.call('project_delete', [projectIds], callback);
-    };
-
-    this.publish = function (projectIds, callback) {
-      jsonRpc.call('project_publish', [projectIds], callback);
-    };
-
-    this.list = function (callback) {
-      jsonRpc.call('project_list_dto', [], callback);
-    };
-
-    this.users = function (callback) {
-      jsonRpc.call('project_usersDto', [], callback);
-    };
-
-    this.readUser = function (userId, callback) {
-      jsonRpc.call('project_readUser', [userId], callback);
-    };
-
-    this.updateUserRole = function (userId, role, callback) {
-      jsonRpc.call('project_updateUserRole', [userId, role], callback);
-    };
-
-    this.acceptJoinRequest = function (userId, role, callback) {
-      jsonRpc.call('project_acceptJoinRequest', [userId, role], callback);
-    };
-
-    this.denyJoinRequest = function (userId, callback) {
-      jsonRpc.call('project_denyJoinRequest', [userId], callback);
-    };
-
-    this.getOwner = function (projectId, callback) {
-      jsonRpc.call('project_getOwner', [projectId], callback);
-    };
-
-    this.removeUsers = function (users, callback) {
-      jsonRpc.call('project_removeUsers', [users], callback);
-    };
-
-    this.projectCodeExists = function (projectCode, callback) {
-      jsonRpc.call('projectcode_exists', [projectCode], callback);
-    };
-
-    this.joinProject = function (projectId, role, callback) {
-      jsonRpc.call('project_joinProject', [projectId, role], callback);
-    };
-
-    this.listUsers = function users(callback) {
-      jsonRpc.call('project_usersDto', [], callback);
-    };
-
-    this.sendJoinRequest = function userSendJoinRequest(projectId, callback) {
-      jsonRpc.call('project_sendJoinRequest', [projectId], callback);
-    };
-
-    this.getJoinRequests = function getJoinRequests(callback) {
-      jsonRpc.call('project_getJoinRequests', [], callback);
-    };
-
-    this.getDto = function getDto(callback) {
-      jsonRpc.call('project_management_dto', [], callback);
-    };
+    this.users = api.method('project_usersDto');
+    this.readUser = api.method('project_readUser');
+    this.updateUserRole = api.method('project_updateUserRole');
+    this.acceptJoinRequest = api.method('project_acceptJoinRequest');
+    this.denyJoinRequest = api.method('project_denyJoinRequest');
+    this.getOwner = api.method('project_getOwner');
+    this.removeUsers = api.method('project_removeUsers');
+    this.projectCodeExists = api.method('projectcode_exists');
+    this.joinProject = api.method('project_joinProject');
+    this.listUsers = api.method('project_usersDto');
+    this.sendJoinRequest = api.method('project_sendJoinRequest');
+    this.getJoinRequests = api.method('project_getJoinRequests');
+    this.getDto = api.method('project_management_dto');
 
     this.runReport = function runReport(reportName, params, callback) {
       params = params || [];
-      jsonRpc.call('project_management_report_' + reportName, params, callback);
+      api.call('project_management_report_' + reportName, params, callback);
     };
 
-    this.archiveProject = function archiveProject(callback) {
-      jsonRpc.call('project_archive', [], callback);
-    };
-
-    this.deleteProject = function deleteProject(callback) {
-      jsonRpc.call('project_delete', [], callback);
-    };
+    this.archiveProject = api.method('project_archive')
+    this.deleteProject = api.method('project_delete')
 
     // data constants
     this.data = {};
@@ -107,14 +53,19 @@ angular.module('bellows.services')
       semdomtrans: 'Semantic Domain Translation',
       lexicon: 'Dictionary'
     };
-    this.data.projectTypesBySite = function () {
+
+    var projectTypesBySite;
+    this.data.projectTypesBySite = function() {
+      return projectTypesBySite;
+    };
+
+    ss.getSession().then(function(session) {
       var types = {
         scriptureforge: ['sfchecks'],
-
         //languageforge: ['lexicon', 'semdomtrans']
         languageforge: ['lexicon']
       };
-      return types[ss.baseSite()];
-    };
+      projectTypesBySite = types[session.baseSite()];
+    });
 
   }]);

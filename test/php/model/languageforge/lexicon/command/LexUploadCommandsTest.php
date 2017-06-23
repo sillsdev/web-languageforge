@@ -1,9 +1,9 @@
 <?php
 
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
+use Api\Model\Languageforge\Lexicon\Import\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexEntryListModel;
 use Api\Model\Languageforge\Lexicon\LexRoles;
-use Api\Model\Languageforge\Lexicon\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexOptionListListModel;
 use PHPUnit\Framework\TestCase;
 
@@ -37,7 +37,7 @@ class LexUploadCommandsTest extends TestCase
         $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
 
         $folderPath = $project->getAudioFolderPath();
-        $filePath = $folderPath . '/' . $response->data->fileName;
+        $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
         $projectSlug = $project->databaseName();
 
         $this->assertTrue($response->result, 'Upload should succeed');
@@ -56,7 +56,7 @@ class LexUploadCommandsTest extends TestCase
         $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
 
         $folderPath = $project->getAudioFolderPath();
-        $filePath = $folderPath . '/' . $response->data->fileName;
+        $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
 
         $this->assertTrue($response->result, 'Upload should succeed');
         $this->assertRegExp("/$fileName/", $response->data->fileName, 'Uploaded audio fileName should contain the original fileName');
@@ -74,7 +74,7 @@ class LexUploadCommandsTest extends TestCase
         $response = LexUploadCommands::uploadAudioFile($projectId, 'audio', $tmpFilePath);
 
         $folderPath = $project->getAudioFolderPath();
-        $filePath = $folderPath . '/' . $response->data->fileName;
+        $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
         $projectSlug = $project->databaseName();
 
         $this->assertTrue($response->result, 'Upload should succeed');
@@ -161,7 +161,7 @@ class LexUploadCommandsTest extends TestCase
         $response = LexUploadCommands::uploadImageFile($projectId, 'sense-image', $tmpFilePath);
 
         $folderPath = $project->getImageFolderPath();
-        $filePath = $folderPath . '/' . $response->data->fileName;
+        $filePath = $folderPath . DIRECTORY_SEPARATOR . $response->data->fileName;
 
         $this->assertTrue($response->result, 'Upload should succeed');
         $this->assertRegExp("/$fileName/", $response->data->fileName, 'Uploaded image fileName should contain the original fileName');
@@ -203,7 +203,7 @@ class LexUploadCommandsTest extends TestCase
 
         $folderPath = $project->getAudioFolderPath();
         $fileName = $response->data->fileName;
-        $filePath = $folderPath . '/' . $fileName;
+        $filePath = $folderPath . DIRECTORY_SEPARATOR . $fileName;
 
         $this->assertTrue(file_exists($filePath), 'Uploaded audio file should exist');
 
@@ -226,7 +226,7 @@ class LexUploadCommandsTest extends TestCase
 
         $folderPath = $project->getImageFolderPath();
         $fileName = $response->data->fileName;
-        $filePath = $folderPath . '/' . $fileName;
+        $filePath = $folderPath . DIRECTORY_SEPARATOR . $fileName;
 
         $this->assertTrue(file_exists($filePath), 'Uploaded image file should exist');
 
@@ -262,7 +262,7 @@ class LexUploadCommandsTest extends TestCase
         $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
 
         $project->read($project->id->asString());
-        $filePath = $project->getAssetsFolderPath() . '/' . $response->data->fileName;
+        $filePath = $project->getAssetsFolderPath() . DIRECTORY_SEPARATOR . $response->data->fileName;
         $projectSlug = $project->databaseName();
 
         $this->assertTrue($response->result, 'Import should succeed');
@@ -278,7 +278,7 @@ class LexUploadCommandsTest extends TestCase
         $this->assertArrayHasKey('th-fonipa', $project->inputSystems);
     }
 
-    public function testImportProjectZip_7zFile_StatsOkAndCustomFieldsImported()
+    public function testImportProjectZip_7zFile_StatsOkAndCustomFieldsAndAssetsImported()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
@@ -298,7 +298,7 @@ class LexUploadCommandsTest extends TestCase
         $response = LexUploadCommands::importProjectZip($projectId, 'import-zip', $tmpFilePath);
 
         $project->read($project->id->asString());
-        $filePath = $project->getAssetsFolderPath() . '/' . $response->data->fileName;
+        $filePath = $project->getAssetsFolderPath() . DIRECTORY_SEPARATOR . $response->data->fileName;
         $projectSlug = $project->databaseName();
         $entryList = new LexEntryListModel($project);
         $entryList->read();
@@ -348,6 +348,16 @@ class LexUploadCommandsTest extends TestCase
         $this->assertEquals('First Custom Item', $entryBSenseA['customFields']['customField_senses_Cust_Multi_ListRef']['values'][0]);
         $this->assertEquals('Second Custom Item', $entryBSenseA['customFields']['customField_senses_Cust_Multi_ListRef']['values'][1]);
         $this->assertEquals('Custom example', $entryBSenseA['examples'][0]['customFields']['customField_examples_Cust_Example']['qaa-x-kal']['value']);
+
+        // assets imported?
+        $audioFilePath = $project->getAudioFolderPath() . DIRECTORY_SEPARATOR . '635460455469905390ɒɾu ɛiɡwɾɛ.wav';
+        $this->assertTrue(file_exists($audioFilePath), 'Uploaded audio file should exist');
+        // image asset file and reference imported as NFD but stored as NFC
+        $imageFilePath = $project->getImageFolderPath() . DIRECTORY_SEPARATOR . 'tårta.PNG'; // NFC
+        $this->assertTrue(file_exists($imageFilePath), 'Uploaded image file should exist');
+        $entryKen = $entriesByGuid['62798a90-29ce-4de7-8013-b4405e10c3b0'];
+        $this->assertEquals('ken', $entryKen['lexeme']['qaa-x-kal']['value']);
+        $this->assertEquals('tårta.PNG', $entryKen['senses'][0]['pictures'][0]['fileName']); // NFC
 
         /*
         echo '<pre style="height:500px; overflow:auto">';

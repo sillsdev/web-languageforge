@@ -11,7 +11,7 @@ function EditorPage() {
 
   this.get = function get(projectId, entryId) {
     var extra = projectId ? ('/' + projectId) : '';
-    extra += (projectId && entryId) ? ('#/editor/entry/' + entryId) : '';
+    extra += (projectId && entryId) ? ('#!/editor/entry/' + entryId) : '';
     browser.get(browser.baseUrl + '/app/lexicon' + extra);
   };
 
@@ -109,7 +109,7 @@ function EditorPage() {
     showHiddenFields: function () {
       // Only click the button if it will result in fields being shown
       this.toggleHiddenFieldsBtn.getText().then(function (text) {
-        if (text == this.toggleHiddenFieldsBtnText.show) {
+        if (text === this.toggleHiddenFieldsBtnText.show) {
           util.scrollTop();
           this.toggleHiddenFieldsBtn.click();
         }
@@ -119,7 +119,7 @@ function EditorPage() {
     hideHiddenFields: function () {
       // Only click the button if it will result in fields being hidden
       this.toggleHiddenFieldsBtn.getText().then(function (text) {
-        if (text == this.toggleHiddenFieldsBtnText.hide) {
+        if (text === this.toggleHiddenFieldsBtnText.hide) {
           this.toggleHiddenFieldsBtn.click();
         }
       }.bind(this));
@@ -164,7 +164,7 @@ function EditorPage() {
 
     // Top-row
     renderedDiv: this.editDiv.element(by.className('dc-rendered-entryContainer')),
-    deleteBtn: this.editDiv.element(by.partialButtonText('Delete')),
+    deleteBtn: this.editDiv.element(by.id('deleteEntry')),
 
     // Helper functions for retrieving various field values
     fields: this.editDiv.all(by.repeater('fieldName in config.fieldOrder')),
@@ -264,7 +264,7 @@ function EditorPage() {
       images: editorUtil.getOneField('Pictures').all(by.css('img')),
       captions: editorUtil.getOneField('Pictures')
         .all(by.css('.input-group > .dc-formattedtext .ta-bind')),
-      removeImages: editorUtil.getOneField('Pictures').all(by.className('fa-times')),
+      removeImages: editorUtil.getOneField('Pictures').all(by.className('fa-trash')),
       getFileName: function (index) {
         return editorUtil.getOneFieldValue('Pictures').then(function (pictures) {
           return pictures[index].fileName;
@@ -353,7 +353,7 @@ function EditorPage() {
         .element(by.css('.commentRegarding')),
       regarding: {
         clearBtn: this.commentDiv.element(by.css('.newCommentForm'))
-          .element(by.css('.commentRegarding')).element(by.css('i.fa-times')),
+          .element(by.css('.commentRegarding')).element(by.css('i.fa-trash')),
         fieldLabel: this.commentDiv.element(by.css('.newCommentForm'))
           .element(by.css('.commentRegarding')).element(by.css('.regardingFieldName')),
         fieldWsid: this.commentDiv.element(by.css('.newCommentForm'))
@@ -382,7 +382,7 @@ function EditorPage() {
       commentNum = 0;
     }
 
-    var comment = (commentNum == -1 ? commentsList.last() : commentsList.get(commentNum));
+    var comment = (commentNum === -1 ? commentsList.last() : commentsList.get(commentNum));
     return this.partsOfComment(comment);
   };
 
@@ -395,7 +395,7 @@ function EditorPage() {
       replyNum = 0;
     }
 
-    var reply = (replyNum == -1 ? repliesList.last() : repliesList.get(replyNum));
+    var reply = (replyNum === -1 ? repliesList.last() : repliesList.get(replyNum));
     return this.partsOfReply(reply);
   };
 
@@ -460,7 +460,7 @@ function EditorPage() {
       author: div.element(by.model('reply.authorInfo.createdByUserRef.name')),
       date: div.element(by.model('reply.authorInfo.createdDate | relativetime')),
       editLink: div.element(by.css('editReplyLink i.fa-chevron-sign-up')),
-      deleteLink: div.element(by.css('deleteReplyLink i.fa-times')),
+      deleteLink: div.element(by.css('deleteReplyLink i.fa-trash')),
       edit: {
         input: div.element(by.css('form input')),
         submit: div.element(by.css('form button[type="submit"]')),

@@ -156,71 +156,73 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       onElementSelect: {
         element: 'span',
         action: function (event, $element, editorScope) {
-          var inputSystems = ss.session.projectSettings.config.inputSystems;
-          editorScope.selects = {};
-          editorScope.selects.language = {};
-          editorScope.selects.language.tag = $element.attr('lang');
-          editorScope.selects.language.optionsOrder = [];
-          editorScope.selects.language.options = {};
-          angular.forEach(inputSystems, function (language, tag) {
-            var languageName = language.languageName;
-            if (languageName === 'Unlisted Language') {
-              languageName += ' (' + tag + ')';
+          ss.getSession().then(function(session) {
+            var inputSystems = session.projectSettings().config.inputSystems;
+            editorScope.selects = {};
+            editorScope.selects.language = {};
+            editorScope.selects.language.tag = $element.attr('lang');
+            editorScope.selects.language.optionsOrder = [];
+            editorScope.selects.language.options = {};
+            angular.forEach(inputSystems, function (language, tag) {
+              var languageName = language.languageName;
+              if (languageName === 'Unlisted Language') {
+                languageName += ' (' + tag + ')';
+              }
+
+              editorScope.selects.language.options[tag] = languageName;
+              editorScope.selects.language.optionsOrder.push(tag);
+            });
+
+            editorScope.displayElements.popover.css('width', '300px');
+            editorScope.displayElements.popover.attr('data-container', 'body');
+            editorScope.displayElements.popover.off('mousedown');
+            var container = editorScope.displayElements.popoverContainer;
+            container.empty();
+            container.css('line-height', '28px');
+            var langSelect = angular.element(
+              '<select data-ng-model="selects.language.tag" ' +
+              'data-ng-options="selects.language.options[tag] ' +
+              'for tag in selects.language.optionsOrder">' +
+              '<option value="">-- choose a language --</option></select>'
+            );
+            container.append(langSelect);
+            var buttonGroup = angular.element('<div class="btn-group pull-right">');
+            var unLinkButton = angular.element('<button type="button" ' +
+              'class="btn btn-default btn-sm" tabindex="-1" unselectable="on">' +
+              '<i class="fa fa-unlink icon-unlink"></i></button>');
+
+            // directly before this click event is fired a digest is fired off whereby the reference
+            // to $element is orphaned off
+            unLinkButton.on('click', function (event) {
+              event.preventDefault();
+              $element.replaceWith($element.contents());
+              editorScope.updateTaBindtaTextElement();
+              editorScope.hidePopover();
+            });
+
+            buttonGroup.append(unLinkButton);
+            container.append(buttonGroup);
+            $compile(editorScope.displayElements.popover)(editorScope);
+
+            // change event declared after $compile so that the bindings are in place
+            langSelect.on('change', function (event) {
+              event.preventDefault();
+              $element.attr('lang', editorScope.selects.language.tag);
+              editorScope.updateTaBindtaTextElement();
+              editorScope.hidePopover();
+
+              console.log('langSelect change: ', $element.attr('lang'));
+            });
+
+            if (event) {
+              editorScope.$apply();
             }
 
-            editorScope.selects.language.options[tag] = languageName;
-            editorScope.selects.language.optionsOrder.push(tag);
+            // use code below (removes close event) instead of editorScope.showPopover($element);
+            editorScope.displayElements.popover.css('display', 'block');
+            editorScope.reflowPopover($element);
+            $animate.addClass(editorScope.displayElements.popover, 'in');
           });
-
-          editorScope.displayElements.popover.css('width', '300px');
-          editorScope.displayElements.popover.attr('data-container', 'body');
-          editorScope.displayElements.popover.off('mousedown');
-          var container = editorScope.displayElements.popoverContainer;
-          container.empty();
-          container.css('line-height', '28px');
-          var langSelect = angular.element(
-            '<select data-ng-model="selects.language.tag" ' +
-            'data-ng-options="selects.language.options[tag] ' +
-            'for tag in selects.language.optionsOrder">' +
-            '<option value="">-- choose a language --</option></select>'
-          );
-          container.append(langSelect);
-          var buttonGroup = angular.element('<div class="btn-group pull-right">');
-          var unLinkButton = angular.element('<button type="button" ' +
-            'class="btn btn-default btn-sm" tabindex="-1" unselectable="on">' +
-            '<i class="fa fa-unlink icon-unlink"></i></button>');
-
-          // directly before this click event is fired a digest is fired off whereby the reference
-          // to $element is orphaned off
-          unLinkButton.on('click', function (event) {
-            event.preventDefault();
-            $element.replaceWith($element.contents());
-            editorScope.updateTaBindtaTextElement();
-            editorScope.hidePopover();
-          });
-
-          buttonGroup.append(unLinkButton);
-          container.append(buttonGroup);
-          $compile(editorScope.displayElements.popover)(editorScope);
-
-          // change event declared after $compile so that the bindings are in place
-          langSelect.on('change', function (event) {
-            event.preventDefault();
-            $element.attr('lang', editorScope.selects.language.tag);
-            editorScope.updateTaBindtaTextElement();
-            editorScope.hidePopover();
-
-            console.log('langSelect change: ', $element.attr('lang'));
-          });
-
-          if (event) {
-            editorScope.$apply();
-          }
-
-          // use code below (removes close event) instead of editorScope.showPopover($element);
-          editorScope.displayElements.popover.css('display', 'block');
-          editorScope.reflowPopover($element);
-          $animate.addClass(editorScope.displayElements.popover, 'in');
         }
       }
     });
@@ -269,16 +271,21 @@ angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular']
       $scope.fte = {};
       if (angular.isDefined($scope.fteToolbar)) {
         $scope.fte.toolbar = $scope.fteToolbar;
-      } else if (ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT)) {
+      }
+      else {
+        ss.getSession().then(function(session) {
+          if (session.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT)) {
 
-        // if site administrator enable development controls
-        //        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan'], ['html']]";
-        // html toggle for development only
-        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
-      } else {
-        //        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
-        // disable unfinished link and language span controls
-        $scope.fte.toolbar = '[[]]';
+            // if site administrator enable development controls
+            //        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan'], ['html']]";
+            // html toggle for development only
+            $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
+          } else {
+            //        $scope.fte.toolbar = "[['lexInsertLink', 'languageSpan']]";
+            // disable unfinished link and language span controls
+            $scope.fte.toolbar = '[[]]';
+          }
+        });
       }
 
       // x gets sanitised so no default wrap

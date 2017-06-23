@@ -24,7 +24,7 @@ angular.module('bellows.services')
      */
     var openDbIfNecessary = function openDbIfNecessary() {
       var deferred = $q.defer();
-      var version = 4;
+      var version = 5;
       if (db == null) {
         var request = indexedDB.open(dbName, version);
 
@@ -169,6 +169,7 @@ angular.module('bellows.services')
         var items = [];
         var index = db.transaction(storeName).objectStore(storeName).index('projectId');
         var cursorRequest = index.openCursor(IDBKeyRange.only(projectId));
+
         cursorRequest.onsuccess = function (e) {
           var cursor = e.target.result;
           if (cursor) {

@@ -15,56 +15,57 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
   }])
   .controller('ProjectSettingsCtrl', ['$scope', 'breadcrumbService', 'userService',
     'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
-    'sfchecksLinkService',
+    'sfchecksLinkService', '$q',
   function ($scope, breadcrumbService, userService,
             sfchecksProjectService, ss, notice, messageService,
-            sfchecksLinkService) {
+            sfchecksLinkService, $q) {
     $scope.project = {};
     $scope.finishedLoading = false;
     $scope.show = {};
     $scope.list = {};
     $scope.list.archivedTexts = [];
 
-    $scope.canEditCommunicationSettings = function () {
-      return ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-    };
+    ss.getSession().then(function(session) {
+      $scope.canEditCommunicationSettings = function () {
+        return session.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
+      };
+    });
 
     $scope.queryProjectSettings = function () {
-      sfchecksProjectService.projectSettings(function (result) {
-        if (result.ok) {
-          $scope.project = result.data.project;
-          $scope.list.users = result.data.entries;
-          $scope.list.userCount = result.data.count;
-          $scope.list.archivedTexts = result.data.archivedTexts;
-          for (var i = 0; i < $scope.list.archivedTexts.length; i++) {
-            $scope.list.archivedTexts[i].url =
-              sfchecksLinkService.text($scope.list.archivedTexts[i].id);
-            $scope.list.archivedTexts[i].dateModified =
-              new Date($scope.list.archivedTexts[i].dateModified);
-          }
-
-          // Rights
-          var rights = result.data.rights;
-          $scope.rights = {};
-          $scope.rights.archive = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE);
-          $scope.rights.deleteOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.DELETE);
-          $scope.rights.create = ss.hasRight(rights, ss.domain.USERS, ss.operation.CREATE);
-          $scope.rights.editOther = ss.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
-          $scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create ||
-            $scope.rights.editOther;
-          $scope.rights.remove = ss.session.project.userIsProjectOwner ||
-            ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
-
-          // Breadcrumb
-          breadcrumbService.set('top',
-              [
-               { href: '/app/projects', label: 'My Projects' },
-               { href: sfchecksLinkService.project(), label: result.data.bcs.project.crumb },
-               { href: sfchecksLinkService.project() + '/settings', label: 'Settings' }
-              ]
-          );
-          $scope.finishedLoading = true;
+      $q.all([ss.getSession(), sfchecksProjectService.projectSettings()]).then(function(data) {
+        var session = data[0], result = data[1];
+        $scope.project = result.data.project;
+        $scope.list.users = result.data.entries;
+        $scope.list.userCount = result.data.count;
+        $scope.list.archivedTexts = result.data.archivedTexts;
+        for (var i = 0; i < $scope.list.archivedTexts.length; i++) {
+          $scope.list.archivedTexts[i].url =
+            sfchecksLinkService.text($scope.list.archivedTexts[i].id);
+          $scope.list.archivedTexts[i].dateModified =
+            new Date($scope.list.archivedTexts[i].dateModified);
         }
+
+        // Rights
+        var rights = result.data.rights;
+        $scope.rights = {};
+        $scope.rights.archive = session.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE);
+        $scope.rights.deleteOther = session.hasRight(rights, ss.domain.USERS, ss.operation.DELETE);
+        $scope.rights.create = session.hasRight(rights, ss.domain.USERS, ss.operation.CREATE);
+        $scope.rights.editOther = session.hasRight(rights, ss.domain.USERS, ss.operation.EDIT);
+        $scope.rights.showControlBar = $scope.rights.deleteOther || $scope.rights.create ||
+          $scope.rights.editOther;
+        $scope.rights.remove = session.project().userIsProjectOwner ||
+          session.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
+
+        // Breadcrumb
+        breadcrumbService.set('top',
+            [
+             { href: '/app/projects', label: 'My Projects' },
+             { href: sfchecksLinkService.project(), label: result.data.bcs.project.crumb },
+             { href: sfchecksLinkService.project() + '/settings', label: 'Settings' }
+            ]
+        );
+        $scope.finishedLoading = true;
       });
     };
 
@@ -250,9 +251,9 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
 
   }])
   .controller('ProjectSettingsCommunicationCtrl', ['$scope', 'userService',
-    'sfchecksProjectService', 'sessionService', 'silNoticeService',
+    'sfchecksProjectService', 'silNoticeService',
   function ($scope, userService,
-            sfchecksProjectService, ss, notice) {
+            sfchecksProjectService, notice) {
     $scope.updateCommunicationSettings = function () {
       sfchecksProjectService.updateSettings($scope.settings.sms, $scope.settings.email,
       function (result) {
@@ -264,10 +265,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     };
 
   }])
-  .controller('ProjectSettingsPropertiesCtrl', ['$scope', 'sfchecksProjectService',
-    'sessionService', 'silNoticeService',
-  function ($scope, sfchecksProjectService,
-            ss, notice) {
+  .controller('ProjectSettingsPropertiesCtrl', ['$scope', 'sfchecksProjectService', 'silNoticeService',
+  function ($scope, sfchecksProjectService, notice) {
     // TODO This can be moved to the page level controller, it is common with the Setup tab.
     $scope.updateProject = function () {
       var project = angular.copy($scope.project);
@@ -281,10 +280,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     };
 
   }])
-  .controller('ProjectSettingsSetupCtrl', ['$scope', 'userService', 'sfchecksProjectService',
-    'sessionService', 'silNoticeService',
-  function ($scope, userService, sfchecksProjectService,
-            ss, notice) {
+  .controller('ProjectSettingsSetupCtrl', ['$scope', 'userService', 'sfchecksProjectService', 'silNoticeService',
+  function ($scope, userService, sfchecksProjectService, notice) {
 
     // TODO This can be moved to the page level controller, it is common with the Setup tab.
     $scope.currentListsEnabled = [];
@@ -357,12 +354,12 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
     });
 
   }])
-  .controller('ProjectSettingsUsersCtrl', ['$scope', 'userService', 'projectService',
-    'sessionService', 'silNoticeService', 'messageService',
-  function ($scope, userService, projectService,
-            ss, notice, messageService) {
+  .controller('ProjectSettingsUsersCtrl', ['$scope', 'userService', 'projectService', 'silNoticeService',
+  'messageService',
+  function ($scope, userService, projectService, notice, messageService) {
     $scope.userFilter = '';
     $scope.message = {};
+    $scope.addMembersCollapsed = true;
     $scope.newMessageCollapsed = true;
 
     $scope.readCommunicationSettings();
@@ -388,6 +385,16 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
         ['p', 'Normal'],
         ['h4', 'Large']
       ]
+    };
+
+    $scope.toggleAddMembers = function () {
+      $scope.addMembersCollapsed = !$scope.addMembersCollapsed;
+      $scope.newMessageCollapsed = true;
+    };
+
+    $scope.toggleMessageUsers = function () {
+      $scope.newMessageCollapsed = !$scope.newMessageCollapsed;
+      $scope.addMembersCollapsed = true;
     };
 
     $scope.show.messaging = function showMessaging() {
