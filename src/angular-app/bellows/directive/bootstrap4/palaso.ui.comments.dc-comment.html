@@ -4,7 +4,7 @@
     </div>
     <div ng-class="{resolvedComment: comment.status == 'resolved'}" >
         <div class="commentContentContainer">
-            <div class="deleteX" uib-tooltip="Delete Comment" tooltip-placement="left" ng-show="rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && hover.comment && !comment.editing" ng-click="deleteComment(comment)"><i class="fa fa-times" ></i></div>
+            <div class="deleteX" uib-tooltip="Delete Comment" tooltip-placement="left" ng-show="rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && hover.comment && !comment.editing" ng-click="deleteComment(comment)"><i class="fa fa-trash" ></i></div>
             <div class="commentLeftSide">
                 <div class="comment-status">
                     <div ng-show="comment.status == 'resolved'" class="comment-status-resolved"></div>
@@ -65,7 +65,7 @@
                     </div>
                     <div ng-show="reply.hover && comment.status != 'resolved'" class="comment-inline-reply">
                         <span uib-tooltip="Edit reply" tooltip-placement="left" ng-show="rights.canEditComment(reply.authorInfo.createdByUserRef.id)" class="editReplyLink btn btn-sm btn-secondary" ng-click="editReply(reply)"><i class="fa fa-pencil"></i></span>
-                        <span uib-tooltip="Delete reply" tooltip-placement="left" ng-show="rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)" class="deleteReplyLink btn btn-sm btn-secondary" ng-click="deleteCommentReply(comment.id, reply)"><i class="fa fa-times"></i></span>
+                        <span uib-tooltip="Delete reply" tooltip-placement="left" ng-show="rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)" class="deleteReplyLink btn btn-sm btn-secondary" ng-click="deleteCommentReply(comment.id, reply)"><i class="fa fa-trash"></i></span>
                     </div>
                 </div>
                 <form ng-show="reply.editing" ng-submit="submitReply(reply)">
@@ -75,13 +75,13 @@
                             <button type="submit" class="btn btn-primary">OK</button>
                         </span>
                         <span class="input-group-btn">
-                            <button class="btn btn-secondary" ng-click="reply.editing = false"><i class="fa fa-times"></i></button>
+                            <button class="btn btn-secondary" ng-click="reply.editing = false"><i class="fa fa-trash"></i></button>
                         </span>
                     </div>
                 </form>
             </div>
             <form class="commentNewReplyForm" ng-show="showNewReplyForm" ng-submit="submitReply(newReply)">
-                <input type="text" class="form-control" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" set-focus="showNewReplyForm"> <button type="submit" class="btn btn-sm btn-secondary">OK</button> <a ng-click="showNewReplyForm = false"><i class="fa fa-times"></i></a>
+                <input type="text" class="form-control" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" set-focus="showNewReplyForm"> <button type="submit" class="btn btn-sm btn-secondary">OK</button> <a ng-click="showNewReplyForm = false"><i class="fa fa-trash"></i></a>
             </form>
         </div>
         <div style="height:30px">

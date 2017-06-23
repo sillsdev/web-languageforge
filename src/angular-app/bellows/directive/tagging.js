@@ -7,7 +7,7 @@ angular.module('palaso.ui.tagging', ['ui.bootstrap'])
 <div class="tag-list">\
   <ul>\
     <li ng-repeat="tag in tags" ng-mouseenter="show = true && rightsDelete()" ng-mouseleave="show = false">\
-      {{tag}} <i class="fa fa-times closeicon" ng-click="removeTag($index)"></i>\
+      {{tag}} <i class="fa fa-trash closeicon" ng-click="removeTag($index)"></i>\
     </li>\
   </ul>\
 </div>\

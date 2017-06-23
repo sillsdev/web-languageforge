@@ -37,6 +37,8 @@ describe('the project settings page - project manager', function () {
     it('can add a new user as a member', function () {
       expect(projectSettingsPage.membersTab.list.count()).toBe(memberCount);
       projectSettingsPage.membersTab.addButton.click();
+      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.membersTab.newMember.input),
+        CONDITION_TIMEOUT);
       projectSettingsPage.membersTab.newMember.input.sendKeys('du');
 
       // sendKeys is split to force correct button behaviour. IJH 2015-10
@@ -182,6 +184,8 @@ describe('the project settings page - project manager', function () {
       expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(0);
       projectSettingsPage.optionlistsTab.addInput.sendKeys('foo');
       projectSettingsPage.optionlistsTab.addButton.click();
+      browser.wait(expectedCondition.visibilityOf(projectSettingsPage.optionlistsTab.addInput),
+        CONDITION_TIMEOUT);
       expect(projectSettingsPage.optionlistsTab.editContentsList.count()).toBe(1);
       projectSettingsPage.optionlistsTab.addInput.sendKeys('bar');
       projectSettingsPage.optionlistsTab.addButton.click();

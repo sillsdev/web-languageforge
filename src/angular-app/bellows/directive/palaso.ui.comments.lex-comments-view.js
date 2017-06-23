@@ -13,48 +13,46 @@ angular.module('palaso.ui.comments')
         control: '='
       },
       controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService',
-        'lexConfigService',
-      function ($scope, $filter, commentService, sessionService, modal, lexConfig) {
-        lexConfig.refresh();
-        $scope.config = lexConfig.configForUser;
-
-        function canComment() {
-          return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
-            sessionService.operation.CREATE);
-        }
-
+        'lexConfigService', '$q',
+      function ($scope, $filter, commentService, ss, modal, lexConfig, $q) {
         // notes by cjh 2015-03
         // define this method on the control (which happens to be an ancestor scope) because it is
         // used by a sibling directive (dc-entry)
         // an alternative implementation to this would be to use the commentService to contain this
         // method (but then the comment service would become lex specific which is a downside
-        $scope.control.selectFieldForComment =
-        function selectFieldForComment(fieldName, model, inputSystem, multioptionValue,
-                                       pictureFilePath) {
-          if (canComment()) {
-            $scope.newComment.regardingFieldConfig = lexConfig.getFieldConfig(fieldName);
-            $scope.newComment.regarding.field = fieldName;
-            $scope.newComment.regarding.fieldNameForDisplay =
-              $scope.newComment.regardingFieldConfig.label;
-            delete $scope.newComment.regarding.inputSystem;
-            delete $scope.newComment.regarding.inputSystemAbbreviation;
-            $scope.newComment.isRegardingPicture = false;
-            if (inputSystem) {
-              $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
-              $scope.newComment.regarding.inputSystem =
-                $scope.config.inputSystems[inputSystem].languageName;
-              $scope.newComment.regarding.inputSystemAbbreviation =
-                $scope.config.inputSystems[inputSystem].abbreviation;
-            } else if (multioptionValue) {
-              $scope.newComment.regarding.fieldValue = multioptionValue;
-            } else if (pictureFilePath) {
-              $scope.newComment.regarding.fieldValue = pictureFilePath;
-              $scope.newComment.isRegardingPicture = true;
-            } else {
-              $scope.newComment.regarding.fieldValue = getFieldValue(model);
-            }
-          }
-        };
+        $q.all([lexConfig.refresh(), ss.getSession()]).then(function(data) {
+          var config = data[0], session = data[1];
+          $scope.config = config;
+          $scope.control.selectFieldForComment =
+          function selectFieldForComment(fieldName, model, inputSystem, multioptionValue, pictureFilePath) {
+            var canComment = session.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE);
+            if(!canComment) return;
+
+            lexConfig.getFieldConfig(fieldName).then(function(fieldConfig){
+              $scope.newComment.regardingFieldConfig = fieldConfig;
+              $scope.newComment.regarding.field = fieldName;
+              $scope.newComment.regarding.fieldNameForDisplay =
+                $scope.newComment.regardingFieldConfig.label;
+              delete $scope.newComment.regarding.inputSystem;
+              delete $scope.newComment.regarding.inputSystemAbbreviation;
+              $scope.newComment.isRegardingPicture = false;
+              if (inputSystem) {
+                $scope.newComment.regarding.fieldValue = getFieldValue(model, inputSystem);
+                $scope.newComment.regarding.inputSystem =
+                  $scope.config.inputSystems[inputSystem].languageName;
+                $scope.newComment.regarding.inputSystemAbbreviation =
+                  $scope.config.inputSystems[inputSystem].abbreviation;
+              } else if (multioptionValue) {
+                $scope.newComment.regarding.fieldValue = multioptionValue;
+              } else if (pictureFilePath) {
+                $scope.newComment.regarding.fieldValue = pictureFilePath;
+                $scope.newComment.isRegardingPicture = true;
+              } else {
+                $scope.newComment.regarding.fieldValue = getFieldValue(model);
+              }
+            });
+          };
+        });
 
         function getFieldValue(model, inputSystem) {
 

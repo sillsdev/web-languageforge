@@ -9,6 +9,8 @@ describe('the question page', function () {
   var textPage         = require('../pages/textPage.js');
   var textSettingsPage = require('../pages/textSettingsPage.js');
   var questionPage     = require('../pages/questionPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   describe('a normal user', function () {
 
@@ -99,6 +101,8 @@ describe('the question page', function () {
           .toBeTruthy();
         expect(textSettingsPage.paratextExportTab.prepareButton.isPresent()).toBe(true);
         textSettingsPage.paratextExportTab.prepareButton.click();
+        browser.wait(expectedCondition.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
+          CONDITION_TIMEOUT);
         expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
         expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1 answer(s)');
         expect(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(false);
@@ -108,6 +112,8 @@ describe('the question page', function () {
       it('can prepare export for answers flagged for export with comments', function () {
         textSettingsPage.paratextExportTab.exportComments.click();
         textSettingsPage.paratextExportTab.prepareButton.click();
+        browser.wait(expectedCondition.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
+          CONDITION_TIMEOUT);
         expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
         expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1 answer(s)');
         expect(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(true);

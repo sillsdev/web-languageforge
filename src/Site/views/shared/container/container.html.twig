@@ -1,10 +1,5 @@
 <!DOCTYPE html>
-{# manifest disabled because it's not yet very functional #}
-{% if false and app.website.name == "Language Forge" %}
-<html lang="en" manifest="/cache.manifest">
-{% else %}
 <html lang="en">
-{% endif %}
 <head>
     <!-- Required meta tags always come first -->
     <meta charset="utf-8">
@@ -67,9 +62,17 @@
         {% endif %}
     </script>
 
+    {% if app.website.domain == 'languageforge.org' %}
+        <script type="text/javascript">window.liveSettings={api_key:"a328216f86c9417cb7583c0100669635"}</script>
+        <script type="text/javascript" src="//cdn.transifex.com/live.js"></script>
+    {% endif %}
+
 </head>
 
 <body>
+
+{# appcache disabled due to being an unfinished feature #}
+{# {% block appcache %}{% endblock %} #}
 {% block header %}{% endblock %}
 {% block content %}{% endblock %}
 {% block script %}{% endblock %}

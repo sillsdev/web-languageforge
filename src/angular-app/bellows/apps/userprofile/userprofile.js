@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
+angular.module('userprofile', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
   'pascalprecht.translate', 'palaso.ui.intlTelInput'])
   .config(['$translateProvider',
   function ($translateProvider) {
@@ -14,9 +14,9 @@ angular.module('userprofile', ['jsonRpc', 'ui.bootstrap', 'bellows.services', 'p
     $translateProvider.useSanitizeValueStrategy('escape');
 
   }])
-  .controller('userProfileCtrl', ['$scope', 'userService', 'sessionService', 'utilService',
+  .controller('userProfileCtrl', ['$scope', 'userService', 'utilService',
   'silNoticeService', 'modalService', '$window',
-function ($scope, userService, ss, util, notice, modalService, $window) {
+function ($scope, userService, util, notice, modalService, $window) {
   $scope.getAvatarUrl = util.getAvatarUrl;
 
   function getAvatarRef(color, shape) {
@@ -123,7 +123,9 @@ function ($scope, userService, ss, util, notice, modalService, $window) {
       };
       modalService.showModal({}, modalOptions).then(function () {
         $scope.updateUser();
-      });
+
+        // catch is necessary to properly implement promise API, which angular 1.6 complains if we don't have a catch
+      }).catch(function (error) {});
     } else {
       $scope.updateUser();
     }

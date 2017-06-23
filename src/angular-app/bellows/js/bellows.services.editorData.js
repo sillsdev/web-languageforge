@@ -13,9 +13,10 @@ function ($q, sessionService, cache, commentsCache,
   var api = undefined;
 
   var showInitialEntries = function showInitialEntries() {
-    sortList(entries);
-    visibleEntries.length = 0; // clear out the array
-    visibleEntries.push.apply(visibleEntries, entries.slice(0, 50));
+    return sortList(entries).then(function(){
+      visibleEntries.length = 0; // clear out the array
+      visibleEntries.push.apply(visibleEntries, entries.slice(0, 50));
+    });
   };
 
   var showMoreEntries = function showMoreEntries() {
@@ -35,25 +36,24 @@ function ($q, sessionService, cache, commentsCache,
    * Called when loading the controller
    * @return promise
    */
-  var loadEditorData = function loadEditorData() {
+  var loadEditorData = function loadEditorData(lexiconScope) {
     var deferred = $q.defer();
     if (entries.length == 0) { // first page load
       if (cache.canCache()) {
         notice.setLoading('Loading Dictionary');
         loadDataFromOfflineCache().then(function (projectObj) {
           if (projectObj.isComplete) {
-            // data found in cache
-            console.log('data successfully loaded from the cache.  Downloading updates...');
-            notice.setLoading('Downloading Updates to Dictionary.');
-            showInitialEntries();
-            refreshEditorData(projectObj.timestamp).then(function (result) {
-              deferred.resolve(result);
+            showInitialEntries().then(function() {
+              lexiconScope.finishedLoading = true;
               notice.cancelLoading();
+              refreshEditorData(projectObj.timestamp).then(function (result) {
+                deferred.resolve(result);
+              });
             });
 
           } else {
             entries = [];
-            console.log('cached data was found to be incomplete. Full download started...');
+            console.log('Editor: cached data was found to be incomplete. Full download started...');
             notice.setLoading('Downloading Full Dictionary.');
             notice.setPercentComplete(0);
             doFullRefresh().then(function (result) {
@@ -65,7 +65,7 @@ function ($q, sessionService, cache, commentsCache,
 
         }, function () {
           // no data found in cache
-          console.log('no data found in cache. Full download started...');
+          console.log('Editor: no data found in cache. Full download started...');
           notice.setLoading('Downloading Full Dictionary.');
           notice.setPercentComplete(0);
           doFullRefresh().then(function (result) {
@@ -75,7 +75,7 @@ function ($q, sessionService, cache, commentsCache,
           });
         });
       } else {
-        console.log('caching not enabled. Full download started...');
+        console.log('Editor: caching not enabled. Full download started...');
         notice.setLoading('Downloading Full Dictionary.');
         notice.setPercentComplete(0);
         doFullRefresh().then(function (result) {
@@ -137,6 +137,9 @@ function ($q, sessionService, cache, commentsCache,
     if (Offline.state == 'up') {
       api.dbeDtoUpdatesOnly(browserInstanceId, timestamp, function (result) {
         processEditorDto(result, true).then(function (result) {
+          if (result.data.itemCount > 0) {
+            console.log("Editor: processed " + result.data.itemCount + " entries from server.");
+          }
           deferred.resolve(result);
         });
       });
@@ -206,7 +209,7 @@ function ($q, sessionService, cache, commentsCache,
           cache.getProjectData().then(function (result) {
             commentService.comments.counts.userPlusOne = result.commentsUserPlusOne;
             endTime = performance.now();
-            console.log('Loaded ' + numOfEntries + ' entries from the cache in ' +
+            console.log('Editor: Loaded ' + numOfEntries + ' entries from cache in ' +
               ((endTime - startTime) / 1000).toFixed(2) + ' seconds');
             deferred.resolve(result);
 
@@ -306,30 +309,32 @@ function ($q, sessionService, cache, commentsCache,
   }
 
   function sortList(list) {
-    var config = sessionService.session.projectSettings.config;
-    var inputSystems = config.entry.fields.lexeme.inputSystems;
-    var lexemeA = '';
-    var lexemeB = '';
-    list.sort(function (a, b) {
-      var x;
-      var ws;
-      for (x = 0; x < inputSystems.length; x++) {
-        ws = inputSystems[x];
-        if (angular.isDefined(a.lexeme) && angular.isDefined(a.lexeme[ws])) {
-          lexemeA = a.lexeme[ws].value;
-          break;
+    return sessionService.getSession().then(function(session) {
+      var config = session.projectSettings().config;
+      var inputSystems = config.entry.fields.lexeme.inputSystems;
+      var lexemeA = '';
+      var lexemeB = '';
+      list.sort(function (a, b) {
+        var x;
+        var ws;
+        for (x = 0; x < inputSystems.length; x++) {
+          ws = inputSystems[x];
+          if (angular.isDefined(a.lexeme) && angular.isDefined(a.lexeme[ws])) {
+            lexemeA = a.lexeme[ws].value;
+            break;
+          }
         }
-      }
 
-      for (x = 0; x < inputSystems.length; x++) {
-        ws = inputSystems[x];
-        if (angular.isDefined(b.lexeme) && angular.isDefined(b.lexeme[ws])) {
-          lexemeB = b.lexeme[ws].value;
-          break;
+        for (x = 0; x < inputSystems.length; x++) {
+          ws = inputSystems[x];
+          if (angular.isDefined(b.lexeme) && angular.isDefined(b.lexeme[ws])) {
+            lexemeB = b.lexeme[ws].value;
+            break;
+          }
         }
-      }
 
-      return Intl.Collator(ws).compare(lexemeA, lexemeB);
+        return Intl.Collator(ws).compare(lexemeA, lexemeB);
+      });
     });
   }
 
@@ -339,16 +344,18 @@ function ($q, sessionService, cache, commentsCache,
    * @param list
    */
   function printLexemesInList(list) {
-    var config = sessionService.session.projectSettings.config;
-    var ws = config.entry.fields.lexeme.inputSystems[1];
-    var arr = [];
-    for (var i = 0; i < list.length; i++) {
-      if (angular.isDefined(list[i].lexeme[ws])) {
-        arr.push(list[i].lexeme[ws].value);
+    sessionService.getSession().then(function(session) {
+      var config = session.projectSettings().config;
+      var ws = config.entry.fields.lexeme.inputSystems[1];
+      var arr = [];
+      for (var i = 0; i < list.length; i++) {
+        if (angular.isDefined(list[i].lexeme[ws])) {
+          arr.push(list[i].lexeme[ws].value);
+        }
       }
-    }
 
-    console.log(arr);
+      console.log(arr);
+    })
   }
 
   return {
