@@ -30,9 +30,9 @@ angular.module('sfchecks-new-project', ['ui.router', 'ui.bootstrap', 'bellows.se
           }
         }]);
     }])
-  .controller('NewSfchecksProjectCtrl', ['$scope', 'projectService', 'sessionService',
+  .controller('NewSfchecksProjectCtrl', ['$scope', 'projectService',
     'silNoticeService', '$window', 'sfchecksLinkService',
-    function ($scope, projectService, ss, notice, $window, linkService) {
+    function ($scope, projectService, notice, $window, linkService) {
       $scope.newProject = {};
 
       // Add new project

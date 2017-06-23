@@ -35,16 +35,16 @@ class FactoryReset
     }
 
     // Destination paths for rsync
-    const DEV_LFPATH = 'root@localhost:/var/www/languageforge.org_dev';
-    const DEV_SFPATH = 'root@localhost:/var/www/scriptureforge.org_dev';
+    const DEV_LFPATH = '/var/www/languageforge.org_dev';
+    const DEV_SFPATH = '/var/www/scriptureforge.org_dev';
 
-    const QA_LFPATH = 'root@localhost:/var/www/languageforge.org_qa';
-    const QA_SFPATH = 'root@localhost:/var/www/scriptureforge.org_qa';
+    const QA_LFPATH = '/var/www/languageforge.org_qa';
+    const QA_SFPATH = '/var/www/scriptureforge.org_qa';
 
-    const LOCAL_LFPATH = 'root@localhost:/var/www/virtual/languageforge.org';
-    const LOCAL_SFPATH = 'root@localhost:/var/www/virtual/scriptureforge.org';
+    const LOCAL_LFPATH = '/var/www/virtual/languageforge.org';
+    const LOCAL_SFPATH = '/var/www/virtual/scriptureforge.org';
 
-    const LFMERGE_SENDRECEIVE_PATH = 'root@localhost:/var/lib/languageforge/lexicon/sendreceive/';
+    const LFMERGE_SENDRECEIVE_PATH = '/var/lib/languageforge/lexicon/sendreceive';
 
     /** @var string - local, dev, or qa */
     public $environment;
@@ -71,7 +71,7 @@ class FactoryReset
          */
         $override = false;
 
-        if (strpos(getcwd(), 'TeamCity') !== false) {
+        if (strpos(gethostname(), 'ba-') !== false) {
             if (!$override) {
                 print "Script being run on the DEVELOPMENT SERVER khrap\n";
                 $this->environment = "dev";
@@ -198,6 +198,7 @@ class FactoryReset
         } else {
             print "\nUsage: FactoryReset.php <run> <DIRECTORY>\n";
             print "Run factory reset and restore mongodb and assets from DIRECTORY\n";
+            print "DIRECTORY is assumed to contain 3 files: sf_assets_backup.tgz lf_assets_backup.tgz mongodb_backup.tgz\n";
             print "\nTest Mode - no data will be changed\n--------------------------------\n\n";
         }
         $archivePath = count($argv) > 2 ? $argv[2] : '';
@@ -233,38 +234,47 @@ class FactoryReset
         $this->Execute($runForReal, $cmd);
 
         if (is_dir($archivePath)) {
-            print "\nExtracting archives...\n";
-            foreach (glob("$archivePath/*tgz*") as $filename) {
-                print "Extracting $filename\n";
-                if (strpos($filename, 'lf_assets') || strpos($filename, 'sf_assets')) {
-                    $cmd = "sudo tar -xzf $filename --strip-components=2 -C /var/www/virtual/";
-                    $this->Execute($runForReal, $cmd);
-                }
-                if (strpos($filename, 'mongo')) {
-                    $cmd = "tar -xzf $filename -C $archivePath";
-                    $this->Execute($runForReal, $cmd);
-                }
+            if (file_exists("$archivePath/lf_assets_backup.tgz")) {
+                print "\nRemoving existing LF assets\n";
+                $cmd = "rm -r {$this->lfSitePath}/htdocs/assets/lexicon";
+                $this->Execute($runForReal, $cmd);
+                print "\nExtracting LF assets into place...\n";
+                $cmd = "tar -xzf $archivePath/lf_assets_backup.tgz --strip-components=3 -C {$this->lfSitePath}/";
+                $this->Execute($runForReal, $cmd);
+            }
+
+            if (file_exists("$archivePath/sf_assets_backup.tgz")) {
+                print "\nRemoving existing SF assets\n";
+                $cmd = "rm -r {$this->sfSitePath}/htdocs/assets/sfchecks";
+                $this->Execute($runForReal, $cmd);
+                print "\nExtracting SF assets into place...\n";
+                $cmd = "tar -xzf $archivePath/sf_assets_backup.tgz --strip-components=3 -C {$this->sfSitePath}/";
+                $this->Execute($runForReal, $cmd);
             }
 
             print "\nEnsure www-data has permissions...\n";
-            $cmd = "sudo chgrp -R www-data $archivePath/var/www";
+            $cmd = "sudo chgrp -R www-data {$this->lfSitePath}/htdocs/assets {$this->sfSitePath}/htdocs/assets";
             $this->Execute($runForReal, $cmd);
-            $cmd = "sudo chmod -R g+w $archivePath/var/www";
+            $cmd = "sudo chmod -R g+w {$this->lfSitePath}/htdocs/assets {$this->sfSitePath}/htdocs/assets";
             $this->Execute($runForReal, $cmd);
-            $cmd = "sudo chown -R www-data:fieldworks $archivePath/var/lib";
+            $cmd = "sudo chown -R www-data:fieldworks {$this->lfmergeSendReceivePath}";
             $this->Execute($runForReal, $cmd);
+
+            if (file_exists("$archivePath/mongodb_backup.tgz")) {
+                print "\nExtracting mongodb backup...\n";
+                $cmd = "tar -xzf $archivePath/mongodb_backup.tgz -C $archivePath";
+                $this->Execute($runForReal, $cmd);
+            }
 
             print "\nRestoring mongodb...\n";
             $mongodbBackup = $archivePath . "/backup/mongo_backup";
-            $cmd = "mongorestore $this->hostOption $mongodbBackup";
+            $cmd = "mongorestore --quiet $this->hostOption $mongodbBackup";
             $this->Execute($runForReal, $cmd);
 
             print "\nUpdating DB site names...\n";
             $this->UpdateDBSiteName($runForReal);
 
             print "\nCleanup extracted files...\n";
-            $cmd = "sudo rm -R $archivePath/var";
-            $this->Execute($runForReal, $cmd);
             $cmd = "sudo rm -R $archivePath/backup";
             $this->Execute($runForReal, $cmd);
         } else {

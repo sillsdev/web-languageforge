@@ -1,5 +1,9 @@
 {% extends 'container.html.twig' %}
 
+{%  block appcache %}
+<iframe src="/include-cache-manifest" width="0" height="0"></iframe>
+{% endblock %}
+
 {% block header %}
 
     {% if isLoggedIn %}
@@ -86,9 +90,7 @@
 
     {% else %}
         <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060">
-            <a class="navbar-brand hidden-sm-down" href="/">Language Forge
-                {% if app.website.domain == "languageforge.local" %} (Bootstrap 4){% endif %}
-            </a>
+            <a class="navbar-brand hidden-sm-down" href="/">Language Forge</a>
 
             <h1 class="mobile-title pull-left hidden-md-up"><a href="/">Language Forge</a></h1>
 

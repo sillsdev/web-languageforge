@@ -4,8 +4,8 @@
 angular.module('bellows.services.comments')
 
 //Lexicon Comment Service
-  .service('lexCommentService', ['jsonRpc', 'commentsOfflineCache', '$filter',
-  function (jsonRpc, offlineCache, $filter) {
+  .service('lexCommentService', ['apiService', 'commentsOfflineCache', '$filter',
+  function (api, offlineCache, $filter) {
     this.comments = {
       items: {
         currentEntry: [],
@@ -41,7 +41,7 @@ angular.module('bellows.services.comments')
       for (var i = 0; i < this.comments.items.all.length; i++) {
         var comment = this.comments.items.all[i];
         var fieldName = comment.regarding.field;
-        if (comment.entryRef == entryId) {
+        if (comment.entryRef === entryId) {
           if (fieldName &&
             angular.isUndefined(this.comments.counts.currentEntry.fields[fieldName])
           ) {
@@ -51,7 +51,7 @@ angular.module('bellows.services.comments')
           this.comments.items.currentEntry.push(comment);
 
           // update the appropriate count for this field and update the total count
-          if (comment.status != 'resolved') {
+          if (comment.status !== 'resolved') {
             if (fieldName) {
               this.comments.counts.currentEntry.fields[fieldName]++;
             }
@@ -74,7 +74,7 @@ angular.module('bellows.services.comments')
           this.comments.counts.byEntry[comment.entryRef] = 0;
         }
 
-        if (comment.status != 'resolved') {
+        if (comment.status !== 'resolved') {
           this.comments.counts.byEntry[comment.entryRef]++;
         }
       }
@@ -131,7 +131,7 @@ angular.module('bellows.services.comments')
       for (var i = list.length - 1; i >= 0; i--) {
         var c = list[i];
         if (deleteComment) {
-          if (c.id == commentId) {
+          if (c.id === commentId) {
             list.splice(i, 1);
           }
         } else {
@@ -139,7 +139,7 @@ angular.module('bellows.services.comments')
           // delete Reply
           for (var j = c.replies.length - 1; j >= 0; j--) {
             var r = c.replies[j];
-            if (r.id == replyId) {
+            if (r.id === replyId) {
               c.replies.splice(j, 1);
             }
           }
@@ -151,44 +151,35 @@ angular.module('bellows.services.comments')
       var comments = this.comments.items.currentEntry;
       for (var i = 0; i < comments.length; i++) {
         var comment = comments[i];
-        if (comment.id == id) {
+        if (comment.id === id) {
           return comment;
         }
       }
     }.bind(this);
 
-    jsonRpc.connect('/api/sf');
-
-    this.update = function updateComment(comment, callback) {
-      this.comments.items.currentEntry.push(comment);
-      jsonRpc.call('lex_comment_update', [comment], callback);
-    };
+    this.update = api.method('lex_comment_update');
 
     this.updateReply = function updateReply(commentId, reply, callback) {
       var comment = getCurrentEntryComment(commentId);
       comment.replies.push(reply);
-      jsonRpc.call('lex_commentReply_update', [commentId, reply], callback);
+      api.call('lex_commentReply_update', [commentId, reply], callback);
     };
 
-    this.remove = function deleteComment(commentId, callback) {
-      jsonRpc.call('lex_comment_delete', [commentId], callback);
-    };
+    this.remove = api.method('lex_comment_delete');
 
-    this.deleteReply = function deleteReply(commentId, replyId, callback) {
-      jsonRpc.call('lex_commentReply_delete', [commentId, replyId], callback);
-    };
+    this.deleteReply = api.method('lex_commentReply_delete');
 
     this.plusOne = function plusOne(commentId, callback) {
       var comment = getCurrentEntryComment(commentId);
       comment.score++;
       this.comments.counts.userPlusOne[commentId] = 1;
-      jsonRpc.call('lex_comment_plusOne', [commentId], callback);
+      api.call('lex_comment_plusOne', [commentId], callback);
     };
 
     this.updateStatus = function updateStatus(commentId, status, callback) {
       var comment = getCurrentEntryComment(commentId);
       comment.status = status;
-      jsonRpc.call('lex_comment_updateStatus', [commentId, status], callback);
+      api.call('lex_comment_updateStatus', [commentId, status], callback);
     };
 
   }]);

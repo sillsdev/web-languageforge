@@ -17,7 +17,7 @@ describe('Editor List and Entry', function () {
   });
 
   it('browse page has correct word count', function () {
-    expect(editorPage.browse.entriesList.count()).toEqual(editorPage.browse.getEntryCount());
+    expect(editorPage.browse.entriesList.count()).toEqual(editorPage.browse.getEntryCount()); // flaky assertion
     expect(editorPage.browse.getEntryCount()).toBe(3);
   });
 

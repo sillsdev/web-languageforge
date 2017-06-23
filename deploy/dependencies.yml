@@ -22,18 +22,25 @@
       apt: name="{{item}}" state=present
       with_items:
         - libapache2-mod-php
-        - php7.0-gd
-        - php7.0-dev
+        - mongodb-server
+        - p7zip-full
         - php7.0-cli
+        - php7.0-dev
+        - php7.0-gd
+        - php7.0-intl
         - php7.0-mbstring
         - php-pear
         - php-xdebug
-        - mongodb-server
         - postfix
         - unzip
-        - p7zip-full
 
-    - file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
+    - name: check for node binary
+      stat: path=/usr/local/bin/node
+      register: node_binary
+
+    - name: symlink node to nodejs
+      file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
+      when: node_binary.stat.exists == False
 
     - name: install Composer
       shell: php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/local/bin --filename=composer

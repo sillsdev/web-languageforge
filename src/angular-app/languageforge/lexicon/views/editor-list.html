@@ -15,7 +15,7 @@
                 <small><i>{{typeahead.matchCountCaption}}</i></small></div>
         </pui-typeahead>
         <div class="col-xs-2 offset-md-4">
-            <button class="btn btn-success pull-right" id="newWord" data-ng-if="rights.canEditEntry()"
+            <button class="btn btn-primary pull-right" id="newWord" data-ng-if="rights.canEditEntry()"
                     data-ng-click="newEntry()"><i class="fa fa-plus"></i><span class="hidden-sm-down"> {{'New Word' | translate}}</span>
             </button>
         </div>
@@ -42,7 +42,7 @@
                     <dc-rendered config="config.entry" model="entry"></dc-rendered>
                     <div data-ng-show="commentService.getEntryCommentCount(entry.id) > 0"
                          style="position:absolute; right:5px;top:3px">
-                        <i style="color: #faa732;" class="fa fa-comment"></i>
+                        <i class="fa fa-comment commentColor"></i>
                     </div>
             </div>
         </div>
