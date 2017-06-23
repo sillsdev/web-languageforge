@@ -37,7 +37,8 @@ exports.config = {
   // Options to be passed to Jasmine-node.
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 120000
+    defaultTimeoutInterval: 120000,
+    print: function() {}
 
     //isVerbose: true,
   },
@@ -57,16 +58,24 @@ exports.config = {
     // This seemed to make the tests more flaky rather than less. IJH 2014-12
     //    browser.addMockModule('disableNgAnimate', disableNgAnimate);
 
-    var jasmineReporters = require('jasmine-reporters');
     if (process.env.TEAMCITY_VERSION) {
+      var jasmineReporters = require('jasmine-reporters');
       jasmine.getEnv().addReporter(new jasmineReporters.TeamCityReporter());
     }
     else {
+      var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+      jasmine.getEnv().addReporter(new SpecReporter({
+        spec: {
+          displayStacktrace: true
+        }
+      }));
+      /*
       jasmine.getEnv().addReporter(new jasmineReporters.TerminalReporter({
         verbosity: browser.params.verbosity, // [0 to 3, jasmine default 2]
         color: true,
         showStack: true
       }));
+      */
       var pauseOnFailure = {
         specDone: function (spec) {
           if (spec.status === 'failed') {

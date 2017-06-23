@@ -7,8 +7,6 @@
             <div id="form-container">
                 <div class="text-xs-center">
                     <h1>Login</h1>
-                    <p>Please login with your <b>Username / Email</b> and <b>Password</b> below.</p>
-                    <p>Don't have an account? <a href="/public/signup">Register now.</a></p>
                     {% for infoMessage in app.session.getFlashBag.get('infoMessage') %}
                         <div uib-alert data-ng-class="'alert-info'">{{ infoMessage }}</div>
                     {% endfor %}
@@ -50,6 +48,7 @@
                                 <a href="forgot_password" id="forgot_password">Forgot your password?</a>
                             </div>
                         </div>
+                        <p>Don't have an account? <a href="/public/signup">Register now.</a></p>
                     </fieldset>
                 </form>
             </div>

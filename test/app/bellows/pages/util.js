@@ -31,7 +31,7 @@ function Utils() {
     // Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of
     // what its current value is
     checkboxElement.isSelected().then(function (checked) {
-      if (checked != value) {
+      if (checked !== value) {
         checkboxElement.click();
       }
     });
@@ -156,7 +156,7 @@ function Utils() {
   // Errors we choose to ignore because they are typically not encountered by users, but only
   // in testing
   this.isMessageToIgnore = function isMessageToIgnore(message) {
-    if (message.level.name == 'WARNING') return true;
+    if (message.level.name === 'WARNING') return true;
 
     var text = message.message;
 
@@ -168,6 +168,6 @@ function Utils() {
 
   this.scrollTop = function () {
     browser.executeScript('window.scroll(0,0)');
-  }
+  };
 
 }

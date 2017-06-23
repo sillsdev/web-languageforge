@@ -6,7 +6,7 @@ var SignupPage = function () {
   };
 
   this.getPrefilledEmail = function (email) {
-    browser.get(browser.baseUrl + '/public/signup#/?e=' + encodeURIComponent(email));
+    browser.get(browser.baseUrl + '/public/signup#!/?e=' + encodeURIComponent(email));
   };
 
   this.signupForm = element(by.tagName('form'));
@@ -31,7 +31,7 @@ var SignupPage = function () {
     setInvalidCaptcha: function () {
       this.blueSquareButton.click();
       this.expectedItemName.getText().then(function (result) {
-        if (result == 'Blue Square') {
+        if (result === 'Blue Square') {
           element(by.className('pui-captcha')).element(by.id('captcha1')).click();
         }
       });

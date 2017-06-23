@@ -50,7 +50,7 @@ describe('E2E testing: Change password', function () {
       CONDITION_TIMEOUT);
     changePasswordPage.submitButton.click();
     expect(changePasswordPage.noticeList.count()).toBe(1);
-    expect(changePasswordPage.noticeList.first().getText()).toContain('Password Updated');
+    expect(changePasswordPage.noticeList.first().getText()).toContain('Password updated');
     loginPage.logout();
 
     loginPage.login(constants.memberUsername, newPassword);

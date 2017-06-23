@@ -1,9 +1,10 @@
 <div>
     <div class="comments-search-container">
         <input dir="auto" class="form-control" placeholder="Filter Comments" ng-model="commentFilter.text" type="text" />&nbsp;
-        <span style="position:absolute; right:13px; top:5px" ng-show="commentFilter.text != ''" title="Clear Filter" ng-click="commentFilter.text = ''">
+        <span ng-show="commentFilter.text != ''" title="Clear Filter" ng-click="commentFilter.text = ''">
             <i class="fa fa-times"></i>
         </span>
+        <!--suppress HtmlFormInputWithoutLabel -->
         <select ng-show="rights.canUpdateCommentStatus()" class="form-control " data-ng-model="commentFilter.status">
             <option value="all">Show All</option>
             <option value="unresolved">Unresolved</option>

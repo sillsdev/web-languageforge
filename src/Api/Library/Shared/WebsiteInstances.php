@@ -36,9 +36,9 @@ class WebsiteInstances
 
         $w = new Website('jamaicanpsalms.scriptureforge.local', Website::SCRIPTUREFORGE);
         $w->name = 'The Jamaican Psalms Project';
-        $w->ssl = true;
+        $w->ssl = false;
         $w->theme = 'jamaicanpsalms';
-        $w->defaultProjectCode = 'jamaicanpsalms';
+        $w->defaultProjectCode = 'jamaican_psalms';
         $sites['jamaicanpsalms.scriptureforge.local'] = $w;
 
         $w = new Website('jamaicanpsalms.e2etest.scriptureforge.local', Website::SCRIPTUREFORGE);
