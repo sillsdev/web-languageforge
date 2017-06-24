@@ -189,7 +189,31 @@ dl.picklists dd {
   }
 }
 
+.modal-select-language .modal-footer {
+  text-align: initial;
+}
+
 @include media-breakpoint-down(sm) {
+  .modal-select-language {
+    .modal-dialog {
+      margin: 0;
+    }
+    .modal-header {
+      padding-top: 0.75em;
+      padding-bottom: 0.75em;
+      h3 {
+        font-size: 1em;
+        margin-right: 1em;
+      }
+    }
+    .modal-body {
+      padding: 0.5em;
+    }
+    .modal-footer {
+      padding: 0.25em;
+    }
+  }
+
   .modal-select-language {
     width: initial;
     height: initial;
