@@ -110,16 +110,21 @@
     border-radius: $border-radius;
     width: 100%;
     float: left;
-    i.fa-edit, i.fa-check, i.fa-chevron-circle-up {
-      cursor: pointer;
-      color: #7c7c7c;
-      padding-left: 10px;
+    span {
+        cursor: pointer;
+        color: #7c7c7c;
+        .fa {
+            padding-left: 10px;
+        }
     }
-    i.fa-edit:hover {
-      color: #247aff;
-    }
-    i.fa-check:hover {
-      color: #8be25c;
+
+    span:hover {
+        i.fa-edit {
+        color: #247aff;
+        }
+        i.fa-check {
+        color: #8be25c;
+        }
     }
 }
 
