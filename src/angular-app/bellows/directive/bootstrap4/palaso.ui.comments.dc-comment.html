@@ -86,11 +86,11 @@
         </div>
         <div style="height:30px">
             <div class="commentBottomBar" ng-show="rights.canComment() && comment.status != 'resolved'">
-                <div class="pull-left">
-                    <b>Status:</b>
-                    <i class="fa fa-chevron-circle-up" ng-show="rights.canUpdateCommentStatus() && comment.status != 'open'" uib-tooltip="Mark as Open" ng-click="updateCommentStatus(comment.id, 'open')"></i>
-                    <i class="fa fa-check" ng-show="rights.canUpdateCommentStatus() && comment.status != 'resolved'" uib-tooltip="Mark as Resolved" ng-click="updateCommentStatus(comment.id, 'resolved')"></i>
-                    <i class="fa fa-edit" ng-show="rights.canUpdateCommentStatus() && comment.status != 'todo'" uib-tooltip="Mark as Todo" ng-click="updateCommentStatus(comment.id, 'todo')"></i>
+                <div class="pull-left" ng-show="rights.canUpdateCommentStatus()">
+                    <b>Set status:</b>
+                    <span ng-show="comment.status != 'open'" uib-tooltip="Mark as Open" ng-click="updateCommentStatus(comment.id, 'open')">Open<i class="fa fa-chevron-circle-up"></i></span>
+                    <span ng-show="comment.status != 'resolved'" uib-tooltip="Mark as Resolved" ng-click="updateCommentStatus(comment.id, 'resolved')">Resolved<i class="fa fa-check"></i></span>
+                    <span ng-show="comment.status != 'todo'" uib-tooltip="Mark as Todo" ng-click="updateCommentStatus(comment.id, 'todo')">Todo<i class="fa fa-edit"></i></span>
                 </div>
                 <div class="pull-right">
                     <button class="btn btn-sm btn-secondary" uib-tooltip="Edit this comment" ng-show="rights.canEditComment(comment.authorInfo.createdByUserRef.id)" ng-click="editComment()"><i class="fa fa-pencil "></i> Edit</button>
