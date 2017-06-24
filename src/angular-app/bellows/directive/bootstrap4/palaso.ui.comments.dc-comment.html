@@ -1,10 +1,10 @@
-<div class="commentContainer" ng-mouseenter="hover.comment = true" ng-mouseleave="hover.comment = false">
+<div class="commentContainer">
     <div ng-show="comment.status == 'resolved'" style="width:70px; height:20px; font-weight:bold; font-size: x-small; position:absolute; left:-2px; z-index: 10; cursor:pointer;" tooltip-placement="right" uib-tooltip="Click to reopen comment" ng-click="updateCommentStatus(comment.id, 'open')">
         <i style="color: #8be25c;" class="fa fa-check fa-2x"></i>Resolved
     </div>
     <div ng-class="{resolvedComment: comment.status == 'resolved'}" >
         <div class="commentContentContainer">
-            <div class="deleteX" uib-tooltip="Delete Comment" tooltip-placement="left" ng-show="rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && hover.comment && !comment.editing" ng-click="deleteComment(comment)"><i class="fa fa-trash" ></i></div>
+            <div class="deleteX" uib-tooltip="Delete Comment" tooltip-placement="left" ng-show="rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && !comment.editing" ng-click="deleteComment(comment)"><i class="fa fa-trash" ></i></div>
             <div class="commentLeftSide">
                 <div class="comment-status">
                     <div ng-show="comment.status == 'resolved'" class="comment-status-resolved"></div>
@@ -85,7 +85,7 @@
             </form>
         </div>
         <div style="height:30px">
-            <div class="commentBottomBar" ng-show="hover.comment && rights.canComment() && comment.status != 'resolved'">
+            <div class="commentBottomBar" ng-show="rights.canComment() && comment.status != 'resolved'">
                 <div class="pull-left">
                     <b>Status:</b>
                     <i class="fa fa-chevron-circle-up" ng-show="rights.canUpdateCommentStatus() && comment.status != 'open'" uib-tooltip="Mark as Open" ng-click="updateCommentStatus(comment.id, 'open')"></i>
