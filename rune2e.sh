@@ -21,8 +21,10 @@ else
     E2EHOSTNAME="languageforge.local"
 fi
 gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
+STATUS=$?
 
 # Ensure cleanup
 gulp test-e2e-teardownTestEnvironment
 gulp test-e2e-useLiveConfig
 gulp test-restart-webserver
+exit $STATUS
