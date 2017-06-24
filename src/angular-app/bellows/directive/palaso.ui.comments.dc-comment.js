@@ -11,8 +11,6 @@ angular.module('palaso.ui.comments')
       function ($scope, commentService, sessionService, util, modal) {
         $scope.getAvatarUrl = util.getAvatarUrl;
 
-        $scope.hover = { comment: false };
-
         $scope.showNewReplyForm = false;
 
         $scope.newReply = { id: '', editingContent: '' };
