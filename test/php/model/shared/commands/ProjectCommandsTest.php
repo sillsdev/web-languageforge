@@ -302,7 +302,7 @@ class ProjectCommandsTest extends TestCase
         // nothing runs in the current test function after an exception. IJH 2014-11
     }
     /**
-     * @depends testRemoveUsers_ProjectOwner_NotRemovedFromProject
+     * @depends testRemoveUsers_ProjectOwner_NotRemovedFromProject_Exception
      */
     public function testRemoveUsers_ProjectOwner_NotRemovedFromProject()
     {
