@@ -6,7 +6,6 @@ angular.module('semdomtrans-new-project',
     'bellows.services',
     'bellows.filters',
     'ui.bootstrap',
-    'ngAnimate',
     'semdomtrans.services',
     'palaso.ui.language',
     'pascalprecht.translate'

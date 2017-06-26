@@ -3,7 +3,6 @@
   "dependencies": {
     "jquery": "~3.1",
     "angular": "~1.6",
-    "angular-animate": "~1.6",
     "angular-route": "~1.6",
     "angular-sanitize": "~1.6",
     "google-open-sans": "1.0.x",

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services',
-    'palaso.ui.notice', 'palaso.ui.language', 'ngAnimate', 'ngFileUpload', 'lexicon.upload'])
+    'palaso.ui.notice', 'palaso.ui.language', 'ngFileUpload', 'lexicon.upload'])
   .controller('LiftImportCtrl', ['$scope', 'Upload', '$uibModal', 'silNoticeService',
     'lexProjectService', '$filter', '$location', 'sessionService',
   function ($scope, Upload, $modal, notice, lexProjectService, $filter,
