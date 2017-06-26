@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
-  'palaso.ui.language', 'ngAnimate', 'palaso.ui.picklistEditor', 'lexicon.services',
+  'palaso.ui.language', 'palaso.ui.picklistEditor', 'lexicon.services',
   'palaso.util.model.transform'])
 
 // Configuration Controller

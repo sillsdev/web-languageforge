@@ -1,7 +1,7 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('signup', ['bellows.services', 'ui.bootstrap', 'ngAnimate', 'pascalprecht.translate',
+angular.module('signup', ['bellows.services', 'ui.bootstrap', 'pascalprecht.translate',
   'palaso.util.model.transform', 'palaso.ui.captcha', 'zxcvbn'])
   .config(['$translateProvider', function ($translateProvider) {
     // configure interface language filepath
