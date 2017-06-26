@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('semdomtrans.review', ['ui.bootstrap', 'bellows.services',  'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.scroll', 'palaso.ui.typeahead'])
+angular.module('semdomtrans.review', ['ui.bootstrap', 'bellows.services',  'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.scroll', 'palaso.ui.typeahead'])
 // DBE controller
 .controller('reviewCtrl', ['$scope', '$state', '$stateParams', 'semdomtransEditorDataService', 'semdomtransEditService', 'modalService', 'silNoticeService', '$rootScope', '$filter', '$timeout',
 function($scope, $state, $stateParams, editorService, semdomEditApi, modal, notice, $rootScope, $filter, $timeout) {

@@ -5,7 +5,6 @@ angular.module('lexicon',
   [
     'ui.router',
     'ui.bootstrap',
-    'ngAnimate',
     'ngSanitize',
     'palaso.ui.dc.rendered',
     'palaso.ui.typeahead',
