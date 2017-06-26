@@ -1,8 +1,8 @@
 <div data-ng-show="finishedLoading">
 <h2 style="font-weight:normal">{{project.projectName}} Settings</h2>
 
-<uib-tabset>
-<uib-tab heading="Members">
+<pui-tabset>
+<pui-tab heading="Members">
     <div data-ng-controller="ProjectSettingsUsersCtrl">
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
             <button class="btn btn-warning" data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther"
@@ -89,8 +89,8 @@
         </table>
         </listview>
     </div>
-</uib-tab>
-<uib-tab heading="Question Templates">
+</pui-tab>
+<pui-tab heading="Question Templates">
     <div data-ng-controller="ProjectSettingsQTemplateCtrl" style="overflow:hidden">
         <form class="control-bar form-inline">
             <button class="btn btn-warning" data-ng-disabled="selected.length == 0" data-ng-click="removeTemplates()">
@@ -136,8 +136,8 @@
         </table>
         </listview>
     </div>
-</uib-tab>
-<uib-tab heading="Archived Texts">
+</pui-tab>
+<pui-tab heading="Archived Texts">
     <div data-ng-controller="ProjectSettingsArchiveTextsCtrl">
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
             <button class="btn btn-success republish-texts" data-ng-disabled="selected.length == 0" data-ng-show="rights.archive"
@@ -167,8 +167,8 @@
             </table>
         </listview>
     </div>
-</uib-tab>
-<uib-tab heading="Project Properties">
+</pui-tab>
+<pui-tab heading="Project Properties">
     <div data-ng-controller="ProjectSettingsPropertiesCtrl">
         <form class="well" data-ng-submit="updateProject()">
         <fieldset>
@@ -197,8 +197,8 @@
         </fieldset>
         </form>
     </div>
-</uib-tab>
-<uib-tab heading="User Profile Lists">
+</pui-tab>
+<pui-tab heading="User Profile Lists">
     <div data-ng-controller="ProjectSettingsSetupCtrl">
         <form data-ng-submit="updateProject()">
             <div class="col-md-4">
@@ -235,8 +235,8 @@
             </div>
         </form>
     </div>
-</uib-tab>
-<uib-tab heading="Communication Settings" select="readCommunicationSettings()" data-ng-if="canEditCommunicationSettings()">
+</pui-tab>
+<pui-tab heading="Communication Settings" select="readCommunicationSettings()" data-ng-if="canEditCommunicationSettings()">
     <div data-ng-controller="ProjectSettingsCommunicationCtrl">
         <form class="well" data-ng-submit="updateCommunicationSettings()">
         <fieldset class="col-md-6 col-lg-4">
@@ -259,18 +259,18 @@
         </fieldset>
         </form>
     </div>
-</uib-tab>
-<uib-tab heading="Reports">
+</pui-tab>
+<pui-tab heading="Reports">
     <form class="well">
         <pui-run-report>
         </pui-run-report>
     </form>
-</uib-tab>
-<uib-tab heading="Delete" data-ng-show="rights.remove">
+</pui-tab>
+<pui-tab heading="Delete" data-ng-show="rights.remove">
     <form class="well">
         <pui-delete-project>
         </pui-delete-project>
     </form>
-</uib-tab>
-</uib-tabset>
+</pui-tab>
+</pui-tabset>
 </div>
