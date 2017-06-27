@@ -1,0 +1,14 @@
+<div>
+  <div uib-dropdown class="hidden-md-up pui-tab-select">
+      <button class="btn btn-secondary" uib-dropdown-toggle>{{tabset.selectedTab().heading}}</button>
+      <div uib-dropdown-menu>
+        <a ng-repeat="tab in tabset.tabs" ng-if="tab.visible()" href ng-click="tabset.selectTab($index)" class="dropdown-item">{{tab.heading}}</a>
+      </div>
+  </div>
+  <ul class="nav nav-tabs hidden-sm-down">
+    <li class="nav-item" ng-repeat="tab in tabset.tabs" >
+      <a ng-click="tabset.selectTab($index)" ng-if="tab.visible()" class="nav-link" ng-class="{'active': tab.selected}" href>{{tab.heading}}</a>
+    </li>
+  </ul>
+  <div ng-transclude></div>
+</div>
