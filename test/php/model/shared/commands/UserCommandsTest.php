@@ -46,16 +46,18 @@ class UserCommandsTest extends TestCase
     public static function setUpBeforeClass()
     {
         self::$environ = new MongoTestEnvironment();
-        self::$environ->clean();
         self::$save = [];
+    }
+
+    protected function setUp()
+    {
+        self::$environ->clean();
     }
 
     public function testDeleteUsers_1User_1Deleted()
     {
-        self::$environ->clean();
-
         $userId = self::$environ->createUser('somename', 'Some Name', 'somename@example.com');
-        $count = UserCommands::deleteUsers(array($userId));
+        $count = UserCommands::deleteUsers([$userId]);
 
         $this->assertEquals(1, $count);
     }
@@ -63,39 +65,29 @@ class UserCommandsTest extends TestCase
     public function testDeleteUsers_NoId_Exception()
     {
         $this->expectException(Exception::class);
-
-        self::$environ->clean();
         UserCommands::deleteUsers(null);
     }
 
     public function testBanUser_NoId_Exception()
     {
         $this->expectException(Exception::class);
-
-        self::$environ->clean();
-
-        $userId = UserCommands::banUser(null);
+        UserCommands::banUser(null);
     }
 
     public function testBanUser_BadId_Exception()
     {
         $this->expectException(Exception::class);
-
-        self::$environ->clean();
-
-        $userId = UserCommands::banUser('notAnId');
+        UserCommands::banUser('notAnId');
     }
 
     public function testBanUser_UserNotActive()
     {
-        self::$environ->clean();
-
         // setup parameters
         $userId = self::$environ->createUser('username', 'name', 'name@example.com');
         $user = new UserModel($userId);
         $this->assertTrue($user->active);
 
-        $userId = UserCommands::banUser($userId, '');
+        $userId = UserCommands::banUser($userId);
 
         $user = new UserModel($userId);
         $this->assertFalse($user->active);
@@ -103,16 +95,14 @@ class UserCommandsTest extends TestCase
 
     public function testUpdateUserProfile_OtherUsername_FalseNoUpdate()
     {
-        self::$environ->clean();
-
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
-        $params = array(
+        self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $params = [
             'id' => $zedId,
             'username' => 'jsmith',
             'email' => 'zed@example.com',
             'avatar_ref' => 'joe.png'
-        );
+        ];
         $zed = new UserModel($zedId);
         $this->assertEquals($zed->avatar_ref, $zed->username . '.png');
 
@@ -123,14 +113,13 @@ class UserCommandsTest extends TestCase
 
     public function testUpdateUserProfile_OtherEmail_FalseNoUpdate()
     {
-        self::$environ->clean();
-
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
-        $params = array(
+        self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        $params = [
             'id' => $zedId,
             'username' => 'zedUser',
-            'email' => 'joe@smith.com');
+            'email' => 'joe@smith.com'
+        ];
         $zed = new UserModel($zedId);
         $this->assertEquals('zed@example.com', $zed->email);
 
@@ -141,16 +130,14 @@ class UserCommandsTest extends TestCase
 
     public function testUpdateUserProfile_OtherUsernameOtherEmail_False()
     {
-        self::$environ->clean();
-
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
-        $user2Id = self::$environ->createUser('janedoe', 'jane doe', 'jane@doe.com');
-        $params = array(
+        self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        self::$environ->createUser('janedoe', 'jane doe', 'jane@doe.com');
+        $params = [
             'id' => $zedId,
             'username' => 'janedoe',
             'email' => 'joe@smith.com'
-        );
+        ];
 
         $this->assertFalse(UserCommands::updateUserProfile($params, $zedId, self::$environ->website));
         $zed = new UserModel($zedId);
@@ -160,14 +147,12 @@ class UserCommandsTest extends TestCase
 
     public function testUpdateUserProfile_NewEmail_IdEmailChanged()
     {
-        self::$environ->clean();
-
         $zedId = self::$environ->createUser('zeduser', 'zed user','zed@example.com');
-        $params = array(
+        $params = [
             'id' => $zedId,
             'username' => 'zeduser',
             'email' => 'joe@smith.com'
-        );
+        ];
         $status = UserCommands::updateUserProfile($params, $zedId, self::$environ->website);
         $this->assertEquals($zedId, $status );
         $zed = new UserModel($zedId);
@@ -177,14 +162,12 @@ class UserCommandsTest extends TestCase
 
     public function testUpdateUserProfile_NewUsernameEmail_LoginUsernameEmailChanged()
     {
-        self::$environ->clean();
-
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $params = array(
+        $params = [
             'id' => $zedId,
             'username' => 'jsmith',
             'email' => 'joe@smith.com'
-        );
+        ];
         $status = UserCommands::updateUserProfile($params, $zedId, self::$environ->website);
         $this->assertEquals('login', $status );
         $zed = new UserModel($zedId);
@@ -194,16 +177,14 @@ class UserCommandsTest extends TestCase
 
     public function testUpdateUserProfile_SetLangCode_LangCodeSet()
     {
-        self::$environ->clean();
-
         // setup parameters
         $userId = self::$environ->createUser('username', 'name', 'name@example.com');
-        $params = array(
+        $params = [
             'id' => $userId,
             'username' => 'username',
             'email' => 'name@example.com',
             'interfaceLanguageCode' => 'th'
-        );
+        ];
 
         $newUserId = UserCommands::updateUserProfile($params, $userId, self::$environ->website);
 
@@ -215,128 +196,110 @@ class UserCommandsTest extends TestCase
 
     public function testCheckUniqueIdentity_selfUsername_OK()
     {
-        self::$environ->clean();
-
         $userId = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
         $joeUser = new UserModel($userId);
 
-        $this->assertEquals('ok', UserCommands::checkUniqueIdentity($joeUser, 'jsmith', '', null));
+        $this->assertEquals('ok', UserCommands::checkUniqueIdentity($joeUser, 'jsmith', ''));
     }
 
     public function testCheckUniqueIdentity_selfEmail_OK()
     {
-        self::$environ->clean();
-
         $userId = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
         $joeUser = new UserModel($userId);
 
-        $this->assertEquals('ok', UserCommands::checkUniqueIdentity($joeUser, '', 'joe@smith.com', null));
+        $this->assertEquals('ok', UserCommands::checkUniqueIdentity($joeUser, '', 'joe@smith.com'));
     }
 
     public function testCheckUniqueIdentity_selfUsernameWithEmail_OK()
     {
-        self::$environ->clean();
-
         $userId = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
         $joeUser = new UserModel($userId);
 
-        $this->assertEquals('ok', UserCommands::checkUniqueIdentity($joeUser, 'jsmith', 'joe@smith.com', null));
+        $this->assertEquals('ok', UserCommands::checkUniqueIdentity($joeUser, 'jsmith', 'joe@smith.com'));
     }
 
     public function testCheckUniqueIdentity_otherUsername_UsernameExists()
     {
-        self::$environ->clean();
-
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
 
         $zedUser = new UserModel($zedId);
 
-        $this->assertEquals('usernameExists', UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'zed@example.com', null));
+        $this->assertEquals('usernameExists', UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'zed@example.com'));
     }
 
     public function testCheckUniqueIdentity_otherEmail_EmailExists()
     {
-        self::$environ->clean();
-
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
 
         $zedUser = new UserModel($zedId);
 
-        $this->assertEquals('emailExists', UserCommands::checkUniqueIdentity($zedUser, 'zedUser', 'joe@smith.com', null));
+        $this->assertEquals('emailExists', UserCommands::checkUniqueIdentity($zedUser, 'zedUser', 'joe@smith.com'));
     }
 
     public function testCheckUniqueIdentity_otherUsernameEmail_UsernameAndEmailExists()
     {
-        self::$environ->clean();
-
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
-        $user2Id = self::$environ->createUser('janedoe', 'jane doe', 'jane@doe.com');
+        self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        self::$environ->createUser('janedoe', 'jane doe', 'jane@doe.com');
 
         $zedUser = new UserModel($zedId);
 
-        $this->assertEquals('usernameAndEmailExists', UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'jane@doe.com', null));
+        $this->assertEquals('usernameAndEmailExists', UserCommands::checkUniqueIdentity($zedUser, 'jsmith', 'jane@doe.com'));
     }
 
     public function testCheckUniqueIdentity_otherCaseUsername_UsernameExists()
     {
-        self::$environ->clean();
-
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
 
         $zedUser = new UserModel($zedId);
 
-        $this->assertEquals('usernameExists', UserCommands::checkUniqueIdentity($zedUser, 'JSMITH', 'zed@example.com', null));
+        $this->assertEquals('usernameExists', UserCommands::checkUniqueIdentity($zedUser, 'JSMITH', 'zed@example.com'));
     }
 
     public function testCheckUniqueIdentity_otherCaseEmail_EmailExists()
     {
-        self::$environ->clean();
-
         $zedId = self::$environ->createUser('zedUser', 'zed user','zed@example.com');
-        $user1Id = self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
+        self::$environ->createUser('jsmith', 'joe smith','joe@smith.com');
 
         $zedUser = new UserModel($zedId);
 
-        $this->assertEquals('emailExists', UserCommands::checkUniqueIdentity($zedUser, 'zedUser', 'JOE@SMITH.COM', null));
+        $this->assertEquals('emailExists', UserCommands::checkUniqueIdentity($zedUser, 'zedUser', 'JOE@SMITH.COM'));
     }
 
     public function testCreateUser_NewUser_NotFalse()
     {
-        self::$environ->clean();
-
         // setup parameters
-        $params = array(
+        $params = [
             'name' => 'user 1',
             'email' => 'name@example.com',
-            'password' => 'password');
+            'password' => 'password'
+        ];
 
         $this->assertNotFalse('login', UserCommands::createUser($params, self::$environ->website));
     }
 
     public function testCreateUser_SameUser_SameID()
     {
-        self::$environ->clean();
-        $params = array(
+        $params = [
             'name' => 'user 1',
             'email' => 'name@example.com',
-            'password' => 'password');
+            'password' => 'password'
+        ];
         $userId = UserCommands::createUser($params, self::$environ->website);
         $this->assertEquals($userId, UserCommands::createUser($params, self::$environ->website));
     }
 
     public function testCreateUser_EmailInUse_False()
     {
-        self::$environ->clean();
-
         // setup parameters
-        $params = array(
+        $params = [
             'name' => 'user 1',
             'email' => 'name@example.com',
-            'password' => 'password');
+            'password' => 'password'
+        ];
         UserCommands::createUser($params, self::$environ->website);
         $params['password'] = 'differentPassword';
 
@@ -345,8 +308,6 @@ class UserCommandsTest extends TestCase
 
     public function testCreateSimple_CreateUser_PasswordAndJoinProject()
     {
-        self::$environ->clean();
-
         // setup parameters: username and project
         $userName = 'username';
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -374,8 +335,6 @@ class UserCommandsTest extends TestCase
     {
         $this->expectException(Exception::class);
 
-        self::$environ->clean();
-
         // setup parameters: name and project
         $name = 'User Name';
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -384,10 +343,10 @@ class UserCommandsTest extends TestCase
         $currentUserId = self::$environ->createUser('test1', 'test1', 'test@test.com');
 
         // create user
-        $dto = UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
+        UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
 
         // create user again
-        $dto = UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
+        UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
     }
 
     // TODO: Register within a project context
@@ -398,18 +357,16 @@ class UserCommandsTest extends TestCase
 
     public function testRegister_NoProjectCode_UserInNoProjects()
     {
-        self::$environ->clean();
-
         $validCode = 'validCode';
-        $params = array(
+        $params = [
                 'id' => '',
                 'username' => 'someusername',
                 'name' => 'Some Name',
                 'email' => 'someone@example.com',
                 'password' => 'somepassword',
                 'captcha' => $validCode
-        );
-        $captcha_info = array('code' => $validCode);
+        ];
+        $captcha_info = ['code' => $validCode];
 
         $this->assertFalse(UserModel::userExists($params['email']));
 
@@ -424,19 +381,17 @@ class UserCommandsTest extends TestCase
 
     public function testRegister_InvalidCaptcha_CaptchaFail()
     {
-        self::$environ->clean();
-
         $validCode = 'validCode';
         $invalidCode = 'invalidCode';
-        $params = array(
+        $params = [
             'id' => '',
             'username' => 'someusername',
             'name' => 'Some Name',
             'email' => 'someone@example.com',
             'password' => 'somepassword',
             'captcha' => $invalidCode
-        );
-        $captcha_info = array('code' => $validCode);
+        ];
+        $captcha_info = ['code' => $validCode];
 
         $delivery = new MockUserCommandsDelivery();
         $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
@@ -446,8 +401,6 @@ class UserCommandsTest extends TestCase
 
     public function testRegister_EmailInUsePasswordExists_EmailNotAvailable()
     {
-        self::$environ->clean();
-
         // setup parameters: user 'test1'
         $userName = 'username';
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -462,15 +415,15 @@ class UserCommandsTest extends TestCase
         $user->write();
 
         $validCode = 'validCode';
-        $params = array(
+        $params = [
             'id' => '',
             'username' => 'someusername',
             'name' => 'Some Name',
             'email' => $takenEmail,
             'password' => 'somepassword',
             'captcha' => $validCode
-        );
-        $captcha_info = array('code' => $validCode);
+        ];
+        $captcha_info = ['code' => $validCode];
         $delivery = new MockUserCommandsDelivery();
 
         // Attempt to register
@@ -481,22 +434,20 @@ class UserCommandsTest extends TestCase
 
     public function testRegister_EmailInUseNoPassword_Login()
     {
-        self::$environ->clean();
-
         // setup parameters: user 'test1'
         $takenEmail = 'test@test.com';
-        $currentUserId = self::$environ->createUser('test1', 'test1', $takenEmail);
+        self::$environ->createUser('test1', 'test1', $takenEmail);
 
         $validCode = 'validCode';
-        $params = array(
+        $params = [
             'id' => '',
             'username' => 'someusername',
             'name' => 'Some Name',
             'email' => $takenEmail,
             'password' => 'somepassword',
             'captcha' => $validCode
-        );
-        $captcha_info = array('code' => $validCode);
+        ];
+        $captcha_info = ['code' => $validCode];
         $delivery = new MockUserCommandsDelivery();
 
         // Attempt to register
@@ -507,44 +458,40 @@ class UserCommandsTest extends TestCase
 
     public function testRegister_NewUser_Login()
     {
-        self::$environ->clean();
-
         $validCode = 'validCode';
-        $params = array(
+        $params = [
             'id' => '',
             'username' => 'anotherusername',
             'name' => 'Another Name',
             'email' => 'another@example.com',
             'password' => 'anotherpassword',
             'captcha' => $validCode
-        );
-        $captcha_info = array('code' => $validCode);
-        $userId = self::$environ->createUser('someusername', 'Some Name', 'someone@example.com');
+        ];
+        $captcha_info = ['code' => $validCode];
+        self::$environ->createUser('someusername', 'Some Name', 'someone@example.com');
 
         $delivery = new MockUserCommandsDelivery();
         $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
 
         $this->assertEquals($result, 'login');
-
     }
 
     public function testRegister_CrossSiteEnabled_UserHasSiteRole()
     {
-        self::$environ->clean();
         $validCode = 'validCode';
-        $params = array(
+        $params = [
             'id' => '',
             'username' => 'jsmith',
             'name' => 'joe smith',
             'email' => 'joe@smith.com',
             'password' => 'somepassword',
             'captcha' => $validCode
-        );
+        ];
         $website = Website::get(self::CROSS_SITE_DOMAIN);
-        $captcha_info = array('code' => $validCode);
+        $captcha_info = ['code' => $validCode];
         $delivery = new MockUserCommandsDelivery();
         // Register user to default website
-        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+        UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
         $joeUser = new UserModel();
         $joeUser->readByEmail('joe@smith.com');
         $this->assertFalse($joeUser->hasRoleOnSite($website));
@@ -559,8 +506,6 @@ class UserCommandsTest extends TestCase
 
     public function testSendInvite_Register_UserActive()
     {
-        self::$environ->clean();
-
         $inviterUserId = self::$environ->createUser("inviteruser", "Inviter Name", "inviter@example.com");
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
@@ -568,22 +513,22 @@ class UserCommandsTest extends TestCase
         $delivery = new MockUserCommandsDelivery();
 
         $validCode = 'validCode';
-        $captcha_info = array('code' => $validCode);
-        $params = array(
+        $captcha_info = ['code' => $validCode];
+        $params = [
             'id' => '',
             'username' => 'jsmith',
             'name' => 'joe smith',
             'email' => 'joe@smith.com',
             'password' => 'somepassword',
             'captcha' => $validCode
-        );
+        ];
 
         $toUserId = UserCommands::sendInvite($project->id->asString(), $inviterUserId, self::$environ->website, $params['email'], $delivery);
         $joeUser = new UserModel($toUserId);
         $this->assertEquals($joeUser->active, null);
         $this->assertNull($joeUser->active);
 
-        $result = UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
+        UserCommands::register($params, self::$environ->website, $captcha_info, $delivery);
 
         $joeUser = new UserModel($toUserId);
         $this->assertTrue($joeUser->active);
@@ -591,8 +536,6 @@ class UserCommandsTest extends TestCase
 
     public function testSendInvite_SendInvite_PropertiesFromToBodyOk()
     {
-        self::$environ->clean();
-
         $inviterUserId = self::$environ->createUser("inviteruser", "Inviter Name", "inviter@example.com");
         $toEmail = 'someone@example.com';
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
@@ -606,8 +549,8 @@ class UserCommandsTest extends TestCase
         $toUser = new UserModel($toUserId);
 
         $senderEmail = 'no-reply@' . self::$environ->website->domain;
-        $expectedFrom = array($senderEmail => self::$environ->website->name);
-        $expectedTo = array($toUser->emailPending => $toUser->name);
+        $expectedFrom = [$senderEmail => self::$environ->website->name];
+        $expectedTo = [$toUser->emailPending => $toUser->name];
         $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp('/Inviter Name/', $delivery->content);
@@ -616,8 +559,6 @@ class UserCommandsTest extends TestCase
 
     public function testChangePassword_SystemAdminChangeOtherUser_Succeeds()
     {
-        self::$environ->clean();
-
         $adminModel = new UserModel();
         $adminModel->username = 'admin';
         $adminModel->role = SystemRoles::SYSTEM_ADMIN;
