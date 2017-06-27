@@ -211,3 +211,10 @@ pui-select-language div.scroll-table table {
 .unread {
   background-color: $background-highlight;
 }
+
+.pui-tab-select {
+  margin-bottom: 1em;
+  button, .dropdown-menu {
+    width: 100%;
+  }
+}

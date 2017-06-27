@@ -236,7 +236,7 @@
         </form>
     </div>
 </pui-tab>
-<pui-tab heading="Communication Settings" select="readCommunicationSettings()" data-ng-if="canEditCommunicationSettings()">
+<pui-tab heading="Communication Settings" select="readCommunicationSettings()" tab-if="canEditCommunicationSettings()">
     <div data-ng-controller="ProjectSettingsCommunicationCtrl">
         <form class="well" data-ng-submit="updateCommunicationSettings()">
         <fieldset class="col-md-6 col-lg-4">
@@ -266,7 +266,7 @@
         </pui-run-report>
     </form>
 </pui-tab>
-<pui-tab heading="Delete" data-ng-show="rights.remove">
+<pui-tab heading="Delete" tab-if="rights.remove">
     <form class="well">
         <pui-delete-project>
         </pui-delete-project>
