@@ -506,7 +506,7 @@ class UserCommandsTest extends TestCase
 
     public function testSendInvite_Register_UserActive()
     {
-        $inviterUserId = self::$environ->createUser("inviteruser", "Inviter Name", "inviter@example.com");
+        $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
         $project->write();
@@ -523,7 +523,7 @@ class UserCommandsTest extends TestCase
             'captcha' => $validCode
         ];
 
-        $toUserId = UserCommands::sendInvite($project->id->asString(), $inviterUserId, self::$environ->website, $params['email'], $delivery);
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $invitingUserId, self::$environ->website, $params['email'], $delivery);
         $joeUser = new UserModel($toUserId);
         $this->assertEquals($joeUser->active, null);
         $this->assertNull($joeUser->active);
@@ -536,14 +536,14 @@ class UserCommandsTest extends TestCase
 
     public function testSendInvite_SendInvite_PropertiesFromToBodyOk()
     {
-        $inviterUserId = self::$environ->createUser("inviteruser", "Inviter Name", "inviter@example.com");
+        $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
         $toEmail = 'someone@example.com';
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $project->projectCode = 'someProjectCode';
         $project->write();
         $delivery = new MockUserCommandsDelivery();
 
-        $toUserId = UserCommands::sendInvite($project->id->asString(), $inviterUserId, self::$environ->website, $toEmail, $delivery);
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $invitingUserId, self::$environ->website, $toEmail, $delivery);
 
         // What's in the delivery?
         $toUser = new UserModel($toUserId);
@@ -553,8 +553,35 @@ class UserCommandsTest extends TestCase
         $expectedTo = [$toUser->emailPending => $toUser->name];
         $this->assertEquals($expectedFrom, $delivery->from);
         $this->assertEquals($expectedTo, $delivery->to);
-        $this->assertRegExp('/Inviter Name/', $delivery->content);
+        $this->assertRegExp('/Inviting Name/', $delivery->content);
         $this->assertRegExp('/Test Project/', $delivery->content);
+    }
+
+    public function testSendInvite_SendInviteTwice_PropertiesFromToBodyOk()
+    {
+        $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
+        $toEmail = 'someone@example.com';
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->projectCode = 'someProjectCode';
+        $project->write();
+        $delivery = new MockUserCommandsDelivery();
+
+        $toUser1Id = UserCommands::sendInvite($project->id->asString(), $invitingUserId, self::$environ->website, $toEmail, $delivery);
+        $delivery = new MockUserCommandsDelivery();
+        $toUser2Id = UserCommands::sendInvite($project->id->asString(), $invitingUserId, self::$environ->website, $toEmail, $delivery);
+
+        // What's in the delivery?
+        $toUser = new UserModel($toUser2Id);
+
+        $senderEmail = 'no-reply@' . self::$environ->website->domain;
+        $expectedFrom = [$senderEmail => self::$environ->website->name];
+        $expectedTo = [$toUser->emailPending => $toUser->name];
+        $this->assertEquals($toUser1Id, $toUser2Id);
+        $this->assertEquals($expectedFrom, $delivery->from);
+        $this->assertEquals($expectedTo, $delivery->to);
+        $this->assertRegExp('/Inviting Name/', $delivery->content);
+        $this->assertRegExp('/Test Project/', $delivery->content);
+        $this->assertRegExp('/public\/signup#!\/\?e=' . urlencode($toUser->emailPending) . '/', $delivery->content);
     }
 
     public function testChangePassword_SystemAdminChangeOtherUser_Succeeds()
