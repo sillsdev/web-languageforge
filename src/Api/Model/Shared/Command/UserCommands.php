@@ -454,7 +454,7 @@ class UserCommands
     /**
      * Sends an email to $toEmail to join the site.
      * @param string $projectId
-     * @param string $inviterUserId
+     * @param string $invitingUserId
      * @param Website $website
      * @param string $toEmail
      * @param DeliveryInterface $delivery
@@ -463,38 +463,40 @@ class UserCommands
      */
     public static function sendInvite(
         $projectId,
-        $inviterUserId,
+        $invitingUserId,
         $website,
         $toEmail,
         DeliveryInterface $delivery = null
     ) {
-        $inviterUser = new UserModel($inviterUserId);
+        $invitingUser = new UserModel($invitingUserId);
         $project = new ProjectModel($projectId);
         $toEmail = UserCommands::sanitizeInput($toEmail);
 
-        $newUser = new UserModel();
-        if (!$newUser->readByEmail($toEmail)) {
-            $newUser->email = $toEmail;
-            $newUser->emailPending = $toEmail;
-            $newUser->role = SystemRoles::USER;
-            Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
+        $invitedUser = new UserModel();
+        if (!$invitedUser->readByEmail($toEmail)) {
+            $invitedUser->email = $toEmail;
+            $invitedUser->emailPending = $toEmail;
+            $invitedUser->role = SystemRoles::USER;
+            $invitedUser->write();
         }
+        Communicate::sendInvite($invitingUser, $invitedUser, $project, $website, $delivery);
+        $invitedUserId = $invitedUser->id->asString();
 
         // Make sure the user exists on the site
-        if (!$newUser->hasRoleOnSite($website)) {
-            $newUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
+        if (!$invitedUser->hasRoleOnSite($website)) {
+            $invitedUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
         }
 
         // Add the user to the project, if they are not already a member
-        if (!$project->userIsMember($newUser->id->asString())) {
-            $newUser->addProject($project->id->asString());
-            $userId = $newUser->write();
-            $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+        if (!$project->userIsMember($invitedUser->id->asString())) {
+            $invitedUser->addProject($project->id->asString());
+            $invitedUserId = $invitedUser->write();
+            $project->addUser($invitedUserId, ProjectRoles::CONTRIBUTOR);
             $project->write();
-            Communicate::sendAddedToProject($inviterUser, $newUser, $project, $website, $delivery);
+            Communicate::sendAddedToProject($invitingUser, $invitedUser, $project, $website, $delivery);
         }
 
-        return $newUser->write();
+        return $invitedUserId;
     }
 
     /**
