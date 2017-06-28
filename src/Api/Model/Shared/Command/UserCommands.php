@@ -459,7 +459,7 @@ class UserCommands
      * @param string $toEmail
      * @param DeliveryInterface $delivery
      * @throws \Exception
-     * @return string $userId
+     * @return string $userId or empty if not sent
      */
     public static function sendInvite(
         $projectId,
@@ -468,6 +468,7 @@ class UserCommands
         $toEmail,
         DeliveryInterface $delivery = null
     ) {
+        $invitedUserId = '';
         $invitingUser = new UserModel($invitingUserId);
         $project = new ProjectModel($projectId);
         $toEmail = UserCommands::sanitizeInput($toEmail);
@@ -479,8 +480,11 @@ class UserCommands
             $invitedUser->role = SystemRoles::USER;
             $invitedUser->write();
         }
-        Communicate::sendInvite($invitingUser, $invitedUser, $project, $website, $delivery);
-        $invitedUserId = $invitedUser->id->asString();
+
+        if ($invitedUser->emailPending) {
+            Communicate::sendInvite($invitingUser, $invitedUser, $project, $website, $delivery);
+            $invitedUserId = $invitedUser->id->asString();
+        }
 
         // Make sure the user exists on the site
         if (!$invitedUser->hasRoleOnSite($website)) {
