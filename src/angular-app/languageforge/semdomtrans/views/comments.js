@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('semdomtrans.comments', ['ui.bootstrap', 'bellows.services', 'bellows.services.comments', 'ngAnimate', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.scroll', 'palaso.ui.comments'])
+angular.module('semdomtrans.comments', ['ui.bootstrap', 'bellows.services', 'bellows.services.comments', 'palaso.ui.notice', 'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.scroll', 'palaso.ui.comments'])
 // DBE controller
 .controller('commentsCtrl', ['$scope', 'semdomtransEditorDataService', '$stateParams', 'modalService', 'silNoticeService', 'lexCommentService',
 function($scope, editorService, $stateParams, modal, notice, commentService) {

@@ -3,6 +3,8 @@
 .settings
 .externalToolBuilders
 .idea/
+.vscode/
+output/chrome/
 .vagrant/
 PhpUnitTests.xml
 phpUnitConsole.txt

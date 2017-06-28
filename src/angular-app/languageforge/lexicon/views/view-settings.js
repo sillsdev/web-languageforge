@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
-  'palaso.ui.language', 'ngAnimate', 'lexicon.services'])
+  'palaso.ui.language', 'lexicon.services'])
   .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService', 'lexProjectService',
     'sessionService', '$filter', '$uibModal', 'lexConfigService', 'lexSendReceive',
   function ($scope, notice, userService, lexProjectService,
