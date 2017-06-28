@@ -49,6 +49,8 @@
     "yargs": "^6.3.0"
   },
   "jscsConfig": {
-    "disallowTrailingComma": true
+    "preset": "airbnb",
+    "disallowTrailingComma": true,
+    "requireTrailingComma": false
   }
 }
