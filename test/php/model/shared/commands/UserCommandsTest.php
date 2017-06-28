@@ -534,7 +534,7 @@ class UserCommandsTest extends TestCase
         $this->assertTrue($joeUser->active);
     }
 
-    public function testSendInvite_SendInvite_PropertiesFromToBodyOk()
+    public function testSendInvite_InvitedUserDoesNotExist_PropertiesFromToBodyOk()
     {
         $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
         $toEmail = 'someone@example.com';
@@ -547,7 +547,6 @@ class UserCommandsTest extends TestCase
 
         // What's in the delivery?
         $toUser = new UserModel($toUserId);
-
         $senderEmail = 'no-reply@' . self::$environ->website->domain;
         $expectedFrom = [$senderEmail => self::$environ->website->name];
         $expectedTo = [$toUser->emailPending => $toUser->name];
@@ -557,7 +556,31 @@ class UserCommandsTest extends TestCase
         $this->assertRegExp('/Test Project/', $delivery->content);
     }
 
-    public function testSendInvite_SendInviteTwice_PropertiesFromToBodyOk()
+    public function testSendInvite_InvitedUserExists_PropertiesFromToBodyOk()
+    {
+        $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
+        $toEmail = 'someone@example.com';
+        $someoneUserId = self::$environ->createUser('someone', 'Someone', $toEmail);
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->projectCode = 'someProjectCode';
+        $project->write();
+        $delivery = new MockUserCommandsDelivery();
+
+        $toUserId = UserCommands::sendInvite($project->id->asString(), $invitingUserId, self::$environ->website, $toEmail, $delivery);
+
+        // What's in the delivery?
+        $toUser = new UserModel($toUserId);
+        $senderEmail = 'no-reply@' . self::$environ->website->domain;
+        $expectedFrom = [$senderEmail => self::$environ->website->name];
+        $expectedTo = [$toUser->email => $toUser->name];
+        $this->assertEquals($someoneUserId, $toUserId);
+        $this->assertEquals($expectedFrom, $delivery->from);
+        $this->assertEquals($expectedTo, $delivery->to);
+        $this->assertRegExp('/Inviting Name/', $delivery->content);
+        $this->assertRegExp('/Test Project/', $delivery->content);
+    }
+
+    public function testSendInvite_InvitedUserDoesNotExistAndSendInviteTwice_PropertiesFromToBodyOk()
     {
         $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
         $toEmail = 'someone@example.com';
@@ -572,7 +595,6 @@ class UserCommandsTest extends TestCase
 
         // What's in the delivery?
         $toUser = new UserModel($toUser2Id);
-
         $senderEmail = 'no-reply@' . self::$environ->website->domain;
         $expectedFrom = [$senderEmail => self::$environ->website->name];
         $expectedTo = [$toUser->emailPending => $toUser->name];
@@ -582,6 +604,26 @@ class UserCommandsTest extends TestCase
         $this->assertRegExp('/Inviting Name/', $delivery->content);
         $this->assertRegExp('/Test Project/', $delivery->content);
         $this->assertRegExp('/public\/signup#!\/\?e=' . urlencode($toUser->emailPending) . '/', $delivery->content);
+    }
+
+    public function testSendInvite_InvitedUserExistsAndSendInviteTwice_EmailNotSent()
+    {
+        $invitingUserId = self::$environ->createUser('invitinguser', 'Inviting Name', 'inviting@example.com');
+        $toEmail = 'someone@example.com';
+        $someoneUserId = self::$environ->createUser('someone', 'Someone', $toEmail);
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->projectCode = 'someProjectCode';
+        $project->write();
+        $delivery = new MockUserCommandsDelivery();
+
+        $toUser1Id = UserCommands::sendInvite($project->id->asString(), $invitingUserId, self::$environ->website, $toEmail, $delivery);
+        $delivery = new MockUserCommandsDelivery();
+        $toUser2Id = UserCommands::sendInvite($project->id->asString(), $invitingUserId, self::$environ->website, $toEmail, $delivery);
+
+        // What's in the delivery?
+        $this->assertEquals($someoneUserId, $toUser1Id);
+        $this->assertEmpty($toUser2Id);
+        $this->assertEmpty($delivery->content);
     }
 
     public function testChangePassword_SystemAdminChangeOtherUser_Succeeds()
