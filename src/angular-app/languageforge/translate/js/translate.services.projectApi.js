@@ -2,39 +2,18 @@
 
 angular.module('translate.services')
   .service('translateProjectApi',
-    ['jsonRpc', 'sessionService', 'projectService',
-  function (jsonRpc, sessionService, projectService) {
-    jsonRpc.connect('/api/sf');
-
+    ['apiService', 'sessionService', 'projectService',
+  function (api, sessionService, projectService) {
     angular.extend(this, projectService);
 
-    this.updateProject = function updateProject(project, callback) {
-      jsonRpc.call('translate_projectUpdate', [project], callback);
-    };
+    this.updateProject = api.method('translate_projectUpdate');
+    this.readProject = api.method('translate_projectDto');
+    this.updateConfig = api.method('translate_configUpdate');
+    this.updateUserPreferences = api.method('translate_configUpdateUserPreferences');
+    this.users = api.method('project_usersDto');
+    this.updateUserProfile = api.method('user_updateProfile');
 
-    this.readProject = function readProject(callback) {
-      jsonRpc.call('translate_projectDto', [], callback);
-    };
-
-    this.updateConfig = function updateConfig(config, callback) {
-      jsonRpc.call('translate_configUpdate', [config], callback);
-    };
-
-    this.updateUserPreferences = function updateUserPreferences(UserPreferences, callback) {
-      jsonRpc.call('translate_configUpdateUserPreferences', [UserPreferences], callback);
-    };
-
-    this.users = function users(callback) {
-      jsonRpc.call('project_usersDto', [], callback);
-    };
-
-    this.updateUserProfile = function updateUserProfile(user, callback) {
-      jsonRpc.call('user_updateProfile', [user], callback);
-    };
-
-    this.getProjectId = function getProjectId() {
-      return sessionService.session.project.id;
-    };
+    this.getProjectId = sessionService.projectId;
 
     this.isValidProjectCode = function isValidProjectCode(code) {
       if (angular.isUndefined(code)) return false;

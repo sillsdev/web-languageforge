@@ -51,10 +51,6 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.target = target;
     $scope.right = source;
     $scope.left = target;
-    $scope.project = $scope.project || {};
-    $scope.project.config = $scope.project.config || {};
-    $scope.project.config.documentSets = $scope.project.config.documentSets || {};
-    $scope.project.config.userPreferences = $scope.project.config.userPreferences || {};
     $scope.confidenceThreshold = 0.2;
     $scope.selectedDocumentSetIndex = 0;
     $scope.documentSets = [];
@@ -67,6 +63,8 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     documentApi.listDocumentSetsDto(function (result) {
       if (result.ok) {
         angular.merge($scope.project, result.data.project);
+        $scope.project.config.documentSets = $scope.project.config.documentSets || {};
+        $scope.project.config.userPreferences = $scope.project.config.userPreferences || {};
         source.inputSystem = $scope.project.config.source.inputSystem;
         target.inputSystem = $scope.project.config.target.inputSystem;
         assistant.initialise(source.inputSystem.tag, target.inputSystem.tag, $scope.project.slug);
@@ -136,7 +134,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
               notice.push(notice.ERROR, 'Sorry, there was a problem removing the document.');
             }
           });
-        });
+        }, angular.noop);
     };
 
     $scope.modalUpdateDocumentSet = function modalUpdateDocumentSet(index) {
@@ -144,7 +142,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       var documentSet = { name: '' };
       if (angular.isDefined(index) && (index in $scope.documentSets)) {
         isCreate = false;
-        documentSet = $scope.documentSets[index];
+        documentSet = angular.copy($scope.documentSets[index]);
       }
 
       var modalInstance = modal.open({
@@ -181,7 +179,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
             notice.push(notice.ERROR, 'Sorry, there was a problem saving your changes.');
           }
         });
-      });
+      }, angular.noop);
     };
 
     $scope.modalMoveDocumentSet = function modalMoveDocumentSet(currentIndex) {
@@ -238,7 +236,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
             notice.push(notice.ERROR, 'Sorry, there was a problem saving your changes.');
           }
         });
-      });
+      }, angular.noop);
     };
 
     $scope.hasDocumentSets = function hasDocumentSets() {
