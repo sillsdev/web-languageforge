@@ -1,78 +1,64 @@
 'use strict';
 
 angular.module('translate.services')
-  .service('translateRightsService', ['sessionService',
-  function (sessionService) {
+  .service('translateRightsService', ['sessionService', function (sessionService) {
     // mock sendReceive (TODO combine with lexRightsService)
     var sendReceive = {
       isInProgress: function () { return false; }
     };
 
-    this.canRemoveUsers = function canRemoveUsers() {
-      if (sendReceive.isInProgress()) return false;
+    var session;
 
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-        sessionService.operation.DELETE);
-    };
+    /**
+     * This helper returns a function with a boolean return type indicating whether an
+     * operation is permitted.
+     * @param {boolean} allowArchived - When false, the resulting function will always return false
+     * if the project is archived.
+     * @param {number} domain - An enum value from sessionService.domain indicating the domain of
+     * the operation.
+     * @param {number} operation - An enum value from sessionService.operation indicating the
+     * operation for which the user's permissions should be checked.
+     * @param {boolean} projectOwnerAllowed - When this is true and the current project is owned by
+     * the current user, the user will be considered to always have permission.
+     * @return {Function<boolean>} - A function that will indicate whether the user is
+     * allowed to perform the given operation.
+     */
+    function condition(allowArchived, domain, operation, projectOwnerAllowed) {
+      return function () {
+        if (sendReceive.isInProgress()) return false;
+        else if (!session.project()) return false;
+        else if (!allowArchived && session.project().isArchived) return false;
+        else {
+          var hasRight = session.hasProjectRight(domain, operation);
 
-    this.canCreateUsers = function canCreateUsers() {
-      if (sendReceive.isInProgress()) return false;
+          // The case where user does not explicitly have a right, but does because user is owner
+          if (projectOwnerAllowed) hasRight = hasRight || session.project().userIsProjectOwner;
+          return hasRight;
+        }
+      };
+    }
 
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-        sessionService.operation.CREATE);
-    };
+    var Rights = (new function () {
+      var domain = sessionService.domain;
+      var operation = sessionService.operation;
 
-    this.canEditUsers = function canEditUsers() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
+      this.canRemoveUsers = condition(true, domain.USERS, operation.DELETE);
+      this.canCreateUsers = condition(true, domain.USERS, operation.CREATE);
+      this.canEditUsers = condition(false, domain.USERS, operation.EDIT);
+      this.canArchiveProject = condition(true, domain.PROJECTS, operation.ARCHIVE, true);
+      this.canDeleteProject = condition(true, domain.PROJECTS, operation.DELETE, true);
+      this.canEditProject = condition(false, domain.PROJECTS, operation.EDIT);
+      this.canEditEntry = condition(false, domain.ENTRIES, operation.EDIT);
+      this.canDeleteEntry = condition(false, domain.ENTRIES, operation.DELETE);
+      this.canComment = condition(false, domain.COMMENTS, operation.CREATE);
+    });
 
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-        sessionService.operation.EDIT);
-    };
-
-    this.canArchiveProject = function canArchiveProject() {
-      if (sendReceive.isInProgress() || !angular.isDefined(sessionService.session.project))
-        return false;
-
-      return (sessionService.session.project.userIsProjectOwner ||
-        sessionService.hasSiteRight(sessionService.domain.PROJECTS,
-          sessionService.operation.ARCHIVE));
-    };
-
-    this.canDeleteProject = function canDeleteProject() {
-      if (sendReceive.isInProgress() || !angular.isDefined(sessionService.session.project))
-        return false;
-
-      return (sessionService.session.project.userIsProjectOwner ||
-        sessionService.hasSiteRight(sessionService.domain.PROJECTS,
-          sessionService.operation.DELETE));
-    };
-
-    this.canEditProject = function canEditProject() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.PROJECTS,
-        sessionService.operation.EDIT);
-    };
-
-    this.canEditEntry = function canEditEntry() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
-        sessionService.operation.EDIT);
-    };
-
-    this.canDeleteEntry = function canDeleteEntry() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.ENTRIES,
-        sessionService.operation.DELETE);
-    };
-
-    this.canComment = function canComment() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.COMMENTS,
-        sessionService.operation.CREATE);
+    // Promise<Rights>
+    this.getRights = function () {
+      return sessionService.getSession().then(function (sessionData) {
+        session = sessionData;
+        return Rights;
+      });
     };
 
   }])

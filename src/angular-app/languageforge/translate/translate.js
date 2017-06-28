@@ -13,8 +13,13 @@ angular.module('translate',
     'translate.editor',
     'translate.settings'
   ])
-  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
-    function ($stateProvider, $urlRouterProvider, $translateProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$compileProvider',
+    'apiServiceProvider',
+    function ($stateProvider, $urlRouterProvider, $translateProvider, $compileProvider,
+              apiService) {
+      $compileProvider.debugInfoEnabled(apiService.isProduction);
+      $compileProvider.commentDirectivesEnabled(apiService.isProduction);
+
       $urlRouterProvider.otherwise('/editor');
 
       // State machine from ui.router
@@ -34,29 +39,35 @@ angular.module('translate',
       $translateProvider.useSanitizeValueStrategy('escape');
     }])
   .controller('TranslateCtrl', ['$scope', '$location', 'sessionService', 'translateRightsService',
-    function ($scope, $location, sessionService, rights) {
-      $scope.project = sessionService.session.project;
-      $scope.rights = rights;
-      $scope.rights.showSettingsDropdown = function showSettingsDropdown() {
-        return $scope.rights.canEditProject() || $scope.rights.canEditUsers();
-      };
+    '$q',
+    function ($scope, $location, sessionService, rightsService, $q) {
+      $q.all([sessionService.getSession(), rightsService.getRights()]).then(function (data) {
+        var session = data[0];
+        var rights = data[1];
 
-      // $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
-      $scope.interfaceConfig = {};
-      $scope.interfaceConfig.direction = 'ltr';
-      $scope.interfaceConfig.pullToSide = 'pull-right';
-      $scope.interfaceConfig.pullNormal = 'pull-left';
-      $scope.interfaceConfig.placementToSide = 'left';
-      $scope.interfaceConfig.placementNormal = 'right';
+        $scope.project = session.project();
+        $scope.rights = rights;
+        $scope.rights.showSettingsDropdown = function showSettingsDropdown() {
+          return $scope.rights.canEditProject() || $scope.rights.canEditUsers();
+        };
 
-      $scope.gotoTranslation = function gotoTranslation() {
-        $location.path('/editor');
-      };
+        // $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
+        $scope.interfaceConfig = {};
+        $scope.interfaceConfig.direction = 'ltr';
+        $scope.interfaceConfig.pullToSide = 'pull-right';
+        $scope.interfaceConfig.pullNormal = 'pull-left';
+        $scope.interfaceConfig.placementToSide = 'left';
+        $scope.interfaceConfig.placementNormal = 'right';
 
-      $scope.showTranslationButton = function showTranslationButton() {
-        return !($location.path().indexOf('/editor') === 0);
-      };
+        $scope.gotoTranslation = function gotoTranslation() {
+          $location.path('/editor');
+        };
 
+        $scope.showTranslationButton = function showTranslationButton() {
+          return !($location.path().indexOf('/editor') === 0);
+        };
+
+      });
     }])
   .controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService',
     function ($scope, $rootScope, breadcrumbService) {
