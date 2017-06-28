@@ -233,7 +233,7 @@ class CommunicateTest extends TestCase
         $this->assertEquals($expectedTo, $delivery->to);
         $this->assertRegExp('/' . self::$environ->website->name . ' invitation/', $delivery->subject);
         $this->assertRegExp('/Inviter User/', $delivery->content);
-        $this->assertRegExp('/' . self::$environ->website->domain . '\/public\/signup#\/\?e=' .
+        $this->assertRegExp('/' . self::$environ->website->domain . '\/public\/signup#!\/\?e=' .
             urlencode($toUser->email) . '/', $delivery->content);
         $this->assertRegExp('/The ' . self::$environ->website->name . ' Team/', $delivery->content);
     }

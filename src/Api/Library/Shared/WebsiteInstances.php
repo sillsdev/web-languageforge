@@ -76,6 +76,13 @@ class WebsiteInstances
         $w->defaultProjectCode = 'jamaican_psalms';
         $sites['jamaicanpsalms.dev.scriptureforge.org'] = $w;
 
+        // qa.scriptureforge.org
+        $w = new Website('qa.scriptureforge.org', Website::SCRIPTUREFORGE);
+        $w->name = 'Scripture Forge';
+        $w->ssl = true;
+        $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
+        $sites['qa.scriptureforge.org'] = $w;
+
         // scriptureforge.org
         $w = new Website('scriptureforge.org', Website::SCRIPTUREFORGE);
         $w->name = 'Scripture Forge';

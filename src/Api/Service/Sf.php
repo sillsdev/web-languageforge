@@ -40,7 +40,6 @@ use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Communicate\EmailSettings;
 use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ActivityListDto;
-use Api\Model\Shared\Dto\CreateSimpleDto;
 use Api\Model\Shared\Dto\ProjectListDto;
 use Api\Model\Shared\Dto\ProjectManagementDto;
 use Api\Model\Shared\Dto\RightsHelper;
@@ -173,9 +172,8 @@ class Sf
     }
 
     /**
-     *
      * @param string $username
-     * @return CreateSimpleDto
+     * @return array CreateSimpleDto
      */
     public function user_createSimple($username)
     {

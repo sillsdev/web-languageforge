@@ -1,5 +1,4 @@
 {
-  "angular-animate": { "path": "vendor_bower/angular-animate" },
   "angular-route": { "path": "vendor_bower/angular-route" },
   "angular-sortable-view": { "path": "vendor_bower/angular-sortable-view/src" },
   "zxcvbn": { "path": "vendor_bower/zxcvbn/dist", "jsFile": "zxcvbn", "jsMinFile": "zxcvbn.js"},
