@@ -5,7 +5,6 @@ angular.module('translate-new-project',
     'bellows.services',
     'bellows.filters',
     'ui.bootstrap',
-    'ngAnimate',
     'ui.router',
     'palaso.ui.utils',
     'palaso.ui.sendReceiveCredentials',
@@ -64,33 +63,32 @@ angular.module('translate-new-project',
   function ($scope, $q, $filter, $modal, $window,
             sessionService, notice, $translate, $state, Upload,
             projectApi, linkService) {
+    $scope.state = $state;
     $scope.interfaceConfig = {};
     $scope.interfaceConfig.userLanguageCode = 'en';
-    if (angular.isDefined(sessionService.session.projectSettings) &&
-        angular.isDefined(sessionService.session.projectSettings.interfaceConfig)) {
-      $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
-    }
-
     $scope.interfaceConfig.direction = 'ltr';
     $scope.interfaceConfig.pullToSide = 'pull-right';
     $scope.interfaceConfig.pullNormal = 'pull-left';
     $scope.interfaceConfig.placementToSide = 'left';
     $scope.interfaceConfig.placementNormal = 'right';
-    if (InputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
-      $scope.interfaceConfig.direction = 'rtl';
-      $scope.interfaceConfig.pullToSide = 'pull-left';
-      $scope.interfaceConfig.pullNormal = 'pull-right';
-      $scope.interfaceConfig.placementToSide = 'right';
-      $scope.interfaceConfig.placementNormal = 'left';
-    }
-
-    $scope.state = $state;
+    sessionService.getSession().then(function (session) {
+      if (angular.isDefined(session.projectSettings()) &&
+        angular.isDefined(session.projectSettings().interfaceConfig)
+      ) {
+        $scope.interfaceConfig = session.projectSettings().interfaceConfig;
+        if (InputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
+          $scope.interfaceConfig.direction = 'rtl';
+          $scope.interfaceConfig.pullToSide = 'pull-left';
+          $scope.interfaceConfig.pullNormal = 'pull-right';
+          $scope.interfaceConfig.placementToSide = 'right';
+          $scope.interfaceConfig.placementNormal = 'left';
+        }
+      }
+    });
 
     // This is where form data will live
     $scope.newProject = {};
     $scope.newProject.appName = 'translate';
-    $scope.project = {};
-    $scope.project.config = {};
 
     $scope.show = {};
     $scope.show.nextButton = true;
@@ -122,6 +120,7 @@ angular.module('translate-new-project',
       $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
       $scope.forwardBtnClass = (bootstrapVersion === 'bootstrap4' ? 'btn-secondary' : '');
       $scope.formValidationDefer = $q.defer();
+      $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
     }
 
@@ -358,7 +357,7 @@ angular.module('translate-new-project',
           if (result.ok) {
             $scope.newProject.id = result.data;
             $scope.project = $scope.newProject;
-            sessionService.refresh(callback);
+            sessionService.getSession(true).then(callback);
           } else {
             notice.push(notice.ERROR, 'The ' + $scope.newProject.projectName +
               ' project could not be created. Please try again.');

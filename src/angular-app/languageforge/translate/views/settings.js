@@ -3,13 +3,9 @@
 angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palaso.ui.listview',
   'palaso.ui.typeahead', 'palaso.ui.archiveProject', 'palaso.ui.deleteProject', 'palaso.ui.notice',
   'palaso.ui.textdrop', 'translate.languages'])
-  .controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService',
-    'silNoticeService', 'translateRightsService', 'translateProjectApi', 'translateAssistant',
-  function ($scope, $filter, userService, sessionService,
-            notice, rights, projectApi, assistant) {
-    $scope.rights = rights;
-    $scope.project = $scope.project || {};
-    $scope.project.config = $scope.project.config || {};
+  .controller('SettingsCtrl',
+    ['$scope', 'silNoticeService', 'translateProjectApi', 'translateAssistant',
+  function ($scope, notice, projectApi, assistant) {
     $scope.actionInProgress = false;
     var pristineProject;
 
@@ -62,6 +58,7 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
     $scope.$on('$destroy', function () {
       angular.copy(pristineProject, $scope.project);
     });
+
   }])
 
   ;
