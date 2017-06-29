@@ -24,7 +24,7 @@
     <div uib-alert class="col-md-12" data-ng-class="'alert-warning'" data-ng-show="isLoading()">
         <div>
             <div>
-                <i class="fa fa-spin fa-spinner"></i> <b>Please wait.  {{getLoadingMessage()}}</b>
+                <i class="fa fa-spin fa-spinner"></i> <b>{{getLoadingMessage()}}</b>
             </div>
             <div data-ng-show="showProgressBar()">
                 <uib-progressbar type="'info'" value="getPercentComplete()" max="100">{{getPercentComplete()}}%</uib-progressbar>

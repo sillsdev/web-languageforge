@@ -102,8 +102,7 @@ angular.module('lexicon.services')
       this.setSyncStarted = function setSyncStarted() {
         notice.cancelProgressBar();
 
-        // TODO: Remove this loading notice and display when we determine the real initial state
-        notice.setLoading('If server available, synchronizing with LanguageDepot.org...');
+        notice.push(notice.SUCCESS, 'S/R has been queued');
         this.startSyncStatusTimer();
       };
 
