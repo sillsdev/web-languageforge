@@ -38,9 +38,9 @@ angular.module('translate',
       $translateProvider.preferredLanguage('en');
       $translateProvider.useSanitizeValueStrategy('escape');
     }])
-  .controller('TranslateCtrl', ['$scope', '$location', 'sessionService', 'translateRightsService',
+  .controller('TranslateCtrl', ['$scope', '$state', 'sessionService', 'translateRightsService',
     '$q',
-    function ($scope, $location, sessionService, rightsService, $q) {
+    function ($scope, $state, sessionService, rightsService, $q) {
       $q.all([sessionService.getSession(), rightsService.getRights()]).then(function (data) {
         var session = data[0];
         var rights = data[1];
@@ -60,11 +60,11 @@ angular.module('translate',
         $scope.interfaceConfig.placementNormal = 'right';
 
         $scope.gotoTranslation = function gotoTranslation() {
-          $location.path('/editor');
+          $state.go('editor');
         };
 
         $scope.showTranslationButton = function showTranslationButton() {
-          return !($location.path().indexOf('/editor') === 0);
+          return !$state.is('editor');
         };
 
       });
