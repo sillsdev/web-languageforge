@@ -1,9 +1,10 @@
 angular.module('bellows.services')
-  .service('apiService', ['jsonRpc', '$q', function (jsonRpc, $q) {
+  .service('apiService', ['jsonRpc', '$q', '$window', function (jsonRpc, $q, $window) {
 
-    var projectId = window.location.pathname.match(/^\/app\/[a-z]+\/([a-z0-9]{24,})\/?$/i);
+    var projectId = $window.location.pathname.match(/^\/app\/[a-z]+\/([a-z0-9]{24,})$/i);
     projectId = projectId == null ? undefined : projectId[1];
     this.projectId = projectId;
+    this.isProduction = !/\.local$/.test($window.location.hostname);
 
     this.call = function(method, args, callback) {
       var options = {
