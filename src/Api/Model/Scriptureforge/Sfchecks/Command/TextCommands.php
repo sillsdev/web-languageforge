@@ -64,10 +64,10 @@ class TextCommands
         if (TextCommands::hasRange($object)) {
             $usxTrimHelper = new UsxTrimHelper(
                 $textModel->content,
-                $object['startCh'] || 0,
-                $object['startVs'] || 0,
-                $object['endCh'] || 0,
-                $object['endVs'] || 0
+                $object['startCh'],
+                $object['startVs'],
+                $object['endCh'],
+                $object['endVs']
             );
             $textModel->content = $usxTrimHelper->trimUsx();
         }
