@@ -8,7 +8,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $stateProvider
       .state('editor', {
         url: '/editor',
-        templateUrl: '/angular-app/languageforge/translate/views/editor.html',
+        templateUrl: '/angular-app/languageforge/translate/editor/editor.html',
         controller: 'EditorCtrl'
       })
     ;
@@ -147,7 +147,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
 
       var modalInstance = modal.open({
         scope: $scope,
-        templateUrl: '/angular-app/languageforge/translate/views/modal-document-set-update.html',
+        templateUrl: '/angular-app/languageforge/translate/editor/modal-document-set-update.html',
         controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
           $scope.titleLabel = (isCreate) ? 'Create a new Document Set' : 'Update Document Set';
           $scope.buttonLabel = (isCreate) ? 'Add' : 'Update';
@@ -186,7 +186,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       var documentSet = $scope.documentSets[currentIndex];
       var modalInstance = modal.open({
         scope: $scope,
-        templateUrl: '/angular-app/languageforge/translate/views/modal-document-set-move.html',
+        templateUrl: '/angular-app/languageforge/translate/editor/modal-document-set-move.html',
         controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
           $scope.documentSet = documentSet;
           $scope.newIndex = currentIndex.toString();
