@@ -26,7 +26,7 @@ angular.module('translate',
       $stateProvider
         .state('settings', {
           url: '/settings',
-          templateUrl: '/angular-app/languageforge/translate/views/settings.html'
+          templateUrl: '/angular-app/languageforge/translate/settings/settings.html'
         })
       ;
 
