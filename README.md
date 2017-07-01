@@ -2,6 +2,10 @@
 
 [Language Forge](https://github.com/sillsdev/web-languageforge) and [Scripture Forge](https://github.com/sillsdev/web-scriptureforge) represent different websites, but have the same code base stored in seperate repositories for the purpose of  version control and issue tracking. Since they are related repos it is easy to merge from one to the other.
 
+## Special Thanks To ##
+
+![BrowserStack Logo](https://raw.githubusercontent.com/sillsdev/web-languageforge/master/readme_images/browserstack-logo.png "BrowserStack")
+For end-to-end test automation
 
 ## Recommended Development Environment ##
 
