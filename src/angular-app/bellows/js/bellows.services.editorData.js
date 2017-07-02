@@ -13,9 +13,11 @@ function ($q, sessionService, cache, commentsCache,
   var api = undefined;
 
   var showInitialEntries = function showInitialEntries() {
-    return sortList(entries).then(function(){
+    return sortList(entries).then(function(sortedEntries){
+      entries.length = 0;
+      Array.prototype.push.apply(entries, sortedEntries);
       visibleEntries.length = 0; // clear out the array
-      visibleEntries.push.apply(visibleEntries, entries.slice(0, 50));
+      Array.prototype.push.apply(visibleEntries, entries.slice(0, 50));
     });
   };
 
@@ -24,7 +26,7 @@ function ($q, sessionService, cache, commentsCache,
     if (visibleEntries.length < entries.length) {
       var currentLength = visibleEntries.length;
       visibleEntries.length = 0;
-      visibleEntries.push.apply(visibleEntries, entries.slice(0, currentLength + increment));
+      Array.prototype.push.apply(visibleEntries, entries.slice(0, currentLength + increment));
     }
   };
 
@@ -199,12 +201,12 @@ function ($q, sessionService, cache, commentsCache,
     var endTime;
     var numOfEntries;
     cache.getAllEntries().then(function (result) {
-      entries.push.apply(entries, result); // proper way to extend the array
+      Array.prototype.push.apply(entries, result); // proper way to extend the array
       numOfEntries = result.length;
 
       if (result.length > 0) {
         commentsCache.getAllComments().then(function (result) {
-          commentService.comments.items.all.push.apply(commentService.comments.items.all, result);
+          Array.prototype.push.apply(commentService.comments.items.all, result);
 
           cache.getProjectData().then(function (result) {
             commentService.comments.counts.userPlusOne = result.commentsUserPlusOne;
@@ -231,7 +233,7 @@ function ($q, sessionService, cache, commentsCache,
     if (result.ok) {
       commentService.comments.counts.userPlusOne = result.data.commentsUserPlusOne;
       if (!updateOnly) {
-        entries.push.apply(entries, result.data.entries); // proper way to extend the array
+        Array.prototype.push.apply(entries, result.data.entries); // proper way to extend the array
         commentService.comments.items.all.push
           .apply(commentService.comments.items.all, result.data.comments);
       } else {
@@ -270,8 +272,17 @@ function ($q, sessionService, cache, commentsCache,
 
         angular.forEach(result.data.deletedCommentIds, commentService.removeCommentFromLists);
 
-        sortList(entries);
-        sortList(visibleEntries);
+        sortList(entries).then(function(sortedEntries) {
+          // the length = 0 followed by Array.push.apply is a method of replacing the contents of
+          // an array without creating a new array thereby keeping original references
+          // to the array
+          entries.length = 0;
+          Array.prototype.push.apply(entries, sortedEntries);
+        });
+        sortList(visibleEntries).then(function(sortedVisibleEntries) {
+          visibleEntries.length = 0;
+          Array.prototype.push.apply(visibleEntries, sortedVisibleEntries);
+        });
       }
 
       if (result.data.itemCount &&
@@ -313,31 +324,30 @@ function ($q, sessionService, cache, commentsCache,
       var startTime = performance.now();
       var config = session.projectSettings().config;
       var inputSystems = config.entry.fields.lexeme.inputSystems;
-      var lexemeA = '';
-      var lexemeB = '';
-      list.sort(function (a, b) {
-        var x;
-        var ws;
-        for (x = 0; x < inputSystems.length; x++) {
-          ws = inputSystems[x];
-          if (angular.isDefined(a.lexeme) && angular.isDefined(a.lexeme[ws])) {
-            lexemeA = a.lexeme[ws].value;
-            break;
-          }
-        }
+      var ws = inputSystems[0];
+      var collator = Intl.Collator(ws);
 
-        for (x = 0; x < inputSystems.length; x++) {
-          ws = inputSystems[x];
-          if (angular.isDefined(b.lexeme) && angular.isDefined(b.lexeme[ws])) {
-            lexemeB = b.lexeme[ws].value;
-            break;
-          }
+      // temporary mapped array
+      var mapped = list.map(function(entry, i) {
+        var lexeme = '';
+        if (angular.isDefined(entry.lexeme) && angular.isDefined(entry.lexeme[ws])) {
+          lexeme = entry.lexeme[ws].value;
         }
-
-        return Intl.Collator(ws).compare(lexemeA, lexemeB);
+        return {index: i, value: lexeme};
       });
+
+      mapped.sort(function(a, b) {
+        return collator.compare(a.value, b.value);
+      });
+
+      var result = mapped.map(function(el) {
+        return list[el.index];
+      });
+
       console.log('Sorted list in ' +
         ((performance.now() - startTime) / 1000).toFixed(2) + ' seconds');
+
+      return result;
     });
   }
 
