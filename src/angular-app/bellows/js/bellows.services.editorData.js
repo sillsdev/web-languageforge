@@ -310,6 +310,7 @@ function ($q, sessionService, cache, commentsCache,
 
   function sortList(list) {
     return sessionService.getSession().then(function(session) {
+      var startTime = performance.now();
       var config = session.projectSettings().config;
       var inputSystems = config.entry.fields.lexeme.inputSystems;
       var lexemeA = '';
@@ -335,6 +336,8 @@ function ($q, sessionService, cache, commentsCache,
 
         return Intl.Collator(ws).compare(lexemeA, lexemeB);
       });
+      console.log('Sorted list in ' +
+        ((performance.now() - startTime) / 1000).toFixed(2) + ' seconds');
     });
   }
 
