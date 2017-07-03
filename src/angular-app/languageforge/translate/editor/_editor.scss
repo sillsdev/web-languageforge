@@ -108,6 +108,7 @@ ng-quill-editor .ql-container {
 .ql-suggestions .table {
     margin-bottom: 0;
     background: inherit;
+    overflow: hidden;
 }
 
 .ql-suggestions .table td {
