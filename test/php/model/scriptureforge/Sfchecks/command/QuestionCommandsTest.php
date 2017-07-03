@@ -2,7 +2,9 @@
 
 use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
 use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
+use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionCommentDto;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\CommentModel;
@@ -199,6 +201,47 @@ class QuestionCommandsTest extends TestCase
 
         $answer1 = $dto[$environ->answerId];
         $this->assertEquals(0, $answer1['score']);
+    }
+
+    public function testVoteUpThenAnswerBecomesHidden_QuestionCommentDto_StillIncludesVote()
+    {
+        // This tests the situation where a vote in the DTO will not have a corresponding answer. E.g., if user A
+        // upvoted user B's answer, then later the project manager turned off the "Users see each other's responses"
+        // setting, then A's vote on B's answer will still be in the DTO, though B's answer is no longer there.
+        $mongoEnviron = new MongoTestEnvironment();
+        $environ = new UserVoteTestEnvironment();
+        $environ->create();
+
+        $secondUserId = $mongoEnviron->createUser('second_user', 'Second User', 'second_user@example.com');
+
+        $dto = $environ->addAnswer('Some answer');
+
+        $answer0 = $dto[$environ->answerId];
+        $this->assertEquals(0, $answer0['score']);
+
+        QuestionCommands::voteUp($environ->userId, $environ->projectId, $environ->questionId, $environ->answerId);
+        $dto = QuestionCommands::voteUp($secondUserId, $environ->projectId, $environ->questionId, $environ->answerId);
+
+        $answer1 = $dto[$environ->answerId];
+        $this->assertEquals(2, $answer1['score']);
+
+        $dto = QuestionCommentDto::encode($environ->projectId, $environ->questionId, $secondUserId);
+        // A MapOf that's empty is DTO-encoded as stdClass instead of array()
+        $this->assertThat($dto['question']['answers'], $this->logicalNot($this->isInstanceOf('stdClass')));
+        $this->assertNotEmpty($dto['question']['answers']);  // Basically equivalent to the check above
+        $this->assertEquals(1, count($dto['votes']));  // Answer's score is 2, but only the user's own votes are sent in this DTO
+        $this->assertArrayHasKey($environ->answerId, $dto['votes']);
+
+        $project = new SfchecksProjectModel($environ->projectId);
+        $project->usersSeeEachOthersResponses = false;
+        $project->write();
+
+        // Vote is still included in DTO even though answer is not
+        $dto = QuestionCommentDto::encode($environ->projectId, $environ->questionId, $secondUserId);
+        $this->assertThat($dto['question']['answers'], $this->isInstanceOf('stdClass'));
+        // Here we can't use assertEmpty since a stdClass instance is *not* considered empty in PHP
+        $this->assertEquals(1, count($dto['votes']));  // Answer is now hidden, but we still see the user's vote on it
+        $this->assertArrayHasKey($environ->answerId, $dto['votes']);
     }
 
     public function testUpdateAnswer_ExistingAnswer_OriginalAuthorIsPreserved()

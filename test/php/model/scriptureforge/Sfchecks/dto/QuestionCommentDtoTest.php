@@ -4,10 +4,13 @@ use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Model\Scriptureforge\Sfchecks\AnswerModel;
 use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionCommentDto;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use PHPUnit\Framework\TestCase;
+
+require_once "CommonQuestionsAndAnswersForDto.php";
 
 class QuestionCommentDtoTest extends TestCase
 {
@@ -26,6 +29,182 @@ class QuestionCommentDtoTest extends TestCase
     public function tearDown()
     {
         self::$environ->clean();
+    }
+
+    public function assertKeyNotPresent($key, $array)
+    {
+        if ($array instanceof stdClass) {
+            print "Skipping assert since stdClass, by definition, has no keys";
+        } else {
+            $this->assertArrayNotHasKey($key, $array);
+        }
+    }
+
+    public function testEncode_TextWithQuestionsWhenUsersCanViewEachOthersAnswers_DtoReturnsExpectedData()
+    {
+        list($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id) = $this->createProjectForTestingAnswerVisibility();
+
+        $sfchecksProject = new SfchecksProjectModel($projectId);
+        $sfchecksProject->usersSeeEachOthersResponses = true;
+        $sfchecksProject->write();
+
+        // In this test, both John Carter and Dejah Thoris should see identical views of the data.
+
+        // John Carter's point of view
+        $dto = QuestionCommentDto::encode($projectId, $question1Id, $user1Id);
+        $this->assertEquals($projectId, $dto['project']['id']);
+
+        $this->assertEquals($question1Id, $dto['question']['id']);
+        $this->assertEquals('Who is speaking?', $dto['question']['title']);
+        $this->assertEquals('Who is telling the story in this text?', $dto['question']['description']);
+        $this->assertEquals('Me, John Carter.', $dto['question']['answers'][$answer1Id]['content']);
+        $this->assertEquals(10, $dto['question']['answers'][$answer1Id]['score']);
+        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer1Id]['userRef']['avatar_ref']);
+        $this->assertEquals('jcarter', $dto['question']['answers'][$answer1Id]['userRef']['username']);
+
+        $dto = QuestionCommentDto::encode($projectId, $question2Id, $user1Id);
+        $this->assertEquals($question2Id, $dto['question']['id']);
+        $this->assertEquals('Where is the storyteller?', $dto['question']['title']);
+        $this->assertEquals('The person telling this story has just arrived somewhere. Where is he?', $dto['question']['description']);
+        $this->assertEquals('On Mars.', $dto['question']['answers'][$answer2Id]['content']);
+        $this->assertEquals(1, $dto['question']['answers'][$answer2Id]['score']);
+        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer2Id]['userRef']['avatar_ref']);
+        $this->assertEquals('jcarter', $dto['question']['answers'][$answer2Id]['userRef']['username']);
+        $this->assertEquals('By the way, the inhabitants of Mars call it Barsoom.', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['content']);
+        $this->assertEquals('jcarter', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['userRef']['username']);
+        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['userRef']['avatar_ref']);
+
+        $this->assertEquals('On the planet we call Barsoom, which you inhabitants of Earth normally call Mars.', $dto['question']['answers'][$answer3Id]['content']);
+        $this->assertEquals('By the way, our name for Earth is Jasoom.', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['content']);
+        $this->assertEquals('dthoris', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['userRef']['username']);
+        $this->assertEquals('dthoris.png', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['userRef']['avatar_ref']);
+        $this->assertEquals('Although I have learned to think of Mars as Barsoom, I still think of Earth as Earth, not Jasoom.', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['content']);
+        $this->assertEquals('jcarter', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['userRef']['username']);
+        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['userRef']['avatar_ref']);
+
+        // Dejah Thoris's point of view
+        $dto = QuestionCommentDto::encode($projectId, $question1Id, $user2Id);
+        $this->assertEquals($projectId, $dto['project']['id']);
+
+        $this->assertEquals($question1Id, $dto['question']['id']);
+        $this->assertEquals('Who is speaking?', $dto['question']['title']);
+        $this->assertEquals('Who is telling the story in this text?', $dto['question']['description']);
+        $this->assertEquals('Me, John Carter.', $dto['question']['answers'][$answer1Id]['content']);
+        $this->assertEquals(10, $dto['question']['answers'][$answer1Id]['score']);
+        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer1Id]['userRef']['avatar_ref']);
+        $this->assertEquals('jcarter', $dto['question']['answers'][$answer1Id]['userRef']['username']);
+
+        $dto = QuestionCommentDto::encode($projectId, $question2Id, $user2Id);
+        $this->assertEquals($question2Id, $dto['question']['id']);
+        $this->assertEquals('Where is the storyteller?', $dto['question']['title']);
+        $this->assertEquals('The person telling this story has just arrived somewhere. Where is he?', $dto['question']['description']);
+        $this->assertEquals('On Mars.', $dto['question']['answers'][$answer2Id]['content']);
+        $this->assertEquals(1, $dto['question']['answers'][$answer2Id]['score']);
+        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer2Id]['userRef']['avatar_ref']);
+        $this->assertEquals('jcarter', $dto['question']['answers'][$answer2Id]['userRef']['username']);
+        $this->assertEquals('By the way, the inhabitants of Mars call it Barsoom.', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['content']);
+        $this->assertEquals('jcarter', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['userRef']['username']);
+        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['userRef']['avatar_ref']);
+
+        $this->assertEquals('On the planet we call Barsoom, which you inhabitants of Earth normally call Mars.', $dto['question']['answers'][$answer3Id]['content']);
+        $this->assertEquals('By the way, our name for Earth is Jasoom.', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['content']);
+        $this->assertEquals('dthoris', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['userRef']['username']);
+        $this->assertEquals('dthoris.png', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['userRef']['avatar_ref']);
+        $this->assertEquals('Although I have learned to think of Mars as Barsoom, I still think of Earth as Earth, not Jasoom.', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['content']);
+        $this->assertEquals('jcarter', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['userRef']['username']);
+        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['userRef']['avatar_ref']);
+    }
+
+    public function testEncode_TextWithQuestionsWhenUsersCannotViewEachOthersAnswers_DtoReturnsExpectedData()
+    {
+        list($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id) = $this->createProjectForTestingAnswerVisibility();
+
+        $sfchecksProject = new SfchecksProjectModel($projectId);
+        $sfchecksProject->usersSeeEachOthersResponses = false;
+        $sfchecksProject->write();
+
+        // In this test, John Carter and Dejah Thoris should see *different* views of the data.
+
+        // John Carter's point of view
+        $dto = QuestionCommentDto::encode($projectId, $question1Id, $user1Id);
+        $this->assertEquals($projectId, $dto['project']['id']);
+
+        $this->assertEquals($question1Id, $dto['question']['id']);
+        $this->assertEquals('Who is speaking?', $dto['question']['title']);
+        $this->assertEquals('Who is telling the story in this text?', $dto['question']['description']);
+        $this->assertEquals('Me, John Carter.', $dto['question']['answers'][$answer1Id]['content']);
+        $this->assertEquals(10, $dto['question']['answers'][$answer1Id]['score']);
+        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer1Id]['userRef']['avatar_ref']);
+        $this->assertEquals('jcarter', $dto['question']['answers'][$answer1Id]['userRef']['username']);
+
+        $dto = QuestionCommentDto::encode($projectId, $question2Id, $user1Id);
+        $this->assertEquals($question2Id, $dto['question']['id']);
+        $this->assertEquals('Where is the storyteller?', $dto['question']['title']);
+        $this->assertEquals('The person telling this story has just arrived somewhere. Where is he?', $dto['question']['description']);
+        $this->assertEquals('On Mars.', $dto['question']['answers'][$answer2Id]['content']);
+        $this->assertEquals(1, $dto['question']['answers'][$answer2Id]['score']);
+        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer2Id]['userRef']['avatar_ref']);
+        $this->assertEquals('jcarter', $dto['question']['answers'][$answer2Id]['userRef']['username']);
+        $this->assertEquals('By the way, the inhabitants of Mars call it Barsoom.', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['content']);
+        $this->assertEquals('jcarter', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['userRef']['username']);
+        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['userRef']['avatar_ref']);
+
+        // John Carter does not see Dejah Thoris's answer, nor any of the comments below it (including his own)
+        $this->assertKeyNotPresent($answer3Id, $dto['question']['answers']);
+//        $this->assertEquals('On the planet we call Barsoom, which you inhabitants of Earth normally call Mars.', $dto['question']['answers'][$answer3Id]['content']);
+//        $this->assertEquals('By the way, our name for Earth is Jasoom.', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['content']);
+//        $this->assertEquals('dthoris', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['userRef']['username']);
+//        $this->assertEquals('dthoris.png', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['userRef']['avatar_ref']);
+//        $this->assertEquals('Although I have learned to think of Mars as Barsoom, I still think of Earth as Earth, not Jasoom.', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['content']);
+//        $this->assertEquals('jcarter', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['userRef']['username']);
+//        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['userRef']['avatar_ref']);
+//
+        // Dejah Thoris's point of view
+        $dto = QuestionCommentDto::encode($projectId, $question1Id, $user2Id);
+        $this->assertEquals($projectId, $dto['project']['id']);
+
+        $this->assertEquals($question1Id, $dto['question']['id']);
+        $this->assertEquals('Who is speaking?', $dto['question']['title']);
+        $this->assertEquals('Who is telling the story in this text?', $dto['question']['description']);
+        // Dejah Thoris does not see John Carter's answer
+//        $this->assertKeyNotPresent('answers', $dto['question']);
+        $this->assertKeyNotPresent($answer1Id, $dto['question']['answers']);
+//        $this->assertEquals('Me, John Carter.', $dto['question']['answers'][$answer1Id]['content']);
+//        $this->assertEquals(10, $dto['question']['answers'][$answer1Id]['score']);
+//        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer1Id]['userRef']['avatar_ref']);
+//        $this->assertEquals('jcarter', $dto['question']['answers'][$answer1Id]['userRef']['username']);
+
+        $dto = QuestionCommentDto::encode($projectId, $question2Id, $user2Id);
+        $this->assertEquals($question2Id, $dto['question']['id']);
+        $this->assertEquals('Where is the storyteller?', $dto['question']['title']);
+        $this->assertEquals('The person telling this story has just arrived somewhere. Where is he?', $dto['question']['description']);
+        // Dejah Thoris does not see John Carter's answer
+        $this->assertKeyNotPresent($answer2Id, $dto['question']['answers']);
+//        $this->assertEquals('On Mars.', $dto['question']['answers'][$answer2Id]['content']);
+//        $this->assertEquals(1, $dto['question']['answers'][$answer2Id]['score']);
+//        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer2Id]['userRef']['avatar_ref']);
+//        $this->assertEquals('jcarter', $dto['question']['answers'][$answer2Id]['userRef']['username']);
+//        $this->assertEquals('By the way, the inhabitants of Mars call it Barsoom.', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['content']);
+//        $this->assertEquals('jcarter', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['userRef']['username']);
+//        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer2Id]['comments'][$comment0Id]['userRef']['avatar_ref']);
+
+        // She does see her own answer, but not John Carter's comment on her answer
+        $this->assertEquals('On the planet we call Barsoom, which you inhabitants of Earth normally call Mars.', $dto['question']['answers'][$answer3Id]['content']);
+        $this->assertEquals('By the way, our name for Earth is Jasoom.', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['content']);
+        $this->assertEquals('dthoris', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['userRef']['username']);
+        $this->assertEquals('dthoris.png', $dto['question']['answers'][$answer3Id]['comments'][$comment1Id]['userRef']['avatar_ref']);
+        $this->assertKeyNotPresent($comment2Id, $dto['question']['answers'][$answer3Id]['comments']);
+//        $this->assertEquals('Although I have learned to think of Mars as Barsoom, I still think of Earth as Earth, not Jasoom.', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['content']);
+//        $this->assertEquals('jcarter', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['userRef']['username']);
+//        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['userRef']['avatar_ref']);
+    }
+
+    public function createProjectForTestingAnswerVisibility(): array
+    {
+        list($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id) =
+            CommonQuestionsAndAnswersForDto::createProjectForTestingAnswerVisibility(self::$environ);
+
+        return array($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id);
     }
 
     public function testEncode_FullQuestionWithAnswersAndComments_DtoReturnsExpectedData()

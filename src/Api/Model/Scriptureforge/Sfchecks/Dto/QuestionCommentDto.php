@@ -45,17 +45,51 @@ class QuestionCommentDto
         $votesDto = array();
         foreach ($votes->votes as $vote) {
             $votesDto[$vote->answerRef->id] = true;
+            // This will sometimes create a situation where a vote in the DTO will not have a corresponding answer.
+            // E.g., if user A upvoted user B's answer, then later the project manager turned off the "Users see each
+            // other's responses" setting, then A's vote on B's answer will still be delivered by the DTO, though B's
+            // answer is no longer delivered.
+            // This is tested for in QuestionCommandsTest.
         }
 
-        $unreadAnswerModel = new UnreadAnswerModel($userId, $project->id->asString(), $questionId);
-        $unreadAnswers = $unreadAnswerModel->unreadItems();
-        $unreadAnswerModel->markAllRead();
-        $unreadAnswerModel->write();
 
-        $unreadCommentModel = new UnreadCommentModel($userId, $project->id->asString(), $questionId);
-        $unreadComments = $unreadCommentModel->unreadItems();
-        $unreadCommentModel->markAllRead();
-        $unreadCommentModel->write();
+        if ($project->usersSeeEachOthersResponses) {
+            $unreadAnswerModel = new UnreadAnswerModel($userId, $project->id->asString(), $questionId);
+            $unreadAnswers = $unreadAnswerModel->unreadItems();
+            $unreadAnswerModel->markAllRead();
+            $unreadAnswerModel->write();
+
+            $unreadCommentModel = new UnreadCommentModel($userId, $project->id->asString(), $questionId);
+            $unreadComments = $unreadCommentModel->unreadItems();
+            $unreadCommentModel->markAllRead();
+            $unreadCommentModel->write();
+        } else {
+            // If users can't see each others' responses, then the only responses they can see are their own,
+            // which are already read. So the DTO should report 0 unread answers and comments in this case.
+            $unreadAnswers = array();
+            $unreadComments = array();
+
+            // Can't use array_filter() here because we have MapOf types, so we have to do this by hand
+            $answersToRemove = array();
+            foreach ($question->answers as $akey => $a) {
+                if ($a->userRef->id === $userId) {
+                    $commentsToRemove = array();
+                    foreach ($a->comments as $ckey => $c) {
+                        if ($c->userRef->id !== $userId) {
+                            array_push($commentsToRemove, $ckey);
+                        }
+                    }
+                    foreach ($commentsToRemove as $ckey) {
+                        unset($a->comments[$ckey]);
+                    }
+                } else {
+                    array_push($answersToRemove, $akey);
+                }
+            }
+            foreach ($answersToRemove as $akey) {
+                unset($question->answers[$akey]);
+            }
+        }
 
         $unreadActivityModel = new UnreadActivityModel($userId, $projectId);
         $unreadActivity = $unreadActivityModel->unreadItems();
