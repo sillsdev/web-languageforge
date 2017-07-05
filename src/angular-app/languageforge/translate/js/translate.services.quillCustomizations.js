@@ -40,7 +40,7 @@ angular.module('translate.services')
      * @returns {boolean}
      */
     Quill.prototype.isTextEmpty = function isTextEmpty() {
-      return !Quill.removeTrailingCarriageReturn(this.getText());
+      return Quill.isTextEmpty(this.getText());
     };
 
     /**
@@ -48,15 +48,14 @@ angular.module('translate.services')
      * @returns {boolean}
      */
     Quill.hasNoSelectionAtCursor = function (range) {
-      return range && range.length === 0;
+      return !!range && range.length === 0;
     };
 
     /**
      * @returns {boolean}
      */
     Quill.prototype.hasNoSelectionAtCursor = function hasNoSelectionAtCursor() {
-      var range = this.getSelection();
-      return range && range.length === 0;
+      return Quill.hasNoSelectionAtCursor(this.getSelection());
     };
   }])
 

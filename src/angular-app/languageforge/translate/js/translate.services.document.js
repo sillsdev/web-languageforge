@@ -33,21 +33,50 @@ angular.module('translate.services')
     };
 
     DocumentData.prototype.updateSegmentLearntData =
-      function setSegmentLearntData(segmentIndex, documentSetId)
-    {
-      this.segment.text = this.getSegment(segmentIndex);
-      this.segment.learnt.text = this.segment.getLearntText();
-      this.segment.learnt.documentSetId = documentSetId;
-      this.segment.learnt.previousRange = this.editor.getSelection();
-      this.updateSegmentState();
-      this.updateSegmentBlockEndIndex();
+      function updateSegmentLearntData(segmentIndex, documentSetId) {
+        this.updateSegmentState(segmentIndex);
+        this.segment.text = this.getSegment(segmentIndex);
+        this.segment.setLearntText();
+        this.segment.learnt.documentSetId = documentSetId;
+        this.setPreviousLearntRange(segmentIndex);
+        this.updateSegmentBlockEndIndex();
+      };
+
+    DocumentData.prototype.updateSegmentState = function updateSegmentState(segmentIndex) {
+      var formats;
+      if (this.editor.hasNoSelectionAtCursor()) {
+        formats = this.editor.getFormat();
+      } else {
+        var index = this.getSegmentBlockStartIndex(segmentIndex);
+        formats = this.editor.getFormat(index);
+      }
+
+      this.segment.updateState(formats);
     };
 
-    DocumentData.prototype.updateSegmentState = function updateSegmentState() {
-      if (this.editor.hasNoSelectionAtCursor()) {
-        this.segment.updateState(this.editor.getFormat());
+    DocumentData.prototype.setPreviousLearntRange = function setPreviousLearntRange(segmentIndex) {
+      var range = this.editor.getSelection();
+      if (!range) {
+        range = {
+          index: this.getSegmentBlockStartIndex(segmentIndex),
+          length: 0
+        };
       }
+
+      this.segment.learnt.previousRange = range;
     };
+
+    DocumentData.prototype.getSegmentBlockStartIndex =
+      function getSegmentBlockStartIndex(segmentIndex) {
+        var editorIndex = 0;
+        angular.forEach(this.getSegments(), function (segment, index) {
+          if (index >= segmentIndex) return;
+
+          editorIndex += segment.length + '\n'.length;
+        });
+
+        return editorIndex;
+      };
 
     DocumentData.prototype.updateSegmentBlockEndIndex = function (range) {
       if (angular.isUndefined(range)) range = this.editor.getSelection();
@@ -109,7 +138,7 @@ angular.module('translate.services')
      * @returns {string}
      */
     DocumentData.prototype.getSegment = function getSegment(index) {
-      if (!this.editor.getText() || index < 0) return '';
+      if (this.editor.isTextEmpty() || index < 0) return '';
 
       if (index > this.getLastSegmentIndex()) {
         index = this.getLastSegmentIndex();
@@ -173,8 +202,8 @@ angular.module('translate.services')
 
     }
 
-    Segment.prototype.getLearntText = function getLearntText() {
-      return this.state.machineHasLearnt ? this.text : '';
+    Segment.prototype.setLearntText = function setLearntText() {
+      this.learnt.text = (this.state.machineHasLearnt) ? this.text : '';
     };
 
     Segment.prototype.hasLearntText = function hasLearntText(text) {
@@ -195,6 +224,8 @@ angular.module('translate.services')
         }
 
         this.state = formats.state;
+      } else {
+        this.state = {};
       }
     };
 
