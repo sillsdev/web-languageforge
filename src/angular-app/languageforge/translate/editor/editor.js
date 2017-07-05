@@ -394,7 +394,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         ) {
           assistant.learnSegment(function () {
             if (selectedDocumentSetId === target.segment.learnt.documentSetId) {
-              notice.push(notice.SUCCESS, 'The line was successfully learnt.');
+              notice.push(notice.SUCCESS, 'The modified line was successfully learnt.');
               target.formatSegmentStateMachineHasLearnt(true, target.segment.learnt.previousRange);
             } else {
               var documentSetIndex = getDocumentSetIndexById($scope.documentSets,
@@ -417,7 +417,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       } else {
         var machineHasLearnt = target.segment.hasLearntText(targetSegmentText);
         target.segment.text = targetSegmentText;
-        target.updateSegmentState();
+        target.updateSegmentState(newSegmentIndex);
         target.updateSegmentBlockEndIndex();
         if (target.segment.state.machineHasLearnt !== machineHasLearnt) {
           target.formatSegmentStateMachineHasLearnt(machineHasLearnt);
