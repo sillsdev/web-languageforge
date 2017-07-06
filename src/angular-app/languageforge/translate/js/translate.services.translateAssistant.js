@@ -57,9 +57,7 @@ angular.module('translate.services')
     this.learnSegment = function learnSegment(callback) {
       if (angular.isUndefined(engine) || angular.isUndefined(session)) return;
 
-      // TODO: enable learning
-      // session.approve(callback);
-      (callback || angular.noop)();
+      session.approve(callback);
     };
 
   }])
