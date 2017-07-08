@@ -7,7 +7,7 @@
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
             <button class="btn btn-warning" data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther"
                     data-ng-click="removeProjectUsers()"><i class="fa fa-remove"></i> Remove Members</button>
-            <button id="addMembersButton" class="btn btn-success" data-ng-show="rights.create" data-ng-click="toggleAddMembers()">
+            <button id="addMembersButton" class="btn btn-primary" data-ng-show="rights.create" data-ng-click="toggleAddMembers()">
                 <i class="fa fa-plus"></i> Add Members</button>
             <button class="btn btn-info" data-ng-show="rights.create" data-ng-click="toggleMessageUsers()">
                 <i class="fa fa-envelope"></i> Message Selected Users</button>
@@ -27,7 +27,7 @@
                             </li>
                         </ul>
                     </pui-typeahead>
-                    <button id="addUserButton" data-ng-model="addMode" class="btn btn-success" data-ng-disabled="disableAddButton"
+                    <button id="addUserButton" data-ng-model="addMode" class="btn btn-primary" data-ng-disabled="disableAddButton"
                             data-ng-click="addProjectUser()">
                         <i data-ng-class="addModeIcon(addMode)"></i>{{addModeText(addMode)}}</button>
                     <span class="warning" data-ng-show="warningText">{{warningText}}</span>
@@ -55,7 +55,7 @@
                                       style="width:400px; height:80px" maxlength="160"></textarea>
                         </label>
                     </fieldset>
-                    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Send Message Now</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Send Message Now</button>
                     <span class="alert alert-error" data-ng-show="messagingWarning">{{messagingWarning}}</span>
                 </form>
             </div>
@@ -95,7 +95,7 @@
         <form class="control-bar form-inline">
             <button class="btn btn-warning" data-ng-disabled="selected.length == 0" data-ng-click="removeTemplates()">
                 <i class="fa fa-remove"></i> Remove Templates</button>
-            <button class="btn btn-success" data-ng-click="toggleTemplateEditor()"><i class="fa fa-plus"></i> Add New Template</button>
+            <button class="btn btn-primary" data-ng-click="toggleTemplateEditor()"><i class="fa fa-plus"></i> Add New Template</button>
         </form>
         <div class="new-item" uib-collapse="!templateEditorVisible">
             <form class="card">
@@ -109,7 +109,7 @@
                         <input class="form-control" type="text" maxlength="35" required data-ng-model="editedTemplate.title"
                                placeholder="One Line Summary for Title" />
                     </label>
-                    <button id="question_templates_save_button" type="submit" class="btn btn-success" data-ng-click="editTemplate()">
+                    <button id="question_templates_save_button" type="submit" class="btn btn-primary" data-ng-click="editTemplate()">
                         <i class="fa fa-check"></i> Save</button>
                     <a href data-ng-click="hideTemplateEditor()">Cancel</a>
                 </fieldset>
@@ -140,7 +140,7 @@
 <pui-tab heading="Archived Texts">
     <div data-ng-controller="ProjectSettingsArchiveTextsCtrl">
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-            <button class="btn btn-success republish-texts" data-ng-disabled="selected.length == 0" data-ng-show="rights.archive"
+            <button class="btn btn-primary republish-texts" data-ng-disabled="selected.length == 0" data-ng-show="rights.archive"
                     data-ng-click="publishTexts()"><i class="fa fa-globe fa-lg">
                 </i> Re-publish Selected Texts</button>
         </form>
@@ -191,7 +191,7 @@
             <label class="checkbox"><input type="checkbox" data-ng-model="project.allowInviteAFriend" />
                 Allow contributors to use "Invite a Friend" feature (managers can always use it)</label>
             <br>
-            <button class="btn btn-success" type="submit" id="project_properties_save_button">
+            <button class="btn btn-primary" type="submit" id="project_properties_save_button">
                 <i class="fa fa-check"></i> Save
             </button>
         </fieldset>
@@ -230,7 +230,7 @@
                 </fieldset>
             </div>
             <div class="col-md-4">
-                <button id="user_profile_lists_save_button" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+                <button id="user_profile_lists_save_button" type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
                 <span data-ng-show="unsavedChanges" class="unsaved-warning" style="color: red">You have unsaved changes.</span> <!-- Remove the style="" attr once class has real CSS definition -->
             </div>
         </form>
@@ -255,7 +255,7 @@
             <label>Email Name
                 <input class="form-control" type="text" placeholder="(From Name)" data-ng-model="settings.email.fromName"/>
             </label>
-            <button id="communication_settings_save_button" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+            <button id="communication_settings_save_button" type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
         </fieldset>
         </form>
     </div>

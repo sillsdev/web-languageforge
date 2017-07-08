@@ -18,11 +18,11 @@ function NewLexProjectPage() {
   this.backButton = element(by.id('backButton'));
   this.nextButton = element(by.id('nextButton'));
   this.expectFormIsValid = function expectFormIsValid() {
-    expect(this.nextButton.getAttribute('class')).toMatch(/btn-success(?:\s|$)/);
+    expect(this.nextButton.getAttribute('class')).toMatch(/btn-primary(?:\s|$)/);
   };
 
   this.expectFormIsNotValid = function expectFormIsNotValid() {
-    expect(this.nextButton.getAttribute('class')).not.toMatch(/btn-success(?:\s|$)/);
+    expect(this.nextButton.getAttribute('class')).not.toMatch(/btn-primary(?:\s|$)/);
   };
 
   this.formStatus = element(by.id('form-status'));
