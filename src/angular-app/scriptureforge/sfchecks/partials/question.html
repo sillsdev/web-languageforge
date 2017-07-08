@@ -33,7 +33,7 @@
                             data-ng-options="s.state as s.label for s in workflowStates"
                             name="workflowState"></select>
                     </label>
-                    <button class="btn btn-success"
+                    <button class="btn btn-primary"
                         data-ng-click="updateQuestion(editedQuestion); hideQuestionEditor()">
                         <i class="fa fa-check"></i> Save</button>
                     <button class="btn btn-warning" data-ng-click="hideQuestionEditor()">
@@ -60,7 +60,7 @@
                 <div data-ng-hide="unreadResponseCount() == 0" class="right badge badge-important">
                     {{unreadResponseCount()}} new response<span data-ng-show="unreadResponseCount() > 1">s</span>
                 </div>
-                <button type="submit" class="btn btn-success" id="doneBtn">Save Answer</button>
+                <button type="submit" class="btn btn-primary" id="doneBtn">Save Answer</button>
             </form>
         </div>
     </div>
@@ -109,7 +109,7 @@
                             <form data-ng-submit="editAnswer(editedAnswer)" data-ng-switch-when="true">
                                 <label><textarea required data-ng-model="editedAnswer.content" class="editAnswer form-control">
                                     </textarea></label>
-                                <button type="submit" class="btn btn-sm btn-success answerBtn"> <i class="fa fa-check"></i>Save </button>
+                                <button type="submit" class="btn btn-sm btn-primary answerBtn"> <i class="fa fa-check"></i>Save </button>
                                 <a href data-ng-click="hideAnswerEditor()">Cancel</a>
                             </form>
                         </div>
@@ -120,7 +120,7 @@
                                     <label>Add tags (comma-separated)
                                         <add-tags tags="tags"></add-tags>
                                     </label>
-                                    <button type="submit" class="btn btn-sm btn-success">
+                                    <button type="submit" class="btn btn-sm btn-primary">
                                         <i class="fa fa-check"></i> Save</button>
                                     <a href data-ng-click="tagEditorVisible=false">Cancel</a>
                                 </form>
@@ -142,7 +142,7 @@
                                           data-ng-switch-when="true">
                                         <div class="form-group">
                                             <label><textarea class="form-control" required data-ng-model="editedComment.content"></textarea></label>
-                                            <button type="submit" class="btn btn-sm btn-success">Save</button>
+                                            <button type="submit" class="btn btn-sm btn-primary">Save</button>
                                             <a href data-ng-click="hideCommentEditor()">Cancel</a>
                                         </div>
                                     </form>
@@ -155,7 +155,7 @@
                             <div uib-collapse="!collapsed">
                                 <form data-ng-submit="submitComment(answerId, answer); collapsed = !collapsed;">
                                     <label class="form-group"><textarea class="form-control" required data-ng-model="newComment.content"></textarea></label>
-                                    <button type="submit" class="btn btn-sm btn-success save-new-comment">Save Comment</button>
+                                    <button type="submit" class="btn btn-sm btn-primary save-new-comment">Save Comment</button>
                                 </form>
                             </div>
                         </div>

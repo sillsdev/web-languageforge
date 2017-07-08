@@ -1,7 +1,7 @@
 <div data-ng-show="finishedLoading">
     <h2 style="font-weight: normal">Questions for {{text.title}}</h2>
     <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-        <button data-ng-show="rights.archive" class="btn btn-warning"
+        <button data-ng-show="rights.archive" class="btn btn-secondary"
             data-ng-disabled="selected.length == 0"
             data-ng-click="archiveQuestions()">
             <i class="fa fa-archive fa-lg"></i> Archive Questions
@@ -11,7 +11,7 @@
             class="btn btn-secondary" data-ng-click="makeQuestionIntoTemplate()">
             <i class="fa fa-thumb-tack"></i> Make Template
         </button>
-        <button data-ng-show="rights.create" class="btn btn-success"
+        <button data-ng-show="rights.create" class="btn btn-primary"
             data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">
             <i class="fa fa-plus"></i> Add New Question
         </button>
@@ -39,7 +39,7 @@
                         Also save as template</label>
                     <a href class="pull-right"
                         data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">Cancel</a>
-                    <button type="submit" class="btn btn-success save-new-question"
+                    <button type="submit" class="btn btn-primary save-new-question"
                         data-ng-disabled="newQuestionForm.$invalid"
                         data-ng-click="addQuestion()">
                         <i class="fa fa-check"></i> Add Question
