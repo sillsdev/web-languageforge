@@ -4,7 +4,7 @@ rm -r node_modules
 npm install &
 cd src
 composer install &
-rm -r vendor_bower
+rm -r node_modules
 bower install &
 wait
 gulp test-e2e-webdriver_update &

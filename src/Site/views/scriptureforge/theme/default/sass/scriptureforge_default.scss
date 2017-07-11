@@ -3,6 +3,6 @@
 $link-color: #04abe1;
 $link-hover-color: #005580;
 
-@import '../../.././../../../vendor_bower/bootstrap/scss/bootstrap';
+@import '../../.././../../../node_modules/bootstrap/scss/bootstrap';
 @import '../../../../scriptureforge/theme/default/sass/_pagination';
 @import '_global';
