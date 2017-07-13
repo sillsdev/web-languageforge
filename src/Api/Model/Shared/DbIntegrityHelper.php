@@ -3,8 +3,10 @@
 namespace Api\Model\Shared;
 
 use Api\Library\Shared\Palaso\DbScriptLogger;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\Mapper\MongoStore;
+use Api\Model\Shared\Rights\ProjectRoles;
 
 class DbIntegrityHelper extends DbScriptLogger
 {
@@ -44,7 +46,9 @@ class DbIntegrityHelper extends DbScriptLogger
 
         
         if ($project->projectName == '') {
-            $this->warn("$projectId has an empty projectName");
+            $this->fix("$projectId has an empty projectName. Setting to 'Unknown Project'");
+            $this->projectsFixed++;
+            $project->projectName = "Unknown Project Name";
         }
         
         if ($project->projectCode == '') {
@@ -77,9 +81,39 @@ class DbIntegrityHelper extends DbScriptLogger
         if ($project->appName == '') {
             $this->warn("{$project->projectName} has no app associated with it");
         }
-        
+
+        // make sure project has an owner
+        $defaultOwnerId = '52b2a2ac56dd85546e8c4f59';
+        if ($project->ownerRef->asString() == '') {
+            $this->warn("{$project->projectName} has no owner.");
+            $this->fix("Setting owner for {$project->projectName} to be $defaultOwnerId");
+            $project->ownerRef->id = $defaultOwnerId;
+            $this->projectsFixed++;
+        }
+
+        // make sure project owner is manager role on project
+        $ownerUserModel = null;
+        if (!$project->userIsMember($project->ownerRef->asString())) {
+            try {
+                $ownerUserModel = new UserModel($project->ownerRef->asString());
+            } catch (\Exception $e) {
+                $this->warn("{$project->projectName} owner {$project->ownerRef->asString()} does not exist!");
+                $this->fix("Setting owner for {$project->projectName} to be $defaultOwnerId");
+                $project->ownerRef->id = $defaultOwnerId;
+                $this->projectsFixed++;
+                $ownerUserModel = new UserModel($project->ownerRef->asString());
+            }
+            $this->fix("Owner for {$project->projectName} now has manager role for the project.");
+            $project->addUser($project->ownerRef->asString(), ProjectRoles::MANAGER);
+            $ownerUserModel->addProject($projectId);
+            $this->projectsFixed++;
+        }
+
         if ($this->makeChanges) {
             $project->write();
+            if (!is_null($ownerUserModel)) {
+                $ownerUserModel->write();
+            }
         }
     }
     
