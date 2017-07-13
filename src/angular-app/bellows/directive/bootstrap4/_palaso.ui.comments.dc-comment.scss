@@ -1,5 +1,8 @@
 @import '../../../../Site/views/languageforge/theme/default/sass/_variables';
 
+$light-text: #555;
+$small-text-size: 0.8em;
+
 /* Comments css */
 
 #lexAppCommentView .dc-rendered-entryContainer {
@@ -78,23 +81,25 @@
 }
 .comment-replies {
   position: relative;
-  line-height: 14px;
   margin-bottom: 6px;
   .comment-inline-reply {
     right: 0;
     position: absolute;
     top: 0;
-    z-index: 1;
   }
   .replyContent {
-    font-size: 12px;
-    color: #808080;
+    font-size: 0.95em;
+    display: block;
+    margin-right: 2.5em;
   }
 }
 .commentContent {
     float: left;
     width: 100%;
     padding-right: 20px;
+}
+.commentRepliesContainer {
+  margin-top: 2em;
 }
 .commentContentContainer i.fa-times:hover, .commentRepliesContainer i.fa-times:hover {
     color: #ed364f;
@@ -147,15 +152,17 @@
   .comment-status-resolved {
     height: 25px;
   }
-  .comment-status-todo {
+
+  .comment-status-todo i {
+    color: #247aff;
+  }
+
+  & > * {
     font-size: 12px;
     font-weight: bold;
     border-bottom: 1px solid $lf-lines;
     padding-bottom: 3px;
     margin-bottom: 3px;
-    i {
-      color: #247aff;
-    }
   }
 }
 
@@ -169,8 +176,8 @@
 }
 
 .commentAuthor {
-    font-size: small;
-    color: #808080;
+    font-size: $small-text-size;
+    color: $light-text;
 }
 
 .commentRepliesContainer .commentAuthor {
@@ -178,8 +185,8 @@
 }
 
 .commentDate {
-    font-size: x-small;
-    color: #808080;
+    font-size: $small-text-size;
+    color: $light-text;
     line-height: 1.2em;
     margin: 5px;
 }
@@ -194,7 +201,12 @@
 }
 
 .resolvedComment {
-    opacity: .5;
+    &:not(:hover) {
+      opacity: 0.6;
+    }
+    transition: 0.3s ease opacity;
+    z-index: 1;
+    position: relative;
 }
 
 .commentCount {
@@ -250,4 +262,10 @@ div.commentListContainer {
 }
 .selectableInputSystemFieldForComment .uneditable-input, .selectableFieldForComment .uneditable-input {
     cursor: pointer;
+}
+
+.commentNewReplyForm textarea {
+    min-height: 4em;
+    height: 4em;
+    margin-bottom: 0.25em;
 }
