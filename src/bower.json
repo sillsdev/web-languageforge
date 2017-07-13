@@ -2,7 +2,7 @@
   "name": "web-xforge",
   "dependencies": {
     "jquery": "~3.1",
-    "angular": "~1.6",
+    "angular": "1.6.4",
     "angular-route": "~1.6",
     "angular-sanitize": "~1.6",
     "google-open-sans": "1.0.x",
@@ -26,5 +26,8 @@
     "intl-tel-input": "~9.2",
     "tether": "1.4.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "resolutions": {
+    "angular": ">1.2.0"
+  }
 }
