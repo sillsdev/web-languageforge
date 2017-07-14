@@ -29,7 +29,7 @@ angular.module('translate.services')
     }
 
     DocumentData.prototype.hasSuggestion = function hasSuggestion() {
-      return this.suggestions && this.suggestions.length > 0;
+      return !!this.suggestions && this.suggestions.length > 0;
     };
 
     DocumentData.prototype.updateSegmentLearntData =
