@@ -123,12 +123,12 @@ class TranslateProjectCommands
             $client = new Client();
         }
 
-        $url = 'http://localhost/machine/translation/engines/';
-        $url .= $project->config->source->inputSystem->tag . '/';
-        $url .= $project->config->target->inputSystem->tag . '/projects';
+        $url = 'http://localhost/machine/translation/projects';
         $postData = [
             'json' => [
                 'id' => $project->databaseName(),
+                'sourceLanguageTag' => $project->config->source->inputSystem->tag,
+                'targetLanguageTag' => $project->config->target->inputSystem->tag,
                 'isShared' => !!$project->config->isTranslationDataShared
             ]
         ];
@@ -141,16 +141,11 @@ class TranslateProjectCommands
      */
     public static function removeMachineTranslationProject($project, ClientInterface $client = null)
     {
-        CodeGuard::checkEmptyAndThrow($project->config->source->inputSystem->tag, 'project->config->source->inputSystem->tag');
-        CodeGuard::checkEmptyAndThrow($project->config->target->inputSystem->tag, 'project->config->target->inputSystem->tag');
         if (is_null($client)) {
             $client = new Client();
         }
 
-        $url = 'http://localhost/machine/translation/engines/';
-        $url .= $project->config->source->inputSystem->tag . '/';
-        $url .= $project->config->target->inputSystem->tag . '/projects/';
-        $url .= $project->databaseName();
+        $url = 'http://localhost/machine/translation/projects/id:' . $project->databaseName();
         try {
             $client->delete($url);
         } catch (RequestException $e) {

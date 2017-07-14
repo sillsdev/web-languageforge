@@ -5,11 +5,10 @@ angular.module('translate.services')
     var engine;
     var session;
 
-    // SIL.Machine.Translation.TranslationEngine.ctor(baseUrl, sourceLanguageTag, targetLanguageTag,
-    //    projectId)
-    this.initialise = function initialise(sourceLanguageTag, targetLanguageTag, projectId) {
+    // SIL.Machine.Translation.TranslationEngine.ctor(baseUrl, projectId)
+    this.initialise = function initialise(projectId) {
       engine = new SIL.Machine.Translation.TranslationEngine(location.origin + '/machine',
-        sourceLanguageTag, targetLanguageTag, projectId);
+        projectId);
     };
 
     /**
