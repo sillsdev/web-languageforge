@@ -96,7 +96,8 @@
                 </form>
             </div>
             <form class="commentNewReplyForm" ng-show="showNewReplyForm" ng-submit="submitReply(newReply)">
-                <textarea class="form-control" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" set-focus="showNewReplyForm"></textarea>                <button type="submit" class="btn btn-sm btn-secondary">Post</button> <a href ng-click="showNewReplyForm = false">Cancel</a>
+                <textarea class="form-control" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" set-focus="showNewReplyForm"></textarea>
+                <button type="submit" class="btn btn-sm btn-primary">Post</button> <a href ng-click="showNewReplyForm = false">Cancel</a>
             </form>
         </div>
         <a href class="btn btn-sm btn-secondary pull-right" ng-show="rights.canComment() && !showNewReplyForm" ng-click="doReply()"><i class="fa fa-reply"></i> Reply</a>
