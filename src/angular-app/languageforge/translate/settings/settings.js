@@ -70,8 +70,7 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
       projectApi.updateProject(projectData, function (result) {
         if (result.ok) {
           $scope.project.id = result.data;
-          assistant.initialise($scope.project.config.source.inputSystem.tag,
-            $scope.project.config.target.inputSystem.tag, $scope.project.slug);
+          assistant.initialise($scope.project.slug);
           pristineProject = angular.copy($scope.project);
           notice.push(notice.SUCCESS,
             $scope.project.projectName + ' settings updated successfully.');

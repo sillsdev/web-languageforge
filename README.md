@@ -387,12 +387,14 @@ gulp build-node-bundle-watch
 From the **web-languageforge** repo root folder...
 ````
 cd ..
-git clone git@github.com:sillsdev/machine-web-api.git
+git clone git@github.com:sillsdev/machine.git
+cd machine
+git checkout -b Translation origin/Translation
 ````
 
 To deploy the machine server...
 ````
-cd machine-web-api/build
+cd build
 ./deploy-developer.sh
 ````
 
@@ -403,3 +405,8 @@ To run the machine server...
 ./run-developer.sh
 ````
 
+Sometimes you may have to remove the `json` file in `/var/lib/languageforge/machine/data/build/` and then restart.
+
+### Suggestion data
+Copy `/var/lib/languageforge/machine/` from live server.
+Add any project slugs to the `Projects` section of the `json` file in `/var/lib/languageforge/machine/data/engine/`.

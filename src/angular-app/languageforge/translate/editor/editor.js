@@ -66,7 +66,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         $scope.project.config.userPreferences = $scope.project.config.userPreferences || {};
         source.inputSystem = $scope.project.config.source.inputSystem;
         target.inputSystem = $scope.project.config.target.inputSystem;
-        assistant.initialise(source.inputSystem.tag, target.inputSystem.tag, $scope.project.slug);
+        assistant.initialise($scope.project.slug);
 
         confidenceThreshold = $scope.project.config.confidenceThreshold;
         if (angular.isDefined($scope.project.config.userPreferences.confidenceThreshold) &&
