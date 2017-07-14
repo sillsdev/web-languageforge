@@ -79,18 +79,30 @@ $small-text-size: 0.8em;
     }
   }
 }
+
+.reply {
+  padding-top: 0.25em;
+  padding-bottom: 0.5em;
+  margin-bottom: 0.25em;
+  border-bottom: 1px solid #eee;
+
+  &:first-child {
+    border-top: 1px solid #eee;
+  }
+}
+
 .comment-replies {
   position: relative;
-  margin-bottom: 6px;
-  .comment-inline-reply {
+  .reply-actions {
     right: 0;
     position: absolute;
     top: 0;
   }
+  .reply-body {
+    margin-right: 2.5em;
+  }
   .replyContent {
     font-size: 0.95em;
-    display: block;
-    margin-right: 2.5em;
   }
 }
 .commentContent {
