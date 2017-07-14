@@ -276,8 +276,10 @@ div.commentListContainer {
     cursor: pointer;
 }
 
-.commentNewReplyForm textarea {
+.commentNewReplyForm, .reply {
+  textarea {
     min-height: 4em;
     height: 4em;
     margin-bottom: 0.25em;
+  }
 }
