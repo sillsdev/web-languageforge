@@ -67,13 +67,13 @@
             </div>
         </div>
         <div class="commentRepliesContainer">
-            <div ng-repeat="reply in comment.replies" ng-mouseenter="reply.hover = true" ng-mouseleave="reply.hover = false">
+            <div ng-repeat="reply in comment.replies" ng-mouseenter="reply.hover = true" ng-mouseleave="reply.hover = false" class="reply">
                 <div ng-hide="reply.editing" class="comment-replies">
-                    <div>
+                    <div class="reply-body">
                         <span class="replyContent">{{reply.content}}</span><span class="commentAuthor"> - {{reply.authorInfo.createdByUserRef.name}}</span>
                         <span class="commentDate">{{reply.authorInfo.createdDate | relativetime}}</span>
                     </div>
-                    <div ng-show="comment.status != 'resolved'" class="comment-inline-reply">
+                    <div ng-show="comment.status != 'resolved'" class="reply-actions">
                         <div class="dropdown pull-right" uib-dropdown>
                             <button class="btn btn-sm btn-secondary" uib-dropdown-toggle type="button"><i class="fa fa-ellipsis-v"></i></button>
                             <div class="dropdown-menu dropdown-menu-right">
