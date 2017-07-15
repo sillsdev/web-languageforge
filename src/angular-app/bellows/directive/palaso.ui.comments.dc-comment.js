@@ -18,11 +18,13 @@ angular.module('palaso.ui.comments')
         $scope.editingCommentContent = '';
 
         if ($scope.comment.regarding.field && angular.isDefined($scope.control.configService)) {
-          $scope.commentRegardingFieldConfig =
-            $scope.control.configService.getFieldConfig($scope.comment.regarding.field);
-          $scope.isCommentRegardingPicture =
-            (($scope.commentRegardingFieldConfig.type == 'pictures') &&
-            !($scope.comment.regarding.inputSystem));
+          $scope.control.configService.getFieldConfig($scope.comment.regarding.field)
+            .then(function (config) {
+            $scope.commentRegardingFieldConfig = config;
+            $scope.isCommentRegardingPicture =
+              (($scope.commentRegardingFieldConfig.type == 'pictures') &&
+              !($scope.comment.regarding.inputSystem));
+          });
         }
 
         $scope.doReply = function doReply() {
