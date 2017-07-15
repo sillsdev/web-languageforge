@@ -18,8 +18,8 @@
                         </div>
                         <div class="form-group row">
                             <label class="regardingFieldName col-md-3 text-md-right">{{comment.regarding.fieldNameForDisplay}}</label>
-                            <div class="col-md-9">
-                                <div data-ng-class="(comment.regarding.inputSystem) ? 'input-group' : ''" data-ng-hide="isCommentRegardingPicture">
+                            <div class="col-md-9" data-ng-hide="isCommentRegardingPicture">
+                                <div data-ng-class="(comment.regarding.inputSystem) ? 'input-group' : ''">
                                     <span data-ng-show="comment.regarding.inputSystem" class="input-group-addon wsid regardingInputSystem" title="{{comment.regarding.inputSystem}}">{{comment.regarding.inputSystemAbbreviation}}</span>
                                     <regarding-field class="form-control" content="comment.regarding.fieldValue" field-config="commentRegardingFieldConfig">
                                     </regarding-field>
