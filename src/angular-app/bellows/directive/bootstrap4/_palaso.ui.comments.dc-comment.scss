@@ -3,6 +3,10 @@
 $light-text: #555;
 $small-text-size: 0.8em;
 
+@mixin light-border() {
+  border-bottom: 1px solid $lf-lines;
+}
+
 /* Comments css */
 
 #lexAppCommentView .dc-rendered-entryContainer {
@@ -52,8 +56,34 @@ $small-text-size: 0.8em;
     position: relative;
 }
 
+.comment-footer {
+  clear: both;
+  display: flex;
+
+  > * {
+    flex: 0;
+    align-self: flex-end;
+    &:not(:last-child) {
+      padding-right: 1em;
+    }
+  }
+  img {
+    width: 50px;
+    height: 50px;
+  }
+  .data-and-author {
+    min-width: 6em;
+  }
+  .commentPlusOne {
+    flex: 1;
+  }
+
+  padding-bottom: 1em;
+  margin-bottom: 0.5em;
+  @include light-border();
+}
+
 .commentContentContainer {
-    display: flex;
     width: 100%;
     .deleteX {
       width:20px;
@@ -84,11 +114,7 @@ $small-text-size: 0.8em;
   padding-top: 0.25em;
   padding-bottom: 0.5em;
   margin-bottom: 0.25em;
-  border-bottom: 1px solid #eee;
-
-  &:first-child {
-    border-top: 1px solid #eee;
-  }
+  @include light-border;
 }
 
 .comment-replies {
@@ -106,12 +132,7 @@ $small-text-size: 0.8em;
   }
 }
 .commentContent {
-    float: left;
-    width: 100%;
-    padding-right: 20px;
-}
-.commentRepliesContainer {
-  margin-top: 2em;
+  margin-bottom: 0.5em;
 }
 .commentContentContainer i.fa-times:hover, .commentRepliesContainer i.fa-times:hover {
     color: #ed364f;
@@ -145,14 +166,7 @@ $small-text-size: 0.8em;
     }
 }
 
-.commentLeftSide {
-    text-align: center;
-    flex: 1;
-}
-
-.commentRightSide {
-    flex: 5;
-    padding: 0 10px;
+.comment-body {
   .commentEditing {
     width: 100%;
     .btn {
@@ -170,11 +184,9 @@ $small-text-size: 0.8em;
   }
 
   & > * {
-    font-size: 12px;
+    font-size: 0.75em;
     font-weight: bold;
-    border-bottom: 1px solid $lf-lines;
-    padding-bottom: 3px;
-    margin-bottom: 3px;
+    text-decoration: underline;
   }
 }
 
@@ -200,7 +212,7 @@ $small-text-size: 0.8em;
     font-size: $small-text-size;
     color: $light-text;
     line-height: 1.2em;
-    margin: 5px;
+    margin-top: 5px;
 }
 
 .editReplyLink {
