@@ -10,8 +10,9 @@ angular.module('lexicon.sync', ['ui.bootstrap', 'bellows.services', 'palaso.ui.n
     $scope.syncStateNotice = sendReceive.syncStateNotice;
     $scope.lastSyncNotice = sendReceive.lastSyncNotice;
 
-    $q.all([sessionService.getSession(), rightsService.getRights()]).then(function(data) {
-      var session = data[0], rights = data[1];
+    $q.all([sessionService.getSession(), rightsService.getRights()]).then(function (data) {
+      var session = data[0];
+      var rights = data[1];
       $scope.showSyncButton = function showSyncButton() {
         return !session.project().isArchived && rights.canEditUsers() &&
           session.projectSettings().hasSendReceive;
