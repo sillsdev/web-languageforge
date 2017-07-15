@@ -413,11 +413,11 @@ function EditorPage() {
       // Left side controls
       // avatar:
       // div.element(by.binding('model.authorInfo.createdByUserRef.avatar_ref')),
-      avatar: div.element(by.css('.commentLeftSide img')),
+      avatar: div.element(by.css('.comment-footer img')),
       author: div.element(by.binding('comment.authorInfo.createdByUserRef.name')),
       date: div.element(by.binding('comment.authorInfo.createdDate | relativetime')),
       score: div.element(by.binding('comment.score')),
-      plusOne: div.element(by.css('.commentLeftSide i.fa-thumbs-o-up:not(.ng-hide)')),
+      plusOne: div.element(by.css('.comment-footer i.fa-thumbs-o-up:not(.ng-hide)')),
 
       // Right side content
       content: div.element(by.binding('comment.content')),
