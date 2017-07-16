@@ -5,7 +5,7 @@
   "angular-translate": { "path": "node_modules/angular-translate/dist" },
   "angular-translate-loader-static-files": { "path": "node_modules/angular-translate-loader-static-files" },
   "angular-truncate-2": { "path": "node_modules/angular-truncate-2/dist" },
-  "angular-ui-router": { "path": "node_modules/@uirouter/angularjs/release" },
+  "angular-ui-router": { "path": "node_modules/angular-ui-router/release" },
   "angular-ui-validate": { "path": "node_modules/angular-ui-validate/dist", "jsFile": "validate" },
   "font-awesome": { "path": "node_modules/font-awesome/css", "cssFile": "font-awesome" },
   "intl-tel-input": { "path": "node_modules/intl-tel-input/build", "jsFile": "js/intlTelInput", "cssFile": "css/intlTelInput" },
