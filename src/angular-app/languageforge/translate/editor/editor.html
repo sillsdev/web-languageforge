@@ -35,6 +35,7 @@
             id="editorLeft" data-modules="left.modulesConfig" data-theme="bubble-custom"
             data-on-editor-created="editorCreated(editor, left.docType)"
             data-on-content-changed="contentChanged(editor, left.docType)"
+            data-on-selection-changed="selectionChanged(editor, left.docType)"
             data-ng-model="left.html" data-read-only="!hasDocumentSets()"
             data-placeholder="&#8203;enter text here"></ng-quill-editor>
         <div class="ql-suggestions">
@@ -56,6 +57,7 @@
             id="editorRight" data-modules="right.modulesConfig" data-theme="bubble-custom"
             data-on-editor-created="editorCreated(editor, right.docType)"
             data-on-content-changed="contentChanged(editor, right.docType)"
+            data-on-selection-changed="selectionChanged(editor, right.docType)"
             data-ng-model="right.html" data-read-only="!hasDocumentSets()"
             data-placeholder="&#8203;enter text here"></ng-quill-editor>
         <div class="ql-suggestions">
