@@ -13,10 +13,10 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       })
     ;
   }])
-  .controller('EditorCtrl', ['$scope', 'silNoticeService', 'translateAssistant',
+  .controller('EditorCtrl', ['$scope', '$q', 'silNoticeService', 'translateAssistant',
     'translateProjectApi', 'translateDocumentApi', 'translateDocumentService', 'wordParser',
     'realTime', 'modalService',
-  function ($scope, notice, assistant,
+  function ($scope, $q, notice, assistant,
             projectApi, documentApi, Document, wordParser, realTime, modal) {
     var currentDocIds = [];
     var selectedSegmentIndex = -1;
@@ -86,15 +86,17 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
             $scope.project.config.userPreferences.selectedDocumentSetId);
         }
 
-        if (angular.isDefined($scope.project.config.userPreferences
-            .isDocumentOrientationTargetRight) &&
-          $scope.project.config.userPreferences.isDocumentOrientationTargetRight
-        ) {
-          $scope.swapEditors(true);
-        } else {
-          $scope.editorCreated($scope.left.editor, $scope.left.docType);
-          $scope.editorCreated($scope.right.editor, $scope.right.docType);
-        }
+        $q.all([source.editorIsCreated.promise, target.editorIsCreated.promise]).then(function () {
+          if (angular.isDefined($scope.project.config.userPreferences
+              .isDocumentOrientationTargetRight) &&
+            $scope.project.config.userPreferences.isDocumentOrientationTargetRight
+          ) {
+            $scope.swapEditors(true);
+          } else {
+            $scope.editorCreated($scope.left.editor, $scope.left.docType);
+            $scope.editorCreated($scope.right.editor, $scope.right.docType);
+          }
+        });
       }
     });
 
@@ -273,6 +275,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       }
 
       $scope[docType].editor = editor;
+      $scope[docType].editorIsCreated.resolve(true);
       if (!docId(docType)) return;
 
       currentDocIds[docType] = docId(docType);
