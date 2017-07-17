@@ -106,13 +106,11 @@ angular.module('translate.services')
         var stateValue = {};
         stateValue[name] = value;
         this.segment.state[name] = value;
-        setTimeout(function () {
-          if (hasNoState) {
-            this.editor.formatLine(blockStartIndex, 1, { state: stateValue }, Quill.sources.USER);
-          } else {
-            this.editor.formatLine(blockStartIndex, 1, stateValue, Quill.sources.USER);
-          }
-        }.bind(this), 1);
+        if (hasNoState) {
+          this.editor.formatLine(blockStartIndex, 1, { state: stateValue }, Quill.sources.USER);
+        } else {
+          this.editor.formatLine(blockStartIndex, 1, stateValue, Quill.sources.USER);
+        }
       }
     }
 
