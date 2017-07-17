@@ -101,10 +101,8 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.selectDocumentSet = function selectDocumentSet(index) {
       if ($scope.selectedDocumentSetIndex !== index) {
         $scope.selectedDocumentSetIndex = index;
-        setTimeout(function () {
-          $scope.contentChanged($scope.left.editor, $scope.left.docType);
-          $scope.contentChanged($scope.right.editor, $scope.right.docType);
-        }, 1);
+        $scope.contentChanged($scope.left.editor, $scope.left.docType);
+        $scope.contentChanged($scope.right.editor, $scope.right.docType);
 
         if (($scope.selectedDocumentSetIndex in $scope.documentSets)) {
           $scope.project.config.userPreferences.selectedDocumentSetId =
@@ -325,16 +323,14 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         var index = range.index;
         var wordStartIndex = wordParser.startIndexOfWordAt(index, words);
         var wordLength = wordParser.lengthOfWordAt(index, words);
-        setTimeout(function () {
-          if (index < currentText.length ||
-            (index === currentText.length && !wordParser.isWordComplete(currentText[index - 1]))
-          ) {
-            editor.deleteText(wordStartIndex, wordLength + 1, Quill.sources.USER);
-            index = wordStartIndex;
-          }
+        if (index < currentText.length ||
+          (index === currentText.length && !wordParser.isWordComplete(currentText[index - 1]))
+        ) {
+          editor.deleteText(wordStartIndex, wordLength + 1, Quill.sources.USER);
+          index = wordStartIndex;
+        }
 
-          editor.insertText(index, text + wordParser.charSpace(), Quill.sources.USER);
-        }, 1);
+        editor.insertText(index, text + wordParser.charSpace(), Quill.sources.USER);
       }
     };
 
@@ -425,16 +421,6 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       }
     }
 
-    function updatePrefix(segmentIndex) {
-      $scope.$apply(function () {
-        target.suggestions = assistant.updatePrefix(target.getSegment(segmentIndex));
-        setTimeout(function () {
-          showAndPositionTooltip(target.editor.theme.suggestTooltip, target.editor,
-            target.hasSuggestion());
-        }, 1);
-      });
-    }
-
     function getSuggestions(newSegmentIndex) {
       if (!source.editor.isTextEmpty() && !target.editor.isTextEmpty()) {
         var newSourceSegmentText = source.getSegment(newSegmentIndex);
@@ -447,11 +433,19 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
             }
           );
         } else {
-          setTimeout(function () {
-            updatePrefix(newSegmentIndex);
-          }, 1);
+          updatePrefix(newSegmentIndex);
         }
       }
+    }
+
+    function updatePrefix(segmentIndex) {
+      $scope.$applyAsync(function () {
+        target.suggestions = assistant.updatePrefix(target.getSegment(segmentIndex));
+        setTimeout(function () {
+          showAndPositionTooltip(target.editor.theme.suggestTooltip, target.editor,
+            target.hasSuggestion());
+        }, 0);
+      });
     }
 
     function showAndPositionTooltip(tooltip, editor, hasCondition) {
