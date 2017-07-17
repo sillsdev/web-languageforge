@@ -6,7 +6,7 @@ angular.module('translate.services')
     this.listDocumentSetsDto = api.method('translate_documentSetListDto');
     this.removeDocumentSet = api.method('translate_documentSetRemove');
   }])
-  .service('translateDocumentService', [function () {
+  .service('translateDocumentService', ['$q', function ($q) {
     var LINE_INDEX = 0;
 
     var Delta = Quill.import('delta');
@@ -22,6 +22,7 @@ angular.module('translate.services')
       //noinspection JSUnusedGlobalSymbols
       this.modulesConfig = {};
       this.html = '';
+      this.editorIsCreated = $q.defer();
       this.editor = {};
       this.inputSystem = {};
       this.segment = new Segment();
