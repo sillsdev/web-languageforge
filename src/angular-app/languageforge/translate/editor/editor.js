@@ -20,7 +20,6 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
             projectApi, documentApi, Document, wordParser, realTime, modal) {
     var currentDocIds = [];
     var selectedSegmentIndex = -1;
-    var onSelectionChanges = {};
     var source = new Document.Data('source', 'Source');
     var target = new Document.Data('target', 'Target');
     var modulesConfig = {
@@ -269,34 +268,26 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       updateContent(editor, docType);
     };
 
-    $scope.editorCreated = function editorCreated(editor, docType) {
-      if (docType in onSelectionChanges) {
-        $scope[docType].editor.off(Quill.events.SELECTION_CHANGE, onSelectionChanges[docType]);
+    $scope.selectionChanged = function selectionChanged(editor, docType) {
+      if (docType === target.docType) {
+        $scope.contentChanged(editor, docType);
+      } else {
+        editor.theme.suggestTooltip.hide();
       }
+    };
 
+    $scope.editorCreated = function editorCreated(editor, docType) {
       $scope[docType].editor = editor;
       $scope[docType].editorIsCreated.resolve(true);
       if (!docId(docType)) return;
 
       currentDocIds[docType] = docId(docType);
       realTime.createAndSubscribeRichTextDoc($scope.project.slug, docId(docType), editor);
-
-      onSelectionChanges[docType] = function () {
-        if (docType === target.docType) {
-          $scope.contentChanged(editor, docType);
-        } else {
-          editor.theme.suggestTooltip.hide();
-        }
-      };
-
-      editor.on(Quill.events.SELECTION_CHANGE, onSelectionChanges[docType]);
     };
 
     $scope.swapEditors = function swapEditors(isNotWritePreference) {
       var leftEditor = $scope.left.editor;
       var rightEditor = $scope.right.editor;
-      leftEditor.off(Quill.events.SELECTION_CHANGE, onSelectionChanges[$scope.left.docType]);
-      rightEditor.off(Quill.events.SELECTION_CHANGE, onSelectionChanges[$scope.right.docType]);
       realTime.disconnectRichTextDoc(currentDocIds[$scope.left.docType], leftEditor);
       realTime.disconnectRichTextDoc(currentDocIds[$scope.right.docType], rightEditor);
       currentDocIds = [];
