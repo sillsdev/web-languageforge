@@ -49,14 +49,18 @@
     <div class="form-group col-sm-12">
         <div class="radio">
             <label>
-                <input type="radio" data-ng-value="true" ng-model="$ctrl.tlpProject.config.isTranslationDataShared" />
+                <input type="radio" data-ng-value="true"
+                       data-ng-model="$ctrl.tlpProject.config.isTranslationDataShared"
+                       data-ng-required="$ctrl.tlpProject.config.isTranslationDataShared === undefined" />
                 {{'Share other project\'s translation data (improve suggestions) and share this project\'s ' +
                 'translation data (improve other\'s suggestions)' | translate}}
             </label>
         </div>
         <div class="radio">
             <label>
-                <input type="radio" data-ng-value="false" ng-model="$ctrl.tlpProject.config.isTranslationDataShared" />
+                <input type="radio" data-ng-value="false"
+                       data-ng-model="$ctrl.tlpProject.config.isTranslationDataShared"
+                       data-ng-required="$ctrl.tlpProject.config.isTranslationDataShared === undefined" />
                 {{'No thanks, this project\'s translation data is private' | translate}}
             </label>
         </div>
