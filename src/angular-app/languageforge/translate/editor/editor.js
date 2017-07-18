@@ -269,10 +269,9 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     };
 
     $scope.selectionChanged = function selectionChanged(editor, docType) {
+      editor.theme.suggestTooltip.hide();
       if (docType === target.docType) {
         $scope.contentChanged(editor, docType);
-      } else {
-        editor.theme.suggestTooltip.hide();
       }
     };
 
