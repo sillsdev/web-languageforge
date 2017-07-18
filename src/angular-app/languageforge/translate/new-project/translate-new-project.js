@@ -357,6 +357,8 @@ angular.module('translate-new-project',
           if (result.ok) {
             $scope.newProject.id = result.data;
             $scope.project = $scope.newProject;
+            $scope.project.config = {};
+            $scope.project.config.isTranslationDataShared = true;
             sessionService.getSession(true).then(callback);
           } else {
             notice.push(notice.ERROR, 'The ' + $scope.newProject.projectName +

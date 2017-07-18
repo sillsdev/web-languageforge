@@ -12,7 +12,13 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
     projectApi.readProject(function (result) {
       if (result.ok) {
         angular.merge($scope.project, result.data.project);
+        $scope.project.config = $scope.project.config || {};
         pristineProject = angular.copy($scope.project);
+        if (angular.isUndefined($scope.project.config.isTranslationDataShared) ||
+          $scope.project.config.isTranslationDataShared === ''
+        ) {
+          $scope.project.config.isTranslationDataShared = true;
+        }
       }
     });
 
