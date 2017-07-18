@@ -4,14 +4,17 @@ angular.module('translate.languages', ['palaso.ui.language'])
   .component('languagesPicker', {
     templateUrl: '/angular-app/languageforge/translate/component/languages-picker.html',
     bindings: {
-      tlpProject: '<',
+      tlpProject: '<?',
       tlpUpdateLanguage: '&'
     },
     controller: ['$uibModal', function ($modal) {
       this.tlpProject = this.tlpProject || {};
       this.tlpProject.config = this.tlpProject.config || {};
-      this.tlpProject.config.isTranslationDataShared =
-        this.tlpProject.config.isTranslationDataShared || true;
+      if (angular.isUndefined(this.tlpProject.config.isTranslationDataShared) ||
+        this.tlpProject.config.isTranslationDataShared === ''
+      ) {
+        this.tlpProject.config.isTranslationDataShared = true;
+      }
 
       this.displayLanguage = function displayLanguage(tag, languageName) {
         if (languageName) {
