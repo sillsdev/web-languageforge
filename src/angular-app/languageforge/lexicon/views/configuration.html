@@ -1,15 +1,15 @@
 <div class="container" data-ng-cloak data-ng-controller="ConfigCtrl">
-<br><h2 style="font-weight:normal">{{'Configuration' | translate}}</h2>
-<form name="configForm" novalidate>
-<fieldset data-ng-disabled="isSaving">
+<br><h2>{{'Configuration' | translate}}</h2>
 <button class="btn btn-primary {{interfaceConfig.pullToSide}}" data-ng-click="configurationApply()"
     data-ng-disabled="configForm.$pristine || isSaving">
     <i class="fa fa-check"></i>{{'Apply' | translate}}</button>
-<uib-tabset>
-    <uib-tab heading="Input Systems" class="{{interfaceConfig.pullNormal}}">
+<form name="configForm" novalidate>
+<fieldset data-ng-disabled="isSaving">
+<pui-tabset>
+    <pui-tab heading="Input Systems" class="{{interfaceConfig.pullNormal}}">
         <div data-ng-include="'/angular-app/languageforge/lexicon/views/configuration-input-systems.html'"></div>
-    </uib-tab>
-    <uib-tab heading="Fields" class="{{interfaceConfig.pullNormal}}">
+    </pui-tab>
+    <pui-tab heading="Fields" class="{{interfaceConfig.pullNormal}}">
         <div data-ng-controller="FieldConfigCtrl">
         <div class="row outer-flex">
 
@@ -162,9 +162,9 @@ configDirty.entry {{configDirty.entry | json}}
 </pre>
  -->
         </div>
-    </uib-tab>
+    </pui-tab>
     <!-- hide Tasks tab
-    <uib-tab heading="Tasks" class="{{interfaceConfig.pullNormal}}">
+    <pui-tab heading="Tasks" class="{{interfaceConfig.pullNormal}}">
         <div data-ng-controller="TaskConfigCtrl">
         <div class="row outer-flex">
 
@@ -313,9 +313,9 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
  -->
         <!-- hide Tasks tab
         </div>
-    </uib-tab>
+    </pui-tab>
     hide Tasks tab -->
-    <uib-tab heading="Option Lists" class="{{interfaceConfig.pullNormal}}">
+    <pui-tab heading="Option Lists" class="{{interfaceConfig.pullNormal}}">
         <div data-ng-controller="OptionListCtrl">
             <div class="row outer-flex">
 
@@ -346,8 +346,8 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
 
             </div>
         </div>
-    </uib-tab>
-</uib-tabset>
+    </pui-tab>
+</pui-tabset>
 </fieldset>
 </form>
 </div>

@@ -13,7 +13,7 @@
                         <label class="control-label col-md-4 text-md-right" for="name" translate="Full Name"></label>
                         <div class="controls col-md-8">
                             <div class="input-group">
-                                <input class="form-control" id="name"
+                                <input class="form-control" id="name" autofocus
                                        required type="text" name="name"
                                        placeholder="{{'your name' | translate}}"
                                        data-ng-model="record.name"/>
@@ -24,7 +24,7 @@
                         <label class="control-label col-md-4 text-md-right" for="email" translate="Email Address"></label>
                         <div class="controls col-md-8">
                             <div class="input-group">
-                                <input class="form-control" id="email" autofocus
+                                <input class="form-control" id="email"
                                        required type="email" name="email"
                                        placeholder="{{'your email' | translate}}"
                                        data-ng-blur="validateForm()"

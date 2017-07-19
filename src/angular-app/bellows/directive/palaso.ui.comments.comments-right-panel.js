@@ -92,7 +92,7 @@ angular.module('palaso.ui.comments')
 
             canEditComment: function canEditComment(commentAuthorId) {
               if (session.project().isArchived) return false;
-              if (session.userId === commentAuthorId) {
+              if (session.userId() === commentAuthorId) {
                 return session.hasProjectRight(ss.domain.COMMENTS,
                   ss.operation.EDIT_OWN);
               } else {
