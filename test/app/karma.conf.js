@@ -5,14 +5,14 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     // list of files / patterns to load in the browser
     files: [
-      'src/vendor_bower/angular/angular.js',
-      'src/vendor_bower/angular-route/angular-route.js',
-      'src/vendor_bower/angular-animate/angular-animate.js',
-      'src/vendor_bower/angular-sanitize/angular-sanitize.js',
+      'src/node_modules/angular/angular.js',
+      'src/node_modules/angular-route/angular-route.js',
+      'src/node_modules/angular-animate/angular-animate.js',
+      'src/node_modules/angular-sanitize/angular-sanitize.js',
       'test/lib/angular/angular-mocks.js',
-      'src/vendor_bower/ng-file-upload/ng-file-upload.js',
-      'src/vendor_bower/jquery/jquery.js',
-      'src/vendor_bower/angular-bootstrap/*ui-bootstrap*.js',
+      'src/node_modules/ng-file-upload/ng-file-upload.js',
+      'src/node_modules/jquery/jquery.js',
+      'src/node_modules/angular-ui-bootstrap/dist/*ui-bootstrap*.js',
       'src/angular-app/**/*.js',
       'test/app/**/unit/*.spec.js'
     ],
