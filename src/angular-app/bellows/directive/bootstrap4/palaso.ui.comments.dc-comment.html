@@ -1,26 +1,12 @@
-<div class="commentContainer" ng-mouseenter="hover.comment = true" ng-mouseleave="hover.comment = false">
-    <div ng-show="comment.status == 'resolved'" style="width:70px; height:20px; font-weight:bold; font-size: x-small; position:absolute; left:-2px; z-index: 10; cursor:pointer;" tooltip-placement="right" uib-tooltip="Click to reopen comment" ng-click="updateCommentStatus(comment.id, 'open')">
-        <i style="color: #8be25c;" class="fa fa-check fa-2x"></i>Resolved
-    </div>
-    <div ng-class="{resolvedComment: comment.status == 'resolved'}" >
+<div class="commentContainer card">
+    <div class="card-block" ng-class="{resolvedComment: comment.status == 'resolved'}">
         <div class="commentContentContainer">
-            <div class="deleteX" uib-tooltip="Delete Comment" tooltip-placement="left" ng-show="rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && hover.comment && !comment.editing" ng-click="deleteComment(comment)"><i class="fa fa-trash" ></i></div>
-            <div class="commentLeftSide">
+            <div class="comment-body">
                 <div class="comment-status">
-                    <div ng-show="comment.status == 'resolved'" class="comment-status-resolved"></div>
-                </div>
-                <img width="50px" height="50px" class="rounded-circle" ng-src="{{getAvatarUrl(comment.authorInfo.createdByUserRef.avatar_ref)}}" />
-                <div class="commentAuthor">{{comment.authorInfo.createdByUserRef.name}}</div>
-                <div class="commentDate">{{comment.authorInfo.createdDate | relativetime}}</div>
-                <div class="commentPlusOne">{{comment.score}}
-                    <i ng-show="canPlusOneComment(comment.id) && rights.canComment() && comment.status != 'resolved'" style="cursor: pointer" ng-click="plusOneComment(comment.id)" uib-tooltip="Like comment" class="fa fa-thumbs-o-up"></i>
-                    <i ng-hide="canPlusOneComment(comment.id) && rights.canComment() && comment.status != 'resolved'" style="opacity: 0.5" class="fa fa-thumbs-o-up"></i>
-                </div>
-            </div>
-            <div class="commentRightSide">
-                <div class="comment-status">
-                    <div ng-show="comment.status == 'resolved'" class="comment-status-resolved"></div>
-                    <div ng-show="comment.status == 'todo' && rights.canUpdateCommentStatus()"class="comment-status-todo" tooltip-placement="bottom-left" uib-tooltip="This comment is marked as Todo">
+                    <div ng-show="comment.status == 'resolved'" class="comment-status-resolved" uib-tooltip="This comment is marked as resolved">
+                        <i style="color: #8be25c;" class="fa fa-check"></i> Resolved
+                    </div>
+                    <div ng-show="comment.status == 'todo'" class="comment-status-todo" uib-tooltip="This comment is marked as todo">
                         <i class="fa fa-edit"></i> Todo
                     </div>
                 </div>
@@ -32,11 +18,11 @@
                         </div>
                         <div class="form-group row">
                             <label class="regardingFieldName col-md-3 text-md-right">{{comment.regarding.fieldNameForDisplay}}</label>
-                            <div class="col-md-9">
-                                <div data-ng-class="(comment.regarding.inputSystem) ? 'input-group' : ''"
-                                     data-ng-hide="isCommentRegardingPicture">
+                            <div class="col-md-9" data-ng-if="!isCommentRegardingPicture">
+                                <div data-ng-class="(comment.regarding.inputSystem) ? 'input-group' : ''">
                                     <span data-ng-show="comment.regarding.inputSystem" class="input-group-addon wsid regardingInputSystem" title="{{comment.regarding.inputSystem}}">{{comment.regarding.inputSystemAbbreviation}}</span>
-                                    <regarding-field class="form-control" content="comment.regarding.fieldValue" field-config="commentRegardingFieldConfig"> </regarding-field>
+                                    <regarding-field class="form-control" content="comment.regarding.fieldValue" field-config="commentRegardingFieldConfig">
+                                    </regarding-field>
                                 </div>
                             </div>
                         </div>
@@ -55,48 +41,65 @@
                     </div>
                 </div>
             </div>
+            <div class="comment-footer">
+                <div>
+                    <img class="rounded-circle" ng-src="{{getAvatarUrl(comment.authorInfo.createdByUserRef.avatar_ref)}}">
+                </div>
+                <div class="data-and-author">
+                    <div class="commentAuthor">{{comment.authorInfo.createdByUserRef.name}}</div>
+                    <div class="commentDate">{{comment.authorInfo.createdDate | relativetime}}</div>
+                </div>
+                <div class="commentPlusOne">{{comment.score}}
+                    <i ng-show="canPlusOneComment(comment.id) && rights.canComment() && comment.status != 'resolved'" style="cursor: pointer"
+                        ng-click="plusOneComment(comment.id)" uib-tooltip="Like comment" class="fa fa-thumbs-o-up"></i>
+                    <i ng-hide="canPlusOneComment(comment.id) && rights.canComment() && comment.status != 'resolved'" style="opacity: 0.5" class="fa fa-thumbs-o-up"></i>
+                </div>
+                <div class="dropdown pull-right" uib-dropdown>
+                    <button class="btn btn-sm btn-secondary ellipsis-menu pui-no-caret" uib-dropdown-toggle type="button"><i class="fa fa-ellipsis-v"></i></button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href class="dropdown-item" ng-show="comment.status != 'open'" ng-click="updateCommentStatus(comment.id, 'open')"><i class="fa fa-chevron-circle-up"></i> Reopen comment</a>
+                        <a href class="dropdown-item" ng-show="comment.status != 'resolved'" ng-click="updateCommentStatus(comment.id, 'resolved')"><i class="fa fa-check"></i> Mark as resolved</a>
+                        <a href class="dropdown-item" ng-show="comment.status != 'todo'" ng-click="updateCommentStatus(comment.id, 'todo')"><i class="fa fa-edit"></i> Mark as to-do</a>
+
+                        <div class="dropdown-divider"></div>
+                        <a href class="dropdown-item" ng-show="rights.canEditComment(comment.authorInfo.createdByUserRef.id)" ng-click="editComment()"><i class="fa fa-pencil"></i> Edit</a>
+                        <a href class="dropdown-item" ng-show="rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && !comment.editing"
+                            ng-click="deleteComment(comment)"><i class="fa fa-trash" ></i> Delete</a>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="commentRepliesContainer">
-            <div ng-repeat="reply in comment.replies" ng-mouseenter="reply.hover = true" ng-mouseleave="reply.hover = false">
+            <div ng-repeat="reply in comment.replies" ng-mouseenter="reply.hover = true" ng-mouseleave="reply.hover = false" class="reply">
                 <div ng-hide="reply.editing" class="comment-replies">
-                    <div>
+                    <div class="reply-body">
                         <span class="replyContent">{{reply.content}}</span><span class="commentAuthor"> - {{reply.authorInfo.createdByUserRef.name}}</span>
                         <span class="commentDate">{{reply.authorInfo.createdDate | relativetime}}</span>
                     </div>
-                    <div ng-show="reply.hover && comment.status != 'resolved'" class="comment-inline-reply">
-                        <span uib-tooltip="Edit reply" tooltip-placement="left" ng-show="rights.canEditComment(reply.authorInfo.createdByUserRef.id)" class="editReplyLink btn btn-sm btn-secondary" ng-click="editReply(reply)"><i class="fa fa-pencil"></i></span>
-                        <span uib-tooltip="Delete reply" tooltip-placement="left" ng-show="rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)" class="deleteReplyLink btn btn-sm btn-secondary" ng-click="deleteCommentReply(comment.id, reply)"><i class="fa fa-trash"></i></span>
+                    <div ng-show="comment.status != 'resolved'" class="reply-actions">
+                        <div class="dropdown pull-right" uib-dropdown>
+                            <button class="btn btn-sm btn-secondary ellipsis-menu pui-no-caret" uib-dropdown-toggle type="button"><i class="fa fa-ellipsis-v"></i></button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a href class="dropdown-item" ng-show="rights.canEditComment(reply.authorInfo.createdByUserRef.id)" class="editReplyLink btn btn-sm btn-secondary"
+                                    ng-click="editReply(reply)"><i class="fa fa-pencil"></i> Edit</a>
+                                <a href class="dropdown-item" ng-show="rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)" class="deleteReplyLink btn btn-sm btn-secondary"
+                                    ng-click="deleteCommentReply(comment.id, reply)"><i class="fa fa-trash"></i> Delete</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <form ng-show="reply.editing" ng-submit="submitReply(reply)">
-                    <div class="input-group">
-                        <input type="text" class="form-control" ng-model="reply.editingContent" set-focus="reply.editing"/>
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-primary">OK</button>
-                        </span>
-                        <span class="input-group-btn">
-                            <button class="btn btn-secondary" ng-click="reply.editing = false"><i class="fa fa-trash"></i></button>
-                        </span>
-                    </div>
+                    <textarea class="form-control" ng-model="reply.editingContent" set-focus="reply.editing"></textarea>
+                    <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                    <a href ng-click="reply.editing = false">Cancel</a>
                 </form>
             </div>
             <form class="commentNewReplyForm" ng-show="showNewReplyForm" ng-submit="submitReply(newReply)">
-                <input type="text" class="form-control" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" set-focus="showNewReplyForm"> <button type="submit" class="btn btn-sm btn-secondary">OK</button> <a ng-click="showNewReplyForm = false"><i class="fa fa-trash"></i></a>
+                <textarea class="form-control" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" set-focus="showNewReplyForm"></textarea>
+                <button type="submit" class="btn btn-sm btn-primary">Post</button>
+                <a href ng-click="showNewReplyForm = false">Cancel</a>
             </form>
         </div>
-        <div style="height:30px">
-            <div class="commentBottomBar" ng-show="hover.comment && rights.canComment() && comment.status != 'resolved'">
-                <div class="pull-left">
-                    <b>Status:</b>
-                    <i class="fa fa-chevron-circle-up" ng-show="rights.canUpdateCommentStatus() && comment.status != 'open'" uib-tooltip="Mark as Open" ng-click="updateCommentStatus(comment.id, 'open')"></i>
-                    <i class="fa fa-check" ng-show="rights.canUpdateCommentStatus() && comment.status != 'resolved'" uib-tooltip="Mark as Resolved" ng-click="updateCommentStatus(comment.id, 'resolved')"></i>
-                    <i class="fa fa-edit" ng-show="rights.canUpdateCommentStatus() && comment.status != 'todo'" uib-tooltip="Mark as Todo" ng-click="updateCommentStatus(comment.id, 'todo')"></i>
-                </div>
-                <div class="pull-right">
-                    <button class="btn btn-sm btn-secondary" uib-tooltip="Edit this comment" ng-show="rights.canEditComment(comment.authorInfo.createdByUserRef.id)" ng-click="editComment()"><i class="fa fa-pencil "></i> Edit</button>
-                    <button class="btn btn-sm btn-secondary" ng-show="rights.canComment()" ng-click="doReply()"><i class="fa fa-reply"></i> Reply</button>
-                </div>
-            </div>
-        </div>
+        <a href class="btn btn-sm btn-secondary pull-right" ng-show="rights.canComment() && !showNewReplyForm" ng-click="doReply()"><i class="fa fa-reply"></i> Reply</a>
     </div>
 </div>
