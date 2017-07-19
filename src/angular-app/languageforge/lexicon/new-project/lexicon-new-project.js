@@ -149,7 +149,7 @@ angular.module('lexicon-new-project',
       $scope.formStatus = msg;
       $scope.formStatusClass = 'alert alert-info';
       if (!msg) $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
-      $scope.forwardBtnClass = 'btn-success';
+      $scope.forwardBtnClass = 'btn-primary';
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
     }

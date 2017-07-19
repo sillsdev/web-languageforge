@@ -1,6 +1,6 @@
 @import '../../../../Site/views/languageforge/theme/default/sass/_variables.scss';
-@import '../../../../vendor_bower/bootstrap/scss/_variables';
-@import '../../../../vendor_bower/bootstrap/scss/_mixins';
+@import '../../../../node_modules/bootstrap/scss/_variables';
+@import '../../../../node_modules/bootstrap/scss/_mixins';
 @import '../views/_editor.scss';
 @import '../directive/_dc-audio';
 @import '../directive/_dc-formattedtext';
