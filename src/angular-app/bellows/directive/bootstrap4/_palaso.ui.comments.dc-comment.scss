@@ -1,5 +1,12 @@
 @import '../../../../Site/views/languageforge/theme/default/sass/_variables';
 
+$light-text: #555;
+$small-text-size: 0.8em;
+
+@mixin light-border() {
+  border-bottom: 1px solid $lf-lines;
+}
+
 /* Comments css */
 
 #lexAppCommentView .dc-rendered-entryContainer {
@@ -49,8 +56,34 @@
     position: relative;
 }
 
+.comment-footer {
+  clear: both;
+  display: flex;
+
+  > * {
+    flex: 0;
+    align-self: flex-end;
+    &:not(:last-child) {
+      padding-right: 1em;
+    }
+  }
+  img {
+    width: 50px;
+    height: 50px;
+  }
+  .data-and-author {
+    min-width: 6em;
+  }
+  .commentPlusOne {
+    flex: 1;
+  }
+
+  padding-bottom: 1em;
+  margin-bottom: 0.5em;
+  @include light-border();
+}
+
 .commentContentContainer {
-    display: flex;
     width: 100%;
     .deleteX {
       width:20px;
@@ -76,25 +109,30 @@
     }
   }
 }
+
+.reply {
+  padding-top: 0.25em;
+  padding-bottom: 0.5em;
+  margin-bottom: 0.25em;
+  @include light-border;
+}
+
 .comment-replies {
   position: relative;
-  line-height: 14px;
-  margin-bottom: 6px;
-  .comment-inline-reply {
+  .reply-actions {
     right: 0;
     position: absolute;
     top: 0;
-    z-index: 1;
+  }
+  .reply-body {
+    margin-right: 2.5em;
   }
   .replyContent {
-    font-size: 12px;
-    color: #808080;
+    font-size: 0.95em;
   }
 }
 .commentContent {
-    float: left;
-    width: 100%;
-    padding-right: 20px;
+  margin-bottom: 0.5em;
 }
 .commentContentContainer i.fa-times:hover, .commentRepliesContainer i.fa-times:hover {
     color: #ed364f;
@@ -110,27 +148,25 @@
     border-radius: $border-radius;
     width: 100%;
     float: left;
-    i.fa-edit, i.fa-check, i.fa-chevron-circle-up {
-      cursor: pointer;
-      color: #7c7c7c;
-      padding-left: 10px;
+    span {
+        cursor: pointer;
+        color: #7c7c7c;
+        .fa {
+            padding-left: 10px;
+        }
     }
-    i.fa-edit:hover {
-      color: #247aff;
-    }
-    i.fa-check:hover {
-      color: #8be25c;
+
+    span:hover {
+        i.fa-edit {
+        color: #247aff;
+        }
+        i.fa-check {
+        color: #8be25c;
+        }
     }
 }
 
-.commentLeftSide {
-    text-align: center;
-    flex: 1;
-}
-
-.commentRightSide {
-    flex: 5;
-    padding: 0 10px;
+.comment-body {
   .commentEditing {
     width: 100%;
     .btn {
@@ -142,15 +178,15 @@
   .comment-status-resolved {
     height: 25px;
   }
-  .comment-status-todo {
-    font-size: 12px;
+
+  .comment-status-todo i {
+    color: #247aff;
+  }
+
+  & > * {
+    font-size: 0.75em;
     font-weight: bold;
-    border-bottom: 1px solid $lf-lines;
-    padding-bottom: 3px;
-    margin-bottom: 3px;
-    i {
-      color: #247aff;
-    }
+    text-decoration: underline;
   }
 }
 
@@ -164,8 +200,8 @@
 }
 
 .commentAuthor {
-    font-size: small;
-    color: #808080;
+    font-size: $small-text-size;
+    color: $light-text;
 }
 
 .commentRepliesContainer .commentAuthor {
@@ -173,10 +209,10 @@
 }
 
 .commentDate {
-    font-size: x-small;
-    color: #808080;
+    font-size: $small-text-size;
+    color: $light-text;
     line-height: 1.2em;
-    margin: 5px;
+    margin-top: 5px;
 }
 
 .editReplyLink {
@@ -189,7 +225,12 @@
 }
 
 .resolvedComment {
-    opacity: .5;
+    &:not(:hover) {
+      opacity: 0.6;
+    }
+    transition: 0.3s ease opacity;
+    z-index: 1;
+    position: relative;
 }
 
 .commentCount {
@@ -221,11 +262,6 @@ div.commentListContainer {
   }
 }
 
-.commentListView {
-    overflow-y: scroll;
-    height: 588px;
-}
-
 .selectableFieldForComment:hover {
     background-color: #eee;
     border: 1px solid $lf-lines;
@@ -245,4 +281,17 @@ div.commentListContainer {
 }
 .selectableInputSystemFieldForComment .uneditable-input, .selectableFieldForComment .uneditable-input {
     cursor: pointer;
+}
+
+.commentNewReplyForm, .reply {
+  textarea {
+    min-height: 4em;
+    height: 4em;
+    margin-bottom: 0.25em;
+  }
+}
+
+.ellipsis-menu {
+  padding-left: 0.8em;
+  padding-right: 0.8em;
 }

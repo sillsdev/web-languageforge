@@ -100,9 +100,6 @@ class Base
             array_unshift($this->data['cssFiles'], "Site/views/shared/cssBootstrap2/bootstrap.css");
         }
 
-        // Other session data
-        $this->data['jsonSession'] = json_encode(SessionCommands::getSessionData($this->_projectId, $this->_userId, $this->website, $this->_appName), JSON_UNESCAPED_SLASHES);
-
         // Add bellows JS for every page because top container menubar needs it for helps
         $bellowsFolder = NG_BASE_FOLDER . "bellows";
         $this->addJavascriptFiles($bellowsFolder . '/_js_module_definitions');

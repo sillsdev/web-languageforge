@@ -20,9 +20,11 @@ angular.module('lexicon',
     'pascalprecht.translate'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$compileProvider',
-  function ($stateProvider, $urlRouterProvider, $translateProvider, $compileProvider) {
-    $compileProvider.debugInfoEnabled(!window.session.isProduction);
-    $compileProvider.commentDirectivesEnabled(!window.session.isProduction);
+    'apiServiceProvider',
+    function ($stateProvider, $urlRouterProvider, $translateProvider, $compileProvider,
+      apiService) {
+    $compileProvider.debugInfoEnabled(apiService.isProduction);
+    $compileProvider.commentDirectivesEnabled(apiService.isProduction);
 
     $urlRouterProvider.otherwise('/editor/list');
 

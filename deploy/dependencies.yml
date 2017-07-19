@@ -47,11 +47,6 @@
       args:
         creates: /usr/local/bin/composer
 
-    - name: install Bower
-      shell: npm install -g bower
-      args:
-        creates: /usr/local/bin/bower
-
     - name: install gulp cli
       shell: npm install -g gulp-cli
       args:
