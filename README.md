@@ -244,7 +244,7 @@ Right-click to select **Options** and set **IDE key**
 PhpStorm PHPSTORM
 ```
 
-When it's time to Debug, check that the bug icon is green for **Debug**.  
+When it's time to Debug, check that the bug icon is green for **Debug**.
 
 Then, from PhpStorm, click the telephone icon near the top right for *Start Listening for PHP Connections*.
 
@@ -348,15 +348,12 @@ After a fresh factory reset, there is one user.  username: admin password: passw
 
 ## Updating dependencies ##
 
-Occasionally developers need to update composer, bower or npm.  If something isn't working after a recent code change, try to update the dependencies:
-
-#### Update bower ####
-
-In src/: `bower install`
+Occasionally developers need to update composer or npm.  If something isn't working after a recent code change, try to update the dependencies:
 
 #### Update npm packages ####
 
 In the root folder: `npm install`
+In the src folder: `npm install`
 
 #### Update composer ####
 
