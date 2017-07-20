@@ -21,14 +21,6 @@
                 <small class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
                 <h5>{{ 'Words in dictionary' | translate }}</h5>
             </div>
-            <div class="form-group">
-                <select class="custom-select">
-                    <option>Sort</option>
-                </select>
-                <select class="custom-select">
-                    <option>Filter</option>
-                </select>
-            </div>
             <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
                 <div id="entryId_{{entry.id}}" class="list-group-item lexiconListItemCompact"
                      data-ng-class="{selected: entry.id == currentEntry.id, listItemHasComment: commentService.getEntryCommentCount(entry.id) > 0}"
