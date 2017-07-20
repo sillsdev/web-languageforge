@@ -52,6 +52,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     $scope.configService = lexConfig;
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
+    $scope.entryListModifiers = editorService.entryListModifiers;
+    $scope.sortEntries = editorService.sortEntries;
+    $scope.filterEntries = editorService.filterEntries;
+
     $scope.show = {
       more: editorService.showMoreEntries,
       emptyFields: false
@@ -61,6 +65,12 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
     lexConfig.refresh().then(function(config) {
       $scope.config = config;
+
+      $scope.$watch('config', function() {
+        setSortAndFilterOptionsFromConfig();
+      });
+
+      // Populate sort and filter option lists based upon dictionary config
 
       $scope.currentEntryIsDirty = function currentEntryIsDirty() {
         if (!$scope.entryLoaded()) return false;
@@ -627,13 +637,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           }
 
           if ($state.is('editor.comments')) {
-            editorService.showInitialEntries();
             $scope.editEntryAndScroll(entryId);
             $scope.showComments();
           }
 
           if ($state.is('editor.entry')) {
-            editorService.showInitialEntries();
             $scope.editEntryAndScroll(entryId);
           }
         }
@@ -697,6 +705,23 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           $interval.cancel(autoSaveTimer);
           autoSaveTimer = undefined;
         }
+      }
+
+      function setSortAndFilterOptionsFromConfig() {
+        console.log($scope.config);
+        $scope.entryListModifiers.sortOptions.length = 0;
+        angular.forEach($scope.config.fieldOrder, function(field) {
+
+          // note: do I need to check if user can see field (view settings).  Is this handled somewhere else? - cjh 2017-07-20
+          if ($scope.config.fields[field].hideIfEmpty) return;
+          $scope.entryListModifiers.sortOptions.push({label:$scope.config.fields[field].label, value:field});
+
+          if (field == 'senses') {
+            angular.forEach($scope.config.fields.senses.fieldOrder, function (senseField) {
+              $scope.entryListModifiers.sortOptions.push({label:$scope.config.fields.senses.fields[field].label, value:senseField});
+            });
+          }
+        });
       }
 
       $scope.$on('$destroy', function () {

@@ -18,7 +18,10 @@ function ($q, editorDataService, api) {
     entries: editorDataService.entries,
     visibleEntries: editorDataService.visibleEntries,
     showInitialEntries: editorDataService.showInitialEntries,
-    showMoreEntries: editorDataService.showMoreEntries
+    showMoreEntries: editorDataService.showMoreEntries,
+    sortEntries: editorDataService.sortEntries,
+    filterEntries: editorDataService.filterEntries,
+    entryListModifiers: editorDataService.entryListModifiers
   };
 
 }]);
