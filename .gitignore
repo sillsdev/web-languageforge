@@ -3,6 +3,8 @@
 .settings
 .externalToolBuilders
 .idea/
+.vscode/
+output/chrome/
 .vagrant/
 PhpUnitTests.xml
 phpUnitConsole.txt
@@ -18,7 +20,7 @@ docs/semdom/semdom lists/*.xml
 **/.bundle/
 !src/vendor/lift/
 src/vendor/
-src/vendor_bower/
+src/node_modules/
 !src/cache/index.html
 !src/cache/.htaccess
 src/cache/

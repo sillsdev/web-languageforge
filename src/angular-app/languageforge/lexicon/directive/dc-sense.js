@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.example',
-  'ngAnimate', 'bellows.services', 'lexicon.services'])
+  'bellows.services', 'lexicon.services'])
 
 // Palaso UI Dictionary Control: Sense
 .directive('dcSense', ['lexUtils', 'modalService', function (utils, modal) {

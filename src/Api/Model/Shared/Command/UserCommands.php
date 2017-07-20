@@ -22,7 +22,6 @@ use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
 use Api\Model\Shared\UserTypeaheadModel;
 use Palaso\Utilities\CodeGuard;
-use Site\Controller\Auth;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class UserCommands
@@ -70,14 +69,15 @@ class UserCommands
             $params['email'] = UserCommands::sanitizeInput($params['email']);
         }
 
-        if (UserCommands::checkUniqueIdentity($user, $params['username'], $params['email']) == 'ok') {
-            $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
-
-            if (!$user->hasRoleOnSite($website) && $website->allowSignupFromOtherSites) {
-                $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
-            }
-            return $user->write();
+        if (UserCommands::checkUniqueIdentity($user, $params['username'], $params['email']) != 'ok') {
+            return null;
         }
+
+        $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
+        if (!$user->hasRoleOnSite($website) && $website->allowSignupFromOtherSites) {
+            $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+        }
+        return $user->write();
     }
 
     /**
@@ -151,7 +151,7 @@ class UserCommands
 
         $projectListModel = new ProjectListModel();
         $projectListModel->read();
-        $projectList = array();
+        $projectList = [];
         foreach ($projectListModel->entries as $p) {
             $projectList[$p['id']] = $p;
         }
@@ -159,7 +159,7 @@ class UserCommands
         foreach ($list->entries as $key => $item) {
             if (array_key_exists('projects', $item)) {
                 $projectIds = $item['projects'];
-                $list->entries[$key]['projects'] = array();
+                $list->entries[$key]['projects'] = [];
                 foreach ($projectIds as $id) {
                     $list->entries[$key]['projects'][] = $projectList[(string)$id];
                 }
@@ -266,13 +266,13 @@ class UserCommands
 
     /**
      * System Admin: Create a user with default site role.
-     * @param string $params
+     * @param array $params
      * @param Website $website
      * @return bool|string userId of the new user
      */
     public static function createUser($params, $website)
     {
-        $captchaInfo = array();
+        $captchaInfo = [];
         $captchaInfo['code'] = $params['captcha'] = 'captcha';
         if (self::register($params, $website, $captchaInfo) == 'login') {
           $user = new UserModel();
@@ -290,14 +290,14 @@ class UserCommands
      * @param string $currentUserId
      * @param Website $website
      * @throws \Exception
-     * @return CreateSimpleDto
+     * @return array
      */
     public static function createSimple($username, $projectId, $currentUserId, $website)
     {
         $user = new UserModel();
         $username = UserCommands::sanitizeInput($username);
         $user->name = $username;
-        if (UserCommands::checkUniqueIdentity($user, $username, '', $website) == 'ok') {
+        if (UserCommands::checkUniqueIdentity($user, $username, '') == 'ok') {
             $user->username = $username;
             $user->role = SystemRoles::USER;
             $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
@@ -333,7 +333,7 @@ class UserCommands
      *
      * @param array $params (email, name, password, captcha)
      * @param Website $website
-     * @param string $captchaInfo
+     * @param array $captchaInfo
      * @param DeliveryInterface $delivery
      * @throws \Exception
      * @return string {captchaFail, login, emailNotAvailable}
@@ -360,7 +360,7 @@ class UserCommands
                 $user->name = $params['name'];
                 $user->setUniqueUsernameFromString($params['name']);
                 $user->active = true;
-                $userId = $user->write();
+                $user->write();
 
                 Communicate::sendWelcomeToWebsite($user, $website, $delivery);
                 Communicate::sendVerifyEmail($user, $website, $delivery);
@@ -419,30 +419,27 @@ class UserCommands
         }
     }
 
-
     public static function getCaptchaData(Session $session)
     {
         srand(microtime() * 100);
-        $captchaData = array(
-            'items' => array(
-                array(
+        $captchaData = [
+            'items' => [
+                [
                     'name' => 'Blue Square',
                     'imgSrc' => '/Site/views/shared/image/captcha/kajrtakzl.png'
-                ),
-                array(
+                ],
+                [
                     'name' => 'Yellow Circle',
                     'imgSrc' => '/Site/views/shared/image/captcha/ljfhadgur.png'
-                ),
-                array(
+                ],
+                [
                     'name' => 'Red Triangle',
                     'imgSrc' => '/Site/views/shared/image/captcha/poietymnv.png'
-                )
-            ),
+                ]
+            ],
             'expectedItemName' => 'Yellow Circle',
-        );
-        $captchaInfo = array(
-            'code' => 1
-        );
+        ];
+        $captchaInfo = ['code' => 1];
         $index = rand(0, count($captchaData['items']) - 1);
         $captchaInfo['code'] = $index;
         $session->set('captcha_info', $captchaInfo);
@@ -457,49 +454,54 @@ class UserCommands
     /**
      * Sends an email to $toEmail to join the site.
      * @param string $projectId
-     * @param string $inviterUserId
+     * @param string $invitingUserId
      * @param Website $website
      * @param string $toEmail
      * @param DeliveryInterface $delivery
      * @throws \Exception
-     * @return string $userId
+     * @return string $userId or empty if not sent
      */
     public static function sendInvite(
         $projectId,
-        $inviterUserId,
+        $invitingUserId,
         $website,
         $toEmail,
         DeliveryInterface $delivery = null
     ) {
-        $inviterUser = new UserModel($inviterUserId);
+        $invitedUserId = '';
+        $invitingUser = new UserModel($invitingUserId);
         $project = new ProjectModel($projectId);
         $toEmail = UserCommands::sanitizeInput($toEmail);
 
-        $newUser = new UserModel();
-        if (!$newUser->readByEmail($toEmail)) {
-            $newUser->email = $toEmail;
-            $newUser->emailPending = $toEmail;
-            $newUser->role = SystemRoles::USER;
-            Communicate::sendInvite($inviterUser, $newUser, $project, $website, $delivery);
+        $invitedUser = new UserModel();
+        if (!$invitedUser->readByEmail($toEmail)) {
+            $invitedUser->email = $toEmail;
+            $invitedUser->emailPending = $toEmail;
+            $invitedUser->role = SystemRoles::USER;
+            $invitedUser->write();
+        }
+
+        if ($invitedUser->emailPending) {
+            Communicate::sendInvite($invitingUser, $invitedUser, $project, $website, $delivery);
+            $invitedUserId = $invitedUser->id->asString();
         }
 
         // Make sure the user exists on the site
-        if (!$newUser->hasRoleOnSite($website)) {
-            $newUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
+        if (!$invitedUser->hasRoleOnSite($website)) {
+            $invitedUser->siteRole[$website->domain] = $website->userDefaultSiteRole;
         }
 
         // Add the user to the project, if they are not already a member
-        if (!$project->userIsMember($newUser->id->asString())) {
-            $newUser->addProject($project->id->asString());
-            $userId = $newUser->write();
-            $project->addUser($userId, ProjectRoles::CONTRIBUTOR);
+        if (!$project->userIsMember($invitedUser->id->asString())) {
+            $invitedUser->addProject($project->id->asString());
+            $invitedUserId = $invitedUser->write();
+            $project->addUser($invitedUserId, ProjectRoles::CONTRIBUTOR);
             $project->write();
-            Communicate::sendAddedToProject($inviterUser, $newUser, $project, $website, $delivery);
+            Communicate::sendAddedToProject($invitingUser, $invitedUser, $project, $website, $delivery);
         }
 
-        return $newUser->write();
+        return $invitedUserId;
     }
-
 
     /**
      * Sends an email to request joining of the project
@@ -514,7 +516,7 @@ class UserCommands
     {
         $newUser = new UserModel($userId);
         $project = new ProjectModel();
-        $project->read($projectId['id']);
+        $project->read($projectId);
 
         // Make sure the user exists on the site
         if (!$newUser->hasRoleOnSite($website)) {
