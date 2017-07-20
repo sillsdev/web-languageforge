@@ -139,40 +139,5 @@ angular.module('lexicon.services')
       return undefined;
     });
   };
-
-  /*
-   * this.isFieldEnabled = function(fieldName, ws) {
-   *
-   * var config = ss.session.projectSettings.config; var userId =
-   * ss.session.userId; var role = ss.session.projectSettings.currentUserRole;
-   * var fieldConfig; // use an user-based field config if defined if
-   * (angular.isDefined(config.userViews[userId])) { fieldConfig =
-   * config.userViews[userId].fields[fieldName]; } else { // fallback to
-   * role-based field config fieldConfig =
-   * config.roleViews[role].fields[fieldName]; }
-   *
-   * if (!fieldConfig) { console.log(fieldName); } // field-level visibility var
-   * show = fieldConfig.show; // input system level visibility if (ws &&
-   * fieldConfig.show && fieldConfig.overrideInputSystems) { if
-   * (fieldConfig.inputSystems.indexOf(ws) != -1) { show = true; } else { show =
-   * false; } } return show; };
-   *
-   * this.isUncommonField = function isUncommonField(fieldName) { var
-   * fieldConfig = getFieldConfig(fieldName); return fieldConfig.hideIfEmpty; };
-   *
-   *
-   * this.isFieldVisible = function isFieldVisible(showUncommon, fieldName,
-   * type, model) { if (type == 'fields') return true; var isVisible = true;
-   *
-   * if (!showUncommon && this.isUncommonField(fieldName)) { isVisible = false;
-   * switch (type) { case 'multitext': angular.forEach(model, function(ws) { if
-   * (model[ws].value != '') { isVisible = true; } }); break; case 'optionlist':
-   * case 'multioptionlist': if (model.value != '') { isVisible = true; } break; } }
-   *
-   * return isVisible; };
-   *
-   */
-
 }])
-
 ;

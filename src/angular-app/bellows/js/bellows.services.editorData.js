@@ -9,13 +9,12 @@ function ($q, sessionService, cache, commentsCache,
           notice, commentService) {
   var entries = [];
   var visibleEntries = [];
-  var browserInstanceId = Math.floor(Math.random() * 1000);
+  var entryListModifiers = {sortBy: "", sortOptions: [], filterBy: "", filterOptions: [], sortReverse: false, filterReverse: false};
+  var browserInstanceId = Math.floor(Math.random() * 1000000);
   var api = undefined;
 
   var showInitialEntries = function showInitialEntries() {
-    return sortList(entries).then(function(sortedEntries){
-      entries.length = 0;
-      Array.prototype.push.apply(entries, sortedEntries);
+    return sortAndFilterEntries().then(function() {
       visibleEntries.length = 0; // clear out the array
       Array.prototype.push.apply(visibleEntries, entries.slice(0, 50));
     });
@@ -272,19 +271,9 @@ function ($q, sessionService, cache, commentsCache,
 
         angular.forEach(result.data.deletedCommentIds, commentService.removeCommentFromLists);
 
-        // only sort the list if there have been changes to entries (or deleted entries)
+        // only sort and filter the list if there have been changes to entries (or deleted entries)
         if (result.data.entries.length > 0 || result.data.deletedEntryIds.length > 0) {
-          sortList(entries).then(function(sortedEntries) {
-            // the length = 0 followed by Array.push.apply is a method of replacing the contents of
-            // an array without creating a new array thereby keeping original references
-            // to the array
-            entries.length = 0;
-            Array.prototype.push.apply(entries, sortedEntries);
-          });
-          sortList(visibleEntries).then(function(sortedVisibleEntries) {
-            visibleEntries.length = 0;
-            Array.prototype.push.apply(visibleEntries, sortedVisibleEntries);
-          });
+          sortAndFilterEntries();
         }
       }
 
@@ -322,9 +311,8 @@ function ($q, sessionService, cache, commentsCache,
     return getIndexInList(id, visibleEntries);
   }
 
-  function sortList(list) {
+  function _sortList(list, field) {
     return sessionService.getSession().then(function(session) {
-      var startTime = performance.now();
       var config = session.projectSettings().config;
       var inputSystems = config.entry.fields.lexeme.inputSystems;
       var ws = inputSystems[0];
@@ -340,17 +328,50 @@ function ($q, sessionService, cache, commentsCache,
       });
 
       mapped.sort(function(a, b) {
-        return collator.compare(a.value, b.value);
+        if (entryListModifiers.sortReverse) {
+          return collator.compare(a.value, b.value) * -1;
+        } else {
+          return collator.compare(a.value, b.value);
+        }
       });
 
       var result = mapped.map(function(el) {
         return list[el.index];
       });
 
-      console.log('Sorted list in ' +
-        ((performance.now() - startTime) / 1000).toFixed(2) + ' seconds');
 
       return result;
+    });
+  }
+
+  function sortEntries() {
+    console.warn(' sort entries! ');
+    var startTime = performance.now();
+    return _sortList(entries).then(function(sortedEntries) {
+      // the length = 0 followed by Array.push.apply is a method of replacing the contents of
+      // an array without creating a new array thereby keeping original references
+      // to the array
+      entries.length = 0;
+      Array.prototype.push.apply(entries, sortedEntries);
+      return _sortList(visibleEntries).then(function(sortedVisibleEntries) {
+        visibleEntries.length = 0;
+        Array.prototype.push.apply(visibleEntries, sortedVisibleEntries);
+        console.log('Sorted entries in ' +
+          ((performance.now() - startTime) / 1000).toFixed(2) + ' seconds');
+      });
+    });
+  }
+
+  function filterEntries() {
+    var deferred = $q.defer();
+    console.warn(' filter entries! ');
+    deferred.resolve(true);
+    return deferred.promise;
+  }
+
+  function sortAndFilterEntries() {
+    return sortEntries().then(function() {
+      return filterEntries();
     });
   }
 
@@ -388,7 +409,10 @@ function ($q, sessionService, cache, commentsCache,
     entries: entries,
     visibleEntries: visibleEntries,
     showInitialEntries: showInitialEntries,
-    showMoreEntries: showMoreEntries
+    showMoreEntries: showMoreEntries,
+    sortEntries: sortEntries,
+    filterEntries: filterEntries,
+    entryListModifiers: entryListModifiers
   };
 
 }]);
