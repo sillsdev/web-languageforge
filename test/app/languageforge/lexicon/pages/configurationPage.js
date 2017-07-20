@@ -21,12 +21,15 @@ function ConfigurationPage() {
 
   this.applyButton = element(by.buttonText('Apply'));
 
-  this.tabDivs = element.all(by.repeater('tab in tabs'));
+  var tabElements = element.all(by.tagName('pui-tab'));
+  this.tab = function () {
+    return tabElements.first();
+  };
 
   this.activePane = element(by.css('div.tab-pane.active'));
 
   this.getTabByName = function getTabByName(tabName) {
-    return element(by.cssContainingText('.uib-tab a', tabName));
+    return element(by.cssContainingText('pui-tabset .tab-links .tab-link', tabName));
   };
 
   this.tabs = {
@@ -37,13 +40,13 @@ function ConfigurationPage() {
   };
 
   this.inputSystemsTab = {
-    newButton:    this.tabDivs.first().element(by.partialButtonText('New')),
-    moreButton:   this.tabDivs.first().element(by.css('.btn-group button')),
+    newButton:    this.tab().element(by.partialButtonText('New')),
+    moreButton:   this.tab().element(by.css('.btn-group button')),
     moreButtonGroup: {
-      addIpa:     this.tabDivs.first().element(by.partialLinkText('Add IPA')),
-      addVoice:   this.tabDivs.first().element(by.partialLinkText('Add Voice')),
-      addVariant: this.tabDivs.first().element(by.partialLinkText('Add a variant')),
-      remove:     this.tabDivs.first().element(by.className('fa fa-trash'))
+      addIpa:     this.tab().element(by.partialLinkText('Add IPA')),
+      addVoice:   this.tab().element(by.partialLinkText('Add Voice')),
+      addVariant: this.tab().element(by.partialLinkText('Add a variant')),
+      remove:     this.tab().element(by.className('fa fa-trash'))
     },
     getLanguageByName: function getLanguageByName(languageName) {
       return element(by.css('div.tab-pane.active div.col-md-3 dl.picklists'))
@@ -51,20 +54,20 @@ function ConfigurationPage() {
     },
 
     selectedInputSystem: {
-      displayName:    this.tabDivs.first().element(by.id('languageDisplayName')),
-      tag:            this.tabDivs.first()
+      displayName:    this.tab().element(by.id('languageDisplayName')),
+      tag:            this.tab()
         .element(by.binding('inputSystemViewModels[selectedInputSystemId].inputSystem.tag')),
-      abbreviationInput: this.tabDivs.first()
+      abbreviationInput: this.tab()
         .element(by.model('inputSystemViewModels[selectedInputSystemId].inputSystem.abbreviation')),
-      rightToLeftCheckbox: this.tabDivs.first().element(by
+      rightToLeftCheckbox: this.tab().element(by
         .model('inputSystemViewModels[selectedInputSystemId].inputSystem.isRightToLeft')),
-      specialDropdown: this.tabDivs.first().element(by.id('special')),
-      purposeDropdown: this.tabDivs.first().element(by.id('purpose')),
-      ipaVariantInput: this.tabDivs.first().element(by.id('ipaVariant')),
-      voiceVariantInput: this.tabDivs.first().element(by.id('voiceVariant')),
-      scriptDropdown: this.tabDivs.first().element(by.id('script')),
-      regionDropdown: this.tabDivs.first().element(by.id('region')),
-      variantInput:   this.tabDivs.first().element(by.id('variant'))
+      specialDropdown: this.tab().element(by.id('special')),
+      purposeDropdown: this.tab().element(by.id('purpose')),
+      ipaVariantInput: this.tab().element(by.id('ipaVariant')),
+      voiceVariantInput: this.tab().element(by.id('voiceVariant')),
+      scriptDropdown: this.tab().element(by.id('script')),
+      regionDropdown: this.tab().element(by.id('region')),
+      variantInput:   this.tab().element(by.id('variant'))
     }
   };
 
@@ -105,7 +108,7 @@ function ConfigurationPage() {
   this.exampleFields = this.activePane.all(by.repeater('fieldName in fieldOrder.examples'));
 
   this.getFieldByName = function getFieldByName(fieldName) {
-    return element(by.css('div.tab-pane.active > div > div > div.col-md-3 dl.picklists'))
+    return element(by.css('div.tab-pane.active > div > div > div > div.col-md-3 dl.picklists'))
       .element(by.cssContainingText('div[data-ng-repeat] > span', fieldName));
   };
 

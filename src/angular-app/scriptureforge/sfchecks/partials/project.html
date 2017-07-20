@@ -19,9 +19,9 @@
     </div>
 
     <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-        <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn btn-warning" data-ng-click="archiveTexts()">
+        <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn btn-secondary" data-ng-click="archiveTexts()">
             <i class="fa fa-archive fa-lg"></i> Archive Texts</button>
-        <button data-ng-show="rights.create" class="btn btn-success" data-ng-click="newTextCollapsed = !newTextCollapsed">
+        <button data-ng-show="rights.create" class="btn btn-primary" data-ng-click="newTextCollapsed = !newTextCollapsed">
             <i class="fa fa-plus"></i> Add New Text</button>
     </form>
     <div uib-collapse="newTextCollapsed">
@@ -70,14 +70,14 @@
                             </label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success" data-ng-disabled="newTextForm.$invalid"
+                    <button type="submit" class="btn btn-primary" data-ng-disabled="newTextForm.$invalid"
                             data-ng-click="addText(); newTextCollapsed = true"><i class="fa fa-check"></i> Save</button>
                 </div>
                 <fieldset class="col-md-4">
                     <div class="drop-box" data-ngf-drop="readUsx($file)" data-ngf-drag-over-class="'dragover'">
                         <h4>or drop a USX file here</h4>
                         <p>or if you prefer...</p>
-                        <button class="btn btn-success" id="browseUsxButton" data-ngf-select="readUsx($file)">Browse...</button>
+                        <button class="btn btn-primary" id="browseUsxButton" data-ngf-select="readUsx($file)">Browse...</button>
                     </div>
                     <div data-ngf-no-file-drop>
                         <div class="btn" data-ngf-select="readUsx($file)">Browse...</div>

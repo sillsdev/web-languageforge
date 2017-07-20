@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngAnimate', 'ngSanitize'])
+angular.module('palaso.ui.notice', ['ui.bootstrap', 'bellows.services', 'ngSanitize'])
   .factory('silNoticeService', ['$interval', 'utilService', function ($interval, util) {
     var notices = [];
     var timers = {};

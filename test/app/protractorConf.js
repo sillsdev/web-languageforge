@@ -48,16 +48,6 @@ exports.config = {
 
     browser.driver.manage().window().maximize();
 
-    // Disable animations so e2e tests run more quickly
-    var disableNgAnimate = function () {
-      angular.module('disableNgAnimate', []).run(['$animate', function ($animate) {
-        $animate.enabled(false);
-      }]);
-    };
-
-    // This seemed to make the tests more flaky rather than less. IJH 2014-12
-    //    browser.addMockModule('disableNgAnimate', disableNgAnimate);
-
     if (process.env.TEAMCITY_VERSION) {
       var jasmineReporters = require('jasmine-reporters');
       jasmine.getEnv().addReporter(new jasmineReporters.TeamCityReporter());

@@ -5,7 +5,6 @@ angular.module('lexicon-new-project',
     'bellows.services',
     'bellows.filters',
     'ui.bootstrap',
-    'ngAnimate',
     'ui.router',
     'palaso.ui.utils',
     'palaso.ui.language',
@@ -150,7 +149,7 @@ angular.module('lexicon-new-project',
       $scope.formStatus = msg;
       $scope.formStatusClass = 'alert alert-info';
       if (!msg) $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
-      $scope.forwardBtnClass = 'btn-success';
+      $scope.forwardBtnClass = 'btn-primary';
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
     }

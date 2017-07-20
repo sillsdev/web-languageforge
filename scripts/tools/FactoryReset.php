@@ -257,7 +257,7 @@ class FactoryReset
             $this->Execute($runForReal, $cmd);
             $cmd = "sudo chmod -R g+w {$this->lfSitePath}/htdocs/assets {$this->sfSitePath}/htdocs/assets";
             $this->Execute($runForReal, $cmd);
-            $cmd = "sudo chown -R www-data:fieldworks {$this->lfmergeSendReceivePath}";
+            $cmd = "sudo chgrp -R fieldworks {$this->lfmergeSendReceivePath}";
             $this->Execute($runForReal, $cmd);
 
             if (file_exists("$archivePath/mongodb_backup.tgz")) {
