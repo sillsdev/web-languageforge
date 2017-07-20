@@ -44,6 +44,8 @@ class TranslateProjectDtoTest extends TestCase
         $this->assertArrayHasKey('source', $dto['project']['config']);
         $this->assertArrayHasKey('target', $dto['project']['config']);
         $this->assertArrayHasKey('documentSets', $dto['project']['config']);
+        $this->assertArrayHasKey('confidenceThreshold', $dto['project']['config']);
+        $this->assertArrayNotHasKey('userPreferences', $dto['project']['config']);
         $this->assertArrayNotHasKey('usersPreferences', $dto['project']['config']);
     }
 }

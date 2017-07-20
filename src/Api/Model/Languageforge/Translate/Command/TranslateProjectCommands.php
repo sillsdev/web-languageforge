@@ -8,6 +8,7 @@ use Api\Model\Languageforge\Translate\TranslateProjectModel;
 use Api\Model\Languageforge\Translate\TranslateUserPreferences;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Mapper\JsonDecoder;
+use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
@@ -56,6 +57,9 @@ class TranslateProjectCommands
         }
         if (array_key_exists('config', $data)) {
             self::decodeConfig($project->config, $data['config']);
+            if (array_key_exists('userPreferences', $data['config'])) {
+                self::decodeUserPreferences($project->config->usersPreferences, $userId, $data['config']['userPreferences']);
+            }
         }
 
         if (self::isNewProject($data)) {
@@ -102,21 +106,7 @@ class TranslateProjectCommands
         $project = new TranslateProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
 
-        if (array_key_exists('selectedDocumentSetId', $data) ||
-            array_key_exists('isDocumentOrientationTargetRight', $data)
-        ) {
-            if (!array_key_exists($userId, $project->config->usersPreferences)) {
-                $project->config->usersPreferences[$userId] = new TranslateUserPreferences();
-            }
-
-            if (array_key_exists('selectedDocumentSetId', $data)) {
-                $project->config->usersPreferences[$userId]->selectedDocumentSetId = $data['selectedDocumentSetId'];
-            }
-
-            if (array_key_exists('isDocumentOrientationTargetRight', $data)) {
-                $project->config->usersPreferences[$userId]->isDocumentOrientationTargetRight = $data['isDocumentOrientationTargetRight'];
-            }
-        }
+        self::decodeUserPreferences($project->config->usersPreferences, $userId, $data);
 
         return $project->write();
     }
@@ -223,5 +213,39 @@ class TranslateProjectCommands
 
         JsonDecoder::decode($config, $configData);
         return $config;
+    }
+
+    /**
+     * @param MapOf $usersPreferences
+     * @param string $userId
+     * @param array $data
+     */
+    private static function decodeUserPreferences($usersPreferences, $userId, $data)
+    {
+        if (array_key_exists('selectedDocumentSetId', $data) ||
+            array_key_exists('isDocumentOrientationTargetRight', $data) ||
+            array_key_exists('hasConfidenceOverride', $data) ||
+            array_key_exists('confidenceThreshold', $data)
+        ) {
+            if (!array_key_exists($userId, $usersPreferences)) {
+                $usersPreferences[$userId] = new TranslateUserPreferences();
+            }
+
+            if (array_key_exists('selectedDocumentSetId', $data)) {
+                $usersPreferences[$userId]->selectedDocumentSetId = $data['selectedDocumentSetId'];
+            }
+
+            if (array_key_exists('isDocumentOrientationTargetRight', $data)) {
+                $usersPreferences[$userId]->isDocumentOrientationTargetRight = $data['isDocumentOrientationTargetRight'];
+            }
+
+            if (array_key_exists('hasConfidenceOverride', $data)) {
+                $usersPreferences[$userId]->hasConfidenceOverride = $data['hasConfidenceOverride'];
+            }
+
+            if (array_key_exists('confidenceThreshold', $data)) {
+                $usersPreferences[$userId]->confidenceThreshold = $data['confidenceThreshold'];
+            }
+        }
     }
 }
