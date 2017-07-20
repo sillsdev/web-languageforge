@@ -25,7 +25,7 @@ CACHE:
 {%  if useMinifiedJs %}
 /node_modules/jquery/dist/jquery.min.js?v={{ version }}
 /node_modules/angular/angular.min.js?v={{ version }}
-/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.min.js?v={{ version }}
+/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v={{ version }}
 
 {% for filename in vendorFilesMinJs %}
 /{{ filename }}?v={{ version }}
