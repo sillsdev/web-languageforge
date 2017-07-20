@@ -34,7 +34,7 @@
 //   'sass'
 //   'sass:watch'
 //   'build-composer'
-//   'build-bower'
+//   'build-npm-front-end'
 //   'build-remove-test-fixtures'
 //   'build-minify'
 //   'build-changeGroup'
@@ -676,16 +676,16 @@ gulp.task('build-composer', function (cb) {
 });
 
 // -------------------------------------
-//   Task: Build Bower
+//   Task: Build npm front-end
 // -------------------------------------
-gulp.task('build-bower', function (cb) {
+gulp.task('build-npm-front-end', function (cb) {
   var options = {
     dryRun: false,
     silent: false,
     cwd: './src'
   };
   execute(
-    'bower install',
+    'npm install',
     options,
     cb
   );
@@ -886,7 +886,7 @@ gulp.task('build',
   gulp.series(
     gulp.parallel(
       'build-composer',
-      'build-bower',
+      'build-npm-front-end',
       'build-version',
       'build-productionConfig',
       'build-clearLocalCache',

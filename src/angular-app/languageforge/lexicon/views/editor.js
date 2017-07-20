@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services',
-  'ngAnimate', 'palaso.ui.dc.entry', 'palaso.ui.comments', 'palaso.ui.showOverflow', 'truncate',
+  'palaso.ui.dc.entry', 'palaso.ui.comments', 'palaso.ui.showOverflow', 'truncate',
   'palaso.ui.scroll', 'palaso.ui.notice', 'lexicon.services'])
   .config(['$stateProvider', function ($stateProvider) {
 

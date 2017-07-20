@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.notice', 'ngAnimate',
+angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.notice',
   'bellows.services', 'ngFileUpload', 'lexicon.services'])
 
 // Palaso UI Dictionary Control: Picture

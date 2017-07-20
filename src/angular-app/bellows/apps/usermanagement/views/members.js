@@ -1,19 +1,23 @@
 'use strict';
 
 angular.module('usermanagement.members',
-  ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead',
-    'ui.bootstrap', 'palaso.ui.notice', 'ngRoute'])
-  .controller('MembersCtrl', ['$scope', 'userService', 'projectService',
-    'sessionService', 'silNoticeService', '$window',
-    function ($scope, userService, projectService, ss, notice, $window) {
+  ['bellows.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'ui.bootstrap',
+    'palaso.ui.notice', 'ngRoute'])
+  .controller('MembersCtrl', ['$scope', 'userService', 'projectService', 'sessionService',
+    'silNoticeService', '$window',
+    function ($scope, userService, projectService, sessionService, notice, $window) {
       $scope.userFilter = '';
 
       $scope.rights = {};
-      ss.getSession().then(function(session) {
-        $scope.rights.remove = session.hasProjectRight(ss.domain.USERS, ss.operation.DELETE);
-        $scope.rights.add = session.hasProjectRight(ss.domain.USERS, ss.operation.CREATE);
-        $scope.rights.changeRole = session.hasProjectRight(ss.domain.USERS, ss.operation.EDIT);
-        $scope.rights.showControlBar = $scope.rights.add || $scope.rights.remove || $scope.rights.changeRole;
+      sessionService.getSession().then(function (session) {
+        $scope.rights.remove =
+          session.hasProjectRight(sessionService.domain.USERS, sessionService.operation.DELETE);
+        $scope.rights.add =
+          session.hasProjectRight(sessionService.domain.USERS, sessionService.operation.CREATE);
+        $scope.rights.changeRole =
+          session.hasProjectRight(sessionService.domain.USERS, sessionService.operation.EDIT);
+        $scope.rights.showControlBar =
+          $scope.rights.add || $scope.rights.remove || $scope.rights.changeRole;
       });
 
       /* ----------------------------------------------------------
@@ -23,15 +27,15 @@ angular.module('usermanagement.members',
       $scope.updateSelection = function updateSelection(event, item) {
         var selectedIndex = $scope.selected.indexOf(item);
         var checkbox = event.target;
-        if (checkbox.checked && selectedIndex == -1) {
+        if (checkbox.checked && selectedIndex === -1) {
           $scope.selected.push(item);
-        } else if (!checkbox.checked && selectedIndex != -1) {
+        } else if (!checkbox.checked && selectedIndex !== -1) {
           $scope.selected.splice(selectedIndex, 1);
         }
       };
 
       $scope.isSelected = function isSelected(item) {
-        return item != null && $scope.selected.indexOf(item) >= 0;
+        return item !== null && $scope.selected.indexOf(item) >= 0;
       };
 
       $scope.removeProjectUsers = function removeProjectUsers() {
@@ -39,29 +43,29 @@ angular.module('usermanagement.members',
         for (var i = 0, l = $scope.selected.length; i < l; i++) {
 
           // Guard against project owner being removed
-          if ($scope.selected[i].id != $scope.project.ownerRef.id) {
+          if ($scope.selected[i].id !== $scope.project.ownerRef.id) {
             userIds.push($scope.selected[i].id);
           } else {
             notice.push(notice.WARN, 'Project owner cannot be removed');
           }
         }
 
-        if (l == 0) {
+        if (l === 0) {
 
           // TODO ERROR
           return;
         }
 
         projectService.removeUsers(userIds).then(function () {
-          ss.getSession().then(function(session) {
-            if (userIds.indexOf(session.userId()) != -1) {
+          sessionService.getSession().then(function (session) {
+            if (userIds.indexOf(session.userId()) !== -1) {
               // redirect if you just removed yourself from the project
               notice.push(notice.SUCCESS, 'You have been removed from this project');
               $window.location.href = '/app/projects';
             } else {
               $scope.queryUserList();
               $scope.selected = [];
-              if (userIds.length == 1) {
+              if (userIds.length === 1) {
                 notice.push(notice.SUCCESS, 'The user was removed from this project');
               } else {
                 notice.push(notice.SUCCESS, userIds.length +
@@ -137,9 +141,9 @@ angular.module('usermanagement.members',
         if (!$scope.excludedUsers) { return false; }
 
         for (var i = 0, l = $scope.excludedUsers.length; i < l; i++) {
-          if (userName == $scope.excludedUsers[i].username ||
-            userName == $scope.excludedUsers[i].name     ||
-            userName == $scope.excludedUsers[i].email) {
+          if (userName === $scope.excludedUsers[i].username ||
+            userName === $scope.excludedUsers[i].name     ||
+            userName === $scope.excludedUsers[i].email) {
             return $scope.excludedUsers[i];
           }
         }
@@ -163,7 +167,7 @@ angular.module('usermanagement.members',
             ' (username \'' + excludedUser.username +
             '\', email ' + excludedUser.email +
             ') is already a member.';
-        } else if ($scope.typeahead.userName.indexOf('@') != -1) {
+        } else if ($scope.typeahead.userName.indexOf('@') !== -1) {
           $scope.addMode = 'invite';
           $scope.disableAddButton = false;
           $scope.warningText = '';
@@ -175,7 +179,7 @@ angular.module('usermanagement.members',
       };
 
       $scope.addProjectUser = function addProjectUser() {
-        if ($scope.addMode == 'addExisting') {
+        if ($scope.addMode === 'addExisting') {
           var model = {};
           model.id = $scope.user.id;
 
@@ -189,7 +193,7 @@ angular.module('usermanagement.members',
                 // rather than returning all users then searching through them in O(N) time.
                 // TODO: Make an "is user in project?" query API. 2014-06 RM
                 var thisUser = result.data.users[i];
-                if (thisUser.id == model.id) {
+                if (thisUser.id === model.id) {
                   notice.push(notice.WARN, '\'' + $scope.user.name + '\' is already a member of '
                     + $scope.project.projectName + '.');
                   $scope.disableAddButton = true;
@@ -206,11 +210,11 @@ angular.module('usermanagement.members',
               });
             }
           });
-        } else if ($scope.addMode == 'invite') {
+        } else if ($scope.addMode === 'invite') {
           $scope.queryUserList();
 
           userService.sendInvite($scope.typeahead.userName, function (result) {
-            if (result.ok) {
+            if (result.ok && result.data) {
               notice.push(notice.SUCCESS, '\'' + $scope.typeahead.userName +
                 '\' was invited to join the project ' + $scope.project.projectName);
               $scope.queryUserList();

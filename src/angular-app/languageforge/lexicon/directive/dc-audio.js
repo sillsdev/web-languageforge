@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notice', 'ngAnimate',
+angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notice',
   'bellows.services', 'ngFileUpload', 'lexicon.services', 'sgw.soundmanager',
   'palaso.ui.mockUpload'
 ])
@@ -73,7 +73,7 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
         }
 
         soundManager.setup({
-          url: 'vendor_bower/SoundManager2/swf/',
+          url: 'node_modules/soundmanager2/swf/',
           flashVersion: 9, // optional: shiny features (default = 8)
           // optional: ignore Flash where possible, use 100% HTML5 mode
           //preferFlash : false,
