@@ -48,7 +48,8 @@ angular.module('translate',
         $scope.project = session.project();
         $scope.rights = rights;
         $scope.rights.showSettingsDropdown = function showSettingsDropdown() {
-          return $scope.rights.canEditProject() || $scope.rights.canEditUsers();
+          return $scope.rights.canEditProject() || $scope.rights.canEditUsers() ||
+            $scope.rights.canEditEntry();
         };
 
         // $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;

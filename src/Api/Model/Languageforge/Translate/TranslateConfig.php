@@ -13,6 +13,7 @@ class TranslateConfig
         $this->source = new TranslateConfigDocType();
         $this->target = new TranslateConfigDocType();
         $this->documentSets = new TranslateConfigDocumentSets();
+        $this->confidenceThreshold = 0.2;
         $this->usersPreferences = new MapOf(function () {
             return new TranslateUserPreferences();
         });
@@ -29,6 +30,9 @@ class TranslateConfig
 
     /** @var TranslateConfigDocumentSets */
     public $documentSets;
+
+    /** @var float */
+    public $confidenceThreshold;
 
     /** @var MapOf <TranslateUserPreferences> key is userId */
     public $usersPreferences;
@@ -64,6 +68,7 @@ class TranslateUserPreferences
     {
         $this->selectedDocumentSetId = '';
         $this->isDocumentOrientationTargetRight = false;
+        $this->hasConfidenceOverride = false;
     }
 
     /** @var string */
@@ -71,4 +76,10 @@ class TranslateUserPreferences
 
     /** @var boolean */
     public $isDocumentOrientationTargetRight;
+
+    /** @var boolean */
+    public $hasConfidenceOverride;
+
+    /** @var float */
+    public $confidenceThreshold;
 }

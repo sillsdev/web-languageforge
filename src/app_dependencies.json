@@ -18,5 +18,6 @@
   "ng-file-upload": { "path": "vendor_bower/ng-file-upload", "jsFile": ["ng-file-upload", "ng-file-upload-shim"] },
   "rangy": { "path": "vendor_bower/rangy", "jsFile": ["rangy-core", "rangy-selectionsaverestore", "rangy-highlighter", "rangy-classapplier", "rangy-serializer", "rangy-textrange"] },
   "soundmanager2": { "path": "vendor_bower/SoundManager2/script", "jsFile": "soundmanager2", "jsMinFile": "soundmanager2-nodebug-jsmin.js" },
-  "textAngular": { "path": "vendor_bower/textAngular/dist", "jsFile": ["textAngular-sanitize", "textAngularSetup", "textAngular"], "jsMinFile": ["textAngular-sanitize", "textAngular"], "cssFile": "textAngular" }
+  "textAngular": { "path": "vendor_bower/textAngular/dist", "jsFile": ["textAngular-sanitize", "textAngularSetup", "textAngular"], "jsMinFile": ["textAngular-sanitize", "textAngular"], "cssFile": "textAngular" },
+  "rzslider": { "path": "vendor_bower/angularjs-slider/dist", "jsFile": "rzslider", "cssFile": "rzslider" }
 }

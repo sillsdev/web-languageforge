@@ -25,7 +25,8 @@
     "SoundManager2": "soundmanager2#*",
     "bootstrap": "4.0.0-alpha.5",
     "intl-tel-input": "~9.2",
-    "tether": "1.4.0"
+    "tether": "1.4.0",
+    "angularjs-slider": "^6.2.3"
   },
   "devDependencies": {}
 }
