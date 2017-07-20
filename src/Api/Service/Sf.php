@@ -843,6 +843,10 @@ class Sf
      */
     public function translate_configUpdate($configData)
     {
+        if (array_key_exists('userPreferences', $configData)) {
+            $this->translate_configUpdateUserPreferences($configData['userPreferences']);
+        }
+
         return TranslateProjectCommands::updateConfig($this->projectId, $configData);
     }
 

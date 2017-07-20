@@ -65,6 +65,46 @@
                 </fieldset>
             </form>
         </uib-tab>
+        <uib-tab heading="{{'Suggestions' | translate}}" select="redrawSlider()">
+            <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="updateConfig()">
+                <fieldset class="card-block" data-ng-disabled="!rights.canEditEntry()">
+                    <div class="form-group row">
+                        <label class="control-label col-xs-12" data-translate="Confidence"></label>
+                        <div class="form-group col-xs-12">
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" data-ng-value="false"
+                                           data-ng-model="confidence.isMyThreshold"
+                                           data-ng-change="selectWhichConfidence()"
+                                           data-ng-required="confidence.isMyThreshold === undefined" />
+                                    {{'Use the project\'s confidence threshold' | translate}}
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" data-ng-value="true"
+                                           data-ng-model="confidence.isMyThreshold"
+                                           data-ng-change="selectWhichConfidence()"
+                                           data-ng-required="confidence.isMyThreshold === undefined" />
+                                    {{'Use my own confidence threshold' | translate}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="controls col-xs-12">
+                            <rzslider rz-slider-model="confidence.value"
+                                      rz-slider-options="confidence.options"></rzslider>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="controls col-xs-12">
+                            <button type="submit" class="btn btn-primary" data-ng-disabled="!rights.canEditEntry()">
+                                <i class="fa fa-check"></i>
+                                {{'Save' | translate}}</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </uib-tab>
 
         <!-- Archive tab disabled now that project owners can delete their own projects -->
         <uib-tab heading="{{'Archive' | translate}}" data-ng-show="false">

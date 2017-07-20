@@ -13,7 +13,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="interfaceConfig.pullToSide">
                         <a class="dropdown-item" ui-sref="settings" data-translate="Project Settings"
-                           data-ng-show="rights.canEditProject()"></a>
+                           data-ng-show="rights.canEditEntry()"></a>
                         <a class="dropdown-item" data-ng-href="/app/usermanagement/{{project.id}}"
                            data-translate="User Management" data-ng-show="rights.canEditUsers()"></a>
                     </div>

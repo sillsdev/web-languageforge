@@ -20,6 +20,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
             projectApi, documentApi, Document, wordParser, realTime, modal) {
     var currentDocIds = [];
     var selectedSegmentIndex = -1;
+    var confidenceThreshold = 0.2;
     var source = new Document.Data('source', 'Source');
     var target = new Document.Data('target', 'Target');
     var modulesConfig = {
@@ -50,7 +51,6 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.target = target;
     $scope.right = source;
     $scope.left = target;
-    $scope.confidenceThreshold = 0.2;
     $scope.selectedDocumentSetIndex = 0;
     $scope.documentSets = [];
     $scope.statusOptions = [
@@ -67,6 +67,14 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         source.inputSystem = $scope.project.config.source.inputSystem;
         target.inputSystem = $scope.project.config.target.inputSystem;
         assistant.initialise(source.inputSystem.tag, target.inputSystem.tag, $scope.project.slug);
+
+        confidenceThreshold = $scope.project.config.confidenceThreshold;
+        if (angular.isDefined($scope.project.config.userPreferences.confidenceThreshold) &&
+          angular.isDefined($scope.project.config.userPreferences.hasConfidenceOverride) &&
+          $scope.project.config.userPreferences.hasConfidenceOverride
+        ) {
+          confidenceThreshold = $scope.project.config.userPreferences.confidenceThreshold;
+        }
 
         if (angular.isDefined($scope.project.config.documentSets.idsOrdered) &&
           $scope.project.config.documentSets.idsOrdered.length > 0
@@ -357,7 +365,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
           var newSourceSegmentText = source.getSegment(selectedSegmentIndex);
           if (newSourceSegmentText !== source.segment.text) {
             source.segment.text = newSourceSegmentText;
-            assistant.translateInteractively(source.segment.text, $scope.confidenceThreshold);
+            assistant.translateInteractively(source.segment.text, confidenceThreshold);
           }
         }
       }
@@ -420,7 +428,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         if (newSegmentIndex !== selectedSegmentIndex || newSourceSegmentText !== source.segment.text
         ) {
           source.segment.text = newSourceSegmentText;
-          assistant.translateInteractively(source.segment.text, $scope.confidenceThreshold,
+          assistant.translateInteractively(source.segment.text, confidenceThreshold,
             function () {
               updatePrefix(newSegmentIndex);
             }
