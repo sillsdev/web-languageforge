@@ -272,17 +272,20 @@ function ($q, sessionService, cache, commentsCache,
 
         angular.forEach(result.data.deletedCommentIds, commentService.removeCommentFromLists);
 
-        sortList(entries).then(function(sortedEntries) {
-          // the length = 0 followed by Array.push.apply is a method of replacing the contents of
-          // an array without creating a new array thereby keeping original references
-          // to the array
-          entries.length = 0;
-          Array.prototype.push.apply(entries, sortedEntries);
-        });
-        sortList(visibleEntries).then(function(sortedVisibleEntries) {
-          visibleEntries.length = 0;
-          Array.prototype.push.apply(visibleEntries, sortedVisibleEntries);
-        });
+        // only sort the list if there have been changes to entries (or deleted entries)
+        if (result.data.entries.length > 0 || result.data.deletedEntryIds.length > 0) {
+          sortList(entries).then(function(sortedEntries) {
+            // the length = 0 followed by Array.push.apply is a method of replacing the contents of
+            // an array without creating a new array thereby keeping original references
+            // to the array
+            entries.length = 0;
+            Array.prototype.push.apply(entries, sortedEntries);
+          });
+          sortList(visibleEntries).then(function(sortedVisibleEntries) {
+            visibleEntries.length = 0;
+            Array.prototype.push.apply(visibleEntries, sortedVisibleEntries);
+          });
+        }
       }
 
       if (result.data.itemCount &&
