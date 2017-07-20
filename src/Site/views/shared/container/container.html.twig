@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Required meta tags always come first -->
+    {# Required meta tags always come first #}
     <meta charset="utf-8">
     {% if isBootstrap4 %}
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,11 +20,12 @@
 
     <link rel="icon" href="/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico" type="image/x-icon" />
 
-    <!-- jquery must be the first js to be loaded -->
+    {# jquery must be the first js to be loaded #}
     {%  if useMinifiedJs %}
         <script src="/node_modules/jquery/dist/jquery.min.js?v={{ version }}"></script>
         <script src="/node_modules/angular/angular.min.js?v={{ version }}"></script>
-        <script src="/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.min.js?v={{ version }}"></script>
+        {# ui-bootstrap-tpls doesn't ship a minified version AFAICT #}
+        <script src="/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v={{ version }}"></script>
 
         {% for filename in vendorFilesMinJs %}
         <script src="/{{ filename }}?v={{ version }}"></script>
