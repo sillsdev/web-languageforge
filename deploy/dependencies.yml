@@ -60,9 +60,6 @@
     - name: symlink node to nodejs
       file: src=/usr/bin/nodejs dest=/usr/local/bin/node state=link
       when: node_binary.stat.exists == False
-        - p7zip-full
-        - unzip
-        - dotnet-dev-1.0.1
 
     - name: install n
       shell: npm install -g n
