@@ -709,19 +709,43 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
       function setSortAndFilterOptionsFromConfig() {
         console.log($scope.config);
-        $scope.entryListModifiers.sortOptions.length = 0;
-        angular.forEach($scope.config.fieldOrder, function(field) {
+        var sortOptions = [], filterOptions = [];
+        filterOptions.push({label:"Comments", value:'comments', type: 'comments'});
+        angular.forEach($scope.config.entry.fieldOrder, function(entryFieldKey) {
+          var entryField = $scope.config.entry.fields[entryFieldKey];
 
           // note: do I need to check if user can see field (view settings).  Is this handled somewhere else? - cjh 2017-07-20
-          if ($scope.config.fields[field].hideIfEmpty) return;
-          $scope.entryListModifiers.sortOptions.push({label:$scope.config.fields[field].label, value:field});
-
-          if (field == 'senses') {
-            angular.forEach($scope.config.fields.senses.fieldOrder, function (senseField) {
-              $scope.entryListModifiers.sortOptions.push({label:$scope.config.fields.senses.fields[field].label, value:senseField});
+          if (entryField.hideIfEmpty) return;
+          if (entryFieldKey == 'senses') {
+            angular.forEach($scope.config.entry.fields.senses.fieldOrder, function (senseFieldKey) {
+              var senseField = $scope.config.entry.fields.senses.fields[senseFieldKey];
+              if (senseField.hideIfEmpty || senseField.type == 'fields') return;
+              sortOptions.push({label:senseField.label, value:senseFieldKey});
+              if (senseField.type == 'multitext') {
+                angular.forEach(senseField.inputSystems, function (ws) {
+                  filterOptions.push({label:senseField.label + ' [' + ws + ']', value:senseFieldKey, type: 'multitext', inputSystem: ws, key: senseFieldKey + '-' + ws});
+                });
+              } else {
+                filterOptions.push({label:senseField.label, value:senseFieldKey, type: senseField.type});
+              }
             });
+          } else {
+            sortOptions.push({label:entryField.label, value:entryFieldKey});
+            if (entryField.type == 'multitext') {
+              angular.forEach(entryField.inputSystems, function (ws) {
+                filterOptions.push({label:entryField.label + ' [' + ws + ']', value:entryFieldKey, type: 'multitext', inputSystem: ws, key: entryFieldKey + '-' + ws});
+              });
+            } else {
+              filterOptions.push({label:entryField.label, value:entryFieldKey, type: entryField.type});
+            }
           }
         });
+        $scope.entryListModifiers.sortOptions.length = 0;
+        $scope.entryListModifiers.filterOptions.length = 0;
+        Array.prototype.push.apply($scope.entryListModifiers.sortOptions, sortOptions);
+        Array.prototype.push.apply($scope.entryListModifiers.filterOptions, filterOptions);
+        console.log("filterOptions:");
+        console.log(filterOptions);
       }
 
       $scope.$on('$destroy', function () {
