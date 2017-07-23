@@ -22,26 +22,22 @@
                 <h5>{{ 'Words in dictionary' | translate }}</h5>
             </div>
             <div class="form-inline">
-                <select class="custom-select" ng-change="sortEntries()" ng-model="entryListModifiers.sortBy">
-                    <option>Sort</option>
+                <select class="custom-select" ng-change="sortEntries()" ng-model="entryListModifiers.sortDirection">
+                    <option value="forward">Sort By</option>
+                    <option value="reverse">In Reverse</option>
+                </select> :
+                <select class="custom-select" ng-change="sortEntries()" ng-model="entryListModifiers.sortBy" ng-options="item as item.label for item in entryListModifiers.sortOptions track by item.value">
                 </select>
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" ng-model="entryListModifiers.sortReverse" ng-change="sortEntries()">
-                        Reverse
-                    </label>
-                </div>
             </div>
             <div class="form-inline">
-                <select class="custom-select" ng-change="filterEntries()" ng-model="entryListModifiers.filterBy">
-                    <option>Filter</option>
+                <select class="custom-select" ng-hide="!entryListModifiers.filterBy" ng-change="filterEntries()" ng-model="entryListModifiers.filterType">
+                    <option value="isEmpty">Does not have</option>
+                    <option value="isNotEmpty">Has</option>
                 </select>
-                <div class="form-check-inline">
-                    <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" ng-model="entryListModifiers.filterReverse" ng-change="sortEntries()">
-                        Invert
-                    </label>
-                </div>
+                <select class="custom-select" ng-change="filterEntries()" ng-model="entryListModifiers.filterBy" ng-options="item as item.label for item in entryListModifiers.filterOptions track by item.key">
+                    <option value="">Filter for...</option>
+                </select>
+                <pre>{{entryListModifiers.filterBy|json}}</pre>
             </div>
             <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
                 <div id="entryId_{{entry.id}}" class="list-group-item lexiconListItemCompact"

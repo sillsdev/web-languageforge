@@ -9,7 +9,7 @@ function ($q, sessionService, cache, commentsCache,
           notice, commentService) {
   var entries = [];
   var visibleEntries = [];
-  var entryListModifiers = {sortBy: "", sortOptions: [], filterBy: "", filterOptions: [], sortReverse: false, filterReverse: false};
+  var entryListModifiers = {sortBy: {label: "Word", value: "lexeme"}, sortOptions: [], filterBy: "", filterOptions: [], sortDirection: "forward", filterType: "isNotEmpty"};
   var browserInstanceId = Math.floor(Math.random() * 1000000);
   var api = undefined;
 
@@ -328,7 +328,7 @@ function ($q, sessionService, cache, commentsCache,
       });
 
       mapped.sort(function(a, b) {
-        if (entryListModifiers.sortReverse) {
+        if (entryListModifiers.sortDirection == 'reverse') {
           return collator.compare(a.value, b.value) * -1;
         } else {
           return collator.compare(a.value, b.value);
