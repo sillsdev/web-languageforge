@@ -353,23 +353,18 @@ Occasionally developers need to update composer or npm.  If something isn't work
 #### Update npm packages ####
 
 In the root folder: `npm install`
+
 In the src folder: `npm install`
 
 #### Update composer ####
 
 In src/: `composer install`
 
-## Setting up and running the Node Server ##
-
-To setup the node server, from the repo root folder...
-````
-cd src/node
-npm install
-````
+## Running the Node Server ##
 
 To run the node server to get real time updating...
-
 ````
+cd src/node
 sudo node server.js
 ````
 
