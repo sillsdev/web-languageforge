@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
-  'palaso.ui.language', 'palaso.ui.picklistEditor', 'lexicon.services',
-  'palaso.util.model.transform'])
+  'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
+  'lexicon.services', 'palaso.util.model.transform'])
 
 // Configuration Controller
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService',

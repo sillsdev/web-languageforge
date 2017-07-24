@@ -15,6 +15,7 @@ describe('Editor Comments', function () {
   });
 
   it('browse page has correct word count', function () {
+    // flaky assertion, also test/app/languageforge/lexicon/editor/e2e/editor-entry.spec.js:20
     expect(editorPage.browse.entriesList.count()).toEqual(editorPage.browse.getEntryCount());
     expect(editorPage.browse.getEntryCount()).toBe(3);
   });

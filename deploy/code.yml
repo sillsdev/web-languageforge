@@ -12,8 +12,8 @@
       when: inventory_hostname == "localhost"
       with_items: "{{site_src_paths}}"
 
-    - name: bower install
-      command: bower install --allow-root
+    - name: npm front-end install
+      command: npm install
       args:
         chdir: "{{item}}"
       changed_when: false
