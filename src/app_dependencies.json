@@ -4,7 +4,7 @@
   "angular-zxcvbn": { "path": "node_modules/angular-zxcvbn/dist", "jsFile": "angular-zxcvbn.min.js" },
   "angular-translate": { "path": "node_modules/angular-translate/dist" },
   "angular-translate-loader-static-files": { "path": "node_modules/angular-translate-loader-static-files" },
-  "quill": { "path": "node/node_modules/quill/dist", "jsFile": "quill", "cssFile": ["quill.bubble.css", "quill.snow.css"] },
+  "quill": { "path": "node_modules/quill/dist", "jsFile": "quill", "cssFile": ["quill.bubble.css", "quill.snow.css"] },
   "ng-quill": { "path": "node_modules/ng-quill/dist" },
   "bundle": { "path": "node/static/dist", "jsFile": "bundle" },
   "angular-truncate-2": { "path": "node_modules/angular-truncate-2/dist" },
