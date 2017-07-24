@@ -23,9 +23,9 @@ CACHE:
 /Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico
 
 {%  if useMinifiedJs %}
-/vendor_bower/jquery/dist/jquery.min.js?v={{ version }}
-/vendor_bower/angular/angular.min.js?v={{ version }}
-/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.min.js?v={{ version }}
+/node_modules/jquery/dist/jquery.min.js?v={{ version }}
+/node_modules/angular/angular.min.js?v={{ version }}
+/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v={{ version }}
 
 {% for filename in vendorFilesMinJs %}
 /{{ filename }}?v={{ version }}
@@ -34,9 +34,9 @@ CACHE:
 /js/lib/{{ app.website.base }}.min.js?v={{ version }}
 
 {%  else %}
-/vendor_bower/jquery/dist/jquery.js?v={{ version }}
-/vendor_bower/angular/angular.js?v={{ version }}
-/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.js?v={{ version }}
+/node_modules/jquery/dist/jquery.js?v={{ version }}
+/node_modules/angular/angular.js?v={{ version }}
+/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v={{ version }}
 
 {% for filename in vendorFilesJs %}
 /{{ filename }}?v={{ version }}
