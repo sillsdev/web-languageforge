@@ -2,13 +2,9 @@
 
 angular.module('lexicon.services')
   .service('lexSendReceiveApi', ['apiService', function (api) {
-
     this.getUserProjects = api.method('sendReceive_getUserProjects');
-    this.updateSRProject = api.method('sendReceive_updateSRProject');
     this.receiveProject = api.method('sendReceive_receiveProject');
-    this.commitProject = api.method('sendReceive_commitProject');
     this.getProjectStatus = api.method('sendReceive_getProjectStatus');
-
   }])
   .service('lexSendReceive', ['sessionService', 'silNoticeService', 'lexSendReceiveApi',
     '$interval', 'lexEditorDataService', '$filter', '$q',
@@ -29,7 +25,9 @@ angular.module('lexicon.services')
       var pendingMessageId;
       var projectSettings;
 
-      sessionService.getSession().then(function(session) {
+      sessionService.getSession().then(updateSessionData);
+
+      function updateSessionData(session) {
         projectSettings = session.projectSettings();
 
         if (angular.isDefined(projectSettings) &&
@@ -39,7 +37,7 @@ angular.module('lexicon.services')
           status = projectSettings.sendReceive.status;
           previousSRState = status.SRState;
         }
-      });
+      }
 
       this.clearState = function clearState() {
         if (!status || angular.isUndefined(status)) {
@@ -66,7 +64,7 @@ angular.module('lexicon.services')
       };
 
       this.isSendReceiveProject = function isSendReceiveProject() {
-        return sessionService.getSession().then(function(session) {
+        return sessionService.getSession().then(function (session) {
           return session.projectSettings().hasSendReceive;
         });
       };
@@ -77,8 +75,8 @@ angular.module('lexicon.services')
         };
 
       // Called after a lexicon project page is done loading
-      this.checkInitialState = function checkInitialState() {
-        this.isSendReceiveProject().then(function(isSR) {
+      this.checkInitialState = function () {
+        this.isSendReceiveProject().then(function (isSR) {
           if (isSR) {
             if (!status || angular.isUndefined(status)) {
               this.clearState();
@@ -96,7 +94,7 @@ angular.module('lexicon.services')
           } else {
             this.startPollUpdateTimer();
           }
-        }.bind(this))
+        }.bind(this));
       }.bind(this);
 
       this.setSyncStarted = function setSyncStarted() {
@@ -107,16 +105,16 @@ angular.module('lexicon.services')
       };
 
       this.setStateUnsynced = function setStateUnsynced() {
-        return this.isSendReceiveProject().then(function(isSR) {
+        return this.isSendReceiveProject().then(function (isSR) {
           if (isSR) {
             previousSRState = status.SRState;
             status.SRState = 'LF_UNSYNCED';
           }
-        })
+        });
       };
 
       var getSyncProjectStatus = function () {
-        sendReceiveApi.getProjectStatus().then(function(result) {
+        sendReceiveApi.getProjectStatus().then(function (result) {
           if (!result.data) {
             this.clearState();
             this.startPollUpdateTimer();
@@ -138,7 +136,7 @@ angular.module('lexicon.services')
             notice.cancelLoading();
           }
 
-          console.log(status);
+          // console.log(status);
 
           switch (status.SRState) {
             case 'PENDING' :
@@ -159,6 +157,7 @@ angular.module('lexicon.services')
                 notice.push(notice.SUCCESS, 'The project was successfully synchronized.');
               }
 
+              sessionService.getSession(true).then(updateSessionData);
               (syncProjectStatusSuccessCallback || angular.noop)();
               break;
           }
@@ -246,7 +245,7 @@ angular.module('lexicon.services')
         return $q.all({
           editorData: editorData.refreshEditorData(),
           isSR: this.isSendReceiveProject()
-        }).then(function(data) {
+        }).then(function (data) {
           if (data.isSR) {
             var editorData = data.editorData.data;
             if (angular.isUndefined(editorData) ||
@@ -306,7 +305,7 @@ angular.module('lexicon.services')
             }
 
             status = result.data;
-            console.log(status);
+            // console.log(status);
             if (status.SRState === 'IDLE' ||
               status.SRState === 'HOLD') {
               this.cancelCloneStatusTimer();

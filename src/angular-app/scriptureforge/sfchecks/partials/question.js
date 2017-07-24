@@ -13,7 +13,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     $scope.state = 'stop';
     $scope.audioReady = false;
     soundManager.setup({
-      url: 'vendor_bower/SoundManager2/swf/',
+      url: 'node_modules/soundmanager2/swf/',
       flashVersion: 9, // optional: shiny features (default = 8)
       // optional: ignore Flash where possible, use 100% HTML5 mode
       // preferFlash : false,

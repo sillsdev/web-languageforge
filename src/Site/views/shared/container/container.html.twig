@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Required meta tags always come first -->
+    {# Required meta tags always come first #}
     <meta charset="utf-8">
     {% if isBootstrap4 %}
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,11 +20,12 @@
 
     <link rel="icon" href="/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico" type="image/x-icon" />
 
-    <!-- jquery must be the first js to be loaded -->
+    {# jquery must be the first js to be loaded #}
     {%  if useMinifiedJs %}
-        <script src="/vendor_bower/jquery/dist/jquery.min.js?v={{ version }}"></script>
-        <script src="/vendor_bower/angular/angular.min.js?v={{ version }}"></script>
-        <script src="/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.min.js?v={{ version }}"></script>
+        <script src="/node_modules/jquery/dist/jquery.min.js?v={{ version }}"></script>
+        <script src="/node_modules/angular/angular.min.js?v={{ version }}"></script>
+        {# ui-bootstrap-tpls doesn't ship a minified version AFAICT #}
+        <script src="/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v={{ version }}"></script>
 
         {% for filename in vendorFilesMinJs %}
         <script src="/{{ filename }}?v={{ version }}"></script>
@@ -33,9 +34,9 @@
         <script src="/js/lib/{{ app.website.base }}.min.js?v={{ version }}"></script>
 
     {%  else %}
-        <script src="/vendor_bower/jquery/dist/jquery.js?v={{ version }}"></script>
-        <script src="/vendor_bower/angular/angular.js?v={{ version }}"></script>
-        <script src="/vendor_bower/angular-bootstrap/ui-bootstrap-tpls.js?v={{ version }}"></script>
+        <script src="/node_modules/jquery/dist/jquery.js?v={{ version }}"></script>
+        <script src="/node_modules/angular/angular.js?v={{ version }}"></script>
+        <script src="/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v={{ version }}"></script>
 
         {% for filename in vendorFilesJs %}
         <script src="/{{ filename }}?v={{ version }}"></script>
@@ -61,8 +62,12 @@
         {% endif %}
     </script>
 
-    {% if app.website.domain == 'languageforge.org' %}
+    {% if 'languageforge.org' in app.website.domain %}
         <script type="text/javascript">window.liveSettings={api_key:"a328216f86c9417cb7583c0100669635"}</script>
+        <script type="text/javascript" src="//cdn.transifex.com/live.js"></script>
+    {% endif %}
+    {% if 'scriptureforge.org' in app.website.domain %}
+        <script type="text/javascript">window.liveSettings={api_key:"f6eeadd6f17f4bd68ea9b12c5afd7124"}</script>
         <script type="text/javascript" src="//cdn.transifex.com/live.js"></script>
     {% endif %}
 
