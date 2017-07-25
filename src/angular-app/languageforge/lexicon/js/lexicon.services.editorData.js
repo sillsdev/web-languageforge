@@ -21,7 +21,8 @@ function ($q, editorDataService, api) {
     showMoreEntries: editorDataService.showMoreEntries,
     sortEntries: editorDataService.sortEntries,
     filterEntries: editorDataService.filterEntries,
-    entryListModifiers: editorDataService.entryListModifiers
+    entryListModifiers: editorDataService.entryListModifiers,
+    getSortableValue: editorDataService.getSortableValue
   };
 
 }]);

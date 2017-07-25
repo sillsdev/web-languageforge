@@ -21,30 +21,33 @@
                 <small class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
                 <h5>{{ 'Words in dictionary' | translate }}</h5>
             </div>
+            <br />
             <div class="form-inline">
                 <select class="custom-select" ng-change="sortEntries()" ng-model="entryListModifiers.sortDirection">
-                    <option value="forward">Sort By</option>
+                    <option value="forward">Display</option>
                     <option value="reverse">In Reverse</option>
                 </select> :
                 <select class="custom-select" ng-change="sortEntries()" ng-model="entryListModifiers.sortBy" ng-options="item as item.label for item in entryListModifiers.sortOptions track by item.value">
                 </select>
             </div>
+            <br />
             <div class="form-inline">
-                <select class="custom-select" ng-hide="!entryListModifiers.filterBy" ng-change="filterEntries()" ng-model="entryListModifiers.filterType">
-                    <option value="isEmpty">Does not have</option>
+                <select class="custom-select" ng-show="entryListModifiers.filterBy" ng-change="filterEntries()" ng-model="entryListModifiers.filterType">
+                    <option value="isEmpty">Doesn't have</option>
                     <option value="isNotEmpty">Has</option>
                 </select>
                 <select class="custom-select" ng-change="filterEntries()" ng-model="entryListModifiers.filterBy" ng-options="item as item.label for item in entryListModifiers.filterOptions track by item.key">
                     <option value="">Filter for...</option>
                 </select>
-                <pre>{{entryListModifiers.filterBy|json}}</pre>
+                <button ng-click="entryListModifiers.filterBy = '';filterEntries()" ng-show="entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
             </div>
+            <br />
             <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
                 <div id="entryId_{{entry.id}}" class="list-group-item lexiconListItemCompact"
                      data-ng-class="{selected: entry.id == currentEntry.id, listItemHasComment: commentService.getEntryCommentCount(entry.id) > 0}"
                      title="{{getCompactItemListOverlay(entry)}}"
                      data-ng-repeat="entry in visibleEntries track by entry.id" data-ng-click="editEntry(entry.id)">
-                    <div dir="auto" class="listItemPrimary" data-ng-bind-html="getWordForDisplay(entry)"></div>
+                    <div dir="auto" class="listItemPrimary" data-ng-bind-html="getCompactListItemForDisplay(config, entry)"></div>
                     <div dir="auto" class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(entry)"></div>
                 </div>
             </div>
