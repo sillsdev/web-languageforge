@@ -314,17 +314,11 @@ function ($q, sessionService, cache, commentsCache,
   function _sortList(list, field) {
     return sessionService.getSession().then(function(session) {
       var config = session.projectSettings().config;
-      var inputSystems = config.entry.fields.lexeme.inputSystems;
-      var ws = inputSystems[0];
-      var collator = Intl.Collator(ws);
+      var collator = Intl.Collator(_getInputSystemForSort(config));
 
       // temporary mapped array
       var mapped = list.map(function(entry, i) {
-        var lexeme = '';
-        if (angular.isDefined(entry.lexeme) && angular.isDefined(entry.lexeme[ws])) {
-          lexeme = entry.lexeme[ws].value;
-        }
-        return {index: i, value: lexeme};
+        return {index: i, value: getSortableValue(config, entry)};
       });
 
       mapped.sort(function(a, b) {
@@ -375,6 +369,63 @@ function ($q, sessionService, cache, commentsCache,
     });
   }
 
+  function _getOptionListItem(optionlist, key) {
+    var itemToReturn = {value: ""};
+    angular.forEach(optionlist.items, function (item) {
+      if (item.key == key) {
+        itemToReturn = item;
+      }
+    });
+    return itemToReturn;
+  };
+
+  function _getInputSystemForSort(config) {
+    var field, inputSystem = 'en', fieldKey = entryListModifiers.sortBy.value;
+    if (fieldKey in config.entry.fields) {
+      field = config.entry.fields[fieldKey];
+    } else if (fieldKey in config.entry.fields.senses.fields) {
+      field = config.entry.fields.senses.fields[fieldKey];
+    }
+    if (field && field.type == 'multitext') {
+      inputSystem = field.inputSystems[0];
+    }
+    return inputSystem;
+  }
+
+  function getSortableValue(config, entry) {
+    var field, dataNode, sortableValue = '', fieldKey = entryListModifiers.sortBy.value;
+    if (fieldKey in config.entry.fields && fieldKey in entry) {
+      field = config.entry.fields[fieldKey];
+      dataNode = entry[fieldKey];
+    } else if (fieldKey in config.entry.fields.senses.fields && fieldKey in entry.senses[0]) {
+      field = config.entry.fields.senses.fields[fieldKey];
+      dataNode = entry.senses[0][fieldKey];
+    }
+    if (field) {
+      if (field.type == 'multitext' && field.inputSystems[0] in dataNode) {
+        sortableValue = dataNode[field.inputSystems[0]].value;
+      } else if (field.type == 'optionlist') {
+        if (config.optionlists) {
+          // something weird here with config.optionlists not being set consistently when this is called - cjh 2017-07
+          sortableValue = _getOptionListItem(config.optionlists[field.listCode], dataNode.value).value;
+        } else {
+          sortableValue = dataNode.value;
+        }
+      } else if (field.type == 'multioptionlist' && dataNode.values.length > 0) {
+        if (field.listCode == 'semdom') {
+          sortableValue = semanticDomains_en[dataNode.values[0]].name;
+        } else {
+          sortableValue = _getOptionListItem(config.optionlists[field.listCode], dataNode.values[0]).value;
+        }
+      }
+    }
+    if (!sortableValue) {
+      return '[Empty]';
+    }
+    return sortableValue;
+  };
+
+
   //noinspection JSUnusedLocalSymbols
   /**
    * A function useful for debugging (prints out to the console the lexeme values)
@@ -412,7 +463,8 @@ function ($q, sessionService, cache, commentsCache,
     showMoreEntries: showMoreEntries,
     sortEntries: sortEntries,
     filterEntries: filterEntries,
-    entryListModifiers: entryListModifiers
+    entryListModifiers: entryListModifiers,
+    getSortableValue: getSortableValue
   };
 
 }]);

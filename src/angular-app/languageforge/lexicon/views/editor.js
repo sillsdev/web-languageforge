@@ -250,6 +250,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         return entryForUpdate;
       }
 
+      $scope.getCompactListItemForDisplay = editorService.getSortableValue;
+
       $scope.getWordForDisplay = function getWordForDisplay(entry) {
         var lexeme = utils.getLexeme($scope.config.entry, entry);
         if (!lexeme) {
@@ -710,7 +712,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       function setSortAndFilterOptionsFromConfig() {
         console.log($scope.config);
         var sortOptions = [], filterOptions = [];
-        filterOptions.push({label:"Comments", value:'comments', type: 'comments'});
+        filterOptions.push({label:"Comments", value:'comments', type: 'comments', key: 'comments'});
         angular.forEach($scope.config.entry.fieldOrder, function(entryFieldKey) {
           var entryField = $scope.config.entry.fields[entryFieldKey];
 
@@ -726,7 +728,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
                   filterOptions.push({label:senseField.label + ' [' + ws + ']', value:senseFieldKey, type: 'multitext', inputSystem: ws, key: senseFieldKey + '-' + ws});
                 });
               } else {
-                filterOptions.push({label:senseField.label, value:senseFieldKey, type: senseField.type});
+                filterOptions.push({label:senseField.label, value:senseFieldKey, type: senseField.type, key: senseFieldKey});
               }
             });
           } else {
@@ -736,7 +738,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
                 filterOptions.push({label:entryField.label + ' [' + ws + ']', value:entryFieldKey, type: 'multitext', inputSystem: ws, key: entryFieldKey + '-' + ws});
               });
             } else {
-              filterOptions.push({label:entryField.label, value:entryFieldKey, type: entryField.type});
+              filterOptions.push({label:entryField.label, value:entryFieldKey, type: entryField.type, key: entryFieldKey});
             }
           }
         });
