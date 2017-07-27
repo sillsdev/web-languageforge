@@ -9,8 +9,10 @@
     {% if isLoggedIn %}
 
         <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060" data-ng-app="xforge.navbarApp" data-ng-controller="navbarController">
-            <a class="desktop-title navbar-brand hidden-sm-down" href="/"><img src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png"> {{ app.website.name }}
-            </a>
+            <span class="desktop-title navbar-brand hidden-sm-down">
+                <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
+                <a class="" href="/">{{ app.website.name }}</a>
+            </span>
             <div class="hidden-md-up">
                 <ul id="mobileMenu" class="nav navbar-nav">
                     <li uib-dropdown class="nav-item nav-projects">
@@ -90,7 +92,10 @@
 
     {% else %}
         <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060">
-            <a class="desktop-title navbar-brand hidden-sm-down" href="/"><img src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png"> {{ app.website.name }}</a>
+            <span class="desktop-title navbar-brand hidden-sm-down">
+                <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
+                <a class="" href="/">{{ app.website.name }}</a>
+            </span>
 
             <h1 class="mobile-title pull-left hidden-md-up"><a href="/"><img src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png"> {{ app.website.name }}</a></h1>
 
