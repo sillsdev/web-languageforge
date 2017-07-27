@@ -1,5 +1,26 @@
-.mobile-title, .desktop-title {
+.desktop-title {
+  position: relative;
+  bottom: 11px;
   img {
-    height: 1.5em;
+    height: 3.5em;
+  }
+  a {
+    position: relative;
+    bottom: 8px;
+    color: white;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+}
+
+.mobile-title {
+  position: relative;
+  bottom: 13px;
+  img {
+    height: 2.6em;
+  }
+  a:hover {
+    text-decoration: none;
   }
 }
