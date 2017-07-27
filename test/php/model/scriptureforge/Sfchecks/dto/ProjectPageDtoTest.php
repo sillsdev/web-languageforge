@@ -100,7 +100,7 @@ class ProjectPageDtoTest extends TestCase
     /**
      * @return array
      */
-    public function createProjectForTestingResponseCountOnProjectPage(): array
+    private function createProjectForTestingResponseCountOnProjectPage(): array
     {
         list($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id) =
             CommonQuestionsAndAnswersForDto::createProjectForTestingAnswerVisibility(self::$environ);
@@ -122,6 +122,6 @@ class ProjectPageDtoTest extends TestCase
         $this->assertEquals(6, $encodedText1['responseCount']);
         $this->assertEquals(0, $encodedText2['responseCount']);
 
-        return array($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id);
+        return [$projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id];
     }
 }

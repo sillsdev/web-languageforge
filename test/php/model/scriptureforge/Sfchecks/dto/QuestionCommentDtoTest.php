@@ -31,15 +31,6 @@ class QuestionCommentDtoTest extends TestCase
         self::$environ->clean();
     }
 
-    public function assertKeyNotPresent($key, $array)
-    {
-        if ($array instanceof stdClass) {
-            print "Skipping assert since stdClass, by definition, has no keys";
-        } else {
-            $this->assertArrayNotHasKey($key, $array);
-        }
-    }
-
     public function testEncode_TextWithQuestionsWhenUsersCanViewEachOthersAnswers_DtoReturnsExpectedData()
     {
         list($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id) = $this->createProjectForTestingAnswerVisibility();
@@ -124,6 +115,8 @@ class QuestionCommentDtoTest extends TestCase
         $sfchecksProject->write();
 
         // In this test, John Carter and Dejah Thoris should see *different* views of the data.
+        // Below, I've kept (but commented out) the assertions that check for data that *would* be seen if the project settings
+        // allowed it. That way the CanViewEachOthersAnswers and CannotViewEachOthersAnswers tests will be easily comparable.
 
         // John Carter's point of view
         $dto = QuestionCommentDto::encode($projectId, $question1Id, $user1Id);
@@ -167,7 +160,6 @@ class QuestionCommentDtoTest extends TestCase
         $this->assertEquals('Who is speaking?', $dto['question']['title']);
         $this->assertEquals('Who is telling the story in this text?', $dto['question']['description']);
         // Dejah Thoris does not see John Carter's answer
-//        $this->assertKeyNotPresent('answers', $dto['question']);
         $this->assertKeyNotPresent($answer1Id, $dto['question']['answers']);
 //        $this->assertEquals('Me, John Carter.', $dto['question']['answers'][$answer1Id]['content']);
 //        $this->assertEquals(10, $dto['question']['answers'][$answer1Id]['score']);
@@ -197,14 +189,6 @@ class QuestionCommentDtoTest extends TestCase
 //        $this->assertEquals('Although I have learned to think of Mars as Barsoom, I still think of Earth as Earth, not Jasoom.', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['content']);
 //        $this->assertEquals('jcarter', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['userRef']['username']);
 //        $this->assertEquals('jcarter.png', $dto['question']['answers'][$answer3Id]['comments'][$comment2Id]['userRef']['avatar_ref']);
-    }
-
-    public function createProjectForTestingAnswerVisibility(): array
-    {
-        list($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id) =
-            CommonQuestionsAndAnswersForDto::createProjectForTestingAnswerVisibility(self::$environ);
-
-        return array($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id);
     }
 
     public function testEncode_FullQuestionWithAnswersAndComments_DtoReturnsExpectedData()
@@ -338,5 +322,22 @@ class QuestionCommentDtoTest extends TestCase
         QuestionCommentDto::encode($project->id->asString(), $questionId, $contributorId);
 
         // nothing runs in the current test function after an exception. IJH 2014-11
+    }
+
+    private function createProjectForTestingAnswerVisibility(): array
+    {
+        list($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id) =
+            CommonQuestionsAndAnswersForDto::createProjectForTestingAnswerVisibility(self::$environ);
+
+        return [$projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id];
+    }
+
+    private function assertKeyNotPresent($key, $array)
+    {
+        if ($array instanceof stdClass) {
+            // Skip assert since stdClass, by definition, has no keys, so this should be considered to succeed
+        } else {
+            $this->assertArrayNotHasKey($key, $array);
+        }
     }
 }

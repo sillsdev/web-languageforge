@@ -42,7 +42,7 @@ class QuestionCommentDto
         //echo $text->content;
 
         $votes = new UserVoteModel($userId, $projectId, $questionId);
-        $votesDto = array();
+        $votesDto = [];
         foreach ($votes->votes as $vote) {
             $votesDto[$vote->answerRef->id] = true;
             // This will sometimes create a situation where a vote in the DTO will not have a corresponding answer.
@@ -66,35 +66,35 @@ class QuestionCommentDto
         } else {
             // If users can't see each others' responses, then the only responses they can see are their own,
             // which are already read. So the DTO should report 0 unread answers and comments in this case.
-            $unreadAnswers = array();
-            $unreadComments = array();
+            $unreadAnswers = [];
+            $unreadComments = [];
 
             // Can't use array_filter() here because we have MapOf types, so we have to do this by hand
-            $answersToRemove = array();
-            foreach ($question->answers as $akey => $a) {
-                if ($a->userRef->id === $userId) {
-                    $commentsToRemove = array();
-                    foreach ($a->comments as $ckey => $c) {
-                        if ($c->userRef->id !== $userId) {
-                            array_push($commentsToRemove, $ckey);
+            $answersToRemove = [];
+            foreach ($question->answers as $answerKey => $answer) {
+                if ($answer->userRef->id === $userId) {
+                    $commentsToRemove = [];
+                    foreach ($answer->comments as $commentKey => $comment) {
+                        if ($comment->userRef->id !== $userId) {
+                            array_push($commentsToRemove, $commentKey);
                         }
                     }
-                    foreach ($commentsToRemove as $ckey) {
-                        unset($a->comments[$ckey]);
+                    foreach ($commentsToRemove as $commentKey) {
+                        unset($answer->comments[$commentKey]);
                     }
                 } else {
-                    array_push($answersToRemove, $akey);
+                    array_push($answersToRemove, $answerKey);
                 }
             }
-            foreach ($answersToRemove as $akey) {
-                unset($question->answers[$akey]);
+            foreach ($answersToRemove as $answerKey) {
+                unset($question->answers[$answerKey]);
             }
         }
 
         $unreadActivityModel = new UnreadActivityModel($userId, $projectId);
         $unreadActivity = $unreadActivityModel->unreadItems();
 
-        $dto = array();
+        $dto = [];
         $dto['question'] = QuestionCommentDtoEncoder::encode($question);
         $dto['votes'] = $votesDto;
         $dto['text'] = JsonEncoder::encode($text);

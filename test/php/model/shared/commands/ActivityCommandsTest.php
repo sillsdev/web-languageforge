@@ -81,7 +81,7 @@ class ActivityCommandsTest extends TestCase
         $this->assertActivityDtoAsExpected($sampleData, $dto2);
     }
 
-    public function createActivityTestEnvironment($canUsersSeeEachOthersResponses = true)
+    private function createActivityTestEnvironment($canUsersSeeEachOthersResponses = true)
     {
         $environ = new MongoTestEnvironment();
         $environ->clean();
@@ -138,24 +138,24 @@ class ActivityCommandsTest extends TestCase
         ];
     }
 
-    public function createSampleText($project, $title, $content): array
+    private function createSampleText($project, $title, $content): array
     {
         $text = new TextModel($project);
         $text->title = $title;
         $text->content = $content;
         $textId = $text->write();
         $a1 = ActivityCommands::addText($project, $textId, $text);
-        return array($text, $textId, $a1);
+        return [$text, $textId, $a1];
     }
 
-    public function createSampleUser($environ, $project, $username): string
+    private function createSampleUser($environ, $project, $username): string
     {
         $userId = $environ->createUser($username, $username, $username . "@example.com");
         \Api\Model\Shared\Command\ProjectCommands::updateUserRole($project->id->asString(), $userId);
         return $userId;
     }
 
-    public function createSampleUsers($environ, $project): array
+    private function createSampleUsers($environ, $project): array
     {
         $user1Id = $this->createSampleUser($environ, $project, "user1");
         $user2Id = $this->createSampleUser($environ, $project, "user2");
@@ -163,10 +163,10 @@ class ActivityCommandsTest extends TestCase
         $a2 = ActivityCommands::addUserToProject($project, $user1Id);
         $a3 = ActivityCommands::addUserToProject($project, $user2Id);
         $a4 = ActivityCommands::addUserToProject($project, $user3Id);
-        return array($user1Id, $user2Id, $user3Id, $a2, $a3, $a4);
+        return [$user1Id, $user2Id, $user3Id, $a2, $a3, $a4];
     }
 
-    public function createSampleQuestion($project, $textId, $title, $description): array
+    private function createSampleQuestion($project, $textId, $title, $description): array
     {
         $question = new QuestionModel($project);
         $question->title = $title;
@@ -174,61 +174,61 @@ class ActivityCommandsTest extends TestCase
         $question->textRef->id = $textId;
         $questionId = $question->write();
         $a5 = ActivityCommands::addQuestion($project, $questionId, $question);
-        return array($question, $questionId, $a5);
+        return [$question, $questionId, $a5];
     }
 
-    public function createSampleAnswer($project, $user3Id, $question, $questionId, $content, $textHighlight = null): array
+    private function createSampleAnswer($project, $user3Id, $question, $questionId, $content, $textHighlight = null): array
     {
         $answer = new AnswerModel();
         $answer->content = $content;
         $answer->score = 10;
         $answer->userRef->id = $user3Id;
         if (isset($textHighlight)) {
-        $answer->textHighlight = $textHighlight;
+            $answer->textHighlight = $textHighlight;
         }
         $answerId = $question->writeAnswer($answer);
         $a6 = ActivityCommands::addAnswer($project, $questionId, $answer);
-        return array($answer, $answerId, $a6);
+        return [$answer, $answerId, $a6];
     }
 
-    public function addComment($project, $userId, $questionId, $answerId, $commentText): array
+    private function addComment($project, $userId, $questionId, $answerId, $commentText): array
     {
         $comment = new CommentModel();
         $comment->content = $commentText;
         $comment->userRef->id = $userId;
         $commentId = QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment);
         $activity = ActivityCommands::addComment($project, $questionId, $answerId, $comment);
-        return array($comment, $commentId, $activity);
+        return [$comment, $commentId, $activity];
     }
 
-    public function updateAnswer($project, $question, $questionId, $answerId, $newContent): array
+    private function updateAnswer($project, $question, $questionId, $answerId, $newContent): array
     {
         $question->read($questionId);
         $answer_updated = $question->readAnswer($answerId);
         $answer_updated->content = $newContent;
         $question->writeAnswer($answer_updated);
         $a9 = ActivityCommands::updateAnswer($project, $questionId, $answer_updated);
-        return array($answer_updated, $a9);
+        return [$answer_updated, $a9];
     }
 
-    public function updateComment($project, $question, $questionId, $answerId, $comment1Id, $newContent): array
+    private function updateComment($project, $question, $questionId, $answerId, $comment1Id, $newContent): array
     {
         $question->read($questionId);
         $comment1_updated = $question->readComment($answerId, $comment1Id);
         $comment1_updated->content = $newContent;
         QuestionModel::writeComment($project->databaseName(), $questionId, $answerId, $comment1_updated);
         $a10 = ActivityCommands::updateComment($project, $questionId, $answerId, $comment1_updated);
-        return array($comment1_updated, $a10);
+        return [$comment1_updated, $a10];
     }
 
-    public function setResponseVisibility($projectId, $value)
+    private function setResponseVisibility($projectId, $value)
     {
         $sfproject = new SfchecksProjectModel($projectId);
         $sfproject->usersSeeEachOthersResponses = $value;
         $sfproject->write();
     }
 
-    public function assertActivityDtoAsExpected($sampleData, $dto)
+    private function assertActivityDtoAsExpected($sampleData, $dto)
     {
         $project = $sampleData['project'];
         $expectedProjectRef = [

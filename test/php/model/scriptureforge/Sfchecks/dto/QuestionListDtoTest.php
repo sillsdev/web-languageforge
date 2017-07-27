@@ -201,6 +201,6 @@ class QuestionListDtoTest extends TestCase
         list($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment1Id, $comment2Id) =
             CommonQuestionsAndAnswersForDto::createProjectForTestingAnswerVisibility(self::$environ);
 
-        return array($projectId, $text1Id, $user1Id, $user2Id, $question1Id, $question2Id);
+        return [$projectId, $text1Id, $user1Id, $user2Id, $question1Id, $question2Id];
     }
 }

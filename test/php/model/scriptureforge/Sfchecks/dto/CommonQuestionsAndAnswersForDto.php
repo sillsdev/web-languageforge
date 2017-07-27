@@ -97,6 +97,6 @@ class CommonQuestionsAndAnswersForDto
         $comment2->userRef->id = $user1Id;
         $comment2Id = QuestionModel::writeComment($project->databaseName(), $question2Id, $answer3Id, $comment2);
 
-        return array($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id);
+        return [$projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id];
     }
 }

@@ -226,9 +226,9 @@ class QuestionCommandsTest extends TestCase
         $this->assertEquals(2, $answer1['score']);
 
         $dto = QuestionCommentDto::encode($environ->projectId, $environ->questionId, $secondUserId);
-        // A MapOf that's empty is DTO-encoded as stdClass instead of array()
+        // A MapOf that's empty is DTO-encoded as stdClass instead of array
         $this->assertThat($dto['question']['answers'], $this->logicalNot($this->isInstanceOf('stdClass')));
-        $this->assertNotEmpty($dto['question']['answers']);  // Basically equivalent to the check above
+        $this->assertNotEmpty($dto['question']['answers']);  // Both checks are required due to how stdClass differs from arrays
         $this->assertEquals(1, count($dto['votes']));  // Answer's score is 2, but only the user's own votes are sent in this DTO
         $this->assertArrayHasKey($environ->answerId, $dto['votes']);
 
