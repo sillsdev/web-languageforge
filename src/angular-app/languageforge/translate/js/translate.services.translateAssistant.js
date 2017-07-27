@@ -26,6 +26,20 @@ angular.module('translate.services')
       });
     };
 
+    // SIL.Machine.Translation.TranslationEngine.train(onStatusUpdate, onFinished)
+    this.train = function train(onStatusUpdate, onFinished) {
+      if (angular.isUndefined(engine)) return;
+
+      engine.train(onStatusUpdate, onFinished);
+    };
+
+    // SIL.Machine.Translation.TranslationEngine.listenForTrainingStatus(onStatusUpdate, onFinished)
+    this.listenForTrainingStatus = function listenForTrainingStatus(onStatusUpdate, onFinished) {
+      if (angular.isUndefined(engine)) return;
+
+      engine.listenForTrainingStatus(onStatusUpdate, onFinished);
+    };
+
     // SIL.Machine.Translation.InteractiveTranslationSession.updatePrefix(prefix)
     this.updatePrefix = function updatePrefix(prefix) {
       if (angular.isUndefined(engine) || angular.isUndefined(session)) return;
