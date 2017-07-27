@@ -5,9 +5,10 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
   'palaso.ui.textdrop', 'translate.languages', 'rzModule'])
   .controller('SettingsCtrl',
     ['$scope', '$interval', 'silNoticeService', 'translateRightsService', 'translateProjectApi',
-      'translateAssistant',
-  function ($scope, $interval, notice, rightsService, projectApi, assistant) {
+      'translateAssistant', 'modalService',
+  function ($scope, $interval, notice, rightsService, projectApi, assistant, modal) {
     $scope.actionInProgress = false;
+    $scope.retrainMessage = '';
     $scope.confidence = {
       value: undefined,
       isMyThreshold: false,
@@ -33,6 +34,8 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
         angular.merge($scope.project, result.data.project);
         $scope.project.config = $scope.project.config || {};
         pristineProject = angular.copy($scope.project);
+        assistant.initialise($scope.project.slug);
+        assistant.listenForTrainingStatus(onTrainStatusUpdate, onTrainSuccess);
         if (angular.isDefined($scope.project.config.userPreferences)) {
           if (angular.isDefined($scope.project.config.userPreferences.hasConfidenceOverride)) {
             $scope.confidence.isMyThreshold =
@@ -94,6 +97,16 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
       }
     };
 
+    $scope.retrain = function retrain() {
+      var retrainMessage = 'This will retrain the translation engine using the existing data. ' +
+        'This can take several minutes and will operate in the background.<br /><br />' +
+        'Are you sure you want to retrain the translation engine?';
+      modal.showModalSimple('Retrain Translation Engine?', retrainMessage, 'Cancel', 'Retrain')
+        .then(function () {
+          assistant.train(onTrainStatusUpdate, onTrainFinished);
+        }, angular.noop);
+    };
+
     $scope.updateLanguage = function updateLanguage(docType, code, language) {
       $scope.project.config[docType] = $scope.project.config[docType] || {};
       $scope.project.config[docType].inputSystem.tag = code;
@@ -135,6 +148,29 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
       angular.copy(pristineProject, $scope.project);
     });
 
+    function onTrainStatusUpdate(progress) {
+      $scope.$applyAsync(function () {
+        $scope.retrainMessage = progress.percentCompleted + '% ' + progress.currentStepMessage;
+      });
+    }
+
+    function onTrainSuccess(isSuccess) {
+      if (isSuccess) {
+        $scope.$applyAsync(function () {
+          notice.push(notice.SUCCESS, 'Finished re-training the translation engine');
+        });
+      }
+    }
+
+    function onTrainFinished(isSuccess) {
+      onTrainSuccess(isSuccess);
+      if (!isSuccess) {
+        $scope.$applyAsync(function () {
+          notice.push(notice.ERROR, 'Could not re-train the translation engine');
+        });
+      }
+    }
+
     function convertThresholdToValue(threshold) {
       var range = $scope.confidence.options.ceil - $scope.confidence.options.floor;
       return $scope.confidence.options.floor + threshold * range;
@@ -146,6 +182,7 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
     }
 
     function updateConfigConfidenceValues() {
+      $scope.project.config.userPreferences = $scope.project.config.userPreferences || {};
       $scope.project.config.userPreferences.hasConfidenceOverride = $scope.confidence.isMyThreshold;
       if ($scope.confidence.isMyThreshold) {
         $scope.project.config.userPreferences.confidenceThreshold =
