@@ -35,6 +35,8 @@
 //   'sass:watch'
 //   'build-composer'
 //   'build-npm-front-end'
+//   'build-webpack'
+//   'build-webpack:watch
 //   'build-remove-test-fixtures'
 //   'build-minify'
 //   'build-changeGroup'
@@ -93,6 +95,7 @@ var Server = require('karma').Server;
 var path = require('path');
 var stylish = require('jshint-stylish');
 var merge = require('merge-stream');
+var glob = require('glob');
 
 var execute = function (command, options, callback) {
   if (!options) {
@@ -713,6 +716,54 @@ gulp.task('build-remove-test-fixtures', function (done) {
   }
 });
 
+function webpack(applicationName, isWatch) {
+  return new Promise(function (resolve, reject) {
+    glob('webpack.config.js', {}, function (err, files) {
+      if (err) return reject(err);
+
+      gutil.log('Building the following webpack configs:');
+      files.forEach(function (fileName) {
+        gutil.log('    ' + fileName);
+      });
+
+      files.forEach(function (fileName) {
+        gutil.log('Processing ' + fileName);
+        var watch = isWatch ? ' --watch' : '';
+        var env = applicationName ? ' --env.applicationName=' + applicationName : '';
+        execute('$(npm bin)/webpack' + watch + env, { cwd: path.dirname(fileName) }, function (err) {
+          if (err) throw err;
+        });
+      });
+
+      resolve();
+    });
+  });
+}
+
+// -------------------------------------
+//   Task: Build webpack
+// -------------------------------------
+gulp.task('build-webpack', function () {
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .argv;
+  return webpack(params.applicationName);
+});
+
+// -------------------------------------
+//   Task: Build webpack watch
+// -------------------------------------
+gulp.task('build-webpack:watch', function () {
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .argv;
+  return webpack(params.applicationName, true);
+});
+
 // -------------------------------------
 //   Task: Build (Concat and ) Minify
 // -------------------------------------
@@ -890,6 +941,7 @@ gulp.task('build',
       'build-clearLocalCache',
       'build-remove-test-fixtures'),
     'sass',
+    'build-webpack',
     'build-minify',
     'build-changeGroup')
 );
