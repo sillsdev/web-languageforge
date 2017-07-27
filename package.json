@@ -13,12 +13,18 @@
     "url": "https://github.com/sillsdev/web-languageforge.git",
     "alternate-url": "https://github.com/sillsdev/web-scriptureforge.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/node": "^7.0.39",
+    "core-js": "^2.4.1",
+    "zone.js": "^0.8.16"
+  },
   "devDependencies": {
     "async": "~1.4.2",
+    "awesome-typescript-loader": "^3.2.2",
     "es6-shim": "^0.35.1",
+    "glob": "^7.1.2",
     "gulp": "github:gulpjs/gulp#4.0",
-    "gulp-clean-css": "^3.0.2",
+    "gulp-clean-css": "^3.7.0",
     "gulp-concat": "^2.6.0",
     "gulp-exec": "~2.1.0",
     "gulp-jshint": "^2.0.1",
@@ -32,7 +38,7 @@
     "gulp-util": "~3.0.6",
     "jasmine-core": "^2.5.2",
     "jasmine-reporters": "~2.2",
-    "jasmine-spec-reporter": "^4.1.0",
+    "jasmine-spec-reporter": "^4.1.1",
     "jshint": "^2.9.3",
     "jshint-stylish": "^2.2.1",
     "karma": "^1.1.2",
@@ -42,10 +48,16 @@
     "karma-teamcity-reporter": "^1.0.0",
     "lodash.template": "^4.4.0",
     "merge-stream": "^1.0.1",
-    "node-sass": "git+https://github.com/sillsdev/node-sass#bug/css-build-fix",
+    "node-sass": "git+https://github.com/sillsdev/node-sass.git#bug/css-build-fix",
     "path": "^0.12.7",
     "phantomjs-prebuilt": "~2.1",
     "protractor": "~4.0",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^6.0.6",
+    "typescript": "^2.4.2",
+    "webpack": "^3.4.1",
+    "webpack-livereload-plugin": "^0.11.0",
+    "webpack-merge": "^4.1.0",
     "yargs": "^6.3.0"
   },
   "jscsConfig": {
