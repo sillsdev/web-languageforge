@@ -9,23 +9,21 @@ function ($q, sessionService, cache, commentsCache,
           notice, commentService) {
   var entries = [];
   var visibleEntries = [];
+  var filteredEntries = [];
   var entryListModifiers = {sortBy: {label: "Word", value: "lexeme"}, sortOptions: [], filterBy: "", filterOptions: [], sortDirection: "forward", filterType: "isNotEmpty"};
   var browserInstanceId = Math.floor(Math.random() * 1000000);
   var api = undefined;
 
   var showInitialEntries = function showInitialEntries() {
-    return sortAndFilterEntries().then(function() {
-      visibleEntries.length = 0; // clear out the array
-      Array.prototype.push.apply(visibleEntries, entries.slice(0, 50));
-    });
+    return sortAndFilterEntries(true);
   };
 
   var showMoreEntries = function showMoreEntries() {
     var increment = 50;
-    if (visibleEntries.length < entries.length) {
+    if (visibleEntries.length < filteredEntries.length) {
       var currentLength = visibleEntries.length;
       visibleEntries.length = 0;
-      Array.prototype.push.apply(visibleEntries, entries.slice(0, currentLength + increment));
+      Array.prototype.push.apply(visibleEntries, filteredEntries.slice(0, currentLength + increment));
     }
   };
 
@@ -156,15 +154,12 @@ function ($q, sessionService, cache, commentsCache,
   };
 
   var removeEntryFromLists = function removeEntryFromLists(id) {
-    var iFullList = getIndexInList(id, entries);
-    if (angular.isDefined(iFullList)) {
-      entries.splice(iFullList, 1);
-    }
-
-    var iShowList = getIndexInList(id, visibleEntries);
-    if (angular.isDefined(iShowList)) {
-      visibleEntries.splice(iShowList, 1);
-    }
+    angular.forEach([entries, filteredEntries, visibleEntries], function(list) {
+      var i = getIndexInList(id, list);
+      if (angular.isDefined(i)) {
+        list.splice(i, 1);
+      }
+    });
 
     return cache.deleteEntry(id);
   };
@@ -237,22 +232,17 @@ function ($q, sessionService, cache, commentsCache,
           .apply(commentService.comments.items.all, result.data.comments);
       } else {
 
-        // splice updates into entry lists
+        // splice updates into entry list
+        // don't need to modify filteredEntries or visibleEntries since those are regenerated
+        // from sortAndFilterEntries() below
         angular.forEach(result.data.entries, function (entry) {
-          var i;
 
-          // splice into entries
-          i = getIndexInList(entry.id, entries);
+          // splice into entries list
+          var i = getIndexInList(entry.id, entries);
           if (angular.isDefined(i)) {
             entries[i] = entry;
           } else {
             addEntryToEntryList(entry);
-          }
-
-          // splice into visibleEntries
-          i = getIndexInList(entry.id, visibleEntries);
-          if (angular.isDefined(i)) {
-            visibleEntries[i] = entry;
           }
         });
 
@@ -273,7 +263,7 @@ function ($q, sessionService, cache, commentsCache,
 
         // only sort and filter the list if there have been changes to entries (or deleted entries)
         if (result.data.entries.length > 0 || result.data.deletedEntryIds.length > 0) {
-          sortAndFilterEntries();
+          sortAndFilterEntries(false);
         }
       }
 
@@ -338,7 +328,7 @@ function ($q, sessionService, cache, commentsCache,
     });
   }
 
-  function sortEntries() {
+  function sortEntries(shouldResetVisibleEntriesList) {
     var startTime = performance.now();
     return _sortList(entries).then(function(sortedEntries) {
       // the length = 0 followed by Array.push.apply is a method of replacing the contents of
@@ -346,25 +336,68 @@ function ($q, sessionService, cache, commentsCache,
       // to the array
       entries.length = 0;
       Array.prototype.push.apply(entries, sortedEntries);
-      return _sortList(visibleEntries).then(function(sortedVisibleEntries) {
-        visibleEntries.length = 0;
-        Array.prototype.push.apply(visibleEntries, sortedVisibleEntries);
-        console.log('Sorted entries in ' +
-          ((performance.now() - startTime) / 1000).toFixed(2) + ' seconds');
+      return _sortList(filteredEntries).then(function(sortedFilteredEntries) {
+        filteredEntries.length = 0;
+        Array.prototype.push.apply(filteredEntries, sortedFilteredEntries);
+        return _sortList(visibleEntries).then(function(sortedVisibleEntries) {
+          visibleEntries.length = 0;
+          if (shouldResetVisibleEntriesList) {
+            Array.prototype.push.apply(visibleEntries, sortedFilteredEntries.slice(0, 50));
+          } else {
+            Array.prototype.push.apply(visibleEntries, sortedVisibleEntries);
+          }
+          console.log('Sorted entries in ' +
+            ((performance.now() - startTime) / 1000).toFixed(2) + ' seconds');
+        });
+
       });
     });
   }
 
-  function filterEntries() {
-    var deferred = $q.defer();
-    console.warn(' filter entries! ');
-    deferred.resolve(true);
-    return deferred.promise;
+  function filterEntries(shouldResetVisibleEntriesList) {
+    return sessionService.getSession().then(function(session) {
+      var config = session.projectSettings().config;
+      filteredEntries.length = 0;
+      if (entryListModifiers.filterBy) {
+        console.log(entryListModifiers.filterBy);
+        Array.prototype.push.apply(filteredEntries, entries.filter(function(entry) {
+          return entryMeetsFilterCriteria(config, entry);
+        }));
+
+      } else {
+        Array.prototype.push.apply(filteredEntries, entries);
+      }
+
+      if (shouldResetVisibleEntriesList) {
+        visibleEntries.length = 0;
+        Array.prototype.push.apply(visibleEntries, filteredEntries.slice(0, 50));
+
+      } else {
+        var filteredVisibleEntries = visibleEntries.filter(function (entry) {
+          return entryMeetsFilterCriteria(config, entry);
+        });
+        visibleEntries.length = 0;
+        Array.prototype.push.apply(visibleEntries, filteredVisibleEntries);
+      }
+    });
   }
 
-  function sortAndFilterEntries() {
-    return sortEntries().then(function() {
-      return filterEntries();
+  function entryMeetsFilterCriteria(config, entry) {
+    if (entryListModifiers.filterBy.type == "comments") {
+      var containsFilter = entryListModifiers.filterType == "isNotEmpty",
+        hasComments = commentService.getEntryCommentCount(entry.id) > 0;
+      if (containsFilter && hasComments || !containsFilter && !hasComments) {
+        return true;
+      }
+
+    } else {
+      // switch statement on field type
+    }
+  }
+
+  function sortAndFilterEntries(shouldResetVisibleEntriesList) {
+    return sortEntries(shouldResetVisibleEntriesList).then(function() {
+      return filterEntries(shouldResetVisibleEntriesList);
     });
   }
 
@@ -462,6 +495,7 @@ function ($q, sessionService, cache, commentsCache,
     showMoreEntries: showMoreEntries,
     sortEntries: sortEntries,
     filterEntries: filterEntries,
+    filteredEntries: filteredEntries,
     entryListModifiers: entryListModifiers,
     getSortableValue: getSortableValue
   };

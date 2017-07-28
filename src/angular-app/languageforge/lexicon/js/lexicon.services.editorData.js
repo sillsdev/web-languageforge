@@ -21,6 +21,7 @@ function ($q, editorDataService, api) {
     showMoreEntries: editorDataService.showMoreEntries,
     sortEntries: editorDataService.sortEntries,
     filterEntries: editorDataService.filterEntries,
+    filteredEntries: editorDataService.filteredEntries,
     entryListModifiers: editorDataService.entryListModifiers,
     getSortableValue: editorDataService.getSortableValue
   };
