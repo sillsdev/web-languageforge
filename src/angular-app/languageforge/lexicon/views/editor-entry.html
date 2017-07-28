@@ -1,6 +1,7 @@
 <div id="lexAppEditView" class="animate-switch row">
     <div class="col-md-4">
         <div>
+            <button style="float:right;margin-top:5px" ng-click="show.entryListModifiers = !show.entryListModifiers" class="btn btn-sm"><span class="fa" ng-class="{ 'fa-minus-square-o': show.entryListModifiers, 'fa-plus-square-o': !show.entryListModifiers} "></span> <span ng-hide="show.entryListModifiers">More</span><span ng-show="show.entryListModifiers">Hide</span></button>
             <pui-typeahead class="typeahead" placeholder="'Search Entries'"
                        items="typeahead.searchResults" term="typeahead.searchItemSelected"
                        search="typeahead.searchEntries" select="typeahead.searchSelect">
@@ -15,33 +16,33 @@
                      data-ng-if="typeahead.searchResults.length > 0">
                     <small><i>{{typeahead.matchCountCaption}}</i></small></div>
             </pui-typeahead>
+            <div ng-show="show.entryListModifiers">
+                <div class="form-inline">
+                    <select class="custom-select sortfilter-control" ng-change="sortEntries()" ng-model="entryListModifiers.sortDirection">
+                        <option value="forward">Display</option>
+                        <option value="reverse">In Reverse</option>
+                    </select>
+                    <select class="custom-select sortfilter-control" ng-change="sortEntries()" ng-model="entryListModifiers.sortBy" ng-options="item as item.label for item in entryListModifiers.sortOptions track by item.value">
+                    </select>
+                </div>
+                <div class="form-inline">
+                    <select class="custom-select sortfilter-control" ng-show="entryListModifiers.filterBy" ng-change="filterEntries()" ng-model="entryListModifiers.filterType">
+                        <option value="isEmpty">Doesn't have</option>
+                        <option value="isNotEmpty">Has</option>
+                    </select>
+                    <select class="custom-select sortfilter-control" ng-change="filterEntries()" ng-model="entryListModifiers.filterBy" ng-options="item as item.label for item in entryListModifiers.filterOptions track by item.key">
+                        <option value="">Filter for...</option>
+                    </select>
+                    <button ng-click="entryListModifiers.filterBy = '';filterEntries()" ng-show="entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
+                </div>
+                <br />
+            </div>
         </div>
         <div class="hidden-sm-down list-group">
             <div class="list-group-item list-group-item-action active">
                 <small class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
                 <h5>{{ 'Words in dictionary' | translate }}</h5>
             </div>
-            <br />
-            <div class="form-inline">
-                <select class="custom-select" ng-change="sortEntries()" ng-model="entryListModifiers.sortDirection">
-                    <option value="forward">Display</option>
-                    <option value="reverse">In Reverse</option>
-                </select> :
-                <select class="custom-select" ng-change="sortEntries()" ng-model="entryListModifiers.sortBy" ng-options="item as item.label for item in entryListModifiers.sortOptions track by item.value">
-                </select>
-            </div>
-            <br />
-            <div class="form-inline">
-                <select class="custom-select" ng-show="entryListModifiers.filterBy" ng-change="filterEntries()" ng-model="entryListModifiers.filterType">
-                    <option value="isEmpty">Doesn't have</option>
-                    <option value="isNotEmpty">Has</option>
-                </select>
-                <select class="custom-select" ng-change="filterEntries()" ng-model="entryListModifiers.filterBy" ng-options="item as item.label for item in entryListModifiers.filterOptions track by item.key">
-                    <option value="">Filter for...</option>
-                </select>
-                <button ng-click="entryListModifiers.filterBy = '';filterEntries()" ng-show="entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
-            </div>
-            <br />
             <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
                 <div id="entryId_{{entry.id}}" class="list-group-item lexiconListItemCompact"
                      data-ng-class="{selected: entry.id == currentEntry.id, listItemHasComment: commentService.getEntryCommentCount(entry.id) > 0}"

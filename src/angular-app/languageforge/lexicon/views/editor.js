@@ -58,7 +58,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
     $scope.show = {
       more: editorService.showMoreEntries,
-      emptyFields: false
+      emptyFields: false,
+      entryListModifiers: false
     };
     // hack to pass down the parent scope down into all child directives (i.e. entry, sense, etc)
     $scope.control = $scope;
