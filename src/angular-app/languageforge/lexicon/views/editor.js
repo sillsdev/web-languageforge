@@ -52,6 +52,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     $scope.configService = lexConfig;
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
+    $scope.filteredEntries = editorService.filteredEntries;
     $scope.entryListModifiers = editorService.entryListModifiers;
     $scope.sortEntries = editorService.sortEntries;
     $scope.filterEntries = editorService.filterEntries;
@@ -708,6 +709,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           $interval.cancel(autoSaveTimer);
           autoSaveTimer = undefined;
         }
+      }
+
+      $scope.resetEntryListFilter = function() {
+        $scope.entryListModifiers.filterBy = '';
+        $scope.filterEntries(true);
       }
 
       function setSortAndFilterOptionsFromConfig() {
