@@ -339,7 +339,6 @@ function ($q, sessionService, cache, commentsCache,
   }
 
   function sortEntries() {
-    console.warn(' sort entries! ');
     var startTime = performance.now();
     return _sortList(entries).then(function(sortedEntries) {
       // the length = 0 followed by Array.push.apply is a method of replacing the contents of
