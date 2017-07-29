@@ -263,7 +263,7 @@ function ($q, sessionService, cache, commentsCache,
 
         // only sort and filter the list if there have been changes to entries (or deleted entries)
         if (result.data.entries.length > 0 || result.data.deletedEntryIds.length > 0) {
-          sortAndFilterEntries(false);
+          sortAndFilterEntries(true);
         }
       }
 
@@ -301,57 +301,59 @@ function ($q, sessionService, cache, commentsCache,
     return getIndexInList(id, visibleEntries);
   }
 
-  function _sortList(list, field) {
-    return sessionService.getSession().then(function(session) {
-      var config = session.projectSettings().config;
-      var collator = Intl.Collator(_getInputSystemForSort(config));
+  function _sortList(config, list) {
+    var collator = Intl.Collator(_getInputSystemForSort(config));
 
-      // temporary mapped array
-      var mapped = list.map(function(entry, i) {
-        return {index: i, value: getSortableValue(config, entry)};
-      });
-
-      mapped.sort(function(a, b) {
-        if (entryListModifiers.sortReverse == true) {
-          return collator.compare(a.value, b.value) * -1;
-        } else {
-          return collator.compare(a.value, b.value);
-        }
-      });
-
-      var result = mapped.map(function(el) {
-        return list[el.index];
-      });
-
-
-      return result;
+    // temporary mapped array
+    var mapped = list.map(function(entry, i) {
+      return {index: i, value: getSortableValue(config, entry)};
     });
+
+    mapped.sort(function(a, b) {
+      if (entryListModifiers.sortReverse == true) {
+        return collator.compare(a.value, b.value) * -1;
+      } else {
+        return collator.compare(a.value, b.value);
+      }
+    });
+
+    var result = mapped.map(function(el) {
+      return list[el.index];
+    });
+
+    return result;
   }
 
   function sortEntries(shouldResetVisibleEntriesList) {
     var startTime = performance.now();
-    return _sortList(entries).then(function(sortedEntries) {
+    return sessionService.getSession().then(function(session) {
+      var config = session.projectSettings().config;
+
       // the length = 0 followed by Array.push.apply is a method of replacing the contents of
       // an array without creating a new array thereby keeping original references
       // to the array
+      var entries_sorted = _sortList(config, entries);
       entries.length = 0;
-      Array.prototype.push.apply(entries, sortedEntries);
-      return _sortList(filteredEntries).then(function(sortedFilteredEntries) {
-        filteredEntries.length = 0;
-        Array.prototype.push.apply(filteredEntries, sortedFilteredEntries);
-        return _sortList(visibleEntries).then(function(sortedVisibleEntries) {
-          visibleEntries.length = 0;
-          if (shouldResetVisibleEntriesList) {
-            Array.prototype.push.apply(visibleEntries, sortedFilteredEntries.slice(0, 50));
-          } else {
-            Array.prototype.push.apply(visibleEntries, sortedVisibleEntries);
-          }
-          console.log('Sorted entries in ' +
-            ((performance.now() - startTime) / 1000).toFixed(2) + ' seconds');
-        });
-
-      });
+      Array.prototype.push.apply(entries, entries_sorted);
+      var filteredEntries_sorted = _sortList(config, filteredEntries);
+      filteredEntries.length = 0;
+      Array.prototype.push.apply(filteredEntries, filteredEntries_sorted);
+      var visibleEntries_sorted = _sortList(config, visibleEntries);
+      visibleEntries.length = 0;
+      if (shouldResetVisibleEntriesList) {
+        Array.prototype.push.apply(visibleEntries, filteredEntries_sorted.slice(0, 50));
+      } else {
+        console.log('sortedVisibleEntries');
+        console.log(visibleEntries_sorted);
+        Array.prototype.push.apply(visibleEntries, visibleEntries_sorted);
+        console.log(visibleEntries);
+      }
+      var sortTime = ((performance.now() - startTime) / 1000).toFixed(2);
+      if (sortTime > 0.5) {
+        console.warn("Sort time took " + sortTime + ' seconds.');
+      }
     });
+
   }
 
   function filterEntries(shouldResetVisibleEntriesList) {
@@ -359,7 +361,6 @@ function ($q, sessionService, cache, commentsCache,
       var config = session.projectSettings().config;
       filteredEntries.length = 0;
       if (entryListModifiers.filterBy) {
-        console.log(entryListModifiers.filterBy);
         Array.prototype.push.apply(filteredEntries, entries.filter(function(entry) {
           return entryMeetsFilterCriteria(config, entry);
         }));
@@ -383,20 +384,113 @@ function ($q, sessionService, cache, commentsCache,
   }
 
   function entryMeetsFilterCriteria(config, entry) {
-    if (entryListModifiers.filterBy.type == "comments") {
-      var containsFilter = entryListModifiers.filterType == "isNotEmpty",
-        hasComments = commentService.getEntryCommentCount(entry.id) > 0;
-      if (containsFilter && hasComments || !containsFilter && !hasComments) {
-        return true;
-      }
+    var mustNotBeEmpty = entryListModifiers.filterType == "isNotEmpty";
+    var containsData = false;
+    var filterType = entryListModifiers.filterBy.type;
+    if (['comments', 'exampleSentences', 'pictures', 'audio'].indexOf(filterType) != -1) {
 
+      // special filter types
+      switch (filterType) {
+        case "comments":
+          containsData = commentService.getEntryCommentCount(entry.id) > 0;
+          break;
+        case "exampleSentences":
+          angular.forEach(entry.senses, function(sense) {
+            if (sense.examples && sense.examples.length > 0) {
+              containsData = true;
+            }
+          });
+          break;
+        case "pictures":
+          angular.forEach(entry.senses, function(sense) {
+            if (sense.pictures && sense.pictures.length > 0) {
+              containsData = true;
+            }
+          });
+          break;
+        case "audio":
+          var field, inputSystem = 'en', fieldKey = entryListModifiers.sortBy.value,
+
+            // intentially not pulling in lexutils because of circular dependency with lexicon.services
+          audioRegex = /^\w{2,3}-Zxxx-x(-\w{2,3})*-[aA][uU][dD][iI][oO]$/;
+
+          if (fieldKey in config.entry.fields) {
+            field = config.entry.fields[fieldKey];
+          } else if (fieldKey in config.entry.fields.senses.fields) {
+            field = config.entry.fields.senses.fields[fieldKey];
+          }
+          angular.forEach(config.entry.fields, function(field, fieldKey) {
+            if (field.type == 'multitext') {
+              angular.forEach(entry[fieldKey], function(fieldNode, ws) {
+                  if (ws && audioRegex.test(ws) && fieldNode.value != '') {
+                  containsData = true;
+                }
+              });
+            }
+            if (fieldKey == 'senses') {
+              angular.forEach(entry.senses, function(sense) {
+                angular.forEach(config.entry.fields.senses.fields, function(field, fieldKey) {
+                  if (field.type == 'multitext') {
+                    angular.forEach(sense[fieldKey], function(fieldNode, ws) {
+                      if (ws && audioRegex.test(ws) && fieldNode.value != '') {
+                        containsData = true;
+                      }
+                    });
+                  }
+                  if (fieldKey == 'examples') {
+                    angular.forEach(sense.examples, function(example) {
+                      angular.forEach(config.entry.fields.senses.fields.examples.fields, function(field, fieldKey) {
+                        if (field.type == 'multitext') {
+                          angular.forEach(example[fieldKey], function(fieldNode, ws) {
+                            if (ws && audioRegex.test(ws) && fieldNode.value != '') {
+                              containsData = true;
+                            }
+                          });
+                        }
+                      });
+                    });
+                  }
+                });
+              });
+            }
+          });
+          break;
+      }
     } else {
-      // switch statement on field type
+
+      // filter by entry or sense field
+      var dataNode;
+      if (entryListModifiers.filterBy.level == 'entry') {
+        dataNode = entry[entryListModifiers.filterBy.value];
+      } else { // sense level
+        dataNode = entry.senses[0][entryListModifiers.filterBy.value];
+      }
+      if (dataNode) {
+        switch (filterType) {
+          case "multitext":
+            if (dataNode[entryListModifiers.filterBy.inputSystem]) {
+              containsData = dataNode[entryListModifiers.filterBy.inputSystem].value != '';
+            }
+            break;
+          case "optionlist":
+            containsData = dataNode.value != '';
+            break;
+          case "multioptionlist":
+            containsData = (dataNode.values.length > 0);
+            break;
+        }
+      }
     }
+    if (mustNotBeEmpty && containsData || !mustNotBeEmpty && !containsData) {
+      return true;
+    }
+    return false;
   }
 
   function sortAndFilterEntries(shouldResetVisibleEntriesList) {
-    return sortEntries(shouldResetVisibleEntriesList).then(function() {
+    // todo: so far I haven't found a good case for NOT resetting visibleEntriesList.
+    // and always reset visibleEntriesList - chris 2017-07
+     return sortEntries(shouldResetVisibleEntriesList).then(function() {
       return filterEntries(shouldResetVisibleEntriesList);
     });
   }
@@ -445,7 +539,6 @@ function ($q, sessionService, cache, commentsCache,
         }
       } else if (field.type == 'multioptionlist' && dataNode.values.length > 0) {
         if (field.listCode == 'semantic-domain-ddp4') {
-          console.log(dataNode);
           sortableValue = semanticDomains_en[dataNode.values[0]].value;
         } else {
           if (config.optionlists && config.optionlists[field.listCode]) {
