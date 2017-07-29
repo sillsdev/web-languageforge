@@ -1,7 +1,7 @@
 <div id="lexAppEditView" class="animate-switch row">
     <div class="col-md-4">
         <div>
-            <button style="float:right;margin-bottom:5px;margin-top: 5px" ng-click="show.entryListModifiers = !show.entryListModifiers" class="btn btn-sm"><span class="fa" ng-class="{ 'fa-minus-square-o': show.entryListModifiers, 'fa-plus-square-o': !show.entryListModifiers} "></span> Options</button>
+            <button style="float:right;margin-bottom:5px;margin-top: 5px" ng-click="show.entryListModifiers = !show.entryListModifiers" class="hidden-sm-down btn btn-sm"><span class="fa" ng-class="{ 'fa-minus-square-o': show.entryListModifiers, 'fa-plus-square-o': !show.entryListModifiers} "></span> Options</button>
             <pui-typeahead class="typeahead" placeholder="'Search Entries'"
                        items="typeahead.searchResults" term="typeahead.searchItemSelected"
                        search="typeahead.searchEntries" select="typeahead.searchSelect">
@@ -16,7 +16,7 @@
                      data-ng-if="typeahead.searchResults.length > 0">
                     <small><i>{{typeahead.matchCountCaption}}</i></small></div>
             </pui-typeahead>
-            <div ng-show="show.entryListModifiers">
+            <div class="hidden-sm-down" ng-show="show.entryListModifiers">
                         <div class="form-group sortfilter-form">
                             <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
                             <div class="form-inline">
