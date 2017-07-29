@@ -717,9 +717,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       }
 
       function setSortAndFilterOptionsFromConfig() {
-        console.log($scope.config);
         var sortOptions = [], filterOptions = [];
-        filterOptions.push({label:"Comments", value:'comments', type: 'comments', key: 'comments'});
         angular.forEach($scope.config.entry.fieldOrder, function(entryFieldKey) {
           var entryField = $scope.config.entry.fields[entryFieldKey];
 
@@ -732,29 +730,39 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
               sortOptions.push({label:senseField.label, value:senseFieldKey});
               if (senseField.type == 'multitext') {
                 angular.forEach(senseField.inputSystems, function (ws) {
-                  filterOptions.push({label:senseField.label + ' [' + ws + ']', value:senseFieldKey, type: 'multitext', inputSystem: ws, key: senseFieldKey + '-' + ws});
+                  filterOptions.push({label:senseField.label + ' [' + ws + ']', level: 'sense', value:senseFieldKey, type: 'multitext', inputSystem: ws, key: senseFieldKey + '-' + ws});
                 });
               } else {
-                filterOptions.push({label:senseField.label, value:senseFieldKey, type: senseField.type, key: senseFieldKey});
+                filterOptions.push({label:senseField.label, level: 'sense', value:senseFieldKey, type: senseField.type, key: senseFieldKey});
               }
             });
           } else {
             sortOptions.push({label:entryField.label, value:entryFieldKey});
             if (entryField.type == 'multitext') {
               angular.forEach(entryField.inputSystems, function (ws) {
-                filterOptions.push({label:entryField.label + ' [' + ws + ']', value:entryFieldKey, type: 'multitext', inputSystem: ws, key: entryFieldKey + '-' + ws});
+                filterOptions.push({label:entryField.label + ' [' + ws + ']', level: 'entry', value: entryFieldKey, type: 'multitext', inputSystem: ws, key: entryFieldKey + '-' + ws});
               });
             } else {
-              filterOptions.push({label:entryField.label, value:entryFieldKey, type: entryField.type, key: entryFieldKey});
+              filterOptions.push({label:entryField.label, level: 'entry', value: entryFieldKey, type: entryField.type, key: entryFieldKey});
             }
           }
         });
+        filterOptions.push({label:"Comments", value:'comments', type: 'comments', key: 'comments'});
+        filterOptions.push({label:"Example Sentences", value:'exampleSentences', type: 'exampleSentences', key: 'exampleSentences'});
+        filterOptions.push({label:"Pictures", value:'pictures', type: 'pictures', key: 'pictures'});
+        var hasAudioInputSystem = false;
+        angular.forEach($scope.config.inputSystems, function(inputSystem) {
+          if (utils.isAudio(inputSystem.tag)) {
+            hasAudioInputSystem = true;
+          }
+        });
+        if (hasAudioInputSystem) {
+          filterOptions.push({label:"Audio", value:'audio', type: 'audio', key: 'audio'});
+        }
         $scope.entryListModifiers.sortOptions.length = 0;
         $scope.entryListModifiers.filterOptions.length = 0;
         Array.prototype.push.apply($scope.entryListModifiers.sortOptions, sortOptions);
         Array.prototype.push.apply($scope.entryListModifiers.filterOptions, filterOptions);
-        console.log("filterOptions:");
-        console.log(filterOptions);
       }
 
       $scope.$on('$destroy', function () {
