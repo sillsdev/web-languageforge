@@ -46,7 +46,7 @@
         </div>
         <div class="hidden-sm-down list-group">
             <div class="list-group-item list-group-item-action active">
-                <small ng-hide="entryListModifiers.filterBy" class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
+                <small ng-hide="entryListModifiers.filterBy" id="totalNumberOfEntries" class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
                 <small ng-show="entryListModifiers.filterBy" class="pull-right">{{filteredEntries.length}} / {{entries.length}}</small>
                 <h5>{{ 'Words in dictionary' | translate }}</h5>
             </div>
