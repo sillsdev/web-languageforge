@@ -10,7 +10,7 @@ function ($q, sessionService, cache, commentsCache,
   var entries = [];
   var visibleEntries = [];
   var filteredEntries = [];
-  var entryListModifiers = {sortBy: {label: "Word", value: "lexeme"}, sortOptions: [], filterBy: "", filterOptions: [], sortDirection: "forward", filterType: "isNotEmpty"};
+  var entryListModifiers = {sortBy: {label: "Word", value: "lexeme"}, sortOptions: [], filterBy: "", filterOptions: [], sortReverse: false, filterType: "isNotEmpty"};
   var browserInstanceId = Math.floor(Math.random() * 1000000);
   var api = undefined;
 
@@ -312,7 +312,7 @@ function ($q, sessionService, cache, commentsCache,
       });
 
       mapped.sort(function(a, b) {
-        if (entryListModifiers.sortDirection == 'reverse') {
+        if (entryListModifiers.sortReverse == true) {
           return collator.compare(a.value, b.value) * -1;
         } else {
           return collator.compare(a.value, b.value);
@@ -437,17 +437,22 @@ function ($q, sessionService, cache, commentsCache,
       if (field.type == 'multitext' && field.inputSystems[0] in dataNode) {
         sortableValue = dataNode[field.inputSystems[0]].value;
       } else if (field.type == 'optionlist') {
-        if (config.optionlists) {
+        if (config.optionlists && config.optionlists[field.listCode]) {
           // something weird here with config.optionlists not being set consistently when this is called - cjh 2017-07
           sortableValue = _getOptionListItem(config.optionlists[field.listCode], dataNode.value).value;
         } else {
           sortableValue = dataNode.value;
         }
       } else if (field.type == 'multioptionlist' && dataNode.values.length > 0) {
-        if (field.listCode == 'semdom') {
-          sortableValue = semanticDomains_en[dataNode.values[0]].name;
+        if (field.listCode == 'semantic-domain-ddp4') {
+          console.log(dataNode);
+          sortableValue = semanticDomains_en[dataNode.values[0]].value;
         } else {
-          sortableValue = _getOptionListItem(config.optionlists[field.listCode], dataNode.values[0]).value;
+          if (config.optionlists && config.optionlists[field.listCode]) {
+            sortableValue = _getOptionListItem(config.optionlists[field.listCode], dataNode.values[0]).value;
+          } else {
+            sortableValue = dataNode.values[0].value;
+          }
         }
       }
     }
