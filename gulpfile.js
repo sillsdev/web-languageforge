@@ -730,9 +730,10 @@ function webpack(applicationName, isWatch) {
         gutil.log('Processing ' + fileName);
         var watch = isWatch ? ' --watch' : '';
         var env = applicationName ? ' --env.applicationName=' + applicationName : '';
-        execute('$(npm bin)/webpack' + watch + env, { cwd: path.dirname(fileName) }, function (err) {
-          if (err) throw err;
-        });
+        execute('$(npm bin)/webpack' + watch + env + ' --colors', { cwd: path.dirname(fileName) },
+          function (err) {
+            if (err) throw err;
+          });
       });
 
       resolve();
