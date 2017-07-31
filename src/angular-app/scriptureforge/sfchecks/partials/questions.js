@@ -97,6 +97,66 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
       return false;
     };
 
+    // Listview Sorting
+
+    $scope.sortdata = { sortColumn: '', direction: '' };
+
+    $scope.sortIconClass = function (columnName) {
+      if (columnName === $scope.sortdata.sortColumn && ($scope.sortdata.direction === 'up' || $scope.sortdata.direction === 'down')) {
+        return 'fa fa-sort-' + $scope.sortdata.direction;
+      } else {
+        return 'fa fa-sort';
+      }
+    };
+
+    $scope.flipDirection = function (direction) {
+      return (direction === 'up') ? 'down' : 'up';
+    };
+
+    $scope.setSortColumn = function (columnName) {
+      if (columnName === $scope.sortdata.sortColumn) {
+        $scope.sortdata.direction = $scope.flipDirection($scope.sortdata.direction);
+      } else {
+        $scope.sortdata.sortColumn = columnName;
+        $scope.sortdata.direction = 'up';
+      }
+    };
+
+    $scope.sortDataByColumn = function (data, columnName, direction) {
+      // This function is as generic as possible, so that it could be reused easily in other code
+      data.sort(function (a, b) {
+        var columnA = a[columnName];
+        var columnB = b[columnName];
+        var aUndefined = angular.isUndefined(columnA);
+        var bUndefined = angular.isUndefined(columnB);
+        if (aUndefined && bUndefined) {
+          return 0;
+        } else if (aUndefined) {
+          return (direction === 'up') ? -1 : +1;
+        } else if (bUndefined) {
+          return (direction === 'up') ? +1 : -1;
+        } else {
+          if (columnA === columnB) {
+            return 0;
+          } else if (columnA < columnB) {
+            return (direction === 'up') ? -1 : +1;
+          } else {
+            return (direction === 'up') ? +1 : -1;
+          }
+        }
+      });
+      return data;
+    };
+
+    $scope.doSort = function () {
+      $scope.sortDataByColumn($scope.questions, $scope.sortdata.sortColumn, $scope.sortdata.direction);
+    };
+
+    $scope.doSortByColumn = function (columnName) {
+      $scope.setSortColumn(columnName);
+      $scope.doSort();
+    };
+
     // Listview Data
     $scope.questions = [];
     $scope.queryQuestions = function () {
