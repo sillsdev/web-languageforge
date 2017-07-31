@@ -29,6 +29,12 @@ table.texts, table.questions {
     text-align: center;
     vertical-align: middle;
   }
+
+  th {
+    text-align: center;
+    // Cursor change to signal that clicking the header will change the sort direction
+    cursor: pointer;
+  }
 }
 
 table label {
