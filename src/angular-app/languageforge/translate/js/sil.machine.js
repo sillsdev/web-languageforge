@@ -1,7 +1,7 @@
 /**
  * @version 1.0.0.0
  * @copyright Copyright ©  2016
- * @compiler Bridge.NET 16.0.0-beta5
+ * @compiler Bridge.NET 16.0.0-rc
  */
 Bridge.assembly("SIL.Machine", function ($asm, globals) {
     "use strict";
@@ -3664,7 +3664,7 @@ Bridge.assembly("SIL.Machine", function ($asm, globals) {
                                             continue;
                                     }
                                     case 4: {
-                                        if (System.Char.isPunctuation(data.charCodeAt(i)) || System.Char.isSymbol(data.charCodeAt(i)) || System.Char.isControl(data.charCodeAt(i))) {
+                                        if (this.isPunctuation(data.charCodeAt(i)) || System.Char.isSymbol(data.charCodeAt(i)) || System.Char.isControl(data.charCodeAt(i))) {
                                                 $step = 5;
                                                 continue;
                                             } else  {
@@ -3846,6 +3846,13 @@ Bridge.assembly("SIL.Machine", function ($asm, globals) {
             },
             toLower: function (str) {
                 return str.toLowerCase();
+            },
+            isPunctuation: function (c) {
+                if (c < 256) {
+                    return System.Char.isPunctuation(c);
+                }
+                // this is a horrible workaround for a bug in Bridge.NET, see issue #2981
+                return System.Text.RegularExpressions.Regex.isMatch(String.fromCharCode(c), "[;·՚-՟։֊־׀׃׆׳״؉؊،؍؛؞؟٪-٭۔܀-܍߷-߹࠰-࠾࡞।॥॰૰෴๏๚๛༄-༒༔༺-༽྅࿐-࿔࿙࿚၊-၏჻፠-፨᐀᙭᙮᚛᚜᛫-᛭᜵᜶។-៖៘-៚᠀-᠊᥄᥅᨞᨟᪠-᪦᪨-᪭᭚-᭠᯼-᯿᰻-᰿᱾᱿᳀-᳇᳓‐-‧‰-⁃⁅-⁑⁓-⁞⁽⁾₍₎〈〉❨-❵⟅⟆⟦-⟯⦃-⦘⧘-⧛⧼⧽⳹-⳼⳾⳿⵰⸀-⸮⸰-⸻、-〃〈-】〔-〟〰〽゠・꓾꓿꘍-꘏꙳꙾꛲-꛷꡴-꡷꣎꣏꣸-꣺꤮꤯꥟꧁-꧍꧞꧟꩜-꩟꫞꫟꫰꫱꯫﴾﴿︐-︙︰-﹒﹔-﹡﹣﹨﹪﹫！-＃％-＊，-／：；？＠［-］＿｛｝｟-･֊־᐀᠆‐-―⸗⸚⸺⸻〜〰゠︱︲﹘﹣－༺༼᚛‚„⁅⁽₍〈❨❪❬❮❰❲❴⟅⟦⟨⟪⟬⟮⦃⦅⦇⦉⦋⦍⦏⦑⦓⦕⦗⧘⧚⧼⸢⸤⸦⸨〈《「『【〔〖〘〚〝﴾︗︵︷︹︻︽︿﹁﹃﹇﹙﹛﹝（［｛｟｢༻༽᚜⁆⁾₎〉❩❫❭❯❱❳❵⟆⟧⟩⟫⟭⟯⦄⦆⦈⦊⦌⦎⦐⦒⦔⦖⦘⧙⧛⧽⸣⸥⸧⸩〉》」』】〕〗〙〛〞〟﴿︘︶︸︺︼︾﹀﹂﹄﹈﹚﹜﹞）］｝｠｣‘‛“‟‹⸂⸄⸉⸌⸜⸠’”›⸃⸅⸊⸍⸝⸡‿⁀⁔︳︴﹍-﹏＿;·՚-՟։׀׃׆׳״؉؊،؍؛؞؟٪-٭۔܀-܍߷-߹࠰-࠾࡞।॥॰૰෴๏๚๛༄-༒༔྅࿐-࿔࿙࿚၊-၏჻፠-፨᙭᙮᛫-᛭᜵᜶។-៖៘-៚᠀-᠅᠇-᠊᥄᥅᨞᨟᪠-᪦᪨-᪭᭚-᭠᯼-᯿᰻-᰿᱾᱿᳀-᳇᳓‖‗†-‧‰-‸※-‾⁁-⁃⁇-⁑⁓⁕-⁞⳹-⳼⳾⳿⵰⸀⸁⸆-⸈⸋⸎-⸖⸘⸙⸛⸞⸟⸪-⸮⸰-⸹、-〃〽・꓾꓿꘍-꘏꙳꙾꛲-꛷꡴-꡷꣎꣏꣸-꣺꤮꤯꥟꧁-꧍꧞꧟꩜-꩟꫞꫟꫰꫱꯫︐-︖︙︰﹅﹆﹉-﹌﹐-﹒﹔-﹗﹟-﹡﹨﹪﹫！-＃％-＇＊，．／：；？＠＼｡､･]");
             }
         }
     });

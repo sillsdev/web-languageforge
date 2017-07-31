@@ -1,7 +1,7 @@
 /*
- * @version   : 1.0.0-beta5 - A Bridge.NET implementation of Newtonsoft.Json
+ * @version   : 1.0.0-rc - A Bridge.NET implementation of Newtonsoft.Json
  * @author    : Object.NET, Inc. http://www.bridge.net/
- * @date      : 2017-07-17
+ * @date      : 2017-07-25
  * @copyright : Copyright (c) 2008-2017, Object.NET, Inc. (http://www.object.net/). All rights reserved.
  * @license   : See license.txt and https://github.com/bridgedotnet/Bridge.NET/blob/master/LICENSE.
  */
@@ -216,9 +216,9 @@ Bridge.assembly("Newtonsoft.Json", function ($asm, globals) {
                         }
                     }
 
-                    if (possibleType && Bridge.Reflection.isEnum(possibleType)) {
+                    /*if (possibleType && Bridge.Reflection.isEnum(possibleType)) {
                         return System.Enum.toString(possibleType, obj);
-                    }
+                    }*/
 
                     if (possibleType && possibleType === System.Char) {
                         return String.fromCharCode(obj);
@@ -477,6 +477,10 @@ Bridge.assembly("Newtonsoft.Json", function ($asm, globals) {
                     }
 
                     var def = Bridge.getDefaultValue(type);
+
+                    if (type.$nullable) {
+                        type = type.$nullableType;
+                    }
 
                     if (raw === null) {
                         return def;
