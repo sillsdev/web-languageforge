@@ -80,11 +80,15 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
           $scope.project.config.documentSets.idsOrdered.length > 0
         ) {
           angular.forEach($scope.project.config.documentSets.idsOrdered, function (id) {
-            $scope.documentSets.push(result.data.documentSetList[id]);
+            if (angular.isDefined(result.data.documentSetList[id])) {
+              $scope.documentSets.push(result.data.documentSetList[id]);
+            }
           });
         } else {
           angular.forEach(result.data.documentSetList, function (documentSet) {
-            $scope.documentSets.push(documentSet);
+            if (angular.isDefined(documentSet)) {
+              $scope.documentSets.push(documentSet);
+            }
           });
         }
 
@@ -132,6 +136,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
             if (result.ok) {
               var noticeMessage = 'Document \'' + documentSet.name + '\' was successfully removed.';
               $scope.documentSets.splice(index, 1);
+              $scope.project.config.documentSets.idsOrdered.splice(index, 1);
               if ($scope.selectedDocumentSetIndex >= index) {
                 $scope.selectDocumentSet($scope.selectedDocumentSetIndex - 1);
               }

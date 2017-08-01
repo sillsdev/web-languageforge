@@ -69,9 +69,25 @@ class TranslateDocumentSetCommands
     public static function removeDocumentSet($projectId, $documentSetId)
     {
         $project = new TranslateProjectModel($projectId);
+        self::removeDocumentSetConfig($project, $documentSetId);
         $documentSet = new TranslateDocumentSetModel($project, $documentSetId);
         $documentSet->isDeleted = true;
         $documentSet->write();
         return true;
+    }
+
+    /**
+     * @param TranslateProjectModel $project
+     * @param string $documentSetId
+     */
+    private static function removeDocumentSetConfig($project, $documentSetId)
+    {
+        foreach ($project->config->documentSets->idsOrdered as $index => $id) {
+            if ($id == $documentSetId) {
+                $project->config->documentSets->idsOrdered->offsetUnset($index);
+                break;
+            }
+        }
+        $project->write();
     }
 }
