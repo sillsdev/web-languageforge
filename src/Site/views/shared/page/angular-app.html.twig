@@ -5,8 +5,5 @@
         {% include bootstrapFolder~'/'~appName~'.html' %}
     </div>
 
-    <script src="/dist/manifest.bundle.js"></script>
-    <script src="/dist/vendor.bundle.js"></script>
-    <script src="/dist/main.bundle.js"></script>
     <script>angular.bootstrap(document.getElementById('app-container-for-bootstrap'), ['{{ appName }}']);</script>
 {% endblock %}

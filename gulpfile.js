@@ -716,7 +716,7 @@ gulp.task('build-remove-test-fixtures', function (done) {
   }
 });
 
-function webpack(applicationName, isWatch) {
+function webpack(applicationName, isProduction, isWatch) {
   return new Promise(function (resolve, reject) {
     glob('webpack.config.js', {}, function (err, files) {
       if (err) return reject(err);
@@ -730,7 +730,9 @@ function webpack(applicationName, isWatch) {
         gutil.log('Processing ' + fileName);
         var watch = isWatch ? ' --watch' : '';
         var env = applicationName ? ' --env.applicationName=' + applicationName : '';
-        execute('$(npm bin)/webpack' + watch + env + ' --colors', { cwd: path.dirname(fileName) },
+        var prod = isProduction ? ' -p' : '';
+        execute('$(npm bin)/webpack' + watch + env + prod + ' --colors',
+          { cwd: path.dirname(fileName) },
           function (err) {
             if (err) throw err;
           });
@@ -749,8 +751,11 @@ gulp.task('build-webpack', function () {
     .option('applicationName', {
       demand: true,
       type: 'string' })
+    .option('doNoCompression', {
+      demand: false,
+      type: 'boolean' })
     .argv;
-  return webpack(params.applicationName);
+  return webpack(params.applicationName, !params.doNoCompression);
 });
 
 // -------------------------------------
@@ -759,10 +764,15 @@ gulp.task('build-webpack', function () {
 gulp.task('build-webpack:watch', function () {
   var params = require('yargs')
     .option('applicationName', {
-      demand: true,
+      demand: false,
+      default: 'languageforge',
       type: 'string' })
+    .option('doNoCompression', {
+      demand: false,
+      default: true,
+      type: 'boolean' })
     .argv;
-  return webpack(params.applicationName, true);
+  return webpack(params.applicationName, !params.doNoCompression, true);
 });
 
 // -------------------------------------
