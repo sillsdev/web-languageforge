@@ -105,8 +105,10 @@ class TranslateDocumentCommandsTest extends TestCase
         $project = ProjectModel::getById($projectId);
         $this->assertCount(0, $project->config->documentSets->idsOrdered);
 
-        // Clean up after ourselves
-        ProjectCommands::deleteProjects([$projectId], $project->ownerRef->asString());
+        // Clean up after ourselves. Remove the project from parent model so the machine engine remove is not called.
+        // Important for running on the build server that doesn't have machine service running - IJH 2017/08
+        $project = new ProjectModel($projectId);
+        $project->remove();
     }
 
     public function testReadDocument_ReadBackOk()
