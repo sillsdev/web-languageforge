@@ -2,8 +2,10 @@
 
 use Api\Model\Languageforge\Translate\Command\TranslateDocumentSetCommands;
 use Api\Model\Languageforge\Translate\TranslateDocumentSetModel;
+use Api\Model\Languageforge\Translate\TranslateProjectModel;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Mapper\JsonEncoder;
+use Api\Model\Shared\ProjectModel;
 use PHPUnit\Framework\TestCase;
 
 class TranslateDocumentCommandsTest extends TestCase
@@ -68,6 +70,40 @@ class TranslateDocumentCommandsTest extends TestCase
         // List to confirm delete
         $dto = TranslateDocumentSetCommands::listDocumentSets($projectId);
         $this->assertEquals(0, $dto->count);
+
+        // Clean up after ourselves
+        ProjectCommands::deleteProjects([$projectId], $project->ownerRef->asString());
+    }
+
+    public function testRemoveDocumentSet_IdInConfig_IdRemovedFromConfig()
+    {
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $project->appName = TranslateProjectModel::TRANSLATE_APP;
+        $projectId = $project->write();
+
+        $documentSet = new TranslateDocumentSetModel($project);
+        $documentSet->name = 'SomeDocument';
+
+        // Create
+        $documentSetData = JsonEncoder::encode($documentSet);
+        $result1 = TranslateDocumentSetCommands::updateDocumentSet($projectId, $documentSetData);
+        $documentSetId = $result1['id'];
+        $this->assertNotNull($documentSetId);
+        $this->assertEquals(24, strlen($documentSetId));
+
+        // Add config
+        /** @var TranslateProjectModel $project */
+        $project = ProjectModel::getById($projectId);
+        $project->config->documentSets->idsOrdered->append($documentSetId);
+        $project->write();
+        $this->assertCount(1, $project->config->documentSets->idsOrdered);
+        $this->assertEquals($documentSetId, $project->config->documentSets->idsOrdered[0]);
+
+        // Delete
+        $result5 = TranslateDocumentSetCommands::removeDocumentSet($projectId, $documentSetId);
+        $this->assertTrue($result5);
+        $project = ProjectModel::getById($projectId);
+        $this->assertCount(0, $project->config->documentSets->idsOrdered);
 
         // Clean up after ourselves
         ProjectCommands::deleteProjects([$projectId], $project->ownerRef->asString());
