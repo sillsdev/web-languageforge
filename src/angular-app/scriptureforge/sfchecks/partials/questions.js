@@ -5,10 +5,10 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice'])
   .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService',
     '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
-    'silNoticeService', 'modalService', '$q',
+    'listviewSortingService', 'silNoticeService', 'modalService', '$q',
   function ($scope, questionService, qts,
             $routeParams, ss, linkService, breadcrumbService,
-            notice, modalService, $q) {
+            sorting, notice, modalService, $q) {
     var Q_TITLE_LIMIT = 70;
     var textId = $routeParams.textId;
     $scope.textId = textId;
@@ -101,55 +101,12 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
 
     $scope.sortdata = { sortColumn: '', direction: '' };
 
-    $scope.sortIconClass = function (columnName) {
-      if (columnName === $scope.sortdata.sortColumn && ($scope.sortdata.direction === 'up' || $scope.sortdata.direction === 'down')) {
-        return 'fa fa-sort-' + $scope.sortdata.direction;
-      } else {
-        return 'fa fa-sort';
-      }
-    };
+    $scope.sortIconClass = function (columnName) { return sorting.sortIconClass($scope.sortdata, columnName); };
 
-    $scope.flipDirection = function (direction) {
-      return (direction === 'up') ? 'down' : 'up';
-    };
-
-    $scope.setSortColumn = function (columnName) {
-      if (columnName === $scope.sortdata.sortColumn) {
-        $scope.sortdata.direction = $scope.flipDirection($scope.sortdata.direction);
-      } else {
-        $scope.sortdata.sortColumn = columnName;
-        $scope.sortdata.direction = 'up';
-      }
-    };
-
-    $scope.sortDataByColumn = function (data, columnName, direction) {
-      // This function is as generic as possible, so that it could be reused easily in other code
-      data.sort(function (a, b) {
-        var columnA = a[columnName];
-        var columnB = b[columnName];
-        var aUndefined = angular.isUndefined(columnA);
-        var bUndefined = angular.isUndefined(columnB);
-        if (aUndefined && bUndefined) {
-          return 0;
-        } else if (aUndefined) {
-          return (direction === 'up') ? -1 : +1;
-        } else if (bUndefined) {
-          return (direction === 'up') ? +1 : -1;
-        } else {
-          if (columnA === columnB) {
-            return 0;
-          } else if (columnA < columnB) {
-            return (direction === 'up') ? -1 : +1;
-          } else {
-            return (direction === 'up') ? +1 : -1;
-          }
-        }
-      });
-      return data;
-    };
+    $scope.setSortColumn = function (columnName) { return sorting.setSortColumn($scope.sortdata, columnName); };
 
     $scope.doSort = function () {
-      $scope.sortDataByColumn($scope.questions, $scope.sortdata.sortColumn, $scope.sortdata.direction);
+      sorting.sortDataByColumn($scope.questions, $scope.sortdata.sortColumn, $scope.sortdata.direction);
     };
 
     $scope.doSortByColumn = function (columnName) {
