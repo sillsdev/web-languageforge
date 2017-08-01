@@ -21,7 +21,8 @@ angular.module('sfchecks.services', ['bellows.services'])
     this.archive = api.method('text_archive');
     this.publish = api.method('text_publish');
     this.settingsDto = api.method('text_settings_dto');
-    this.exportComments = api.method('text_exportComments');  }])
+    this.exportComments = api.method('text_exportComments');
+  }])
   .service('questionService', ['apiService', function (api) {
     this.read = api.method('question_comment_dto');
     this.update = api.method('question_update');
@@ -64,4 +65,54 @@ angular.module('sfchecks.services', ['bellows.services'])
     this.update = api.method('questionTemplate_update');
     this.remove = api.method('questionTemplate_delete');
     this.list = api.method('questionTemplate_list');
-  }]);
+  }])
+  .service('listviewSortingService', function () {
+    this.sortDataByColumn = function (data, columnName, direction) {
+      // This function is as generic as possible, so that it could be reused easily in other code
+      data.sort(function (a, b) {
+        var columnA = a[columnName];
+        var columnB = b[columnName];
+        var aUndefined = angular.isUndefined(columnA);
+        var bUndefined = angular.isUndefined(columnB);
+        if (aUndefined && bUndefined) {
+          return 0;
+        } else if (aUndefined) {
+          return (direction === 'up') ? -1 : +1;
+        } else if (bUndefined) {
+          return (direction === 'up') ? +1 : -1;
+        } else {
+          if (columnA === columnB) {
+            return 0;
+          } else if (columnA < columnB) {
+            return (direction === 'up') ? -1 : +1;
+          } else {
+            return (direction === 'up') ? +1 : -1;
+          }
+        }
+      });
+      return data;
+    };
+
+    this.flipDirection = function (direction) {
+      return (direction === 'up') ? 'down' : 'up';
+    };
+
+    // TODO: The sortdata parameter here should probably turn into some kind of class with setSortColumn and sortIconClass methods
+
+    this.setSortColumn = function (sortdata, columnName) {
+      if (columnName === sortdata.sortColumn) {
+        sortdata.direction = this.flipDirection(sortdata.direction);
+      } else {
+        sortdata.sortColumn = columnName;
+        sortdata.direction = 'up';
+      }
+    };
+
+    this.sortIconClass = function (sortdata, columnName) {
+      if (columnName === sortdata.sortColumn && (sortdata.direction === 'up' || sortdata.direction === 'down')) {
+        return 'fa fa-sort-' + sortdata.direction;
+      } else {
+        return 'fa fa-sort';
+      }
+    };
+  });
