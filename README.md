@@ -83,8 +83,11 @@ Install node_modules used to build Sass files and run E2E tests
 cd web-languageforge
 npm install
 gulp sass
+gulp build-webpack --applicationName 'languageforge' --doNoCompression true
 ```
 To watch Sass files for changes, run `gulp sass:watch`. The output will also be in a more readable format (rather than compressed as it is with `gulp sass`). You can also pass the `--debug` flag to enable source comments and source maps in comments in the output files.
+
+To watch TypeScript files for changes, run `gulp build-webpack:watch` (this defaults to Language Forge, for Scripture Forge run `gulp build-webpack:watch --applicationName 'scriptureforge'`). This includes a live reload server (browser setup [here](#LiveReloadInstall)).
 
 ### Language Forge Configuration File <a id="LFConfig"></a>
 Manually edit the Language Forge config file
@@ -252,15 +255,15 @@ Reference for [Integrating Xdebug with PhpStorm](https://www.jetbrains.com/help/
 
 ### LiveReload ###
 
-#### LiveReload Chrome extension
+#### LiveReload Chrome extension <a id="LiveReloadInstall"></a>
 
 Install the [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en-US) extension.
 
 Then from PhpStorm, click
 **View**->**Tool Windows** -> **Gulp**
 
-When you want LiveReload running, double-click the **reload** Gulp task.
-Then in the LiveReload chrome extension, left click to enable it.  A solid dot in the circle means the plugin is connected. Now when an applicable source file is changed and saved, it should trigger an automate page reload in the browser.
+When you want LiveReload running, double-click the **reload** or **build-webpack:watch** Gulp task.
+Then in the LiveReload chrome extension, click to enable it.  A solid dot in the circle means the plugin is connected. Now when an applicable source file is changed and saved, it should trigger an automate page reload in the browser.
 
 ## Testing ##
 
@@ -352,9 +355,10 @@ Occasionally developers need to update composer or npm.  If something isn't work
 
 #### Update npm packages ####
 
-In the root folder: `npm install`
-In the src folder: `npm install`
+In the *root* folder: `npm install`
+
+In the **src/** folder: `npm install`
 
 #### Update composer ####
 
-In src/: `composer install`
+In the **src/** folder: `composer install`
