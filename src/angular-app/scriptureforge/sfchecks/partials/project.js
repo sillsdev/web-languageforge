@@ -4,10 +4,10 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
   'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice',
   'palaso.ui.textdrop', 'palaso.ui.jqte', 'ngFileUpload', 'ngRoute'])
   .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService',
-    'linkService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
+    'linkService', 'listviewSortingService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
     'modalService', '$q',
   function ($scope, textService, ss, breadcrumbService,
-            linkService, notice, sfchecksProjectService, messageService,
+            linkService, sorting, notice, sfchecksProjectService, messageService,
             modalService, $q) {
     $scope.finishedLoading = false;
 
@@ -63,55 +63,12 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
 
     $scope.sortdata = { sortColumn: '', direction: '' };
 
-    $scope.sortIconClass = function (columnName) {
-      if (columnName === $scope.sortdata.sortColumn && ($scope.sortdata.direction === 'up' || $scope.sortdata.direction === 'down')) {
-        return 'fa fa-sort-' + $scope.sortdata.direction;
-      } else {
-        return 'fa fa-sort';
-      }
-    };
+    $scope.sortIconClass = function (columnName) { return sorting.sortIconClass($scope.sortdata, columnName); };
 
-    $scope.flipDirection = function (direction) {
-      return (direction === 'up') ? 'down' : 'up';
-    };
-
-    $scope.setSortColumn = function (columnName) {
-      if (columnName === $scope.sortdata.sortColumn) {
-        $scope.sortdata.direction = $scope.flipDirection($scope.sortdata.direction);
-      } else {
-        $scope.sortdata.sortColumn = columnName;
-        $scope.sortdata.direction = 'up';
-      }
-    };
-
-    $scope.sortDataByColumn = function (data, columnName, direction) {
-      // This function is as generic as possible, so that it could be reused easily in other code
-      data.sort(function (a, b) {
-        var columnA = a[columnName];
-        var columnB = b[columnName];
-        var aUndefined = angular.isUndefined(columnA);
-        var bUndefined = angular.isUndefined(columnB);
-        if (aUndefined && bUndefined) {
-          return 0;
-        } else if (aUndefined) {
-          return (direction === 'up') ? -1 : +1;
-        } else if (bUndefined) {
-          return (direction === 'up') ? +1 : -1;
-        } else {
-          if (columnA === columnB) {
-            return 0;
-          } else if (columnA < columnB) {
-            return (direction === 'up') ? -1 : +1;
-          } else {
-            return (direction === 'up') ? +1 : -1;
-          }
-        }
-      });
-      return data;
-    };
+    $scope.setSortColumn = function (columnName) { return sorting.setSortColumn($scope.sortdata, columnName); };
 
     $scope.doSort = function () {
-      $scope.sortDataByColumn($scope.texts, $scope.sortdata.sortColumn, $scope.sortdata.direction);
+      sorting.sortDataByColumn($scope.texts, $scope.sortdata.sortColumn, $scope.sortdata.direction);
     };
 
     $scope.doSortByColumn = function (columnName) {
