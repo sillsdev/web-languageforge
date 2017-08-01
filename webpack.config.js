@@ -13,6 +13,7 @@ var webpackConfig = {
   },
 
   plugins: [
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // to not to load all locales
     new webpack.ContextReplacementPlugin(
 
       // The ([\\/]) piece accounts for path separators in *nix and Windows
@@ -25,8 +26,12 @@ var webpackConfig = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: function (module) {
-        // this assumes your vendor imports exist in the node_modules directory
-        return module.context && module.context.indexOf('node_modules') !== -1;
+        // this assumes your vendor imports exist in the node_modules or js/assets directories
+        return module.context && (
+          module.context.indexOf('node_modules') !== -1 ||
+          module.context.indexOf('js/assets') !== -1 ||
+          module.context.indexOf('js/vendor') !== -1
+        );
       }
     }),
 
@@ -39,22 +44,14 @@ var webpackConfig = {
 
   module: {
     rules: [
+      { test: /\.ts$/, use: 'awesome-typescript-loader' },
+      { test: /\.s?css$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
       {
-        test: /\.ts$/,
-        use: [
-          { loader: 'awesome-typescript-loader' }
-        ]
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        use: 'url-loader?limit=10000'
       },
-      {
-        test: /\.scss$/,
-        exclude: /node_modules/,
-        use: [
-          { loader: 'raw-loader' },
-          { loader: 'sass-loader' }
-        ]
-      },
-      { test: /\.css$/, use: 'raw-loader' },
-      { test: /\.html$/, use: 'raw-loader' }
+      { test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/, use: 'file-loader' },
+      { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' }
     ]
   }
 
