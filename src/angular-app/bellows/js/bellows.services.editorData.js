@@ -4,29 +4,35 @@ angular.module('bellows.services')
 
 // Lexicon Entry Service
 .factory('editorDataService', ['$q', 'sessionService', 'editorOfflineCache', 'commentsOfflineCache',
-  'silNoticeService', 'lexCommentService',
+  'silNoticeService', 'lexCommentService', 'utilService',
 function ($q, sessionService, cache, commentsCache,
-          notice, commentService) {
+          notice, commentService, util) {
   var entries = [];
   var visibleEntries = [];
-  var browserInstanceId = Math.floor(Math.random() * 1000);
+  var filteredEntries = [];
+  var entryListModifiers = {
+    sortBy: {
+      label: 'Word',
+      value: 'lexeme'
+    },
+    sortOptions: [],
+    sortReverse: false,
+    filterBy: '',
+    filterOptions: [],
+    filterType: 'isNotEmpty'
+  };
+  var browserInstanceId = Math.floor(Math.random() * 1000000);
   var api = undefined;
 
   var showInitialEntries = function showInitialEntries() {
-    return sortList(entries).then(function(sortedEntries){
-      entries.length = 0;
-      Array.prototype.push.apply(entries, sortedEntries);
-      visibleEntries.length = 0; // clear out the array
-      Array.prototype.push.apply(visibleEntries, entries.slice(0, 50));
-    });
+    return sortAndFilterEntries(true);
   };
 
   var showMoreEntries = function showMoreEntries() {
     var increment = 50;
-    if (visibleEntries.length < entries.length) {
-      var currentLength = visibleEntries.length;
-      visibleEntries.length = 0;
-      Array.prototype.push.apply(visibleEntries, entries.slice(0, currentLength + increment));
+    if (visibleEntries.length < filteredEntries.length) {
+      util.arrayCopyRetainingReferences(filteredEntries.slice(0, visibleEntries.length + increment),
+        visibleEntries);
     }
   };
 
@@ -40,12 +46,12 @@ function ($q, sessionService, cache, commentsCache,
    */
   var loadEditorData = function loadEditorData(lexiconScope) {
     var deferred = $q.defer();
-    if (entries.length == 0) { // first page load
+    if (entries.length === 0) { // first page load
       if (cache.canCache()) {
         notice.setLoading('Loading Dictionary');
         loadDataFromOfflineCache().then(function (projectObj) {
           if (projectObj.isComplete) {
-            showInitialEntries().then(function() {
+            showInitialEntries().then(function () {
               lexiconScope.finishedLoading = true;
               notice.cancelLoading();
               refreshEditorData(projectObj.timestamp).then(function (result) {
@@ -110,7 +116,7 @@ function ($q, sessionService, cache, commentsCache,
       var totalCount = result.data.itemTotalCount;
       notice.setPercentComplete(parseInt(newOffset * 100 / totalCount));
       processEditorDto(result, false).then(function () {
-        if (offset == 0) {
+        if (offset === 0) {
           showInitialEntries();
         }
 
@@ -136,12 +142,13 @@ function ($q, sessionService, cache, commentsCache,
     var deferred = $q.defer();
 
     // get data from the server
-    if (Offline.state == 'up') {
+    if (Offline.state === 'up') {
       api.dbeDtoUpdatesOnly(browserInstanceId, timestamp, function (result) {
         processEditorDto(result, true).then(function (result) {
           if (result.data.itemCount > 0) {
-            console.log("Editor: processed " + result.data.itemCount + " entries from server.");
+            console.log('Editor: processed ' + result.data.itemCount + ' entries from server.');
           }
+
           deferred.resolve(result);
         });
       });
@@ -157,15 +164,12 @@ function ($q, sessionService, cache, commentsCache,
   };
 
   var removeEntryFromLists = function removeEntryFromLists(id) {
-    var iFullList = getIndexInList(id, entries);
-    if (angular.isDefined(iFullList)) {
-      entries.splice(iFullList, 1);
-    }
-
-    var iShowList = getIndexInList(id, visibleEntries);
-    if (angular.isDefined(iShowList)) {
-      visibleEntries.splice(iShowList, 1);
-    }
+    angular.forEach([entries, filteredEntries, visibleEntries], function (list) {
+      var i = getIndexInList(id, list);
+      if (angular.isDefined(i)) {
+        list.splice(i, 1);
+      }
+    });
 
     return cache.deleteEntry(id);
   };
@@ -201,12 +205,12 @@ function ($q, sessionService, cache, commentsCache,
     var endTime;
     var numOfEntries;
     cache.getAllEntries().then(function (result) {
-      Array.prototype.push.apply(entries, result); // proper way to extend the array
+      util.arrayExtend(entries, result);
       numOfEntries = result.length;
 
       if (result.length > 0) {
         commentsCache.getAllComments().then(function (result) {
-          Array.prototype.push.apply(commentService.comments.items.all, result);
+          util.arrayExtend(commentService.comments.items.all, result);
 
           cache.getProjectData().then(function (result) {
             commentService.comments.counts.userPlusOne = result.commentsUserPlusOne;
@@ -233,27 +237,22 @@ function ($q, sessionService, cache, commentsCache,
     if (result.ok) {
       commentService.comments.counts.userPlusOne = result.data.commentsUserPlusOne;
       if (!updateOnly) {
-        Array.prototype.push.apply(entries, result.data.entries); // proper way to extend the array
+        util.arrayExtend(entries, result.data.entries);
         commentService.comments.items.all.push
           .apply(commentService.comments.items.all, result.data.comments);
       } else {
 
-        // splice updates into entry lists
+        // splice updates into entry list
+        // don't need to modify filteredEntries or visibleEntries since those are regenerated
+        // from sortAndFilterEntries() below
         angular.forEach(result.data.entries, function (entry) {
-          var i;
 
-          // splice into entries
-          i = getIndexInList(entry.id, entries);
+          // splice into entries list
+          var i = getIndexInList(entry.id, entries);
           if (angular.isDefined(i)) {
             entries[i] = entry;
           } else {
             addEntryToEntryList(entry);
-          }
-
-          // splice into visibleEntries
-          i = getIndexInList(entry.id, visibleEntries);
-          if (angular.isDefined(i)) {
-            visibleEntries[i] = entry;
           }
         });
 
@@ -272,17 +271,10 @@ function ($q, sessionService, cache, commentsCache,
 
         angular.forEach(result.data.deletedCommentIds, commentService.removeCommentFromLists);
 
-        sortList(entries).then(function(sortedEntries) {
-          // the length = 0 followed by Array.push.apply is a method of replacing the contents of
-          // an array without creating a new array thereby keeping original references
-          // to the array
-          entries.length = 0;
-          Array.prototype.push.apply(entries, sortedEntries);
-        });
-        sortList(visibleEntries).then(function(sortedVisibleEntries) {
-          visibleEntries.length = 0;
-          Array.prototype.push.apply(visibleEntries, sortedVisibleEntries);
-        });
+        // only sort and filter the list if there have been changes to entries (or deleted entries)
+        if (result.data.entries.length > 0 || result.data.deletedEntryIds.length > 0) {
+          sortAndFilterEntries(true);
+        }
       }
 
       if (result.data.itemCount &&
@@ -302,7 +294,7 @@ function ($q, sessionService, cache, commentsCache,
     var index = undefined;
     for (var i = 0; i < list.length; i++) {
       var e = list[i];
-      if (e.id == id) {
+      if (e.id === id) {
         index = i;
         break;
       }
@@ -311,44 +303,277 @@ function ($q, sessionService, cache, commentsCache,
     return index;
   }
 
-  function getIndexInEntries(id) {
-    return getIndexInList(id, entries);
-  }
+  function sortList(config, list) {
+    var collator = Intl.Collator(_getInputSystemForSort(config));
 
-  function getIndexInVisibleEntries(id) {
-    return getIndexInList(id, visibleEntries);
-  }
-
-  function sortList(list) {
-    return sessionService.getSession().then(function(session) {
-      var startTime = performance.now();
-      var config = session.projectSettings().config;
-      var inputSystems = config.entry.fields.lexeme.inputSystems;
-      var ws = inputSystems[0];
-      var collator = Intl.Collator(ws);
-
-      // temporary mapped array
-      var mapped = list.map(function(entry, i) {
-        var lexeme = '';
-        if (angular.isDefined(entry.lexeme) && angular.isDefined(entry.lexeme[ws])) {
-          lexeme = entry.lexeme[ws].value;
-        }
-        return {index: i, value: lexeme};
-      });
-
-      mapped.sort(function(a, b) {
-        return collator.compare(a.value, b.value);
-      });
-
-      var result = mapped.map(function(el) {
-        return list[el.index];
-      });
-
-      console.log('Sorted list in ' +
-        ((performance.now() - startTime) / 1000).toFixed(2) + ' seconds');
-
-      return result;
+    // temporary mapped array
+    var mapped = list.map(function (entry, i) {
+      return { index: i, value: getSortableValue(config, entry) };
     });
+
+    mapped.sort(function (a, b) {
+      if (entryListModifiers.sortReverse === true) {
+        return -collator.compare(a.value, b.value);
+      } else {
+        return collator.compare(a.value, b.value);
+      }
+    });
+
+    return mapped.map(function (el) {
+      return list[el.index];
+    });
+  }
+
+  function sortEntries(shouldResetVisibleEntriesList) {
+    var startTime = performance.now();
+    return sessionService.getSession().then(function (session) {
+      var config = session.projectSettings().config;
+
+      // the length = 0 followed by Array.push.apply is a method of replacing the contents of
+      // an array without creating a new array thereby keeping original references
+      // to the array
+      var entriesSorted = sortList(config, entries);
+      util.arrayCopyRetainingReferences(entriesSorted, entries);
+      var filteredEntriesSorted = sortList(config, filteredEntries);
+      util.arrayCopyRetainingReferences(filteredEntriesSorted, filteredEntries);
+      var visibleEntriesSorted = sortList(config, visibleEntries);
+      if (shouldResetVisibleEntriesList) {
+        util.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, 50), visibleEntries);
+      } else {
+        console.log('sortedVisibleEntries');
+        console.log(visibleEntriesSorted);
+        util.arrayCopyRetainingReferences(visibleEntriesSorted, visibleEntries);
+        console.log(visibleEntries);
+      }
+
+      var sortTime = ((performance.now() - startTime) / 1000).toFixed(2);
+      if (sortTime > 0.5) {
+        console.warn('Sort time took ' + sortTime + ' seconds.');
+      }
+    });
+
+  }
+
+  function filterEntries(shouldResetVisibleEntriesList) {
+    return sessionService.getSession().then(function (session) {
+      var config = session.projectSettings().config;
+      if (entryListModifiers.filterBy) {
+        util.arrayCopyRetainingReferences(entries.filter(function (entry) {
+          return entryMeetsFilterCriteria(config, entry);
+        }), filteredEntries);
+
+      } else {
+        util.arrayCopyRetainingReferences(entries, filteredEntries);
+      }
+
+      if (shouldResetVisibleEntriesList) {
+        util.arrayCopyRetainingReferences(filteredEntries.slice(0, 50), visibleEntries);
+
+      } else {
+        var filteredVisibleEntries = visibleEntries.filter(function (entry) {
+          return entryMeetsFilterCriteria(config, entry);
+        });
+
+        util.arrayCopyRetainingReferences(filteredVisibleEntries, visibleEntries);
+      }
+    });
+  }
+
+  function entryMeetsFilterCriteria(config, entry) {
+    var mustNotBeEmpty = entryListModifiers.filterType === 'isNotEmpty';
+    var containsData = false;
+    var filterType = entryListModifiers.filterBy.type;
+    if (['comments', 'exampleSentences', 'pictures', 'audio'].indexOf(filterType) !== -1) {
+
+      // special filter types
+      switch (filterType) {
+        case 'comments':
+          containsData = commentService.getEntryCommentCount(entry.id) > 0;
+          break;
+        case 'exampleSentences':
+          angular.forEach(entry.senses, function (sense) {
+            if (sense.examples && sense.examples.length > 0) {
+              containsData = true;
+            }
+          });
+
+          break;
+        case 'pictures':
+          angular.forEach(entry.senses, function (sense) {
+            if (sense.pictures && sense.pictures.length > 0) {
+              containsData = true;
+            }
+          });
+
+          break;
+        case 'audio':
+          var fieldKey = entryListModifiers.sortBy.value;
+          var field;
+
+          if (fieldKey in config.entry.fields) {
+            field = config.entry.fields[fieldKey];
+          } else if (fieldKey in config.entry.fields.senses.fields) {
+            field = config.entry.fields.senses.fields[fieldKey];
+          }
+
+          angular.forEach(config.entry.fields, function (field, fieldKey) {
+            if (field.type === 'multitext') {
+              angular.forEach(entry[fieldKey], function (fieldNode, ws) {
+                  if (ws && util.isAudio(ws) && fieldNode.value !== '') {
+                    containsData = true;
+                  }
+                });
+            }
+
+            if (fieldKey === 'senses') {
+              angular.forEach(entry.senses, function (sense) {
+                angular.forEach(config.entry.fields.senses.fields, function (field, fieldKey) {
+                  if (field.type === 'multitext') {
+                    angular.forEach(sense[fieldKey], function (fieldNode, ws) {
+                      if (ws && util.isAudio(ws) && fieldNode.value !== '') {
+                        containsData = true;
+                      }
+                    });
+                  }
+
+                  if (fieldKey === 'examples') {
+                    angular.forEach(sense.examples, function (example) {
+                      angular.forEach(config.entry.fields.senses.fields.examples.fields,
+                        function (field, fieldKey) {
+                          if (field.type === 'multitext') {
+                            angular.forEach(example[fieldKey], function (fieldNode, ws) {
+                              if (ws && util.isAudio(ws) && fieldNode.value !== '') {
+                                containsData = true;
+                              }
+                            });
+                          }
+                        }
+                      );
+                    });
+                  }
+                });
+              });
+            }
+          });
+
+          break;
+      }
+    } else {
+
+      // filter by entry or sense field
+      var dataNode;
+      if (entryListModifiers.filterBy.level === 'entry') {
+        dataNode = entry[entryListModifiers.filterBy.value];
+      } else { // sense level
+        dataNode = entry.senses[0][entryListModifiers.filterBy.value];
+      }
+
+      if (dataNode) {
+        switch (filterType) {
+          case 'multitext':
+            if (dataNode[entryListModifiers.filterBy.inputSystem]) {
+              containsData = dataNode[entryListModifiers.filterBy.inputSystem].value !== '';
+            }
+
+            break;
+          case 'optionlist':
+            containsData = dataNode.value !== '';
+            break;
+          case 'multioptionlist':
+            containsData = (dataNode.values.length > 0);
+            break;
+        }
+      }
+    }
+
+    return (mustNotBeEmpty && containsData || !mustNotBeEmpty && !containsData);
+  }
+
+  function sortAndFilterEntries(shouldResetVisibleEntriesList) {
+    // todo: so far I haven't found a good case for NOT resetting visibleEntriesList.
+    // and always reset visibleEntriesList - chris 2017-07
+    return sortEntries(shouldResetVisibleEntriesList).then(function () {
+      return filterEntries(shouldResetVisibleEntriesList);
+    });
+  }
+
+  function _getOptionListItem(optionlist, key) {
+    var itemToReturn = { value: '' };
+    angular.forEach(optionlist.items, function (item) {
+      if (item.key === key) {
+        itemToReturn = item;
+      }
+    });
+
+    return itemToReturn;
+  }
+
+  function _getInputSystemForSort(config) {
+    var inputSystem = 'en';
+    var fieldKey = entryListModifiers.sortBy.value;
+    var field;
+    if (fieldKey in config.entry.fields) {
+      field = config.entry.fields[fieldKey];
+    } else if (fieldKey in config.entry.fields.senses.fields) {
+      field = config.entry.fields.senses.fields[fieldKey];
+    }
+
+    if (field && field.type === 'multitext') {
+      inputSystem = field.inputSystems[0];
+    }
+
+    return inputSystem;
+  }
+
+  function getSortableValue(config, entry) {
+    var fieldKey = entryListModifiers.sortBy.value;
+    var sortableValue = '';
+    var field;
+    var dataNode;
+    if (fieldKey in config.entry.fields && fieldKey in entry) {
+      field = config.entry.fields[fieldKey];
+      dataNode = entry[fieldKey];
+    } else if (fieldKey in config.entry.fields.senses.fields && angular.isDefined(entry.senses) &&
+      entry.senses.length > 0 && fieldKey in entry.senses[0]
+    ) {
+      field = config.entry.fields.senses.fields[fieldKey];
+      dataNode = entry.senses[0][fieldKey];
+    }
+
+    if (field) {
+      if (field.type === 'multitext' && field.inputSystems[0] in dataNode) {
+        sortableValue = dataNode[field.inputSystems[0]].value;
+      } else if (field.type === 'optionlist') {
+        if (config.optionlists && config.optionlists[field.listCode]) {
+          // something weird here with config.optionlists not being set consistently when this is
+          // called - cjh 2017-07
+          sortableValue = _getOptionListItem(config.optionlists[field.listCode], dataNode.value)
+            .value;
+        } else {
+          sortableValue = dataNode.value;
+        }
+      } else if (field.type === 'multioptionlist' && dataNode.values.length > 0) {
+        if (field.listCode === 'semantic-domain-ddp4') {
+          sortableValue = semanticDomains_en // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+            [dataNode.values[0]].value;
+        } else {
+          if (config.optionlists && config.optionlists[field.listCode]) {
+            sortableValue = _getOptionListItem(
+              config.optionlists[field.listCode],
+              dataNode.values[0]
+            ).value;
+          } else {
+            sortableValue = dataNode.values[0].value;
+          }
+        }
+      }
+    }
+
+    if (!sortableValue) {
+      return '[Empty]';
+    }
+
+    return sortableValue;
   }
 
   //noinspection JSUnusedLocalSymbols
@@ -357,7 +582,7 @@ function ($q, sessionService, cache, commentsCache,
    * @param list
    */
   function printLexemesInList(list) {
-    sessionService.getSession().then(function(session) {
+    sessionService.getSession().then(function (session) {
       var config = session.projectSettings().config;
       var ws = config.entry.fields.lexeme.inputSystems[1];
       var arr = [];
@@ -368,7 +593,7 @@ function ($q, sessionService, cache, commentsCache,
       }
 
       console.log(arr);
-    })
+    });
   }
 
   return {
@@ -380,12 +605,16 @@ function ($q, sessionService, cache, commentsCache,
     refreshEditorData: refreshEditorData,
     removeEntryFromLists: removeEntryFromLists,
     addEntryToEntryList: addEntryToEntryList,
-    getIndexInEntries: getIndexInEntries,
-    getIndexInVisibleEntries: getIndexInVisibleEntries,
+    getIndexInList: getIndexInList,
     entries: entries,
     visibleEntries: visibleEntries,
     showInitialEntries: showInitialEntries,
-    showMoreEntries: showMoreEntries
+    showMoreEntries: showMoreEntries,
+    sortEntries: sortEntries,
+    filterEntries: filterEntries,
+    filteredEntries: filteredEntries,
+    entryListModifiers: entryListModifiers,
+    getSortableValue: getSortableValue
   };
 
 }]);
