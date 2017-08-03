@@ -47,6 +47,31 @@ describe('Activity E2E Test', function () {
 
   });
 
+  describe('Running as second member: ', function () {
+
+    it('Login and navigate to the first test Question page', function () {
+      loginPage.loginAsSecondUser();
+      projectListPage.get();
+      projectListPage.clickOnProject(constants.testProjectName);
+      projectPage.textLink(constants.testText1Title).click();
+      textPage.clickOnQuestion(constants.testText1Question1Title);
+    });
+
+    performCommonActions();
+
+    it('Navigate to Activity Page to verify actions', function () {
+      activityPage.get();
+
+      // Print everything in the activity list for debugging purposes
+      // activityPage.printActivitiesNames();
+    });
+
+    verifyCommonActions(activityIndex, constants.member2Username);
+
+    verifyFilters(constants.member2Username);
+
+  });
+
   describe('Running as manager: ', function () {
     var memberCount = 0;
 
@@ -135,6 +160,135 @@ describe('Activity E2E Test', function () {
 
     verifyFilters(constants.managerUsername);
 
+  });
+
+  describe('Testing activity-visibility settings: ', function () {  // TODO: That's not a great description
+    it('Set response visibility to TRUE', function () {
+      loginPage.loginAsManager();
+      projectSettingsPage.get();
+      projectSettingsPage.tabs.project.click();
+      projectSettingsPage.projectTab.setCheckbox(projectSettingsPage.projectTab.usersSeeEachOthersResponses, true);
+      expect(projectSettingsPage.projectTab.usersSeeEachOthersResponses.getAttribute('checked'))
+        .toBeTruthy();
+    });
+
+    describe('Running as first member: ', function () {
+
+      it('Login and navigate to the first test Question page', function () {
+        loginPage.loginAsUser();
+        projectListPage.get();
+        projectListPage.clickOnProject(constants.testProjectName);
+        projectPage.textLink(constants.testText1Title).click();
+        textPage.clickOnQuestion(constants.testText1Question1Title);
+      });
+
+      performCommonActions();
+
+      it('Navigate to Activity Page to verify actions', function () {
+        activityPage.get();
+
+        // Print everything in the activity list for debugging purposes
+        // activityPage.printActivitiesNames();
+      });
+
+      verifyCommonActions(activityIndex, constants.memberUsername);
+
+      verifyFilters(constants.memberUsername);
+
+    });
+
+    describe('Running as second member: ', function () {
+
+      it('Login and navigate to the first test Question page', function () {
+        loginPage.loginAsSecondUser();
+        projectListPage.get();
+        projectListPage.clickOnProject(constants.testProjectName);
+        projectPage.textLink(constants.testText1Title).click();
+        textPage.clickOnQuestion(constants.testText1Question1Title);
+      });
+
+      performCommonActions();
+
+      it('Navigate to Activity Page to verify actions', function () {
+        activityPage.get();
+
+        // Print everything in the activity list for debugging purposes
+        // activityPage.printActivitiesNames();
+      });
+
+      verifyCommonActions(activityIndex, constants.member2Username);
+
+      verifyFilters(constants.member2Username);
+
+    });
+
+    it('Set response visibility to FALSE', function () {
+      loginPage.loginAsManager();
+      projectSettingsPage.get();
+      projectSettingsPage.tabs.project.click();
+      projectSettingsPage.projectTab.setCheckbox(projectSettingsPage.projectTab.usersSeeEachOthersResponses, false);
+      expect(projectSettingsPage.projectTab.usersSeeEachOthersResponses.getAttribute('checked'))
+        .toBeFalsy();
+    });
+
+    describe('Running as first member with visibility false: ', function () {
+
+      it('Login and navigate to the first test Question page', function () {
+        loginPage.loginAsUser();
+        projectListPage.get();
+        projectListPage.clickOnProject(constants.testProjectName);
+        projectPage.textLink(constants.testText1Title).click();
+        textPage.clickOnQuestion(constants.testText1Question1Title);
+      });
+
+      performCommonActions();
+
+      it('Navigate to Activity Page to verify actions', function () {
+        activityPage.get();
+
+        // Print everything in the activity list for debugging purposes
+        // activityPage.printActivitiesNames();
+      });
+
+      verifyCommonActions(activityIndex, constants.memberUsername);
+
+      verifyFilters(constants.memberUsername);
+
+    });
+
+    describe('Running as second member with visibility false: ', function () {
+
+      it('Login and navigate to the first test Question page', function () {
+        loginPage.loginAsUser();
+        projectListPage.get();
+        projectListPage.clickOnProject(constants.testProjectName);
+        projectPage.textLink(constants.testText1Title).click();
+        textPage.clickOnQuestion(constants.testText1Question1Title);
+      });
+
+      performCommonActions();
+
+      it('Navigate to Activity Page to verify actions', function () {
+        activityPage.get();
+
+        // Print everything in the activity list for debugging purposes
+        // activityPage.printActivitiesNames();
+      });
+
+      // We don't call verifyCommonActions here, because the activity list should be empty
+
+      activityPage.get();
+      activityPage.activitiesList.filter(function (item) {
+        // Look for activity items that do not contain our username
+        return (item.getText().then(function (text) {
+          return text.indexOf(constants.member2Username) === -1;
+        }));
+      }).then(function (activityItems) {
+        // Currently in "Only My Activity" mode, so should see NO items without our username
+        expect(activityItems.length).toEqual(0);
+      });
+
+    });
   });
 
   function performCommonActions() {
