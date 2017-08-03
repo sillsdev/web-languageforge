@@ -2,7 +2,8 @@
 
 angular.module('lexicon.services')
 
-  .service('lexUtils', [function () {
+  .service('lexUtils', ['utilService', function (util) {
+    angular.extend(this, util);
 
     function getFirstField(config, node, fieldName) {
       var result = '';
@@ -169,11 +170,6 @@ angular.module('lexicon.services')
       }
 
       return '';
-    };
-
-    this.isAudio = function isAudio(tag) {
-      var tagAudioPattern = /^\w{2,3}-Zxxx-x(-\w{2,3})*-[aA][uU][dD][iI][oO]$/;
-      return tagAudioPattern.test(tag);
     };
 
   }]);
