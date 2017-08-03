@@ -11,12 +11,15 @@ function ($q, sessionService, cache, commentsCache,
   var visibleEntries = [];
   var filteredEntries = [];
   var entryListModifiers = {
-    sortBy: {label: "Word", value: "lexeme"},
+    sortBy: {
+      label: 'Word',
+      value: 'lexeme'
+    },
     sortOptions: [],
     sortReverse: false,
-    filterBy: "",
+    filterBy: '',
     filterOptions: [],
-    filterType: "isNotEmpty"
+    filterType: 'isNotEmpty'
   };
   var browserInstanceId = Math.floor(Math.random() * 1000000);
   var api = undefined;
@@ -30,7 +33,8 @@ function ($q, sessionService, cache, commentsCache,
     if (visibleEntries.length < filteredEntries.length) {
       var currentLength = visibleEntries.length;
       visibleEntries.length = 0;
-      Array.prototype.push.apply(visibleEntries, filteredEntries.slice(0, currentLength + increment));
+      Array.prototype.push.apply(visibleEntries, filteredEntries.slice(0,
+        currentLength + increment));
     }
   };
 
@@ -44,12 +48,12 @@ function ($q, sessionService, cache, commentsCache,
    */
   var loadEditorData = function loadEditorData(lexiconScope) {
     var deferred = $q.defer();
-    if (entries.length == 0) { // first page load
+    if (entries.length === 0) { // first page load
       if (cache.canCache()) {
         notice.setLoading('Loading Dictionary');
         loadDataFromOfflineCache().then(function (projectObj) {
           if (projectObj.isComplete) {
-            showInitialEntries().then(function() {
+            showInitialEntries().then(function () {
               lexiconScope.finishedLoading = true;
               notice.cancelLoading();
               refreshEditorData(projectObj.timestamp).then(function (result) {
@@ -114,7 +118,7 @@ function ($q, sessionService, cache, commentsCache,
       var totalCount = result.data.itemTotalCount;
       notice.setPercentComplete(parseInt(newOffset * 100 / totalCount));
       processEditorDto(result, false).then(function () {
-        if (offset == 0) {
+        if (offset === 0) {
           showInitialEntries();
         }
 
@@ -140,12 +144,13 @@ function ($q, sessionService, cache, commentsCache,
     var deferred = $q.defer();
 
     // get data from the server
-    if (Offline.state == 'up') {
+    if (Offline.state === 'up') {
       api.dbeDtoUpdatesOnly(browserInstanceId, timestamp, function (result) {
         processEditorDto(result, true).then(function (result) {
           if (result.data.itemCount > 0) {
-            console.log("Editor: processed " + result.data.itemCount + " entries from server.");
+            console.log('Editor: processed ' + result.data.itemCount + ' entries from server.');
           }
+
           deferred.resolve(result);
         });
       });
@@ -161,7 +166,7 @@ function ($q, sessionService, cache, commentsCache,
   };
 
   var removeEntryFromLists = function removeEntryFromLists(id) {
-    angular.forEach([entries, filteredEntries, visibleEntries], function(list) {
+    angular.forEach([entries, filteredEntries, visibleEntries], function (list) {
       var i = getIndexInList(id, list);
       if (angular.isDefined(i)) {
         list.splice(i, 1);
@@ -291,7 +296,7 @@ function ($q, sessionService, cache, commentsCache,
     var index = undefined;
     for (var i = 0; i < list.length; i++) {
       var e = list[i];
-      if (e.id == id) {
+      if (e.id === id) {
         index = i;
         break;
       }
@@ -301,66 +306,65 @@ function ($q, sessionService, cache, commentsCache,
   }
 
   function sortList(config, list) {
-    const collator = Intl.Collator(_getInputSystemForSort(config));
+    var collator = Intl.Collator(_getInputSystemForSort(config));
 
     // temporary mapped array
-    const mapped = list.map(function(entry, i) {
-      return {index: i, value: getSortableValue(config, entry)};
+    var mapped = list.map(function (entry, i) {
+      return { index: i, value: getSortableValue(config, entry) };
     });
 
-    mapped.sort(function(a, b) {
-      if (entryListModifiers.sortReverse == true) {
+    mapped.sort(function (a, b) {
+      if (entryListModifiers.sortReverse === true) {
         return -collator.compare(a.value, b.value);
       } else {
         return collator.compare(a.value, b.value);
       }
     });
 
-    const result = mapped.map(function(el) {
+    return mapped.map(function (el) {
       return list[el.index];
     });
-
-    return result;
   }
 
   function sortEntries(shouldResetVisibleEntriesList) {
-    const startTime = performance.now();
-    return sessionService.getSession().then(function(session) {
+    var startTime = performance.now();
+    return sessionService.getSession().then(function (session) {
       var config = session.projectSettings().config;
 
       // the length = 0 followed by Array.push.apply is a method of replacing the contents of
       // an array without creating a new array thereby keeping original references
       // to the array
-      var entries_sorted = sortList(config, entries);
+      var entriesSorted = sortList(config, entries);
       entries.length = 0;
-      Array.prototype.push.apply(entries, entries_sorted);
-      var filteredEntries_sorted = sortList(config, filteredEntries);
+      Array.prototype.push.apply(entries, entriesSorted);
+      var filteredEntriesSorted = sortList(config, filteredEntries);
       filteredEntries.length = 0;
-      Array.prototype.push.apply(filteredEntries, filteredEntries_sorted);
-      var visibleEntries_sorted = sortList(config, visibleEntries);
+      Array.prototype.push.apply(filteredEntries, filteredEntriesSorted);
+      var visibleEntriesSorted = sortList(config, visibleEntries);
       visibleEntries.length = 0;
       if (shouldResetVisibleEntriesList) {
-        Array.prototype.push.apply(visibleEntries, filteredEntries_sorted.slice(0, 50));
+        Array.prototype.push.apply(visibleEntries, filteredEntriesSorted.slice(0, 50));
       } else {
         console.log('sortedVisibleEntries');
-        console.log(visibleEntries_sorted);
-        Array.prototype.push.apply(visibleEntries, visibleEntries_sorted);
+        console.log(visibleEntriesSorted);
+        Array.prototype.push.apply(visibleEntries, visibleEntriesSorted);
         console.log(visibleEntries);
       }
+
       var sortTime = ((performance.now() - startTime) / 1000).toFixed(2);
       if (sortTime > 0.5) {
-        console.warn("Sort time took " + sortTime + ' seconds.');
+        console.warn('Sort time took ' + sortTime + ' seconds.');
       }
     });
 
   }
 
   function filterEntries(shouldResetVisibleEntriesList) {
-    return sessionService.getSession().then(function(session) {
+    return sessionService.getSession().then(function (session) {
       var config = session.projectSettings().config;
       filteredEntries.length = 0;
       if (entryListModifiers.filterBy) {
-        Array.prototype.push.apply(filteredEntries, entries.filter(function(entry) {
+        Array.prototype.push.apply(filteredEntries, entries.filter(function (entry) {
           return entryMeetsFilterCriteria(config, entry);
         }));
 
@@ -376,6 +380,7 @@ function ($q, sessionService, cache, commentsCache,
         var filteredVisibleEntries = visibleEntries.filter(function (entry) {
           return entryMeetsFilterCriteria(config, entry);
         });
+
         visibleEntries.length = 0;
         Array.prototype.push.apply(visibleEntries, filteredVisibleEntries);
       }
@@ -383,143 +388,157 @@ function ($q, sessionService, cache, commentsCache,
   }
 
   function entryMeetsFilterCriteria(config, entry) {
-    var mustNotBeEmpty = entryListModifiers.filterType == "isNotEmpty";
+    var mustNotBeEmpty = entryListModifiers.filterType === 'isNotEmpty';
     var containsData = false;
     var filterType = entryListModifiers.filterBy.type;
-    if (['comments', 'exampleSentences', 'pictures', 'audio'].indexOf(filterType) != -1) {
+    if (['comments', 'exampleSentences', 'pictures', 'audio'].indexOf(filterType) !== -1) {
 
       // special filter types
       switch (filterType) {
-        case "comments":
+        case 'comments':
           containsData = commentService.getEntryCommentCount(entry.id) > 0;
           break;
-        case "exampleSentences":
-          angular.forEach(entry.senses, function(sense) {
+        case 'exampleSentences':
+          angular.forEach(entry.senses, function (sense) {
             if (sense.examples && sense.examples.length > 0) {
               containsData = true;
             }
           });
+
           break;
-        case "pictures":
-          angular.forEach(entry.senses, function(sense) {
+        case 'pictures':
+          angular.forEach(entry.senses, function (sense) {
             if (sense.pictures && sense.pictures.length > 0) {
               containsData = true;
             }
           });
-          break;
-        case "audio":
-          var field, inputSystem = 'en', fieldKey = entryListModifiers.sortBy.value,
 
-            // intentially not pulling in lexutils because of circular dependency with lexicon.services
-          audioRegex = /^\w{2,3}-Zxxx-x(-\w{2,3})*-[aA][uU][dD][iI][oO]$/;
+          break;
+        case 'audio':
+          var fieldKey = entryListModifiers.sortBy.value;
+
+          // intentionally not using lexutils because of circular dependency with lexicon.services
+          var audioRegex = /^\w{2,3}-Zxxx-x(-\w{2,3})*-[aA][uU][dD][iI][oO]$/;
+          var field;
 
           if (fieldKey in config.entry.fields) {
             field = config.entry.fields[fieldKey];
           } else if (fieldKey in config.entry.fields.senses.fields) {
             field = config.entry.fields.senses.fields[fieldKey];
           }
-          angular.forEach(config.entry.fields, function(field, fieldKey) {
-            if (field.type == 'multitext') {
-              angular.forEach(entry[fieldKey], function(fieldNode, ws) {
-                  if (ws && audioRegex.test(ws) && fieldNode.value != '') {
-                  containsData = true;
-                }
-              });
+
+          angular.forEach(config.entry.fields, function (field, fieldKey) {
+            if (field.type === 'multitext') {
+              angular.forEach(entry[fieldKey], function (fieldNode, ws) {
+                  if (ws && audioRegex.test(ws) && fieldNode.value !== '') {
+                    containsData = true;
+                  }
+                });
             }
-            if (fieldKey == 'senses') {
-              angular.forEach(entry.senses, function(sense) {
-                angular.forEach(config.entry.fields.senses.fields, function(field, fieldKey) {
-                  if (field.type == 'multitext') {
-                    angular.forEach(sense[fieldKey], function(fieldNode, ws) {
-                      if (ws && audioRegex.test(ws) && fieldNode.value != '') {
+
+            if (fieldKey === 'senses') {
+              angular.forEach(entry.senses, function (sense) {
+                angular.forEach(config.entry.fields.senses.fields, function (field, fieldKey) {
+                  if (field.type === 'multitext') {
+                    angular.forEach(sense[fieldKey], function (fieldNode, ws) {
+                      if (ws && audioRegex.test(ws) && fieldNode.value !== '') {
                         containsData = true;
                       }
                     });
                   }
-                  if (fieldKey == 'examples') {
-                    angular.forEach(sense.examples, function(example) {
-                      angular.forEach(config.entry.fields.senses.fields.examples.fields, function(field, fieldKey) {
-                        if (field.type == 'multitext') {
-                          angular.forEach(example[fieldKey], function(fieldNode, ws) {
-                            if (ws && audioRegex.test(ws) && fieldNode.value != '') {
-                              containsData = true;
-                            }
-                          });
+
+                  if (fieldKey === 'examples') {
+                    angular.forEach(sense.examples, function (example) {
+                      angular.forEach(config.entry.fields.senses.fields.examples.fields,
+                        function (field, fieldKey) {
+                          if (field.type === 'multitext') {
+                            angular.forEach(example[fieldKey], function (fieldNode, ws) {
+                              if (ws && audioRegex.test(ws) && fieldNode.value !== '') {
+                                containsData = true;
+                              }
+                            });
+                          }
                         }
-                      });
+                      );
                     });
                   }
                 });
               });
             }
           });
+
           break;
       }
     } else {
 
       // filter by entry or sense field
       var dataNode;
-      if (entryListModifiers.filterBy.level == 'entry') {
+      if (entryListModifiers.filterBy.level === 'entry') {
         dataNode = entry[entryListModifiers.filterBy.value];
       } else { // sense level
         dataNode = entry.senses[0][entryListModifiers.filterBy.value];
       }
+
       if (dataNode) {
         switch (filterType) {
-          case "multitext":
+          case 'multitext':
             if (dataNode[entryListModifiers.filterBy.inputSystem]) {
-              containsData = dataNode[entryListModifiers.filterBy.inputSystem].value != '';
+              containsData = dataNode[entryListModifiers.filterBy.inputSystem].value !== '';
             }
+
             break;
-          case "optionlist":
-            containsData = dataNode.value != '';
+          case 'optionlist':
+            containsData = dataNode.value !== '';
             break;
-          case "multioptionlist":
+          case 'multioptionlist':
             containsData = (dataNode.values.length > 0);
             break;
         }
       }
     }
-    if (mustNotBeEmpty && containsData || !mustNotBeEmpty && !containsData) {
-      return true;
-    }
-    return false;
+
+    return (mustNotBeEmpty && containsData || !mustNotBeEmpty && !containsData);
   }
 
   function sortAndFilterEntries(shouldResetVisibleEntriesList) {
     // todo: so far I haven't found a good case for NOT resetting visibleEntriesList.
     // and always reset visibleEntriesList - chris 2017-07
-     return sortEntries(shouldResetVisibleEntriesList).then(function() {
+    return sortEntries(shouldResetVisibleEntriesList).then(function () {
       return filterEntries(shouldResetVisibleEntriesList);
     });
   }
 
   function _getOptionListItem(optionlist, key) {
-    var itemToReturn = {value: ""};
+    var itemToReturn = { value: '' };
     angular.forEach(optionlist.items, function (item) {
-      if (item.key == key) {
+      if (item.key === key) {
         itemToReturn = item;
       }
     });
+
     return itemToReturn;
-  };
+  }
 
   function _getInputSystemForSort(config) {
-    var field, inputSystem = 'en', fieldKey = entryListModifiers.sortBy.value;
+    var inputSystem = 'en';
+    var fieldKey = entryListModifiers.sortBy.value;
+    var field;
     if (fieldKey in config.entry.fields) {
       field = config.entry.fields[fieldKey];
     } else if (fieldKey in config.entry.fields.senses.fields) {
       field = config.entry.fields.senses.fields[fieldKey];
     }
-    if (field && field.type == 'multitext') {
+
+    if (field && field.type === 'multitext') {
       inputSystem = field.inputSystems[0];
     }
+
     return inputSystem;
   }
 
   function getSortableValue(config, entry) {
+    var fieldKey = entryListModifiers.sortBy.value;
     var sortableValue = '';
-    const fieldKey = entryListModifiers.sortBy.value;
     var field;
     var dataNode;
     if (fieldKey in config.entry.fields && fieldKey in entry) {
@@ -529,34 +548,42 @@ function ($q, sessionService, cache, commentsCache,
       field = config.entry.fields.senses.fields[fieldKey];
       dataNode = entry.senses[0][fieldKey];
     }
+
     if (field) {
-      if (field.type == 'multitext' && field.inputSystems[0] in dataNode) {
+      if (field.type === 'multitext' && field.inputSystems[0] in dataNode) {
         sortableValue = dataNode[field.inputSystems[0]].value;
-      } else if (field.type == 'optionlist') {
+      } else if (field.type === 'optionlist') {
         if (config.optionlists && config.optionlists[field.listCode]) {
-          // something weird here with config.optionlists not being set consistently when this is called - cjh 2017-07
-          sortableValue = _getOptionListItem(config.optionlists[field.listCode], dataNode.value).value;
+          // something weird here with config.optionlists not being set consistently when this is
+          // called - cjh 2017-07
+          sortableValue = _getOptionListItem(config.optionlists[field.listCode], dataNode.value)
+            .value;
         } else {
           sortableValue = dataNode.value;
         }
-      } else if (field.type == 'multioptionlist' && dataNode.values.length > 0) {
-        if (field.listCode == 'semantic-domain-ddp4') {
-          sortableValue = semanticDomains_en[dataNode.values[0]].value;
+      } else if (field.type === 'multioptionlist' && dataNode.values.length > 0) {
+        if (field.listCode === 'semantic-domain-ddp4') {
+          sortableValue = semanticDomains_en // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+            [dataNode.values[0]].value;
         } else {
           if (config.optionlists && config.optionlists[field.listCode]) {
-            sortableValue = _getOptionListItem(config.optionlists[field.listCode], dataNode.values[0]).value;
+            sortableValue = _getOptionListItem(
+              config.optionlists[field.listCode],
+              dataNode.values[0]
+            ).value;
           } else {
             sortableValue = dataNode.values[0].value;
           }
         }
       }
     }
+
     if (!sortableValue) {
       return '[Empty]';
     }
-    return sortableValue;
-  };
 
+    return sortableValue;
+  }
 
   //noinspection JSUnusedLocalSymbols
   /**
@@ -564,7 +591,7 @@ function ($q, sessionService, cache, commentsCache,
    * @param list
    */
   function printLexemesInList(list) {
-    sessionService.getSession().then(function(session) {
+    sessionService.getSession().then(function (session) {
       var config = session.projectSettings().config;
       var ws = config.entry.fields.lexeme.inputSystems[1];
       var arr = [];
@@ -575,7 +602,7 @@ function ($q, sessionService, cache, commentsCache,
       }
 
       console.log(arr);
-    })
+    });
   }
 
   return {
