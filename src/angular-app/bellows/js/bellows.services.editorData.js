@@ -10,7 +10,14 @@ function ($q, sessionService, cache, commentsCache,
   var entries = [];
   var visibleEntries = [];
   var filteredEntries = [];
-  var entryListModifiers = {sortBy: {label: "Word", value: "lexeme"}, sortOptions: [], filterBy: "", filterOptions: [], sortReverse: false, filterType: "isNotEmpty"};
+  var entryListModifiers = {
+    sortBy: {label: "Word", value: "lexeme"},
+    sortOptions: [],
+    sortReverse: false,
+    filterBy: "",
+    filterOptions: [],
+    filterType: "isNotEmpty"
+  };
   var browserInstanceId = Math.floor(Math.random() * 1000000);
   var api = undefined;
 
@@ -301,23 +308,23 @@ function ($q, sessionService, cache, commentsCache,
     return getIndexInList(id, visibleEntries);
   }
 
-  function _sortList(config, list) {
-    var collator = Intl.Collator(_getInputSystemForSort(config));
+  function sortList(config, list) {
+    const collator = Intl.Collator(_getInputSystemForSort(config));
 
     // temporary mapped array
-    var mapped = list.map(function(entry, i) {
+    const mapped = list.map(function(entry, i) {
       return {index: i, value: getSortableValue(config, entry)};
     });
 
     mapped.sort(function(a, b) {
       if (entryListModifiers.sortReverse == true) {
-        return collator.compare(a.value, b.value) * -1;
+        return -collator.compare(a.value, b.value);
       } else {
         return collator.compare(a.value, b.value);
       }
     });
 
-    var result = mapped.map(function(el) {
+    const result = mapped.map(function(el) {
       return list[el.index];
     });
 
@@ -325,20 +332,20 @@ function ($q, sessionService, cache, commentsCache,
   }
 
   function sortEntries(shouldResetVisibleEntriesList) {
-    var startTime = performance.now();
+    const startTime = performance.now();
     return sessionService.getSession().then(function(session) {
       var config = session.projectSettings().config;
 
       // the length = 0 followed by Array.push.apply is a method of replacing the contents of
       // an array without creating a new array thereby keeping original references
       // to the array
-      var entries_sorted = _sortList(config, entries);
+      var entries_sorted = sortList(config, entries);
       entries.length = 0;
       Array.prototype.push.apply(entries, entries_sorted);
-      var filteredEntries_sorted = _sortList(config, filteredEntries);
+      var filteredEntries_sorted = sortList(config, filteredEntries);
       filteredEntries.length = 0;
       Array.prototype.push.apply(filteredEntries, filteredEntries_sorted);
-      var visibleEntries_sorted = _sortList(config, visibleEntries);
+      var visibleEntries_sorted = sortList(config, visibleEntries);
       visibleEntries.length = 0;
       if (shouldResetVisibleEntriesList) {
         Array.prototype.push.apply(visibleEntries, filteredEntries_sorted.slice(0, 50));
@@ -519,7 +526,10 @@ function ($q, sessionService, cache, commentsCache,
   }
 
   function getSortableValue(config, entry) {
-    var field, dataNode, sortableValue = '', fieldKey = entryListModifiers.sortBy.value;
+    var sortableValue = '';
+    const fieldKey = entryListModifiers.sortBy.value;
+    var field;
+    var dataNode;
     if (fieldKey in config.entry.fields && fieldKey in entry) {
       field = config.entry.fields[fieldKey];
       dataNode = entry[fieldKey];
