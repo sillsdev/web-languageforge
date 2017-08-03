@@ -4,9 +4,9 @@ angular.module('bellows.services')
 
 // Lexicon Entry Service
 .factory('editorDataService', ['$q', 'sessionService', 'editorOfflineCache', 'commentsOfflineCache',
-  'silNoticeService', 'lexCommentService',
+  'silNoticeService', 'lexCommentService', 'utilService',
 function ($q, sessionService, cache, commentsCache,
-          notice, commentService) {
+          notice, commentService, util) {
   var entries = [];
   var visibleEntries = [];
   var filteredEntries = [];
@@ -31,10 +31,8 @@ function ($q, sessionService, cache, commentsCache,
   var showMoreEntries = function showMoreEntries() {
     var increment = 50;
     if (visibleEntries.length < filteredEntries.length) {
-      var currentLength = visibleEntries.length;
-      visibleEntries.length = 0;
-      Array.prototype.push.apply(visibleEntries, filteredEntries.slice(0,
-        currentLength + increment));
+      util.arrayCopyRetainingReferences(filteredEntries.slice(0, visibleEntries.length + increment),
+        visibleEntries);
     }
   };
 
@@ -207,12 +205,12 @@ function ($q, sessionService, cache, commentsCache,
     var endTime;
     var numOfEntries;
     cache.getAllEntries().then(function (result) {
-      Array.prototype.push.apply(entries, result); // proper way to extend the array
+      util.arrayExtend(entries, result);
       numOfEntries = result.length;
 
       if (result.length > 0) {
         commentsCache.getAllComments().then(function (result) {
-          Array.prototype.push.apply(commentService.comments.items.all, result);
+          util.arrayExtend(commentService.comments.items.all, result);
 
           cache.getProjectData().then(function (result) {
             commentService.comments.counts.userPlusOne = result.commentsUserPlusOne;
@@ -239,7 +237,7 @@ function ($q, sessionService, cache, commentsCache,
     if (result.ok) {
       commentService.comments.counts.userPlusOne = result.data.commentsUserPlusOne;
       if (!updateOnly) {
-        Array.prototype.push.apply(entries, result.data.entries); // proper way to extend the array
+        util.arrayExtend(entries, result.data.entries);
         commentService.comments.items.all.push
           .apply(commentService.comments.items.all, result.data.comments);
       } else {
@@ -335,19 +333,16 @@ function ($q, sessionService, cache, commentsCache,
       // an array without creating a new array thereby keeping original references
       // to the array
       var entriesSorted = sortList(config, entries);
-      entries.length = 0;
-      Array.prototype.push.apply(entries, entriesSorted);
+      util.arrayCopyRetainingReferences(entriesSorted, entries);
       var filteredEntriesSorted = sortList(config, filteredEntries);
-      filteredEntries.length = 0;
-      Array.prototype.push.apply(filteredEntries, filteredEntriesSorted);
+      util.arrayCopyRetainingReferences(filteredEntriesSorted, filteredEntries);
       var visibleEntriesSorted = sortList(config, visibleEntries);
-      visibleEntries.length = 0;
       if (shouldResetVisibleEntriesList) {
-        Array.prototype.push.apply(visibleEntries, filteredEntriesSorted.slice(0, 50));
+        util.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, 50), visibleEntries);
       } else {
         console.log('sortedVisibleEntries');
         console.log(visibleEntriesSorted);
-        Array.prototype.push.apply(visibleEntries, visibleEntriesSorted);
+        util.arrayCopyRetainingReferences(visibleEntriesSorted, visibleEntries);
         console.log(visibleEntries);
       }
 
@@ -362,27 +357,24 @@ function ($q, sessionService, cache, commentsCache,
   function filterEntries(shouldResetVisibleEntriesList) {
     return sessionService.getSession().then(function (session) {
       var config = session.projectSettings().config;
-      filteredEntries.length = 0;
       if (entryListModifiers.filterBy) {
-        Array.prototype.push.apply(filteredEntries, entries.filter(function (entry) {
+        util.arrayCopyRetainingReferences(entries.filter(function (entry) {
           return entryMeetsFilterCriteria(config, entry);
-        }));
+        }), filteredEntries);
 
       } else {
-        Array.prototype.push.apply(filteredEntries, entries);
+        util.arrayCopyRetainingReferences(entries, filteredEntries);
       }
 
       if (shouldResetVisibleEntriesList) {
-        visibleEntries.length = 0;
-        Array.prototype.push.apply(visibleEntries, filteredEntries.slice(0, 50));
+        util.arrayCopyRetainingReferences(filteredEntries.slice(0, 50), visibleEntries);
 
       } else {
         var filteredVisibleEntries = visibleEntries.filter(function (entry) {
           return entryMeetsFilterCriteria(config, entry);
         });
 
-        visibleEntries.length = 0;
-        Array.prototype.push.apply(visibleEntries, filteredVisibleEntries);
+        util.arrayCopyRetainingReferences(filteredVisibleEntries, visibleEntries);
       }
     });
   }
@@ -416,9 +408,6 @@ function ($q, sessionService, cache, commentsCache,
           break;
         case 'audio':
           var fieldKey = entryListModifiers.sortBy.value;
-
-          // intentionally not using lexutils because of circular dependency with lexicon.services
-          var audioRegex = /^\w{2,3}-Zxxx-x(-\w{2,3})*-[aA][uU][dD][iI][oO]$/;
           var field;
 
           if (fieldKey in config.entry.fields) {
@@ -430,7 +419,7 @@ function ($q, sessionService, cache, commentsCache,
           angular.forEach(config.entry.fields, function (field, fieldKey) {
             if (field.type === 'multitext') {
               angular.forEach(entry[fieldKey], function (fieldNode, ws) {
-                  if (ws && audioRegex.test(ws) && fieldNode.value !== '') {
+                  if (ws && util.isAudio(ws) && fieldNode.value !== '') {
                     containsData = true;
                   }
                 });
@@ -441,7 +430,7 @@ function ($q, sessionService, cache, commentsCache,
                 angular.forEach(config.entry.fields.senses.fields, function (field, fieldKey) {
                   if (field.type === 'multitext') {
                     angular.forEach(sense[fieldKey], function (fieldNode, ws) {
-                      if (ws && audioRegex.test(ws) && fieldNode.value !== '') {
+                      if (ws && util.isAudio(ws) && fieldNode.value !== '') {
                         containsData = true;
                       }
                     });
@@ -453,7 +442,7 @@ function ($q, sessionService, cache, commentsCache,
                         function (field, fieldKey) {
                           if (field.type === 'multitext') {
                             angular.forEach(example[fieldKey], function (fieldNode, ws) {
-                              if (ws && audioRegex.test(ws) && fieldNode.value !== '') {
+                              if (ws && util.isAudio(ws) && fieldNode.value !== '') {
                                 containsData = true;
                               }
                             });
@@ -544,7 +533,9 @@ function ($q, sessionService, cache, commentsCache,
     if (fieldKey in config.entry.fields && fieldKey in entry) {
       field = config.entry.fields[fieldKey];
       dataNode = entry[fieldKey];
-    } else if (fieldKey in config.entry.fields.senses.fields && fieldKey in entry.senses[0]) {
+    } else if (fieldKey in config.entry.fields.senses.fields && angular.isDefined(entry.senses) &&
+      entry.senses.length > 0 && fieldKey in entry.senses[0]
+    ) {
       field = config.entry.fields.senses.fields[fieldKey];
       dataNode = entry.senses[0][fieldKey];
     }

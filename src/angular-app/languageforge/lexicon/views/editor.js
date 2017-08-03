@@ -723,6 +723,16 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         $scope.filterEntries(true);
       };
 
+      function getInputSystemAbbreviation(inputSystemTag) {
+        if (angular.isUndefined($scope.config) || angular.isUndefined($scope.config.inputSystems) ||
+          !(inputSystemTag in $scope.config.inputSystems)
+        ) {
+          return inputSystemTag;
+        }
+
+        return $scope.config.inputSystems[inputSystemTag].abbreviation;
+      }
+
       function setSortAndFilterOptionsFromConfig() {
         var sortOptions = [];
         var filterOptions = [];
@@ -738,10 +748,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
               if (senseField.hideIfEmpty || senseField.type === 'fields') return;
               sortOptions.push({ label: senseField.label, value: senseFieldKey });
               if (senseField.type === 'multitext') {
-                angular.forEach(senseField.inputSystems, function (ws) {
-                  filterOptions.push({ label: senseField.label + ' [' + ws + ']', level: 'sense',
-                    value: senseFieldKey, type: 'multitext', inputSystem: ws,
-                    key: senseFieldKey + '-' + ws });
+                angular.forEach(senseField.inputSystems, function (inputSystemTag) {
+                  var abbreviation = getInputSystemAbbreviation(inputSystemTag);
+                  filterOptions.push({ label: senseField.label + ' [' + abbreviation + ']',
+                    level: 'sense', value: senseFieldKey, type: 'multitext',
+                    inputSystem: inputSystemTag, key: senseFieldKey + '-' + inputSystemTag });
                 });
               } else {
                 filterOptions.push({ label: senseField.label, level: 'sense', value: senseFieldKey,
@@ -751,10 +762,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           } else {
             sortOptions.push({ label: entryField.label, value: entryFieldKey });
             if (entryField.type === 'multitext') {
-              angular.forEach(entryField.inputSystems, function (ws) {
-                filterOptions.push({ label: entryField.label + ' [' + ws + ']', level: 'entry',
-                  value: entryFieldKey, type: 'multitext', inputSystem: ws,
-                  key: entryFieldKey + '-' + ws });
+              angular.forEach(entryField.inputSystems, function (inputSystemTag) {
+                var abbreviation = getInputSystemAbbreviation(inputSystemTag);
+                filterOptions.push({ label: entryField.label + ' [' + abbreviation + ']',
+                  level: 'entry', value: entryFieldKey, type: 'multitext',
+                  inputSystem: inputSystemTag, key: entryFieldKey + '-' + inputSystemTag });
               });
             } else {
               filterOptions.push({ label: entryField.label, level: 'entry', value: entryFieldKey,
@@ -780,10 +792,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           filterOptions.push({ label: 'Audio', value: 'audio', type: 'audio', key: 'audio' });
         }
 
-        $scope.entryListModifiers.sortOptions.length = 0;
-        $scope.entryListModifiers.filterOptions.length = 0;
-        Array.prototype.push.apply($scope.entryListModifiers.sortOptions, sortOptions);
-        Array.prototype.push.apply($scope.entryListModifiers.filterOptions, filterOptions);
+        utils.arrayCopyRetainingReferences(sortOptions, $scope.entryListModifiers.sortOptions);
+        utils.arrayCopyRetainingReferences(filterOptions, $scope.entryListModifiers.filterOptions);
       }
 
       $scope.$on('$destroy', function () {
