@@ -72,8 +72,6 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         setSortAndFilterOptionsFromConfig();
       });
 
-      // Populate sort and filter option lists based upon dictionary config
-
       $scope.currentEntryIsDirty = function currentEntryIsDirty() {
         if (!$scope.entryLoaded()) return false;
 

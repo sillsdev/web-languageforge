@@ -137,13 +137,13 @@ function EditorPage() {
     entriesList: this.editDiv.all(by.repeater('entry in visibleEntries')),
     findEntryByLexeme: function (lexeme) {
       var div = this.editDiv.element(by.id('compactEntryListContainer'));
-      return div.element(by.cssContainingText('listItemPrimary',
+      return div.element(by.cssContainingText('.listItemPrimary',
         lexeme));
     }.bind(this),
 
     findEntryByDefinition: function (definition) {
       var div = this.editDiv.element(by.id('compactEntryListContainer'));
-      return div.element(by.cssContainingText('listItemSecondary',
+      return div.element(by.cssContainingText('.listItemSecondary',
         definition));
     }.bind(this),
 
