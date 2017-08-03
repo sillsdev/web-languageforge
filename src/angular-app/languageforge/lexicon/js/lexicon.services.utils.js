@@ -2,7 +2,8 @@
 
 angular.module('lexicon.services')
 
-  .service('lexUtils', [function () {
+  .service('lexUtils', ['utilService', function (util) {
+    angular.extend(this, util);
 
     function getFirstField(config, node, fieldName) {
       var result = '';
@@ -13,7 +14,7 @@ angular.module('lexicon.services')
         for (var i = 0; i < config.fields[fieldName].inputSystems.length; i++) {
           ws = config.fields[fieldName].inputSystems[i];
           field = node[fieldName][ws];
-          if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '') {
+          if (angular.isDefined(field) && angular.isDefined(field.value) && field.value !== '') {
             result = field.value;
             break;
           }
@@ -30,7 +31,7 @@ angular.module('lexicon.services')
         config.fields[fieldName].inputSystems) {
         angular.forEach(config.fields[fieldName].inputSystems, function (inputSystem) {
           var field = node[fieldName][inputSystem];
-          if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '') {
+          if (angular.isDefined(field) && angular.isDefined(field.value) && field.value !== '') {
             if (result) {
               result += delimiter + field.value;
             } else {
@@ -69,7 +70,7 @@ angular.module('lexicon.services')
         angular.forEach(config.fields.citationForm.inputSystems, function (inputSystemTag) {
           if (angular.isDefined(entry.citationForm)) {
             var field = entry.citationForm[inputSystemTag];
-            if (angular.isDefined(field) && angular.isDefined(field.value) && field.value != '' &&
+            if (angular.isDefined(field) && angular.isDefined(field.value) && field.value !== '' &&
                 !this.isAudio(inputSystemTag)
             ) {
               citationFormByInputSystem[inputSystemTag] = field.value;
@@ -130,10 +131,10 @@ angular.module('lexicon.services')
     /**
      * @param config example config obj
      * @param example
-     * @field string 'sentence' or 'translation'
+     * @param {string} field 'sentence' or 'translation'
      */
     this.getExample = function getExampleSentence(config, example, field) {
-      if (field == 'sentence' || field == 'translation') {
+      if (field === 'sentence' || field === 'translation') {
         return getFields(config, example, field);
       }
     };
@@ -143,9 +144,9 @@ angular.module('lexicon.services')
         if (optionlists) {
           var abbreviation = '';
           angular.forEach(optionlists, function (optionlist) {
-            if (optionlist.code == 'partOfSpeech' || optionlist.code == 'grammatical-info') {
+            if (optionlist.code === 'partOfSpeech' || optionlist.code === 'grammatical-info') {
               angular.forEach(optionlist.items, function (item) {
-                if (item.key == posModel.value) {
+                if (item.key === posModel.value) {
                   abbreviation = item.abbreviation;
                 }
               });
@@ -169,11 +170,6 @@ angular.module('lexicon.services')
       }
 
       return '';
-    };
-
-    this.isAudio = function isAudio(tag) {
-      var tagAudioPattern = /^\w{2,3}-Zxxx-x(-\w{2,3})*-[aA][uU][dD][iI][oO]$/;
-      return tagAudioPattern.test(tag);
     };
 
   }]);
