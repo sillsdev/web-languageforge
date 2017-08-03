@@ -78,16 +78,18 @@ ansible-playbook -i hosts playbook_xenial.yml --limit localhost -K
 ````
 If you run into an error on the `ssl_config : LetsEncrypt: Install packages` task, run the playbook again and that task should succeed the second time it is run.
 
-Install node_modules used to build Sass files and run E2E tests
+Install dependencies used to build Sass files and run E2E tests
 ```
 cd web-languageforge
 npm install
 gulp sass
-gulp build-webpack --applicationName 'languageforge' --doNoCompression true
+gulp webpack-lf
 ```
+or use `gulp webpack-sf` if you are working in **Scripture Forge**.
+
 To watch Sass files for changes, run `gulp sass:watch`. The output will also be in a more readable format (rather than compressed as it is with `gulp sass`). You can also pass the `--debug` flag to enable source comments and source maps in comments in the output files.
 
-To watch TypeScript files for changes, run `gulp build-webpack:watch` (this defaults to Language Forge, for Scripture Forge run `gulp build-webpack:watch --applicationName 'scriptureforge'`). This includes a live reload server (browser setup [here](#LiveReloadInstall)).
+To watch TypeScript files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#LiveReloadInstall)).
 
 ### Language Forge Configuration File <a id="LFConfig"></a>
 Manually edit the Language Forge config file
