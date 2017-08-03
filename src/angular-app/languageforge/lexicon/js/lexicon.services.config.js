@@ -6,7 +6,7 @@ angular.module('lexicon.services')
 .service('lexConfigService', ['sessionService', function (sessionService) {
 
   this.refresh = function () {
-    return sessionService.getSession().then(function(session) {
+    return sessionService.getSession().then(function (session) {
       var config = angular.copy(session.projectSettings().config);
       var userId = session.userId();
       var role = session.projectSettings().currentUserRole;
@@ -31,13 +31,12 @@ angular.module('lexicon.services')
       removeDisabledConfigFields(config.entry.fields.senses, fieldsConfig);
       removeDisabledConfigFields(config.entry.fields.senses.fields.examples, fieldsConfig);
 
-      this.configForUser = config;
       return config;
     }.bind(this));
   }.bind(this);
 
   this.isTaskEnabled = function isTaskEnabled(taskName) {
-    sessionService.getSession().then(function(session) {
+    sessionService.getSession().then(function (session) {
       var config = session.projectSettings().config;
       var role = session.projectSettings().currentUserRole;
       var userId = session.userId();
@@ -57,19 +56,19 @@ angular.module('lexicon.services')
 
     if (angular.isUndefined(model))
       return false;
-    if (type == 'fields')
+    if (type === 'fields')
       return true;
     switch (type) {
       case 'multitext':
         angular.forEach(model, function (field) {
-          if (field.value && field.value != '') {
+          if (field.value && field.value !== '') {
             containsData = true;
           }
         });
 
         break;
       case 'optionlist':
-        if (model.value && model.value != '') {
+        if (model.value && model.value !== '') {
           containsData = true;
         }
 
@@ -92,7 +91,7 @@ angular.module('lexicon.services')
 
   function removeDisabledConfigFields(config, fieldsConfig) {
     angular.forEach(config.fieldOrder, function (fieldName) {
-      if (fieldName != 'senses' && fieldName != 'examples') {
+      if (fieldName !== 'senses' && fieldName !== 'examples') {
         var fieldConfig = fieldsConfig.fields[fieldName];
 
         if (fieldConfig && fieldConfig.show) {
@@ -118,7 +117,7 @@ angular.module('lexicon.services')
   };
 
   this.getFieldConfig = function getFieldConfig(fieldName) {
-    return sessionService.getSession().then(function(session) {
+    return sessionService.getSession().then(function (session) {
       var config = session.projectSettings().config;
       var search = config.entry.fields;
 
@@ -139,40 +138,6 @@ angular.module('lexicon.services')
       return undefined;
     });
   };
-
-  /*
-   * this.isFieldEnabled = function(fieldName, ws) {
-   *
-   * var config = ss.session.projectSettings.config; var userId =
-   * ss.session.userId; var role = ss.session.projectSettings.currentUserRole;
-   * var fieldConfig; // use an user-based field config if defined if
-   * (angular.isDefined(config.userViews[userId])) { fieldConfig =
-   * config.userViews[userId].fields[fieldName]; } else { // fallback to
-   * role-based field config fieldConfig =
-   * config.roleViews[role].fields[fieldName]; }
-   *
-   * if (!fieldConfig) { console.log(fieldName); } // field-level visibility var
-   * show = fieldConfig.show; // input system level visibility if (ws &&
-   * fieldConfig.show && fieldConfig.overrideInputSystems) { if
-   * (fieldConfig.inputSystems.indexOf(ws) != -1) { show = true; } else { show =
-   * false; } } return show; };
-   *
-   * this.isUncommonField = function isUncommonField(fieldName) { var
-   * fieldConfig = getFieldConfig(fieldName); return fieldConfig.hideIfEmpty; };
-   *
-   *
-   * this.isFieldVisible = function isFieldVisible(showUncommon, fieldName,
-   * type, model) { if (type == 'fields') return true; var isVisible = true;
-   *
-   * if (!showUncommon && this.isUncommonField(fieldName)) { isVisible = false;
-   * switch (type) { case 'multitext': angular.forEach(model, function(ws) { if
-   * (model[ws].value != '') { isVisible = true; } }); break; case 'optionlist':
-   * case 'multioptionlist': if (model.value != '') { isVisible = true; } break; } }
-   *
-   * return isVisible; };
-   *
-   */
-
 }])
 
 ;

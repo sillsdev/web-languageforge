@@ -1,33 +1,80 @@
 <div id="lexAppEditView" class="animate-switch row">
     <div class="col-md-4">
-        <div>
-            <pui-typeahead class="typeahead" placeholder="'Search Entries'"
-                       items="typeahead.searchResults" term="typeahead.searchItemSelected"
-                       search="typeahead.searchEntries" select="typeahead.searchSelect">
-                <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
-                    <li data-typeahead-item="e" class="typeahead-item list-group-item"
-                        data-ng-repeat="e in typeahead.searchResults | limitTo: typeahead.limit">
-                        <div class="listItemPrimary" data-ng-bind-html="getWordForDisplay(e)"></div>
-                        <small class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(e)"></small>
-                    </li>
-                </ul>
-                <div style="text-align:center; background-color: #d3d3d3; color:black;"
-                     data-ng-if="typeahead.searchResults.length > 0">
-                    <small><i>{{typeahead.matchCountCaption}}</i></small></div>
-            </pui-typeahead>
-        </div>
-        <div class="hidden-sm-down list-group">
-            <div class="list-group-item list-group-item-action active">
-                <small class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
-                <h5>{{ 'Words in dictionary' | translate }}</h5>
+        <div class="row">
+            <div class="col-md-12 col-lg-8">
+                <pui-typeahead class="typeahead" placeholder="'Search Entries'"
+                               items="typeahead.searchResults" term="typeahead.searchItemSelected"
+                               search="typeahead.searchEntries" select="typeahead.searchSelect">
+                    <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
+                        <li data-typeahead-item="e" class="typeahead-item list-group-item"
+                            data-ng-repeat="e in typeahead.searchResults | limitTo: typeahead.limit">
+                            <div class="listItemPrimary" data-ng-bind-html="getWordForDisplay(e)"></div>
+                            <small class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(e)"></small>
+                        </li>
+                    </ul>
+                    <div style="text-align:center; background-color: #d3d3d3; color:black;"
+                         data-ng-if="typeahead.searchResults.length > 0">
+                        <small><i>{{typeahead.matchCountCaption}}</i></small>
+                    </div>
+                </pui-typeahead>
             </div>
-            <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-                <div id="entryId_{{entry.id}}" class="list-group-item lexiconListItemCompact"
-                     data-ng-class="{selected: entry.id == currentEntry.id, listItemHasComment: commentService.getEntryCommentCount(entry.id) > 0}"
-                     title="{{getCompactItemListOverlay(entry)}}"
-                     data-ng-repeat="entry in visibleEntries track by entry.id" data-ng-click="editEntry(entry.id)">
-                    <div dir="auto" class="listItemPrimary" data-ng-bind-html="getWordForDisplay(entry)"></div>
-                    <div dir="auto" class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(entry)"></div>
+            <div class="col-md-12 col-lg-4 hidden-sm-down">
+                <button ng-click="show.entryListModifiers = !show.entryListModifiers" class="btn btn-sm pull-right">
+                    <span class="fa" ng-class="{ 'fa-minus-square-o': show.entryListModifiers, 'fa-plus-square-o': !show.entryListModifiers} "></span>
+                    Options</button>
+            </div>
+        </div>
+        <br class="hidden-sm-down hidden-lg-up" />
+        <div class="row">
+            <div class="hidden-sm-down" ng-show="show.entryListModifiers">
+                <div class="form-group sortfilter-form">
+                    <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
+                    <div class="form-inline">
+                        <select id="sortEntriesBy" class="custom-select sortfilter-control"
+                                ng-change="sortEntries(true)" ng-model="entryListModifiers.sortBy"
+                                ng-options="item as item.label for item in entryListModifiers.sortOptions track by item.value">
+                        </select>
+                        <label style="margin: 7px">
+                            <input type="checkbox" ng-change="sortEntries(true)" ng-model="entryListModifiers.sortReverse"> Reverse
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group sortfilter-form">
+                    <label class="font-weight-bold" for="filterEntriesFor">Filter Entries</label>
+                    <div class="form-inline">
+                        <select class="custom-select sortfilter-control" ng-show="entryListModifiers.filterBy"
+                                ng-change="filterEntries(true)" ng-model="entryListModifiers.filterType">
+                            <option value="isEmpty">Doesn't have</option>
+                            <option value="isNotEmpty">Has</option>
+                        </select>
+                        <select class="custom-select sortfilter-control" id="filterEntriesFor"
+                                ng-change="filterEntries(true)" ng-model="entryListModifiers.filterBy"
+                                ng-options="item as item.label for item in entryListModifiers.filterOptions track by item.key">
+                            <option value="">Show All</option>
+                        </select>
+                        <button ng-click="resetEntryListFilter()" ng-show="entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
+                    </div>
+                </div>
+
+                <br />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col hidden-sm-down list-group">
+                <div class="list-group-item list-group-item-action active">
+                    <small ng-hide="entryListModifiers.filterBy" id="totalNumberOfEntries" class="pull-right">{{entries.length}} {{'entries' | translate}}</small>
+                    <small ng-show="entryListModifiers.filterBy" class="pull-right">{{filteredEntries.length}} / {{entries.length}}</small>
+                    <h5>{{ 'Words in dictionary' | translate }}</h5>
+                </div>
+                <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
+                    <div id="entryId_{{entry.id}}" class="list-group-item lexiconListItemCompact"
+                         data-ng-class="{selected: entry.id == currentEntry.id, listItemHasComment: commentService.getEntryCommentCount(entry.id) > 0}"
+                         title="{{getCompactItemListOverlay(entry)}}"
+                         data-ng-repeat="entry in visibleEntries track by entry.id" data-ng-click="editEntry(entry.id)">
+                        <div dir="auto" class="listItemPrimary" data-ng-bind-html="getCompactListItemForDisplay(config, entry)"></div>
+                        <div dir="auto" class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(entry)"></div>
+                    </div>
                 </div>
             </div>
         </div>
