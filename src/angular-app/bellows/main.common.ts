@@ -1,5 +1,3 @@
-// jquery must be the first js to be loaded
-import 'jquery'
 import 'angular'
 import 'angular-ui-bootstrap'
 import 'angular-route'
@@ -13,8 +11,6 @@ import 'angular-ui-validate'
 
 import 'ng-file-upload/dist/ng-file-upload-all.js'
 import 'soundmanager2'
-
-// import 'font-awesome/css/font-awesome.css'
 
 import './polyfills.browser.ts'
 
