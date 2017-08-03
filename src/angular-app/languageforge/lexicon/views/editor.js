@@ -116,14 +116,14 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       };
 
       function resetEntryLists(id, pristineEntry) {
-        var entryIndex = editorService.getIndexInEntries(id);
+        var entryIndex = editorService.getIndexInList(id, $scope.entries);
         var entry = prepCustomFieldsForUpdate(pristineEntry);
         if (angular.isDefined(entryIndex)) {
           $scope.entries[entryIndex] = entry;
           $scope.currentEntry = pristineEntry;
         }
 
-        var visibleEntryIndex = editorService.getIndexInVisibleEntries(id);
+        var visibleEntryIndex = editorService.getIndexInList(id, $scope.visibleEntries);
         if (angular.isDefined(visibleEntryIndex)) {
           $scope.visibleEntries[visibleEntryIndex] = entry;
         }
@@ -206,7 +206,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
               // refresh data will add the new entry to the entries list
               editorService.refreshEditorData().then(function () {
                 if (entry && isNewEntry) {
-                  setCurrentEntry($scope.entries[editorService.getIndexInEntries(entry.id)]);
+                  setCurrentEntry($scope.entries[editorService.getIndexInList(entry.id, $scope.entries)]);
                   editorService.removeEntryFromLists(newEntryTempId);
                   if (doSetEntry) {
                     $state.go('.', { entryId: entry.id }, { notify: false });
@@ -348,9 +348,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
         // only expand the "show window" if we know that the entry is actually in
         // the entry list - a safe guard
-        if (angular.isDefined(editorService.getIndexInEntries(id))) {
-          while ($scope.visibleEntries.length < $scope.entries.length) {
-            index = editorService.getIndexInVisibleEntries(id);
+        if (angular.isDefined(editorService.getIndexInList(id, $scope.filteredEntries))) {
+          while ($scope.visibleEntries.length < $scope.filteredEntries.length) {
+            index = editorService.getIndexInList(id, $scope.visibleEntries);
             if (angular.isDefined(index)) {
               break;
             }
@@ -358,7 +358,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
             editorService.showMoreEntries();
           }
         } else {
-          throw 'Error: tried to scroll to an entry that is not in the entry list!';
+          console.warn('Error: tried to scroll to an entry that is not in the entry list!');
         }
 
         // note: ':visible' is a JQuery invention that means 'it takes up space on
@@ -435,7 +435,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       $scope.editEntry = function editEntry(id) {
         if ($scope.currentEntry.id !== id) {
           $scope.saveCurrentEntry();
-          setCurrentEntry($scope.entries[editorService.getIndexInEntries(id)]);
+          setCurrentEntry($scope.entries[editorService.getIndexInList(id, $scope.entries)]);
           commentService.loadEntryComments(id);
         }
 
@@ -456,8 +456,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           setCurrentEntry(newEntry);
           commentService.loadEntryComments(newEntry.id);
           editorService.addEntryToEntryList(newEntry);
-          editorService.showInitialEntries();
-          scrollListToEntry(newEntry.id, 'top');
+          editorService.showInitialEntries().then(function() {
+            scrollListToEntry(newEntry.id, 'top');
+          });
           if ($state.is('editor.entry')) {
             $state.go('.', { entryId: newEntry.id }, { notify: false });
           } else {
@@ -595,7 +596,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         // var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?",
         // {lexeme:utils.getLexeme($scope.config.entry, entry)});
         modal.showModalSimple('Delete Entry', deletemsg, 'Cancel', 'Delete Entry').then(function () {
-          var iShowList = editorService.getIndexInVisibleEntries(entry.id);
+          var iShowList = editorService.getIndexInList(entry.id, $scope.visibleEntries);
           editorService.removeEntryFromLists(entry.id);
           if ($scope.entries.length > 0) {
             if (iShowList !== 0)
@@ -631,7 +632,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         function goToState() {
           // if entry not found goto first visible entry
           var entryId = $state.params.entryId;
-          if (angular.isUndefined(editorService.getIndexInEntries(entryId))) {
+          if (angular.isUndefined(editorService.getIndexInList(entryId, $scope.entries))) {
             entryId = '';
             if (angular.isDefined($scope.visibleEntries[0])) {
               entryId = $scope.visibleEntries[0].id;
@@ -679,13 +680,13 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
             resetEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
           }
         } else {
-          setCurrentEntry($scope.entries[editorService.getIndexInEntries($scope.currentEntry.id)]);
+          setCurrentEntry($scope.entries[editorService.getIndexInList($scope.currentEntry.id, $scope.entries)]);
         }
       }
 
       function syncProjectStatusSuccess() {
         editorService.refreshEditorData().then(function () {
-          setCurrentEntry($scope.entries[editorService.getIndexInEntries($scope.currentEntry.id)]);
+          setCurrentEntry($scope.entries[editorService.getIndexInList($scope.currentEntry.id, $scope.entries)]);
           sessionService.getSession(true).then(lexConfig.refresh);
           notice.removeById(warnOfUnsavedEditsId);
         });

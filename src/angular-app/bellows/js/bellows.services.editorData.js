@@ -300,14 +300,6 @@ function ($q, sessionService, cache, commentsCache,
     return index;
   }
 
-  function getIndexInEntries(id) {
-    return getIndexInList(id, entries);
-  }
-
-  function getIndexInVisibleEntries(id) {
-    return getIndexInList(id, visibleEntries);
-  }
-
   function sortList(config, list) {
     const collator = Intl.Collator(_getInputSystemForSort(config));
 
@@ -595,8 +587,7 @@ function ($q, sessionService, cache, commentsCache,
     refreshEditorData: refreshEditorData,
     removeEntryFromLists: removeEntryFromLists,
     addEntryToEntryList: addEntryToEntryList,
-    getIndexInEntries: getIndexInEntries,
-    getIndexInVisibleEntries: getIndexInVisibleEntries,
+    getIndexInList: getIndexInList,
     entries: entries,
     visibleEntries: visibleEntries,
     showInitialEntries: showInitialEntries,
