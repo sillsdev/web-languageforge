@@ -13,12 +13,16 @@ function ($q, editorDataService, api) {
     refreshEditorData: editorDataService.refreshEditorData,
     removeEntryFromLists: editorDataService.removeEntryFromLists,
     addEntryToEntryList: editorDataService.addEntryToEntryList,
-    getIndexInEntries: editorDataService.getIndexInEntries,
-    getIndexInVisibleEntries: editorDataService.getIndexInVisibleEntries,
+    getIndexInList: editorDataService.getIndexInList,
     entries: editorDataService.entries,
     visibleEntries: editorDataService.visibleEntries,
     showInitialEntries: editorDataService.showInitialEntries,
-    showMoreEntries: editorDataService.showMoreEntries
+    showMoreEntries: editorDataService.showMoreEntries,
+    sortEntries: editorDataService.sortEntries,
+    filterEntries: editorDataService.filterEntries,
+    filteredEntries: editorDataService.filteredEntries,
+    entryListModifiers: editorDataService.entryListModifiers,
+    getSortableValue: editorDataService.getSortableValue
   };
 
 }]);
