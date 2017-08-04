@@ -1,12 +1,14 @@
 'use strict';
 
-angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellows.services', 'sfchecks.services',
-  'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte',
-  'ngFileUpload', 'ngRoute'])
-  .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService', 'sfchecksLinkService',
-    'silNoticeService', 'sfchecksProjectService', 'messageService', 'modalService', '$q',
-  function ($scope, textService, ss, breadcrumbService, sfchecksLinkService,
-            notice, sfchecksProjectService, messageService, modalService, $q) {
+angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellows.services',
+  'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice',
+  'palaso.ui.textdrop', 'palaso.ui.jqte', 'ngFileUpload', 'ngRoute'])
+  .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService',
+    'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
+    'modalService', '$q',
+  function ($scope, textService, ss, breadcrumbService,
+            sfchecksLinkService, notice, sfchecksProjectService, messageService,
+            modalService, $q) {
     $scope.finishedLoading = false;
 
     // Rights
@@ -14,7 +16,8 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     $scope.rights.archive = false;
     $scope.rights.create = false;
     $scope.rights.edit = false; //ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-    $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.edit;
+    $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
+      $scope.rights.edit;
 
     // Broadcast Messages
     // items are in the format of {id: id, subject: subject, content: content}
@@ -29,7 +32,7 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     $scope.markMessageRead = function (id) {
       for (var i = 0; i < $scope.messages.length; ++i) {
         var m = $scope.messages[i];
-        if (m.id == id) {
+        if (m.id === id) {
           $scope.messages.splice(i, 1);
           messageService.markRead(id);
           break;
@@ -43,15 +46,15 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
-      if (checkbox.checked && selectedIndex == -1) {
+      if (checkbox.checked && selectedIndex === -1) {
         $scope.selected.push(item);
-      } else if (!checkbox.checked && selectedIndex != -1) {
+      } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
     $scope.isSelected = function (item) {
-      return item != null && $scope.selected.indexOf(item) >= 0;
+      return item !== null && $scope.selected.indexOf(item) >= 0;
     };
 
     $scope.texts = [];
@@ -59,8 +62,9 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     // Page Dto
     // Page Dto
     $scope.getPageDto = function () {
-      $q.all([ss.getSession(), sfchecksProjectService.pageDto()]).then(function(data) {
-        var session = data[0], result = data[1];
+      $q.all([ss.getSession(), sfchecksProjectService.pageDto()]).then(function (data) {
+        var session = data[0];
+        var result = data[1];
         $scope.texts = result.data.texts;
         $scope.textsCount = $scope.texts.length;
         $scope.enhanceDto($scope.texts);
@@ -84,10 +88,14 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
         );
 
         var rights = result.data.rights;
-        $scope.rights.archive = session.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE) && !session.project().isArchived;
-        $scope.rights.create = session.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE) && !session.project().isArchived;
-        $scope.rights.edit = session.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) && !session.project().isArchived;
-        $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.edit;
+        $scope.rights.archive = session.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE) &&
+          !session.project().isArchived;
+        $scope.rights.create = session.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE) &&
+          !session.project().isArchived;
+        $scope.rights.edit = session.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) &&
+          !session.project().isArchived;
+        $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
+          $scope.rights.edit;
 
         $scope.finishedLoading = true;
       });
@@ -102,13 +110,12 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
         textIds.push($scope.selected[i].id);
       }
 
-      if (textIds.length == 1) {
+      if (textIds.length === 1) {
         message = 'Are you sure you want to archive the selected text?';
       } else {
         message = 'Are you sure you want to archive the ' + textIds.length + ' selected texts?';
       }
 
-      // The commented modalService below can be used instead of the window.confirm alert, but must change E2E tests using alerts. IJH 2014-06
       var modalOptions = {
         closeButtonText: 'Cancel',
         actionButtonText: 'Archive',
@@ -120,14 +127,14 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
           if (result.ok) {
             $scope.selected = []; // Reset the selection
             $scope.getPageDto();
-            if (textIds.length == 1) {
+            if (textIds.length === 1) {
               notice.push(notice.SUCCESS, 'The text was archived successfully');
             } else {
               notice.push(notice.SUCCESS, 'The texts were archived successfully');
             }
           }
         });
-      });
+      }, angular.noop);
     };
 
     // Add Text
@@ -173,12 +180,13 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
         // First few characters should be optional BOM, optional <?xml ..., then <usx ...
         var startOfText = reader.result.slice(0, 1000);
         var usxIndex = startOfText.indexOf('<usx');
-        if (usxIndex != -1) {
+        if (usxIndex !== -1) {
           $scope.$apply(function () {
             $scope.content = reader.result;
           });
         } else {
-          notice.push(notice.ERROR, 'Error loading USX file. The file doesn\'t appear to be valid USX.');
+          notice.push(notice.ERROR,
+            'Error loading USX file. The file doesn\'t appear to be valid USX.');
           $scope.$apply(function () {
             $scope.content = '';
           });
@@ -192,4 +200,4 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
 
   }])
 
-;
+  ;

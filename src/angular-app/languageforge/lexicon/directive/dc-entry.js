@@ -11,7 +11,8 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
         model: '=',
         control: '='
       },
-      controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rightsService) {
+      controller: ['$scope', '$state', 'lexRightsService',
+      function ($scope, $state, rightsService) {
         $scope.$state = $state;
 
         rightsService.getRights().then(function (rights) {
@@ -35,7 +36,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
             .then(function () {
               $scope.model.senses.splice(index, 1);
               $scope.control.saveCurrentEntry();
-            });
+            }, angular.noop);
         };
 
         $scope.deleteEntry = function () {

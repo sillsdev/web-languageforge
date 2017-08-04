@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.language', [])
+angular.module('palaso.ui.language', ['language.inputSystems'])
 
   // Palaso UI Select Language
   .directive('puiSelectLanguage', [function () {
@@ -15,14 +15,14 @@ angular.module('palaso.ui.language', [])
         puiSuggestedLanguageCodes: '=',
         puiShowLinks: '='
       },
-      controller: ['$scope', '$filter', function ($scope, $filter) {
+      controller: ['$scope', 'inputSystems', function ($scope, inputSystems) {
 
         // TODO Enhance. Could use infinite scrolling since search can return large results.
         // See example here http://jsfiddle.net/W6wJ2/. IJH 2014-02
         $scope.currentCode = '';
         $scope.puiAddDisabled = true;
         $scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
-        $scope.allLanguages = InputSystems.languages();
+        $scope.allLanguages = inputSystems.languages();
 
         // Sort languages with two-letter codes first, then three-letter codes
         $scope.buildLanguageList = function () {
@@ -48,14 +48,13 @@ angular.module('palaso.ui.language', [])
           angular.forEach($scope.allLanguages, function (language) {
             if (language.code.two === code || language.code.three === code) {
               $scope.suggestedLanguages.push(language);
-              return;
             }
           });
         });
 
         $scope.search = function search() {
           $scope.filterText = $scope.searchText;
-          if ($scope.searchText == '*') {
+          if ($scope.searchText === '*') {
             $scope.filterText = '';
           }
         };

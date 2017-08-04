@@ -32,14 +32,14 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       })
       ;
   }])
-  .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService',
+  .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService', '$q',
     '$state', '$window', '$interval', '$filter', 'lexLinkService', 'lexUtils', 'lexRightsService',
     'silNoticeService', '$rootScope', '$location', 'lexConfigService', 'lexCommentService',
-    'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService', '$q',
-  function ($scope, userService, sessionService, lexService,
+    'lexEditorDataService', 'lexProjectService', 'lexSendReceive', 'modalService',
+  function ($scope, userService, sessionService, lexService, $q,
             $state, $window, $interval, $filter, linkService, utils, rightsService,
             notice, $rootScope, $location, lexConfig, commentService,
-            editorService, lexProjectService, sendReceive, modal, $q) {
+            editorService, lexProjectService, sendReceive, modal) {
 
     var pristineEntry = {};
     var warnOfUnsavedEditsId;
@@ -52,9 +52,15 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     $scope.configService = lexConfig;
     $scope.entries = editorService.entries;
     $scope.visibleEntries = editorService.visibleEntries;
+    $scope.filteredEntries = editorService.filteredEntries;
+    $scope.entryListModifiers = editorService.entryListModifiers;
+    $scope.sortEntries = editorService.sortEntries;
+    $scope.filterEntries = editorService.filterEntries;
+
     $scope.show = {
       more: editorService.showMoreEntries,
-      emptyFields: false
+      emptyFields: false,
+      entryListModifiers: false
     };
 
     // hack to pass down the parent scope down into all child directives (i.e. entry, sense, etc)
@@ -62,6 +68,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
     lexConfig.refresh().then(function (config) {
       $scope.config = config;
+
+      $scope.$watch('config', function () {
+        setSortAndFilterOptionsFromConfig();
+      });
 
       $scope.currentEntryIsDirty = function currentEntryIsDirty() {
         if (!$scope.entryLoaded()) return false;
@@ -107,29 +117,31 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       };
 
       function resetEntryLists(id, pristineEntry) {
-        var entryIndex = editorService.getIndexInEntries(id);
+        var entryIndex = editorService.getIndexInList(id, $scope.entries);
         var entry = prepCustomFieldsForUpdate(pristineEntry);
         if (angular.isDefined(entryIndex)) {
           $scope.entries[entryIndex] = entry;
           $scope.currentEntry = pristineEntry;
         }
 
-        var visibleEntryIndex = editorService.getIndexInVisibleEntries(id);
+        var visibleEntryIndex = editorService.getIndexInList(id, $scope.visibleEntries);
         if (angular.isDefined(visibleEntryIndex)) {
           $scope.visibleEntries[visibleEntryIndex] = entry;
         }
       }
 
       function warnOfUnsavedEdits(entry) {
-        warnOfUnsavedEditsId = notice.push(notice.WARN, 'A synchronize has been started by another ' +
-          'user. When the synchronize has finished, please check your recent edits in entry "' +
+        warnOfUnsavedEditsId = notice.push(notice.WARN, 'A synchronize has been started by ' +
+          'another user. When the synchronize has finished, please check your recent edits in ' +
+          'entry "' +
           $scope.getWordForDisplay(entry) + '".');
       }
 
-      rightsService.getRights().then(function(rights) {
+      rightsService.getRights().then(function (rights) {
         $scope.rights = rights;
 
-        $scope.saveCurrentEntry = function saveCurrentEntry(doSetEntry, successCallback, failCallback) {
+        $scope.saveCurrentEntry = function saveCurrentEntry(doSetEntry, successCallback,
+                                                            failCallback) {
           var isNewEntry = false;
           var newEntryTempId;
           if (angular.isUndefined(doSetEntry)) {
@@ -197,7 +209,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
               // refresh data will add the new entry to the entries list
               editorService.refreshEditorData().then(function () {
                 if (entry && isNewEntry) {
-                  setCurrentEntry($scope.entries[editorService.getIndexInEntries(entry.id)]);
+                  setCurrentEntry($scope.entries[editorService.getIndexInList(entry.id,
+                    $scope.entries)]);
                   editorService.removeEntryFromLists(newEntryTempId);
                   if (doSetEntry) {
                     $state.go('.', { entryId: entry.id }, { notify: false });
@@ -208,7 +221,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
               saveStatus = 'saved';
               (successCallback || angular.noop)(data.result);
-            }).catch(function(reason) {
+            }).catch(function (reason) {
               saveStatus = 'unsaved';
               (failCallback || angular.noop)(reason);
             });
@@ -240,6 +253,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         entryForUpdate = prepCustomFieldsForUpdate(entryForUpdate);
         return entryForUpdate;
       }
+
+      $scope.getCompactListItemForDisplay = editorService.getSortableValue;
 
       $scope.getWordForDisplay = function getWordForDisplay(entry) {
         var lexeme = utils.getLexeme($scope.config.entry, entry);
@@ -337,9 +352,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
         // only expand the "show window" if we know that the entry is actually in
         // the entry list - a safe guard
-        if (angular.isDefined(editorService.getIndexInEntries(id))) {
-          while ($scope.visibleEntries.length < $scope.entries.length) {
-            index = editorService.getIndexInVisibleEntries(id);
+        if (angular.isDefined(editorService.getIndexInList(id, $scope.filteredEntries))) {
+          while ($scope.visibleEntries.length < $scope.filteredEntries.length) {
+            index = editorService.getIndexInList(id, $scope.visibleEntries);
             if (angular.isDefined(index)) {
               break;
             }
@@ -347,7 +362,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
             editorService.showMoreEntries();
           }
         } else {
-          throw 'Error: tried to scroll to an entry that is not in the entry list!';
+          console.warn('Error: tried to scroll to an entry that is not in the entry list!');
         }
 
         // note: ':visible' is a JQuery invention that means 'it takes up space on
@@ -424,7 +439,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       $scope.editEntry = function editEntry(id) {
         if ($scope.currentEntry.id !== id) {
           $scope.saveCurrentEntry();
-          setCurrentEntry($scope.entries[editorService.getIndexInEntries(id)]);
+          setCurrentEntry($scope.entries[editorService.getIndexInList(id, $scope.entries)]);
           commentService.loadEntryComments(id);
         }
 
@@ -445,8 +460,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           setCurrentEntry(newEntry);
           commentService.loadEntryComments(newEntry.id);
           editorService.addEntryToEntryList(newEntry);
-          editorService.showInitialEntries();
-          scrollListToEntry(newEntry.id, 'top');
+          editorService.showInitialEntries().then(function () {
+            scrollListToEntry(newEntry.id, 'top');
+          });
+
           if ($state.is('editor.entry')) {
             $state.go('.', { entryId: newEntry.id }, { notify: false });
           } else {
@@ -573,6 +590,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
             break;
         }
 
+        // console.log('end data: ', data);
         return data;
       };
 
@@ -582,25 +600,26 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
         // var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?",
         // {lexeme:utils.getLexeme($scope.config.entry, entry)});
-        modal.showModalSimple('Delete Entry', deletemsg, 'Cancel', 'Delete Entry').then(function () {
-          var iShowList = editorService.getIndexInVisibleEntries(entry.id);
-          editorService.removeEntryFromLists(entry.id);
-          if ($scope.entries.length > 0) {
-            if (iShowList !== 0)
-              iShowList--;
-            setCurrentEntry($scope.visibleEntries[iShowList]);
-            $state.go('.', { entryId: $scope.visibleEntries[iShowList].id }, { notify: false });
-          } else {
-            $scope.returnToList();
-          }
+        modal.showModalSimple('Delete Entry', deletemsg, 'Cancel', 'Delete Entry').then(
+          function () {
+            var iShowList = editorService.getIndexInList(entry.id, $scope.visibleEntries);
+            editorService.removeEntryFromLists(entry.id);
+            if ($scope.entries.length > 0) {
+              if (iShowList !== 0)
+                iShowList--;
+              setCurrentEntry($scope.visibleEntries[iShowList]);
+              $state.go('.', { entryId: $scope.visibleEntries[iShowList].id }, { notify: false });
+            } else {
+              $scope.returnToList();
+            }
 
-          if (!entryIsNew(entry)) {
-            sendReceive.setStateUnsynced();
-            lexService.remove(entry.id, function () {
-              editorService.refreshEditorData();
-            });
-          }
-        });
+            if (!entryIsNew(entry)) {
+              sendReceive.setStateUnsynced();
+              lexService.remove(entry.id, function () {
+                editorService.refreshEditorData();
+              });
+            }
+          }, angular.noop);
       };
 
       $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {
@@ -619,7 +638,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         function goToState() {
           // if entry not found goto first visible entry
           var entryId = $state.params.entryId;
-          if (angular.isUndefined(editorService.getIndexInEntries(entryId))) {
+          if (angular.isUndefined(editorService.getIndexInList(entryId, $scope.entries))) {
             entryId = '';
             if (angular.isDefined($scope.visibleEntries[0])) {
               entryId = $scope.visibleEntries[0].id;
@@ -627,13 +646,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           }
 
           if ($state.is('editor.comments')) {
-            editorService.showInitialEntries();
             $scope.editEntryAndScroll(entryId);
             $scope.showComments();
           }
 
           if ($state.is('editor.entry')) {
-            editorService.showInitialEntries();
             $scope.editEntryAndScroll(entryId);
           }
         }
@@ -669,13 +686,15 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
             resetEntryLists($scope.currentEntry.id, angular.copy(pristineEntry));
           }
         } else {
-          //setCurrentEntry($scope.entries[editorService.getIndexInEntries($scope.currentEntry.id)]);
+          setCurrentEntry($scope.entries[editorService.getIndexInList($scope.currentEntry.id,
+            $scope.entries)]);
         }
       }
 
       function syncProjectStatusSuccess() {
         editorService.refreshEditorData().then(function () {
-          setCurrentEntry($scope.entries[editorService.getIndexInEntries($scope.currentEntry.id)]);
+          setCurrentEntry($scope.entries[editorService.getIndexInList($scope.currentEntry.id,
+            $scope.entries)]);
           sessionService.getSession(true).then(lexConfig.refresh);
           notice.removeById(warnOfUnsavedEditsId);
         });
@@ -699,6 +718,84 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         }
       }
 
+      $scope.resetEntryListFilter = function () {
+        $scope.entryListModifiers.filterBy = '';
+        $scope.filterEntries(true);
+      };
+
+      function getInputSystemAbbreviation(inputSystemTag) {
+        if (angular.isUndefined($scope.config) || angular.isUndefined($scope.config.inputSystems) ||
+          !(inputSystemTag in $scope.config.inputSystems)
+        ) {
+          return inputSystemTag;
+        }
+
+        return $scope.config.inputSystems[inputSystemTag].abbreviation;
+      }
+
+      function setSortAndFilterOptionsFromConfig() {
+        var sortOptions = [];
+        var filterOptions = [];
+        angular.forEach($scope.config.entry.fieldOrder, function (entryFieldKey) {
+          var entryField = $scope.config.entry.fields[entryFieldKey];
+
+          // TODO: do I need to check if user can see field (view settings).
+          // Is this handled somewhere else? - cjh 2017-07-20
+          if (entryField.hideIfEmpty) return;
+          if (entryFieldKey === 'senses') {
+            angular.forEach($scope.config.entry.fields.senses.fieldOrder, function (senseFieldKey) {
+              var senseField = $scope.config.entry.fields.senses.fields[senseFieldKey];
+              if (senseField.hideIfEmpty || senseField.type === 'fields') return;
+              sortOptions.push({ label: senseField.label, value: senseFieldKey });
+              if (senseField.type === 'multitext') {
+                angular.forEach(senseField.inputSystems, function (inputSystemTag) {
+                  var abbreviation = getInputSystemAbbreviation(inputSystemTag);
+                  filterOptions.push({ label: senseField.label + ' [' + abbreviation + ']',
+                    level: 'sense', value: senseFieldKey, type: 'multitext',
+                    inputSystem: inputSystemTag, key: senseFieldKey + '-' + inputSystemTag });
+                });
+              } else {
+                filterOptions.push({ label: senseField.label, level: 'sense', value: senseFieldKey,
+                  type: senseField.type, key: senseFieldKey });
+              }
+            });
+          } else {
+            sortOptions.push({ label: entryField.label, value: entryFieldKey });
+            if (entryField.type === 'multitext') {
+              angular.forEach(entryField.inputSystems, function (inputSystemTag) {
+                var abbreviation = getInputSystemAbbreviation(inputSystemTag);
+                filterOptions.push({ label: entryField.label + ' [' + abbreviation + ']',
+                  level: 'entry', value: entryFieldKey, type: 'multitext',
+                  inputSystem: inputSystemTag, key: entryFieldKey + '-' + inputSystemTag });
+              });
+            } else {
+              filterOptions.push({ label: entryField.label, level: 'entry', value: entryFieldKey,
+                type: entryField.type, key: entryFieldKey });
+            }
+          }
+        });
+
+        filterOptions.push({ label: 'Comments', value: 'comments', type: 'comments',
+          key: 'comments' });
+        filterOptions.push({ label: 'Example Sentences', value: 'exampleSentences',
+          type: 'exampleSentences', key: 'exampleSentences' });
+        filterOptions.push({ label: 'Pictures', value: 'pictures', type: 'pictures',
+          key: 'pictures' });
+        var hasAudioInputSystem = false;
+        angular.forEach($scope.config.inputSystems, function (inputSystem) {
+          if (utils.isAudio(inputSystem.tag)) {
+            hasAudioInputSystem = true;
+          }
+        });
+
+        if (hasAudioInputSystem) {
+          filterOptions.push({ label: 'Audio', value: 'audio', type: 'audio', key: 'audio' });
+        }
+
+        utils.arrayCopyRetainingReferences(sortOptions, $scope.entryListModifiers.sortOptions);
+        utils.arrayCopyRetainingReferences(filterOptions, $scope.entryListModifiers.filterOptions);
+      }
+
       $scope.$on('$destroy', function () {
         cancelAutoSaveTimer();
         $scope.saveCurrentEntry();
@@ -717,7 +814,9 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         angular.forEach(startAt, function (value, key) {
           var deleted = false;
           angular.forEach(properties, function (propName) {
+            // console.log ("key = " + key + " && propName = " + propName);
             if (!deleted && key === propName) {
+              // console.log("deleted " + key + " (" + startAt[key] + ")");
               delete startAt[key];
               deleted = true;
             }
@@ -744,14 +843,15 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         // Concatenate to get prioritized list of exact matches, then non-exact.
         // TODO: would be better to search for gloss.  DDW 2016-06-22
         var results =
-            $filter('filter')($scope.entries, { lexeme: query }, true).concat(
-            $filter('filter')($scope.entries, { senses: query }, true),
-            $filter('filter')($scope.entries, { lexeme: query }),
-            $filter('filter')($scope.entries, { senses: query }),
-            $filter('filter')($scope.entries, query));
+            $filter('filter')($scope.filteredEntries, { lexeme: query }, true).concat(
+            $filter('filter')($scope.filteredEntries, { senses: query }, true),
+            $filter('filter')($scope.filteredEntries, { lexeme: query }),
+            $filter('filter')($scope.filteredEntries, { senses: query }),
+            $filter('filter')($scope.filteredEntries, query));
 
         // Set function to return unique results
-        $scope.typeahead.searchResults = Array.from(new Set(results)); // TODO Set is not available until ES2015
+        // TODO Set is not available until ES2015
+        $scope.typeahead.searchResults = Array.from(new Set(results));
         $scope.typeahead.matchCountCaption = '';
         var numMatches = $scope.typeahead.searchResults.length;
         if (numMatches > $scope.typeahead.limit) {

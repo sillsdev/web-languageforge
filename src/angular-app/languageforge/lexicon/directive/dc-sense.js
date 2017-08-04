@@ -32,7 +32,7 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
           .then(function () {
             $scope.model.examples.splice(index, 1);
             $scope.control.saveCurrentEntry();
-          });
+          }, angular.noop);
       };
     }],
 
