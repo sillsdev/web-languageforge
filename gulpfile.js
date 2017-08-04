@@ -663,59 +663,44 @@ gulp.task('sass:watch', function () {
 
 //region webpack
 
-function webpack(applicationName, isProduction, isWatch) {
-  return new Promise(function (resolve, reject) {
-    glob('webpack.config.js', {}, function (err, files) {
-      if (err) return reject(err);
-
-      gutil.log('Building the following webpack configs:');
-      files.forEach(function (fileName) {
-        gutil.log('    ' + fileName);
-      });
-
-      files.forEach(function (fileName) {
-        gutil.log('Processing ' + fileName);
-        var watch = isWatch ? ' --watch' : '';
-        var env = applicationName ? ' --env.applicationName=' + applicationName : '';
-        var prod = isProduction ? ' -p' : '';
-        execute('$(npm bin)/webpack' + watch + env + prod + ' --colors',
-          { cwd: path.dirname(fileName) },
-          function (err) {
-            if (err) throw err;
-          });
-      });
-
-      resolve();
+function webpack(applicationName, callback, isProduction, isWatch) {
+  var watch = isWatch ? ' --watch' : '';
+  var env = applicationName ? ' --env.applicationName=' + applicationName : '';
+  var prod = isProduction ? ' -p' : '';
+  execute('$(npm bin)/webpack' + watch + env + prod + ' --colors',
+    { cwd: '.' },
+    function (err) {
+      if (err) throw new gutil.PluginError('webpack', err);
+      callback();
     });
-  });
 }
 
 // -------------------------------------
 //   Task: webpack-lf
 // -------------------------------------
-gulp.task('webpack-lf', function () {
-  return webpack('languageforge');
+gulp.task('webpack-lf', function (cb) {
+  webpack('languageforge', cb);
 });
 
 // -------------------------------------
 //   Task: webpack-lf watch
 // -------------------------------------
-gulp.task('webpack-lf:watch', function () {
-  return webpack('languageforge', false, true);
+gulp.task('webpack-lf:watch', function (cb) {
+  webpack('languageforge', cb, false, true);
 });
 
 // -------------------------------------
 //   Task: webpack-sf
 // -------------------------------------
-gulp.task('webpack-sf', function () {
-  return webpack('scriptureforge');
+gulp.task('webpack-sf', function (cb) {
+  webpack('scriptureforge', cb);
 });
 
 // -------------------------------------
 //   Task: webpack-sf watch
 // -------------------------------------
-gulp.task('webpack-sf:watch', function () {
-  return webpack('scriptureforge', false, true);
+gulp.task('webpack-sf:watch', function (cb) {
+  webpack('scriptureforge', cb, false, true);
 });
 
 // endregion
@@ -781,7 +766,7 @@ gulp.task('build-remove-test-fixtures', function (done) {
 // -------------------------------------
 //   Task: Build webpack
 // -------------------------------------
-gulp.task('build-webpack', function () {
+gulp.task('build-webpack', function (cb) {
   var params = require('yargs')
     .option('applicationName', {
       demand: true,
@@ -790,7 +775,7 @@ gulp.task('build-webpack', function () {
       demand: false,
       type: 'boolean' })
     .argv;
-  return webpack(params.applicationName, !params.doNoCompression);
+  webpack(params.applicationName, cb, !params.doNoCompression);
 });
 
 // -------------------------------------
