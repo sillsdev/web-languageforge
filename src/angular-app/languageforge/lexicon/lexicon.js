@@ -17,6 +17,7 @@ angular.module('lexicon',
     'lexicon.settings',
     'lexicon.sync',
     'lexicon.services',
+    'language.inputSystems',
     'pascalprecht.translate'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$compileProvider',
@@ -62,10 +63,10 @@ angular.module('lexicon',
   }])
   .controller('LexiconCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService',
     '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService',
-    'lexSendReceiveApi', 'lexSendReceive', 'lexRightsService', '$q',
+    'lexSendReceiveApi', 'lexSendReceive', 'lexRightsService', '$q', 'inputSystems',
   function ($scope, sessionService, lexConfig, lexProjectService,
             $translate, $location, $interval, notice, editorService,
-            sendReceiveApi, sendReceive, rightsService, $q) {
+            sendReceiveApi, sendReceive, rightsService, $q, inputSystems) {
     var pristineLanguageCode;
 
     $scope.finishedLoading = false;
@@ -74,8 +75,9 @@ angular.module('lexicon',
       sendReceive.checkInitialState();
     });
 
-    $q.all([sessionService.getSession(), rightsService.getRights()]).then(function(data) {
-      var session = data[0], rights = data[1];
+    $q.all([sessionService.getSession(), rightsService.getRights()]).then(function (data) {
+      var session = data[0];
+      var rights = data[1];
 
       $scope.project = session.project();
       $scope.rights = rights;
@@ -106,7 +108,7 @@ angular.module('lexicon',
         $translate.use(code);
         pristineLanguageCode = angular.copy(code);
 
-        if (InputSystems.isRightToLeft(code)) {
+        if (inputSystems.isRightToLeft(code)) {
           $scope.interfaceConfig.direction = 'rtl';
           $scope.interfaceConfig.pullToSide = 'pull-left';
           $scope.interfaceConfig.pullNormal = 'pull-right';
@@ -167,7 +169,7 @@ angular.module('lexicon',
 
       Offline.on('down', function () {
         setTitle('Language Forge Offline', '0.8em', '#555');
-         offlineMessageId = notice.push(notice.ERROR,
+        offlineMessageId = notice.push(notice.ERROR,
           'You are offline. Some features are not available', null, true, 5 * 1000);
         $scope.online = false;
         if (!/^\/editor\//.test($location.path())) {

@@ -1,9 +1,7 @@
-'use strict';
-
 // THIS FILE IS copied from the AUTOMATICALLY GENERATED file.
 
 // input systems languages small data subset for testing/debugging
-var _inputSystems_languagesSmall = [
+export const _inputSystems_languagesSmall = [
   {
     "name": "Ghotuo",
     "code": {

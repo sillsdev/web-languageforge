@@ -33,8 +33,13 @@
 //   'test-e2e-run'
 //   'sass'
 //   'sass:watch'
+//   'webpack-lf'
+//   'webpack-lf:watch
+//   'webpack-sf'
+//   'webpack-sf:watch
 //   'build-composer'
 //   'build-npm-front-end'
+//   'build-webpack'
 //   'build-node-bundle'
 //   'build-node-bundle-watch'
 //   'build-remove-test-fixtures'
@@ -657,6 +662,50 @@ gulp.task('sass:watch', function () {
 
 // endregion
 
+//region webpack
+
+function webpack(applicationName, callback, isProduction, isWatch) {
+  var watch = isWatch ? ' --watch' : '';
+  var env = applicationName ? ' --env.applicationName=' + applicationName : '';
+  var prod = isProduction ? ' -p' : '';
+  execute('$(npm bin)/webpack' + watch + env + prod + ' --colors',
+    { cwd: '.' },
+    function (err) {
+      if (err) throw new gutil.PluginError('webpack', err);
+      callback();
+    });
+}
+
+// -------------------------------------
+//   Task: webpack-lf
+// -------------------------------------
+gulp.task('webpack-lf', function (cb) {
+  webpack('languageforge', cb);
+});
+
+// -------------------------------------
+//   Task: webpack-lf watch
+// -------------------------------------
+gulp.task('webpack-lf:watch', function (cb) {
+  webpack('languageforge', cb, false, true);
+});
+
+// -------------------------------------
+//   Task: webpack-sf
+// -------------------------------------
+gulp.task('webpack-sf', function (cb) {
+  webpack('scriptureforge', cb);
+});
+
+// -------------------------------------
+//   Task: webpack-sf watch
+// -------------------------------------
+gulp.task('webpack-sf:watch', function (cb) {
+  webpack('scriptureforge', cb, false, true);
+});
+
+// endregion
+
 //region build
 
 // -------------------------------------
@@ -733,6 +782,21 @@ gulp.task('build-remove-test-fixtures', function (done) {
   } else {
     done();
   }
+});
+
+// -------------------------------------
+//   Task: Build webpack
+// -------------------------------------
+gulp.task('build-webpack', function (cb) {
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .option('doNoCompression', {
+      demand: false,
+      type: 'boolean' })
+    .argv;
+  webpack(params.applicationName, cb, !params.doNoCompression);
 });
 
 // -------------------------------------
@@ -913,6 +977,7 @@ gulp.task('build',
       'build-clearLocalCache',
       'build-remove-test-fixtures'),
     'sass',
+    'build-webpack',
     'build-minify',
     'build-changeGroup')
 );
