@@ -3,9 +3,9 @@
 angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
   'palaso.ui.language', 'lexicon.services'])
   .controller('ViewSettingsCtrl', ['$scope', 'silNoticeService', 'userService', 'lexProjectService',
-    'sessionService', '$filter', '$uibModal', 'lexConfigService', 'lexSendReceive',
+    'sessionService', '$filter', 'lexConfigService', 'lexSendReceive',
   function ($scope, notice, userService, lexProjectService,
-            sessionService, $filter, $modal, lexConfig, sendReceive) {
+            sessionService, $filter, lexConfig, sendReceive) {
     var currentTabIndex = 0;
     var warnOfUnsavedEditsId;
 
@@ -76,7 +76,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
       }
     };
 
-    sessionService.getSession().then(function(session) {
+    sessionService.getSession().then(function (session) {
       $scope.configDirty = angular.copy(session.projectSettings().config);
 
       $scope.selectUser = function selectUser(userId) {
@@ -162,8 +162,8 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
 
       $scope.isCustomField = lexConfig.isCustomField;
 
-      // $scope.fieldConfig, fieldOrder, and customFieldOrder will be read-only copies
-      // of the config, so the view doesn't need to dig too deeply into config.entry.foo.bar.baz.quux
+      // $scope.fieldConfig, fieldOrder, and customFieldOrder will be read-only copies of the
+      // config, so the view doesn't need to dig too deeply into config.entry.foo.bar.baz.quux
       $scope.getFieldConfig = function getFieldConfig(config) {
         $scope.fieldConfig = {};
         function getFields(section) {
@@ -188,7 +188,9 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         getFields(config.entry.fields.senses.customFields);
         getFields(config.entry.fields.senses.fields.examples.customFields);
         $scope.fieldOrder = {
-          entry: config.entry.fieldOrder.filter(function (field) { return field.type !== 'fields'; }),
+          entry: config.entry.fieldOrder.filter(function (field) {
+            return field.type !== 'fields';
+          }),
 
           senses: config.entry.fields.senses.fieldOrder.filter(function (field) {
             return field.type !== 'fields'; }),
@@ -203,7 +205,8 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
           { byRole: true, byUser: false, name: $filter('translate')('Observer'),
             role: 'observer', view: $scope.configDirty.roleViews.observer, active: true },
           { byRole: true, byUser: false, name: $filter('translate')('Commenter'),
-            role: 'observer_with_comment', view: $scope.configDirty.roleViews.observer_with_comment },
+            role: 'observer_with_comment',
+            view: $scope.configDirty.roleViews.observer_with_comment },
           { byRole: true, byUser: false, name: $filter('translate')('Contributor'),
             role: 'contributor', view: $scope.configDirty.roleViews.contributor },
           { byRole: true, byUser: false, name: $filter('translate')('Manager'),
@@ -230,8 +233,9 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         lexProjectService.updateConfiguration($scope.configDirty, [], function (result) {
           if (result.ok) {
             var isSuccess = result.data;
-              if (isSuccess) {
-              notice.push(notice.SUCCESS, $filter('translate')('View settings updated successfully'));
+            if (isSuccess) {
+              notice.push(notice.SUCCESS,
+                $filter('translate')('View settings updated successfully'));
               session.projectSettings().config = angular.copy($scope.configDirty);
               lexConfig.refresh();
             } else {

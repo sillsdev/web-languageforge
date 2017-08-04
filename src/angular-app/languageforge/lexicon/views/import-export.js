@@ -20,7 +20,7 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services',
 
     $scope.importLift = function importLift() {
       if (!$scope.upload.file || $scope.upload.file.$error) return;
-      sessionService.getSession().then(function(session) {
+      sessionService.getSession().then(function (session) {
         if ($scope.upload.file.size > session.fileSizeMax()) {
           notice.push(notice.ERROR, '<b>' + $scope.upload.file.name + '</b> (' +
             $filter('bytes')($scope.upload.file.size) + ') is too large. It must be smaller than ' +
@@ -81,15 +81,16 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services',
               });
 
               // reload the config after the import is complete
-              modalInstance.result.then()['finally'](function () {
+              modalInstance.result.then(function () {
                 sessionService.getSession(true).then(function () {
-                  notice.push(notice.SUCCESS, $filter('translate')('Import completed successfully'));
+                  notice.push(notice.SUCCESS,
+                    $filter('translate')('Import completed successfully'));
                   notice.push(notice.INFO, $filter('translate')('Your project was successfully' +
                     ' imported.  Carefully review the configuration below before continuing,' +
                     ' especially the input systems and fields tabs'));
                   $location.path('/configuration');
                 });
-              });
+              }, angular.noop);
             } else {
               $scope.upload.progress = 0;
               notice.push(notice.ERROR, response.data.data.errorMessage);
@@ -119,7 +120,7 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services',
           function (evt) {
             notice.setPercentComplete(100.0 * evt.loaded / evt.total);
           });
-      })
+      });
     };
 
     // see http://stackoverflow.com/questions/190852/how-can-i-get-file-extensions-with-javascript

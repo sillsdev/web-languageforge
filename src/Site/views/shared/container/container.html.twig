@@ -23,9 +23,9 @@
     {# jquery must be the first js to be loaded #}
     {%  if useMinifiedJs %}
         <script src="/node_modules/jquery/dist/jquery.min.js?v={{ version }}"></script>
-        <script src="/node_modules/angular/angular.min.js?v={{ version }}"></script>
-        {# ui-bootstrap-tpls doesn't ship a minified version AFAICT #}
-        <script src="/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v={{ version }}"></script>
+        <script src="/dist/manifest.bundle.js"></script>
+        <script src="/dist/vendor.bundle.js"></script>
+        <script src="/dist/main.bundle.js"></script>
 
         {% for filename in vendorFilesMinJs %}
         <script src="/{{ filename }}?v={{ version }}"></script>
@@ -35,8 +35,9 @@
 
     {%  else %}
         <script src="/node_modules/jquery/dist/jquery.js?v={{ version }}"></script>
-        <script src="/node_modules/angular/angular.js?v={{ version }}"></script>
-        <script src="/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v={{ version }}"></script>
+        <script src="/dist/manifest.bundle.js"></script>
+        <script src="/dist/vendor.bundle.js"></script>
+        <script src="/dist/main.bundle.js"></script>
 
         {% for filename in vendorFilesJs %}
         <script src="/{{ filename }}?v={{ version }}"></script>

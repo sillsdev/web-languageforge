@@ -13,6 +13,7 @@ angular.module('lexicon-new-project',
     'palaso.util.model.transform',
     'pascalprecht.translate',
     'ngFileUpload',
+    'language.inputSystems',
     'lexicon.services'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
@@ -96,13 +97,13 @@ angular.module('lexicon-new-project',
   }])
   .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$uibModal', '$window',
     'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate',
-    '$state', 'Upload', 'lexProjectService', 'lexSendReceiveApi',  'lexSendReceive',
+    '$state', 'Upload', 'inputSystems', 'lexProjectService', 'lexSendReceiveApi',  'lexSendReceive',
   function ($scope, $q, $filter, $modal, $window,
             sessionService, notice, projectService, linkService, $translate,
-            $state, Upload, lexProjectService, sendReceiveApi, sendReceive) {
+            $state, Upload, inputSystems, lexProjectService, sendReceiveApi, sendReceive) {
     $scope.interfaceConfig = {};
     $scope.interfaceConfig.userLanguageCode = 'en';
-    sessionService.getSession().then(function(session) {
+    sessionService.getSession().then(function (session) {
       if (angular.isDefined(session.projectSettings()) &&
           angular.isDefined(session.projectSettings().interfaceConfig)) {
         $scope.interfaceConfig = session.projectSettings().interfaceConfig;
@@ -114,7 +115,7 @@ angular.module('lexicon-new-project',
     $scope.interfaceConfig.pullNormal = 'pull-left';
     $scope.interfaceConfig.placementToSide = 'left';
     $scope.interfaceConfig.placementNormal = 'right';
-    if (InputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
+    if (inputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
       $scope.interfaceConfig.direction = 'rtl';
       $scope.interfaceConfig.pullToSide = 'pull-left';
       $scope.interfaceConfig.pullNormal = 'pull-right';
@@ -209,10 +210,11 @@ angular.module('lexicon-new-project',
       $scope.progressIndicatorStep1Label = $filter('translate')('Connect');
       $scope.progressIndicatorStep2Label = $filter('translate')('Verify');
       $scope.resetValidateProjectForm();
-      sessionService.getSession().then(function (session){
+      sessionService.getSession().then(function (session) {
         if (!$scope.project.sendReceive.username) {
           $scope.project.sendReceive.username = session.username();
         }
+
         validateForm();
       });
     };
@@ -534,7 +536,7 @@ angular.module('lexicon-new-project',
     $scope.uploadFile = function uploadFile(file) {
       if (!file || file.$error) return;
 
-      sessionService.getSession().then(function(session) {
+      sessionService.getSession().then(function (session) {
         if (file.size > session.fileSizeMax()) {
           notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
             $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
@@ -689,7 +691,7 @@ angular.module('lexicon-new-project',
       modalInstance.result.then(function (selected) {
         $scope.newProject.languageCode = selected.code;
         $scope.newProject.language = selected.language;
-      });
+      }, angular.noop);
     };
 
     function savePrimaryLanguage(callback) {
@@ -697,7 +699,7 @@ angular.module('lexicon-new-project',
       var optionlist = {};
       var inputSystem = {};
       notice.setLoading('Configuring project for first use...');
-      sessionService.getSession().then(function(session) {
+      sessionService.getSession().then(function (session) {
         if (angular.isDefined(session.projectSettings())) {
           config = session.projectSettings().config;
           optionlist = session.projectSettings().optionlists;
