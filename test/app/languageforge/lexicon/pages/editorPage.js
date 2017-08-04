@@ -54,7 +54,7 @@ function EditorPage() {
     noEntriesElem: this.browseDiv.element(by.className('no-entries')),
     noEntriesNewWordBtn: element(by.id('noEntriesNewWord')),
     newWordBtn: element(by.id('newWord')),
-    entryCountElem: this.browseDiv.element(by.binding('entries.length')),
+    entryCountElem: this.browseDiv.element(by.id('totalNumberOfEntries')),
     getEntryCount: function () {
       // assumption is entry count > 0
       browser.wait(expectedCondition.visibilityOf(this.entryCountElem), CONDITION_TIMEOUT);
@@ -127,7 +127,7 @@ function EditorPage() {
 
     // Left sidebar UI elements
     newWordBtn: this.editDiv.element(by.css('editorNewWordBtn')),
-    entryCountElem: this.editDiv.element(by.binding('entries.length')),
+    entryCountElem: this.editDiv.element(by.id('totalNumberOfEntries')),
     getEntryCount: function () {
       return this.entryCountElem.getText().then(function (s) {
         return parseInt(s, 10);
@@ -137,13 +137,13 @@ function EditorPage() {
     entriesList: this.editDiv.all(by.repeater('entry in visibleEntries')),
     findEntryByLexeme: function (lexeme) {
       var div = this.editDiv.element(by.id('compactEntryListContainer'));
-      return div.element(by.cssContainingText('[data-ng-bind-html="getWordForDisplay(entry)"',
+      return div.element(by.cssContainingText('.listItemPrimary',
         lexeme));
     }.bind(this),
 
     findEntryByDefinition: function (definition) {
       var div = this.editDiv.element(by.id('compactEntryListContainer'));
-      return div.element(by.cssContainingText('[data-ng-bind-html="getMeaningForDisplay(entry)"',
+      return div.element(by.cssContainingText('.listItemSecondary',
         definition));
     }.bind(this),
 
