@@ -79,7 +79,7 @@ angular.module('palaso.ui.comments')
                 });
 
                 commentService.removeCommentFromLists(comment.id);
-              });
+              }, angular.noop);
           });
         };
 
@@ -100,7 +100,7 @@ angular.module('palaso.ui.comments')
                 });
 
                 commentService.removeCommentFromLists(commentId, reply.id);
-              });
+              }, angular.noop);
           });
         };
 

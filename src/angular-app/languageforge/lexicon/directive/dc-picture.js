@@ -75,7 +75,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
                   }
                 }
               });
-            });
+            }, angular.noop);
         } else {
           $scope.pictures.splice(index, 1);
         }

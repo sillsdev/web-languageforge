@@ -619,7 +619,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
                 editorService.refreshEditorData();
               });
             }
-          });
+          }, angular.noop);
       };
 
       $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {

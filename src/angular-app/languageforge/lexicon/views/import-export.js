@@ -81,7 +81,7 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services',
               });
 
               // reload the config after the import is complete
-              modalInstance.result.then()['finally'](function () {
+              modalInstance.result.then(function () {
                 sessionService.getSession(true).then(function () {
                   notice.push(notice.SUCCESS,
                     $filter('translate')('Import completed successfully'));
@@ -90,7 +90,7 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services',
                     ' especially the input systems and fields tabs'));
                   $location.path('/configuration');
                 });
-              });
+              }, angular.noop);
             } else {
               $scope.upload.progress = 0;
               notice.push(notice.ERROR, response.data.data.errorMessage);

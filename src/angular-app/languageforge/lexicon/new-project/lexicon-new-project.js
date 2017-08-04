@@ -691,7 +691,7 @@ angular.module('lexicon-new-project',
       modalInstance.result.then(function (selected) {
         $scope.newProject.languageCode = selected.code;
         $scope.newProject.language = selected.language;
-      });
+      }, angular.noop);
     };
 
     function savePrimaryLanguage(callback) {

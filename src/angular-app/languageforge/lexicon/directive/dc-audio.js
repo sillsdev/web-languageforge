@@ -133,7 +133,7 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
                     }
                   }
                 });
-              });
+              }, angular.noop);
           }
         };
 
