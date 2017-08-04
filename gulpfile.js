@@ -58,7 +58,6 @@
 // child_process     : Call a child process with the ease of exec and safety of spawn
 // gulp              : The streaming build system
 // gulp-concat       : Concatenates files
-// gulp-clean-css    : Minifies CSS - useful after using sass to compile everything
 // gulp-jshint       : JSHint plugin for gulp
 // gulp-livereload   : Gulp plugin for livereload
 // gulp-markdown     : Markdown to HTML
@@ -66,7 +65,6 @@
 // gulp-protractor   : A helper for protactor and gulp
 // gulp-rename       : Rename files
 // gulp-replace      : A string replace plugin for gulp
-// gulp-sass         : Sass plugin for Gulp
 // gulp-uglify       : Minify files with UglifyJS
 // gulp-util         : Utility functions for gulp plugins
 // lodash.template   : The lodash method `_.template` exported as a module
