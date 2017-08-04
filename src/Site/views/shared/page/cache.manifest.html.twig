@@ -24,8 +24,9 @@ CACHE:
 
 {%  if useMinifiedJs %}
 /node_modules/jquery/dist/jquery.min.js?v={{ version }}
-/node_modules/angular/angular.min.js?v={{ version }}
-/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v={{ version }}
+/dist/manifest.bundle.js
+/dist/vendor.bundle.js
+/dist/main.bundle.js
 
 {% for filename in vendorFilesMinJs %}
 /{{ filename }}?v={{ version }}
@@ -35,8 +36,9 @@ CACHE:
 
 {%  else %}
 /node_modules/jquery/dist/jquery.js?v={{ version }}
-/node_modules/angular/angular.js?v={{ version }}
-/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js?v={{ version }}
+/dist/manifest.bundle.js
+/dist/vendor.bundle.js
+/dist/main.bundle.js
 
 {% for filename in vendorFilesJs %}
 /{{ filename }}?v={{ version }}
