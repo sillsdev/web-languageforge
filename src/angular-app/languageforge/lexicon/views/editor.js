@@ -619,7 +619,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
                 editorService.refreshEditorData();
               });
             }
-          });
+          }, angular.noop);
       };
 
       $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {
@@ -843,11 +843,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         // Concatenate to get prioritized list of exact matches, then non-exact.
         // TODO: would be better to search for gloss.  DDW 2016-06-22
         var results =
-            $filter('filter')($scope.entries, { lexeme: query }, true).concat(
-            $filter('filter')($scope.entries, { senses: query }, true),
-            $filter('filter')($scope.entries, { lexeme: query }),
-            $filter('filter')($scope.entries, { senses: query }),
-            $filter('filter')($scope.entries, query));
+            $filter('filter')($scope.filteredEntries, { lexeme: query }, true).concat(
+            $filter('filter')($scope.filteredEntries, { senses: query }, true),
+            $filter('filter')($scope.filteredEntries, { lexeme: query }),
+            $filter('filter')($scope.filteredEntries, { senses: query }),
+            $filter('filter')($scope.filteredEntries, query));
 
         // Set function to return unique results
         // TODO Set is not available until ES2015

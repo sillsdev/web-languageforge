@@ -65,7 +65,7 @@ angular.module('semdomtrans-new-project',
     };
 
     $scope.checkLanguageAvailability = function checkLanguageAvailability() {
-      if ($scope.languageCode == '') {
+      if ($scope.languageCode === '') {
         $scope.canCreate = false;
       } else {
 
@@ -73,7 +73,7 @@ angular.module('semdomtrans-new-project',
         checksBeingMade++;
         semdomSetupApi.doesProjectExist($scope.languageCode, function (result) {
           checksBeingMade--;
-          if (result.ok && checksBeingMade == 0) {
+          if (result.ok && checksBeingMade === 0) {
             $scope.canCreate = result.data;
           }
         });
@@ -91,7 +91,7 @@ angular.module('semdomtrans-new-project',
       modalService.showModalSimple('Request Project Join', request, 'Cancel',
         'Request Project Join').then(function () {
         projectService.sendJoinRequest(project.id, function () {});
-      });
+      }, angular.noop);
     };
 
     $scope.createProject = function createProject(useGoogleTranslateData) {
