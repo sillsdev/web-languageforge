@@ -1,18 +1,6 @@
 {
-  "angular-route": { "path": "node_modules/angular-route" },
-  "angular-sortable-view": { "path": "node_modules/angular-sortable-view/src" },
-  "angular-zxcvbn": { "path": "node_modules/angular-zxcvbn/dist", "jsFile": "angular-zxcvbn.min.js" },
-  "angular-translate": { "path": "node_modules/angular-translate/dist" },
-  "angular-translate-loader-static-files": { "path": "node_modules/angular-translate-loader-static-files" },
-  "angular-truncate-2": { "path": "node_modules/angular-truncate-2/dist" },
-  "angular-ui-router": { "path": "node_modules/angular-ui-router/release" },
-  "angular-ui-validate": { "path": "node_modules/angular-ui-validate/dist", "jsFile": "validate" },
   "font-awesome": { "path": "node_modules/font-awesome/css", "cssFile": "font-awesome" },
   "intl-tel-input": { "path": "node_modules/intl-tel-input/build", "jsFile": "js/intlTelInput", "cssFile": "css/intlTelInput" },
-  "lodash": { "path": "node_modules/lodash" },
-  "moment": { "path": "node_modules/moment", "jsFile": ["moment"], "jsMinFile": ["min/moment"]},
-  "ng-file-upload": { "path": "node_modules/ng-file-upload/dist", "jsFile": ["ng-file-upload", "ng-file-upload-shim"] },
   "rangy": { "path": "node_modules/rangy/lib", "jsFile": ["rangy-core.js", "rangy-selectionsaverestore.js", "rangy-highlighter.js", "rangy-classapplier.js", "rangy-serializer.js", "rangy-textrange.js"] },
-  "soundmanager2": { "path": "node_modules/soundmanager2/script", "jsFile": "soundmanager2", "jsMinFile": "soundmanager2-nodebug-jsmin.js" },
   "textAngular": { "path": "node_modules/textangular/dist", "jsFile": ["textAngular-sanitize", "textAngularSetup", "textAngular"], "jsMinFile": ["textAngular-sanitize", "textAngular"], "cssFile": "textAngular" }
 }
