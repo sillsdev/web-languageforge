@@ -33,7 +33,7 @@ angular.module('palaso.ui.deleteProject', ['bellows.services'])
                   $scope.actionInProgress = false;
                 });
               });
-            });
+            }, angular.noop);
           };
         }]
     };

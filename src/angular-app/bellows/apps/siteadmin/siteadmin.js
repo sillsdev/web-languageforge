@@ -350,7 +350,7 @@ angular.module('siteadmin', [
               }
             }
           });
-        });
+        }, angular.noop);
       };
     }
   ])

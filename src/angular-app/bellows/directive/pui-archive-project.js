@@ -32,7 +32,7 @@ angular.module('palaso.ui.archiveProject', ['bellows.services'])
                   $scope.puiActionInProgress = false;
                 }
               });
-            });
+            }, angular.noop);
           };
         }]
     };

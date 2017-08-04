@@ -36,7 +36,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
             .then(function () {
               $scope.model.senses.splice(index, 1);
               $scope.control.saveCurrentEntry();
-            });
+            }, angular.noop);
         };
 
         $scope.deleteEntry = function () {
