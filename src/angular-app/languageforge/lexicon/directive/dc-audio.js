@@ -188,7 +188,7 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
               },
 
               function (evt) {
-                notice.setPercentComplete(100.0 * evt.loaded / evt.total);
+                notice.setPercentComplete(Math.floor(100.0 * evt.loaded / evt.total));
               });
           });
         };
