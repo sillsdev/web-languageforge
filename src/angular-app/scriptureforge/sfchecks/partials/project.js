@@ -134,7 +134,7 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
             }
           }
         });
-      });
+      }, angular.noop);
     };
 
     // Add Text

@@ -91,7 +91,7 @@ angular.module('semdomtrans-new-project',
       modalService.showModalSimple('Request Project Join', request, 'Cancel',
         'Request Project Join').then(function () {
         projectService.sendJoinRequest(project.id, function () {});
-      });
+      }, angular.noop);
     };
 
     $scope.createProject = function createProject(useGoogleTranslateData) {

@@ -186,7 +186,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
             }
           }
         });
-      });
+      }, angular.noop);
     };
 
     // Add question
@@ -354,7 +354,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         } else {
           $scope.editedText.content = $scope.dto.text.content;
         }
-      });
+      }, angular.noop);
     };
 
     $scope.readUsx = function readUsx(file) {

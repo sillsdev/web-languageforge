@@ -392,7 +392,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
             delete answer.comments[commentId];
           }
         });
-      });
+      }, angular.noop);
     };
 
     var afterUpdateAnswer = function (answersDto) {
@@ -487,7 +487,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
             $scope.question.answerCount = Object.keys($scope.question.answers).length;
           }
         });
-      });
+      }, angular.noop);
     };
 
     $scope.selectedText = '';
