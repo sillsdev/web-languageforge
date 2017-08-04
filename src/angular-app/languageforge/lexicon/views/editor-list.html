@@ -1,6 +1,6 @@
 <div id="lexAppListView" class="animate-switch">
-    <div data-ng-hide="visibleEntries.length === 0" class="row no-gutters gutter-fix">
-        <pui-typeahead class="typeahead col-xs-10 col-md-6" placeholder="'Search Entries'"
+    <div data-ng-hide="visibleEntries.length === 0" class="row">
+        <pui-typeahead class="typeahead col-xs-7 col-md-6" placeholder="'Search Entries'"
                    items="typeahead.searchResults" term="typeahead.searchItemSelected"
                    search="typeahead.searchEntries" select="typeahead.searchSelect">
             <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
@@ -14,11 +14,53 @@
                  data-ng-if="typeahead.searchResults.length > 0">
                 <small><i>{{typeahead.matchCountCaption}}</i></small></div>
         </pui-typeahead>
-        <div class="col-xs-2 offset-md-4">
+        <div class="col-xs-3 col-md-3">
+            <button ng-click="show.entryListModifiers = !show.entryListModifiers" class="btn btn-sm">
+                <span class="fa" ng-class="{ 'fa-minus-square-o': show.entryListModifiers, 'fa-plus-square-o': !show.entryListModifiers} "></span>
+                <span class="hidden-sm-down"> {{'Options' | translate}}</span>
+            </button>
+        </div>
+        <div class="col-xs-2 col-md-3">
             <button class="btn btn-primary pull-right" id="newWord" data-ng-if="rights.canEditEntry()"
                     data-ng-click="newEntry()"><i class="fa fa-plus"></i><span class="hidden-sm-down"> {{'New Word' | translate}}</span>
             </button>
         </div>
+    </div>
+    <div class="row" ng-show="show.entryListModifiers">
+        <div class="col-md-12 col-lg-6">
+            <div class="form-group sortfilter-form">
+                <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
+                <div class="form-inline">
+                    <select id="sortEntriesBy" class="custom-select sortfilter-control"
+                            ng-change="sortEntries(true)" ng-model="entryListModifiers.sortBy"
+                            ng-options="item as item.label for item in entryListModifiers.sortOptions track by item.value">
+                    </select>
+                    <label style="margin: 7px">
+                        <input type="checkbox" ng-change="sortEntries(true)" ng-model="entryListModifiers.sortReverse"> Reverse
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-6">
+            <div class="form-group sortfilter-form">
+                <label class="font-weight-bold" for="filterEntriesFor">Filter Entries</label>
+                <div class="form-inline">
+                    <select class="custom-select sortfilter-control" ng-show="entryListModifiers.filterBy"
+                            ng-change="filterEntries(true)" ng-model="entryListModifiers.filterType">
+                        <option value="isEmpty">Doesn't have</option>
+                        <option value="isNotEmpty">Has</option>
+                    </select>
+                    <select class="custom-select sortfilter-control" id="filterEntriesFor"
+                            ng-change="filterEntries(true)" ng-model="entryListModifiers.filterBy"
+                            ng-options="item as item.label for item in entryListModifiers.filterOptions track by item.key">
+                        <option value="">Show All</option>
+                    </select>
+                    <button ng-click="resetEntryListFilter()" ng-show="entryListModifiers.filterBy" class="btn btn-sm">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <br />
     </div>
     <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
         <div class="text-xs-center no-entries" data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading">
