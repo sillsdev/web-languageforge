@@ -84,7 +84,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
       $scope.uploadFile = function uploadFile(file) {
         if (!file || file.$error) return;
 
-        sessionService.getSession().then(function(session) {
+        sessionService.getSession().then(function (session) {
           if (file.size > session.fileSizeMax()) {
             $scope.upload.progress = 0;
             $scope.upload.file = null;

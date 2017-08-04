@@ -1,34 +1,37 @@
 'use strict';
+
 angular.module('palaso.ui.comments')
 
-// Palaso UI Dictionary Control: Comments
-
+  // Palaso UI Dictionary Control: Comments
   .directive('lexCommentsView', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/palaso.ui.comments.lex-comments-view.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion +
+        '/palaso.ui.comments.lex-comments-view.html',
       scope: {
         entry: '=',
         entryConfig: '=',
         control: '='
       },
-      controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'modalService',
-        'lexConfigService', '$q',
-      function ($scope, $filter, commentService, ss, modal, lexConfig, $q) {
+      controller: ['$scope', '$filter', 'lexCommentService', 'sessionService', 'lexConfigService',
+        '$q',
+      function ($scope, $filter, commentService, ss, lexConfig, $q) {
         // notes by cjh 2015-03
         // define this method on the control (which happens to be an ancestor scope) because it is
         // used by a sibling directive (dc-entry)
         // an alternative implementation to this would be to use the commentService to contain this
         // method (but then the comment service would become lex specific which is a downside
-        $q.all([lexConfig.refresh(), ss.getSession()]).then(function(data) {
-          var config = data[0], session = data[1];
+        $q.all([lexConfig.refresh(), ss.getSession()]).then(function (data) {
+          var config = data[0];
+          var session = data[1];
           $scope.config = config;
           $scope.control.selectFieldForComment =
-          function selectFieldForComment(fieldName, model, inputSystem, multioptionValue, pictureFilePath) {
+          function selectFieldForComment(fieldName, model, inputSystem, multioptionValue,
+                                         pictureFilePath) {
             var canComment = session.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE);
-            if(!canComment) return;
+            if (!canComment) return;
 
-            lexConfig.getFieldConfig(fieldName).then(function(fieldConfig){
+            lexConfig.getFieldConfig(fieldName).then(function (fieldConfig) {
               $scope.newComment.regardingFieldConfig = fieldConfig;
               $scope.newComment.regarding.field = fieldName;
               $scope.newComment.regarding.fieldNameForDisplay =
@@ -55,7 +58,6 @@ angular.module('palaso.ui.comments')
         });
 
         function getFieldValue(model, inputSystem) {
-
           // get value of option list
           if (angular.isDefined(model.value)) {
 

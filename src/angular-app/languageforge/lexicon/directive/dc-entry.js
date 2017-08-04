@@ -11,17 +11,18 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
         model: '=',
         control: '='
       },
-      controller: ['$scope', '$state', 'lexRightsService', function ($scope, $state, rightsService) {
+      controller: ['$scope', '$state', 'lexRightsService',
+      function ($scope, $state, rightsService) {
         $scope.$state = $state;
 
-        rightsService.getRights().then(function(rights) {
+        rightsService.getRights().then(function (rights) {
           $scope.rights = rights;
         });
 
         $scope.addSense = function ($position) {
           var newSense = {};
           $scope.control.makeValidModelRecursive($scope.config.fields.senses, newSense, 'examples');
-          if ($position == 0) {
+          if ($position === 0) {
             $scope.model.senses.unshift(newSense);
           } else {
             $scope.model.senses.push(newSense);
@@ -38,9 +39,9 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
             });
         };
 
-        $scope.deleteEntry = function() {
+        $scope.deleteEntry = function () {
           $scope.control.deleteEntry($scope.control.currentEntry);
-        }
+        };
 
       }],
 
@@ -49,4 +50,4 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
     };
   }])
 
-;
+  ;
