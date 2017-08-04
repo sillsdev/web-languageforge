@@ -75,15 +75,15 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
-      if (checkbox.checked && selectedIndex == -1) {
+      if (checkbox.checked && selectedIndex === -1) {
         $scope.selected.push(item);
-      } else if (!checkbox.checked && selectedIndex != -1) {
+      } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
     $scope.isSelected = function (item) {
-      if (item == null) {
+      if (item === null) {
         return false;
       }
 
@@ -101,8 +101,9 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.questions = [];
     $scope.queryQuestions = function () {
       //console.log("queryQuestions()");
-      $q.all([ss.getSession(), questionService.list(textId)]).then(function(data) {
-        var session = data[0], result = data[1];
+      $q.all([ss.getSession(), questionService.list(textId)]).then(function (data) {
+        var session = data[0];
+        var result = data[1];
         $scope.selected = [];
         $scope.questions = result.data.entries;
         $scope.questionsCount = result.data.count;
@@ -110,7 +111,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         $scope.enhanceDto($scope.questions);
         $scope.project = result.data.project;
         $scope.text = result.data.text;
-        if ($scope.text.audioFileName != '') {
+        if ($scope.text.audioFileName !== '') {
           $scope.audioPlayUrl = '/assets/sfchecks/' + $scope.project.slug + '/' + $scope.text.id +
             '_' + $scope.text.audioFileName;
           $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
@@ -131,7 +132,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         );
 
         var rights = result.data.rights;
-        $scope.rights.archive = session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE) &&
+        $scope.rights.archive =
+          session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE) &&
           !session.project().isArchived;
         $scope.rights.create = session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE) &&
           !session.project().isArchived;
@@ -159,7 +161,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         questionIds.push($scope.selected[i].id);
       }
 
-      if (questionIds.length == 1) {
+      if (questionIds.length === 1) {
         message = 'Are you sure you want to archive the selected question?';
       } else {
         message = 'Are you sure you want to archive the ' + questionIds.length +
@@ -177,7 +179,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
           if (result.ok) {
             $scope.selected = []; // Reset the selection
             $scope.queryQuestions();
-            if (questionIds.length == 1) {
+            if (questionIds.length === 1) {
               notice.push(notice.SUCCESS, 'The question was archived successfully');
             } else {
               notice.push(notice.SUCCESS, 'The questions were archived successfully');
@@ -223,7 +225,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.makeQuestionIntoTemplate = function () {
       // Expects one, and only one, question to be selected (checked)
       var l = $scope.selected.length;
-      if (l != 1) {
+      if (l !== 1) {
         return;
       }
 
@@ -270,8 +272,9 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.uploadResult = '';
 
     $scope.queryTextSettings = function () {
-      $q.all([ss.getSession(), textService.settingsDto($scope.textId)]).then(function(data) {
-        var session = data[0], result = data[1];
+      $q.all([ss.getSession(), textService.settingsDto($scope.textId)]).then(function (data) {
+        var session = data[0];
+        var result = data[1];
         $scope.dto = result.data;
         $scope.textTitle = $scope.dto.text.title;
         $scope.editedText.title = $scope.dto.text.title;
@@ -335,7 +338,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         bodyText: msg
       };
       modalService.showModal({}, modalOptions).then(function () {
-        if ($scope.editedText.content && $scope.editedText.content != $scope.dto.text.content) {
+        if ($scope.editedText.content && $scope.editedText.content !== $scope.dto.text.content) {
           // Wait; the user had already entered text. Pop up ANOTHER confirm box.
           msg = 'Caution: You had previous edits in the USX text box, which will be replaced if ' +
             'you proceed. Are you really sure you want to throw away your previous edits?';
@@ -363,7 +366,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         // First few characters should be optional BOM, optional <?xml ..., then <usx ...
         var startOfText = reader.result.slice(0, 1000);
         var usxIndex = startOfText.indexOf('<usx');
-        if (usxIndex != -1) {
+        if (usxIndex !== -1) {
           $scope.$apply(function () {
             $scope.editedText.content = reader.result;
           });
@@ -382,7 +385,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.uploadAudio = function uploadAudio(file) {
       if (!file || file.$error) return;
 
-      ss.getSession().then(function(session) {
+      ss.getSession().then(function (session) {
         if (file.size > session.fileSizeMax()) {
           notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
             $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
@@ -406,7 +409,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
               notice.push(notice.SUCCESS, $scope.uploadResult);
             } else {
               notice.push(notice.ERROR, response.data.data.errorMessage);
-              if (response.data.data.errorType == 'UserMessage') {
+              if (response.data.data.errorType === 'UserMessage') {
                 $scope.uploadResult = response.data.data.errorMessage;
               }
             }
@@ -444,15 +447,15 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
-      if (checkbox.checked && selectedIndex == -1) {
+      if (checkbox.checked && selectedIndex === -1) {
         $scope.selected.push(item);
-      } else if (!checkbox.checked && selectedIndex != -1) {
+      } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
     $scope.isSelected = function (item) {
-      if (item == null) {
+      if (item === null) {
         return false;
       }
 
@@ -477,7 +480,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         if (result.ok) {
           $scope.selected = []; // Reset the selection
           $scope.queryTextSettings();
-          if (questionIds.length == 1) {
+          if (questionIds.length === 1) {
             notice.push(notice.SUCCESS, 'The question was re-published successfully');
           } else {
             notice.push(notice.SUCCESS, 'The questions were re-published successfully');

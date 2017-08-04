@@ -54,7 +54,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
       if (result.ok) {
         $scope.project = result.data.project;
         $scope.text = result.data.text;
-        if ($scope.text.audioFileName != '') {
+        if ($scope.text.audioFileName !== '') {
           $scope.audioPlayUrl = '/assets/sfchecks/' + $scope.project.slug + '/' + $scope.text.id +
             '_' + $scope.text.audioFileName;
           $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
@@ -90,20 +90,20 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
       }
     });
 
-    ss.getSession().then(function(session) {
+    ss.getSession().then(function (session) {
 
       // Rights: Answers
       $scope.rightsEditResponse = function (userId) {
         if (session.project().isArchived) return false;
         return session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT) ||
-          ((userId == session.userId()) &&
+          ((userId === session.userId()) &&
           session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
       };
 
       $scope.rightsDeleteResponse = function (userId) {
         if (session.project().isArchived) return false;
         return session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE) ||
-          ((userId == session.userId()) &&
+          ((userId === session.userId()) &&
           session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
       };
 
@@ -149,7 +149,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
 
     $scope.questionIsClosed = function () {
       if ($scope.question) {
-        return ($scope.question.workflowState == 'closed');
+        return ($scope.question.workflowState === 'closed');
       }
     };
 
@@ -274,7 +274,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     });
 
     $scope.answerEditorVisible = function (answerId) {
-      return (answerId == $scope.openEditors.answerId);
+      return (answerId === $scope.openEditors.answerId);
     };
 
     $scope.showCommentEditor = function (commentId) {
@@ -299,7 +299,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
       searchLoop: for (var aid in $scope.question.answers) {
         var answer = $scope.question.answers[aid];
         for (var cid in answer.comments) {
-          if (cid == newval) {
+          if (cid === newval) {
             comment = answer.comments[cid];
             break searchLoop;
           }
@@ -325,7 +325,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     });
 
     $scope.commentEditorVisible = function (commentId) {
-      return (commentId == $scope.openEditors.commentId);
+      return (commentId === $scope.openEditors.commentId);
     };
 
     $scope.newComment = {
@@ -340,7 +340,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     $scope.updateComment = function (answerId, answer, newComment) {
       questionService.updateComment(questionId, answerId, newComment, function (result) {
         if (result.ok) {
-          if (newComment.id == '') {
+          if (newComment.id === '') {
             notice.push(notice.SUCCESS, 'The comment was submitted successfully');
           } else {
             notice.push(notice.SUCCESS, 'The comment was updated successfully');
@@ -406,7 +406,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     };
 
     $scope.voteUp = function (answerId) {
-      if ($scope.votes[answerId] == true || $scope.questionIsClosed()) {
+      if ($scope.votes[answerId] === true || $scope.questionIsClosed()) {
         return;
       }
 
@@ -420,7 +420,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     };
 
     $scope.voteDown = function (answerId) {
-      if ($scope.votes[answerId] != true || $scope.questionIsClosed()) {
+      if ($scope.votes[answerId] !== true || $scope.questionIsClosed()) {
         return;
       }
 
@@ -436,7 +436,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     var updateAnswer = function (questionId, answer) {
       questionService.updateAnswer(questionId, answer, function (result) {
         if (result.ok) {
-          if (answer.id == '') {
+          if (answer.id === '') {
             notice.push(notice.SUCCESS, 'The answer was submitted successfully');
           } else {
             notice.push(notice.SUCCESS, 'The answer was updated successfully');

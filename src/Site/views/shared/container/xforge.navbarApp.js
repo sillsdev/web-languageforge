@@ -10,9 +10,10 @@ angular.module('xforge.navbarApp', ['bellows.services', 'ui.bootstrap', 'pascalp
     };
   }])
   */
-  .controller('navbarController', ['$scope', 'modalService', '$location', 'sessionService', '$window',
-  function ($scope, modalService, $location, ss, $window) {
-
+  .controller('navbarController', ['$scope', 'modalService', '$location', 'sessionService',
+    '$window',
+  function ($scope, modalService, $location, sessionService,
+            $window) {
     $scope.helpFilePath = '';
 
     // this function should be run whenever the location changes
@@ -21,21 +22,22 @@ angular.module('xforge.navbarApp', ['bellows.services', 'ui.bootstrap', 'pascalp
       var partialPath = '/helps/en/page/' + appName;
       partialPath += $location.path().replace('/', '-') + '.html';
 
-      return ss.getSession().then(function(session) {
+      return sessionService.getSession().then(function (session) {
         var foundFile = false;
         var helpFilePathsAvailable = session.helps ? session.helps.filePaths : [];
 
         helpFilePathsAvailable.forEach(function (path) {
-          if (path.indexOf(partialPath) != -1) {
+          if (path.indexOf(partialPath) !== -1) {
             foundFile = true;
             $scope.helpFilePath = '/' + path;
           }
         });
+
         return foundFile;
       });
     }
 
-    isHelpFilePresentOnServer().then(function(shown) {
+    isHelpFilePresentOnServer().then(function (shown) {
       $scope.showButton = shown;
     });
 
@@ -46,4 +48,6 @@ angular.module('xforge.navbarApp', ['bellows.services', 'ui.bootstrap', 'pascalp
       }
     };
 
-  }]);
+  }])
+
+  ;

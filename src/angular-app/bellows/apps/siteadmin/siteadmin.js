@@ -16,9 +16,9 @@ angular.module('siteadmin', [
       state: 'add' // can be either "add" or "update"
     };
 
-    sessionService.getSession().then(function(session) {
+    sessionService.getSession().then(function (session) {
       $scope.userId = session.userId();
-    })
+    });
 
     $scope.focusInput = function () {
       $scope.vars.inputfocus = true;
@@ -32,21 +32,21 @@ angular.module('siteadmin', [
     $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
-      if (checkbox.checked && selectedIndex == -1) {
+      if (checkbox.checked && selectedIndex === -1) {
         $scope.selected.push(item);
-      } else if (!checkbox.checked && selectedIndex != -1) {
+      } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
     $scope.isSelected = function (item) {
-      return item != null && $scope.selected.indexOf(item) >= 0;
+      return item !== null && $scope.selected.indexOf(item) >= 0;
     };
 
     $scope.users = [];
 
     $scope.queryUsers = function (invalidateCache) {
-      var forceReload = (invalidateCache || (!$scope.users) || ($scope.users.length == 0));
+      var forceReload = (invalidateCache || (!$scope.users) || ($scope.users.length === 0));
       if (forceReload) {
         userService.list(function (result) {
           if (result.ok) {
@@ -108,7 +108,7 @@ angular.module('siteadmin', [
     };
 
     $scope.roleLabel = function (role) {
-      if (role == undefined) {
+      if (role === undefined) {
         return '';
       }
 
@@ -141,7 +141,7 @@ angular.module('siteadmin', [
     };
 
     $scope.updateRecord = function (record) {
-      if (record.id == undefined) {
+      if (record.id === undefined) {
         // add a new user
         record.id = '';
 
@@ -190,14 +190,14 @@ angular.module('siteadmin', [
         userIds.push($scope.selected[i].id);
       }
 
-      if (l == 0) {
+      if (l === 0) {
         // TODO ERROR
         return;
       }
 
       userService.remove(userIds, function (result) {
         if (result.ok) {
-          if (result.data == 1) {
+          if (result.data === 1) {
             notice.push(notice.SUCCESS, '1 user was deleted');
           } else if (result.data > 1) {
             notice.push(notice.SUCCESS, result.data + ' users were deleted');
@@ -218,7 +218,7 @@ angular.module('siteadmin', [
     $scope.banUser = function (record) {
       userService.ban(record.id, function (result) {
         if (result.ok) {
-          if (result.data != false) {
+          if (result.data !== false) {
             notice.push(notice.SUCCESS, 'The user ' + record.username + ' was banned');
           } else {
             notice.push(notice.ERROR, 'Error banning ' + record.username);
@@ -265,12 +265,13 @@ angular.module('siteadmin', [
 
       // Rights
       $scope.rights = {};
-      ss.getSession().then(function(session) {
+      ss.getSession().then(function (session) {
         var hasRight = session.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
         $scope.rights.remove = hasRight;
         $scope.rights.publish = hasRight;
         $scope.rights.showControlBar = hasRight;
       });
+
       $scope.queryArchivedProjects = function () {
         projectService.archivedList(function (result) {
           if (result.ok) {
@@ -292,15 +293,15 @@ angular.module('siteadmin', [
       $scope.updateSelection = function (event, item) {
         var selectedIndex = $scope.selected.indexOf(item);
         var checkbox = event.target;
-        if (checkbox.checked && selectedIndex == -1) {
+        if (checkbox.checked && selectedIndex === -1) {
           $scope.selected.push(item);
-        } else if (!checkbox.checked && selectedIndex != -1) {
+        } else if (!checkbox.checked && selectedIndex !== -1) {
           $scope.selected.splice(selectedIndex, 1);
         }
       };
 
       $scope.isSelected = function (item) {
-        return item != null && $scope.selected.indexOf(item) >= 0;
+        return item !== null && $scope.selected.indexOf(item) >= 0;
       };
 
       // Publish archived Projects
@@ -314,7 +315,7 @@ angular.module('siteadmin', [
           if (result.ok) {
             $scope.selected = []; // Reset the selection
             $scope.queryArchivedProjects();
-            if (projectIds.length == 1) {
+            if (projectIds.length === 1) {
               notice.push(notice.SUCCESS, 'The project was re-published successfully');
             } else {
               notice.push(notice.SUCCESS, 'The projects were re-published successfully');
@@ -342,7 +343,7 @@ angular.module('siteadmin', [
             if (result.ok) {
               $scope.selected = []; // Reset the selection
               $scope.queryArchivedProjects();
-              if (projectIds.length == 1) {
+              if (projectIds.length === 1) {
                 notice.push(notice.SUCCESS, 'The project was permanently deleted');
               } else {
                 notice.push(notice.SUCCESS, 'The projects were permanently deleted');
