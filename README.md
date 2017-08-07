@@ -359,8 +359,6 @@ Occasionally developers need to update composer or npm.  If something isn't work
 
 In the *root* folder: `npm install`
 
-In the **src/** folder: `npm install`
-
 #### Update composer ####
 
 In the **src/** folder: `composer install`
