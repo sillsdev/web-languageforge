@@ -2,6 +2,7 @@
 
 describe('Activity E2E Test', function () {
   var constants       = require('../../../testConstants.json');
+  var util            = require('../../../bellows/pages/util.js');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
   var activityPage    = require('../../../bellows/pages/activityPage.js');
   var projectListPage = require('../../../bellows/pages/projectsPage.js');
@@ -21,6 +22,8 @@ describe('Activity E2E Test', function () {
       edit: 'This is an edited comment.'
     }
   };
+
+  beforeEach(util.registerCustomJasmineMatchers);
 
   describe('Running as member: ', function () {
 
@@ -359,6 +362,7 @@ describe('Activity E2E Test', function () {
       questionPage.notice.firstCloseButton.click();
     });
 
+    // TODO: Figure out how to handle the next two tests in the "users CANNOT see each others' responses" scenario
     it("Performing action 'delete' on 'comments'", function () {
       expect(questionPage.notice.list.count()).toBe(0);
       expect(questionPage.comments.list.count()).toEqual(2);
@@ -388,46 +392,36 @@ describe('Activity E2E Test', function () {
   function verifyUpvoteActions(activityIndex, username) {
     it("Verify action 'upvote' on 'answers' appears on the activity feed", function () {
       activityIndex += 1;
-      var activityText = activityPage.getActivityText(activityIndex);
-      expect(activityText).toContain(username);
-      expect(activityText).toContain('+1\'d your answer');
-      expect(activityText).toContain(constants.testText1Question1Title);
+      var regex = new RegExp('.*' + util.escapeRegExp(username + ' +1\'d your answer') + '.*' + util.escapeRegExp(constants.testText1Question1Title));
+      expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
     return activityIndex;
   }
 
   function verifyAnswerActions(activityIndex, username) {
     it("Verify action 'edit' on 'answers' appears on the activity feed", function () {
-      var activityText = activityPage.getActivityText(activityIndex);
-      expect(activityText).toContain(username);
-      expect(activityText).toContain('updated their answer');
-      expect(activityText).toContain(testData.answer.edit);
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their answer.*' + util.escapeRegExp(testData.answer.edit));
+      expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     it("Verify action 'edit' on 'comments' appears on the activity feed", function () {
       activityIndex += 1;
-      var activityText = activityPage.getActivityText(activityIndex);
-      expect(activityText).toContain(username);
-      expect(activityText).toContain('updated their comment');
-      expect(activityText).toContain(testData.answer.add);
-      expect(activityText).toContain(testData.comment.edit);
+
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their comment.*' + util.escapeRegExp(testData.answer.add) + '.*' + util.escapeRegExp(testData.comment.edit));
+      expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     it("Verify action 'addToLastAnswer' on 'comments' appears on the activity feed", function () {
       activityIndex += 1;
-      var activityText = activityPage.getActivityText(activityIndex);
-      expect(activityText).toContain(username);
-      expect(activityText).toContain('commented');
-      expect(activityText).toContain(testData.answer.add);
-      expect(activityText).toContain(testData.comment.add);
+
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' commented.*' + util.escapeRegExp(testData.answer.add) + '.*' + util.escapeRegExp(testData.comment.add));
+      expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     it("Verify action 'add' on 'answers' appears on the activity feed", function () {
       activityIndex += 1;
-      var activityText = activityPage.getActivityText(activityIndex);
-      expect(activityText).toContain(username);
-      expect(activityText).toContain('answered');
-      expect(activityText).toContain(testData.answer.add);
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' answered.*' + util.escapeRegExp(testData.answer.add));
+      expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
     return activityIndex;
   }
