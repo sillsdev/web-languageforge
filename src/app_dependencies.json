@@ -1,10 +1,8 @@
 {
   "quill": { "path": "node_modules/quill/dist", "jsFile": "quill", "cssFile": ["quill.bubble.css", "quill.snow.css"] },
   "ng-quill": { "path": "node_modules/ng-quill/dist" },
-  "bundle": { "path": "node/static/dist", "jsFile": "bundle" },
   "font-awesome": { "path": "node_modules/font-awesome/css", "cssFile": "font-awesome" },
   "intl-tel-input": { "path": "node_modules/intl-tel-input/build", "jsFile": "js/intlTelInput", "cssFile": "css/intlTelInput" },
   "rangy": { "path": "node_modules/rangy/lib", "jsFile": ["rangy-core.js", "rangy-selectionsaverestore.js", "rangy-highlighter.js", "rangy-classapplier.js", "rangy-serializer.js", "rangy-textrange.js"] },
-  "rzslider": { "path": "node_modules/angularjs-slider/dist", "jsFile": "rzslider", "cssFile": "rzslider" },
   "textAngular": { "path": "node_modules/textangular/dist", "jsFile": ["textAngular-sanitize", "textAngularSetup", "textAngular"], "jsMinFile": ["textAngular-sanitize", "textAngular"], "cssFile": "textAngular" }
 }
