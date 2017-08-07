@@ -59,7 +59,6 @@
 // -------------------------------------
 //
 // es6-shim          : ECMAScript 6 (Harmony) compatibility for legacy JavaScript engines
-// async             : Higher-order functions and common patterns for asynchronous code
 // child_process     : Call a child process with the ease of exec and safety of spawn
 // gulp              : The streaming build system
 // gulp-concat       : Concatenates files
@@ -78,7 +77,6 @@
 // path              : Node.JS path module
 // yargs             : yargs the modern, pirate-themed, successor to optimist
 require('es6-shim');
-var async = require('async');
 var _execute = require('child_process').exec;
 var gulp = require('gulp');
 var concat = require('gulp-concat');
@@ -97,8 +95,6 @@ var _template = require('lodash.template');
 var Server = require('karma').Server;
 var path = require('path');
 var stylish = require('jshint-stylish');
-var merge = require('merge-stream');
-var glob = require('glob');
 
 var execute = function (command, options, callback) {
   if (!options) {
@@ -627,7 +623,8 @@ gulp.task('test-e2e-run').description = 'Run the E2E test on local developer env
 
 var sassCommand = './node_modules/.bin/node-sass';
 
-gulp.task('sass', gulp.parallel(function buildSiteDir(done) {
+gulp.task('sass', gulp.parallel(
+  function buildSiteDir(done) {
     execute(sassCommand + ' src/Site/ -o src/Site/ --output-style compressed', null, done);
   },
 

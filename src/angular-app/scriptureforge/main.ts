@@ -1,1 +1,1 @@
-import '../bellows/main.common'
+import '../bellows/main.common';
