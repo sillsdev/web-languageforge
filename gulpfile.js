@@ -40,8 +40,6 @@
 //   'build-composer'
 //   'build-npm-front-end'
 //   'build-webpack'
-//   'build-node-bundle'
-//   'build-node-bundle-watch'
 //   'build-remove-test-fixtures'
 //   'build-minify'
 //   'build-changeGroup'
@@ -61,7 +59,6 @@
 // -------------------------------------
 //
 // es6-shim          : ECMAScript 6 (Harmony) compatibility for legacy JavaScript engines
-// async             : Higher-order functions and common patterns for asynchronous code
 // child_process     : Call a child process with the ease of exec and safety of spawn
 // gulp              : The streaming build system
 // gulp-concat       : Concatenates files
@@ -80,7 +77,6 @@
 // path              : Node.JS path module
 // yargs             : yargs the modern, pirate-themed, successor to optimist
 require('es6-shim');
-var async = require('async');
 var _execute = require('child_process').exec;
 var gulp = require('gulp');
 var concat = require('gulp-concat');
@@ -99,7 +95,6 @@ var _template = require('lodash.template');
 var Server = require('karma').Server;
 var path = require('path');
 var stylish = require('jshint-stylish');
-var merge = require('merge-stream');
 
 var execute = function (command, options, callback) {
   if (!options) {
@@ -741,26 +736,6 @@ gulp.task('build-npm-front-end', function (cb) {
 });
 
 // -------------------------------------
-//   Task: build-node-bundle
-// -------------------------------------
-gulp.task('build-node-bundle', function (cb) {
-  var options = {
-    dryRun: false,
-    debug: false
-  };
-  execute('node node_modules/browserify/bin/cmd.js' +
-    ' src/angular-app/languageforge/translate/js/realTime.node' +
-    ' -o src/node/static/dist/bundle.js', options, cb);
-});
-
-// -------------------------------------
-//   Task: build-node-bundle-watch
-// -------------------------------------
-gulp.task('build-node-bundle-watch', function () {
-  gulp.watch(['src/angular-app/**/*.node', 'src/node/**/client.js'], gulp.series('build-node-bundle'));
-});
-
-// -------------------------------------
 //   Task: Build Remove test fixtures (directives) in HTML only on live build
 // -------------------------------------
 gulp.task('build-remove-test-fixtures', function (done) {
@@ -971,7 +946,6 @@ gulp.task('build',
     gulp.parallel(
       'build-composer',
       'build-npm-front-end',
-      'build-node-bundle',
       'build-version',
       'build-productionConfig',
       'build-clearLocalCache',

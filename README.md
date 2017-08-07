@@ -373,19 +373,6 @@ cd src/node
 sudo node server.js
 ````
 
-## Browserify the realTime.node file ##
-
-After editing the `realTime.node` or `client.js` files, use browserify to get put all of the dependencies into one file so that the `realTime.node` file has access to them.
-
-To browserify the `realTime.node` file from the repo root folder:
-````
-gulp build-node-bundle
-````
-
-If you're making several changes use:
-````
-gulp build-node-bundle-watch
-````
 ## Setting up and running the Machine Web Server ##
 
 ### Installation and Deployment

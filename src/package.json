@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "angularjs-slider": "^6.2.3",
     "bootstrap": "4.0.0-alpha.5",
     "font-awesome": "^4.7.0",
     "intl-tel-input": "9.2.7",
