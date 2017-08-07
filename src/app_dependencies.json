@@ -1,8 +1,8 @@
 {
-  "quill": { "path": "node_modules/quill/dist", "jsFile": "quill", "cssFile": ["quill.bubble.css", "quill.snow.css"] },
-  "ng-quill": { "path": "node_modules/ng-quill/dist" },
-  "font-awesome": { "path": "node_modules/font-awesome/css", "cssFile": "font-awesome" },
-  "intl-tel-input": { "path": "node_modules/intl-tel-input/build", "jsFile": "js/intlTelInput", "cssFile": "css/intlTelInput" },
-  "rangy": { "path": "node_modules/rangy/lib", "jsFile": ["rangy-core.js", "rangy-selectionsaverestore.js", "rangy-highlighter.js", "rangy-classapplier.js", "rangy-serializer.js", "rangy-textrange.js"] },
-  "textAngular": { "path": "node_modules/textangular/dist", "jsFile": ["textAngular-sanitize", "textAngularSetup", "textAngular"], "jsMinFile": ["textAngular-sanitize", "textAngular"], "cssFile": "textAngular" }
+  "font-awesome": { "path": "dist/font-awesome/css", "cssFile": "font-awesome" },
+  "intl-tel-input": { "path": "dist/intl-tel-input", "jsFile": "js/intlTelInput", "cssFile": "css/intlTelInput" },
+  "quill": { "path": "dist/quill", "jsFile": "quill", "cssFile": ["quill.bubble.css", "quill.snow.css"] },
+  "ng-quill": { "path": "dist/ng-quill" },
+  "rangy": { "path": "dist/rangy", "jsFile": ["rangy-core.js", "rangy-selectionsaverestore.js", "rangy-highlighter.js", "rangy-classapplier.js", "rangy-serializer.js", "rangy-textrange.js"] },
+  "textAngular": { "path": "dist/textangular", "jsFile": ["textAngular-sanitize", "textAngularSetup", "textAngular"], "jsMinFile": ["textAngular-sanitize", "textAngular"], "cssFile": "textAngular" }
 }

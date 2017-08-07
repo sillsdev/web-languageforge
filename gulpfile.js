@@ -623,7 +623,8 @@ gulp.task('test-e2e-run').description = 'Run the E2E test on local developer env
 
 var sassCommand = './node_modules/.bin/node-sass';
 
-gulp.task('sass', gulp.parallel(function buildSiteDir(done) {
+gulp.task('sass', gulp.parallel(
+  function buildSiteDir(done) {
     execute(sassCommand + ' src/Site/ -o src/Site/ --output-style compressed', null, done);
   },
 
