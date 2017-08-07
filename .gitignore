@@ -1,6 +1,5 @@
 *~
 *.swp
-**/.bundle/
 .DS_Store
 .externalToolBuilders
 .idea/
@@ -27,7 +26,6 @@ src/cache/
 src/dist/
 src/js/lib/languageforge.min.js
 src/js/lib/scriptureforge.min.js
-src/node/static/dist/
 src/node/serverConfig.js
 src/node_modules/
 !src/vendor/lift/

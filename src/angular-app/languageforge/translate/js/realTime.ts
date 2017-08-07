@@ -1,4 +1,3 @@
-'use strict';
 
 // LanguageForge Real-Time Client Service
 angular.module('realTime', [])
