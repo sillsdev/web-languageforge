@@ -54,8 +54,17 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
     $scope.visibleEntries = editorService.visibleEntries;
     $scope.filteredEntries = editorService.filteredEntries;
     $scope.entryListModifiers = editorService.entryListModifiers;
-    $scope.sortEntries = editorService.sortEntries;
-    $scope.filterEntries = editorService.filterEntries;
+    $scope.sortEntries = function (args) {
+      editorService.sortEntries.apply(this, arguments).then(function () {
+        $scope.typeahead.searchEntries($scope.typeahead.searchItemSelected);
+      });
+    };
+
+    $scope.filterEntries = function (args) {
+      editorService.filterEntries.apply(this, arguments).then(function () {
+        $scope.typeahead.searchEntries($scope.typeahead.searchItemSelected);
+      });
+    };
 
     $scope.show = {
       more: editorService.showMoreEntries,
@@ -840,18 +849,38 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
       $scope.typeahead.searchEntries = function searchEntries(query) {
 
-        // Concatenate to get prioritized list of exact matches, then non-exact.
-        // TODO: would be better to search for gloss.  DDW 2016-06-22
-        var results =
-            $filter('filter')($scope.filteredEntries, { lexeme: query }, true).concat(
-            $filter('filter')($scope.filteredEntries, { senses: query }, true),
-            $filter('filter')($scope.filteredEntries, { lexeme: query }),
-            $filter('filter')($scope.filteredEntries, { senses: query }),
-            $filter('filter')($scope.filteredEntries, query));
+        var filteredEntries = $filter('filter')($scope.filteredEntries, query);
+        var prioritizedEntries = {
+          wordBeginning: [],
+          word: [],
+          meaningBeginning: [],
+          meaning: [],
+          everythingElse: []
+        };
 
-        // Set function to return unique results
-        // TODO Set is not available until ES2015
-        $scope.typeahead.searchResults = Array.from(new Set(results));
+        angular.forEach(filteredEntries, function (entry) {
+          var word = $scope.getWordForDisplay(entry);
+          var meaning = $scope.getMeaningForDisplay(entry);
+          if (word.indexOf(query) === 0) {
+            prioritizedEntries.wordBeginning.push(entry);
+          } else if (word.indexOf(query) !== -1) {
+            prioritizedEntries.word.push(entry);
+          } else if (meaning.indexOf(query) === 0) {
+            prioritizedEntries.meaningBeginning.push(entry);
+          } else if (meaning.indexOf(query) !== -1) {
+            prioritizedEntries.meaning.push(entry);
+          } else {
+            prioritizedEntries.everythingElse.push(entry);
+          }
+        });
+
+        $scope.typeahead.searchResults = [].concat(
+          prioritizedEntries.wordBeginning,
+          prioritizedEntries.word,
+          prioritizedEntries.meaningBeginning,
+          prioritizedEntries.meaning,
+          prioritizedEntries.everythingElse
+        );
         $scope.typeahead.matchCountCaption = '';
         var numMatches = $scope.typeahead.searchResults.length;
         if (numMatches > $scope.typeahead.limit) {
