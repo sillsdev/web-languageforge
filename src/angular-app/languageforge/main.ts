@@ -14,3 +14,5 @@ import 'quill/dist/quill.snow.css';
 import 'ng-quill';
 
 import './translate/js/realTime';
+import './translate/editor/quill/quill.module'
+import './translate/editor/quill/quill.service'
