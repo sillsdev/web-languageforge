@@ -3,9 +3,9 @@
 angular.module('semdomtrans',
   [
     'ui.router',
+    'coreModule',
     'bellows.services',
     'bellows.services.comments',
-    'bellows.filters',
     'semdomtrans.edit',
     'semdomtrans.comments',
     'semdomtrans.services',
