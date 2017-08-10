@@ -2,8 +2,8 @@
 
 angular.module('lexicon-new-project',
   [
+    'coreModule',
     'bellows.services',
-    'bellows.filters',
     'ui.bootstrap',
     'ui.router',
     'palaso.ui.utils',

@@ -3,8 +3,8 @@
 angular.module('semdomtrans-new-project',
   [
     'ui.router',
+    'coreModule',
     'bellows.services',
-    'bellows.filters',
     'ui.bootstrap',
     'semdomtrans.services',
     'palaso.ui.language',

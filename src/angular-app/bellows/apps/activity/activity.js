@@ -3,11 +3,11 @@
 // Declare app level module which depends on filters, and services
 angular.module('activity',
     [
-     'ngRoute',
-     'bellows.services',
-     'bellows.filters',
-     'ui.bootstrap',
-     'sgw.ui.breadcrumb',
+      'ngRoute',
+      'coreModule',
+      'bellows.services',
+      'ui.bootstrap',
+      'sgw.ui.breadcrumb'
     ])
   .controller('ActivityCtrl', ['$scope', '$sce', 'activityPageService', 'sfchecksLinkService',
     'sessionService', 'utilService', 'breadcrumbService',
@@ -89,8 +89,8 @@ angular.module('activity',
         $scope.showAllActivity = false;
         $scope.filteredActivities = [];
         angular.forEach($scope.activities, function (activity) {
-          if (activity.userRef && activity.userRef.id == session.userId() ||
-            activity.userRef2 && activity.userRef2.id == session.userId()
+          if (activity.userRef && activity.userRef.id === session.userId() ||
+            activity.userRef2 && activity.userRef2.id === session.userId()
           ) {
             $scope.filteredActivities.push(activity);
           }
