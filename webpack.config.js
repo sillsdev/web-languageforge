@@ -62,7 +62,20 @@ var webpackConfig = {
         use: 'url-loader?limit=10000'
       },
       { test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/, use: 'file-loader' },
-      { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' }
+      { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' },
+      {
+        test: /machine\.js/,
+        // fix conflict between System namespace in Bridge and System variable injection
+        parser: { system: false },
+        // fix critical dependency warning by removing reference to require() in Bridge
+        use: {
+          loader: 'string-replace-loader',
+          query: {
+            search: ' || require(name)',
+            replace: ''
+          }
+        }
+      }
     ]
   }
 

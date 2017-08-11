@@ -1,7 +1,7 @@
 /**
- * @version   : 16.0.0-rc - Bridge.NET
+ * @version   : 16.0.1 - Bridge.NET
  * @author    : Object.NET, Inc. http://bridge.net/
- * @date      : 2017-07-25
+ * @date      : 2017-08-08
  * @copyright : Copyright 2008-2017 Object.NET, Inc. http://object.net/
  * @license   : See license.txt and https://github.com/bridgedotnet/Bridge/blob/master/LICENSE.md
  */
@@ -3326,8 +3326,8 @@
     // @source systemAssemblyVersion.js
 
     Bridge.init(function () {
-        Bridge.SystemAssembly.version = "16.0.0-rc";
-        Bridge.SystemAssembly.compiler = "16.0.0-rc";
+        Bridge.SystemAssembly.version = "16.0.1";
+        Bridge.SystemAssembly.compiler = "16.0.1";
     });
 
     Bridge.define("Bridge.Utils.SystemAssemblyVersion");
@@ -28811,3 +28811,5134 @@ Bridge.define("System.Text.RegularExpressions.RegexParser", {
     // @source Finally.js
 
 })(this);
+
+/**
+ * @version   : 16.0.1 - Bridge.NET
+ * @author    : Object.NET, Inc. http://bridge.net/
+ * @date      : 2017-08-08
+ * @copyright : Copyright 2008-2017 Object.NET, Inc. http://object.net/
+ * @license   : See license.txt and https://github.com/bridgedotnet/Bridge/blob/master/LICENSE.md
+ */
+
+    var $m = Bridge.setMetadata,
+        $n = [System,System.Text.RegularExpressions,System.Collections,System.Collections.Generic,System.Collections.ObjectModel,System.Threading,System.Text,System.Globalization,System.Threading.Tasks,System.Net.WebSockets,System.Runtime.CompilerServices,Bridge.Utils];
+    $m($n[0].BitConverter, function () { return {"att":1048961,"a":2,"s":true,"m":[{"a":1,"n":"CheckArguments","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"size","pt":$n[0].Int32,"ps":2}],"sn":"checkArguments","rt":$n[0].Void,"p":[$n[0].Array.type(System.Byte),$n[0].Int32,$n[0].Int32]},{"a":1,"n":"CreateLong","is":true,"t":8,"pi":[{"n":"low","pt":$n[0].Int32,"ps":0},{"n":"high","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (low, high) { return System.Int64([low, high]); },"rt":$n[0].Int64,"p":[$n[0].Int32,$n[0].Int32]},{"a":1,"n":"CreateULong","is":true,"t":8,"pi":[{"n":"low","pt":$n[0].Int32,"ps":0},{"n":"high","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (low, high) { return System.UInt64([low, high]); },"rt":$n[0].UInt64,"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"DoubleToInt64Bits","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"doubleToInt64Bits","rt":$n[0].Int64,"p":[$n[0].Double]},{"a":2,"n":"GetBytes","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Boolean,"ps":0}],"sn":"getBytes","rt":$n[0].Array.type(System.Byte),"p":[$n[0].Boolean]},{"a":2,"n":"GetBytes","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0}],"sn":"getBytes$1","rt":$n[0].Array.type(System.Byte),"p":[$n[0].Char]},{"a":2,"n":"GetBytes","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"getBytes$2","rt":$n[0].Array.type(System.Byte),"p":[$n[0].Double]},{"a":2,"n":"GetBytes","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int16,"ps":0}],"sn":"getBytes$3","rt":$n[0].Array.type(System.Byte),"p":[$n[0].Int16]},{"a":2,"n":"GetBytes","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"getBytes$4","rt":$n[0].Array.type(System.Byte),"p":[$n[0].Int32]},{"a":2,"n":"GetBytes","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"getBytes$5","rt":$n[0].Array.type(System.Byte),"p":[$n[0].Int64]},{"a":2,"n":"GetBytes","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Single,"ps":0}],"sn":"getBytes$6","rt":$n[0].Array.type(System.Byte),"p":[$n[0].Single]},{"a":2,"n":"GetBytes","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt16,"ps":0}],"sn":"getBytes$7","rt":$n[0].Array.type(System.Byte),"p":[$n[0].UInt16]},{"a":2,"n":"GetBytes","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt32,"ps":0}],"sn":"getBytes$8","rt":$n[0].Array.type(System.Byte),"p":[$n[0].UInt32]},{"a":2,"n":"GetBytes","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"getBytes$9","rt":$n[0].Array.type(System.Byte),"p":[$n[0].UInt64]},{"a":1,"n":"GetHexValue","is":true,"t":8,"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"sn":"getHexValue","rt":$n[0].Char,"p":[$n[0].Int32]},{"a":1,"n":"GetIsLittleEndian","is":true,"t":8,"sn":"getIsLittleEndian","rt":$n[0].Boolean},{"a":1,"n":"GetLongHigh","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"tpc":0,"def":function (value) { return value.value.high; },"rt":$n[0].Int32,"p":[$n[0].Int64]},{"a":1,"n":"GetLongLow","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"tpc":0,"def":function (value) { return value.value.low; },"rt":$n[0].Int32,"p":[$n[0].Int64]},{"a":1,"n":"GetView","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"getView","rt":DataView,"p":[$n[0].Int64]},{"a":1,"n":"GetViewBytes","is":true,"t":8,"pi":[{"n":"view","pt":DataView,"ps":0},{"n":"count","dv":-1,"o":true,"pt":$n[0].Int32,"ps":1},{"n":"startIndex","dv":0,"o":true,"pt":$n[0].Int32,"ps":2}],"sn":"getViewBytes","rt":$n[0].Array.type(System.Byte),"p":[DataView,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Int64BitsToDouble","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"int64BitsToDouble","rt":$n[0].Double,"p":[$n[0].Int64]},{"a":1,"n":"SetViewBytes","is":true,"t":8,"pi":[{"n":"view","pt":DataView,"ps":0},{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":1},{"n":"count","dv":-1,"o":true,"pt":$n[0].Int32,"ps":2},{"n":"startIndex","dv":0,"o":true,"pt":$n[0].Int32,"ps":3}],"sn":"setViewBytes","rt":$n[0].Void,"p":[DataView,$n[0].Array.type(System.Byte),$n[0].Int32,$n[0].Int32]},{"a":2,"n":"ToBoolean","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"toBoolean","rt":$n[0].Boolean,"p":[$n[0].Array.type(System.Byte),$n[0].Int32]},{"a":2,"n":"ToChar","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"toChar","rt":$n[0].Char,"p":[$n[0].Array.type(System.Byte),$n[0].Int32]},{"a":2,"n":"ToDouble","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"toDouble","rt":$n[0].Double,"p":[$n[0].Array.type(System.Byte),$n[0].Int32]},{"a":2,"n":"ToInt16","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"toInt16","rt":$n[0].Int16,"p":[$n[0].Array.type(System.Byte),$n[0].Int32]},{"a":2,"n":"ToInt32","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"toInt32","rt":$n[0].Int32,"p":[$n[0].Array.type(System.Byte),$n[0].Int32]},{"a":2,"n":"ToInt64","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"toInt64","rt":$n[0].Int64,"p":[$n[0].Array.type(System.Byte),$n[0].Int32]},{"a":2,"n":"ToSingle","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"toSingle","rt":$n[0].Single,"p":[$n[0].Array.type(System.Byte),$n[0].Int32]},{"a":2,"n":"ToString","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Array.type(System.Byte)]},{"a":2,"n":"ToString","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"toString$1","rt":$n[0].String,"p":[$n[0].Array.type(System.Byte),$n[0].Int32]},{"a":2,"n":"ToString","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"length","pt":$n[0].Int32,"ps":2}],"sn":"toString$2","rt":$n[0].String,"p":[$n[0].Array.type(System.Byte),$n[0].Int32,$n[0].Int32]},{"a":2,"n":"ToUInt16","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"toUInt16","rt":$n[0].UInt16,"p":[$n[0].Array.type(System.Byte),$n[0].Int32]},{"a":2,"n":"ToUInt32","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"toUInt32","rt":$n[0].UInt32,"p":[$n[0].Array.type(System.Byte),$n[0].Int32]},{"a":2,"n":"ToUInt64","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Array.type(System.Byte),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"toUInt64","rt":$n[0].UInt64,"p":[$n[0].Array.type(System.Byte),$n[0].Int32]},{"a":1,"n":"View","is":true,"t":8,"pi":[{"n":"length","pt":$n[0].Int32,"ps":0}],"sn":"view","rt":DataView,"p":[$n[0].Int32]},{"a":1,"n":"Arg_ArrayPlusOffTooSmall","is":true,"t":4,"rt":$n[0].String,"sn":"arg_ArrayPlusOffTooSmall"},{"a":2,"n":"IsLittleEndian","is":true,"t":4,"rt":$n[0].Boolean,"sn":"isLittleEndian","ro":true}]}; });
+    $m($n[0].DateTimeKind, function () { return {"att":8449,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Local","is":true,"t":4,"rt":$n[0].DateTimeKind,"sn":"Local"},{"a":2,"n":"Unspecified","is":true,"t":4,"rt":$n[0].DateTimeKind,"sn":"Unspecified"},{"a":2,"n":"Utc","is":true,"t":4,"rt":$n[0].DateTimeKind,"sn":"Utc"}]}; });
+    $m($n[0].FormattableString, function () { return {"att":1048705,"a":2,"m":[{"a":3,"n":".ctor","t":1,"sn":"ctor"},{"ab":true,"a":2,"n":"GetArgument","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"getArgument","rt":$n[0].Object,"p":[$n[0].Int32]},{"ab":true,"a":2,"n":"GetArguments","t":8,"sn":"getArguments","rt":$n[0].Array.type(System.Object)},{"a":2,"n":"Invariant","is":true,"t":8,"pi":[{"n":"formattable","pt":$n[0].FormattableString,"ps":0}],"sn":"invariant","rt":$n[0].String,"p":[$n[0].FormattableString]},{"ov":true,"a":2,"n":"ToString","t":8,"sn":"toString","rt":$n[0].String},{"ab":true,"a":2,"n":"ToString","t":8,"pi":[{"n":"formatProvider","pt":$n[0].IFormatProvider,"ps":0}],"sn":"toString$1","rt":$n[0].String,"p":[$n[0].IFormatProvider]},{"ab":true,"a":2,"n":"ArgumentCount","t":16,"rt":$n[0].Int32,"g":{"ab":true,"a":2,"n":"get_ArgumentCount","t":8,"rt":$n[0].Int32,"fg":"ArgumentCount"},"fn":"ArgumentCount"},{"ab":true,"a":2,"n":"Format","t":16,"rt":$n[0].String,"g":{"ab":true,"a":2,"n":"get_Format","t":8,"rt":$n[0].String,"fg":"Format"},"fn":"Format"}]}; });
+    $m($n[0].FormattableStringImpl, function () { return {"att":1048576,"a":4,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Array.type(System.Object)],"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"args","ip":true,"pt":$n[0].Array.type(System.Object),"ps":1}],"sn":"ctor"},{"ov":true,"a":2,"n":"GetArgument","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"getArgument","rt":$n[0].Object,"p":[$n[0].Int32]},{"ov":true,"a":2,"n":"GetArguments","t":8,"sn":"getArguments","rt":$n[0].Array.type(System.Object)},{"ov":true,"a":2,"n":"ToString","t":8,"pi":[{"n":"formatProvider","pt":$n[0].IFormatProvider,"ps":0}],"sn":"toString$1","rt":$n[0].String,"p":[$n[0].IFormatProvider]},{"ov":true,"a":2,"n":"ArgumentCount","t":16,"rt":$n[0].Int32,"g":{"ov":true,"a":2,"n":"get_ArgumentCount","t":8,"rt":$n[0].Int32,"fg":"ArgumentCount"},"fn":"ArgumentCount"},{"ov":true,"a":2,"n":"Format","t":16,"rt":$n[0].String,"g":{"ov":true,"a":2,"n":"get_Format","t":8,"rt":$n[0].String,"fg":"Format"},"fn":"Format"},{"a":1,"n":"args","t":4,"rt":$n[0].Array.type(System.Object),"sn":"args"},{"a":1,"n":"format","t":4,"rt":$n[0].String,"sn":"format"}]}; });
+    $m($n[0].Guid, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Array.type(System.Byte)],"pi":[{"n":"b","pt":$n[0].Array.type(System.Byte),"ps":0}],"sn":"$ctor1"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"uuid","pt":$n[0].String,"ps":0}],"sn":"$ctor4"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int16,$n[0].Int16,$n[0].Array.type(System.Byte)],"pi":[{"n":"a","pt":$n[0].Int32,"ps":0},{"n":"b","pt":$n[0].Int16,"ps":1},{"n":"c","pt":$n[0].Int16,"ps":2},{"n":"d","pt":$n[0].Array.type(System.Byte),"ps":3}],"sn":"$ctor3"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int16,$n[0].Int16,$n[0].Byte,$n[0].Byte,$n[0].Byte,$n[0].Byte,$n[0].Byte,$n[0].Byte,$n[0].Byte,$n[0].Byte],"pi":[{"n":"a","pt":$n[0].Int32,"ps":0},{"n":"b","pt":$n[0].Int16,"ps":1},{"n":"c","pt":$n[0].Int16,"ps":2},{"n":"d","pt":$n[0].Byte,"ps":3},{"n":"e","pt":$n[0].Byte,"ps":4},{"n":"f","pt":$n[0].Byte,"ps":5},{"n":"g","pt":$n[0].Byte,"ps":6},{"n":"h","pt":$n[0].Byte,"ps":7},{"n":"i","pt":$n[0].Byte,"ps":8},{"n":"j","pt":$n[0].Byte,"ps":9},{"n":"k","pt":$n[0].Byte,"ps":10}],"sn":"$ctor2"},{"a":2,"n":".ctor","t":1,"p":[$n[0].UInt32,$n[0].UInt16,$n[0].UInt16,$n[0].Byte,$n[0].Byte,$n[0].Byte,$n[0].Byte,$n[0].Byte,$n[0].Byte,$n[0].Byte,$n[0].Byte],"pi":[{"n":"a","pt":$n[0].UInt32,"ps":0},{"n":"b","pt":$n[0].UInt16,"ps":1},{"n":"c","pt":$n[0].UInt16,"ps":2},{"n":"d","pt":$n[0].Byte,"ps":3},{"n":"e","pt":$n[0].Byte,"ps":4},{"n":"f","pt":$n[0].Byte,"ps":5},{"n":"g","pt":$n[0].Byte,"ps":6},{"n":"h","pt":$n[0].Byte,"ps":7},{"n":"i","pt":$n[0].Byte,"ps":8},{"n":"j","pt":$n[0].Byte,"ps":9},{"n":"k","pt":$n[0].Byte,"ps":10}],"sn":"$ctor5"},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"value","pt":$n[0].Guid,"ps":0}],"sn":"compareTo","rt":$n[0].Int32,"p":[$n[0].Guid]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"o","pt":$n[0].Guid,"ps":0}],"sn":"equalsT","rt":$n[0].Boolean,"p":[$n[0].Guid]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"o","pt":$n[0].Object,"ps":0}],"sn":"equals","rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":1,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"sn":"format$1","rt":$n[0].String,"p":[$n[0].String]},{"a":1,"n":"FromString","t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"sn":"fromString","rt":$n[0].Void,"p":[$n[0].String]},{"ov":true,"a":2,"n":"GetHashCode","t":8,"sn":"getHashCode","rt":$n[0].Int32},{"a":1,"n":"MakeBinary","is":true,"t":8,"pi":[{"n":"x","pt":$n[0].Byte,"ps":0}],"sn":"makeBinary","rt":$n[0].String,"p":[$n[0].Byte]},{"a":2,"n":"NewGuid","is":true,"t":8,"sn":"newGuid","rt":$n[0].Guid},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0}],"sn":"parse","rt":$n[0].Guid,"p":[$n[0].String]},{"a":2,"n":"ParseExact","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"format","pt":$n[0].String,"ps":1}],"sn":"parseExact","rt":$n[0].Guid,"p":[$n[0].String,$n[0].String]},{"a":1,"n":"ParseInternal","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"format","pt":$n[0].String,"ps":1},{"n":"check","pt":$n[0].Boolean,"ps":2}],"sn":"parseInternal","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].String,$n[0].Boolean]},{"a":2,"n":"ToByteArray","t":8,"sn":"toByteArray","rt":$n[0].Array.type(System.Byte)},{"ov":true,"a":2,"n":"ToString","t":8,"sn":"toString","rt":$n[0].String},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"sn":"toString$1","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"formatProvider","pt":$n[0].IFormatProvider,"ps":1}],"sn":"format","rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Guid,"ps":1}],"sn":"tryParse","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Guid]},{"a":2,"n":"TryParseExact","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"format","pt":$n[0].String,"ps":1},{"n":"result","out":true,"pt":$n[0].Guid,"ps":2}],"sn":"tryParseExact","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].String,$n[0].Guid]},{"a":2,"n":"op_Equality","is":true,"t":8,"pi":[{"n":"a","pt":$n[0].Guid,"ps":0},{"n":"b","pt":$n[0].Guid,"ps":1}],"sn":"op_Equality","rt":$n[0].Boolean,"p":[$n[0].Guid,$n[0].Guid]},{"a":2,"n":"op_Inequality","is":true,"t":8,"pi":[{"n":"a","pt":$n[0].Guid,"ps":0},{"n":"b","pt":$n[0].Guid,"ps":1}],"sn":"op_Inequality","rt":$n[0].Boolean,"p":[$n[0].Guid,$n[0].Guid]},{"a":2,"n":"Empty","is":true,"t":4,"rt":$n[0].Guid,"sn":"empty","ro":true},{"a":1,"n":"NonFormat","is":true,"t":4,"rt":$n[1].Regex,"sn":"nonFormat","ro":true},{"a":1,"n":"Replace","is":true,"t":4,"rt":$n[1].Regex,"sn":"replace","ro":true},{"a":1,"n":"Rnd","is":true,"t":4,"rt":$n[0].Random,"sn":"rnd","ro":true},{"a":1,"n":"Split","is":true,"t":4,"rt":$n[1].Regex,"sn":"split","ro":true},{"a":1,"n":"Valid","is":true,"t":4,"rt":$n[1].Regex,"sn":"valid","ro":true},{"a":1,"n":"_a","t":4,"rt":$n[0].Int32,"sn":"_a"},{"a":1,"n":"_b","t":4,"rt":$n[0].Int16,"sn":"_b"},{"a":1,"n":"_c","t":4,"rt":$n[0].Int16,"sn":"_c"},{"a":1,"n":"_d","t":4,"rt":$n[0].Byte,"sn":"_d"},{"a":1,"n":"_e","t":4,"rt":$n[0].Byte,"sn":"_e"},{"a":1,"n":"_f","t":4,"rt":$n[0].Byte,"sn":"_f"},{"a":1,"n":"_g","t":4,"rt":$n[0].Byte,"sn":"_g"},{"a":1,"n":"_h","t":4,"rt":$n[0].Byte,"sn":"_h"},{"a":1,"n":"_i","t":4,"rt":$n[0].Byte,"sn":"_i"},{"a":1,"n":"_j","t":4,"rt":$n[0].Byte,"sn":"_j"},{"a":1,"n":"_k","t":4,"rt":$n[0].Byte,"sn":"_k"},{"a":1,"n":"error1","is":true,"t":4,"rt":$n[0].String,"sn":"error1"}]}; });
+    $m($n[0].Random, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"seed","pt":$n[0].Int32,"ps":0}],"sn":"$ctor1"},{"a":1,"n":"GetSampleForLargeRange","t":8,"sn":"getSampleForLargeRange","rt":$n[0].Double},{"a":1,"n":"InternalSample","t":8,"sn":"internalSample","rt":$n[0].Int32},{"v":true,"a":2,"n":"Next","t":8,"sn":"next","rt":$n[0].Int32},{"v":true,"a":2,"n":"Next","t":8,"pi":[{"n":"maxValue","pt":$n[0].Int32,"ps":0}],"sn":"next$1","rt":$n[0].Int32,"p":[$n[0].Int32]},{"v":true,"a":2,"n":"Next","t":8,"pi":[{"n":"minValue","pt":$n[0].Int32,"ps":0},{"n":"maxValue","pt":$n[0].Int32,"ps":1}],"sn":"next$2","rt":$n[0].Int32,"p":[$n[0].Int32,$n[0].Int32]},{"v":true,"a":2,"n":"NextBytes","t":8,"pi":[{"n":"buffer","pt":$n[0].Array.type(System.Byte),"ps":0}],"sn":"nextBytes","rt":$n[0].Void,"p":[$n[0].Array.type(System.Byte)]},{"v":true,"a":2,"n":"NextDouble","t":8,"sn":"nextDouble","rt":$n[0].Double},{"v":true,"a":3,"n":"Sample","t":8,"sn":"sample","rt":$n[0].Double},{"a":1,"n":"MBIG","is":true,"t":4,"rt":$n[0].Int32,"sn":"MBIG"},{"a":1,"n":"MSEED","is":true,"t":4,"rt":$n[0].Int32,"sn":"MSEED"},{"a":1,"n":"MZ","is":true,"t":4,"rt":$n[0].Int32,"sn":"MZ"},{"a":1,"n":"SeedArray","t":4,"rt":$n[0].Array.type(System.Int32),"sn":"seedArray"},{"a":1,"n":"inext","t":4,"rt":$n[0].Int32,"sn":"inext"},{"a":1,"n":"inextp","t":4,"rt":$n[0].Int32,"sn":"inextp"}]}; });
+    $m($n[0].IndexOutOfRangeException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].ArgumentNullException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"paramName","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"def":function (message, innerException) { return new System.ArgumentNullException(null, message, innerException); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].String],"pi":[{"n":"paramName","pt":$n[0].String,"ps":0},{"n":"message","pt":$n[0].String,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].ArgumentException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"def":function (message, innerException) { return new System.ArgumentException(message, null, innerException); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"paramName","pt":$n[0].String,"ps":1}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"paramName","pt":$n[0].String,"ps":1},{"n":"innerException","pt":$n[0].Exception,"ps":2}],"sn":"ctor"},{"a":2,"n":"ParamName","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_ParamName","t":8,"rt":$n[0].String,"fg":"ParamName"},"fn":"ParamName"}]}; });
+    $m($n[0].ArithmeticException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].Console, function () { return {"att":1048833,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Clear","is":true,"t":8,"sn":"Clear","rt":$n[0].Void},{"a":2,"n":"Read","is":true,"t":8,"tpc":0,"def":function () { return prompt(); },"rt":$n[0].String},{"a":2,"n":"ReadLine","is":true,"t":8,"tpc":0,"def":function () { return prompt(); },"rt":$n[0].String},{"a":2,"n":"ReadLine","is":true,"t":8,"pi":[{"n":"text","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (text) { return prompt(text); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ReadLine","is":true,"t":8,"pi":[{"n":"text","pt":$n[0].String,"ps":0},{"n":"value","pt":$n[0].String,"ps":1}],"tpc":0,"def":function (text, value) { return prompt(text, value); },"rt":$n[0].String,"p":[$n[0].String,$n[0].String]},{"a":1,"n":"TransformChars","is":true,"t":8,"pi":[{"n":"buffer","pt":$n[0].Array.type(System.Char),"ps":0},{"n":"all","pt":$n[0].Int32,"ps":1},{"n":"index","pt":$n[0].Int32,"ps":2},{"n":"count","pt":$n[0].Int32,"ps":3}],"sn":"TransformChars","rt":$n[0].String,"p":[$n[0].Array.type(System.Char),$n[0].Int32,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Boolean,"ps":0}],"tpc":0,"def":function (value) { return System.Console.Write(System.Boolean.toString(value)); },"rt":$n[0].Void,"p":[$n[0].Boolean]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (value) { return System.Console.Write(String.fromCharCode(value)); },"rt":$n[0].Void,"p":[$n[0].Char]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"buffer","pt":$n[0].Array.type(System.Char),"ps":0}],"tpc":0,"def":function (buffer) { return System.Console.Write(System.Console.TransformChars(buffer, 1)); },"rt":$n[0].Void,"p":[$n[0].Array.type(System.Char)]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Console.Write(value.toString('G')); },"rt":$n[0].Void,"p":[$n[0].Decimal]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (value) { return System.Console.Write(System.Double.format(value)); },"rt":$n[0].Void,"p":[$n[0].Double]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"Write","rt":$n[0].Void,"p":[$n[0].Int32]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"Write","rt":$n[0].Void,"p":[$n[0].Int64]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Object,"ps":0}],"sn":"Write","rt":$n[0].Void,"p":[$n[0].Object]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Single,"ps":0}],"sn":"Write","rt":$n[0].Void,"p":[$n[0].Single]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"Write","rt":$n[0].Void,"p":[$n[0].String]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt32,"ps":0}],"sn":"Write","rt":$n[0].Void,"p":[$n[0].UInt32]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"Write","rt":$n[0].Void,"p":[$n[0].UInt64]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg0","pt":$n[0].Object,"ps":1}],"tpc":0,"def":function (format, arg0) { return System.Console.Write(System.String.format(format, arg0)); },"rt":$n[0].Void,"p":[$n[0].String,$n[0].Object]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg","ip":true,"pt":$n[0].Array.type(System.Object),"ps":1}],"tpc":0,"def":function (format, arg) { return System.Console.Write(System.String.format(format, arg)); },"rt":$n[0].Void,"p":[$n[0].String,$n[0].Array.type(System.Object)]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"buffer","pt":$n[0].Array.type(System.Char),"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (buffer, index, count) { return System.Console.Write(System.Console.TransformChars(buffer, 0, index, count)); },"rt":$n[0].Void,"p":[$n[0].Array.type(System.Char),$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg0","pt":$n[0].Object,"ps":1},{"n":"arg1","pt":$n[0].Object,"ps":2}],"tpc":0,"def":function (format, arg0, arg1) { return System.Console.Write(System.String.format(format, arg0, arg1)); },"rt":$n[0].Void,"p":[$n[0].String,$n[0].Object,$n[0].Object]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg0","pt":$n[0].Object,"ps":1},{"n":"arg1","pt":$n[0].Object,"ps":2},{"n":"arg2","pt":$n[0].Object,"ps":3}],"tpc":0,"def":function (format, arg0, arg1, arg2) { return System.Console.Write(System.String.format(format, arg0, arg1, arg2)); },"rt":$n[0].Void,"p":[$n[0].String,$n[0].Object,$n[0].Object,$n[0].Object]},{"a":2,"n":"Write","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg0","pt":$n[0].Object,"ps":1},{"n":"arg1","pt":$n[0].Object,"ps":2},{"n":"arg2","pt":$n[0].Object,"ps":3},{"n":"arg3","pt":$n[0].Object,"ps":4}],"tpc":0,"def":function (format, arg0, arg1, arg2, arg3) { return System.Console.Write(System.String.format(format, [arg0, arg1, arg2, arg3])); },"rt":$n[0].Void,"p":[$n[0].String,$n[0].Object,$n[0].Object,$n[0].Object,$n[0].Object]},{"a":2,"n":"WriteLine","is":true,"t":8,"sn":"WriteLine","rt":$n[0].Void},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Boolean,"ps":0}],"tpc":0,"def":function (value) { return System.Console.WriteLine(System.Boolean.toString(value)); },"rt":$n[0].Void,"p":[$n[0].Boolean]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (value) { return System.Console.WriteLine(String.fromCharCode(value)); },"rt":$n[0].Void,"p":[$n[0].Char]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"buffer","pt":$n[0].Array.type(System.Char),"ps":0}],"tpc":0,"def":function (buffer) { return System.Console.WriteLine(System.Console.TransformChars(buffer, 1)); },"rt":$n[0].Void,"p":[$n[0].Array.type(System.Char)]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Console.WriteLine(value.toString('G')); },"rt":$n[0].Void,"p":[$n[0].Decimal]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (value) { return System.Console.WriteLine(System.Double.format(value)); },"rt":$n[0].Void,"p":[$n[0].Double]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"WriteLine","rt":$n[0].Void,"p":[$n[0].Int32]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"WriteLine","rt":$n[0].Void,"p":[$n[0].Int64]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Nullable$1(System.Decimal),"ps":0}],"tpc":0,"def":function (value) { return System.Console.WriteLine(value && value.toString('G')); },"rt":$n[0].Void,"p":[$n[0].Nullable$1(System.Decimal)]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Object,"ps":0}],"sn":"WriteLine","rt":$n[0].Void,"p":[$n[0].Object]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Single,"ps":0}],"tpc":0,"def":function (value) { return System.Console.WriteLine(System.Single.format(value)); },"rt":$n[0].Void,"p":[$n[0].Single]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"WriteLine","rt":$n[0].Void,"p":[$n[0].String]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":Function,"ps":0}],"tpc":0,"def":function (value) { return System.Console.WriteLine(Bridge.getTypeName(value)); },"rt":$n[0].Void,"p":[Function]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt32,"ps":0}],"sn":"WriteLine","rt":$n[0].Void,"p":[$n[0].UInt32]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"WriteLine","rt":$n[0].Void,"p":[$n[0].UInt64]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg0","pt":$n[0].Object,"ps":1}],"tpc":0,"def":function (format, arg0) { return System.Console.WriteLine(System.String.format(format, arg0)); },"rt":$n[0].Void,"p":[$n[0].String,$n[0].Object]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg","ip":true,"pt":$n[0].Array.type(System.Object),"ps":1}],"tpc":0,"def":function (format, arg) { return System.Console.WriteLine(System.String.format(format, arg)); },"rt":$n[0].Void,"p":[$n[0].String,$n[0].Array.type(System.Object)]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"buffer","pt":$n[0].Array.type(System.Char),"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (buffer, index, count) { return System.Console.WriteLine(System.Console.TransformChars(buffer, 0, index, count)); },"rt":$n[0].Void,"p":[$n[0].Array.type(System.Char),$n[0].Int32,$n[0].Int32]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg0","pt":$n[0].Object,"ps":1},{"n":"arg1","pt":$n[0].Object,"ps":2}],"tpc":0,"def":function (format, arg0, arg1) { return System.Console.WriteLine(System.String.format(format, arg0, arg1)); },"rt":$n[0].Void,"p":[$n[0].String,$n[0].Object,$n[0].Object]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg0","pt":$n[0].Object,"ps":1},{"n":"arg1","pt":$n[0].Object,"ps":2},{"n":"arg2","pt":$n[0].Object,"ps":3}],"tpc":0,"def":function (format, arg0, arg1, arg2) { return System.Console.WriteLine(System.String.format(format, arg0, arg1, arg2)); },"rt":$n[0].Void,"p":[$n[0].String,$n[0].Object,$n[0].Object,$n[0].Object]},{"a":2,"n":"WriteLine","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg0","pt":$n[0].Object,"ps":1},{"n":"arg1","pt":$n[0].Object,"ps":2},{"n":"arg2","pt":$n[0].Object,"ps":3},{"n":"arg3","pt":$n[0].Object,"ps":4}],"tpc":0,"def":function (format, arg0, arg1, arg2, arg3) { return System.Console.WriteLine(System.String.format(format, [arg0, arg1, arg2, arg3])); },"rt":$n[0].Void,"p":[$n[0].String,$n[0].Object,$n[0].Object,$n[0].Object,$n[0].Object]}]}; });
+    $m($n[0].ArraySegment, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[System.Array.type(System.Object)],"pi":[{"n":"array","pt":System.Array.type(System.Object),"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[System.Array.type(System.Object),$n[0].Int32,$n[0].Int32],"pi":[{"n":"array","pt":System.Array.type(System.Object),"ps":0},{"n":"offset","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"sn":"ctor"},{"a":2,"n":"Array","t":16,"rt":System.Array.type(System.Object),"g":{"a":2,"n":"get_Array","t":8,"tpc":0,"def":function () { return getArray(); },"rt":System.Array.type(System.Object)}},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"tpc":0,"def":function () { return getCount(); },"rt":$n[0].Int32}},{"a":2,"n":"Offset","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Offset","t":8,"tpc":0,"def":function () { return getOffset(); },"rt":$n[0].Int32}}]}; });
+    $m($n[0].Enum, function () { return {"att":1048705,"a":2,"m":[{"a":3,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"target","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (target) { return Bridge.compare(this, target); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (other) { return System.Enum.equals(this, other, Bridge.getType(this)); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Format","is":true,"t":8,"pi":[{"n":"enumType","pt":Function,"ps":0},{"n":"value","pt":$n[0].Object,"ps":1},{"n":"format","pt":$n[0].String,"ps":2}],"sn":"format","rt":$n[0].String,"p":[Function,$n[0].Object,$n[0].String]},{"a":2,"n":"GetName","is":true,"t":8,"pi":[{"n":"enumType","pt":Function,"ps":0},{"n":"value","pt":$n[0].Object,"ps":1}],"sn":"getName","rt":$n[0].String,"p":[Function,$n[0].Object]},{"a":2,"n":"GetNames","is":true,"t":8,"pi":[{"n":"enumType","pt":Function,"ps":0}],"sn":"getNames","rt":$n[0].Array.type(System.String),"p":[Function]},{"a":2,"n":"GetValues","is":true,"t":8,"pi":[{"n":"enumType","pt":Function,"ps":0}],"sn":"getValues","rt":Array,"p":[Function]},{"a":2,"n":"HasFlag","t":8,"pi":[{"n":"flag","pt":$n[0].Enum,"ps":0}],"tpc":0,"def":function (flag) { return System.Enum.hasFlag(this, flag); },"rt":$n[0].Boolean,"p":[$n[0].Enum]},{"a":2,"n":"IsDefined","is":true,"t":8,"pi":[{"n":"enumType","pt":Function,"ps":0},{"n":"value","pt":$n[0].Object,"ps":1}],"sn":"isDefined","rt":$n[0].Boolean,"p":[Function,$n[0].Object]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"enumType","pt":Function,"ps":0},{"n":"value","pt":$n[0].String,"ps":1}],"sn":"parse","rt":$n[0].Enum,"p":[Function,$n[0].String]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"enumType","pt":Function,"ps":0},{"n":"value","pt":$n[0].String,"ps":1},{"n":"ignoreCase","pt":$n[0].Boolean,"ps":2}],"sn":"parse","rt":$n[0].Enum,"p":[Function,$n[0].String,$n[0].Boolean]},{"ov":true,"a":2,"n":"ToString","t":8,"tpc":0,"def":function () { return System.Enum.toString(Bridge.getType(this), this); },"rt":$n[0].String},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Enum.format(Bridge.getType(this), this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"formatProvider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, formatProvider) { return System.Enum.format(Bridge.getType(this), this, format); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"ToString","is":true,"t":8,"pi":[{"n":"enumType","pt":Function,"ps":0},{"n":"value","pt":$n[0].Enum,"ps":1}],"sn":"toString","rt":$n[0].String,"p":[Function,$n[0].Enum]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":System.Object,"ps":1}],"tpc":1,"def":function (TEnum, value, result) { return System.Enum.tryParse(TEnum, value, result); },"rt":$n[0].Boolean,"p":[$n[0].String,System.Object]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"ignoreCase","pt":$n[0].Boolean,"ps":1},{"n":"result","out":true,"pt":System.Object,"ps":2}],"tpc":1,"def":function (TEnum, value, ignoreCase, result) { return System.Enum.tryParse(TEnum, value, result, ignoreCase); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Boolean,System.Object]}]}; });
+    $m($n[0].Environment, function () { return {"att":385,"a":2,"s":true,"m":[{"n":".cctor","t":1,"sn":"ctor","sm":true},{"a":2,"n":"Exit","is":true,"t":8,"pi":[{"n":"exitCode","pt":$n[0].Int32,"ps":0}],"sn":"exit","rt":$n[0].Void,"p":[$n[0].Int32]},{"a":2,"n":"ExpandEnvironmentVariables","is":true,"t":8,"pi":[{"n":"name","pt":$n[0].String,"ps":0}],"sn":"expandEnvironmentVariables","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"FailFast","is":true,"t":8,"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"failFast","rt":$n[0].Void,"p":[$n[0].String]},{"a":2,"n":"FailFast","is":true,"t":8,"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"exception","pt":$n[0].Exception,"ps":1}],"sn":"failFast$1","rt":$n[0].Void,"p":[$n[0].String,$n[0].Exception]},{"a":2,"n":"GetCommandLineArgs","is":true,"t":8,"sn":"getCommandLineArgs","rt":$n[0].Array.type(System.String)},{"a":2,"n":"GetEnvironmentVariable","is":true,"t":8,"pi":[{"n":"variable","pt":$n[0].String,"ps":0}],"sn":"getEnvironmentVariable","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"GetEnvironmentVariable","is":true,"t":8,"pi":[{"n":"variable","pt":$n[0].String,"ps":0},{"n":"target","pt":$n[0].EnvironmentVariableTarget,"ps":1}],"sn":"getEnvironmentVariable$1","rt":$n[0].String,"p":[$n[0].String,$n[0].EnvironmentVariableTarget]},{"a":2,"n":"GetEnvironmentVariables","is":true,"t":8,"sn":"getEnvironmentVariables","rt":$n[2].IDictionary},{"a":2,"n":"GetEnvironmentVariables","is":true,"t":8,"pi":[{"n":"target","pt":$n[0].EnvironmentVariableTarget,"ps":0}],"sn":"getEnvironmentVariables$1","rt":$n[2].IDictionary,"p":[$n[0].EnvironmentVariableTarget]},{"a":2,"n":"GetFolderPath","is":true,"t":8,"pi":[{"n":"folder","pt":$n[0].Environment.SpecialFolder,"ps":0}],"tpc":0,"def":function (folder) { return ""; },"rt":$n[0].String,"p":[$n[0].Environment.SpecialFolder]},{"a":2,"n":"GetFolderPath","is":true,"t":8,"pi":[{"n":"folder","pt":$n[0].Environment.SpecialFolder,"ps":0},{"n":"option","pt":$n[0].Environment.SpecialFolderOption,"ps":1}],"tpc":0,"def":function (folder, option) { return ""; },"rt":$n[0].String,"p":[$n[0].Environment.SpecialFolder,$n[0].Environment.SpecialFolderOption]},{"a":2,"n":"GetLogicalDrives","is":true,"t":8,"sn":"getLogicalDrives","rt":$n[0].Array.type(System.String)},{"a":1,"n":"PatchDictionary","is":true,"t":8,"pi":[{"n":"d","pt":$n[3].Dictionary$2(System.String,System.String),"ps":0}],"sn":"patchDictionary","rt":$n[3].Dictionary$2(System.String,System.String),"p":[$n[3].Dictionary$2(System.String,System.String)]},{"a":2,"n":"SetEnvironmentVariable","is":true,"t":8,"pi":[{"n":"variable","pt":$n[0].String,"ps":0},{"n":"value","pt":$n[0].String,"ps":1}],"sn":"setEnvironmentVariable","rt":$n[0].Void,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"SetEnvironmentVariable","is":true,"t":8,"pi":[{"n":"variable","pt":$n[0].String,"ps":0},{"n":"value","pt":$n[0].String,"ps":1},{"n":"target","pt":$n[0].EnvironmentVariableTarget,"ps":2}],"sn":"setEnvironmentVariable$1","rt":$n[0].Void,"p":[$n[0].String,$n[0].String,$n[0].EnvironmentVariableTarget]},{"a":2,"n":"CommandLine","is":true,"t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_CommandLine","t":8,"rt":$n[0].String,"fg":"CommandLine","is":true},"fn":"CommandLine"},{"a":2,"n":"CurrentDirectory","is":true,"t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_CurrentDirectory","t":8,"rt":$n[0].String,"fg":"CurrentDirectory","is":true},"s":{"a":2,"n":"set_CurrentDirectory","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"CurrentDirectory","is":true},"fn":"CurrentDirectory"},{"a":2,"n":"CurrentManagedThreadId","is":true,"t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_CurrentManagedThreadId","is":true,"t":8,"tpc":0,"def":function () { return 0; },"rt":$n[0].Int32}},{"a":2,"n":"ExitCode","is":true,"t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_ExitCode","t":8,"rt":$n[0].Int32,"fg":"ExitCode","is":true},"s":{"a":2,"n":"set_ExitCode","t":8,"p":[$n[0].Int32],"rt":$n[0].Void,"fs":"ExitCode","is":true},"fn":"ExitCode"},{"a":1,"n":"Global","is":true,"t":16,"rt":System.Object,"g":{"a":1,"n":"get_Global","is":true,"t":8,"tpc":0,"def":function () { return Bridge.global; },"rt":System.Object},"s":{"a":1,"n":"set_Global","is":true,"t":8,"pi":[{"n":"value","pt":System.Object,"ps":0}],"sn":"Global","rt":$n[0].Void,"p":[System.Object]}},{"a":2,"n":"HasShutdownStarted","is":true,"t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_HasShutdownStarted","is":true,"t":8,"tpc":0,"def":function () { return false; },"rt":$n[0].Boolean},"s":{"a":1,"n":"set_HasShutdownStarted","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Boolean,"ps":0}],"sn":"HasShutdownStarted","rt":$n[0].Void,"p":[$n[0].Boolean]}},{"a":2,"n":"Is64BitOperatingSystem","is":true,"t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_Is64BitOperatingSystem","t":8,"rt":$n[0].Boolean,"fg":"Is64BitOperatingSystem","is":true},"fn":"Is64BitOperatingSystem"},{"a":2,"n":"Is64BitProcess","is":true,"t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_Is64BitProcess","is":true,"t":8,"tpc":0,"def":function () { return false; },"rt":$n[0].Boolean},"s":{"a":1,"n":"set_Is64BitProcess","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Boolean,"ps":0}],"sn":"Is64BitProcess","rt":$n[0].Void,"p":[$n[0].Boolean]}},{"a":1,"n":"Location","is":true,"t":16,"rt":System.Object,"g":{"a":1,"n":"get_Location","t":8,"rt":System.Object,"fg":"Location","is":true},"fn":"Location"},{"a":2,"n":"MachineName","is":true,"t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_MachineName","is":true,"t":8,"tpc":0,"def":function () { return ""; },"rt":$n[0].String},"s":{"a":1,"n":"set_MachineName","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"MachineName","rt":$n[0].Void,"p":[$n[0].String]}},{"a":2,"n":"NewLine","is":true,"t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_NewLine","is":true,"t":8,"tpc":0,"def":function () { return '\n'; },"rt":$n[0].String}},{"a":2,"n":"OSVersion","is":true,"t":16,"rt":$n[0].Object,"g":{"a":2,"n":"get_OSVersion","is":true,"t":8,"tpc":0,"def":function () { return null; },"rt":$n[0].Object},"s":{"a":1,"n":"set_OSVersion","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Object,"ps":0}],"sn":"OSVersion","rt":$n[0].Void,"p":[$n[0].Object]}},{"a":2,"n":"ProcessorCount","is":true,"t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_ProcessorCount","t":8,"rt":$n[0].Int32,"fg":"ProcessorCount","is":true},"fn":"ProcessorCount"},{"a":2,"n":"StackTrace","is":true,"t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_StackTrace","t":8,"rt":$n[0].String,"fg":"StackTrace","is":true},"fn":"StackTrace"},{"a":2,"n":"SystemDirectory","is":true,"t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_SystemDirectory","is":true,"t":8,"tpc":0,"def":function () { return ""; },"rt":$n[0].String},"s":{"a":1,"n":"set_SystemDirectory","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"SystemDirectory","rt":$n[0].Void,"p":[$n[0].String]}},{"a":2,"n":"SystemPageSize","is":true,"t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_SystemPageSize","is":true,"t":8,"tpc":0,"def":function () { return 1; },"rt":$n[0].Int32},"s":{"a":1,"n":"set_SystemPageSize","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"SystemPageSize","rt":$n[0].Void,"p":[$n[0].Int32]}},{"a":2,"n":"TickCount","is":true,"t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_TickCount","is":true,"t":8,"tpc":0,"def":function () { return Date.now(); },"rt":$n[0].Int32},"s":{"a":1,"n":"set_TickCount","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"TickCount","rt":$n[0].Void,"p":[$n[0].Int32]}},{"a":2,"n":"UserDomainName","is":true,"t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_UserDomainName","is":true,"t":8,"tpc":0,"def":function () { return ""; },"rt":$n[0].String},"s":{"a":1,"n":"set_UserDomainName","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"UserDomainName","rt":$n[0].Void,"p":[$n[0].String]}},{"a":2,"n":"UserInteractive","is":true,"t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_UserInteractive","is":true,"t":8,"tpc":0,"def":function () { return true; },"rt":$n[0].Boolean},"s":{"a":1,"n":"set_UserInteractive","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Boolean,"ps":0}],"sn":"UserInteractive","rt":$n[0].Void,"p":[$n[0].Boolean]}},{"a":2,"n":"UserName","is":true,"t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_UserName","is":true,"t":8,"tpc":0,"def":function () { return ""; },"rt":$n[0].String},"s":{"a":1,"n":"set_UserName","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"UserName","rt":$n[0].Void,"p":[$n[0].String]}},{"a":2,"n":"Version","is":true,"t":16,"rt":$n[0].Version,"g":{"a":2,"n":"get_Version","t":8,"rt":$n[0].Version,"fg":"Version","is":true},"fn":"Version"},{"a":2,"n":"WorkingSet","is":true,"t":16,"rt":$n[0].Int64,"g":{"a":2,"n":"get_WorkingSet","is":true,"t":8,"tpc":0,"def":function () { return System.Int64(0); },"rt":$n[0].Int64},"s":{"a":1,"n":"set_WorkingSet","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"WorkingSet","rt":$n[0].Void,"p":[$n[0].Int64]}},{"a":1,"n":"Variables","is":true,"t":4,"rt":$n[3].Dictionary$2(System.String,System.String),"sn":"variables"},{"a":1,"n":"__Property__Initializer__ExitCode","is":true,"t":4,"rt":$n[0].Int32,"sn":"__Property__Initializer__ExitCode"}]}; });
+    $m($n[0].IDisposable, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Dispose","t":8,"sn":"System$IDisposable$dispose","rt":$n[0].Void}]}; });
+    $m($n[0].OutOfMemoryException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"def":function (message, innerException) { return new System.OutOfMemoryException(message, innerException); }}]}; });
+    $m($n[0].RankException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].AggregateException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[3].IEnumerable$1(System.Exception)],"pi":[{"n":"innerExceptions","pt":$n[3].IEnumerable$1(System.Exception),"ps":0}],"def":function (innerExceptions) { return new System.AggregateException(null, innerExceptions); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Array.type(System.Exception)],"pi":[{"n":"innerExceptions","ip":true,"pt":$n[0].Array.type(System.Exception),"ps":0}],"def":function (innerExceptions) { return new System.AggregateException(null, Array.prototype.slice.call((arguments, 0))); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[3].IEnumerable$1(System.Exception)],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerExceptions","pt":$n[3].IEnumerable$1(System.Exception),"ps":1}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Array.type(System.Exception)],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerExceptions","ip":true,"pt":$n[0].Array.type(System.Exception),"ps":1}],"def":function (message, innerExceptions) { return new System.AggregateException(message, Array.prototype.slice.call((arguments, 1))); }},{"a":2,"n":"Flatten","t":8,"sn":"flatten","rt":$n[0].AggregateException},{"a":2,"n":"Handle","t":8,"pi":[{"n":"predicate","pt":Function,"ps":0}],"sn":"handle","rt":$n[0].Void,"p":[Function]},{"a":2,"n":"InnerExceptions","t":16,"rt":$n[4].ReadOnlyCollection$1(System.Exception),"g":{"a":2,"n":"get_InnerExceptions","t":8,"rt":$n[4].ReadOnlyCollection$1(System.Exception),"fg":"innerExceptions"},"fn":"innerExceptions"}]}; });
+    $m($n[0].OperationCanceledException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"def":function (message) { return new System.OperationCanceledException(message, System.Threading.CancellationToken.none); }},{"a":2,"n":".ctor","t":1,"p":[$n[5].CancellationToken],"pi":[{"n":"token","pt":$n[5].CancellationToken,"ps":0}],"def":function (token) { return new System.OperationCanceledException(null, token); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"def":function (message, innerException) { return new System.OperationCanceledException(message, System.Threading.CancellationToken.none, innerException); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[5].CancellationToken],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"token","pt":$n[5].CancellationToken,"ps":1}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception,$n[5].CancellationToken],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1},{"n":"token","pt":$n[5].CancellationToken,"ps":2}],"def":function (message, innerException, token) { return new System.OperationCanceledException(message, token, innerException); }},{"a":2,"n":"CancellationToken","t":16,"rt":$n[5].CancellationToken,"g":{"a":2,"n":"get_CancellationToken","t":8,"rt":$n[5].CancellationToken,"fg":"cancellationToken"},"s":{"a":1,"n":"set_CancellationToken","t":8,"p":[$n[5].CancellationToken],"rt":$n[0].Void,"fs":"cancellationToken"},"fn":"cancellationToken"}]}; });
+    $m($n[0].SystemException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"def":function (message, innerException) { return new System.SystemException(message, innerException); }}]}; });
+    $m($n[0].TimeoutException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"def":function (message, innerException) { return new System.TimeoutException(message, innerException); }}]}; });
+    $m($n[0].Uri, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"uriString","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":"AbsoluteUri","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_AbsoluteUri","t":8,"tpc":0,"def":function () { return getAbsoluteUri(); },"rt":$n[0].String}}]}; });
+    $m($n[0].Version, function () { return {"att":1048833,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"version","pt":$n[0].String,"ps":0}],"sn":"$ctor4"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32],"pi":[{"n":"major","pt":$n[0].Int32,"ps":0},{"n":"minor","pt":$n[0].Int32,"ps":1}],"sn":"$ctor1"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32,$n[0].Int32],"pi":[{"n":"major","pt":$n[0].Int32,"ps":0},{"n":"minor","pt":$n[0].Int32,"ps":1},{"n":"build","pt":$n[0].Int32,"ps":2}],"sn":"$ctor2"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32],"pi":[{"n":"major","pt":$n[0].Int32,"ps":0},{"n":"minor","pt":$n[0].Int32,"ps":1},{"n":"build","pt":$n[0].Int32,"ps":2},{"n":"revision","pt":$n[0].Int32,"ps":3}],"sn":"$ctor3"},{"a":1,"n":"AppendPositiveNumber","is":true,"t":8,"pi":[{"n":"num","pt":$n[0].Int32,"ps":0},{"n":"sb","pt":$n[6].StringBuilder,"ps":1}],"sn":"appendPositiveNumber","rt":$n[0].Void,"p":[$n[0].Int32,$n[6].StringBuilder]},{"a":2,"n":"Clone","t":8,"sn":"clone","rt":$n[0].Object},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"version","pt":$n[0].Object,"ps":0}],"sn":"compareTo$1","rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"value","pt":$n[0].Version,"ps":0}],"sn":"compareTo","rt":$n[0].Int32,"p":[$n[0].Version]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"sn":"equals","rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"obj","pt":$n[0].Version,"ps":0}],"sn":"equalsT","rt":$n[0].Boolean,"p":[$n[0].Version]},{"ov":true,"a":2,"n":"GetHashCode","t":8,"sn":"getHashCode","rt":$n[0].Int32},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0}],"sn":"parse","rt":$n[0].Version,"p":[$n[0].String]},{"ov":true,"a":2,"n":"ToString","t":8,"sn":"toString","rt":$n[0].String},{"a":2,"n":"ToString","t":8,"pi":[{"n":"fieldCount","pt":$n[0].Int32,"ps":0}],"sn":"toString$1","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Version,"ps":1}],"sn":"tryParse","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Version]},{"a":1,"n":"TryParseComponent","is":true,"t":8,"pi":[{"n":"component","pt":$n[0].String,"ps":0},{"n":"componentName","pt":$n[0].String,"ps":1},{"n":"result","ref":true,"pt":$n[0].Version.VersionResult,"ps":2},{"n":"parsedComponent","out":true,"pt":$n[0].Int32,"ps":3}],"sn":"tryParseComponent","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].String,$n[0].Version.VersionResult,$n[0].Int32]},{"a":1,"n":"TryParseVersion","is":true,"t":8,"pi":[{"n":"version","pt":$n[0].String,"ps":0},{"n":"result","ref":true,"pt":$n[0].Version.VersionResult,"ps":1}],"sn":"tryParseVersion","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Version.VersionResult]},{"a":2,"n":"op_Equality","is":true,"t":8,"pi":[{"n":"v1","pt":$n[0].Version,"ps":0},{"n":"v2","pt":$n[0].Version,"ps":1}],"sn":"op_Equality","rt":$n[0].Boolean,"p":[$n[0].Version,$n[0].Version]},{"a":2,"n":"op_GreaterThan","is":true,"t":8,"pi":[{"n":"v1","pt":$n[0].Version,"ps":0},{"n":"v2","pt":$n[0].Version,"ps":1}],"sn":"op_GreaterThan","rt":$n[0].Boolean,"p":[$n[0].Version,$n[0].Version]},{"a":2,"n":"op_GreaterThanOrEqual","is":true,"t":8,"pi":[{"n":"v1","pt":$n[0].Version,"ps":0},{"n":"v2","pt":$n[0].Version,"ps":1}],"sn":"op_GreaterThanOrEqual","rt":$n[0].Boolean,"p":[$n[0].Version,$n[0].Version]},{"a":2,"n":"op_Inequality","is":true,"t":8,"pi":[{"n":"v1","pt":$n[0].Version,"ps":0},{"n":"v2","pt":$n[0].Version,"ps":1}],"sn":"op_Inequality","rt":$n[0].Boolean,"p":[$n[0].Version,$n[0].Version]},{"a":2,"n":"op_LessThan","is":true,"t":8,"pi":[{"n":"v1","pt":$n[0].Version,"ps":0},{"n":"v2","pt":$n[0].Version,"ps":1}],"sn":"op_LessThan","rt":$n[0].Boolean,"p":[$n[0].Version,$n[0].Version]},{"a":2,"n":"op_LessThanOrEqual","is":true,"t":8,"pi":[{"n":"v1","pt":$n[0].Version,"ps":0},{"n":"v2","pt":$n[0].Version,"ps":1}],"sn":"op_LessThanOrEqual","rt":$n[0].Boolean,"p":[$n[0].Version,$n[0].Version]},{"a":2,"n":"Build","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Build","t":8,"rt":$n[0].Int32,"fg":"Build"},"fn":"Build"},{"a":2,"n":"Major","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Major","t":8,"rt":$n[0].Int32,"fg":"Major"},"fn":"Major"},{"a":2,"n":"MajorRevision","t":16,"rt":$n[0].Int16,"g":{"a":2,"n":"get_MajorRevision","t":8,"rt":$n[0].Int16,"fg":"MajorRevision"},"fn":"MajorRevision"},{"a":2,"n":"Minor","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Minor","t":8,"rt":$n[0].Int32,"fg":"Minor"},"fn":"Minor"},{"a":2,"n":"MinorRevision","t":16,"rt":$n[0].Int16,"g":{"a":2,"n":"get_MinorRevision","t":8,"rt":$n[0].Int16,"fg":"MinorRevision"},"fn":"MinorRevision"},{"a":2,"n":"Revision","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Revision","t":8,"rt":$n[0].Int32,"fg":"Revision"},"fn":"Revision"},{"a":1,"n":"SeparatorsArray","is":true,"t":4,"rt":$n[0].Char,"sn":"separatorsArray","ro":true},{"a":1,"n":"ZERO_CHAR_VALUE","is":true,"t":4,"rt":$n[0].Int32,"sn":"ZERO_CHAR_VALUE"},{"a":1,"n":"_Build","t":4,"rt":$n[0].Int32,"sn":"_Build"},{"a":1,"n":"_Major","t":4,"rt":$n[0].Int32,"sn":"_Major"},{"a":1,"n":"_Minor","t":4,"rt":$n[0].Int32,"sn":"_Minor"},{"a":1,"n":"_Revision","t":4,"rt":$n[0].Int32,"sn":"_Revision"}]}; });
+    $m($n[0].Version.ParseFailureKind, function () { return {"td":$n[0].Version,"att":261,"a":4,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"ArgumentException","is":true,"t":4,"rt":$n[0].Version.ParseFailureKind,"sn":"ArgumentException"},{"a":2,"n":"ArgumentNullException","is":true,"t":4,"rt":$n[0].Version.ParseFailureKind,"sn":"ArgumentNullException"},{"a":2,"n":"ArgumentOutOfRangeException","is":true,"t":4,"rt":$n[0].Version.ParseFailureKind,"sn":"ArgumentOutOfRangeException"},{"a":2,"n":"FormatException","is":true,"t":4,"rt":$n[0].Version.ParseFailureKind,"sn":"FormatException"}]}; });
+    $m($n[0].Version.VersionResult, function () { return {"td":$n[0].Version,"att":1048845,"a":4,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":4,"n":"GetVersionParseException","t":8,"sn":"getVersionParseException","rt":$n[0].Exception},{"a":4,"n":"Init","t":8,"pi":[{"n":"argumentName","pt":$n[0].String,"ps":0},{"n":"canThrow","pt":$n[0].Boolean,"ps":1}],"sn":"init","rt":$n[0].Void,"p":[$n[0].String,$n[0].Boolean]},{"a":4,"n":"SetFailure","t":8,"pi":[{"n":"failure","pt":$n[0].Version.ParseFailureKind,"ps":0}],"sn":"setFailure","rt":$n[0].Void,"p":[$n[0].Version.ParseFailureKind]},{"a":4,"n":"SetFailure","t":8,"pi":[{"n":"failure","pt":$n[0].Version.ParseFailureKind,"ps":0},{"n":"argument","pt":$n[0].String,"ps":1}],"sn":"setFailure$1","rt":$n[0].Void,"p":[$n[0].Version.ParseFailureKind,$n[0].String]},{"a":4,"n":"m_argumentName","t":4,"rt":$n[0].String,"sn":"m_argumentName"},{"a":4,"n":"m_canThrow","t":4,"rt":$n[0].Boolean,"sn":"m_canThrow"},{"a":4,"n":"m_exceptionArgument","t":4,"rt":$n[0].String,"sn":"m_exceptionArgument"},{"a":4,"n":"m_failure","t":4,"rt":$n[0].Version.ParseFailureKind,"sn":"m_failure"},{"a":4,"n":"m_parsedVersion","t":4,"rt":$n[0].Version,"sn":"m_parsedVersion"}]}; });
+    $m($n[0].OverflowException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].ArgumentOutOfRangeException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"paramName","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"def":function (message, innerException) { return new System.ArgumentOutOfRangeException(null, message, innerException); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].String],"pi":[{"n":"paramName","pt":$n[0].String,"ps":0},{"n":"message","pt":$n[0].String,"ps":1}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Object,$n[0].String],"pi":[{"n":"paramName","pt":$n[0].String,"ps":0},{"n":"actualValue","pt":$n[0].Object,"ps":1},{"n":"message","pt":$n[0].String,"ps":2}],"def":function (paramName, actualValue, message) { return new System.ArgumentOutOfRangeException(paramName, message, null, actualValue); }},{"a":2,"n":"ActualValue","t":16,"rt":$n[0].Object,"g":{"a":2,"n":"get_ActualValue","t":8,"rt":$n[0].Object,"fg":"ActualValue"},"fn":"ActualValue"}]}; });
+    $m($n[0].Boolean, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":1,"n":".ctor","t":1,"p":[System.Object],"pi":[{"n":"_","pt":System.Object,"ps":0}],"def":function (_) { return false; }},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].Boolean,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].Boolean]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Boolean,"ps":0}],"tpc":0,"def":function (other) { return this === other; },"rt":$n[0].Boolean,"p":[$n[0].Boolean]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (value) { return System.Boolean.parse(value); },"rt":$n[0].Boolean,"p":[$n[0].String]},{"ov":true,"a":2,"n":"ToString","t":8,"tpc":0,"def":function () { return System.Boolean.toString(this); },"rt":$n[0].String},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Boolean,"ps":1}],"tpc":0,"def":function (value, result) { return System.Boolean.tryParse(value, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Boolean]},{"a":4,"n":"False","is":true,"t":4,"rt":$n[0].Int32,"sn":"False"},{"a":2,"n":"FalseString","is":true,"t":4,"rt":$n[0].String,"sn":"falseString","ro":true},{"a":4,"n":"True","is":true,"t":4,"rt":$n[0].Int32,"sn":"True"},{"a":2,"n":"TrueString","is":true,"t":4,"rt":$n[0].String,"sn":"trueString","ro":true}]}; });
+    $m($n[0].Char, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"def":function () { return Number; }},{"a":1,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"def":function (i) { return Number; }},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (value) { return Bridge.compare(this, value); },"rt":$n[0].Int32,"p":[$n[0].Char]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"value","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (value) { return Bridge.compare(this, value); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"obj","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (obj) { return this === obj; },"rt":$n[0].Boolean,"p":[$n[0].Char]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return System.Char.equals(this, obj); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Char.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Char.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"ov":true,"a":2,"n":"GetHashCode","t":8,"tpc":0,"def":function () { return System.Char.getHashCode(this); },"rt":$n[0].Int32},{"a":2,"n":"IsControl","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"sn":"isControl","rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsControl","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return System.Char.isControl(s.charCodeAt(index)); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsDigit","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"sn":"isDigit","rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsDigit","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return System.Char.isDigit(s.charCodeAt(index)); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsHighSurrogate","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"sn":"isHighSurrogate","rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsHighSurrogate","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return System.Char.isHighSurrogate(s.charCodeAt(index)); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsLetter","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"sn":"isLetter","rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsLetter","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return System.Char.isLetter(s.charCodeAt(index)); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsLetterOrDigit","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (c) { return (System.Char.isDigit(c) || System.Char.isLetter(c)); },"rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsLetterOrDigit","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return (System.Char.isDigit(s.charCodeAt(index)) || System.Char.isLetter(s.charCodeAt(index))); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsLowSurrogate","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"sn":"isLowSurrogate","rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsLowSurrogate","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return System.Char.isLowSurrogate(s.charCodeAt(index)); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsLower","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (s) { return Bridge.isLower(s); },"rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsNumber","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"sn":"isNumber","rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsNumber","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return System.Char.isNumber(s.charCodeAt(index)); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsPunctuation","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"sn":"isPunctuation","rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsPunctuation","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return System.Char.isPunctuation(s.charCodeAt(index)); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsSeparator","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"sn":"isSeparator","rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsSeparator","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return System.Char.isSeparator(s.charCodeAt(index)); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsSurrogate","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"sn":"isSurrogate","rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsSurrogate","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return System.Char.isSurrogate(s.charCodeAt(index)); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsSurrogatePair","is":true,"t":8,"pi":[{"n":"highSurrogate","pt":$n[0].Char,"ps":0},{"n":"lowSurrogate","pt":$n[0].Char,"ps":1}],"tpc":0,"def":function (highSurrogate, lowSurrogate) { return (System.Char.isHighSurrogate(highSurrogate) && System.Char.isLowSurrogate(lowSurrogate)); },"rt":$n[0].Boolean,"p":[$n[0].Char,$n[0].Char]},{"a":2,"n":"IsSurrogatePair","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return (System.Char.isHighSurrogate(s.charCodeAt(index)) && System.Char.isLowSurrogate(s.charCodeAt(index + 1))); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsSymbol","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"sn":"isSymbol","rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsSymbol","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return System.Char.isSymbol(s.charCodeAt(index)); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsUpper","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (s) { return Bridge.isUpper(s); },"rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsUpper","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"sn":"isUpper","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsWhiteSpace","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (c) { return System.Char.isWhiteSpace(String.fromCharCode(c)); },"rt":$n[0].Boolean,"p":[$n[0].Char]},{"a":2,"n":"IsWhiteSpace","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, index) { return System.Char.isWhiteSpace(s.charAt(index)); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.Char.charCodeAt(s, 0); },"rt":$n[0].Char,"p":[$n[0].String]},{"a":2,"n":"ToLower","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (c) { return String.fromCharCode(c).toLowerCase().charCodeAt(0); },"rt":$n[0].Char,"p":[$n[0].Char]},{"ov":true,"a":2,"n":"ToString","t":8,"tpc":0,"def":function () { return String.fromCharCode(this); },"rt":$n[0].String},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Char.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Char.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"ToUpper","is":true,"t":8,"pi":[{"n":"c","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (c) { return String.fromCharCode(c).toUpperCase().charCodeAt(0); },"rt":$n[0].Char,"p":[$n[0].Char]},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].Char,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].Char,"sn":"MinValue"}]}; });
+    $m($n[0].DateTime, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int64],"pi":[{"n":"ticks","pt":$n[0].Int64,"ps":0}],"def":function (ticks) { return System.DateTime.create$2(ticks); }},{"a":1,"n":".ctor","t":1,"p":[System.Object],"pi":[{"n":"_","pt":System.Object,"ps":0}],"def":function (_) { return System.DateTime.getDefaultValue(); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int64,$n[0].DateTimeKind],"pi":[{"n":"ticks","pt":$n[0].Int64,"ps":0},{"n":"kind","pt":$n[0].DateTimeKind,"ps":1}],"def":function (ticks, kind) { return System.DateTime.create$2(ticks, kind); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32,$n[0].Int32],"pi":[{"n":"year","pt":$n[0].Int32,"ps":0},{"n":"month","pt":$n[0].Int32,"ps":1},{"n":"day","pt":$n[0].Int32,"ps":2}],"def":function (year, month, day) { return System.DateTime.create(year, month, day); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32],"pi":[{"n":"year","pt":$n[0].Int32,"ps":0},{"n":"month","pt":$n[0].Int32,"ps":1},{"n":"day","pt":$n[0].Int32,"ps":2},{"n":"hour","pt":$n[0].Int32,"ps":3},{"n":"minute","pt":$n[0].Int32,"ps":4},{"n":"second","pt":$n[0].Int32,"ps":5}],"def":function (year, month, day, hour, minute, second) { return System.DateTime.create(year, month, day, hour, minute, second); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].DateTimeKind],"pi":[{"n":"year","pt":$n[0].Int32,"ps":0},{"n":"month","pt":$n[0].Int32,"ps":1},{"n":"day","pt":$n[0].Int32,"ps":2},{"n":"hour","pt":$n[0].Int32,"ps":3},{"n":"minute","pt":$n[0].Int32,"ps":4},{"n":"second","pt":$n[0].Int32,"ps":5},{"n":"kind","pt":$n[0].DateTimeKind,"ps":6}],"def":function (year, month, day, hour, minute, second, kind) { return System.DateTime.create(year, month, day, hour, minute, second, 0, kind); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32],"pi":[{"n":"year","pt":$n[0].Int32,"ps":0},{"n":"month","pt":$n[0].Int32,"ps":1},{"n":"day","pt":$n[0].Int32,"ps":2},{"n":"hour","pt":$n[0].Int32,"ps":3},{"n":"minute","pt":$n[0].Int32,"ps":4},{"n":"second","pt":$n[0].Int32,"ps":5},{"n":"millisecond","pt":$n[0].Int32,"ps":6}],"def":function (year, month, day, hour, minute, second, millisecond) { return System.DateTime.create(year, month, day, hour, minute, second, millisecond); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].DateTimeKind],"pi":[{"n":"year","pt":$n[0].Int32,"ps":0},{"n":"month","pt":$n[0].Int32,"ps":1},{"n":"day","pt":$n[0].Int32,"ps":2},{"n":"hour","pt":$n[0].Int32,"ps":3},{"n":"minute","pt":$n[0].Int32,"ps":4},{"n":"second","pt":$n[0].Int32,"ps":5},{"n":"millisecond","pt":$n[0].Int32,"ps":6},{"n":"kind","pt":$n[0].DateTimeKind,"ps":7}],"def":function (year, month, day, hour, minute, second, millisecond, kind) { return System.DateTime.create(year, month, day, hour, minute, second, millisecond, kind); }},{"a":2,"n":"Add","t":8,"pi":[{"n":"value","pt":$n[0].TimeSpan,"ps":0}],"tpc":0,"def":function (value) { return System.DateTime.add(this, value); },"rt":$n[0].DateTime,"p":[$n[0].TimeSpan]},{"a":2,"n":"AddDays","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (value) { return System.DateTime.addDays(this, value); },"rt":$n[0].DateTime,"p":[$n[0].Double]},{"a":2,"n":"AddHours","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (value) { return System.DateTime.addHours(this, value); },"rt":$n[0].DateTime,"p":[$n[0].Double]},{"a":2,"n":"AddMilliseconds","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (value) { return System.DateTime.addMilliseconds(this, value); },"rt":$n[0].DateTime,"p":[$n[0].Double]},{"a":2,"n":"AddMinutes","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (value) { return System.DateTime.addMinutes(this, value); },"rt":$n[0].DateTime,"p":[$n[0].Double]},{"a":2,"n":"AddMonths","t":8,"pi":[{"n":"months","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (months) { return System.DateTime.addMonths(this, months); },"rt":$n[0].DateTime,"p":[$n[0].Int32]},{"a":2,"n":"AddSeconds","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (value) { return System.DateTime.addSeconds(this, value); },"rt":$n[0].DateTime,"p":[$n[0].Double]},{"a":2,"n":"AddTicks","t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"tpc":0,"def":function (value) { return System.DateTime.addTicks(this, value); },"rt":$n[0].DateTime,"p":[$n[0].Int64]},{"a":2,"n":"AddYears","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (value) { return System.DateTime.addYears(this, value); },"rt":$n[0].DateTime,"p":[$n[0].Int32]},{"a":2,"n":"Compare","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].DateTime,"ps":0},{"n":"t2","pt":$n[0].DateTime,"ps":1}],"tpc":0,"def":function (t1, t2) { return Bridge.compare(t1, t2); },"rt":$n[0].Int32,"p":[$n[0].DateTime,$n[0].DateTime]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].DateTime,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].DateTime]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"DaysInMonth","is":true,"t":8,"pi":[{"n":"year","pt":$n[0].Int32,"ps":0},{"n":"month","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (year, month) { return System.DateTime.getDaysInMonth(year, month); },"rt":$n[0].Int32,"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].DateTime,"ps":0}],"tpc":0,"def":function (other) { return Bridge.equalsT(this, other); },"rt":$n[0].Boolean,"p":[$n[0].DateTime]},{"a":2,"n":"Equals","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].DateTime,"ps":0},{"n":"t2","pt":$n[0].DateTime,"ps":1}],"tpc":0,"def":function (t1, t2) { return Bridge.equalsT(t1, t2); },"rt":$n[0].Boolean,"p":[$n[0].DateTime,$n[0].DateTime]},{"a":2,"n":"IsDaylightSavingTime","t":8,"tpc":0,"def":function () { return System.DateTime.isDaylightSavingTime(this); },"rt":$n[0].Boolean},{"a":2,"n":"IsLeapYear","is":true,"t":8,"pi":[{"n":"year","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (year) { return System.DateTime.getIsLeapYear(year); },"rt":$n[0].Boolean,"p":[$n[0].Int32]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.DateTime.parse(s); },"rt":$n[0].DateTime,"p":[$n[0].String]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (s, provider) { return System.DateTime.parse(s, provider); },"rt":$n[0].DateTime,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"ParseExact","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"format","pt":$n[0].String,"ps":1},{"n":"provider","pt":$n[0].IFormatProvider,"ps":2}],"tpc":0,"def":function (s, format, provider) { return System.DateTime.parseExact(s, format, provider); },"rt":$n[0].DateTime,"p":[$n[0].String,$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"SpecifyKind","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].DateTime,"ps":0},{"n":"kind","pt":$n[0].DateTimeKind,"ps":1}],"tpc":0,"def":function (value, kind) { return System.DateTime.specifyKind(value, kind); },"rt":$n[0].DateTime,"p":[$n[0].DateTime,$n[0].DateTimeKind]},{"a":2,"n":"Subtract","t":8,"pi":[{"n":"value","pt":$n[0].DateTime,"ps":0}],"tpc":0,"def":function (value) { return System.DateTime.subdd(this, value); },"rt":$n[0].TimeSpan,"p":[$n[0].DateTime]},{"a":2,"n":"Subtract","t":8,"pi":[{"n":"value","pt":$n[0].TimeSpan,"ps":0}],"tpc":0,"def":function (value) { return System.DateTime.subtract(this, value); },"rt":$n[0].DateTime,"p":[$n[0].TimeSpan]},{"a":2,"n":"ToLocalTime","t":8,"tpc":0,"def":function () { return System.DateTime.toLocalTime(this); },"rt":$n[0].DateTime},{"a":2,"n":"ToShortDateString","t":8,"tpc":0,"def":function () { return System.DateTime.format(this, "d"); },"rt":$n[0].String},{"a":2,"n":"ToShortTimeString","t":8,"tpc":0,"def":function () { return System.DateTime.format(this, "t"); },"rt":$n[0].String},{"ov":true,"a":2,"n":"ToString","t":8,"tpc":0,"def":function () { return System.DateTime.format(this); },"rt":$n[0].String},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.DateTime.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.DateTime.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"ToUniversalTime","t":8,"tpc":0,"def":function () { return System.DateTime.toUniversalTime(this); },"rt":$n[0].DateTime},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].DateTime,"ps":1}],"tpc":0,"def":function (s, result) { return System.DateTime.tryParse(s, null, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].DateTime]},{"a":2,"n":"TryParseExact","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"format","pt":$n[0].String,"ps":1},{"n":"provider","pt":$n[0].IFormatProvider,"ps":2},{"n":"result","out":true,"pt":$n[0].DateTime,"ps":3}],"tpc":0,"def":function (s, format, provider, result) { return System.DateTime.tryParseExact(s, format, provider, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].String,$n[0].IFormatProvider,$n[0].DateTime]},{"a":2,"n":"op_Addition","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].DateTime,"ps":0},{"n":"t","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (d, t) { return System.DateTime.adddt(d, t); },"rt":$n[0].DateTime,"p":[$n[0].DateTime,$n[0].TimeSpan]},{"a":2,"n":"op_Equality","is":true,"t":8,"pi":[{"n":"a","pt":$n[0].DateTime,"ps":0},{"n":"b","pt":$n[0].DateTime,"ps":1}],"tpc":0,"def":function (a, b) { return Bridge.equals(a, b); },"rt":$n[0].Boolean,"p":[$n[0].DateTime,$n[0].DateTime]},{"a":2,"n":"op_GreaterThan","is":true,"t":8,"pi":[{"n":"a","pt":$n[0].DateTime,"ps":0},{"n":"b","pt":$n[0].DateTime,"ps":1}],"tpc":0,"def":function (a, b) { return System.DateTime.gt(a, b); },"rt":$n[0].Boolean,"p":[$n[0].DateTime,$n[0].DateTime]},{"a":2,"n":"op_GreaterThanOrEqual","is":true,"t":8,"pi":[{"n":"a","pt":$n[0].DateTime,"ps":0},{"n":"b","pt":$n[0].DateTime,"ps":1}],"tpc":0,"def":function (a, b) { return System.DateTime.gte(a, b); },"rt":$n[0].Boolean,"p":[$n[0].DateTime,$n[0].DateTime]},{"a":2,"n":"op_Inequality","is":true,"t":8,"pi":[{"n":"a","pt":$n[0].DateTime,"ps":0},{"n":"b","pt":$n[0].DateTime,"ps":1}],"tpc":0,"def":function (a, b) { return !Bridge.equals(a, b); },"rt":$n[0].Boolean,"p":[$n[0].DateTime,$n[0].DateTime]},{"a":2,"n":"op_LessThan","is":true,"t":8,"pi":[{"n":"a","pt":$n[0].DateTime,"ps":0},{"n":"b","pt":$n[0].DateTime,"ps":1}],"tpc":0,"def":function (a, b) { return System.DateTime.lt(a, b); },"rt":$n[0].Boolean,"p":[$n[0].DateTime,$n[0].DateTime]},{"a":2,"n":"op_LessThanOrEqual","is":true,"t":8,"pi":[{"n":"a","pt":$n[0].DateTime,"ps":0},{"n":"b","pt":$n[0].DateTime,"ps":1}],"tpc":0,"def":function (a, b) { return System.DateTime.lte(a, b); },"rt":$n[0].Boolean,"p":[$n[0].DateTime,$n[0].DateTime]},{"a":2,"n":"op_Subtraction","is":true,"t":8,"pi":[{"n":"a","pt":$n[0].DateTime,"ps":0},{"n":"b","pt":$n[0].DateTime,"ps":1}],"tpc":0,"def":function (a, b) { return System.DateTime.subdd(a, b); },"rt":$n[0].TimeSpan,"p":[$n[0].DateTime,$n[0].DateTime]},{"a":2,"n":"op_Subtraction","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].DateTime,"ps":0},{"n":"t","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (d, t) { return System.DateTime.subdt(d, t); },"rt":$n[0].DateTime,"p":[$n[0].DateTime,$n[0].TimeSpan]},{"a":2,"n":"Date","t":16,"rt":$n[0].DateTime,"g":{"a":2,"n":"get_Date","t":8,"tpc":0,"def":function () { return System.DateTime.getDate(this); },"rt":$n[0].DateTime}},{"a":2,"n":"Day","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Day","t":8,"tpc":0,"def":function () { return System.DateTime.getDay(this); },"rt":$n[0].Int32}},{"a":2,"n":"DayOfWeek","t":16,"rt":$n[0].DayOfWeek,"g":{"a":2,"n":"get_DayOfWeek","t":8,"tpc":0,"def":function () { return System.DateTime.getDayOfWeek(this); },"rt":$n[0].DayOfWeek}},{"a":2,"n":"DayOfYear","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_DayOfYear","t":8,"tpc":0,"def":function () { return System.DateTime.getDayOfYear(this); },"rt":$n[0].Int32}},{"a":2,"n":"Hour","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Hour","t":8,"tpc":0,"def":function () { return System.DateTime.getHour(this); },"rt":$n[0].Int32}},{"a":2,"n":"Kind","t":16,"rt":$n[0].DateTimeKind,"g":{"a":2,"n":"get_Kind","t":8,"tpc":0,"def":function () { return System.DateTime.getKind(this); },"rt":$n[0].DateTimeKind},"s":{"a":1,"n":"set_Kind","t":8,"pi":[{"n":"value","pt":$n[0].DateTimeKind,"ps":0}],"sn":"Kind","rt":$n[0].Void,"p":[$n[0].DateTimeKind]}},{"a":2,"n":"Millisecond","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Millisecond","t":8,"tpc":0,"def":function () { return System.DateTime.getMillisecond(this); },"rt":$n[0].Int32}},{"a":2,"n":"Minute","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Minute","t":8,"tpc":0,"def":function () { return System.DateTime.getMinute(this); },"rt":$n[0].Int32}},{"a":2,"n":"Month","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Month","t":8,"tpc":0,"def":function () { return System.DateTime.getMonth(this); },"rt":$n[0].Int32}},{"a":2,"n":"Now","is":true,"t":16,"rt":$n[0].DateTime,"g":{"a":2,"n":"get_Now","is":true,"t":8,"tpc":0,"def":function () { return System.DateTime.getNow(); },"rt":$n[0].DateTime}},{"a":2,"n":"Second","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Second","t":8,"tpc":0,"def":function () { return System.DateTime.getSecond(this); },"rt":$n[0].Int32}},{"a":2,"n":"Ticks","t":16,"rt":$n[0].Int64,"g":{"a":2,"n":"get_Ticks","t":8,"tpc":0,"def":function () { return System.DateTime.getTicks(this); },"rt":$n[0].Int64}},{"a":2,"n":"TimeOfDay","t":16,"rt":$n[0].TimeSpan,"g":{"a":2,"n":"get_TimeOfDay","t":8,"tpc":0,"def":function () { return System.DateTime.getTimeOfDay(this); },"rt":$n[0].TimeSpan}},{"a":2,"n":"Today","is":true,"t":16,"rt":$n[0].DateTime,"g":{"a":2,"n":"get_Today","is":true,"t":8,"tpc":0,"def":function () { return System.DateTime.getToday(); },"rt":$n[0].DateTime}},{"a":2,"n":"UtcNow","is":true,"t":16,"rt":$n[0].DateTime,"g":{"a":2,"n":"get_UtcNow","is":true,"t":8,"tpc":0,"def":function () { return System.DateTime.getUtcNow(); },"rt":$n[0].DateTime}},{"a":2,"n":"Year","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Year","t":8,"tpc":0,"def":function () { return System.DateTime.getYear(this); },"rt":$n[0].Int32}},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].DateTime,"sn":"maxValue","ro":true},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].DateTime,"sn":"minValue","ro":true}]}; });
+    $m($n[0].DayOfWeek, function () { return {"att":8449,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Friday","is":true,"t":4,"rt":$n[0].DayOfWeek,"sn":"Friday"},{"a":2,"n":"Monday","is":true,"t":4,"rt":$n[0].DayOfWeek,"sn":"Monday"},{"a":2,"n":"Saturday","is":true,"t":4,"rt":$n[0].DayOfWeek,"sn":"Saturday"},{"a":2,"n":"Sunday","is":true,"t":4,"rt":$n[0].DayOfWeek,"sn":"Sunday"},{"a":2,"n":"Thursday","is":true,"t":4,"rt":$n[0].DayOfWeek,"sn":"Thursday"},{"a":2,"n":"Tuesday","is":true,"t":4,"rt":$n[0].DayOfWeek,"sn":"Tuesday"},{"a":2,"n":"Wednesday","is":true,"t":4,"rt":$n[0].DayOfWeek,"sn":"Wednesday"}]}; });
+    $m($n[0].Double, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"def":function () { return Number; }},{"a":1,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"def":function (i) { return Number; }},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].Double]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return Bridge.compare(this, obj); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (other) { return this === other; },"rt":$n[0].Boolean,"p":[$n[0].Double]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (other) { return System.Double.equals(this, other); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Double.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Double.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"ov":true,"a":2,"n":"GetHashCode","t":8,"tpc":0,"def":function () { return System.Double.getHashCode(this); },"rt":$n[0].Int32},{"a":2,"n":"IsFinite","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (d) { return isFinite(d); },"rt":$n[0].Boolean,"p":[$n[0].Double]},{"a":2,"n":"IsInfinity","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (d) { return (Math.abs(d) === Number.POSITIVE_INFINITY); },"rt":$n[0].Boolean,"p":[$n[0].Double]},{"a":2,"n":"IsNaN","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (d) { return isNaN(d); },"rt":$n[0].Boolean,"p":[$n[0].Double]},{"a":2,"n":"IsNegativeInfinity","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (d) { return (d === Number.NEGATIVE_INFINITY); },"rt":$n[0].Boolean,"p":[$n[0].Double]},{"a":2,"n":"IsPositiveInfinity","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Double,"ps":0}],"tpc":0,"def":function (d) { return (d === Number.POSITIVE_INFINITY); },"rt":$n[0].Boolean,"p":[$n[0].Double]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.Double.parse(s); },"rt":$n[0].Double,"p":[$n[0].String]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (s, provider) { return Bridge.Int.parseFloat(s, provider); },"rt":$n[0].Double,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"ToExponential","t":8,"sn":"toExponential","rt":$n[0].String},{"a":2,"n":"ToExponential","t":8,"pi":[{"n":"fractionDigits","pt":$n[0].Int32,"ps":0}],"sn":"toExponential","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToFixed","t":8,"sn":"toFixed","rt":$n[0].String},{"a":2,"n":"ToFixed","t":8,"pi":[{"n":"fractionDigits","pt":$n[0].Int32,"ps":0}],"sn":"toFixed","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToPrecision","t":8,"sn":"toPrecision","rt":$n[0].String},{"a":2,"n":"ToPrecision","t":8,"pi":[{"n":"precision","pt":$n[0].Int32,"ps":0}],"sn":"toPrecision","rt":$n[0].String,"p":[$n[0].Int32]},{"ov":true,"a":2,"n":"ToString","t":8,"tpc":0,"def":function () { return System.Double.format(this); },"rt":$n[0].String},{"a":2,"n":"ToString","t":8,"pi":[{"n":"provider","pt":$n[0].IFormatProvider,"ps":0}],"tpc":0,"def":function (provider) { return System.Double.format(this, "G", provider); },"rt":$n[0].String,"p":[$n[0].IFormatProvider]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"radix","pt":$n[0].Int32,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Double.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Double.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Double,"ps":1}],"tpc":0,"def":function (s, result) { return System.Double.tryParse(s, null, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Double]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1},{"n":"result","out":true,"pt":$n[0].Double,"ps":2}],"tpc":0,"def":function (s, provider, result) { return System.Double.tryParse(s, provider, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].IFormatProvider,$n[0].Double]},{"a":2,"n":"Epsilon","is":true,"t":4,"rt":$n[0].Double,"sn":"Epsilon"},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].Double,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].Double,"sn":"MinValue"},{"a":2,"n":"NaN","is":true,"t":4,"rt":$n[0].Double,"sn":"naN","ro":true},{"a":2,"n":"NegativeInfinity","is":true,"t":4,"rt":$n[0].Double,"sn":"negativeInfinity","ro":true},{"a":2,"n":"PositiveInfinity","is":true,"t":4,"rt":$n[0].Double,"sn":"positiveInfinity","ro":true}]}; });
+    $m($n[0].ICloneable, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Clone","t":8,"tpc":0,"def":function () { return Bridge.clone(this); },"rt":$n[0].Object}]}; });
+    $m($n[0].IFormatProvider, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"GetFormat","t":8,"pi":[{"n":"formatType","pt":Function,"ps":0}],"sn":"System$IFormatProvider$getFormat","rt":$n[0].Object,"p":[Function]}]}; });
+    $m($n[0].SByte, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"def":function () { return Number; }},{"a":1,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"def":function (i) { return Number; }},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return Bridge.compare(this, obj); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].SByte,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].SByte]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (other) { return System.SByte.equals(this, other); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].SByte,"ps":0}],"tpc":0,"def":function (other) { return this === other; },"rt":$n[0].Boolean,"p":[$n[0].SByte]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.SByte.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.SByte.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.SByte.parse(s); },"rt":$n[0].SByte,"p":[$n[0].String]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"radix","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, radix) { return System.SByte.parse(s, radix); },"rt":$n[0].SByte,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"radix","pt":$n[0].Int32,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.SByte.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.SByte.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].SByte,"ps":1}],"tpc":0,"def":function (s, result) { return System.SByte.tryParse(s, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].SByte]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].SByte,"ps":1},{"n":"radix","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (s, result, radix) { return System.SByte.tryParse(s, result, radix); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].SByte,$n[0].Int32]},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].SByte,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].SByte,"sn":"MinValue"}]}; });
+    $m($n[0].Byte, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"def":function () { return Number; }},{"a":1,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"def":function (i) { return Number; }},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].Byte,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].Byte]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return Bridge.compare(this, obj); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Byte,"ps":0}],"tpc":0,"def":function (other) { return this === other; },"rt":$n[0].Boolean,"p":[$n[0].Byte]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (other) { return System.Byte.equals(this, other); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Byte.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Byte.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.Byte.parse(s); },"rt":$n[0].Byte,"p":[$n[0].String]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"radix","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, radix) { return System.Byte.parse(s, radix); },"rt":$n[0].Byte,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"radix","pt":$n[0].Int32,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Byte.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Byte.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Byte,"ps":1}],"tpc":0,"def":function (s, result) { return System.Byte.tryParse(s, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Byte]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Byte,"ps":1},{"n":"radix","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (s, result, radix) { return System.Byte.tryParse(s, result, radix); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Byte,$n[0].Int32]},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].Byte,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].Byte,"sn":"MinValue"}]}; });
+    $m($n[0].Int16, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"def":function () { return Number; }},{"a":1,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"def":function (i) { return Number; }},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].Int16,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].Int16]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return Bridge.compare(this, obj); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Int16,"ps":0}],"tpc":0,"def":function (other) { return this === other; },"rt":$n[0].Boolean,"p":[$n[0].Int16]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (other) { return System.Int16.equals(this, other); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Int16.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Int16.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.Int16.parse(s); },"rt":$n[0].Int16,"p":[$n[0].String]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"radix","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, radix) { return System.Int16.parse(s, radix); },"rt":$n[0].Int16,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"radix","pt":$n[0].Int32,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Int16.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Int16.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Int16,"ps":1}],"tpc":0,"def":function (s, result) { return System.Int16.tryParse(s, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int16]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Int16,"ps":1},{"n":"radix","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (s, result, radix) { return System.Int16.tryParse(s, result, radix); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int16,$n[0].Int32]},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].Int16,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].Int16,"sn":"MinValue"}]}; });
+    $m($n[0].Single, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"def":function () { return Number; }},{"a":1,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"def":function (i) { return Number; }},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return Bridge.compare(this, obj); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].Single,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].Single]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (other) { return System.Single.equals(this, other); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Single,"ps":0}],"tpc":0,"def":function (other) { return this === other; },"rt":$n[0].Boolean,"p":[$n[0].Single]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Single.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Single.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"ov":true,"a":2,"n":"GetHashCode","t":8,"tpc":0,"def":function () { return System.Single.getHashCode(this); },"rt":$n[0].Int32},{"a":2,"n":"IsFinite","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Single,"ps":0}],"tpc":0,"def":function (d) { return isFinite(d); },"rt":$n[0].Boolean,"p":[$n[0].Single]},{"a":2,"n":"IsInfinity","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Single,"ps":0}],"tpc":0,"def":function (d) { return (Math.abs(d) === Number.POSITIVE_INFINITY); },"rt":$n[0].Boolean,"p":[$n[0].Single]},{"a":2,"n":"IsNaN","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Single,"ps":0}],"tpc":0,"def":function (d) { return isNaN(d); },"rt":$n[0].Boolean,"p":[$n[0].Single]},{"a":2,"n":"IsNegativeInfinity","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Single,"ps":0}],"tpc":0,"def":function (d) { return (d === Number.NEGATIVE_INFINITY); },"rt":$n[0].Boolean,"p":[$n[0].Single]},{"a":2,"n":"IsPositiveInfinity","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Single,"ps":0}],"tpc":0,"def":function (d) { return (d === Number.POSITIVE_INFINITY); },"rt":$n[0].Boolean,"p":[$n[0].Single]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.Single.parse(s); },"rt":$n[0].Single,"p":[$n[0].String]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (s, provider) { return System.Single.parse(s, provider); },"rt":$n[0].Single,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"ToExponential","t":8,"sn":"toExponential","rt":$n[0].String},{"a":2,"n":"ToExponential","t":8,"pi":[{"n":"fractionDigits","pt":$n[0].Int32,"ps":0}],"sn":"toExponential","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToFixed","t":8,"sn":"toFixed","rt":$n[0].String},{"a":2,"n":"ToFixed","t":8,"pi":[{"n":"fractionDigits","pt":$n[0].Int32,"ps":0}],"sn":"toFixed","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToPrecision","t":8,"sn":"toPrecision","rt":$n[0].String},{"a":2,"n":"ToPrecision","t":8,"pi":[{"n":"precision","pt":$n[0].Int32,"ps":0}],"sn":"toPrecision","rt":$n[0].String,"p":[$n[0].Int32]},{"ov":true,"a":2,"n":"ToString","t":8,"tpc":0,"def":function () { return System.Single.format(this); },"rt":$n[0].String},{"a":2,"n":"ToString","t":8,"pi":[{"n":"provider","pt":$n[0].IFormatProvider,"ps":0}],"tpc":0,"def":function (provider) { return System.Single.format(this, "G", provider); },"rt":$n[0].String,"p":[$n[0].IFormatProvider]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"radix","pt":$n[0].Int32,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Single.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Single.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Single,"ps":1}],"tpc":0,"def":function (s, result) { return System.Single.tryParse(s, null, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Single]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1},{"n":"result","out":true,"pt":$n[0].Single,"ps":2}],"tpc":0,"def":function (s, provider, result) { return System.Single.tryParse(s, provider, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].IFormatProvider,$n[0].Single]},{"a":2,"n":"Epsilon","is":true,"t":4,"rt":$n[0].Single,"sn":"Epsilon"},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].Single,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].Single,"sn":"MinValue"},{"a":2,"n":"NaN","is":true,"t":4,"rt":$n[0].Single,"sn":"naN","ro":true},{"a":2,"n":"NegativeInfinity","is":true,"t":4,"rt":$n[0].Single,"sn":"negativeInfinity","ro":true},{"a":2,"n":"PositiveInfinity","is":true,"t":4,"rt":$n[0].Single,"sn":"positiveInfinity","ro":true}]}; });
+    $m($n[0].UInt16, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"def":function () { return Number; }},{"a":1,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"def":function (i) { return Number; }},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return Bridge.compare(this, obj); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].UInt16,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].UInt16]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (other) { return System.UInt16.equals(this, other); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].UInt16,"ps":0}],"tpc":0,"def":function (other) { return this === other; },"rt":$n[0].Boolean,"p":[$n[0].UInt16]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.UInt16.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.UInt16.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.UInt16.parse(s); },"rt":$n[0].UInt16,"p":[$n[0].String]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"radix","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, radix) { return System.UInt16.parse(s, radix); },"rt":$n[0].UInt16,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"radix","pt":$n[0].Int32,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.UInt16.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.UInt16.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].UInt16,"ps":1}],"tpc":0,"def":function (s, result) { return System.UInt16.tryParse(s, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].UInt16]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].UInt16,"ps":1},{"n":"radix","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (s, result, radix) { return System.UInt16.tryParse(s, result, radix); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].UInt16,$n[0].Int32]},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].UInt16,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].UInt16,"sn":"MinValue"}]}; });
+    $m($n[0].Int32, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"def":function () { return Number; }},{"a":1,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"def":function (i) { return Number; }},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].Int32]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return Bridge.compare(this, obj); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (other) { return this === other; },"rt":$n[0].Boolean,"p":[$n[0].Int32]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (other) { return System.Int32.equals(this, other); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Int32.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Int32.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.Int32.parse(s); },"rt":$n[0].Int32,"p":[$n[0].String]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"radix","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, radix) { return System.Int32.parse(s, radix); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"radix","pt":$n[0].Int32,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.Int32.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.Int32.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, result) { return System.Int32.tryParse(s, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Int32,"ps":1},{"n":"radix","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (s, result, radix) { return System.Int32.tryParse(s, result, radix); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].Int32,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].Int32,"sn":"MinValue"}]}; });
+    $m($n[0].Int64, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":1,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"sn":"ctor"},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].Int64,"ps":0}],"sn":"compareTo","rt":$n[0].Int32,"p":[$n[0].Int64]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"sn":"compareTo","rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Int64,"ps":0}],"sn":"equalsT","rt":$n[0].Boolean,"p":[$n[0].Int64]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"sn":"format","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"sn":"format","rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.Int64.parse(s); },"rt":$n[0].Int64,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"radix","pt":$n[0].Int32,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"sn":"format","rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Int64,"ps":1}],"tpc":0,"def":function (s, result) { return System.Int64.tryParse(s, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"op_Explicit","rt":$n[0].Int64,"p":[$n[0].Double]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Byte,"p":[$n[0].Int64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Char,"p":[$n[0].Int64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Double,"p":[$n[0].Int64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Int16,"p":[$n[0].Int64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Int32,"p":[$n[0].Int64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"op_Explicit","rt":$n[0].SByte,"p":[$n[0].Int64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Single,"p":[$n[0].Int64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"op_Explicit","rt":$n[0].UInt16,"p":[$n[0].Int64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"op_Explicit","rt":$n[0].UInt32,"p":[$n[0].Int64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"op_Explicit","rt":$n[0].UInt64,"p":[$n[0].Int64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Single,"ps":0}],"sn":"op_Explicit","rt":$n[0].Int64,"p":[$n[0].Single]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Int64,"p":[$n[0].UInt64]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Byte,"ps":0}],"sn":"op_Implicit","rt":$n[0].Int64,"p":[$n[0].Byte]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0}],"sn":"op_Implicit","rt":$n[0].Int64,"p":[$n[0].Char]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int16,"ps":0}],"sn":"op_Implicit","rt":$n[0].Int64,"p":[$n[0].Int16]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"op_Implicit","rt":$n[0].Int64,"p":[$n[0].Int32]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].SByte,"ps":0}],"sn":"op_Implicit","rt":$n[0].Int64,"p":[$n[0].SByte]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt16,"ps":0}],"sn":"op_Implicit","rt":$n[0].Int64,"p":[$n[0].UInt16]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt32,"ps":0}],"sn":"op_Implicit","rt":$n[0].Int64,"p":[$n[0].UInt32]},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].Int64,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].Int64,"sn":"MinValue"}]}; });
+    $m($n[0].UInt64, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":1,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"sn":"ctor"},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"sn":"compareTo","rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].UInt64,"ps":0}],"sn":"compareTo","rt":$n[0].Int32,"p":[$n[0].UInt64]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].UInt64,"ps":0}],"sn":"equalsT","rt":$n[0].Boolean,"p":[$n[0].UInt64]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"sn":"format","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"sn":"format","rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.UInt64.parse(s); },"rt":$n[0].UInt64,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"radix","pt":$n[0].Int32,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"sn":"format","rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].UInt64,"ps":1}],"tpc":0,"def":function (s, result) { return System.UInt64.tryParse(s, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].UInt64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"op_Explicit","rt":$n[0].UInt64,"p":[$n[0].Double]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Single,"ps":0}],"sn":"op_Explicit","rt":$n[0].UInt64,"p":[$n[0].Single]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Byte,"p":[$n[0].UInt64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Char,"p":[$n[0].UInt64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Double,"p":[$n[0].UInt64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Int16,"p":[$n[0].UInt64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Int32,"p":[$n[0].UInt64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"op_Explicit","rt":$n[0].SByte,"p":[$n[0].UInt64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"op_Explicit","rt":$n[0].Single,"p":[$n[0].UInt64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"op_Explicit","rt":$n[0].UInt16,"p":[$n[0].UInt64]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"op_Explicit","rt":$n[0].UInt32,"p":[$n[0].UInt64]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Byte,"ps":0}],"sn":"op_Implicit","rt":$n[0].UInt64,"p":[$n[0].Byte]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0}],"sn":"op_Implicit","rt":$n[0].UInt64,"p":[$n[0].Char]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int16,"ps":0}],"sn":"op_Implicit","rt":$n[0].UInt64,"p":[$n[0].Int16]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"op_Implicit","rt":$n[0].UInt64,"p":[$n[0].Int32]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].SByte,"ps":0}],"sn":"op_Implicit","rt":$n[0].UInt64,"p":[$n[0].SByte]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt16,"ps":0}],"sn":"op_Implicit","rt":$n[0].UInt64,"p":[$n[0].UInt16]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt32,"ps":0}],"sn":"op_Implicit","rt":$n[0].UInt64,"p":[$n[0].UInt32]},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].UInt64,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].UInt64,"sn":"MinValue"}]}; });
+    $m($n[0].UInt32, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"def":function () { return Number; }},{"a":1,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"def":function (i) { return Number; }},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return Bridge.compare(this, obj); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].UInt32,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other); },"rt":$n[0].Int32,"p":[$n[0].UInt32]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (other) { return System.UInt32.equals(this, other); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].UInt32,"ps":0}],"tpc":0,"def":function (other) { return this === other; },"rt":$n[0].Boolean,"p":[$n[0].UInt32]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.UInt32.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.UInt32.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.UInt32.parse(s); },"rt":$n[0].UInt32,"p":[$n[0].String]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"radix","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (s, radix) { return System.UInt32.parse(s, radix); },"rt":$n[0].UInt32,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"radix","pt":$n[0].Int32,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return System.UInt32.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return System.UInt32.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].UInt32,"ps":1}],"tpc":0,"def":function (s, result) { return System.UInt32.tryParse(s, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].UInt32]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].UInt32,"ps":1},{"n":"radix","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (s, result, radix) { return System.UInt32.tryParse(s, result, radix); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].UInt32,$n[0].Int32]},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].UInt32,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].UInt32,"sn":"MinValue"}]}; });
+    $m($n[0].DivideByZeroException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].FormatException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].IFormattable, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"formatProvider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, formatProvider) { return Bridge.format(this, format, formatProvider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]}]}; });
+    $m($n[0].Decimal, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"def":function () { return System.Decimal; }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Double],"pi":[{"n":"d","pt":$n[0].Double,"ps":0}],"def":function (d) { return System.Decimal(d); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"def":function (i) { return System.Decimal(i); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int64],"pi":[{"n":"n","pt":$n[0].Int64,"ps":0}],"def":function (n) { return System.Decimal(n); }},{"a":1,"n":".ctor","t":1,"p":[System.Object],"pi":[{"n":"_","pt":System.Object,"ps":0}],"def":function (_) { return System.Decimal(0); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Single],"pi":[{"n":"f","pt":$n[0].Single,"ps":0}],"def":function (f) { return System.Decimal(f); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].UInt32],"pi":[{"n":"i","pt":$n[0].UInt32,"ps":0}],"def":function (i) { return System.Decimal(i); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].UInt64],"pi":[{"n":"n","pt":$n[0].UInt64,"ps":0}],"def":function (n) { return System.Decimal(n); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Boolean,$n[0].Byte],"pi":[{"n":"lo","pt":$n[0].Int32,"ps":0},{"n":"mid","pt":$n[0].Int32,"ps":1},{"n":"hi","pt":$n[0].Int32,"ps":2},{"n":"isNegative","pt":$n[0].Boolean,"ps":3},{"n":"scale","pt":$n[0].Byte,"ps":4}],"def":function (lo, mid, hi, isNegative, scale) { return System.Decimal; }},{"a":2,"n":"Abs","t":8,"sn":"abs","rt":$n[0].Decimal},{"a":2,"n":"Add","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.add(d2); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"Ceiling","t":8,"sn":"ceil","rt":$n[0].Decimal},{"a":2,"n":"Ceiling","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return d.ceil(); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"Compare","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.compareTo(d2); },"rt":$n[0].Int32,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (other) { return this.compareTo(other); },"rt":$n[0].Int32,"p":[$n[0].Decimal]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return this.compareTo(obj); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"ComparedTo","t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"sn":"comparedTo","rt":$n[0].Int32,"p":[$n[0].Decimal]},{"a":2,"n":"DecimalPlaces","t":8,"sn":"decimalPlaces","rt":$n[0].Int32},{"a":2,"n":"Divide","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.div(d2); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"DividedToIntegerBy","t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"sn":"dividedToIntegerBy","rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Decimal,"ps":0}],"sn":"equalsT","rt":$n[0].Boolean,"p":[$n[0].Decimal]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"o","pt":$n[0].Object,"ps":0}],"sn":"equals","rt":$n[0].Boolean,"p":[$n[0].Object]},{"a":2,"n":"Equals","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.equals(d2); },"rt":$n[0].Boolean,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"Exp","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return System.Decimal.exp(d); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"Exponential","t":8,"sn":"exponential","rt":$n[0].Decimal},{"a":2,"n":"Floor","t":8,"sn":"floor","rt":$n[0].Decimal},{"a":2,"n":"Floor","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return d.floor(); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return Bridge.Int.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return Bridge.Int.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"ov":true,"a":2,"n":"GetHashCode","t":8,"sn":"getHashCode","rt":$n[0].Int32},{"a":2,"n":"IsFinite","t":8,"sn":"isFinite","rt":$n[0].Boolean},{"a":2,"n":"IsInteger","t":8,"sn":"isInteger","rt":$n[0].Boolean},{"a":2,"n":"IsNaN","t":8,"sn":"isNaN","rt":$n[0].Boolean},{"a":2,"n":"IsNegative","t":8,"sn":"isNegative","rt":$n[0].Boolean},{"a":2,"n":"IsZero","t":8,"sn":"isZero","rt":$n[0].Boolean},{"a":2,"n":"Ln","t":8,"sn":"ln","rt":$n[0].Decimal},{"a":2,"n":"Ln","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return System.Decimal.ln(d); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"Log","t":8,"pi":[{"n":"logBase","pt":$n[0].Decimal,"ps":0}],"sn":"log","rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"Log","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0},{"n":"logBase","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d, logBase) { return System.Decimal.log(d, logBase); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"Max","is":true,"t":8,"pi":[{"n":"values","ip":true,"pt":$n[0].Array.type(System.Decimal),"ps":0}],"sn":"max","rt":$n[0].Decimal,"p":[$n[0].Array.type(System.Decimal)]},{"a":2,"n":"Min","is":true,"t":8,"pi":[{"n":"values","ip":true,"pt":$n[0].Array.type(System.Decimal),"ps":0}],"sn":"min","rt":$n[0].Decimal,"p":[$n[0].Array.type(System.Decimal)]},{"a":2,"n":"Multiply","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.mul(d2); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"Negate","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return System.Decimal(0).sub(d); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (s) { return System.Decimal(s); },"rt":$n[0].Decimal,"p":[$n[0].String]},{"a":2,"n":"Parse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (s, provider) { return System.Decimal(s, provider); },"rt":$n[0].Decimal,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"Pow","t":8,"pi":[{"n":"n","pt":$n[0].Double,"ps":0}],"sn":"pow","rt":$n[0].Decimal,"p":[$n[0].Double]},{"a":2,"n":"Pow","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0},{"n":"exponent","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d, exponent) { return System.Decimal.pow(d, exponent); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"Precision","t":8,"sn":"precision","rt":$n[0].Int32},{"a":2,"n":"Random","is":true,"t":8,"pi":[{"n":"dp","pt":$n[0].Int32,"ps":0}],"sn":"random","rt":$n[0].Decimal,"p":[$n[0].Int32]},{"a":2,"n":"Remainder","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.mod(d2); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"Round","t":8,"sn":"round","rt":$n[0].Decimal},{"a":2,"n":"Round","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return System.Decimal.round(d, 6); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"Round","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0},{"n":"decimals","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (d, decimals) { return System.Decimal.toDecimalPlaces(d, decimals, 6); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Int32]},{"a":2,"n":"Round","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0},{"n":"mode","pt":Number,"ps":1}],"tpc":0,"def":function (d, mode) { return System.Decimal.round(d, mode); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,Number]},{"a":2,"n":"Round","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0},{"n":"decimals","pt":$n[0].Int32,"ps":1},{"n":"mode","pt":Number,"ps":2}],"tpc":0,"def":function (d, decimals, mode) { return System.Decimal.toDecimalPlaces(d, decimals, mode); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Int32,Number]},{"a":2,"n":"SetConfig","is":true,"t":8,"pi":[{"n":"config","pt":$n[0].Object,"ps":0}],"sn":"setConfig","rt":$n[0].Void,"p":[$n[0].Object]},{"a":2,"n":"Sqrt","t":8,"sn":"sqrt","rt":$n[0].Decimal},{"a":2,"n":"Sqrt","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return System.Decimal.sqrt(d); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"Subtract","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.sub(d2); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"ToByte","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Decimal.toInt(value); },"rt":$n[0].Byte,"p":[$n[0].Decimal]},{"a":2,"n":"ToChar","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Decimal.toInt(value); },"rt":$n[0].Char,"p":[$n[0].Decimal]},{"a":2,"n":"ToDecimalPlaces","t":8,"pi":[{"n":"dp","pt":$n[0].Int32,"ps":0},{"n":"rm","pt":Number,"ps":1}],"sn":"toDecimalPlaces","rt":$n[0].Decimal,"p":[$n[0].Int32,Number]},{"a":2,"n":"ToDouble","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Decimal.toFloat(value); },"rt":$n[0].Double,"p":[$n[0].Decimal]},{"a":2,"n":"ToExponential","t":8,"pi":[{"n":"dp","pt":$n[0].Int32,"ps":0},{"n":"rm","pt":Number,"ps":1}],"sn":"toExponential","rt":$n[0].String,"p":[$n[0].Int32,Number]},{"a":2,"n":"ToFixed","t":8,"pi":[{"n":"dp","pt":$n[0].Int32,"ps":0},{"n":"rm","pt":Number,"ps":1}],"sn":"toFixed","rt":$n[0].String,"p":[$n[0].Int32,Number]},{"a":2,"n":"ToFormat","t":8,"sn":"toFormat","rt":$n[0].String},{"a":2,"n":"ToFormat","t":8,"pi":[{"n":"config","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (config) { return toFormat(null, null,config); },"rt":$n[0].String,"p":[$n[0].Object]},{"a":2,"n":"ToFormat","t":8,"pi":[{"n":"dp","pt":$n[0].Int32,"ps":0}],"sn":"toFormat","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"ToFormat","t":8,"pi":[{"n":"dp","pt":$n[0].Int32,"ps":0},{"n":"rm","pt":Number,"ps":1}],"sn":"toFormat","rt":$n[0].String,"p":[$n[0].Int32,Number]},{"a":2,"n":"ToFormat","t":8,"pi":[{"n":"dp","pt":$n[0].Int32,"ps":0},{"n":"rm","pt":Number,"ps":1},{"n":"config","pt":$n[0].Object,"ps":2}],"sn":"toFormat","rt":$n[0].String,"p":[$n[0].Int32,Number,$n[0].Object]},{"a":2,"n":"ToFormat","t":8,"pi":[{"n":"dp","pt":$n[0].Int32,"ps":0},{"n":"rm","pt":Number,"ps":1},{"n":"provider","pt":$n[0].IFormatProvider,"ps":2}],"sn":"toFormat","rt":$n[0].String,"p":[$n[0].Int32,Number,$n[0].IFormatProvider]},{"a":2,"n":"ToInt16","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Decimal.toInt(value); },"rt":$n[0].Int16,"p":[$n[0].Decimal]},{"a":2,"n":"ToInt32","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Decimal.toInt(value); },"rt":$n[0].Int32,"p":[$n[0].Decimal]},{"a":2,"n":"ToInt64","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Decimal.toInt(value); },"rt":$n[0].Int64,"p":[$n[0].Decimal]},{"a":2,"n":"ToPrecision","t":8,"pi":[{"n":"sd","pt":$n[0].Int32,"ps":0},{"n":"rm","pt":Number,"ps":1}],"sn":"toPrecision","rt":$n[0].String,"p":[$n[0].Int32,Number]},{"a":2,"n":"ToSByte","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Decimal.toInt(value); },"rt":$n[0].SByte,"p":[$n[0].Decimal]},{"a":2,"n":"ToSignificantDigits","t":8,"pi":[{"n":"sd","pt":$n[0].Int32,"ps":0},{"n":"rm","pt":Number,"ps":1}],"sn":"toSignificantDigits","rt":$n[0].Decimal,"p":[$n[0].Int32,Number]},{"a":2,"n":"ToSingle","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Decimal.toFloat(value); },"rt":$n[0].Single,"p":[$n[0].Decimal]},{"ov":true,"a":2,"n":"ToString","t":8,"sn":"toString","rt":$n[0].String},{"a":2,"n":"ToString","t":8,"pi":[{"n":"provider","pt":$n[0].IFormatProvider,"ps":0}],"tpc":0,"def":function (provider) { return Bridge.Int.format(this, "G", provider); },"rt":$n[0].String,"p":[$n[0].IFormatProvider]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (format) { return Bridge.Int.format(this, format); },"rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"tpc":0,"def":function (format, provider) { return Bridge.Int.format(this, format, provider); },"rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"ToUInt16","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Decimal.toInt(value); },"rt":$n[0].UInt16,"p":[$n[0].Decimal]},{"a":2,"n":"ToUInt32","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Decimal.toInt(value); },"rt":$n[0].UInt32,"p":[$n[0].Decimal]},{"a":2,"n":"ToUInt64","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (value) { return System.Decimal.toInt(value); },"rt":$n[0].UInt64,"p":[$n[0].Decimal]},{"a":2,"n":"Truncate","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return d.trunc(); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"result","out":true,"pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (s, result) { return System.Decimal.tryParse(s, null, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Decimal]},{"a":2,"n":"TryParse","is":true,"t":8,"pi":[{"n":"s","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1},{"n":"result","out":true,"pt":$n[0].Decimal,"ps":2}],"tpc":0,"def":function (s, provider, result) { return System.Decimal.tryParse(s, provider, result); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].IFormatProvider,$n[0].Decimal]},{"a":2,"n":"op_Addition","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.add(d2); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"op_Decrement","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return d.dec(); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"op_Division","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.div(d2); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"op_Equality","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.equalsT(d2); },"rt":$n[0].Boolean,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"op_Explicit","rt":$n[0].Byte,"p":[$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"op_Explicit","rt":$n[0].Char,"p":[$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"op_Explicit","rt":$n[0].Double,"p":[$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"op_Explicit","rt":$n[0].Int16,"p":[$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"op_Explicit","rt":$n[0].Int32,"p":[$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"op_Explicit","rt":$n[0].Int64,"p":[$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"op_Explicit","rt":$n[0].SByte,"p":[$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"op_Explicit","rt":$n[0].Single,"p":[$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"op_Explicit","rt":$n[0].UInt16,"p":[$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"op_Explicit","rt":$n[0].UInt32,"p":[$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"op_Explicit","rt":$n[0].UInt64,"p":[$n[0].Decimal]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"op_Explicit","rt":$n[0].Decimal,"p":[$n[0].Double]},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Single,"ps":0}],"sn":"op_Explicit","rt":$n[0].Decimal,"p":[$n[0].Single]},{"a":2,"n":"op_GreaterThan","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.gt(d2); },"rt":$n[0].Boolean,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"op_GreaterThanOrEqual","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.gte(d2); },"rt":$n[0].Boolean,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Byte,"ps":0}],"sn":"op_Implicit","rt":$n[0].Decimal,"p":[$n[0].Byte]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0}],"sn":"op_Implicit","rt":$n[0].Decimal,"p":[$n[0].Char]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int16,"ps":0}],"sn":"op_Implicit","rt":$n[0].Decimal,"p":[$n[0].Int16]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"op_Implicit","rt":$n[0].Decimal,"p":[$n[0].Int32]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"op_Implicit","rt":$n[0].Decimal,"p":[$n[0].Int64]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].SByte,"ps":0}],"sn":"op_Implicit","rt":$n[0].Decimal,"p":[$n[0].SByte]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt16,"ps":0}],"sn":"op_Implicit","rt":$n[0].Decimal,"p":[$n[0].UInt16]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt32,"ps":0}],"sn":"op_Implicit","rt":$n[0].Decimal,"p":[$n[0].UInt32]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"sn":"op_Implicit","rt":$n[0].Decimal,"p":[$n[0].UInt64]},{"a":2,"n":"op_Increment","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return d.inc(); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"op_Inequality","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.ne(d2); },"rt":$n[0].Boolean,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"op_LessThan","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.lt(d2); },"rt":$n[0].Boolean,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"op_LessThanOrEqual","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.lte(d2); },"rt":$n[0].Boolean,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"op_Modulus","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.mod(d2); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"op_Multiply","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.mul(d2); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"op_Subtraction","is":true,"t":8,"pi":[{"n":"d1","pt":$n[0].Decimal,"ps":0},{"n":"d2","pt":$n[0].Decimal,"ps":1}],"tpc":0,"def":function (d1, d2) { return d1.sub(d2); },"rt":$n[0].Decimal,"p":[$n[0].Decimal,$n[0].Decimal]},{"a":2,"n":"op_UnaryNegation","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return d.neg(); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"op_UnaryPlus","is":true,"t":8,"pi":[{"n":"d","pt":$n[0].Decimal,"ps":0}],"tpc":0,"def":function (d) { return d.clone(); },"rt":$n[0].Decimal,"p":[$n[0].Decimal]},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].Decimal,"sn":"MaxValue"},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].Decimal,"sn":"MinValue"},{"a":2,"n":"MinusOne","is":true,"t":4,"rt":$n[0].Decimal,"sn":"MinusOne"},{"a":2,"n":"One","is":true,"t":4,"rt":$n[0].Decimal,"sn":"One"},{"a":2,"n":"Zero","is":true,"t":4,"rt":$n[0].Decimal,"sn":"Zero"}]}; });
+    $m($n[0].IComparable, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"CompareTo","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (obj) { return Bridge.compare(this, obj); },"rt":$n[0].Int32,"p":[$n[0].Object]}]}; });
+    $m($n[0].IComparable$1, function (T) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":T,"ps":0}],"tpc":0,"def":function (other) { return Bridge.compare(this, other, false, T); },"rt":$n[0].Int32,"p":[T]}]}; });
+    $m($n[0].IEquatable$1, function (T) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":T,"ps":0}],"tpc":0,"def":function (other) { return Bridge.equalsT(this, other, T); },"rt":$n[0].Boolean,"p":[T]}]}; });
+    $m($n[0].InvalidCastException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].InvalidOperationException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].Exception, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"},{"v":true,"a":2,"n":"GetBaseException","t":8,"sn":"getBaseException","rt":$n[0].Exception},{"v":true,"a":2,"n":"Data","t":16,"rt":$n[3].IDictionary$2(System.Object,System.Object),"g":{"v":true,"a":2,"n":"get_Data","t":8,"rt":$n[3].IDictionary$2(System.Object,System.Object),"fg":"Data"},"fn":"Data"},{"v":true,"a":2,"n":"InnerException","t":16,"rt":$n[0].Exception,"g":{"v":true,"a":2,"n":"get_InnerException","t":8,"rt":$n[0].Exception,"fg":"InnerException"},"fn":"InnerException"},{"v":true,"a":2,"n":"Message","t":16,"rt":$n[0].String,"g":{"v":true,"a":2,"n":"get_Message","t":8,"rt":$n[0].String,"fg":"Message"},"fn":"Message"},{"v":true,"a":2,"n":"StackTrace","t":16,"rt":$n[0].String,"g":{"v":true,"a":2,"n":"get_StackTrace","t":8,"rt":$n[0].String,"fg":"StackTrace"},"fn":"StackTrace"}]}; });
+    $m($n[0].NotImplementedException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].NotSupportedException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].Nullable$1, function (T) { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[T],"pi":[{"n":"value","pt":T,"ps":0}],"def":function (value) { return value; }},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (other) { return System.Nullable.equalsT(this, other); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"ov":true,"a":2,"n":"GetHashCode","t":8,"tpc":0,"def":function () { return System.Nullable.getHashCode(this, T); },"rt":$n[0].Int32},{"a":2,"n":"GetValueOrDefault","t":8,"tpc":0,"def":function () { return System.Nullable.getValueOrDefault(this, T); },"rt":T},{"a":2,"n":"GetValueOrDefault","t":8,"pi":[{"n":"defaultValue","pt":T,"ps":0}],"tpc":0,"def":function (defaultValue) { return System.Nullable.getValueOrDefault(this, defaultValue); },"rt":T,"p":[T]},{"ov":true,"a":2,"n":"ToString","t":8,"tpc":0,"def":function () { return System.Nullable.toString(this, T); },"rt":$n[0].String},{"a":2,"n":"op_Explicit","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Nullable$1(T),"ps":0}],"tpc":0,"def":function (value) { return System.Nullable.getValue(this); },"rt":T,"p":[$n[0].Nullable$1(T)]},{"a":2,"n":"op_Implicit","is":true,"t":8,"pi":[{"n":"value","pt":T,"ps":0}],"sn":"op_Implicit","rt":$n[0].Nullable$1(T),"p":[T]},{"a":2,"n":"HasValue","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_HasValue","t":8,"tpc":0,"def":function () { return System.Nullable.hasValue(this); },"rt":$n[0].Boolean}},{"a":2,"n":"Value","t":16,"rt":T,"g":{"a":2,"n":"get_Value","t":8,"tpc":0,"def":function () { return System.Nullable.getValue(this); },"rt":T}}]}; });
+    $m($n[0].NullReferenceException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[0].String, function () { return {"att":1048833,"a":2,"m":[{"a":2,"n":".ctor","t":1,"def":function () { return ""; }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Array.type(System.Char)],"pi":[{"n":"value","pt":$n[0].Array.type(System.Char),"ps":0}],"def":function (value) { return String.fromCharCode.apply(null, value); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Char,$n[0].Int32],"pi":[{"n":"c","pt":$n[0].Char,"ps":0},{"n":"count","pt":$n[0].Int32,"ps":1}],"def":function (c, count) { return System.String.fromCharCount(c, count); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Array.type(System.Char),$n[0].Int32,$n[0].Int32],"pi":[{"n":"value","pt":$n[0].Array.type(System.Char),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"length","pt":$n[0].Int32,"ps":2}],"def":function (value, startIndex, length) { return String.fromCharCode.apply(null, value.slice(startIndex, startIndex + length)); }},{"a":2,"n":"Clone","t":8,"tpc":0,"def":function () { return this; },"rt":$n[0].Object},{"a":2,"n":"Compare","is":true,"t":8,"pi":[{"n":"strA","pt":$n[0].String,"ps":0},{"n":"strB","pt":$n[0].String,"ps":1}],"tpc":0,"def":function (strA, strB) { return System.String.compare(strA, strB); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"Compare","is":true,"t":8,"pi":[{"n":"strA","pt":$n[0].String,"ps":0},{"n":"strB","pt":$n[0].String,"ps":1},{"n":"ignoreCase","pt":$n[0].Boolean,"ps":2}],"tpc":0,"def":function (strA, strB, ignoreCase) { return System.String.compare(strA, strB, ignoreCase); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].String,$n[0].Boolean]},{"a":2,"n":"Compare","is":true,"t":8,"pi":[{"n":"strA","pt":$n[0].String,"ps":0},{"n":"strB","pt":$n[0].String,"ps":1},{"n":"comparisonType","pt":Number,"ps":2}],"tpc":0,"def":function (strA, strB, comparisonType) { return System.String.compare(strA, strB, comparisonType); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].String,Number]},{"a":2,"n":"Compare","is":true,"t":8,"pi":[{"n":"strA","pt":$n[0].String,"ps":0},{"n":"strB","pt":$n[0].String,"ps":1},{"n":"ignoreCase","pt":$n[0].Boolean,"ps":2},{"n":"culture","pt":$n[7].CultureInfo,"ps":3}],"tpc":0,"def":function (strA, strB, ignoreCase, culture) { return System.String.compare(strA, strB, ignoreCase, culture); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].String,$n[0].Boolean,$n[7].CultureInfo]},{"a":2,"n":"Compare","is":true,"t":8,"pi":[{"n":"strA","pt":$n[0].String,"ps":0},{"n":"indexA","pt":$n[0].Int32,"ps":1},{"n":"strB","pt":$n[0].String,"ps":2},{"n":"indexB","pt":$n[0].Int32,"ps":3},{"n":"length","pt":$n[0].Int32,"ps":4}],"tpc":0,"def":function (strA, indexA, strB, indexB, length) { return System.String.compare(strA.substr(indexA, length), strB.substr(indexB, length)); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].Int32,$n[0].String,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Compare","is":true,"t":8,"pi":[{"n":"strA","pt":$n[0].String,"ps":0},{"n":"indexA","pt":$n[0].Int32,"ps":1},{"n":"strB","pt":$n[0].String,"ps":2},{"n":"indexB","pt":$n[0].Int32,"ps":3},{"n":"length","pt":$n[0].Int32,"ps":4},{"n":"ignoreCase","pt":$n[0].Boolean,"ps":5}],"tpc":0,"def":function (strA, indexA, strB, indexB, length, ignoreCase) { return System.String.compare(strA.substr(indexA, length), strB.substr(indexB, length), ignoreCase); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].Int32,$n[0].String,$n[0].Int32,$n[0].Int32,$n[0].Boolean]},{"a":2,"n":"Compare","is":true,"t":8,"pi":[{"n":"strA","pt":$n[0].String,"ps":0},{"n":"indexA","pt":$n[0].Int32,"ps":1},{"n":"strB","pt":$n[0].String,"ps":2},{"n":"indexB","pt":$n[0].Int32,"ps":3},{"n":"length","pt":$n[0].Int32,"ps":4},{"n":"comparisonType","pt":Number,"ps":5}],"tpc":0,"def":function (strA, indexA, strB, indexB, length, comparisonType) { return System.String.compare(strA.substr(indexA, length), strB.substr(indexB, length), comparisonType); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].Int32,$n[0].String,$n[0].Int32,$n[0].Int32,Number]},{"a":2,"n":"Compare","is":true,"t":8,"pi":[{"n":"strA","pt":$n[0].String,"ps":0},{"n":"indexA","pt":$n[0].Int32,"ps":1},{"n":"strB","pt":$n[0].String,"ps":2},{"n":"indexB","pt":$n[0].Int32,"ps":3},{"n":"length","pt":$n[0].Int32,"ps":4},{"n":"ignoreCase","pt":$n[0].Boolean,"ps":5},{"n":"culture","pt":$n[7].CultureInfo,"ps":6}],"tpc":0,"def":function (strA, indexA, strB, indexB, length, ignoreCase, culture) { return System.String.compare(strA.substr(indexA, length), strB.substr(indexB, length), ignoreCase, culture); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].Int32,$n[0].String,$n[0].Int32,$n[0].Int32,$n[0].Boolean,$n[7].CultureInfo]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"value","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (value) { return System.String.compare(this, value.toString()); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"strB","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (strB) { return System.String.compare(this, strB); },"rt":$n[0].Int32,"p":[$n[0].String]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"values","pt":$n[3].IEnumerable$1(System.String),"ps":0}],"tpc":0,"def":function (values) { return System.String.concat(Bridge.toArray(values)); },"rt":$n[0].String,"p":[$n[3].IEnumerable$1(System.String)]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"values","pt":$n[3].IEnumerable$1(System.Object),"ps":0}],"tpc":1,"def":function (T, values) { return System.String.concat(Bridge.toArray(values)); },"rt":$n[0].String,"p":[$n[3].IEnumerable$1(System.Object)]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"arg0","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (arg0) { return System.String.concat(arg0); },"rt":$n[0].String,"p":[$n[0].Object]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"args","ip":true,"pt":$n[0].Array.type(System.Object),"ps":0}],"tpc":0,"def":function (args) { return System.String.concat(Array.prototype.slice.call((arguments, 0))); },"rt":$n[0].String,"p":[$n[0].Array.type(System.Object)]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"values","ip":true,"pt":$n[0].Array.type(System.String),"ps":0}],"tpc":0,"def":function (values) { return System.String.concat(Array.prototype.slice.call((arguments, 0))); },"rt":$n[0].String,"p":[$n[0].Array.type(System.String)]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"arg0","pt":$n[0].Object,"ps":0},{"n":"arg1","pt":$n[0].Object,"ps":1}],"tpc":0,"def":function (arg0, arg1) { return System.String.concat(arg0, arg1); },"rt":$n[0].String,"p":[$n[0].Object,$n[0].Object]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"str0","pt":$n[0].String,"ps":0},{"n":"str1","pt":$n[0].String,"ps":1}],"tpc":0,"def":function (str0, str1) { return System.String.concat(str0, str1); },"rt":$n[0].String,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"arg0","pt":$n[0].Object,"ps":0},{"n":"arg1","pt":$n[0].Object,"ps":1},{"n":"arg2","pt":$n[0].Object,"ps":2}],"tpc":0,"def":function (arg0, arg1, arg2) { return System.String.concat(arg0, arg1, arg2); },"rt":$n[0].String,"p":[$n[0].Object,$n[0].Object,$n[0].Object]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"str0","pt":$n[0].String,"ps":0},{"n":"str1","pt":$n[0].String,"ps":1},{"n":"str2","pt":$n[0].String,"ps":2}],"tpc":0,"def":function (str0, str1, str2) { return System.String.concat(str0, str1, str2); },"rt":$n[0].String,"p":[$n[0].String,$n[0].String,$n[0].String]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"arg0","pt":$n[0].Object,"ps":0},{"n":"arg1","pt":$n[0].Object,"ps":1},{"n":"arg2","pt":$n[0].Object,"ps":2},{"n":"arg3","pt":$n[0].Object,"ps":3}],"tpc":0,"def":function (arg0, arg1, arg2, arg3) { return System.String.concat(arg0, arg1, arg2, arg3); },"rt":$n[0].String,"p":[$n[0].Object,$n[0].Object,$n[0].Object,$n[0].Object]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"str0","pt":$n[0].String,"ps":0},{"n":"str1","pt":$n[0].String,"ps":1},{"n":"str2","pt":$n[0].String,"ps":2},{"n":"str3","pt":$n[0].String,"ps":3}],"tpc":0,"def":function (str0, str1, str2, str3) { return System.String.concat(str0, str1, str2, str3); },"rt":$n[0].String,"p":[$n[0].String,$n[0].String,$n[0].String,$n[0].String]},{"a":2,"n":"Concat","is":true,"t":8,"pi":[{"n":"arg0","pt":$n[0].Object,"ps":0},{"n":"arg1","pt":$n[0].Object,"ps":1},{"n":"arg2","pt":$n[0].Object,"ps":2},{"n":"arg3","pt":$n[0].Object,"ps":3},{"n":"args","ip":true,"pt":$n[0].Array.type(System.Object),"ps":4}],"tpc":0,"def":function (arg0, arg1, arg2, arg3, args) { return System.String.concat(arg0, arg1, arg2, arg3, args); },"rt":$n[0].String,"p":[$n[0].Object,$n[0].Object,$n[0].Object,$n[0].Object,$n[0].Array.type(System.Object)]},{"a":2,"n":"Contains","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (value) { return System.String.contains(this,value); },"rt":$n[0].Boolean,"p":[$n[0].String]},{"a":2,"n":"EndsWith","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (value) { return System.String.endsWith(this, value); },"rt":$n[0].Boolean,"p":[$n[0].String]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (value) { return System.String.equals(this, value); },"rt":$n[0].Boolean,"p":[$n[0].String]},{"a":2,"n":"Equals","is":true,"t":8,"pi":[{"n":"a","pt":$n[0].String,"ps":0},{"n":"b","pt":$n[0].String,"ps":1}],"tpc":0,"def":function (a, b) { return System.String.equals(a, b); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"comparisonType","pt":Number,"ps":1}],"tpc":0,"def":function (value, comparisonType) { return System.String.equals(this, value, comparisonType); },"rt":$n[0].Boolean,"p":[$n[0].String,Number]},{"a":2,"n":"Equals","is":true,"t":8,"pi":[{"n":"a","pt":$n[0].String,"ps":0},{"n":"b","pt":$n[0].String,"ps":1},{"n":"comparisonType","pt":Number,"ps":2}],"tpc":0,"def":function (a, b, comparisonType) { return System.String.equals(a, b, comparisonType); },"rt":$n[0].Boolean,"p":[$n[0].String,$n[0].String,Number]},{"a":2,"n":"Format","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg0","pt":$n[0].Object,"ps":1}],"tpc":0,"def":function (format, arg0) { return System.String.format(format, arg0); },"rt":$n[0].String,"p":[$n[0].String,$n[0].Object]},{"a":2,"n":"Format","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"args","ip":true,"pt":$n[0].Array.type(System.Object),"ps":1}],"tpc":0,"def":function (format, args) { return System.String.format(format, args); },"rt":$n[0].String,"p":[$n[0].String,$n[0].Array.type(System.Object)]},{"a":2,"n":"Format","is":true,"t":8,"pi":[{"n":"provider","pt":$n[0].IFormatProvider,"ps":0},{"n":"format","pt":$n[0].String,"ps":1},{"n":"arg0","pt":$n[0].Object,"ps":2}],"tpc":0,"def":function (provider, format, arg0) { return System.String.formatProvider(provider, format, arg0); },"rt":$n[0].String,"p":[$n[0].IFormatProvider,$n[0].String,$n[0].Object]},{"a":2,"n":"Format","is":true,"t":8,"pi":[{"n":"provider","pt":$n[0].IFormatProvider,"ps":0},{"n":"format","pt":$n[0].String,"ps":1},{"n":"args","ip":true,"pt":$n[0].Array.type(System.Object),"ps":2}],"tpc":0,"def":function (provider, format, args) { return System.String.formatProvider(provider, format, args); },"rt":$n[0].String,"p":[$n[0].IFormatProvider,$n[0].String,$n[0].Array.type(System.Object)]},{"a":2,"n":"Format","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg0","pt":$n[0].Object,"ps":1},{"n":"arg1","pt":$n[0].Object,"ps":2}],"tpc":0,"def":function (format, arg0, arg1) { return System.String.format(format, arg0, arg1); },"rt":$n[0].String,"p":[$n[0].String,$n[0].Object,$n[0].Object]},{"a":2,"n":"Format","is":true,"t":8,"pi":[{"n":"provider","pt":$n[0].IFormatProvider,"ps":0},{"n":"format","pt":$n[0].String,"ps":1},{"n":"arg0","pt":$n[0].Object,"ps":2},{"n":"arg1","pt":$n[0].Object,"ps":3}],"tpc":0,"def":function (provider, format, arg0, arg1) { return System.String.formatProvider(provider, format, arg0, arg1); },"rt":$n[0].String,"p":[$n[0].IFormatProvider,$n[0].String,$n[0].Object,$n[0].Object]},{"a":2,"n":"Format","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"arg0","pt":$n[0].Object,"ps":1},{"n":"arg1","pt":$n[0].Object,"ps":2},{"n":"arg2","pt":$n[0].Object,"ps":3}],"tpc":0,"def":function (format, arg0, arg1, arg2) { return System.String.format(format, arg0, arg1, arg2); },"rt":$n[0].String,"p":[$n[0].String,$n[0].Object,$n[0].Object,$n[0].Object]},{"a":2,"n":"Format","is":true,"t":8,"pi":[{"n":"provider","pt":$n[0].IFormatProvider,"ps":0},{"n":"format","pt":$n[0].String,"ps":1},{"n":"arg0","pt":$n[0].Object,"ps":2},{"n":"arg1","pt":$n[0].Object,"ps":3},{"n":"arg2","pt":$n[0].Object,"ps":4}],"tpc":0,"def":function (provider, format, arg0, arg1, arg2) { return System.String.formatProvider(provider, format, arg0, arg1, arg2); },"rt":$n[0].String,"p":[$n[0].IFormatProvider,$n[0].String,$n[0].Object,$n[0].Object,$n[0].Object]},{"a":2,"n":"GetEnumerator","t":8,"tpc":0,"def":function () { return Bridge.getEnumerator(this); },"rt":$n[0].CharEnumerator},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (value) { return System.String.indexOf(this, String.fromCharCode(value)); },"rt":$n[0].Int32,"p":[$n[0].Char]},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (value) { return System.String.indexOf(this, value); },"rt":$n[0].Int32,"p":[$n[0].String]},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (value, startIndex) { return System.String.indexOf(this, String.fromCharCode(value), startIndex); },"rt":$n[0].Int32,"p":[$n[0].Char,$n[0].Int32]},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (value, startIndex) { return System.String.indexOf(this, value, startIndex); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"comparisonType","pt":Number,"ps":1}],"tpc":0,"def":function (value, comparisonType) { return ($t = this, System.String.indexOf($t, value, 0, $t.length, comparisonType)); },"rt":$n[0].Int32,"p":[$n[0].String,Number]},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (value, startIndex, count) { return System.String.indexOf(this, String.fromCharCode(value), startIndex, count); },"rt":$n[0].Int32,"p":[$n[0].Char,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"searchValue","pt":$n[0].String,"ps":0},{"n":"fromIndex","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (searchValue, fromIndex, count) { return System.String.indexOf(this, searchValue, fromIndex, count); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"comparisonType","pt":Number,"ps":2}],"tpc":0,"def":function (value, startIndex, comparisonType) { return ($t1 = this, System.String.indexOf($t1, value, startIndex, $t1.length, comparisonType)); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].Int32,Number]},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2},{"n":"comparisonType","pt":Number,"ps":3}],"tpc":0,"def":function (value, startIndex, count, comparisonType) { return System.String.indexOf(this, value, startIndex, count, comparisonType); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].Int32,$n[0].Int32,Number]},{"a":2,"n":"IndexOfAny","t":8,"pi":[{"n":"anyOf","pt":$n[0].Array.type(System.Char),"ps":0}],"tpc":0,"def":function (anyOf) { return System.String.indexOfAny(this, anyOf); },"rt":$n[0].Int32,"p":[$n[0].Array.type(System.Char)]},{"a":2,"n":"IndexOfAny","t":8,"pi":[{"n":"anyOf","pt":$n[0].Array.type(System.Char),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (anyOf, startIndex) { return System.String.indexOfAny(this, anyOf, startIndex); },"rt":$n[0].Int32,"p":[$n[0].Array.type(System.Char),$n[0].Int32]},{"a":2,"n":"IndexOfAny","t":8,"pi":[{"n":"anyOf","pt":$n[0].Array.type(System.Char),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (anyOf, startIndex, count) { return System.String.indexOfAny(this, anyOf, startIndex, count); },"rt":$n[0].Int32,"p":[$n[0].Array.type(System.Char),$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"startIndex","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].String,"ps":1}],"tpc":0,"def":function (startIndex, value) { return System.String.insert(startIndex, this, value); },"rt":$n[0].String,"p":[$n[0].Int32,$n[0].String]},{"a":2,"n":"IsNullOrEmpty","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (value) { return System.String.isNullOrEmpty(value); },"rt":$n[0].Boolean,"p":[$n[0].String]},{"a":2,"n":"IsNullOrWhiteSpace","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (value) { return System.String.isNullOrWhiteSpace(value); },"rt":$n[0].Boolean,"p":[$n[0].String]},{"a":2,"n":"Join","is":true,"t":8,"pi":[{"n":"separator","pt":$n[0].String,"ps":0},{"n":"values","pt":$n[3].IEnumerable$1(System.String),"ps":1}],"tpc":0,"def":function (separator, values) { return Bridge.toArray(values).join(separator); },"rt":$n[0].String,"p":[$n[0].String,$n[3].IEnumerable$1(System.String)]},{"a":2,"n":"Join","is":true,"t":8,"pi":[{"n":"separator","pt":$n[0].String,"ps":0},{"n":"values","pt":$n[3].IEnumerable$1(System.Object),"ps":1}],"tpc":1,"def":function (T, separator, values) { return Bridge.toArray(values).join(separator); },"rt":$n[0].String,"p":[$n[0].String,$n[3].IEnumerable$1(System.Object)]},{"a":2,"n":"Join","is":true,"t":8,"pi":[{"n":"separator","pt":$n[0].String,"ps":0},{"n":"values","ip":true,"pt":$n[0].Array.type(System.Object),"ps":1}],"tpc":0,"def":function (separator, values) { return Array.prototype.slice.call((arguments, 1)).join(separator); },"rt":$n[0].String,"p":[$n[0].String,$n[0].Array.type(System.Object)]},{"a":2,"n":"Join","is":true,"t":8,"pi":[{"n":"separator","pt":$n[0].String,"ps":0},{"n":"value","ip":true,"pt":$n[0].Array.type(System.String),"ps":1}],"tpc":0,"def":function (separator, value) { return Array.prototype.slice.call((arguments, 1)).join(separator); },"rt":$n[0].String,"p":[$n[0].String,$n[0].Array.type(System.String)]},{"a":2,"n":"Join","is":true,"t":8,"pi":[{"n":"separator","pt":$n[0].String,"ps":0},{"n":"value","pt":$n[0].Array.type(System.String),"ps":1},{"n":"startIndex","pt":$n[0].Int32,"ps":2},{"n":"count","pt":$n[0].Int32,"ps":3}],"tpc":0,"def":function (separator, value, startIndex, count) { return value.slice(startIndex, startIndex + count).join(separator); },"rt":$n[0].String,"p":[$n[0].String,$n[0].Array.type(System.String),$n[0].Int32,$n[0].Int32]},{"a":2,"n":"LastIndexOf","t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (value) { return this.lastIndexOf(String.fromCharCode(value)); },"rt":$n[0].Int32,"p":[$n[0].Char]},{"a":2,"n":"LastIndexOf","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"lastIndexOf","rt":$n[0].Int32,"p":[$n[0].String]},{"a":2,"n":"LastIndexOf","t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (value, startIndex) { return this.lastIndexOf(String.fromCharCode(value), startIndex); },"rt":$n[0].Int32,"p":[$n[0].Char,$n[0].Int32]},{"a":2,"n":"LastIndexOf","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"lastIndexOf","rt":$n[0].Int32,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"LastIndexOf","t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (value, startIndex, count) { return System.String.lastIndexOf(this, String.fromCharCode(value), startIndex, count); },"rt":$n[0].Int32,"p":[$n[0].Char,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"LastIndexOf","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (value, startIndex, count) { return System.String.lastIndexOf(this, value, startIndex, count); },"rt":$n[0].Int32,"p":[$n[0].String,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"LastIndexOfAny","t":8,"pi":[{"n":"anyOf","ip":true,"pt":$n[0].Array.type(System.Char),"ps":0}],"tpc":0,"def":function (anyOf) { return System.String.lastIndexOfAny(this, Array.prototype.slice.call((arguments, 0))); },"rt":$n[0].Int32,"p":[$n[0].Array.type(System.Char)]},{"a":2,"n":"LastIndexOfAny","t":8,"pi":[{"n":"anyOf","pt":$n[0].Array.type(System.Char),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (anyOf, startIndex) { return System.String.lastIndexOfAny(this, anyOf, startIndex); },"rt":$n[0].Int32,"p":[$n[0].Array.type(System.Char),$n[0].Int32]},{"a":2,"n":"LastIndexOfAny","t":8,"pi":[{"n":"anyOf","pt":$n[0].Array.type(System.Char),"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"tpc":0,"def":function (anyOf, startIndex, count) { return System.String.lastIndexOfAny(this, anyOf, startIndex, count); },"rt":$n[0].Int32,"p":[$n[0].Array.type(System.Char),$n[0].Int32,$n[0].Int32]},{"a":2,"n":"PadLeft","t":8,"pi":[{"n":"totalWidth","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (totalWidth) { return System.String.alignString(this, totalWidth); },"rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"PadLeft","t":8,"pi":[{"n":"totalWidth","pt":$n[0].Int32,"ps":0},{"n":"paddingChar","pt":$n[0].Char,"ps":1}],"tpc":0,"def":function (totalWidth, paddingChar) { return System.String.alignString(this, totalWidth, paddingChar); },"rt":$n[0].String,"p":[$n[0].Int32,$n[0].Char]},{"a":2,"n":"PadRight","t":8,"pi":[{"n":"totalWidth","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (totalWidth) { return System.String.alignString(this, -totalWidth); },"rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"PadRight","t":8,"pi":[{"n":"totalWidth","pt":$n[0].Int32,"ps":0},{"n":"paddingChar","pt":$n[0].Char,"ps":1}],"tpc":0,"def":function (totalWidth, paddingChar) { return System.String.alignString(this, -totalWidth, paddingChar); },"rt":$n[0].String,"p":[$n[0].Int32,$n[0].Char]},{"a":2,"n":"Remove","t":8,"pi":[{"n":"startIndex","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (startIndex) { return System.String.remove(this, startIndex); },"rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"Remove","t":8,"pi":[{"n":"startIndex","pt":$n[0].Int32,"ps":0},{"n":"count","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (startIndex, count) { return System.String.remove(this, startIndex, count); },"rt":$n[0].String,"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"oldChar","pt":$n[0].Char,"ps":0},{"n":"newChar","pt":$n[0].Char,"ps":1}],"tpc":0,"def":function (oldChar, newChar) { return System.String.replaceAll(this, String.fromCharCode(oldChar), String.fromCharCode(newChar)); },"rt":$n[0].String,"p":[$n[0].Char,$n[0].Char]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"oldValue","pt":$n[0].String,"ps":0},{"n":"newValue","pt":$n[0].String,"ps":1}],"tpc":0,"def":function (oldValue, newValue) { return System.String.replaceAll(this, oldValue, newValue); },"rt":$n[0].String,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"Split","t":8,"pi":[{"n":"separator","ip":true,"pt":$n[0].Array.type(System.Char),"ps":0}],"tpc":0,"def":function (separator) { return System.String.split(this, Array.prototype.slice.call((arguments, 0)).map(function(i) {{ return String.fromCharCode(i); }})); },"rt":$n[0].Array.type(System.String),"p":[$n[0].Array.type(System.Char)]},{"a":2,"n":"Split","t":8,"pi":[{"n":"separator","pt":$n[0].Array.type(System.Char),"ps":0},{"n":"count","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (separator, count) { return System.String.split(this, separator.map(function(i) {{ return String.fromCharCode(i); }}), count); },"rt":$n[0].Array.type(System.String),"p":[$n[0].Array.type(System.Char),$n[0].Int32]},{"a":2,"n":"Split","t":8,"pi":[{"n":"separator","pt":$n[0].Array.type(System.Char),"ps":0},{"n":"options","pt":Number,"ps":1}],"tpc":0,"def":function (separator, options) { return System.String.split(this, separator.map(function(i) {{ return String.fromCharCode(i); }}), null, options); },"rt":$n[0].Array.type(System.String),"p":[$n[0].Array.type(System.Char),Number]},{"a":2,"n":"Split","t":8,"pi":[{"n":"separator","pt":$n[0].Array.type(System.String),"ps":0},{"n":"options","pt":Number,"ps":1}],"tpc":0,"def":function (separator, options) { return System.String.split(this, separator, null, options); },"rt":$n[0].Array.type(System.String),"p":[$n[0].Array.type(System.String),Number]},{"a":2,"n":"Split","t":8,"pi":[{"n":"separator","pt":$n[0].Array.type(System.Char),"ps":0},{"n":"count","pt":$n[0].Int32,"ps":1},{"n":"options","pt":Number,"ps":2}],"tpc":0,"def":function (separator, count, options) { return System.String.split(this, separator.map(function(i) {{ return String.fromCharCode(i); }}), count, options); },"rt":$n[0].Array.type(System.String),"p":[$n[0].Array.type(System.Char),$n[0].Int32,Number]},{"a":2,"n":"Split","t":8,"pi":[{"n":"separator","pt":$n[0].Array.type(System.String),"ps":0},{"n":"count","pt":$n[0].Int32,"ps":1},{"n":"options","pt":Number,"ps":2}],"tpc":0,"def":function (separator, count, options) { return System.String.split(this, separator, count, options); },"rt":$n[0].Array.type(System.String),"p":[$n[0].Array.type(System.String),$n[0].Int32,Number]},{"a":2,"n":"StartsWith","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (value) { return System.String.startsWith(this, value); },"rt":$n[0].Boolean,"p":[$n[0].String]},{"a":2,"n":"Substring","t":8,"pi":[{"n":"startIndex","pt":$n[0].Int32,"ps":0}],"sn":"substr","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"Substring","t":8,"pi":[{"n":"startIndex","pt":$n[0].Int32,"ps":0},{"n":"length","pt":$n[0].Int32,"ps":1}],"sn":"substr","rt":$n[0].String,"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"ToCharArray","t":8,"tpc":0,"def":function () { return ($t2 = this, System.String.toCharArray($t2, 0, $t2.length)); },"rt":$n[0].Array.type(System.Char)},{"a":2,"n":"ToCharArray","t":8,"pi":[{"n":"startIndex","pt":$n[0].Int32,"ps":0},{"n":"length","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (startIndex, length) { return System.String.toCharArray(this, startIndex, length); },"rt":$n[0].Array.type(System.Char),"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"ToLower","t":8,"tpc":0,"def":function () { return this.toLowerCase(); },"rt":$n[0].String},{"a":2,"n":"ToUpper","t":8,"tpc":0,"def":function () { return this.toUpperCase(); },"rt":$n[0].String},{"a":2,"n":"Trim","t":8,"sn":"trim","rt":$n[0].String},{"a":2,"n":"Trim","t":8,"pi":[{"n":"trimChars","ip":true,"pt":$n[0].Array.type(System.Char),"ps":0}],"tpc":0,"def":function (trimChars) { return System.String.trim(this, Array.prototype.slice.call((arguments, 0))); },"rt":$n[0].String,"p":[$n[0].Array.type(System.Char)]},{"a":2,"n":"TrimEnd","t":8,"tpc":0,"def":function () { return System.String.trimEnd(this); },"rt":$n[0].String},{"a":2,"n":"TrimEnd","t":8,"pi":[{"n":"trimChars","ip":true,"pt":$n[0].Array.type(System.Char),"ps":0}],"tpc":0,"def":function (trimChars) { return System.String.trimEnd(this, Array.prototype.slice.call((arguments, 0))); },"rt":$n[0].String,"p":[$n[0].Array.type(System.Char)]},{"a":2,"n":"TrimStart","t":8,"tpc":0,"def":function () { return System.String.trimStart(this); },"rt":$n[0].String},{"a":2,"n":"TrimStart","t":8,"pi":[{"n":"trimChars","ip":true,"pt":$n[0].Array.type(System.Char),"ps":0}],"tpc":0,"def":function (trimChars) { return System.String.trimStart(this, Array.prototype.slice.call((arguments, 0))); },"rt":$n[0].String,"p":[$n[0].Array.type(System.Char)]},{"a":2,"n":"op_Equality","is":true,"t":8,"pi":[{"n":"s1","pt":$n[0].String,"ps":0},{"n":"s2","pt":$n[0].String,"ps":1}],"sn":"op_Equality","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"op_Inequality","is":true,"t":8,"pi":[{"n":"s1","pt":$n[0].String,"ps":0},{"n":"s2","pt":$n[0].String,"ps":1}],"sn":"op_Inequality","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"Item","t":16,"rt":$n[0].Char,"p":[$n[0].Int32],"i":true,"ipi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"g":{"a":2,"n":"get_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (index) { return charCodeAt(index); },"rt":$n[0].Char,"p":[$n[0].Int32]}},{"a":2,"n":"Length","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Length","t":8,"rt":$n[0].Int32,"fg":"length"},"fn":"length"},{"a":2,"n":"Empty","is":true,"t":4,"rt":$n[0].String,"sn":"Empty"}]}; });
+    $m($n[0].TimeSpan, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int64],"pi":[{"n":"ticks","pt":$n[0].Int64,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32,$n[0].Int32],"pi":[{"n":"hours","pt":$n[0].Int32,"ps":0},{"n":"minutes","pt":$n[0].Int32,"ps":1},{"n":"seconds","pt":$n[0].Int32,"ps":2}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32],"pi":[{"n":"days","pt":$n[0].Int32,"ps":0},{"n":"hours","pt":$n[0].Int32,"ps":1},{"n":"minutes","pt":$n[0].Int32,"ps":2},{"n":"seconds","pt":$n[0].Int32,"ps":3}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32,$n[0].Int32],"pi":[{"n":"days","pt":$n[0].Int32,"ps":0},{"n":"hours","pt":$n[0].Int32,"ps":1},{"n":"minutes","pt":$n[0].Int32,"ps":2},{"n":"seconds","pt":$n[0].Int32,"ps":3},{"n":"milliseconds","pt":$n[0].Int32,"ps":4}],"sn":"ctor"},{"a":2,"n":"Add","t":8,"pi":[{"n":"ts","pt":$n[0].TimeSpan,"ps":0}],"sn":"add","rt":$n[0].TimeSpan,"p":[$n[0].TimeSpan]},{"a":2,"n":"Compare","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].TimeSpan,"ps":0},{"n":"t2","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (t1, t2) { return t1.compareTo(t2); },"rt":$n[0].Int32,"p":[$n[0].TimeSpan,$n[0].TimeSpan]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"value","pt":$n[0].Object,"ps":0}],"sn":"compareTo","rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"value","pt":$n[0].TimeSpan,"ps":0}],"sn":"compareTo","rt":$n[0].Int32,"p":[$n[0].TimeSpan]},{"a":2,"n":"Duration","t":8,"sn":"duration","rt":$n[0].TimeSpan},{"a":2,"n":"Equals","t":8,"pi":[{"n":"obj","pt":$n[0].TimeSpan,"ps":0}],"sn":"equalsT","rt":$n[0].Boolean,"p":[$n[0].TimeSpan]},{"a":2,"n":"Equals","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].TimeSpan,"ps":0},{"n":"t2","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (t1, t2) { return (t1).ticks.eq((t2).ticks); },"rt":$n[0].Boolean,"p":[$n[0].TimeSpan,$n[0].TimeSpan]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Format","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"sn":"toString","rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"FromDays","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"fromDays","rt":$n[0].TimeSpan,"p":[$n[0].Double]},{"a":2,"n":"FromHours","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"fromHours","rt":$n[0].TimeSpan,"p":[$n[0].Double]},{"a":2,"n":"FromMilliseconds","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"fromMilliseconds","rt":$n[0].TimeSpan,"p":[$n[0].Double]},{"a":2,"n":"FromMinutes","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"fromMinutes","rt":$n[0].TimeSpan,"p":[$n[0].Double]},{"a":2,"n":"FromSeconds","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"fromSeconds","rt":$n[0].TimeSpan,"p":[$n[0].Double]},{"a":2,"n":"FromTicks","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"sn":"fromTicks","rt":$n[0].TimeSpan,"p":[$n[0].Int64]},{"a":2,"n":"Negate","t":8,"sn":"negate","rt":$n[0].TimeSpan},{"a":2,"n":"Subtract","t":8,"pi":[{"n":"ts","pt":$n[0].TimeSpan,"ps":0}],"sn":"subtract","rt":$n[0].TimeSpan,"p":[$n[0].TimeSpan]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"sn":"toString","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"ToString","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"provider","pt":$n[0].IFormatProvider,"ps":1}],"sn":"format","rt":$n[0].String,"p":[$n[0].String,$n[0].IFormatProvider]},{"a":2,"n":"op_Addition","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].TimeSpan,"ps":0},{"n":"t2","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (t1, t2) { return System.TimeSpan.add(t1, t2); },"rt":$n[0].TimeSpan,"p":[$n[0].TimeSpan,$n[0].TimeSpan]},{"a":2,"n":"op_Equality","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].TimeSpan,"ps":0},{"n":"t2","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (t1, t2) { return System.TimeSpan.eq(t1, t2); },"rt":$n[0].Boolean,"p":[$n[0].TimeSpan,$n[0].TimeSpan]},{"a":2,"n":"op_GreaterThan","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].TimeSpan,"ps":0},{"n":"t2","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (t1, t2) { return System.TimeSpan.gt(t1, t2); },"rt":$n[0].Boolean,"p":[$n[0].TimeSpan,$n[0].TimeSpan]},{"a":2,"n":"op_GreaterThanOrEqual","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].TimeSpan,"ps":0},{"n":"t2","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (t1, t2) { return System.TimeSpan.gte(t1, t2); },"rt":$n[0].Boolean,"p":[$n[0].TimeSpan,$n[0].TimeSpan]},{"a":2,"n":"op_Inequality","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].TimeSpan,"ps":0},{"n":"t2","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (t1, t2) { return System.TimeSpan.neq(t1, t2); },"rt":$n[0].Boolean,"p":[$n[0].TimeSpan,$n[0].TimeSpan]},{"a":2,"n":"op_LessThan","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].TimeSpan,"ps":0},{"n":"t2","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (t1, t2) { return System.TimeSpan.lt(t1, t2); },"rt":$n[0].Boolean,"p":[$n[0].TimeSpan,$n[0].TimeSpan]},{"a":2,"n":"op_LessThanOrEqual","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].TimeSpan,"ps":0},{"n":"t2","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (t1, t2) { return System.TimeSpan.lte(t1, t2); },"rt":$n[0].Boolean,"p":[$n[0].TimeSpan,$n[0].TimeSpan]},{"a":2,"n":"op_Subtraction","is":true,"t":8,"pi":[{"n":"t1","pt":$n[0].TimeSpan,"ps":0},{"n":"t2","pt":$n[0].TimeSpan,"ps":1}],"tpc":0,"def":function (t1, t2) { return System.TimeSpan.sub(t1, t2); },"rt":$n[0].TimeSpan,"p":[$n[0].TimeSpan,$n[0].TimeSpan]},{"a":2,"n":"op_UnaryNegation","is":true,"t":8,"pi":[{"n":"t","pt":$n[0].TimeSpan,"ps":0}],"tpc":0,"def":function (t) { return System.TimeSpan.neg(t); },"rt":$n[0].TimeSpan,"p":[$n[0].TimeSpan]},{"a":2,"n":"op_UnaryPlus","is":true,"t":8,"pi":[{"n":"t","pt":$n[0].TimeSpan,"ps":0}],"tpc":0,"def":function (t) { return System.TimeSpan.plus(t); },"rt":$n[0].TimeSpan,"p":[$n[0].TimeSpan]},{"a":2,"n":"Days","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Days","t":8,"tpc":0,"def":function () { return getDays(); },"rt":$n[0].Int32}},{"a":2,"n":"Hours","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Hours","t":8,"tpc":0,"def":function () { return getHours(); },"rt":$n[0].Int32}},{"a":2,"n":"Milliseconds","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Milliseconds","t":8,"tpc":0,"def":function () { return getMilliseconds(); },"rt":$n[0].Int32}},{"a":2,"n":"Minutes","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Minutes","t":8,"tpc":0,"def":function () { return getMinutes(); },"rt":$n[0].Int32}},{"a":2,"n":"Seconds","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Seconds","t":8,"tpc":0,"def":function () { return getSeconds(); },"rt":$n[0].Int32}},{"a":2,"n":"Ticks","t":16,"rt":$n[0].Int64,"g":{"a":2,"n":"get_Ticks","t":8,"tpc":0,"def":function () { return getTicks(); },"rt":$n[0].Int64}},{"a":2,"n":"TotalDays","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_TotalDays","t":8,"tpc":0,"def":function () { return getTotalDays(); },"rt":$n[0].Double}},{"a":2,"n":"TotalHours","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_TotalHours","t":8,"tpc":0,"def":function () { return getTotalHours(); },"rt":$n[0].Double}},{"a":2,"n":"TotalMilliseconds","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_TotalMilliseconds","t":8,"tpc":0,"def":function () { return getTotalMilliseconds(); },"rt":$n[0].Double}},{"a":2,"n":"TotalMinutes","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_TotalMinutes","t":8,"tpc":0,"def":function () { return getTotalMinutes(); },"rt":$n[0].Double}},{"a":2,"n":"TotalSeconds","t":16,"rt":$n[0].Double,"g":{"a":2,"n":"get_TotalSeconds","t":8,"tpc":0,"def":function () { return getTotalSeconds(); },"rt":$n[0].Double}},{"a":2,"n":"MaxValue","is":true,"t":4,"rt":$n[0].TimeSpan,"sn":"maxValue","ro":true},{"a":2,"n":"MinValue","is":true,"t":4,"rt":$n[0].TimeSpan,"sn":"minValue","ro":true},{"a":2,"n":"TicksPerDay","is":true,"t":4,"rt":$n[0].Int64,"sn":"TicksPerDay"},{"a":2,"n":"TicksPerHour","is":true,"t":4,"rt":$n[0].Int64,"sn":"TicksPerHour"},{"a":2,"n":"TicksPerMillisecond","is":true,"t":4,"rt":$n[0].Int64,"sn":"TicksPerMillisecond"},{"a":2,"n":"TicksPerMinute","is":true,"t":4,"rt":$n[0].Int64,"sn":"TicksPerMinute"},{"a":2,"n":"TicksPerSecond","is":true,"t":4,"rt":$n[0].Int64,"sn":"TicksPerSecond"},{"a":2,"n":"Zero","is":true,"t":4,"rt":$n[0].TimeSpan,"sn":"zero","ro":true}]}; });
+    $m($n[0].Void, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"}]}; });
+    $m($n[7].CultureNotFoundException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"def":function (message) { return new System.Globalization.CultureNotFoundException(null, null, message); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"def":function (message, innerException) { return new System.Globalization.CultureNotFoundException(null, null, message, innerException); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].String],"pi":[{"n":"paramName","pt":$n[0].String,"ps":0},{"n":"message","pt":$n[0].String,"ps":1}],"def":function (paramName, message) { return new System.Globalization.CultureNotFoundException(paramName, null, message); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Int32,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"invalidCultureId","pt":$n[0].Int32,"ps":1},{"n":"innerException","pt":$n[0].Exception,"ps":2}],"def":function (message, invalidCultureId, innerException) { return new System.Globalization.CultureNotFoundException(null, null, message, innerException, invalidCultureId); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Int32,$n[0].String],"pi":[{"n":"paramName","pt":$n[0].String,"ps":0},{"n":"invalidCultureId","pt":$n[0].Int32,"ps":1},{"n":"message","pt":$n[0].String,"ps":2}],"def":function (paramName, invalidCultureId, message) { return new System.Globalization.CultureNotFoundException(paramName, null, message, null, invalidCultureId); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"invalidCultureName","pt":$n[0].String,"ps":1},{"n":"innerException","pt":$n[0].Exception,"ps":2}],"def":function (message, invalidCultureName, innerException) { return new System.Globalization.CultureNotFoundException(null, invalidCultureName, message, innerException); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].String,$n[0].String],"pi":[{"n":"paramName","pt":$n[0].String,"ps":0},{"n":"invalidCultureName","pt":$n[0].String,"ps":1},{"n":"message","pt":$n[0].String,"ps":2}],"def":function (paramName, invalidCultureName, message) { return new System.Globalization.CultureNotFoundException(paramName, invalidCultureName, message); }},{"a":2,"n":"InvalidCultureId","t":16,"rt":$n[0].Nullable$1(System.Int32),"g":{"a":2,"n":"get_InvalidCultureId","t":8,"tpc":0,"def":function () { return getInvalidCultureId(); },"rt":$n[0].Nullable$1(System.Int32)}},{"a":2,"n":"InvalidCultureName","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_InvalidCultureName","t":8,"tpc":0,"def":function () { return getInvalidCultureName(); },"rt":$n[0].String}}]}; });
+    $m($n[7].CultureInfo, function () { return {"att":1048833,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"name","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":"Clone","t":8,"sn":"clone","rt":$n[0].Object},{"a":2,"n":"CreateSpecificCulture","is":true,"t":8,"pi":[{"n":"name","pt":$n[0].String,"ps":0}],"sn":"getCultureInfo","rt":$n[7].CultureInfo,"p":[$n[0].String]},{"a":2,"n":"GetCultureInfo","is":true,"t":8,"pi":[{"n":"name","pt":$n[0].String,"ps":0}],"sn":"getCultureInfo","rt":$n[7].CultureInfo,"p":[$n[0].String]},{"a":2,"n":"GetCultures","is":true,"t":8,"sn":"getCultures","rt":System.Array.type(System.Globalization.CultureInfo)},{"a":2,"n":"GetFormat","t":8,"pi":[{"n":"formatType","pt":Function,"ps":0}],"sn":"getFormat","rt":$n[0].Object,"p":[Function]},{"a":2,"n":"CurrentCulture","is":true,"t":16,"rt":$n[7].CultureInfo,"g":{"a":2,"n":"get_CurrentCulture","is":true,"t":8,"tpc":0,"def":function () { return this.getCurrentCulture(); },"rt":$n[7].CultureInfo},"s":{"a":2,"n":"set_CurrentCulture","is":true,"t":8,"pi":[{"n":"value","pt":$n[7].CultureInfo,"ps":0}],"tpc":0,"def":function (value) { return this.setCurrentCulture(value); },"rt":$n[0].Void,"p":[$n[7].CultureInfo]}},{"a":2,"n":"DateTimeFormat","t":16,"rt":$n[7].DateTimeFormatInfo,"g":{"a":2,"n":"get_DateTimeFormat","t":8,"rt":$n[7].DateTimeFormatInfo,"fg":"dateTimeFormat"},"s":{"a":2,"n":"set_DateTimeFormat","t":8,"p":[$n[7].DateTimeFormatInfo],"rt":$n[0].Void,"fs":"dateTimeFormat"},"fn":"dateTimeFormat"},{"a":2,"n":"EnglishName","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_EnglishName","t":8,"rt":$n[0].String,"fg":"englishName"},"s":{"a":2,"n":"set_EnglishName","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"englishName"},"fn":"englishName"},{"a":2,"n":"InvariantCulture","is":true,"t":16,"rt":$n[7].CultureInfo,"g":{"a":2,"n":"get_InvariantCulture","t":8,"rt":$n[7].CultureInfo,"fg":"invariantCulture","is":true},"fn":"invariantCulture"},{"a":2,"n":"Name","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_Name","t":8,"rt":$n[0].String,"fg":"name"},"fn":"name"},{"a":2,"n":"NativeName","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_NativeName","t":8,"rt":$n[0].String,"fg":"nativeName"},"s":{"a":2,"n":"set_NativeName","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"nativeName"},"fn":"nativeName"},{"a":2,"n":"NumberFormat","t":16,"rt":$n[7].NumberFormatInfo,"g":{"a":2,"n":"get_NumberFormat","t":8,"rt":$n[7].NumberFormatInfo,"fg":"numberFormat"},"s":{"a":2,"n":"set_NumberFormat","t":8,"p":[$n[7].NumberFormatInfo],"rt":$n[0].Void,"fs":"numberFormat"},"fn":"numberFormat"}]}; });
+    $m($n[7].DateTimeFormatInfo, function () { return {"att":1048833,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Clone","t":8,"sn":"clone","rt":$n[0].Object},{"a":2,"n":"GetAbbreviatedDayName","t":8,"pi":[{"n":"dayofweek","pt":$n[0].DayOfWeek,"ps":0}],"sn":"getAbbreviatedDayName","rt":$n[0].String,"p":[$n[0].DayOfWeek]},{"a":2,"n":"GetAbbreviatedMonthName","t":8,"pi":[{"n":"month","pt":$n[0].Int32,"ps":0}],"sn":"getAbbreviatedMonthName","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"GetAllDateTimePatterns","t":8,"sn":"getAllDateTimePatterns","rt":$n[0].Array.type(System.String)},{"a":2,"n":"GetAllDateTimePatterns","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0}],"sn":"getAllDateTimePatterns","rt":$n[0].Array.type(System.String),"p":[$n[0].String]},{"a":2,"n":"GetDayName","t":8,"pi":[{"n":"dayofweek","pt":$n[0].DayOfWeek,"ps":0}],"sn":"getDayName","rt":$n[0].String,"p":[$n[0].DayOfWeek]},{"a":2,"n":"GetFormat","t":8,"pi":[{"n":"formatType","pt":Function,"ps":0}],"sn":"getFormat","rt":$n[0].Object,"p":[Function]},{"a":2,"n":"GetMonthName","t":8,"pi":[{"n":"month","pt":$n[0].Int32,"ps":0}],"sn":"getMonthName","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"GetShortestDayName","t":8,"pi":[{"n":"dayOfWeek","pt":$n[0].DayOfWeek,"ps":0}],"sn":"getShortestDayName","rt":$n[0].String,"p":[$n[0].DayOfWeek]},{"a":2,"n":"AMDesignator","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_AMDesignator","t":8,"rt":$n[0].String,"fg":"amDesignator"},"s":{"a":2,"n":"set_AMDesignator","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"amDesignator"},"fn":"amDesignator"},{"a":2,"n":"AbbreviatedDayNames","t":16,"rt":$n[0].Array.type(System.String),"g":{"a":2,"n":"get_AbbreviatedDayNames","t":8,"rt":$n[0].Array.type(System.String),"fg":"abbreviatedDayNames"},"s":{"a":2,"n":"set_AbbreviatedDayNames","t":8,"p":[$n[0].Array.type(System.String)],"rt":$n[0].Void,"fs":"abbreviatedDayNames"},"fn":"abbreviatedDayNames"},{"a":2,"n":"AbbreviatedMonthGenitiveNames","t":16,"rt":$n[0].Array.type(System.String),"g":{"a":2,"n":"get_AbbreviatedMonthGenitiveNames","t":8,"rt":$n[0].Array.type(System.String),"fg":"abbreviatedMonthGenitiveNames"},"s":{"a":2,"n":"set_AbbreviatedMonthGenitiveNames","t":8,"p":[$n[0].Array.type(System.String)],"rt":$n[0].Void,"fs":"abbreviatedMonthGenitiveNames"},"fn":"abbreviatedMonthGenitiveNames"},{"a":2,"n":"AbbreviatedMonthNames","t":16,"rt":$n[0].Array.type(System.String),"g":{"a":2,"n":"get_AbbreviatedMonthNames","t":8,"rt":$n[0].Array.type(System.String),"fg":"abbreviatedMonthNames"},"s":{"a":2,"n":"set_AbbreviatedMonthNames","t":8,"p":[$n[0].Array.type(System.String)],"rt":$n[0].Void,"fs":"abbreviatedMonthNames"},"fn":"abbreviatedMonthNames"},{"a":2,"n":"CurrentInfo","is":true,"t":16,"rt":$n[7].DateTimeFormatInfo,"g":{"a":2,"n":"get_CurrentInfo","t":8,"rt":$n[7].DateTimeFormatInfo,"fg":"currentInfo","is":true},"fn":"currentInfo"},{"a":2,"n":"DateSeparator","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_DateSeparator","t":8,"rt":$n[0].String,"fg":"dateSeparator"},"s":{"a":2,"n":"set_DateSeparator","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"dateSeparator"},"fn":"dateSeparator"},{"a":2,"n":"DayNames","t":16,"rt":$n[0].Array.type(System.String),"g":{"a":2,"n":"get_DayNames","t":8,"rt":$n[0].Array.type(System.String),"fg":"dayNames"},"s":{"a":2,"n":"set_DayNames","t":8,"p":[$n[0].Array.type(System.String)],"rt":$n[0].Void,"fs":"dayNames"},"fn":"dayNames"},{"a":2,"n":"FirstDayOfWeek","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_FirstDayOfWeek","t":8,"rt":$n[0].Int32,"fg":"firstDayOfWeek"},"s":{"a":2,"n":"set_FirstDayOfWeek","t":8,"p":[$n[0].Int32],"rt":$n[0].Void,"fs":"firstDayOfWeek"},"fn":"firstDayOfWeek"},{"a":2,"n":"FullDateTimePattern","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_FullDateTimePattern","t":8,"rt":$n[0].String,"fg":"fullDateTimePattern"},"s":{"a":2,"n":"set_FullDateTimePattern","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"fullDateTimePattern"},"fn":"fullDateTimePattern"},{"a":2,"n":"InvariantInfo","is":true,"t":16,"rt":$n[7].DateTimeFormatInfo,"g":{"a":2,"n":"get_InvariantInfo","t":8,"rt":$n[7].DateTimeFormatInfo,"fg":"invariantInfo","is":true},"fn":"invariantInfo"},{"a":2,"n":"LongDatePattern","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_LongDatePattern","t":8,"rt":$n[0].String,"fg":"longDatePattern"},"s":{"a":2,"n":"set_LongDatePattern","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"longDatePattern"},"fn":"longDatePattern"},{"a":2,"n":"LongTimePattern","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_LongTimePattern","t":8,"rt":$n[0].String,"fg":"longTimePattern"},"s":{"a":2,"n":"set_LongTimePattern","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"longTimePattern"},"fn":"longTimePattern"},{"a":2,"n":"MonthDayPattern","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_MonthDayPattern","t":8,"rt":$n[0].String,"fg":"monthDayPattern"},"s":{"a":2,"n":"set_MonthDayPattern","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"monthDayPattern"},"fn":"monthDayPattern"},{"a":2,"n":"MonthGenitiveNames","t":16,"rt":$n[0].Array.type(System.String),"g":{"a":2,"n":"get_MonthGenitiveNames","t":8,"rt":$n[0].Array.type(System.String),"fg":"monthGenitiveNames"},"s":{"a":2,"n":"set_MonthGenitiveNames","t":8,"p":[$n[0].Array.type(System.String)],"rt":$n[0].Void,"fs":"monthGenitiveNames"},"fn":"monthGenitiveNames"},{"a":2,"n":"MonthNames","t":16,"rt":$n[0].Array.type(System.String),"g":{"a":2,"n":"get_MonthNames","t":8,"rt":$n[0].Array.type(System.String),"fg":"monthNames"},"s":{"a":2,"n":"set_MonthNames","t":8,"p":[$n[0].Array.type(System.String)],"rt":$n[0].Void,"fs":"monthNames"},"fn":"monthNames"},{"a":2,"n":"PMDesignator","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_PMDesignator","t":8,"rt":$n[0].String,"fg":"pmDesignator"},"s":{"a":2,"n":"set_PMDesignator","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"pmDesignator"},"fn":"pmDesignator"},{"a":2,"n":"RFC1123Pattern","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_RFC1123Pattern","t":8,"rt":$n[0].String,"fg":"rfc1123Pattern"},"s":{"a":2,"n":"set_RFC1123Pattern","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"rfc1123Pattern"},"fn":"rfc1123Pattern"},{"a":2,"n":"RoundtripFormat","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_RoundtripFormat","t":8,"rt":$n[0].String,"fg":"roundtripFormat"},"s":{"a":2,"n":"set_RoundtripFormat","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"roundtripFormat"},"fn":"roundtripFormat"},{"a":2,"n":"ShortDatePattern","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_ShortDatePattern","t":8,"rt":$n[0].String,"fg":"shortDatePattern"},"s":{"a":2,"n":"set_ShortDatePattern","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"shortDatePattern"},"fn":"shortDatePattern"},{"a":2,"n":"ShortTimePattern","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_ShortTimePattern","t":8,"rt":$n[0].String,"fg":"shortTimePattern"},"s":{"a":2,"n":"set_ShortTimePattern","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"shortTimePattern"},"fn":"shortTimePattern"},{"a":2,"n":"ShortestDayNames","t":16,"rt":$n[0].Array.type(System.String),"g":{"a":2,"n":"get_ShortestDayNames","t":8,"rt":$n[0].Array.type(System.String),"fg":"shortestDayNames"},"s":{"a":2,"n":"set_ShortestDayNames","t":8,"p":[$n[0].Array.type(System.String)],"rt":$n[0].Void,"fs":"shortestDayNames"},"fn":"shortestDayNames"},{"a":2,"n":"SortableDateTimePattern","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_SortableDateTimePattern","t":8,"rt":$n[0].String,"fg":"sortableDateTimePattern"},"s":{"a":2,"n":"set_SortableDateTimePattern","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"sortableDateTimePattern"},"fn":"sortableDateTimePattern"},{"a":2,"n":"TimeSeparator","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_TimeSeparator","t":8,"rt":$n[0].String,"fg":"timeSeparator"},"s":{"a":2,"n":"set_TimeSeparator","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"timeSeparator"},"fn":"timeSeparator"},{"a":2,"n":"UniversalSortableDateTimePattern","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_UniversalSortableDateTimePattern","t":8,"rt":$n[0].String,"fg":"universalSortableDateTimePattern"},"s":{"a":2,"n":"set_UniversalSortableDateTimePattern","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"universalSortableDateTimePattern"},"fn":"universalSortableDateTimePattern"},{"a":2,"n":"YearMonthPattern","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_YearMonthPattern","t":8,"rt":$n[0].String,"fg":"yearMonthPattern"},"s":{"a":2,"n":"set_YearMonthPattern","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"yearMonthPattern"},"fn":"yearMonthPattern"}]}; });
+    $m($n[7].NumberFormatInfo, function () { return {"att":1048833,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Clone","t":8,"sn":"clone","rt":$n[0].Object},{"a":2,"n":"GetFormat","t":8,"pi":[{"n":"formatType","pt":Function,"ps":0}],"sn":"getFormat","rt":$n[0].Object,"p":[Function]},{"a":2,"n":"CurrencyDecimalDigits","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_CurrencyDecimalDigits","t":8,"rt":$n[0].Int32,"fg":"currencyDecimalDigits"},"s":{"a":2,"n":"set_CurrencyDecimalDigits","t":8,"p":[$n[0].Int32],"rt":$n[0].Void,"fs":"currencyDecimalDigits"},"fn":"currencyDecimalDigits"},{"a":2,"n":"CurrencyDecimalSeparator","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_CurrencyDecimalSeparator","t":8,"rt":$n[0].String,"fg":"currencyDecimalSeparator"},"s":{"a":2,"n":"set_CurrencyDecimalSeparator","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"currencyDecimalSeparator"},"fn":"currencyDecimalSeparator"},{"a":2,"n":"CurrencyGroupSeparator","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_CurrencyGroupSeparator","t":8,"rt":$n[0].String,"fg":"currencyGroupSeparator"},"s":{"a":2,"n":"set_CurrencyGroupSeparator","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"currencyGroupSeparator"},"fn":"currencyGroupSeparator"},{"a":2,"n":"CurrencyGroupSizes","t":16,"rt":$n[0].Array.type(System.Int32),"g":{"a":2,"n":"get_CurrencyGroupSizes","t":8,"rt":$n[0].Array.type(System.Int32),"fg":"currencyGroupSizes"},"s":{"a":2,"n":"set_CurrencyGroupSizes","t":8,"p":[$n[0].Array.type(System.Int32)],"rt":$n[0].Void,"fs":"currencyGroupSizes"},"fn":"currencyGroupSizes"},{"a":2,"n":"CurrencyNegativePattern","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_CurrencyNegativePattern","t":8,"rt":$n[0].Int32,"fg":"currencyNegativePattern"},"s":{"a":2,"n":"set_CurrencyNegativePattern","t":8,"p":[$n[0].Int32],"rt":$n[0].Void,"fs":"currencyNegativePattern"},"fn":"currencyNegativePattern"},{"a":2,"n":"CurrencyPositivePattern","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_CurrencyPositivePattern","t":8,"rt":$n[0].Int32,"fg":"currencyPositivePattern"},"s":{"a":2,"n":"set_CurrencyPositivePattern","t":8,"p":[$n[0].Int32],"rt":$n[0].Void,"fs":"currencyPositivePattern"},"fn":"currencyPositivePattern"},{"a":2,"n":"CurrencySymbol","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_CurrencySymbol","t":8,"rt":$n[0].String,"fg":"currencySymbol"},"s":{"a":2,"n":"set_CurrencySymbol","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"currencySymbol"},"fn":"currencySymbol"},{"a":2,"n":"CurrentInfo","is":true,"t":16,"rt":$n[7].NumberFormatInfo,"g":{"a":2,"n":"get_CurrentInfo","t":8,"rt":$n[7].NumberFormatInfo,"fg":"currentInfo","is":true},"fn":"currentInfo"},{"a":2,"n":"InvariantInfo","is":true,"t":16,"rt":$n[7].NumberFormatInfo,"g":{"a":2,"n":"get_InvariantInfo","t":8,"rt":$n[7].NumberFormatInfo,"fg":"invariantInfo","is":true},"fn":"invariantInfo"},{"a":2,"n":"NaNSymbol","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_NaNSymbol","t":8,"rt":$n[0].String,"fg":"nanSymbol"},"s":{"a":2,"n":"set_NaNSymbol","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"nanSymbol"},"fn":"nanSymbol"},{"a":2,"n":"NegativeInfinitySymbol","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_NegativeInfinitySymbol","t":8,"rt":$n[0].String,"fg":"negativeInfinitySymbol"},"s":{"a":2,"n":"set_NegativeInfinitySymbol","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"negativeInfinitySymbol"},"fn":"negativeInfinitySymbol"},{"a":2,"n":"NegativeSign","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_NegativeSign","t":8,"rt":$n[0].String,"fg":"negativeSign"},"s":{"a":2,"n":"set_NegativeSign","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"negativeSign"},"fn":"negativeSign"},{"a":2,"n":"NumberDecimalDigits","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_NumberDecimalDigits","t":8,"rt":$n[0].Int32,"fg":"numberDecimalDigits"},"s":{"a":2,"n":"set_NumberDecimalDigits","t":8,"p":[$n[0].Int32],"rt":$n[0].Void,"fs":"numberDecimalDigits"},"fn":"numberDecimalDigits"},{"a":2,"n":"NumberDecimalSeparator","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_NumberDecimalSeparator","t":8,"rt":$n[0].String,"fg":"numberDecimalSeparator"},"s":{"a":2,"n":"set_NumberDecimalSeparator","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"numberDecimalSeparator"},"fn":"numberDecimalSeparator"},{"a":2,"n":"NumberGroupSeparator","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_NumberGroupSeparator","t":8,"rt":$n[0].String,"fg":"numberGroupSeparator"},"s":{"a":2,"n":"set_NumberGroupSeparator","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"numberGroupSeparator"},"fn":"numberGroupSeparator"},{"a":2,"n":"NumberGroupSizes","t":16,"rt":$n[0].Array.type(System.Int32),"g":{"a":2,"n":"get_NumberGroupSizes","t":8,"rt":$n[0].Array.type(System.Int32),"fg":"numberGroupSizes"},"s":{"a":2,"n":"set_NumberGroupSizes","t":8,"p":[$n[0].Array.type(System.Int32)],"rt":$n[0].Void,"fs":"numberGroupSizes"},"fn":"numberGroupSizes"},{"a":2,"n":"PercentDecimalDigits","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_PercentDecimalDigits","t":8,"rt":$n[0].Int32,"fg":"percentDecimalDigits"},"s":{"a":2,"n":"set_PercentDecimalDigits","t":8,"p":[$n[0].Int32],"rt":$n[0].Void,"fs":"percentDecimalDigits"},"fn":"percentDecimalDigits"},{"a":2,"n":"PercentDecimalSeparator","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_PercentDecimalSeparator","t":8,"rt":$n[0].String,"fg":"percentDecimalSeparator"},"s":{"a":2,"n":"set_PercentDecimalSeparator","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"percentDecimalSeparator"},"fn":"percentDecimalSeparator"},{"a":2,"n":"PercentGroupSeparator","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_PercentGroupSeparator","t":8,"rt":$n[0].String,"fg":"percentGroupSeparator"},"s":{"a":2,"n":"set_PercentGroupSeparator","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"percentGroupSeparator"},"fn":"percentGroupSeparator"},{"a":2,"n":"PercentGroupSizes","t":16,"rt":$n[0].Array.type(System.Int32),"g":{"a":2,"n":"get_PercentGroupSizes","t":8,"rt":$n[0].Array.type(System.Int32),"fg":"percentGroupSizes"},"s":{"a":2,"n":"set_PercentGroupSizes","t":8,"p":[$n[0].Array.type(System.Int32)],"rt":$n[0].Void,"fs":"percentGroupSizes"},"fn":"percentGroupSizes"},{"a":2,"n":"PercentNegativePattern","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_PercentNegativePattern","t":8,"rt":$n[0].Int32,"fg":"percentNegativePattern"},"s":{"a":2,"n":"set_PercentNegativePattern","t":8,"p":[$n[0].Int32],"rt":$n[0].Void,"fs":"percentNegativePattern"},"fn":"percentNegativePattern"},{"a":2,"n":"PercentPositivePattern","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_PercentPositivePattern","t":8,"rt":$n[0].Int32,"fg":"percentPositivePattern"},"s":{"a":2,"n":"set_PercentPositivePattern","t":8,"p":[$n[0].Int32],"rt":$n[0].Void,"fs":"percentPositivePattern"},"fn":"percentPositivePattern"},{"a":2,"n":"PercentSymbol","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_PercentSymbol","t":8,"rt":$n[0].String,"fg":"percentSymbol"},"s":{"a":2,"n":"set_PercentSymbol","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"percentSymbol"},"fn":"percentSymbol"},{"a":2,"n":"PositiveInfinitySymbol","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_PositiveInfinitySymbol","t":8,"rt":$n[0].String,"fg":"positiveInfinitySymbol"},"s":{"a":2,"n":"set_PositiveInfinitySymbol","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"positiveInfinitySymbol"},"fn":"positiveInfinitySymbol"},{"a":2,"n":"PositiveSign","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_PositiveSign","t":8,"rt":$n[0].String,"fg":"positiveSign"},"s":{"a":2,"n":"set_PositiveSign","t":8,"p":[$n[0].String],"rt":$n[0].Void,"fs":"positiveSign"},"fn":"positiveSign"}]}; });
+    $m($n[5].Timer, function () { return {"att":1048833,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[Function],"pi":[{"n":"callback","pt":Function,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[Function,$n[0].Object,$n[0].Int32,$n[0].Int32],"pi":[{"n":"callback","pt":Function,"ps":0},{"n":"state","pt":$n[0].Object,"ps":1},{"n":"dueTime","pt":$n[0].Int32,"ps":2},{"n":"period","pt":$n[0].Int32,"ps":3}],"sn":"$ctor1"},{"a":2,"n":".ctor","t":1,"p":[Function,$n[0].Object,$n[0].Int64,$n[0].Int64],"pi":[{"n":"callback","pt":Function,"ps":0},{"n":"state","pt":$n[0].Object,"ps":1},{"n":"dueTime","pt":$n[0].Int64,"ps":2},{"n":"period","pt":$n[0].Int64,"ps":3}],"sn":"$ctor2"},{"a":2,"n":".ctor","t":1,"p":[Function,$n[0].Object,$n[0].TimeSpan,$n[0].TimeSpan],"pi":[{"n":"callback","pt":Function,"ps":0},{"n":"state","pt":$n[0].Object,"ps":1},{"n":"dueTime","pt":$n[0].TimeSpan,"ps":2},{"n":"period","pt":$n[0].TimeSpan,"ps":3}],"sn":"$ctor3"},{"a":2,"n":".ctor","t":1,"p":[Function,$n[0].Object,$n[0].UInt32,$n[0].UInt32],"pi":[{"n":"callback","pt":Function,"ps":0},{"n":"state","pt":$n[0].Object,"ps":1},{"n":"dueTime","pt":$n[0].UInt32,"ps":2},{"n":"period","pt":$n[0].UInt32,"ps":3}],"sn":"$ctor4"},{"a":2,"n":"Change","t":8,"pi":[{"n":"dueTime","pt":$n[0].Int32,"ps":0},{"n":"period","pt":$n[0].Int32,"ps":1}],"sn":"change","rt":$n[0].Boolean,"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Change","t":8,"pi":[{"n":"dueTime","pt":$n[0].Int64,"ps":0},{"n":"period","pt":$n[0].Int64,"ps":1}],"sn":"change$1","rt":$n[0].Boolean,"p":[$n[0].Int64,$n[0].Int64]},{"a":2,"n":"Change","t":8,"pi":[{"n":"dueTime","pt":$n[0].TimeSpan,"ps":0},{"n":"period","pt":$n[0].TimeSpan,"ps":1}],"sn":"change$2","rt":$n[0].Boolean,"p":[$n[0].TimeSpan,$n[0].TimeSpan]},{"a":2,"n":"Change","t":8,"pi":[{"n":"dueTime","pt":$n[0].UInt32,"ps":0},{"n":"period","pt":$n[0].UInt32,"ps":1}],"sn":"change$3","rt":$n[0].Boolean,"p":[$n[0].UInt32,$n[0].UInt32]},{"a":1,"n":"ChangeTimer","t":8,"pi":[{"n":"dueTime","pt":$n[0].Int64,"ps":0},{"n":"period","pt":$n[0].Int64,"ps":1}],"sn":"changeTimer","rt":$n[0].Boolean,"p":[$n[0].Int64,$n[0].Int64]},{"a":1,"n":"ClearTimeout","t":8,"sn":"clearTimeout","rt":$n[0].Void},{"a":2,"n":"Dispose","t":8,"sn":"dispose","rt":$n[0].Void},{"a":1,"n":"HandleCallback","t":8,"sn":"handleCallback","rt":$n[0].Void},{"a":1,"n":"RunTimer","t":8,"pi":[{"n":"period","pt":$n[0].Int64,"ps":0},{"n":"checkDispose","dv":true,"o":true,"pt":$n[0].Boolean,"ps":1}],"sn":"runTimer","rt":$n[0].Boolean,"p":[$n[0].Int64,$n[0].Boolean]},{"a":1,"n":"TimerSetup","t":8,"pi":[{"n":"callback","pt":Function,"ps":0},{"n":"state","pt":$n[0].Object,"ps":1},{"n":"dueTime","pt":$n[0].Int64,"ps":2},{"n":"period","pt":$n[0].Int64,"ps":3}],"sn":"timerSetup","rt":$n[0].Boolean,"p":[Function,$n[0].Object,$n[0].Int64,$n[0].Int64]},{"a":1,"n":"EXC_DISPOSED","is":true,"t":4,"rt":$n[0].String,"sn":"EXC_DISPOSED"},{"a":1,"n":"EXC_LESS","is":true,"t":4,"rt":$n[0].String,"sn":"EXC_LESS"},{"a":1,"n":"EXC_MORE","is":true,"t":4,"rt":$n[0].String,"sn":"EXC_MORE"},{"a":1,"n":"MAX_SUPPORTED_TIMEOUT","is":true,"t":4,"rt":$n[0].UInt32,"sn":"MAX_SUPPORTED_TIMEOUT"},{"a":1,"n":"disposed","t":4,"rt":$n[0].Boolean,"sn":"disposed"},{"a":4,"n":"dueTime","t":4,"rt":$n[0].Int64,"sn":"dueTime"},{"a":1,"n":"id","t":4,"rt":$n[0].Nullable$1(System.Int32),"sn":"id"},{"a":4,"n":"period","t":4,"rt":$n[0].Int64,"sn":"period"},{"a":1,"n":"state","t":4,"rt":$n[0].Object,"sn":"state"},{"a":1,"n":"timerCallback","t":4,"rt":Function,"sn":"timerCallback"}]}; });
+    $m($n[5].CancellationToken, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Boolean],"pi":[{"n":"canceled","pt":$n[0].Boolean,"ps":0}],"sn":"ctor"},{"a":2,"n":"Register","t":8,"pi":[{"n":"callback","pt":Function,"ps":0}],"sn":"register","rt":$n[5].CancellationTokenRegistration,"p":[Function]},{"a":2,"n":"Register","t":8,"pi":[{"n":"callback","pt":Function,"ps":0},{"n":"useSynchronizationContext","pt":$n[0].Boolean,"ps":1}],"tpc":0,"def":function (callback, useSynchronizationContext) { return this.register(callback); },"rt":$n[5].CancellationTokenRegistration,"p":[Function,$n[0].Boolean]},{"a":2,"n":"Register","t":8,"pi":[{"n":"callback","pt":Function,"ps":0},{"n":"state","pt":$n[0].Object,"ps":1}],"sn":"register","rt":$n[5].CancellationTokenRegistration,"p":[Function,$n[0].Object]},{"a":2,"n":"Register","t":8,"pi":[{"n":"callback","pt":Function,"ps":0},{"n":"state","pt":$n[0].Object,"ps":1},{"n":"useSynchronizationContext","pt":$n[0].Boolean,"ps":2}],"tpc":0,"def":function (callback, state, useSynchronizationContext) { return this.register(callback, state); },"rt":$n[5].CancellationTokenRegistration,"p":[Function,$n[0].Object,$n[0].Boolean]},{"a":2,"n":"ThrowIfCancellationRequested","t":8,"sn":"throwIfCancellationRequested","rt":$n[0].Void},{"a":2,"n":"CanBeCanceled","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_CanBeCanceled","t":8,"tpc":0,"def":function () { return getCanBeCanceled(); },"rt":$n[0].Boolean}},{"a":2,"n":"IsCancellationRequested","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsCancellationRequested","t":8,"tpc":0,"def":function () { return getIsCancellationRequested(); },"rt":$n[0].Boolean}},{"a":2,"n":"None","is":true,"t":16,"rt":$n[5].CancellationToken,"g":{"a":2,"n":"get_None","t":8,"rt":$n[5].CancellationToken,"fg":"none","is":true},"fn":"none"}]}; });
+    $m($n[5].CancellationTokenRegistration, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Dispose","t":8,"sn":"dispose","rt":$n[0].Void},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[5].CancellationTokenRegistration,"ps":0}],"sn":"equalsT","rt":$n[0].Boolean,"p":[$n[5].CancellationTokenRegistration]},{"a":2,"n":"op_Equality","is":true,"t":8,"pi":[{"n":"left","pt":$n[5].CancellationTokenRegistration,"ps":0},{"n":"right","pt":$n[5].CancellationTokenRegistration,"ps":1}],"tpc":0,"def":function (left, right) { return Bridge.equals(left, right); },"rt":$n[0].Boolean,"p":[$n[5].CancellationTokenRegistration,$n[5].CancellationTokenRegistration]},{"a":2,"n":"op_Inequality","is":true,"t":8,"pi":[{"n":"left","pt":$n[5].CancellationTokenRegistration,"ps":0},{"n":"right","pt":$n[5].CancellationTokenRegistration,"ps":1}],"tpc":0,"def":function (left, right) { return !Bridge.equals(left, right); },"rt":$n[0].Boolean,"p":[$n[5].CancellationTokenRegistration,$n[5].CancellationTokenRegistration]}]}; });
+    $m($n[5].CancellationTokenSource, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"millisecondsDelay","pt":$n[0].Int32,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].TimeSpan],"pi":[{"n":"delay","pt":$n[0].TimeSpan,"ps":0}],"def":function (delay) { return new System.Threading.CancellationTokenSource(delay.ticks / 10000); }},{"a":2,"n":"Cancel","t":8,"sn":"cancel","rt":$n[0].Void},{"a":2,"n":"Cancel","t":8,"pi":[{"n":"throwOnFirstException","pt":$n[0].Boolean,"ps":0}],"sn":"cancel","rt":$n[0].Void,"p":[$n[0].Boolean]},{"a":2,"n":"CancelAfter","t":8,"pi":[{"n":"millisecondsDelay","pt":$n[0].Int32,"ps":0}],"sn":"cancelAfter","rt":$n[0].Void,"p":[$n[0].Int32]},{"a":2,"n":"CancelAfter","t":8,"pi":[{"n":"delay","pt":$n[0].TimeSpan,"ps":0}],"tpc":0,"def":function (delay) { return this.cancelAfter(delay.ticks / 10000); },"rt":$n[0].Void,"p":[$n[0].TimeSpan]},{"a":2,"n":"CreateLinkedTokenSource","is":true,"t":8,"pi":[{"n":"tokens","ip":true,"pt":System.Array.type(System.Threading.CancellationToken),"ps":0}],"tpc":0,"def":function (tokens) { return System.Threading.CancellationTokenSource.createLinked(tokens); },"rt":$n[5].CancellationTokenSource,"p":[System.Array.type(System.Threading.CancellationToken)]},{"a":2,"n":"CreateLinkedTokenSource","is":true,"t":8,"pi":[{"n":"token1","pt":$n[5].CancellationToken,"ps":0},{"n":"token2","pt":$n[5].CancellationToken,"ps":1}],"sn":"createLinked","rt":$n[5].CancellationTokenSource,"p":[$n[5].CancellationToken,$n[5].CancellationToken]},{"a":2,"n":"Dispose","t":8,"sn":"dispose","rt":$n[0].Void},{"a":2,"n":"IsCancellationRequested","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsCancellationRequested","t":8,"rt":$n[0].Boolean,"fg":"isCancellationRequested"},"s":{"a":1,"n":"set_IsCancellationRequested","t":8,"p":[$n[0].Boolean],"rt":$n[0].Void,"fs":"isCancellationRequested"},"fn":"isCancellationRequested"},{"a":2,"n":"Token","t":16,"rt":$n[5].CancellationToken,"g":{"a":2,"n":"get_Token","t":8,"rt":$n[5].CancellationToken,"fg":"token"},"s":{"a":1,"n":"set_Token","t":8,"p":[$n[5].CancellationToken],"rt":$n[0].Void,"fs":"token"},"fn":"token"}]}; });
+    $m($n[8].Task, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[Function],"pi":[{"n":"action","pt":Function,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[Function,$n[0].Object],"pi":[{"n":"action","pt":Function,"ps":0},{"n":"state","pt":$n[0].Object,"ps":1}],"sn":"ctor"},{"a":2,"n":"Complete","t":8,"pi":[{"n":"result","dv":null,"o":true,"pt":$n[0].Object,"ps":0}],"sn":"complete","rt":$n[0].Void,"p":[$n[0].Object]},{"a":2,"n":"ContinueWith","t":8,"pi":[{"n":"continuationAction","pt":Function,"ps":0}],"sn":"continueWith","rt":$n[8].Task,"p":[Function]},{"a":2,"n":"ContinueWith","t":8,"pi":[{"n":"continuationFunction","pt":Function,"ps":0}],"tpc":1,"tprm":["TResult"],"sn":"continueWith","rt":$n[8].Task$1,"p":[Function]},{"a":2,"n":"Delay","is":true,"t":8,"pi":[{"n":"millisecondDelay","pt":$n[0].Int32,"ps":0}],"sn":"delay","rt":$n[8].Task,"p":[$n[0].Int32]},{"a":2,"n":"Dispose","t":8,"sn":"dispose","rt":$n[0].Void},{"a":2,"n":"FromCallback","is":true,"t":8,"pi":[{"n":"target","pt":$n[0].Object,"ps":0},{"n":"method","pt":$n[0].String,"ps":1},{"n":"otherArguments","ip":true,"pt":$n[0].Array.type(System.Object),"ps":2}],"sn":"fromCallback","rt":$n[8].Task,"p":[$n[0].Object,$n[0].String,$n[0].Array.type(System.Object)]},{"a":2,"n":"FromCallback","is":true,"t":8,"pi":[{"n":"target","pt":$n[0].Object,"ps":0},{"n":"method","pt":$n[0].String,"ps":1},{"n":"otherArguments","ip":true,"pt":$n[0].Array.type(System.Object),"ps":2}],"tpc":1,"tprm":["TResult"],"sn":"fromCallback","rt":$n[8].Task$1,"p":[$n[0].Object,$n[0].String,$n[0].Array.type(System.Object)]},{"a":2,"n":"FromCallbackResult","is":true,"t":8,"pi":[{"n":"target","pt":$n[0].Object,"ps":0},{"n":"method","pt":$n[0].String,"ps":1},{"n":"resultHandler","pt":Function,"ps":2},{"n":"otherArguments","ip":true,"pt":$n[0].Array.type(System.Object),"ps":3}],"sn":"fromCallbackResult","rt":$n[8].Task,"p":[$n[0].Object,$n[0].String,Function,$n[0].Array.type(System.Object)]},{"a":2,"n":"FromCallbackResult","is":true,"t":8,"pi":[{"n":"target","pt":$n[0].Object,"ps":0},{"n":"method","pt":$n[0].String,"ps":1},{"n":"resultHandler","pt":Function,"ps":2},{"n":"otherArguments","ip":true,"pt":$n[0].Array.type(System.Object),"ps":3}],"tpc":1,"tprm":["TResult"],"sn":"fromCallbackResult","rt":$n[8].Task$1,"p":[$n[0].Object,$n[0].String,Function,$n[0].Array.type(System.Object)]},{"a":2,"n":"FromPromise","is":true,"t":8,"pi":[{"n":"promise","pt":Bridge.IPromise,"ps":0}],"sn":"fromPromise","rt":$n[8].Task$1,"p":[Bridge.IPromise]},{"a":2,"n":"FromPromise","is":true,"t":8,"pi":[{"n":"promise","pt":Bridge.IPromise,"ps":0},{"n":"resultHandler","pt":Function,"ps":1}],"tpc":1,"tprm":["TResult"],"sn":"fromPromise","rt":$n[8].Task$1,"p":[Bridge.IPromise,Function]},{"a":2,"n":"FromPromise","is":true,"t":8,"pi":[{"n":"promise","pt":Bridge.IPromise,"ps":0},{"n":"resultHandler","pt":Function,"ps":1},{"n":"errorHandler","pt":Function,"ps":2}],"tpc":1,"tprm":["TResult"],"sn":"fromPromise","rt":$n[8].Task$1,"p":[Bridge.IPromise,Function,Function]},{"a":2,"n":"FromPromise","is":true,"t":8,"pi":[{"n":"promise","pt":Bridge.IPromise,"ps":0},{"n":"resultHandler","pt":Function,"ps":1},{"n":"errorHandler","pt":Function,"ps":2},{"n":"progressHandler","pt":Function,"ps":3}],"tpc":1,"tprm":["TResult"],"sn":"fromPromise","rt":$n[8].Task$1,"p":[Bridge.IPromise,Function,Function,Function]},{"a":2,"n":"FromResult","is":true,"t":8,"pi":[{"n":"result","pt":System.Object,"ps":0}],"tpc":1,"tprm":["TResult"],"sn":"fromResult","rt":$n[8].Task$1,"p":[System.Object]},{"a":2,"n":"GetAwaiter","t":8,"sn":"getAwaiter","rt":$n[8].TaskAwaiter},{"a":2,"n":"Run","is":true,"t":8,"pi":[{"n":"action","pt":Function,"ps":0}],"sn":"run","rt":$n[8].Task,"p":[Function]},{"a":2,"n":"Run","is":true,"t":8,"pi":[{"n":"function","pt":Function,"ps":0}],"tpc":1,"tprm":["TResult"],"sn":"run","rt":$n[8].Task$1,"p":[Function]},{"a":2,"n":"Start","t":8,"sn":"start","rt":$n[0].Void},{"a":2,"n":"WhenAll","is":true,"t":8,"pi":[{"n":"tasks","pt":$n[3].IEnumerable$1(System.Threading.Tasks.Task),"ps":0}],"sn":"whenAll","rt":$n[8].Task,"p":[$n[3].IEnumerable$1(System.Threading.Tasks.Task)]},{"a":2,"n":"WhenAll","is":true,"t":8,"pi":[{"n":"tasks","pt":$n[3].IEnumerable$1(System.Threading.Tasks.Task$1),"ps":0}],"tpc":1,"tprm":["TResult"],"sn":"whenAll","rt":$n[8].Task$1,"p":[$n[3].IEnumerable$1(System.Threading.Tasks.Task$1)]},{"a":2,"n":"WhenAll","is":true,"t":8,"pi":[{"n":"tasks","ip":true,"pt":System.Array.type(System.Threading.Tasks.Task),"ps":0}],"sn":"whenAll","rt":$n[8].Task,"p":[System.Array.type(System.Threading.Tasks.Task)]},{"a":2,"n":"WhenAll","is":true,"t":8,"pi":[{"n":"tasks","ip":true,"pt":System.Array.type(System.Threading.Tasks.Task$1),"ps":0}],"tpc":1,"tprm":["TResult"],"sn":"whenAll","rt":$n[8].Task$1,"p":[System.Array.type(System.Threading.Tasks.Task$1)]},{"a":2,"n":"WhenAny","is":true,"t":8,"pi":[{"n":"tasks","pt":$n[3].IEnumerable$1(System.Threading.Tasks.Task),"ps":0}],"sn":"whenAny","rt":$n[8].Task$1,"p":[$n[3].IEnumerable$1(System.Threading.Tasks.Task)]},{"a":2,"n":"WhenAny","is":true,"t":8,"pi":[{"n":"tasks","pt":$n[3].IEnumerable$1(System.Threading.Tasks.Task$1),"ps":0}],"tpc":1,"tprm":["TResult"],"sn":"whenAny","rt":$n[8].Task$1,"p":[$n[3].IEnumerable$1(System.Threading.Tasks.Task$1)]},{"a":2,"n":"WhenAny","is":true,"t":8,"pi":[{"n":"tasks","ip":true,"pt":System.Array.type(System.Threading.Tasks.Task),"ps":0}],"sn":"whenAny","rt":$n[8].Task$1,"p":[System.Array.type(System.Threading.Tasks.Task)]},{"a":2,"n":"WhenAny","is":true,"t":8,"pi":[{"n":"tasks","ip":true,"pt":System.Array.type(System.Threading.Tasks.Task$1),"ps":0}],"tpc":1,"tprm":["TResult"],"sn":"whenAny","rt":$n[8].Task$1,"p":[System.Array.type(System.Threading.Tasks.Task$1)]},{"a":2,"n":"Exception","t":16,"rt":$n[0].AggregateException,"g":{"a":2,"n":"get_Exception","t":8,"rt":$n[0].AggregateException,"fg":"exception"},"fn":"exception"},{"a":2,"n":"IsCanceled","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsCanceled","t":8,"tpc":0,"def":function () { return isCanceled(); },"rt":$n[0].Boolean}},{"a":2,"n":"IsCompleted","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsCompleted","t":8,"tpc":0,"def":function () { return isCompleted(); },"rt":$n[0].Boolean}},{"a":2,"n":"IsFaulted","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsFaulted","t":8,"tpc":0,"def":function () { return isFaulted(); },"rt":$n[0].Boolean}},{"a":2,"n":"Status","t":16,"rt":$n[8].TaskStatus,"g":{"a":2,"n":"get_Status","t":8,"rt":$n[8].TaskStatus,"fg":"status"},"fn":"status"}]}; });
+    $m($n[8].Task$1, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[Function],"pi":[{"n":"function","pt":Function,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[Function,$n[0].Object],"pi":[{"n":"function","pt":Function,"ps":0},{"n":"state","pt":$n[0].Object,"ps":1}],"sn":"ctor"},{"a":2,"n":"ContinueWith","t":8,"pi":[{"n":"continuationAction","pt":Function,"ps":0}],"sn":"continueWith","rt":$n[8].Task,"p":[Function]},{"a":2,"n":"ContinueWith","t":8,"pi":[{"n":"continuationFunction","pt":Function,"ps":0}],"sn":"continueWith","rt":$n[8].Task$1,"p":[Function]},{"a":2,"n":"GetAwaiter","t":8,"sn":"getAwaiter","rt":$n[8].Task(System.Object)},{"a":2,"n":"SetResult","t":8,"pi":[{"n":"result","pt":System.Object,"ps":0}],"sn":"setResult","rt":$n[0].Void,"p":[System.Object]},{"a":2,"n":"Result","t":16,"rt":System.Object,"g":{"a":2,"n":"get_Result","t":8,"tpc":0,"def":function () { return getResult(); },"rt":System.Object}}]}; });
+    $m($n[8].TaskCanceledException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[8].Task],"pi":[{"n":"task","pt":$n[8].Task,"ps":0}],"def":function (task) { return new System.Threading.Tasks.TaskCanceledException(null, task); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"def":function (message, innerException) { return new System.Threading.Tasks.TaskCanceledException(message, null, innerException); }},{"a":2,"n":"Task","t":16,"rt":$n[8].Task,"g":{"a":2,"n":"get_Task","t":8,"rt":$n[8].Task,"fg":"task"},"s":{"a":1,"n":"set_Task","t":8,"p":[$n[8].Task],"rt":$n[0].Void,"fs":"task"},"fn":"task"}]}; });
+    $m($n[8].TaskCompletionSource, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"SetCanceled","t":8,"sn":"setCanceled","rt":$n[0].Void},{"a":2,"n":"SetException","t":8,"pi":[{"n":"exceptions","pt":$n[3].IEnumerable$1(System.Exception),"ps":0}],"sn":"setException","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(System.Exception)]},{"a":2,"n":"SetException","t":8,"pi":[{"n":"exception","pt":$n[0].Exception,"ps":0}],"sn":"setException","rt":$n[0].Void,"p":[$n[0].Exception]},{"a":2,"n":"SetResult","t":8,"pi":[{"n":"result","pt":System.Object,"ps":0}],"sn":"setResult","rt":$n[0].Void,"p":[System.Object]},{"a":2,"n":"TrySetCanceled","t":8,"sn":"trySetCanceled","rt":$n[0].Boolean},{"a":2,"n":"TrySetException","t":8,"pi":[{"n":"exceptions","pt":$n[3].IEnumerable$1(System.Exception),"ps":0}],"sn":"trySetException","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(System.Exception)]},{"a":2,"n":"TrySetException","t":8,"pi":[{"n":"exception","pt":$n[0].Exception,"ps":0}],"sn":"trySetException","rt":$n[0].Boolean,"p":[$n[0].Exception]},{"a":2,"n":"TrySetResult","t":8,"pi":[{"n":"result","pt":System.Object,"ps":0}],"sn":"trySetResult","rt":$n[0].Boolean,"p":[System.Object]},{"a":2,"n":"Task","t":16,"rt":$n[8].Task$1,"g":{"a":2,"n":"get_Task","t":8,"rt":$n[8].Task$1,"fg":"task"},"fn":"task"}]}; });
+    $m($n[6].StringBuilder, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"capacity","pt":$n[0].Int32,"ps":0}],"def":function (capacity) { return new System.Text.StringBuilder("", capacity); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Int32],"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"capacity","pt":$n[0].Int32,"ps":1}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Int32,$n[0].Int32],"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"length","pt":$n[0].Int32,"ps":2}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Int32,$n[0].Int32,$n[0].Int32],"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"length","pt":$n[0].Int32,"ps":2},{"n":"capacity","pt":$n[0].Int32,"ps":3}],"sn":"ctor"},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].Boolean,"ps":0}],"sn":"append","rt":$n[6].StringBuilder,"p":[$n[0].Boolean]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].Byte,"ps":0}],"sn":"append","rt":$n[6].StringBuilder,"p":[$n[0].Byte]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0}],"tpc":0,"def":function (value) { return append(String.fromCharCode(value)); },"rt":$n[6].StringBuilder,"p":[$n[0].Char]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].Decimal,"ps":0}],"sn":"append","rt":$n[6].StringBuilder,"p":[$n[0].Decimal]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].Double,"ps":0}],"sn":"append","rt":$n[6].StringBuilder,"p":[$n[0].Double]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"append","rt":$n[6].StringBuilder,"p":[$n[0].Int32]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].Int64,"ps":0}],"tpc":0,"def":function (value) { return this.append(value.toString()); },"rt":$n[6].StringBuilder,"p":[$n[0].Int64]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].Object,"ps":0}],"sn":"append","rt":$n[6].StringBuilder,"p":[$n[0].Object]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].Single,"ps":0}],"sn":"append","rt":$n[6].StringBuilder,"p":[$n[0].Single]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"append","rt":$n[6].StringBuilder,"p":[$n[0].String]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].UInt32,"ps":0}],"sn":"append","rt":$n[6].StringBuilder,"p":[$n[0].UInt32]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].UInt64,"ps":0}],"tpc":0,"def":function (value) { return this.append(value.toString()); },"rt":$n[6].StringBuilder,"p":[$n[0].UInt64]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].Char,"ps":0},{"n":"repeatCount","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (value, repeatCount) { return append(String.fromCharCode(value), repeatCount); },"rt":$n[6].StringBuilder,"p":[$n[0].Char,$n[0].Int32]},{"a":2,"n":"Append","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"sn":"append","rt":$n[6].StringBuilder,"p":[$n[0].String,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"AppendFormat","t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"args","ip":true,"pt":$n[0].Array.type(System.Object),"ps":1}],"sn":"appendFormat","rt":$n[6].StringBuilder,"p":[$n[0].String,$n[0].Array.type(System.Object)]},{"a":2,"n":"AppendLine","t":8,"sn":"appendLine","rt":$n[6].StringBuilder},{"a":2,"n":"AppendLine","t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"appendLine","rt":$n[6].StringBuilder,"p":[$n[0].String]},{"a":2,"n":"Clear","t":8,"sn":"clear","rt":$n[6].StringBuilder},{"a":2,"n":"Equals","t":8,"pi":[{"n":"sb","pt":$n[6].StringBuilder,"ps":0}],"sn":"equals","rt":$n[0].Boolean,"p":[$n[6].StringBuilder]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Boolean,"ps":1}],"sn":"insert","rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].Boolean]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Char,"ps":1}],"tpc":0,"def":function (index, value) { return insert(index, String.fromCharCode(value)); },"rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].Char]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Decimal,"ps":1}],"sn":"insert","rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].Decimal]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Double,"ps":1}],"sn":"insert","rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].Double]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Int32,"ps":1}],"sn":"insert","rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Int64,"ps":1}],"tpc":0,"def":function (index, value) { return this.insert(index, value.toString()); },"rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].Int64]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Object,"ps":1}],"sn":"insert","rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].Object]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Single,"ps":1}],"sn":"insert","rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].Single]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].String,"ps":1}],"sn":"insert","rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].String]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].UInt32,"ps":1}],"sn":"insert","rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].UInt32]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].UInt64,"ps":1}],"tpc":0,"def":function (index, value) { return this.insert(index, value.toString()); },"rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].UInt64]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].String,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"sn":"insert","rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].String,$n[0].Int32]},{"a":2,"n":"Remove","t":8,"pi":[{"n":"startIndex","pt":$n[0].Int32,"ps":0},{"n":"length","pt":$n[0].Int32,"ps":1}],"sn":"remove","rt":$n[6].StringBuilder,"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"oldChar","pt":$n[0].Char,"ps":0},{"n":"newChar","pt":$n[0].Char,"ps":1}],"tpc":0,"def":function (oldChar, newChar) { return replace(String.fromCharCode(oldChar), String.fromCharCode(newChar)); },"rt":$n[6].StringBuilder,"p":[$n[0].Char,$n[0].Char]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"oldValue","pt":$n[0].String,"ps":0},{"n":"newValue","pt":$n[0].String,"ps":1}],"sn":"replace","rt":$n[6].StringBuilder,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"oldChar","pt":$n[0].Char,"ps":0},{"n":"newChar","pt":$n[0].Char,"ps":1},{"n":"startIndex","pt":$n[0].Int32,"ps":2},{"n":"count","pt":$n[0].Int32,"ps":3}],"tpc":0,"def":function (oldChar, newChar, startIndex, count) { return replace(String.fromCharCode(oldChar), String.fromCharCode(newChar), startIndex, count); },"rt":$n[6].StringBuilder,"p":[$n[0].Char,$n[0].Char,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"oldValue","pt":$n[0].String,"ps":0},{"n":"newValue","pt":$n[0].String,"ps":1},{"n":"startIndex","pt":$n[0].Int32,"ps":2},{"n":"count","pt":$n[0].Int32,"ps":3}],"sn":"replace","rt":$n[6].StringBuilder,"p":[$n[0].String,$n[0].String,$n[0].Int32,$n[0].Int32]},{"ov":true,"a":2,"n":"ToString","t":8,"sn":"toString","rt":$n[0].String},{"a":2,"n":"ToString","t":8,"pi":[{"n":"startIndex","pt":$n[0].Int32,"ps":0},{"n":"length","pt":$n[0].Int32,"ps":1}],"sn":"toString","rt":$n[0].String,"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Capacity","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Capacity","t":8,"tpc":0,"def":function () { return getCapacity(); },"rt":$n[0].Int32},"s":{"a":2,"n":"set_Capacity","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (value) { return setCapacity(value); },"rt":$n[0].Void,"p":[$n[0].Int32]}},{"a":2,"n":"Item","t":16,"rt":$n[0].Char,"p":[$n[0].Int32],"i":true,"ipi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"g":{"a":2,"n":"get_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"getChar","rt":$n[0].Char,"p":[$n[0].Int32]},"s":{"a":2,"n":"set_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Char,"ps":1}],"sn":"setChar","rt":$n[0].Void,"p":[$n[0].Int32,$n[0].Char]}},{"a":2,"n":"Length","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Length","t":8,"tpc":0,"def":function () { return getLength(); },"rt":$n[0].Int32},"s":{"a":2,"n":"set_Length","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (value) { return setLength(value); },"rt":$n[0].Void,"p":[$n[0].Int32]}}]}; });
+    $m($n[1].Capture, function () { return {"att":1048577,"a":2,"m":[{"a":4,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Int32,$n[0].Int32],"pi":[{"n":"text","pt":$n[0].String,"ps":0},{"n":"i","pt":$n[0].Int32,"ps":1},{"n":"l","pt":$n[0].Int32,"ps":2}],"sn":"ctor"},{"ov":true,"a":2,"n":"ToString","t":8,"sn":"toString","rt":$n[0].String},{"a":2,"n":"Index","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Index","t":8,"tpc":0,"def":function () { return getIndex(); },"rt":$n[0].Int32}},{"a":2,"n":"Length","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Length","t":8,"tpc":0,"def":function () { return getLength(); },"rt":$n[0].Int32}},{"a":2,"n":"Value","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_Value","t":8,"tpc":0,"def":function () { return getValue(); },"rt":$n[0].String}}]}; });
+    $m($n[1].CaptureCollection, function () { return {"att":1048577,"a":2,"m":[{"a":4,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":Array,"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1}],"sn":"copyTo","rt":$n[0].Void,"p":[Array,$n[0].Int32]},{"a":2,"n":"GetEnumerator","t":8,"sn":"getEnumerator","rt":$n[2].IEnumerator},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"tpc":0,"def":function () { return getCount(); },"rt":$n[0].Int32}},{"a":2,"n":"IsReadOnly","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"tpc":0,"def":function () { return getIsReadOnly(); },"rt":$n[0].Boolean}},{"a":2,"n":"IsSynchronized","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsSynchronized","t":8,"tpc":0,"def":function () { return getIsSynchronized(); },"rt":$n[0].Boolean}},{"a":2,"n":"Item","t":16,"rt":$n[1].Capture,"p":[$n[0].Int32],"i":true,"ipi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"g":{"a":2,"n":"get_Item","t":8,"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (i) { return get(i); },"rt":$n[1].Capture,"p":[$n[0].Int32]}},{"a":2,"n":"SyncRoot","t":16,"rt":$n[0].Object,"g":{"a":2,"n":"get_SyncRoot","t":8,"tpc":0,"def":function () { return getSyncRoot(); },"rt":$n[0].Object}}]}; });
+    $m($n[1].Group, function () { return {"att":1048577,"a":2,"m":[{"a":4,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Array.type(System.Int32),$n[0].Int32],"pi":[{"n":"text","pt":$n[0].String,"ps":0},{"n":"caps","pt":$n[0].Array.type(System.Int32),"ps":1},{"n":"capcount","pt":$n[0].Int32,"ps":2}],"sn":"ctor"},{"a":2,"n":"Synchronized","is":true,"t":8,"pi":[{"n":"inner","pt":$n[1].Group,"ps":0}],"sn":"synchronized","rt":$n[1].Group,"p":[$n[1].Group]},{"a":2,"n":"Captures","t":16,"rt":$n[1].CaptureCollection,"g":{"a":2,"n":"get_Captures","t":8,"tpc":0,"def":function () { return getCaptures(); },"rt":$n[1].CaptureCollection}},{"a":2,"n":"Success","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_Success","t":8,"tpc":0,"def":function () { return getSuccess(); },"rt":$n[0].Boolean}}]}; });
+    $m($n[1].GroupCollection, function () { return {"att":1048577,"a":2,"m":[{"a":4,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":Array,"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1}],"sn":"copyTo","rt":$n[0].Void,"p":[Array,$n[0].Int32]},{"a":2,"n":"GetEnumerator","t":8,"sn":"getEnumerator","rt":$n[2].IEnumerator},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"tpc":0,"def":function () { return getCount(); },"rt":$n[0].Int32}},{"a":2,"n":"IsReadOnly","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"tpc":0,"def":function () { return getIsReadOnly(); },"rt":$n[0].Boolean}},{"a":2,"n":"IsSynchronized","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsSynchronized","t":8,"tpc":0,"def":function () { return getIsSynchronized(); },"rt":$n[0].Boolean}},{"a":2,"n":"Item","t":16,"rt":$n[1].Group,"p":[$n[0].Int32],"i":true,"ipi":[{"n":"groupnum","pt":$n[0].Int32,"ps":0}],"g":{"a":2,"n":"get_Item","t":8,"pi":[{"n":"groupnum","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (groupnum) { return get(groupnum); },"rt":$n[1].Group,"p":[$n[0].Int32]}},{"a":2,"n":"Item","t":16,"rt":$n[1].Group,"p":[$n[0].String],"i":true,"ipi":[{"n":"groupname","pt":$n[0].String,"ps":0}],"g":{"a":2,"n":"get_Item","t":8,"pi":[{"n":"groupname","pt":$n[0].String,"ps":0}],"tpc":0,"def":function (groupname) { return getByName(groupname); },"rt":$n[1].Group,"p":[$n[0].String]}},{"a":2,"n":"SyncRoot","t":16,"rt":$n[0].Object,"g":{"a":2,"n":"get_SyncRoot","t":8,"tpc":0,"def":function () { return getSyncRoot(); },"rt":$n[0].Object}}]}; });
+    $m($n[1].Match, function () { return {"att":1048577,"a":2,"m":[{"a":4,"n":".ctor","t":1,"p":[$n[1].Regex,$n[0].Int32,$n[0].String,$n[0].Int32,$n[0].Int32,$n[0].Int32],"pi":[{"n":"regex","pt":$n[1].Regex,"ps":0},{"n":"capcount","pt":$n[0].Int32,"ps":1},{"n":"text","pt":$n[0].String,"ps":2},{"n":"begpos","pt":$n[0].Int32,"ps":3},{"n":"len","pt":$n[0].Int32,"ps":4},{"n":"startpos","pt":$n[0].Int32,"ps":5}],"sn":"ctor"},{"a":2,"n":"NextMatch","t":8,"sn":"nextMatch","rt":$n[1].Match},{"v":true,"a":2,"n":"Result","t":8,"pi":[{"n":"replacement","pt":$n[0].String,"ps":0}],"sn":"result","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"Synchronized","is":true,"t":8,"pi":[{"n":"inner","pt":$n[1].Match,"ps":0}],"sn":"synchronized","rt":$n[1].Match,"p":[$n[1].Match]},{"a":2,"n":"Empty","is":true,"t":16,"rt":$n[1].Match,"g":{"a":2,"n":"get_Empty","is":true,"t":8,"tpc":0,"def":function () { return this.getEmpty(); },"rt":$n[1].Match}},{"v":true,"a":2,"n":"Groups","t":16,"rt":$n[1].GroupCollection,"g":{"v":true,"a":2,"n":"get_Groups","t":8,"tpc":0,"def":function () { return getGroups(); },"rt":$n[1].GroupCollection}}]}; });
+    $m($n[1].MatchCollection, function () { return {"att":1048577,"a":2,"m":[{"a":4,"n":".ctor","t":1,"p":[$n[1].Regex,$n[0].String,$n[0].Int32,$n[0].Int32,$n[0].Int32],"pi":[{"n":"regex","pt":$n[1].Regex,"ps":0},{"n":"input","pt":$n[0].String,"ps":1},{"n":"beginning","pt":$n[0].Int32,"ps":2},{"n":"length","pt":$n[0].Int32,"ps":3},{"n":"startat","pt":$n[0].Int32,"ps":4}],"sn":"ctor"},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":Array,"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1}],"sn":"copyTo","rt":$n[0].Void,"p":[Array,$n[0].Int32]},{"a":2,"n":"GetEnumerator","t":8,"sn":"getEnumerator","rt":$n[2].IEnumerator},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"tpc":0,"def":function () { return getCount(); },"rt":$n[0].Int32}},{"a":2,"n":"IsReadOnly","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"tpc":0,"def":function () { return getIsReadOnly(); },"rt":$n[0].Boolean}},{"a":2,"n":"IsSynchronized","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsSynchronized","t":8,"tpc":0,"def":function () { return getIsSynchronized(); },"rt":$n[0].Boolean}},{"v":true,"a":2,"n":"Item","t":16,"rt":$n[1].Match,"p":[$n[0].Int32],"i":true,"ipi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"g":{"v":true,"a":2,"n":"get_Item","t":8,"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (i) { return get(i); },"rt":$n[1].Match,"p":[$n[0].Int32]}},{"a":2,"n":"SyncRoot","t":16,"rt":$n[0].Object,"g":{"a":2,"n":"get_SyncRoot","t":8,"tpc":0,"def":function () { return getSyncRoot(); },"rt":$n[0].Object}}]}; });
+    $m($n[1].Regex, function () { return {"att":1048833,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"pattern","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[1].RegexOptions],"pi":[{"n":"pattern","pt":$n[0].String,"ps":0},{"n":"options","pt":$n[1].RegexOptions,"ps":1}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[1].RegexOptions,$n[0].TimeSpan],"pi":[{"n":"pattern","pt":$n[0].String,"ps":0},{"n":"options","pt":$n[1].RegexOptions,"ps":1},{"n":"matchTimeout","pt":$n[0].TimeSpan,"ps":2}],"sn":"ctor"},{"a":2,"n":"Escape","is":true,"t":8,"pi":[{"n":"str","pt":$n[0].String,"ps":0}],"sn":"escape","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"GetGroupNames","t":8,"sn":"getGroupNames","rt":$n[0].Array.type(System.String)},{"a":2,"n":"GetGroupNumbers","t":8,"sn":"getGroupNumbers","rt":$n[0].Array.type(System.Int32)},{"a":2,"n":"GroupNameFromNumber","t":8,"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"sn":"groupNameFromNumber","rt":$n[0].String,"p":[$n[0].Int32]},{"a":2,"n":"GroupNumberFromName","t":8,"pi":[{"n":"name","pt":$n[0].String,"ps":0}],"sn":"groupNumberFromName","rt":$n[0].Int32,"p":[$n[0].String]},{"a":2,"n":"IsMatch","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0}],"sn":"isMatch","rt":$n[0].Boolean,"p":[$n[0].String]},{"a":2,"n":"IsMatch","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"startat","pt":$n[0].Int32,"ps":1}],"sn":"isMatch","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"IsMatch","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1}],"sn":"isMatch","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"IsMatch","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"options","pt":$n[1].RegexOptions,"ps":2}],"sn":"isMatch","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].String,$n[1].RegexOptions]},{"a":2,"n":"IsMatch","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"options","pt":$n[1].RegexOptions,"ps":2},{"n":"matchTimeout","pt":$n[0].TimeSpan,"ps":3}],"sn":"isMatch","rt":$n[0].Boolean,"p":[$n[0].String,$n[0].String,$n[1].RegexOptions,$n[0].TimeSpan]},{"a":2,"n":"Match","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0}],"sn":"match","rt":$n[1].Match,"p":[$n[0].String]},{"a":2,"n":"Match","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"startat","pt":$n[0].Int32,"ps":1}],"sn":"match","rt":$n[1].Match,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"Match","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1}],"sn":"match","rt":$n[1].Match,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"Match","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"beginning","pt":$n[0].Int32,"ps":1},{"n":"length","pt":$n[0].Int32,"ps":2}],"sn":"match","rt":$n[1].Match,"p":[$n[0].String,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Match","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"options","pt":$n[1].RegexOptions,"ps":2}],"sn":"match","rt":$n[1].Match,"p":[$n[0].String,$n[0].String,$n[1].RegexOptions]},{"a":2,"n":"Match","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"options","pt":$n[1].RegexOptions,"ps":2},{"n":"matchTimeout","pt":$n[0].TimeSpan,"ps":3}],"sn":"match","rt":$n[1].Match,"p":[$n[0].String,$n[0].String,$n[1].RegexOptions,$n[0].TimeSpan]},{"a":2,"n":"Matches","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0}],"sn":"matches","rt":$n[1].MatchCollection,"p":[$n[0].String]},{"a":2,"n":"Matches","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"startat","pt":$n[0].Int32,"ps":1}],"sn":"matches","rt":$n[1].MatchCollection,"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"Matches","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1}],"sn":"matches","rt":$n[1].MatchCollection,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"Matches","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"options","pt":$n[1].RegexOptions,"ps":2}],"sn":"matches","rt":$n[1].MatchCollection,"p":[$n[0].String,$n[0].String,$n[1].RegexOptions]},{"a":2,"n":"Matches","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"options","pt":$n[1].RegexOptions,"ps":2},{"n":"matchTimeout","pt":$n[0].TimeSpan,"ps":3}],"sn":"matches","rt":$n[1].MatchCollection,"p":[$n[0].String,$n[0].String,$n[1].RegexOptions,$n[0].TimeSpan]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"replacement","pt":$n[0].String,"ps":1}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,$n[0].String]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"evaluator","pt":Function,"ps":1}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,Function]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"replacement","pt":$n[0].String,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,$n[0].String,$n[0].Int32]},{"a":2,"n":"Replace","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"replacement","pt":$n[0].String,"ps":2}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,$n[0].String,$n[0].String]},{"a":2,"n":"Replace","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"evaluator","pt":Function,"ps":2}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,$n[0].String,Function]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"evaluator","pt":Function,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,Function,$n[0].Int32]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"replacement","pt":$n[0].String,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2},{"n":"startat","pt":$n[0].Int32,"ps":3}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,$n[0].String,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Replace","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"replacement","pt":$n[0].String,"ps":2},{"n":"options","pt":$n[1].RegexOptions,"ps":3}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,$n[0].String,$n[0].String,$n[1].RegexOptions]},{"a":2,"n":"Replace","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"evaluator","pt":Function,"ps":2},{"n":"options","pt":$n[1].RegexOptions,"ps":3}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,$n[0].String,Function,$n[1].RegexOptions]},{"a":2,"n":"Replace","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"evaluator","pt":Function,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2},{"n":"startat","pt":$n[0].Int32,"ps":3}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,Function,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Replace","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"replacement","pt":$n[0].String,"ps":2},{"n":"options","pt":$n[1].RegexOptions,"ps":3},{"n":"matchTimeout","pt":$n[0].TimeSpan,"ps":4}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,$n[0].String,$n[0].String,$n[1].RegexOptions,$n[0].TimeSpan]},{"a":2,"n":"Replace","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"evaluator","pt":Function,"ps":2},{"n":"options","pt":$n[1].RegexOptions,"ps":3},{"n":"matchTimeout","pt":$n[0].TimeSpan,"ps":4}],"sn":"replace","rt":$n[0].String,"p":[$n[0].String,$n[0].String,Function,$n[1].RegexOptions,$n[0].TimeSpan]},{"a":2,"n":"Split","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0}],"sn":"split","rt":$n[0].Array.type(System.String),"p":[$n[0].String]},{"a":2,"n":"Split","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"count","pt":$n[0].Int32,"ps":1}],"sn":"split","rt":$n[0].Array.type(System.String),"p":[$n[0].String,$n[0].Int32]},{"a":2,"n":"Split","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1}],"sn":"split","rt":$n[0].Array.type(System.String),"p":[$n[0].String,$n[0].String]},{"a":2,"n":"Split","t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"count","pt":$n[0].Int32,"ps":1},{"n":"startat","pt":$n[0].Int32,"ps":2}],"sn":"split","rt":$n[0].Array.type(System.String),"p":[$n[0].String,$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Split","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"options","pt":$n[1].RegexOptions,"ps":2}],"sn":"split","rt":$n[0].Array.type(System.String),"p":[$n[0].String,$n[0].String,$n[1].RegexOptions]},{"a":2,"n":"Split","is":true,"t":8,"pi":[{"n":"input","pt":$n[0].String,"ps":0},{"n":"pattern","pt":$n[0].String,"ps":1},{"n":"options","pt":$n[1].RegexOptions,"ps":2},{"n":"matchTimeout","pt":$n[0].TimeSpan,"ps":3}],"sn":"split","rt":$n[0].Array.type(System.String),"p":[$n[0].String,$n[0].String,$n[1].RegexOptions,$n[0].TimeSpan]},{"a":2,"n":"Unescape","is":true,"t":8,"pi":[{"n":"str","pt":$n[0].String,"ps":0}],"sn":"unescape","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"MatchTimeout","t":16,"rt":$n[0].TimeSpan,"g":{"a":2,"n":"get_MatchTimeout","t":8,"tpc":0,"def":function () { return getMatchTimeout(); },"rt":$n[0].TimeSpan}},{"a":2,"n":"Options","t":16,"rt":$n[1].RegexOptions,"g":{"a":2,"n":"get_Options","t":8,"tpc":0,"def":function () { return getOptions(); },"rt":$n[1].RegexOptions}},{"a":2,"n":"RightToLeft","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_RightToLeft","t":8,"tpc":0,"def":function () { return getRightToLeft(); },"rt":$n[0].Boolean}}]}; });
+    $m($n[9].ClientWebSocket, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Abort","t":8,"sn":"abort","rt":$n[0].Void},{"a":2,"n":"CloseAsync","t":8,"pi":[{"n":"closeStatus","pt":$n[9].WebSocketCloseStatus,"ps":0},{"n":"statusDescription","pt":$n[0].String,"ps":1},{"n":"cancellationToken","pt":$n[5].CancellationToken,"ps":2}],"sn":"closeAsync","rt":$n[8].Task,"p":[$n[9].WebSocketCloseStatus,$n[0].String,$n[5].CancellationToken]},{"a":2,"n":"CloseOutputAsync","t":8,"pi":[{"n":"closeStatus","pt":$n[9].WebSocketCloseStatus,"ps":0},{"n":"statusDescription","pt":$n[0].String,"ps":1},{"n":"cancellationToken","pt":$n[5].CancellationToken,"ps":2}],"sn":"closeOutputAsync","rt":$n[8].Task,"p":[$n[9].WebSocketCloseStatus,$n[0].String,$n[5].CancellationToken]},{"a":2,"n":"ConnectAsync","t":8,"pi":[{"n":"uri","pt":$n[0].Uri,"ps":0},{"n":"cancellationToken","pt":$n[5].CancellationToken,"ps":1}],"sn":"connectAsync","rt":$n[8].Task,"p":[$n[0].Uri,$n[5].CancellationToken]},{"a":2,"n":"Dispose","t":8,"sn":"dispose","rt":$n[0].Void},{"a":2,"n":"ReceiveAsync","t":8,"pi":[{"n":"buffer","pt":$n[0].ArraySegment,"ps":0},{"n":"cancellationToken","pt":$n[5].CancellationToken,"ps":1}],"sn":"receiveAsync","rt":$n[8].Task$1,"p":[$n[0].ArraySegment,$n[5].CancellationToken]},{"a":2,"n":"SendAsync","t":8,"pi":[{"n":"buffer","pt":$n[0].ArraySegment,"ps":0},{"n":"messageType","pt":$n[9].WebSocketMessageType,"ps":1},{"n":"endOfMessage","dv":true,"o":true,"pt":$n[0].Boolean,"ps":2},{"n":"cancellationToken","dv":null,"o":true,"pt":$n[5].CancellationToken,"ps":3}],"sn":"sendAsync","rt":$n[8].Task,"p":[$n[0].ArraySegment,$n[9].WebSocketMessageType,$n[0].Boolean,$n[5].CancellationToken]},{"a":2,"n":"CloseStatus","t":16,"rt":$n[0].Nullable$1(System.Net.WebSockets.WebSocketCloseStatus),"g":{"a":2,"n":"get_CloseStatus","t":8,"tpc":0,"def":function () { return getCloseStatus(); },"rt":$n[0].Nullable$1(System.Net.WebSockets.WebSocketCloseStatus)}},{"a":2,"n":"CloseStatusDescription","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_CloseStatusDescription","t":8,"tpc":0,"def":function () { return getCloseStatusDescription(); },"rt":$n[0].String}},{"a":2,"n":"Options","t":16,"rt":$n[9].ClientWebSocketOptions,"g":{"a":2,"n":"get_Options","t":8,"tpc":0,"def":function () { return getOptions(); },"rt":$n[9].ClientWebSocketOptions}},{"a":2,"n":"State","t":16,"rt":$n[9].WebSocketState,"g":{"a":2,"n":"get_State","t":8,"tpc":0,"def":function () { return getState(); },"rt":$n[9].WebSocketState}},{"a":2,"n":"SubProtocol","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_SubProtocol","t":8,"tpc":0,"def":function () { return getSubProtocol(); },"rt":$n[0].String}}]}; });
+    $m($n[9].ClientWebSocketOptions, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"AddSubProtocol","t":8,"pi":[{"n":"subProtocol","pt":$n[0].String,"ps":0}],"sn":"addSubProtocol","rt":$n[0].Void,"p":[$n[0].String]}]}; });
+    $m($n[9].WebSocketReceiveResult, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[9].WebSocketMessageType,$n[0].Boolean],"pi":[{"n":"count","pt":$n[0].Int32,"ps":0},{"n":"messageType","pt":$n[9].WebSocketMessageType,"ps":1},{"n":"endOfMessage","pt":$n[0].Boolean,"ps":2}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[9].WebSocketMessageType,$n[0].Boolean,$n[0].Nullable$1(System.Net.WebSockets.WebSocketCloseStatus),$n[0].String],"pi":[{"n":"count","pt":$n[0].Int32,"ps":0},{"n":"messageType","pt":$n[9].WebSocketMessageType,"ps":1},{"n":"endOfMessage","pt":$n[0].Boolean,"ps":2},{"n":"closeStatus","pt":$n[0].Nullable$1(System.Net.WebSockets.WebSocketCloseStatus),"ps":3},{"n":"closeStatusDescription","pt":$n[0].String,"ps":4}],"sn":"ctor"},{"a":2,"n":"CloseStatus","t":16,"rt":$n[0].Nullable$1(System.Net.WebSockets.WebSocketCloseStatus),"g":{"a":2,"n":"get_CloseStatus","t":8,"tpc":0,"def":function () { return getCloseStatus(); },"rt":$n[0].Nullable$1(System.Net.WebSockets.WebSocketCloseStatus)}},{"a":2,"n":"CloseStatusDescription","t":16,"rt":$n[0].String,"g":{"a":2,"n":"get_CloseStatusDescription","t":8,"tpc":0,"def":function () { return getCloseStatusDescription(); },"rt":$n[0].String}},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"tpc":0,"def":function () { return getCount(); },"rt":$n[0].Int32}},{"a":2,"n":"EndOfMessage","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_EndOfMessage","t":8,"tpc":0,"def":function () { return getEndOfMessage(); },"rt":$n[0].Boolean}},{"a":2,"n":"MessageType","t":16,"rt":$n[9].WebSocketMessageType,"g":{"a":2,"n":"get_MessageType","t":8,"tpc":0,"def":function () { return getMessageType(); },"rt":$n[9].WebSocketMessageType}}]}; });
+    $m($n[2].BitArray, function () { return {"att":1048833,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[0].Array.type(System.Boolean)],"pi":[{"n":"values","pt":$n[0].Array.type(System.Boolean),"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Array.type(System.Byte)],"pi":[{"n":"bytes","pt":$n[0].Array.type(System.Byte),"ps":0}],"sn":"$ctor1"},{"a":2,"n":".ctor","t":1,"p":[$n[2].BitArray],"pi":[{"n":"bits","pt":$n[2].BitArray,"ps":0}],"sn":"$ctor2"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"length","pt":$n[0].Int32,"ps":0}],"sn":"$ctor3"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Array.type(System.Int32)],"pi":[{"n":"values","pt":$n[0].Array.type(System.Int32),"ps":0}],"sn":"$ctor5"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[0].Boolean],"pi":[{"n":"length","pt":$n[0].Int32,"ps":0},{"n":"defaultValue","pt":$n[0].Boolean,"ps":1}],"sn":"$ctor4"},{"a":2,"n":"And","t":8,"pi":[{"n":"value","pt":$n[2].BitArray,"ps":0}],"sn":"and","rt":$n[2].BitArray,"p":[$n[2].BitArray]},{"a":2,"n":"Clone","t":8,"sn":"clone","rt":$n[0].Object},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":Array,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"sn":"copyTo","rt":$n[0].Void,"p":[Array,$n[0].Int32]},{"a":2,"n":"Get","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"get","rt":$n[0].Boolean,"p":[$n[0].Int32]},{"a":1,"n":"GetArrayLength","is":true,"t":8,"pi":[{"n":"n","pt":$n[0].Int32,"ps":0},{"n":"div","pt":$n[0].Int32,"ps":1}],"sn":"getArrayLength","rt":$n[0].Int32,"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"GetEnumerator","t":8,"sn":"getEnumerator","rt":$n[2].IEnumerator},{"a":2,"n":"Not","t":8,"sn":"not","rt":$n[2].BitArray},{"a":2,"n":"Or","t":8,"pi":[{"n":"value","pt":$n[2].BitArray,"ps":0}],"sn":"or","rt":$n[2].BitArray,"p":[$n[2].BitArray]},{"a":2,"n":"Set","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Boolean,"ps":1}],"sn":"set","rt":$n[0].Void,"p":[$n[0].Int32,$n[0].Boolean]},{"a":2,"n":"SetAll","t":8,"pi":[{"n":"value","pt":$n[0].Boolean,"ps":0}],"sn":"setAll","rt":$n[0].Void,"p":[$n[0].Boolean]},{"a":2,"n":"Xor","t":8,"pi":[{"n":"value","pt":$n[2].BitArray,"ps":0}],"sn":"xor","rt":$n[2].BitArray,"p":[$n[2].BitArray]},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"rt":$n[0].Int32,"fg":"Count"},"fn":"Count"},{"a":2,"n":"IsReadOnly","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"rt":$n[0].Boolean,"fg":"IsReadOnly"},"fn":"IsReadOnly"},{"a":2,"n":"IsSynchronized","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsSynchronized","t":8,"rt":$n[0].Boolean,"fg":"IsSynchronized"},"fn":"IsSynchronized"},{"a":2,"n":"Item","t":16,"rt":$n[0].Boolean,"p":[$n[0].Int32],"i":true,"ipi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"g":{"a":2,"n":"get_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"getItem","rt":$n[0].Boolean,"p":[$n[0].Int32]},"s":{"a":2,"n":"set_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Boolean,"ps":1}],"sn":"setItem","rt":$n[0].Void,"p":[$n[0].Int32,$n[0].Boolean]}},{"a":2,"n":"Length","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Length","t":8,"rt":$n[0].Int32,"fg":"Length"},"s":{"a":2,"n":"set_Length","t":8,"p":[$n[0].Int32],"rt":$n[0].Void,"fs":"Length"},"fn":"Length"},{"a":1,"n":"BitsPerByte","is":true,"t":4,"rt":$n[0].Int32,"sn":"BitsPerByte"},{"a":1,"n":"BitsPerInt32","is":true,"t":4,"rt":$n[0].Int32,"sn":"BitsPerInt32"},{"a":1,"n":"BytesPerInt32","is":true,"t":4,"rt":$n[0].Int32,"sn":"BytesPerInt32"},{"a":1,"n":"_ShrinkThreshold","is":true,"t":4,"rt":$n[0].Int32,"sn":"_ShrinkThreshold"},{"a":1,"n":"_version","t":4,"rt":$n[0].Int32,"sn":"_version"},{"a":1,"n":"m_array","t":4,"rt":$n[0].Array.type(System.Int32),"sn":"m_array"},{"a":1,"n":"m_length","t":4,"rt":$n[0].Int32,"sn":"m_length"}]}; });
+    $m($n[2].BitArray.BitArrayEnumeratorSimple, function () { return {"td":$n[2].BitArray,"att":1048579,"a":1,"m":[{"a":4,"n":".ctor","t":1,"p":[$n[2].BitArray],"pi":[{"n":"bitarray","pt":$n[2].BitArray,"ps":0}],"sn":"ctor"},{"v":true,"a":2,"n":"MoveNext","t":8,"sn":"moveNext","rt":$n[0].Boolean},{"a":2,"n":"Reset","t":8,"sn":"reset","rt":$n[0].Void},{"v":true,"a":2,"n":"Current","t":16,"rt":$n[0].Object,"g":{"v":true,"a":2,"n":"get_Current","t":8,"rt":$n[0].Object,"fg":"Current"},"fn":"Current"},{"a":1,"n":"bitarray","t":4,"rt":$n[2].BitArray,"sn":"bitarray"},{"a":1,"n":"currentElement","t":4,"rt":$n[0].Boolean,"sn":"currentElement"},{"a":1,"n":"index","t":4,"rt":$n[0].Int32,"sn":"index"},{"a":1,"n":"version","t":4,"rt":$n[0].Int32,"sn":"version"}]}; });
+    $m($n[2].HashHelpers, function () { return {"att":1048960,"a":4,"s":true,"m":[{"a":2,"n":"ExpandPrime","is":true,"t":8,"pi":[{"n":"oldSize","pt":$n[0].Int32,"ps":0}],"sn":"expandPrime","rt":$n[0].Int32,"p":[$n[0].Int32]},{"a":2,"n":"GetMinPrime","is":true,"t":8,"sn":"getMinPrime","rt":$n[0].Int32},{"a":2,"n":"GetPrime","is":true,"t":8,"pi":[{"n":"min","pt":$n[0].Int32,"ps":0}],"sn":"getPrime","rt":$n[0].Int32,"p":[$n[0].Int32]},{"a":2,"n":"IsPrime","is":true,"t":8,"pi":[{"n":"candidate","pt":$n[0].Int32,"ps":0}],"sn":"isPrime","rt":$n[0].Boolean,"p":[$n[0].Int32]},{"a":1,"n":"HashPrime","is":true,"t":4,"rt":$n[0].Int32,"sn":"HashPrime"},{"a":2,"n":"MaxPrimeArrayLength","is":true,"t":4,"rt":$n[0].Int32,"sn":"MaxPrimeArrayLength"},{"a":2,"n":"primes","is":true,"t":4,"rt":$n[0].Array.type(System.Int32),"sn":"primes","ro":true}]}; });
+    $m($n[2].IDictionary, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Add","t":8,"pi":[{"n":"key","pt":$n[0].Object,"ps":0},{"n":"value","pt":$n[0].Object,"ps":1}],"sn":"System$Collections$IDictionary$add","rt":$n[0].Void,"p":[$n[0].Object,$n[0].Object]},{"ab":true,"a":2,"n":"ContainsKey","t":8,"pi":[{"n":"key","pt":$n[0].Object,"ps":0}],"sn":"System$Collections$IDictionary$containsKey","rt":$n[0].Boolean,"p":[$n[0].Object]},{"ab":true,"a":2,"n":"Remove","t":8,"pi":[{"n":"key","pt":$n[0].Object,"ps":0}],"sn":"System$Collections$IDictionary$remove","rt":$n[0].Boolean,"p":[$n[0].Object]},{"ab":true,"a":2,"n":"IsReadOnly","t":16,"rt":$n[0].Boolean,"g":{"ab":true,"a":2,"n":"get_IsReadOnly","t":8,"rt":$n[0].Boolean,"fg":"System$Collections$IDictionary$IsReadOnly"},"s":{"ab":true,"a":1,"n":"set_IsReadOnly","t":8,"p":[$n[0].Boolean],"rt":$n[0].Void,"fs":"System$Collections$IDictionary$IsReadOnly"},"fn":"System$Collections$IDictionary$IsReadOnly"},{"ab":true,"a":2,"n":"Item","t":16,"rt":$n[0].Object,"p":[$n[0].Object],"i":true,"ipi":[{"n":"key","pt":$n[0].Object,"ps":0}],"g":{"ab":true,"a":2,"n":"get_Item","t":8,"pi":[{"n":"key","pt":$n[0].Object,"ps":0}],"sn":"System$Collections$IDictionary$getItem","rt":$n[0].Object,"p":[$n[0].Object]},"s":{"ab":true,"a":2,"n":"set_Item","t":8,"pi":[{"n":"key","pt":$n[0].Object,"ps":0},{"n":"value","pt":$n[0].Object,"ps":1}],"sn":"System$Collections$IDictionary$setItem","rt":$n[0].Void,"p":[$n[0].Object,$n[0].Object]}},{"ab":true,"a":2,"n":"Keys","t":16,"rt":$n[2].ICollection,"g":{"ab":true,"a":2,"n":"get_Keys","t":8,"rt":$n[2].ICollection,"fg":"System$Collections$IDictionary$Keys"},"s":{"ab":true,"a":1,"n":"set_Keys","t":8,"p":[$n[2].ICollection],"rt":$n[0].Void,"fs":"System$Collections$IDictionary$Keys"},"fn":"System$Collections$IDictionary$Keys"},{"ab":true,"a":2,"n":"Values","t":16,"rt":$n[2].ICollection,"g":{"ab":true,"a":2,"n":"get_Values","t":8,"rt":$n[2].ICollection,"fg":"System$Collections$IDictionary$Values"},"s":{"ab":true,"a":1,"n":"set_Values","t":8,"p":[$n[2].ICollection],"rt":$n[0].Void,"fs":"System$Collections$IDictionary$Values"},"fn":"System$Collections$IDictionary$Values"}]}; });
+    $m($n[2].IList, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Add","t":8,"pi":[{"n":"item","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (item) { return System.Array.add(this, item); },"rt":$n[0].Void,"p":[$n[0].Object]},{"ab":true,"a":2,"n":"Clear","t":8,"tpc":0,"def":function () { return System.Array.clear(this); },"rt":$n[0].Void},{"ab":true,"a":2,"n":"Contains","t":8,"pi":[{"n":"item","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (item) { return System.Array.contains(this, item); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"ab":true,"a":2,"n":"IndexOf","t":8,"pi":[{"n":"item","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (item) { return System.Array.indexOf(this, item, 0, null); },"rt":$n[0].Int32,"p":[$n[0].Object]},{"ab":true,"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"item","pt":$n[0].Object,"ps":1}],"tpc":0,"def":function (index, item) { return System.Array.insert(this, index, item); },"rt":$n[0].Void,"p":[$n[0].Int32,$n[0].Object]},{"ab":true,"a":2,"n":"Remove","t":8,"pi":[{"n":"item","pt":$n[0].Object,"ps":0}],"tpc":0,"def":function (item) { return System.Array.remove(this, item); },"rt":$n[0].Boolean,"p":[$n[0].Object]},{"ab":true,"a":2,"n":"RemoveAt","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (index) { return System.Array.removeAt(this, index); },"rt":$n[0].Void,"p":[$n[0].Int32]},{"ab":true,"a":2,"n":"IsReadOnly","t":16,"rt":$n[0].Boolean,"g":{"ab":true,"a":2,"n":"get_IsReadOnly","t":8,"tpc":0,"def":function () { return System.Array.getIsReadOnly(this); },"rt":$n[0].Boolean},"s":{"ab":true,"a":1,"n":"set_IsReadOnly","t":8,"pi":[{"n":"value","pt":$n[0].Boolean,"ps":0}],"sn":"System$Collections$IList$IsReadOnly","rt":$n[0].Void,"p":[$n[0].Boolean]}},{"ab":true,"a":2,"n":"Item","t":16,"rt":$n[0].Object,"p":[$n[0].Int32],"i":true,"ipi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"g":{"ab":true,"a":2,"n":"get_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (index) { return System.Array.getItem(this, index); },"rt":$n[0].Object,"p":[$n[0].Int32]},"s":{"ab":true,"a":2,"n":"set_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":$n[0].Object,"ps":1}],"tpc":0,"def":function (index, value) { return System.Array.setItem(this, index); },"rt":$n[0].Void,"p":[$n[0].Int32,$n[0].Object]}}]}; });
+    $m($n[2].ICollection, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":Array,"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (array, arrayIndex) { return System.Array.copyTo(this, array, arrayIndex); },"rt":$n[0].Void,"p":[Array,$n[0].Int32]},{"ab":true,"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"ab":true,"a":2,"n":"get_Count","t":8,"tpc":0,"def":function () { return System.Array.getCount(this); },"rt":$n[0].Int32},"s":{"ab":true,"a":1,"n":"set_Count","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"System$Collections$ICollection$Count","rt":$n[0].Void,"p":[$n[0].Int32]}}]}; });
+    $m($n[2].IEnumerable, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"GetEnumerator","t":8,"tpc":0,"def":function () { return Bridge.getEnumerator(this); },"rt":$n[2].IEnumerator}]}; });
+    $m($n[2].IEnumerator, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"MoveNext","t":8,"sn":"System$Collections$IEnumerator$moveNext","rt":$n[0].Boolean},{"ab":true,"a":2,"n":"Reset","t":8,"sn":"System$Collections$IEnumerator$reset","rt":$n[0].Void},{"ab":true,"a":2,"n":"Current","t":16,"rt":$n[0].Object,"g":{"ab":true,"a":2,"n":"get_Current","t":8,"rt":$n[0].Object,"fg":"System$Collections$IEnumerator$Current"},"s":{"ab":true,"a":1,"n":"set_Current","t":8,"p":[$n[0].Object],"rt":$n[0].Void,"fs":"System$Collections$IEnumerator$Current"},"fn":"System$Collections$IEnumerator$Current"}]}; });
+    $m($n[2].IEqualityComparer, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"x","pt":$n[0].Object,"ps":0},{"n":"y","pt":$n[0].Object,"ps":1}],"sn":"System$Collections$IEqualityComparer$equals","rt":$n[0].Boolean,"p":[$n[0].Object,$n[0].Object]},{"ab":true,"a":2,"n":"GetHashCode","t":8,"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"sn":"System$Collections$IEqualityComparer$getHashCode","rt":$n[0].Int32,"p":[$n[0].Object]}]}; });
+    $m($n[4].ReadOnlyCollection$1, function (T) { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[3].IList$1(T)],"pi":[{"n":"list","pt":$n[3].IList$1(T),"ps":0}],"sn":"ctor"},{"a":2,"n":"Contains","t":8,"pi":[{"n":"value","pt":T,"ps":0}],"sn":"contains","rt":$n[0].Boolean,"p":[T]},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":System.Array.type(T),"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1}],"sn":"copyTo","rt":$n[0].Void,"p":[System.Array.type(T),$n[0].Int32]},{"a":2,"n":"GetEnumerator","t":8,"sn":"getEnumerator","rt":$n[3].IEnumerator$1(T)},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"value","pt":T,"ps":0}],"sn":"indexOf","rt":$n[0].Int32,"p":[T]},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"rt":$n[0].Int32,"fg":"Count"},"fn":"Count"},{"a":2,"n":"Item","t":16,"rt":T,"p":[$n[0].Int32],"i":true,"ipi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"g":{"a":2,"n":"get_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"get","rt":T,"p":[$n[0].Int32]}}]}; });
+    $m($n[3].BitHelper, function () { return {"att":1048832,"a":4,"m":[{"a":4,"n":".ctor","t":1,"p":[$n[0].Array.type(System.Int32),$n[0].Int32],"pi":[{"n":"bitArray","pt":$n[0].Array.type(System.Int32),"ps":0},{"n":"length","pt":$n[0].Int32,"ps":1}],"sn":"ctor"},{"a":4,"n":"IsMarked","t":8,"pi":[{"n":"bitPosition","pt":$n[0].Int32,"ps":0}],"sn":"isMarked","rt":$n[0].Boolean,"p":[$n[0].Int32]},{"a":4,"n":"MarkBit","t":8,"pi":[{"n":"bitPosition","pt":$n[0].Int32,"ps":0}],"sn":"markBit","rt":$n[0].Void,"p":[$n[0].Int32]},{"a":4,"n":"ToIntArrayLength","is":true,"t":8,"pi":[{"n":"n","pt":$n[0].Int32,"ps":0}],"sn":"toIntArrayLength","rt":$n[0].Int32,"p":[$n[0].Int32]},{"a":1,"n":"IntSize","is":true,"t":4,"rt":$n[0].Byte,"sn":"IntSize"},{"a":1,"n":"MarkedBitFlag","is":true,"t":4,"rt":$n[0].Byte,"sn":"MarkedBitFlag"},{"a":1,"n":"_array","t":4,"rt":$n[0].Array.type(System.Int32),"sn":"_array","ro":true},{"a":1,"n":"_length","t":4,"rt":$n[0].Int32,"sn":"_length","ro":true}]}; });
+    $m(Bridge.Collections.EnumerableHelpers, function () { return {"att":1048960,"a":4,"s":true,"m":[{"a":4,"n":"ToArray","is":true,"t":8,"pi":[{"n":"source","pt":$n[3].IEnumerable$1(System.Object),"ps":0}],"tpc":1,"tprm":["T"],"sn":"toArray","rt":System.Array.type(System.Object),"p":[$n[3].IEnumerable$1(System.Object)]},{"a":4,"n":"ToArray","is":true,"t":8,"pi":[{"n":"source","pt":$n[3].IEnumerable$1(System.Object),"ps":0},{"n":"length","out":true,"pt":$n[0].Int32,"ps":1}],"tpc":1,"tprm":["T"],"sn":"toArray$1","rt":System.Array.type(System.Object),"p":[$n[3].IEnumerable$1(System.Object),$n[0].Int32]}]}; });
+    $m($n[3].HashSet$1, function (T) { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[3].IEnumerable$1(T)],"pi":[{"n":"collection","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"$ctor1"},{"a":2,"n":".ctor","t":1,"p":[$n[3].IEqualityComparer$1(T)],"pi":[{"n":"comparer","pt":$n[3].IEqualityComparer$1(T),"ps":0}],"sn":"$ctor3"},{"a":2,"n":".ctor","t":1,"p":[$n[3].IEnumerable$1(T),$n[3].IEqualityComparer$1(T)],"pi":[{"n":"collection","pt":$n[3].IEnumerable$1(T),"ps":0},{"n":"comparer","pt":$n[3].IEqualityComparer$1(T),"ps":1}],"sn":"$ctor2"},{"a":2,"n":"Add","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"add","rt":$n[0].Boolean,"p":[T]},{"a":1,"n":"AddIfNotPresent","t":8,"pi":[{"n":"value","pt":T,"ps":0}],"sn":"addIfNotPresent","rt":$n[0].Boolean,"p":[T]},{"a":1,"n":"AddOrGetLocation","t":8,"pi":[{"n":"value","pt":T,"ps":0},{"n":"location","out":true,"pt":$n[0].Int32,"ps":1}],"sn":"addOrGetLocation","rt":$n[0].Boolean,"p":[T,$n[0].Int32]},{"a":1,"n":"AreEqualityComparersEqual","is":true,"t":8,"pi":[{"n":"set1","pt":$n[3].HashSet$1(T),"ps":0},{"n":"set2","pt":$n[3].HashSet$1(T),"ps":1}],"sn":"areEqualityComparersEqual","rt":$n[0].Boolean,"p":[$n[3].HashSet$1(T),$n[3].HashSet$1(T)]},{"a":2,"n":"ArrayClear","t":8,"pi":[{"n":"array","pt":Array,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1},{"n":"length","pt":$n[0].Int32,"ps":2}],"sn":"arrayClear","rt":$n[0].Void,"p":[Array,$n[0].Int32,$n[0].Int32]},{"a":1,"n":"CheckUniqueAndUnfoundElements","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0},{"n":"returnIfUnfound","pt":$n[0].Boolean,"ps":1}],"sn":"checkUniqueAndUnfoundElements","rt":$n[3].HashSet$1.ElementCount(T),"p":[$n[3].IEnumerable$1(T),$n[0].Boolean]},{"a":2,"n":"Clear","t":8,"sn":"clear","rt":$n[0].Void},{"a":2,"n":"Contains","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"contains","rt":$n[0].Boolean,"p":[T]},{"a":1,"n":"ContainsAllElements","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"containsAllElements","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":System.Array.type(T),"ps":0}],"sn":"copyTo$1","rt":$n[0].Void,"p":[System.Array.type(T)]},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":System.Array.type(T),"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1}],"sn":"copyTo","rt":$n[0].Void,"p":[System.Array.type(T),$n[0].Int32]},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":System.Array.type(T),"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1},{"n":"count","pt":$n[0].Int32,"ps":2}],"sn":"copyTo$2","rt":$n[0].Void,"p":[System.Array.type(T),$n[0].Int32,$n[0].Int32]},{"a":2,"n":"ExceptWith","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"exceptWith","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(T)]},{"a":2,"n":"GetEnumerator","t":8,"sn":"getEnumerator","rt":$n[3].HashSet$1.Enumerator(T)},{"a":4,"n":"HashSetEquals","is":true,"t":8,"pi":[{"n":"set1","pt":$n[3].HashSet$1(T),"ps":0},{"n":"set2","pt":$n[3].HashSet$1(T),"ps":1},{"n":"comparer","pt":$n[3].IEqualityComparer$1(T),"ps":2}],"sn":"hashSetEquals","rt":$n[0].Boolean,"p":[$n[3].HashSet$1(T),$n[3].HashSet$1(T),$n[3].IEqualityComparer$1(T)]},{"a":1,"n":"IncreaseCapacity","t":8,"sn":"increaseCapacity","rt":$n[0].Void},{"a":1,"n":"Initialize","t":8,"pi":[{"n":"capacity","pt":$n[0].Int32,"ps":0}],"sn":"initialize","rt":$n[0].Void,"p":[$n[0].Int32]},{"a":1,"n":"InternalGetHashCode","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"internalGetHashCode","rt":$n[0].Int32,"p":[T]},{"a":1,"n":"InternalIndexOf","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"internalIndexOf","rt":$n[0].Int32,"p":[T]},{"a":2,"n":"IntersectWith","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"intersectWith","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(T)]},{"a":1,"n":"IntersectWithEnumerable","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"intersectWithEnumerable","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(T)]},{"a":1,"n":"IntersectWithHashSetWithSameEC","t":8,"pi":[{"n":"other","pt":$n[3].HashSet$1(T),"ps":0}],"sn":"intersectWithHashSetWithSameEC","rt":$n[0].Void,"p":[$n[3].HashSet$1(T)]},{"a":2,"n":"IsProperSubsetOf","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"isProperSubsetOf","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"a":2,"n":"IsProperSupersetOf","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"isProperSupersetOf","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"a":2,"n":"IsSubsetOf","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"isSubsetOf","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"a":1,"n":"IsSubsetOfHashSetWithSameEC","t":8,"pi":[{"n":"other","pt":$n[3].HashSet$1(T),"ps":0}],"sn":"isSubsetOfHashSetWithSameEC","rt":$n[0].Boolean,"p":[$n[3].HashSet$1(T)]},{"a":2,"n":"IsSupersetOf","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"isSupersetOf","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"a":2,"n":"Overlaps","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"overlaps","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"a":2,"n":"Remove","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"remove","rt":$n[0].Boolean,"p":[T]},{"a":2,"n":"RemoveWhere","t":8,"pi":[{"n":"match","pt":Function,"ps":0}],"sn":"removeWhere","rt":$n[0].Int32,"p":[Function]},{"a":1,"n":"SetCapacity","t":8,"pi":[{"n":"newSize","pt":$n[0].Int32,"ps":0},{"n":"forceNewHashCodes","pt":$n[0].Boolean,"ps":1}],"sn":"setCapacity","rt":$n[0].Void,"p":[$n[0].Int32,$n[0].Boolean]},{"a":2,"n":"SetEquals","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"setEquals","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"a":2,"n":"SymmetricExceptWith","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"symmetricExceptWith","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(T)]},{"a":1,"n":"SymmetricExceptWithEnumerable","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"symmetricExceptWithEnumerable","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(T)]},{"a":1,"n":"SymmetricExceptWithUniqueHashSet","t":8,"pi":[{"n":"other","pt":$n[3].HashSet$1(T),"ps":0}],"sn":"symmetricExceptWithUniqueHashSet","rt":$n[0].Void,"p":[$n[3].HashSet$1(T)]},{"a":4,"n":"ToArray","t":8,"sn":"toArray","rt":System.Array.type(T)},{"a":2,"n":"TrimExcess","t":8,"sn":"trimExcess","rt":$n[0].Void},{"a":2,"n":"UnionWith","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"unionWith","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(T)]},{"a":2,"n":"Comparer","t":16,"rt":$n[3].IEqualityComparer$1(T),"g":{"a":2,"n":"get_Comparer","t":8,"rt":$n[3].IEqualityComparer$1(T),"fg":"Comparer"},"fn":"Comparer"},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"rt":$n[0].Int32,"fg":"Count"},"fn":"Count"},{"a":2,"n":"IsReadOnly","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"rt":$n[0].Boolean,"fg":"IsReadOnly"},"fn":"IsReadOnly"},{"a":1,"n":"Lower31BitMask","is":true,"t":4,"rt":$n[0].Int32,"sn":"Lower31BitMask"},{"a":1,"n":"ShrinkThreshold","is":true,"t":4,"rt":$n[0].Int32,"sn":"ShrinkThreshold"},{"a":1,"n":"_buckets","t":4,"rt":$n[0].Array.type(System.Int32),"sn":"_buckets"},{"a":1,"n":"_comparer","t":4,"rt":$n[3].IEqualityComparer$1(T),"sn":"_comparer"},{"a":1,"n":"_count","t":4,"rt":$n[0].Int32,"sn":"_count"},{"a":1,"n":"_freeList","t":4,"rt":$n[0].Int32,"sn":"_freeList"},{"a":1,"n":"_lastIndex","t":4,"rt":$n[0].Int32,"sn":"_lastIndex"},{"a":1,"n":"_slots","t":4,"rt":System.Array.type(System.Collections.Generic.HashSet$1.Slot(T)),"sn":"_slots"},{"a":1,"n":"_version","t":4,"rt":$n[0].Int32,"sn":"_version"}]}; });
+    $m($n[3].HashSet$1.ElementCount, function (T) { return {"td":$n[3].HashSet$1(T),"att":1048845,"a":4,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":4,"n":"unfoundCount","t":4,"rt":$n[0].Int32,"sn":"unfoundCount"},{"a":4,"n":"uniqueCount","t":4,"rt":$n[0].Int32,"sn":"uniqueCount"}]}; });
+    $m($n[3].HashSet$1.Slot, function (T) { return {"td":$n[3].HashSet$1(T),"att":1048845,"a":4,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":4,"n":"hashCode","t":4,"rt":$n[0].Int32,"sn":"hashCode"},{"a":4,"n":"next","t":4,"rt":$n[0].Int32,"sn":"next"},{"a":4,"n":"value","t":4,"rt":T,"sn":"value"}]}; });
+    $m($n[3].HashSet$1.Enumerator, function (T) { return {"td":$n[3].HashSet$1(T),"att":1048842,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":4,"n":".ctor","t":1,"p":[$n[3].HashSet$1(T)],"pi":[{"n":"set","pt":$n[3].HashSet$1(T),"ps":0}],"sn":"$ctor1"},{"a":2,"n":"Dispose","t":8,"sn":"dispose","rt":$n[0].Void},{"a":2,"n":"MoveNext","t":8,"sn":"moveNext","rt":$n[0].Boolean},{"a":2,"n":"Current","t":16,"rt":T,"g":{"a":2,"n":"get_Current","t":8,"rt":T,"fg":"Current"},"fn":"Current"},{"a":1,"n":"_current","t":4,"rt":T,"sn":"_current"},{"a":1,"n":"_index","t":4,"rt":$n[0].Int32,"sn":"_index"},{"a":1,"n":"_set","t":4,"rt":$n[3].HashSet$1(T),"sn":"_set"},{"a":1,"n":"_version","t":4,"rt":$n[0].Int32,"sn":"_version"}]}; });
+    $m($n[3].IReadOnlyDictionary$2, function (TKey, TValue) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"ContainsKey","t":8,"pi":[{"n":"key","pt":TKey,"ps":0}],"sn":"System$Collections$Generic$IReadOnlyDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$containsKey","rt":$n[0].Boolean,"p":[TKey]},{"ab":true,"a":2,"n":"TryGetValue","t":8,"pi":[{"n":"key","pt":TKey,"ps":0},{"n":"value","out":true,"pt":TValue,"ps":1}],"sn":"System$Collections$Generic$IReadOnlyDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$tryGetValue","rt":$n[0].Boolean,"p":[TKey,TValue]},{"ab":true,"a":2,"n":"Item","t":16,"rt":TValue,"p":[TKey],"i":true,"ipi":[{"n":"key","pt":TKey,"ps":0}],"g":{"ab":true,"a":2,"n":"get_Item","t":8,"pi":[{"n":"key","pt":TKey,"ps":0}],"sn":"System$Collections$Generic$IReadOnlyDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getItem","rt":TValue,"p":[TKey]}},{"ab":true,"a":2,"n":"Keys","t":16,"rt":$n[3].IEnumerable$1(TKey),"g":{"ab":true,"a":2,"n":"get_Keys","t":8,"rt":$n[3].IEnumerable$1(TKey),"fg":"\"System$Collections$Generic$IReadOnlyDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Keys\""},"s":{"ab":true,"a":1,"n":"set_Keys","t":8,"p":[$n[3].IEnumerable$1(TKey)],"rt":$n[0].Void,"fs":"\"System$Collections$Generic$IReadOnlyDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Keys\""},"fn":"\"System$Collections$Generic$IReadOnlyDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Keys\""},{"ab":true,"a":2,"n":"Values","t":16,"rt":$n[3].IEnumerable$1(TValue),"g":{"ab":true,"a":2,"n":"get_Values","t":8,"rt":$n[3].IEnumerable$1(TValue),"fg":"\"System$Collections$Generic$IReadOnlyDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Values\""},"s":{"ab":true,"a":1,"n":"set_Values","t":8,"p":[$n[3].IEnumerable$1(TValue)],"rt":$n[0].Void,"fs":"\"System$Collections$Generic$IReadOnlyDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Values\""},"fn":"\"System$Collections$Generic$IReadOnlyDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Values\""}]}; });
+    $m($n[3].Queue$1, function (T) { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[3].IEnumerable$1(T)],"pi":[{"n":"collection","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"$ctor1"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"capacity","pt":$n[0].Int32,"ps":0}],"sn":"$ctor2"},{"a":2,"n":"Clear","t":8,"sn":"clear","rt":$n[0].Void},{"a":2,"n":"Contains","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"contains","rt":$n[0].Boolean,"p":[T]},{"v":true,"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":Array,"ps":0},{"n":"index","pt":$n[0].Int32,"ps":1}],"sn":"copyTo","rt":$n[0].Void,"p":[Array,$n[0].Int32]},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":System.Array.type(T),"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1}],"sn":"copyTo$1","rt":$n[0].Void,"p":[System.Array.type(T),$n[0].Int32]},{"a":2,"n":"Dequeue","t":8,"sn":"dequeue","rt":T},{"a":2,"n":"Enqueue","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"enqueue","rt":$n[0].Void,"p":[T]},{"a":1,"n":"GetElement","t":8,"pi":[{"n":"i","pt":$n[0].Int32,"ps":0}],"sn":"getElement","rt":T,"p":[$n[0].Int32]},{"a":2,"n":"GetEnumerator","t":8,"sn":"getEnumerator","rt":$n[3].Queue$1.Enumerator(T)},{"a":1,"n":"MoveNext","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"moveNext","rt":$n[0].Int32,"p":[$n[0].Int32]},{"a":2,"n":"Peek","t":8,"sn":"peek","rt":T},{"a":1,"n":"SetCapacity","t":8,"pi":[{"n":"capacity","pt":$n[0].Int32,"ps":0}],"sn":"setCapacity","rt":$n[0].Void,"p":[$n[0].Int32]},{"a":2,"n":"ToArray","t":8,"sn":"toArray","rt":System.Array.type(T)},{"a":2,"n":"TrimExcess","t":8,"sn":"trimExcess","rt":$n[0].Void},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"rt":$n[0].Int32,"fg":"Count"},"fn":"Count"},{"a":2,"n":"IsReadOnly","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"rt":$n[0].Boolean,"fg":"IsReadOnly"},"fn":"IsReadOnly"},{"a":1,"n":"DefaultCapacity","is":true,"t":4,"rt":$n[0].Int32,"sn":"DefaultCapacity"},{"a":1,"n":"GrowFactor","is":true,"t":4,"rt":$n[0].Int32,"sn":"GrowFactor"},{"a":1,"n":"MinimumGrow","is":true,"t":4,"rt":$n[0].Int32,"sn":"MinimumGrow"},{"a":1,"n":"_array","t":4,"rt":System.Array.type(T),"sn":"_array"},{"a":1,"n":"_head","t":4,"rt":$n[0].Int32,"sn":"_head"},{"a":1,"n":"_size","t":4,"rt":$n[0].Int32,"sn":"_size"},{"a":1,"n":"_tail","t":4,"rt":$n[0].Int32,"sn":"_tail"},{"a":1,"n":"_version","t":4,"rt":$n[0].Int32,"sn":"_version"}]}; });
+    $m($n[3].Queue$1.Enumerator, function (T) { return {"td":$n[3].Queue$1(T),"att":1048842,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":4,"n":".ctor","t":1,"p":[$n[3].Queue$1(T)],"pi":[{"n":"q","pt":$n[3].Queue$1(T),"ps":0}],"sn":"$ctor1"},{"a":2,"n":"Dispose","t":8,"sn":"dispose","rt":$n[0].Void},{"a":2,"n":"MoveNext","t":8,"sn":"moveNext","rt":$n[0].Boolean},{"a":2,"n":"Current","t":16,"rt":T,"g":{"a":2,"n":"get_Current","t":8,"rt":T,"fg":"Current"},"fn":"Current"},{"a":1,"n":"_currentElement","t":4,"rt":T,"sn":"_currentElement"},{"a":1,"n":"_index","t":4,"rt":$n[0].Int32,"sn":"_index"},{"a":1,"n":"_q","t":4,"rt":$n[3].Queue$1(T),"sn":"_q"},{"a":1,"n":"_version","t":4,"rt":$n[0].Int32,"sn":"_version"}]}; });
+    $m($n[3].Stack$1, function (T) { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[3].IEnumerable$1(T)],"pi":[{"n":"collection","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"$ctor1"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"capacity","pt":$n[0].Int32,"ps":0}],"sn":"$ctor2"},{"a":2,"n":"Clear","t":8,"sn":"clear","rt":$n[0].Void},{"a":2,"n":"Contains","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"contains","rt":$n[0].Boolean,"p":[T]},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":Array,"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1}],"sn":"copyTo","rt":$n[0].Void,"p":[Array,$n[0].Int32]},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":System.Array.type(T),"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1}],"sn":"copyTo$1","rt":$n[0].Void,"p":[System.Array.type(T),$n[0].Int32]},{"a":2,"n":"GetEnumerator","t":8,"sn":"getEnumerator","rt":$n[3].Stack$1.Enumerator(T)},{"a":2,"n":"Peek","t":8,"sn":"peek","rt":T},{"a":2,"n":"Pop","t":8,"sn":"pop","rt":T},{"a":2,"n":"Push","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"push","rt":$n[0].Void,"p":[T]},{"a":2,"n":"ToArray","t":8,"sn":"toArray","rt":System.Array.type(T)},{"a":2,"n":"TrimExcess","t":8,"sn":"trimExcess","rt":$n[0].Void},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"rt":$n[0].Int32,"fg":"Count"},"fn":"Count"},{"a":2,"n":"IsReadOnly","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"rt":$n[0].Boolean,"fg":"IsReadOnly"},"fn":"IsReadOnly"},{"a":1,"n":"DefaultCapacity","is":true,"t":4,"rt":$n[0].Int32,"sn":"DefaultCapacity"},{"a":1,"n":"_array","t":4,"rt":System.Array.type(T),"sn":"_array"},{"a":1,"n":"_size","t":4,"rt":$n[0].Int32,"sn":"_size"},{"a":1,"n":"_version","t":4,"rt":$n[0].Int32,"sn":"_version"}]}; });
+    $m($n[3].Stack$1.Enumerator, function (T) { return {"td":$n[3].Stack$1(T),"att":1048842,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":4,"n":".ctor","t":1,"p":[$n[3].Stack$1(T)],"pi":[{"n":"stack","pt":$n[3].Stack$1(T),"ps":0}],"sn":"$ctor1"},{"a":2,"n":"Dispose","t":8,"sn":"dispose","rt":$n[0].Void},{"a":2,"n":"MoveNext","t":8,"sn":"moveNext","rt":$n[0].Boolean},{"a":2,"n":"Current","t":16,"rt":T,"g":{"a":2,"n":"get_Current","t":8,"rt":T,"fg":"Current"},"fn":"Current"},{"a":1,"n":"_currentElement","t":4,"rt":T,"sn":"_currentElement"},{"a":1,"n":"_index","t":4,"rt":$n[0].Int32,"sn":"_index"},{"a":1,"n":"_stack","t":4,"rt":$n[3].Stack$1(T),"sn":"_stack"},{"a":1,"n":"_version","t":4,"rt":$n[0].Int32,"sn":"_version"}]}; });
+    $m($n[3].IReadOnlyCollection$1, function (T) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"ab":true,"a":2,"n":"get_Count","t":8,"tpc":0,"def":function () { return System.Array.getCount(this, T); },"rt":$n[0].Int32},"s":{"ab":true,"a":1,"n":"set_Count","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"System$Collections$Generic$IReadOnlyCollection$1$" + Bridge.getTypeAlias(T) + "$Count","rt":$n[0].Void,"p":[$n[0].Int32]}}]}; });
+    $m($n[3].IReadOnlyList$1, function (T) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Item","t":16,"rt":T,"p":[$n[0].Int32],"i":true,"ipi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"g":{"ab":true,"a":2,"n":"get_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (index) { return System.Array.getItem(this, index, T); },"rt":T,"p":[$n[0].Int32]}}]}; });
+    $m($n[3].IComparer$1, function (T) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Compare","t":8,"pi":[{"n":"x","pt":T,"ps":0},{"n":"y","pt":T,"ps":1}],"sn":"System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(T) + "$compare","rt":$n[0].Int32,"p":[T,T]}]}; });
+    $m($n[3].IList$1, function (T) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"IndexOf","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"tpc":0,"def":function (item) { return System.Array.indexOf(this, item, 0, null, T); },"rt":$n[0].Int32,"p":[T]},{"ab":true,"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"item","pt":T,"ps":1}],"tpc":0,"def":function (index, item) { return System.Array.insert(this, index, item, T); },"rt":$n[0].Void,"p":[$n[0].Int32,T]},{"ab":true,"a":2,"n":"RemoveAt","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (index) { return System.Array.removeAt(this, index, T); },"rt":$n[0].Void,"p":[$n[0].Int32]},{"ab":true,"a":2,"n":"Item","t":16,"rt":T,"p":[$n[0].Int32],"i":true,"ipi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"g":{"ab":true,"a":2,"n":"get_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"tpc":0,"def":function (index) { return System.Array.getItem(this, index, T); },"rt":T,"p":[$n[0].Int32]},"s":{"ab":true,"a":2,"n":"set_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":T,"ps":1}],"tpc":0,"def":function (index, value) { return System.Array.setItem(this, index, T); },"rt":$n[0].Void,"p":[$n[0].Int32,T]}}]}; });
+    $m($n[3].ISet$1, function (T) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Add","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"System$Collections$Generic$ISet$1$" + Bridge.getTypeAlias(T) + "$add","rt":$n[0].Boolean,"p":[T]},{"ab":true,"a":2,"n":"ExceptWith","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"System$Collections$Generic$ISet$1$" + Bridge.getTypeAlias(T) + "$exceptWith","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(T)]},{"ab":true,"a":2,"n":"IntersectWith","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"System$Collections$Generic$ISet$1$" + Bridge.getTypeAlias(T) + "$intersectWith","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(T)]},{"ab":true,"a":2,"n":"IsProperSubsetOf","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"System$Collections$Generic$ISet$1$" + Bridge.getTypeAlias(T) + "$isProperSubsetOf","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"ab":true,"a":2,"n":"IsProperSupersetOf","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"System$Collections$Generic$ISet$1$" + Bridge.getTypeAlias(T) + "$isProperSupersetOf","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"ab":true,"a":2,"n":"IsSubsetOf","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"System$Collections$Generic$ISet$1$" + Bridge.getTypeAlias(T) + "$isSubsetOf","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"ab":true,"a":2,"n":"IsSupersetOf","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"System$Collections$Generic$ISet$1$" + Bridge.getTypeAlias(T) + "$isSupersetOf","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"ab":true,"a":2,"n":"Overlaps","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"System$Collections$Generic$ISet$1$" + Bridge.getTypeAlias(T) + "$overlaps","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"ab":true,"a":2,"n":"SetEquals","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"System$Collections$Generic$ISet$1$" + Bridge.getTypeAlias(T) + "$setEquals","rt":$n[0].Boolean,"p":[$n[3].IEnumerable$1(T)]},{"ab":true,"a":2,"n":"SymmetricExceptWith","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"System$Collections$Generic$ISet$1$" + Bridge.getTypeAlias(T) + "$symmetricExceptWith","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(T)]},{"ab":true,"a":2,"n":"UnionWith","t":8,"pi":[{"n":"other","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"System$Collections$Generic$ISet$1$" + Bridge.getTypeAlias(T) + "$unionWith","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(T)]}]}; });
+    $m($n[3].Dictionary$2, function (TKey, TValue) { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[3].IDictionary$2(TKey,TValue)],"pi":[{"n":"dictionary","pt":$n[3].IDictionary$2(TKey,TValue),"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[3].IEqualityComparer$1(TKey)],"pi":[{"n":"comparer","pt":$n[3].IEqualityComparer$1(TKey),"ps":0}],"def":function (comparer) { return new (System.Collections.Generic.Dictionary$2(TKey, TValue))(null, comparer); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"capacity","pt":$n[0].Int32,"ps":0}],"def":function (capacity) { return new (System.Collections.Generic.Dictionary$2(TKey, TValue))(); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Object],"pi":[{"n":"obj","pt":$n[0].Object,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[3].IDictionary$2(TKey,TValue),$n[3].IEqualityComparer$1(TKey)],"pi":[{"n":"dictionary","pt":$n[3].IDictionary$2(TKey,TValue),"ps":0},{"n":"comparer","pt":$n[3].IEqualityComparer$1(TKey),"ps":1}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32,$n[3].IEqualityComparer$1(TKey)],"pi":[{"n":"capacity","pt":$n[0].Int32,"ps":0},{"n":"comparer","pt":$n[3].IEqualityComparer$1(TKey),"ps":1}],"def":function (capacity, comparer) { return new (System.Collections.Generic.Dictionary$2(TKey, TValue))(null, comparer); }},{"a":2,"n":".ctor","t":1,"p":[$n[0].Object,$n[3].IEqualityComparer$1(TKey)],"pi":[{"n":"obj","pt":$n[0].Object,"ps":0},{"n":"comparer","pt":$n[3].IEqualityComparer$1(TKey),"ps":1}],"sn":"ctor"},{"a":2,"n":"Add","t":8,"pi":[{"n":"key","pt":TKey,"ps":0},{"n":"value","pt":TValue,"ps":1}],"sn":"add","rt":$n[0].Void,"p":[TKey,TValue]},{"a":2,"n":"Clear","t":8,"sn":"clear","rt":$n[0].Void},{"a":2,"n":"ContainsKey","t":8,"pi":[{"n":"key","pt":TKey,"ps":0}],"sn":"containsKey","rt":$n[0].Boolean,"p":[TKey]},{"a":2,"n":"ContainsValue","t":8,"pi":[{"n":"value","pt":TValue,"ps":0}],"sn":"containsValue","rt":$n[0].Boolean,"p":[TValue]},{"a":2,"n":"Get","t":8,"pi":[{"n":"key","pt":TKey,"ps":0}],"sn":"get","rt":TValue,"p":[TKey]},{"a":2,"n":"GetEnumerator","t":8,"sn":"getEnumerator","rt":$n[3].IEnumerator$1(System.Collections.Generic.KeyValuePair$2(TKey,TValue))},{"a":1,"n":"Items","t":8,"pi":[{"n":"key","pt":TKey,"ps":0}],"sn":"items","rt":TValue,"p":[TKey]},{"a":2,"n":"Remove","t":8,"pi":[{"n":"key","pt":TKey,"ps":0}],"sn":"remove","rt":$n[0].Boolean,"p":[TKey]},{"a":2,"n":"Set","t":8,"pi":[{"n":"key","pt":TKey,"ps":0},{"n":"value","pt":TValue,"ps":1}],"sn":"set","rt":$n[0].Void,"p":[TKey,TValue]},{"a":2,"n":"TryGetValue","t":8,"pi":[{"n":"key","pt":TKey,"ps":0},{"n":"value","out":true,"pt":TValue,"ps":1}],"sn":"tryGetValue","rt":$n[0].Boolean,"p":[TKey,TValue]},{"a":2,"n":"Comparer","t":16,"rt":$n[3].IEqualityComparer$1(TKey),"g":{"a":2,"n":"get_Comparer","t":8,"rt":$n[3].IEqualityComparer$1(TKey),"fg":"comparer"},"fn":"comparer"},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"rt":$n[0].Int32,"fg":"count"},"fn":"count"},{"a":2,"n":"IsReadOnly","t":16,"rt":$n[0].Boolean,"g":{"a":2,"n":"get_IsReadOnly","t":8,"tpc":0,"def":function () { return getIsReadOnly(); },"rt":$n[0].Boolean}},{"a":2,"n":"Item","t":16,"rt":TValue,"p":[TKey],"i":true,"ipi":[{"n":"key","pt":TKey,"ps":0}],"g":{"a":2,"n":"get_Item","t":8,"pi":[{"n":"key","pt":TKey,"ps":0}],"sn":"get","rt":TValue,"p":[TKey]},"s":{"a":2,"n":"set_Item","t":8,"pi":[{"n":"key","pt":TKey,"ps":0},{"n":"value","pt":TValue,"ps":1}],"sn":"set","rt":$n[0].Void,"p":[TKey,TValue]}},{"a":2,"n":"Keys","t":16,"rt":$n[3].ICollection$1(TKey),"g":{"a":2,"n":"get_Keys","t":8,"tpc":0,"def":function () { return getKeys(); },"rt":$n[3].ICollection$1(TKey)}},{"a":2,"n":"Values","t":16,"rt":$n[3].ICollection$1(TValue),"g":{"a":2,"n":"get_Values","t":8,"tpc":0,"def":function () { return getValues(); },"rt":$n[3].ICollection$1(TValue)}}]}; });
+    $m($n[3].ICollection$1, function (T) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Add","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"tpc":0,"def":function (item) { return System.Array.add(this, item, T); },"rt":$n[0].Void,"p":[T]},{"ab":true,"a":2,"n":"Clear","t":8,"tpc":0,"def":function () { return System.Array.clear(this, T); },"rt":$n[0].Void},{"ab":true,"a":2,"n":"Contains","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"tpc":0,"def":function (item) { return System.Array.contains(this, item, T); },"rt":$n[0].Boolean,"p":[T]},{"ab":true,"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":System.Array.type(T),"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1}],"tpc":0,"def":function (array, arrayIndex) { return System.Array.copyTo(this, array, arrayIndex, T); },"rt":$n[0].Void,"p":[System.Array.type(T),$n[0].Int32]},{"ab":true,"a":2,"n":"Remove","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"tpc":0,"def":function (item) { return System.Array.remove(this, item, T); },"rt":$n[0].Boolean,"p":[T]},{"ab":true,"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"ab":true,"a":2,"n":"get_Count","t":8,"tpc":0,"def":function () { return System.Array.getCount(this, T); },"rt":$n[0].Int32},"s":{"ab":true,"a":1,"n":"set_Count","t":8,"pi":[{"n":"value","pt":$n[0].Int32,"ps":0}],"sn":"System$Collections$Generic$ICollection$1$" + Bridge.getTypeAlias(T) + "$Count","rt":$n[0].Void,"p":[$n[0].Int32]}},{"ab":true,"a":2,"n":"IsReadOnly","t":16,"rt":$n[0].Boolean,"g":{"ab":true,"a":2,"n":"get_IsReadOnly","t":8,"tpc":0,"def":function () { return System.Array.getIsReadOnly(this, T); },"rt":$n[0].Boolean},"s":{"ab":true,"a":1,"n":"set_IsReadOnly","t":8,"pi":[{"n":"value","pt":$n[0].Boolean,"ps":0}],"sn":"System$Collections$Generic$ICollection$1$" + Bridge.getTypeAlias(T) + "$IsReadOnly","rt":$n[0].Void,"p":[$n[0].Boolean]}}]}; });
+    $m($n[3].IDictionary$2, function (TKey, TValue) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Add","t":8,"pi":[{"n":"key","pt":TKey,"ps":0},{"n":"value","pt":TValue,"ps":1}],"sn":"System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$add","rt":$n[0].Void,"p":[TKey,TValue]},{"ab":true,"a":2,"n":"ContainsKey","t":8,"pi":[{"n":"key","pt":TKey,"ps":0}],"sn":"System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$containsKey","rt":$n[0].Boolean,"p":[TKey]},{"ab":true,"a":2,"n":"Remove","t":8,"pi":[{"n":"key","pt":TKey,"ps":0}],"sn":"System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$remove","rt":$n[0].Boolean,"p":[TKey]},{"ab":true,"a":2,"n":"TryGetValue","t":8,"pi":[{"n":"key","pt":TKey,"ps":0},{"n":"value","out":true,"pt":TValue,"ps":1}],"sn":"System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$tryGetValue","rt":$n[0].Boolean,"p":[TKey,TValue]},{"ab":true,"a":2,"n":"Item","t":16,"rt":TValue,"p":[TKey],"i":true,"ipi":[{"n":"key","pt":TKey,"ps":0}],"g":{"ab":true,"a":2,"n":"get_Item","t":8,"pi":[{"n":"key","pt":TKey,"ps":0}],"sn":"System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$getItem","rt":TValue,"p":[TKey]},"s":{"ab":true,"a":2,"n":"set_Item","t":8,"pi":[{"n":"key","pt":TKey,"ps":0},{"n":"value","pt":TValue,"ps":1}],"sn":"System$Collections$Generic$IDictionary$2$" + Bridge.getTypeAlias(TKey) + "$" + Bridge.getTypeAlias(TValue) + "$setItem","rt":$n[0].Void,"p":[TKey,TValue]}},{"ab":true,"a":2,"n":"Keys","t":16,"rt":$n[3].ICollection$1(TKey),"g":{"ab":true,"a":2,"n":"get_Keys","t":8,"rt":$n[3].ICollection$1(TKey),"fg":"\"System$Collections$Generic$IDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Keys\""},"s":{"ab":true,"a":1,"n":"set_Keys","t":8,"p":[$n[3].ICollection$1(TKey)],"rt":$n[0].Void,"fs":"\"System$Collections$Generic$IDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Keys\""},"fn":"\"System$Collections$Generic$IDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Keys\""},{"ab":true,"a":2,"n":"Values","t":16,"rt":$n[3].ICollection$1(TValue),"g":{"ab":true,"a":2,"n":"get_Values","t":8,"rt":$n[3].ICollection$1(TValue),"fg":"\"System$Collections$Generic$IDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Values\""},"s":{"ab":true,"a":1,"n":"set_Values","t":8,"p":[$n[3].ICollection$1(TValue)],"rt":$n[0].Void,"fs":"\"System$Collections$Generic$IDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Values\""},"fn":"\"System$Collections$Generic$IDictionary$2$\" + Bridge.getTypeAlias(TKey) + \"$\" + Bridge.getTypeAlias(TValue) + \"$Values\""}]}; });
+    $m($n[3].IEnumerable$1, function (T) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"GetEnumerator","t":8,"tpc":0,"def":function () { return Bridge.getEnumerator(this, T); },"rt":$n[3].IEnumerator$1(T)}]}; });
+    $m($n[3].IEnumerator$1, function (T) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Current","t":16,"rt":T,"g":{"ab":true,"a":2,"n":"get_Current","t":8,"rt":T,"fg":"\"System$Collections$Generic$IEnumerator$1$\" + Bridge.getTypeAlias(T) + \"$Current$1\""},"s":{"ab":true,"a":1,"n":"set_Current","t":8,"p":[T],"rt":$n[0].Void,"fs":"\"System$Collections$Generic$IEnumerator$1$\" + Bridge.getTypeAlias(T) + \"$Current$1\""},"fn":"\"System$Collections$Generic$IEnumerator$1$\" + Bridge.getTypeAlias(T) + \"$Current$1\""}]}; });
+    $m($n[3].IEqualityComparer$1, function (T) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"x","pt":T,"ps":0},{"n":"y","pt":T,"ps":1}],"sn":"System$Collections$Generic$IEqualityComparer$1$" + Bridge.getTypeAlias(T) + "$equals2","rt":$n[0].Boolean,"p":[T,T]},{"ab":true,"a":2,"n":"GetHashCode","t":8,"pi":[{"n":"obj","pt":T,"ps":0}],"sn":"System$Collections$Generic$IEqualityComparer$1$" + Bridge.getTypeAlias(T) + "$getHashCode2","rt":$n[0].Int32,"p":[T]}]}; });
+    $m($n[3].EqualityComparer$1, function (T) { return {"att":1048705,"a":2,"m":[{"a":3,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"v":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"x","pt":T,"ps":0},{"n":"y","pt":T,"ps":1}],"sn":"equals2","rt":$n[0].Boolean,"p":[T,T]},{"v":true,"a":2,"n":"GetHashCode","t":8,"pi":[{"n":"obj","pt":T,"ps":0}],"sn":"getHashCode2","rt":$n[0].Int32,"p":[T]},{"a":2,"n":"Default","is":true,"t":16,"rt":$n[3].EqualityComparer$1(T),"g":{"a":2,"n":"get_Default","is":true,"t":8,"tpc":0,"def":function () { return System.Collections.Generic.EqualityComparer$1(T).def; },"rt":$n[3].EqualityComparer$1(T)}}]}; });
+    $m($n[3].KeyValuePair$2, function (TKey, TValue) { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[TKey,TValue],"pi":[{"n":"key","pt":TKey,"ps":0},{"n":"value","pt":TValue,"ps":1}],"sn":"ctor"},{"a":2,"n":"Key","t":16,"rt":TKey,"g":{"a":2,"n":"get_Key","t":8,"rt":TKey,"fg":"key"},"fn":"key"},{"a":2,"n":"Value","t":16,"rt":TValue,"g":{"a":2,"n":"get_Value","t":8,"rt":TValue,"fg":"value"},"fn":"value"}]}; });
+    $m($n[3].List$1, function (T) { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[3].IEnumerable$1(T)],"pi":[{"n":"items","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].Int32],"pi":[{"n":"capacity","pt":$n[0].Int32,"ps":0}],"sn":"ctor"},{"a":2,"n":"Add","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"add","rt":$n[0].Void,"p":[T]},{"a":2,"n":"AddRange","t":8,"pi":[{"n":"items","pt":$n[3].IEnumerable$1(T),"ps":0}],"sn":"addRange","rt":$n[0].Void,"p":[$n[3].IEnumerable$1(T)]},{"a":2,"n":"BinarySearch","t":8,"pi":[{"n":"value","pt":T,"ps":0}],"sn":"binarySearch","rt":$n[0].Int32,"p":[T]},{"a":2,"n":"BinarySearch","t":8,"pi":[{"n":"value","pt":T,"ps":0},{"n":"comparer","pt":$n[3].IComparer$1(T),"ps":1}],"sn":"binarySearch","rt":$n[0].Int32,"p":[T,$n[3].IComparer$1(T)]},{"a":2,"n":"BinarySearch","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"length","pt":$n[0].Int32,"ps":1},{"n":"value","pt":T,"ps":2}],"sn":"binarySearch","rt":$n[0].Int32,"p":[$n[0].Int32,$n[0].Int32,T]},{"a":2,"n":"BinarySearch","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"length","pt":$n[0].Int32,"ps":1},{"n":"value","pt":T,"ps":2},{"n":"comparer","pt":$n[3].IComparer$1(T),"ps":3}],"sn":"binarySearch","rt":$n[0].Int32,"p":[$n[0].Int32,$n[0].Int32,T,$n[3].IComparer$1(T)]},{"a":2,"n":"Clear","t":8,"sn":"clear","rt":$n[0].Void},{"a":2,"n":"Contains","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"contains","rt":$n[0].Boolean,"p":[T]},{"a":2,"n":"ConvertAll","t":8,"pi":[{"n":"converter","pt":Function,"ps":0}],"tpc":1,"def":function (TOutput, converter) { return this.convertAll(TOutput, converter); },"rt":$n[3].List$1(System.Object),"p":[Function]},{"a":2,"n":"CopyTo","t":8,"pi":[{"n":"array","pt":System.Array.type(T),"ps":0},{"n":"arrayIndex","pt":$n[0].Int32,"ps":1}],"sn":"copyTo","rt":$n[0].Void,"p":[System.Array.type(T),$n[0].Int32]},{"a":2,"n":"ForEach","t":8,"pi":[{"n":"action","pt":Function,"ps":0}],"sn":"forEach","rt":$n[0].Void,"p":[Function]},{"a":2,"n":"Get","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"get","rt":T,"p":[$n[0].Int32]},{"a":2,"n":"GetEnumerator","t":8,"sn":"getEnumerator","rt":$n[3].IEnumerator$1(T)},{"a":2,"n":"GetRange","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"getRange","rt":$n[3].List$1(T),"p":[$n[0].Int32]},{"a":2,"n":"GetRange","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"count","pt":$n[0].Int32,"ps":1}],"sn":"getRange","rt":$n[3].List$1(T),"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"indexOf","rt":$n[0].Int32,"p":[T]},{"a":2,"n":"IndexOf","t":8,"pi":[{"n":"item","pt":T,"ps":0},{"n":"startIndex","pt":$n[0].Int32,"ps":1}],"sn":"indexOf","rt":$n[0].Int32,"p":[T,$n[0].Int32]},{"a":2,"n":"Insert","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"item","pt":T,"ps":1}],"sn":"insert","rt":$n[0].Void,"p":[$n[0].Int32,T]},{"a":2,"n":"InsertRange","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"items","pt":$n[3].IEnumerable$1(T),"ps":1}],"sn":"insertRange","rt":$n[0].Void,"p":[$n[0].Int32,$n[3].IEnumerable$1(T)]},{"a":1,"n":"Items","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"items","rt":T,"p":[$n[0].Int32]},{"a":2,"n":"Join","t":8,"sn":"join","rt":$n[0].String},{"a":2,"n":"Join","t":8,"pi":[{"n":"delimiter","pt":$n[0].String,"ps":0}],"sn":"join","rt":$n[0].String,"p":[$n[0].String]},{"a":2,"n":"LastIndexOf","t":8,"pi":[{"n":"item","pt":$n[0].Object,"ps":0}],"sn":"lastIndexOf","rt":$n[0].Int32,"p":[$n[0].Object]},{"a":2,"n":"LastIndexOf","t":8,"pi":[{"n":"item","pt":$n[0].Object,"ps":0},{"n":"fromIndex","pt":$n[0].Int32,"ps":1}],"sn":"lastIndexOf","rt":$n[0].Int32,"p":[$n[0].Object,$n[0].Int32]},{"a":2,"n":"Remove","t":8,"pi":[{"n":"item","pt":T,"ps":0}],"sn":"remove","rt":$n[0].Boolean,"p":[T]},{"a":2,"n":"RemoveAt","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"removeAt","rt":$n[0].Void,"p":[$n[0].Int32]},{"a":2,"n":"RemoveRange","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"count","pt":$n[0].Int32,"ps":1}],"sn":"removeRange","rt":$n[0].Void,"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Reverse","t":8,"sn":"reverse","rt":$n[0].Void},{"a":2,"n":"Set","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":T,"ps":1}],"sn":"set","rt":$n[0].Void,"p":[$n[0].Int32,T]},{"a":2,"n":"Slice","t":8,"pi":[{"n":"start","pt":$n[0].Int32,"ps":0}],"sn":"slice","rt":$n[3].List$1(T),"p":[$n[0].Int32]},{"a":2,"n":"Slice","t":8,"pi":[{"n":"start","pt":$n[0].Int32,"ps":0},{"n":"end","pt":$n[0].Int32,"ps":1}],"sn":"slice","rt":$n[3].List$1(T),"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Sort","t":8,"sn":"sort","rt":$n[0].Void},{"a":2,"n":"Sort","t":8,"pi":[{"n":"comparer","pt":$n[3].IComparer$1(T),"ps":0}],"tpc":0,"def":function (comparer) { return this.sort(Bridge.fn.bind(comparer, comparer.compare)); },"rt":$n[0].Void,"p":[$n[3].IComparer$1(T)]},{"a":2,"n":"Sort","t":8,"pi":[{"n":"comparison","pt":Function,"ps":0}],"sn":"sort","rt":$n[0].Void,"p":[Function]},{"a":2,"n":"Splice","t":8,"pi":[{"n":"start","pt":$n[0].Int32,"ps":0},{"n":"deleteCount","pt":$n[0].Int32,"ps":1}],"sn":"splice","rt":$n[0].Void,"p":[$n[0].Int32,$n[0].Int32]},{"a":2,"n":"Splice","t":8,"pi":[{"n":"start","pt":$n[0].Int32,"ps":0},{"n":"deleteCount","pt":$n[0].Int32,"ps":1},{"n":"itemsToInsert","pt":$n[3].IEnumerable$1(T),"ps":2}],"sn":"splice","rt":$n[0].Void,"p":[$n[0].Int32,$n[0].Int32,$n[3].IEnumerable$1(T)]},{"a":2,"n":"ToArray","t":8,"sn":"toArray","rt":System.Array.type(T)},{"a":2,"n":"TrimExcess","t":8,"sn":"trimExcess","rt":$n[0].Void},{"a":2,"n":"Unshift","t":8,"pi":[{"n":"items","ip":true,"pt":System.Array.type(T),"ps":0}],"sn":"unshift","rt":$n[0].Void,"p":[System.Array.type(T)]},{"a":2,"n":"Capacity","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Capacity","t":8,"rt":$n[0].Int32,"fg":"Capacity"},"s":{"a":2,"n":"set_Capacity","t":8,"p":[$n[0].Int32],"rt":$n[0].Void,"fs":"Capacity"},"fn":"Capacity"},{"a":2,"n":"Count","t":16,"rt":$n[0].Int32,"g":{"a":2,"n":"get_Count","t":8,"rt":$n[0].Int32,"fg":"Count"},"fn":"Count"},{"a":2,"n":"Item","t":16,"rt":T,"p":[$n[0].Int32],"i":true,"ipi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"g":{"a":2,"n":"get_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0}],"sn":"getItem","rt":T,"p":[$n[0].Int32]},"s":{"a":2,"n":"set_Item","t":8,"pi":[{"n":"index","pt":$n[0].Int32,"ps":0},{"n":"value","pt":T,"ps":1}],"sn":"setItem","rt":$n[0].Void,"p":[$n[0].Int32,T]}}]}; });
+    $m($n[3].KeyNotFoundException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String],"pi":[{"n":"message","pt":$n[0].String,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[0].String,$n[0].Exception],"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"innerException","pt":$n[0].Exception,"ps":1}],"sn":"ctor"}]}; });
+    $m($n[10].FormattableStringFactory, function () { return {"att":1048961,"a":2,"s":true,"m":[{"a":2,"n":"Create","is":true,"t":8,"pi":[{"n":"format","pt":$n[0].String,"ps":0},{"n":"args","ip":true,"pt":$n[0].Array.type(System.Object),"ps":1}],"sn":"create","rt":$n[0].FormattableString,"p":[$n[0].String,$n[0].Array.type(System.Object)]}]}; });
+    $m(Bridge.Console, function () { return {"att":1048577,"a":2,"m":[{"a":1,"n":".ctor","t":1,"sn":"ctor"},{"a":1,"n":"BuildConsoleMessage","t":8,"pi":[{"n":"message","pt":$n[0].String,"ps":0},{"n":"messageType","pt":Bridge.Console.MessageType,"ps":1}],"sn":"buildConsoleMessage","rt":Bridge.Console.Element,"p":[$n[0].String,Bridge.Console.MessageType]},{"a":2,"n":"Clear","is":true,"t":8,"sn":"clear","rt":$n[0].Void},{"a":2,"n":"Close","t":8,"sn":"close","rt":$n[0].Void},{"a":2,"n":"Debug","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"debug","rt":$n[0].Void,"p":[$n[0].String]},{"a":2,"n":"Error","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].String,"ps":0}],"sn":"error","rt":$n[0].Void,"p":[$n[0].String]},{"a":2,"n":"Hide","is":true,"t":8,"sn":"hide","rt":$n[0].Void},{"a":2,"n":"HideTooltip","t":8,"sn":"hideTooltip","rt":$n[0].Void},{"a":1,"n":"Init","t":8,"pi":[{"n":"reinit","dv":false,"o":true,"pt":$n[0].Boolean,"ps":0}],"sn":"init","rt":$n[0].Void,"p":[$n[0].Boolean]},{"a":2,"n":"InitConsoleFunctions","is":true,"t":8,"sn":"initConsoleFunctions","rt":$n[0].Void},{"a":2,"n":"Log","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Object,"ps":0},{"n":"newLine","dv":true,"o":true,"pt":$n[0].Boolean,"ps":1}],"sn":"log","rt":$n[0].Void,"p":[$n[0].Object,$n[0].Boolean]},{"a":1,"n":"LogBase","is":true,"t":8,"pi":[{"n":"value","pt":$n[0].Object,"ps":0},{"n":"newLine","dv":true,"o":true,"pt":$n[0].Boolean,"ps":1},{"n":"messageType","dv":0,"o":true,"pt":Bridge.Console.MessageType,"ps":2}],"sn":"logBase","rt":$n[0].Void,"p":[$n[0].Object,$n[0].Boolean,Bridge.Console.MessageType]},{"a":1,"n":"Obj2Css","t":8,"pi":[{"n":"obj","pt":$n[3].Dictionary$2(System.String,System.String),"ps":0}],"sn":"obj2Css","rt":$n[0].String,"p":[$n[3].Dictionary$2(System.String,System.String)]},{"a":1,"n":"SetAttributes","t":8,"pi":[{"n":"el","pt":Bridge.Console.Element,"ps":0},{"n":"attrs","pt":$n[3].Dictionary$2(System.String,System.String),"ps":1}],"sn":"setAttributes","rt":$n[0].Void,"p":[Bridge.Console.Element,$n[3].Dictionary$2(System.String,System.String)]},{"a":2,"n":"Show","is":true,"t":8,"sn":"show","rt":$n[0].Void},{"a":2,"n":"ShowTooltip","t":8,"sn":"showTooltip","rt":$n[0].Void},{"a":2,"n":"Toggle","is":true,"t":8,"sn":"toggle","rt":$n[0].Void},{"a":1,"n":"UnwrapBodyContent","t":8,"sn":"unwrapBodyContent","rt":$n[0].Void},{"a":1,"n":"WrapBodyContent","t":8,"sn":"wrapBodyContent","rt":$n[0].Void},{"a":2,"n":"Instance","is":true,"t":16,"rt":Bridge.Console,"g":{"a":2,"n":"get_Instance","t":8,"rt":Bridge.Console,"fg":"instance","is":true},"fn":"instance"},{"a":1,"n":"BODY_WRAPPER_ID","is":true,"t":4,"rt":$n[0].String,"sn":"BODY_WRAPPER_ID"},{"a":1,"n":"BridgeConsoleLabel","t":4,"rt":Bridge.Console.Element,"sn":"bridgeConsoleLabel"},{"a":1,"n":"BridgeIcon","t":4,"rt":Bridge.Console.Element,"sn":"bridgeIcon"},{"a":1,"n":"BridgeIconPath","t":4,"rt":Bridge.Console.Element,"sn":"bridgeIconPath"},{"a":2,"n":"BufferedOutput","t":4,"rt":$n[0].String,"sn":"bufferedOutput"},{"a":1,"n":"CONSOLE_MESSAGES_ID","is":true,"t":4,"rt":$n[0].String,"sn":"CONSOLE_MESSAGES_ID"},{"a":1,"n":"CloseBtn","t":4,"rt":Bridge.Console.Element,"sn":"closeBtn"},{"a":1,"n":"CloseIcon","t":4,"rt":Bridge.Console.Element,"sn":"closeIcon"},{"a":1,"n":"CloseIconPath","t":4,"rt":Bridge.Console.Element,"sn":"closeIconPath"},{"a":1,"n":"ConsoleBody","t":4,"rt":Bridge.Console.Element,"sn":"consoleBody"},{"a":1,"n":"ConsoleHeader","t":4,"rt":Bridge.Console.Element,"sn":"consoleHeader"},{"a":1,"n":"ConsoleMessages","t":4,"rt":Bridge.Console.Element,"sn":"consoleMessages"},{"a":1,"n":"ConsoleWrap","t":4,"rt":Bridge.Console.Element,"sn":"consoleWrap"},{"a":2,"n":"CurrentMessageElement","t":4,"rt":$n[0].Object,"sn":"currentMessageElement"},{"a":1,"n":"Hidden","t":4,"rt":$n[0].Boolean,"sn":"hidden"},{"a":1,"n":"IsNewLine","t":4,"rt":$n[0].Boolean,"sn":"isNewLine"},{"a":1,"n":"Position","is":true,"t":4,"rt":$n[0].String,"sn":"position"},{"a":1,"n":"Tooltip","t":4,"rt":Bridge.Console.Element,"sn":"tooltip"},{"a":1,"n":"consoleHeaderHeight","t":4,"rt":$n[0].String,"sn":"consoleHeaderHeight"},{"a":1,"n":"consoleHeight","t":4,"rt":$n[0].String,"sn":"consoleHeight"},{"a":1,"n":"instance","is":true,"t":4,"rt":Bridge.Console,"sn":"instance$1"},{"a":1,"n":"svgNS","t":4,"rt":$n[0].String,"sn":"svgNS"}]}; });
+    $m($n[11].SystemAssemblyVersion, function () { return {"att":1048576,"a":4,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Version","is":true,"t":8,"sn":"version","rt":$n[0].Void}]}; });
+
+/*
+ * @version   : 1.0.0 - A Bridge.NET implementation of Newtonsoft.Json
+ * @author    : Object.NET, Inc. http://www.bridge.net/
+ * @date      : 2017-08-01
+ * @copyright : Copyright (c) 2008-2017, Object.NET, Inc. (http://www.object.net/). All rights reserved.
+ * @license   : See license.txt and https://github.com/bridgedotnet/Bridge.NET/blob/master/LICENSE.
+ */
+
+
+// @source @AssemblyBegin.js
+
+Bridge.assembly("Newtonsoft.Json", function ($asm, globals) {
+    "use strict";
+
+// @source @generated.js
+
+    Bridge.define("Newtonsoft.Json.Formatting", {
+        $kind: "enum",
+        statics: {
+            fields: {
+                None: 0,
+                Indented: 1
+            }
+        }
+    });
+
+    Bridge.define("Newtonsoft.Json.JsonConstructorAttribute", {
+        inherits: [System.Attribute]
+    });
+
+    Bridge.define("Newtonsoft.Json.JsonException", {
+        inherits: [System.Exception],
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                System.Exception.ctor.call(this);
+            },
+            $ctor1: function (message) {
+                this.$initialize();
+                System.Exception.ctor.call(this, message);
+            },
+            $ctor2: function (message, innerException) {
+                this.$initialize();
+                System.Exception.ctor.call(this, message, innerException);
+            }
+        }
+    });
+
+    Bridge.define("Newtonsoft.Json.JsonSerializerSettings", {
+        statics: {
+            fields: {
+                DefaultNullValueHandling: 0,
+                DefaultTypeNameHandling: 0
+            },
+            ctors: {
+                init: function () {
+                    this.DefaultNullValueHandling = Newtonsoft.Json.NullValueHandling.Include;
+                    this.DefaultTypeNameHandling = Newtonsoft.Json.TypeNameHandling.None;
+                }
+            }
+        },
+        fields: {
+            _typeNameHandling: null,
+            _nullValueHandling: null
+        },
+        props: {
+            NullValueHandling: {
+                get: function () {
+                    var $t;
+                    return ($t = this._nullValueHandling, $t != null ? $t : Newtonsoft.Json.JsonSerializerSettings.DefaultNullValueHandling);
+                },
+                set: function (value) {
+                    this._nullValueHandling = value;
+                }
+            },
+            TypeNameHandling: {
+                get: function () {
+                    var $t;
+                    return ($t = this._typeNameHandling, $t != null ? $t : Newtonsoft.Json.JsonSerializerSettings.DefaultTypeNameHandling);
+                },
+                set: function (value) {
+                    this._typeNameHandling = value;
+                }
+            },
+            ContractResolver: null
+        }
+    });
+
+    Bridge.define("Newtonsoft.Json.NullValueHandling", {
+        $kind: "enum",
+        statics: {
+            fields: {
+                Include: 0,
+                Ignore: 1
+            }
+        }
+    });
+
+    Bridge.define("Newtonsoft.Json.Serialization.IContractResolver", {
+        $kind: "interface"
+    });
+
+    Bridge.define("Newtonsoft.Json.TypeNameHandling", {
+        $kind: "enum",
+        statics: {
+            fields: {
+                None: 0,
+                Objects: 1
+            }
+        },
+        $flags: true
+    });
+
+    Bridge.define("Newtonsoft.Json.JsonSerializationException", {
+        inherits: [Newtonsoft.Json.JsonException],
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                Newtonsoft.Json.JsonException.ctor.call(this);
+            },
+            $ctor1: function (message) {
+                this.$initialize();
+                Newtonsoft.Json.JsonException.$ctor1.call(this, message);
+            },
+            $ctor2: function (message, innerException) {
+                this.$initialize();
+                Newtonsoft.Json.JsonException.$ctor2.call(this, message, innerException);
+            }
+        }
+    });
+
+    Bridge.define("Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver", {
+        inherits: [Newtonsoft.Json.Serialization.IContractResolver]
+    });
+
+
+// @source @JsonConvert.js
+
+    Bridge.define("Newtonsoft.Json.JsonConvert", {
+        statics: {
+            methods: {
+                stringify: function (value, formatting) {
+                    if (formatting === Newtonsoft.Json.Formatting.Indented) {
+                        return JSON.stringify(value, null, "  ");
+                    }
+
+                    return JSON.stringify(value);
+                },
+
+                getEnumerableElementType: function (type) {
+                    var interfaceType;
+                    if (System.String.startsWith(type.$$name, "System.Collections.Generic.IEnumerable")) {
+                        interfaceType = type;
+                    } else {
+                        var interfaces = Bridge.Reflection.getInterfaces(type);
+
+                        for (var j = 0; j < interfaces.length; j++) {
+                            if (System.String.startsWith(interfaces[j].$$name, "System.Collections.Generic.IEnumerable")) {
+                                interfaceType = interfaces[j];
+                                break;
+                            }
+                        }
+                    }
+
+                    return interfaceType ? Bridge.Reflection.getGenericArguments(interfaceType)[0] : null;
+                },
+
+                validateReflectable: function (type) {
+                    do {
+                        var ignoreMetaData = type === System.Object || type === Object || type.$literal || type.$kind === "anonymous",
+                            nometa = !Bridge.getMetadata(type);
+
+                        if (!ignoreMetaData && nometa) {
+                            if (Bridge.$jsonGuard) {
+                                delete Bridge.$jsonGuard;
+                            }
+
+                            throw new System.InvalidOperationException(Bridge.getTypeName(type) + " is not reflectable and cannot be serialized.");
+                        }
+                        type = ignoreMetaData ? null : Bridge.Reflection.getBaseType(type);
+                    } while (!ignoreMetaData && type != null)
+                },
+
+                defaultGuard: function () {
+                    Bridge.$jsonGuard && Bridge.$jsonGuard.pop();
+                },
+
+                getValue: function(obj, name) {
+                    name = name.toLowerCase();
+                    for (var key in obj) {
+                        if (key.toLowerCase() == name) {
+                            return obj[key];
+                        }
+                    }
+                },
+
+                SerializeObject: function (obj, formatting, settings, returnRaw, possibleType) {
+                    if (Bridge.is(formatting, Newtonsoft.Json.JsonSerializerSettings)) {
+                        settings = formatting;
+                        formatting = 0;
+                    }
+
+                    if (obj == null) {
+                        if (settings && settings.NullValueHandling === Newtonsoft.Json.NullValueHandling.Ignore) {
+                            return;
+                        }
+
+                        return returnRaw ? null : this.stringify(null, formatting);
+                    }
+
+                    var objType = Bridge.getType(obj);
+
+                    if (possibleType && objType) {
+                        if (possibleType.$kind === "interface" || Bridge.Reflection.isAssignableFrom(possibleType, objType)) {
+                            possibleType = null;
+                        }
+                    }
+
+                    /*if (possibleType && Bridge.Reflection.isEnum(possibleType)) {
+                        return System.Enum.toString(possibleType, obj);
+                    }*/
+
+                    if (possibleType && possibleType === System.Char) {
+                        return String.fromCharCode(obj);
+                    }
+
+                    if (typeof obj === "function") {
+                        var name = Bridge.getTypeName(obj);
+                        return returnRaw ? name : this.stringify(name, formatting);
+                    } else if (typeof obj === "object") {
+                        var type = possibleType || objType,
+                            arr,
+                            i;
+
+                        var removeGuard = Newtonsoft.Json.JsonConvert.defaultGuard;
+                        if (!Bridge.$jsonGuard) {
+                            Bridge.$jsonGuard = [];
+                            removeGuard = function () {
+                                delete Bridge.$jsonGuard;
+                            };
+                        }
+
+                        if (Bridge.$jsonGuard.indexOf(obj) > -1) {
+                            return;
+                        }
+
+                        if (type !== System.Guid &&
+                            type !== System.Int64 &&
+                            type !== System.UInt64 &&
+                            type !== System.Decimal &&
+                            type !== System.DateTime &&
+                            type !== System.Char &&
+                            !Bridge.Reflection.isEnum(type)) {
+                            Bridge.$jsonGuard.push(obj);
+                        } else {
+                            removeGuard();
+                        }
+
+                        if (obj && obj.$boxed) {
+                            obj = Bridge.unbox(obj, true);
+                        }
+
+                        if (type === System.Guid) {
+                            return returnRaw ? obj.toString() : this.stringify(obj.toString(), formatting);
+                        } else if (type === System.Int64) {
+                            return obj.toJSON();
+                        } else if (type === System.UInt64) {
+                            return obj.toJSON();
+                        } else if (type === System.Decimal) {
+                            return obj.toJSON();
+                        } else if (type === System.DateTime) {
+                            var d = System.DateTime.format(obj, "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFFK");
+                            return returnRaw ? d : this.stringify(d, formatting);
+                        } else if (Bridge.isArray(null, type)) {
+                            if (type.$elementType === System.Byte) {
+                                removeGuard();
+                                var json = System.Convert.toBase64String(obj);
+                                return returnRaw ? json : this.stringify(json, formatting);
+                            }
+
+                            arr = [];
+
+                            for (i = 0; i < obj.length; i++) {
+                                arr.push(Newtonsoft.Json.JsonConvert.SerializeObject(obj[i], formatting, settings, true, type.$elementType));
+                            }
+
+                            obj = arr;
+                        } else if (Bridge.Reflection.isEnum(type)) {
+                            var name = System.Enum.toString(type, obj);
+                            return returnRaw ? name : this.stringify(name, formatting);
+                        } else if (type === System.Char) {
+                            return returnRaw ? String.fromCharCode(obj) : this.stringify(String.fromCharCode(obj), formatting);
+                        } else if (Bridge.Reflection.isAssignableFrom(System.Collections.IDictionary, type)) {
+                            var typesGeneric = System.Collections.Generic.Dictionary$2.getTypeParameters(type),
+                                typeKey = typesGeneric[0],
+                                typeValue = typesGeneric[1];
+
+                            var dict = {},
+                                enm = Bridge.getEnumerator(obj);
+
+                            while (enm.moveNext()) {
+                                var entr = enm.Current;
+                                dict[Newtonsoft.Json.JsonConvert.SerializeObject(entr.key, formatting, settings, true, typeKey)] = Newtonsoft.Json.JsonConvert.SerializeObject(entr.value, formatting, settings, true, typeValue);
+                            }
+
+                            obj = dict;
+                        } else if (Bridge.Reflection.isAssignableFrom(System.Collections.IEnumerable, type)) {
+                            var typeElement = Newtonsoft.Json.JsonConvert.getEnumerableElementType(type),
+                                enumerator = Bridge.getEnumerator(obj, typeElement);
+
+                            arr = [];
+
+                            while (enumerator.moveNext()) {
+                                var item = enumerator.Current;
+                                arr.push(Newtonsoft.Json.JsonConvert.SerializeObject(item, formatting, settings, true, typeElement));
+                            }
+
+                            obj = arr;
+                        } else {
+                            var raw = {},
+                                nometa = !Bridge.getMetadata(type);
+
+                            Newtonsoft.Json.JsonConvert.validateReflectable(type);
+
+                            if (settings && settings.TypeNameHandling) {
+                                raw["$type"] = Bridge.Reflection.getTypeQName(type);
+                            }
+
+                            if (nometa) {
+                                if (obj.toJSON) {
+                                    raw = obj.toJSON();
+                                } else {
+                                    for (var key in obj) {
+                                        if (obj.hasOwnProperty(key)) {
+                                            raw[key] = Newtonsoft.Json.JsonConvert.SerializeObject(obj[key], formatting, settings, true);
+                                        }
+                                    }
+                                }
+                            } else {
+                                var fields = Bridge.Reflection.getMembers(type, 4, 20),
+                                    camelCase = settings && Bridge.is(settings.ContractResolver, Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver);
+
+                                for (i = 0; i < fields.length; i++) {
+                                    var f = fields[i],
+                                        fname = camelCase ? (f.n.charAt(0).toLowerCase() + f.n.substr(1)) : f.n;
+                                    raw[fname] = Newtonsoft.Json.JsonConvert.SerializeObject(Bridge.Reflection.fieldAccess(f, obj), formatting, settings, true, f.rt);
+                                }
+
+                                var properties = Bridge.Reflection.getMembers(type, 16, 20);
+
+                                for (i = 0; i < properties.length; i++) {
+                                    var p = properties[i];
+                                    if (!!p.g) {
+                                        var pname = camelCase ? (p.n.charAt(0).toLowerCase() + p.n.substr(1)) : p.n;
+                                        raw[pname] = Newtonsoft.Json.JsonConvert.SerializeObject(Bridge.Reflection.midel(p.g, obj)(), formatting, settings, true, p.rt);
+                                    }
+                                }
+                            }
+
+                            obj = raw;
+                        }
+
+                        removeGuard();
+                    }
+
+                    return returnRaw ? obj : this.stringify(obj, formatting);
+                },
+
+                createInstance: function (type, raw, settings) {
+                    var rawIsArray = Bridge.isArray(raw),
+                        isEnumerable = rawIsArray && Bridge.Reflection.isAssignableFrom(System.Collections.IEnumerable, type),
+                        isObject = typeof raw === "object" && !rawIsArray;
+                    if (isEnumerable || isObject) {
+                        var ctors = Bridge.Reflection.getMembers(type, 1, 28),
+                            hasDefault = false,
+                            jsonCtor = null;
+
+                        if (ctors.length > 0) {
+                            for (var idx = 0; idx < ctors.length; idx++) {
+                                var c = ctors[idx],
+                                    hasAttribute = System.Attribute.getCustomAttributes(c, Newtonsoft.Json.JsonConstructorAttribute).length > 0,
+                                    isDefault = (c.pi || []).length === 0;
+
+                                if (isDefault) {
+                                    hasDefault = true;
+                                }
+
+                                if (hasAttribute) {
+                                    if (jsonCtor != null) {
+                                        throw new Newtonsoft.Json.JsonException("Multiple constructors with the JsonConstructorAttribute.");
+                                    }
+
+                                    jsonCtor = c;
+                                }
+                            }
+                        }
+
+                        if (!hasDefault && ctors.length > 0) {
+                            if (ctors.length > 1 && jsonCtor == null) {
+                                throw new Newtonsoft.Json.JsonSerializationException("Unable to find a constructor to use for type " + Bridge.getTypeName(type) + ". A class should either have a default constructor or one constructor with arguments.");
+                            }
+
+                            if (jsonCtor == null) {
+                                jsonCtor = ctors[0];
+                            }
+
+                            var params = jsonCtor.pi || [],
+                                args = [];
+
+                            if (isEnumerable) {
+                                if (Bridge.Reflection.isAssignableFrom(System.Collections.IEnumerable, params[0].pt)) {
+                                    var arr = [],
+                                        elementType = Bridge.Reflection.getGenericArguments(params[0].pt)[0] ||
+                                                      Bridge.Reflection.getGenericArguments(type)[0] ||
+                                                      System.Object;
+                                    for (var i = 0; i < raw.length; i++) {
+                                        arr[i] = Newtonsoft.Json.JsonConvert.DeserializeObject(raw[i], elementType, settings, true);
+                                    }
+                                    args.push(arr);
+                                    settings.$list = true;
+                                }
+                            } else {
+                                var theKeys = Object.getOwnPropertyNames(raw).toString();
+                                for (var i = 0; i < params.length; i++) {
+                                    var name = params[i].sn || params[i].n,
+                                        match = new RegExp(name, 'i').exec(theKeys);
+
+                                    name = match && match.length > 0 ? match[0] : null;
+
+                                    if (name) {
+                                        args[i] = Newtonsoft.Json.JsonConvert.DeserializeObject(raw[name], params[i].pt, settings, true);
+                                    } else {
+                                        args[i] = Bridge.getDefaultValue(params[i].pt);
+                                    }
+                                }
+                            }
+
+                            return Bridge.Reflection.invokeCI(jsonCtor, args);
+                        }
+                    }
+
+                    return Bridge.createInstance(type);
+                },
+
+                DeserializeObject: function (raw, type, settings, field) {
+                    settings = settings || {};
+                    if (type.$kind === "interface") {
+                        if (type === System.Collections.IList) {
+                            type = System.Collections.Generic.List$1(System.Object);
+                        } else if (Bridge.Reflection.isGenericType(type) && Bridge.Reflection.isAssignableFrom(System.Collections.Generic.IList$1, Bridge.Reflection.getGenericTypeDefinition(type))) {
+                            type = System.Collections.Generic.List$1(System.Collections.Generic.List$1.getElementType(type) || System.Object);
+                        } else if (System.Collections.IDictionary === type) {
+                            type = System.Collections.Generic.Dictionary$2(System.Object, System.Object);
+                        } else if (Bridge.Reflection.isGenericType(type) && Bridge.Reflection.isAssignableFrom(System.Collections.Generic.IDictionary$2, Bridge.Reflection.getGenericTypeDefinition(type))) {
+                            var tPrms = System.Collections.Generic.Dictionary$2.getTypeParameters(type);
+                            type = System.Collections.Generic.Dictionary$2(tPrms[0] || System.Object, tPrms[1] || System.Object);
+                        }
+                    }
+
+                    if (!field && typeof raw === "string") {
+                        var obj,
+                            invalidJson = false;
+                        try {
+                            obj = JSON.parse(raw);
+                        } catch (e) {
+                            invalidJson = true;
+                        }
+
+                        if (!invalidJson && (typeof obj === "object" || Bridge.isArray(obj) || type === System.Array.type(System.Byte, 1) || type === Function || type === System.Guid || type === System.DateTime || type === System.Char || Bridge.Reflection.isEnum(type))) {
+                            raw = obj;
+                        }
+                    }
+
+                    var isObject = type === Object || type === System.Object;
+                    if (isObject || type.$literal) {
+                        return Bridge.merge(isObject ? {} : Bridge.createInstance(type), raw);
+                    }
+
+                    var def = Bridge.getDefaultValue(type);
+
+                    if (type.$nullable) {
+                        type = type.$nullableType;
+                    }
+
+                    if (raw === null) {
+                        return def;
+                    } else if (raw === false) {
+                        if (type === System.String) {
+                            return "false";
+                        }
+                        return def;
+                    } else if (raw === true) {
+                        if (type === System.Boolean) {
+                            return true;
+                        } else if (type === System.Int64) {
+                            return System.Int64(1);
+                        } else if (type === System.UInt64) {
+                            return System.UInt64(1);
+                        } else if (type === System.Decimal) {
+                            return System.Decimal(1.0);
+                        } else if (type === String.String) {
+                            return "true";
+                        } else if (type === System.DateTime) {
+                            return System.DateTime.create$2(1, 0);
+                        } else if (Bridge.Reflection.isEnum(type)) {
+                            return Bridge.unbox(System.Enum.parse(type, 1));
+                        } else {
+                            if (typeof def === "number") {
+                                return def + 1;
+                            }
+
+                            return null;
+                        }
+                    } else if (typeof raw === "number") {
+                        if (type === System.Boolean) {
+                            return raw !== 0;
+                        } else if (Bridge.Reflection.isEnum(type)) {
+                            return Bridge.unbox(System.Enum.parse(type, raw));
+                        } else if (type === System.SByte) {
+                            return raw | 0;
+                        } else if (type === System.Byte) {
+                            return raw >>> 0;
+                        } else if (type === System.Int16) {
+                            return raw | 0;
+                        } else if (type === System.UInt16) {
+                            return raw >>> 0;
+                        } else if (type === System.Int32) {
+                            return raw | 0;
+                        } else if (type === System.UInt32) {
+                            return raw >>> 0;
+                        } else if (type === System.Int64) {
+                            return System.Int64(raw);
+                        } else if (type === System.UInt64) {
+                            return System.UInt64(raw);
+                        } else if (type === System.Single) {
+                            return raw;
+                        } else if (type === System.Double) {
+                            return raw;
+                        } else if (type === System.Decimal) {
+                            return System.Decimal(raw);
+                        } else if (type === System.Char) {
+                            return raw | 0;
+                        } else if (type === System.String) {
+                            return raw.toString();
+                        } else if (type === System.DateTime) {
+                            return System.DateTime.create$2(raw | 0, 0);
+                        } else {
+                            return null;
+                        }
+                    } else if (typeof raw === "string") {
+                        if (type === Function) {
+                            return Bridge.Reflection.getType(raw);
+                        } else if (type === System.Guid) {
+                            return System.Guid.parse(raw);
+                        } else if (type === System.Boolean) {
+                            return raw !== "";
+                        } else if (type === System.SByte) {
+                            return raw | 0;
+                        } else if (type === System.Byte) {
+                            return raw >>> 0;
+                        } else if (type === System.Int16) {
+                            return raw | 0;
+                        } else if (type === System.UInt16) {
+                            return raw >>> 0;
+                        } else if (type === System.Int32) {
+                            return raw | 0;
+                        } else if (type === System.UInt32) {
+                            return raw >>> 0;
+                        } else if (type === System.Int64) {
+                            return System.Int64(raw);
+                        } else if (type === System.UInt64) {
+                            return System.UInt64(raw);
+                        } else if (type === System.Single) {
+                            return parseFloat(raw);
+                        } else if (type === System.Double) {
+                            return parseFloat(raw);
+                        } else if (type === System.Decimal) {
+                            try {
+                                return System.Decimal(raw);
+                            } catch (ex) {
+                                return System.Decimal(0);
+                            }
+                        } else if (type === System.Char) {
+                            if (raw.length === 0) {
+                                return 0;
+                            }
+
+                            return raw.charCodeAt(0);
+                        } else if (type === System.String) {
+                            return field ? raw : JSON.parse(raw);
+                        } else if (type === System.DateTime) {
+                            var isUtc = System.String.endsWith(raw, "Z");
+                            var format = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.FFFFFFF" + (isUtc ? "'Z'" : "K");
+
+                            var d = System.DateTime.parseExact(raw, format, null, true, true);
+
+                            d = d != null ? d : System.DateTime.parse(raw, undefined, true);
+
+                            if (isUtc && d.kind !== 1) {
+                                d = System.DateTime.specifyKind(d, 1);
+                            }
+
+                            return d;
+                        } else if (Bridge.Reflection.isEnum(type)) {
+                            return Bridge.unbox(System.Enum.parse(type, raw));
+                        } else if (type === System.Array.type(System.Byte, 1)) {
+                            return System.Convert.fromBase64String(raw);
+                        } else {
+                            return null;
+                        }
+                    } else if (typeof raw === "object") {
+                        if (def !== null && type.$kind !== "struct") {
+                            return def;
+                        } else if (Bridge.isArray(null, type)) {
+                            if (raw.length === undefined) {
+                                return [];
+                            }
+
+                            var arr = new Array();
+                            System.Array.type(type.$elementType, type.$rank || 1, arr);
+
+                            for (var i = 0; i < raw.length; i++) {
+                                arr[i] = Newtonsoft.Json.JsonConvert.DeserializeObject(raw[i], type.$elementType, settings, true);
+                            }
+
+                            return arr;
+                        } else if (Bridge.Reflection.isAssignableFrom(System.Collections.IList, type)) {
+                            var typeElement = System.Collections.Generic.List$1.getElementType(type) || System.Object;
+                            var list = Newtonsoft.Json.JsonConvert.createInstance(type, raw, settings);
+
+                            if (settings.$list) {
+                                return list;
+                            }
+
+                            if (raw.length === undefined) {
+                                return list;
+                            }
+
+                            for (var i = 0; i < raw.length; i++) {
+                                list.add(Newtonsoft.Json.JsonConvert.DeserializeObject(raw[i], typeElement, settings, true));
+                            }
+
+                            return list;
+                        } else if (Bridge.Reflection.isAssignableFrom(System.Collections.IDictionary, type)) {
+                            var typesGeneric = System.Collections.Generic.Dictionary$2.getTypeParameters(type),
+                                typeKey = typesGeneric[0] || System.Object,
+                                typeValue = typesGeneric[1] || System.Object;
+
+                            var dictionary = Newtonsoft.Json.JsonConvert.createInstance(type, raw, settings);
+
+                            if (settings.$list) {
+                                return dictionary;
+                            }
+
+                            for (var each in raw) {
+                                if (raw.hasOwnProperty(each)) {
+                                    dictionary.add(Newtonsoft.Json.JsonConvert.DeserializeObject(each, typeKey, settings, true), Newtonsoft.Json.JsonConvert.DeserializeObject(raw[each], typeValue, settings, true));
+                                }
+                            }
+
+                            return dictionary;
+                        } else {
+                            var typeName = raw["$type"];
+
+                            if (settings && settings.TypeNameHandling > 0 && typeName != null) {
+                                var parts = typeName.split(",");
+
+                                if (parts.length > 1) {
+                                    var lastEl = parts.pop();
+
+                                    if (lastEl.indexOf("]") < 0) {
+                                        typeName = parts.join(",");
+                                    }
+                                }
+
+                                type = Bridge.Reflection.getType(typeName);
+                            }
+
+                            if (type === null) {
+                                throw TypeError(System.String.concat("Cannot find type: ", raw["$type"]));
+                            }
+
+                            var o = Newtonsoft.Json.JsonConvert.createInstance(type, raw, settings);;
+
+                            var camelCase = settings && Bridge.is(settings.ContractResolver, Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver),
+                                fields = Bridge.Reflection.getMembers(type, 4, 20),
+                                value,
+                                f,
+                                p,
+                                mname,
+                                i;
+
+                            for (i = 0; i < fields.length; i++) {
+                                f = fields[i];
+                                mname = camelCase ? (f.n.charAt(0).toLowerCase() + f.n.substr(1)) : f.n;
+                                value = raw[mname];
+
+                                if (value === undefined) {
+                                    value = Newtonsoft.Json.JsonConvert.getValue(raw, mname);
+                                }
+
+                                if (value !== undefined) {
+                                    Bridge.Reflection.fieldAccess(f,o, Newtonsoft.Json.JsonConvert.DeserializeObject(value, f.rt, settings, true));
+                                }
+                            }
+
+                            var properties = Bridge.Reflection.getMembers(type, 16, 20);
+
+                            for (i = 0; i < properties.length; i++) {
+                                p = properties[i];
+                                mname = camelCase ? (p.n.charAt(0).toLowerCase() + p.n.substr(1)) : p.n;
+                                value = raw[mname];
+
+                                if (value === undefined) {
+                                    value = Newtonsoft.Json.JsonConvert.getValue(raw, mname);
+                                }
+
+                                if (value !== undefined) {
+                                    if (!!p.s) {
+                                        Bridge.Reflection.midel(p.s, o)(Newtonsoft.Json.JsonConvert.DeserializeObject(value, p.rt, settings, true));
+                                    }
+                                    else if (type.$kind === "anonymous") {
+                                        o[p.n] = Newtonsoft.Json.JsonConvert.DeserializeObject(value, p.rt, settings, true);
+                                    }
+                                }
+                            }
+
+                            return o;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+// @source @AssemblyEnd.js
+
+});
+/**
+ * @version 1.0.0.0
+ * @copyright Copyright ©  2016
+ * @compiler Bridge.NET 16.0.1
+ */
+Bridge.assembly("SIL.Machine", function ($asm, globals) {
+    "use strict";
+
+    Bridge.define("SIL.Machine.Annotations.SpanFactory$1", function (TOffset) { return {
+        props: {
+            empty: null,
+            includeEndpoint: false,
+            comparer: null,
+            equalityComparer: null
+        },
+        ctors: {
+            init: function () {
+                this.empty = new (SIL.Machine.Annotations.Span$1(TOffset))();
+            },
+            ctor: function () {
+                SIL.Machine.Annotations.SpanFactory$1(TOffset).$ctor1.call(this, false);
+            },
+            $ctor1: function (includeEndpoint) {
+                SIL.Machine.Annotations.SpanFactory$1(TOffset).$ctor2.call(this, includeEndpoint, new (System.Collections.Generic.Comparer$1(TOffset))(System.Collections.Generic.Comparer$1.$default.fn), System.Collections.Generic.EqualityComparer$1(TOffset).def);
+            },
+            $ctor2: function (includeEndpoint, comparer, equalityComparer) {
+                this.$initialize();
+                this.includeEndpoint = includeEndpoint;
+                this.comparer = comparer;
+                this.equalityComparer = equalityComparer;
+            }
+        },
+        methods: {
+            isValidSpan: function (start, end) {
+                return this.isValidSpan$1(start, end, SIL.Machine.DataStructures.Direction.leftToRight);
+            },
+            isValidSpan$1: function (start, end, dir) {
+                if (dir === SIL.Machine.DataStructures.Direction.rightToLeft) {
+                    var temp = start;
+                    start = end;
+                    end = temp;
+                }
+
+                var compare = this.comparer[Bridge.geti(this.comparer, "System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare", "System$Collections$Generic$IComparer$1$compare")](start, end);
+                return this.includeEndpoint ? compare <= 0 : compare < 0;
+            },
+            create$1: function (start, end) {
+                return this.create$2(start, end, SIL.Machine.DataStructures.Direction.leftToRight);
+            },
+            create$2: function (start, end, dir) {
+                if (dir === SIL.Machine.DataStructures.Direction.rightToLeft) {
+                    var temp = start;
+                    start = end;
+                    end = temp;
+                }
+
+                if (!this.isValidSpan(start, end)) {
+                    throw new System.ArgumentException("The start offset is greater than the end offset.", "start");
+                }
+
+                return new (SIL.Machine.Annotations.Span$1(TOffset)).$ctor2(this, start, end);
+            },
+            create: function (offset) {
+                return this.create$3(offset, SIL.Machine.DataStructures.Direction.leftToRight);
+            },
+            create$3: function (offset, dir) {
+                return this.create$2(offset, offset, dir);
+            }
+        }
+    }; });
+
+    Bridge.define("SIL.Machine.Annotations.Span$1", function (TOffset) { return {
+        inherits: function () { return [System.IComparable$1(SIL.Machine.Annotations.Span$1(TOffset)),System.IComparable,System.IEquatable$1(SIL.Machine.Annotations.Span$1(TOffset))]; },
+        $kind: "struct",
+        statics: {
+            methods: {
+                op_Equality: function (x, y) {
+                    return x.equalsT(y);
+                },
+                op_Inequality: function (x, y) {
+                    return !(SIL.Machine.Annotations.Span$1(TOffset).op_Equality(x, y));
+                },
+                getDefaultValue: function () { return new (SIL.Machine.Annotations.Span$1(TOffset))(); }
+            }
+        },
+        props: {
+            spanFactory: null,
+            isEmpty: {
+                get: function () {
+                    return SIL.Machine.Annotations.Span$1(TOffset).op_Equality(this.spanFactory.empty, this);
+                }
+            },
+            start: Bridge.getDefaultValue(TOffset),
+            end: Bridge.getDefaultValue(TOffset),
+            length: {
+                get: function () {
+                    return this.spanFactory.calcLength(this.start, this.end);
+                }
+            }
+        },
+        alias: [
+            "compareTo", ["System$IComparable$1$SIL$Machine$Annotations$Span$1$" + Bridge.getTypeAlias(TOffset) + "$compareTo", "System$IComparable$1$compareTo"],
+            "compareTo$1", "System$IComparable$compareTo",
+            "equalsT", "System$IEquatable$1$SIL$Machine$Annotations$Span$1$" + Bridge.getTypeAlias(TOffset) + "$equalsT"
+        ],
+        ctors: {
+            $ctor2: function (spanFactory, start, end) {
+                this.$initialize();
+                this.spanFactory = spanFactory;
+                this.start = start;
+                this.end = end;
+            },
+            $ctor1: function (span) {
+                SIL.Machine.Annotations.Span$1(TOffset).$ctor2.call(this, span.spanFactory, span.start, span.end);
+            },
+            ctor: function () {
+                this.$initialize();
+            }
+        },
+        methods: {
+            getStart: function (dir) {
+                return dir === SIL.Machine.DataStructures.Direction.leftToRight ? this.start : this.end;
+            },
+            getEnd: function (dir) {
+                return dir === SIL.Machine.DataStructures.Direction.leftToRight ? this.end : this.start;
+            },
+            overlaps$2: function (other) {
+                if (this.isEmpty) {
+                    return other.isEmpty;
+                }
+                if (other.isEmpty) {
+                    return false;
+                }
+
+                if (this.spanFactory.includeEndpoint) {
+                    return this.spanFactory.comparer[Bridge.geti(this.spanFactory.comparer, "System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare", "System$Collections$Generic$IComparer$1$compare")](this.start, other.end) <= 0 && this.spanFactory.comparer[Bridge.geti(this.spanFactory.comparer, "System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare", "System$Collections$Generic$IComparer$1$compare")](this.end, other.start) >= 0;
+                }
+
+                return this.spanFactory.comparer[Bridge.geti(this.spanFactory.comparer, "System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare", "System$Collections$Generic$IComparer$1$compare")](this.start, other.end) < 0 && this.spanFactory.comparer[Bridge.geti(this.spanFactory.comparer, "System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare", "System$Collections$Generic$IComparer$1$compare")](this.end, other.start) > 0;
+            },
+            overlaps: function (start, end) {
+                return this.overlaps$1(start, end, SIL.Machine.DataStructures.Direction.leftToRight);
+            },
+            overlaps$1: function (start, end, dir) {
+                return this.overlaps$2(this.spanFactory.create$2(start, end, dir));
+            },
+            contains$4: function (other) {
+                if (this.isEmpty) {
+                    return other.isEmpty;
+                }
+                if (other.isEmpty) {
+                    return false;
+                }
+
+                return this.spanFactory.comparer[Bridge.geti(this.spanFactory.comparer, "System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare", "System$Collections$Generic$IComparer$1$compare")](this.start, other.start) <= 0 && this.spanFactory.comparer[Bridge.geti(this.spanFactory.comparer, "System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare", "System$Collections$Generic$IComparer$1$compare")](this.end, other.end) >= 0;
+            },
+            contains: function (offset) {
+                return this.contains$3(offset, SIL.Machine.DataStructures.Direction.leftToRight);
+            },
+            contains$3: function (offset, dir) {
+                return this.contains$4(this.spanFactory.create$3(offset, dir));
+            },
+            contains$1: function (start, end) {
+                return this.contains$2(start, end, SIL.Machine.DataStructures.Direction.leftToRight);
+            },
+            contains$2: function (start, end, dir) {
+                return this.contains$4(this.spanFactory.create$2(start, end, dir));
+            },
+            compareTo: function (other) {
+                if (this.isEmpty) {
+                    return other.isEmpty ? 0 : -1;
+                }
+                if (other.isEmpty) {
+                    return 1;
+                }
+
+                var res = this.spanFactory.comparer[Bridge.geti(this.spanFactory.comparer, "System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare", "System$Collections$Generic$IComparer$1$compare")](this.start, other.start);
+                if (res === 0) {
+                    res = (-this.spanFactory.comparer[Bridge.geti(this.spanFactory.comparer, "System$Collections$Generic$IComparer$1$" + Bridge.getTypeAlias(TOffset) + "$compare", "System$Collections$Generic$IComparer$1$compare")](this.end, other.end)) | 0;
+                }
+                return res;
+            },
+            compareTo$1: function (other) {
+                if (!(Bridge.is(other, SIL.Machine.Annotations.Span$1(TOffset)))) {
+                    throw new System.ArgumentException();
+                }
+                return this.compareTo(System.Nullable.getValue(Bridge.cast(Bridge.unbox(other), SIL.Machine.Annotations.Span$1(TOffset))));
+            },
+            getHashCode: function () {
+                var code = 23;
+                code = (Bridge.Int.mul(code, 31) + (this.start == null ? 0 : this.spanFactory.equalityComparer[Bridge.geti(this.spanFactory.equalityComparer, "System$Collections$Generic$IEqualityComparer$1$" + Bridge.getTypeAlias(TOffset) + "$getHashCode2", "System$Collections$Generic$IEqualityComparer$1$getHashCode2")](this.start))) | 0;
+                code = (Bridge.Int.mul(code, 31) + (this.end == null ? 0 : this.spanFactory.equalityComparer[Bridge.geti(this.spanFactory.equalityComparer, "System$Collections$Generic$IEqualityComparer$1$" + Bridge.getTypeAlias(TOffset) + "$getHashCode2", "System$Collections$Generic$IEqualityComparer$1$getHashCode2")](this.end))) | 0;
+                return code;
+            },
+            equals: function (obj) {
+                return Bridge.is(obj, SIL.Machine.Annotations.Span$1(TOffset)) && this.equalsT(System.Nullable.getValue(Bridge.cast(Bridge.unbox(obj), SIL.Machine.Annotations.Span$1(TOffset))));
+            },
+            equalsT: function (other) {
+                return this.spanFactory.equalityComparer[Bridge.geti(this.spanFactory.equalityComparer, "System$Collections$Generic$IEqualityComparer$1$" + Bridge.getTypeAlias(TOffset) + "$equals2", "System$Collections$Generic$IEqualityComparer$1$equals2")](this.start, other.start) && this.spanFactory.equalityComparer[Bridge.geti(this.spanFactory.equalityComparer, "System$Collections$Generic$IEqualityComparer$1$" + Bridge.getTypeAlias(TOffset) + "$equals2", "System$Collections$Generic$IEqualityComparer$1$equals2")](this.end, other.end);
+            },
+            toString: function () {
+                return System.String.format("[{0}, {1}]", this.start, this.end);
+            },
+            $clone: function (to) { return this; }
+        }
+    }; });
+
+    Bridge.define("SIL.Machine.DataStructures.Direction", {
+        $kind: "enum",
+        statics: {
+            fields: {
+                leftToRight: 0,
+                rightToLeft: 1
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Tokenization.DetokenizeOperation", {
+        $kind: "enum",
+        statics: {
+            fields: {
+                noOperation: 0,
+                mergeLeft: 1,
+                mergeRight: 2,
+                mergeRightFirstLeftSecond: 3
+            }
+        }
+    });
+
+    Bridge.definei("SIL.Machine.Tokenization.IDetokenizer$2", function (TData, TToken) { return {
+        $kind: "interface",
+        $variance: [1,2]
+    }; });
+
+    Bridge.definei("SIL.Machine.Tokenization.ITokenizer$2", function (TData, TOffset) { return {
+        $kind: "interface",
+        $variance: [2,0]
+    }; });
+
+    Bridge.define("SIL.Machine.Tokenization.TokenizationExtensions", {
+        statics: {
+            methods: {
+                tokenizeToStrings: function (tokenizer, str) {
+                    return System.Linq.Enumerable.from(tokenizer[Bridge.geti(tokenizer, "SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize", "SIL$Machine$Tokenization$ITokenizer$2$tokenize")](str)).select(function (span) {
+                            return str.substr(span.start, span.length);
+                        });
+                }
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.AlignmentType", {
+        $kind: "enum",
+        statics: {
+            fields: {
+                unknown: -1,
+                notAligned: 0,
+                aligned: 1
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.EcmScoreInfo", {
+        props: {
+            scores: null,
+            operations: null
+        },
+        ctors: {
+            init: function () {
+                this.scores = new (System.Collections.Generic.List$1(System.Double))();
+                this.operations = new (System.Collections.Generic.List$1(SIL.Machine.Translation.EditOperation))();
+            }
+        },
+        methods: {
+            updatePositions: function (prevEsi, positions) {
+                while (System.Array.getCount(this.scores, System.Double) < System.Array.getCount(prevEsi.scores, System.Double)) {
+                    System.Array.add(this.scores, 0, System.Double);
+                }
+
+                while (System.Array.getCount(this.operations, SIL.Machine.Translation.EditOperation) < System.Array.getCount(prevEsi.operations, SIL.Machine.Translation.EditOperation)) {
+                    System.Array.add(this.operations, 0, SIL.Machine.Translation.EditOperation);
+                }
+
+                for (var i = 0; i < System.Array.getCount(positions, System.Int32); i = (i + 1) | 0) {
+                    System.Array.setItem(this.scores, System.Array.getItem(positions, i, System.Int32), System.Array.getItem(prevEsi.scores, System.Array.getItem(positions, i, System.Int32), System.Double), System.Double);
+                    if (System.Array.getCount(prevEsi.operations, SIL.Machine.Translation.EditOperation) > i) {
+                        System.Array.setItem(this.operations, System.Array.getItem(positions, i, System.Int32), System.Array.getItem(prevEsi.operations, System.Array.getItem(positions, i, System.Int32), SIL.Machine.Translation.EditOperation), SIL.Machine.Translation.EditOperation);
+                    }
+                }
+            },
+            removeLast: function () {
+                if (System.Array.getCount(this.scores, System.Double) > 1) {
+                    System.Array.removeAt(this.scores, ((System.Array.getCount(this.scores, System.Double) - 1) | 0), System.Double);
+                }
+                if (System.Array.getCount(this.operations, SIL.Machine.Translation.EditOperation) > 1) {
+                    System.Array.removeAt(this.operations, ((System.Array.getCount(this.operations, SIL.Machine.Translation.EditOperation) - 1) | 0), SIL.Machine.Translation.EditOperation);
+                }
+            },
+            getLastInsPrefixWordFromEsi: function () {
+                var results = System.Array.init(System.Array.getCount(this.operations, SIL.Machine.Translation.EditOperation), 0, System.Int32);
+
+                for (var j = (System.Array.getCount(this.operations, SIL.Machine.Translation.EditOperation) - 1) | 0; j >= 0; j = (j - 1) | 0) {
+                    switch (System.Array.getItem(this.operations, j, SIL.Machine.Translation.EditOperation)) {
+                        case SIL.Machine.Translation.EditOperation.hit: 
+                            results[System.Array.index(j, results)] = (j - 1) | 0;
+                            break;
+                        case SIL.Machine.Translation.EditOperation.insert: 
+                            var tj = j;
+                            while (tj >= 0 && System.Array.getItem(this.operations, tj, SIL.Machine.Translation.EditOperation) === SIL.Machine.Translation.EditOperation.insert) {
+                                tj = (tj - 1) | 0;
+                            }
+                            if (System.Array.getItem(this.operations, tj, SIL.Machine.Translation.EditOperation) === SIL.Machine.Translation.EditOperation.hit || System.Array.getItem(this.operations, tj, SIL.Machine.Translation.EditOperation) === SIL.Machine.Translation.EditOperation.substitute) {
+                                tj = (tj - 1) | 0;
+                            }
+                            results[System.Array.index(j, results)] = tj;
+                            break;
+                        case SIL.Machine.Translation.EditOperation.delete: 
+                            results[System.Array.index(j, results)] = j;
+                            break;
+                        case SIL.Machine.Translation.EditOperation.substitute: 
+                            results[System.Array.index(j, results)] = (j - 1) | 0;
+                            break;
+                        case SIL.Machine.Translation.EditOperation.none: 
+                            results[System.Array.index(j, results)] = 0;
+                            break;
+                    }
+                }
+
+                return results;
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.EditDistance$2", function (TSeq, TItem) { return {
+        props: {
+            hitCost: 0,
+            insertionCost: 0,
+            substitutionCost: 0,
+            deletionCost: 0
+        },
+        methods: {
+            compute: function (x, y) {
+                return this.compute$3(x, y, true, false);
+            },
+            compute$1: function (x, y, ops) {
+                return this.compute$4(x, y, true, false, ops);
+            },
+            compute$3: function (x, y, isLastItemComplete, usePrefixDelOp) {
+                var distMatrix = { };
+                return this.compute$2(x, y, isLastItemComplete, usePrefixDelOp, distMatrix);
+            },
+            compute$4: function (x, y, isLastItemComplete, usePrefixDelOp, ops) {
+                var distMatrix = { };
+                var dist = this.compute$2(x, y, isLastItemComplete, usePrefixDelOp, distMatrix);
+                ops.v = System.Linq.Enumerable.from(this.getOperations(x, y, distMatrix.v, isLastItemComplete, usePrefixDelOp, this.getCount(x), this.getCount(y))).toArray();
+                return dist;
+            },
+            compute$2: function (x, y, isLastItemComplete, usePrefixDelOp, distMatrix) {
+                distMatrix.v = this.initDistMatrix(x, y);
+
+                var xCount = this.getCount(x);
+                var yCount = this.getCount(y);
+                for (var i = 0; i <= xCount; i = (i + 1) | 0) {
+                    for (var j = 0; j <= yCount; j = (j + 1) | 0) {
+                        var iPred = { }, jPred = { };
+                        var op = { v : new SIL.Machine.Translation.EditOperation() };
+                        distMatrix.v.set([i, j], this.processMatrixCell(x, y, distMatrix.v, usePrefixDelOp, j !== yCount || isLastItemComplete, i, j, iPred, jPred, op));
+                    }
+                }
+
+                return distMatrix.v.get([xCount, yCount]);
+            },
+            computePrefix: function (x, y, isLastItemComplete, usePrefixDelOp, ops) {
+                return this.compute$4(x, y, isLastItemComplete, usePrefixDelOp, ops);
+            },
+            initDistMatrix: function (x, y) {
+                var xCount = this.getCount(x);
+                var yCount = this.getCount(y);
+                var dim = Math.max(xCount, yCount);
+                var distMatrix = System.Array.create(0, null, System.Double, ((dim + 1) | 0), ((dim + 1) | 0));
+                return distMatrix;
+            },
+            getOperations: function (x, y, distMatrix, isLastItemComplete, usePrefixDelOp, i, j) {
+                i = {v:i};
+                j = {v:j};
+                var yCount = this.getCount(y);
+                var ops = new (System.Collections.Generic.Stack$1(SIL.Machine.Translation.EditOperation)).ctor();
+                while (i.v > 0 || j.v > 0) {
+                    var op = { v : new SIL.Machine.Translation.EditOperation() };
+                    this.processMatrixCell(x, y, distMatrix, usePrefixDelOp, j.v !== yCount || isLastItemComplete, i.v, j.v, i, j, op);
+                    if (op.v !== SIL.Machine.Translation.EditOperation.prefixDelete) {
+                        ops.push(op.v);
+                    }
+                }
+                return ops;
+            },
+            processMatrixCell: function (x, y, distMatrix, usePrefixDelOp, isComplete, i, j, iPred, jPred, op) {
+                if (i !== 0 && j !== 0) {
+                    var xItem = this.getItem(x, ((i - 1) | 0));
+                    var yItem = this.getItem(y, ((j - 1) | 0));
+                    var substCost;
+                    if (this.isHit(xItem, yItem, isComplete)) {
+                        substCost = this.getHitCost(xItem, yItem, isComplete);
+                        op.v = SIL.Machine.Translation.EditOperation.hit;
+                    } else {
+                        substCost = this.getSubstitutionCost(xItem, yItem, isComplete);
+                        op.v = SIL.Machine.Translation.EditOperation.substitute;
+                    }
+
+                    var cost = distMatrix.get([((i - 1) | 0), ((j - 1) | 0)]) + substCost;
+                    var min = cost;
+                    iPred.v = (i - 1) | 0;
+                    jPred.v = (j - 1) | 0;
+
+                    var delCost = usePrefixDelOp && j === this.getCount(y) ? 0 : this.getDeletionCost(xItem);
+                    cost = distMatrix.get([((i - 1) | 0), j]) + delCost;
+                    if (cost < min) {
+                        min = cost;
+                        iPred.v = (i - 1) | 0;
+                        jPred.v = j;
+                        op.v = delCost === 0 ? SIL.Machine.Translation.EditOperation.prefixDelete : SIL.Machine.Translation.EditOperation.delete;
+                    }
+
+                    cost = distMatrix.get([i, ((j - 1) | 0)]) + this.getInsertionCost(yItem);
+                    if (cost < min) {
+                        min = cost;
+                        iPred.v = i;
+                        jPred.v = (j - 1) | 0;
+                        op.v = SIL.Machine.Translation.EditOperation.insert;
+                    }
+
+                    return min;
+                }
+
+                if (i === 0 && j === 0) {
+                    iPred.v = 0;
+                    jPred.v = 0;
+                    op.v = SIL.Machine.Translation.EditOperation.none;
+                    return 0;
+                }
+
+                if (i === 0) {
+                    iPred.v = 0;
+                    jPred.v = (j - 1) | 0;
+                    op.v = SIL.Machine.Translation.EditOperation.insert;
+                    return distMatrix.get([0, ((j - 1) | 0)]) + this.getInsertionCost(this.getItem(y, ((j - 1) | 0)));
+                }
+
+                iPred.v = (i - 1) | 0;
+                jPred.v = 0;
+                op.v = SIL.Machine.Translation.EditOperation.delete;
+                return distMatrix.get([((i - 1) | 0), 0]) + this.getDeletionCost(this.getItem(x, ((i - 1) | 0)));
+            }
+        }
+    }; });
+
+    Bridge.define("SIL.Machine.Translation.EditOperation", {
+        $kind: "enum",
+        statics: {
+            fields: {
+                none: 0,
+                hit: 1,
+                insert: 2,
+                delete: 3,
+                prefixDelete: 4,
+                substitute: 5
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.ErrorCorrectionModel", {
+        fields: {
+            _segmentEditDistance: null
+        },
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                this._segmentEditDistance = new SIL.Machine.Translation.SegmentEditDistance();
+                this.setErrorModelParameters(128, 0.8, 1, 1, 1);
+            }
+        },
+        methods: {
+            setErrorModelParameters: function (vocSize, hitProb, insFactor, substFactor, delFactor) {
+                var e;
+                if (vocSize === 0) {
+                    e = (1 - hitProb) / (insFactor + substFactor + delFactor);
+                } else {
+                    e = (1 - hitProb) / ((insFactor * vocSize) + (substFactor * (((vocSize - 1) | 0))) + delFactor);
+                }
+
+                var insProb = e * insFactor;
+                var substProb = e * substFactor;
+                var delProb = e * delFactor;
+
+                this._segmentEditDistance.hitCost = -Bridge.Math.log(hitProb);
+                this._segmentEditDistance.insertionCost = -Bridge.Math.log(insProb);
+                this._segmentEditDistance.substitutionCost = -Bridge.Math.log(substProb);
+                this._segmentEditDistance.deletionCost = -Bridge.Math.log(delProb);
+            },
+            setupInitialEsi: function (initialEsi) {
+                var score = this._segmentEditDistance.compute(System.Array.init(0, null, System.String), System.Array.init(0, null, System.String));
+                System.Array.clear(initialEsi.scores, System.Double);
+                System.Array.add(initialEsi.scores, score, System.Double);
+                System.Array.clear(initialEsi.operations, SIL.Machine.Translation.EditOperation);
+            },
+            setupEsi: function (esi, prevEsi, word) {
+                var score = this._segmentEditDistance.compute(System.Array.init([word], System.String), System.Array.init(0, null, System.String));
+                System.Array.clear(esi.scores, System.Double);
+                System.Array.add(esi.scores, System.Array.getItem(prevEsi.scores, 0, System.Double) + score, System.Double);
+                System.Array.clear(esi.operations, SIL.Machine.Translation.EditOperation);
+                System.Array.add(esi.operations, SIL.Machine.Translation.EditOperation.none, SIL.Machine.Translation.EditOperation);
+            },
+            extendInitialEsi: function (initialEsi, prevInitialEsi, prefixDiff) {
+                this._segmentEditDistance.incrComputePrefixFirstRow(initialEsi.scores, prevInitialEsi.scores, prefixDiff);
+            },
+            extendEsi: function (esi, prevEsi, word, prefixDiff, isLastWordComplete) {
+                var $t;
+                var ops = this._segmentEditDistance.incrComputePrefix(esi.scores, prevEsi.scores, word, prefixDiff, isLastWordComplete);
+                $t = Bridge.getEnumerator(ops, SIL.Machine.Translation.EditOperation);
+                try {
+                    while ($t.moveNext()) {
+                        var op = $t.Current;
+                        System.Array.add(esi.operations, op, SIL.Machine.Translation.EditOperation);
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }},
+            correctPrefix: function (correction, uncorrectedPrefixLen, prefix, isLastWordComplete) {
+                var $t;
+                if (uncorrectedPrefixLen === 0) {
+                    $t = Bridge.getEnumerator(prefix, System.String);
+                    try {
+                        while ($t.moveNext()) {
+                            var w = $t.Current;
+                            System.Array.add(correction.target, w, System.String);
+                            System.Array.add(correction.targetConfidences, -1, System.Double);
+                        }
+                    } finally {
+                        if (Bridge.is($t, System.IDisposable)) {
+                            $t.System$IDisposable$dispose();
+                        }
+                    }return System.Array.getCount(prefix, System.String);
+                }
+
+                var wordOps = { }, charOps = { };
+                this._segmentEditDistance.computePrefix$1(System.Linq.Enumerable.from(correction.target).take(uncorrectedPrefixLen).toArray(System.String), prefix, isLastWordComplete, false, wordOps, charOps);
+                return this.correctPrefix$1(correction, wordOps.v, charOps.v, prefix, isLastWordComplete);
+            },
+            correctPrefix$1: function (correction, wordOps, charOps, prefix, isLastWordComplete) {
+                var $t;
+                var alignmentColsToCopy = new (System.Collections.Generic.List$1(System.Int32))();
+
+                var i = 0, j = 0, k = 0;
+                $t = Bridge.getEnumerator(wordOps, SIL.Machine.Translation.EditOperation);
+                try {
+                    while ($t.moveNext()) {
+                        var wordOp = $t.Current;
+                        switch (wordOp) {
+                            case SIL.Machine.Translation.EditOperation.insert: 
+                                System.Array.insert(correction.target, j, System.Array.getItem(prefix, j, System.String), System.String);
+                                System.Array.insert(correction.targetConfidences, j, -1, System.Double);
+                                alignmentColsToCopy.add(-1);
+                                for (var l = k; l < System.Array.getCount(correction.phrases, SIL.Machine.Translation.PhraseInfo); l = (l + 1) | 0) {
+                                    System.Array.getItem(correction.phrases, l, SIL.Machine.Translation.PhraseInfo).targetCut = (System.Array.getItem(correction.phrases, l, SIL.Machine.Translation.PhraseInfo).targetCut + 1) | 0;
+                                }
+                                j = (j + 1) | 0;
+                                break;
+                            case SIL.Machine.Translation.EditOperation.delete: 
+                                System.Array.removeAt(correction.target, j, System.String);
+                                System.Array.removeAt(correction.targetConfidences, j, System.Double);
+                                i = (i + 1) | 0;
+                                if (k < System.Array.getCount(correction.phrases, SIL.Machine.Translation.PhraseInfo)) {
+                                    for (var l1 = k; l1 < System.Array.getCount(correction.phrases, SIL.Machine.Translation.PhraseInfo); l1 = (l1 + 1) | 0) {
+                                        System.Array.getItem(correction.phrases, l1, SIL.Machine.Translation.PhraseInfo).targetCut = (System.Array.getItem(correction.phrases, l1, SIL.Machine.Translation.PhraseInfo).targetCut - 1) | 0;
+                                    }
+
+                                    if (System.Array.getItem(correction.phrases, k, SIL.Machine.Translation.PhraseInfo).targetCut < 0 || (k > 0 && System.Array.getItem(correction.phrases, k, SIL.Machine.Translation.PhraseInfo).targetCut === System.Array.getItem(correction.phrases, ((k - 1) | 0), SIL.Machine.Translation.PhraseInfo).targetCut)) {
+                                        System.Array.removeAt(correction.phrases, k, SIL.Machine.Translation.PhraseInfo);
+                                        alignmentColsToCopy.clear();
+                                        i = 0;
+                                    } else if (j > System.Array.getItem(correction.phrases, k, SIL.Machine.Translation.PhraseInfo).targetCut) {
+                                        this.resizeAlignment(correction, k, alignmentColsToCopy);
+                                        alignmentColsToCopy.clear();
+                                        i = 0;
+                                        k = (k + 1) | 0;
+                                    }
+                                }
+                                break;
+                            case SIL.Machine.Translation.EditOperation.hit: 
+                            case SIL.Machine.Translation.EditOperation.substitute: 
+                                if (wordOp === SIL.Machine.Translation.EditOperation.substitute || j < ((System.Array.getCount(prefix, System.String) - 1) | 0) || isLastWordComplete) {
+                                    System.Array.setItem(correction.target, j, System.Array.getItem(prefix, j, System.String), System.String);
+                                } else {
+                                    System.Array.setItem(correction.target, j, this.correctWord(charOps, System.Array.getItem(correction.target, j, System.String), System.Array.getItem(prefix, j, System.String)), System.String);
+                                }
+                                if (wordOp === SIL.Machine.Translation.EditOperation.substitute) {
+                                    System.Array.setItem(correction.targetConfidences, j, -1, System.Double);
+                                } else {
+                                    if (wordOp === SIL.Machine.Translation.EditOperation.hit) {
+                                        correction.targetUncorrectedPrefixWords.System$Collections$Generic$ISet$1$System$Int32$add(j);
+                                    }
+                                }
+                                alignmentColsToCopy.add(i);
+                                i = (i + 1) | 0;
+                                j = (j + 1) | 0;
+                                if (k < System.Array.getCount(correction.phrases, SIL.Machine.Translation.PhraseInfo) && j > System.Array.getItem(correction.phrases, k, SIL.Machine.Translation.PhraseInfo).targetCut) {
+                                    this.resizeAlignment(correction, k, alignmentColsToCopy);
+                                    alignmentColsToCopy.clear();
+                                    i = 0;
+                                    k = (k + 1) | 0;
+                                }
+                                break;
+                        }
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }
+                while (j < System.Array.getCount(correction.target, System.String)) {
+                    alignmentColsToCopy.add(i);
+
+                    i = (i + 1) | 0;
+                    j = (j + 1) | 0;
+                    if (k < System.Array.getCount(correction.phrases, SIL.Machine.Translation.PhraseInfo) && j > System.Array.getItem(correction.phrases, k, SIL.Machine.Translation.PhraseInfo).targetCut) {
+                        this.resizeAlignment(correction, k, alignmentColsToCopy);
+                        alignmentColsToCopy.clear();
+                        break;
+                    }
+                }
+
+                return alignmentColsToCopy.Count;
+            },
+            resizeAlignment: function (correction, phraseIndex, colsToCopy) {
+                var curAlignment = System.Array.getItem(correction.phrases, phraseIndex, SIL.Machine.Translation.PhraseInfo).alignment;
+                if (colsToCopy.Count === curAlignment.columnCount) {
+                    return;
+                }
+
+                var newAlignment = new SIL.Machine.Translation.WordAlignmentMatrix.$ctor1(curAlignment.rowCount, colsToCopy.Count);
+                for (var j = 0; j < newAlignment.columnCount; j = (j + 1) | 0) {
+                    if (colsToCopy.getItem(j) !== -1) {
+                        for (var i = 0; i < newAlignment.rowCount; i = (i + 1) | 0) {
+                            newAlignment.setitem(i, j, curAlignment.getitem(i, colsToCopy.getItem(j)));
+                        }
+                    }
+                }
+
+                System.Array.getItem(correction.phrases, phraseIndex, SIL.Machine.Translation.PhraseInfo).alignment = newAlignment;
+            },
+            correctWord: function (charOps, word, prefix) {
+                var $t;
+                var sb = new System.Text.StringBuilder();
+                var i = 0, j = 0;
+                $t = Bridge.getEnumerator(charOps, SIL.Machine.Translation.EditOperation);
+                try {
+                    while ($t.moveNext()) {
+                        var charOp = $t.Current;
+                        switch (charOp) {
+                            case SIL.Machine.Translation.EditOperation.hit: 
+                                sb.append(String.fromCharCode(word.charCodeAt(i)));
+                                i = (i + 1) | 0;
+                                j = (j + 1) | 0;
+                                break;
+                            case SIL.Machine.Translation.EditOperation.insert: 
+                                sb.append(String.fromCharCode(prefix.charCodeAt(j)));
+                                j = (j + 1) | 0;
+                                break;
+                            case SIL.Machine.Translation.EditOperation.delete: 
+                                i = (i + 1) | 0;
+                                break;
+                            case SIL.Machine.Translation.EditOperation.substitute: 
+                                sb.append(String.fromCharCode(prefix.charCodeAt(j)));
+                                i = (i + 1) | 0;
+                                j = (j + 1) | 0;
+                                break;
+                        }
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }
+                sb.append(word.substr(i));
+                return sb.toString();
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor", {
+        statics: {
+            methods: {
+                addToNBestList: function (T, nbestList, n, item) {
+                    var index = nbestList.binarySearch(item);
+                    if (index < 0) {
+                        index = ~index;
+                    } else {
+                        index = (index + 1) | 0;
+                    }
+                    if (nbestList.Count < n) {
+                        nbestList.insert(index, item);
+                    } else if (index < nbestList.Count) {
+                        nbestList.insert(index, item);
+                        nbestList.removeAt(((nbestList.Count - 1) | 0));
+                    }
+                }
+            }
+        },
+        fields: {
+            _wordGraph: null,
+            _restScores: null,
+            _ecm: null,
+            _stateEcmScoreInfos: null,
+            _arcEcmScoreInfos: null,
+            _stateBestScores: null,
+            _stateWordGraphScores: null,
+            _stateBestPrevArcs: null,
+            _statesInvolvedInArcs: null,
+            _prevPrefix: null,
+            _prevIsLastWordComplete: false
+        },
+        props: {
+            ecmWeight: 0,
+            wordGraphWeight: 0
+        },
+        ctors: {
+            ctor: function (ecm, wordGraph, ecmWeight, wordGraphWeight) {
+                if (ecmWeight === void 0) { ecmWeight = 1.0; }
+                if (wordGraphWeight === void 0) { wordGraphWeight = 1.0; }
+
+                this.$initialize();
+                this._ecm = ecm;
+                this._wordGraph = wordGraph;
+                this.ecmWeight = ecmWeight;
+                this.wordGraphWeight = wordGraphWeight;
+
+                this._restScores = System.Linq.Enumerable.from(this._wordGraph.computeRestScores()).toArray();
+                this._stateEcmScoreInfos = new (System.Collections.Generic.List$1(SIL.Machine.Translation.EcmScoreInfo))();
+                this._arcEcmScoreInfos = new (System.Collections.Generic.List$1(System.Collections.Generic.List$1(SIL.Machine.Translation.EcmScoreInfo)))();
+                this._stateBestScores = new (System.Collections.Generic.List$1(System.Collections.Generic.List$1(System.Double)))();
+                this._stateWordGraphScores = new (System.Collections.Generic.List$1(System.Double))();
+                this._stateBestPrevArcs = new (System.Collections.Generic.List$1(System.Collections.Generic.List$1(System.Int32)))();
+                this._statesInvolvedInArcs = new (System.Collections.Generic.HashSet$1(System.Int32)).ctor();
+                this._prevPrefix = System.Array.init(0, null, System.String);
+
+                this.initStates();
+                this.initArcs();
+            }
+        },
+        methods: {
+            initStates: function () {
+                for (var i = 0; i < this._wordGraph.stateCount; i = (i + 1) | 0) {
+                    this._stateEcmScoreInfos.add(new SIL.Machine.Translation.EcmScoreInfo());
+                    this._stateWordGraphScores.add(0);
+                    this._stateBestScores.add(new (System.Collections.Generic.List$1(System.Double))());
+                    this._stateBestPrevArcs.add(new (System.Collections.Generic.List$1(System.Int32))());
+                }
+
+                if (!this._wordGraph.isEmpty) {
+                    this._ecm.setupInitialEsi(this._stateEcmScoreInfos.getItem(SIL.Machine.Translation.WordGraph.initialState));
+                    this.updateInitialStateBestScores();
+                }
+            },
+            initArcs: function () {
+                var $t;
+                for (var arcIndex = 0; arcIndex < System.Array.getCount(this._wordGraph.arcs, SIL.Machine.Translation.WordGraphArc); arcIndex = (arcIndex + 1) | 0) {
+                    var arc = System.Array.getItem(this._wordGraph.arcs, arcIndex, SIL.Machine.Translation.WordGraphArc);
+
+                    // init ecm score info for each word of arc
+                    var prevEsi = this._stateEcmScoreInfos.getItem(arc.prevState);
+                    var esis = new (System.Collections.Generic.List$1(SIL.Machine.Translation.EcmScoreInfo))();
+                    $t = Bridge.getEnumerator(arc.words, System.String);
+                    try {
+                        while ($t.moveNext()) {
+                            var word = $t.Current;
+                            var esi = new SIL.Machine.Translation.EcmScoreInfo();
+                            this._ecm.setupEsi(esi, prevEsi, word);
+                            esis.add(esi);
+                            prevEsi = esi;
+                        }
+                    } finally {
+                        if (Bridge.is($t, System.IDisposable)) {
+                            $t.System$IDisposable$dispose();
+                        }
+                    }this._arcEcmScoreInfos.add(esis);
+
+                    // init best scores for the arc's successive state
+                    this.updateStateBestScores(arcIndex, 0);
+
+                    this._statesInvolvedInArcs.add(arc.prevState);
+                    this._statesInvolvedInArcs.add(arc.nextState);
+                }
+            },
+            updateInitialStateBestScores: function () {
+                var $t;
+                var esi = this._stateEcmScoreInfos.getItem(SIL.Machine.Translation.WordGraph.initialState);
+
+                this._stateWordGraphScores.setItem(SIL.Machine.Translation.WordGraph.initialState, this._wordGraph.initialStateScore);
+
+                var bestScores = this._stateBestScores.getItem(SIL.Machine.Translation.WordGraph.initialState);
+                var bestPrevArcs = this._stateBestPrevArcs.getItem(SIL.Machine.Translation.WordGraph.initialState);
+
+                bestScores.clear();
+                bestPrevArcs.clear();
+
+                $t = Bridge.getEnumerator(esi.scores, System.Double);
+                try {
+                    while ($t.moveNext()) {
+                        var score = $t.Current;
+                        bestScores.add((this.ecmWeight * -score) + (this.wordGraphWeight * this._wordGraph.initialStateScore));
+                        bestPrevArcs.add(2147483647);
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }},
+            updateStateBestScores: function (arcIndex, prefixDiffSize) {
+                var arc = System.Array.getItem(this._wordGraph.arcs, arcIndex, SIL.Machine.Translation.WordGraphArc);
+                var arcEsis = this._arcEcmScoreInfos.getItem(arcIndex);
+
+                var prevEsi = arcEsis.Count === 0 ? this._stateEcmScoreInfos.getItem(arc.prevState) : arcEsis.getItem(((arcEsis.Count - 1) | 0));
+
+                var wordGraphScore = this._stateWordGraphScores.getItem(arc.prevState) + arc.score;
+
+                var nextStateBestScores = this._stateBestScores.getItem(arc.nextState);
+                var nextStateBestPrevArcs = this._stateBestPrevArcs.getItem(arc.nextState);
+
+                var positions = new (System.Collections.Generic.List$1(System.Int32))();
+                var startPos = prefixDiffSize === 0 ? 0 : ((System.Array.getCount(prevEsi.scores, System.Double) - prefixDiffSize) | 0);
+                for (var i = startPos; i < System.Array.getCount(prevEsi.scores, System.Double); i = (i + 1) | 0) {
+                    var newScore = (this.ecmWeight * -System.Array.getItem(prevEsi.scores, i, System.Double)) + (this.wordGraphWeight * wordGraphScore);
+
+                    if (i === nextStateBestScores.Count || nextStateBestScores.getItem(i) < newScore) {
+                        this.addOrReplace(System.Double, nextStateBestScores, i, newScore);
+                        positions.add(i);
+                        this.addOrReplace(System.Int32, nextStateBestPrevArcs, i, arcIndex);
+                    }
+                }
+
+                this._stateEcmScoreInfos.getItem(arc.nextState).updatePositions(prevEsi, positions);
+
+                this._stateWordGraphScores.setItem(arc.nextState, wordGraphScore);
+            },
+            addOrReplace: function (T, list, index, item) {
+                if (index > list.Count) {
+                    throw new System.ArgumentOutOfRangeException("index");
+                }
+
+                if (index === list.Count) {
+                    list.add(item);
+                } else {
+                    list.setItem(index, item);
+                }
+            },
+            correct: function (prefix, isLastWordComplete, n) {
+                var $t, $t1, $t2;
+                // get valid portion of the processed prefix vector
+                var validProcPrefixCount = 0;
+                for (var i = 0; i < this._prevPrefix.length; i = (i + 1) | 0) {
+                    if (i >= System.Array.getCount(prefix, System.String)) {
+                        break;
+                    }
+
+                    if (i === ((this._prevPrefix.length - 1) | 0) && i === ((System.Array.getCount(prefix, System.String) - 1) | 0)) {
+                        if (Bridge.referenceEquals(this._prevPrefix[System.Array.index(i, this._prevPrefix)], System.Array.getItem(prefix, i, System.String)) && this._prevIsLastWordComplete === isLastWordComplete) {
+                            validProcPrefixCount = (validProcPrefixCount + 1) | 0;
+                        }
+                    } else if (Bridge.referenceEquals(this._prevPrefix[System.Array.index(i, this._prevPrefix)], System.Array.getItem(prefix, i, System.String))) {
+                        validProcPrefixCount = (validProcPrefixCount + 1) | 0;
+                    }
+                }
+
+                var diffSize = (this._prevPrefix.length - validProcPrefixCount) | 0;
+                if (diffSize > 0) {
+                    // adjust size of info for arcs
+                    $t = Bridge.getEnumerator(this._arcEcmScoreInfos);
+                    try {
+                        while ($t.moveNext()) {
+                            var esis = $t.Current;
+                            $t1 = Bridge.getEnumerator(esis);
+                            try {
+                                while ($t1.moveNext()) {
+                                    var esi = $t1.Current;
+                                    for (var i1 = 0; i1 < diffSize; i1 = (i1 + 1) | 0) {
+                                        esi.removeLast();
+                                    }
+                                }
+                            } finally {
+                                if (Bridge.is($t1, System.IDisposable)) {
+                                    $t1.System$IDisposable$dispose();
+                                }
+                            }
+                        }
+                    } finally {
+                        if (Bridge.is($t, System.IDisposable)) {
+                            $t.System$IDisposable$dispose();
+                        }
+                    }
+                    // adjust size of info for states
+                    $t2 = Bridge.getEnumerator(this._statesInvolvedInArcs);
+                    try {
+                        while ($t2.moveNext()) {
+                            var state = $t2.Current;
+                            for (var i2 = 0; i2 < diffSize; i2 = (i2 + 1) | 0) {
+                                this._stateEcmScoreInfos.getItem(state).removeLast();
+                                this._stateBestScores.getItem(state).removeAt(((this._stateBestScores.getItem(state).Count - 1) | 0));
+                                this._stateBestPrevArcs.getItem(state).removeAt(((this._stateBestPrevArcs.getItem(state).Count - 1) | 0));
+                            }
+                        }
+                    } finally {
+                        if (Bridge.is($t2, System.IDisposable)) {
+                            $t2.System$IDisposable$dispose();
+                        }
+                    }}
+
+                // get difference between prefix and valid portion of processed prefix
+                var prefixDiff = System.Array.init(((System.Array.getCount(prefix, System.String) - validProcPrefixCount) | 0), null, System.String);
+                for (var i3 = 0; i3 < prefixDiff.length; i3 = (i3 + 1) | 0) {
+                    prefixDiff[System.Array.index(i3, prefixDiff)] = System.Array.getItem(prefix, ((validProcPrefixCount + i3) | 0), System.String);
+                }
+
+                // process word-graph given prefix difference
+                this.processWordGraphForPrefixDiff(prefixDiff, isLastWordComplete);
+
+                var candidates = new (System.Collections.Generic.List$1(SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.Candidate))();
+                this.getNBestStateCandidates(candidates, n);
+                this.getNBestSubStateCandidates(candidates, n);
+
+                var nbestCorrections = System.Linq.Enumerable.from(candidates).select(Bridge.fn.bind(this, function (c) {
+                        return this.getCorrectionForCandidate(prefix, isLastWordComplete, c);
+                    })).toArray(SIL.Machine.Translation.TranslationInfo);
+
+                this._prevPrefix = System.Linq.Enumerable.from(prefix).toArray();
+                this._prevIsLastWordComplete = isLastWordComplete;
+
+                return nbestCorrections;
+            },
+            processWordGraphForPrefixDiff: function (prefixDiff, isLastWordComplete) {
+                if (System.Array.getCount(prefixDiff, System.String) === 0) {
+                    return;
+                }
+
+                if (!this._wordGraph.isEmpty) {
+                    var prevInitialEsi = this._stateEcmScoreInfos.getItem(SIL.Machine.Translation.WordGraph.initialState);
+                    this._ecm.extendInitialEsi(this._stateEcmScoreInfos.getItem(SIL.Machine.Translation.WordGraph.initialState), prevInitialEsi, prefixDiff);
+                    this.updateInitialStateBestScores();
+                }
+
+                for (var arcIndex = 0; arcIndex < System.Array.getCount(this._wordGraph.arcs, SIL.Machine.Translation.WordGraphArc); arcIndex = (arcIndex + 1) | 0) {
+                    var arc = System.Array.getItem(this._wordGraph.arcs, arcIndex, SIL.Machine.Translation.WordGraphArc);
+
+                    // update ecm score info for each word of arc
+                    var prevEsi = this._stateEcmScoreInfos.getItem(arc.prevState);
+                    var esis = this._arcEcmScoreInfos.getItem(arcIndex);
+                    while (esis.Count < System.Array.getCount(arc.words, System.String)) {
+                        esis.add(new SIL.Machine.Translation.EcmScoreInfo());
+                    }
+                    for (var i = 0; i < System.Array.getCount(arc.words, System.String); i = (i + 1) | 0) {
+                        var esi = esis.getItem(i);
+                        this._ecm.extendEsi(esi, prevEsi, arc.isUnknown ? "" : System.Array.getItem(arc.words, i, System.String), prefixDiff, isLastWordComplete);
+                        prevEsi = esi;
+                    }
+
+                    // update best scores for the arc's successive state
+                    this.updateStateBestScores(arcIndex, System.Array.getCount(prefixDiff, System.String));
+                }
+            },
+            getNBestStateCandidates: function (candidates, n) {
+                var $t;
+                $t = Bridge.getEnumerator(this._statesInvolvedInArcs);
+                try {
+                    while ($t.moveNext()) {
+                        var state = $t.Current;
+                        var restScore = this._restScores[System.Array.index(state, this._restScores)];
+                        var bestScores = this._stateBestScores.getItem(state);
+
+                        var score = bestScores.getItem(((bestScores.Count - 1) | 0)) + (this.wordGraphWeight * restScore);
+                        SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.addToNBestList(SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.Candidate, candidates, n, new SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.Candidate(score, state));
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }},
+            getNBestSubStateCandidates: function (candidates, n) {
+                for (var arcIndex = 0; arcIndex < System.Array.getCount(this._wordGraph.arcs, SIL.Machine.Translation.WordGraphArc); arcIndex = (arcIndex + 1) | 0) {
+                    var arc = System.Array.getItem(this._wordGraph.arcs, arcIndex, SIL.Machine.Translation.WordGraphArc);
+                    if (System.Array.getCount(arc.words, System.String) > 1) {
+                        var wordGraphScore = this._stateWordGraphScores.getItem(arc.prevState);
+
+                        for (var i = 0; i < ((System.Array.getCount(arc.words, System.String) - 1) | 0); i = (i + 1) | 0) {
+                            var esi = this._arcEcmScoreInfos.getItem(arcIndex).getItem(i);
+                            var score = (this.wordGraphWeight * wordGraphScore) + (this.ecmWeight * -System.Array.getItem(esi.scores, ((System.Array.getCount(esi.scores, System.Double) - 1) | 0), System.Double)) + (this.wordGraphWeight * this._restScores[System.Array.index(arc.prevState, this._restScores)]);
+                            SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.addToNBestList(SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.Candidate, candidates, n, new SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.Candidate(score, arc.nextState, arcIndex, i));
+                        }
+                    }
+                }
+            },
+            getCorrectionForCandidate: function (prefix, isLastWordComplete, candidate) {
+                var $t;
+                var correction = ($t = new SIL.Machine.Translation.TranslationInfo(), $t.score = candidate.score, $t);
+
+                var uncorrectedPrefixLen;
+                if (candidate.arcIndex === -1) {
+                    this.addBestUncorrectedPrefixState(correction, System.Array.getCount(prefix, System.String), candidate.state);
+                    uncorrectedPrefixLen = System.Array.getCount(correction.target, System.String);
+                } else {
+                    this.addBestUncorrectedPrefixSubState(correction, System.Array.getCount(prefix, System.String), candidate.arcIndex, candidate.arcWordIndex);
+                    var firstArc = System.Array.getItem(this._wordGraph.arcs, candidate.arcIndex, SIL.Machine.Translation.WordGraphArc);
+                    uncorrectedPrefixLen = (((((System.Array.getCount(correction.target, System.String) - System.Array.getCount(firstArc.words, System.String)) | 0) - candidate.arcWordIndex) | 0) + 1) | 0;
+                }
+
+                var alignmentColsToAddCount = this._ecm.correctPrefix(correction, uncorrectedPrefixLen, prefix, isLastWordComplete);
+
+                $t = Bridge.getEnumerator(System.Linq.Enumerable.from(this._wordGraph.getBestPathFromFinalStateToState(candidate.state)).reverse());
+                try {
+                    while ($t.moveNext()) {
+                        var arc = $t.Current;
+                        this.updateCorrectionFromArc(correction, arc, false, alignmentColsToAddCount);
+                        alignmentColsToAddCount = 0;
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }
+                return correction;
+            },
+            addBestUncorrectedPrefixState: function (correction, procPrefixPos, state) {
+                var $t;
+                var arcs = new (System.Collections.Generic.Stack$1(SIL.Machine.Translation.WordGraphArc)).ctor();
+
+                var curState = state;
+                var curProcPrefixPos = procPrefixPos;
+                while (curState !== 0) {
+                    var arcIndex = this._stateBestPrevArcs.getItem(curState).getItem(curProcPrefixPos);
+                    var arc = System.Array.getItem(this._wordGraph.arcs, arcIndex, SIL.Machine.Translation.WordGraphArc);
+
+                    for (var i = (System.Array.getCount(arc.words, System.String) - 1) | 0; i >= 0; i = (i - 1) | 0) {
+                        var predPrefixWords = this._arcEcmScoreInfos.getItem(arcIndex).getItem(i).getLastInsPrefixWordFromEsi();
+                        curProcPrefixPos = System.Array.getItem(predPrefixWords, curProcPrefixPos, System.Int32);
+                    }
+
+                    arcs.push(arc);
+
+                    curState = arc.prevState;
+                }
+
+                $t = Bridge.getEnumerator(arcs);
+                try {
+                    while ($t.moveNext()) {
+                        var arc1 = $t.Current;
+                        this.updateCorrectionFromArc(correction, arc1, true, 0);
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }},
+            addBestUncorrectedPrefixSubState: function (correction, procPrefixPos, arcIndex, arcWordIndex) {
+                var arc = System.Array.getItem(this._wordGraph.arcs, arcIndex, SIL.Machine.Translation.WordGraphArc);
+
+                var curProcPrefixPos = procPrefixPos;
+                for (var i = arcWordIndex; i >= 0; i = (i - 1) | 0) {
+                    var predPrefixWords = this._arcEcmScoreInfos.getItem(arcIndex).getItem(i).getLastInsPrefixWordFromEsi();
+                    curProcPrefixPos = System.Array.getItem(predPrefixWords, curProcPrefixPos, System.Int32);
+                }
+
+                this.addBestUncorrectedPrefixState(correction, curProcPrefixPos, arc.prevState);
+
+                this.updateCorrectionFromArc(correction, arc, true, 0);
+            },
+            updateCorrectionFromArc: function (correction, arc, isPrefix, alignmentColsToAddCount) {
+                var $t;
+                for (var i = 0; i < System.Array.getCount(arc.words, System.String); i = (i + 1) | 0) {
+                    System.Array.add(correction.target, System.Array.getItem(arc.words, i, System.String), System.String);
+                    System.Array.add(correction.targetConfidences, System.Array.getItem(arc.wordConfidences, i, System.Double), System.Double);
+                    if (!isPrefix && arc.isUnknown) {
+                        correction.targetUnknownWords.System$Collections$Generic$ISet$1$System$Int32$add(((System.Array.getCount(correction.target, System.String) - 1) | 0));
+                    }
+                }
+
+                var alignment = arc.alignment;
+                if (alignmentColsToAddCount > 0) {
+                    var newAlignment = new SIL.Machine.Translation.WordAlignmentMatrix.$ctor1(alignment.rowCount, ((alignment.columnCount + alignmentColsToAddCount) | 0));
+                    for (var j = 0; j < alignment.columnCount; j = (j + 1) | 0) {
+                        for (var i1 = 0; i1 < alignment.rowCount; i1 = (i1 + 1) | 0) {
+                            newAlignment.setitem(i1, ((alignmentColsToAddCount + j) | 0), alignment.getitem(i1, j));
+                        }
+                    }
+                    alignment = newAlignment;
+                }
+
+                var phrase = ($t = new SIL.Machine.Translation.PhraseInfo(), $t.sourceStartIndex = arc.sourceStartIndex, $t.sourceEndIndex = arc.sourceEndIndex, $t.targetCut = ((System.Array.getCount(correction.target, System.String) - 1) | 0), $t.alignment = alignment, $t);
+                System.Array.add(correction.phrases, phrase, SIL.Machine.Translation.PhraseInfo);
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.Candidate", {
+        inherits: function () { return [System.IComparable$1(SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.Candidate)]; },
+        props: {
+            score: 0,
+            state: 0,
+            arcIndex: 0,
+            arcWordIndex: 0
+        },
+        alias: ["compareTo", ["System$IComparable$1$SIL$Machine$Translation$ErrorCorrectionWordGraphProcessor$Candidate$compareTo", "System$IComparable$1$compareTo"]],
+        ctors: {
+            ctor: function (score, state, arcIndex, arcWordIndex) {
+                if (arcIndex === void 0) { arcIndex = -1; }
+                if (arcWordIndex === void 0) { arcWordIndex = -1; }
+
+                this.$initialize();
+                this.score = score;
+                this.state = state;
+                this.arcIndex = arcIndex;
+                this.arcWordIndex = arcWordIndex;
+            }
+        },
+        methods: {
+            compareTo: function (other) {
+                return ((-Bridge.compare(this.score, other.score)) | 0);
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.InteractiveTranslationResult", {
+        props: {
+            smtWordGraph: null,
+            ruleResult: null
+        },
+        ctors: {
+            ctor: function (smtWordGraph, ruleResult) {
+                this.$initialize();
+                this.smtWordGraph = smtWordGraph;
+                this.ruleResult = ruleResult;
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.InteractiveTranslationSession", {
+        statics: {
+            fields: {
+                ruleEngineThreshold: 0
+            },
+            ctors: {
+                init: function () {
+                    this.ruleEngineThreshold = 0.05;
+                }
+            }
+        },
+        fields: {
+            _engine: null,
+            _wordGraphProcessor: null,
+            _curResult: null,
+            _confidenceThreshold: 0
+        },
+        props: {
+            smtWordGraph: null,
+            ruleResult: null,
+            sourceSegment: null,
+            confidenceThreshold: {
+                get: function () {
+                    return this._confidenceThreshold;
+                },
+                set: function (value) {
+                    if (this._confidenceThreshold !== value) {
+                        this._confidenceThreshold = value;
+                        this.updateSuggestion();
+                    }
+                }
+            },
+            prefix: null,
+            isLastWordComplete: false,
+            currentSuggestion: null
+        },
+        ctors: {
+            ctor: function (engine, sourceSegment, confidenceThreshold, result) {
+                this.$initialize();
+                this._engine = engine;
+                this.sourceSegment = sourceSegment;
+                this._confidenceThreshold = confidenceThreshold;
+                this.ruleResult = result.ruleResult;
+                this.smtWordGraph = result.smtWordGraph;
+
+                this._wordGraphProcessor = new SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor(this._engine.errorCorrectionModel, this.smtWordGraph);
+                this.updatePrefix("");
+            }
+        },
+        methods: {
+            updatePrefix: function (prefix) {
+                var tokenSpans = System.Linq.Enumerable.from(this._engine.targetWordTokenizer[Bridge.geti(this._engine.targetWordTokenizer, "SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize", "SIL$Machine$Tokenization$ITokenizer$2$tokenize")](prefix)).toArray();
+                this.prefix = System.Linq.Enumerable.from(tokenSpans).select(function (s) {
+                        return prefix.substr(s.start, s.length);
+                    }).toArray(System.String);
+                this.isLastWordComplete = tokenSpans.length === 0 || tokenSpans[System.Array.index(((tokenSpans.length - 1) | 0), tokenSpans)].end !== prefix.length;
+
+                var correction = System.Linq.Enumerable.from(this._wordGraphProcessor.correct(this.prefix, this.isLastWordComplete, 1)).firstOrDefault(null, null);
+                var smtResult = this.createResult(correction);
+
+                if (this.ruleResult == null) {
+                    this._curResult = smtResult;
+                } else {
+                    var prefixCount = this.prefix.length;
+                    if (!this.isLastWordComplete) {
+                        prefixCount = (prefixCount - 1) | 0;
+                    }
+
+                    this._curResult = smtResult.merge(prefixCount, SIL.Machine.Translation.InteractiveTranslationSession.ruleEngineThreshold, this.ruleResult);
+                }
+
+                this.updateSuggestion();
+
+                return this.currentSuggestion;
+            },
+            updateSuggestion: function () {
+                var suggestions = System.Linq.Enumerable.from(SIL.Machine.Translation.TranslationSuggester.getSuggestedWordIndices(this.prefix, this.isLastWordComplete, this._curResult, this._confidenceThreshold)).select(Bridge.fn.bind(this, $asm.$.SIL.Machine.Translation.InteractiveTranslationSession.f1)).toArray(System.String);
+
+                this.currentSuggestion = suggestions;
+            },
+            approve: function (onFinished) {
+                this._engine.restClient.trainSegmentPairAsync(this.sourceSegment, this.prefix).continueWith(function (t) {
+                    onFinished(!t.isFaulted());
+                });
+            },
+            createResult: function (info) {
+                var $t;
+                if (info == null) {
+                    return new SIL.Machine.Translation.TranslationResult(this.sourceSegment, System.Linq.Enumerable.empty(), System.Linq.Enumerable.empty(), System.Linq.Enumerable.empty(), new SIL.Machine.Translation.WordAlignmentMatrix.$ctor1(this.sourceSegment.length, 0));
+                }
+
+                var confidences = System.Linq.Enumerable.from(info.targetConfidences).toArray();
+                var sources = System.Array.init(System.Array.getCount(info.target, System.String), 0, SIL.Machine.Translation.TranslationSources);
+                var alignment = new SIL.Machine.Translation.WordAlignmentMatrix.$ctor1(this.sourceSegment.length, System.Array.getCount(info.target, System.String));
+                var trgPhraseStartIndex = 0;
+                $t = Bridge.getEnumerator(info.phrases, SIL.Machine.Translation.PhraseInfo);
+                try {
+                    while ($t.moveNext()) {
+                        var phrase = $t.Current;
+                        for (var j = trgPhraseStartIndex; j <= phrase.targetCut; j = (j + 1) | 0) {
+                            for (var i = phrase.sourceStartIndex; i <= phrase.sourceEndIndex; i = (i + 1) | 0) {
+                                if (phrase.alignment.getitem(((i - phrase.sourceStartIndex) | 0), ((j - trgPhraseStartIndex) | 0)) === SIL.Machine.Translation.AlignmentType.aligned) {
+                                    alignment.setitem(i, j, SIL.Machine.Translation.AlignmentType.aligned);
+                                }
+                            }
+                            sources[System.Array.index(j, sources)] = System.Array.contains(info.targetUnknownWords, j, System.Int32) ? SIL.Machine.Translation.TranslationSources.none : SIL.Machine.Translation.TranslationSources.smt;
+                        }
+                        trgPhraseStartIndex = (phrase.targetCut + 1) | 0;
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }
+                return new SIL.Machine.Translation.TranslationResult(this.sourceSegment, info.target, confidences, sources, alignment);
+            }
+        }
+    });
+
+    Bridge.ns("SIL.Machine.Translation.InteractiveTranslationSession", $asm.$);
+
+    Bridge.apply($asm.$.SIL.Machine.Translation.InteractiveTranslationSession, {
+        f1: function (j) {
+            return System.Array.getItem(this._curResult.targetSegment, j, System.String);
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.PhraseInfo", {
+        props: {
+            sourceStartIndex: 0,
+            sourceEndIndex: 0,
+            targetCut: 0,
+            alignment: null
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.Preprocessors", {
+        statics: {
+            methods: {
+                lowercase: function (str) {
+                    return str.toLowerCase();
+                },
+                null: function (str) {
+                    return str;
+                }
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.SmtTrainProgress", {
+        $kind: "struct",
+        statics: {
+            methods: {
+                getDefaultValue: function () { return new SIL.Machine.Translation.SmtTrainProgress(); }
+            }
+        },
+        props: {
+            currentStep: 0,
+            currentStepMessage: null,
+            stepCount: 0,
+            percentCompleted: {
+                get: function () {
+                    return Bridge.Int.clip32(Bridge.Math.round((this.currentStep / this.stepCount) * 100.0, 0, 4));
+                }
+            }
+        },
+        ctors: {
+            $ctor1: function (currentStep, currentStepMessage, stepCount) {
+                this.$initialize();
+                this.currentStep = currentStep;
+                this.currentStepMessage = currentStepMessage;
+                this.stepCount = stepCount;
+            },
+            ctor: function () {
+                this.$initialize();
+            }
+        },
+        methods: {
+            getHashCode: function () {
+                var h = Bridge.addHash([6941615751, this.currentStep, this.currentStepMessage, this.stepCount]);
+                return h;
+            },
+            equals: function (o) {
+                if (!Bridge.is(o, SIL.Machine.Translation.SmtTrainProgress)) {
+                    return false;
+                }
+                return Bridge.equals(this.currentStep, o.currentStep) && Bridge.equals(this.currentStepMessage, o.currentStepMessage) && Bridge.equals(this.stepCount, o.stepCount);
+            },
+            $clone: function (to) { return this; }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.TranslationEngine", {
+        props: {
+            sourceWordTokenizer: null,
+            targetWordTokenizer: null,
+            sourceSegmentTokenizer: null,
+            targetSegmentTokenizer: null,
+            restClient: null,
+            errorCorrectionModel: null
+        },
+        ctors: {
+            ctor: function (baseUrl, projectId, httpClient) {
+                if (httpClient === void 0) { httpClient = null; }
+
+                this.$initialize();
+                var wordTokenizer = new SIL.Machine.Tokenization.LatinWordTokenizer.ctor();
+                this.sourceWordTokenizer = wordTokenizer;
+                this.targetWordTokenizer = wordTokenizer;
+                var segmentTokenizer = new SIL.Machine.Tokenization.LatinSentenceTokenizer.ctor();
+                this.sourceSegmentTokenizer = segmentTokenizer;
+                this.targetSegmentTokenizer = segmentTokenizer;
+                if (!System.String.endsWith(baseUrl, "/")) {
+                    baseUrl = System.String.concat(baseUrl, "/");
+                }
+                this.restClient = new SIL.Machine.WebApi.Client.TranslationRestClient(baseUrl, projectId, httpClient || new SIL.Machine.WebApi.Client.AjaxHttpClient());
+                this.errorCorrectionModel = new SIL.Machine.Translation.ErrorCorrectionModel();
+            }
+        },
+        methods: {
+            translateInteractively: function (sourceSegment, confidenceThreshold, onFinished) {
+                var tokens = System.Linq.Enumerable.from(SIL.Machine.Tokenization.TokenizationExtensions.tokenizeToStrings(this.sourceWordTokenizer, sourceSegment)).toArray();
+                var task = this.restClient.translateInteractivelyAsync(tokens);
+                task.continueWith(Bridge.fn.bind(this, function (t) {
+                    onFinished(t.isFaulted() ? null : new SIL.Machine.Translation.InteractiveTranslationSession(this, tokens, confidenceThreshold, t.getResult()));
+                }));
+            },
+            train: function (onStatusUpdate, onFinished) {
+                this.restClient.trainAsync(onStatusUpdate).continueWith(function (t) {
+                    onFinished(!t.isFaulted());
+                });
+            },
+            listenForTrainingStatus: function (onStatusUpdate, onFinished) {
+                this.restClient.listenForTrainingStatus(onStatusUpdate).continueWith(function (t) {
+                    onFinished(!t.isFaulted());
+                });
+            },
+            tokenizeSourceSegment: function (sourceSegment) {
+                return System.Linq.Enumerable.from(this.sourceWordTokenizer[Bridge.geti(this.sourceWordTokenizer, "SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize", "SIL$Machine$Tokenization$ITokenizer$2$tokenize")](sourceSegment)).select($asm.$.SIL.Machine.Translation.TranslationEngine.f1).toArray(System.Int32);
+            },
+            tokenizeTargetSegment: function (targetSegment) {
+                return System.Linq.Enumerable.from(this.targetWordTokenizer[Bridge.geti(this.targetWordTokenizer, "SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize", "SIL$Machine$Tokenization$ITokenizer$2$tokenize")](targetSegment)).select($asm.$.SIL.Machine.Translation.TranslationEngine.f1).toArray(System.Int32);
+            },
+            tokenizeSourceDocument: function (sourceDocument) {
+                return System.Linq.Enumerable.from(this.sourceSegmentTokenizer[Bridge.geti(this.sourceSegmentTokenizer, "SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize", "SIL$Machine$Tokenization$ITokenizer$2$tokenize")](sourceDocument)).select($asm.$.SIL.Machine.Translation.TranslationEngine.f1).toArray(System.Int32);
+            },
+            tokenizeTargetDocument: function (targetDocument) {
+                return System.Linq.Enumerable.from(this.targetSegmentTokenizer[Bridge.geti(this.targetSegmentTokenizer, "SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize", "SIL$Machine$Tokenization$ITokenizer$2$tokenize")](targetDocument)).select($asm.$.SIL.Machine.Translation.TranslationEngine.f1).toArray(System.Int32);
+            }
+        }
+    });
+
+    Bridge.ns("SIL.Machine.Translation.TranslationEngine", $asm.$);
+
+    Bridge.apply($asm.$.SIL.Machine.Translation.TranslationEngine, {
+        f1: function (s) {
+            return s.start;
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.TranslationInfo", {
+        props: {
+            target: null,
+            targetConfidences: null,
+            phrases: null,
+            targetUnknownWords: null,
+            targetUncorrectedPrefixWords: null,
+            score: 0
+        },
+        ctors: {
+            init: function () {
+                this.target = new (System.Collections.Generic.List$1(System.String))();
+                this.targetConfidences = new (System.Collections.Generic.List$1(System.Double))();
+                this.phrases = new (System.Collections.Generic.List$1(SIL.Machine.Translation.PhraseInfo))();
+                this.targetUnknownWords = new (System.Collections.Generic.HashSet$1(System.Int32)).ctor();
+                this.targetUncorrectedPrefixWords = new (System.Collections.Generic.HashSet$1(System.Int32)).ctor();
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.TranslationResult", {
+        props: {
+            sourceSegment: null,
+            targetSegment: null,
+            targetWordConfidences: null,
+            targetWordSources: null,
+            alignment: null
+        },
+        ctors: {
+            ctor: function (sourceSegment, targetSegment, confidences, sources, alignment) {
+                this.$initialize();
+                this.sourceSegment = System.Linq.Enumerable.from(sourceSegment).toArray();
+                this.targetSegment = System.Linq.Enumerable.from(targetSegment).toArray();
+                this.targetWordConfidences = System.Linq.Enumerable.from(confidences).toArray();
+                if (System.Array.getCount(this.targetWordConfidences, System.Double) !== System.Array.getCount(this.targetSegment, System.String)) {
+                    throw new System.ArgumentException("The confidences must be the same length as the target segment.", "confidences");
+                }
+                this.targetWordSources = System.Linq.Enumerable.from(sources).toArray();
+                if (System.Array.getCount(this.targetWordSources, SIL.Machine.Translation.TranslationSources) !== System.Array.getCount(this.targetSegment, System.String)) {
+                    throw new System.ArgumentException("The sources must be the same length as the target segment.", "sources");
+                }
+                this.alignment = alignment;
+                if (this.alignment.rowCount !== System.Array.getCount(this.sourceSegment, System.String)) {
+                    throw new System.ArgumentException("The alignment source length must be the same length as the source segment.", "alignment");
+                }
+                if (this.alignment.columnCount !== System.Array.getCount(this.targetSegment, System.String)) {
+                    throw new System.ArgumentException("The alignment target length must be the same length as the target segment.", "alignment");
+                }
+            }
+        },
+        methods: {
+            merge: function (prefixCount, threshold, otherResult) {
+                var $t, $t1, $t2, $t3, $t4, $t5;
+                var mergedTargetSegment = new (System.Collections.Generic.List$1(System.String))();
+                var mergedConfidences = new (System.Collections.Generic.List$1(System.Double))();
+                var mergedSources = new (System.Collections.Generic.List$1(SIL.Machine.Translation.TranslationSources))();
+                var mergedAlignment = new (System.Collections.Generic.HashSet$1(System.Object)).ctor();
+                for (var j = 0; j < System.Array.getCount(this.targetSegment, System.String); j = (j + 1) | 0) {
+                    var sourceIndices = System.Linq.Enumerable.from(this.alignment.getColumnAlignedIndices(j)).toArray();
+                    if (sourceIndices.length === 0) {
+                        // target word doesn't align with anything
+                        mergedTargetSegment.add(System.Array.getItem(this.targetSegment, j, System.String));
+                        mergedConfidences.add(System.Array.getItem(this.targetWordConfidences, j, System.Double));
+                        mergedSources.add(System.Array.getItem(this.targetWordSources, j, SIL.Machine.Translation.TranslationSources));
+                    } else {
+                        // target word aligns with some source words
+                        if (j < prefixCount || System.Array.getItem(this.targetWordConfidences, j, System.Double) >= threshold) {
+                            // use target word of this result
+                            mergedTargetSegment.add(System.Array.getItem(this.targetSegment, j, System.String));
+                            mergedConfidences.add(System.Array.getItem(this.targetWordConfidences, j, System.Double));
+                            var sources = System.Array.getItem(this.targetWordSources, j, SIL.Machine.Translation.TranslationSources);
+                            $t = Bridge.getEnumerator(sourceIndices);
+                            try {
+                                while ($t.moveNext()) {
+                                    var i = $t.Current;
+                                    // combine sources for any words that both this result and the other result translated the same
+                                    $t1 = Bridge.getEnumerator(otherResult.alignment.getRowAlignedIndices(i), System.Int32);
+                                    try {
+                                        while ($t1.moveNext()) {
+                                            var jOther = $t1.Current;
+                                            var otherSources = System.Array.getItem(otherResult.targetWordSources, jOther, SIL.Machine.Translation.TranslationSources);
+                                            if (otherSources !== SIL.Machine.Translation.TranslationSources.none && Bridge.referenceEquals(System.Array.getItem(otherResult.targetSegment, jOther, System.String), System.Array.getItem(this.targetSegment, j, System.String))) {
+                                                sources |= otherSources;
+                                            }
+                                        }
+                                    } finally {
+                                        if (Bridge.is($t1, System.IDisposable)) {
+                                            $t1.System$IDisposable$dispose();
+                                        }
+                                    }
+                                    mergedAlignment.add({ item1: i, item2: ((mergedTargetSegment.Count - 1) | 0) });
+                                }
+                            } finally {
+                                if (Bridge.is($t, System.IDisposable)) {
+                                    $t.System$IDisposable$dispose();
+                                }
+                            }mergedSources.add(sources);
+                        } else {
+                            // use target words of other result
+                            var found = false;
+                            $t2 = Bridge.getEnumerator(sourceIndices);
+                            try {
+                                while ($t2.moveNext()) {
+                                    var i1 = $t2.Current;
+                                    $t3 = Bridge.getEnumerator(otherResult.alignment.getRowAlignedIndices(i1), System.Int32);
+                                    try {
+                                        while ($t3.moveNext()) {
+                                            var jOther1 = $t3.Current;
+                                            // look for any translated words from other result
+                                            var otherSources1 = System.Array.getItem(otherResult.targetWordSources, jOther1, SIL.Machine.Translation.TranslationSources);
+                                            if (otherSources1 !== SIL.Machine.Translation.TranslationSources.none) {
+                                                mergedTargetSegment.add(System.Array.getItem(otherResult.targetSegment, jOther1, System.String));
+                                                mergedConfidences.add(System.Array.getItem(otherResult.targetWordConfidences, jOther1, System.Double));
+                                                mergedSources.add(otherSources1);
+                                                mergedAlignment.add({ item1: i1, item2: ((mergedTargetSegment.Count - 1) | 0) });
+                                                found = true;
+                                            }
+                                        }
+                                    } finally {
+                                        if (Bridge.is($t3, System.IDisposable)) {
+                                            $t3.System$IDisposable$dispose();
+                                        }
+                                    }
+                                }
+                            } finally {
+                                if (Bridge.is($t2, System.IDisposable)) {
+                                    $t2.System$IDisposable$dispose();
+                                }
+                            }
+                            if (!found) {
+                                // the other result had no translated words, so just use this result's target word
+                                mergedTargetSegment.add(System.Array.getItem(this.targetSegment, j, System.String));
+                                mergedConfidences.add(System.Array.getItem(this.targetWordConfidences, j, System.Double));
+                                mergedSources.add(System.Array.getItem(this.targetWordSources, j, SIL.Machine.Translation.TranslationSources));
+                                $t4 = Bridge.getEnumerator(sourceIndices);
+                                try {
+                                    while ($t4.moveNext()) {
+                                        var i2 = $t4.Current;
+                                        mergedAlignment.add({ item1: i2, item2: ((mergedTargetSegment.Count - 1) | 0) });
+                                    }
+                                } finally {
+                                    if (Bridge.is($t4, System.IDisposable)) {
+                                        $t4.System$IDisposable$dispose();
+                                    }
+                                }}
+                        }
+                    }
+                }
+
+                var alignment = new SIL.Machine.Translation.WordAlignmentMatrix.$ctor1(System.Array.getCount(this.sourceSegment, System.String), mergedTargetSegment.Count);
+                $t5 = Bridge.getEnumerator(mergedAlignment);
+                try {
+                    while ($t5.moveNext()) {
+                        var t = $t5.Current;
+                        alignment.setitem(t.item1, t.item2, SIL.Machine.Translation.AlignmentType.aligned);
+                    }
+                } finally {
+                    if (Bridge.is($t5, System.IDisposable)) {
+                        $t5.System$IDisposable$dispose();
+                    }
+                }return new SIL.Machine.Translation.TranslationResult(this.sourceSegment, mergedTargetSegment, mergedConfidences, mergedSources, alignment);
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.TranslationSources", {
+        $kind: "enum",
+        statics: {
+            fields: {
+                none: 0,
+                smt: 1,
+                transfer: 2,
+                prefix: 4
+            }
+        },
+        $flags: true
+    });
+
+    Bridge.define("SIL.Machine.Translation.TranslationSuggester", {
+        statics: {
+            methods: {
+                getSuggestedWordIndices: function (prefix, isLastWordComplete, result, confidenceThreshold) {
+                    return new (Bridge.GeneratorEnumerable$1(System.Int32))(Bridge.fn.bind(this, function (prefix, isLastWordComplete, result, confidenceThreshold) {
+                        var $step = 0,
+                            $jumpFromFinally,
+                            $returnValue,
+                            startingJ,
+                            lookaheadCount,
+                            i,
+                            j,
+                            sourceIndices,
+                            $t,
+                            ti,
+                            inPhrase,
+                            word,
+                            confidence,
+                            sources,
+                            $async_e;
+
+                        var $enumerator = new (Bridge.GeneratorEnumerator$1(System.Int32))(Bridge.fn.bind(this, function () {
+                            try {
+                                for (;;) {
+                                    switch ($step) {
+                                        case 0: {
+                                            startingJ = System.Array.getCount(prefix, System.String);
+                                                if (!isLastWordComplete) {
+                                                    $step = 1;
+                                                    continue;
+                                                } 
+                                                $step = 5;
+                                                continue;
+                                        }
+                                        case 1: {
+                                            // if the prefix ends with a partial word and it has been completed,
+                                                // then make sure it is included as a suggestion,
+                                                // otherwise, don't return any suggestions
+                                                if ((System.Array.getItem(result.targetWordSources, ((startingJ - 1) | 0), SIL.Machine.Translation.TranslationSources) & SIL.Machine.Translation.TranslationSources.smt) !== 0) {
+                                                    $step = 2;
+                                                    continue;
+                                                } else  {
+                                                    $step = 3;
+                                                    continue;
+                                                }
+                                        }
+                                        case 2: {
+                                            startingJ = (startingJ - 1) | 0;
+                                            $step = 4;
+                                            continue;
+                                        }
+                                        case 3: {
+                                            return false;
+                                        }
+                                        case 4: {
+                                            $step = 5;
+                                            continue;
+                                        }
+                                        case 5: {
+                                            lookaheadCount = 1;
+                                                i = -1;
+                                                for (j = System.Array.getCount(prefix, System.String); j < System.Array.getCount(result.targetSegment, System.String); j = (j + 1) | 0) {
+                                                    sourceIndices = System.Linq.Enumerable.from(result.alignment.getColumnAlignedIndices(j)).toArray();
+                                                    if (sourceIndices.length === 0) {
+                                                        lookaheadCount = (lookaheadCount + 1) | 0;
+                                                    } else {
+                                                        lookaheadCount = (lookaheadCount + (((sourceIndices.length - 1) | 0))) | 0;
+                                                        $t = Bridge.getEnumerator(sourceIndices);
+                                                        try {
+                                                            while ($t.moveNext()) {
+                                                                ti = $t.Current;
+                                                                if (i === -1 || ti < i) {
+                                                                    i = ti;
+                                                                }
+                                                            }
+                                                        } finally {
+                                                            if (Bridge.is($t, System.IDisposable)) {
+                                                                $t.System$IDisposable$dispose();
+                                                            }
+                                                        }}
+                                                }
+                                                if (i === -1) {
+                                                    i = 0;
+                                                }
+                                                for (; i < System.Array.getCount(result.sourceSegment, System.String); i = (i + 1) | 0) {
+                                                    if (result.alignment.isRowAligned(i) === SIL.Machine.Translation.AlignmentType.notAligned) {
+                                                        lookaheadCount = (lookaheadCount + 1) | 0;
+                                                    }
+                                                }
+
+                                                j = startingJ;
+                                                inPhrase = false;
+                                            $step = 6;
+                                            continue;
+                                        }
+                                        case 6: {
+                                            if ( j < System.Array.getCount(result.targetSegment, System.String) && (lookaheadCount > 0 || inPhrase) ) {
+                                                    $step = 7;
+                                                    continue;
+                                                } 
+                                                $step = 12;
+                                                continue;
+                                        }
+                                        case 7: {
+                                            word = System.Array.getItem(result.targetSegment, j, System.String);
+                                                // stop suggesting at punctuation
+                                                if (System.Linq.Enumerable.from(word).all(System.Char.isPunctuation)) {
+                                                    $step = 12;
+                                                    continue;
+                                                }
+
+                                                // criteria for suggesting a word
+                                                // the word must either:
+                                                // - meet the confidence threshold
+                                                // - come from a transfer engine
+                                                confidence = System.Array.getItem(result.targetWordConfidences, j, System.Double);
+                                                sources = System.Array.getItem(result.targetWordSources, j, SIL.Machine.Translation.TranslationSources);
+                                                if (confidence >= confidenceThreshold || (sources & SIL.Machine.Translation.TranslationSources.transfer) !== 0) {
+                                                    $step = 8;
+                                                    continue;
+                                                } else  {
+                                                    $step = 10;
+                                                    continue;
+                                                }
+                                        }
+                                        case 8: {
+                                            $enumerator.current = j;
+                                                $step = 9;
+                                                return true;
+                                        }
+                                        case 9: {
+                                            inPhrase = true;
+                                                lookaheadCount = (lookaheadCount - 1) | 0;
+                                            $step = 11;
+                                            continue;
+                                        }
+                                        case 10: {
+                                            // skip over inserted words
+                                                if (result.alignment.isColumnAligned(j) === SIL.Machine.Translation.AlignmentType.aligned) {
+                                                    lookaheadCount = (lookaheadCount - 1) | 0;
+                                                    // only suggest the first word/phrase we find
+                                                    if (inPhrase) {
+                                                        $step = 12;
+                                                        continue;
+                                                    }
+                                                }
+                                            $step = 11;
+                                            continue;
+                                        }
+                                        case 11: {
+                                            j = (j + 1) | 0;
+
+                                                $step = 6;
+                                                continue;
+                                        }
+                                        case 12: {
+
+                                        }
+                                        default: {
+                                            return false;
+                                        }
+                                    }
+                                }
+                            } catch($async_e1) {
+                                $async_e = System.Exception.create($async_e1);
+                                throw $async_e;
+                            }
+                        }));
+                        return $enumerator;
+                    }, arguments));
+                }
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.WordAlignmentMatrix", {
+        fields: {
+            _matrix: null
+        },
+        props: {
+            rowCount: {
+                get: function () {
+                    return System.Array.getLength(this._matrix, 0);
+                }
+            },
+            columnCount: {
+                get: function () {
+                    return System.Array.getLength(this._matrix, 1);
+                }
+            }
+        },
+        ctors: {
+            $ctor1: function (i, j, defaultValue) {
+                if (defaultValue === void 0) { defaultValue = 0; }
+
+                this.$initialize();
+                this._matrix = System.Array.create(0, null, SIL.Machine.Translation.AlignmentType, i, j);
+                if (defaultValue !== SIL.Machine.Translation.AlignmentType.notAligned) {
+                    this.setAll(defaultValue);
+                }
+            },
+            ctor: function (other) {
+                this.$initialize();
+                this._matrix = System.Array.create(0, null, SIL.Machine.Translation.AlignmentType, other.rowCount, other.columnCount);
+                for (var i = 0; i < this.rowCount; i = (i + 1) | 0) {
+                    for (var j = 0; j < this.columnCount; j = (j + 1) | 0) {
+                        this._matrix.set([i, j], other._matrix.get([i, j]));
+                    }
+                }
+            }
+        },
+        methods: {
+            getitem: function (i, j) {
+                return this._matrix.get([i, j]);
+            },
+            setitem: function (i, j, value) {
+                this._matrix.set([i, j], value);
+            },
+            setAll: function (value) {
+                for (var i = 0; i < this.rowCount; i = (i + 1) | 0) {
+                    for (var j = 0; j < this.columnCount; j = (j + 1) | 0) {
+                        this._matrix.set([i, j], value);
+                    }
+                }
+            },
+            isRowAligned: function (i) {
+                for (var j = 0; j < this.columnCount; j = (j + 1) | 0) {
+                    if (this._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.aligned) {
+                        return SIL.Machine.Translation.AlignmentType.aligned;
+                    }
+                    if (this._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.unknown) {
+                        return SIL.Machine.Translation.AlignmentType.unknown;
+                    }
+                }
+                return SIL.Machine.Translation.AlignmentType.notAligned;
+            },
+            isColumnAligned: function (j) {
+                for (var i = 0; i < this.rowCount; i = (i + 1) | 0) {
+                    if (this._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.aligned) {
+                        return SIL.Machine.Translation.AlignmentType.aligned;
+                    }
+                    if (this._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.unknown) {
+                        return SIL.Machine.Translation.AlignmentType.unknown;
+                    }
+                }
+                return SIL.Machine.Translation.AlignmentType.notAligned;
+            },
+            getRowAlignedIndices: function (i) {
+                return new (Bridge.GeneratorEnumerable$1(System.Int32))(Bridge.fn.bind(this, function (i) {
+                    var $step = 0,
+                        $jumpFromFinally,
+                        $returnValue,
+                        j,
+                        $async_e;
+
+                    var $enumerator = new (Bridge.GeneratorEnumerator$1(System.Int32))(Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                switch ($step) {
+                                    case 0: {
+                                        j = 0;
+                                            $step = 1;
+                                            continue;
+                                    }
+                                    case 1: {
+                                        if ( j < this.columnCount ) {
+                                                $step = 2;
+                                                continue;
+                                            }
+                                        $step = 7;
+                                        continue;
+                                    }
+                                    case 2: {
+                                        if (this._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.aligned) {
+                                                $step = 3;
+                                                continue;
+                                            } 
+                                            $step = 5;
+                                            continue;
+                                    }
+                                    case 3: {
+                                        $enumerator.current = j;
+                                            $step = 4;
+                                            return true;
+                                    }
+                                    case 4: {
+                                        $step = 5;
+                                        continue;
+                                    }
+                                    case 5: {
+                                        $step = 6;
+                                        continue;
+                                    }
+                                    case 6: {
+                                        j = (j + 1) | 0;
+                                        $step = 1;
+                                        continue;
+                                    }
+                                    case 7: {
+
+                                    }
+                                    default: {
+                                        return false;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            throw $async_e;
+                        }
+                    }));
+                    return $enumerator;
+                }, arguments));
+            },
+            getColumnAlignedIndices: function (j) {
+                return new (Bridge.GeneratorEnumerable$1(System.Int32))(Bridge.fn.bind(this, function (j) {
+                    var $step = 0,
+                        $jumpFromFinally,
+                        $returnValue,
+                        i,
+                        $async_e;
+
+                    var $enumerator = new (Bridge.GeneratorEnumerator$1(System.Int32))(Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                switch ($step) {
+                                    case 0: {
+                                        i = 0;
+                                            $step = 1;
+                                            continue;
+                                    }
+                                    case 1: {
+                                        if ( i < this.rowCount ) {
+                                                $step = 2;
+                                                continue;
+                                            }
+                                        $step = 7;
+                                        continue;
+                                    }
+                                    case 2: {
+                                        if (this._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.aligned) {
+                                                $step = 3;
+                                                continue;
+                                            } 
+                                            $step = 5;
+                                            continue;
+                                    }
+                                    case 3: {
+                                        $enumerator.current = i;
+                                            $step = 4;
+                                            return true;
+                                    }
+                                    case 4: {
+                                        $step = 5;
+                                        continue;
+                                    }
+                                    case 5: {
+                                        $step = 6;
+                                        continue;
+                                    }
+                                    case 6: {
+                                        i = (i + 1) | 0;
+                                        $step = 1;
+                                        continue;
+                                    }
+                                    case 7: {
+
+                                    }
+                                    default: {
+                                        return false;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            throw $async_e;
+                        }
+                    }));
+                    return $enumerator;
+                }, arguments));
+            },
+            isNeighborAligned: function (i, j) {
+                if (i > 0 && this._matrix.get([((i - 1) | 0), j]) === SIL.Machine.Translation.AlignmentType.aligned) {
+                    return true;
+                }
+                if (j > 0 && this._matrix.get([i, ((j - 1) | 0)]) === SIL.Machine.Translation.AlignmentType.aligned) {
+                    return true;
+                }
+                if (i < ((this.rowCount - 1) | 0) && this._matrix.get([((i + 1) | 0), j]) === SIL.Machine.Translation.AlignmentType.aligned) {
+                    return true;
+                }
+                if (j < ((this.columnCount - 1) | 0) && this._matrix.get([i, ((j + 1) | 0)]) === SIL.Machine.Translation.AlignmentType.aligned) {
+                    return true;
+                }
+                return false;
+            },
+            unionWith: function (other) {
+                if (this.rowCount !== other.rowCount || this.columnCount !== other.columnCount) {
+                    throw new System.ArgumentException("The matrices are not the same size.", "other");
+                }
+
+                for (var i = 0; i < this.rowCount; i = (i + 1) | 0) {
+                    for (var j = 0; j < this.columnCount; j = (j + 1) | 0) {
+                        if (!(this._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.aligned || other._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.aligned)) {
+                            this._matrix.set([i, j], SIL.Machine.Translation.AlignmentType.aligned);
+                        }
+                    }
+                }
+            },
+            intersectWith: function (other) {
+                if (this.rowCount !== other.rowCount || this.columnCount !== other.columnCount) {
+                    throw new System.ArgumentException("The matrices are not the same size.", "other");
+                }
+
+                for (var i = 0; i < this.rowCount; i = (i + 1) | 0) {
+                    for (var j = 0; j < this.columnCount; j = (j + 1) | 0) {
+                        if (!(this._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.aligned && other._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.aligned)) {
+                            this._matrix.set([i, j], SIL.Machine.Translation.AlignmentType.notAligned);
+                        }
+                    }
+                }
+            },
+            symmetrizeWith: function (other) {
+                if (this.rowCount !== other.rowCount || this.columnCount !== other.columnCount) {
+                    throw new System.ArgumentException("The matrices are not the same size.", "other");
+                }
+
+                var aux = this.clone();
+
+                this.intersectWith(other);
+                var prev = null;
+                while (!this.valueEquals(prev)) {
+                    prev = this.clone();
+                    for (var i = 0; i < this.rowCount; i = (i + 1) | 0) {
+                        for (var j = 0; j < this.columnCount; j = (j + 1) | 0) {
+                            if ((other._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.aligned || aux._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.aligned) && this._matrix.get([i, j]) === SIL.Machine.Translation.AlignmentType.notAligned) {
+                                if (this.isColumnAligned(j) === SIL.Machine.Translation.AlignmentType.notAligned && this.isRowAligned(i) === SIL.Machine.Translation.AlignmentType.notAligned) {
+                                    this._matrix.set([i, j], SIL.Machine.Translation.AlignmentType.aligned);
+                                } else {
+                                    if (this.isNeighborAligned(i, j)) {
+                                        this._matrix.set([i, j], SIL.Machine.Translation.AlignmentType.aligned);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            transpose: function () {
+                var newMatrix = System.Array.create(0, null, SIL.Machine.Translation.AlignmentType, this.columnCount, this.rowCount);
+                for (var i = 0; i < this.rowCount; i = (i + 1) | 0) {
+                    for (var j = 0; j < this.columnCount; j = (j + 1) | 0) {
+                        newMatrix.set([j, i], this._matrix.get([i, j]));
+                    }
+                }
+                this._matrix = newMatrix;
+            },
+            toGizaFormat: function (sourceSegment, targetSegment) {
+                var $t;
+                var sb = new System.Text.StringBuilder();
+                sb.appendFormat("{0}\n", Bridge.toArray(targetSegment).join(" "));
+
+                var sourceWords = $asm.$.SIL.Machine.Translation.WordAlignmentMatrix.f1(new (System.Collections.Generic.List$1(System.String))());
+                sourceWords.addRange(sourceSegment);
+
+                var i = 0;
+                $t = Bridge.getEnumerator(sourceWords);
+                try {
+                    while ($t.moveNext()) {
+                        var sourceWord = $t.Current;
+                        if (i > 0) {
+                            sb.append(" ");
+                        }
+                        sb.append(sourceWord);
+                        sb.append(" ({ ");
+                        for (var j = 0; j < this.columnCount; j = (j + 1) | 0) {
+                            if (i === 0) {
+                                if (this.isColumnAligned(j) === SIL.Machine.Translation.AlignmentType.notAligned) {
+                                    sb.append(((j + 1) | 0));
+                                    sb.append(" ");
+                                }
+                            } else if (this._matrix.get([((i - 1) | 0), j]) === SIL.Machine.Translation.AlignmentType.aligned) {
+                                sb.append(((j + 1) | 0));
+                                sb.append(" ");
+                            }
+                        }
+
+                        sb.append("})");
+                        i = (i + 1) | 0;
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }sb.append("\n");
+                return sb.toString();
+            },
+            valueEquals: function (other) {
+                if (other == null) {
+                    return false;
+                }
+
+                if (this.rowCount !== other.rowCount || this.columnCount !== other.columnCount) {
+                    return false;
+                }
+
+                for (var i = 0; i < this.rowCount; i = (i + 1) | 0) {
+                    for (var j = 0; j < this.columnCount; j = (j + 1) | 0) {
+                        if (this._matrix.get([i, j]) !== other._matrix.get([i, j])) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            },
+            toString: function () {
+                return Bridge.toArray(System.Linq.Enumerable.range(0, this.rowCount).selectMany(Bridge.fn.bind(this, $asm.$.SIL.Machine.Translation.WordAlignmentMatrix.f2), function (item1, item2) { return { item1: item1, item2: item2 }; }).where(Bridge.fn.bind(this, $asm.$.SIL.Machine.Translation.WordAlignmentMatrix.f3)).select($asm.$.SIL.Machine.Translation.WordAlignmentMatrix.f4)).join(" ");
+            },
+            clone: function () {
+                return new SIL.Machine.Translation.WordAlignmentMatrix.ctor(this);
+            }
+        }
+    });
+
+    Bridge.ns("SIL.Machine.Translation.WordAlignmentMatrix", $asm.$);
+
+    Bridge.apply($asm.$.SIL.Machine.Translation.WordAlignmentMatrix, {
+        f1: function (_o4) {
+            _o4.add("NULL");
+            return _o4;
+        },
+        f2: function (i) {
+            return System.Linq.Enumerable.range(0, this.columnCount);
+        },
+        f3: function (t) {
+            return this._matrix.get([t.item1, t.item2]) === SIL.Machine.Translation.AlignmentType.aligned;
+        },
+        f4: function (t) {
+            return System.String.format("{0}-{1}", Bridge.box(t.item1, System.Int32), Bridge.box(t.item2, System.Int32));
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.WordGraph", {
+        statics: {
+            fields: {
+                initialState: 0,
+                smallScore: 0
+            },
+            ctors: {
+                init: function () {
+                    this.initialState = 0;
+                    this.smallScore = -999999999;
+                }
+            }
+        },
+        fields: {
+            _finalStates: null
+        },
+        props: {
+            initialStateScore: 0,
+            arcs: null,
+            stateCount: 0,
+            finalStates: {
+                get: function () {
+                    return this._finalStates;
+                }
+            },
+            isEmpty: {
+                get: function () {
+                    return System.Array.getCount(this.arcs, SIL.Machine.Translation.WordGraphArc) === 0;
+                }
+            }
+        },
+        ctors: {
+            ctor: function (arcs, finalStates, initialStateScore) {
+                if (initialStateScore === void 0) { initialStateScore = 0.0; }
+
+                this.$initialize();                var $t;
+
+                this.arcs = System.Linq.Enumerable.from(arcs).toArray();
+                var maxState = -1;
+                $t = Bridge.getEnumerator(this.arcs, SIL.Machine.Translation.WordGraphArc);
+                try {
+                    while ($t.moveNext()) {
+                        var arc = $t.Current;
+                        if (arc.nextState > maxState) {
+                            maxState = arc.nextState;
+                        }
+                        if (arc.prevState > maxState) {
+                            maxState = arc.prevState;
+                        }
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }this.stateCount = (maxState + 1) | 0;
+                this._finalStates = new (System.Collections.Generic.HashSet$1(System.Int32)).$ctor1(finalStates);
+                this.initialStateScore = initialStateScore;
+        }
+    },
+    methods: {
+        computeRestScores: function () {
+            var $t;
+            var restScores = System.Linq.Enumerable.repeat(SIL.Machine.Translation.WordGraph.smallScore, this.stateCount).toArray(System.Double);
+
+            $t = Bridge.getEnumerator(this._finalStates);
+            try {
+                while ($t.moveNext()) {
+                    var state = $t.Current;
+                    restScores[System.Array.index(state, restScores)] = this.initialStateScore;
+                }
+            } finally {
+                if (Bridge.is($t, System.IDisposable)) {
+                    $t.System$IDisposable$dispose();
+                }
+            }
+            for (var i = (System.Array.getCount(this.arcs, SIL.Machine.Translation.WordGraphArc) - 1) | 0; i >= 0; i = (i - 1) | 0) {
+                var arc = System.Array.getItem(this.arcs, i, SIL.Machine.Translation.WordGraphArc);
+
+                var score = arc.score + restScores[System.Array.index(arc.nextState, restScores)];
+                if (score < SIL.Machine.Translation.WordGraph.smallScore) {
+                    score = SIL.Machine.Translation.WordGraph.smallScore;
+                }
+                if (score > restScores[System.Array.index(arc.prevState, restScores)]) {
+                    restScores[System.Array.index(arc.prevState, restScores)] = score;
+                }
+            }
+
+            return restScores;
+        },
+        computePrevScores: function (state, prevScores, stateBestPrevArcs) {
+            if (this.isEmpty) {
+                prevScores.v = System.Array.init(0, 0, System.Double);
+                stateBestPrevArcs.v = System.Array.init(0, 0, System.Int32);
+                return;
+            }
+
+            prevScores.v = System.Linq.Enumerable.repeat(SIL.Machine.Translation.WordGraph.smallScore, this.stateCount).toArray(System.Double);
+            stateBestPrevArcs.v = System.Array.init(this.stateCount, 0, System.Int32);
+
+            if (state === SIL.Machine.Translation.WordGraph.initialState) {
+                prevScores.v[System.Array.index(SIL.Machine.Translation.WordGraph.initialState, prevScores.v)] = this.initialStateScore;
+            } else {
+                prevScores.v[System.Array.index(state, prevScores.v)] = 0;
+            }
+
+            var accessibleStates = function (_o5) {
+                    _o5.add(state);
+                    return _o5;
+                }(new (System.Collections.Generic.HashSet$1(System.Int32)).ctor());
+            for (var arcIndex = 0; arcIndex < System.Array.getCount(this.arcs, SIL.Machine.Translation.WordGraphArc); arcIndex = (arcIndex + 1) | 0) {
+                var arc = System.Array.getItem(this.arcs, arcIndex, SIL.Machine.Translation.WordGraphArc);
+
+                if (accessibleStates.contains(arc.prevState)) {
+                    var score = arc.score + prevScores.v[System.Array.index(arc.prevState, prevScores.v)];
+                    if (score < SIL.Machine.Translation.WordGraph.smallScore) {
+                        score = SIL.Machine.Translation.WordGraph.smallScore;
+                    }
+                    if (score > prevScores.v[System.Array.index(arc.nextState, prevScores.v)]) {
+                        prevScores.v[System.Array.index(arc.nextState, prevScores.v)] = score;
+                        stateBestPrevArcs.v[System.Array.index(arc.nextState, stateBestPrevArcs.v)] = arcIndex;
+                    }
+                    accessibleStates.add(arc.nextState);
+                } else {
+                    if (!accessibleStates.contains(arc.nextState)) {
+                        prevScores.v[System.Array.index(arc.nextState, prevScores.v)] = SIL.Machine.Translation.WordGraph.smallScore;
+                    }
+                }
+            }
+        },
+        getBestPathFromFinalStateToState: function (state) {
+            return new (Bridge.GeneratorEnumerable$1(SIL.Machine.Translation.WordGraphArc))(Bridge.fn.bind(this, function (state) {
+                var $step = 0,
+                    $jumpFromFinally,
+                    $returnValue,
+                    prevScores,
+                    stateBestPredArcs,
+                    bestFinalStateScore,
+                    bestFinalState,
+                    $t,
+                    finalState,
+                    score,
+                    curState,
+                    end,
+                    arcIndex,
+                    arc,
+                    $async_e;
+
+                var $enumerator = new (Bridge.GeneratorEnumerator$1(SIL.Machine.Translation.WordGraphArc))(Bridge.fn.bind(this, function () {
+                    try {
+                        for (;;) {
+                            switch ($step) {
+                                case 0: {
+                                    prevScores = { };
+                                        stateBestPredArcs = { };
+                                        this.computePrevScores(state, prevScores, stateBestPredArcs);
+
+                                        bestFinalStateScore = SIL.Machine.Translation.WordGraph.smallScore;
+                                        bestFinalState = 0;
+                                        $t = Bridge.getEnumerator(this._finalStates);
+                                        try {
+                                            while ($t.moveNext()) {
+                                                finalState = $t.Current;
+                                                score = prevScores.v[System.Array.index(finalState, prevScores.v)];
+                                                if (bestFinalStateScore < score) {
+                                                    bestFinalState = finalState;
+                                                    bestFinalStateScore = score;
+                                                }
+                                            }
+                                        } finally {
+                                            if (Bridge.is($t, System.IDisposable)) {
+                                                $t.System$IDisposable$dispose();
+                                            }
+                                        }
+                                        if (!this._finalStates.contains(bestFinalState)) {
+                                            $step = 1;
+                                            continue;
+                                        } 
+                                        $step = 2;
+                                        continue;
+                                }
+                                case 1: {
+                                    return false;
+                                }
+                                case 2: {
+                                    curState = bestFinalState;
+                                        end = false;
+                                    $step = 3;
+                                    continue;
+                                }
+                                case 3: {
+                                    if ( !end ) {
+                                            $step = 4;
+                                            continue;
+                                        } 
+                                        $step = 9;
+                                        continue;
+                                }
+                                case 4: {
+                                    if (curState === state) {
+                                            $step = 5;
+                                            continue;
+                                        } else  {
+                                            $step = 6;
+                                            continue;
+                                        }
+                                }
+                                case 5: {
+                                    end = true;
+                                    $step = 8;
+                                    continue;
+                                }
+                                case 6: {
+                                    arcIndex = stateBestPredArcs.v[System.Array.index(curState, stateBestPredArcs.v)];
+                                        arc = System.Array.getItem(this.arcs, arcIndex, SIL.Machine.Translation.WordGraphArc);
+                                        $enumerator.current = arc;
+                                        $step = 7;
+                                        return true;
+                                }
+                                case 7: {
+                                    curState = arc.prevState;
+                                    $step = 8;
+                                    continue;
+                                }
+                                case 8: {
+                                    
+                                        $step = 3;
+                                        continue;
+                                }
+                                case 9: {
+
+                                }
+                                default: {
+                                    return false;
+                                }
+                            }
+                        }
+                    } catch($async_e1) {
+                        $async_e = System.Exception.create($async_e1);
+                        throw $async_e;
+                    }
+                }));
+                return $enumerator;
+            }, arguments));
+        }
+    }
+    });
+
+    Bridge.define("SIL.Machine.Translation.WordGraphArc", {
+        props: {
+            prevState: 0,
+            nextState: 0,
+            score: 0,
+            words: null,
+            alignment: null,
+            wordConfidences: null,
+            sourceStartIndex: 0,
+            sourceEndIndex: 0,
+            isUnknown: false
+        },
+        ctors: {
+            ctor: function (prevState, nextState, score, words, alignment, wordConfidences, sourceStartIndex, sourceEndIndex, isUnknown) {
+                this.$initialize();
+                this.prevState = prevState;
+                this.nextState = nextState;
+                this.score = score;
+                this.words = System.Linq.Enumerable.from(words).toArray();
+                this.alignment = alignment;
+                this.wordConfidences = System.Linq.Enumerable.from(wordConfidences).toArray();
+                this.sourceStartIndex = sourceStartIndex;
+                this.sourceEndIndex = sourceEndIndex;
+                this.isUnknown = isUnknown;
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Client.IHttpClient", {
+        $kind: "interface"
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Client.HttpException", {
+        inherits: [System.Exception],
+        props: {
+            statusCode: 0
+        },
+        ctors: {
+            ctor: function (message) {
+                this.$initialize();
+                System.Exception.ctor.call(this, message);
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Client.HttpRequestMethod", {
+        $kind: "enum",
+        statics: {
+            fields: {
+                get: 0,
+                post: 1,
+                put: 2,
+                delete: 3
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Client.HttpResponse", {
+        props: {
+            isSuccess: false,
+            statusCode: 0,
+            content: null
+        },
+        ctors: {
+            ctor: function (isSuccess, statusCode, content) {
+                if (content === void 0) { content = null; }
+
+                this.$initialize();
+                this.isSuccess = isSuccess;
+                this.statusCode = statusCode;
+                this.content = content;
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Client.TranslationRestClient", {
+        statics: {
+            fields: {
+                serializerSettings: null
+            },
+            ctors: {
+                init: function () {
+                    var $t;
+                    this.serializerSettings = ($t = new Newtonsoft.Json.JsonSerializerSettings(), $t.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(), $t);
+                }
+            },
+            methods: {
+                createModel: function (resultDto, sourceSegment) {
+                    return new SIL.Machine.Translation.InteractiveTranslationResult(SIL.Machine.WebApi.Client.TranslationRestClient.createModel$3(resultDto.wordGraph), SIL.Machine.WebApi.Client.TranslationRestClient.createModel$1(resultDto.ruleResult, sourceSegment));
+                },
+                createModel$3: function (dto) {
+                    var $t;
+                    var arcs = new (System.Collections.Generic.List$1(SIL.Machine.Translation.WordGraphArc))();
+                    $t = Bridge.getEnumerator(dto.arcs);
+                    try {
+                        while ($t.moveNext()) {
+                            var arcDto = $t.Current;
+                            arcs.add(new SIL.Machine.Translation.WordGraphArc(arcDto.prevState, arcDto.nextState, arcDto.score, arcDto.words, SIL.Machine.WebApi.Client.TranslationRestClient.createModel$2(arcDto.alignment, ((((arcDto.sourceEndIndex - arcDto.sourceStartIndex) | 0) + 1) | 0), arcDto.words.length), System.Linq.Enumerable.from(arcDto.confidences).select(function(x) { return Bridge.cast(x, System.Double); }), arcDto.sourceStartIndex, arcDto.sourceEndIndex, arcDto.isUnknown));
+                        }
+                    } finally {
+                        if (Bridge.is($t, System.IDisposable)) {
+                            $t.System$IDisposable$dispose();
+                        }
+                    }
+                    return new SIL.Machine.Translation.WordGraph(arcs, dto.finalStates, dto.initialStateScore);
+                },
+                createModel$1: function (dto, sourceSegment) {
+                    if (dto == null) {
+                        return null;
+                    }
+
+                    return new SIL.Machine.Translation.TranslationResult(sourceSegment, dto.target, System.Linq.Enumerable.from(dto.confidences).select(function(x) { return Bridge.cast(x, System.Double); }), dto.sources, SIL.Machine.WebApi.Client.TranslationRestClient.createModel$2(dto.alignment, System.Array.getCount(sourceSegment, System.String), dto.target.length));
+                },
+                createModel$2: function (dto, i, j) {
+                    var $t;
+                    var alignment = new SIL.Machine.Translation.WordAlignmentMatrix.$ctor1(i, j);
+                    $t = Bridge.getEnumerator(dto);
+                    try {
+                        while ($t.moveNext()) {
+                            var wordPairDto = $t.Current;
+                            alignment.setitem(wordPairDto.sourceIndex, wordPairDto.targetIndex, SIL.Machine.Translation.AlignmentType.aligned);
+                        }
+                    } finally {
+                        if (Bridge.is($t, System.IDisposable)) {
+                            $t.System$IDisposable$dispose();
+                        }
+                    }return alignment;
+                }
+            }
+        },
+        props: {
+            projectId: null,
+            baseUrl: {
+                get: function () {
+                    return this.httpClient.SIL$Machine$WebApi$Client$IHttpClient$baseUrl;
+                }
+            },
+            httpClient: null,
+            errorCorrectionModel: null
+        },
+        ctors: {
+            ctor: function (baseUrl, projectId, httpClient) {
+                this.$initialize();
+                this.projectId = projectId;
+                this.httpClient = httpClient;
+                this.errorCorrectionModel = new SIL.Machine.Translation.ErrorCorrectionModel();
+                this.httpClient.SIL$Machine$WebApi$Client$IHttpClient$baseUrl = baseUrl;
+            }
+        },
+        methods: {
+            translateInteractivelyAsync: function (sourceSegment) {
+                var $step = 0,
+                    $task1, 
+                    $taskResult1, 
+                    $jumpFromFinally, 
+                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                    $returnValue, 
+                    url, 
+                    body, 
+                    response, 
+                    $t, 
+                    resultDto, 
+                    $async_e, 
+                    $asyncBody = Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                $step = System.Array.min([0,1], $step);
+                                switch ($step) {
+                                    case 0: {
+                                        url = System.String.format("translation/engines/project:{0}/actions/interactiveTranslate", this.projectId);
+                                        body = Newtonsoft.Json.JsonConvert.SerializeObject(sourceSegment, SIL.Machine.WebApi.Client.TranslationRestClient.serializerSettings);
+                                        $task1 = this.httpClient.SIL$Machine$WebApi$Client$IHttpClient$sendAsync(SIL.Machine.WebApi.Client.HttpRequestMethod.post, url, body, "application/json");
+                                        $step = 1;
+                                        $task1.continueWith($asyncBody);
+                                        return;
+                                    }
+                                    case 1: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        response = $taskResult1;
+                                        if (!response.isSuccess) {
+                                            throw ($t = new SIL.Machine.WebApi.Client.HttpException("Error calling interactiveTranslate action."), $t.statusCode = response.statusCode, $t);
+                                        }
+                                        resultDto = Newtonsoft.Json.JsonConvert.DeserializeObject(response.content, SIL.Machine.WebApi.Dtos.InteractiveTranslationResultDto, SIL.Machine.WebApi.Client.TranslationRestClient.serializerSettings);
+                                        $tcs.setResult(SIL.Machine.WebApi.Client.TranslationRestClient.createModel(resultDto, sourceSegment));
+                                        return;
+                                    }
+                                    default: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            $tcs.setException($async_e);
+                        }
+                    }, arguments);
+
+                $asyncBody();
+                return $tcs.task;
+            },
+            trainSegmentPairAsync: function (sourceSegment, targetSegment) {
+                var $step = 0,
+                    $task1, 
+                    $taskResult1, 
+                    $jumpFromFinally, 
+                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                    $returnValue, 
+                    url, 
+                    pairDto, 
+                    $t, 
+                    body, 
+                    response, 
+                    $async_e, 
+                    $asyncBody = Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                $step = System.Array.min([0,1], $step);
+                                switch ($step) {
+                                    case 0: {
+                                        url = System.String.format("translation/engines/project:{0}/actions/trainSegment", this.projectId);
+                                        pairDto = ($t = new SIL.Machine.WebApi.Dtos.SegmentPairDto(), $t.sourceSegment = System.Linq.Enumerable.from(sourceSegment).toArray(), $t.targetSegment = System.Linq.Enumerable.from(targetSegment).toArray(), $t);
+                                        body = Newtonsoft.Json.JsonConvert.SerializeObject(pairDto, SIL.Machine.WebApi.Client.TranslationRestClient.serializerSettings);
+                                        $task1 = this.httpClient.SIL$Machine$WebApi$Client$IHttpClient$sendAsync(SIL.Machine.WebApi.Client.HttpRequestMethod.post, url, body, "application/json");
+                                        $step = 1;
+                                        $task1.continueWith($asyncBody);
+                                        return;
+                                    }
+                                    case 1: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        response = $taskResult1;
+                                        if (!response.isSuccess) {
+                                            throw ($t = new SIL.Machine.WebApi.Client.HttpException("Error calling trainSegment action."), $t.statusCode = response.statusCode, $t);
+                                        }
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                    default: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            $tcs.setException($async_e);
+                        }
+                    }, arguments);
+
+                $asyncBody();
+                return $tcs.task;
+            },
+            trainAsync: function (progress) {
+                var $step = 0,
+                    $task1, 
+                    $taskResult1, 
+                    $task2, 
+                    $taskResult2, 
+                    $task3, 
+                    $jumpFromFinally, 
+                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                    $returnValue, 
+                    engineId, 
+                    buildDto, 
+                    $async_e, 
+                    $asyncBody = Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                $step = System.Array.min([0,1,2,3], $step);
+                                switch ($step) {
+                                    case 0: {
+                                        $task1 = this.getEngineIdAsync();
+                                        $step = 1;
+                                        $task1.continueWith($asyncBody);
+                                        return;
+                                    }
+                                    case 1: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        engineId = $taskResult1;
+                                        $task2 = this.createBuildAsync(engineId);
+                                        $step = 2;
+                                        $task2.continueWith($asyncBody);
+                                        return;
+                                    }
+                                    case 2: {
+                                        $taskResult2 = $task2.getAwaitedResult();
+                                        buildDto = $taskResult2;
+                                        $task3 = this.pollBuildProgressAsync(buildDto, progress);
+                                        $step = 3;
+                                        $task3.continueWith($asyncBody);
+                                        return;
+                                    }
+                                    case 3: {
+                                        $task3.getAwaitedResult();
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                    default: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            $tcs.setException($async_e);
+                        }
+                    }, arguments);
+
+                $asyncBody();
+                return $tcs.task;
+            },
+            listenForTrainingStatus: function (progress) {
+                var $step = 0,
+                    $task1, 
+                    $taskResult1, 
+                    $task2, 
+                    $taskResult2, 
+                    $task3, 
+                    $jumpFromFinally, 
+                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                    $returnValue, 
+                    engineId, 
+                    url, 
+                    response, 
+                    $t, 
+                    buildDto, 
+                    $async_e, 
+                    $asyncBody = Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                $step = System.Array.min([0,1,2,3], $step);
+                                switch ($step) {
+                                    case 0: {
+                                        $task1 = this.getEngineIdAsync();
+                                        $step = 1;
+                                        $task1.continueWith($asyncBody);
+                                        return;
+                                    }
+                                    case 1: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        engineId = $taskResult1;
+                                        url = System.String.format("translation/builds/engine:{0}?waitNew=true", engineId);
+                                        $task2 = this.httpClient.SIL$Machine$WebApi$Client$IHttpClient$sendAsync(SIL.Machine.WebApi.Client.HttpRequestMethod.get, url, void 0, void 0);
+                                        $step = 2;
+                                        $task2.continueWith($asyncBody);
+                                        return;
+                                    }
+                                    case 2: {
+                                        $taskResult2 = $task2.getAwaitedResult();
+                                        response = $taskResult2;
+                                        if (!response.isSuccess) {
+                                            throw ($t = new SIL.Machine.WebApi.Client.HttpException("Error getting build."), $t.statusCode = response.statusCode, $t);
+                                        }
+                                        buildDto = Newtonsoft.Json.JsonConvert.DeserializeObject(response.content, SIL.Machine.WebApi.Dtos.BuildDto, SIL.Machine.WebApi.Client.TranslationRestClient.serializerSettings);
+                                        $task3 = this.pollBuildProgressAsync(buildDto, progress);
+                                        $step = 3;
+                                        $task3.continueWith($asyncBody);
+                                        return;
+                                    }
+                                    case 3: {
+                                        $task3.getAwaitedResult();
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                    default: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            $tcs.setException($async_e);
+                        }
+                    }, arguments);
+
+                $asyncBody();
+                return $tcs.task;
+            },
+            getEngineIdAsync: function () {
+                var $step = 0,
+                    $task1, 
+                    $taskResult1, 
+                    $jumpFromFinally, 
+                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                    $returnValue, 
+                    url, 
+                    response, 
+                    $t, 
+                    engineDto, 
+                    $async_e, 
+                    $asyncBody = Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                $step = System.Array.min([0,1], $step);
+                                switch ($step) {
+                                    case 0: {
+                                        url = System.String.format("translation/engines/project:{0}", this.projectId);
+                                        $task1 = this.httpClient.SIL$Machine$WebApi$Client$IHttpClient$sendAsync(SIL.Machine.WebApi.Client.HttpRequestMethod.get, url, void 0, void 0);
+                                        $step = 1;
+                                        $task1.continueWith($asyncBody);
+                                        return;
+                                    }
+                                    case 1: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        response = $taskResult1;
+                                        if (!response.isSuccess) {
+                                            throw ($t = new SIL.Machine.WebApi.Client.HttpException("Error getting engine identifier."), $t.statusCode = response.statusCode, $t);
+                                        }
+                                        engineDto = Newtonsoft.Json.JsonConvert.DeserializeObject(response.content, SIL.Machine.WebApi.Dtos.EngineDto, SIL.Machine.WebApi.Client.TranslationRestClient.serializerSettings);
+                                        $tcs.setResult(engineDto.id);
+                                        return;
+                                    }
+                                    default: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            $tcs.setException($async_e);
+                        }
+                    }, arguments);
+
+                $asyncBody();
+                return $tcs.task;
+            },
+            createBuildAsync: function (engineId) {
+                var $step = 0,
+                    $task1, 
+                    $taskResult1, 
+                    $jumpFromFinally, 
+                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                    $returnValue, 
+                    body, 
+                    response, 
+                    $t, 
+                    $async_e, 
+                    $asyncBody = Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                $step = System.Array.min([0,1], $step);
+                                switch ($step) {
+                                    case 0: {
+                                        body = Newtonsoft.Json.JsonConvert.SerializeObject(engineId, SIL.Machine.WebApi.Client.TranslationRestClient.serializerSettings);
+                                        $task1 = this.httpClient.SIL$Machine$WebApi$Client$IHttpClient$sendAsync(SIL.Machine.WebApi.Client.HttpRequestMethod.post, "translation/builds", body, "application/json");
+                                        $step = 1;
+                                        $task1.continueWith($asyncBody);
+                                        return;
+                                    }
+                                    case 1: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        response = $taskResult1;
+                                        if (!response.isSuccess) {
+                                            throw ($t = new SIL.Machine.WebApi.Client.HttpException("Error starting build."), $t.statusCode = response.statusCode, $t);
+                                        }
+                                        $tcs.setResult(Newtonsoft.Json.JsonConvert.DeserializeObject(response.content, SIL.Machine.WebApi.Dtos.BuildDto, SIL.Machine.WebApi.Client.TranslationRestClient.serializerSettings));
+                                        return;
+                                    }
+                                    default: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            $tcs.setException($async_e);
+                        }
+                    }, arguments);
+
+                $asyncBody();
+                return $tcs.task;
+            },
+            pollBuildProgressAsync: function (buildDto, progress) {
+                var $step = 0,
+                    $task1, 
+                    $taskResult1, 
+                    $jumpFromFinally, 
+                    $tcs = new System.Threading.Tasks.TaskCompletionSource(), 
+                    $returnValue, 
+                    url, 
+                    response, 
+                    $t, 
+                    $async_e, 
+                    $asyncBody = Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                $step = System.Array.min([0,1,2,3], $step);
+                                switch ($step) {
+                                    case 0: {
+                                        if ( true ) {
+                                            $step = 1;
+                                            continue;
+                                        } 
+                                        $step = 3;
+                                        continue;
+                                    }
+                                    case 1: {
+                                        progress(new SIL.Machine.Translation.SmtTrainProgress.$ctor1(buildDto.currentStep, buildDto.currentStepMessage, buildDto.stepCount));
+
+                                        url = System.String.format("translation/builds/id:{0}?minRevision={1}", buildDto.id, buildDto.revision.add(System.Int64(1)));
+                                        $task1 = this.httpClient.SIL$Machine$WebApi$Client$IHttpClient$sendAsync(SIL.Machine.WebApi.Client.HttpRequestMethod.get, url, void 0, void 0);
+                                        $step = 2;
+                                        $task1.continueWith($asyncBody);
+                                        return;
+                                    }
+                                    case 2: {
+                                        $taskResult1 = $task1.getAwaitedResult();
+                                        response = $taskResult1;
+                                        if (response.isSuccess) {
+                                            buildDto = Newtonsoft.Json.JsonConvert.DeserializeObject(response.content, SIL.Machine.WebApi.Dtos.BuildDto, SIL.Machine.WebApi.Client.TranslationRestClient.serializerSettings);
+                                        } else {
+                                            if (response.statusCode === 404) {
+                                                $step = 3;
+                                                continue;
+                                            } else {
+                                                throw ($t = new SIL.Machine.WebApi.Client.HttpException("Error getting build status."), $t.statusCode = response.statusCode, $t);
+                                            }
+                                        }
+
+                                        $step = 0;
+                                        continue;
+                                    }
+                                    case 3: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                    default: {
+                                        $tcs.setResult(null);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            $tcs.setException($async_e);
+                        }
+                    }, arguments);
+
+                $asyncBody();
+                return $tcs.task;
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Dtos.AlignedWordPairDto", {
+        props: {
+            sourceIndex: 0,
+            targetIndex: 0
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Dtos.LinkDto", {
+        props: {
+            href: null
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Dtos.InteractiveTranslationResultDto", {
+        props: {
+            wordGraph: null,
+            ruleResult: null
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Dtos.SegmentPairDto", {
+        props: {
+            sourceSegment: null,
+            targetSegment: null
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Dtos.TranslationResultDto", {
+        props: {
+            target: null,
+            confidences: null,
+            sources: null,
+            alignment: null
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Dtos.WordGraphArcDto", {
+        props: {
+            prevState: 0,
+            nextState: 0,
+            score: 0,
+            words: null,
+            confidences: null,
+            sourceStartIndex: 0,
+            sourceEndIndex: 0,
+            isUnknown: false,
+            alignment: null
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Dtos.WordGraphDto", {
+        props: {
+            initialStateScore: 0,
+            finalStates: null,
+            arcs: null
+        }
+    });
+
+    Bridge.define("SIL.Machine.Annotations.IntegerSpanFactory", {
+        inherits: [SIL.Machine.Annotations.SpanFactory$1(System.Int32)],
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                SIL.Machine.Annotations.SpanFactory$1(System.Int32).ctor.call(this);
+                this.empty = new (SIL.Machine.Annotations.Span$1(System.Int32)).$ctor2(this, -1, -1);
+            }
+        },
+        methods: {
+            calcLength: function (start, end) {
+                return ((end - start) | 0);
+            },
+            create$3: function (offset, dir) {
+                return this.create$2(offset, ((offset + (dir === SIL.Machine.DataStructures.Direction.leftToRight ? 1 : -1)) | 0), dir);
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Tokenization.WhitespaceTokenizer", {
+        inherits: [SIL.Machine.Tokenization.ITokenizer$2(System.String,System.Int32)],
+        props: {
+            spanFactory: null
+        },
+        alias: [
+            "tokenize$1", ["SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize", "SIL$Machine$Tokenization$ITokenizer$2$tokenize"],
+            "tokenize", ["SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize$1", "SIL$Machine$Tokenization$ITokenizer$2$tokenize$1"]
+        ],
+        ctors: {
+            ctor: function () {
+                SIL.Machine.Tokenization.WhitespaceTokenizer.$ctor1.call(this, new SIL.Machine.Annotations.IntegerSpanFactory());
+            },
+            $ctor1: function (spanFactory) {
+                this.$initialize();
+                this.spanFactory = spanFactory;
+            }
+        },
+        methods: {
+            tokenize$1: function (data) {
+                if (Bridge.referenceEquals(data, "")) {
+                    return System.Linq.Enumerable.empty();
+                }
+
+                return this.tokenize(data, this.spanFactory.create$1(0, data.length));
+            },
+            tokenize: function (data, dataSpan) {
+                return new (Bridge.GeneratorEnumerable$1(SIL.Machine.Annotations.Span$1(System.Int32)))(Bridge.fn.bind(this, function (data, dataSpan) {
+                    var $step = 0,
+                        $jumpFromFinally,
+                        $returnValue,
+                        startIndex,
+                        i,
+                        $async_e;
+
+                    var $enumerator = new (Bridge.GeneratorEnumerator$1(SIL.Machine.Annotations.Span$1(System.Int32)))(Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                switch ($step) {
+                                    case 0: {
+                                        if (dataSpan.isEmpty) {
+                                                $step = 1;
+                                                continue;
+                                            } 
+                                            $step = 2;
+                                            continue;
+                                    }
+                                    case 1: {
+                                        return false;
+                                    }
+                                    case 2: {
+                                        startIndex = -1;
+                                            i = dataSpan.start;
+                                            $step = 3;
+                                            continue;
+                                    }
+                                    case 3: {
+                                        if ( i < dataSpan.end ) {
+                                                $step = 4;
+                                                continue;
+                                            }
+                                        $step = 12;
+                                        continue;
+                                    }
+                                    case 4: {
+                                        if (System.Char.isWhiteSpace(String.fromCharCode(data.charCodeAt(i)))) {
+                                                $step = 5;
+                                                continue;
+                                            } else  {
+                                                $step = 9;
+                                                continue;
+                                            }
+                                    }
+                                    case 5: {
+                                        if (startIndex !== -1) {
+                                                $step = 6;
+                                                continue;
+                                            } 
+                                            $step = 8;
+                                            continue;
+                                    }
+                                    case 6: {
+                                        $enumerator.current = this.spanFactory.create$1(startIndex, i);
+                                            $step = 7;
+                                            return true;
+                                    }
+                                    case 7: {
+                                        $step = 8;
+                                        continue;
+                                    }
+                                    case 8: {
+                                        startIndex = -1;
+                                        $step = 10;
+                                        continue;
+                                    }
+                                    case 9: {
+                                        if (startIndex === -1) {
+                                                startIndex = i;
+                                            }
+                                        $step = 10;
+                                        continue;
+                                    }
+                                    case 10: {
+                                        $step = 11;
+                                        continue;
+                                    }
+                                    case 11: {
+                                        i = (i + 1) | 0;
+                                        $step = 3;
+                                        continue;
+                                    }
+                                    case 12: {
+                                        if (startIndex !== -1) {
+                                                $step = 13;
+                                                continue;
+                                            } 
+                                            $step = 15;
+                                            continue;
+                                    }
+                                    case 13: {
+                                        $enumerator.current = this.spanFactory.create$1(startIndex, data.length);
+                                            $step = 14;
+                                            return true;
+                                    }
+                                    case 14: {
+                                        $step = 15;
+                                        continue;
+                                    }
+                                    case 15: {
+
+                                    }
+                                    default: {
+                                        return false;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            throw $async_e;
+                        }
+                    }));
+                    return $enumerator;
+                }, arguments));
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Tokenization.RegexTokenizer", {
+        inherits: [SIL.Machine.Tokenization.ITokenizer$2(System.String,System.Int32)],
+        fields: {
+            _spanFactory: null,
+            _regex: null
+        },
+        alias: [
+            "tokenize$1", ["SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize", "SIL$Machine$Tokenization$ITokenizer$2$tokenize"],
+            "tokenize", ["SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize$1", "SIL$Machine$Tokenization$ITokenizer$2$tokenize$1"]
+        ],
+        ctors: {
+            $ctor1: function (regexPattern) {
+                SIL.Machine.Tokenization.RegexTokenizer.ctor.call(this, new SIL.Machine.Annotations.IntegerSpanFactory(), regexPattern);
+            },
+            ctor: function (spanFactory, regexPattern) {
+                this.$initialize();
+                this._spanFactory = spanFactory;
+                this._regex = new System.Text.RegularExpressions.Regex.ctor(regexPattern);
+            }
+        },
+        methods: {
+            tokenize$1: function (data) {
+                if (Bridge.referenceEquals(data, "")) {
+                    return System.Linq.Enumerable.empty();
+                }
+
+                return this.tokenize(data, this._spanFactory.create$1(0, data.length));
+            },
+            tokenize: function (data, dataSpan) {
+                if (dataSpan.isEmpty) {
+                    return System.Linq.Enumerable.empty();
+                }
+
+                return System.Linq.Enumerable.from(this._regex.matches(data.substr(0, dataSpan.end), dataSpan.start)).select(function(x) { return Bridge.cast(x, System.Text.RegularExpressions.Match); }).select(Bridge.fn.bind(this, $asm.$.SIL.Machine.Tokenization.RegexTokenizer.f1));
+            }
+        }
+    });
+
+    Bridge.ns("SIL.Machine.Tokenization.RegexTokenizer", $asm.$);
+
+    Bridge.apply($asm.$.SIL.Machine.Tokenization.RegexTokenizer, {
+        f1: function (m) {
+            return this._spanFactory.create$1(m.getIndex(), ((m.getIndex() + m.getLength()) | 0));
+        }
+    });
+
+    Bridge.define("SIL.Machine.Tokenization.SimpleStringDetokenizer", {
+        inherits: [SIL.Machine.Tokenization.IDetokenizer$2(System.String,System.String)],
+        fields: {
+            _operationSelector: null
+        },
+        alias: ["detokenize", ["SIL$Machine$Tokenization$IDetokenizer$2$System$String$System$String$detokenize", "SIL$Machine$Tokenization$IDetokenizer$2$detokenize"]],
+        ctors: {
+            ctor: function (operationSelector) {
+                this.$initialize();
+                this._operationSelector = operationSelector;
+            }
+        },
+        methods: {
+            detokenize: function (tokens) {
+                var $t;
+                var currentRightLeftTokens = new (System.Collections.Generic.HashSet$1(System.String)).ctor();
+                var sb = new System.Text.StringBuilder();
+                var nextMergeLeft = true;
+                $t = Bridge.getEnumerator(tokens, System.String);
+                try {
+                    while ($t.moveNext()) {
+                        var token = $t.Current;
+                        var mergeRight = false;
+                        switch (this._operationSelector(token)) {
+                            case SIL.Machine.Tokenization.DetokenizeOperation.mergeLeft: 
+                                nextMergeLeft = true;
+                                break;
+                            case SIL.Machine.Tokenization.DetokenizeOperation.mergeRight: 
+                                mergeRight = true;
+                                break;
+                            case SIL.Machine.Tokenization.DetokenizeOperation.mergeRightFirstLeftSecond: 
+                                if (currentRightLeftTokens.contains(token)) {
+                                    nextMergeLeft = true;
+                                    currentRightLeftTokens.remove(token);
+                                } else {
+                                    mergeRight = true;
+                                    currentRightLeftTokens.add(token);
+                                }
+                                break;
+                            case SIL.Machine.Tokenization.DetokenizeOperation.noOperation: 
+                                break;
+                        }
+
+                        if (!nextMergeLeft) {
+                            sb.append(" ");
+                        } else {
+                            nextMergeLeft = false;
+                        }
+
+                        sb.append(token);
+
+                        if (mergeRight) {
+                            nextMergeLeft = true;
+                        }
+                    }
+                } finally {
+                    if (Bridge.is($t, System.IDisposable)) {
+                        $t.System$IDisposable$dispose();
+                    }
+                }return sb.toString();
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.SegmentEditDistance", {
+        inherits: [SIL.Machine.Translation.EditDistance$2(System.Collections.Generic.IReadOnlyList$1(System.String),System.String)],
+        statics: {
+            methods: {
+                getOpCounts: function (ops, hitCount, insCount, substCount, delCount) {
+                    var $t;
+                    hitCount.v = 0;
+                    insCount.v = 0;
+                    substCount.v = 0;
+                    delCount.v = 0;
+                    $t = Bridge.getEnumerator(ops, SIL.Machine.Translation.EditOperation);
+                    try {
+                        while ($t.moveNext()) {
+                            var op = $t.Current;
+                            switch (op) {
+                                case SIL.Machine.Translation.EditOperation.hit: 
+                                    hitCount.v = (hitCount.v + 1) | 0;
+                                    break;
+                                case SIL.Machine.Translation.EditOperation.insert: 
+                                    insCount.v = (insCount.v + 1) | 0;
+                                    break;
+                                case SIL.Machine.Translation.EditOperation.substitute: 
+                                    substCount.v = (substCount.v + 1) | 0;
+                                    break;
+                                case SIL.Machine.Translation.EditOperation.delete: 
+                                    delCount.v = (delCount.v + 1) | 0;
+                                    break;
+                            }
+                        }
+                    } finally {
+                        if (Bridge.is($t, System.IDisposable)) {
+                            $t.System$IDisposable$dispose();
+                        }
+                    }}
+            }
+        },
+        fields: {
+            _wordEditDistance: null
+        },
+        props: {
+            hitCost: {
+                get: function () {
+                    return Bridge.ensureBaseProperty(this, "hitCost").$SIL$Machine$Translation$EditDistance$2$System$Collections$Generic$IReadOnlyList$1$System$String$System$String$hitCost;
+                },
+                set: function (value) {
+                    Bridge.ensureBaseProperty(this, "hitCost").$SIL$Machine$Translation$EditDistance$2$System$Collections$Generic$IReadOnlyList$1$System$String$System$String$hitCost = value;
+                    this._wordEditDistance.hitCost = value;
+                }
+            },
+            substitutionCost: {
+                get: function () {
+                    return Bridge.ensureBaseProperty(this, "substitutionCost").$SIL$Machine$Translation$EditDistance$2$System$Collections$Generic$IReadOnlyList$1$System$String$System$String$substitutionCost;
+                },
+                set: function (value) {
+                    Bridge.ensureBaseProperty(this, "substitutionCost").$SIL$Machine$Translation$EditDistance$2$System$Collections$Generic$IReadOnlyList$1$System$String$System$String$substitutionCost = value;
+                    this._wordEditDistance.substitutionCost = value;
+                }
+            },
+            insertionCost: {
+                get: function () {
+                    return Bridge.ensureBaseProperty(this, "insertionCost").$SIL$Machine$Translation$EditDistance$2$System$Collections$Generic$IReadOnlyList$1$System$String$System$String$insertionCost;
+                },
+                set: function (value) {
+                    Bridge.ensureBaseProperty(this, "insertionCost").$SIL$Machine$Translation$EditDistance$2$System$Collections$Generic$IReadOnlyList$1$System$String$System$String$insertionCost = value;
+                    this._wordEditDistance.insertionCost = value;
+                }
+            },
+            deletionCost: {
+                get: function () {
+                    return Bridge.ensureBaseProperty(this, "deletionCost").$SIL$Machine$Translation$EditDistance$2$System$Collections$Generic$IReadOnlyList$1$System$String$System$String$deletionCost;
+                },
+                set: function (value) {
+                    Bridge.ensureBaseProperty(this, "deletionCost").$SIL$Machine$Translation$EditDistance$2$System$Collections$Generic$IReadOnlyList$1$System$String$System$String$deletionCost = value;
+                    this._wordEditDistance.deletionCost = value;
+                }
+            }
+        },
+        ctors: {
+            ctor: function () {
+                this.$initialize();
+                SIL.Machine.Translation.EditDistance$2(System.Collections.Generic.IReadOnlyList$1(System.String),System.String).ctor.call(this);
+                this._wordEditDistance = new SIL.Machine.Translation.WordEditDistance();
+            }
+        },
+        methods: {
+            computePrefix$1: function (x, y, isLastItemComplete, usePrefixDelOp, wordOps, charOps) {
+                var distMatrix = { };
+                var dist = this.compute$2(x, y, isLastItemComplete, usePrefixDelOp, distMatrix);
+
+                charOps.v = null;
+                var i = { v : System.Array.getCount(x, System.String) };
+                var j = { v : System.Array.getCount(y, System.String) };
+                var ops = new (System.Collections.Generic.Stack$1(SIL.Machine.Translation.EditOperation)).ctor();
+                while (i.v > 0 || j.v > 0) {
+                    var op = { v : new SIL.Machine.Translation.EditOperation() };
+                    this.processMatrixCell(x, y, distMatrix.v, usePrefixDelOp, j.v !== System.Array.getCount(y, System.String) || isLastItemComplete, i.v, j.v, i, j, op);
+                    if (op.v !== SIL.Machine.Translation.EditOperation.prefixDelete) {
+                        ops.push(op.v);
+                    }
+
+                    if (((j.v + 1) | 0) === System.Array.getCount(y, System.String) && !isLastItemComplete && op.v === SIL.Machine.Translation.EditOperation.hit) {
+                        this._wordEditDistance.computePrefix(System.Array.getItem(x, i.v, System.String), System.Array.getItem(y, ((System.Array.getCount(y, System.String) - 1) | 0), System.String), true, true, charOps);
+                    }
+                }
+
+                wordOps.v = ops.toArray();
+                if (charOps.v == null) {
+                    charOps.v = System.Array.init(0, 0, SIL.Machine.Translation.EditOperation);
+                }
+
+                return dist;
+            },
+            incrComputePrefixFirstRow: function (scores, prevScores, yIncr) {
+                var $t;
+                if (!Bridge.referenceEquals(scores, prevScores)) {
+                    System.Array.clear(scores, System.Double);
+                    $t = Bridge.getEnumerator(prevScores, System.Double);
+                    try {
+                        while ($t.moveNext()) {
+                            var score = $t.Current;
+                            System.Array.add(scores, score, System.Double);
+                        }
+                    } finally {
+                        if (Bridge.is($t, System.IDisposable)) {
+                            $t.System$IDisposable$dispose();
+                        }
+                    }}
+
+                var startPos = System.Array.getCount(scores, System.Double);
+                for (var jIncr = 0; jIncr < System.Array.getCount(yIncr, System.String); jIncr = (jIncr + 1) | 0) {
+                    var j = (startPos + jIncr) | 0;
+                    if (j === 0) {
+                        System.Array.add(scores, this.getInsertionCost(System.Array.getItem(yIncr, jIncr, System.String)), System.Double);
+                    } else {
+                        System.Array.add(scores, System.Array.getItem(scores, ((j - 1) | 0), System.Double) + this.getInsertionCost(System.Array.getItem(yIncr, jIncr, System.String)), System.Double);
+                    }
+                }
+            },
+            incrComputePrefix: function (scores, prevScores, xWord, yIncr, isLastItemComplete) {
+                var x = System.Array.init([xWord], System.String);
+                var y = System.Array.init(((System.Array.getCount(prevScores, System.Double) - 1) | 0), null, System.String);
+                for (var i = 0; i < System.Array.getCount(yIncr, System.String); i = (i + 1) | 0) {
+                    y[System.Array.index(((((((System.Array.getCount(prevScores, System.Double) - System.Array.getCount(yIncr, System.String)) | 0) - 1) | 0) + i) | 0), y)] = System.Array.getItem(yIncr, i, System.String);
+                }
+
+                var distMatrix = this.initDistMatrix(x, y);
+
+                for (var j = 0; j < System.Array.getCount(prevScores, System.Double); j = (j + 1) | 0) {
+                    distMatrix.set([0, j], System.Array.getItem(prevScores, j, System.Double));
+                }
+                for (var j1 = 0; j1 < System.Array.getCount(scores, System.Double); j1 = (j1 + 1) | 0) {
+                    distMatrix.set([1, j1], System.Array.getItem(scores, j1, System.Double));
+                }
+
+                while (System.Array.getCount(scores, System.Double) < System.Array.getCount(prevScores, System.Double)) {
+                    System.Array.add(scores, 0, System.Double);
+                }
+
+                var startPos = (System.Array.getCount(prevScores, System.Double) - System.Array.getCount(yIncr, System.String)) | 0;
+
+                var ops = new (System.Collections.Generic.List$1(SIL.Machine.Translation.EditOperation))();
+                for (var jIncr = 0; jIncr < System.Array.getCount(yIncr, System.String); jIncr = (jIncr + 1) | 0) {
+                    var j2 = (startPos + jIncr) | 0;
+                    var iPred = { }, jPred = { };
+                    var op = { v : new SIL.Machine.Translation.EditOperation() };
+                    var dist = this.processMatrixCell(x, y, distMatrix, false, j2 !== y.length || isLastItemComplete, 1, j2, iPred, jPred, op);
+                    System.Array.setItem(scores, j2, dist, System.Double);
+                    distMatrix.set([1, j2], dist);
+                    ops.add(op.v);
+                }
+
+                return ops;
+            },
+            getCount: function (item) {
+                return System.Array.getCount(item, System.String);
+            },
+            getItem: function (seq, index) {
+                return System.Array.getItem(seq, index, System.String);
+            },
+            getHitCost: function (x, y, isComplete) {
+                return this.hitCost * y.length;
+            },
+            getSubstitutionCost: function (x, y, isComplete) {
+                if (Bridge.referenceEquals(x, "")) {
+                    return (this.substitutionCost * 0.99) * y.length;
+                }
+
+                var ops = { };
+                if (isComplete) {
+                    this._wordEditDistance.compute$1(x, y, ops);
+                } else {
+                    this._wordEditDistance.computePrefix(x, y, true, true, ops);
+                }
+
+                var hitCount = { }, insCount = { }, substCount = { }, delCount = { };
+                SIL.Machine.Translation.SegmentEditDistance.getOpCounts(ops.v, hitCount, insCount, substCount, delCount);
+
+                return (this.hitCost * hitCount.v) + (this.insertionCost * insCount.v) + (this.substitutionCost * substCount.v) + (this.deletionCost * delCount.v);
+            },
+            getDeletionCost: function (x) {
+                if (Bridge.referenceEquals(x, "")) {
+                    return this.deletionCost;
+                }
+                return this.deletionCost * x.length;
+            },
+            getInsertionCost: function (y) {
+                return this.insertionCost * y.length;
+            },
+            isHit: function (x, y, isComplete) {
+                return Bridge.referenceEquals(x, y) || (!isComplete && System.String.startsWith(x, y));
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Translation.WordEditDistance", {
+        inherits: [SIL.Machine.Translation.EditDistance$2(System.String,System.Char)],
+        methods: {
+            getCount: function (item) {
+                return item.length;
+            },
+            getItem: function (seq, index) {
+                return seq.charCodeAt(index);
+            },
+            getHitCost: function (x, y, isComplete) {
+                return this.hitCost;
+            },
+            getSubstitutionCost: function (x, y, isComplete) {
+                return this.substitutionCost;
+            },
+            getDeletionCost: function (x) {
+                return this.deletionCost;
+            },
+            getInsertionCost: function (y) {
+                return this.insertionCost;
+            },
+            isHit: function (x, y, isComplete) {
+                return x === y;
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Client.AjaxHttpClient", {
+        inherits: [SIL.Machine.WebApi.Client.IHttpClient],
+        props: {
+            baseUrl: null
+        },
+        alias: [
+            "baseUrl", "SIL$Machine$WebApi$Client$IHttpClient$baseUrl",
+            "sendAsync", "SIL$Machine$WebApi$Client$IHttpClient$sendAsync"
+        ],
+        methods: {
+            sendAsync: function (method, url, body, contentType) {
+                if (body === void 0) { body = null; }
+                if (contentType === void 0) { contentType = null; }
+                var tcs = new System.Threading.Tasks.TaskCompletionSource();
+                var request = new XMLHttpRequest();
+                request.onreadystatechange = function () {
+                    if (request.readyState !== 4) {
+                        return;
+                    }
+
+                    if ((request.status >= 200 && request.status < 300) || request.status === 304) {
+                        tcs.setResult(new SIL.Machine.WebApi.Client.HttpResponse(true, request.status, request.responseText));
+                    } else {
+                        tcs.setResult(new SIL.Machine.WebApi.Client.HttpResponse(false, request.status));
+                    }
+                };
+
+                var methodStr;
+                switch (method) {
+                    case SIL.Machine.WebApi.Client.HttpRequestMethod.get: 
+                        methodStr = "GET";
+                        break;
+                    case SIL.Machine.WebApi.Client.HttpRequestMethod.post: 
+                        methodStr = "POST";
+                        break;
+                    case SIL.Machine.WebApi.Client.HttpRequestMethod.delete: 
+                        methodStr = "DELETE";
+                        break;
+                    case SIL.Machine.WebApi.Client.HttpRequestMethod.put: 
+                        methodStr = "PUT";
+                        break;
+                    default: 
+                        throw new System.ArgumentException("Unrecognized HTTP method.", "method");
+                }
+
+                request.open(methodStr, System.String.concat(this.baseUrl, url));
+                if (contentType != null) {
+                    request.setRequestHeader("Content-Type", contentType);
+                }
+                if (body == null) {
+                    request.send();
+                } else {
+                    request.send(body);
+                }
+                return tcs.task;
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Dtos.BuildDto", {
+        inherits: [SIL.Machine.WebApi.Dtos.LinkDto],
+        props: {
+            id: null,
+            revision: System.Int64(0),
+            engine: null,
+            stepCount: 0,
+            currentStep: 0,
+            currentStepMessage: null
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Dtos.EngineDto", {
+        inherits: [SIL.Machine.WebApi.Dtos.LinkDto],
+        props: {
+            id: null,
+            sourceLanguageTag: null,
+            targetLanguageTag: null,
+            isShared: false,
+            projects: null
+        }
+    });
+
+    Bridge.define("SIL.Machine.WebApi.Dtos.ProjectDto", {
+        inherits: [SIL.Machine.WebApi.Dtos.LinkDto],
+        props: {
+            id: null,
+            isShared: false,
+            sourceLanguageTag: null,
+            targetLanguageTag: null,
+            engine: null
+        }
+    });
+
+    Bridge.define("SIL.Machine.Tokenization.LatinWordTokenizer", {
+        inherits: [SIL.Machine.Tokenization.WhitespaceTokenizer],
+        statics: {
+            fields: {
+                innerWordPunctRegex: null
+            },
+            ctors: {
+                init: function () {
+                    this.innerWordPunctRegex = new System.Text.RegularExpressions.Regex.ctor("\\G[&'\\-.:=?@­·‐‑’‧]|_+");
+                }
+            }
+        },
+        fields: {
+            _abbreviations: null
+        },
+        alias: ["tokenize", ["SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize$1", "SIL$Machine$Tokenization$ITokenizer$2$tokenize$1"]],
+        ctors: {
+            ctor: function () {
+                SIL.Machine.Tokenization.LatinWordTokenizer.$ctor1.call(this, new SIL.Machine.Annotations.IntegerSpanFactory());
+            },
+            $ctor3: function (abbreviations) {
+                SIL.Machine.Tokenization.LatinWordTokenizer.$ctor2.call(this, new SIL.Machine.Annotations.IntegerSpanFactory(), abbreviations);
+            },
+            $ctor1: function (spanFactory) {
+                SIL.Machine.Tokenization.LatinWordTokenizer.$ctor2.call(this, spanFactory, System.Linq.Enumerable.empty());
+            },
+            $ctor2: function (spanFactory, abbreviations) {
+                this.$initialize();
+                SIL.Machine.Tokenization.WhitespaceTokenizer.$ctor1.call(this, spanFactory);
+                this._abbreviations = new (System.Collections.Generic.HashSet$1(System.String)).$ctor1(System.Linq.Enumerable.from(abbreviations).select(Bridge.fn.cacheBind(this, this.toLower)));
+            }
+        },
+        methods: {
+            tokenize: function (data, dataSpan) {
+                return new (Bridge.GeneratorEnumerable$1(SIL.Machine.Annotations.Span$1(System.Int32)))(Bridge.fn.bind(this, function (data, dataSpan) {
+                    var $step = 0,
+                        $jumpFromFinally,
+                        $returnValue,
+                        $t,
+                        span,
+                        wordStart,
+                        innerWordPunct,
+                        i,
+                        match,
+                        $async_e;
+
+                    var $enumerator = new (Bridge.GeneratorEnumerator$1(SIL.Machine.Annotations.Span$1(System.Int32)))(Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                switch ($step) {
+                                    case 0: {
+                                        $t = Bridge.getEnumerator(SIL.Machine.Tokenization.WhitespaceTokenizer.prototype.tokenize.call(this, data, dataSpan), SIL.Machine.Annotations.Span$1(System.Int32));
+                                            $step = 1;
+                                            continue;
+                                    }
+                                    case 1: {
+                                        if ($t.moveNext()) {
+                                                span = $t.Current;
+                                                $step = 2;
+                                                continue;
+                                            }
+                                        $step = 32;
+                                        continue;
+                                    }
+                                    case 2: {
+                                        wordStart = -1;
+                                            innerWordPunct = -1;
+                                            i = span.start;
+                                        $step = 3;
+                                        continue;
+                                    }
+                                    case 3: {
+                                        if ( i < span.end ) {
+                                                $step = 4;
+                                                continue;
+                                            } 
+                                            $step = 19;
+                                            continue;
+                                    }
+                                    case 4: {
+                                        if (this.isPunctuation(data.charCodeAt(i)) || System.Char.isSymbol(data.charCodeAt(i)) || System.Char.isControl(data.charCodeAt(i))) {
+                                                $step = 5;
+                                                continue;
+                                            } else  {
+                                                $step = 17;
+                                                continue;
+                                            }
+                                    }
+                                    case 5: {
+                                        if (wordStart === -1) {
+                                                $step = 6;
+                                                continue;
+                                            } else  {
+                                                $step = 8;
+                                                continue;
+                                            }
+                                    }
+                                    case 6: {
+                                        $enumerator.current = this.spanFactory.create(i);
+                                            $step = 7;
+                                            return true;
+                                    }
+                                    case 7: {
+                                        $step = 16;
+                                        continue;
+                                    }
+                                    case 8: {
+                                        if (innerWordPunct !== -1) {
+                                                $step = 9;
+                                                continue;
+                                            } else  {
+                                                $step = 12;
+                                                continue;
+                                            }
+                                    }
+                                    case 9: {
+                                        $enumerator.current = this.spanFactory.create$1(wordStart, innerWordPunct);
+                                            $step = 10;
+                                            return true;
+                                    }
+                                    case 10: {
+                                        $enumerator.current = this.spanFactory.create$1(innerWordPunct, i);
+                                            $step = 11;
+                                            return true;
+                                    }
+                                    case 11: {
+                                        wordStart = i;
+                                        $step = 15;
+                                        continue;
+                                    }
+                                    case 12: {
+                                        match = SIL.Machine.Tokenization.LatinWordTokenizer.innerWordPunctRegex.match(data, i);
+                                            if (match.getSuccess()) {
+                                                innerWordPunct = i;
+                                                i = (i + match.getLength()) | 0;
+                                                $step = 3;
+                                                continue;
+                                            }
+
+                                            $enumerator.current = this.spanFactory.create$1(wordStart, i);
+                                            $step = 13;
+                                            return true;
+                                    }
+                                    case 13: {
+                                        $enumerator.current = this.spanFactory.create(i);
+                                            $step = 14;
+                                            return true;
+                                    }
+                                    case 14: {
+                                        wordStart = -1;
+                                        $step = 15;
+                                        continue;
+                                    }
+                                    case 15: {
+                                        $step = 16;
+                                        continue;
+                                    }
+                                    case 16: {
+                                        $step = 18;
+                                        continue;
+                                    }
+                                    case 17: {
+                                        if (wordStart === -1) {
+                                                wordStart = i;
+                                            }
+                                        $step = 18;
+                                        continue;
+                                    }
+                                    case 18: {
+                                        innerWordPunct = -1;
+                                            i = (i + 1) | 0;
+
+                                            $step = 3;
+                                            continue;
+                                    }
+                                    case 19: {
+                                        if (wordStart !== -1) {
+                                                $step = 20;
+                                                continue;
+                                            } 
+                                            $step = 31;
+                                            continue;
+                                    }
+                                    case 20: {
+                                        if (innerWordPunct !== -1) {
+                                                $step = 21;
+                                                continue;
+                                            } else  {
+                                                $step = 28;
+                                                continue;
+                                            }
+                                    }
+                                    case 21: {
+                                        if (Bridge.referenceEquals(data.substr(innerWordPunct, ((span.end - innerWordPunct) | 0)), ".") && this._abbreviations.contains(this.toLower(data.substr(wordStart, ((innerWordPunct - wordStart) | 0))))) {
+                                                $step = 22;
+                                                continue;
+                                            } else  {
+                                                $step = 24;
+                                                continue;
+                                            }
+                                    }
+                                    case 22: {
+                                        $enumerator.current = this.spanFactory.create$1(wordStart, span.end);
+                                            $step = 23;
+                                            return true;
+                                    }
+                                    case 23: {
+                                        $step = 27;
+                                        continue;
+                                    }
+                                    case 24: {
+                                        $enumerator.current = this.spanFactory.create$1(wordStart, innerWordPunct);
+                                            $step = 25;
+                                            return true;
+                                    }
+                                    case 25: {
+                                        $enumerator.current = this.spanFactory.create$1(innerWordPunct, span.end);
+                                            $step = 26;
+                                            return true;
+                                    }
+                                    case 26: {
+                                        $step = 27;
+                                        continue;
+                                    }
+                                    case 27: {
+                                        $step = 30;
+                                        continue;
+                                    }
+                                    case 28: {
+                                        $enumerator.current = this.spanFactory.create$1(wordStart, span.end);
+                                            $step = 29;
+                                            return true;
+                                    }
+                                    case 29: {
+                                        $step = 30;
+                                        continue;
+                                    }
+                                    case 30: {
+                                        $step = 31;
+                                        continue;
+                                    }
+                                    case 31: {
+                                        $step = 1;
+                                        continue;
+                                    }
+                                    case 32: {
+
+                                    }
+                                    default: {
+                                        return false;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            throw $async_e;
+                        }
+                    }));
+                    return $enumerator;
+                }, arguments));
+            },
+            toLower: function (str) {
+                return str.toLowerCase();
+            },
+            isPunctuation: function (c) {
+                if (c < 256) {
+                    return System.Char.isPunctuation(c);
+                }
+                // this is a horrible workaround for a bug in Bridge.NET, see issue #2981
+                return System.Text.RegularExpressions.Regex.isMatch(String.fromCharCode(c), "[;·՚-՟։֊־׀׃׆׳״؉؊،؍؛؞؟٪-٭۔܀-܍߷-߹࠰-࠾࡞।॥॰૰෴๏๚๛༄-༒༔༺-༽྅࿐-࿔࿙࿚၊-၏჻፠-፨᐀᙭᙮᚛᚜᛫-᛭᜵᜶។-៖៘-៚᠀-᠊᥄᥅᨞᨟᪠-᪦᪨-᪭᭚-᭠᯼-᯿᰻-᰿᱾᱿᳀-᳇᳓‐-‧‰-⁃⁅-⁑⁓-⁞⁽⁾₍₎〈〉❨-❵⟅⟆⟦-⟯⦃-⦘⧘-⧛⧼⧽⳹-⳼⳾⳿⵰⸀-⸮⸰-⸻、-〃〈-】〔-〟〰〽゠・꓾꓿꘍-꘏꙳꙾꛲-꛷꡴-꡷꣎꣏꣸-꣺꤮꤯꥟꧁-꧍꧞꧟꩜-꩟꫞꫟꫰꫱꯫﴾﴿︐-︙︰-﹒﹔-﹡﹣﹨﹪﹫！-＃％-＊，-／：；？＠［-］＿｛｝｟-･֊־᐀᠆‐-―⸗⸚⸺⸻〜〰゠︱︲﹘﹣－༺༼᚛‚„⁅⁽₍〈❨❪❬❮❰❲❴⟅⟦⟨⟪⟬⟮⦃⦅⦇⦉⦋⦍⦏⦑⦓⦕⦗⧘⧚⧼⸢⸤⸦⸨〈《「『【〔〖〘〚〝﴾︗︵︷︹︻︽︿﹁﹃﹇﹙﹛﹝（［｛｟｢༻༽᚜⁆⁾₎〉❩❫❭❯❱❳❵⟆⟧⟩⟫⟭⟯⦄⦆⦈⦊⦌⦎⦐⦒⦔⦖⦘⧙⧛⧽⸣⸥⸧⸩〉》」』】〕〗〙〛〞〟﴿︘︶︸︺︼︾﹀﹂﹄﹈﹚﹜﹞）］｝｠｣‘‛“‟‹⸂⸄⸉⸌⸜⸠’”›⸃⸅⸊⸍⸝⸡‿⁀⁔︳︴﹍-﹏＿;·՚-՟։׀׃׆׳״؉؊،؍؛؞؟٪-٭۔܀-܍߷-߹࠰-࠾࡞।॥॰૰෴๏๚๛༄-༒༔྅࿐-࿔࿙࿚၊-၏჻፠-፨᙭᙮᛫-᛭᜵᜶។-៖៘-៚᠀-᠅᠇-᠊᥄᥅᨞᨟᪠-᪦᪨-᪭᭚-᭠᯼-᯿᰻-᰿᱾᱿᳀-᳇᳓‖‗†-‧‰-‸※-‾⁁-⁃⁇-⁑⁓⁕-⁞⳹-⳼⳾⳿⵰⸀⸁⸆-⸈⸋⸎-⸖⸘⸙⸛⸞⸟⸪-⸮⸰-⸹、-〃〽・꓾꓿꘍-꘏꙳꙾꛲-꛷꡴-꡷꣎꣏꣸-꣺꤮꤯꥟꧁-꧍꧞꧟꩜-꩟꫞꫟꫰꫱꯫︐-︖︙︰﹅﹆﹉-﹌﹐-﹒﹔-﹗﹟-﹡﹨﹪﹫！-＃％-＇＊，．／：；？＠＼｡､･]");
+            }
+        }
+    });
+
+    Bridge.define("SIL.Machine.Tokenization.LatinSentenceTokenizer", {
+        inherits: [SIL.Machine.Tokenization.LatinWordTokenizer],
+        statics: {
+            fields: {
+                sentenceTerminals: null,
+                closingQuotes: null,
+                closingBrackets: null,
+                newLineRegex: null
+            },
+            ctors: {
+                init: function () {
+                    this.sentenceTerminals = $asm.$.SIL.Machine.Tokenization.LatinSentenceTokenizer.f1(new (System.Collections.Generic.HashSet$1(System.String)).ctor());
+                    this.closingQuotes = $asm.$.SIL.Machine.Tokenization.LatinSentenceTokenizer.f2(new (System.Collections.Generic.HashSet$1(System.String)).ctor());
+                    this.closingBrackets = $asm.$.SIL.Machine.Tokenization.LatinSentenceTokenizer.f3(new (System.Collections.Generic.HashSet$1(System.String)).ctor());
+                    this.newLineRegex = new System.Text.RegularExpressions.Regex.ctor("\n|\r\n?");
+                }
+            }
+        },
+        alias: ["tokenize", ["SIL$Machine$Tokenization$ITokenizer$2$System$String$System$Int32$tokenize$1", "SIL$Machine$Tokenization$ITokenizer$2$tokenize$1"]],
+        ctors: {
+            ctor: function () {
+                SIL.Machine.Tokenization.LatinSentenceTokenizer.$ctor1.call(this, new SIL.Machine.Annotations.IntegerSpanFactory());
+            },
+            $ctor3: function (abbreviations) {
+                SIL.Machine.Tokenization.LatinSentenceTokenizer.$ctor2.call(this, new SIL.Machine.Annotations.IntegerSpanFactory(), abbreviations);
+            },
+            $ctor1: function (spanFactory) {
+                SIL.Machine.Tokenization.LatinSentenceTokenizer.$ctor2.call(this, spanFactory, System.Linq.Enumerable.empty());
+            },
+            $ctor2: function (spanFactory, abbreviations) {
+                this.$initialize();
+                SIL.Machine.Tokenization.LatinWordTokenizer.$ctor2.call(this, spanFactory, abbreviations);
+            }
+        },
+        methods: {
+            tokenize: function (data, dataSpan) {
+                return new (Bridge.GeneratorEnumerable$1(SIL.Machine.Annotations.Span$1(System.Int32)))(Bridge.fn.bind(this, function (data, dataSpan) {
+                    var $step = 0,
+                        $jumpFromFinally,
+                        $returnValue,
+                        lineStart,
+                        $t,
+                        match,
+                        $t1,
+                        sentenceSpan,
+                        $t2,
+                        sentenceSpan1,
+                        $async_e;
+
+                    var $enumerator = new (Bridge.GeneratorEnumerator$1(SIL.Machine.Annotations.Span$1(System.Int32)))(Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                switch ($step) {
+                                    case 0: {
+                                        if (dataSpan.isEmpty) {
+                                                $step = 1;
+                                                continue;
+                                            } 
+                                            $step = 2;
+                                            continue;
+                                    }
+                                    case 1: {
+                                        return false;
+                                    }
+                                    case 2: {
+                                        lineStart = 0;
+                                            $t = Bridge.getEnumerator(SIL.Machine.Tokenization.LatinSentenceTokenizer.newLineRegex.matches(data.substr(0, dataSpan.end), dataSpan.start));
+                                            $step = 3;
+                                            continue;
+                                    }
+                                    case 3: {
+                                        if ($t.moveNext()) {
+                                                match = Bridge.cast($t.Current, System.Text.RegularExpressions.Match);
+                                                $step = 4;
+                                                continue;
+                                            }
+                                        $step = 9;
+                                        continue;
+                                    }
+                                    case 4: {
+                                        $t1 = Bridge.getEnumerator(this.tokenizeLine(data, lineStart, ((match.getIndex() + match.getLength()) | 0)), SIL.Machine.Annotations.Span$1(System.Int32));
+                                            $step = 5;
+                                            continue;
+                                    }
+                                    case 5: {
+                                        if ($t1.moveNext()) {
+                                                sentenceSpan = $t1.Current;
+                                                $step = 6;
+                                                continue;
+                                            }
+                                        $step = 8;
+                                        continue;
+                                    }
+                                    case 6: {
+                                        $enumerator.current = sentenceSpan;
+                                            $step = 7;
+                                            return true;
+                                    }
+                                    case 7: {
+                                        $step = 5;
+                                        continue;
+                                    }
+                                    case 8: {
+                                        lineStart = (match.getIndex() + match.getLength()) | 0;
+                                        $step = 3;
+                                        continue;
+                                    }
+                                    case 9: {
+                                        if (lineStart < dataSpan.end) {
+                                                $step = 10;
+                                                continue;
+                                            } 
+                                            $step = 15;
+                                            continue;
+                                    }
+                                    case 10: {
+                                        $t2 = Bridge.getEnumerator(this.tokenizeLine(data, lineStart, dataSpan.end), SIL.Machine.Annotations.Span$1(System.Int32));
+                                            $step = 11;
+                                            continue;
+                                    }
+                                    case 11: {
+                                        if ($t2.moveNext()) {
+                                                sentenceSpan1 = $t2.Current;
+                                                $step = 12;
+                                                continue;
+                                            }
+                                        $step = 14;
+                                        continue;
+                                    }
+                                    case 12: {
+                                        $enumerator.current = sentenceSpan1;
+                                            $step = 13;
+                                            return true;
+                                    }
+                                    case 13: {
+                                        $step = 11;
+                                        continue;
+                                    }
+                                    case 14: {
+                                        $step = 15;
+                                        continue;
+                                    }
+                                    case 15: {
+
+                                    }
+                                    default: {
+                                        return false;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            throw $async_e;
+                        }
+                    }));
+                    return $enumerator;
+                }, arguments));
+            },
+            tokenizeLine: function (data, start, end) {
+                return new (Bridge.GeneratorEnumerable$1(SIL.Machine.Annotations.Span$1(System.Int32)))(Bridge.fn.bind(this, function (data, start, end) {
+                    var $step = 0,
+                        $jumpFromFinally,
+                        $returnValue,
+                        sentenceStart,
+                        sentenceEnd,
+                        inEnd,
+                        hasEndQuotesBrackets,
+                        $t,
+                        wordSpan,
+                        word,
+                        $async_e;
+
+                    var $enumerator = new (Bridge.GeneratorEnumerator$1(SIL.Machine.Annotations.Span$1(System.Int32)))(Bridge.fn.bind(this, function () {
+                        try {
+                            for (;;) {
+                                switch ($step) {
+                                    case 0: {
+                                        sentenceStart = -1;sentenceEnd = -1;
+                                            inEnd = false;hasEndQuotesBrackets = false;
+                                            $t = Bridge.getEnumerator(SIL.Machine.Tokenization.LatinWordTokenizer.prototype.tokenize.call(this, data, this.spanFactory.create$1(start, end)), SIL.Machine.Annotations.Span$1(System.Int32));
+                                            $step = 1;
+                                            continue;
+                                    }
+                                    case 1: {
+                                        if ($t.moveNext()) {
+                                                wordSpan = $t.Current;
+                                                $step = 2;
+                                                continue;
+                                            }
+                                        $step = 13;
+                                        continue;
+                                    }
+                                    case 2: {
+                                        if (sentenceStart === -1) {
+                                                sentenceStart = wordSpan.start;
+                                            }
+                                            word = data.substr(wordSpan.start, wordSpan.length);
+                                            if (!inEnd) {
+                                                $step = 3;
+                                                continue;
+                                            } else  {
+                                                $step = 4;
+                                                continue;
+                                            }
+                                    }
+                                    case 3: {
+                                        if (SIL.Machine.Tokenization.LatinSentenceTokenizer.sentenceTerminals.contains(word)) {
+                                                inEnd = true;
+                                            }
+                                        $step = 12;
+                                        continue;
+                                    }
+                                    case 4: {
+                                        if (SIL.Machine.Tokenization.LatinSentenceTokenizer.closingQuotes.contains(word) || SIL.Machine.Tokenization.LatinSentenceTokenizer.closingBrackets.contains(word)) {
+                                                $step = 5;
+                                                continue;
+                                            } else  {
+                                                $step = 6;
+                                                continue;
+                                            }
+                                    }
+                                    case 5: {
+                                        hasEndQuotesBrackets = true;
+                                        $step = 11;
+                                        continue;
+                                    }
+                                    case 6: {
+                                        if (hasEndQuotesBrackets && Bridge.isLower(word.charCodeAt(0))) {
+                                                $step = 7;
+                                                continue;
+                                            } else  {
+                                                $step = 8;
+                                                continue;
+                                            }
+                                    }
+                                    case 7: {
+                                        inEnd = false;
+                                            hasEndQuotesBrackets = false;
+                                        $step = 10;
+                                        continue;
+                                    }
+                                    case 8: {
+                                        $enumerator.current = this.spanFactory.create$1(sentenceStart, sentenceEnd);
+                                            $step = 9;
+                                            return true;
+                                    }
+                                    case 9: {
+                                        sentenceStart = wordSpan.start;
+                                            inEnd = false;
+                                            hasEndQuotesBrackets = false;
+                                        $step = 10;
+                                        continue;
+                                    }
+                                    case 10: {
+                                        $step = 11;
+                                        continue;
+                                    }
+                                    case 11: {
+                                        $step = 12;
+                                        continue;
+                                    }
+                                    case 12: {
+                                        sentenceEnd = wordSpan.end;
+                                        $step = 1;
+                                        continue;
+                                    }
+                                    case 13: {
+                                        if (sentenceStart !== -1 && sentenceEnd !== -1) {
+                                                $step = 14;
+                                                continue;
+                                            } 
+                                            $step = 16;
+                                            continue;
+                                    }
+                                    case 14: {
+                                        $enumerator.current = this.spanFactory.create$1(sentenceStart, sentenceEnd);
+                                            $step = 15;
+                                            return true;
+                                    }
+                                    case 15: {
+                                        $step = 16;
+                                        continue;
+                                    }
+                                    case 16: {
+
+                                    }
+                                    default: {
+                                        return false;
+                                    }
+                                }
+                            }
+                        } catch($async_e1) {
+                            $async_e = System.Exception.create($async_e1);
+                            throw $async_e;
+                        }
+                    }));
+                    return $enumerator;
+                }, arguments));
+            }
+        }
+    });
+
+    Bridge.ns("SIL.Machine.Tokenization.LatinSentenceTokenizer", $asm.$);
+
+    Bridge.apply($asm.$.SIL.Machine.Tokenization.LatinSentenceTokenizer, {
+        f1: function (_o1) {
+            _o1.add(".");
+            _o1.add("!");
+            _o1.add("?");
+            _o1.add("‼");
+            _o1.add("‽");
+            _o1.add("⁇");
+            _o1.add("⁈");
+            _o1.add("⁉");
+            _o1.add("。");
+            _o1.add("﹒");
+            _o1.add("﹗");
+            _o1.add("！");
+            _o1.add("．");
+            _o1.add("？");
+            _o1.add("｡");
+            return _o1;
+        },
+        f2: function (_o2) {
+            _o2.add("'");
+            _o2.add("’");
+            _o2.add("\"");
+            _o2.add("”");
+            _o2.add("»");
+            _o2.add("›");
+            return _o2;
+        },
+        f3: function (_o3) {
+            _o3.add("]");
+            _o3.add(")");
+            return _o3;
+        }
+    });
+});
+
+Bridge.assembly("SIL.Machine", function ($asm, globals) {
+    "use strict";
+
+
+    var $m = Bridge.setMetadata,
+        $n = [System.Collections.Generic,SIL.Machine.Annotations,System,System.Text.RegularExpressions,SIL.Machine.Tokenization,SIL.Machine.DataStructures,SIL.Machine.WebApi.Dtos,SIL.Machine.WebApi.Client,System.Threading.Tasks,SIL.Machine.Translation,Newtonsoft.Json];
+    $m($n[4].IDetokenizer$2, function (TData, TToken) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Detokenize","t":8,"pi":[{"n":"tokens","pt":$n[0].IEnumerable$1(TToken),"ps":0}],"sn":"SIL$Machine$Tokenization$IDetokenizer$2$" + Bridge.getTypeAlias(TData) + "$" + Bridge.getTypeAlias(TToken) + "$detokenize","rt":TData,"p":[$n[0].IEnumerable$1(TToken)]}]}; });
+    $m($n[4].ITokenizer$2, function (TData, TOffset) { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"Tokenize","t":8,"pi":[{"n":"data","pt":TData,"ps":0}],"sn":"SIL$Machine$Tokenization$ITokenizer$2$" + Bridge.getTypeAlias(TData) + "$" + Bridge.getTypeAlias(TOffset) + "$tokenize","rt":$n[0].IEnumerable$1(SIL.Machine.Annotations.Span$1(TOffset)),"p":[TData]},{"ab":true,"a":2,"n":"Tokenize","t":8,"pi":[{"n":"data","pt":TData,"ps":0},{"n":"span","pt":$n[1].Span$1(TOffset),"ps":1}],"sn":"SIL$Machine$Tokenization$ITokenizer$2$" + Bridge.getTypeAlias(TData) + "$" + Bridge.getTypeAlias(TOffset) + "$tokenize$1","rt":$n[0].IEnumerable$1(SIL.Machine.Annotations.Span$1(TOffset)),"p":[TData,$n[1].Span$1(TOffset)]}]}; });
+    $m($n[4].LatinSentenceTokenizer, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[1].SpanFactory$1(System.Int32)],"pi":[{"n":"spanFactory","pt":$n[1].SpanFactory$1(System.Int32),"ps":0}],"sn":"$ctor1"},{"a":2,"n":".ctor","t":1,"p":[$n[0].IEnumerable$1(System.String)],"pi":[{"n":"abbreviations","pt":$n[0].IEnumerable$1(System.String),"ps":0}],"sn":"$ctor3"},{"a":2,"n":".ctor","t":1,"p":[$n[1].SpanFactory$1(System.Int32),$n[0].IEnumerable$1(System.String)],"pi":[{"n":"spanFactory","pt":$n[1].SpanFactory$1(System.Int32),"ps":0},{"n":"abbreviations","pt":$n[0].IEnumerable$1(System.String),"ps":1}],"sn":"$ctor2"},{"ov":true,"a":2,"n":"Tokenize","t":8,"pi":[{"n":"data","pt":$n[2].String,"ps":0},{"n":"dataSpan","pt":$n[1].Span$1(System.Int32),"ps":1}],"sn":"tokenize","rt":$n[0].IEnumerable$1(SIL.Machine.Annotations.Span$1(System.Int32)),"p":[$n[2].String,$n[1].Span$1(System.Int32)]},{"a":1,"n":"TokenizeLine","t":8,"pi":[{"n":"data","pt":$n[2].String,"ps":0},{"n":"start","pt":$n[2].Int32,"ps":1},{"n":"end","pt":$n[2].Int32,"ps":2}],"sn":"tokenizeLine","rt":$n[0].IEnumerable$1(SIL.Machine.Annotations.Span$1(System.Int32)),"p":[$n[2].String,$n[2].Int32,$n[2].Int32]},{"a":1,"n":"ClosingBrackets","is":true,"t":4,"rt":$n[0].HashSet$1(System.String),"sn":"closingBrackets","ro":true},{"a":1,"n":"ClosingQuotes","is":true,"t":4,"rt":$n[0].HashSet$1(System.String),"sn":"closingQuotes","ro":true},{"a":1,"n":"NewLineRegex","is":true,"t":4,"rt":$n[3].Regex,"sn":"newLineRegex","ro":true},{"a":1,"n":"SentenceTerminals","is":true,"t":4,"rt":$n[0].HashSet$1(System.String),"sn":"sentenceTerminals","ro":true}]}; });
+    $m($n[4].LatinWordTokenizer, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[1].SpanFactory$1(System.Int32)],"pi":[{"n":"spanFactory","pt":$n[1].SpanFactory$1(System.Int32),"ps":0}],"sn":"$ctor1"},{"a":2,"n":".ctor","t":1,"p":[$n[0].IEnumerable$1(System.String)],"pi":[{"n":"abbreviations","pt":$n[0].IEnumerable$1(System.String),"ps":0}],"sn":"$ctor3"},{"a":2,"n":".ctor","t":1,"p":[$n[1].SpanFactory$1(System.Int32),$n[0].IEnumerable$1(System.String)],"pi":[{"n":"spanFactory","pt":$n[1].SpanFactory$1(System.Int32),"ps":0},{"n":"abbreviations","pt":$n[0].IEnumerable$1(System.String),"ps":1}],"sn":"$ctor2"},{"a":1,"n":"IsPunctuation","t":8,"pi":[{"n":"c","pt":$n[2].Char,"ps":0}],"sn":"isPunctuation","rt":$n[2].Boolean,"p":[$n[2].Char]},{"a":1,"n":"ToLower","t":8,"pi":[{"n":"str","pt":$n[2].String,"ps":0}],"sn":"toLower","rt":$n[2].String,"p":[$n[2].String]},{"ov":true,"a":2,"n":"Tokenize","t":8,"pi":[{"n":"data","pt":$n[2].String,"ps":0},{"n":"dataSpan","pt":$n[1].Span$1(System.Int32),"ps":1}],"sn":"tokenize","rt":$n[0].IEnumerable$1(SIL.Machine.Annotations.Span$1(System.Int32)),"p":[$n[2].String,$n[1].Span$1(System.Int32)]},{"a":1,"n":"InnerWordPunctRegex","is":true,"t":4,"rt":$n[3].Regex,"sn":"innerWordPunctRegex","ro":true},{"a":1,"n":"_abbreviations","t":4,"rt":$n[0].HashSet$1(System.String),"sn":"_abbreviations","ro":true}]}; });
+    $m($n[4].RegexTokenizer, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[2].String],"pi":[{"n":"regexPattern","pt":$n[2].String,"ps":0}],"sn":"$ctor1"},{"a":2,"n":".ctor","t":1,"p":[$n[1].SpanFactory$1(System.Int32),$n[2].String],"pi":[{"n":"spanFactory","pt":$n[1].SpanFactory$1(System.Int32),"ps":0},{"n":"regexPattern","pt":$n[2].String,"ps":1}],"sn":"ctor"},{"a":2,"n":"Tokenize","t":8,"pi":[{"n":"data","pt":$n[2].String,"ps":0}],"sn":"tokenize$1","rt":$n[0].IEnumerable$1(SIL.Machine.Annotations.Span$1(System.Int32)),"p":[$n[2].String]},{"a":2,"n":"Tokenize","t":8,"pi":[{"n":"data","pt":$n[2].String,"ps":0},{"n":"dataSpan","pt":$n[1].Span$1(System.Int32),"ps":1}],"sn":"tokenize","rt":$n[0].IEnumerable$1(SIL.Machine.Annotations.Span$1(System.Int32)),"p":[$n[2].String,$n[1].Span$1(System.Int32)]},{"a":1,"n":"_regex","t":4,"rt":$n[3].Regex,"sn":"_regex","ro":true},{"a":1,"n":"_spanFactory","t":4,"rt":$n[1].SpanFactory$1(System.Int32),"sn":"_spanFactory","ro":true}]}; });
+    $m($n[4].DetokenizeOperation, function () { return {"att":257,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"MergeLeft","is":true,"t":4,"rt":$n[4].DetokenizeOperation,"sn":"mergeLeft"},{"a":2,"n":"MergeRight","is":true,"t":4,"rt":$n[4].DetokenizeOperation,"sn":"mergeRight"},{"a":2,"n":"MergeRightFirstLeftSecond","is":true,"t":4,"rt":$n[4].DetokenizeOperation,"sn":"mergeRightFirstLeftSecond"},{"a":2,"n":"NoOperation","is":true,"t":4,"rt":$n[4].DetokenizeOperation,"sn":"noOperation"}]}; });
+    $m($n[4].SimpleStringDetokenizer, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[Function],"pi":[{"n":"operationSelector","pt":Function,"ps":0}],"sn":"ctor"},{"a":2,"n":"Detokenize","t":8,"pi":[{"n":"tokens","pt":$n[0].IEnumerable$1(System.String),"ps":0}],"sn":"detokenize","rt":$n[2].String,"p":[$n[0].IEnumerable$1(System.String)]},{"a":1,"n":"_operationSelector","t":4,"rt":Function,"sn":"_operationSelector","ro":true}]}; });
+    $m($n[4].TokenizationExtensions, function () { return {"att":1048961,"a":2,"s":true,"m":[{"a":2,"n":"TokenizeToStrings","is":true,"t":8,"pi":[{"n":"tokenizer","pt":$n[4].ITokenizer$2(System.String,System.Int32),"ps":0},{"n":"str","pt":$n[2].String,"ps":1}],"sn":"tokenizeToStrings","rt":$n[0].IEnumerable$1(System.String),"p":[$n[4].ITokenizer$2(System.String,System.Int32),$n[2].String]}]}; });
+    $m($n[4].WhitespaceTokenizer, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[1].SpanFactory$1(System.Int32)],"pi":[{"n":"spanFactory","pt":$n[1].SpanFactory$1(System.Int32),"ps":0}],"sn":"$ctor1"},{"a":2,"n":"Tokenize","t":8,"pi":[{"n":"data","pt":$n[2].String,"ps":0}],"sn":"tokenize$1","rt":$n[0].IEnumerable$1(SIL.Machine.Annotations.Span$1(System.Int32)),"p":[$n[2].String]},{"v":true,"a":2,"n":"Tokenize","t":8,"pi":[{"n":"data","pt":$n[2].String,"ps":0},{"n":"dataSpan","pt":$n[1].Span$1(System.Int32),"ps":1}],"sn":"tokenize","rt":$n[0].IEnumerable$1(SIL.Machine.Annotations.Span$1(System.Int32)),"p":[$n[2].String,$n[1].Span$1(System.Int32)]},{"a":3,"n":"SpanFactory","t":16,"rt":$n[1].SpanFactory$1(System.Int32),"g":{"a":3,"n":"get_SpanFactory","t":8,"rt":$n[1].SpanFactory$1(System.Int32),"fg":"spanFactory"},"s":{"a":1,"n":"set_SpanFactory","t":8,"p":[$n[1].SpanFactory$1(System.Int32)],"rt":$n[2].Void,"fs":"spanFactory"},"fn":"spanFactory"}]}; });
+    $m($n[5].Direction, function () { return {"att":257,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"LeftToRight","is":true,"t":4,"rt":$n[5].Direction,"sn":"leftToRight"},{"a":2,"n":"RightToLeft","is":true,"t":4,"rt":$n[5].Direction,"sn":"rightToLeft"}]}; });
+    $m($n[1].IntegerSpanFactory, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"ov":true,"a":5,"n":"CalcLength","t":8,"pi":[{"n":"start","pt":$n[2].Int32,"ps":0},{"n":"end","pt":$n[2].Int32,"ps":1}],"sn":"calcLength","rt":$n[2].Int32,"p":[$n[2].Int32,$n[2].Int32]},{"ov":true,"a":2,"n":"Create","t":8,"pi":[{"n":"offset","pt":$n[2].Int32,"ps":0},{"n":"dir","pt":$n[5].Direction,"ps":1}],"sn":"create$3","rt":$n[1].Span$1(System.Int32),"p":[$n[2].Int32,$n[5].Direction]}]}; });
+    $m($n[1].Span$1, function (TOffset) { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[1].Span$1(TOffset)],"pi":[{"n":"span","pt":$n[1].Span$1(TOffset),"ps":0}],"sn":"$ctor1"},{"a":4,"n":".ctor","t":1,"p":[$n[1].SpanFactory$1(TOffset),TOffset,TOffset],"pi":[{"n":"spanFactory","pt":$n[1].SpanFactory$1(TOffset),"ps":0},{"n":"start","pt":TOffset,"ps":1},{"n":"end","pt":TOffset,"ps":2}],"sn":"$ctor2"},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[1].Span$1(TOffset),"ps":0}],"sn":"compareTo","rt":$n[2].Int32,"p":[$n[1].Span$1(TOffset)]},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[2].Object,"ps":0}],"sn":"compareTo$1","rt":$n[2].Int32,"p":[$n[2].Object]},{"a":2,"n":"Contains","t":8,"pi":[{"n":"other","pt":$n[1].Span$1(TOffset),"ps":0}],"sn":"contains$4","rt":$n[2].Boolean,"p":[$n[1].Span$1(TOffset)]},{"a":2,"n":"Contains","t":8,"pi":[{"n":"offset","pt":TOffset,"ps":0}],"sn":"contains","rt":$n[2].Boolean,"p":[TOffset]},{"a":2,"n":"Contains","t":8,"pi":[{"n":"offset","pt":TOffset,"ps":0},{"n":"dir","pt":$n[5].Direction,"ps":1}],"sn":"contains$3","rt":$n[2].Boolean,"p":[TOffset,$n[5].Direction]},{"a":2,"n":"Contains","t":8,"pi":[{"n":"start","pt":TOffset,"ps":0},{"n":"end","pt":TOffset,"ps":1}],"sn":"contains$1","rt":$n[2].Boolean,"p":[TOffset,TOffset]},{"a":2,"n":"Contains","t":8,"pi":[{"n":"start","pt":TOffset,"ps":0},{"n":"end","pt":TOffset,"ps":1},{"n":"dir","pt":$n[5].Direction,"ps":2}],"sn":"contains$2","rt":$n[2].Boolean,"p":[TOffset,TOffset,$n[5].Direction]},{"a":2,"n":"Equals","t":8,"pi":[{"n":"other","pt":$n[1].Span$1(TOffset),"ps":0}],"sn":"equalsT","rt":$n[2].Boolean,"p":[$n[1].Span$1(TOffset)]},{"ov":true,"a":2,"n":"Equals","t":8,"pi":[{"n":"obj","pt":$n[2].Object,"ps":0}],"sn":"equals","rt":$n[2].Boolean,"p":[$n[2].Object]},{"a":2,"n":"GetEnd","t":8,"pi":[{"n":"dir","pt":$n[5].Direction,"ps":0}],"sn":"getEnd","rt":TOffset,"p":[$n[5].Direction]},{"ov":true,"a":2,"n":"GetHashCode","t":8,"sn":"getHashCode","rt":$n[2].Int32},{"a":2,"n":"GetStart","t":8,"pi":[{"n":"dir","pt":$n[5].Direction,"ps":0}],"sn":"getStart","rt":TOffset,"p":[$n[5].Direction]},{"a":2,"n":"Overlaps","t":8,"pi":[{"n":"other","pt":$n[1].Span$1(TOffset),"ps":0}],"sn":"overlaps$2","rt":$n[2].Boolean,"p":[$n[1].Span$1(TOffset)]},{"a":2,"n":"Overlaps","t":8,"pi":[{"n":"start","pt":TOffset,"ps":0},{"n":"end","pt":TOffset,"ps":1}],"sn":"overlaps","rt":$n[2].Boolean,"p":[TOffset,TOffset]},{"a":2,"n":"Overlaps","t":8,"pi":[{"n":"start","pt":TOffset,"ps":0},{"n":"end","pt":TOffset,"ps":1},{"n":"dir","pt":$n[5].Direction,"ps":2}],"sn":"overlaps$1","rt":$n[2].Boolean,"p":[TOffset,TOffset,$n[5].Direction]},{"ov":true,"a":2,"n":"ToString","t":8,"sn":"toString","rt":$n[2].String},{"a":2,"n":"op_Equality","is":true,"t":8,"pi":[{"n":"x","pt":$n[1].Span$1(TOffset),"ps":0},{"n":"y","pt":$n[1].Span$1(TOffset),"ps":1}],"sn":"op_Equality","rt":$n[2].Boolean,"p":[$n[1].Span$1(TOffset),$n[1].Span$1(TOffset)]},{"a":2,"n":"op_Inequality","is":true,"t":8,"pi":[{"n":"x","pt":$n[1].Span$1(TOffset),"ps":0},{"n":"y","pt":$n[1].Span$1(TOffset),"ps":1}],"sn":"op_Inequality","rt":$n[2].Boolean,"p":[$n[1].Span$1(TOffset),$n[1].Span$1(TOffset)]},{"a":2,"n":"End","t":16,"rt":TOffset,"g":{"a":2,"n":"get_End","t":8,"rt":TOffset,"fg":"end"},"s":{"a":1,"n":"set_End","t":8,"p":[TOffset],"rt":$n[2].Void,"fs":"end"},"fn":"end"},{"a":2,"n":"IsEmpty","t":16,"rt":$n[2].Boolean,"g":{"a":2,"n":"get_IsEmpty","t":8,"rt":$n[2].Boolean,"fg":"isEmpty"},"fn":"isEmpty"},{"a":2,"n":"Length","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_Length","t":8,"rt":$n[2].Int32,"fg":"length"},"fn":"length"},{"a":2,"n":"SpanFactory","t":16,"rt":$n[1].SpanFactory$1(TOffset),"g":{"a":2,"n":"get_SpanFactory","t":8,"rt":$n[1].SpanFactory$1(TOffset),"fg":"spanFactory"},"s":{"a":1,"n":"set_SpanFactory","t":8,"p":[$n[1].SpanFactory$1(TOffset)],"rt":$n[2].Void,"fs":"spanFactory"},"fn":"spanFactory"},{"a":2,"n":"Start","t":16,"rt":TOffset,"g":{"a":2,"n":"get_Start","t":8,"rt":TOffset,"fg":"start"},"s":{"a":1,"n":"set_Start","t":8,"p":[TOffset],"rt":$n[2].Void,"fs":"start"},"fn":"start"}]}; });
+    $m($n[1].SpanFactory$1, function (TOffset) { return {"att":1048705,"a":2,"m":[{"a":3,"n":".ctor","t":1,"sn":"ctor"},{"a":3,"n":".ctor","t":1,"p":[$n[2].Boolean],"pi":[{"n":"includeEndpoint","pt":$n[2].Boolean,"ps":0}],"sn":"$ctor1"},{"a":3,"n":".ctor","t":1,"p":[$n[2].Boolean,$n[0].IComparer$1(TOffset),$n[0].IEqualityComparer$1(TOffset)],"pi":[{"n":"includeEndpoint","pt":$n[2].Boolean,"ps":0},{"n":"comparer","pt":$n[0].IComparer$1(TOffset),"ps":1},{"n":"equalityComparer","pt":$n[0].IEqualityComparer$1(TOffset),"ps":2}],"sn":"$ctor2"},{"ab":true,"a":5,"n":"CalcLength","t":8,"pi":[{"n":"start","pt":TOffset,"ps":0},{"n":"end","pt":TOffset,"ps":1}],"sn":"calcLength","rt":$n[2].Int32,"p":[TOffset,TOffset]},{"a":2,"n":"Create","t":8,"pi":[{"n":"offset","pt":TOffset,"ps":0}],"sn":"create","rt":$n[1].Span$1(TOffset),"p":[TOffset]},{"v":true,"a":2,"n":"Create","t":8,"pi":[{"n":"offset","pt":TOffset,"ps":0},{"n":"dir","pt":$n[5].Direction,"ps":1}],"sn":"create$3","rt":$n[1].Span$1(TOffset),"p":[TOffset,$n[5].Direction]},{"a":2,"n":"Create","t":8,"pi":[{"n":"start","pt":TOffset,"ps":0},{"n":"end","pt":TOffset,"ps":1}],"sn":"create$1","rt":$n[1].Span$1(TOffset),"p":[TOffset,TOffset]},{"v":true,"a":2,"n":"Create","t":8,"pi":[{"n":"start","pt":TOffset,"ps":0},{"n":"end","pt":TOffset,"ps":1},{"n":"dir","pt":$n[5].Direction,"ps":2}],"sn":"create$2","rt":$n[1].Span$1(TOffset),"p":[TOffset,TOffset,$n[5].Direction]},{"a":2,"n":"IsValidSpan","t":8,"pi":[{"n":"start","pt":TOffset,"ps":0},{"n":"end","pt":TOffset,"ps":1}],"sn":"isValidSpan","rt":$n[2].Boolean,"p":[TOffset,TOffset]},{"a":2,"n":"IsValidSpan","t":8,"pi":[{"n":"start","pt":TOffset,"ps":0},{"n":"end","pt":TOffset,"ps":1},{"n":"dir","pt":$n[5].Direction,"ps":2}],"sn":"isValidSpan$1","rt":$n[2].Boolean,"p":[TOffset,TOffset,$n[5].Direction]},{"a":2,"n":"Comparer","t":16,"rt":$n[0].IComparer$1(TOffset),"g":{"a":2,"n":"get_Comparer","t":8,"rt":$n[0].IComparer$1(TOffset),"fg":"comparer"},"s":{"a":1,"n":"set_Comparer","t":8,"p":[$n[0].IComparer$1(TOffset)],"rt":$n[2].Void,"fs":"comparer"},"fn":"comparer"},{"a":2,"n":"Empty","t":16,"rt":$n[1].Span$1(TOffset),"g":{"a":2,"n":"get_Empty","t":8,"rt":$n[1].Span$1(TOffset),"fg":"empty"},"s":{"a":3,"n":"set_Empty","t":8,"p":[$n[1].Span$1(TOffset)],"rt":$n[2].Void,"fs":"empty"},"fn":"empty"},{"a":2,"n":"EqualityComparer","t":16,"rt":$n[0].IEqualityComparer$1(TOffset),"g":{"a":2,"n":"get_EqualityComparer","t":8,"rt":$n[0].IEqualityComparer$1(TOffset),"fg":"equalityComparer"},"s":{"a":1,"n":"set_EqualityComparer","t":8,"p":[$n[0].IEqualityComparer$1(TOffset)],"rt":$n[2].Void,"fs":"equalityComparer"},"fn":"equalityComparer"},{"a":2,"n":"IncludeEndpoint","t":16,"rt":$n[2].Boolean,"g":{"a":2,"n":"get_IncludeEndpoint","t":8,"rt":$n[2].Boolean,"fg":"includeEndpoint"},"s":{"a":1,"n":"set_IncludeEndpoint","t":8,"p":[$n[2].Boolean],"rt":$n[2].Void,"fs":"includeEndpoint"},"fn":"includeEndpoint"}]}; });
+    $m($n[6].AlignedWordPairDto, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"SourceIndex","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_SourceIndex","t":8,"rt":$n[2].Int32,"fg":"sourceIndex"},"s":{"a":2,"n":"set_SourceIndex","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"sourceIndex"},"fn":"sourceIndex"},{"a":2,"n":"TargetIndex","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_TargetIndex","t":8,"rt":$n[2].Int32,"fg":"targetIndex"},"s":{"a":2,"n":"set_TargetIndex","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"targetIndex"},"fn":"targetIndex"}]}; });
+    $m($n[6].BuildDto, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"CurrentStep","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_CurrentStep","t":8,"rt":$n[2].Int32,"fg":"currentStep"},"s":{"a":2,"n":"set_CurrentStep","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"currentStep"},"fn":"currentStep"},{"a":2,"n":"CurrentStepMessage","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_CurrentStepMessage","t":8,"rt":$n[2].String,"fg":"currentStepMessage"},"s":{"a":2,"n":"set_CurrentStepMessage","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"currentStepMessage"},"fn":"currentStepMessage"},{"a":2,"n":"Engine","t":16,"rt":$n[6].LinkDto,"g":{"a":2,"n":"get_Engine","t":8,"rt":$n[6].LinkDto,"fg":"engine"},"s":{"a":2,"n":"set_Engine","t":8,"p":[$n[6].LinkDto],"rt":$n[2].Void,"fs":"engine"},"fn":"engine"},{"a":2,"n":"Id","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_Id","t":8,"rt":$n[2].String,"fg":"id"},"s":{"a":2,"n":"set_Id","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"id"},"fn":"id"},{"a":2,"n":"Revision","t":16,"rt":$n[2].Int64,"g":{"a":2,"n":"get_Revision","t":8,"rt":$n[2].Int64,"fg":"revision"},"s":{"a":2,"n":"set_Revision","t":8,"p":[$n[2].Int64],"rt":$n[2].Void,"fs":"revision"},"fn":"revision"},{"a":2,"n":"StepCount","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_StepCount","t":8,"rt":$n[2].Int32,"fg":"stepCount"},"s":{"a":2,"n":"set_StepCount","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"stepCount"},"fn":"stepCount"}]}; });
+    $m($n[6].EngineDto, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Id","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_Id","t":8,"rt":$n[2].String,"fg":"id"},"s":{"a":2,"n":"set_Id","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"id"},"fn":"id"},{"a":2,"n":"IsShared","t":16,"rt":$n[2].Boolean,"g":{"a":2,"n":"get_IsShared","t":8,"rt":$n[2].Boolean,"fg":"isShared"},"s":{"a":2,"n":"set_IsShared","t":8,"p":[$n[2].Boolean],"rt":$n[2].Void,"fs":"isShared"},"fn":"isShared"},{"a":2,"n":"Projects","t":16,"rt":System.Array.type(SIL.Machine.WebApi.Dtos.LinkDto),"g":{"a":2,"n":"get_Projects","t":8,"rt":System.Array.type(SIL.Machine.WebApi.Dtos.LinkDto),"fg":"projects"},"s":{"a":2,"n":"set_Projects","t":8,"p":[System.Array.type(SIL.Machine.WebApi.Dtos.LinkDto)],"rt":$n[2].Void,"fs":"projects"},"fn":"projects"},{"a":2,"n":"SourceLanguageTag","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_SourceLanguageTag","t":8,"rt":$n[2].String,"fg":"sourceLanguageTag"},"s":{"a":2,"n":"set_SourceLanguageTag","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"sourceLanguageTag"},"fn":"sourceLanguageTag"},{"a":2,"n":"TargetLanguageTag","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_TargetLanguageTag","t":8,"rt":$n[2].String,"fg":"targetLanguageTag"},"s":{"a":2,"n":"set_TargetLanguageTag","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"targetLanguageTag"},"fn":"targetLanguageTag"}]}; });
+    $m($n[6].InteractiveTranslationResultDto, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"RuleResult","t":16,"rt":$n[6].TranslationResultDto,"g":{"a":2,"n":"get_RuleResult","t":8,"rt":$n[6].TranslationResultDto,"fg":"ruleResult"},"s":{"a":2,"n":"set_RuleResult","t":8,"p":[$n[6].TranslationResultDto],"rt":$n[2].Void,"fs":"ruleResult"},"fn":"ruleResult"},{"a":2,"n":"WordGraph","t":16,"rt":$n[6].WordGraphDto,"g":{"a":2,"n":"get_WordGraph","t":8,"rt":$n[6].WordGraphDto,"fg":"wordGraph"},"s":{"a":2,"n":"set_WordGraph","t":8,"p":[$n[6].WordGraphDto],"rt":$n[2].Void,"fs":"wordGraph"},"fn":"wordGraph"}]}; });
+    $m($n[6].LinkDto, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Href","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_Href","t":8,"rt":$n[2].String,"fg":"href"},"s":{"a":2,"n":"set_Href","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"href"},"fn":"href"}]}; });
+    $m($n[6].ProjectDto, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Engine","t":16,"rt":$n[6].LinkDto,"g":{"a":2,"n":"get_Engine","t":8,"rt":$n[6].LinkDto,"fg":"engine"},"s":{"a":2,"n":"set_Engine","t":8,"p":[$n[6].LinkDto],"rt":$n[2].Void,"fs":"engine"},"fn":"engine"},{"a":2,"n":"Id","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_Id","t":8,"rt":$n[2].String,"fg":"id"},"s":{"a":2,"n":"set_Id","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"id"},"fn":"id"},{"a":2,"n":"IsShared","t":16,"rt":$n[2].Boolean,"g":{"a":2,"n":"get_IsShared","t":8,"rt":$n[2].Boolean,"fg":"isShared"},"s":{"a":2,"n":"set_IsShared","t":8,"p":[$n[2].Boolean],"rt":$n[2].Void,"fs":"isShared"},"fn":"isShared"},{"a":2,"n":"SourceLanguageTag","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_SourceLanguageTag","t":8,"rt":$n[2].String,"fg":"sourceLanguageTag"},"s":{"a":2,"n":"set_SourceLanguageTag","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"sourceLanguageTag"},"fn":"sourceLanguageTag"},{"a":2,"n":"TargetLanguageTag","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_TargetLanguageTag","t":8,"rt":$n[2].String,"fg":"targetLanguageTag"},"s":{"a":2,"n":"set_TargetLanguageTag","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"targetLanguageTag"},"fn":"targetLanguageTag"}]}; });
+    $m($n[6].SegmentPairDto, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"SourceSegment","t":16,"rt":$n[2].Array.type(System.String),"g":{"a":2,"n":"get_SourceSegment","t":8,"rt":$n[2].Array.type(System.String),"fg":"sourceSegment"},"s":{"a":2,"n":"set_SourceSegment","t":8,"p":[$n[2].Array.type(System.String)],"rt":$n[2].Void,"fs":"sourceSegment"},"fn":"sourceSegment"},{"a":2,"n":"TargetSegment","t":16,"rt":$n[2].Array.type(System.String),"g":{"a":2,"n":"get_TargetSegment","t":8,"rt":$n[2].Array.type(System.String),"fg":"targetSegment"},"s":{"a":2,"n":"set_TargetSegment","t":8,"p":[$n[2].Array.type(System.String)],"rt":$n[2].Void,"fs":"targetSegment"},"fn":"targetSegment"}]}; });
+    $m($n[6].TranslationResultDto, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Alignment","t":16,"rt":System.Array.type(SIL.Machine.WebApi.Dtos.AlignedWordPairDto),"g":{"a":2,"n":"get_Alignment","t":8,"rt":System.Array.type(SIL.Machine.WebApi.Dtos.AlignedWordPairDto),"fg":"alignment"},"s":{"a":2,"n":"set_Alignment","t":8,"p":[System.Array.type(SIL.Machine.WebApi.Dtos.AlignedWordPairDto)],"rt":$n[2].Void,"fs":"alignment"},"fn":"alignment"},{"a":2,"n":"Confidences","t":16,"rt":$n[2].Array.type(System.Single),"g":{"a":2,"n":"get_Confidences","t":8,"rt":$n[2].Array.type(System.Single),"fg":"confidences"},"s":{"a":2,"n":"set_Confidences","t":8,"p":[$n[2].Array.type(System.Single)],"rt":$n[2].Void,"fs":"confidences"},"fn":"confidences"},{"a":2,"n":"Sources","t":16,"rt":System.Array.type(SIL.Machine.Translation.TranslationSources),"g":{"a":2,"n":"get_Sources","t":8,"rt":System.Array.type(SIL.Machine.Translation.TranslationSources),"fg":"sources"},"s":{"a":2,"n":"set_Sources","t":8,"p":[System.Array.type(SIL.Machine.Translation.TranslationSources)],"rt":$n[2].Void,"fs":"sources"},"fn":"sources"},{"a":2,"n":"Target","t":16,"rt":$n[2].Array.type(System.String),"g":{"a":2,"n":"get_Target","t":8,"rt":$n[2].Array.type(System.String),"fg":"target"},"s":{"a":2,"n":"set_Target","t":8,"p":[$n[2].Array.type(System.String)],"rt":$n[2].Void,"fs":"target"},"fn":"target"}]}; });
+    $m($n[6].WordGraphArcDto, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Alignment","t":16,"rt":System.Array.type(SIL.Machine.WebApi.Dtos.AlignedWordPairDto),"g":{"a":2,"n":"get_Alignment","t":8,"rt":System.Array.type(SIL.Machine.WebApi.Dtos.AlignedWordPairDto),"fg":"alignment"},"s":{"a":2,"n":"set_Alignment","t":8,"p":[System.Array.type(SIL.Machine.WebApi.Dtos.AlignedWordPairDto)],"rt":$n[2].Void,"fs":"alignment"},"fn":"alignment"},{"a":2,"n":"Confidences","t":16,"rt":$n[2].Array.type(System.Single),"g":{"a":2,"n":"get_Confidences","t":8,"rt":$n[2].Array.type(System.Single),"fg":"confidences"},"s":{"a":2,"n":"set_Confidences","t":8,"p":[$n[2].Array.type(System.Single)],"rt":$n[2].Void,"fs":"confidences"},"fn":"confidences"},{"a":2,"n":"IsUnknown","t":16,"rt":$n[2].Boolean,"g":{"a":2,"n":"get_IsUnknown","t":8,"rt":$n[2].Boolean,"fg":"isUnknown"},"s":{"a":2,"n":"set_IsUnknown","t":8,"p":[$n[2].Boolean],"rt":$n[2].Void,"fs":"isUnknown"},"fn":"isUnknown"},{"a":2,"n":"NextState","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_NextState","t":8,"rt":$n[2].Int32,"fg":"nextState"},"s":{"a":2,"n":"set_NextState","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"nextState"},"fn":"nextState"},{"a":2,"n":"PrevState","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_PrevState","t":8,"rt":$n[2].Int32,"fg":"prevState"},"s":{"a":2,"n":"set_PrevState","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"prevState"},"fn":"prevState"},{"a":2,"n":"Score","t":16,"rt":$n[2].Single,"g":{"a":2,"n":"get_Score","t":8,"rt":$n[2].Single,"fg":"score"},"s":{"a":2,"n":"set_Score","t":8,"p":[$n[2].Single],"rt":$n[2].Void,"fs":"score"},"fn":"score"},{"a":2,"n":"SourceEndIndex","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_SourceEndIndex","t":8,"rt":$n[2].Int32,"fg":"sourceEndIndex"},"s":{"a":2,"n":"set_SourceEndIndex","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"sourceEndIndex"},"fn":"sourceEndIndex"},{"a":2,"n":"SourceStartIndex","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_SourceStartIndex","t":8,"rt":$n[2].Int32,"fg":"sourceStartIndex"},"s":{"a":2,"n":"set_SourceStartIndex","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"sourceStartIndex"},"fn":"sourceStartIndex"},{"a":2,"n":"Words","t":16,"rt":$n[2].Array.type(System.String),"g":{"a":2,"n":"get_Words","t":8,"rt":$n[2].Array.type(System.String),"fg":"words"},"s":{"a":2,"n":"set_Words","t":8,"p":[$n[2].Array.type(System.String)],"rt":$n[2].Void,"fs":"words"},"fn":"words"}]}; });
+    $m($n[6].WordGraphDto, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Arcs","t":16,"rt":System.Array.type(SIL.Machine.WebApi.Dtos.WordGraphArcDto),"g":{"a":2,"n":"get_Arcs","t":8,"rt":System.Array.type(SIL.Machine.WebApi.Dtos.WordGraphArcDto),"fg":"arcs"},"s":{"a":2,"n":"set_Arcs","t":8,"p":[System.Array.type(SIL.Machine.WebApi.Dtos.WordGraphArcDto)],"rt":$n[2].Void,"fs":"arcs"},"fn":"arcs"},{"a":2,"n":"FinalStates","t":16,"rt":$n[2].Array.type(System.Int32),"g":{"a":2,"n":"get_FinalStates","t":8,"rt":$n[2].Array.type(System.Int32),"fg":"finalStates"},"s":{"a":2,"n":"set_FinalStates","t":8,"p":[$n[2].Array.type(System.Int32)],"rt":$n[2].Void,"fs":"finalStates"},"fn":"finalStates"},{"a":2,"n":"InitialStateScore","t":16,"rt":$n[2].Single,"g":{"a":2,"n":"get_InitialStateScore","t":8,"rt":$n[2].Single,"fg":"initialStateScore"},"s":{"a":2,"n":"set_InitialStateScore","t":8,"p":[$n[2].Single],"rt":$n[2].Void,"fs":"initialStateScore"},"fn":"initialStateScore"}]}; });
+    $m($n[7].AjaxHttpClient, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"SendAsync","t":8,"pi":[{"n":"method","pt":$n[7].HttpRequestMethod,"ps":0},{"n":"url","pt":$n[2].String,"ps":1},{"n":"body","dv":null,"o":true,"pt":$n[2].String,"ps":2},{"n":"contentType","dv":null,"o":true,"pt":$n[2].String,"ps":3}],"sn":"sendAsync","rt":$n[8].Task$1,"p":[$n[7].HttpRequestMethod,$n[2].String,$n[2].String,$n[2].String]},{"a":2,"n":"BaseUrl","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_BaseUrl","t":8,"rt":$n[2].String,"fg":"baseUrl"},"s":{"a":2,"n":"set_BaseUrl","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"baseUrl"},"fn":"baseUrl"}]}; });
+    $m($n[7].HttpException, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[2].String],"pi":[{"n":"message","pt":$n[2].String,"ps":0}],"sn":"ctor"},{"a":2,"n":"StatusCode","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_StatusCode","t":8,"rt":$n[2].Int32,"fg":"statusCode"},"s":{"a":2,"n":"set_StatusCode","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"statusCode"},"fn":"statusCode"}]}; });
+    $m($n[7].HttpResponse, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[2].Boolean,$n[2].Int32,$n[2].String],"pi":[{"n":"isSuccess","pt":$n[2].Boolean,"ps":0},{"n":"statusCode","pt":$n[2].Int32,"ps":1},{"n":"content","dv":null,"o":true,"pt":$n[2].String,"ps":2}],"sn":"ctor"},{"a":2,"n":"Content","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_Content","t":8,"rt":$n[2].String,"fg":"content"},"s":{"a":1,"n":"set_Content","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"content"},"fn":"content"},{"a":2,"n":"IsSuccess","t":16,"rt":$n[2].Boolean,"g":{"a":2,"n":"get_IsSuccess","t":8,"rt":$n[2].Boolean,"fg":"isSuccess"},"s":{"a":1,"n":"set_IsSuccess","t":8,"p":[$n[2].Boolean],"rt":$n[2].Void,"fs":"isSuccess"},"fn":"isSuccess"},{"a":2,"n":"StatusCode","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_StatusCode","t":8,"rt":$n[2].Int32,"fg":"statusCode"},"s":{"a":1,"n":"set_StatusCode","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"statusCode"},"fn":"statusCode"}]}; });
+    $m($n[7].HttpRequestMethod, function () { return {"att":257,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Delete","is":true,"t":4,"rt":$n[7].HttpRequestMethod,"sn":"delete"},{"a":2,"n":"Get","is":true,"t":4,"rt":$n[7].HttpRequestMethod,"sn":"get"},{"a":2,"n":"Post","is":true,"t":4,"rt":$n[7].HttpRequestMethod,"sn":"post"},{"a":2,"n":"Put","is":true,"t":4,"rt":$n[7].HttpRequestMethod,"sn":"put"}]}; });
+    $m($n[7].IHttpClient, function () { return {"att":161,"a":2,"m":[{"ab":true,"a":2,"n":"SendAsync","t":8,"pi":[{"n":"method","pt":$n[7].HttpRequestMethod,"ps":0},{"n":"url","pt":$n[2].String,"ps":1},{"n":"body","dv":null,"o":true,"pt":$n[2].String,"ps":2},{"n":"contentType","dv":null,"o":true,"pt":$n[2].String,"ps":3}],"sn":"SIL$Machine$WebApi$Client$IHttpClient$sendAsync","rt":$n[8].Task$1,"p":[$n[7].HttpRequestMethod,$n[2].String,$n[2].String,$n[2].String]},{"ab":true,"a":2,"n":"BaseUrl","t":16,"rt":$n[2].String,"g":{"ab":true,"a":2,"n":"get_BaseUrl","t":8,"rt":$n[2].String,"fg":"SIL$Machine$WebApi$Client$IHttpClient$baseUrl"},"s":{"ab":true,"a":2,"n":"set_BaseUrl","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"SIL$Machine$WebApi$Client$IHttpClient$baseUrl"},"fn":"SIL$Machine$WebApi$Client$IHttpClient$baseUrl"}]}; });
+    $m($n[7].TranslationRestClient, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[2].String,$n[2].String,$n[7].IHttpClient],"pi":[{"n":"baseUrl","pt":$n[2].String,"ps":0},{"n":"projectId","pt":$n[2].String,"ps":1},{"n":"httpClient","pt":$n[7].IHttpClient,"ps":2}],"sn":"ctor"},{"a":1,"n":"CreateBuildAsync","t":8,"pi":[{"n":"engineId","pt":$n[2].String,"ps":0}],"sn":"createBuildAsync","rt":$n[8].Task$1,"p":[$n[2].String]},{"a":1,"n":"CreateModel","is":true,"t":8,"pi":[{"n":"dto","pt":$n[6].WordGraphDto,"ps":0}],"sn":"createModel$3","rt":$n[9].WordGraph,"p":[$n[6].WordGraphDto]},{"a":1,"n":"CreateModel","is":true,"t":8,"pi":[{"n":"resultDto","pt":$n[6].InteractiveTranslationResultDto,"ps":0},{"n":"sourceSegment","pt":$n[0].IReadOnlyList$1(System.String),"ps":1}],"sn":"createModel","rt":$n[9].InteractiveTranslationResult,"p":[$n[6].InteractiveTranslationResultDto,$n[0].IReadOnlyList$1(System.String)]},{"a":1,"n":"CreateModel","is":true,"t":8,"pi":[{"n":"dto","pt":$n[6].TranslationResultDto,"ps":0},{"n":"sourceSegment","pt":$n[0].IReadOnlyList$1(System.String),"ps":1}],"sn":"createModel$1","rt":$n[9].TranslationResult,"p":[$n[6].TranslationResultDto,$n[0].IReadOnlyList$1(System.String)]},{"a":1,"n":"CreateModel","is":true,"t":8,"pi":[{"n":"dto","pt":System.Array.type(SIL.Machine.WebApi.Dtos.AlignedWordPairDto),"ps":0},{"n":"i","pt":$n[2].Int32,"ps":1},{"n":"j","pt":$n[2].Int32,"ps":2}],"sn":"createModel$2","rt":$n[9].WordAlignmentMatrix,"p":[System.Array.type(SIL.Machine.WebApi.Dtos.AlignedWordPairDto),$n[2].Int32,$n[2].Int32]},{"a":1,"n":"GetEngineIdAsync","t":8,"sn":"getEngineIdAsync","rt":$n[8].Task$1},{"a":2,"n":"ListenForTrainingStatus","t":8,"pi":[{"n":"progress","pt":Function,"ps":0}],"sn":"listenForTrainingStatus","rt":$n[8].Task,"p":[Function]},{"a":1,"n":"PollBuildProgressAsync","t":8,"pi":[{"n":"buildDto","pt":$n[6].BuildDto,"ps":0},{"n":"progress","pt":Function,"ps":1}],"sn":"pollBuildProgressAsync","rt":$n[8].Task,"p":[$n[6].BuildDto,Function]},{"a":2,"n":"TrainAsync","t":8,"pi":[{"n":"progress","pt":Function,"ps":0}],"sn":"trainAsync","rt":$n[8].Task,"p":[Function]},{"a":2,"n":"TrainSegmentPairAsync","t":8,"pi":[{"n":"sourceSegment","pt":$n[0].IReadOnlyList$1(System.String),"ps":0},{"n":"targetSegment","pt":$n[0].IReadOnlyList$1(System.String),"ps":1}],"sn":"trainSegmentPairAsync","rt":$n[8].Task,"p":[$n[0].IReadOnlyList$1(System.String),$n[0].IReadOnlyList$1(System.String)]},{"a":2,"n":"TranslateInteractivelyAsync","t":8,"pi":[{"n":"sourceSegment","pt":$n[0].IReadOnlyList$1(System.String),"ps":0}],"sn":"translateInteractivelyAsync","rt":$n[8].Task$1,"p":[$n[0].IReadOnlyList$1(System.String)]},{"a":2,"n":"BaseUrl","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_BaseUrl","t":8,"rt":$n[2].String,"fg":"baseUrl"},"fn":"baseUrl"},{"a":4,"n":"ErrorCorrectionModel","t":16,"rt":$n[9].ErrorCorrectionModel,"g":{"a":4,"n":"get_ErrorCorrectionModel","t":8,"rt":$n[9].ErrorCorrectionModel,"fg":"errorCorrectionModel"},"s":{"a":1,"n":"set_ErrorCorrectionModel","t":8,"p":[$n[9].ErrorCorrectionModel],"rt":$n[2].Void,"fs":"errorCorrectionModel"},"fn":"errorCorrectionModel"},{"a":4,"n":"HttpClient","t":16,"rt":$n[7].IHttpClient,"g":{"a":4,"n":"get_HttpClient","t":8,"rt":$n[7].IHttpClient,"fg":"httpClient"},"s":{"a":1,"n":"set_HttpClient","t":8,"p":[$n[7].IHttpClient],"rt":$n[2].Void,"fs":"httpClient"},"fn":"httpClient"},{"a":2,"n":"ProjectId","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_ProjectId","t":8,"rt":$n[2].String,"fg":"projectId"},"s":{"a":1,"n":"set_ProjectId","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"projectId"},"fn":"projectId"},{"a":2,"n":"SerializerSettings","is":true,"t":4,"rt":$n[10].JsonSerializerSettings,"sn":"serializerSettings","ro":true}]}; });
+    $m($n[9].InteractiveTranslationSession, function () { return {"att":1048577,"a":2,"m":[{"a":4,"n":".ctor","t":1,"p":[$n[9].TranslationEngine,$n[2].Array.type(System.String),$n[2].Double,$n[9].InteractiveTranslationResult],"pi":[{"n":"engine","pt":$n[9].TranslationEngine,"ps":0},{"n":"sourceSegment","pt":$n[2].Array.type(System.String),"ps":1},{"n":"confidenceThreshold","pt":$n[2].Double,"ps":2},{"n":"result","pt":$n[9].InteractiveTranslationResult,"ps":3}],"sn":"ctor"},{"a":2,"n":"Approve","t":8,"pi":[{"n":"onFinished","pt":Function,"ps":0}],"sn":"approve","rt":$n[2].Void,"p":[Function]},{"a":1,"n":"CreateResult","t":8,"pi":[{"n":"info","pt":$n[9].TranslationInfo,"ps":0}],"sn":"createResult","rt":$n[9].TranslationResult,"p":[$n[9].TranslationInfo]},{"a":2,"n":"UpdatePrefix","t":8,"pi":[{"n":"prefix","pt":$n[2].String,"ps":0}],"sn":"updatePrefix","rt":$n[2].Array.type(System.String),"p":[$n[2].String]},{"a":1,"n":"UpdateSuggestion","t":8,"sn":"updateSuggestion","rt":$n[2].Void},{"a":2,"n":"ConfidenceThreshold","t":16,"rt":$n[2].Double,"g":{"a":2,"n":"get_ConfidenceThreshold","t":8,"rt":$n[2].Double,"fg":"confidenceThreshold"},"s":{"a":2,"n":"set_ConfidenceThreshold","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"confidenceThreshold"},"fn":"confidenceThreshold"},{"a":2,"n":"CurrentSuggestion","t":16,"rt":$n[2].Array.type(System.String),"g":{"a":2,"n":"get_CurrentSuggestion","t":8,"rt":$n[2].Array.type(System.String),"fg":"currentSuggestion"},"s":{"a":1,"n":"set_CurrentSuggestion","t":8,"p":[$n[2].Array.type(System.String)],"rt":$n[2].Void,"fs":"currentSuggestion"},"fn":"currentSuggestion"},{"a":2,"n":"IsLastWordComplete","t":16,"rt":$n[2].Boolean,"g":{"a":2,"n":"get_IsLastWordComplete","t":8,"rt":$n[2].Boolean,"fg":"isLastWordComplete"},"s":{"a":1,"n":"set_IsLastWordComplete","t":8,"p":[$n[2].Boolean],"rt":$n[2].Void,"fs":"isLastWordComplete"},"fn":"isLastWordComplete"},{"a":2,"n":"Prefix","t":16,"rt":$n[2].Array.type(System.String),"g":{"a":2,"n":"get_Prefix","t":8,"rt":$n[2].Array.type(System.String),"fg":"prefix"},"s":{"a":1,"n":"set_Prefix","t":8,"p":[$n[2].Array.type(System.String)],"rt":$n[2].Void,"fs":"prefix"},"fn":"prefix"},{"a":4,"n":"RuleResult","t":16,"rt":$n[9].TranslationResult,"g":{"a":4,"n":"get_RuleResult","t":8,"rt":$n[9].TranslationResult,"fg":"ruleResult"},"s":{"a":1,"n":"set_RuleResult","t":8,"p":[$n[9].TranslationResult],"rt":$n[2].Void,"fs":"ruleResult"},"fn":"ruleResult"},{"a":4,"n":"SmtWordGraph","t":16,"rt":$n[9].WordGraph,"g":{"a":4,"n":"get_SmtWordGraph","t":8,"rt":$n[9].WordGraph,"fg":"smtWordGraph"},"s":{"a":1,"n":"set_SmtWordGraph","t":8,"p":[$n[9].WordGraph],"rt":$n[2].Void,"fs":"smtWordGraph"},"fn":"smtWordGraph"},{"a":2,"n":"SourceSegment","t":16,"rt":$n[2].Array.type(System.String),"g":{"a":2,"n":"get_SourceSegment","t":8,"rt":$n[2].Array.type(System.String),"fg":"sourceSegment"},"s":{"a":1,"n":"set_SourceSegment","t":8,"p":[$n[2].Array.type(System.String)],"rt":$n[2].Void,"fs":"sourceSegment"},"fn":"sourceSegment"},{"a":1,"n":"RuleEngineThreshold","is":true,"t":4,"rt":$n[2].Double,"sn":"ruleEngineThreshold"},{"a":1,"n":"_confidenceThreshold","t":4,"rt":$n[2].Double,"sn":"_confidenceThreshold"},{"a":1,"n":"_curResult","t":4,"rt":$n[9].TranslationResult,"sn":"_curResult"},{"a":1,"n":"_engine","t":4,"rt":$n[9].TranslationEngine,"sn":"_engine","ro":true},{"a":1,"n":"_wordGraphProcessor","t":4,"rt":$n[9].ErrorCorrectionWordGraphProcessor,"sn":"_wordGraphProcessor","ro":true}]}; });
+    $m($n[9].TranslationEngine, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[2].String,$n[2].String,$n[7].IHttpClient],"pi":[{"n":"baseUrl","pt":$n[2].String,"ps":0},{"n":"projectId","pt":$n[2].String,"ps":1},{"n":"httpClient","dv":null,"o":true,"pt":$n[7].IHttpClient,"ps":2}],"sn":"ctor"},{"a":2,"n":"ListenForTrainingStatus","t":8,"pi":[{"n":"onStatusUpdate","pt":Function,"ps":0},{"n":"onFinished","pt":Function,"ps":1}],"sn":"listenForTrainingStatus","rt":$n[2].Void,"p":[Function,Function]},{"a":2,"n":"TokenizeSourceDocument","t":8,"pi":[{"n":"sourceDocument","pt":$n[2].String,"ps":0}],"sn":"tokenizeSourceDocument","rt":$n[2].Array.type(System.Int32),"p":[$n[2].String]},{"a":2,"n":"TokenizeSourceSegment","t":8,"pi":[{"n":"sourceSegment","pt":$n[2].String,"ps":0}],"sn":"tokenizeSourceSegment","rt":$n[2].Array.type(System.Int32),"p":[$n[2].String]},{"a":2,"n":"TokenizeTargetDocument","t":8,"pi":[{"n":"targetDocument","pt":$n[2].String,"ps":0}],"sn":"tokenizeTargetDocument","rt":$n[2].Array.type(System.Int32),"p":[$n[2].String]},{"a":2,"n":"TokenizeTargetSegment","t":8,"pi":[{"n":"targetSegment","pt":$n[2].String,"ps":0}],"sn":"tokenizeTargetSegment","rt":$n[2].Array.type(System.Int32),"p":[$n[2].String]},{"a":2,"n":"Train","t":8,"pi":[{"n":"onStatusUpdate","pt":Function,"ps":0},{"n":"onFinished","pt":Function,"ps":1}],"sn":"train","rt":$n[2].Void,"p":[Function,Function]},{"a":2,"n":"TranslateInteractively","t":8,"pi":[{"n":"sourceSegment","pt":$n[2].String,"ps":0},{"n":"confidenceThreshold","pt":$n[2].Double,"ps":1},{"n":"onFinished","pt":Function,"ps":2}],"sn":"translateInteractively","rt":$n[2].Void,"p":[$n[2].String,$n[2].Double,Function]},{"a":4,"n":"ErrorCorrectionModel","t":16,"rt":$n[9].ErrorCorrectionModel,"g":{"a":4,"n":"get_ErrorCorrectionModel","t":8,"rt":$n[9].ErrorCorrectionModel,"fg":"errorCorrectionModel"},"s":{"a":1,"n":"set_ErrorCorrectionModel","t":8,"p":[$n[9].ErrorCorrectionModel],"rt":$n[2].Void,"fs":"errorCorrectionModel"},"fn":"errorCorrectionModel"},{"a":4,"n":"RestClient","t":16,"rt":$n[7].TranslationRestClient,"g":{"a":4,"n":"get_RestClient","t":8,"rt":$n[7].TranslationRestClient,"fg":"restClient"},"s":{"a":1,"n":"set_RestClient","t":8,"p":[$n[7].TranslationRestClient],"rt":$n[2].Void,"fs":"restClient"},"fn":"restClient"},{"a":4,"n":"SourceSegmentTokenizer","t":16,"rt":$n[4].ITokenizer$2(System.String,System.Int32),"g":{"a":4,"n":"get_SourceSegmentTokenizer","t":8,"rt":$n[4].ITokenizer$2(System.String,System.Int32),"fg":"sourceSegmentTokenizer"},"s":{"a":4,"n":"set_SourceSegmentTokenizer","t":8,"p":[$n[4].ITokenizer$2(System.String,System.Int32)],"rt":$n[2].Void,"fs":"sourceSegmentTokenizer"},"fn":"sourceSegmentTokenizer"},{"a":4,"n":"SourceWordTokenizer","t":16,"rt":$n[4].ITokenizer$2(System.String,System.Int32),"g":{"a":4,"n":"get_SourceWordTokenizer","t":8,"rt":$n[4].ITokenizer$2(System.String,System.Int32),"fg":"sourceWordTokenizer"},"s":{"a":4,"n":"set_SourceWordTokenizer","t":8,"p":[$n[4].ITokenizer$2(System.String,System.Int32)],"rt":$n[2].Void,"fs":"sourceWordTokenizer"},"fn":"sourceWordTokenizer"},{"a":4,"n":"TargetSegmentTokenizer","t":16,"rt":$n[4].ITokenizer$2(System.String,System.Int32),"g":{"a":4,"n":"get_TargetSegmentTokenizer","t":8,"rt":$n[4].ITokenizer$2(System.String,System.Int32),"fg":"targetSegmentTokenizer"},"s":{"a":4,"n":"set_TargetSegmentTokenizer","t":8,"p":[$n[4].ITokenizer$2(System.String,System.Int32)],"rt":$n[2].Void,"fs":"targetSegmentTokenizer"},"fn":"targetSegmentTokenizer"},{"a":4,"n":"TargetWordTokenizer","t":16,"rt":$n[4].ITokenizer$2(System.String,System.Int32),"g":{"a":4,"n":"get_TargetWordTokenizer","t":8,"rt":$n[4].ITokenizer$2(System.String,System.Int32),"fg":"targetWordTokenizer"},"s":{"a":4,"n":"set_TargetWordTokenizer","t":8,"p":[$n[4].ITokenizer$2(System.String,System.Int32)],"rt":$n[2].Void,"fs":"targetWordTokenizer"},"fn":"targetWordTokenizer"}]}; });
+    $m($n[9].InteractiveTranslationResult, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[9].WordGraph,$n[9].TranslationResult],"pi":[{"n":"smtWordGraph","pt":$n[9].WordGraph,"ps":0},{"n":"ruleResult","pt":$n[9].TranslationResult,"ps":1}],"sn":"ctor"},{"a":2,"n":"RuleResult","t":16,"rt":$n[9].TranslationResult,"g":{"a":2,"n":"get_RuleResult","t":8,"rt":$n[9].TranslationResult,"fg":"ruleResult"},"s":{"a":1,"n":"set_RuleResult","t":8,"p":[$n[9].TranslationResult],"rt":$n[2].Void,"fs":"ruleResult"},"fn":"ruleResult"},{"a":2,"n":"SmtWordGraph","t":16,"rt":$n[9].WordGraph,"g":{"a":2,"n":"get_SmtWordGraph","t":8,"rt":$n[9].WordGraph,"fg":"smtWordGraph"},"s":{"a":1,"n":"set_SmtWordGraph","t":8,"p":[$n[9].WordGraph],"rt":$n[2].Void,"fs":"smtWordGraph"},"fn":"smtWordGraph"}]}; });
+    $m($n[9].PhraseInfo, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Alignment","t":16,"rt":$n[9].WordAlignmentMatrix,"g":{"a":2,"n":"get_Alignment","t":8,"rt":$n[9].WordAlignmentMatrix,"fg":"alignment"},"s":{"a":2,"n":"set_Alignment","t":8,"p":[$n[9].WordAlignmentMatrix],"rt":$n[2].Void,"fs":"alignment"},"fn":"alignment"},{"a":2,"n":"SourceEndIndex","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_SourceEndIndex","t":8,"rt":$n[2].Int32,"fg":"sourceEndIndex"},"s":{"a":2,"n":"set_SourceEndIndex","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"sourceEndIndex"},"fn":"sourceEndIndex"},{"a":2,"n":"SourceStartIndex","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_SourceStartIndex","t":8,"rt":$n[2].Int32,"fg":"sourceStartIndex"},"s":{"a":2,"n":"set_SourceStartIndex","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"sourceStartIndex"},"fn":"sourceStartIndex"},{"a":2,"n":"TargetCut","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_TargetCut","t":8,"rt":$n[2].Int32,"fg":"targetCut"},"s":{"a":2,"n":"set_TargetCut","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"targetCut"},"fn":"targetCut"}]}; });
+    $m($n[9].Preprocessors, function () { return {"att":1048961,"a":2,"s":true,"m":[{"a":2,"n":"Lowercase","is":true,"t":8,"pi":[{"n":"str","pt":$n[2].String,"ps":0}],"sn":"lowercase","rt":$n[2].String,"p":[$n[2].String]},{"a":2,"n":"Null","is":true,"t":8,"pi":[{"n":"str","pt":$n[2].String,"ps":0}],"sn":"null","rt":$n[2].String,"p":[$n[2].String]}]}; });
+    $m($n[9].SmtTrainProgress, function () { return {"att":1048841,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[2].Int32,$n[2].String,$n[2].Int32],"pi":[{"n":"currentStep","pt":$n[2].Int32,"ps":0},{"n":"currentStepMessage","pt":$n[2].String,"ps":1},{"n":"stepCount","pt":$n[2].Int32,"ps":2}],"sn":"$ctor1"},{"a":2,"n":"CurrentStep","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_CurrentStep","t":8,"rt":$n[2].Int32,"fg":"currentStep"},"s":{"a":1,"n":"set_CurrentStep","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"currentStep"},"fn":"currentStep"},{"a":2,"n":"CurrentStepMessage","t":16,"rt":$n[2].String,"g":{"a":2,"n":"get_CurrentStepMessage","t":8,"rt":$n[2].String,"fg":"currentStepMessage"},"s":{"a":1,"n":"set_CurrentStepMessage","t":8,"p":[$n[2].String],"rt":$n[2].Void,"fs":"currentStepMessage"},"fn":"currentStepMessage"},{"a":2,"n":"PercentCompleted","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_PercentCompleted","t":8,"rt":$n[2].Int32,"fg":"percentCompleted"},"fn":"percentCompleted"},{"a":2,"n":"StepCount","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_StepCount","t":8,"rt":$n[2].Int32,"fg":"stepCount"},"s":{"a":1,"n":"set_StepCount","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"stepCount"},"fn":"stepCount"}]}; });
+    $m($n[9].TranslationInfo, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Phrases","t":16,"rt":$n[0].IList$1(SIL.Machine.Translation.PhraseInfo),"g":{"a":2,"n":"get_Phrases","t":8,"rt":$n[0].IList$1(SIL.Machine.Translation.PhraseInfo),"fg":"phrases"},"s":{"a":1,"n":"set_Phrases","t":8,"p":[$n[0].IList$1(SIL.Machine.Translation.PhraseInfo)],"rt":$n[2].Void,"fs":"phrases"},"fn":"phrases"},{"a":2,"n":"Score","t":16,"rt":$n[2].Double,"g":{"a":2,"n":"get_Score","t":8,"rt":$n[2].Double,"fg":"score"},"s":{"a":2,"n":"set_Score","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"score"},"fn":"score"},{"a":2,"n":"Target","t":16,"rt":$n[0].IList$1(System.String),"g":{"a":2,"n":"get_Target","t":8,"rt":$n[0].IList$1(System.String),"fg":"target"},"s":{"a":1,"n":"set_Target","t":8,"p":[$n[0].IList$1(System.String)],"rt":$n[2].Void,"fs":"target"},"fn":"target"},{"a":2,"n":"TargetConfidences","t":16,"rt":$n[0].IList$1(System.Double),"g":{"a":2,"n":"get_TargetConfidences","t":8,"rt":$n[0].IList$1(System.Double),"fg":"targetConfidences"},"s":{"a":1,"n":"set_TargetConfidences","t":8,"p":[$n[0].IList$1(System.Double)],"rt":$n[2].Void,"fs":"targetConfidences"},"fn":"targetConfidences"},{"a":2,"n":"TargetUncorrectedPrefixWords","t":16,"rt":$n[0].ISet$1(System.Int32),"g":{"a":2,"n":"get_TargetUncorrectedPrefixWords","t":8,"rt":$n[0].ISet$1(System.Int32),"fg":"targetUncorrectedPrefixWords"},"s":{"a":1,"n":"set_TargetUncorrectedPrefixWords","t":8,"p":[$n[0].ISet$1(System.Int32)],"rt":$n[2].Void,"fs":"targetUncorrectedPrefixWords"},"fn":"targetUncorrectedPrefixWords"},{"a":2,"n":"TargetUnknownWords","t":16,"rt":$n[0].ISet$1(System.Int32),"g":{"a":2,"n":"get_TargetUnknownWords","t":8,"rt":$n[0].ISet$1(System.Int32),"fg":"targetUnknownWords"},"s":{"a":1,"n":"set_TargetUnknownWords","t":8,"p":[$n[0].ISet$1(System.Int32)],"rt":$n[2].Void,"fs":"targetUnknownWords"},"fn":"targetUnknownWords"},{"a":1,"n":"__Property__Initializer__Phrases","t":4,"rt":$n[0].IList$1(SIL.Machine.Translation.PhraseInfo),"sn":"__Property__Initializer__Phrases"},{"a":1,"n":"__Property__Initializer__Target","t":4,"rt":$n[0].IList$1(System.String),"sn":"__Property__Initializer__Target"},{"a":1,"n":"__Property__Initializer__TargetConfidences","t":4,"rt":$n[0].IList$1(System.Double),"sn":"__Property__Initializer__TargetConfidences"},{"a":1,"n":"__Property__Initializer__TargetUncorrectedPrefixWords","t":4,"rt":$n[0].ISet$1(System.Int32),"sn":"__Property__Initializer__TargetUncorrectedPrefixWords"},{"a":1,"n":"__Property__Initializer__TargetUnknownWords","t":4,"rt":$n[0].ISet$1(System.Int32),"sn":"__Property__Initializer__TargetUnknownWords"}]}; });
+    $m($n[9].EcmScoreInfo, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"GetLastInsPrefixWordFromEsi","t":8,"sn":"getLastInsPrefixWordFromEsi","rt":$n[0].IReadOnlyList$1(System.Int32)},{"a":2,"n":"RemoveLast","t":8,"sn":"removeLast","rt":$n[2].Void},{"a":2,"n":"UpdatePositions","t":8,"pi":[{"n":"prevEsi","pt":$n[9].EcmScoreInfo,"ps":0},{"n":"positions","pt":$n[0].IList$1(System.Int32),"ps":1}],"sn":"updatePositions","rt":$n[2].Void,"p":[$n[9].EcmScoreInfo,$n[0].IList$1(System.Int32)]},{"a":2,"n":"Operations","t":16,"rt":$n[0].IList$1(SIL.Machine.Translation.EditOperation),"g":{"a":2,"n":"get_Operations","t":8,"rt":$n[0].IList$1(SIL.Machine.Translation.EditOperation),"fg":"operations"},"s":{"a":1,"n":"set_Operations","t":8,"p":[$n[0].IList$1(SIL.Machine.Translation.EditOperation)],"rt":$n[2].Void,"fs":"operations"},"fn":"operations"},{"a":2,"n":"Scores","t":16,"rt":$n[0].IList$1(System.Double),"g":{"a":2,"n":"get_Scores","t":8,"rt":$n[0].IList$1(System.Double),"fg":"scores"},"s":{"a":1,"n":"set_Scores","t":8,"p":[$n[0].IList$1(System.Double)],"rt":$n[2].Void,"fs":"scores"},"fn":"scores"},{"a":1,"n":"__Property__Initializer__Operations","t":4,"rt":$n[0].IList$1(SIL.Machine.Translation.EditOperation),"sn":"__Property__Initializer__Operations"},{"a":1,"n":"__Property__Initializer__Scores","t":4,"rt":$n[0].IList$1(System.Double),"sn":"__Property__Initializer__Scores"}]}; });
+    $m($n[9].EditOperation, function () { return {"att":257,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Delete","is":true,"t":4,"rt":$n[9].EditOperation,"sn":"delete"},{"a":2,"n":"Hit","is":true,"t":4,"rt":$n[9].EditOperation,"sn":"hit"},{"a":2,"n":"Insert","is":true,"t":4,"rt":$n[9].EditOperation,"sn":"insert"},{"a":2,"n":"None","is":true,"t":4,"rt":$n[9].EditOperation,"sn":"none"},{"a":2,"n":"PrefixDelete","is":true,"t":4,"rt":$n[9].EditOperation,"sn":"prefixDelete"},{"a":2,"n":"Substitute","is":true,"t":4,"rt":$n[9].EditOperation,"sn":"substitute"}]}; });
+    $m($n[9].EditDistance$2, function (TSeq, TItem) { return {"att":1048705,"a":2,"m":[{"a":3,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"v":true,"a":2,"n":"Compute","t":8,"pi":[{"n":"x","pt":TSeq,"ps":0},{"n":"y","pt":TSeq,"ps":1}],"sn":"compute","rt":$n[2].Double,"p":[TSeq,TSeq]},{"v":true,"a":2,"n":"Compute","t":8,"pi":[{"n":"x","pt":TSeq,"ps":0},{"n":"y","pt":TSeq,"ps":1},{"n":"ops","out":true,"pt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),"ps":2}],"sn":"compute$1","rt":$n[2].Double,"p":[TSeq,TSeq,$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation)]},{"a":1,"n":"Compute","t":8,"pi":[{"n":"x","pt":TSeq,"ps":0},{"n":"y","pt":TSeq,"ps":1},{"n":"isLastItemComplete","pt":$n[2].Boolean,"ps":2},{"n":"usePrefixDelOp","pt":$n[2].Boolean,"ps":3}],"sn":"compute$3","rt":$n[2].Double,"p":[TSeq,TSeq,$n[2].Boolean,$n[2].Boolean]},{"a":1,"n":"Compute","t":8,"pi":[{"n":"x","pt":TSeq,"ps":0},{"n":"y","pt":TSeq,"ps":1},{"n":"isLastItemComplete","pt":$n[2].Boolean,"ps":2},{"n":"usePrefixDelOp","pt":$n[2].Boolean,"ps":3},{"n":"ops","out":true,"pt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),"ps":4}],"sn":"compute$4","rt":$n[2].Double,"p":[TSeq,TSeq,$n[2].Boolean,$n[2].Boolean,$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation)]},{"a":3,"n":"Compute","t":8,"pi":[{"n":"x","pt":TSeq,"ps":0},{"n":"y","pt":TSeq,"ps":1},{"n":"isLastItemComplete","pt":$n[2].Boolean,"ps":2},{"n":"usePrefixDelOp","pt":$n[2].Boolean,"ps":3},{"n":"distMatrix","out":true,"pt":$n[2].Array.type(System.Double, 2),"ps":4}],"sn":"compute$2","rt":$n[2].Double,"p":[TSeq,TSeq,$n[2].Boolean,$n[2].Boolean,$n[2].Array.type(System.Double, 2)]},{"v":true,"a":2,"n":"ComputePrefix","t":8,"pi":[{"n":"x","pt":TSeq,"ps":0},{"n":"y","pt":TSeq,"ps":1},{"n":"isLastItemComplete","pt":$n[2].Boolean,"ps":2},{"n":"usePrefixDelOp","pt":$n[2].Boolean,"ps":3},{"n":"ops","out":true,"pt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),"ps":4}],"sn":"computePrefix","rt":$n[2].Double,"p":[TSeq,TSeq,$n[2].Boolean,$n[2].Boolean,$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation)]},{"ab":true,"a":3,"n":"GetCount","t":8,"pi":[{"n":"item","pt":TSeq,"ps":0}],"sn":"getCount","rt":$n[2].Int32,"p":[TSeq]},{"ab":true,"a":3,"n":"GetDeletionCost","t":8,"pi":[{"n":"x","pt":TItem,"ps":0}],"sn":"getDeletionCost","rt":$n[2].Double,"p":[TItem]},{"ab":true,"a":3,"n":"GetHitCost","t":8,"pi":[{"n":"x","pt":TItem,"ps":0},{"n":"y","pt":TItem,"ps":1},{"n":"isComplete","pt":$n[2].Boolean,"ps":2}],"sn":"getHitCost","rt":$n[2].Double,"p":[TItem,TItem,$n[2].Boolean]},{"ab":true,"a":3,"n":"GetInsertionCost","t":8,"pi":[{"n":"y","pt":TItem,"ps":0}],"sn":"getInsertionCost","rt":$n[2].Double,"p":[TItem]},{"ab":true,"a":3,"n":"GetItem","t":8,"pi":[{"n":"seq","pt":TSeq,"ps":0},{"n":"index","pt":$n[2].Int32,"ps":1}],"sn":"getItem","rt":TItem,"p":[TSeq,$n[2].Int32]},{"a":1,"n":"GetOperations","t":8,"pi":[{"n":"x","pt":TSeq,"ps":0},{"n":"y","pt":TSeq,"ps":1},{"n":"distMatrix","pt":$n[2].Array.type(System.Double, 2),"ps":2},{"n":"isLastItemComplete","pt":$n[2].Boolean,"ps":3},{"n":"usePrefixDelOp","pt":$n[2].Boolean,"ps":4},{"n":"i","pt":$n[2].Int32,"ps":5},{"n":"j","pt":$n[2].Int32,"ps":6}],"sn":"getOperations","rt":$n[0].IEnumerable$1(SIL.Machine.Translation.EditOperation),"p":[TSeq,TSeq,$n[2].Array.type(System.Double, 2),$n[2].Boolean,$n[2].Boolean,$n[2].Int32,$n[2].Int32]},{"ab":true,"a":3,"n":"GetSubstitutionCost","t":8,"pi":[{"n":"x","pt":TItem,"ps":0},{"n":"y","pt":TItem,"ps":1},{"n":"isComplete","pt":$n[2].Boolean,"ps":2}],"sn":"getSubstitutionCost","rt":$n[2].Double,"p":[TItem,TItem,$n[2].Boolean]},{"a":3,"n":"InitDistMatrix","t":8,"pi":[{"n":"x","pt":TSeq,"ps":0},{"n":"y","pt":TSeq,"ps":1}],"sn":"initDistMatrix","rt":$n[2].Array.type(System.Double, 2),"p":[TSeq,TSeq]},{"ab":true,"a":3,"n":"IsHit","t":8,"pi":[{"n":"x","pt":TItem,"ps":0},{"n":"y","pt":TItem,"ps":1},{"n":"isComplete","pt":$n[2].Boolean,"ps":2}],"sn":"isHit","rt":$n[2].Boolean,"p":[TItem,TItem,$n[2].Boolean]},{"a":3,"n":"ProcessMatrixCell","t":8,"pi":[{"n":"x","pt":TSeq,"ps":0},{"n":"y","pt":TSeq,"ps":1},{"n":"distMatrix","pt":$n[2].Array.type(System.Double, 2),"ps":2},{"n":"usePrefixDelOp","pt":$n[2].Boolean,"ps":3},{"n":"isComplete","pt":$n[2].Boolean,"ps":4},{"n":"i","pt":$n[2].Int32,"ps":5},{"n":"j","pt":$n[2].Int32,"ps":6},{"n":"iPred","out":true,"pt":$n[2].Int32,"ps":7},{"n":"jPred","out":true,"pt":$n[2].Int32,"ps":8},{"n":"op","out":true,"pt":$n[9].EditOperation,"ps":9}],"sn":"processMatrixCell","rt":$n[2].Double,"p":[TSeq,TSeq,$n[2].Array.type(System.Double, 2),$n[2].Boolean,$n[2].Boolean,$n[2].Int32,$n[2].Int32,$n[2].Int32,$n[2].Int32,$n[9].EditOperation]},{"v":true,"a":2,"n":"DeletionCost","t":16,"rt":$n[2].Double,"g":{"v":true,"a":2,"n":"get_DeletionCost","t":8,"rt":$n[2].Double,"fg":"deletionCost"},"s":{"v":true,"a":2,"n":"set_DeletionCost","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"deletionCost"},"fn":"deletionCost"},{"v":true,"a":2,"n":"HitCost","t":16,"rt":$n[2].Double,"g":{"v":true,"a":2,"n":"get_HitCost","t":8,"rt":$n[2].Double,"fg":"hitCost"},"s":{"v":true,"a":2,"n":"set_HitCost","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"hitCost"},"fn":"hitCost"},{"v":true,"a":2,"n":"InsertionCost","t":16,"rt":$n[2].Double,"g":{"v":true,"a":2,"n":"get_InsertionCost","t":8,"rt":$n[2].Double,"fg":"insertionCost"},"s":{"v":true,"a":2,"n":"set_InsertionCost","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"insertionCost"},"fn":"insertionCost"},{"v":true,"a":2,"n":"SubstitutionCost","t":16,"rt":$n[2].Double,"g":{"v":true,"a":2,"n":"get_SubstitutionCost","t":8,"rt":$n[2].Double,"fg":"substitutionCost"},"s":{"v":true,"a":2,"n":"set_SubstitutionCost","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"substitutionCost"},"fn":"substitutionCost"}]}; });
+    $m($n[9].ErrorCorrectionModel, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"CorrectPrefix","t":8,"pi":[{"n":"correction","pt":$n[9].TranslationInfo,"ps":0},{"n":"uncorrectedPrefixLen","pt":$n[2].Int32,"ps":1},{"n":"prefix","pt":$n[0].IReadOnlyList$1(System.String),"ps":2},{"n":"isLastWordComplete","pt":$n[2].Boolean,"ps":3}],"sn":"correctPrefix","rt":$n[2].Int32,"p":[$n[9].TranslationInfo,$n[2].Int32,$n[0].IReadOnlyList$1(System.String),$n[2].Boolean]},{"a":1,"n":"CorrectPrefix","t":8,"pi":[{"n":"correction","pt":$n[9].TranslationInfo,"ps":0},{"n":"wordOps","pt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),"ps":1},{"n":"charOps","pt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),"ps":2},{"n":"prefix","pt":$n[0].IReadOnlyList$1(System.String),"ps":3},{"n":"isLastWordComplete","pt":$n[2].Boolean,"ps":4}],"sn":"correctPrefix$1","rt":$n[2].Int32,"p":[$n[9].TranslationInfo,$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),$n[0].IReadOnlyList$1(System.String),$n[2].Boolean]},{"a":1,"n":"CorrectWord","t":8,"pi":[{"n":"charOps","pt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),"ps":0},{"n":"word","pt":$n[2].String,"ps":1},{"n":"prefix","pt":$n[2].String,"ps":2}],"sn":"correctWord","rt":$n[2].String,"p":[$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),$n[2].String,$n[2].String]},{"a":2,"n":"ExtendEsi","t":8,"pi":[{"n":"esi","pt":$n[9].EcmScoreInfo,"ps":0},{"n":"prevEsi","pt":$n[9].EcmScoreInfo,"ps":1},{"n":"word","pt":$n[2].String,"ps":2},{"n":"prefixDiff","pt":$n[0].IReadOnlyList$1(System.String),"ps":3},{"n":"isLastWordComplete","pt":$n[2].Boolean,"ps":4}],"sn":"extendEsi","rt":$n[2].Void,"p":[$n[9].EcmScoreInfo,$n[9].EcmScoreInfo,$n[2].String,$n[0].IReadOnlyList$1(System.String),$n[2].Boolean]},{"a":2,"n":"ExtendInitialEsi","t":8,"pi":[{"n":"initialEsi","pt":$n[9].EcmScoreInfo,"ps":0},{"n":"prevInitialEsi","pt":$n[9].EcmScoreInfo,"ps":1},{"n":"prefixDiff","pt":$n[0].IReadOnlyList$1(System.String),"ps":2}],"sn":"extendInitialEsi","rt":$n[2].Void,"p":[$n[9].EcmScoreInfo,$n[9].EcmScoreInfo,$n[0].IReadOnlyList$1(System.String)]},{"a":1,"n":"ResizeAlignment","t":8,"pi":[{"n":"correction","pt":$n[9].TranslationInfo,"ps":0},{"n":"phraseIndex","pt":$n[2].Int32,"ps":1},{"n":"colsToCopy","pt":$n[0].List$1(System.Int32),"ps":2}],"sn":"resizeAlignment","rt":$n[2].Void,"p":[$n[9].TranslationInfo,$n[2].Int32,$n[0].List$1(System.Int32)]},{"a":2,"n":"SetErrorModelParameters","t":8,"pi":[{"n":"vocSize","pt":$n[2].Int32,"ps":0},{"n":"hitProb","pt":$n[2].Double,"ps":1},{"n":"insFactor","pt":$n[2].Double,"ps":2},{"n":"substFactor","pt":$n[2].Double,"ps":3},{"n":"delFactor","pt":$n[2].Double,"ps":4}],"sn":"setErrorModelParameters","rt":$n[2].Void,"p":[$n[2].Int32,$n[2].Double,$n[2].Double,$n[2].Double,$n[2].Double]},{"a":2,"n":"SetupEsi","t":8,"pi":[{"n":"esi","pt":$n[9].EcmScoreInfo,"ps":0},{"n":"prevEsi","pt":$n[9].EcmScoreInfo,"ps":1},{"n":"word","pt":$n[2].String,"ps":2}],"sn":"setupEsi","rt":$n[2].Void,"p":[$n[9].EcmScoreInfo,$n[9].EcmScoreInfo,$n[2].String]},{"a":2,"n":"SetupInitialEsi","t":8,"pi":[{"n":"initialEsi","pt":$n[9].EcmScoreInfo,"ps":0}],"sn":"setupInitialEsi","rt":$n[2].Void,"p":[$n[9].EcmScoreInfo]},{"a":1,"n":"_segmentEditDistance","t":4,"rt":$n[9].SegmentEditDistance,"sn":"_segmentEditDistance","ro":true}]}; });
+    $m($n[9].ErrorCorrectionWordGraphProcessor, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[9].ErrorCorrectionModel,$n[9].WordGraph,$n[2].Double,$n[2].Double],"pi":[{"n":"ecm","pt":$n[9].ErrorCorrectionModel,"ps":0},{"n":"wordGraph","pt":$n[9].WordGraph,"ps":1},{"n":"ecmWeight","dv":1.0,"o":true,"pt":$n[2].Double,"ps":2},{"n":"wordGraphWeight","dv":1.0,"o":true,"pt":$n[2].Double,"ps":3}],"sn":"ctor"},{"a":1,"n":"AddBestUncorrectedPrefixState","t":8,"pi":[{"n":"correction","pt":$n[9].TranslationInfo,"ps":0},{"n":"procPrefixPos","pt":$n[2].Int32,"ps":1},{"n":"state","pt":$n[2].Int32,"ps":2}],"sn":"addBestUncorrectedPrefixState","rt":$n[2].Void,"p":[$n[9].TranslationInfo,$n[2].Int32,$n[2].Int32]},{"a":1,"n":"AddBestUncorrectedPrefixSubState","t":8,"pi":[{"n":"correction","pt":$n[9].TranslationInfo,"ps":0},{"n":"procPrefixPos","pt":$n[2].Int32,"ps":1},{"n":"arcIndex","pt":$n[2].Int32,"ps":2},{"n":"arcWordIndex","pt":$n[2].Int32,"ps":3}],"sn":"addBestUncorrectedPrefixSubState","rt":$n[2].Void,"p":[$n[9].TranslationInfo,$n[2].Int32,$n[2].Int32,$n[2].Int32]},{"a":1,"n":"AddOrReplace","t":8,"pi":[{"n":"list","pt":$n[0].List$1(System.Object),"ps":0},{"n":"index","pt":$n[2].Int32,"ps":1},{"n":"item","pt":System.Object,"ps":2}],"tpc":1,"tprm":["T"],"sn":"addOrReplace","rt":$n[2].Void,"p":[$n[0].List$1(System.Object),$n[2].Int32,System.Object]},{"a":1,"n":"AddToNBestList","is":true,"t":8,"pi":[{"n":"nbestList","pt":$n[0].List$1(System.Object),"ps":0},{"n":"n","pt":$n[2].Int32,"ps":1},{"n":"item","pt":System.Object,"ps":2}],"tpc":1,"tprm":["T"],"sn":"addToNBestList","rt":$n[2].Void,"p":[$n[0].List$1(System.Object),$n[2].Int32,System.Object]},{"a":2,"n":"Correct","t":8,"pi":[{"n":"prefix","pt":$n[0].IReadOnlyList$1(System.String),"ps":0},{"n":"isLastWordComplete","pt":$n[2].Boolean,"ps":1},{"n":"n","pt":$n[2].Int32,"ps":2}],"sn":"correct","rt":$n[0].IEnumerable$1(SIL.Machine.Translation.TranslationInfo),"p":[$n[0].IReadOnlyList$1(System.String),$n[2].Boolean,$n[2].Int32]},{"a":1,"n":"GetCorrectionForCandidate","t":8,"pi":[{"n":"prefix","pt":$n[0].IReadOnlyList$1(System.String),"ps":0},{"n":"isLastWordComplete","pt":$n[2].Boolean,"ps":1},{"n":"candidate","pt":$n[9].ErrorCorrectionWordGraphProcessor.Candidate,"ps":2}],"sn":"getCorrectionForCandidate","rt":$n[9].TranslationInfo,"p":[$n[0].IReadOnlyList$1(System.String),$n[2].Boolean,$n[9].ErrorCorrectionWordGraphProcessor.Candidate]},{"a":1,"n":"GetNBestStateCandidates","t":8,"pi":[{"n":"candidates","pt":$n[0].List$1(SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.Candidate),"ps":0},{"n":"n","pt":$n[2].Int32,"ps":1}],"sn":"getNBestStateCandidates","rt":$n[2].Void,"p":[$n[0].List$1(SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.Candidate),$n[2].Int32]},{"a":1,"n":"GetNBestSubStateCandidates","t":8,"pi":[{"n":"candidates","pt":$n[0].List$1(SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.Candidate),"ps":0},{"n":"n","pt":$n[2].Int32,"ps":1}],"sn":"getNBestSubStateCandidates","rt":$n[2].Void,"p":[$n[0].List$1(SIL.Machine.Translation.ErrorCorrectionWordGraphProcessor.Candidate),$n[2].Int32]},{"a":1,"n":"InitArcs","t":8,"sn":"initArcs","rt":$n[2].Void},{"a":1,"n":"InitStates","t":8,"sn":"initStates","rt":$n[2].Void},{"a":1,"n":"ProcessWordGraphForPrefixDiff","t":8,"pi":[{"n":"prefixDiff","pt":$n[0].IReadOnlyList$1(System.String),"ps":0},{"n":"isLastWordComplete","pt":$n[2].Boolean,"ps":1}],"sn":"processWordGraphForPrefixDiff","rt":$n[2].Void,"p":[$n[0].IReadOnlyList$1(System.String),$n[2].Boolean]},{"a":1,"n":"UpdateCorrectionFromArc","t":8,"pi":[{"n":"correction","pt":$n[9].TranslationInfo,"ps":0},{"n":"arc","pt":$n[9].WordGraphArc,"ps":1},{"n":"isPrefix","pt":$n[2].Boolean,"ps":2},{"n":"alignmentColsToAddCount","pt":$n[2].Int32,"ps":3}],"sn":"updateCorrectionFromArc","rt":$n[2].Void,"p":[$n[9].TranslationInfo,$n[9].WordGraphArc,$n[2].Boolean,$n[2].Int32]},{"a":1,"n":"UpdateInitialStateBestScores","t":8,"sn":"updateInitialStateBestScores","rt":$n[2].Void},{"a":1,"n":"UpdateStateBestScores","t":8,"pi":[{"n":"arcIndex","pt":$n[2].Int32,"ps":0},{"n":"prefixDiffSize","pt":$n[2].Int32,"ps":1}],"sn":"updateStateBestScores","rt":$n[2].Void,"p":[$n[2].Int32,$n[2].Int32]},{"a":2,"n":"EcmWeight","t":16,"rt":$n[2].Double,"g":{"a":2,"n":"get_EcmWeight","t":8,"rt":$n[2].Double,"fg":"ecmWeight"},"s":{"a":1,"n":"set_EcmWeight","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"ecmWeight"},"fn":"ecmWeight"},{"a":2,"n":"WordGraphWeight","t":16,"rt":$n[2].Double,"g":{"a":2,"n":"get_WordGraphWeight","t":8,"rt":$n[2].Double,"fg":"wordGraphWeight"},"s":{"a":1,"n":"set_WordGraphWeight","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"wordGraphWeight"},"fn":"wordGraphWeight"},{"a":1,"n":"_arcEcmScoreInfos","t":4,"rt":$n[0].List$1(System.Collections.Generic.List$1(SIL.Machine.Translation.EcmScoreInfo)),"sn":"_arcEcmScoreInfos","ro":true},{"a":1,"n":"_ecm","t":4,"rt":$n[9].ErrorCorrectionModel,"sn":"_ecm","ro":true},{"a":1,"n":"_prevIsLastWordComplete","t":4,"rt":$n[2].Boolean,"sn":"_prevIsLastWordComplete"},{"a":1,"n":"_prevPrefix","t":4,"rt":$n[2].Array.type(System.String),"sn":"_prevPrefix"},{"a":1,"n":"_restScores","t":4,"rt":$n[2].Array.type(System.Double),"sn":"_restScores","ro":true},{"a":1,"n":"_stateBestPrevArcs","t":4,"rt":$n[0].List$1(System.Collections.Generic.List$1(System.Int32)),"sn":"_stateBestPrevArcs","ro":true},{"a":1,"n":"_stateBestScores","t":4,"rt":$n[0].List$1(System.Collections.Generic.List$1(System.Double)),"sn":"_stateBestScores","ro":true},{"a":1,"n":"_stateEcmScoreInfos","t":4,"rt":$n[0].List$1(SIL.Machine.Translation.EcmScoreInfo),"sn":"_stateEcmScoreInfos","ro":true},{"a":1,"n":"_stateWordGraphScores","t":4,"rt":$n[0].List$1(System.Double),"sn":"_stateWordGraphScores","ro":true},{"a":1,"n":"_statesInvolvedInArcs","t":4,"rt":$n[0].HashSet$1(System.Int32),"sn":"_statesInvolvedInArcs","ro":true},{"a":1,"n":"_wordGraph","t":4,"rt":$n[9].WordGraph,"sn":"_wordGraph","ro":true}]}; });
+    $m($n[9].ErrorCorrectionWordGraphProcessor.Candidate, function () { return {"td":$n[9].ErrorCorrectionWordGraphProcessor,"att":1048579,"a":1,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[2].Double,$n[2].Int32,$n[2].Int32,$n[2].Int32],"pi":[{"n":"score","pt":$n[2].Double,"ps":0},{"n":"state","pt":$n[2].Int32,"ps":1},{"n":"arcIndex","dv":-1,"o":true,"pt":$n[2].Int32,"ps":2},{"n":"arcWordIndex","dv":-1,"o":true,"pt":$n[2].Int32,"ps":3}],"sn":"ctor"},{"a":2,"n":"CompareTo","t":8,"pi":[{"n":"other","pt":$n[9].ErrorCorrectionWordGraphProcessor.Candidate,"ps":0}],"sn":"compareTo","rt":$n[2].Int32,"p":[$n[9].ErrorCorrectionWordGraphProcessor.Candidate]},{"a":2,"n":"ArcIndex","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_ArcIndex","t":8,"rt":$n[2].Int32,"fg":"arcIndex"},"s":{"a":1,"n":"set_ArcIndex","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"arcIndex"},"fn":"arcIndex"},{"a":2,"n":"ArcWordIndex","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_ArcWordIndex","t":8,"rt":$n[2].Int32,"fg":"arcWordIndex"},"s":{"a":1,"n":"set_ArcWordIndex","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"arcWordIndex"},"fn":"arcWordIndex"},{"a":2,"n":"Score","t":16,"rt":$n[2].Double,"g":{"a":2,"n":"get_Score","t":8,"rt":$n[2].Double,"fg":"score"},"s":{"a":1,"n":"set_Score","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"score"},"fn":"score"},{"a":2,"n":"State","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_State","t":8,"rt":$n[2].Int32,"fg":"state"},"s":{"a":1,"n":"set_State","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"state"},"fn":"state"}]}; });
+    $m($n[9].SegmentEditDistance, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"ComputePrefix","t":8,"pi":[{"n":"x","pt":$n[0].IReadOnlyList$1(System.String),"ps":0},{"n":"y","pt":$n[0].IReadOnlyList$1(System.String),"ps":1},{"n":"isLastItemComplete","pt":$n[2].Boolean,"ps":2},{"n":"usePrefixDelOp","pt":$n[2].Boolean,"ps":3},{"n":"wordOps","out":true,"pt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),"ps":4},{"n":"charOps","out":true,"pt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),"ps":5}],"sn":"computePrefix$1","rt":$n[2].Double,"p":[$n[0].IReadOnlyList$1(System.String),$n[0].IReadOnlyList$1(System.String),$n[2].Boolean,$n[2].Boolean,$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation)]},{"ov":true,"a":3,"n":"GetCount","t":8,"pi":[{"n":"item","pt":$n[0].IReadOnlyList$1(System.String),"ps":0}],"sn":"getCount","rt":$n[2].Int32,"p":[$n[0].IReadOnlyList$1(System.String)]},{"ov":true,"a":3,"n":"GetDeletionCost","t":8,"pi":[{"n":"x","pt":$n[2].String,"ps":0}],"sn":"getDeletionCost","rt":$n[2].Double,"p":[$n[2].String]},{"ov":true,"a":3,"n":"GetHitCost","t":8,"pi":[{"n":"x","pt":$n[2].String,"ps":0},{"n":"y","pt":$n[2].String,"ps":1},{"n":"isComplete","pt":$n[2].Boolean,"ps":2}],"sn":"getHitCost","rt":$n[2].Double,"p":[$n[2].String,$n[2].String,$n[2].Boolean]},{"ov":true,"a":3,"n":"GetInsertionCost","t":8,"pi":[{"n":"y","pt":$n[2].String,"ps":0}],"sn":"getInsertionCost","rt":$n[2].Double,"p":[$n[2].String]},{"ov":true,"a":3,"n":"GetItem","t":8,"pi":[{"n":"seq","pt":$n[0].IReadOnlyList$1(System.String),"ps":0},{"n":"index","pt":$n[2].Int32,"ps":1}],"sn":"getItem","rt":$n[2].String,"p":[$n[0].IReadOnlyList$1(System.String),$n[2].Int32]},{"a":1,"n":"GetOpCounts","is":true,"t":8,"pi":[{"n":"ops","pt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),"ps":0},{"n":"hitCount","out":true,"pt":$n[2].Int32,"ps":1},{"n":"insCount","out":true,"pt":$n[2].Int32,"ps":2},{"n":"substCount","out":true,"pt":$n[2].Int32,"ps":3},{"n":"delCount","out":true,"pt":$n[2].Int32,"ps":4}],"sn":"getOpCounts","rt":$n[2].Void,"p":[$n[0].IReadOnlyList$1(SIL.Machine.Translation.EditOperation),$n[2].Int32,$n[2].Int32,$n[2].Int32,$n[2].Int32]},{"ov":true,"a":3,"n":"GetSubstitutionCost","t":8,"pi":[{"n":"x","pt":$n[2].String,"ps":0},{"n":"y","pt":$n[2].String,"ps":1},{"n":"isComplete","pt":$n[2].Boolean,"ps":2}],"sn":"getSubstitutionCost","rt":$n[2].Double,"p":[$n[2].String,$n[2].String,$n[2].Boolean]},{"a":2,"n":"IncrComputePrefix","t":8,"pi":[{"n":"scores","pt":$n[0].IList$1(System.Double),"ps":0},{"n":"prevScores","pt":$n[0].IList$1(System.Double),"ps":1},{"n":"xWord","pt":$n[2].String,"ps":2},{"n":"yIncr","pt":$n[0].IReadOnlyList$1(System.String),"ps":3},{"n":"isLastItemComplete","pt":$n[2].Boolean,"ps":4}],"sn":"incrComputePrefix","rt":$n[0].IEnumerable$1(SIL.Machine.Translation.EditOperation),"p":[$n[0].IList$1(System.Double),$n[0].IList$1(System.Double),$n[2].String,$n[0].IReadOnlyList$1(System.String),$n[2].Boolean]},{"a":2,"n":"IncrComputePrefixFirstRow","t":8,"pi":[{"n":"scores","pt":$n[0].IList$1(System.Double),"ps":0},{"n":"prevScores","pt":$n[0].IList$1(System.Double),"ps":1},{"n":"yIncr","pt":$n[0].IReadOnlyList$1(System.String),"ps":2}],"sn":"incrComputePrefixFirstRow","rt":$n[2].Void,"p":[$n[0].IList$1(System.Double),$n[0].IList$1(System.Double),$n[0].IReadOnlyList$1(System.String)]},{"ov":true,"a":3,"n":"IsHit","t":8,"pi":[{"n":"x","pt":$n[2].String,"ps":0},{"n":"y","pt":$n[2].String,"ps":1},{"n":"isComplete","pt":$n[2].Boolean,"ps":2}],"sn":"isHit","rt":$n[2].Boolean,"p":[$n[2].String,$n[2].String,$n[2].Boolean]},{"ov":true,"a":2,"n":"DeletionCost","t":16,"rt":$n[2].Double,"g":{"ov":true,"a":2,"n":"get_DeletionCost","t":8,"rt":$n[2].Double,"fg":"deletionCost"},"s":{"ov":true,"a":2,"n":"set_DeletionCost","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"deletionCost"},"fn":"deletionCost"},{"ov":true,"a":2,"n":"HitCost","t":16,"rt":$n[2].Double,"g":{"ov":true,"a":2,"n":"get_HitCost","t":8,"rt":$n[2].Double,"fg":"hitCost"},"s":{"ov":true,"a":2,"n":"set_HitCost","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"hitCost"},"fn":"hitCost"},{"ov":true,"a":2,"n":"InsertionCost","t":16,"rt":$n[2].Double,"g":{"ov":true,"a":2,"n":"get_InsertionCost","t":8,"rt":$n[2].Double,"fg":"insertionCost"},"s":{"ov":true,"a":2,"n":"set_InsertionCost","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"insertionCost"},"fn":"insertionCost"},{"ov":true,"a":2,"n":"SubstitutionCost","t":16,"rt":$n[2].Double,"g":{"ov":true,"a":2,"n":"get_SubstitutionCost","t":8,"rt":$n[2].Double,"fg":"substitutionCost"},"s":{"ov":true,"a":2,"n":"set_SubstitutionCost","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"substitutionCost"},"fn":"substitutionCost"},{"a":1,"n":"_wordEditDistance","t":4,"rt":$n[9].WordEditDistance,"sn":"_wordEditDistance","ro":true}]}; });
+    $m($n[9].TranslationResult, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[0].IEnumerable$1(System.String),$n[0].IEnumerable$1(System.String),$n[0].IEnumerable$1(System.Double),$n[0].IEnumerable$1(SIL.Machine.Translation.TranslationSources),$n[9].WordAlignmentMatrix],"pi":[{"n":"sourceSegment","pt":$n[0].IEnumerable$1(System.String),"ps":0},{"n":"targetSegment","pt":$n[0].IEnumerable$1(System.String),"ps":1},{"n":"confidences","pt":$n[0].IEnumerable$1(System.Double),"ps":2},{"n":"sources","pt":$n[0].IEnumerable$1(SIL.Machine.Translation.TranslationSources),"ps":3},{"n":"alignment","pt":$n[9].WordAlignmentMatrix,"ps":4}],"sn":"ctor"},{"a":2,"n":"Merge","t":8,"pi":[{"n":"prefixCount","pt":$n[2].Int32,"ps":0},{"n":"threshold","pt":$n[2].Double,"ps":1},{"n":"otherResult","pt":$n[9].TranslationResult,"ps":2}],"sn":"merge","rt":$n[9].TranslationResult,"p":[$n[2].Int32,$n[2].Double,$n[9].TranslationResult]},{"a":2,"n":"Alignment","t":16,"rt":$n[9].WordAlignmentMatrix,"g":{"a":2,"n":"get_Alignment","t":8,"rt":$n[9].WordAlignmentMatrix,"fg":"alignment"},"s":{"a":1,"n":"set_Alignment","t":8,"p":[$n[9].WordAlignmentMatrix],"rt":$n[2].Void,"fs":"alignment"},"fn":"alignment"},{"a":2,"n":"SourceSegment","t":16,"rt":$n[0].IReadOnlyList$1(System.String),"g":{"a":2,"n":"get_SourceSegment","t":8,"rt":$n[0].IReadOnlyList$1(System.String),"fg":"sourceSegment"},"s":{"a":1,"n":"set_SourceSegment","t":8,"p":[$n[0].IReadOnlyList$1(System.String)],"rt":$n[2].Void,"fs":"sourceSegment"},"fn":"sourceSegment"},{"a":2,"n":"TargetSegment","t":16,"rt":$n[0].IReadOnlyList$1(System.String),"g":{"a":2,"n":"get_TargetSegment","t":8,"rt":$n[0].IReadOnlyList$1(System.String),"fg":"targetSegment"},"s":{"a":1,"n":"set_TargetSegment","t":8,"p":[$n[0].IReadOnlyList$1(System.String)],"rt":$n[2].Void,"fs":"targetSegment"},"fn":"targetSegment"},{"a":2,"n":"TargetWordConfidences","t":16,"rt":$n[0].IReadOnlyList$1(System.Double),"g":{"a":2,"n":"get_TargetWordConfidences","t":8,"rt":$n[0].IReadOnlyList$1(System.Double),"fg":"targetWordConfidences"},"s":{"a":1,"n":"set_TargetWordConfidences","t":8,"p":[$n[0].IReadOnlyList$1(System.Double)],"rt":$n[2].Void,"fs":"targetWordConfidences"},"fn":"targetWordConfidences"},{"a":2,"n":"TargetWordSources","t":16,"rt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.TranslationSources),"g":{"a":2,"n":"get_TargetWordSources","t":8,"rt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.TranslationSources),"fg":"targetWordSources"},"s":{"a":1,"n":"set_TargetWordSources","t":8,"p":[$n[0].IReadOnlyList$1(SIL.Machine.Translation.TranslationSources)],"rt":$n[2].Void,"fs":"targetWordSources"},"fn":"targetWordSources"}]}; });
+    $m($n[9].TranslationSources, function () { return {"att":257,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"None","is":true,"t":4,"rt":$n[9].TranslationSources,"sn":"none"},{"a":2,"n":"Prefix","is":true,"t":4,"rt":$n[9].TranslationSources,"sn":"prefix"},{"a":2,"n":"Smt","is":true,"t":4,"rt":$n[9].TranslationSources,"sn":"smt"},{"a":2,"n":"Transfer","is":true,"t":4,"rt":$n[9].TranslationSources,"sn":"transfer"}]}; });
+    $m($n[9].AlignmentType, function () { return {"att":257,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"a":2,"n":"Aligned","is":true,"t":4,"rt":$n[9].AlignmentType,"sn":"aligned"},{"a":2,"n":"NotAligned","is":true,"t":4,"rt":$n[9].AlignmentType,"sn":"notAligned"},{"a":2,"n":"Unknown","is":true,"t":4,"rt":$n[9].AlignmentType,"sn":"unknown"}]}; });
+    $m($n[9].WordAlignmentMatrix, function () { return {"att":1048577,"a":2,"m":[{"a":1,"n":".ctor","t":1,"p":[$n[9].WordAlignmentMatrix],"pi":[{"n":"other","pt":$n[9].WordAlignmentMatrix,"ps":0}],"sn":"ctor"},{"a":2,"n":".ctor","t":1,"p":[$n[2].Int32,$n[2].Int32,$n[9].AlignmentType],"pi":[{"n":"i","pt":$n[2].Int32,"ps":0},{"n":"j","pt":$n[2].Int32,"ps":1},{"n":"defaultValue","dv":0,"o":true,"pt":$n[9].AlignmentType,"ps":2}],"sn":"$ctor1"},{"a":2,"n":"Clone","t":8,"sn":"clone","rt":$n[9].WordAlignmentMatrix},{"a":2,"n":"GetColumnAlignedIndices","t":8,"pi":[{"n":"j","pt":$n[2].Int32,"ps":0}],"sn":"getColumnAlignedIndices","rt":$n[0].IEnumerable$1(System.Int32),"p":[$n[2].Int32]},{"a":2,"n":"GetRowAlignedIndices","t":8,"pi":[{"n":"i","pt":$n[2].Int32,"ps":0}],"sn":"getRowAlignedIndices","rt":$n[0].IEnumerable$1(System.Int32),"p":[$n[2].Int32]},{"a":2,"n":"IntersectWith","t":8,"pi":[{"n":"other","pt":$n[9].WordAlignmentMatrix,"ps":0}],"sn":"intersectWith","rt":$n[2].Void,"p":[$n[9].WordAlignmentMatrix]},{"a":2,"n":"IsColumnAligned","t":8,"pi":[{"n":"j","pt":$n[2].Int32,"ps":0}],"sn":"isColumnAligned","rt":$n[9].AlignmentType,"p":[$n[2].Int32]},{"a":2,"n":"IsNeighborAligned","t":8,"pi":[{"n":"i","pt":$n[2].Int32,"ps":0},{"n":"j","pt":$n[2].Int32,"ps":1}],"sn":"isNeighborAligned","rt":$n[2].Boolean,"p":[$n[2].Int32,$n[2].Int32]},{"a":2,"n":"IsRowAligned","t":8,"pi":[{"n":"i","pt":$n[2].Int32,"ps":0}],"sn":"isRowAligned","rt":$n[9].AlignmentType,"p":[$n[2].Int32]},{"a":2,"n":"SetAll","t":8,"pi":[{"n":"value","pt":$n[9].AlignmentType,"ps":0}],"sn":"setAll","rt":$n[2].Void,"p":[$n[9].AlignmentType]},{"a":2,"n":"SymmetrizeWith","t":8,"pi":[{"n":"other","pt":$n[9].WordAlignmentMatrix,"ps":0}],"sn":"symmetrizeWith","rt":$n[2].Void,"p":[$n[9].WordAlignmentMatrix]},{"a":2,"n":"ToGizaFormat","t":8,"pi":[{"n":"sourceSegment","pt":$n[0].IEnumerable$1(System.String),"ps":0},{"n":"targetSegment","pt":$n[0].IEnumerable$1(System.String),"ps":1}],"sn":"toGizaFormat","rt":$n[2].String,"p":[$n[0].IEnumerable$1(System.String),$n[0].IEnumerable$1(System.String)]},{"ov":true,"a":2,"n":"ToString","t":8,"sn":"toString","rt":$n[2].String},{"a":2,"n":"Transpose","t":8,"sn":"transpose","rt":$n[2].Void},{"a":2,"n":"UnionWith","t":8,"pi":[{"n":"other","pt":$n[9].WordAlignmentMatrix,"ps":0}],"sn":"unionWith","rt":$n[2].Void,"p":[$n[9].WordAlignmentMatrix]},{"a":2,"n":"ValueEquals","t":8,"pi":[{"n":"other","pt":$n[9].WordAlignmentMatrix,"ps":0}],"sn":"valueEquals","rt":$n[2].Boolean,"p":[$n[9].WordAlignmentMatrix]},{"a":2,"n":"ColumnCount","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_ColumnCount","t":8,"rt":$n[2].Int32,"fg":"columnCount"},"fn":"columnCount"},{"a":2,"n":"Item","t":16,"rt":$n[9].AlignmentType,"p":[$n[2].Int32,$n[2].Int32],"i":true,"ipi":[{"n":"i","pt":$n[2].Int32,"ps":0},{"n":"j","pt":$n[2].Int32,"ps":1}],"g":{"a":2,"n":"get_Item","t":8,"pi":[{"n":"i","pt":$n[2].Int32,"ps":0},{"n":"j","pt":$n[2].Int32,"ps":1}],"sn":"getitem","rt":$n[9].AlignmentType,"p":[$n[2].Int32,$n[2].Int32]},"s":{"a":2,"n":"set_Item","t":8,"pi":[{"n":"i","pt":$n[2].Int32,"ps":0},{"n":"j","pt":$n[2].Int32,"ps":1},{"n":"value","pt":$n[9].AlignmentType,"ps":2}],"sn":"setitem","rt":$n[2].Void,"p":[$n[2].Int32,$n[2].Int32,$n[9].AlignmentType]}},{"a":2,"n":"RowCount","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_RowCount","t":8,"rt":$n[2].Int32,"fg":"rowCount"},"fn":"rowCount"},{"a":1,"n":"_matrix","t":4,"rt":System.Array.type(SIL.Machine.Translation.AlignmentType, 2),"sn":"_matrix"}]}; });
+    $m($n[9].TranslationSuggester, function () { return {"att":1048961,"a":2,"s":true,"m":[{"a":2,"n":"GetSuggestedWordIndices","is":true,"t":8,"pi":[{"n":"prefix","pt":$n[0].IReadOnlyList$1(System.String),"ps":0},{"n":"isLastWordComplete","pt":$n[2].Boolean,"ps":1},{"n":"result","pt":$n[9].TranslationResult,"ps":2},{"n":"confidenceThreshold","pt":$n[2].Double,"ps":3}],"sn":"getSuggestedWordIndices","rt":$n[0].IEnumerable$1(System.Int32),"p":[$n[0].IReadOnlyList$1(System.String),$n[2].Boolean,$n[9].TranslationResult,$n[2].Double]}]}; });
+    $m($n[9].WordEditDistance, function () { return {"att":1048577,"a":2,"m":[{"a":2,"isSynthetic":true,"n":".ctor","t":1,"sn":"ctor"},{"ov":true,"a":3,"n":"GetCount","t":8,"pi":[{"n":"item","pt":$n[2].String,"ps":0}],"sn":"getCount","rt":$n[2].Int32,"p":[$n[2].String]},{"ov":true,"a":3,"n":"GetDeletionCost","t":8,"pi":[{"n":"x","pt":$n[2].Char,"ps":0}],"sn":"getDeletionCost","rt":$n[2].Double,"p":[$n[2].Char]},{"ov":true,"a":3,"n":"GetHitCost","t":8,"pi":[{"n":"x","pt":$n[2].Char,"ps":0},{"n":"y","pt":$n[2].Char,"ps":1},{"n":"isComplete","pt":$n[2].Boolean,"ps":2}],"sn":"getHitCost","rt":$n[2].Double,"p":[$n[2].Char,$n[2].Char,$n[2].Boolean]},{"ov":true,"a":3,"n":"GetInsertionCost","t":8,"pi":[{"n":"y","pt":$n[2].Char,"ps":0}],"sn":"getInsertionCost","rt":$n[2].Double,"p":[$n[2].Char]},{"ov":true,"a":3,"n":"GetItem","t":8,"pi":[{"n":"seq","pt":$n[2].String,"ps":0},{"n":"index","pt":$n[2].Int32,"ps":1}],"sn":"getItem","rt":$n[2].Char,"p":[$n[2].String,$n[2].Int32]},{"ov":true,"a":3,"n":"GetSubstitutionCost","t":8,"pi":[{"n":"x","pt":$n[2].Char,"ps":0},{"n":"y","pt":$n[2].Char,"ps":1},{"n":"isComplete","pt":$n[2].Boolean,"ps":2}],"sn":"getSubstitutionCost","rt":$n[2].Double,"p":[$n[2].Char,$n[2].Char,$n[2].Boolean]},{"ov":true,"a":3,"n":"IsHit","t":8,"pi":[{"n":"x","pt":$n[2].Char,"ps":0},{"n":"y","pt":$n[2].Char,"ps":1},{"n":"isComplete","pt":$n[2].Boolean,"ps":2}],"sn":"isHit","rt":$n[2].Boolean,"p":[$n[2].Char,$n[2].Char,$n[2].Boolean]}]}; });
+    $m($n[9].WordGraph, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[0].IEnumerable$1(SIL.Machine.Translation.WordGraphArc),$n[0].IEnumerable$1(System.Int32),$n[2].Double],"pi":[{"n":"arcs","pt":$n[0].IEnumerable$1(SIL.Machine.Translation.WordGraphArc),"ps":0},{"n":"finalStates","pt":$n[0].IEnumerable$1(System.Int32),"ps":1},{"n":"initialStateScore","dv":0.0,"o":true,"pt":$n[2].Double,"ps":2}],"sn":"ctor"},{"a":1,"n":"ComputePrevScores","t":8,"pi":[{"n":"state","pt":$n[2].Int32,"ps":0},{"n":"prevScores","out":true,"pt":$n[2].Array.type(System.Double),"ps":1},{"n":"stateBestPrevArcs","out":true,"pt":$n[2].Array.type(System.Int32),"ps":2}],"sn":"computePrevScores","rt":$n[2].Void,"p":[$n[2].Int32,$n[2].Array.type(System.Double),$n[2].Array.type(System.Int32)]},{"a":2,"n":"ComputeRestScores","t":8,"sn":"computeRestScores","rt":$n[0].IEnumerable$1(System.Double)},{"a":2,"n":"GetBestPathFromFinalStateToState","t":8,"pi":[{"n":"state","pt":$n[2].Int32,"ps":0}],"sn":"getBestPathFromFinalStateToState","rt":$n[0].IEnumerable$1(SIL.Machine.Translation.WordGraphArc),"p":[$n[2].Int32]},{"a":2,"n":"Arcs","t":16,"rt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.WordGraphArc),"g":{"a":2,"n":"get_Arcs","t":8,"rt":$n[0].IReadOnlyList$1(SIL.Machine.Translation.WordGraphArc),"fg":"arcs"},"s":{"a":1,"n":"set_Arcs","t":8,"p":[$n[0].IReadOnlyList$1(SIL.Machine.Translation.WordGraphArc)],"rt":$n[2].Void,"fs":"arcs"},"fn":"arcs"},{"a":2,"n":"FinalStates","t":16,"rt":$n[0].IEnumerable$1(System.Int32),"g":{"a":2,"n":"get_FinalStates","t":8,"rt":$n[0].IEnumerable$1(System.Int32),"fg":"finalStates"},"fn":"finalStates"},{"a":2,"n":"InitialStateScore","t":16,"rt":$n[2].Double,"g":{"a":2,"n":"get_InitialStateScore","t":8,"rt":$n[2].Double,"fg":"initialStateScore"},"s":{"a":1,"n":"set_InitialStateScore","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"initialStateScore"},"fn":"initialStateScore"},{"a":2,"n":"IsEmpty","t":16,"rt":$n[2].Boolean,"g":{"a":2,"n":"get_IsEmpty","t":8,"rt":$n[2].Boolean,"fg":"isEmpty"},"fn":"isEmpty"},{"a":2,"n":"StateCount","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_StateCount","t":8,"rt":$n[2].Int32,"fg":"stateCount"},"s":{"a":1,"n":"set_StateCount","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"stateCount"},"fn":"stateCount"},{"a":2,"n":"InitialState","is":true,"t":4,"rt":$n[2].Int32,"sn":"initialState"},{"a":1,"n":"SmallScore","is":true,"t":4,"rt":$n[2].Double,"sn":"smallScore"},{"a":1,"n":"_finalStates","t":4,"rt":$n[0].HashSet$1(System.Int32),"sn":"_finalStates","ro":true}]}; });
+    $m($n[9].WordGraphArc, function () { return {"att":1048577,"a":2,"m":[{"a":2,"n":".ctor","t":1,"p":[$n[2].Int32,$n[2].Int32,$n[2].Double,$n[0].IEnumerable$1(System.String),$n[9].WordAlignmentMatrix,$n[0].IEnumerable$1(System.Double),$n[2].Int32,$n[2].Int32,$n[2].Boolean],"pi":[{"n":"prevState","pt":$n[2].Int32,"ps":0},{"n":"nextState","pt":$n[2].Int32,"ps":1},{"n":"score","pt":$n[2].Double,"ps":2},{"n":"words","pt":$n[0].IEnumerable$1(System.String),"ps":3},{"n":"alignment","pt":$n[9].WordAlignmentMatrix,"ps":4},{"n":"wordConfidences","pt":$n[0].IEnumerable$1(System.Double),"ps":5},{"n":"sourceStartIndex","pt":$n[2].Int32,"ps":6},{"n":"sourceEndIndex","pt":$n[2].Int32,"ps":7},{"n":"isUnknown","pt":$n[2].Boolean,"ps":8}],"sn":"ctor"},{"a":2,"n":"Alignment","t":16,"rt":$n[9].WordAlignmentMatrix,"g":{"a":2,"n":"get_Alignment","t":8,"rt":$n[9].WordAlignmentMatrix,"fg":"alignment"},"s":{"a":1,"n":"set_Alignment","t":8,"p":[$n[9].WordAlignmentMatrix],"rt":$n[2].Void,"fs":"alignment"},"fn":"alignment"},{"a":2,"n":"IsUnknown","t":16,"rt":$n[2].Boolean,"g":{"a":2,"n":"get_IsUnknown","t":8,"rt":$n[2].Boolean,"fg":"isUnknown"},"s":{"a":1,"n":"set_IsUnknown","t":8,"p":[$n[2].Boolean],"rt":$n[2].Void,"fs":"isUnknown"},"fn":"isUnknown"},{"a":2,"n":"NextState","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_NextState","t":8,"rt":$n[2].Int32,"fg":"nextState"},"s":{"a":1,"n":"set_NextState","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"nextState"},"fn":"nextState"},{"a":2,"n":"PrevState","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_PrevState","t":8,"rt":$n[2].Int32,"fg":"prevState"},"s":{"a":1,"n":"set_PrevState","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"prevState"},"fn":"prevState"},{"a":2,"n":"Score","t":16,"rt":$n[2].Double,"g":{"a":2,"n":"get_Score","t":8,"rt":$n[2].Double,"fg":"score"},"s":{"a":1,"n":"set_Score","t":8,"p":[$n[2].Double],"rt":$n[2].Void,"fs":"score"},"fn":"score"},{"a":2,"n":"SourceEndIndex","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_SourceEndIndex","t":8,"rt":$n[2].Int32,"fg":"sourceEndIndex"},"s":{"a":1,"n":"set_SourceEndIndex","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"sourceEndIndex"},"fn":"sourceEndIndex"},{"a":2,"n":"SourceStartIndex","t":16,"rt":$n[2].Int32,"g":{"a":2,"n":"get_SourceStartIndex","t":8,"rt":$n[2].Int32,"fg":"sourceStartIndex"},"s":{"a":1,"n":"set_SourceStartIndex","t":8,"p":[$n[2].Int32],"rt":$n[2].Void,"fs":"sourceStartIndex"},"fn":"sourceStartIndex"},{"a":2,"n":"WordConfidences","t":16,"rt":$n[0].IReadOnlyList$1(System.Double),"g":{"a":2,"n":"get_WordConfidences","t":8,"rt":$n[0].IReadOnlyList$1(System.Double),"fg":"wordConfidences"},"s":{"a":1,"n":"set_WordConfidences","t":8,"p":[$n[0].IReadOnlyList$1(System.Double)],"rt":$n[2].Void,"fs":"wordConfidences"},"fn":"wordConfidences"},{"a":2,"n":"Words","t":16,"rt":$n[0].IReadOnlyList$1(System.String),"g":{"a":2,"n":"get_Words","t":8,"rt":$n[0].IReadOnlyList$1(System.String),"fg":"words"},"s":{"a":1,"n":"set_Words","t":8,"p":[$n[0].IReadOnlyList$1(System.String)],"rt":$n[2].Void,"fs":"words"},"fn":"words"}]}; });
+});
