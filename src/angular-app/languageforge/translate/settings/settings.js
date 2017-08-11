@@ -5,8 +5,8 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
   'palaso.ui.textdrop', 'translate.languages', 'rzModule'])
   .controller('SettingsCtrl',
     ['$scope', '$interval', 'silNoticeService', 'translateRightsService', 'translateProjectApi',
-      'translateAssistant', 'modalService',
-  function ($scope, $interval, notice, rightsService, projectApi, assistant, modal) {
+      'machineService', 'modalService',
+  function ($scope, $interval, notice, rightsService, projectApi, machineService, modal) {
     $scope.actionInProgress = false;
     $scope.retrainMessage = '';
     $scope.confidence = {
@@ -34,8 +34,8 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
         angular.merge($scope.project, result.data.project);
         $scope.project.config = $scope.project.config || {};
         pristineProject = angular.copy($scope.project);
-        assistant.initialise($scope.project.slug);
-        assistant.listenForTrainingStatus(onTrainStatusUpdate, onTrainSuccess);
+        machineService.initialise($scope.project.slug);
+        machineService.listenForTrainingStatus(onTrainStatusUpdate, onTrainSuccess);
         if (angular.isDefined($scope.project.config.userPreferences)) {
           if (angular.isDefined($scope.project.config.userPreferences.hasConfidenceOverride)) {
             $scope.confidence.isMyThreshold =
@@ -73,7 +73,7 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
       projectApi.updateProject(projectData, function (result) {
         if (result.ok) {
           $scope.project.id = result.data;
-          assistant.initialise($scope.project.slug);
+          machineService.initialise($scope.project.slug);
           pristineProject = angular.copy($scope.project);
           notice.push(notice.SUCCESS,
             $scope.project.projectName + ' settings updated successfully.');
@@ -103,7 +103,7 @@ angular.module('translate.settings', ['bellows.services', 'ui.bootstrap', 'palas
         'Are you sure you want to retrain the translation engine?';
       modal.showModalSimple('Retrain Translation Engine?', retrainMessage, 'Cancel', 'Retrain')
         .then(function () {
-          assistant.train(onTrainStatusUpdate, onTrainFinished);
+          machineService.train(onTrainStatusUpdate, onTrainFinished);
         }, angular.noop);
     };
 
