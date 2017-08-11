@@ -13,6 +13,8 @@ import 'quill/dist/quill.bubble.css';
 import 'quill/dist/quill.snow.css';
 import 'ng-quill';
 
+import './translate/core/translate-core.module';
+import './translate/core/machine.service';
 import './translate/js/realTime';
 import './translate/editor/quill/quill.module'
 import './translate/editor/quill/quill.service'

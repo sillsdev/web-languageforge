@@ -13,10 +13,10 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       })
     ;
   }])
-  .controller('EditorCtrl', ['$scope', '$q', 'silNoticeService', 'translateAssistant',
+  .controller('EditorCtrl', ['$scope', '$q', 'silNoticeService', 'machineService',
     'translateProjectApi', 'translateDocumentApi', 'translateDocumentService', 'wordParser',
     'realTime', 'modalService',
-  function ($scope, $q, notice, assistant,
+  function ($scope, $q, notice, machineService,
             projectApi, documentApi, Document, wordParser, realTime, modal) {
     var currentDocIds = [];
     var selectedSegmentIndex = -1;
@@ -66,7 +66,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         $scope.project.config.userPreferences = $scope.project.config.userPreferences || {};
         source.inputSystem = $scope.project.config.source.inputSystem;
         target.inputSystem = $scope.project.config.target.inputSystem;
-        assistant.initialise($scope.project.slug);
+        machineService.initialise($scope.project.slug);
 
         confidenceThreshold = $scope.project.config.confidenceThreshold;
         if (angular.isDefined($scope.project.config.userPreferences.confidenceThreshold) &&
@@ -370,7 +370,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
           var newSourceSegmentText = source.getSegment(selectedSegmentIndex);
           if (newSourceSegmentText !== source.segment.text) {
             source.segment.text = newSourceSegmentText;
-            assistant.translateInteractively(source.segment.text, confidenceThreshold);
+            machineService.translateInteractively(source.segment.text, confidenceThreshold);
           }
         }
       }
@@ -394,7 +394,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
           Quill.hasNoSelectionAtCursor(target.segment.learnt.previousRange) &&
           !target.segment.hasLearntText(targetSegmentText)
         ) {
-          assistant.learnSegment(function () {
+          machineService.learnSegment(function () {
             if (selectedDocumentSetId === target.segment.learnt.documentSetId) {
               notice.push(notice.SUCCESS, 'The modified line was successfully learnt.');
               target.formatSegmentStateMachineHasLearnt(true, target.segment.learnt.previousRange);
@@ -433,7 +433,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         if (newSegmentIndex !== selectedSegmentIndex || newSourceSegmentText !== source.segment.text
         ) {
           source.segment.text = newSourceSegmentText;
-          assistant.translateInteractively(source.segment.text, confidenceThreshold,
+          machineService.translateInteractively(source.segment.text, confidenceThreshold,
             function () {
               updatePrefix(newSegmentIndex);
             }
@@ -446,7 +446,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
 
     function updatePrefix(segmentIndex) {
       $scope.$applyAsync(function () {
-        target.suggestions = assistant.updatePrefix(target.getSegment(segmentIndex));
+        target.suggestions = machineService.updatePrefix(target.getSegment(segmentIndex));
         setTimeout(function () {
           showAndPositionTooltip(target.editor.theme.suggestTooltip, target.editor,
             target.hasSuggestion());

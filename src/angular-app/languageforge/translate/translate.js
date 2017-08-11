@@ -11,7 +11,8 @@ angular.module('translate',
     'pascalprecht.translate',
     'translate.services',
     'translate.editor',
-    'translate.settings'
+    'translate.settings',
+    'translateCoreModule'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$compileProvider',
     'apiServiceProvider',
