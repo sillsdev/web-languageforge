@@ -15,6 +15,6 @@ import 'ng-quill';
 
 import './translate/core/translate-core.module';
 import './translate/core/machine.service';
-import './translate/js/realTime';
+import './translate/shared/translate-shared.module';
 import './translate/editor/quill/quill.module'
 import './translate/editor/quill/quill.service'
