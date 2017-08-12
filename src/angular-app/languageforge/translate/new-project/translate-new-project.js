@@ -13,7 +13,7 @@ angular.module('translate-new-project',
     'pascalprecht.translate',
     'ngFileUpload',
     'translate.services',
-    'translate.languages'
+    'translateSharedModule'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
   function ($stateProvider, $urlRouterProvider, $translateProvider) {
