@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.services', 'ngQuill',
-  'quillService', 'translate.quill', 'realTime', 'palaso.ui.showOverflow'])
+  'translateCoreModule', 'quillService', 'translate.quill', 'palaso.ui.showOverflow'])
   .config(['$stateProvider', function ($stateProvider) {
 
     // State machine from ui.router
@@ -159,7 +159,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
 
       var modalInstance = modal.open({
         scope: $scope,
-        templateUrl: '/angular-app/languageforge/translate/editor/modal-document-set-update.html',
+        templateUrl: '/angular-app/languageforge/translate/editor/document-set-update.modal.html',
         controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
           $scope.titleLabel = (isCreate) ? 'Create a new Document Set' : 'Update Document Set';
           $scope.buttonLabel = (isCreate) ? 'Add' : 'Update';
@@ -198,7 +198,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       var documentSet = $scope.documentSets[currentIndex];
       var modalInstance = modal.open({
         scope: $scope,
-        templateUrl: '/angular-app/languageforge/translate/editor/modal-document-set-move.html',
+        templateUrl: '/angular-app/languageforge/translate/editor/document-set-move.modal.html',
         controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
           $scope.documentSet = documentSet;
           $scope.newIndex = currentIndex.toString();
