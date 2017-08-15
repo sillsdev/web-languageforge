@@ -15,4 +15,4 @@ import 'soundmanager2';
 import './polyfills.browser';
 
 // this is imported here to ensure JS files can use it
-import '../bellows/js/filters';
+import './core/core.module';
