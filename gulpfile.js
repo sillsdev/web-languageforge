@@ -18,9 +18,10 @@
 //   'test-php'
 //   'test-php-debug'
 //   'test-php-coverage'
-//   'test-php-watch'
-//   'test-php-debug-watch'
-//   'test-js-unit'
+//   'test-php:watch'
+//   'test-php-debug:watch'
+//   'test-js'
+//   'test-js:watch'
 //   'test-e2e-webdriver_update'
 //   'test-e2e-webdriver_standalone'
 //   'test-e2e-useTestConfig'
@@ -276,7 +277,7 @@ gulp.task('mongodb-copy-prod-db').description =
 
 //endregion
 
-//region Test (PHP and E2E)
+//region Test (PHP, JS and E2E)
 
 // -------------------------------------
 //   Task: test-php
@@ -292,26 +293,6 @@ gulp.task('test-php', function () {
   return gulp.src(src)
     .pipe(phpunit('src/vendor/bin/phpunit', options));
 });
-
-/*
-gulp.task('test-php', function (cb) {
-  var src = 'test/php/phpunit.xml';
-  var options = {
-    dryRun: false,
-    debug: false,
-    logJunit: 'PhpUnitTests.xml'
-  };
-  gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
-  execute(
-    '/usr/bin/env php src/vendor/phpunit/phpunit/phpunit -c test/php/phpunit.xml',
-    options,
-    cb
-  );
-
-  // return gulp.src(src)
-  //   .pipe(phpunit('src/vendor/bin/phpunit', options));
-});
-*/
 
 // -------------------------------------
 //   Task: test-php with debugging info
@@ -343,28 +324,39 @@ gulp.task('test-php-coverage', function () {
 });
 
 // -------------------------------------
-//   Task: test-php-watch
+//   Task: test-php:watch
 // -------------------------------------
-gulp.task('test-php-watch', function () {
+gulp.task('test-php:watch', function () {
   gulp.watch(phpPatterns, ['test-php']);
 });
 
 // -------------------------------------
-//   Task: test-php-watch with debugging info
+//   Task: test-php-debug:watch with debugging info
 // -------------------------------------
-gulp.task('test-php-debug-watch', function () {
+gulp.task('test-php-debug:watch', function () {
   gulp.watch(phpPatterns, ['test-php-debug']);
 });
 
 // -------------------------------------
-//   Task: test-js-unit
+//   Task: test-js
 // -------------------------------------
-gulp.task('test-js-unit', function (cb) {
-  console.log('cwd: ', __dirname);
+gulp.task('test-js', function (cb) {
   new Server({
     configFile: __dirname + '/test/app/karma.conf.js',
     reporters: 'teamcity',
+    browsers: ['PhantomJS'],
     singleRun: true
+  }, cb).start();
+});
+
+// -------------------------------------
+//   Task: test-js:watch
+// -------------------------------------
+gulp.task('test-js:watch', function (cb) {
+  new Server({
+    configFile: __dirname + '/test/app/karma.conf.js',
+    autoWatch: true,
+    singleRun: false
   }, cb).start();
 });
 
@@ -990,6 +982,7 @@ gulp.task('build-php',
   gulp.series(
     'build',
     'test-php',
+    'test-js',
     'build-upload',
     'test-restart-webserver')
 );
