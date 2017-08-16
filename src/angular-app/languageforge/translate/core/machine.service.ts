@@ -1,9 +1,6 @@
 /// <reference path='excluded/machine.d.ts' />
 
-'use strict';
-
 import './excluded/machine.js';
-
 import machine = SIL.Machine.Translation;
 
 export class MachineService {
