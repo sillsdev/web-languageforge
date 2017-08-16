@@ -2,8 +2,6 @@ import * as Parchment from 'parchment';
 import * as quill from 'quill';
 
 export module QuillCustomization {
-  'use strict';
-
   declare class Quill extends quill.Quill {
     // noinspection JSUnusedGlobalSymbols
     static imports: string;
