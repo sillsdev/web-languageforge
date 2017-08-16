@@ -785,6 +785,7 @@ gulp.task('build-minify', function () {
     'src/angular-app/' + params.applicationName + '/**/*.js',
     '!src/angular-app/**/*.min.js',
     '!src/angular-app/**/assets/**',
+    '!src/angular-app/**/excluded/**',
     '!src/angular-app/**/vendor/**'];
   var minJsFile = params.applicationName + '.min.js';
   var dest = 'src/js/lib/';
