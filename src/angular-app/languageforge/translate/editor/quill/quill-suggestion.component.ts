@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import { WordParser } from '../word-parser.service';
 
 export const QuillSuggestionComponent = {
   bindings: {
@@ -6,7 +7,7 @@ export const QuillSuggestionComponent = {
     qlInsertSuggestion: '&'
   },
   templateUrl: '/angular-app/languageforge/translate/editor/quill/quill-suggestion.component.html',
-  controller: ['wordParser', function (wordParser: any) {
+  controller: ['wordParser', function (wordParser: WordParser) {
     this.wordCombine = wordParser.wordCombine;
 
     this.wordWidthStyle = function (word: string, isLast: boolean) {

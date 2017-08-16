@@ -9,8 +9,8 @@ import 'quill/dist/quill.snow.css';
 import 'ng-quill';
 
 import './core/translate-core.module';
-import './core/machine.service';
 import './shared/translate-shared.module';
+import './editor/editor.module';
 import './editor/quill/quill.module'
 import './editor/quill/quill.service'
 
