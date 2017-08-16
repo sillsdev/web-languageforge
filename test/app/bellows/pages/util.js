@@ -114,7 +114,7 @@ function Utils() {
   };
 
   this.notice = {
-    list: element.all(by.repeater('notice in notices()'))
+    list: element.all(by.repeater('notice in $ctrl.notices()'))
   };
   this.notice.firstCloseButton = this.notice.list.first().element(by.partialButtonText('×'));
   this.notice.waitToInclude = function (includedText) {
