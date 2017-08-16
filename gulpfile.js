@@ -719,7 +719,7 @@ gulp.task('build-npm-front-end', function (cb) {
   var options = {
     dryRun: false,
     silent: false,
-    cwd: './src'
+    cwd: '.'
   };
   execute(
     'npm install',
