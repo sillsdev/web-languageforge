@@ -362,24 +362,30 @@ describe('Activity E2E Test', function () {
       questionPage.notice.firstCloseButton.click();
     });
 
-    // TODO: Figure out how to handle the next two tests in the "users CANNOT see each others' responses" scenario
     it("Performing action 'delete' on 'comments'", function () {
       expect(questionPage.notice.list.count()).toBe(0);
-      expect(questionPage.comments.list.count()).toEqual(2);
+      var oldCount = questionPage.comments.list.count();
       questionPage.comments.archive('');
-      expect(questionPage.comments.list.count()).toEqual(1);
+      var newCount = questionPage.comments.list.count();
+      oldCount.then(function(oldCount) {
+        expect(newCount).toEqual(oldCount - 1);
+      });
       questionPage.notice.waitToInclude('The comment was removed successfully');
       questionPage.notice.firstCloseButton.click();
     });
 
     it("Performing action 'delete' on 'answers'", function () {
       expect(questionPage.notice.list.count()).toBe(0);
-      expect(questionPage.answers.list.count()).toEqual(2);
-      questionPage.answers.archive('');
-      expect(questionPage.answers.list.count()).toEqual(1);
-      expect(questionPage.answers.last().getText()).toContain(constants.testText1Question1Answer);
-      questionPage.notice.waitToInclude('The answer was removed successfully');
-      questionPage.notice.firstCloseButton.click();
+      questionPage.answers.list.count().then(function (oldCount) {
+        questionPage.answers.archive('');
+        var newCount = questionPage.answers.list.count();
+        expect(newCount).toEqual(oldCount - 1);
+        if (oldCount > 1) {  // Which means newCount > 0 -- but oldCount is a real int, while newCount is still a promise
+          expect(questionPage.answers.last().getText()).toContain(constants.testText1Question1Answer);
+        }
+        questionPage.notice.waitToInclude('The answer was removed successfully');
+        questionPage.notice.firstCloseButton.click();
+      });
     });
   }
 
