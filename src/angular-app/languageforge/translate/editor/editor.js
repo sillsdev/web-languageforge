@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.services', 'ngQuill',
-  'translateCoreModule', 'quillService', 'translate.quill', 'palaso.ui.showOverflow'])
+  'translateCoreModule', 'quillService', 'translate.quill', 'palaso.ui.showOverflow', 'editorModule'])
   .config(['$stateProvider', function ($stateProvider) {
 
     // State machine from ui.router
