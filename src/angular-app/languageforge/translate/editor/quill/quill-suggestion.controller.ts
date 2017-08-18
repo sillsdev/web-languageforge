@@ -2,11 +2,10 @@ import * as angular from 'angular';
 import { WordParser } from '../word-parser.service';
 
 export class QuillSuggestionController implements angular.IController {
+  qlSuggestions: string[];
+  qlInsertSuggestion: (params: { text: string }) => void;
+
   static $inject: string[] = ['wordParser'];
-
-  public qlSuggestions: string[];
-  public qlInsertSuggestion: (params: { text: string }) => void;
-
   constructor(private wordParser: WordParser) {}
 
   wordCombine(words: string[]): string {
