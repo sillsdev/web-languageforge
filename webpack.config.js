@@ -64,7 +64,7 @@ var webpackConfig = {
       { test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/, use: 'file-loader' },
       { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' },
       {
-        test: /machine\.js/,
+        test: /bridge\.js/,
         // fix conflict between System namespace in Bridge and System variable injection
         parser: { system: false },
         // fix critical dependency warning by removing reference to require() in Bridge
@@ -75,6 +75,11 @@ var webpackConfig = {
             replace: ''
           }
         }
+      },
+      {
+        test: /(newtonsoft\.json|machine)\.js/,
+        // fix conflict between System namespace in Bridge and System variable injection
+        parser: { system: false }
       }
     ]
   }
