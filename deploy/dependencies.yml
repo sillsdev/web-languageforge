@@ -38,7 +38,7 @@
     - name: install packages
       apt: name="{{item}}" state=present update_cache='yes'
       with_items:
-        - dotnet-dev-1.0.1
+        - dotnet-sdk-2.0.0
         - libapache2-mod-php
         - mongodb-server
         - nodejs
