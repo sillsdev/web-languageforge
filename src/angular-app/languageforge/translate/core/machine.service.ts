@@ -1,7 +1,4 @@
-/// <reference path='excluded/machine.d.ts' />
-
-import './excluded/machine.js';
-import machine = SIL.Machine.Translation;
+import * as machine from 'machine';
 
 export class MachineService {
   private engine: machine.TranslationEngine;
