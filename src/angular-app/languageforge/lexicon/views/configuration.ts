@@ -2,7 +2,7 @@ import * as angular from 'angular';
 import { _inputSystems_regions } from '../../../bellows/js/assets/inputSystems_regions'
 import { _inputSystems_scripts } from '../../../bellows/js/assets/inputSystems_scripts'
 
-angular.module('lexicon.configuration', ['ui.bootstrap', 'bellows.services', 'palaso.ui.notice',
+angular.module('lexicon.configuration', ['ui.bootstrap', 'coreModule', 'bellows.services', 'palaso.ui.notice',
   'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
   'palaso.util.model.transform', 'lexicon.services', 'language.inputSystems'])
 

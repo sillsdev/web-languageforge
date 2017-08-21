@@ -17,8 +17,9 @@ var webpackConfig = {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // to not to load all locales
     new CopyWebpackPlugin([
       { from: './node_modules/font-awesome/', to: 'font-awesome' },
-      { from: './node_modules/intl-tel-input/build', to: 'intl-tel-input' },
+      { from: './node_modules/intl-tel-input/build/', to: 'intl-tel-input' },
       { from: './node_modules/jquery/dist/', to: 'jquery' },
+      { from: './node_modules/offline-js/offline.min.js', to: 'offline-js' },
       { from: './node_modules/quill/dist/', to: 'quill' },
       { from: './node_modules/ng-quill/dist/', to: 'ng-quill' },
       { from: './node_modules/rangy/lib/', to: 'rangy' },
@@ -62,25 +63,7 @@ var webpackConfig = {
         use: 'url-loader?limit=10000'
       },
       { test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/, use: 'file-loader' },
-      { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' },
-      {
-        test: /bridge\.js/,
-        // fix conflict between System namespace in Bridge and System variable injection
-        parser: { system: false },
-        // fix critical dependency warning by removing reference to require() in Bridge
-        use: {
-          loader: 'string-replace-loader',
-          query: {
-            search: ' || require(name)',
-            replace: ''
-          }
-        }
-      },
-      {
-        test: /(newtonsoft\.json|machine)\.js/,
-        // fix conflict between System namespace in Bridge and System variable injection
-        parser: { system: false }
-      }
+      { test: /\.(png|jpg)$/, use: 'url-loader?limit=8192' }
     ]
   }
 
