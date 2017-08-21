@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 
-export declare interface BytesFilterFunction { (bytes: any, precision?: number): string }
+export interface BytesFilterFunction { (bytes: any, precision?: number): string }
 
 export function BytesFilter(): BytesFilterFunction {
   return (bytes: any, precision?: number): string => {
@@ -16,7 +16,7 @@ export function BytesFilter(): BytesFilterFunction {
   };
 }
 
-export declare interface RelativeTimeFilterFunction { (timestamp?: string, timeFormat?: string): string }
+export interface RelativeTimeFilterFunction { (timestamp?: string, timeFormat?: string): string }
 
 export function RelativeTimeFilter(): RelativeTimeFilterFunction {
   return (timestamp?: string, timeFormat?: string): string => {

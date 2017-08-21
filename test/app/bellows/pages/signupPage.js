@@ -57,7 +57,7 @@ var SignupPage = function () {
 
   this.captchaInvalid = element(by.id('captchaInvalid'));
   this.signupButton = element(by.id('submit'));
-  this.noticeList  = element.all(by.repeater('notice in notices()'));
+  this.noticeList  = element.all(by.repeater('notice in $ctrl.notices()'));
 };
 
 module.exports = new SignupPage();
