@@ -33,32 +33,42 @@ export class ProjectService {
   deleteProject: ApiMethod;
   data: ProjectData;
 
+  protected api: ApiService;
+  protected sessionService: SessionService;
+  private offlineCache: any;
+  private $q: angular.IQService;
+
   private projectTypesBySite: string[];
 
-  static $inject: string[] = ['apiService', 'sessionService', 'offlineCache', '$q'];
-  constructor(private api: ApiService, private sessionService: SessionService, private offlineCache: any, private $q: angular.IQService)
+  static $inject: string[] = ['$injector'];
+  constructor(protected $injector: angular.auto.IInjectorService)
   {
-    this.create = api.method('project_create');
-    this.createSwitchSession = api.method('project_create_switchSession');
-    this.joinSwitchSession = api.method('project_join_switchSession');
-    this.archivedList = api.method('project_archivedList');
-    this.remove = api.method('project_delete');
-    this.publish = api.method('project_publish');
-    this.users = api.method('project_usersDto');
-    this.readUser = api.method('project_readUser');
-    this.updateUserRole = api.method('project_updateUserRole');
-    this.acceptJoinRequest = api.method('project_acceptJoinRequest');
-    this.denyJoinRequest = api.method('project_denyJoinRequest');
-    this.getOwner = api.method('project_getOwner');
-    this.removeUsers = api.method('project_removeUsers');
-    this.projectCodeExists = api.method('projectcode_exists');
-    this.joinProject = api.method('project_joinProject');
-    this.listUsers = api.method('project_usersDto');
-    this.sendJoinRequest = api.method('project_sendJoinRequest');
-    this.getJoinRequests = api.method('project_getJoinRequests');
-    this.getDto = api.method('project_management_dto');
-    this.archiveProject = api.method('project_archive');
-    this.deleteProject = api.method('project_delete');
+    this.api = $injector.get('apiService');
+    this.sessionService = $injector.get('sessionService');
+    this.offlineCache = $injector.get('offlineCache');
+    this.$q = $injector.get('$q');
+
+    this.create = this.api.method('project_create');
+    this.createSwitchSession = this.api.method('project_create_switchSession');
+    this.joinSwitchSession = this.api.method('project_join_switchSession');
+    this.archivedList = this.api.method('project_archivedList');
+    this.remove = this.api.method('project_delete');
+    this.publish = this.api.method('project_publish');
+    this.users = this.api.method('project_usersDto');
+    this.readUser = this.api.method('project_readUser');
+    this.updateUserRole = this.api.method('project_updateUserRole');
+    this.acceptJoinRequest = this.api.method('project_acceptJoinRequest');
+    this.denyJoinRequest = this.api.method('project_denyJoinRequest');
+    this.getOwner = this.api.method('project_getOwner');
+    this.removeUsers = this.api.method('project_removeUsers');
+    this.projectCodeExists = this.api.method('projectcode_exists');
+    this.joinProject = this.api.method('project_joinProject');
+    this.listUsers = this.api.method('project_usersDto');
+    this.sendJoinRequest = this.api.method('project_sendJoinRequest');
+    this.getJoinRequests = this.api.method('project_getJoinRequests');
+    this.getDto = this.api.method('project_management_dto');
+    this.archiveProject = this.api.method('project_archive');
+    this.deleteProject = this.api.method('project_delete');
 
     // data constants
     this.data = new ProjectData();
@@ -69,7 +79,7 @@ export class ProjectService {
       lexicon: 'Dictionary'
     };
 
-    sessionService.getSession().then((session: Session) => {
+    this.sessionService.getSession().then((session: Session) => {
       let types = {
         scriptureforge: ['sfchecks'],
 
