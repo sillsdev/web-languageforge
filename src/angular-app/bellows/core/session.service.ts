@@ -19,15 +19,15 @@ export class Session {
     this.username = this.sessionDataFunctionFor('username');
   }
 
-  hasSiteRight(domain: RightsFunction, operation: RightsFunction) {
+  hasSiteRight(domain: RightsFunction, operation: RightsFunction): boolean {
     return this.hasRight(this.data.userSiteRights, domain, operation);
   };
 
-  hasProjectRight(domain: RightsFunction, operation: RightsFunction) {
+  hasProjectRight(domain: RightsFunction, operation: RightsFunction): boolean {
     return this.hasRight(this.data.userProjectRights, domain, operation);
   };
 
-  hasRight(rights: any, domain: RightsFunction, operation: RightsFunction) {
+  hasRight(rights: any, domain: RightsFunction, operation: RightsFunction): boolean {
     if (!rights) return false;
     let right = domain() + operation();
     return rights.indexOf(right) !== -1;
@@ -60,9 +60,9 @@ class SessionData {
   userProjectRights: any;
 }
 
-interface RightsFunction { (): number }
+export interface RightsFunction { (): number }
 
-class Domains {
+export class Domains {
   ANY: RightsFunction;
   USERS: RightsFunction;
   PROJECTS: RightsFunction;
@@ -75,7 +75,7 @@ class Domains {
   ENTRIES: RightsFunction;
 }
 
-class Operations {
+export class Operations {
   CREATE: RightsFunction;
   EDIT: RightsFunction;
   DELETE: RightsFunction;
