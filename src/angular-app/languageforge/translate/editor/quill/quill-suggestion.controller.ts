@@ -12,7 +12,7 @@ export class QuillSuggestionController implements angular.IController {
     return this.wordParser.wordCombine(words);
   }
 
-  wordWidthStyle(word: string, isLast: boolean): Object {
+  wordWidthStyle(word: string, isLast: boolean): any {
     let words = this.wordCombine(this.qlSuggestions);
     if (words.length <= 0) return;
 
