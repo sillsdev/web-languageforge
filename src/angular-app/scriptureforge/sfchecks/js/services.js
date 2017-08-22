@@ -72,8 +72,8 @@ angular.module('sfchecks.services', ['bellows.services'])
       data.sort(function (a, b) {
         var columnA = a[columnName];
         var columnB = b[columnName];
-        var aUndefined = angular.isUndefined(columnA);
-        var bUndefined = angular.isUndefined(columnB);
+        var aUndefined = (typeof columnA === 'undefined');
+        var bUndefined = (typeof columnB === 'undefined');
         if (aUndefined && bUndefined) {
           return 0;
         } else if (aUndefined) {
