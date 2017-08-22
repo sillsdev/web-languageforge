@@ -12,6 +12,8 @@ angular.module('translate-new-project',
     'palaso.util.model.transform',
     'pascalprecht.translate',
     'ngFileUpload',
+    'language.inputSystems',
+    'translateCoreModule',
     'translate.services',
     'translateSharedModule'
   ])
@@ -58,10 +60,10 @@ angular.module('translate-new-project',
 
   }])
   .controller('NewTranslateProjectCtrl', ['$scope', '$q', '$filter', '$uibModal', '$window',
-    'sessionService', 'silNoticeService', '$translate', '$state', 'Upload',
+    'sessionService', 'silNoticeService', '$translate', '$state', 'Upload', 'inputSystems',
     'translateProjectApi', 'sfchecksLinkService',
   function ($scope, $q, $filter, $modal, $window,
-            sessionService, notice, $translate, $state, Upload,
+            sessionService, notice, $translate, $state, Upload, inputSystems,
             projectApi, linkService) {
     $scope.state = $state;
     $scope.interfaceConfig = {};
@@ -76,7 +78,7 @@ angular.module('translate-new-project',
         angular.isDefined(session.projectSettings().interfaceConfig)
       ) {
         $scope.interfaceConfig = session.projectSettings().interfaceConfig;
-        if (InputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
+        if (inputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
           $scope.interfaceConfig.direction = 'rtl';
           $scope.interfaceConfig.pullToSide = 'pull-left';
           $scope.interfaceConfig.pullNormal = 'pull-right';
