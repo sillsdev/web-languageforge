@@ -29,7 +29,7 @@ export class WordParser {
   lengthOfWordAt(index: number, words: string[]): number {
     let wordLength = words[0].length;
     let startIndex = 0;
-    for (let wordIndex in words) {
+    for (let wordIndex = 0; wordIndex < words.length; wordIndex++) {
       let word = words[wordIndex];
       startIndex += word.length + 1;
       if (index < startIndex) break;

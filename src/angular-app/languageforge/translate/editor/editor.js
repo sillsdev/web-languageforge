@@ -14,15 +14,15 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     ;
   }])
   .controller('EditorCtrl', ['$scope', '$q', 'silNoticeService', 'machineService',
-    'translateProjectApi', 'translateDocumentApi', 'translateDocumentService', 'wordParser',
+    'translateProjectApi', 'translateDocumentApi', 'documentDataService', 'wordParser',
     'realTime', 'modalService',
   function ($scope, $q, notice, machineService,
-            projectApi, documentApi, Document, wordParser, realTime, modal) {
+            projectApi, documentApi, documentDataService, wordParser, realTime, modal) {
     var currentDocIds = [];
     var selectedSegmentIndex = -1;
     var confidenceThreshold = 0.2;
-    var source = new Document.Data('source', 'Source');
-    var target = new Document.Data('target', 'Target');
+    var source = documentDataService.createDocumentData('source', 'Source');
+    var target = documentDataService.createDocumentData('target', 'Target');
     var modulesConfig = {
       toolbar: [
         ['bold', 'italic', 'underline', 'strike'],      // toggled buttons
@@ -323,9 +323,9 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     $scope.insertSuggestion = function insertSuggestion(docType, text) {
       var editor = $scope[docType].editor;
       var range = editor.selection.lastRange;
-      var currentText = Quill.removeTrailingCarriageReturn(editor.getText());
+      var currentText = documentDataService.removeTrailingCarriageReturn(editor.getText());
       var words = wordParser.wordBreak(currentText);
-      if (Quill.hasNoSelectionAtCursor(range)) {
+      if (documentDataService.hasNoSelectionAtCursor(range)) {
         var index = range.index;
         var wordStartIndex = wordParser.startIndexOfWordAt(index, words);
         var wordLength = wordParser.lengthOfWordAt(index, words);
@@ -366,7 +366,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       } else {
         editor.theme.moreTooltip.hide();
         editor.theme.suggestTooltip.hide();
-        if (docType === source.docType && !editor.isTextEmpty()) {
+        if (docType === source.docType && !documentDataService.isTextEmpty(editor.getText())) {
           var newSourceSegmentText = source.getSegment(selectedSegmentIndex);
           if (newSourceSegmentText !== source.segment.text) {
             source.segment.text = newSourceSegmentText;
@@ -377,7 +377,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     }
 
     function learnSegment(newSegmentIndex) {
-      if (selectedSegmentIndex >= 0 && !target.editor.hasNoSelectionAtCursor()) return;
+      if (selectedSegmentIndex >= 0 && !documentDataService.hasNoSelectionAtCursor(target.editor.getSelection())) return;
 
       var targetSegmentText = target.getSegment(selectedSegmentIndex);
       var selectedDocumentSetId = $scope.documentSets[$scope.selectedDocumentSetIndex].id;
@@ -390,8 +390,8 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
           targetSegmentText = target.segment.text;
         }
 
-        if (!Quill.isTextEmpty(targetSegmentText) &&
-          Quill.hasNoSelectionAtCursor(target.segment.learnt.previousRange) &&
+        if (!documentDataService.isTextEmpty(targetSegmentText) &&
+          documentDataService.hasNoSelectionAtCursor(target.segment.learnt.previousRange) &&
           !target.segment.hasLearntText(targetSegmentText)
         ) {
           machineService.learnSegment(function () {
@@ -428,7 +428,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     }
 
     function getSuggestions(newSegmentIndex) {
-      if (!source.editor.isTextEmpty() && !target.editor.isTextEmpty()) {
+      if (!documentDataService.isTextEmpty(source.editor.getText()) && !documentDataService.isTextEmpty(target.editor.getText())) {
         var newSourceSegmentText = source.getSegment(newSegmentIndex);
         if (newSegmentIndex !== selectedSegmentIndex || newSourceSegmentText !== source.segment.text
         ) {
@@ -456,7 +456,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
 
     function showAndPositionTooltip(tooltip, editor, hasCondition) {
       hasCondition = angular.isDefined(hasCondition) ? hasCondition : true;
-      if (editor.hasNoSelectionAtCursor() && hasCondition) {
+      if (documentDataService.hasNoSelectionAtCursor(editor.getSelection()) && hasCondition) {
         tooltip.show();
         tooltip.position(editor.getBounds(editor.getSelection()));
       } else {

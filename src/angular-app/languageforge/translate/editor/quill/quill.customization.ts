@@ -9,11 +9,6 @@ export module QuillCustomization {
     // noinspection ReservedWordAsName
     static import(path: string): any;
     static register(path: string, def: any, suppressWarning?: boolean): void;
-    static removeTrailingCarriageReturn(text: string): string;
-    static isTextEmpty(text: string): boolean;
-    static hasNoSelectionAtCursor(range: any): boolean;
-    isTextEmpty(): boolean;
-    hasNoSelectionAtCursor(): boolean;
   }
 
   declare class QuillTheme {
@@ -56,44 +51,6 @@ export module QuillCustomization {
       }
 
       Quill.register('themes/bubble-custom', CustomBubbleTheme);
-
-      /**
-       * @param {string} text
-       * @returns {string}
-       */
-      Quill.removeTrailingCarriageReturn = function removeTrailingCarriageReturn(text: string) {
-        return (text.endsWith('\n')) ? text.substr(0, text.length - 1) : text;
-      };
-
-      /**
-       * @param {string} text
-       * @returns {boolean}
-       */
-      Quill.isTextEmpty = function (text: string) {
-        return !Quill.removeTrailingCarriageReturn(text);
-      };
-
-      /**
-       * @returns {boolean}
-       */
-      Quill.prototype.isTextEmpty = function isTextEmpty() {
-        return Quill.isTextEmpty(this.getText());
-      };
-
-      /**
-       * @param range
-       * @returns {boolean}
-       */
-      Quill.hasNoSelectionAtCursor = function (range: any) {
-        return !!range && range.length === 0;
-      };
-
-      /**
-       * @returns {boolean}
-       */
-      Quill.prototype.hasNoSelectionAtCursor = function hasNoSelectionAtCursor() {
-        return Quill.hasNoSelectionAtCursor(this.getSelection());
-      };
     }
   }
 
