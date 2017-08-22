@@ -9,13 +9,14 @@ angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.
             notice, lexProjectService) {
     // lexProjectService.setBreadcrumbs('settings', $filter('translate')('Project Settings'));
 
-    ss.getSession().then(function(session) {
+    ss.getSession().then(function (session) {
+      $scope.rights = $scope.rights || {};
       $scope.rights.archive = (!session.project().isArchived &&
         (session.project().userIsProjectOwner ||
         session.hasSiteRight(ss.domain.PROJECTS, ss.operation.ARCHIVE)));
       $scope.rights.remove = session.project().userIsProjectOwner ||
         session.hasSiteRight(ss.domain.PROJECTS, ss.operation.DELETE);
-    })
+    });
 
     readProject();
 
