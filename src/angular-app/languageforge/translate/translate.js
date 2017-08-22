@@ -26,7 +26,8 @@ angular.module('translate',
       $stateProvider
         .state('settings', {
           url: '/settings',
-          templateUrl: '/angular-app/languageforge/translate/settings/settings.html'
+          template: '<translate-settings tsc-on-update="onUpdateProject($event)">' +
+            '</translate-settings>'
         })
       ;
 
@@ -68,6 +69,9 @@ angular.module('translate',
           return !$state.is('editor');
         };
 
+        $scope.onUpdateProject = function ($event) {
+          $scope.project = $event.project;
+        };
       });
     }])
   .controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService',
