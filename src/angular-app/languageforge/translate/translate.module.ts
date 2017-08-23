@@ -13,8 +13,9 @@ import './core/translate-core.module';
 import './shared/translate-shared.module';
 
 import './editor/editor.module';
-import './editor/quill/quill.module'
-import './editor/quill/quill.service'
+import './editor/quill/quill.module';
+import './editor/quill/quill.service';
+import './new-project/translate-new-project.module';
 import './settings/settings.module';
 
 export const TranslateModule = angular
