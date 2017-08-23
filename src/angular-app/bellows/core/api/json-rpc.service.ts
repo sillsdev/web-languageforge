@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 
-import { ErrorService } from './error.service';
+import { ErrorService } from '../error.service';
 
 interface JsonRequest {
   version: string;
