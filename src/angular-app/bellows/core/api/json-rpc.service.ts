@@ -13,7 +13,7 @@ export interface JsonRpcResult extends angular.IHttpPromiseCallbackArg<any> {
   ok?: boolean;
 }
 
-export interface JsonRpcCallback { (result: JsonRpcResult): void; }
+export interface JsonRpcCallback { (result?: JsonRpcResult): void; }
 
 // Simple Angular service for making JSON-RPC easier from the client side
 
