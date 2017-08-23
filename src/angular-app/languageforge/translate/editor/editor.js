@@ -14,10 +14,9 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     ;
   }])
   .controller('EditorCtrl', ['$scope', '$q', 'silNoticeService', 'machineService',
-    'translateProjectApi', 'translateDocumentApi', 'documentDataService', 'wordParser',
-    'realTime', 'modalService',
+    'translateProjectApi', 'documentDataService', 'wordParser', 'realTime', 'modalService',
   function ($scope, $q, notice, machineService,
-            projectApi, documentApi, documentDataService, wordParser, realTime, modal) {
+            projectApi, documentDataService, wordParser, realTime, modal) {
     var currentDocIds = [];
     var selectedSegmentIndex = -1;
     var confidenceThreshold = 0.2;
@@ -59,7 +58,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       { key: 2, name: 'approved' }
     ];
 
-    documentApi.listDocumentSetsDto(function (result) {
+    projectApi.listDocumentSetsDto(function (result) {
       if (result.ok) {
         angular.merge($scope.project, result.data.project);
         $scope.project.config.documentSets = $scope.project.config.documentSets || {};
@@ -132,7 +131,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
         documentSet.name + '</b>?';
       modal.showModalSimple('Delete Document Set?', deleteMessage, 'Cancel', 'Delete Document Set')
         .then(function () {
-          documentApi.removeDocumentSet(documentSet.id, function (result) {
+          projectApi.removeDocumentSet(documentSet.id, function (result) {
             if (result.ok) {
               var noticeMessage = 'Document \'' + documentSet.name + '\' was successfully removed.';
               $scope.documentSets.splice(index, 1);
@@ -172,7 +171,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
       });
 
       modalInstance.result.then(function (documentSet) {
-        documentApi.updateDocumentSet(documentSet, function (result) {
+        projectApi.updateDocumentSet(documentSet, function (result) {
           if (result.ok) {
             angular.merge(documentSet, result.data);
 

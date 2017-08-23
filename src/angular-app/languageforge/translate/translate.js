@@ -9,7 +9,6 @@ angular.module('translate',
     'coreModule',
     'bellows.services',
     'pascalprecht.translate',
-    'translate.services',
     'translate.editor',
     'translate.settings',
     'translateCoreModule'
