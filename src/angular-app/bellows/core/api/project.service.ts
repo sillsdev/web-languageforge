@@ -1,8 +1,8 @@
 import * as angular from 'angular';
 
-import { ApiMethod, ApiService } from  './api.service';
+import { ApiMethod, ApiService } from './api.service';
 import { JsonRpcCallback } from './json-rpc.service';
-import { Session, SessionService } from './session.service';
+import { Session, SessionService } from '../session.service';
 
 export class ProjectData {
   projectTypeNames: any;
