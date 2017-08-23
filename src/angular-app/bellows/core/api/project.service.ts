@@ -1,7 +1,6 @@
 import * as angular from 'angular';
 
-import { ApiMethod, ApiService } from './api.service';
-import { JsonRpcCallback } from './json-rpc.service';
+import { ApiService, JsonRpcCallback } from './api.service';
 import { Session, SessionService } from '../session.service';
 
 export class ProjectData {
@@ -10,27 +9,6 @@ export class ProjectData {
 }
 
 export class ProjectService {
-  create: ApiMethod;
-  createSwitchSession: ApiMethod;
-  joinSwitchSession: ApiMethod;
-  archivedList: ApiMethod;
-  remove: ApiMethod;
-  publish: ApiMethod;
-  users: ApiMethod;
-  readUser: ApiMethod;
-  updateUserRole: ApiMethod;
-  acceptJoinRequest: ApiMethod;
-  denyJoinRequest: ApiMethod;
-  getOwner: ApiMethod;
-  removeUsers: ApiMethod;
-  projectCodeExists: ApiMethod;
-  joinProject: ApiMethod;
-  listUsers: ApiMethod;
-  sendJoinRequest: ApiMethod;
-  getJoinRequests: ApiMethod;
-  getDto: ApiMethod;
-  archiveProject: ApiMethod;
-  deleteProject: ApiMethod;
   data: ProjectData;
 
   protected api: ApiService;
@@ -47,28 +25,6 @@ export class ProjectService {
     this.sessionService = $injector.get('sessionService');
     this.offlineCache = $injector.get('offlineCache');
     this.$q = $injector.get('$q');
-
-    this.create = this.api.method('project_create');
-    this.createSwitchSession = this.api.method('project_create_switchSession');
-    this.joinSwitchSession = this.api.method('project_join_switchSession');
-    this.archivedList = this.api.method('project_archivedList');
-    this.remove = this.api.method('project_delete');
-    this.publish = this.api.method('project_publish');
-    this.users = this.api.method('project_usersDto');
-    this.readUser = this.api.method('project_readUser');
-    this.updateUserRole = this.api.method('project_updateUserRole');
-    this.acceptJoinRequest = this.api.method('project_acceptJoinRequest');
-    this.denyJoinRequest = this.api.method('project_denyJoinRequest');
-    this.getOwner = this.api.method('project_getOwner');
-    this.removeUsers = this.api.method('project_removeUsers');
-    this.projectCodeExists = this.api.method('projectcode_exists');
-    this.joinProject = this.api.method('project_joinProject');
-    this.listUsers = this.api.method('project_usersDto');
-    this.sendJoinRequest = this.api.method('project_sendJoinRequest');
-    this.getJoinRequests = this.api.method('project_getJoinRequests');
-    this.getDto = this.api.method('project_management_dto');
-    this.archiveProject = this.api.method('project_archive');
-    this.deleteProject = this.api.method('project_delete');
 
     // data constants
     this.data = new ProjectData();
@@ -96,6 +52,30 @@ export class ProjectService {
 
   }
 
+  create(projectName: string, projectCode: string, appName: string, srProject: any = {}, callback?: JsonRpcCallback) {
+    return this.api.call('project_create', [projectName, projectCode, appName, srProject], callback);
+  }
+
+  createSwitchSession(projectName: string, projectCode: string, appName: string, srProject: any = {}, callback?: JsonRpcCallback) {
+    return this.api.call('project_create_switchSession', [projectName, projectCode, appName, srProject], callback);
+  }
+
+  joinSwitchSession(srProject: any, role: string, callback?: JsonRpcCallback) {
+    return this.api.call('project_join_switchSession', [srProject, role], callback);
+  }
+
+  archiveProject(callback?: JsonRpcCallback) {
+    return this.api.call('project_archive', [], callback);
+  }
+
+  archivedList(callback?: JsonRpcCallback) {
+    return this.api.call('project_archivedList', [], callback);
+  }
+
+  publish(projectIds: string[], callback?: JsonRpcCallback) {
+    return this.api.call('project_publish', [projectIds], callback);
+  }
+
   list() {
     if (navigator.onLine /* TODO use Offline.state */) {
       let deferred = this.$q.defer();
@@ -111,7 +91,71 @@ export class ProjectService {
     }
   };
 
-  runReport(reportName: string, params: any[] = [], callback: JsonRpcCallback) {
+  joinProject(projectId: string, role: string, callback?: JsonRpcCallback) {
+    return this.api.call('project_joinProject', [projectId, role], callback);
+  }
+
+  listUsers(callback?: JsonRpcCallback) {
+    return this.api.call('project_usersDto', [], callback);
+  }
+
+  /**
+   * @deprecated use listUsers instead
+   * @param {JsonRpcCallback} callback
+   * @returns {angular.IPromise<any>}
+   */
+  users(callback?: JsonRpcCallback) {
+    return this.api.call('project_usersDto', [], callback);
+  }
+
+  getJoinRequests(callback?: JsonRpcCallback) {
+    return this.api.call('project_getJoinRequests', [], callback);
+  }
+
+  sendJoinRequest(projectId: string, callback?: JsonRpcCallback) {
+    return this.api.call('project_sendJoinRequest', [projectId], callback);
+  }
+
+  deleteProject(projectIds: string[], callback?: JsonRpcCallback) {
+    return this.api.call('project_delete', [projectIds], callback);
+  }
+
+  /**
+   * @deprecated use deleteProject instead
+   * @param {string[]} projectIds
+   * @param {JsonRpcCallback} callback
+   * @returns {angular.IPromise<any>}
+   */
+  remove(projectIds: string[], callback?: JsonRpcCallback) {
+    return this.api.call('project_delete', [projectIds], callback);
+  }
+
+  projectCodeExists(projectCode: string, callback?: JsonRpcCallback) {
+    return this.api.call('projectcode_exists', [projectCode], callback);
+  }
+
+  updateUserRole(userId: string, role: string, callback?: JsonRpcCallback) {
+    return this.api.call('project_updateUserRole', [userId, role], callback);
+  }
+
+  acceptJoinRequest(userId: string, role: string, callback?: JsonRpcCallback) {
+    return this.api.call('project_acceptJoinRequest', [userId, role], callback);
+  }
+
+  denyJoinRequest(userId: string, callback?: JsonRpcCallback) {
+    return this.api.call('project_denyJoinRequest', [userId], callback);
+  }
+
+  removeUsers(userIds: string[], callback?: JsonRpcCallback) {
+    return this.api.call('project_removeUsers', [userIds], callback);
+  }
+
+
+  getDto(callback?: JsonRpcCallback) {
+    return this.api.call('project_management_dto', [], callback);
+  }
+
+  runReport(reportName: string, params: any[] = [], callback?: JsonRpcCallback) {
     this.api.call('project_management_report_' + reportName, params, callback);
   };
 
