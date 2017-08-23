@@ -11,6 +11,9 @@ export class TranslateProjectService extends ProjectService {
   users: ApiMethod;
   updateUserProfile: ApiMethod;
   getProjectId: () => string;
+  updateDocumentSet: ApiMethod;
+  listDocumentSetsDto: ApiMethod;
+  removeDocumentSet: ApiMethod;
 
   static $inject: string[] = ['$injector'];
   constructor(protected $injector: angular.auto.IInjectorService) {
@@ -22,6 +25,9 @@ export class TranslateProjectService extends ProjectService {
     this.users = this.api.method('project_usersDto');
     this.updateUserProfile = this.api.method('user_updateProfile');
     this.getProjectId = this.sessionService.projectId;
+    this.updateDocumentSet = this.api.method('translate_documentSetUpdate');
+    this.listDocumentSetsDto = this.api.method('translate_documentSetListDto');
+    this.removeDocumentSet = this.api.method('translate_documentSetRemove');
   }
 
   isValidProjectCode(code: string): boolean {
