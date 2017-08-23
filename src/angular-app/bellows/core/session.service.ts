@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 
-import { ApiMethod, ApiService } from  './api.service';
+import { ApiMethod, ApiService } from './api/api.service';
 
 export class Session {
   readonly userId: SessionDataFunction;
