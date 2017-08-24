@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 
-export interface ModalService extends angular.ui.bootstrap.IModalProvider {
+export interface ModalService extends angular.ui.bootstrap.IModalService {
   showModalSimple(headerText: string, messageText: string, closeButtonText?: string,
                   actionButtonText?: string): angular.IPromise<any>;
   showModal(customModalDefaults: angular.ui.bootstrap.IModalSettings,
