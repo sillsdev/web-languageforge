@@ -1,4 +1,4 @@
-import { RangeStatic, StringMap } from 'quill';
+import { RangeStatic, StringMap, FormatMachine } from './quill/quill.customization';
 
 export class Segment {
   public text: string;
@@ -8,7 +8,10 @@ export class Segment {
     previousRange: RangeStatic
   };
   public blockEndIndex: number = -1;
-  public state: StringMap = {};
+  public state: {
+    status?: number,
+    machineHasLearnt?: boolean
+  } = {};
 
   constructor(text?: string) {
     this.text = text || '';
@@ -23,7 +26,7 @@ export class Segment {
   }
 
   setLearntText(): void {
-    this.learnt.text = this.state['machineHasLearnt'] ? this.text : '';
+    this.learnt.text = this.state.machineHasLearnt != null && this.state.machineHasLearnt ? this.text : '';
   }
 
   hasLearntText(text: string): boolean {
@@ -31,25 +34,22 @@ export class Segment {
   }
 
   updateState(formats: StringMap): void {
-    let state: StringMap = formats['state'];
-    if (state != null) {
-      let status = state['status'];
+    let format: FormatMachine = formats['state'];
+    this.state = {};
+    if (format != null) {
+      let status = format.status;
       if (status != null) {
-        state['status'] = Number(status);
+        this.state.status = Number(status);
       }
 
-      let machineHasLearnt = state['machineHasLearnt'];
-      if (machineHasLearnt != null && typeof machineHasLearnt === 'string') {
-        state['machineHasLearnt'] = machineHasLearnt.toLowerCase() === 'true';
+      let machineHasLearnt = format.machineHasLearnt;
+      if (machineHasLearnt != null) {
+        this.state.machineHasLearnt = machineHasLearnt.toLowerCase() === 'true';
       }
-
-      this.state = state;
-    } else {
-      this.state = {};
     }
   }
 
   hasNoState(): boolean {
-    return this.state['status'] == null && this.state['machineHasLearnt'] == null;
+    return this.state.status == null && this.state.machineHasLearnt == null;
   }
 }

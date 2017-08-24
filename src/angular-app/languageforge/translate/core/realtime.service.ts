@@ -24,11 +24,8 @@ declare class Quill extends quill.Quill {
   // noinspection JSUnusedGlobalSymbols
   static imports: string;
 
-  // noinspection ReservedWordAsName
-  static import(path: string): any;
-  static register(path: string, def: any, suppressWarning?: boolean): void;
   static sources: any;
-  static events: any
+  static events: any;
 }
 
 export class RealTimeService {
