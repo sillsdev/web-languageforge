@@ -10,7 +10,7 @@ export const QuillMoreComponent = {
   controller: [function () {
     this.qlStatus = this.qlStatus || 0;
 
-    this.selectChange = (optionKey: string) => {
+    this.selectChange = (optionKey: number) => {
       (this.qlChangeStatus || angular.noop)({ optionKey: optionKey });
     };
   }]
