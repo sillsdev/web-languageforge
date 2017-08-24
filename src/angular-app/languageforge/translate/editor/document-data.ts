@@ -1,5 +1,5 @@
 import { Segment } from './segment';
-import { Quill, RangeStatic, DeltaStatic, Delta, StringMap } from 'quill';
+import { Quill, RangeStatic, DeltaStatic, Delta, StringMap, FormatMachine } from './quill/quill.customization';
 import * as angular from 'angular';
 
 export class DocumentData {
@@ -19,7 +19,7 @@ export class DocumentData {
 
   docType: string;
   label: string;
-  html: '';
+  html: string = '';
   suggestions: string[] = [];
   segment: Segment = new Segment();
   editor: Quill;
@@ -91,41 +91,44 @@ export class DocumentData {
     }
   }
 
-  formatSegmentStateStatus(value: string, range?: RangeStatic): void {
+  formatSegmentStateStatus(value: number, range?: RangeStatic): void {
     this.formatSegmentState('status', value, range);
   }
 
-  formatSegmentStateMachineHasLearnt(value: string, range?: RangeStatic): void {
+  formatSegmentStateMachineHasLearnt(value: boolean, range?: RangeStatic): void {
     this.formatSegmentState('machineHasLearnt', value, range);
   }
 
-  private formatSegmentState(name: string, value: string, range?: RangeStatic): void {
+  private formatSegmentState(name: string, value: any, range?: RangeStatic): void {
     if (range == null) range = this.editor.getSelection();
 
     if (DocumentData.hasNoSelectionAtCursor(range)) {
       let block = this.editor.getLine(range.index);
       let blockStartIndex = this.editor.getIndex(block[DocumentData.LINE_INDEX]);
       let hasNoState = this.segment.hasNoState();
-      let stateValue: StringMap = {};
-      stateValue[name] = value;
+      let format: FormatMachine = {};
+      format[name] = value.toString();
       this.segment.state[name] = value;
       let formats: StringMap;
       if (hasNoState) {
         formats = {};
-        formats['state'] = stateValue;
+        formats['state'] = format;
       } else {
-        formats = stateValue;
+        formats = format;
       }
       this.editor.formatLine(blockStartIndex, 1, formats, 'user');
     }
   }
 
-  createDeltaSegmentStateMachineHasLearnt(value: string, index: number, state?: StringMap, length: number = 1): DeltaStatic {
-    let stateValue: StringMap = {};
-    if (state != null) stateValue = angular.copy(state);
-    stateValue['machineHasLearnt'] = value;
+  createDeltaSegmentStateMachineHasLearnt(value: boolean, index: number, segment: Segment,
+                                          length: number = 1): DeltaStatic {
+    let format: FormatMachine = {};
+    if (segment.state.status != null) {
+      format.status = segment.state.status.toString();
+    }
+    format.machineHasLearnt = value.toString();
     let formats: StringMap = {};
-    formats['state'] = stateValue;
+    formats['state'] = format;
 
     return new Delta().retain(index).retain(length, formats);
   }

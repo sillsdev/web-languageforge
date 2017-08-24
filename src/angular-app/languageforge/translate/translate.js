@@ -9,7 +9,7 @@ angular.module('translate',
     'coreModule',
     'bellows.services',
     'pascalprecht.translate',
-    'translate.editor',
+    'editorModule',
     'translate.settings',
     'translateCoreModule'
   ])
@@ -28,6 +28,11 @@ angular.module('translate',
           url: '/settings',
           template: '<translate-settings tsc-on-update="onUpdateProject($event)">' +
             '</translate-settings>'
+        })
+        .state('editor', {
+          url: '/editor',
+          template: '<editor-component ec-project="project" ec-on-update="onUpdateProject($event)"' +
+            'ec-interface-config="interfaceConfig"></editor-component>'
         })
       ;
 
