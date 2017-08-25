@@ -19,12 +19,15 @@ export class Rights {
   readonly canDeleteEntry: ConditionFunction;
   readonly canComment: ConditionFunction;
 
-  constructor(private domain: Domains, private operation: Operations, private sendReceive: SendReceive, public session?: Session) {
+  constructor(private domain: Domains, private operation: Operations,
+              private sendReceive: SendReceive, public session?: Session) {
     this.canRemoveUsers = this.isPermitted(true, domain.USERS, operation.DELETE);
     this.canCreateUsers = this.isPermitted(true, domain.USERS, operation.CREATE);
     this.canEditUsers = this.isPermitted(false, domain.USERS, operation.EDIT);
-    this.canArchiveProject = this.isPermitted(true, domain.PROJECTS, operation.ARCHIVE, true);
-    this.canDeleteProject = this.isPermitted(true, domain.PROJECTS, operation.DELETE, true);
+    this.canArchiveProject = this.isPermitted(true, domain.PROJECTS, operation.ARCHIVE,
+      true);
+    this.canDeleteProject = this.isPermitted(true, domain.PROJECTS, operation.DELETE,
+      true);
     this.canEditProject = this.isPermitted(false, domain.PROJECTS, operation.EDIT);
     this.canEditEntry = this.isPermitted(false, domain.ENTRIES, operation.EDIT);
     this.canDeleteEntry = this.isPermitted(false, domain.ENTRIES, operation.DELETE);
@@ -36,16 +39,17 @@ export class Rights {
    * operation is permitted.
    * @param {boolean} allowArchived - When false, the resulting function will always return false
    * if the project is archived.
-   * @param {number} domain - An enum value from sessionService.domain indicating the domain of
-   * the operation.
-   * @param {number} operation - An enum value from sessionService.operation indicating the
+   * @param {RightsFunction} domain - An enum value from sessionService.domain indicating the domain
+   * of the operation.
+   * @param {RightsFunction} operation - An enum value from sessionService.operation indicating the
    * operation for which the user's permissions should be checked.
    * @param {boolean} projectOwnerAllowed - When this is true and the current project is owned by
    * the current user, the user will be considered to always have permission.
    * @return {Function<boolean>} - A function that will indicate whether the user is
    * allowed to perform the given operation.
    */
-  private isPermitted(allowArchived: boolean, domain: RightsFunction, operation: RightsFunction, projectOwnerAllowed: boolean = false): ConditionFunction {
+  private isPermitted(allowArchived: boolean, domain: RightsFunction, operation: RightsFunction,
+                      projectOwnerAllowed: boolean = false): ConditionFunction {
     return () => {
       if (this.sendReceive.isInProgress()) return false;
       else if (!this.session.project()) return false;
