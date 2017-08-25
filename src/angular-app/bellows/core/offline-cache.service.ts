@@ -1,11 +1,18 @@
 import * as angular from 'angular';
 
+export interface OfflineCacheService {
+  canCache(): boolean;
+  setObjectsInStore(storeName: string, projectId: string, items: any[], isAdd?: boolean): angular.IPromise<any>;
+  deleteObjectInStore(storeName: string, key: string): angular.IPromise<any>;
+  getAllFromStore(storeName: string, projectId?: string): angular.IPromise<any>;
+  getOneFromStore(storeName: string, key: string): angular.IPromise<any>;
+}
+
 /**
  * implements an offline cache storage system
  */
 // FixMe: when change to class, get console error "Possibly unhandled rejection"
 // See https://github.com/angular-ui/ui-router/issues/2889 to determine source
-//   .service('offlineCache', ['$window', '$q',
 export function OfflineCacheService($window: angular.IWindowService, $q: angular.IQService) {
   const dbName = 'xforgeCache';
   const version = 5;
@@ -91,7 +98,7 @@ export function OfflineCacheService($window: angular.IWindowService, $q: angular
    * @param {boolean} isAdd
    * @returns {*}
    */
-  this.setObjectsInStore = function setObjectsInStore(storeName: string, projectId: string, items: any[], isAdd: boolean = false) {
+  this.setObjectsInStore = function setObjectsInStore(storeName: string, projectId: string, items: any[], isAdd: boolean = false): angular.IPromise<any> {
     let deferred = $q.defer();
     openDbIfNecessary().then(function () {
       let request;
@@ -133,7 +140,7 @@ export function OfflineCacheService($window: angular.IWindowService, $q: angular
     return deferred.promise;
   };
 
-  this.deleteObjectInStore = function deleteObjectInStore(storeName: string, key: string) {
+  this.deleteObjectInStore = function deleteObjectInStore(storeName: string, key: string): angular.IPromise<any> {
     // cjh 2015-03 it seems to me from the spec that we can call "delete" without first checking
     // if the id exists
     // http://www.w3.org/TR/IndexedDB/#dfn-steps-for-deleting-records-from-an-object-store
@@ -158,7 +165,7 @@ export function OfflineCacheService($window: angular.IWindowService, $q: angular
 
   };
 
-  this.getAllFromStore = function getAllFromStore(storeName: string, projectId: string) {
+  this.getAllFromStore = function getAllFromStore(storeName: string, projectId?: string): angular.IPromise<any> {
     let deferred = $q.defer();
     openDbIfNecessary().then(function () {
       let items: any[] = [];
@@ -191,7 +198,7 @@ export function OfflineCacheService($window: angular.IWindowService, $q: angular
     return deferred.promise;
   };
 
-  this.getOneFromStore = function getOneFromStore(storeName: string, key: string) {
+  this.getOneFromStore = function getOneFromStore(storeName: string, key: string): angular.IPromise<any> {
     let deferred = $q.defer();
     openDbIfNecessary().then(function () {
       let request = db.transaction(storeName).objectStore(storeName).get(key);

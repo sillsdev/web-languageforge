@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 
-import { ApiMethod, ApiService } from './api/api.service';
+import { ApiService, JsonRpcCallback } from './api/api.service';
 
 export class Session {
   readonly userId: SessionDataFunction;
@@ -38,7 +38,7 @@ export class Session {
   };
 
   private sessionDataFunctionFor(key: string): SessionDataFunction {
-    return () => {
+    return (): any => {
       return this.data[key];
     };
   }
@@ -94,10 +94,9 @@ export class Operations {
 export class SessionService {
   domain: Domains;
   operation: Operations;
-  getCaptchaData: ApiMethod;
 
   private session: Session;
-  private promiseForSession: angular.IPromise<any>;
+  private sessionDataPromise: angular.IPromise<SessionData>;
 
   static $inject: string[] = ['apiService', '$q'];
   constructor(private api: ApiService, private $q: angular.IQService) {
@@ -127,7 +126,6 @@ export class SessionService {
 
     this.domain = domains;
     this.operation = operations;
-    this.getCaptchaData = api.method('get_captcha_data');
 
     // session instance (singleton) that references the data
     this.session = new Session();
@@ -137,7 +135,7 @@ export class SessionService {
     return this.api.projectId;
   };
 
-  getSession(forceRefresh: boolean = false, callback?: SessionCallback) {
+  getSession(forceRefresh: boolean = false, callback?: SessionCallback): angular.IPromise<Session> {
     if (this.session.data && !forceRefresh) {
       if (callback) callback(this.session);
       return this.$q.when(this.session); // Wrap session in a promise
@@ -150,17 +148,21 @@ export class SessionService {
     });
   };
 
-  private fetchSessionData(forceRefresh: boolean) {
-    if (this.promiseForSession && !forceRefresh) return this.promiseForSession;
+  getCaptchaData(callback?: JsonRpcCallback): angular.IPromise<any> {
+    return this.api.call('get_captcha_data', [], callback);
+  }
 
-    let promise: angular.IPromise<any> = this.api.call('session_getSessionData').then((response) => {
+  private fetchSessionData(forceRefresh: boolean): angular.IPromise<SessionData> {
+    if (this.sessionDataPromise && !forceRefresh) return this.sessionDataPromise;
+
+    let promise: angular.IPromise<SessionData> = this.api.call('session_getSessionData').then((response) => {
       return response.data;
     }).catch((response) => {
       console.error(response); // TODO decide whether to show to user or just retry
       return this.fetchSessionData(forceRefresh); // retry
     });
 
-    if (!this.promiseForSession) this.promiseForSession = promise;
+    if (!this.sessionDataPromise) this.sessionDataPromise = promise;
     return promise;
   }
 
