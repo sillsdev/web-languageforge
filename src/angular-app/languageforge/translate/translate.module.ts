@@ -8,7 +8,7 @@ import 'quill/dist/quill.bubble.css';
 import 'quill/dist/quill.snow.css';
 import 'ng-quill';
 
-import '../../bellows/js/assets/inputSystems';
+import '../../bellows/core/input-systems/input-systems.service';
 import './core/translate-core.module';
 import './shared/translate-shared.module';
 
