@@ -26,7 +26,7 @@ src/cache/
 src/dist/
 src/js/lib/languageforge.min.js
 src/js/lib/scriptureforge.min.js
-src/node/serverConfig.js
+src/node/config.js
 src/node_modules/
 !src/vendor/lift/
 src/vendor/

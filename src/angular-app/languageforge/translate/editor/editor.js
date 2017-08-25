@@ -14,7 +14,7 @@ angular.module('translate.editor', ['ui.router', 'ui.bootstrap', 'bellows.servic
     ;
   }])
   .controller('EditorCtrl', ['$scope', '$q', 'silNoticeService', 'machineService',
-    'translateProjectApi', 'documentDataService', 'wordParser', 'realTime', 'modalService',
+    'translateProjectApi', 'documentDataService', 'wordParser', 'realTimeService', 'modalService',
   function ($scope, $q, notice, machineService,
             projectApi, documentDataService, wordParser, realTime, modal) {
     var currentDocIds = [];
