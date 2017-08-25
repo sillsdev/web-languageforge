@@ -96,7 +96,7 @@ angular.module('lexicon-new-project',
 
   }])
   .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$uibModal', '$window',
-    'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate',
+    'sessionService', 'silNoticeService', 'projectService', 'linkService', '$translate',
     '$state', 'Upload', 'inputSystems', 'lexProjectService', 'lexSendReceiveApi',  'lexSendReceive',
   function ($scope, $q, $filter, $modal, $window,
             sessionService, notice, projectService, linkService, $translate,
