@@ -12,7 +12,7 @@ ShareDB.types.register(richText.type);
 var backend = new ShareDB({ db: database });
 var connection = backend.connect();
 
-var config = (fs.existsSync('./serverConfig.js')) ? require('./serverConfig') : {};
+var config = (fs.existsSync('./config.js')) ? require('./config') : {};
 var defaultSslKey = '/etc/letsencrypt/live/cat.languageforge.org/privkey.pem';
 var defaultSslCert = '/etc/letsencrypt/live/cat.languageforge.org/cert.pem';
 var sslKeyPath = config.sslKeyPath || defaultSslKey;
