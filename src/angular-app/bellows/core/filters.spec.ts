@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 import 'angular-mocks';
+
 import { BytesFilter, BytesFilterFunction, RelativeTimeFilter, RelativeTimeFilterFunction } from './filters';
 
 describe('Filters: ', () => {

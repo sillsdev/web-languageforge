@@ -1,6 +1,8 @@
 import * as angular from 'angular';
 
-class Notice {
+import { UtilityService } from '../utility.service';
+
+export class Notice {
   cannotClose: boolean;
 
   constructor(
@@ -25,7 +27,7 @@ export class NoticeService {
   private loadingMessage: string;
 
   static $inject: string[] = ['$interval', 'utilService'];
-  constructor(private $interval: angular.IIntervalService, private util: any) {
+  constructor(private $interval: angular.IIntervalService, private util: UtilityService) {
     this.notices = [];
     this.timers = {};
     this.percentComplete = 0;
@@ -69,14 +71,14 @@ export class NoticeService {
     return id;
   };
 
-  removeById(id: string) {
+  removeById(id: string): void {
     this.remove(this.getIndexById(id));
     if (id in this.timers) {
       this.$interval.cancel(this.timers[id]);
     }
   };
 
-  remove(index: number) {
+  remove(index: number): void {
     if (!angular.isUndefined(index)) {
       this.notices.splice(index, 1);
     }
@@ -90,7 +92,7 @@ export class NoticeService {
     return this.loadingMessage;
   };
 
-  setLoading(message: string) {
+  setLoading(message: string): void {
     this.loadingMessage = message;
     this.isLoadingNotice = true;
   };
@@ -99,12 +101,12 @@ export class NoticeService {
     return this.percentComplete;
   };
 
-  setPercentComplete(percent: number) {
+  setPercentComplete(percent: number): void {
     this.percentComplete = percent;
     this.isProgressBarShown = true;
   };
 
-  cancelProgressBar() {
+  cancelProgressBar(): void {
     this.isProgressBarShown = false;
   };
 
@@ -112,7 +114,7 @@ export class NoticeService {
     return this.isProgressBarShown;
   };
 
-  cancelLoading() {
+  cancelLoading(): void {
     this.loadingMessage = '';
     this.isLoadingNotice = false;
   };
