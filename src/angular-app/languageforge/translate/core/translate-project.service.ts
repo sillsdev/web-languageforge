@@ -45,7 +45,6 @@ export class TranslateProjectService extends ProjectService {
     this.api.call('user_updateProfile', params, callback);
   };
 
-
   isValidProjectCode(code: string): boolean {
     if (angular.isUndefined(code)) return false;
 

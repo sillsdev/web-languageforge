@@ -1,5 +1,7 @@
 import * as angular from 'angular';
 
+import { InputSystemsService } from '../../../bellows/core/input-systems/input-systems.service';
+import { LinkService } from '../../../bellows/core/link.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { SessionCallback, SessionService } from '../../../bellows/core/session.service';
 import { JsonRpcCallback, TranslateProjectService } from '../core/translate-project.service';
@@ -62,13 +64,13 @@ export class TranslateNewProjectController implements angular.IController {
     '$filter', '$window',
     '$state', 'sessionService',
     'silNoticeService', 'inputSystems',
-    'translateProjectApi', 'sfchecksLinkService'
+    'translateProjectApi', 'linkService'
   ];
   constructor(private $scope: angular.IScope, private $q: angular.IQService,
               private $filter: angular.IFilterService, private $window: angular.IWindowService,
               private $state: angular.ui.IStateService, private sessionService: SessionService,
-              private notice: NoticeService, private inputSystems: any,
-              private projectApi: TranslateProjectService, private linkService: any) {}
+              private notice: NoticeService, private inputSystems: InputSystemsService,
+              private projectApi: TranslateProjectService, private linkService: LinkService) {}
   
   $onInit(){
     this.interfaceConfig = new InterfaceConfig();

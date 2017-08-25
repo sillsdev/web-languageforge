@@ -200,12 +200,12 @@ export class TranslateSettingsController implements angular.IController {
     }
   };
 
-  private convertThresholdToValue(threshold: number) {
+  private convertThresholdToValue(threshold: number): number {
     let range = this.confidence.options.ceil - this.confidence.options.floor;
     return this.confidence.options.floor + threshold * range;
   };
 
-  private convertValueToThreshold(value: number) {
+  private convertValueToThreshold(value: number): number {
     let range = this.confidence.options.ceil - this.confidence.options.floor;
     return (value - this.confidence.options.floor) / range;
   };
