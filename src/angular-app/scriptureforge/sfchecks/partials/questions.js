@@ -4,10 +4,10 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
   'sfchecks.services', 'ngFileUpload', 'ngSanitize', 'ngRoute', 'sgw.soundmanager',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice'])
   .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService',
-    '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService',
+    '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
     'silNoticeService', 'modalService', '$q',
   function ($scope, questionService, qts,
-            $routeParams, ss, sfchecksLinkService, breadcrumbService,
+            $routeParams, ss, linkService, breadcrumbService,
             notice, modalService, $q) {
     var Q_TITLE_LIMIT = 70;
     var textId = $routeParams.textId;
@@ -117,7 +117,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
           $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
         }
 
-        $scope.text.url = sfchecksLinkService.text(textId);
+        $scope.text.url = linkService.text(textId);
 
         //console.log($scope.project.name);
         //console.log($scope.text.title);
@@ -126,8 +126,8 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         breadcrumbService.set('top',
           [
             { href: '/app/projects', label: 'My Projects' },
-            { href: sfchecksLinkService.project(), label: $scope.project.name },
-            { href: sfchecksLinkService.text($routeParams.textId), label: $scope.text.title }
+            { href: linkService.project(), label: $scope.project.name },
+            { href: linkService.text($routeParams.textId), label: $scope.text.title }
           ]
         );
 
@@ -244,7 +244,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
 
     $scope.enhanceDto = function (items) {
       angular.forEach(items, function (item) {
-        item.url = sfchecksLinkService.question(textId, item.id);
+        item.url = linkService.question(textId, item.id);
         item.calculatedTitle = questionService.util.calculateTitle(item.title, item.description,
           Q_TITLE_LIMIT);
       });
@@ -253,10 +253,10 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
   }])
   .controller('QuestionsSettingsCtrl', ['$scope', 'Upload', 'sessionService', '$routeParams',
     'breadcrumbService', 'silNoticeService', 'textService', 'questionService',
-    'sfchecksLinkService', 'modalService', '$q',
+    'linkService', 'modalService', '$q',
   function ($scope, Upload, ss, $routeParams,
             breadcrumbService, notice, textService, questionService,
-            sfchecksLinkService, modalService, $q) {
+            linkService, modalService, $q) {
     var Q_TITLE_LIMIT = 50;
     var textId = $routeParams.textId;
     $scope.textId = textId;
@@ -281,7 +281,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         $scope.editedText.fontfamily = $scope.dto.text.fontfamily;
         $scope.settings.archivedQuestions = result.data.archivedQuestions;
         for (var i = 0; i < $scope.settings.archivedQuestions.length; i++) {
-          $scope.settings.archivedQuestions[i].url = sfchecksLinkService.question($scope.textId,
+          $scope.settings.archivedQuestions[i].url = linkService.question($scope.textId,
             $scope.settings.archivedQuestions[i].id);
           $scope.settings.archivedQuestions[i].calculatedTitle =
             questionService.util.calculateTitle($scope.settings.archivedQuestions[i].title,
@@ -301,9 +301,9 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         breadcrumbService.set('top',
           [
             { href: '/app/projects', label: 'My Projects' },
-            { href: sfchecksLinkService.project(), label: $scope.dto.bcs.project.crumb },
-            { href: sfchecksLinkService.text($routeParams.textId), label: $scope.dto.text.title },
-            { href: sfchecksLinkService.text($routeParams.textId) + '/Settings',
+            { href: linkService.project(), label: $scope.dto.bcs.project.crumb },
+            { href: linkService.text($routeParams.textId), label: $scope.dto.text.title },
+            { href: linkService.text($routeParams.textId) + '/Settings',
               label: 'Settings' }
           ]
         );
