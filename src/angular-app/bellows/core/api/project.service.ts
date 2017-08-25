@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import { ApiService, JsonRpcCallback } from './api.service';
+import { OfflineCacheService } from '../offline-cache.service';
 import { Session, SessionService } from '../session.service';
 
 export class ProjectData {
@@ -13,7 +14,7 @@ export class ProjectService {
 
   protected api: ApiService;
   protected sessionService: SessionService;
-  private offlineCache: any;
+  private offlineCache: OfflineCacheService;
   private $q: angular.IQService;
 
   private projectTypesBySite: string[];

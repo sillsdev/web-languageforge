@@ -3,6 +3,7 @@ import * as angular from 'angular';
 import { inputSystemsRegions } from '../../../bellows/core/input-systems/input-systems.regions'
 import { inputSystemsScripts } from '../../../bellows/core/input-systems/input-systems.scripts'
 import { InputSystemsService } from '../../../bellows/core/input-systems/input-systems.service';
+import { UtilityService } from '../../../bellows/core/utility.service';
 
 angular.module('lexicon.configuration', ['ui.bootstrap', 'coreModule', 'bellows.services', 'palaso.ui.notice',
   'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
@@ -12,7 +13,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'coreModule', 'bellows.
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService',
   '$filter', '$uibModal', 'lexConfigService', 'utilService', 'lexSendReceive', 'inputSystems',
 function ($scope, notice, lexProjectService, sessionService,
-          $filter, $modal, lexConfig, util, sendReceive, inputSystems: InputSystemsService) {
+          $filter, $modal, lexConfig, util: UtilityService, sendReceive, inputSystems: InputSystemsService) {
   let inputSystemSelected = true;
   let warnOfUnsavedEditsId: number;
   lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Configuration'));
