@@ -1,9 +1,9 @@
 import * as angular from 'angular';
 
-import { NoticeService } from './notice.service';
+import { Notice, NoticeService } from './notice.service';
 import { Session, SessionService } from '../session.service';
 
-export class NoticeController {
+export class NoticeController implements angular.IController {
   gitHubRepo: string;
 
   static $inject: string[] = ['silNoticeService', 'sessionService'];
@@ -13,27 +13,27 @@ export class NoticeController {
     });
   }
 
-  closeNotice(id: string) {
+  closeNotice(id: string): void {
     this.noticeService.removeById(id);
   };
 
-  notices() {
+  notices(): Notice[] {
     return this.noticeService.get();
   };
 
-  getLoadingMessage() {
+  getLoadingMessage(): string {
     return this.noticeService.getLoadingMessage()
   };
 
-  isLoading() {
+  isLoading(): boolean {
     return this.noticeService.isLoading()
   };
 
-  showProgressBar() {
+  showProgressBar(): boolean {
     return this.noticeService.showProgressBar()
   };
 
-  getPercentComplete() {
+  getPercentComplete(): number {
     return this.noticeService.getPercentComplete()
   };
 }
