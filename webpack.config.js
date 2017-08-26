@@ -40,7 +40,8 @@ var webpackConfig = {
         return module.context && (
           module.context.indexOf('node_modules') !== -1 ||
           module.context.indexOf('js/assets') !== -1 ||
-          module.context.indexOf('js/vendor') !== -1
+          module.context.indexOf('js/vendor') !== -1 ||
+          module.context.indexOf('core/input-systems') !== -1
         );
       }
     }),
