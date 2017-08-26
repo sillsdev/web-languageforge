@@ -69,7 +69,7 @@ describe('Project page (project.js)', function () {
     ctrl = $controller('ProjectCtrl', {
       $scope: scope,
       sfchecksProjectService: mockSfchecksProjectService,
-      sfchecksLinkService: mockSfchecksLinkService,
+      linkService: mockSfchecksLinkService,
       $q: q
     });
   }));

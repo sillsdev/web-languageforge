@@ -4,7 +4,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule', 'bellows.serv
   'sgw.soundmanager', 'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte',
   'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice'])
   .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService',
-    'utilService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService', 'modalService',
+    'utilService', 'breadcrumbService', 'silNoticeService', 'linkService', 'modalService',
   function ($scope, $routeParams, questionService, ss,
             util, breadcrumbService, notice, linkService, modalService) {
     var Q_TITLE_LIMIT = 30;
