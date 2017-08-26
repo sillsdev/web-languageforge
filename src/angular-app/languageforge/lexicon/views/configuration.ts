@@ -1,6 +1,9 @@
 import * as angular from 'angular';
-import { _inputSystems_regions } from '../../../bellows/js/assets/inputSystems_regions'
-import { _inputSystems_scripts } from '../../../bellows/js/assets/inputSystems_scripts'
+
+import { inputSystemsRegions } from '../../../bellows/core/input-systems/input-systems.regions'
+import { inputSystemsScripts } from '../../../bellows/core/input-systems/input-systems.scripts'
+import { InputSystemsService } from '../../../bellows/core/input-systems/input-systems.service';
+import { UtilityService } from '../../../bellows/core/utility.service';
 
 angular.module('lexicon.configuration', ['ui.bootstrap', 'coreModule', 'bellows.services', 'palaso.ui.notice',
   'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
@@ -10,7 +13,7 @@ angular.module('lexicon.configuration', ['ui.bootstrap', 'coreModule', 'bellows.
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService',
   '$filter', '$uibModal', 'lexConfigService', 'utilService', 'lexSendReceive', 'inputSystems',
 function ($scope, notice, lexProjectService, sessionService,
-          $filter, $modal, lexConfig, util, sendReceive, inputSystems) {
+          $filter, $modal, lexConfig, util: UtilityService, sendReceive, inputSystems: InputSystemsService) {
   let inputSystemSelected = true;
   let warnOfUnsavedEditsId: number;
   lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Configuration'));
@@ -147,7 +150,7 @@ function ($scope, notice, lexProjectService, sessionService,
             // Script
             // scripts would be better obtained from a service CP 2014-08
             if ((/^[a-zA-Z]{4}$/.test(tokens[i])) &&
-              (tokens[i] in _inputSystems_scripts) // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+              (tokens[i] in inputSystemsScripts)
             ) {
               this.script = tokens[i];
               this.special = specialOptionsOrder[3];
@@ -157,7 +160,7 @@ function ($scope, notice, lexProjectService, sessionService,
             // Region
             // scripts would be better obtained from a service CP 2014-08
             if ((/^[a-zA-Z]{2}$/.test(tokens[i]) || /^[0-9]{3}$/.test(tokens[i])) &&
-              (tokens[i] in _inputSystems_regions) // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+              (tokens[i] in inputSystemsRegions)
             ) {
               this.region = tokens[i];
               this.special = specialOptionsOrder[3];
