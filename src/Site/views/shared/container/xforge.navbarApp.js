@@ -11,10 +11,12 @@ angular.module('xforge.navbarApp', ['bellows.services', 'ui.bootstrap', 'pascalp
   }])
   */
   .controller('navbarController', ['$scope', 'modalService', '$location', 'sessionService',
-    '$window',
-  function ($scope, modalService, $location, sessionService,
-            $window) {
+    '$window', 'projectService',
+    function ($scope, modalService, $location, sessionService,
+            $window, projectService) {
     $scope.helpFilePath = '';
+    $scope.projectTypeNames = projectService.data.projectTypeNames;
+    $scope.projectTypesBySite = projectService.data.projectTypesBySite;
 
     // this function should be run whenever the location changes
     function isHelpFilePresentOnServer() {
@@ -26,6 +28,7 @@ angular.module('xforge.navbarApp', ['bellows.services', 'ui.bootstrap', 'pascalp
         var foundFile = false;
         var helpFilePathsAvailable = session.helps ? session.helps.filePaths : [];
 
+        $scope.siteName = session.baseSite();
         helpFilePathsAvailable.forEach(function (path) {
           if (path.indexOf(partialPath) !== -1) {
             foundFile = true;
