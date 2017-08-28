@@ -269,10 +269,10 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
 
   }])
   .controller('QuestionsSettingsCtrl', ['$scope', 'Upload', 'sessionService', '$routeParams',
-    'breadcrumbService', 'silNoticeService', 'textService', 'questionService',
+    'breadcrumbService', 'silNoticeService', 'textService', 'questionService', 'utilService',
     'linkService', 'modalService', '$q',
   function ($scope, Upload, ss, $routeParams,
-            breadcrumbService, notice, textService, questionService,
+            breadcrumbService, notice, textService, questionService, util,
             linkService, modalService, $q) {
     var Q_TITLE_LIMIT = 50;
     var textId = $routeParams.textId;
@@ -375,28 +375,16 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     };
 
     $scope.readUsx = function readUsx(file) {
-      if (!file || file.$error) return;
-
-      var reader = new FileReader();
-      reader.addEventListener('loadend', function () {
-        // Basic sanity check: make sure what was uploaded is USX
-        // First few characters should be optional BOM, optional <?xml ..., then <usx ...
-        var startOfText = reader.result.slice(0, 1000);
-        var usxIndex = startOfText.indexOf('<usx');
-        if (usxIndex !== -1) {
-          $scope.$apply(function () {
-            $scope.editedText.content = reader.result;
-          });
-        } else {
-          notice.push(notice.ERROR, 'Error loading USX file. The file doesn\'t appear to be ' +
-            'valid USX.');
-          $scope.$apply(function () {
-            $scope.editedText.content = '';
-          });
-        }
+      util.readUsxFile(file).then(function (usx) {
+        $scope.$applyAsync(function () {
+          $scope.editedText.content = usx;
+        });
+      }).catch(function (errorMessage) {
+        $scope.$applyAsync(function () {
+          notice.push(notice.ERROR, errorMessage);
+          $scope.editedText.content = '';
+        });
       });
-
-      reader.readAsText(file);
     };
 
     $scope.uploadAudio = function uploadAudio(file) {
