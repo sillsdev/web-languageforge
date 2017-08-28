@@ -21,7 +21,7 @@ function BellowsProjectSettingsPage() {
     this.projectSettingsLink.click();
   };
 
-  this.noticeList = element.all(by.repeater('notice in notices()'));
+  this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
 
   this.backButton = element(by.linkText('Back'));

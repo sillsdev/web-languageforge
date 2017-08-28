@@ -1,11 +1,11 @@
 {% verbatim %}
 <div class="content container" data-ng-cloak data-ng-controller="MainCtrl">
-	<div data-sil-notices></div>
+    <sil-notices></sil-notices>
     <div class="hdrnav" ng-if="rights.canEditProject()">
         <div class="btn-group" style="margin-top:25px; float:right">
                 <a class="btn dropdown-toggle"
                     data-toggle="dropdown"
-                    tooltip-placement="{{interfaceConfig.placementToSide}}"
+                    data-tooltip-placement="{{interfaceConfig.placementToSide}}"
                     uib-tooltip="Settings" href="#">
                     <i class="fa fa-cog fa-lg"></i>
                     <span class="caret"></span></a>

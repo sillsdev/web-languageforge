@@ -30,7 +30,7 @@ src/js/lib/scriptureforge.min.js
 src/node_modules/
 !src/vendor/lift/
 src/vendor/
-test/CodeCoverage/php/
+test/CodeCoverage/
 vagrant_ansible_inventory_*
 
 # CSS files generated from Sass

@@ -3,16 +3,16 @@
 // Declare app level module which depends on filters, and services
 angular.module('sfchecks',
     [
-     'ngRoute',
-     'ngSanitize',
-     'sfchecks.project',
-     'sfchecks.projectSettings',
-     'sfchecks.questions',
-     'sfchecks.question',
-     'sfchecks.filters',
-     'bellows.filters',
-     'palaso.ui.notice',
-     'sf.ui.invitefriend'
+      'ngRoute',
+      'ngSanitize',
+      'coreModule',
+      'sfchecks.project',
+      'sfchecks.projectSettings',
+      'sfchecks.questions',
+      'sfchecks.question',
+      'sfchecks.filters',
+      'palaso.ui.notice',
+      'sf.ui.invitefriend'
     ])
   .config(['$routeProvider', function ($routeProvider) {
     // the "projects" route is a hack to redirect to the /app/projects URL.
