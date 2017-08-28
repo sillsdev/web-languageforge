@@ -4,11 +4,11 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
   'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice',
   'palaso.ui.textdrop', 'palaso.ui.jqte', 'ngFileUpload', 'ngRoute'])
   .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService',
-    'linkService', 'listviewSortingService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
-    'modalService', '$q',
+    'linkService', 'listviewSortingService', 'silNoticeService', 'sfchecksProjectService',
+    'messageService', 'utilService', 'modalService', '$q',
   function ($scope, textService, ss, breadcrumbService,
-            linkService, sorting, notice, sfchecksProjectService, messageService,
-            modalService, $q) {
+            linkService, sorting, notice, sfchecksProjectService,
+            messageService, util, modalService, $q) {
     $scope.finishedLoading = false;
 
     // Rights
@@ -189,28 +189,16 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     };
 
     $scope.readUsx = function readUsx(file) {
-      if (!file || file.$error) return;
-
-      var reader = new FileReader();
-      reader.addEventListener('loadend', function () {
-        // Basic sanity check: make sure what was uploaded is USX
-        // First few characters should be optional BOM, optional <?xml ..., then <usx ...
-        var startOfText = reader.result.slice(0, 1000);
-        var usxIndex = startOfText.indexOf('<usx');
-        if (usxIndex !== -1) {
-          $scope.$apply(function () {
-            $scope.content = reader.result;
-          });
-        } else {
-          notice.push(notice.ERROR,
-            'Error loading USX file. The file doesn\'t appear to be valid USX.');
-          $scope.$apply(function () {
-            $scope.content = '';
-          });
-        }
+      util.readUsxFile(file).then(function (usx) {
+        $scope.$applyAsync(function () {
+          $scope.content = usx;
+        });
+      }).catch(function (errorMessage) {
+        $scope.$applyAsync(function () {
+          notice.push(notice.ERROR, errorMessage);
+          $scope.content = '';
+        });
       });
-
-      reader.readAsText(file);
     };
 
     $scope.getPageDto();
