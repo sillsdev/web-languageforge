@@ -1,4 +1,5 @@
-import { RangeStatic, StringMap, FormatMachine } from './quill/quill.customization';
+import { RangeStatic, StringMap } from 'quill';
+import { FormatMachine } from './quill/suggestions-theme';
 
 export class Segment {
   public text: string;
