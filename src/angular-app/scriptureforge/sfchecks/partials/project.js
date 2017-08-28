@@ -4,10 +4,10 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
   'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice',
   'palaso.ui.textdrop', 'palaso.ui.jqte', 'ngFileUpload', 'ngRoute'])
   .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService',
-    'sfchecksLinkService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
+    'linkService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
     'modalService', '$q',
   function ($scope, textService, ss, breadcrumbService,
-            sfchecksLinkService, notice, sfchecksProjectService, messageService,
+            linkService, notice, sfchecksProjectService, messageService,
             modalService, $q) {
     $scope.finishedLoading = false;
 
@@ -77,13 +77,13 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
         $scope.members = result.data.members;
 
         $scope.project = result.data.project;
-        $scope.project.url = sfchecksLinkService.project();
+        $scope.project.url = linkService.project();
 
         // Breadcrumb
         breadcrumbService.set('top',
         [
         { href: '/app/projects', label: 'My Projects' },
-        { href: sfchecksLinkService.project(), label: $scope.project.name }
+        { href: linkService.project(), label: $scope.project.name }
         ]
         );
 
@@ -166,7 +166,7 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     $scope.enhanceDto = function (items) {
       for (var i in items) {
         if (items.hasOwnProperty(i)) {
-          items[i].url = sfchecksLinkService.text(items[i].id);
+          items[i].url = linkService.text(items[i].id);
         }
       }
     };

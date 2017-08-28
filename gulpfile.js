@@ -18,9 +18,10 @@
 //   'test-php'
 //   'test-php-debug'
 //   'test-php-coverage'
-//   'test-php-watch'
-//   'test-php-debug-watch'
-//   'test-js-unit'
+//   'test-php:watch'
+//   'test-php-debug:watch'
+//   'test-js'
+//   'test-js:watch'
 //   'test-e2e-webdriver_update'
 //   'test-e2e-webdriver_standalone'
 //   'test-e2e-useTestConfig'
@@ -59,7 +60,6 @@
 // -------------------------------------
 //
 // es6-shim          : ECMAScript 6 (Harmony) compatibility for legacy JavaScript engines
-// async             : Higher-order functions and common patterns for asynchronous code
 // child_process     : Call a child process with the ease of exec and safety of spawn
 // gulp              : The streaming build system
 // gulp-concat       : Concatenates files
@@ -78,7 +78,6 @@
 // path              : Node.JS path module
 // yargs             : yargs the modern, pirate-themed, successor to optimist
 require('es6-shim');
-var async = require('async');
 var _execute = require('child_process').exec;
 var gulp = require('gulp');
 var concat = require('gulp-concat');
@@ -97,8 +96,6 @@ var _template = require('lodash.template');
 var Server = require('karma').Server;
 var path = require('path');
 var stylish = require('jshint-stylish');
-var merge = require('merge-stream');
-var glob = require('glob');
 
 var execute = function (command, options, callback) {
   if (!options) {
@@ -280,7 +277,7 @@ gulp.task('mongodb-copy-prod-db').description =
 
 //endregion
 
-//region Test (PHP and E2E)
+//region Test (PHP, JS and E2E)
 
 // -------------------------------------
 //   Task: test-php
@@ -296,26 +293,6 @@ gulp.task('test-php', function () {
   return gulp.src(src)
     .pipe(phpunit('src/vendor/bin/phpunit', options));
 });
-
-/*
-gulp.task('test-php', function (cb) {
-  var src = 'test/php/phpunit.xml';
-  var options = {
-    dryRun: false,
-    debug: false,
-    logJunit: 'PhpUnitTests.xml'
-  };
-  gutil.log("##teamcity[importData type='junit' path='PhpUnitTests.xml']");
-  execute(
-    '/usr/bin/env php src/vendor/phpunit/phpunit/phpunit -c test/php/phpunit.xml',
-    options,
-    cb
-  );
-
-  // return gulp.src(src)
-  //   .pipe(phpunit('src/vendor/bin/phpunit', options));
-});
-*/
 
 // -------------------------------------
 //   Task: test-php with debugging info
@@ -347,28 +324,39 @@ gulp.task('test-php-coverage', function () {
 });
 
 // -------------------------------------
-//   Task: test-php-watch
+//   Task: test-php:watch
 // -------------------------------------
-gulp.task('test-php-watch', function () {
+gulp.task('test-php:watch', function () {
   gulp.watch(phpPatterns, ['test-php']);
 });
 
 // -------------------------------------
-//   Task: test-php-watch with debugging info
+//   Task: test-php-debug:watch with debugging info
 // -------------------------------------
-gulp.task('test-php-debug-watch', function () {
+gulp.task('test-php-debug:watch', function () {
   gulp.watch(phpPatterns, ['test-php-debug']);
 });
 
 // -------------------------------------
-//   Task: test-js-unit
+//   Task: test-js
 // -------------------------------------
-gulp.task('test-js-unit', function (cb) {
-  console.log('cwd: ', __dirname);
+gulp.task('test-js', function (cb) {
   new Server({
     configFile: __dirname + '/test/app/karma.conf.js',
     reporters: 'teamcity',
+    browsers: ['PhantomJS'],
     singleRun: true
+  }, cb).start();
+});
+
+// -------------------------------------
+//   Task: test-js:watch
+// -------------------------------------
+gulp.task('test-js:watch', function (cb) {
+  new Server({
+    configFile: __dirname + '/test/app/karma.conf.js',
+    autoWatch: true,
+    singleRun: false
   }, cb).start();
 });
 
@@ -627,7 +615,8 @@ gulp.task('test-e2e-run').description = 'Run the E2E test on local developer env
 
 var sassCommand = './node_modules/.bin/node-sass';
 
-gulp.task('sass', gulp.parallel(function buildSiteDir(done) {
+gulp.task('sass', gulp.parallel(
+  function buildSiteDir(done) {
     execute(sassCommand + ' src/Site/ -o src/Site/ --output-style compressed', null, done);
   },
 
@@ -730,7 +719,7 @@ gulp.task('build-npm-front-end', function (cb) {
   var options = {
     dryRun: false,
     silent: false,
-    cwd: './src'
+    cwd: '.'
   };
   execute(
     'npm install',
@@ -796,6 +785,7 @@ gulp.task('build-minify', function () {
     'src/angular-app/' + params.applicationName + '/**/*.js',
     '!src/angular-app/**/*.min.js',
     '!src/angular-app/**/assets/**',
+    '!src/angular-app/**/excluded/**',
     '!src/angular-app/**/vendor/**'];
   var minJsFile = params.applicationName + '.min.js';
   var dest = 'src/js/lib/';
@@ -993,6 +983,7 @@ gulp.task('build-php',
   gulp.series(
     'build',
     'test-php',
+    'test-js',
     'build-upload',
     'test-restart-webserver')
 );

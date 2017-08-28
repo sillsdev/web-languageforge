@@ -8,7 +8,7 @@ function ConfigurationPage() {
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
-  this.noticeList = element.all(by.repeater('notice in notices()'));
+  this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
 
   this.settingsMenuLink = element(by.className('fa-cog'));

@@ -1,7 +1,8 @@
-var webpack = require('webpack');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var path = require('path');
-var webpackMerge = require('webpack-merge');
 var LiveReloadPlugin = require('webpack-livereload-plugin');
+var webpack = require('webpack');
+var webpackMerge = require('webpack-merge');
 
 // Webpack Config
 var webpackConfig = {
@@ -14,6 +15,15 @@ var webpackConfig = {
 
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // to not to load all locales
+    new CopyWebpackPlugin([
+      { from: './node_modules/font-awesome/', to: 'font-awesome' },
+      { from: './node_modules/intl-tel-input/build/', to: 'intl-tel-input' },
+      { from: './node_modules/jquery/dist/', to: 'jquery' },
+      { from: './node_modules/offline-js/offline.min.js', to: 'offline-js' },
+      { from: './node_modules/rangy/lib/', to: 'rangy' },
+      { from: './node_modules/textangular/dist/', to: 'textangular' },
+      { from: './node_modules/zxcvbn/dist/', to: 'zxcvbn' }
+    ]),
     new webpack.ContextReplacementPlugin(
 
       // The ([\\/]) piece accounts for path separators in *nix and Windows
@@ -30,7 +40,8 @@ var webpackConfig = {
         return module.context && (
           module.context.indexOf('node_modules') !== -1 ||
           module.context.indexOf('js/assets') !== -1 ||
-          module.context.indexOf('js/vendor') !== -1
+          module.context.indexOf('js/vendor') !== -1 ||
+          module.context.indexOf('core/input-systems') !== -1
         );
       }
     }),
