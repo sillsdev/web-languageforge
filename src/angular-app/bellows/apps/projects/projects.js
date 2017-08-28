@@ -3,13 +3,16 @@
 angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootstrap',
   'palaso.ui.notice', 'palaso.ui.utils'
 ])
-  .controller('ProjectsCtrl', ['$scope', 'projectService', 'sessionService', 'silNoticeService',
-  function ($scope, projectService, ss, notice) {
+  .controller('ProjectsCtrl', ['$scope', '$window', 'projectService', 'sessionService',
+    'silNoticeService',
+  function ($scope, $window, projectService, ss,
+            notice) {
     $scope.finishedLoading = false;
-
     $scope.rights = {};
+    $scope.projectTypeNames = projectService.data.projectTypeNames;
+    $scope.projectTypesBySite = projectService.data.projectTypesBySite;
 
-    ss.getSession().then(function(session) {
+    ss.getSession().then(function (session) {
       $scope.rights.edit = session.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
       $scope.rights.create = session.hasSiteRight(ss.domain.PROJECTS, ss.operation.CREATE);
       $scope.rights.showControlBar = $scope.rights.create;
@@ -22,14 +25,15 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
     $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
-      if (checkbox.checked && selectedIndex == -1) {
+      if (checkbox.checked && selectedIndex === -1) {
         $scope.selected.push(item);
-      } else if (!checkbox.checked && selectedIndex != -1) {
+      } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
     $scope.isSelected = function (item) {
+      // noinspection EqualityComparisonWithCoercionJS
       return item != null && $scope.selected.indexOf(item) >= 0;
     };
 
@@ -38,6 +42,7 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
     $scope.queryProjectsForUser = function () {
       projectService.list().then(function (projects) {
         $scope.projects = projects;
+
         // Is this perhaps wrong? Maybe not all projects are included in the JSONRPC response?
         // That might explain the existance of the previous result.data.count
         $scope.projectCount = projects.length;
@@ -46,11 +51,11 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
     };
 
     $scope.isInProject = function (project) {
-      return (project.role != 'none');
+      return (project.role !== 'none');
     };
 
     $scope.isManager = function (project) {
-      return (project.role == 'project_manager');
+      return (project.role === 'project_manager');
     };
 
     // Add user as Manager of project
@@ -75,8 +80,15 @@ angular.module('projects', ['bellows.services', 'palaso.ui.listview', 'ui.bootst
       });
     };
 
-    $scope.projectTypeNames = projectService.data.projectTypeNames;
-    $scope.projectTypesBySite = projectService.data.projectTypesBySite;
+    $scope.startProject = function startProject() {
+      if ($scope.projectTypesBySite().length === 1) {
+        var appName = $scope.projectTypesBySite()[0];
+        $window.location.href = '/app/' + appName + '/new-project';
+      } else {
+        $scope.newProjectCollapsed = !$scope.newProjectCollapsed;
+      }
+    };
+
   }])
 
   ;
