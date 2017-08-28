@@ -18,8 +18,6 @@ rm -r node_modules
 npm install &
 cd src
 composer install &
-rm -r node_modules
-npm install &
 wait
 gulp test-e2e-webdriver_update &
 ../cleanup_css.sh

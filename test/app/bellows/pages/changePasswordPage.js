@@ -17,5 +17,5 @@ function BellowsChangePasswordPage() {
   this.confirm = element(by.model('vars.confirm_password'));
   this.passwordMatchImage = element(by.id('passwordMatch'));
   this.submitButton = element(by.partialButtonText('Change Password'));
-  this.noticeList = element.all(by.repeater('notice in notices()'));
+  this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
 }

@@ -22,7 +22,7 @@
 
     {# jquery must be the first js to be loaded #}
     {%  if useMinifiedJs %}
-        <script src="/node_modules/jquery/dist/jquery.min.js?v={{ version }}"></script>
+        <script src="/dist/jquery/jquery.min.js?v={{ version }}"></script>
         <script src="/dist/manifest.bundle.js"></script>
         <script src="/dist/vendor.bundle.js"></script>
         <script src="/dist/main.bundle.js"></script>
@@ -34,7 +34,7 @@
         <script src="/js/lib/{{ app.website.base }}.min.js?v={{ version }}"></script>
 
     {%  else %}
-        <script src="/node_modules/jquery/dist/jquery.js?v={{ version }}"></script>
+        <script src="/dist/jquery/jquery.js?v={{ version }}"></script>
         <script src="/dist/manifest.bundle.js"></script>
         <script src="/dist/vendor.bundle.js"></script>
         <script src="/dist/main.bundle.js"></script>

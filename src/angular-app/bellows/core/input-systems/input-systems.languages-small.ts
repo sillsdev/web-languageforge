@@ -1,7 +1,7 @@
 // THIS FILE IS copied from the AUTOMATICALLY GENERATED file.
 
-// input systems languages small data subset for testing/debugging
-export const _inputSystems_languagesSmall = [
+// Input Systems Languages Small data subset for testing/debugging
+export const inputSystemsLanguagesSmall = [
   {
     "name": "Ghotuo",
     "code": {
