@@ -3,6 +3,7 @@ import Quill, { Tooltip } from 'quill';
 
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
+import { UtilityService } from '../../../bellows/core/utility.service';
 import { MachineService } from '../core/machine.service';
 import { RealTimeService } from '../core/realtime.service';
 import { TranslateProjectService } from '../core/translate-project.service';
@@ -16,6 +17,8 @@ export class EditorController implements angular.IController {
   left: DocumentData;
   selectedDocumentSetIndex: number = 0;
   documentSets: any[] = [];
+
+  // noinspection JSUnusedGlobalSymbols
   readonly statusOptions: Array<{ key: number, name: string }> = [
     { key: 0, name: 'none' },
     { key: 1, name: 'draft' },
@@ -29,11 +32,11 @@ export class EditorController implements angular.IController {
   private selectedSegmentIndex: number = -1;
   private confidenceThreshold: number = 0.2;
 
-  static $inject = ['$scope', '$q', 'silNoticeService', 'machineService',
-    'translateProjectApi', 'realTimeService', 'modalService'];
+  static $inject = ['$scope', '$q', 'silNoticeService',
+    'machineService', 'translateProjectApi', 'realTimeService', 'modalService', 'utilService'];
   constructor(private $scope: angular.IScope, private $q: angular.IQService, private notice: NoticeService,
               private machineService: MachineService, private projectApi: TranslateProjectService,
-              private realTime: RealTimeService, private modal: ModalService) { }
+              private realTime: RealTimeService, private modal: ModalService, private util: UtilityService) { }
 
   $onInit(): void {
     this.source = new DocumentData(this.$q, 'source', 'Source');
@@ -58,7 +61,17 @@ export class EditorController implements angular.IController {
 
       more: {
         container: '.ql-more'
+      },
+
+      dragAndDrop: {
+        onDrop: (file: File, editor: Quill, event: DragEvent) => {
+          return this.onDrop(file, editor, event);
+        // },
+        // onPaste: (item: DataTransferItem, editor: Quill, event: ClipboardEvent) => {
+        //   return this.onPaste(item, editor, event);
+        }
       }
+
     };
     this.source.modulesConfig = angular.copy(modulesConfig);
     this.target.modulesConfig = angular.copy(modulesConfig);
@@ -86,7 +99,7 @@ export class EditorController implements angular.IController {
         if (this.ecProject.config.documentSets.idsOrdered != null &&
           this.ecProject.config.documentSets.idsOrdered.length > 0
         ) {
-          for (const id of this.ecProject.config.documentSets.idsOrdered) {
+          for (let id of this.ecProject.config.documentSets.idsOrdered) {
             if (result.data.documentSetList[id] != null) {
               this.documentSets.push(result.data.documentSetList[id]);
             }
@@ -329,6 +342,7 @@ export class EditorController implements angular.IController {
     }
   }
 
+  // noinspection JSUnusedGlobalSymbols
   insertSuggestion(doc: DocumentData, suggestionIndex: number): void {
     const selection = doc.editor.getSelection();
     if (selection.length > 0) {
@@ -340,6 +354,7 @@ export class EditorController implements angular.IController {
     doc.editor.setSelection(selection.index + text.length + 1, 0, Quill.sources.USER);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   changeStatus(doc: DocumentData, optionKey: number): void {
     if (doc.docType === 'target') {
       doc.formatSegmentStateStatus(optionKey, doc.editor.getSelection());
@@ -471,6 +486,66 @@ export class EditorController implements angular.IController {
   private getDocumentSetIndexById(documentSetId: string): number {
     return this.documentSets.findIndex(docSet => docSet.id === documentSetId);
   }
+
+  private onDrop(file: File, editor: Quill, event: DragEvent): void {
+    if (!file.name.toLowerCase().endsWith('.usx') && !file.name.toLowerCase().endsWith('.txt')) {
+      this.$scope.$applyAsync(() => {
+        this.notice.push(this.notice.ERROR, 'Drag a USX or text file.');
+      });
+      return;
+    }
+
+    event.stopPropagation();
+    event.preventDefault();
+    if (file.name.toLowerCase().endsWith('.usx')) {
+      this.util.readUsxFile(file).then((usx: string) => {
+        this.projectApi.usxToHtml(usx).then((result) => {
+          if (result.ok) {
+            this.$scope.$applyAsync(() => {
+              const index = editor.getSelection(true).index || editor.getLength();
+              editor.clipboard.dangerouslyPasteHTML(index, result.data, Quill.sources.USER);
+            });
+          }
+        });
+      }).catch((errorMessage: string) => {
+        this.$scope.$applyAsync(() => {
+          this.notice.push(this.notice.ERROR, errorMessage);
+        });
+      });
+    } else if (file.name.toLowerCase().endsWith('.txt')) {
+      this.util.readTextFile(file).then((text: string) => {
+        text = text.replace(/\n/g, '</p><p>');
+        text = '<p>' + text + '</p>';
+        this.$scope.$applyAsync(() => {
+          const index = editor.getSelection(true).index || editor.getLength();
+          editor.clipboard.dangerouslyPasteHTML(index, text, Quill.sources.USER);
+        });
+      }).catch((errorMessage: string) => {
+        this.$scope.$applyAsync(() => {
+          this.notice.push(this.notice.ERROR, errorMessage);
+        });
+      });
+    }
+  }
+
+  private onPaste(item: DataTransferItem, editor: Quill, event: ClipboardEvent): void {
+    event.preventDefault();
+    this.util.readUsxFile(item).then((usx: string) => {
+      this.projectApi.usxToHtml(usx).then((result) => {
+        if (result.ok) {
+          this.$scope.$applyAsync(() => {
+            const selection = editor.getSelection(true);
+            editor.clipboard.dangerouslyPasteHTML(selection.index, result.data, Quill.sources.USER);
+          });
+        }
+      });
+    }).catch((errorMessage: string) => {
+      this.$scope.$applyAsync(() => {
+        this.notice.push(this.notice.ERROR, errorMessage);
+      });
+    });
+  }
+
 }
 
 export const EditorComponent: angular.IComponentOptions = {
