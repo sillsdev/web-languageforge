@@ -1,5 +1,6 @@
 import { Segment } from './segment';
-import { Quill, RangeStatic, DeltaStatic, Delta, StringMap, FormatMachine } from './quill/quill.customization';
+import Quill, { RangeStatic, DeltaStatic, Delta, StringMap } from 'quill';
+import { FormatMachine } from './quill/suggestions-theme';
 import * as angular from 'angular';
 
 export class DocumentData {
@@ -116,7 +117,7 @@ export class DocumentData {
       } else {
         formats = format;
       }
-      this.editor.formatLine(blockStartIndex, 1, formats, 'user');
+      this.editor.formatLine(blockStartIndex, 1, formats, Quill.sources.USER);
     }
   }
 

@@ -1,20 +1,5 @@
 import Parchment from 'parchment';
-import * as quill from 'quill';
-export { QuillOptionsStatic, BoundsStatic, RangeStatic, DeltaStatic, Delta, StringMap } from 'quill';
-
-export interface Selection {
-  lastRange: quill.RangeStatic;
-}
-
-export declare class Quill extends quill.Quill {
-  theme: SuggestionsTheme;
-  selection: Selection
-}
-
-export interface Theme {
-  quill: Quill;
-  options: quill.QuillOptionsStatic;
-}
+import Quill, { Theme, QuillOptionsStatic, Tooltip, BoundsStatic, Module } from 'quill';
 
 export interface SuggestionsTheme extends Theme {
   moreTooltip: Tooltip;
@@ -28,47 +13,18 @@ export class FormatMachine {
   ) {}
 }
 
-export interface Tooltip {
-  quill: Quill;
-  boundsContainer: quill.BoundsStatic | Element;
-  root: any;
-  hide(): void;
-  position(reference: any): number;
-  show(): void;
-}
-
-declare class QuillTheme implements Theme {
-  quill: Quill;
-  options: quill.QuillOptionsStatic;
-  constructor(quill: Quill, options: quill.QuillOptionsStatic);
-}
-
-declare class QuillTooltip implements Tooltip {
-  quill: Quill;
-  boundsContainer: quill.BoundsStatic | Element;
-  root: any;
-  constructor(quill: Quill, boundsContainer: quill.BoundsStatic);
-  hide(): void;
-  position(reference: any): number;
-  show(): void;
-}
-
-declare class QuillModule {
-  constructor(quill: quill.Quill, options: quill.QuillOptionsStatic);
-}
-
 export function registerSuggestionsTheme() : void {
-  const Tooltip = Quill.import('ui/tooltip') as typeof QuillTooltip;
-  const Module = Quill.import('core/module') as typeof QuillModule;
+  const QuillTooltip = Quill.import('ui/tooltip') as typeof Tooltip;
+  const QuillModule = Quill.import('core/module') as typeof Module;
   const Block = Quill.import('blots/block') as typeof Parchment.Block;
   const Scroll = Quill.import('blots/scroll') as typeof Parchment.Scroll;
-  const BubbleTheme = Quill.import('themes/bubble') as typeof QuillTheme;
+  const BubbleTheme = Quill.import('themes/bubble') as typeof Theme;
 
   // Add a 'more' control to Quill
-  class MoreTooltip extends Tooltip {
+  class MoreTooltip extends QuillTooltip {
     static TEMPLATE = '';
 
-    constructor(quill: Quill, boundsContainer: quill.BoundsStatic) {
+    constructor(quill: Quill, boundsContainer: BoundsStatic) {
       super(quill, boundsContainer);
 
       this.boundsContainer = boundsContainer || document.body;
@@ -84,7 +40,7 @@ export function registerSuggestionsTheme() : void {
         if (event.clientX > rect.left && event.clientX < rect.right &&
           event.clientY > rect.top && event.clientY < rect.bottom
         ) {
-          this.quill.theme.suggestTooltip.hide();
+          (<SuggestionsTheme>this.quill.theme).suggestTooltip.hide();
           event.preventDefault();
         }
       });
@@ -101,7 +57,7 @@ export function registerSuggestionsTheme() : void {
     };
   }
 
-  class More extends Module {
+  class More extends QuillModule {
     container: any;
 
     constructor(quill: any, options: any) {
@@ -191,10 +147,10 @@ export function registerSuggestionsTheme() : void {
   Scroll.allowedChildren.push(StateBlock);
 
   // Add a suggest tooltip to Quill
-  class SuggestTooltip extends Tooltip {
+  class SuggestTooltip extends QuillTooltip {
     static TEMPLATE = '<span class="ql-suggest-tooltip-arrow"></span>';
 
-    constructor(quill: Quill, boundsContainer: quill.BoundsStatic) {
+    constructor(quill: Quill, boundsContainer: BoundsStatic) {
       super(quill, boundsContainer);
       this.boundsContainer = boundsContainer || document.body;
       this.quill = quill;
@@ -218,16 +174,16 @@ export function registerSuggestionsTheme() : void {
     };
   }
 
-  class Suggestions extends Module {
+  class Suggestions extends QuillModule {
     container: any;
 
-    constructor(quill: any, options: any) {
+    constructor(quill: Quill, options: any) {
       super(quill, options);
 
       // initially container is sibling of <ng-quill-editor>
       this.container = quill.container.parentNode.parentNode.parentNode
         .querySelector(options.container);
-      quill.theme.suggestTooltip.root.appendChild(this.container);
+      (<SuggestionsTheme>quill.theme).suggestTooltip.root.appendChild(this.container);
     }
   }
 
@@ -236,7 +192,7 @@ export function registerSuggestionsTheme() : void {
     moreTooltip: Tooltip;
     suggestTooltip: Tooltip;
 
-    constructor(quill: Quill, options: quill.QuillOptionsStatic) {
+    constructor(quill: Quill, options: QuillOptionsStatic) {
       super(quill, options);
       const QuillMoreTooltip = Quill.import('ui/more-tooltip');
       const QuillSuggestTooltip = Quill.import('ui/suggest-tooltip');
