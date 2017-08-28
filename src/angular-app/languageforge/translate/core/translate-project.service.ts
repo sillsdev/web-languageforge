@@ -41,6 +41,10 @@ export class TranslateProjectService extends ProjectService {
     return this.api.call('translate_documentSetRemove', [documentId], callback);
   }
 
+  usxToHtml(usx: string, callback?: JsonRpcCallback) {
+    return this.api.call('translate_usxToHtml', [usx], callback);
+  }
+
   updateUserProfile(params: any[] = [], callback?: JsonRpcCallback) {
     this.api.call('user_updateProfile', params, callback);
   };
