@@ -327,23 +327,20 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             // LanguageForge (translate)
-            case 'translate_projectUpdate':
-                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-
             case 'translate_projectDto':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::VIEW);
 
+            case 'translate_projectUpdate':
             case 'translate_configUpdate':
                 return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
 
             case 'translate_configUpdateUserPreferences':
+            case 'translate_documentSetListDto':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
 
             case 'translate_documentSetUpdate':
+            case 'translate_usxToHtml':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
-
-            case 'translate_documentSetListDto':
-                return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
 
             case 'translate_documentSetRemove':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::DELETE);

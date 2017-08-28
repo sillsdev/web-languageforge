@@ -3,11 +3,13 @@ import Quill, { RangeStatic, QuillOptionsStatic, BoundsStatic } from 'quill';
 declare module 'quill' {
   export namespace Quill {
     const sources: {
-      USER: 'user',
+      API: 'api',
       SILENT: 'silent',
-      API: 'api'
+      USER: 'user'
     };
     const events: {
+      EDITOR_CHANGE: 'editor-change',
+      SELECTION_CHANGE: 'selection-change',
       TEXT_CHANGE: 'text-change'
     };
   }
@@ -34,6 +36,8 @@ declare module 'quill' {
   }
 
   export class Module {
+    quill: Quill;
+    options: QuillOptionsStatic;
     constructor(quill: Quill, options: QuillOptionsStatic);
   }
 }

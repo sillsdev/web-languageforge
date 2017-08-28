@@ -1,3 +1,5 @@
+@import '../../../../Site/views/languageforge/theme/default/sass/_variables';
+
 .picklist {
     cursor: pointer;
 }
@@ -57,6 +59,11 @@ ng-quill-editor .ql-editor {
 
 ng-quill-editor .ql-container {
     /*border: 1px solid dimgray;*/
+}
+
+ng-quill-editor .ql-editor.drop-box {
+    opacity: 0.5;
+    border-color: $lf-lines;
 }
 
 .ql-more-tooltip {

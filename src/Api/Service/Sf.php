@@ -37,6 +37,7 @@ use Api\Model\Scriptureforge\Sfchecks\Dto\ProjectSettingsDto;
 use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionCommentDto;
 use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionListDto;
 use Api\Model\Scriptureforge\Sfchecks\Dto\TextSettingsDto;
+use Api\Model\Scriptureforge\Sfchecks\Dto\UsxHelper;
 use Api\Model\Shared\Command\MessageCommands;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\SessionCommands;
@@ -872,6 +873,12 @@ class Sf
     public function translate_documentSetRemove($documentId)
     {
         return TranslateDocumentSetCommands::removeDocumentSet($this->projectId, $documentId);
+    }
+
+    public function translate_usxToHtml($usx)
+    {
+        $usxHelper = new UsxHelper($usx);
+        return $usxHelper->toHtml();
     }
 
 

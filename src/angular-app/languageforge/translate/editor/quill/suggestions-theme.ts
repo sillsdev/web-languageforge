@@ -6,6 +6,14 @@ export interface SuggestionsTheme extends Theme {
   suggestTooltip: Tooltip;
 }
 
+export interface DropFunction {
+  (file: File, editor: Quill, event: DragEvent | ClipboardEvent): void;
+}
+
+export interface PasteFunction {
+  (item: DataTransferItem, editor: Quill, event: ClipboardEvent): void;
+}
+
 export class FormatMachine {
   status?: string;
   machineHasLearnt?: string;
@@ -17,6 +25,9 @@ export function registerSuggestionsTheme(): void {
   const Block = Quill.import('blots/block') as typeof Parchment.Block;
   const Scroll = Quill.import('blots/scroll') as typeof Parchment.Scroll;
   const BubbleTheme = Quill.import('themes/bubble') as typeof Theme;
+
+  // noinspection JSUnusedLocalSymbols
+  let dropElements: HTMLElement[] = [];
 
   // Add a 'more' control to Quill
   class MoreTooltip extends QuillTooltip {
@@ -185,6 +196,115 @@ export function registerSuggestionsTheme(): void {
     }
   }
 
+  interface DropOptions extends QuillOptionsStatic {
+    onDrop?: DropFunction;
+    onPaste?: PasteFunction;
+  }
+
+  // inspired by https://github.com/kensnyder/quill-image-drop-module and
+  // https://github.com/immense/quill-drag-and-drop-module
+  class DragAndDrop extends QuillModule {
+    options: DropOptions;
+
+    constructor(quill: Quill, options: DropOptions) {
+      super(quill, options);
+      if (options.onDrop) {
+        this.options.onDrop = options.onDrop;
+        this.quill.root.addEventListener('drop', this.handleDrop.bind(this));
+      }
+
+      if (options.onPaste) {
+        this.options.onPaste = options.onPaste;
+        this.quill.root.addEventListener('paste', this.handlePaste.bind(this));
+      }
+    }
+
+    handleDrop(event: DragEvent): void {
+      if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length) {
+        if (document.caretRangeFromPoint) {
+          const selection = document.getSelection();
+          const range = document.caretRangeFromPoint(event.clientX, event.clientY);
+          if (selection && range) {
+            selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
+          }
+        }
+
+        [].forEach.call(event.dataTransfer.files, (file: File) => {
+          if (this.options.onDrop) this.options.onDrop(file, this.quill, event);
+        });
+      }
+      DragAndDrop.clearDropElementClasses();
+    }
+
+    handlePaste(event: ClipboardEvent): void {
+      if (event.clipboardData && event.clipboardData.items && event.clipboardData.items.length) {
+        [].forEach.call(event.clipboardData.items, (item: DataTransferItem) => {
+          if (this.options.onPaste) this.options.onPaste(item, this.quill, event);
+        });
+      }
+    }
+
+    static monitorFileDragEvents(): void {
+      let dragTimer: number;
+      document.addEventListener('dragover', (event: any) => {
+        event.preventDefault();
+        let dt = event.dataTransfer;
+        if (dt.types && (dt.types.indexOf ? dt.types.indexOf('Files') != -1 : dt.types.includes('Files'))) {
+          let elements = document.getElementsByClassName('ql-editor');
+          [].forEach.call(elements, (element: HTMLElement, index: number) => {
+            element.classList.add('drop-box');
+            if (!element.id) element.id = 'ql-editor-' + index;
+            dropElements.push(element);
+          });
+          window.clearTimeout(dragTimer);
+        }
+      });
+
+      document.addEventListener('dragleave', (event: DragEvent) => {
+        let element = event.target as HTMLElement;
+        if (DragAndDrop.isInDropElements(element)) {
+          return;
+        }
+
+        dragTimer = window.setTimeout(() => {
+          DragAndDrop.clearDropElementClasses();
+        }, 25);
+      });
+
+      document.addEventListener('drop', (event: DragEvent) => {
+        event.preventDefault();
+        DragAndDrop.clearDropElementClasses();
+      });
+    }
+
+    private static isInDropElements(element: HTMLElement): boolean {
+      let result = false;
+      dropElements.forEach((dropElement) => {
+        if (dropElement.id === element.id || DragAndDrop.isDescendant(dropElement, element)) {
+          result = true;
+        }
+      });
+      return result;
+    }
+
+    private static isDescendant(parent: HTMLElement, child: HTMLElement): boolean {
+      let node = child.parentNode;
+      while (node != null) {
+        if (node === parent) {
+          return true;
+        }
+        node = node.parentNode;
+      }
+      return false;
+    }
+
+    private static clearDropElementClasses(): void {
+      dropElements.forEach((element) => element.classList.remove('drop-box'));
+      dropElements = [];
+    }
+
+  }
+
   // Customize the Bubble theme in Quill
   class SuggestionsBubbleTheme extends BubbleTheme implements SuggestionsTheme {
     moreTooltip: Tooltip;
@@ -206,4 +326,7 @@ export function registerSuggestionsTheme(): void {
   Quill.register('ui/suggest-tooltip', SuggestTooltip);
   Quill.register('modules/suggestions', Suggestions);
   Quill.register('themes/suggestions', SuggestionsBubbleTheme);
+  Quill.register('modules/dragAndDrop', DragAndDrop);
+
+  DragAndDrop.monitorFileDragEvents();
 }

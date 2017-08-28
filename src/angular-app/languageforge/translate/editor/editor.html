@@ -36,8 +36,8 @@
             data-on-editor-created="$ctrl.editorCreated(editor, $ctrl.left)"
             data-on-content-changed="$ctrl.contentChanged(editor, $ctrl.left)"
             data-on-selection-changed="$ctrl.selectionChanged(editor, $ctrl.left)"
-            data-ng-model="left.html" data-read-only="!$ctrl.hasDocumentSets()"
-            data-placeholder="&#8203;enter text here"></ng-quill-editor>
+            data-ng-model="$ctrl.left.html" data-read-only="!$ctrl.hasDocumentSets()"
+            data-placeholder="&#8203;enter text here or drop a file"></ng-quill-editor>
         <div class="ql-suggestions">
             <ql-suggestion data-ql-suggestions="$ctrl.left.suggestions"
                            data-ql-insert-suggestion="$ctrl.insertSuggestion($ctrl.left, suggestionIndex)"></ql-suggestion>
@@ -58,8 +58,8 @@
             data-on-editor-created="$ctrl.editorCreated(editor, $ctrl.right)"
             data-on-content-changed="$ctrl.contentChanged(editor, $ctrl.right)"
             data-on-selection-changed="$ctrl.selectionChanged(editor, $ctrl.right)"
-            data-ng-model="right.html" data-read-only="!$ctrl.hasDocumentSets()"
-            data-placeholder="&#8203;enter text here"></ng-quill-editor>
+            data-ng-model="$ctrl.right.html" data-read-only="!$ctrl.hasDocumentSets()"
+            data-placeholder="&#8203;enter text here or drop a file"></ng-quill-editor>
         <div class="ql-suggestions">
             <ql-suggestion data-ql-suggestions="$ctrl.right.suggestions"
                            data-ql-insert-suggestion="$ctrl.insertSuggestion($ctrl.right, suggestionIndex)"></ql-suggestion>
