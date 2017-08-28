@@ -1,7 +1,6 @@
-import * as quill from 'quill';
+import Quill, { TextChangeHandler } from 'quill';
 
 interface DocCallback { (error: any): void }
-interface OnTextChangeFunction { (delta: any, oldDelta: any, source: any): void }
 interface OnOpsFunction { (op: any, source: any): void }
 
 export declare class RealTimeDoc {
@@ -20,14 +19,6 @@ export declare class RealTimeDoc {
   removeListener(eventName: string, onOpsFunction: OnOpsFunction): void;
 }
 
-declare class Quill extends quill.Quill {
-  // noinspection JSUnusedGlobalSymbols
-  static imports: string;
-
-  static sources: any;
-  static events: any;
-}
-
 export class RealTimeService {
   private readonly ShareDB = require('sharedb/lib/client');
   private readonly richText = require('rich-text');
@@ -37,14 +28,14 @@ export class RealTimeService {
   private readonly connection = new this.ShareDB.Connection(this.socket);
 
   private docSubs: { [id: string]: RealTimeDoc } = {};
-  private onTextChanges: { [id: string]: OnTextChangeFunction } = {};
+  private onTextChanges: { [id: string]: TextChangeHandler } = {};
   private onOps: { [id: string]: OnOpsFunction } = {};
 
   constructor() {
     this.ShareDB.types.register(this.richText.type);
   }
 
-  createAndSubscribeRichTextDoc(collection: string, id: string, quill: quill.Quill) {
+  createAndSubscribeRichTextDoc(collection: string, id: string, quill: Quill) {
     let doc: RealTimeDoc;
     if (id in this.docSubs) {
       doc = this.docSubs[id];
@@ -106,7 +97,7 @@ export class RealTimeService {
     }
   };
 
-  disconnectRichTextDoc(id: string, quill: quill.Quill) {
+  disconnectRichTextDoc(id: string, quill: Quill) {
     if (id in this.onTextChanges) {
       quill.off(Quill.events.TEXT_CHANGE, this.onTextChanges[id]);
       delete this.onTextChanges[id];

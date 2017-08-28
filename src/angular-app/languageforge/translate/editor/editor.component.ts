@@ -6,7 +6,8 @@ import { DocumentDataService } from './document-data.service';
 import { DocumentData } from './document-data';
 import { WordParser } from './word-parser.service';
 import { ModalService } from '../../../bellows/core/modal/modal.service';
-import { Quill, Tooltip } from './quill/quill.customization';
+import Quill, { Tooltip } from 'quill';
+import { SuggestionsTheme } from './quill/suggestions-theme';
 import { RealTimeService } from '../core/realtime.service';
 
 export class EditorController implements angular.IController {
@@ -30,10 +31,10 @@ export class EditorController implements angular.IController {
 
   static $inject = ['$scope', '$q', 'silNoticeService', 'machineService',
     'translateProjectApi', 'documentDataService', 'wordParser', 'realTimeService', 'modalService'];
-  constructor (private $scope: angular.IScope, private $q: angular.IQService, private notice: NoticeService,
-               private machineService: MachineService, private projectApi: TranslateProjectService,
-               private documentDataService: DocumentDataService, private wordParser: WordParser,
-               private realTime: RealTimeService, private modal: ModalService) {}
+  constructor(private $scope: angular.IScope, private $q: angular.IQService, private notice: NoticeService,
+    private machineService: MachineService, private projectApi: TranslateProjectService,
+    private documentDataService: DocumentDataService, private wordParser: WordParser,
+    private realTime: RealTimeService, private modal: ModalService) { }
 
   $onInit(): void {
     this.source = this.documentDataService.createDocumentData('source', 'Source');
@@ -152,7 +153,7 @@ export class EditorController implements angular.IController {
             this.notice.push(this.notice.ERROR, 'Sorry, there was a problem removing the document.');
           }
         });
-      }, () => {});
+      }, () => { });
   }
 
   modalUpdateDocumentSet(index?: number): void {
@@ -195,7 +196,7 @@ export class EditorController implements angular.IController {
           this.notice.push(this.notice.ERROR, 'Sorry, there was a problem saving your changes.');
         }
       });
-    }, () => {});
+    }, () => { });
   }
 
   modalMoveDocumentSet(currentIndex: number): void {
@@ -247,7 +248,7 @@ export class EditorController implements angular.IController {
         }
         this.ecOnUpdate({ project: this.ecProject });
       });
-    }, () => {});
+    }, () => { });
   }
 
   hasDocumentSets(): boolean {
@@ -279,7 +280,7 @@ export class EditorController implements angular.IController {
   }
 
   selectionChanged(editor: Quill, docType: string): void {
-    editor.theme.suggestTooltip.hide();
+    (<SuggestionsTheme>editor.theme).suggestTooltip.hide();
     if (docType === this.target.docType) {
       this.contentChanged(editor, docType);
     }
@@ -332,11 +333,11 @@ export class EditorController implements angular.IController {
       if (index < currentText.length ||
         (index === currentText.length && !this.wordParser.isWordComplete(currentText[index - 1]))
       ) {
-        editor.deleteText(wordStartIndex, wordLength + 1, 'user');
+        editor.deleteText(wordStartIndex, wordLength + 1, Quill.sources.USER);
         index = wordStartIndex;
       }
 
-      editor.insertText(index, text + this.wordParser.charSpace(), 'user');
+      editor.insertText(index, text + this.wordParser.charSpace(), Quill.sources.USER);
     }
   }
 
@@ -367,14 +368,15 @@ export class EditorController implements angular.IController {
 
   private updateContent(editor: Quill, docType: string): void {
     if (docType === this.target.docType) {
-      this.showAndPositionTooltip(this.target.editor.theme.moreTooltip, this.target.editor);
+      this.showAndPositionTooltip((<SuggestionsTheme>this.target.editor.theme).moreTooltip, this.target.editor);
       let newSegmentIndex = this.target.getSegmentIndex();
       this.learnSegment(newSegmentIndex);
       this.getSuggestions(newSegmentIndex);
       this.selectedSegmentIndex = newSegmentIndex;
     } else {
-      editor.theme.moreTooltip.hide();
-      editor.theme.suggestTooltip.hide();
+      let theme = editor.theme as SuggestionsTheme;
+      theme.moreTooltip.hide();
+      theme.suggestTooltip.hide();
       if (docType === this.source.docType && !this.documentDataService.isTextEmpty(editor.getText())) {
         let newSourceSegmentText = this.source.getSegment(this.selectedSegmentIndex);
         if (newSourceSegmentText !== this.source.segment.text) {
@@ -420,7 +422,7 @@ export class EditorController implements angular.IController {
               this.target.segment.blockEndIndex, this.target.segment);
             this.realTime.updateRichTextDoc(this.ecProject.slug,
               this.docId(this.target.docType, this.target.segment.learnt.documentSetId), formatDelta,
-              'user');
+              Quill.sources.USER);
           }
 
           this.target.updateSegmentLearntData(newSegmentIndex, selectedDocumentSetId);
@@ -458,7 +460,7 @@ export class EditorController implements angular.IController {
     this.$scope.$applyAsync(() => {
       this.target.suggestions = this.machineService.updatePrefix(this.target.getSegment(segmentIndex));
       setTimeout(() => {
-        this.showAndPositionTooltip(this.target.editor.theme.suggestTooltip, this.target.editor,
+        this.showAndPositionTooltip((<SuggestionsTheme>this.target.editor.theme).suggestTooltip, this.target.editor,
           this.target.hasSuggestion());
       }, 0);
     });
