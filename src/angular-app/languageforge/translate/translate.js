@@ -66,6 +66,13 @@ angular.module('translate',
         $scope.interfaceConfig.placementToSide = 'left';
         $scope.interfaceConfig.placementNormal = 'right';
 
+        // setup offline.js options
+        // see https://github.com/hubspot/offline for all options
+        // we tell offline.js to NOT store and remake requests while the connection is down
+        Offline.options.requests = false;
+        Offline.options.checkOnLoad = true;
+        Offline.options.checks = { xhr: { url: '/offlineCheck.txt' } };
+
         $scope.gotoTranslation = function gotoTranslation() {
           $state.go('editor');
         };
