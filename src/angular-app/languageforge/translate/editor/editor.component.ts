@@ -27,7 +27,7 @@ export class EditorController implements angular.IController {
   ];
   ecProject: any;
   ecInterfaceConfig: any;
-  ecOnUpdate: ($event: any) => void;
+  ecOnUpdate: (event: { $event: { project: any } }) => void;
 
   static $inject = ['$scope', '$q', 'silNoticeService', 'machineService',
     'translateProjectApi', 'documentDataService', 'wordParser', 'realTimeService', 'modalService'];
@@ -147,7 +147,7 @@ export class EditorController implements angular.IController {
             if (this.selectedDocumentSetIndex >= index) {
               this.selectDocumentSet(this.selectedDocumentSetIndex - 1);
             }
-            this.ecOnUpdate({ project: this.ecProject });
+            this.ecOnUpdate({ $event: { project: this.ecProject } });
             this.notice.push(this.notice.SUCCESS, noticeMessage);
           } else {
             this.notice.push(this.notice.ERROR, 'Sorry, there was a problem removing the document.');
@@ -190,7 +190,7 @@ export class EditorController implements angular.IController {
             this.documentSets[index] = documentSet;
             noticeMessage = noticeMessage + 'updated.';
           }
-          this.ecOnUpdate({ project: this.ecProject });
+          this.ecOnUpdate({ $event: { project: this.ecProject } });
           this.notice.push(this.notice.SUCCESS, noticeMessage);
         } else {
           this.notice.push(this.notice.ERROR, 'Sorry, there was a problem saving your changes.');
@@ -246,7 +246,7 @@ export class EditorController implements angular.IController {
         } else {
           this.notice.push(this.notice.ERROR, 'Sorry, there was a problem saving your changes.');
         }
-        this.ecOnUpdate({ project: this.ecProject });
+        this.ecOnUpdate({ $event: { project: this.ecProject } });
       });
     }, () => { });
   }
@@ -317,7 +317,7 @@ export class EditorController implements angular.IController {
       let userPreferences = this.ecProject.config.userPreferences;
       userPreferences.isDocumentOrientationTargetRight = this.right.docType === this.target.docType;
       this.projectApi.updateUserPreferences(userPreferences);
-      this.ecOnUpdate({ project: this.ecProject });
+      this.ecOnUpdate({ $event: { project: this.ecProject } });
     }
   }
 

@@ -8,7 +8,7 @@ import { TranslateProjectService } from '../core/translate-project.service';
 import { Rights, TranslateRightsService } from '../core/translate-rights.service';
 
 export class TranslateSettingsController implements angular.IController {
-  tscOnUpdate: ($event: any) => void;
+  tscOnUpdate: (event: { $event: { project: any } }) => void;
 
   actionInProgress: boolean;
   retrainMessage: string;
