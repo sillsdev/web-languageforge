@@ -37,10 +37,10 @@ angular.module('sfchecks-new-project', ['ui.router', 'ui.bootstrap', 'bellows.se
 
       // Add new project
       $scope.addProject = function () {
-        if ($scope.projectCodeState == 'ok') {
+        if ($scope.projectCodeState === 'ok') {
           $scope.isSubmitting = true;
           projectService.create($scope.newProject.projectName, $scope.newProject.projectCode,
-            'sfchecks', function (result) {
+            'sfchecks', {}, function (result) {
               //$scope.isSubmitting = false;
               if (result.ok) {
                 notice.push(notice.SUCCESS, 'The ' + $scope.newProject.projectName +
