@@ -111,7 +111,7 @@ export class NoticeService {
   };
 
   showProgressBar(): boolean {
-    return this.isProgressBarShown;
+    return this.isProgressBarShown && this.percentComplete > 4;
   };
 
   cancelLoading(): void {
