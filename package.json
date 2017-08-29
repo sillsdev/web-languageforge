@@ -65,6 +65,7 @@
     "@types/karma-coverage": "^0.5.32",
     "@types/ng-file-upload": "^12.2.1",
     "@types/node": "^7.0.39",
+    "@types/offline-js": "0.7.28",
     "@types/quill": "1.3.2",
     "@types/rangy": "0.0.30",
     "angular-mocks": "^1.6.5",

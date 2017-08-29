@@ -1,12 +1,15 @@
 import * as angular from 'angular';
-
+import uiRouter from 'angular-ui-router';
+import { CoreModule } from '../../../bellows/core/core.module'
+import { TranslateCoreModule } from '../core/translate-core.module';
+import { TranslateSharedModule } from '../shared/translate-shared.module';
 import { TranslateNewProjectController } from './translate-new-project.controller';
 
 angular.module('translate-new-project', [
-    'coreModule',
+    CoreModule,
     'bellows.services',
     'ui.bootstrap',
-    'ui.router',
+    uiRouter,
     'palaso.ui.utils',
     'palaso.ui.sendReceiveCredentials',
     'palaso.ui.mockUpload',
@@ -14,8 +17,8 @@ angular.module('translate-new-project', [
     'pascalprecht.translate',
     'ngFileUpload',
     'language.inputSystems',
-    'translateCoreModule',
-    'translateSharedModule'
+    TranslateCoreModule,
+    TranslateSharedModule
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
   function ($stateProvider: angular.ui.IStateProvider,
@@ -32,20 +35,20 @@ angular.module('translate-new-project', [
 
     // State machine from ui.router
     $stateProvider
-      .state('newProject', <angular.ui.IState>{
+      .state('newProject', {
         abstract: true,
         templateUrl:
           '/angular-app/languageforge/translate/new-project/views/new-project-abstract.html',
         controller: 'NewTranslateProjectCtrl',
         controllerAs: '$ctrl'
       })
-      .state('newProject.name', <angular.ui.IState>{
+      .state('newProject.name', {
         templateUrl: '/angular-app/languageforge/translate/new-project/views/new-project-name.html',
         data: {
           step: 1
         }
       })
-      .state('newProject.languages', <angular.ui.IState>{
+      .state('newProject.languages', {
         templateUrl:
           '/angular-app/languageforge/translate/new-project/views/new-project-languages.html',
         data: {
@@ -55,7 +58,7 @@ angular.module('translate-new-project', [
     ;
 
     $urlRouterProvider
-      .when('', ['$state', function ($state: angular.ui.IStateService | any) {
+      .when('', ['$state', ($state: angular.ui.IStateService | any) => {
         if (!$state.$current.navigable) {
           $state.go('newProject.name');
         }
