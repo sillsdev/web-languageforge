@@ -32,9 +32,9 @@ export class EditorController implements angular.IController {
   static $inject = ['$scope', '$q', 'silNoticeService', 'machineService',
     'translateProjectApi', 'documentDataService', 'wordParser', 'realTimeService', 'modalService'];
   constructor(private $scope: angular.IScope, private $q: angular.IQService, private notice: NoticeService,
-    private machineService: MachineService, private projectApi: TranslateProjectService,
-    private documentDataService: DocumentDataService, private wordParser: WordParser,
-    private realTime: RealTimeService, private modal: ModalService) { }
+              private machineService: MachineService, private projectApi: TranslateProjectService,
+              private documentDataService: DocumentDataService, private wordParser: WordParser,
+              private realTime: RealTimeService, private modal: ModalService) { }
 
   $onInit(): void {
     this.source = this.documentDataService.createDocumentData('source', 'Source');
