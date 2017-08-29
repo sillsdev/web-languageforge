@@ -24,25 +24,25 @@ angular.module('lexicon.services')
       return result;
     }
 
-    function getFields(config, node, fieldName, delimiter) {
+    var getFields = function(config, node, fieldName, delimiter) {
       var result = '';
       if (typeof (delimiter) === 'undefined') delimiter = ' ';
       if (node[fieldName] && config && config.fields && config.fields[fieldName] &&
         config.fields[fieldName].inputSystems) {
         angular.forEach(config.fields[fieldName].inputSystems, function (inputSystem) {
           var field = node[fieldName][inputSystem];
-          if (angular.isDefined(field) && angular.isDefined(field.value) && field.value !== '') {
+          if (!this.isAudio(inputSystem) && angular.isDefined(field) && angular.isDefined(field.value) && field.value !== '') {
             if (result) {
               result += delimiter + field.value;
             } else {
               result = field.value;
             }
           }
-        });
+        }, this);
       }
 
       return result;
-    }
+    }.bind(this);
 
     /**
      *
