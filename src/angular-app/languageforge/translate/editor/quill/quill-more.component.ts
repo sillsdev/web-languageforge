@@ -7,11 +7,11 @@ export const QuillMoreComponent = {
     qlChangeStatus: '&'
   },
   templateUrl: '/angular-app/languageforge/translate/editor/quill/quill-more.component.html',
-  controller: [function () {
+  controller: [function() {
     this.qlStatus = this.qlStatus || 0;
 
     this.selectChange = (optionKey: number) => {
-      (this.qlChangeStatus || angular.noop)({ optionKey: optionKey });
+      (this.qlChangeStatus || angular.noop)({ optionKey });
     };
   }]
 };

@@ -1,0 +1,17 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "quotemark": [true, "single"],
+    "trailing-comma": [true, { "multiline": "never", "singline": "never" }],
+    "arrow-parens": [true, "ban-single-arg-parens"],
+    "member-access": [true, "no-public"],
+    "object-literal-sort-keys": false,
+    "no-empty": false,
+    "prefer-const": { "severity": "warning" },
+    "member-ordering": [false],
+    "curly": [true, "ignore-same-line"],
+    "interface-name": [true, "never-prefix"],
+    "max-classes-per-file": [false],
+    "radix": { "severity": "warning" }
+  }
+}
