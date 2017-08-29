@@ -1,5 +1,5 @@
 import Parchment from 'parchment';
-import Quill, { Theme, QuillOptionsStatic, Tooltip, BoundsStatic, Module } from 'quill';
+import Quill, { BoundsStatic, Module, QuillOptionsStatic, Theme, Tooltip } from 'quill';
 
 export interface SuggestionsTheme extends Theme {
   moreTooltip: Tooltip;
@@ -7,13 +7,11 @@ export interface SuggestionsTheme extends Theme {
 }
 
 export class FormatMachine {
-  constructor(
-    public status?: string,
-    public machineHasLearnt?: string
-  ) {}
+  status?: string;
+  machineHasLearnt?: string;
 }
 
-export function registerSuggestionsTheme() : void {
+export function registerSuggestionsTheme(): void {
   const QuillTooltip = Quill.import('ui/tooltip') as typeof Tooltip;
   const QuillModule = Quill.import('core/module') as typeof Module;
   const Block = Quill.import('blots/block') as typeof Parchment.Block;
@@ -31,16 +29,16 @@ export function registerSuggestionsTheme() : void {
       this.quill = quill;
       this.root = quill.addContainer('ql-more-tooltip');
       this.root.innerHTML = MoreTooltip.TEMPLATE;
-      let offset = parseInt(window.getComputedStyle(this.root).marginTop);
+      const offset = parseInt(window.getComputedStyle(this.root).marginTop, 10);
       this.quill.root.addEventListener('scroll', () => {
         this.root.style.marginTop = (-1 * this.quill.root.scrollTop) + offset + 'px';
       });
       this.root.addEventListener('mousedown', (event: any) => {
-        let rect = this.root.getBoundingClientRect();
+        const rect = this.root.getBoundingClientRect();
         if (event.clientX > rect.left && event.clientX < rect.right &&
           event.clientY > rect.top && event.clientY < rect.bottom
         ) {
-          (<SuggestionsTheme>this.quill.theme).suggestTooltip.hide();
+          (this.quill.theme as SuggestionsTheme).suggestTooltip.hide();
           event.preventDefault();
         }
       });
@@ -48,13 +46,13 @@ export function registerSuggestionsTheme() : void {
     }
 
     position(reference: any) {
-      let top = reference.top + this.quill.root.scrollTop +
+      const top = reference.top + this.quill.root.scrollTop +
         (reference.height - this.root.clientHeight) / 2;
       this.root.style.top = top + 'px';
       this.root.style.left = this.quill.root.clientWidth + 2 * this.quill.root.offsetLeft
         - this.root.clientWidth + 'px';
       return 0;
-    };
+    }
   }
 
   class More extends QuillModule {
@@ -88,7 +86,7 @@ export function registerSuggestionsTheme() : void {
     }
 
     static create(value: FormatMachine) {
-      let node = (super.create(value) as any);
+      const node = (super.create(value) as any);
       if (value) {
         if (value.status) {
           node.setAttribute('data-status', value.status);
@@ -103,7 +101,7 @@ export function registerSuggestionsTheme() : void {
     }
 
     static formats(node: any): FormatMachine {
-      let format = new FormatMachine();
+      const format = new FormatMachine();
       if (node.hasAttribute('data-status')) {
         format.status = node.getAttribute('data-status');
       }
@@ -156,22 +154,22 @@ export function registerSuggestionsTheme() : void {
       this.quill = quill;
       this.root = quill.addContainer('ql-suggest-tooltip');
       this.root.innerHTML = SuggestTooltip.TEMPLATE;
-      let offset = parseInt(window.getComputedStyle(this.root).marginTop);
-      this.quill.root.addEventListener('scroll', function () {
+      const offset = parseInt(window.getComputedStyle(this.root).marginTop, 10);
+      this.quill.root.addEventListener('scroll', () => {
         this.root.style.marginTop = (-1 * this.quill.root.scrollTop) + offset + 'px';
-      }.bind(this));
+      });
       this.hide();
     }
 
     position(reference: any) {
-      let shift = (super.position(reference) as number);
-      let top = reference.bottom + this.quill.root.scrollTop + 10;
+      const shift = (super.position(reference) as number);
+      const top = reference.bottom + this.quill.root.scrollTop + 10;
       this.root.style.top = top + 'px';
-      let arrow = this.root.querySelector('.ql-suggest-tooltip-arrow');
+      const arrow = this.root.querySelector('.ql-suggest-tooltip-arrow');
       arrow.style.marginLeft = '';
       if (shift === 0) return shift;
       arrow.style.marginLeft = (-1 * shift - arrow.offsetWidth / 2) + 'px';
-    };
+    }
   }
 
   class Suggestions extends QuillModule {
@@ -183,7 +181,7 @@ export function registerSuggestionsTheme() : void {
       // initially container is sibling of <ng-quill-editor>
       this.container = quill.container.parentNode.parentNode.parentNode
         .querySelector(options.container);
-      (<SuggestionsTheme>quill.theme).suggestTooltip.root.appendChild(this.container);
+      (quill.theme as SuggestionsTheme).suggestTooltip.root.appendChild(this.container);
     }
   }
 

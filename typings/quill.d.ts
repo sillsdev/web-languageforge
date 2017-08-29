@@ -3,7 +3,9 @@ import Quill, { RangeStatic, QuillOptionsStatic, BoundsStatic } from 'quill';
 declare module 'quill' {
   export namespace Quill {
     const sources: {
-      USER: 'user'
+      USER: 'user',
+      SILENT: 'silent',
+      API: 'api'
     };
     const events: {
       TEXT_CHANGE: 'text-change'
@@ -12,12 +14,7 @@ declare module 'quill' {
 
   export interface Quill {
     theme: Theme;
-    selection: Selection
     container: any;
-  }
-
-  export interface Selection {
-    lastRange: RangeStatic;
   }
 
   export class Theme {

@@ -35,8 +35,8 @@
     "machine": "http://build.palaso.org/guestAuth/repository/download/Machine_MachineTranslation/latest.lastSuccessful/machine.tgz",
     "moment": "^2.18.1",
     "ng-file-upload": "12.0.4",
-    "offline-js": "0.7.11",
     "ng-quill": "~3.0",
+    "offline-js": "0.7.11",
     "quill": "^1.0",
     "rangy": "^1.3.0",
     "rich-text": "^3.0.1",
@@ -50,7 +50,7 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@types/angular": "^1.6.28",
+    "@types/angular": "1.6.28",
     "@types/angular-mocks": "^1.5.10",
     "@types/angular-route": "^1.3.4",
     "@types/angular-sanitize": "^1.3.5",
@@ -65,7 +65,7 @@
     "@types/karma-coverage": "^0.5.32",
     "@types/ng-file-upload": "^12.2.1",
     "@types/node": "^7.0.39",
-    "@types/offline-js": "0.7.28",
+    "@types/offline-js": "^0.7.28",
     "@types/quill": "1.3.2",
     "@types/rangy": "0.0.30",
     "angular-mocks": "^1.6.5",
