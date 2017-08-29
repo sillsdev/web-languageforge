@@ -2,14 +2,14 @@ import { RangeStatic, StringMap } from 'quill';
 import { FormatMachine } from './quill/suggestions-theme';
 
 export class Segment {
-  public text: string;
-  public learnt: {
+  text: string;
+  learnt: {
     text: string,
     documentSetId: string,
-    previousRange: RangeStatic
+    previousSelection: RangeStatic
   };
-  public blockEndIndex: number = -1;
-  public state: {
+  blockEndIndex: number = -1;
+  state: {
     status?: number,
     machineHasLearnt?: boolean
   } = {};
@@ -19,7 +19,7 @@ export class Segment {
     this.learnt = {
       text: '',
       documentSetId: '',
-      previousRange: {
+      previousSelection: {
         index: undefined,
         length: undefined
       }
@@ -35,15 +35,15 @@ export class Segment {
   }
 
   updateState(formats: StringMap): void {
-    let format: FormatMachine = formats['state'];
+    const format: FormatMachine = formats.state;
     this.state = {};
     if (format != null) {
-      let status = format.status;
+      const status = format.status;
       if (status != null) {
         this.state.status = Number(status);
       }
 
-      let machineHasLearnt = format.machineHasLearnt;
+      const machineHasLearnt = format.machineHasLearnt;
       if (machineHasLearnt != null) {
         this.state.machineHasLearnt = machineHasLearnt.toLowerCase() === 'true';
       }

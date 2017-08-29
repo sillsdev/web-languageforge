@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 import uiRouter from 'angular-ui-router';
-import { CoreModule } from '../../../bellows/core/core.module'
+import { CoreModule } from '../../../bellows/core/core.module';
 import { TranslateCoreModule } from '../core/translate-core.module';
 import { TranslateSharedModule } from '../shared/translate-shared.module';
 import { TranslateNewProjectController } from './translate-new-project.controller';

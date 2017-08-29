@@ -1,45 +1,44 @@
 import * as angular from 'angular';
+import Quill, { Tooltip } from 'quill';
+
+import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { MachineService } from '../core/machine.service';
-import { TranslateProjectService } from '../core/translate-project.service';
-import { DocumentDataService } from './document-data.service';
-import { DocumentData } from './document-data';
-import { WordParser } from './word-parser.service';
-import { ModalService } from '../../../bellows/core/modal/modal.service';
-import Quill, { Tooltip } from 'quill';
-import { SuggestionsTheme } from './quill/suggestions-theme';
 import { RealTimeService } from '../core/realtime.service';
+import { TranslateProjectService } from '../core/translate-project.service';
+import { DocumentData } from './document-data';
+import { SuggestionsTheme } from './quill/suggestions-theme';
 
 export class EditorController implements angular.IController {
-  private currentDocIds: string[] = [];
-  private selectedSegmentIndex: number = -1;
-  private confidenceThreshold: number = 0.2;
   source: DocumentData;
   target: DocumentData;
   right: DocumentData;
   left: DocumentData;
   selectedDocumentSetIndex: number = 0;
   documentSets: any[] = [];
-  readonly statusOptions: { key: number, name: string }[] = [
+  readonly statusOptions: Array<{ key: number, name: string }> = [
     { key: 0, name: 'none' },
     { key: 1, name: 'draft' },
     { key: 2, name: 'approved' }
   ];
   ecProject: any;
   ecInterfaceConfig: any;
-  ecOnUpdate: (event: { $event: { project: any } }) => void;
+  ecOnUpdate: (params: { $event: { project: any } }) => void;
+
+  private currentDocIds: string[] = [];
+  private selectedSegmentIndex: number = -1;
+  private confidenceThreshold: number = 0.2;
 
   static $inject = ['$scope', '$q', 'silNoticeService', 'machineService',
-    'translateProjectApi', 'documentDataService', 'wordParser', 'realTimeService', 'modalService'];
+    'translateProjectApi', 'realTimeService', 'modalService'];
   constructor(private $scope: angular.IScope, private $q: angular.IQService, private notice: NoticeService,
               private machineService: MachineService, private projectApi: TranslateProjectService,
-              private documentDataService: DocumentDataService, private wordParser: WordParser,
               private realTime: RealTimeService, private modal: ModalService) { }
 
   $onInit(): void {
-    this.source = this.documentDataService.createDocumentData('source', 'Source');
-    this.target = this.documentDataService.createDocumentData('target', 'Target');
-    let modulesConfig: any = {
+    this.source = new DocumentData(this.$q, 'source', 'Source');
+    this.target = new DocumentData(this.$q, 'target', 'Target');
+    const modulesConfig: any = {
       toolbar: [
         ['bold', 'italic', 'underline', 'strike'],      // toggled buttons
         [{ script: 'sub' }, { script: 'super' }],       // superscript/subscript
@@ -76,7 +75,7 @@ export class EditorController implements angular.IController {
         this.machineService.initialise(this.ecProject.slug);
 
         this.confidenceThreshold = this.ecProject.config.confidenceThreshold;
-        let userPreferences = this.ecProject.config.userPreferences;
+        const userPreferences = this.ecProject.config.userPreferences;
         if (userPreferences.confidenceThreshold != null &&
           userPreferences.hasConfidenceOverride != null &&
           userPreferences.hasConfidenceOverride
@@ -87,7 +86,7 @@ export class EditorController implements angular.IController {
         if (this.ecProject.config.documentSets.idsOrdered != null &&
           this.ecProject.config.documentSets.idsOrdered.length > 0
         ) {
-          for (let id of this.ecProject.config.documentSets.idsOrdered) {
+          for (const id of this.ecProject.config.documentSets.idsOrdered) {
             if (result.data.documentSetList[id] != null) {
               this.documentSets.push(result.data.documentSetList[id]);
             }
@@ -110,8 +109,8 @@ export class EditorController implements angular.IController {
           ) {
             this.swapEditors(false);
           } else {
-            this.editorCreated(this.left.editor, this.left.docType);
-            this.editorCreated(this.right.editor, this.right.docType);
+            this.editorCreated(this.left.editor, this.left);
+            this.editorCreated(this.right.editor, this.right);
           }
         });
       }
@@ -121,11 +120,11 @@ export class EditorController implements angular.IController {
   selectDocumentSet(index: number): void {
     if (this.selectedDocumentSetIndex !== index) {
       this.selectedDocumentSetIndex = index;
-      this.contentChanged(this.left.editor, this.left.docType);
-      this.contentChanged(this.right.editor, this.right.docType);
+      this.contentChanged(this.left.editor, this.left);
+      this.contentChanged(this.right.editor, this.right);
 
       if (this.selectedDocumentSetIndex in this.documentSets) {
-        let userPreferences = this.ecProject.config.userPreferences;
+        const userPreferences = this.ecProject.config.userPreferences;
         userPreferences.selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
         this.projectApi.updateUserPreferences(userPreferences);
       }
@@ -133,7 +132,7 @@ export class EditorController implements angular.IController {
   }
 
   modalDeleteDocumentSet(index: number): void {
-    let documentSet = this.documentSets[index];
+    const documentSet = this.documentSets[index];
     const deleteMessage = 'This will delete both source and target documents.<br /><br />' +
       'Are you sure you want to delete the document set <b>' +
       documentSet.name + '</b>?';
@@ -164,30 +163,32 @@ export class EditorController implements angular.IController {
       documentSet = angular.copy(this.documentSets[index]);
     }
 
-    let modalInstance = this.modal.open({
+    const modalInstance = this.modal.open({
       scope: this.$scope,
       templateUrl: '/angular-app/languageforge/translate/editor/document-set-update.modal.html',
-      controller: ['$scope', '$uibModalInstance', ($scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
-        $scope.titleLabel = (isCreate) ? 'Create a new Document Set' : 'Update Document Set';
-        $scope.buttonLabel = (isCreate) ? 'Add' : 'Update';
-        $scope.documentSet = documentSet;
+      controller: ['$scope', '$uibModalInstance',
+        ($scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
+          $scope.titleLabel = (isCreate) ? 'Create a new Document Set' : 'Update Document Set';
+          $scope.buttonLabel = (isCreate) ? 'Add' : 'Update';
+          $scope.documentSet = documentSet;
 
-        $scope.update = () => $modalInstance.close($scope.documentSet);
-      }]
+          $scope.update = () => $modalInstance.close($scope.documentSet);
+        }
+      ]
     });
 
-    modalInstance.result.then(documentSet => {
-      this.projectApi.updateDocumentSet(documentSet, result => {
+    modalInstance.result.then(docSet => {
+      this.projectApi.updateDocumentSet(docSet, result => {
         if (result.ok) {
-          angular.merge(documentSet, result.data);
+          angular.merge(docSet, result.data);
 
-          let noticeMessage = 'Document \'' + documentSet.name + '\' successfully ';
+          let noticeMessage = 'Document \'' + docSet.name + '\' successfully ';
           if (isCreate) {
-            this.documentSets.push(documentSet);
+            this.documentSets.push(docSet);
             this.selectDocumentSet(this.documentSets.length - 1);
             noticeMessage = noticeMessage + 'added.';
           } else {
-            this.documentSets[index] = documentSet;
+            this.documentSets[index] = docSet;
             noticeMessage = noticeMessage + 'updated.';
           }
           this.ecOnUpdate({ $event: { project: this.ecProject } });
@@ -200,25 +201,29 @@ export class EditorController implements angular.IController {
   }
 
   modalMoveDocumentSet(currentIndex: number): void {
-    let documentSet = this.documentSets[currentIndex];
-    let modalInstance = this.modal.open({
-      scope: this.$scope,
-      templateUrl: '/angular-app/languageforge/translate/editor/document-set-move.modal.html',
-      controller: ['$scope', '$uibModalInstance', ($scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
-        $scope.documentSet = documentSet;
-        $scope.newIndex = currentIndex.toString();
-        $scope.positionOptions = [];
-        for (let index = 0; index < this.documentSets.length; index++) {
-          $scope.positionOptions.push((index + 1) +
-            ((index === currentIndex) ? ' (current)' : ''));
-        }
+    const documentSet = this.documentSets[currentIndex];
+    const modalInstance = this.modal.open({
+      controller: ['$scope', '$uibModalInstance',
+        ($scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
+          $scope.documentSet = documentSet;
+          $scope.newIndex = currentIndex.toString();
+          $scope.positionOptions = [];
+          for (let index = 0; index < this.documentSets.length; index++) {
+            $scope.positionOptions.push((index + 1) +
+              ((index === currentIndex) ? ' (current)' : ''));
+          }
 
-        $scope.move = () => $modalInstance.close(Number($scope.newIndex));
-      }]
+          $scope.move = () => $modalInstance.close(Number($scope.newIndex));
+        }
+      ],
+      scope: this.$scope,
+      templateUrl: '/angular-app/languageforge/translate/editor/document-set-move.modal.html'
     });
 
     modalInstance.result.then(newIndex => {
-      if (newIndex === currentIndex) return;
+      if (newIndex === currentIndex) {
+        return;
+      }
 
       this.documentSets.splice(currentIndex, 1);
       this.documentSets.splice(newIndex, 0, documentSet);
@@ -237,7 +242,7 @@ export class EditorController implements angular.IController {
       }
 
       this.selectDocumentSet(selectedIndex);
-      this.ecProject.config.documentSets.idsOrdered = this.documentSets.map(documentSet => documentSet.id);
+      this.ecProject.config.documentSets.idsOrdered = this.documentSets.map(docSet => docSet.id);
 
       this.projectApi.updateConfig(this.ecProject.config, result => {
         if (result.ok) {
@@ -258,106 +263,93 @@ export class EditorController implements angular.IController {
       this.selectedDocumentSetIndex < this.documentSets.length;
   }
 
-  getLabel(label: string, languageTag: string): string {
+  getEditorLabel(doc: DocumentData): string {
     let docName = '';
     if (this.documentSets.length > 0 && this.selectedDocumentSetIndex in this.documentSets) {
       docName = this.documentSets[this.selectedDocumentSetIndex].name + ' ';
     }
 
-    return docName + label + ((languageTag) ? ' (' + languageTag + ')' : '');
+    return docName + doc.label + ((doc.inputSystem.tag) ? ' (' + doc.inputSystem.tag + ')' : '');
   }
 
-  contentChanged(editor: Quill, docType: string): void {
-    if (!this.docId(docType)) return;
-
-    if (this.currentDocIds[docType] !== this.docId(docType)) {
-      this.realTime.disconnectRichTextDoc(this.currentDocIds[docType], editor);
-      delete this.currentDocIds[docType];
-      this.editorCreated(editor, docType);
+  contentChanged(editor: Quill, doc: DocumentData): void {
+    const docId = this.docId(doc.docType);
+    if (docId === '') {
+      return;
     }
 
-    this.updateContent(editor, docType);
+    if (this.currentDocIds[doc.docType] !== docId) {
+      this.realTime.disconnectRichTextDoc(this.currentDocIds[doc.docType], editor);
+      delete this.currentDocIds[doc.docType];
+      this.editorCreated(editor, doc);
+    }
+
+    this.updateContent(doc);
   }
 
-  selectionChanged(editor: Quill, docType: string): void {
-    (<SuggestionsTheme>editor.theme).suggestTooltip.hide();
-    if (docType === this.target.docType) {
-      this.contentChanged(editor, docType);
+  selectionChanged(editor: Quill, doc: DocumentData): void {
+    (editor.theme as SuggestionsTheme).suggestTooltip.hide();
+    if (doc.docType === 'target') {
+      this.contentChanged(editor, doc);
     }
   }
 
-  editorCreated(editor: Quill, docType: string): void {
-    let docData = this.getDocumentData(docType);
+  editorCreated(editor: Quill, doc: DocumentData): void {
+    doc.editor = editor;
+    doc.editorIsCreated.resolve(true);
 
-    docData.editor = editor;
-    docData.editorIsCreated.resolve(true);
-    if (!this.docId(docType)) return;
-
-    this.currentDocIds[docType] = this.docId(docType);
-    this.realTime.createAndSubscribeRichTextDoc(this.ecProject.slug, this.docId(docType), editor);
+    const docId = this.docId(doc.docType);
+    if (docId !== '') {
+      this.currentDocIds[doc.docType] = docId;
+      this.realTime.createAndSubscribeRichTextDoc(this.ecProject.slug, docId, editor);
+    }
   }
 
   swapEditors(writePreferences: boolean = true): void {
-    let leftEditor = this.left.editor;
-    let rightEditor = this.right.editor;
+    const leftEditor = this.left.editor;
+    const rightEditor = this.right.editor;
     this.realTime.disconnectRichTextDoc(this.currentDocIds[this.left.docType], leftEditor);
     this.realTime.disconnectRichTextDoc(this.currentDocIds[this.right.docType], rightEditor);
     this.currentDocIds = [];
 
-    let newLeft = this.right;
-    let newRight = this.left;
+    const newLeft = this.right;
+    const newRight = this.left;
     delete this.right;
     delete this.left;
     this.right = newRight;
     this.left = newLeft;
-    this.editorCreated(leftEditor, newLeft.docType);
-    this.editorCreated(rightEditor, newRight.docType);
+    this.editorCreated(leftEditor, newLeft);
+    this.editorCreated(rightEditor, newRight);
 
     if (writePreferences) {
-      let userPreferences = this.ecProject.config.userPreferences;
+      const userPreferences = this.ecProject.config.userPreferences;
       userPreferences.isDocumentOrientationTargetRight = this.right.docType === this.target.docType;
       this.projectApi.updateUserPreferences(userPreferences);
       this.ecOnUpdate({ $event: { project: this.ecProject } });
     }
   }
 
-  insertSuggestion(docType: string, text: string): void {
-    let editor = this.getDocumentData(docType).editor;
-    let range = editor.selection.lastRange;
-    let currentText = this.documentDataService.removeTrailingCarriageReturn(editor.getText());
-    let words = this.wordParser.wordBreak(currentText);
-    if (this.documentDataService.hasNoSelectionAtCursor(range)) {
-      let index = range.index;
-      let wordStartIndex = this.wordParser.startIndexOfWordAt(index, words);
-      let wordLength = this.wordParser.lengthOfWordAt(index, words);
-      if (index < currentText.length ||
-        (index === currentText.length && !this.wordParser.isWordComplete(currentText[index - 1]))
-      ) {
-        editor.deleteText(wordStartIndex, wordLength + 1, Quill.sources.USER);
-        index = wordStartIndex;
-      }
-
-      editor.insertText(index, text + this.wordParser.charSpace(), Quill.sources.USER);
+  insertSuggestion(doc: DocumentData, suggestionIndex: number): void {
+    const selection = doc.editor.getSelection();
+    if (selection.length > 0) {
+      return;
     }
+
+    const text = this.machineService.getSuggestionText(suggestionIndex);
+    doc.editor.insertText(selection.index, text + ' ', Quill.sources.USER);
+    doc.editor.setSelection(selection.index + text.length + 1, 0, Quill.sources.USER);
   }
 
-  changeStatus(docType: string, optionKey: number): void {
-    if (docType !== this.target.docType) return;
-
-    this.target.formatSegmentStateStatus(optionKey, this.target.editor.selection.lastRange);
-  }
-
-  private getDocumentData(docType: string): DocumentData {
-    switch (docType) {
-      case 'source':
-        return this.source;
-      case 'target':
-        return this.target;
+  changeStatus(doc: DocumentData, optionKey: number): void {
+    if (doc.docType === 'target') {
+      doc.formatSegmentStateStatus(optionKey, doc.editor.getSelection());
     }
   }
 
   private docId(docKey: string, documentSetId?: string): string {
-    if (!(this.selectedDocumentSetIndex in this.documentSets)) return '';
+    if (!(this.selectedDocumentSetIndex in this.documentSets)) {
+      return '';
+    }
 
     if (documentSetId == null) {
       documentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
@@ -366,36 +358,40 @@ export class EditorController implements angular.IController {
     return documentSetId + ':' + docKey;
   }
 
-  private updateContent(editor: Quill, docType: string): void {
-    if (docType === this.target.docType) {
-      this.showAndPositionTooltip((<SuggestionsTheme>this.target.editor.theme).moreTooltip, this.target.editor);
-      let newSegmentIndex = this.target.getSegmentIndex();
-      this.learnSegment(newSegmentIndex);
-      this.getSuggestions(newSegmentIndex);
-      this.selectedSegmentIndex = newSegmentIndex;
-    } else {
-      let theme = editor.theme as SuggestionsTheme;
-      theme.moreTooltip.hide();
-      theme.suggestTooltip.hide();
-      if (docType === this.source.docType && !this.documentDataService.isTextEmpty(editor.getText())) {
-        let newSourceSegmentText = this.source.getSegment(this.selectedSegmentIndex);
-        if (newSourceSegmentText !== this.source.segment.text) {
-          this.source.segment.text = newSourceSegmentText;
-          this.machineService.translateInteractively(this.source.segment.text, this.confidenceThreshold);
+  private updateContent(doc: DocumentData): void {
+    const theme = doc.editor.theme as SuggestionsTheme;
+    switch (doc.docType) {
+      case 'target':
+        this.showAndPositionTooltip(theme.moreTooltip, doc.editor);
+        const newSegmentIndex = this.target.getSegmentIndex();
+        this.learnSegment(newSegmentIndex);
+        this.getSuggestions(newSegmentIndex);
+        this.selectedSegmentIndex = newSegmentIndex;
+        break;
+
+      case 'source':
+        theme.moreTooltip.hide();
+        theme.suggestTooltip.hide();
+        if (!doc.isTextEmpty()) {
+          const newSourceSegmentText = doc.getSegment(this.selectedSegmentIndex);
+          if (newSourceSegmentText !== doc.segment.text) {
+            doc.segment.text = newSourceSegmentText;
+            this.machineService.translateInteractively(doc.segment.text, this.confidenceThreshold);
+          }
         }
-      }
+        break;
     }
   }
 
   private learnSegment(newSegmentIndex: number): void {
     if (this.selectedSegmentIndex >= 0 &&
-      !this.documentDataService.hasNoSelectionAtCursor(this.target.editor.getSelection())
+      !DocumentData.isSelectionCollapsed(this.target.editor.getSelection())
     ) {
       return;
     }
 
     let targetSegmentText = this.target.getSegment(this.selectedSegmentIndex);
-    let selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
+    const selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
     if (this.selectedSegmentIndex < 0) {
       this.target.updateSegmentLearntData(newSegmentIndex, selectedDocumentSetId);
     } else if (newSegmentIndex !== this.selectedSegmentIndex
@@ -405,20 +401,20 @@ export class EditorController implements angular.IController {
         targetSegmentText = this.target.segment.text;
       }
 
-      if (!this.documentDataService.isTextEmpty(targetSegmentText) &&
-        this.documentDataService.hasNoSelectionAtCursor(this.target.segment.learnt.previousRange) &&
+      if (targetSegmentText !== '' &&
+        DocumentData.isSelectionCollapsed(this.target.segment.learnt.previousSelection) &&
         !this.target.segment.hasLearntText(targetSegmentText)
       ) {
         this.machineService.learnSegment(() => {
           if (selectedDocumentSetId === this.target.segment.learnt.documentSetId) {
             this.notice.push(this.notice.SUCCESS, 'The modified line was successfully learnt.');
-            this.target.formatSegmentStateMachineHasLearnt(true, this.target.segment.learnt.previousRange);
+            this.target.formatSegmentStateMachineHasLearnt(true, this.target.segment.learnt.previousSelection);
           } else {
-            let documentSetIndex = this.getDocumentSetIndexById(this.target.segment.learnt.documentSetId);
-            let documentSetName = this.documentSets[documentSetIndex].name;
+            const documentSetIndex = this.getDocumentSetIndexById(this.target.segment.learnt.documentSetId);
+            const documentSetName = this.documentSets[documentSetIndex].name;
             this.notice.push(this.notice.SUCCESS, 'The modified line from the \'' + documentSetName +
               '\' document set was successfully learnt.');
-            let formatDelta = this.target.createDeltaSegmentStateMachineHasLearnt(true,
+            const formatDelta = this.target.createDeltaSegmentStateMachineHasLearnt(true,
               this.target.segment.blockEndIndex, this.target.segment);
             this.realTime.updateRichTextDoc(this.ecProject.slug,
               this.docId(this.target.docType, this.target.segment.learnt.documentSetId), formatDelta,
@@ -431,7 +427,7 @@ export class EditorController implements angular.IController {
         this.target.updateSegmentLearntData(newSegmentIndex, selectedDocumentSetId);
       }
     } else {
-      let machineHasLearnt = this.target.segment.hasLearntText(targetSegmentText);
+      const machineHasLearnt = this.target.segment.hasLearntText(targetSegmentText);
       this.target.segment.text = targetSegmentText;
       this.target.updateSegmentState(newSegmentIndex);
       this.target.updateSegmentBlockEndIndex();
@@ -442,17 +438,13 @@ export class EditorController implements angular.IController {
   }
 
   private getSuggestions(newSegmentIndex: number): void {
-    if (!this.documentDataService.isTextEmpty(this.source.editor.getText()) &&
-      !this.documentDataService.isTextEmpty(this.target.editor.getText())
-    ) {
-      let newSourceSegmentText = this.source.getSegment(newSegmentIndex);
-      if (newSegmentIndex !== this.selectedSegmentIndex || newSourceSegmentText !== this.source.segment.text) {
-        this.source.segment.text = newSourceSegmentText;
-        this.machineService.translateInteractively(this.source.segment.text, this.confidenceThreshold,
-          () => this.updatePrefix(newSegmentIndex));
-      } else {
-        this.updatePrefix(newSegmentIndex);
-      }
+    const newSourceSegmentText = this.source.getSegment(newSegmentIndex);
+    if (newSegmentIndex !== this.selectedSegmentIndex || newSourceSegmentText !== this.source.segment.text) {
+      this.source.segment.text = newSourceSegmentText;
+      this.machineService.translateInteractively(this.source.segment.text, this.confidenceThreshold,
+        () => this.updatePrefix(newSegmentIndex));
+    } else {
+      this.updatePrefix(newSegmentIndex);
     }
   }
 
@@ -460,17 +452,17 @@ export class EditorController implements angular.IController {
     this.$scope.$applyAsync(() => {
       this.target.suggestions = this.machineService.updatePrefix(this.target.getSegment(segmentIndex));
       setTimeout(() => {
-        this.showAndPositionTooltip((<SuggestionsTheme>this.target.editor.theme).suggestTooltip, this.target.editor,
+        this.showAndPositionTooltip((this.target.editor.theme as SuggestionsTheme).suggestTooltip, this.target.editor,
           this.target.hasSuggestion());
       }, 0);
     });
   }
 
   private showAndPositionTooltip(tooltip: Tooltip, editor: Quill, hasCondition: boolean = true): void {
-    if (this.documentDataService.hasNoSelectionAtCursor(editor.getSelection()) && hasCondition) {
+    const selection = editor.getSelection();
+    if (DocumentData.isSelectionCollapsed(selection) && hasCondition) {
       tooltip.show();
-      let range = editor.getSelection();
-      tooltip.position(editor.getBounds(range.index, range.length));
+      tooltip.position(editor.getBounds(selection.index, selection.length));
     } else {
       tooltip.hide();
     }
@@ -483,9 +475,9 @@ export class EditorController implements angular.IController {
 
 export const EditorComponent: angular.IComponentOptions = {
   bindings: {
-    ecProject: '<',
     ecInterfaceConfig: '<',
-    ecOnUpdate: '&'
+    ecOnUpdate: '&',
+    ecProject: '<'
   },
   templateUrl: '/angular-app/languageforge/translate/editor/editor.html',
   controller: EditorController

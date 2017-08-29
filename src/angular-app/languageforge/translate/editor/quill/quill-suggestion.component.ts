@@ -1,36 +1,36 @@
 import * as angular from 'angular';
-import { WordParser } from '../word-parser.service';
 
 export class QuillSuggestionController implements angular.IController {
   qlSuggestions: string[];
-  qlInsertSuggestion: (params: { text: string }) => void;
-
-  static $inject: string[] = ['wordParser'];
-  constructor(private wordParser: WordParser) {}
+  qlInsertSuggestion: (params: { suggestionIndex: number }) => void;
 
   wordCombine(words: string[]): string {
-    return this.wordParser.wordCombine(words);
+    words = words || [];
+    return words.join(' ');
   }
 
   wordWidthStyle(word: string, isLast: boolean): any {
-    let words = this.wordCombine(this.qlSuggestions);
-    if (words.length <= 0) return;
+    const words = this.wordCombine(this.qlSuggestions);
+    if (words.length <= 0) {
+      return;
+    }
 
-    let space = (isLast) ? 0 : 1;
+    const space = (isLast) ? 0 : 1;
     return { width: Math.floor((word.length + space) * 100 / words.length) + '%' };
   }
 
   selectAll(): void {
-    let text = this.wordCombine(this.qlSuggestions);
-    if (this.qlInsertSuggestion) this.qlInsertSuggestion({ text: text });
+    if (this.qlInsertSuggestion != null) {
+      this.qlInsertSuggestion({ suggestionIndex: -1 });
+    }
   }
 
   selectWord(index: number): void {
-    let text = this.qlSuggestions[index];
-    if (this.qlInsertSuggestion) this.qlInsertSuggestion({ text: text });
+    if (this.qlInsertSuggestion != null) {
+      this.qlInsertSuggestion({ suggestionIndex: index });
+    }
   }
 }
-
 
 export const QuillSuggestionComponent: angular.IComponentOptions = {
   bindings: {

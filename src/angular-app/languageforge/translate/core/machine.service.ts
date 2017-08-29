@@ -1,60 +1,80 @@
-import * as machine from 'machine';
+import { InteractiveTranslationSession, SmtTrainProgress, TranslationEngine } from 'machine';
 
 export class MachineService {
-  private engine: machine.TranslationEngine;
-  private session: machine.InteractiveTranslationSession;
+  private engine: TranslationEngine;
+  private session: InteractiveTranslationSession;
 
   // SIL.Machine.Translation.TranslationEngine.ctor(baseUrl, projectId)
   initialise(projectId: string): void {
-    this.engine = new machine.TranslationEngine(location.origin + '/machine', projectId);
+    this.engine = new TranslationEngine(location.origin + '/machine', projectId);
   }
 
   // SIL.Machine.Translation.TranslationEngine.translateInteractively(sourceSegment,
   //    confidenceThreshold, onFinished)
-  translateInteractively(sourceSegment: string, confidenceThreshold: number,
-                         callback?: () => void): void {
-    if (this.engine == null) return;
+  translateInteractively(sourceSegment: string, confidenceThreshold: number, callback?: () => void): void {
+    if (this.engine == null) {
+      return;
+    }
 
     this.engine.translateInteractively(sourceSegment, confidenceThreshold, newSession => {
       this.session = newSession;
-      if (callback != null) callback();
+      if (callback != null) {
+        callback();
+      }
     });
-  };
+  }
 
   // SIL.Machine.Translation.TranslationEngine.train(onStatusUpdate, onFinished)
-  train(onStatusUpdate: (progress: machine.SmtTrainProgress) => void,
-        onFinished: (success: boolean) => void): void {
-    if (this.engine == null) return;
+  train(onStatusUpdate: (progress: SmtTrainProgress) => void, onFinished: (success: boolean) => void): void {
+    if (this.engine == null) {
+      return;
+    }
 
     this.engine.train(onStatusUpdate, onFinished);
   }
 
   // SIL.Machine.Translation.TranslationEngine.listenForTrainingStatus(onStatusUpdate, onFinished)
-  listenForTrainingStatus(onStatusUpdate: (progress: machine.SmtTrainProgress) => void,
+  listenForTrainingStatus(onStatusUpdate: (progress: SmtTrainProgress) => void,
                           onFinished: (success: boolean) => void): void {
-    if (this.engine == null) return;
+    if (this.engine == null) {
+      return;
+    }
 
     this.engine.listenForTrainingStatus(onStatusUpdate, onFinished);
   }
 
   // SIL.Machine.Translation.InteractiveTranslationSession.updatePrefix(prefix)
   updatePrefix(prefix: string): string[] {
-    if (this.engine == null || this.session == null) return [];
+    if (this.engine == null || this.session == null) {
+      return [];
+    }
 
     // returns suggestions
     return this.session.updatePrefix(prefix);
   }
 
   getCurrentSuggestion(): string[] {
-    if (this.engine == null || this.session == null) return [];
+    if (this.engine == null || this.session == null) {
+      return [];
+    }
 
     return this.session.currentSuggestion;
   }
 
   // SIL.Machine.Translation.InteractiveTranslationSession.approve(onFinished)
   learnSegment(callback: (success: boolean) => void): void {
-    if (this.engine == null || this.session == null) return;
+    if (this.engine == null || this.session == null) {
+      return;
+    }
 
     this.session.approve(callback);
+  }
+
+  getSuggestionText(suggestionIndex?: number): string {
+    if (this.engine == null || this.session == null) {
+      return '';
+    }
+
+    return this.session.getSuggestionText(suggestionIndex);
   }
 }
