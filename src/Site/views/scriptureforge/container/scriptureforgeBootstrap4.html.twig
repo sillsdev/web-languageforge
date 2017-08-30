@@ -33,8 +33,10 @@
                                 </div>
                             </div>
                             {% endverbatim %}
-                            <a class="dropdown-item" href="/app/projects"><b>List All Projects</b></a>
-                            <div class="dropdown-divider" data-ng-hide="{{ projects|length <= 0 }}"></div>
+                            {% if projects|length > 10 %}
+                                <a class="dropdown-item" href="/app/projects">List All Projects</a>
+                            {% endif %}
+                            <div class="dropdown-divider"></div>
                             {% for project in projects %}
                                 <a class="dropdown-item"
                                    href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
@@ -88,8 +90,10 @@
                                 </div>
                             </div>
                             {% endverbatim %}
+                            {% if projects|length > 10 %}
                             <a class="dropdown-item" href="/app/projects">List All Projects</a>
-                            <div class="dropdown-divider" data-ng-hide="{{ projects|length <= 0 }}"></div>
+                            {% endif %}
+                            <div class="dropdown-divider"></div>
                             {% for project in projects %}
                                 <a class="dropdown-item"
                                    href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
