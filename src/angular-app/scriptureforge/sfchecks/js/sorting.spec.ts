@@ -4,9 +4,8 @@ import 'angular-mocks';
 // import { BytesFilter, BytesFilterFunction, RelativeTimeFilter, RelativeTimeFilterFunction } from './services';
 import './services';
 import '../../../bellows/_js_module_definitions/bellows.services._module_.js';
-import '../../../bellows/js/error.js';
-import '../../../bellows/js/jsonrpc';
-import '../../../bellows/directive/notice.js';
+import '../../../bellows/core/error.service';
+import '../../../bellows/core/notice/notice.service';
 import 'angular-sanitize';
 
 describe('Sorting: ', () => {
