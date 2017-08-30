@@ -94,7 +94,18 @@ function SfProjectSettingsPage() {
     code: element(by.model('project.projectCode')),
     featured: element(by.model('project.featured')),
     allowAudioDownload: element(by.model('project.allowAudioDownload')),
+    usersSeeEachOthersResponses: element(by.model('project.usersSeeEachOthersResponses')),
     saveButton: element(by.id('project_properties_save_button'))
+  };
+
+  // Set a checkbox to either true or false no matter what its current value is
+  // TODO: Move this function to a general utilities library somewhere
+  this.projectTab.setCheckbox = function(checkboxElement, value) {
+    checkboxElement.isSelected().then(function(selected) {
+      if (value !== selected) {
+        checkboxElement.click();
+      }
+    });
   };
 
   this.optionlistsTab = {
