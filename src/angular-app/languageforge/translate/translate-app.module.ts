@@ -5,7 +5,7 @@ import { ApiService } from '../../bellows/core/api/api.service';
 import { CoreModule } from '../../bellows/core/core.module';
 import { TranslateCoreModule } from './core/translate-core.module';
 import { TranslateEditorModule } from './editor/editor.module';
-import { TranslateNewProjectModule } from './new-project/translate-new-project.module';
+import './new-project/translate-new-project.module';
 import { TranslateSettingsModule } from './settings/settings.module';
 import { TranslateAppComponent } from './translate-app.component';
 
@@ -18,16 +18,15 @@ export const TranslateAppModule = angular
     CoreModule,
     TranslateCoreModule,
     TranslateEditorModule,
-    TranslateNewProjectModule,
     TranslateSettingsModule
   ])
   .component('translateApp', TranslateAppComponent)
   .config(['$stateProvider', '$urlRouterProvider',
     '$translateProvider', '$compileProvider',
     'apiServiceProvider',
-    function ($stateProvider: angular.ui.IStateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider,
-              $translateProvider: angular.translate.ITranslateProvider, $compileProvider: angular.ICompileProvider,
-              apiService: ApiService) {
+    ($stateProvider: angular.ui.IStateProvider, $urlRouterProvider: angular.ui.IUrlRouterProvider,
+     $translateProvider: angular.translate.ITranslateProvider, $compileProvider: angular.ICompileProvider,
+     apiService: ApiService) => {
       $compileProvider.debugInfoEnabled(apiService.isProduction);
       $compileProvider.commentDirectivesEnabled(apiService.isProduction);
 
@@ -56,7 +55,7 @@ export const TranslateAppModule = angular
       $translateProvider.useSanitizeValueStrategy('escape');
     }])
   .controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService',
-    function ($scope: any, $rootScope: angular.IRootScopeService, breadcrumbService: any) {
+    ($scope: any, $rootScope: angular.IRootScopeService, breadcrumbService: any) => {
       $scope.idmap = breadcrumbService.idmap;
       $rootScope.$on('$routeChangeSuccess', () => {
         $scope.breadcrumbs = breadcrumbService.read();

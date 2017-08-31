@@ -1,8 +1,13 @@
-import { InteractiveTranslationSession, SmtTrainProgress, TranslationEngine } from 'machine';
+import { InteractiveTranslationSession, Range, SentenceTokenizer, SmtTrainProgress, TranslationEngine } from 'machine';
+import { RangeStatic } from 'quill';
 
 export class MachineService {
+  private readonly segmentTokenizer: SentenceTokenizer = new SentenceTokenizer();
   private engine: TranslationEngine;
   private session: InteractiveTranslationSession;
+  private sourceSegment: string = '';
+  private prefix: string = '';
+  private confidenceThreshold: number = -1;
 
   // SIL.Machine.Translation.TranslationEngine.ctor(baseUrl, projectId)
   initialise(projectId: string): void {
@@ -16,6 +21,16 @@ export class MachineService {
       return;
     }
 
+    this.prefix = '';
+    if (this.sourceSegment === sourceSegment && this.confidenceThreshold === confidenceThreshold) {
+      if (callback != null) {
+        callback();
+      }
+      return;
+    }
+
+    this.sourceSegment = sourceSegment;
+    this.confidenceThreshold = confidenceThreshold;
     this.engine.translateInteractively(sourceSegment, confidenceThreshold, newSession => {
       this.session = newSession;
       if (callback != null) {
@@ -49,7 +64,11 @@ export class MachineService {
       return [];
     }
 
-    // returns suggestions
+    if (this.prefix === prefix) {
+      return this.session.currentSuggestion;
+    }
+
+    this.prefix = prefix;
     return this.session.updatePrefix(prefix);
   }
 
@@ -62,7 +81,7 @@ export class MachineService {
   }
 
   // SIL.Machine.Translation.InteractiveTranslationSession.approve(onFinished)
-  learnSegment(callback: (success: boolean) => void): void {
+  trainSegment(callback: (success: boolean) => void): void {
     if (this.engine == null || this.session == null) {
       return;
     }
@@ -76,5 +95,9 @@ export class MachineService {
     }
 
     return this.session.getSuggestionText(suggestionIndex);
+  }
+
+  tokenizeDocumentText(text: string): RangeStatic[] {
+    return this.segmentTokenizer.tokenize(text) as RangeStatic[];
   }
 }

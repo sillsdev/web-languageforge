@@ -13,7 +13,7 @@ export class TranslateAppController implements angular.IController {
               private rightsService: TranslateRightsService, private $q: angular.IQService) {}
 
   $onInit() {
-    this.$q.all([this.sessionService.getSession(), this.rightsService.getRights()]).then((data) => {
+    this.$q.all([this.sessionService.getSession(), this.rightsService.getRights()]).then(data => {
       const session = data[0];
       const rights = data[1];
 

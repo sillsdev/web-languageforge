@@ -47,7 +47,7 @@ export class TranslateProjectService extends ProjectService {
 
   updateUserProfile(params: any[] = [], callback?: JsonRpcCallback) {
     this.api.call('user_updateProfile', params, callback);
-  };
+  }
 
   isValidProjectCode(code: string): boolean {
     if (angular.isUndefined(code)) return false;
@@ -56,5 +56,5 @@ export class TranslateProjectService extends ProjectService {
     // dashes and underscores
     const pattern = /^[a-z][a-z0-9\-_]*$/;
     return pattern.test(code);
-  };
+  }
 }
