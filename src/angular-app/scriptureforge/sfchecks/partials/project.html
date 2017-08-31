@@ -89,6 +89,13 @@
     </div>
     <listview hide-if-empty="true" items="texts" visible-items="visibleTexts" select="">
         <table class="texts table">
+            <tr>
+                <th><!-- Checkbox column has no header --></th>
+                <th data-ng-click="doSortByColumn('title')"        >Text title <i data-ng-class="sortIconClass('title')"></i></th>
+                <th data-ng-click="doSortByColumn('questionCount')">Question count <i data-ng-class="sortIconClass('questionCount')"></i></th>
+                <th data-ng-click="doSortByColumn('responseCount')">Response count <i data-ng-class="sortIconClass('responseCount')"></i></th>
+                <th data-ng-click="doSortByColumn('dateCreated')"  >Date text was added <i data-ng-class="sortIconClass('dateCreated')"></i></th>
+            </tr>
             <tr data-ng-repeat="text in visibleTexts" data-ng-class="{active: isSelected(text)}">
                 <td>
                     <label data-ng-show="rights.archive">
