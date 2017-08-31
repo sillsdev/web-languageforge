@@ -4,15 +4,18 @@ namespace Api\Model\Shared\Dto;
 
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\ActivityModel;
 use Api\Model\Shared\ActivityModelMongoMapper;
+use Api\Model\Shared\CommentModel;
 use Api\Model\Shared\GlobalUnreadActivityModel;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\Mapper\MapperListModel;
 use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\ProjectList_UserModel;
 use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\UnreadItem;
 use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UnreadActivityModel;
 
@@ -33,7 +36,7 @@ class ActivityListDto
     }
 
     // note: it could be argued that this is a migration method that is not necessary if we were to migrate the database of existing activity entries with no projectId cjh 2014-07
-    public static function getGlobalUnreadActivityForUser($userId)
+    public static function getGlobalUnreadActivityForUser($userId, $activityFilter = null)
     {
         $unreadActivity = new GlobalUnreadActivityModel($userId);
         $items = $unreadActivity->unreadItems();
@@ -43,11 +46,16 @@ class ActivityListDto
         return $items;
     }
 
-    public static function getUnreadActivityForUserInProject($userId, $projectId)
+    public static function getUnreadActivityForUserInProject($userId, $projectId, $activityFilter = null)
     {
         $unreadActivity = new UnreadActivityModel($userId, $projectId);
         $items = $unreadActivity->unreadItems();
-        $unreadActivity->markAllRead();
+        if (isset($activityFilter)) {
+            $items = array_filter($items, $activityFilter);
+            $unreadActivity->markMultipleRead($items);
+        } else {
+            $unreadActivity->markAllRead();
+        }
         $unreadActivity->write();
 
         return $items;
@@ -66,8 +74,18 @@ class ActivityListDto
         $unreadItems = array();
         foreach ($projectList->entries as $project) {
             $projectModel = new ProjectModel($project['id']);
+            // Sfchecks projects need special handling of the "Users can see each others' responses" option
+            $activityFilter = null;
+            if ($projectModel->appName === SfchecksProjectModel::SFCHECKS_APP) {
+                $sfchecksProjectModel = new SfchecksProjectModel($project['id']);
+                if (! $sfchecksProjectModel->usersSeeEachOthersResponses) {
+                    $activityFilter = function ($itemId) use ($projectModel, $userId) {
+                        return self::filterActivityByUserId($projectModel, $userId, $itemId);
+                    };
+                }
+            }
             $activity = array_merge($activity, self::getActivityForProject($projectModel));
-            $unreadItems = array_merge($unreadItems, self::getUnreadActivityForUserInProject($userId, $project['id']));
+            $unreadItems = array_merge($unreadItems, self::getUnreadActivityForUserInProject($userId, $project['id'], $activityFilter));
         }
         $unreadItems = array_merge($unreadItems, self::getGlobalUnreadActivityForUser($userId));
         uasort($activity, array('self', 'sortActivity'));
@@ -77,6 +95,34 @@ class ActivityListDto
         );
 
         return $dto;
+    }
+
+    // Helper function for getActivityForUser()
+    private static function filterActivityByUserId($projectModel, $userId, $itemId)
+    {
+        $activity = new ActivityModel($projectModel, $itemId);
+        switch ($activity->action) {
+            case ActivityModel::ADD_ANSWER:
+            case ActivityModel::UPDATE_ANSWER:
+                $authorId = $activity->userRef->id;
+                return ($authorId == $userId);
+                break;
+            case ActivityModel::ADD_COMMENT:
+            case ActivityModel::UPDATE_COMMENT:
+                $commentAuthorId = $activity->userRef->id;
+                $answerAuthorId = $activity->userRef2->id;
+                return ($answerAuthorId == $userId && $commentAuthorId == $userId);
+                break;
+            case ActivityModel::INCREASE_SCORE:
+            case ActivityModel::DECREASE_SCORE:
+                // These activities actually do not preserve enough information for us to tell whose answer was voted on!
+                // So we can only filter by "You yourself voted an answer up or down", and can't tell whose answer it was.
+                $voterId = $activity->userRef->id;
+                return ($voterId == $userId);
+                break;
+            default:
+                return true;
+        }
     }
 
     private static function sortActivity($a, $b)
