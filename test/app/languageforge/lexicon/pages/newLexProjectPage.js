@@ -11,7 +11,7 @@ function NewLexProjectPage() {
   };
 
   // form controls
-  this.noticeList = element.all(by.repeater('notice in notices()'));
+  this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.partialButtonText('×'));
   this.newLexProjectForm = element(by.tagName('form'));
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));

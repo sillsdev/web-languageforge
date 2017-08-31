@@ -628,7 +628,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
                 editorService.refreshEditorData();
               });
             }
-          });
+          }, angular.noop);
       };
 
       $scope.getCompactItemListOverlay = function getCompactItemListOverlay(entry) {
@@ -859,7 +859,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         };
 
         angular.forEach(filteredEntries, function (entry) {
-          var word = $scope.getWordForDisplay(entry);
+          var word = $scope.getCompactListItemForDisplay($scope.config, entry);
           var meaning = $scope.getMeaningForDisplay(entry);
           if (word.indexOf(query) === 0) {
             prioritizedEntries.wordBeginning.push(entry);
