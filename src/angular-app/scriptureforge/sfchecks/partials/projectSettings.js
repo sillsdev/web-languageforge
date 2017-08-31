@@ -15,10 +15,10 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
   }])
   .controller('ProjectSettingsCtrl', ['$scope', 'breadcrumbService', 'userService',
     'sfchecksProjectService', 'sessionService', 'silNoticeService', 'messageService',
-    'sfchecksLinkService', '$q',
+    'linkService', '$q',
   function ($scope, breadcrumbService, userService,
             sfchecksProjectService, ss, notice, messageService,
-            sfchecksLinkService, $q) {
+            linkService, $q) {
     $scope.project = {};
     $scope.finishedLoading = false;
     $scope.show = {};
@@ -40,7 +40,7 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
         $scope.list.archivedTexts = result.data.archivedTexts;
         for (var i = 0; i < $scope.list.archivedTexts.length; i++) {
           $scope.list.archivedTexts[i].url =
-            sfchecksLinkService.text($scope.list.archivedTexts[i].id);
+            linkService.text($scope.list.archivedTexts[i].id);
           $scope.list.archivedTexts[i].dateModified =
             new Date($scope.list.archivedTexts[i].dateModified);
         }
@@ -61,8 +61,8 @@ angular.module('sfchecks.projectSettings', ['bellows.services', 'sfchecks.servic
         breadcrumbService.set('top',
             [
              { href: '/app/projects', label: 'My Projects' },
-             { href: sfchecksLinkService.project(), label: result.data.bcs.project.crumb },
-             { href: sfchecksLinkService.project() + '/settings', label: 'Settings' }
+             { href: linkService.project(), label: result.data.bcs.project.crumb },
+             { href: linkService.project() + '/settings', label: 'Settings' }
             ]
         );
         $scope.finishedLoading = true;

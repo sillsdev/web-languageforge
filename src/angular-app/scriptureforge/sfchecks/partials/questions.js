@@ -4,10 +4,10 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
   'sfchecks.services', 'ngFileUpload', 'ngSanitize', 'ngRoute', 'sgw.soundmanager',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice'])
   .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService',
-    '$routeParams', 'sessionService', 'sfchecksLinkService', 'breadcrumbService',
+    '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
     'silNoticeService', 'modalService', '$q',
   function ($scope, questionService, qts,
-            $routeParams, ss, sfchecksLinkService, breadcrumbService,
+            $routeParams, ss, linkService, breadcrumbService,
             notice, modalService, $q) {
     var Q_TITLE_LIMIT = 70;
     var textId = $routeParams.textId;
@@ -75,15 +75,15 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
-      if (checkbox.checked && selectedIndex == -1) {
+      if (checkbox.checked && selectedIndex === -1) {
         $scope.selected.push(item);
-      } else if (!checkbox.checked && selectedIndex != -1) {
+      } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
     $scope.isSelected = function (item) {
-      if (item == null) {
+      if (item === null) {
         return false;
       }
 
@@ -101,8 +101,9 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.questions = [];
     $scope.queryQuestions = function () {
       //console.log("queryQuestions()");
-      $q.all([ss.getSession(), questionService.list(textId)]).then(function(data) {
-        var session = data[0], result = data[1];
+      $q.all([ss.getSession(), questionService.list(textId)]).then(function (data) {
+        var session = data[0];
+        var result = data[1];
         $scope.selected = [];
         $scope.questions = result.data.entries;
         $scope.questionsCount = result.data.count;
@@ -110,13 +111,13 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         $scope.enhanceDto($scope.questions);
         $scope.project = result.data.project;
         $scope.text = result.data.text;
-        if ($scope.text.audioFileName != '') {
+        if ($scope.text.audioFileName !== '') {
           $scope.audioPlayUrl = '/assets/sfchecks/' + $scope.project.slug + '/' + $scope.text.id +
             '_' + $scope.text.audioFileName;
           $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
         }
 
-        $scope.text.url = sfchecksLinkService.text(textId);
+        $scope.text.url = linkService.text(textId);
 
         //console.log($scope.project.name);
         //console.log($scope.text.title);
@@ -125,13 +126,14 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         breadcrumbService.set('top',
           [
             { href: '/app/projects', label: 'My Projects' },
-            { href: sfchecksLinkService.project(), label: $scope.project.name },
-            { href: sfchecksLinkService.text($routeParams.textId), label: $scope.text.title }
+            { href: linkService.project(), label: $scope.project.name },
+            { href: linkService.text($routeParams.textId), label: $scope.text.title }
           ]
         );
 
         var rights = result.data.rights;
-        $scope.rights.archive = session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE) &&
+        $scope.rights.archive =
+          session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.ARCHIVE) &&
           !session.project().isArchived;
         $scope.rights.create = session.hasRight(rights, ss.domain.QUESTIONS, ss.operation.CREATE) &&
           !session.project().isArchived;
@@ -159,7 +161,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         questionIds.push($scope.selected[i].id);
       }
 
-      if (questionIds.length == 1) {
+      if (questionIds.length === 1) {
         message = 'Are you sure you want to archive the selected question?';
       } else {
         message = 'Are you sure you want to archive the ' + questionIds.length +
@@ -177,14 +179,14 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
           if (result.ok) {
             $scope.selected = []; // Reset the selection
             $scope.queryQuestions();
-            if (questionIds.length == 1) {
+            if (questionIds.length === 1) {
               notice.push(notice.SUCCESS, 'The question was archived successfully');
             } else {
               notice.push(notice.SUCCESS, 'The questions were archived successfully');
             }
           }
         });
-      });
+      }, angular.noop);
     };
 
     // Add question
@@ -223,7 +225,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.makeQuestionIntoTemplate = function () {
       // Expects one, and only one, question to be selected (checked)
       var l = $scope.selected.length;
-      if (l != 1) {
+      if (l !== 1) {
         return;
       }
 
@@ -242,7 +244,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
 
     $scope.enhanceDto = function (items) {
       angular.forEach(items, function (item) {
-        item.url = sfchecksLinkService.question(textId, item.id);
+        item.url = linkService.question(textId, item.id);
         item.calculatedTitle = questionService.util.calculateTitle(item.title, item.description,
           Q_TITLE_LIMIT);
       });
@@ -251,10 +253,10 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
   }])
   .controller('QuestionsSettingsCtrl', ['$scope', 'Upload', 'sessionService', '$routeParams',
     'breadcrumbService', 'silNoticeService', 'textService', 'questionService',
-    'sfchecksLinkService', 'modalService', '$q',
+    'linkService', 'modalService', '$q',
   function ($scope, Upload, ss, $routeParams,
             breadcrumbService, notice, textService, questionService,
-            sfchecksLinkService, modalService, $q) {
+            linkService, modalService, $q) {
     var Q_TITLE_LIMIT = 50;
     var textId = $routeParams.textId;
     $scope.textId = textId;
@@ -270,15 +272,16 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.uploadResult = '';
 
     $scope.queryTextSettings = function () {
-      $q.all([ss.getSession(), textService.settingsDto($scope.textId)]).then(function(data) {
-        var session = data[0], result = data[1];
+      $q.all([ss.getSession(), textService.settingsDto($scope.textId)]).then(function (data) {
+        var session = data[0];
+        var result = data[1];
         $scope.dto = result.data;
         $scope.textTitle = $scope.dto.text.title;
         $scope.editedText.title = $scope.dto.text.title;
         $scope.editedText.fontfamily = $scope.dto.text.fontfamily;
         $scope.settings.archivedQuestions = result.data.archivedQuestions;
         for (var i = 0; i < $scope.settings.archivedQuestions.length; i++) {
-          $scope.settings.archivedQuestions[i].url = sfchecksLinkService.question($scope.textId,
+          $scope.settings.archivedQuestions[i].url = linkService.question($scope.textId,
             $scope.settings.archivedQuestions[i].id);
           $scope.settings.archivedQuestions[i].calculatedTitle =
             questionService.util.calculateTitle($scope.settings.archivedQuestions[i].title,
@@ -298,9 +301,9 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         breadcrumbService.set('top',
           [
             { href: '/app/projects', label: 'My Projects' },
-            { href: sfchecksLinkService.project(), label: $scope.dto.bcs.project.crumb },
-            { href: sfchecksLinkService.text($routeParams.textId), label: $scope.dto.text.title },
-            { href: sfchecksLinkService.text($routeParams.textId) + '/Settings',
+            { href: linkService.project(), label: $scope.dto.bcs.project.crumb },
+            { href: linkService.text($routeParams.textId), label: $scope.dto.text.title },
+            { href: linkService.text($routeParams.textId) + '/Settings',
               label: 'Settings' }
           ]
         );
@@ -335,7 +338,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         bodyText: msg
       };
       modalService.showModal({}, modalOptions).then(function () {
-        if ($scope.editedText.content && $scope.editedText.content != $scope.dto.text.content) {
+        if ($scope.editedText.content && $scope.editedText.content !== $scope.dto.text.content) {
           // Wait; the user had already entered text. Pop up ANOTHER confirm box.
           msg = 'Caution: You had previous edits in the USX text box, which will be replaced if ' +
             'you proceed. Are you really sure you want to throw away your previous edits?';
@@ -351,7 +354,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         } else {
           $scope.editedText.content = $scope.dto.text.content;
         }
-      });
+      }, angular.noop);
     };
 
     $scope.readUsx = function readUsx(file) {
@@ -363,7 +366,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         // First few characters should be optional BOM, optional <?xml ..., then <usx ...
         var startOfText = reader.result.slice(0, 1000);
         var usxIndex = startOfText.indexOf('<usx');
-        if (usxIndex != -1) {
+        if (usxIndex !== -1) {
           $scope.$apply(function () {
             $scope.editedText.content = reader.result;
           });
@@ -382,7 +385,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.uploadAudio = function uploadAudio(file) {
       if (!file || file.$error) return;
 
-      ss.getSession().then(function(session) {
+      ss.getSession().then(function (session) {
         if (file.size > session.fileSizeMax()) {
           notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
             $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
@@ -406,7 +409,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
               notice.push(notice.SUCCESS, $scope.uploadResult);
             } else {
               notice.push(notice.ERROR, response.data.data.errorMessage);
-              if (response.data.data.errorType == 'UserMessage') {
+              if (response.data.data.errorType === 'UserMessage') {
                 $scope.uploadResult = response.data.data.errorMessage;
               }
             }
@@ -444,15 +447,15 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
     $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
-      if (checkbox.checked && selectedIndex == -1) {
+      if (checkbox.checked && selectedIndex === -1) {
         $scope.selected.push(item);
-      } else if (!checkbox.checked && selectedIndex != -1) {
+      } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
     $scope.isSelected = function (item) {
-      if (item == null) {
+      if (item === null) {
         return false;
       }
 
@@ -477,7 +480,7 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
         if (result.ok) {
           $scope.selected = []; // Reset the selection
           $scope.queryTextSettings();
-          if (questionIds.length == 1) {
+          if (questionIds.length === 1) {
             notice.push(notice.SUCCESS, 'The question was re-published successfully');
           } else {
             notice.push(notice.SUCCESS, 'The questions were re-published successfully');

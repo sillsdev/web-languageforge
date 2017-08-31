@@ -10,7 +10,7 @@
             <div class="card card-default col-md-6 offset-md-3">
                 <div class="card-block">
                     <div class="form-group row">
-                        <label class="control-label col-md-4 text-md-right" for="name" translate="Full Name"></label>
+                        <label class="control-label col-md-4 text-md-right" for="name" data-translate="Full Name"></label>
                         <div class="controls col-md-8">
                             <div class="input-group">
                                 <input class="form-control" id="name" autofocus
@@ -21,7 +21,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-md-4 text-md-right" for="email" translate="Email Address"></label>
+                        <label class="control-label col-md-4 text-md-right" for="email" data-translate="Email Address"></label>
                         <div class="controls col-md-8">
                             <div class="input-group">
                                 <input class="form-control" id="email"
@@ -36,9 +36,9 @@
                         </div>
                     </div>
                     <div>
-                        <script src="/node_modules/zxcvbn/dist/zxcvbn.js"></script>
+                        <script src="/dist/zxcvbn/zxcvbn.js"></script>
                         <div class="form-group row">
-                            <label class="control-label col-md-4 text-md-right" for="password" translate="Password"></label>
+                            <label class="control-label col-md-4 text-md-right" for="password" data-translate="Password"></label>
                             <div class="controls col-md-8">
                                 <div class="input-group">
                                     <input class="form-control" id="password"
@@ -46,8 +46,10 @@
                                            placeholder="minimum 7 characters"
                                            zxcvbn="passwordStrength"
                                            ng-change="validateForm()"
-                                           data-ng-model="record.password"/>
-                                    <span class="input-group-addon" title="Password Strength" data-ng-show="record.password.length > 0" data-ng-class="{'alert-danger': (passwordStrength.score < 2 || record.password.length < 7), 'alert-warning': (passwordStrength.score == 2), 'alert-info': passwordStrength.score == 3, 'alert-success': passwordStrength.score == 4 }">
+                                           data-ng-model="record.password" />
+                                    <span class="input-group-addon" title="Password Strength"
+                                          data-ng-show="record.password.length > 0"
+                                          data-ng-class="{'alert-danger': (passwordStrength.score < 2 || record.password.length < 7), 'alert-warning': (passwordStrength.score == 2), 'alert-info': passwordStrength.score == 3, 'alert-success': passwordStrength.score == 4 }">
                                         <i class="fa fa-key"></i> {{ ['Too Weak', 'Too Weak', 'Fair', 'Good', 'Strong'][passwordStrength.score]}}
                                     </span>
                                 </div>
@@ -56,14 +58,15 @@
                     </div>
                     <div class="form-group row">
                         <div class="controls col-md-8 offset-md-4">
-                            <label class="checkbox"><input type="checkbox" data-ng-model="showPassword"/> {{'Show password' |
-                                translate}}</label>
+                            <label class="checkbox">
+                                <input type="checkbox" data-ng-model="showPassword" />
+                                {{'Show password' | translate}}</label>
                         </div>
                     </div>
                     <div class="form-group form-group-last row">
                         <div class="controls col-md-8 offset-md-4">
-                            <pui-captcha data-pui-items="captchaData.items" data-pui-expected-item-name="captchaData.expectedItemName"
-                                         data-pui-selected="record.captcha"></pui-captcha>
+                            <pui-captcha pui-items="captchaData.items" pui-expected-item-name="captchaData.expectedItemName"
+                                         pui-selected="record.captcha"></pui-captcha>
                         </div>
                     </div>
                 </div>
@@ -80,10 +83,14 @@
                             <i class="fa fa-thumbs-o-up"></i>
                         </span>
                     </button>
-                    <span role="alert" class="text-danger" id="captchaInvalid" ng-show="captchaFailed">The shape verification failed.  Please try again.<br></span>
-                    <span role="alert" class="text-danger" id="emailInvalid" data-ng-show="!emailValid">Please enter a valid email address. An example of an email address: john@doe.com<br></span>
-                    <span role="alert" class="text-danger" id="emailTaken" data-ng-show="emailExists">{{takenEmail}} is taken. Please try another<br></span>
-                    <span role="alert" class="text-danger" id="passwordIsWeak" data-ng-show="passwordIsWeak">Password is too weak.<br></span>
+                    <span role="alert" class="text-danger" id="captchaInvalid" ng-show="captchaFailed">
+                        The shape verification failed.  Please try again.<br></span>
+                    <span role="alert" class="text-danger" id="emailInvalid" data-ng-show="!emailValid">
+                        Please enter a valid email address. An example of an email address: john@doe.com<br></span>
+                    <span role="alert" class="text-danger" id="emailTaken" data-ng-show="emailExists">
+                        {{takenEmail}} is taken. Please try another<br></span>
+                    <span role="alert" class="text-danger" id="passwordIsWeak" data-ng-show="passwordIsWeak">
+                        Password is too weak.<br></span>
                 </div>
             </div>
             <div class="row">

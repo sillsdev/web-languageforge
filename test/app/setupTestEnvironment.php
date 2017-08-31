@@ -110,6 +110,22 @@ $memberUserId = UserCommands::updateUser(array(
     'role' => SystemRoles::USER),
     $website
 );
+$member2UserId = UserCommands::createUser(array(
+    'name' => $constants['member2Name'],
+    'email' => $constants['member2Email'],
+    'password' => $constants['member2Password']),
+    $website
+);
+$member2UserId = UserCommands::updateUser(array(
+    'id' => $member2UserId,
+    'name' => $constants['member2Name'],
+    'email' => $constants['member2Email'],
+    'username' => $constants['member2Username'],
+    'password' => $constants['member2Password'],
+    'active' => true,
+    'role' => SystemRoles::USER),
+    $website
+);
 $expiredUserId = UserCommands::createUser(array(
     'name' => $constants['expiredName'],
     'email' => $constants['expiredEmail'],
@@ -231,6 +247,7 @@ $srTestProjectId = ProjectCommands::createProject(
 
 ProjectCommands::updateUserRole($testProjectId, $managerUserId, ProjectRoles::MANAGER);
 ProjectCommands::updateUserRole($testProjectId, $memberUserId, ProjectRoles::CONTRIBUTOR);
+ProjectCommands::updateUserRole($testProjectId, $member2UserId, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($testProjectId, $resetUserId, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($otherProjectId, $adminUserId, ProjectRoles::MANAGER);
 ProjectCommands::updateUserRole($fourthProjectId, $adminUserId, ProjectRoles::MANAGER);

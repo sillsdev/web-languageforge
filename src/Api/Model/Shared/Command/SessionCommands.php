@@ -14,6 +14,7 @@ class SessionCommands
      * @param string $userId
      * @param Website $website
      * @param string $appName - refers to the application being used by the user
+     * @param string $mockFilename
      * @return array
      */
     public static function getSessionData($projectId, $userId, $website, $appName = '')
@@ -30,7 +31,7 @@ class SessionCommands
             $sessionData['username'] = $user->username;
         }
 
-        if ($projectId) {
+        if ($projectId && ProjectModel::projectExistsOnWebsite($projectId, $website)) {
             $project = ProjectModel::getById($projectId);
             if (array_key_exists($userId, $project->users)) {
                 $sessionData['project'] = array();

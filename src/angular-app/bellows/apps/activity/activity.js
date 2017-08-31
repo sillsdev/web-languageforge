@@ -3,15 +3,15 @@
 // Declare app level module which depends on filters, and services
 angular.module('activity',
     [
-     'ngRoute',
-     'bellows.services',
-     'bellows.filters',
-     'ui.bootstrap',
-     'sgw.ui.breadcrumb',
+      'ngRoute',
+      'coreModule',
+      'bellows.services',
+      'ui.bootstrap',
+      'sgw.ui.breadcrumb'
     ])
-  .controller('ActivityCtrl', ['$scope', '$sce', 'activityPageService', 'sfchecksLinkService',
+  .controller('ActivityCtrl', ['$scope', '$sce', 'activityPageService', 'linkService',
     'sessionService', 'utilService', 'breadcrumbService',
-  function ($scope, $sce, activityService, sfchecksLinkService,
+  function ($scope, $sce, activityService, linkService,
             sessionService, util, breadcrumbService) {
     $scope.getAvatarUrl = util.getAvatarUrl;
 
@@ -28,29 +28,29 @@ angular.module('activity',
     $scope.decodeActivityList = function (items) {
       for (var i = 0; i < items.length; i++) {
         if ('userRef' in items[i]) {
-          items[i].userHref = sfchecksLinkService.user(items[i].userRef.id);
+          items[i].userHref = linkService.user(items[i].userRef.id);
         }
 
         if ('userRef2' in items[i]) {
-          items[i].userHref2 = sfchecksLinkService.user(items[i].userRef2.id);
+          items[i].userHref2 = linkService.user(items[i].userRef2.id);
         }
 
         if ('projectRef' in items[i]) {
           items[i].projectHref =
-            sfchecksLinkService.project(items[i].projectRef.id, items[i].projectRef.type);
+            linkService.project(items[i].projectRef.id, items[i].projectRef.type);
         }
 
         if ('textRef' in items[i]) {
-          items[i].textHref = sfchecksLinkService.text(items[i].textRef, items[i].projectRef.id);
+          items[i].textHref = linkService.text(items[i].textRef, items[i].projectRef.id);
         }
 
         if ('questionRef' in items[i]) {
-          items[i].questionHref = sfchecksLinkService.question(items[i].textRef,
+          items[i].questionHref = linkService.question(items[i].textRef,
             items[i].questionRef, items[i].projectRef.id);
         }
 
         if ('entryRef' in items[i]) {
-          items[i].entryHref = sfchecksLinkService.entry(items[i].entryRef, items[i].projectRef.id);
+          items[i].entryHref = linkService.entry(items[i].entryRef, items[i].projectRef.id);
         }
 
         if ('content' in items[i]) {
@@ -89,8 +89,8 @@ angular.module('activity',
         $scope.showAllActivity = false;
         $scope.filteredActivities = [];
         angular.forEach($scope.activities, function (activity) {
-          if (activity.userRef && activity.userRef.id == session.userId() ||
-            activity.userRef2 && activity.userRef2.id == session.userId()
+          if (activity.userRef && activity.userRef.id === session.userId() ||
+            activity.userRef2 && activity.userRef2.id === session.userId()
           ) {
             $scope.filteredActivities.push(activity);
           }
