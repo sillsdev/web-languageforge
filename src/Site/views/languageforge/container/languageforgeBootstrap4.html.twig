@@ -62,7 +62,7 @@
                             <a class="dropdown-item" href="/auth/logout">Logout</a>
                         </div>
                     </li>
-                    <h1 class="mobile-title"><a href="/"><img src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png"> {{ app.website.name }}</a></h1>
+                    <a class="navbar-brand" href="/"><span style="margin-left:20px">{{ app.website.name }}</span></a>
                 </ul>
             </div>
 
@@ -126,13 +126,6 @@
 
     {% else %}
         <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060">
-            <span class="desktop-title navbar-brand hidden-sm-down">
-                <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
-                <a class="" href="/">{{ app.website.name }}</a>
-            </span>
-
-            <h1 class="mobile-title pull-left hidden-md-up"><a href="/"><img src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png"> {{ app.website.name }}</a></h1>
-
             <ul class="nav navbar-nav pull-right">
                 <li class="nav-item header-button-rounded">
                     <a class="nav-link" href="/public/signup">Sign Up</a>
@@ -141,6 +134,7 @@
                     <a class="nav-link" href="/auth/login">Login</a>
                 </li>
             </ul>
+            <a class="navbar-brand" href="/"><img src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png" style="width:70px; height:70px; position:relative; top:-15px" class="align-top d-inline-block hidden-sm-down"> {{ app.website.name }}</a>
         </nav>
 
     {% endif %}
