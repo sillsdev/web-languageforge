@@ -7,30 +7,23 @@ import { UtilityService } from '../../../bellows/core/utility.service';
 import { MachineService } from '../core/machine.service';
 import { RealTimeService } from '../core/realtime.service';
 import { TranslateProjectService } from '../core/translate-project.service';
-import { DocumentData } from './document-data';
+import { DocumentEditor } from './document-editor';
 import { SuggestionsTheme } from './quill/suggestions-theme';
+import { Segment } from './segment';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: any;
   tecInterfaceConfig: any;
   tecOnUpdate: (params: { $event: { project: any } }) => void;
 
-  source: DocumentData;
-  target: DocumentData;
-  right: DocumentData;
-  left: DocumentData;
+  source: DocumentEditor;
+  target: DocumentEditor;
+  right: DocumentEditor;
+  left: DocumentEditor;
   selectedDocumentSetIndex: number = 0;
   documentSets: any[] = [];
 
-  // noinspection JSUnusedGlobalSymbols
-  readonly statusOptions: Array<{ key: number, name: string }> = [
-    { key: 0, name: 'none' },
-    { key: 1, name: 'draft' },
-    { key: 2, name: 'approved' }
-  ];
-
   private currentDocIds: string[] = [];
-  private selectedSegmentIndex: number = -1;
   private confidenceThreshold: number = 0.2;
 
   static $inject = ['$scope', '$q', 'silNoticeService',
@@ -40,8 +33,8 @@ export class TranslateEditorController implements angular.IController {
               private realTime: RealTimeService, private modal: ModalService, private util: UtilityService) { }
 
   $onInit(): void {
-    this.source = new DocumentData(this.$q, 'source', 'Source');
-    this.target = new DocumentData(this.$q, 'target', 'Target');
+    this.source = new DocumentEditor(this.machineService, this.$q.defer(), DocumentEditor.sourceType, 'Source');
+    this.target = new DocumentEditor(this.machineService, this.$q.defer(), DocumentEditor.targetType, 'Target');
     const modulesConfig: any = {
       toolbar: [
         ['bold', 'italic', 'underline', 'strike'],      // toggled buttons
@@ -60,16 +53,12 @@ export class TranslateEditorController implements angular.IController {
         container: '.ql-suggestions'
       },
 
-      more: {
-        container: '.ql-more'
-      },
-
       dragAndDrop: {
-        onDrop: (file: File, editor: Quill, event: DragEvent) => {
-          return this.onDrop(file, editor, event);
+        onDrop: (file: File, quill: Quill, event: DragEvent) => {
+          return this.onDrop(file, quill, event);
         // },
-        // onPaste: (item: DataTransferItem, editor: Quill, event: ClipboardEvent) => {
-        //   return this.onPaste(item, editor, event);
+        // onPaste: (item: DataTransferItem, quill: Quill, event: ClipboardEvent) => {
+        //   return this.onPaste(item, quill, event);
         }
       }
 
@@ -100,7 +89,7 @@ export class TranslateEditorController implements angular.IController {
         if (this.tecProject.config.documentSets.idsOrdered != null &&
           this.tecProject.config.documentSets.idsOrdered.length > 0
         ) {
-          for (let id of this.tecProject.config.documentSets.idsOrdered) {
+          for (const id of this.tecProject.config.documentSets.idsOrdered) {
             if (result.data.documentSetList[id] != null) {
               this.documentSets.push(result.data.documentSetList[id]);
             }
@@ -117,14 +106,14 @@ export class TranslateEditorController implements angular.IController {
           this.selectedDocumentSetIndex = this.getDocumentSetIndexById(userPreferences.selectedDocumentSetId);
         }
 
-        this.$q.all([this.source.editorIsCreated.promise, this.target.editorIsCreated.promise]).then(() => {
+        this.$q.all([this.source.quillIsCreated.promise, this.target.quillIsCreated.promise]).then(() => {
           if (userPreferences.isDocumentOrientationTargetRight != null &&
             userPreferences.isDocumentOrientationTargetRight
           ) {
             this.swapEditors(false);
           } else {
-            this.editorCreated(this.left.editor, this.left);
-            this.editorCreated(this.right.editor, this.right);
+            this.quillCreated(this.left.quill, this.left);
+            this.quillCreated(this.right.quill, this.right);
           }
         });
       }
@@ -134,8 +123,8 @@ export class TranslateEditorController implements angular.IController {
   selectDocumentSet(index: number): void {
     if (this.selectedDocumentSetIndex !== index) {
       this.selectedDocumentSetIndex = index;
-      this.contentChanged(this.left.editor, this.left);
-      this.contentChanged(this.right.editor, this.right);
+      this.switchCurrentDocument(this.left);
+      this.switchCurrentDocument(this.right);
 
       if (this.selectedDocumentSetIndex in this.documentSets) {
         const userPreferences = this.tecProject.config.userPreferences;
@@ -195,18 +184,20 @@ export class TranslateEditorController implements angular.IController {
       this.projectApi.updateDocumentSet(docSet, result => {
         if (result.ok) {
           angular.merge(docSet, result.data);
-
           let noticeMessage = 'Document \'' + docSet.name + '\' successfully ';
           if (isCreate) {
             this.documentSets.push(docSet);
+            this.tecProject.config.documentSets.idsOrdered.push(docSet.id);
+            this.projectApi.updateConfig(this.tecProject.config);
             this.selectDocumentSet(this.documentSets.length - 1);
-            noticeMessage = noticeMessage + 'added.';
+            noticeMessage += 'added.';
+            this.notice.push(this.notice.SUCCESS, noticeMessage);
           } else {
             this.documentSets[index] = docSet;
-            noticeMessage = noticeMessage + 'updated.';
+            noticeMessage += 'updated.';
+            this.notice.push(this.notice.SUCCESS, noticeMessage);
           }
           this.tecOnUpdate({ $event: { project: this.tecProject } });
-          this.notice.push(this.notice.SUCCESS, noticeMessage);
         } else {
           this.notice.push(this.notice.ERROR, 'Sorry, there was a problem saving your changes.');
         }
@@ -277,53 +268,42 @@ export class TranslateEditorController implements angular.IController {
       this.selectedDocumentSetIndex < this.documentSets.length;
   }
 
-  getEditorLabel(doc: DocumentData): string {
+  getEditorLabel(editor: DocumentEditor): string {
     let docName = '';
     if (this.documentSets.length > 0 && this.selectedDocumentSetIndex in this.documentSets) {
       docName = this.documentSets[this.selectedDocumentSetIndex].name + ' ';
     }
 
-    return docName + doc.label + ((doc.inputSystem.tag) ? ' (' + doc.inputSystem.tag + ')' : '');
+    return docName + editor.label + ((editor.inputSystem.tag) ? ' (' + editor.inputSystem.tag + ')' : '');
   }
 
-  contentChanged(editor: Quill, doc: DocumentData): void {
-    const docId = this.docId(doc.docType);
-    if (docId === '') {
-      return;
-    }
-
-    if (this.currentDocIds[doc.docType] !== docId) {
-      this.realTime.disconnectRichTextDoc(this.currentDocIds[doc.docType], editor);
-      delete this.currentDocIds[doc.docType];
-      this.editorCreated(editor, doc);
-    }
-
-    this.updateContent(doc);
+  contentChanged(editor: DocumentEditor): void {
+    this.updateEditor(editor);
   }
 
-  selectionChanged(editor: Quill, doc: DocumentData): void {
-    (editor.theme as SuggestionsTheme).suggestTooltip.hide();
-    if (doc.docType === 'target') {
-      this.contentChanged(editor, doc);
+  selectionChanged(editor: DocumentEditor): void {
+    this.target.hideSuggestions();
+    if (editor.docType === DocumentEditor.targetType) {
+      this.updateEditor(editor);
     }
   }
 
-  editorCreated(editor: Quill, doc: DocumentData): void {
-    doc.editor = editor;
-    doc.editorIsCreated.resolve(true);
+  quillCreated(quill: Quill, editor: DocumentEditor): void {
+    editor.quill = quill;
+    editor.quillIsCreated.resolve(true);
 
-    const docId = this.docId(doc.docType);
+    const docId = this.docId(editor.docType);
     if (docId !== '') {
-      this.currentDocIds[doc.docType] = docId;
-      this.realTime.createAndSubscribeRichTextDoc(this.tecProject.slug, docId, editor);
+      this.currentDocIds[editor.docType] = docId;
+      this.realTime.createAndSubscribeRichTextDoc(this.tecProject.slug, docId, quill);
     }
   }
 
   swapEditors(writePreferences: boolean = true): void {
-    const leftEditor = this.left.editor;
-    const rightEditor = this.right.editor;
-    this.realTime.disconnectRichTextDoc(this.currentDocIds[this.left.docType], leftEditor);
-    this.realTime.disconnectRichTextDoc(this.currentDocIds[this.right.docType], rightEditor);
+    const leftQuill = this.left.quill;
+    const rightQuill = this.right.quill;
+    this.realTime.disconnectRichTextDoc(this.currentDocIds[this.left.docType], leftQuill);
+    this.realTime.disconnectRichTextDoc(this.currentDocIds[this.right.docType], rightQuill);
     this.currentDocIds = [];
 
     const newLeft = this.right;
@@ -332,8 +312,8 @@ export class TranslateEditorController implements angular.IController {
     delete this.left;
     this.right = newRight;
     this.left = newLeft;
-    this.editorCreated(leftEditor, newLeft);
-    this.editorCreated(rightEditor, newRight);
+    this.quillCreated(leftQuill, newLeft);
+    this.quillCreated(rightQuill, newRight);
 
     if (writePreferences) {
       const userPreferences = this.tecProject.config.userPreferences;
@@ -343,22 +323,16 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  insertSuggestion(doc: DocumentData, suggestionIndex: number): void {
-    const selection = doc.editor.getSelection();
-    if (selection.length > 0) {
+  private switchCurrentDocument(editor: DocumentEditor) {
+    const docId = this.docId(editor.docType);
+    if (docId === '') {
       return;
     }
 
-    const text = this.machineService.getSuggestionText(suggestionIndex);
-    doc.editor.insertText(selection.index, text + ' ', Quill.sources.USER);
-    doc.editor.setSelection(selection.index + text.length + 1, 0, Quill.sources.USER);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  changeStatus(doc: DocumentData, optionKey: number): void {
-    if (doc.docType === 'target') {
-      doc.formatSegmentStateStatus(optionKey, doc.editor.getSelection());
+    if (this.currentDocIds[editor.docType] !== docId) {
+      this.realTime.disconnectRichTextDoc(this.currentDocIds[editor.docType], editor.quill);
+      delete this.currentDocIds[editor.docType];
+      this.quillCreated(editor.quill, editor);
     }
   }
 
@@ -374,121 +348,78 @@ export class TranslateEditorController implements angular.IController {
     return documentSetId + ':' + docKey;
   }
 
-  private updateContent(doc: DocumentData): void {
-    const theme = doc.editor.theme as SuggestionsTheme;
-    switch (doc.docType) {
-      case 'target':
-        this.showAndPositionTooltip(theme.moreTooltip, doc.editor);
-        const newSegmentIndex = this.target.getSegmentIndex();
-        this.learnSegment(newSegmentIndex);
-        this.getSuggestions(newSegmentIndex);
-        this.selectedSegmentIndex = newSegmentIndex;
+  private updateEditor(editor: DocumentEditor): void {
+    const selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
+    const previousDocumentSetId = editor.documentSetId;
+    const previousSegment = editor.currentSegment;
+    const segmentChanged = editor.update(selectedDocumentSetId);
+    switch (editor.docType) {
+      case DocumentEditor.targetType:
+        if (segmentChanged) {
+          if (previousSegment != null && !previousSegment.isTrained) {
+            this.trainSegment(previousDocumentSetId, previousSegment);
+          }
+
+          // select the corresponding source segment
+          this.source.switchCurrentSegment(selectedDocumentSetId, editor.currentSegment.index);
+          // update suggestions for new segment
+          this.machineService.translateInteractively(this.source.currentSegment.text, this.confidenceThreshold,
+            () => this.updatePrefix());
+        } else if (this.source.currentSegment != null) {
+          this.updatePrefix();
+        }
         break;
 
-      case 'source':
-        theme.moreTooltip.hide();
-        theme.suggestTooltip.hide();
-        if (!doc.isTextEmpty()) {
-          const newSourceSegmentText = doc.getSegment(this.selectedSegmentIndex);
-          if (newSourceSegmentText !== doc.segment.text) {
-            doc.segment.text = newSourceSegmentText;
-            this.machineService.translateInteractively(doc.segment.text, this.confidenceThreshold);
-          }
+      case DocumentEditor.sourceType:
+        if (!segmentChanged && this.source.currentSegment != null) {
+          this.machineService.translateInteractively(this.source.currentSegment.text, this.confidenceThreshold);
         }
         break;
     }
   }
 
-  private learnSegment(newSegmentIndex: number): void {
-    if (this.selectedSegmentIndex >= 0 &&
-      !DocumentData.isSelectionCollapsed(this.target.editor.getSelection())
-    ) {
+  private trainSegment(documentSetId: string, segment: Segment): void {
+    if (segment.range.length === 0) {
+      // don't bother training an empty segment
       return;
     }
 
-    let targetSegmentText = this.target.getSegment(this.selectedSegmentIndex);
-    const selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
-    if (this.selectedSegmentIndex < 0) {
-      this.target.updateSegmentLearntData(newSegmentIndex, selectedDocumentSetId);
-    } else if (newSegmentIndex !== this.selectedSegmentIndex
-      || selectedDocumentSetId !== this.target.segment.learnt.documentSetId
-    ) {
-      if (selectedDocumentSetId !== this.target.segment.learnt.documentSetId) {
-        targetSegmentText = this.target.segment.text;
-      }
-
-      if (targetSegmentText !== '' &&
-        DocumentData.isSelectionCollapsed(this.target.segment.learnt.previousSelection) &&
-        !this.target.segment.hasLearntText(targetSegmentText)
-      ) {
-        this.machineService.learnSegment(() => {
-          if (selectedDocumentSetId === this.target.segment.learnt.documentSetId) {
-            this.notice.push(this.notice.SUCCESS, 'The modified line was successfully learnt.');
-            this.target.formatSegmentStateMachineHasLearnt(true, this.target.segment.learnt.previousSelection);
-          } else {
-            const documentSetIndex = this.getDocumentSetIndexById(this.target.segment.learnt.documentSetId);
-            const documentSetName = this.documentSets[documentSetIndex].name;
-            this.notice.push(this.notice.SUCCESS, 'The modified line from the \'' + documentSetName +
-              '\' document set was successfully learnt.');
-            const formatDelta = this.target.createDeltaSegmentStateMachineHasLearnt(true,
-              this.target.segment.blockEndIndex, this.target.segment);
-            this.realTime.updateRichTextDoc(this.tecProject.slug,
-              this.docId(this.target.docType, this.target.segment.learnt.documentSetId), formatDelta,
-              Quill.sources.USER);
-          }
-
-          this.target.updateSegmentLearntData(newSegmentIndex, selectedDocumentSetId);
-        });
+    this.machineService.trainSegment(success => {
+      const selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
+      if (selectedDocumentSetId === documentSetId) {
+        // the selection is still on the same document, so update machine format on current editor
+        this.notice.push(this.notice.SUCCESS, 'The modified sentence was successfully trained.');
+        segment.isTrained = true;
+        this.target.formatSegment(segment);
       } else {
-        this.target.updateSegmentLearntData(newSegmentIndex, selectedDocumentSetId);
+        // the selection is on a different document, so update machine format through real-time service
+        const documentSetIndex = this.getDocumentSetIndexById(documentSetId);
+        const documentSetName = this.documentSets[documentSetIndex].name;
+        this.notice.push(this.notice.SUCCESS, 'The modified sentence from the \'' + documentSetName +
+          '\' document set was successfully trained.');
+        segment.isTrained = true;
+        const formatDelta = this.target.createDeltaSegment(segment);
+        this.realTime.updateRichTextDoc(this.tecProject.slug, this.docId(this.target.docType, documentSetId),
+          formatDelta, Quill.sources.USER);
       }
-    } else {
-      const machineHasLearnt = this.target.segment.hasLearntText(targetSegmentText);
-      this.target.segment.text = targetSegmentText;
-      this.target.updateSegmentState(newSegmentIndex);
-      this.target.updateSegmentBlockEndIndex();
-      if (this.target.segment.state.machineHasLearnt !== machineHasLearnt) {
-        this.target.formatSegmentStateMachineHasLearnt(machineHasLearnt);
-      }
-    }
-  }
-
-  private getSuggestions(newSegmentIndex: number): void {
-    const newSourceSegmentText = this.source.getSegment(newSegmentIndex);
-    if (newSegmentIndex !== this.selectedSegmentIndex || newSourceSegmentText !== this.source.segment.text) {
-      this.source.segment.text = newSourceSegmentText;
-      this.machineService.translateInteractively(this.source.segment.text, this.confidenceThreshold,
-        () => this.updatePrefix(newSegmentIndex));
-    } else {
-      this.updatePrefix(newSegmentIndex);
-    }
-  }
-
-  private updatePrefix(segmentIndex: number): void {
-    this.$scope.$applyAsync(() => {
-      this.target.suggestions = this.machineService.updatePrefix(this.target.getSegment(segmentIndex));
-      setTimeout(() => {
-        this.showAndPositionTooltip((this.target.editor.theme as SuggestionsTheme).suggestTooltip, this.target.editor,
-          this.target.hasSuggestion());
-      }, 0);
     });
   }
 
-  private showAndPositionTooltip(tooltip: Tooltip, editor: Quill, hasCondition: boolean = true): void {
-    const selection = editor.getSelection();
-    if (DocumentData.isSelectionCollapsed(selection) && hasCondition) {
-      tooltip.show();
-      tooltip.position(editor.getBounds(selection.index, selection.length));
-    } else {
-      tooltip.hide();
-    }
+  private updatePrefix(): void {
+    // this method can be called asynchronously, so use $applyAsync()
+    this.$scope.$applyAsync(() => {
+      this.target.suggestions = this.machineService.updatePrefix(this.target.currentSegment.text);
+      setTimeout(() => {
+        this.target.showSuggestions();
+      }, 0);
+    });
   }
 
   private getDocumentSetIndexById(documentSetId: string): number {
     return this.documentSets.findIndex(docSet => docSet.id === documentSetId);
   }
 
-  private onDrop(file: File, editor: Quill, event: DragEvent): void {
+  private onDrop(file: File, quill: Quill, event: DragEvent): void {
     if (!file.name.toLowerCase().endsWith('.usx') && !file.name.toLowerCase().endsWith('.txt')) {
       this.$scope.$applyAsync(() => {
         this.notice.push(this.notice.ERROR, 'Drag a USX or text file.');
@@ -499,14 +430,14 @@ export class TranslateEditorController implements angular.IController {
     event.stopPropagation();
     event.preventDefault();
     if (file.name.toLowerCase().endsWith('.usx')) {
-      this.notice.setLoading('Reading USX file "'+ file.name + '"...');
+      this.notice.setLoading('Reading USX file "' + file.name + '"...');
       this.util.readUsxFile(file).then((usx: string) => {
-        this.notice.setLoading('Formatting USX file "'+ file.name + '" data...');
-        this.projectApi.usxToHtml(usx).then((result) => {
+        this.notice.setLoading('Formatting USX file "' + file.name + '" data...');
+        this.projectApi.usxToHtml(usx).then(result => {
           if (result.ok) {
             this.$scope.$applyAsync(() => {
-              const index = editor.getSelection(true).index || editor.getLength();
-              editor.clipboard.dangerouslyPasteHTML(index, result.data, Quill.sources.USER);
+              const index = quill.getSelection(true).index || quill.getLength();
+              quill.clipboard.dangerouslyPasteHTML(index, result.data, Quill.sources.USER);
               this.notice.cancelLoading();
             });
           }
@@ -518,13 +449,13 @@ export class TranslateEditorController implements angular.IController {
         });
       });
     } else if (file.name.toLowerCase().endsWith('.txt')) {
-      this.notice.setLoading('Reading text file "'+ file.name + '"...');
+      this.notice.setLoading('Reading text file "' + file.name + '"...');
       this.util.readTextFile(file).then((text: string) => {
         text = text.replace(/\n/g, '</p><p>');
         text = '<p>' + text + '</p>';
         this.$scope.$applyAsync(() => {
-          const index = editor.getSelection(true).index || editor.getLength();
-          editor.clipboard.dangerouslyPasteHTML(index, text, Quill.sources.USER);
+          const index = quill.getSelection(true).index || quill.getLength();
+          quill.clipboard.dangerouslyPasteHTML(index, text, Quill.sources.USER);
           this.notice.cancelLoading();
         });
       }).catch((errorMessage: string) => {
@@ -536,16 +467,16 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private onPaste(item: DataTransferItem, editor: Quill, event: ClipboardEvent): void {
+  private onPaste(item: DataTransferItem, quill: Quill, event: ClipboardEvent): void {
     event.preventDefault();
     this.notice.setLoading('Reading USX file...');
     this.util.readUsxFile(item).then((usx: string) => {
       this.notice.setLoading('Formatting USX file data...');
-      this.projectApi.usxToHtml(usx).then((result) => {
+      this.projectApi.usxToHtml(usx).then(result => {
         if (result.ok) {
           this.$scope.$applyAsync(() => {
-            const selection = editor.getSelection(true);
-            editor.clipboard.dangerouslyPasteHTML(selection.index, result.data, Quill.sources.USER);
+            const selection = quill.getSelection(true);
+            quill.clipboard.dangerouslyPasteHTML(selection.index, result.data, Quill.sources.USER);
             this.notice.cancelLoading();
           });
         }
