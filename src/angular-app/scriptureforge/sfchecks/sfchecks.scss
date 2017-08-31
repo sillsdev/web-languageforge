@@ -28,6 +28,15 @@ table.texts, table.questions {
   td {
     text-align: center;
     vertical-align: middle;
+    // Bootstrap's default table padding makes text and question view way too spaced-out vertically
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  th {
+    text-align: center;
+    // Cursor change to signal that clicking the header will change the sort direction
+    cursor: pointer;
   }
 }
 

@@ -4,10 +4,10 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
   'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice',
   'palaso.ui.textdrop', 'palaso.ui.jqte', 'ngFileUpload', 'ngRoute'])
   .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService',
-    'linkService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
+    'linkService', 'listviewSortingService', 'silNoticeService', 'sfchecksProjectService', 'messageService',
     'modalService', '$q',
   function ($scope, textService, ss, breadcrumbService,
-            linkService, notice, sfchecksProjectService, messageService,
+            linkService, sorting, notice, sfchecksProjectService, messageService,
             modalService, $q) {
     $scope.finishedLoading = false;
 
@@ -58,6 +58,23 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     };
 
     $scope.texts = [];
+
+    // Listview Sorting
+
+    $scope.sortdata = { sortColumn: '', direction: '' };
+
+    $scope.sortIconClass = function (columnName) { return sorting.sortIconClass($scope.sortdata, columnName); };
+
+    $scope.setSortColumn = function (columnName) { return sorting.setSortColumn($scope.sortdata, columnName); };
+
+    $scope.doSort = function () {
+      sorting.sortDataByColumn($scope.texts, $scope.sortdata.sortColumn, $scope.sortdata.direction);
+    };
+
+    $scope.doSortByColumn = function (columnName) {
+      $scope.setSortColumn(columnName);
+      $scope.doSort();
+    };
 
     // Page Dto
     // Page Dto
