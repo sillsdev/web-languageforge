@@ -5,10 +5,10 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice'])
   .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService',
     '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
-    'silNoticeService', 'modalService', '$q',
+    'listviewSortingService', 'silNoticeService', 'modalService', '$q',
   function ($scope, questionService, qts,
             $routeParams, ss, linkService, breadcrumbService,
-            notice, modalService, $q) {
+            sorting, notice, modalService, $q) {
     var Q_TITLE_LIMIT = 70;
     var textId = $routeParams.textId;
     $scope.textId = textId;
@@ -95,6 +95,23 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
       }
 
       return false;
+    };
+
+    // Listview Sorting
+
+    $scope.sortdata = { sortColumn: '', direction: '' };
+
+    $scope.sortIconClass = function (columnName) { return sorting.sortIconClass($scope.sortdata, columnName); };
+
+    $scope.setSortColumn = function (columnName) { return sorting.setSortColumn($scope.sortdata, columnName); };
+
+    $scope.doSort = function () {
+      sorting.sortDataByColumn($scope.questions, $scope.sortdata.sortColumn, $scope.sortdata.direction);
+    };
+
+    $scope.doSortByColumn = function (columnName) {
+      $scope.setSortColumn(columnName);
+      $scope.doSort();
     };
 
     // Listview Data
