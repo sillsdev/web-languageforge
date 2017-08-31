@@ -41,7 +41,7 @@ class ActivityListDtoTest extends TestCase
         $answer->content = "first answer";
         $answer->score = 10;
         $answer->userRef->id = $userId;
-        $answer->textHightlight = "text highlight";
+        $answer->textHighlight = "text highlight";
         $question->writeAnswer($answer);
         $activityId = ActivityCommands::addAnswer($project, $questionId, $answer);
 

@@ -33,6 +33,12 @@ function SfActivityPage() {
     return this.activitiesList.get(index).getText();
   };
 
+  this.getAllActivityTexts = function getAllActivityTexts() {
+    return this.activitiesList.map(function (elem) {
+      return elem.getText();
+    });
+  };
+
   // Prints the entire activity list
   //noinspection JSUnusedGlobalSymbols
   this.printActivitiesNames = function printActivitiesNames() {

@@ -56,6 +56,9 @@ class UsxHelper
         $this->_footnotes = array();
         xml_parse($this->_parser, $this->_usx);
         //echo $this->_out;
+        // If we can't parse *anything at all*, assume this wasn't actually USX and return it unchanged.
+        if ($this->_out === '')
+            $this->_out = $this->_usx;
         return $this->_out;
     }
 

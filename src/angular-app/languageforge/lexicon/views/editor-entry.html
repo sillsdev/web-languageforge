@@ -8,7 +8,7 @@
                     <ul data-ng-if="typeahead.searchResults.length > 0" class="list-group">
                         <li data-typeahead-item="e" class="typeahead-item list-group-item"
                             data-ng-repeat="e in typeahead.searchResults | limitTo: typeahead.limit">
-                            <div class="listItemPrimary" data-ng-bind-html="getWordForDisplay(e)"></div>
+                            <div class="listItemPrimary" data-ng-bind-html="getCompactListItemForDisplay(config, e)"></div>
                             <small class="listItemSecondary" data-ng-bind-html="getMeaningForDisplay(e)"></small>
                         </li>
                     </ul>

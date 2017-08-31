@@ -541,8 +541,20 @@ function ($q, sessionService, cache, commentsCache,
     }
 
     if (field) {
-      if (field.type === 'multitext' && field.inputSystems[0] in dataNode) {
-        sortableValue = dataNode[field.inputSystems[0]].value;
+      if (field.type === 'multitext') {
+        if (field.inputSystems[0] in dataNode) {
+          sortableValue = dataNode[field.inputSystems[0]].value;
+        }
+        // special case for lexeme form.  Use citation form instead, if available
+        if (fieldKey == 'lexeme') {
+          var citationFormInputSystem = config.entry.fields.citationForm.inputSystems[0];
+          if (entry.citationForm && citationFormInputSystem in entry.citationForm) {
+            var citationForm = entry.citationForm[citationFormInputSystem].value;
+            if (citationForm != '') {
+              sortableValue = citationForm;
+            }
+          }
+        }
       } else if (field.type === 'optionlist') {
         if (config.optionlists && config.optionlists[field.listCode]) {
           // something weird here with config.optionlists not being set consistently when this is

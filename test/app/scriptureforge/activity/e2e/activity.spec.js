@@ -2,6 +2,7 @@
 
 describe('Activity E2E Test', function () {
   var constants       = require('../../../testConstants.json');
+  var util            = require('../../../bellows/pages/util.js');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
   var activityPage    = require('../../../bellows/pages/activityPage.js');
   var projectListPage = require('../../../bellows/pages/projectsPage.js');
@@ -22,6 +23,8 @@ describe('Activity E2E Test', function () {
     }
   };
 
+  beforeEach(util.registerCustomJasmineMatchers);
+
   describe('Running as member: ', function () {
 
     it('Login and navigate to the first test Question page', function () {
@@ -41,9 +44,34 @@ describe('Activity E2E Test', function () {
       // activityPage.printActivitiesNames();
     });
 
-    verifyCommonActions(activityIndex, constants.memberUsername);
+    activityIndex = verifyCommonActions(activityIndex, constants.memberUsername);
 
     verifyFilters(constants.memberUsername);
+
+  });
+
+  describe('Running as second member: ', function () {
+
+    it('Login and navigate to the first test Question page', function () {
+      loginPage.loginAsSecondUser();
+      projectListPage.get();
+      projectListPage.clickOnProject(constants.testProjectName);
+      projectPage.textLink(constants.testText1Title).click();
+      textPage.clickOnQuestion(constants.testText1Question1Title);
+    });
+
+    performCommonActions();
+
+    it('Navigate to Activity Page to verify actions', function () {
+      activityPage.get();
+
+      // Print everything in the activity list for debugging purposes
+      // activityPage.printActivitiesNames();
+    });
+
+    activityIndex = verifyCommonActions(activityIndex, constants.member2Username);
+
+    verifyFilters(constants.member2Username);
 
   });
 
@@ -137,8 +165,158 @@ describe('Activity E2E Test', function () {
 
   });
 
-  function performCommonActions() {
-    // perform up vote first because it occasionally posts activity before a task started after it
+  function setResponseVisibility(value) {
+    loginPage.loginAsManager();
+    projectSettingsPage.get();
+    projectSettingsPage.tabs.project.click();
+    projectSettingsPage.projectTab.setCheckbox(projectSettingsPage.projectTab.usersSeeEachOthersResponses, value);
+    projectSettingsPage.projectTab.saveButton.click();
+  };
+
+  function verifyResponseVisibility(valueShouldBeTrue) {
+    projectSettingsPage.get();
+    projectSettingsPage.tabs.project.click();
+    var isChecked = projectSettingsPage.projectTab.usersSeeEachOthersResponses.getAttribute('checked');
+    if (valueShouldBeTrue) {
+      expect(isChecked).toBeTruthy();
+    } else {
+      expect(isChecked).toBeFalsy();
+    }
+  }
+
+  describe('Testing activity-visibility settings: ', function () {  // TODO: That's not a great description
+    it('Set response visibility to TRUE', function () {
+      setResponseVisibility(true);
+      verifyResponseVisibility(true);
+    });
+
+    describe('Running as first member: ', function () {
+
+      it('Login and navigate to the first test Question page', function () {
+        loginPage.loginAsUser();
+        projectListPage.get();
+        projectListPage.clickOnProject(constants.testProjectName);
+        projectPage.textLink(constants.testText1Title).click();
+        textPage.clickOnQuestion(constants.testText1Question1Title);
+      });
+
+      performCommonActions();
+
+      it('Navigate to Activity Page to verify actions', function () {
+        activityPage.get();
+
+        // Print everything in the activity list for debugging purposes
+        // activityPage.printActivitiesNames();
+      });
+
+      activityIndex = verifyCommonActions(activityIndex, constants.memberUsername);
+
+      verifyFilters(constants.memberUsername);
+
+    });
+
+    describe('Running as second member: ', function () {
+
+      it('Login and navigate to the first test Question page', function () {
+        loginPage.loginAsSecondUser();
+        projectListPage.get();
+        projectListPage.clickOnProject(constants.testProjectName);
+        projectPage.textLink(constants.testText1Title).click();
+        textPage.clickOnQuestion(constants.testText1Question1Title);
+      });
+
+      performCommonActions();
+
+      it('Navigate to Activity Page to verify actions', function () {
+        activityPage.get();
+
+        // Print everything in the activity list for debugging purposes
+        // activityPage.printActivitiesNames();
+      });
+
+      activityIndex = verifyCommonActions(activityIndex, constants.member2Username);
+
+      verifyFilters(constants.member2Username);
+
+    });
+
+    it('Set response visibility to FALSE', function () {
+      setResponseVisibility(false);
+      verifyResponseVisibility(false);
+    });
+
+    describe('Running as first member with visibility false: ', function () {
+
+      it('Login and navigate to the first test Question page', function () {
+        loginPage.loginAsUser();
+        projectListPage.get();
+        projectListPage.clickOnProject(constants.testProjectName);
+        projectPage.textLink(constants.testText1Title).click();
+        textPage.clickOnQuestion(constants.testText1Question1Title);
+      });
+
+      performAnswerActions();
+
+      it('Navigate to Activity Page to verify actions', function () {
+        activityPage.get();
+
+        // Print everything in the activity list for debugging purposes
+        // activityPage.printActivitiesNames();
+      });
+
+      verifyAnswerActions(activityIndex, constants.memberUsername);
+
+      verifyFilters(constants.memberUsername);
+
+    });
+
+    describe('Running as second member with visibility false: ', function () {
+
+      it('Login and navigate to the first test Question page', function () {
+        loginPage.loginAsSecondUser();
+        projectListPage.get();
+        projectListPage.clickOnProject(constants.testProjectName);
+        projectPage.textLink(constants.testText1Title).click();
+        textPage.clickOnQuestion(constants.testText1Question1Title);
+      });
+
+      performAnswerActions();
+
+      it('Navigate to Activity Page to verify actions', function () {
+        activityPage.get();
+
+        // Print everything in the activity list for debugging purposes
+        // activityPage.printActivitiesNames();
+      });
+
+      // We don't call verifyCommonActions here, because the activity list should be empty for user 2  // NOPE.
+
+      verifyAnswerActions(activityIndex, constants.member2Username);
+
+      verifyFilters(constants.member2Username);
+
+      // TODO: Also check that the performCommonActions() function can't see others' responses
+
+      // activityPage.get();
+      // activityPage.activitiesList.filter(function (item) {
+      //   // Look for activity items that do not contain our username
+      //   return (item.getText().then(function (text) {
+      //     return text.indexOf(constants.member2Username) === -1;
+      //   }));
+      // }).then(function (activityItems) {
+      //   // Currently in "Only My Activity" mode, so should see NO items without our username
+      //   expect(activityItems.length).toEqual(0);
+      // });
+
+    });
+
+    it('Set response visibility to TRUE for other tests', function () {
+      setResponseVisibility(true);
+      verifyResponseVisibility(true);
+    });
+  });
+
+  function performUpvoteActions() {
     it("Performing action 'upvote' on 'answers'", function () {
       expect(questionPage.answers.votes(0).getText()).toEqual('0');
       questionPage.answers.upvote(0);
@@ -149,7 +327,9 @@ describe('Activity E2E Test', function () {
       questionPage.answers.downvote(0);
       expect(questionPage.answers.votes(0).getText()).toEqual('0');
     });
+  }
 
+  function performAnswerActions() {
     it("Performing action 'add' on 'answers'", function () {
       expect(questionPage.notice.list.count()).toBe(0);
       questionPage.answers.add(testData.answer.add);
@@ -184,65 +364,77 @@ describe('Activity E2E Test', function () {
 
     it("Performing action 'delete' on 'comments'", function () {
       expect(questionPage.notice.list.count()).toBe(0);
-      expect(questionPage.comments.list.count()).toEqual(2);
+      var oldCount = questionPage.comments.list.count();
       questionPage.comments.archive('');
-      expect(questionPage.comments.list.count()).toEqual(1);
+      var newCount = questionPage.comments.list.count();
+      oldCount.then(function(oldCount) {
+        expect(newCount).toEqual(oldCount - 1);
+      });
       questionPage.notice.waitToInclude('The comment was removed successfully');
       questionPage.notice.firstCloseButton.click();
     });
 
     it("Performing action 'delete' on 'answers'", function () {
       expect(questionPage.notice.list.count()).toBe(0);
-      expect(questionPage.answers.list.count()).toEqual(2);
-      questionPage.answers.archive('');
-      expect(questionPage.answers.list.count()).toEqual(1);
-      expect(questionPage.answers.last().getText()).toContain(constants.testText1Question1Answer);
-      questionPage.notice.waitToInclude('The answer was removed successfully');
-      questionPage.notice.firstCloseButton.click();
+      questionPage.answers.list.count().then(function (oldCount) {
+        questionPage.answers.archive('');
+        var newCount = questionPage.answers.list.count();
+        expect(newCount).toEqual(oldCount - 1);
+        if (oldCount > 1) {  // Which means newCount > 0 -- but oldCount is a real int, while newCount is still a promise
+          expect(questionPage.answers.last().getText()).toContain(constants.testText1Question1Answer);
+        }
+        questionPage.notice.waitToInclude('The answer was removed successfully');
+        questionPage.notice.firstCloseButton.click();
+      });
     });
   }
 
-  function verifyCommonActions(activityIndex, username) {
+  function performCommonActions() {
+    // perform up vote first because it occasionally posts activity before a task started after it
+    performUpvoteActions();
+    performAnswerActions();
+  }
+
+  function verifyUpvoteActions(activityIndex, username) {
+    it("Verify action 'upvote' on 'answers' appears on the activity feed", function () {
+      activityIndex += 1;
+      var regex = new RegExp('.*' + util.escapeRegExp(username + ' +1\'d your answer') + '.*' + util.escapeRegExp(constants.testText1Question1Title));
+      expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
+    });
+    return activityIndex;
+  }
+
+  function verifyAnswerActions(activityIndex, username) {
     it("Verify action 'edit' on 'answers' appears on the activity feed", function () {
-      var activityText = activityPage.getActivityText(activityIndex);
-      expect(activityText).toContain(username);
-      expect(activityText).toContain('updated their answer');
-      expect(activityText).toContain(testData.answer.edit);
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their answer.*' + util.escapeRegExp(testData.answer.edit));
+      expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     it("Verify action 'edit' on 'comments' appears on the activity feed", function () {
       activityIndex += 1;
-      var activityText = activityPage.getActivityText(activityIndex);
-      expect(activityText).toContain(username);
-      expect(activityText).toContain('updated their comment');
-      expect(activityText).toContain(testData.answer.add);
-      expect(activityText).toContain(testData.comment.edit);
+
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' updated their comment.*' + util.escapeRegExp(testData.answer.add) + '.*' + util.escapeRegExp(testData.comment.edit));
+      expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     it("Verify action 'addToLastAnswer' on 'comments' appears on the activity feed", function () {
       activityIndex += 1;
-      var activityText = activityPage.getActivityText(activityIndex);
-      expect(activityText).toContain(username);
-      expect(activityText).toContain('commented');
-      expect(activityText).toContain(testData.answer.add);
-      expect(activityText).toContain(testData.comment.add);
+
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' commented.*' + util.escapeRegExp(testData.answer.add) + '.*' + util.escapeRegExp(testData.comment.add));
+      expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
 
     it("Verify action 'add' on 'answers' appears on the activity feed", function () {
       activityIndex += 1;
-      var activityText = activityPage.getActivityText(activityIndex);
-      expect(activityText).toContain(username);
-      expect(activityText).toContain('answered');
-      expect(activityText).toContain(testData.answer.add);
+      var regex = new RegExp('.*' + util.escapeRegExp(username) + ' answered.*' + util.escapeRegExp(testData.answer.add));
+      expect(activityPage.getAllActivityTexts()).toContainMultilineMatch(regex);
     });
+    return activityIndex;
+  }
 
-    it("Verify action 'upvote' on 'answers' appears on the activity feed", function () {
-      activityIndex += 1;
-      var activityText = activityPage.getActivityText(activityIndex);
-      expect(activityText).toContain(username);
-      expect(activityText).toContain('+1\'d your answer');
-      expect(activityText).toContain(constants.testText1Question1Title);
-    });
+  function verifyCommonActions(activityIndex, username) {
+    activityIndex = verifyAnswerActions(activityIndex, username);
+    activityIndex = verifyUpvoteActions(activityIndex, username);
   }
 
   function verifyFilters(username) {
