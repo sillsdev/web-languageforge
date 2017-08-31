@@ -1,4 +1,4 @@
 'use strict';
 
 // module definition
-angular.module('bellows.services', ['jsonRpc', 'ui.bootstrap']);
+angular.module('bellows.services', ['jsonRpc', 'ui.bootstrap', 'coreModule']);

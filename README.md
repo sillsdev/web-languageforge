@@ -2,10 +2,79 @@
 
 [Language Forge](https://github.com/sillsdev/web-languageforge) and [Scripture Forge](https://github.com/sillsdev/web-scriptureforge) represent different websites, but have the same code base stored in seperate repositories for the purpose of  version control and issue tracking. Since they are related repos it is easy to merge from one to the other.
 
+## Users ##
+
+To use **Language Forge** go to [languageforge.org](https://languageforge.org).
+
+To use **Scripture Forge** go to [scriptureforge.org](https://scriptureforge.org).
+
+### User Problems ###
+
+To report an issue for **Language Forge** go to [Language Forge issues](https://github.com/sillsdev/web-languageforge/issues).
+
+To report an issue for **Scripture Forge** go to [Scripture Forge issues](https://github.com/sillsdev/web-scriptureforge/issues).
+
+**Note:** Scan the list to make sure your issue hasn't already been reported. If not, click **New issue**.
+
 ## Special Thanks To ##
 
 ![BrowserStack Logo](https://raw.githubusercontent.com/sillsdev/web-languageforge/master/readme_images/browserstack-logo.png "BrowserStack")
-For end-to-end test automation
+
+For end-to-end test automation.
+
+## Developers ##
+
+We use [Gitflow](http://nvie.com/posts/a-successful-git-branching-model/) with two modifications:
+
+* The Gitflow **master** branch is our **live** branch.
+* The Gitflow **develop** branch is our **master** branch. All pull requests go against **master**.
+
+We merge from **master** to testing (**qa** branch) then ship from **qa** to **live**.
+
+### Builds ###
+Status of builds from our continuous integration (CI) [server](https://build.palaso.org):
+
+| Site            | Master Unit | Master E2E | QA | Live |
+| --------------- | ----------- | ---------- | -- | ---- |
+| Language Forge  | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt372)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:LanguageForge_LanguageForgeLive)/statusIcon)|
+| Scripture Forge | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:bt270)/statusIcon) | in transition | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeQa)/statusIcon) | ![Build Status](https://build.palaso.org/app/rest/builds/buildType:(id:ScriptureForge_ScriptureForgeLive)/statusIcon)|
+
+Successful builds from our CI server deploy to:
+
+| Site            | Master | QA | Live |
+| --------------- | ------ | -- | ---- |
+| Language Forge  | [dev.languageforge.org](https://dev.languageforge.org) | [qa.languageforge.org](https://qa.languageforge.org) | [languageforge.org](https://languageforge.org) |
+| Scripture Forge | [dev.scriptureforge.org](https://dev.scriptureforge.org) | [qa.scriptureforge.org](https://qa.scriptureforge.org) | [scriptureforge.org](https://scriptureforge.org) |
+
+## Style Guides ##
+
+PHP code conforms to [PSR-2](http://www.php-fig.org/psr/psr-2/).
+
+ * Add `php-cs-fixer` globally installed with *composer* (http://cs.sensiolabs.org/). Here is how to add it to **PhpStorm** (https://hackernoon.com/how-to-configure-phpstorm-to-use-php-cs-fixer-1844991e521f). Use it with the parameters `fix --verbose "$FileDir$/$FileName$"`.
+
+JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/javascript). 
+
+ * Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#CodeStyle)).
+ * We plan to use [Prettier](https://prettier.io/) with pre-commit hook after re-writing the whole repo with Prettier first.
+
+## TypeScript Integration ##
+
+We are in the process of moving our code base from JavaScript to [**TypeScript**](https://www.typescriptlang.org).
+
+> Note: this repo is currently AngularJS (1.6) not Angular (2+).
+
+As we make the conversion to TypeScript, we will be following the [Angular Style Guide](https://angular.io/guide/styleguide). This is opinionated not only about things like file name conventions but also file and folder structure. This is an appropriate time to change structure and file names since most file contents will be changed anyway. The reason for following this is to make it easier, not only for new developers to the project (like the FLEx team and hired developers) but also to change to Angular (2+) later.
+
+To this end you'll also want to be familiar with [Upgrading from AngularJS](https://angular.io/guide/upgrade) particularly the [Preparation](https://angular.io/guide/upgrade#preparation) section.
+
+We are expecting that TypeScript will help us get things right from the beginning (catching things even as you type) as well as maintenance. We are expecting that it will be an easier transition for the FLEx team and that they will be able to help us with good typing, interfaces and class design.
+
+Other useful resources:
+ - [x] [angularjs-styleguide/typescript at master · toddmotto/angularjs-styleguide](https://github.com/toddmotto/angularjs-styleguide/tree/master/typescript#stateless-components)
+ - [x] [AngularJS 1.x with TypeScript (or ES6) Best Practices by Martin McWhorter on CodePen](https://codepen.io/martinmcwhorter/post/angularjs-1-x-with-typescript-or-es6-best-practices)
+ - [x] [What is best practice to create an AngularJS 1.5 component in Typescript? - Stack Overflow](https://stackoverflow.com/questions/35451652/what-is-best-practice-to-create-an-angularjs-1-5-component-in-typescript)
+ - [x] [Don't Panic: Using ui-router as a Component Router](http://dontpanic.42.nl/2016/07/using-ui-router-as-component-router.html)
+ - [x] [Lifecycle hooks in Angular 1.5](https://toddmotto.com/angular-1-5-lifecycle-hooks#onchanges)
 
 ## Recommended Development Environment ##
 
@@ -78,13 +147,18 @@ ansible-playbook -i hosts playbook_xenial.yml --limit localhost -K
 ````
 If you run into an error on the `ssl_config : LetsEncrypt: Install packages` task, run the playbook again and that task should succeed the second time it is run.
 
-Install node_modules used to build Sass files and run E2E tests
+Install dependencies used to build Sass files and run E2E tests
 ```
 cd web-languageforge
 npm install
 gulp sass
+gulp webpack-lf
 ```
+or use `gulp webpack-sf` if you are working in **Scripture Forge**.
+
 To watch Sass files for changes, run `gulp sass:watch`. The output will also be in a more readable format (rather than compressed as it is with `gulp sass`). You can also pass the `--debug` flag to enable source comments and source maps in comments in the output files.
+
+To watch TypeScript files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#LiveReloadInstall)).
 
 ### Language Forge Configuration File <a id="LFConfig"></a>
 Manually edit the Language Forge config file
@@ -159,7 +233,7 @@ phpstorm
 
 LSDev members can contact their team lead to get the SIL license information.  PhpStorm also has an option *Evaluate for free for 30 days*.
 
-#### Coding Standard and Style ####
+#### Coding Standard and Style <a id="CodeStyle"></a>
 
 [Download](https://plugins.jetbrains.com/plugin/7294) the PhpStorm plugin for EditorConfig and then install:
 
@@ -252,15 +326,15 @@ Reference for [Integrating Xdebug with PhpStorm](https://www.jetbrains.com/help/
 
 ### LiveReload ###
 
-#### LiveReload Chrome extension
+#### LiveReload Chrome extension <a id="LiveReloadInstall"></a>
 
 Install the [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en-US) extension.
 
 Then from PhpStorm, click
 **View**->**Tool Windows** -> **Gulp**
 
-When you want LiveReload running, double-click the **reload** Gulp task.
-Then in the LiveReload chrome extension, left click to enable it.  A solid dot in the circle means the plugin is connected. Now when an applicable source file is changed and saved, it should trigger an automate page reload in the browser.
+When you want LiveReload running, double-click the **reload** or **build-webpack:watch** Gulp task.
+Then in the LiveReload chrome extension, click to enable it.  A solid dot in the circle means the plugin is connected. Now when an applicable source file is changed and saved, it should trigger an automate page reload in the browser.
 
 ## Testing ##
 
@@ -283,6 +357,12 @@ Select *Default boostrap file* and browse to `web-languageforge/test/php/TestCon
 To run tests, browse to the project view, right-click `test/php` and select `Run php`.
 
 Note: at least one test will fail if the LFMerge (send/receive) program is not installed and available.  This is OK as long as you are not testing Send/Receive functionality.
+
+### JavaScript and TypeScript Unit Tests ###
+
+`gulp test-js` or `gulp test-js:watch`
+
+TypeScript unit test spec files live in the `src` folder next to the relevant source file. Only E2E test specs will be in the `test` folder (at least while they are still JS files).
 
 ### End-to-End (E2E) Tests ###
 
@@ -323,7 +403,7 @@ will run the  the *lexicon-new-project.spec.js* tests on **languageforge**.
 
 To add more verbosity during E2E tests, add a parameter `--verbosity true`
 
-## Building with gulp ##
+## Get a copy of the live database ##
 
 (For installation of npm see https://github.com/nodesource/distributions)
 
@@ -337,7 +417,7 @@ To install the mongodb databases locally, run:
 gulp mongodb-copy-prod-db
 ```
 
-## Resetting the MongoDB ##
+## Resetting MongoDB ##
 
 If you want to _start over_ with your mongo database, you can use the factory reset script like so (this will delete all data in the mongodb):
 ````
@@ -352,9 +432,8 @@ Occasionally developers need to update composer or npm.  If something isn't work
 
 #### Update npm packages ####
 
-In the root folder: `npm install`
-In the src folder: `npm install`
+In the *root* folder: `npm install`
 
 #### Update composer ####
 
-In src/: `composer install`
+In the **src/** folder: `composer install`

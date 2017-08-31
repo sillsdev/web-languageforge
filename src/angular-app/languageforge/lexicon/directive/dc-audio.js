@@ -2,8 +2,7 @@
 
 angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notice',
   'bellows.services', 'ngFileUpload', 'lexicon.services', 'sgw.soundmanager',
-  'palaso.ui.mockUpload'
-])
+  'palaso.ui.mockUpload'])
 
   // Palaso UI Dictionary Control: Audio
   .directive('dcAudio', [function () {
@@ -31,7 +30,7 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
             return false;
           }
 
-          return $scope.dcFilename.trim() != '';
+          return $scope.dcFilename.trim() !== '';
         }
 
         $scope.hasAudio = hasAudio;
@@ -65,7 +64,7 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
             autoLoad: true,
             autoPlay: false,
             onload: function () {
-              if (this.readyState == 3) {
+              if (this.readyState === 3) {
                 $scope.$apply();
               }
             }
@@ -134,14 +133,14 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
                     }
                   }
                 });
-              });
+              }, angular.noop);
           }
         };
 
         $scope.uploadAudio = function uploadAudio(file) {
           if (!file || file.$error) return;
 
-          sessionService.getSession().then(function(session) {
+          sessionService.getSession().then(function (session) {
             if (file.size > session.fileSizeMax()) {
               notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
                 $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
