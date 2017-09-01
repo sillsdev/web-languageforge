@@ -40,6 +40,12 @@ function BellowsLoginPage() {
 
   this.loginAsMember = this.loginAsUser;
 
+  this.loginAsSecondUser = function loginAsSecondUser() {
+    this.login(constants.member2Email, constants.member2Password);
+  };
+
+  this.loginAsSecondMember = this.loginAsSecondUser;
+
   this.loginAsObserver = function loginAsObserver() {
     this.login(constants.observerEmail, constants.observerPassword);
   };

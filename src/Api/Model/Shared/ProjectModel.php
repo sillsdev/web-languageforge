@@ -101,7 +101,7 @@ class ProjectModel extends MapperModel
     public $userProperties;
 
     /**
-     * Specifies which site this project belongs to e.g. scriptureforge || languageforgen, cf. Website class
+     * Specifies which site this project belongs to e.g. scriptureforge || languageforge, cf. Website class
      * @var string
      */
     public $siteName;

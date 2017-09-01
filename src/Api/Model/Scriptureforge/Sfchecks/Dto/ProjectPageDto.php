@@ -52,7 +52,17 @@ class ProjectPageDto
                     $question = new QuestionModel($project, $q['id']);
                     if (! $question->isArchived) {
                         $entry['questionCount']++;
+                        if (! $project->usersSeeEachOthersResponses) {
+                            $q['answers'] = array_filter($q['answers'], function($answer) use ($userId) {
+                                return ((string)$answer['userRef'] == $userId);
+                            });
+                        }
                         foreach ($q['answers'] as $a) {
+                            if (! $project->usersSeeEachOthersResponses) {
+                                $a['comments'] = array_filter($a['comments'], function($comment) use ($userId) {
+                                    return ((string)$comment['userRef'] == $userId);
+                                });
+                            }
                             $commentCount = count($a['comments']);
                             $responseCount += ($commentCount+1); // +1 for this answer
                         }

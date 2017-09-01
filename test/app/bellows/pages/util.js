@@ -153,6 +153,69 @@ function Utils() {
     return child.element(by.xpath('..'));
   };
 
+  // This handy function comes from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+  this.escapeRegExp = function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+  };
+
+  /*
+   * Jasmine custom matcher (https://jasmine.github.io/2.0/custom_matcher.html) to search a list
+   * for a string that matches a given regex. E.g., you have ['an apple', 'a banana'] and you want
+   * to know if the list contains a string that matches the regex /banana/.
+   *
+   * To use this matcher, call util.registerCustomJasmineMatchers() in your beforeEach() function.
+   * Then you'll be able to write tests like `expect(item).toContainMatch(regex)`.
+   * NOTE: If you want to be able to match across multiple lines with a `.*` component in your regex,
+   * you'll need to use .toContainMultilineMatch() instead.
+   */
+
+  this.registerCustomJasmineMatchers = function registerCustomJasmineMatchers() {
+    jasmine.addMatchers({
+        toContainMultilineMatch: function toContainMultilineMatch(jasmineUtil, customTesters) {
+          return {
+            compare: function checkList(list, regex) {
+              var checkItem = function (item) {
+                // The dot in Javascript regexes CANNOT match newlines, so we deal with that here
+                return regex.test(item.replace(/\n/g, ' '));
+              };
+              var index = list.findIndex(checkItem);
+
+              var compareResult = {};
+              compareResult.pass = index >= 0;
+              if (compareResult.pass) {
+                compareResult.message = 'Expected list not to contain a match for ' + regex.toString() + ' but it did.';
+              } else {
+                compareResult.message = 'Expected list to contain a match for ' + regex.toString() + ' but it did not.';
+              }
+
+              return compareResult;
+            }
+          };
+        },
+
+        toContainMatch: function toContainMatch(jasmineUtil, customTesters) {
+          return {
+            compare: function checkList(list, regex) {
+              var checkItem = function (item) {
+                return regex.test(item);
+              };
+              var index = list.findIndex(checkItem);
+
+              var compareResult = {};
+              compareResult.pass = index >= 0;
+              if (compareResult.pass) {
+                compareResult.message = 'Expected list not to contain a match for ' + regex.toString() + ' but it did.';
+              } else {
+                compareResult.message = 'Expected list to contain a match for ' + regex.toString() + ' but it did not.';
+              }
+
+              return compareResult;
+            }
+          }
+        }
+      });
+  };
+
   // Errors we choose to ignore because they are typically not encountered by users, but only
   // in testing
   this.isMessageToIgnore = function isMessageToIgnore(message) {
