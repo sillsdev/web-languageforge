@@ -3,7 +3,7 @@
     <uib-tabset>
         <uib-tab heading="Edit Text">
             <div>
-                <form data-ng-submit="updateText(editedText)">
+                <form>
                     <div class="col-md-4">
                         <div>
                             <div class="form-group">
@@ -63,8 +63,8 @@
             </div>
             <div class="clearfix"></div>
             <div>
-                <button type="submit" class="btn btn-primary save-text" data-ng-disabled="newTextForm.$invalid"
-                        data-ng-click="addText(); newTextCollapsed = true"><i class="fa fa-check"></i> Save</button>
+                <button type="submit" class="btn btn-primary save-text" data-ng-click="updateText(editedText)">
+                    <i class="fa fa-check"></i> Save</button>
             </div>
         </uib-tab>
         <uib-tab heading="Archived Questions">
@@ -72,7 +72,7 @@
                 <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
                     <button class="btn btn-primary"
                             data-ng-disabled="selected.length == 0"
-                            data-ng-show="rights.archive" class="btn"
+                            data-ng-show="rights.archive"
                             data-ng-click="publishQuestions()">
                         <i class="fa fa-globe fa-lg"></i> Re-publish Questions
                     </button>
@@ -159,7 +159,7 @@
                 </div>
             </div>
         </uib-tab>
-        </tabset>
+    </uib-tabset>
 </div>
 <div data-ng-hide="rights.editOther">
     <p>You don't have permission to edit this text.</p>
