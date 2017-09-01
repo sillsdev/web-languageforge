@@ -69,6 +69,12 @@
             <listview hide-if-empty="true" search="queryQuestions()"
                 items="questions" visible-items="visibleQuestions" select="">
                 <table class="questions table">
+                    <tr>
+                        <th><!-- Checkbox column has no header --></th>
+                        <th data-ng-click="doSortByColumn('calculatedTitle')">Question title <i data-ng-class="sortIconClass('calculatedTitle')"></i></th>
+                        <th data-ng-click="doSortByColumn('answerCount')"    >Answer count <i data-ng-class="sortIconClass('answerCount')"></i></th>
+                        <th data-ng-click="doSortByColumn('responseCount')"  >Response count <i data-ng-class="sortIconClass('responseCount')"></i></th>
+                    </tr>
                     <tr data-ng-repeat="question in visibleQuestions" data-ng-class="{active: isSelected(question)}">
                         <td>
                             <label data-ng-show="rights.archive">

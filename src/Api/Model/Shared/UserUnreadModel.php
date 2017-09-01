@@ -87,6 +87,30 @@ class UserUnreadModel extends UserRelationModel
         }
     }
 
+    /**
+     * @param string[] $itemIds
+     * @param bool $shouldRemoveAllTypes - whether to remove ALL types of unread items whose IDs are in $itemIds, or just the types this instance was created to handle
+     * @param bool $isInputAssociativeArray - whether $itemIds is a "dictionary-like" array with item IDs as keys (default is false, meaning it's just a "normal" array with integer keys)
+     */
+    public function markMultipleRead($itemIds, $shouldRemoveAllTypes = false, $isInputAssociativeArray = false)
+    {
+        // We want an associative array since we may be marking hundreds of items as read, and we want O(1) lookup during the for loop
+        if ($isInputAssociativeArray) {
+            $idsToRemove = $itemIds;
+        } else {
+            $idsToRemove = array_flip($itemIds);  // Simplest way to convert a "normal" array to a "dict-like" array when we only care about O(1) lookups on the keys
+        }
+        $c = $this->unread->count();
+        for ($i = $c - 1; $i >= 0; $i--) {
+            $unreadItem = $this->unread[$i];
+            if ($shouldRemoveAllTypes || $unreadItem->type == $this->_type) {
+                if (array_key_exists($unreadItem->itemRef->id, $idsToRemove)) {
+                    unset($this->unread[$i]);
+                }
+            }
+        }
+    }
+
     public function markAllRead()
     {
         $c = $this->unread->count();
@@ -111,7 +135,7 @@ class UserUnreadModel extends UserRelationModel
     }
 
     /**
-     * @return array<UnreadItem>
+     * @return string[]
      */
     public function unreadItems()
     {
