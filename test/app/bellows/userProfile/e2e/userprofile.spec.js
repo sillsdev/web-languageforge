@@ -21,9 +21,9 @@ describe('User Profile E2E Test', function () {
 
       it('Logging in', function () {
         // Login before test to ensure proper role
-        if (expectedUsername == constants.memberUsername) {
+        if (expectedUsername === constants.memberUsername) {
           loginPage.loginAsUser();
-        } else if (expectedUsername == constants.managerUsername) {
+        } else if (expectedUsername === constants.managerUsername) {
           loginPage.loginAsManager();
         }
       });
@@ -48,9 +48,9 @@ describe('User Profile E2E Test', function () {
         var expectedAge = '';
         var expectedGender = '';
 
-        if (expectedUsername == constants.memberUsername) {
+        if (expectedUsername === constants.memberUsername) {
           expectedFullname = constants.memberName;
-        } else if (expectedUsername == constants.managerUsername) {
+        } else if (expectedUsername === constants.managerUsername) {
           expectedFullname = constants.managerName;
         }
 
@@ -70,22 +70,19 @@ describe('User Profile E2E Test', function () {
         var expectedAvatar;
 
         // vars to restore
-        var password;
         var originalEmail;
 
-        if (expectedUsername == constants.memberUsername) {
+        if (expectedUsername === constants.memberUsername) {
           newColor = 'Blue';
           newShape = 'Elephant';
           newMobilePhone = '+1876 5555555';
           expectedAvatar = userProfile.blueElephantAvatarUri;
-          password = constants.memberPassword;
           originalEmail = constants.memberEmail;
-        } else if (expectedUsername == constants.managerUsername) {
+        } else if (expectedUsername === constants.managerUsername) {
           newColor = 'Gold';
           newShape = 'Pig';
           newMobilePhone = '+1876 911';
           expectedAvatar = userProfile.goldPigAvatarUri;
-          password = constants.managerPassword;
           originalEmail = constants.managerEmail;
         }
 
@@ -133,10 +130,10 @@ describe('User Profile E2E Test', function () {
         var originalEmail;
 
         // Login before test to ensure proper role
-        if (expectedUsername == constants.memberUsername) {
+        if (expectedUsername === constants.memberUsername) {
           originalEmail = constants.memberEmail;
           loginPage.loginAsUser();
-        } else if (expectedUsername == constants.managerUsername) {
+        } else if (expectedUsername === constants.managerUsername) {
           originalEmail = constants.managerEmail;
           loginPage.loginAsManager();
         }
@@ -182,13 +179,14 @@ describe('User Profile E2E Test', function () {
 
         // Login with new username and revert to original username
         loginPage.get();
-        expect(loginPage.infoMessages.count()).toBe(1); // flaky assertion?
+        browser.wait(expectedCondition.visibilityOf(loginPage.username), CONDITION_TIMEOUT);
+        expect(loginPage.infoMessages.count()).toBe(1);
         expect(loginPage.infoMessages.first().getText()).toContain(
           'Username changed. Please login.');
 
-        if (expectedUsername == constants.memberUsername) {
+        if (expectedUsername === constants.memberUsername) {
           loginPage.login(newUsername, constants.memberPassword);
-        } else if (expectedUsername == constants.managerUsername) {
+        } else if (expectedUsername === constants.managerUsername) {
           loginPage.login(newUsername, constants.managerPassword);
         }
 
@@ -201,9 +199,9 @@ describe('User Profile E2E Test', function () {
       });
 
       it('Update and store "About Me" settings', function () {
-        if (expectedUsername == constants.memberUsername) {
+        if (expectedUsername === constants.memberUsername) {
           loginPage.loginAsUser();
-        } else if (expectedUsername == constants.managerUsername) {
+        } else if (expectedUsername === constants.managerUsername) {
           loginPage.loginAsManager();
         }
 
@@ -213,11 +211,11 @@ describe('User Profile E2E Test', function () {
         var newFullName;
         var newAge;
         var newGender;
-        if (expectedUsername == constants.memberUsername) {
+        if (expectedUsername === constants.memberUsername) {
           newFullName = 'abracadabra';
           newAge = '3.1415';
           newGender = 'Female';
-        } else if (expectedUsername == constants.managerUsername) {
+        } else if (expectedUsername === constants.managerUsername) {
           newFullName = 'MrAdmin';
           newAge = '33.33';
           newGender = 'Male';
