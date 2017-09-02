@@ -498,30 +498,37 @@ export class EditorController implements angular.IController {
     event.stopPropagation();
     event.preventDefault();
     if (file.name.toLowerCase().endsWith('.usx')) {
+      this.notice.setLoading('Reading USX file "'+ file.name + '"...');
       this.util.readUsxFile(file).then((usx: string) => {
+        this.notice.setLoading('Formatting USX file "'+ file.name + '" data...');
         this.projectApi.usxToHtml(usx).then((result) => {
           if (result.ok) {
             this.$scope.$applyAsync(() => {
               const index = editor.getSelection(true).index || editor.getLength();
               editor.clipboard.dangerouslyPasteHTML(index, result.data, Quill.sources.USER);
+              this.notice.cancelLoading();
             });
           }
         });
       }).catch((errorMessage: string) => {
         this.$scope.$applyAsync(() => {
+          this.notice.cancelLoading();
           this.notice.push(this.notice.ERROR, errorMessage);
         });
       });
     } else if (file.name.toLowerCase().endsWith('.txt')) {
+      this.notice.setLoading('Reading text file "'+ file.name + '"...');
       this.util.readTextFile(file).then((text: string) => {
         text = text.replace(/\n/g, '</p><p>');
         text = '<p>' + text + '</p>';
         this.$scope.$applyAsync(() => {
           const index = editor.getSelection(true).index || editor.getLength();
           editor.clipboard.dangerouslyPasteHTML(index, text, Quill.sources.USER);
+          this.notice.cancelLoading();
         });
       }).catch((errorMessage: string) => {
         this.$scope.$applyAsync(() => {
+          this.notice.cancelLoading();
           this.notice.push(this.notice.ERROR, errorMessage);
         });
       });
@@ -530,17 +537,21 @@ export class EditorController implements angular.IController {
 
   private onPaste(item: DataTransferItem, editor: Quill, event: ClipboardEvent): void {
     event.preventDefault();
+    this.notice.setLoading('Reading USX file...');
     this.util.readUsxFile(item).then((usx: string) => {
+      this.notice.setLoading('Formatting USX file data...');
       this.projectApi.usxToHtml(usx).then((result) => {
         if (result.ok) {
           this.$scope.$applyAsync(() => {
             const selection = editor.getSelection(true);
             editor.clipboard.dangerouslyPasteHTML(selection.index, result.data, Quill.sources.USER);
+            this.notice.cancelLoading();
           });
         }
       });
     }).catch((errorMessage: string) => {
       this.$scope.$applyAsync(() => {
+        this.notice.cancelLoading();
         this.notice.push(this.notice.ERROR, errorMessage);
       });
     });
