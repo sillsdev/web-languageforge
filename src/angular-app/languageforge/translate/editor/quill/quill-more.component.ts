@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 
-export const QuillMoreComponent = {
+export const QuillMoreComponent: angular.IComponentOptions = {
   bindings: {
     qlStatus: '<',
     qlStatusOptions: '<',

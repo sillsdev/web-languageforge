@@ -18,6 +18,7 @@ export class Rights {
   readonly canEditEntry: ConditionFunction;
   readonly canDeleteEntry: ConditionFunction;
   readonly canComment: ConditionFunction;
+  showSettingsDropdown?: ConditionFunction;
 
   constructor(private domain: Domains, private operation: Operations,
               private sendReceive: SendReceive, public session?: Session) {

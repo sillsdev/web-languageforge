@@ -1,0 +1,38 @@
+<div class="content container-fluid" data-ng-cloak dir="{{$ctrl.interfaceConfig.direction}}">
+    <div class="hdrnav row">
+        <div class="col-xs-12">
+            <div class="hdrnav-container">
+                <div class="btn-group" uib-dropdown data-ng-class="$ctrl.interfaceConfig.pullToSide"
+                     data-ng-show="$ctrl.rights.showSettingsDropdown()">
+                    <a class="btn btn-secondary pui-no-caret" uib-dropdown-toggle data-ng-class="$ctrl.interfaceConfig.pullToSide"
+                       data-tooltip-placement="{{$ctrl.interfaceConfig.placementToSide}}"
+                       uib-tooltip="Settings" href="#">
+                        <i class="fa fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="$ctrl.interfaceConfig.pullToSide">
+                        <a class="dropdown-item" ui-sref="settings" data-translate="Project Settings"
+                           data-ng-show="$ctrl.rights.canEditEntry()"></a>
+                        <a class="dropdown-item" data-ng-href="/app/usermanagement/{{$ctrl.project.id}}"
+                           data-translate="User Management" data-ng-show="$ctrl.rights.canEditUsers()"></a>
+                    </div>
+                </div>
+                <div class="pull-right return-button">
+                    <button class="btn btn-secondary" uib-tooltip="View the translation"
+                            data-tooltip-placement="{{$ctrl.interfaceConfig.placementToSide}}"
+                            data-ng-show="$ctrl.showTranslationButton()"
+                            data-ng-click="$ctrl.gotoTranslation()">
+                        <i class="fa fa-arrow-circle-left"></i> {{'Translation' | translate}}
+                    </button>
+                </div>
+                <ol id="top" class="breadcrumb hidden-sm-down" breadcrumbs></ol>
+            </div>
+        </div>
+    </div>
+
+    <div id="lexicon-hmenu">
+        <div class="lexnav control-group"></div>
+    </div>
+
+    <sil-notices></sil-notices>
+    <div data-ui-view></div>
+</div>
