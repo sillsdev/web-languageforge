@@ -1,25 +1,24 @@
 import * as angular from 'angular';
 import uiRouter from 'angular-ui-router';
+
 import { CoreModule } from '../../../bellows/core/core.module';
 import { TranslateCoreModule } from '../core/translate-core.module';
 import { TranslateSharedModule } from '../shared/translate-shared.module';
 import { TranslateNewProjectController } from './translate-new-project.controller';
 
-angular.module('translate-new-project', [
-    CoreModule,
-    'bellows.services',
+export const TranslateNewProjectModule = angular.module('translate-new-project', [
     'ui.bootstrap',
     uiRouter,
-    'palaso.ui.utils',
-    'palaso.ui.sendReceiveCredentials',
-    'palaso.ui.mockUpload',
-    'palaso.util.model.transform',
     'pascalprecht.translate',
     'ngFileUpload',
+    CoreModule,
+    'bellows.services',
+    'palaso.ui.utils',
     'language.inputSystems',
     TranslateCoreModule,
     TranslateSharedModule
   ])
+  .controller('NewTranslateProjectCtrl', TranslateNewProjectController)
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
   function ($stateProvider: angular.ui.IStateProvider,
             $urlRouterProvider: angular.ui.IUrlRouterProvider,
@@ -65,6 +64,4 @@ angular.module('translate-new-project', [
       }]);
 
   }])
-  .controller('NewTranslateProjectCtrl', TranslateNewProjectController)
-
-  ;
+  .name;
