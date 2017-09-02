@@ -21,7 +21,7 @@ export const CoreModule = angular
   .service('modalService', ['$uibModal', ModalService])
   .service('offlineCache', ['$window', '$q', OfflineCacheService])
   .service('linkService', LinkService)
-  .service('utilService', ['$q', UtilityService])
+  .service('utilService', UtilityService)
   .filter('bytes', BytesFilter)
   .filter('relativetime', RelativeTimeFilter)
   .name;
