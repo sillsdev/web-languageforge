@@ -1,9 +1,9 @@
 import * as angular from 'angular';
 
-import { MachineService } from '../core/machine.service';
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { SessionService } from '../../../bellows/core/session.service';
+import { MachineService } from '../core/machine.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { Rights, TranslateRightsService } from '../core/translate-rights.service';
 
@@ -86,11 +86,11 @@ export class TranslateSettingsController implements angular.IController {
         }
       }
     });
-  };
+  }
 
   $onDestroy() {
     angular.copy(this.pristineProject, this.project);
-  };
+  }
 
   updateProject() {
     this.updateConfigConfidenceValues();
@@ -112,7 +112,7 @@ export class TranslateSettingsController implements angular.IController {
           this.project.projectName + ' settings updated successfully.');
       }
     });
-  };
+  }
 
   updateConfig() {
     if (this.rights.canEditProject()) {
@@ -129,7 +129,7 @@ export class TranslateSettingsController implements angular.IController {
         }
       });
     }
-  };
+  }
 
   retrain() {
     const retrainMessage = 'This will retrain the translation engine using the existing data. ' +
@@ -139,19 +139,21 @@ export class TranslateSettingsController implements angular.IController {
       .then(() => {
         this.machineService.train(this.onTrainStatusUpdate, this.onTrainFinished);
       }, angular.noop);
-  };
+  }
 
+  // noinspection JSUnusedGlobalSymbols
   updateLanguage(docType: string, code: string, language: any) {
     this.project.config[docType] = this.project.config[docType] || {};
     this.project.config[docType].inputSystem.tag = code;
     this.project.config[docType].inputSystem.languageName = language.name;
-  };
+  }
 
+  // noinspection JSUnusedGlobalSymbols
   redrawSlider() {
     this.$interval(() => {
       this.$scope.$broadcast('rzSliderForceRender');
     }, 0, 1);
-  };
+  }
 
   selectWhichConfidence() {
     this.confidence.options.disabled = !this.confidence.isMyThreshold &&
@@ -175,13 +177,13 @@ export class TranslateSettingsController implements angular.IController {
       this.confidence.value =
         this.convertThresholdToValue(this.project.config.confidenceThreshold);
     }
-  };
+  }
 
   private onTrainStatusUpdate(progress: any) {
     this.$scope.$applyAsync(() => {
       this.retrainMessage = progress.percentCompleted + '% ' + progress.currentStepMessage;
     });
-  };
+  }
 
   private onTrainSuccess(isSuccess: boolean) {
     if (isSuccess) {
@@ -189,7 +191,7 @@ export class TranslateSettingsController implements angular.IController {
         this.notice.push(this.notice.SUCCESS, 'Finished re-training the translation engine');
       });
     }
-  };
+  }
 
   private onTrainFinished(isSuccess: boolean) {
     this.onTrainSuccess(isSuccess);
@@ -198,17 +200,17 @@ export class TranslateSettingsController implements angular.IController {
         this.notice.push(this.notice.ERROR, 'Could not re-train the translation engine');
       });
     }
-  };
+  }
 
   private convertThresholdToValue(threshold: number): number {
     let range = this.confidence.options.ceil - this.confidence.options.floor;
     return this.confidence.options.floor + threshold * range;
-  };
+  }
 
   private convertValueToThreshold(value: number): number {
     let range = this.confidence.options.ceil - this.confidence.options.floor;
     return (value - this.confidence.options.floor) / range;
-  };
+  }
 
   private updateConfigConfidenceValues() {
     this.project.config.userPreferences = this.project.config.userPreferences || {};
@@ -220,11 +222,11 @@ export class TranslateSettingsController implements angular.IController {
       this.project.config.confidenceThreshold =
         this.convertValueToThreshold(this.confidence.value);
     }
-  };
+  }
 
 }
 
-export const TranslateSettingsComponent = {
+export const TranslateSettingsComponent: angular.IComponentOptions = {
   bindings: {
     tscOnUpdate: '&'
   },

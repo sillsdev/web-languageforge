@@ -10,7 +10,11 @@ import { TranslateProjectService } from '../core/translate-project.service';
 import { DocumentData } from './document-data';
 import { SuggestionsTheme } from './quill/suggestions-theme';
 
-export class EditorController implements angular.IController {
+export class TranslateEditorController implements angular.IController {
+  tecProject: any;
+  tecInterfaceConfig: any;
+  tecOnUpdate: (params: { $event: { project: any } }) => void;
+
   source: DocumentData;
   target: DocumentData;
   right: DocumentData;
@@ -24,9 +28,6 @@ export class EditorController implements angular.IController {
     { key: 1, name: 'draft' },
     { key: 2, name: 'approved' }
   ];
-  ecProject: any;
-  ecInterfaceConfig: any;
-  ecOnUpdate: (params: { $event: { project: any } }) => void;
 
   private currentDocIds: string[] = [];
   private selectedSegmentIndex: number = -1;
@@ -80,15 +81,15 @@ export class EditorController implements angular.IController {
 
     this.projectApi.listDocumentSetsDto(result => {
       if (result.ok) {
-        angular.merge(this.ecProject, result.data.project);
-        this.ecProject.config.documentSets = this.ecProject.config.documentSets || {};
-        this.ecProject.config.userPreferences = this.ecProject.config.userPreferences || {};
-        this.source.inputSystem = this.ecProject.config.source.inputSystem;
-        this.target.inputSystem = this.ecProject.config.target.inputSystem;
-        this.machineService.initialise(this.ecProject.slug);
+        angular.merge(this.tecProject, result.data.project);
+        this.tecProject.config.documentSets = this.tecProject.config.documentSets || {};
+        this.tecProject.config.userPreferences = this.tecProject.config.userPreferences || {};
+        this.source.inputSystem = this.tecProject.config.source.inputSystem;
+        this.target.inputSystem = this.tecProject.config.target.inputSystem;
+        this.machineService.initialise(this.tecProject.slug);
 
-        this.confidenceThreshold = this.ecProject.config.confidenceThreshold;
-        const userPreferences = this.ecProject.config.userPreferences;
+        this.confidenceThreshold = this.tecProject.config.confidenceThreshold;
+        const userPreferences = this.tecProject.config.userPreferences;
         if (userPreferences.confidenceThreshold != null &&
           userPreferences.hasConfidenceOverride != null &&
           userPreferences.hasConfidenceOverride
@@ -96,10 +97,10 @@ export class EditorController implements angular.IController {
           this.confidenceThreshold = userPreferences.confidenceThreshold;
         }
 
-        if (this.ecProject.config.documentSets.idsOrdered != null &&
-          this.ecProject.config.documentSets.idsOrdered.length > 0
+        if (this.tecProject.config.documentSets.idsOrdered != null &&
+          this.tecProject.config.documentSets.idsOrdered.length > 0
         ) {
-          for (let id of this.ecProject.config.documentSets.idsOrdered) {
+          for (let id of this.tecProject.config.documentSets.idsOrdered) {
             if (result.data.documentSetList[id] != null) {
               this.documentSets.push(result.data.documentSetList[id]);
             }
@@ -137,7 +138,7 @@ export class EditorController implements angular.IController {
       this.contentChanged(this.right.editor, this.right);
 
       if (this.selectedDocumentSetIndex in this.documentSets) {
-        const userPreferences = this.ecProject.config.userPreferences;
+        const userPreferences = this.tecProject.config.userPreferences;
         userPreferences.selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
         this.projectApi.updateUserPreferences(userPreferences);
       }
@@ -155,11 +156,11 @@ export class EditorController implements angular.IController {
           if (result.ok) {
             const noticeMessage = 'Document \'' + documentSet.name + '\' was successfully removed.';
             this.documentSets.splice(index, 1);
-            this.ecProject.config.documentSets.idsOrdered.splice(index, 1);
+            this.tecProject.config.documentSets.idsOrdered.splice(index, 1);
             if (this.selectedDocumentSetIndex >= index) {
               this.selectDocumentSet(this.selectedDocumentSetIndex - 1);
             }
-            this.ecOnUpdate({ $event: { project: this.ecProject } });
+            this.tecOnUpdate({ $event: { project: this.tecProject } });
             this.notice.push(this.notice.SUCCESS, noticeMessage);
           } else {
             this.notice.push(this.notice.ERROR, 'Sorry, there was a problem removing the document.');
@@ -204,7 +205,7 @@ export class EditorController implements angular.IController {
             this.documentSets[index] = docSet;
             noticeMessage = noticeMessage + 'updated.';
           }
-          this.ecOnUpdate({ $event: { project: this.ecProject } });
+          this.tecOnUpdate({ $event: { project: this.tecProject } });
           this.notice.push(this.notice.SUCCESS, noticeMessage);
         } else {
           this.notice.push(this.notice.ERROR, 'Sorry, there was a problem saving your changes.');
@@ -255,16 +256,16 @@ export class EditorController implements angular.IController {
       }
 
       this.selectDocumentSet(selectedIndex);
-      this.ecProject.config.documentSets.idsOrdered = this.documentSets.map(docSet => docSet.id);
+      this.tecProject.config.documentSets.idsOrdered = this.documentSets.map(docSet => docSet.id);
 
-      this.projectApi.updateConfig(this.ecProject.config, result => {
+      this.projectApi.updateConfig(this.tecProject.config, result => {
         if (result.ok) {
           this.notice.push(this.notice.SUCCESS,
             'Document \'' + documentSet.name + '\' successfully moved.');
         } else {
           this.notice.push(this.notice.ERROR, 'Sorry, there was a problem saving your changes.');
         }
-        this.ecOnUpdate({ $event: { project: this.ecProject } });
+        this.tecOnUpdate({ $event: { project: this.tecProject } });
       });
     }, () => { });
   }
@@ -314,7 +315,7 @@ export class EditorController implements angular.IController {
     const docId = this.docId(doc.docType);
     if (docId !== '') {
       this.currentDocIds[doc.docType] = docId;
-      this.realTime.createAndSubscribeRichTextDoc(this.ecProject.slug, docId, editor);
+      this.realTime.createAndSubscribeRichTextDoc(this.tecProject.slug, docId, editor);
     }
   }
 
@@ -335,10 +336,10 @@ export class EditorController implements angular.IController {
     this.editorCreated(rightEditor, newRight);
 
     if (writePreferences) {
-      const userPreferences = this.ecProject.config.userPreferences;
+      const userPreferences = this.tecProject.config.userPreferences;
       userPreferences.isDocumentOrientationTargetRight = this.right.docType === this.target.docType;
       this.projectApi.updateUserPreferences(userPreferences);
-      this.ecOnUpdate({ $event: { project: this.ecProject } });
+      this.tecOnUpdate({ $event: { project: this.tecProject } });
     }
   }
 
@@ -431,7 +432,7 @@ export class EditorController implements angular.IController {
               '\' document set was successfully learnt.');
             const formatDelta = this.target.createDeltaSegmentStateMachineHasLearnt(true,
               this.target.segment.blockEndIndex, this.target.segment);
-            this.realTime.updateRichTextDoc(this.ecProject.slug,
+            this.realTime.updateRichTextDoc(this.tecProject.slug,
               this.docId(this.target.docType, this.target.segment.learnt.documentSetId), formatDelta,
               Quill.sources.USER);
           }
@@ -559,12 +560,12 @@ export class EditorController implements angular.IController {
 
 }
 
-export const EditorComponent: angular.IComponentOptions = {
+export const TranslateEditorComponent: angular.IComponentOptions = {
   bindings: {
-    ecInterfaceConfig: '<',
-    ecOnUpdate: '&',
-    ecProject: '<'
+    tecInterfaceConfig: '<',
+    tecOnUpdate: '&',
+    tecProject: '<'
   },
-  templateUrl: '/angular-app/languageforge/translate/editor/editor.html',
-  controller: EditorController
+  templateUrl: '/angular-app/languageforge/translate/editor/editor.component.html',
+  controller: TranslateEditorController
 };

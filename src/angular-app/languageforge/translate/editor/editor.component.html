@@ -1,4 +1,4 @@
-<h2>{{'Translate' | translate}} {{$ctrl.ecProject.projectName}}</h2>
+<h2>{{'Translate' | translate}} {{$ctrl.tecProject.projectName}}</h2>
 <div class="row">
     <div class="col-sm-2">
         <label data-translate="Document"></label>
@@ -7,7 +7,7 @@
             <i class="fa fa-plus iconPadding"></i>{{'New' | translate}}</button>
         <div class="picklist">
             <div data-ng-repeat="documentSet in $ctrl.documentSets" data-ng-class="{ selected: $ctrl.selectedDocumentSetIndex === $index }">
-                <div class="btn-group" uib-dropdown data-ng-class="$ctrl.ecInterfaceConfig.pullToSide">
+                <div class="btn-group" uib-dropdown data-ng-class="$ctrl.tecInterfaceConfig.pullToSide">
                     <a class="pui-no-caret" uib-dropdown-toggle id="dropdownMenuLink">
                         <i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu dropdown-menu-sm-left" uib-dropdown-menu aria-labelledby="dropdownMenuLink">

@@ -65,7 +65,7 @@ export class LanguagesPickerController implements angular.IController {
 
 }
 
-export const LanguagesPickerComponent = {
+export const LanguagesPickerComponent: angular.IComponentOptions = {
   bindings: {
     tlpProject: '<?',
     tlpUpdateLanguage: '&'
