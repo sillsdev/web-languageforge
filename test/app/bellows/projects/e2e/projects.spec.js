@@ -1,13 +1,11 @@
 'use strict';
 
-/**
- *  TODO: Perhaps User Management needs to be its own app. IJH 2015-01
- */
 describe('E2E Projects List App', function () {
   var constants     = require('../../../testConstants.json');
-  var util          = require('../../pages/util.js');
   var loginPage     = require('../../pages/loginPage');
   var projectsPage  = require('../../pages/projectsPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   describe('for Normal User', function () {
 
@@ -26,6 +24,7 @@ describe('E2E Projects List App', function () {
     it('can list two projects of which the user is a member', function () {
       loginPage.loginAsAdmin();
       projectsPage.get();
+      browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn), CONDITION_TIMEOUT);
       projectsPage.addMemberToProject(constants.otherProjectName, constants.memberName);
       loginPage.loginAsMember();
       projectsPage.get();
