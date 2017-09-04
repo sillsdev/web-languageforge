@@ -13,7 +13,7 @@ export class DocumentEditor {
     return selection != null && selection.length === 0;
   }
 
-  documentSetId: string;
+  currentDocumentSetId: string;
   suggestions: string[] = [];
   currentSegment: Segment;
   quill: Quill;
@@ -57,8 +57,8 @@ export class DocumentEditor {
 
   switchCurrentSegment(documentSetId: string, segmentIndex: number): boolean {
     let documentChanged = false;
-    if (this.documentSetId !== documentSetId) {
-      this.documentSetId = documentSetId;
+    if (this.currentDocumentSetId !== documentSetId) {
+      this.currentDocumentSetId = documentSetId;
       documentChanged = true;
     }
 
