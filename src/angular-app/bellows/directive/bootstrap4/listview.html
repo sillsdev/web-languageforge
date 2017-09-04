@@ -1,6 +1,6 @@
-<div class="listview" ng-hide="hideIfEmpty && filteredItems.length <= 10">
+<div class="listview" ng-hide="hideIfEmpty && items.length == 0">
     <div ng-transclude></div>
-    <div class="row">
+    <div class="row" ng-hide="filteredItems.length <= 10">
         <div class="col-md-8 col-lg-10" ng-hide="filteredItems.length <= itemsPerPage">
             <ul uib-pagination total-items="filteredItems.length" data-ng-model="currentPage" boundary-links="true"
                 items-per-page="itemsPerPage" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
