@@ -36,12 +36,14 @@ export const TranslateAppModule = angular
       $stateProvider
         .state('settings', {
           url: '/settings',
-          template: '<translate-settings tsc-on-update="$ctrl.onUpdateProject($event)">' +
-            '</translate-settings>'
+          template: '<translate-settings tsc-rights="$ctrl.rights" tsc-project="$ctrl.project" ' +
+            'tsc-interface-config="$ctrl.interfaceConfig" ' +
+            'tsc-on-update="$ctrl.onUpdateProject($event)"></translate-settings>'
         })
         .state('editor', {
           url: '/editor',
-          template: '<translate-editor tec-project="$ctrl.project" tec-on-update="$ctrl.onUpdateProject($event)"' +
+          template: '<translate-editor tec-project="$ctrl.project" ' +
+            'tec-on-update="$ctrl.onUpdateProject($event)" ' +
             'tec-interface-config="$ctrl.interfaceConfig"></translate-editor>'
         })
         ;

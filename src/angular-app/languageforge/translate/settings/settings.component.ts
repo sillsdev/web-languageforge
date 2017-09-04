@@ -2,12 +2,14 @@ import * as angular from 'angular';
 
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
-import { SessionService } from '../../../bellows/core/session.service';
 import { MachineService } from '../core/machine.service';
 import { TranslateProjectService } from '../core/translate-project.service';
-import { Rights, TranslateRightsService } from '../core/translate-rights.service';
+import { Rights } from '../core/translate-rights.service';
 
 export class TranslateSettingsController implements angular.IController {
+  tscProject: any;
+  tscRights: Rights;
+  tscInterfaceConfig: any;
   tscOnUpdate: (params: { $event: { project: any } }) => void;
 
   actionInProgress: boolean;
@@ -15,81 +17,67 @@ export class TranslateSettingsController implements angular.IController {
   confidence: any;
   project: any;
   rights: Rights;
-
-  private pristineProject: any;
+  interfaceConfig: any;
 
   static $inject = ['$scope', '$interval',
-    'silNoticeService', 'sessionService',
-    'translateRightsService',
-    'translateProjectApi', 'machineService',
-    'modalService', '$q'
+    'silNoticeService', 'translateProjectApi',
+    'machineService', 'modalService'
   ];
   constructor(private $scope: angular.IScope, private $interval: angular.IIntervalService,
-              private notice: NoticeService, private sessionService: SessionService,
-              private rightsService: TranslateRightsService,
-              private projectApi: TranslateProjectService, private machineService: MachineService,
-              private modal: ModalService, private $q: angular.IQService) {}
+              private notice: NoticeService, private projectApi: TranslateProjectService,
+              private machineService: MachineService, private modal: ModalService) {}
 
-  $onInit() {
-    this.actionInProgress = false;
-    this.retrainMessage = '';
-    this.confidence = {
-      value: undefined,
-      isMyThreshold: false,
-      options: {
-        floor: 0,
-        ceil: 100,
-        step: 1,
-        showSelectionBar: true,
-        translate: (value: number) => {
-          return value + '%';
-        }
+  $onChanges(changes: any) {
+    if (changes.tscRights) {
+      this.rights = angular.copy(changes.tscRights.currentValue);
+    }
+
+    if (changes.tscInterfaceConfig) {
+      this.interfaceConfig = angular.copy(changes.tscInterfaceConfig.currentValue);
+    }
+
+    if (changes.tscProject) {
+      this.project = angular.copy(changes.tscProject.currentValue);
+      if (changes.tscProject.isFirstChange()) {
+        this.actionInProgress = false;
+        this.retrainMessage = '';
+        this.confidence = {
+          value: undefined,
+          isMyThreshold: false,
+          options: {
+            floor: 0,
+            ceil: 100,
+            step: 1,
+            showSelectionBar: true,
+            translate: (value: number) => {
+              return value + '%';
+            }
+          }
+        };
       }
-    };
 
-    this.$q.all([this.sessionService.getSession(), this.rightsService.getRights(),
-      this.projectApi.readProject()
-    ]).then((data) => {
-      let session = data[0];
-      let rights = data[1];
-      let readProjectResult = data[2];
-
-      this.project = session.project();
-      this.rights = rights;
-
-      if (readProjectResult.ok) {
-        angular.merge(this.project, readProjectResult.data.project);
-        this.project.config = this.project.config || {};
-        this.pristineProject = angular.copy(this.project);
-        this.machineService.initialise(this.project.slug);
-        this.machineService.listenForTrainingStatus(this.onTrainStatusUpdate, this.onTrainSuccess);
-        if (angular.isDefined(this.project.config.userPreferences)) {
-          if (angular.isDefined(this.project.config.userPreferences.hasConfidenceOverride)) {
-            this.confidence.isMyThreshold =
-              this.project.config.userPreferences.hasConfidenceOverride;
-          }
-
-          if (angular.isUndefined(this.project.config.userPreferences.confidenceThreshold) ||
-            !(isFinite(this.project.config.userPreferences.confidenceThreshold) &&
-              angular.isNumber(this.project.config.userPreferences.confidenceThreshold))
-          ) {
-            this.project.config.userPreferences.confidenceThreshold =
-              this.project.config.confidenceThreshold;
-          }
+      this.machineService.initialise(this.project.slug);
+      this.machineService.listenForTrainingStatus(this.onTrainStatusUpdate, this.onTrainSuccess);
+      if (angular.isDefined(this.project.config.userPreferences)) {
+        if (angular.isDefined(this.project.config.userPreferences.hasConfidenceOverride)) {
+          this.confidence.isMyThreshold =
+            this.project.config.userPreferences.hasConfidenceOverride;
         }
-
-        this.selectWhichConfidence();
-        if (angular.isUndefined(this.project.config.isTranslationDataShared) ||
-          this.project.config.isTranslationDataShared === ''
+        if (angular.isUndefined(this.project.config.userPreferences.confidenceThreshold) ||
+          !(isFinite(this.project.config.userPreferences.confidenceThreshold) &&
+            angular.isNumber(this.project.config.userPreferences.confidenceThreshold))
         ) {
-          this.project.config.isTranslationDataShared = true;
+          this.project.config.userPreferences.confidenceThreshold =
+            this.project.config.confidenceThreshold;
         }
       }
-    });
-  }
-
-  $onDestroy() {
-    angular.copy(this.pristineProject, this.project);
+      this.selectWhichConfidence();
+      if (angular.isUndefined(this.project.config.isTranslationDataShared) ||
+        this.project.config.isTranslationDataShared === ''
+      ) {
+        this.project.config.isTranslationDataShared = true;
+      }
+    }
   }
 
   updateProject() {
@@ -106,7 +94,6 @@ export class TranslateSettingsController implements angular.IController {
       if (result.ok) {
         this.project.id = result.data;
         this.machineService.initialise(this.project.slug);
-        this.pristineProject = angular.copy(this.project);
         if (this.tscOnUpdate) this.tscOnUpdate({ $event: { project: this.project } });
         this.notice.push(this.notice.SUCCESS,
           this.project.projectName + ' settings updated successfully.');
@@ -121,8 +108,6 @@ export class TranslateSettingsController implements angular.IController {
       this.updateConfigConfidenceValues();
       this.projectApi.updateUserPreferences(this.project.config.userPreferences).then((result) => {
         if (result.ok) {
-          this.pristineProject.config.userPreferences =
-            angular.copy(this.project.config.userPreferences);
           if (this.tscOnUpdate) this.tscOnUpdate({ $event: { project: this.project } });
           this.notice.push(this.notice.SUCCESS,
             this.project.projectName + ' confidence updated successfully.');
@@ -228,6 +213,9 @@ export class TranslateSettingsController implements angular.IController {
 
 export const TranslateSettingsComponent: angular.IComponentOptions = {
   bindings: {
+    tscProject: '<',
+    tscRights: '<',
+    tscInterfaceConfig: '<',
     tscOnUpdate: '&'
   },
   templateUrl: '/angular-app/languageforge/translate/settings/settings.component.html',
