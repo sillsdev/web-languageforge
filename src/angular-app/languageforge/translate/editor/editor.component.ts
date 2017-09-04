@@ -77,7 +77,9 @@ export class TranslateEditorController implements angular.IController {
         this.target.inputSystem = this.tecProject.config.target.inputSystem;
         this.machineService.initialise(this.tecProject.slug);
 
-        if (this.tecProject.config.documentSets.idsOrdered != null) {
+        if (this.tecProject.config.documentSets.idsOrdered != null &&
+          this.tecProject.config.documentSets.idsOrdered.length > 0
+        ) {
           for (const id of this.tecProject.config.documentSets.idsOrdered) {
             if (result.data.documentSetList[id] != null) {
               this.documentSets.push(result.data.documentSetList[id]);
