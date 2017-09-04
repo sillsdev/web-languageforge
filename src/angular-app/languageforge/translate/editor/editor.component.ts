@@ -77,6 +77,22 @@ export class TranslateEditorController implements angular.IController {
         this.target.inputSystem = this.tecProject.config.target.inputSystem;
         this.machineService.initialise(this.tecProject.slug);
 
+        if (this.tecProject.config.documentSets.idsOrdered != null) {
+          for (const id of this.tecProject.config.documentSets.idsOrdered) {
+            if (result.data.documentSetList[id] != null) {
+              this.documentSets.push(result.data.documentSetList[id]);
+            }
+          }
+        } else {
+          this.tecProject.config.documentSets.idsOrdered = [];
+          angular.forEach(result.data.documentSetList, documentSet => {
+            if (angular.isDefined(documentSet)) {
+              this.documentSets.push(documentSet);
+              this.tecProject.config.documentSets.idsOrdered.push(documentSet);
+            }
+          });
+        }
+
         this.confidenceThreshold = this.tecProject.config.confidenceThreshold;
         const userPreferences = this.tecProject.config.userPreferences;
         if (userPreferences.confidenceThreshold != null &&
@@ -84,22 +100,6 @@ export class TranslateEditorController implements angular.IController {
           userPreferences.hasConfidenceOverride
         ) {
           this.confidenceThreshold = userPreferences.confidenceThreshold;
-        }
-
-        if (this.tecProject.config.documentSets.idsOrdered != null &&
-          this.tecProject.config.documentSets.idsOrdered.length > 0
-        ) {
-          for (const id of this.tecProject.config.documentSets.idsOrdered) {
-            if (result.data.documentSetList[id] != null) {
-              this.documentSets.push(result.data.documentSetList[id]);
-            }
-          }
-        } else {
-          angular.forEach(result.data.documentSetList, documentSet => {
-            if (angular.isDefined(documentSet)) {
-              this.documentSets.push(documentSet);
-            }
-          });
         }
 
         if (userPreferences.selectedDocumentSetId != null) {
@@ -120,16 +120,18 @@ export class TranslateEditorController implements angular.IController {
     });
   }
 
-  selectDocumentSet(index: number): void {
+  selectDocumentSet(index: number, updateConfig: boolean = true): void {
     if (this.selectedDocumentSetIndex !== index) {
       this.selectedDocumentSetIndex = index;
-      this.switchCurrentDocument(this.left);
-      this.switchCurrentDocument(this.right);
+      this.switchCurrentDocumentSet(this.left);
+      this.switchCurrentDocumentSet(this.right);
 
       if (this.selectedDocumentSetIndex in this.documentSets) {
         const userPreferences = this.tecProject.config.userPreferences;
         userPreferences.selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
-        this.projectApi.updateUserPreferences(userPreferences);
+        if (updateConfig) {
+          this.projectApi.updateConfig(this.tecProject.config);
+        }
       }
     }
   }
@@ -147,10 +149,11 @@ export class TranslateEditorController implements angular.IController {
             this.documentSets.splice(index, 1);
             this.tecProject.config.documentSets.idsOrdered.splice(index, 1);
             if (this.selectedDocumentSetIndex >= index) {
-              this.selectDocumentSet(this.selectedDocumentSetIndex - 1);
+              this.selectDocumentSet(this.selectedDocumentSetIndex - 1, false);
             }
-            this.tecOnUpdate({ $event: { project: this.tecProject } });
+            this.projectApi.updateConfig(this.tecProject.config);
             this.notice.push(this.notice.SUCCESS, noticeMessage);
+            this.tecOnUpdate({ $event: { project: this.tecProject } });
           } else {
             this.notice.push(this.notice.ERROR, 'Sorry, there was a problem removing the document.');
           }
@@ -188,8 +191,8 @@ export class TranslateEditorController implements angular.IController {
           if (isCreate) {
             this.documentSets.push(docSet);
             this.tecProject.config.documentSets.idsOrdered.push(docSet.id);
+            this.selectDocumentSet(this.documentSets.length - 1, false);
             this.projectApi.updateConfig(this.tecProject.config);
-            this.selectDocumentSet(this.documentSets.length - 1);
             noticeMessage += 'added.';
             this.notice.push(this.notice.SUCCESS, noticeMessage);
           } else {
@@ -246,9 +249,8 @@ export class TranslateEditorController implements angular.IController {
         }
       }
 
-      this.selectDocumentSet(selectedIndex);
       this.tecProject.config.documentSets.idsOrdered = this.documentSets.map(docSet => docSet.id);
-
+      this.selectDocumentSet(selectedIndex, false);
       this.projectApi.updateConfig(this.tecProject.config, result => {
         if (result.ok) {
           this.notice.push(this.notice.SUCCESS,
@@ -323,7 +325,7 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private switchCurrentDocument(editor: DocumentEditor) {
+  private switchCurrentDocumentSet(editor: DocumentEditor) {
     const docId = this.docId(editor.docType);
     if (docId === '') {
       return;
@@ -350,7 +352,7 @@ export class TranslateEditorController implements angular.IController {
 
   private updateEditor(editor: DocumentEditor): void {
     const selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
-    const previousDocumentSetId = editor.documentSetId;
+    const previousDocumentSetId = editor.currentDocumentSetId;
     const previousSegment = editor.currentSegment;
     const segmentChanged = editor.update(selectedDocumentSetId);
     switch (editor.docType) {
