@@ -4,7 +4,6 @@
 .externalToolBuilders
 .idea/
 .settings
-.vscode/
 .vagrant/
 deploy/**/*.retry
 deploy/ansible.cfg
