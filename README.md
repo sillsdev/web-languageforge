@@ -162,7 +162,7 @@ To watch Sass files for changes, run `gulp sass:watch`. The output will also be 
 
 To watch TypeScript files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#LiveReloadInstall)).
 
-### Language Forge Configuration File <a id="LFConfig"></a>
+#### Language Forge Configuration File <a id="LFConfig"></a>
 Manually edit the Language Forge config file
 
 ```
@@ -175,10 +175,12 @@ and modify PhpSourcePath to
 PhpSourcePath = /var/www/virtual/languageforge.org/htdocs
 ```
 
+-------------------------------
+
 ### Windows 10 Setup
 Before setting up a development environment on Windows 10, it is important to understand a couple of things about how WSL works.
-1. WSL is designed to only work with command-line tools. It cannot run GUI applications. This is not an issue for us, since we will only need to run command-line tools.
-2. You cannot make changes to the Linux filesystem from Windows, but you can make changes to the Windows filesystem from Linux. In practical terms, this means that any files that you want to be able to modify should be stored in the Windows filesystem. For example, Git repos should be cloned to the Windows filesystem. Windows drives are automatically mounted in Linux under the `/mnt` directory. A good practice is to store all Git repos in a directory on Windows, and then create a symbolic link to the directory in your home directory on Linux.
+1. You cannot make changes to the Linux filesystem from Windows, but you can make changes to the Windows filesystem from Linux. In practical terms, this means that any files that you want to be able to modify should be stored in the Windows filesystem. For example, Git repos should be cloned to the Windows filesystem. Windows drives are automatically mounted in Linux under the `/mnt` directory. A good practice is to store all Git repos in a directory on Windows, and then create a symbolic link to the directory in your home directory on Linux.
+2. WSL is designed to only work with command-line tools. It cannot run GUI applications. This means that any GUI-based code editors or IDEs will need to be run in Windows.
 3. Linux processes only run as long as a Bash shell is open. You can start a Bash shell on Ubuntu by running **Bash on Ubuntu on Windows** from the Start menu or by running `bash` from the command prompt. Once you close all Ubuntu Bash shells, all Linux processes will shutdown gracefully. This means that you will have to start any services that you need when you open an Ubuntu Bash shell.
 
 #### Prerequisites
