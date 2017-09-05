@@ -14,7 +14,7 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
         items: '=',
         hideIfEmpty: '@',
         visibleItems: '=',
-        filteredItems: '=',
+        filteredItems: '=?',
         itemsFilter: '=?',
       },
       controller: ['$scope', function($scope) {
