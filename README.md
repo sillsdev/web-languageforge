@@ -188,7 +188,7 @@ The first step is to install Ubuntu 16.04 on Windows. Follow the steps outlined 
 
 Download and install [Git for Windows](https://git-for-windows.github.io/). If you would like a full-fledged GUI for Git, you can install [Git Extensions](https://gitextensions.github.io/).
 
-After, WSL and Git are installed, you will need to perform an Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) in Ubuntu to install and configure a basic development environment. The **ops-devbox** repo will need to be cloned in Windows. You will need to ensure that repo is checked out with with Unix line endings, so that Linux can read them properly.
+After, WSL and Git are installed, you will need to perform an Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure a basic development environment. The **ops-devbox** repo will need to be cloned in Windows. You will also need to ensure that the repo is checked out with Unix line endings, so that Linux can read them properly.
 
 To clone **ops-devbox** with Linux line endings, open **Git Bash** in Windows (not **Bash on Ubuntu on Windows**) and run:
 
@@ -199,7 +199,7 @@ git config core.autocrlf input
 git checkout
 ```
 
-Once the repo is cloned, you can install Ansible and run the ansible scripts in Ubuntu as outlined in the [**ops-devbox** README](https://github.com/sillsdev/ops-devbox).
+Once the repo is cloned, you can install Ansible in Ubuntu and run the ansible scripts as outlined in the [**ops-devbox** README](https://github.com/sillsdev/ops-devbox).
 
 #### Installation and Deployment
 
