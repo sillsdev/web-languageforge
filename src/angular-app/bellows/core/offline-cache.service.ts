@@ -15,7 +15,7 @@ export interface OfflineCacheService {
 // See https://github.com/angular-ui/ui-router/issues/2889 to determine source
 export function OfflineCacheService($window: angular.IWindowService, $q: angular.IQService) {
   const dbName = 'xforgeCache';
-  const version = 5;
+  const version = 6;
 
   let indexedDB: any = $window.indexedDB;
   let db: any = null;
@@ -72,7 +72,8 @@ export function OfflineCacheService($window: angular.IWindowService, $q: angular
           db.deleteObjectStore('projects');
         }
 
-        db.createObjectStore('projects', { keyPath: 'id' });
+        let projectsStore = db.createObjectStore('projects', { keyPath: 'id' });
+        projectsStore.createIndex('projectId', 'projectId', { unique: true });
       };
 
       request.onsuccess = function (e: any) {
@@ -169,7 +170,10 @@ export function OfflineCacheService($window: angular.IWindowService, $q: angular
     let deferred = $q.defer();
     openDbIfNecessary().then(function () {
       let items: any[] = [];
-      let index = db.transaction(storeName).objectStore(storeName).index('projectId');
+      let objectStore = db.transaction(storeName).objectStore(storeName);
+      //console.log("open index projectId for storeName = " + storeName);
+      let index = objectStore.index('projectId');
+      //console.log("open cursor for index on storeName = " + storeName);
       let cursorRequest = index.openCursor(IDBKeyRange.only(projectId));
 
       cursorRequest.onsuccess = function (e: any) {
