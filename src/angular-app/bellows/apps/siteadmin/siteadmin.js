@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('siteadmin', [
-  'ngRoute', 'sfAdmin.filters', 'sfAdmin.services', 'sfAdmin.directives', 'bellows.services',
-  'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'ui.bootstrap', 'palaso.ui.utils'
+  'ngRoute', 'ui.bootstrap', 'bellows.services',
+  'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'palaso.ui.utils'
 ])
   .controller('UserCtrl', ['$scope', 'userService', 'sessionService', 'silNoticeService',
   function ($scope, userService, sessionService, notice) {

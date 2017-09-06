@@ -891,16 +891,12 @@ class Sf
     private static function isAnonymousMethod($methodName)
     {
         $methods = [
-            'identity_check',
             'get_captcha_data',
             'reset_password',
             'sendReceive_getUserProjects',
             'sendReceive_notification_receiveRequest',
             'sendReceive_notification_sendRequest',
-            'user_activate',
-            'user_readForRegistration',
             'user_register',
-            'user_updateFromRegistration',
             'session_getSessionData'
         ];
         return in_array($methodName, $methods);
