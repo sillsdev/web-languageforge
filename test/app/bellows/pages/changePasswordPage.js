@@ -13,8 +13,8 @@ function BellowsChangePasswordPage() {
   };
 
   this.form = element(by.tagName('form'));
-  this.password = element(by.model('vars.password'));
-  this.confirm = element(by.model('vars.confirm_password'));
+  this.password = element(by.model('$ctrl.password'));
+  this.confirm = element(by.model('$ctrl.confirm_password'));
   this.passwordMatchImage = element(by.id('passwordMatch'));
   this.submitButton = element(by.partialButtonText('Change Password'));
   this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
