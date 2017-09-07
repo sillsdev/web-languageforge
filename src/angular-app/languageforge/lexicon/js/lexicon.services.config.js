@@ -27,9 +27,9 @@ angular.module('lexicon.services')
         fieldsConfig = config.roleViews[role];
       }
 
-      removeDisabledConfigFields(config.entry, fieldsConfig);
-      removeDisabledConfigFields(config.entry.fields.senses, fieldsConfig);
-      removeDisabledConfigFields(config.entry.fields.senses.fields.examples, fieldsConfig);
+      setConfigFieldVisibility(config.entry, fieldsConfig);
+      setConfigFieldVisibility(config.entry.fields.senses, fieldsConfig);
+      setConfigFieldVisibility(config.entry.fields.senses.fields.examples, fieldsConfig);
 
       return config;
     }.bind(this));
@@ -89,27 +89,28 @@ angular.module('lexicon.services')
     return containsData;
   };
 
-  function removeDisabledConfigFields(config, fieldsConfig) {
-    angular.forEach(config.fieldOrder, function (fieldName) {
-      if (fieldName !== 'senses' && fieldName !== 'examples') {
-        var fieldConfig = fieldsConfig.fields[fieldName];
+  function setConfigFieldVisibility(config, fieldsConfig) {
+    var visibleFields = config.fieldOrder.filter(function (fieldName) {
+      if (fieldName === 'senses' || fieldName === 'examples') {
+        return true;  // Never remove the senses or examples config!
+      }
 
-        if (fieldConfig && fieldConfig.show) {
-          // field is enabled
-
-          // override input systems if specified
-          if (fieldConfig.overrideInputSystems) {
-            config.fields[fieldName].inputSystems = angular.copy(fieldConfig.inputSystems);
-          }
-        } else {
-          // remove config field
-          delete config.fields[fieldName];
-
-          // remove field from fieldOrder array
-          config.fieldOrder.splice(config.fieldOrder.indexOf(fieldName), 1);
+      var fieldConfig = fieldsConfig.fields[fieldName];
+      if (fieldConfig && fieldConfig.show) {
+        // Also override input systems if specified
+        if (fieldConfig.overrideInputSystems) {
+          config.fields[fieldName].inputSystems = angular.copy(fieldConfig.inputSystems);
         }
+        return true;
+      } else {
+        // Also remove field config
+        delete config.fields[fieldName];
+        return false;
       }
     });
+
+    // Now set fieldOrder array *after* we're done iterating over it
+    config.fieldOrder = visibleFields;
   }
 
   this.isCustomField = function isCustomField(fieldName) {
