@@ -40,7 +40,7 @@ function ProjectsPage() {
 
   //noinspection JSUnusedGlobalSymbols
   this.projectTypes = element.all(by.repeater('project in visibleProjects')
-    .column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
+    .column('{{project.projectName}} ({{$ctrl.projectTypes[project.appName]}})'));
 
   //noinspection JSUnusedGlobalSymbols
   this.select100ItemsPerPage = function select100ItemsPerPage() {
