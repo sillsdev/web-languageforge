@@ -1,8 +1,9 @@
 import * as angular from 'angular';
-import Quill, { Delta, DeltaStatic, RangeStatic, StringMap, Tooltip } from 'quill';
+import Quill, { Delta, DeltaStatic, RangeStatic, Tooltip } from 'quill';
 
 import { MachineService } from '../core/machine.service';
-import { MachineFormat, SuggestionsTheme } from './quill/suggestions-theme';
+import { MetricService } from './metric.service';
+import { SuggestionsTheme } from './quill/suggestions-theme';
 import { Segment } from './segment';
 
 export class DocumentEditor {
@@ -14,21 +15,37 @@ export class DocumentEditor {
   }
 
   currentDocumentSetId: string;
-  suggestions: string[] = [];
   currentSegment: Segment;
   quill: Quill;
   modulesConfig: any = {};
   inputSystem: any = {};
 
-  constructor(private machineService: MachineService, public quillIsCreated: angular.IDeferred<{}>,
-              public docType: string, public label: string) { }
+  private _suggestions: string[] = [];
+  private previousSuggestions: string[] = [];
+
+  constructor(public docType: string, public label: string,
+              public quillIsCreated: angular.IDeferred<boolean>,
+              private machineService: MachineService, private metricService: MetricService) { }
 
   isTextEmpty(): boolean {
     return this.quill.getText().trim() === '';
   }
 
   hasSuggestion(): boolean {
-    return this.suggestions != null && this.suggestions.length > 0;
+    return this._suggestions != null && this._suggestions.length > 0;
+  }
+
+  get suggestions(): string[] {
+    return this._suggestions;
+  }
+
+  set suggestions(suggestions: string[]) {
+    this.previousSuggestions = this._suggestions;
+    this._suggestions = suggestions;
+  }
+
+  hasSuggestionsChanged(suggestions: string[] = this._suggestions): boolean {
+    return !angular.equals(suggestions, this.previousSuggestions);
   }
 
   update(documentSetId: string): boolean {
@@ -91,26 +108,28 @@ export class DocumentEditor {
     this.quill.formatText(segment.range.index, segment.range.length, format, Quill.sources.USER);
   }
 
-  createDeltaSegment(segment: Segment): DeltaStatic {
+  static createDeltaSegment(segment: Segment): DeltaStatic {
     const format = segment.getFormat();
     const QuillDelta = Quill.import('delta') as typeof Delta;
     return new QuillDelta().retain(segment.range.index).retain(segment.range.length, format);
   }
 
   showSuggestions(): void {
-    this.showAndPositionTooltip((this.quill.theme as SuggestionsTheme).suggestionsTooltip, this.quill,
-      this.hasSuggestion());
+    DocumentEditor.showAndPositionTooltip((this.quill.theme as SuggestionsTheme).suggestionsTooltip,
+      this.quill, this.hasSuggestion());
   }
 
   hideSuggestions(): void {
     (this.quill.theme as SuggestionsTheme).suggestionsTooltip.hide();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   insertSuggestion(suggestionIndex: number): void {
     const selection = this.quill.getSelection();
     const text = this.machineService.getSuggestionText(suggestionIndex);
     this.quill.insertText(selection.index, text + ' ', Quill.sources.USER);
     this.quill.setSelection(selection.index + text.length + 1, 0, Quill.sources.USER);
+    this.metricService.onSuggestionTaken();
   }
 
   private getSegmentRange(index: number): RangeStatic {
@@ -154,7 +173,7 @@ export class DocumentEditor {
     }
   }
 
-  private showAndPositionTooltip(tooltip: Tooltip, quill: Quill, hasCondition: boolean = true): void {
+  private static showAndPositionTooltip(tooltip: Tooltip, quill: Quill, hasCondition: boolean = true): void {
     const selection = quill.getSelection();
     if (DocumentEditor.isSelectionCollapsed(selection) && hasCondition) {
       tooltip.show();
