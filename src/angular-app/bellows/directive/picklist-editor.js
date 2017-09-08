@@ -24,7 +24,7 @@ angular.module('palaso.ui.picklistEditor', ['angular-sortable-view'])
       elm.focus(function() {
           ctrl.$pristine = false;
       });
-    }  
+    }
   }
 })
 .directive('picklistEditor', function() {
@@ -41,31 +41,62 @@ angular.module('palaso.ui.picklistEditor', ['angular-sortable-view'])
       $scope.defaultKeyFunc = function(value) {
         return value.replace(/ /gi, '_');
       };
-      
+
       $scope.showDefault = angular.isDefined($scope.defaultKey);
-      
+
+      $scope.deletableIndexes = [];
+
       $scope.pickAddItem = function() {
         if ($scope.newValue) {
           var keyFunc = $scope.keyFunc || $scope.defaultKeyFunc;
           var key = keyFunc($scope.newValue);
           $scope.items.push({key: key, value: $scope.newValue});
+          $scope.deletableIndexes.push($scope.items.length - 1);
           $scope.newValue = undefined;
         }
       };
-      
+
       $scope.pickRemoveItem = function(index) {
+        // Remove index from deletableIndexes, shift all indexes *after* it up by 1
+        $scope.deletableIndexes = $scope.deletableIndexes.map(function (i) {
+          if (i === index) return -1;
+          else if (i < index) return i;
+          else return i - 1;
+        }).filter(i => i !== -1);
         $scope.items.splice(index, 1);
       };
-      
+
       // only unsaved items can be removed
       // TODO: implement search and replace to allow remove on any item. IJH 2015-03
       $scope.showRemove = function showRemove(index) {
-        if (angular.isUndefined($scope.pristineItems)) {
-          return true;
-        }
-        return !(index in  $scope.pristineItems);
+        return ($scope.deletableIndexes.indexOf(index) != -1);
       };
-      
+
+      $scope.onSort = function onSort(indexFrom, indexTo) {
+        if (indexFrom === indexTo) {
+          return; // Nothing to do
+        }
+        // Ensure deletableIndexes stays up-to-date with the reordered items
+        var lo = Math.min(indexFrom, indexTo);
+        var hi = Math.max(indexFrom, indexTo);
+        $scope.deletableIndexes = $scope.deletableIndexes.map(function (i) {
+          // Items before or after the rearranged block don't need to be touched
+          if ((i < lo) || (i > hi)) {
+            return i;
+          } else if (i === indexFrom) {
+            return indexTo;
+          } else {
+            if (indexFrom > indexTo) {
+              // Something moved back, other items shift forward
+              return i + 1;
+            } else {
+              // Something moved forward, other items shift back
+              return i - 1;
+            }
+          }
+        });
+      };
+
       $scope.blur = function(elem) {
         elem.blur();
       };
