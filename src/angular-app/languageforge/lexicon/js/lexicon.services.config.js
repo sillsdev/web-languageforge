@@ -27,9 +27,9 @@ angular.module('lexicon.services')
         fieldsConfig = config.roleViews[role];
       }
 
-      setConfigFieldVisibility(config.entry, fieldsConfig);
-      setConfigFieldVisibility(config.entry.fields.senses, fieldsConfig);
-      setConfigFieldVisibility(config.entry.fields.senses.fields.examples, fieldsConfig);
+      removeDisabledConfigFields(config.entry, fieldsConfig);
+      removeDisabledConfigFields(config.entry.fields.senses, fieldsConfig);
+      removeDisabledConfigFields(config.entry.fields.senses.fields.examples, fieldsConfig);
 
       return config;
     }.bind(this));
@@ -89,7 +89,7 @@ angular.module('lexicon.services')
     return containsData;
   };
 
-  function setConfigFieldVisibility(config, fieldsConfig) {
+  function removeDisabledConfigFields(config, fieldsConfig) {
     var visibleFields = config.fieldOrder.filter(function (fieldName) {
       if (fieldName === 'senses' || fieldName === 'examples') {
         return true;  // Never remove the senses or examples config!
