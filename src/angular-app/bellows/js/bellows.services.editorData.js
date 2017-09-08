@@ -465,7 +465,9 @@ function ($q, sessionService, cache, commentsCache,
       if (entryListModifiers.filterBy.level === 'entry') {
         dataNode = entry[entryListModifiers.filterBy.value];
       } else { // sense level
-        dataNode = entry.senses[0][entryListModifiers.filterBy.value];
+        if (entry.senses.length > 0) {
+          dataNode = entry.senses[0][entryListModifiers.filterBy.value];
+        }
       }
 
       if (dataNode) {
@@ -530,6 +532,7 @@ function ($q, sessionService, cache, commentsCache,
     var sortableValue = '';
     var field;
     var dataNode;
+    var isSpecialMultitext = (fieldKey == 'lexeme' || fieldKey == 'citationForm');
     if (fieldKey in config.entry.fields && fieldKey in entry) {
       field = config.entry.fields[fieldKey];
       dataNode = entry[fieldKey];
@@ -540,19 +543,26 @@ function ($q, sessionService, cache, commentsCache,
       dataNode = entry.senses[0][fieldKey];
     }
 
-    if (field) {
-      if (field.type === 'multitext') {
-        if (field.inputSystems[0] in dataNode) {
-          sortableValue = dataNode[field.inputSystems[0]].value;
-        }
-        // special case for lexeme form.  Use citation form instead, if available
-        if (fieldKey == 'lexeme') {
-          var citationFormInputSystem = config.entry.fields.citationForm.inputSystems[0];
-          if (entry.citationForm && citationFormInputSystem in entry.citationForm) {
-            var citationForm = entry.citationForm[citationFormInputSystem].value;
-            if (citationForm != '') {
-              sortableValue = citationForm;
+    if (field || isSpecialMultitext) {
+      if (isSpecialMultitext || field.type === 'multitext') {
+
+        // special case for lexeme form / citation form.  Use citation form if available, fall back to lexeme form
+        if (fieldKey == 'lexeme' || fieldKey == 'citationForm') {
+          var citationFormInputSystems = config.entry.fields.citationForm.inputSystems;
+          if (entry.citationForm && citationFormInputSystems.length > 0 && citationFormInputSystems[0] in entry.citationForm) {
+            sortableValue = entry.citationForm[citationFormInputSystems[0]].value;
+          }
+          if (!sortableValue) {
+            var lexemeInputSystems = config.entry.fields.lexeme.inputSystems;
+            if (entry.lexeme && lexemeInputSystems.length > 0 && lexemeInputSystems[0] in entry.lexeme) {
+              sortableValue = entry.lexeme[lexemeInputSystems[0]].value;
             }
+          }
+
+          // regular multi-text field
+        } else {
+          if (field.inputSystems.length > 0 && field.inputSystems[0] in dataNode) {
+            sortableValue = dataNode[field.inputSystems[0]].value;
           }
         }
       } else if (field.type === 'optionlist') {
@@ -566,8 +576,13 @@ function ($q, sessionService, cache, commentsCache,
         }
       } else if (field.type === 'multioptionlist' && dataNode.values.length > 0) {
         if (field.listCode === 'semantic-domain-ddp4') {
-          sortableValue = semanticDomains_en // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
-            [dataNode.values[0]].value;
+          if (semanticDomains_en // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+              [dataNode.values[0]]) {
+            sortableValue = semanticDomains_en // jscs:ignore requireCamelCaseOrUpperCaseIdentifiers
+              [dataNode.values[0]].value;
+          } else {
+            sortableValue = dataNode.values[0];
+          }
         } else {
           if (config.optionlists && config.optionlists[field.listCode]) {
             sortableValue = _getOptionListItem(
