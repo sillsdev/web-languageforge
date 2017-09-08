@@ -4,7 +4,7 @@ import { UserService } from '../../core/api/user.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
 
-export class ChangePasswordController implements angular.IController {
+export class ChangePasswordAppController implements angular.IController {
   password: string;
   confirm_password: string;
 
@@ -26,7 +26,7 @@ export class ChangePasswordController implements angular.IController {
   };
 }
 
-export const ChangePasswordComponent: angular.IComponentOptions = {
-  controller: ChangePasswordController,
-  templateUrl: '/angular-app/bellows/apps/changepassword/change-password.component.html'
+export const ChangePasswordAppComponent: angular.IComponentOptions = {
+  controller: ChangePasswordAppController,
+  templateUrl: '/angular-app/bellows/apps/changepassword/change-password-app.component.html'
 };
