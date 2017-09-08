@@ -89,7 +89,7 @@ angular.module('lexicon.services')
     return containsData;
   };
 
-  function setConfigFieldVisibility(config, fieldsConfig) {
+  function removeDisabledConfigFields(config, fieldsConfig) {
     var visibleFields = config.fieldOrder.filter(function (fieldName) {
       if (fieldName === 'senses' || fieldName === 'examples') {
         return true;  // Never remove the senses or examples config!

@@ -260,7 +260,6 @@ class Sf
 
 
     /**
-     *
      * @param string $projectName
      * @param string $projectCode
      * @param string $appName
