@@ -388,22 +388,24 @@ export class TranslateEditorController implements angular.IController {
     }
 
     this.machineService.trainSegment(success => {
-      const selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
-      if (selectedDocumentSetId === documentSetId) {
-        // the selection is still on the same document, so update machine format on current editor
-        this.notice.push(this.notice.SUCCESS, 'The modified sentence was successfully trained.');
-        segment.isTrained = true;
-        this.target.formatSegment(segment);
-      } else {
-        // the selection is on a different document, so update machine format through real-time service
-        const documentSetIndex = this.getDocumentSetIndexById(documentSetId);
-        const documentSetName = this.documentSets[documentSetIndex].name;
-        this.notice.push(this.notice.SUCCESS, 'The modified sentence from the \'' + documentSetName +
-          '\' document set was successfully trained.');
-        segment.isTrained = true;
-        const formatDelta = this.target.createDeltaSegment(segment);
-        this.realTime.updateRichTextDoc(this.tecProject.slug, this.docId(this.target.docType, documentSetId),
-          formatDelta, Quill.sources.USER);
+      if (success) {
+        const selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
+        if (selectedDocumentSetId === documentSetId) {
+          // the selection is still on the same document, so update machine format on current editor
+          this.notice.push(this.notice.SUCCESS, 'The modified sentence was successfully trained.');
+          segment.isTrained = true;
+          this.target.formatSegment(segment);
+        } else {
+          // the selection is on a different document, so update machine format through real-time service
+          const documentSetIndex = this.getDocumentSetIndexById(documentSetId);
+          const documentSetName = this.documentSets[documentSetIndex].name;
+          this.notice.push(this.notice.SUCCESS, 'The modified sentence from the \'' + documentSetName +
+            '\' document set was successfully trained.');
+          segment.isTrained = true;
+          const formatDelta = this.target.createDeltaSegment(segment);
+          this.realTime.updateRichTextDoc(this.tecProject.slug, this.docId(this.target.docType, documentSetId),
+            formatDelta, Quill.sources.USER);
+        }
       }
     });
   }
