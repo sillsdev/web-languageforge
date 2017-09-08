@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import Quill, { Tooltip } from 'quill';
+import Quill from 'quill';
 
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
@@ -8,7 +8,6 @@ import { MachineService } from '../core/machine.service';
 import { RealTimeService } from '../core/realtime.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { DocumentEditor } from './document-editor';
-import { SuggestionsTheme } from './quill/suggestions-theme';
 import { Segment } from './segment';
 
 export class TranslateEditorController implements angular.IController {
@@ -90,7 +89,7 @@ export class TranslateEditorController implements angular.IController {
           angular.forEach(result.data.documentSetList, documentSet => {
             if (angular.isDefined(documentSet)) {
               this.documentSets.push(documentSet);
-              this.tecProject.config.documentSets.idsOrdered.push(documentSet);
+              this.tecProject.config.documentSets.idsOrdered.push(documentSet.id);
             }
           });
         }

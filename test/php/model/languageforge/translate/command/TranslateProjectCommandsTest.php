@@ -34,9 +34,11 @@ class TranslateProjectCommandsTest extends TestCase
 
         $this->assertEquals('qaa', $config['source']['inputSystem']['tag']);
         $this->assertEquals('qaa', $config['target']['inputSystem']['tag']);
+        $this->assertCount(0, $config['documentSets']['idsOrdered']);
 
         $config['source']['inputSystem']['tag'] = 'es';
         $config['target']['inputSystem']['tag'] = 'en';
+        $config['documentSets']['idsOrdered'] = ['docSetId1'];
 
         $client = new Client();
         $mock = new Mock([new Response(200), new Response(200)]);
@@ -49,6 +51,8 @@ class TranslateProjectCommandsTest extends TestCase
         // test for updated values
         $this->assertEquals('es', $project2->config->source->inputSystem->tag);
         $this->assertEquals('en', $project2->config->target->inputSystem->tag);
+        $this->assertCount(1, $project2->config->documentSets->idsOrdered);
+        $this->assertEquals('docSetId1', $project2->config->documentSets->idsOrdered[0]);
     }
 
     public function testUpdateProject_UpdateConfig_ConfigPersists()
