@@ -1,10 +1,10 @@
 import * as angular from 'angular';
 
-import { ChangePasswordComponent } from './change-password.component';
+import { ChangePasswordAppComponent } from './change-password-app.component';
 
 export const ChangePasswordModule = angular
   .module('changepassword', ['ui.bootstrap', 'bellows.services', 'ui.validate',
     'palaso.ui.notice', 'palaso.ui.utils', 'zxcvbn'
   ])
-  .component('changePassword', ChangePasswordComponent)
+  .component('changePasswordApp', ChangePasswordAppComponent)
   .name;
