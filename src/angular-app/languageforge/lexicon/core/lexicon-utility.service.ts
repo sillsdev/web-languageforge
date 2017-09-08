@@ -11,43 +11,32 @@ export class LexiconUtilityService extends UtilityService {
   }
 
   getCitationForms(config: any, entry: any): string {
-    if (entry.lexeme == null) {
-      return '';
+    let inputSystems: string[] = [];
+    if (config != null && config.fields.citationForm != null) {
+      inputSystems = [...config.fields.citationForm.inputSystems];
     }
-
+    if (config != null && config.fields.lexeme != null) {
+      inputSystems = [...config.fields.lexeme.inputSystems];
+    }
     let citation = '';
-    let citationFormByInputSystem = {};
-    if (config.fields.citationForm != null) {
-      for (let inputSystemTag of config.fields.citationForm.inputSystems) {
-        if (entry.citationForm != null) {
-          let field = entry.citationForm[inputSystemTag];
-          if (field != null && field.value != null && field.value !== '' &&
-              !this.isAudio(inputSystemTag)
-          ) {
-            citationFormByInputSystem[inputSystemTag] = field.value;
+    new Set(inputSystems).forEach((inputSystemTag: string) => {
+      if (!this.isAudio(inputSystemTag)) {
+        let valueToAppend = '';
+        if (entry.citationForm != null && entry.citationForm[inputSystemTag] != null && entry.citationForm[inputSystemTag].value != '') {
+          valueToAppend = entry.citationForm[inputSystemTag].value;
+        } else if (entry.lexeme != null && entry.lexeme[inputSystemTag] != null && entry.lexeme[inputSystemTag].value != '') {
+          valueToAppend = entry.lexeme[inputSystemTag].value;
+        }
+
+        if (valueToAppend) {
+          if (citation) {
+            citation += ' ' + valueToAppend;
+          } else {
+            citation += valueToAppend;
           }
         }
       }
-    }
-
-    for (let inputSystemTag of config.fields.lexeme.inputSystems) {
-      let field = entry.lexeme[inputSystemTag];
-      let valueToAppend = '';
-      if (citationFormByInputSystem[inputSystemTag] != null) {
-        valueToAppend = citationFormByInputSystem[inputSystemTag];
-      } else if (field != null && field.value != null && !this.isAudio(inputSystemTag)) {
-        valueToAppend = field.value;
-      }
-
-      if (valueToAppend) {
-        if (citation) {
-          citation += ' ' + valueToAppend;
-        } else {
-          citation += valueToAppend;
-        }
-      }
-    }
-
+    });
     return citation;
   }
 
