@@ -5,6 +5,7 @@ import { LinkService } from '../../../bellows/core/link.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { SessionCallback, SessionService } from '../../../bellows/core/session.service';
 import { JsonRpcCallback, TranslateProjectService } from '../core/translate-project.service';
+import { TranslateConfig, TranslateProject } from '../shared/model/translate-project.model';
 
 export class InterfaceConfig {
   direction = 'ltr';
@@ -15,15 +16,7 @@ export class InterfaceConfig {
   userLanguageCode = 'en';
 }
 
-class Project {
-  appName: string;
-  config?: any;
-  id: string;
-  projectCode: string;
-  projectName: string;
-}
-
-class NewProject extends Project {
+class NewProject extends TranslateProject {
   editProjectCode: boolean;
 }
 
@@ -48,7 +41,7 @@ export class TranslateNewProjectController implements angular.IController {
   progressIndicatorStep1Label: string;
   progressIndicatorStep2Label: string;
   progressIndicatorStep3Label: string;
-  project: Project;
+  project: TranslateProject;
   projectCodeState: string;
   projectCodeStateDefer: angular.IDeferred<string>;
   show: Show;
@@ -342,7 +335,7 @@ export class TranslateNewProjectController implements angular.IController {
         if (result.ok) {
           this.newProject.id = result.data;
           this.project = this.newProject;
-          this.project.config = {};
+          this.project.config = new TranslateConfig;
           this.project.config.isTranslationDataShared = true;
           this.sessionService.getSession(true).then(callback);
         } else {

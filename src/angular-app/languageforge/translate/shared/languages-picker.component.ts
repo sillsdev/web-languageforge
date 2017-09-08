@@ -1,14 +1,7 @@
 import * as angular from 'angular';
 
 import { ModalService } from '../../../bellows/core/modal/modal.service';
-
-class TranslateConfig {
-  isTranslationDataShared?: boolean | string;
-}
-
-class TranslateProject {
-  config?: TranslateConfig;
-}
+import { TranslateConfig, TranslateProject } from './model/translate-project.model';
 
 export class LanguagesPickerController implements angular.IController {
   tlpProject: TranslateProject;

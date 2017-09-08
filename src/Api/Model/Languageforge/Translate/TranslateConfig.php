@@ -17,6 +17,7 @@ class TranslateConfig
         $this->usersPreferences = new MapOf(function () {
             return new TranslateUserPreferences();
         });
+        $this->metrics = new TranslateConfigMetrics();
     }
 
     /** @var TranslateConfigDocType */
@@ -36,6 +37,9 @@ class TranslateConfig
 
     /** @var MapOf <TranslateUserPreferences> key is userId */
     public $usersPreferences;
+
+    /** @var TranslateConfigMetrics */
+    public $metrics;
 }
 
 class TranslateConfigDocType
@@ -82,4 +86,19 @@ class TranslateUserPreferences
 
     /** @var float */
     public $confidenceThreshold;
+}
+
+class TranslateConfigMetrics
+{
+    public function __construct()
+    {
+        $this->activeEditTimeout = 5; // s
+        $this->editingTimeout = 20*60; // s
+    }
+
+    /** @var int [s] */
+    public $activeEditTimeout;
+
+    /** @var int [s] */
+    public $editingTimeout;
 }
