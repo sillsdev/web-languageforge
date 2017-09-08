@@ -8,10 +8,15 @@ import { MachineService } from '../core/machine.service';
 import { RealTimeService } from '../core/realtime.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { DocumentEditor } from './document-editor';
+import { Metrics, MetricService } from './metric.service';
 import { Segment } from './segment';
+import {
+  TranslateConfigDocumentSets,
+  TranslateProject, TranslateUserPreferences
+} from '../shared/model/translate-project.model';
 
 export class TranslateEditorController implements angular.IController {
-  tecProject: any;
+  tecProject: TranslateProject;
   tecInterfaceConfig: any;
   tecOnUpdate: (params: { $event: { project: any } }) => void;
 
@@ -21,19 +26,27 @@ export class TranslateEditorController implements angular.IController {
   left: DocumentEditor;
   selectedDocumentSetIndex: number = 0;
   documentSets: any[] = [];
+  metrics: Metrics;
 
   private currentDocIds: string[] = [];
   private confidenceThreshold: number = 0.2;
 
-  static $inject = ['$scope', '$q', 'silNoticeService',
-    'machineService', 'translateProjectApi', 'realTimeService', 'modalService', 'utilService'];
-  constructor(private $scope: angular.IScope, private $q: angular.IQService, private notice: NoticeService,
-              private machineService: MachineService, private projectApi: TranslateProjectService,
-              private realTime: RealTimeService, private modal: ModalService, private util: UtilityService) { }
+  static $inject = ['$scope', '$q',
+    'machineService', 'metricService',
+    'modalService', 'silNoticeService',
+    'realTimeService', 'translateProjectApi',
+    'utilService'];
+  constructor(private $scope: angular.IScope, private $q: angular.IQService,
+              private machineService: MachineService, private metricService: MetricService,
+              private modal: ModalService, private notice: NoticeService,
+              private realTime: RealTimeService, private projectApi: TranslateProjectService,
+              private util: UtilityService) { }
 
   $onInit(): void {
-    this.source = new DocumentEditor(this.machineService, this.$q.defer(), DocumentEditor.sourceType, 'Source');
-    this.target = new DocumentEditor(this.machineService, this.$q.defer(), DocumentEditor.targetType, 'Target');
+    this.source = new DocumentEditor(DocumentEditor.sourceType, 'Source', this.$q.defer(),
+      this.machineService, this.metricService);
+    this.target = new DocumentEditor(DocumentEditor.targetType, 'Target', this.$q.defer(),
+      this.machineService, this.metricService);
     const modulesConfig: any = {
       toolbar: '#toolbar',
       suggestions: {
@@ -59,8 +72,10 @@ export class TranslateEditorController implements angular.IController {
     this.projectApi.listDocumentSetsDto(result => {
       if (result.ok) {
         angular.merge(this.tecProject, result.data.project);
-        this.tecProject.config.documentSets = this.tecProject.config.documentSets || {};
-        this.tecProject.config.userPreferences = this.tecProject.config.userPreferences || {};
+        this.tecProject.config.documentSets = this.tecProject.config.documentSets ||
+          new TranslateConfigDocumentSets();
+        this.tecProject.config.userPreferences = this.tecProject.config.userPreferences ||
+          new TranslateUserPreferences();
         this.source.inputSystem = this.tecProject.config.source.inputSystem;
         this.target.inputSystem = this.tecProject.config.target.inputSystem;
         this.machineService.initialise(this.tecProject.slug);
@@ -105,9 +120,27 @@ export class TranslateEditorController implements angular.IController {
             this.quillCreated(this.left.quill, this.left);
             this.quillCreated(this.right.quill, this.right);
           }
+
+          this.metricService.setTimeouts(this.tecProject.config.metrics.activeEditTimeout,
+            this.tecProject.config.metrics.editingTimeout);
+          this.metrics = this.metricService.metrics;
+          this.source.quill.root.addEventListener('keydown', this.metricService.onKeyDown);
+          this.target.quill.root.addEventListener('keydown', this.metricService.onKeyDown);
+          this.source.quill.root.addEventListener('keypress', this.metricService.onKeyPress);
+          this.target.quill.root.addEventListener('keypress', this.metricService.onKeyPress);
+          document.addEventListener('mousedown', this.metricService.onMouseDown)
         });
       }
     });
+
+  }
+
+  $onDestroy() {
+    this.source.quill.root.removeEventListener('keydown', this.metricService.onKeyDown);
+    this.target.quill.root.removeEventListener('keydown', this.metricService.onKeyDown);
+    this.source.quill.root.removeEventListener('keypress', this.metricService.onKeyPress);
+    this.target.quill.root.removeEventListener('keypress', this.metricService.onKeyPress);
+    document.removeEventListener('mousedown', this.metricService.onMouseDown)
   }
 
   selectDocumentSet(index: number, updateConfig: boolean = true): void {
@@ -391,7 +424,7 @@ export class TranslateEditorController implements angular.IController {
           this.notice.push(this.notice.SUCCESS, 'The modified sentence from the \'' + documentSetName +
             '\' document set was successfully trained.');
           segment.isTrained = true;
-          const formatDelta = this.target.createDeltaSegment(segment);
+          const formatDelta = DocumentEditor.createDeltaSegment(segment);
           this.realTime.updateRichTextDoc(this.tecProject.slug, this.docId(this.target.docType, documentSetId),
             formatDelta, Quill.sources.USER);
         }
@@ -403,6 +436,9 @@ export class TranslateEditorController implements angular.IController {
     // this method can be called asynchronously, so use $applyAsync()
     this.$scope.$applyAsync(() => {
       this.target.suggestions = this.machineService.updatePrefix(this.target.currentSegment.text);
+      if (this.target.hasSuggestionsChanged() && this.target.suggestions.length > 0) {
+        this.metricService.onSuggestionGiven();
+      }
       setTimeout(() => {
         this.target.showSuggestions();
       }, 0);

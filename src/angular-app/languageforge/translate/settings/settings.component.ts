@@ -5,9 +5,10 @@ import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { MachineService } from '../core/machine.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { Rights } from '../core/translate-rights.service';
+import { TranslateProject } from '../shared/model/translate-project.model';
 
 export class TranslateSettingsController implements angular.IController {
-  tscProject: any;
+  tscProject: TranslateProject;
   tscRights: Rights;
   tscInterfaceConfig: any;
   tscOnUpdate: (params: { $event: { project: any } }) => void;
