@@ -27,9 +27,9 @@ angular.module('lexicon.services')
         fieldsConfig = config.roleViews[role];
       }
 
-      setConfigFieldVisibility(config.entry, fieldsConfig);
-      setConfigFieldVisibility(config.entry.fields.senses, fieldsConfig);
-      setConfigFieldVisibility(config.entry.fields.senses.fields.examples, fieldsConfig);
+      removeDisabledConfigFields(config.entry, fieldsConfig);
+      removeDisabledConfigFields(config.entry.fields.senses, fieldsConfig);
+      removeDisabledConfigFields(config.entry.fields.senses.fields.examples, fieldsConfig);
 
       return config;
     }.bind(this));
