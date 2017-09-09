@@ -46,12 +46,12 @@ function SfUserProfilePage() {
     emailTaken:  element(by.id('emailTaken')),
     usernameTaken: element(by.id('usernameTaken')),
 
-    avatarColor:      element(by.model('user.avatar_color')),
-    avatarShape:      element(by.model('user.avatar_shape')),
+    avatarColor:      element(by.model('$ctrl.user.avatar_color')),
+    avatarShape:      element(by.model('$ctrl.user.avatar_shape')),
     avatar:           element(by.id('avatarRef')),
 
     // Jamaican mobile phone number will move to Project scope
-    mobilePhoneInput: element(by.model('user.mobile_phone')),
+    mobilePhoneInput: element(by.model('$ctrl.user.mobile_phone')),
 
     // Contact preferences
     emailBtn:         element(By.partialButtonText('Email')),
@@ -100,9 +100,9 @@ function SfUserProfilePage() {
   }.bind(this);
 
   this.aboutMeTab = {
-    fullName: element(by.model('user.name')),
-    age:      element(by.model('user.age')),
-    gender:   element(by.model('user.gender')),
+    fullName: element(by.model('$ctrl.user.name')),
+    age:      element(by.model('$ctrl.user.age')),
+    gender:   element(by.model('$ctrl.user.gender')),
     saveBtn:  element(by.partialButtonText('Save'))
   };
 
