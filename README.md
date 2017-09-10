@@ -80,6 +80,8 @@ Other useful resources:
 
 Our recommended development environment for web development is Linux Ubuntu GNOME.  Choose either the [Vagrant VM Setup](#VagrantSetup) or the [Local Linux Development Setup](#LocalSetup).  Even though the Vagrant VM Setup is definitely easier because it always installs from a clean slate on a new virtual box, we recommend doing development on your local development machine.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
 
+It is also possible to develop on Windows 10 using the Windows Subsystem for Linux (WSL). This allows you to run a Linux distribution, such as Ubuntu, in Windows. The development environment has only been tested on Windows 10 Creators Update (1703). For steps on setting up a development environment in Windows 10, see [Windows 10 Setup](#windows-10-setup).
+
 ---------------------------------
 
 ### Vagrant VM Setup <a id="VagrantSetup"></a>
@@ -160,7 +162,7 @@ To watch Sass files for changes, run `gulp sass:watch`. The output will also be 
 
 To watch TypeScript files for changes, run `gulp webpack-lf:watch` or `gulp webpack-sf:watch`. This includes a live reload server to refresh the browser on TypeScript changes (browser setup [here](#LiveReloadInstall)).
 
-### Language Forge Configuration File <a id="LFConfig"></a>
+#### Language Forge Configuration File <a id="LFConfig"></a>
 Manually edit the Language Forge config file
 
 ```
@@ -172,6 +174,64 @@ and modify PhpSourcePath to
 ```
 PhpSourcePath = /var/www/virtual/languageforge.org/htdocs
 ```
+
+-------------------------------
+
+### Windows 10 Setup
+Before setting up a development environment on Windows 10, it is important to understand a couple of things about how WSL works.
+1. You cannot make changes to the Linux filesystem from Windows, but you can make changes to the Windows filesystem from Linux. In practical terms, this means that any files that you want to be able to modify should be stored in the Windows filesystem. For example, Git repos should be cloned to the Windows filesystem. Windows drives are automatically mounted in Linux under the `/mnt` directory. A good practice is to store all Git repos in a directory on Windows, and then create a symbolic link to the directory in your home directory on Linux.
+2. WSL is designed to only work with command-line tools. It cannot run GUI applications. This means that any GUI-based code editors or IDEs will need to be run in Windows.
+3. Linux processes only run as long as a Bash shell is open. You can start a Bash shell on Ubuntu by running **Bash on Ubuntu on Windows** from the Start menu or by running `bash` from the command prompt. Once you close all Ubuntu Bash shells, all Linux processes will shutdown gracefully. This means that you will have to start any services that you need when you open an Ubuntu Bash shell.
+
+#### Prerequisites
+The first step is to install Ubuntu 16.04 on Windows. Follow the steps outlined on this [page](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide).
+
+Download and install [Git for Windows](https://git-for-windows.github.io/). If you would like a full-fledged GUI for Git, you can install [Git Extensions](https://gitextensions.github.io/).
+
+After, WSL and Git are installed, you will need to perform an Ansible-assisted setup [described here](https://github.com/sillsdev/ops-devbox) to install and configure a basic development environment. The **ops-devbox** repo will need to be cloned in Windows. You will also need to ensure that the repo is checked out with Unix line endings, so that Linux can read them properly.
+
+To clone **ops-devbox** with Linux line endings, open **Git Bash** in Windows (not **Bash on Ubuntu on Windows**) and run:
+
+```
+git clone --recurse-submodules --no-checkout https://github.com/sillsdev/ops-devbox
+cd ops-devbox
+git config core.autocrlf input
+git checkout
+```
+
+Once the repo is cloned, you can install Ansible in Ubuntu and run the ansible scripts as outlined in the [**ops-devbox** README](https://github.com/sillsdev/ops-devbox).
+
+#### Installation and Deployment
+
+Follow the steps outlined in the [Installation and Deployment](#installation-and-deployment) section of [Local Linux Development Setup](#local-linux-development-setup). Remember that you will need to clone the **xForge** repos in Windows with Unix line endings.
+
+```
+git clone --recurse-submodules --no-checkout https://github.com/sillsdev/web-languageforge
+cd web-languageforge
+git config core.autocrlf input
+git checkout
+```
+
+The rest of the steps should be performed in an Ubuntu Bash shell.
+
+In order to access the local deployment of **xForge** apps, the local host names need to be added to Windows hosts file. The following lines should be added to the hosts file located at `C:\Windows\System32\drivers\etc\hosts`:
+
+```
+127.0.0.1  languageforge.local
+127.0.0.1  scriptureforge.local
+```
+
+#### Starting Services
+
+All required Linux services must be restarted when you open the first Ubuntu Bash shell. You can start the services required for development with the following commands:
+
+```
+sudo service postfix start
+sudo service mongodb start
+sudo service apache2 start
+```
+
+You can create a shell script that executes these commands in order to make it more convenient to start the services.
 
 ## Installing IDEs and Debugger ##
 
@@ -335,6 +395,16 @@ Then from PhpStorm, click
 
 When you want LiveReload running, double-click the **reload** or **build-webpack:watch** Gulp task.
 Then in the LiveReload chrome extension, click to enable it.  A solid dot in the circle means the plugin is connected. Now when an applicable source file is changed and saved, it should trigger an automate page reload in the browser.
+
+### Visual Studio Code
+
+Visual Studio Code is a simple, free, cross-platform code editor. You can download VS Code from [here](https://code.visualstudio.com/).
+
+The first time you open VS Code in the `web-languageforge` directory, it will recommend a list of extensions that are useful for developing **xForge** apps.
+
+Build tasks have been setup to work on both Windows 10 and Linux. Tasks are available for performing webpack build, sass build, and npm install. Tasks are defined in the `.vscode/tasks.json` file.
+
+Chrome debugging has also been configured. Launch configurations are defined in the `.vscode/launch.json` file.
 
 ## Testing ##
 
