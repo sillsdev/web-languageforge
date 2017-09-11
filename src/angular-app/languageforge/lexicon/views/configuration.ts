@@ -706,7 +706,7 @@ function ($scope, $modal, sessionService) {
         case 'multitext':
           customField.displayMultiline = false;
           customField.width = 20;
-          customField.inputSystems = [$scope.inputSystemsList[0].tag];
+          customField.inputSystems = [$scope.inputSystemsList[0].inputSystem.tag];
           customViewField.type = 'multitext';
           customViewField.overrideInputSystems = false;
           customViewField.inputSystems = [];
