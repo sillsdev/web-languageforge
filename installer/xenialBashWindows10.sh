@@ -6,23 +6,11 @@ then
 	exit
 fi
 
-echo -e "
-Notice: This installer assumes the following:
-
-- it is being run in Bash a fresh Ubuntu Xenial on Windows 10 installation.
-- it is being run from a source directory (e.g. /mnt/c/src ) where the web-languageforge repo will be cloned.
-
-  If this is not the case, continue at your own risk
-
-In the off chance that you want to completely remove and reinstall Xenial Bash on Windows 10,
-you can run these commands from a Windows Command Prompt (not Bash!) before running this script:
-
-lxrun /uninstall /full 
-lxrun /install 
-"
-
-read -n 1 -s -r -p "Press any key to start the xForge developer environment install process"
-echo -e "\n\n"
+if grep -qE "(Microsoft|WSL)" /proc/version &> /dev/null ; then
+    OS=Windows
+else
+    OS=Linux
+fi
 
 echo Add extra apt repositories
 wget -O- http://linux.lsdev.sil.org/downloads/sil-testing.gpg | apt-key add -
@@ -61,13 +49,17 @@ echo Factory Reset the database
 cd scripts/tools
 php FactoryReset.php run
 
-HOSTSFILE=/mnt/c/Windows/System32/drivers/etc/hosts
-if [ -f "$HOSTSFILE" ]
-then
-	echo "Modify windows hosts file"
-	echo -e "\n127.0.0.1\tlanguageforge.local\n" >> $HOSTSFILE
-	echo -e "\n127.0.0.1\tscriptureforge.local\n" >> $HOSTSFILE
-	echo -e "\n127.0.0.1\tjamaicanpsalms.scriptureforge.local\n" >> $HOSTSFILE
+if [ $OS == "Windows"]; then
+    HOSTSFILE=/mnt/c/Windows/System32/drivers/etc/hosts
+    ALREADYHASHOSTS=`grep "languageforge.local" $HOSTSFILE`
+    if [ -f "$HOSTSFILE" -a ! -n "$ALREADYHASHOSTS" ]; then
+        echo "Modify Windows hosts file"
+        HOSTLINES="
+        127.0.0.1\tlanguageforge.local
+        127.0.0.1\tscriptureforge.local
+        127.0.0.1\tjamaicanpsalms.scriptureforge.local"
+        echo -e "$HOSTLINES" >> $HOSTSFILE
+    fi
 fi
 
 echo You should now be able to access Language Forge locally at http://languageforge.local
