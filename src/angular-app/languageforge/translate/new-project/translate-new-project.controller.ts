@@ -8,8 +8,8 @@ import { JsonRpcCallback, TranslateProjectService } from '../core/translate-proj
 
 export class InterfaceConfig {
   direction = 'ltr';
-  pullNormal = 'pull-left';
-  pullToSide = 'pull-right';
+  pullNormal = 'float-left';
+  pullToSide = 'float-right';
   placementNormal = 'right';
   placementToSide = 'left';
   userLanguageCode = 'en';
@@ -71,10 +71,10 @@ export class TranslateNewProjectController implements angular.IController {
               private $state: angular.ui.IStateService, private sessionService: SessionService,
               private notice: NoticeService, private inputSystems: InputSystemsService,
               private projectApi: TranslateProjectService, private linkService: LinkService) {}
-  
-  $onInit(){
+
+  $onInit() {
     this.interfaceConfig = new InterfaceConfig();
-    this.sessionService.getSession().then((session) => {
+    this.sessionService.getSession().then(session => {
       if (angular.isDefined(session.projectSettings()) &&
         angular.isDefined(session.projectSettings().interfaceConfig)
       ) {
@@ -153,7 +153,7 @@ export class TranslateNewProjectController implements angular.IController {
     this.forwardBtnClass = 'btn-success';
     this.formValidationDefer.resolve(true);
     return this.formValidationDefer.promise;
-  };
+  }
 
   private makeFormNeutral(msg: string = '') {
     this.formValidated = false;
@@ -163,7 +163,7 @@ export class TranslateNewProjectController implements angular.IController {
     this.formValidationDefer = this.$q.defer();
     this.formValidationDefer.resolve(true);
     return this.formValidationDefer.promise;
-  };
+  }
 
   private makeFormInvalid(msg: string = '') {
     this.formValidated = false;
@@ -174,14 +174,14 @@ export class TranslateNewProjectController implements angular.IController {
     this.forwardBtnClass = '';
     this.formValidationDefer.resolve(false);
     return this.formValidationDefer.promise;
-  };
+  }
 
   resetValidateProjectForm() {
     this.makeFormNeutral();
     this.projectCodeState = 'unchecked';
     this.projectCodeStateDefer = this.$q.defer();
     this.projectCodeStateDefer.resolve('unchecked');
-  };
+  }
 
   iconForStep(step: number) {
     let classes = [];
@@ -198,7 +198,7 @@ export class TranslateNewProjectController implements angular.IController {
     }
 
     return classes;
-  };
+  }
 
   prevStep() {
     this.show.backButton = false;
@@ -207,7 +207,7 @@ export class TranslateNewProjectController implements angular.IController {
       case 'newProject.name':
         break;
     }
-  };
+  }
 
   nextStep() {
     this.validateForm().then((isValid: boolean) => {
@@ -215,7 +215,7 @@ export class TranslateNewProjectController implements angular.IController {
         this.gotoNextState();
       }
     });
-  };
+  }
 
   // Form validation requires API calls, so it return a promise rather than a value.
   validateForm() {
@@ -270,7 +270,7 @@ export class TranslateNewProjectController implements angular.IController {
         });
     }
     return this.ok();
-  };
+  }
 
   private gotoNextState() {
     switch (this.$state.current.name) {
@@ -289,14 +289,14 @@ export class TranslateNewProjectController implements angular.IController {
         });
         break;
     }
-  };
+  }
 
   private gotoEditor() {
     let url;
     this.makeFormValid();
     url = this.linkService.project(this.newProject.id, this.newProject.appName);
     this.$window.location.href = url;
-  };
+  }
 
   // ----- Step 1: Project name -----
 
@@ -313,7 +313,7 @@ export class TranslateNewProjectController implements angular.IController {
     } else {
       this.projectCodeState = 'loading';
       this.projectCodeStateDefer.notify('loading');
-      this.projectApi.projectCodeExists(this.newProject.projectCode, (result) => {
+      this.projectApi.projectCodeExists(this.newProject.projectCode, result => {
         if (result.ok) {
           if (result.data) {
             this.projectCodeState = 'exists';
@@ -330,7 +330,7 @@ export class TranslateNewProjectController implements angular.IController {
     }
 
     return this.projectCodeStateDefer.promise;
-  };
+  }
 
   private createProject(callback?: SessionCallback) {
     if (!this.newProject.projectName || !this.newProject.projectCode ||
@@ -340,7 +340,7 @@ export class TranslateNewProjectController implements angular.IController {
     }
 
     this.projectApi.createSwitchSession(this.newProject.projectName,
-      this.newProject.projectCode, this.newProject.appName, false, (result) => {
+      this.newProject.projectCode, this.newProject.appName, false, result => {
         if (result.ok) {
           this.newProject.id = result.data;
           this.project = this.newProject;
@@ -352,12 +352,12 @@ export class TranslateNewProjectController implements angular.IController {
             ' project could not be created. Please try again.');
         }
       });
-  };
+  }
 
   // ----- Step 2: select source and target languages -----
 
   private updateConfig(callback?: JsonRpcCallback) {
-    this.projectApi.updateConfig(this.project.config, (result) => {
+    this.projectApi.updateConfig(this.project.config, result => {
       if (result.ok) {
         this.notice.push(this.notice.SUCCESS,
           this.project.projectName + ' configuration updated successfully.');
@@ -366,12 +366,12 @@ export class TranslateNewProjectController implements angular.IController {
         this.makeFormInvalid('Could not save languages for ' + this.project.projectName);
       }
     });
-  };
+  }
 
   updateLanguage(docType: string, code: string, language: any) {
     this.project.config[docType] = this.project.config[docType] || {};
     this.project.config[docType].inputSystem.tag = code;
     this.project.config[docType].inputSystem.languageName = language.name;
-  };
+  }
 
 }

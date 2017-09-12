@@ -7,7 +7,17 @@ $lf-lines: #ddd;
 $lf-comments: #D89D49;
 
 // Overwrite variables - see node_modules/bootstrap/sass/_variables.scss
-$brand-primary: $lf-blue;
-$brand-warning: $lf-comments;
+// NOTE: with Bootstrap Beta 2, we should be able to override just the colors we need to
+$theme-colors: (
+    primary: $lf-blue,
+    secondary: #868e96,
+    success: #28a745,
+    info: #17a2b8,
+    warning: $lf-comments,
+    danger: #dc3545,
+    light: #f8f9fa,
+    dark: #343a40
+);
+
 $headings-margin-bottom: 20px;
 $navbar-dark-color: white;

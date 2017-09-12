@@ -8,12 +8,12 @@
 
     {% if isLoggedIn %}
 
-        <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060" data-ng-app="xforge.navbarApp" data-ng-controller="navbarController">
-            <span class="desktop-title navbar-brand hidden-sm-down">
+        <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch" style="background-color: #104060" data-ng-app="xforge.navbarApp" data-ng-controller="navbarController">
+            <span class="desktop-title navbar-brand d-none d-md-block mr-auto">
                 <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
                 <a class="" href="/">{{ app.website.name }}</a>
             </span>
-            <div class="hidden-md-up">
+            <div class="d-md-none flex-grow">
                 <ul id="mobileMenu" class="nav navbar-nav">
                     <li uib-dropdown class="nav-item nav-projects">
                         <a class="nav-link" uib-dropdown-toggle href id="mobileMyProjectDropdown"
@@ -47,7 +47,8 @@
                             {% endfor %}
                         </div>
                     </li>
-                    <li uib-dropdown class="nav-item nav-user">
+                    <a class="navbar-brand" href="/"><span style="margin-left:20px">{{ app.website.name }}</span></a>
+                    <li uib-dropdown class="nav-item nav-user ml-auto">
                         <a class="nav-link" uib-dropdown-toggle href id="mobileUserDropdown"
                            aria-haspopup="true" aria-expanded="false">
                             <img src="{{ smallAvatarUrl }}"
@@ -62,11 +63,10 @@
                             <a class="dropdown-item" href="/auth/logout">Logout</a>
                         </div>
                     </li>
-                    <a class="navbar-brand" href="/"><span style="margin-left:20px">{{ app.website.name }}</span></a>
                 </ul>
             </div>
 
-            <div class="collapse navbar-toggleable-sm pull-right">
+            <div class="d-none d-md-block">
                 <ul class="nav navbar-nav">
 
                     <!-- <li class="nav-item">
@@ -81,7 +81,7 @@
                             <a class="dropdown-item" href="/releasenotes">Release Notes</a>
                         </div>
                     </li>
-                    <li class="nav-item" uib-dropdown>
+                    <li class="nav-item dropdown" uib-dropdown>
                         <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdown"
                            aria-haspopup="true" aria-expanded="false">
                             My Projects</a>
@@ -131,8 +131,13 @@
         </nav>
 
     {% else %}
-        <nav class="fixed-nav-bar navbar navbar-dark" style="background-color: #104060">
-            <ul class="nav navbar-nav pull-right">
+        <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch" style="background-color: #104060">
+            <span class="desktop-title navbar-brand d-none d-md-block mr-auto">
+                <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
+                <a class="" href="/">{{ app.website.name }}</a>
+            </span>
+            <a class="navbar-brand d-md-none mr-auto" href="/"><span style="margin-left:20px">{{ app.website.name }}</span></a>
+            <ul class="nav navbar-nav">
                 <li class="nav-item header-button-rounded">
                     <a class="nav-link" href="/public/signup">Sign Up</a>
                 </li>
@@ -140,7 +145,6 @@
                     <a class="nav-link" href="/auth/login">Login</a>
                 </li>
             </ul>
-            <a class="navbar-brand" href="/"><img src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png" style="width:70px; height:70px; position:relative; top:-15px" class="align-top d-inline-block hidden-sm-down"> {{ app.website.name }}</a>
         </nav>
 
     {% endif %}
@@ -150,7 +154,7 @@
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-xs-12 text-xs-center footerimages">
+                <div class="col-12 text-center footerimages">
                     <a href="http://ic.payap.ac.th/"><img src="/Site/views/shared/image/payap_logo.png"
                                                           alt="Payap University Logo" width="170" height="50"/></a>
                     <a href="http://www.sil.org"><img src="/Site/views/shared/image/sil_logo_small.png"
@@ -158,7 +162,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12 text-xs-center">
+                <div class="col-12 text-center">
                     <div><small>v {{ version }}</small></div>
                     Copyright {{ "now"|date("Y") }} <a href="http://www.sil.org" class="links">SIL International</a>.
                     Use of this site is governed by our <a href="/terms_and_conditions" class="links">terms and

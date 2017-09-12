@@ -1,6 +1,6 @@
 <div class="content container-fluid" data-ng-cloak dir="{{$ctrl.interfaceConfig.direction}}">
-    <div class="hdrnav row">
-        <div class="col-xs-12">
+    <div class="hdrnav row float-right">
+        <div class="col-12">
             <div class="hdrnav-container">
                 <div class="btn-group" uib-dropdown data-ng-class="$ctrl.interfaceConfig.pullToSide"
                      data-ng-show="$ctrl.rights.showSettingsDropdown()">
@@ -16,7 +16,7 @@
                            data-translate="User Management" data-ng-show="$ctrl.rights.canEditUsers()"></a>
                     </div>
                 </div>
-                <div class="pull-right return-button">
+                <div class="float-right return-button">
                     <button class="btn btn-secondary" uib-tooltip="View the translation"
                             data-tooltip-placement="{{$ctrl.interfaceConfig.placementToSide}}"
                             data-ng-show="$ctrl.showTranslationButton()"
@@ -24,7 +24,7 @@
                         <i class="fa fa-arrow-circle-left"></i> {{'Translation' | translate}}
                     </button>
                 </div>
-                <ol id="top" class="breadcrumb hidden-sm-down" breadcrumbs></ol>
+                <ol id="top" class="breadcrumb d-none d-md-block" breadcrumbs></ol>
             </div>
         </div>
     </div>

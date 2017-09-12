@@ -274,7 +274,7 @@ legend.override-bootstrap {
       cursor: pointer;
     }
     i:hover {
-      color: $brand-danger;
+      color: map-get($theme-colors, danger);
     }
   }
 }
