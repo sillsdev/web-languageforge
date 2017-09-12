@@ -21,7 +21,7 @@ form.dc-semanticdomain .controls > div {
 
 .dc-semanticdomain-value {
     border: 1px solid $lf-lines;
-    padding: $input-padding-y $input-padding-x;
+    padding: $input-btn-padding-y $input-btn-padding-x;
     border-radius: $border-radius;
 }
 
@@ -39,7 +39,7 @@ form.dc-semanticdomain i.closeicon {
     text-align: center;
 }
 form.dc-semanticdomain i.closeicon:hover {
-  background: $brand-danger;
+  background: map-get($theme-colors, danger);
   color: #fff;
 }
 

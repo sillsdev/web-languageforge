@@ -1,7 +1,7 @@
 {% verbatim %}
 <div class="content container fluid" data-ng-controller="ProjectsCtrl" data-ng-cloak>
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div style="padding-top:10px">
                     <sil-notices></sil-notices>
                     <div data-ng-show="finishedLoading">
@@ -30,14 +30,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <hr />
             </div>
-            <div class="col-xs-12">
+            <div class="col-12">
                 <listview hide-if-empty="true" search="queryProjectsForUser()" items="projects" visible-items="visibleProjects" select="">
                     <div data-ng-repeat="project in visibleProjects">
                         <div class="row" data-ng-class="{active: isSelected(project)}">
-                            <div class="col-xs-12 col-sm-6">
+                            <div class="col-12 col-sm-6">
                                 <a data-ng-show="isInProject(project)" data-ng-href="/app/{{project.appName}}/{{project.id}}">
                                     <span class="larger-text">{{project.projectName}}</span>
                                 </a>
@@ -45,7 +45,7 @@
                                 <br />
                                 <small class="text-muted">{{projectTypeNames[project.appName]}}</small>
                             </div>
-                            <div class="col-xs-12 col-sm-6" data-ng-show="rights.edit">
+                            <div class="col-12 col-sm-6" data-ng-show="rights.edit">
                                 <button class="btn btn-secondary" data-ng-show="!isManager(project)"
                                         data-ng-click="addManagerToProject(project)">
                                     <i class="fa fa-plus"></i> Manager</button>
