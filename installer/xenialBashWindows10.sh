@@ -55,7 +55,7 @@ ansible-playbook -i hosts playbook_webdeveloper_bash_windows10.yml --limit local
 
 echo "Refresh xForge dependencies"
 cd ..
-./refreshDeps.sh
+su $SUDO_USER -c "./refreshDeps.sh"
 
 echo Factory Reset the database
 cd scripts/tools
