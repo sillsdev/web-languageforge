@@ -1,11 +1,11 @@
-<div class="row">
-    <div class="col-md-10 offset-md-1">
+<div class="row justify-content-center">
+    <div class="col-md-10">
         <div id="form-container">
-            <div class="text-xs-center">
+            <div class="text-center">
 
                 <h2 data-translate="Start Translation Project"></h2>
-                <div class="row" data-ng-show="$ctrl.show.nextButton">
-                    <div class="col-md-10 offset-md-1">
+                <div class="row justify-content-center" data-ng-show="$ctrl.show.nextButton">
+                    <div class="col-md-10">
                         <ul class="list-inline" id="progress-indicator">
                             <li class="list-inline-item">
                                 <i data-ng-class="$ctrl.iconForStep(1)"></i>
@@ -27,23 +27,23 @@
             <!-- use ng-submit to catch the form submission and use our Angular function -->
             <form class="form" id="newLexProjectForm" name="newLexProjectForm" data-ng-pristine data-ng-valid
                   data-ng-scope data-ng-submit="$ctrl.nextStep()">
-                <div class="row">
-                    <div class="col-md-10 offset-md-1" id="form-status" data-ng-class="$ctrl.formStatusClass">{{$ctrl.formStatus | translate}}&nbsp;</div>
+                <div class="row justify-content-center">
+                    <div class="col-md-10" id="form-status" data-ng-class="$ctrl.formStatusClass">{{$ctrl.formStatus | translate}}&nbsp;</div>
                 </div>
 
                 <!-- our nested state views will be injected here -->
-                <div id="form-views" data-ui-view></div>
+                <div id="form-views" class="mb-3" data-ui-view></div>
 
-                <div class="row" data-ng-show="$ctrl.show.nextButton">
-                    <div class="col-md-10 offset-md-1">
+                <div class="row justify-content-center" data-ng-show="$ctrl.show.nextButton">
+                    <div class="col-md-10">
 
-                        <a class="btn btn-secondary pull-left" data-ng-class="$ctrl.interfaceConfig.pullNormal"
+                        <a class="btn btn-secondary" data-ng-class="$ctrl.interfaceConfig.pullNormal"
                            id="backButton" data-ng-click="$ctrl.prevStep()" data-ng-show="$ctrl.show.backButton">
                             <i class="fa fa-arrow-circle-left"></i>
                             {{'Back' | translate}}
                         </a>
 
-                        <button type="submit" class="btn pull-right" data-ng-class="[$ctrl.interfaceConfig.pullToSide, $ctrl.forwardBtnClass]" href="#"
+                        <button type="submit" class="btn" data-ng-class="[$ctrl.interfaceConfig.pullToSide, $ctrl.forwardBtnClass]" href="#"
                                 id="nextButton" data-ng-disabled="!$ctrl.show.nextButton">
                             {{$ctrl.nextButtonLabel}}&nbsp;
                             <i class="fa fa-arrow-circle-right"></i>

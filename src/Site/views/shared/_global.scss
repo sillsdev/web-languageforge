@@ -24,3 +24,12 @@
     text-decoration: none;
   }
 }
+
+.flex-grow {
+  flex: 1;
+}
+
+.alert-dismissible .close {
+  top: -.125rem;
+  padding: 0;
+}

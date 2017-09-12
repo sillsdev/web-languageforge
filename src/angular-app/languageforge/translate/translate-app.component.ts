@@ -37,8 +37,8 @@ export class TranslateAppController implements angular.IController {
       // this.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
       this.interfaceConfig = {};
       this.interfaceConfig.direction = 'ltr';
-      this.interfaceConfig.pullToSide = 'pull-right';
-      this.interfaceConfig.pullNormal = 'pull-left';
+      this.interfaceConfig.pullToSide = 'float-right';
+      this.interfaceConfig.pullNormal = 'float-left';
       this.interfaceConfig.placementToSide = 'left';
       this.interfaceConfig.placementNormal = 'right';
     });

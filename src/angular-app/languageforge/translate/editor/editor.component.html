@@ -29,7 +29,7 @@
     </div>
     <div class="col-sm-5 clearfix" lang="{{$ctrl.left.inputSystem.tag}}" data-ng-show="$ctrl.hasDocumentSets()">
         <label>{{$ctrl.getEditorLabel($ctrl.left)}}</label>
-        <button type="button" class="btn btn-secondary btn-sm hidden-xs-down float-sm-right" data-ng-click="$ctrl.swapEditors()">
+        <button type="button" class="btn btn-secondary btn-sm d-none d-sm-block float-sm-right" data-ng-click="$ctrl.swapEditors()">
             <i class="fa fa-exchange"></i></button>
         <ng-quill-editor
             id="editorLeft" data-modules="$ctrl.left.modulesConfig" data-theme="suggestions"
@@ -43,7 +43,7 @@
                            data-ql-insert-suggestion="$ctrl.left.insertSuggestion(suggestionIndex)"></ql-suggestion>
         </div>
     </div>
-    <div class="col-sm-5 hidden-sm-up" data-ng-show="$ctrl.hasDocumentSets()">
+    <div class="col-sm-5 d-sm-none" data-ng-show="$ctrl.hasDocumentSets()">
         <button type="button" class="btn btn-secondary btn-sm" data-ng-click="$ctrl.swapEditors()">
             <i class="fa fa-exchange fa-rotate-90"></i></button>
     </div>
