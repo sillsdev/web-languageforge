@@ -1,13 +1,21 @@
+@import '../../../../../../../node_modules/bootstrap/scss/_functions';
+@import '../../../../../../../node_modules/bootstrap/scss/_variables';
+@import '../../../../../../../node_modules/bootstrap/scss/_mixins';
+
 $navbar-height: 50px;
 
 a {
   cursor: pointer;
 }
 
-body{
+html {
+  height: 100%;
+}
+
+body {
   background: white;
-    display: flex;
-  min-height: 100vh;
+  height: 100%;
+  display: flex;
   flex-direction: column;
 }
 
@@ -21,8 +29,10 @@ h1.mobile-title {
 }
 
 #app-container-for-bootstrap {
+  display: flex;
+  flex-direction: column;
+  @extend .flex-grow;
   margin-top: $navbar-height + 10px;
-  flex: 1;
 }
 .card .form-group-last {
   margin-bottom: 0;
@@ -386,6 +396,7 @@ nav {
 
 nav.navbar {
   transition: background-color 1s ease;
+  flex: 0 0 auto;
 
   .nav-user.nav-item {
     margin-left: 0;
@@ -398,7 +409,7 @@ nav.navbar {
 
 footer.footer {
   margin-top: 0.5em;
-  padding: 1em;
+  padding: 0.5em;
 }
 
 .dropdown .pui-no-caret::after {
@@ -407,4 +418,12 @@ footer.footer {
 
 pui-tab {
   width: 100%;
+}
+
+.flex-grow {
+  flex: 1 1 auto;
+}
+
+.btn-std {
+  @include button-variant(white, #ADADAD, #E6E6E6);
 }

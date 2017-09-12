@@ -42,7 +42,7 @@ export const TranslateAppModule = angular
         })
         .state('editor', {
           url: '/editor',
-          template: '<translate-editor tec-project="$ctrl.project" ' +
+          template: '<translate-editor class="d-flex flex-column flex-grow" tec-project="$ctrl.project" ' +
             'tec-on-update="$ctrl.onUpdateProject($event)" ' +
             'tec-interface-config="$ctrl.interfaceConfig"></translate-editor>'
         })

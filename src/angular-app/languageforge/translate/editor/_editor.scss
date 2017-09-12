@@ -2,6 +2,10 @@
 
 .picklist {
     cursor: pointer;
+    box-shadow: 0 0 0 0.75pt #d1d1d1, 0 0 3pt 0.75pt #ccc;
+    border: 0;
+    background-color: white;
+    overflow-y: auto;
 }
 
 .picklist .dropdown-toggle {
@@ -31,34 +35,54 @@
     text-align: center;
 }
 
-.picklist .dropdown-menu-sm-left {
-    /* @extend .dropdown-menu-right */
-    right: 0;
-    left: auto;
-}
-
 @media (min-width: 576px) {
     /* sm and above */
-    .picklist .dropdown-menu-sm-left {
-        /* @extend .dropdown-menu-left */
-        right: auto;
-        left: 0;
+    #picklist-column {
+        flex: 0 0 210px;
+    }
+
+    .picklist {
+        flex: 1 1 auto;
+    }
+
+    ng-quill-editor {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        div {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+        }
+    }
+
+    ng-quill-editor .ql-container.ql-snow {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
     }
 }
 
-[ng-quill-editor] {
-    display: block;
+#toolbar {
+    background-color: #F1F1F1;
+    border-left: 0px;
+    border-right: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+    flex: 0 0 auto;
 }
 
-ng-quill-editor .ql-editor {
-    margin-left: -15px;
-    margin-right: -15px;
-    /*padding-left: 0;*/
-    /*padding-right: 0;*/
+#editor-area {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #EEEEEE;
+    overflow: auto;
 }
 
-ng-quill-editor .ql-container {
-    /*border: 1px solid dimgray;*/
+ng-quill-editor .ql-container.ql-snow {
+    box-shadow: 0 0 0 0.75pt #d1d1d1, 0 0 3pt 0.75pt #ccc;
+    border: 0;
+    background-color: white;
 }
 
 ng-quill-editor .ql-editor.drop-box {
