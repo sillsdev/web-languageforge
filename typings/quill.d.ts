@@ -25,6 +25,10 @@ declare module 'quill' {
     constructor(quill: Quill, options: QuillOptionsStatic);
   }
 
+  export class SnowTheme extends Theme {
+    extendToolbar(toolbar: any): void;
+  }
+
   export class Tooltip {
     quill: Quill;
     boundsContainer: BoundsStatic | Element;
@@ -39,5 +43,13 @@ declare module 'quill' {
     quill: Quill;
     options: QuillOptionsStatic;
     constructor(quill: Quill, options: QuillOptionsStatic);
+  }
+
+  export class Toolbar extends Module {
+    controls: Array<[string, HTMLElement]>;
+    handlers: { [format: string]: (value: any) => void; }
+
+    attach(input: HTMLElement): void;
+    update(range: RangeStatic): void;
   }
 }

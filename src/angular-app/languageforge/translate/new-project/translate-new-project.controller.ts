@@ -75,14 +75,12 @@ export class TranslateNewProjectController implements angular.IController {
   $onInit() {
     this.interfaceConfig = new InterfaceConfig();
     this.sessionService.getSession().then(session => {
-      if (angular.isDefined(session.projectSettings()) &&
-        angular.isDefined(session.projectSettings().interfaceConfig)
-      ) {
-        this.interfaceConfig = session.projectSettings().interfaceConfig;
+      if (session.projectSettings() != null && session.projectSettings().interfaceConfig != null) {
+        angular.merge(this.interfaceConfig, session.projectSettings().interfaceConfig);
         if (this.inputSystems.isRightToLeft(this.interfaceConfig.userLanguageCode)) {
           this.interfaceConfig.direction = 'rtl';
-          this.interfaceConfig.pullToSide = 'pull-left';
-          this.interfaceConfig.pullNormal = 'pull-right';
+          this.interfaceConfig.pullToSide = 'float-left';
+          this.interfaceConfig.pullNormal = 'float-right';
           this.interfaceConfig.placementToSide = 'right';
           this.interfaceConfig.placementNormal = 'left';
         }
@@ -159,7 +157,7 @@ export class TranslateNewProjectController implements angular.IController {
     this.formValidated = false;
     this.formStatus = msg;
     this.formStatusClass = (this.bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
-    this.forwardBtnClass = (this.bootstrapVersion === 'bootstrap4' ? 'btn-secondary' : '');
+    this.forwardBtnClass = (this.bootstrapVersion === 'bootstrap4' ? 'btn-std' : '');
     this.formValidationDefer = this.$q.defer();
     this.formValidationDefer.resolve(true);
     return this.formValidationDefer.promise;

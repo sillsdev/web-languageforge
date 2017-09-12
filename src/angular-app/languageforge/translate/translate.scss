@@ -1,5 +1,11 @@
 @import 'editor/_editor.scss';
 
+.hdrnav {
+    position: absolute;
+    right: 0;
+    flex: 0 0 auto;
+}
+
 .hdrnav .hdrnav-container .btn-group {
     margin-left: 10px;
 }
@@ -14,4 +20,8 @@
 
 footer.footer {
     margin-top: 0px;
+}
+
+.btn-std {
+    min-width: 32px;
 }

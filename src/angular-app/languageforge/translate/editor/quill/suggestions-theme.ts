@@ -1,17 +1,15 @@
 import Parchment from 'parchment';
-import Quill, { BoundsStatic, Module, QuillOptionsStatic, Theme, Tooltip } from 'quill';
+import Quill, {
+  BoundsStatic, Delta, Module, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
+} from 'quill';
 
 export interface SuggestionsTheme extends Theme {
   suggestionsTooltip: Tooltip;
 }
 
-export interface DropFunction {
-  (file: File, editor: Quill, event: DragEvent | ClipboardEvent): void;
-}
+export type DropFunction = (file: File, editor: Quill, event: DragEvent | ClipboardEvent) => void;
 
-export interface PasteFunction {
-  (item: DataTransferItem, editor: Quill, event: ClipboardEvent): void;
-}
+export type PasteFunction = (item: DataTransferItem, editor: Quill, event: ClipboardEvent) => void;
 
 export class MachineFormat {
   isTrained?: string;
@@ -21,7 +19,8 @@ export function registerSuggestionsTheme(): void {
   const QuillTooltip = Quill.import('ui/tooltip') as typeof Tooltip;
   const QuillModule = Quill.import('core/module') as typeof Module;
   const Inline = Quill.import('blots/inline') as typeof Parchment.Inline;
-  const BubbleTheme = Quill.import('themes/bubble') as typeof Theme;
+  const QuillSnowTheme = Quill.import('themes/snow') as typeof SnowTheme;
+  const QuillToolbar = Quill.import('modules/toolbar') as typeof Toolbar;
 
   // noinspection JSUnusedLocalSymbols
   let dropElements: HTMLElement[] = [];
@@ -120,7 +119,8 @@ export function registerSuggestionsTheme(): void {
           const selection = document.getSelection();
           const range = document.caretRangeFromPoint(event.clientX, event.clientY);
           if (selection && range) {
-            selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer, range.startOffset);
+            selection.setBaseAndExtent(range.startContainer, range.startOffset, range.startContainer,
+              range.startOffset);
           }
         }
 
@@ -143,9 +143,9 @@ export function registerSuggestionsTheme(): void {
       let dragTimer: number;
       document.addEventListener('dragover', (event: any) => {
         event.preventDefault();
-        let dt = event.dataTransfer;
-        if (dt.types && (dt.types.indexOf ? dt.types.indexOf('Files') != -1 : dt.types.includes('Files'))) {
-          let elements = document.getElementsByClassName('ql-editor');
+        const dt = event.dataTransfer;
+        if (dt.types && (dt.types.indexOf ? dt.types.indexOf('Files') !== -1 : dt.types.includes('Files'))) {
+          const elements = document.getElementsByClassName('ql-editor');
           [].forEach.call(elements, (element: HTMLElement, index: number) => {
             element.classList.add('drop-box');
             if (!element.id) element.id = 'ql-editor-' + index;
@@ -156,7 +156,7 @@ export function registerSuggestionsTheme(): void {
       });
 
       document.addEventListener('dragleave', (event: DragEvent) => {
-        let element = event.target as HTMLElement;
+        const element = event.target as HTMLElement;
         if (DragAndDrop.isInDropElements(element)) {
           return;
         }
@@ -174,7 +174,7 @@ export function registerSuggestionsTheme(): void {
 
     private static isInDropElements(element: HTMLElement): boolean {
       let result = false;
-      dropElements.forEach((dropElement) => {
+      dropElements.forEach(dropElement => {
         if (dropElement.id === element.id || DragAndDrop.isDescendant(dropElement, element)) {
           result = true;
         }
@@ -194,14 +194,14 @@ export function registerSuggestionsTheme(): void {
     }
 
     private static clearDropElementClasses(): void {
-      dropElements.forEach((element) => element.classList.remove('drop-box'));
+      dropElements.forEach(element => element.classList.remove('drop-box'));
       dropElements = [];
     }
 
   }
 
-  // Customize the Bubble theme in Quill
-  class SuggestionsBubbleTheme extends BubbleTheme implements SuggestionsTheme {
+  // Customize the Snow theme in Quill
+  class SuggestionsSnowTheme extends QuillSnowTheme implements SuggestionsTheme {
     moreTooltip: Tooltip;
     suggestionsTooltip: Tooltip;
 
@@ -210,13 +210,76 @@ export function registerSuggestionsTheme(): void {
       const QuillSuggestionsTooltip = Quill.import('ui/suggest-tooltip');
       this.suggestionsTooltip = new QuillSuggestionsTooltip(this.quill, this.options.bounds);
     }
+
+    extendToolbar(toolbar: any): void {
+      if (!toolbar.container.classList.contains('ql-snow')) {
+        super.extendToolbar(toolbar);
+      }
+    }
+  }
+
+  class MultiEditorToolbar extends QuillToolbar {
+    private hasFocus: boolean = false;
+
+    attach(input: HTMLElement): void {
+      let format: string = [].find.call(input.classList, (className: string) => {
+        return className.indexOf('ql-') === 0;
+      });
+      if (!format) return;
+      format = format.slice('ql-'.length);
+      if (input.tagName === 'BUTTON') {
+        input.setAttribute('type', 'button');
+      }
+      const eventName = input.tagName === 'SELECT' ? 'change' : 'click';
+      input.addEventListener(eventName, e => {
+        if (!this.hasFocus) {
+          return;
+        }
+
+        let value: string | boolean;
+        if (input.tagName === 'SELECT') {
+          const select = input as HTMLSelectElement;
+          if (select.selectedIndex < 0) return;
+          const selected = select.options[select.selectedIndex];
+          if (selected.hasAttribute('selected')) {
+            value = false;
+          } else {
+            value = selected.value || false;
+          }
+        } else {
+          const button = input as HTMLButtonElement;
+          if (button.classList.contains('ql-active')) {
+            value = false;
+          } else {
+            value = button.value || !input.hasAttribute('value');
+          }
+          e.preventDefault();
+        }
+        this.quill.focus();
+        const range = this.quill.getSelection();
+        if (this.handlers[format] != null) {
+          this.handlers[format].call(this, value);
+        } else {
+          this.quill.format(format, value, Quill.sources.USER);
+        }
+        this.update(range);
+      });
+      // TODO use weakmap
+      this.controls.push([format, input]);
+    }
+
+    update(range: RangeStatic): void {
+      this.hasFocus = this.quill.hasFocus();
+      super.update(range);
+    }
   }
 
   Quill.register('blots/segment', SegmentBlot);
   Quill.register('ui/suggest-tooltip', SuggestionsTooltip);
   Quill.register('modules/suggestions', Suggestions);
-  Quill.register('themes/suggestions', SuggestionsBubbleTheme);
+  Quill.register('themes/suggestions', SuggestionsSnowTheme);
   Quill.register('modules/dragAndDrop', DragAndDrop);
+  Quill.register('modules/toolbar', MultiEditorToolbar, true);
 
   DragAndDrop.monitorFileDragEvents();
 }
