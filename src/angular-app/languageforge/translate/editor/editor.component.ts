@@ -35,19 +35,7 @@ export class TranslateEditorController implements angular.IController {
     this.source = new DocumentEditor(this.machineService, this.$q.defer(), DocumentEditor.sourceType, 'Source');
     this.target = new DocumentEditor(this.machineService, this.$q.defer(), DocumentEditor.targetType, 'Target');
     const modulesConfig: any = {
-      toolbar: [
-        ['bold', 'italic', 'underline', 'strike'],      // toggled buttons
-        [{ script: 'sub' }, { script: 'super' }],       // superscript/subscript
-        [{ indent: '-1' }, { indent: '+1' }],           // outdent/indent
-        [{ align: [] }],
-
-        [{ size: ['small', false, 'large', 'huge'] }],  // custom dropdown
-        [{ font: [] }],
-        [{ color: [] }, { background: [] }],            // dropdown with defaults from theme
-        [{ direction: 'rtl' }],                         // text direction
-        ['clean']                                       // remove formatting button
-      ],
-
+      toolbar: '#toolbar',
       suggestions: {
         container: '.ql-suggestions'
       },
@@ -62,6 +50,7 @@ export class TranslateEditorController implements angular.IController {
       }
 
     };
+
     this.source.modulesConfig = angular.copy(modulesConfig);
     this.target.modulesConfig = angular.copy(modulesConfig);
     this.right = this.source;
