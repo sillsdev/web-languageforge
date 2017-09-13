@@ -15,8 +15,9 @@ import 'soundmanager2';
 import './polyfills.browser';
 
 // this is imported here to ensure JS files can use it
-import './apps/changepassword/change-password-app.module'
-import './apps/projects/projects-app.module'
-import './apps/userprofile/user-profile-app.module'
+import './apps/changepassword/change-password-app.module';
+import './apps/projects/projects-app.module';
+import './apps/usermanagement/user-management-app.module';
+import './apps/userprofile/user-profile-app.module';
 import './core/core.module';
-import './shared/pui-utils.module'
+import './shared/pui-utils.module';

@@ -1,10 +1,11 @@
 import * as angular from 'angular';
 
+import { NoticeServiceModule } from './notice/notice.module';
 import { NoticeService } from './notice/notice.service';
 
 export class ErrorService {
   static $inject: string[] = ['$log', 'silNoticeService'];
-  constructor(private $log: angular.ILogService, private noticeService: NoticeService) {}
+  constructor(private $log: angular.ILogService, private noticeService: NoticeService) { }
 
   error(title: string, message: string = '') {
     this.$log.error('Error: ' + title + ' - ' + message);
@@ -13,5 +14,7 @@ export class ErrorService {
   };
 }
 
-angular.module('coreModule.errorService', ['palaso.ui.notice'])
-  .service('error', ErrorService);
+export const ErrorServiceModule = angular
+  .module('coreModule.errorService', ['palaso.ui.notice'])
+  .service('error', ErrorService)
+  .name;
