@@ -76,5 +76,12 @@ if [ $OS == "Windows" ]; then
     echo "Note: the Windows Bash window must be open in order for languageforge.local to work"
 fi
 
+echo Run PHP Unit tests
+cd ../..
+gulp test-php
+
+#echo Run JS Unit tests
+#gulp test-js
+
 echo You should now be able to access Language Forge locally at http://languageforge.local
 echo Installation finished!
