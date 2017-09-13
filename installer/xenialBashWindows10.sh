@@ -49,7 +49,7 @@ echo Factory Reset the database
 cd scripts/tools
 php FactoryReset.php run
 
-if [ $OS == "Windows"]; then
+if [ $OS == "Windows" ]; then
     HOSTSFILE=/mnt/c/Windows/System32/drivers/etc/hosts
     ALREADYHASHOSTS=`grep "languageforge.local" $HOSTSFILE`
     if [ -f "$HOSTSFILE" -a ! -n "$ALREADYHASHOSTS" ]; then
@@ -60,6 +60,20 @@ if [ $OS == "Windows"]; then
         127.0.0.1\tjamaicanpsalms.scriptureforge.local"
         echo -e "$HOSTLINES" >> $HOSTSFILE
     fi
+
+    BASHRCFILE="/home/$SUDO_USER/.bashrc"
+    ALREADYHASSERVICESTART=`grep "service apache2 start" $BASHRCFILE`
+    if [ -f "$BASHRCFILE" -a ! -n "$ALREADYHASSERVICESTART" ]; then
+        echo "Adding service start lines to $BASHRCFILE"
+        SERVICELINES="
+        echo 'Starting Language Forge services (from .bashrc)'
+        sudo service apache2 start
+        sudo service postfix start
+        sudo service mongodb start"
+        echo "$SERVICELINES" >> $BASHRCFILE
+    fi
+
+    echo "Note: the Windows Bash window must be open in order for languageforge.local to work"
 fi
 
 echo You should now be able to access Language Forge locally at http://languageforge.local
