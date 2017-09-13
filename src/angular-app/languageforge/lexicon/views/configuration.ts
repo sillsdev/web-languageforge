@@ -1,12 +1,14 @@
 import * as angular from 'angular';
 
+import { CoreModule } from '../../../bellows/core/core.module';
 import { inputSystemsRegions } from '../../../bellows/core/input-systems/input-systems.regions'
 import { inputSystemsScripts } from '../../../bellows/core/input-systems/input-systems.scripts'
 import { InputSystemsService } from '../../../bellows/core/input-systems/input-systems.service';
+import { NoticeServiceModule } from '../../../bellows/core/notice/notice.module';
 import { UtilityService } from '../../../bellows/core/utility.service';
 
-angular.module('lexicon.configuration', ['ui.bootstrap', 'coreModule', 'bellows.services', 'palaso.ui.notice',
-  'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
+angular.module('lexicon.configuration', ['ui.bootstrap', CoreModule, 'bellows.services',
+  NoticeServiceModule, 'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
   'palaso.util.model.transform', 'lexicon.services', 'language.inputSystems'])
 
 // Configuration Controller

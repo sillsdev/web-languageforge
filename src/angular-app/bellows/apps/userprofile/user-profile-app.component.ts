@@ -1,8 +1,8 @@
 import * as angular from 'angular';
 
 import { UserService } from '../../core/api/user.service';
-import { ModalService } from "../../core/modal/modal.service";
-import { NoticeService } from "../../core/notice/notice.service";
+import { ModalService } from '../../core/modal/modal.service';
+import { NoticeService } from '../../core/notice/notice.service';
 import { UtilityService } from '../../core/utility.service';
 import { UserProfile } from '../../shared/model/user-profile.model';
 
@@ -228,4 +228,3 @@ export const UserProfileAppComponent: angular.IComponentOptions = {
   controller: UserProfileAppController,
   templateUrl: '/angular-app/bellows/apps/userprofile/user-profile-app.component.html'
 };
-
