@@ -12,6 +12,7 @@
     "curly": [true, "ignore-same-line"],
     "interface-name": [true, "never-prefix"],
     "max-classes-per-file": [false],
-    "radix": { "severity": "warning" }
+    "radix": { "severity": "warning" },
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"]
   }
 }

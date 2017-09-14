@@ -117,7 +117,8 @@ var defaultConfig = {
     process: true,
     Buffer: false,
     clearImmediate: false,
-    setImmediate: false
+    setImmediate: false,
+    fs: 'empty'
   }
 };
 

@@ -7,8 +7,8 @@ import { SuggestionsTheme } from './quill/suggestions-theme';
 import { Segment } from './segment';
 
 export class DocumentEditor {
-  static readonly sourceType = 'source';
-  static readonly targetType = 'target';
+  static readonly SOURCE = 'source';
+  static readonly TARGET = 'target';
 
   static isSelectionCollapsed(selection: RangeStatic): boolean {
     return selection != null && selection.length === 0;
@@ -20,6 +20,7 @@ export class DocumentEditor {
   modulesConfig: any = {};
   inputSystem: any = {};
 
+  private isShowingSuggestions: boolean = false;
   private _suggestions: string[] = [];
   private previousSuggestions: string[] = [];
 
@@ -31,7 +32,7 @@ export class DocumentEditor {
     return this.quill.getText().trim() === '';
   }
 
-  hasSuggestion(): boolean {
+  get hasSuggestions(): boolean {
     return this._suggestions != null && this._suggestions.length > 0;
   }
 
@@ -46,6 +47,16 @@ export class DocumentEditor {
 
   hasSuggestionsChanged(suggestions: string[] = this._suggestions): boolean {
     return !angular.equals(suggestions, this.previousSuggestions);
+  }
+
+  get isSelectionAtSegmentEnd(): boolean {
+    const selection = this.quill.getSelection();
+    if (selection == null) {
+      return false;
+    }
+    const selectionEndIndex = selection.index + selection.length;
+    const segmentEndIndex = this.currentSegment.range.index + this.currentSegment.range.length;
+    return selectionEndIndex === segmentEndIndex;
   }
 
   update(documentSetId: string): boolean {
@@ -84,7 +95,7 @@ export class DocumentEditor {
       return false;
     }
 
-    if (this.docType === DocumentEditor.targetType && !documentChanged && this.currentSegment != null) {
+    if (this.docType === DocumentEditor.TARGET && !documentChanged && this.currentSegment != null) {
       // remove machine formatting from the whitespace at the end of a segment
       const endIndex = this.currentSegment.range.index + this.currentSegment.range.length;
       if (this.quill.getText(endIndex, 1).trim() === '') {
@@ -96,7 +107,7 @@ export class DocumentEditor {
     const text = this.quill.getText(segmentRange.index, segmentRange.length);
     this.currentSegment = new Segment(segmentIndex, text, segmentRange);
 
-    if (this.docType === DocumentEditor.targetType) {
+    if (this.docType === DocumentEditor.TARGET) {
       const format = this.quill.getFormat(segmentRange);
       this.currentSegment.updateFromFormat(format);
     }
@@ -115,20 +126,35 @@ export class DocumentEditor {
   }
 
   showSuggestions(): void {
-    DocumentEditor.showAndPositionTooltip((this.quill.theme as SuggestionsTheme).suggestionsTooltip,
-      this.quill, this.hasSuggestion());
+    const selection = this.quill.getSelection();
+    if (this.hasSuggestions) {
+      const tooltip = (this.quill.theme as SuggestionsTheme).suggestionsTooltip;
+      tooltip.show();
+      tooltip.position(this.quill.getBounds(selection.index, selection.length));
+      this.isShowingSuggestions = true;
+    } else {
+      this.hideSuggestions();
+    }
   }
 
   hideSuggestions(): void {
     (this.quill.theme as SuggestionsTheme).suggestionsTooltip.hide();
+    this.isShowingSuggestions = false;
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  insertSuggestion(suggestionIndex: number): void {
-    const selection = this.quill.getSelection();
-    const text = this.machineService.getSuggestionText(suggestionIndex);
-    this.quill.insertText(selection.index, text + ' ', Quill.sources.USER);
-    this.quill.setSelection(selection.index + text.length + 1, 0, Quill.sources.USER);
+  insertSuggestion(suggestionIndex: number = -1): void {
+    if (!this.isShowingSuggestions || suggestionIndex >= this.machineService.getCurrentSuggestion().length) {
+      return;
+    }
+
+    let endIndex = this.currentSegment.range.index + this.currentSegment.range.length;
+    const { deleteLength, insertText } = this.machineService.getSuggestionTextInsertion(suggestionIndex);
+    if (deleteLength > 0) {
+      this.quill.deleteText(endIndex - deleteLength, deleteLength, Quill.sources.USER);
+      endIndex -= deleteLength;
+    }
+    this.quill.insertText(endIndex, insertText + ' ', Quill.sources.USER);
+    this.quill.setSelection(endIndex + insertText.length, 1, Quill.sources.USER);
     this.metricService.onSuggestionTaken();
   }
 
@@ -138,11 +164,11 @@ export class DocumentEditor {
     }
 
     const segments = this.getSegmentRanges();
-    return index < segments.length ? segments[index] : segments[segments.length - 1];
+    return index < segments.length ? segments[index] : { index: this.quill.getLength() - 1, length: 0 };
   }
 
   private getSegmentRanges(): RangeStatic[] {
-    const text = this.quill.getText();
+    const text = this.quill.getText().substr(0, this.quill.getLength() - 1);
     const segmentRanges = this.machineService.tokenizeDocumentText(text);
     if (segmentRanges.length === 0) {
       segmentRanges.push({ index: 0, length: 0 });
@@ -163,23 +189,13 @@ export class DocumentEditor {
     this.currentSegment.text = text;
     this.currentSegment.range = segmentRange;
 
-    if (this.docType === DocumentEditor.targetType) {
+    if (this.docType === DocumentEditor.TARGET) {
       const format = this.quill.getFormat(segmentRange);
       this.currentSegment.updateFromFormat(format);
       if (isChanged && this.currentSegment.isTrained) {
         this.currentSegment.isTrained = false;
         this.formatSegment();
       }
-    }
-  }
-
-  private static showAndPositionTooltip(tooltip: Tooltip, quill: Quill, hasCondition: boolean = true): void {
-    const selection = quill.getSelection();
-    if (DocumentEditor.isSelectionCollapsed(selection) && hasCondition) {
-      tooltip.show();
-      tooltip.position(quill.getBounds(selection.index, selection.length));
-    } else {
-      tooltip.hide();
     }
   }
 }
