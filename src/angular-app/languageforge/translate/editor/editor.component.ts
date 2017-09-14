@@ -7,13 +7,12 @@ import { UtilityService } from '../../../bellows/core/utility.service';
 import { MachineService } from '../core/machine.service';
 import { RealTimeService } from '../core/realtime.service';
 import { TranslateProjectService } from '../core/translate-project.service';
+import {
+  TranslateConfigDocumentSets, TranslateProject, TranslateUserPreferences
+} from '../shared/model/translate-project.model';
 import { DocumentEditor } from './document-editor';
 import { Metrics, MetricService } from './metric.service';
 import { Segment } from './segment';
-import {
-  TranslateConfigDocumentSets,
-  TranslateProject, TranslateUserPreferences
-} from '../shared/model/translate-project.model';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: TranslateProject;
@@ -27,16 +26,22 @@ export class TranslateEditorController implements angular.IController {
   selectedDocumentSetIndex: number = 0;
   documentSets: any[] = [];
   metrics: Metrics;
+  dropdownMenuClass: string = 'dropdown-menu-left';
 
   private currentDocIds: string[] = [];
   private confidenceThreshold: number = 0.2;
+  private onWindowResize = () => {
+    this.$scope.$apply(() => {
+      this.updateDropdowMenuClass();
+    });
+  }
 
-  static $inject = ['$scope', '$q',
+  static $inject = ['$window', '$scope', '$q',
     'machineService', 'metricService',
     'modalService', 'silNoticeService',
     'realTimeService', 'translateProjectApi',
     'utilService'];
-  constructor(private $scope: angular.IScope, private $q: angular.IQService,
+  constructor(private $window: Window, private $scope: angular.IScope, private $q: angular.IQService,
               private machineService: MachineService, private metricService: MetricService,
               private modal: ModalService, private notice: NoticeService,
               private realTime: RealTimeService, private projectApi: TranslateProjectService,
@@ -68,6 +73,9 @@ export class TranslateEditorController implements angular.IController {
     this.target.modulesConfig = angular.copy(modulesConfig);
     this.right = this.source;
     this.left = this.target;
+
+    this.$window.addEventListener('resize', this.onWindowResize);
+    this.updateDropdowMenuClass();
 
     this.projectApi.listDocumentSetsDto(result => {
       if (result.ok) {
@@ -128,19 +136,20 @@ export class TranslateEditorController implements angular.IController {
           this.target.quill.root.addEventListener('keydown', this.metricService.onKeyDown);
           this.source.quill.root.addEventListener('keypress', this.metricService.onKeyPress);
           this.target.quill.root.addEventListener('keypress', this.metricService.onKeyPress);
-          document.addEventListener('mousedown', this.metricService.onMouseDown)
+          this.$window.document.addEventListener('mousedown', this.metricService.onMouseDown);
         });
       }
     });
 
   }
 
-  $onDestroy() {
+  $onDestroy(): void {
     this.source.quill.root.removeEventListener('keydown', this.metricService.onKeyDown);
     this.target.quill.root.removeEventListener('keydown', this.metricService.onKeyDown);
     this.source.quill.root.removeEventListener('keypress', this.metricService.onKeyPress);
     this.target.quill.root.removeEventListener('keypress', this.metricService.onKeyPress);
-    document.removeEventListener('mousedown', this.metricService.onMouseDown)
+    this.$window.document.removeEventListener('mousedown', this.metricService.onMouseDown);
+    this.$window.removeEventListener('resize', this.onWindowResize);
   }
 
   selectDocumentSet(index: number, updateConfig: boolean = true): void {
@@ -346,6 +355,12 @@ export class TranslateEditorController implements angular.IController {
       this.projectApi.updateUserPreferences(userPreferences);
       this.tecOnUpdate({ $event: { project: this.tecProject } });
     }
+  }
+
+  private updateDropdowMenuClass(): void {
+    const width = this.$window.innerWidth || this.$window.document.documentElement.clientWidth ||
+      this.$window.document.body.clientWidth;
+    this.dropdownMenuClass = width < 576 ? 'dropdown-menu-right' : 'dropdown-menu-left';
   }
 
   private switchCurrentDocumentSet(editor: DocumentEditor) {
