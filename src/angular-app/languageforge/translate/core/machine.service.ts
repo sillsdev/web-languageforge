@@ -89,12 +89,12 @@ export class MachineService {
     this.session.approve(callback);
   }
 
-  getSuggestionText(suggestionIndex?: number): string {
+  getSuggestionTextInsertion(suggestionIndex?: number): {deleteLength: number, insertText: string} {
     if (this.engine == null || this.session == null) {
-      return '';
+      return { deleteLength: 0, insertText: '' };
     }
 
-    return this.session.getSuggestionText(suggestionIndex);
+    return this.session.getSuggestionTextInsertion(suggestionIndex);
   }
 
   tokenizeDocumentText(text: string): RangeStatic[] {
