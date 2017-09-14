@@ -48,12 +48,13 @@ export class TranslateEditorController implements angular.IController {
               private util: UtilityService) { }
 
   $onInit(): void {
-    this.source = new DocumentEditor(DocumentEditor.sourceType, 'Source', this.$q.defer(),
+    this.source = new DocumentEditor(DocumentEditor.SOURCE, 'Source', this.$q.defer(),
       this.machineService, this.metricService);
-    this.target = new DocumentEditor(DocumentEditor.targetType, 'Target', this.$q.defer(),
+    this.target = new DocumentEditor(DocumentEditor.TARGET, 'Target', this.$q.defer(),
       this.machineService, this.metricService);
     const modulesConfig: any = {
       toolbar: '#toolbar',
+
       suggestions: {
         container: '.ql-suggestions'
       },
@@ -65,9 +66,21 @@ export class TranslateEditorController implements angular.IController {
         // onPaste: (item: DataTransferItem, quill: Quill, event: ClipboardEvent) => {
         //   return this.onPaste(item, quill, event);
         }
-      }
+      },
 
+      keyboard: {
+        bindings: { }
+      }
     };
+
+    for (let i = -1; i < 9; i++) {
+      const numKey = (i + 1).toString();
+      modulesConfig.keyboard.bindings['insertSuggestion' + numKey] = {
+        key: numKey,
+        shortKey: true,
+        handler: () => this.target.insertSuggestion(i)
+      };
+    }
 
     this.source.modulesConfig = angular.copy(modulesConfig);
     this.target.modulesConfig = angular.copy(modulesConfig);
@@ -125,8 +138,8 @@ export class TranslateEditorController implements angular.IController {
           ) {
             this.swapEditors(false);
           } else {
-            this.quillCreated(this.left.quill, this.left);
-            this.quillCreated(this.right.quill, this.right);
+            this.onQuillCreated(this.left.quill, this.left);
+            this.onQuillCreated(this.right.quill, this.right);
           }
 
           this.metricService.setTimeouts(this.tecProject.config.metrics.activeEditTimeout,
@@ -311,21 +324,20 @@ export class TranslateEditorController implements angular.IController {
     return docName + editor.label + ((editor.inputSystem.tag) ? ' (' + editor.inputSystem.tag + ')' : '');
   }
 
-  contentChanged(editor: DocumentEditor): void {
+  onContentChanged(editor: DocumentEditor): void {
     this.updateEditor(editor);
   }
 
-  selectionChanged(editor: DocumentEditor): void {
+  onSelectionChanged(editor: DocumentEditor): void {
     this.target.hideSuggestions();
-    if (editor.docType === DocumentEditor.targetType) {
+    if (editor.docType === DocumentEditor.TARGET) {
       this.updateEditor(editor);
     }
   }
 
-  quillCreated(quill: Quill, editor: DocumentEditor): void {
+  onQuillCreated(quill: Quill, editor: DocumentEditor): void {
     editor.quill = quill;
     editor.quillIsCreated.resolve(true);
-
     const docId = this.docId(editor.docType);
     if (docId !== '') {
       this.currentDocIds[editor.docType] = docId;
@@ -346,8 +358,8 @@ export class TranslateEditorController implements angular.IController {
     delete this.left;
     this.right = newRight;
     this.left = newLeft;
-    this.quillCreated(leftQuill, newLeft);
-    this.quillCreated(rightQuill, newRight);
+    this.onQuillCreated(leftQuill, newLeft);
+    this.onQuillCreated(rightQuill, newRight);
 
     if (writePreferences) {
       const userPreferences = this.tecProject.config.userPreferences;
@@ -372,7 +384,7 @@ export class TranslateEditorController implements angular.IController {
     if (this.currentDocIds[editor.docType] !== docId) {
       this.realTime.disconnectRichTextDoc(this.currentDocIds[editor.docType], editor.quill);
       delete this.currentDocIds[editor.docType];
-      this.quillCreated(editor.quill, editor);
+      this.onQuillCreated(editor.quill, editor);
     }
   }
 
@@ -394,7 +406,7 @@ export class TranslateEditorController implements angular.IController {
     const previousSegment = editor.currentSegment;
     const segmentChanged = editor.update(selectedDocumentSetId);
     switch (editor.docType) {
-      case DocumentEditor.targetType:
+      case DocumentEditor.TARGET:
         if (segmentChanged) {
           if (previousSegment != null && !previousSegment.isTrained) {
             this.trainSegment(previousDocumentSetId, previousSegment);
@@ -410,7 +422,7 @@ export class TranslateEditorController implements angular.IController {
         }
         break;
 
-      case DocumentEditor.sourceType:
+      case DocumentEditor.SOURCE:
         if (!segmentChanged && this.source.currentSegment != null) {
           this.machineService.translateInteractively(this.source.currentSegment.text, this.confidenceThreshold);
         }
@@ -429,7 +441,7 @@ export class TranslateEditorController implements angular.IController {
         const selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
         if (selectedDocumentSetId === documentSetId) {
           // the selection is still on the same document, so update machine format on current editor
-          this.notice.push(this.notice.SUCCESS, 'The modified sentence was successfully trained.');
+          this.notice.push(this.notice.SUCCESS, 'The modified sentence was trained successfully.');
           segment.isTrained = true;
           this.target.formatSegment(segment);
         } else {
@@ -437,7 +449,7 @@ export class TranslateEditorController implements angular.IController {
           const documentSetIndex = this.getDocumentSetIndexById(documentSetId);
           const documentSetName = this.documentSets[documentSetIndex].name;
           this.notice.push(this.notice.SUCCESS, 'The modified sentence from the \'' + documentSetName +
-            '\' document set was successfully trained.');
+            '\' document set was trained successfully.');
           segment.isTrained = true;
           const formatDelta = DocumentEditor.createDeltaSegment(segment);
           this.realTime.updateRichTextDoc(this.tecProject.slug, this.docId(this.target.docType, documentSetId),
@@ -451,12 +463,12 @@ export class TranslateEditorController implements angular.IController {
     // this method can be called asynchronously, so use $applyAsync()
     this.$scope.$applyAsync(() => {
       this.target.suggestions = this.machineService.updatePrefix(this.target.currentSegment.text);
-      if (this.target.hasSuggestionsChanged() && this.target.suggestions.length > 0) {
+      if (this.target.hasSuggestionsChanged() && this.target.hasSuggestions) {
         this.metricService.onSuggestionGiven();
       }
-      setTimeout(() => {
-        this.target.showSuggestions();
-      }, 0);
+      if (this.target.isSelectionAtSegmentEnd) {
+        setTimeout(() => this.target.showSuggestions(), 0);
+      }
     });
   }
 
