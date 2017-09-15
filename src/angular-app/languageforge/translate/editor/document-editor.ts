@@ -1,12 +1,13 @@
 import * as angular from 'angular';
+import Parchment from 'parchment';
 import Quill, { Delta, DeltaStatic, RangeStatic, Tooltip } from 'quill';
 
 import { MachineService } from '../core/machine.service';
 import { MetricService } from './metric.service';
 import { SuggestionsTheme } from './quill/suggestions-theme';
-import { Segment } from './segment';
+import { Segment, TargetSegment } from './segment';
 
-export class DocumentEditor {
+export abstract class DocumentEditor {
   static readonly SOURCE = 'source';
   static readonly TARGET = 'target';
 
@@ -16,37 +17,31 @@ export class DocumentEditor {
 
   currentDocumentSetId: string;
   currentSegment: Segment;
-  quill: Quill;
   modulesConfig: any = {};
   inputSystem: any = {};
 
-  private isShowingSuggestions: boolean = false;
-  private _suggestions: string[] = [];
-  private previousSuggestions: string[] = [];
+  private readonly _created: angular.IDeferred<boolean>;
+  private _quill: Quill;
 
-  constructor(public docType: string, public label: string,
-              public quillIsCreated: angular.IDeferred<boolean>,
-              private machineService: MachineService, private metricService: MetricService) { }
-
-  isTextEmpty(): boolean {
-    return this.quill.getText().trim() === '';
+  constructor($q: angular.IQService,
+              protected readonly machineService: MachineService) {
+    this._created = $q.defer();
   }
 
-  get hasSuggestions(): boolean {
-    return this._suggestions != null && this._suggestions.length > 0;
+  abstract get docType(): string;
+  abstract get label(): string;
+
+  get quill(): Quill {
+    return this._quill;
   }
 
-  get suggestions(): string[] {
-    return this._suggestions;
+  set quill(quill: Quill) {
+    this._quill = quill;
+    this._created.resolve(true);
   }
 
-  set suggestions(suggestions: string[]) {
-    this.previousSuggestions = this._suggestions;
-    this._suggestions = suggestions;
-  }
-
-  hasSuggestionsChanged(suggestions: string[] = this._suggestions): boolean {
-    return !angular.equals(suggestions, this.previousSuggestions);
+  get hasFocus(): boolean {
+    return this.quill.hasFocus();
   }
 
   get isSelectionAtSegmentEnd(): boolean {
@@ -57,6 +52,10 @@ export class DocumentEditor {
     const selectionEndIndex = selection.index + selection.length;
     const segmentEndIndex = this.currentSegment.range.index + this.currentSegment.range.length;
     return selectionEndIndex === segmentEndIndex;
+  }
+
+  get created(): angular.IPromise<boolean> {
+    return this._created.promise;
   }
 
   update(documentSetId: string): boolean {
@@ -95,26 +94,28 @@ export class DocumentEditor {
       return false;
     }
 
-    if (this.docType === DocumentEditor.TARGET && !documentChanged && this.currentSegment != null) {
-      // remove machine formatting from the whitespace at the end of a segment
+    if (!documentChanged && this.currentSegment != null) {
+      // remove segment formatting from whitespace at the end of a segment
       const endIndex = this.currentSegment.range.index + this.currentSegment.range.length;
-      if (this.quill.getText(endIndex, 1).trim() === '') {
-        this.quill.formatText(endIndex, 1, 'segment', false);
+      let len = 0;
+      while ((endIndex + len) < this.quill.getLength() && this.quill.getText(endIndex, len + 1).trim() === '') {
+        len++;
+      }
+      if (len > 0) {
+        this.quill.formatText(endIndex, len, 'segment', false, Quill.sources.USER);
       }
     }
 
-    const segmentRange = this.getSegmentRange(segmentIndex);
-    const text = this.quill.getText(segmentRange.index, segmentRange.length);
-    this.currentSegment = new Segment(segmentIndex, text, segmentRange);
-
-    if (this.docType === DocumentEditor.TARGET) {
-      const format = this.quill.getFormat(segmentRange);
-      this.currentSegment.updateFromFormat(format);
-    }
+    this.currentSegment = this.createSegment(segmentIndex);
+    this.updateCurrentSegment();
     return true;
   }
 
   formatSegment(segment: Segment = this.currentSegment): void {
+    if (segment.range.length === 0) {
+      return;
+    }
+
     const format = segment.getFormat();
     this.quill.formatText(segment.range.index, segment.range.length, format, Quill.sources.USER);
   }
@@ -123,6 +124,78 @@ export class DocumentEditor {
     const format = segment.getFormat();
     const QuillDelta = Quill.import('delta') as typeof Delta;
     return new QuillDelta().retain(segment.range.index).retain(segment.range.length, format);
+  }
+
+  protected createSegment(index: number): Segment {
+    return new Segment(index);
+  }
+
+  private getSegmentRange(index: number): RangeStatic {
+    if (this.quill.getText().trim() === '') {
+      return { index: 0, length: 0 };
+    }
+
+    const segments = this.getSegmentRanges();
+    return index < segments.length ? segments[index] : { index: this.quill.getLength() - 1, length: 0 };
+  }
+
+  private getSegmentRanges(): RangeStatic[] {
+    const text = this.quill.getText().substr(0, this.quill.getLength() - 1);
+    const segmentRanges = this.machineService.tokenizeDocumentText(text);
+    if (segmentRanges.length === 0) {
+      segmentRanges.push({ index: 0, length: 0 });
+    } else {
+      const lastSegmentRange = segmentRanges[segmentRanges.length - 1];
+      const lastSegmentEnd = lastSegmentRange.index + lastSegmentRange.length;
+      if (lastSegmentEnd < text.length) {
+        segmentRanges.push({ index: text.length, length: 0 });
+      }
+    }
+    return segmentRanges;
+  }
+
+  private updateCurrentSegment() {
+    const range = this.getSegmentRange(this.currentSegment.index);
+    const text = this.quill.getText(range.index, range.length);
+    const format = this.quill.getFormat(range);
+    if (this.currentSegment.update(text, range, format)) {
+      this.formatSegment();
+    }
+  }
+}
+
+export class TargetDocumentEditor extends DocumentEditor {
+  private isShowingSuggestions: boolean = false;
+  private _suggestions: string[] = [];
+  private previousSuggestions: string[] = [];
+
+  constructor($q: angular.IQService, machineService: MachineService, private readonly metricService: MetricService) {
+    super($q, machineService);
+  }
+
+  get docType(): string {
+    return DocumentEditor.TARGET;
+  }
+
+  get label(): string {
+    return 'Target';
+  }
+
+  get hasSuggestions(): boolean {
+    return this._suggestions != null && this._suggestions.length > 0;
+  }
+
+  get suggestions(): string[] {
+    return this._suggestions;
+  }
+
+  set suggestions(suggestions: string[]) {
+    this.previousSuggestions = this._suggestions;
+    this._suggestions = suggestions;
+  }
+
+  hasSuggestionsChanged(suggestions: string[] = this._suggestions): boolean {
+    return !angular.equals(suggestions, this.previousSuggestions);
   }
 
   showSuggestions(): void {
@@ -158,44 +231,54 @@ export class DocumentEditor {
     this.metricService.onSuggestionTaken();
   }
 
-  private getSegmentRange(index: number): RangeStatic {
-    if (this.isTextEmpty()) {
-      return { index: 0, length: 0 };
-    }
+  protected createSegment(index: number): Segment {
+    return new TargetSegment(index);
+  }
+}
 
-    const segments = this.getSegmentRanges();
-    return index < segments.length ? segments[index] : { index: this.quill.getLength() - 1, length: 0 };
+export class SourceDocumentEditor extends DocumentEditor {
+  get docType(): string {
+    return DocumentEditor.SOURCE;
   }
 
-  private getSegmentRanges(): RangeStatic[] {
-    const text = this.quill.getText().substr(0, this.quill.getLength() - 1);
-    const segmentRanges = this.machineService.tokenizeDocumentText(text);
-    if (segmentRanges.length === 0) {
-      segmentRanges.push({ index: 0, length: 0 });
-    } else {
-      const lastSegmentRange = segmentRanges[segmentRanges.length - 1];
-      const lastSegmentEnd = lastSegmentRange.index + lastSegmentRange.length;
-      if (lastSegmentEnd < text.length) {
-        segmentRanges.push({ index: text.length, length: 0 });
-      }
-    }
-    return segmentRanges;
+  get label(): string {
+    return 'Source';
   }
 
-  private updateCurrentSegment() {
-    const segmentRange = this.getSegmentRange(this.currentSegment.index);
-    const text = this.quill.getText(segmentRange.index, segmentRange.length);
-    const isChanged = this.currentSegment.text !== text;
-    this.currentSegment.text = text;
-    this.currentSegment.range = segmentRange;
-
-    if (this.docType === DocumentEditor.TARGET) {
-      const format = this.quill.getFormat(segmentRange);
-      this.currentSegment.updateFromFormat(format);
-      if (isChanged && this.currentSegment.isTrained) {
-        this.currentSegment.isTrained = false;
-        this.formatSegment();
-      }
+  highlightCurrentSegment(): void {
+    if (this.currentSegment == null || this.currentSegment.range.length === 0) {
+      return;
     }
+
+    const { found, elem } = this.getCurrentSegmentElement();
+    if (found) {
+      elem.classList.add('highlight');
+    }
+  }
+
+  unhighlightCurrentSegment(): void {
+    if (this.currentSegment == null || this.currentSegment.range.length === 0) {
+      return;
+    }
+
+    const { found, elem } = this.getCurrentSegmentElement();
+    if (found) {
+      elem.classList.remove('highlight');
+    }
+  }
+
+  private getCurrentSegmentElement(): { found: boolean, elem?: HTMLElement } {
+    let blot = this.quill.getLeaf(this.currentSegment.range.index + this.currentSegment.range.length)[0];
+    while (blot != null) {
+      const node = blot.domNode as Node;
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as HTMLElement;
+        if (element.classList.contains('segment')) {
+          return { found: true, elem: element };
+        }
+      }
+      blot = blot.parent;
+    }
+    return { found: false };
   }
 }

@@ -26,6 +26,7 @@ declare module 'quill' {
   }
 
   export class SnowTheme extends Theme {
+    pickers: Picker[];
     extendToolbar(toolbar: any): void;
   }
 
@@ -51,5 +52,9 @@ declare module 'quill' {
 
     attach(input: HTMLElement): void;
     update(range: RangeStatic): void;
+  }
+
+  export class Picker {
+    update(): void;
   }
 }
