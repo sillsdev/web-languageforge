@@ -133,3 +133,7 @@ ng-quill-editor .ql-editor.drop-box {
 .ql-container.ql-bubble:not(.ql-disabled) .ql-suggest-tooltip a:hover::after {
     visibility: hidden;
 }
+
+.highlight {
+    background-color: yellow;
+}

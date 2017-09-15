@@ -10,17 +10,17 @@ import { TranslateProjectService } from '../core/translate-project.service';
 import {
   TranslateConfigDocumentSets, TranslateProject, TranslateUserPreferences
 } from '../shared/model/translate-project.model';
-import { DocumentEditor } from './document-editor';
+import { DocumentEditor, SourceDocumentEditor, TargetDocumentEditor } from './document-editor';
 import { Metrics, MetricService } from './metric.service';
-import { Segment } from './segment';
+import { Segment, TargetSegment } from './segment';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: TranslateProject;
   tecInterfaceConfig: any;
   tecOnUpdate: (params: { $event: { project: any } }) => void;
 
-  source: DocumentEditor;
-  target: DocumentEditor;
+  source: SourceDocumentEditor;
+  target: TargetDocumentEditor;
   right: DocumentEditor;
   left: DocumentEditor;
   selectedDocumentSetIndex: number = 0;
@@ -48,10 +48,8 @@ export class TranslateEditorController implements angular.IController {
               private util: UtilityService) { }
 
   $onInit(): void {
-    this.source = new DocumentEditor(DocumentEditor.SOURCE, 'Source', this.$q.defer(),
-      this.machineService, this.metricService);
-    this.target = new DocumentEditor(DocumentEditor.TARGET, 'Target', this.$q.defer(),
-      this.machineService, this.metricService);
+    this.source = new SourceDocumentEditor(this.$q, this.machineService);
+    this.target = new TargetDocumentEditor(this.$q, this.machineService, this.metricService);
     const modulesConfig: any = {
       toolbar: '#toolbar',
 
@@ -132,7 +130,7 @@ export class TranslateEditorController implements angular.IController {
           this.selectedDocumentSetIndex = this.getDocumentSetIndexById(userPreferences.selectedDocumentSetId);
         }
 
-        this.$q.all([this.source.quillIsCreated.promise, this.target.quillIsCreated.promise]).then(() => {
+        this.$q.all([this.source.created, this.target.created]).then(() => {
           if (userPreferences.isDocumentOrientationTargetRight != null &&
             userPreferences.isDocumentOrientationTargetRight
           ) {
@@ -330,14 +328,11 @@ export class TranslateEditorController implements angular.IController {
 
   onSelectionChanged(editor: DocumentEditor): void {
     this.target.hideSuggestions();
-    if (editor.docType === DocumentEditor.TARGET) {
-      this.updateEditor(editor);
-    }
+    this.updateEditor(editor);
   }
 
   onQuillCreated(quill: Quill, editor: DocumentEditor): void {
     editor.quill = quill;
-    editor.quillIsCreated.resolve(true);
     const docId = this.docId(editor.docType);
     if (docId !== '') {
       this.currentDocIds[editor.docType] = docId;
@@ -408,29 +403,41 @@ export class TranslateEditorController implements angular.IController {
     switch (editor.docType) {
       case DocumentEditor.TARGET:
         if (segmentChanged) {
-          if (previousSegment != null && !previousSegment.isTrained) {
-            this.trainSegment(previousDocumentSetId, previousSegment);
+          const previousTargetSegment = previousSegment as TargetSegment;
+          if (previousTargetSegment != null && !previousTargetSegment.isTrained) {
+            this.trainSegment(previousDocumentSetId, previousTargetSegment);
           }
 
           // select the corresponding source segment
+          this.source.unhighlightCurrentSegment();
           this.source.switchCurrentSegment(selectedDocumentSetId, editor.currentSegment.index);
+          this.source.highlightCurrentSegment();
           // update suggestions for new segment
           this.machineService.translateInteractively(this.source.currentSegment.text, this.confidenceThreshold,
             () => this.updatePrefix());
-        } else if (this.source.currentSegment != null) {
-          this.updatePrefix();
+        } else {
+          if (this.source.currentSegment != null) {
+            this.updatePrefix();
+          }
+          if (this.target.hasFocus) {
+            this.source.highlightCurrentSegment();
+          } else {
+            this.source.unhighlightCurrentSegment();
+          }
         }
         break;
 
       case DocumentEditor.SOURCE:
-        if (!segmentChanged && this.source.currentSegment != null) {
+        if (segmentChanged) {
+          this.target.switchCurrentSegment(selectedDocumentSetId, editor.currentSegment.index);
+        } else if (this.source.currentSegment != null) {
           this.machineService.translateInteractively(this.source.currentSegment.text, this.confidenceThreshold);
         }
         break;
     }
   }
 
-  private trainSegment(documentSetId: string, segment: Segment): void {
+  private trainSegment(documentSetId: string, segment: TargetSegment): void {
     if (segment.range.length === 0) {
       // don't bother training an empty segment
       return;

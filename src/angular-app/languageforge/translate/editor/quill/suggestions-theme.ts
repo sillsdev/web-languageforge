@@ -1,6 +1,6 @@
 import Parchment from 'parchment';
 import Quill, {
-  BoundsStatic, Delta, Module, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
+  BoundsStatic, Delta, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
 } from 'quill';
 
 export interface SuggestionsTheme extends Theme {
@@ -11,7 +11,7 @@ export type DropFunction = (file: File, editor: Quill, event: DragEvent | Clipbo
 
 export type PasteFunction = (item: DataTransferItem, editor: Quill, event: ClipboardEvent) => void;
 
-export class MachineFormat {
+export class SegmentFormat {
   isTrained?: string;
 }
 
@@ -26,7 +26,7 @@ export function registerSuggestionsTheme(): void {
   let dropElements: HTMLElement[] = [];
 
   class SegmentBlot extends Inline {
-    static create(value: MachineFormat) {
+    static create(value: SegmentFormat) {
       const node: any = super.create(value);
       if (value) {
         if (value.isTrained) {
@@ -37,17 +37,29 @@ export function registerSuggestionsTheme(): void {
       return node;
     }
 
-    static formats(node: any): MachineFormat {
-      const format = new MachineFormat();
+    static formats(node: any): SegmentFormat {
+      const format = new SegmentFormat();
       if (node.hasAttribute('data-is-trained')) {
         format.isTrained = node.getAttribute('data-is-trained');
       }
 
       return format;
     }
+
+    formatAt(index: number, length: number, name: string, value: any): void {
+      // ensure that formatting in a segment span is created as a child span and not a sibiling segment span
+      if (name === 'segment') {
+        super.formatAt(index, length, name, value);
+      } else {
+        this.children.forEachAt(index, length, (child, offset, len) => {
+          child.formatAt(offset, len, name, value);
+        });
+      }
+    }
   }
   SegmentBlot.blotName = 'segment';
-  SegmentBlot.tagName = 'span';
+  SegmentBlot.className = 'segment';
+  (Inline as any).order.push('segment');
 
   // Add a suggest tooltip to Quill
   class SuggestionsTooltip extends QuillTooltip {
@@ -202,6 +214,8 @@ export function registerSuggestionsTheme(): void {
 
   // Customize the Snow theme in Quill
   class SuggestionsSnowTheme extends QuillSnowTheme implements SuggestionsTheme {
+    private static pickers: Picker[];
+
     moreTooltip: Tooltip;
     suggestionsTooltip: Tooltip;
 
@@ -212,14 +226,23 @@ export function registerSuggestionsTheme(): void {
     }
 
     extendToolbar(toolbar: any): void {
-      if (!toolbar.container.classList.contains('ql-snow')) {
+      if (toolbar.container.classList.contains('ql-snow')) {
+        // hook up the update() method for pickers to the editor-change event
+        this.pickers = SuggestionsSnowTheme.pickers;
+        this.quill.on('editor-change', () => {
+          for (const picker of this.pickers) {
+            picker.update();
+          }
+        });
+      } else {
         super.extendToolbar(toolbar);
+        SuggestionsSnowTheme.pickers = this.pickers;
       }
     }
   }
 
   class MultiEditorToolbar extends QuillToolbar {
-    private hasFocus: boolean = false;
+    private static currentQuill: Quill;
 
     attach(input: HTMLElement): void {
       let format: string = [].find.call(input.classList, (className: string) => {
@@ -232,7 +255,7 @@ export function registerSuggestionsTheme(): void {
       }
       const eventName = input.tagName === 'SELECT' ? 'change' : 'click';
       input.addEventListener(eventName, e => {
-        if (!this.hasFocus) {
+        if (MultiEditorToolbar.currentQuill !== this.quill) {
           return;
         }
 
@@ -269,7 +292,8 @@ export function registerSuggestionsTheme(): void {
     }
 
     update(range: RangeStatic): void {
-      this.hasFocus = this.quill.hasFocus();
+      // save the last used editor, so the toolbar knows which editor to update
+      MultiEditorToolbar.currentQuill = this.quill;
       super.update(range);
     }
   }
