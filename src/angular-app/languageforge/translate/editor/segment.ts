@@ -1,24 +1,55 @@
 import { RangeStatic, StringMap } from 'quill';
-import { MachineFormat } from './quill/suggestions-theme';
+import { SegmentFormat } from './quill/suggestions-theme';
 
 export class Segment {
+  private _text: string;
+  private _range: RangeStatic;
+
+  constructor(public readonly index: number) { }
+
+  get text(): string {
+    return this._text;
+  }
+
+  get range(): RangeStatic {
+    return this._range;
+  }
+
+  update(text: string, range: RangeStatic, format: StringMap): boolean {
+    this._text = text;
+    this._range = range;
+    return format.segment == null;
+  }
+
+  getFormat(): StringMap {
+    const segmentFormat: SegmentFormat = {};
+    return { segment: segmentFormat };
+  }
+}
+
+export class TargetSegment extends Segment {
   isTrained: boolean = false;
 
-  constructor(public index: number, public text: string, public range: RangeStatic) { }
-
-  updateFromFormat(format: StringMap): void {
-    const machineFormat: MachineFormat = format.segment;
-    if (machineFormat != null) {
-      const isTrained = machineFormat.isTrained;
+  update(text: string, range: RangeStatic, format: StringMap): boolean {
+    const isChanged = this.text != null && this.text !== text;
+    const result = super.update(text, range, format);
+    const segmentFormat: SegmentFormat = format.segment;
+    if (segmentFormat != null) {
+      const isTrained = segmentFormat.isTrained;
       if (isTrained != null) {
         this.isTrained = isTrained.toLowerCase() === 'true';
       }
     }
+    if (isChanged) {
+      this.isTrained = false;
+      return true;
+    }
+    return result;
   }
 
   getFormat(): StringMap {
-    const machineFormat: MachineFormat = {};
-    machineFormat.isTrained = this.isTrained.toString();
-    return { segment: machineFormat };
+    const format = super.getFormat();
+    format.segment.isTrained = this.isTrained.toString();
+    return format;
   }
 }
