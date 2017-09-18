@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import Quill from 'quill';
+import Quill, { StringMap } from 'quill';
 
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
@@ -51,7 +51,26 @@ export class TranslateEditorController implements angular.IController {
     this.source = new SourceDocumentEditor(this.$q, this.machineService);
     this.target = new TargetDocumentEditor(this.$q, this.machineService, this.metricService);
     const modulesConfig: any = {
-      toolbar: '#toolbar',
+      toolbar: {
+        container: '#toolbar',
+        handlers: {
+          clean(value: any) {
+            // clean should not remove the segment formatting
+            const quill = this.quill as Quill;
+            const format = quill.getFormat() as StringMap;
+            for (const name in format) {
+              if (name === 'segment') {
+                delete format[name];
+              } else {
+                format[name] = false;
+              }
+            }
+
+            const range = quill.getSelection();
+            quill.formatText(range.index, range.length, format, Quill.sources.USER);
+          }
+        }
+      },
 
       suggestions: {
         container: '.ql-suggestions'
