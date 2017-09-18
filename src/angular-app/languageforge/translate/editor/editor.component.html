@@ -1,6 +1,25 @@
 <h2>{{$ctrl.tecProject.projectName}}</h2>
 <div id="toolbar" class="row">
     <span class="ql-formats">
+        <select class="ql-header">
+            <option value="1"></option>
+            <option value="2"></option>
+            <option value="3"></option>
+            <option selected>Normal text</option>
+        </select>
+    </span>
+    <span class="ql-formats">
+        <select class="ql-font"></select>
+    </span>
+    <span class="ql-formats">
+        <select class="ql-size">
+            <option value="small">10</option>
+            <option selected>13</option>
+            <option value="large">18</option>
+            <option value="huge">32</option>
+        </select>
+    </span>
+    <span class="ql-formats">
         <button class="ql-bold"></button>
         <button class="ql-italic"></button>
         <button class="ql-underline"></button>
@@ -11,38 +30,26 @@
         <button class="ql-script" value="super"></button>
     </span>
     <span class="ql-formats">
-        <button class="ql-indent" value="-1"></button>
-        <button class="ql-indent" value="+1"></button>
-    </span>
-    <span class="ql-formats">
-        <select class="ql-align">
-            <option selected="" value=""></option>
-            <option value="center"></option>
-            <option value="right"></option>
-            <option value="justify"></option>
-        </select>
-    </span>
-    <span class="ql-formats">
-        <select class="ql-size">
-            <option value="small"></option>
-            <option selected="" value=""></option>
-            <option value="large"></option>
-            <option value="huge"></option>
-        </select>
-    </span>
-    <span class="ql-formats">
-        <select class="ql-font">
-            <option selected="" value=""></option>
-            <option value="serif"></option>
-            <option value="monospace"></option>
-        </select>
-    </span>
-    <span class="ql-formats">
         <select class="ql-color"></select>
         <select class="ql-background"></select>
     </span>
     <span class="ql-formats">
+        <button class="ql-align" value=""></button>
+        <button class="ql-align" value="center"></button>
+        <button class="ql-align" value="right"></button>
+        <button class="ql-align" value="justify"></button>
+    </span>
+    <span class="ql-formats">
+        <button class="ql-list" value="ordered"></button>
+        <button class="ql-list" value="bullet"></button>
+        <button class="ql-indent" value="-1"></button>
+        <button class="ql-indent" value="+1"></button>
+    </span>
+    <span class="ql-formats">
         <button class="ql-direction" value="rtl"></button>
+    </span>
+    <span class="ql-formats">
+        <button class="ql-clean"></button>
     </span>
 </div>
 <div id="editor-area" class="row flex-grow">
