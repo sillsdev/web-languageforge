@@ -293,8 +293,12 @@ export function registerSuggestionsTheme(): void {
 
     update(range: RangeStatic): void {
       // save the last used editor, so the toolbar knows which editor to update
-      MultiEditorToolbar.currentQuill = this.quill;
-      super.update(range);
+      if (MultiEditorToolbar.currentQuill === this.quill) {
+        super.update(range);
+      } else if (this.quill.hasFocus()) {
+        MultiEditorToolbar.currentQuill = this.quill;
+        super.update(range);
+      }
     }
   }
 
