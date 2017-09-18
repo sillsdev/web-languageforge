@@ -1,6 +1,5 @@
 import * as angular from 'angular';
-import Parchment from 'parchment';
-import Quill, { Delta, DeltaStatic, RangeStatic, Tooltip } from 'quill';
+import Quill, { RangeStatic } from 'quill';
 
 import { DocType } from '../core/constants';
 import { MachineService } from '../core/machine.service';
@@ -124,7 +123,7 @@ export class TargetDocumentEditor extends DocumentEditor {
   private previousSuggestions: string[] = [];
 
   constructor($q: angular.IQService, machineService: MachineService, private readonly metricService: MetricService,
-              private readonly $window: Window
+              private readonly $window: angular.IWindowService
   ) {
     super($q, machineService);
   }

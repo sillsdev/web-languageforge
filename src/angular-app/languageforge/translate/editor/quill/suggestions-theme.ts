@@ -1,6 +1,6 @@
 import Parchment from 'parchment';
 import Quill, {
-  BoundsStatic, Delta, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
+  BoundsStatic, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
 } from 'quill';
 
 export interface SuggestionsTheme extends Theme {
@@ -184,7 +184,6 @@ export function registerSuggestionsTheme(): void {
   class SuggestionsSnowTheme extends QuillSnowTheme implements SuggestionsTheme {
     private static pickers: Picker[];
 
-    moreTooltip: Tooltip;
     suggestionsTooltip: Tooltip;
 
     constructor(quill: Quill, options: QuillOptionsStatic) {
