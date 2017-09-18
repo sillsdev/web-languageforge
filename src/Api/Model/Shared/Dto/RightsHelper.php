@@ -339,6 +339,7 @@ class RightsHelper
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::VIEW);
 
             case 'translate_documentSetUpdate':
+            case 'translate_updateMetrics':
             case 'translate_usxToHtml':
                 return $this->userHasProjectRight(Domain::ENTRIES + Operation::EDIT);
 

@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import { InteractiveTranslationSession, Range, SegmentTokenizer, SmtTrainProgress, TranslationEngine } from 'machine';
+import { InteractiveTranslationSession, SegmentTokenizer, SmtTrainProgress, TranslationEngine } from 'machine';
 import { RangeStatic } from 'quill';
 
 import { DocType } from './constants';

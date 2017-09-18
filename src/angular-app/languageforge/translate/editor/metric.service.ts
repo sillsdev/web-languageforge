@@ -1,3 +1,7 @@
+import * as angular from 'angular';
+
+import { TranslateProjectService } from '../core/translate-project.service';
+
 export class Metrics {
   keyBackspaceCount: number = 0;
   keyDeleteCount: number = 0;
@@ -6,21 +10,24 @@ export class Metrics {
   mouseClickCount: number = 0;
   suggestionAcceptedCount: number = 0;
   suggestionTotalCount: number = 0;
-  wordCount: number = 0;
   timeEditActive: number = 0;
   timeTotal: number = 0;
 }
 
 export class MetricService {
+  currentDocumentSetId: string;
+
   private _metrics: Metrics = new Metrics();
+  private metricId: string = '';
+  private hasActiveEdits: boolean = false;
   private activeEditTimeout: number;
   private activeEditCountdown: number;
   private editingTimeout: number;
   private editingCountdown: number;
-  private timer: angular.IPromise<any>;
+  private timer: angular.IPromise<null>;
 
-  static $inject: string[] = ['$interval'];
-  constructor(private $interval: angular.IIntervalService) {
+  static $inject: string[] = ['$interval', 'translateProjectApi'];
+  constructor(private $interval: angular.IIntervalService, private projectApi: TranslateProjectService) {
     this.timer = this.$interval(this.onTimer, 1000);
   }
 
@@ -35,9 +42,13 @@ export class MetricService {
     switch(event.key) {
       case 'Delete':
         this._metrics.keyDeleteCount++;
+        this.hasActiveEdits = true;
+        this.activeEditCountdown = this.activeEditTimeout;
         break;
       case 'Backspace':
         this._metrics.keyBackspaceCount++;
+        this.hasActiveEdits = true;
+        this.activeEditCountdown = this.activeEditTimeout;
         break;
       case 'ArrowUp':
       case 'ArrowDown':
@@ -54,6 +65,7 @@ export class MetricService {
 
   onKeyPress = (): void => {
     this._metrics.keyCharacterCount++;
+    this.hasActiveEdits = true;
     this.activeEditCountdown = this.activeEditTimeout;
     this.editingCountdown = this.editingTimeout;
   };
@@ -79,14 +91,14 @@ export class MetricService {
       this._metrics.timeEditActive++;
       if (!this.isActiveEdit) {
         this._metrics.timeEditActive -= this.activeEditTimeout;
+        this.sendMetrics();
       }
     }
 
     if (this.isEditing) {
       this.editingCountdown--;
       if (!this.isEditing) {
-        // ToDo: post metrics to server
-        console.log('editing timed out');
+        this.sendMetrics(true);
       }
     }
   };
@@ -100,15 +112,33 @@ export class MetricService {
     this._metrics.mouseClickCount = 0;
     this._metrics.suggestionAcceptedCount = 0;
     this._metrics.suggestionTotalCount = 0;
-    this._metrics.wordCount = 0;
     this._metrics.timeEditActive = 0;
+
+    this.hasActiveEdits = false;
+    this.activeEditCountdown = 0;
+  }
+
+  sendMetrics(doReset: boolean = false, documentSetId: string = this.currentDocumentSetId) {
+    doReset = this.hasActiveEdits && doReset;
+    console.log('metrics sent', this._metrics.timeEditActive, this.currentDocumentSetId, this.metricId, doReset);
+    this.projectApi.updateMetrics(this._metrics, this.currentDocumentSetId, this.metricId).then(result => {
+      if (result.ok && !doReset) {
+        this.metricId = result.data;
+      }
+    });
+    if (documentSetId !== this.currentDocumentSetId) {
+      this.currentDocumentSetId = documentSetId;
+    }
+
+    if (doReset) {
+      this.reset();
+      this.metricId = '';
+    }
   }
 
   setTimeouts(activeEditTimeout: number, editingTimeout: number): void {
     this.activeEditTimeout = activeEditTimeout;
     this.editingTimeout = editingTimeout;
-    console.log('activeEditTimeout:', this.activeEditTimeout);
-    console.log('editingTimeout:', this.editingTimeout);
   }
 
   private get isActiveEdit(): boolean {
