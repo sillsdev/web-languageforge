@@ -2,6 +2,8 @@ import * as angular from 'angular';
 
 import { JsonRpcCallback } from '../../../bellows/core/api/api.service';
 import { ProjectService } from '../../../bellows/core/api/project.service';
+import { Metrics } from '../editor/metric.service';
+
 export { JsonRpcCallback } from '../../../bellows/core/api/api.service';
 
 export class TranslateProjectService extends ProjectService {
@@ -41,12 +43,16 @@ export class TranslateProjectService extends ProjectService {
     return this.api.call('translate_documentSetRemove', [documentId], callback);
   }
 
+  updateMetrics(metricsData: Metrics, documentSetId: string, metricId: string = '', callback?: JsonRpcCallback) {
+    return this.api.call('translate_updateMetrics', [metricsData, documentSetId, metricId], callback);
+  }
+
   usxToHtml(usx: string, callback?: JsonRpcCallback) {
     return this.api.call('translate_usxToHtml', [usx], callback);
   }
 
   updateUserProfile(params: any[] = [], callback?: JsonRpcCallback) {
-    this.api.call('user_updateProfile', params, callback);
+    return this.api.call('user_updateProfile', params, callback);
   }
 
   isValidProjectCode(code: string): boolean {

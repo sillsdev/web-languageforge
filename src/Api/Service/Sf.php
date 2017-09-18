@@ -24,6 +24,7 @@ use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransAppManagementDto;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
 use Api\Model\Languageforge\Translate\Command\TranslateDocumentSetCommands;
+use Api\Model\Languageforge\Translate\Command\TranslateMetricCommands;
 use Api\Model\Languageforge\Translate\Command\TranslateProjectCommands;
 use Api\Model\Languageforge\Translate\Dto\TranslateDocumentSetDto;
 use Api\Model\Languageforge\Translate\Dto\TranslateProjectDto;
@@ -873,6 +874,11 @@ class Sf
     public function translate_documentSetRemove($documentId)
     {
         return TranslateDocumentSetCommands::removeDocumentSet($this->projectId, $documentId);
+    }
+
+    public function translate_updateMetrics($metricData, $documentSetId, $metricId)
+    {
+        return TranslateMetricCommands::updateMetric($this->projectId, $metricId, $metricData, $documentSetId, $this->userId);
     }
 
     public function translate_usxToHtml($usx)

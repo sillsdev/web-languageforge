@@ -8,7 +8,7 @@ use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\ProjectModel;
 use PHPUnit\Framework\TestCase;
 
-class TranslateDocumentCommandsTest extends TestCase
+class TranslateDocumentSetCommandsTest extends TestCase
 {
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;
@@ -23,7 +23,7 @@ class TranslateDocumentCommandsTest extends TestCase
         self::$environ->clean();
     }
 
-    public function testTranslateDocumentCrud_CreateUpdateDeleteListOk()
+    public function testTranslateDocumentSetCrud_CreateUpdateDeleteListOk()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
@@ -111,7 +111,7 @@ class TranslateDocumentCommandsTest extends TestCase
         $project->remove();
     }
 
-    public function testReadDocument_ReadBackOk()
+    public function testReadDocumentSet_ReadBackOk()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
@@ -125,7 +125,7 @@ class TranslateDocumentCommandsTest extends TestCase
         $this->assertEquals('SomeDocument', $newDocumentSetData['name']);
     }
 
-    public function testUpdateDocument_DataPersists()
+    public function testUpdateDocumentSet_DataPersists()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
@@ -144,7 +144,7 @@ class TranslateDocumentCommandsTest extends TestCase
         $this->assertEquals('OtherDocument', $newDocumentSetData['name']);
     }
 
-    public function testUpdateDocument_ClearedData_DataIsCleared()
+    public function testUpdateDocumentSet_ClearedData_DataIsCleared()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
@@ -162,7 +162,7 @@ class TranslateDocumentCommandsTest extends TestCase
         $this->assertEquals('', $updatedDocumentSetData['name']);
     }
 
-    public function testListDocuments_allDocuments()
+    public function testListDocumentSets_allDocuments()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();

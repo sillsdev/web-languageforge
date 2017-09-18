@@ -13,7 +13,6 @@ import {
 } from '../shared/model/translate-project.model';
 import { DocumentEditor, SourceDocumentEditor, TargetDocumentEditor } from './document-editor';
 import { Metrics, MetricService } from './metric.service';
-import { Segment } from './segment';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: TranslateProject;
@@ -30,18 +29,14 @@ export class TranslateEditorController implements angular.IController {
   dropdownMenuClass: string = 'dropdown-menu-left';
 
   private currentDocIds: string[] = [];
-  private onWindowResize = () => {
-    this.$scope.$apply(() => {
-      this.updateDropdowMenuClass();
-    });
-  }
+  private currentDocType: string;
 
   static $inject = ['$window', '$scope', '$q',
     'machineService', 'metricService',
     'modalService', 'silNoticeService',
     'realTimeService', 'translateProjectApi',
     'utilService'];
-  constructor(private $window: Window, private $scope: angular.IScope, private $q: angular.IQService,
+  constructor(private $window: angular.IWindowService, private $scope: angular.IScope, private $q: angular.IQService,
               private machineService: MachineService, private metricService: MetricService,
               private modal: ModalService, private notice: NoticeService,
               private realTime: RealTimeService, private projectApi: TranslateProjectService,
@@ -50,6 +45,7 @@ export class TranslateEditorController implements angular.IController {
   $onInit(): void {
     this.source = new SourceDocumentEditor(this.$q, this.machineService);
     this.target = new TargetDocumentEditor(this.$q, this.machineService, this.metricService, this.$window);
+    // noinspection JSUnusedLocalSymbols
     const modulesConfig: any = {
       toolbar: {
         container: '#toolbar',
@@ -105,7 +101,7 @@ export class TranslateEditorController implements angular.IController {
     this.left = this.target;
 
     this.$window.addEventListener('resize', this.onWindowResize);
-    this.updateDropdowMenuClass();
+    this.updateDropdownMenuClass();
 
     this.projectApi.listDocumentSetsDto(result => {
       if (result.ok) {
@@ -179,6 +175,7 @@ export class TranslateEditorController implements angular.IController {
     this.source.quill.root.removeEventListener('keypress', this.metricService.onKeyPress);
     this.target.quill.root.removeEventListener('keypress', this.metricService.onKeyPress);
     this.$window.document.removeEventListener('mousedown', this.metricService.onMouseDown);
+    this.metricService.sendMetrics(true);
     this.$window.removeEventListener('resize', this.onWindowResize);
     this.target.trainSegmentIfNecessary();
   }
@@ -348,6 +345,14 @@ export class TranslateEditorController implements angular.IController {
 
   onSelectionChanged(editor: DocumentEditor): void {
     this.target.hideSuggestions();
+    if (this.hasEditorChanged(editor) && editor.hasFocus) {
+      if (this.currentDocType === DocType.TARGET) {
+        this.metricService.sendMetrics(true, editor.currentDocumentSetId);
+      } else {
+        // don't record metrics in source editor
+        this.metricService.reset();
+      }
+    }
     this.updateEditor(editor);
   }
 
@@ -384,11 +389,17 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private updateDropdowMenuClass(): void {
+  private updateDropdownMenuClass(): void {
     const width = this.$window.innerWidth || this.$window.document.documentElement.clientWidth ||
       this.$window.document.body.clientWidth;
     this.dropdownMenuClass = width < 576 ? 'dropdown-menu-right' : 'dropdown-menu-left';
   }
+
+  private onWindowResize = () => {
+    this.$scope.$apply(() => {
+      this.updateDropdownMenuClass();
+    });
+  };
 
   private switchCurrentDocumentSet(editor: DocumentEditor) {
     const docId = this.docId(editor.docType);
@@ -423,6 +434,15 @@ export class TranslateEditorController implements angular.IController {
         if (segmentChanged) {
           // select the corresponding source segment
           this.source.switchCurrentSegment(selectedDocumentSetId, editor.currentSegment.index);
+
+          if (this.currentDocType) {
+            this.metricService.sendMetrics(true, editor.currentDocumentSetId);
+          } else {
+            if (this.selectedDocumentSetIndex in this.documentSets) {
+              this.metricService.currentDocumentSetId = selectedDocumentSetId;
+            }
+          }
+
           // update suggestions for new segment
           this.source.translateCurrentSegment().then(() => this.target.updateSuggestions());
         } else {
@@ -440,10 +460,18 @@ export class TranslateEditorController implements angular.IController {
         }
         break;
     }
+
+    if (editor.hasFocus) {
+      this.currentDocType = editor.docType;
+    }
   }
 
   private getDocumentSetIndexById(documentSetId: string): number {
-    return this.documentSets.findIndex(docSet => docSet.id === documentSetId);
+    return this.documentSets.findIndex(documentSet => documentSet.id === documentSetId);
+  }
+
+  private hasEditorChanged(editor: DocumentEditor): boolean {
+    return editor.docType !== this.currentDocType;
   }
 
   private onDrop(file: File, quill: Quill, event: DragEvent): void {
