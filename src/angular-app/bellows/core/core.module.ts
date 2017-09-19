@@ -11,6 +11,7 @@ import { SessionService } from './session.service';
 import { UtilityService } from './utility.service';
 
 import './api/json-rpc.service';
+import './breadcrumbs/breadcrumb.module'
 import './error.service';
 import './notice/notice.module';
 

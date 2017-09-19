@@ -1,6 +1,5 @@
 import * as angular from 'angular';
 
-import { NoticeServiceModule } from './notice/notice.module';
 import { NoticeService } from './notice/notice.service';
 
 export class ErrorService {
