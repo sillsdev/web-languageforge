@@ -877,7 +877,7 @@ class Sf
 
     public function translate_usxToHtml($usx)
     {
-        $usxHelper = new UsxHelper($usx);
+        $usxHelper = new UsxHelper($usx, true);
         return $usxHelper->toHtml();
     }
 
