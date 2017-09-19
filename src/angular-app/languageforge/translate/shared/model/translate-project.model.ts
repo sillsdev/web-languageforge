@@ -22,6 +22,7 @@ export class TranslateConfig {
   confidenceThreshold: number;
   documentSets: TranslateConfigDocumentSets;
   isTranslationDataShared?: boolean | string;
+  isTranslationDataScripture?: boolean;
   metrics: TranslateConfigMetrics;
   source: TranslateConfigDocType;
   target: TranslateConfigDocType;
