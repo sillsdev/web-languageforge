@@ -7,4 +7,5 @@ export class Project {
   projectName: string;
   role: string;
   siteName: string;
+  type?: string;
 }
