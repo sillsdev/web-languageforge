@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import { ActivityService } from './api/activity.service';
 import { ApiService } from './api/api.service';
 import { ProjectService } from './api/project.service';
 import { UserService } from './api/user.service';
@@ -19,6 +20,7 @@ export const CoreModule = angular
   .module('coreModule', [])
   .service('projectService', ProjectService)
   .service('userService', UserService)
+  .service('activityService', ActivityService)
   .service('apiService', ApiService)
   .service('sessionService', SessionService)
   .service('modalService', ['$uibModal', ModalService])
