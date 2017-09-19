@@ -29,6 +29,9 @@ class TranslateConfig
     /** @var boolean */
     public $isTranslationDataShared;
 
+    /** @var boolean */
+    public $isTranslationDataScripture;
+
     /** @var TranslateConfigDocumentSets */
     public $documentSets;
 
