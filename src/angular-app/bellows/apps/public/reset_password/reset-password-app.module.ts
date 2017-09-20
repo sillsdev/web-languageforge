@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import { UserService } from '../../../core/api/user.service';
+import { CoreModule } from '../../../core/core.module';
 import { UserWithPassword } from '../../../shared/model/user-password.model';
 
 export class ResetPasswordController implements angular.IController {
@@ -35,6 +36,6 @@ export class ResetPasswordController implements angular.IController {
 }
 
 export const ResetPasswordAppModule = angular
-  .module('reset_password', ['ui.bootstrap', 'bellows.services'])
+  .module('reset_password', ['ui.bootstrap', CoreModule])
   .controller('ResetPasswordCtrl', ResetPasswordController)
   .name;

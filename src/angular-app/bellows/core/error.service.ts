@@ -1,5 +1,6 @@
 import * as angular from 'angular';
 
+import { NoticeModule } from './notice/notice.module';
 import { NoticeService } from './notice/notice.service';
 
 export class ErrorService {
@@ -13,7 +14,7 @@ export class ErrorService {
   };
 }
 
-export const ErrorServiceModule = angular
-  .module('coreModule.errorService', ['palaso.ui.notice'])
+export const ErrorModule = angular
+  .module('coreModule.errorService', [NoticeModule])
   .service('error', ErrorService)
   .name;
