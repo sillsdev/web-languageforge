@@ -3,13 +3,16 @@ import * as angular from 'angular';
 import { CoreModule } from '../../../bellows/core/core.module';
 import { inputSystemsRegions } from '../../../bellows/core/input-systems/input-systems.regions'
 import { inputSystemsScripts } from '../../../bellows/core/input-systems/input-systems.scripts'
-import { InputSystemsService } from '../../../bellows/core/input-systems/input-systems.service';
-import { NoticeServiceModule } from '../../../bellows/core/notice/notice.module';
+import {
+  InputSystemsModule,
+  InputSystemsService
+} from '../../../bellows/core/input-systems/input-systems.service';
+import { NoticeModule } from '../../../bellows/core/notice/notice.module';
 import { UtilityService } from '../../../bellows/core/utility.service';
 
-angular.module('lexicon.configuration', ['ui.bootstrap', CoreModule, 'bellows.services',
-  NoticeServiceModule, 'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
-  'palaso.util.model.transform', 'lexicon.services', 'language.inputSystems'])
+angular.module('lexicon.configuration', ['ui.bootstrap', CoreModule,
+  NoticeModule, 'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
+  'palaso.util.model.transform', 'lexicon.services', InputSystemsModule])
 
 // Configuration Controller
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService',
