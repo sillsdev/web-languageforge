@@ -1,14 +1,15 @@
 import * as angular from 'angular';
 import uiRouter from 'angular-ui-router';
 
-import { NoticeServiceModule } from '../../core/notice/notice.module';
+import { CoreModule } from '../../core/core.module';
+import { NoticeModule } from '../../core/notice/notice.module';
 import { UserManagementAppComponent } from './user-management-app.component';
 import { UserManagementMembersComponent } from './members.component';
 import { UserManagementJoinRequestsComponent } from './join-requests.component';
 
 export const UserManagementAppModule = angular
-  .module('usermanagement',['ui.router', 'ui.bootstrap', 'bellows.services',
-    NoticeServiceModule, 'palaso.ui.listview', 'palaso.ui.typeahead'
+  .module('usermanagement',['ui.router', 'ui.bootstrap', CoreModule,
+    NoticeModule, 'palaso.ui.listview', 'palaso.ui.typeahead'
   ])
   .component('userManagementApp', UserManagementAppComponent)
   .component('userManagementMembers', UserManagementMembersComponent)
