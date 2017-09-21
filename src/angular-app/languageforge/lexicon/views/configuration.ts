@@ -1,13 +1,18 @@
 import * as angular from 'angular';
 
+import { CoreModule } from '../../../bellows/core/core.module';
 import { inputSystemsRegions } from '../../../bellows/core/input-systems/input-systems.regions'
 import { inputSystemsScripts } from '../../../bellows/core/input-systems/input-systems.scripts'
-import { InputSystemsService } from '../../../bellows/core/input-systems/input-systems.service';
+import {
+  InputSystemsModule,
+  InputSystemsService
+} from '../../../bellows/core/input-systems/input-systems.service';
+import { NoticeModule } from '../../../bellows/core/notice/notice.module';
 import { UtilityService } from '../../../bellows/core/utility.service';
 
-angular.module('lexicon.configuration', ['ui.bootstrap', 'coreModule', 'bellows.services', 'palaso.ui.notice',
-  'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
-  'palaso.util.model.transform', 'lexicon.services', 'language.inputSystems'])
+angular.module('lexicon.configuration', ['ui.bootstrap', CoreModule,
+  NoticeModule, 'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
+  'palaso.util.model.transform', 'lexicon.services', InputSystemsModule])
 
 // Configuration Controller
 .controller('ConfigCtrl', ['$scope', 'silNoticeService', 'lexProjectService', 'sessionService',
@@ -706,7 +711,7 @@ function ($scope, $modal, sessionService) {
         case 'multitext':
           customField.displayMultiline = false;
           customField.width = 20;
-          customField.inputSystems = [$scope.inputSystemsList[0].tag];
+          customField.inputSystems = [$scope.inputSystemsList[0].inputSystem.tag];
           customViewField.type = 'multitext';
           customViewField.overrideInputSystems = false;
           customViewField.inputSystems = [];

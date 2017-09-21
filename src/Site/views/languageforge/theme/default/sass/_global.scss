@@ -31,6 +31,7 @@ h1.mobile-title {
 #app-container-for-bootstrap {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
   @extend .flex-grow;
   margin-top: $navbar-height + 10px;
 }
