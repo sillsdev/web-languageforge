@@ -2,6 +2,8 @@ import * as angular from 'angular';
 import uiRouter from 'angular-ui-router';
 
 import { CoreModule } from '../../../bellows/core/core.module';
+import { InputSystemsModule } from '../../../bellows/core/input-systems/input-systems.service';
+import { PuiUtilityModule } from '../../../bellows/shared/pui-utils.module';
 import { TranslateCoreModule } from '../core/translate-core.module';
 import { TranslateSharedModule } from '../shared/translate-shared.module';
 import { TranslateNewProjectController } from './translate-new-project.controller';
@@ -12,9 +14,8 @@ export const TranslateNewProjectModule = angular.module('translate-new-project',
     'pascalprecht.translate',
     'ngFileUpload',
     CoreModule,
-    'bellows.services',
-    'palaso.ui.utils',
-    'language.inputSystems',
+    PuiUtilityModule,
+    InputSystemsModule,
     TranslateCoreModule,
     TranslateSharedModule
   ])
