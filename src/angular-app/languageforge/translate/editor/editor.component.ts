@@ -4,6 +4,7 @@ import Quill, { StringMap } from 'quill';
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { UtilityService } from '../../../bellows/core/utility.service';
+import { DocType } from '../core/constants';
 import { MachineService } from '../core/machine.service';
 import { RealTimeService } from '../core/realtime.service';
 import { TranslateProjectService } from '../core/translate-project.service';
@@ -116,7 +117,7 @@ export class TranslateEditorController implements angular.IController {
           new TranslateUserPreferences();
         this.source.inputSystem = this.tecProject.config.source.inputSystem;
         this.target.inputSystem = this.tecProject.config.target.inputSystem;
-        this.machineService.initialise(this.tecProject.slug);
+        this.machineService.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
 
         if (this.tecProject.config.documentSets.idsOrdered != null &&
           this.tecProject.config.documentSets.idsOrdered.length > 0
@@ -420,7 +421,7 @@ export class TranslateEditorController implements angular.IController {
     const previousSegment = editor.currentSegment;
     const segmentChanged = editor.update(selectedDocumentSetId);
     switch (editor.docType) {
-      case DocumentEditor.TARGET:
+      case DocType.TARGET:
         if (segmentChanged) {
           const previousTargetSegment = previousSegment as TargetSegment;
           if (previousTargetSegment != null && !previousTargetSegment.isTrained) {
@@ -446,7 +447,7 @@ export class TranslateEditorController implements angular.IController {
         }
         break;
 
-      case DocumentEditor.SOURCE:
+      case DocType.SOURCE:
         if (segmentChanged) {
           this.target.switchCurrentSegment(selectedDocumentSetId, editor.currentSegment.index);
         } else if (this.source.currentSegment != null) {
