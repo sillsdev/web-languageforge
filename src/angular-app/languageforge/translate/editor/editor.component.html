@@ -85,8 +85,8 @@
     <div class="col-sm d-flex flex-column mb-1">
         <div class="row flex-grow">
             <div class="col-sm-6 d-flex flex-column" lang="{{$ctrl.left.inputSystem.tag}}" data-ng-show="$ctrl.hasDocumentSets()">
-                <div class="d-flex mb-1">
-                    <label class="flex-grow text-truncate">{{$ctrl.getEditorLabel($ctrl.left)}}</label>
+                <div class="d-flex flex-no-grow">
+                    <label class="flex-grow text-truncate editor-label">{{$ctrl.getEditorLabel($ctrl.left)}}</label>
                     <button type="button" class="btn btn-std btn-sm d-none d-sm-block" data-ng-click="$ctrl.swapEditors()">
                         <i class="fa fa-exchange"></i></button>
                 </div>
@@ -107,8 +107,8 @@
                     <i class="fa fa-exchange fa-rotate-90"></i></button>
             </div>
             <div class="col-sm-6 d-flex flex-column" lang="{{$ctrl.right.inputSystem.tag}}" data-ng-show="$ctrl.hasDocumentSets()">
-                <div class="mb-1">
-                    <label>{{$ctrl.getEditorLabel($ctrl.right)}}</label>
+                <div class="flex-no-grow">
+                    <label class="editor-label">{{$ctrl.getEditorLabel($ctrl.right)}}</label>
                 </div>
                 <ng-quill-editor
                     id="editorRight" data-modules="$ctrl.right.modulesConfig" data-theme="suggestions"
