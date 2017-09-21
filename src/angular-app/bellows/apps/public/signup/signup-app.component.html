@@ -1,13 +1,13 @@
 <div class="content container" data-ng-cloak>
-    <div class="text-xs-center">
+    <div class="text-center">
         <h1>Create an account</h1>
         <sil-notices></sil-notices>
     </div>
 
-    <form class="form-horizontal" data-ng-submit="$ctrl.processForm()" id="signupForm" name="signupForm">
+    <form class="form-horizontal row justify-content-center" data-ng-submit="$ctrl.processForm()" id="signupForm" name="signupForm">
         <fieldset>
-            <div class="card card-default col-md-6 offset-md-3">
-                <div class="card-block">
+            <div class="card card-default">
+                <div class="card-body">
                     <div class="form-group row">
                         <label class="control-label col-md-4 text-md-right" for="name" data-translate="Full Name"></label>
                         <div class="controls col-md-8">
@@ -56,48 +56,46 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="controls col-md-8 offset-md-4">
+                        <div class="controls col-md-8 ml-md-auto">
                             <label class="checkbox">
                                 <input type="checkbox" data-ng-model="$ctrl.showPassword" />
                                 {{'Show password' | translate}}</label>
                         </div>
                     </div>
                     <div class="form-group form-group-last row">
-                        <div class="controls col-md-8 offset-md-4">
+                        <div class="controls col-md-8 ml-md-auto">
                             <pui-captcha pui-items="$ctrl.captchaData.items" pui-expected-item-name="$ctrl.captchaData.expectedItemName"
                                          pui-selected="$ctrl.record.captcha"></pui-captcha>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6 offset-md-3">
-                    <button class="btn btn-primary pull-right" type="submit" id="submit"
-                            data-ng-disabled="signupForm.$invalid || $ctrl.passwordIsWeak">
-                        {{'Sign Up' | translate}}
-                        <span data-ng-show="$ctrl.submissionInProgress">
-                            <i class="fa fa-spinner fa-spin"></i>
-                        </span>
-                        <span data-ng-show="!$ctrl.submissionInProgress">
-                            <i class="fa fa-thumbs-o-up"></i>
-                        </span>
-                    </button>
-                    <span role="alert" class="text-danger" id="captchaInvalid" data-ng-show="$ctrl.captchaFailed">
-                        The shape verification failed.  Please try again.<br></span>
-                    <span role="alert" class="text-danger" id="emailInvalid" data-ng-show="!$ctrl.emailValid">
-                        Please enter a valid email address. An example of an email address: john@doe.com<br></span>
-                    <span role="alert" class="text-danger" id="emailTaken" data-ng-show="$ctrl.emailExists">
-                        {{takenEmail}} is taken. Please try another<br></span>
-                    <span role="alert" class="text-danger" id="passwordIsWeak" data-ng-show="$ctrl.passwordIsWeak">
-                        Password is too weak.<br></span>
-                </div>
+
+            <br />
+            <div class="row justify-content-center">
+                <button class="btn btn-primary pull-right" type="submit" id="submit"
+                        data-ng-disabled="signupForm.$invalid || $ctrl.passwordIsWeak">
+                    {{'Sign Up' | translate}}
+                    <span data-ng-show="$ctrl.submissionInProgress">
+                        <i class="fa fa-spinner fa-spin"></i>
+                    </span>
+                    <span data-ng-show="!$ctrl.submissionInProgress">
+                        <i class="fa fa-thumbs-o-up"></i>
+                    </span>
+                </button>
+                <span role="alert" class="text-danger" id="captchaInvalid" data-ng-show="$ctrl.captchaFailed">
+                    The shape verification failed.  Please try again.<br></span>
+                <span role="alert" class="text-danger" id="emailInvalid" data-ng-show="!$ctrl.emailValid">
+                    Please enter a valid email address. An example of an email address: john@doe.com<br></span>
+                <span role="alert" class="text-danger" id="emailTaken" data-ng-show="$ctrl.emailExists">
+                    {{takenEmail}} is taken. Please try another<br></span>
+                <span role="alert" class="text-danger" id="passwordIsWeak" data-ng-show="$ctrl.passwordIsWeak">
+                    Password is too weak.<br></span>
             </div>
-            <div class="row">
-                <div class="text-xs-center">
-                    <br/>
-                    <small data-translate="powered by"></small>
-                    <p>{{'Sign-on Identification List' | translate}}</p>
-                </div>
+            <div class="text-center">
+                <br/>
+                <small data-translate="powered by"></small>
+                <p>{{'Sign-on Identification List' | translate}}</p>
             </div>
         </fieldset>
     </form>
