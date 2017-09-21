@@ -90,26 +90,27 @@ angular.module('lexicon.services')
   };
 
   function removeDisabledConfigFields(config, fieldsConfig) {
-    angular.forEach(config.fieldOrder, function (fieldName) {
-      if (fieldName !== 'senses' && fieldName !== 'examples') {
-        var fieldConfig = fieldsConfig.fields[fieldName];
+    var visibleFields = config.fieldOrder.filter(function (fieldName) {
+      if (fieldName === 'senses' || fieldName === 'examples') {
+        return true;  // Never remove the senses or examples config!
+      }
 
-        if (fieldConfig && fieldConfig.show) {
-          // field is enabled
-
-          // override input systems if specified
-          if (fieldConfig.overrideInputSystems) {
-            config.fields[fieldName].inputSystems = angular.copy(fieldConfig.inputSystems);
-          }
-        } else {
-          // remove config field
-          delete config.fields[fieldName];
-
-          // remove field from fieldOrder array
-          config.fieldOrder.splice(config.fieldOrder.indexOf(fieldName), 1);
+      var fieldConfig = fieldsConfig.fields[fieldName];
+      if (fieldConfig && fieldConfig.show) {
+        // Also override input systems if specified
+        if (fieldConfig.overrideInputSystems) {
+          config.fields[fieldName].inputSystems = angular.copy(fieldConfig.inputSystems);
         }
+        return true;
+      } else {
+        // Also remove field config
+        delete config.fields[fieldName];
+        return false;
       }
     });
+
+    // Now set fieldOrder array *after* we're done iterating over it
+    config.fieldOrder = visibleFields;
   }
 
   this.isCustomField = function isCustomField(fieldName) {

@@ -40,7 +40,7 @@ function ProjectsPage() {
 
   //noinspection JSUnusedGlobalSymbols
   this.projectTypes = element.all(by.repeater('project in visibleProjects')
-    .column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
+    .column('{{project.projectName}} ({{$ctrl.projectTypes[project.appName]}})'));
 
   //noinspection JSUnusedGlobalSymbols
   this.select100ItemsPerPage = function select100ItemsPerPage() {
@@ -117,7 +117,7 @@ function ProjectsPage() {
       addToProjectBtn.click();
 
       // Now set the user to member or manager, as needed
-      var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
+      var projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
       var foundUserRow;
       projectMemberRows.map(function (row) {
         var nameColumn = row.element(by.binding('user.username'));
@@ -154,9 +154,18 @@ function ProjectsPage() {
       this.settings.button.click();
       this.settings.userManagementLink.click();
 
-      var userFilter = element(by.model('userFilter'));
-      userFilter.sendKeys(userName);
-      var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
+      var userFilter;
+      var projectMemberRows;
+      if (browser.baseUrl.includes('scriptureforge')) {
+        userFilter = element(by.model('userFilter'));
+        userFilter.sendKeys(userName);
+        projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
+      } else if (browser.baseUrl.includes('languageforge')) {
+        userFilter = element(by.model('$ctrl.userFilter'));
+        userFilter.sendKeys(userName);
+        projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
+      }
+
       var foundUserRow = projectMemberRows.first();
       var rowCheckbox = foundUserRow.element(by.css('input[type="checkbox"]'));
       util.setCheckbox(rowCheckbox, true);

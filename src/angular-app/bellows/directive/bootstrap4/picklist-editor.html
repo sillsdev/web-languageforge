@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="row clearfix">
-        <div sv-root sv-part="items">
+        <div sv-root sv-part="items" sv-on-sort="onSort($indexFrom, $indexTo)">
             <div data-ng-repeat="item in items" class="picklist-group" sv-element>
                 <a data-ng-show="showRemove($index)" data-ng-click="pickRemoveItem($index)"><i class="fa fa-trash"></i></a>
                 <span data-ng-hide="showRemove($index)" style="padding-left: 17px"></span>

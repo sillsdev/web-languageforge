@@ -263,7 +263,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         return entryForUpdate;
       }
 
-      $scope.getCompactListItemForDisplay = editorService.getSortableValue;
+      $scope.getPrimaryListItemForDisplay = editorService.getSortableValue;
 
       $scope.getWordForDisplay = function getWordForDisplay(entry) {
         var lexeme = utils.getLexeme($scope.config.entry, entry);
@@ -859,7 +859,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         };
 
         angular.forEach(filteredEntries, function (entry) {
-          var word = $scope.getCompactListItemForDisplay($scope.config, entry);
+          var word = $scope.getPrimaryListItemForDisplay($scope.config, entry);
           var meaning = $scope.getMeaningForDisplay(entry);
           if (word.indexOf(query) === 0) {
             prioritizedEntries.wordBeginning.push(entry);

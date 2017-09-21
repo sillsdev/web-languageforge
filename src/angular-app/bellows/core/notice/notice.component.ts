@@ -38,7 +38,7 @@ export class NoticeController implements angular.IController {
   };
 }
 
-export const noticeComponent: angular.IComponentOptions = {
+export const NoticeComponent: angular.IComponentOptions = {
   templateUrl: '/angular-app/bellows/core/notice/notice.component.html',
   controller: NoticeController
 };
