@@ -1,21 +1,24 @@
-import { InteractiveTranslationSession, Range, SentenceTokenizer, SmtTrainProgress, TranslationEngine } from 'machine';
+import { InteractiveTranslationSession, Range, SegmentTokenizer, SmtTrainProgress, TranslationEngine } from 'machine';
 import { RangeStatic } from 'quill';
 
+import { DocType } from './constants';
+
 export class MachineService {
-  private readonly segmentTokenizer: SentenceTokenizer = new SentenceTokenizer();
   private engine: TranslationEngine;
   private session: InteractiveTranslationSession;
   private sourceSegment: string = '';
   private prefix: string = '';
   private confidenceThreshold: number = -1;
+  private sourceSegmentTokenizer: SegmentTokenizer;
+  private targetSegmentTokenizer: SegmentTokenizer;
 
-  // SIL.Machine.Translation.TranslationEngine.ctor(baseUrl, projectId)
-  initialise(projectId: string): void {
+  initialise(projectId: string, isScripture: boolean): void {
     this.engine = new TranslationEngine(location.origin + '/machine', projectId);
+    const segmentType = isScripture ? 'line' : 'latin';
+    this.sourceSegmentTokenizer = new SegmentTokenizer(segmentType);
+    this.targetSegmentTokenizer = new SegmentTokenizer(segmentType);
   }
 
-  // SIL.Machine.Translation.TranslationEngine.translateInteractively(sourceSegment,
-  //    confidenceThreshold, onFinished)
   translateInteractively(sourceSegment: string, confidenceThreshold: number, callback?: () => void): void {
     if (this.engine == null) {
       return;
@@ -39,7 +42,6 @@ export class MachineService {
     });
   }
 
-  // SIL.Machine.Translation.TranslationEngine.train(onStatusUpdate, onFinished)
   train(onStatusUpdate: (progress: SmtTrainProgress) => void, onFinished: (success: boolean) => void): void {
     if (this.engine == null) {
       return;
@@ -48,7 +50,6 @@ export class MachineService {
     this.engine.train(onStatusUpdate, onFinished);
   }
 
-  // SIL.Machine.Translation.TranslationEngine.listenForTrainingStatus(onStatusUpdate, onFinished)
   listenForTrainingStatus(onStatusUpdate: (progress: SmtTrainProgress) => void,
                           onFinished: (success: boolean) => void): void {
     if (this.engine == null) {
@@ -58,7 +59,6 @@ export class MachineService {
     this.engine.listenForTrainingStatus(onStatusUpdate, onFinished);
   }
 
-  // SIL.Machine.Translation.InteractiveTranslationSession.updatePrefix(prefix)
   updatePrefix(prefix: string): string[] {
     if (this.engine == null || this.session == null) {
       return [];
@@ -80,7 +80,6 @@ export class MachineService {
     return this.session.currentSuggestion;
   }
 
-  // SIL.Machine.Translation.InteractiveTranslationSession.approve(onFinished)
   trainSegment(callback: (success: boolean) => void): void {
     if (this.engine == null || this.session == null) {
       return;
@@ -97,7 +96,21 @@ export class MachineService {
     return this.session.getSuggestionTextInsertion(suggestionIndex);
   }
 
-  tokenizeDocumentText(text: string): RangeStatic[] {
-    return this.segmentTokenizer.tokenize(text) as RangeStatic[];
+  tokenizeDocumentText(docType: string, text: string): RangeStatic[] {
+    let tokenizer: SegmentTokenizer;
+    switch (docType) {
+      case DocType.SOURCE:
+        tokenizer = this.sourceSegmentTokenizer;
+        break;
+      case DocType.TARGET:
+        tokenizer = this.targetSegmentTokenizer;
+        break;
+    }
+
+    if (tokenizer == null) {
+      return [];
+    }
+
+    return tokenizer.tokenize(text).map(r => ({ index: r.start, length: r.length }));
   }
 }
