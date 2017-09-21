@@ -1,0 +1,63 @@
+<div id="userManagementMembers" data-ng-cloak>
+    <form data-ng-show="$ctrl.rights.showControlBar" class="control-bar form-inline">
+        <button class="btn btn-primary" data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.remove"
+                data-ng-click="$ctrl.removeProjectUsers()"><i class="fa fa-trash iconPadding"></i>Remove Members</button>
+        <button data-ng-show="$ctrl.rights.add" class="btn btn-primary" id="addMembersButton"
+                data-ng-click="newUserCollapsed = !newUserCollapsed"><i class="fa fa-plus iconPadding"></i>Add Members</button>
+        <input class="form-control" type="text" ng-model="$ctrl.userFilter" placeholder="Member List Filter" />
+        <a ng-show="$ctrl.userFilter != ''" title="Clear Filter" ng-click="$ctrl.userFilter = ''"><i class="fa fa-times" style="color:gray"></i></a>
+    </form>
+    <div id="newMembersDiv" class=" new-item" uib-collapse="!newUserCollapsed">
+        <form class="form-inline">
+        <div class="form-control row gutter-fix">
+            <pui-typeahead class="typeahead" items="$ctrl.users" term="$ctrl.typeahead.userName" search="$ctrl.queryUser" select="$ctrl.selectUser">
+                <ul>
+                    <li typeahead-item="user" data-ng-repeat="user in $ctrl.users" class="typeahead-item">
+                        <img width="32px" data-ng-src="{{$ctrl.imageSource(user.avatarRef)}}" class="left">
+                        <p class="name">{{user.name}}</p>
+                        <p class="email">{{user.email}}</p>
+                    </li>
+                </ul>
+            </pui-typeahead>
+            <button data-ng-model="$ctrl.addMode" id="addUserButton" class="btn btn-primary"
+                    data-ng-disabled="disableAddButton" data-ng-click="$ctrl.addProjectUser()">
+                <i class="iconPadding" data-ng-class="$ctrl.addModeIcon($ctrl.addMode)"></i>{{$ctrl.addModeText($ctrl.addMode)}}</button>
+            <span class="warning" data-ng-show="$ctrl.warningText">{{$ctrl.warningText}}</span>
+        </div>
+        </form>
+    </div>
+    <listview search="$ctrl.queryUserList()" items="$ctrl.list.users" items-filter="$ctrl.userFilter" visible-items="$ctrl.list.visibleUsers" select="">
+        <table class="table table-hover table-responsive" >
+            <thead class="thead-inverse">
+            <tr>
+                <th></th>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Role</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="user in $ctrl.list.visibleUsers" data-ng-class="{active: $ctrl.isSelected(user)}" >
+                <td width="16px" align="center">
+                    <!--suppress HtmlFormInputWithoutLabel -->
+                    <input data-ng-show="$ctrl.rights.remove" type="checkbox" data-ng-checked="$ctrl.isSelected(user)"
+                           data-ng-click="$ctrl.updateSelection($event, user)" />
+                </td>
+                <td>{{user.username}}</td>
+                <td>{{user.name}}</td>
+                <td ng-show="user.id == $ctrl.project.ownerRef.id">
+                    <!--suppress HtmlFormInputWithoutLabel -->
+                    <select class="custom-select" disabled><option>Manager and Project Owner</option></select>
+                </td>
+                <td ng-hide="user.id == $ctrl.project.ownerRef.id">
+                    <!--suppress HtmlFormInputWithoutLabel -->
+                    <select class="custom-select col-xs-12" data-ng-model="user.role" data-ng-disabled="!$ctrl.rights.changeRole"
+                            data-ng-change="$ctrl.onRoleChange(user)"
+                            data-ng-options="roleKey as roleName for (roleKey, roleName) in $ctrl.roles"></select>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </listview>
+</div>
+
