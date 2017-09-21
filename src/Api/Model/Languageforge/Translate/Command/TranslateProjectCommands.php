@@ -129,6 +129,8 @@ class TranslateProjectCommands
                 'id' => $project->databaseName(),
                 'sourceLanguageTag' => $project->config->source->inputSystem->tag,
                 'targetLanguageTag' => $project->config->target->inputSystem->tag,
+                'sourceSegmentType' => $project->config->isTranslationDataScripture ? 'line' : 'latin',
+                'targetSegmentType' => $project->config->isTranslationDataScripture ? 'line' : 'latin',
                 'isShared' => !!$project->config->isTranslationDataShared
             ]
         ];
@@ -189,6 +191,11 @@ class TranslateProjectCommands
             }
             if (array_key_exists('isTranslationDataShared', $data['config']) &&
                 !!$data['config']['isTranslationDataShared'] != !!$project->config->isTranslationDataShared
+            ) {
+                return true;
+            }
+            if (array_key_exists('isTranslationDataScripture', $data['config']) &&
+                !!$data['config']['isTranslationDataScripture'] != !!$project->config->isTranslationDataScripture
             ) {
                 return true;
             }

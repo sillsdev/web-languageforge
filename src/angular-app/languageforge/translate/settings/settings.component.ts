@@ -5,7 +5,7 @@ import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { MachineService } from '../core/machine.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { Rights } from '../core/translate-rights.service';
-import { TranslateProject } from '../shared/model/translate-project.model';
+import { TranslateProject, TranslateUserPreferences } from '../shared/model/translate-project.model';
 
 export class TranslateSettingsController implements angular.IController {
   tscProject: TranslateProject;
@@ -16,7 +16,7 @@ export class TranslateSettingsController implements angular.IController {
   actionInProgress: boolean;
   retrainMessage: string;
   confidence: any;
-  project: any;
+  project: TranslateProject;
   rights: Rights;
   interfaceConfig: any;
 
@@ -57,7 +57,7 @@ export class TranslateSettingsController implements angular.IController {
         };
       }
 
-      this.machineService.initialise(this.project.slug);
+      this.machineService.initialise(this.project.slug, this.project.config.isTranslationDataScripture);
       this.machineService.listenForTrainingStatus(this.onTrainStatusUpdate, this.onTrainSuccess);
       if (angular.isDefined(this.project.config.userPreferences)) {
         if (angular.isDefined(this.project.config.userPreferences.hasConfidenceOverride)) {
@@ -83,7 +83,7 @@ export class TranslateSettingsController implements angular.IController {
 
   updateProject() {
     this.updateConfigConfidenceValues();
-    let projectData = {
+    const projectData = {
       id: this.project.id,
       projectName: this.project.projectName,
       interfaceLanguageCode: this.project.interfaceLanguageCode,
@@ -91,10 +91,10 @@ export class TranslateSettingsController implements angular.IController {
       config: this.project.config
     };
 
-    this.projectApi.updateProject(projectData).then((result) => {
+    this.projectApi.updateProject(projectData).then(result => {
       if (result.ok) {
         this.project.id = result.data;
-        this.machineService.initialise(this.project.slug);
+        this.machineService.initialise(this.project.slug, this.project.config.isTranslationDataScripture);
         if (this.tscOnUpdate) this.tscOnUpdate({ $event: { project: this.project } });
         this.notice.push(this.notice.SUCCESS,
           this.project.projectName + ' settings updated successfully.');
@@ -107,7 +107,7 @@ export class TranslateSettingsController implements angular.IController {
       this.updateProject();
     } else if (this.rights.canEditEntry()) {
       this.updateConfigConfidenceValues();
-      this.projectApi.updateUserPreferences(this.project.config.userPreferences).then((result) => {
+      this.projectApi.updateUserPreferences(this.project.config.userPreferences).then(result => {
         if (result.ok) {
           if (this.tscOnUpdate) this.tscOnUpdate({ $event: { project: this.project } });
           this.notice.push(this.notice.SUCCESS,
@@ -189,17 +189,17 @@ export class TranslateSettingsController implements angular.IController {
   }
 
   private convertThresholdToValue(threshold: number): number {
-    let range = this.confidence.options.ceil - this.confidence.options.floor;
+    const range = this.confidence.options.ceil - this.confidence.options.floor;
     return this.confidence.options.floor + threshold * range;
   }
 
   private convertValueToThreshold(value: number): number {
-    let range = this.confidence.options.ceil - this.confidence.options.floor;
+    const range = this.confidence.options.ceil - this.confidence.options.floor;
     return (value - this.confidence.options.floor) / range;
   }
 
   private updateConfigConfidenceValues() {
-    this.project.config.userPreferences = this.project.config.userPreferences || {};
+    this.project.config.userPreferences = this.project.config.userPreferences || new TranslateUserPreferences();
     this.project.config.userPreferences.hasConfidenceOverride = this.confidence.isMyThreshold;
     if (this.confidence.isMyThreshold) {
       this.project.config.userPreferences.confidenceThreshold =

@@ -2,15 +2,13 @@ import * as angular from 'angular';
 import Parchment from 'parchment';
 import Quill, { Delta, DeltaStatic, RangeStatic, Tooltip } from 'quill';
 
+import { DocType } from '../core/constants';
 import { MachineService } from '../core/machine.service';
 import { MetricService } from './metric.service';
 import { SuggestionsTheme } from './quill/suggestions-theme';
 import { Segment, TargetSegment } from './segment';
 
 export abstract class DocumentEditor {
-  static readonly SOURCE = 'source';
-  static readonly TARGET = 'target';
-
   static isSelectionCollapsed(selection: RangeStatic): boolean {
     return selection != null && selection.length === 0;
   }
@@ -141,7 +139,7 @@ export abstract class DocumentEditor {
 
   private getSegmentRanges(): RangeStatic[] {
     const text = this.quill.getText().substr(0, this.quill.getLength() - 1);
-    const segmentRanges = this.machineService.tokenizeDocumentText(text);
+    const segmentRanges = this.machineService.tokenizeDocumentText(this.docType, text);
     if (segmentRanges.length === 0) {
       segmentRanges.push({ index: 0, length: 0 });
     } else {
@@ -174,7 +172,7 @@ export class TargetDocumentEditor extends DocumentEditor {
   }
 
   get docType(): string {
-    return DocumentEditor.TARGET;
+    return DocType.TARGET;
   }
 
   get label(): string {
@@ -238,7 +236,7 @@ export class TargetDocumentEditor extends DocumentEditor {
 
 export class SourceDocumentEditor extends DocumentEditor {
   get docType(): string {
-    return DocumentEditor.SOURCE;
+    return DocType.SOURCE;
   }
 
   get label(): string {
