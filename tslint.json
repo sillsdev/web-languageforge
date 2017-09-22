@@ -13,6 +13,7 @@
     "interface-name": [true, "never-prefix"],
     "max-classes-per-file": [false],
     "radix": { "severity": "warning" },
-    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"]
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
+    "no-console": false
   }
 }

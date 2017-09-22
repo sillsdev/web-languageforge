@@ -6,7 +6,7 @@ import { DocType } from '../core/constants';
 import { MachineService } from '../core/machine.service';
 import { MetricService } from './metric.service';
 import { SuggestionsTheme } from './quill/suggestions-theme';
-import { Segment, TargetSegment } from './segment';
+import { Segment } from './segment';
 
 export abstract class DocumentEditor {
   static isSelectionCollapsed(selection: RangeStatic): boolean {
@@ -40,16 +40,6 @@ export abstract class DocumentEditor {
 
   get hasFocus(): boolean {
     return this.quill.hasFocus();
-  }
-
-  get isSelectionAtSegmentEnd(): boolean {
-    const selection = this.quill.getSelection();
-    if (selection == null) {
-      return false;
-    }
-    const selectionEndIndex = selection.index + selection.length;
-    const segmentEndIndex = this.currentSegment.range.index + this.currentSegment.range.length;
-    return selectionEndIndex === segmentEndIndex;
   }
 
   get created(): angular.IPromise<boolean> {
@@ -92,40 +82,9 @@ export abstract class DocumentEditor {
       return false;
     }
 
-    if (!documentChanged && this.currentSegment != null) {
-      // remove segment formatting from whitespace at the end of a segment
-      const endIndex = this.currentSegment.range.index + this.currentSegment.range.length;
-      let len = 0;
-      while ((endIndex + len) < this.quill.getLength() && this.quill.getText(endIndex, len + 1).trim() === '') {
-        len++;
-      }
-      if (len > 0) {
-        this.quill.formatText(endIndex, len, 'segment', false, Quill.sources.USER);
-      }
-    }
-
-    this.currentSegment = this.createSegment(segmentIndex);
+    this.currentSegment = new Segment(segmentIndex);
     this.updateCurrentSegment();
     return true;
-  }
-
-  formatSegment(segment: Segment = this.currentSegment): void {
-    if (segment.range.length === 0) {
-      return;
-    }
-
-    const format = segment.getFormat();
-    this.quill.formatText(segment.range.index, segment.range.length, format, Quill.sources.USER);
-  }
-
-  static createDeltaSegment(segment: Segment): DeltaStatic {
-    const format = segment.getFormat();
-    const QuillDelta = Quill.import('delta') as typeof Delta;
-    return new QuillDelta().retain(segment.range.index).retain(segment.range.length, format);
-  }
-
-  protected createSegment(index: number): Segment {
-    return new Segment(index);
   }
 
   private getSegmentRange(index: number): RangeStatic {
@@ -155,10 +114,7 @@ export abstract class DocumentEditor {
   private updateCurrentSegment() {
     const range = this.getSegmentRange(this.currentSegment.index);
     const text = this.quill.getText(range.index, range.length);
-    const format = this.quill.getFormat(range);
-    if (this.currentSegment.update(text, range, format)) {
-      this.formatSegment();
-    }
+    this.currentSegment.update(text, range);
   }
 }
 
@@ -167,7 +123,9 @@ export class TargetDocumentEditor extends DocumentEditor {
   private _suggestions: string[] = [];
   private previousSuggestions: string[] = [];
 
-  constructor($q: angular.IQService, machineService: MachineService, private readonly metricService: MetricService) {
+  constructor($q: angular.IQService, machineService: MachineService, private readonly metricService: MetricService,
+              private readonly $window: Window
+  ) {
     super($q, machineService);
   }
 
@@ -179,10 +137,6 @@ export class TargetDocumentEditor extends DocumentEditor {
     return 'Target';
   }
 
-  get hasSuggestions(): boolean {
-    return this._suggestions != null && this._suggestions.length > 0;
-  }
-
   get suggestions(): string[] {
     return this._suggestions;
   }
@@ -192,19 +146,39 @@ export class TargetDocumentEditor extends DocumentEditor {
     this._suggestions = suggestions;
   }
 
-  hasSuggestionsChanged(suggestions: string[] = this._suggestions): boolean {
-    return !angular.equals(suggestions, this.previousSuggestions);
+  update(documentSetId: string): boolean {
+    const segmentChanged = super.update(documentSetId);
+    if (!segmentChanged) {
+      this.updateSuggestions();
+    }
+    return segmentChanged;
   }
 
-  showSuggestions(): void {
-    const selection = this.quill.getSelection();
-    if (this.hasSuggestions) {
-      const tooltip = (this.quill.theme as SuggestionsTheme).suggestionsTooltip;
-      tooltip.show();
-      tooltip.position(this.quill.getBounds(selection.index, selection.length));
-      this.isShowingSuggestions = true;
-    } else {
-      this.hideSuggestions();
+  switchCurrentSegment(documentSetId: string, segmentIndex: number): boolean {
+    const previousDocumentSetId = this.currentDocumentSetId;
+    const previousSegment = this.currentSegment;
+    const segmentChanged = super.switchCurrentSegment(documentSetId, segmentIndex);
+    if (segmentChanged && previousSegment != null && previousSegment.isChanged && previousSegment.range.length > 0) {
+      this.machineService.trainSegment(success => {
+        if (success) {
+          this.$window.console.log('The segment was trained successfully');
+        }
+      });
+    }
+    return segmentChanged;
+  }
+
+  updateSuggestions(): void {
+    if (this.currentSegment == null) {
+      return;
+    }
+
+    this.suggestions = this.machineService.updatePrefix(this.currentSegment.text);
+    if (this.hasSuggestionsChanged && this.hasSuggestions) {
+      this.metricService.onSuggestionGiven();
+    }
+    if (this.isSelectionAtSegmentEnd) {
+      setTimeout(() => this.showSuggestions(), 0);
     }
   }
 
@@ -229,12 +203,42 @@ export class TargetDocumentEditor extends DocumentEditor {
     this.metricService.onSuggestionTaken();
   }
 
-  protected createSegment(index: number): Segment {
-    return new TargetSegment(index);
+  private showSuggestions(): void {
+    const selection = this.quill.getSelection();
+    if (this.hasSuggestions) {
+      const tooltip = (this.quill.theme as SuggestionsTheme).suggestionsTooltip;
+      tooltip.show();
+      tooltip.position(this.quill.getBounds(selection.index, selection.length));
+      this.isShowingSuggestions = true;
+    } else {
+      this.hideSuggestions();
+    }
+  }
+
+  private get hasSuggestions(): boolean {
+    return this._suggestions != null && this._suggestions.length > 0;
+  }
+
+  private get hasSuggestionsChanged(): boolean {
+    return !angular.equals(this._suggestions, this.previousSuggestions);
+  }
+
+  private get isSelectionAtSegmentEnd(): boolean {
+    const selection = this.quill.getSelection();
+    if (selection == null) {
+      return false;
+    }
+    const selectionEndIndex = selection.index + selection.length;
+    const segmentEndIndex = this.currentSegment.range.index + this.currentSegment.range.length;
+    return selectionEndIndex === segmentEndIndex;
   }
 }
 
 export class SourceDocumentEditor extends DocumentEditor {
+  confidenceThreshold: number = 0.2;
+
+  private _isCurrentSegmentHighlighted: boolean = false;
+
   get docType(): string {
     return DocType.SOURCE;
   }
@@ -243,40 +247,48 @@ export class SourceDocumentEditor extends DocumentEditor {
     return 'Source';
   }
 
-  highlightCurrentSegment(): void {
+  get isCurrentSegmentHighlighted(): boolean {
+    return this._isCurrentSegmentHighlighted;
+  }
+
+  set isCurrentSegmentHighlighted(value: boolean) {
+    if (this._isCurrentSegmentHighlighted === value) {
+      return;
+    }
+
+    this._isCurrentSegmentHighlighted = value;
+
     if (this.currentSegment == null || this.currentSegment.range.length === 0) {
       return;
     }
 
-    const { found, elem } = this.getCurrentSegmentElement();
-    if (found) {
-      elem.classList.add('highlight');
-    }
+    this.quill.formatText(this.currentSegment.range.index, this.currentSegment.range.length, 'highlight', value,
+      Quill.sources.SILENT);
   }
 
-  unhighlightCurrentSegment(): void {
-    if (this.currentSegment == null || this.currentSegment.range.length === 0) {
-      return;
+  update(documentSetId: string): boolean {
+    if (this.hasFocus) {
+      this.isCurrentSegmentHighlighted = false;
     }
-
-    const { found, elem } = this.getCurrentSegmentElement();
-    if (found) {
-      elem.classList.remove('highlight');
+    const segmentChanged = super.update(documentSetId);
+    if (!segmentChanged && this.currentSegment != null && this.currentSegment.isChanged) {
+        this.translateCurrentSegment();
     }
+    return segmentChanged;
   }
 
-  private getCurrentSegmentElement(): { found: boolean, elem?: HTMLElement } {
-    let blot = this.quill.getLeaf(this.currentSegment.range.index + this.currentSegment.range.length)[0];
-    while (blot != null) {
-      const node = blot.domNode as Node;
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        const element = node as HTMLElement;
-        if (element.classList.contains('segment')) {
-          return { found: true, elem: element };
-        }
-      }
-      blot = blot.parent;
+  switchCurrentSegment(documentSetId: string, segmentIndex: number): boolean {
+    if (!this.hasFocus) {
+      this.isCurrentSegmentHighlighted = false;
     }
-    return { found: false };
+    const segmentChanged = super.switchCurrentSegment(documentSetId, segmentIndex);
+    if (!this.hasFocus) {
+      this.isCurrentSegmentHighlighted = true;
+    }
+    return segmentChanged;
+  }
+
+  translateCurrentSegment(callback?: () => void) {
+    this.machineService.translateInteractively(this.currentSegment.text, this.confidenceThreshold, callback);
   }
 }
