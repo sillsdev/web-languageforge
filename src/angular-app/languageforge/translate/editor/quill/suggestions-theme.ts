@@ -11,10 +11,6 @@ export type DropFunction = (file: File, editor: Quill, event: DragEvent | Clipbo
 
 export type PasteFunction = (item: DataTransferItem, editor: Quill, event: ClipboardEvent) => void;
 
-export class SegmentFormat {
-  isTrained?: string;
-}
-
 export function registerSuggestionsTheme(): void {
   const QuillTooltip = Quill.import('ui/tooltip') as typeof Tooltip;
   const QuillModule = Quill.import('core/module') as typeof Module;
@@ -25,41 +21,13 @@ export function registerSuggestionsTheme(): void {
   // noinspection JSUnusedLocalSymbols
   let dropElements: HTMLElement[] = [];
 
-  class SegmentBlot extends Inline {
-    static create(value: SegmentFormat) {
-      const node: any = super.create(value);
-      if (value) {
-        if (value.isTrained) {
-          node.setAttribute('data-is-trained', value.isTrained);
-        }
-      }
-
-      return node;
-    }
-
-    static formats(node: any): SegmentFormat {
-      const format = new SegmentFormat();
-      if (node.hasAttribute('data-is-trained')) {
-        format.isTrained = node.getAttribute('data-is-trained');
-      }
-
-      return format;
-    }
-
-    formatAt(index: number, length: number, name: string, value: any): void {
-      // ensure that formatting in a segment span is created as a child span and not a sibiling segment span
-      if (name === 'segment') {
-        super.formatAt(index, length, name, value);
-      } else {
-        this.children.forEachAt(index, length, (child, offset, len) => {
-          child.formatAt(offset, len, name, value);
-        });
-      }
+  class HighlightBlot extends Inline {
+    static formats(node: any): any {
+      return { };
     }
   }
-  SegmentBlot.blotName = 'segment';
-  SegmentBlot.className = 'segment';
-  (Inline as any).order.push('segment');
+  HighlightBlot.blotName = 'highlight';
+  HighlightBlot.className = 'highlight';
 
   // Add a suggest tooltip to Quill
   class SuggestionsTooltip extends QuillTooltip {
@@ -302,7 +270,7 @@ export function registerSuggestionsTheme(): void {
     }
   }
 
-  Quill.register('blots/segment', SegmentBlot);
+  Quill.register('blots/highlight', HighlightBlot);
   Quill.register('ui/suggest-tooltip', SuggestionsTooltip);
   Quill.register('modules/suggestions', Suggestions);
   Quill.register('themes/suggestions', SuggestionsSnowTheme);

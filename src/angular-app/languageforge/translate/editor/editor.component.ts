@@ -13,7 +13,7 @@ import {
 } from '../shared/model/translate-project.model';
 import { DocumentEditor, SourceDocumentEditor, TargetDocumentEditor } from './document-editor';
 import { Metrics, MetricService } from './metric.service';
-import { Segment, TargetSegment } from './segment';
+import { Segment } from './segment';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: TranslateProject;
@@ -30,7 +30,6 @@ export class TranslateEditorController implements angular.IController {
   dropdownMenuClass: string = 'dropdown-menu-left';
 
   private currentDocIds: string[] = [];
-  private confidenceThreshold: number = 0.2;
   private onWindowResize = () => {
     this.$scope.$apply(() => {
       this.updateDropdowMenuClass();
@@ -50,7 +49,7 @@ export class TranslateEditorController implements angular.IController {
 
   $onInit(): void {
     this.source = new SourceDocumentEditor(this.$q, this.machineService);
-    this.target = new TargetDocumentEditor(this.$q, this.machineService, this.metricService);
+    this.target = new TargetDocumentEditor(this.$q, this.machineService, this.metricService, this.$window);
     const modulesConfig: any = {
       toolbar: {
         container: '#toolbar',
@@ -137,13 +136,13 @@ export class TranslateEditorController implements angular.IController {
           });
         }
 
-        this.confidenceThreshold = this.tecProject.config.confidenceThreshold;
+        this.source.confidenceThreshold = this.tecProject.config.confidenceThreshold;
         const userPreferences = this.tecProject.config.userPreferences;
         if (userPreferences.confidenceThreshold != null &&
           userPreferences.hasConfidenceOverride != null &&
           userPreferences.hasConfidenceOverride
         ) {
-          this.confidenceThreshold = userPreferences.confidenceThreshold;
+          this.source.confidenceThreshold = userPreferences.confidenceThreshold;
         }
 
         if (userPreferences.selectedDocumentSetId != null) {
@@ -417,32 +416,19 @@ export class TranslateEditorController implements angular.IController {
 
   private updateEditor(editor: DocumentEditor): void {
     const selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
-    const previousDocumentSetId = editor.currentDocumentSetId;
-    const previousSegment = editor.currentSegment;
     const segmentChanged = editor.update(selectedDocumentSetId);
     switch (editor.docType) {
       case DocType.TARGET:
         if (segmentChanged) {
-          const previousTargetSegment = previousSegment as TargetSegment;
-          if (previousTargetSegment != null && !previousTargetSegment.isTrained) {
-            this.trainSegment(previousDocumentSetId, previousTargetSegment);
-          }
-
           // select the corresponding source segment
-          this.source.unhighlightCurrentSegment();
           this.source.switchCurrentSegment(selectedDocumentSetId, editor.currentSegment.index);
-          this.source.highlightCurrentSegment();
           // update suggestions for new segment
-          this.machineService.translateInteractively(this.source.currentSegment.text, this.confidenceThreshold,
-            () => this.updatePrefix());
+          this.source.translateCurrentSegment(() => this.updateSuggestionsAsync());
         } else {
-          if (this.source.currentSegment != null) {
-            this.updatePrefix();
-          }
           if (this.target.hasFocus) {
-            this.source.highlightCurrentSegment();
-          } else {
-            this.source.unhighlightCurrentSegment();
+            this.source.isCurrentSegmentHighlighted = true;
+          } else if (!this.source.hasFocus) {
+            this.source.isCurrentSegmentHighlighted = false;
           }
         }
         break;
@@ -450,53 +436,14 @@ export class TranslateEditorController implements angular.IController {
       case DocType.SOURCE:
         if (segmentChanged) {
           this.target.switchCurrentSegment(selectedDocumentSetId, editor.currentSegment.index);
-        } else if (this.source.currentSegment != null) {
-          this.machineService.translateInteractively(this.source.currentSegment.text, this.confidenceThreshold);
         }
         break;
     }
   }
 
-  private trainSegment(documentSetId: string, segment: TargetSegment): void {
-    if (segment.range.length === 0) {
-      // don't bother training an empty segment
-      return;
-    }
-
-    this.machineService.trainSegment(success => {
-      if (success) {
-        const selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
-        if (selectedDocumentSetId === documentSetId) {
-          // the selection is still on the same document, so update machine format on current editor
-          this.notice.push(this.notice.SUCCESS, 'The modified sentence was trained successfully.');
-          segment.isTrained = true;
-          this.target.formatSegment(segment);
-        } else {
-          // the selection is on a different document, so update machine format through real-time service
-          const documentSetIndex = this.getDocumentSetIndexById(documentSetId);
-          const documentSetName = this.documentSets[documentSetIndex].name;
-          this.notice.push(this.notice.SUCCESS, 'The modified sentence from the \'' + documentSetName +
-            '\' document set was trained successfully.');
-          segment.isTrained = true;
-          const formatDelta = DocumentEditor.createDeltaSegment(segment);
-          this.realTime.updateRichTextDoc(this.tecProject.slug, this.docId(this.target.docType, documentSetId),
-            formatDelta, Quill.sources.USER);
-        }
-      }
-    });
-  }
-
-  private updatePrefix(): void {
+  private updateSuggestionsAsync(): void {
     // this method can be called asynchronously, so use $applyAsync()
-    this.$scope.$applyAsync(() => {
-      this.target.suggestions = this.machineService.updatePrefix(this.target.currentSegment.text);
-      if (this.target.hasSuggestionsChanged() && this.target.hasSuggestions) {
-        this.metricService.onSuggestionGiven();
-      }
-      if (this.target.isSelectionAtSegmentEnd) {
-        setTimeout(() => this.target.showSuggestions(), 0);
-      }
-    });
+    this.$scope.$applyAsync(() => this.target.updateSuggestions());
   }
 
   private getDocumentSetIndexById(documentSetId: string): number {
