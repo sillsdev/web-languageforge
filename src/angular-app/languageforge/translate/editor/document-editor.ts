@@ -158,14 +158,19 @@ export class TargetDocumentEditor extends DocumentEditor {
     const previousDocumentSetId = this.currentDocumentSetId;
     const previousSegment = this.currentSegment;
     const segmentChanged = super.switchCurrentSegment(documentSetId, segmentIndex);
-    if (segmentChanged && previousSegment != null && previousSegment.isChanged && previousSegment.range.length > 0) {
-      this.machineService.trainSegment(success => {
-        if (success) {
-          this.$window.console.log('The segment was trained successfully');
-        }
-      });
+    if (segmentChanged) {
+      this.trainSegmentIfNecessary(previousDocumentSetId, previousSegment);
     }
     return segmentChanged;
+  }
+
+  trainSegmentIfNecessary(documentSetId: string = this.currentDocumentSetId, segment: Segment = this.currentSegment): void {
+    if (segment != null && segment.isChanged && segment.range.length > 0) {
+      this.machineService.trainSegment().then(() => {
+        this.$window.console.log('Segment ' + segment.index + ' of document ' + documentSetId +
+          ' was trained successfully.');
+      });
+    }
   }
 
   updateSuggestions(): void {
@@ -288,7 +293,7 @@ export class SourceDocumentEditor extends DocumentEditor {
     return segmentChanged;
   }
 
-  translateCurrentSegment(callback?: () => void) {
-    this.machineService.translateInteractively(this.currentSegment.text, this.confidenceThreshold, callback);
+  translateCurrentSegment(): angular.IPromise<void> {
+    return this.machineService.translateInteractively(this.currentSegment.text, this.confidenceThreshold);
   }
 }
