@@ -5,7 +5,7 @@ export class Segment {
   private _range: RangeStatic;
   private initialText: string;
 
-  constructor(public readonly index: number) { }
+  constructor(public readonly documentSetId: string, public readonly index: number) { }
 
   get text(): string {
     return this._text;
@@ -17,6 +17,10 @@ export class Segment {
 
   get isChanged(): boolean {
     return this._text !== this.initialText;
+  }
+
+  acceptChanges(): void {
+    this.initialText = this._text;
   }
 
   update(text: string, range: RangeStatic): void {
