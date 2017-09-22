@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 
-import { ErrorService, ErrorServiceModule } from '../error.service';
+import { ErrorService, ErrorModule } from '../error.service';
 
 interface JsonRequest {
   version: string;
@@ -141,7 +141,7 @@ export class JsonRpcService {
 
 }
 
-export const JsonRpcServiceModule = angular
-  .module('jsonRpc', [ErrorServiceModule])
+export const JsonRpcModule = angular
+  .module('jsonRpc', [ErrorModule])
   .service('jsonRpc', JsonRpcService)
   .name;
