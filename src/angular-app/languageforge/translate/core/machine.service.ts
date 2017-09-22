@@ -13,11 +13,12 @@ export class MachineService {
   private sourceSegmentTokenizer: SegmentTokenizer;
   private targetSegmentTokenizer: SegmentTokenizer;
 
-  static $inject: string[] = ['$q', '$rootScope'];
-  constructor(private readonly $q: angular.IQService, private readonly $rootScope: angular.IRootScopeService) { }
+  static $inject: string[] = ['$window', '$q', '$rootScope'];
+  constructor(private $window: angular.IWindowService, private readonly $q: angular.IQService,
+              private readonly $rootScope: angular.IRootScopeService) { }
 
   initialise(projectId: string, isScripture: boolean): void {
-    this.engine = new TranslationEngine(location.origin + '/machine', projectId);
+    this.engine = new TranslationEngine(this.$window.location.origin + '/machine', projectId);
     const segmentType = isScripture ? 'line' : 'latin';
     this.sourceSegmentTokenizer = new SegmentTokenizer(segmentType);
     this.targetSegmentTokenizer = new SegmentTokenizer(segmentType);

@@ -1,4 +1,7 @@
-<h2>{{$ctrl.tecProject.projectName}}</h2>
+<label>
+    <span class="project-name-label">{{$ctrl.tecProject.projectName}}</span>
+    <span class="save-label ml-3">{{$ctrl.saveMessage}}</span>
+</label>
 <div id="toolbar" class="row">
     <span class="ql-formats">
         <select class="ql-header">
@@ -55,7 +58,7 @@
 <div id="editor-area" class="row flex-grow">
     <div id="picklist-column" class="col-sm d-flex flex-column mb-1">
         <div class="d-flex">
-            <label class="flex-grow text-truncate" data-translate="Documents"></label>
+            <label class="editor-label flex-grow text-truncate" data-translate="Documents"></label>
             <button type="button" class="btn btn-std btn-sm" data-ng-click="$ctrl.modalUpdateDocumentSet()">
                 <i class="fa fa-plus"></i></button>
         </div>

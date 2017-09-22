@@ -1,7 +1,9 @@
 import Quill, { TextChangeHandler } from 'quill';
 
-interface DocCallback { (error: any): void }
-interface OnOpsFunction { (op: any, source: any): void }
+import { SaveState } from './constants';
+
+type DocCallback = (error: any) => void;
+type OnOpsFunction = (op: any, source: any) => void;
 
 export declare class RealTimeDoc {
   type: string;
@@ -20,19 +22,34 @@ export declare class RealTimeDoc {
 }
 
 export class RealTimeService {
-  private readonly ShareDB = require('sharedb/lib/client');
-  private readonly richText = require('rich-text');
+  private static readonly ShareDB = require('sharedb/lib/client');
+  private static readonly richText = require('rich-text');
 
-  // Open WebSocket connection to ShareDB server
-  private readonly socket = new WebSocket(RealTimeService.getWebSocketDocUrl());
-  private readonly connection = new this.ShareDB.Connection(this.socket);
+  private readonly socket: WebSocket;
+  private readonly connection: any;
 
   private docSubs: { [id: string]: RealTimeDoc } = {};
   private onTextChanges: { [id: string]: TextChangeHandler } = {};
   private onOps: { [id: string]: OnOpsFunction } = {};
 
-  constructor() {
-    this.ShareDB.types.register(this.richText.type);
+  private pendingOpCount: { [id: string]: number } = {};
+
+  static $inject = ['$window'];
+  constructor(private $window: angular.IWindowService) {
+    RealTimeService.ShareDB.types.register(RealTimeService.richText.type);
+    // Open WebSocket connection to ShareDB server
+    this.socket = new WebSocket(this.getWebSocketDocUrl());
+    this.connection = new RealTimeService.ShareDB.Connection(this.socket);
+  }
+
+  getSaveState(id: string): SaveState {
+    if (!(id in this.pendingOpCount)) {
+      return SaveState.Unedited;
+    } else if (this.pendingOpCount[id] > 0) {
+      return SaveState.Saving;
+    } else {
+      return SaveState.Saved;
+    }
   }
 
   createAndSubscribeRichTextDoc(collection: string, id: string, quill: Quill) {
@@ -43,31 +60,35 @@ export class RealTimeService {
     } else {
       collection = collection || 'collection';
       doc = this.connection.get(collection, id);
-      doc.fetch((err) => {
+      doc.fetch(err => {
         if (err) throw err;
 
         if (doc.type === null) {
-          doc.create([{insert: ''}], this.richText.type.name);
+          doc.create([{ insert: '' }], RealTimeService.richText.type.name);
         }
       });
     }
 
     this.docSubs[id] = doc;
-    doc.subscribe((err) => {
+    doc.subscribe(err => {
       if (err) throw err;
 
       quill.setContents(doc.data);
 
-      this.onTextChanges[id] = function (delta: any, oldDelta: any, source: any) {
+      this.onTextChanges[id] = (delta: any, oldDelta: any, source: any) => {
         if (source !== Quill.sources.USER) return;
-        doc.submitOp(delta, {source: quill});
+        if (!(id in this.pendingOpCount)) {
+          this.pendingOpCount[id] = 0;
+        }
+        this.pendingOpCount[id]++;
+        doc.submitOp(delta, {source: quill}, error => this.pendingOpCount[id]--);
 
         // console.log('onTextChange: docId', id, 'data', quill.getText());
       };
 
       quill.on(Quill.events.TEXT_CHANGE, this.onTextChanges[id]);
 
-      this.onOps[id] = function (op: any, source: any) {
+      this.onOps[id] = (op: any, source: any) => {
         if (source === quill) return;
         quill.updateContents(op);
 
@@ -76,26 +97,26 @@ export class RealTimeService {
 
       doc.on('op', this.onOps[id]);
     });
-  };
+  }
 
-  updateRichTextDoc(collection: string = 'collection', id: string, delta: any, source: any) {
+  updateRichTextDoc(collection: string, id: string, delta: any, source: any) {
     let doc: RealTimeDoc;
     if (id in this.docSubs) {
       doc = this.docSubs[id];
-      doc.submitOp(delta, {source: source});
+      doc.submitOp(delta, { source });
     } else {
       doc = this.connection.get(collection, id);
-      doc.fetch((err) => {
+      doc.fetch(err => {
         if (err) throw err;
 
         if (doc.type === null) {
-          doc.create([{insert: ''}], this.richText.type.name);
+          doc.create([{ insert: '' }], RealTimeService.richText.type.name);
         } else {
-          doc.submitOp(delta, {source: source});
+          doc.submitOp(delta, { source });
         }
       });
     }
-  };
+  }
 
   disconnectRichTextDoc(id: string, quill: Quill) {
     if (id in this.onTextChanges) {
@@ -111,11 +132,13 @@ export class RealTimeService {
 
       this.docSubs[id].destroy();
       delete this.docSubs[id];
-    }
-  };
 
-  private static getWebSocketDocUrl() {
-    let url = 'wss://' + window.location.host;
+      delete this.pendingOpCount[id];
+    }
+  }
+
+  private getWebSocketDocUrl() {
+    const url = 'wss://' + this.$window.location.host;
     return (url.endsWith(':8443')) ? url : url + ':8443';
   }
 

@@ -4,7 +4,7 @@ import Quill, { StringMap } from 'quill';
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { UtilityService } from '../../../bellows/core/utility.service';
-import { DocType } from '../core/constants';
+import { DocType, SaveState } from '../core/constants';
 import { MachineService } from '../core/machine.service';
 import { RealTimeService } from '../core/realtime.service';
 import { TranslateProjectService } from '../core/translate-project.service';
@@ -28,7 +28,6 @@ export class TranslateEditorController implements angular.IController {
   metrics: Metrics;
   dropdownMenuClass: string = 'dropdown-menu-left';
 
-  private currentDocIds: string[] = [];
   private currentDocType: string;
 
   static $inject = ['$window', '$scope', '$q',
@@ -37,14 +36,31 @@ export class TranslateEditorController implements angular.IController {
     'realTimeService', 'translateProjectApi',
     'utilService'];
   constructor(private $window: angular.IWindowService, private $scope: angular.IScope, private $q: angular.IQService,
-              private machineService: MachineService, private metricService: MetricService,
+              private machine: MachineService, private metricService: MetricService,
               private modal: ModalService, private notice: NoticeService,
               private realTime: RealTimeService, private projectApi: TranslateProjectService,
               private util: UtilityService) { }
 
+  get saveMessage(): string {
+    switch (this.saveState) {
+      case SaveState.Unsaved:
+        return 'Unsaved changes';
+      case SaveState.Saving:
+        return 'Saving...';
+      case SaveState.Saved:
+        return 'All changes saved';
+      case SaveState.Unedited:
+        return '';
+    }
+  }
+
+  private get saveState(): SaveState {
+    return Math.min(this.source.saveState, this.target.saveState);
+  }
+
   $onInit(): void {
-    this.source = new SourceDocumentEditor(this.$q, this.machineService);
-    this.target = new TargetDocumentEditor(this.$q, this.machineService, this.metricService, this.$window);
+    this.source = new SourceDocumentEditor(this.$q, this.machine, this.realTime);
+    this.target = new TargetDocumentEditor(this.$q, this.machine, this.realTime, this.metricService, this.$window);
     // noinspection JSUnusedLocalSymbols
     const modulesConfig: any = {
       toolbar: {
@@ -103,6 +119,8 @@ export class TranslateEditorController implements angular.IController {
     this.$window.addEventListener('resize', this.onWindowResize);
     this.updateDropdownMenuClass();
 
+    this.$window.addEventListener('beforeunload', this.onBeforeUnload);
+
     this.projectApi.listDocumentSetsDto(result => {
       if (result.ok) {
         angular.merge(this.tecProject, result.data.project);
@@ -112,7 +130,7 @@ export class TranslateEditorController implements angular.IController {
           new TranslateUserPreferences();
         this.source.inputSystem = this.tecProject.config.source.inputSystem;
         this.target.inputSystem = this.tecProject.config.target.inputSystem;
-        this.machineService.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
+        this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
 
         if (this.tecProject.config.documentSets.idsOrdered != null &&
           this.tecProject.config.documentSets.idsOrdered.length > 0
@@ -177,7 +195,8 @@ export class TranslateEditorController implements angular.IController {
     this.$window.document.removeEventListener('mousedown', this.metricService.onMouseDown);
     this.metricService.sendMetrics(true);
     this.$window.removeEventListener('resize', this.onWindowResize);
-    this.target.trainSegmentIfNecessary();
+    this.$window.removeEventListener('beforeunload', this.onBeforeUnload);
+    this.save();
   }
 
   selectDocumentSet(index: number, updateConfig: boolean = true): void {
@@ -347,7 +366,7 @@ export class TranslateEditorController implements angular.IController {
     this.target.hideSuggestions();
     if (this.hasEditorChanged(editor) && editor.hasFocus) {
       if (this.currentDocType === DocType.TARGET) {
-        this.metricService.sendMetrics(true, editor.currentDocumentSetId);
+        this.metricService.sendMetrics(true, this.target.currentSegmentDocumentSetId);
       } else {
         // don't record metrics in source editor
         this.metricService.reset();
@@ -358,19 +377,14 @@ export class TranslateEditorController implements angular.IController {
 
   onQuillCreated(quill: Quill, editor: DocumentEditor): void {
     editor.quill = quill;
-    const docId = this.docId(editor.docType);
-    if (docId !== '') {
-      this.currentDocIds[editor.docType] = docId;
-      this.realTime.createAndSubscribeRichTextDoc(this.tecProject.slug, docId, quill);
-    }
+    this.switchCurrentDocumentSet(editor);
   }
 
   swapEditors(writePreferences: boolean = true): void {
     const leftQuill = this.left.quill;
     const rightQuill = this.right.quill;
-    this.realTime.disconnectRichTextDoc(this.currentDocIds[this.left.docType], leftQuill);
-    this.realTime.disconnectRichTextDoc(this.currentDocIds[this.right.docType], rightQuill);
-    this.currentDocIds = [];
+    this.left.closeDocumentSet();
+    this.right.closeDocumentSet();
 
     const newLeft = this.right;
     const newRight = this.left;
@@ -389,6 +403,20 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
+  private onBeforeUnload = (event: BeforeUnloadEvent) => {
+    if (this.saveState < SaveState.Saved) {
+      setTimeout(() => this.save(), 100);
+      const message = 'There are unsaved changes.';
+      event.returnValue = message;
+      return message;
+    }
+  }
+
+  private save(): void {
+    this.source.save();
+    this.target.save();
+  }
+
   private updateDropdownMenuClass(): void {
     const width = this.$window.innerWidth || this.$window.document.documentElement.clientWidth ||
       this.$window.document.body.clientWidth;
@@ -399,48 +427,27 @@ export class TranslateEditorController implements angular.IController {
     this.$scope.$apply(() => {
       this.updateDropdownMenuClass();
     });
-  };
-
-  private switchCurrentDocumentSet(editor: DocumentEditor) {
-    const docId = this.docId(editor.docType);
-    if (docId === '') {
-      return;
-    }
-
-    if (this.currentDocIds[editor.docType] !== docId) {
-      this.realTime.disconnectRichTextDoc(this.currentDocIds[editor.docType], editor.quill);
-      delete this.currentDocIds[editor.docType];
-      this.onQuillCreated(editor.quill, editor);
-    }
   }
 
-  private docId(docKey: string, documentSetId?: string): string {
-    if (!(this.selectedDocumentSetIndex in this.documentSets)) {
-      return '';
+  private switchCurrentDocumentSet(editor: DocumentEditor) {
+    editor.closeDocumentSet();
+    if (this.selectedDocumentSetIndex in this.documentSets) {
+      editor.openDocumentSet(this.tecProject.slug, this.documentSets[this.selectedDocumentSetIndex].id);
     }
-
-    if (documentSetId == null) {
-      documentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
-    }
-
-    return documentSetId + ':' + docKey;
   }
 
   private updateEditor(editor: DocumentEditor): void {
-    const selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
-    const segmentChanged = editor.update(selectedDocumentSetId);
+    const segmentChanged = editor.update();
     switch (editor.docType) {
       case DocType.TARGET:
         if (segmentChanged) {
           // select the corresponding source segment
-          this.source.switchCurrentSegment(selectedDocumentSetId, editor.currentSegment.index);
+          this.source.switchCurrentSegment(this.target.currentSegmentIndex);
 
           if (this.currentDocType) {
-            this.metricService.sendMetrics(true, editor.currentDocumentSetId);
-          } else {
-            if (this.selectedDocumentSetIndex in this.documentSets) {
-              this.metricService.currentDocumentSetId = selectedDocumentSetId;
-            }
+            this.metricService.sendMetrics(true, this.target.currentSegmentDocumentSetId);
+          } else if (this.selectedDocumentSetIndex in this.documentSets) {
+            this.metricService.currentDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
           }
 
           // update suggestions for new segment
@@ -456,7 +463,7 @@ export class TranslateEditorController implements angular.IController {
 
       case DocType.SOURCE:
         if (segmentChanged) {
-          this.target.switchCurrentSegment(selectedDocumentSetId, editor.currentSegment.index);
+          this.target.switchCurrentSegment(this.source.currentSegmentIndex);
         }
         break;
     }
