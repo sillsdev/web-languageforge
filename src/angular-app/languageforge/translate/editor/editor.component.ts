@@ -180,6 +180,7 @@ export class TranslateEditorController implements angular.IController {
     this.target.quill.root.removeEventListener('keypress', this.metricService.onKeyPress);
     this.$window.document.removeEventListener('mousedown', this.metricService.onMouseDown);
     this.$window.removeEventListener('resize', this.onWindowResize);
+    this.target.trainSegmentIfNecessary();
   }
 
   selectDocumentSet(index: number, updateConfig: boolean = true): void {
@@ -423,7 +424,7 @@ export class TranslateEditorController implements angular.IController {
           // select the corresponding source segment
           this.source.switchCurrentSegment(selectedDocumentSetId, editor.currentSegment.index);
           // update suggestions for new segment
-          this.source.translateCurrentSegment(() => this.updateSuggestionsAsync());
+          this.source.translateCurrentSegment().then(() => this.target.updateSuggestions());
         } else {
           if (this.target.hasFocus) {
             this.source.isCurrentSegmentHighlighted = true;
@@ -439,11 +440,6 @@ export class TranslateEditorController implements angular.IController {
         }
         break;
     }
-  }
-
-  private updateSuggestionsAsync(): void {
-    // this method can be called asynchronously, so use $applyAsync()
-    this.$scope.$applyAsync(() => this.target.updateSuggestions());
   }
 
   private getDocumentSetIndexById(documentSetId: string): number {

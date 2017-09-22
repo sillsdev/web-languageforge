@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import { SmtTrainProgress } from 'machine';
 
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
@@ -58,7 +59,7 @@ export class TranslateSettingsController implements angular.IController {
       }
 
       this.machineService.initialise(this.project.slug, this.project.config.isTranslationDataScripture);
-      this.machineService.listenForTrainingStatus(this.onTrainStatusUpdate, this.onTrainSuccess);
+      this.listenForTrainingStatus();
       if (angular.isDefined(this.project.config.userPreferences)) {
         if (angular.isDefined(this.project.config.userPreferences.hasConfidenceOverride)) {
           this.confidence.isMyThreshold =
@@ -122,9 +123,7 @@ export class TranslateSettingsController implements angular.IController {
       'This can take several minutes and will operate in the background.<br /><br />' +
       'Are you sure you want to retrain the translation engine?';
     this.modal.showModalSimple('Retrain Translation Engine?', retrainMessage, 'Cancel', 'Retrain')
-      .then(() => {
-        this.machineService.train(this.onTrainStatusUpdate, this.onTrainFinished);
-      }, angular.noop);
+      .then(() => this.machineService.startTraining());
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -165,27 +164,24 @@ export class TranslateSettingsController implements angular.IController {
     }
   }
 
-  private onTrainStatusUpdate(progress: any) {
-    this.$scope.$applyAsync(() => {
+  private listenForTrainingStatus(): void {
+    this.machineService.listenForTrainingStatus(progress => this.onTrainStatusUpdate(progress))
+      .then(() => this.onTrainSuccess()).finally(() => this.onTrainFinished());
+  }
+
+  private onTrainStatusUpdate(progress: SmtTrainProgress): void {
+    if (progress.percentCompleted != null && progress.currentStepMessage != null) {
       this.retrainMessage = progress.percentCompleted + '% ' + progress.currentStepMessage;
-    });
-  }
-
-  private onTrainSuccess(isSuccess: boolean) {
-    if (isSuccess) {
-      this.$scope.$applyAsync(() => {
-        this.notice.push(this.notice.SUCCESS, 'Finished re-training the translation engine');
-      });
     }
   }
 
-  private onTrainFinished(isSuccess: boolean) {
-    this.onTrainSuccess(isSuccess);
-    if (!isSuccess) {
-      this.$scope.$applyAsync(() => {
-        this.notice.push(this.notice.ERROR, 'Could not re-train the translation engine');
-      });
-    }
+  private onTrainSuccess(): void {
+    this.notice.push(this.notice.SUCCESS, 'Finished training the translation engine');
+  }
+
+  private onTrainFinished(): void {
+    this.retrainMessage = '';
+    setTimeout(() => this.listenForTrainingStatus(), 0);
   }
 
   private convertThresholdToValue(threshold: number): number {

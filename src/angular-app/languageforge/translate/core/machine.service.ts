@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 import { InteractiveTranslationSession, Range, SegmentTokenizer, SmtTrainProgress, TranslationEngine } from 'machine';
 import { RangeStatic } from 'quill';
 
@@ -12,6 +13,9 @@ export class MachineService {
   private sourceSegmentTokenizer: SegmentTokenizer;
   private targetSegmentTokenizer: SegmentTokenizer;
 
+  static $inject: string[] = ['$q', '$rootScope'];
+  constructor(private readonly $q: angular.IQService, private readonly $rootScope: angular.IRootScopeService) { }
+
   initialise(projectId: string, isScripture: boolean): void {
     this.engine = new TranslationEngine(location.origin + '/machine', projectId);
     const segmentType = isScripture ? 'line' : 'latin';
@@ -19,44 +23,65 @@ export class MachineService {
     this.targetSegmentTokenizer = new SegmentTokenizer(segmentType);
   }
 
-  translateInteractively(sourceSegment: string, confidenceThreshold: number, callback?: () => void): void {
+  translateInteractively(sourceSegment: string, confidenceThreshold: number): angular.IPromise<void> {
     if (this.engine == null) {
-      return;
+      return this.$q.resolve();
     }
 
     this.prefix = '';
     if (this.sourceSegment === sourceSegment && this.confidenceThreshold === confidenceThreshold) {
-      if (callback != null) {
-        callback();
-      }
-      return;
+      return this.$q.resolve();
     }
 
+    const deferred = this.$q.defer<void>();
     this.sourceSegment = sourceSegment;
     this.confidenceThreshold = confidenceThreshold;
     this.engine.translateInteractively(sourceSegment, confidenceThreshold, newSession => {
-      this.session = newSession;
-      if (callback != null) {
-        callback();
+      if (newSession != null) {
+        this.session = newSession;
+        deferred.resolve();
+      } else {
+        deferred.reject('Error occurred while retrieving translation result.');
       }
     });
+
+    return deferred.promise;
   }
 
-  train(onStatusUpdate: (progress: SmtTrainProgress) => void, onFinished: (success: boolean) => void): void {
+  startTraining(): angular.IPromise<void> {
     if (this.engine == null) {
-      return;
+      return this.$q.resolve();
     }
 
-    this.engine.train(onStatusUpdate, onFinished);
+    const deferred = this.$q.defer<void>();
+    this.engine.startTraining(success => {
+      if (success) {
+        deferred.resolve();
+      } else {
+        deferred.reject('Error occurred while starting the training process.');
+      }
+    });
+
+    return deferred.promise;
   }
 
-  listenForTrainingStatus(onStatusUpdate: (progress: SmtTrainProgress) => void,
-                          onFinished: (success: boolean) => void): void {
+  listenForTrainingStatus(onStatusUpdate: (progress: SmtTrainProgress) => void): angular.IPromise<void> {
     if (this.engine == null) {
-      return;
+      return this.$q.resolve();
     }
 
-    this.engine.listenForTrainingStatus(onStatusUpdate, onFinished);
+    const deferred = this.$q.defer<void>();
+    this.engine.listenForTrainingStatus(progress => {
+      this.$rootScope.$apply(scope => onStatusUpdate(progress));
+    }, success => {
+      if (success) {
+        deferred.resolve();
+      } else {
+        deferred.reject('Error occurred while listening for training status.');
+      }
+    });
+
+    return deferred.promise;
   }
 
   updatePrefix(prefix: string): string[] {
@@ -80,12 +105,20 @@ export class MachineService {
     return this.session.currentSuggestion;
   }
 
-  trainSegment(callback: (success: boolean) => void): void {
+  trainSegment(): angular.IPromise<void> {
     if (this.engine == null || this.session == null) {
-      return;
+      return this.$q.resolve();
     }
 
-    this.session.approve(callback);
+    const deferred = this.$q.defer<void>();
+    this.session.approve(success => {
+      if (success) {
+        deferred.resolve();
+      } else {
+        deferred.reject('Error occurred while training the segment.');
+      }
+    });
+    return deferred.promise;
   }
 
   getSuggestionTextInsertion(suggestionIndex?: number): {deleteLength: number, insertText: string} {
