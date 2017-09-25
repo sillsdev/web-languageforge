@@ -26,7 +26,6 @@ table.texts, table.questions {
   width: 100%;
 
   td {
-    padding-left: 5px;
     vertical-align: middle;
     // Bootstrap's default table padding makes text and question view way too spaced-out vertically
     padding-top: 0;
@@ -34,8 +33,6 @@ table.texts, table.questions {
   }
 
   th {
-    text-align: center;
-    // Cursor change to signal that clicking the header will change the sort direction
     cursor: pointer;
   }
 }
@@ -122,4 +119,118 @@ table label {
 .save-text {
   margin-top: 1em;
   margin-left: 15px;
+}
+
+div#textcontrol {
+  overflow: auto;
+  min-height: 400px;
+  max-height: 650px;
+}
+
+div#textcontrol p, div.scripture-quote p {
+  line-height: 1.2em;
+}
+
+div#textcontrol p.q1, div.scripture-quote p.q1 {
+  margin-bottom: 0em;
+}
+
+div#textcontrol p.q2, div.scripture-quote p.q2 {
+  margin-bottom: 0em;
+  margin-left: 1.5em;
+}
+
+
+div#comments {
+  overflow: auto;
+  min-height: 400px;
+  max-height: 650px;
+}
+
+div#comments table {
+  width: 100%;
+}
+
+div#comments table td {
+  border: 0;
+  padding: 0;
+  vertical-align: top;
+}
+
+div.scripture-quote {
+  background-color: #dddddd;
+  padding: 5px;
+  font-size: 90%;
+}
+
+div.vote {
+  text-align: center;
+  line-height: 1.0em;
+  margin-right: 16px;
+  margin-top: -8px;
+}
+
+div.vote a {
+  display: block;
+  font-size: 42px;
+  color: #999;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+div.vote a.disabled {
+  color: #eee;
+}
+
+div.vote span {
+  font-size: 24px;
+  font-weight: bold;
+  color: #999;
+}
+
+div.answer div.by {
+  background: #eee;
+  margin: 8px 0 0 0;
+  vertical-align: top;
+  width: 260px;
+}
+
+div.answer div.by img {
+  display: inline-block;
+  border: 2px solid white;
+  margin: 4px;
+  vertical-align: top;
+}
+
+div.answer div.by div {
+  display: inline-block;
+  margin: 6px 0 4px 4px;
+  vertical-align: middle;
+  line-height: 1.2em;
+  color: #666;
+}
+
+div#comments table.comments textarea {
+  width: 95%;
+}
+
+div#comments table.comments td {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+/* New Item under ribbon bar */
+div.new-item {
+  margin: 20px 0 20px 0;
+}
+
+div.new-item.collapse.in {
+  overflow: visible;
+}
+
+.unread {
+  background-color: #E1F2E1;
+  margin-top:10px;
+  padding: 5px;
+  border: #C1DBC1 2px solid;
 }
