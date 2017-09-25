@@ -56,7 +56,7 @@ export class InputSystemsService {
 
 }
 
-angular.module('language.inputSystems', [])
+export const InputSystemsModule = angular
+  .module('language.inputSystems', [])
   .service('inputSystems', InputSystemsService)
-
-  ;
+  .name;
