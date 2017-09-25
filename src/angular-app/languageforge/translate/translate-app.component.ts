@@ -3,9 +3,10 @@ import * as angular from 'angular';
 import { SessionService } from '../../bellows/core/session.service';
 import { TranslateProjectService } from './core/translate-project.service';
 import { Rights, TranslateRightsService } from './core/translate-rights.service';
+import { TranslateConfig, TranslateProject } from './shared/model/translate-project.model';
 
 export class TranslateAppController implements angular.IController {
-  project: any;
+  project: TranslateProject;
   rights: Rights;
   interfaceConfig: any;
 
@@ -27,12 +28,13 @@ export class TranslateAppController implements angular.IController {
           this.rights.canEditEntry();
       };
 
-      this.project = session.project();
+      let project: TranslateProject = session.project();
       if (readProjectResult.ok) {
-        angular.merge(this.project, readProjectResult.data.project);
+        angular.merge(project, readProjectResult.data.project);
       }
 
-      this.project.config = this.project.config || {};
+      project.config = project.config || new TranslateConfig();
+      this.project = project;
 
       // this.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
       this.interfaceConfig = {};
