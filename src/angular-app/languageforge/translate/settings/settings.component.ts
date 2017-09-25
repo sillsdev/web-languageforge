@@ -30,34 +30,34 @@ export class TranslateSettingsController implements angular.IController {
               private machineService: MachineService, private modal: ModalService) {}
 
   $onChanges(changes: any) {
-    if (changes.tscRights) {
+    if (changes.tscRights.currentValue) {
       this.rights = angular.copy(changes.tscRights.currentValue);
     }
 
-    if (changes.tscInterfaceConfig) {
+    if (changes.tscInterfaceConfig.currentValue) {
       this.interfaceConfig = angular.copy(changes.tscInterfaceConfig.currentValue);
     }
 
-    if (changes.tscProject) {
-      this.project = angular.copy(changes.tscProject.currentValue);
-      if (changes.tscProject.isFirstChange()) {
-        this.actionInProgress = false;
-        this.retrainMessage = '';
-        this.confidence = {
-          value: undefined,
-          isMyThreshold: false,
-          options: {
-            floor: 0,
-            ceil: 100,
-            step: 1,
-            showSelectionBar: true,
-            translate: (value: number) => {
-              return value + '%';
-            }
+    if (changes.tscProject.isFirstChange()) {
+      this.actionInProgress = false;
+      this.retrainMessage = '';
+      this.confidence = {
+        value: undefined,
+        isMyThreshold: false,
+        options: {
+          floor: 0,
+          ceil: 100,
+          step: 1,
+          showSelectionBar: true,
+          translate: (value: number) => {
+            return value + '%';
           }
-        };
-      }
+        }
+      };
+    }
 
+    if (changes.tscProject.currentValue) {
+      this.project = angular.copy(changes.tscProject.currentValue);
       this.machineService.initialise(this.project.slug, this.project.config.isTranslationDataScripture);
       this.listenForTrainingStatus();
       if (angular.isDefined(this.project.config.userPreferences)) {
