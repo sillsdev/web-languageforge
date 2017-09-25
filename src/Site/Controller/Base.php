@@ -37,7 +37,7 @@ class Base
         $this->data['cssFiles'] = array();
         $this->data['vendorFilesJs'] = array();
         $this->data['vendorFilesMinJs'] = array();
-        $this->data['isBootstrap4'] = false;
+        $this->data['isBootstrap4'] = true;
         $this->data['isAngular2'] = false;
     }
 
@@ -86,19 +86,12 @@ class Base
 
     // all child classes should use this method to render their pages
     protected function renderPage(Application $app, $viewName) {
-
-        if ($this->data['isBootstrap4']) {
-            // TODO: move to app_dependencies once bootstrap4 migration is complete
-            $sassDir = $this->getThemePath() . "/sass";
-            if (!file_exists($sassDir)) {
-                $sassDir = $this->getThemePath("default") . "/sass";
-            }
-            $this->addCssFiles($sassDir, array(), false);
-        } else {
-            $this->addCssFiles($this->getThemePath()."/cssBootstrap2", array(), false);
-            $this->addCssFiles("Site/views/shared/cssBootstrap2", array('bootstrap.css'), false);
-            array_unshift($this->data['cssFiles'], "Site/views/shared/cssBootstrap2/bootstrap.css");
+        // TODO: move to app_dependencies once bootstrap4 migration is complete
+        $sassDir = $this->getThemePath() . "/sass";
+        if (!file_exists($sassDir)) {
+            $sassDir = $this->getThemePath("default") . "/sass";
         }
+        $this->addCssFiles($sassDir, array(), false);
 
         // Add bellows JS for every page because top container menubar needs it for helps
         $bellowsFolder = NG_BASE_FOLDER . "bellows";
