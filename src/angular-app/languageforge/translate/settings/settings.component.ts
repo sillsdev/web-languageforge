@@ -119,11 +119,12 @@ export class TranslateSettingsController implements angular.IController {
   }
 
   retrain() {
-    const retrainMessage = 'This will retrain the translation engine using the existing data. ' +
+    const modalMessage = 'This will retrain the translation engine using the existing data. ' +
       'This can take several minutes and will operate in the background.<br /><br />' +
       'Are you sure you want to retrain the translation engine?';
-    this.modal.showModalSimple('Retrain Translation Engine?', retrainMessage, 'Cancel', 'Retrain')
-      .then(() => this.machineService.startTraining());
+    this.modal.showModalSimple('Retrain Translation Engine?', modalMessage, 'Cancel', 'Retrain')
+      .then(() => this.machineService.startTraining())
+      .catch(() => {});
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -135,9 +136,7 @@ export class TranslateSettingsController implements angular.IController {
 
   // noinspection JSUnusedGlobalSymbols
   redrawSlider() {
-    this.$interval(() => {
-      this.$scope.$broadcast('rzSliderForceRender');
-    }, 0, 1);
+    this.$interval(() => this.$scope.$broadcast('rzSliderForceRender'), 0, 1);
   }
 
   selectWhichConfidence() {
@@ -166,7 +165,9 @@ export class TranslateSettingsController implements angular.IController {
 
   private listenForTrainingStatus(): void {
     this.machineService.listenForTrainingStatus(progress => this.onTrainStatusUpdate(progress))
-      .then(() => this.onTrainSuccess()).finally(() => this.onTrainFinished());
+      .then(() => this.onTrainSuccess())
+      .catch(() => {})
+      .finally(() => this.onTrainFinished());
   }
 
   private onTrainStatusUpdate(progress: SmtTrainProgress): void {
