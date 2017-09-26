@@ -17,7 +17,7 @@ describe('the questions settings page - project manager', function () {
     projectListPage.get();
     projectListPage.clickOnProject(constants.testProjectName);
     projectPage.textLink(constants.testText1Title).click();
-    textPage.textSettingsBtn.click();
+    textPage.clickTextSettingsButton();
   });
 
   describe('edit text tab', function () {
