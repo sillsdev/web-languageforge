@@ -16,6 +16,11 @@ function SfTextPage() {
   this.addNewBtn = element(by.partialButtonText('Add New Question'));
   this.textSettingsBtn = element(by.id('text_settings_button'));
 
+  this.clickTextSettingsButton = function() {
+    element(by.id("text_settings_button")).click();
+    element(by.id("text_settings_link")).click();
+  }
+
   this.questionLink = function questionLink(title) {
     return element(by.linkText(title));
   };
@@ -68,5 +73,5 @@ function SfTextPage() {
     });
   };
 
-  this.textContent = element(by.id('text'));
+  this.textContent = element(by.id('textcontrol'));
 }
