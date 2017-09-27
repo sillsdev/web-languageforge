@@ -118,14 +118,15 @@ export class MetricService {
     this.activeEditCountdown = 0;
   }
 
-  sendMetrics(doReset: boolean = false, documentSetId: string = this.currentDocumentSetId) {
+  sendMetrics(doReset: boolean = false, documentSetId: string = this.currentDocumentSetId): angular.IPromise<any> {
     doReset = this.hasActiveEdits && doReset;
     console.log('metrics sent', this._metrics.timeEditActive, this.currentDocumentSetId, this.metricId, doReset);
-    this.projectApi.updateMetrics(this._metrics, this.currentDocumentSetId, this.metricId).then(result => {
-      if (result.ok && !doReset) {
-        this.metricId = result.data;
-      }
-    });
+    const promise = this.projectApi.updateMetrics(this._metrics, this.currentDocumentSetId, this.metricId)
+      .then(result => {
+        if (result.ok && !doReset) {
+          this.metricId = result.data;
+        }
+      });
     if (documentSetId !== this.currentDocumentSetId) {
       this.currentDocumentSetId = documentSetId;
     }
@@ -134,6 +135,8 @@ export class MetricService {
       this.reset();
       this.metricId = '';
     }
+
+    return promise;
   }
 
   setTimeouts(activeEditTimeout: number, editingTimeout: number): void {
