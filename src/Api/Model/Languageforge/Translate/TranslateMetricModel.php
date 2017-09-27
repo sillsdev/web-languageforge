@@ -18,7 +18,6 @@ class TranslateMetricModel extends MapperModel
      */
     public function __construct($projectModel, $id = '', $documentSetId = '', $userId = '')
     {
-        $this->setReadOnlyProp('isDeleted');
         $this->id = new Id();
         $this->userRef = new IdReference($userId);
         $this->documentSetIdRef = new IdReference($documentSetId);
