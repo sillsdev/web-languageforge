@@ -21,6 +21,7 @@ export abstract class DocumentEditor {
   private documentSetId: string = '';
   private readonly _created: angular.IDeferred<boolean>;
   private _quill: Quill;
+  private segmentRanges: RangeStatic[];
 
   constructor($q: angular.IQService, protected readonly machine: MachineService,
               private readonly realTime: RealTimeService) {
@@ -70,6 +71,7 @@ export abstract class DocumentEditor {
     if (this.documentSetId !== documentSetId) {
       this.documentSetId = documentSetId;
       this.realTime.createAndSubscribeRichTextDoc(collection, this.docId, this.quill);
+      this.segmentRanges = null;
     }
   }
 
@@ -79,18 +81,20 @@ export abstract class DocumentEditor {
     }
   }
 
-  update(): boolean {
-    const segmentRanges = this.getSegmentRanges();
+  update(textChange: boolean): boolean {
+    if (this.segmentRanges == null || textChange) {
+      this.segmentRanges = this.getSegmentRanges();
+    }
     const selection = this.quill.getSelection();
     if (selection == null) {
       return false;
     }
     let segmentIndex = -1;
     if (DocumentEditor.isSelectionCollapsed(selection)) {
-      segmentIndex = segmentRanges.findIndex(range => selection.index <= range.index + range.length);
+      segmentIndex = this.segmentRanges.findIndex(range => selection.index <= range.index + range.length);
     }
     if (segmentIndex === -1) {
-      segmentIndex = this.currentSegment == null ? segmentRanges.length - 1 : this.currentSegment.index;
+      segmentIndex = this.currentSegment == null ? this.segmentRanges.length - 1 : this.currentSegment.index;
     }
 
     if (this.switchCurrentSegment(segmentIndex)) {
@@ -186,8 +190,8 @@ export class TargetDocumentEditor extends DocumentEditor {
     this.trainSegment();
   }
 
-  update(): boolean {
-    const segmentChanged = super.update();
+  update(textChange: boolean): boolean {
+    const segmentChanged = super.update(textChange);
     if (!segmentChanged) {
       this.updateSuggestions();
     }
@@ -341,11 +345,11 @@ export class SourceDocumentEditor extends DocumentEditor {
       Quill.sources.SILENT);
   }
 
-  update(): boolean {
+  update(textChange: boolean): boolean {
     if (this.hasFocus) {
       this.isCurrentSegmentHighlighted = false;
     }
-    const segmentChanged = super.update();
+    const segmentChanged = super.update(textChange);
     if (!segmentChanged && this.currentSegment != null && this.currentSegment.isChanged) {
         this.translateCurrentSegment();
     }
