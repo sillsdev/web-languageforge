@@ -1,4 +1,4 @@
-import { RangeStatic, StringMap } from 'quill';
+import { RangeStatic } from 'quill';
 
 export class Segment {
   private _text: string;

@@ -58,7 +58,6 @@ export class RealTimeService {
       doc = this.docSubs[id];
       this.disconnectRichTextDoc(id, quill);
     } else {
-      collection = collection || 'collection';
       doc = this.connection.get(collection, id);
       doc.fetch(err => {
         if (err) throw err;

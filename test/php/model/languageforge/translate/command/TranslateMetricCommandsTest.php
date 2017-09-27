@@ -3,11 +3,10 @@
 use Api\Model\Languageforge\Translate\Command\TranslateMetricCommands;
 use Api\Model\Languageforge\Translate\TranslateDocumentSetModel;
 use Api\Model\Languageforge\Translate\TranslateMetricModel;
-use Api\Model\Languageforge\Translate\TranslateMetrics;
-use Api\Model\Languageforge\Translate\TranslateProjectModel;
 use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Mapper\JsonEncoder;
-use Api\Model\Shared\ProjectModel;
+use Elasticsearch\ClientBuilder;
+use GuzzleHttp\Ring\Client\MockHandler;
 use PHPUnit\Framework\TestCase;
 
 class TranslateMetricCommandsTest extends TestCase
@@ -25,13 +24,65 @@ class TranslateMetricCommandsTest extends TestCase
         self::$environ->clean();
     }
 
-    public function testTranslateDocumentCrud_CreateUpdateDeleteListOk()
+    public function testElasticSearchDoc_CRUD_CreateAndDeleteOk()
+    {
+        $valid = @fsockopen('es_401', 9200, $errno, $errstr, 30);
+        if (!$valid) {
+            $this->markTestSkipped('Test skipped, http://es_401:9200 not responding');
+        }
+
+        // Create
+        $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
+        $userId = self::$environ->createUser('User', 'Name', 'name@example.com');
+        $documentSet = new TranslateDocumentSetModel($project);
+        $documentSet->name = 'SomeDocument';
+        $documentSetId = $documentSet->write();
+        $metric = new TranslateMetricModel($project, '', $documentSetId, $userId);
+        $metric->metrics->mouseClickCount = 1;
+        $metric->write();
+
+        $response = TranslateMetricCommands::indexMetricDoc($project, $metric, true);
+
+        $this->assertNotNull($response);
+        $this->assertEquals('cat_metrics', $response['_index']);
+        $this->assertEquals($project->projectCode, $response['_type']);
+        $this->assertEquals($metric->id->asString(), $response['_id']);
+        $this->assertEquals(1, $response['_version']);
+        $this->assertEquals(1, $response['created']);
+
+        // Delete
+        $response2 = TranslateMetricCommands::deleteMetricDoc($project, $metric);
+
+        $this->assertNotNull($response2);
+        $this->assertEquals(1, $response2['found']);
+        $this->assertEquals('cat_metrics', $response2['_index']);
+        $this->assertEquals($project->projectCode, $response2['_type']);
+        $this->assertEquals($metric->id->asString(), $response2['_id']);
+        $this->assertEquals(2, $response2['_version']);
+    }
+
+    const esCreatedResponse = <<<EOD
+{
+  "_index": "cat_metrics",
+  "_type": "testcode1",
+  "_id": "59ce24b8a07ed541a8341195",
+  "_version": 1,
+  "result": "created",
+  "_shards": {
+    "total": 2,
+    "successful": 1,
+    "failed": 0
+  },
+  "created": true
+}
+EOD;
+
+    public function testTranslateDocument_CRUD_CreateUpdateDeleteListOk()
     {
         $project = self::$environ->createProject(SF_TESTPROJECT, SF_TESTPROJECTCODE);
         $projectId = $project->id->asString();
 
         $metric = new TranslateMetricModel($project);
-        $metric->metrics = new TranslateMetrics();
         $metric->metrics->mouseClickCount = 1;
 
         // List
@@ -45,7 +96,21 @@ class TranslateMetricCommandsTest extends TestCase
         $userId = self::$environ->createUser('User', 'Name', 'name@example.com');
         $metricData = JsonEncoder::encode($metric->metrics);
 
-        $metricId = TranslateMetricCommands::updateMetric($projectId, '', $metricData, $documentSetId, $userId);
+        $bodyFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR .'testTranslateDocumentCRUDBody.json';
+        file_put_contents($bodyFilePath, self::esCreatedResponse);
+        $mockHandler = new MockHandler([
+            'status' => 200,
+            'transfer_stats' => [
+                'total_time' => 100
+            ],
+            'body' => fopen($bodyFilePath, 'r')
+        ]);
+        $client = ClientBuilder::create()
+            ->setHosts(['somehost'])
+            ->setHandler($mockHandler)
+            ->build();
+
+        $metricId = TranslateMetricCommands::updateMetric($projectId, '', $metricData, $documentSetId, $userId, $client);
 
         $this->assertNotNull($metricId);
         $this->assertEquals(24, strlen($metricId));
@@ -60,7 +125,20 @@ class TranslateMetricCommandsTest extends TestCase
 
         // Update
         $result1['metrics']['mouseClickCount'] = 2;
-        $metricId2 = TranslateMetricCommands::updateMetric($projectId, $metricId, $result1['metrics']);
+        $mockHandler = new MockHandler([
+            'status' => 200,
+            'transfer_stats' => [
+                'total_time' => 100
+            ],
+            'body' => fopen($bodyFilePath, 'r')
+        ]);
+        $client = ClientBuilder::create()
+            ->setHosts(['somehost'])
+            ->setHandler($mockHandler)
+            ->build();
+
+        $metricId2 = TranslateMetricCommands::updateMetric($projectId, $metricId, $result1['metrics'], '', '', $client);
+
         $this->assertNotNull($metricId2);
         $this->assertEquals($metricId, $metricId2);
 
