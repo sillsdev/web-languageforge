@@ -21,6 +21,7 @@ class TranslateMetricModel extends MapperModel
         $this->id = new Id();
         $this->userRef = new IdReference($userId);
         $this->documentSetIdRef = new IdReference($documentSetId);
+        $this->version = '0.0.1';
         $this->metrics = new TranslateMetrics();
 
         $databaseName = $projectModel->databaseName();
@@ -35,6 +36,9 @@ class TranslateMetricModel extends MapperModel
 
     /** @var IdReference */
     public $documentSetIdRef;
+
+    /** @var string */
+    public $version;
 
     /** @var TranslateMetrics */
     public $metrics;
