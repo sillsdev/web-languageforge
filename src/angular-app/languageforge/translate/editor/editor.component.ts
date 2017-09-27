@@ -30,16 +30,16 @@ export class TranslateEditorController implements angular.IController {
 
   private currentDocType: string;
 
-  static $inject = ['$window', '$scope', '$q',
-    'machineService', 'metricService',
-    'modalService', 'silNoticeService',
-    'realTimeService', 'translateProjectApi',
-    'utilService'];
-  constructor(private $window: angular.IWindowService, private $scope: angular.IScope, private $q: angular.IQService,
-              private machine: MachineService, private metricService: MetricService,
-              private modal: ModalService, private notice: NoticeService,
-              private realTime: RealTimeService, private projectApi: TranslateProjectService,
-              private util: UtilityService) { }
+  static $inject = ['$window', '$scope',
+    '$q', 'machineService',
+    'metricService', 'modalService',
+    'silNoticeService', 'realTimeService',
+    'translateProjectApi', 'utilService'];
+  constructor(private readonly $window: angular.IWindowService, private readonly $scope: angular.IScope,
+              private readonly $q: angular.IQService, private readonly machine: MachineService,
+              private readonly metricService: MetricService, private readonly modal: ModalService,
+              private readonly notice: NoticeService, private readonly realTime: RealTimeService,
+              private readonly projectApi: TranslateProjectService, private readonly util: UtilityService) { }
 
   get saveMessage(): string {
     switch (this.saveState) {
@@ -193,7 +193,6 @@ export class TranslateEditorController implements angular.IController {
     this.source.quill.root.removeEventListener('keypress', this.metricService.onKeyPress);
     this.target.quill.root.removeEventListener('keypress', this.metricService.onKeyPress);
     this.$window.document.removeEventListener('mousedown', this.metricService.onMouseDown);
-    this.metricService.sendMetrics(true);
     this.$window.removeEventListener('resize', this.onWindowResize);
     this.$window.removeEventListener('beforeunload', this.onBeforeUnload);
     this.save();
@@ -342,6 +341,10 @@ export class TranslateEditorController implements angular.IController {
     }, () => { });
   }
 
+  gotoProjects(): void {
+    this.save().then(() => this.$window.location.href = '/app/projects');
+  }
+
   hasDocumentSets(): boolean {
     return this.selectedDocumentSetIndex != null &&
       this.documentSets != null &&
@@ -412,9 +415,12 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private save(): void {
-    this.source.save();
-    this.target.save();
+  private save(): angular.IPromise<{}> {
+    return this.$q.all([
+      this.source.save(),
+      this.target.save(),
+      this.metricService.sendMetrics(true)
+    ]);
   }
 
   private updateDropdownMenuClass(): void {
