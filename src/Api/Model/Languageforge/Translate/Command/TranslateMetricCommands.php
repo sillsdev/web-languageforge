@@ -71,14 +71,8 @@ class TranslateMetricCommands
         Client $client = null
     ): array
     {
-        $metricData = [
-            'dateCreated' => $metric->dateCreated->asFormattedString(),
-            'dateModified' => $metric->dateModified->asFormattedString(),
-            'userRef' => $metric->userRef->asString(),
-            'documentSetIdRef' => $metric->documentSetIdRef->asString(),
-            'metrics' => JsonEncoder::encode($metric->metrics),
-            'isTestData' => $isTestData
-        ];
+        $metricData = JsonEncoder::encode($metric);
+        unset($metricData['id']);
 
         return self::indexElasticSearchDoc('cat_metrics', $project->projectCode, $metricData,
             $metric->id->asString(), $isTestData, $client);
