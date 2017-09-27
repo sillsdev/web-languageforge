@@ -23,9 +23,9 @@ export abstract class DocumentEditor {
   private _quill: Quill;
   private segmentRanges: RangeStatic[];
 
-  constructor($q: angular.IQService, protected readonly machine: MachineService,
+  constructor(private readonly $q: angular.IQService, protected readonly machine: MachineService,
               private readonly realTime: RealTimeService) {
-    this._created = $q.defer();
+    this._created = this.$q.defer();
   }
 
   abstract get docType(): string;
@@ -120,7 +120,9 @@ export abstract class DocumentEditor {
     return true;
   }
 
-  save(): void { }
+  save(): angular.IPromise<void> {
+    return this.$q.resolve();
+  }
 
   protected getSaveState(): SaveState {
     return this.realTime.getSaveState(this.docId);
@@ -186,8 +188,8 @@ export class TargetDocumentEditor extends DocumentEditor {
     this._suggestions = suggestions;
   }
 
-  save(): void {
-    this.trainSegment();
+  save(): angular.IPromise<void> {
+    return this.trainSegment();
   }
 
   update(textChange: boolean): boolean {
@@ -260,7 +262,7 @@ export class TargetDocumentEditor extends DocumentEditor {
     return segment != null && segment.range.length > 0 && this.isSegmentComplete(segment) && segment.isChanged;
   }
 
-  private trainSegment(segment: Segment = this.currentSegment): void {
+  private trainSegment(segment: Segment = this.currentSegment): angular.IPromise<void> {
     if (!this.isSegmentUntrained(segment)) {
       return;
     }
@@ -269,7 +271,7 @@ export class TargetDocumentEditor extends DocumentEditor {
       this.pendingTrainCount = 0;
     }
     this.pendingTrainCount++;
-    this.machine.trainSegment()
+    return this.machine.trainSegment()
       .then(() => {
         segment.acceptChanges();
         this.$window.console.log('Segment ' + segment.index + ' of document ' + segment.documentSetId
