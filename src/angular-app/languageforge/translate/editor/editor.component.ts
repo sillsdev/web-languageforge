@@ -359,7 +359,7 @@ export class TranslateEditorController implements angular.IController {
   }
 
   onContentChanged(editor: DocumentEditor): void {
-    this.updateEditor(editor);
+    this.updateEditor(editor, true);
   }
 
   onSelectionChanged(editor: DocumentEditor): void {
@@ -372,7 +372,7 @@ export class TranslateEditorController implements angular.IController {
         this.metricService.reset();
       }
     }
-    this.updateEditor(editor);
+    this.updateEditor(editor, false);
   }
 
   onQuillCreated(quill: Quill, editor: DocumentEditor): void {
@@ -436,8 +436,8 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private updateEditor(editor: DocumentEditor): void {
-    const segmentChanged = editor.update();
+  private updateEditor(editor: DocumentEditor, textChange: boolean): void {
+    const segmentChanged = editor.update(textChange);
     switch (editor.docType) {
       case DocType.TARGET:
         if (segmentChanged) {
