@@ -73,6 +73,7 @@ class TranslateMetricCommands
     {
         $metricData = JsonEncoder::encode($metric);
         unset($metricData['id']);
+        $metricData['isTestData'] = $isTestData;
 
         return self::indexElasticSearchDoc('cat_metrics', $project->projectCode, $metricData,
             $metric->id->asString(), $isTestData, $client);
