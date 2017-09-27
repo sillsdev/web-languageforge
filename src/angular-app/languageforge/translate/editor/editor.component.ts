@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 import { SmtTrainProgress } from 'machine';
-import Quill, { StringMap } from 'quill';
+import Quill from 'quill';
 
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
@@ -109,7 +109,9 @@ export class TranslateEditorController implements angular.IController {
 
   $onChanges(changes: any) {
     const projectChange = changes.tecProject as angular.IChangesObject<TranslateProject>;
-    if (projectChange.previousValue !== projectChange.currentValue && projectChange.currentValue != null) {
+    if (projectChange != null && projectChange.previousValue !== projectChange.currentValue &&
+      projectChange.currentValue != null
+    ) {
       this.projectApi.listDocumentSetsDto(result => {
         if (result.ok) {
           angular.merge(this.tecProject, result.data.project);

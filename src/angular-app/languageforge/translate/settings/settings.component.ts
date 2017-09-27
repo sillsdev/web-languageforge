@@ -1,6 +1,5 @@
 import * as angular from 'angular';
 
-import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { Rights } from '../core/translate-rights.service';
@@ -19,19 +18,17 @@ export class TranslateSettingsController implements angular.IController {
   interfaceConfig: any;
 
   static $inject = ['$scope', '$interval',
-    'silNoticeService', 'translateProjectApi',
-    'modalService'
+    'silNoticeService', 'translateProjectApi'
   ];
   constructor(private $scope: angular.IScope, private $interval: angular.IIntervalService,
-              private notice: NoticeService, private projectApi: TranslateProjectService,
-              private modal: ModalService) {}
+              private notice: NoticeService, private projectApi: TranslateProjectService) {}
 
   $onChanges(changes: any) {
-    if (changes.tscRights.currentValue) {
+    if (changes.tscRights != null && changes.tscRights.currentValue != null) {
       this.rights = angular.copy(changes.tscRights.currentValue);
     }
 
-    if (changes.tscInterfaceConfig.currentValue) {
+    if (changes.tscInterfaceConfig != null && changes.tscInterfaceConfig.currentValue != null) {
       this.interfaceConfig = angular.copy(changes.tscInterfaceConfig.currentValue);
     }
 
@@ -52,7 +49,7 @@ export class TranslateSettingsController implements angular.IController {
       };
     }
 
-    if (changes.tscProject.currentValue) {
+    if (changes.tscProject != null && changes.tscProject.currentValue != null) {
       this.project = angular.copy(changes.tscProject.currentValue);
       if (angular.isDefined(this.project.config.userPreferences)) {
         if (angular.isDefined(this.project.config.userPreferences.hasConfidenceOverride)) {
