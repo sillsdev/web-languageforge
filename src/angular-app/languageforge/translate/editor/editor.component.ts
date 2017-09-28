@@ -63,26 +63,7 @@ export class TranslateEditorController implements angular.IController {
     this.target = new TargetDocumentEditor(this.$q, this.machine, this.realTime, this.metricService, this.$window);
     // noinspection JSUnusedLocalSymbols
     const modulesConfig: any = {
-      toolbar: {
-        container: '#toolbar',
-        handlers: {
-          clean(value: any) {
-            // clean should not remove the segment formatting
-            const quill = this.quill as Quill;
-            const format = quill.getFormat() as StringMap;
-            for (const name in format) {
-              if (name === 'segment') {
-                delete format[name];
-              } else {
-                format[name] = false;
-              }
-            }
-
-            const range = quill.getSelection();
-            quill.formatText(range.index, range.length, format, Quill.sources.USER);
-          }
-        }
-      },
+      toolbar: '#toolbar',
 
       suggestions: {
         container: '.ql-suggestions'

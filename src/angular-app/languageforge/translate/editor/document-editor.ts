@@ -343,8 +343,8 @@ export class SourceDocumentEditor extends DocumentEditor {
       return;
     }
 
-    this.quill.formatText(this.currentSegment.range.index, this.currentSegment.range.length, 'highlight', value,
-      Quill.sources.SILENT);
+    this.quill.formatText(this.currentSegment.range.index, this.currentSegment.range.length, 'highlight',
+      value ? this.docType : false, Quill.sources.SILENT);
   }
 
   update(textChange: boolean): boolean {
