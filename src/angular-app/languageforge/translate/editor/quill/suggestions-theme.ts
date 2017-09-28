@@ -8,26 +8,21 @@ export interface SuggestionsTheme extends Theme {
 }
 
 export type DropFunction = (file: File, editor: Quill, event: DragEvent | ClipboardEvent) => void;
-
 export type PasteFunction = (item: DataTransferItem, editor: Quill, event: ClipboardEvent) => void;
 
 export function registerSuggestionsTheme(): void {
   const QuillTooltip = Quill.import('ui/tooltip') as typeof Tooltip;
   const QuillModule = Quill.import('core/module') as typeof Module;
-  const Inline = Quill.import('blots/inline') as typeof Parchment.Inline;
   const QuillSnowTheme = Quill.import('themes/snow') as typeof SnowTheme;
   const QuillToolbar = Quill.import('modules/toolbar') as typeof Toolbar;
+  const QuillParchment = Quill.import('parchment') as typeof Parchment;
 
   // noinspection JSUnusedLocalSymbols
   let dropElements: HTMLElement[] = [];
 
-  class HighlightBlot extends Inline {
-    static formats(node: any): any {
-      return { };
-    }
-  }
-  HighlightBlot.blotName = 'highlight';
-  HighlightBlot.className = 'highlight';
+  const HighlightClass = new QuillParchment.Attributor.Class('highlight', 'highlight', {
+    scope: Parchment.Scope.INLINE
+  });
 
   // Add a suggest tooltip to Quill
   class SuggestionsTooltip extends QuillTooltip {
@@ -269,7 +264,8 @@ export function registerSuggestionsTheme(): void {
     }
   }
 
-  Quill.register('blots/highlight', HighlightBlot);
+  Quill.register('attributors/class/highlight', HighlightClass);
+  Quill.register('formats/highlight', HighlightClass);
   Quill.register('ui/suggest-tooltip', SuggestionsTooltip);
   Quill.register('modules/suggestions', Suggestions);
   Quill.register('themes/suggestions', SuggestionsSnowTheme);
