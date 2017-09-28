@@ -10,7 +10,7 @@
             <button class="btn btn-secondary" data-ng-show="rights.create" data-ng-click="toggleMessageUsers()">
                 <i class="fa fa-envelope"></i> Message Selected Users</button>
             <button class="btn btn-secondary" data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther"
-                    data-ng-click="removeProjectUsers()"><i class="fa fa-remove"></i> Remove Members</button>
+                    data-ng-click="removeProjectUsers()"><i class="fa fa-trash"></i> Remove Members</button>
             <input class="form-control" type="text" data-ng-model="userFilter" placeholder="Member List Filter"/>
             <a data-ng-show="userFilter != ''" title="Clear Filter" data-ng-click="userFilter = ''">
                 <i class="fa fa-remove" style="color:gray"></i></a>
@@ -93,9 +93,9 @@
 <pui-tab heading="Question Templates">
     <div data-ng-controller="ProjectSettingsQTemplateCtrl" style="overflow:hidden">
         <form class="control-bar form-inline">
-            <button class="btn btn-warning" data-ng-disabled="selected.length == 0" data-ng-click="removeTemplates()">
-                <i class="fa fa-remove"></i> Remove Templates</button>
             <button class="btn btn-primary" data-ng-click="toggleTemplateEditor()"><i class="fa fa-plus"></i> Add New Template</button>
+            <button class="btn btn-secondary" data-ng-disabled="selected.length == 0" data-ng-click="removeTemplates()">
+                <i class="fa fa-trash"></i> Remove Templates</button>
         </form>
         <div class="new-item" uib-collapse="!templateEditorVisible">
             <form class="card">

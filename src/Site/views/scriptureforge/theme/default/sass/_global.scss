@@ -356,7 +356,7 @@ $vote-width: 2em;
   }
 }
 
-.answer, .question {
+.answer {
   padding: 0.5em;
   @extend .card;
   display: block;
