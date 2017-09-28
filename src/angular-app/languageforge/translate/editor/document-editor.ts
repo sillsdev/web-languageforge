@@ -17,11 +17,11 @@ export abstract class DocumentEditor {
   inputSystem: any = {};
 
   protected currentSegment: Segment;
+  protected segmentRanges: RangeStatic[];
 
   private documentSetId: string = '';
   private readonly _created: angular.IDeferred<boolean>;
   private _quill: Quill;
-  private segmentRanges: RangeStatic[];
 
   constructor(private readonly $q: angular.IQService, protected readonly machine: MachineService,
               private readonly realTime: RealTimeService) {
@@ -128,6 +128,12 @@ export abstract class DocumentEditor {
     return this.realTime.getSaveState(this.docId);
   }
 
+  protected toggleHighlight(range: RangeStatic, value: boolean): void {
+    if (range.length > 0) {
+      this.quill.formatText(range.index, range.length, 'highlight', value ? this.docType : false, Quill.sources.SILENT);
+    }
+  }
+
   private getSegmentRange(index: number): RangeStatic {
     if (this.quill.getText().trim() === '') {
       return { index: 0, length: 0 };
@@ -197,6 +203,15 @@ export class TargetDocumentEditor extends DocumentEditor {
     if (!segmentChanged) {
       this.updateSuggestions();
     }
+
+    if (textChange) {
+      this.quill.formatText(0, this.quill.getLength(), 'highlight', false, Quill.sources.SILENT);
+      const lastSegmentRange = this.segmentRanges[this.segmentRanges.length - 1];
+      if (!this.isSegmentComplete(lastSegmentRange)) {
+        this.toggleHighlight(lastSegmentRange, true);
+      }
+    }
+
     return segmentChanged;
   }
 
@@ -259,7 +274,7 @@ export class TargetDocumentEditor extends DocumentEditor {
   }
 
   private isSegmentUntrained(segment: Segment = this.currentSegment): boolean {
-    return segment != null && segment.range.length > 0 && this.isSegmentComplete(segment) && segment.isChanged;
+    return segment != null && segment.range.length > 0 && this.isSegmentComplete(segment.range) && segment.isChanged;
   }
 
   private trainSegment(segment: Segment = this.currentSegment): angular.IPromise<void> {
@@ -310,8 +325,8 @@ export class TargetDocumentEditor extends DocumentEditor {
     return selectionEndIndex === segmentEndIndex;
   }
 
-  private isSegmentComplete(segment: Segment): boolean {
-    return segment.range.index + segment.range.length !== this.quill.getLength() - 1;
+  private isSegmentComplete(range: RangeStatic): boolean {
+    return range.index + range.length !== this.quill.getLength() - 1;
   }
 }
 
@@ -338,13 +353,9 @@ export class SourceDocumentEditor extends DocumentEditor {
     }
 
     this._isCurrentSegmentHighlighted = value;
-
-    if (this.currentSegment == null || this.currentSegment.range.length === 0) {
-      return;
+    if (this.currentSegment != null) {
+      this.toggleHighlight(this.currentSegment.range, value);
     }
-
-    this.quill.formatText(this.currentSegment.range.index, this.currentSegment.range.length, 'highlight',
-      value ? this.docType : false, Quill.sources.SILENT);
   }
 
   update(textChange: boolean): boolean {
