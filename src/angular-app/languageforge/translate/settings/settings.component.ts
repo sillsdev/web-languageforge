@@ -1,9 +1,7 @@
 import * as angular from 'angular';
-import { SmtTrainProgress } from 'machine';
 
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
-import { MachineService } from '../core/machine.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { Rights } from '../core/translate-rights.service';
 import { TranslateProject, TranslateUserPreferences } from '../shared/model/translate-project.model';
@@ -15,7 +13,6 @@ export class TranslateSettingsController implements angular.IController {
   tscOnUpdate: (params: { $event: { project: any } }) => void;
 
   actionInProgress: boolean;
-  retrainMessage: string;
   confidence: any;
   project: TranslateProject;
   rights: Rights;
@@ -23,11 +20,11 @@ export class TranslateSettingsController implements angular.IController {
 
   static $inject = ['$scope', '$interval',
     'silNoticeService', 'translateProjectApi',
-    'machineService', 'modalService'
+    'modalService'
   ];
   constructor(private $scope: angular.IScope, private $interval: angular.IIntervalService,
               private notice: NoticeService, private projectApi: TranslateProjectService,
-              private machineService: MachineService, private modal: ModalService) {}
+              private modal: ModalService) {}
 
   $onChanges(changes: any) {
     if (changes.tscRights.currentValue) {
@@ -40,7 +37,6 @@ export class TranslateSettingsController implements angular.IController {
 
     if (changes.tscProject.isFirstChange()) {
       this.actionInProgress = false;
-      this.retrainMessage = '';
       this.confidence = {
         value: undefined,
         isMyThreshold: false,
@@ -58,8 +54,6 @@ export class TranslateSettingsController implements angular.IController {
 
     if (changes.tscProject.currentValue) {
       this.project = angular.copy(changes.tscProject.currentValue);
-      this.machineService.initialise(this.project.slug, this.project.config.isTranslationDataScripture);
-      this.listenForTrainingStatus();
       if (angular.isDefined(this.project.config.userPreferences)) {
         if (angular.isDefined(this.project.config.userPreferences.hasConfidenceOverride)) {
           this.confidence.isMyThreshold =
@@ -95,7 +89,6 @@ export class TranslateSettingsController implements angular.IController {
     this.projectApi.updateProject(projectData).then(result => {
       if (result.ok) {
         this.project.id = result.data;
-        this.machineService.initialise(this.project.slug, this.project.config.isTranslationDataScripture);
         if (this.tscOnUpdate) this.tscOnUpdate({ $event: { project: this.project } });
         this.notice.push(this.notice.SUCCESS,
           this.project.projectName + ' settings updated successfully.');
@@ -116,15 +109,6 @@ export class TranslateSettingsController implements angular.IController {
         }
       });
     }
-  }
-
-  retrain() {
-    const modalMessage = 'This will retrain the translation engine using the existing data. ' +
-      'This can take several minutes and will operate in the background.<br /><br />' +
-      'Are you sure you want to retrain the translation engine?';
-    this.modal.showModalSimple('Retrain Translation Engine?', modalMessage, 'Cancel', 'Retrain')
-      .then(() => this.machineService.startTraining())
-      .catch(() => {});
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -161,28 +145,6 @@ export class TranslateSettingsController implements angular.IController {
       this.confidence.value =
         this.convertThresholdToValue(this.project.config.confidenceThreshold);
     }
-  }
-
-  private listenForTrainingStatus(): void {
-    this.machineService.listenForTrainingStatus(progress => this.onTrainStatusUpdate(progress))
-      .then(() => this.onTrainSuccess())
-      .catch(() => {})
-      .finally(() => this.onTrainFinished());
-  }
-
-  private onTrainStatusUpdate(progress: SmtTrainProgress): void {
-    if (progress.percentCompleted != null && progress.currentStepMessage != null) {
-      this.retrainMessage = progress.percentCompleted + '% ' + progress.currentStepMessage;
-    }
-  }
-
-  private onTrainSuccess(): void {
-    this.notice.push(this.notice.SUCCESS, 'Finished training the translation engine');
-  }
-
-  private onTrainFinished(): void {
-    this.retrainMessage = '';
-    setTimeout(() => this.listenForTrainingStatus(), 0);
   }
 
   private convertThresholdToValue(threshold: number): number {

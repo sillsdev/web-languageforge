@@ -2,9 +2,11 @@
     <span class="project-name-label">{{$ctrl.tecProject.projectName}}</span>
     <small class="text-muted ml-3">{{$ctrl.saveMessage}}</small>
 </label>
-<div id="toolbar" class="row">
+<div id="toolbar" class="row flex-no-grow align-items-center">
     <span class="ql-formats">
         <a class="btn btn-primary" href="#" data-ng-click="$ctrl.gotoProjects()">Save &amp; Close</a>
+        <a class="btn btn-secondary" href="#" data-ng-click="$ctrl.train()" data-ng-show="!$ctrl.isTraining">Train</a>
+        <uib-progressbar data-ng-show="$ctrl.isTraining" value="$ctrl.trainingPercent">{{$ctrl.trainingPercent}}%</uib-progressbar>
     </span>
     <span class="ql-formats">
         <select class="ql-header">

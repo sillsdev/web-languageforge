@@ -67,9 +67,7 @@
     background-color: #F1F1F1;
     border-left: 0px;
     border-right: 0px;
-    padding-left: 15px;
-    padding-right: 15px;
-    flex: 0 0 auto;
+    padding: 6px 15px;
 }
 
 #editor-area {
@@ -160,12 +158,24 @@ ng-quill-editor .ql-editor.drop-box {
 }
 
 .ql-snow.ql-toolbar .btn {
-    height: 24px;
+    width: 98px;
+    height: 28px;
+    line-height: 26px;
     font-size: 14px;
     margin-bottom: 0;
-    padding: 3px 5px;
+    padding: 0;
 }
 
 .ql-snow.ql-toolbar .btn-primary {
     color: #fff;
+}
+
+.ql-snow.ql-toolbar .btn-secondary {
+    color: #fff;
+}
+
+.ql-snow.ql-toolbar .progress {
+    display: inline-flex;
+    width: 98px;
+    height: 28px;
 }
