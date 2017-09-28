@@ -1,4 +1,5 @@
 import * as angular from 'angular';
+import { SmtTrainProgress } from 'machine';
 import Quill, { StringMap } from 'quill';
 
 import { ModalService } from '../../../bellows/core/modal/modal.service';
@@ -27,6 +28,8 @@ export class TranslateEditorController implements angular.IController {
   documentSets: any[] = [];
   metrics: Metrics;
   dropdownMenuClass: string = 'dropdown-menu-left';
+  trainingPercent: number = 0;
+  isTraining: boolean = false;
 
   private currentDocType: string;
 
@@ -169,6 +172,9 @@ export class TranslateEditorController implements angular.IController {
           });
         }
       });
+
+      this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
+      this.listenForTrainingStatus();
     }
   }
 
@@ -330,6 +336,15 @@ export class TranslateEditorController implements angular.IController {
     this.save().then(() => this.$window.location.href = '/app/projects');
   }
 
+  train() {
+    const modalMessage = 'This will train the translation engine using all existing documents. ' +
+      'This can take several minutes and will operate in the background.<br /><br />' +
+      'Are you sure you want to train the translation engine?';
+    this.modal.showModalSimple('Train Translation Engine?', modalMessage, 'Cancel', 'Train')
+      .then(() => this.machine.startTraining())
+      .catch(() => {});
+  }
+
   hasDocumentSets(): boolean {
     return this.selectedDocumentSetIndex != null &&
       this.documentSets != null &&
@@ -389,6 +404,30 @@ export class TranslateEditorController implements angular.IController {
       this.projectApi.updateUserPreferences(userPreferences);
       this.tecOnUpdate({ $event: { project: this.tecProject } });
     }
+  }
+
+  private listenForTrainingStatus(): void {
+    this.machine.listenForTrainingStatus(progress => this.onTrainStatusUpdate(progress))
+      .then(() => this.onTrainSuccess())
+      .catch(() => { })
+      .finally(() => this.onTrainFinished());
+  }
+
+  private onTrainStatusUpdate(progress: SmtTrainProgress): void {
+    this.isTraining = true;
+    if (progress.stepCount > 0) {
+      this.trainingPercent = progress.percentCompleted;
+    }
+  }
+
+  private onTrainSuccess(): void {
+    this.notice.push(this.notice.SUCCESS, 'Finished training the translation engine');
+  }
+
+  private onTrainFinished(): void {
+    this.isTraining = false;
+    this.trainingPercent = 0;
+    setTimeout(() => this.listenForTrainingStatus(), 0);
   }
 
   private onBeforeUnload = (event: BeforeUnloadEvent) => {
