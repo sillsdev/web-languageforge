@@ -75,6 +75,7 @@
                 items="questions" visible-items="visibleQuestions" select="">
                 <table class="questions table">
                     <tr>
+                        <th></th>
                         <th class="text-nowrap" data-ng-click="doSortByColumn('calculatedTitle')">Question <i data-ng-class="sortIconClass('calculatedTitle')"></i></th>
                         <th class="text-nowrap" data-ng-click="doSortByColumn('answerCount')"    >Answers <i data-ng-class="sortIconClass('answerCount')"></i></th>
                         <th class="text-nowrap" data-ng-click="doSortByColumn('responseCount')"  >Responses <i data-ng-class="sortIconClass('responseCount')"></i></th>
@@ -82,6 +83,8 @@
                     <tr data-ng-repeat="question in visibleQuestions" data-ng-class="{active: isSelected(question)}">
                         <td>
                             <input type="checkbox" data-ng-show="rights.archive" data-ng-checked="isSelected(question)" data-ng-click="updateSelection($event, question)">
+                        </td>
+                        <td>
                             <a data-ng-href="{{question.url}}"><span class="larger-text">{{question.calculatedTitle}}</span></a>
                         </td>
                         <td ng-class="{'text-muted':question.answerCount == 0}">
