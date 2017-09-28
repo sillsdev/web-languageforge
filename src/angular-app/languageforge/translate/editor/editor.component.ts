@@ -101,71 +101,75 @@ export class TranslateEditorController implements angular.IController {
     this.updateDropdownMenuClass();
 
     this.$window.addEventListener('beforeunload', this.onBeforeUnload);
+  }
 
-    this.projectApi.listDocumentSetsDto(result => {
-      if (result.ok) {
-        angular.merge(this.tecProject, result.data.project);
-        this.tecProject.config.documentSets = this.tecProject.config.documentSets ||
-          new TranslateConfigDocumentSets();
-        this.tecProject.config.userPreferences = this.tecProject.config.userPreferences ||
-          new TranslateUserPreferences();
-        this.source.inputSystem = this.tecProject.config.source.inputSystem;
-        this.target.inputSystem = this.tecProject.config.target.inputSystem;
-        this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
+  $onChanges(changes: any) {
+    const projectChange = changes.tecProject as angular.IChangesObject<TranslateProject>;
+    if (projectChange.previousValue !== projectChange.currentValue && projectChange.currentValue != null) {
+      this.projectApi.listDocumentSetsDto(result => {
+        if (result.ok) {
+          angular.merge(this.tecProject, result.data.project);
+          this.tecProject.config.documentSets = this.tecProject.config.documentSets ||
+            new TranslateConfigDocumentSets();
+          this.tecProject.config.userPreferences = this.tecProject.config.userPreferences ||
+            new TranslateUserPreferences();
+          this.source.inputSystem = this.tecProject.config.source.inputSystem;
+          this.target.inputSystem = this.tecProject.config.target.inputSystem;
+          this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
 
-        if (this.tecProject.config.documentSets.idsOrdered != null &&
-          this.tecProject.config.documentSets.idsOrdered.length > 0
-        ) {
-          for (const id of this.tecProject.config.documentSets.idsOrdered) {
-            if (result.data.documentSetList[id] != null) {
-              this.documentSets.push(result.data.documentSetList[id]);
+          if (this.tecProject.config.documentSets.idsOrdered != null &&
+            this.tecProject.config.documentSets.idsOrdered.length > 0
+          ) {
+            for (const id of this.tecProject.config.documentSets.idsOrdered) {
+              if (result.data.documentSetList[id] != null) {
+                this.documentSets.push(result.data.documentSetList[id]);
+              }
             }
+          } else {
+            this.tecProject.config.documentSets.idsOrdered = [];
+            angular.forEach(result.data.documentSetList, documentSet => {
+              if (angular.isDefined(documentSet)) {
+                this.documentSets.push(documentSet);
+                this.tecProject.config.documentSets.idsOrdered.push(documentSet.id);
+              }
+            });
           }
-        } else {
-          this.tecProject.config.documentSets.idsOrdered = [];
-          angular.forEach(result.data.documentSetList, documentSet => {
-            if (angular.isDefined(documentSet)) {
-              this.documentSets.push(documentSet);
-              this.tecProject.config.documentSets.idsOrdered.push(documentSet.id);
+
+          this.source.confidenceThreshold = this.tecProject.config.confidenceThreshold;
+          const userPreferences = this.tecProject.config.userPreferences;
+          if (userPreferences.confidenceThreshold != null &&
+            userPreferences.hasConfidenceOverride != null &&
+            userPreferences.hasConfidenceOverride
+          ) {
+            this.source.confidenceThreshold = userPreferences.confidenceThreshold;
+          }
+
+          if (userPreferences.selectedDocumentSetId != null) {
+            this.selectedDocumentSetIndex = this.getDocumentSetIndexById(userPreferences.selectedDocumentSetId);
+          }
+
+          this.$q.all([this.source.created, this.target.created]).then(() => {
+            if (userPreferences.isDocumentOrientationTargetRight != null &&
+              userPreferences.isDocumentOrientationTargetRight
+            ) {
+              this.swapEditors(false);
+            } else {
+              this.onQuillCreated(this.left.quill, this.left);
+              this.onQuillCreated(this.right.quill, this.right);
             }
+
+            this.metricService.setTimeouts(this.tecProject.config.metrics.activeEditTimeout,
+              this.tecProject.config.metrics.editingTimeout);
+            this.metrics = this.metricService.metrics;
+            this.source.quill.root.addEventListener('keydown', this.metricService.onKeyDown);
+            this.target.quill.root.addEventListener('keydown', this.metricService.onKeyDown);
+            this.source.quill.root.addEventListener('keypress', this.metricService.onKeyPress);
+            this.target.quill.root.addEventListener('keypress', this.metricService.onKeyPress);
+            this.$window.document.addEventListener('mousedown', this.metricService.onMouseDown);
           });
         }
-
-        this.source.confidenceThreshold = this.tecProject.config.confidenceThreshold;
-        const userPreferences = this.tecProject.config.userPreferences;
-        if (userPreferences.confidenceThreshold != null &&
-          userPreferences.hasConfidenceOverride != null &&
-          userPreferences.hasConfidenceOverride
-        ) {
-          this.source.confidenceThreshold = userPreferences.confidenceThreshold;
-        }
-
-        if (userPreferences.selectedDocumentSetId != null) {
-          this.selectedDocumentSetIndex = this.getDocumentSetIndexById(userPreferences.selectedDocumentSetId);
-        }
-
-        this.$q.all([this.source.created, this.target.created]).then(() => {
-          if (userPreferences.isDocumentOrientationTargetRight != null &&
-            userPreferences.isDocumentOrientationTargetRight
-          ) {
-            this.swapEditors(false);
-          } else {
-            this.onQuillCreated(this.left.quill, this.left);
-            this.onQuillCreated(this.right.quill, this.right);
-          }
-
-          this.metricService.setTimeouts(this.tecProject.config.metrics.activeEditTimeout,
-            this.tecProject.config.metrics.editingTimeout);
-          this.metrics = this.metricService.metrics;
-          this.source.quill.root.addEventListener('keydown', this.metricService.onKeyDown);
-          this.target.quill.root.addEventListener('keydown', this.metricService.onKeyDown);
-          this.source.quill.root.addEventListener('keypress', this.metricService.onKeyPress);
-          this.target.quill.root.addEventListener('keypress', this.metricService.onKeyPress);
-          this.$window.document.addEventListener('mousedown', this.metricService.onMouseDown);
-        });
-      }
-    });
-
+      });
+    }
   }
 
   $onDestroy(): void {
