@@ -6,7 +6,7 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services',
     'lexProjectService', '$filter', '$location', 'sessionService',
   function ($scope, Upload, $modal, notice, lexProjectService, $filter,
             $location, sessionService) {
-    lexProjectService.setBreadcrumbs('importExport', 'Import/export');
+    lexProjectService.setBreadcrumbs('importExport', 'LIFT Import');
 
     $scope.upload = {};
     $scope.upload.mergeRule = 'createDuplicates';
