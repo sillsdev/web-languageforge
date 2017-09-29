@@ -82,7 +82,8 @@ angular.module('sfchecks.services', ['bellows.services'])
           return (direction === 'up') ? +1 : -1;
         } else {
           if (typeof a === 'string' && typeof b === 'string') {
-            return a.toLowerCase().localeCompare(b.toLowerCase());
+            var sign = (direction === 'up') ? +1 : -1;
+            return a.toLowerCase().localeCompare(b.toLowerCase()) * sign;
           } else {
             // number type
             if (a === b) {
