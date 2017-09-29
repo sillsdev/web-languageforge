@@ -17,6 +17,12 @@ declare module 'quill' {
   export interface Quill {
     theme: Theme;
     container: any;
+    scrollingContainer: Element;
+    selection: Selection;
+  }
+
+  export interface Selection {
+    getBounds(index: number, length?: number): ClientRect;
   }
 
   export class Theme {
