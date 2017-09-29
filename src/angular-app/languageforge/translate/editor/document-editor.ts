@@ -124,6 +124,19 @@ export abstract class DocumentEditor {
     return this.$q.resolve();
   }
 
+  syncScroll(otherEditor: DocumentEditor): void {
+    if (!otherEditor.hasFocus) {
+      return;
+    }
+
+    const otherRange = otherEditor.currentSegment.range;
+    const otherBounds = otherEditor.quill.selection.getBounds(otherRange.index);
+
+    const thisRange = this.currentSegment.range;
+    const thisBounds = this.quill.selection.getBounds(thisRange.index);
+    this.quill.scrollingContainer.scrollTop += thisBounds.top - otherBounds.top;
+  }
+
   protected getSaveState(): SaveState {
     return this.realTime.getSaveState(this.docId);
   }
