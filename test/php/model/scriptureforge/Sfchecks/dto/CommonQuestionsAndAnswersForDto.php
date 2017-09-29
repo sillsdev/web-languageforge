@@ -5,6 +5,8 @@ use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksProjectModel;
 use Api\Model\Scriptureforge\Sfchecks\TextModel;
 use Api\Model\Shared\CommentModel;
+use Api\Model\Shared\Rights\ProjectRoles;
+use Api\Model\Shared\UserModel;
 
 class CommonQuestionsAndAnswersForDto
 {
