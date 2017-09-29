@@ -135,6 +135,7 @@ export class RealTimeService {
 
       delete this.pendingOpCount[id];
     }
+    quill.setText('');
   }
 
   private getWebSocketDocUrl() {
