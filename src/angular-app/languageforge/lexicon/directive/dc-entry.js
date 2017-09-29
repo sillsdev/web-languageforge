@@ -1,5 +1,5 @@
 angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.sense',
-  'ngAnimate', 'lexicon.services', 'bellows.services'])
+  'lexicon.services', 'bellows.services'])
 
   // Palaso UI Dictionary Control: Entry
   .directive('dcEntry', ['lexUtils', 'modalService', function (utils, modal) {
@@ -11,16 +11,22 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
         model: '=',
         control: '='
       },
-      controller: ['$scope', '$state', function ($scope, $state) {
+      controller: ['$scope', '$state', 'lexRightsService',
+      function ($scope, $state, rightsService) {
         $scope.$state = $state;
-        $scope.addSense = function () {
+
+        rightsService.getRights().then(function (rights) {
+          $scope.rights = rights;
+        });
+
+        $scope.addSense = function ($position) {
           var newSense = {};
           $scope.control.makeValidModelRecursive($scope.config.fields.senses, newSense, 'examples');
-          $scope.model.senses.push(newSense);
-
-          // Scroll to the newly added sense to provide UI feedback
-          var elem = document.getElementsByClassName('entryItemView')[0];
-          $(elem).animate({ scrollTop:elem.scrollHeight }, 1500);
+          if ($position === 0) {
+            $scope.model.senses.unshift(newSense);
+          } else {
+            $scope.model.senses.push(newSense);
+          }
         };
 
         $scope.deleteSense = function (index) {
@@ -29,7 +35,12 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
           modal.showModalSimple('Delete Meaning', deletemsg, 'Cancel', 'Delete Meaning')
             .then(function () {
               $scope.model.senses.splice(index, 1);
-            });
+              $scope.control.saveCurrentEntry();
+            }, angular.noop);
+        };
+
+        $scope.deleteEntry = function () {
+          $scope.control.deleteEntry($scope.control.currentEntry);
         };
 
       }],
@@ -39,4 +50,4 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
     };
   }])
 
-;
+  ;

@@ -5,6 +5,8 @@ describe('Editor Comments', function () {
   var loginPage    = require('../../../../bellows/pages/loginPage.js');
   var projectsPage = require('../../../../bellows/pages/projectsPage.js');
   var editorPage   = require('../../pages/editorPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   it('setup: login, click on test project', function () {
     loginPage.loginAsManager();
@@ -13,6 +15,7 @@ describe('Editor Comments', function () {
   });
 
   it('browse page has correct word count', function () {
+    // flaky assertion, also test/app/languageforge/lexicon/editor/e2e/editor-entry.spec.js:20
     expect(editorPage.browse.entriesList.count()).toEqual(editorPage.browse.getEntryCount());
     expect(editorPage.browse.getEntryCount()).toBe(3);
   });
@@ -34,10 +37,10 @@ describe('Editor Comments', function () {
     // Earlier tests modify the avatar and name of the manager user; don't check those
     //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
     //expect(comment.author.getText()).toEqual(constants.managerName);
-    expect(comment.date.getText()).toContain('ago');
     expect(comment.score.getText()).toEqual('0');
     expect(comment.plusOne.isPresent()).toBe(true);
     expect(comment.content.getText()).toEqual('First comment on this word.');
+    expect(comment.date.getText()).toMatch(/ago|in a few seconds/);
 
     // This comment should have no "regarding" section
     expect(comment.regarding.fieldLabel.isDisplayed()).toBe(false);
@@ -58,19 +61,17 @@ describe('Editor Comments', function () {
     //expect(comment.avatar.getAttribute('src')).toContain(constants.avatar);
     //expect(comment.author.getText()).toEqual(constants.managerName);
 
-    // wait to ensure date is in the past (server time slightly out from browser can make it future)
-    browser.sleep(200);
     expect(comment.score.getText()).toEqual('0');
     expect(comment.plusOne.isPresent()).toBe(true);
     expect(comment.content.getText()).toEqual('Second comment.');
-    expect(comment.date.getText()).toContain('ago');
+    expect(comment.date.getText()).toMatch(/ago|in a few seconds/);
 
     // This comment should have a "regarding" section
     expect(comment.regarding.fieldLabel.isDisplayed()).toBe(true);
     var word    = constants.testEntry1.lexeme.th.value;
-    var meaning = constants.testEntry1.senses[0].definition.en.value;
+    var definition = constants.testEntry1.senses[0].definition.en.value;
     expect(comment.regarding.word.getText()).toEqual(word);
-    expect(comment.regarding.meaning.getText()).toEqual(meaning);
+    expect(comment.regarding.definition.getText()).toEqual(definition);
     expect(comment.regarding.fieldLabel.getText()).toEqual('Word');
     expect(comment.regarding.fieldWsid .getText()).toEqual('th');
     expect(comment.regarding.fieldValue.getText()).toEqual(word);
@@ -93,6 +94,7 @@ describe('Editor Comments', function () {
   it('comments page: refresh returns to comment', function () {
     var comment = editorPage.comment.getComment(0);
     browser.refresh();
+    browser.wait(expectedCondition.visibilityOf(comment.content), CONDITION_TIMEOUT);
     expect(comment.content.getText()).toEqual('First comment on this word.');
   });
 

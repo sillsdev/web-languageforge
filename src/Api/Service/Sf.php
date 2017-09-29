@@ -18,67 +18,43 @@ use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexDbeDto;
 use Api\Model\Languageforge\Lexicon\Dto\LexProjectDto;
+use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransItemCommands;
+use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
+use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
 use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransAppManagementDto;
-use Api\Model\Scriptureforge\Dto\ProjectPageDto;
-use Api\Model\Scriptureforge\Dto\QuestionCommentDto;
-use Api\Model\Scriptureforge\Dto\QuestionListDto;
-use Api\Model\Scriptureforge\Dto\TextSettingsDto;
+use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksProjectCommands;
 use Api\Model\Scriptureforge\Sfchecks\Command\SfchecksUploadCommands;
-use Api\Model\Scriptureforge\Dto\ProjectSettingsDto;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionTemplateCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\TextCommands;
+use Api\Model\Scriptureforge\Sfchecks\Dto\ProjectPageDto;
+use Api\Model\Scriptureforge\Sfchecks\Dto\ProjectSettingsDto;
+use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionCommentDto;
+use Api\Model\Scriptureforge\Sfchecks\Dto\QuestionListDto;
+use Api\Model\Scriptureforge\Sfchecks\Dto\TextSettingsDto;
+use Api\Model\Shared\Command\MessageCommands;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Command\SessionCommands;
+use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\Communicate\EmailSettings;
+use Api\Model\Shared\Communicate\SmsSettings;
 use Api\Model\Shared\Dto\ActivityListDto;
-use Api\Model\Shared\Dto\CreateSimpleDto;
 use Api\Model\Shared\Dto\ProjectListDto;
 use Api\Model\Shared\Dto\ProjectManagementDto;
 use Api\Model\Shared\Dto\RightsHelper;
 use Api\Model\Shared\Dto\UserProfileDto;
-use Api\Model\Command\MessageCommands;
-use Api\Model\Command\ProjectCommands;
-use Api\Model\Command\SessionCommands;
-use Api\Model\Command\QuestionCommands;
-use Api\Model\Command\QuestionTemplateCommands;
-use Api\Model\Command\TextCommands;
-use Api\Model\Command\UserCommands;
-use Api\Model\Mapper\JsonEncoder;
-use Api\Model\ProjectModel;
-use Api\Model\UserModel;
-use Api\Model\Languageforge\Semdomtrans\Dto\SemDomTransEditDto;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransProjectCommands;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransItemCommands;
-use Api\Model\Languageforge\Semdomtrans\Command\SemDomTransWorkingSetCommands;
+use Api\Model\Shared\Mapper\JsonEncoder;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\UserListModel;
+use Api\Model\Shared\UserModel;
 use Silex\Application;
 use Site\Controller\Auth;
 
 require_once APPPATH . 'vendor/autoload.php';
-require_once APPPATH . 'Api/Model/ProjectModel.php';
-require_once APPPATH . 'Api/Model/QuestionModel.php';
-require_once APPPATH . 'Api/Model/TextModel.php';
-require_once APPPATH . 'Api/Model/UserModel.php';
 
 class Sf
 {
-    /**
-     *
-     * @var string
-     */
-    private $userId;
-
-    /**
-     *
-     * @var string
-     */
-    private $projectId;
-
-    /**
-     * @var Application
-     */
-    private $app;
-
-    /**
-     * @var Website
-     */
-    private $website;
-
     public function __construct(Application $app)
     {
         $this->app = $app;
@@ -92,6 +68,18 @@ class Sf
         // TODO put in the LanguageForge style error handler for logging / jsonrpc return formatting etc. CP 2013-07
         ini_set('display_errors', 0);
     }
+
+    /** @var Application */
+    private $app;
+
+    /** @var Website */
+    private $website;
+
+    /** @var string */
+    private $userId;
+
+    /** @var string */
+    private $projectId;
 
     // ---------------------------------------------------------------
     // IMPORTANT NOTE TO THE DEVELOPERS
@@ -125,11 +113,22 @@ class Sf
     /**
      * Read the user profile from $id
      *
-     * @return UserProfileDto
+     * @return array
      */
     public function user_readProfile()
     {
         return UserProfileDto::encode($this->userId, $this->website);
+    }
+
+    /**
+     * Ban a User from the given $id
+     *
+     * @params string $id
+     * @return string Id of banned user
+     */
+    public function user_ban($id)
+    {
+        return UserCommands::banUser($id);
     }
 
     /**
@@ -144,14 +143,21 @@ class Sf
     }
 
     /**
-     * Create/Update a User Profile
+     * Update a User Profile
+     * Changing username will notify client to signout
      *
-     * @param array $params (encoded UserProfileModel)
-     * @return string Id of written object
+     * @param array $params (encoded UserModel)
+     * @return  bool|string False if update failed; $userId on update; 'login' on
+     *  username change to notify client to signout
      */
     public function user_updateProfile($params)
     {
-        return UserCommands::updateUserProfile($params, $this->userId);
+        $result = UserCommands::updateUserProfile($params, $this->userId, $this->website);
+        if ($result == 'login') {
+            // Username changed
+            $this->app['session']->getFlashBag()->add('infoMessage', 'Username changed. Please login.');
+        }
+        return $result;
     }
 
     /**
@@ -166,19 +172,17 @@ class Sf
     }
 
     /**
-     *
-     * @param string $userName
-     * @return CreateSimpleDto
+     * @param string $username
+     * @return array CreateSimpleDto
      */
-    public function user_createSimple($userName)
+    public function user_createSimple($username)
     {
-        return UserCommands::createSimple($userName, $this->projectId, $this->userId, $this->website);
+        return UserCommands::createSimple($username, $this->projectId, $this->userId, $this->website);
     }
 
     // TODO Pretty sure this is going to want some paging params
     /**
-     *
-     * @return \Api\Model\UserListModel
+     * @return UserListModel
      */
     public function user_list()
     {
@@ -206,13 +210,6 @@ class Sf
         return Auth::resetPassword($this->app, $resetPasswordKey, $newPassword);
     }
 
-    public function identity_check($username, $email)
-    {
-        // intentionally we have no security here: people can see what users exist by trial and error
-        $identityCheck = UserCommands::checkIdentity($username, $email, $this->website);
-        return JsonEncoder::encode($identityCheck);
-    }
-
     public function check_unique_identity($userId, $updatedUsername, $updatedEmail)
     {
         if ($userId) {
@@ -220,13 +217,7 @@ class Sf
         } else {
             $user = new UserModel();
         }
-        $identityCheck = UserCommands::checkUniqueIdentity($user, $updatedUsername, $updatedEmail);
-        return JsonEncoder::encode($identityCheck);
-    }
-
-    public function user_activate($username, $password, $email)
-    {
-        return UserCommands::activate($username, $password, $email, $this->website, $this->app);
+        return UserCommands::checkUniqueIdentity($user, $updatedUsername, $updatedEmail);
     }
 
     /**
@@ -237,7 +228,11 @@ class Sf
      */
     public function user_register($params)
     {
-        return UserCommands::register($params, $this->app['session']->get('captcha_info'), $this->website);
+        $result = UserCommands::register($params, $this->website, $this->app['session']->get('captcha_info'));
+        if ($result == 'login') {
+            Auth::login($this->app, UserCommands::sanitizeInput($params['email']), $params['password']);
+        }
+        return $result;
     }
 
     public function user_create($params)
@@ -249,21 +244,11 @@ class Sf
         return UserCommands::getCaptchaData($this->app['session']);
     }
 
-    public function user_readForRegistration($validationKey)
-    {
-        return UserCommands::readForRegistration($validationKey);
-    }
-
-    public function user_updateFromRegistration($validationKey, $params)
-    {
-        return UserCommands::updateFromRegistration($validationKey, $params, $this->website);
-    }
-
     public function user_sendInvite($toEmail)
     {
         return UserCommands::sendInvite($this->projectId, $this->userId, $this->website, $toEmail);
     }
-    
+
     // ---------------------------------------------------------------
     // GENERAL PROJECT API
     // ---------------------------------------------------------------
@@ -272,10 +257,9 @@ class Sf
     {
         return UserCommands::sendJoinRequest($projectID, $this->userId, $this->website);
     }
-    
-    
+
+
     /**
-     *
      * @param string $projectName
      * @param string $projectCode
      * @param string $appName
@@ -364,12 +348,12 @@ class Sf
     {
         return ProjectCommands::updateUserRole($projectId, $this->userId, $role);
     }
-    
+
     public function project_usersDto()
     {
         return ProjectCommands::usersDto($this->projectId);
     }
-    
+
     public function project_getJoinRequests()
     {
         return ProjectCommands::getJoinRequests($this->projectId);
@@ -384,7 +368,7 @@ class Sf
     public function project_delete($projectIds)
     {
         if (empty($projectIds)) {
-            $projectIds = array($this->projectId);
+            $projectIds = [$this->projectId];
         }
         $this->app['session']->set('projectId', "");
         return ProjectCommands::deleteProjects($projectIds, $this->userId);
@@ -433,14 +417,14 @@ class Sf
     {
         return ProjectCommands::updateUserRole($this->projectId, $userId, $role);
     }
-    
-    public function project_acceptJoinRequest($userId, $role) 
+
+    public function project_acceptJoinRequest($userId, $role)
     {
          UserCommands::acceptJoinRequest($this->projectId, $userId, $this->website, $role);
          ProjectCommands::removeJoinRequest($this->projectId, $userId);
     }
-    
-    public function project_denyJoinRequest($userId) 
+
+    public function project_denyJoinRequest($userId)
     {
         ProjectCommands::removeJoinRequest($this->projectId, $userId);
     }
@@ -469,8 +453,8 @@ class Sf
 
     /**
      * Updates the ProjectSettingsModel which are settings accessible only to site administrators
-     * @param array<Api\Model\Sms\SmsSettings> $smsSettingsArray
-     * @param array<Api\Model\EmailSettings> $emailSettingsArray
+     * @param SmsSettings[] $smsSettingsArray
+     * @param EmailSettings[] $emailSettingsArray
      * @return string $result id to the projectSettingsModel
      */
     public function project_updateSettings($smsSettingsArray, $emailSettingsArray)
@@ -694,11 +678,11 @@ class Sf
 
     public function lex_configuration_update($config, $optionlists)
     {
-        LexProjectCommands::updateConfig($this->projectId, $config);
+        if (!LexProjectCommands::updateConfig($this->projectId, $config)) return false;
         foreach ($optionlists as $optionlist) {
             LexOptionListCommands::updateList($this->projectId, $optionlist);
         }
-        return;
+        return true;
     }
 
     public function lex_project_removeMediaFile($mediaType, $fileName)
@@ -756,15 +740,21 @@ class Sf
         return LexOptionListCommands::updateList($this->projectId, $params);
     }
 
-    public function lex_upload_importProjectZip($mediaType, $tmpFilePath)
+    public function lex_uploadAudioFile($mediaType, $tmpFilePath)
     {
-        $response = LexUploadCommands::importProjectZip($this->projectId, $mediaType, $tmpFilePath);
+        $response = LexUploadCommands::uploadAudioFile($this->projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
     public function lex_uploadImageFile($mediaType, $tmpFilePath)
     {
         $response = LexUploadCommands::uploadImageFile($this->projectId, $mediaType, $tmpFilePath);
+        return JsonEncoder::encode($response);
+    }
+
+    public function lex_upload_importProjectZip($mediaType, $tmpFilePath)
+    {
+        $response = LexUploadCommands::importProjectZip($this->projectId, $mediaType, $tmpFilePath);
         return JsonEncoder::encode($response);
     }
 
@@ -825,51 +815,49 @@ class Sf
 
     /*
      * --------------------------------------------------------------- SEMANTIC DOMAIN TRANSLATION MANAGER API ---------------------------------------------------------------
-     */    
+     */
     public function semdom_editor_dto($browserId, $lastFetchTime = null)
     {
         $sessionLabel = 'lexDbeFetch_' . $browserId;
         $this->app['session']->set($sessionLabel, time());
         if ($lastFetchTime) {
             $lastFetchTime = $lastFetchTime - 5; // 5 second buffer
-    
+
             return SemDomTransEditDto::encode($this->projectId, $this->userId, $lastFetchTime);
         } else {
             return SemDomTransEditDto::encode($this->projectId, $this->userId);
         }
     }
-    
-    
-    
+
     public function semdom_get_open_projects() {
         return SemDomTransProjectCommands::getOpenSemdomProjects($this->userId);
     }
-    
+
     public function semdom_item_update($data) {
         return SemDomTransItemCommands::update($data, $this->projectId);
     }
-    
+
     public function semdom_project_exists($languageIsoCode) {
         return SemDomTransProjectCommands::checkProjectExists($languageIsoCode);
     }
-    
+
     public function semdom_workingset_update($data) {
         return SemDomTransWorkingSetCommands::update($data, $this->projectId);
     }
-    
+
     public function semdom_export_project() {
         return $this->website->domain . "/" . SemDomTransProjectCommands::exportProject($this->projectId);
     }
-    
+
     // 2015-04 CJH REVIEW: this method should be moved to the semdom project commands (and a test should be written around it).  This method should also assert that a project with that code does not already exist
-    public function semdom_create_project($languageIsoCode, $languageName, $useGoogleTranslateData) {        
+    public function semdom_create_project($languageIsoCode, $languageName, $useGoogleTranslateData) {
         return SemDomTransProjectCommands::createProject($languageIsoCode, $languageName, $useGoogleTranslateData, $this->userId, $this->website);
     }
-    
+
     public function semdom_does_googletranslatedata_exist($languageIsoCode) {
         return SemDomTransProjectCommands::doesGoogleTranslateDataExist($languageIsoCode);
-    }    
-    
+    }
+
     // -------------------------------- Project Management App Api ----------------------------------
     public function project_management_dto() {
         return ProjectManagementDto::encode($this->projectId);
@@ -887,8 +875,6 @@ class Sf
         return SfchecksReports::ResponsesOverTimeReport($this->projectId);
     }
 
-
-
     // -------------------------------- Semdomtrans App Management Api ----------------------------------
     public function semdomtrans_app_management_dto() {
         return SemDomTransAppManagementDto::encode();
@@ -896,7 +882,7 @@ class Sf
 
     public function semdomtrans_export_all_projects() {
         // TODO: implement this
-        return array('exportUrl' => '/sampledownload.zip');
+        return ['exportUrl' => '/sampledownload.zip'];
     }
 
     // ---------------------------------------------------------------
@@ -904,22 +890,19 @@ class Sf
     // ---------------------------------------------------------------
     private static function isAnonymousMethod($methodName)
     {
-        $methods = array(
-            'identity_check',
+        $methods = [
             'get_captcha_data',
             'reset_password',
             'sendReceive_getUserProjects',
             'sendReceive_notification_receiveRequest',
             'sendReceive_notification_sendRequest',
-            'user_activate',
-            'user_readForRegistration',
             'user_register',
-            'user_updateFromRegistration'
-        );
+            'session_getSessionData'
+        ];
         return in_array($methodName, $methods);
     }
 
-    public function checkPermissions($methodName, $params)
+    public function checkPermissions($methodName)
     {
         if (! self::isAnonymousMethod($methodName)) {
             if (! $this->userId) {
@@ -931,7 +914,7 @@ class Sf
                 $projectModel = null;
             }
             $rightsHelper = new RightsHelper($this->userId, $projectModel, $this->website);
-            if (! $rightsHelper->userCanAccessMethod($methodName, $params)) {
+            if (! $rightsHelper->userCanAccessMethod($methodName)) {
                 throw new UserUnauthorizedException("Insufficient privileges accessing API method '$methodName'");
             }
         }

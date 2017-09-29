@@ -2,13 +2,27 @@
 
 namespace Api\Model\Languageforge\Semdomtrans;
 
-use Api\Model\Mapper\MapperListModel;
-use Api\Model\Mapper\MongoMapper;
-use Api\Model\ProjectModel;
-use MongoDB\BSON\UTCDatetime;
+use Api\Model\Shared\Mapper\MapperListModel;
+use Api\Model\Shared\Mapper\MongoMapper;
+use Api\Model\Shared\ProjectModel;
+use MongoDB\BSON\UTCDateTime;
 
 class SemDomTransItemListModel extends MapperListModel
 {
+    /**
+     * @param ProjectModel $projectModel
+     * @param int $newerThanTimestamp
+     */
+    public function __construct($projectModel, $newerThanTimestamp = null)
+    {
+        if (!is_null($newerThanTimestamp)) {
+            $startDate = new UTCDateTime(1000*$newerThanTimestamp);
+            parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array(), array('key' => 1));
+        } else {
+            parent::__construct( self::mapper($projectModel->databaseName()), array(), array(), array('key' => 1));
+        }
+    }
+
     public static function mapper($databaseName)
     {
         /** @var MongoMapper $instance */
@@ -18,19 +32,5 @@ class SemDomTransItemListModel extends MapperListModel
         }
 
         return $instance;
-    }
-
-    /**
-     * @param ProjectModel $projectModel
-     * @param int $newerThanTimestamp
-     */
-    public function __construct($projectModel, $newerThanTimestamp = null)
-    {
-        if (!is_null($newerThanTimestamp)) {
-            $startDate = new UTCDatetime(1000*$newerThanTimestamp);
-            parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array(), array('key' => 1));
-        } else {
-            parent::__construct( self::mapper($projectModel->databaseName()), array(), array(), array('key' => 1));
-        }
     }
 }

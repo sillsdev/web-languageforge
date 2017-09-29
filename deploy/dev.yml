@@ -1,0 +1,29 @@
+---
+
+- name: "Install Dev Tools"
+  hosts: all
+  become: no
+  gather_facts: no
+  tasks:
+  - name: "Dev: Install packages"
+    apt: name="{{item}}" state=present
+    become: yes
+    with_items:
+      - chromium-browser
+
+  - name: "Dev VSCode: Check if already installed"
+    command: dpkg-query -W code
+    register: dev_vscode
+    failed_when: dev_vscode.rc > 1
+    changed_when: dev_vscode.rc == 1
+
+  - name: "Dev VSCode: Download"
+    get_url:
+      url: http://downloads.sil.org/vagrant/packages/code_1.7.2-1479766213_amd64.deb
+      dest: /home/vagrant/
+    when: dev_vscode.rc == 1
+
+  - name: "Dev VSCode: Install"
+    apt: deb="/home/vagrant/code_1.7.2-1479766213_amd64.deb"
+    become: yes
+    when: dev_vscode.rc == 1

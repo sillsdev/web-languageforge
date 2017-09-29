@@ -6,7 +6,7 @@ angular.module('palaso.ui.mockUpload', [])
   .directive('puiMockUpload', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/pui-mock-upload.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/pui-mock-upload.html',
       scope: {
         puiDoUpload: '&'
       },

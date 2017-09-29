@@ -4,16 +4,9 @@ namespace Api\Model\Shared\Command;
 
 class ErrorResult
 {
-
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $errorType;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $errorMessage;
 }

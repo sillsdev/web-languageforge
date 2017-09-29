@@ -3,7 +3,7 @@
 namespace Api\Model\Shared\Rights;
 
 use Api\Library\Shared\Website;
-use Api\Model\Mapper\MapOf;
+use Api\Model\Shared\Mapper\MapOf;
 
 class SiteRoles extends RolesBase
 {

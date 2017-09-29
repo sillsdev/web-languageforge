@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.soundmanager',
-  'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte', 'palaso.ui.selection',
-  'palaso.ui.tagging', 'palaso.ui.notice'])
+angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule', 'bellows.services',
+  'sgw.soundmanager', 'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte',
+  'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice'])
   .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService',
-    'utilService', 'breadcrumbService', 'silNoticeService', 'sfchecksLinkService', 'modalService',
+    'utilService', 'breadcrumbService', 'silNoticeService', 'linkService', 'modalService',
   function ($scope, $routeParams, questionService, ss,
             util, breadcrumbService, notice, linkService, modalService) {
     var Q_TITLE_LIMIT = 30;
@@ -13,7 +13,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     $scope.state = 'stop';
     $scope.audioReady = false;
     soundManager.setup({
-      url: 'vendor_bower/SoundManager2/swf/',
+      url: 'node_modules/soundmanager2/swf/',
       flashVersion: 9, // optional: shiny features (default = 8)
       // optional: ignore Flash where possible, use 100% HTML5 mode
       // preferFlash : false,
@@ -24,9 +24,9 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
 
     $scope.audioIcon = function () {
       var map = {
-        stop: 'icon-volume-up',
-        play: 'icon-pause',
-        pause: 'icon-play'
+        stop: 'fa fa-volume-up',
+        play: 'fa fa-pause',
+        pause: 'fa fa-play'
       };
       return map[$scope.state];
     };
@@ -54,7 +54,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
       if (result.ok) {
         $scope.project = result.data.project;
         $scope.text = result.data.text;
-        if ($scope.text.audioFileName != '') {
+        if ($scope.text.audioFileName !== '') {
           $scope.audioPlayUrl = '/assets/sfchecks/' + $scope.project.slug + '/' + $scope.text.id +
             '_' + $scope.text.audioFileName;
           $scope.audioDownloadUrl = '/download' + $scope.audioPlayUrl;
@@ -90,47 +90,51 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
       }
     });
 
-    // Rights: Answers
-    $scope.rightsEditResponse = function (userId) {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT) ||
-        ((userId == ss.currentUserId()) &&
-        ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
-    };
+    ss.getSession().then(function (session) {
 
-    $scope.rightsDeleteResponse = function (userId) {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE) ||
-        ((userId == ss.currentUserId()) &&
-        ss.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
-    };
+      // Rights: Answers
+      $scope.rightsEditResponse = function (userId) {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT) ||
+          ((userId === session.userId()) &&
+          session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.EDIT_OWN));
+      };
 
-    // Rights: Question
-    $scope.rightsCloseQuestion = function () {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
-    };
+      $scope.rightsDeleteResponse = function (userId) {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE) ||
+          ((userId === session.userId()) &&
+          session.hasRight($scope.rights, ss.domain.ANSWERS, ss.operation.DELETE_OWN));
+      };
 
-    $scope.rightsEditQuestion = function () {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
-    };
+      // Rights: Question
+      $scope.rightsCloseQuestion = function () {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
+      };
 
-    // Rights: Tags
-    $scope.rightsCreateTag = function () {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.CREATE);
-    };
+      $scope.rightsEditQuestion = function () {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.QUESTIONS, ss.operation.EDIT);
+      };
 
-    $scope.rightsDeleteTag = function () {
-      if (ss.session.project.isArchived) return false;
-      return ss.hasRight($scope.rights, ss.domain.TAGS, ss.operation.DELETE);
-    };
+      // Rights: Tags
+      $scope.rightsCreateTag = function () {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.TAGS, ss.operation.CREATE);
+      };
 
-    // Rights: Export
-    $scope.rightsExport = function () {
-      return ss.hasRight($scope.rights, ss.domain.TEXTS, ss.operation.EDIT);
-    };
+      $scope.rightsDeleteTag = function () {
+        if (session.project().isArchived) return false;
+        return session.hasRight($scope.rights, ss.domain.TAGS, ss.operation.DELETE);
+      };
+
+      // Rights: Export
+      $scope.rightsExport = function () {
+        return session.hasRight($scope.rights, ss.domain.TEXTS, ss.operation.EDIT);
+      };
+
+    });
 
     $scope.workflowStates = [{
       state: 'open',
@@ -145,7 +149,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
 
     $scope.questionIsClosed = function () {
       if ($scope.question) {
-        return ($scope.question.workflowState == 'closed');
+        return ($scope.question.workflowState === 'closed');
       }
     };
 
@@ -270,7 +274,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     });
 
     $scope.answerEditorVisible = function (answerId) {
-      return (answerId == $scope.openEditors.answerId);
+      return (answerId === $scope.openEditors.answerId);
     };
 
     $scope.showCommentEditor = function (commentId) {
@@ -295,7 +299,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
       searchLoop: for (var aid in $scope.question.answers) {
         var answer = $scope.question.answers[aid];
         for (var cid in answer.comments) {
-          if (cid == newval) {
+          if (cid === newval) {
             comment = answer.comments[cid];
             break searchLoop;
           }
@@ -321,7 +325,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     });
 
     $scope.commentEditorVisible = function (commentId) {
-      return (commentId == $scope.openEditors.commentId);
+      return (commentId === $scope.openEditors.commentId);
     };
 
     $scope.newComment = {
@@ -336,7 +340,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     $scope.updateComment = function (answerId, answer, newComment) {
       questionService.updateComment(questionId, answerId, newComment, function (result) {
         if (result.ok) {
-          if (newComment.id == '') {
+          if (newComment.id === '') {
             notice.push(notice.SUCCESS, 'The comment was submitted successfully');
           } else {
             notice.push(notice.SUCCESS, 'The comment was updated successfully');
@@ -388,7 +392,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
             delete answer.comments[commentId];
           }
         });
-      });
+      }, angular.noop);
     };
 
     var afterUpdateAnswer = function (answersDto) {
@@ -402,7 +406,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     };
 
     $scope.voteUp = function (answerId) {
-      if ($scope.votes[answerId] == true || $scope.questionIsClosed()) {
+      if ($scope.votes[answerId] === true || $scope.questionIsClosed()) {
         return;
       }
 
@@ -416,7 +420,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     };
 
     $scope.voteDown = function (answerId) {
-      if ($scope.votes[answerId] != true || $scope.questionIsClosed()) {
+      if ($scope.votes[answerId] !== true || $scope.questionIsClosed()) {
         return;
       }
 
@@ -432,7 +436,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
     var updateAnswer = function (questionId, answer) {
       questionService.updateAnswer(questionId, answer, function (result) {
         if (result.ok) {
-          if (answer.id == '') {
+          if (answer.id === '') {
             notice.push(notice.SUCCESS, 'The answer was submitted successfully');
           } else {
             notice.push(notice.SUCCESS, 'The answer was updated successfully');
@@ -483,7 +487,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'bellows.services', 'sgw.so
             $scope.question.answerCount = Object.keys($scope.question.answers).length;
           }
         });
-      });
+      }, angular.noop);
     };
 
     $scope.selectedText = '';

@@ -1,0 +1,31 @@
+{
+  "atom": { "rewriteTsconfig": false },
+  "angularCompilerOptions": {
+    "debug": false
+  },
+  "awesomeTypescriptLoaderOptions": {
+    "useWebpackText": true
+  },
+  "buildOnSave": false,
+  "compileOnSave": false,
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": ["es6", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "src/dist",
+    "rootDir": ".",
+    "sourceMap": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

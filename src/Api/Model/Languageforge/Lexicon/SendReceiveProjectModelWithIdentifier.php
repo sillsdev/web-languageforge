@@ -10,8 +10,6 @@ class SendReceiveProjectModelWithIdentifier extends SendReceiveProjectModel
         $this->identifier = $identifier;
     }
 
-    /**
-     * @var string Language Depot project identifier
-     */
+    /** @var string Language Depot project identifier */
     public $identifier;
 }

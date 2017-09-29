@@ -2,10 +2,10 @@
 
 namespace Api\Model\Shared\Dto;
 
-use Api\Model\ProjectModel;
+use Api\Model\Shared\ProjectModel;
 
-class ProjectManagementDto {
-
+class ProjectManagementDto
+{
     public static function encode($projectId) {
         $dto = array();
         $project = ProjectModel::getById($projectId);
@@ -25,5 +25,4 @@ class ProjectManagementDto {
 
         return $dto;
     }
-
 }

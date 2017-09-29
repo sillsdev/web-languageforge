@@ -24,7 +24,6 @@ by.addLocator('elemMatches', function (selector, regexOrString, parentElem) {
 module.exports = new Utils();
 
 function Utils() {
-  var _this = this;
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
@@ -32,7 +31,7 @@ function Utils() {
     // Ensure a checkbox element will be either checked (true) or unchecked (false), regardless of
     // what its current value is
     checkboxElement.isSelected().then(function (checked) {
-      if (checked != value) {
+      if (checked !== value) {
         checkboxElement.click();
       }
     });
@@ -45,7 +44,7 @@ function Utils() {
 
   this.clickDropdownByValue = function clickDropdownByValue(dropdownElement, value) {
     // Select an element of the dropdown based on its value (its text)
-    _this.findDropdownByValue(dropdownElement, value).click();
+    this.findDropdownByValue(dropdownElement, value).click();
   };
 
   this.findRowByFunc = function findRowByFunc(repeater, searchFunc) {
@@ -82,7 +81,7 @@ function Utils() {
       searchText = new RegExp(searchText, regExpFlags);
     }
 
-    return _this.findRowByFunc(repeater, function (rowText) {
+    return this.findRowByFunc(repeater, function (rowText) {
       return searchText.test(rowText);
     });
   };
@@ -114,6 +113,23 @@ function Utils() {
     }, timeout);
   };
 
+  this.notice = {
+    list: element.all(by.repeater('notice in $ctrl.notices()'))
+  };
+  this.notice.firstCloseButton = this.notice.list.first().element(by.partialButtonText('×'));
+  this.notice.waitToInclude = function (includedText) {
+    browser.wait(function () {
+      return this.notice.list.count().then(function (count) {
+        return count >= 1;
+      });
+    }.bind(this), CONDITION_TIMEOUT);
+    browser.wait(function () {
+      return this.notice.list.first().getText().then(function (text) {
+        return text.includes(includedText);
+      });
+    }.bind(this), CONDITION_TIMEOUT);
+  }.bind(this);
+
   this.checkModalTextMatches = function checkModalTextMatchesfunction(expectedText) {
     var modalBody = element(by.css('.modal-body'));
 
@@ -130,11 +146,91 @@ function Utils() {
   };
 
   this.clickBreadcrumb = function clickBreadcrumb(breadcrumbText) {
-    element(by.elemMatches('ul.topCrumbs > li', breadcrumbText)).click();
+    element(by.elemMatches('.breadcrumb > li', breadcrumbText)).click();
   };
 
   this.parent = function parent(child) {
     return child.element(by.xpath('..'));
+  };
+
+  // This handy function comes from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+  this.escapeRegExp = function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+  };
+
+  /*
+   * Jasmine custom matcher (https://jasmine.github.io/2.0/custom_matcher.html) to search a list
+   * for a string that matches a given regex. E.g., you have ['an apple', 'a banana'] and you want
+   * to know if the list contains a string that matches the regex /banana/.
+   *
+   * To use this matcher, call util.registerCustomJasmineMatchers() in your beforeEach() function.
+   * Then you'll be able to write tests like `expect(item).toContainMatch(regex)`.
+   * NOTE: If you want to be able to match across multiple lines with a `.*` component in your regex,
+   * you'll need to use .toContainMultilineMatch() instead.
+   */
+
+  this.registerCustomJasmineMatchers = function registerCustomJasmineMatchers() {
+    jasmine.addMatchers({
+        toContainMultilineMatch: function toContainMultilineMatch(jasmineUtil, customTesters) {
+          return {
+            compare: function checkList(list, regex) {
+              var checkItem = function (item) {
+                // The dot in Javascript regexes CANNOT match newlines, so we deal with that here
+                return regex.test(item.replace(/\n/g, ' '));
+              };
+              var index = list.findIndex(checkItem);
+
+              var compareResult = {};
+              compareResult.pass = index >= 0;
+              if (compareResult.pass) {
+                compareResult.message = 'Expected list not to contain a match for ' + regex.toString() + ' but it did.';
+              } else {
+                compareResult.message = 'Expected list to contain a match for ' + regex.toString() + ' but it did not.';
+              }
+
+              return compareResult;
+            }
+          };
+        },
+
+        toContainMatch: function toContainMatch(jasmineUtil, customTesters) {
+          return {
+            compare: function checkList(list, regex) {
+              var checkItem = function (item) {
+                return regex.test(item);
+              };
+              var index = list.findIndex(checkItem);
+
+              var compareResult = {};
+              compareResult.pass = index >= 0;
+              if (compareResult.pass) {
+                compareResult.message = 'Expected list not to contain a match for ' + regex.toString() + ' but it did.';
+              } else {
+                compareResult.message = 'Expected list to contain a match for ' + regex.toString() + ' but it did not.';
+              }
+
+              return compareResult;
+            }
+          }
+        }
+      });
+  };
+
+  // Errors we choose to ignore because they are typically not encountered by users, but only
+  // in testing
+  this.isMessageToIgnore = function isMessageToIgnore(message) {
+    if (message.level.name === 'WARNING') return true;
+
+    var text = message.message;
+
+    return /angular.*\.js .* TypeError: undefined is not a function/.test(text) ||
+      /angular.*\.js .* Error: \[\$compile:tpload]/.test(text) ||
+      text.includes('password or credit card input in a non-secure context.') ||
+      text.includes('ERR_INTERNET_DISCONNECTED');
+  };
+
+  this.scrollTop = function () {
+    browser.executeScript('window.scroll(0,0)');
   };
 
 }

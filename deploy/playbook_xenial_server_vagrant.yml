@@ -1,0 +1,10 @@
+---
+
+- include: dependencies.yml
+  vars:
+    deploy: lf_only
+- include: code.yml
+  vars:
+    site_src_paths:
+      - /home/vagrant/src/web-languageforge/src
+    lf_path: /home/vagrant/src/web-languageforge

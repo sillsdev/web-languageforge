@@ -2,12 +2,13 @@
 
 namespace Api\Model\Languageforge\Lexicon\Config;
 
-use Api\Model\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\ArrayOf;
 
 class LexConfigMultiText extends LexConfig
 {
     public function __construct()
     {
+        parent::__construct();
         $this->type = LexConfig::MULTITEXT;
         $this->displayMultiline = false;
         $this->width = 20;
@@ -20,6 +21,6 @@ class LexConfigMultiText extends LexConfig
     /** @var ArrayOf */
     public $inputSystems;
 
-    /** @var bool */
+    /** @var boolean */
     public $displayMultiline;
 }

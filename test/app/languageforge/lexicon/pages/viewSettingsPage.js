@@ -1,12 +1,17 @@
 'use strict';
 
-function ViewSettingsPage() {
-  var _this = this;
+module.exports = new ViewSettingsPage();
 
-  this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
+function ViewSettingsPage() {
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
+
+  this.settingsMenuLink = element(by.css('.hdrnav a.btn i.fa-cog'));
   this.viewSettingsLink = element(by.linkText('View Settings'));
   this.get = function get() {
+    browser.wait(expectedCondition.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
     this.settingsMenuLink.click();
+    browser.wait(expectedCondition.visibilityOf(this.viewSettingsLink), CONDITION_TIMEOUT);
     this.viewSettingsLink.click();
   };
 
@@ -17,25 +22,25 @@ function ViewSettingsPage() {
   this.applyButton = element(by.buttonText('Apply'));
 
   this.getTabByName = function getTabByName(tabName) {
-    return element(by.css('div.tabbable ul.nav-tabs')).element(by.cssContainingText('a', tabName));
+    return element(by.css('ul.nav.nav-tabs')).element(by.partialLinkText(tabName));
   };
 
   this.tabs = {
     observer: {
       go: function () {
-        _this.getTabByName('Observer').click();
-      }
+        this.getTabByName('Observer').click();
+      }.bind(this)
     },
     contributor: {
       go: function () {
-        _this.getTabByName('Contributor').click();
-      }
+        this.getTabByName('Contributor').click();
+      }.bind(this)
     },
     manager: {
       showAllFieldsBtn: this.tabDivs.get(3).element(by.buttonText('Show All Fields')),
       go: function () {
-        _this.getTabByName('Manager').click();
-      }
+        this.getTabByName('Manager').click();
+      }.bind(this)
     }
   };
 
@@ -53,11 +58,11 @@ function ViewSettingsPage() {
   //noinspection JSUnusedGlobalSymbols
   this.showCommonFieldsBtn = element(by.buttonText('Show Only Common Fields'));
 
-  this.activePane = element(by.css('div.tab-pane.active'));
+  this.activePane = element(by.css('div.tab-pane.ng-scope.active'));
 
-  this.accordionDiv = this.activePane.element(by.css('div.accordion'));
+  this.accordionDiv = this.activePane.element(by.css('uib-accordion'));
   this.accordionEnabledFields = this.accordionDiv
-    .element(by.elemMatches('div.accordion-heading a', '^Enabled Fields for'));
+    .element(by.css('a.accordion-toggle'));
 
   //noinspection JSUnusedGlobalSymbols
   this.accordionEnabledTasks = this.accordionDiv
@@ -86,25 +91,25 @@ function ViewSettingsPage() {
     return this.getFieldByName(fieldName, treatAsRegex).element(by.css('i')).getAttribute('class');
   };
 
-  this.showField = this.activePane.element(by.cssContainingText('label.checkbox', 'Show field'))
-    .element(by.css('input[type="checkbox"]'));
-
-  //noinspection JSUnusedGlobalSymbols
-  this.overrideInputSystems = this.activePane
-    .element(by.cssContainingText('label.checkbox', 'Override Input Systems'))
-    .element(by.css('input[type="checkbox"]'));
+  this.showField = this.activePane.element(by.id('showFieldCheckbox'));
+  this.overrideInputSystems = this.activePane.element(by.id('overrideInputSystemCheckbox'));
 
   this.usersWithViewSettings = this.activePane.element(by.css('#userSelectList'));
   this.addViewSettingsForMember = function addViewSettingsForMember(memberName) {
+
     this.activePane.element(by.css('div.typeahead input')).sendKeys(memberName);
-    this.activePane.element(by.css('div.typeahead')).all(by.repeater('user in typeahead.users'))
-      .first().click();
+    this.activePane.element(by.css('div.typeahead input')).sendKeys(protractor.Key.ENTER);
+
+    // Trying to click by name in the typeahead is flaky because the list visibility depends
+    // where the mouse happens to be hovering.  Just directly add the name
+    //this.activePane.element(by.css('div.typeahead')).all(by.repeater('user in typeahead.users'))
+    //  .first().click();
     this.activePane.element(by.buttonText('Add Member Specific Settings')).click();
   };
 
   this.pickMemberWithViewSettings = function pickMemberWithViewSettings(memberName) {
     this.usersWithViewSettings
-      .element(by.elemMatches('div.picklists > ul.unstyled > li', memberName)).click();
+      .element(by.elemMatches('div.picklists > ul.list-unstyled > li', memberName)).click();
   };
 
   //noinspection JSUnusedGlobalSymbols
@@ -114,5 +119,3 @@ function ViewSettingsPage() {
   this.removeMemberViewSettingsBtn = this.activePane
     .element(by.buttonText('Remove Member Specific Settings'));
 }
-
-module.exports = new ViewSettingsPage();

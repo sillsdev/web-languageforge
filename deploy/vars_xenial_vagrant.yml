@@ -1,0 +1,80 @@
+---
+# vars_xenial_vagrant
+
+# mongo_path: /hddlinux/mongodb
+mongo_path: /var/lib/mongodb
+php_log_folder: /var/log/php
+lf_path: /home/vagrant/src/xForge/web-languageforge
+sf_path: /home/vagrant/src/xForge/web-languageforge
+
+ssl_letsencrypt_install: false
+
+ssl_items:
+  - name: scriptureforge
+    state: selfsign
+    request:
+        country_code: "TH"
+        state: "Chiang Mai"
+        locality: "Chiang Mai"
+        organization: "SIL"
+        organization_unit: ""
+        common_name: "scriptureforge.local"
+        alt_names:
+          - key: DNS.1
+            value: "www.scriptureforge.local"
+          - key: DNS.2
+            value: "scriptureforge.local"
+    sign:
+
+apache_site_enable:
+  - default_local.conf
+  - languageforge_org.conf
+  - scriptureforge_org.conf
+
+apache_vhosts:
+  - server_name: default.local
+    server_admin: webmaster@palaso.org
+    server_file_name: default_local
+    template: vhost_ssl.conf.j2
+    document_root: /var/www/virtual/default_local
+    link_to: "/home/vagrant/src/xForge/web-languageforge"
+    directory_options:
+      - "+Indexes"
+      - "+FollowSymLinks"
+    directory_extra:
+      - RewriteEngine On
+    virtual_hosts:
+      - has_ssl: false
+        port: 80
+        server_alias: []
+  - server_name: languageforge.org
+    server_admin: webmaster@palaso.org
+    server_file_name: languageforge_org
+    template: vhost_ssl.conf.j2
+    document_root: /var/www/virtual/languageforge.org/htdocs
+    link_to: "/home/vagrant/src/xForge/web-languageforge/src"
+    directory_extra:
+      - RewriteEngine On
+    virtual_hosts:
+      - has_ssl: false
+        port: 80
+        server_alias:
+          - languageforge.local
+  - server_name: scriptureforge.org
+    server_admin: webmaster@palaso.org
+    server_file_name: scriptureforge_org
+    template: vhost_ssl.conf.j2
+    document_root: /var/www/virtual/scriptureforge.org/htdocs
+    link_to: "/home/vagrant/src/xForge/web-scriptureforge/src"
+    directory_extra:
+      - RewriteEngine On
+    virtual_hosts:
+      - has_ssl: false
+        port: 80
+        server_alias:
+          - scriptureforge.local
+      - has_ssl: true
+        port: 443
+        certificate_file: "scriptureforge.pem"
+        key_file: "scriptureforge.key"
+

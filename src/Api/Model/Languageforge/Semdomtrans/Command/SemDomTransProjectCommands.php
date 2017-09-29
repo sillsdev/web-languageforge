@@ -4,12 +4,12 @@ namespace Api\Model\Languageforge\Semdomtrans\Command;
 
 use Api\Library\Languageforge\Semdomtrans\SemDomXMLExporter;
 use Api\Library\Shared\Website;
-use Api\Model\Command\ProjectCommands;
 use Api\Model\Languageforge\LfProjectModel;
-use Api\Model\Languageforge\SemDomTransProjectModel;
-use Api\Model\Mapper\Id;
-use Api\Model\ProjectListModel;
-use Api\Model\ProjectModel;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Mapper\Id;
+use Api\Model\Shared\ProjectListModel;
+use Api\Model\Shared\ProjectModel;
 
 class SemDomTransProjectCommands
 {

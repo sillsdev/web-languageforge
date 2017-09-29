@@ -2,19 +2,25 @@
 
 use Api\Library\Shared\Website;
 
-$rootPath = realpath(__DIR__ . '/../../') . '/';
+$rootPath = realpath(__DIR__ . '/../..') . DIRECTORY_SEPARATOR;
 
 // Fake app path define
-define('APPPATH', $rootPath . 'src/');
+if (! defined('APPPATH')) {
+    define('APPPATH', $rootPath . 'src/');
+}
+
+if (! defined('ENVIRONMENT')) {
+    define('ENVIRONMENT', 'development');
+}
 
 require_once APPPATH . 'vendor/autoload.php';
 
 define('TestMode', true);
 
 define('TestPath', $rootPath . 'test/');
+define('TestCommonPath', $rootPath . 'test/common/');
 define('TestPhpPath', $rootPath . 'test/php/');
 define('TestLibPath', $rootPath . 'test/lib/');
-define('SimpleTestPath', $rootPath . 'src/vendor/simpletest/simpletest/');
 define('SourcePath', $rootPath . 'src/');
 
 define('SF_DATABASE', 'scriptureforge_test');
@@ -27,3 +33,5 @@ define('BCRYPT_COST', 7);
 
 global $WEBSITE;
 $WEBSITE = Website::get('dev.scriptureforge.org');
+
+require_once TestCommonPath . 'MongoTestEnvironment.php';

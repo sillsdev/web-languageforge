@@ -36,9 +36,9 @@ class WebsiteInstances
 
         $w = new Website('jamaicanpsalms.scriptureforge.local', Website::SCRIPTUREFORGE);
         $w->name = 'The Jamaican Psalms Project';
-        $w->ssl = true;
+        $w->ssl = false;
         $w->theme = 'jamaicanpsalms';
-        $w->defaultProjectCode = 'jamaicanpsalms';
+        $w->defaultProjectCode = 'jamaican_psalms';
         $sites['jamaicanpsalms.scriptureforge.local'] = $w;
 
         $w = new Website('jamaicanpsalms.e2etest.scriptureforge.local', Website::SCRIPTUREFORGE);
@@ -76,11 +76,19 @@ class WebsiteInstances
         $w->defaultProjectCode = 'jamaican_psalms';
         $sites['jamaicanpsalms.dev.scriptureforge.org'] = $w;
 
+        // qa.scriptureforge.org
+        $w = new Website('qa.scriptureforge.org', Website::SCRIPTUREFORGE);
+        $w->name = 'Scripture Forge';
+        $w->ssl = true;
+        $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
+        $sites['qa.scriptureforge.org'] = $w;
+
         // scriptureforge.org
         $w = new Website('scriptureforge.org', Website::SCRIPTUREFORGE);
         $w->name = 'Scripture Forge';
         $w->ssl = true;
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
+        $w->isProduction = true;
         $sites['scriptureforge.org'] = $w;
 
         // jamaicanpsalms.com
@@ -89,6 +97,7 @@ class WebsiteInstances
         $w->ssl = true;
         $w->theme = 'jamaicanpsalms';
         $w->defaultProjectCode = 'jamaican_psalms';
+        $w->isProduction = true;
         $sites['jamaicanpsalms.scriptureforge.org'] = $w;
 
         // waaqwiinaagiwritings.org
@@ -97,6 +106,7 @@ class WebsiteInstances
         $w->ssl = true;
         $w->theme = 'simple';
         $w->defaultProjectCode = 'waaqwiinaagiwritings';
+        $w->isProduction = true;
         $sites['waaqwiinaagiwritings.org'] = $w;
 
         return $sites;
@@ -131,19 +141,28 @@ class WebsiteInstances
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
         $sites['e2etest.languageforge.local'] = $w;
 
-        // dev.languageforge.org sites
+        // dev.languageforge.org
         $w = new Website('dev.languageforge.org', Website::LANGUAGEFORGE);
         $w->name = 'Language Forge';
         $w->ssl = true;
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
         $sites['dev.languageforge.org'] = $w;
 
+        // qa.languageforge.org
+        $w = new Website('qa.languageforge.org', Website::LANGUAGEFORGE);
+        $w->name = 'Language Forge';
+        $w->ssl = true;
+        $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
+        $sites['qa.languageforge.org'] = $w;
+
         // languageforge.org
         $w = new Website('languageforge.org', Website::LANGUAGEFORGE);
         $w->name = 'Language Forge';
         $w->userDefaultSiteRole = Website::SITEROLE_PROJECT_CREATOR;
         $w->ssl = true;
+        $w->isProduction = true;
         $sites['languageforge.org'] = $w;
+
 
         return $sites;
     }

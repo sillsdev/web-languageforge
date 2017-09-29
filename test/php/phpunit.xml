@@ -1,0 +1,48 @@
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
+    backupGlobals="true"
+    backupStaticAttributes="false"
+    bootstrap="TestConfig.php"
+    cacheTokens="false"
+    colors="auto"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    forceCoversAnnotation="false"
+    mapTestClassNameToCoveredClassName="false"
+    processIsolation="false"
+    stopOnError="false"
+    stopOnFailure="false"
+    stopOnIncomplete="false"
+    stopOnSkipped="false"
+    stopOnRisky="false"
+    timeoutForSmallTests="1"
+    timeoutForMediumTests="10"
+    timeoutForLargeTests="60"
+    verbose="true"
+>
+    <php>
+        <ini name="xdebug.show_exception_trace" value="0"/>
+    </php>
+    <testsuites>
+        <testsuite name="xForge all PHP unit tests">
+            <directory>./</directory>
+            <exclude>./library/shared/LanguageDataTest.php</exclude>
+        </testsuite>
+    </testsuites>
+    <groups>
+        <exclude>
+            <group>explicit</group>
+        </exclude>
+    </groups>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../../src/Api</directory>
+            <exclude>
+                <directory>../../src/Api/Library/Shared/Script</directory>
+                <directory>../../src/Api/Library/Shared/CLI</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

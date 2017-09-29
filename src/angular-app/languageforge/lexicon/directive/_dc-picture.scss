@@ -1,0 +1,77 @@
+.dc-pictures {
+    margin-bottom: 0px;
+}
+
+.dc-pictures label {
+    font-weight:bold;
+}
+
+
+.addItem.addPicture {
+    margin-bottom: 20px;
+}
+
+.dc-picture {
+    position: relative;
+    display: block;
+    vertical-align: top;
+}
+
+.dc-picture .dc-multitext .controls {
+    margin-left: 0px;
+}
+
+.dc-picture img {
+    height: 150px;
+    margin: 0 0 14px;
+}
+
+.dc-picture {
+  .pictureX {
+    position: absolute;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid $lf-lines;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    right: 0;
+    line-height: 28px;
+    text-align: center;
+    i {
+      vertical-align: top;
+    }
+  }
+}
+
+form.dc-pictures form.dc-multitext .controls input[type="text"] {
+    width: 95px;
+}
+
+form.dc-pictures {
+  .dc-drop-box {
+    width: 100%;
+    display: block;
+    .drop-box {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 20px;
+    }
+    .deleteX {
+      margin-right: 10px;
+    }
+
+    .progress {
+      width: 150px;
+    }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .dc-picture {
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+}

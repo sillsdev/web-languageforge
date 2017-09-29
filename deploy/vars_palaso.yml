@@ -8,6 +8,8 @@ php_log_folder: /var/log/php
 lf_path: /var/www/virtual/default_local/web-languageforge
 sf_path: /var/www/virtual/default_local/web-scriptureforge
 
+ssl_letsencrypt_install: false
+
 ssl_items:
   - name: scriptureforge
     state: selfsign

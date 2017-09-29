@@ -7,10 +7,11 @@ use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Dto\RightsHelper;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 class Script extends Base
 {
-    public function view(Application $app, $folder = '', $scriptName = '', $runType = 'test') {
+    public function run(Request $request, Application $app, $folder = '', $scriptName = '', $runType = 'test') {
         $this->data['controlpanel'] = false;
         $this->data['runtype'] = $runType;
 

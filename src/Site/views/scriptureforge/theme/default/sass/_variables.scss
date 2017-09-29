@@ -1,0 +1,16 @@
+$sf-grey: #3a3a3a;
+$sf-orange: #D89D49;
+$lf-blue: #104060;
+$sf-disabled: #999999;
+$sf-lines: #ddd;
+
+// Overwrite variables - see node_modules/bootstrap/sass/_variables.scss
+$brand-primary: $sf-grey;
+$brand-warning: $sf-orange;
+$headings-margin-bottom: 20px;
+$navbar-dark-color: white;
+$link-color: $lf-blue;
+
+// do we need these?
+//$link-hover-color: #005580;
+

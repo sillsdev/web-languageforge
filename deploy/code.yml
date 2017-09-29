@@ -2,7 +2,7 @@
 
 - name: Deploy development environment for xForge (languageforge.org and scriptureforge.org)
   hosts: all
-  sudo: no
+  become: no
   tasks:
     - name: composer install
       command: composer install
@@ -10,19 +10,18 @@
         chdir: "{{item}}"
       changed_when: false
       when: inventory_hostname == "localhost"
-      with_items:
-        - /var/www/virtual/languageforge.org/htdocs
-        - /var/www/virtual/scriptureforge.org/htdocs
+      with_items: "{{site_src_paths}}"
 
-    - name: bower install
-      command: bower install --allow-root
+    - name: npm install
+      command: npm install
       args:
         chdir: "{{item}}"
       changed_when: false
       when: inventory_hostname == "localhost"
-      with_items:
-        - /var/www/virtual/languageforge.org/htdocs
-        - /var/www/virtual/scriptureforge.org/htdocs
+      with_items: "{{lf_path}}"
 
     - name: factory reset mongodb to empty with admin user
-      shell: php factoryReset.php run chdir={{lf_path}}/scripts/tools/
+      shell: php FactoryReset.php run
+      become: true
+      args:
+        chdir: "{{lf_path}}/scripts/tools/"

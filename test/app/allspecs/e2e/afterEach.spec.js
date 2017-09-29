@@ -1,8 +1,10 @@
 'use strict';
 
-var appFrame = require('../../bellows/pages/appFrame.js');
-var body     = require('../../bellows/pages/pageBody.js');
 afterEach(function () {
+  var appFrame = require('../../bellows/pages/appFrame.js');
+  var body     = require('../../bellows/pages/pageBody.js');
+  var util     = require('../../bellows/pages/util.js');
+
   appFrame.errorMessage.isPresent().then(function (isPresent) {
     if (isPresent) {
       appFrame.errorMessage.getText().then(function (message) {
@@ -27,28 +29,20 @@ afterEach(function () {
   browser.manage().logs().get('browser').then(function (browserLog) {
     if (browserLog.length > 0) {
       for (var i = 0; i < browserLog.length; i++) {
-        var message = browserLog[i].message;
-        if (message.indexOf('\n') != -1) {
+        var message = browserLog[i];
+        var text = message.message;
+        if (text.indexOf('\n') != -1) {
 
           // place CR between lines
-          message = message.split('\n').join('\n');
+          text = text.split('\n').join('\n');
         }
 
-        // Errors we choose to ignore because they are typically not encountered by users, but only
-        // in testing
-        if (/angular\.js .* TypeError: undefined is not a function/.test(message) ||
-          /angular.*\.js .* Error: \[\$compile:tpload]/.test(message) ||
-          /angular\.js .* Error: RPC Error - Server Status Code -1/.test(message) ||
-          /"level":"info"/.test(message) ||
-          /next_id/.test(message) ||
-          /ERR_INTERNET_DISCONNECTED/.test(message)
-        ) {
+        if (util.isMessageToIgnore(message)) {
           return;
         }
 
-        message = '\n\nBrowser Console JS Error: \n' + message + '\n\n';
-        expect(message).toEqual(''); // fail the test
-
+        text = '\n\nBrowser Console JS Error: \n' + text + '\n\n';
+        expect(text).toEqual(''); // fail the test
       }
     }
   });

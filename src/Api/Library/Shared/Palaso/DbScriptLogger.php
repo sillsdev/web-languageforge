@@ -1,20 +1,24 @@
 <?php
+
 namespace Api\Library\Shared\Palaso;
 
-class DbScriptLogger {
-    /**
-     * 
-     * @var string
-     */
+class DbScriptLogger
+{
+    public function __construct($makeChanges) {
+        $this->output = "";
+        $this->makeChanges = $makeChanges;
+        if ($makeChanges) {
+            $this->yell("-------------- Database WILL be modified --------------------");
+        } else {
+            $this->yell("-------------- Test mode - no changes will be made --------------------");
+        }
+    }
+
+    /** @var string */
     protected $output;
 
-    /**
-     * 
-     * @var boolean
-     */
+    /** @var boolean */
     protected $makeChanges;
-    
-    
 
     /**
      * Output an informational message 
@@ -26,7 +30,7 @@ class DbScriptLogger {
     
     /**
      * Output an important message
-     * @param unknown $message
+     * @param mixed $message
      */
     protected function yell($message) {
         $this->output .= "\nIMPORTANT: $message\n\n";
@@ -34,7 +38,7 @@ class DbScriptLogger {
     
     /**
      * Output a warning
-     * @param unknown $message
+     * @param mixed $message
      */
     protected function warn($message) {
         $this->output .= "\nWARNING: $message\n\n";
@@ -42,14 +46,13 @@ class DbScriptLogger {
     
     /**
      * Output a message about something that has been automatically fixed
-     * @param unknown $message
+     * @param mixed $message
      */
     protected function fix($message) {
         $this->output .= "\nFIXED: $message\n\n";
     }
     
     /**
-     * 
      * @return string - the output
      */
     public function flushOutput() {
@@ -57,15 +60,4 @@ class DbScriptLogger {
         $this->output = "";
         return $output;
     }
-    
-    public function __construct($makeChanges) {
-        $this->output = "";
-        $this->makeChanges = $makeChanges;
-        if ($makeChanges) {
-            $this->yell("-------------- Database WILL be modified --------------------");
-        } else {
-            $this->yell("-------------- Test mode - no changes will be made --------------------");
-        }
-    }
-
 }

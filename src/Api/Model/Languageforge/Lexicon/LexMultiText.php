@@ -2,7 +2,7 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Mapper\MapOf;
+use Api\Model\Shared\Mapper\MapOf;
 
 function generateLexValue()
 {
@@ -19,7 +19,7 @@ class LexMultiText extends MapOf
     public function form($inputSystem, $value)
     {
         if (array_key_exists($inputSystem, $this)) {
-            $this[$inputSystem]->value = $value;
+            $this[$inputSystem]->value($value);
         } else {
             $this[$inputSystem] = new LexValue($value);
         }

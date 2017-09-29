@@ -1,0 +1,45 @@
+ssl_letsencrypt_install: false
+ssl_letsencrypt_defaultmode: "webroot"
+ssl_letsencrypt_email: cambell_prince@sil.org
+
+ssl_items:
+  - name: languageforge_org
+    vendor: letsencrypt
+    state: skip
+    sign:
+        webroot: /var/www/languageforge.org/htdocs
+        alt_names:
+          - "-d languageforge.org"
+          - "-d www.languageforge.org"
+  - name: scriptureforge_org
+    vendor: letsencrypt
+    state: skip
+    sign:
+        webroot: /var/www/scriptureforge.org/htdocs
+        alt_names:
+          - "-d scriptureforge.org"
+          - "-d www.scriptureforge.org"
+  - name: scriptureforge_org_jamaicanpsalms
+    vendor: letsencrypt
+    state: skip
+    sign:
+        webroot: /var/www/scriptureforge.org/htdocs
+        alt_names:
+          - "-d jamaicanpsalms.scriptureforge.org"
+          - "-d www.jamaicanpsalms.scriptureforge.org"
+  - name: jamaicanpsalms_com
+    vendor: letsencrypt
+    state: skip
+    sign:
+        webroot: /var/www/scriptureforge.org/htdocs
+        alt_names:
+          - "-d jamaicanpsalms.com"
+          - "-d www.jamaicanpsalms.com"
+  - name: waaqwiinaagiwritings_org
+    vendor: letsencrypt
+    state: skip
+    sign:
+        webroot: /var/www/scriptureforge.org/htdocs
+        alt_names:
+          - "-d waaqwiinaagiwritings.org"
+          - "-d www.waaqwiinaagiwritings.org"

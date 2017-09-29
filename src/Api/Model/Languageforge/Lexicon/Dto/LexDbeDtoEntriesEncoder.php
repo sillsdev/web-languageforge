@@ -3,7 +3,7 @@
 namespace Api\Model\Languageforge\Lexicon\Dto;
 
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
-use Api\Model\Mapper\JsonEncoder;
+use Api\Model\Shared\Mapper\JsonEncoder;
 
 class LexDbeDtoEntriesEncoder extends JsonEncoder
 {

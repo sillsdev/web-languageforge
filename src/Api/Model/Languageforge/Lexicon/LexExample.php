@@ -2,8 +2,8 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Mapper\MapOf;
-use Api\Model\Mapper\ObjectForEncoding;
+use Api\Model\Shared\Mapper\MapOf;
+use Api\Model\Shared\Mapper\ObjectForEncoding;
 use LazyProperty\LazyPropertiesTrait;
 
 class LexExample extends ObjectForEncoding
@@ -26,7 +26,6 @@ class LexExample extends ObjectForEncoding
             'translationGuid',
             'reference',
             'customFields',
-            'examplePublishIn'
         ], false);
     }
 
@@ -40,8 +39,6 @@ class LexExample extends ObjectForEncoding
                 return new LexMultiText();
             case 'translationGuid':
                 return Guid::create();
-            case 'examplePublishIn':
-                return new LexMultiValue();
             case 'customFields':
                 return new MapOf('Api\Model\Languageforge\Lexicon\generateCustomField');
             default:
@@ -78,6 +75,4 @@ class LexExample extends ObjectForEncoding
     /** @var LexMultiText */
     public $reference;
 
-    /** @var LexMultiValue */
-    public $examplePublishIn;
 }

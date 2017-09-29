@@ -1,0 +1,13 @@
+$lf-blue: #104060;
+$lf-highlight: #CDDEEB;
+// TODO: Check if we need to change the font to the new design or stick to the default one
+$lf-font: "PT Sans",sans-serif;
+$lf-disabled: #999999;
+$lf-lines: #ddd;
+$lf-comments: #D89D49;
+
+// Overwrite variables - see node_modules/bootstrap/sass/_variables.scss
+$brand-primary: $lf-blue;
+$brand-warning: $lf-comments;
+$headings-margin-bottom: 20px;
+$navbar-dark-color: white;

@@ -2,12 +2,13 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
-use Api\Model\Command\ProjectCommands;
+use Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModelWithIdentifier;
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\JsonEncoder;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\JsonEncoder;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -75,7 +76,7 @@ class SendReceiveCommands
 
         self::mockE2ETestingData($username, $password, $client);
 
-        $url = 'http://admin.languagedepot.org/api/user/'.$username.'/projects';
+        $url = 'https://admin.languagedepot.org/api/user/'.$username.'/projects';
         $postData = ['json' => ['password' => $password]];
 
         $tryCounter = 1;
@@ -95,11 +96,7 @@ class SendReceiveCommands
             }
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
-        if ($response->getStatusCode() == 403) $result->isKnownUser = true;
-
         if ($response->getStatusCode() == 200) {
-            $result->isKnownUser = true;
             $result->hasValidCredentials = true;
             foreach ($response->json() as $index => $srProject) {
                 $result->projects[] = new SendReceiveProjectModelWithIdentifier(
@@ -168,7 +165,7 @@ class SendReceiveCommands
      * @param string $pidFilePath
      * @param string $command
      * @return bool true if process started or already running, otherwise false
-     * @throws \Api\Library\Shared\Palaso\Exception\ResourceNotAvailableException
+     * @throws ResourceNotAvailableException
      * @throws \Exception
      */
     public static function startLFMergeIfRequired($projectId, $pidFilePath = null, $command = null)
@@ -216,7 +213,14 @@ class SendReceiveCommands
         }
 
         $projectStatePath = $statePath . DIRECTORY_SEPARATOR . strtolower($project->projectCode) . '.state';
-        if (!file_exists($projectStatePath) || !is_file($projectStatePath)) return false;
+        if (!file_exists($projectStatePath) || !is_file($projectStatePath)) {
+            // Generate default state file of "IDLE" if it doesn't exist.
+            $status['SRState'] = "IDLE";
+            $status['ProjectCode'] = $project->projectCode;
+            if (!is_writeable($statePath)) return false;
+
+            file_put_contents($projectStatePath, json_encode($status, JSON_PRETTY_PRINT));
+        }
 
         $statusJson = file_get_contents($projectStatePath);
         $status = json_decode($statusJson, true);
@@ -241,7 +245,28 @@ class SendReceiveCommands
             }
             $status['PercentComplete'] = min(99, intval((time() - $status['StartTimestamp']) / ($previousRunTotalMilliseconds / 1000) * 100));
         }
+
+        // if project is modified since last sync, set state as un-synced
+        if (array_key_exists('SRState', $status) && $status['SRState'] == "IDLE" &&
+            $project->lastEntryModifiedDate && $project->lastSyncedDate &&
+            ($project->lastEntryModifiedDate > $project->lastSyncedDate)
+        ) {
+            $status['SRState'] = 'LF_UNSYNCED';
+        }
+
         return $status;
+    }
+
+    /**
+     * logic should match JavaScript service lexSendReceive.isInProgress()
+     * @param $projectId
+     * @return bool true if SRState is CLONING or SYNCING, false otherwise
+     */
+    public static function isInProgress($projectId)
+    {
+        $status = self::getProjectStatus($projectId);
+        return $status && array_key_exists('SRState', $status) &&
+            ($status['SRState'] == 'CLONING' || $status['SRState'] == 'LF_CLONING' || $status['SRState'] == 'SYNCING');
     }
 
     /**
@@ -427,13 +452,13 @@ class SendReceiveCommands
         if ($username == self::TEST_SR_USERNAME) {
             if ($password == self::TEST_SR_PASSWORD) {
                 $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository":'.
-                    ' "http://public.languagedepot.org", "role": "manager", "isLinked": false}, '.
+                    ' "https://public.languagedepot.org", "role": "manager", "isLinked": false}, '.
                     '{"identifier": "mock-id2", "name": "mock-name2", "repository": '.
-                    '"http://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
+                    '"https://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
                     '{"identifier": "mock-id3", "name": "mock-name3", "repository": '.
-                    '"http://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
+                    '"https://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
                     '{"identifier": "mock-id4", "name": "mock-name4", "repository": '.
-                    '"http://private.languagedepot.org", "role": "manager", "isLinked": false}]');
+                    '"https://private.languagedepot.org", "role": "manager", "isLinked": false}]');
                 $response = new Response(200, ['Content-Type' => 'application/json'], $body);
                 $mock = new Mock([$response]);
                 $client->getEmitter()->attach($mock);
@@ -533,39 +558,25 @@ class SendReceiveCommands
 
 class SendReceivePaths
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $mergeQueuePath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $receiveQueuePath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $sendQueuePath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $editQueuePath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $syncQueuePath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $workPath;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $statePath;
 }
 
@@ -573,7 +584,6 @@ class SendReceiveGetUserProjectResult
 {
     public function __construct()
     {
-        $this->isKnownUser = false;
         $this->errorMessage = '';
         $this->hasValidCredentials = false;
         $this->projects = new ArrayOf(function() {
@@ -581,23 +591,12 @@ class SendReceiveGetUserProjectResult
         });
     }
 
-    /**
-     * @var bool true if the username exists, false otherwise
-     */
-    public $isKnownUser;
-
-    /**
-     * @var bool true if the username and password are valid, false otherwise
-     */
+    /** @var boolean true if the username and password are valid, false otherwise */
     public $hasValidCredentials;
 
-    /**
-     * @var ArrayOf <SendReceiveProjectModel>
-     */
+    /** @var ArrayOf<SendReceiveProjectModel> */
     public $projects;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $errorMessage;
 }
