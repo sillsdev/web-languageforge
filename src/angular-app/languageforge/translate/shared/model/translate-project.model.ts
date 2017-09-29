@@ -29,27 +29,23 @@ export class TranslateConfig {
   userPreferences: TranslateUserPreferences;
 }
 
-export class TranslateConfigDocType
-{
+export class TranslateConfigDocType {
   /** @var InputSystem */
   inputSystem: any;
 }
 
-export class TranslateConfigDocumentSets
-{
+export class TranslateConfigDocumentSets {
   idsOrdered: string[];
 }
 
-export class TranslateUserPreferences
-{
+export class TranslateUserPreferences {
   confidenceThreshold: number;
   hasConfidenceOverride: boolean;
   isDocumentOrientationTargetRight: boolean;
   selectedDocumentSetId: string;
 }
 
-export class TranslateConfigMetrics
-{
+export class TranslateConfigMetrics {
   activeEditTimeout: number;
   editingTimeout: number;
 }
