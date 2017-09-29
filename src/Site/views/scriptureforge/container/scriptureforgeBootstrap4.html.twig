@@ -68,8 +68,14 @@
                     <li class="nav-item">
                         <a class="nav-link " href="/app/activity">Activity</a>
                     </li>
-                    <li class="nav-item" data-ng-show="showButton">
-                        <a class="nav-link" ng-click="showHelpContent()">Help</a>
+                    <li class="nav-item" uib-dropdown>
+                        <a class="nav-link" uib-dropdown-toggle href id="helpDropdown" aria-haspopup="true" aria-expanded="false">Help</a>
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="helpDropdown">
+                            <a class="dropdown-item" target="_blank" href="https://community.scripture.software.sil.org/c/scripture-forge/how-to">Tutorials and How-Tos</a>
+                            <a class="dropdown-item" target="_blank" href="https://community.scripture.software.sil.org/c/scripture-forge">Community Support</a>
+                            <a class="dropdown-item" target="_blank" href="mailto:issues@scriptureforge.org">Report a Problem<br />(email issues@scriptureforge.org)</a>
+                            <a class="dropdown-item" href="/releasenotes">Release Notes</a>
+                        </div>
                     </li>
                     <li class="nav-item" uib-dropdown>
                         <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdown"

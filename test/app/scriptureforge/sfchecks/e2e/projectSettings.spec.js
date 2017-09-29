@@ -1,6 +1,6 @@
 'use strict';
 
-describe('the project settings page - project manager', function () {
+describe('SFChecks project settings page - project manager', function () {
   var constants       = require('../../../testConstants.json');
   var loginPage       = require('../../../bellows/pages/loginPage.js');
   var util            = require('../../../bellows/pages/util.js');
