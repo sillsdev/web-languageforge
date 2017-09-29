@@ -10,11 +10,9 @@ To use **Scripture Forge** go to [scriptureforge.org](https://scriptureforge.org
 
 ### User Problems ###
 
-To report an issue for **Language Forge** go to [Language Forge issues](https://github.com/sillsdev/web-languageforge/issues).
+To report an user issue with the **Language Forge** application, email "issues @ languageforge dot org".
 
-To report an issue for **Scripture Forge** go to [Scripture Forge issues](https://github.com/sillsdev/web-scriptureforge/issues).
-
-**Note:** Scan the list to make sure your issue hasn't already been reported. If not, click **New issue**.
+To report an user issue with the **Scripture Forge** application email "issues @ scriptureforge dot org".
 
 ## Special Thanks To ##
 
@@ -105,7 +103,11 @@ curl -sL https://raw.githubusercontent.com/sillsdev/web-languageforge/master/ins
 ```
 Expect the install to take 30-60 minutes on a fresh Ubuntu Xenial install, depending upon your internet connection.
 
-### How to Uninstall/Reinstall Ubuntu on Windows 10 WSL
+### How to Setup/Uninstall/Reinstall Ubuntu on Windows 10 WSL
+
+If you have never installed Ubuntu on Windows 10, [follow the instructions in this guide](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide) to ensure the pre-requisites are installed
+
+
 If you have already installed Ubuntu on Windows 10 but want to uninstall and re-install fresh open a Windows Command Prompt (Run as Administrator) and type the following:
 ```
 lxrun /uninstall /full
