@@ -32,6 +32,7 @@ export class TranslateEditorController implements angular.IController {
   isTraining: boolean = false;
 
   private currentDocType: string;
+  private failedConnectionCount: number = 0;
 
   static $inject = ['$window', '$scope',
     '$q', 'machineService',
@@ -409,11 +410,12 @@ export class TranslateEditorController implements angular.IController {
   private listenForTrainingStatus(): void {
     this.machine.listenForTrainingStatus(progress => this.onTrainStatusUpdate(progress))
       .then(() => this.onTrainSuccess())
-      .catch(() => { })
+      .catch(() => this.onTrainError())
       .finally(() => this.onTrainFinished());
   }
 
   private onTrainStatusUpdate(progress: SmtTrainProgress): void {
+    this.failedConnectionCount = 0;
     this.isTraining = true;
     if (progress.stepCount > 0) {
       this.trainingPercent = progress.percentCompleted;
@@ -421,14 +423,23 @@ export class TranslateEditorController implements angular.IController {
   }
 
   private onTrainSuccess(): void {
+    this.failedConnectionCount = 0;
     this.source.resetTranslation().then(() => this.target.updateSuggestions());
     this.notice.push(this.notice.SUCCESS, 'Finished training the translation engine');
+  }
+
+  private onTrainError(): void {
+    this.failedConnectionCount++;
   }
 
   private onTrainFinished(): void {
     this.isTraining = false;
     this.trainingPercent = 0;
-    setTimeout(() => this.listenForTrainingStatus(), 0);
+    if (this.failedConnectionCount >= 3) {
+      this.notice.push(this.notice.ERROR, 'Unable to connect to translation engine');
+    } else {
+      setTimeout(() => this.listenForTrainingStatus(), 0);
+    }
   }
 
   private onBeforeUnload = (event: BeforeUnloadEvent) => {
