@@ -62,7 +62,7 @@ angular.module('palaso.ui.picklistEditor', ['angular-sortable-view'])
           if (i === index) return -1;
           else if (i < index) return i;
           else return i - 1;
-        }).filter(i => i !== -1);
+        }).filter(function (i) {return i !== -1});
         $scope.items.splice(index, 1);
       };
 
