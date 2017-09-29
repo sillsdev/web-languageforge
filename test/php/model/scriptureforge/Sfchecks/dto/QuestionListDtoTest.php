@@ -33,7 +33,7 @@ class QuestionListDtoTest extends TestCase
 
     public function testEncode_QuestionWithAnswersWhenUsersCanViewEachOthersAnswers_DtoReturnsExpectedData()
     {
-        list($projectId, $textId, $user1Id, $user2Id, $question1Id, $question2Id) = $this->createProjectForTestingQuestionsAndAnswers();
+        list($projectId, $textId, $user1Id, $user2Id, $user3Id, $question1Id, $question2Id) = $this->createProjectForTestingQuestionsAndAnswers();
 
         // Question 1 has 1 answer by John Carter, 0 by Dejah Thoris.
         // Question 2 has 1 answer by John Carter, 1 by Dejah Thoris. Dejah Thoris's answer also contains 1 comment by Dejah Thoris and 1 by John Carter.
@@ -80,6 +80,24 @@ class QuestionListDtoTest extends TestCase
         // make sure our text content is coming down into the dto
         $this->assertTrue(strlen($dto['text']['content']) > 0);
 
+        // And also from the point of view of Tars Tarkas, a project manager
+        $dto = QuestionListDto::encode($projectId, $textId, $user3Id);
+        $this->assertEquals(2, $dto['count']);
+        $this->assertInternalType('array', $dto['entries']);
+        $entriesById = self::$environ->indexItemsBy($dto['entries'], 'id');
+        $entry0 = $entriesById[$question1Id];
+        $entry1 = $entriesById[$question2Id];
+        $this->assertEquals('Who is speaking?', $entry0['title']);
+        $this->assertEquals('Where is the storyteller?', $entry1['title']);
+        $this->assertEquals(1, $entry0['answerCount']);
+        $this->assertEquals(2, $entry1['answerCount']);
+        // Specifically check if comments got included in answer count
+        $this->assertNotEquals(4, $dto['entries'][1]['answerCount'], 'Comments should not be included in answer count.');
+        $this->assertEquals(1, $entry0['responseCount']);
+        $this->assertEquals(5, $entry1['responseCount']);
+        // make sure our text content is coming down into the dto
+        $this->assertTrue(strlen($dto['text']['content']) > 0);
+
         // archive 1 Question
         $question2 = new QuestionModel($project, $question2Id);
         $question2->isArchived = true;
@@ -95,7 +113,7 @@ class QuestionListDtoTest extends TestCase
 
     public function testEncode_QuestionWithAnswersWhenUsersCannotViewEachOthersAnswers_DtoReturnsExpectedData()
     {
-        list($projectId, $textId, $user1Id, $user2Id, $question1Id, $question2Id) = $this->createProjectForTestingQuestionsAndAnswers();
+        list($projectId, $textId, $user1Id, $user2Id, $user3Id, $question1Id, $question2Id) = $this->createProjectForTestingQuestionsAndAnswers();
 
         // Question 1 has 1 answer by John Carter, 0 by Dejah Thoris.
         // Question 2 has 1 answer by John Carter, 1 by Dejah Thoris. Dejah Thoris's answer also contains 1 comment by Dejah Thoris and 1 by John Carter.
@@ -145,6 +163,24 @@ class QuestionListDtoTest extends TestCase
         $this->assertEquals(0, $entry1['responseCount']);
         $this->assertNotEquals(4, $entry2['responseCount'], 'Only a user\'s own comments should be included in response count in this scenario.');
         $this->assertEquals(2, $entry2['responseCount']); // Dejah Thoris can see her own answer and comment, but not John Carter's comment on her answer
+        // make sure our text content is coming down into the dto
+        $this->assertTrue(strlen($dto['text']['content']) > 0);
+
+        // And also from the point of view of Tars Tarkas, a project manager
+        $dto = QuestionListDto::encode($projectId, $textId, $user3Id);
+        $this->assertEquals(2, $dto['count']);
+        $this->assertInternalType('array', $dto['entries']);
+        $entriesById = self::$environ->indexItemsBy($dto['entries'], 'id');
+        $entry0 = $entriesById[$question1Id];
+        $entry1 = $entriesById[$question2Id];
+        $this->assertEquals('Who is speaking?', $entry0['title']);
+        $this->assertEquals('Where is the storyteller?', $entry1['title']);
+        $this->assertEquals(1, $entry0['answerCount'], 'Project managers should still see all answers in this scenario.');
+        $this->assertEquals(2, $entry1['answerCount'], 'Project managers should still see all answers in this scenario.');
+        // Specifically check if comments got included in answer count
+        $this->assertNotEquals(4, $dto['entries'][1]['answerCount'], 'Comments should not be included in answer count.');
+        $this->assertEquals(1, $entry0['responseCount'], 'Project managers should still see all comments in this scenario.');
+        $this->assertEquals(5, $entry1['responseCount'], 'Project managers should still see all comments in this scenario.');
         // make sure our text content is coming down into the dto
         $this->assertTrue(strlen($dto['text']['content']) > 0);
 
@@ -198,9 +234,9 @@ class QuestionListDtoTest extends TestCase
      */
     public function createProjectForTestingQuestionsAndAnswers(): array
     {
-        list($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment1Id, $comment2Id) =
+        list($projectId, $text1Id, $text2Id, $user1Id, $user2Id, $user3Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment1Id, $comment2Id) =
             CommonQuestionsAndAnswersForDto::createProjectForTestingAnswerVisibility(self::$environ);
 
-        return [$projectId, $text1Id, $user1Id, $user2Id, $question1Id, $question2Id];
+        return [$projectId, $text1Id, $user1Id, $user2Id, $user3Id, $question1Id, $question2Id];
     }
 }

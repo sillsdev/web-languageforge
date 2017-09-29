@@ -37,6 +37,22 @@ class CommonQuestionsAndAnswersForDto
         // Answers are tied to specific users, so let's create some sample users
         $user1Id = $environ->createUser('jcarter', 'John Carter', 'johncarter@example.com');
         $user2Id = $environ->createUser('dthoris', 'Dejah Thoris', 'princess@example.com');
+        $user3Id = $environ->createUser('ttarkas', 'Tars Tarkas', 'princess@example.com');
+
+        // Tars Tarkas is the project manager, the other two are contributors
+        $project->addUser($user1Id, ProjectRoles::CONTRIBUTOR);
+        $project->addUser($user2Id, ProjectRoles::CONTRIBUTOR);
+        $project->addUser($user3Id, ProjectRoles::MANAGER);
+        $project->write();
+        $user1 = new UserModel($user1Id);
+        $user2 = new UserModel($user2Id);
+        $user3 = new UserModel($user3Id);
+        $user1->addProject($projectId);
+        $user2->addProject($projectId);
+        $user3->addProject($projectId);
+        $user1->write();
+        $user2->write();
+        $user3->write();
 
         // Two questions for text 1...
         $question1 = new QuestionModel($project);
@@ -97,6 +113,6 @@ class CommonQuestionsAndAnswersForDto
         $comment2->userRef->id = $user1Id;
         $comment2Id = QuestionModel::writeComment($project->databaseName(), $question2Id, $answer3Id, $comment2);
 
-        return [$projectId, $text1Id, $text2Id, $user1Id, $user2Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id];
+        return [$projectId, $text1Id, $text2Id, $user1Id, $user2Id, $user3Id, $answer1Id, $answer2Id, $answer3Id, $question1Id, $question2Id, $comment0Id, $comment1Id, $comment2Id];
     }
 }
