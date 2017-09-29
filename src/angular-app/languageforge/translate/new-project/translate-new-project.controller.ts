@@ -175,7 +175,7 @@ export class TranslateNewProjectController implements angular.IController {
   }
 
   iconForStep(step: number) {
-    let classes = [];
+    const classes = [];
     if (this.$state.current.data.step > step) {
       classes.push(
         (this.bootstrapVersion === 'bootstrap4' ? 'fa fa-check-square' : 'icon-check-sign'));
@@ -335,8 +335,8 @@ export class TranslateNewProjectController implements angular.IController {
         if (result.ok) {
           this.newProject.id = result.data;
           this.project = this.newProject;
-          this.project.config = new TranslateConfig;
-          this.project.config.isTranslationDataShared = true;
+          this.project.config = new TranslateConfig();
+          this.project.config.isTranslationDataShared = false;
           this.sessionService.getSession(true).then(callback);
         } else {
           this.notice.push(this.notice.ERROR, 'The ' + this.newProject.projectName +

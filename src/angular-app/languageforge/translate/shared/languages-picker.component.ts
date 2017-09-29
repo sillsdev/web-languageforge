@@ -13,10 +13,10 @@ export class LanguagesPickerController implements angular.IController {
   $onChanges() {
     this.tlpProject = this.tlpProject || new TranslateProject();
     this.tlpProject.config = this.tlpProject.config || new TranslateConfig();
-    if (angular.isUndefined(this.tlpProject.config.isTranslationDataShared) ||
+    if (this.tlpProject.config.isTranslationDataShared == null ||
       this.tlpProject.config.isTranslationDataShared === ''
     ) {
-      this.tlpProject.config.isTranslationDataShared = true;
+      this.tlpProject.config.isTranslationDataShared = false;
     }
   }
 
@@ -26,21 +26,21 @@ export class LanguagesPickerController implements angular.IController {
     }
 
     return '';
-  };
+  }
 
   openLanguageModal(type: string) {
-    let modalInstance = this.$modal.open({
+    const modalInstance = this.$modal.open({
       templateUrl: '/angular-app/languageforge/translate/shared/select-language.modal.html',
-      controller: ['$scope', '$uibModalInstance', function (
+      controller: ['$scope', '$uibModalInstance', (
         $scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService
-      ) {
-        let typeNames = { source: 'Source', target: 'Target' };
+      ) => {
+        const typeNames = { source: 'Source', target: 'Target' };
         $scope.typeName = typeNames[type];
         $scope.selected = {
           code: '',
           language: {}
         };
-        $scope.select = function () {
+        $scope.select = () => {
           $modalInstance.close($scope.selected);
         };
       }],
@@ -48,14 +48,15 @@ export class LanguagesPickerController implements angular.IController {
       windowTopClass: 'modal-select-language'
     });
     modalInstance.result.then((selected: any) => {
-      if (this.tlpUpdateLanguage) this.tlpUpdateLanguage({
-        docType: type,
-        code: selected.code,
-        language: selected.language
-      });
+      if (this.tlpUpdateLanguage) {
+        this.tlpUpdateLanguage({
+          docType: type,
+          code: selected.code,
+          language: selected.language
+        });
+      }
     });
-  };
-
+  }
 }
 
 export const LanguagesPickerComponent: angular.IComponentOptions = {
