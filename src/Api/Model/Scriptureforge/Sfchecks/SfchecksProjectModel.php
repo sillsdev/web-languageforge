@@ -3,6 +3,7 @@
 namespace Api\Model\Scriptureforge\Sfchecks;
 
 use Api\Model\Scriptureforge\SfProjectModel;
+use Api\Model\Shared\Rights\ProjectRoles;
 
 class SfchecksProjectModel extends SfProjectModel
 {
