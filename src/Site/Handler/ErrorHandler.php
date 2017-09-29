@@ -16,7 +16,7 @@ class ErrorHandler
                 return $app['twig']->render('error404.twig', array());
                 break;
             default:
-                return new Response('We are sorry, something went wrong.');
+                return new Response('We are sorry, something went wrong.' . "\nCode: $code \nException: " . $e->getMessage() . "\nStack Trace: " . $e->getTraceAsString());
         }
     }
 }

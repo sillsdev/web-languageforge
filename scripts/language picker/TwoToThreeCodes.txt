@@ -3,7 +3,7 @@ ab	abk
 af	afr
 ak	aka
 am	amh
-ar	arb
+ar	ara
 an	arg
 as	asm
 av	ava
@@ -104,10 +104,9 @@ mr	mar
 mk	mkd
 mg	mlg
 mt	mlt
-mo	mol
 mn	mon
 mi	mri
-ms	zlm
+ms	msa
 my	mya
 na	nau
 nv	nav

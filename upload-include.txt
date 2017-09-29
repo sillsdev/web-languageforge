@@ -1,0 +1,7 @@
+# specific files to include
+/assets/index.html
+
+# patterns to include
+/angular-app/languageforge/lexicon/js/vendor/**
+/angular-app/**/assets/*.js
+/angular-app/**/**min.js

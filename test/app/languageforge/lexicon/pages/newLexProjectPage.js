@@ -1,43 +1,40 @@
 'use strict';
 
+module.exports = new NewLexProjectPage();
+
 function NewLexProjectPage() {
   var mockUpload = require('../../../bellows/pages/mockUploadElement.js');
   var modal      = require('./lexModals.js');
-  var _this = this;
 
   this.get = function get() {
     browser.get(browser.baseUrl + '/app/lexicon/new-project');
   };
 
-  this.getChooser = function getChooser() {
-    browser.get(browser.baseUrl + '/app/lexicon/new-project/#/chooser');
-  };
-
   // form controls
-  this.noticeList = element.all(by.repeater('notice in notices()'));
-  this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
+  this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
+  this.firstNoticeCloseButton = this.noticeList.first().element(by.partialButtonText('×'));
   this.newLexProjectForm = element(by.tagName('form'));
   this.progressIndicatorStep3Label = element(by.binding('progressIndicatorStep3Label'));
   this.backButton = element(by.id('backButton'));
   this.nextButton = element(by.id('nextButton'));
   this.expectFormIsValid = function expectFormIsValid() {
-    expect(_this.nextButton.getAttribute('class')).toMatch(/btn-success(?:\s|$)/);
+    expect(this.nextButton.getAttribute('class')).toMatch(/btn-primary(?:\s|$)/);
   };
 
   this.expectFormIsNotValid = function expectFormIsNotValid() {
-    expect(_this.nextButton.getAttribute('class')).not.toMatch(/btn-success(?:\s|$)/);
+    expect(this.nextButton.getAttribute('class')).not.toMatch(/btn-primary(?:\s|$)/);
   };
 
   this.formStatus = element(by.id('form-status'));
-  this.formStatus.expectHasNoError = function expectHasNoError() {
-    expect(_this.formStatus.getAttribute('class')).not.toContain('alert');
-  };
+  this.formStatus.expectHasNoError = function () {
+    expect(this.formStatus.getAttribute('class')).not.toContain('alert');
+  }.bind(this);
 
-  this.formStatus.expectContainsError = function expectContainsError(partialMsg) {
+  this.formStatus.expectContainsError = function (partialMsg) {
     if (!partialMsg) partialMsg = '';
-    expect(_this.formStatus.getAttribute('class')).toContain('alert-error');
-    expect(_this.formStatus.getText()).toContain(partialMsg);
-  };
+    expect(this.formStatus.getAttribute('class')).toContain('alert-danger');
+    expect(this.formStatus.getText()).toContain(partialMsg);
+  }.bind(this);
 
   // step 0: chooser
   this.chooserPage = {};
@@ -47,12 +44,10 @@ function NewLexProjectPage() {
   // step 1: send receive credentials
   this.srCredentialsPage = {};
   this.srCredentialsPage.loginInput = element(by.id('srUsername'));
-  this.srCredentialsPage.loginUnknown = element(by.id('usernameUnknown'));
   this.srCredentialsPage.loginOk = element(by.id('usernameOk'));
   this.srCredentialsPage.passwordInput = element(by.id('srPassword'));
-  this.srCredentialsPage.passwordUnknown = element(by.id('passwordUnknown'));
+  this.srCredentialsPage.credentialsInvalid = element(by.id('credentialsInvalid'));
   this.srCredentialsPage.passwordOk = element(by.id('passwordOk'));
-  this.srCredentialsPage.projectUneditable = element(by.id('srProject'));
   this.srCredentialsPage.projectSelect = function () {
     return element(by.id('srProjectSelect'));
   };
@@ -93,12 +88,10 @@ function NewLexProjectPage() {
 
   // see http://stackoverflow.com/questions/25553057/making-protractor-wait-until-a-ui-boostrap-modal-box-has-disappeared-with-cucum
   this.primaryLanguagePage.selectButtonClick = function () {
-    _this.primaryLanguagePage.selectButton.click();
+    this.primaryLanguagePage.selectButton.click();
     browser.executeScript('$(\'.modal\').removeClass(\'fade\');');
-  };
+  }.bind(this);
 
   // select language modal
   this.modal = modal;
 }
-
-module.exports = new NewLexProjectPage();

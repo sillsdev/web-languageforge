@@ -2,9 +2,7 @@
 
 namespace Api\Library\Shared\Script\Migration;
 
-use Api\Library\Languageforge\Semdomtrans\SemDomXMLImporter;
-use Api\Model\Languageforge\SemDomTransProjectModel;
-use Api\Model\ProjectModel;
+use Api\Model\Languageforge\Semdomtrans\SemDomTransProjectModel;
 
 class ImportEnglishSemDomProject
 {

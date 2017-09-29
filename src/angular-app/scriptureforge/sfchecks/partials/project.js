@@ -1,12 +1,14 @@
 'use strict';
 
-angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellows.services', 'sfchecks.services',
-  'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.jqte',
-  'ngFileUpload', 'ngRoute'])
-  .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService', 'sfchecksLinkService',
-    'silNoticeService', 'sfchecksProjectService', 'messageService', 'modalService',
-  function ($scope, textService, ss, breadcrumbService, sfchecksLinkService,
-            notice, sfchecksProjectService, messageService, modalService) {
+angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellows.services',
+  'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice',
+  'palaso.ui.textdrop', 'palaso.ui.jqte', 'ngFileUpload', 'ngRoute'])
+  .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService',
+    'linkService', 'listviewSortingService', 'silNoticeService', 'sfchecksProjectService',
+    'messageService', 'utilService', 'modalService', '$q',
+  function ($scope, textService, ss, breadcrumbService,
+            linkService, sorting, notice, sfchecksProjectService,
+            messageService, util, modalService, $q) {
     $scope.finishedLoading = false;
 
     // Rights
@@ -14,7 +16,8 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     $scope.rights.archive = false;
     $scope.rights.create = false;
     $scope.rights.edit = false; //ss.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT);
-    $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.edit;
+    $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
+      $scope.rights.edit;
 
     // Broadcast Messages
     // items are in the format of {id: id, subject: subject, content: content}
@@ -29,7 +32,7 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     $scope.markMessageRead = function (id) {
       for (var i = 0; i < $scope.messages.length; ++i) {
         var m = $scope.messages[i];
-        if (m.id == id) {
+        if (m.id === id) {
           $scope.messages.splice(i, 1);
           messageService.markRead(id);
           break;
@@ -43,53 +46,75 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     $scope.updateSelection = function (event, item) {
       var selectedIndex = $scope.selected.indexOf(item);
       var checkbox = event.target;
-      if (checkbox.checked && selectedIndex == -1) {
+      if (checkbox.checked && selectedIndex === -1) {
         $scope.selected.push(item);
-      } else if (!checkbox.checked && selectedIndex != -1) {
+      } else if (!checkbox.checked && selectedIndex !== -1) {
         $scope.selected.splice(selectedIndex, 1);
       }
     };
 
     $scope.isSelected = function (item) {
-      return item != null && $scope.selected.indexOf(item) >= 0;
+      return item !== null && $scope.selected.indexOf(item) >= 0;
     };
 
     $scope.texts = [];
 
+    // Listview Sorting
+
+    $scope.sortdata = { sortColumn: '', direction: '' };
+
+    $scope.sortIconClass = function (columnName) { return sorting.sortIconClass($scope.sortdata, columnName); };
+
+    $scope.setSortColumn = function (columnName) { return sorting.setSortColumn($scope.sortdata, columnName); };
+
+    $scope.doSort = function () {
+      sorting.sortDataByColumn($scope.texts, $scope.sortdata.sortColumn, $scope.sortdata.direction);
+    };
+
+    $scope.doSortByColumn = function (columnName) {
+      $scope.setSortColumn(columnName);
+      $scope.doSort();
+    };
+
+    // Page Dto
     // Page Dto
     $scope.getPageDto = function () {
-      sfchecksProjectService.pageDto(function (result) {
-        if (result.ok) {
-          $scope.texts = result.data.texts;
-          $scope.textsCount = $scope.texts.length;
-          $scope.enhanceDto($scope.texts);
+      $q.all([ss.getSession(), sfchecksProjectService.pageDto()]).then(function (data) {
+        var session = data[0];
+        var result = data[1];
+        $scope.texts = result.data.texts;
+        $scope.textsCount = $scope.texts.length;
+        $scope.enhanceDto($scope.texts);
 
-          $scope.messages = result.data.broadcastMessages;
+        $scope.messages = result.data.broadcastMessages;
 
-          // update activity count service
-          $scope.activityUnreadCount = result.data.activityUnreadCount;
+        // update activity count service
+        $scope.activityUnreadCount = result.data.activityUnreadCount;
 
-          $scope.members = result.data.members;
+        $scope.members = result.data.members;
 
-          $scope.project = result.data.project;
-          $scope.project.url = sfchecksLinkService.project();
+        $scope.project = result.data.project;
+        $scope.project.url = linkService.project();
 
-          // Breadcrumb
-          breadcrumbService.set('top',
-              [
-               { href: '/app/projects', label: 'My Projects' },
-               { href: sfchecksLinkService.project(), label: $scope.project.name }
-              ]
-          );
+        // Breadcrumb
+        breadcrumbService.set('top',
+        [
+        { href: '/app/projects', label: 'My Projects' },
+        { href: linkService.project(), label: $scope.project.name }
+        ]
+        );
 
-          var rights = result.data.rights;
-          $scope.rights.archive = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE) && !ss.session.project.isArchived;
-          $scope.rights.create = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE) && !ss.session.project.isArchived;
-          $scope.rights.edit = ss.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) && !ss.session.project.isArchived;
-          $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create || $scope.rights.edit;
+        var rights = result.data.rights;
+        $scope.rights.archive = session.hasRight(rights, ss.domain.TEXTS, ss.operation.ARCHIVE) &&
+          !session.project().isArchived;
+        $scope.rights.create = session.hasRight(rights, ss.domain.TEXTS, ss.operation.CREATE) &&
+          !session.project().isArchived;
+        $scope.rights.edit = session.hasRight(rights, ss.domain.TEXTS, ss.operation.EDIT) &&
+          !session.project().isArchived;
+        $scope.rights.showControlBar = $scope.rights.archive || $scope.rights.create ||
+          $scope.rights.edit;
 
-          $scope.finishedLoading = true;
-        }
+        $scope.finishedLoading = true;
       });
     };
 
@@ -102,13 +127,12 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
         textIds.push($scope.selected[i].id);
       }
 
-      if (textIds.length == 1) {
+      if (textIds.length === 1) {
         message = 'Are you sure you want to archive the selected text?';
       } else {
         message = 'Are you sure you want to archive the ' + textIds.length + ' selected texts?';
       }
 
-      // The commented modalService below can be used instead of the window.confirm alert, but must change E2E tests using alerts. IJH 2014-06
       var modalOptions = {
         closeButtonText: 'Cancel',
         actionButtonText: 'Archive',
@@ -120,14 +144,14 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
           if (result.ok) {
             $scope.selected = []; // Reset the selection
             $scope.getPageDto();
-            if (textIds.length == 1) {
+            if (textIds.length === 1) {
               notice.push(notice.SUCCESS, 'The text was archived successfully');
             } else {
               notice.push(notice.SUCCESS, 'The texts were archived successfully');
             }
           }
         });
-      });
+      }, angular.noop);
     };
 
     // Add Text
@@ -159,33 +183,22 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
     $scope.enhanceDto = function (items) {
       for (var i in items) {
         if (items.hasOwnProperty(i)) {
-          items[i].url = sfchecksLinkService.text(items[i].id);
+          items[i].url = linkService.text(items[i].id);
         }
       }
     };
 
     $scope.readUsx = function readUsx(file) {
-      if (!file || file.$error) return;
-
-      var reader = new FileReader();
-      reader.addEventListener('loadend', function () {
-        // Basic sanity check: make sure what was uploaded is USX
-        // First few characters should be optional BOM, optional <?xml ..., then <usx ...
-        var startOfText = reader.result.slice(0, 1000);
-        var usxIndex = startOfText.indexOf('<usx');
-        if (usxIndex != -1) {
-          $scope.$apply(function () {
-            $scope.content = reader.result;
-          });
-        } else {
-          notice.push(notice.ERROR, 'Error loading USX file. The file doesn\'t appear to be valid USX.');
-          $scope.$apply(function () {
-            $scope.content = '';
-          });
-        }
+      util.readUsxFile(file).then(function (usx) {
+        $scope.$applyAsync(function () {
+          $scope.content = usx;
+        });
+      }).catch(function (errorMessage) {
+        $scope.$applyAsync(function () {
+          notice.push(notice.ERROR, errorMessage);
+          $scope.content = '';
+        });
       });
-
-      reader.readAsText(file);
     };
 
     $scope.getPageDto();

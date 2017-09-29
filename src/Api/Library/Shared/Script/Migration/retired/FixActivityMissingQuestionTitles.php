@@ -1,26 +1,23 @@
 <?php
+
 namespace Api\Library\Shared\Script\Migration;
 
-use Api\Model\ActivityModel;
-
-use Api\Model\dto\ActivityListDto;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Shared\ProjectListModel;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\ActivityModel;
+use Api\Model\Shared\Dto\ActivityListDto;
 
 require_once APPPATH . 'Api/Model/TextModel.php';
-require_once APPPATH . 'Api/Model/QuestionModel.php';
-
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
-use Api\Model\ProjectListModel;
-use Api\Model\ProjectModel;
 
 class FixActivityMissingQuestionTitles
 {
     public function run()
     {
         $message = '';
-        $projectlist = new ProjectListModel();
-        $projectlist->read();
-        $projectIds = array_map(function ($e) { return $e['id'];}, $projectlist->entries);
+        $projectList = new ProjectListModel();
+        $projectList->read();
+        $projectIds = array_map(function ($e) { return $e['id'];}, $projectList->entries);
 
         $emptyQuestionTitles = 0;
 

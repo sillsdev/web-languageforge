@@ -1,68 +1,41 @@
 'use strict';
 
-function ProjectSettingsPage() {
-  var _this = this;
+module.exports = new ProjectSettingsPage();
 
-  this.settingsMenuLink = element(by.css('.hdrnav a.btn i.icon-cog'));
+function ProjectSettingsPage() {
+  var projectsPage = require('../../../bellows/pages/projectsPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
+
+  this.settingsMenuLink = element(by.className('btn dropdown-toggle'));
   this.projectSettingsLink = element(by.linkText('Project Settings'));
-  this.get = function get() {
+
+  // Get the projectSettings for project projectName
+  this.get = function get(projectName) {
+    projectsPage.get();
+    projectsPage.clickOnProject(projectName);
+    browser.wait(expectedCondition.visibilityOf(this.settingsMenuLink), CONDITION_TIMEOUT);
     this.settingsMenuLink.click();
+    browser.wait(expectedCondition.visibilityOf(this.projectSettingsLink), CONDITION_TIMEOUT);
     this.projectSettingsLink.click();
   };
 
   //noinspection JSUnusedGlobalSymbols
   this.backToDictionaryBtn = element(by.buttonText('Dictionary'));
 
-  this.tabDivs = element.all(by.repeater('tab in tabs'));
+  this.tabDivs = element.all(by.className('tab-pane'));
   this.activePane = element(by.css('div.tab-pane.active'));
 
   this.getTabByName = function getTabByName(tabName) {
-    return element(by.css('div.tabbable ul.nav-tabs')).element(by.cssContainingText('a', tabName));
+    return element(by.css('ul.nav-tabs')).element(by.cssContainingText('a', tabName));
   };
 
   this.tabs = {
-    project: this.getTabByName('Project Properties'),
-    sendReceive: this.getTabByName('Send and Receive Properties')
+    project: this.getTabByName('Project Properties')
   };
 
   this.projectTab = {
     saveButton: this.tabDivs.get(0).element(by.buttonText('Save'))
-  };
-
-  this.sendReceiveTab = {
-    formStatus:             this.tabDivs.get(1).element(by.id('form-status')),
-    loginInput:             this.tabDivs.get(1).element(by.id('srUsername')),
-    loginUnknown:           this.tabDivs.get(1).element(by.id('usernameUnknown')),
-    loginOk:                this.tabDivs.get(1).element(by.id('usernameOk')),
-    passwordInput:          this.tabDivs.get(1).element(by.id('srPassword')),
-    passwordUnknown:        this.tabDivs.get(1).element(by.id('passwordUnknown')),
-    passwordOk:             this.tabDivs.get(1).element(by.id('passwordOk')),
-    visiblePasswordInput:   this.tabDivs.get(1).element(by.id('srVisiblePassword')),
-    showCharactersCheckbox: this.tabDivs.get(1).element(by.model('showPassword')),
-    projectUneditable:      this.tabDivs.get(1).element(by.id('srProject')),
-    saveButton:             this.tabDivs.get(1).element(by.buttonText('Save'))
-  };
-
-  this.sendReceiveTab.projectSelect = function projectSelect() {
-    return _this.tabDivs.get(1).element(by.id('srProjectSelect'));
-  };
-
-  this.sendReceiveTab.projectSelectedOption = function projectSelectedOption() {
-    return _this.sendReceiveTab.projectSelect().element(by.css('option:checked')).getText();
-  };
-
-  this.sendReceiveTab.formStatus.expectHasNoError = function expectHasNoError() {
-    expect(_this.sendReceiveTab.formStatus.getAttribute('class')).not.toContain('alert');
-  };
-
-  this.sendReceiveTab.formStatus.expectContainsError = function expectContainsError(partialMsg) {
-    if (!partialMsg) partialMsg = '';
-    expect(_this.sendReceiveTab.formStatus.getAttribute('class')).toContain('alert-error');
-    expect(_this.sendReceiveTab.formStatus.getText()).toContain(partialMsg);
-  };
-
-  this.communicationTab = {
-    saveButton: this.tabDivs.get(2).element(by.buttonText('Save'))
   };
 
   /** Second parameter is optional, default false. If true, fieldName will be considered
@@ -75,5 +48,3 @@ function ProjectSettingsPage() {
       .element(by.elemMatches('div[data-ng-repeat]', fieldRegex));
   };
 }
-
-module.exports = new ProjectSettingsPage();

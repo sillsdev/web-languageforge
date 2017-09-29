@@ -2,9 +2,9 @@
 
 namespace Api\Library\Shared\Communicate\Sms;
 
-use Api\Model\Mapper\Id;
-use Api\Model\Mapper\IdReference;
-use Api\Model\Mapper\MapperModel;
+use Api\Model\Shared\Mapper\Id;
+use Api\Model\Shared\Mapper\IdReference;
+use Api\Model\Shared\Mapper\MapperModel;
 
 class SmsModel extends MapperModel
 {
@@ -30,69 +30,44 @@ class SmsModel extends MapperModel
         parent::__construct(SmsMongoMapper::connect($databaseName), $id);
     }
 
+    /** @var Id */
+    public $id;
+
+    /** @var IdReference */
+    public $userRef;
+
+    /** @var string */
+    public $userName;
+
+    /** @var string */
+    public $from;
+
+    /** @var string */
+    public $to;
+
+    /** @var string */
+    public $message;
+
+    /** @var string */
+    public $state;
+
+    /** @var string */
+    public $error;
+
+    /** @var \DateTime */
+    public $dateCreated;
+
+    /** @var \DateTime */
+    public $dateSent;
+
+    /** @var string */
+    public $provider;
+
+    /** @var string */
+    public $providerInfo;
+
     public static function remove($databaseName, $id)
     {
         SmsMongoMapper::connect($databaseName)->remove($id);
     }
-
-    /**
-     * @var Id
-     */
-    public $id;
-
-    /**
-     * @var IdReference
-     */
-    public $userRef;
-
-    /**
-     * @var string
-     */
-    public $userName;
-
-    /**
-     * @var string
-     */
-    public $from;
-
-    /**
-     * @var string
-     */
-    public $to;
-
-    /**
-     * @var string
-     */
-    public $message;
-
-    /**
-     * @var string
-     */
-    public $state;
-
-    /**
-     * @var string
-     */
-    public $error;
-
-    /**
-     * @var \DateTime
-     */
-    public $dateCreated;
-
-    /**
-     * @var \DateTime
-     */
-    public $dateSent;
-
-    /**
-     * @var string
-     */
-    public $provider;
-
-    /**
-     * @var string
-     */
-    public $providerInfo;
-
 }

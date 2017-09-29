@@ -2,8 +2,8 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Mapper\IdReference;
-use Api\Model\Mapper\ObjectForEncoding;
+use Api\Model\Shared\Mapper\IdReference;
+use Api\Model\Shared\Mapper\ObjectForEncoding;
 use Litipk\Jiffy\UniversalTimestamp;
 
 /**

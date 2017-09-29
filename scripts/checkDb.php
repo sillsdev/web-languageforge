@@ -3,7 +3,7 @@
 require_once('scriptsConfig.php');
 
 use Api\Model\Shared\DbIntegrityHelper;
-use Api\Model\ProjectListModel;
+use Api\Model\Shared\ProjectListModel;
 
 (php_sapi_name() == 'cli') or die('this script must be run on the command-line');
 
@@ -21,7 +21,17 @@ foreach ($projectList->entries as $p) {
     print $helper->flushOutput();
 }
 
+$userList = new \Api\Model\Shared\UserListModel();
+$userList->read();
+foreach ($userList->entries as $u) {
+    $helper->checkUser($u['id']);
+    print $helper->flushOutput();
+}
+
+$helper->generateSummary();
+
 print $helper->flushOutput();
+
 
 // verify integrity of all users
 

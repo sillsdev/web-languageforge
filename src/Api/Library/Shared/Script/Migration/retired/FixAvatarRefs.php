@@ -2,8 +2,8 @@
 
 namespace Api\Library\Shared\Script\Migration;
 
-use Api\Model\UserListModel;
-use Api\Model\UserProfileModel;
+use Api\Model\Shared\UserListModel;
+use Api\Model\Shared\UserModel;
 
 class FixAvatarRefs
 {
@@ -16,7 +16,7 @@ class FixAvatarRefs
         $badAvatarLinks = 0;
         foreach ($userlist->entries as $userParams) { // foreach existing user
             $userId = $userParams['id'];
-            $user = new UserProfileModel($userId);
+            $user = new UserModel($userId);
             if (strpos($user->avatar_ref, '/') !== FALSE or strpos($user->avatar_ref, '\\') !== FALSE) {
                 if ($user->avatar_color != '' && $user->avatar_shape != '') {
                     $newRef = $user->avatar_color.'-'.$user->avatar_shape.'-128x128.png';

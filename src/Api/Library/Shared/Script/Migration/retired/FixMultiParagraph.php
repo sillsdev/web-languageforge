@@ -12,8 +12,8 @@ use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexMultiParagraph;
 use Api\Model\Languageforge\Lexicon\LexParagraph;
 use Api\Model\Languageforge\Lexicon\LexSense;
-use Api\Model\Mapper\ObjectForEncoding;
-use Api\Model\ProjectListModel;
+use Api\Model\Shared\Mapper\ObjectForEncoding;
+use Api\Model\Shared\ProjectListModel;
 
 (php_sapi_name() == 'cli') or exit('this script must be run on the command-line');
 

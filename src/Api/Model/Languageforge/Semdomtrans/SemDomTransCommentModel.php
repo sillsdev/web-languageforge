@@ -2,29 +2,17 @@
 
 namespace Api\Model\Languageforge\Semdomtrans;
 
-use Api\Model\Mapper\Id;
-use Api\Model\Mapper\IdReference;
-use Api\Model\Mapper\MapperModel;
-use Api\Model\Mapper\MongoMapper;
-use Api\Model\ProjectModel;
+use Api\Model\Shared\Mapper\Id;
+use Api\Model\Shared\Mapper\IdReference;
+use Api\Model\Shared\Mapper\MapperModel;
+use Api\Model\Shared\Mapper\MongoMapper;
+use Api\Model\Shared\ProjectModel;
 
 class SemDomTransCommentModel extends MapperModel
 {
-
-    public static function mapper($databaseName)
-    {
-        /** @var MongoMapper $instance */
-        static $instance = null;
-        if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new MongoMapper($databaseName, 'semdomTransComments');
-        }
-
-        return $instance;
-    }
-
     /**
      * @param ProjectModel $projectModel
-     * @param string       $id
+     * @param string $id
      */
     public function __construct($projectModel, $id = '')
     {
@@ -42,9 +30,20 @@ class SemDomTransCommentModel extends MapperModel
     /** @var IdReference */
     public $entryRef;
 
-    /** @var SemDomTransCommentFieldReference */
+    /** @var SemDomTransFieldReference */
     public $regarding;
 
     /** @var string */
     public $content;
+
+    public static function mapper($databaseName)
+    {
+        /** @var MongoMapper $instance */
+        static $instance = null;
+        if (null === $instance || $instance->databaseName() != $databaseName) {
+            $instance = new MongoMapper($databaseName, 'semdomTransComments');
+        }
+
+        return $instance;
+    }
 }

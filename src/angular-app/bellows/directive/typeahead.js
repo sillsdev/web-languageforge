@@ -6,7 +6,7 @@ angular.module('palaso.ui.typeahead', [])
       restrict: 'E',
       transclude: true,
       replace: true,
-      templateUrl: '/angular-app/bellows/directive/typeahead.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/typeahead.html',
       scope: {
         search: '=',
         select: '=',
@@ -51,7 +51,7 @@ angular.module('palaso.ui.typeahead', [])
         $scope.query = function () {
           if ($scope.term) {
             $scope.hide = false;
-            $scope.search($scope.term);
+            $scope.search($scope.term.normalize());
           } else {
             // Hide when no search term
             $scope.hide = true;
@@ -126,6 +126,7 @@ angular.module('palaso.ui.typeahead', [])
         });
 
         scope.$watch('items', function (items) {
+          if(!items) return;
           controller.activate(items.length ? items[0] : null);
         });
 

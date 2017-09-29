@@ -1,0 +1,46 @@
+---
+
+# vars_palaso
+
+# mongo_path: /hddlinux/mongodb
+mongo_path: /var/lib/mongodb
+php_log_folder: /var/log/php
+lf_path: /var/www/virtual/default_local/web-languageforge
+sf_path: "{{lf_path}}"
+
+ssl_letsencrypt_install: false
+
+ssl_items: []
+
+apache_site_enable:
+  - default_local.conf
+  - languageforge_org.conf
+
+apache_vhosts:
+  - server_name: default.local
+    server_admin: webmaster@palaso.org
+    server_file_name: default_local
+    template: vhost_ssl.conf.j2
+    document_root: /var/www/virtual/default_local
+    directory_options:
+      - "+Indexes"
+      - "+FollowSymLinks"
+    directory_extra:
+      - RewriteEngine On
+    virtual_hosts:
+      - has_ssl: false
+        port: 80
+        server_alias: []
+  - server_name: languageforge.org
+    server_admin: webmaster@palaso.org
+    server_file_name: languageforge_org
+    template: vhost_ssl.conf.j2
+    document_root: /var/www/virtual/languageforge.org/htdocs
+    link_to: "{{lf_path}}/src"
+    directory_extra:
+      - RewriteEngine On
+    virtual_hosts:
+      - has_ssl: false
+        port: 80
+        server_alias:
+          - languageforge.local

@@ -3,19 +3,17 @@
 namespace Site\Controller;
 
 use Api\Library\Shared\Communicate\Communicate;
-use Api\Model\Command\UserCommands;
-use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
-use Api\Model\UserModelBase;
+use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
+use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\UserModel;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Core\SecurityContextInterface;
 
 defined('ENVIRONMENT') or exit('No direct script access allowed');
 
-class Auth extends PublicApp
+class Auth extends App
 {
     // return status
     const LOGIN_FAIL = 'loginFail';
@@ -27,23 +25,26 @@ class Auth extends PublicApp
         switch ($appName) {
             /** @noinspection PhpMissingBreakStatementInspection */
             case 'reset_password':
-                $user = new UserModelBase();
+                $user = new UserModel();
                 if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
                     $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
 
-                    return $app->redirect('/auth/login');
+                    return $app->redirect($this->isLoggedIn($app) ? '/auth/logout' : '/auth/login');
                 }
 
                 if (!$user->hasForgottenPassword(false)) {
                     $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. It may have expired. Please try again.');
 
-                    return $app->redirect('/auth/login');
+                    return $app->redirect($this->isLoggedIn($app) ? '/auth/logout' : '/auth/login');
                 }
 
                 // no break; - intentional fall through to next case
             case 'forgot_password':
             case 'login':
-                $this->setupNgView($app, $appName);
+                if($this->isLoggedIn($app)) {
+                    return $app->redirect('/app/projects');
+                }
+                $this->setupAngularAppVariables($app, $appName);
                 $this->setupAuthView($request, $app);
 
                 return $this->renderPage($app, 'angular-app');
@@ -55,16 +56,17 @@ class Auth extends PublicApp
 
     public function forgotPassword(Request $request, Application $app)
     {
-        $usernameOrEmail = $request->request->get('_username');
+        $usernameOrEmail = UserCommands::sanitizeInput($request->request->get('_username'));
         $user = new UserModel();
         if (!$user->readByUsernameOrEmail($usernameOrEmail)) {
             $app['session']->getFlashBag()->add('errorMessage', 'User not found.');
             return $this->view($request, $app, 'forgot_password');
+        } else if (!$user->active) {
+            $app['session']->getFlashBag()->add('errorMessage', 'Access denied.');
+            return $this->view($request, $app, 'forgot_password');
         }
 
-        $identityCheck = UserCommands::checkIdentity($user->username, $user->email, $this->website);
-
-        if (! $identityCheck->usernameExistsOnThisSite) {
+        if (!$user->hasRoleOnSite($this->website)) {
             $user->siteRole[$this->website->domain] = $this->website->userDefaultSiteRole;
         }
 
@@ -80,10 +82,21 @@ class Auth extends PublicApp
     private function setupAuthView(Request $request, Application $app)
     {
         $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
-        if ($app['security.last_error']($request)) {
-            $app['session']->getFlashBag()->add('errorMessage', $app['security.last_error']($request));
-            if ($app['session']->has(SecurityContextInterface::AUTHENTICATION_ERROR)) {
-                $app['session']->remove(SecurityContextInterface::AUTHENTICATION_ERROR);
+        $errorMsg = $app['security.last_error']($request);
+        if ($errorMsg == 'Bad credentials.') {
+            $user = new UserModel();
+            if ($user->readByUsernameOrEmail($this->data['last_username']) &&
+                !$user->active) {
+                $errorMsg = 'Your account has been deactivated';
+            } else {
+                $errorMsg = 'Invalid username or password.';
+            }
+        }
+
+        if ($errorMsg) {
+            $app['session']->getFlashBag()->add('errorMessage', $errorMsg);
+            if ($app['session']->has(Security::AUTHENTICATION_ERROR)) {
+                $app['session']->remove(Security::AUTHENTICATION_ERROR);
             }
         }
     }
@@ -92,12 +105,13 @@ class Auth extends PublicApp
      * @param Application $app
      * @param string $resetPasswordKey
      * @param string $newPassword
-     * @throws \Api\Library\Shared\Palaso\Exception\UserUnauthorizedException
+     * @throws UserUnauthorizedException
      * @return string $userId
      */
     public static function resetPassword(Application $app, $resetPasswordKey = '', $newPassword = '')
     {
-        $user = new UserModelBase();
+        $user = new UserModel();
+
         if (!$user->readByProperty('resetPasswordKey', $resetPasswordKey)) {
             $app['session']->getFlashBag()->add('errorMessage', 'Your password reset cannot be completed. Please try again.');
             return false;

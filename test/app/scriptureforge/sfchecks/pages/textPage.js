@@ -1,18 +1,31 @@
 'use strict';
 
-var SfTextPage = function () {
+module.exports = new SfTextPage();
+
+function SfTextPage() {
   // currently this page is called questions.html but will be refactored. IJH 2014-06
+
+  var util = require('../../../bellows/pages/util.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
+
+  this.notice = util.notice;
 
   this.archiveButton = element(by.partialButtonText('Archive Questions'));
   this.makeTemplateBtn = element(by.partialButtonText('Make Template'));
   this.addNewBtn = element(by.partialButtonText('Add New Question'));
   this.textSettingsBtn = element(by.id('text_settings_button'));
 
-  this.questionLink = function (title) {
+  this.clickTextSettingsButton = function() {
+    element(by.id("text_settings_button")).click();
+    element(by.id("text_settings_link")).click();
+  }
+
+  this.questionLink = function questionLink(title) {
     return element(by.linkText(title));
   };
 
-  this.clickOnQuestion = function (questionTitle) {
+  this.clickOnQuestion = function clickOnQuestion(questionTitle) {
     element(by.linkText(questionTitle)).click();
   };
 
@@ -31,7 +44,7 @@ var SfTextPage = function () {
 
   // getFirstCheckbox has to be a function because the .first() method will actually resolve the
   // finder
-  this.getFirstCheckbox = function () {
+  this.getFirstCheckbox = function getFirstCheckbox() {
     return this.questionRows.first().element(by.css('input[type="checkbox"]'));
   };
 
@@ -41,25 +54,24 @@ var SfTextPage = function () {
     description: element(by.model('questionDescription')),
     summary: element(by.model('questionTitle')),
     saveButton: element(by.css('form[name="newQuestionForm"]'))
-      .element(by.partialButtonText('Save'))
+      .element(by.css('.save-new-question'))
   };
 
-  this.addNewQuestion = function (description, summary) {
+  this.addNewQuestion = function addNewQuestion(description, summary) {
     expect(this.newQuestion.showFormButton.isDisplayed()).toBe(true);
     this.newQuestion.showFormButton.click();
+    browser.wait(expectedCondition.visibilityOf(this.newQuestion.description), CONDITION_TIMEOUT);
     this.newQuestion.description.sendKeys(description);
     this.newQuestion.summary.sendKeys(summary);
     this.newQuestion.saveButton.click();
   };
 
   //noinspection JSUnusedGlobalSymbols
-  this.printQuestionNames = function () {
+  this.printQuestionNames = function printQuestionNames() {
     this.questionNames.each(function (names) {
       names.getText().then(console.log);
     });
   };
 
-  this.textContent = element(by.id('text'));
-};
-
-module.exports = new SfTextPage();
+  this.textContent = element(by.id('textcontrol'));
+}

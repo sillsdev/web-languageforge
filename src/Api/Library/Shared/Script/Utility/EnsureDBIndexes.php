@@ -5,10 +5,10 @@ namespace Api\Library\Shared\Script\Utility;
 use Api\Library\Shared\Website;
 use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexOptionListModel;
-use Api\Model\Mapper\MongoStore;
-use Api\Model\ProjectListModel;
-use Api\Model\ProjectModel;
-use Api\Model\ProjectModelMongoMapper;
+use Api\Model\Shared\Mapper\MongoStore;
+use Api\Model\Shared\ProjectListModel;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\ProjectModelMongoMapper;
 
 define('SF_TEST_DATABASE', 'scriptureforge_test');
 

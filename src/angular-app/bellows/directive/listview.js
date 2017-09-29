@@ -7,20 +7,21 @@ angular.module('palaso.ui.listview', ['ui.bootstrap'])
       restrict: 'EA',
       transclude: true,
       replace: true,
-      templateUrl: '/angular-app/bellows/directive/listview.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/listview.html',
       scope: {
         search: '&',
         select: '&',
         items: '=',
         hideIfEmpty: '@',
         visibleItems: '=',
+        filteredItems: '=?',
         itemsFilter: '=?',
       },
       controller: ['$scope', function($scope) {
         $scope.noOfPages = 3;  // TODO: calculate this automatically
         $scope.currentPage = 1;
         $scope.maxSize = 5;
-        $scope.itemsPerPage = 10;  // This should match the default value for the selector above
+        $scope.itemsPerPage = "10";  // This should match the default value for the selector above
         $scope.filteredItems = []; // This prevents "cannot read property 'length' of undefined" errors on first page load
 
         this.activate = function(item) {

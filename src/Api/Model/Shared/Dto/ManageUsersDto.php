@@ -2,7 +2,7 @@
 
 namespace Api\Model\Shared\Dto;
 
-use Api\Model\ProjectModel;
+use Api\Model\Shared\ProjectModel;
 
 class ManageUsersDto
 {
@@ -22,7 +22,7 @@ class ManageUsersDto
         $data['project'] = array(
             'roles' => $projectModel->getRolesList(),
             'ownerRef' => $projectModel->ownerRef,
-            'name' => $projectModel->projectName,
+            'projectName' => $projectModel->projectName,
             'appLink' => "/app/{$projectModel->appName}/$projectId/"
         );
 

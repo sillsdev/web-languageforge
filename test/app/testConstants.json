@@ -1,43 +1,50 @@
 {
   "Bellows_Test_Constants" : "",
-  
+
   "siteType"        : "languageforge",
   "siteHostname"    : "languageforge.local",
   "baseUrl"         : "http://languageforge.local",
 
-  "adminUsername"   : "test_runner_admin",
-  "adminPassword"   : "hammertime",
-  "adminName"       : "Test Admin",
-  "adminEmail"      : "test_runner_admin@example.com",
-  "managerUsername" : "test_runner_manager_user",
-  "managerPassword" : "manageruser1",
-  "managerName"     : "Test Manager",
-  "managerEmail"    : "test_runner_manager_user@example.com",
-  "memberUsername"  : "test_runner_normal_user",
-  "memberPassword"  : "normaluser1",
-  "memberName"      : "Test User",
-  "memberEmail"     : "test_runner_normal_user@example.com",
-  "expiredUsername" : "test_runner_expired_normal_user",
-  "expiredPassword" : "normaluser2",
-  "expiredName"     : "Test ExpiredUser",
-  "expiredEmail"    : "test_runner_expired_normal_user@example.com",
-  "expiredPasswordKey": "fa6c056d5155059c4f067e77c4cb420fcfc3762f",
-  "resetUsername"   : "test_runner_reset_normal_user",
-  "resetPassword"   : "normaluser3",
-  "resetName"       : "Test ResetUser",
-  "resetEmail"      : "test_runner_reset_normal_user@example.com",
-  "resetPasswordKey": "122240670b5136bdb260d02feaff098280c33bd4",
-  "notUsedUsername" : "not_used_user",
-  "notUsedEmail"    : "not_used_user@example.com",
-  "notUsedName"     : "Test NotAUser",
-
+  "adminUsername"      : "test_runner_admin",
+  "adminName"          : "Test Admin",
+  "adminPassword"      : "hammertime",
+  "adminEmail"         : "test_runner_admin@example.com",
+  "managerUsername"    : "test_runner_manager_user",
+  "managerName"        : "Test Manager",
+  "managerPassword"    : "manageruser1",
+  "managerEmail"       : "test_runner_manager_user@example.com",
+  "memberUsername"     : "test_runner_normal_user",
+  "memberName"         : "Test User",
+  "memberPassword"     : "normaluser1",
+  "memberEmail"        : "test_runner_normal_user@example.com",
+  "member2Username"    : "test_runner_normal_user_2",
+  "member2Name"        : "Test Second User",
+  "member2Password"    : "normaluser2",
+  "member2Email"       : "test_runner_normal_user_2@example.com",
+  "expiredUsername"    : "test_runner_expired_normal_user",
+  "expiredName"        : "Test ExpiredUser",
+  "expiredPassword"    : "normaluser3",
+  "expiredEmail"       : "test_runner_expired_normal_user@example.com",
+  "expiredPasswordKey" : "fa6c056d5155059c4f067e77c4cb420fcfc3762f",
+  "resetUsername"      : "test_runner_reset_normal_user",
+  "resetName"          : "Test ResetUser",
+  "resetPassword"      : "normaluser4",
+  "resetEmail"         : "test_runner_reset_normal_user@example.com",
+  "resetPasswordKey"   : "122240670b5136bdb260d02feaff098280c33bd4",
+  "observerUsername"   : "test_runner_observer_normal_user",
+  "observerName"       : "Test ObserverUser",
+  "observerPassword"   : "normaluser5",
+  "observerEmail"      : "test_runner_observer_normal_user@example.com",
+  "unusedUsername"     : "test_runner_unused_user",
+  "unusedName"         : "Test UnusedUser",
+  "unusedEmail"        : "test_runner_unused_user+test@example.com",
   "passwordTooShort": "123456",
-  "passwordValid"   : "1234567",
+  "passwordValid"   : "languageforge",
   "emailNoAt"       : "email",
   "emailValid"      : "email@example.com",
 
   "avatar"           : "/Site/views/shared/image/avatar/anonymoose.png",
-  
+
   "testProjectName"  : "Test Project",
   "testProjectCode"  : "test_project",
   "testProjectAllowInvites": false,
@@ -88,10 +95,15 @@
 
   "LanguageForge_Test_Constants" : "",
 
+  "Language added to new project" : "",
+  "searchLanguage" : "Spanish",
+  "foundLanguage" : "español",
+
   "Entries added during setup" : "",
   "testEntry1" : {
     "lexeme": {"th":        {"value": "ข้าวผัดหมู"},
-               "th-fonipa": {"value": "khâaw phàt mǔu"}},
+               "th-fonipa": {"value": "khâaw phàt mǔu"},
+               "th-Zxxx-x-audio": {"value": "TestAudio.mp3"}},
     "senses": [{"definition": {"en": {"value": "fried rice with pork"}},
                 "pictures": [{"fileName": "FriedRiceWithPork.jpg",
                               "caption": {"en": {"value": "fried rice with pork"}}}],
@@ -146,7 +158,7 @@
                 "source": {"en": {"value": "http://www.thai-language.com/id/131403#def1c"}}
               }]
   },
-  
+
   "testMockZipImportFile" : {
     "lastModified" : 1416986856000,
     "name" : "TestLexProject.zip",
@@ -161,7 +173,21 @@
     "type" : "",
     "webkitRelativePath": ""
   },
-  
+  "testMockPngUploadFile" : {
+    "lastModified" : 1416986856000,
+    "name" : "TestImage.png",
+    "size" : 5652,
+    "type" : "",
+    "webkitRelativePath": ""
+  },
+  "testMockMp3UploadFile" : {
+    "lastModified" : 1416986856000,
+    "name" : "TestAudio.mp3",
+    "size" : 21064,
+    "type" : "",
+    "webkitRelativePath": ""
+  },
+
   "End_of_constants" : ""
 
 }

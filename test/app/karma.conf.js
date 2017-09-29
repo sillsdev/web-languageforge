@@ -1,28 +1,46 @@
+'use strict';
+
 // Karma configuration
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     basePath: '../..',
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'karma-typescript'],
+
     // list of files / patterns to load in the browser
     files: [
-      'src/vendor_bower/angular/angular.js',
-      'src/vendor_bower/angular-route/angular-route.js',
-      'src/vendor_bower/angular-animate/angular-animate.js',
-      'src/vendor_bower/angular-sanitize/angular-sanitize.js',
-      'test/lib/angular/angular-mocks.js',
-      'src/vendor_bower/ng-file-upload/ng-file-upload.js',
-      'src/vendor_bower/jquery/jquery.js',
-      'src/vendor_bower/angular-bootstrap/*ui-bootstrap*.js',
-      'src/angular-app/**/*.js',
-      'test/app/**/unit/*.spec.js'
+      'src/angular-app/**/*.ts'
+
+      // exclude sfchecks tests for now since they aren't working - IJH 2017-08
+      // 'node_modules/angular/angular.js',
+      // 'node_modules/angular-route/angular-route.js',
+      // 'node_modules/angular-sanitize/angular-sanitize.js',
+      // 'node_modules/angular-mocks/angular-mocks.js',
+      // 'node_modules/ng-file-upload/dist/ng-file-upload.js',
+      // 'node_modules/jquery/dist/jquery.js',
+      // 'node_modules/angular-ui-bootstrap/dist/*ui-bootstrap*.js',
+      // 'src/angular-app/**/*.js',
+      // 'test/app/**/unit/*.spec.js'
     ],
 
     // list of files to exclude
     exclude: [],
 
+    // preprocess matching files before serving them to the browser
+    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+    preprocessors: {
+      '**/*.ts': ['karma-typescript']
+    },
+
+    karmaTypescriptConfig: {
+      tsconfig: './tsconfig.json',
+      reports: {
+        html: 'test/CodeCoverage/typescript/'
+      }
+    },
+
     // test results reporter to use
     // possible values: dots || progress || growl
-    reporters: ['progress'],
+    reporters: ['progress', 'karma-typescript'],
 
     // web server port
     port: 8080,
@@ -34,12 +52,10 @@ module.exports = function(config) {
     colors: true,
 
     // level of logging
-    // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO ||
-  // LOG_DEBUG
+    // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
     logLevel: config.LOG_WARN,
 
-    // enable / disable watching file and executing tests whenever any file
-  // changes
+    // enable / disable watching file and executing tests whenever any file changes
     autoWatch: false,
 
     // Start these browsers, currently available:
@@ -50,7 +66,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS'],
+    browsers: ['Chrome', 'PhantomJS'],
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 8000,

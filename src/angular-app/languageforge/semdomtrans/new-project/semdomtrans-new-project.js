@@ -3,10 +3,9 @@
 angular.module('semdomtrans-new-project',
   [
     'ui.router',
+    'coreModule',
     'bellows.services',
-    'bellows.filters',
     'ui.bootstrap',
-    'ngAnimate',
     'semdomtrans.services',
     'palaso.ui.language',
     'pascalprecht.translate'
@@ -30,10 +29,10 @@ angular.module('semdomtrans-new-project',
 
   }])
   .controller('projectSetupCtrl', ['$scope', '$state', '$location', '$window',
-    'semdomtransSetupService', 'projectService',  'sessionService', '$modal', 'modalService',
+    'semdomtransSetupService', 'projectService', '$uibModal', 'modalService',
     'silNoticeService',
   function ($scope, $state, $location, $window,
-            semdomSetupApi, projectService, sessionService, $modal, modalService,
+            semdomSetupApi, projectService, $modal, modalService,
             notice) {
     $scope.languageCode = '';
     $scope.canCreate = false;
@@ -48,7 +47,7 @@ angular.module('semdomtrans-new-project',
     $scope.openNewLanguageModal = function openNewLanguageModal() {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
-        controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+        controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
           $scope.selected = {
             code: '',
             language: {}
@@ -66,7 +65,7 @@ angular.module('semdomtrans-new-project',
     };
 
     $scope.checkLanguageAvailability = function checkLanguageAvailability() {
-      if ($scope.languageCode == '') {
+      if ($scope.languageCode === '') {
         $scope.canCreate = false;
       } else {
 
@@ -74,7 +73,7 @@ angular.module('semdomtrans-new-project',
         checksBeingMade++;
         semdomSetupApi.doesProjectExist($scope.languageCode, function (result) {
           checksBeingMade--;
-          if (result.ok && checksBeingMade == 0) {
+          if (result.ok && checksBeingMade === 0) {
             $scope.canCreate = result.data;
           }
         });
@@ -92,7 +91,7 @@ angular.module('semdomtrans-new-project',
       modalService.showModalSimple('Request Project Join', request, 'Cancel',
         'Request Project Join').then(function () {
         projectService.sendJoinRequest(project.id, function () {});
-      });
+      }, angular.noop);
     };
 
     $scope.createProject = function createProject(useGoogleTranslateData) {

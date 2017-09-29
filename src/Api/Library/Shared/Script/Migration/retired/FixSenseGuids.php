@@ -9,7 +9,7 @@ use Api\Model\Languageforge\Lexicon\LexEntryModel;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\LexPicture;
 use Api\Model\Languageforge\Lexicon\LexSense;
-use Api\Model\ProjectListModel;
+use Api\Model\Shared\ProjectListModel;
 
 (php_sapi_name() == 'cli') or die('this script must be run on the command-line');
 

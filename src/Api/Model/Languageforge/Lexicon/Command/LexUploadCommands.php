@@ -2,20 +2,18 @@
 
 namespace Api\Model\Languageforge\Lexicon\Command;
 
-use Palaso\Utilities\FileUtilities;
-use Api\Model\Command\ProjectCommands;
+use Api\Model\Shared\Command\ProjectCommands;
 use Api\Model\Shared\Command\ErrorResult;
 use Api\Model\Shared\Command\ImportResult;
 use Api\Model\Shared\Command\MediaResult;
 use Api\Model\Shared\Command\UploadResponse;
-use Api\Model\Languageforge\Lexicon\LexEntryModel;
+use Api\Model\Languageforge\Lexicon\Import\LiftImport;
+use Api\Model\Languageforge\Lexicon\Import\LiftMergeRule;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
-use Api\Model\Languageforge\Lexicon\LiftImport;
-use Api\Model\Languageforge\Lexicon\LiftMergeRule;
+use Palaso\Utilities\FileUtilities;
 
 class LexUploadCommands
 {
-
     private static $allowedLiftExtensions = array(
         ".lift"
     );
@@ -27,22 +25,22 @@ class LexUploadCommands
      * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
-     * @return \Api\Model\Shared\Command\UploadResponse
+     * @return UploadResponse
      */
     public static function uploadAudioFile($projectId, $mediaType, $tmpFilePath)
     {
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
-        if ($mediaType != 'entry-audio') {
+        if ($mediaType != 'audio') {
             throw new \Exception("Unsupported upload type.");
         }
         if (! $tmpFilePath) {
             throw new \Exception("Upload controller did not move the uploaded file.");
         }
 
-        $entryId = $_POST['entryId'];
         $file = $_FILES['file'];
         $fileName = $file['name'];
+        $fileNamePrefix = date("YmdHis");
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);
@@ -53,11 +51,24 @@ class LexUploadCommands
         $fileExt = (false === $pos = strrpos($fileName, '.')) ? '' : substr($fileName, $pos);
 
         $allowedTypes = array(
+            "application/octet-stream",
             "audio/mpeg",
-            "audio/mp3"
+            "audio/x-mpeg",
+            "audio/mp3",
+            "audio/x-mp3",
+            "audio/mpeg3",
+            "audio/x-mpeg3",
+            "audio/mpg",
+            "audio/x-mpg",
+            "audio/x-mpegaudio",
+            "audio/x-wav",
+            "audio/wav"
         );
         $allowedExtensions = array(
-            ".mp3"
+            ".mp3",
+            ".mpa",
+            ".mpg",
+            ".wav"
         );
 
         $response = new UploadResponse();
@@ -67,28 +78,22 @@ class LexUploadCommands
             $project->createAssetsFolders();
             $folderPath = $project->getAudioFolderPath();
 
-            // cleanup previous files of any allowed extension
-            self::cleanupFiles($folderPath, $entryId, $allowedExtensions);
-
             // move uploaded file from tmp location to assets
-            $filePath = self::mediaFilePath($folderPath, $entryId, $fileName);
+            $filePath = self::mediaFilePath($folderPath, $fileNamePrefix, $fileName);
             $moveOk = copy($tmpFilePath, $filePath);
             @unlink($tmpFilePath);
-
-            // update database with file location
-            $entry = new LexEntryModel($project, $entryId);
-            $entry->audioFileName = '';
-            if ($moveOk) {
-                $entry->audioFileName = $fileName;
-            }
-            $entry->write();
 
             // construct server response
             if ($moveOk && $tmpFilePath) {
                 $data = new MediaResult();
                 $data->path = $project->getAudioFolderPath($project->getAssetsRelativePath());
-                $data->fileName = $fileName;
+                $data->fileName = $fileNamePrefix . '_' . $fileName;
                 $response->result = true;
+
+                if (array_key_exists('previousFilename', $_POST)) {
+                    $previousFilename = $_POST['previousFilename'];
+                    self::deleteMediaFile($projectId, $mediaType, $previousFilename);
+                }
             } else {
                 $data = new ErrorResult();
                 $data->errorType = 'UserMessage';
@@ -120,7 +125,7 @@ class LexUploadCommands
      * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
-     * @return \Api\Model\Shared\Command\UploadResponse
+     * @return UploadResponse
      */
     public static function uploadImageFile($projectId, $mediaType, $tmpFilePath)
     {
@@ -204,7 +209,7 @@ class LexUploadCommands
      * @param string $mediaType, options are 'image'.
      * @param string $fileName
      * @throws \Exception
-     * @return \Api\Model\Shared\Command\UploadResponse
+     * @return UploadResponse
      */
     public static function deleteMediaFile($projectId, $mediaType, $fileName) {
         $response = new UploadResponse();
@@ -212,6 +217,9 @@ class LexUploadCommands
         $project = new LexProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
         switch ($mediaType) {
+            case 'audio':
+                $folderPath = $project->getAudioFolderPath();
+                break;
             case 'sense-image':
                 $folderPath = $project->getImageFolderPath();
                 break;
@@ -225,9 +233,9 @@ class LexUploadCommands
         }
         $filePath = $folderPath . '/' . $fileName;
         if (file_exists($filePath) and ! is_dir($filePath)) {
-            if (@unlink($filePath)) {
+            if (unlink($filePath)) {
                 $data = new MediaResult();
-                $data->path = $project->getImageFolderPath();
+                $data->path = $folderPath;
                 $data->fileName = $fileName;
                 $response->result = true;
             } else {
@@ -277,7 +285,7 @@ class LexUploadCommands
      * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
-     * @return \Api\Model\Shared\Command\UploadResponse
+     * @return UploadResponse
      */
     public static function importProjectZip($projectId, $mediaType, $tmpFilePath)
     {
@@ -290,18 +298,9 @@ class LexUploadCommands
 
         $file = $_FILES['file'];
         $fileName = $file['name'];
-        $mergeRule = LiftMergeRule::IMPORT_WINS;
-        if (array_key_exists('mergeRule', $_POST)) {
-            $mergeRule = $_POST['mergeRule'];
-        }
-        $skipSameModTime = false;
-        if (array_key_exists('skipSameModTime', $_POST)) {
-            $skipSameModTime = $_POST['skipSameModTime'];
-        }
-        $deleteMatchingEntry = false;
-        if (array_key_exists('deleteMatchingEntry', $_POST)) {
-            $deleteMatchingEntry = $_POST['deleteMatchingEntry'];
-        }
+        $mergeRule = self::extractStringFromArray($_POST, 'mergeRule', LiftMergeRule::IMPORT_WINS);
+        $skipSameModTime = self::extractBooleanFromArray($_POST, 'skipSameModTime');
+        $deleteMatchingEntry = self::extractBooleanFromArray($_POST, 'deleteMatchingEntry');
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);
@@ -401,7 +400,7 @@ class LexUploadCommands
      * @param string $mediaType
      * @param string $tmpFilePath
      * @throws \Exception
-     * @return \Api\Model\Shared\Command\UploadResponse
+     * @return UploadResponse
      */
     public static function importLiftFile($projectId, $mediaType, $tmpFilePath)
     {
@@ -414,9 +413,9 @@ class LexUploadCommands
 
         $file = $_FILES['file'];
         $fileName = $file['name'];
-        $mergeRule = $_POST['mergeRule'];
-        $skipSameModTime = $_POST['skipSameModTime'];
-        $deleteMatchingEntry = $_POST['deleteMatchingEntry'];
+        $mergeRule = self::extractStringFromArray($_POST, 'mergeRule', LiftMergeRule::IMPORT_WINS);
+        $skipSameModTime = self::extractBooleanFromArray($_POST, 'skipSameModTime');
+        $deleteMatchingEntry = self::extractBooleanFromArray($_POST, 'deleteMatchingEntry');
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $fileType = finfo_file($finfo, $tmpFilePath);
@@ -488,5 +487,39 @@ class LexUploadCommands
 
         $response->data = $data;
         return $response;
+    }
+
+    /**
+     * @param array $array
+     * @param string $key
+     * @param string $defaultValue
+     * @return string
+     */
+    private static function extractStringFromArray($array, $key, $defaultValue): string
+    {
+        $result = $defaultValue;
+        if (array_key_exists($key, $array)) {
+            $result = $array[$key];
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $array
+     * @param string $key
+     * @param bool $defaultValue
+     * @return bool
+     */
+    private static function extractBooleanFromArray($array, $key, $defaultValue = false): bool
+    {
+        $result = $defaultValue;
+        if (array_key_exists($key, $array)) {
+            if (is_bool($array[$key])) {
+                $result = $array[$key];
+            } else {
+                $result = (strtolower($array[$key]) == 'true');
+            }
+        }
+        return $result;
     }
 }

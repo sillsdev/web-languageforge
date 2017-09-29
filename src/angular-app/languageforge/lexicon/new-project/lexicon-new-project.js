@@ -2,10 +2,9 @@
 
 angular.module('lexicon-new-project',
   [
+    'coreModule',
     'bellows.services',
-    'bellows.filters',
     'ui.bootstrap',
-    'ngAnimate',
     'ui.router',
     'palaso.ui.utils',
     'palaso.ui.language',
@@ -14,6 +13,7 @@ angular.module('lexicon-new-project',
     'palaso.util.model.transform',
     'pascalprecht.translate',
     'ngFileUpload',
+    'language.inputSystems',
     'lexicon.services'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
@@ -81,7 +81,7 @@ angular.module('lexicon-new-project',
       })
       .state('newProject.selectPrimaryLanguage', {
         templateUrl: '/angular-app/languageforge/lexicon/new-project/views/' +
-          'new-project-select-primary-language.html',
+        'new-project-select-primary-language.html',
         data: {
           step: 3 // This is not a typo. There are two possible step 3 templates.
         }
@@ -90,31 +90,32 @@ angular.module('lexicon-new-project',
     $urlRouterProvider
       .when('', ['$state', function ($state) {
         if (!$state.$current.navigable) {
-          //$state.go('newProject.chooser');
-          $state.go('newProject.name');
+          $state.go('newProject.chooser');
         }
       }]);
 
   }])
-  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$modal', '$window',
-    'sessionService', 'silNoticeService', 'projectService', 'sfchecksLinkService', '$translate',
-    '$state', 'Upload', 'lexProjectService', 'lexSendReceiveApi',  'lexSendReceive',
+  .controller('NewLexProjectCtrl', ['$scope', '$q', '$filter', '$uibModal', '$window',
+    'sessionService', 'silNoticeService', 'projectService', 'linkService', '$translate',
+    '$state', 'Upload', 'inputSystems', 'lexProjectService', 'lexSendReceiveApi',  'lexSendReceive',
   function ($scope, $q, $filter, $modal, $window,
             sessionService, notice, projectService, linkService, $translate,
-            $state, Upload, lexProjectService, sendReceiveApi, sendReceive) {
+            $state, Upload, inputSystems, lexProjectService, sendReceiveApi, sendReceive) {
     $scope.interfaceConfig = {};
     $scope.interfaceConfig.userLanguageCode = 'en';
-    if (angular.isDefined(sessionService.session.projectSettings) &&
-        angular.isDefined(sessionService.session.projectSettings.interfaceConfig)) {
-      $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
-    }
+    sessionService.getSession().then(function (session) {
+      if (angular.isDefined(session.projectSettings()) &&
+          angular.isDefined(session.projectSettings().interfaceConfig)) {
+        $scope.interfaceConfig = session.projectSettings().interfaceConfig;
+      }
+    });
 
     $scope.interfaceConfig.direction = 'ltr';
     $scope.interfaceConfig.pullToSide = 'pull-right';
     $scope.interfaceConfig.pullNormal = 'pull-left';
     $scope.interfaceConfig.placementToSide = 'left';
     $scope.interfaceConfig.placementNormal = 'right';
-    if (InputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
+    if (inputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
       $scope.interfaceConfig.direction = 'rtl';
       $scope.interfaceConfig.pullToSide = 'pull-left';
       $scope.interfaceConfig.pullNormal = 'pull-right';
@@ -132,7 +133,7 @@ angular.module('lexicon-new-project',
 
     $scope.isSRProject = false;
     $scope.show = {};
-    $scope.show.nextButton = ($state.current.name != 'newProject.chooser');
+    $scope.show.nextButton = ($state.current.name !== 'newProject.chooser');
     $scope.show.backButton = false;
     $scope.show.flexHelp = false;
     $scope.show.cloning = true;
@@ -148,8 +149,8 @@ angular.module('lexicon-new-project',
       $scope.formValidated = true;
       $scope.formStatus = msg;
       $scope.formStatusClass = 'alert alert-info';
-      if (!msg) $scope.formStatusClass = 'neutral';
-      $scope.forwardBtnClass = 'btn-success';
+      if (!msg) $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
+      $scope.forwardBtnClass = 'btn-primary';
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
     }
@@ -158,9 +159,10 @@ angular.module('lexicon-new-project',
       if (!msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = 'neutral';
-      $scope.forwardBtnClass = '';
+      $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
+      $scope.forwardBtnClass = (bootstrapVersion === 'bootstrap4' ? 'btn-secondary' : '');
       $scope.formValidationDefer = $q.defer();
+      $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
     }
 
@@ -168,8 +170,9 @@ angular.module('lexicon-new-project',
       if (!msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = 'alert alert-error';
-      if (!msg) $scope.formStatusClass = 'neutral';
+      $scope.formStatusClass =
+        (bootstrapVersion === 'bootstrap4' ? 'alert alert-danger' : 'alert alert-error');
+      if (!msg) $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
       $scope.forwardBtnClass = '';
       $scope.formValidationDefer.resolve(false);
       return $scope.formValidationDefer.promise;
@@ -183,13 +186,15 @@ angular.module('lexicon-new-project',
     $scope.iconForStep = function iconForStep(step) {
       var classes = [];
       if ($state.current.data.step > step) {
-        classes.push('icon-check-sign');
-      } else {
-        classes.push('icon-check-empty');
+        classes.push(
+          (bootstrapVersion === 'bootstrap4' ? 'fa fa-check-square' : 'icon-check-sign'));
       }
 
-      if ($state.current.data.step < step) {
-        classes.push('muted');
+      if ($state.current.data.step === step) {
+        classes.push((bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o' : 'icon-check-empty'));
+      } else if ($state.current.data.step < step) {
+        classes.push(
+          (bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o muted' : 'icon-check-empty muted'));
       }
 
       return classes;
@@ -205,11 +210,13 @@ angular.module('lexicon-new-project',
       $scope.progressIndicatorStep1Label = $filter('translate')('Connect');
       $scope.progressIndicatorStep2Label = $filter('translate')('Verify');
       $scope.resetValidateProjectForm();
-      if (!$scope.project.sendReceive.username) {
-        $scope.project.sendReceive.username = sessionService.session.username;
-      }
+      sessionService.getSession().then(function (session) {
+        if (!$scope.project.sendReceive.username) {
+          $scope.project.sendReceive.username = session.username();
+        }
 
-      validateForm();
+        validateForm();
+      });
     };
 
     $scope.createNew = function createNew() {
@@ -267,10 +274,8 @@ angular.module('lexicon-new-project',
       switch ($state.current.name) {
         case 'newProject.chooser':
           return error();
-          break;
         case 'newProject.sendReceiveCredentials':
           return validateSendReceiveCredentialsForm();
-          break;
         case 'newProject.sendReceiveClone':
           if (sendReceive.isInProgress()) {
             return error();
@@ -291,7 +296,7 @@ angular.module('lexicon-new-project',
             return error('Please select a project type.');
           }
 
-          if ($scope.projectCodeState == 'unchecked') {
+          if ($scope.projectCodeState === 'unchecked') {
             $scope.checkProjectCode();
           }
 
@@ -324,10 +329,10 @@ angular.module('lexicon-new-project',
             }
           });
 
-          break;
         case 'newProject.initialData':
+          return neutral();
         case 'newProject.verifyData':
-          break;
+          return neutral();
         case 'newProject.selectPrimaryLanguage':
           if (!$scope.newProject.languageCode) {
             return error('Please select a primary language for the project.');
@@ -353,7 +358,7 @@ angular.module('lexicon-new-project',
           $scope.resetValidateProjectForm();
           if ($scope.project.sendReceive.project.isLinked) {
             var role = 'contributor';
-            if ($scope.project.sendReceive.project.role == 'manager') {
+            if ($scope.project.sendReceive.project.role === 'manager') {
               role = 'project_manager';
             }
 
@@ -361,7 +366,7 @@ angular.module('lexicon-new-project',
               function (result) {
                 if (result.ok) {
                   $scope.newProject.id = result.data;
-                  sessionService.refresh(gotoLexicon);
+                  sessionService.getSession(true).then(gotoLexicon);
                 } else {
                   notice.push(notice.ERROR, 'Well this is embarrassing. ' +
                     'We couldn\'t join you to the project. Sorry about that.');
@@ -466,22 +471,21 @@ angular.module('lexicon-new-project',
       $scope.projectCodeStateDefer = $q.defer();
       $scope.projectCodeStateDefer.resolve('unchecked');
       $scope.project.sendReceive.isUnchecked = true;
-      $scope.project.sendReceive.usernameStatus = 'unchecked';
-      $scope.project.sendReceive.passwordStatus = 'unchecked';
+      $scope.project.sendReceive.credentialsStatus = 'unchecked';
     }
 
     $scope.resetValidateProjectForm = resetValidateProjectForm;
 
     $scope.$watch('projectCodeState', function (newval, oldval) {
-      if (!newval || newval == oldval) { return; }
+      if (!newval || newval === oldval) { return; }
 
-      if (newval == 'unchecked') {
+      if (newval === 'unchecked') {
         // User just typed in the project name box.
         // Need to wait just a bit for the idle-validate to kick in.
         return;
       }
 
-      if (oldval == 'loading') {
+      if (oldval === 'loading') {
         // Project code state just resolved. Validate rest of form so Forward button can activate.
         validateForm();
       }
@@ -499,7 +503,7 @@ angular.module('lexicon-new-project',
       if (!$scope.isSRProject) {
         if (angular.isUndefined(newval)) {
           $scope.newProject.projectCode = '';
-        } else if (newval != oldval) {
+        } else if (newval !== oldval) {
           $scope.newProject.projectCode = newval.toLowerCase().replace(/ /g, '_');
         }
       }
@@ -517,7 +521,7 @@ angular.module('lexicon-new-project',
         $scope.project.sendReceive.project, function (result) {
         if (result.ok) {
           $scope.newProject.id = result.data;
-          sessionService.refresh(callback);
+          sessionService.getSession(true).then(callback);
         } else {
           notice.push(notice.ERROR, 'The ' + $scope.newProject.projectName +
             ' project could not be created. Please try again.');
@@ -531,51 +535,54 @@ angular.module('lexicon-new-project',
 
     $scope.uploadFile = function uploadFile(file) {
       if (!file || file.$error) return;
-      if (file.size > sessionService.fileSizeMax()) {
-        notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
-          $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
-          $filter('bytes')(sessionService.fileSizeMax()) + '.');
-        return;
-      }
 
-      notice.setLoading('Importing ' + file.name + '...');
-      Upload.upload({
-        url: '/upload/lf-lexicon/import-zip',
-        data: { file: file }
-      }).then(function (response) {
-        notice.cancelLoading();
-        var isUploadSuccess = response.data.result;
-        if (isUploadSuccess) {
-          notice.push(notice.SUCCESS, $filter('translate')('Successfully imported') + ' ' +
-            file.name);
-          $scope.newProject.entriesImported = response.data.data.stats.importEntries;
-          $scope.newProject.importErrors = response.data.data.importErrors;
-          gotoNextState();
-        } else {
-          $scope.newProject.entriesImported = 0;
-          notice.push(notice.ERROR, response.data.data.errorMessage);
-        }
-      },
-
-      function (response) {
-        notice.cancelLoading();
-        var errorMessage = $filter('translate')('Import failed.');
-        if (response.status > 0) {
-          errorMessage += ' Status: ' + response.status;
-          if (response.statusText) {
-            errorMessage += ' ' + response.statusText;
-          }
-
-          if (response.data) {
-            errorMessage += '- ' + response.data;
-          }
+      sessionService.getSession().then(function (session) {
+        if (file.size > session.fileSizeMax()) {
+          notice.push(notice.ERROR, '<b>' + file.name + '</b> (' +
+            $filter('bytes')(file.size) + ') is too large. It must be smaller than ' +
+            $filter('bytes')(session.fileSizeMax()) + '.');
+          return;
         }
 
-        notice.push(notice.ERROR, errorMessage);
-      },
+        notice.setLoading('Importing ' + file.name + '...');
+        Upload.upload({
+          url: '/upload/lf-lexicon/import-zip',
+          data: { file: file }
+        }).then(function (response) {
+          notice.cancelLoading();
+          var isUploadSuccess = response.data.result;
+          if (isUploadSuccess) {
+            notice.push(notice.SUCCESS, $filter('translate')('Successfully imported') + ' ' +
+              file.name);
+            $scope.newProject.entriesImported = response.data.data.stats.importEntries;
+            $scope.newProject.importErrors = response.data.data.importErrors;
+            gotoNextState();
+          } else {
+            $scope.newProject.entriesImported = 0;
+            notice.push(notice.ERROR, response.data.data.errorMessage);
+          }
+        },
 
-      function (evt) {
-        notice.setPercentComplete(100.0 * evt.loaded / evt.total);
+        function (response) {
+          notice.cancelLoading();
+          var errorMessage = $filter('translate')('Import failed.');
+          if (response.status > 0) {
+            errorMessage += ' Status: ' + response.status;
+            if (response.statusText) {
+              errorMessage += ' ' + response.statusText;
+            }
+
+            if (response.data) {
+              errorMessage += '- ' + response.data;
+            }
+          }
+
+          notice.push(notice.ERROR, errorMessage);
+        },
+
+        function (evt) {
+          notice.setPercentComplete(100.0 * evt.loaded / evt.total);
+        });
       });
     };
 
@@ -614,12 +621,8 @@ angular.module('lexicon-new-project',
         return neutral();
       }
 
-      if ($scope.project.sendReceive.usernameStatus == 'unknown') {
-        return error('The Login dosen\'t exist on LanguageDepot.org. Enter a Login.');
-      }
-
-      if ($scope.project.sendReceive.passwordStatus == 'invalid') {
-        return error('The Password isn\'t valid on LanguageDepot.org. Enter the Password.');
+      if ($scope.project.sendReceive.credentialsStatus === 'invalid') {
+        return error('The username or password isn\'t valid on LanguageDepot.org.');
       }
 
       $scope.project.sendReceive.projectStatus = 'no_access';
@@ -628,8 +631,8 @@ angular.module('lexicon-new-project',
       }
 
       if (!$scope.project.sendReceive.project.isLinked &&
-          $scope.project.sendReceive.project.role != 'manager') {
-        return error('Please select a Project that you are the Manager on LanguageDepot.org.');
+          $scope.project.sendReceive.project.role !== 'manager') {
+        return error('Please select a Project that you are the Manager of on LanguageDepot.org.');
       }
 
       $scope.project.sendReceive.projectStatus = 'ok';
@@ -671,7 +674,7 @@ angular.module('lexicon-new-project',
     $scope.openNewLanguageModal = function openNewLanguageModal() {
       var modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
-        controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+        controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
           $scope.selected = {
             code: '',
             language: {}
@@ -679,12 +682,16 @@ angular.module('lexicon-new-project',
           $scope.add = function () {
             $modalInstance.close($scope.selected);
           };
-        }]
+
+          $scope.close = $modalInstance.dismiss;
+        }],
+
+        windowTopClass: 'modal-select-language'
       });
       modalInstance.result.then(function (selected) {
         $scope.newProject.languageCode = selected.code;
         $scope.newProject.language = selected.language;
-      });
+      }, angular.noop);
     };
 
     function savePrimaryLanguage(callback) {
@@ -692,27 +699,29 @@ angular.module('lexicon-new-project',
       var optionlist = {};
       var inputSystem = {};
       notice.setLoading('Configuring project for first use...');
-      if (angular.isDefined(sessionService.session.projectSettings)) {
-        config = sessionService.session.projectSettings.config;
-        optionlist = sessionService.session.projectSettings.optionlists;
-      }
-
-      inputSystem.abbreviation = $scope.newProject.languageCode;
-      inputSystem.tag = $scope.newProject.languageCode;
-      inputSystem.languageName = $scope.newProject.language.name;
-      config.inputSystems[$scope.newProject.languageCode] = inputSystem;
-      if ('th' in config.inputSystems) {
-        delete config.inputSystems.th;
-        replaceFieldInputSystem(config.entry, 'th', $scope.newProject.languageCode);
-      }
-
-      lexProjectService.updateConfiguration(config, optionlist, function (result) {
-        notice.cancelLoading();
-        if (result.ok) {
-          (callback || angular.noop)();
-        } else {
-          makeFormInvalid('Could not add ' + $scope.newProject.language.name + ' to project.');
+      sessionService.getSession().then(function (session) {
+        if (angular.isDefined(session.projectSettings())) {
+          config = session.projectSettings().config;
+          optionlist = session.projectSettings().optionlists;
         }
+
+        inputSystem.abbreviation = $scope.newProject.languageCode;
+        inputSystem.tag = $scope.newProject.languageCode;
+        inputSystem.languageName = $scope.newProject.language.name;
+        config.inputSystems[$scope.newProject.languageCode] = inputSystem;
+        if ($scope.newProject.languageCode !== 'th' && 'th' in config.inputSystems) {
+          delete config.inputSystems.th;
+          replaceFieldInputSystem(config.entry, 'th', $scope.newProject.languageCode);
+        }
+
+        lexProjectService.updateConfiguration(config, optionlist, function (result) {
+          notice.cancelLoading();
+          if (result.ok) {
+            (callback || angular.noop)();
+          } else {
+            makeFormInvalid('Could not add ' + $scope.newProject.language.name + ' to project.');
+          }
+        });
       });
     }
 

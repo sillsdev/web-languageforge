@@ -4,28 +4,14 @@ namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
-use Api\Model\Mapper\MapperListModel;
-use Api\Model\Mapper\MongoMapper;
-use Api\Model\ProjectModel;
-use Api\Model\Mapper\ArrayOf;
-use MongoDB\BSON\UTCDatetime;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\MapperListModel;
+use Api\Model\Shared\Mapper\MongoMapper;
+use Api\Model\Shared\ProjectModel;
+use MongoDB\BSON\UTCDateTime;
 
 class LexEntryListModel extends MapperListModel
 {
-    /** @var LexConfiguration */
-    private $_config;
-
-    public static function mapper($databaseName)
-    {
-        /** @var MongoMapper $instance */
-        static $instance = null;
-        if (null === $instance || $instance->databaseName() != $databaseName) {
-            $instance = new MongoMapper($databaseName, 'lexicon');
-        }
-
-        return $instance;
-    }
-
     /**
      * @param ProjectModel $projectModel
      * @param int $newerThanTimestamp
@@ -41,11 +27,25 @@ class LexEntryListModel extends MapperListModel
         $this->_config = $lexProject->config;
 
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new UTCDatetime(1000*$newerThanTimestamp);
+            $startDate = new UTCDateTime(1000*$newerThanTimestamp);
             parent::__construct( self::mapper($projectModel->databaseName()), array('dateModified'=> array('$gte' => $startDate), 'isDeleted' => false), array(), array(), $limit, $skip);
         } else {
             parent::__construct( self::mapper($projectModel->databaseName()), array('isDeleted' => false), array(), array(), $limit, $skip);
         }
+    }
+
+    /** @var LexConfiguration */
+    private $_config;
+
+    public static function mapper($databaseName)
+    {
+        /** @var MongoMapper $instance */
+        static $instance = null;
+        if (null === $instance || $instance->databaseName() != $databaseName) {
+            $instance = new MongoMapper($databaseName, 'lexicon');
+        }
+
+        return $instance;
     }
 
     public function readForDto($missingInfo = '')

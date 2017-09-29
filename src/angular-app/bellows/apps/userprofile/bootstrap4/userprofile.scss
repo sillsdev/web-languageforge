@@ -1,0 +1,22 @@
+@media (max-width: 576px){    /* TODO This is for components only used on phone sized screen */
+
+}
+
+#userprofileForm {
+  input {
+    background-color: #e3e3e3;
+
+    &:focus {
+      background-color: white;
+    }
+  }
+
+  select.form-control {
+    background-color: #e3e3e3;
+
+    &:focus {
+      background-color: white;
+    }
+  }
+}
+
