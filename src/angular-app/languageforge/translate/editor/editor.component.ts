@@ -489,6 +489,8 @@ export class TranslateEditorController implements angular.IController {
             this.source.isCurrentSegmentHighlighted = false;
           }
         }
+
+        this.source.syncScroll(this.target);
         break;
 
       case DocType.SOURCE:
