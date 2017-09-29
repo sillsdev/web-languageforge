@@ -394,6 +394,11 @@ export class SourceDocumentEditor extends DocumentEditor {
   }
 
   translateCurrentSegment(): angular.IPromise<void> {
-    return this.machine.translateInteractively(this.currentSegment.text, this.confidenceThreshold);
+    return this.machine.translate(this.currentSegment.text, this.confidenceThreshold);
+  }
+
+  resetTranslation(): angular.IPromise<void> {
+    this.machine.resetTranslation();
+    return this.translateCurrentSegment();
   }
 }
