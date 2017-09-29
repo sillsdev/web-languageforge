@@ -24,7 +24,7 @@ export class MachineService {
     this.targetSegmentTokenizer = new SegmentTokenizer(segmentType);
   }
 
-  translateInteractively(sourceSegment: string, confidenceThreshold: number): angular.IPromise<void> {
+  translate(sourceSegment: string, confidenceThreshold: number): angular.IPromise<void> {
     if (this.engine == null) {
       return this.$q.resolve();
     }
@@ -49,40 +49,9 @@ export class MachineService {
     return deferred.promise;
   }
 
-  startTraining(): angular.IPromise<void> {
-    if (this.engine == null) {
-      return this.$q.resolve();
-    }
-
-    const deferred = this.$q.defer<void>();
-    this.engine.startTraining(success => {
-      if (success) {
-        deferred.resolve();
-      } else {
-        deferred.reject('Error occurred while starting the training process.');
-      }
-    });
-
-    return deferred.promise;
-  }
-
-  listenForTrainingStatus(onStatusUpdate: (progress: SmtTrainProgress) => void): angular.IPromise<void> {
-    if (this.engine == null) {
-      return this.$q.resolve();
-    }
-
-    const deferred = this.$q.defer<void>();
-    this.engine.listenForTrainingStatus(progress => {
-      this.$rootScope.$apply(scope => onStatusUpdate(progress));
-    }, success => {
-      if (success) {
-        deferred.resolve();
-      } else {
-        deferred.reject('Error occurred while listening for training status.');
-      }
-    });
-
-    return deferred.promise;
+  resetTranslation(): void {
+    this.sourceSegment = '';
+    this.prefix = '';
   }
 
   updatePrefix(prefix: string): string[] {
@@ -146,5 +115,41 @@ export class MachineService {
     }
 
     return tokenizer.tokenize(text).map(r => ({ index: r.start, length: r.length }));
+  }
+
+  startTraining(): angular.IPromise<void> {
+    if (this.engine == null) {
+      return this.$q.resolve();
+    }
+
+    const deferred = this.$q.defer<void>();
+    this.engine.startTraining(success => {
+      if (success) {
+        deferred.resolve();
+      } else {
+        deferred.reject('Error occurred while starting the training process.');
+      }
+    });
+
+    return deferred.promise;
+  }
+
+  listenForTrainingStatus(onStatusUpdate: (progress: SmtTrainProgress) => void): angular.IPromise<void> {
+    if (this.engine == null) {
+      return this.$q.resolve();
+    }
+
+    const deferred = this.$q.defer<void>();
+    this.engine.listenForTrainingStatus(progress => {
+      this.$rootScope.$apply(scope => onStatusUpdate(progress));
+    }, success => {
+      if (success) {
+        deferred.resolve();
+      } else {
+        deferred.reject('Error occurred while listening for training status.');
+      }
+    });
+
+    return deferred.promise;
   }
 }
