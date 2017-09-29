@@ -424,6 +424,7 @@ export class TranslateEditorController implements angular.IController {
 
   private onTrainSuccess(): void {
     this.failedConnectionCount = 0;
+    this.target.hideSuggestions();
     this.source.resetTranslation().then(() => this.target.updateSuggestions());
     this.notice.push(this.notice.SUCCESS, 'Finished training the translation engine');
   }
