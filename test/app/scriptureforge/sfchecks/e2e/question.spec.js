@@ -86,9 +86,13 @@ describe('the question page', function () {
     describe('paratext export of flagged answer', function () {
 
       it('setup: back to Text, click settings, click on tab', function () {
-        // TODO change to use breadcrumb text link (back has indeterminate finish) IJH 2014-06
-        browser.navigate().back();
-        textPage.textSettingsBtn.click();
+
+        // click on breadcrumb text title to go back one
+        element(by.linkText(constants.testText1Title)).click();
+
+        // click on text settings
+        textPage.clickTextSettingsButton();
+
         textSettingsPage.tabs.paratextExport.click();
       });
 
