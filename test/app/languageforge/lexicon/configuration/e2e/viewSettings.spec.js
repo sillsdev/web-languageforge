@@ -20,18 +20,18 @@ describe('View settings page', function () {
   });
 
   it('Hide Semantic Domain field for Manager', function () {
-    expect(viewSettingsPage.getFieldByNameIconClass('Semantic Domain')).toMatch('icon-eye-open');
+    expect(viewSettingsPage.getFieldByNameIconClass('Semantic Domain')).toMatch('fa fa-eye');
     viewSettingsPage.getFieldByName('Semantic Domain').click();
     util.setCheckbox(viewSettingsPage.showField, false);
     expect(viewSettingsPage.getFieldByNameIconClass('Semantic Domain'))
-      .not.toMatch('icon-eye-open');
+      .not.toMatch('fa fa-eye');
     viewSettingsPage.applyButton.click();
   });
 
   it('Hide Semantic Domain field for specific username of admin user', function () {
     viewSettingsPage.getTabByName('Member Specific').click();
-    viewSettingsPage.addViewSettingsForMember(constants.adminUsername);
-    viewSettingsPage.pickMemberWithViewSettings(constants.adminUsername);
+    viewSettingsPage.addViewSettingsForMember(constants.adminName);
+    viewSettingsPage.pickMemberWithViewSettings(constants.adminName);
     expect(viewSettingsPage.accordionEnabledFields.getText()).toEqual(
         'Enabled Fields for ' + constants.adminName + ' (' + constants.adminUsername + ')'
     );

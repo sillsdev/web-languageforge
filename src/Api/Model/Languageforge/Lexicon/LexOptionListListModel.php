@@ -2,9 +2,9 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Mapper\MapperListModel;
-use Api\Model\Mapper\MongoMapper;
-use MongoDB\BSON\UTCDatetime;
+use Api\Model\Shared\Mapper\MapperListModel;
+use Api\Model\Shared\Mapper\MongoMapper;
+use MongoDB\BSON\UTCDateTime;
 
 class LexOptionListListModel extends MapperListModel
 {
@@ -26,7 +26,7 @@ class LexOptionListListModel extends MapperListModel
     public function __construct($project, $newerThanTimestamp = null)
     {
         if (!is_null($newerThanTimestamp)) {
-            $startDate = new UTCDatetime(1000*$newerThanTimestamp);
+            $startDate = new UTCDateTime(1000*$newerThanTimestamp);
             parent::__construct( self::mapper($project->databaseName()), array('dateModified'=> array('$gte' => $startDate)), array());
         } else {
             parent::__construct( self::mapper($project->databaseName()), array('name' => array('$regex' => '')));

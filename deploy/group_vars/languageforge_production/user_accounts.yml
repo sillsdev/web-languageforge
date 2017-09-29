@@ -1,0 +1,20 @@
+---
+user_accounts:
+  - name: chris
+    authorized:
+      - "{{ keys['chris'] }}"
+  - name: rmunn
+    authorized:
+      - "{{ keys['rmunn'] }}"
+  - name: ira
+    authorized:
+      - "{{ keys['ira'] }}"
+  - name: damien
+    authorized:
+      - "{{ keys['damien'] }}"
+  - name: eberhard
+    authorized:
+      - "{{ keys['ebeilharz1'] }}"
+      - "{{ keys['ebeilharz2'] }}"
+      - "{{ keys['ebeilharz3'] }}"
+  

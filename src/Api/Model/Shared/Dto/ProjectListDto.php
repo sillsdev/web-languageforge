@@ -3,12 +3,12 @@
 namespace Api\Model\Shared\Dto;
 
 use Api\Library\Shared\Website;
+use Api\Model\Shared\ProjectList_UserModel;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\ProjectRoles;
-use Api\Model\ProjectList_UserModel;
-use Api\Model\ProjectModel;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 
 class ProjectListDto
 {

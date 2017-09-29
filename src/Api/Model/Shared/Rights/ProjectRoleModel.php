@@ -4,9 +4,6 @@ namespace Api\Model\Shared\Rights;
 
 class ProjectRoleModel
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     public $role;
-
 }

@@ -1,0 +1,44 @@
+.desktop-title {
+  position: relative;
+  bottom: 11px;
+  img {
+    height: 3.5em;
+  }
+  a {
+    position: relative;
+    bottom: 8px;
+    color: white;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+}
+
+.mobile-title {
+  position: relative;
+  bottom: 13px;
+  img {
+    height: 2.6em;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+}
+
+.btn {
+  margin-bottom: 5px;
+}
+
+
+
+// override bootstrap tab style for on focus / hover as temporary fix for uib-tabs
+// this fixes/removes the grey line on the bottom of selected tabs
+// longterm solution is to make a change to a fork of uib, after we switch to bs4-beta
+.nav-tabs {
+  .nav-link:focus{
+    border-bottom-color: white;
+  }
+  .uib-tab.active a:hover {
+    border-bottom-color: white;
+  }
+}

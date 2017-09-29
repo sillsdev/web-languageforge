@@ -1,0 +1,11 @@
+---
+
+- name: Configure production for xForge (languageforge.org and scriptureforge.org)
+  hosts: all
+  become: yes
+  roles:
+    # - fix
+    # locale_install may be needed if locale has been changed away from defaults
+    # - locale_install
+    # - ssl_config
+    - apache_config

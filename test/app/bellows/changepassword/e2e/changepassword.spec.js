@@ -6,7 +6,7 @@ describe('E2E testing: Change password', function () {
   var header             = require('../../pages/pageHeader');
   var changePasswordPage = require('../../pages/changePasswordPage');
   var expectedCondition = protractor.ExpectedConditions;
-  var CONDITION_TIMEOUT = 5000;
+  var CONDITION_TIMEOUT = 3000;
   var newPassword = '12345678';
 
   it('setup: login as user, go to change password page', function () {
@@ -50,7 +50,7 @@ describe('E2E testing: Change password', function () {
       CONDITION_TIMEOUT);
     changePasswordPage.submitButton.click();
     expect(changePasswordPage.noticeList.count()).toBe(1);
-    expect(changePasswordPage.noticeList.first().getText()).toContain('Password Updated');
+    expect(changePasswordPage.noticeList.first().getText()).toContain('Password updated');
     loginPage.logout();
 
     loginPage.login(constants.memberUsername, newPassword);

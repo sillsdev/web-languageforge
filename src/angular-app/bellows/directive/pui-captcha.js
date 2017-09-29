@@ -6,7 +6,7 @@ angular.module('palaso.ui.captcha', [])
   .directive('puiCaptcha', [function() {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/pui-captcha.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/pui-captcha.html',
       scope: {
         puiItems: '=',
         puiExpectedItemName: '=',

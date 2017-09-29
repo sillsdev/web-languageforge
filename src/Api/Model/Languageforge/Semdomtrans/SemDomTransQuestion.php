@@ -10,13 +10,9 @@ class SemDomTransQuestion
         $this->terms = new SemDomTransTranslatedForm($terms);
     }
 
-    /**
-     * @var SemDomTransTranslatedForm
-     */
+    /** @var SemDomTransTranslatedForm */
     public $question;
 
-    /**
-     * @var SemDomTransTranslatedForm
-     */
+    /** @var SemDomTransTranslatedForm */
     public $terms;
 }

@@ -1,0 +1,53 @@
+form.dc-semanticdomain {
+    margin: 0;
+    margin-right: -4px;
+}
+
+form.dc-semanticdomain .controls div {
+    display: inline-block;
+}
+
+form.dc-semanticdomain .controls > div {
+    margin-bottom: 10px;
+}
+
+.dc-semanticdomain-values {
+    position: relative;
+}
+
+.dc-semanticdomain-values > div {
+    padding-right: 9px;
+}
+
+.dc-semanticdomain-value {
+    border: 1px solid $lf-lines;
+    padding: $input-padding-y $input-padding-x;
+    border-radius: $border-radius;
+}
+
+form.dc-semanticdomain i.closeicon {
+    position: absolute;
+    top: -6px;
+    right: 0;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid $lf-lines;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    text-align: center;
+}
+form.dc-semanticdomain i.closeicon:hover {
+  background: $brand-danger;
+  color: #fff;
+}
+
+.dc-semanticdomain-value select, dc-semanticdomain .addItem {
+    margin: 0 0 20px;
+}
+
+dc-semanticdomain .spacing-after {
+    line-height: 0;
+    margin-bottom: 10px;
+}

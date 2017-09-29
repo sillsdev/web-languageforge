@@ -4,16 +4,9 @@ namespace Api\Model\Shared\Command;
 
 class UploadResponse
 {
-
-    /**
-     *
-     * @var boolean
-     */
+    /** @var boolean */
     public $result;
 
-    /**
-     *
-     * @var ImportResult|MediaResult|ErrorResult
-     */
+    /** @var ImportResult|MediaResult|ErrorResult */
     public $data;
 }

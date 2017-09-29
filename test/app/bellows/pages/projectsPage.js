@@ -1,17 +1,18 @@
 'use strict';
 
-var projectTypes = {
-  sf: 'Community Scripture Checking', // ScriptureForge
-  lf: 'Web Dictionary' // LanguageForge
-};
+module.exports = new ProjectsPage();
 
-var util = require('./util');
-var constants = require('../../testConstants.json');
+function ProjectsPage() {
+  var util = require('./util');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
+  var projectTypes = {
+    sf: 'Community Scripture Checking', // ScriptureForge
+    lf: 'Web Dictionary' // LanguageForge
+  };
 
-var ProjectsPage = function () {
-  var _this = this;
   this.url = '/app/projects';
-  this.get = function () {
+  this.get = function get() {
     browser.get(browser.baseUrl + this.url);
   };
 
@@ -23,10 +24,10 @@ var ProjectsPage = function () {
   this.saveBtn = element(by.partialButtonText('Save'));
 
   this.settings = {};
-  this.settings.button = element(by.css('a.btn i.icon-cog'));
-  if (constants.siteType == 'scriptureforge') {
+  this.settings.button = element(by.className('fa fa-cog'));
+  if (browser.baseUrl.includes('scriptureforge')) {
     this.settings.userManagementLink = element(by.linkText('Project Settings'));
-  } else if (constants.siteType == 'languageforge') {
+  } else if (browser.baseUrl.includes('languageforge')) {
     this.settings.userManagementLink = element(by.linkText('User Management'));
   }
 
@@ -36,16 +37,19 @@ var ProjectsPage = function () {
   this.projectsList = element.all(by.repeater('project in visibleProjects'));
   this.projectNames = element.all(by.repeater('project in visibleProjects')
     .column('project.projectName'));
-  this.projectTypes = element.all(by.repeater('project in visibleProjects')
-    .column('{{project.projectName}} ({{projectTypes[project.appName]}})'));
 
-  this.select100ItemsPerPage = function () {
+  //noinspection JSUnusedGlobalSymbols
+  this.projectTypes = element.all(by.repeater('project in visibleProjects')
+    .column('{{project.projectName}} ({{$ctrl.projectTypes[project.appName]}})'));
+
+  //noinspection JSUnusedGlobalSymbols
+  this.select100ItemsPerPage = function select100ItemsPerPage() {
     util.clickDropdownByValue(this.itemsPerPageCtrl, '100');
     expect(element(by.model('itemsPerPage')).element(by.css('option:checked'))
       .getText()).toEqual('100');
   };
 
-  this.findProject = function (projectName) {
+  this.findProject = function findProject(projectName) {
     var foundRow = undefined;
     var result = protractor.promise.defer();
     var searchName = new RegExp(projectName);
@@ -66,14 +70,15 @@ var ProjectsPage = function () {
     return result;
   };
 
-  this.addNewProject = function (nameToAdd) {
+  //noinspection JSUnusedGlobalSymbols
+  this.addNewProject = function addNewProject(nameToAdd) {
     this.createBtn.click();
     this.newProjectNameInput.sendKeys(nameToAdd);
     util.clickDropdownByValue(this.newProjectTypeSelect, projectTypes.sf);
     this.saveBtn.click();
   };
 
-  this.clickOnProject = function (projectName) {
+  this.clickOnProject = function clickOnProject(projectName) {
     this.findProject(projectName).then(function (projectRow) {
       var projectLink = projectRow.element(by.css('a'));
       projectLink.getAttribute('href').then(function (url) {
@@ -82,18 +87,22 @@ var ProjectsPage = function () {
     });
   };
 
-  this.addUserToProject = function (projectName, usersName, roleText) {
+  this.addUserToProject = function addUserToProject(projectName, usersName, roleText) {
     this.findProject(projectName).then(function (projectRow) {
       var projectLink = projectRow.element(by.css('a'));
       projectLink.click();
+      browser.wait(expectedCondition.visibilityOf(this.settings.button), CONDITION_TIMEOUT);
+      this.settings.button.click();
+      browser.wait(expectedCondition.visibilityOf(this.settings.userManagementLink),
+        CONDITION_TIMEOUT);
+      this.settings.userManagementLink.click();
 
-      _this.settings.button.click();
-      _this.settings.userManagementLink.click();
-
-      var addMembersBtn = element(by.partialButtonText('Add Members'));
-      var newMembersDiv = element(by.css('#newMembersDiv'));
-      var userNameInput = newMembersDiv.element(by.css('input[type="text"]'));
+      var addMembersBtn = element(by.id('addMembersButton'));
+      browser.wait(expectedCondition.visibilityOf(addMembersBtn), CONDITION_TIMEOUT);
       addMembersBtn.click();
+      var newMembersDiv = element(by.css('#newMembersDiv'));
+      var userNameInput = newMembersDiv.element(by.id('typeaheadInput'));
+      browser.wait(expectedCondition.visibilityOf(userNameInput), CONDITION_TIMEOUT);
       userNameInput.sendKeys(usersName);
 
       var typeaheadDiv = element(by.css('.typeahead'));
@@ -103,12 +112,12 @@ var ProjectsPage = function () {
       });
 
       // This should be unique no matter what
-      var addToProjectBtn = newMembersDiv.element(by.css('button'));
+      var addToProjectBtn = newMembersDiv.element(by.id('addUserButton'));
       expect(addToProjectBtn.getText()).toContain('Add Existing User');
       addToProjectBtn.click();
 
       // Now set the user to member or manager, as needed
-      var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
+      var projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
       var foundUserRow;
       projectMemberRows.map(function (row) {
         var nameColumn = row.element(by.binding('user.username'));
@@ -124,38 +133,46 @@ var ProjectsPage = function () {
         }
       });
 
-      _this.get(); // After all is finished, reload projects _this
-    });
+      this.get(); // After all is finished, reload projects page
+    }.bind(this));
   };
 
-  this.addManagerToProject = function (projectName, usersName) {
+  //noinspection JSUnusedGlobalSymbols
+  this.addManagerToProject = function addManagerToProject(projectName, usersName) {
     this.addUserToProject(projectName, usersName, 'Manager');
   };
 
-  this.addMemberToProject = function (projectName, usersName) {
+  this.addMemberToProject = function addMemberToProject(projectName, usersName) {
     this.addUserToProject(projectName, usersName, 'Contributor');
   };
 
-  this.removeUserFromProject = function (projectName, userName) {
+  this.removeUserFromProject = function removeUserFromProject(projectName, userName) {
     this.findProject(projectName).then(function (projectRow) {
       var projectLink = projectRow.element(by.css('a'));
       projectLink.click();
 
-      _this.settings.button.click();
-      _this.settings.userManagementLink.click();
+      this.settings.button.click();
+      this.settings.userManagementLink.click();
 
-      var userFilter = element(by.model('userFilter'));
-      userFilter.sendKeys(userName);
-      var projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
+      var userFilter;
+      var projectMemberRows;
+      if (browser.baseUrl.includes('scriptureforge')) {
+        userFilter = element(by.model('userFilter'));
+        userFilter.sendKeys(userName);
+        projectMemberRows = element.all(by.repeater('user in list.visibleUsers'));
+      } else if (browser.baseUrl.includes('languageforge')) {
+        userFilter = element(by.model('$ctrl.userFilter'));
+        userFilter.sendKeys(userName);
+        projectMemberRows = element.all(by.repeater('user in $ctrl.list.visibleUsers'));
+      }
+
       var foundUserRow = projectMemberRows.first();
       var rowCheckbox = foundUserRow.element(by.css('input[type="checkbox"]'));
       util.setCheckbox(rowCheckbox, true);
       var removeMembersBtn = element(by.partialButtonText('Remove Members'));
       removeMembersBtn.click();
 
-      _this.get(); // After all is finished, reload projects page
-    });
+      this.get(); // After all is finished, reload projects page
+    }.bind(this));
   };
-};
-
-module.exports = new ProjectsPage();
+}

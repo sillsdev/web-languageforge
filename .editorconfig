@@ -1,0 +1,37 @@
+root = true
+
+; applies to all files
+[*]
+indent_style = space
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+; applies only to JS files
+[*.js]
+tab_width = 2
+indent_size = 2
+continuation_indent_size = 2
+
+; applies only to JSON files
+[*.json]
+tab_width = 4
+indent_size = 2
+continuation_indent_size = 8
+
+; applies only to Markdown files
+[*.md]
+trim_trailing_whitespace = false
+
+; applies only to PHP files
+[*.php]
+tab_width = 4
+indent_size = 4
+continuation_indent_size = 4
+
+; applies to the rest of these files
+[*.{css, html, xml}]
+tab_width = 4
+indent_size = 4
+continuation_indent_size = 8

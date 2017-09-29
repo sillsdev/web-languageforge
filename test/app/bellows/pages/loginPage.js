@@ -2,46 +2,55 @@
 
 var constants = require('../../testConstants');
 
-var BellowsLoginPage = function() {
-  var _this = this; // For use inside our methods. Necessary when passing anonymous functions around, which lose access to "this".
+module.exports = new BellowsLoginPage();
 
-  this.get = function() {
+function BellowsLoginPage() {
+  this.get = function get() {
     browser.get(browser.baseUrl + '/auth/login');
   };
 
-  this.form = element(by.tagName('form'));
-  this.infoMessages = element.all(by.css('.alert-info'));
-  this.errors = element.all(by.css('.alert-error'));
+  this.form = element(by.css('form[name="loginForm"]'));
+  this.infoMessages = element.all(by.className('alert-info'));
+  this.errors = element.all(by.css('.alert-danger'));
   this.username = element(by.id('username'));
   this.password = element(by.id('password'));
   this.forgotPasswordLink = element(by.id('forgot_password'));
   this.submit   = element(by.xpath('//button[@type="submit"]'));
 
-  this.login = function(username, password) {
-    _this.get();
-    _this.username.sendKeys(username);
-    _this.password.sendKeys(password);
-    _this.submit.click();
+  this.login = function login(username, password) {
+    browser.get(browser.baseUrl + '/auth/logout');
+
+    this.get();
+    this.username.sendKeys(username);
+    this.password.sendKeys(password);
+    this.submit.click();
   };
 
-  this.loginAsAdmin = function() {
-    _this.login(constants.adminUsername, constants.adminPassword);
+  this.loginAsAdmin = function loginAsAdmin() {
+    this.login(constants.adminEmail, constants.adminPassword);
   };
 
-  this.loginAsManager = function() {
-    _this.login(constants.managerUsername, constants.managerPassword);
+  this.loginAsManager = function loginAsManager() {
+    this.login(constants.managerEmail, constants.managerPassword);
   };
 
-  this.loginAsUser = this.loginAsMember = function() {
-    _this.login(constants.memberUsername, constants.memberPassword);
+  this.loginAsUser = function loginAsUser() {
+    this.login(constants.memberEmail, constants.memberPassword);
   };
 
-  this.logout = function() {
-    browser.get(browser.baseUrl + '/app/logout');
+  this.loginAsMember = this.loginAsUser;
+
+  this.loginAsSecondUser = function loginAsSecondUser() {
+    this.login(constants.member2Email, constants.member2Password);
   };
-};
 
-module.exports = new BellowsLoginPage();
+  this.loginAsSecondMember = this.loginAsSecondUser;
 
-// This makes the result of calling require('./pages/loginPage') to be the BellowsLoginPage constructor function.
-// So you'd use this as "var LoginPage = require('./pages/loginPage'); var loginPage = new LoginPage();"
+  this.loginAsObserver = function loginAsObserver() {
+    this.login(constants.observerEmail, constants.observerPassword);
+  };
+
+  this.logout = function logout() {
+    browser.get(browser.baseUrl + '/auth/logout');
+  };
+}

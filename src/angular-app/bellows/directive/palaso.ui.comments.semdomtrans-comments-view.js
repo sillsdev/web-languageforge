@@ -5,7 +5,7 @@ angular.module('palaso.ui.comments')
   .directive('semdomtransCommentsView', [function() {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.semdomtrans-comments-view.html',
+      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/palaso.ui.comments.semdomtrans-comments-view.html',
       scope: {
         control: "=",
         entry: "="

@@ -4,16 +4,9 @@ namespace Api\Model\Shared\Command;
 
 class MediaResult
 {
-
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $path;
 
-    /**
-     *
-     * @var string
-     */
+    /** @var string */
     public $fileName;
 }

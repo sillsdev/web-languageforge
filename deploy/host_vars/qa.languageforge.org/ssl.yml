@@ -1,0 +1,20 @@
+ssl_letsencrypt_install: true
+ssl_letsencrypt_defaultmode: "webroot"
+ssl_letsencrypt_email: cambell_prince@sil.org
+
+ssl_items:
+  - name: languageforge_org_qa
+    vendor: letsencrypt
+    state: sign
+    sign:
+        webroot: /var/www/languageforge.org_qa/htdocs
+        alt_names:
+          - "-d qa.languageforge.org"
+  - name: languageforge_org_cat
+    vendor: letsencrypt
+    state: sign
+    sign:
+        webroot: /var/www/languageforge.org_cat/htdocs
+        alt_names:
+          - "-d cat.languageforge.org"
+          - "-d www.cat.languageforge.org"

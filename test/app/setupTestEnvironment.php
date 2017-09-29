@@ -4,22 +4,23 @@ require_once('e2eTestConfig.php');
 
 // use commands go here (after the e2eTestConfig)
 use Api\Library\Shared\Website;
-use Api\Model\Command\ProjectCommands;
-use Api\Model\Command\UserCommands;
-use Api\Model\Command\TextCommands;
-use Api\Model\Command\QuestionCommands;
-use Api\Model\Command\QuestionTemplateCommands;
+use Api\Model\Languageforge\Lexicon\LexRoles;
+use Api\Model\Scriptureforge\Sfchecks\Command\TextCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionCommands;
+use Api\Model\Scriptureforge\Sfchecks\Command\QuestionTemplateCommands;
+use Api\Model\Scriptureforge\SfProjectModel;
 use Api\Model\Languageforge\Lexicon\Command\LexEntryCommands;
 use Api\Model\Languageforge\Lexicon\Command\LexUploadCommands;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\LfProjectModel;
-use Api\Model\Mapper\MongoStore;
-use Api\Model\ProjectModel;
-use Api\Model\Scriptureforge\SfProjectModel;
+use Api\Model\Shared\Command\ProjectCommands;
+use Api\Model\Shared\Command\UserCommands;
+use Api\Model\Shared\Mapper\MongoStore;
+use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
-use Api\Model\UserModel;
+use Api\Model\Shared\UserModel;
 
 $constants = json_decode(file_get_contents(TestPath . 'app/testConstants.json'), true);
 
@@ -36,15 +37,21 @@ if (is_null($website)) {
 }
 $site = $website->base;
 
+if (strpos(SF_DATABASE, '_test') === false ) {
+    exit("Error: SF_DATABASE '" . SF_DATABASE . "' is not a test database");
+}
 // start with a fresh database
 MongoStore::dropAllCollections(SF_DATABASE);
 
 // Also empty out databases for the test projects
 $projectArrays = array(
-    $constants['testProjectName']  => $constants['testProjectCode'],
-    $constants['otherProjectName'] => $constants['otherProjectCode'],
+    $constants['testProjectName']   => $constants['testProjectCode'],
+    $constants['otherProjectName']  => $constants['otherProjectCode'],
+    $constants['thirdProjectName']  => $constants['thirdProjectCode'],
     $constants['fourthProjectName'] => $constants['fourthProjectCode'],
-    $constants['srProjectName'] => $constants['srProjectCode']
+    $constants['newProjectName']    => $constants['newProjectCode'],
+    $constants['emptyProjectName']  => $constants['emptyProjectCode'],
+    $constants['srProjectName']     => $constants['srProjectCode']
 );
 
 foreach ($projectArrays as $projectName => $projectCode) {
@@ -52,26 +59,17 @@ foreach ($projectArrays as $projectName => $projectCode) {
     $projectModel->projectName = $projectName;
     $projectModel->projectCode = $projectCode;
     MongoStore::dropAllCollections($projectModel->databaseName());
+    MongoStore::dropDB($projectModel->databaseName());
 }
 
-// drop the third database because it is used in a rename test
-$projectModel = new ProjectModel();
-$projectModel->projectName = $constants['thirdProjectName'];
-$projectModel->projectCode = $constants['thirdProjectCode'];
-MongoStore::dropDB($projectModel->databaseName());
-
-// drop the 'new' and 'empty' database because it is used in a 'create new project' test
-$projectModel = new ProjectModel();
-$projectModel->projectName = $constants['newProjectName'];
-$projectModel->projectCode = $constants['newProjectCode'];
-MongoStore::dropDB($projectModel->databaseName());
-$projectModel = new ProjectModel();
-$projectModel->projectName = $constants['emptyProjectName'];
-$projectModel->projectCode = $constants['emptyProjectCode'];
-MongoStore::dropDB($projectModel->databaseName());
-
 $adminUserId = UserCommands::createUser(array(
-    'id' => '',
+    'name' => $constants['adminName'],
+    'email' => $constants['adminEmail'],
+    'password' => $constants['adminPassword']),
+    $website
+);
+$adminUserId = UserCommands::updateUser(array(
+    'id' => $adminUserId,
     'name' => $constants['adminName'],
     'email' => $constants['adminEmail'],
     'username' => $constants['adminUsername'],
@@ -81,7 +79,13 @@ $adminUserId = UserCommands::createUser(array(
     $website
 );
 $managerUserId = UserCommands::createUser(array(
-    'id' => '',
+    'name' => $constants['managerName'],
+    'email' => $constants['managerEmail'],
+    'password' => $constants['managerPassword']),
+    $website
+);
+$managerUserId = UserCommands::updateUser(array(
+    'id' => $managerUserId,
     'name' => $constants['managerName'],
     'email' => $constants['managerEmail'],
     'username' => $constants['managerUsername'],
@@ -91,7 +95,13 @@ $managerUserId = UserCommands::createUser(array(
     $website
 );
 $memberUserId = UserCommands::createUser(array(
-    'id' => '',
+    'name' => $constants['memberName'],
+    'email' => $constants['memberEmail'],
+    'password' => $constants['memberPassword']),
+    $website
+);
+$memberUserId = UserCommands::updateUser(array(
+    'id' => $memberUserId,
     'name' => $constants['memberName'],
     'email' => $constants['memberEmail'],
     'username' => $constants['memberUsername'],
@@ -100,8 +110,30 @@ $memberUserId = UserCommands::createUser(array(
     'role' => SystemRoles::USER),
     $website
 );
+$member2UserId = UserCommands::createUser(array(
+    'name' => $constants['member2Name'],
+    'email' => $constants['member2Email'],
+    'password' => $constants['member2Password']),
+    $website
+);
+$member2UserId = UserCommands::updateUser(array(
+    'id' => $member2UserId,
+    'name' => $constants['member2Name'],
+    'email' => $constants['member2Email'],
+    'username' => $constants['member2Username'],
+    'password' => $constants['member2Password'],
+    'active' => true,
+    'role' => SystemRoles::USER),
+    $website
+);
 $expiredUserId = UserCommands::createUser(array(
-    'id' => '',
+    'name' => $constants['expiredName'],
+    'email' => $constants['expiredEmail'],
+    'password' => $constants['memberPassword']), // intentionally set wrong password
+    $website
+);
+$expiredUserId = UserCommands::updateUser(array(
+    'id' => $expiredUserId,
     'name' => $constants['expiredName'],
     'email' => $constants['expiredEmail'],
     'username' => $constants['expiredUsername'],
@@ -111,11 +143,33 @@ $expiredUserId = UserCommands::createUser(array(
     $website
 );
 $resetUserId = UserCommands::createUser(array(
-    'id' => '',
+    'name' => $constants['resetName'],
+    'email' => $constants['resetEmail'],
+    'password' => $constants['memberPassword']), // intentionally set wrong password
+    $website
+);
+$resetUserId = UserCommands::updateUser(array(
+    'id' => $resetUserId,
     'name' => $constants['resetName'],
     'email' => $constants['resetEmail'],
     'username' => $constants['resetUsername'],
     'password' => $constants['memberPassword'], // intentionally set wrong password
+    'active' => true,
+    'role' => SystemRoles::USER),
+    $website
+);
+$observerUserId = UserCommands::createUser(array(
+    'name' => $constants['observerName'],
+    'email' => $constants['observerEmail'],
+    'password' => $constants['observerPassword']),
+    $website
+);
+$observerUserId = UserCommands::updateUser(array(
+    'id' => $observerUserId,
+    'name' => $constants['observerName'],
+    'email' => $constants['observerEmail'],
+    'username' => $constants['observerUsername'],
+    'password' => $constants['observerPassword'],
     'active' => true,
     'role' => SystemRoles::USER),
     $website
@@ -179,7 +233,7 @@ $fourthProjectModel->write();
 $srProject = array(
     'identifier' => $constants['srIdentifier'],
     'name' => $constants['srName'],
-    'repository' => 'http://public.languagedepot.org',
+    'repository' => 'https://public.languagedepot.org',
     'role' => 'manager'
 );
 $srTestProjectId = ProjectCommands::createProject(
@@ -193,6 +247,7 @@ $srTestProjectId = ProjectCommands::createProject(
 
 ProjectCommands::updateUserRole($testProjectId, $managerUserId, ProjectRoles::MANAGER);
 ProjectCommands::updateUserRole($testProjectId, $memberUserId, ProjectRoles::CONTRIBUTOR);
+ProjectCommands::updateUserRole($testProjectId, $member2UserId, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($testProjectId, $resetUserId, ProjectRoles::CONTRIBUTOR);
 ProjectCommands::updateUserRole($otherProjectId, $adminUserId, ProjectRoles::MANAGER);
 ProjectCommands::updateUserRole($fourthProjectId, $adminUserId, ProjectRoles::MANAGER);
@@ -256,10 +311,33 @@ if ($site == 'scriptureforge') {
         $managerUserId);
 } elseif ($site == 'languageforge') {
     // Set up LanguageForge E2E test envrionment here
+    ProjectCommands::updateUserRole($testProjectId, $observerUserId, LexRoles::OBSERVER);
     $testProjectModel = new LexProjectModel($testProjectId);
-    $testProjectModel->addInputSystem("th-fonipa", "tipa", "Thai");
+    $testProjectModel->addInputSystem('th-fonipa', 'tipa', 'Thai');
     $testProjectModel->config->entry->fields[LexConfig::LEXEME]->inputSystems[] = 'th-fonipa';
+    $testProjectModel->addInputSystem('th-Zxxx-x-audio', 'taud', 'Thai Voice');
+    $testProjectModel->config->entry->fields[LexConfig::LEXEME]->inputSystems[] = 'th-Zxxx-x-audio';
     $testProjectId = $testProjectModel->write();
+
+    // setup to mimic file upload
+    $fileName = $constants['testEntry1']['lexeme']['th-Zxxx-x-audio']['value'];
+    $file = array();
+    $file['name'] = $fileName;
+    $_FILES['file'] = $file;
+
+    // put a copy of the test file in tmp
+    $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
+    copy(TestPath . "common/$fileName", $tmpFilePath);
+
+    $response = LexUploadCommands::uploadAudioFile($testProjectId, 'audio', $tmpFilePath);
+
+    // cleanup tmp file if it still exists
+    if (file_exists($tmpFilePath) and ! is_dir($tmpFilePath)) {
+        @unlink($tmpFilePath);
+    }
+
+    // put uploaded file into entry1
+    $constants['testEntry1']['lexeme']['th-Zxxx-x-audio']['value'] = $response->data->fileName;
 
     // setup to mimic file upload
     $fileName = $constants['testEntry1']['senses'][0]['pictures'][0]['fileName'];
@@ -269,7 +347,7 @@ if ($site == 'scriptureforge') {
 
     // put a copy of the test file in tmp
     $tmpFilePath = sys_get_temp_dir() . "/CopyOf$fileName";
-    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+    copy(TestPath . "common/$fileName", $tmpFilePath);
 
     $response = LexUploadCommands::uploadImageFile($testProjectId, 'sense-image', $tmpFilePath);
 
@@ -302,11 +380,31 @@ if ($site == 'scriptureforge') {
 
     // put mock uploaded zip import (jpg file)
     $fileName = $constants['testMockJpgImportFile']['name'];
-    $tmpFilePath = sys_get_temp_dir() . '/' . $fileName;
-    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+    $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+    copy(TestPath . "common/$fileName", $tmpFilePath);
 
     // put mock uploaded zip import (zip file)
     $fileName = $constants['testMockZipImportFile']['name'];
-    $tmpFilePath = sys_get_temp_dir() . '/' . $fileName;
-    copy(TestPath . "php/common/$fileName", $tmpFilePath);
+    $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+    copy(TestPath . "common/$fileName", $tmpFilePath);
+
+    // put mock uploaded audio (png file)
+    $fileName = $constants['testMockPngUploadFile']['name'];
+    $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+    copy(TestPath . "common/$fileName", $tmpFilePath);
+
+    // put mock uploaded audio (mp3 file)
+    $fileName = $constants['testMockMp3UploadFile']['name'];
+    $tmpFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+    copy(TestPath . "common/$fileName", $tmpFilePath);
+}
+
+if ($website->domain == 'jamaicanpsalms.scriptureforge.local') {
+    $jpProject = ProjectCommands::createProject(
+        "The Jamaican Psalms Project",
+        "jamaican_psalms",
+        SfProjectModel::SFCHECKS_APP,
+        $adminUserId,
+        $website
+    );
 }

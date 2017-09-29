@@ -5,23 +5,28 @@ angular.module('lexicon',
   [
     'ui.router',
     'ui.bootstrap',
-    'ngAnimate',
     'ngSanitize',
     'palaso.ui.dc.rendered',
     'palaso.ui.typeahead',
+    'coreModule',
     'bellows.services',
-    'bellows.filters',
     'lexicon.editor',
     'lexicon.configuration',
     'lexicon.view.settings',
     'lexicon.import-export',
     'lexicon.settings',
+    'lexicon.sync',
     'lexicon.services',
-    'lexicon.filters',
+    'language.inputSystems',
     'pascalprecht.translate'
   ])
-  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
-  function ($stateProvider, $urlRouterProvider, $translateProvider) {
+  .config(['$stateProvider', '$urlRouterProvider', '$translateProvider', '$compileProvider',
+    'apiServiceProvider',
+    function ($stateProvider, $urlRouterProvider, $translateProvider, $compileProvider,
+      apiService) {
+    $compileProvider.debugInfoEnabled(apiService.isProduction);
+    $compileProvider.commentDirectivesEnabled(apiService.isProduction);
+
     $urlRouterProvider.otherwise('/editor/list');
 
     // State machine from ui.router
@@ -42,6 +47,10 @@ angular.module('lexicon',
         url: '/settings',
         templateUrl: '/angular-app/languageforge/lexicon/views/settings.html'
       })
+      .state('sync', {
+        url: '/sync',
+        templateUrl: '/angular-app/languageforge/lexicon/views/sync.html'
+      })
       ;
 
     // configure interface language file path
@@ -50,161 +59,129 @@ angular.module('lexicon',
       suffix: '.json'
     });
     $translateProvider.preferredLanguage('en');
-      $translateProvider.useSanitizeValueStrategy('escape');
+    $translateProvider.useSanitizeValueStrategy('escape');
   }])
   .controller('LexiconCtrl', ['$scope', 'sessionService', 'lexConfigService', 'lexProjectService',
     '$translate', '$location', '$interval', 'silNoticeService', 'lexEditorDataService',
-    'lexSendReceiveApi', 'lexSendReceive',
+    'lexSendReceiveApi', 'lexSendReceive', 'lexRightsService', '$q', 'inputSystems',
   function ($scope, sessionService, lexConfig, lexProjectService,
             $translate, $location, $interval, notice, editorService,
-            sendReceiveApi, sendReceive) {
+            sendReceiveApi, sendReceive, rightsService, $q, inputSystems) {
     var pristineLanguageCode;
 
-    $scope.project = sessionService.session.project;
-    $scope.projectSettings = sessionService.session.projectSettings;
-    $scope.syncNotice = sendReceive.syncNotice;
-
-    $scope.rights = {};
-    $scope.rights.canRemoveUsers = function canRemoveUsers() {
-      if (sendReceive.isInProgress()) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-        sessionService.operation.DELETE);
-    };
-
-    $scope.rights.canCreateUsers = function canCreateUsers() {
-      if (sendReceive.isInProgress()) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-          sessionService.operation.CREATE);
-    };
-
-    $scope.rights.canEditUsers = function canEditUsers() {
-      if (sendReceive.isInProgress() || sessionService.session.project.isArchived) return false;
-
-      return sessionService.hasProjectRight(sessionService.domain.USERS,
-          sessionService.operation.EDIT);
-    };
-
-    $scope.rights.canArchiveProject = function canArchiveProject() {
-      if (sendReceive.isInProgress() || !angular.isDefined(sessionService.session.project))
-        return false;
-
-      return (sessionService.session.project.userIsProjectOwner ||
-        sessionService.hasSiteRight(sessionService.domain.PROJECTS,
-          sessionService.operation.ARCHIVE));
-    };
-
-    $scope.rights.showControlBar = function showControlBar() {
-      return $scope.rights.canRemoveUsers() || $scope.rights.canCreateUsers() ||
-        $scope.rights.canEditUsers();
-    };
-
     $scope.finishedLoading = false;
-    editorService.loadEditorData().then(function () {
+    editorService.loadEditorData($scope).then(function () {
       $scope.finishedLoading = true;
       sendReceive.checkInitialState();
     });
 
-    $scope.currentUserRole = sessionService.session.projectSettings.currentUserRole;
-    $scope.interfaceConfig = sessionService.session.projectSettings.interfaceConfig;
-    pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
-    changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
+    $q.all([sessionService.getSession(), rightsService.getRights()]).then(function (data) {
+      var session = data[0];
+      var rights = data[1];
 
-    $scope.gotoDictionary = function gotoDictionary() {
-      $location.path('/editor/list');
-    };
+      $scope.project = session.project();
+      $scope.rights = rights;
+      $scope.rights.showControlBar = function showControlBar() {
+        return $scope.rights.canRemoveUsers() || $scope.rights.canCreateUsers() ||
+          $scope.rights.canEditUsers();
+      };
 
-    $scope.showDictionaryButton = function showDictionaryButton() {
-      return !($location.path().indexOf('/editor') == 0);
-    };
+      $scope.showSync = function showSync() {
+        return !$scope.project.isArchived && rights.canEditUsers() &&
+          session.projectSettings().hasSendReceive;
+      };
 
-    function changeInterfaceLanguage(code) {
-      $translate.use(code);
-      pristineLanguageCode = angular.copy(code);
+      $scope.currentUserRole = session.projectSettings().currentUserRole;
+      $scope.interfaceConfig = session.projectSettings().interfaceConfig;
+      pristineLanguageCode = angular.copy($scope.interfaceConfig.userLanguageCode);
+      changeInterfaceLanguage($scope.interfaceConfig.userLanguageCode);
 
-      if (InputSystems.isRightToLeft(code)) {
-        $scope.interfaceConfig.direction = 'rtl';
-        $scope.interfaceConfig.pullToSide = 'pull-left';
-        $scope.interfaceConfig.pullNormal = 'pull-right';
-        $scope.interfaceConfig.placementToSide = 'right';
-        $scope.interfaceConfig.placementNormal = 'left';
-      } else {
-        $scope.interfaceConfig.direction = 'ltr';
-        $scope.interfaceConfig.pullToSide = 'pull-right';
-        $scope.interfaceConfig.pullNormal = 'pull-left';
-        $scope.interfaceConfig.placementToSide = 'left';
-        $scope.interfaceConfig.placementNormal = 'right';
-      }
-    }
+      $scope.gotoDictionary = function gotoDictionary() {
+        $location.path('/editor/list');
+      };
 
-    $scope.$watch('interfaceConfig.userLanguageCode', function (newVal) {
-      if (newVal && newVal != pristineLanguageCode) {
-        var user = {};
-        user.interfaceLanguageCode = newVal;
+      $scope.showDictionaryButton = function showDictionaryButton() {
+        return !($location.path().indexOf('/editor') === 0);
+      };
 
-        lexProjectService.updateUserProfile(user);
+      function changeInterfaceLanguage(code) {
+        $translate.use(code);
+        pristineLanguageCode = angular.copy(code);
 
-        changeInterfaceLanguage(newVal);
-      }
-    });
-
-    $scope.showSyncButton = function showSyncButton() {
-      var isEditorView = ($location.path().indexOf('/editor/') == 0);
-      return !$scope.project.isArchived && $scope.rights.canEditUsers() &&
-        $scope.projectSettings.hasSendReceive && isEditorView;
-    };
-
-    $scope.disableSyncButton = function disableSyncButton() {
-      return sendReceive.isStarted();
-    };
-
-    // Called when Send/Receive button clicked
-    $scope.syncProject = function syncProject() {
-      sendReceiveApi.receiveProject(function (result) {
-        if (result.ok) {
-          sendReceive.setSyncStarted();
+        if (inputSystems.isRightToLeft(code)) {
+          $scope.interfaceConfig.direction = 'rtl';
+          $scope.interfaceConfig.pullToSide = 'pull-left';
+          $scope.interfaceConfig.pullNormal = 'pull-right';
+          $scope.interfaceConfig.placementToSide = 'right';
+          $scope.interfaceConfig.placementNormal = 'left';
         } else {
-          notice.push(notice.ERROR,
-            'The project could not be synchronized with LanguageDepot.org. Please try again.');
+          $scope.interfaceConfig.direction = 'ltr';
+          $scope.interfaceConfig.pullToSide = 'pull-right';
+          $scope.interfaceConfig.pullNormal = 'pull-left';
+          $scope.interfaceConfig.placementToSide = 'left';
+          $scope.interfaceConfig.placementNormal = 'right';
+        }
+      }
+
+      $scope.$watch('interfaceConfig.userLanguageCode', function (newVal) {
+        if (newVal && newVal !== pristineLanguageCode) {
+          var user = {};
+          user.interfaceLanguageCode = newVal;
+
+          lexProjectService.updateUserProfile(user);
+
+          changeInterfaceLanguage(newVal);
         }
       });
-    };
 
-    $scope.$on('$destroy', sendReceive.cancelAllStatusTimers);
+      $scope.$on('$destroy', sendReceive.cancelAllStatusTimers);
 
-    // setup offline.js options
-    // see https://github.com/hubspot/offline for all options
-    // we tell offline.js to NOT store and remake requests while the connection is down
-    Offline.options.requests = false;
-    Offline.options.checkOnLoad = true;
-    Offline.options.checks = { xhr: { url: '/offlineCheck.txt' } };
+      // setup offline.js options
+      // see https://github.com/hubspot/offline for all options
+      // we tell offline.js to NOT store and remake requests while the connection is down
+      Offline.options.requests = false;
+      Offline.options.checkOnLoad = true;
+      Offline.options.checks = { xhr: { url: '/offlineCheck.txt' } };
 
-    var offlineMessageId;
-    Offline.on('up', function () {
-      if ($scope.online == false) {
-        notice.removeById(offlineMessageId);
-        notice.push(notice.SUCCESS, 'You are back online!');
+      // Set the page's Language Forge title, font size, and nav's background color
+      function setTitle(text, fontSize, backgroundColor) {
+        var title = document.querySelector('nav .mobile-title a');
+        title.textContent = text;
+        title.style.fontSize = fontSize;
+
+        document.querySelector('nav a.navbar-brand').textContent = text;
+
+        document.querySelector('nav.navbar').style.backgroundColor = backgroundColor;
       }
 
-      $scope.online = true;
-      $scope.$digest();
+      var offlineMessageId;
+      Offline.on('up', function () {
+        setTitle('Language Forge', '', '');
+
+        if ($scope.online === false) {
+          notice.removeById(offlineMessageId);
+          notice.push(notice.SUCCESS, 'You are back online!');
+        }
+
+        $scope.online = true;
+        $scope.$digest();
+      });
+
+      Offline.on('down', function () {
+        setTitle('Language Forge Offline', '0.8em', '#555');
+        offlineMessageId = notice.push(notice.ERROR,
+          'You are offline. Some features are not available', null, true, 5 * 1000);
+        $scope.online = false;
+        if (!/^\/editor\//.test($location.path())) {
+          // redirect to the editor
+          $location.path('/editor');
+          notice.push(notice.SUCCESS,
+            'The dictionary editor is available offline.  Settings are not.');
+        }
+
+        $scope.$digest();
+      });
     });
-
-    Offline.on('down', function () {
-      offlineMessageId = notice.push(notice.ERROR,
-        'You are offline.  Some features are not available', null, true);
-      $scope.online = false;
-      if (!/^\/editor\//.test($location.path())) {
-        // redirect to the editor
-        $location.path('/editor');
-        notice.push(notice.SUCCESS,
-          'The dictionary editor is available offline.  Settings are not.');
-      }
-
-      $scope.$digest();
-    });
-
   }])
   .controller('BreadcrumbCtrl', ['$scope', '$rootScope', 'breadcrumbService',
   function ($scope, $rootScope, breadcrumbService) {

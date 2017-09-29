@@ -2,9 +2,9 @@
 
 namespace Api\Model\Languageforge\Lexicon;
 
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\MapOf;
-use Api\Model\Mapper\ObjectForEncoding;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\MapOf;
+use Api\Model\Shared\Mapper\ObjectForEncoding;
 use LazyProperty\LazyPropertiesTrait;
 
 function generateExample()
@@ -55,7 +55,6 @@ class LexSense extends ObjectForEncoding
                 'reversalEntries',
                 'senseType',
                 'academicDomains',
-                'sensePublishIn',
                 'anthropologyCategories',
                 'status'
         ], false);
@@ -94,7 +93,6 @@ class LexSense extends ObjectForEncoding
             case 'reversalEntries': return new LexMultiValue();
             case 'senseType': return new LexValue();
             case 'academicDomains': return new LexMultiValue();
-            case 'sensePublishIn': return new LexMultiValue();
             case 'anthropologyCategories': return new LexMultiValue();
             case 'status': return new LexMultiValue();
             default:
@@ -239,9 +237,6 @@ class LexSense extends ObjectForEncoding
 
     /** @var LexMultiValue */
     public $academicDomains;
-
-    /** @var LexMultiValue */
-    public $sensePublishIn;
 
     /** @var LexMultiValue */
     public $anthropologyCategories;

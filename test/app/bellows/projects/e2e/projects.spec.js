@@ -1,15 +1,11 @@
 'use strict';
 
-/**
- *  TODO: refactor tests so that constants.siteType doesn't need to be specified in
- *  protractorConf.scriptureforge.js and protractorConf.languageforge.js as used in projectsPage.js.
- *  Perhaps User Management needs to be its own app. IJH 2015-01
- */
 describe('E2E Projects List App', function () {
   var constants     = require('../../../testConstants.json');
-  var util          = require('../../pages/util.js');
   var loginPage     = require('../../pages/loginPage');
   var projectsPage  = require('../../pages/projectsPage.js');
+  var expectedCondition = protractor.ExpectedConditions;
+  var CONDITION_TIMEOUT = 3000;
 
   describe('for Normal User', function () {
 
@@ -28,9 +24,11 @@ describe('E2E Projects List App', function () {
     it('can list two projects of which the user is a member', function () {
       loginPage.loginAsAdmin();
       projectsPage.get();
+      browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn), CONDITION_TIMEOUT);
       projectsPage.addMemberToProject(constants.otherProjectName, constants.memberName);
       loginPage.loginAsMember();
       projectsPage.get();
+      browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn), CONDITION_TIMEOUT);
       expect(projectsPage.projectsList.count()).toBe(2);
     });
 
@@ -42,15 +40,13 @@ describe('E2E Projects List App', function () {
   };
 
   var shouldProjectHaveButtons = function shouldProjectHaveButtons(projectRow, bool) {
-    var addAsManagerBtn = projectRow.element(by.partialButtonText('Add me as Manager'));
-    var addAsMemberBtn = projectRow.element(by.partialButtonText('Add me as Contributor'));
+    var addAsManagerBtn = projectRow.element(by.partialButtonText('Manager'));
     expect(addAsManagerBtn.isDisplayed()).toBe(bool);
-    expect(addAsMemberBtn.isDisplayed()).toBe(bool);
   };
 
   describe('for System Admin User', function () {
 
-    it('should list all projects for ScriptureForge', function () {
+    it('should list all projects', function () {
       loginPage.loginAsAdmin();
       projectsPage.get();
       expect(projectsPage.projectsList.count()).toBeGreaterThan(0);
@@ -90,7 +86,7 @@ describe('E2E Projects List App', function () {
         shouldProjectHaveButtons(projectRow, true);
 
         // Now add the admin back to the project
-        projectRow.element(by.partialButtonText('Add me as Manager')).click();
+        projectRow.element(by.partialButtonText('Manager')).click();
       });
 
       // And the buttons should go away after one of them is clicked

@@ -7,7 +7,7 @@ var BellowsForgotPasswordPage = function() {
 
   this.form = element(by.tagName('form'));
   this.infoMessages = element.all(by.css('.alert-info'));
-  this.errors = element.all(by.css('.alert-error'));
+  this.errors = element.all(by.css('.alert-danger'));
   this.usernameInput = element(by.id('username'));
   this.submitButton = element(by.partialButtonText('Submit'));
 };

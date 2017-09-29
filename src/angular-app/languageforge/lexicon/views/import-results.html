@@ -14,14 +14,14 @@
     <div data-ng-hide="hasImportErrors()" translate="There were no non-critical import errors."></div>
     <div data-ng-show="hasImportErrors()">
         <button class="btn" data-ng-click="show.importErrors = !show.importErrors">{{showImportErrorsButtonLabel()}}</button>
-        <div data-collapse="! show.importErrors">
+        <div uib-collapse="! show.importErrors">
             <pre id="importErrors">{{result.importErrors}}</pre>
         </div>
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" 
-        data-ng-click="ok()" 
+    <button class="btn btn-primary"
+        data-ng-click="ok()"
         data-ng-disabled="addDisabled">
-        <i class="icon-ok"></i> {{'Ok' | translate}}</button>
+        <i class="fa fa-check"></i> {{'Ok' | translate}}</button>
 </div>

@@ -7,7 +7,7 @@ require_once '../scriptConfig.php';
 $scripts = array('FixMultiParagraph.php');
 
 print("\nProject script runner started\n\n");
-$projectList = new \Api\Model\ProjectListModel();
+$projectList = new \Api\Model\Shared\ProjectListModel();
 $projectList->read();
 foreach ($projectList->entries as $projectParams) {
     foreach ($scripts as $script) {

@@ -2,8 +2,8 @@
 
 namespace Api\Library\Shared\Communicate\Sms;
 
-use Api\Model\Mapper\MapOf;
-use Api\Model\Mapper\MapperListModel;
+use Api\Model\Shared\Mapper\MapOf;
+use Api\Model\Shared\Mapper\MapperListModel;
 
 class SmsQueueModel extends MapperListModel
 {
@@ -12,7 +12,7 @@ class SmsQueueModel extends MapperListModel
      */
     public function __construct($databaseName)
     {
-        $this->entries = new MapOf(function ($data) use ($databaseName) { return new SmsModel($databaseName); });
+        $this->entries = new MapOf(function () use ($databaseName) { return new SmsModel($databaseName); });
         parent::__construct(
             SmsMongoMapper::connect($databaseName),
             array()

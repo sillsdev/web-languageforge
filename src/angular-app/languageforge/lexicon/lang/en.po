@@ -43,6 +43,9 @@ msgstr "Add Voice for {languageName}"
 msgid "Apply"
 msgstr "Apply"
 
+msgid "Archive"
+msgstr "Archive"
+
 msgid "Are you sure you want to delete '{lexeme}'?"
 msgstr "Are you sure you want to delete '{lexeme}'?"
 
@@ -51,6 +54,12 @@ msgstr "Browse..."
 
 msgid "Comment"
 msgstr "Comment"
+
+msgid "Configuration"
+msgstr "Configuration"
+
+msgid "Configuration updated successfully"
+msgstr "Configuration updated successfully"
 
 msgid "Create New User"
 msgstr "Create New User"
@@ -61,17 +70,14 @@ msgstr "Default Interface Language"
 msgid "Delete matching entry if deleted in import."
 msgstr "Delete matching entry if deleted in import."
 
+msgid "Delete"
+msgstr "Delete"
+
 msgid "Delete Word"
 msgstr "Delete Word"
 
 msgid "Dictionary Browse and Edit"
 msgstr "Dictionary Browse and Edit"
-
-msgid "Dictionary Configuration"
-msgstr "Dictionary Configuration"
-
-msgid "Dictionary configuration updated successfully"
-msgstr "Dictionary configuration updated successfully"
 
 msgid "Display Name"
 msgstr "Display Name"
@@ -114,6 +120,9 @@ msgstr "Full Name"
 
 msgid "Hidden if empty"
 msgstr "Hidden if empty"
+
+msgid "Hide Hidden Fields"
+msgstr "Hide Hidden Fields"
 
 msgid "Import"
 msgstr "Import"
@@ -217,6 +226,9 @@ msgstr "Remove {languageName}"
 msgid "Remove Members"
 msgstr "Remove Members"
 
+msgid "Reports"
+msgstr "Reports"
+
 msgid "Right to left language"
 msgstr "Right to left language"
 
@@ -243,6 +255,9 @@ msgstr "Sense Level Fields"
 
 msgid "Settings Import"
 msgstr "Settings Import"
+
+msgid "Show Hidden Fields"
+msgstr "Show Hidden Fields"
 
 msgid "Skip importing entries with identical modification times."
 msgstr "Skip importing entries with identical modification times."

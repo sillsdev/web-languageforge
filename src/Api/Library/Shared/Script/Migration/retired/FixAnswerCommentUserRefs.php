@@ -1,16 +1,14 @@
 <?php
+
 namespace Api\Library\Shared\Script\Migration;
 
-require_once APPPATH . 'Api/Model/TextModel.php';
-require_once APPPATH . 'Api/Model/QuestionModel.php';
-
-use Api\Model\QuestionListModel;
-use Api\Model\QuestionModel;
-use Api\Model\TextModel;
-use Api\Model\TextListModel;
-use Api\Model\ProjectListModel;
-use Api\Model\ProjectModel;
-use Api\Model\UserListModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionListModel;
+use Api\Model\Scriptureforge\Sfchecks\QuestionModel;
+use Api\Model\Scriptureforge\Sfchecks\TextListModel;
+use Api\Model\Shared\Mapper\IdReference;
+use Api\Model\Shared\ProjectListModel;
+use Api\Model\Shared\ProjectModel;
+use Api\Model\Shared\UserListModel;
 
 class FixAnswerCommentUserRefs
 {
@@ -18,28 +16,27 @@ class FixAnswerCommentUserRefs
     {
         $testMode = ($mode == 'test');
         $message = "";
-        $userlist = new UserListModel();
-        $userlist->read();
-        $userIds = array_map(function ($e) { return $e['id'];}, $userlist->entries);
+        $userList = new UserListModel();
+        $userList->read();
+        $userIds = array_map(function ($e) { return $e['id'];}, $userList->entries);
 
-        $projectlist = new ProjectListModel();
-        $projectlist->read();
-        $projectIds = array_map(function ($e) { return $e['id'];}, $projectlist->entries);
+        $projectList = new ProjectListModel();
+        $projectList->read();
+        $projectIds = array_map(function ($e) { return $e['id'];}, $projectList->entries);
 
         $deadCommentUserRefs = 0;
         $deadAnswerUserRefs = 0;
 
         foreach ($projectIds as $projectId) {
             $project = new ProjectModel($projectId);
-            $textlist = new TextListModel($project);
-            $textlist->read();
-            $textIds = array_map(function ($e) { return $e['id'];}, $textlist->entries);
+            $textList = new TextListModel($project);
+            $textList->read();
+            $textIds = array_map(function ($e) { return $e['id'];}, $textList->entries);
 
             foreach ($textIds as $textId) {
-
-                $questionlist = new QuestionListModel($project, $textId);
-                $questionlist->read();
-                $questionIds = array_map(function ($e) { return $e['id'];}, $questionlist->entries);
+                $questionList = new QuestionListModel($project, $textId);
+                $questionList->read();
+                $questionIds = array_map(function ($e) { return $e['id'];}, $questionList->entries);
 
                 foreach ($questionIds as $questionId) {
                     $question = new QuestionModel($project, $questionId);
@@ -47,6 +44,7 @@ class FixAnswerCommentUserRefs
                     foreach ($question->answers as $answerId => $answer) {
 
                         foreach ($answer->comments as $commentId => $comment) {
+                            /** @var IdReference $ref */
                             $ref = $comment->userRef;
                             if (!empty($ref->id) && !in_array($ref->asString(), $userIds)) {
                                 $comment->userRef->id = '';

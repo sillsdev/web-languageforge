@@ -4,54 +4,51 @@ angular.module('lexicon.services')
 
 // Lexicon Configuration Service
 .service('lexConfigService', ['sessionService', function (sessionService) {
-  var _this = this;
 
-  this.configForUser = getConfigForUser();
+  this.refresh = function () {
+    return sessionService.getSession().then(function (session) {
+      var config = angular.copy(session.projectSettings().config);
+      var userId = session.userId();
+      var role = session.projectSettings().currentUserRole;
+      var fieldsConfig;
 
-  this.refresh = function refresh() {
-    _this.configForUser = getConfigForUser();
-  };
+      // copy option lists to config object
+      config.optionlists = {};
+      angular.forEach(session.projectSettings().optionlists, function (optionlist) {
+        config.optionlists[optionlist.code] = optionlist;
+      });
 
-  function getConfigForUser() {
-    var config = angular.copy(sessionService.session.projectSettings.config);
-    var userId = sessionService.session.userId;
-    var role = sessionService.session.projectSettings.currentUserRole;
-    var fieldsConfig;
+      // use an user-based field config if defined
+      if (angular.isDefined(config.userViews[userId])) {
+        fieldsConfig = config.userViews[userId];
+      } else {
 
-    // copy option lists to config object
-    config.optionlists = {};
-    angular.forEach(sessionService.session.projectSettings.optionlists, function (optionlist) {
-      config.optionlists[optionlist.code] = optionlist;
-    });
+        // fallback to role-based field config
+        fieldsConfig = config.roleViews[role];
+      }
 
-    // use an user-based field config if defined
-    if (angular.isDefined(config.userViews[userId])) {
-      fieldsConfig = config.userViews[userId];
-    } else {
+      removeDisabledConfigFields(config.entry, fieldsConfig);
+      removeDisabledConfigFields(config.entry.fields.senses, fieldsConfig);
+      removeDisabledConfigFields(config.entry.fields.senses.fields.examples, fieldsConfig);
 
-      // fallback to role-based field config
-      fieldsConfig = config.roleViews[role];
-    }
-
-    removeDisabledConfigFields(config.entry, fieldsConfig);
-    removeDisabledConfigFields(config.entry.fields.senses, fieldsConfig);
-    removeDisabledConfigFields(config.entry.fields.senses.fields.examples, fieldsConfig);
-
-    return config;
-  }
+      return config;
+    }.bind(this));
+  }.bind(this);
 
   this.isTaskEnabled = function isTaskEnabled(taskName) {
-    var config = sessionService.session.projectSettings.config;
-    var role = sessionService.session.projectSettings.currentUserRole;
-    var userId = sessionService.session.userId;
+    sessionService.getSession().then(function (session) {
+      var config = session.projectSettings().config;
+      var role = session.projectSettings().currentUserRole;
+      var userId = session.userId();
 
-    if (angular.isDefined(config.userViews[userId])) {
-      return config.userViews[userId].showTasks[taskName];
-    } else {
+      if (angular.isDefined(config.userViews[userId])) {
+        return config.userViews[userId].showTasks[taskName];
+      } else {
 
-      // fallback to role-based field config
-      return config.roleViews[role].showTasks[taskName];
-    }
+        // fallback to role-based field config
+        return config.roleViews[role].showTasks[taskName];
+      }
+    });
   };
 
   this.fieldContainsData = function fieldContainsData(type, model) {
@@ -59,19 +56,19 @@ angular.module('lexicon.services')
 
     if (angular.isUndefined(model))
       return false;
-    if (type == 'fields')
+    if (type === 'fields')
       return true;
     switch (type) {
       case 'multitext':
         angular.forEach(model, function (field) {
-          if (field.value && field.value != '') {
+          if (field.value && field.value !== '') {
             containsData = true;
           }
         });
 
         break;
       case 'optionlist':
-        if (model.value && model.value != '') {
+        if (model.value && model.value !== '') {
           containsData = true;
         }
 
@@ -93,26 +90,27 @@ angular.module('lexicon.services')
   };
 
   function removeDisabledConfigFields(config, fieldsConfig) {
-    angular.forEach(config.fieldOrder, function (fieldName) {
-      if (fieldName != 'senses' && fieldName != 'examples') {
-        var fieldConfig = fieldsConfig.fields[fieldName];
+    var visibleFields = config.fieldOrder.filter(function (fieldName) {
+      if (fieldName === 'senses' || fieldName === 'examples') {
+        return true;  // Never remove the senses or examples config!
+      }
 
-        if (fieldConfig && fieldConfig.show) {
-          // field is enabled
-
-          // override input systems if specified
-          if (fieldConfig.overrideInputSystems) {
-            config.fields[fieldName].inputSystems = angular.copy(fieldConfig.inputSystems);
-          }
-        } else {
-          // remove config field
-          delete config.fields[fieldName];
-
-          // remove field from fieldOrder array
-          config.fieldOrder.splice(config.fieldOrder.indexOf(fieldName), 1);
+      var fieldConfig = fieldsConfig.fields[fieldName];
+      if (fieldConfig && fieldConfig.show) {
+        // Also override input systems if specified
+        if (fieldConfig.overrideInputSystems) {
+          config.fields[fieldName].inputSystems = angular.copy(fieldConfig.inputSystems);
         }
+        return true;
+      } else {
+        // Also remove field config
+        delete config.fields[fieldName];
+        return false;
       }
     });
+
+    // Now set fieldOrder array *after* we're done iterating over it
+    config.fieldOrder = visibleFields;
   }
 
   this.isCustomField = function isCustomField(fieldName) {
@@ -120,59 +118,27 @@ angular.module('lexicon.services')
   };
 
   this.getFieldConfig = function getFieldConfig(fieldName) {
-    var config = sessionService.session.projectSettings.config;
-    var search = config.entry.fields;
+    return sessionService.getSession().then(function (session) {
+      var config = session.projectSettings().config;
+      var search = config.entry.fields;
 
-    if (angular.isDefined(search[fieldName])) {
-      return search[fieldName];
-    }
+      if (angular.isDefined(search[fieldName])) {
+        return search[fieldName];
+      }
 
-    search = config.entry.fields.senses.fields;
-    if (angular.isDefined(search[fieldName])) {
-      return search[fieldName];
-    }
+      search = config.entry.fields.senses.fields;
+      if (angular.isDefined(search[fieldName])) {
+        return search[fieldName];
+      }
 
-    search = config.entry.fields.senses.fields.examples.fields;
-    if (angular.isDefined(search[fieldName])) {
-      return search[fieldName];
-    }
+      search = config.entry.fields.senses.fields.examples.fields;
+      if (angular.isDefined(search[fieldName])) {
+        return search[fieldName];
+      }
 
-    return undefined;
+      return undefined;
+    });
   };
-
-  /*
-   * this.isFieldEnabled = function(fieldName, ws) {
-   *
-   * var config = ss.session.projectSettings.config; var userId =
-   * ss.session.userId; var role = ss.session.projectSettings.currentUserRole;
-   * var fieldConfig; // use an user-based field config if defined if
-   * (angular.isDefined(config.userViews[userId])) { fieldConfig =
-   * config.userViews[userId].fields[fieldName]; } else { // fallback to
-   * role-based field config fieldConfig =
-   * config.roleViews[role].fields[fieldName]; }
-   *
-   * if (!fieldConfig) { console.log(fieldName); } // field-level visibility var
-   * show = fieldConfig.show; // input system level visibility if (ws &&
-   * fieldConfig.show && fieldConfig.overrideInputSystems) { if
-   * (fieldConfig.inputSystems.indexOf(ws) != -1) { show = true; } else { show =
-   * false; } } return show; };
-   *
-   * this.isUncommonField = function isUncommonField(fieldName) { var
-   * fieldConfig = getFieldConfig(fieldName); return fieldConfig.hideIfEmpty; };
-   *
-   *
-   * this.isFieldVisible = function isFieldVisible(showUncommon, fieldName,
-   * type, model) { if (type == 'fields') return true; var isVisible = true;
-   *
-   * if (!showUncommon && this.isUncommonField(fieldName)) { isVisible = false;
-   * switch (type) { case 'multitext': angular.forEach(model, function(ws) { if
-   * (model[ws].value != '') { isVisible = true; } }); break; case 'optionlist':
-   * case 'multioptionlist': if (model.value != '') { isVisible = true; } break; } }
-   *
-   * return isVisible; };
-   *
-   */
-
 }])
 
 ;

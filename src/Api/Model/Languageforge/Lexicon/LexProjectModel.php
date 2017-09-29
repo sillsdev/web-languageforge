@@ -8,8 +8,9 @@ use Api\Model\Languageforge\Lexicon\Config\LexConfiguration;
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
 use Api\Model\Languageforge\Lexicon\Dto\LexBaseViewDto;
 use Api\Model\Languageforge\LfProjectModel;
-use Api\Model\Mapper\MapOf;
-use Api\Model\Mapper\MongoStore;
+use Api\Model\Shared\Mapper\MapOf;
+use Api\Model\Shared\Mapper\MongoStore;
+use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\FileUtilities;
 
 class LexProjectModel extends LfProjectModel
@@ -26,6 +27,11 @@ class LexProjectModel extends LfProjectModel
 
         $this->config = new LexConfiguration();
         $this->sendReceiveProject = new SendReceiveProjectModel();
+
+        $this->lastSyncedDate = UniversalTimestamp::fromSecondsTimestamp(0);
+        $this->setReadOnlyProp('lastSyncedDate');
+        $this->lastEntryModifiedDate = UniversalTimestamp::fromSecondsTimestamp(1);
+        $this->setReadOnlyProp('lastEntryModifiedDate');
 
         // default values
         $this->inputSystems['en'] = new InputSystem('en', 'English', 'en');
@@ -50,6 +56,12 @@ class LexProjectModel extends LfProjectModel
 
     /** @var SendReceiveProjectModel */
     public $sendReceiveProject;
+
+    /** @var UniversalTimestamp */
+    public $lastSyncedDate;
+
+    /** @var UniversalTimestamp */
+    public $lastEntryModifiedDate;
 
     /**
      * Adds an input system if it doesn't already exist
@@ -78,11 +90,16 @@ class LexProjectModel extends LfProjectModel
         }
     }
 
+    /**
+     * @param string $userId
+     * @return array
+     */
     public function getPublicSettings($userId)
     {
         $settings = parent::getPublicSettings($userId);
         $settings['currentUserRole'] = $this->users[$userId]->role;
         $settings['hasSendReceive'] = $this->hasSendReceive();
+        $settings['lastSyncedDate'] = $this->lastSyncedDate->asDateTimeInterface()->format(\DateTime::RFC2822);
 
         return array_merge($settings, LexBaseViewDto::encode($this->id->asString(), $userId));
     }
@@ -171,11 +188,20 @@ class LexProjectModel extends LfProjectModel
     }
 
     /**
-     * @param $targetPath
-     * @param $linkPath
+     * @param string $targetPath
+     * @param string $linkPath
      */
     private function moveExistingFilesAndCreateSymlink($targetPath, $linkPath)
     {
+        // target must be a folder (or link to folder)
+        if (file_exists($targetPath)) {
+            if (!is_dir($targetPath)) {
+                unlink($targetPath);
+            }
+        } else {
+            FileUtilities::createAllFolders($targetPath);
+        }
+
         if (file_exists($linkPath)) {
             if (is_dir($linkPath) && !is_link($linkPath)) {
                 FileUtilities::copyFolderTree($linkPath, $targetPath);

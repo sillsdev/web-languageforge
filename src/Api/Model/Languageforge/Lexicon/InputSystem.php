@@ -12,24 +12,15 @@ class InputSystem
         $this->isRightToLeft = false;
     }
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $abbreviation;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $tag; // RFC5646 tag e.g. qaa-x-lang
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $languageName;
 
-    /**
-     * @var boolean
-     */
+    /** @var boolean */
     public $isRightToLeft;
-
 }

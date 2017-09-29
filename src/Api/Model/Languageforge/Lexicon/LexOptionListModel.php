@@ -3,13 +3,29 @@
 namespace Api\Model\Languageforge\Lexicon;
 
 use Api\Model\Languageforge\Lexicon\Config\LexConfig;
-use Api\Model\Mapper\ArrayOf;
-use Api\Model\Mapper\Id;
-use Api\Model\Mapper\MapperModel;
-use Api\Model\Mapper\MongoMapper;
+use Api\Model\Shared\Mapper\ArrayOf;
+use Api\Model\Shared\Mapper\Id;
+use Api\Model\Shared\Mapper\MapperModel;
+use Api\Model\Shared\Mapper\MongoMapper;
+use Api\Model\Shared\ProjectModel;
 
 class LexOptionListModel extends MapperModel
 {
+    /**
+     * @param ProjectModel $projectModel
+     * @param string $id
+     */
+    public function __construct($projectModel, $id = '')
+    {
+        $this->items = new ArrayOf(function () {
+            return new LexOptionListItem();
+        });
+        $this->id = new Id();
+        $this->canDelete = true;
+        $databaseName = $projectModel->databaseName();
+        parent::__construct(self::mapper($databaseName), $id);
+    }
+
     /** @var Id */
     public $id;
 
@@ -25,23 +41,8 @@ class LexOptionListModel extends MapperModel
     /** @var string */
     public $defaultItemKey;
 
-    /** @var bool */
+    /** @var boolean */
     public $canDelete;
-
-    /**
-     * @param \Api\Model\ProjectModel $projectModel
-     * @param string $id
-     */
-    public function __construct($projectModel, $id = '')
-    {
-        $this->items = new ArrayOf(function () {
-            return new LexOptionListItem();
-        });
-        $this->id = new Id();
-        $this->canDelete = true;
-        $databaseName = $projectModel->databaseName();
-        parent::__construct(self::mapper($databaseName), $id);
-    }
 
     /**
      * @param string $databaseName
