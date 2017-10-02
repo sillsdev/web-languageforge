@@ -79,6 +79,7 @@ export abstract class DocumentEditor {
     if (this.docId !== '') {
       this.realTime.disconnectRichTextDoc(this.docId, this.quill);
     }
+    this.documentSetId = '';
   }
 
   update(textChange: boolean): boolean {
