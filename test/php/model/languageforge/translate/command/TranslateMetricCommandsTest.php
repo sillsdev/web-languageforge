@@ -20,7 +20,8 @@ class TranslateMetricCommandsTest extends TestCase
         self::$environ->clean();
     }
 
-    public static function tearDownAfterClass() {
+    public static function tearDownAfterClass()
+    {
         self::$environ->clean();
     }
 
@@ -164,6 +165,7 @@ EOD;
 
         // Clean up after ourselves
         ProjectCommands::deleteProjects([$projectId], $project->ownerRef->asString());
+        @unlink($bodyFilePath);
     }
 
 }
