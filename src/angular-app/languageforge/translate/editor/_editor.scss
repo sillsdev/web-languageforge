@@ -1,4 +1,7 @@
 @import '../../../../Site/views/languageforge/theme/default/sass/_variables';
+@import '../../../../../node_modules/bootstrap/scss/_functions';
+@import '../../../../../node_modules/bootstrap/scss/_variables';
+@import '../../../../../node_modules/bootstrap/scss/_mixins';
 
 .picklist {
     cursor: pointer;
@@ -93,6 +96,7 @@ ng-quill-editor .ql-editor.drop-box {
     border-radius: 12px;
     color: #373a3c;
     position: absolute;
+    z-index: $zindex-tooltip;
 }
 
 .ql-suggest-tooltip-arrow {
@@ -106,6 +110,7 @@ ng-quill-editor .ql-editor.drop-box {
     margin-left: -6px;
     position: absolute;
     box-sizing: border-box;
+    z-index: $zindex-tooltip;
 }
 
 .ql-suggestions {
