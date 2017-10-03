@@ -38,7 +38,7 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <div style="margin-top:20px;font-weight: bold" ng-show="$ctrl.rights.canEditProjects"><span ng-show="projectFilter.length > 0">Showing {{filteredProjects.length}} of </span>{{$ctrl.projects.length}} Projects</div>
+            <div style="margin-top:20px;font-weight: bold" ng-show="$ctrl.rights.canEditProjects"><span ng-show="projectFilter.length > 0">Showing <span class="notranslate">{{filteredProjects.length}}</span> of </span><span class="notranslate">{{$ctrl.projects.length}}</span> Projects</div>
             <hr />
             <listview hide-if-empty="true" search="$ctrl.queryProjectsForUser()" items-filter="projectFilter" items="$ctrl.projects" filtered-items="filteredProjects" visible-items="visibleProjects" select="">
                 <div data-ng-repeat="project in visibleProjects">

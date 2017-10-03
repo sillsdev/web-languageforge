@@ -28,7 +28,7 @@
                                 <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
                                     <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
                                         <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a {{projectTypeNames[appName]}} project</b>
+                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
                                     </a>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@
                                 <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
                                     <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
                                         <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a {{projectTypeNames[appName]}} project</b>
+                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
                                     </a>
                                 </div>
                             </div>
@@ -112,7 +112,7 @@
                             <img src="{{ smallAvatarUrl }}"
                                  style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px"
                                  class="rounded-circle"
-                                 id="smallAvatarURL" />Hi, {{ userName }}</a>
+                                 id="smallAvatarURL" />Hi, <span class="notranslate">{{ userName }}</span></a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="userDropdown">
                             {% if isAdmin %}
                                 <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
@@ -162,7 +162,7 @@
             <div class="row">
                 <div class="col-xs-12 text-xs-center">
                     <div><small>v {{ version }}</small></div>
-                    Copyright {{ "now"|date("Y") }} <a href="http://www.sil.org" class="links">SIL International</a>.
+                    Copyright <span class="notranslate">{{ "now"|date("Y") }}</span> <a href="http://www.sil.org" class="links">SIL International</a>.
                     Use of this site is governed by our <a href="/terms_and_conditions" class="links">terms and
                     conditions</a> of use.
                 </div>
