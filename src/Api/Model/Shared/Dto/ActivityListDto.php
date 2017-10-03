@@ -78,7 +78,7 @@ class ActivityListDto
             $activityFilter = null;
             if ($projectModel->appName === SfchecksProjectModel::SFCHECKS_APP) {
                 $sfchecksProjectModel = new SfchecksProjectModel($project['id']);
-                if (! $sfchecksProjectModel->usersSeeEachOthersResponses) {
+                if (! $sfchecksProjectModel->shouldSeeOtherUsersResponses($userId)) {
                     $activityFilter = function ($itemId) use ($projectModel, $userId) {
                         return self::filterActivityByUserId($projectModel, $userId, $itemId);
                     };
