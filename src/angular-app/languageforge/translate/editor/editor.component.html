@@ -98,7 +98,7 @@
                     <button type="button" class="btn btn-std btn-sm d-none d-sm-block" data-ng-click="$ctrl.swapEditors()">
                         <i class="fa fa-exchange"></i></button>
                 </div>
-                <ng-quill-editor
+                <ng-quill-editor class="notranslate"
                     id="editorLeft" data-modules="$ctrl.left.modulesConfig" data-theme="suggestions"
                     data-on-editor-created="$ctrl.onQuillCreated(editor, $ctrl.left)"
                     data-on-content-changed="$ctrl.onContentChanged($ctrl.left)"
@@ -118,7 +118,7 @@
                 <div class="flex-no-grow">
                     <label class="editor-label">{{$ctrl.getEditorLabel($ctrl.right)}}</label>
                 </div>
-                <ng-quill-editor
+                <ng-quill-editor class="notranslate"
                     id="editorRight" data-modules="$ctrl.right.modulesConfig" data-theme="suggestions"
                     data-on-editor-created="$ctrl.onQuillCreated(editor, $ctrl.right)"
                     data-on-content-changed="$ctrl.onContentChanged($ctrl.right)"
