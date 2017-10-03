@@ -44,9 +44,10 @@ class QuestionListDto
         $data['text'] = JsonEncoder::encode($text);
         $usxHelper = new UsxHelper($text->content);
         $data['text']['content'] = $usxHelper->toHtml();
+        $shouldSeeOtherUsersResponses = $project->shouldSeeOtherUsersResponses($userId);  // Look it up just once
         foreach ($questionList->entries as $questionData) {
             $question = new QuestionModel($project, $questionData['id']);
-            if (! $project->usersSeeEachOthersResponses) {
+            if (! $shouldSeeOtherUsersResponses) {
                 $questionData['answers'] = array_filter($questionData['answers'], function($answer) use ($userId) {
                     return ((string)$answer['userRef'] == $userId);
                 });
@@ -56,7 +57,7 @@ class QuestionListDto
                 $questionData['answerCount'] = count($questionData['answers']);
                 $responseCount = 0; // "Responses" = answers + comments
                 foreach ($questionData['answers'] as $a) {
-                    if (! $project->usersSeeEachOthersResponses) {
+                    if (! $shouldSeeOtherUsersResponses) {
                         $a['comments'] = array_filter($a['comments'], function($comment) use ($userId) {
                             return ((string)$comment['userRef'] == $userId);
                         });

@@ -63,7 +63,7 @@
                               placeholder='Type your answer here. Click "Save Answer" when finished.'></textarea>
                     </div>
                     <div data-ng-hide="unreadResponseCount() == 0" class="right badge badge-important">
-                        {{unreadResponseCount()}} new response<span data-ng-show="unreadResponseCount() > 1">s</span>
+                        <span class="notranslate">{{unreadResponseCount()}}</span> new response<span data-ng-show="unreadResponseCount() > 1">s</span>
                     </div>
                     <button type="submit" class="btn btn-primary" id="doneBtn">Save Answer</button>
                 </form>
@@ -92,8 +92,8 @@
                             <div class="author">
                                 <img data-ng-src="{{getAvatarUrl(answer.userRef.avatar_ref)}}" width="32" height="32" />
                                 <div>
-                                    Answered {{answer.dateCreated | date:mediumDate}}<br />
-                                    by {{answer.userRef.username}}
+                                    Answered <span class="notranslate">{{answer.dateCreated | date:mediumDate}}</span><br />
+                                    by <span class="notranslate">{{answer.userRef.username}}</span>
                                 </div>
                             </div>
                             <div class="answerControls">
@@ -135,9 +135,9 @@
                         <div class="comments">
                             <div data-ng-repeat="comment in answer.comments">
                                 <div class="comment" data-ng-class="{unread: isUnreadComment(comment.id)}">
-                                    {{comment.content}} -
+                                    <span class="notranslate">{{comment.content}} -
                                     {{comment.userRef.username}} -
-                                    {{comment.dateCreated | date:mediumdate}}
+                                    {{comment.dateCreated | date:mediumdate}}</span>
                                     <a href data-ng-show="rightsEditResponse(comment.userRef.userid) && !questionIsClosed()"
                                        data-ng-click="showCommentEditor(comment.id)">edit</a>&nbsp;
                                     <a href data-ng-show="rightsDeleteResponse(comment.userRef.userid) && !questionIsClosed()"

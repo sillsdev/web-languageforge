@@ -3,12 +3,12 @@
 </div>
 <div class="modal-body">
     <ul>
-        <li>Existing entries before import: {{result.stats.existingEntries}}</li>
-        <li>Imported data entries: {{result.stats.importEntries}}</li>
-        <li>New entries added from the imported data: {{result.stats.newEntries}}</li>
-        <li>Existing entries merged with the imported data: {{result.stats.entriesMerged}}</li>
-        <li>Existing entries duplicated by the imported data: {{result.stats.entriesDuplicated}}</li>
-        <li>Existing entries deleted by the imported data: {{result.stats.entriesDeleted}}</li>
+        <li>Existing entries before import: <span class="notranslate">{{result.stats.existingEntries}}</span></li>
+        <li>Imported data entries: <span class="notranslate">{{result.stats.importEntries}}</span></li>
+        <li>New entries added from the imported data: <span class="notranslate">{{result.stats.newEntries}}</span></li>
+        <li>Existing entries merged with the imported data: <span class="notranslate">{{result.stats.entriesMerged}}</span></li>
+        <li>Existing entries duplicated by the imported data: <span class="notranslate">{{result.stats.entriesDuplicated}}</span></li>
+        <li>Existing entries deleted by the imported data: <span class="notranslate">{{result.stats.entriesDeleted}}</span></li>
     </ul>
     <br/>
     <div data-ng-hide="hasImportErrors()" translate="There were no non-critical import errors."></div>

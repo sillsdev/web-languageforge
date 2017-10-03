@@ -48,14 +48,14 @@ export class UserManagementMembersController implements angular.IController {
     } else if (!checkbox.checked && selectedIndex !== -1) {
       this.selected.splice(selectedIndex, 1);
     }
-  };
+  }
 
   isSelected(user: User): boolean {
     return user !== null && this.selected.indexOf(user) >= 0;
-  };
+  }
 
   removeProjectUsers(): void {
-    let userIds: string[] = [];
+    const userIds: string[] = [];
     const l = this.selected.length;
     for (let i = 0; i < l; i++) {
 
@@ -74,7 +74,7 @@ export class UserManagementMembersController implements angular.IController {
     }
 
     this.projectService.removeUsers(userIds).then(() => {
-      this.sessionService.getSession().then((session) => {
+      this.sessionService.getSession().then(session => {
         if (userIds.indexOf(session.userId()) !== -1) {
           // redirect if you just removed yourself from the project
           this.notice.push(this.notice.SUCCESS, 'You have been removed from this project');
@@ -91,15 +91,16 @@ export class UserManagementMembersController implements angular.IController {
         }
       });
     });
-  };
+  }
 
+  // noinspection JSUnusedGlobalSymbols
   onRoleChange(user: User): void {
-    this.projectService.updateUserRole(user.id, user.role, (result) => {
+    this.projectService.updateUserRole(user.id, user.role, result => {
       if (result.ok) {
         this.notice.push(this.notice.SUCCESS, user.username + '\'s role was changed to ' + user.role);
       }
     });
-  };
+  }
 
   /* ----------------------------------------------------------
    * Typeahead
@@ -116,10 +117,11 @@ export class UserManagementMembersController implements angular.IController {
       this.updateAddMode('addExisting');
       this.disableAddButton = false;
     }
-  };
+  }
 
+  // noinspection JSUnusedGlobalSymbols
   queryUser = (userName: string): void => {
-    this.userService.typeaheadExclusive(userName, this.project.id, (result) => {
+    this.userService.typeaheadExclusive(userName, this.project.id, result => {
       // TODO Check userName == controller view value (cf bootstrap typeahead) else abandon.
       if (result.ok) {
         this.users = result.data.entries;
@@ -132,15 +134,15 @@ export class UserManagementMembersController implements angular.IController {
         this.updateAddMode();
       }
     });
-  };
+  }
 
   addModeText(addMode: string): string {
     return this.addModes[addMode].en;
-  };
+  }
 
   addModeIcon(addMode: string): string {
     return this.addModes[addMode].icon;
-  };
+  }
 
   updateAddMode(newMode?: string): void {
     if (newMode in this.addModes) {
@@ -149,7 +151,7 @@ export class UserManagementMembersController implements angular.IController {
       // This also covers the case where newMode is undefined
       this.calculateAddMode();
     }
-  };
+  }
 
   /* Is this userName in the "excluded users" list? (I.e., users already in current project)
    * Note that it's not enough to check whether the "excluded users" list is non-empty,
@@ -170,7 +172,7 @@ export class UserManagementMembersController implements angular.IController {
     }
 
     return;
-  };
+  }
 
   calculateAddMode(): void {
     // TODO This isn't adequate.  Need to watch the
@@ -196,23 +198,23 @@ export class UserManagementMembersController implements angular.IController {
       this.disableAddButton = true;
       this.warningText = '';
     }
-  };
+  }
 
   addProjectUser(): void {
     if (this.addMode === 'addExisting') {
-      let model = new User();
+      const model = new User();
       model.id = this.user.id;
 
       // Check existing users to see if we're adding someone that already exists in the project
-      this.projectService.listUsers((result) => {
-        if (result.ok) {
-          for (let i = 0, l = result.data.users.length; i < l; i++) {
+      this.projectService.listUsers(listResult => {
+        if (listResult.ok) {
+          for (let i = 0, l = listResult.data.users.length; i < l; i++) {
 
             // This approach works, but is unnecessarily slow.
             // We should have an "is user in project?" API,
             // rather than returning all users then searching through them in O(N) time.
             // TODO: Make an "is user in project?" query API. 2014-06 RM
-            const thisUser = result.data.users[i];
+            const thisUser = listResult.data.users[i];
             if (thisUser.id === model.id) {
               this.notice.push(this.notice.WARN, '\'' + this.user.name + '\' is already a member of '
                 + this.project.projectName + '.');
@@ -221,8 +223,8 @@ export class UserManagementMembersController implements angular.IController {
             }
           }
 
-          this.projectService.updateUserRole(this.user.id, 'contributor', (result) => {
-            if (result.ok) {
+          this.projectService.updateUserRole(this.user.id, 'contributor', updateResult => {
+            if (updateResult.ok) {
               this.notice.push(this.notice.SUCCESS, '\'' + this.user.name + '\' was added to ' +
                 this.project.projectName + ' successfully');
               this.queryUserList();
@@ -233,7 +235,7 @@ export class UserManagementMembersController implements angular.IController {
     } else if (this.addMode === 'invite') {
       this.queryUserList();
 
-      this.userService.sendInvite(this.typeahead.userName, function (result) {
+      this.userService.sendInvite(this.typeahead.userName, result => {
         if (result.ok && result.data) {
           this.notice.push(this.notice.SUCCESS, '\'' + this.typeahead.userName +
             '\' was invited to join the project ' + this.project.projectName);
@@ -241,13 +243,13 @@ export class UserManagementMembersController implements angular.IController {
         }
       });
     }
-  };
+  }
 
   // noinspection JSMethodCanBeStatic
   imageSource(avatarRef: string): string {
     return avatarRef ? '/Site/views/shared/image/avatar/' + avatarRef :
       '/Site/views/shared/image/avatar/anonymous02.png';
-  };
+  }
 
 }
 
