@@ -50,7 +50,7 @@
                             <textarea class="form-control" required name="emailTemplate" placeholder="Email Message"
                                       data-ng-model="message.emailTemplate" style="width:400px; height:200px"></textarea>
                         </label>
-                        <label class="form-group">SMS Message <i>({{160 - message.smsTemplate.length}} characters remaining)</i>
+                        <label class="form-group">SMS Message <i>(<span class="notranslate">{{160 - message.smsTemplate.length}}</span> characters remaining)</i>
                             <textarea class="form-control" required name="smsTemplate" placeholder="SMS Message" data-ng-model="message.smsTemplate"
                                       style="width:400px; height:80px" maxlength="160"></textarea>
                         </label>
@@ -158,11 +158,11 @@
                     </td>
                     <td><a data-ng-href="{{text.url}}">
                         <div class="attention-block">
-                            <span class="subtitle">{{text.questionCount}} questions</span>
+                            <span class="subtitle"><span class="notranslate">{{text.questionCount}}</span> questions</span>
                         </div>
                     </a></td>
-                    <td>{{text.responseCount}} responses</td>
-                    <td>Archived on {{text.dateModified | date:'fullDate'}}</td>
+                    <td><span class="notranslate">{{text.responseCount}}</span> responses</td>
+                    <td>Archived on <span class="notranslate">{{text.dateModified | date:'fullDate'}}</span></td>
                 </tr>
             </table>
         </listview>
@@ -180,9 +180,9 @@
                     </div>
                 </label>
             </div>
-            <label class="control-label"><B>Project Code:</B> {{project.projectCode}}</label>
+            <label class="control-label"><B>Project Code:</B> <span class="notranslate">{{project.projectCode}}</span></label>
             <br>
-            <label class="control-label"><B>Project Owner:</B> {{project.ownerRef.username}}</label>
+            <label class="control-label"><B>Project Owner:</B> <span class="notranslate">{{project.ownerRef.username}}</span></label>
             <!-- <label class="checkbox"><input type="checkbox" data-ng-model="project.featured" /> Featured on website</label> -->
             <br>
             <label class="checkbox"><input type="checkbox" data-ng-model="project.usersSeeEachOthersResponses" />
