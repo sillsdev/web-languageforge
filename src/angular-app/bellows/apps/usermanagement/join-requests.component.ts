@@ -13,24 +13,24 @@ export class UserManagementJoinRequestsController implements angular.IController
   constructor(private userService: UserService, private projectService: ProjectService) {}
 
   acceptJoinRequest(userId: string, role: string) {
-    this.projectService.acceptJoinRequest(userId, role, (result) => {
-      if (result.ok) {
-        this.projectService.getJoinRequests((result) => {
-          this.joinRequests = result.data;
+    this.projectService.acceptJoinRequest(userId, role, acceptResult => {
+      if (acceptResult.ok) {
+        this.projectService.getJoinRequests(getResult => {
+          this.joinRequests = getResult.data;
          });
       }
-    })
-  };
+    });
+  }
 
   denyJoinRequest(userId: string) {
-    this.projectService.denyJoinRequest(userId, (result) => {
-      if (result.ok) {
-        this.projectService.getJoinRequests((result) => {
-          this.joinRequests = result.data;
+    this.projectService.denyJoinRequest(userId, denyResult => {
+      if (denyResult.ok) {
+        this.projectService.getJoinRequests(getResult => {
+          this.joinRequests = getResult.data;
          });
       }
-    })
-  };
+    });
+  }
 
 }
 
