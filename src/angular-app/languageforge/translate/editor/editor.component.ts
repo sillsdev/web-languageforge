@@ -544,34 +544,24 @@ export class TranslateEditorController implements angular.IController {
         this.notice.setLoading('Formatting USX file "' + file.name + '" data...');
         this.projectApi.usxToHtml(usx).then(result => {
           if (result.ok) {
-            this.$scope.$applyAsync(() => {
-              const index = quill.getSelection(true).index || quill.getLength();
-              quill.clipboard.dangerouslyPasteHTML(index, result.data, Quill.sources.USER);
-              this.notice.cancelLoading();
-            });
+            this.insertHtml(quill, result.data);
+            this.notice.cancelLoading();
           }
         });
       }).catch((errorMessage: string) => {
-        this.$scope.$applyAsync(() => {
-          this.notice.cancelLoading();
-          this.notice.push(this.notice.ERROR, errorMessage);
-        });
+        this.notice.cancelLoading();
+        this.notice.push(this.notice.ERROR, errorMessage);
       });
     } else if (file.name.toLowerCase().endsWith('.txt')) {
       this.notice.setLoading('Reading text file "' + file.name + '"...');
       this.util.readTextFile(file).then((text: string) => {
         text = text.replace(/\n/g, '</p><p>');
         text = '<p>' + text + '</p>';
-        this.$scope.$applyAsync(() => {
-          const index = quill.getSelection(true).index || quill.getLength();
-          quill.clipboard.dangerouslyPasteHTML(index, text, Quill.sources.USER);
-          this.notice.cancelLoading();
-        });
+        this.insertHtml(quill, text);
+        this.notice.cancelLoading();
       }).catch((errorMessage: string) => {
-        this.$scope.$applyAsync(() => {
-          this.notice.cancelLoading();
-          this.notice.push(this.notice.ERROR, errorMessage);
-        });
+        this.notice.cancelLoading();
+        this.notice.push(this.notice.ERROR, errorMessage);
       });
     }
   }
@@ -583,18 +573,30 @@ export class TranslateEditorController implements angular.IController {
       this.notice.setLoading('Formatting USX file data...');
       this.projectApi.usxToHtml(usx).then(result => {
         if (result.ok) {
-          this.$scope.$applyAsync(() => {
-            const selection = quill.getSelection(true);
-            quill.clipboard.dangerouslyPasteHTML(selection.index, result.data, Quill.sources.USER);
-            this.notice.cancelLoading();
-          });
+          this.insertHtml(quill, result.data);
+          this.notice.cancelLoading();
         }
       });
     }).catch((errorMessage: string) => {
-      this.$scope.$applyAsync(() => {
-        this.notice.cancelLoading();
-        this.notice.push(this.notice.ERROR, errorMessage);
-      });
+      this.notice.cancelLoading();
+      this.notice.push(this.notice.ERROR, errorMessage);
+    });
+  }
+
+  private insertHtml(quill: Quill, html: string) {
+    // ensure blank line at end - allows to complete the last segment
+    if (!html.endsWith('<p><br></p>')) {
+      html += '<p><br></p>';
+    }
+
+    this.$scope.$applyAsync(() => {
+      let index = quill.getSelection(true).index || quill.getLength();
+      if (quill.getLength() === 1 && quill.getText() === '\n') {
+        // editor is empty
+        index = 0;
+      }
+
+      quill.clipboard.dangerouslyPasteHTML(index, html, Quill.sources.USER);
     });
   }
 
