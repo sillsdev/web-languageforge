@@ -1,5 +1,4 @@
 @media (max-width: 576px){    /* TODO This is for components only used on phone sized screen */
-
 }
 
 #userprofileForm {
@@ -17,6 +16,10 @@
     &:focus {
       background-color: white;
     }
+  }
+
+  .intl-tel-input {
+    width: 100%;
   }
 }
 
