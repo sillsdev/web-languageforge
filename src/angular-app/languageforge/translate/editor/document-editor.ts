@@ -212,6 +212,11 @@ export class TargetDocumentEditor extends DocumentEditor {
     return this.trainSegment();
   }
 
+  closeDocumentSet(): void {
+    this.hideSuggestions();
+    super.closeDocumentSet();
+  }
+
   update(textChange: boolean): boolean {
     const segmentChanged = super.update(textChange);
     if (!segmentChanged) {

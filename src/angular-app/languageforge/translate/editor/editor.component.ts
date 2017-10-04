@@ -1,6 +1,6 @@
 import * as angular from 'angular';
 import { SmtTrainProgress } from 'machine';
-import Quill from 'quill';
+import Quill, { RangeStatic } from 'quill';
 
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
@@ -33,6 +33,8 @@ export class TranslateEditorController implements angular.IController {
 
   private currentDocType: string;
   private failedConnectionCount: number = 0;
+  private savedTargetSelection: RangeStatic;
+  private savedSourceSelection: RangeStatic;
 
   static $inject = ['$window', '$scope',
     '$q', 'machineService',
@@ -44,23 +46,6 @@ export class TranslateEditorController implements angular.IController {
               private readonly metricService: MetricService, private readonly modal: ModalService,
               private readonly notice: NoticeService, private readonly realTime: RealTimeService,
               private readonly projectApi: TranslateProjectService, private readonly util: UtilityService) { }
-
-  get saveMessage(): string {
-    switch (this.saveState) {
-      case SaveState.Unsaved:
-        return 'Unsaved changes';
-      case SaveState.Saving:
-        return 'Saving...';
-      case SaveState.Saved:
-        return 'All changes saved';
-      case SaveState.Unedited:
-        return '';
-    }
-  }
-
-  private get saveState(): SaveState {
-    return Math.min(this.source.saveState, this.target.saveState);
-  }
 
   $onInit(): void {
     this.source = new SourceDocumentEditor(this.$q, this.machine, this.realTime);
@@ -365,6 +350,7 @@ export class TranslateEditorController implements angular.IController {
   }
 
   onContentChanged(editor: DocumentEditor): void {
+    this.restoreCursorAfterEditorSwap();
     this.updateEditor(editor, true);
   }
 
@@ -386,9 +372,24 @@ export class TranslateEditorController implements angular.IController {
     this.switchCurrentDocumentSet(editor);
   }
 
+  get saveMessage(): string {
+    switch (this.saveState) {
+      case SaveState.Unsaved:
+        return 'Unsaved changes';
+      case SaveState.Saving:
+        return 'Saving...';
+      case SaveState.Saved:
+        return 'All changes saved';
+      case SaveState.Unedited:
+        return '';
+    }
+  }
+
   swapEditors(writePreferences: boolean = true): void {
     const leftQuill = this.left.quill;
     const rightQuill = this.right.quill;
+    this.savedTargetSelection = this.target.quill.getSelection();
+    this.savedSourceSelection = this.source.quill.getSelection();
     this.left.closeDocumentSet();
     this.right.closeDocumentSet();
 
@@ -462,6 +463,10 @@ export class TranslateEditorController implements angular.IController {
     ]);
   }
 
+  private get saveState(): SaveState {
+    return Math.min(this.source.saveState, this.target.saveState);
+  }
+
   private updateDropdownMenuClass(): void {
     const width = this.$window.innerWidth || this.$window.document.documentElement.clientWidth ||
       this.$window.document.body.clientWidth;
@@ -530,6 +535,23 @@ export class TranslateEditorController implements angular.IController {
 
   private hasEditorChanged(editor: DocumentEditor): boolean {
     return editor.docType !== this.currentDocType;
+  }
+
+  private restoreCursorAfterEditorSwap() {
+    if (this.savedTargetSelection && this.savedTargetSelection.index < this.target.quill.getLength()) {
+      // change source segment then back again (reloads source text) to ensure suggestions after swap
+      const sourceCurrentSegmentIndex = this.source.currentSegmentIndex;
+      this.source.switchCurrentSegment(sourceCurrentSegmentIndex + 1);
+      this.source.switchCurrentSegment(sourceCurrentSegmentIndex);
+      this.target.quill.setSelection(this.savedTargetSelection);
+      this.source.translateCurrentSegment();
+      this.savedTargetSelection = null;
+    }
+
+    if (this.savedSourceSelection && this.savedSourceSelection.index < this.source.quill.getLength()) {
+      this.source.quill.setSelection(this.savedSourceSelection);
+      this.savedSourceSelection = null;
+    }
   }
 
   private onDrop(file: File, quill: Quill, event: DragEvent): void {
