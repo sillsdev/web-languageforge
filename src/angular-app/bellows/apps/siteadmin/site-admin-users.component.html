@@ -1,5 +1,5 @@
 <div class="row" style="overflow:hidden">
-    <div class="col-xs-12 col-md-8">
+    <div class="col-12 col-md-8">
         <fieldset>
             <legend>Users (total: {{$ctrl.users.length}})</legend>
             <hr/>
@@ -24,7 +24,7 @@
                 </div>
             </form>
             <listview search="$ctrl.queryUsers()" items="$ctrl.users" items-filter="$ctrl.filterUsers"
-                      visible-items="visibleUsers" select="">
+                      visible-items="visibleUsers" select="" style="overflow-x: auto">
                 <table class="table table-hover table-responsive">
                     <thead class="thead-inverse">
                     <tr>
@@ -63,13 +63,13 @@
         </fieldset>
     </div>
 
-    <div class="col-xs-12 col-md-4">
+    <div class="col-12 col-md-4">
         <form data-ng-submit="$ctrl.updateRecord($ctrl.record)"
               data-ng-hide="$ctrl.vars.editButtonName === ''" name="userForm">
             <fieldset>
                 <legend>User data</legend>
                 <hr/>
-                <div class="card card-block bg-faded">
+                <div class="card card-body bg-light">
                     <label>Username</label>
                     <div class="input-group">
                         <input data-idle-validate="$ctrl.checkUniqueUser()"
@@ -121,7 +121,7 @@
                         data-ng-options="key as role.name for (key, role) in $ctrl.systemRoles"></select>
                 <br />
                 <label style="margin-bottom:20px">Site Roles</label>
-                <div class="card card-block bg-faded">
+                <div class="card card-body bg-light">
                     <div data-ng-repeat="(site, role) in $ctrl.record.siteRole">
                         <label for="siteRole">{{site}}</label>
                         <select class="form-control" id="siteRole" data-ng-model="role"
