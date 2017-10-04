@@ -108,7 +108,7 @@ describe('the question page', function () {
         browser.wait(expectedCondition.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
           CONDITION_TIMEOUT);
         expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
-        expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1 answer(s)');
+        expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1');
         expect(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(false);
         expect(textSettingsPage.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
       });
@@ -119,9 +119,9 @@ describe('the question page', function () {
         browser.wait(expectedCondition.visibilityOf(textSettingsPage.paratextExportTab.answerCount),
           CONDITION_TIMEOUT);
         expect(textSettingsPage.paratextExportTab.answerCount.isDisplayed()).toBe(true);
-        expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1 answer(s)');
+        expect(textSettingsPage.paratextExportTab.answerCount.getText()).toEqual('1');
         expect(textSettingsPage.paratextExportTab.commentCount.isDisplayed()).toBe(true);
-        expect(textSettingsPage.paratextExportTab.commentCount.getText()).toEqual('1 comment(s)');
+        expect(textSettingsPage.paratextExportTab.commentCount.getText()).toEqual('1');
         expect(textSettingsPage.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
       });
 

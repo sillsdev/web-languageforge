@@ -79,7 +79,7 @@ describe('the questions settings page - project manager', function () {
       browser.wait(expectedCondition.visibilityOf(page.paratextExportTab.answerCount),
         CONDITION_TIMEOUT);
       expect(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
-      expect(page.paratextExportTab.answerCount.getText()).toEqual('2 answer(s)');
+      expect(page.paratextExportTab.answerCount.getText()).toEqual('2');
       expect(page.paratextExportTab.commentCount.isDisplayed()).toBe(false);
       expect(page.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
     });
@@ -90,9 +90,9 @@ describe('the questions settings page - project manager', function () {
       browser.wait(expectedCondition.visibilityOf(page.paratextExportTab.answerCount),
         CONDITION_TIMEOUT);
       expect(page.paratextExportTab.answerCount.isDisplayed()).toBe(true);
-      expect(page.paratextExportTab.answerCount.getText()).toEqual('2 answer(s)');
+      expect(page.paratextExportTab.answerCount.getText()).toEqual('2');
       expect(page.paratextExportTab.commentCount.isDisplayed()).toBe(true);
-      expect(page.paratextExportTab.commentCount.getText()).toEqual('2 comment(s)');
+      expect(page.paratextExportTab.commentCount.getText()).toEqual('2');
       expect(page.paratextExportTab.downloadButton.isDisplayed()).toBe(true);
     });
 
