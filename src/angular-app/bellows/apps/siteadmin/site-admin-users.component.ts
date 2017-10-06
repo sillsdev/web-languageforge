@@ -8,7 +8,13 @@ import { User } from '../../shared/model/user.model';
 
 export class SiteAdminUsersController implements angular.IController {
   filterUsers = '';
-  roles = {
+  siteRoles = {
+    none: { name: 'None' },
+    user: { name: 'User' },
+    project_creator: { name: 'Project Creator' },
+    site_manager: { name: 'Site Manager' }
+  };
+  systemRoles = {
     user: { name: 'User' },
     system_admin: { name: 'Site Administrator' }
   };
@@ -119,6 +125,10 @@ export class SiteAdminUsersController implements angular.IController {
     this.vars.state = 'add';
     this.showPasswordForm();
     this.focusInput();
+  }
+
+  siteRoleChanged(site: string, role: string): void {
+    this.record.siteRole[site] = role;
   }
 
   // noinspection JSUnusedGlobalSymbols
