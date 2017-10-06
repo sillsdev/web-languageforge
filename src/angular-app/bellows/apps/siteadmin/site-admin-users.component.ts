@@ -3,11 +3,17 @@ import * as angular from 'angular';
 import { UserService } from '../../core/api/user.service';
 import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
-import { User } from '../../shared/model/user.model';
 import { UserWithPassword } from '../../shared/model/user-password.model';
+import { User } from '../../shared/model/user.model';
 
 export class SiteAdminUsersController implements angular.IController {
   filterUsers = '';
+  roles = {
+    user: { name: 'User' },
+    system_admin: { name: 'Site Administrator' }
+  };
+  selected: User[] = [];
+  users: User[] = [];
   vars = {
     selectedIndex: -1,
     editButtonName: '',
@@ -18,13 +24,7 @@ export class SiteAdminUsersController implements angular.IController {
     state: 'add' // can be either "add" or "update"
   };
   userId: string;
-  selected: User[] = [];
-  users: User[] = [];
   record: UserWithPassword;
-  roles: {
-    user: { name: 'User' },
-    system_admin: { name: 'Site Administrator' }
-  };
 
   /*
    * State of the username and email address being validated:
@@ -37,20 +37,19 @@ export class SiteAdminUsersController implements angular.IController {
   */
   uniqueUserState: string = 'empty';
 
-
   static $inject = ['$scope', 'userService',
     'sessionService', 'silNoticeService'];
   constructor(private $scope: angular.IScope, private userService: UserService,
               private sessionService: SessionService, private notice: NoticeService) { }
 
   $onInit() {
-    this.sessionService.getSession().then((session) => {
+    this.sessionService.getSession().then(session => {
       this.userId = session.userId();
     });
 
-    this.$scope.$watch(() => { return this.vars.record.id; }, (newId: string) => {
+    this.$scope.$watch(() => this.vars.record.id, (newId: string) => {
       if (newId) {
-        this.userService.read(newId, (result) => {
+        this.userService.read(newId, result => {
           this.record = result.data;
           this.uniqueUserState = 'empty';
         });
@@ -64,11 +63,11 @@ export class SiteAdminUsersController implements angular.IController {
 
   focusInput(): void {
     this.vars.inputfocus = true;
-  };
+  }
 
   blurInput(): void {
     this.vars.inputfocus = false;
-  };
+  }
 
   updateSelection(event: Event, user: User): void {
     const selectedIndex = this.selected.indexOf(user);
@@ -78,16 +77,16 @@ export class SiteAdminUsersController implements angular.IController {
     } else if (!checkbox.checked && selectedIndex !== -1) {
       this.selected.splice(selectedIndex, 1);
     }
-  };
+  }
 
   isSelected(user: User): boolean {
     return user !== null && this.selected.indexOf(user) >= 0;
-  };
+  }
 
   queryUsers(invalidateCache: boolean): void {
     const forceReload = (invalidateCache || (!this.users) || (this.users.length === 0));
     if (forceReload) {
-      this.userService.list((result) => {
+      this.userService.list(result => {
         if (result.ok) {
           this.users = result.data.entries;
         } else {
@@ -95,7 +94,7 @@ export class SiteAdminUsersController implements angular.IController {
         }
       });
     }
-  };
+  }
 
   selectRow(index: number, user: User = new User()): void {
     this.vars.selectedIndex = index;
@@ -109,7 +108,7 @@ export class SiteAdminUsersController implements angular.IController {
       this.vars.state = 'update';
       this.hidePasswordForm();
     }
-  };
+  }
 
   addRecord(): void {
     this.selectRow(-1); // Make a blank entry in the "User data" area
@@ -120,32 +119,33 @@ export class SiteAdminUsersController implements angular.IController {
     this.vars.state = 'add';
     this.showPasswordForm();
     this.focusInput();
-  };
+  }
 
+  // noinspection JSUnusedGlobalSymbols
   resetValidateUserForm(): void {
     this.uniqueUserState = 'empty';
-  };
+  }
 
   // Check for unique username and email
   checkUniqueUser(): void {
     if (this.record.email) {
       this.uniqueUserState = 'loading';
       this.userService.checkUniqueIdentity(this.record.id, this.record.username,
-        this.record.email, (result) => {
+        this.record.email, result => {
           if (result.ok) {
             this.uniqueUserState = result.data;
           }
         }
       );
     }
-  };
+  }
 
   updateRecord(record: UserWithPassword): void {
     if (record.id === undefined) {
       // add a new user
       record.id = '';
 
-      this.userService.create(record, (result) => {
+      this.userService.create(record, result => {
         if (result.ok) {
           if (result.data) {
             this.notice.push(this.notice.SUCCESS, 'The user ' + record.email +
@@ -164,7 +164,7 @@ export class SiteAdminUsersController implements angular.IController {
 
     } else {
       // update an existing user
-      this.userService.update(record, (result) => {
+      this.userService.update(record, result => {
         if (result.ok) {
           if (result.data) {
             this.notice.push(this.notice.SUCCESS, 'The user ' + record.username +
@@ -183,10 +183,10 @@ export class SiteAdminUsersController implements angular.IController {
 
     this.uniqueUserState = 'empty';
     this.queryUsers(true);
-  };
+  }
 
   removeUsers(): void {
-    let userIds: string[] = [];
+    const userIds: string[] = [];
     const l = this.selected.length;
     for (let i = 0; i < l; i++) {
       userIds.push(this.selected[i].id);
@@ -197,7 +197,7 @@ export class SiteAdminUsersController implements angular.IController {
       return;
     }
 
-    this.userService.remove(userIds, (result) => {
+    this.userService.remove(userIds, result => {
       if (result.ok) {
         if (result.data === 1) {
           this.notice.push(this.notice.SUCCESS, '1 user was deleted');
@@ -215,10 +215,10 @@ export class SiteAdminUsersController implements angular.IController {
       this.record = new User();
       this.queryUsers(true);
     });
-  };
+  }
 
   banUser(record: UserWithPassword): void {
-    this.userService.ban(record.id, (result) => {
+    this.userService.ban(record.id, result => {
       if (result.ok) {
         if (result.data !== false) {
           this.notice.push(this.notice.SUCCESS, 'The user ' + record.username + ' was banned');
@@ -234,27 +234,27 @@ export class SiteAdminUsersController implements angular.IController {
       this.record = new User();
       this.queryUsers(true);
     });
-  };
+  }
 
   changePassword(record: UserWithPassword): void {
-    this.userService.changePassword(record.id, record.password, (result) => {
+    this.userService.changePassword(record.id, record.password, result => {
       if (result.ok) {
         this.notice.push(this.notice.SUCCESS, 'Password for ' + record.name + ' updated successfully');
       }
     });
-  };
+  }
 
   showPasswordForm(): void {
     this.vars.showPasswordForm = true;
-  };
+  }
 
   hidePasswordForm(): void {
     this.vars.showPasswordForm = false;
-  };
+  }
 
   togglePasswordForm(): void {
     this.vars.showPasswordForm = !this.vars.showPasswordForm;
-  };
+  }
 
 }
 
