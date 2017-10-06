@@ -138,7 +138,6 @@ class WebsiteInstances
         $w = new Website('cat.languageforge.local', Website::LANGUAGEFORGE);
         $w->name = 'Language Forge';
         $w->ssl = false;
-        $w->userDefaultSiteRole = SiteRoles::PROJECT_CREATOR;
         $sites['cat.languageforge.local'] = $w;
 
         $w = new Website('e2etest.languageforge.local', Website::LANGUAGEFORGE);
@@ -165,7 +164,6 @@ class WebsiteInstances
         $w = new Website('cat.languageforge.org', Website::LANGUAGEFORGE);
         $w->name = 'Language Forge';
         $w->ssl = true;
-        $w->userDefaultSiteRole = SiteRoles::PROJECT_CREATOR;
         $sites['cat.languageforge.org'] = $w;
 
         // languageforge.org
