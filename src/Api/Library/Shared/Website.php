@@ -2,27 +2,18 @@
 
 namespace Api\Library\Shared;
 
-// this class is loaded early in index.php and therefore cannot have any dependencies on other libraries
+use Api\Model\Shared\Rights\SiteRoles;
 
 class Website
 {
     const SCRIPTUREFORGE = 'scriptureforge';
     const LANGUAGEFORGE = 'languageforge';
 
-    // TODO: figure out how to use SiteRoles instead of these constants (required because we cannot load SiteRoles directly)
-    const SITEROLE_NONE = 'none';
-    const SITEROLE_USER = 'user';
-    const SITEROLE_PROJECT_CREATOR = 'project_creator';
-    const SITEROLE_SITE_MANAGER = 'site_manager';
-
-    /**
-     * @param string $domain
-     * @param string $base
-     * @throws \Exception
-     */
-    public function __construct($domain, $base)
+    public function __construct(string $domain, string $base)
     {
-        if ($base != self::SCRIPTUREFORGE && $base != self::LANGUAGEFORGE) { throw new \Exception('website->base must be either scriptureforge or languageforge'); }
+        if ($base != self::SCRIPTUREFORGE && $base != self::LANGUAGEFORGE) {
+            throw new \Exception('website->base must be either scriptureforge or languageforge');
+        }
         $this->domain = $domain;
         $this->name = $domain;
         $this->base = $base;
@@ -30,7 +21,7 @@ class Website
         $this->ssl = false;
         $this->isProduction = false;
         $this->defaultProjectCode = '';
-        $this->userDefaultSiteRole = self::SITEROLE_USER; // must match SiteRoles::USER;
+        $this->userDefaultSiteRole = SiteRoles::USER;
         $this->allowSignupFromOtherSites = true;
     }
 
@@ -163,6 +154,8 @@ class Website
                 header("Location: http://" . substr($hostname, strpos($hostname, '.')+1), true, 302);
             }
         }
+
+        return null;
     }
 
     public function baseUrl()
@@ -192,28 +185,6 @@ class Website
         }
         return $dirPath;
     }
-
-    /**
-     * get an array of available project themes for a base site (scriptureforge or languageforge)
-     * @param string $baseSite
-     * @return array
-     */
-    /* note: not currently used
-    public static function getProjectThemeNamesForSite($baseSite = self::SCRIPTUREFORGE)
-    {
-        $themeNames = array();
-        $sitePath = APPPATH . 'views/' . $baseSite;
-        if (is_dir($sitePath)) {
-            $folders = glob($sitePath . '/*' , GLOB_ONLYDIR);
-            foreach ($folders as &$folder) {
-                $folder = pathinfo($folder, PATHINFO_BASENAME);
-            }
-            $themeNames = $folders;
-        }
-
-        return $themeNames;
-    }
-    */
 
     /**
      * This function contains the "definitions" for each website/domain
