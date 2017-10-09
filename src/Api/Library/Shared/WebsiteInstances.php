@@ -137,6 +137,7 @@ class WebsiteInstances
 
         $w = new Website('cat.languageforge.local', Website::LANGUAGEFORGE);
         $w->name = 'Language Forge';
+        $w->theme = 'cat';
         $w->ssl = false;
         $sites['cat.languageforge.local'] = $w;
 
@@ -163,6 +164,7 @@ class WebsiteInstances
         // cat.languageforge.org
         $w = new Website('cat.languageforge.org', Website::LANGUAGEFORGE);
         $w->name = 'Language Forge';
+        $w->theme = 'cat';
         $w->ssl = true;
         $sites['cat.languageforge.org'] = $w;
 
