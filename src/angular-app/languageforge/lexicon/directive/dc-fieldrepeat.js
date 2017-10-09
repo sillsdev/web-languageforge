@@ -19,10 +19,7 @@ angular.module('palaso.ui.dc.fieldrepeat', ['palaso.ui.dc.multitext', 'palaso.ui
     function ($scope, $state, lexConfigService) {
       $scope.$state = $state;
       $scope.fieldContainsData = lexConfigService.fieldContainsData;
-    }],
-
-    link: function (scope) {
-      scope.optionlists = scope.control.config.optionlists;
-    }
+      $scope.optionlists = $scope.control.config.optionlists;
+    }]
   };
 }]);
