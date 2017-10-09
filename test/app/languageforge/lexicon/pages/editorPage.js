@@ -124,6 +124,7 @@ function EditorPage() {
       // Only click the button if it will result in fields being hidden
       this.toggleHiddenFieldsBtn.getText().then(function (text) {
         if (text === this.toggleHiddenFieldsBtnText.hide) {
+          util.scrollTop();
           this.toggleHiddenFieldsBtn.click();
         }
       }.bind(this));
