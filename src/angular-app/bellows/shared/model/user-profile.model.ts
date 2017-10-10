@@ -7,7 +7,6 @@ export class UserProfile extends User {
   avatar_ref: string;
   communicate_via: string = '';
   gender: string = '';
-  last_login: string = '';
   mobile_phone: string = '';
   projectUserProfiles: any;
 }

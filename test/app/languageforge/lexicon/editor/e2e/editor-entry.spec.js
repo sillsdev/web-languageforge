@@ -8,7 +8,6 @@ describe('Editor List and Entry', function () {
   var editorPage       = require('../../pages/editorPage.js');
   var editorUtil       = require('../../pages/editorUtil.js');
   var configPage       = require('../../pages/configurationPage.js');
-  var viewSettingsPage = require('../../pages/viewSettingsPage.js');
 
   it('setup: login, click on test project', function () {
     loginPage.loginAsManager();
@@ -17,7 +16,8 @@ describe('Editor List and Entry', function () {
   });
 
   it('browse page has correct word count', function () {
-    expect(editorPage.browse.entriesList.count()).toEqual(editorPage.browse.getEntryCount()); // flaky assertion
+    // flaky assertion
+    expect(editorPage.browse.entriesList.count()).toEqual(editorPage.browse.getEntryCount());
     expect(editorPage.browse.getEntryCount()).toBe(3);
   });
 
@@ -102,6 +102,10 @@ describe('Editor List and Entry', function () {
     expect(editorPage.edit.pictures.addPictureLink.isPresent()).toBe(true);
     expect(editorPage.edit.pictures.addDropBox.isDisplayed()).toBe(false);
     expect(editorPage.edit.pictures.addCancelButton.isDisplayed()).toBe(false);
+
+    // fix problem with protractor not scrolling to element before click
+    browser.driver.executeScript('arguments[0].scrollIntoView();',
+      editorPage.edit.pictures.addPictureLink.getWebElement());
     editorPage.edit.pictures.addPictureLink.click();
     expect(editorPage.edit.pictures.addPictureLink.isPresent()).toBe(false);
     expect(editorPage.edit.pictures.addDropBox.isDisplayed()).toBe(true);
@@ -381,6 +385,10 @@ describe('Editor List and Entry', function () {
 
   it('setup: click on word with multiple definitions (found by lexeme)', function () {
     editorPage.edit.findEntryByLexeme(constants.testMultipleMeaningEntry1.lexeme.th.value).click();
+
+    // fix problem with protractor not scrolling to element before click
+    browser.driver.executeScript('arguments[0].scrollIntoView();',
+      editorPage.edit.senses.first().getWebElement());
     editorPage.edit.senses.first().click();
   });
 

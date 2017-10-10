@@ -93,7 +93,7 @@ function EditorUtil() {
     var switchDiv = elem.element(by.css('[data-on="config.fields[fieldName].type"] > div'));
     return switchDiv.getAttribute('data-ng-switch-when').then(function (fieldType) {
       var parser;
-      if (fieldType == 'multitext') {
+      if (fieldType === 'multitext') {
         parser = this.dcParsingFuncs[fieldType][multitextStrategy];
       } else {
         parser = this.dcParsingFuncs[fieldType];
@@ -167,6 +167,13 @@ function EditorUtil() {
     },
 
     clear: function clear(element) {
+      // fix problem with protractor not scrolling to element before click
+      element.getLocation().then(function (navDivLocation) {
+        var initTop = (navDivLocation.y - 150) > 0 ? navDivLocation.y - 150 : 1;
+        var initLeft = navDivLocation.x;
+        browser.executeScript('window.scrollTo(' + initLeft + ',' + initTop + ');');
+      });
+
       element.click();
       var ctrlA = protractor.Key.chord(protractor.Key.CONTROL, 'a');
       browser.actions().sendKeys(ctrlA).perform();
