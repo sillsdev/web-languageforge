@@ -115,23 +115,26 @@
                             </span>
                     </div>
                 </div>
-                <div>
-                    <label for="_role">System Role</label>
-                    <select class="form-control" id="_role" required data-ng-model="$ctrl.record.role"
-                            data-ng-disabled="$ctrl.vars.state=='add'"
-                            data-ng-options="key as role.name for (key, role) in $ctrl.roles"></select>
-                </div>
+                <label for="_role">System Role</label>
+                <select class="form-control" id="_role" required data-ng-model="$ctrl.record.role"
+                        data-ng-disabled="$ctrl.vars.state === 'add'"
+                        data-ng-options="key as role.name for (key, role) in $ctrl.systemRoles"></select>
                 <br />
-                <div>
-                    <label style="margin-bottom:20px">Site Roles: </label>
-                    <pre class="card card-block bg-faded"><code>{{$ctrl.record.siteRole | json}}</code></pre>
+                <label style="margin-bottom:20px">Site Roles</label>
+                <div class="card card-block bg-faded">
+                    <div data-ng-repeat="(site, role) in $ctrl.record.siteRole">
+                        <label for="siteRole">{{site}}</label>
+                        <select class="form-control" id="siteRole" data-ng-model="role"
+                                data-ng-disabled="$ctrl.vars.state === 'add'" data-ng-change="$ctrl.siteRoleChanged(site, role)"
+                                data-ng-options="key as siteRole.name for (key, siteRole) in $ctrl.siteRoles"></select>
+                    </div>
                 </div>
                 <a data-ng-show="$ctrl.vars.state === 'update'" href=""
                    data-ng-click="$ctrl.togglePasswordForm(); $ctrl.vars.inputfocus = $ctrl.vars.showPasswordForm">
                     Change <span class="notranslate">{{$ctrl.record.username}}</span>'s password</a>
                 <div data-ng-show="$ctrl.vars.showPasswordForm">
                     <label for="_password">Password</label>
-                    <input id="_password" type="text" name="password" data-idle-validate="$ctrl.checkUniqueUser()"
+                    <input id="_password" class="form-control" type="text" name="password" data-idle-validate="$ctrl.checkUniqueUser()"
                            data-idle-validate-keypress="$ctrl.resetValidateUserForm()" data-idle-validate-msec="500"
                            data-ng-model="$ctrl.record.password" data-pui-auto-focus="$ctrl.vars.inputfocus" />
                 </div>
@@ -144,28 +147,28 @@
                 <div>
                     <button class="btn btn-primary" data-ng-disabled="$ctrl.record.active"
                             data-ng-click="$ctrl.checkUniqueUser(); $ctrl.record.active = true">
-                        <div class="fa fa-stack">
+                        <span class="fa fa-stack">
                             <i class="fa fa-user fa-lg "></i>
-                        </div>
+                        </span>
                         Activate
                     </button>
                     <!--Ban button has a separate API so don't submit the form -->
                     <button class="btn btn-danger" type="button"
                             data-ng-disabled="$ctrl.vars.record.id === userId || !$ctrl.record.active"
                             data-ng-click="$ctrl.checkUniqueUser(); $ctrl.banUser($ctrl.record)">
-                        <div class="fa fa-stack">
+                        <span class="fa fa-stack">
                             <i class="fa fa-user fa-stack-1x"></i>
                             <i class="fa fa-ban fa-stack-2x"></i>
-                        </div>
+                        </span>
                         Ban
                     </button>
                 </div>
                 <br />
                 <button class="btn btn-primary" type="submit"
                         data-ng-disabled="userForm.$invalid || !($ctrl.uniqueUserState === 'ok')">
-                    <div class="fa fa-stack">
+                    <span class="fa fa-stack">
                         <i class="fa fa-lg fa-{{$ctrl.vars.editButtonIcon}}"></i>
-                    </div>
+                    </span>
                     {{$ctrl.vars.editButtonName}}
                 </button>
             </fieldset>
