@@ -74,9 +74,13 @@ class UserCommands
         }
 
         $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
+        if (array_key_exists('siteRole', $params)) {
+            $user->siteRole->exchangeArray($params['siteRole']);
+        }
         if (!$user->hasRoleOnSite($website) && $website->allowSignupFromOtherSites) {
             $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
         }
+
         return $user->write();
     }
 
