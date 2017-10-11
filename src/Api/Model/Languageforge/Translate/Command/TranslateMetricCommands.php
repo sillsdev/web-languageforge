@@ -2,6 +2,7 @@
 
 namespace Api\Model\Languageforge\Translate\Command;
 
+use Api\Model\Languageforge\Translate\Dto\TranslateMetricDto;
 use Api\Model\Languageforge\Translate\TranslateMetricListModel;
 use Api\Model\Languageforge\Translate\TranslateMetricModel;
 use Api\Model\Languageforge\Translate\TranslateProjectModel;
@@ -71,9 +72,7 @@ class TranslateMetricCommands
         Client $client = null
     ): array
     {
-        $metricData = JsonEncoder::encode($metric);
-        unset($metricData['id']);
-        $metricData['isTestData'] = $isTestData;
+        $metricData = TranslateMetricDto::encode($metric, $project, $isTestData);
 
         return self::indexElasticSearchDoc('cat_metrics', $project->projectCode, $metricData,
             $metric->id->asString(), $isTestData, $client);
