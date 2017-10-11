@@ -82,6 +82,7 @@ export class MetricService {
   onSuggestionTaken = (): void => {
     this._metrics.suggestionAcceptedCount++;
     this.editingCountdown = this.editingTimeout;
+    this.hasActiveEdits = true;
   };
 
   onTimer = (): void => {
