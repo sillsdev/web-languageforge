@@ -8,15 +8,11 @@ use Api\Model\Shared\UserModel;
 
 class TranslateProjectDtoEncoder extends JsonEncoder
 {
-    public function encodeIdReference($key, $model)
+    public function encodeIdReference(&$key, $model)
     {
-        // TODO ownerRef is declared in ProjectModel as an IdReference.  Here, it gets encoded as an Array 2014-08 DDW
-        // Trello: https://trello.com/c/Zw0aLLYv
         if ($key == 'ownerRef') {
             $user = new UserModel();
-            if ($user->exists($model->asString())) {
-                $user->read($model->asString());
-
+            if ($user->readIfExists($model->asString())) {
                 return [
                     'id' => $user->id->asString(),
                     'username' => $user->username
@@ -29,7 +25,7 @@ class TranslateProjectDtoEncoder extends JsonEncoder
         }
     }
 
-    public static function encode($model)
+    public static function encode($model): array
     {
         $encoder = new TranslateProjectDtoEncoder();
         $data = $encoder->_encode($model);
