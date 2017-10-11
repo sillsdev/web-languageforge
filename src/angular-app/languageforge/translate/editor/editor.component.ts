@@ -511,6 +511,10 @@ export class TranslateEditorController implements angular.IController {
       case DocType.SOURCE:
         if (segmentChanged) {
           this.target.switchCurrentSegment(this.source.currentSegmentIndex);
+
+          if (!this.currentDocType && this.selectedDocumentSetIndex in this.documentSets) {
+            this.metricService.currentDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
+          }
         }
         break;
     }
