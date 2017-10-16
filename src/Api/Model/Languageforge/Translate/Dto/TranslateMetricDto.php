@@ -75,6 +75,8 @@ class TranslateMetricDto
         $data = TranslateMetricDtoEncoder::encodeModel($metric, $project);
         unset($data['id']);
         $data['isTestData'] = $isTestData;
+        $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+        $data['ipAddress'] = $ipAddress;
 
         return $data;
     }
