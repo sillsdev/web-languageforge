@@ -7,6 +7,8 @@ use Api\Model\Languageforge\Translate\TranslateMetricModel;
 use Api\Model\Shared\Mapper\JsonEncoder;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
+use GeoIp2\Database\Reader;
+use GeoIp2\Exception\AddressNotFoundException;
 
 class TranslateMetricDtoEncoder extends JsonEncoder
 {
@@ -70,13 +72,35 @@ class TranslateMetricDtoEncoder extends JsonEncoder
 
 class TranslateMetricDto
 {
+    const GEO_CITY_DB_FILE_PATH = '/usr/local/share/GeoIP/GeoLite2-City.mmdb';
+
     public static function encode(TranslateMetricModel $metric, ProjectModel $project, $isTestData = false): array
     {
         $data = TranslateMetricDtoEncoder::encodeModel($metric, $project);
         unset($data['id']);
         $data['isTestData'] = $isTestData;
+
         $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
         $data['ipAddress'] = $ipAddress;
+        try {
+            $reader = new Reader(self::GEO_CITY_DB_FILE_PATH);
+            $record = $reader->city($ipAddress);
+            $data['geoCountryIsoCode'] = $record->country->isoCode;
+            $data['geoLocation'] = [
+                'latitude' => $record->location->latitude,
+                'longitude' => $record->location->longitude
+            ];
+        } catch (AddressNotFoundException $e) {
+            // ignore exceptions if the address in not found in production
+            if ($isTestData) {
+                throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            }
+        } catch (\InvalidArgumentException $e) {
+            // production code must have the Geo DB
+            if (!$isTestData) {
+                throw new \Exception($e->getMessage(), $e->getCode(), $e);
+            }
+        }
 
         return $data;
     }
