@@ -16,6 +16,8 @@ use Palaso\Utilities\CodeGuard;
 
 class TranslateMetricCommands
 {
+    const ELASTIC_SEARCH_METRICS_INDEX = 'cat_metrics_2';
+
     public static function updateMetric(
         string $projectId,
         string $metricId,
@@ -74,13 +76,19 @@ class TranslateMetricCommands
     {
         $metricData = TranslateMetricDto::encode($metric, $project, $isTestData);
 
-        return self::indexElasticSearchDoc('cat_metrics', $project->projectCode, $metricData,
-            $metric->id->asString(), $isTestData, $client);
+        return self::indexElasticSearchDoc(self::ELASTIC_SEARCH_METRICS_INDEX, self::getElasticSearchMetricType(),
+            $metricData, $metric->id->asString(), $isTestData, $client);
     }
 
-    public static function deleteMetricDoc(ProjectModel $project, TranslateMetricModel $metric, Client $client = null): array
+    public static function deleteMetricDoc(TranslateMetricModel $metric, Client $client = null): array
     {
-        return self::deleteElasticSearchDoc('cat_metrics', $project->projectCode, $metric->id->asString(), $client);
+        return self::deleteElasticSearchDoc(self::ELASTIC_SEARCH_METRICS_INDEX, self::getElasticSearchMetricType(),
+            $metric->id->asString(), $client);
+    }
+
+    public static function getElasticSearchMetricType(): string
+    {
+        return 'cat_metric';
     }
 
     private static function indexElasticSearchDoc(

@@ -41,31 +41,33 @@ class TranslateMetricCommandsTest extends TestCase
         $metric = new TranslateMetricModel($project, '', $documentSetId, $userId);
         $metric->metrics->mouseClickCount = 1;
         $metric->write();
+        $ipAddress = '110.77.202.231';
+        $_SERVER['REMOTE_ADDR'] = $ipAddress;
 
         $response = TranslateMetricCommands::indexMetricDoc($project, $metric, true);
 
         $this->assertNotNull($response);
-        $this->assertEquals('cat_metrics', $response['_index']);
-        $this->assertEquals($project->projectCode, $response['_type']);
+        $this->assertEquals(TranslateMetricCommands::ELASTIC_SEARCH_METRICS_INDEX, $response['_index']);
+        $this->assertEquals(TranslateMetricCommands::getElasticSearchMetricType(), $response['_type']);
         $this->assertEquals($metric->id->asString(), $response['_id']);
         $this->assertEquals(1, $response['_version']);
         $this->assertEquals(1, $response['created']);
 
         // Delete
-        $response2 = TranslateMetricCommands::deleteMetricDoc($project, $metric);
+        $response2 = TranslateMetricCommands::deleteMetricDoc($metric);
 
         $this->assertNotNull($response2);
         $this->assertEquals(1, $response2['found']);
-        $this->assertEquals('cat_metrics', $response2['_index']);
-        $this->assertEquals($project->projectCode, $response2['_type']);
+        $this->assertEquals(TranslateMetricCommands::ELASTIC_SEARCH_METRICS_INDEX, $response2['_index']);
+        $this->assertEquals(TranslateMetricCommands::getElasticSearchMetricType(), $response2['_type']);
         $this->assertEquals($metric->id->asString(), $response2['_id']);
         $this->assertEquals(2, $response2['_version']);
     }
 
     const esCreatedResponse = <<<EOD
 {
-  "_index": "cat_metrics",
-  "_type": "testcode1",
+  "_index": "cat_metrics_2",
+  "_type": "cat_metric",
   "_id": "59ce24b8a07ed541a8341195",
   "_version": 1,
   "result": "created",
