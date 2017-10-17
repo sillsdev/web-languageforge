@@ -181,7 +181,7 @@ Run the following Ansible playbooks to configure Ansible and run both sites.
 ````
 cd web-languageforge/deploy
 ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
-ansible-playbook -i hosts playbook_xenial.yml --limit localhost -K
+ansible-playbook playbook_xenial.yml --limit localhost -K
 ````
 If you run into an error on the `ssl_config : LetsEncrypt: Install packages` task, run the playbook again and that task should succeed the second time it is run.
 
