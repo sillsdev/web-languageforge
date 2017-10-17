@@ -4,16 +4,24 @@ use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Shared\Mapper\JsonEncoder;
-use GuzzleHttp\Client;
-use GuzzleHttp\Message\Response;
-use GuzzleHttp\Stream\Stream;
-use GuzzleHttp\Subscriber\Mock;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\MiddleWare;
+use GuzzleHttp\Psr7\Response;
 use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\FileUtilities;
 use PHPUnit\Framework\TestCase;
 
 class SendReceiveCommandsTest extends TestCase
 {
+    // duplicate of data in /test/app/testConstants.json
+    const TEST_MEMBER_USERNAME = 'test_runner_normal_user';
+    const TEST_SR_USERNAME = 'sr-mock-username';
+    const TEST_SR_PASSWORD = 'sr-mock-password';
+    // TODO: Can we get rid of these constants?
+
     /** @var LexiconMongoTestEnvironment Local store of mock test environment */
     private static $environ;
 
@@ -21,6 +29,71 @@ class SendReceiveCommandsTest extends TestCase
     {
         self::$environ = new LexiconMongoTestEnvironment();
         self::$environ->clean();
+    }
+
+    private static function setResponseErrorCode($errorCode, $errorReason = "")
+    {
+        // A Guzzler middleware function; see http://docs.guzzlephp.org/en/stable/handlers-and-middleware.html
+        return function (callable $handler) use ($errorCode, $errorReason) {
+            return function (
+                RequestInterface $request,
+                array $options
+            ) use ($handler, $errorCode, $errorReason) {
+                $promise = $handler($request, $options);
+                return $promise->then(
+                    function (ResponseInterface $response) use ($errorCode, $errorReason) {
+                        return $response->withStatus($errorCode, $errorReason);
+                    }
+                );
+            };
+        };
+    }
+
+    private static function skipRequestAndSetErrorCode($errorCode, $errorReason = "")
+    {
+        // A Guzzler middleware function; see http://docs.guzzlephp.org/en/stable/handlers-and-middleware.html
+        return function (callable $handler) use ($errorCode, $errorReason) {
+            return function (
+                RequestInterface $request,
+                array $options
+            ) use ($errorCode, $errorReason) {
+                return $promise->then(
+                    function (ResponseInterface $response) use ($errorCode, $errorReason) {
+                        return $response->withStatus($errorCode, $errorReason);
+                    }
+                );
+            };
+        };
+    }
+
+    private static function createMockHandlerWithErrorCode($errorCode)
+    {
+        $handler = GuzzleHttp\HandlerStack::create();
+        $handler->push(MiddleWare::mapResponse(function (ResponseInterface $_ignored) use ($errorCode) {
+            return new Response($errorCode);
+        }));
+        return $handler;
+    }
+
+    private static function createMockHandlerWithE2ETestingData($username, $password)
+    {
+        if ($username == self::TEST_SR_USERNAME) {
+            if ($password == self::TEST_SR_PASSWORD) {
+                $body = '[{"identifier": "mock-id1", "name": "mock-name1", "repository":'.
+                    ' "https://public.languagedepot.org", "role": "manager", "isLinked": false}, '.
+                    '{"identifier": "mock-id2", "name": "mock-name2", "repository": '.
+                    '"https://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
+                    '{"identifier": "mock-id3", "name": "mock-name3", "repository": '.
+                    '"https://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
+                    '{"identifier": "mock-id4", "name": "mock-name4", "repository": '.
+                    '"https://private.languagedepot.org", "role": "manager", "isLinked": false}]';
+                $response = new Response(200, ['Content-Type' => 'application/json'], $body);
+                $mock = new MockHandler([$response]);
+                return $mock;
+            } else {
+                return self::createMockHandlerWithErrorCode(403);
+            }
+        }
     }
 /*
     public function testGetUserProjectsActualApi_ValidCredentials_CredentialsValid()
@@ -93,9 +166,8 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = '';
         $password = '';
-        $client = new Client();
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password);
 
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
@@ -105,11 +177,10 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $mock = new Mock([new Response(403)]);
-        $client->getEmitter()->attach($mock);
+        $mock = new MockHandler([new Response(403)]);
+        $handlerStack = new HandlerStack($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, $handlerStack);
 
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
@@ -119,11 +190,10 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $mock = new Mock([new Response(404)]);
-        $client->getEmitter()->attach($mock);
+        $mock = new MockHandler([new Response(404)]);
+        $handlerStack = new HandlerStack($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, $handlerStack);
 
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
@@ -133,13 +203,12 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier1", "name": "name", "repository": "", "role": ""}]');
+        $body = '[{"identifier": "identifier1", "name": "name", "repository": "", "role": ""}]';
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-        $mock = new Mock([$response]);
-        $client->getEmitter()->attach($mock);
+        $mock = new MockHandler([$response]);
+        $handlerStack = new HandlerStack($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, $handlerStack);
 
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(1, $result['projects']);
@@ -149,14 +218,13 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier2", "name": "name2", "repository": "", "role": ""}, '.
-            '{"identifier": "identifier1", "name": "name1", "repository": "", "role": ""}]');
+        $body = '[{"identifier": "identifier2", "name": "name2", "repository": "", "role": ""}, '.
+            '{"identifier": "identifier1", "name": "name1", "repository": "", "role": ""}]';
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-        $mock = new Mock([$response]);
-        $client->getEmitter()->attach($mock);
+        $mock = new MockHandler([$response]);
+        $handlerStack = new HandlerStack($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, $handlerStack);
 
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
@@ -169,16 +237,15 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", '.
+        $body = '[{"identifier": "identifier", "name": "name2", '.
             '"repository": "https://public.languagedepot.org", "role": ""}, '.
             '{"identifier": "identifier", "name": "name1", "repository": '.
-            '"https://private.languagedepot.org", "role": ""}]');
+            '"https://private.languagedepot.org", "role": ""}]';
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-        $mock = new Mock([$response]);
-        $client->getEmitter()->attach($mock);
+        $mock = new MockHandler([$response]);
+        $handlerStack = new HandlerStack($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, $handlerStack);
 
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
@@ -192,16 +259,15 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": '.
+        $body = '[{"identifier": "identifier", "name": "name2", "repository": '.
             '"https://private.languagedepot.org", "role": ""}, '.
             '{"identifier": "identifier", "name": "name1", '.
-            '"repository": "https://public.languagedepot.org", "role": ""}]');
+            '"repository": "https://public.languagedepot.org", "role": ""}]';
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-        $mock = new Mock([$response]);
-        $client->getEmitter()->attach($mock);
+        $mock = new MockHandler([$response]);
+        $handlerStack = new HandlerStack($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, $handlerStack);
 
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
@@ -215,14 +281,13 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "", "role": ""}, '.
-            '{"identifier": "sr_id", "name": "sr_name", "repository": "", "role": ""}]');
+        $body = '[{"identifier": "identifier", "name": "name2", "repository": "", "role": ""}, '.
+            '{"identifier": "sr_id", "name": "sr_name", "repository": "", "role": ""}]';
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-        $mock = new Mock([$response]);
-        $client->getEmitter()->attach($mock);
+        $mock = new MockHandler([$response]);
+        $handlerStack = new HandlerStack($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, $handlerStack);
 
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
