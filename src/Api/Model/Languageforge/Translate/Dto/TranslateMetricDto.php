@@ -78,6 +78,7 @@ class TranslateMetricDto
     {
         $data = TranslateMetricDtoEncoder::encodeModel($metric, $project);
         unset($data['id']);
+        $data['projectCode'] = $project->projectCode;
         $data['isTestData'] = $isTestData;
 
         $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
@@ -87,8 +88,8 @@ class TranslateMetricDto
             $record = $reader->city($ipAddress);
             $data['geoCountryIsoCode'] = $record->country->isoCode;
             $data['geoLocation'] = [
-                'latitude' => $record->location->latitude,
-                'longitude' => $record->location->longitude
+                'lat' => $record->location->latitude,
+                'lon' => $record->location->longitude
             ];
         } catch (AddressNotFoundException $e) {
             // ignore exceptions if the address in not found in production
