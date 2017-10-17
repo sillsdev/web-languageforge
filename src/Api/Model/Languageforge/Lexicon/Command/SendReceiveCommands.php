@@ -67,12 +67,21 @@ class SendReceiveCommands
      * @param ClientInterface|null $client
      * @return SendReceiveGetUserProjectResult
      */
-    public static function getUserProjects($username, $password, HandlerStack $handler = null)
+    public static function getUserProjects($username, $password, array $mockResponses = [])
     {
         $result = new SendReceiveGetUserProjectResult();
         if (!$username) return JsonEncoder::encode($result);
 
-        $handler = self::handleMockE2ETestingData($username, $password, $handler);
+        $mockResponse = self::mockE2ETestingData($username, $password);
+        if (! is_null($mockResponse)) {
+            array_push($mockResponses, $mockResponse);
+        }
+        if (empty($mockResponses)) {
+            $handler = HandlerStack::create();
+        } else {
+            $mockHandler = new MockHandler($mockResponses);
+            $handler = HandlerStack::create($mockHandler);
+        }
         $client = new Client(["handler" => $handler]);
 
         $url = 'https://admin.languagedepot.org/api/user/'.$username.'/projects';
@@ -442,11 +451,10 @@ class SendReceiveCommands
      * @param string $password
      * @param ClientInterface $client
      */
-    private static function handleMockE2ETestingData($username, $password, HandlerStack $handler = null)
+    private static function mockE2ETestingData($username, $password)
     {
-        $mock = null;
         if ($username == self::TEST_MEMBER_USERNAME) {
-            $mock = new MockHandler([new Response(404)]);
+            return new Response(404);
         }
 
         if ($username == self::TEST_SR_USERNAME) {
@@ -459,25 +467,12 @@ class SendReceiveCommands
                     '"https://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
                     '{"identifier": "mock-id4", "name": "mock-name4", "repository": '.
                     '"https://private.languagedepot.org", "role": "manager", "isLinked": false}]';
-                $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-                $mock = new MockHandler([$response]);
+                return new Response(200, ['Content-Type' => 'application/json'], $body);
             } else {
-                $mock = new MockHandler([new Response(403)]);
+                return new Response(403);
             }
         }
-
-        // Unfortunately, this gets complicated
-
-        if (is_null($mock) && is_null($handler)) {
-            return HandlerStack::create();
-        } elseif (is_null($mock)) {
-            return $handler;
-        } elseif (is_null($handler)) {
-            return HandlerStack::create($mock);
-        } else {
-            $handler->push($mock);
-            return $handler;
-        }
+        return null;
     }
 
     /**
