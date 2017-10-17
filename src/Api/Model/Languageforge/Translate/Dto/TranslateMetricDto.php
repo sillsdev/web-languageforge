@@ -72,7 +72,7 @@ class TranslateMetricDtoEncoder extends JsonEncoder
 
 class TranslateMetricDto
 {
-    const GEO_CITY_DB_FILE_PATH = '/usr/local/share/GeoIP/GeoLite2-City.mmdb';
+    const GEO_CITY_DB_FILE_PATH = '/usr/share/GeoIP/GeoLite2-City.mmdb';
 
     public static function encode(TranslateMetricModel $metric, ProjectModel $project, $isTestData = false): array
     {
