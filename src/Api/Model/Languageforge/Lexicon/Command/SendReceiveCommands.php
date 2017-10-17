@@ -12,9 +12,9 @@ use Api\Model\Shared\Mapper\JsonEncoder;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Message\Response;
-use GuzzleHttp\Stream\Stream;
-use GuzzleHttp\Subscriber\Mock;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use Palaso\Utilities\FileUtilities;
 
 class SendReceiveCommands
@@ -67,14 +67,13 @@ class SendReceiveCommands
      * @param ClientInterface|null $client
      * @return SendReceiveGetUserProjectResult
      */
-    public static function getUserProjects($username, $password, ClientInterface $client = null)
+    public static function getUserProjects($username, $password, HandlerStack $handler = null)
     {
         $result = new SendReceiveGetUserProjectResult();
         if (!$username) return JsonEncoder::encode($result);
 
-        if (is_null($client)) $client = new Client();
-
-        self::mockE2ETestingData($username, $password, $client);
+        $handler = self::handleMockE2ETestingData($username, $password, $handler);
+        $client = new Client(["handler" => $handler]);
 
         $url = 'https://admin.languagedepot.org/api/user/'.$username.'/projects';
         $postData = ['json' => ['password' => $password]];
@@ -98,7 +97,8 @@ class SendReceiveCommands
 
         if ($response->getStatusCode() == 200) {
             $result->hasValidCredentials = true;
-            foreach ($response->json() as $index => $srProject) {
+            $json = \GuzzleHttp\json_decode($response->getBody(), true);
+            foreach ($json as $index => $srProject) {
                 $result->projects[] = new SendReceiveProjectModelWithIdentifier(
                     $srProject['identifier'],
                     $srProject['name'],
@@ -442,30 +442,41 @@ class SendReceiveCommands
      * @param string $password
      * @param ClientInterface $client
      */
-    private static function mockE2ETestingData($username, $password, ClientInterface $client)
+    private static function handleMockE2ETestingData($username, $password, HandlerStack $handler = null)
     {
+        $mock = null;
         if ($username == self::TEST_MEMBER_USERNAME) {
-            $mock = new Mock([new Response(404)]);
-            $client->getEmitter()->attach($mock);
+            $mock = new MockHandler([new Response(404)]);
         }
 
         if ($username == self::TEST_SR_USERNAME) {
             if ($password == self::TEST_SR_PASSWORD) {
-                $body = Stream::factory('[{"identifier": "mock-id1", "name": "mock-name1", "repository":'.
+                $body = '[{"identifier": "mock-id1", "name": "mock-name1", "repository":'.
                     ' "https://public.languagedepot.org", "role": "manager", "isLinked": false}, '.
                     '{"identifier": "mock-id2", "name": "mock-name2", "repository": '.
                     '"https://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
                     '{"identifier": "mock-id3", "name": "mock-name3", "repository": '.
                     '"https://public.languagedepot.org", "role": "contributor", "isLinked": false}, '.
                     '{"identifier": "mock-id4", "name": "mock-name4", "repository": '.
-                    '"https://private.languagedepot.org", "role": "manager", "isLinked": false}]');
+                    '"https://private.languagedepot.org", "role": "manager", "isLinked": false}]';
                 $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-                $mock = new Mock([$response]);
-                $client->getEmitter()->attach($mock);
+                $mock = new MockHandler([$response]);
             } else {
-                $mock = new Mock([new Response(403)]);
-                $client->getEmitter()->attach($mock);
+                $mock = new MockHandler([new Response(403)]);
             }
+        }
+
+        // Unfortunately, this gets complicated
+
+        if (is_null($mock) && is_null($handler)) {
+            return HandlerStack::create();
+        } elseif (is_null($mock)) {
+            return $handler;
+        } elseif (is_null($handler)) {
+            return HandlerStack::create($mock);
+        } else {
+            $handler->push($mock);
+            return $handler;
         }
     }
 
