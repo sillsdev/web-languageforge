@@ -98,7 +98,7 @@ class TranslateMetricDto
             }
         } catch (\InvalidArgumentException $e) {
             // production code must have the Geo DB
-            if (!$isTestData) {
+            if (!$isTestData && $ipAddress) {
                 throw new \Exception($e->getMessage(), $e->getCode(), $e);
             }
         }
