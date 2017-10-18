@@ -529,7 +529,7 @@ gulp.task('test-e2e-doTest', function (cb) {
   var params = require('yargs')
     .usage(
       'Usage: $0 test-e2e-doTest --webserverHost [hostname] --specs [testSpecs] ' +
-      '--seleniumAddress [address] --verbosity [bool]')
+      '--seleniumAddress [address] --verbosity [bool] --conf [filename]')
     .option('webserverHost', {
       demand: true,
       describe: 'hostname (without the protocol) for E2E testing',
@@ -546,6 +546,18 @@ gulp.task('test-e2e-doTest', function (cb) {
       demand: false,
       describe: 'bool for jasmine reporter verbosity.  true for more detail',
       type: 'boolean' })
+    .option('conf', {
+      demand: false,
+      describe: 'filename of a protractor conf file.  default is protractorConf.js',
+      type: 'string' })
+    .option('browserstackUser', {
+      demand: false,
+      describe: 'BrowserStack API username',
+      type: 'string' })
+    .option('browserstackKey', {
+      demand: false,
+      describe: 'BrowserStack API key',
+      type: 'string' })
     .help('?')
     .alias('?', 'help')
     .example('$0 test-e2e-run --webserverHost languageforge.local',
@@ -557,18 +569,43 @@ gulp.task('test-e2e-doTest', function (cb) {
   var protocol =
     (params.webserverHost === 'jamaicanpsalms.scriptureforge.local') ? 'https://' : 'http://';
 
+  var configFile;
+  if (params.conf && params.conf.length > 0) {
+    configFile = './test/app/' + params.conf;
+  } else {
+    configFile = './test/app/protractorConf.js';
+  }
+
+  var isBrowserStack = false;
+
+  // Get the browser stack user and password
+  if (params.browserstackUser && params.browserstackUser.length > 0) {
+    protractorOptions.args.push('--browserstackUser', params.browserStackUser);
+    isBrowserStack = true;
+  }
+  if (params.browserstackKey && params.browserstackKey.length > 0) {
+    protractorOptions.args.push('--browserstackKey', params.browserStackKey);
+  }
+
+  var webserverHost = params.webserverHost;
+  if (isBrowserStack) {
+    webserverHost = webserverHost.replace(".local", ".org");
+  }
+
   // vars for configuring protractor
   var protractorOptions = {
-    configFile: './test/app/protractorConf.js',
+    configFile: configFile,
     args: ['--baseUrl', protocol + params.webserverHost],
     debug: false
   };
 
   // Generate list of specs to test (glob format so protractor will test whatever files exist)
   var specString = (params.specs) ? params.specs : '*';
+
   var specs = [
     'test/app/allspecs/e2e/*.spec.js',
     'test/app/bellows/**/e2e/' + specString + '.spec.js'];
+
   if (params.webserverHost.includes('languageforge')) {
     specs.push('test/app/languageforge/**/e2e/' + specString + '.spec.js');
   } else {
