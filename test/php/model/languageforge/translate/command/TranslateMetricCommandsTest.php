@@ -98,6 +98,8 @@ EOD;
         $documentSetId = $documentSet->write();
         $userId = self::$environ->createUser('User', 'Name', 'name@example.com');
         $metricData = JsonEncoder::encode($metric->metrics);
+        $ipAddress = '110.77.202.231';
+        $_SERVER['REMOTE_ADDR'] = $ipAddress;
 
         $bodyFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR .'testTranslateDocumentCRUDBody.json';
         file_put_contents($bodyFilePath, self::esCreatedResponse);
