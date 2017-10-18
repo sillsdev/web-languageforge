@@ -28,4 +28,6 @@
          value: '-o ControlMaster=auto -o ControlPersist=600s'
        - property: 'pipelining'
          value: 'true'
+       - property: 'inventory'
+         value: 'hosts'
 
