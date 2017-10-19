@@ -15,7 +15,7 @@ export class Metrics {
 }
 
 export class MetricService {
-  currentDocumentSetId: string;
+  currentDocumentSetId: string = '';
 
   private _metrics: Metrics = new Metrics();
   private metricId: string = '';
@@ -39,7 +39,7 @@ export class MetricService {
 
   onKeyDown = (event: KeyboardEvent): void => {
     this.editingCountdown = this.editingTimeout;
-    switch(event.key) {
+    switch (event.key) {
       case 'Delete':
         this._metrics.keyDeleteCount++;
         this.hasActiveEdits = true;
@@ -61,29 +61,29 @@ export class MetricService {
         this._metrics.keyNavigationCount++;
         break;
     }
-  };
+  }
 
   onKeyPress = (): void => {
     this._metrics.keyCharacterCount++;
     this.hasActiveEdits = true;
     this.activeEditCountdown = this.activeEditTimeout;
     this.editingCountdown = this.editingTimeout;
-  };
+  }
 
   onMouseDown = (): void => {
     this._metrics.mouseClickCount++;
     this.editingCountdown = this.editingTimeout;
-  };
+  }
 
   onSuggestionGiven = (): void => {
     this._metrics.suggestionTotalCount++;
-  };
+  }
 
   onSuggestionTaken = (): void => {
     this._metrics.suggestionAcceptedCount++;
     this.editingCountdown = this.editingTimeout;
     this.hasActiveEdits = true;
-  };
+  }
 
   onTimer = (): void => {
     this._metrics.timeTotal++;
@@ -102,7 +102,7 @@ export class MetricService {
         this.sendMetrics(true);
       }
     }
-  };
+  }
 
   reset(): void {
     // never reset timeTotal because it is reset on page load (start session)
@@ -128,7 +128,7 @@ export class MetricService {
           this.metricId = result.data;
         }
       });
-    if (documentSetId !== this.currentDocumentSetId) {
+    if (this.currentDocumentSetId !== documentSetId) {
       this.currentDocumentSetId = documentSetId;
     }
 
