@@ -74,7 +74,7 @@ class TranslateUserPreferences
     public function __construct()
     {
         $this->selectedDocumentSetId = '';
-        $this->isDocumentOrientationTargetRight = false;
+        $this->isDocumentOrientationTargetRight = true;
         $this->hasConfidenceOverride = false;
     }
 

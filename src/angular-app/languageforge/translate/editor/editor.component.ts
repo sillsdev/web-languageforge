@@ -83,8 +83,8 @@ export class TranslateEditorController implements angular.IController {
 
     this.source.modulesConfig = angular.copy(modulesConfig);
     this.target.modulesConfig = angular.copy(modulesConfig);
-    this.right = this.source;
-    this.left = this.target;
+    this.right = this.target;
+    this.left = this.source;
 
     this.$window.addEventListener('resize', this.onWindowResize);
     this.updateDropdownMenuClass();
@@ -141,7 +141,7 @@ export class TranslateEditorController implements angular.IController {
 
           this.$q.all([this.source.created, this.target.created]).then(() => {
             if (userPreferences.isDocumentOrientationTargetRight != null &&
-              userPreferences.isDocumentOrientationTargetRight
+              !userPreferences.isDocumentOrientationTargetRight
             ) {
               this.swapEditors(false);
             } else {
