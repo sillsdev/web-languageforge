@@ -93,7 +93,7 @@ class TranslateMetricDto
             ];
         } catch (AddressNotFoundException $e) {
             // ignore exceptions if the address in not found in production
-            if ($isTestData) {
+            if ($isTestData && $ipAddress != '127.0.0.1') {
                 throw new \Exception($e->getMessage(), $e->getCode(), $e);
             }
         } catch (\InvalidArgumentException $e) {

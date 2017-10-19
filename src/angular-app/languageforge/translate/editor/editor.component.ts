@@ -459,8 +459,17 @@ export class TranslateEditorController implements angular.IController {
     return this.$q.all([
       this.source.save(),
       this.target.save(),
-      this.metricService.sendMetrics(true)
+      this.saveMetrics()
     ]);
+  }
+
+  private saveMetrics(): angular.IPromise<any> {
+    // if nothing has happened in either editor then don't send metrics
+    if (!this.currentDocType) {
+      return this.$q.resolve();
+    }
+
+    return this.metricService.sendMetrics(true);
   }
 
   private get saveState(): SaveState {
