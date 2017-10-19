@@ -4,11 +4,11 @@
             <div class="hdrnav-container">
                 <div class="btn-group" uib-dropdown data-ng-class="$ctrl.interfaceConfig.pullToSide"
                      data-ng-show="$ctrl.rights.showSettingsDropdown()">
-                    <a class="btn btn-std pui-no-caret" uib-dropdown-toggle data-ng-class="$ctrl.interfaceConfig.pullToSide"
-                       data-tooltip-placement="{{$ctrl.interfaceConfig.placementToSide}}"
-                       uib-tooltip="Settings" href="#">
+                    <button class="btn btn-std pui-no-caret" uib-dropdown-toggle data-ng-class="$ctrl.interfaceConfig.pullToSide"
+                       data-toggle="tooltip" data-placement="{{$ctrl.interfaceConfig.placementToSide}}"
+                       title="Settings">
                         <i class="fa fa-ellipsis-v"></i>
-                    </a>
+                    </button>
                     <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="$ctrl.interfaceConfig.pullToSide">
                         <a class="dropdown-item" ui-sref="settings" data-translate="Project Settings"
                            data-ng-show="$ctrl.rights.canEditEntry()"></a>
@@ -17,14 +17,14 @@
                     </div>
                 </div>
                 <div class="float-right return-button">
-                    <button class="btn btn-std" uib-tooltip="View the translation"
-                            data-tooltip-placement="{{$ctrl.interfaceConfig.placementToSide}}"
+                    <button class="btn btn-std" title="View the translation" data-toggle="tooltip"
+                            data-placement="{{$ctrl.interfaceConfig.placementToSide}}"
                             data-ng-show="$ctrl.showTranslationButton()"
                             data-ng-click="$ctrl.gotoTranslation()">
                         <i class="fa fa-arrow-circle-left"></i> {{'Translation' | translate}}
                     </button>
                 </div>
-                <ol id="top" class="breadcrumb d-none d-md-block" breadcrumbs></ol>
+                <breadcrumbs id="top" class="breadcrumb d-none d-md-block"></breadcrumbs>
             </div>
         </div>
     </div>
