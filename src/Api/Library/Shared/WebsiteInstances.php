@@ -28,6 +28,13 @@ class WebsiteInstances
         $w->userDefaultSiteRole = SiteRoles::PROJECT_CREATOR;
         $sites['scriptureforge.local'] = $w;
 
+        // Google OAuth wants your domain to end in .org or .com or a "real" top-level domain. So for OAuth testing:
+        $w = new Website('localdev.scriptureforge.org', Website::SCRIPTUREFORGE);
+        $w->name = 'Scripture Forge';
+        $w->ssl = true;
+        $w->userDefaultSiteRole = SiteRoles::PROJECT_CREATOR;
+        $sites['localdev.scriptureforge.org'] = $w;
+
         $w = new Website('e2etest.scriptureforge.local', Website::SCRIPTUREFORGE);
         $w->name = 'Scripture Forge';
         $w->ssl = false;
