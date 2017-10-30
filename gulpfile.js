@@ -147,7 +147,9 @@ var phpPatterns = [
   'test/**/*.php'
 ];
 
-const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
+// If using a JSON file for the Google API secrets, uncomment the following line and search for "Google API" to find other lines to uncomment further below.
+
+// const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
 
 // -------------------------------------
 //   Task: Do Reload
@@ -886,13 +888,16 @@ gulp.task('build-productionConfig', function () {
       demand: false,
       default: 'not_a_secret',
       type: 'string' })
+    // If using a JSON file for the Google API secrets, uncomment the "default: secrets_google_api_client_id.(name)" lines below.
     .option('googleClientId', {
       demand: false,
-      default: secrets_google_api_client_id.web.client_id,
+      // default: secrets_google_api_client_id.web.client_id,
+      default: 'googleClientId',
       type: 'string' })
     .option('googleClientSecret', {
       demand: false,
-      default: secrets_google_api_client_id.web.client_secret,
+      // default: secrets_google_api_client_id.web.client_secret,
+      default: 'googleClientSecret',
       type: 'string' })
     .argv;
   var configSrc = [
