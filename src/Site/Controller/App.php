@@ -5,7 +5,9 @@ namespace Site\Controller;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class App extends Base
 {
@@ -16,6 +18,43 @@ class App extends Base
         $this->setupBaseVariables($app);
         $this->setupAngularAppVariables($app, $appName, $projectId);
         return $this->renderPage($app, 'angular-app');
+    }
+
+    public function oauthCallback(Request $request)
+    {
+        $provider = new \League\OAuth2\Client\Provider\Google([
+            'clientId'     => GOOGLE_CLIENT_ID,
+            'clientSecret' => GOOGLE_CLIENT_SECRET,
+            'redirectUri'  => 'https://localdev.scriptureforge.org/oauthcallback',
+            'hostedDomain' => 'https://localdev.scriptureforge.org',
+        ]);
+
+        $error = $request->query->get('error', null);
+        if (! is_null($error)) {
+            return new Response('OAuth error ' . htmlspecialchars($error, ENT_QUOTES, 'UTF-8'), 200);
+        }
+        $code = $request->query->get('code', null);
+        if (is_null($code)) {
+            $authUrl = $provider->getAuthorizationUrl();
+            $_SESSION['oauth2state'] = $provider->getState();  // TODO: Determine how these should be stored under Silex: probably not in $_SESSION
+            return new RedirectResponse($authUrl);
+        } else {
+            $state = $request->query->get('state', null);
+            if (is_null($state) || ($state !== $_SESSION['oauth2state'])) {
+                // Invalid state, which *could* indicate some kind of attempted hack (CSRF, etc.)
+                unset($_SESSION['oauth2state']);
+                return new Response('DEBUG: Invalid OAuth state', 200);  // TODO: determine how to handle this scenario
+            }
+            $token = $provider->getAccessToken('authorization_code', [
+                'code' => $code
+            ]);
+            try {
+                $userDetails = $provider->getResourceOwner($token);
+                return new Response('Hello, ' . $userDetails->getName() . '. Your email is ' . $userDetails->getEmail() . ' and your avatar is <img src="' . $userDetails->getAvatar() . '"/>', 200);
+            } catch (Exception $e) {
+                return new Response('DEBUG: Failure getting user details', 200);  // TODO: determine how to handle this scenario
+            }
+        }
     }
 
     public function setupAngularAppVariables(Application $app, $appName, $projectId = '')

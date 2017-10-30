@@ -41,3 +41,4 @@ src/angular-app/scriptureforge/**/*.css
 src/Site/views/**/*.css
 src/Site/views/scriptureforge/theme/default/cssBootstrap4/**/.css
 
+secrets/
