@@ -147,6 +147,8 @@ var phpPatterns = [
   'test/**/*.php'
 ];
 
+const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
+
 // -------------------------------------
 //   Task: Do Reload
 // -------------------------------------
@@ -884,6 +886,14 @@ gulp.task('build-productionConfig', function () {
       demand: false,
       default: 'not_a_secret',
       type: 'string' })
+    .option('googleClientId', {
+      demand: false,
+      default: secrets_google_api_client_id.web.client_id,
+      type: 'string' })
+    .option('googleClientSecret', {
+      demand: false,
+      default: secrets_google_api_client_id.web.client_secret,
+      type: 'string' })
     .argv;
   var configSrc = [
     './src/config.php',
@@ -900,6 +910,12 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('REMEMBER_ME_SECRET', ').*;$/m,
       '$1' + params.secret + '\');'))
+    .pipe(replace(
+      /(define\('GOOGLE_CLIENT_ID', ').*;$/m,
+      '$1' + params.googleClientId + '\');'))
+    .pipe(replace(
+      /(define\('GOOGLE_CLIENT_SECRET', ').*;$/m,
+      '$1' + params.googleClientSecret + '\');'))
     .pipe(gulp.dest('./'));
 });
 
