@@ -20,7 +20,7 @@ class App extends Base
         return $this->renderPage($app, 'angular-app');
     }
 
-    public function oauthCallback(Request $request)
+    public function oauthCallback(Request $request, Application $app)
     {
         $provider = new \League\OAuth2\Client\Provider\Google([
             'clientId'     => GOOGLE_CLIENT_ID,
@@ -33,27 +33,37 @@ class App extends Base
         if (! is_null($error)) {
             return new Response('OAuth error ' . htmlspecialchars($error, ENT_QUOTES, 'UTF-8'), 200);
         }
-        $code = $request->query->get('code', null);
-        if (is_null($code)) {
-            $authUrl = $provider->getAuthorizationUrl();
-            $_SESSION['oauth2state'] = $provider->getState();  // TODO: Determine how these should be stored under Silex: probably not in $_SESSION
-            return new RedirectResponse($authUrl);
+        if ($app['session']->has('oauthtoken')) {
+            $token = $app['session']->get('oauthtoken');
         } else {
-            $state = $request->query->get('state', null);
-            if (is_null($state) || ($state !== $_SESSION['oauth2state'])) {
-                // Invalid state, which *could* indicate some kind of attempted hack (CSRF, etc.)
-                unset($_SESSION['oauth2state']);
-                return new Response('DEBUG: Invalid OAuth state', 200);  // TODO: determine how to handle this scenario
+            $code = $request->query->get('code', null);
+            if (is_null($code)) {   //
+                $authUrl = $provider->getAuthorizationUrl();
+                $app['session']->set('oauth2state', $provider->getState());
+                $_SESSION['oauth2state'] = $provider->getState();  // TODO: Determine how these should be stored under Silex: probably not in $_SESSION
+                return new RedirectResponse($authUrl);
+            } else {
+                $state = $request->query->get('state', null);
+                if (is_null($state) || ($state !== $app['session']->get('oauth2state'))) {
+                    // Invalid state, which *could* indicate some kind of attempted hack (CSRF, etc.)
+                    $app['session']->remove('oauth2state');
+                    return new Response('DEBUG: Invalid OAuth state', 200);  // TODO: determine how to handle this scenario
+                }
+                if ($app['session']->has('oauthtoken')) {
+                    $token = $app['session']->get('oauthtoken');
+                } else {
+                    $token = $provider->getAccessToken('authorization_code', [
+                        'code' => $code
+                    ]);
+                    $app['session']->set('oauthtoken', $token);  // TODO: Decide how to store which provider the token is from (Google or Paratext, maybe Facebook in the future)
+                }
             }
-            $token = $provider->getAccessToken('authorization_code', [
-                'code' => $code
-            ]);
-            try {
-                $userDetails = $provider->getResourceOwner($token);
-                return new Response('Hello, ' . $userDetails->getName() . '. Your email is ' . $userDetails->getEmail() . ' and your avatar is <img src="' . $userDetails->getAvatar() . '"/>', 200);
-            } catch (Exception $e) {
-                return new Response('DEBUG: Failure getting user details', 200);  // TODO: determine how to handle this scenario
-            }
+        }
+        try {
+            $userDetails = $provider->getResourceOwner($token);
+            return new Response('Hello, ' . $userDetails->getName() . '. Your email is ' . $userDetails->getEmail() . ' and your avatar is <img src="' . $userDetails->getAvatar() . '"/><br/>The token was ' . $token->getToken() . 'and the user ID was ' . $userDetails->getId(), 200);
+        } catch (Exception $e) {
+            return new Response('DEBUG: Failure getting user details', 200);  // TODO: determine how to handle this scenario
         }
     }
 
