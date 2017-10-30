@@ -1,16 +1,31 @@
+var cookie = require('cookie');
+var express = require('express');
 var fs = require('fs');
 var https = require('https');
-var express = require('express');
-var ShareDB = require('sharedb');
-var richText = require('rich-text');
-var WebSocket = require('ws');
-var WebSocketJSONStream = require('websocket-json-stream');
-var database = require('sharedb-mongo')('mongodb://localhost:27017/realtime');
 var MongoClient = require('mongodb').MongoClient;
+var os = require('os');
+var path = require('path');
+var richText = require('rich-text');
+var ShareDB = require('sharedb');
+var database = require('sharedb-mongo')('mongodb://localhost:27017/realtime');
+var WebSocketJSONStream = require('websocket-json-stream');
+var WebSocket = require('ws');
 
 ShareDB.types.register(richText.type);
-var backend = new ShareDB({ db: database });
-var connection = backend.connect();
+
+var share = new ShareDB({ db: database });
+
+// Expose the session from initial connection as agent.phpSessionId.
+share.use('connect', function (request, done) {
+  if (request.req) {
+    request.agent.phpSessionId = request.req.phpSessionId;
+  }
+
+  done();
+});
+
+share.use('apply', useUserData);
+share.connect();
 
 var config = (fs.existsSync('./config.js')) ? require('./config') : {};
 var defaultSslKey = '/etc/letsencrypt/live/cat.languageforge.org/privkey.pem';
@@ -36,6 +51,87 @@ MongoClient.connect('mongodb://localhost:27017/realtime', function (err, db) {
   });
 });
 
+function startServer() {
+  // Create web servers to serve files and listen to WebSocket connections
+  var privateKey  = fs.readFileSync(sslKeyPath, 'utf8');
+  var certificate = fs.readFileSync(sslCertPath, 'utf8');
+  var options = { key: privateKey, cert: certificate };
+  var app = express();
+  app.use(express.static('static'));
+  var docServer = https.createServer(options, app);
+
+  // Connect any incoming WebSocket connection to ShareDB
+  var docWss = new WebSocket.Server({ server: docServer });
+  docWss.on('connection', function (ws) {
+    getSession(ws, function (err, session) {
+      if (err) return console.log(err);
+
+      ws.upgradeReq.session = session;
+      var stream = new WebSocketJSONStream(ws);
+      var agent = share.listen(stream, ws.upgradeReq);
+
+      // Commented - disconnect is not well tested. IJH 2017-09
+      // setTimeout(function () {
+      //   var collection = agent.subscribedDocs.collection;
+      //   var docIds = [];
+      //   for (var key in collection) {
+      //     if (collection.hasOwnProperty(key)) {
+      //       docIds.push(collection[key].id);
+      //     }
+      //   }
+      //
+      //   docDisconnect(docIds, -1, agent);
+      // }, 1500);
+
+    });
+
+  });
+
+  docServer.listen(webSocketDocServerPort, hostname, function () {
+    console.log('Doc Server is listening at https://' + hostname + ':' + webSocketDocServerPort);
+  });
+}
+
+// Gets the current session from a WebSocket connection.
+function getSession(ws, callback) {
+  if (ws.upgradeReq.headers.cookie) {
+    const cookies = cookie.parse(ws.upgradeReq.headers.cookie);
+    ws.upgradeReq.phpSessionId = cookies.PHPSESSID;
+  }
+
+  callback();
+}
+
+function useUserData(request, callback) {
+  // Get the id of the currently logged in user from the session.
+  var userId = '';
+  const session = getSessionJsonObjFromFile(request.agent.phpSessionId);
+
+  // noinspection EqualityComparisonWithCoercionJS
+  if (session && session.userId != null) {
+    userId = session.userId;
+  }
+
+  if (userId) {
+    request.op.m.u = userId;
+  }
+
+  callback();
+}
+
+function getSessionJsonObjFromFile(sessionId) {
+  if (sessionId === null || sessionId === '') return false;
+
+  var filePath = path.join(os.tmpdir(), 'jsonSessionData', sessionId + '.json');
+  try {
+    var jsonObj = require(filePath);
+  } catch (e) {
+    return false;
+  }
+
+  return jsonObj;
+}
+
 // Check if object is empty
 function isEmpty(object) {
   for (var key in object) {
@@ -48,8 +144,8 @@ function isEmpty(object) {
 
 // Disconnect document
 function docDisconnect(docIds, receivedBytes, agent) {
-  if (receivedBytes == agent.stream.ws.bytesReceived) {
-    var streams = backend.pubsub.streams;
+  if (receivedBytes === agent.stream.ws.bytesReceived) {
+    var streams = share.pubsub.streams;
     for (var fieldId in streams) {
       if (streams.hasOwnProperty(fieldId)) {
         for (var docId in docIds) {
@@ -63,7 +159,7 @@ function docDisconnect(docIds, receivedBytes, agent) {
             delete streams[fieldId];
           }
 
-          var sub = backend.pubsub.subscribed;
+          var sub = share.pubsub.subscribed;
           if (sub.hasOwnProperty(fieldId)) {
             delete sub[fieldId];
           }
@@ -77,52 +173,3 @@ function docDisconnect(docIds, receivedBytes, agent) {
     }, connectionTime * 1000);
   }
 }
-
-function startServer() {
-  // Create web servers to serve files and listen to WebSocket connections
-  var privateKey  = fs.readFileSync(sslKeyPath, 'utf8');
-  var certificate = fs.readFileSync(sslCertPath, 'utf8');
-  var options = { key: privateKey, cert: certificate };
-  var app = express();
-  app.use(express.static('static'));
-  var docServer = https.createServer(options, app);
-
-  // Connect any incoming WebSocket connection to ShareDB
-  var docWss = new WebSocket.Server({ server: docServer });
-  docWss.on('connection', function (ws) {
-    var stream = new WebSocketJSONStream(ws);
-    var agent = backend.listen(stream);
-    setTimeout(function () {
-      var collection = agent.subscribedDocs.collection;
-      var docIds = [];
-      for (var key in collection) {
-        if (collection.hasOwnProperty(key)) {
-          docIds.push(collection[key].id);
-        }
-      }
-
-      docDisconnect(docIds, -1, agent);
-    }, 1500);
-  });
-
-  docServer.listen(webSocketDocServerPort, hostname, function () {
-    console.log('Doc Server is listening at https://' + hostname + ':' + webSocketDocServerPort);
-  });
-}
-
-//noinspection JSUnusedLocalSymbols
-function getJsonObjFromFile(sessionId) {
-  if (sessionId == null || sessionId == '') return false;
-
-  var tmpDir = '/tmp';
-  var filePath = tmpDir + '/jsonSessionData/' + sessionId + '.json';
-  try {
-    var jsonObj = require(filePath);
-  } catch (e) {
-    return false;
-  }
-
-  return jsonObj;
-}
-
-// getJsonObjFromFile('t8vcdm2gb2235a88ps696liv35');

@@ -27,6 +27,7 @@
     "angular-zxcvbn": "^3.2.2",
     "angularjs-slider": "^6.2.3",
     "bootstrap": "^4.0.0-beta",
+    "cookie": "^0.3.1",
     "core-js": "^2.4.1",
     "express": "^4.14.0",
     "font-awesome": "^4.7.0",
