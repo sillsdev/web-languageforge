@@ -22,6 +22,10 @@ class AuthUserProvider implements UserProviderInterface
     /** @var Website */
     private $website;
 
+    /**
+     * @param string $usernameOrEmail
+     * @return UserWithId
+     */
     public function loadUserByUsername($usernameOrEmail) {
 
         $user = new UserModelWithPassword();
@@ -84,6 +88,10 @@ class AuthUserProvider implements UserProviderInterface
         return new UserWithId($user->username, $user->password, $user->id->asString(), $roles);
     }
 
+    /**
+     * @param UserInterface $user
+     * @return UserInterface $user
+     */
     public function refreshUser(UserInterface $user) {
         if (! $user instanceof UserWithId) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
