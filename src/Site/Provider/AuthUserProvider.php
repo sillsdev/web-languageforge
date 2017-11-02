@@ -5,6 +5,7 @@ namespace Site\Provider;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
+use Api\Model\Shared\UserModel;
 use Api\Model\Shared\UserModelWithPassword;
 use Site\Model\UserWithId;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -78,12 +79,7 @@ class AuthUserProvider implements UserProviderInterface
         }
         */
 
-        $roles = array('ROLE_'.$user->role);
-        if ($user->siteRole and
-            $user->siteRole->offsetExists($this->website->domain) and
-            $user->siteRole[$this->website->domain] !== SiteRoles::NONE) {
-            $roles[] = 'ROLE_SITE_'.$user->siteRole[$this->website->domain];
-        }
+        $roles = AuthUserProvider::getSiteRoles($user, $this->website);
 
         return new UserWithId($user->username, $user->password, $user->id->asString(), $roles);
     }
@@ -102,5 +98,16 @@ class AuthUserProvider implements UserProviderInterface
 
     public function supportsClass($class) {
         return $class === 'Site\Model\UserWithId';
+    }
+
+    public static function getSiteRoles(UserModel $user, Website $website)
+    {
+        $roles = array('ROLE_'.$user->role);
+        if ($user->siteRole and
+            $user->siteRole->offsetExists($website->domain) and
+            $user->siteRole[$website->domain] !== SiteRoles::NONE) {
+            $roles[] = 'ROLE_SITE_'.$user->siteRole[$website->domain];
+        }
+        return $roles;
     }
 }
