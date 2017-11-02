@@ -6,9 +6,13 @@ use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
+use Site\Model\UserWithId;
+use Site\Provider\AuthUserProvider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class GoogleOAuth extends Base
 {
@@ -65,25 +69,55 @@ class GoogleOAuth extends Base
                     //      - account linking (includes xforge login form + option to update email address on account - button 2)
 
                     // redirect to UI for creating new account
+
+                    // TODO: Implement the above instead of returning the temporary response below.
+                    return new Response("Email address " . $userDetails->getEmail() . " not found");
+                } else {
+                    // Found an email address matching this OAuth token
+
+                    // TODO: Besides logging in and redirecting to main page, we also want to record this in the Mongo database, via the UserModel's new oauthTokens property.
+                    // But we'll do that in the next step, after we've verified that this code works.
+                    $redirectUrl = $this->setTokenAndCalculateRedirectDestination($userModel, $app);
+                    return new RedirectResponse($redirectUrl);
                 }
+            } else {
+                // Found valid user
+                $redirectUrl = $this->setTokenAndCalculateRedirectDestination($userModel, $app);
+                return new RedirectResponse($redirectUrl);
             }
 
             // if we find a user with incoming oauthId, get that user model
 
             // if no user found, find user by email provided by oauth, then get that user model
 
-            // then do automatic login
-            $app['session']->set('allowOAuthLogin', true);
-            $subRequest = Request::create(
-                '/app/login_check', 'POST',
-                array('_username' => $username, '_password' => 'oauthpassword'),
-                $app['request']->cookies->all(), array(), $app['request']->server->all()
-            );
-            $app->handle($subRequest, HttpKernelInterface::MASTER_REQUEST, false);
+            // then do automatic login, but instead of a login POST, we'll just store the security token that Symfony expects
+            // (See http://symfony.com/doc/current/testing/http_authentication.html#creating-the-authentication-token for details)
 
             //return new Response('Hello, ' . $userDetails->getName() . '. Your email is ' . $userDetails->getEmail() . ' and your avatar is <img src="' . $userDetails->getAvatar() . '"/><br/>The token was ' . $token->getToken() . 'and the user ID was ' . $userDetails->getId(), 200);
         } catch (Exception $e) {
             return new Response('DEBUG: Failure getting user details', 200);  // TODO: determine how to handle this scenario
         }
+    }
+
+    // Any function with "And" in the name probably does two things, and that's true in this case
+    // TODO: refactor into two functions, one to set the token and the other to calculate the redirect destination.
+    public function setTokenAndCalculateRedirectDestination(UserModel $userModel, Application $app)
+    {
+        $roles = AuthUserProvider::getSiteRoles($userModel, $app['website']);
+        $oauthUser = new UserWithId($userModel->username, '', $userModel->username, $roles);
+        $oauthToken = new UsernamePasswordToken($oauthUser, '', 'site', $oauthUser->getRoles());
+        $tokenStorage = $app['security.token_storage'];
+        if (!is_null($tokenStorage) && $tokenStorage instanceof TokenStorageInterface) {
+            $tokenStorage->setToken($oauthToken);
+            // TODO: We'd like to use AuthenticationSuccessHandler to handle calculating a better redirect URL, but I don't
+            // currently know how to get service instances from the app's DI container when we're inside a URL handler. - 2017-11 RM
+            $redirectUrl = '/';
+            return $redirectUrl;
+        } else {
+            // OAuth authentication succeeded, but we failed to set the Silex auth token.
+            $app['session']->getFlashBag()->add('errorMessage', 'Sorry, we couldn\'t process the Google login data. This may be a temporary failure, so please try again. If the problem persists, try logging in with a username and password instead.');
+            return '/auth/login';  // TODO: Get this URL from config (where?) instead of hardcoding it
+        }
+
     }
 }
