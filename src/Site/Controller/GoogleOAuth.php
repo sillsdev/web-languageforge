@@ -22,7 +22,6 @@ class GoogleOAuth extends Base
             'clientId'     => GOOGLE_CLIENT_ID,
             'clientSecret' => GOOGLE_CLIENT_SECRET,
             'redirectUri'  => 'https://localdev.scriptureforge.org/oauthcallback',
-            'hostedDomain' => 'https://localdev.scriptureforge.org',
         ]);
 
         $error = $request->query->get('error', null);
@@ -40,7 +39,7 @@ class GoogleOAuth extends Base
         } else {
             $code = $request->query->get('code', null);
             if (is_null($code)) {   //
-                $authUrl = $provider->getAuthorizationUrl(["prompt" => "none"]);
+                $authUrl = $provider->getAuthorizationUrl(["prompt" => "select_account"]);
                 $app['session']->set('oauth2state', $provider->getState());
                 return new RedirectResponse($authUrl);
             } else {
