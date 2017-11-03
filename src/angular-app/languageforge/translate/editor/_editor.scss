@@ -95,6 +95,7 @@ ng-quill-editor .ql-editor.drop-box {
     background-color: lightgrey;
     border-radius: 12px;
     color: #373a3c;
+    padding: 0.2rem;
     position: absolute;
     z-index: $zindex-tooltip;
 }
@@ -117,19 +118,20 @@ ng-quill-editor .ql-editor.drop-box {
     margin: 0 6px;
 }
 
-.ql-suggestions .table {
-    margin-bottom: 0;
-    background: inherit;
-    overflow: hidden;
+.ql-suggestions .ql-suggest a:hover {
+    color: #06c;
+    text-decoration: underline;
 }
 
-.ql-suggestions .table td {
-    border: 0;
-}
-
-.ql-suggestions .table a {
+.ql-suggestions .ql-suggest a {
+    color: #06c;
     padding: 0;
+    margin: 0;
     font-size: inherit;
+}
+
+.ql-suggestions .ql-suggest ul {
+    margin-bottom: 0.3rem;
 }
 
 .ql-container.ql-bubble:not(.ql-disabled) .ql-suggest-tooltip a:hover::before,
