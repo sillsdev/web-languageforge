@@ -155,6 +155,32 @@ ng-quill-editor .ql-editor.drop-box {
     width: 60px;
 }
 
+#toolbar .ql-formats button:hover .fo-style-underline {
+    border-bottom-color: #06c;
+}
+
+#toolbar .ql-formats button .fo-style-underline {
+    border-bottom: 1px solid black;
+}
+
+#toolbar .rzslider .rz-bubble {
+    font-size: small;
+}
+
+#toolbar .rzslider .rz-pointer {
+    top: -7px;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+}
+
+#toolbar .rzslider .rz-pointer::after {
+    top: 5px;
+    left: 5px;
+    width: 6px;
+    height: 6px;
+}
+
 .editor-label {
     min-height: 28px;
 }
