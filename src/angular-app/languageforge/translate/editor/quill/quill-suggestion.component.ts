@@ -4,19 +4,11 @@ export class QuillSuggestionController implements angular.IController {
   qlSuggestions: string[];
   qlInsertSuggestion: (params: { suggestionIndex: number }) => void;
 
+  showSuggestionHelp: boolean = false;
+
   wordCombine(words: string[]): string {
     words = words || [];
     return words.join(' ');
-  }
-
-  wordWidthStyle(word: string, isLast: boolean): any {
-    const words = this.wordCombine(this.qlSuggestions);
-    if (words.length <= 0) {
-      return;
-    }
-
-    const space = (isLast) ? 0 : 1;
-    return { width: Math.floor((word.length + space) * 100 / words.length) + '%' };
   }
 
   selectAll(): void {
@@ -25,11 +17,6 @@ export class QuillSuggestionController implements angular.IController {
     }
   }
 
-  selectWord(index: number): void {
-    if (this.qlInsertSuggestion != null) {
-      this.qlInsertSuggestion({ suggestionIndex: index });
-    }
-  }
 }
 
 export const QuillSuggestionComponent: angular.IComponentOptions = {

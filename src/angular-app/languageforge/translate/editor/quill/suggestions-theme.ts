@@ -30,8 +30,6 @@ export function registerSuggestionsTheme(): void {
 
     constructor(quill: Quill, boundsContainer: BoundsStatic) {
       super(quill, boundsContainer);
-      this.boundsContainer = boundsContainer || document.body;
-      this.quill = quill;
       this.root = quill.addContainer('ql-suggest-tooltip');
       this.root.innerHTML = SuggestionsTooltip.TEMPLATE;
       const offset = parseInt(window.getComputedStyle(this.root).marginTop, 10);
@@ -59,9 +57,15 @@ export function registerSuggestionsTheme(): void {
       super(quill, options);
 
       // initially container is sibling of <ng-quill-editor>
-      this.container = quill.container.parentNode.parentNode.parentNode
-        .querySelector(options.container);
-      (quill.theme as SuggestionsTheme).suggestionsTooltip.root.appendChild(this.container);
+      this.container = quill.container.parentNode.parentNode.parentNode.querySelector(options.container);
+      const suggestionsTooltip = (quill.theme as SuggestionsTheme).suggestionsTooltip;
+      suggestionsTooltip.root.appendChild(this.container);
+      this.container.addEventListener('click', (event: MouseEvent) => {
+        if ((event.target as HTMLAnchorElement).classList.contains('suggestion-help')) {
+          suggestionsTooltip.show();
+          this.quill.focus();
+        }
+      });
     }
   }
 
