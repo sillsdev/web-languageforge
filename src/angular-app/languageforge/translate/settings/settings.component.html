@@ -64,7 +64,9 @@
                 </fieldset>
             </form>
         </uib-tab>
-        <uib-tab heading="{{'Suggestions' | translate}}" select="$ctrl.redrawSlider()">
+
+        <!-- Suggestions tab disabled while the controls are on the main UI -->
+        <uib-tab heading="{{'Suggestions' | translate}}" select="$ctrl.redrawSlider()" data-ng-show="false">
             <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateConfig()">
                 <fieldset class="card-body" data-ng-disabled="!$ctrl.rights.canEditEntry()">
                     <div class="form-group row">

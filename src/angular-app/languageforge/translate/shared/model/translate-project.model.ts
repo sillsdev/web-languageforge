@@ -42,6 +42,7 @@ export class TranslateUserPreferences {
   confidenceThreshold: number;
   hasConfidenceOverride: boolean;
   isDocumentOrientationTargetRight: boolean;
+  isFormattingOptionsShown: boolean;
   selectedDocumentSetId: string;
 }
 

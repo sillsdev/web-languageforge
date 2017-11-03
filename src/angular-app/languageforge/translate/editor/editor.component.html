@@ -1,64 +1,88 @@
 <label>
-    <span class="project-name-label">{{$ctrl.tecProject.projectName}}</span>
+    <span class="project-name-label notranslate">{{$ctrl.tecProject.projectName}}</span>
     <small class="text-muted ml-3">{{$ctrl.saveMessage}}</small>
 </label>
 <div id="toolbar" class="row flex-no-grow align-items-center">
     <span class="ql-formats">
         <a class="btn btn-primary" href="#" data-ng-click="$ctrl.gotoProjects()">Save &amp; Close</a>
-        <a class="btn btn-secondary" href="#" data-ng-click="$ctrl.train()" data-ng-show="!$ctrl.isTraining">Train</a>
-        <uib-progressbar data-ng-show="$ctrl.isTraining" value="$ctrl.trainingPercent">{{$ctrl.trainingPercent}}%</uib-progressbar>
+        <a class="btn btn-secondary" href="#" data-ng-click="$ctrl.train()"
+           data-ng-if="!$ctrl.isTraining && $ctrl.hasDocumentSets()">Train</a>
+        <uib-progressbar data-ng-if="$ctrl.isTraining" value="$ctrl.trainingPercent">{{$ctrl.trainingPercent}}%</uib-progressbar>
     </span>
-    <span class="ql-formats">
-        <select class="ql-header">
-            <option value="1"></option>
-            <option value="2"></option>
-            <option value="3"></option>
-            <option selected>Normal text</option>
+    <span class="ql-formats controls col-sm-6 col-lg-5 col-xl-4" data-ng-if="$ctrl.hasDocumentSets()">
+        <rzslider rz-slider-model="$ctrl.confidence.value" rz-slider-options="$ctrl.confidence.options" title="Confidence threshold"></rzslider>
+    </span>
+    <span class="ql-formats" data-ng-if="$ctrl.hasDocumentSets()">
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <select class="ql-confidence form-control form-control-sm" title="Confidence"
+                data-ng-model="$ctrl.confidence.isCustomThreshold" data-ng-change="$ctrl.changeConfidenceType()">
+            <option data-ng-value="false">Project</option>
+            <option data-ng-value="true">Custom</option>
         </select>
     </span>
-    <span class="ql-formats">
-        <select class="ql-font"></select>
+    <span class="ql-formats" data-ng-if="$ctrl.hasDocumentSets()">
+        <button data-ng-click="$ctrl.toggleFormattingOptions()" title="Formatting options" style="font-family: FontAwesome">
+            <span class="fo-fa-font fo-style-underline">&#xf031;</span><span class="fo-fa-chevron-down" data-ng-if="!$ctrl.showFormats">&#xf078;</span><span class="fo-fa-chevron-up" data-ng-if="$ctrl.showFormats">&#xf077;</span>
+        </button>
     </span>
-    <span class="ql-formats">
-        <select class="ql-size">
-            <option value="small">10</option>
-            <option selected>13</option>
-            <option value="large">18</option>
-            <option value="huge">32</option>
-        </select>
-    </span>
-    <span class="ql-formats">
-        <button class="ql-bold"></button>
-        <button class="ql-italic"></button>
-        <button class="ql-underline"></button>
-        <button class="ql-strike"></button>
-    </span>
-    <span class="ql-formats">
-        <button class="ql-script" value="sub"></button>
-        <button class="ql-script" value="super"></button>
-    </span>
-    <span class="ql-formats">
-        <select class="ql-color"></select>
-        <select class="ql-background"></select>
-    </span>
-    <span class="ql-formats">
-        <button class="ql-align" value=""></button>
-        <button class="ql-align" value="center"></button>
-        <button class="ql-align" value="right"></button>
-        <button class="ql-align" value="justify"></button>
-    </span>
-    <span class="ql-formats">
-        <button class="ql-list" value="ordered"></button>
-        <button class="ql-list" value="bullet"></button>
-        <button class="ql-indent" value="-1"></button>
-        <button class="ql-indent" value="+1"></button>
-    </span>
-    <span class="ql-formats">
-        <button class="ql-direction" value="rtl"></button>
-    </span>
-    <span class="ql-formats">
-        <button class="ql-clean"></button>
-    </span>
+    <div data-ng-show="$ctrl.showFormats && $ctrl.hasDocumentSets()">
+        <span class="ql-formats">
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select class="ql-header" title="Styles">
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+                <option selected>Normal text</option>
+            </select>
+        </span>
+        <span class="ql-formats">
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select class="ql-font" title="Font"></select>
+        </span>
+        <span class="ql-formats">
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select class="ql-size" title="Font size">
+                <option value="small">10</option>
+                <option selected>13</option>
+                <option value="large">18</option>
+                <option value="huge">32</option>
+            </select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-bold" title="Bold (Ctrl+B)"></button>
+            <button class="ql-italic" title="Italics (Ctrl+I)"></button>
+            <button class="ql-underline" title="Underline (Ctrl+U)"></button>
+            <button class="ql-strike" title="Strikethrough"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-script" value="sub" title="Subscript"></button>
+            <button class="ql-script" value="super" title="Superscript"></button>
+        </span>
+        <span class="ql-formats">
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select class="ql-color" title="Text color"></select>
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <select class="ql-background" title="Background color"></select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-align" value="" title="Left align"></button>
+            <button class="ql-align" value="center" title="Center align"></button>
+            <button class="ql-align" value="right" title="Right align"></button>
+            <button class="ql-align" value="justify" title="Justify"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-list" value="ordered" title="Numbered list"></button>
+            <button class="ql-list" value="bullet" title="Bulleted list"></button>
+            <button class="ql-indent" value="-1" title="Decrease indent (Shift+Tab)"></button>
+            <button class="ql-indent" value="+1" title="Increase indent (Tab)"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-direction" value="rtl" title="Text direction"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-clean" title="Clear formatting"></button>
+        </span>
+    </div>
 </div>
 <div id="editor-area" class="row flex-grow">
     <div id="picklist-column" class="col-sm d-flex flex-column mb-1">
@@ -87,8 +111,9 @@
                 </div>
             </div>
         </div>
-        <button class="btn btn-std btn-sm flex-no-grow" type="button" data-ng-click="showMetrics = !showMetrics" style="margin-top: 10px; margin-bottom: 0">
-            {{showMetrics ? 'Hide' : 'Show'}} Metrics</button>
+        <button class="btn btn-std btn-sm flex-no-grow" type="button" data-ng-click="$ctrl.showMetrics = !$ctrl.showMetrics"
+                data-ng-if="$ctrl.hasDocumentSets()" style="margin-top: 10px; margin-bottom: 0">
+            {{$ctrl.showMetrics ? 'Hide' : 'Show'}} Metrics</button>
     </div>
     <div class="col-sm d-flex flex-column mb-1">
         <div class="row flex-grow">
@@ -110,7 +135,7 @@
                                 data-ql-insert-suggestion="$ctrl.left.insertSuggestion(suggestionIndex)"></ql-suggestion>
                 </div>
             </div>
-            <div class="col-sm-6 d-sm-none" data-ng-show="$ctrl.hasDocumentSets()">
+            <div class="col-sm-6 d-sm-none" data-ng-if="$ctrl.hasDocumentSets()">
                 <button type="button" class="btn btn-std btn-sm" data-ng-click="$ctrl.swapEditors()">
                     <i class="fa fa-exchange fa-rotate-90"></i></button>
             </div>
@@ -133,7 +158,7 @@
         </div>
     </div>
 </div>
-<div data-ng-if="showMetrics">
+<div data-ng-if="$ctrl.showMetrics">
     <small class="text-muted">
         Backspace key {{$ctrl.metrics.keyBackspaceCount}}&nbsp;&nbsp;&nbsp;
         Delete key {{$ctrl.metrics.keyDeleteCount}}&nbsp;&nbsp;&nbsp;

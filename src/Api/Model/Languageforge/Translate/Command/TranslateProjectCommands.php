@@ -226,6 +226,7 @@ class TranslateProjectCommands
     {
         if (array_key_exists('selectedDocumentSetId', $data) ||
             array_key_exists('isDocumentOrientationTargetRight', $data) ||
+            array_key_exists('isFormattingOptionsShown', $data) ||
             array_key_exists('hasConfidenceOverride', $data) ||
             array_key_exists('confidenceThreshold', $data)
         ) {
@@ -239,6 +240,10 @@ class TranslateProjectCommands
 
             if (array_key_exists('isDocumentOrientationTargetRight', $data)) {
                 $usersPreferences[$userId]->isDocumentOrientationTargetRight = $data['isDocumentOrientationTargetRight'];
+            }
+
+            if (array_key_exists('isFormattingOptionsShown', $data)) {
+                $usersPreferences[$userId]->isFormattingOptionsShown = $data['isFormattingOptionsShown'];
             }
 
             if (array_key_exists('hasConfidenceOverride', $data)) {
