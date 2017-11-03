@@ -550,11 +550,11 @@ gulp.task('test-e2e-doTest', function (cb) {
       demand: false,
       describe: 'filename of a protractor conf file.  default is protractorConf.js',
       type: 'string' })
-    .option('browserstackUser', {
+    .option('browserStackUser', {
       demand: false,
       describe: 'BrowserStack API username',
       type: 'string' })
-    .option('browserstackKey', {
+    .option('browserStackKey', {
       demand: false,
       describe: 'BrowserStack API key',
       type: 'string' })
@@ -577,27 +577,29 @@ gulp.task('test-e2e-doTest', function (cb) {
   }
 
   var isBrowserStack = false;
+  var protractorOptions = {
+    debug: false,
+    args: []
+  };
 
   // Get the browser stack user and password
-  if (params.browserstackUser && params.browserstackUser.length > 0) {
+  if (params.browserStackUser && params.browserStackUser.length > 0) {
     protractorOptions.args.push('--browserstackUser', params.browserStackUser);
     isBrowserStack = true;
   }
-  if (params.browserstackKey && params.browserstackKey.length > 0) {
+  if (params.browserStackKey && params.browserStackKey.length > 0) {
     protractorOptions.args.push('--browserstackKey', params.browserStackKey);
   }
 
   var webserverHost = params.webserverHost;
   if (isBrowserStack) {
     webserverHost = webserverHost.replace(".local", ".org");
+    configFile = './test/app/browserStackLFProtractorConf.js';
   }
 
   // vars for configuring protractor
-  var protractorOptions = {
-    configFile: configFile,
-    args: ['--baseUrl', protocol + params.webserverHost],
-    debug: false
-  };
+  protractorOptions.configFile = configFile;
+  protractorOptions.args.push('--baseUrl', protocol + params.webserverHost);
 
   // Generate list of specs to test (glob format so protractor will test whatever files exist)
   var specString = (params.specs) ? params.specs : '*';
