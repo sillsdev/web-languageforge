@@ -40,6 +40,10 @@ class GoogleOAuth extends Base
             $code = $request->query->get('code', null);
             if (is_null($code)) {   //
                 $authUrl = $provider->getAuthorizationUrl(["prompt" => "select_account"]);
+                // OAuth library automatically sets approval_prompt parameter and doesn't have an option to remove it,
+                // but "prompt" and "approval_prompt" are not allowed to both appear in the same OAuth query.
+                $authUrl = str_replace("&approval_prompt=auto", "", $authUrl);
+                $authUrl = str_replace("?approval_prompt=auto&", "?", $authUrl);
                 $app['session']->set('oauth2state', $provider->getState());
                 return new RedirectResponse($authUrl);
             } else {
