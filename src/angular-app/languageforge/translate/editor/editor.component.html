@@ -62,14 +62,14 @@
 </div>
 <div id="editor-area" class="row flex-grow">
     <div id="picklist-column" class="col-sm d-flex flex-column mb-1">
-        <div class="d-flex">
+        <div class="d-flex flex-no-grow">
             <label class="editor-label flex-grow text-truncate" data-translate="Documents"></label>
             <button type="button" class="btn btn-std btn-sm" data-ng-click="$ctrl.modalUpdateDocumentSet()">
                 <i class="fa fa-plus"></i></button>
         </div>
         <div class="picklist">
             <div data-ng-repeat="documentSet in $ctrl.documentSets" data-ng-class="{ selected: $ctrl.selectedDocumentSetIndex === $index }">
-                <div class="btn-group" uib-dropdown dropdown-append-to-body data-ng-class="$ctrl.tecInterfaceConfig.pullToSide" data-ng-show="$ctrl.selectedDocumentSetIndex === $index">
+                <div class="btn-group" uib-dropdown data-dropdown-append-to-body data-ng-class="$ctrl.tecInterfaceConfig.pullToSide" data-ng-show="$ctrl.selectedDocumentSetIndex === $index">
                     <a class="pui-no-caret" uib-dropdown-toggle id="dropdownMenuLink">
                         <i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu" data-ng-class="$ctrl.dropdownMenuClass" uib-dropdown-menu aria-labelledby="dropdownMenuLink">
@@ -87,7 +87,7 @@
                 </div>
             </div>
         </div>
-        <button class="btn btn-std btn-sm" type="button" data-ng-click="showMetrics = !showMetrics" style="margin-top: 10px">
+        <button class="btn btn-std btn-sm flex-no-grow" type="button" data-ng-click="showMetrics = !showMetrics" style="margin-top: 10px; margin-bottom: 0">
             {{showMetrics ? 'Hide' : 'Show'}} Metrics</button>
     </div>
     <div class="col-sm d-flex flex-column mb-1">
