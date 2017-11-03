@@ -599,7 +599,7 @@ gulp.task('test-e2e-doTest', function (cb) {
 
   // vars for configuring protractor
   protractorOptions.configFile = configFile;
-  protractorOptions.args.push('--baseUrl', protocol + params.webserverHost);
+  protractorOptions.args.push('--baseUrl', protocol + webserverHost);
 
   // Generate list of specs to test (glob format so protractor will test whatever files exist)
   var specString = (params.specs) ? params.specs : '*';
