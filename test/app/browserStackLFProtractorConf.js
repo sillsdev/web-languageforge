@@ -3,11 +3,32 @@ exports.config = {
   'framework': 'jasmine2',
   'rootElement': '[id="app-container-for-bootstrap"]',
 
-  'capabilities': {
-    'browserName': 'chrome',
-    'os': 'Windows',
-    'os_version': '10'
+  'commonCapabilities': {
+    'browserstack.build': process.env.BUILD_NUMBER,
+    'browserstack.project': process.env.TEAMCITY_BUILDCONF_NAME
   },
+
+  'multiCapabilities': [{
+    'browserName': 'Chrome',
+    'os': 'Windows',
+    'os_version': '10',
+  },{
+    'browserName': 'Chrome',
+    'browser_version': '55.0',
+    'os': 'Windows',
+    'os_version': '10',
+  },{
+    'browserName': 'Chrome',
+    'browser_version': '55.0',
+    'os': 'Windows',
+    'os_version': '10',
+    'resolution': '1600x1200',
+  },{
+    'browserName': 'Firefox'
+  },{
+    'browserName': 'IE'
+  }],
+
 
   onPrepare: function () {
     if (process.env.TEAMCITY_VERSION) {
