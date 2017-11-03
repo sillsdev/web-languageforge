@@ -27,6 +27,12 @@ class GoogleOAuth extends Base
 
         $error = $request->query->get('error', null);
         if (! is_null($error)) {
+            if ($error === 'immediate_failed') {
+                // Not a problem; this just means that the user wasn't logged in elsewhere.
+                $authUrl = $provider->getAuthorizationUrl();
+                $app['session']->set('oauth2state', $provider->getState());
+                return new RedirectResponse($authUrl);
+            }
             return new Response('OAuth error ' . htmlspecialchars($error, ENT_QUOTES, 'UTF-8'), 200);
         }
         if ($app['session']->has('oauthtoken')) {
@@ -34,7 +40,7 @@ class GoogleOAuth extends Base
         } else {
             $code = $request->query->get('code', null);
             if (is_null($code)) {   //
-                $authUrl = $provider->getAuthorizationUrl();
+                $authUrl = $provider->getAuthorizationUrl(["prompt" => "none"]);
                 $app['session']->set('oauth2state', $provider->getState());
                 return new RedirectResponse($authUrl);
             } else {
@@ -59,7 +65,8 @@ class GoogleOAuth extends Base
 
             // look up UserModel with incoming oauthId
             $userModel = new UserModel();
-            $userModel->readByPropertyArrayContains('googleOAuthId', $userDetails->getId());
+            $googleOAuthId = $userDetails->getId();
+            $userModel->readByPropertyArrayContains('googleOAuthIds', $googleOAuthId);
             if (!$userModel->id->asString()) {
                 $userModel->readByEmail($userDetails->getEmail());
                 if (!$userModel->id->asString()) {
@@ -74,15 +81,16 @@ class GoogleOAuth extends Base
                     return new Response("Email address " . $userDetails->getEmail() . " not found");
                 } else {
                     // Found an email address matching this OAuth token
-
-                    // TODO: Besides logging in and redirecting to main page, we also want to record this in the Mongo database, via the UserModel's new oauthTokens property.
-                    // But we'll do that in the next step, after we've verified that this code works.
+                    $userModel->googleOAuthIds[] = $googleOAuthId;
+                    $userModel->write();
                     $redirectUrl = $this->setTokenAndCalculateRedirectDestination($userModel, $app);
+//                    return new Response('Found your email address ' . $userModel->email . ' and updated Mongo with your Google ID. Next time you should see a different message.');
                     return new RedirectResponse($redirectUrl);
                 }
             } else {
                 // Found valid user
                 $redirectUrl = $this->setTokenAndCalculateRedirectDestination($userModel, $app);
+//                return new Response('Found a valid Google ID in your Mongo user record. You have been logged in as ' . $userModel->username);
                 return new RedirectResponse($redirectUrl);
             }
 
@@ -101,7 +109,7 @@ class GoogleOAuth extends Base
 
     // Any function with "And" in the name probably does two things, and that's true in this case
     // TODO: refactor into two functions, one to set the token and the other to calculate the redirect destination.
-    public function setTokenAndCalculateRedirectDestination(UserModel $userModel, Application $app)
+    public function setTokenAndCalculateRedirectDestination(UserModel $userModel, Application $app): string
     {
         $roles = AuthUserProvider::getSiteRoles($userModel, $app['website']);
         $oauthUser = new UserWithId($userModel->username, '', $userModel->username, $roles);

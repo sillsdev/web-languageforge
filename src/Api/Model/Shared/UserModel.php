@@ -314,12 +314,6 @@ class UserModel extends MapperModel
         return $this->readByProperty('email', $email);
     }
 
-    public function readByPropertyArrayContains($property, $value)
-    {
-        // TODO: Implement (on the parent class, not here).
-        // For now do nothing as this function exists just so that the GoogleOAuth class won't throw a TypeError while we're developing.
-    }
-
     /**
      * @param string $usernameOrEmail
      * @return bool - true if we were successful reading by either username or email
