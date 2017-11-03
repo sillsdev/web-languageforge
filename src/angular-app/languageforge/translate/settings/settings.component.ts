@@ -43,7 +43,14 @@ export class TranslateSettingsController implements angular.IController {
           step: 1,
           showSelectionBar: true,
           translate: (value: number) => {
-            return value + '%';
+            switch (value) {
+              case 0:
+                return 'most suggestions';
+              case 100:
+                return 'better phrases';
+              default:
+                return value + '%';
+            }
           }
         }
       };

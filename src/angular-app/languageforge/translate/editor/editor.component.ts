@@ -9,6 +9,7 @@ import { DocType, SaveState } from '../core/constants';
 import { MachineService } from '../core/machine.service';
 import { RealTimeService } from '../core/realtime.service';
 import { TranslateProjectService } from '../core/translate-project.service';
+import { Rights } from '../core/translate-rights.service';
 import {
   TranslateConfigDocumentSets, TranslateProject, TranslateUserPreferences
 } from '../shared/model/translate-project.model';
@@ -17,24 +18,27 @@ import { Metrics, MetricService } from './metric.service';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: TranslateProject;
+  tecRights: Rights;
   tecInterfaceConfig: any;
   tecOnUpdate: (params: { $event: { project: any } }) => void;
 
+  documentSets: any[] = [];
+  dropdownMenuClass: string = 'dropdown-menu-left';
+  isTraining: boolean = false;
+  selectedDocumentSetIndex: number = 0;
+  showFormats: boolean = false;
+  trainingPercent: number = 0;
+  confidence: any;
+  left: DocumentEditor;
+  right: DocumentEditor;
   source: SourceDocumentEditor;
   target: TargetDocumentEditor;
-  right: DocumentEditor;
-  left: DocumentEditor;
-  selectedDocumentSetIndex: number = 0;
-  documentSets: any[] = [];
   metrics: Metrics;
-  dropdownMenuClass: string = 'dropdown-menu-left';
-  trainingPercent: number = 0;
-  isTraining: boolean = false;
 
-  private currentDocType: string;
   private failedConnectionCount: number = 0;
-  private savedTargetSelection: RangeStatic;
+  private currentDocType: string;
   private savedSourceSelection: RangeStatic;
+  private savedTargetSelection: RangeStatic;
 
   static $inject = ['$window', '$scope',
     '$q', 'machineService',
@@ -94,6 +98,34 @@ export class TranslateEditorController implements angular.IController {
 
   $onChanges(changes: any) {
     const projectChange = changes.tecProject as angular.IChangesObject<TranslateProject>;
+    if (projectChange.isFirstChange()) {
+      // noinspection JSUnusedGlobalSymbols
+      this.confidence = {
+        value: undefined,
+        isCustomThreshold: false,
+        options: {
+          floor: 0,
+          ceil: 1,
+          step: 0.01,
+          precision: 2,
+          showSelectionBar: true,
+          onEnd: () => {
+            this.updateConfig();
+          },
+          translate: (value: number) => {
+            switch (value) {
+              case 0:
+                return 'most suggestions';
+              case 1:
+                return 'better phrases';
+              default:
+                return Math.round(value * 100) + '%';
+            }
+          }
+        }
+      };
+    }
+
     if (projectChange != null && projectChange.previousValue !== projectChange.currentValue &&
       projectChange.currentValue != null
     ) {
@@ -107,6 +139,7 @@ export class TranslateEditorController implements angular.IController {
           this.source.inputSystem = this.tecProject.config.source.inputSystem;
           this.target.inputSystem = this.tecProject.config.target.inputSystem;
           this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
+          this.showFormats =  this.tecProject.config.userPreferences.isFormattingOptionsShown;
 
           if (this.tecProject.config.documentSets.idsOrdered != null &&
             this.tecProject.config.documentSets.idsOrdered.length > 0
@@ -160,6 +193,19 @@ export class TranslateEditorController implements angular.IController {
           });
         }
       });
+
+      if (angular.isDefined(this.tecProject.config.userPreferences)) {
+        if (angular.isDefined(this.tecProject.config.userPreferences.hasConfidenceOverride)) {
+          this.confidence.isCustomThreshold = this.tecProject.config.userPreferences.hasConfidenceOverride;
+        }
+        if (angular.isUndefined(this.tecProject.config.userPreferences.confidenceThreshold) ||
+          !(isFinite(this.tecProject.config.userPreferences.confidenceThreshold) &&
+            angular.isNumber(this.tecProject.config.userPreferences.confidenceThreshold))
+        ) {
+          this.tecProject.config.userPreferences.confidenceThreshold = this.tecProject.config.confidenceThreshold;
+        }
+      }
+      this.selectWhichConfidence();
 
       this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
       this.listenForTrainingStatus();
@@ -385,6 +431,31 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
+  toggleFormattingOptions(): void {
+    this.showFormats = !this.showFormats;
+    this.tecProject.config.userPreferences.isFormattingOptionsShown = this.showFormats;
+    this.projectApi.updateConfig(this.tecProject.config, () => {
+      this.tecOnUpdate({ $event: { project: this.tecProject } });
+    });
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  changeConfidenceType() {
+    this.selectWhichConfidence();
+    this.updateConfig();
+  }
+
+  updateConfig() {
+    if (this.tecRights.canEditEntry()) {
+      this.updateConfigConfidenceValues();
+      this.projectApi.updateUserPreferences(this.tecProject.config.userPreferences).then(result => {
+        if (result.ok && this.tecOnUpdate) {
+          this.tecOnUpdate({ $event: { project: this.tecProject } });
+        }
+      });
+    }
+  }
+
   swapEditors(writePreferences: boolean = true): void {
     const leftQuill = this.left.quill;
     const rightQuill = this.right.quill;
@@ -563,6 +634,34 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
+  private selectWhichConfidence() {
+    this.confidence.options.disabled = !this.confidence.isCustomThreshold && !this.tecRights.canEditProject();
+    if (this.confidence.isCustomThreshold) {
+      if (angular.isDefined(this.confidence.value) && isFinite(this.confidence.value)) {
+        this.tecProject.config.confidenceThreshold = this.confidence.value;
+        delete this.confidence.value;
+      }
+
+      this.confidence.value = this.tecProject.config.userPreferences.confidenceThreshold;
+    } else {
+      if (angular.isDefined(this.confidence.value) && isFinite(this.confidence.value)) {
+        this.tecProject.config.userPreferences.confidenceThreshold = this.confidence.value;
+        delete this.confidence.value;
+      }
+
+      this.confidence.value = this.tecProject.config.confidenceThreshold;
+    }
+  }
+
+  private updateConfigConfidenceValues() {
+    this.tecProject.config.userPreferences.hasConfidenceOverride = this.confidence.isCustomThreshold;
+    if (this.confidence.isCustomThreshold) {
+      this.tecProject.config.userPreferences.confidenceThreshold = this.confidence.value;
+    } else {
+      this.tecProject.config.confidenceThreshold = this.confidence.value;
+    }
+  }
+
   private onDrop(file: File, quill: Quill, event: DragEvent): void {
     if (!file.name.toLowerCase().endsWith('.usx') && !file.name.toLowerCase().endsWith('.txt')) {
       this.$scope.$applyAsync(() => {
@@ -641,7 +740,8 @@ export const TranslateEditorComponent: angular.IComponentOptions = {
   bindings: {
     tecInterfaceConfig: '<',
     tecOnUpdate: '&',
-    tecProject: '<'
+    tecProject: '<',
+    tecRights: '<'
   },
   templateUrl: '/angular-app/languageforge/translate/editor/editor.component.html',
   controller: TranslateEditorController

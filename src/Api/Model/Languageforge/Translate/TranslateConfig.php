@@ -73,22 +73,26 @@ class TranslateUserPreferences
 {
     public function __construct()
     {
-        $this->selectedDocumentSetId = '';
-        $this->isDocumentOrientationTargetRight = true;
         $this->hasConfidenceOverride = false;
+        $this->isDocumentOrientationTargetRight = true;
+        $this->isFormattingOptionsShown = false;
+        $this->selectedDocumentSetId = '';
     }
 
-    /** @var string */
-    public $selectedDocumentSetId;
+    /** @var float */
+    public $confidenceThreshold;
+
+    /** @var boolean */
+    public $hasConfidenceOverride;
 
     /** @var boolean */
     public $isDocumentOrientationTargetRight;
 
     /** @var boolean */
-    public $hasConfidenceOverride;
+    public $isFormattingOptionsShown;
 
-    /** @var float */
-    public $confidenceThreshold;
+    /** @var string */
+    public $selectedDocumentSetId;
 }
 
 class TranslateConfigMetrics
