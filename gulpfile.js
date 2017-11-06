@@ -648,6 +648,15 @@ gulp.task('test-e2e-run',
 );
 gulp.task('test-e2e-run').description = 'Run the E2E test on local developer environment';
 
+gulp.task('test-e2e-local-lf', gulp.series(
+    'test-e2e-useTestConfig',
+    'test-restart-webserver',
+    'test-e2e-setupTestEnvironment',
+    'test-e2e-doTest',
+    'test-e2e-teardownTestEnvironment',
+    'test-e2e-useLiveConfig',
+    'test-restart-webserver')
+);
 //endregion
 
 // region sass
