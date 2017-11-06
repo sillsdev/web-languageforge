@@ -570,12 +570,6 @@ gulp.task('test-e2e-doTest', function (cb) {
     (params.webserverHost === 'jamaicanpsalms.scriptureforge.local') ? 'https://' : 'http://';
 
   var configFile;
-  if (params.conf && params.conf.length > 0) {
-    configFile = './test/app/' + params.conf;
-  } else {
-    configFile = './test/app/protractorConf.js';
-  }
-
   var isBrowserStack = false;
   var protractorOptions = {
     debug: false,
@@ -594,7 +588,16 @@ gulp.task('test-e2e-doTest', function (cb) {
   var webserverHost = params.webserverHost;
   if (isBrowserStack) {
     webserverHost = webserverHost.replace(".local", ".org");
-    configFile = './test/app/browserStackLFProtractorConf.js';
+  }
+
+  if (params.conf && params.conf.length > 0) {
+    configFile = './test/app/' + params.conf;
+  } else {
+    if (isBrowserStack) {
+      configFile = './test/app/browserStackLFProtractorConf.js';
+    } else {
+      configFile = './test/app/protractorConf.js';
+    }
   }
 
   // vars for configuring protractor
