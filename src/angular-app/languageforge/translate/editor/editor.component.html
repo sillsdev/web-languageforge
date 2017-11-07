@@ -9,7 +9,7 @@
            data-ng-if="!$ctrl.isTraining && $ctrl.hasDocumentSets() && $ctrl.tecRights.canEditProject()">Train</a>
         <uib-progressbar data-ng-if="$ctrl.isTraining" value="$ctrl.trainingPercent">{{$ctrl.trainingPercent}}%</uib-progressbar>
     </span>
-    <span class="ql-formats controls col-sm-6 col-lg-8 col-xl-9" data-ng-if="$ctrl.hasDocumentSets()">
+    <span class="ql-formats controls col-sm-4 col-md-5 col-lg-7 col-xl-8" data-ng-if="$ctrl.hasDocumentSets()">
         <rzslider rz-slider-model="$ctrl.confidence.value" rz-slider-options="$ctrl.confidence.options" title="Confidence threshold"></rzslider>
     </span>
     <span class="ql-formats" data-ng-if="$ctrl.hasDocumentSets()">
