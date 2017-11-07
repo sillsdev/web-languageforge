@@ -465,7 +465,7 @@
             "support": {
                 "source": "https://github.com/sillsdev/LazyProperty/tree/feature/factory"
             },
-            "time": "2016-10-03 09:06:50"
+            "time": "2016-10-03T09:06:50+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -819,12 +819,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sillsdev/web-php-utilities.git",
-                "reference": "84481f8d3f8f758732b8be679ddd52930c67fa2b"
+                "reference": "49c320b3960841c84f5a7aad6f5ea9c8874e240e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/84481f8d3f8f758732b8be679ddd52930c67fa2b",
-                "reference": "84481f8d3f8f758732b8be679ddd52930c67fa2b",
+                "url": "https://api.github.com/repos/sillsdev/web-php-utilities/zipball/49c320b3960841c84f5a7aad6f5ea9c8874e240e",
+                "reference": "49c320b3960841c84f5a7aad6f5ea9c8874e240e",
                 "shasum": ""
             },
             "require-dev": {
@@ -842,7 +842,7 @@
                 "source": "https://github.com/sillsdev/web-php-utilities/tree/master",
                 "issues": "https://github.com/sillsdev/web-php-utilities/issues"
             },
-            "time": "2017-06-15 06:27:56"
+            "time": "2017-11-07T08:59:09+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1945,7 +1945,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2017-03-22 23:28:45"
+            "time": "2017-03-22T23:28:45+00:00"
         }
     ],
     "packages-dev": [
