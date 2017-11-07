@@ -233,10 +233,14 @@ export class TranslateEditorController implements angular.IController {
         const userPreferences = this.tecProject.config.userPreferences;
         userPreferences.selectedDocumentSetId = this.documentSets[this.selectedDocumentSetIndex].id;
         if (updateConfig) {
-          this.projectApi.updateConfig(this.tecProject.config);
+          this.projectApi.updateUserPreferences(userPreferences);
         }
       }
     }
+  }
+
+  showDocumentSetMore(index: number): boolean {
+    return this.tecRights.canEditProject() && (this.selectedDocumentSetIndex === index);
   }
 
   modalDeleteDocumentSet(index: number): void {
@@ -434,7 +438,7 @@ export class TranslateEditorController implements angular.IController {
   toggleFormattingOptions(): void {
     this.showFormats = !this.showFormats;
     this.tecProject.config.userPreferences.isFormattingOptionsShown = this.showFormats;
-    this.projectApi.updateConfig(this.tecProject.config, () => {
+    this.projectApi.updateUserPreferences(this.tecProject.config.userPreferences, () => {
       this.tecOnUpdate({ $event: { project: this.tecProject } });
     });
   }
@@ -642,6 +646,9 @@ export class TranslateEditorController implements angular.IController {
         delete this.confidence.value;
       }
 
+      if (this.tecProject.config.userPreferences.confidenceThreshold == null) {
+        this.tecProject.config.userPreferences.confidenceThreshold = this.tecProject.config.confidenceThreshold;
+      }
       this.confidence.value = this.tecProject.config.userPreferences.confidenceThreshold;
     } else {
       if (angular.isDefined(this.confidence.value) && isFinite(this.confidence.value)) {
