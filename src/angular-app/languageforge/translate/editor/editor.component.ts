@@ -96,7 +96,7 @@ export class TranslateEditorController implements angular.IController {
     this.$window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
-  $onChanges(changes: any) {
+  $onChanges(changes: any): void {
     const projectChange = changes.tecProject as angular.IChangesObject<TranslateProject>;
     if (projectChange.isFirstChange()) {
       // noinspection JSUnusedGlobalSymbols
@@ -374,7 +374,7 @@ export class TranslateEditorController implements angular.IController {
     this.save().then(() => this.$window.location.href = '/app/projects');
   }
 
-  train() {
+  train(): void {
     const modalMessage = 'This will train the translation engine using all existing documents. ' +
       'This can take several minutes and will operate in the background.<br /><br />' +
       'Are you sure you want to train the translation engine?';
@@ -444,12 +444,12 @@ export class TranslateEditorController implements angular.IController {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  changeConfidenceType() {
+  changeConfidenceType(): void {
     this.selectWhichConfidence();
     this.updateConfig();
   }
 
-  updateConfig() {
+  updateConfig(): void {
     if (this.tecRights.canEditEntry()) {
       this.updateConfigConfidenceValues();
       this.projectApi.updateUserPreferences(this.tecProject.config.userPreferences).then(result => {
@@ -563,7 +563,7 @@ export class TranslateEditorController implements angular.IController {
     });
   }
 
-  private switchCurrentDocumentSet(editor: DocumentEditor) {
+  private switchCurrentDocumentSet(editor: DocumentEditor): void {
     editor.closeDocumentSet();
     if (this.selectedDocumentSetIndex in this.documentSets) {
       editor.openDocumentSet(this.tecProject.slug, this.documentSets[this.selectedDocumentSetIndex].id);
@@ -621,7 +621,7 @@ export class TranslateEditorController implements angular.IController {
     return editor.docType !== this.currentDocType;
   }
 
-  private restoreCursorAfterEditorSwap() {
+  private restoreCursorAfterEditorSwap(): void {
     if (this.savedTargetSelection && this.savedTargetSelection.index < this.target.quill.getLength()) {
       // change source segment then back again (reloads source text) to ensure suggestions after swap
       const sourceCurrentSegmentIndex = this.source.currentSegmentIndex;
@@ -638,7 +638,19 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private selectWhichConfidence() {
+  private reloadSuggestions(savedTargetSelection = this.target.quill.getSelection()): void {
+    const nextTargetSelection = angular.copy(savedTargetSelection);
+    nextTargetSelection.index++;
+    this.target.quill.setSelection(nextTargetSelection);
+    this.target.update(false);
+    this.source.translateCurrentSegment().then(() => {
+      this.target.quill.setSelection(savedTargetSelection);
+      this.target.update(false);
+      this.source.translateCurrentSegment();
+    });
+  }
+
+  private selectWhichConfidence(): void {
     this.confidence.options.disabled = !this.confidence.isCustomThreshold && !this.tecRights.canEditProject();
     if (this.confidence.isCustomThreshold) {
       if (angular.isDefined(this.confidence.value) && isFinite(this.confidence.value)) {
@@ -660,13 +672,16 @@ export class TranslateEditorController implements angular.IController {
     }
   }
 
-  private updateConfigConfidenceValues() {
+  private updateConfigConfidenceValues(): void {
     this.tecProject.config.userPreferences.hasConfidenceOverride = this.confidence.isCustomThreshold;
     if (this.confidence.isCustomThreshold) {
       this.tecProject.config.userPreferences.confidenceThreshold = this.confidence.value;
     } else {
       this.tecProject.config.confidenceThreshold = this.confidence.value;
     }
+
+    this.source.confidenceThreshold = this.confidence.value;
+    this.reloadSuggestions();
   }
 
   private onDrop(file: File, quill: Quill, event: DragEvent): void {
@@ -724,7 +739,7 @@ export class TranslateEditorController implements angular.IController {
     });
   }
 
-  private insertHtml(quill: Quill, html: string) {
+  private insertHtml(quill: Quill, html: string): void {
     // ensure blank line at end - allows to complete the last segment
     if (!html.endsWith('<p><br></p>')) {
       html += '<p><br></p>';
