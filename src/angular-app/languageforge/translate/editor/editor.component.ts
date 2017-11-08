@@ -13,6 +13,7 @@ import { Rights } from '../core/translate-rights.service';
 import {
   TranslateConfigDocumentSets, TranslateProject, TranslateUserPreferences
 } from '../shared/model/translate-project.model';
+import { TranslateUtilities } from '../shared/translate-utilities';
 import { DocumentEditor, SourceDocumentEditor, TargetDocumentEditor } from './document-editor';
 import { Metrics, MetricService } from './metric.service';
 
@@ -108,6 +109,9 @@ export class TranslateEditorController implements angular.IController {
           step: 0.01,
           precision: 2,
           showSelectionBar: true,
+          getSelectionBarColor: (value: number) => {
+            return TranslateUtilities.sliderColor(value);
+          },
           onEnd: () => {
             this.updateConfig();
           },

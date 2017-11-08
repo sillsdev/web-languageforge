@@ -3,7 +3,8 @@ import * as angular from 'angular';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { TranslateProjectService } from '../core/translate-project.service';
 import { Rights } from '../core/translate-rights.service';
-import { TranslateProject, TranslateUserPreferences } from '../shared/model/translate-project.model';
+import { TranslateProject } from '../shared/model/translate-project.model';
+import { TranslateUtilities } from '../shared/translate-utilities';
 
 export class TranslateSettingsController implements angular.IController {
   tscProject: TranslateProject;
@@ -34,6 +35,7 @@ export class TranslateSettingsController implements angular.IController {
 
     if (changes.tscProject.isFirstChange()) {
       this.actionInProgress = false;
+      // noinspection JSUnusedGlobalSymbols
       this.confidence = {
         value: undefined,
         options: {
@@ -42,6 +44,9 @@ export class TranslateSettingsController implements angular.IController {
           step: 0.01,
           precision: 2,
           showSelectionBar: true,
+          getSelectionBarColor: (value: number) => {
+            return TranslateUtilities.sliderColor(value);
+          },
           translate: (value: number) => {
             switch (value) {
               case 0:
