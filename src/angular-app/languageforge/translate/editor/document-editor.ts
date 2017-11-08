@@ -208,6 +208,10 @@ export class TargetDocumentEditor extends DocumentEditor {
     this._suggestions = suggestions;
   }
 
+  get confidence(): number {
+    return this.machine.suggestionConfidence;
+  }
+
   save(): angular.IPromise<void> {
     return this.trainSegment();
   }
@@ -263,16 +267,12 @@ export class TargetDocumentEditor extends DocumentEditor {
   }
 
   insertSuggestion(suggestionIndex: number = -1): void {
-    if (!this.isShowingSuggestions || suggestionIndex >= this.machine.getCurrentSuggestion().length) {
+    if (suggestionIndex >= this.machine.getCurrentSuggestion().length) {
       return;
     }
 
-    let endIndex = this.currentSegment.range.index + this.currentSegment.range.length;
-    const { deleteLength, insertText } = this.machine.getSuggestionTextInsertion(suggestionIndex);
-    if (deleteLength > 0) {
-      this.quill.deleteText(endIndex - deleteLength, deleteLength, Quill.sources.USER);
-      endIndex -= deleteLength;
-    }
+    const endIndex = this.currentSegment.range.index + this.currentSegment.range.length;
+    const insertText = this.machine.getSuggestionText(suggestionIndex);
     this.quill.insertText(endIndex, insertText + ' ', Quill.sources.USER);
     this.quill.setSelection(endIndex + insertText.length, 1, Quill.sources.USER);
     this.metricService.onSuggestionTaken();

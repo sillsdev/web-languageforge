@@ -1,5 +1,6 @@
 <span class="ql-suggest d-flex">
-    <a class="btn" data-ng-click="$ctrl.selectAll()">{{$ctrl.wordCombine($ctrl.qlSuggestions)}}</a>&nbsp;&nbsp;
+    <a data-ng-click="$ctrl.selectAll()" data-ng-style="$ctrl.suggestionStyle">{{$ctrl.wordCombine($ctrl.qlSuggestions)}}</a>&nbsp;&nbsp;
+    <span><small class="text-muted">{{$ctrl.confidencePercent}}%</small></span>&nbsp;
     <a data-ng-click="$ctrl.showSuggestionHelp = !$ctrl.showSuggestionHelp"><i class="suggestion-help fa fa-info-circle"></i></a>
 </span>
 <div class="ql-suggest text-muted" data-ng-show="$ctrl.showSuggestionHelp">

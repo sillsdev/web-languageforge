@@ -13,7 +13,8 @@
         <rzslider rz-slider-model="$ctrl.confidence.value" rz-slider-options="$ctrl.confidence.options" title="Confidence threshold"></rzslider>
     </span>
     <span class="ql-formats" data-ng-if="$ctrl.hasDocumentSets()">
-        <button data-ng-click="$ctrl.resetConfidence()" title="Confidence"><i class="fa fa-refresh"></i></button>
+        <button data-ng-click="$ctrl.resetConfidence()" title="Reset confidence threshold to project default value">
+            <i class="fa fa-refresh"></i></button>
     </span>
     <span class="ql-formats" data-ng-if="$ctrl.hasDocumentSets()">
         <button data-ng-click="$ctrl.toggleFormattingOptions()" title="Formatting options" style="font-family: FontAwesome">
@@ -129,8 +130,8 @@
                     data-ng-model="$ctrl.left.html" data-read-only="!$ctrl.hasDocumentSets()"
                     data-placeholder="&#8203;enter text here or drop a file"></ng-quill-editor>
                 <div class="ql-suggestions">
-                    <ql-suggestion data-ql-suggestions="$ctrl.left.suggestions"
-                                data-ql-insert-suggestion="$ctrl.left.insertSuggestion(suggestionIndex)"></ql-suggestion>
+                    <ql-suggestion ql-suggestions="$ctrl.left.suggestions" ql-confidence="$ctrl.left.confidence"
+                                ql-insert-suggestion="$ctrl.left.insertSuggestion(suggestionIndex)"></ql-suggestion>
                 </div>
             </div>
             <div class="col-sm-6 d-sm-none" data-ng-if="$ctrl.hasDocumentSets()">
@@ -149,8 +150,8 @@
                     data-ng-model="$ctrl.right.html" data-read-only="!$ctrl.hasDocumentSets()"
                     data-placeholder="&#8203;enter text here or drop a file"></ng-quill-editor>
                 <div class="ql-suggestions">
-                    <ql-suggestion data-ql-suggestions="$ctrl.right.suggestions"
-                                data-ql-insert-suggestion="$ctrl.right.insertSuggestion(suggestionIndex)"></ql-suggestion>
+                    <ql-suggestion ql-suggestions="$ctrl.right.suggestions" ql-confidence="$ctrl.right.confidence"
+                                ql-insert-suggestion="$ctrl.right.insertSuggestion(suggestionIndex)"></ql-suggestion>
                 </div>
             </div>
         </div>
