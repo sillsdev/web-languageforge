@@ -24,11 +24,10 @@ export class TranslateAppController implements angular.IController {
     ]).then(([rights, session, readProjectResult]) => {
       this.rights = rights;
       this.rights.showSettingsDropdown = () => {
-        return this.rights.canEditProject() || this.rights.canEditUsers() ||
-          this.rights.canEditEntry();
+        return this.rights.canEditProject() || this.rights.canEditUsers();
       };
 
-      let project: TranslateProject = session.project();
+      const project: TranslateProject = session.project();
       if (readProjectResult.ok) {
         angular.merge(project, readProjectResult.data.project);
       }
@@ -54,6 +53,7 @@ export class TranslateAppController implements angular.IController {
     return !this.$state.is('editor');
   }
 
+  // noinspection JSUnusedGlobalSymbols
   onUpdateProject($event: { project: any }) {
     this.project = $event.project;
   }
