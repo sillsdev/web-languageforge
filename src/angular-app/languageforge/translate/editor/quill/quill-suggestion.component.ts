@@ -1,7 +1,10 @@
 import * as angular from 'angular';
 
+import { TranslateUtilities } from '../../shared/translate-utilities';
+
 export class QuillSuggestionController implements angular.IController {
   qlSuggestions: string[];
+  qlConfidence: number;
   qlInsertSuggestion: (params: { suggestionIndex: number }) => void;
 
   showSuggestionHelp: boolean = false;
@@ -17,11 +20,20 @@ export class QuillSuggestionController implements angular.IController {
     }
   }
 
+  get confidencePercent(): number {
+    return Math.round(this.qlConfidence * 100);
+  }
+
+  get suggestionStyle() {
+    return TranslateUtilities.suggestionStyle(this.qlConfidence);
+  }
+
 }
 
 export const QuillSuggestionComponent: angular.IComponentOptions = {
   bindings: {
     qlSuggestions: '<',
+    qlConfidence: '<',
     qlInsertSuggestion: '&'
   },
   templateUrl: '/angular-app/languageforge/translate/editor/quill/quill-suggestion.component.html',

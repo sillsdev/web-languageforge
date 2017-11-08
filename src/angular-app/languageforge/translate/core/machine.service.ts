@@ -60,7 +60,7 @@ export class MachineService {
     }
 
     if (this.prefix === prefix) {
-      return this.session.currentSuggestion;
+      return this.session.suggestion;
     }
 
     this.prefix = prefix;
@@ -72,7 +72,15 @@ export class MachineService {
       return [];
     }
 
-    return this.session.currentSuggestion;
+    return this.session.suggestion;
+  }
+
+  get suggestionConfidence(): number {
+    if (this.engine == null || this.session == null) {
+      return 0;
+    }
+
+    return this.session.suggestionConfidence;
   }
 
   trainSegment(): angular.IPromise<void> {
@@ -91,12 +99,12 @@ export class MachineService {
     return deferred.promise;
   }
 
-  getSuggestionTextInsertion(suggestionIndex?: number): {deleteLength: number, insertText: string} {
+  getSuggestionText(suggestionIndex?: number): string {
     if (this.engine == null || this.session == null) {
-      return { deleteLength: 0, insertText: '' };
+      return '';
     }
 
-    return this.session.getSuggestionTextInsertion(suggestionIndex);
+    return this.session.getSuggestionText(suggestionIndex);
   }
 
   tokenizeDocumentText(docType: string, text: string): RangeStatic[] {
