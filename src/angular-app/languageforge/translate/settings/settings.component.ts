@@ -36,20 +36,20 @@ export class TranslateSettingsController implements angular.IController {
       this.actionInProgress = false;
       this.confidence = {
         value: undefined,
-        isMyThreshold: false,
         options: {
           floor: 0,
-          ceil: 100,
-          step: 1,
+          ceil: 1,
+          step: 0.01,
+          precision: 2,
           showSelectionBar: true,
           translate: (value: number) => {
             switch (value) {
               case 0:
                 return 'most suggestions';
-              case 100:
+              case 1:
                 return 'better phrases';
               default:
-                return value + '%';
+                return Math.round(value * 100) + '%';
             }
           }
         }
@@ -58,20 +58,7 @@ export class TranslateSettingsController implements angular.IController {
 
     if (changes.tscProject != null && changes.tscProject.currentValue != null) {
       this.project = angular.copy(changes.tscProject.currentValue);
-      if (angular.isDefined(this.project.config.userPreferences)) {
-        if (angular.isDefined(this.project.config.userPreferences.hasConfidenceOverride)) {
-          this.confidence.isMyThreshold =
-            this.project.config.userPreferences.hasConfidenceOverride;
-        }
-        if (angular.isUndefined(this.project.config.userPreferences.confidenceThreshold) ||
-          !(isFinite(this.project.config.userPreferences.confidenceThreshold) &&
-            angular.isNumber(this.project.config.userPreferences.confidenceThreshold))
-        ) {
-          this.project.config.userPreferences.confidenceThreshold =
-            this.project.config.confidenceThreshold;
-        }
-      }
-      this.selectWhichConfidence();
+      this.confidence.value = this.project.config.confidenceThreshold;
       if (angular.isUndefined(this.project.config.isTranslationDataShared) ||
         this.project.config.isTranslationDataShared === ''
       ) {
@@ -81,7 +68,7 @@ export class TranslateSettingsController implements angular.IController {
   }
 
   updateProject() {
-    this.updateConfigConfidenceValues();
+    this.project.config.confidenceThreshold = this.confidence.value;
     const projectData = {
       id: this.project.id,
       projectName: this.project.projectName,
@@ -100,21 +87,6 @@ export class TranslateSettingsController implements angular.IController {
     });
   }
 
-  updateConfig() {
-    if (this.rights.canEditProject()) {
-      this.updateProject();
-    } else if (this.rights.canEditEntry()) {
-      this.updateConfigConfidenceValues();
-      this.projectApi.updateUserPreferences(this.project.config.userPreferences).then(result => {
-        if (result.ok) {
-          if (this.tscOnUpdate) this.tscOnUpdate({ $event: { project: this.project } });
-          this.notice.push(this.notice.SUCCESS,
-            this.project.projectName + ' confidence updated successfully.');
-        }
-      });
-    }
-  }
-
   // noinspection JSUnusedGlobalSymbols
   updateLanguage(docType: string, code: string, language: any) {
     this.project.config[docType] = this.project.config[docType] || {};
@@ -125,52 +97,6 @@ export class TranslateSettingsController implements angular.IController {
   // noinspection JSUnusedGlobalSymbols
   redrawSlider() {
     this.$interval(() => this.$scope.$broadcast('rzSliderForceRender'), 0, 1);
-  }
-
-  selectWhichConfidence() {
-    this.confidence.options.disabled = !this.confidence.isMyThreshold &&
-      !this.rights.canEditProject();
-    if (this.confidence.isMyThreshold) {
-      if (angular.isDefined(this.confidence.value) && isFinite(this.confidence.value)) {
-        this.project.config.confidenceThreshold =
-          this.convertValueToThreshold(this.confidence.value);
-        delete this.confidence.value;
-      }
-
-      this.confidence.value =
-        this.convertThresholdToValue(this.project.config.userPreferences.confidenceThreshold);
-    } else {
-      if (angular.isDefined(this.confidence.value) && isFinite(this.confidence.value)) {
-        this.project.config.userPreferences.confidenceThreshold =
-          this.convertValueToThreshold(this.confidence.value);
-        delete this.confidence.value;
-      }
-
-      this.confidence.value =
-        this.convertThresholdToValue(this.project.config.confidenceThreshold);
-    }
-  }
-
-  private convertThresholdToValue(threshold: number): number {
-    const range = this.confidence.options.ceil - this.confidence.options.floor;
-    return this.confidence.options.floor + threshold * range;
-  }
-
-  private convertValueToThreshold(value: number): number {
-    const range = this.confidence.options.ceil - this.confidence.options.floor;
-    return (value - this.confidence.options.floor) / range;
-  }
-
-  private updateConfigConfidenceValues() {
-    this.project.config.userPreferences = this.project.config.userPreferences || new TranslateUserPreferences();
-    this.project.config.userPreferences.hasConfidenceOverride = this.confidence.isMyThreshold;
-    if (this.confidence.isMyThreshold) {
-      this.project.config.userPreferences.confidenceThreshold =
-        this.convertValueToThreshold(this.confidence.value);
-    } else {
-      this.project.config.confidenceThreshold =
-        this.convertValueToThreshold(this.confidence.value);
-    }
   }
 
 }

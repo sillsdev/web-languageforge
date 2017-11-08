@@ -1,19 +1,18 @@
 <div data-ng-cloak id="translateAppSettingsView">
-    <h2>{{$ctrl.project.projectName}} <span data-translate="Settings"></span></h2>
+    <h2><span class="notranslate">{{$ctrl.project.projectName}}</span> Settings</h2>
     <uib-tabset>
-        <uib-tab heading="{{'Project Properties' | translate}}">
+        <uib-tab heading="Project Properties">
             <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateProject()">
                 <fieldset class="card-body" data-ng-disabled="!$ctrl.rights.canEditProject()">
                     <div class="form-group row">
-                        <label class="control-label col-12" for="projName" data-translate="Project Name"></label>
+                        <label class="control-label col-12" for="projName">Project Name</label>
                         <div class="controls col-12">
                             <input id="projName" type="text" class="form-control" placeholder="project name"
                                    data-ng-model="$ctrl.project.projectName" />
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-12" for="language"
-                               data-translate="Default Interface Language"></label>
+                        <label class="control-label col-12" for="language">Default Interface Language</label>
                         <div class="controls col-12">
                             <select class="form-control" id="language"
                                 data-ng-model="$ctrl.project.interfaceLanguageCode"
@@ -23,13 +22,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-12">{{'Project Code' | translate}}</label>
+                        <label class="control-label col-12">Project Code</label>
                         <div class="controls col-12">
                             {{$ctrl.project.projectCode}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-12">{{'Project Owner' | translate}}</label>
+                        <label class="control-label col-12">Project Owner</label>
                         <div class="controls col-12">
                             {{$ctrl.project.ownerRef.username}}
                         </div>
@@ -37,60 +36,36 @@
                     <div class="form-group row">
                         <div class="controls col-12">
                             <label class="checkbox"><input type="checkbox" data-ng-model="$ctrl.project.featured"/>
-                                {{'Featured On Website' | translate}}</label>
+                                Featured On Website</label>
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="controls col-12">
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>
-                                {{'Save' | translate}}</button>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
                         </div>
                     </div>
                 </fieldset>
             </form>
         </uib-tab>
-        <uib-tab heading="{{'Languages' | translate}}">
-            <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateConfig()">
+        <uib-tab heading="Languages">
+            <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateProject()">
                 <fieldset class="card-body" data-ng-disabled="!$ctrl.rights.canEditProject()">
                     <languages-picker data-tlp-project="$ctrl.project"
                                       data-tlp-update-language="$ctrl.updateLanguage(docType, code, language)">
                     </languages-picker>
                     <div class="form-group row">
                         <div class="controls col-12">
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>
-                                {{'Save' | translate}}</button>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
                         </div>
                     </div>
                 </fieldset>
             </form>
         </uib-tab>
-
-        <!-- Suggestions tab disabled while the controls are on the main UI -->
-        <uib-tab heading="{{'Suggestions' | translate}}" select="$ctrl.redrawSlider()" data-ng-show="false">
-            <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateConfig()">
-                <fieldset class="card-body" data-ng-disabled="!$ctrl.rights.canEditEntry()">
+        <uib-tab heading="Suggestions" select="$ctrl.redrawSlider()">
+            <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateProject()">
+                <fieldset class="card-body" data-ng-disabled="!$ctrl.rights.canEditProject()">
                     <div class="form-group row">
-                        <label class="control-label col-12" data-translate="Confidence"></label>
-                        <div class="form-group col-12">
-                            <div class="form-check form-check-inline">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="radio" data-ng-value="false"
-                                           data-ng-model="$ctrl.confidence.isMyThreshold"
-                                           data-ng-change="$ctrl.selectWhichConfidence()"
-                                           data-ng-required="$ctrl.confidence.isMyThreshold === undefined" />
-                                    {{'Use the project\'s confidence threshold' | translate}}
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="radio" data-ng-value="true"
-                                           data-ng-model="$ctrl.confidence.isMyThreshold"
-                                           data-ng-change="$ctrl.selectWhichConfidence()"
-                                           data-ng-required="$ctrl.confidence.isMyThreshold === undefined" />
-                                    {{'Use my own confidence threshold' | translate}}
-                                </label>
-                            </div>
-                        </div>
+                        <label class="control-label col-12">Default Project Confidence Threshold</label>
                         <div class="controls col-12">
                             <rzslider rz-slider-model="$ctrl.confidence.value"
                                       rz-slider-options="$ctrl.confidence.options"></rzslider>
@@ -98,9 +73,7 @@
                     </div>
                     <div class="form-group row">
                         <div class="controls col-12">
-                            <button type="submit" class="btn btn-primary" data-ng-disabled="!$ctrl.rights.canEditEntry()">
-                                <i class="fa fa-check"></i>
-                                {{'Save' | translate}}</button>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
                         </div>
                     </div>
                 </fieldset>
@@ -108,7 +81,7 @@
         </uib-tab>
 
         <!-- Archive tab disabled now that project owners can delete their own projects -->
-        <uib-tab heading="{{'Archive' | translate}}" data-ng-show="false">
+        <uib-tab heading="Archive" data-ng-show="false">
             <form class="card card-default">
                 <div class="card-body">
                     <pui-archive-project pui-action-in-progress="$ctrl.actionInProgress">
@@ -116,7 +89,7 @@
                 </div>
             </form>
         </uib-tab>
-        <uib-tab heading="{{'Delete' | translate}}" data-ng-show="$ctrl.rights.canDeleteProject()">
+        <uib-tab heading="Delete" data-ng-show="$ctrl.rights.canDeleteProject()">
             <form class="card card-default">
                 <div class="card-body">
                     <pui-delete-project></pui-delete-project>
