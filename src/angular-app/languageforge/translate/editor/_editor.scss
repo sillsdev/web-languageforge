@@ -163,6 +163,11 @@ ng-quill-editor .ql-editor.drop-box {
     border-bottom: 1px solid black;
 }
 
+#toolbar .ql-formats.controls {
+    padding: 0;
+    margin-right: 0;
+}
+
 #toolbar .rzslider .rz-bubble {
     font-size: small;
 }

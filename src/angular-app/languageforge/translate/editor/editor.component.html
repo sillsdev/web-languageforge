@@ -13,12 +13,7 @@
         <rzslider rz-slider-model="$ctrl.confidence.value" rz-slider-options="$ctrl.confidence.options" title="Confidence threshold"></rzslider>
     </span>
     <span class="ql-formats" data-ng-if="$ctrl.hasDocumentSets()">
-        <!--suppress HtmlFormInputWithoutLabel -->
-        <select class="ql-confidence form-control form-control-sm" title="Confidence"
-                data-ng-model="$ctrl.confidence.isCustomThreshold" data-ng-change="$ctrl.changeConfidenceType()">
-            <option data-ng-value="false">Project</option>
-            <option data-ng-value="true">Custom</option>
-        </select>
+        <button data-ng-click="$ctrl.resetConfidence()" title="Confidence"><i class="fa fa-refresh"></i></button>
     </span>
     <span class="ql-formats" data-ng-if="$ctrl.hasDocumentSets()">
         <button data-ng-click="$ctrl.toggleFormattingOptions()" title="Formatting options" style="font-family: FontAwesome">
