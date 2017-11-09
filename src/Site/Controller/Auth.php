@@ -4,6 +4,7 @@ namespace Site\Controller;
 
 use Api\Library\Shared\Communicate\Communicate;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
+use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
@@ -41,6 +42,7 @@ class Auth extends App
                 // no break; - intentional fall through to next case
             case 'forgot_password':
             case 'login':
+            case 'link_oauth_account':
                 if($this->isLoggedIn($app)) {
                     return $app->redirect('/app/projects');
                 }
@@ -82,6 +84,16 @@ class Auth extends App
     private function setupAuthView(Request $request, Application $app)
     {
         $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
+        if ($app['session']->has(GoogleOAuth::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK)) {
+            $this->data['oauth_id_for_login'] = $app['session']->get(GoogleOAuth::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
+            $this->data['oauth_full_name_for_login'] = $app['session']->get(GoogleOAuth::SESSION_KEY_OAUTH_FULL_NAME);
+            $email = $app['session']->get(GoogleOAuth::SESSION_KEY_OAUTH_EMAIL_ADDRESS);
+            $this->data['oauth_email_for_login'] = $email;
+            $link = Communicate::calculateSignupUrl($email, $this->website);
+            // TODO: It would be nice to fill in the full name, too, since we have it available. That would require updating the Angular signup app.
+            $this->data['oauth_uri_for_signup'] = $link;
+        }
+
         $errorMsg = $app['security.last_error']($request);
         if ($errorMsg == 'Bad credentials.') {
             $user = new UserModel();

@@ -1,0 +1,18 @@
+{% verbatim %}
+{% endverbatim %}
+
+<div class="content container" data-ng-controller="LinkOAuthAccountCtrl">
+    <div class="row">
+        Hi, {{ oauth_full_name_for_login }}. You've signed in with your {{ oauth_email_for_login }}
+        Google account, but we don't have that address associated with a Scripture Forge account. Do
+        you already have a Scripture Forge account? Then click "Link existing account" and sign in to
+        your Scripture Forge account, and we will link it to your Google account so that you can log
+        in faster next time. If you don't already have a Scripture Forge account, click "Create new
+        account" and we will create a new account for you, already linked to your Google account.
+        <hr>
+        <div style="display: flex; justify-content: space-between">
+            <a href="/auth/login" class="btn btn-success">Link existing account</a>
+            <a href="{{ oauth_uri_for_signup }}" class="btn btn-info">Create new account</a>
+        </div>
+    </div>
+</div>
