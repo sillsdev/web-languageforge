@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if ! [ `whoami` == "root" ]
+if [ `whoami` == "root" ]
 then
-	echo This script must be run with sudo!
+	echo This script cannot be run as sudo!
 	exit
 fi
 
@@ -12,22 +12,31 @@ else
     OS=Linux
 fi
 
+if [ $OS == "Windows" ]; then
+    echo "I see that you are running this script in Windows 10 WSL.  Before proceeding, you must install the Java JRE and NodeJS in Windows to be able to run E2E tests."
+    echo "Have you done that in a Windows command prompt already? (Ctrl-C to exit and do that now, if necessary)"
+    read -p "Otherwise, press any key to continue"
+fi
+
+echo "Please enter your sudo password below (necessary for some installation steps)"
+sudo "echo Thank you!"
+
 echo Add extra apt repositories
-wget -O- http://linux.lsdev.sil.org/downloads/sil-testing.gpg | apt-key add -
-add-apt-repository -y 'deb http://linux.lsdev.sil.org/ubuntu xenial main'
-add-apt-repository -y 'deb http://linux.lsdev.sil.org/ubuntu xenial-experimental main'
-add-apt-repository -y ppa:ansible/ansible
+wget -O- http://linux.lsdev.sil.org/downloads/sil-testing.gpg | sudo apt-key add -
+sudo add-apt-repository -y 'deb http://linux.lsdev.sil.org/ubuntu xenial main'
+sudo add-apt-repository -y 'deb http://linux.lsdev.sil.org/ubuntu xenial-experimental main'
+sudo add-apt-repository -y ppa:ansible/ansible
 
 echo Install NodeJS 8.X and latest npm
-curl -sL https://deb.nodesource.com/setup_8.x | bash -
-apt-get install -y nodejs
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt install -y nodejs
 
 echo Install postfix non-interactively
-DEBIAN_FRONTEND=noninteractive apt-get install -y postfix
+DEBIAN_FRONTEND=noninteractive sudo apt install -y postfix
 
 echo Install and upgrade packages
-apt install -y git ansible php7.0-cli libapache2-mod-php mongodb-server p7zip-full php7.0-dev php7.0-gd php7.0-intl php7.0-mbstring php-pear php-xdebug postfix unzip lfmerge
-apt -y upgrade
+sudo apt install -y git ansible php7.0-cli libapache2-mod-php mongodb-server p7zip-full php7.0-dev php7.0-gd php7.0-intl php7.0-mbstring php-pear php-xdebug postfix unzip lfmerge
+sudo apt -y upgrade
 
 if [ ! -d "web-languageforge/deploy" ]
 then
@@ -38,16 +47,21 @@ fi
 cd web-languageforge/deploy
 
 echo "Run xforge web developer ansible scripts"
-ansible-playbook -i hosts playbook_create_config.yml --limit localhost
-ansible-playbook -i hosts playbook_webdeveloper_bash_windows10.yml --limit localhost
+echo "Please enter your sudo password when prompted (twice)"
+ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
+ansible-playbook -i hosts playbook_webdeveloper_bash_windows10.yml --limit localhost -K
 
 echo "Refresh xForge dependencies"
 cd ..
-su $SUDO_USER -c "./refreshDeps.sh"
+./refreshDeps.sh
 
-echo Factory Reset the database
+echo "Please enter your sudo password if necessary"
+sudo echo "Thank you!"
+
+echo "Factory Reset the database"
 cd scripts/tools
-php FactoryReset.php run
+
+sudo php FactoryReset.php run
 
 if [ $OS == "Windows" ]; then
     HOSTSFILE=/mnt/c/Windows/System32/drivers/etc/hosts
@@ -76,12 +90,24 @@ if [ $OS == "Windows" ]; then
     echo "Note: the Windows Bash window must be open in order for languageforge.local to work"
 fi
 
-echo Run PHP Unit tests
+echo "Run PHP Unit tests"
 cd ../..
 gulp test-php
 
-#echo Run JS Unit tests
-#gulp test-js
+echo "Now we're ready to run E2E tests"
+echo "Selenium Server must be running before proceeding."
+if [ $OS == "Windows" ]; then
+    echo "Selenium server can be started from a Windows command prompt by typing 'selenium-standalone start'"
+else
+    echo "Selenium server can be started in a separate process by typing 'gulp test-e2e-webdriver_standalone' in a separate terminal process"
+fi
+read -p "Press any key once Selenium Server is up and running"
 
-echo You should now be able to access Language Forge locally at http://languageforge.local
-echo Installation finished!
+echo "Now Running E2E tests in Chrome"
+./rune2e.sh lf
+
+echo "You should now be able to access Language Forge locally at http://languageforge.local"
+
+echo "Installation finished!"
+
+echo "Did the PHP and end-to-end tests pass?"
