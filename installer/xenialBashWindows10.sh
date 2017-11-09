@@ -13,13 +13,27 @@ else
 fi
 
 if [ $OS == "Windows" ]; then
-    echo "I see that you are running this script in Windows 10 WSL.  Before proceeding, you must install the Java JRE and NodeJS in Windows to be able to run E2E tests."
-    echo "Have you done that in a Windows command prompt already? (Ctrl-C to exit and do that now, if necessary)"
-    read -p "Otherwise, press any key to continue"
+    echo "I see that you are running this script in Windows 10 WSL."
+
+    echo "hi" > /mnt/c/Windows/amiadmin
+    if [ $? == 1 ]; then
+        echo "This script must be run inside an elevated Bash terminal!"
+        echo "Re-open this Ubuntu Bash terminal by right-clicking on the icon and 'Run as Administrator'"
+        exit
+    else
+        rm /mnt/c/Windows/amiadmin
+    fi
+    echo "We will use the Windows package manager Chocolatey to install Windows dependencies (JRE and Selenium Server)"
+    read -p "press [Enter] when you're ready"
+    powershell.exe -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
+    cmd.exe /C "choco install -y jre8 selenium selenium-chrome-driver"
+
+    echo "Starting Selenium Server standalone in a separate process..."
+    cmd.exe /C "/mnt/c/tools/selenium/standalone.cmd" &
 fi
 
 echo "Please enter your sudo password below (necessary for some installation steps)"
-sudo "echo Thank you!"
+sudo echo "Thank you!"
 
 echo Add extra apt repositories
 wget -O- http://linux.lsdev.sil.org/downloads/sil-testing.gpg | sudo apt-key add -
@@ -28,11 +42,11 @@ sudo add-apt-repository -y 'deb http://linux.lsdev.sil.org/ubuntu xenial-experim
 sudo add-apt-repository -y ppa:ansible/ansible
 
 echo Install NodeJS 8.X and latest npm
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+wget -O- https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt install -y nodejs
 
 echo Install postfix non-interactively
-DEBIAN_FRONTEND=noninteractive sudo apt install -y postfix
+sudo DEBIAN_FRONTEND=noninteractive apt install -y postfix
 
 echo Install and upgrade packages
 sudo apt install -y git ansible php7.0-cli libapache2-mod-php mongodb-server p7zip-full php7.0-dev php7.0-gd php7.0-intl php7.0-mbstring php-pear php-xdebug postfix unzip lfmerge
@@ -96,18 +110,16 @@ gulp test-php
 
 echo "Now we're ready to run E2E tests"
 echo "Selenium Server must be running before proceeding."
-if [ $OS == "Windows" ]; then
-    echo "Selenium server can be started from a Windows command prompt by typing 'selenium-standalone start'"
-else
+if [ $OS == "Linux" ]; then
     echo "Selenium server can be started in a separate process by typing 'gulp test-e2e-webdriver_standalone' in a separate terminal process"
+    read -p "Press [Enter] once Selenium Server is up and running"
 fi
-read -p "Press any key once Selenium Server is up and running"
 
 echo "Now Running E2E tests in Chrome"
 ./rune2e.sh lf
 
 echo "You should now be able to access Language Forge locally at http://languageforge.local"
-
+echo "username: admin"
+echo "password: password"
 echo "Installation finished!"
-
 echo "Did the PHP and end-to-end tests pass?"
