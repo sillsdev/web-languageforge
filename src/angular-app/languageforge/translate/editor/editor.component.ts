@@ -102,7 +102,6 @@ export class TranslateEditorController implements angular.IController {
       // noinspection JSUnusedGlobalSymbols
       this.confidence = {
         value: undefined,
-        isCustomThreshold: false,
         options: {
           floor: 0,
           ceil: 1,
@@ -195,17 +194,15 @@ export class TranslateEditorController implements angular.IController {
       });
 
       if (angular.isDefined(this.tecProject.config.userPreferences)) {
-        if (angular.isDefined(this.tecProject.config.userPreferences.hasConfidenceOverride)) {
-          this.confidence.isCustomThreshold = this.tecProject.config.userPreferences.hasConfidenceOverride;
-        }
         if (angular.isUndefined(this.tecProject.config.userPreferences.confidenceThreshold) ||
+          !this.tecProject.config.userPreferences.hasConfidenceOverride ||
           !(isFinite(this.tecProject.config.userPreferences.confidenceThreshold) &&
             angular.isNumber(this.tecProject.config.userPreferences.confidenceThreshold))
         ) {
           this.tecProject.config.userPreferences.confidenceThreshold = this.tecProject.config.confidenceThreshold;
         }
       }
-      this.selectWhichConfidence();
+      this.confidence.value = this.tecProject.config.userPreferences.confidenceThreshold;
 
       this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
       this.listenForTrainingStatus();
@@ -443,9 +440,10 @@ export class TranslateEditorController implements angular.IController {
     });
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  changeConfidenceType(): void {
-    this.selectWhichConfidence();
+  resetConfidence(): void {
+    this.tecProject.config.userPreferences.hasConfidenceOverride = false;
+    this.tecProject.config.userPreferences.confidenceThreshold = this.tecProject.config.confidenceThreshold;
+    this.confidence.value = this.tecProject.config.confidenceThreshold;
     this.updateConfig();
   }
 
@@ -650,35 +648,10 @@ export class TranslateEditorController implements angular.IController {
     });
   }
 
-  private selectWhichConfidence(): void {
-    this.confidence.options.disabled = !this.confidence.isCustomThreshold && !this.tecRights.canEditProject();
-    if (this.confidence.isCustomThreshold) {
-      if (angular.isDefined(this.confidence.value) && isFinite(this.confidence.value)) {
-        this.tecProject.config.confidenceThreshold = this.confidence.value;
-        delete this.confidence.value;
-      }
-
-      if (this.tecProject.config.userPreferences.confidenceThreshold == null) {
-        this.tecProject.config.userPreferences.confidenceThreshold = this.tecProject.config.confidenceThreshold;
-      }
-      this.confidence.value = this.tecProject.config.userPreferences.confidenceThreshold;
-    } else {
-      if (angular.isDefined(this.confidence.value) && isFinite(this.confidence.value)) {
-        this.tecProject.config.userPreferences.confidenceThreshold = this.confidence.value;
-        delete this.confidence.value;
-      }
-
-      this.confidence.value = this.tecProject.config.confidenceThreshold;
-    }
-  }
-
   private updateConfigConfidenceValues(): void {
-    this.tecProject.config.userPreferences.hasConfidenceOverride = this.confidence.isCustomThreshold;
-    if (this.confidence.isCustomThreshold) {
-      this.tecProject.config.userPreferences.confidenceThreshold = this.confidence.value;
-    } else {
-      this.tecProject.config.confidenceThreshold = this.confidence.value;
-    }
+    this.tecProject.config.userPreferences.confidenceThreshold = this.confidence.value;
+    this.tecProject.config.userPreferences.hasConfidenceOverride =
+      (this.tecProject.config.userPreferences.confidenceThreshold !== this.tecProject.config.confidenceThreshold);
 
     this.source.confidenceThreshold = this.confidence.value;
     this.reloadSuggestions();
