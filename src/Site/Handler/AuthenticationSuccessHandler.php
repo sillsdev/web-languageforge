@@ -7,7 +7,10 @@ use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
+use Silex\Application;
+use Site\Controller\GoogleOAuth;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 use Symfony\Component\Security\Http\HttpUtils;
@@ -25,6 +28,48 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         $this->setProviderKey($providerKey);
     }
 
+    /**
+     * Used to detect if we are signing in after OAuth success in order to link accounts
+     * @param SessionInterface $session
+     * @return mixed
+     */
+    public function hasOAuthId(SessionInterface $session)
+    {
+        return (!is_null($session)) && $session->has('oauthTokenIdToLink');
+    }
+
+    /**
+     * @param UserModel $user
+     * @param string $oauthTokenId
+     * @param string $oauthProvider
+     */
+    public function addOAuthIdToUserModel(UserModel $user, string $oauthTokenId, string $oauthProvider)
+    {
+        switch ($oauthProvider) {
+            case "google":
+                $user->googleOAuthIds[] = $oauthTokenId;
+                break;
+            case "facebook":
+                $user->facebookOAuthIds[] = $oauthTokenId;
+                break;
+            case "paratext":
+                $user->paratextOAuthIds[] = $oauthTokenId;
+                break;
+            default:
+                break;  // Do nothing
+        }
+    }
+
+    public function alternateApiForTheAbove(SessionInterface $session, UserModel $user)
+    {
+        $oauthTokenId = $session->get(GoogleOAuth::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
+        if (!is_null($oauthTokenId)) {
+            $oauthProvider = $session->get(GoogleOAuth::SESSION_KEY_OAUTH_PROVIDER);
+            $this->addOAuthIdToUserModel($user, $oauthTokenId, $oauthProvider);
+            $session->remove(GoogleOAuth::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
+        }
+    }
+
     public function onAuthenticationSuccess(Request $request, TokenInterface $token) {
         $username = $token->getUser()->getUsername();
         $user = new UserModel();
@@ -34,6 +79,13 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
             $user->readByUserName($username);
         }
         $website = Website::get();
+
+        $session = $request->getSession();
+        if ($this->hasOAuthId($session)) {
+            // NOTE that this adds the OAuth ID to the user model without checking if it's already there. That check
+            // should happen elsewhere, and an oauthTokenIdToLink should only be put in the session if it's necessary.
+            $this->alternateApiForTheAbove($session, $user);
+        }
 
         $user->last_login = time();
         $user->write();
