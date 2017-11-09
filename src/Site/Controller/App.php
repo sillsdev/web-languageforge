@@ -267,6 +267,7 @@ class AppModel {
             "activity",
             "changepassword",
             "forgot_password",
+            "link_oauth_account",
             "login",
             "projects",
             "reset_password",

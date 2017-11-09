@@ -2,8 +2,6 @@
 
 namespace Site\Controller;
 
-use Api\Library\Shared\SilexSessionHelper;
-use Api\Library\Shared\Website;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
 use Site\Model\UserWithId;
@@ -16,6 +14,11 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class GoogleOAuth extends Base
 {
+    const SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK = 'oauthTokenIdToLink';
+    const SESSION_KEY_OAUTH_PROVIDER = 'oauthProvider';
+    const SESSION_KEY_OAUTH_EMAIL_ADDRESS = 'oauthEmailAddress';
+    const SESSION_KEY_OAUTH_FULL_NAME = 'oauthFullName';
+
     public function oauthCallback(Request $request, Application $app)
     {
         $provider = new \League\OAuth2\Client\Provider\Google([
@@ -59,7 +62,8 @@ class GoogleOAuth extends Base
                     $token = $provider->getAccessToken('authorization_code', [
                         'code' => $code
                     ]);
-                    $app['session']->set('oauthtoken', $token);  // TODO: Decide how to store which provider the token is from (Google or Paratext, maybe Facebook in the future)
+                    $app['session']->set('oauthtoken', $token);
+                    $app['session']->set('oauthprovider', 'google');  // TODO: Once we add Facebook, make a getProviderName() method that subclasses will override
                 }
             }
         }
@@ -78,22 +82,25 @@ class GoogleOAuth extends Base
                     //      - automatically create a new xForge account with user details (button 1)
                     //      - account linking (includes xforge login form + option to update email address on account - button 2)
 
+                    // Pass all OAuth information into the "what next?" page via the session, so that the user doesn't see it in the login page URL
+                    $app['session']->set(GoogleOAuth::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK, $googleOAuthId);
+                    $app['session']->set(GoogleOAuth::SESSION_KEY_OAUTH_PROVIDER, 'google');
+                    $app['session']->set(GoogleOAuth::SESSION_KEY_OAUTH_EMAIL_ADDRESS, $userDetails->getEmail());
+                    $app['session']->set(GoogleOAuth::SESSION_KEY_OAUTH_FULL_NAME, $userDetails->getName());
+
                     // redirect to UI for creating new account
 
-                    // TODO: Implement the above instead of returning the temporary response below.
-                    return new Response("Email address " . $userDetails->getEmail() . " not found");
+                    return new RedirectResponse('/auth/link_oauth_account');
                 } else {
                     // Found an email address matching this OAuth token
                     $userModel->googleOAuthIds[] = $googleOAuthId;
                     $userModel->write();
                     $redirectUrl = $this->setTokenAndCalculateRedirectDestination($userModel, $app);
-//                    return new Response('Found your email address ' . $userModel->email . ' and updated Mongo with your Google ID. Next time you should see a different message.');
                     return new RedirectResponse($redirectUrl);
                 }
             } else {
                 // Found valid user
                 $redirectUrl = $this->setTokenAndCalculateRedirectDestination($userModel, $app);
-//                return new Response('Found a valid Google ID in your Mongo user record. You have been logged in as ' . $userModel->username);
                 return new RedirectResponse($redirectUrl);
             }
 
@@ -104,7 +111,6 @@ class GoogleOAuth extends Base
             // then do automatic login, but instead of a login POST, we'll just store the security token that Symfony expects
             // (See http://symfony.com/doc/current/testing/http_authentication.html#creating-the-authentication-token for details)
 
-            //return new Response('Hello, ' . $userDetails->getName() . '. Your email is ' . $userDetails->getEmail() . ' and your avatar is <img src="' . $userDetails->getAvatar() . '"/><br/>The token was ' . $token->getToken() . 'and the user ID was ' . $userDetails->getId(), 200);
         } catch (Exception $e) {
             return new Response('DEBUG: Failure getting user details', 200);  // TODO: determine how to handle this scenario
         }
