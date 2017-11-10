@@ -29,7 +29,7 @@ if [ $OS == "Windows" ]; then
     cmd.exe /C "choco install -y jre8 selenium selenium-chrome-driver"
 
     echo "Starting Selenium Server standalone in a separate process..."
-    cmd.exe /C "/mnt/c/tools/selenium/standalone.cmd" &
+    cmd.exe /C "C:\tools\selenium\standalone.cmd" &
 fi
 
 echo "Please enter your sudo password below (necessary for some installation steps)"
