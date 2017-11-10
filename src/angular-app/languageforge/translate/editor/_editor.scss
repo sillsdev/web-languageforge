@@ -224,5 +224,41 @@ ng-quill-editor .ql-editor.drop-box {
 .ql-snow.ql-toolbar .progress {
     display: inline-flex;
     width: 98px;
+    background-color: lightgrey;
+}
+
+.ql-snow.ql-toolbar .training.progress {
     height: 28px;
+}
+
+.rating {
+    display: inline-block;
+    vertical-align: middle;
+
+    input {
+        display: none;
+    }
+
+    label::before {
+        margin: 5px;
+        font-size: 1.25em;
+        font-family: FontAwesome;
+        display: inline-block;
+        content: "\f005";
+    }
+
+    .half::before {
+        content: "\f089";
+        position: absolute;
+    }
+
+    label {
+        color: #ddd;
+        float: right;
+        margin-bottom: 0;
+    }
+
+    input:checked ~ label {
+        color: #FFD700;
+    }
 }

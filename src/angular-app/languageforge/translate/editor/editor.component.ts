@@ -115,9 +115,9 @@ export class TranslateEditorController implements angular.IController {
           translate: (value: number) => {
             switch (value) {
               case 0:
-                return 'most suggestions';
+                return 'more suggestions';
               case 1:
-                return 'better phrases';
+                return 'better suggestions';
               default:
                 return Math.round(value * 100) + '%';
             }
@@ -373,7 +373,11 @@ export class TranslateEditorController implements angular.IController {
       'This can take several minutes and will operate in the background.<br /><br />' +
       'Are you sure you want to train the translation engine?';
     this.modal.showModalSimple('Train Translation Engine?', modalMessage, 'Cancel', 'Train')
-      .then(() => this.machine.startTraining())
+      .then(() => {
+        this.trainingPercent = 0;
+        this.isTraining = true;
+        this.machine.startTraining();
+      })
       .catch(() => { });
   }
 
@@ -441,6 +445,12 @@ export class TranslateEditorController implements angular.IController {
     this.tecProject.config.userPreferences.confidenceThreshold = this.tecProject.config.confidenceThreshold;
     this.confidence.value = this.tecProject.config.confidenceThreshold;
     this.updateConfig();
+  }
+
+  get engineRating(): string {
+    const rescaledConfidence = Math.min(1.0, this.machine.engineConfidence / 0.6);
+    const rating = rescaledConfidence * 3;
+    return (Math.round(rating * 2) / 2).toFixed(1);
   }
 
   updateConfig(): void {
