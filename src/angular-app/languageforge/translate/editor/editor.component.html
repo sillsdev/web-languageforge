@@ -7,10 +7,23 @@
         <a class="btn btn-primary" href="#" data-ng-click="$ctrl.gotoProjects()">Save &amp; Close</a>
         <a class="btn btn-secondary" href="#" data-ng-click="$ctrl.train()"
            data-ng-if="!$ctrl.isTraining && $ctrl.hasDocumentSets() && $ctrl.tecRights.canEditProject()">Train</a>
-        <uib-progressbar data-ng-if="$ctrl.isTraining" value="$ctrl.trainingPercent">{{$ctrl.trainingPercent}}%</uib-progressbar>
+        <uib-progress class="training" data-ng-if="$ctrl.isTraining" title="Training">
+            <uib-bar class="justify-content-start" value="$ctrl.trainingPercent" data-ng-if="$ctrl.trainingPercent < 25">
+                {{$ctrl.trainingPercent}}%</uib-bar>
+            <uib-bar class="justify-content-center" value="$ctrl.trainingPercent" data-ng-if="$ctrl.trainingPercent >= 25">
+                {{$ctrl.trainingPercent}}%</uib-bar>
+        </uib-progress>
+        <div class="rating" title="Engine rating">
+            <input type="radio" disabled data-ng-model="$ctrl.engineRating" value="3.0" /><label></label>
+            <input type="radio" disabled data-ng-model="$ctrl.engineRating" value="2.5" /><label class="half"></label>
+            <input type="radio" disabled data-ng-model="$ctrl.engineRating" value="2.0" /><label></label>
+            <input type="radio" disabled data-ng-model="$ctrl.engineRating" value="1.5" /><label class="half"></label>
+            <input type="radio" disabled data-ng-model="$ctrl.engineRating" value="1.0" /><label></label>
+            <input type="radio" disabled data-ng-model="$ctrl.engineRating" value="0.5" /><label class="half"></label>
+        </div>
     </span>
     <span class="ql-formats controls col-sm-4 col-md-5 col-lg-7 col-xl-8" data-ng-if="$ctrl.hasDocumentSets()">
-        <rzslider rz-slider-model="$ctrl.confidence.value" rz-slider-options="$ctrl.confidence.options" title="Confidence threshold"></rzslider>
+        <rzslider rz-slider-model="$ctrl.confidence.value" rz-slider-options="$ctrl.confidence.options" title="Suggestion confidence threshold"></rzslider>
     </span>
     <span class="ql-formats" data-ng-if="$ctrl.hasDocumentSets()">
         <button data-ng-click="$ctrl.resetConfidence()" title="Reset confidence threshold to project default value">
