@@ -15,6 +15,17 @@ fi
 if [ $OS == "Windows" ]; then
     echo "I see that you are running this script in Windows 10 WSL."
 
+
+    # From https://stackoverflow.com/questions/47080898/npm-warn-tar-einval-after-wsl-fall-creators-update
+    # this can be removed once MS has fixed the WSL symlink bug affecting NPM
+    if ! mount | grep -q "C: on /mnt/c type drvfs (rw,noatime,fallback=1)"; then
+        echo "== Remount of C: drive required =="
+        pushd ~ > /dev/null
+        sudo umount /mnt/c
+        sudo mount -t drvfs -o noatime,fallback=1 C: /mnt/c
+        popd > /dev/null
+    fi
+
     echo "hi" > /mnt/c/Windows/amiadmin
     if [ $? == 1 ]; then
         echo "This script must be run inside an elevated Bash terminal!"
@@ -76,36 +87,27 @@ echo "Factory Reset the database"
 cd scripts/tools
 
 sudo php FactoryReset.php run
+cd ../..
 
 if [ $OS == "Windows" ]; then
     HOSTSFILE=/mnt/c/Windows/System32/drivers/etc/hosts
     ALREADYHASHOSTS=`grep "languageforge.local" $HOSTSFILE`
     if [ -f "$HOSTSFILE" -a ! -n "$ALREADYHASHOSTS" ]; then
         echo "Modify Windows hosts file"
-        HOSTLINES="
-        127.0.0.1\tlanguageforge.local
-        127.0.0.1\tscriptureforge.local
-        127.0.0.1\tjamaicanpsalms.scriptureforge.local"
-        echo -e "$HOSTLINES" >> $HOSTSFILE
+        cat installer/windowsHostFileAdditions.txt >> $HOSTSFILE
     fi
 
-    BASHRCFILE="/home/$SUDO_USER/.bashrc"
-    ALREADYHASSERVICESTART=`grep "service apache2 start" $BASHRCFILE`
-    if [ -f "$BASHRCFILE" -a ! -n "$ALREADYHASSERVICESTART" ]; then
+    BASHRCFILE="/home/$USER/.bashrc"
+    ALREADYHASBASHRCMODS=`grep "service apache2 start" $BASHRCFILE`
+    if [ -f "$BASHRCFILE" -a ! -n "$ALREADYHASBASHRCMODS" ]; then
         echo "Adding service start lines to $BASHRCFILE"
-        SERVICELINES="
-        echo 'Starting Language Forge services (from .bashrc)'
-        sudo service apache2 start
-        sudo service postfix start
-        sudo service mongodb start"
-        echo "$SERVICELINES" >> $BASHRCFILE
+        cat installer/bashrcFileAdditions.txt >> $BASHRCFILE
     fi
 
     echo "Note: the Windows Bash window must be open in order for languageforge.local to work"
 fi
 
 echo "Run PHP Unit tests"
-cd ../..
 gulp test-php
 
 echo "Now we're ready to run E2E tests"
