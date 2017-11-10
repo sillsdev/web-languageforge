@@ -12,6 +12,7 @@ export class MachineService {
   private _confidenceThreshold: number = 0.2;
   private sourceSegmentTokenizer: SegmentTokenizer;
   private targetSegmentTokenizer: SegmentTokenizer;
+  private _engineConfidence: number = 0;
 
   static $inject: string[] = ['$window', '$q', '$rootScope'];
   constructor(private $window: angular.IWindowService, private readonly $q: angular.IQService,
@@ -30,6 +31,7 @@ export class MachineService {
 
   initialise(projectId: string, isScripture: boolean): void {
     this.engine = new TranslationEngine(this.$window.location.origin + '/machine', projectId);
+    this.updateConfidence();
     const segmentType = isScripture ? 'line' : 'latin';
     this.sourceSegmentTokenizer = new SegmentTokenizer(segmentType);
     this.targetSegmentTokenizer = new SegmentTokenizer(segmentType);
@@ -104,6 +106,10 @@ export class MachineService {
     return this.session.suggestionConfidence;
   }
 
+  get engineConfidence(): number {
+    return this._engineConfidence;
+  }
+
   trainSegment(): angular.IPromise<void> {
     if (this.engine == null || this.session == null) {
       return this.$q.resolve();
@@ -173,6 +179,7 @@ export class MachineService {
       this.$rootScope.$apply(scope => onStatusUpdate(progress));
     }, success => {
       if (success) {
+        this.updateConfidence();
         deferred.resolve();
       } else {
         deferred.reject('Error occurred while listening for training status.');
@@ -180,5 +187,13 @@ export class MachineService {
     });
 
     return deferred.promise;
+  }
+
+  private updateConfidence(): void {
+    this.engine.getConfidence((success, confidence) => {
+      if (success) {
+        this.$rootScope.$apply(scope => this._engineConfidence = confidence);
+      }
+    });
   }
 }

@@ -50,9 +50,9 @@ export class TranslateSettingsController implements angular.IController {
           translate: (value: number) => {
             switch (value) {
               case 0:
-                return 'most suggestions';
+                return 'more suggestions';
               case 1:
-                return 'better phrases';
+                return 'better suggestions';
               default:
                 return Math.round(value * 100) + '%';
             }
