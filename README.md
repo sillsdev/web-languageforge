@@ -581,3 +581,9 @@ Sometimes you may have to remove the `json` file in `/var/lib/languageforge/mach
 ### Suggestion data
 Copy `/var/lib/languageforge/machine/` from live server.
 Add any project slugs to the `Projects` section of the `json` file in `/var/lib/languageforge/machine/data/engine/`.
+
+## ElasticSearch Data ##
+Before putting data into **ElasticSearch**, setup the index with settings and data mappings...
+```
+./scripts/server/elasticSearch/setupElasticSearchCATIndex.sh
+```
