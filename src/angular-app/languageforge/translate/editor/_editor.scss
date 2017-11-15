@@ -134,6 +134,10 @@ ng-quill-editor .ql-editor.drop-box {
     margin-bottom: 0.3rem;
 }
 
+.ql-suggestions div.ql-suggest {
+    padding-top: 5px;
+}
+
 .ql-container.ql-bubble:not(.ql-disabled) .ql-suggest-tooltip a:hover::before,
 .ql-container.ql-bubble:not(.ql-disabled) .ql-suggest-tooltip a:hover::after {
     visibility: hidden;
