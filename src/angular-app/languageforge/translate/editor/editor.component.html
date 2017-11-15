@@ -162,10 +162,10 @@
         Backspace key {{$ctrl.metrics.keyBackspaceCount}}&nbsp;&nbsp;&nbsp;
         Delete key {{$ctrl.metrics.keyDeleteCount}}&nbsp;&nbsp;&nbsp;
         Character keys {{$ctrl.metrics.keyCharacterCount}}&nbsp;&nbsp;&nbsp;
+        Productive characters {{$ctrl.metrics.productiveCharacterCount}}&nbsp;&nbsp;&nbsp;
         Navigation keys {{$ctrl.metrics.keyNavigationCount}}&nbsp;&nbsp;&nbsp;
         Mouse clicks {{$ctrl.metrics.mouseClickCount}}&nbsp;&nbsp;&nbsp;
-        Suggestions accepted {{$ctrl.metrics.suggestionAcceptedCount}}&nbsp;&nbsp;&nbsp;
-        Total suggestions {{$ctrl.metrics.suggestionTotalCount}}&nbsp;&nbsp;&nbsp;
+        Suggestions (accepted/given) {{$ctrl.metrics.suggestionAcceptedCount}}/{{$ctrl.metrics.suggestionTotalCount}}&nbsp;&nbsp;&nbsp;
         Active edit time {{$ctrl.metrics.timeEditActive | secondsToTime}}&nbsp;&nbsp;&nbsp;
         Total time {{$ctrl.metrics.timeTotal | secondsToTime}}
     </small>

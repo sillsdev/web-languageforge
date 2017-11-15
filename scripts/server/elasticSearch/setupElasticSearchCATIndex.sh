@@ -28,6 +28,7 @@ curl -XPUT "http://es_401:9200/cat_metrics_2" -H 'Content-Type: application/json
             "keyDeleteCount": { "type": "integer" },
             "keyNavigationCount": { "type": "integer" },
             "mouseClickCount": { "type": "integer" },
+            "productiveCharacterCount": { "type": "integer" },
             "suggestionAcceptedCount": { "type": "integer" },
             "suggestionTotalCount": { "type": "integer" },
             "timeEditActive": { "type": "long" },

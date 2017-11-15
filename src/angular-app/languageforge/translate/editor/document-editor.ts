@@ -278,6 +278,10 @@ export class TargetDocumentEditor extends DocumentEditor {
     this.metricService.onSuggestionTaken();
   }
 
+  get productiveCharacterCount(): number {
+    return this.currentSegment.productiveCharacterCount;
+  }
+
   protected getSaveState(): SaveState {
     let trainSaveState: SaveState;
     if (this.isSegmentUntrained()) {
