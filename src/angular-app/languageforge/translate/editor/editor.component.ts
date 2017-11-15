@@ -576,6 +576,10 @@ export class TranslateEditorController implements angular.IController {
     const segmentChanged = editor.update(textChange);
     switch (editor.docType) {
       case DocType.TARGET:
+        if (this.target.hasFocus) {
+          this.metricService.productiveCharacterCount = this.target.productiveCharacterCount;
+        }
+
         if (segmentChanged) {
           // select the corresponding source segment
           this.source.switchCurrentSegment(this.target.currentSegmentIndex);

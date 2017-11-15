@@ -8,6 +8,7 @@ export class Metrics {
   keyCharacterCount: number = 0;
   keyNavigationCount: number = 0;
   mouseClickCount: number = 0;
+  productiveCharacterCount: number = 0;
   suggestionAcceptedCount: number = 0;
   suggestionTotalCount: number = 0;
   timeEditActive: number = 0;
@@ -15,6 +16,8 @@ export class Metrics {
 }
 
 export class MetricService {
+  readonly TIMER_INTERVAL = 1000; // ms
+
   currentDocumentSetId: string = '';
 
   private _metrics: Metrics = new Metrics();
@@ -24,15 +27,19 @@ export class MetricService {
   private activeEditCountdown: number;
   private editingTimeout: number;
   private editingCountdown: number;
-  private timer: angular.IPromise<null>;
+  private timer: angular.IPromise<void>;
 
   static $inject: string[] = ['$interval', 'translateProjectApi'];
   constructor(private $interval: angular.IIntervalService, private projectApi: TranslateProjectService) {
-    this.timer = this.$interval(this.onTimer, 1000);
+    this.timer = this.$interval(this.onTimer, this.TIMER_INTERVAL);
   }
 
   get metrics(): Metrics {
     return this._metrics;
+  }
+
+  set productiveCharacterCount(count: number) {
+    this._metrics.productiveCharacterCount = count;
   }
 
   // arrow functions used here and below to bind to the class instance. IJH 2017-09
@@ -111,6 +118,7 @@ export class MetricService {
     this._metrics.keyCharacterCount = 0;
     this._metrics.keyNavigationCount = 0;
     this._metrics.mouseClickCount = 0;
+    this._metrics.productiveCharacterCount = 0;
     this._metrics.suggestionAcceptedCount = 0;
     this._metrics.suggestionTotalCount = 0;
     this._metrics.timeEditActive = 0;
