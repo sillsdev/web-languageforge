@@ -30,4 +30,9 @@ export class Segment {
       this.initialText = text;
     }
   }
+
+  get productiveCharacterCount(): number {
+    return this.text.length - this.initialText.length;
+  }
+
 }

@@ -21,7 +21,7 @@ class TranslateMetricModel extends MapperModel
         $this->id = new Id();
         $this->userRef = new IdReference($userId);
         $this->documentSetIdRef = new IdReference($documentSetId);
-        $this->version = '0.0.2';
+        $this->version = '0.0.3';
         $this->metrics = new TranslateMetrics();
 
         $databaseName = $projectModel->databaseName();
@@ -77,16 +77,19 @@ class TranslateMetrics
     public $keyBackspaceCount;
 
     /** @var int */
-    public $keyDeleteCount;
+    public $keyCharacterCount;
 
     /** @var int */
-    public $keyCharacterCount;
+    public $keyDeleteCount;
 
     /** @var int */
     public $keyNavigationCount;
 
     /** @var int */
     public $mouseClickCount;
+
+    /** @var int */
+    public $productiveCharacterCount;
 
     /** @var int */
     public $suggestionAcceptedCount;
