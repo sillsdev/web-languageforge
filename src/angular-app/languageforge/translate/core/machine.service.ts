@@ -9,13 +9,24 @@ export class MachineService {
   private session: InteractiveTranslationSession;
   private sourceSegment: string = '';
   private prefix: string = '';
-  private confidenceThreshold: number = -1;
+  private _confidenceThreshold: number = 0.2;
   private sourceSegmentTokenizer: SegmentTokenizer;
   private targetSegmentTokenizer: SegmentTokenizer;
 
   static $inject: string[] = ['$window', '$q', '$rootScope'];
   constructor(private $window: angular.IWindowService, private readonly $q: angular.IQService,
               private readonly $rootScope: angular.IRootScopeService) { }
+
+  get confidenceThreshold(): number {
+    return this._confidenceThreshold;
+  }
+
+  set confidenceThreshold(value: number) {
+    this._confidenceThreshold = value;
+    if (this.engine != null && this.session != null) {
+      this.session.confidenceThreshold = value;
+    }
+  }
 
   initialise(projectId: string, isScripture: boolean): void {
     this.engine = new TranslationEngine(this.$window.location.origin + '/machine', projectId);
@@ -24,24 +35,34 @@ export class MachineService {
     this.targetSegmentTokenizer = new SegmentTokenizer(segmentType);
   }
 
-  translate(sourceSegment: string, confidenceThreshold: number): angular.IPromise<void> {
+  translate(sourceSegment: string): angular.IPromise<void> {
     if (this.engine == null) {
       return this.$q.resolve();
     }
 
     this.prefix = '';
-    if (this.sourceSegment === sourceSegment && this.confidenceThreshold === confidenceThreshold) {
+    if (this.sourceSegment === sourceSegment) {
+      return this.$q.resolve();
+    }
+
+    this.sourceSegment = sourceSegment;
+    if (sourceSegment === '') {
+      this.session = null;
       return this.$q.resolve();
     }
 
     const deferred = this.$q.defer<void>();
-    this.sourceSegment = sourceSegment;
-    this.confidenceThreshold = confidenceThreshold;
-    this.engine.translateInteractively(sourceSegment, confidenceThreshold, newSession => {
+    this.engine.translateInteractively(sourceSegment, this.confidenceThreshold, newSession => {
       if (newSession != null) {
-        this.session = newSession;
-        deferred.resolve();
+        if (this.sourceSegment === sourceSegment) {
+          this.session = newSession;
+          deferred.resolve();
+        } else {
+          this.session = null;
+          deferred.reject('Translation result is no longer valid.');
+        }
       } else {
+        this.session = null;
         deferred.reject('Error occurred while retrieving translation result.');
       }
     });

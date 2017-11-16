@@ -38,8 +38,6 @@ export class TranslateEditorController implements angular.IController {
 
   private failedConnectionCount: number = 0;
   private currentDocType: string;
-  private savedSourceSelection: RangeStatic;
-  private savedTargetSelection: RangeStatic;
 
   static $inject = ['$window', '$scope',
     '$q', 'machineService',
@@ -58,10 +56,6 @@ export class TranslateEditorController implements angular.IController {
     // noinspection JSUnusedLocalSymbols
     const modulesConfig: any = {
       toolbar: '#toolbar',
-
-      suggestions: {
-        container: '.ql-suggestions'
-      },
 
       dragAndDrop: {
         onDrop: (file: File, quill: Quill, event: DragEvent) => {
@@ -88,6 +82,9 @@ export class TranslateEditorController implements angular.IController {
 
     this.source.modulesConfig = angular.copy(modulesConfig);
     this.target.modulesConfig = angular.copy(modulesConfig);
+    this.target.modulesConfig.suggestions = {
+      container: '.ql-suggestions'
+    };
     this.right = this.target;
     this.left = this.source;
 
@@ -162,7 +159,7 @@ export class TranslateEditorController implements angular.IController {
             });
           }
 
-          this.source.confidenceThreshold = this.tecProject.config.confidenceThreshold;
+          this.machine.confidenceThreshold = this.tecProject.config.confidenceThreshold;
           const userPreferences = this.tecProject.config.userPreferences;
           if (angular.isDefined(userPreferences)) {
             if (angular.isUndefined(userPreferences.confidenceThreshold) || !userPreferences.hasConfidenceOverride ||
@@ -176,7 +173,7 @@ export class TranslateEditorController implements angular.IController {
           if (userPreferences.confidenceThreshold != null && userPreferences.hasConfidenceOverride != null &&
             userPreferences.hasConfidenceOverride
           ) {
-            this.source.confidenceThreshold = userPreferences.confidenceThreshold;
+            this.machine.confidenceThreshold = userPreferences.confidenceThreshold;
           }
 
           if (userPreferences.selectedDocumentSetId != null) {
@@ -188,10 +185,9 @@ export class TranslateEditorController implements angular.IController {
               !userPreferences.isDocumentOrientationTargetRight
             ) {
               this.swapEditors(false);
-            } else {
-              this.onQuillCreated(this.left.quill, this.left);
-              this.onQuillCreated(this.right.quill, this.right);
             }
+            this.onQuillCreated(this.source.quill, this.source);
+            this.onQuillCreated(this.target.quill, this.target);
 
             this.metricService.setTimeouts(this.tecProject.config.metrics.activeEditTimeout,
               this.tecProject.config.metrics.editingTimeout);
@@ -224,8 +220,8 @@ export class TranslateEditorController implements angular.IController {
   selectDocumentSet(index: number, updateConfig: boolean = true): void {
     if (this.selectedDocumentSetIndex !== index) {
       this.selectedDocumentSetIndex = index;
-      this.switchCurrentDocumentSet(this.left);
-      this.switchCurrentDocumentSet(this.right);
+      this.switchCurrentDocumentSet(this.source);
+      this.switchCurrentDocumentSet(this.target);
 
       if (this.selectedDocumentSetIndex in this.documentSets) {
         const userPreferences = this.tecProject.config.userPreferences;
@@ -378,7 +374,7 @@ export class TranslateEditorController implements angular.IController {
       'Are you sure you want to train the translation engine?';
     this.modal.showModalSimple('Train Translation Engine?', modalMessage, 'Cancel', 'Train')
       .then(() => this.machine.startTraining())
-      .catch(() => {});
+      .catch(() => { });
   }
 
   hasDocumentSets(): boolean {
@@ -398,7 +394,6 @@ export class TranslateEditorController implements angular.IController {
   }
 
   onContentChanged(editor: DocumentEditor): void {
-    this.restoreCursorAfterEditorSwap();
     this.updateEditor(editor, true);
   }
 
@@ -460,21 +455,28 @@ export class TranslateEditorController implements angular.IController {
   }
 
   swapEditors(writePreferences: boolean = true): void {
-    const leftQuill = this.left.quill;
-    const rightQuill = this.right.quill;
-    this.savedTargetSelection = this.target.quill.getSelection();
-    this.savedSourceSelection = this.source.quill.getSelection();
-    this.left.closeDocumentSet();
-    this.right.closeDocumentSet();
+    let focusedEditor: DocumentEditor;
+    switch (this.currentDocType) {
+      case DocType.SOURCE:
+        focusedEditor = this.source;
+        break;
+      case DocType.TARGET:
+        focusedEditor = this.target;
+        break;
+    }
+    const leftEditorElem = this.left.quill.container.parentElement.parentElement;
+    const leftParentElem = leftEditorElem.parentElement;
+    const rightEditorElem = this.right.quill.container.parentElement.parentElement;
+    const rightParentElem = rightEditorElem.parentElement;
+    leftParentElem.appendChild(rightEditorElem);
+    rightParentElem.appendChild(leftEditorElem);
+    const temp = this.left;
+    this.left = this.right;
+    this.right = temp;
 
-    const newLeft = this.right;
-    const newRight = this.left;
-    delete this.right;
-    delete this.left;
-    this.right = newRight;
-    this.left = newLeft;
-    this.onQuillCreated(leftQuill, newLeft);
-    this.onQuillCreated(rightQuill, newRight);
+    if (focusedEditor != null) {
+      focusedEditor.quill.focus();
+    }
 
     if (writePreferences) {
       const userPreferences = this.tecProject.config.userPreferences;
@@ -502,7 +504,9 @@ export class TranslateEditorController implements angular.IController {
   private onTrainSuccess(): void {
     this.failedConnectionCount = 0;
     this.target.hideSuggestions();
-    this.source.resetTranslation().then(() => this.target.updateSuggestions());
+    this.source.resetTranslation()
+      .then(() => this.target.updateSuggestions())
+      .catch(() => { });
     this.notice.push(this.notice.SUCCESS, 'Finished training the translation engine');
   }
 
@@ -588,7 +592,9 @@ export class TranslateEditorController implements angular.IController {
           }
 
           // update suggestions for new segment
-          this.source.translateCurrentSegment().then(() => this.target.updateSuggestions());
+          this.source.translateCurrentSegment()
+            .then(() => this.target.updateSuggestions())
+            .catch(() => { });
         } else {
           if (this.target.hasFocus) {
             this.source.isCurrentSegmentHighlighted = true;
@@ -624,42 +630,13 @@ export class TranslateEditorController implements angular.IController {
     return editor.docType !== this.currentDocType;
   }
 
-  private restoreCursorAfterEditorSwap(): void {
-    if (this.savedTargetSelection && this.savedTargetSelection.index < this.target.quill.getLength()) {
-      // change source segment then back again (reloads source text) to ensure suggestions after swap
-      const sourceCurrentSegmentIndex = this.source.currentSegmentIndex;
-      this.source.switchCurrentSegment(sourceCurrentSegmentIndex + 1);
-      this.source.switchCurrentSegment(sourceCurrentSegmentIndex);
-      this.target.quill.setSelection(this.savedTargetSelection);
-      this.source.translateCurrentSegment();
-      this.savedTargetSelection = null;
-    }
-
-    if (this.savedSourceSelection && this.savedSourceSelection.index < this.source.quill.getLength()) {
-      this.source.quill.setSelection(this.savedSourceSelection);
-      this.savedSourceSelection = null;
-    }
-  }
-
-  private reloadSuggestions(savedTargetSelection = this.target.quill.getSelection()): void {
-    const nextTargetSelection = angular.copy(savedTargetSelection);
-    nextTargetSelection.index++;
-    this.target.quill.setSelection(nextTargetSelection);
-    this.target.update(false);
-    this.source.translateCurrentSegment().then(() => {
-      this.target.quill.setSelection(savedTargetSelection);
-      this.target.update(false);
-      this.source.translateCurrentSegment();
-    });
-  }
-
   private updateConfigConfidenceValues(): void {
     this.tecProject.config.userPreferences.confidenceThreshold = this.confidence.value;
     this.tecProject.config.userPreferences.hasConfidenceOverride =
       (this.tecProject.config.userPreferences.confidenceThreshold !== this.tecProject.config.confidenceThreshold);
 
-    this.source.confidenceThreshold = this.confidence.value;
-    this.reloadSuggestions();
+    this.machine.confidenceThreshold = this.confidence.value;
+    this.target.updateSuggestions();
   }
 
   private onDrop(file: File, quill: Quill, event: DragEvent): void {

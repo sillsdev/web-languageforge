@@ -134,7 +134,9 @@ export class RealTimeService {
 
       delete this.pendingOpCount[id];
     }
-    quill.setText('');
+    // Quill seems to load a doc faster if the editor is empty, but we don't want to fire any events, which can mess
+    // up DocumentEditor state
+    quill.setText('', Quill.sources.SILENT);
   }
 
   private getWebSocketDocUrl() {
