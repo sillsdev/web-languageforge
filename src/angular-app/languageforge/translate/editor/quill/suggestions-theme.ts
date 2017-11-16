@@ -43,7 +43,7 @@ export function registerSuggestionsTheme(): void {
       const shift = (super.position(reference) as number);
       const top = reference.bottom + this.quill.root.scrollTop + 10;
       this.root.style.top = top + 'px';
-      const arrow = this.root.querySelector('.ql-suggest-tooltip-arrow');
+      const arrow = this.root.querySelector('.ql-suggest-tooltip-arrow') as HTMLElement;
       arrow.style.marginLeft = '';
       if (shift === 0) return shift;
       arrow.style.marginLeft = (-1 * shift - arrow.offsetWidth / 2) + 'px';
@@ -51,13 +51,14 @@ export function registerSuggestionsTheme(): void {
   }
 
   class Suggestions extends QuillModule {
-    container: any;
+    container: Element;
 
     constructor(quill: Quill, options: any) {
       super(quill, options);
 
       // initially container is sibling of <ng-quill-editor>
-      this.container = quill.container.parentNode.parentNode.parentNode.querySelector(options.container);
+      const elem = quill.container.parentElement.parentElement.parentElement;
+      this.container = elem.querySelector(options.container);
       const suggestionsTooltip = (quill.theme as SuggestionsTheme).suggestionsTooltip;
       suggestionsTooltip.root.appendChild(this.container);
       this.container.addEventListener('click', (event: MouseEvent) => {

@@ -16,7 +16,7 @@ declare module 'quill' {
 
   export interface Quill {
     theme: Theme;
-    container: any;
+    container: Element;
     scrollingContainer: Element;
     selection: Selection;
   }
@@ -39,7 +39,7 @@ declare module 'quill' {
   export class Tooltip {
     quill: Quill;
     boundsContainer: BoundsStatic | Element;
-    root: any;
+    root: HTMLElement;
     constructor(quill: Quill, boundsContainer: BoundsStatic);
     hide(): void;
     position(reference: any): number;
