@@ -76,6 +76,7 @@ export abstract class DocumentEditor {
   }
 
   closeDocumentSet(): void {
+    this.quill.blur();
     if (this.docId !== '') {
       this.realTime.disconnectRichTextDoc(this.docId, this.quill);
     }
@@ -144,7 +145,11 @@ export abstract class DocumentEditor {
 
   protected toggleHighlight(range: RangeStatic, value: boolean): void {
     if (range.length > 0) {
-      this.quill.formatText(range.index, range.length, 'highlight', value ? this.docType : false, Quill.sources.SILENT);
+      // this changes the underlying HTML, which can mess up some Quill events, so defer this call
+      setTimeout(() => {
+        this.quill.formatText(range.index, range.length, 'highlight', value ? this.docType : false,
+          Quill.sources.SILENT);
+      });
     }
   }
 
@@ -354,8 +359,6 @@ export class TargetDocumentEditor extends DocumentEditor {
 }
 
 export class SourceDocumentEditor extends DocumentEditor {
-  confidenceThreshold: number = 0.2;
-
   private _isCurrentSegmentHighlighted: boolean = false;
 
   get docType(): string {
@@ -386,8 +389,8 @@ export class SourceDocumentEditor extends DocumentEditor {
       this.isCurrentSegmentHighlighted = false;
     }
     const segmentChanged = super.update(textChange);
-    if (!segmentChanged && this.currentSegment != null && this.currentSegment.isChanged) {
-        this.translateCurrentSegment();
+    if (this.currentSegment != null && (segmentChanged || this.currentSegment.isChanged)) {
+        this.translateCurrentSegment().catch(() => { });
     }
     return segmentChanged;
   }
@@ -404,7 +407,7 @@ export class SourceDocumentEditor extends DocumentEditor {
   }
 
   translateCurrentSegment(): angular.IPromise<void> {
-    return this.machine.translate(this.currentSegment.text, this.confidenceThreshold);
+    return this.machine.translate(this.currentSegment.text);
   }
 
   resetTranslation(): angular.IPromise<void> {
