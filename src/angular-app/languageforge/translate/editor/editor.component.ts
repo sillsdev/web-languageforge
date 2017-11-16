@@ -164,8 +164,16 @@ export class TranslateEditorController implements angular.IController {
 
           this.source.confidenceThreshold = this.tecProject.config.confidenceThreshold;
           const userPreferences = this.tecProject.config.userPreferences;
-          if (userPreferences.confidenceThreshold != null &&
-            userPreferences.hasConfidenceOverride != null &&
+          if (angular.isDefined(userPreferences)) {
+            if (angular.isUndefined(userPreferences.confidenceThreshold) || !userPreferences.hasConfidenceOverride ||
+              !(isFinite(userPreferences.confidenceThreshold) && angular.isNumber(userPreferences.confidenceThreshold))
+            ) {
+              userPreferences.confidenceThreshold = this.tecProject.config.confidenceThreshold;
+            }
+          }
+          this.confidence.value = userPreferences.confidenceThreshold;
+
+          if (userPreferences.confidenceThreshold != null && userPreferences.hasConfidenceOverride != null &&
             userPreferences.hasConfidenceOverride
           ) {
             this.source.confidenceThreshold = userPreferences.confidenceThreshold;
@@ -196,17 +204,6 @@ export class TranslateEditorController implements angular.IController {
           });
         }
       });
-
-      if (angular.isDefined(this.tecProject.config.userPreferences)) {
-        if (angular.isUndefined(this.tecProject.config.userPreferences.confidenceThreshold) ||
-          !this.tecProject.config.userPreferences.hasConfidenceOverride ||
-          !(isFinite(this.tecProject.config.userPreferences.confidenceThreshold) &&
-            angular.isNumber(this.tecProject.config.userPreferences.confidenceThreshold))
-        ) {
-          this.tecProject.config.userPreferences.confidenceThreshold = this.tecProject.config.confidenceThreshold;
-        }
-      }
-      this.confidence.value = this.tecProject.config.userPreferences.confidenceThreshold;
 
       this.machine.initialise(this.tecProject.slug, this.tecProject.config.isTranslationDataScripture);
       this.listenForTrainingStatus();
