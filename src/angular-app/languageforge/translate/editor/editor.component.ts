@@ -16,6 +16,7 @@ import {
 import { TranslateUtilities } from '../shared/translate-utilities';
 import { DocumentEditor, SourceDocumentEditor, TargetDocumentEditor } from './document-editor';
 import { Metrics, MetricService } from './metric.service';
+import { setTimeout } from 'core-js/library/web/timers';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: TranslateProject;
@@ -513,7 +514,11 @@ export class TranslateEditorController implements angular.IController {
 
   private onTrainSuccess(): void {
     this.failedConnectionCount = 0;
-    this.target.hideSuggestions();
+
+    this.target.suggestions = [];
+    if (this.currentDocType === DocType.TARGET) {
+      setTimeout(() => this.target.showSuggestions());
+    }
     this.source.resetTranslation()
       .then(() => this.target.updateSuggestions())
       .catch(() => { });
@@ -602,6 +607,8 @@ export class TranslateEditorController implements angular.IController {
           }
 
           // update suggestions for new segment
+          this.target.suggestions = [];
+          setTimeout(() => this.target.showSuggestions());
           this.source.translateCurrentSegment()
             .then(() => this.target.updateSuggestions())
             .catch(() => { });
