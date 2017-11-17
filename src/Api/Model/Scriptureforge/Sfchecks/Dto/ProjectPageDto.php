@@ -41,6 +41,7 @@ class ProjectPageDto
             $data['project']['name'] .= " [ARCHIVED]";
         }
         $data['texts'] = array();
+        $shouldSeeOtherUsersResponses = $project->shouldSeeOtherUsersResponses($userId);  // Look it up just once
         foreach ($textList->entries as $entry) {
             $text = new TextModel($project, $entry['id']);
             if (! $text->isArchived) {
@@ -52,13 +53,13 @@ class ProjectPageDto
                     $question = new QuestionModel($project, $q['id']);
                     if (! $question->isArchived) {
                         $entry['questionCount']++;
-                        if (! $project->usersSeeEachOthersResponses) {
+                        if (! $shouldSeeOtherUsersResponses) {
                             $q['answers'] = array_filter($q['answers'], function($answer) use ($userId) {
                                 return ((string)$answer['userRef'] == $userId);
                             });
                         }
                         foreach ($q['answers'] as $a) {
-                            if (! $project->usersSeeEachOthersResponses) {
+                            if (! $shouldSeeOtherUsersResponses) {
                                 $a['comments'] = array_filter($a['comments'], function($comment) use ($userId) {
                                     return ((string)$comment['userRef'] == $userId);
                                 });
