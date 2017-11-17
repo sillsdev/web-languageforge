@@ -61,9 +61,8 @@
     <hr />
     <div class="row">
         <div class="col-md-5" oncopy="return false;">
-            <h2 class="pull-left audio-buttons" data-ng-show="text.audioFileName && audioReady">
-                <a data-sgw-sound-player href="audioPlayUrl" data-sgw-state="state">
-                    <i data-ng-class="audioIcon()" uib-tooltip="Play audio"></i></a>
+            <h2 class="pull-left audio-buttons" data-ng-show="true">
+                <pui-soundplayer data-url="audioPlayUrl" uib-tooltip="Play audio"></pui-soundplayer>
                 <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
                     <i class="fa fa-arrow-circle-o-down" uib-tooltip="Download audio"></i></a>
             </h2>

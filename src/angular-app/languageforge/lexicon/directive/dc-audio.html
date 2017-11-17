@@ -44,16 +44,10 @@
     </div>
 
     <!-- playback control -->
-    <div class="player" data-ng-show="hasAudio() && audioReady && !show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">
-        <a data-sgw-sound-player data-href="audioPlayUrl()" data-sgw-state="state" data-sgw-sound="sound">
-            <i data-ng-class="audioIcon()"></i></a>
-        <span class="audioProgress text-muted">{{formatTimestamp(sound.position)}} / {{formatTimestamp(sound.duration)}}</span>
+    <div class="player" data-ng-show="hasAudio() && !show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">
+        <pui-soundplayer data-url="audioPlayUrl()" data-time-format="formatTimestamp"></pui-soundplayer>
+        <!-- <span class="audioProgress text-muted">{{formatTimestamp(sound.position)}} / {{formatTimestamp(sound.duration)}}</span> -->
     </div>
-
-    <!-- built-in html5 playback control -->
-    <!--<div class="player" data-ng-show="hasAudio() && audioReady && !show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">-->
-        <!--<audio controls data-ngf-src="audioPlayUrl()"></audio>-->
-    <!--</div>-->
 
     <pui-mock-upload data-pui-do-upload="uploadAudio(file)"></pui-mock-upload><!-- Used to mock file upload. Assumes file is already in the right location. This should be removed from production code! IJH 2016-11 -->
 </div>
