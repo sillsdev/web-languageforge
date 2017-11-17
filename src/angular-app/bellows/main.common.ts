@@ -10,7 +10,6 @@ import 'angular-ui-router';
 import 'angular-ui-validate';
 
 import 'ng-file-upload/dist/ng-file-upload-all.js';
-import 'soundmanager2';
 
 import './polyfills.browser';
 
