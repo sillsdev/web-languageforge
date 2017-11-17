@@ -57,6 +57,7 @@ export class MachineService {
     this.engine.translateInteractively(sourceSegment, this.confidenceThreshold, newSession => {
       if (newSession != null) {
         if (this.sourceSegment === sourceSegment) {
+          newSession.initialize();
           this.session = newSession;
           deferred.resolve();
         } else {

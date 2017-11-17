@@ -233,17 +233,18 @@ export class TargetDocumentEditor extends DocumentEditor {
   }
 
   update(textChange: boolean): boolean {
+    const prevSegment = this.currentSegment;
     const segmentChanged = super.update(textChange);
-    if (!segmentChanged) {
+    if (segmentChanged) {
+      if (prevSegment != null) {
+        this.updateHighlight(prevSegment.range);
+      }
+    } else {
       this.updateSuggestions();
     }
 
-    if (textChange) {
-      this.quill.formatText(0, this.quill.getLength(), 'highlight', false, Quill.sources.SILENT);
-      const lastSegmentRange = this.segmentRanges[this.segmentRanges.length - 1];
-      if (!this.isSegmentComplete(lastSegmentRange)) {
-        this.toggleHighlight(lastSegmentRange, true);
-      }
+    if (textChange && this.currentSegment != null && this.currentSegment.index === this.segmentRanges.length - 1) {
+      this.updateHighlight(this.currentSegment.range);
     }
 
     return segmentChanged;
@@ -259,7 +260,7 @@ export class TargetDocumentEditor extends DocumentEditor {
   }
 
   updateSuggestions(): void {
-    if (this.currentSegment == null) {
+    if (this.currentSegment == null || !this.isSelectionAtSegmentEnd) {
       return;
     }
 
@@ -268,7 +269,7 @@ export class TargetDocumentEditor extends DocumentEditor {
       this.metricService.onSuggestionGiven();
     }
     setTimeout(() => {
-      if (this.isSelectionAtSegmentEnd && this.hasSuggestions) {
+      if (this.hasSuggestions) {
         this.showSuggestions();
       } else {
         this.hideSuggestions();
@@ -277,6 +278,10 @@ export class TargetDocumentEditor extends DocumentEditor {
   }
 
   showSuggestions(): void {
+    if (!this.isSelectionAtSegmentEnd) {
+      return;
+    }
+
     const selection = this.quill.getSelection();
     const tooltip = (this.quill.theme as SuggestionsTheme).suggestionsTooltip;
     tooltip.show();
@@ -361,6 +366,10 @@ export class TargetDocumentEditor extends DocumentEditor {
 
   private isSegmentComplete(range: RangeStatic): boolean {
     return range.index + range.length !== this.quill.getLength() - 1;
+  }
+
+  private updateHighlight(range: RangeStatic): void {
+    this.toggleHighlight(range, !this.isSegmentComplete(range));
   }
 }
 
