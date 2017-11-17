@@ -3,6 +3,7 @@
 namespace Site\Controller;
 
 use Api\Model\Shared\UserModel;
+use League\OAuth2\Client\Provider\Google;
 use Silex\Application;
 use Site\Model\UserWithId;
 use Site\Provider\AuthUserProvider;
@@ -11,6 +12,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+
+class SelectAccountOAuthProvider extends Google
+{
+    protected function getAuthorizationParameters(array $options)
+    {
+        // Default provider adds "approval_prompt=auto", but using both "prompt" and "approval_prompt" together is not allowed
+        $params = parent::getAuthorizationParameters($options);
+        $params['prompt'] = 'select_account';
+        unset($params['approval_prompt']);
+        return $params;
+    }
+}
 
 class GoogleOAuth extends Base
 {
@@ -21,7 +34,7 @@ class GoogleOAuth extends Base
 
     public function oauthCallback(Request $request, Application $app)
     {
-        $provider = new \League\OAuth2\Client\Provider\Google([
+        $provider = new SelectAccountOAuthProvider([
             'clientId'     => GOOGLE_CLIENT_ID,
             'clientSecret' => GOOGLE_CLIENT_SECRET,
             'redirectUri'  => 'https://localdev.scriptureforge.org/oauthcallback',
@@ -43,11 +56,6 @@ class GoogleOAuth extends Base
             $code = $request->query->get('code', null);
             if (is_null($code)) {   //
                 $authUrl = $provider->getAuthorizationUrl(["prompt" => "select_account"]);
-                // OAuth library automatically sets approval_prompt parameter and doesn't have an option to remove it,
-                // but "prompt" and "approval_prompt" are not allowed to both appear in the same OAuth query.
-                // TODO: Better approach: subclass and override the getAuthorizationParameters() method.
-                $authUrl = str_replace("&approval_prompt=auto", "", $authUrl);
-                $authUrl = str_replace("?approval_prompt=auto&", "?", $authUrl);
                 $app['session']->set('oauth2state', $provider->getState());
                 return new RedirectResponse($authUrl);
             } else {
