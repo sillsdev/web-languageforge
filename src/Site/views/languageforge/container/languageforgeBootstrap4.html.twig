@@ -32,7 +32,7 @@
                                 <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
                                     <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
                                         <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a {{projectTypeNames[appName]}} project</b>
+                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
                                     </a>
                                 </div>
                             </div>
@@ -95,7 +95,7 @@
                                 <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
                                     <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
                                         <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a {{projectTypeNames[appName]}} project</b>
+                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
                                     </a>
                                 </div>
                             </div>
@@ -116,7 +116,7 @@
                             <img src="{{ smallAvatarUrl }}"
                                  style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px"
                                  class="rounded-circle"
-                                 id="smallAvatarURL" />Hi, {{ userName }}</a>
+                                 id="smallAvatarURL" />Hi, <span class="notranslate">{{ userName }}</span></a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="userDropdown">
                             {% if isAdmin %}
                                 <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
