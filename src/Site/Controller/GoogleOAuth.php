@@ -2,6 +2,7 @@
 
 namespace Site\Controller;
 
+use Api\Library\Shared\Website;
 use Api\Model\Shared\UserModel;
 use League\OAuth2\Client\Provider\Google;
 use Silex\Application;
@@ -34,10 +35,11 @@ class GoogleOAuth extends Base
 
     public function oauthCallback(Request $request, Application $app)
     {
+        $website = Website::get();
         $provider = new SelectAccountOAuthProvider([
             'clientId'     => GOOGLE_CLIENT_ID,
             'clientSecret' => GOOGLE_CLIENT_SECRET,
-            'redirectUri'  => 'https://localdev.scriptureforge.org/oauthcallback',
+            'redirectUri'  => $website->baseUrl() . '/oauthcallback',
         ]);
 
         $error = $request->query->get('error', null);
