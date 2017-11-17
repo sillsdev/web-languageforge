@@ -1,7 +1,10 @@
+import * as angular from 'angular';
 import Parchment from 'parchment';
 import Quill, {
   BoundsStatic, Module, Picker, QuillOptionsStatic, RangeStatic, SnowTheme, Theme, Toolbar, Tooltip
 } from 'quill';
+
+import { FormatUsx, FormatUsxHtmlAttributes } from './quill-usx.converter';
 
 export interface SuggestionsTheme extends Theme {
   suggestionsTooltip: Tooltip;
@@ -16,9 +19,174 @@ export function registerSuggestionsTheme(): void {
   const QuillSnowTheme = Quill.import('themes/snow') as typeof SnowTheme;
   const QuillToolbar = Quill.import('modules/toolbar') as typeof Toolbar;
   const QuillParchment = Quill.import('parchment') as typeof Parchment;
+  const Inline = Quill.import('blots/inline') as typeof Parchment.Inline;
+  const Block = Quill.import('blots/block') as typeof Parchment.Block;
+  const Scroll = Quill.import('blots/scroll') as typeof Parchment.Scroll;
 
   // noinspection JSUnusedLocalSymbols
   let dropElements: HTMLElement[] = [];
+
+  const customAttributeName = (key: string) => 'data-' + key;
+
+  class VerseInline extends Inline {
+    // noinspection JSUnusedGlobalSymbols
+    static blotName = 'verse';
+    // static className = Inline.className;
+    static tagName = 'usx-verse';
+    static scope = Inline.scope;
+    // noinspection JSUnusedGlobalSymbols
+    static allowedChildren = Inline.allowedChildren;
+    // noinspection JSUnusedGlobalSymbols
+    static defaultChild = Inline.defaultChild;
+
+    static create(value: FormatUsx): Node {
+      const node = (super.create(value) as HTMLElement);
+      if (value) {
+        const formatHtmlAttributes = new FormatUsxHtmlAttributes();
+        for (const key in value) {
+          if (value.hasOwnProperty(key) && value[key] !== null) {
+            if (formatHtmlAttributes.hasOwnProperty(key)) {
+              node.setAttribute(key, value[key]);
+            } else {
+              node.setAttribute(customAttributeName(key), value[key]);
+            }
+          }
+        }
+      }
+
+      return node;
+    }
+
+    static formats(node: HTMLElement): FormatUsx {
+      const format = new FormatUsx();
+      const formatHtmlAttributes = new FormatUsxHtmlAttributes();
+      for (const key in format) {
+        if (formatHtmlAttributes.hasOwnProperty(key) && node.hasAttribute(key)) {
+          format[key] = node.getAttribute(key);
+        } else if (format.hasOwnProperty(key) && node.hasAttribute(customAttributeName(key))) {
+          format[key] = node.getAttribute(customAttributeName(key));
+        }
+      }
+
+      return format;
+    }
+
+    static value(node: HTMLElement): FormatUsx {
+      return VerseInline.formats(node);
+    }
+
+    format(name: string, value: any): void {
+      const format = new FormatUsx();
+      const formatHtmlAttributes = new FormatUsxHtmlAttributes();
+      if (formatHtmlAttributes.hasOwnProperty(name)) {
+        this.domNode.setAttribute(name, value);
+      } else if (format.hasOwnProperty(name)) {
+        this.domNode.setAttribute(customAttributeName(name), value);
+      } else {
+        super.format(name, value);
+      }
+    }
+  }
+
+  class CharInline extends VerseInline {
+    // noinspection JSUnusedGlobalSymbols
+    static blotName = 'char';
+    // static className = 'char';
+    static tagName = 'usx-char';
+    // static scope = VerseInline.scope;
+    // noinspection JSUnusedGlobalSymbols
+    static allowedChildren = angular.copy(VerseInline.allowedChildren);
+    // noinspection JSUnusedGlobalSymbols
+    static defaultChild = VerseInline.defaultChild;
+
+    static create = VerseInline.create;
+    // noinspection JSUnusedGlobalSymbols
+    static formats = VerseInline.formats;
+    static value = VerseInline.value;
+  }
+
+  class NoteInline extends VerseInline {
+    // noinspection JSUnusedGlobalSymbols
+    static blotName = 'note';
+    // static className = 'note';
+    static tagName = 'usx-note';
+    // static scope = VerseInline.scope;
+    // noinspection JSUnusedGlobalSymbols
+    static allowedChildren = angular.copy(VerseInline.allowedChildren);
+    // noinspection JSUnusedGlobalSymbols
+    static defaultChild = VerseInline.defaultChild;
+
+    static create = VerseInline.create;
+    // noinspection JSUnusedGlobalSymbols
+    static formats = VerseInline.formats;
+    static value = VerseInline.value;
+  }
+
+  NoteInline.allowedChildren.push(CharInline);
+  VerseInline.allowedChildren.push(NoteInline);
+  VerseInline.allowedChildren.push(CharInline);
+
+  const blockAllowedChildren = Block.allowedChildren;
+  blockAllowedChildren.push(VerseInline);
+
+  class ParaBlock extends Block {
+    // noinspection JSUnusedGlobalSymbols
+    static blotName = 'para';
+    static className = Block.className;
+    static tagName = 'usx-para';
+    static scope = Block.scope;
+    // noinspection JSUnusedGlobalSymbols
+    static allowedChildren = blockAllowedChildren;
+    // noinspection JSUnusedGlobalSymbols
+    static defaultChild = Block.defaultChild;
+
+    static create = VerseInline.create;
+    // noinspection JSUnusedGlobalSymbols
+    static formats = VerseInline.formats;
+    static value = VerseInline.value;
+
+    // FixMe: figure out how to inherit format method from VerseInline class - IJH 2017-11
+    format(name: string, value: any): void {
+      const format = new FormatUsx();
+      const formatHtmlAttributes = new FormatUsxHtmlAttributes();
+      if (formatHtmlAttributes.hasOwnProperty(name)) {
+        this.domNode.setAttribute(name, value);
+      } else if (format.hasOwnProperty(name)) {
+        this.domNode.setAttribute(customAttributeName(name), value);
+      } else {
+        super.format(name, value);
+      }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    optimize(context: { [key: string]: any; }): void {
+      super.optimize(context);
+      const Break = Quill.import('blots/break');
+      if (this.children.length === 0 || (this.children.length === 1 && this.children.head instanceof Break)) {
+        this.formatAt(0, 1, 'block', true);
+      }
+    }
+  }
+
+  class ChapterBlock extends ParaBlock {
+    // noinspection JSUnusedGlobalSymbols
+    static blotName = 'chapter';
+    static className = ParaBlock.className;
+    static tagName = 'usx-chapter';
+    static scope = ParaBlock.scope;
+    // noinspection JSUnusedGlobalSymbols
+    static allowedChildren = ParaBlock.allowedChildren;
+    // noinspection JSUnusedGlobalSymbols
+    static defaultChild = ParaBlock.defaultChild;
+
+    static create = ParaBlock.create;
+    // noinspection JSUnusedGlobalSymbols
+    static formats = ParaBlock.formats;
+    static value = ParaBlock.value;
+  }
+
+  Scroll.allowedChildren.push(ParaBlock);
+  Scroll.allowedChildren.push(ChapterBlock);
 
   const HighlightClass = new QuillParchment.Attributor.Class('highlight', 'highlight', {
     scope: Parchment.Scope.INLINE
@@ -39,13 +207,15 @@ export function registerSuggestionsTheme(): void {
       this.hide();
     }
 
-    position(reference: any) {
+    position(reference: any): number {
       const shift = (super.position(reference) as number);
       const top = reference.bottom + this.quill.root.scrollTop + 10;
       this.root.style.top = top + 'px';
       const arrow = this.root.querySelector('.ql-suggest-tooltip-arrow') as HTMLElement;
       arrow.style.marginLeft = '';
-      if (shift === 0) return shift;
+      if (shift === 0) {
+        return shift;
+      }
       arrow.style.marginLeft = (-1 * shift - arrow.offsetWidth / 2) + 'px';
     }
   }
@@ -271,11 +441,17 @@ export function registerSuggestionsTheme(): void {
 
   Quill.register('attributors/class/highlight', HighlightClass);
   Quill.register('formats/highlight', HighlightClass);
+  Quill.register('blots/verse', VerseInline);
+  Quill.register('blots/note', NoteInline);
+  Quill.register('blots/char', CharInline);
+  Quill.register('blots/para', ParaBlock);
+  Quill.register('blots/chapter', ChapterBlock);
+  Quill.register('blots/scroll', Scroll, true);
   Quill.register('ui/suggest-tooltip', SuggestionsTooltip);
   Quill.register('modules/suggestions', Suggestions);
-  Quill.register('themes/suggestions', SuggestionsSnowTheme);
   Quill.register('modules/dragAndDrop', DragAndDrop);
   Quill.register('modules/toolbar', MultiEditorToolbar, true);
+  Quill.register('themes/suggestions', SuggestionsSnowTheme);
 
   DragAndDrop.monitorFileDragEvents();
 }
