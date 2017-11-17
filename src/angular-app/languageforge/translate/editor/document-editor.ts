@@ -13,6 +13,11 @@ export abstract class DocumentEditor {
     return selection != null && selection.length === 0;
   }
 
+  static isTextEmpty(text: string): boolean {
+    text = text.endsWith('\n') ? text.substr(0, text.length - 1) : text;
+    return text === '';
+  }
+
   modulesConfig: any = {};
   inputSystem: any = {};
 
@@ -60,17 +65,8 @@ export abstract class DocumentEditor {
     return this.getSaveState();
   }
 
-  private get docId(): string {
-    if (this.documentSetId === '') {
-      return '';
-    }
-    return this.documentSetId + ':' + this.docType;
-  }
-
-  private get isTextEmpty(): boolean {
-    let text = this.quill.getText();
-    text = text.endsWith('\n') ? text.substr(0, text.length - 1) : text;
-    return text === '';
+  get isTextEmpty(): boolean {
+    return DocumentEditor.isTextEmpty(this.quill.getText());
   }
 
   openDocumentSet(collection: string, documentSetId: string): void {
@@ -157,6 +153,13 @@ export abstract class DocumentEditor {
           Quill.sources.SILENT);
       });
     }
+  }
+
+  private get docId(): string {
+    if (this.documentSetId === '') {
+      return '';
+    }
+    return this.documentSetId + ':' + this.docType;
   }
 
   private getSegmentRange(index: number): RangeStatic {

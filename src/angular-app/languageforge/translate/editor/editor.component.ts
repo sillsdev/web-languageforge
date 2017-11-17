@@ -1,7 +1,9 @@
 import * as angular from 'angular';
+import { setTimeout } from 'core-js/library/web/timers';
 import { SmtTrainProgress } from 'machine';
-import Quill, { RangeStatic } from 'quill';
+import Quill from 'quill';
 
+import { JsonRpcResult } from '../../../bellows/core/api/json-rpc.service';
 import { ModalService } from '../../../bellows/core/modal/modal.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { UtilityService } from '../../../bellows/core/utility.service';
@@ -16,6 +18,7 @@ import {
 import { TranslateUtilities } from '../shared/translate-utilities';
 import { DocumentEditor, SourceDocumentEditor, TargetDocumentEditor } from './document-editor';
 import { Metrics, MetricService } from './metric.service';
+import { QuillUsxConverter } from './quill/quill-usx.converter';
 
 export class TranslateEditorController implements angular.IController {
   tecProject: TranslateProject;
@@ -655,21 +658,20 @@ export class TranslateEditorController implements angular.IController {
 
   private onDrop(file: File, quill: Quill, event: DragEvent): void {
     if (!file.name.toLowerCase().endsWith('.usx') && !file.name.toLowerCase().endsWith('.txt')) {
-      this.$scope.$applyAsync(() => {
-        this.notice.push(this.notice.ERROR, 'Drag a USX or text file.');
-      });
+      this.notice.push(this.notice.ERROR, 'Drag a USX file (*.usx) or text file (*.txt).');
       return;
     }
 
     event.stopPropagation();
     event.preventDefault();
+    const isVerseOnNewLine = this.tecProject.config.isTranslationDataScripture;
     if (file.name.toLowerCase().endsWith('.usx')) {
       this.notice.setLoading('Reading USX file "' + file.name + '"...');
       this.util.readUsxFile(file).then((usx: string) => {
         this.notice.setLoading('Formatting USX file "' + file.name + '" data...');
-        this.projectApi.usxToHtml(usx).then(result => {
+        this.usxToHtml(usx).then(result => {
           if (result.ok) {
-            this.insertHtml(quill, result.data);
+            this.insertHtml(quill, result.data, isVerseOnNewLine, false);
             this.notice.cancelLoading();
           }
         });
@@ -680,9 +682,8 @@ export class TranslateEditorController implements angular.IController {
     } else if (file.name.toLowerCase().endsWith('.txt')) {
       this.notice.setLoading('Reading text file "' + file.name + '"...');
       this.util.readTextFile(file).then((text: string) => {
-        text = text.replace(/\n/g, '</p><p>');
-        text = '<p>' + text + '</p>';
-        this.insertHtml(quill, text);
+        const html = '<p>' + text.replace(/\n/g, '</p><p>') + '</p>';
+        this.insertHtml(quill, html, isVerseOnNewLine, false);
         this.notice.cancelLoading();
       }).catch((errorMessage: string) => {
         this.notice.cancelLoading();
@@ -696,7 +697,7 @@ export class TranslateEditorController implements angular.IController {
     this.notice.setLoading('Reading USX file...');
     this.util.readUsxFile(item).then((usx: string) => {
       this.notice.setLoading('Formatting USX file data...');
-      this.projectApi.usxToHtml(usx).then(result => {
+      this.usxToHtml(usx).then(result => {
         if (result.ok) {
           this.insertHtml(quill, result.data);
           this.notice.cancelLoading();
@@ -708,21 +709,41 @@ export class TranslateEditorController implements angular.IController {
     });
   }
 
-  private insertHtml(quill: Quill, html: string): void {
+  private usxToHtml(usx: string): angular.IPromise<JsonRpcResult> {
+    const deferred = this.$q.defer();
+    const result: JsonRpcResult = {
+      ok: true,
+      data: QuillUsxConverter.convertFromStringToHtml(usx, 'application/xml')
+    };
+    deferred.resolve(result);
+    return deferred.promise;
+  }
+
+  private insertHtml(quill: Quill, html: string, isVerseOnNewLine = false, isBlankLastLineRequired = true): void {
     // ensure blank line at end - allows to complete the last segment
-    if (!html.endsWith('<p><br></p>')) {
+    if (isBlankLastLineRequired && !html.endsWith('<p><br></p>')) {
       html += '<p><br></p>';
+    }
+
+    if (isVerseOnNewLine) {
+      html = QuillUsxConverter.versesOnNewLine(html);
     }
 
     this.$scope.$applyAsync(() => {
       let index = quill.getSelection(true).index || quill.getLength();
-      if (quill.getLength() === 1 && quill.getText() === '\n') {
-        // editor is empty
+      if (DocumentEditor.isTextEmpty(quill.getText())) {
         index = 0;
       }
 
       quill.clipboard.dangerouslyPasteHTML(index, html, Quill.sources.USER);
+      this.alignHtml();
     });
+  }
+
+  private alignHtml() {
+    if (!this.source.isTextEmpty && !this.target.isTextEmpty) {
+      console.log('can align', this.source.quill.root, this.target.quill.root);
+    }
   }
 
 }
