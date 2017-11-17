@@ -67,6 +67,12 @@ export abstract class DocumentEditor {
     return this.documentSetId + ':' + this.docType;
   }
 
+  private get isTextEmpty(): boolean {
+    let text = this.quill.getText();
+    text = text.endsWith('\n') ? text.substr(0, text.length - 1) : text;
+    return text === '';
+  }
+
   openDocumentSet(collection: string, documentSetId: string): void {
     if (this.documentSetId !== documentSetId) {
       this.documentSetId = documentSetId;
@@ -154,7 +160,7 @@ export abstract class DocumentEditor {
   }
 
   private getSegmentRange(index: number): RangeStatic {
-    if (this.quill.getText().trim() === '') {
+    if (this.isTextEmpty) {
       return { index: 0, length: 0 };
     }
 
@@ -261,9 +267,21 @@ export class TargetDocumentEditor extends DocumentEditor {
     if (this.hasSuggestionsChanged && this.hasSuggestions) {
       this.metricService.onSuggestionGiven();
     }
-    if (this.isSelectionAtSegmentEnd) {
-      setTimeout(() => this.showSuggestions(), 0);
-    }
+    setTimeout(() => {
+      if (this.isSelectionAtSegmentEnd && this.hasSuggestions) {
+        this.showSuggestions();
+      } else {
+        this.hideSuggestions();
+      }
+    });
+  }
+
+  showSuggestions(): void {
+    const selection = this.quill.getSelection();
+    const tooltip = (this.quill.theme as SuggestionsTheme).suggestionsTooltip;
+    tooltip.show();
+    tooltip.position(this.quill.getBounds(selection.index, selection.length));
+    this.isShowingSuggestions = true;
   }
 
   hideSuggestions(): void {
@@ -321,18 +339,6 @@ export class TargetDocumentEditor extends DocumentEditor {
           + ' was trained successfully.');
       })
       .finally(() => this.pendingTrainCount--);
-  }
-
-  private showSuggestions(): void {
-    const selection = this.quill.getSelection();
-    if (this.hasSuggestions) {
-      const tooltip = (this.quill.theme as SuggestionsTheme).suggestionsTooltip;
-      tooltip.show();
-      tooltip.position(this.quill.getBounds(selection.index, selection.length));
-      this.isShowingSuggestions = true;
-    } else {
-      this.hideSuggestions();
-    }
   }
 
   private get hasSuggestions(): boolean {

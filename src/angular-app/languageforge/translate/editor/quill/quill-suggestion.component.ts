@@ -9,6 +9,10 @@ export class QuillSuggestionController implements angular.IController {
 
   showSuggestionHelp: boolean = false;
 
+  get isLoading(): boolean {
+    return this.qlSuggestions == null || this.qlSuggestions.length === 0;
+  }
+
   wordCombine(words: string[]): string {
     words = words || [];
     return words.join(' ');
@@ -27,7 +31,6 @@ export class QuillSuggestionController implements angular.IController {
   get suggestionStyle() {
     return TranslateUtilities.suggestionStyle(this.qlConfidence);
   }
-
 }
 
 export const QuillSuggestionComponent: angular.IComponentOptions = {
