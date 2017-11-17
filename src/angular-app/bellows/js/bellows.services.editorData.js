@@ -532,7 +532,7 @@ function ($q, sessionService, cache, commentsCache,
     var sortableValue = '';
     var field;
     var dataNode;
-    var isSpecialMultitext = (fieldKey == 'lexeme' || fieldKey == 'citationForm');
+    var isSpecialMultitext = (fieldKey === 'lexeme' || fieldKey === 'citationForm');
     if (fieldKey in config.entry.fields && fieldKey in entry) {
       field = config.entry.fields[fieldKey];
       dataNode = entry[fieldKey];
@@ -547,10 +547,12 @@ function ($q, sessionService, cache, commentsCache,
       if (isSpecialMultitext || field.type === 'multitext') {
 
         // special case for lexeme form / citation form.  Use citation form if available, fall back to lexeme form
-        if (fieldKey == 'lexeme' || fieldKey == 'citationForm') {
-          var citationFormInputSystems = config.entry.fields.citationForm.inputSystems;
-          if (entry.citationForm && citationFormInputSystems.length > 0 && citationFormInputSystems[0] in entry.citationForm) {
-            sortableValue = entry.citationForm[citationFormInputSystems[0]].value;
+        if (fieldKey === 'lexeme' || fieldKey === 'citationForm') {
+          if (config.entry.fields.citationForm) {
+            var citationFormInputSystems = config.entry.fields.citationForm.inputSystems;
+            if (entry.citationForm && citationFormInputSystems.length > 0 && citationFormInputSystems[0] in entry.citationForm) {
+              sortableValue = entry.citationForm[citationFormInputSystems[0]].value;
+            }
           }
           if (!sortableValue) {
             var lexemeInputSystems = config.entry.fields.lexeme.inputSystems;
