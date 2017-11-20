@@ -13,7 +13,7 @@
             <uib-bar class="justify-content-center" value="$ctrl.trainingPercent" data-ng-if="$ctrl.trainingPercent >= 25">
                 {{$ctrl.trainingPercent}}%</uib-bar>
         </uib-progress>
-        <div class="rating" title="Engine rating">
+        <div class="rating" data-ng-attr-title="Engine rating ({{$ctrl.engineConfidence}}%)">
             <input type="radio" disabled data-ng-model="$ctrl.engineRating" value="3.0" /><label></label>
             <input type="radio" disabled data-ng-model="$ctrl.engineRating" value="2.5" /><label class="half"></label>
             <input type="radio" disabled data-ng-model="$ctrl.engineRating" value="2.0" /><label></label>
