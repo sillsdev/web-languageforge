@@ -195,6 +195,7 @@ export class TargetDocumentEditor extends DocumentEditor {
   private _suggestions: string[] = [];
   private previousSuggestions: string[] = [];
   private pendingTrainCount: number;
+  private isTranslating: boolean = false;
 
   constructor($q: angular.IQService, machine: MachineService, realTime: RealTimeService,
               private readonly metricService: MetricService, private readonly $window: angular.IWindowService
@@ -259,34 +260,36 @@ export class TargetDocumentEditor extends DocumentEditor {
     return segmentChanged;
   }
 
+  onStartTranslating(): void {
+    this.isTranslating = true;
+    this.suggestions = [];
+    setTimeout(() => this.showSuggestions());
+  }
+
+  onFinishTranslating(): void {
+    this.isTranslating = false;
+    this.updateSuggestions();
+  }
+
   updateSuggestions(): void {
-    if (this.currentSegment == null || !this.isSelectionAtSegmentEnd) {
+    if (this.currentSegment == null) {
       return;
     }
 
-    this.suggestions = this.machine.updatePrefix(this.currentSegment.text);
-    if (this.hasSuggestionsChanged && this.hasSuggestions) {
-      this.metricService.onSuggestionGiven();
+    if (!this.isTranslating && this.isSelectionAtSegmentEnd) {
+      // only bother updating the suggestion if the cursor is at the end of the segment
+      this.suggestions = this.machine.updatePrefix(this.currentSegment.text);
+      if (this.hasSuggestionsChanged && this.hasSuggestions) {
+        this.metricService.onSuggestionGiven();
+      }
     }
     setTimeout(() => {
-      if (this.hasSuggestions) {
+      if ((this.isTranslating || this.hasSuggestions) && this.isSelectionAtSegmentEnd) {
         this.showSuggestions();
       } else {
         this.hideSuggestions();
       }
     });
-  }
-
-  showSuggestions(): void {
-    if (!this.isSelectionAtSegmentEnd) {
-      return;
-    }
-
-    const selection = this.quill.getSelection();
-    const tooltip = (this.quill.theme as SuggestionsTheme).suggestionsTooltip;
-    tooltip.show();
-    tooltip.position(this.quill.getBounds(selection.index, selection.length));
-    this.isShowingSuggestions = true;
   }
 
   hideSuggestions(): void {
@@ -322,6 +325,18 @@ export class TargetDocumentEditor extends DocumentEditor {
       trainSaveState = SaveState.Saved;
     }
     return Math.min(super.getSaveState(), trainSaveState);
+  }
+
+  private showSuggestions(): void {
+    if (!this.isSelectionAtSegmentEnd) {
+      return;
+    }
+
+    const selection = this.quill.getSelection();
+    const tooltip = (this.quill.theme as SuggestionsTheme).suggestionsTooltip;
+    tooltip.show();
+    tooltip.position(this.quill.getBounds(selection.index, selection.length));
+    this.isShowingSuggestions = true;
   }
 
   private isSegmentUntrained(segment: Segment = this.currentSegment): boolean {
