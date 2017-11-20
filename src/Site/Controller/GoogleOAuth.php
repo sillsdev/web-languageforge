@@ -39,7 +39,7 @@ class GoogleOAuth extends Base
         $provider = new SelectAccountOAuthProvider([
             'clientId'     => GOOGLE_CLIENT_ID,
             'clientSecret' => GOOGLE_CLIENT_SECRET,
-            'redirectUri'  => $website->baseUrl() . '/oauthcallback',
+            'redirectUri'  => $website->baseUrl() . '/oauthcallback/google',
         ]);
 
         $error = $request->query->get('error', null);
