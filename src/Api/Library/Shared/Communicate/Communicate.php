@@ -152,7 +152,7 @@ class Communicate
         $vars = [
             'user' => $inviterUserModel,
             'project' => $projectModel,
-            'link' => self::calculateSignupUrl($toUserModel, $website),
+            'link' => self::calculateSignupUrl($toUserModel->email, $website),
             'website' => $website,
         ];
 
