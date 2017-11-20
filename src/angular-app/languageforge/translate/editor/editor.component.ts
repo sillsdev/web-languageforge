@@ -447,6 +447,10 @@ export class TranslateEditorController implements angular.IController {
     this.updateConfig();
   }
 
+  get engineConfidence(): string {
+    return (this.machine.engineConfidence * 100).toFixed(2);
+  }
+
   get engineRating(): string {
     const rescaledConfidence = Math.min(1.0, this.machine.engineConfidence / 0.6);
     const rating = rescaledConfidence * 3;
