@@ -879,6 +879,15 @@ gulp.task('build-changeGroup').description =
 // -------------------------------------
 gulp.task('build-productionConfig', function () {
   var defaultMongodbConnection = 'localhost:27017';
+  // Pass Google client ID and secret via environment variables so they don't show up in the build logs
+  var googleClientId = process.env.GOOGLE_CLIENT_ID;
+  if (googleClientId === undefined) {
+    googleClientId = 'googleClientId';
+  }
+  var googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  if (googleClientSecret === undefined) {
+    googleClientSecret = 'googleClientSecret';
+  }
   var params = require('yargs')
     .option('mongodbConnection', {
       demand: false,
@@ -892,12 +901,12 @@ gulp.task('build-productionConfig', function () {
     .option('googleClientId', {
       demand: false,
       // default: secrets_google_api_client_id.web.client_id,
-      default: 'googleClientId',
+      default: googleClientId,
       type: 'string' })
     .option('googleClientSecret', {
       demand: false,
       // default: secrets_google_api_client_id.web.client_secret,
-      default: 'googleClientSecret',
+      default: googleClientSecret,
       type: 'string' })
     .argv;
   var configSrc = [
