@@ -29,7 +29,7 @@ class SelectAccountOAuthProvider extends Google
     }
 }
 
-class GoogleOAuth extends Base
+abstract class OAuthBase extends Base
 {
     const SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK = 'oauthTokenIdToLink';
     const SESSION_KEY_OAUTH_PROVIDER = 'oauthProvider';
@@ -82,7 +82,7 @@ class GoogleOAuth extends Base
                 }
             }
         }
-        return $this->loginWithOAuthToken($app, $provider, $token);
+        return $this->handleOAuthToken($app, $provider, $token);
     }
 
     public function addSessionMessage(Application $app, string $message, string $priority)
@@ -100,14 +100,11 @@ class GoogleOAuth extends Base
         $this->addSessionMessage($app, $message, 'errorMessage');
     }
 
-    public function getProviderName(): string
-    {
-        return "google";
-    }
+    abstract public function getProviderName(): string;
 
     public static function createOAuthProvider(string $providerName)
     {
-        // Factory
+        // TODO: This factory function should probably get its own class
         switch ($providerName) {
             case "google":
                 return new GoogleOAuth();
@@ -119,7 +116,7 @@ class GoogleOAuth extends Base
             default:
                 break;
         }
-        return new GoogleOAuth();
+        throw new \InvalidArgumentException("Unknown OAuth provider name");
     }
 
     /**
@@ -136,12 +133,12 @@ class GoogleOAuth extends Base
 
     public function linkOAuthAccount(SessionInterface $session, UserModel $user)
     {
-        $oauthTokenId = $session->get(GoogleOAuth::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
+        $oauthTokenId = $session->get(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
         if (!is_null($oauthTokenId)) {
-            $oauthProvider = $session->get(GoogleOAuth::SESSION_KEY_OAUTH_PROVIDER);
-            $provider = GoogleOAuth::createOAuthProvider($oauthProvider);
+            $oauthProvider = $session->get(OAuthBase::SESSION_KEY_OAUTH_PROVIDER);
+            $provider = OAuthBase::createOAuthProvider($oauthProvider);
             $provider->addOAuthIdToUserModel($user, $oauthTokenId);
-            GoogleOAuth::removeOAuthKeysFromSession($session);
+            OAuthBase::removeOAuthKeysFromSession($session);
         }
     }
 
@@ -194,11 +191,13 @@ class GoogleOAuth extends Base
     }
 
     public static function removeOAuthKeysFromSession(SessionInterface $session) {
-        $session->remove(GoogleOAuth::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
-        $session->remove(GoogleOAuth::SESSION_KEY_OAUTH_PROVIDER);
-        $session->remove(GoogleOAuth::SESSION_KEY_OAUTH_EMAIL_ADDRESS);
-        $session->remove(GoogleOAuth::SESSION_KEY_OAUTH_FULL_NAME);
+        $session->remove(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
+        $session->remove(OAuthBase::SESSION_KEY_OAUTH_PROVIDER);
+        $session->remove(OAuthBase::SESSION_KEY_OAUTH_EMAIL_ADDRESS);
+        $session->remove(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME);
     }
+
+    abstract protected function handleOAuthToken(Application $app, AbstractProvider $provider, OAuthAccessToken $token);
 
     /**
      * @param Application $app
@@ -251,9 +250,27 @@ class GoogleOAuth extends Base
      */
     protected function setOAuthDetailsInSession(Application $app, string $googleOAuthId, string $email, string $fullName)
     {
-        $app['session']->set(GoogleOAuth::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK, $googleOAuthId);
-        $app['session']->set(GoogleOAuth::SESSION_KEY_OAUTH_PROVIDER, 'google');
-        $app['session']->set(GoogleOAuth::SESSION_KEY_OAUTH_EMAIL_ADDRESS, $email);
-        $app['session']->set(GoogleOAuth::SESSION_KEY_OAUTH_FULL_NAME, $fullName);
+        $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK, $googleOAuthId);
+        $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_PROVIDER, 'google');
+        $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_EMAIL_ADDRESS, $email);
+        $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME, $fullName);
+    }
+}
+
+class GoogleOAuth extends OAuthBase
+{
+    public function getProviderName(): string
+    {
+        return "google";
+    }
+
+    protected function handleOAuthToken(Application $app, AbstractProvider $provider, OAuthAccessToken $token)
+    {
+        return $this->loginWithOAuthToken($app, $provider, $token);
+    }
+
+    public function oauthCallback(Request $request, Application $app)
+    {
+        return parent::oauthCallback($request, $app);
     }
 }
