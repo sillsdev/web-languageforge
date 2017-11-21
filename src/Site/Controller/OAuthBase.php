@@ -256,21 +256,3 @@ abstract class OAuthBase extends Base
         $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME, $fullName);
     }
 }
-
-class GoogleOAuth extends OAuthBase
-{
-    public function getProviderName(): string
-    {
-        return "google";
-    }
-
-    protected function handleOAuthToken(Application $app, AbstractProvider $provider, OAuthAccessToken $token)
-    {
-        return $this->loginWithOAuthToken($app, $provider, $token);
-    }
-
-    public function oauthCallback(Request $request, Application $app)
-    {
-        return parent::oauthCallback($request, $app);
-    }
-}
