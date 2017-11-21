@@ -33,7 +33,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      * @param SessionInterface $session
      * @return mixed
      */
-    public function hasOAuthId(SessionInterface $session)
+    public function hasOAuthId(SessionInterface $session)  // TODO: Move to the OAuthProvider base class, along with the next two functions
     {
         return (!is_null($session)) && $session->has('oauthTokenIdToLink');
     }
@@ -43,7 +43,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      * @param string $oauthTokenId
      * @param string $oauthProvider
      */
-    public function addOAuthIdToUserModel(UserModel $user, string $oauthTokenId, string $oauthProvider)
+    public function addOAuthIdToUserModelForAnyProvider(UserModel $user, string $oauthTokenId, string $oauthProvider)
     {
         switch ($oauthProvider) {
             case "google":
@@ -60,13 +60,13 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         }
     }
 
-    public function alternateApiForTheAbove(SessionInterface $session, UserModel $user)
+    public function addOAuthIdToUserModel(SessionInterface $session, UserModel $user)
     {
         $oauthTokenId = $session->get(GoogleOAuth::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
         if (!is_null($oauthTokenId)) {
             $oauthProvider = $session->get(GoogleOAuth::SESSION_KEY_OAUTH_PROVIDER);
-            $this->addOAuthIdToUserModel($user, $oauthTokenId, $oauthProvider);
-            $session->remove(GoogleOAuth::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
+            $this->addOAuthIdToUserModelForAnyProvider($user, $oauthTokenId, $oauthProvider);
+            GoogleOAuth::removeOAuthKeysFromSession($session);
         }
     }
 
@@ -84,7 +84,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
         if ($this->hasOAuthId($session)) {
             // NOTE that this adds the OAuth ID to the user model without checking if it's already there. That check
             // should happen elsewhere, and an oauthTokenIdToLink should only be put in the session if it's necessary.
-            $this->alternateApiForTheAbove($session, $user);
+            $this->addOAuthIdToUserModel($session, $user);
         }
 
         $user->last_login = time();
