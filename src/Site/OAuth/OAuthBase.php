@@ -10,8 +10,6 @@ use Silex\Application;
 use Site\Controller\Base;
 use Site\Controller\Exception;
 use Site\Model\UserWithId;
-use Site\OAuth\GoogleOAuth;
-use Site\OAuth\ParatextOAuth;
 use Site\Provider\AuthUserProvider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

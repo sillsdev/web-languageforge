@@ -8,7 +8,6 @@ use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken as OAuthAccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use Psr\Http\Message\ResponseInterface;
-use Site\OAuth\ParatextUser;
 
 class ParatextOAuthProvider extends AbstractProvider
 {
