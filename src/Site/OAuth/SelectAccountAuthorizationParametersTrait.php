@@ -5,7 +5,7 @@ namespace Site\OAuth;
 /**
  * Use this trait in any OAuthProviders you create, so that you don't have to duplicate this code repeatedly
  */
-trait SelectAccountAuthorizationParameters
+trait SelectAccountAuthorizationParametersTrait
 {
     protected function getAuthorizationParameters(array $options)
     {
