@@ -8,7 +8,7 @@ use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
-use Site\Controller\OAuthBase;
+use Site\OAuth\OAuthBase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
