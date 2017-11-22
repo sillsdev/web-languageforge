@@ -11,7 +11,7 @@ namespace Site\OAuth;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken as OAuthAccessToken;
 use Silex\Application;
-use Site\Controller\OAuthBase;
+use Site\OAuth\OAuthBase;
 use Site\OAuth\SelectAccountOAuthProvider;
 use Symfony\Component\HttpFoundation\Request;
 

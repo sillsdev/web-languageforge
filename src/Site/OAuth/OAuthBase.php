@@ -1,12 +1,14 @@
 <?php
 
-namespace Site\Controller;
+namespace Site\OAuth;
 
 use Api\Library\Shared\Website;
 use Api\Model\Shared\UserModel;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken as OAuthAccessToken;
 use Silex\Application;
+use Site\Controller\Base;
+use Site\Controller\Exception;
 use Site\Model\UserWithId;
 use Site\OAuth\GoogleOAuth;
 use Site\OAuth\ParatextOAuth;
