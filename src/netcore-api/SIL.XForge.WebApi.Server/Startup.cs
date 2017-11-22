@@ -1,3 +1,4 @@
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -33,7 +34,7 @@ namespace SIL.XForge.WebApi.Server
                 .AddJsonOptions(a => a.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
             services.AddRouting(options => options.LowercaseUrls = true);
 
-            services.AddMongoDataAccess();
+            services.AddMongoDataAccess("mongodb://localhost:27017");
             services.AddSingleton<SendReceiveService>();
         }
 
@@ -46,6 +47,8 @@ namespace SIL.XForge.WebApi.Server
             app.UseCors("GlobalPolicy");
 
             app.UseMvc();
+
+            app.UseHangfireServer();
         }
     }
 }

@@ -1,8 +1,10 @@
-using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using SIL.XForge.WebApi.Server.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace SIL.XForge.WebApi.Server.DataAccess
 {
@@ -24,41 +26,65 @@ namespace SIL.XForge.WebApi.Server.DataAccess
 
         public Task<T> GetAsync(string dbName, string id)
         {
-            return GetCollection(dbName).Find(CreateIdFilter(id)).FirstOrDefaultAsync();
+            return GetCollection(dbName).Find(e => e.Id == id).FirstOrDefaultAsync();
         }
 
-        public Task InsertAsync(string dbName, T entity)
+        public IMongoQueryable<T> Query(string dbName)
         {
-            return GetCollection(dbName).InsertOneAsync(entity);
+            return GetCollection(dbName).AsQueryable();
         }
 
-        public async Task<bool> UpdateAsync(string dbName, T entity)
+        public async Task<bool> InsertAsync(string dbName, T entity)
         {
-            ReplaceOneResult result = await GetCollection(dbName).ReplaceOneAsync(CreateIdFilter(entity.Id), entity);
+            try
+            {
+                await GetCollection(dbName).InsertOneAsync(entity);
+                return true;
+            }
+            catch (AggregateException ae)
+            {
+                ae.Handle(e =>
+                    {
+                        var mwe = e as MongoWriteException;
+                        if (mwe != null && mwe.WriteError.Category == ServerErrorCategory.DuplicateKey)
+                            return true;
+                        return false;
+                    });
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateAsync(string dbName, T entity, bool upsert = false)
+        {
+            ReplaceOneResult result = await GetCollection(dbName).ReplaceOneAsync(e => e.Id == entity.Id, entity,
+                new UpdateOptions { IsUpsert = upsert });
             if (result.IsAcknowledged)
-                return result.MatchedCount > 0;
+                return upsert || result.MatchedCount > 0;
             return false;
+        }
+
+        public async Task<T> UpdateAsync(string dbName, Expression<Func<T, bool>> filter,
+            Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update, bool upsert = false)
+        {
+            return await GetCollection(dbName).FindOneAndUpdateAsync(filter, update(Builders<T>.Update),
+                new FindOneAndUpdateOptions<T>
+                {
+                    IsUpsert = upsert,
+                    ReturnDocument = ReturnDocument.After
+                });
         }
 
         public async Task<bool> DeleteAsync(string dbName, T entity)
         {
-            DeleteResult result = await GetCollection(dbName).DeleteOneAsync(CreateIdFilter(entity.Id));
+            DeleteResult result = await GetCollection(dbName).DeleteOneAsync(e => e.Id == entity.Id);
             if (result.IsAcknowledged)
                 return result.DeletedCount > 0;
             return false;
         }
 
-        public async Task<bool> DeleteAsync(string dbName, string id)
+        public Task<T> DeleteAsync(string dbName, Expression<Func<T, bool>> filter)
         {
-            DeleteResult result = await GetCollection(dbName).DeleteOneAsync(CreateIdFilter(id));
-            if (result.IsAcknowledged)
-                return result.DeletedCount > 0;
-            return false;
-        }
-
-        protected static FilterDefinition<T> CreateIdFilter(string id)
-        {
-            return Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
+            return GetCollection(dbName).FindOneAndDeleteAsync(filter);
         }
 
         protected IMongoCollection<T> GetCollection(string dbName)
