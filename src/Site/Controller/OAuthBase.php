@@ -9,6 +9,7 @@ use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken as OAuthAccessToken;
 use Silex\Application;
 use Site\Model\UserWithId;
+use Site\OAuth\GoogleOAuth;
 use Site\OAuth\ParatextOAuth;
 use Site\Provider\AuthUserProvider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
