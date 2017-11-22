@@ -1,3 +1,4 @@
+using Hangfire;
 using SIL.XForge.WebApi.Server.Models;
 
 namespace SIL.XForge.WebApi.Server.Services
@@ -6,12 +7,19 @@ namespace SIL.XForge.WebApi.Server.Services
     {
         public void StartJob(SendReceiveJob job)
         {
-            // TODO: perform send/receive on a separate thread
+            if (job.BackgroundJobId != null)
+                return;
+
+            string id = job.Id;
+            BackgroundJob.Enqueue<SendReceiveRunner>(r => r.RunAsync(null, null, id));
         }
 
-        public void CancelJob(string id)
+        public void CancelJob(SendReceiveJob job)
         {
-            // TODO: cancel send/receive job
+            if (job.BackgroundJobId == null)
+                return;
+
+            BackgroundJob.Delete(job.BackgroundJobId);
         }
     }
 }

@@ -1,10 +1,11 @@
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver.Linq;
+using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Dtos;
 using SIL.XForge.WebApi.Server.Models;
 using SIL.XForge.WebApi.Server.Services;
+using System.Collections.Generic;
 using System.Linq;
-using SIL.XForge.WebApi.Server.DataAccess;
 using System.Threading.Tasks;
 
 namespace SIL.XForge.WebApi.Server.Controllers
@@ -40,11 +41,8 @@ namespace SIL.XForge.WebApi.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] string projectId)
         {
-            var job = new SendReceiveJob
-            {
-                Project = projectId
-            };
-            await _jobRepo.InsertAsync(DbNames.Default, job);
+            SendReceiveJob job = await _jobRepo.UpdateAsync(DbNames.Default, j => j.Project == projectId,
+                b => b.SetOnInsert(j => j.Project, projectId), true);
             _sendReceiveService.StartJob(job);
             SendReceiveJobDto dto = CreateDto(job);
             return Created(dto.Href, dto);
@@ -53,9 +51,10 @@ namespace SIL.XForge.WebApi.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(string id)
         {
-            if (await _jobRepo.DeleteAsync(DbNames.Default, id))
+            SendReceiveJob job = await _jobRepo.DeleteAsync(DbNames.Default, j => j.Id == id);
+            if (job != null)
             {
-                _sendReceiveService.CancelJob(id);
+                _sendReceiveService.CancelJob(job);
                 return Ok();
             }
             return NotFound();
