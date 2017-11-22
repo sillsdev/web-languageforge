@@ -3,12 +3,11 @@
 
 <div class="content container" data-ng-controller="LinkOAuthAccountCtrl">
     <div class="row">
-        Hi, {{ oauth_full_name_for_login }}. Please log in with your Scripture Forge account
-        so we can link it to your Google account ({{ oauth_email_for_login }}).
+        Hi, {{ oauth_full_name_for_login }}. Do you already have a Scripture Forge account?
         <hr>
         <div style="display: flex; justify-content: space-between">
-            <a href="/auth/login" class="btn btn-success">Link existing account</a>
-            <a href="{{ oauth_uri_for_signup }}" class="btn btn-info">Create new account</a>
+            <a href="/auth/login" class="btn btn-success">Yes</a>
+            <a href="{{ oauth_uri_for_signup }}" class="btn btn-danger">No</a>
         </div>
     </div>
 </div>
