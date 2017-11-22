@@ -4,5 +4,6 @@ namespace SIL.XForge.WebApi.Server.Models
     {
         public string Id { get; set; }
         public string Project { get; set; }
+        public string BackgroundJobId { get; set; }
     }
 }

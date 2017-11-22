@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.Mongo;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -11,13 +13,15 @@ namespace SIL.XForge.WebApi.Server.DataAccess
 {
     public static class DataAccessExtensions
     {
-        public static IServiceCollection AddMongoDataAccess(this IServiceCollection services)
+        public static IServiceCollection AddMongoDataAccess(this IServiceCollection services, string connectionString)
         {
+            services.AddHangfire(x => x.UseMongoStorage(connectionString, DbNames.Default));
+
             var pack = new ConventionPack();
             pack.Add(new CamelCaseElementNameConvention());
             ConventionRegistry.Register("Custom", pack, t => true);
 
-            services.AddSingleton<IMongoClient>(sp => new MongoClient("mongodb://localhost:27017"));
+            services.AddSingleton<IMongoClient>(sp => new MongoClient(connectionString));
             services.AddMongoRepository<SendReceiveJob>("send_receive");
             return services;
         }
