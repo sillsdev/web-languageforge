@@ -237,6 +237,7 @@ $app->get('/auth/{appName}',    'Site\Controller\Auth::view')->value('appName', 
 $app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bind('auth_forgot_password');
 
 $app->get('/oauthcallback/google', 'Site\Controller\GoogleOAuth::oauthCallback');
+$app->get('/oauthcallback/paratext', 'Site\OAuth\ParatextOAuth::oauthCallback');
 
 $app->get('/download/assets/{appName}/{projectSlug}/audio/{filename}', 'Site\Controller\Download::assets');
 $app->get('/download/assets/{appName}/{projectSlug}/{filename}', 'Site\Controller\Download::assets');

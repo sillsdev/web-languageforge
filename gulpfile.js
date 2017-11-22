@@ -888,6 +888,14 @@ gulp.task('build-productionConfig', function () {
   if (googleClientSecret === undefined) {
     googleClientSecret = 'googleClientSecret';
   }
+  var paratextClientId = process.env.PARATEXT_CLIENT_ID;
+  if (paratextClientId === undefined) {
+    paratextClientId = 'paratextClientId';
+  }
+  var paratextApiToken = process.env.PARATEXT_API_TOKEN;
+  if (paratextApiToken === undefined) {
+    paratextApiToken = 'paratextApiToken';
+  }
   var params = require('yargs')
     .option('mongodbConnection', {
       demand: false,
@@ -907,6 +915,14 @@ gulp.task('build-productionConfig', function () {
       demand: false,
       // default: secrets_google_api_client_id.web.client_secret,
       default: googleClientSecret,
+      type: 'string' })
+    .option('paratextClientId', {
+      demand: false,
+      default: paratextClientId,
+      type: 'string' })
+    .option('paratextApiToken', {
+      demand: false,
+      default: paratextApiToken,
       type: 'string' })
     .argv;
   var configSrc = [
@@ -930,6 +946,12 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('GOOGLE_CLIENT_SECRET', ').*;$/m,
       '$1' + params.googleClientSecret + '\');'))
+    .pipe(replace(
+      /(define\('PARATEXT_CLIENT_ID', ').*;$/m,
+      '$1' + params.paratextClientId + '\');'))
+    .pipe(replace(
+      /(define\('PARATEXT_API_TOKEN', ').*;$/m,
+      '$1' + params.paratextApiToken + '\');'))
     .pipe(gulp.dest('./'));
 });
 
