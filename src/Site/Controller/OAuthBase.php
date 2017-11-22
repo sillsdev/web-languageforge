@@ -5,7 +5,6 @@ namespace Site\Controller;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\UserModel;
 use League\OAuth2\Client\Provider\AbstractProvider;
-use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken as OAuthAccessToken;
 use Silex\Application;
 use Site\Model\UserWithId;
@@ -18,14 +17,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-
-// TODO: This would be useful... if we could somehow get the Google and Facebook OAuth user classes to implement it
-interface ResourceOwnerInterfaceWithMoreDetails extends ResourceOwnerInterface
-{
-    public function getName();
-    public function getEmail();
-    public function getAvatar();
-}
 
 abstract class OAuthBase extends Base
 {
