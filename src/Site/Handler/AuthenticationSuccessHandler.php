@@ -8,7 +8,7 @@ use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
-use Site\Controller\GoogleOAuth;
+use Site\Controller\OAuthBase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -62,11 +62,11 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
 
     public function addOAuthIdToUserModel(SessionInterface $session, UserModel $user)
     {
-        $oauthTokenId = $session->get(GoogleOAuth::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
+        $oauthTokenId = $session->get(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
         if (!is_null($oauthTokenId)) {
-            $oauthProvider = $session->get(GoogleOAuth::SESSION_KEY_OAUTH_PROVIDER);
+            $oauthProvider = $session->get(OAuthBase::SESSION_KEY_OAUTH_PROVIDER);
             $this->addOAuthIdToUserModelForAnyProvider($user, $oauthTokenId, $oauthProvider);
-            GoogleOAuth::removeOAuthKeysFromSession($session);
+            OAuthBase::removeOAuthKeysFromSession($session);
         }
     }
 

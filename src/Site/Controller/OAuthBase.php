@@ -5,10 +5,11 @@ namespace Site\Controller;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\UserModel;
 use League\OAuth2\Client\Provider\AbstractProvider;
-use League\OAuth2\Client\Provider\Google;
+use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken as OAuthAccessToken;
 use Silex\Application;
 use Site\Model\UserWithId;
+use Site\OAuth\ParatextOAuth;
 use Site\Provider\AuthUserProvider;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,16 +18,12 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class SelectAccountOAuthProvider extends Google
+// TODO: This would be useful... if we could somehow get the Google and Facebook OAuth user classes to implement it
+interface ResourceOwnerInterfaceWithMoreDetails extends ResourceOwnerInterface
 {
-    protected function getAuthorizationParameters(array $options)
-    {
-        // Default provider adds "approval_prompt=auto", but using both "prompt" and "approval_prompt" together is not allowed
-        $params = parent::getAuthorizationParameters($options);
-        $params['prompt'] = 'select_account';
-        unset($params['approval_prompt']);
-        return $params;
-    }
+    public function getName();
+    public function getEmail();
+    public function getAvatar();
 }
 
 abstract class OAuthBase extends Base
@@ -36,15 +33,17 @@ abstract class OAuthBase extends Base
     const SESSION_KEY_OAUTH_EMAIL_ADDRESS = 'oauthEmailAddress';
     const SESSION_KEY_OAUTH_FULL_NAME = 'oauthFullName';
 
+    /**
+     * @param $redirectUri
+     * @return AbstractProvider
+     */
+    abstract protected function getOAuthProvider($redirectUri): AbstractProvider;
+
     public function oauthCallback(Request $request, Application $app)
     {
         $website = Website::get();
         $redirectUri = $website->baseUrl() . '/oauthcallback/'. $this->getProviderName();
-        $provider = new SelectAccountOAuthProvider([
-            'clientId'     => GOOGLE_CLIENT_ID,
-            'clientSecret' => GOOGLE_CLIENT_SECRET,
-            'redirectUri'  => $redirectUri,
-        ]);
+        $provider = $this->getOAuthProvider($redirectUri);
 
         $error = $request->query->get('error', null);
         if (! is_null($error)) {
@@ -55,7 +54,7 @@ abstract class OAuthBase extends Base
             $this->addErrorMessage($app, 'OAuth error ' . htmlspecialchars($error, ENT_QUOTES, 'UTF-8'));
             return new RedirectResponse($this->chooseRedirectUrl(false, $app));
         }
-        if ($app['session']->has('oauthtoken')) {
+        if ($app['session']->has('oauthtoken') && $app['session']->has('oauthprovider') && $app['session']->get('oauthprovider') == $this->getProviderName()) {
             $token = $app['session']->get('oauthtoken');
         } else {
             $code = $request->query->get('code', null);
@@ -71,7 +70,7 @@ abstract class OAuthBase extends Base
                     // Or just try to get an auth code again:
                     // return $this->getAuthCode($app, $provider, ["prompt" => "select_account"]);
                 }
-                if ($app['session']->has('oauthtoken')) {
+                if ($app['session']->has('oauthtoken') && $app['session']->has('oauthprovider') && $app['session']->get('oauthprovider') == $this->getProviderName()) {
                     $token = $app['session']->get('oauthtoken');
                 } else {
                     $token = $provider->getAccessToken('authorization_code', [
@@ -110,8 +109,10 @@ abstract class OAuthBase extends Base
                 return new GoogleOAuth();
                 break;
             case "facebook":
+                // TODO: Implement FacebookOAuth class
                 break;
             case "paratext":
+                return new ParatextOAuth();
                 break;
             default:
                 break;
