@@ -24,6 +24,7 @@ abstract class OAuthBase extends Base
     const SESSION_KEY_OAUTH_PROVIDER = 'oauthProvider';
     const SESSION_KEY_OAUTH_EMAIL_ADDRESS = 'oauthEmailAddress';
     const SESSION_KEY_OAUTH_FULL_NAME = 'oauthFullName';
+    const SESSION_KEY_OAUTH_AVATAR_URL = 'oauthAvatarUrl';
 
     /**
      * @param $redirectUri
@@ -188,6 +189,7 @@ abstract class OAuthBase extends Base
         $session->remove(OAuthBase::SESSION_KEY_OAUTH_PROVIDER);
         $session->remove(OAuthBase::SESSION_KEY_OAUTH_EMAIL_ADDRESS);
         $session->remove(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME);
+        $session->remove(OAuthBase::SESSION_KEY_OAUTH_AVATAR_URL);
     }
 
     abstract protected function handleOAuthToken(Application $app, AbstractProvider $provider, OAuthAccessToken $token);
@@ -213,7 +215,7 @@ abstract class OAuthBase extends Base
                     // And no match by email either
 
                     // Pass all OAuth information into the "what next?" page via the session, so that the user doesn't see it in the login page URL
-                    $this->setOAuthDetailsInSession($app, $googleOAuthId, $userDetails->getEmail(), $userDetails->getName());
+                    $this->setOAuthDetailsInSession($app, $googleOAuthId, $userDetails->getEmail(), $userDetails->getName(), $userDetails->getAvatar());
 
                     // We'll ask the user to either link existing account or create a new account
                     return new RedirectResponse('/auth/link_oauth_account');
@@ -241,11 +243,14 @@ abstract class OAuthBase extends Base
      * @param string $googleOAuthId
      * @param string $email
      */
-    protected function setOAuthDetailsInSession(Application $app, string $googleOAuthId, string $email, string $fullName)
+    protected function setOAuthDetailsInSession(Application $app, string $googleOAuthId, string $email, string $fullName, string $avatarUrl = null)
     {
         $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK, $googleOAuthId);
         $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_PROVIDER, 'google');
         $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_EMAIL_ADDRESS, $email);
         $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME, $fullName);
+        if ($avatarUrl) {
+            $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_AVATAR_URL, $avatarUrl);
+        }
     }
 }
