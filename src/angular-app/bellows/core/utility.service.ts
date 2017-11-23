@@ -13,7 +13,11 @@ export class UtilityService {
   }
 
   getAvatarUrl(avatarRef: string): string {
-    return (avatarRef) ? '/Site/views/shared/image/avatar/' + avatarRef : '';
+    if (avatarRef) {
+      return (avatarRef.startsWith('http')) ? avatarRef : '/Site/views/shared/image/avatar/' + avatarRef;
+    } else {
+      return '';
+    }
   }
 
   isAudio(tag: string): boolean {
