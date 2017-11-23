@@ -4,6 +4,7 @@ namespace Api\Model\Shared;
 
 use Api\Library\Shared\Website;
 use Api\Model\Scriptureforge\Sfchecks\SfchecksUserProfile;
+use Api\Model\Shared\Mapper\ArrayOf;
 use Api\Model\Shared\Mapper\Id;
 use Api\Model\Shared\Mapper\IdReference;
 use Api\Model\Shared\Mapper\MapperModel;
@@ -39,6 +40,9 @@ class UserModel extends MapperModel
         $this->id = new Id();
         $this->projects = new ReferenceList();
         $this->siteRole = new MapOf();
+        $this->googleOAuthIds = new ArrayOf();
+        $this->facebookOAuthIds = new ArrayOf();
+        $this->paratextOAuthIds = new ArrayOf();
         $this->validationExpirationDate = new \DateTime();
         $this->resetPasswordExpirationDate = new \DateTime();
         $this->projectsProperties = new MapOf(function () {
@@ -95,6 +99,15 @@ class UserModel extends MapperModel
 
     /** @var MapOf<string> */
     public $siteRole;
+
+    /** @var ArrayOf<string> */
+    public $googleOAuthIds;
+
+    /** @var ArrayOf<string> */
+    public $paratextOAuthIds;
+
+    /** @var ArrayOf<string> */
+    public $facebookOAuthIds;
 
     /** @var boolean */
     public $active;

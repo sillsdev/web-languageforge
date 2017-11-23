@@ -147,6 +147,10 @@ var phpPatterns = [
   'test/**/*.php'
 ];
 
+// If using a JSON file for the Google API secrets, uncomment the following line and search for "Google API" to find other lines to uncomment further below.
+
+// const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
+
 // -------------------------------------
 //   Task: Do Reload
 // -------------------------------------
@@ -889,6 +893,23 @@ gulp.task('build-changeGroup').description =
 // -------------------------------------
 gulp.task('build-productionConfig', function () {
   var defaultMongodbConnection = 'localhost:27017';
+  // Pass Google client ID and secret via environment variables so they don't show up in the build logs
+  var googleClientId = process.env.GOOGLE_CLIENT_ID;
+  if (googleClientId === undefined) {
+    googleClientId = 'googleClientId';
+  }
+  var googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  if (googleClientSecret === undefined) {
+    googleClientSecret = 'googleClientSecret';
+  }
+  // var paratextClientId = process.env.PARATEXT_CLIENT_ID;
+  // if (paratextClientId === undefined) {
+  //   paratextClientId = 'paratextClientId';
+  // }
+  // var paratextApiToken = process.env.PARATEXT_API_TOKEN;
+  // if (paratextApiToken === undefined) {
+  //   paratextApiToken = 'paratextApiToken';
+  // }
   var params = require('yargs')
     .option('mongodbConnection', {
       demand: false,
@@ -898,6 +919,25 @@ gulp.task('build-productionConfig', function () {
       demand: false,
       default: 'not_a_secret',
       type: 'string' })
+    // If using a JSON file for the Google API secrets, uncomment the "default: secrets_google_api_client_id.(name)" lines below.
+    .option('googleClientId', {
+      demand: false,
+      // default: secrets_google_api_client_id.web.client_id,
+      default: googleClientId,
+      type: 'string' })
+    .option('googleClientSecret', {
+      demand: false,
+      // default: secrets_google_api_client_id.web.client_secret,
+      default: googleClientSecret,
+      type: 'string' })
+    // .option('paratextClientId', {
+    //   demand: false,
+    //   default: paratextClientId,
+    //   type: 'string' })
+    // .option('paratextApiToken', {
+    //   demand: false,
+    //   default: paratextApiToken,
+    // type: 'string' })
     .argv;
   var configSrc = [
     './src/config.php',
@@ -914,6 +954,18 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('REMEMBER_ME_SECRET', ').*;$/m,
       '$1' + params.secret + '\');'))
+    .pipe(replace(
+      /(define\('GOOGLE_CLIENT_ID', ').*;$/m,
+      '$1' + params.googleClientId + '\');'))
+    .pipe(replace(
+      /(define\('GOOGLE_CLIENT_SECRET', ').*;$/m,
+      '$1' + params.googleClientSecret + '\');'))
+    .pipe(replace(
+      /(define\('PARATEXT_CLIENT_ID', ').*;$/m,
+      '$1' + params.paratextClientId + '\');'))
+    .pipe(replace(
+      /(define\('PARATEXT_API_TOKEN', ').*;$/m,
+      '$1' + params.paratextApiToken + '\');'))
     .pipe(gulp.dest('./'));
 });
 

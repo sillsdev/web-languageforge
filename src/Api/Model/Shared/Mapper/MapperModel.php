@@ -77,6 +77,11 @@ class MapperModel extends ObjectForEncoding
         return $this->_mapper->readByProperties($this, $properties);
     }
 
+    public function readByPropertyArrayContains($property, $value)
+    {
+        return $this->_mapper->readByPropertyArrayContains($this, $property, $value);
+    }
+
     /**
      * Writes the model to the mongo collection
      * @return string The unique id of the object written
