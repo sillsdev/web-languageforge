@@ -7,7 +7,10 @@ use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\Rights\SiteRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
+use Silex\Application;
+use Site\OAuth\OAuthBase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 use Symfony\Component\Security\Http\HttpUtils;
@@ -34,6 +37,13 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
             $user->readByUserName($username);
         }
         $website = Website::get();
+
+        $session = $request->getSession();
+        if (OAuthBase::sessionHasOAuthId($session)) {
+            OAuthBase::linkOAuthAccount($session, $user);
+            // NOTE that this adds the OAuth ID to the user model without checking if it's already there. That check
+            // should happen elsewhere, and an oauthTokenIdToLink should only be put in the session if it's necessary.
+        }
 
         $user->last_login = time();
         $user->write();

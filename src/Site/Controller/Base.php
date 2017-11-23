@@ -144,7 +144,12 @@ class Base
                 $this->data['isAdmin'] = SystemRoles::hasRight($this->_user->role, Domain::USERS + Operation::CREATE);
             }
             $this->data['userName'] = $this->_user->username;
-            $this->data['smallAvatarUrl'] = '/Site/views/shared/image/avatar/'.$this->_user->avatar_ref;
+            if ($this->_user->avatar_ref && substr($this->_user->avatar_ref, 0, 4) === 'http')
+            {
+                $this->data['smallAvatarUrl'] = $this->_user->avatar_ref;
+            } else {
+                $this->data['smallAvatarUrl'] = '/Site/views/shared/image/avatar/' . $this->_user->avatar_ref;
+            }
             $projects = $this->_user->listProjects($this->website->domain);
             $this->data['projects_count'] = $projects->count;
             $this->data['projects'] = $projects->entries;
