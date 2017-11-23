@@ -152,7 +152,7 @@ class Communicate
         $vars = [
             'user' => $inviterUserModel,
             'project' => $projectModel,
-            'link' => self::calculateSignupUrl($toUserModel->email, $website),
+            'link' => self::calculateSignupUrl($website, $toUserModel->email),
             'website' => $website,
         ];
 
@@ -325,12 +325,21 @@ class Communicate
     }
 
     /**
-     * @param string $email
      * @param Website $website
+     * @param string $email
+     * @param string $name
+     * @param string $avatar
      * @return string
      */
-    public static function calculateSignupUrl(string $email, Website $website): string
+    public static function calculateSignupUrl(Website $website, string $email, string $name = null, string $avatar = null): string
     {
-        return $website->baseUrl() . '/public/signup#!/?e=' . urlencode($email);
+        $url = $website->baseUrl() . '/public/signup#!/?e=' . urlencode($email);
+        if ($name) {
+            $url = $url . '&n=' . urlencode($name);
+        }
+        if ($avatar) {
+            $url = $url . '&a=' . urlencode($avatar);
+        }
+        return $url;
     }
 }

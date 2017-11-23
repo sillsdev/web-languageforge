@@ -87,10 +87,12 @@ class Auth extends App
         $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
         if ($app['session']->has(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK)) {
             $this->data['oauth_id_for_login'] = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
-            $this->data['oauth_full_name_for_login'] = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME);
+            $name = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME);
+            $this->data['oauth_full_name_for_login'] = $name;
             $email = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_EMAIL_ADDRESS);
             $this->data['oauth_email_for_login'] = $email;
-            $link = Communicate::calculateSignupUrl($email, $this->website);
+            $avatar = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_AVATAR_URL);
+            $link = Communicate::calculateSignupUrl($this->website, $email, $name, $avatar);
             // TODO: It would be nice to fill in the full name, too, since we have it available. That would require updating the Angular signup app.
             $this->data['oauth_uri_for_signup'] = $link;
         }
