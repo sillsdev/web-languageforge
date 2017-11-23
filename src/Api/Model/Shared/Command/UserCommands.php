@@ -393,6 +393,9 @@ class UserCommands
         $user->active = true;
         $user->name = $params['name'];
         $user->setUniqueUsernameFromString($params['name']);
+        if (isset($params['avatar_ref'])) {
+            $user->avatar_ref = $params['avatar_ref'];
+        }
         $user->role = SystemRoles::USER;
         $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
         $userId = $user->write();
