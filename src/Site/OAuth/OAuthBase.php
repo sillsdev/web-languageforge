@@ -125,7 +125,7 @@ abstract class OAuthBase extends Base
         $user->googleOAuthIds[] = $oauthTokenId;
     }
 
-    public function linkOAuthAccount(SessionInterface $session, UserModel $user)
+    public static function linkOAuthAccount(SessionInterface $session, UserModel $user)
     {
         $oauthTokenId = $session->get(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
         if (!is_null($oauthTokenId)) {
@@ -182,6 +182,16 @@ abstract class OAuthBase extends Base
         $authUrl = $provider->getAuthorizationUrl($options);
         $app['session']->set('oauth2state', $provider->getState());
         return new RedirectResponse($authUrl);
+    }
+
+    /**
+     * Used to detect if we are signing in after OAuth success in order to link accounts
+     * @param SessionInterface $session
+     * @return mixed
+     */
+    public static function sessionHasOAuthId(SessionInterface $session)
+    {
+        return (!is_null($session)) && $session->has(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
     }
 
     public static function removeOAuthKeysFromSession(SessionInterface $session) {

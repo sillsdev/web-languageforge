@@ -93,9 +93,11 @@ class Auth extends App
             $this->data['oauth_email_for_login'] = $email;
             $avatar = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_AVATAR_URL);
             $link = Communicate::calculateSignupUrl($this->website, $email, $name, $avatar);
-            // TODO: It would be nice to fill in the full name, too, since we have it available. That would require updating the Angular signup app.
             $this->data['oauth_uri_for_signup'] = $link;
         }
+
+        $website = Website::get();
+        $this->data['website_name'] = $website->name;
 
         $errorMsg = $app['security.last_error']($request);
         if ($errorMsg == 'Bad credentials.') {
