@@ -25,6 +25,7 @@ abstract class OAuthBase extends Base
     const SESSION_KEY_OAUTH_EMAIL_ADDRESS = 'oauthEmailAddress';
     const SESSION_KEY_OAUTH_FULL_NAME = 'oauthFullName';
     const SESSION_KEY_OAUTH_AVATAR_URL = 'oauthAvatarUrl';
+    const SESSION_KEY_OAUTH_ACCESS_TOKEN = 'oauthToken';
 
     /**
      * @param $redirectUri
@@ -47,8 +48,10 @@ abstract class OAuthBase extends Base
             $this->addErrorMessage($app, 'OAuth error ' . htmlspecialchars($error, ENT_QUOTES, 'UTF-8'));
             return new RedirectResponse($this->chooseRedirectUrl(false, $app));
         }
-        if ($app['session']->has('oauthtoken') && $app['session']->has('oauthprovider') && $app['session']->get('oauthprovider') == $this->getProviderName()) {
-            $token = $app['session']->get('oauthtoken');
+        if ($app['session']->has(OAuthBase::SESSION_KEY_OAUTH_ACCESS_TOKEN)
+            && $app['session']->has(OauthBase::SESSION_KEY_OAUTH_PROVIDER)
+            && $app['session']->get(OauthBase::SESSION_KEY_OAUTH_PROVIDER) == $this->getProviderName()) {
+            $token = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_ACCESS_TOKEN);
         } else {
             $code = $request->query->get('code', null);
             if (is_null($code)) {
@@ -63,14 +66,14 @@ abstract class OAuthBase extends Base
                     // Or just try to get an auth code again:
                     // return $this->getAuthCode($app, $provider, ["prompt" => "select_account"]);
                 }
-                if ($app['session']->has('oauthtoken') && $app['session']->has('oauthprovider') && $app['session']->get('oauthprovider') == $this->getProviderName()) {
-                    $token = $app['session']->get('oauthtoken');
+                if ($app['session']->has(OAuthBase::SESSION_KEY_OAUTH_ACCESS_TOKEN) && $app['session']->has(OauthBase::SESSION_KEY_OAUTH_PROVIDER) && $app['session']->get(OauthBase::SESSION_KEY_OAUTH_PROVIDER) == $this->getProviderName()) {
+                    $token = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_ACCESS_TOKEN);
                 } else {
                     $token = $provider->getAccessToken('authorization_code', [
                         'code' => $code
                     ]);
-                    $app['session']->set('oauthtoken', $token);
-                    $app['session']->set('oauthprovider', $this->getProviderName());
+                    $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_ACCESS_TOKEN, $token);
+                    $app['session']->set(OauthBase::SESSION_KEY_OAUTH_PROVIDER, $this->getProviderName());
                 }
             }
         }
@@ -195,6 +198,7 @@ abstract class OAuthBase extends Base
     }
 
     public static function removeOAuthKeysFromSession(SessionInterface $session) {
+        $session->remove(OAuthBase::SESSION_KEY_OAUTH_ACCESS_TOKEN);
         $session->remove(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
         $session->remove(OAuthBase::SESSION_KEY_OAUTH_PROVIDER);
         $session->remove(OAuthBase::SESSION_KEY_OAUTH_EMAIL_ADDRESS);
