@@ -1,5 +1,6 @@
 using Hangfire;
 using Hangfire.Mongo;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -13,8 +14,11 @@ namespace SIL.XForge.WebApi.Server.DataAccess
 {
     public static class DataAccessExtensions
     {
-        public static IServiceCollection AddMongoDataAccess(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddMongoDataAccess(this IServiceCollection services,
+            IConfiguration configuration)
         {
+            IConfigurationSection dataAccessConfig = configuration.GetSection("DataAccess");
+            string connectionString = dataAccessConfig.GetValue<string>("ConnectionString");
             services.AddHangfire(x => x.UseMongoStorage(connectionString, DbNames.Default));
 
             var pack = new ConventionPack();

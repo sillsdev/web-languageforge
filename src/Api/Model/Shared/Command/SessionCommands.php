@@ -6,6 +6,7 @@ use Api\Library\Shared\HelpContentCommands;
 use Api\Library\Shared\Website;
 use Api\Model\Shared\ProjectModel;
 use Api\Model\Shared\UserModel;
+use Firebase\JWT\JWT;
 
 class SessionCommands
 {
@@ -61,6 +62,19 @@ class SessionCommands
         $fileSizeMax = min(array($postMax, $uploadMax));
         $sessionData['fileSizeMax'] = $fileSizeMax;
 
+        // JWT token
+        $issuedAt = time();
+        // 30 day expiration
+        $expiration = $issuedAt + (30 * 86400);
+        $token = array(
+            "iss" => "xForge",
+            "aud" => "xForge",
+            "iat" => $issuedAt,
+            "exp" => $expiration,
+            "sub" => (string) $userId
+        );
+        $sessionData['accessToken'] = JWT::encode($token, self::getJwtKey());
+
         //return JsonEncoder::encode($sessionData);  // This is handled elsewhere
         return $sessionData;
     }
@@ -88,6 +102,19 @@ class SessionCommands
         }
 
         return $result;
+    }
+
+    private static $_jwtKey;
+    private static function getJwtKey()
+    {
+        if (!isset(static::$_jwtKey)) {
+            if (file_exists(JWT_KEY_FILE)) {
+                static::$_jwtKey = trim(file_get_contents(JWT_KEY_FILE));
+            } else {
+                static::$_jwtKey = 'this_is_not_a_secret_dev_only';
+            }
+        }
+        return static::$_jwtKey;
     }
 
 }
