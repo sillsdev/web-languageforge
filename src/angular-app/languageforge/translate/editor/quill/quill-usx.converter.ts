@@ -1,5 +1,12 @@
+import Quill from 'quill';
+
+import { JsonRpcResult } from '../../../../bellows/core/api/json-rpc.service';
+import { UtilityService } from '../../../../bellows/core/utility.service';
+import { SourceDocumentEditor, TargetDocumentEditor } from '../document-editor';
+
 export class FormatUsxHtmlAttributes {
   // must assign null value so properties can be iterated over
+  id: string = null;
   title: string = null;
 }
 
@@ -49,50 +56,122 @@ export class QuillUsxConverter {
     return html.replace(/(\/usx-verse>.*?)(<usx-verse )/g, '\$1</usx-para><usx-para data-verse-alignment>\$2');
   }
 
-  static convertFromStringToHtml(usx: string, mimeType: string): string {
+  static convertFromStringToHtml(usx: string, mimeType: string): JsonRpcResult {
+    const result: JsonRpcResult = {
+      ok: false,
+      data: null
+    };
     const parser = new DOMParser();
     const doc = parser.parseFromString(usx, mimeType);
-    const usxAttributesAndValuesToKeep = new UsxAttributesAndValuesToKeep();
-    QuillUsxConverter.convertNode(doc, 'book', '', usxAttributesAndValuesToKeep);
-    QuillUsxConverter.convertNode(doc, 'para', 'usx-para', usxAttributesAndValuesToKeep);
-    QuillUsxConverter.convertNode(doc, 'chapter', 'usx-chapter', usxAttributesAndValuesToKeep, 'number');
-    QuillUsxConverter.convertNode(doc, 'verse', 'usx-verse', usxAttributesAndValuesToKeep, 'number');
-    QuillUsxConverter.convertNode(doc, 'note', 'usx-note', usxAttributesAndValuesToKeep);
-    QuillUsxConverter.convertNode(doc, 'char', 'usx-char', usxAttributesAndValuesToKeep);
-    console.log(doc);
+    if (!QuillUsxConverter.isDOMParserError(doc)) {
+      const usxAttributesAndValuesToKeep = new UsxAttributesAndValuesToKeep();
+      QuillUsxConverter.removeNodes(doc, ['para', 'chapter', 'verse', 'note', 'char']);
+      QuillUsxConverter.convertNode(doc, 'para', 'usx-para', usxAttributesAndValuesToKeep);
+      QuillUsxConverter.convertNode(doc, 'chapter', 'usx-chapter', usxAttributesAndValuesToKeep, 'number');
+      QuillUsxConverter.convertNode(doc, 'verse', 'usx-verse', usxAttributesAndValuesToKeep, 'number');
+      QuillUsxConverter.convertNode(doc, 'note', 'usx-note', usxAttributesAndValuesToKeep);
+      QuillUsxConverter.convertNode(doc, 'char', 'usx-char', usxAttributesAndValuesToKeep);
+      result.ok = true;
+    }
 
-    return doc.documentElement.innerHTML;
+    result.data = doc.documentElement.innerHTML;
+    return result;
   }
 
-  private static convertNode(doc: Document, oldTagName: string, newTagName: string,
+  static removeNodes(doc: Document, nodeNamesToKeep: string[]) {
+    let node = doc.documentElement.firstChild;
+    while (node) {
+      const nextSibling = node.nextSibling;
+      if (node.nodeType === Node.ELEMENT_NODE && !nodeNamesToKeep.includes(node.nodeName.toLowerCase())) {
+        doc.documentElement.removeChild(node);
+      }
+
+      node = nextSibling;
+    }
+  }
+
+  static alignHtml(source: SourceDocumentEditor, target: TargetDocumentEditor) {
+    class InsertHtmlAt {
+      constructor(public index: number, public html: string) {}
+    }
+
+    const targetInserts: InsertHtmlAt[] = [];
+    const sourceInserts: InsertHtmlAt[] = [];
+    let targetLine = 0;
+    let sourceLine = 0;
+    let sourceChildNode = source.quill.root.firstChild;
+    let targetChildNode = target.quill.root.firstChild;
+    let sourceChild: HTMLElement;
+    let targetChild: HTMLElement;
+    while (sourceChildNode || targetChildNode) {
+      sourceChild = sourceChildNode as HTMLElement;
+      targetChild = targetChildNode as HTMLElement;
+      if (sourceChild.nodeName !== targetChild.nodeName ||
+        sourceChild.getAttribute('data-style') !== targetChild.getAttribute('data-style')
+      ) {
+        if (sourceChild.nodeName === targetChildNode.nextSibling.nodeName && sourceChild.getAttribute('data-style')
+          === (targetChildNode.nextSibling as HTMLElement).getAttribute('data-style')
+        ) {
+          const index = source.quill.getIndex(source.quill.getLines()[sourceLine]);
+          const html = QuillUsxConverter.newLineHtml(targetChild);
+          sourceInserts.push(new InsertHtmlAt(index, html));
+          targetChildNode = targetChildNode.nextSibling;
+          targetLine++;
+        } else if (sourceChild.nextSibling.nodeName === targetChildNode.nodeName &&
+          (sourceChildNode.nextSibling as HTMLElement).getAttribute('data-style') ===
+          targetChild.getAttribute('data-style')
+        ) {
+          const index = target.quill.getIndex(target.quill.getLines()[targetLine]);
+          const html = QuillUsxConverter.newLineHtml(sourceChild);
+          targetInserts.push(new InsertHtmlAt(index, html));
+          sourceChildNode = sourceChildNode.nextSibling;
+          sourceLine++;
+        }
+      } else {
+        sourceChildNode = sourceChildNode.nextSibling;
+        targetChildNode = targetChildNode.nextSibling;
+        sourceLine++;
+        targetLine++;
+      }
+    }
+
+    for (const insert of targetInserts.reverse()) {
+      target.quill.clipboard.dangerouslyPasteHTML(insert.index, insert.html, Quill.sources.USER);
+    }
+
+    for (const insert of sourceInserts.reverse()) {
+      source.quill.clipboard.dangerouslyPasteHTML(insert.index, insert.html, Quill.sources.USER);
+    }
+  }
+
+  private static newLineHtml(element: HTMLElement): string {
+    const EMPTY_PLACEHOLDER = '\xa0'; // &nbsp;
+    const doc = new Document();
+    const newNode = doc.createElement(element.nodeName);
+    QuillUsxConverter.copyAttributes(element, newNode);
+    if (element.firstChild.nodeName.toLowerCase() === 'usx-verse') {
+      newNode.innerHTML = (element.firstChild as HTMLElement).outerHTML;
+    }
+    newNode.innerHTML += EMPTY_PLACEHOLDER;
+    return newNode.outerHTML;
+  }
+
+  private static convertNode(doc: Document, oldNodeName: string, newNodeName: string,
                              attributesAndValuesToKeep: UsxAttributesAndValuesToKeep,
                              contentAttributeName: string = '') {
-    const nodes = [].slice.call(doc.querySelectorAll(oldTagName)) as HTMLElement[];
+    const nodes = [].slice.call(doc.querySelectorAll(oldNodeName)) as HTMLElement[];
     for (const oldNode of nodes) {
       if (QuillUsxConverter.hasAttributesAndValues(oldNode, attributesAndValuesToKeep)) {
-        const newNode = doc.createElement(newTagName);
+        const newNode = doc.createElement(newNodeName);
         newNode.innerHTML = oldNode.innerHTML;
+        QuillUsxConverter.AddNoteId(oldNode, newNode);
         for (const key in oldNode.attributes) {
           if (oldNode.attributes.hasOwnProperty(key)) {
-            if (contentAttributeName !== '' && oldNode.attributes[key].name === contentAttributeName) {
-              newNode.textContent = oldNode.attributes[key].value;
-            } else if (!attributesAndValuesToKeep.hasOwnProperty(oldNode.attributes[key].name) ||
-              attributesAndValuesToKeep.shouldKeepAnyValue(oldNode.attributes[key].name) ||
-              attributesAndValuesToKeep[oldNode.attributes[key].name].includes(oldNode.attributes[key].value)
-            ) {
-              const name = (attributesAndValuesToKeep.hasOwnProperty(oldNode.attributes[key].name)) ?
-                'data-' + oldNode.attributes[key].name : oldNode.attributes[key].name;
-              newNode.setAttribute(name, oldNode.attributes[key].value);
-              QuillUsxConverter.addNoteTooltip(oldNode, newNode, key);
-            }
+            const oldAttribute: Attr = oldNode.attributes[key];
+            QuillUsxConverter.copyAttribute(oldAttribute, newNode, attributesAndValuesToKeep, contentAttributeName);
+            QuillUsxConverter.addNoteTooltip(oldNode, newNode, oldAttribute);
           }
         }
-
-        // FixMe: If <note> has no text content it is removed completely including attributes we want to round-trip.
-        // Perhaps stop quill from 'optimizing' nested spans. - IJH 2017-11
-        // if (oldTagName === 'note' && QuillUsxConverter.getTextWithoutChildren(oldNode) === '') {
-        //   newNode.innerHTML = '\xa0' + oldNode.innerHTML; // &nbsp;
-        // }
 
         oldNode.parentNode.replaceChild(newNode, oldNode);
       } else {
@@ -114,8 +193,32 @@ export class QuillUsxConverter {
     return false;
   }
 
-  private static addNoteTooltip(oldNode: HTMLElement, newNode: HTMLElement, key: string): void {
-    if (oldNode.attributes[key].name === 'style' && oldNode.attributes[key].value === 'fr') {
+  private static copyAttribute(oldAttribute: Attr, newNode: HTMLElement,
+                               attributesAndValuesToKeep: UsxAttributesAndValuesToKeep,
+                               contentAttributeName: string): void {
+    if (contentAttributeName !== '' && oldAttribute.name === contentAttributeName) {
+      newNode.textContent = oldAttribute.value;
+    } else if (!attributesAndValuesToKeep.hasOwnProperty(oldAttribute.name) ||
+      attributesAndValuesToKeep.shouldKeepAnyValue(oldAttribute.name) ||
+      attributesAndValuesToKeep[oldAttribute.name].includes(oldAttribute.value)
+    ) {
+      const name = (attributesAndValuesToKeep.hasOwnProperty(oldAttribute.name)) ?
+        'data-' + oldAttribute.name : oldAttribute.name;
+      newNode.setAttribute(name, oldAttribute.value);
+    }
+  }
+
+  private static AddNoteId(oldNode: HTMLElement, newNode: HTMLElement): void {
+    if (oldNode.nodeName === 'note' && !oldNode.getAttribute('id')) {
+      // FixMe: use UtilityService.uuid() after change to static method - IJH 2017-11
+      const date = new Date();
+      const uniqueId = '_note_' + date.getSeconds() + date.getMilliseconds();
+      newNode.setAttribute('id', uniqueId); // UtilityService.uuid());
+    }
+  }
+
+  private static addNoteTooltip(oldNode: HTMLElement, newNode: HTMLElement, oldAttribute: Attr): void {
+    if (oldAttribute.name === 'style' && oldAttribute.value === 'fr') {
       let tooltip = '';
       const siblings = [].slice.call(oldNode.parentNode.childNodes) as HTMLElement[];
       for (const sibling of siblings) {
@@ -132,19 +235,15 @@ export class QuillUsxConverter {
     }
   }
 
-  // https://stackoverflow.com/questions/9340449/
-  // is-there-a-way-to-get-innertext-of-only-the-top-element-and-ignore-the-child-el
-  private static getTextWithoutChildren(node: HTMLElement) {
-    let child = node.firstChild;
-    const texts: string[] = [];
-
-    while (child) {
-      if (child.nodeType === child.TEXT_NODE) {
-        texts.push((child as Text).data);
+  private static copyAttributes(oldNode: HTMLElement, newNode: HTMLElement) {
+    for (const key in oldNode.attributes) {
+      if (oldNode.attributes.hasOwnProperty(key)) {
+        newNode.setAttribute(oldNode.attributes[key].name, oldNode.attributes[key].value);
       }
-      child = child.nextSibling;
     }
+  }
 
-    return texts.join('');
+  private static isDOMParserError(doc: Document) {
+    return doc.querySelectorAll('parsererror').length > 0;
   }
 }
