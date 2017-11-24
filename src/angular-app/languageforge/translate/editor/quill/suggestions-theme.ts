@@ -93,7 +93,7 @@ export function registerSuggestionsTheme(): void {
     static blotName = 'char';
     // static className = 'char';
     static tagName = 'usx-char';
-    // static scope = VerseInline.scope;
+    static scope = VerseInline.scope;
     // noinspection JSUnusedGlobalSymbols
     static allowedChildren = angular.copy(VerseInline.allowedChildren);
     // noinspection JSUnusedGlobalSymbols
@@ -110,7 +110,7 @@ export function registerSuggestionsTheme(): void {
     static blotName = 'note';
     // static className = 'note';
     static tagName = 'usx-note';
-    // static scope = VerseInline.scope;
+    static scope = VerseInline.scope;
     // noinspection JSUnusedGlobalSymbols
     static allowedChildren = angular.copy(VerseInline.allowedChildren);
     // noinspection JSUnusedGlobalSymbols
@@ -120,6 +120,21 @@ export function registerSuggestionsTheme(): void {
     // noinspection JSUnusedGlobalSymbols
     static formats = VerseInline.formats;
     static value = VerseInline.value;
+
+    remove(): void {
+      const id = this.domNode.getAttribute('id');
+      const parentNode = this.domNode.parentNode;
+      if (id != null && parentNode != null) {
+        const removeNodes = (parentNode as HTMLElement).querySelectorAll('usx-note[id=' + id + ']');
+        for (const key in removeNodes) {
+          if (removeNodes.hasOwnProperty(key)) {
+            parentNode.removeChild(removeNodes[key]);
+          }
+        }
+      }
+
+      super.remove();
+    }
   }
 
   NoteInline.allowedChildren.push(CharInline);

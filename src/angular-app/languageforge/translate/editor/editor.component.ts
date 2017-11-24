@@ -672,9 +672,11 @@ export class TranslateEditorController implements angular.IController {
         this.usxToHtml(usx).then(result => {
           if (result.ok) {
             this.insertHtml(quill, result.data, isVerseOnNewLine, false);
-            this.notice.cancelLoading();
           }
-        });
+        }).catch(result => {
+          this.notice.push(this.notice.ERROR, '"' + file.name + '" does not appear to be valid USX. Try another file.',
+            result.data);
+        }).finally( () => this.notice.cancelLoading());
       }).catch((errorMessage: string) => {
         this.notice.cancelLoading();
         this.notice.push(this.notice.ERROR, errorMessage);
@@ -700,9 +702,10 @@ export class TranslateEditorController implements angular.IController {
       this.usxToHtml(usx).then(result => {
         if (result.ok) {
           this.insertHtml(quill, result.data);
-          this.notice.cancelLoading();
         }
-      });
+      }).catch(result => {
+        this.notice.push(this.notice.ERROR, 'This does not appear to be valid USX. Try another file.', result.data);
+      }).finally( () => this.notice.cancelLoading());
     }).catch((errorMessage: string) => {
       this.notice.cancelLoading();
       this.notice.push(this.notice.ERROR, errorMessage);
@@ -711,11 +714,12 @@ export class TranslateEditorController implements angular.IController {
 
   private usxToHtml(usx: string): angular.IPromise<JsonRpcResult> {
     const deferred = this.$q.defer();
-    const result: JsonRpcResult = {
-      ok: true,
-      data: QuillUsxConverter.convertFromStringToHtml(usx, 'application/xml')
-    };
-    deferred.resolve(result);
+    const result: JsonRpcResult = QuillUsxConverter.convertFromStringToHtml(usx, 'application/xml');
+    if (result.ok) {
+      deferred.resolve(result);
+    } else {
+      deferred.reject(result);
+    }
     return deferred.promise;
   }
 
@@ -736,14 +740,11 @@ export class TranslateEditorController implements angular.IController {
       }
 
       quill.clipboard.dangerouslyPasteHTML(index, html, Quill.sources.USER);
-      this.alignHtml();
-    });
-  }
 
-  private alignHtml() {
-    if (!this.source.isTextEmpty && !this.target.isTextEmpty) {
-      console.log('can align', this.source.quill.root, this.target.quill.root);
-    }
+      if (!this.source.isTextEmpty && !this.target.isTextEmpty) {
+        QuillUsxConverter.alignHtml(this.source, this.target);
+      }
+    });
   }
 
 }
