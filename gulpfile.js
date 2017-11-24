@@ -348,8 +348,6 @@ gulp.task('test-js', function (cb) {
   new Server({
     configFile: __dirname + '/test/app/karma.conf.js',
     reporters: 'teamcity',
-    browsers: ['PhantomJS'],
-    singleRun: true
   }, cb).start();
 });
 
