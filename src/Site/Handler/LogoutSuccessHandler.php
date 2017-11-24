@@ -22,9 +22,7 @@ class LogoutSuccessHandler extends DefaultLogoutSuccessHandler
         if (!$this->session->getFlashBag()->has('infoMessage')) {
             $this->session->getFlashBag()->add('infoMessage', 'Logged Out Successfully');
         }
-        if (OAuthBase::sessionHasOAuthId($this->session)) {
-            OAuthBase::removeOAuthKeysFromSession($this->session);
-        }
+        OAuthBase::removeOAuthKeysFromSession($this->session);
         return $this->httpUtils->createRedirectResponse($request, '/auth/login');
     }
 }
