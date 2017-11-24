@@ -5,20 +5,34 @@ import { Project } from '../shared/model/project.model';
 import { ApiService, JsonRpcCallback } from './api/api.service';
 
 export class Session {
-  readonly userId: SessionDataFunction;
-  readonly fileSizeMax: SessionDataFunction;
-  readonly baseSite: SessionDataFunction;
-  readonly projectSettings: SessionDataFunction;
-  readonly project: SessionDataFunction;
-  readonly username: SessionDataFunction;
+  constructor(public data?: SessionData) { }
 
-  constructor(public data?: SessionData) {
-    this.userId = this.sessionDataFunctionFor('userId');
-    this.fileSizeMax = this.sessionDataFunctionFor('fileSizeMax');
-    this.baseSite = this.sessionDataFunctionFor('baseSite');
-    this.projectSettings = this.sessionDataFunctionFor('projectSettings');
-    this.project = this.sessionDataFunctionFor('project');
-    this.username = this.sessionDataFunctionFor('username');
+  userId(): string {
+    return this.data.userId;
+  }
+
+  fileSizeMax(): number {
+    return this.data.fileSizeMax;
+  }
+
+  baseSite(): string {
+    return this.data.baseSite;
+  }
+
+  projectSettings(): any {
+    return this.projectSettings;
+  }
+
+  project(): any {
+    return this.project;
+  }
+
+  username(): string {
+    return this.data.username;
+  }
+
+  accessToken(): string {
+    return this.data.accessToken;
   }
 
   hasSiteRight(domain: RightsFunction, operation: RightsFunction): boolean {
@@ -38,18 +52,9 @@ export class Session {
   getProjectSetting(setting: string) {
     return this.data.projectSettings[setting];
   }
-
-  private sessionDataFunctionFor(key: string): SessionDataFunction {
-    return (): any => {
-      return this.data[key];
-    };
-  }
-
 }
 
 export type SessionCallback = (session: Session) => void;
-
-type SessionDataFunction = () => any;
 
 class SessionData {
   userId: string;
@@ -60,6 +65,7 @@ class SessionData {
   username: string;
   userSiteRights: any;
   userProjectRights: any;
+  accessToken: string;
 }
 
 export type RightsFunction = () => number;
@@ -171,5 +177,4 @@ export class SessionService {
   private rightsFunction(val: number): RightsFunction {
     return () => val;
   }
-
 }
