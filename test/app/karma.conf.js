@@ -50,7 +50,7 @@ module.exports = function (config) {
 
     colors: true,
     logLevel: config.LOG_WARN,
-    browsers: ['ChromeHeadless'],
+    browsers: ['ChromiumHeadless'],
     captureTimeout: 8000,
     singleRun: true
   });
