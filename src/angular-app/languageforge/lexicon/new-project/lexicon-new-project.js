@@ -440,7 +440,7 @@ angular.module('lexicon-new-project',
 
     $scope.checkProjectCode = function checkProjectCode() {
       $scope.projectCodeStateDefer = $q.defer();
-      if (!lexProjectService.isValidProjectCode($scope.newProject.projectCode)) {
+      if (!lexProjectService.constructor.isValidProjectCode($scope.newProject.projectCode)) {
         $scope.projectCodeState = 'invalid';
         $scope.projectCodeStateDefer.resolve('invalid');
       } else {
