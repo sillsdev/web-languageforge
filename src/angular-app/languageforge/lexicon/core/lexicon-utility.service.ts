@@ -2,7 +2,7 @@ import { UtilityService } from '../../../bellows/core/utility.service';
 
 export class LexiconUtilityService extends UtilityService {
   getLexeme(config: any, entry: any): string {
-    return this.getFirstField(config, entry, 'lexeme');
+    return LexiconUtilityService.getFirstField(config, entry, 'lexeme');
   }
 
   //noinspection JSUnusedGlobalSymbols
@@ -22,9 +22,13 @@ export class LexiconUtilityService extends UtilityService {
     new Set(inputSystems).forEach((inputSystemTag: string) => {
       if (!this.isAudio(inputSystemTag)) {
         let valueToAppend = '';
-        if (entry.citationForm != null && entry.citationForm[inputSystemTag] != null && entry.citationForm[inputSystemTag].value != '') {
+        if (entry.citationForm != null && entry.citationForm[inputSystemTag] != null &&
+          entry.citationForm[inputSystemTag].value !== ''
+        ) {
           valueToAppend = entry.citationForm[inputSystemTag].value;
-        } else if (entry.lexeme != null && entry.lexeme[inputSystemTag] != null && entry.lexeme[inputSystemTag].value != '') {
+        } else if (entry.lexeme != null && entry.lexeme[inputSystemTag] != null &&
+          entry.lexeme[inputSystemTag].value !== ''
+        ) {
           valueToAppend = entry.lexeme[inputSystemTag].value;
         }
 
@@ -40,18 +44,10 @@ export class LexiconUtilityService extends UtilityService {
     return citation;
   }
 
-  getDefinition(config: any, sense: any): string {
-    return this.getFirstField(config, sense, 'definition');
-  }
-
-  getGloss(config: any, sense: any): string {
-    return this.getFirstField(config, sense, 'gloss');
-  }
-
   getMeaning(config: any, sense: any): string {
-    let meaning = this.getDefinition(config, sense);
+    let meaning = LexiconUtilityService.getDefinition(config, sense);
     if (!meaning) {
-      meaning = this.getGloss(config, sense);
+      meaning = LexiconUtilityService.getGloss(config, sense);
     }
 
     return meaning;
@@ -76,9 +72,9 @@ export class LexiconUtilityService extends UtilityService {
     if (posModel) {
       if (optionlists) {
         let abbreviation = '';
-        for (let optionlist of optionlists) {
+        for (const optionlist of optionlists) {
           if (optionlist.code === 'partOfSpeech' || optionlist.code === 'grammatical-info') {
-            for (let item of optionlist.items) {
+            for (const item of optionlist.items) {
               if (item.key === posModel.value) {
                 abbreviation = item.abbreviation;
               }
@@ -86,8 +82,9 @@ export class LexiconUtilityService extends UtilityService {
           }
         }
 
-        if (abbreviation)
+        if (abbreviation) {
           return abbreviation;
+        }
       }
 
       // capture text inside parentheses
@@ -107,11 +104,11 @@ export class LexiconUtilityService extends UtilityService {
 
   private getFields(config: any, node: any, fieldName: string, delimiter: string = ' '): string {
     let result = '';
-    if (node[fieldName] && config && config.fields && config.fields[fieldName] &&
-      config.fields[fieldName].inputSystems) {
-      for (let inputSystem of config.fields[fieldName].inputSystems ) {
-        let field = node[fieldName][inputSystem];
-        if (!this.isAudio(inputSystem) && field != null && field.value != null && field.value !== ''
+    if (node[fieldName] && config && config.fields && config.fields[fieldName] && config.fields[fieldName].inputSystems
+    ) {
+      for (const languageTag of config.fields[fieldName].inputSystems ) {
+        const field = node[fieldName][languageTag];
+        if (!this.isAudio(languageTag) && field != null && field.value != null && field.value !== ''
         ) {
           if (result) {
             result += delimiter + field.value;
@@ -125,15 +122,21 @@ export class LexiconUtilityService extends UtilityService {
     return result;
   }
 
-  private getFirstField(config: any, node: any, fieldName: string): string {
+  private static getDefinition(config: any, sense: any): string {
+    return LexiconUtilityService.getFirstField(config, sense, 'definition');
+  }
+
+  private static getGloss(config: any, sense: any): string {
+    return LexiconUtilityService.getFirstField(config, sense, 'gloss');
+  }
+
+  private static getFirstField(config: any, node: any, fieldName: string): string {
     let result = '';
-    let ws;
     let field;
     if (node[fieldName] && config && config.fields && config.fields[fieldName] &&
       config.fields[fieldName].inputSystems) {
-      for (let i in config.fields[fieldName].inputSystems) {
-        ws = config.fields[fieldName].inputSystems[i];
-        field = node[fieldName][ws];
+      for (const languageTag of config.fields[fieldName].inputSystems) {
+        field = node[fieldName][languageTag];
         if (field != null && field.value != null && field.value !== '') {
           result = field.value;
           break;
