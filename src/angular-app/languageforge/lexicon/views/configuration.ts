@@ -12,6 +12,8 @@ import { NoticeModule } from '../../../bellows/core/notice/notice.module';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { SessionService } from '../../../bellows/core/session.service';
 import { UtilityService } from '../../../bellows/core/utility.service';
+import { LexiconConfigService } from '../core/lexicon-config.service';
+import { LexiconProjectService } from '../core/lexicon-project.service';
 import { LexiconSendReceiveService } from '../core/lexicon-send-receive.service';
 
 export const LexiconConfigModule = angular
@@ -20,7 +22,8 @@ export const LexiconConfigModule = angular
     'palaso.util.model.transform', 'lexicon.services', InputSystemsModule])
   .controller('ConfigCtrl', ['$scope', '$filter', '$uibModal',
     'silNoticeService', 'sessionService',
-    'lexProjectService', 'lexConfigService', 'lexSendReceive',
+    'lexProjectService', 'lexConfigService',
+    'lexSendReceive',
     LexiconConfigController])
   .controller('FieldConfigCtrl', ['$scope', '$uibModal', 'sessionService', LexiconFieldConfigController])
   .controller('TaskConfigCtrl', ['$scope', '$filter', LexiconTaskConfigurationController])
@@ -29,7 +32,8 @@ export const LexiconConfigModule = angular
 
 function LexiconConfigController($scope: any, $filter: angular.IFilterService, $modal: ModalService,
                                  notice: NoticeService, sessionService: SessionService,
-                                 lexProjectService: any, lexConfig: any, sendReceive: LexiconSendReceiveService) {
+                                 lexProjectService: LexiconProjectService, lexConfig: LexiconConfigService,
+                                 sendReceive: LexiconSendReceiveService) {
   let inputSystemSelected = true;
   let warnOfUnsavedEditsId: string;
   lexProjectService.setBreadcrumbs('configuration', $filter('translate')('Configuration'));
@@ -298,7 +302,7 @@ function LexiconConfigController($scope: any, $filter: angular.IFilterService, $
       }
     };
 
-    $scope.isCustomField = lexConfig.isCustomField;
+    $scope.isCustomField = LexiconConfigService.isCustomField;
     $scope.selectInputSystem = function selectInputSystem(id: string) {
       $scope.selectedInputSystemId = id;
       inputSystemSelected = true;
@@ -470,9 +474,9 @@ function LexiconConfigController($scope: any, $filter: angular.IFilterService, $
     }
 
     function syncProjectStatusSuccess() {
-      sessionService.getSession(true).then((session: any) => {
-        $scope.configDirty = angular.copy(session.projectSettings().config);
-        $scope.optionlistDirty = angular.copy(session.projectSettings().optionlists);
+      sessionService.getSession(true).then((refreshedSession: any) => {
+        $scope.configDirty = angular.copy(refreshedSession.projectSettings().config);
+        $scope.optionlistDirty = angular.copy(refreshedSession.projectSettings().optionlists);
         setupView();
         $scope.selectField($scope.currentField.name, true);
         $scope.configForm.$setPristine();
@@ -551,21 +555,22 @@ function LexiconConfigController($scope: any, $filter: angular.IFilterService, $
     $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes: any) {
       const modalInstance = $modal.open({
         templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
-        controller: ['$scope', '$uibModalInstance', ($scope: any, $modalInstance: any) => {
-          $scope.selected = {
-            code: '',
-            language: {}
-          };
-          $scope.add = () => {
-            $modalInstance.close($scope.selected);
-          };
+        windowTopClass: 'modal-select-language',
+        controller: ['$scope', '$uibModalInstance',
+          (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
+            scope.selected = {
+              code: '',
+              language: {}
+            };
+            scope.add = () => {
+              $modalInstance.close(scope.selected);
+            };
 
-          $scope.close = $modalInstance.dismiss;
+            scope.close = $modalInstance.dismiss;
 
-          $scope.suggestedLanguageCodes = suggestedLanguageCodes;
-        }],
-
-        windowTopClass: 'modal-select-language'
+            scope.suggestedLanguageCodes = suggestedLanguageCodes;
+          }
+        ]
       });
 
       modalInstance.result.then((selected: any) => {
@@ -646,9 +651,9 @@ function LexiconFieldConfigController($scope: any, $modal: ModalService, session
       scope: $scope,
       templateUrl: '/angular-app/languageforge/lexicon/views/new-custom-field.html',
       controller: ['$scope', '$filter', '$uibModalInstance',
-        ($scope: any, $filter: any, $modalInstance: any) => {
-          $scope.selects = {};
-          $scope.selects.level = {
+        (scope: any, $filter: angular.IFilterService, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
+          scope.selects = {};
+          scope.selects.level = {
             optionsOrder: ['entry', 'senses', 'examples'],
             options: {
               entry: $filter('translate')('Entry Level'),
@@ -656,7 +661,7 @@ function LexiconFieldConfigController($scope: any, $modal: ModalService, session
               examples: $filter('translate')('Example Level')
             }
           };
-          $scope.selects.type = {
+          scope.selects.type = {
             optionsOrder: ['multitext', 'optionlist', 'multioptionlist'],
             options: {
               multitext: $filter('translate')('Multi-input-system Text'),
@@ -668,32 +673,32 @@ function LexiconFieldConfigController($scope: any, $modal: ModalService, session
               number: $filter('translate')('Number')
             }
           };
-          $scope.selects.listCode = {
+          scope.selects.listCode = {
             optionsOrder: [],
             options: {}
           };
-          angular.forEach($scope.optionlistDirty, optionList => {
-            $scope.selects.listCode.optionsOrder.push(optionList.code);
-            $scope.selects.listCode.options[optionList.code] = optionList.name;
+          angular.forEach(scope.optionlistDirty, optionList => {
+            scope.selects.listCode.optionsOrder.push(optionList.code);
+            scope.selects.listCode.options[optionList.code] = optionList.name;
           });
 
-          $scope.newCustomData = {
+          scope.newCustomData = {
             name: ''
           };
-          $scope.customFieldNameExists = function customFieldNameExists(level: string, code: string) {
+          scope.customFieldNameExists = function customFieldNameExists(level: string, code: string) {
             const customFieldName = 'customField_' + level + '_' + code;
-            return customFieldName in $scope.fieldConfig;
+            return customFieldName in scope.fieldConfig;
           };
 
-          $scope.add = function add() {
-            $modalInstance.close($scope.newCustomData);
+          scope.add = function add() {
+            $modalInstance.close(scope.newCustomData);
           };
 
-          $scope.$watch('newCustomData.name', (newValue: string, oldValue: string) => {
+          scope.$watch('newCustomData.name', (newValue: string, oldValue: string) => {
             if (angular.isDefined(newValue) && newValue !== oldValue) {
 
               // replace spaces with underscore
-              $scope.newCustomData.code = newValue.replace(/ /g, '_');
+              scope.newCustomData.code = newValue.replace(/ /g, '_');
             }
           });
 
@@ -773,7 +778,7 @@ function LexiconFieldConfigController($scope: any, $modal: ModalService, session
 
   sessionService.getSession().then((session: any) => {
     $scope.showRemoveCustomField = function showRemoveCustomField(fieldName: string) {
-      return $scope.isCustomField(fieldName) &&
+      return LexiconConfigService.isCustomField(fieldName) &&
         !(fieldName in session.projectSettings().config.entry.fields) &&
         !(fieldName in session.projectSettings().config.entry.fields.senses.fields) &&
         !(fieldName in
@@ -784,7 +789,7 @@ function LexiconFieldConfigController($scope: any, $modal: ModalService, session
   $scope.removeSelectedCustomField = function removeSelectedCustomField() {
     const fieldName = $scope.currentField.name;
     let i: number;
-    if ($scope.isCustomField(fieldName)) {
+    if (LexiconConfigService.isCustomField(fieldName)) {
       delete $scope.fieldConfig[fieldName];
 
       // remove field name from fieldOrder
