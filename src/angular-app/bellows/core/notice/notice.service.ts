@@ -26,8 +26,8 @@ export class NoticeService {
   private isLoadingNotice: boolean;
   private loadingMessage: string;
 
-  static $inject: string[] = ['$interval', 'utilService'];
-  constructor(private $interval: angular.IIntervalService, private util: UtilityService) {
+  static $inject: string[] = ['$interval'];
+  constructor(private $interval: angular.IIntervalService) {
     this.notices = [];
     this.timers = {};
     this.percentComplete = 0;
@@ -44,7 +44,7 @@ export class NoticeService {
   }
 
   push(type: () => string, message: string, details?: string, cannotClose?: boolean, time?: number): string {
-    const id = this.util.uuid();
+    const id = UtilityService.uuid();
 
     if (!time && type() === this.SUCCESS()) time = 4 * 1000;
     if (time) {

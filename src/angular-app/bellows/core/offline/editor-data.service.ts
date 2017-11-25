@@ -52,14 +52,12 @@ export class EditorDataService {
   private api: any;
 
   static $inject: string[] = ['$q', '$window', 'silNoticeService',
-    'sessionService', 'utilService',
-    'editorOfflineCache', 'commentsOfflineCache',
-    'lexCommentService'
+    'sessionService', 'editorOfflineCache',
+    'commentsOfflineCache', 'lexCommentService'
   ];
   constructor(private $q: angular.IQService, private $window: WindowService, private notice: NoticeService,
-              private sessionService: SessionService, private util: UtilityService,
-              private cache: EditorOfflineCacheService, private commentsCache: CommentsOfflineCacheService,
-              private commentService: LexiconCommentService) { }
+              private sessionService: SessionService, private cache: EditorOfflineCacheService,
+              private commentsCache: CommentsOfflineCacheService, private commentService: LexiconCommentService) { }
 
   showInitialEntries = (): angular.IPromise<any> => {
     return this.sortAndFilterEntries(true);
@@ -68,7 +66,7 @@ export class EditorDataService {
   showMoreEntries = (): void => {
     const increment = 50;
     if (this.visibleEntries.length < this.filteredEntries.length) {
-      this.util.arrayCopyRetainingReferences(
+      UtilityService.arrayCopyRetainingReferences(
         this.filteredEntries.slice(0, this.visibleEntries.length + increment), this.visibleEntries);
     }
   }
@@ -182,7 +180,7 @@ export class EditorDataService {
     if (result.ok) {
       this.commentService.comments.counts.userPlusOne = result.data.commentsUserPlusOne;
       if (!updateOnly) {
-        this.util.arrayExtend(this.entries, result.data.entries);
+        UtilityService.arrayExtend(this.entries, result.data.entries);
         this.commentService.comments.items.all.push.apply(this.commentService.comments.items.all, result.data.comments);
       } else {
         // splice updates into entry list don't need to modify filteredEntries or visibleEntries since those are
@@ -253,16 +251,16 @@ export class EditorDataService {
       // the length = 0 followed by Array.push.apply is a method of replacing the contents of an array without creating
       // a new array thereby keeping original references to the array
       const entriesSorted = this.sortList(config, this.entries);
-      this.util.arrayCopyRetainingReferences(entriesSorted, this.entries);
+      UtilityService.arrayCopyRetainingReferences(entriesSorted, this.entries);
       const filteredEntriesSorted = this.sortList(config, this.filteredEntries);
-      this.util.arrayCopyRetainingReferences(filteredEntriesSorted, this.filteredEntries);
+      UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted, this.filteredEntries);
       const visibleEntriesSorted = this.sortList(config, this.visibleEntries);
       if (shouldResetVisibleEntriesList) {
-        this.util.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, 50), this.visibleEntries);
+        UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, 50), this.visibleEntries);
       } else {
         console.log('sortedVisibleEntries');
         console.log(visibleEntriesSorted);
-        this.util.arrayCopyRetainingReferences(visibleEntriesSorted, this.visibleEntries);
+        UtilityService.arrayCopyRetainingReferences(visibleEntriesSorted, this.visibleEntries);
         console.log(this.visibleEntries);
       }
 
@@ -277,21 +275,21 @@ export class EditorDataService {
     return this.sessionService.getSession().then(session => {
       const config = session.projectSettings().config;
       if (this.entryListModifiers.filterBy) {
-        this.util.arrayCopyRetainingReferences(this.entries.filter((entry: any) => {
+        UtilityService.arrayCopyRetainingReferences(this.entries.filter((entry: any) => {
           return this.entryMeetsFilterCriteria(config, entry);
         }), this.filteredEntries);
       } else {
-        this.util.arrayCopyRetainingReferences(this.entries, this.filteredEntries);
+        UtilityService.arrayCopyRetainingReferences(this.entries, this.filteredEntries);
       }
 
       if (shouldResetVisibleEntriesList) {
-        this.util.arrayCopyRetainingReferences(this.filteredEntries.slice(0, 50), this.visibleEntries);
+        UtilityService.arrayCopyRetainingReferences(this.filteredEntries.slice(0, 50), this.visibleEntries);
       } else {
         const filteredVisibleEntries = this.visibleEntries.filter((entry: any) => {
           return this.entryMeetsFilterCriteria(config, entry);
         });
 
-        this.util.arrayCopyRetainingReferences(filteredVisibleEntries, this.visibleEntries);
+        UtilityService.arrayCopyRetainingReferences(filteredVisibleEntries, this.visibleEntries);
       }
     });
   }
@@ -438,7 +436,7 @@ export class EditorDataService {
           angular.forEach(config.entry.fields, (entryField, entryFieldKey) => {
             if (entryField.type === 'multitext') {
               angular.forEach(entry[entryFieldKey], (fieldNode, ws) => {
-                  if (ws && this.util.isAudio(ws) && fieldNode.value !== '') {
+                  if (ws && UtilityService.isAudio(ws) && fieldNode.value !== '') {
                     containsData = true;
                   }
                 });
@@ -449,7 +447,7 @@ export class EditorDataService {
                 angular.forEach(config.entry.fields.senses.fields, (senseField: any, senseFieldKey: string) => {
                   if (senseField.type === 'multitext') {
                     angular.forEach(sense[senseFieldKey], (fieldNode: any, ws: string) => {
-                      if (ws && this.util.isAudio(ws) && fieldNode.value !== '') {
+                      if (ws && UtilityService.isAudio(ws) && fieldNode.value !== '') {
                         containsData = true;
                       }
                     });
@@ -461,7 +459,7 @@ export class EditorDataService {
                         (exampleField: any, exampleFieldKey: string) => {
                           if (exampleField.type === 'multitext') {
                             angular.forEach(example[exampleFieldKey], (fieldNode: any, ws: string) => {
-                              if (ws && this.util.isAudio(ws) && fieldNode.value !== '') {
+                              if (ws && UtilityService.isAudio(ws) && fieldNode.value !== '') {
                                 containsData = true;
                               }
                             });
@@ -544,11 +542,11 @@ export class EditorDataService {
     let endTime;
     let numOfEntries: number;
     this.cache.getAllEntries().then(entries => {
-      this.util.arrayExtend(this.entries, entries);
+      UtilityService.arrayExtend(this.entries, entries);
       numOfEntries = entries.length;
       if (entries.length > 0) {
         this.commentsCache.getAllComments().then(comments => {
-          this.util.arrayExtend(this.commentService.comments.items.all, comments);
+          UtilityService.arrayExtend(this.commentService.comments.items.all, comments);
           this.cache.getProjectData().then(projectData => {
             this.commentService.comments.counts.userPlusOne = projectData.commentsUserPlusOne;
             endTime = performance.now();

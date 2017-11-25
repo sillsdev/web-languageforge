@@ -100,7 +100,7 @@ angular.module('lexicon-new-project',
     '$state', 'Upload', 'inputSystems', 'lexProjectService', 'lexSendReceiveApi',  'lexSendReceive',
   function ($scope, $q, $filter, $modal, $window,
             sessionService, notice, projectService, linkService, $translate,
-            $state, Upload, inputSystems, lexProjectService, sendReceiveApi, sendReceive) {
+            $state, Upload, inputSystemsService, lexProjectService, sendReceiveApi, sendReceive) {
     $scope.interfaceConfig = {};
     $scope.interfaceConfig.userLanguageCode = 'en';
     sessionService.getSession().then(function (session) {
@@ -115,7 +115,7 @@ angular.module('lexicon-new-project',
     $scope.interfaceConfig.pullNormal = 'pull-left';
     $scope.interfaceConfig.placementToSide = 'left';
     $scope.interfaceConfig.placementNormal = 'right';
-    if (inputSystems.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
+    if (inputSystemsService.constructor.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
       $scope.interfaceConfig.direction = 'rtl';
       $scope.interfaceConfig.pullToSide = 'pull-left';
       $scope.interfaceConfig.pullNormal = 'pull-right';

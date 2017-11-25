@@ -22,7 +22,7 @@ angular.module('palaso.ui.language', ['language.inputSystems'])
         $scope.currentCode = '';
         $scope.puiAddDisabled = true;
         $scope.filterText = 'xXxXxXxXxXxDoesntExistxXxXxXxXxXx';
-        $scope.allLanguages = inputSystems.languages();
+        $scope.allLanguages = inputSystems.constructor.languages();
 
         // Sort languages with two-letter codes first, then three-letter codes
         $scope.buildLanguageList = function () {
