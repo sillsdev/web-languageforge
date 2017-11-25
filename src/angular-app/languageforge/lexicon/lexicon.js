@@ -67,7 +67,7 @@ angular.module('lexicon',
     'lexSendReceiveApi', 'lexSendReceive', 'lexRightsService', '$q', 'inputSystems',
   function ($scope, sessionService, lexConfig, lexProjectService,
             $translate, $location, $interval, notice, editorService,
-            sendReceiveApi, sendReceive, rightsService, $q, inputSystems) {
+            sendReceiveApi, sendReceive, rightsService, $q, inputSystemsService) {
     var pristineLanguageCode;
 
     $scope.finishedLoading = false;
@@ -109,7 +109,7 @@ angular.module('lexicon',
         $translate.use(code);
         pristineLanguageCode = angular.copy(code);
 
-        if (inputSystems.isRightToLeft(code)) {
+        if (inputSystemsService.constructor.isRightToLeft(code)) {
           $scope.interfaceConfig.direction = 'rtl';
           $scope.interfaceConfig.pullToSide = 'pull-left';
           $scope.interfaceConfig.pullNormal = 'pull-right';

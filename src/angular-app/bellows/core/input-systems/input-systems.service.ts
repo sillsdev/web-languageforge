@@ -6,7 +6,7 @@ import { inputSystemsRegions } from './input-systems.regions';
 import { inputSystemsScripts } from './input-systems.scripts';
 
 export class InputSystemsService {
-  languages(dataType: string = '') {
+  static languages(dataType: string = '') {
     const unlisted = {
       name: 'Unlisted Language',
       code: {
@@ -27,7 +27,7 @@ export class InputSystemsService {
 
     let unlistedExists = false;
     for (const language of languages) {
-      if (language.code.three === unlisted.code.three){
+      if (language.code.three === unlisted.code.three) {
         unlistedExists = true;
         break;
       }
@@ -40,15 +40,15 @@ export class InputSystemsService {
     return languages;
   }
 
-  scripts() {
+  static scripts() {
     return inputSystemsScripts;
   }
 
-  regions() {
+  static regions() {
     return inputSystemsRegions;
   }
 
-  isRightToLeft(code: string) {
+  static isRightToLeft(code: string) {
     // TODO. Enhance. find a source for this list; manually update for now. IJH 2014-04
     const rtlCodes = ['fa', 'fas'];
     return (rtlCodes.indexOf(code) >= 0);
