@@ -4,5 +4,6 @@ namespace SIL.XForge.WebApi.Server.DataAccess
     {
         public const string Default = "scriptureforge";
         public const string Realtime = "realtime";
+        public const string Jobs = "jobs";
     }
 }
