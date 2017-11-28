@@ -16,6 +16,8 @@ export class SignupAppController implements angular.IController {
   showPassword = false;
   emailValid = true;
   emailProvided = false;
+  nameProvided = false;
+  avatarProvided = false;
   submissionInProgress = false;
   emailExists = false;
   takenEmail = '';
@@ -31,16 +33,26 @@ export class SignupAppController implements angular.IController {
   constructor(private $scope: any, private $location: angular.ILocationService,
               private $window: angular.IWindowService,
               private userService: UserService, private sessionService: SessionService) {}
-  
+
   $onInit() {
     this.record.id = '';
     this.record.password = '';
 
-    // Parse for email if given
+    // Parse for user details if given
     const email = this.$location.search().e;
     if (email !== undefined && email.length > 0) {
       this.record.email = decodeURIComponent(email);
       this.emailProvided = true;
+    }
+    const name = this.$location.search().n;
+    if (name !== undefined && name.length > 0) {
+      this.record.name = decodeURIComponent(name);
+      this.nameProvided = true;
+    }
+    const avatar = this.$location.search().a;
+    if (avatar !== undefined && avatar.length > 0) {
+      this.record.avatar_ref = decodeURIComponent(avatar);
+      this.avatarProvided = true;
     }
 
     this.sessionService.getSession().then((session) => {

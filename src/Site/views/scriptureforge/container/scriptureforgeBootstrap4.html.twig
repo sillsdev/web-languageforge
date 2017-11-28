@@ -20,7 +20,7 @@
                             <a class="dropdown-item" href="/app/activity">Activity</a>
                             <div class="dropdown-divider"></div>
                             {% verbatim %}
-                            <div data-ng-switch="projectTypesBySite().length">
+                            <div data-ng-switch="projectTypesBySite().length" data-ng-show="rights.canCreateProject">
                                 <div data-ng-switch-when="1">
                                     <a class="dropdown-item" data-ng-href="/app/{{projectTypesBySite()[0]}}/new-project">
                                         <b>Start or Join a New Project</b></a>
@@ -35,8 +35,13 @@
                             {% endverbatim %}
                             {% if projects|length > 10 %}
                                 <a class="dropdown-item" href="/app/projects">List All Projects</a>
+                                <div class="dropdown-divider"></div>
                             {% endif %}
-                            <div class="dropdown-divider"></div>
+                            {% if projects|length <= 10 %}
+                                {% verbatim %}
+                                <div class="dropdown-divider" data-ng-show="rights.canCreateProject"></div>
+                                {% endverbatim %}
+                            {% endif %}
                             {% for project in projects %}
                                 <a class="dropdown-item"
                                    href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
@@ -83,7 +88,7 @@
                             My Projects</a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="myProjectDropdown">
                             {% verbatim %}
-                            <div data-ng-switch="projectTypesBySite().length">
+                            <div data-ng-switch="projectTypesBySite().length" data-ng-show="rights.canCreateProject">
                                 <div data-ng-switch-when="1">
                                     <a class="dropdown-item" data-ng-href="/app/{{projectTypesBySite()[0]}}/new-project">
                                         <b>Start or Join a New Project</b></a>
@@ -97,9 +102,14 @@
                             </div>
                             {% endverbatim %}
                             {% if projects|length > 10 %}
-                            <a class="dropdown-item" href="/app/projects">List All Projects</a>
+                                <a class="dropdown-item" href="/app/projects">List All Projects</a>
+                                <div class="dropdown-divider"></div>
                             {% endif %}
-                            <div class="dropdown-divider"></div>
+                            {% if projects|length <= 10 %}
+                                {% verbatim %}
+                                <div class="dropdown-divider" data-ng-show="rights.canCreateProject"></div>
+                                {% endverbatim %}
+                            {% endif %}
                             {% for project in projects %}
                                 <a class="dropdown-item"
                                    href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>

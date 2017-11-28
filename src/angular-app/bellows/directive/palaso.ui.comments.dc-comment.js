@@ -9,7 +9,7 @@ angular.module('palaso.ui.comments')
         '/palaso.ui.comments.dc-comment.html',
       controller: ['$scope', 'lexCommentService', 'sessionService', 'utilService', 'modalService',
       function ($scope, commentService, sessionService, util, modal) {
-        $scope.getAvatarUrl = util.getAvatarUrl;
+        $scope.getAvatarUrl = util.constructor.getAvatarUrl;
 
         $scope.showNewReplyForm = false;
 
