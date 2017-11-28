@@ -1,5 +1,7 @@
 import * as angular from 'angular';
 
+import { ProjectSettings } from '../shared/model/project-settings.model';
+import { Project } from '../shared/model/project.model';
 import { ApiService, JsonRpcCallback } from './api/api.service';
 
 export class Session {
@@ -21,21 +23,21 @@ export class Session {
 
   hasSiteRight(domain: RightsFunction, operation: RightsFunction): boolean {
     return this.hasRight(this.data.userSiteRights, domain, operation);
-  };
+  }
 
   hasProjectRight(domain: RightsFunction, operation: RightsFunction): boolean {
     return this.hasRight(this.data.userProjectRights, domain, operation);
-  };
+  }
 
   hasRight(rights: any, domain: RightsFunction, operation: RightsFunction): boolean {
     if (!rights) return false;
-    let right = domain() + operation();
+    const right = domain() + operation();
     return rights.indexOf(right) !== -1;
-  };
+  }
 
   getProjectSetting(setting: string) {
     return this.data.projectSettings[setting];
-  };
+  }
 
   private sessionDataFunctionFor(key: string): SessionDataFunction {
     return (): any => {
@@ -45,22 +47,22 @@ export class Session {
 
 }
 
-export interface SessionCallback { (session: Session): void; }
+export type SessionCallback = (session: Session) => void;
 
-interface SessionDataFunction { (): any}
+type SessionDataFunction = () => any;
 
 class SessionData {
   userId: string;
   fileSizeMax: number;
   baseSite: string;
-  projectSettings: any;
-  project: any;
+  projectSettings: ProjectSettings;
+  project: Project;
   username: string;
   userSiteRights: any;
   userProjectRights: any;
 }
 
-export interface RightsFunction { (): number }
+export type RightsFunction = () => number;
 
 export class Domains {
   ANY: RightsFunction;
@@ -133,7 +135,7 @@ export class SessionService {
 
   projectId() {
     return this.api.projectId;
-  };
+  }
 
   getSession(forceRefresh: boolean = false, callback?: SessionCallback): angular.IPromise<Session> {
     if (this.session.data && !forceRefresh) {
@@ -146,7 +148,7 @@ export class SessionService {
       if (callback) callback(this.session);
       return this.session;
     });
-  };
+  }
 
   getCaptchaData(callback?: JsonRpcCallback): angular.IPromise<any> {
     return this.api.call('get_captcha_data', [], callback);
@@ -155,10 +157,10 @@ export class SessionService {
   private fetchSessionData(forceRefresh: boolean): angular.IPromise<SessionData> {
     if (this.sessionDataPromise && !forceRefresh) return this.sessionDataPromise;
 
-    let promise: angular.IPromise<SessionData> = this.api.call('session_getSessionData').then((response) => {
-      return response.data;
-    }).catch((response) => {
-      console.error(response); // TODO decide whether to show to user or just retry
+    const promise: angular.IPromise<SessionData> = this.api.call('session_getSessionData').then(result => {
+      return result.data;
+    }).catch(result => {
+      console.error(result); // TODO decide whether to show to user or just retry
       return this.fetchSessionData(forceRefresh); // retry
     });
 
@@ -167,10 +169,7 @@ export class SessionService {
   }
 
   private rightsFunction(val: number): RightsFunction {
-    return function () {
-      return val;
-    };
+    return () => val;
   }
 
 }
-

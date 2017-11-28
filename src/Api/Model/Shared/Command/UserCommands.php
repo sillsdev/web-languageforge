@@ -74,9 +74,13 @@ class UserCommands
         }
 
         $user->setProperties(UserModel::ADMIN_ACCESSIBLE, $params);
+        if (array_key_exists('siteRole', $params)) {
+            $user->siteRole->exchangeArray($params['siteRole']);
+        }
         if (!$user->hasRoleOnSite($website) && $website->allowSignupFromOtherSites) {
             $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
         }
+
         return $user->write();
     }
 
@@ -389,6 +393,9 @@ class UserCommands
         $user->active = true;
         $user->name = $params['name'];
         $user->setUniqueUsernameFromString($params['name']);
+        if (isset($params['avatar_ref'])) {
+            $user->avatar_ref = $params['avatar_ref'];
+        }
         $user->role = SystemRoles::USER;
         $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
         $userId = $user->write();
