@@ -33,6 +33,7 @@
         - php-xdebug
         - postfix
         - unzip
+        - chromium-browser
 
     - name: check for node binary
       stat: path=/usr/local/bin/node

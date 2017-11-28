@@ -1,9 +1,9 @@
 import * as angular from 'angular';
 
 import { JsonRpcCallback, JsonRpcResult, JsonRpcService } from './json-rpc.service';
-export { JsonRpcCallback } from './json-rpc.service';
 
-export interface ApiMethod { (): angular.IPromise<any> }
+export { JsonRpcCallback, JsonRpcResult } from './json-rpc.service';
+export type ApiMethod = () => angular.IPromise<any>;
 
 export class ApiService {
   projectId: string;
@@ -11,13 +11,13 @@ export class ApiService {
 
   static $inject: string[] = ['jsonRpc', '$q', '$window'];
   constructor(private jsonRpc: JsonRpcService, private $q: angular.IQService, private $window: angular.IWindowService) {
-    let projectIdMatch = $window.location.pathname.match(/^\/app\/[a-z]+\/([a-z0-9]{24,})\/?$/i);
+    const projectIdMatch = $window.location.pathname.match(/^\/app\/[a-z]+\/([a-z0-9]{24,})\/?$/i);
     this.projectId = (projectIdMatch === null) ? undefined : projectIdMatch[1];
     this.isProduction = !/\.local$/.test($window.location.hostname);
   }
 
-  call(method: string, args?: any[], callback?: JsonRpcCallback): angular.IPromise<any> {
-    let options = {
+  call(method: string, args?: any[], callback?: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+    const options = {
       projectId: this.projectId
     };
 
@@ -28,7 +28,7 @@ export class ApiService {
         result.ok ? resolve(result) : reject(result);
       });
     });
-  };
+  }
 
   /**
    * @deprecated in TypeScript (Ok still in JS). Use 'call' directly so the method signature is defined
@@ -37,9 +37,9 @@ export class ApiService {
    */
   method(method: string): ApiMethod {
     // cannot be an arrow function as that doesn't support use of 'arguments'
-    return function (): angular.IPromise<any> {
+    return function(): angular.IPromise<JsonRpcResult> {
       // convert to array
-      let args = [].slice.call(arguments);
+      const args = [].slice.call(arguments);
       let callback: JsonRpcCallback;
       if (typeof args[args.length - 1] === 'function') {
         callback = args.pop();
@@ -47,6 +47,6 @@ export class ApiService {
 
       return this.call(method, args, callback);
     }.bind(this);
-  };
+  }
 
 }
