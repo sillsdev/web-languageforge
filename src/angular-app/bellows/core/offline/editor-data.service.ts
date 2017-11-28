@@ -256,14 +256,9 @@ export class EditorDataService {
       UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted, this.filteredEntries);
       const visibleEntriesSorted = this.sortList(config, this.visibleEntries);
       if (shouldResetVisibleEntriesList) {
+        // TODO: Magic number "50" below should become a constant somewhere
         UtilityService.arrayCopyRetainingReferences(filteredEntriesSorted.slice(0, 50), this.visibleEntries);
-      } else {
-        console.log('sortedVisibleEntries');
-        console.log(visibleEntriesSorted);
-        UtilityService.arrayCopyRetainingReferences(visibleEntriesSorted, this.visibleEntries);
-        console.log(this.visibleEntries);
       }
-
       const sortTime = (performance.now() - startTime) / 1000;
       if (sortTime > 0.5) {
         console.warn('Sort time took ' + sortTime.toFixed(2) + ' seconds.');
@@ -283,13 +278,8 @@ export class EditorDataService {
       }
 
       if (shouldResetVisibleEntriesList) {
+        // TODO: Magic number "50" below should become a constant somewhere
         UtilityService.arrayCopyRetainingReferences(this.filteredEntries.slice(0, 50), this.visibleEntries);
-      } else {
-        const filteredVisibleEntries = this.visibleEntries.filter((entry: any) => {
-          return this.entryMeetsFilterCriteria(config, entry);
-        });
-
-        UtilityService.arrayCopyRetainingReferences(filteredVisibleEntries, this.visibleEntries);
       }
     });
   }
@@ -387,11 +377,14 @@ export class EditorDataService {
         }
 
         if (newOffset < totalCount) {
-          this.doFullRefresh(newOffset).then(() => {
-            deferred.resolve(result);
+          this.doFullRefresh(newOffset).then((newResult) => {
+            // TODO: Merge the old and new results so that we're returning the full array
+            deferred.resolve(newResult);
           });
         } else {
-          deferred.resolve(result);
+          this.sortAndFilterEntries(false).then(() => {
+            deferred.resolve(result)
+          });
         }
       });
     });
