@@ -85,7 +85,11 @@ function EditorPage() {
       browser.wait(expectedCondition.visibilityOf(
         element(by.id('lexAppListView'))), CONDITION_TIMEOUT);
       return this.entriesList.filter(function (row) {
-        return row.element(by.binding('entry.word')).getText().then(function (word) {
+        var element = row.element(by.binding('entry.word'));
+
+        // fix problem with protractor not scrolling to element before click
+        browser.driver.executeScript('arguments[0].scrollIntoView();', element.getWebElement());
+        return element.getText().then(function (word) {
           return (word.indexOf(lexeme) > -1);
         });
       });
@@ -120,6 +124,7 @@ function EditorPage() {
       // Only click the button if it will result in fields being hidden
       this.toggleHiddenFieldsBtn.getText().then(function (text) {
         if (text === this.toggleHiddenFieldsBtnText.hide) {
+          util.scrollTop();
           this.toggleHiddenFieldsBtn.click();
         }
       }.bind(this));

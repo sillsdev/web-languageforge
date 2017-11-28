@@ -236,6 +236,9 @@ $app->get('/auth/reset_password/{resetPasswordKey}', 'Site\Controller\Auth::view
 $app->get('/auth/{appName}',    'Site\Controller\Auth::view')->value('appName', 'login');
 $app->post('/auth/forgot_password', 'Site\Controller\Auth::forgotPassword')->bind('auth_forgot_password');
 
+$app->get('/oauthcallback/google', 'Site\OAuth\GoogleOAuth::oauthCallback');
+//$app->get('/oauthcallback/paratext', 'Site\OAuth\ParatextOAuth::oauthCallback');  // Not currently active
+
 $app->get('/download/assets/{appName}/{projectSlug}/audio/{filename}', 'Site\Controller\Download::assets');
 $app->get('/download/assets/{appName}/{projectSlug}/{filename}', 'Site\Controller\Download::assets');
 $app->get('/{pageName}/',       'Site\Controller\Page::view')->value('pageName', 'home');

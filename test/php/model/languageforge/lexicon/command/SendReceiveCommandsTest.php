@@ -4,10 +4,12 @@ use Api\Model\Languageforge\Lexicon\Command\SendReceiveCommands;
 use Api\Model\Languageforge\Lexicon\LexProjectModel;
 use Api\Model\Languageforge\Lexicon\SendReceiveProjectModel;
 use Api\Model\Shared\Mapper\JsonEncoder;
-use GuzzleHttp\Client;
-use GuzzleHttp\Message\Response;
-use GuzzleHttp\Stream\Stream;
-use GuzzleHttp\Subscriber\Mock;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\MiddleWare;
+use GuzzleHttp\Psr7\Response;
 use Litipk\Jiffy\UniversalTimestamp;
 use Palaso\Utilities\FileUtilities;
 use PHPUnit\Framework\TestCase;
@@ -93,9 +95,8 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = '';
         $password = '';
-        $client = new Client();
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password);
 
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
@@ -105,11 +106,9 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $mock = new Mock([new Response(403)]);
-        $client->getEmitter()->attach($mock);
+        $response = new Response(403);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, [$response]);
 
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
@@ -119,11 +118,9 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $mock = new Mock([new Response(404)]);
-        $client->getEmitter()->attach($mock);
+        $response = new Response(404);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, [$response]);
 
         $this->assertEquals(false, $result['hasValidCredentials']);
         $this->assertCount(0, $result['projects']);
@@ -133,13 +130,10 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier1", "name": "name", "repository": "", "role": ""}]');
+        $body = '[{"identifier": "identifier1", "name": "name", "repository": "", "role": ""}]';
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-        $mock = new Mock([$response]);
-        $client->getEmitter()->attach($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, [$response]);
 
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(1, $result['projects']);
@@ -149,14 +143,11 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier2", "name": "name2", "repository": "", "role": ""}, '.
-            '{"identifier": "identifier1", "name": "name1", "repository": "", "role": ""}]');
+        $body = '[{"identifier": "identifier2", "name": "name2", "repository": "", "role": ""}, '.
+            '{"identifier": "identifier1", "name": "name1", "repository": "", "role": ""}]';
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-        $mock = new Mock([$response]);
-        $client->getEmitter()->attach($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, [$response]);
 
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
@@ -169,16 +160,13 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", '.
+        $body = '[{"identifier": "identifier", "name": "name2", '.
             '"repository": "https://public.languagedepot.org", "role": ""}, '.
             '{"identifier": "identifier", "name": "name1", "repository": '.
-            '"https://private.languagedepot.org", "role": ""}]');
+            '"https://private.languagedepot.org", "role": ""}]';
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-        $mock = new Mock([$response]);
-        $client->getEmitter()->attach($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, [$response]);
 
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
@@ -192,16 +180,13 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": '.
+        $body = '[{"identifier": "identifier", "name": "name2", "repository": '.
             '"https://private.languagedepot.org", "role": ""}, '.
             '{"identifier": "identifier", "name": "name1", '.
-            '"repository": "https://public.languagedepot.org", "role": ""}]');
+            '"repository": "https://public.languagedepot.org", "role": ""}]';
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-        $mock = new Mock([$response]);
-        $client->getEmitter()->attach($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, [$response]);
 
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);
@@ -215,14 +200,11 @@ class SendReceiveCommandsTest extends TestCase
     {
         $username = 'mock_user';
         $password = 'mock_pass';
-        $client = new Client();
-        $body = Stream::factory('[{"identifier": "identifier", "name": "name2", "repository": "", "role": ""}, '.
-            '{"identifier": "sr_id", "name": "sr_name", "repository": "", "role": ""}]');
+        $body = '[{"identifier": "identifier", "name": "name2", "repository": "", "role": ""}, '.
+            '{"identifier": "sr_id", "name": "sr_name", "repository": "", "role": ""}]';
         $response = new Response(200, ['Content-Type' => 'application/json'], $body);
-        $mock = new Mock([$response]);
-        $client->getEmitter()->attach($mock);
 
-        $result = SendReceiveCommands::getUserProjects($username, $password, $client);
+        $result = SendReceiveCommands::getUserProjects($username, $password, [$response]);
 
         $this->assertTrue($result['hasValidCredentials']);
         $this->assertCount(2, $result['projects']);

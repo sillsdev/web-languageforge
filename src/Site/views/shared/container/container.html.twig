@@ -18,7 +18,7 @@
         <link rel=stylesheet href="/{{ cssFile }}?v={{ version }}" />
     {% endfor %}
 
-    <link rel="icon" href="/Site/views/{{ app.website.base~'/theme/'~app.website.theme }}/image/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="{{ faviconPath }}" type="image/x-icon" />
 
     {# jquery must be the first js to be loaded #}
     {%  if useMinifiedJs %}
