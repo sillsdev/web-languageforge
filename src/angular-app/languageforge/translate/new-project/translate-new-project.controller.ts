@@ -70,7 +70,7 @@ export class TranslateNewProjectController implements angular.IController {
     this.sessionService.getSession().then(session => {
       if (session.projectSettings() != null && session.projectSettings().interfaceConfig != null) {
         angular.merge(this.interfaceConfig, session.projectSettings().interfaceConfig);
-        if (this.inputSystems.isRightToLeft(this.interfaceConfig.userLanguageCode)) {
+        if (InputSystemsService.isRightToLeft(this.interfaceConfig.userLanguageCode)) {
           this.interfaceConfig.direction = 'rtl';
           this.interfaceConfig.pullToSide = 'float-left';
           this.interfaceConfig.pullNormal = 'float-right';

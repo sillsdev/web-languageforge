@@ -147,6 +147,10 @@ var phpPatterns = [
   'test/**/*.php'
 ];
 
+// If using a JSON file for the Google API secrets, uncomment the following line and search for "Google API" to find other lines to uncomment further below.
+
+// const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
+
 // -------------------------------------
 //   Task: Do Reload
 // -------------------------------------
@@ -344,8 +348,6 @@ gulp.task('test-js', function (cb) {
   new Server({
     configFile: __dirname + '/test/app/karma.conf.js',
     reporters: 'teamcity',
-    browsers: ['PhantomJS'],
-    singleRun: true
   }, cb).start();
 });
 
@@ -550,11 +552,11 @@ gulp.task('test-e2e-doTest', function (cb) {
       demand: false,
       describe: 'filename of a protractor conf file.  default is protractorConf.js',
       type: 'string' })
-    .option('browserstackUser', {
+    .option('browserStackUser', {
       demand: false,
       describe: 'BrowserStack API username',
       type: 'string' })
-    .option('browserstackKey', {
+    .option('browserStackKey', {
       demand: false,
       describe: 'BrowserStack API key',
       type: 'string' })
@@ -570,20 +572,18 @@ gulp.task('test-e2e-doTest', function (cb) {
     (params.webserverHost === 'jamaicanpsalms.scriptureforge.local') ? 'https://' : 'http://';
 
   var configFile;
-  if (params.conf && params.conf.length > 0) {
-    configFile = './test/app/' + params.conf;
-  } else {
-    configFile = './test/app/protractorConf.js';
-  }
-
   var isBrowserStack = false;
+  var protractorOptions = {
+    debug: false,
+    args: []
+  };
 
   // Get the browser stack user and password
-  if (params.browserstackUser && params.browserstackUser.length > 0) {
+  if (params.browserStackUser && params.browserStackUser.length > 0) {
     protractorOptions.args.push('--browserstackUser', params.browserStackUser);
     isBrowserStack = true;
   }
-  if (params.browserstackKey && params.browserstackKey.length > 0) {
+  if (params.browserStackKey && params.browserStackKey.length > 0) {
     protractorOptions.args.push('--browserstackKey', params.browserStackKey);
   }
 
@@ -592,12 +592,19 @@ gulp.task('test-e2e-doTest', function (cb) {
     webserverHost = webserverHost.replace(".local", ".org");
   }
 
+  if (params.conf && params.conf.length > 0) {
+    configFile = './test/app/' + params.conf;
+  } else {
+    if (isBrowserStack) {
+      configFile = './test/app/browserStackLFProtractorConf.js';
+    } else {
+      configFile = './test/app/protractorConf.js';
+    }
+  }
+
   // vars for configuring protractor
-  var protractorOptions = {
-    configFile: configFile,
-    args: ['--baseUrl', protocol + params.webserverHost],
-    debug: false
-  };
+  protractorOptions.configFile = configFile;
+  protractorOptions.args.push('--baseUrl', protocol + webserverHost);
 
   // Generate list of specs to test (glob format so protractor will test whatever files exist)
   var specString = (params.specs) ? params.specs : '*';
@@ -646,6 +653,15 @@ gulp.task('test-e2e-run',
 );
 gulp.task('test-e2e-run').description = 'Run the E2E test on local developer environment';
 
+gulp.task('test-e2e-local-lf', gulp.series(
+    'test-e2e-useTestConfig',
+    'test-restart-webserver',
+    'test-e2e-setupTestEnvironment',
+    'test-e2e-doTest',
+    'test-e2e-teardownTestEnvironment',
+    'test-e2e-useLiveConfig',
+    'test-restart-webserver')
+);
 //endregion
 
 // region sass
@@ -875,6 +891,23 @@ gulp.task('build-changeGroup').description =
 // -------------------------------------
 gulp.task('build-productionConfig', function () {
   var defaultMongodbConnection = 'localhost:27017';
+  // Pass Google client ID and secret via environment variables so they don't show up in the build logs
+  var googleClientId = process.env.GOOGLE_CLIENT_ID;
+  if (googleClientId === undefined) {
+    googleClientId = 'googleClientId';
+  }
+  var googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  if (googleClientSecret === undefined) {
+    googleClientSecret = 'googleClientSecret';
+  }
+  // var paratextClientId = process.env.PARATEXT_CLIENT_ID;
+  // if (paratextClientId === undefined) {
+  //   paratextClientId = 'paratextClientId';
+  // }
+  // var paratextApiToken = process.env.PARATEXT_API_TOKEN;
+  // if (paratextApiToken === undefined) {
+  //   paratextApiToken = 'paratextApiToken';
+  // }
   var params = require('yargs')
     .option('mongodbConnection', {
       demand: false,
@@ -884,6 +917,25 @@ gulp.task('build-productionConfig', function () {
       demand: false,
       default: 'not_a_secret',
       type: 'string' })
+    // If using a JSON file for the Google API secrets, uncomment the "default: secrets_google_api_client_id.(name)" lines below.
+    .option('googleClientId', {
+      demand: false,
+      // default: secrets_google_api_client_id.web.client_id,
+      default: googleClientId,
+      type: 'string' })
+    .option('googleClientSecret', {
+      demand: false,
+      // default: secrets_google_api_client_id.web.client_secret,
+      default: googleClientSecret,
+      type: 'string' })
+    // .option('paratextClientId', {
+    //   demand: false,
+    //   default: paratextClientId,
+    //   type: 'string' })
+    // .option('paratextApiToken', {
+    //   demand: false,
+    //   default: paratextApiToken,
+    // type: 'string' })
     .argv;
   var configSrc = [
     './src/config.php',
@@ -900,6 +952,18 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('REMEMBER_ME_SECRET', ').*;$/m,
       '$1' + params.secret + '\');'))
+    .pipe(replace(
+      /(define\('GOOGLE_CLIENT_ID', ').*;$/m,
+      '$1' + params.googleClientId + '\');'))
+    .pipe(replace(
+      /(define\('GOOGLE_CLIENT_SECRET', ').*;$/m,
+      '$1' + params.googleClientSecret + '\');'))
+    .pipe(replace(
+      /(define\('PARATEXT_CLIENT_ID', ').*;$/m,
+      '$1' + params.paratextClientId + '\');'))
+    .pipe(replace(
+      /(define\('PARATEXT_API_TOKEN', ').*;$/m,
+      '$1' + params.paratextApiToken + '\');'))
     .pipe(gulp.dest('./'));
 });
 
