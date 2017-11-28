@@ -5,7 +5,9 @@ namespace Site\Controller;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class App extends Base
 {
@@ -266,6 +268,7 @@ class AppModel {
             "activity",
             "changepassword",
             "forgot_password",
+            "link_oauth_account",
             "login",
             "projects",
             "reset_password",

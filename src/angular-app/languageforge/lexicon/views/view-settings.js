@@ -160,7 +160,7 @@ angular.module('lexicon.view.settings', ['ui.bootstrap', 'bellows.services', 'pa
         }
       });
 
-      $scope.isCustomField = lexConfig.isCustomField;
+      $scope.isCustomField = lexConfig.constructor.isCustomField;
 
       // $scope.fieldConfig, fieldOrder, and customFieldOrder will be read-only copies of the
       // config, so the view doesn't need to dig too deeply into config.entry.foo.bar.baz.quux

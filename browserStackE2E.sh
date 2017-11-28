@@ -10,11 +10,11 @@
 
 if [ "$1" = "sf" ]
   then
-    E2EHOSTNAME="e2etest.scriptureforge.org"
+    E2EHOSTNAME="e2etest.scriptureforge.local"
 else
-    E2EHOSTNAME="e2etest.languageforge.org"
+    E2EHOSTNAME="e2etest.languageforge.local"
 fi
-gulp test-e2e-run --conf protractorConfBrowserStack.js --webserverHost $E2EHOSTNAME ${@:2}
+gulp test-e2e-run --webserverHost $E2EHOSTNAME ${@:2}
 STATUS=$?
 
 # Ensure cleanup

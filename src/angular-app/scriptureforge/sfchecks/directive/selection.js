@@ -1,3 +1,4 @@
+'use strict';
 
 angular.module('palaso.ui.selection', [])
 
@@ -72,7 +73,7 @@ angular.module('palaso.ui.selection', [])
             scope.oldHighlightedRange = range;
 
             scope.$apply(function () {
-              if (scope.silSelectedText != undefined) {
+              if (scope.silSelectedText !== undefined) {
                 scope.silSelectedText = selectedHtml;
               }
             });
