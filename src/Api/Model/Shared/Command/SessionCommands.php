@@ -67,8 +67,8 @@ class SessionCommands
         // 30 day expiration
         $expiration = $issuedAt + (30 * 86400);
         $token = array(
-            "iss" => "xForge",
-            "aud" => "xForge",
+            "iss" => $website->domain,
+            "aud" => $website->domain,
             "iat" => $issuedAt,
             "exp" => $expiration,
             "sub" => (string) $userId

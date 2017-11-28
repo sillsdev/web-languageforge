@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Services;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -15,16 +16,24 @@ namespace SIL.XForge.WebApi.Server
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var issuers = new List<string> { "languageforge.org", "scriptureforge.org" };
+            if (Environment.IsDevelopment())
+            {
+                issuers.Add("languageforge.local");
+                issuers.Add("scriptureforge.local");
+            }
             IConfigurationSection securityConfig = Configuration.GetSection("Security");
             string keyFilePath = securityConfig.GetValue<string>("JwtKeyFile");
             string key = "this_is_not_a_secret_dev_only";
@@ -35,8 +44,8 @@ namespace SIL.XForge.WebApi.Server
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidIssuer = "xForge",
-                        ValidAudience = "xForge",
+                        ValidIssuers = issuers,
+                        ValidAudiences = issuers,
                         RequireExpirationTime = false,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key))
                     };
