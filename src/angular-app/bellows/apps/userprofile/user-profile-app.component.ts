@@ -11,7 +11,7 @@ interface UserProfileAppControllerScope extends angular.IScope {
 }
 
 export class UserProfileAppController implements angular.IController {
-  getAvatarUrl = this.util.getAvatarUrl;
+  getAvatarUrl = UtilityService.getAvatarUrl;
   projectsSettings: any[];
   emailValid = true;
   usernameValid = true;
@@ -30,20 +30,18 @@ export class UserProfileAppController implements angular.IController {
   private initShape = '';
 
   static $inject = ['$scope', '$window',
-    'userService', 'modalService',
-    'silNoticeService', 'utilService'];
+    'userService', 'modalService', 'silNoticeService'];
   constructor(private $scope: UserProfileAppControllerScope, private $window: angular.IWindowService,
-              private userService: UserService, private modalService: ModalService,
-              private notice: NoticeService, private util: UtilityService) {}
+              private userService: UserService, private modalService: ModalService, private notice: NoticeService) {}
 
   $onInit(): void {
     this.user.avatar_ref = UserProfileAppController.getAvatarRef('', '');
 
-    this.$scope.$watch(() => { return this.user.avatar_color; }, () => {
+    this.$scope.$watch(() => this.user.avatar_color, () => {
       this.user.avatar_ref = UserProfileAppController.getAvatarRef(this.user.avatar_color, this.user.avatar_shape);
     });
 
-    this.$scope.$watch(() => { return this.user.avatar_shape; }, () => {
+    this.$scope.$watch(() => this.user.avatar_shape, () => {
       this.user.avatar_ref = UserProfileAppController.getAvatarRef(this.user.avatar_color, this.user.avatar_shape);
     });
 
@@ -97,7 +95,7 @@ export class UserProfileAppController implements angular.IController {
       (this.$scope.userprofileForm.username.$dirty && !this.$scope.userprofileForm.$error.username);
 
     this.userService.checkUniqueIdentity(this.user.id, this.user.username, this.user.email,
-       (result) => {
+       result => {
       if (result.ok) {
         switch (result.data) {
           case 'usernameExists' :
@@ -126,7 +124,7 @@ export class UserProfileAppController implements angular.IController {
         }
       }
     });
-  };
+  }
 
   submit(): void {
     if (this.user.username !== this.originalUsername) {
@@ -149,10 +147,10 @@ export class UserProfileAppController implements angular.IController {
     } else {
       this.updateUser();
     }
-  };
+  }
 
   private loadUser(): void {
-    this.userService.readProfile((result) => {
+    this.userService.readProfile(result => {
       if (result.ok) {
         this.user = result.data.userProfile;
         this.originalUsername = this.user.username;
@@ -161,16 +159,16 @@ export class UserProfileAppController implements angular.IController {
         this.projectsSettings = result.data.projectsSettings;
 
         // populate the project pickList default values with the userProfile picked values
-        for (let i = 0; i < this.projectsSettings.length; i++) {
-          let project = this.projectsSettings[i];
+        for (const project of this.projectsSettings) {
           if (project.userProperties && project.userProperties.userProfilePickLists) {
             angular.forEach(project.userProperties.userProfilePickLists,
               (pickList, pickListId) => {
                 // ensure user has profile data
                 if (this.user.projectUserProfiles[project.id]) {
-                  if (this.user.projectUserProfiles[project.id][pickListId])
-                    this.projectsSettings[i].userProperties.userProfilePickLists[pickListId]
+                  if (this.user.projectUserProfiles[project.id][pickListId]) {
+                    project.userProperties.userProfilePickLists[pickListId]
                       .defaultKey = this.user.projectUserProfiles[project.id][pickListId];
+                  }
                 }
               }
             );
@@ -178,12 +176,11 @@ export class UserProfileAppController implements angular.IController {
         }
       }
     });
-  };
+  }
 
   private updateUser(): void {
     // populate the userProfile picked values from the project pickLists
-    for (let i = 0; i < this.projectsSettings.length; i++) {
-      let project = this.projectsSettings[i];
+    for (const project of this.projectsSettings) {
       this.user.projectUserProfiles[project.id] = {};
       if (project.userProperties && project.userProperties.userProfilePickLists) {
         angular.forEach(project.userProperties.userProfilePickLists,
@@ -194,11 +191,11 @@ export class UserProfileAppController implements angular.IController {
       }
     }
 
-    this.userService.updateProfile(this.user, (result) => {
+    this.userService.updateProfile(this.user, result => {
       if (result.ok) {
         if (this.user.avatar_color !== this.initColor || this.user.avatar_shape !== this.initShape) {
           const newAvatarUrl = this.getAvatarUrl(this.user.avatar_ref);
-          ['mobileSmallAvatarURL', 'smallAvatarURL'].forEach((id) => {
+          ['mobileSmallAvatarURL', 'smallAvatarURL'].forEach(id => {
             const imageElement = this.$window.document.getElementById(id) as HTMLImageElement;
             imageElement.src = newAvatarUrl;
           });
@@ -212,7 +209,7 @@ export class UserProfileAppController implements angular.IController {
         }
       }
     });
-  };
+  }
 
   private static getAvatarRef(color?: string, shape?: string): string {
     if (!color || !shape) {
