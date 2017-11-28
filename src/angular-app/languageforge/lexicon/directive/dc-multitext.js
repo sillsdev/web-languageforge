@@ -17,8 +17,7 @@ angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOve
     controller: ['$scope', '$state', 'sessionService', 'lexUtils',
     function ($scope, $state, sessionService, lexUtils) {
       $scope.$state = $state;
-      $scope.isAudio = lexUtils.isAudio;
-      $scope.savedFieldID = 'placeHolder';
+      $scope.isAudio = lexUtils.constructor.isAudio;
 
       sessionService.getSession().then(function (session) {
         $scope.inputSystems = session.projectSettings().config.inputSystems;

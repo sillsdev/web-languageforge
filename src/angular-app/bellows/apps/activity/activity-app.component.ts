@@ -31,7 +31,7 @@ class Activity {
 }
 
 export class ActivityAppController implements angular.IController {
-  getAvatarUrl = this.util.getAvatarUrl;
+  getAvatarUrl = UtilityService.getAvatarUrl;
   unread: string[] = [];
   filteredActivities: Activity[] = [];
   activities: Activity[] = [];
@@ -39,10 +39,10 @@ export class ActivityAppController implements angular.IController {
 
   static $inject = ['$sce', 'activityService',
     'breadcrumbService', 'linkService',
-    'sessionService', 'utilService'];
+    'sessionService'];
   constructor(private $sce: angular.ISCEService, private activityService: ActivityService,
               private breadcrumbService: BreadcrumbService, private linkService: LinkService,
-              private sessionService: SessionService, private util: UtilityService) { }
+              private sessionService: SessionService) { }
 
   $onInit(): void {
     this.breadcrumbService.set('top', [
