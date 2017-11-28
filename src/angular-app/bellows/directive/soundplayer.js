@@ -36,12 +36,7 @@ angular.module('palaso.ui.soundplayer', [])
             $scope.audioElement.play();
             mostRecentlyPlayedAudioElement = $scope.audioElement;
           } else {
-            stop($scope.audioElement);
-          }
-
-          function stop(audio) {
-            audio.pause();
-            audio.currentTime = 0;
+            $scope.audioElement.pause();
           }
         };
 
