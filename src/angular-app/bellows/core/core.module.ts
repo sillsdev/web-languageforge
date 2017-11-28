@@ -8,19 +8,18 @@ import { UserService } from './api/user.service';
 import { BytesFilter, RelativeTimeFilter } from './filters';
 import { LinkService } from './link.service';
 import { ModalService } from './modal/modal.service';
-import { OfflineCacheService } from './offline-cache.service';
+import { OfflineModule } from './offline/offline.module';
 import { SessionService } from './session.service';
 import { UtilityService } from './utility.service';
 
 export const CoreModule = angular
-  .module('coreModule', [JsonRpcModule])
+  .module('coreModule', [JsonRpcModule, OfflineModule])
   .service('projectService', ProjectService)
   .service('userService', UserService)
   .service('activityService', ActivityService)
   .service('apiService', ApiService)
   .service('sessionService', SessionService)
   .service('modalService', ['$uibModal', ModalService])
-  .service('offlineCache', ['$window', '$q', OfflineCacheService])
   .service('linkService', LinkService)
   .service('utilService', UtilityService)
   .filter('bytes', BytesFilter)

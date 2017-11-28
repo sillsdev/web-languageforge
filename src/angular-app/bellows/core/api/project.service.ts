@@ -1,8 +1,8 @@
 import * as angular from 'angular';
 
-import { ApiService, JsonRpcCallback } from './api.service';
-import { OfflineCacheService } from '../offline-cache.service';
+import { OfflineCacheService } from '../offline/offline-cache.service';
 import { Session, SessionService } from '../session.service';
+import { ApiService, JsonRpcCallback } from './api.service';
 
 export class ProjectData {
   projectTypeNames: any;
@@ -20,8 +20,7 @@ export class ProjectService {
   private projectTypesBySite: string[];
 
   static $inject: string[] = ['$injector'];
-  constructor(protected $injector: angular.auto.IInjectorService)
-  {
+  constructor(protected $injector: angular.auto.IInjectorService) {
     this.api = $injector.get('apiService');
     this.sessionService = $injector.get('sessionService');
     this.offlineCache = $injector.get('offlineCache');
@@ -37,10 +36,10 @@ export class ProjectService {
     };
 
     this.sessionService.getSession().then((session: Session) => {
-      let types = {
+      const types = {
         scriptureforge: ['sfchecks'],
 
-        //languageforge: ['lexicon', 'semdomtrans']
+        // languageforge: ['lexicon', 'semdomtrans']
         languageforge: ['lexicon']
       };
       this.projectTypesBySite = types[session.baseSite()];
@@ -56,7 +55,8 @@ export class ProjectService {
     return this.api.call('project_create', [projectName, projectCode, appName, srProject], callback);
   }
 
-  createSwitchSession(projectName: string, projectCode: string, appName: string, srProject: any = {}, callback?: JsonRpcCallback) {
+  createSwitchSession(projectName: string, projectCode: string, appName: string, srProject: any = {},
+                      callback?: JsonRpcCallback) {
     return this.api.call('project_create_switchSession', [projectName, projectCode, appName, srProject], callback);
   }
 
@@ -78,9 +78,9 @@ export class ProjectService {
 
   list() {
     if (navigator.onLine /* TODO use Offline.state */) {
-      let deferred = this.$q.defer();
+      const deferred = this.$q.defer();
 
-      this.api.call('project_list_dto', [], (response) => {
+      this.api.call('project_list_dto', [], response => {
         if (response.ok) deferred.resolve(response.data.entries);
         else deferred.reject();
       });
@@ -89,7 +89,7 @@ export class ProjectService {
     } else {
       return this.offlineCache.getAllFromStore('projects');
     }
-  };
+  }
 
   joinProject(projectId: string, role: string, callback?: JsonRpcCallback) {
     return this.api.call('project_joinProject', [projectId, role], callback);
@@ -150,13 +150,12 @@ export class ProjectService {
     return this.api.call('project_removeUsers', [userIds], callback);
   }
 
-
   getDto(callback?: JsonRpcCallback) {
     return this.api.call('project_management_dto', [], callback);
   }
 
   runReport(reportName: string, params: any[] = [], callback?: JsonRpcCallback) {
     this.api.call('project_management_report_' + reportName, params, callback);
-  };
+  }
 
 }
