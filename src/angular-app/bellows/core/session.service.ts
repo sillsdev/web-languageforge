@@ -20,11 +20,11 @@ export class Session {
   }
 
   projectSettings(): any {
-    return this.projectSettings;
+    return this.data.projectSettings;
   }
 
   project(): any {
-    return this.project;
+    return this.data.project;
   }
 
   username(): string {
