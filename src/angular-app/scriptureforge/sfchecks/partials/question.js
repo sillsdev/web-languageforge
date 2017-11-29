@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule', 'bellows.services',
+angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
   'sgw.soundmanager', 'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte',
   'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice'])
   .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService',

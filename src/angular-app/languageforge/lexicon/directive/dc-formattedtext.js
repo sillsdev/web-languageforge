@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.formattedtext', ['bellows.services', 'textAngular'])
+angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
 
 // Custom textAngular tool for language spans
 .config(['$provide', function ($provide) {
