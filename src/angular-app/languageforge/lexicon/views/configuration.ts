@@ -345,6 +345,8 @@ function LexiconConfigController($scope: any, $filter: angular.IFilterService, $
       }
     };
 
+    $scope.selectField('lexeme');
+
     function setupView() {
       if (!angular.isDefined($scope.configDirty.inputSystems)) {
         return;
@@ -600,8 +602,6 @@ function LexiconConfigController($scope: any, $filter: angular.IFilterService, $
 
 function LexiconFieldConfigController($scope: any, $modal: ModalService, sessionService: SessionService) {
   $scope.showAllFields = false;
-
-  $scope.selectField('lexeme');
 
   $scope.moveUp = function moveUp(currentTag: string) {
     const currentTagIndex = $scope.currentField.inputSystems.fieldOrder.indexOf(currentTag);
