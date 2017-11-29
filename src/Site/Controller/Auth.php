@@ -96,8 +96,7 @@ class Auth extends App
             $this->data['oauth_uri_for_signup'] = $link;
         }
 
-        $website = Website::get();
-        $this->data['website_name'] = $website->name;
+        $this->data['website_name'] = $this->website->name;
 
         $errorMsg = $app['security.last_error']($request);
         if ($errorMsg == 'Bad credentials.') {
