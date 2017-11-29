@@ -1,15 +1,6 @@
 'use strict';
 
-angular.module('xforge.navbarApp', ['bellows.services', 'ui.bootstrap', 'pascalprecht.translate',
-  'bellows.services'])
-  /*
-  .service('helpButtonService', ['jsonRpc', function(jsonRpc) {
-    jsonRpc.connect('/api/sf');
-    this.checkIfCanShowPageButton = function(urlPath, hashPath, callback) {
-      jsonRpc.call('xforge_frame_can_show_page_help_button', [urlPath, hashPath], callback);
-    };
-  }])
-  */
+angular.module('xforge.navbarApp', ['ui.bootstrap', 'coreModule'])
   .controller('navbarController', ['$scope', 'modalService', '$location', 'sessionService',
     '$window', 'projectService',
     function ($scope, modalService, $location, sessionService,

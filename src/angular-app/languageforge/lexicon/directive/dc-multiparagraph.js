@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.multiparagraph', ['bellows.services', 'palaso.ui.showOverflow',
+angular.module('palaso.ui.dc.multiparagraph', ['coreModule', 'palaso.ui.showOverflow',
   'palaso.ui.dc.formattedtext'])
 
 // Dictionary Control Multitext
