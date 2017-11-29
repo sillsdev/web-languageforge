@@ -6,9 +6,7 @@ use Api\Model\Languageforge\Translate\TranslateProjectModel;
 use Api\Model\Shared\Rights\ProjectRoles;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\UserModel;
-use GuzzleHttp\Client;
-use GuzzleHttp\Message\Response;
-use GuzzleHttp\Subscriber\Mock;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 class TranslateProjectCommandsTest extends TestCase
@@ -40,11 +38,9 @@ class TranslateProjectCommandsTest extends TestCase
         $config['target']['inputSystem']['tag'] = 'en';
         $config['documentSets']['idsOrdered'] = ['docSetId1'];
 
-        $client = new Client();
-        $mock = new Mock([new Response(200), new Response(200)]);
-        $client->getEmitter()->attach($mock);
+        $mockResponses = [new Response(200), new Response(200)];
 
-        TranslateProjectCommands::updateConfig($projectId, $config, $client);
+        TranslateProjectCommands::updateConfig($projectId, $config, $mockResponses);
 
         $project2 = new TranslateProjectModel($projectId);
 
@@ -81,11 +77,9 @@ class TranslateProjectCommandsTest extends TestCase
         $config['target']['inputSystem']['tag'] = 'en';
         $data['config'] = $config;
 
-        $client = new Client();
-        $mock = new Mock([new Response(200)]);
-        $client->getEmitter()->attach($mock);
+        $mockResponses = [new Response(200)];
 
-        TranslateProjectCommands::updateProject($projectId, $userId, $data, $client);
+        TranslateProjectCommands::updateProject($projectId, $userId, $data, $mockResponses);
 
         $project2 = new TranslateProjectModel($projectId);
 
