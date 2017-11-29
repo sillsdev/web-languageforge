@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.rendered', ['lexicon.services'])
+angular.module('palaso.ui.dc.rendered', [])
 
 // Palaso UI Rendered Definition
 .directive('dcRendered', [function () {

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.notice',
-  'bellows.services', 'ngFileUpload', 'lexicon.services'])
+  'ngFileUpload'])
 
 // Palaso UI Dictionary Control: Picture
 .directive('dcPicture', [function () {

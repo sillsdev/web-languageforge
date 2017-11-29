@@ -19,7 +19,7 @@ import { LexiconSendReceiveService } from '../core/lexicon-send-receive.service'
 export const LexiconConfigModule = angular
   .module('lexicon.configuration', ['ui.bootstrap', CoreModule,
     NoticeModule, 'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
-    'palaso.util.model.transform', 'lexicon.services', InputSystemsModule])
+    'palaso.util.model.transform', InputSystemsModule])
   .controller('ConfigCtrl', ['$scope', '$filter', '$uibModal',
     'silNoticeService', 'sessionService',
     'lexProjectService', 'lexConfigService',

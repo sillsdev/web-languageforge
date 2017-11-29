@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.ui.breadcrumb',
+angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.breadcrumb',
   'sfchecks.services', 'ngFileUpload', 'ngSanitize', 'ngRoute', 'sgw.soundmanager',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice'])
   .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService',
@@ -101,12 +101,17 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'bellows.services', 'sgw.u
 
     $scope.sortdata = { sortColumn: '', direction: '' };
 
-    $scope.sortIconClass = function (columnName) { return sorting.sortIconClass($scope.sortdata, columnName); };
+    $scope.sortIconClass = function (columnName) {
+      return sorting.sortIconClass($scope.sortdata, columnName);
+    };
 
-    $scope.setSortColumn = function (columnName) { return sorting.setSortColumn($scope.sortdata, columnName); };
+    $scope.setSortColumn = function (columnName) {
+      return sorting.setSortColumn($scope.sortdata, columnName);
+    };
 
     $scope.doSort = function () {
-      sorting.sortDataByColumn($scope.questions, $scope.sortdata.sortColumn, $scope.sortdata.direction);
+      sorting.sortDataByColumn($scope.questions, $scope.sortdata.sortColumn,
+        $scope.sortdata.direction);
     };
 
     $scope.doSortByColumn = function (columnName) {
