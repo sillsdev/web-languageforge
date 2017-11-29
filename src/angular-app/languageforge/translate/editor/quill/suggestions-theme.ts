@@ -34,7 +34,6 @@ export function registerSuggestionsTheme(): void {
     // static className = Inline.className;
     static tagName = 'usx-verse';
     static scope = Inline.scope;
-    // noinspection JSUnusedGlobalSymbols
     static allowedChildren = Inline.allowedChildren;
     // noinspection JSUnusedGlobalSymbols
     static defaultChild = Inline.defaultChild;
@@ -86,15 +85,26 @@ export function registerSuggestionsTheme(): void {
         super.format(name, value);
       }
     }
+
+    // ensure sibling <verse>s with the same style attribute are combined into a single <verse> element
+    optimize(context: { [key: string]: any; }): void {
+      super.optimize(context);
+      const style = this.domNode.getAttribute('data-style');
+      const next = this.next;
+      if (style != null && next instanceof VerseInline && next.prev === this &&
+        next.domNode.getAttribute('data-style') === style
+      ) {
+        next.moveChildren(this);
+        next.remove();
+      }
+    }
   }
 
   class CharInline extends VerseInline {
     // noinspection JSUnusedGlobalSymbols
     static blotName = 'char';
-    // static className = 'char';
     static tagName = 'usx-char';
     static scope = VerseInline.scope;
-    // noinspection JSUnusedGlobalSymbols
     static allowedChildren = angular.copy(VerseInline.allowedChildren);
     // noinspection JSUnusedGlobalSymbols
     static defaultChild = VerseInline.defaultChild;
@@ -108,10 +118,8 @@ export function registerSuggestionsTheme(): void {
   class NoteInline extends VerseInline {
     // noinspection JSUnusedGlobalSymbols
     static blotName = 'note';
-    // static className = 'note';
     static tagName = 'usx-note';
     static scope = VerseInline.scope;
-    // noinspection JSUnusedGlobalSymbols
     static allowedChildren = angular.copy(VerseInline.allowedChildren);
     // noinspection JSUnusedGlobalSymbols
     static defaultChild = VerseInline.defaultChild;
@@ -121,19 +129,25 @@ export function registerSuggestionsTheme(): void {
     static formats = VerseInline.formats;
     static value = VerseInline.value;
 
-    remove(): void {
+    // if the visible ref is deleted ensure the entire <note> is deleted
+    deleteAt(index: number, length: number): void {
       const id = this.domNode.getAttribute('id');
-      const parentNode = this.domNode.parentNode;
-      if (id != null && parentNode != null) {
-        const removeNodes = (parentNode as HTMLElement).querySelectorAll('usx-note[id=' + id + ']');
-        for (const key in removeNodes) {
-          if (removeNodes.hasOwnProperty(key)) {
-            parentNode.removeChild(removeNodes[key]);
-          }
-        }
+      if (id != null) {
+        this.remove();
+      } else {
+        super.deleteAt(index, length);
       }
+    }
 
-      super.remove();
+    // ensure sibling <note>s with the same id are combined into a single <note> element
+    optimize(context: { [key: string]: any; }): void {
+      super.optimize(context);
+      const id = this.domNode.getAttribute('id');
+      const next = this.next;
+      if (id != null && next instanceof NoteInline && next.prev === this && next.domNode.getAttribute('id') === id) {
+        next.moveChildren(this);
+        next.remove();
+      }
     }
   }
 
@@ -150,7 +164,6 @@ export function registerSuggestionsTheme(): void {
     static className = Block.className;
     static tagName = 'usx-para';
     static scope = Block.scope;
-    // noinspection JSUnusedGlobalSymbols
     static allowedChildren = blockAllowedChildren;
     // noinspection JSUnusedGlobalSymbols
     static defaultChild = Block.defaultChild;
@@ -159,19 +172,6 @@ export function registerSuggestionsTheme(): void {
     // noinspection JSUnusedGlobalSymbols
     static formats = VerseInline.formats;
     static value = VerseInline.value;
-
-    // FixMe: figure out how to inherit format method from VerseInline class - IJH 2017-11
-    format(name: string, value: any): void {
-      const format = new FormatUsx();
-      const formatHtmlAttributes = new FormatUsxHtmlAttributes();
-      if (formatHtmlAttributes.hasOwnProperty(name)) {
-        this.domNode.setAttribute(name, value);
-      } else if (format.hasOwnProperty(name)) {
-        this.domNode.setAttribute(customAttributeName(name), value);
-      } else {
-        super.format(name, value);
-      }
-    }
 
     // noinspection JSUnusedGlobalSymbols
     optimize(context: { [key: string]: any; }): void {
@@ -183,13 +183,15 @@ export function registerSuggestionsTheme(): void {
     }
   }
 
+  // inherit format method from VerseInline class
+  ParaBlock.prototype.format = VerseInline.prototype.format;
+
   class ChapterBlock extends ParaBlock {
     // noinspection JSUnusedGlobalSymbols
     static blotName = 'chapter';
     static className = ParaBlock.className;
     static tagName = 'usx-chapter';
     static scope = ParaBlock.scope;
-    // noinspection JSUnusedGlobalSymbols
     static allowedChildren = ParaBlock.allowedChildren;
     // noinspection JSUnusedGlobalSymbols
     static defaultChild = ParaBlock.defaultChild;
