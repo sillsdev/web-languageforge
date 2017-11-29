@@ -13,8 +13,9 @@ use Api\Model\Shared\Mapper\MongoStore;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\Rights\Operation;
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use Palaso\Utilities\CodeGuard;
 
 class TranslateProjectCommands
@@ -23,13 +24,14 @@ class TranslateProjectCommands
      * Create or update project
      * @param string $projectId
      * @param string $userId
-     * @param array<projectModel> $data
-     * @param ClientInterface|null $client
+     * @param array $data
+     * @param array $mockResponses
+     * @return string
      * @throws UserUnauthorizedException
      * @throws \Exception
-     * @return string projectId
+     * @internal param $array <projectModel> $data
      */
-    public static function updateProject($projectId, $userId, $data, ClientInterface $client = null)
+    public static function updateProject($projectId, $userId, $data, array $mockResponses = [])
     {
         $project = new TranslateProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
@@ -63,10 +65,10 @@ class TranslateProjectCommands
         }
 
         if (self::isNewProject($data)) {
-            self::createMachineTranslationProject($project, $client);
+            self::createMachineTranslationProject($project, $mockResponses);
         } elseif ($hasMachineTranslationProjectChanged) {
-            self::removeMachineTranslationProject($project, $client);
-            self::createMachineTranslationProject($project, $client);
+            self::removeMachineTranslationProject($project, $mockResponses);
+            self::createMachineTranslationProject($project, $mockResponses);
         }
 
         return $project->write();
@@ -75,11 +77,10 @@ class TranslateProjectCommands
     /**
      * @param string $projectId
      * @param array $configData
-     * @param ClientInterface|null $client
-     * @throws \Exception
-     * @return string $projectId
+     * @param array $mockResponses
+     * @return string
      */
-    public static function updateConfig($projectId, $configData, ClientInterface $client = null)
+    public static function updateConfig($projectId, $configData, array $mockResponses = [])
     {
         $project = new TranslateProjectModel($projectId);
         ProjectCommands::checkIfArchivedAndThrow($project);
@@ -88,8 +89,8 @@ class TranslateProjectCommands
         self::decodeConfig($project->config, $configData);
 
         if ($hasMachineTranslationProjectChanged) {
-            self::removeMachineTranslationProject($project, $client);
-            self::createMachineTranslationProject($project, $client);
+            self::removeMachineTranslationProject($project, $mockResponses);
+            self::createMachineTranslationProject($project, $mockResponses);
         }
 
         return $project->write();
@@ -113,16 +114,19 @@ class TranslateProjectCommands
 
     /**
      * @param TranslateProjectModel $project
-     * @param ClientInterface $client
+     * @param array $mockResponses
      */
-    public static function createMachineTranslationProject($project, ClientInterface $client = null)
+    public static function createMachineTranslationProject($project, array $mockResponses = [])
     {
         CodeGuard::checkEmptyAndThrow($project->config->source->inputSystem->tag, 'project->config->source->inputSystem->tag');
         CodeGuard::checkEmptyAndThrow($project->config->target->inputSystem->tag, 'project->config->target->inputSystem->tag');
-        if (is_null($client)) {
-            $client = new Client();
+        if (empty($mockResponses)) {
+            $handlerStack = HandlerStack::create();
+        } else {
+            $handlerStack = HandlerStack::create(new MockHandler($mockResponses));
         }
 
+        $client = new Client(['handler' => $handlerStack]);
         $url = 'http://localhost/machine/translation/projects';
         $postData = [
             'json' => [
@@ -139,14 +143,17 @@ class TranslateProjectCommands
 
     /**
      * @param TranslateProjectModel $project
-     * @param ClientInterface $client
+     * @param array $mockResponses
      */
-    public static function removeMachineTranslationProject($project, ClientInterface $client = null)
+    public static function removeMachineTranslationProject($project, array $mockResponses = [])
     {
-        if (is_null($client)) {
-            $client = new Client();
+        if (empty($mockResponses)) {
+            $handlerStack = HandlerStack::create();
+        } else {
+            $handlerStack = HandlerStack::create(new MockHandler($mockResponses));
         }
 
+        $client = new Client(['handler' => $handlerStack]);
         $url = 'http://localhost/machine/translation/projects/id:' . $project->databaseName();
         try {
             $client->delete($url);
