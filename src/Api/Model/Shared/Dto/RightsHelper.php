@@ -309,9 +309,6 @@ class RightsHelper
             case 'lex_comment_plusOne':
                 return $this->userHasProjectRight(Domain::COMMENTS + Operation::VIEW);
 
-            case 'lex_optionlist_update':
-                return $this->userHasProjectRight(Domain::PROJECTS + Operation::EDIT);
-
             case 'lex_uploadAudioFile':
             case 'lex_uploadImageFile':
             case 'lex_project_removeMediaFile':

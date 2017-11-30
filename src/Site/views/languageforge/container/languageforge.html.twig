@@ -22,7 +22,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="#"><img src="{{ smallAvatarUrl }}" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px" id="smallAvatarURL" />Hi, {{ userName }}</a>
+                            <a href="#"><img src="{{ smallAvatarUrl }}" style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px" id="smallAvatarURL" />Hi, <span class="notranslate">{{ userName }}</span></a>
                             <ul>
                                 {% if isAdmin %}
                                     <li><a href="/app/siteadmin">Site Administration</a></li>
@@ -59,7 +59,7 @@
                 <div class="row">
                     <div class="span1" style="color: #404040"><small>v {{ version }}</small></div>
                     <div class="span8 offset1">
-                        Copyright {{ "now"|date("Y") }} <a href="http://www.sil.org">SIL International</a>. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.
+                        Copyright <span class="notranslate">{{ "now"|date("Y") }}</span> <a href="http://www.sil.org">SIL International</a>. Use of this site is governed by our <a href="/terms_and_conditions">terms and conditions</a> of use.
                     </div>
                 </div>
             </div>

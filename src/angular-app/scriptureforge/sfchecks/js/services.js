@@ -69,11 +69,11 @@ angular.module('sfchecks.services', ['bellows.services'])
   .service('listviewSortingService', function () {
     this.sortDataByColumn = function (data, columnName, direction) {
       // This function is as generic as possible, so that it could be reused easily in other code
-      data.sort(function (a, b) {
-        var columnA = a[columnName];
-        var columnB = b[columnName];
-        var aUndefined = (typeof columnA === 'undefined');
-        var bUndefined = (typeof columnB === 'undefined');
+      data.sort(function (objA, objB) {
+        var a = objA[columnName];
+        var b = objB[columnName];
+        var aUndefined = (typeof a === 'undefined');
+        var bUndefined = (typeof b === 'undefined');
         if (aUndefined && bUndefined) {
           return 0;
         } else if (aUndefined) {
@@ -81,12 +81,18 @@ angular.module('sfchecks.services', ['bellows.services'])
         } else if (bUndefined) {
           return (direction === 'up') ? +1 : -1;
         } else {
-          if (columnA === columnB) {
-            return 0;
-          } else if (columnA < columnB) {
-            return (direction === 'up') ? -1 : +1;
+          if (typeof a === 'string' && typeof b === 'string') {
+            var sign = (direction === 'up') ? +1 : -1;
+            return a.toLowerCase().localeCompare(b.toLowerCase()) * sign;
           } else {
-            return (direction === 'up') ? +1 : -1;
+            // number type
+            if (a === b) {
+              return 0;
+            } else if (a < b) {
+              return (direction === 'up') ? -1 : +1;
+            } else {
+              return (direction === 'up') ? +1 : -1;
+            }
           }
         }
       });

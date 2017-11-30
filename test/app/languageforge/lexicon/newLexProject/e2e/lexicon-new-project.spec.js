@@ -428,8 +428,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
 
     it('displays stats', function () {
       expect(page.verifyDataPage.title.getText()).toEqual('Verify Data');
-      expect(page.verifyDataPage.entriesImported.getText())
-        .toEqual('2 entries were found in the initial data.');
+      expect(page.verifyDataPage.entriesImported.getText()).toEqual('2');
       page.formStatus.expectHasNoError();
     });
 

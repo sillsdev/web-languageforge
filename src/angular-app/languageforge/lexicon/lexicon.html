@@ -14,7 +14,7 @@
                         <a class="dropdown-item" ui-sref="configuration" data-translate="Configuration"></a>
                         <a class="dropdown-item" ui-sref="viewSettings" data-translate="View Settings"></a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" ui-sref="importExport" data-translate="Import/Export"></a>
+                        <a class="dropdown-item" ui-sref="importExport" data-translate="Import Data"></a>
                         <a class="dropdown-item" data-ng-href="/app/usermanagement/{{project.id}}"
                            data-translate="User Management"></a>
                         <a class="dropdown-item" ui-sref="settings" data-translate="Project Settings"></a>
@@ -31,7 +31,7 @@
                         <i class="fa fa-arrow-circle-left"></i> {{'Dictionary' | translate}}
                     </button>
                 </div>
-                <ol id="top" class="breadcrumb hidden-sm-down" breadcrumbs></ol>
+                <breadcrumbs id="top" class="breadcrumb hidden-sm-down"></breadcrumbs>
                 <ol id="projectName" class="hidden-md-up text-center">{{project.projectName}}</ol>
             </div>
         </div>

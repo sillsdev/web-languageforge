@@ -1,6 +1,12 @@
 import * as angular from 'angular';
 
-import { ErrorService } from '../error.service';
+import { ErrorModule, ErrorService } from '../error.service';
+
+export interface JsonRpcResult extends angular.IHttpPromiseCallbackArg<any> {
+  ok?: boolean;
+}
+
+export type JsonRpcCallback = (result?: JsonRpcResult) => void;
 
 interface JsonRequest {
   version: string;
@@ -8,12 +14,6 @@ interface JsonRequest {
   params: any;
   id: number;
 }
-
-export interface JsonRpcResult extends angular.IHttpPromiseCallbackArg<any> {
-  ok?: boolean;
-}
-
-export interface JsonRpcCallback { (result?: JsonRpcResult): void; }
 
 // Simple Angular service for making JSON-RPC easier from the client side
 
@@ -24,13 +24,14 @@ export class JsonRpcService {
   lastId: number;
 
   static $inject: string[] = ['$http', '$window', 'error'];
-  constructor(private $http: angular.IHttpService, private $window: angular.IWindowService, private error: ErrorService) {
+  constructor(private $http: angular.IHttpService, private $window: angular.IWindowService, private error: ErrorService
+  ) {
     this.lastId = 0;
   }
 
   nextId(): number {
     return ++this.lastId;
-  };
+  }
 
   /**
    * @param {string} url - The endpoint to send the request to
@@ -48,30 +49,26 @@ export class JsonRpcService {
    *   - {Object} config
    */
   call(url: string, method: string, options: any, remoteParams: any[], callback: JsonRpcCallback) {
-
-    let params: any = {};
-    Object.keys(options).forEach((prop) => {
+    const params: any = {};
+    Object.keys(options).forEach(prop => {
       params[prop] = options[prop];
     });
 
     params.orderedParams = remoteParams;
 
-    let jsonRequest:JsonRequest = {
+    const jsonRequest: JsonRequest = {
       version: '2.0',
-      method: method,
-      params: params,
+      method,
+      params,
       id: this.nextId()
     };
-    let httpRequest: angular.IRequestConfig = {
-      url: url,
+    const httpRequest: angular.IRequestConfig = {
+      url,
       method: 'POST',
-      data: JSON.stringify(jsonRequest),
-
-      // Might not be necessary, since this appears to be the default for Angular's $http service
-      headers: { 'Content-Type': 'application/json' }
+      data: JSON.stringify(jsonRequest)
     };
-    let result: JsonRpcResult = {};
-    let request = this.$http(httpRequest);
+    const result: JsonRpcResult | any = {};
+    const request = this.$http(httpRequest);
 
     const requestSuccess = (response: angular.IHttpPromiseCallbackArg<any>) => {
       if (response.data === null) {
@@ -92,14 +89,14 @@ export class JsonRpcService {
             type = 'The requested resource is not available.';
             break;
           case 'UserNotAuthenticatedException':
-            type = "You're not currently signed in.";
+            type = 'You\'re not currently signed in.';
 
             // redirect to login page with message
             this.error.error('You will now be redirected to the login page.');
             this.$window.location.href = '/auth/login';
             return;
           case 'UserUnauthorizedException':
-            type = "You don't have sufficient privileges.";
+            type = 'You don\'t have sufficient privileges.';
             break;
           default:
             type = 'Exception';
@@ -137,9 +134,11 @@ export class JsonRpcService {
     request.then(requestSuccess, requestError);
 
     return request;
-  };
+  }
 
 }
 
-angular.module('jsonRpc', ['coreModule.errorService'])
-  .service('jsonRpc', JsonRpcService);
+export const JsonRpcModule = angular
+  .module('jsonRpc', [ErrorModule])
+  .service('jsonRpc', JsonRpcService)
+  .name;

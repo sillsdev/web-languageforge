@@ -234,7 +234,7 @@ class MongoMapper
         try {
             MongoDecoder::decode($model, $data, $id);
         } catch (\Exception $ex) {
-            CodeGuard::exception("Exception thrown while decoding '$id'", $ex->getCode(), $ex);
+            CodeGuard::exception("Exception thrown while decoding " . get_class($model) . "('$id')", $ex->getCode(), $ex);
         }
     }
 
@@ -267,6 +267,17 @@ class MongoMapper
     {
         CodeGuard::checkTypeAndThrow($properties, 'array');
         $data = $this->_collection->findOne($properties);
+        if ($data != NULL) {
+            MongoDecoder::decode($model, $data, (string) $data['_id']);
+            return true;
+        }
+        return false;
+    }
+
+    public function readByPropertyArrayContains($model, $property, $value)
+    {
+        CodeGuard::checkTypeAndThrow($value, 'string');
+        $data = $this->_collection->findOne([$property => $value]);  // Yes, it's that simple
         if ($data != NULL) {
             MongoDecoder::decode($model, $data, (string) $data['_id']);
             return true;

@@ -37,7 +37,7 @@ class Base
         $this->data['cssFiles'] = array();
         $this->data['vendorFilesJs'] = array();
         $this->data['vendorFilesMinJs'] = array();
-        $this->data['isBootstrap4'] = false;
+        $this->data['isBootstrap4'] = true;
         $this->data['isAngular2'] = false;
     }
 
@@ -86,38 +86,32 @@ class Base
 
     // all child classes should use this method to render their pages
     protected function renderPage(Application $app, $viewName) {
-
-        if ($this->data['isBootstrap4']) {
-            // TODO: move to app_dependencies once bootstrap4 migration is complete
-            $sassDir = $this->getThemePath() . "/sass";
-            if (!file_exists($sassDir)) {
-                $sassDir = $this->getThemePath("default") . "/sass";
-            }
-            $this->addCssFiles($sassDir, array(), false);
-        } else {
-            $this->addCssFiles($this->getThemePath()."/cssBootstrap2", array(), false);
-            $this->addCssFiles("Site/views/shared/cssBootstrap2", array('bootstrap.css'), false);
-            array_unshift($this->data['cssFiles'], "Site/views/shared/cssBootstrap2/bootstrap.css");
+        // TODO: move to app_dependencies once bootstrap4 migration is complete
+        $sassDir = $this->getThemePath() . '/sass';
+        if (!file_exists($sassDir)) {
+            $sassDir = $this->getThemePath('default') . '/sass';
         }
+        $this->addCssFiles($sassDir, array(), false);
 
         // Add bellows JS for every page because top container menubar needs it for helps
-        $bellowsFolder = NG_BASE_FOLDER . "bellows";
+        $bellowsFolder = NG_BASE_FOLDER . 'bellows';
         $this->addJavascriptFiles($bellowsFolder . '/_js_module_definitions');
         $this->addJavascriptFiles($bellowsFolder . '/js', array('vendor', 'assets'));
         $this->addJavascriptFiles($bellowsFolder . '/directive');
 
         // Add general Angular app dependencies
         $dependencies = $this->getAngularAppDependencies();
-        foreach ($dependencies["js"] as $dependencyFilePath) {
+        foreach ($dependencies['js'] as $dependencyFilePath) {
             $this->data['vendorFilesJs'][] = $dependencyFilePath;
         }
-        foreach ($dependencies["min"] as $dependencyFilePath) {
+        foreach ($dependencies['min'] as $dependencyFilePath) {
             $this->data['vendorFilesMinJs'][] = $dependencyFilePath;
         }
-        foreach ($dependencies["css"] as $dependencyFilePath) {
+        foreach ($dependencies['css'] as $dependencyFilePath) {
             $this->data['vendorFilesCss'][] = $dependencyFilePath;
         }
 
+        $this->data['faviconPath'] = $this->getFilePath('image/favicon.ico');
         $this->populateHeaderMenuViewdata();
         $this->data['useCdn'] = USE_CDN;
 
@@ -150,7 +144,12 @@ class Base
                 $this->data['isAdmin'] = SystemRoles::hasRight($this->_user->role, Domain::USERS + Operation::CREATE);
             }
             $this->data['userName'] = $this->_user->username;
-            $this->data['smallAvatarUrl'] = '/Site/views/shared/image/avatar/'.$this->_user->avatar_ref;
+            if ($this->_user->avatar_ref && substr($this->_user->avatar_ref, 0, 4) === 'http')
+            {
+                $this->data['smallAvatarUrl'] = $this->_user->avatar_ref;
+            } else {
+                $this->data['smallAvatarUrl'] = '/Site/views/shared/image/avatar/' . $this->_user->avatar_ref;
+            }
             $projects = $this->_user->listProjects($this->website->domain);
             $this->data['projects_count'] = $projects->count;
             $this->data['projects'] = $projects->entries;
@@ -175,6 +174,19 @@ class Base
         }
 
         return 'Site/views/'.$this->website->base.'/theme/'.$theme;
+    }
+
+    protected function getFilePath($filename) {
+        $themePath = $this->getThemePath();
+        $filePath = $themePath . DIRECTORY_SEPARATOR . $filename;
+        if (!file_exists($filePath)) {
+            $themePath = $this->getThemePath('default');
+            $filePath = $themePath . DIRECTORY_SEPARATOR . $filename;
+            if (!file_exists($filePath)) {
+                throw new \Exception(__FILE__ . ' - filename doesn\'t exist: ' . $filename);
+            }
+        }
+        return DIRECTORY_SEPARATOR . $filePath;
     }
 
     protected function addJavascriptFilesToBeMinified($folder, $exclude = array()) {

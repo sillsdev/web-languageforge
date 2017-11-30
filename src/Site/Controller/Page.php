@@ -32,6 +32,6 @@ class Page extends Base
     }
 
     private function setupPageVariables(Application $app) {
-        $this->data['isBootstrap4'] = (preg_match('@languageforge@', $app['request']->getHost()) == 1) ? true : false;
+        $this->data['isBootstrap4'] = true;
     }
 }

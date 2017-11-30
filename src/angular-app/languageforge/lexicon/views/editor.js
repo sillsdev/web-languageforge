@@ -266,7 +266,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       $scope.getPrimaryListItemForDisplay = editorService.getSortableValue;
 
       $scope.getWordForDisplay = function getWordForDisplay(entry) {
-        var lexeme = utils.getLexeme($scope.config.entry, entry);
+        var lexeme = utils.constructor.getLexeme($scope.config.entry, entry);
         if (!lexeme) {
           return '[Empty]';
         }
@@ -286,7 +286,8 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
       $scope.getMeaningForDisplay = function getMeaningForDisplay(entry) {
         var meaning = '';
         if (entry.senses && entry.senses[0]) {
-          meaning = utils.getMeaning($scope.config.entry.fields.senses, entry.senses[0]);
+          meaning =
+            utils.constructor.getMeaning($scope.config.entry.fields.senses, entry.senses[0]);
         }
 
         if (!meaning) {
@@ -605,7 +606,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
 
       $scope.deleteEntry = function deleteEntry(entry) {
         var deletemsg = 'Are you sure you want to delete the entry <b>\' ' +
-          utils.getLexeme($scope.config.entry, entry) + ' \'</b>';
+          utils.constructor.getLexeme($scope.config.entry, entry) + ' \'</b>';
 
         // var deletemsg = $filter('translate')("Are you sure you want to delete '{lexeme}'?",
         // {lexeme:utils.getLexeme($scope.config.entry, entry)});
@@ -792,7 +793,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           key: 'pictures' });
         var hasAudioInputSystem = false;
         angular.forEach($scope.config.inputSystems, function (inputSystem) {
-          if (utils.isAudio(inputSystem.tag)) {
+          if (utils.constructor.isAudio(inputSystem.tag)) {
             hasAudioInputSystem = true;
           }
         });
@@ -801,8 +802,10 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
           filterOptions.push({ label: 'Audio', value: 'audio', type: 'audio', key: 'audio' });
         }
 
-        utils.arrayCopyRetainingReferences(sortOptions, $scope.entryListModifiers.sortOptions);
-        utils.arrayCopyRetainingReferences(filterOptions, $scope.entryListModifiers.filterOptions);
+        utils.constructor.arrayCopyRetainingReferences(sortOptions,
+          $scope.entryListModifiers.sortOptions);
+        utils.constructor.arrayCopyRetainingReferences(filterOptions,
+          $scope.entryListModifiers.filterOptions);
       }
 
       $scope.$on('$destroy', function () {

@@ -3,6 +3,7 @@
 namespace Api\Model\Scriptureforge\Sfchecks;
 
 use Api\Model\Scriptureforge\SfProjectModel;
+use Api\Model\Shared\Rights\ProjectRoles;
 
 class SfchecksProjectModel extends SfProjectModel
 {
@@ -23,6 +24,17 @@ class SfchecksProjectModel extends SfProjectModel
         $settings['usersSeeEachOthersResponses'] = $this->usersSeeEachOthersResponses;
 
         return $settings;
+    }
+
+    public function shouldSeeOtherUsersResponses($userId)
+    {
+        if ($this->usersSeeEachOthersResponses) return true;
+        $isManager = (
+            array_key_exists($userId, $this->users) &&
+            property_exists($this->users[$userId], "role") &&
+            $this->users[$userId]->role == ProjectRoles::MANAGER
+        );
+        return $isManager;
     }
 
     /** @var boolean Does this project allows users to see each other's answers and comments, or just their own? */

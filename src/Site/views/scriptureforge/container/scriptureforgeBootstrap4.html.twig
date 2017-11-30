@@ -20,7 +20,7 @@
                             <a class="dropdown-item" href="/app/activity">Activity</a>
                             <div class="dropdown-divider"></div>
                             {% verbatim %}
-                            <div data-ng-switch="projectTypesBySite().length">
+                            <div data-ng-switch="projectTypesBySite().length" data-ng-show="rights.canCreateProject">
                                 <div data-ng-switch-when="1">
                                     <a class="dropdown-item" data-ng-href="/app/{{projectTypesBySite()[0]}}/new-project">
                                         <b>Start or Join a New Project</b></a>
@@ -28,15 +28,20 @@
                                 <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
                                     <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
                                         <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a {{projectTypeNames[appName]}} project</b>
+                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
                                     </a>
                                 </div>
                             </div>
                             {% endverbatim %}
                             {% if projects|length > 10 %}
                                 <a class="dropdown-item" href="/app/projects">List All Projects</a>
+                                <div class="dropdown-divider"></div>
                             {% endif %}
-                            <div class="dropdown-divider"></div>
+                            {% if projects|length <= 10 %}
+                                {% verbatim %}
+                                <div class="dropdown-divider" data-ng-show="rights.canCreateProject"></div>
+                                {% endverbatim %}
+                            {% endif %}
                             {% for project in projects %}
                                 <a class="dropdown-item"
                                    href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
@@ -68,8 +73,14 @@
                     <li class="nav-item">
                         <a class="nav-link " href="/app/activity">Activity</a>
                     </li>
-                    <li class="nav-item" data-ng-show="showButton">
-                        <a class="nav-link" ng-click="showHelpContent()">Help</a>
+                    <li class="nav-item" uib-dropdown>
+                        <a class="nav-link" uib-dropdown-toggle href id="helpDropdown" aria-haspopup="true" aria-expanded="false">Help</a>
+                        <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="helpDropdown">
+                            <a class="dropdown-item" target="_blank" href="https://community.scripture.software.sil.org/c/scripture-forge/how-to">Tutorials and How-Tos</a>
+                            <a class="dropdown-item" target="_blank" href="https://community.scripture.software.sil.org/c/scripture-forge">Community Support</a>
+                            <a class="dropdown-item" target="_blank" href="mailto:issues@scriptureforge.org">Report a Problem<br />(email issues@scriptureforge.org)</a>
+                            <a class="dropdown-item" href="/releasenotes">Release Notes</a>
+                        </div>
                     </li>
                     <li class="nav-item" uib-dropdown>
                         <a class="nav-link" uib-dropdown-toggle href id="myProjectDropdown"
@@ -77,7 +88,7 @@
                             My Projects</a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="myProjectDropdown">
                             {% verbatim %}
-                            <div data-ng-switch="projectTypesBySite().length">
+                            <div data-ng-switch="projectTypesBySite().length" data-ng-show="rights.canCreateProject">
                                 <div data-ng-switch-when="1">
                                     <a class="dropdown-item" data-ng-href="/app/{{projectTypesBySite()[0]}}/new-project">
                                         <b>Start or Join a New Project</b></a>
@@ -85,15 +96,20 @@
                                 <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
                                     <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
                                         <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a {{projectTypeNames[appName]}} project</b>
+                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
                                     </a>
                                 </div>
                             </div>
                             {% endverbatim %}
                             {% if projects|length > 10 %}
-                            <a class="dropdown-item" href="/app/projects">List All Projects</a>
+                                <a class="dropdown-item" href="/app/projects">List All Projects</a>
+                                <div class="dropdown-divider"></div>
                             {% endif %}
-                            <div class="dropdown-divider"></div>
+                            {% if projects|length <= 10 %}
+                                {% verbatim %}
+                                <div class="dropdown-divider" data-ng-show="rights.canCreateProject"></div>
+                                {% endverbatim %}
+                            {% endif %}
                             {% for project in projects %}
                                 <a class="dropdown-item"
                                    href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
@@ -106,7 +122,7 @@
                             <img src="{{ smallAvatarUrl }}"
                                  style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px"
                                  class="rounded-circle"
-                                 id="smallAvatarURL" />Hi, {{ userName }}</a>
+                                 id="smallAvatarURL" />Hi, <span class="notranslate">{{ userName }}</span></a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="userDropdown">
                             {% if isAdmin %}
                                 <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>
@@ -156,7 +172,7 @@
             <div class="row">
                 <div class="col-xs-12 text-xs-center">
                     <div><small>v {{ version }}</small></div>
-                    Copyright {{ "now"|date("Y") }} <a href="http://www.sil.org" class="links">SIL International</a>.
+                    Copyright <span class="notranslate">{{ "now"|date("Y") }}</span> <a href="http://www.sil.org" class="links">SIL International</a>.
                     Use of this site is governed by our <a href="/terms_and_conditions" class="links">terms and
                     conditions</a> of use.
                 </div>

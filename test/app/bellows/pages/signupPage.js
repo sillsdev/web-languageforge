@@ -19,7 +19,7 @@ var SignupPage = function () {
   this.visiblePasswordInvalid = element(by.id('visiblePasswordInvalid'));
   this.passwordInput = element(by.id('password'));
   this.passwordIsWeak = element(by.id('passwordIsWeak'));
-  this.showPassword = element(by.model('showPassword'));
+  this.showPassword = element(by.model('$ctrl.showPassword'));
 
   this.captchaDiv = element(by.className('pui-captcha'));
   this.captcha = {

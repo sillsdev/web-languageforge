@@ -8,7 +8,7 @@
         <tab heading="Export">
             <div ng-show="languages.length > 0">
                 <p>Export the following semantic domain language lists in FLEx XML format</p>
-                <button ng-click="doExport()" class="btn btn-primary">Export {{languages.length}} languages</button>
+                <button ng-click="doExport()" class="btn btn-primary">Export <span class="notranslate">{{languages.length}}</span> languages</button>
                 <span style="font-weight: bold" ng-repeat="language in languages"><a ng-href="/app/semdomtrans/{{language.id}}">{{language.name}}</a>  </span>
             </div>
             <div ng-hide="languages.length > 0">

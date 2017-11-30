@@ -7,7 +7,7 @@ module.exports = new SfActivityPage();
  */
 function SfActivityPage() {
   this.activityURL = '/app/activity';
-  this.activitiesList = element.all(by.repeater('item in filteredActivities'));
+  this.activitiesList = element.all(by.repeater('item in $ctrl.filteredActivities'));
 
   // Navigate to the Activity page
   this.get = function get() {

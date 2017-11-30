@@ -26,7 +26,7 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
 
       $scope.deleteExample = function deleteExample(index) {
         var deletemsg = "Are you sure you want to delete the example <b>' " +
-          utils.getExample($scope.config.fields.examples, $scope.model.examples[index],
+          utils.constructor.getExample($scope.config.fields.examples, $scope.model.examples[index],
             'sentence') + " '</b>";
         modal.showModalSimple('Delete Example', deletemsg, 'Cancel', 'Delete Example')
           .then(function () {

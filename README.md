@@ -10,11 +10,9 @@ To use **Scripture Forge** go to [scriptureforge.org](https://scriptureforge.org
 
 ### User Problems ###
 
-To report an issue for **Language Forge** go to [Language Forge issues](https://github.com/sillsdev/web-languageforge/issues).
+To report an user issue with the **Language Forge** application, email "issues @ languageforge dot org".
 
-To report an issue for **Scripture Forge** go to [Scripture Forge issues](https://github.com/sillsdev/web-scriptureforge/issues).
-
-**Note:** Scan the list to make sure your issue hasn't already been reported. If not, click **New issue**.
+To report an user issue with the **Scripture Forge** application email "issues @ scriptureforge dot org".
 
 ## Special Thanks To ##
 
@@ -78,15 +76,53 @@ Other useful resources:
 
 ## Recommended Development Environment ##
 
+### Automatic Install 
+The below sections go into detail on how to manually set up the developer environment.  As an alternative to these instructions, you can download and run the automatic install script that is known to work on Ubuntu Xenial Native and Ubuntu Xenial on Windows 10 WSL.
+[Click here for the Automatic Install instructions](#automatic-install-script).
+
+### Linux Ubuntu Gnome ###
+
 Our recommended development environment for web development is Linux Ubuntu GNOME.  Choose either the [Vagrant VM Setup](#VagrantSetup) or the [Local Linux Development Setup](#LocalSetup).  Even though the Vagrant VM Setup is definitely easier because it always installs from a clean slate on a new virtual box, we recommend doing development on your local development machine.  This approach will make your page loads approximately 50 times faster.  In my tests 100 ms (local) vs 5000 ms (Vagrant / Virtualbox).  The reason for this is that Virtualbox gives access to the php files via the VirtualBox shared folder feature.  This is notoriously slow.
 
-It is also possible to develop on Windows 10 using the Windows Subsystem for Linux (WSL). This allows you to run a Linux distribution, such as Ubuntu, in Windows. The development environment has only been tested on Windows 10 Creators Update (1703). For steps on setting up a development environment in Windows 10, see [Windows 10 Setup](#windows-10-setup).
+### Ubuntu Xenial on Windows 10 WSL ###
+It is also possible to develop on Windows 10 using the Windows Subsystem for Linux (WSL). This allows you to run a Linux distribution, such as Ubuntu, in Windows. The development environment has only been tested on Windows 10 Creators Update (1703). For the full steps on setting up a development environment in Windows 10, see [Windows 10 Setup](#windows-10-setup).
+
+## Automatic Install Script ##
+
+This automatic install script assumes that you are starting with a fresh install of Ubuntu Xenial, either native or on Windows 10 WSL.
+
+To begin the automatic installation, cd into a source directory (creating one if necessary).  On Windows 10 WSL this might look like this (make sure you are in Bash!):
+```
+mkdir -p /mnt/c/src
+cd /mnt/c/src
+```
+
+Now, download and run the install script:
+```
+wget -O- https://raw.githubusercontent.com/sillsdev/web-languageforge/master/installer/xenialBashWindows10.sh | bash -
+```
+Expect the install to take 30-60 minutes on a fresh Ubuntu Xenial install, depending upon your internet connection.
+
+### How to Setup/Uninstall/Reinstall Ubuntu on Windows 10 WSL
+
+If you have never installed Ubuntu on Windows 10, [follow the instructions in this guide](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide) to ensure the pre-requisites are installed
+
+
+If you have already installed Ubuntu on Windows 10 but want to uninstall and re-install fresh open a Windows Command Prompt (Run as Administrator) and type the following:
+```
+lxrun /uninstall /full
+```
+If this is your first time installing Ubuntu Xenial on Windows 10 (or if you just uninstalled in the previous step) type the following:
+```
+lxrun /install
+```
+After Ubuntu Xenial Bash has finished installing, close the Windows Command Prompt and open a Bash prompt (now available in the start menu)
 
 ---------------------------------
 
 ### Vagrant VM Setup <a id="VagrantSetup"></a>
 
-Clone this repository to your host machine and and `vagrant up` the Xenial box. We intentionally postpone provisioning on initial boot so the `Virtualbox guest additions` updates don't interfere with the provisioning process.
+Clone this repository to your host machine and `vagrant up` the Xenial box. We intentionally postpone provisioning on initial boot so the `Virtualbox guest additions` updates don't interfere with the provisioning process.
 
 ```
 git clone https://github.com/sillsdev/web-languageforge web-languageforge --recurse-submodules
@@ -145,7 +181,7 @@ Run the following Ansible playbooks to configure Ansible and run both sites.
 ````
 cd web-languageforge/deploy
 ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
-ansible-playbook -i hosts playbook_xenial.yml --limit localhost -K
+ansible-playbook playbook_xenial.yml --limit localhost -K
 ````
 If you run into an error on the `ssl_config : LetsEncrypt: Install packages` task, run the playbook again and that task should succeed the second time it is run.
 

@@ -9,6 +9,7 @@ use Api\Model\Shared\Mapper\MapOf;
 use Api\Model\Shared\Mapper\MapperModel;
 use Api\Model\Shared\Mapper\MongoMapper;
 use Api\Model\Shared\ProjectModel;
+use Litipk\Jiffy\UniversalTimestamp;
 
 class QuestionModel extends MapperModel
 {
@@ -21,6 +22,7 @@ class QuestionModel extends MapperModel
         $this->id = new Id();
         $this->workflowState = "open"; // default workflow state
         $this->description = '';
+        $this->dateEdited = UniversalTimestamp::now();
         $this->title = '';
         $this->textRef = new IdReference();
         $this->answers = new MapOf(
@@ -42,7 +44,7 @@ class QuestionModel extends MapperModel
     /** @var string A content description/explanation of the question being asked */
     public $description;
 
-    /** @var \DateTime */
+    /** @var UniversalTimestamp */
     public $dateEdited;
 
     /** @var IdReference - Id of the referring text */
