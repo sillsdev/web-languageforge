@@ -43,7 +43,7 @@
                         <ul class="list-unstyled">
                             <li data-ng-click="selectUser(userId)" data-ng-repeat="(userId, userView) in configDirty.userViews"
                                 data-ng-class="{selected:currentUserId == userId}">
-                                {{usersWithSettings[userId].name}} ({{usersWithSettings[userId].username}})
+                                <span class="notranslate">{{usersWithSettings[userId].name}} ({{usersWithSettings[userId].username}})</span>
                                 <span data-ng-hide="isAtLeastOneSense(userView)">
                                     <i class="fa fa-exclamation-circle"
                                         title="{{'At least one Meaning field must be enabled!' | translate}}"
@@ -139,7 +139,7 @@
 
                 <!-- settings -->
                 <div class="card card-block bg-faded">
-                    <h3 style="font-weight:normal">{{fieldConfig[currentField.name].label}} {{'Field View Settings' | translate}}</h3>
+                    <h3 style="font-weight:normal"><span class="notranslate">{{fieldConfig[currentField.name].label}}</span> {{'Field View Settings' | translate}}</h3>
                     <div class="form-group">
                         <div class="controls">
                             <label class="checkbox {{interfaceConfig.pullNormal}}">
@@ -171,7 +171,7 @@
                                             data-ng-class="{selected:currentField.inputSystems.currentTag == inputSystemTag}">
                                             <div class="checkbox"><!--suppress HtmlFormInputWithoutLabel -->
                                                 <input data-ng-model="currentField.inputSystems.selected[inputSystemTag]" type="checkbox"/>
-                                                {{configDirty.inputSystems[inputSystemTag].abbreviation}}</div>
+                                                <span class="notranslate">{{configDirty.inputSystems[inputSystemTag].abbreviation}}</span></div>
                                         </li>
                                     </ul>
                                 </div>

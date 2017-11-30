@@ -1,5 +1,5 @@
 <div data-ng-show="finishedLoading">
-    <h2 style="font-weight: normal">Questions for {{text.title}}</h2>
+    <h2 style="font-weight: normal">Questions for <span class="notranslate">{{text.title}}</span></h2>
     <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
         <button data-ng-show="rights.create" class="btn btn-primary"
                 data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">
@@ -28,13 +28,13 @@
         <form class="card span11" name="newQuestionForm">
             <div class="card-block">
                 <fieldset class="col-md-4">
-                    <label class="form-group">Question
-                        <textarea required data-ng-model="questionDescription" class="form-control" rows="4"
-                              placeholder="The Question"></textarea>
-                    </label>
                     <label class="form-group">Title
                         <input type="text" data-ng-model="questionTitle" class="form-control" maxlength="70"
                             placeholder="One-line Summary For Title" />
+                    </label>
+                    <label class="form-group">Question
+                        <textarea required data-ng-model="questionDescription" class="form-control" rows="4"
+                              placeholder="The Question"></textarea>
                     </label>
                     <label class="form-group">
                         <input title="A summary title is required for templates"
@@ -88,9 +88,9 @@
                             <a data-ng-href="{{question.url}}"><span class="larger-text">{{question.calculatedTitle}}</span></a>
                         </td>
                         <td ng-class="{'text-muted':question.answerCount == 0}">
-                            {{question.answerCount}} answer<span ng-if="question.answerCount > 1">s</span>
+                            <span class="notranslate">{{question.answerCount}}</span> answer<span ng-if="question.answerCount > 1">s</span>
                         </td>
-                        <td ng-class="{'text-muted':question.responseCount == 0}">{{question.responseCount}} response<span ng-if="question.responseCount > 1">s</span></td>
+                        <td ng-class="{'text-muted':question.responseCount == 0}"><span class="notranslate">{{question.responseCount}}</span> response<span ng-if="question.responseCount > 1">s</span></td>
                     </tr>
                 </table>
             </listview>
