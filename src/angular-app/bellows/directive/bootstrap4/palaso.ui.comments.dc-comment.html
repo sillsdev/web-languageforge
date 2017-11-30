@@ -89,13 +89,13 @@
                     </div>
                 </div>
                 <form ng-show="reply.editing" ng-submit="submitReply(reply)">
-                    <textarea class="form-control" ng-model="reply.editingContent" set-focus="reply.editing"></textarea>
+                    <textarea class="form-control" ng-model="reply.editingContent" pui-auto-focus="reply.editing"></textarea>
                     <button type="submit" class="btn btn-sm btn-primary">Update</button>
                     <a href ng-click="reply.editing = false">Cancel</a>
                 </form>
             </div>
             <form class="commentNewReplyForm" ng-show="showNewReplyForm" ng-submit="submitReply(newReply)">
-                <textarea class="form-control" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" set-focus="showNewReplyForm"></textarea>
+                <textarea class="form-control" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" pui-auto-focus="showNewReplyForm"></textarea>
                 <button type="submit" class="btn btn-sm btn-primary">Post</button>
                 <a href ng-click="showNewReplyForm = false">Cancel</a>
             </form>

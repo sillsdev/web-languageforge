@@ -4,9 +4,11 @@ namespace Site\Controller;
 
 use Api\Library\Shared\Communicate\Communicate;
 use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
+use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
+use Site\OAuth\OAuthBase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Security;
@@ -41,6 +43,7 @@ class Auth extends App
                 // no break; - intentional fall through to next case
             case 'forgot_password':
             case 'login':
+            case 'link_oauth_account':
                 if($this->isLoggedIn($app)) {
                     return $app->redirect('/app/projects');
                 }
@@ -82,6 +85,19 @@ class Auth extends App
     private function setupAuthView(Request $request, Application $app)
     {
         $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
+        if ($app['session']->has(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK)) {
+            $this->data['oauth_id_for_login'] = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
+            $name = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME);
+            $this->data['oauth_full_name_for_login'] = $name;
+            $email = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_EMAIL_ADDRESS);
+            $this->data['oauth_email_for_login'] = $email;
+            $avatar = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_AVATAR_URL);
+            $link = Communicate::calculateSignupUrl($this->website, $email, $name, $avatar);
+            $this->data['oauth_uri_for_signup'] = $link;
+        }
+
+        $this->data['website_name'] = $this->website->name;
+
         $errorMsg = $app['security.last_error']($request);
         if ($errorMsg == 'Bad credentials.') {
             $user = new UserModel();

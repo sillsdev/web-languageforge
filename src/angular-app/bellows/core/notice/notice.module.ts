@@ -1,10 +1,10 @@
 import * as angular from 'angular';
 
-import { noticeComponent } from './notice.component';
+import { NoticeComponent } from './notice.component';
 import { NoticeService } from './notice.service';
 
-angular.module('palaso.ui.notice', ['ngSanitize', 'coreModule'])
-  .component('silNotices', noticeComponent)
+export const NoticeModule = angular
+  .module('palaso.ui.notice', ['ngSanitize'])
+  .component('silNotices', NoticeComponent)
   .service('silNoticeService', NoticeService)
-
-  ;
+  .name;

@@ -1,16 +1,15 @@
 import { UtilityService } from '../../../bellows/core/utility.service';
 
 export class LexiconUtilityService extends UtilityService {
-  getLexeme(config: any, entry: any): string {
-    return this.getFirstField(config, entry, 'lexeme');
+  static getLexeme(config: any, entry: any): string {
+    return LexiconUtilityService.getFirstField(config, entry, 'lexeme');
   }
 
-  //noinspection JSUnusedGlobalSymbols
-  getWords(config: any, entry: any): string {
-    return this.getFields(config, entry, 'lexeme');
+  static getWords(config: any, entry: any): string {
+    return LexiconUtilityService.getFields(config, entry, 'lexeme');
   }
 
-  getCitationForms(config: any, entry: any): string {
+  static getCitationForms(config: any, entry: any): string {
     let inputSystems: string[] = [];
     if (config != null && config.fields.citationForm != null) {
       inputSystems = [...config.fields.citationForm.inputSystems];
@@ -20,11 +19,15 @@ export class LexiconUtilityService extends UtilityService {
     }
     let citation = '';
     new Set(inputSystems).forEach((inputSystemTag: string) => {
-      if (!this.isAudio(inputSystemTag)) {
+      if (!LexiconUtilityService.isAudio(inputSystemTag)) {
         let valueToAppend = '';
-        if (entry.citationForm != null && entry.citationForm[inputSystemTag] != null && entry.citationForm[inputSystemTag].value != '') {
+        if (entry.citationForm != null && entry.citationForm[inputSystemTag] != null &&
+          entry.citationForm[inputSystemTag].value !== ''
+        ) {
           valueToAppend = entry.citationForm[inputSystemTag].value;
-        } else if (entry.lexeme != null && entry.lexeme[inputSystemTag] != null && entry.lexeme[inputSystemTag].value != '') {
+        } else if (entry.lexeme != null && entry.lexeme[inputSystemTag] != null &&
+          entry.lexeme[inputSystemTag].value !== ''
+        ) {
           valueToAppend = entry.lexeme[inputSystemTag].value;
         }
 
@@ -40,45 +43,37 @@ export class LexiconUtilityService extends UtilityService {
     return citation;
   }
 
-  getDefinition(config: any, sense: any): string {
-    return this.getFirstField(config, sense, 'definition');
-  }
-
-  getGloss(config: any, sense: any): string {
-    return this.getFirstField(config, sense, 'gloss');
-  }
-
-  getMeaning(config: any, sense: any): string {
-    let meaning = this.getDefinition(config, sense);
+  static getMeaning(config: any, sense: any): string {
+    let meaning = LexiconUtilityService.getDefinition(config, sense);
     if (!meaning) {
-      meaning = this.getGloss(config, sense);
+      meaning = LexiconUtilityService.getGloss(config, sense);
     }
 
     return meaning;
   }
 
-  getMeanings(config: any, sense: any): string {
-    let meaning = this.getFields(config, sense, 'definition');
+  static getMeanings(config: any, sense: any): string {
+    let meaning = LexiconUtilityService.getFields(config, sense, 'definition');
     if (!meaning) {
-      meaning = this.getFields(config, sense, 'gloss');
+      meaning = LexiconUtilityService.getFields(config, sense, 'gloss');
     }
 
     return meaning;
   }
 
-  getExample(config: any, example: any, field: string): string {
+  static getExample(config: any, example: any, field: string): string {
     if (field === 'sentence' || field === 'translation') {
-      return this.getFields(config, example, field);
+      return LexiconUtilityService.getFields(config, example, field);
     }
   }
 
-  getPartOfSpeechAbbreviation(posModel: any, optionlists: any[]): string {
+  static getPartOfSpeechAbbreviation(posModel: any, optionlists: any[]): string {
     if (posModel) {
       if (optionlists) {
         let abbreviation = '';
-        for (let optionlist of optionlists) {
+        for (const optionlist of optionlists) {
           if (optionlist.code === 'partOfSpeech' || optionlist.code === 'grammatical-info') {
-            for (let item of optionlist.items) {
+            for (const item of optionlist.items) {
               if (item.key === posModel.value) {
                 abbreviation = item.abbreviation;
               }
@@ -86,8 +81,9 @@ export class LexiconUtilityService extends UtilityService {
           }
         }
 
-        if (abbreviation)
+        if (abbreviation) {
           return abbreviation;
+        }
       }
 
       // capture text inside parentheses
@@ -105,13 +101,13 @@ export class LexiconUtilityService extends UtilityService {
     return '';
   }
 
-  private getFields(config: any, node: any, fieldName: string, delimiter: string = ' '): string {
+  private static getFields(config: any, node: any, fieldName: string, delimiter: string = ' '): string {
     let result = '';
-    if (node[fieldName] && config && config.fields && config.fields[fieldName] &&
-      config.fields[fieldName].inputSystems) {
-      for (let inputSystem of config.fields[fieldName].inputSystems ) {
-        let field = node[fieldName][inputSystem];
-        if (!this.isAudio(inputSystem) && field != null && field.value != null && field.value !== ''
+    if (node[fieldName] && config && config.fields && config.fields[fieldName] && config.fields[fieldName].inputSystems
+    ) {
+      for (const languageTag of config.fields[fieldName].inputSystems ) {
+        const field = node[fieldName][languageTag];
+        if (!LexiconUtilityService.isAudio(languageTag) && field != null && field.value != null && field.value !== ''
         ) {
           if (result) {
             result += delimiter + field.value;
@@ -125,15 +121,21 @@ export class LexiconUtilityService extends UtilityService {
     return result;
   }
 
-  private getFirstField(config: any, node: any, fieldName: string): string {
+  private static getDefinition(config: any, sense: any): string {
+    return LexiconUtilityService.getFirstField(config, sense, 'definition');
+  }
+
+  private static getGloss(config: any, sense: any): string {
+    return LexiconUtilityService.getFirstField(config, sense, 'gloss');
+  }
+
+  private static getFirstField(config: any, node: any, fieldName: string): string {
     let result = '';
-    let ws;
     let field;
     if (node[fieldName] && config && config.fields && config.fields[fieldName] &&
       config.fields[fieldName].inputSystems) {
-      for (let i in config.fields[fieldName].inputSystems) {
-        ws = config.fields[fieldName].inputSystems[i];
-        field = node[fieldName][ws];
+      for (const languageTag of config.fields[fieldName].inputSystems) {
+        field = node[fieldName][languageTag];
         if (field != null && field.value != null && field.value !== '') {
           result = field.value;
           break;

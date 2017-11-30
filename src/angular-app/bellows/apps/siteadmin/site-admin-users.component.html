@@ -1,0 +1,179 @@
+<div class="row" style="overflow:hidden">
+    <div class="col-xs-12 col-md-8">
+        <fieldset>
+            <legend>Users (total: {{$ctrl.users.length}})</legend>
+            <hr/>
+            <form class="control-bar form-inline">
+                <div class="row">
+                    <div class="col-md-12 col-lg-7">
+                        <button class="btn" data-ng-disabled="$ctrl.selected.length === 0"
+                                data-ng-click="$ctrl.removeUsers()">
+                            <i class="fa fa-times iconPadding" aria-hidden="true" style="color:red"></i>Remove Users</button>
+                        <button class="btn btn-primary" data-ng-click="$ctrl.addRecord()">
+                            <i class="fa fa-plus iconPadding" aria-hidden="true"></i>Add New</button>
+                    </div>
+                    <div class="col-md-12 col-lg-5">
+                        <div>
+                            <input class="form-control" type="text" data-ng-model="$ctrl.filterUsers"
+                                   placeholder="Filter user list">
+                            <a data-ng-show="$ctrl.filterUsers !== ''" title="Clear Filter"
+                               data-ng-click="$ctrl.filterUsers = ''">
+                                <i class="fa fa-times" style="color:gray"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <listview search="$ctrl.queryUsers()" items="$ctrl.users" items-filter="$ctrl.filterUsers"
+                      visible-items="visibleUsers" select="">
+                <table class="table table-hover table-responsive">
+                    <thead class="thead-inverse">
+                    <tr>
+                        <th></th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Projects</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-ng-repeat="user in visibleUsers" data-ng-class="{ active: $ctrl.isSelected(user) }" >
+                        <td width="16px" align="center">
+                            <!--suppress HtmlFormInputWithoutLabel -->
+                            <input type="checkbox" data-ng-checked="$ctrl.isSelected(user)"
+                                   data-ng-click="$ctrl.updateSelection($event, user)" />
+                        </td>
+                        <td class="username-styling">
+                            <a ng-style="!user.active && {'text-decoration': 'line-through', 'color':'grey'}"
+                               data-ng-click="$ctrl.selectRow($index, user)" title="Click to edit this user"
+                               class="username-styling">{{user.username}}</a>
+                        </td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.name}} <span ng-show="user.role === 'system_admin'">(System Admin)</span></td>
+                        <td><span style="font-weight: bold" ng-show="user.projects.length > 0">(<span class="notranslate">{{user.projects.length}}</span>
+                            project<span ng-show="user.projects.length > 1">s</span>) </span>
+                            <span ng-repeat="project in user.projects">
+                                <a class="username-styling"
+                                   data-ng-href="http://{{project.siteName}}/app/{{project.appName}}/{{project.id}}">
+                                    {{project.projectCode}}</a><span ng-show="!$last">, </span></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </listview>
+        </fieldset>
+    </div>
+
+    <div class="col-xs-12 col-md-4">
+        <form data-ng-submit="$ctrl.updateRecord($ctrl.record)"
+              data-ng-hide="$ctrl.vars.editButtonName === ''" name="userForm">
+            <fieldset>
+                <legend>User data</legend>
+                <hr/>
+                <div class="card card-block bg-faded">
+                    <label>Username</label>
+                    <div class="input-group">
+                        <input data-idle-validate="$ctrl.checkUniqueUser()"
+                               class="form-control"
+                               data-idle-validate-keypress="$ctrl.resetValidateUserForm()"
+                               type="text" placeholder="(username)"
+                               data-ng-disabled="$ctrl.vars.state === 'add'"
+                               data-ng-model="$ctrl.record.username"/>
+                        <span class="input-group-addon" data-ng-show="$ctrl.uniqueUserState === 'loading'">
+                                <i id="userNameLoading" class="fa fa-spinner fa-spin"></i>
+                            </span>
+                        <span class="input-group-addon"
+                              data-ng-show="($ctrl.uniqueUserState === 'usernameExists') || ($ctrl.uniqueUserState === 'usernameAndEmailExists')">
+                                <i id="userNameExists" class="fa fa-times" title="User name already exist!"></i>
+                            </span>
+                    </div>
+                    <div>
+                        <label>Full Name</label>
+                        <input data-idle-validate="$ctrl.checkUniqueUser()"
+                               class="form-control"
+                               data-idle-validate-keypress="$ctrl.resetValidateUserForm()"
+                               data-idle-validate-msec="500"
+                               required type="text" placeholder="(your name here)"
+                               data-ng-model="$ctrl.record.name"/>
+                    </div>
+                    <label>Email</label>
+                    <div class="input-group">
+                        <input data-idle-validate="$ctrl.checkUniqueUser()"
+                               class="form-control"
+                               data-idle-validate-keypress="$ctrl.resetValidateUserForm()"
+                               data-idle-validate-msec="300"
+                               required type="text" placeholder="(no email)"
+                               data-ng-model="$ctrl.record.email"/>
+                        <span class="input-group-addon" data-ng-show="$ctrl.uniqueUserState === 'loading'">
+                                <i id="userEmailLoading" class="fa fa-spinner fa-spin"></i>
+                            </span>
+                        <span class="input-group-addon alert-success" data-ng-show="$ctrl.uniqueUserState === 'ok'">
+                                <i id="userEmailOk" class="fa fa-check" title="User email is available!"></i>
+                            </span>
+                        <span class="input-group-addon"
+                              data-ng-show="($ctrl.uniqueUserState === 'emailExists') || ($ctrl.uniqueUserState === 'usernameAndEmailExists')">
+                                <i id="userEmailExists" class="fa fa-times" title="User email already exist!"></i>
+                            </span>
+                    </div>
+                </div>
+                <label for="_role">System Role</label>
+                <select class="form-control" id="_role" required data-ng-model="$ctrl.record.role"
+                        data-ng-disabled="$ctrl.vars.state === 'add'"
+                        data-ng-options="key as role.name for (key, role) in $ctrl.systemRoles"></select>
+                <br />
+                <label style="margin-bottom:20px">Site Roles</label>
+                <div class="card card-block bg-faded">
+                    <div data-ng-repeat="(site, role) in $ctrl.record.siteRole">
+                        <label for="siteRole">{{site}}</label>
+                        <select class="form-control" id="siteRole" data-ng-model="role"
+                                data-ng-disabled="$ctrl.vars.state === 'add'" data-ng-change="$ctrl.siteRoleChanged(site, role)"
+                                data-ng-options="key as siteRole.name for (key, siteRole) in $ctrl.siteRoles"></select>
+                    </div>
+                </div>
+                <a data-ng-show="$ctrl.vars.state === 'update'" href=""
+                   data-ng-click="$ctrl.togglePasswordForm(); $ctrl.vars.inputfocus = $ctrl.vars.showPasswordForm">
+                    Change <span class="notranslate">{{$ctrl.record.username}}</span>'s password</a>
+                <div data-ng-show="$ctrl.vars.showPasswordForm">
+                    <label for="_password">Password</label>
+                    <input id="_password" class="form-control" type="text" name="password" data-idle-validate="$ctrl.checkUniqueUser()"
+                           data-idle-validate-keypress="$ctrl.resetValidateUserForm()" data-idle-validate-msec="500"
+                           data-ng-model="$ctrl.record.password" data-pui-auto-focus="$ctrl.vars.inputfocus" />
+                </div>
+                <hr/>
+                <div>
+                    <label style="cursor:default">User Created On: <span class="notranslate">{{ $ctrl.record.dateCreated | date:shortDate }}</span></label>
+                    <label data-ng-show="$ctrl.record.last_login" style="cursor:default">
+                        Last Login: <span class="notranslate">{{$ctrl.record.last_login * 1000 | date:shortDate}}</span></label>
+                </div>
+                <div>
+                    <button class="btn btn-primary" data-ng-disabled="$ctrl.record.active"
+                            data-ng-click="$ctrl.checkUniqueUser(); $ctrl.record.active = true">
+                        <span class="fa fa-stack">
+                            <i class="fa fa-user fa-lg "></i>
+                        </span>
+                        Activate
+                    </button>
+                    <!--Ban button has a separate API so don't submit the form -->
+                    <button class="btn btn-danger" type="button"
+                            data-ng-disabled="$ctrl.vars.record.id === userId || !$ctrl.record.active"
+                            data-ng-click="$ctrl.checkUniqueUser(); $ctrl.banUser($ctrl.record)">
+                        <span class="fa fa-stack">
+                            <i class="fa fa-user fa-stack-1x"></i>
+                            <i class="fa fa-ban fa-stack-2x"></i>
+                        </span>
+                        Ban
+                    </button>
+                </div>
+                <br />
+                <button class="btn btn-primary" type="submit"
+                        data-ng-disabled="userForm.$invalid || !($ctrl.uniqueUserState === 'ok')">
+                    <span class="fa fa-stack">
+                        <i class="fa fa-lg fa-{{$ctrl.vars.editButtonIcon}}"></i>
+                    </span>
+                    {{$ctrl.vars.editButtonName}}
+                </button>
+            </fieldset>
+        </form>
+        <br />
+        <hr>
+    </div>
+</div>
