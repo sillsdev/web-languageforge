@@ -556,7 +556,7 @@ function LexiconConfigController($scope: any, $filter: angular.IFilterService, $
 
     $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes: any) {
       const modalInstance = $modal.open({
-        templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
+        templateUrl: '/angular-app/languageforge/lexicon/settings/select-new-language.html',
         windowTopClass: 'modal-select-language',
         controller: ['$scope', '$uibModalInstance',
           (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
@@ -652,7 +652,7 @@ function LexiconFieldConfigController($scope: any, $modal: ModalService, session
   $scope.openNewCustomFieldModal = function openNewCustomFieldModal() {
     const modalInstance = $modal.open({
       scope: $scope,
-      templateUrl: '/angular-app/languageforge/lexicon/views/new-custom-field.html',
+      templateUrl: '/angular-app/languageforge/lexicon/settings/new-custom-field.html',
       controller: ['$scope', '$filter', '$uibModalInstance',
         (scope: any, $filter: angular.IFilterService, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
           scope.selects = {};

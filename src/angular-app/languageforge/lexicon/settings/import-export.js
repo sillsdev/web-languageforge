@@ -54,7 +54,7 @@ angular.module('lexicon.import-export', ['ui.bootstrap', 'ngFileUpload', 'coreMo
             if (isUploadSuccess) {
               $scope.upload.progress = 100.0;
               var modalInstance = $modal.open({
-                templateUrl: '/angular-app/languageforge/lexicon/views/import-results.html',
+                templateUrl: '/angular-app/languageforge/lexicon/settings/import-results.html',
                 controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
                   $scope.show = {};
                   $scope.show.importErrors = false;
