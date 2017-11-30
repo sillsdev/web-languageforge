@@ -25,6 +25,10 @@ angular.module('palaso.ui.soundplayer', [])
           }
         };
 
+        ctrl.$onDestroy = function () {
+          $scope.audioElement.pause();
+        };
+
         $scope.iconClass = function () {
           return $scope.playing ? 'fa-pause' : 'fa-play';
         };
