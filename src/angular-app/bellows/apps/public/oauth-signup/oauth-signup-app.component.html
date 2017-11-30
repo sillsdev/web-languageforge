@@ -1,0 +1,93 @@
+<div class="content container">
+    <div class="row">
+        <div class="col-sm-12">
+            <sil-notices></sil-notices>
+            Hi <span class="notranslate">{{ $ctrl.record.name }}</span>,<br/>
+            <h5>Looks like you're new here!</h5> Please confirm your information below to create your account.
+            <form class="form-horizontal" data-ng-submit="$ctrl.submit()" id="userprofileForm" name="userprofileForm">
+                <fieldset>
+                    <div class="form-group row">
+                        <div class="card bg-faded col-md-7">
+                            <div class="card-block">
+                                <div class="form-group row">
+                                    <label class="control-label col-md-4 text-md-right" for="fullname">Full Name</label>
+                                    <div class="controls col-md-8">
+                                        <input class="form-control" id="fullname" autofocus
+                                               type="text" name="fullname"
+                                               placeholder="(full name)"
+                                               data-ng-model="$ctrl.record.name"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-md-4 text-md-right" for="email">Email Address</label>
+                                    <div class="controls col-md-8">
+                                        <div class="input-group">
+                                            <input class="form-control" id="email" disabled
+                                                   type="email" name="email"
+                                                   data-ng-model="$ctrl.record.email"/>
+                                        </div>
+                                    </div>
+                                </div>
+<!-- Uncomment if we want to allow users to pick their own usernames (would also require a PHP change)
+                                <div class="form-group row">
+                                    <label class="control-label col-md-4 text-md-right" for="username">Username</label>
+                                    <div class="controls col-md-8">
+                                        <div class="input-group">
+                                            <input class="form-control" id="username"
+                                                   type="text" name="username"
+                                                   data-ng-blur="$ctrl.validateForm();"
+                                                   data-ng-model="$ctrl.record.username"/>
+                                            <span class="input-group-addon alert-danger" data-ng-show="!$ctrl.recordnameValid || $ctrl.recordnameExists">
+                                                <i class="fa fa-times"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <span role="alert" class="text-danger" id="usernameTaken" data-ng-show="$ctrl.recordnameExists">Username <span class="notranslate">{{$ctrl.takenUsername}}</span> is taken. Please choose a different username.<br></span>
+                                </div>
+-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="card bg-faded col-md-7">
+                            <div class="card-block">
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <label class="control-label text-md-right" for="avatarRef" data-translate="Avatar"></label>
+                                        <div class="controls" style="margin-bottom:10px">
+                                            <img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{$ctrl.getAvatarUrl($ctrl.record.avatar_ref)}}" title="Use the dropdown selections below to change your avatar's color and shape" />
+                                            <a data-ng-click="$ctrl.resetAvatar()">Reset</a>
+                                            <!-- TODO: Implement the "Reset" link so you can use your original Google avatar -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <select data-ng-model="$ctrl.avatarChoice.avatar_color" class="form-control" data-ng-options="c.value as c.label for c in $ctrl.dropdown.avatarColors"><option value="">Select a Color...</option></select>
+                                        <br/>
+                                        <select data-ng-model="$ctrl.avatarChoice.avatar_shape" class="form-control" data-ng-options="s.value as s.label for s in $ctrl.dropdown.avatarShapes"><option value="">Choose an animal...</option></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="submit" data-ng-disabled="userprofileForm.$invalid||$ctrl.emailExists||$ctrl.recordnameExists" class="btn btn-primary " id="saveBtn"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <div class="hr-and-text">
+        <hr class="thin-line">
+        <div class="text-inside-hr">or</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>Already have an account?</h5>
+            Then click <a href="/auth/login"><strong>Login</strong></a> and provide your {{ website_name }} username and password to link your account.
+            <!-- TODO: Move login form into this controller? -->
+        </div>
+    </div>
+</div>

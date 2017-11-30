@@ -43,6 +43,7 @@ class Auth extends App
                 // no break; - intentional fall through to next case
             case 'forgot_password':
             case 'login':
+            case 'oauth-signup':
             case 'link_oauth_account':
                 if($this->isLoggedIn($app)) {
                     return $app->redirect('/app/projects');
@@ -92,6 +93,7 @@ class Auth extends App
             $email = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_EMAIL_ADDRESS);
             $this->data['oauth_email_for_login'] = $email;
             $avatar = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_AVATAR_URL);
+            $this->data['oauth_avatar_for_login'] = $avatar;
             $link = Communicate::calculateSignupUrl($this->website, $email, $name, $avatar);
             $this->data['oauth_uri_for_signup'] = $link;
         }
