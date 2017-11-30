@@ -643,6 +643,9 @@ function LexiconFieldConfigController($scope: any, $modal: ModalService, session
   };
 
   $scope.fieldConfigItemExists = function fieldConfigItemExists(itemName: string) {
+    if (angular.isUndefined($scope.currentField)) {
+      return false;
+    }
     return itemName in $scope.fieldConfig[$scope.currentField.name];
   };
 
