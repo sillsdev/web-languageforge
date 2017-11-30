@@ -32,7 +32,6 @@ namespace SIL.XForge.WebApi.Server.DataAccess
                 new ObjectRefConvention()
             };
             ConventionRegistry.Register("Custom", pack, t => true);
-            BsonClassMap.RegisterClassMap<ProjectRole>();
 
             services.AddSingleton<IMongoClient>(sp => new MongoClient(connectionString));
 
