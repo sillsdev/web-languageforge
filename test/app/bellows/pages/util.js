@@ -224,7 +224,7 @@ function Utils() {
     var text = message.message;
 
     return /angular.*\.js .* TypeError: undefined is not a function/.test(text) ||
-      /angular.*\.js .* Error: \[\$compile:tpload]/.test(text) ||
+      /\[\$compile:tpload] .* HTTP status: -1/.test(text) ||
       text.includes('password or credit card input in a non-secure context.') ||
       text.includes('ERR_INTERNET_DISCONNECTED');
   };

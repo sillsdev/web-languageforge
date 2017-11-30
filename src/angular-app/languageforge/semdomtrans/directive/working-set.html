@@ -25,7 +25,7 @@
                                
                                <button class="btn btn-primary" ng-click="control.setInclusion(control.typeahead.searchResults, true)"> Include All </button>
                                <button class="btn btn-primary" ng-click="control.setInclusion(control.typeahead.searchResults, false)"> Exclude All </button>
-                                <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="control.typeahead.searchResults.length > 0"><small ><i>{{control.typeahead.searchResults.length}} match(es)</i></small></li>
+                                <li style="text-align:center; background-color: #d3d3d3; color:black;margin-top:5px" ng-if="control.typeahead.searchResults.length > 0"><small ><i><span class="notranslate">{{control.typeahead.searchResults.length}}</span> match(es)</i></small></li>
                             </ul>
                         </pui-typeahead>
                     </td>

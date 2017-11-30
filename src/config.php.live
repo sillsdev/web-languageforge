@@ -55,5 +55,13 @@ if (! defined('REMEMBER_ME_SECRET')) {
     define('REMEMBER_ME_SECRET', 'not_a_secret');
 }
 
+if (! defined('GOOGLE_CLIENT_ID')) {
+    define('GOOGLE_CLIENT_ID', 'googleClientId');
+}
+
+if (! defined('GOOGLE_CLIENT_SECRET')) {
+    define('GOOGLE_CLIENT_SECRET', 'googleClientSecret');
+}
+
 define('NG_BASE_FOLDER', 'angular-app/');
 define('BCRYPT_COST', 7);

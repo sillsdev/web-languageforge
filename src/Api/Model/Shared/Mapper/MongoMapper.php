@@ -274,6 +274,17 @@ class MongoMapper
         return false;
     }
 
+    public function readByPropertyArrayContains($model, $property, $value)
+    {
+        CodeGuard::checkTypeAndThrow($value, 'string');
+        $data = $this->_collection->findOne([$property => $value]);  // Yes, it's that simple
+        if ($data != NULL) {
+            MongoDecoder::decode($model, $data, (string) $data['_id']);
+            return true;
+        }
+        return false;
+    }
+
     public function readSubDocument($model, $rootId, $property, $id)
     {
         CodeGuard::checkTypeAndThrow($rootId, 'string');

@@ -8,7 +8,7 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule', 'bellows.serv
   function ($scope, $routeParams, questionService, ss,
             util, breadcrumbService, notice, linkService, modalService) {
     var Q_TITLE_LIMIT = 30;
-    $scope.getAvatarUrl = util.getAvatarUrl;
+    $scope.getAvatarUrl = util.constructor.getAvatarUrl;
     $scope.finishedLoading = false;
     $scope.state = 'stop';
     $scope.audioReady = false;
@@ -262,14 +262,16 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule', 'bellows.serv
         userRef: answer.userRef
       };
       for (var id in answer.comments) {
-        var strippedComment = {};
-        var comment = answer.comments[id];
-        strippedComment.id = comment.id;
-        strippedComment.content = comment.content;
-        strippedComment.dateCreated = comment.dateCreated;
-        strippedComment.dateEdited = comment.dateEdited;
-        strippedComment.userRef = comment.userRef.userid;
-        $scope.editedAnswer.comments[id] = strippedComment;
+        if (answer.comments.hasOwnProperty(id)) {
+          var strippedComment = {};
+          var comment = answer.comments[id];
+          strippedComment.id = comment.id;
+          strippedComment.content = comment.content;
+          strippedComment.dateCreated = comment.dateCreated;
+          strippedComment.dateEdited = comment.dateEdited;
+          strippedComment.userRef = comment.userRef.userid;
+          $scope.editedAnswer.comments[id] = strippedComment;
+        }
       }
     });
 
@@ -297,11 +299,13 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule', 'bellows.serv
       // the commentId (the old value won't help us).
       var comment = undefined;
       searchLoop: for (var aid in $scope.question.answers) {
-        var answer = $scope.question.answers[aid];
-        for (var cid in answer.comments) {
-          if (cid === newval) {
-            comment = answer.comments[cid];
-            break searchLoop;
+        if ($scope.question.answers.hasOwnProperty(aid)) {
+          var answer = $scope.question.answers[aid];
+          for (var cid in answer.comments) {
+            if (answer.comments.hasOwnProperty(cid) && cid === newval) {
+              comment = answer.comments[cid];
+              break searchLoop;
+            }
           }
         }
       }
@@ -347,8 +351,10 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule', 'bellows.serv
           }
 
           for (var id in result.data) {
-            newComment = result.data[id]; // There should be one, and only one,
-            // record in result.data
+            if (result.data.hasOwnProperty(id)) {
+              // There should be one, and only one, record in result.data
+              newComment = result.data[id];
+            }
           }
 
           $scope.question.answers[answerId].comments[newComment.id] = newComment;
@@ -397,8 +403,10 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule', 'bellows.serv
 
     var afterUpdateAnswer = function (answersDto) {
       for (var id in answersDto) {
-        $scope.question.answers[id] = answersDto[id];
-        $scope.myResponses.push(id);
+        if (answersDto.hasOwnProperty(id)) {
+          $scope.question.answers[id] = answersDto[id];
+          $scope.myResponses.push(id);
+        }
       }
 
       // Recalculate answer count as it might have changed
