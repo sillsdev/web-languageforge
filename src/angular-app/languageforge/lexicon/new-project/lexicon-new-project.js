@@ -3,7 +3,6 @@
 angular.module('lexicon-new-project',
   [
     'coreModule',
-    'bellows.services',
     'ui.bootstrap',
     'ui.router',
     'palaso.ui.utils',
@@ -13,8 +12,9 @@ angular.module('lexicon-new-project',
     'palaso.util.model.transform',
     'pascalprecht.translate',
     'ngFileUpload',
+    'sgw.ui.breadcrumb',
     'language.inputSystems',
-    'lexicon.services'
+    'lexiconCoreModule'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
   function ($stateProvider, $urlRouterProvider, $translateProvider) {

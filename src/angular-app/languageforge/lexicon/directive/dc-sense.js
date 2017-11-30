@@ -1,7 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.example',
-  'bellows.services', 'lexicon.services'])
+angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.example'])
 
 // Palaso UI Dictionary Control: Sense
 .directive('dcSense', ['lexUtils', 'modalService', function (utils, modal) {
@@ -34,10 +33,6 @@ angular.module('palaso.ui.dc.sense', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
             $scope.control.saveCurrentEntry();
           }, angular.noop);
       };
-    }],
-
-    link: function (scope, element, attrs, controller) {
-
-    }
+    }]
   };
 }]);

@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('palaso.ui.dc.multitext', ['bellows.services', 'palaso.ui.showOverflow',
-  'palaso.ui.dc.formattedtext', 'palaso.ui.dc.audio', 'lexicon.services'])
+angular.module('palaso.ui.dc.multitext', ['palaso.ui.showOverflow', 'palaso.ui.dc.formattedtext',
+  'palaso.ui.dc.audio'])
 
 // Dictionary Control Multitext
 .directive('dcMultitext', [function () {

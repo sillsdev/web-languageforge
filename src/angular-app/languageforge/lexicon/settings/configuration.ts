@@ -19,7 +19,7 @@ import { LexiconSendReceiveService } from '../core/lexicon-send-receive.service'
 export const LexiconConfigModule = angular
   .module('lexicon.configuration', ['ui.bootstrap', CoreModule,
     NoticeModule, 'palaso.ui.language', 'palaso.ui.tabset', 'palaso.ui.picklistEditor',
-    'palaso.util.model.transform', 'lexicon.services', InputSystemsModule])
+    'palaso.util.model.transform', InputSystemsModule])
   .controller('ConfigCtrl', ['$scope', '$filter', '$uibModal',
     'silNoticeService', 'sessionService',
     'lexProjectService', 'lexConfigService',
@@ -556,7 +556,7 @@ function LexiconConfigController($scope: any, $filter: angular.IFilterService, $
 
     $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes: any) {
       const modalInstance = $modal.open({
-        templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
+        templateUrl: '/angular-app/languageforge/lexicon/settings/select-new-language.html',
         windowTopClass: 'modal-select-language',
         controller: ['$scope', '$uibModalInstance',
           (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
@@ -643,13 +643,16 @@ function LexiconFieldConfigController($scope: any, $modal: ModalService, session
   };
 
   $scope.fieldConfigItemExists = function fieldConfigItemExists(itemName: string) {
+    if (angular.isUndefined($scope.currentField)) {
+      return false;
+    }
     return itemName in $scope.fieldConfig[$scope.currentField.name];
   };
 
   $scope.openNewCustomFieldModal = function openNewCustomFieldModal() {
     const modalInstance = $modal.open({
       scope: $scope,
-      templateUrl: '/angular-app/languageforge/lexicon/views/new-custom-field.html',
+      templateUrl: '/angular-app/languageforge/lexicon/settings/new-custom-field.html',
       controller: ['$scope', '$filter', '$uibModalInstance',
         (scope: any, $filter: angular.IFilterService, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
           scope.selects = {};
