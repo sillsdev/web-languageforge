@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('lexicon.import-export', ['ui.bootstrap', 'bellows.services',
-    'palaso.ui.notice', 'palaso.ui.language', 'ngFileUpload', 'lexicon.upload'])
+angular.module('lexicon.import-export', ['ui.bootstrap', 'ngFileUpload', 'bellows.services',
+    'palaso.ui.notice', 'palaso.ui.language'])
   .controller('LiftImportCtrl', ['$scope', 'Upload', '$uibModal', 'silNoticeService',
     'lexProjectService', '$filter', '$location', 'sessionService',
   function ($scope, Upload, $modal, notice, lexProjectService, $filter,
             $location, sessionService) {
-    lexProjectService.setBreadcrumbs('importExport', 'Import/export');
+    lexProjectService.setBreadcrumbs('importExport', 'LIFT Import');
 
     $scope.upload = {};
     $scope.upload.mergeRule = 'createDuplicates';

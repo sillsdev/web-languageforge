@@ -1,4 +1,4 @@
-<h2 style="font-weight: normal">Update {{textTitle}}</h2>
+<h2 style="font-weight: normal">Update <span class="notranslate">{{textTitle}}</span></h2>
 <div data-ng-show="rights.editOther">
     <uib-tabset>
         <uib-tab heading="Edit Text">
@@ -31,18 +31,18 @@
                             </div>
                         </div>
                         <div class="verse-range" uib-collapse="rangeSelectorCollapsed">
-                            <div class="form-group">
+                            <div class="form-inline">
                                 <label>From
-                                    <div><input type="number" class="form-control" data-ng-model="editedText.startCh" min="1" placeholder="Chap." />
-                                        &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="editedText.startVs" min="1" placeholder="Verse" />
+                                    <div><input type="number" style="width:6em" class="form-control" data-ng-model="editedText.startCh" min="1" placeholder="Chap." />
+                                        &nbsp;:&nbsp;<input type="number" style="width:6em" class="form-control" data-ng-model="editedText.startVs" min="1" placeholder="Verse" />
                                         <button data-ng-click="editedText.startCh = ''; editedText.startVs = ''" class="btn btn-link">reset</button>
                                     </div>
                                 </label>
                             </div>
-                            <div class="form-group">
+                            <div class="form-inline">
                                 <label>To
-                                    <div><input type="number" class="form-control" data-ng-model="editedText.endCh" min="1" placeholder="Chap." />
-                                        &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="editedText.endVs" min="1" placeholder="Verse" />
+                                    <div><input type="number" style="width:6em" class="form-control" data-ng-model="editedText.endCh" min="1" placeholder="Chap." />
+                                        &nbsp;:&nbsp;<input type="number" style="width:6em" class="form-control" data-ng-model="editedText.endVs" min="1" placeholder="Verse" />
                                         <button data-ng-click="endCh = ''; endVs = ''" class="btn btn-link">reset</button>
                                     </div>
                                 </label>
@@ -87,11 +87,11 @@
                                     <label><input type="checkbox" data-ng-click="updateSelection($event, question)" /></label></td>
                                 <td><a class="span5" data-ng-href="{{question.url}}">
                                     <span class="larger-text">{{question.calculatedTitle}}</span></a></td>
-                                <td><a class="attention-block" data-ng-href="{{question.url}}">
-                                        {{question.answerCount}} answers
+                                <td><a data-ng-href="{{question.url}}">
+                                        <span class="notranslate">{{question.answerCount}}</span> answers
                                     </a></td>
-                                <td>{{question.responseCount}} responses</td>
-                                <td>Archived on {{question.dateModified | date:'fullDate'}}</td>
+                                <td><span class="notranslate">{{question.responseCount}}</span> responses</td>
+                                <td>Archived on <span class="notranslate">{{question.dateModified | date:'fullDate'}}</span></td>
                             <hr />
                         </tr>
                     </table>
@@ -149,9 +149,9 @@
                      data-ng-show="download.totalCount">
                     <p data-ng-show="download.totalCount > 0" class="text-success">
                         Ready to Download: <span data-ng-show="download.answerCount > 0"
-                                                 class="label label-success">{{download.answerCount}}
+                                                 class="label label-success"><span class="notranslate">{{download.answerCount}}</span>
                     answer(s)</span> <span data-ng-show="download.commentCount > 0"
-                                           class="label label-info">{{download.commentCount}}
+                                           class="label label-info"><span class="notranslate">{{download.commentCount}}</span>
                     comment(s)</span>
                     </p>
                     <button data-ng-click="downloadExport()" class="btn btn-primary">
@@ -160,7 +160,4 @@
             </div>
         </uib-tab>
     </uib-tabset>
-</div>
-<div data-ng-hide="rights.editOther">
-    <p>You don't have permission to edit this text.</p>
 </div>

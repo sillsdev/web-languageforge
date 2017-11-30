@@ -13,7 +13,7 @@ export class Notice {
     public showDetails: boolean
   ) {}
 
-  toggleDetails () {
+  toggleDetails() {
     this.showDetails = !this.showDetails;
   }
 }
@@ -26,8 +26,8 @@ export class NoticeService {
   private isLoadingNotice: boolean;
   private loadingMessage: string;
 
-  static $inject: string[] = ['$interval', 'utilService'];
-  constructor(private $interval: angular.IIntervalService, private util: UtilityService) {
+  static $inject: string[] = ['$interval'];
+  constructor(private $interval: angular.IIntervalService) {
     this.notices = [];
     this.timers = {};
     this.percentComplete = 0;
@@ -44,14 +44,14 @@ export class NoticeService {
   }
 
   push(type: () => string, message: string, details?: string, cannotClose?: boolean, time?: number): string {
-    let id = this.util.uuid();
+    const id = UtilityService.uuid();
 
     if (!time && type() === this.SUCCESS()) time = 4 * 1000;
     if (time) {
       this.timers[id] = this.$interval(() => { this.removeById(id); }, time, 1);
     }
 
-    let notice = new Notice(type(), message, id, details, false);
+    const notice = new Notice(type(), message, id, details, false);
 
     if (details) {
       details = details.replace(/<p>/gm, '\n');
@@ -69,73 +69,73 @@ export class NoticeService {
 
     this.notices.push(notice);
     return id;
-  };
+  }
 
   removeById(id: string): void {
     this.remove(this.getIndexById(id));
     if (id in this.timers) {
       this.$interval.cancel(this.timers[id]);
     }
-  };
+  }
 
   remove(index: number): void {
     if (!angular.isUndefined(index)) {
       this.notices.splice(index, 1);
     }
-  };
+  }
 
   get(): Notice[] {
     return this.notices;
-  };
+  }
 
   getLoadingMessage(): string {
     return this.loadingMessage;
-  };
+  }
 
   setLoading(message: string): void {
     this.loadingMessage = message;
     this.isLoadingNotice = true;
-  };
+  }
 
   getPercentComplete(): number {
     return this.percentComplete;
-  };
+  }
 
   setPercentComplete(percent: number): void {
     this.percentComplete = percent;
     this.isProgressBarShown = true;
-  };
+  }
 
   cancelProgressBar(): void {
     this.isProgressBarShown = false;
-  };
+  }
 
   showProgressBar(): boolean {
     return this.isProgressBarShown && this.percentComplete > 4;
-  };
+  }
 
   cancelLoading(): void {
     this.loadingMessage = '';
     this.isLoadingNotice = false;
-  };
+  }
 
   isLoading(): boolean {
     return this.isLoadingNotice;
-  };
+  }
 
   ERROR(): string {
     return 'danger';
-  };
+  }
 
   WARN(): string {
     return 'warning';
-  };
+  }
 
   INFO(): string {
     return 'info';
-  };
+  }
 
   SUCCESS(): string {
     return 'success';
-  };
+  }
 }

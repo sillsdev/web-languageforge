@@ -30,8 +30,8 @@ describe('the questions list page (AKA the text page)', function () {
           expect(typeof row === 'undefined').toBeFalsy();
           var answerCount = row.element(by.binding('question.answerCount'));
           var responseCount = row.element(by.binding('question.responseCount'));
-          expect(answerCount.getText()).toBe('1 answers');
-          expect(responseCount.getText()).toBe('2 responses');
+          expect(answerCount.getText()).toBe('1');
+          expect(responseCount.getText()).toBe('2');
         });
 
       util.findRowByText(textPage.questionRows, constants.testText1Question2Title)
@@ -40,8 +40,8 @@ describe('the questions list page (AKA the text page)', function () {
           expect(typeof row === 'undefined').toBeFalsy();
           var answerCount = row.element(By.binding('question.answerCount'));
           var responseCount = row.element(By.binding('question.responseCount'));
-          expect(answerCount.getText()).toBe('1 answers');
-          expect(responseCount.getText()).toBe('2 responses');
+          expect(answerCount.getText()).toBe('1');
+          expect(responseCount.getText()).toBe('2');
         });
     });
 
@@ -104,7 +104,7 @@ describe('the questions list page (AKA the text page)', function () {
     });
 
     it('can re-publish the question that was just archived (Text Settings)', function () {
-      textPage.textSettingsBtn.click();
+      textPage.clickTextSettingsButton();
       browser.wait(expectedCondition.visibilityOf(textSettingsPage.tabs.archiveQuestions),
         CONDITION_TIMEOUT);
       textSettingsPage.tabs.archiveQuestions.click();

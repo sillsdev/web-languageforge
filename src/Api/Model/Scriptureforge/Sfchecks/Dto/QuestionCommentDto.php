@@ -53,7 +53,7 @@ class QuestionCommentDto
         }
 
 
-        if ($project->usersSeeEachOthersResponses) {
+        if ($project->shouldSeeOtherUsersResponses($userId)) {
             $unreadAnswerModel = new UnreadAnswerModel($userId, $project->id->asString(), $questionId);
             $unreadAnswers = $unreadAnswerModel->unreadItems();
             $unreadAnswerModel->markAllRead();

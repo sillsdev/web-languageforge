@@ -24,7 +24,7 @@
                             <!-- <a class="dropdown-item" href="/app/activity">Activity</a>
                             <div class="dropdown-divider"></div> -->
                             {% verbatim %}
-                            <div data-ng-switch="projectTypesBySite().length">
+                            <div data-ng-switch="projectTypesBySite().length" data-ng-show="rights.canCreateProject">
                                 <div data-ng-switch-when="1">
                                     <a class="dropdown-item" data-ng-href="/app/{{projectTypesBySite()[0]}}/new-project">
                                         <b>Start or Join a New Project</b></a>
@@ -32,15 +32,20 @@
                                 <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
                                     <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
                                         <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a {{projectTypeNames[appName]}} project</b>
+                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
                                     </a>
                                 </div>
                             </div>
                             {% endverbatim %}
                             {% if projects|length > 10 %}
-                            <a class="dropdown-item" href="/app/projects"><b>List All Projects</b></a>
+                                <a class="dropdown-item" href="/app/projects"><b>List All Projects</b></a>
+                                <div class="dropdown-divider"></div>
                             {% endif %}
-                            <div class="dropdown-divider"></div>
+                            {% if projects|length <= 10 %}
+                                {% verbatim %}
+                                <div class="dropdown-divider" data-ng-show="rights.canCreateProject"></div>
+                                {% endverbatim %}
+                            {% endif %}
                             {% for project in projects %}
                                 <a class="dropdown-item"
                                    href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
@@ -77,7 +82,7 @@
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="helpDropdown">
                             <a class="dropdown-item" target="_blank" href="https://community.software.sil.org/c/language-forge/how-to">Tutorials and How-Tos</a>
                             <a class="dropdown-item" target="_blank" href="https://community.software.sil.org/c/language-forge">Community Support</a>
-                            <a class="dropdown-item" target="_blank" href="https://github.com/sillsdev/web-languageforge/issues">Report a Bug</a>
+                            <a class="dropdown-item" target="_blank" href="mailto:issues@languageforge.org">Report a Problem<br />(email issues@languageforge.org)</a>
                             <a class="dropdown-item" href="/releasenotes">Release Notes</a>
                         </div>
                     </li>
@@ -87,7 +92,7 @@
                             My Projects</a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="myProjectDropdown">
                             {% verbatim %}
-                            <div data-ng-switch="projectTypesBySite().length">
+                            <div data-ng-switch="projectTypesBySite().length" data-ng-show="rights.canCreateProject">
                                 <div data-ng-switch-when="1">
                                     <a class="dropdown-item" data-ng-href="/app/{{projectTypesBySite()[0]}}/new-project">
                                         <b>Start or Join a New Project</b></a>
@@ -95,15 +100,20 @@
                                 <div data-ng-switch-default data-ng-repeat="appName in projectTypesBySite()">
                                     <a class="dropdown-item" data-ng-href="/app/{{appName}}/new-project">
                                         <img height="24px" data-ng-src="/Site/views/{{siteName}}/image/{{appName}}-newProjectBadge.png" />
-                                        <b>Start a {{projectTypeNames[appName]}} project</b>
+                                        <b>Start a <span class="notranslate">{{projectTypeNames[appName]}}</span> project</b>
                                     </a>
                                 </div>
                             </div>
                             {% endverbatim %}
                             {% if projects|length > 10 %}
-                            <a class="dropdown-item" href="/app/projects"><b>List All Projects</b></a>
+                                <a class="dropdown-item" href="/app/projects"><b>List All Projects</b></a>
+                                <div class="dropdown-divider"></div>
                             {% endif %}
-                            <div class="dropdown-divider"></div>
+                            {% if projects|length <= 10 %}
+                                {% verbatim %}
+                                <div class="dropdown-divider" data-ng-show="rights.canCreateProject"></div>
+                                {% endverbatim %}
+                            {% endif %}
                             {% for project in projects %}
                                 <a class="dropdown-item"
                                    href="{{ '/app/'~project.appName~'/'~project.id }}">{{ project.projectName }}</a>
@@ -116,7 +126,7 @@
                             <img src="{{ smallAvatarUrl }}"
                                  style="width: 28px; height: 28px; float:left; position:relative; top:-5px; border:1px solid #39537c; margin-right:10px"
                                  class="rounded-circle"
-                                 id="smallAvatarURL" />Hi, {{ userName }}</a>
+                                 id="smallAvatarURL" />Hi, <span class="notranslate">{{ userName }}</span></a>
                         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu aria-labelledby="userDropdown">
                             {% if isAdmin %}
                                 <a class="dropdown-item" href="/app/siteadmin">Site Administration</a>

@@ -28,6 +28,7 @@ describe('E2E Projects List App', function () {
       projectsPage.addMemberToProject(constants.otherProjectName, constants.memberName);
       loginPage.loginAsMember();
       projectsPage.get();
+      browser.wait(expectedCondition.visibilityOf(projectsPage.createBtn), CONDITION_TIMEOUT);
       expect(projectsPage.projectsList.count()).toBe(2);
     });
 

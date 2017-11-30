@@ -1,0 +1,4 @@
+        127.0.0.1\tlanguageforge.local
+        127.0.0.1\tdefault.local
+        127.0.0.1\tscriptureforge.local
+        127.0.0.1\tjamaicanpsalms.scriptureforge.local
