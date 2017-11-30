@@ -7,7 +7,7 @@
 <fieldset data-ng-disabled="isSaving">
 <pui-tabset>
     <pui-tab heading="Input Systems" class="{{interfaceConfig.pullNormal}}">
-        <div data-ng-include="'/angular-app/languageforge/lexicon/views/configuration-input-systems.html'"></div>
+        <div data-ng-include="'/angular-app/languageforge/lexicon/settings/configuration-input-systems.html'"></div>
     </pui-tab>
     <pui-tab heading="Fields" class="{{interfaceConfig.pullNormal}}">
         <div data-ng-controller="FieldConfigCtrl">
@@ -148,7 +148,7 @@
                         <button class="btn btn-primary {{interfaceConfig.pullToSide}}"
                             data-ng-click="editInputSystems.done()"><i class="fa fa-check"></i>{{'Done' | translate}}</button>
                         <h3 style="font-weight:normal" data-translate="Edit Input Systems"></h3>
-                        <div data-ng-include="'/angular-app/languageforge/lexicon/views/configuration-input-systems.html'"></div>
+                        <div data-ng-include="'/angular-app/languageforge/lexicon/settings/configuration-input-systems.html'"></div>
                     </div>
                 </div>
             </div>

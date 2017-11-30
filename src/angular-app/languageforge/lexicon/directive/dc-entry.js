@@ -1,5 +1,4 @@
-angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.sense',
-  'lexicon.services', 'bellows.services'])
+angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.sense'])
 
   // Palaso UI Dictionary Control: Entry
   .directive('dcEntry', ['lexUtils', 'modalService', function (utils, modal) {
@@ -44,10 +43,7 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
           $scope.control.deleteEntry($scope.control.currentEntry);
         };
 
-      }],
-
-      link: function (scope, element, attrs, controller) {
-      }
+      }]
     };
   }])
 
