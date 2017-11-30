@@ -232,7 +232,7 @@ abstract class OAuthBase extends Base
                     $this->setOAuthDetailsInSession($app, $googleOAuthId, $userDetails->getEmail(), $userDetails->getName(), $userDetails->getAvatar());
 
                     // We'll ask the user to either link existing account or create a new account
-                    return new RedirectResponse('/auth/link_oauth_account');
+                    return new RedirectResponse('/auth/oauth-signup');
                 } else {
                     // Found an email address matching this OAuth token, so add the token
                     $this->addOAuthIdToUserModel($userModel, $googleOAuthId);
