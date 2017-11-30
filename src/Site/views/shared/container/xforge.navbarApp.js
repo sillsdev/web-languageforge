@@ -17,6 +17,7 @@ angular.module('xforge.navbarApp', ['bellows.services', 'ui.bootstrap', 'pascalp
     $scope.helpFilePath = '';
     $scope.projectTypeNames = projectService.data.projectTypeNames;
     $scope.projectTypesBySite = projectService.data.projectTypesBySite;
+    $scope.rights = {};
 
     // this function should be run whenever the location changes
     function isHelpFilePresentOnServer() {
@@ -27,6 +28,9 @@ angular.module('xforge.navbarApp', ['bellows.services', 'ui.bootstrap', 'pascalp
       return sessionService.getSession().then(function (session) {
         var foundFile = false;
         var helpFilePathsAvailable = session.helps ? session.helps.filePaths : [];
+
+        $scope.rights.canCreateProject =
+          session.hasSiteRight(sessionService.domain.PROJECTS, sessionService.operation.CREATE);
 
         $scope.siteName = session.baseSite();
         helpFilePathsAvailable.forEach(function (path) {

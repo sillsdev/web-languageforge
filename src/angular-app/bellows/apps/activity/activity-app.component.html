@@ -22,13 +22,13 @@
                             {{item.date | relativetime}}
                         </div>
                         <div class="col-md-8 activity-content">i]
-                            <span>{{item.userRef.username}} commented on {{item.userRef2.username}}'s answer to
-                                &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
-                                on <a href="{{item.textHref}}">{{item.content.text}}</a>
-                                in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
+                            <span><span class="notranslate">{{item.userRef.username}}</span> commented on <span class="notranslate">{{item.userRef2.username}}</span>'s answer to
+                                &ldquo;<a class="notranslate" href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
+                                on <a class="notranslate" href="{{item.textHref}}">{{item.content.text}}</a>
+                                in <a class="notranslate" href="{{item.projectHref}}">{{item.content.project}}</a></span>
                             <p class="indented" data-ng-bind-html="item.content.answer"></p>
                             <hr />
-                            <p class="indented">{{item.content.comment}} - {{item.userRef.username}}</p>
+                            <p class="indented notranslate">{{item.content.comment}} - {{item.userRef.username}}</p>
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                             {{item.date | relativetime}}
                         </div>
                         <div class="col-md-8 activity-content">
-                            <span>{{item.userRef.username}} updated their comment on {{item.userRef2.username}}'s
+                            <span><span class="notranslate">{{item.userRef.username}}</span> updated their comment on <span class="notranslate">{{item.userRef2.username}}</span>'s
                                 answer to &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
                                 on <a href="{{item.textHref}}">{{item.content.text}}</a>
                                 in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
@@ -96,7 +96,7 @@
                             {{item.date | relativetime}}
                         </div>
                         <div class="col-md-8 activity-content">
-                            <span>{{item.content.user}} is now a member of
+                            <span><span class="notranslate">{{item.content.user}}</span> is now a member of
                                 <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                             {{item.date | relativetime}}
                         </div>
                         <div class="col-md-8 activity-content">
-                            <span>{{item.userRef.username}} answered
+                            <span><span class="notranslate">{{item.userRef.username}}</span> answered
                                 &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
                                 on <a href="{{item.textHref}}">{{item.content.text}}</a>
                                 in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
@@ -147,7 +147,7 @@
                             {{item.date | relativetime}}
                         </div>
                         <div class="col-sm-8 activity-content">
-                            <span>{{item.userRef.username}} updated their answer to
+                            <span><span class="notranslate">{{item.userRef.username}}</span> updated their answer to
                                 &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
                                 on <a href="{{item.textHref}}">{{item.content.text}}</a>
                                 in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
@@ -166,7 +166,7 @@
                             {{item.date | relativetime}}
                         </div>
                         <div class="col-sm-8 activity-content">
-                            <span>{{item.userRef.username}} +1'd your answer to
+                            <span><span class="notranslate">{{item.userRef.username}}</span> +1'd your answer to
                                 &ldquo;<a href="{{item.questionHref}}">{{item.content.question}}</a>&rdquo;
                                 on <a href="{{item.textHref}}">{{item.content.text}}</a>
                                 in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
@@ -184,7 +184,7 @@
                             {{item.date | relativetime}}
                         </div>
                         <div class="col-sm-9 activity-content">
-                            <span>{{item.userRef.username}} created the entry
+                            <span><span class="notranslate">{{item.userRef.username}}</span> created the entry
                                 &ldquo;<a href="{{item.entryHref}}">{{item.content.entry}}</a>&rdquo;
                                 in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                         </div>
@@ -201,7 +201,7 @@
                             {{item.date | relativetime}}
                         </div>
                         <div class="col-sm-9 activity-content">
-                            <span>{{item.userRef.username}} updated the entry for
+                            <span><span class="notranslate">{{item.userRef.username}}</span> updated the entry for
                                 &ldquo;<a href="{{item.entryHref}}">{{item.content.entry}}</a>&rdquo;
                                 in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                         </div>
@@ -218,7 +218,7 @@
                             {{item.date | relativetime}}
                         </div>
                         <div class="col-sm-9 activity-content">
-                            <span>{{item.userRef.username}} deleted the entry &ldquo;{{item.content.entry}}&rdquo;
+                            <span><span class="notranslate">{{item.userRef.username}}</span> deleted the entry &ldquo;<span class="notranslate">{{item.content.entry}}</span>&rdquo;
                                 in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                         </div>
                     </div>
@@ -226,7 +226,7 @@
 
                 <div class="col-sm-12" data-ng-switch-default>
                     <hr>
-                    The {{item.action + '-' + item.type}} activity type is unimplemented
+                    The <span class="notranslate">{{item.action + '-' + item.type}}</span> activity type is unimplemented
                 </div>
 
             </ng-switch>

@@ -31,7 +31,8 @@ angular.module('palaso.ui.dc.entry', ['palaso.ui.dc.fieldrepeat', 'palaso.ui.dc.
 
         $scope.deleteSense = function (index) {
           var deletemsg = "Are you sure you want to delete the meaning <b>' " +
-            utils.getMeaning($scope.config.fields.senses, $scope.model.senses[index])  + " '</b>";
+            utils.constructor.getMeaning($scope.config.fields.senses, $scope.model.senses[index]) +
+            " '</b>";
           modal.showModalSimple('Delete Meaning', deletemsg, 'Cancel', 'Delete Meaning')
             .then(function () {
               $scope.model.senses.splice(index, 1);
