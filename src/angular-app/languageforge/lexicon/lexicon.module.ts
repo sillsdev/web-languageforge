@@ -4,7 +4,7 @@ import { LexiconCoreModule } from './core/lexicon-core.module';
 
 // these are imported here to ensure JS files can use them
 import '../../bellows/core/input-systems/input-systems.service';
-import './views/configuration';
+import './settings/configuration';
 
 export const LexiconModule = angular
   .module('lexiconModule', [LexiconCoreModule])
