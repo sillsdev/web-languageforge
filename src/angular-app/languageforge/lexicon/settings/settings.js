@@ -1,8 +1,7 @@
 'use strict';
 
-angular.module('lexicon.settings', ['bellows.services', 'ui.bootstrap', 'palaso.ui.listview',
-  'palaso.ui.typeahead', 'palaso.ui.archiveProject', 'palaso.ui.deleteProject', 'palaso.ui.notice',
-  'palaso.ui.textdrop'])
+angular.module('lexicon.settings', ['coreModule', 'palaso.ui.listview', 'palaso.ui.archiveProject',
+  'palaso.ui.deleteProject', 'palaso.ui.notice', 'palaso.ui.textdrop', 'palaso.ui.typeahead'])
   .controller('SettingsCtrl', ['$scope', '$filter', 'userService', 'sessionService',
     'silNoticeService', 'lexProjectService',
   function ($scope, $filter, userService, ss,

@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services',
+angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
   'palaso.ui.dc.entry', 'palaso.ui.comments', 'palaso.ui.showOverflow', 'truncate',
-  'palaso.ui.scroll', 'palaso.ui.notice', 'lexicon.services'])
+  'palaso.ui.scroll', 'palaso.ui.notice'])
   .config(['$stateProvider', function ($stateProvider) {
 
     // State machine from ui.router
@@ -12,22 +12,22 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'bellows.services
         // Need quotes around Javascript keywords like 'abstract' so YUI compressor won't complain
         'abstract': true, // jscs:ignore
         url: '/editor',
-        templateUrl: '/angular-app/languageforge/lexicon/views/editor-abstract.html',
+        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-abstract.html',
         controller: 'EditorCtrl'
       })
       .state('editor.list', {
         url: '/list',
-        templateUrl: '/angular-app/languageforge/lexicon/views/editor-list.html',
+        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-list.html',
         controller: 'EditorListCtrl'
       })
       .state('editor.entry', {
         url: '/entry/{entryId:[0-9a-z_]{6,24}}',
-        templateUrl: '/angular-app/languageforge/lexicon/views/editor-entry.html',
+        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-entry.html',
         controller: 'EditorEntryCtrl'
       })
       .state('editor.comments', {
         url: '/entry/{entryId:[0-9a-z_]{6,24}}/comments',
-        templateUrl: '/angular-app/languageforge/lexicon/views/editor-comments.html',
+        templateUrl: '/angular-app/languageforge/lexicon/editor/editor-comments.html',
         controller: 'EditorCommentsCtrl'
       })
       ;
