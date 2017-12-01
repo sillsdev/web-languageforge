@@ -1,20 +1,20 @@
 import * as angular from 'angular';
 
-import { CoreModule } from '../../../bellows/core/core.module';
-import { inputSystemsRegions } from '../../../bellows/core/input-systems/input-systems.regions';
-import { inputSystemsScripts } from '../../../bellows/core/input-systems/input-systems.scripts';
+import { CoreModule } from '../../../../bellows/core/core.module';
+import { inputSystemsRegions } from '../../../../bellows/core/input-systems/input-systems.regions';
+import { inputSystemsScripts } from '../../../../bellows/core/input-systems/input-systems.scripts';
 import {
   InputSystemsModule,
   InputSystemsService
-} from '../../../bellows/core/input-systems/input-systems.service';
-import { ModalService } from '../../../bellows/core/modal/modal.service';
-import { NoticeModule } from '../../../bellows/core/notice/notice.module';
-import { NoticeService } from '../../../bellows/core/notice/notice.service';
-import { SessionService } from '../../../bellows/core/session.service';
-import { UtilityService } from '../../../bellows/core/utility.service';
-import { LexiconConfigService } from '../core/lexicon-config.service';
-import { LexiconProjectService } from '../core/lexicon-project.service';
-import { LexiconSendReceiveService } from '../core/lexicon-send-receive.service';
+} from '../../../../bellows/core/input-systems/input-systems.service';
+import { ModalService } from '../../../../bellows/core/modal/modal.service';
+import { NoticeModule } from '../../../../bellows/core/notice/notice.module';
+import { NoticeService } from '../../../../bellows/core/notice/notice.service';
+import { SessionService } from '../../../../bellows/core/session.service';
+import { UtilityService } from '../../../../bellows/core/utility.service';
+import { LexiconConfigService } from '../../core/lexicon-config.service';
+import { LexiconProjectService } from '../../core/lexicon-project.service';
+import { LexiconSendReceiveService } from '../../core/lexicon-send-receive.service';
 
 export const LexiconConfigModule = angular
   .module('lexicon.configuration', ['ui.bootstrap', CoreModule,
@@ -556,7 +556,7 @@ function LexiconConfigController($scope: any, $filter: angular.IFilterService, $
 
     $scope.openNewLanguageModal = function openNewLanguageModal(suggestedLanguageCodes: any) {
       const modalInstance = $modal.open({
-        templateUrl: '/angular-app/languageforge/lexicon/settings/select-new-language.html',
+        templateUrl: '/angular-app/languageforge/lexicon/shared/select-new-language.html',
         windowTopClass: 'modal-select-language',
         controller: ['$scope', '$uibModalInstance',
           (scope: any, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
@@ -652,7 +652,7 @@ function LexiconFieldConfigController($scope: any, $modal: ModalService, session
   $scope.openNewCustomFieldModal = function openNewCustomFieldModal() {
     const modalInstance = $modal.open({
       scope: $scope,
-      templateUrl: '/angular-app/languageforge/lexicon/settings/new-custom-field.html',
+      templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/new-custom-field.html',
       controller: ['$scope', '$filter', '$uibModalInstance',
         (scope: any, $filter: angular.IFilterService, $modalInstance: angular.ui.bootstrap.IModalInstanceService) => {
           scope.selects = {};

@@ -8,7 +8,7 @@ angular.module('palaso.ui.dc.fieldrepeat', ['palaso.ui.dc.multitext', 'palaso.ui
 .directive('dcFieldrepeat', [function () {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/directive/dc-fieldrepeat.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-fieldrepeat.html',
     scope: {
       config: '=',
       model: '=',

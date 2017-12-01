@@ -6,7 +6,7 @@ angular.module('palaso.ui.dc.multioptionlist', [])
 .directive('dcMultioptionlist', [function () {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/directive/dc-multioptionlist.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-multioptionlist.html',
     scope: {
       config: '=',
       model: '=',

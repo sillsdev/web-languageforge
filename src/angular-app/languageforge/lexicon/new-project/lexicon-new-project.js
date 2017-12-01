@@ -673,7 +673,7 @@ angular.module('lexicon-new-project',
 
     $scope.openNewLanguageModal = function openNewLanguageModal() {
       var modalInstance = $modal.open({
-        templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
+        templateUrl: '/angular-app/languageforge/lexicon/shared/select-new-language.html',
         controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
           $scope.selected = {
             code: '',

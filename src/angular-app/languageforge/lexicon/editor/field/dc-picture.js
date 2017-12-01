@@ -7,7 +7,7 @@ angular.module('palaso.ui.dc.picture', ['palaso.ui.dc.multitext', 'palaso.ui.not
 .directive('dcPicture', [function () {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/directive/dc-picture.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-picture.html',
     scope: {
       config: '=',
       pictures: '=',

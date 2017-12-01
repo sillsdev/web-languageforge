@@ -7,7 +7,7 @@ angular.module('palaso.ui.dc.multitext', ['palaso.ui.showOverflow', 'palaso.ui.d
 .directive('dcMultitext', [function () {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/directive/dc-multitext.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-multitext.html',
     scope: {
       config: '=',
       model: '=',
