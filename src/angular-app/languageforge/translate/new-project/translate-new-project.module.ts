@@ -21,9 +21,9 @@ export const TranslateNewProjectModule = angular.module('translate-new-project',
   ])
   .controller('NewTranslateProjectCtrl', TranslateNewProjectController)
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
-  function ($stateProvider: angular.ui.IStateProvider,
-            $urlRouterProvider: angular.ui.IUrlRouterProvider,
-            $translateProvider: angular.translate.ITranslateProvider) {
+  ($stateProvider: angular.ui.IStateProvider,
+   $urlRouterProvider: angular.ui.IUrlRouterProvider,
+   $translateProvider: angular.translate.ITranslateProvider) => {
 
     // configure interface language filepath
     $translateProvider.useStaticFilesLoader({
@@ -42,6 +42,12 @@ export const TranslateNewProjectModule = angular.module('translate-new-project',
         controller: 'NewTranslateProjectCtrl',
         controllerAs: '$ctrl'
       })
+      .state('newProject.chooser', {
+        templateUrl: '/angular-app/languageforge/translate/new-project/views/new-project-chooser.html',
+        data: {
+          step: 0
+        }
+      })
       .state('newProject.name', {
         templateUrl: '/angular-app/languageforge/translate/new-project/views/new-project-name.html',
         data: {
@@ -55,12 +61,25 @@ export const TranslateNewProjectModule = angular.module('translate-new-project',
           step: 2
         }
       })
+      .state('newProject.sendReceiveCredentials', {
+        templateUrl: '/angular-app/languageforge/translate/new-project/views/new-project-sr-credentials.html',
+        data: {
+          step: 2
+        }
+      })
+      .state('newProject.sendReceiveClone', {
+        templateUrl:
+          '/angular-app/languageforge/translate/new-project/views/new-project-sr-clone.html',
+        data: {
+          step: 3
+        }
+      })
     ;
 
     $urlRouterProvider
       .when('', ['$state', ($state: angular.ui.IStateService | any) => {
         if (!$state.$current.navigable) {
-          $state.go('newProject.name');
+          $state.go('newProject.chooser');
         }
       }]);
 

@@ -1,9 +1,11 @@
 import * as angular from 'angular';
 
+import { UserRestApiService } from '../../../bellows/core/api/user-rest-api.service';
 import { InputSystemsService } from '../../../bellows/core/input-systems/input-systems.service';
 import { LinkService } from '../../../bellows/core/link.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { SessionCallback, SessionService } from '../../../bellows/core/session.service';
+import { ParatextProject, ParatextUserInfo } from '../../../bellows/shared/model/paratext-user-info.model';
 import { JsonRpcCallback, TranslateProjectService } from '../core/translate-project.service';
 import { TranslateConfig, TranslateProject } from '../shared/model/translate-project.model';
 
@@ -41,10 +43,13 @@ export class TranslateNewProjectController implements angular.IController {
   progressIndicatorStep1Label: string;
   progressIndicatorStep2Label: string;
   progressIndicatorStep3Label: string;
-  project: TranslateProject;
   projectCodeState: string;
   projectCodeStateDefer: angular.IDeferred<string>;
   show: Show;
+  paratextUserInfo: ParatextUserInfo;
+  sourceProject: ParatextProject;
+  targetProject: ParatextProject;
+  isRetrievingParatextUserInfo: boolean = false;
 
   private readonly bootstrapVersion = 'bootstrap4';
 
@@ -52,18 +57,21 @@ export class TranslateNewProjectController implements angular.IController {
   private readonly ok = this.makeFormValid;
   private readonly neutral = this.makeFormNeutral;
   private readonly error = this.makeFormInvalid;
+  private paratextSignInWindow: Window;
 
   static $inject = ['$scope', '$q',
     '$filter', '$window',
     '$state', 'sessionService',
     'silNoticeService', 'inputSystems',
-    'translateProjectApi', 'linkService'
+    'translateProjectApi', 'linkService',
+    'userRestApiService'
   ];
   constructor(private $scope: angular.IScope, private $q: angular.IQService,
               private $filter: angular.IFilterService, private $window: angular.IWindowService,
               private $state: angular.ui.IStateService, private sessionService: SessionService,
               private notice: NoticeService, private inputSystems: InputSystemsService,
-              private projectApi: TranslateProjectService, private linkService: LinkService) {}
+              private projectApi: TranslateProjectService, private linkService: LinkService,
+              private userRestApiService: UserRestApiService) {}
 
   $onInit() {
     this.interfaceConfig = new InterfaceConfig();
@@ -81,14 +89,17 @@ export class TranslateNewProjectController implements angular.IController {
     });
 
     this.newProject = new NewProject();
+    this.newProject.config = new TranslateConfig();
     this.newProject.appName = 'translate';
+    this.newProject.config.isTranslationDataShared = false;
 
+    this.isSRProject = false;
     this.show = new Show();
-    this.show.nextButton = true;
+    this.show.nextButton = this.$state.current.name !== 'newProject.chooser';
     this.show.backButton = false;
     this.show.flexHelp = false;
     this.show.cloning = true;
-    this.show.step3 = false;
+    this.show.step3 = true;
     this.nextButtonLabel = this.$filter('translate')('Next');
     this.progressIndicatorStep1Label = this.$filter('translate')('Name');
     this.progressIndicatorStep2Label = this.$filter('translate')('Languages');
@@ -125,12 +136,10 @@ export class TranslateNewProjectController implements angular.IController {
     this.$scope.$watch(() => {
       return this.newProject.projectName;
     }, (newVal: string, oldVal: string) => {
-      if (!this.isSRProject) {
-        if (angular.isUndefined(newVal)) {
-          this.newProject.projectCode = '';
-        } else if (newVal !== oldVal) {
-          this.newProject.projectCode = newVal.toLowerCase().replace(/ /g, '_');
-        }
+      if (angular.isUndefined(newVal)) {
+        this.newProject.projectCode = '';
+      } else if (newVal !== oldVal) {
+        this.newProject.projectCode = newVal.toLowerCase().replace(/ /g, '_');
       }
     });
 
@@ -174,6 +183,26 @@ export class TranslateNewProjectController implements angular.IController {
     this.projectCodeStateDefer.resolve('unchecked');
   }
 
+  getProjectFromInternet() {
+    this.$state.go('newProject.name');
+    this.isSRProject = true;
+    this.show.nextButton = true;
+    this.show.backButton = true;
+    this.nextButtonLabel = this.$filter('translate')('Next');
+    this.progressIndicatorStep2Label = this.$filter('translate')('Connect');
+    this.resetValidateProjectForm();
+    this.getParatextUserInfo();
+  }
+
+  createNew() {
+    this.$state.go('newProject.name');
+    this.isSRProject = false;
+    this.show.nextButton = true;
+    this.show.backButton = true;
+    this.nextButtonLabel = this.$filter('translate')('Next');
+    this.progressIndicatorStep2Label = this.$filter('translate')('Languages');
+  }
+
   iconForStep(step: number) {
     const classes = [];
     if (this.$state.current.data.step > step) {
@@ -192,16 +221,25 @@ export class TranslateNewProjectController implements angular.IController {
   }
 
   prevStep() {
-    this.show.backButton = false;
     this.resetValidateProjectForm();
     switch (this.$state.current.name) {
+      case 'newProject.sendReceiveCredentials':
+        this.$state.go('newProject.name');
+        this.nextButtonLabel = this.$filter('translate')('Next');
+        break;
       case 'newProject.name':
+        this.$state.go('newProject.chooser');
+        this.show.backButton = false;
+        this.show.nextButton = false;
+        break;
+      case 'newProject.languages':
+        this.$state.go('newProject.name');
         break;
     }
   }
 
   nextStep() {
-    this.validateForm().then((isValid: boolean) => {
+    this.validateForm().then(isValid => {
       if (isValid) {
         this.gotoNextState();
       }
@@ -213,6 +251,12 @@ export class TranslateNewProjectController implements angular.IController {
     this.formValidationDefer = this.$q.defer();
 
     switch (this.$state.current.name) {
+      case 'newProject.chooser':
+        return this.error();
+      case 'newProject.sendReceiveCredentials':
+        return this.validateSendReceiveCredentialsForm();
+      case 'newProject.sendReceiveClone':
+        return this.error();
       case 'newProject.name':
         if (!this.newProject.projectName) {
           return this.error('Project Name cannot be empty. Please enter a project name.');
@@ -263,21 +307,59 @@ export class TranslateNewProjectController implements angular.IController {
     return this.ok();
   }
 
+  private validateSendReceiveCredentialsForm(): angular.IPromise<boolean> {
+    if (this.paratextSignInWindow != null && !this.paratextSignInWindow.closed) {
+      return this.error();
+    }
+
+    if (!this.isSignedIntoParatext) {
+      return this.error('Please sign into ParaTExt.');
+    }
+
+    if (this.sourceProject == null || this.targetProject == null) {
+      return this.error();
+    }
+
+    if (this.sourceProject.id === this.targetProject.id) {
+      return this.error('The source and target projects cannot be the same.');
+    }
+
+    return this.ok();
+  }
+
   private gotoNextState() {
     switch (this.$state.current.name) {
-      case 'newProject.name':
-        this.createProject();
-        this.$state.go('newProject.languages');
+      case 'newProject.sendReceiveCredentials':
+        this.$state.go('newProject.sendReceiveClone');
         this.show.backButton = false;
+        this.show.cloning = true;
+        this.show.nextButton = false;
+        this.resetValidateProjectForm();
+        this.createProject().then(success => {
+          if (success) {
+            // TODO: start send/receive here
+          }
+        });
+        break;
+      case 'newProject.sendReceiveClone':
+        // TODO: go to translation project when send/receive completes
+        break;
+      case 'newProject.name':
+        this.$state.go(this.isSRProject ? 'newProject.sendReceiveCredentials' : 'newProject.languages');
         this.projectCodeState = 'empty';
         this.projectCodeStateDefer = this.$q.defer();
         this.projectCodeStateDefer.resolve('empty');
+        this.nextButtonLabel = this.$filter('translate')(this.isSRProject ? 'Get Started' : 'Next');
         this.makeFormNeutral();
         break;
       case 'newProject.languages':
-        this.updateConfig(() => {
-          this.gotoEditor();
-        });
+        this.createProject()
+          .then(success => success ? this.updateConfig() : false)
+          .then(success => {
+            if (success) {
+              this.gotoEditor();
+            }
+          });
         break;
     }
   }
@@ -287,6 +369,44 @@ export class TranslateNewProjectController implements angular.IController {
     this.makeFormValid();
     url = this.linkService.project(this.newProject.id, this.newProject.appName);
     this.$window.location.href = url;
+  }
+
+  // ----- Step 1: Get S/R credentials -----
+  get isSignedIntoParatext(): boolean {
+    return this.paratextUserInfo != null;
+  }
+
+  signIntoParatext(): void {
+    if (this.paratextSignInWindow != null && !this.paratextSignInWindow.closed) {
+      this.paratextSignInWindow.focus();
+      return;
+    }
+
+    const wLeft = this.$window.screenLeft ? this.$window.screenLeft : this.$window.screenX;
+    const wTop = this.$window.screenTop ? this.$window.screenTop : this.$window.screenY;
+    const width = 760;
+    const height = 852;
+    const left = wLeft + (this.$window.innerWidth / 2) - (width / 2);
+    const top = wTop + (this.$window.innerHeight / 2) - (height / 2);
+    const features = 'top=' + top + ',left=' + left + ',width=' + width + ',height=' + height + ',menubar=0,toolbar=0';
+    this.paratextSignInWindow = this.$window.open('/oauthcallback/paratext', 'ParatextSignIn', features);
+    const checkWindow = setInterval(() => {
+      if (this.paratextSignInWindow == null || !this.paratextSignInWindow.closed) {
+        return;
+      }
+
+      clearInterval(checkWindow);
+      this.paratextSignInWindow = null;
+      this.getParatextUserInfo();
+    }, 100);
+  }
+
+  private getParatextUserInfo(): void {
+    this.isRetrievingParatextUserInfo = true;
+    this.sessionService.getSession()
+      .then(session => this.userRestApiService.getParatextInfo(session.userId()))
+      .then(paratextUserInfo => this.paratextUserInfo = paratextUserInfo)
+      .finally(() => this.isRetrievingParatextUserInfo = false);
   }
 
   // ----- Step 1: Project name -----
@@ -323,46 +443,46 @@ export class TranslateNewProjectController implements angular.IController {
     return this.projectCodeStateDefer.promise;
   }
 
-  private createProject(callback?: SessionCallback) {
+  private createProject(): angular.IPromise<boolean> {
     if (!this.newProject.projectName || !this.newProject.projectCode ||
       !this.newProject.appName) {
       // This function sometimes gets called during setup, when this.newProject is still empty.
-      return;
+      return this.$q.resolve(false);
     }
 
-    this.projectApi.createSwitchSession(this.newProject.projectName,
-      this.newProject.projectCode, this.newProject.appName, false, result => {
-        if (result.ok) {
-          this.newProject.id = result.data;
-          this.project = this.newProject;
-          this.project.config = new TranslateConfig();
-          this.project.config.isTranslationDataShared = false;
-          this.sessionService.getSession(true).then(callback);
-        } else {
-          this.notice.push(this.notice.ERROR, 'The ' + this.newProject.projectName +
-            ' project could not be created. Please try again.');
-        }
-      });
+    return this.projectApi.createSwitchSession(this.newProject.projectName,
+      this.newProject.projectCode, this.newProject.appName, false
+    ).then(result => {
+      if (result.ok) {
+        this.newProject.id = result.data;
+        return this.sessionService.getSession(true).then(session => true);
+      } else {
+        this.notice.push(this.notice.ERROR, 'The ' + this.newProject.projectName +
+          ' project could not be created. Please try again.');
+        return false;
+      }
+    });
   }
 
   // ----- Step 2: select source and target languages -----
 
-  private updateConfig(callback?: JsonRpcCallback) {
-    this.projectApi.updateConfig(this.project.config, result => {
+  private updateConfig(): angular.IPromise<boolean> {
+    return this.projectApi.updateConfig(this.newProject.config).then(result => {
       if (result.ok) {
         this.notice.push(this.notice.SUCCESS,
-          this.project.projectName + ' configuration updated successfully.');
-        if (callback != null) callback();
+          this.newProject.projectName + ' configuration updated successfully.');
+        return true;
       } else {
-        this.makeFormInvalid('Could not save languages for ' + this.project.projectName);
+        this.makeFormInvalid('Could not save languages for ' + this.newProject.projectName);
+        return false;
       }
     });
   }
 
   updateLanguage(docType: string, code: string, language: any) {
-    this.project.config[docType] = this.project.config[docType] || {};
-    this.project.config[docType].inputSystem.tag = code;
-    this.project.config[docType].inputSystem.languageName = language.name;
+    this.newProject.config[docType] = this.newProject.config[docType] || {};
+    this.newProject.config[docType].inputSystem.tag = code;
+    this.newProject.config[docType].inputSystem.languageName = language.name;
   }
 
 }

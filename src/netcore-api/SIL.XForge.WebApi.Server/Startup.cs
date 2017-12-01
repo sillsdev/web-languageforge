@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using SIL.XForge.WebApi.Server.DataAccess;
+using SIL.XForge.WebApi.Server.Options;
 using SIL.XForge.WebApi.Server.Services;
 using System.Collections.Generic;
 using System.IO;
@@ -65,8 +66,11 @@ namespace SIL.XForge.WebApi.Server
                     = new CamelCasePropertyNamesContractResolver());
             services.AddRouting(options => options.LowercaseUrls = true);
 
+            services.Configure<ParatextOptions>(Configuration.GetSection("Paratext"));
+
             services.AddMongoDataAccess(Configuration);
             services.AddSingleton<SendReceiveService>();
+            services.AddSingleton<ParatextService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
