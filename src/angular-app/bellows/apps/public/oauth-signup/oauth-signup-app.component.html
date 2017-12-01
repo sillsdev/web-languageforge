@@ -4,7 +4,7 @@
             <sil-notices></sil-notices>
             Hi <span class="notranslate">{{ $ctrl.record.name }}</span>,<br/>
             <h5>Looks like you're new here!</h5> Please confirm your information below to create your account.
-            <form class="form-horizontal" data-ng-submit="$ctrl.submit()" id="userprofileForm" name="userprofileForm">
+            <form class="form-horizontal" data-ng-submit="$ctrl.processForm()" id="userprofileForm" name="userprofileForm">
                 <fieldset>
                     <div class="form-group row">
                         <div class="card bg-faded col-md-7">
@@ -28,7 +28,6 @@
                                         </div>
                                     </div>
                                 </div>
-<!-- Uncomment if we want to allow users to pick their own usernames (would also require a PHP change)
                                 <div class="form-group row">
                                     <label class="control-label col-md-4 text-md-right" for="username">Username</label>
                                     <div class="controls col-md-8">
@@ -37,15 +36,14 @@
                                                    type="text" name="username"
                                                    data-ng-blur="$ctrl.validateForm();"
                                                    data-ng-model="$ctrl.record.username"/>
-                                            <span class="input-group-addon alert-danger" data-ng-show="!$ctrl.recordnameValid || $ctrl.recordnameExists">
+                                            <span class="input-group-addon alert-danger" data-ng-show="!$ctrl.usernameValid || $ctrl.usernameExists">
                                                 <i class="fa fa-times"></i></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <span role="alert" class="text-danger" id="usernameTaken" data-ng-show="$ctrl.recordnameExists">Username <span class="notranslate">{{$ctrl.takenUsername}}</span> is taken. Please choose a different username.<br></span>
+                                    <span role="alert" class="text-danger" id="usernameTaken" data-ng-show="$ctrl.usernameExists">Username <span class="notranslate">{{$ctrl.takenUsername}}</span> is taken. Please choose a different username.<br></span>
                                 </div>
--->
                             </div>
                         </div>
                     </div>
@@ -72,7 +70,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
-                            <button type="submit" data-ng-disabled="userprofileForm.$invalid||$ctrl.emailExists||$ctrl.recordnameExists" class="btn btn-primary " id="saveBtn"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+                            <button type="submit" data-ng-disabled="userprofileForm.$invalid||$ctrl.usernameExists" class="btn btn-primary " id="saveBtn"><i class="fa fa-check" aria-hidden="true"></i> Sign up</button>
                         </div>
                     </div>
                 </fieldset>
