@@ -6,8 +6,9 @@ namespace SIL.XForge.WebApi.Server.Models
     {
         public string Id { get; set; }
         public string ProjectName { get; set; }
-        public Dictionary<string, ProjectRole> Users { get; set; }
+        public Dictionary<string, ProjectRole> Users { get; set; } = new Dictionary<string, ProjectRole>();
         public string AppName { get; set; }
+        public string ProjectCode { get; set; }
 
         public Dictionary<string, object> ExtraElements { get; set; }
 
