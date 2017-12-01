@@ -44,7 +44,6 @@
     "rich-text": "^3.0.1",
     "sharedb": "^1.0.0-beta",
     "sharedb-mongo": "1.0.0-beta",
-    "soundmanager2": "2.97.20170601",
     "textangular": "1.5.12",
     "websocket-json-stream": "^0.0.1",
     "ws": "^1.1.0",

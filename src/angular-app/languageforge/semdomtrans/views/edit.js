@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('semdomtrans.edit', ['ui.bootstrap', 'bellows.services',  'palaso.ui.notice',
+angular.module('semdomtrans.edit', ['ui.bootstrap', 'coreModule',  'palaso.ui.notice',
   'semdomtrans.services', 'palaso.ui.sd.term', 'palaso.ui.sd.questions', 'palaso.ui.scroll',
   'palaso.ui.typeahead', 'palaso.ui.sd.ws'])
 

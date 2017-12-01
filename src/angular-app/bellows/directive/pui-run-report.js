@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.runReport', ['bellows.services'])
+angular.module('palaso.ui.runReport', ['coreModule'])
   .directive('puiRunReport', [function () {
     return {
       restrict: 'E',
