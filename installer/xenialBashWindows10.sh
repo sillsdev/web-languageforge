@@ -37,10 +37,8 @@ if [ $OS == "Windows" ]; then
     echo "We will use the Windows package manager Chocolatey to install Windows dependencies (JRE and Selenium Server)"
     read -p "press [Enter] when you're ready"
     powershell.exe -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
-    cmd.exe /C "choco install -y jre8 selenium selenium-chrome-driver"
+    cmd.exe /C "choco install -y jre8 selenium selenium-chrome-driver php"
 
-    echo "Starting Selenium Server standalone in a separate process..."
-    cmd.exe /C "C:\tools\selenium\standalone.cmd" &
 fi
 
 echo "Please enter your sudo password below (necessary for some installation steps)"
@@ -76,12 +74,14 @@ echo "Please enter your sudo password when prompted (twice)"
 ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
 ansible-playbook -i hosts playbook_webdeveloper_bash_windows10.yml --limit localhost -K
 
+
 echo "Refresh xForge dependencies"
 cd ..
 ./refreshDeps.sh
 
 echo "Please enter your sudo password if necessary"
 sudo echo "Thank you!"
+sudo adduser $USER fieldworks
 
 echo "Factory Reset the database"
 cd scripts/tools
@@ -109,16 +109,6 @@ fi
 
 echo "Run PHP Unit tests"
 gulp test-php
-
-echo "Now we're ready to run E2E tests"
-echo "Selenium Server must be running before proceeding."
-if [ $OS == "Linux" ]; then
-    echo "Selenium server can be started in a separate process by typing 'gulp test-e2e-webdriver_standalone' in a separate terminal process"
-    read -p "Press [Enter] once Selenium Server is up and running"
-fi
-
-echo "Now Running E2E tests in Chrome"
-./rune2e.sh lf
 
 echo "You should now be able to access Language Forge locally at http://languageforge.local"
 echo "username: admin"
