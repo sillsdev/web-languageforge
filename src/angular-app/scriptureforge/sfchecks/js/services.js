@@ -2,7 +2,7 @@
 
 // Services
 // ScriptureForge common services
-angular.module('sfchecks.services', ['bellows.services'])
+angular.module('sfchecks.services', ['coreModule'])
   .service('sfchecksProjectService', ['apiService', function (api) {
     this.read = api.method('project_read');
     this.update = api.method('project_update');
@@ -43,7 +43,7 @@ angular.module('sfchecks.services', ['bellows.services'])
     this.util.calculateTitle = function (title, description, charLimit) {
       charLimit = charLimit || 50;
       var questionTitleCalculated;
-      if (!title || title == '') {
+      if (!title || title === '') {
         var spaceIndex = description.indexOf(' ', charLimit);
         var shortTitle;
         if (spaceIndex > -1) {
@@ -96,6 +96,7 @@ angular.module('sfchecks.services', ['bellows.services'])
           }
         }
       });
+
       return data;
     };
 
@@ -103,7 +104,8 @@ angular.module('sfchecks.services', ['bellows.services'])
       return (direction === 'up') ? 'down' : 'up';
     };
 
-    // TODO: The sortdata parameter here should probably turn into some kind of class with setSortColumn and sortIconClass methods
+    // TODO: The sortdata parameter here should probably turn into some kind of class with
+    // setSortColumn and sortIconClass methods
 
     this.setSortColumn = function (sortdata, columnName) {
       if (columnName === sortdata.sortColumn) {
@@ -115,7 +117,9 @@ angular.module('sfchecks.services', ['bellows.services'])
     };
 
     this.sortIconClass = function (sortdata, columnName) {
-      if (columnName === sortdata.sortColumn && (sortdata.direction === 'up' || sortdata.direction === 'down')) {
+      if (columnName === sortdata.sortColumn &&
+        (sortdata.direction === 'up' || sortdata.direction === 'down')
+      ) {
         return 'fa fa-sort-' + sortdata.direction;
       } else {
         return 'fa fa-sort';
