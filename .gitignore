@@ -42,3 +42,12 @@ src/Site/views/**/*.css
 src/Site/views/scriptureforge/theme/default/cssBootstrap4/**/.css
 
 secrets/
+
+# VS files
+.vs
+[Bb]in
+[Dd]ebug*/
+obj/
+[Rr]elease*/
+_ReSharper*/
+*.user
