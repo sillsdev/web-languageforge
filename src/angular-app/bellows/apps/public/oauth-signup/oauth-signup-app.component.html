@@ -2,8 +2,8 @@
     <div class="row">
         <div class="col-sm-12">
             <sil-notices></sil-notices>
-            Hi <span class="notranslate">{{ $ctrl.record.name }}</span>,<br/>
-            <h5>Looks like you're new here!</h5> Please confirm your information below to create your account.
+            <h5>Looks like you're new here!</h5>
+            Please confirm your information below to create your account.
             <form class="form-horizontal" data-ng-submit="$ctrl.processForm()" id="userprofileForm" name="userprofileForm">
                 <fieldset>
                     <div class="form-group row">
@@ -52,10 +52,14 @@
                             <div class="card-block">
                                 <div class="form-group row">
                                     <div class="col-md-4">
-                                        <label class="control-label text-md-right" for="avatarRef" data-translate="Avatar"></label>
                                         <div class="controls" style="margin-bottom:10px">
                                             <img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{$ctrl.getAvatarUrl($ctrl.record.avatar_ref)}}" title="Use the dropdown selections below to change your avatar's color and shape" />
-                                            <a data-ng-click="$ctrl.resetAvatar()">Reset</a>
+                                            <br/>
+                                            <a href=""
+                                               data-ng-click="$ctrl.resetAvatar()"
+                                               data-ng-show="$ctrl.avatarHasColorAndShape($ctrl.avatarChoice.avatar_color, $ctrl.avatarChoice.avatar_shape)">
+                                                Reset profile image
+                                            </a>
                                             <!-- TODO: Implement the "Reset" link so you can use your original Google avatar -->
                                         </div>
                                     </div>
@@ -75,17 +79,17 @@
                     </div>
                 </fieldset>
             </form>
-        </div>
-    </div>
-    <div class="hr-and-text">
-        <hr class="thin-line">
-        <div class="text-inside-hr">or</div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <h5>Already have an account?</h5>
-            Then click <a href="/auth/login"><strong>Login</strong></a> and provide your {{ website_name }} username and password to link your account.
-            <!-- TODO: Move login form into this controller? -->
+            <div class="hr-and-text col-md-7">
+                <hr class="thin-line">
+                <div class="text-inside-hr">or</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h5>Already have an account?</h5>
+                    Then click <a href="/auth/login"><strong>Login</strong></a> and provide your {{ website_name }} username and password to link your account.
+                    <!-- TODO: Move login form into this controller? -->
+                </div>
+            </div>
         </div>
     </div>
 </div>

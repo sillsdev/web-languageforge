@@ -160,6 +160,10 @@ export class OAuthSignupAppController implements angular.IController {
       });
   }
 
+  public avatarHasColorAndShape(color?: string, shape?: string) {
+    return (color && shape);
+  }
+
   private getAvatarRef(color?: string, shape?: string): string {
     if (!color || !shape) {
       return (this.oauthAvatar) ? this.oauthAvatar : 'anonymoose.png';
