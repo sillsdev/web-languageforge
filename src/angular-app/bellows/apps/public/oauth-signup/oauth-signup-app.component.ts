@@ -9,6 +9,7 @@ export class OAuthSignupAppController implements angular.IController {
   public oauthEmail: string;
   public oauthAvatar: string;
   public oauthId: string;
+  public loginPath: string;
   public websiteName: string;
   emailValid = true;
   emailProvided = false;
@@ -218,6 +219,7 @@ export const OAuthSignupAppComponent: angular.IComponentOptions = {
     oauthEmail: '@',
     oauthAvatar: '@',
     oauthId: '@',
+    loginPath: '@',
     websiteName: '@'
   },
   controller: OAuthSignupAppController,
