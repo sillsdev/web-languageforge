@@ -12,6 +12,7 @@ use Site\Model\UserWithId;
 use Site\OAuth\OAuthBase;
 use Site\Provider\AuthUserProvider;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -54,6 +55,11 @@ class Auth extends App
                 }
                 $this->setupAngularAppVariables($app, $appName);
                 $this->setupAuthView($request, $app);
+                if ($appName === 'oauth-signup') {
+                    $this->setupOAuthView($app);
+                } else {
+                    $this->removeOAuthData($app);
+                }
 
                 return $this->renderPage($app, 'angular-app');
                 break;
@@ -83,14 +89,9 @@ class Auth extends App
         return $app->redirect('/auth/login');
     }
 
-    /**
-     * @param Request $request
-     * @param Application $app
-     */
-    private function setupAuthView(Request $request, Application $app)
+    private function setupOAuthView(Application $app)
     {
-        $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
-        if ($app['session']->has(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK)) {
+        if (OAuthBase::sessionHasOAuthId($app['session'])) {
             $this->data['oauth_id_for_login'] = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
             $name = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME);
             $this->data['oauth_full_name_for_login'] = $name;
@@ -101,6 +102,22 @@ class Auth extends App
             $link = Communicate::calculateSignupUrl($this->website, $email, $name, $avatar);
             $this->data['oauth_uri_for_signup'] = $link;
         }
+    }
+
+    private function removeOAuthData(Application $app)
+    {
+        if (!is_null($app['session']) && $app['session'] instanceof SessionInterface) {
+            OAuthBase::removeOAuthKeysFromSession($app['session']);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param Application $app
+     */
+    private function setupAuthView(Request $request, Application $app)
+    {
+        $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
 
         $this->data['website_name'] = $this->website->name;
 
