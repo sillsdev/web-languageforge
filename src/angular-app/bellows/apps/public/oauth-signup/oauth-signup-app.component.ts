@@ -173,9 +173,17 @@ export class OAuthSignupAppController implements angular.IController {
     return color + '-' + shape + '-128x128.png';
   }
 
-  public getAvatarUrl(avatarRef: string): string {
+  public getAvatarUrl(avatarRef: string, size?: string): string {
     if (avatarRef) {
-      return (avatarRef.startsWith('http')) ? avatarRef : '/Site/views/shared/image/avatar/' + avatarRef;
+      if (avatarRef.startsWith('http')) {
+        if (size) {
+          return avatarRef + '?sz=' + size;
+        } else {
+          return avatarRef;
+        }
+      } else {
+        return '/Site/views/shared/image/avatar/' + avatarRef;
+      }
     } else {
       return '';
     }
