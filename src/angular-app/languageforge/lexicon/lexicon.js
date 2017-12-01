@@ -33,7 +33,7 @@ angular.module('lexicon',
     $stateProvider
       .state('configuration', {
         url: '/configuration',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/configuration.html'
+        templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration.html'
       })
       .state('viewSettings', {
         url: '/viewSettings',

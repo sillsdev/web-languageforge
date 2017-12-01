@@ -259,7 +259,7 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
 .directive('dcFormattedtext', [function () {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/directive/dc-formattedtext.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-formattedtext.html',
     scope: {
       fteModel: '=',
       fteToolbar: '=',

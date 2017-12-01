@@ -2,14 +2,14 @@
 @import '../../../../../node_modules/bootstrap/scss/_variables';
 @import '../../../../../node_modules/bootstrap/scss/_mixins';
 @import '../editor/_editor.scss';
-@import '../directive/_dc-audio';
-@import '../directive/_dc-formattedtext';
-@import '../directive/_dc-multioptionlist.scss';
-@import '../directive/_dc-multiparagraph.scss';
-@import '../directive/_dc-multitext.scss';
-@import '../directive/_dc-picture.scss';
-@import '../directive/_dc-rendered.scss';
-@import '../directive/_dc-semanticdomain.scss';
+@import '../editor/field/_dc-audio';
+@import '../editor/field/_dc-formattedtext';
+@import '../editor/field/_dc-multioptionlist.scss';
+@import '../editor/field/_dc-multiparagraph.scss';
+@import '../editor/field/_dc-multitext.scss';
+@import '../editor/field/_dc-picture.scss';
+@import '../editor/field/_dc-rendered.scss';
+@import '../editor/field/_dc-semanticdomain.scss';
 @import '../../../bellows/directive/bootstrap4/palaso.ui.comments.dc-comment';
 
 #lexAppListView {

@@ -4,7 +4,7 @@ angular.module('palaso.ui.dc.example', ['palaso.ui.dc.fieldrepeat'])
 .directive('dcExample', [function () {
   return {
     restrict: 'E',
-    templateUrl: '/angular-app/languageforge/lexicon/directive/dc-example.html',
+    templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-example.html',
     scope: {
       config: '=',
       model: '=',
