@@ -7,7 +7,7 @@ angular.module('palaso.ui.dc.audio', ['palaso.ui.dc.multitext', 'palaso.ui.notic
   .directive('dcAudio', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/languageforge/lexicon/directive/dc-audio.html',
+      templateUrl: '/angular-app/languageforge/lexicon/editor/field/dc-audio.html',
       scope: {
         dcFilename: '=',
         dcControl: '='
