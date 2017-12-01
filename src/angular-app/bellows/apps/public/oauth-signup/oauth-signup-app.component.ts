@@ -25,6 +25,9 @@ export class OAuthSignupAppController implements angular.IController {
   submissionInProgress = false;
   emailExists = false;
   takenEmail = '';
+  usernameExists = false;
+  usernameValid = false;
+  takenUsername = '';
   record = new User();
   hostname: string;
 
@@ -43,6 +46,10 @@ export class OAuthSignupAppController implements angular.IController {
     }
     if (this.oauthFullName !== undefined && this.oauthFullName.length > 0) {
       this.record.name = this.oauthFullName;
+      this.calculateUsername(this.record.name).then(username => {
+        this.record.username = username;
+        this.validateForm();
+      });
       this.nameProvided = true;
     }
     if (this.oauthAvatar !== undefined && this.oauthAvatar.length > 0) {
@@ -113,12 +120,20 @@ export class OAuthSignupAppController implements angular.IController {
     this.$scope.website_name = this.websiteName;
   }
 
-/* Uncomment if we also want to allow users to pick their own usernames
+  calculateUsername(usernameBase: string) {
+    return this.userService.calculateUsername(usernameBase).then(result => {
+      if (result.ok) {
+        return result.data;
+      } else {
+        throw result.statusText;
+      }
+    }).catch(reason => {
+      // Ignore errors in this one
+    });
+  }
+
   validateForm(): void {
-    this.emailValid = this.$scope.userprofileForm.email.$pristine ||
-      (this.$scope.userprofileForm.email.$dirty && !this.$scope.userprofileForm.$error.email);
-    this.usernameValid = this.$scope.userprofileForm.username.$pristine ||
-      (this.$scope.userprofileForm.username.$dirty && !this.$scope.userprofileForm.$error.username);
+    this.usernameValid = this.$scope.userprofileForm.username && !this.$scope.userprofileForm.$error.username;
 
     this.userService.checkUniqueIdentity(this.record.id, this.record.username, this.record.email,
       result => {
@@ -126,32 +141,25 @@ export class OAuthSignupAppController implements angular.IController {
           switch (result.data) {
             case 'usernameExists' :
               this.usernameExists = true;
-              this.emailExists = false;
-              this.takenUsername = this.user.username.toLowerCase();
-              this.$scope.userprofileForm.username.$setPristine();
+              this.takenUsername = this.record.username.toLowerCase();
+              // this.$scope.userprofileForm.username.$setPristine();
               break;
             case 'emailExists' :
               this.usernameExists = false;
-              this.emailExists = true;
-              this.takenEmail = this.user.email.toLowerCase();
-              this.$scope.userprofileForm.email.$setPristine();
               break;
             case 'usernameAndEmailExists' :
+              // Shouldn't happen since OAuth login would have matched email
               this.usernameExists = true;
-              this.emailExists = true;
-              this.takenUsername = this.user.username.toLowerCase();
-              this.takenEmail = this.user.email.toLowerCase();
-              this.$scope.userprofileForm.username.$setPristine();
-              this.$scope.userprofileForm.email.$setPristine();
+              this.takenUsername = this.record.username.toLowerCase();
+              // this.$scope.userprofileForm.username.$setPristine();
               break;
             default:
               this.usernameExists = false;
-              this.emailExists = false;
           }
         }
       });
   }
-*/
+
   private getAvatarRef(color?: string, shape?: string): string {
     if (!color || !shape) {
       return (this.oauthAvatar) ? this.oauthAvatar : 'anonymoose.png';
@@ -181,13 +189,13 @@ export class OAuthSignupAppController implements angular.IController {
 
   private registerUser(successCallback: (url: string) => void) {
     this.submissionInProgress = true;
-    this.userService.register(this.record, (result) => {
+    this.userService.registerOAuthUser(this.record, (result) => {
       if (result.ok) {
         switch (result.data) {
-          case 'emailNotAvailable':
-            this.emailExists = true;
-            this.takenEmail = this.record.email.toLowerCase();
-            this.$scope.signupForm.email.$setPristine();
+          case 'usernameNotAvailable':
+            // Shouldn't happen since OAuth login would have matched email
+            this.usernameExists = true;
+            this.takenUsername = this.record.username.toLowerCase();
             break;
           case 'login':
             successCallback('/app/projects');

@@ -8,9 +8,13 @@ use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
+use Site\Model\UserWithId;
 use Site\OAuth\OAuthBase;
+use Site\Provider\AuthUserProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Security;
 
 defined('ENVIRONMENT') or exit('No direct script access allowed');
@@ -160,6 +164,19 @@ class Auth extends App
             $app['request']->cookies->all(), array(), $app['request']->server->all()
         );
         $app->handle($subRequest, HttpKernelInterface::MASTER_REQUEST, false);
+    }
+
+    public static function loginWithoutPassword(Application $app, string $username): string
+    {
+        $userModel = new UserModel();
+        $userModel->readByUserName($username);
+        $roles = AuthUserProvider::getSiteRoles($userModel, $app['website']);
+        $userWithId = new UserWithId($userModel->username, '', $userModel->username, $roles);
+        $authToken = new UsernamePasswordToken($userWithId, '', 'site', $userWithId->getRoles());
+        $tokenStorage = $app['security.token_storage'];
+        if (!is_null($tokenStorage) && $tokenStorage instanceof TokenStorageInterface) {
+            $tokenStorage->setToken($authToken);
+        }
     }
 
     /**
