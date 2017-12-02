@@ -45,7 +45,7 @@ angular.module('lexicon',
       })
       .state('settings', {
         url: '/settings',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/settings.html'
+        templateUrl: '/angular-app/languageforge/lexicon/settings/project-settings.html'
       })
       .state('sync', {
         url: '/sync',
