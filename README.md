@@ -99,7 +99,7 @@ cd /mnt/c/src
 
 Now, download and run the install script:
 ```
-wget -O- https://raw.githubusercontent.com/sillsdev/web-languageforge/master/installer/xenialBashWindows10.sh | bash -
+wget -O- https://raw.githubusercontent.com/sillsdev/web-languageforge/master/installer/ubuntu1604Installer.sh | bash -
 ```
 Expect the install to take 30-60 minutes on a fresh Ubuntu Xenial install, depending upon your internet connection.
 
