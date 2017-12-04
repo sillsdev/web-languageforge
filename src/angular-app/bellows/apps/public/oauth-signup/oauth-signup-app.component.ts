@@ -8,13 +8,9 @@ export class OAuthSignupAppController implements angular.IController {
   public oauthFullName: string;
   public oauthEmail: string;
   public oauthAvatar: string;
-  public oauthId: string;
+  public oauthId: string;  // Not currently used
   public loginPath: string;
   public websiteName: string;
-  emailValid = true;
-  emailProvided = false;
-  nameProvided = false;
-  avatarProvided = false;
   dropdown = {
     avatarColors: {},
     avatarShapes: {},
@@ -25,7 +21,6 @@ export class OAuthSignupAppController implements angular.IController {
   };
   submissionInProgress = false;
   emailExists = false;
-  takenEmail = '';
   usernameExists = false;
   usernameValid = false;
   takenUsername = '';
@@ -43,7 +38,6 @@ export class OAuthSignupAppController implements angular.IController {
 
     if (this.oauthEmail !== undefined && this.oauthEmail.length > 0) {
       this.record.email = this.oauthEmail;
-      this.emailProvided = true;
     }
     if (this.oauthFullName !== undefined && this.oauthFullName.length > 0) {
       this.record.name = this.oauthFullName;
@@ -51,14 +45,10 @@ export class OAuthSignupAppController implements angular.IController {
         this.record.username = username;
         this.validateForm();
       });
-      this.nameProvided = true;
     }
     if (this.oauthAvatar !== undefined && this.oauthAvatar.length > 0) {
-      // this.oauthAvatar = this.oauthAvatar.replace('sz=50', 'sz=100');  // TODO: Do this somewhere in the OAuth PHP code
       this.record.avatar_ref = this.oauthAvatar;
-      this.avatarProvided = true;
     }
-    console.log("OAuthSignupAppController.$onInit() called, and websiteName is", this.websiteName, 'and oauth ID is', this.oauthId, 'and avatar is', this.oauthAvatar);
 
     this.sessionService.getSession().then((session) => {
       // signup app should only show when no user is present (not logged in)
@@ -67,6 +57,7 @@ export class OAuthSignupAppController implements angular.IController {
       }
     });
 
+    // TODO: This is duplicated from the userprofile app. Should refactor avatar stuff into separate library.
     this.dropdown.avatarColors = [
       { value: 'purple4', label: 'Purple' },
       { value: 'green', label: 'Green' },
@@ -106,15 +97,11 @@ export class OAuthSignupAppController implements angular.IController {
     ];
 
     this.$scope.$watch(() => this.avatarChoice.avatar_color, () => {
-      console.log("Avatar color changed to", this.avatarChoice.avatar_color);
       this.record.avatar_ref = this.getAvatarRef(this.avatarChoice.avatar_color, this.avatarChoice.avatar_shape);
-      console.log("Avatar ref is now", this.record.avatar_ref);
     });
 
     this.$scope.$watch(() => this.avatarChoice.avatar_shape, () => {
-      console.log("Avatar shape changed to", this.avatarChoice.avatar_shape);
       this.record.avatar_ref = this.getAvatarRef(this.avatarChoice.avatar_color, this.avatarChoice.avatar_shape);
-      console.log("Avatar ref is now", this.record.avatar_ref);
     });
 
     this.hostname = this.$window.location.hostname;
@@ -134,7 +121,7 @@ export class OAuthSignupAppController implements angular.IController {
   }
 
   validateForm(): void {
-    this.usernameValid = this.$scope.userprofileForm.username && !this.$scope.userprofileForm.$error.username;
+    this.usernameValid = this.$scope.oauthSignupForm.username && !this.$scope.oauthSignupForm.$error.username;
 
     this.userService.checkUniqueIdentity(this.record.id, this.record.username, this.record.email,
       result => {
@@ -143,16 +130,15 @@ export class OAuthSignupAppController implements angular.IController {
             case 'usernameExists' :
               this.usernameExists = true;
               this.takenUsername = this.record.username.toLowerCase();
-              // this.$scope.userprofileForm.username.$setPristine();
               break;
             case 'emailExists' :
+              // Shouldn't happen since OAuth login would have matched email
               this.usernameExists = false;
               break;
             case 'usernameAndEmailExists' :
               // Shouldn't happen since OAuth login would have matched email
               this.usernameExists = true;
               this.takenUsername = this.record.username.toLowerCase();
-              // this.$scope.userprofileForm.username.$setPristine();
               break;
             default:
               this.usernameExists = false;
@@ -177,7 +163,7 @@ export class OAuthSignupAppController implements angular.IController {
     if (avatarRef) {
       if (avatarRef.startsWith('http')) {
         if (size) {
-          return avatarRef + '?sz=' + size;
+          return avatarRef + '?sz=' + size;  // TODO: This will be different for Facebook
         } else {
           return avatarRef;
         }
