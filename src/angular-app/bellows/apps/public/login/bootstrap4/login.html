@@ -15,12 +15,8 @@
                     {% endfor %}
                 </div>
 
-                {% if oauth_email_for_login is defined %}
-                <p>Please log in to your {{ website_name }} account so that we can link the {{ oauth_email_for_login }} account to it.</p>
-                {% else %}
                 <p><a href="/oauthcallback/google"><img src="/Site/views/shared/image/btn_google_signin_dark_normal_web.png"/></a></p>
                 <!-- TODO: Replace the PNG button with an HTML+CSS one to allow translation, as in http://tech.yeesiang.com/social-login-button-with-font-awesome-bootstrap/ -->
-                {% endif %}
                 <form class="form-horizontal" action="{{ path('app_login_check') }}" method="post"
                       accept-charset="utf-8" name="loginForm" novalidate>
                     <fieldset>
