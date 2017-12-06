@@ -412,13 +412,13 @@ class UserCommands
     }
 
     /**
-     * Public: Register a new user and activate them if they already exist on a new site.
+     * Public: Register a new user who has already authenticated with OAuth.
      *
-     * @param array $params (email, name, password, captcha)
+     * @param array $params (email, username, name, ?avatar_ref)
      * @param Website $website
      * @param DeliveryInterface $delivery
      * @throws \Exception
-     * @return string {captchaFail, login, emailNotAvailable}
+     * @return string {login, usernameNotAvailable}
      */
     public static function registerOAuthUser($params, $website, DeliveryInterface $delivery = null)
     {
