@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.deleteProject', ['bellows.services'])
+angular.module('palaso.ui.deleteProject', ['coreModule'])
   .directive('puiDeleteProject', [function () {
     return {
       restrict: 'E',

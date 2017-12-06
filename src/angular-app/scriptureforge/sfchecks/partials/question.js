@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule', 'bellows.services',
-  'sgw.soundmanager', 'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte',
+angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule',
+  'sfchecks.services', 'ngRoute', 'palaso.ui.listview', 'palaso.ui.jqte',
   'palaso.ui.selection', 'palaso.ui.tagging', 'palaso.ui.notice'])
   .controller('QuestionCtrl', ['$scope', '$routeParams', 'questionService', 'sessionService',
     'utilService', 'breadcrumbService', 'silNoticeService', 'linkService', 'modalService',
@@ -11,25 +11,6 @@ angular.module('sfchecks.question', ['ui.bootstrap', 'coreModule', 'bellows.serv
     $scope.getAvatarUrl = util.constructor.getAvatarUrl;
     $scope.finishedLoading = false;
     $scope.state = 'stop';
-    $scope.audioReady = false;
-    soundManager.setup({
-      url: 'node_modules/soundmanager2/swf/',
-      flashVersion: 9, // optional: shiny features (default = 8)
-      // optional: ignore Flash where possible, use 100% HTML5 mode
-      // preferFlash : false,
-      onready: function () {
-        $scope.audioReady = true;
-      }
-    });
-
-    $scope.audioIcon = function () {
-      var map = {
-        stop: 'fa fa-volume-up',
-        play: 'fa fa-pause',
-        pause: 'fa fa-play'
-      };
-      return map[$scope.state];
-    };
 
     var questionId = $routeParams.questionId;
 

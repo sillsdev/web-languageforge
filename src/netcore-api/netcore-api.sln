@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIL.XForge.WebApi.Server", "SIL.XForge.WebApi.Server\SIL.XForge.WebApi.Server.csproj", "{156E761D-6EC0-41FF-BAE6-D31882319ED9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{156E761D-6EC0-41FF-BAE6-D31882319ED9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{156E761D-6EC0-41FF-BAE6-D31882319ED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{156E761D-6EC0-41FF-BAE6-D31882319ED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{156E761D-6EC0-41FF-BAE6-D31882319ED9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F93BB2A5-2FEF-4D85-9391-EFBA18104562}
+	EndGlobalSection
+EndGlobal
