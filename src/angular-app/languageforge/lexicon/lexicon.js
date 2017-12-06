@@ -9,7 +9,7 @@ angular.module('lexicon',
     'palaso.ui.dc.rendered',
     'palaso.ui.typeahead',
     'coreModule',
-    'bellows.services',
+    'sgw.ui.breadcrumb',
     'lexiconCoreModule',
     'lexicon.editor',
     'lexicon.configuration',
@@ -17,7 +17,6 @@ angular.module('lexicon',
     'lexicon.import-export',
     'lexicon.settings',
     'lexicon.sync',
-    'lexicon.services',
     'language.inputSystems',
     'pascalprecht.translate'
   ])
@@ -34,23 +33,23 @@ angular.module('lexicon',
     $stateProvider
       .state('configuration', {
         url: '/configuration',
-        templateUrl: '/angular-app/languageforge/lexicon/views/configuration.html'
+        templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration.html'
       })
       .state('viewSettings', {
         url: '/viewSettings',
-        templateUrl: '/angular-app/languageforge/lexicon/views/view-settings.html'
+        templateUrl: '/angular-app/languageforge/lexicon/settings/view-settings.html'
       })
       .state('importExport', {
         url: '/importExport',
-        templateUrl: '/angular-app/languageforge/lexicon/views/import-export.html'
+        templateUrl: '/angular-app/languageforge/lexicon/settings/import-export.html'
       })
       .state('settings', {
         url: '/settings',
-        templateUrl: '/angular-app/languageforge/lexicon/views/settings.html'
+        templateUrl: '/angular-app/languageforge/lexicon/settings/project-settings.html'
       })
       .state('sync', {
         url: '/sync',
-        templateUrl: '/angular-app/languageforge/lexicon/views/sync.html'
+        templateUrl: '/angular-app/languageforge/lexicon/settings/sync.html'
       })
       ;
 
