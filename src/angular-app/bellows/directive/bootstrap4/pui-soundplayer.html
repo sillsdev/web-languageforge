@@ -1,0 +1,7 @@
+<a ng-click="togglePlayback()">
+    <i class="fa {{iconClass()}}"></i>
+</a>
+<span data-ng-if="audioElement.duration && $ctrl.timeFormat" class="audioProgress text-muted">
+    {{currentTime()}} / {{duration()}}
+</span>
+<input style="height: auto;" type="range" min="0" max="{{durationInSeconds()}}" step="0.1" ng-show="seekVisible()" id="puiSoundplayerSlider">
