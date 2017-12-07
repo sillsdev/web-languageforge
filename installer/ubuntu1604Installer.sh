@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o errexit
 
 if [ `whoami` == "root" ]
 then
@@ -17,15 +18,14 @@ if [ $OS == "Windows" ]; then
 
     echo "hi" > /mnt/c/Windows/amiadmin
     if [ $? == 1 ]; then
-        echo "This script must be run inside an elevated Bash terminal!"
-        echo "Re-open this Ubuntu Bash terminal by right-clicking on the icon and 'Run as Administrator'"
+        echo "This script must be run inside an elevated Ubuntu terminal!"
+        echo "Re-open this Ubuntu terminal by right-clicking on the icon and 'Run as Administrator'"
         exit
     else
         rm /mnt/c/Windows/amiadmin
     fi
-    echo "We will use the Windows package manager Chocolatey to install Windows dependencies (JRE and Selenium Server)"
-    read -p "press [Enter] when you're ready"
-    powershell.exe -Command "Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
+
+    # We assume that choco is already installed via the windowsSetup.sh script
     cmd.exe /C "choco install -y jre8 selenium selenium-chrome-driver php"
 
 fi
