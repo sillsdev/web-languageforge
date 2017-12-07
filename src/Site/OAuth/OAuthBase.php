@@ -229,10 +229,14 @@ abstract class OAuthBase extends Base
                     // And no match by email either
 
                     // Pass all OAuth information into the "what next?" page via the session, so that the user doesn't see it in the login page URL
-                    $this->setOAuthDetailsInSession($app, $googleOAuthId, $userDetails->getEmail(), $userDetails->getName(), $userDetails->getAvatar());
+                    $avatar = $userDetails->getAvatar();
+                    if (!is_null($avatar)) {
+                        $avatar = $this->getFullSizeAvatarUrl($avatar);
+                    }
+                    $this->setOAuthDetailsInSession($app, $googleOAuthId, $userDetails->getEmail(), $userDetails->getName(), $avatar);
 
                     // We'll ask the user to either link existing account or create a new account
-                    return new RedirectResponse('/auth/link_oauth_account');
+                    return new RedirectResponse('/auth/oauth-signup');
                 } else {
                     // Found an email address matching this OAuth token, so add the token
                     $this->addOAuthIdToUserModel($userModel, $googleOAuthId);
@@ -250,6 +254,16 @@ abstract class OAuthBase extends Base
         } catch (Exception $e) {
             return new Response('DEBUG: Failure getting user details', 200);  // TODO: determine how to handle this scenario
         }
+    }
+
+    /**
+     * Override in descendant classes if avatar URLs have size embedded in them (e.g., for Google, we would strip the '?sz=50' from the URL)
+     * @param string $avatarUrl
+     * @return string
+     */
+    public function getFullSizeAvatarUrl(string $avatarUrl)
+    {
+        return $avatarUrl;
     }
 
     /**
