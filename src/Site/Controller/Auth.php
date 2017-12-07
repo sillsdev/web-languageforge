@@ -183,7 +183,7 @@ class Auth extends App
         $app->handle($subRequest, HttpKernelInterface::MASTER_REQUEST, false);
     }
 
-    public static function loginWithoutPassword(Application $app, string $username): string
+    public static function loginWithoutPassword(Application $app, string $username)
     {
         $userModel = new UserModel();
         $userModel->readByUserName($username);
