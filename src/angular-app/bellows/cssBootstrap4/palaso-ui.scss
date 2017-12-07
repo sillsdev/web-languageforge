@@ -217,3 +217,12 @@ pui-select-language div.scroll-table table {
     width: 100%;
   }
 }
+
+pui-soundplayer {
+  .controls {
+      font-size: 1rem;
+  }
+  .seek-slider {
+      height: auto;
+  }
+}
