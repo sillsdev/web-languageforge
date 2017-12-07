@@ -4,8 +4,7 @@ angular.module('palaso.ui.soundplayer', [])
   .component('puiSoundplayer', {
       bindings: {
         url: '<',
-        timeFormat: '<',
-        seekAlwaysVisible: '='
+        controlsAlwaysVisible: '<'
       },
       controller: ['$scope', function ($scope) {
         var ctrl = this;
@@ -55,11 +54,11 @@ angular.module('palaso.ui.soundplayer', [])
         };
 
         $scope.duration = function () {
-          return ctrl.timeFormat($scope.audioElement.duration * 1000);
+          return $scope.formatTimestamp($scope.audioElement.duration * 1000);
         };
 
         $scope.currentTime = function () {
-          return ctrl.timeFormat($scope.audioElement.currentTime * 1000);
+          return $scope.formatTimestamp($scope.audioElement.currentTime * 1000);
         };
 
         $scope.audioElement.addEventListener('loadedmetadata', function () {
@@ -70,16 +69,24 @@ angular.module('palaso.ui.soundplayer', [])
         $scope.audioElement.addEventListener('timeupdate', function () {
           slider.value = $scope.audioElement.currentTime;
           // If the time as shown the user has changed, only then run a digest
-          if (ctrl.currentTime && previousFormattedTime !== $scope.currentTime()) $scope.$digest();
+          if (previousFormattedTime !== $scope.currentTime()) $scope.$digest();
         });
 
-        $scope.seekVisible = function () {
-          return $scope.playing || $scope.seekAlwaysVisible;
+        $scope.controlsVisible = function () {
+          return $scope.playing || ctrl.controlsAlwaysVisible;
         };
 
         slider.addEventListener('change', function (e) {
           $scope.audioElement.currentTime = e.target.value;
         });
+
+        $scope.formatTimestamp = function formatTimestamp(timestamp) {
+          var totalSeconds = timestamp / 1000;
+          var minutes = Math.floor(totalSeconds / 60);
+          var seconds = Math.floor(totalSeconds % 60);
+          seconds = (seconds < 10 ? '0' : '') + seconds;
+          return minutes + ':' + seconds;
+        };
       }],
 
                                           // FIXME why is bootstrapVersion not defined here?
