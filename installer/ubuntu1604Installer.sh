@@ -15,17 +15,6 @@ fi
 if [ $OS == "Windows" ]; then
     echo "I see that you are running this script in Windows 10 WSL."
 
-
-    # From https://stackoverflow.com/questions/47080898/npm-warn-tar-einval-after-wsl-fall-creators-update
-    # this can be removed once MS has fixed the WSL symlink bug affecting NPM
-    if ! mount | grep -q "C: on /mnt/c type drvfs (rw,noatime,fallback=1)"; then
-        echo "== Remount of C: drive required =="
-        pushd ~ > /dev/null
-        sudo umount /mnt/c
-        sudo mount -t drvfs -o noatime,fallback=1 C: /mnt/c
-        popd > /dev/null
-    fi
-
     echo "hi" > /mnt/c/Windows/amiadmin
     if [ $? == 1 ]; then
         echo "This script must be run inside an elevated Bash terminal!"
@@ -93,7 +82,7 @@ if [ $OS == "Windows" ]; then
     HOSTSFILE=/mnt/c/Windows/System32/drivers/etc/hosts
     ALREADYHASHOSTS=`grep "languageforge.local" $HOSTSFILE`
     if [ -f "$HOSTSFILE" -a ! -n "$ALREADYHASHOSTS" ]; then
-        echo "Modify Windows hosts file"
+        echo "Modifying Windows hosts file"
         cat installer/windowsHostFileAdditions.txt >> $HOSTSFILE
     fi
 
@@ -107,11 +96,7 @@ if [ $OS == "Windows" ]; then
     echo "Note: the Windows Bash window must be open in order for languageforge.local to work"
 fi
 
-echo "Run PHP Unit tests"
-gulp test-php
-
 echo "You should now be able to access Language Forge locally at http://languageforge.local"
 echo "username: admin"
 echo "password: password"
 echo "Installation finished!"
-echo "Did the PHP and end-to-end tests pass?"
