@@ -412,6 +412,53 @@ class UserCommands
     }
 
     /**
+     * Public: Register a new user who has already authenticated with OAuth.
+     *
+     * @param array $params (email, username, name, ?avatar_ref)
+     * @param Website $website
+     * @param DeliveryInterface $delivery
+     * @throws \Exception
+     * @return string {login, usernameNotAvailable}
+     */
+    public static function registerOAuthUser($params, $website, DeliveryInterface $delivery = null)
+    {
+        $email = self::sanitizeInput($params['email']);
+        CodeGuard::checkEmptyAndThrow($email, 'email');
+        $username = self::sanitizeInput($params['username']);
+        CodeGuard::checkEmptyAndThrow($username, 'username');
+
+        if (UserModel::userExists($username)) {
+            return "usernameNotAvailable";
+        }
+
+        $user = new UserModel();
+        $user->email = $email;
+        $user->active = true;
+        $user->name = $params['name'];
+        $user->username = $username;
+        if (isset($params['avatar_ref'])) {
+            $user->avatar_ref = $params['avatar_ref'];
+        }
+        $user->role = SystemRoles::USER;
+        $user->siteRole[$website->domain] = $website->userDefaultSiteRole;
+        $userId = $user->write();
+
+        // NO password for users registered with OAuth
+
+        UserCommands::addUserToDefaultProject($userId, $website);
+        Communicate::sendWelcomeToWebsite($user, $website, $delivery);
+        Communicate::sendVerifyEmail($user, $website, $delivery);
+        return "login";
+    }
+
+    public static function calculateUniqueUsernameFromString($usernameBase)
+    {
+        $user = new UserModel();
+        $user->setUniqueUsernameFromString($usernameBase);
+        return $user->username;
+    }
+
+    /**
      * @param string $userId
      * @param Website $website
      */

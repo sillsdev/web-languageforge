@@ -8,9 +8,14 @@ use Api\Library\Shared\Website;
 use Api\Model\Shared\Command\UserCommands;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
+use Site\Model\UserWithId;
 use Site\OAuth\OAuthBase;
+use Site\Provider\AuthUserProvider;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Security;
 
 defined('ENVIRONMENT') or exit('No direct script access allowed');
@@ -43,12 +48,18 @@ class Auth extends App
                 // no break; - intentional fall through to next case
             case 'forgot_password':
             case 'login':
+            case 'oauth-signup':
             case 'link_oauth_account':
                 if($this->isLoggedIn($app)) {
                     return $app->redirect('/app/projects');
                 }
                 $this->setupAngularAppVariables($app, $appName);
                 $this->setupAuthView($request, $app);
+                if ($appName === 'oauth-signup') {
+                    $this->setupOAuthView($app);
+                } else {
+                    $this->removeOAuthData($app);
+                }
 
                 return $this->renderPage($app, 'angular-app');
                 break;
@@ -78,6 +89,28 @@ class Auth extends App
         return $app->redirect('/auth/login');
     }
 
+    private function setupOAuthView(Application $app)
+    {
+        if (OAuthBase::sessionHasOAuthId($app['session'])) {
+            $this->data['oauth_id_for_login'] = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
+            $name = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME);
+            $this->data['oauth_full_name_for_login'] = $name;
+            $email = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_EMAIL_ADDRESS);
+            $this->data['oauth_email_for_login'] = $email;
+            $avatar = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_AVATAR_URL);
+            $this->data['oauth_avatar_for_login'] = $avatar;
+            $link = Communicate::calculateSignupUrl($this->website, $email, $name, $avatar);
+            $this->data['oauth_uri_for_signup'] = $link;
+        }
+    }
+
+    private function removeOAuthData(Application $app)
+    {
+        if (!is_null($app['session']) && $app['session'] instanceof SessionInterface) {
+            OAuthBase::removeOAuthKeysFromSession($app['session']);
+        }
+    }
+
     /**
      * @param Request $request
      * @param Application $app
@@ -85,16 +118,6 @@ class Auth extends App
     private function setupAuthView(Request $request, Application $app)
     {
         $this->data['last_username'] = $app['session']->get(Security::LAST_USERNAME);
-        if ($app['session']->has(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK)) {
-            $this->data['oauth_id_for_login'] = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK);
-            $name = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME);
-            $this->data['oauth_full_name_for_login'] = $name;
-            $email = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_EMAIL_ADDRESS);
-            $this->data['oauth_email_for_login'] = $email;
-            $avatar = $app['session']->get(OAuthBase::SESSION_KEY_OAUTH_AVATAR_URL);
-            $link = Communicate::calculateSignupUrl($this->website, $email, $name, $avatar);
-            $this->data['oauth_uri_for_signup'] = $link;
-        }
 
         $this->data['website_name'] = $this->website->name;
 
@@ -158,6 +181,19 @@ class Auth extends App
             $app['request']->cookies->all(), array(), $app['request']->server->all()
         );
         $app->handle($subRequest, HttpKernelInterface::MASTER_REQUEST, false);
+    }
+
+    public static function loginWithoutPassword(Application $app, string $username): string
+    {
+        $userModel = new UserModel();
+        $userModel->readByUserName($username);
+        $roles = AuthUserProvider::getSiteRoles($userModel, $app['website']);
+        $userWithId = new UserWithId($userModel->username, '', $userModel->username, $roles);
+        $authToken = new UsernamePasswordToken($userWithId, '', 'site', $userWithId->getRoles());
+        $tokenStorage = $app['security.token_storage'];
+        if (!is_null($tokenStorage) && $tokenStorage instanceof TokenStorageInterface) {
+            $tokenStorage->setToken($authToken);
+        }
     }
 
     /**
