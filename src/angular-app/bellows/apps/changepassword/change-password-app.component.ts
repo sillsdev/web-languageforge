@@ -5,7 +5,6 @@ import { NoticeService } from '../../core/notice/notice.service';
 import { SessionService } from '../../core/session.service';
 
 export class ChangePasswordAppController implements angular.IController {
-  old_password: string;
   password: string;
   confirm_password: string;
 
