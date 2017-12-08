@@ -30,6 +30,7 @@ define('SF_TESTPROJECTCODE',  'testcode1');
 define('SF_TESTPROJECT2',     'Test Project2');
 define('SF_TESTPROJECTCODE2', 'testcode2');
 define('BCRYPT_COST', 7);
+define('JWT_KEY_FILE', 'jwt_key');
 
 global $WEBSITE;
 $WEBSITE = Website::get('dev.scriptureforge.org');

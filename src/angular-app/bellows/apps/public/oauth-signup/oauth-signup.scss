@@ -1,0 +1,32 @@
+/* form styling */
+#form-container .page-header h1 {
+    margin-left: 0;
+}
+
+#form-container #forgot_password {
+    margin-left: 10px;
+}
+
+.yes-no-buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.hr-and-text {
+  text-align: center;
+  font-variant: small-caps;
+}
+
+.hr-and-text .thin-line {
+  position: relative;
+  /* top should be roughly half the line-height */
+  top: 1.375em;
+  margin-bottom: 0;
+}
+
+.hr-and-text .text-inside-hr {
+  padding: 10px;
+  position: relative;
+  display: inline-block;
+  background: white;
+}
