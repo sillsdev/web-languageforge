@@ -1,5 +1,5 @@
 #!/bin/bash
-set -o errexit
+set -e
 
 if [ `whoami` == "root" ]
 then
@@ -7,23 +7,24 @@ then
 	exit
 fi
 
-if grep -qE "(Microsoft|WSL)" /proc/version &> /dev/null ; then
-    OS=Windows
-else
-    OS=Linux
-fi
+OS=Linux
+grep -qE "(Microsoft|WSL)" /proc/version &> /dev/null && OS=Windows
 
 if [ $OS == "Windows" ]; then
-    echo "I see that you are running this script in Windows 10 WSL."
+    echo "Running this script in Windows 10 WSL!"
+    WORKINGDIR=`pwd`
+    if [ "$WORKINGDIR" != "/mnt/c/src" ]; then
+        echo "WARNING: It is recommended that you run this script from /mnt/c/src"
+    fi
 
-    echo "hi" > /mnt/c/Windows/amiadmin
-    if [ $? == 1 ]; then
+    ISADMIN=0 && echo "hi" > /mnt/c/Windows/amiadmin && ISADMIN=1
+    if [ "$ISADMIN" == "0" ]; then
         echo "This script must be run inside an elevated Ubuntu terminal!"
         echo "Re-open this Ubuntu terminal by right-clicking on the icon and 'Run as Administrator'"
         exit
-    else
-        rm /mnt/c/Windows/amiadmin
     fi
+
+    rm /mnt/c/Windows/amiadmin
 
     # We assume that choco is already installed via the windowsSetup.sh script
     cmd.exe /C "choco install -y jre8 selenium selenium-chrome-driver php"
@@ -47,7 +48,7 @@ echo Install postfix non-interactively
 sudo DEBIAN_FRONTEND=noninteractive apt install -y postfix
 
 echo Install and upgrade packages
-sudo apt install -y chromium-browser git ansible php7.0-cli libapache2-mod-php mongodb-server p7zip-full php7.0-dev php7.0-gd php7.0-intl php7.0-mbstring php-pear php-xdebug postfix unzip lfmerge
+sudo apt install -y flip chromium-browser git ansible php7.0-cli libapache2-mod-php mongodb-server p7zip-full php7.0-dev php7.0-gd php7.0-intl php7.0-mbstring php-pear php-xdebug postfix unzip lfmerge
 sudo apt -y upgrade
 
 if [ ! -d "web-languageforge/deploy" ]
@@ -62,28 +63,21 @@ echo "Run xforge web developer ansible scripts"
 echo "Please enter your sudo password when prompted (twice)"
 ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
 ansible-playbook -i hosts playbook_webdeveloper_bash_windows10.yml --limit localhost -K
-
-
-echo "Refresh xForge dependencies"
 cd ..
-./refreshDeps.sh
 
 echo "Please enter your sudo password if necessary"
 sudo echo "Thank you!"
 sudo adduser $USER fieldworks
-
-echo "Factory Reset the database"
-cd scripts/tools
-
-sudo php FactoryReset.php run
-cd ../..
 
 if [ $OS == "Windows" ]; then
     HOSTSFILE=/mnt/c/Windows/System32/drivers/etc/hosts
     ALREADYHASHOSTS=`grep "languageforge.local" $HOSTSFILE`
     if [ -f "$HOSTSFILE" -a ! -n "$ALREADYHASHOSTS" ]; then
         echo "Modifying Windows hosts file"
-        cat installer/windowsHostFileAdditions.txt >> $HOSTSFILE
+        ADDITIONSFILE=installer/windowsHostFileAdditions.txt
+        flip -m $ADDITIONSFILE
+        cat $ADDITIONSFILE >> $HOSTSFILE
+        flip -u $ADDITIONSFILE
     fi
 
     BASHRCFILE="/home/$USER/.bashrc"
@@ -95,6 +89,15 @@ if [ $OS == "Windows" ]; then
 
     echo "Note: the Windows Bash window must be open in order for languageforge.local to work"
 fi
+
+echo "Refresh xForge dependencies"
+./refreshDeps.sh
+
+echo "Factory Reset the database"
+cd scripts/tools
+
+sudo php FactoryReset.php run
+cd ../..
 
 echo "You should now be able to access Language Forge locally at http://languageforge.local"
 echo "username: admin"
