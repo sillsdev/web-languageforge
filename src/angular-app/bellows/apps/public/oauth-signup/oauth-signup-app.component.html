@@ -1,0 +1,133 @@
+<div class="content container">
+    <div class="row">
+        <div class="col-sm-12">
+            <sil-notices></sil-notices>
+            <h5>Looks like you're new here!</h5>
+            <p>Please confirm your information below to create your account.</p>
+            <form class="form-horizontal" data-ng-submit="$ctrl.processForm()" id="oauthSignupForm" name="oauthSignupForm">
+                <fieldset>
+                    <div class="form-group row">
+                        <div class="card bg-faded col-md-7">
+                            <div class="card-block">
+                                <div class="form-group row">
+                                    <label class="control-label col-md-4 text-md-right" for="fullname">Full Name</label>
+                                    <div class="controls col-md-8">
+                                        <input class="form-control" id="fullname" autofocus
+                                               type="text" name="fullname"
+                                               placeholder="(full name)"
+                                               data-ng-model="$ctrl.record.name"/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-md-4 text-md-right" for="email">Email Address</label>
+                                    <div class="controls col-md-8">
+                                        <div class="input-group">
+                                            <input class="form-control" id="email" disabled
+                                                   type="email" name="email"
+                                                   data-ng-model="$ctrl.record.email"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-md-4 text-md-right" for="username">Username</label>
+                                    <div class="controls col-md-8">
+                                        <div class="input-group">
+                                            <input class="form-control" id="username"
+                                                   type="text" name="username"
+                                                   data-ng-blur="$ctrl.validateForm();"
+                                                   data-ng-model="$ctrl.record.username"/>
+                                            <span class="input-group-addon alert-danger" data-ng-show="!$ctrl.usernameValid || $ctrl.usernameExists">
+                                                <i class="fa fa-times"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-bottom: 0px">
+                                    <span role="alert" class="text-danger" id="usernameTaken" data-ng-show="$ctrl.usernameExists">Username <span class="notranslate">{{$ctrl.takenUsername}}</span> is taken. Please choose a different username.<br></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="card bg-faded col-md-7">
+                            <div class="card-block">
+                                <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <div class="controls" style="margin-bottom:10px">
+                                            <img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{$ctrl.getAvatarUrl($ctrl.record.avatar_ref, 100)}}" title="Use these dropdown selections to change your avatar's color and shape" />
+                                            <br/>
+                                            <a href=""
+                                               data-ng-click="$ctrl.resetAvatar()"
+                                               data-ng-show="$ctrl.avatarHasColorAndShape($ctrl.avatarChoice.avatar_color, $ctrl.avatarChoice.avatar_shape)">
+                                                Reset avatar
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <select data-ng-model="$ctrl.avatarChoice.avatar_color" class="form-control" data-ng-options="c.value as c.label for c in $ctrl.dropdown.avatarColors"><option value="">Select a Color...</option></select>
+                                        <br/>
+                                        <select data-ng-model="$ctrl.avatarChoice.avatar_shape" class="form-control" data-ng-options="s.value as s.label for s in $ctrl.dropdown.avatarShapes"><option value="">Choose an animal...</option></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="submit" data-ng-disabled="oauthSignupForm.$invalid||$ctrl.usernameExists" class="btn btn-primary " id="saveBtn"><i class="fa fa-check" aria-hidden="true"></i> Sign up</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+            <div class="hr-and-text col-md-7">
+                <hr class="thin-line">
+                <div class="text-inside-hr">or</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h5>Already have an account?</h5>
+                    <p>Then log in here with your {{ website_name }} username and password to link {{ oauth_email_for_login }} to your account.</p>
+                    <div class="card bg-faded col-md-7">
+                        <div class="card-block">
+                            <form class="form-horizontal" action="{{ $ctrl.loginPath }}" method="post"
+                                  accept-charset="utf-8" name="oauthLoginForm" novalidate>
+                                <fieldset>
+                                    <div class="form-group row">
+                                        <label class="control-label" for="login_username">Username or Email</label>
+                                        <div class="controls">
+                                            <input class="form-control form-control-lg" id="login_username"
+                                                   required type="text" name="_username"
+                                                   value=""/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="control-label" for="login_password">Password</label>
+                                        <div class="controls">
+                                            <input class="form-control form-control-lg" id="login_password"
+                                                   required type="password" name="_password"
+                                                   value=""/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="controls">
+                                            <label class="checkbox">
+                                                <input type="checkbox" id="remember" checked name="_remember_me"/>
+                                                Remember me on this device
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-last">
+                                        <div class="controls">
+                                            <button type="submit" class="btn btn-primary" name="submit">Login</button>
+                                            &nbsp;
+                                            <a href="forgot_password" id="forgot_password">Forgot your password?</a>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

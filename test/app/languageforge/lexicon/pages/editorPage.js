@@ -205,11 +205,11 @@ function EditorPage() {
 
     audio: {
       players: function (searchLabel) {
-        return editorUtil.getOneField(searchLabel).all(by.css('.player > a'));
+        return editorUtil.getOneField(searchLabel).all(by.css('.player a'));
       },
 
       playerIcons: function (searchLabel) {
-        return editorUtil.getOneField(searchLabel).all(by.css('.player > a > i'));
+        return editorUtil.getOneField(searchLabel).all(by.css('.player a > i'));
       },
 
       moreControls: function (searchLabel) {
