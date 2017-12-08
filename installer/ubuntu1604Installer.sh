@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 if [ `whoami` == "root" ]
 then
@@ -42,27 +41,27 @@ sudo add-apt-repository -y ppa:ansible/ansible
 
 echo Install NodeJS 8.X and latest npm
 wget -O- https://deb.nodesource.com/setup_8.x | sudo -E bash -
-sudo apt install -y nodejs
+sudo apt install -y nodejs || exit
 
 echo Install postfix non-interactively
-sudo DEBIAN_FRONTEND=noninteractive apt install -y postfix
+sudo DEBIAN_FRONTEND=noninteractive apt install -y postfix || exit
 
 echo Install and upgrade packages
-sudo apt install -y flip chromium-browser git ansible php7.0-cli libapache2-mod-php mongodb-server p7zip-full php7.0-dev php7.0-gd php7.0-intl php7.0-mbstring php-pear php-xdebug postfix unzip lfmerge
-sudo apt -y upgrade
+sudo apt install -y flip chromium-browser git ansible php7.0-cli libapache2-mod-php mongodb-server p7zip-full php7.0-dev php7.0-gd php7.0-intl php7.0-mbstring php-pear php-xdebug postfix unzip lfmerge || exit
+sudo apt -y upgrade || exit
 
 if [ ! -d "web-languageforge/deploy" ]
 then
 	echo Clone web-languageforge repo into the current directory
-	git clone --recurse-submodules https://github.com/sillsdev/web-languageforge
+	git clone --recurse-submodules https://github.com/sillsdev/web-languageforge || exit
 fi
 
 cd web-languageforge/deploy
 
 echo "Run xforge web developer ansible scripts"
 echo "Please enter your sudo password when prompted (twice)"
-ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K
-ansible-playbook -i hosts playbook_webdeveloper_bash_windows10.yml --limit localhost -K
+ansible-playbook -i hosts playbook_create_config.yml --limit localhost -K || exit
+ansible-playbook -i hosts playbook_webdeveloper_bash_windows10.yml --limit localhost -K || exit
 cd ..
 
 echo "Please enter your sudo password if necessary"
@@ -91,12 +90,12 @@ if [ $OS == "Windows" ]; then
 fi
 
 echo "Refresh xForge dependencies"
-./refreshDeps.sh
+./refreshDeps.sh || exit
 
 echo "Factory Reset the database"
 cd scripts/tools
 
-sudo php FactoryReset.php run
+sudo php FactoryReset.php run || exit
 cd ../..
 
 echo "You should now be able to access Language Forge locally at http://languageforge.local"
