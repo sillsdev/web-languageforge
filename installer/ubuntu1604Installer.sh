@@ -33,6 +33,11 @@ fi
 echo "Please enter your sudo password below (necessary for some installation steps)"
 sudo echo "Thank you!"
 
+echo "Adding regional Ubuntu mirrors to apt sources.list"
+sudo sed -i '1i deb mirror://mirrors.ubuntu.com/mirrors.txt xenial main restricted universe multiverse\n' /etc/apt/sources.list
+sudo sed -i '1i deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-updates main restricted universe multiverse\n' /etc/apt/sources.list
+sudo sed -i '1i deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-backports main restricted universe multiverse\n' /etc/apt/sources.list
+
 echo Add extra apt repositories
 wget -O- http://linux.lsdev.sil.org/downloads/sil-testing.gpg | sudo apt-key add -
 sudo add-apt-repository -y 'deb http://linux.lsdev.sil.org/ubuntu xenial main'
