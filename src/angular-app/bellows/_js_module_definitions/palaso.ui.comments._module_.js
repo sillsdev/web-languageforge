@@ -1,4 +1,4 @@
 'use strict';
 
 // module definition
-angular.module('palaso.ui.comments', ['palaso.ui.utils', 'bellows.services', 'palaso.ui.notice', 'pascalprecht.translate']);
+angular.module('palaso.ui.comments', ['coreModule', 'palaso.ui.notice', 'palaso.ui.utils']);

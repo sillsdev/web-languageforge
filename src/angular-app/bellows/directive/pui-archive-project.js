@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('palaso.ui.archiveProject', ['bellows.services'])
+angular.module('palaso.ui.archiveProject', ['coreModule'])
   .directive('puiArchiveProject', [function () {
     return {
       restrict: 'E',
