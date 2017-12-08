@@ -33,7 +33,7 @@ angular.module('lexicon',
     $stateProvider
       .state('configuration', {
         url: '/configuration',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/configuration.html'
+        templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration.html'
       })
       .state('viewSettings', {
         url: '/viewSettings',
@@ -45,7 +45,7 @@ angular.module('lexicon',
       })
       .state('settings', {
         url: '/settings',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/settings.html'
+        templateUrl: '/angular-app/languageforge/lexicon/settings/project-settings.html'
       })
       .state('sync', {
         url: '/sync',
