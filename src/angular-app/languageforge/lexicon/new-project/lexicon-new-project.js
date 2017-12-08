@@ -3,7 +3,6 @@
 angular.module('lexicon-new-project',
   [
     'coreModule',
-    'bellows.services',
     'ui.bootstrap',
     'ui.router',
     'palaso.ui.utils',
@@ -13,8 +12,9 @@ angular.module('lexicon-new-project',
     'palaso.util.model.transform',
     'pascalprecht.translate',
     'ngFileUpload',
+    'sgw.ui.breadcrumb',
     'language.inputSystems',
-    'lexicon.services'
+    'lexiconCoreModule'
   ])
   .config(['$stateProvider', '$urlRouterProvider', '$translateProvider',
   function ($stateProvider, $urlRouterProvider, $translateProvider) {
@@ -673,7 +673,7 @@ angular.module('lexicon-new-project',
 
     $scope.openNewLanguageModal = function openNewLanguageModal() {
       var modalInstance = $modal.open({
-        templateUrl: '/angular-app/languageforge/lexicon/views/select-new-language.html',
+        templateUrl: '/angular-app/languageforge/lexicon/shared/select-new-language.html',
         controller: ['$scope', '$uibModalInstance', function ($scope, $modalInstance) {
           $scope.selected = {
             code: '',
