@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.breadcrumb',
-  'sfchecks.services', 'ngFileUpload', 'ngSanitize', 'ngRoute', 'sgw.soundmanager',
+  'sfchecks.services', 'ngFileUpload', 'ngSanitize', 'ngRoute', 'palaso.ui.soundplayer',
   'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice'])
   .controller('QuestionsCtrl', ['$scope', 'questionService', 'questionTemplateService',
     '$routeParams', 'sessionService', 'linkService', 'breadcrumbService',
@@ -12,26 +12,6 @@ angular.module('sfchecks.questions', ['ui.bootstrap', 'coreModule', 'sgw.ui.brea
     var Q_TITLE_LIMIT = 70;
     var textId = $routeParams.textId;
     $scope.textId = textId;
-
-    $scope.audioReady = false;
-    soundManager.setup({
-      url: 'node_modules/soundmanager2/swf/',
-      flashVersion: 9, // optional: shiny features (default = 8)
-      // optional: ignore Flash where possible, use 100% HTML5 mode
-      //preferFlash : false,
-      onready: function () {
-        $scope.audioReady = true;
-      }
-    });
-
-    $scope.audioIcon = function () {
-      var map = {
-        stop: 'fa fa-volume-up',
-        play: 'fa fa-pause',
-        pause: 'fa fa-play'
-      };
-      return map[$scope.state];
-    };
 
     // Rights
     $scope.rights = {};
