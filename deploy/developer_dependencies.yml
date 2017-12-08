@@ -159,13 +159,13 @@
         recurse: yes
       with_items:
         - path: "{{lf_path}}/src/assets"
-          mode: 'u=rwX,g=rwX'
+          mode: 'u=rwX,g=rwXs'
         - path: "{{sf_path}}/src/assets"
-          mode: 'u=rwX,g=rwX'
+          mode: 'u=rwX,g=rwXs'
         - path: "{{lf_path}}/src/cache"
-          mode: 'u=rwX,g=rwX'
+          mode: 'u=rwX,g=rwXs'
         - path: "{{sf_path}}/src/cache"
-          mode: 'u=rwX,g=rwX'
+          mode: 'u=rwX,g=rwXs'
 
     - name: Ensure /var/lib/languageforge directory is writeable (for LfMerge)
       file: path="/var/lib/languageforge" state=directory owner=www-data group=www-data mode=0755
