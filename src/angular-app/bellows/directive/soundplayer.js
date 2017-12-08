@@ -6,7 +6,7 @@ angular.module('palaso.ui.soundplayer', [])
         url: '<',
         timeFormat: '<'
       },
-      controller: function ($scope) {
+      controller: ['$scope', function ($scope) {
         var ctrl = this;
         var mostRecentlyPlayedAudioElement;
         $scope.audioElement = document.createElement('audio');
@@ -59,7 +59,7 @@ angular.module('palaso.ui.soundplayer', [])
         $scope.audioElement.addEventListener('timeupdate', function () {
           $scope.$digest();
         });
-      },
+      }],
 
       template: '<a ng-click="togglePlayback()"><i class="fa {{iconClass()}}"></i></a>'
         + '<span data-ng-if="audioElement.duration && $ctrl.timeFormat" ' +

@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 if [ `whoami` == "root" ]
 then
@@ -15,7 +14,7 @@ if [ "$OS" == "Windows" ]; then
         echo "Amended $BASHRCFILE with WSL-specific instructions."
     fi
     RETURNCODE=0
-    echo "hi" > /mnt/c/Windows/amiadmin || RETURNCODE=$?
+    echo "hi" > /mnt/c/Windows/amiadmin 2> /dev/null || RETURNCODE=$?
     if [ "$RETURNCODE" -ne 0 ]; then
         echo "This script must be run inside an elevated Ubuntu terminal!"
         echo "Re-open this Ubuntu terminal by right-clicking on the icon and 'Run as Administrator'"
