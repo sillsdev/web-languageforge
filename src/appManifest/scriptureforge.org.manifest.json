@@ -1,0 +1,29 @@
+{
+    "short_name": "SForge",
+    "name": "Scripture Forge",
+    "background_color": "#2196F3",
+    "display": "standalone",
+    "icons": [
+      {
+        "src": "logo-48-mhdpi.png",
+        "type": "image/png",
+        "sizes": "48x48"
+      },
+      {
+        "src": "logo-96-xhdpi.png",
+        "type": "image/png",
+        "sizes": "96x96"
+      },
+      {
+        "src": "logo-144-xxhdpi.png",
+        "type": "image/png",
+        "sizes": "144x144"
+      },
+      {
+        "src": "logo-circle-192-xxxhdpi.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      }
+    ],
+    "start_url": "https://qa.scriptureforge.org"
+}
