@@ -1,7 +1,7 @@
 {
-    "short_name": "SForge",
+    "short_name": "SF",
     "name": "Scripture Forge",
-    "background_color": "#2196F3",
+    "background_color": "#3a3a3a",
     "display": "standalone",
     "icons": [
       {

@@ -1,7 +1,7 @@
 {
-    "short_name": "LForge",
+    "short_name": "LF",
     "name": "Language Forge",
-    "background_color": "#2196F3",
+    "background_color": "#104060",
     "display": "standalone",
     "icons": [
       {
