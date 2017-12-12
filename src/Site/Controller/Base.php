@@ -112,6 +112,11 @@ class Base
         }
 
         $this->data['faviconPath'] = $this->getFilePath('image/favicon.ico');
+
+        if (file_exists('appManifest/' . $this->website->domain . '.manifest.json')) {
+            $this->data['manifestFilename'] = $this->website->domain . '.manifest.json';
+        }
+
         $this->populateHeaderMenuViewdata();
         $this->data['useCdn'] = USE_CDN;
 
