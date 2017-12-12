@@ -337,6 +337,7 @@ configDirty.tasks['{{currentTaskName}}'] = {{configDirty.tasks[currentTaskName] 
                 <div class="col-md-9">
                     <div class="card card-block bg-faded settings-panel" id="picklistEditorFieldset">
                         <h3 class="control-label">{{optionlistDirty[currentListIndex].name}}</h3>
+                        <i>(At this time {{optionlistDirty[currentListIndex].name}} items cannot be deleted)</i>
                         <div class="controls">
                             <picklist-editor items="optionlistDirty[currentListIndex].items"
                                 pristine-items="optionlistPristine[currentListIndex].items"></picklist-editor>
