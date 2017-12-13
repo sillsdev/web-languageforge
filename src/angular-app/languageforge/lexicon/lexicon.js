@@ -12,7 +12,7 @@ angular.module('lexicon',
     'sgw.ui.breadcrumb',
     'lexiconCoreModule',
     'lexicon.editor',
-    'lexicon.configuration',
+    'lexiconConfigurationModule',
     'lexicon.view.settings',
     'lexicon.import-export',
     'lexicon.settings',
@@ -33,7 +33,7 @@ angular.module('lexicon',
     $stateProvider
       .state('configuration', {
         url: '/configuration',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/configuration/configuration.html'
+        template: '<lsc-config></lsc-config>'
       })
       .state('viewSettings', {
         url: '/viewSettings',
@@ -41,7 +41,7 @@ angular.module('lexicon',
       })
       .state('importExport', {
         url: '/importExport',
-        templateUrl: '/angular-app/languageforge/lexicon/settings/import-export.html'
+        templateUrl: '/angular-app/languageforge/lexicon/settings/import.html'
       })
       .state('settings', {
         url: '/settings',
