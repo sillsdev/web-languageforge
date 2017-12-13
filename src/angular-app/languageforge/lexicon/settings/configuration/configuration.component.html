@@ -1,0 +1,33 @@
+<br>
+<h2>Configuration</h2>
+<button class="btn btn-primary pull-right" data-ng-click="$ctrl.configurationApply()"
+    data-ng-disabled="configForm.$pristine || $ctrl.isSaving">
+    <i class="fa fa-check"></i>Apply</button>
+<form name="configForm" novalidate>
+    <fieldset data-ng-disabled="$ctrl.isSaving">
+        <pui-tabset>
+            <pui-tab heading="Fields">
+                <lsc-fields fcc-current-field="$ctrl.currentField"
+                            fcc-field-config="$ctrl.fieldConfig"
+                            fcc-config-dirty="$ctrl.configDirty"
+                            fcc-config-pristine="$ctrl.configPristine"
+                            fcc-input-system-view-models="$ctrl.inputSystemViewModels"
+                            fcc-input-systems-list="$ctrl.inputSystemsList"
+                            fcc-option-lists="$ctrl.optionListsDirty"
+                            fcc-select-field="$ctrl.selectField(fieldName)"
+                            fcc-on-update="$ctrl.onUpdate($event)"></lsc-fields>
+            </pui-tab>
+            <pui-tab heading="Input Systems">
+                <lsc-input-systems isc-input-system-view-models="$ctrl.inputSystemViewModels"
+                                   isc-input-systems-list="$ctrl.inputSystemsList"
+                                   isc-config-pristine="$ctrl.configPristine"
+                                   isc-on-update="$ctrl.onUpdate($event)"></lsc-input-systems>
+            </pui-tab>
+            <pui-tab heading="Option Lists">
+                <lsc-option-lists olc-option-lists-dirty="$ctrl.optionListsDirty"
+                                  olc-option-lists-pristine="$ctrl.optionListsPristine"
+                                  olc-on-update="$ctrl.onUpdate($event)"></lsc-option-lists>
+            </pui-tab>
+        </pui-tabset>
+    </fieldset>
+</form>
