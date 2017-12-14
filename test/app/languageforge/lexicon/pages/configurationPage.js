@@ -5,8 +5,6 @@ module.exports = new ConfigurationPage();
 function ConfigurationPage() {
   var modal = require('./lexModals.js');
   var util = require('../../../bellows/pages/util.js');
-  var expectedCondition = protractor.ExpectedConditions;
-  var CONDITION_TIMEOUT = 3000;
 
   this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.className('close'));
@@ -40,13 +38,13 @@ function ConfigurationPage() {
   };
 
   this.inputSystemsTab = {
-    newButton:    this.tab().element(by.partialButtonText('New')),
-    moreButton:   this.tab().element(by.css('.btn-group button')),
+    newButton:    this.activePane.element(by.partialButtonText('New')),
+    moreButton:   this.activePane.element(by.css('.btn-group button')),
     moreButtonGroup: {
-      addIpa:     this.tab().element(by.partialLinkText('Add IPA')),
-      addVoice:   this.tab().element(by.partialLinkText('Add Voice')),
-      addVariant: this.tab().element(by.partialLinkText('Add a variant')),
-      remove:     this.tab().element(by.className('fa fa-trash'))
+      addIpa:     this.activePane.element(by.partialLinkText('Add IPA')),
+      addVoice:   this.activePane.element(by.partialLinkText('Add Voice')),
+      addVariant: this.activePane.element(by.partialLinkText('Add a variant')),
+      remove:     this.activePane.element(by.className('fa fa-trash'))
     },
     getLanguageByName: function getLanguageByName(languageName) {
       return element(by.css('div.tab-pane.active div.col-md-3 dl.picklists'))
@@ -54,20 +52,20 @@ function ConfigurationPage() {
     },
 
     selectedInputSystem: {
-      displayName:    this.tab().element(by.id('languageDisplayName')),
-      tag:            this.tab()
-        .element(by.binding('inputSystemViewModels[selectedInputSystemId].inputSystem.tag')),
-      abbreviationInput: this.tab()
-        .element(by.model('inputSystemViewModels[selectedInputSystemId].inputSystem.abbreviation')),
-      rightToLeftCheckbox: this.tab().element(by
-        .model('inputSystemViewModels[selectedInputSystemId].inputSystem.isRightToLeft')),
-      specialDropdown: this.tab().element(by.id('special')),
-      purposeDropdown: this.tab().element(by.id('purpose')),
-      ipaVariantInput: this.tab().element(by.id('ipaVariant')),
-      voiceVariantInput: this.tab().element(by.id('voiceVariant')),
-      scriptDropdown: this.tab().element(by.id('script')),
-      regionDropdown: this.tab().element(by.id('region')),
-      variantInput:   this.tab().element(by.id('variant'))
+      displayName:    this.activePane.element(by.id('languageDisplayName')),
+      tag:            this.activePane.element(by.binding(
+        '$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.tag')),
+      abbreviationInput: this.activePane.element(by.model(
+        '$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.abbreviation')),
+      rightToLeftCheckbox: this.activePane.element(by.model(
+        '$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.isRightToLeft')),
+      specialDropdown: this.activePane.element(by.id('special')),
+      purposeDropdown: this.activePane.element(by.id('purpose')),
+      ipaVariantInput: this.activePane.element(by.id('ipaVariant')),
+      voiceVariantInput: this.activePane.element(by.id('voiceVariant')),
+      scriptDropdown: this.activePane.element(by.id('script')),
+      regionDropdown: this.activePane.element(by.id('region')),
+      variantInput:   this.activePane.element(by.id('variant'))
     }
   };
 
@@ -80,14 +78,15 @@ function ConfigurationPage() {
   this.fieldsTab = {
     fieldSetupLabel: this.activePane.element(by.id('fieldSetupLabel')),
     hiddenIfEmptyCheckbox: this.activePane
-      .element(by.model('fieldConfig[currentField.name].hideIfEmpty')),
-    widthInput: this.activePane.element(by.model('fieldConfig[currentField.name].width')),
+      .element(by.model('$ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].hideIfEmpty')),
+    widthInput: this.activePane
+      .element(by.model('$ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].width')),
     captionHiddenIfEmptyCheckbox: this.activePane
-      .element(by.model('fieldConfig[currentField.name].captionHideIfEmpty')),
+      .element(by.model('$ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].captionHideIfEmpty')),
     inputSystemTags: this.activePane
-      .all(by.repeater('inputSystemTag in currentField.inputSystems.fieldOrder')),
+      .all(by.repeater('inputSystemTag in $ctrl.fccCurrentField.inputSystems.fieldOrder')),
     inputSystemCheckboxes: this.activePane
-      .all(by.model('currentField.inputSystems.selecteds[inputSystemTag]')),
+      .all(by.model('$ctrl.fccCurrentField.inputSystems.selecteds[inputSystemTag]')),
     inputSystemUpButton: this.activePane.element(by.id('upButton')),
     inputSystemDownButton: this.activePane.element(by.id('downButton')),
     newCustomFieldButton: this.activePane.element(by.buttonText('New Custom Field')),
@@ -103,12 +102,16 @@ function ConfigurationPage() {
   this.showAllFieldsButton = element(by.buttonText('Show All Fields'));
   this.showCommonFieldsButton = element(by.buttonText('Show Only Common Fields'));
 
-  this.entryFields = this.activePane.all(by.repeater('fieldName in fieldOrder.entry'));
-  this.senseFields = this.activePane.all(by.repeater('fieldName in fieldOrder.senses'));
-  this.exampleFields = this.activePane.all(by.repeater('fieldName in fieldOrder.examples'));
+  this.entryFields = this.activePane
+    .all(by.repeater('fieldName in $ctrl.fccConfigDirty.entry.fieldOrder'));
+  this.senseFields = this.activePane
+    .all(by.repeater('fieldName in $ctrl.fccConfigDirty.entry.fields.senses.fieldOrder'));
+  this.exampleFields = this.activePane.all(by
+    .repeater('fieldName in $ctrl.fccConfigDirty.entry.fields.senses.fields.examples.fieldOrder'));
 
   this.getFieldByName = function getFieldByName(fieldName) {
-    return element(by.css('div.tab-pane.active > div > div > div > div.col-md-3 dl.picklists'))
+    return element(by
+      .css('div.tab-pane.active > div > lsc-fields > div > div.col-md-3 dl.picklists'))
       .element(by.cssContainingText('div[data-ng-repeat] > span', fieldName));
   };
 

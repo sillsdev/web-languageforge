@@ -15,6 +15,7 @@ export class SendReceiveStatus {
   ProjectCode: string;
 }
 
+// SRStates with an "LF_" prefix are languageforge overrides
 export enum SendReceiveState {
   Idle = 'IDLE',
   Hold = 'HOLD',

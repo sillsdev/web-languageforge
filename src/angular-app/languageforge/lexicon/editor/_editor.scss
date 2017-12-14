@@ -1,3 +1,65 @@
+@import '../../../../../node_modules/bootstrap/scss/functions';
+@import '../../../../../node_modules/bootstrap/scss/variables';
+@import '../../../../../node_modules/bootstrap/scss/mixins';
+
+@import '../../../../Site/views/languageforge/theme/default/sass/variables';
+@import '../../../bellows/directive/bootstrap4/palaso.ui.comments.dc-comment';
+@import 'field/dc-audio';
+@import 'field/dc-formattedtext';
+@import 'field/dc-multioptionlist';
+@import 'field/dc-multiparagraph';
+@import 'field/dc-multitext';
+@import 'field/dc-picture';
+@import 'field/dc-rendered';
+@import 'field/dc-semanticdomain';
+
+.lexAppToolbar {
+    border: 1px solid $lf-lines;
+    margin: 10px 0 20px;
+    padding: 4px;
+    width: 100%;
+    float: left;
+    background-color: #f6f6f6;
+    border-radius: $border-radius;
+}
+.hdrnav .hdrnav-container {
+    float: left;
+    width: 100%;
+    .btn-group {
+        margin-left: 10px;
+    }
+}
+form .wsid {
+    width: 60px;
+    max-width: 60px;
+    text-align: right;
+}
+
+@include media-breakpoint-down(sm) {
+    .dc-rendered-word {
+        display: block;
+    }
+    .hdrnav .return-button {
+        float: left;
+    }
+    #lexAppCommentView .entryItemView, #lexAppCommentView .commentListView {
+        max-height: none ;
+        height: auto;
+    }
+}
+
+.sortfilter-control {
+    width: 150px;
+    margin:4px;
+}
+
+.sortfilter-form {
+    border: 1px solid $lf-lines;
+    padding: 10px;
+    margin: 5px;
+}
+
+
 fieldset.comment-filter {
     margin: 20px;
     border: 2px groove threedface;
@@ -229,10 +291,28 @@ legend.override-bootstrap {
 .flexColumnContainer {
 }
 
-#lexAppListView .lexiconItemListContainer {
-    height: 460px;
-    overflow: auto;
-    margin-bottom: 15px;
+#lexAppListView {
+    margin-top: 20px;
+    .lexiconListItem {
+        cursor: pointer;
+        h5 {
+            margin: 0;
+        }
+    }
+    .lexiconItemListContainer {
+        height: 460px;
+        overflow: auto;
+        margin-bottom: 15px;
+    }
+    .lexiconListItem.active {
+        cursor: default;
+    }
+    .no-entries .btn {
+        margin: 0 20px 10px 0;
+    }
+    .no-entries .btn:last-child {
+        margin-right: 0;
+    }
 }
 
 .uneditable-input {
@@ -250,45 +330,45 @@ legend.override-bootstrap {
         margin-bottom: 5px;
         padding: 8px 0 24px;
     }
-  .card-block .addItem {
-    margin-right: 0;
-  }
-  .topAddMeaning {
-    margin-bottom: 14px;
-  }
-  .list-group-item:not(.list-group-item-action) {
-    cursor: pointer;
-  }
-  .listItemPrimary {
-    z-index: 2;
-    font-size: 1.0em;
-  }
-  .listItemSecondary {
-    z-index: 2;
-    font-size: 0.8em;
-    overflow: hidden;
-  }
-  .deleteX {
-    i {
-      cursor: pointer;
+    .card-block .addItem {
+        margin-right: 0;
     }
-    i:hover {
-      color: map-get($theme-colors, danger);
+    .topAddMeaning {
+        margin-bottom: 14px;
     }
-  }
+    .list-group-item:not(.list-group-item-action) {
+        cursor: pointer;
+    }
+    .listItemPrimary {
+        z-index: 2;
+        font-size: 1.0em;
+    }
+    .listItemSecondary {
+        z-index: 2;
+        font-size: 0.8em;
+        overflow: hidden;
+    }
+    .deleteX {
+        i {
+            cursor: pointer;
+        }
+        i:hover {
+            color: map-get($theme-colors, danger);
+        }
+    }
+    h5 {
+        margin: 0;
+    }
 }
 
-
-
-
 .lexiconListItemCompact {
-  position: relative;
-  overflow-y: hidden;
-  min-height: 40px;
-  height: 55px;
-  border-bottom: solid 1px darkgrey;
-  width: 100%;
-  line-height: 1.0em;
+    position: relative;
+    overflow-y: hidden;
+    min-height: 40px;
+    height: 55px;
+    border-bottom: solid 1px darkgrey;
+    width: 100%;
+    line-height: 1.0em;
 }
 
 .lexiconItemListContainer .selected {

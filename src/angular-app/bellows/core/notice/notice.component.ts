@@ -1,41 +1,42 @@
 import * as angular from 'angular';
 
-import { Notice, NoticeService } from './notice.service';
 import { Session, SessionService } from '../session.service';
+import { Notice, NoticeService } from './notice.service';
 
 export class NoticeController implements angular.IController {
-  gitHubRepo: string;
+  issueEmail: string;
 
   static $inject: string[] = ['silNoticeService', 'sessionService'];
   constructor(private noticeService: NoticeService, private sessionService: SessionService) {
+    this.issueEmail = 'issues@languageforge.org';
     sessionService.getSession().then((session: Session) => {
-      this.gitHubRepo = 'web-' + session.baseSite();
+      this.issueEmail = 'issues@' + session.baseSite() + '.org';
     });
   }
 
   closeNotice(id: string): void {
     this.noticeService.removeById(id);
-  };
+  }
 
   notices(): Notice[] {
     return this.noticeService.get();
-  };
+  }
 
   getLoadingMessage(): string {
-    return this.noticeService.getLoadingMessage()
-  };
+    return this.noticeService.getLoadingMessage();
+  }
 
   isLoading(): boolean {
-    return this.noticeService.isLoading()
-  };
+    return this.noticeService.isLoading();
+  }
 
   showProgressBar(): boolean {
-    return this.noticeService.showProgressBar()
-  };
+    return this.noticeService.showProgressBar();
+  }
 
   getPercentComplete(): number {
-    return this.noticeService.getPercentComplete()
-  };
+    return this.noticeService.getPercentComplete();
+  }
 }
 
 export const NoticeComponent: angular.IComponentOptions = {
