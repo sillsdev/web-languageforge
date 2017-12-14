@@ -1,6 +1,6 @@
 export class InputSystem {
   abbreviation: string;
-  isRightToLeft: boolean;
+  isRightToLeft?: boolean;
   languageName: string;
   tag: string;
 }

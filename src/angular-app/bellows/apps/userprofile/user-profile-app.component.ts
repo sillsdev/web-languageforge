@@ -211,6 +211,14 @@ export class UserProfileAppController implements angular.IController {
     });
   }
 
+  static getAvatarUrl(avatarRef: string): string {
+    if (avatarRef) {
+      return (avatarRef.startsWith('http')) ? avatarRef : '/Site/views/shared/image/avatar/' + avatarRef;
+    } else {
+      return '';
+    }
+  }
+
   private static getAvatarRef(color?: string, shape?: string): string {
     if (!color || !shape) {
       return 'anonymoose.png';

@@ -173,8 +173,7 @@ export class LexiconSendReceiveService {
   }
 
   // UI strings corresponding to SRState in the LfMerge state file.
-  // SRStates with an "LF_" prefix are languageforge overrides
-  syncStateNotice(): string {
+  syncStateNotice = (): string => {
     if (angular.isUndefined(this.status)) return;
 
     switch (this.status.SRState) {
@@ -199,7 +198,7 @@ export class LexiconSendReceiveService {
     }
   }
 
-  lastSyncNotice(): string {
+  lastSyncNotice = (): string => {
     if (angular.isUndefined(this.status) || angular.isUndefined(this.projectSettings)) return;
 
     switch (this.status.SRState) {

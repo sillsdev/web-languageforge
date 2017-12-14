@@ -270,6 +270,7 @@ class AppModel {
             "forgot_password",
             "link_oauth_account",
             "login",
+            "oauth-signup",
             "projects",
             "reset_password",
             "signup",

@@ -1,6 +1,7 @@
 import { InputSystem } from './input-system.model';
+import { LexOptionList } from './option-list.model';
 
-class LexConfig {
+export class LexConfig {
   hideIfEmpty: boolean;
   label: string;
   type: string;
@@ -12,9 +13,9 @@ export class LexConfigMultiText extends LexConfig {
   width: number;
 }
 
-class LexConfigMultiParagraph extends LexConfig { }
+export class LexConfigMultiParagraph extends LexConfig { }
 
-class LexConfigOptionList extends LexConfig {
+export class LexConfigOptionList extends LexConfig {
   listCode: string;
 }
 
@@ -25,20 +26,22 @@ class LexConfigPictures extends LexConfigMultiText {
   captionHideIfEmpty: boolean;
 }
 
+export type LexConfigField = LexConfigFieldList | LexConfigMultiText | LexConfigMultiParagraph | LexConfigOptionList |
+  LexConfigMultiOptionList | LexConfigPictures;
+
 export class LexConfigFieldList extends LexConfig {
   fieldOrder: string[];
   fields: {
-    [fialdName: string]: LexConfigFieldList | LexConfigMultiText | LexConfigMultiParagraph | LexConfigOptionList |
-      LexConfigMultiOptionList | LexConfigPictures
+    [fieldName: string]: LexConfigField
   };
 }
 
-class LexViewFieldConfig {
+export class LexViewFieldConfig {
   show: boolean;
   type: string;
 }
 
-class LexViewMultiTextFieldConfig extends LexViewFieldConfig {
+export class LexViewMultiTextFieldConfig extends LexViewFieldConfig {
   overrideInputSystems: boolean;
   inputSystems: string[];
 }
@@ -53,28 +56,12 @@ class LexTask {
   type: string;
 }
 
-class LexOptionListItem {
-  abbreviation: string;
-  guid: string;
-  key: string;
-  value: string;
-}
-
-class LexOptionListModel {
-  canDelete: boolean;
-  code: string;
-  defaultItemKey: string;
-  id: string;
-  items: LexOptionListItem[];
-  name: string;
-}
-
 class LexUserViewConfig extends LexRoleViewConfig { }
 
 export class LexiconConfig {
   entry: LexConfigFieldList;
   inputSystems?: { [tag: string]: InputSystem };
-  optionlists?: { [listCode: string]: LexOptionListModel };
+  optionlists?: { [listCode: string]: LexOptionList };
   roleViews: { [role: string]: LexRoleViewConfig };
   tasks: { [taskType: string]: LexTask };
   userViews: { [userId: string]: LexUserViewConfig };
