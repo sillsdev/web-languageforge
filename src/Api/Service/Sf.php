@@ -241,6 +241,20 @@ class Sf
         return $result;
     }
 
+    public function user_register_oauth($params)
+    {
+        $result = UserCommands::registerOAuthUser($params, $this->website, $this->app['session']->get('captcha_info'));
+        if ($result == 'login') {
+            Auth::loginWithoutPassword($this->app, UserCommands::sanitizeInput($params['username']));
+        }
+        return $result;
+    }
+
+    public function user_calculate_username($usernameBase)
+    {
+        return UserCommands::calculateUniqueUsernameFromString($usernameBase);
+    }
+
     public function user_create($params)
     {
         return UserCommands::createUser($params, $this->website);
@@ -972,6 +986,9 @@ class Sf
             'sendReceive_notification_receiveRequest',
             'sendReceive_notification_sendRequest',
             'user_register',
+            'user_register_oauth',
+            'user_calculate_username',
+            'check_unique_identity',
             'session_getSessionData'
         ];
         return in_array($methodName, $methods);
