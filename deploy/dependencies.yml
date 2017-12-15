@@ -16,11 +16,14 @@
   pre_tasks:
     - name: "Add .NET Core | add source"
       apt_repository:
-        repo: "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ {{base_distribution_release}} main"
+        repo: "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-{{base_distribution_release}}-prod {{base_distribution_release}} main"
         state: present
       when: base_distribution == 'ubuntu'
     - name: "Add .NET Core | add key"
-      apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=417A0893 state=present
+      apt_key:
+        id: BE1229CF
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        keyring: /etc/apt/trusted.gpg.d/microsoft.gpg
       when: base_distribution == 'ubuntu'
     - name: "Add GeoIP Update | add source"
       apt_repository:
@@ -43,7 +46,7 @@
     - name: install packages
       apt: name="{{item}}" state=present update_cache='yes'
       with_items:
-        - dotnet-sdk-2.0.0
+        - dotnet-sdk-2.0.2
         - geoipupdate
         - libapache2-mod-php
         - mongodb-server
