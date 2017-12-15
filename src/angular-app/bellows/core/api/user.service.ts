@@ -57,8 +57,16 @@ export class UserService {
     return this.api.call('check_unique_identity', [userId, updatedUsername, updatedEmail], callback);
   }
 
+  calculateUsername(usernameBase: string) {
+    return this.api.call('user_calculate_username', [usernameBase]);
+  }
+
   register(params: any, callback?: JsonRpcCallback) {
     return this.api.call('user_register', [params], callback);
+  }
+
+  registerOAuthUser(params: any, callback?: JsonRpcCallback) {
+    return this.api.call('user_register_oauth', [params], callback);
   }
 
   create(params: any, callback?: JsonRpcCallback) {

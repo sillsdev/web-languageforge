@@ -1,3 +1,7 @@
+a {
+  cursor: pointer;
+}
+
 body{
   background: white;
   display: flex;
@@ -40,7 +44,7 @@ div.picklists li.selected {
 }
 
 dl.picklists {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 dl.picklists div {

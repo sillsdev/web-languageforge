@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellows.services',
+angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'coreModule',
   'sfchecks.services', 'palaso.ui.listview', 'palaso.ui.typeahead', 'palaso.ui.notice',
   'palaso.ui.textdrop', 'palaso.ui.jqte', 'ngFileUpload', 'ngRoute'])
   .controller('ProjectCtrl', ['$scope', 'textService', 'sessionService', 'breadcrumbService',
@@ -63,9 +63,13 @@ angular.module('sfchecks.project', ['ui.bootstrap', 'sgw.ui.breadcrumb', 'bellow
 
     $scope.sortdata = { sortColumn: '', direction: '' };
 
-    $scope.sortIconClass = function (columnName) { return sorting.sortIconClass($scope.sortdata, columnName); };
+    $scope.sortIconClass = function (columnName) {
+      return sorting.sortIconClass($scope.sortdata, columnName);
+    };
 
-    $scope.setSortColumn = function (columnName) { return sorting.setSortColumn($scope.sortdata, columnName); };
+    $scope.setSortColumn = function (columnName) {
+      return sorting.setSortColumn($scope.sortdata, columnName);
+    };
 
     $scope.doSort = function () {
       sorting.sortDataByColumn($scope.texts, $scope.sortdata.sortColumn, $scope.sortdata.direction);
