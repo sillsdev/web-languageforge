@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('semdomtrans.services', ['bellows.services'])
+angular.module('semdomtrans.services', ['coreModule'])
   .service('semdomtransSetupService', ['apiService',
   function (api) {
 

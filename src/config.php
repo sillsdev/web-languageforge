@@ -65,3 +65,7 @@ if (! defined('GOOGLE_CLIENT_SECRET')) {
 
 define('NG_BASE_FOLDER', 'angular-app/');
 define('BCRYPT_COST', 7);
+
+if (! defined('JWT_KEY_FILE')) {
+    define('JWT_KEY_FILE', 'jwt_key');
+}
