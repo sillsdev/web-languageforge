@@ -113,6 +113,7 @@ class Base
 
         $this->data['faviconPath'] = $this->getFilePath('image/favicon.ico');
 
+        $this->data['manifestFilename'] = '';
         if (file_exists('appManifest/' . $this->website->domain . '.manifest.json')) {
             $this->data['manifestFilename'] = $this->website->domain . '.manifest.json';
         }
