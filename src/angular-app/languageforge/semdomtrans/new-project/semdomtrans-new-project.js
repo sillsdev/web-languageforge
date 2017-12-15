@@ -4,7 +4,6 @@ angular.module('semdomtrans-new-project',
   [
     'ui.router',
     'coreModule',
-    'bellows.services',
     'ui.bootstrap',
     'semdomtrans.services',
     'palaso.ui.language',
