@@ -28,3 +28,16 @@ export function RelativeTimeFilter(): RelativeTimeFilterFunction {
     return '';
   };
 }
+
+export type EncodeURIFilterFunction = (input: string) => string;
+export class EncodeURIFilter {
+  static $inject = ['$window'];
+  static filter($window: angular.IWindowService): EncodeURIFilterFunction {
+    return (input: string): string => {
+      if (input) {
+        return $window.encodeURIComponent(input);
+      }
+      return '';
+    };
+  }
+}

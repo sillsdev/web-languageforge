@@ -5,7 +5,7 @@ import { ApiService } from './api/api.service';
 import { JsonRpcModule } from './api/json-rpc.service';
 import { ProjectService } from './api/project.service';
 import { UserService } from './api/user.service';
-import { BytesFilter, RelativeTimeFilter } from './filters';
+import {BytesFilter, EncodeURIFilter, RelativeTimeFilter} from './filters';
 import { LinkService } from './link.service';
 import { ModalService } from './modal/modal.service';
 import { OfflineModule } from './offline/offline.module';
@@ -24,4 +24,5 @@ export const CoreModule = angular
   .service('utilService', UtilityService)
   .filter('bytes', BytesFilter)
   .filter('relativetime', RelativeTimeFilter)
+  .filter('encodeURI', EncodeURIFilter)
   .name;
