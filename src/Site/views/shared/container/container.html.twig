@@ -20,6 +20,8 @@
 
     <link rel="icon" href="{{ faviconPath }}" type="image/x-icon" />
 
+    <link rel="manifest" href="/appManifest/{{ app.website.domain }}.manifest.json">
+
     {# jquery must be the first js to be loaded #}
     {%  if useMinifiedJs %}
         <script src="/dist/jquery/jquery.min.js?v={{ version }}"></script>

@@ -1,0 +1,14 @@
+{
+    "short_name": "SF",
+    "name": "Scripture Forge",
+    "background_color": "#3a3a3a",
+    "display": "standalone",
+    "icons": [
+      {
+        "src": "logo-48-mhdpi.png",
+        "type": "image/png",
+        "sizes": "48x48"
+      }
+    ],
+    "start_url": "https://qa.scriptureforge.org"
+}
