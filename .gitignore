@@ -32,6 +32,7 @@ src/vendor/
 test/CodeCoverage/
 vagrant_ansible_inventory_*
 test/app/protractorConfBrowserStack.js
+artifacts/
 
 # CSS files generated from Sass
 src/angular-app/bellows/apps/**/*.css

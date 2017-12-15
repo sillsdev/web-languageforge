@@ -32,6 +32,7 @@
 //   'test-e2e-env'
 //   'test-e2e-doTest'
 //   'test-e2e-run'
+//   'test-dotnet'
 //   'sass'
 //   'sass:watch'
 //   'webpack-lf'
@@ -47,6 +48,9 @@
 //   'build-version'
 //   'build-productionConfig'
 //   'build-clearLocalCache'
+//   'build-dotnet-publish'
+//   'build-dotnet-secrets'
+//   'build-dotnet'
 //   'build-upload'
 //   'build'
 //   'build-and-upload'
@@ -96,6 +100,10 @@ var _template = require('lodash.template');
 var Server = require('karma').Server;
 var path = require('path');
 var stylish = require('jshint-stylish');
+var dotnetPublish = require('gulp-dotnet-cli').publish;
+var dotnetTest = require('gulp-dotnet-cli').test;
+var fs = require('fs');
+var del = require('del');
 
 var execute = function (command, options, callback) {
   if (!options) {
@@ -281,7 +289,7 @@ gulp.task('mongodb-copy-prod-db').description =
 
 //endregion
 
-//region Test (PHP, JS and E2E)
+//region Test (PHP, JS, .NET, and E2E)
 
 // -------------------------------------
 //   Task: test-php
@@ -484,6 +492,60 @@ gulp.task('remote-restart-php-fpm', function (cb) {
 });
 
 // -------------------------------------
+//   Task: Local Restart xForge Web API
+// -------------------------------------
+gulp.task('local-restart-xforge-web-api', function (cb) {
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .option('dest', {
+      demand: true,
+      type: 'string' })
+    .argv;
+  var suffix = '';
+  if (params.dest.includes('e2etest')) {
+    suffix = '_e2etest';
+  }
+  var options = {
+    applicationName: params.applicationName + suffix
+  };
+  execute(
+    'sudo service <%= applicationName %>-web-api restart',
+    options,
+    cb
+  );
+});
+
+// -------------------------------------
+//   Task: Remote Restart xForge Web API
+// -------------------------------------
+gulp.task('remote-restart-xforge-web-api', function (cb) {
+  var params = require('yargs')
+    .option('applicationName', {
+      demand: true,
+      type: 'string' })
+    .option('dest', {
+      demand: true,
+      type: 'string' })
+    .option('uploadCredentials', {
+      demand: true,
+      type: 'string' })
+    .argv;
+  var options = {
+    applicationName: params.applicationName,
+    credentials: params.uploadCredentials,
+    destination: params.dest.slice(0, params.dest.indexOf(':'))
+  };
+
+  execute(
+    "ssh -i <%= credentials %> <%= destination %> 'service <%= applicationName %>-web-api restart'",
+    options,
+    cb
+  );
+});
+
+// -------------------------------------
 //   Task: E2E Test: Modify Environment
 // -------------------------------------
 gulp.task('test-e2e-env', function () {
@@ -662,6 +724,14 @@ gulp.task('test-e2e-local-lf', gulp.series(
     'test-e2e-useLiveConfig',
     'test-restart-webserver')
 );
+
+// -------------------------------------
+//   Task: Run .NET Core unit tests
+// -------------------------------------
+gulp.task('test-dotnet', function () {
+  return gulp.src('**/*.Tests.csproj', { read: false }).pipe(dotnetTest());
+});
+
 //endregion
 
 // region sass
@@ -876,15 +946,15 @@ gulp.task('build-version', function () {
 // -------------------------------------
 gulp.task('build-changeGroup', function (cb) {
   execute(
-    'sudo chgrp -R www-data src; sudo chgrp -R www-data test; ' +
-    'sudo chmod -R g+w src; sudo chmod -R g+w test',
+    'sudo chgrp -R www-data src; sudo chgrp -R www-data test; sudo chgrp -R www-data artifacts; ' +
+    'sudo chmod -R g+w src; sudo chmod -R g+w test; sudo chmod -R g+w artifacts',
     null,
     cb
   );
 });
 
 gulp.task('build-changeGroup').description =
-  'Ensure www-data is the group and can write for src and test folder';
+  'Ensure www-data is the group and can write for src, test, and artifacts folder';
 
 // -------------------------------------
 //   Task: Build Production Config
@@ -900,14 +970,19 @@ gulp.task('build-productionConfig', function () {
   if (googleClientSecret === undefined) {
     googleClientSecret = 'googleClientSecret';
   }
-  // var paratextClientId = process.env.PARATEXT_CLIENT_ID;
-  // if (paratextClientId === undefined) {
-  //   paratextClientId = 'paratextClientId';
-  // }
-  // var paratextApiToken = process.env.PARATEXT_API_TOKEN;
-  // if (paratextApiToken === undefined) {
-  //   paratextApiToken = 'paratextApiToken';
-  // }
+  var paratextClientId = process.env.PARATEXT_CLIENT_ID;
+  if (paratextClientId === undefined) {
+    paratextClientId = 'paratextClientId';
+  }
+  var paratextApiToken = process.env.PARATEXT_API_TOKEN;
+  if (paratextApiToken === undefined) {
+    paratextApiToken = 'paratextApiToken';
+  }
+  var jwtKey = process.env.JWT_KEY;
+  if (jwtKey === undefined) {
+    jwtKey = 'jwtKey';
+  }
+
   var params = require('yargs')
     .option('mongodbConnection', {
       demand: false,
@@ -928,14 +1003,18 @@ gulp.task('build-productionConfig', function () {
       // default: secrets_google_api_client_id.web.client_secret,
       default: googleClientSecret,
       type: 'string' })
-    // .option('paratextClientId', {
-    //   demand: false,
-    //   default: paratextClientId,
-    //   type: 'string' })
-    // .option('paratextApiToken', {
-    //   demand: false,
-    //   default: paratextApiToken,
-    // type: 'string' })
+    .option('paratextClientId', {
+      demand: false,
+      default: paratextClientId,
+      type: 'string' })
+    .option('paratextApiToken', {
+      demand: false,
+      default: paratextApiToken,
+      type: 'string' })
+    .option('jwtKey', {
+      demand: false,
+      default: jwtKey,
+      type: 'string' })
     .argv;
   var configSrc = [
     './src/config.php',
@@ -964,6 +1043,9 @@ gulp.task('build-productionConfig', function () {
     .pipe(replace(
       /(define\('PARATEXT_API_TOKEN', ').*;$/m,
       '$1' + params.paratextApiToken + '\');'))
+    .pipe(replace(
+      /(define\('JWT_KEY', ').*;$/m,
+      '$1' + params.jwtKey + '\');'))
     .pipe(gulp.dest('./'));
 });
 
@@ -985,6 +1067,56 @@ gulp.task('build-clearLocalCache', function (cb) {
 
 gulp.task('build-clearLocalCache').description =
   'Clear all subdirectories of local cache/';
+
+// -------------------------------------
+//   Task: .NET Core publish
+// -------------------------------------
+gulp.task('build-dotnet-publish', function () {
+  del('artifacts/netcore-api/**/*');
+  return gulp.src('src/netcore-api/SIL.XForge.WebApi.Server/SIL.XForge.WebApi.Server.csproj', { read: false })
+    .pipe(dotnetPublish({
+      configuration: 'Release',
+      runtime: 'linux-x64',
+      output: '../../../artifacts/netcore-api'
+    }))
+});
+
+// -------------------------------------
+//   Task: Build .NET Core secrets config
+// -------------------------------------
+gulp.task('build-dotnet-secrets', function (cb) {
+  var paratextClientId = process.env.PARATEXT_CLIENT_ID;
+  if (paratextClientId === undefined) {
+    paratextClientId = 'paratextClientId';
+  }
+  var paratextApiToken = process.env.PARATEXT_API_TOKEN;
+  if (paratextApiToken === undefined) {
+    paratextApiToken = 'paratextApiToken';
+  }
+  var jwtKey = process.env.JWT_KEY;
+  if (jwtKey === undefined) {
+    jwtKey = 'jwtKey';
+  }
+
+  fs.writeFile('artifacts/netcore-api/secrets.json', JSON.stringify({
+    Security: {
+      JwtKey: jwtKey
+    },
+    Paratext: {
+      ClientId: paratextClientId,
+      ClientSecret: paratextApiToken
+    }
+  }), cb);
+});
+
+// -------------------------------------
+//   Task: Build .NET Core
+// -------------------------------------
+gulp.task('build-dotnet',
+  gulp.series(
+    'build-dotnet-publish',
+    'build-dotnet-secrets')
+);
 
 // -------------------------------------
 //   Task: Build Upload to destination
@@ -1031,6 +1163,17 @@ gulp.task('build-upload', function (cb) {
       cb
     );
   }
+
+  options.src = 'artifacts/netcore-api/';
+  options.dest = path.join(params.dest, '/api2');
+
+  execute(
+    'rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
+    '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
+    '<%= src %> <%= dest %>',
+    options,
+    cb
+  );
 });
 
 // -------------------------------------
@@ -1044,7 +1187,8 @@ gulp.task('build',
       'build-version',
       'build-productionConfig',
       'build-clearLocalCache',
-      'build-remove-test-fixtures'),
+      'build-remove-test-fixtures',
+      'build-dotnet'),
     'sass',
     'build-webpack',
     'build-minify',
@@ -1058,7 +1202,8 @@ gulp.task('build-and-upload',
   gulp.series(
     'build',
     'build-upload',
-    'remote-restart-php-fpm')
+    'remote-restart-php-fpm',
+    'remote-restart-xforge-web-api')
 );
 
 // -------------------------------------
@@ -1069,6 +1214,7 @@ gulp.task('build-e2e',
     'test-e2e-useTestConfig',
     'build',
     'build-upload',
+    'local-restart-xforge-web-api',
     'test-e2e-env',
     'test-e2e-setupTestEnvironment',
     'test-e2e-doTest'
@@ -1085,8 +1231,10 @@ gulp.task('build-php',
     'build',
     'test-php',
     'test-js',
+    'test-dotnet',
     'build-upload',
-    'test-restart-webserver')
+    'test-restart-webserver',
+    'local-restart-xforge-web-api')
 );
 gulp.task('build-php').description =
   'Build and Run PHP tests on CI server; Deploy to dev site';
