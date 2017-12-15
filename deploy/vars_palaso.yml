@@ -56,7 +56,9 @@ apache_vhosts:
       - has_ssl: false
         port: 80
         server_alias: []
-        proxy: '/machine/ "unix:///tmp/machine-web-api.sock|http://127.0.0.1/" timeout=21600'
+        proxy:
+          - '/api2/ http://localhost:5000/ timeout=21600'
+          - '/machine/ http://localhost:5001/ timeout=21600'
   - server_name: languageforge.org
     server_admin: webmaster@palaso.org
     server_file_name: languageforge_org
@@ -70,7 +72,9 @@ apache_vhosts:
         port: 80
         server_alias:
           - languageforge.local
-        proxy: '/machine/ "unix:///tmp/machine-web-api.sock|http://127.0.0.1/" timeout=21600'
+        proxy:
+          - '/api2/ http://localhost:5000/ timeout=21600'
+          - '/machine/ http://localhost:5001/ timeout=21600'
   - server_name: scriptureforge.org
     server_admin: webmaster@palaso.org
     server_file_name: scriptureforge_org
@@ -84,9 +88,13 @@ apache_vhosts:
         port: 80
         server_alias:
           - scriptureforge.local
-        proxy: '/machine/ "unix:///tmp/machine-web-api.sock|http://127.0.0.1/" timeout=21600'
+        proxy:
+          - '/api2/ http://localhost:5000/ timeout=21600'
+          - '/machine/ http://localhost:5001/ timeout=21600'
       - has_ssl: true
         port: 443
         certificate_file: "scriptureforge.pem"
         key_file: "scriptureforge.key"
-        proxy: '/machine/ "unix:///tmp/machine-web-api.sock|http://127.0.0.1/" timeout=21600'
+        proxy:
+          - '/api2/ http://localhost:5000/ timeout=21600'
+          - '/machine/ http://localhost:5001/ timeout=21600'
