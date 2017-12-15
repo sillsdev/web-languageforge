@@ -42,13 +42,13 @@ namespace SIL.XForge.WebApi.Server.Services
 
         public Task<Attempt<ParatextUserInfo>> TryGetUserInfo(User user)
         {
-            return CallApiAsync(user, async () =>
+            return CallApiAsync(user, async u =>
                 {
-                    if ((await TryGetProjectsAsync(user)).TryResult(out IReadOnlyList<ParatextProject> projects))
+                    if ((await TryGetProjectsAsync(u)).TryResult(out IReadOnlyList<ParatextProject> projects))
                     {
                         return Attempt.Success(new ParatextUserInfo
                         {
-                            Username = GetUsername(user),
+                            Username = GetUsername(u),
                             Projects = projects
                         });
                     }
@@ -113,7 +113,7 @@ namespace SIL.XForge.WebApi.Server.Services
             return Attempt.Success(user);
         }
 
-        private async Task<Attempt<T>> CallApiAsync<T>(User user, Func<Task<Attempt<T>>> call)
+        private async Task<Attempt<T>> CallApiAsync<T>(User user, Func<User, Task<Attempt<T>>> call)
         {
             if (user.ParatextAccessToken?.AccessToken == null)
                 return Attempt<T>.Failure;
@@ -129,7 +129,7 @@ namespace SIL.XForge.WebApi.Server.Services
                     refreshed = true;
                 }
 
-                Attempt<T> attempt = await call();
+                Attempt<T> attempt = await call(user);
                 if (attempt.Success)
                     return attempt;
 

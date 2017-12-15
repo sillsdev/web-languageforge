@@ -191,7 +191,6 @@ export class TranslateNewProjectController implements angular.IController {
     this.nextButtonLabel = this.$filter('translate')('Next');
     this.progressIndicatorStep2Label = this.$filter('translate')('Connect');
     this.resetValidateProjectForm();
-    this.getParatextUserInfo();
   }
 
   createNew() {
@@ -313,7 +312,7 @@ export class TranslateNewProjectController implements angular.IController {
     }
 
     if (!this.isSignedIntoParatext) {
-      return this.error('Please sign into ParaTExt.');
+      return this.error();
     }
 
     if (this.sourceProject == null || this.targetProject == null) {
@@ -351,6 +350,9 @@ export class TranslateNewProjectController implements angular.IController {
         this.projectCodeStateDefer.resolve('empty');
         this.nextButtonLabel = this.$filter('translate')(this.isSRProject ? 'Get Started' : 'Next');
         this.makeFormNeutral();
+        if (this.isSRProject) {
+          this.getParatextUserInfo();
+        }
         break;
       case 'newProject.languages':
         this.createProject()
