@@ -383,6 +383,13 @@ class ProjectModel extends MapperModel
         }
     }
 
+    public static function getByProjectCode($projectCode)
+    {
+        $project = new ProjectModel();
+        $project->readByProperties(array('projectCode' => $projectCode));
+        return self::getById($project->id->asString());
+    }
+
     /**
      * @return string Relative path of the projects assets folder
      */
