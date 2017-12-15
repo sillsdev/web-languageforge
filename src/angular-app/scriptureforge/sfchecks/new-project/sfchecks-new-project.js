@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sfchecks-new-project', ['ui.router', 'ui.bootstrap', 'bellows.services',
+angular.module('sfchecks-new-project', ['ui.router', 'ui.bootstrap', 'coreModule',
   'palaso.ui.listview', 'palaso.ui.notice', 'palaso.ui.utils'])
   .config(['$stateProvider', '$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
@@ -115,7 +115,7 @@ angular.module('sfchecks-new-project', ['ui.router', 'ui.bootstrap', 'bellows.se
                 }
               }
             });
-          } else if ($scope.newProject.projectCode == '') {
+          } else if ($scope.newProject.projectCode === '') {
             $scope.projectCodeState = 'empty';
           } else {
             $scope.projectCodeState = 'invalid';
