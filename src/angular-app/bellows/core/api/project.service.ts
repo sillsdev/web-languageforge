@@ -15,6 +15,7 @@ export class ProjectService {
   protected api: ApiService;
   protected sessionService: SessionService;
   private offlineCache: OfflineCacheService;
+  private $location: angular.ILocationService;
   private $q: angular.IQService;
 
   private projectTypesBySite: string[];
@@ -24,6 +25,7 @@ export class ProjectService {
     this.api = $injector.get('apiService');
     this.sessionService = $injector.get('sessionService');
     this.offlineCache = $injector.get('offlineCache');
+    this.$location = $injector.get('$location');
     this.$q = $injector.get('$q');
 
     // data constants
@@ -38,12 +40,18 @@ export class ProjectService {
 
     this.sessionService.getSession().then((session: Session) => {
       const types = {
-        scriptureforge: ['sfchecks'],
+        'scriptureforge': ['sfchecks'],
 
-        // languageforge: ['lexicon', 'semdomtrans']
-        languageforge: ['translate']
+        // 'languageforge': ['lexicon', 'semdomtrans']
+        'languageforge': ['lexicon'],
+        'cat.languageforge': ['translate']
       };
-      this.projectTypesBySite = types[session.baseSite()];
+
+      if (this.$location.host().startsWith('cat.') && session.baseSite() === 'languageforge') {
+        this.projectTypesBySite = types['cat.languageforge'];
+      } else {
+        this.projectTypesBySite = types[session.baseSite()];
+      }
     });
 
     this.data.projectTypesBySite = () => {
