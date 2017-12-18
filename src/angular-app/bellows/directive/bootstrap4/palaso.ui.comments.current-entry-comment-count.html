@@ -1,4 +1,5 @@
 <span>
-    <span ng-if="count.total !== 1"> {{count.total}}<span class="hidden-sm-down"> {{'Comments'|translate}}</span> </span>
-    <span ng-if="count.total === 1"> {{count.total}}<span class="hidden-sm-down">  {{'Comment'|translate}}</span> </span>
+    {{count.total}}
+    <span ng-if="count.total !== 1" class="d-none d-md-block">Comments</span>
+    <span ng-if="count.total === 1" class="d-none d-md-block">Comment</span>
 </span>

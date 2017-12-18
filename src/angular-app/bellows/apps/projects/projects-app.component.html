@@ -52,7 +52,7 @@
                             <small class="text-muted">{{$ctrl.projectTypeNames[project.appName]}}</small>
                         </div>
                         <div class="col-12 col-sm-6" data-ng-show="$ctrl.rights.canEditProjects">
-                            <button class="btn btn-secondary" data-ng-show="!$ctrl.isManager(project)"
+                            <button class="btn btn-std" data-ng-show="!$ctrl.isManager(project)"
                                     data-ng-click="$ctrl.addManagerToProject(project)">
                                 <i class="fa fa-plus"></i> Manager</button>
                         </div>

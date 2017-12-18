@@ -58,17 +58,17 @@
             <!-- control buttons for member-specific views -->
             <div class="row" data-ng-show="tab.byUser && state === 'userSettings'">
                 <div class="col-md-3">
-                    <button class="btn" data-ng-click="goSelectUser()"><i class="fa fa-arrow-circle-left"></i> {{'Select Member' | translate}}</button>
+                    <button class="btn btn-std" data-ng-click="goSelectUser()"><i class="fa fa-arrow-circle-left"></i> {{'Select Member' | translate}}</button>
                 </div>
                 <div class="col-md-9">
-                    <button class="btn" data-ng-click="removeSelectedMemberSettings()">
+                    <button class="btn btn-std" data-ng-click="removeSelectedMemberSettings()">
                         <i class="fa fa-trash"></i> {{'Remove Member Specific Settings' | translate}} </button>
                 </div>
             </div>
         <uib-accordion close-others="true">
         <uib-accordian-group uib-accordion-group is-open="true">
         <uib-accordion-heading>
-            <div class="card card-block">
+            <div class="card card-body">
                 <h3>{{'Enabled Fields for' | translate}} {{forWhom | translate}}</h3>
             </div>
         </uib-accordion-heading>
@@ -82,7 +82,7 @@
                 <div class="form-group">
                     <button data-ng-click="showAllFields = ! showAllFields" class="btn btn-sm">
                         <i class="fa fa-{{ showAllFields ? 'minus-square-o' : 'plus-square-o' }}"></i>
-                        <span class="hidden-sm-down">
+                        <span class="d-none d-md-block">
                             {{showAllFields ? 'Show Only Common Fields' : 'Show All Fields' | translate}}
                         </span>
                     </button>
@@ -138,7 +138,7 @@
             <div class="col-md-8 form-group">
 
                 <!-- settings -->
-                <div class="card card-block bg-faded">
+                <div class="card card-body bg-light">
                     <h3 style="font-weight:normal"><span class="notranslate">{{fieldConfig[currentField.name].label}}</span> {{'Field View Settings' | translate}}</h3>
                     <div class="form-group">
                         <div class="controls">
@@ -176,10 +176,10 @@
                                     </ul>
                                 </div>
                                 <div class="col-md-1 btn-group btn-group-vertical">
-                                    <button class="btn" data-ng-click="moveUp(currentField.inputSystems.currentTag, currentView)"
+                                    <button class="btn btn-std" data-ng-click="moveUp(currentField.inputSystems.currentTag, currentView)"
                                         data-ng-disabled="currentField.inputSystems.order[0] == currentField.inputSystems.currentTag || !currentField.inputSystems.currentTag">
                                         &nbsp;&nbsp;<i class="fa fa-arrow-up"></i></button>
-                                    <button class="btn" data-ng-click="moveDown(currentField.inputSystems.currentTag, currentView)"
+                                    <button class="btn btn-std" data-ng-click="moveDown(currentField.inputSystems.currentTag, currentView)"
                                         data-ng-disabled="currentField.inputSystems.order[currentField.inputSystems.order.length - 1] == currentField.inputSystems.currentTag || !currentField.inputSystems.currentTag">
                                         &nbsp;&nbsp;<i class="fa fa-arrow-down"></i></button>
                                 </div>

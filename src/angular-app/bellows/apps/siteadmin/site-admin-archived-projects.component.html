@@ -1,10 +1,10 @@
 <form data-ng-show="$ctrl.rights.showControlBar" class="control-bar form-inline">
     <div class="row">
         <div class="col-12">
-            <button data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.publish" class="btn"
+            <button data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.publish" class="btn btn-std"
                     data-ng-click="$ctrl.publishProjects()">
                 <i class="fa fa-globe fa-lg iconPadding" aria-hidden="true" style="color:black"></i>Re-publish Projects</button>
-            <button data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.remove" class="btn"
+            <button data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.remove" class="btn btn-std"
                     data-ng-click="$ctrl.deleteProjects()" style="color:black">Delete Projects</button>
         </div>
     </div>

@@ -10,19 +10,18 @@
                     </span>
                 </div>
                 <span class="input-group-btn">
-                    <button type="submit" class="btn btn-secondary" type="button" data-ng-click="search()"><i class="fa fa-search"></i> Search</button>
+                    <button type="submit" class="btn btn-std" data-ng-click="search()">
+                        <i class="fa fa-search"></i> Search</button>
                 </span>
             </div>
         </form>
         <div class="col-xs-6">
-            <button class="btn btn-primary pull-right"
+            <button class="btn btn-primary float-right"
                 data-ng-show="!showSuggestions && puiSuggestedLanguageCodes.length > 0"
                 data-ng-click="suggest()">
                 Suggest Languages from Lexical Data
             </button>
-            <button class="btn btn-primary pull-right"
-                data-ng-show="showSuggestions"
-                data-ng-click="clearSearch()"
+            <button class="btn btn-primary float-right" data-ng-show="showSuggestions" data-ng-click="clearSearch()">
                 <i class="fa fa-times" aria-hidden="true"></i> Clear Suggestions
             </button>
         </div>

@@ -1,12 +1,12 @@
 {% verbatim %}
 <div class="content container" ng-cloak>
     <div id="sfchecks-hmenu" class="hdrnav">
-        <div ng-controller="inviteAFriend" id="inviteAFriend" class="pull-right" ng-show="showInviteDiv">
+        <div ng-controller="inviteAFriend" id="inviteAFriend" class="float-right" ng-show="showInviteDiv">
             <div class="overlay-bg" ng-show="showInviteForm">
                 <form class="form-inline" ng-submit="sendInvite();showInviteForm=false">
                     <div class="heading">
                         <span>Invite a friend to Scripture Forge</span>
-                        <span><a href class="pull-right" ng-click="showInviteForm=false"><i class="fa fa-times"></i></a></span>
+                        <span><a href class="float-right" ng-click="showInviteForm=false"><i class="fa fa-times"></i></a></span>
                     </div>
                     <div class="input-group">
                         <input required type="email" class="form-control" ng-model="email" placeholder="email@address"/>

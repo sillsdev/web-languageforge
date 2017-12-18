@@ -198,7 +198,7 @@ legend.override-bootstrap {
     padding: 1px;
 }
 
-.datepicker table th button.pull-left, .datepicker table th button.pull-right {
+.datepicker table th button.float-left, .datepicker table th button.float-right {
     padding: 2px 13px;
 }
 
@@ -330,7 +330,7 @@ legend.override-bootstrap {
         margin-bottom: 5px;
         padding: 8px 0 24px;
     }
-    .card-block .addItem {
+    .card-body .addItem {
         margin-right: 0;
     }
     .topAddMeaning {

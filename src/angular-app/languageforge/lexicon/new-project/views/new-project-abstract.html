@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <div id="form-container">
-            <div class="text-xs-center">
+            <div class="text-center">
 
                 <h2 data-translate="Start or join a Web Dictionary Project"></h2>
                 <div class="row" data-ng-show="show.nextButton">
@@ -34,13 +34,13 @@
             <div class="row" data-ng-show="show.nextButton">
                 <div class="col-md-8 offset-md-2">
 
-                    <a class="btn btn-secondary pull-left" data-ng-class="interfaceConfig.pullNormal"
+                    <a class="btn btn-std" data-ng-class="interfaceConfig.pullNormal"
                         id="backButton" data-ng-click="prevStep()" data-ng-show="show.backButton">
                         <i class="fa fa-arrow-circle-left"></i>
                         {{'Back' | translate}}
                     </a>
 
-                    <button class="btn pull-right" data-ng-class="[interfaceConfig.pullToSide, forwardBtnClass]" href="#"
+                    <button class="btn" data-ng-class="[interfaceConfig.pullToSide, forwardBtnClass]" href="#"
                         id="nextButton" data-ng-click="nextStep()" data-ng-disabled="!show.nextButton">
                         {{nextButtonLabel}}&nbsp;
                         <i class="fa fa-arrow-circle-right"></i>

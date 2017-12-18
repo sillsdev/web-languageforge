@@ -17,12 +17,12 @@
         <div class="col-xs-3 col-md-3">
             <button ng-click="show.entryListModifiers = !show.entryListModifiers" class="btn btn-sm">
                 <span class="fa" ng-class="{ 'fa-minus-square-o': show.entryListModifiers, 'fa-plus-square-o': !show.entryListModifiers} "></span>
-                <span class="hidden-sm-down"> {{'Options' | translate}}</span>
+                <span class="d-none d-md-block"> {{'Options' | translate}}</span>
             </button>
         </div>
         <div class="col-xs-2 col-md-3">
-            <button class="btn btn-primary pull-right" id="newWord" data-ng-if="rights.canEditEntry()"
-                    data-ng-click="newEntry()"><i class="fa fa-plus"></i><span class="hidden-sm-down"> {{'New Word' | translate}}</span>
+            <button class="btn btn-primary float-right" id="newWord" data-ng-if="rights.canEditEntry()"
+                    data-ng-click="newEntry()"><i class="fa fa-plus"></i><span class="d-none d-md-block"> {{'New Word' | translate}}</span>
             </button>
         </div>
     </div>
@@ -63,7 +63,7 @@
         <br />
     </div>
     <div class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">
-        <div class="text-xs-center no-entries" data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading">
+        <div class="text-center no-entries" data-ng-show="entries.length == 0 && rights.canEditProject() && finishedLoading">
             <h4>Looks like there are no entries yet.</h4>
             <button class="btn btn-primary" data-ng-click="navigateToLiftImport()"
                     data-ng-hide="projectSettings.hasSendReceive">
@@ -76,8 +76,8 @@
         </div>
         <div class="list-group" data-ng-show="entries.length > 0 && finishedLoading">
             <div class="lexiconListItem list-group-item list-group-item-action active">
-                <small ng-hide="entryListModifiers.filterBy" id="totalNumberOfEntries" class="pull-right"><span class="notranslate">{{entries.length}}</span> {{'entries' | translate}}</small>
-                <small ng-show="entryListModifiers.filterBy" class="pull-right notranslate">{{filteredEntries.length}} / {{entries.length}}</small>
+                <small ng-hide="entryListModifiers.filterBy" id="totalNumberOfEntries" class="float-right"><span class="notranslate">{{entries.length}}</span> {{'entries' | translate}}</small>
+                <small ng-show="entryListModifiers.filterBy" class="float-right notranslate">{{filteredEntries.length}} / {{entries.length}}</small>
                 <h5>{{ 'Words in dictionary' | translate }}</h5>
             </div>
             <div class="lexiconListItem list-group-item list-group-item-action" data-ng-repeat="entry in visibleEntries track by entry.id"

@@ -27,7 +27,7 @@
     <div class="col-md-9 settings-panel">
         <!-- control buttons -->
         <div uib-dropdown class="dropdown form-group btn-group">
-            <button uib-dropdown-toggle class="btn btn-sm btn-secondary pui-no-caret"><i class="fa fa-ellipsis-v"></i></button>
+            <button uib-dropdown-toggle class="btn btn-sm btn-std pui-no-caret"><i class="fa fa-ellipsis-v"></i></button>
             <div class="dropdown-menu" uib-dropdown-menu>
                 <a href class="dropdown-item" tabindex="-1" data-ng-class="{disabled: $ctrl.newExists($ctrl.selects.special.optionsOrder[1])}"
                    data-ng-click="$ctrl.addInputSystem($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language, $ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.languageName, $ctrl.selects.special.optionsOrder[1])">
@@ -50,8 +50,8 @@
         </div>
 
         <!-- settings -->
-        <div class="card card-block bg-faded" data-ng-show="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId]">
-            <label class="col-form-label pull-right">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.tag}}</label>
+        <div class="card card-body bg-light" data-ng-show="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId]">
+            <label class="col-form-label float-right">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.tag}}</label>
             <!-- listed language name -->
             <h3 data-ng-show="!$ctrl.isUnlistedLanguage($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language)" id="languageDisplayName">
                 {{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].languageDisplayName()}}</h3>
