@@ -85,7 +85,7 @@
                              class="details-row" data-ng-class="{active: isSelected(question)}">
                                 <td data-ng-show="rights.archive">
                                     <label><input type="checkbox" data-ng-click="updateSelection($event, question)" /></label></td>
-                                <td><a class="span5" data-ng-href="{{question.url}}">
+                                <td><a class="col-md-5" data-ng-href="{{question.url}}">
                                     <span class="larger-text">{{question.calculatedTitle}}</span></a></td>
                                 <td><a data-ng-href="{{question.url}}">
                                         <span class="notranslate">{{question.answerCount}}</span> answers
@@ -120,9 +120,9 @@
             </form>
         </uib-tab>
         <uib-tab heading="ParaTExt Export">
-            <div class="row-fluid outer-flex" data-ng-controller="ParatextExportTextCtrl">
+            <div class="row outer-flex" data-ng-controller="ParatextExportTextCtrl">
                 <h4>Export Text Answers/Comments to a ParaTExt XML file</h4>
-                <form class="span4" name="exportForm">
+                <form class="col-md-4" name="exportForm">
                     <label><input type="checkbox" checked name="exportAnswers"
                                   id="exportAnswers" disabled /> Export Answers</label>
                     <br>
@@ -145,7 +145,7 @@
                         again, or uncheck "Only export flagged Answers" to export all
                         answers/comments</p>
                 </form>
-                <div class="span5" style="margin-right: 200px"
+                <div class="col-md-5" style="margin-right: 200px"
                      data-ng-show="download.totalCount">
                     <p data-ng-show="download.totalCount > 0" class="text-success">
                         Ready to Download: <span data-ng-show="download.answerCount > 0"

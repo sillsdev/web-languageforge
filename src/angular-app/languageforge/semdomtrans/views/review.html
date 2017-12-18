@@ -1,20 +1,20 @@
 <div data-ng-cloak data-ng-controller="reviewCtrl" id="semDomAppContainer">
         <div style="margin-top:100px; height: 500px;  width:100%; margin-right:0px; margin-left:0px" class="container-fluid">
             <div class="row">      
-                <div class="span6" style="margin-bottom:30px">
+                <div class="col-md-6" style="margin-bottom:30px">
                     <a style="float: left"  ui-sref="editor.editItem({position:currentEntryIndex})">  &#8592; Back to Edit</a>
                 </div>   
             </div>
             <div class="row" style="border:solid black 1px;">      
-              <div class="span3" style="text-align: center; float:left; margin-left:-1px; margin-right:0px">
+              <div class="col-md-3" style="text-align: center; float:left; margin-left:-1px; margin-right:0px">
                 <b>Items to Review</b>    
               </div>
-              <div style="text-align: center; float:right; margin-left:0px; margin-right:0px" class="span9">
+              <div style="text-align: center; float:right; margin-left:0px; margin-right:0px" class="col-md-9">
                 <b>Fields on Current Item to Review</b>
               </div>
             </div>
             <div class="row" style='width:100%; margin-right:0px; margin-left:0px'>
-              <div class="span3" style="border-right:solid black 1px; float:left; margin-left:-1px; margin-right:0px">
+              <div class="col-md-3" style="border-right:solid black 1px; float:left; margin-left:-1px; margin-right:0px">
                 <div>
                     <div style="overflow-y:scroll; overflow-x:hidden; height:400px; width:100%; margin-left:0px; margin-right:0px" >
                          <div ng-repeat="item in displayedItems track by item.key" ng-class="{selected: (item.key == currentEntry.key)}"  ng-click="changeTerm(item.key)">
@@ -23,7 +23,7 @@
                     </div>
                 </div>                
               </div>
-              <div style="text-align: center; float:right; margin-left:0px; margin-right:0px" class="span9">
+              <div style="text-align: center; float:right; margin-left:0px; margin-right:0px" class="col-md-9">
                 <div style="overflow-y:scroll; height:400px;">
                 <table style="width:100%"> 
                     <tr>

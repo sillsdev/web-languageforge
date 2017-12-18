@@ -39,7 +39,7 @@
             <div class="row outer-flex">
 
                 <!-- Left column: user select list -->
-                <div class="span3 form-group picklists" id="userSelectList">
+                <div class="col-md-3 form-group picklists" id="userSelectList">
                         <ul class="list-unstyled">
                             <li data-ng-click="selectUser(userId)" data-ng-repeat="(userId, userView) in configDirty.userViews"
                                 data-ng-class="{selected:currentUserId == userId}">
@@ -163,7 +163,7 @@
                         <div data-ng-show="currentView.fields[currentField.name].overrideInputSystems">
                             <hr />
                             <div class="row outer-flex form-group">
-                                <div class="span3 picklists">
+                                <div class="col-md-3 picklists">
                                     <label class="control-label" for="inputSystem">{{'Input Systems' | translate}}</label>
                                     <ul class="list-unstyled indent1"  id="inputSystem">
                                         <li data-ng-click="currentField.inputSystems.currentTag = inputSystemTag"
@@ -175,7 +175,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="span1 btn-group btn-group-vertical">
+                                <div class="col-md-1 btn-group btn-group-vertical">
                                     <button class="btn" data-ng-click="moveUp(currentField.inputSystems.currentTag, currentView)"
                                         data-ng-disabled="currentField.inputSystems.order[0] == currentField.inputSystems.currentTag || !currentField.inputSystems.currentTag">
                                         &nbsp;&nbsp;<i class="fa fa-arrow-up"></i></button>
@@ -204,7 +204,7 @@ currentField {{currentField | json}}
 
             <!-- Left column: task view settings -->
             <!-- hide Tasks group
-            <div class="span4 form-group">
+            <div class="col-md-4 form-group">
                 <dl>
                     <dt data-translate="Dashboard"></dt>
                     <dd><div class="controls">
