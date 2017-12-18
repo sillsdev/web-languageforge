@@ -7,8 +7,8 @@
             <form class="form-horizontal" data-ng-submit="$ctrl.processForm()" id="oauthSignupForm" name="oauthSignupForm">
                 <fieldset>
                     <div class="form-group row">
-                        <div class="card bg-faded col-md-7">
-                            <div class="card-block">
+                        <div class="card bg-light col-md-7">
+                            <div class="card-body">
                                 <div class="form-group row">
                                     <label class="col-form-label col-md-4 text-md-right" for="fullname">Full Name</label>
                                     <div class="controls col-md-8">
@@ -48,8 +48,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="card bg-faded col-md-7">
-                            <div class="card-block">
+                        <div class="card bg-light col-md-7">
+                            <div class="card-body">
                                 <div class="form-group row">
                                     <div class="col-md-4">
                                         <div class="controls" style="margin-bottom:10px">
@@ -86,8 +86,8 @@
                 <div class="col-sm-12">
                     <h5>Already have an account?</h5>
                     <p>Then log in here with your {{ website_name }} username and password to link {{ oauth_email_for_login }} to your account.</p>
-                    <div class="card bg-faded col-md-7">
-                        <div class="card-block">
+                    <div class="card bg-light col-md-7">
+                        <div class="card-body">
                             <form class="form-horizontal" action="{{ $ctrl.loginPath }}" method="post"
                                   accept-charset="utf-8" name="oauthLoginForm" novalidate>
                                 <fieldset>

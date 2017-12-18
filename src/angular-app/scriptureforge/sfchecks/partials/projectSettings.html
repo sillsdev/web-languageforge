@@ -7,9 +7,9 @@
         <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
             <button id="addMembersButton" class="btn btn-primary" data-ng-show="rights.create" data-ng-click="toggleAddMembers()">
                 <i class="fa fa-plus"></i> Add Members</button>
-            <button class="btn btn-secondary" data-ng-show="rights.create" data-ng-click="toggleMessageUsers()">
+            <button class="btn btn-std" data-ng-show="rights.create" data-ng-click="toggleMessageUsers()">
                 <i class="fa fa-envelope"></i> Message Selected Users</button>
-            <button class="btn btn-secondary" data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther"
+            <button class="btn btn-std" data-ng-disabled="selected.length == 0" data-ng-show="rights.deleteOther"
                     data-ng-click="removeProjectUsers()"><i class="fa fa-trash"></i> Remove Members</button>
             <input class="form-control" type="text" data-ng-model="userFilter" placeholder="Member List Filter"/>
             <a data-ng-show="userFilter != ''" title="Clear Filter" data-ng-click="userFilter = ''">
@@ -17,7 +17,7 @@
         </form>
         <div id="newMembersDiv" class="new-item" uib-collapse="addMembersCollapsed">
             <form class="card form-inline">
-                <div class="card-block">
+                <div class="card-body">
                     <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
                         <ul ng-hide="users.length == 0">
                             <li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
@@ -36,10 +36,10 @@
         </div>
         <div id="newMessageDiv" uib-collapse="newMessageCollapsed">
             <div class="card">
-                <div class="card-block" data-ng-hide="show.messaging()">
+                <div class="card-body" data-ng-hide="show.messaging()">
                     <p>Click <b>Communication Settings</b> to setup messaging.</p>
                 </div>
-                <form class="card-block" data-ng-submit="sendMessageToSelectedUsers()" data-ng-show="show.messaging()">
+                <form class="card-body" data-ng-submit="sendMessageToSelectedUsers()" data-ng-show="show.messaging()">
                     <fieldset>
                         <p style="color:red">All fields are required to message selected users</p>
                         <label class="form-group">Email Subject
@@ -94,12 +94,12 @@
     <div data-ng-controller="ProjectSettingsQTemplateCtrl" style="overflow:hidden">
         <form class="control-bar form-inline">
             <button class="btn btn-primary" data-ng-click="toggleTemplateEditor()"><i class="fa fa-plus"></i> Add New Template</button>
-            <button class="btn btn-secondary" data-ng-disabled="selected.length == 0" data-ng-click="removeTemplates()">
+            <button class="btn btn-std" data-ng-disabled="selected.length == 0" data-ng-click="removeTemplates()">
                 <i class="fa fa-trash"></i> Remove Templates</button>
         </form>
         <div class="new-item" uib-collapse="!templateEditorVisible">
             <form class="card">
-                <fieldset class="card-block">
+                <fieldset class="card-body">
                     <label>Question Template
                         <textarea class="form-control" required data-ng-model="editedTemplate.description" rows="4"
                                   placeholder="The Question"></textarea>
@@ -227,7 +227,7 @@
             <div class="col-md-4">
                 <fieldset class="card fieldset" id="picklistEditorFieldset">
                     <legend>{{project.userProperties.userProfilePickLists[currentListId].name}}</legend>
-                    <div class="card-block">
+                    <div class="card-body">
                         <picklist-editor items="project.userProperties.userProfilePickLists[currentListId].items" default-key="project.userProperties.userProfilePickLists[currentListId].defaultKey"></picklist-editor>
                     </div>
                 </fieldset>
