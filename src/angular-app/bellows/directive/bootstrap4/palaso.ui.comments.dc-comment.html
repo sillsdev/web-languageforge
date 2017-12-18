@@ -80,10 +80,14 @@
                         <div class="dropdown pull-right" uib-dropdown>
                             <button class="btn btn-sm btn-secondary ellipsis-menu pui-no-caret" uib-dropdown-toggle type="button"><i class="fa fa-ellipsis-v"></i></button>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a href class="editReplyLink btn btn-sm btn-secondary dropdown-item" ng-show="rights.canEditComment(reply.authorInfo.createdByUserRef.id)"
-                                    ng-click="editReply(reply)"><i class="fa fa-pencil"></i> Edit</a>
-                                <a href class="deleteReplyLink btn btn-sm btn-secondary dropdown-item" ng-show="rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)"
-                                    ng-click="deleteCommentReply(comment.id, reply)"><i class="fa fa-trash"></i> Delete</a>
+                                <a href class="editReplyLink btn btn-sm btn-secondary dropdown-item editReplyLink btn btn-sm btn-secondary"
+                                   ng-show="rights.canEditComment(reply.authorInfo.createdByUserRef.id)"
+                                   ng-click="editReply(reply)">
+                                    <i class="fa fa-pencil"></i> Edit</a>
+                                <a href class="deleteReplyLink btn btn-sm btn-secondary dropdown-item deleteReplyLink btn btn-sm btn-secondary"
+                                   ng-show="rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)"
+                                   ng-click="deleteCommentReply(comment.id, reply)">
+                                    <i class="fa fa-trash"></i> Delete</a>
                             </div>
                         </div>
                     </div>

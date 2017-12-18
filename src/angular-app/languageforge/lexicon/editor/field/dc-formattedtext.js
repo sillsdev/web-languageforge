@@ -53,7 +53,7 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
           container.append(link);
           var buttonGroup = angular.element('<div class="btn-group pull-right">');
           var reLinkButton = angular.element('<button type="button" ' +
-            'class="btn btn-default btn-sm" tabindex="-1" unselectable="on">' +
+            'class="btn btn-std btn-sm" tabindex="-1" unselectable="on">' +
             '<i class="fa fa-edit icon-edit"></i></button>');
           reLinkButton.on('click', function (event) {
             event.preventDefault();
@@ -69,7 +69,7 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
 
           buttonGroup.append(reLinkButton);
           var unLinkButton = angular.element('<button type="button" ' +
-            'class="btn btn-default btn-sm" tabindex="-1" unselectable="on">' +
+            'class="btn btn-std btn-sm" tabindex="-1" unselectable="on">' +
             '<i class="fa fa-unlink icon-unlink"></i></button>');
 
           // directly before this click event is fired a digest is fired off whereby the reference
@@ -83,7 +83,7 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
 
           buttonGroup.append(unLinkButton);
           var targetToggle = angular.element('<button type="button" ' +
-            'class="btn btn-default btn-sm" tabindex="-1" unselectable="on">' +
+            'class="btn btn-std btn-sm" tabindex="-1" unselectable="on">' +
             'Open in New Window</button>');
           if ($element.attr('target') === '_blank') {
             targetToggle.addClass('active');
@@ -107,7 +107,7 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
     // see http://stackoverflow.com/questions/4652734/return-html-from-a-user-selected-text
     function getSelectionHtml() {
       var html = '';
-      if (typeof window.getSelection != 'undefined') {
+      if (typeof window.getSelection !== 'undefined') {
         var sel = window.getSelection();
         if (sel.rangeCount) {
           var container = document.createElement('div');
@@ -117,8 +117,8 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
 
           html = container.innerHTML;
         }
-      } else if (typeof document.selection != 'undefined') {
-        if (document.selection.type == 'Text') {
+      } else if (typeof document.selection !== 'undefined') {
+        if (document.selection.type === 'Text') {
           html = document.selection.createRange().htmlText;
         }
       }
@@ -156,7 +156,7 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
       onElementSelect: {
         element: 'span',
         action: function (event, $element, editorScope) {
-          ss.getSession().then(function(session) {
+          ss.getSession().then(function (session) {
             var inputSystems = session.projectSettings().config.inputSystems;
             editorScope.selects = {};
             editorScope.selects.language = {};
@@ -188,7 +188,7 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
             container.append(langSelect);
             var buttonGroup = angular.element('<div class="btn-group pull-right">');
             var unLinkButton = angular.element('<button type="button" ' +
-              'class="btn btn-default btn-sm" tabindex="-1" unselectable="on">' +
+              'class="btn btn-std btn-sm" tabindex="-1" unselectable="on">' +
               '<i class="fa fa-unlink icon-unlink"></i></button>');
 
             // directly before this click event is fired a digest is fired off whereby the reference
@@ -271,9 +271,8 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
       $scope.fte = {};
       if (angular.isDefined($scope.fteToolbar)) {
         $scope.fte.toolbar = $scope.fteToolbar;
-      }
-      else {
-        ss.getSession().then(function(session) {
+      } else {
+        ss.getSession().then(function (session) {
           if (session.hasSiteRight(ss.domain.PROJECTS, ss.operation.EDIT)) {
 
             // if site administrator enable development controls

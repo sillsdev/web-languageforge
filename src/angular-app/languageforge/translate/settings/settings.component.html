@@ -5,14 +5,14 @@
             <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateProject()">
                 <fieldset class="card-body" data-ng-disabled="!$ctrl.rights.canEditProject()">
                     <div class="form-group row">
-                        <label class="control-label col-12" for="projName">Project Name</label>
+                        <label class="col-form-label col-12" for="projName">Project Name</label>
                         <div class="controls col-12">
                             <input id="projName" type="text" class="form-control" placeholder="project name"
                                    data-ng-model="$ctrl.project.projectName" />
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-12" for="language">Default Interface Language</label>
+                        <label class="col-form-label col-12" for="language">Default Interface Language</label>
                         <div class="controls col-12">
                             <select class="form-control" id="language"
                                 data-ng-model="$ctrl.project.interfaceLanguageCode"
@@ -22,13 +22,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-12">Project Code</label>
+                        <label class="col-form-label col-12">Project Code</label>
                         <div class="controls col-12">
                             {{$ctrl.project.projectCode}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-12">Project Owner</label>
+                        <label class="col-form-label col-12">Project Owner</label>
                         <div class="controls col-12">
                             {{$ctrl.project.ownerRef.username}}
                         </div>
@@ -65,7 +65,7 @@
             <form class="card card-default ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="$ctrl.updateProject()">
                 <fieldset class="card-body" data-ng-disabled="!$ctrl.rights.canEditProject()">
                     <div class="form-group row">
-                        <label class="control-label col-12">Default Project Confidence Threshold</label>
+                        <label class="col-form-label col-12">Default Project Confidence Threshold</label>
                         <div class="controls col-12">
                             <rzslider rz-slider-model="$ctrl.confidence.value"
                                       rz-slider-options="$ctrl.confidence.options"></rzslider>

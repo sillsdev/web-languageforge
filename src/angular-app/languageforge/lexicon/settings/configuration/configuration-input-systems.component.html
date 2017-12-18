@@ -51,7 +51,7 @@
 
         <!-- settings -->
         <div class="card card-block bg-faded" data-ng-show="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId]">
-            <label class="control-label pull-right">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.tag}}</label>
+            <label class="col-form-label pull-right">{{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.tag}}</label>
             <!-- listed language name -->
             <h3 data-ng-show="!$ctrl.isUnlistedLanguage($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language)" id="languageDisplayName">
                 {{$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].languageDisplayName()}}</h3>
@@ -62,7 +62,7 @@
                 data-ng-show="$ctrl.isUnlistedLanguage($ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].language)">
             <br><br>
             <div class="form-group">
-                <label class="control-label" for="abbrev">Display Abbreviation (limited to 4 lowercase characters)</label>
+                <label class="col-form-label" for="abbrev">Display Abbreviation (limited to 4 lowercase characters)</label>
                 <div class="controls">
                     <input type="text" class="form-control" id="abbrev" model-transform-limit="4"
                            data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].inputSystem.abbreviation">
@@ -78,7 +78,7 @@
                 <small>Some settings are disabled because the Input System may already be in use.</small>
             </p>
             <div class="form-group">
-                <label class="control-label" for="special">Special</label>
+                <label class="col-form-label" for="special">Special</label>
                 <div class="controls">
                     <select class="form-control" id="special"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special"
@@ -87,10 +87,10 @@
                 </div>
             </div>
 
-            <div class="col-md-offset-1">
+            <div class="offset-md-1">
             <!-- IPA transcription -->
             <div class="form-group" data-ng-show="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special == $ctrl.selects.special.optionsOrder[1]">
-                <label class="control-label" for="purpose">Purpose</label>
+                <label class="col-form-label" for="purpose">Purpose</label>
                 <div class="controls">
                     <select class="form-control" id="purpose"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].purpose"
@@ -98,7 +98,7 @@
                         data-ng-options="$ctrl.selects.purpose.options[key] for key in $ctrl.selects.purpose.optionsOrder">
                         <option value="">unspecified</option></select>
                 </div>
-                <label class="control-label" for="ipaVariant">Variant (limited to letters or numbers, no spaces)</label>
+                <label class="col-form-label" for="ipaVariant">Variant (limited to letters or numbers, no spaces)</label>
                 <div class="controls">
                     <input type="text" class="form-control" id="ipaVariant" size="25"
                           model-transform-limit="35" model-transform-no-space data-ng-trim="false"
@@ -108,7 +108,7 @@
             </div>
             <!-- Voice -->
             <div class="form-group" data-ng-show="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special == $ctrl.selects.special.optionsOrder[2]">
-                <label class="control-label" for="voiceVariant">Variant (limited to letters or numbers, no spaces)</label>
+                <label class="col-form-label" for="voiceVariant">Variant (limited to letters or numbers, no spaces)</label>
                 <div class="controls">
                     <input type="text" class="form-control" id="voiceVariant" size="25"
                            model-transform-limit="35" model-transform-no-space data-ng-trim="false"
@@ -118,7 +118,7 @@
             </div>
             <!-- Script / Region / Variant -->
             <div class="form-group" data-ng-show="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special == $ctrl.selects.special.optionsOrder[3]">
-                <label class="control-label" for="script">Script</label>
+                <label class="col-form-label" for="script">Script</label>
                 <div class="controls">
                     <select class="form-control" id="script"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].script"
@@ -126,7 +126,7 @@
                         data-ng-options="key as option.join(', ') for (key, option) in $ctrl.selects.script.options">
                         <option value="">-- select a script --</option></select>
                 </div>
-                <label class="control-label" for="region">Region</label>
+                <label class="col-form-label" for="region">Region</label>
                 <div class="controls">
                     <select class="form-control" id="region"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].region"
@@ -134,7 +134,7 @@
                         data-ng-options="key as option for (key, option) in $ctrl.selects.region.options">
                         <option value="">-- select a region --</option></select>
                 </div>
-                <label class="control-label" for="variant">Variant (limited to letters or numbers, no spaces)</label>
+                <label class="col-form-label" for="variant">Variant (limited to letters or numbers, no spaces)</label>
                 <div class="controls">
                     <input type="text" class="form-control" id="variant" size="25"
                         model-transform-limit="35" model-transform-no-space data-ng-trim="false"
