@@ -213,7 +213,7 @@ export class TranslateNewProjectController implements angular.IController {
       classes.push((this.bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o' : 'icon-check-empty'));
     } else if (this.$state.current.data.step < step) {
       classes.push(
-        (this.bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o muted' : 'icon-check-empty muted'));
+        (this.bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o text-muted' : 'icon-check-empty text-muted'));
     }
 
     return classes;

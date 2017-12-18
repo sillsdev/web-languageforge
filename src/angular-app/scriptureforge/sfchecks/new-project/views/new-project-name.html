@@ -5,7 +5,7 @@
     <div class="alert alert-danger" ng-show="projectCodeState == 'exists'">Project Code already exists!</div>
     <div class="alert alert-danger" ng-show="projectCodeState == 'empty'">The Project Code cannot be empty</div>
 
-    <div class="control-group">
+    <div class="form-group">
     <div class="controls">
         <label>Project Name
         <input class="form-control" type="text" data-ng-model="newProject.projectName"
@@ -15,7 +15,7 @@
     </div>
 </div>
 <br />
-<div class="control-group">
+<div class="form-group">
     <label class="control-label text-muted" for="projectCode">Project Code</label>
     <div class="controls input-group">
         <input class="form-control" type="text" data-ng-model="newProject.projectCode" id="projectCode" data-ng-trim="false"

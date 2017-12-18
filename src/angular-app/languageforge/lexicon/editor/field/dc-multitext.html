@@ -4,7 +4,7 @@
         <div class="controls" ng-class="(config.type == 'pictures' ? 'col-md-12' : 'col-md-8')">
             <div class="input-group" data-ng-click="selectInputSystem(tag)"
                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
-                <span class="add-on wsid input-group-addon notranslate" tabindex="-1"
+                <span class="wsid input-group-addon notranslate" tabindex="-1"
                     title="{{tag}} {{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
                 <dc-formattedtext class="dc-formattedtext" data-ng-if="!isAudio(tag)"
                     fte-multiline="false"
