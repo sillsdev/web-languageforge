@@ -1,6 +1,6 @@
 <form class="form-horizontal dc-pictures">
     <div class="form-group row">
-        <label class="control-label col-md-4 text-md-right">{{config.label}}</label>
+        <label class="col-form-label col-md-4 text-md-right">{{config.label}}</label>
         <div class="col-md-8">
             <div class="dc-picture" data-ng-repeat="picture in pictures">
                 <div data-ng-if="control.rights.canEditEntry() && $state.is('editor.entry')"

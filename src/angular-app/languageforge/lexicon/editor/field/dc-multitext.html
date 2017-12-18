@@ -1,6 +1,6 @@
 <form class="form-horizontal dc-multitext">
     <div class="form-group row" data-ng-repeat="tag in config.inputSystems">
-        <label class="control-label col-md-4 text-md-right" data-ng-show="config.type != 'pictures'" ng-class="($first ? '' : 'hidden-sm-down')"><span data-ng-show="$first">{{config.label}}</span></label>
+        <label class="col-form-label col-md-4 text-md-right" data-ng-show="config.type != 'pictures'" ng-class="($first ? '' : 'hidden-sm-down')"><span data-ng-show="$first">{{config.label}}</span></label>
         <div class="controls" ng-class="(config.type == 'pictures' ? 'col-md-12' : 'col-md-8')">
             <div class="input-group" data-ng-click="selectInputSystem(tag)"
                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
