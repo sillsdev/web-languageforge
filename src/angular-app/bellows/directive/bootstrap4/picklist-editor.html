@@ -20,8 +20,8 @@
             <div data-ng-repeat="item in items" class="picklist-group" sv-element>
                 <a data-ng-show="showRemove($index)" data-ng-click="pickRemoveItem($index)"><i class="fa fa-trash"></i></a>
                 <span data-ng-hide="showRemove($index)" style="padding-left: 17px"></span>
-                <input type="text" data-ng-model="item.value" data-on-enter="blur(thisElement)" class="picklist-row"></input>
-                <input disabled type="text" data-ng-model="item.value" class="picklist-row" sv-placeholder></input>
+                <input type="text" data-ng-model="item.value" data-on-enter="blur(thisElement)" class="picklist-row">
+                <input disabled type="text" data-ng-model="item.value" class="picklist-row" sv-placeholder>
                 <i class="fa fa-bars" sv-handle></i>
             </div>
         </div>
