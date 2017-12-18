@@ -20,11 +20,11 @@
             </div>
             <div class="col-md-12 col-lg-4 d-none d-md-block">
                 <button ng-click="show.entryListModifiers = !show.entryListModifiers" class="btn btn-sm float-right">
-                    <span class="fa" ng-class="{ 'fa-minus-square-o': show.entryListModifiers, 'fa-plus-square-o': !show.entryListModifiers} "></span>
+                    <span class="fa" data-ng-class="show.entryListModifiers ? 'fa-minus-square-o': 'fa-plus-square-o'"></span>
                     Options</button>
             </div>
         </div>
-        <br class="d-none d-md-block d-lg-none" />
+        <br class="d-none d-md-block d-lg-none">
         <div class="row">
             <div class="d-none d-md-block" ng-show="show.entryListModifiers">
                 <div class="form-group sortfilter-form">

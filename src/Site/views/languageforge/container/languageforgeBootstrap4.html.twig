@@ -9,7 +9,7 @@
     {% if isLoggedIn %}
 
         <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch" style="background-color: #104060" data-ng-app="xforge.navbarApp" data-ng-controller="navbarController">
-            <span class="desktop-title navbar-brand d-none d-md-block mr-auto">
+            <span class="desktop-title navbar-brand d-none d-md-inline-block mr-auto">
                 <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
                 <a class="" href="/">{{ app.website.name }}</a>
             </span>
@@ -142,7 +142,7 @@
 
     {% else %}
         <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch" style="background-color: #104060">
-            <span class="desktop-title navbar-brand d-none d-md-block mr-auto">
+            <span class="desktop-title navbar-brand d-none d-md-inline-block mr-auto">
                 <img class="navbar-logo" src="/Site/views/languageforge/theme/default/image/lf_logo_medium.png">
                 <a class="" href="/">{{ app.website.name }}</a>
             </span>

@@ -8,9 +8,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
     // State machine from ui.router
     $stateProvider
       .state('editor', {
-
-        // Need quotes around Javascript keywords like 'abstract' so YUI compressor won't complain
-        'abstract': true, // jscs:ignore
+        abstract: true,
         url: '/editor',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-abstract.html',
         controller: 'EditorCtrl'

@@ -30,9 +30,7 @@ angular.module('lexicon-new-project',
     // State machine from ui.router
     $stateProvider
       .state('newProject', {
-
-        // Need quotes around Javascript keywords like 'abstract' so YUI compressor won't complain
-        'abstract': true, // jscs:ignore
+        abstract: true,
         templateUrl:
           '/angular-app/languageforge/lexicon/new-project/views/new-project-abstract.html',
         controller: 'NewLexProjectCtrl'
