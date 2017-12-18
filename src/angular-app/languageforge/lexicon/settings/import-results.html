@@ -13,7 +13,7 @@
     <br/>
     <div data-ng-hide="hasImportErrors()" translate="There were no non-critical import errors."></div>
     <div data-ng-show="hasImportErrors()">
-        <button class="btn" data-ng-click="show.importErrors = !show.importErrors">{{showImportErrorsButtonLabel()}}</button>
+        <button class="btn btn-std" data-ng-click="show.importErrors = !show.importErrors">{{showImportErrorsButtonLabel()}}</button>
         <div uib-collapse="! show.importErrors">
             <pre id="importErrors">{{result.importErrors}}</pre>
         </div>

@@ -56,7 +56,7 @@
                             <button class="btn btn-primary" id="browseUsxButton" data-ngf-select="readUsx($file)">Browse...</button>
                         </div>
                         <div data-ngf-no-file-drop>
-                            <div class="btn" data-ngf-select="readUsx($file)">Browse...</div>
+                            <div class="btn btn-std" data-ngf-select="readUsx($file)">Browse...</div>
                         </div>
                     </fieldset>
                 </form>
@@ -108,7 +108,7 @@
                     <button class="btn btn-primary" id="browseButton" data-ngf-select="uploadAudio($file)">Browse...</button>
                 </div>
                 <div data-ngf-no-file-drop>
-                    <div class="btn" data-ngf-select="uploadAudio($file)">Browse...</div>
+                    <div class="btn btn-std" data-ngf-select="uploadAudio($file)">Browse...</div>
                 </div>
                 <br />
                 <div data-ng-show="file != null">
@@ -135,7 +135,7 @@
                     <br>
                     <button class="btn btn-primary"
                             data-ng-disabled="exportForm.$invalid || download.inprogress"
-                            data-ng-click="startExport()" class="btn">
+                            data-ng-click="startExport()" class="btn btn-std">
                         Prepare Export</button>
                     <span data-ng-show="download.inprogress">
                         <i class="fa fa-spinner fa-spin" style="position: absolute; padding-left: 5px; padding-top: 8px;"></i></span>

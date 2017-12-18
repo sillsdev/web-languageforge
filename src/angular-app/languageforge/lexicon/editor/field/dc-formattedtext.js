@@ -51,7 +51,7 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
             'vertical-align': 'middle'
           });
           container.append(link);
-          var buttonGroup = angular.element('<div class="btn-group pull-right">');
+          var buttonGroup = angular.element('<div class="btn-group float-right">');
           var reLinkButton = angular.element('<button type="button" ' +
             'class="btn btn-std btn-sm" tabindex="-1" unselectable="on">' +
             '<i class="fa fa-edit icon-edit"></i></button>');
@@ -186,7 +186,7 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
               '<option value="">-- choose a language --</option></select>'
             );
             container.append(langSelect);
-            var buttonGroup = angular.element('<div class="btn-group pull-right">');
+            var buttonGroup = angular.element('<div class="btn-group float-right">');
             var unLinkButton = angular.element('<button type="button" ' +
               'class="btn btn-std btn-sm" tabindex="-1" unselectable="on">' +
               '<i class="fa fa-unlink icon-unlink"></i></button>');

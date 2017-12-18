@@ -5,18 +5,18 @@
                 data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">
             <i class="fa fa-plus"></i> Add New Question
         </button>
-        <button data-ng-show="rights.archive" class="btn btn-secondary"
+        <button data-ng-show="rights.archive" class="btn btn-std"
             data-ng-disabled="selected.length == 0"
             data-ng-click="archiveQuestions()">
             <i class="fa fa-archive fa-lg"></i> Archive Questions
         </button>
         <button data-ng-show="rights.createTemplate"
             data-ng-disabled="selected.length == 0 || selected.length > 1"
-            class="btn btn-secondary" data-ng-click="makeQuestionIntoTemplate()">
+            class="btn btn-std" data-ng-click="makeQuestionIntoTemplate()">
             <i class="fa fa-thumb-tack"></i> Make Template
         </button>
-        <div id="text_settings_button" class="pull-right" uib-dropdown data-ng-show="rights.editOther">
-            <a class="btn btn-secondary" uib-dropdown-toggle tooltip-placement="left">
+        <div id="text_settings_button" class="float-right" uib-dropdown data-ng-show="rights.editOther">
+            <a class="btn btn-std" uib-dropdown-toggle tooltip-placement="left">
                 <i class="fa fa-cog"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
@@ -26,7 +26,7 @@
     </form>
     <div class="new-item" uib-collapse="newQuestionCollapsed">
         <form class="card col-md-11" name="newQuestionForm">
-            <div class="card-block">
+            <div class="card-body">
                 <fieldset class="col-md-4">
                     <label class="form-group">Title
                         <input type="text" data-ng-model="questionTitle" class="form-control" maxlength="70"
@@ -42,7 +42,7 @@
                             data-ng-model="saveAsTemplate"
                             data-ng-show="rights.createTemplate" />
                         Also save as template</label>
-                    <a href class="pull-right"
+                    <a href class="float-right"
                         data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">Cancel</a>
                     <button type="submit" class="btn btn-primary save-new-question"
                         data-ng-disabled="newQuestionForm.$invalid"
@@ -61,10 +61,10 @@
     <hr />
     <div class="row">
         <div class="col-md-5" oncopy="return false;">
-            <h2 class="pull-left audio-buttons" data-ng-show="text.audioFileName">
-                <pui-soundplayer data-url="audioPlayUrl" uib-tooltip="Play audio"></pui-soundplayer>
+            <h2 class="float-left audio-buttons" data-ng-show="text.audioFileName">
+                <pui-soundplayer data-url="audioPlayUrl" title="Play audio"></pui-soundplayer>
                 <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
-                    <i class="fa fa-arrow-circle-o-down" uib-tooltip="Download audio"></i></a>
+                    <i class="fa fa-arrow-circle-o-down" title="Download audio"></i></a>
             </h2>
             <h2>{{text.title}}</h2>
             <div id="textcontrol" style="font-family: {{text.fontfamily}}" data-ng-bind-html="text.content"></div>

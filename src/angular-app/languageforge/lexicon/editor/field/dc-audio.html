@@ -3,7 +3,7 @@
     <div data-ng-hide="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullToSide">
         <div data-ng-show="hasAudio()">
             <div class="dropdown" uib-dropdown data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()">
-                <a class="btn btn-secondary dropdown-toggle pui-no-caret" uib-dropdown-toggle><i class="fa fa-ellipsis-v"></i></a>
+                <a class="btn btn-std dropdown-toggle pui-no-caret" uib-dropdown-toggle><i class="fa fa-ellipsis-v"></i></a>
                 <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="dcControl.interfaceConfig.pullToSide">
                     <a class="dropdown-item" data-ng-href="{{audioDownloadUrl()}}">
                         <i class="fa fa-download"></i> {{'Download' | translate}} <span class="notranslate">'{{displayFilename()}}'</span></a>
@@ -15,12 +15,12 @@
                 </div>
             </div>
             <div data-ng-hide="$state.is('editor.entry') && dcControl.rights.canEditEntry() || !$state.is('editor.entry')">
-                <a class="btn btn-secondary buttonAppend" data-ng-href="{{audioDownloadUrl()}}" title="Download audio">
+                <a class="btn btn-std buttonAppend" data-ng-href="{{audioDownloadUrl()}}" title="Download audio">
                     <i class="fa fa-download"></i></a>
             </div>
         </div>
         <div data-ng-hide="hasAudio()">
-            <button class="btn btn-secondary buttonAppend" data-ng-click="show.audioUpload = true"
+            <button class="btn btn-std buttonAppend" data-ng-click="show.audioUpload = true"
                 data-ng-show="$state.is('editor.entry') && dcControl.rights.canEditEntry()"
                 title="{{'Upload an audio file' | translate}}">
                 <i class="fa fa-cloud-upload"></i></button>
@@ -29,17 +29,17 @@
 
     <!-- upload control -->
     <div class="uploadCtl" data-ng-show="show.audioUpload" data-ng-class="dcControl.interfaceConfig.pullNormal">
-        <div class="deleteX pull-right">
+        <div class="deleteX float-right">
             <i data-ng-click="show.audioUpload = false" title="Cancel Uploading Audio" class="fa fa-times"
                id="audioAddCancel"></i>
         </div>
         <div class="drop-box" data-ngf-drop="uploadAudio($file)" data-ngf-drag-over-class="'dragover'">
             <h4 data-translate="Drop an audio file here"></h4>
             <p data-translate="or if you prefer..."></p>
-            <div class="btn btn-secondary" id="browseButton" data-ngf-select="uploadAudio($file)" data-translate="Browse..."></div>
+            <div class="btn btn-std" id="browseButton" data-ngf-select="uploadAudio($file)" data-translate="Browse..."></div>
         </div>
         <div data-ngf-no-file-drop>
-            <div class="btn btn-secondary" ngf-select="uploadAudio($file)" data-translate="Browse..."></div>
+            <div class="btn btn-std" ngf-select="uploadAudio($file)" data-translate="Browse..."></div>
         </div>
     </div>
 

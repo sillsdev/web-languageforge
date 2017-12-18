@@ -5,11 +5,11 @@
             <b>{{message.subject}}</b><br /><span data-ng-bind-html="message.content"></span></alert>
     </div>
 
-    <div id="settingsDropdownButton" class="pull-right" uib-dropdown data-ng-show="rights.edit">
-        <a class="btn btn-secondary"
+    <div id="settingsDropdownButton" class="float-right" uib-dropdown data-ng-show="rights.edit">
+        <a class="btn btn-std"
            uib-dropdown-toggle
            tooltip-placement="left"
-           uib-tooltip="Settings">
+           title="Settings">
             <i class="fa fa-cog"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
@@ -19,14 +19,14 @@
     </div>
 
     <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-        <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn btn-secondary" data-ng-click="archiveTexts()">
+        <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn btn-std" data-ng-click="archiveTexts()">
             <i class="fa fa-archive fa-lg"></i> Archive Texts</button>
         <button data-ng-show="rights.create" class="btn btn-primary" data-ng-click="newTextCollapsed = !newTextCollapsed">
             <i class="fa fa-plus"></i> Add New Text</button>
     </form>
     <div uib-collapse="newTextCollapsed">
         <div class="card new-text">
-            <form class="card-block" name="newTextForm">
+            <form class="card-body" name="newTextForm">
                 <div class="col-md-4">
                     <div>
                         <div class="form-group">
@@ -80,7 +80,7 @@
                         <button class="btn btn-primary" id="browseUsxButton" data-ngf-select="readUsx($file)">Browse...</button>
                     </div>
                     <div data-ngf-no-file-drop>
-                        <div class="btn" data-ngf-select="readUsx($file)">Browse...</div>
+                        <div class="btn btn-std" data-ngf-select="readUsx($file)">Browse...</div>
                     </div>
                 </fieldset>
                 <div style="clear: left"></div>

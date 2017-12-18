@@ -2,12 +2,12 @@
 <div class="content container"
     data-ng-cloak data-ng-controller="LexiconCtrl" dir="{{interfaceConfig.direction}}">
     <div class="hdrnav row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <div class="hdrnav-container">
                 <div class="btn-group" uib-dropdown data-ng-class="interfaceConfig.pullToSide" data-ng-show="rights.canEditUsers()">
-                    <a class="btn btn-secondary" uib-dropdown-toggle data-ng-class="interfaceConfig.pullToSide"
+                    <a class="btn btn-std" uib-dropdown-toggle data-ng-class="interfaceConfig.pullToSide"
                        tooltip-placement="{{interfaceConfig.placementToSide}}"
-                       uib-tooltip="Settings" href="#">
+                       title="Settings" href="#">
                         <i class="fa fa-cog"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu data-ng-class="interfaceConfig.pullToSide">
@@ -23,16 +23,16 @@
                            data-translate="Synchronize"></a>
                     </div>
                 </div>
-                <div class="pull-right return-button">
-                    <button class="btn btn-secondary" uib-tooltip="View the dictionary"
+                <div class="float-right return-button">
+                    <button class="btn btn-std" title="View the dictionary"
                             tooltip-placement="{{interfaceConfig.placementNormal}}"
                             data-ng-show="showDictionaryButton()"
                             data-ng-click="gotoDictionary()">
                         <i class="fa fa-arrow-circle-left"></i> {{'Dictionary' | translate}}
                     </button>
                 </div>
-                <breadcrumbs id="top" class="breadcrumb hidden-sm-down"></breadcrumbs>
-                <ol id="projectName" class="hidden-md-up text-center">{{project.projectName}}</ol>
+                <breadcrumbs id="top" class="breadcrumb d-none d-md-block"></breadcrumbs>
+                <ol id="projectName" class="d-md-none text-center">{{project.projectName}}</ol>
             </div>
         </div>
     </div>

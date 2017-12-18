@@ -6,7 +6,7 @@
         <div class="form-group">
             <button data-ng-click="$ctrl.showAllFields = !$ctrl.showAllFields" class="btn btn-sm">
                 <i data-ng-class="'fa fa-' + $ctrl.showAllFields ? 'minus-square-o' : 'plus-square-o'"></i>
-                <span class="hidden-sm-down">{{$ctrl.showAllFields ? 'Show Only Common Fields' : 'Show All Fields'}}</span>
+                <span class="d-none d-md-block">{{$ctrl.showAllFields ? 'Show Only Common Fields' : 'Show All Fields'}}</span>
             </button>
         </div>
 
@@ -53,13 +53,13 @@
     <div class="col-md-9">
         <!-- control buttons -->
         <div class="form-group" style="height: 30px">
-            <button class="btn" data-ng-click="$ctrl.removeSelectedCustomField()"
+            <button class="btn btn-std" data-ng-click="$ctrl.removeSelectedCustomField()"
                     data-ng-show="$ctrl.showRemoveCustomField($ctrl.fccCurrentField.name)">
                 <i class="fa fa-trash iconPadding"></i>Remove Custom Field</button>
         </div>
 
         <!-- settings -->
-        <div class="card card-block bg-faded settings-panel">
+        <div class="card card-body bg-light settings-panel">
             <h3 id="fieldSetupLabel"><span class="notranslate">{{$ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].label}} </span>Field Setup</h3>
             <div class="form-group"
                  data-ng-show="$ctrl.isCustomField($ctrl.fccCurrentField.name)">
@@ -119,18 +119,18 @@
                         <a href="" data-ng-click="$ctrl.editInputSystems.collapsed = false">Edit input systems</a>
                     </div>
                     <div class="col-md-1 btn-group-vertical">
-                        <button class="btn" id="upButton"
+                        <button class="btn btn-std" id="upButton"
                                 data-ng-click="$ctrl.moveUp($ctrl.fccCurrentField.inputSystems.tag)"
                                 data-ng-disabled="$ctrl.fccCurrentField.inputSystems.fieldOrder[0] == $ctrl.fccCurrentField.inputSystems.tag || !$ctrl.fccCurrentField.inputSystems.tag">
                             <i class="fa fa-arrow-up"></i></button>
-                        <button class="btn" id="downButton"
+                        <button class="btn btn-std" id="downButton"
                                 data-ng-click="$ctrl.moveDown($ctrl.fccCurrentField.inputSystems.tag)"
                                 data-ng-disabled="$ctrl.fccCurrentField.inputSystems.fieldOrder[$ctrl.fccCurrentField.inputSystems.fieldOrder.length - 1] == $ctrl.fccCurrentField.inputSystems.tag || !$ctrl.fccCurrentField.inputSystems.tag">
                             <i class="fa fa-arrow-down"></i></button>
                     </div>
                 </div>
                 <div uib-collapse="$ctrl.editInputSystems.collapsed">
-                    <button class="btn btn-primary pull-right" data-ng-click="$ctrl.editInputSystems.done()">
+                    <button class="btn btn-primary float-right" data-ng-click="$ctrl.editInputSystems.done()">
                         <i class="fa fa-check"></i>Done</button>
                     <h3 style="font-weight:normal" data-translate="Edit Input Systems"></h3>
                     <lsc-input-systems isc-input-system-view-models="$ctrl.fccInputSystemViewModels"

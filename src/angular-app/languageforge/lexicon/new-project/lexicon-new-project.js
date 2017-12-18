@@ -111,14 +111,14 @@ angular.module('lexicon-new-project',
     });
 
     $scope.interfaceConfig.direction = 'ltr';
-    $scope.interfaceConfig.pullToSide = 'pull-right';
-    $scope.interfaceConfig.pullNormal = 'pull-left';
+    $scope.interfaceConfig.pullToSide = 'float-right';
+    $scope.interfaceConfig.pullNormal = 'float-left';
     $scope.interfaceConfig.placementToSide = 'left';
     $scope.interfaceConfig.placementNormal = 'right';
     if (inputSystemsService.constructor.isRightToLeft($scope.interfaceConfig.userLanguageCode)) {
       $scope.interfaceConfig.direction = 'rtl';
-      $scope.interfaceConfig.pullToSide = 'pull-left';
-      $scope.interfaceConfig.pullNormal = 'pull-right';
+      $scope.interfaceConfig.pullToSide = 'float-left';
+      $scope.interfaceConfig.pullNormal = 'float-right';
       $scope.interfaceConfig.placementToSide = 'right';
       $scope.interfaceConfig.placementNormal = 'left';
     }
@@ -160,7 +160,7 @@ angular.module('lexicon-new-project',
       $scope.formValidated = false;
       $scope.formStatus = msg;
       $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
-      $scope.forwardBtnClass = (bootstrapVersion === 'bootstrap4' ? 'btn-secondary' : '');
+      $scope.forwardBtnClass = (bootstrapVersion === 'bootstrap4' ? 'btn-std' : '');
       $scope.formValidationDefer = $q.defer();
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
