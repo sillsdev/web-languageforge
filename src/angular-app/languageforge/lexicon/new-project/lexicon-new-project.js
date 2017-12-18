@@ -194,7 +194,7 @@ angular.module('lexicon-new-project',
         classes.push((bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o' : 'icon-check-empty'));
       } else if ($state.current.data.step < step) {
         classes.push(
-          (bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o muted' : 'icon-check-empty muted'));
+          (bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o text-muted' : 'icon-check-empty text-muted'));
       }
 
       return classes;
