@@ -5,7 +5,7 @@
     {% if isLoggedIn %}
 
         <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch" data-ng-app="xforge.navbarApp" data-ng-controller="navbarController">
-            <span class="desktop-title navbar-brand d-none d-md-block mr-auto">
+            <span class="desktop-title navbar-brand d-none d-md-inline-block mr-auto">
                 <img class="navbar-logo" src="/Site/views/scriptureforge/theme/default/image/sf_logo_medium.png">
                 <a class="" href="/">{{ app.website.name }}</a>
             </span>
@@ -138,7 +138,7 @@
 
     {% else %}
         <nav class="fixed-nav-bar navbar navbar-expand navbar-dark align-items-stretch">
-            <span class="desktop-title navbar-brand d-none d-md-block mr-auto">
+            <span class="desktop-title navbar-brand d-none d-md-inline-block mr-auto">
                 <img class="navbar-logo" src="/Site/views/scriptureforge/theme/default/image/sf_logo_medium.png">
                 <a class="" href="/">{{ app.website.name }}</a>
             </span>

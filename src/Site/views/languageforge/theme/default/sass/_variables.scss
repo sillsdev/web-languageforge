@@ -7,7 +7,7 @@ $lf-lines: #ddd;
 $lf-comments: #D89D49;
 
 // Overwrite variables - see node_modules/bootstrap/sass/_variables.scss
-// NOTE: with Bootstrap Beta 2, we should be able to override just the colors we need to
+// FixMe: with Bootstrap Beta 2, we should be able to override just the colors we need to
 $theme-colors: (
     primary: $lf-blue,
     secondary: #868e96,
