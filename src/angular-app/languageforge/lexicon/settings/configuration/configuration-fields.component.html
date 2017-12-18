@@ -63,7 +63,7 @@
             <h3 id="fieldSetupLabel"><span class="notranslate">{{$ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].label}} </span>Field Setup</h3>
             <div class="form-group"
                  data-ng-show="$ctrl.isCustomField($ctrl.fccCurrentField.name)">
-                <label class="control-label" for="displayName">Display Name</label>
+                <label class="col-form-label" for="displayName">Display Name</label>
                 <div class="controls">
                     <input type="text" class="form-control" id="displayName"
                            data-ng-model="$ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].label">
@@ -80,7 +80,7 @@
             </div>
             <div class="form-group"
                  data-ng-if="$ctrl.fieldConfigItemExists('width') && $ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].type != 'pictures'">
-                <label class="control-label" for="width">Width</label>
+                <label class="col-form-label" for="width">Width</label>
                 <div class="controls">
                     <input class="form-control" type="number" id="width" min="20" max="40"
                            data-ng-model="$ctrl.fccFieldConfig[$ctrl.fccCurrentField.name].width">
@@ -106,7 +106,7 @@
                 <hr>
                 <div class="row outer-flex form-group" data-ng-show="$ctrl.editInputSystems.collapsed">
                     <div class="col-md-4 picklists">
-                        <label class="control-label" for="inputSystem">Input Systems</label>
+                        <label class="col-form-label" for="inputSystem">Input Systems</label>
                         <ul class="list-unstyled indent1"  id="inputSystem">
                             <li data-ng-click="$ctrl.fccCurrentField.inputSystems.tag = inputSystemTag"
                                 data-ng-repeat="inputSystemTag in $ctrl.fccCurrentField.inputSystems.fieldOrder"

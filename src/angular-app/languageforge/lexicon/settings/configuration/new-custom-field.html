@@ -4,7 +4,7 @@
 <div class="modal-body">
     <form class="form-horizontal" name="customFieldForm" novalidate>
         <div class="form-group">
-            <label class="control-label" for="name">Display Name</label>
+            <label class="col-form-label" for="name">Display Name</label>
             <div class="controls">
                 <input class="col-md-3 form-control" id="name" autofocus
                     required type="text" name="name"
@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" for="code">Field Code</label>
+            <label class="col-form-label" for="code">Field Code</label>
             <div class="controls">
                 <input class="col-md-3 form-control" id="code"
                     disabled type="text" name="code"
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" for="level">Field Level</label>
+            <label class="col-form-label" for="level">Field Level</label>
             <div class="controls">
                 <select class="form-control" id="level" name="level" required
                     data-ng-model="newCustomData.level"
@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label" for="type">Field Type</label>
+            <label class="col-form-label" for="type">Field Type</label>
             <div class="controls">
                 <select class="form-control" id="type" name="type" required
                     data-ng-model="newCustomData.type"
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="form-group" data-ng-if="(newCustomData.type == 'optionlist') || (newCustomData.type == 'multioptionlist')">
-            <label class="control-label" for="optionListCode">Option List</label>
+            <label class="col-form-label" for="optionListCode">Option List</label>
             <div class="controls">
                 <select class="form-control" id="optionListCode" name="optionlistCode" required
                     data-ng-model="newCustomData.listCode"

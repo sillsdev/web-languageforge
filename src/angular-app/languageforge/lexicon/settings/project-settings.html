@@ -6,13 +6,13 @@
             <form class="card card-block bg-faded ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="updateProject()" style="">
                 <fieldset data-ng-disabled="!rights.remove">
                     <div class="form-group row">
-                        <label class="control-label col-xs-12" for="projName" data-translate="Project Name"></label>
+                        <label class="col-form-label col-xs-12" for="projName" data-translate="Project Name"></label>
                         <div class="controls col-xs-12">
                             <input id="projName" type="text" class="form-control" placeholder="project name" data-ng-model="project.projectName" />
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-xs-12" for="language" data-translate="Default Interface Language"></label>
+                        <label class="col-form-label col-xs-12" for="language" data-translate="Default Interface Language"></label>
                         <div class="controls col-xs-12">
                             <select class="form-control" id="language"
                                 data-ng-model="project.interfaceLanguageCode"
@@ -22,13 +22,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-xs-12">{{'Project Code' | translate}}</label>
+                        <label class="col-form-label col-xs-12">{{'Project Code' | translate}}</label>
                         <div class="controls col-xs-12 notranslate">
                             {{project.projectCode}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="control-label col-xs-12">{{'Project Owner' | translate}}</label>
+                        <label class="col-form-label col-xs-12">{{'Project Owner' | translate}}</label>
                         <div class="controls col-xs-12 notranslate">
                             {{project.ownerRef.username}}
                         </div>

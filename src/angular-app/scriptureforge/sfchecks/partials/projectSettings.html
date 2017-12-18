@@ -173,16 +173,16 @@
         <form class="well" data-ng-submit="updateProject()">
         <fieldset>
             <div class="form-group">
-                <label class="control-label" for="projName">
+                <label class="col-form-label" for="projName">
                     <strong data-translate="Project Name"></strong>
                     <div class="controls">
                         <input id="projName" class="form-control" type="text" placeholder="project name" data-ng-model="project.projectName"/>
                     </div>
                 </label>
             </div>
-            <label class="control-label"><B>Project Code:</B> <span class="notranslate">{{project.projectCode}}</span></label>
+            <label class="col-form-label"><b>Project Code:</b> <span class="notranslate">{{project.projectCode}}</span></label>
             <br>
-            <label class="control-label"><B>Project Owner:</B> <span class="notranslate">{{project.ownerRef.username}}</span></label>
+            <label class="col-form-label"><b>Project Owner:</b> <span class="notranslate">{{project.ownerRef.username}}</span></label>
             <!-- <label class="checkbox"><input type="checkbox" data-ng-model="project.featured" /> Featured on website</label> -->
             <br>
             <label class="checkbox"><input type="checkbox" data-ng-model="project.usersSeeEachOthersResponses" />

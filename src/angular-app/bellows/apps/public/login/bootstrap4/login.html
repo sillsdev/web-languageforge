@@ -19,13 +19,13 @@
             <form class="form-horizontal" action="{{ path('app_login_check') }}" method="post"
                   accept-charset="utf-8" name="loginForm" novalidate>
                 <div class="form-group">
-                    <label class="control-label" for="username">Username or Email</label>
+                    <label class="col-form-label" for="username">Username or Email</label>
                     <input class="form-control form-control-lg" id="username"
                            required type="text" name="_username"
                            value="{{ last_username }}">
                 </div>
                 <div class="form-group">
-                    <label class="control-label" for="password">Password</label>
+                    <label class="col-form-label" for="password">Password</label>
                     <input class="form-control form-control-lg" id="password"
                            required type="password" name="_password"
                            value="">
