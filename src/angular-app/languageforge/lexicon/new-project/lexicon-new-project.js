@@ -106,7 +106,7 @@ angular.module('lexicon-new-project',
     sessionService.getSession().then(function (session) {
       if (angular.isDefined(session.projectSettings()) &&
           angular.isDefined(session.projectSettings().interfaceConfig)) {
-        $scope.interfaceConfig = session.projectSettings().interfaceConfig;
+        angular.merge($scope.interfaceConfig, session.projectSettings().interfaceConfig);
       }
     });
 
@@ -173,7 +173,7 @@ angular.module('lexicon-new-project',
       $scope.formStatusClass =
         (bootstrapVersion === 'bootstrap4' ? 'alert alert-danger' : 'alert alert-error');
       if (!msg) $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
-      $scope.forwardBtnClass = '';
+      $scope.forwardBtnClass = 'btn-std';
       $scope.formValidationDefer.resolve(false);
       return $scope.formValidationDefer.promise;
     }
@@ -193,8 +193,8 @@ angular.module('lexicon-new-project',
       if ($state.current.data.step === step) {
         classes.push((bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o' : 'icon-check-empty'));
       } else if ($state.current.data.step < step) {
-        classes.push(
-          (bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o text-muted' : 'icon-check-empty text-muted'));
+        classes.push((bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o text-muted' :
+            'icon-check-empty text-muted'));
       }
 
       return classes;
