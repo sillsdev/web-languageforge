@@ -11,7 +11,10 @@ $projectCodeHandles = ['testProjectCode', 'otherProjectCode', 'thirdProjectCode'
     'fourthProjectCode', 'newProjectCode', 'emptyProjectCode', 'srProjectCode'];
 foreach ($projectCodeHandles as $handle) {
     $project = ProjectModel::getByProjectCode($constants[$handle]);
-    $project->remove();
+    if ($project->hasId()) {
+        $project->remove();
+        echo "Removed '${constants[$handle]}'";
+    }
 }
 
 // cleanup mocked uploaded/imported files
