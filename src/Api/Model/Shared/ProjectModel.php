@@ -360,6 +360,13 @@ class ProjectModel extends MapperModel
     }
 
     /**
+     * @return bool
+     */
+    public function hasId() {
+        return $this->id->asString() != '';
+    }
+
+    /**
      * @param string $projectId
      * @return ProjectModel
      */
@@ -382,9 +389,12 @@ class ProjectModel extends MapperModel
 
     public static function getByProjectCode($projectCode)
     {
-        $project = new ProjectModel();
-        $project->readByProperties(array('projectCode' => $projectCode));
-        return self::getById($project->id->asString());
+        $m = new ProjectModel();
+        $m->readByProperties(array('projectCode' => $projectCode));
+        if ($m->hasId()) {
+            return self::getById($m->id->asString());
+        }
+        return $m; // empty project
     }
 
     /**
