@@ -947,7 +947,7 @@ gulp.task('build-version', function () {
 gulp.task('build-changeGroup', function (cb) {
   execute(
     'sudo chgrp -R www-data src; sudo chgrp -R www-data test; sudo chgrp -R www-data artifacts; ' +
-    'sudo chmod -R g+w src; sudo chmod -R g+w test; sudo chmod -R g+w artifacts',
+    'sudo chmod -R g+w src; sudo chmod -R g+w test; sudo chmod -R g+wx artifacts',
     null,
     cb
   );
@@ -1168,7 +1168,7 @@ gulp.task('build-upload', function (cb) {
   options.dest = path.join(params.dest, '/api2');
 
   execute(
-    'rsync -progzlt --chmod=Dug=rwx,Fug=rw,o-rwx ' +
+    'rsync -progzlt --chmod=Dug=rwx,Fug=rwx,o-rwx ' +
     '--delete-during --stats --rsync-path="sudo rsync" <%= rsh %> ' +
     '<%= src %> <%= dest %>',
     options,
