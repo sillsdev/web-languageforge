@@ -1,9 +1,11 @@
 <form class="form-horizontal dc-multitext">
     <div class="form-group row" data-ng-repeat="tag in config.inputSystems">
-        <label class="col-form-label col-md-4 text-md-right" data-ng-show="config.type != 'pictures'" data-ng-class="$first ? '' : 'd-none d-md-inline-block'"><span data-ng-show="$first">{{config.label}}</span></label>
-        <div class="controls" ng-class="(config.type == 'pictures' ? 'col-md-12' : 'col-md-8')">
+        <label class="col-form-label col-md-4 text-md-right" data-ng-show="config.type != 'pictures'"
+               data-ng-class="$first ? '' : 'd-none d-md-inline-block'">
+            <span data-ng-show="$first">{{config.label}}</span></label>
+        <div class="controls" data-ng-class="config.type == 'pictures' ? 'col-md-12' : 'col-md-8'">
             <div class="input-group" data-ng-click="selectInputSystem(tag)"
-                data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
+                 data-ng-class="{selectableInputSystemFieldForComment: $state.is('editor.comments') && control.rights.canComment()}">
                 <span class="wsid input-group-addon notranslate" tabindex="-1"
                     title="{{tag}} {{inputSystems[tag].languageName}}">{{inputSystems[tag].abbreviation}}</span>
                 <dc-formattedtext class="dc-formattedtext" data-ng-if="!isAudio(tag)"
