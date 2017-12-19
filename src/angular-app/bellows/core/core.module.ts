@@ -24,5 +24,5 @@ export const CoreModule = angular
   .service('utilService', UtilityService)
   .filter('bytes', BytesFilter)
   .filter('relativetime', RelativeTimeFilter)
-  .filter('encodeURI', EncodeURIFilter)
+  .filter('encodeURI', ['$window', EncodeURIFilter])
   .name;
