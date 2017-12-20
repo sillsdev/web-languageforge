@@ -10,7 +10,6 @@ using SIL.XForge.WebApi.Server.DataAccess;
 using SIL.XForge.WebApi.Server.Options;
 using SIL.XForge.WebApi.Server.Services;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace SIL.XForge.WebApi.Server
@@ -29,11 +28,12 @@ namespace SIL.XForge.WebApi.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var issuers = new List<string> { "languageforge.org", "scriptureforge.org" };
+            var issuers = new List<string> { "languageforge.org", "scriptureforge.org", "cat.languageforge.org" };
             if (Environment.IsDevelopment())
             {
                 issuers.Add("languageforge.local");
                 issuers.Add("scriptureforge.local");
+                issuers.Add("cat.languageforge.local");
             }
             IConfigurationSection securityConfig = Configuration.GetSection("Security");
             string jwtKey = securityConfig.GetValue<string>("JwtKey") ?? "this_is_not_a_secret_dev_only";

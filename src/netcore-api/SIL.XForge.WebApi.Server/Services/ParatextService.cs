@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SIL.XForge.WebApi.Server.Services
 {
@@ -44,13 +45,17 @@ namespace SIL.XForge.WebApi.Server.Services
         {
             return CallApiAsync(user, async u =>
                 {
-                    if ((await TryGetProjectsAsync(u)).TryResult(out IReadOnlyList<ParatextProject> projects))
+                    if ((await TryGetRepoIdsAsync(u)).TryResult(out ISet<string> projectIds))
                     {
-                        return Attempt.Success(new ParatextUserInfo
+                        if ((await TryGetProjectsAsync(u, projectIds))
+                            .TryResult(out IReadOnlyList<ParatextProject> projects))
                         {
-                            Username = GetUsername(u),
-                            Projects = projects
-                        });
+                            return Attempt.Success(new ParatextUserInfo
+                            {
+                                Username = GetUsername(u),
+                                Projects = projects
+                            });
+                        }
                     }
                     return Attempt<ParatextUserInfo>.Failure;
                 });
@@ -63,7 +68,22 @@ namespace SIL.XForge.WebApi.Server.Services
             return usernameClaim?.Value;
         }
 
-        private async Task<Attempt<IReadOnlyList<ParatextProject>>> TryGetProjectsAsync(User user)
+        private async Task<Attempt<ISet<string>>> TryGetRepoIdsAsync(User user)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "api8/projects");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer",
+                user.ParatextAccessToken.AccessToken);
+            HttpResponseMessage response = await _dataAccessClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+                return Attempt<ISet<string>>.Failure;
+            string responseXml = await response.Content.ReadAsStringAsync();
+            var repos = XElement.Parse(responseXml);
+            var repoIds = new HashSet<string>(repos.Elements("repo").Select(r => (string) r.Element("projid")));
+            return new Attempt<ISet<string>>(repoIds);
+        }
+
+        private async Task<Attempt<IReadOnlyList<ParatextProject>>> TryGetProjectsAsync(User user,
+            ISet<string> projectIds)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "api8/projects");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer",
@@ -72,19 +92,28 @@ namespace SIL.XForge.WebApi.Server.Services
             if (!response.IsSuccessStatusCode)
                 return Attempt<IReadOnlyList<ParatextProject>>.Failure;
             string responseJson = await response.Content.ReadAsStringAsync();
-            var projects = JArray.Parse(responseJson);
-            return new Attempt<IReadOnlyList<ParatextProject>>(projects.Select(GetProjectInfo).ToArray());
-        }
-
-        private static ParatextProject GetProjectInfo(JToken project)
-        {
-            JToken identification = project["identification_systemId"]
-                .FirstOrDefault(id => (string) id["type"] == "paratext");
-            return new ParatextProject
+            var projectArray = JArray.Parse(responseJson);
+            var projects = new List<ParatextProject>();
+            foreach (JToken projectObj in projectArray)
             {
-                Id = (string) identification["text"],
-                Name = (string) identification["fullname"]
-            };
+                JToken identificationObj = projectObj["identification_systemId"]
+                    .FirstOrDefault(id => (string) id["type"] == "paratext");
+                if (identificationObj == null)
+                    continue;
+                string projectId = (string) identificationObj["text"];
+                if (!projectIds.Contains(projectId))
+                    continue;
+
+                projects.Add(new ParatextProject
+                    {
+                        Id = projectId,
+                        Name = (string) identificationObj["fullname"],
+                        LanguageTag = (string) projectObj["language_ldml"],
+                        // TODO: use SIL.WritingSystems to get language name from ISO-3 code
+                        LanguageName = (string) projectObj["language_iso"]
+                    });
+            }
+            return new Attempt<IReadOnlyList<ParatextProject>>(projects);
         }
 
         private async Task<Attempt<User>> RefreshAccessTokenAsync(User user)
