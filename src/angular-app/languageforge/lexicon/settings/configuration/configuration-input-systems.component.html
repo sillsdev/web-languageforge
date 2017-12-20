@@ -80,7 +80,7 @@
             <div class="form-group">
                 <label class="col-form-label" for="special">Special</label>
                 <div class="controls">
-                    <select class="form-control" id="special"
+                    <select class="form-control custom-select" id="special"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special"
                         data-ng-disabled="$ctrl.isInputSystemInUse()"
                         data-ng-options="$ctrl.selects.special.options[key] for key in $ctrl.selects.special.optionsOrder"></select>
@@ -92,7 +92,7 @@
             <div class="form-group" data-ng-show="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special == $ctrl.selects.special.optionsOrder[1]">
                 <label class="col-form-label" for="purpose">Purpose</label>
                 <div class="controls">
-                    <select class="form-control" id="purpose"
+                    <select class="form-control custom-select" id="purpose"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].purpose"
                         data-ng-disabled="$ctrl.isInputSystemInUse()"
                         data-ng-options="$ctrl.selects.purpose.options[key] for key in $ctrl.selects.purpose.optionsOrder">
@@ -120,7 +120,7 @@
             <div class="form-group" data-ng-show="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].special == $ctrl.selects.special.optionsOrder[3]">
                 <label class="col-form-label" for="script">Script</label>
                 <div class="controls">
-                    <select class="form-control" id="script"
+                    <select class="form-control custom-select" id="script"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].script"
                         data-ng-disabled="$ctrl.isInputSystemInUse()"
                         data-ng-options="key as option.join(', ') for (key, option) in $ctrl.selects.script.options">
@@ -128,7 +128,7 @@
                 </div>
                 <label class="col-form-label" for="region">Region</label>
                 <div class="controls">
-                    <select class="form-control" id="region"
+                    <select class="form-control custom-select" id="region"
                         data-ng-model="$ctrl.iscInputSystemViewModels[$ctrl.selectedInputSystemId].region"
                         data-ng-disabled="$ctrl.isInputSystemInUse()"
                         data-ng-options="key as option for (key, option) in $ctrl.selects.region.options">

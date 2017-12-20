@@ -16,7 +16,7 @@
             <div class="dc-multioptionlist-values"
                  data-ng-show="$state.is('editor.entry') && rights.canEditEntry() && isAdding">
                 <!--suppress HtmlFormInputWithoutLabel -->
-                <select class="form-control" data-ng-change="addValue()" data-ng-model="newValue"
+                <select class="form-control custom-select" data-ng-change="addValue()" data-ng-model="newValue"
                         data-ng-options="item.key as item.value for item in items | filter: filterSelectedItems">
                     <option value="">Pick an item</option>
                 </select>

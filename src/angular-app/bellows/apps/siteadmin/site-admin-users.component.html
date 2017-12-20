@@ -116,7 +116,7 @@
                     </div>
                 </div>
                 <label for="_role">System Role</label>
-                <select class="form-control" id="_role" required data-ng-model="$ctrl.record.role"
+                <select class="form-control custom-select" id="_role" required data-ng-model="$ctrl.record.role"
                         data-ng-disabled="$ctrl.vars.state === 'add'"
                         data-ng-options="key as role.name for (key, role) in $ctrl.systemRoles"></select>
                 <br />
@@ -124,7 +124,7 @@
                 <div class="card card-body bg-light">
                     <div data-ng-repeat="(site, role) in $ctrl.record.siteRole">
                         <label for="siteRole">{{site}}</label>
-                        <select class="form-control" id="siteRole" data-ng-model="role"
+                        <select class="form-control custom-select" id="siteRole" data-ng-model="role"
                                 data-ng-disabled="$ctrl.vars.state === 'add'" data-ng-change="$ctrl.siteRoleChanged(site, role)"
                                 data-ng-options="key as siteRole.name for (key, siteRole) in $ctrl.siteRoles"></select>
                     </div>

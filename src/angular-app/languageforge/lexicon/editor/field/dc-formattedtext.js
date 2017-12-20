@@ -180,7 +180,7 @@ angular.module('palaso.ui.dc.formattedtext', ['coreModule', 'textAngular'])
             container.empty();
             container.css('line-height', '28px');
             var langSelect = angular.element(
-              '<select data-ng-model="selects.language.tag" ' +
+              '<select class="custom-select" data-ng-model="selects.language.tag" ' +
               'data-ng-options="selects.language.options[tag] ' +
               'for tag in selects.language.optionsOrder">' +
               '<option value="">-- choose a language --</option></select>'

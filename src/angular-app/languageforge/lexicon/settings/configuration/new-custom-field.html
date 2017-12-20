@@ -27,7 +27,7 @@
         <div class="form-group">
             <label class="col-form-label" for="level">Field Level</label>
             <div class="controls">
-                <select class="form-control" id="level" name="level" required
+                <select class="form-control custom-select" id="level" name="level" required
                     data-ng-model="newCustomData.level"
                     data-ng-options="selects.level.options[key] for key in selects.level.optionsOrder">
                     <option value="">-- choose a field level --</option></select>
@@ -36,7 +36,7 @@
         <div class="form-group">
             <label class="col-form-label" for="type">Field Type</label>
             <div class="controls">
-                <select class="form-control" id="type" name="type" required
+                <select class="form-control custom-select" id="type" name="type" required
                     data-ng-model="newCustomData.type"
                     data-ng-options="selects.type.options[key] for key in selects.type.optionsOrder">
                     <option value="">-- choose a field type --</option></select>
@@ -45,7 +45,7 @@
         <div class="form-group" data-ng-if="(newCustomData.type == 'optionlist') || (newCustomData.type == 'multioptionlist')">
             <label class="col-form-label" for="optionListCode">Option List</label>
             <div class="controls">
-                <select class="form-control" id="optionListCode" name="optionlistCode" required
+                <select class="form-control custom-select" id="optionListCode" name="optionlistCode" required
                     data-ng-model="newCustomData.listCode"
                     data-ng-options="selects.listCode.options[code] for code in selects.listCode.optionsOrder">
                     <option value="">-- choose an option list --</option></select>

@@ -5,7 +5,7 @@
             <i class="fa fa-times"></i>
         </span>
         <!--suppress HtmlFormInputWithoutLabel -->
-        <select ng-show="rights.canUpdateCommentStatus()" class="form-control " data-ng-model="commentFilter.status">
+        <select ng-show="rights.canUpdateCommentStatus()" class="form-control custom-select" data-ng-model="commentFilter.status">
             <option value="all">Show All</option>
             <option value="unresolved">Unresolved</option>
             <option ng-if="rights.canUpdateCommentStatus()" value="todo">Todo</option>
