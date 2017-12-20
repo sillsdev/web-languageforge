@@ -15,7 +15,7 @@ export class MachineService {
   private _engineConfidence: number = 0;
 
   static $inject: string[] = ['$window', '$q', '$rootScope'];
-  constructor(private $window: angular.IWindowService, private readonly $q: angular.IQService,
+  constructor(private readonly $window: angular.IWindowService, private readonly $q: angular.IQService,
               private readonly $rootScope: angular.IRootScopeService) { }
 
   get confidenceThreshold(): number {

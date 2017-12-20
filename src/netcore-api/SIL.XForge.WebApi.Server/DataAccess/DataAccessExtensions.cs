@@ -65,6 +65,10 @@ namespace SIL.XForge.WebApi.Server.DataAccess
                 {
                     cm.SetDiscriminator("lexicon");
                 }, true);
+            services.AddMongoRepository<TranslateProject>("projects", cm =>
+                {
+                    cm.SetDiscriminator("translate");
+                }, true);
             return services;
         }
 
