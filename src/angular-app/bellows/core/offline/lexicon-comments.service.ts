@@ -1,8 +1,8 @@
 import * as angular from 'angular';
 
-import { ApiService } from '../api/api.service';
-import { JsonRpcCallback } from '../api/json-rpc.service';
-import { CommentsOfflineCacheService } from './comments-offline-cache.service';
+import {ApiService} from '../api/api.service';
+import {JsonRpcCallback, JsonRpcResult} from '../api/json-rpc.service';
+import {CommentsOfflineCacheService} from './comments-offline-cache.service';
 
 class Comment {
   id: string;
@@ -124,7 +124,7 @@ export class LexiconCommentService {
     return 0;
   }
 
-  removeCommentFromLists(commentId: string, replyId: string): void {
+  removeCommentFromLists = (commentId: string, replyId: string): void => {
     if (replyId) {
       // just delete the replyId but don't delete the entire comment
       LexiconCommentService.deleteCommentInList(commentId, replyId, this.comments.items.all);
@@ -149,35 +149,35 @@ export class LexiconCommentService {
     arr.push.apply(arr, this.$filter('filter')(comments, filter.byStatus));
   }
 
-  update(commentData: any, callback: JsonRpcCallback): void {
-    this.api.call('lex_comment_update', [commentData], callback);
+  update(commentData: any, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+    return this.api.call('lex_comment_update', [commentData], callback);
   }
 
-  updateReply(commentId: string, reply: string, callback: JsonRpcCallback): void {
+  updateReply(commentId: string, reply: string, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
     const comment = this.getCurrentEntryComment(commentId);
     comment.replies.push(reply);
-    this.api.call('lex_commentReply_update', [commentId, reply], callback);
+    return this.api.call('lex_commentReply_update', [commentId, reply], callback);
   }
 
-  remove(commentId: string, callback: JsonRpcCallback): void {
-    this.api.call('lex_comment_delete', [commentId], callback);
+  remove(commentId: string, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+    return this.api.call('lex_comment_delete', [commentId], callback);
   }
 
-  deleteReply(commentId: string, replyId: string, callback: JsonRpcCallback): void {
-    this.api.call('lex_commentReply_delete', [commentId, replyId], callback);
+  deleteReply(commentId: string, replyId: string, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
+    return this.api.call('lex_commentReply_delete', [commentId, replyId], callback);
   }
 
-  plusOne(commentId: string, callback: JsonRpcCallback): void {
+  plusOne(commentId: string, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
     const comment = this.getCurrentEntryComment(commentId);
     comment.score++;
     this.comments.counts.userPlusOne[commentId] = 1;
-    this.api.call('lex_comment_plusOne', [commentId], callback);
+    return this.api.call('lex_comment_plusOne', [commentId], callback);
   }
 
-  updateStatus(commentId: string, status: string, callback: JsonRpcCallback): void {
+  updateStatus(commentId: string, status: string, callback: JsonRpcCallback): angular.IPromise<JsonRpcResult> {
     const comment = this.getCurrentEntryComment(commentId);
     comment.status = status;
-    this.api.call('lex_comment_updateStatus', [commentId, status], callback);
+    return this.api.call('lex_comment_updateStatus', [commentId, status], callback);
   }
 
   private static deleteCommentInList(commentId: string, replyId: string, commentsList: any): void {
