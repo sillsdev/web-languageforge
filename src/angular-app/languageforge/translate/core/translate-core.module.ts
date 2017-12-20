@@ -5,6 +5,8 @@ import { RealTimeService } from './realtime.service';
 import { SecondsToTimeFilter } from './seconds-to-time.filter';
 import { TranslateProjectService } from './translate-project.service';
 import { TranslateRightsService } from './translate-rights.service';
+import { TranslateSendReceiveApiService } from './translate-send-receive-api.service';
+import { TranslateSendReceiveService } from './translate-send-receive.service';
 
 export const TranslateCoreModule = angular
   .module('translateCoreModule', [])
@@ -12,5 +14,7 @@ export const TranslateCoreModule = angular
   .service('translateRightsService', TranslateRightsService)
   .service('machineService', MachineService)
   .service('realTimeService', RealTimeService)
+  .service('translateSendReceiveApiService', TranslateSendReceiveApiService)
+  .service('translateSendReceiveService', TranslateSendReceiveService)
   .filter('secondsToTime', SecondsToTimeFilter)
   .name;

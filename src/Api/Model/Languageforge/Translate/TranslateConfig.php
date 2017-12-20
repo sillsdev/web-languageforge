@@ -50,10 +50,29 @@ class TranslateConfigDocType
     public function __construct($tag = 'qaa', $name = '')
     {
         $this->inputSystem = new InputSystem($tag, $name);
+        $this->paratextProject = new ParatextProject();
     }
 
     /** @var InputSystem */
     public $inputSystem;
+
+    /** @var ParatextProject */
+    public $paratextProject;
+}
+
+class ParatextProject
+{
+    public function __construct()
+    {
+        $this->id = '';
+        $this->name = '';
+    }
+
+    /** @var string */
+    public $id;
+
+    /** @var string */
+    public $name;
 }
 
 class TranslateConfigDocumentSets

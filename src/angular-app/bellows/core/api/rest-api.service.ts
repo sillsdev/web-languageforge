@@ -21,7 +21,14 @@ export class RestApiService {
   private send<T>(method: string, url: string, data: any): angular.IPromise<T> {
     return this.sessionService.getSession()
       .then(session => {
-        const httpConfig = { method, url, data, headers: { Authorization: 'Bearer ' + session.accessToken() }};
+        const httpConfig = {
+          method,
+          url,
+          data: JSON.stringify(data),
+          headers: {
+            'Content-type': 'application/json',
+            'Authorization': 'Bearer ' + session.accessToken()
+          }};
         return this.$http<T>(httpConfig);
       }).then(arg => {
         return arg.status === 204 ? null : arg.data;
