@@ -1,4 +1,4 @@
-import { InputSystem } from './input-system.model';
+import { InputSystem } from '../../../../bellows/shared/model/input-system.model';
 import { LexOptionList } from './option-list.model';
 
 export class LexConfig {
