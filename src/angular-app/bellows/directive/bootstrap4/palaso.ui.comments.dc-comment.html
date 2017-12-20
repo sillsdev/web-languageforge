@@ -80,22 +80,22 @@
                         <div class="dropdown pull-right" uib-dropdown>
                             <button class="btn btn-sm btn-secondary ellipsis-menu pui-no-caret" uib-dropdown-toggle type="button"><i class="fa fa-ellipsis-v"></i></button>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a href class="dropdown-item" ng-show="rights.canEditComment(reply.authorInfo.createdByUserRef.id)" class="editReplyLink btn btn-sm btn-secondary"
+                                <a href class="editReplyLink btn btn-sm btn-secondary dropdown-item" ng-show="rights.canEditComment(reply.authorInfo.createdByUserRef.id)"
                                     ng-click="editReply(reply)"><i class="fa fa-pencil"></i> Edit</a>
-                                <a href class="dropdown-item" ng-show="rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)" class="deleteReplyLink btn btn-sm btn-secondary"
+                                <a href class="deleteReplyLink btn btn-sm btn-secondary dropdown-item" ng-show="rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)"
                                     ng-click="deleteCommentReply(comment.id, reply)"><i class="fa fa-trash"></i> Delete</a>
                             </div>
                         </div>
                     </div>
                 </div>
                 <form ng-show="reply.editing" ng-submit="submitReply(reply)">
-                    <textarea class="form-control" ng-model="reply.editingContent" pui-auto-focus="reply.editing"></textarea>
+                    <textarea class="form-control" ng-model="reply.editingContent" pui-auto-focus="reply.isAutoFocusEditing"></textarea>
                     <button type="submit" class="btn btn-sm btn-primary">Update</button>
                     <a href ng-click="reply.editing = false">Cancel</a>
                 </form>
             </div>
             <form class="commentNewReplyForm" ng-show="showNewReplyForm" ng-submit="submitReply(newReply)">
-                <textarea class="form-control" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" pui-auto-focus="showNewReplyForm"></textarea>
+                <textarea class="form-control" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" pui-auto-focus="isAutoFocusNewReply"></textarea>
                 <button type="submit" class="btn btn-sm btn-primary">Post</button>
                 <a href ng-click="showNewReplyForm = false">Cancel</a>
             </form>
