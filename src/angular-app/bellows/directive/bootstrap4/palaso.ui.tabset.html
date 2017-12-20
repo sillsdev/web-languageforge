@@ -6,7 +6,7 @@
                class="dropdown-item tab-link">{{tab.heading}}</a>
         </div>
     </div>
-    <ul class="nav nav-tabs d-none d-md-block tab-links">
+    <ul class="nav nav-tabs d-none d-md-flex tab-links">
     <li class="nav-item" ng-repeat="tab in tabset.tabs" >
         <a ng-click="tabset.selectTab($index)" ng-if="tab.visible()" class="nav-link tab-link"
            ng-class="{'active': tab.selected}" href>{{tab.heading}}</a>

@@ -5,8 +5,8 @@
         <!-- control buttons -->
         <div class="form-group">
             <button data-ng-click="$ctrl.showAllFields = !$ctrl.showAllFields" class="btn btn-sm">
-                <i data-ng-class="'fa fa-' + $ctrl.showAllFields ? 'minus-square-o' : 'plus-square-o'"></i>
-                <span class="d-none d-md-inline-block">{{$ctrl.showAllFields ? 'Show Only Common Fields' : 'Show All Fields'}}</span>
+                <i data-ng-class="'fa ' + ($ctrl.showAllFields ? 'fa-minus-square-o' : 'fa-plus-square-o')"></i>
+                {{$ctrl.showAllFields ? 'Show Only Common Fields' : 'Show All Fields'}}
             </button>
         </div>
 
@@ -104,9 +104,9 @@
 
             <div data-ng-if="$ctrl.fieldConfigItemExists('inputSystems')">
                 <hr>
-                <div class="row outer-flex form-group" data-ng-show="$ctrl.editInputSystems.collapsed">
-                    <div class="col-md-4 picklists">
-                        <label class="col-form-label" for="inputSystem">Input Systems</label>
+                <div class="row align-items-start form-group" data-ng-show="$ctrl.editInputSystems.collapsed">
+                    <label class="col-form-label col-12" for="inputSystem">Input Systems</label>
+                    <div class="col-xs-auto picklists">
                         <ul class="list-unstyled indent1"  id="inputSystem">
                             <li data-ng-click="$ctrl.fccCurrentField.inputSystems.tag = inputSystemTag"
                                 data-ng-repeat="inputSystemTag in $ctrl.fccCurrentField.inputSystems.fieldOrder"
@@ -116,9 +116,8 @@
                                     {{$ctrl.fccConfigDirty.inputSystems[inputSystemTag].abbreviation}}</div>
                             </li>
                         </ul>
-                        <a href="" data-ng-click="$ctrl.editInputSystems.collapsed = false">Edit input systems</a>
                     </div>
-                    <div class="col-md-1 btn-group-vertical">
+                    <div class="col-xs-auto btn-group-vertical" style="margin-left: 3rem; margin-right: 3rem">
                         <button class="btn btn-std" id="upButton"
                                 data-ng-click="$ctrl.moveUp($ctrl.fccCurrentField.inputSystems.tag)"
                                 data-ng-disabled="$ctrl.fccCurrentField.inputSystems.fieldOrder[0] == $ctrl.fccCurrentField.inputSystems.tag || !$ctrl.fccCurrentField.inputSystems.tag">
@@ -127,6 +126,9 @@
                                 data-ng-click="$ctrl.moveDown($ctrl.fccCurrentField.inputSystems.tag)"
                                 data-ng-disabled="$ctrl.fccCurrentField.inputSystems.fieldOrder[$ctrl.fccCurrentField.inputSystems.fieldOrder.length - 1] == $ctrl.fccCurrentField.inputSystems.tag || !$ctrl.fccCurrentField.inputSystems.tag">
                             <i class="fa fa-arrow-down"></i></button>
+                    </div>
+                    <div class="col-12">
+                        <a href="" data-ng-click="$ctrl.editInputSystems.collapsed = false">Edit input systems</a>
                     </div>
                 </div>
                 <div uib-collapse="$ctrl.editInputSystems.collapsed">
