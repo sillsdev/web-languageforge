@@ -1,3 +1,6 @@
+import { InputSystem } from '../../../../bellows/shared/model/input-system.model';
+import { ParatextProject } from '../../../../bellows/shared/model/paratext-user-info.model';
+
 export class TranslateProject {
   config?: TranslateConfig;
 
@@ -24,14 +27,14 @@ export class TranslateConfig {
   isTranslationDataShared?: boolean | string;
   isTranslationDataScripture?: boolean;
   metrics: TranslateConfigMetrics;
-  source: TranslateConfigDocType;
-  target: TranslateConfigDocType;
+  source?: TranslateConfigDocType;
+  target?: TranslateConfigDocType;
   userPreferences: TranslateUserPreferences;
 }
 
 export class TranslateConfigDocType {
-  /** @var InputSystem */
-  inputSystem: any;
+  inputSystem?: InputSystem;
+  paratextProject?: ParatextProject;
 }
 
 export class TranslateConfigDocumentSets {

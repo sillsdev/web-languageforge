@@ -104,7 +104,9 @@ class ParatextOAuthProvider extends AbstractProvider
             'openid',
             'projects:read',
             'data_access',
-            'offline_access'
+            'offline_access',
+            'projects.members:read',
+            'projects.members:write'
         ];
     }
 

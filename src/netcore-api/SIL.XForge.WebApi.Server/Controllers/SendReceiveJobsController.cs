@@ -7,6 +7,8 @@ using SIL.XForge.WebApi.Server.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using MongoDB.Driver;
 
 namespace SIL.XForge.WebApi.Server.Controllers
 {
@@ -50,14 +52,18 @@ namespace SIL.XForge.WebApi.Server.Controllers
         }
 
         [HttpPost]
+        // TODO: cannot use ProjectAuthorize attribute
         [ProjectAuthorize(Domain.Projects, Operation.Edit)]
         public async Task<IActionResult> CreateAsync([FromBody] string projectId)
         {
-            SendReceiveJob job = await _jobRepo.UpdateAsync(j => j.ProjectRef == projectId,
-                b => b.SetOnInsert(j => j.ProjectRef, projectId), true);
-            _sendReceiveService.StartJob(job);
+            SendReceiveJob job = await _jobRepo.UpdateAsync(j => j.ProjectRef == projectId
+                && j.State != SendReceiveJob.IdleState,
+                b => b.SetOnInsert(j => j.ProjectRef, projectId)
+                      .SetOnInsert(j => j.State, SendReceiveJob.PendingState), true);
             SendReceiveJobDto dto = CreateDto(job);
-            return Created(dto.Href, dto);
+            if (_sendReceiveService.StartJob(job))
+                return Created(dto.Href, dto);
+            return Ok(dto);
         }
 
         [HttpDelete("{id}")]
@@ -88,7 +94,9 @@ namespace SIL.XForge.WebApi.Server.Controllers
             {
                 Id = job.Id.ToString(),
                 Href = Url.RouteUrl(RouteNames.SendReceiveJobs) + "/" + job.Id,
-                Project = new ResourceDto { Id = job.ProjectRef }
+                Project = new ResourceDto { Id = job.ProjectRef },
+                PercentCompleted = job.PercentCompleted,
+                State = job.State
             };
         }
     }
