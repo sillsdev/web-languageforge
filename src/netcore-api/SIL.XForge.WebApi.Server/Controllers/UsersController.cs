@@ -45,7 +45,18 @@ namespace SIL.XForge.WebApi.Server.Controllers
             return new ParatextUserInfoDto
             {
                 Username = userInfo.Username,
-                Projects = userInfo.Projects.Select(p => new ParatextProjectDto { Id = p.Id, Name = p.Name }).ToArray()
+                Projects = userInfo.Projects.Select(CreateDto).ToArray()
+            };
+        }
+
+        private ParatextProjectDto CreateDto(ParatextProject project)
+        {
+            return new ParatextProjectDto
+            {
+                Id = project.Id,
+                Name = project.Name,
+                LanguageTag = project.LanguageTag,
+                LanguageName = project.LanguageName
             };
         }
     }

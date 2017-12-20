@@ -5,9 +5,11 @@ import { InputSystemsService } from '../../../bellows/core/input-systems/input-s
 import { LinkService } from '../../../bellows/core/link.service';
 import { NoticeService } from '../../../bellows/core/notice/notice.service';
 import { SessionCallback, SessionService } from '../../../bellows/core/session.service';
+import { InputSystem } from '../../../bellows/shared/model/input-system.model';
 import { ParatextProject, ParatextUserInfo } from '../../../bellows/shared/model/paratext-user-info.model';
 import { JsonRpcCallback, TranslateProjectService } from '../core/translate-project.service';
-import { TranslateConfig, TranslateProject } from '../shared/model/translate-project.model';
+import { TranslateSendReceiveService } from '../core/translate-send-receive.service';
+import { TranslateConfig, TranslateConfigDocType, TranslateProject } from '../shared/model/translate-project.model';
 
 export class InterfaceConfig {
   direction = 'ltr';
@@ -47,8 +49,8 @@ export class TranslateNewProjectController implements angular.IController {
   projectCodeStateDefer: angular.IDeferred<string>;
   show: Show;
   paratextUserInfo: ParatextUserInfo;
-  sourceProject: ParatextProject;
-  targetProject: ParatextProject;
+  sourceParatextProject: ParatextProject;
+  targetParatextProject: ParatextProject;
   isRetrievingParatextUserInfo: boolean = false;
 
   // Shorthand to make things look a touch nicer
@@ -62,14 +64,16 @@ export class TranslateNewProjectController implements angular.IController {
     '$state', 'sessionService',
     'silNoticeService', 'inputSystems',
     'translateProjectApi', 'linkService',
-    'userRestApiService'
+    'userRestApiService',
+    'translateSendReceiveService'
   ];
   constructor(private $scope: angular.IScope, private $q: angular.IQService,
               private $filter: angular.IFilterService, private $window: angular.IWindowService,
               private $state: angular.ui.IStateService, private sessionService: SessionService,
               private notice: NoticeService, private inputSystems: InputSystemsService,
               private projectApi: TranslateProjectService, private linkService: LinkService,
-              private userRestApiService: UserRestApiService) {}
+              private userRestApiService: UserRestApiService,
+              private translateSendReceiveService: TranslateSendReceiveService) {}
 
   $onInit() {
     this.interfaceConfig = new InterfaceConfig();
@@ -310,11 +314,11 @@ export class TranslateNewProjectController implements angular.IController {
       return this.error();
     }
 
-    if (this.sourceProject == null || this.targetProject == null) {
+    if (this.sourceParatextProject == null || this.targetParatextProject == null) {
       return this.error();
     }
 
-    if (this.sourceProject.id === this.targetProject.id) {
+    if (this.sourceParatextProject.id === this.targetParatextProject.id) {
       return this.error('The source and target projects cannot be the same.');
     }
 
@@ -329,14 +333,16 @@ export class TranslateNewProjectController implements angular.IController {
         this.show.cloning = true;
         this.show.nextButton = false;
         this.resetValidateProjectForm();
-        this.createProject().then(success => {
-          if (success) {
-            // TODO: start send/receive here
-          }
-        });
+
+        this.updateConfigForParatextProject('source', this.sourceParatextProject);
+        this.updateConfigForParatextProject('target', this.targetParatextProject);
+
+        this.createProject()
+          .then(() => this.updateConfig())
+          .then(() => this.translateSendReceiveService.startClone(this.newProject.id))
+          .then(() => this.gotoEditor());
         break;
       case 'newProject.sendReceiveClone':
-        // TODO: go to translation project when send/receive completes
         break;
       case 'newProject.name':
         this.$state.go(this.isSRProject ? 'newProject.sendReceiveCredentials' : 'newProject.languages');
@@ -351,12 +357,8 @@ export class TranslateNewProjectController implements angular.IController {
         break;
       case 'newProject.languages':
         this.createProject()
-          .then(success => success ? this.updateConfig() : false)
-          .then(success => {
-            if (success) {
-              this.gotoEditor();
-            }
-          });
+          .then(() => this.updateConfig())
+          .then(() => this.gotoEditor());
         break;
     }
   }
@@ -440,11 +442,36 @@ export class TranslateNewProjectController implements angular.IController {
     return this.projectCodeStateDefer.promise;
   }
 
-  private createProject(): angular.IPromise<boolean> {
+  // ----- Step 2: select source and target languages -----
+
+  updateLanguage(docType: string, code: string, language: any) {
+    const configDocType: TranslateConfigDocType = this.newProject.config[docType] || new TranslateConfigDocType();
+    if (configDocType.inputSystem == null) {
+      configDocType.inputSystem = new InputSystem();
+    }
+    configDocType.inputSystem.tag = code;
+    configDocType.inputSystem.languageName = language.name;
+    this.newProject.config[docType] = configDocType;
+  }
+
+  // ----- Project creation -----
+
+  private updateConfigForParatextProject(docType: string, paratextProject: ParatextProject): void {
+    const configDocType: TranslateConfigDocType = this.newProject.config[docType] || new TranslateConfigDocType();
+    configDocType.paratextProject = paratextProject;
+    if (configDocType.inputSystem == null) {
+      configDocType.inputSystem = new InputSystem();
+    }
+    configDocType.inputSystem.tag = paratextProject.languageTag;
+    configDocType.inputSystem.languageName = paratextProject.languageName;
+    this.newProject.config[docType] = configDocType;
+  }
+
+  private createProject(): angular.IPromise<void> {
     if (!this.newProject.projectName || !this.newProject.projectCode ||
       !this.newProject.appName) {
       // This function sometimes gets called during setup, when this.newProject is still empty.
-      return this.$q.resolve(false);
+      return this.$q.resolve();
     }
 
     return this.projectApi.createSwitchSession(this.newProject.projectName,
@@ -452,34 +479,21 @@ export class TranslateNewProjectController implements angular.IController {
     ).then(result => {
       if (result.ok) {
         this.newProject.id = result.data;
-        return this.sessionService.getSession(true).then(session => true);
+        return this.sessionService.getSession(true).then(session => { });
       } else {
         this.notice.push(this.notice.ERROR, 'The ' + this.newProject.projectName +
           ' project could not be created. Please try again.');
-        return false;
+        return this.$q.reject();
       }
     });
   }
 
-  // ----- Step 2: select source and target languages -----
-
-  private updateConfig(): angular.IPromise<boolean> {
+  private updateConfig(): angular.IPromise<void> {
     return this.projectApi.updateConfig(this.newProject.config).then(result => {
-      if (result.ok) {
-        this.notice.push(this.notice.SUCCESS,
-          this.newProject.projectName + ' configuration updated successfully.');
-        return true;
-      } else {
+      if (!result.ok) {
         this.makeFormInvalid('Could not save languages for ' + this.newProject.projectName);
-        return false;
+        return this.$q.reject();
       }
     });
   }
-
-  updateLanguage(docType: string, code: string, language: any) {
-    this.newProject.config[docType] = this.newProject.config[docType] || {};
-    this.newProject.config[docType].inputSystem.tag = code;
-    this.newProject.config[docType].inputSystem.languageName = language.name;
-  }
-
 }

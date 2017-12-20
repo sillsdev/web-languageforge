@@ -1,7 +1,7 @@
 import { inputSystemsRegions } from '../../../../bellows/core/input-systems/input-systems.regions';
 import { inputSystemsScripts } from '../../../../bellows/core/input-systems/input-systems.scripts';
 import { UtilityService } from '../../../../bellows/core/utility.service';
-import { InputSystem } from '../../shared/model/input-system.model';
+import { InputSystem } from '../../../../bellows/shared/model/input-system.model';
 import { OptionSelects } from './option-selects.model';
 
 /**
