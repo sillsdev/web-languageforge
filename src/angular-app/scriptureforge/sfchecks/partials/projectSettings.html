@@ -80,9 +80,9 @@
                 <td>{{user.username}}</td>
                 <td>{{user.name}}</td>
                 <td data-ng-show="user.id == project.ownerRef.id">
-                    <label><select class="form-control" disabled><option>Manager and Project Owner</option></select></label></td>
+                    <label><select class="form-control custom-select" disabled><option>Manager and Project Owner</option></select></label></td>
                 <td data-ng-hide="user.id == project.ownerRef.id">
-                    <label><select class="form-control" data-ng-model="user.role" data-ng-change="onRoleChange(user)"
+                    <label><select class="form-control custom-select" data-ng-model="user.role" data-ng-change="onRoleChange(user)"
                                    data-ng-options="role.key as role.name for role in roles"></select></label></td>
             </tr>
             </tbody>

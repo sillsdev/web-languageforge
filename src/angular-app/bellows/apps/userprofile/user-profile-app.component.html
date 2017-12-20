@@ -61,10 +61,10 @@
                                             </div>
                                             <div class="col-md-8">
                                                 <!--suppress HtmlFormInputWithoutLabel -->
-                                                <select data-ng-model="$ctrl.user.avatar_color" class="form-control" data-ng-options="c.value as c.label for c in $ctrl.dropdown.avatarColors"><option value="">Select a Color...</option></select>
-                                                <br/>
+                                                <select data-ng-model="$ctrl.user.avatar_color" class="form-control custom-select" data-ng-options="c.value as c.label for c in $ctrl.dropdown.avatarColors"><option value="">Select a Color...</option></select>
+                                                <br><br>
                                                 <!--suppress HtmlFormInputWithoutLabel -->
-                                                <select data-ng-model="$ctrl.user.avatar_shape" class="form-control" data-ng-options="s.value as s.label for s in $ctrl.dropdown.avatarShapes"><option value="">Choose an animal...</option></select>
+                                                <select data-ng-model="$ctrl.user.avatar_shape" class="form-control custom-select" data-ng-options="s.value as s.label for s in $ctrl.dropdown.avatarShapes"><option value="">Choose an animal...</option></select>
                                             </div>
                                         </div>
                                     </div>
@@ -126,7 +126,7 @@
                                         <div class="form-group form-group-last row">
                                             <label class="col-form-label col-md-4 text-md-right" for="gender">Gender</label>
                                             <div class="col-md-8">
-                                                <select class="form-control" id="gender" data-ng-model="$ctrl.user.gender">
+                                                <select class="form-control custom-select" id="gender" data-ng-model="$ctrl.user.gender">
                                                     <option>Male</option>
                                                     <option>Female</option>
                                                 </select>
@@ -142,27 +142,32 @@
                                     <div class="col-sm-6 col-md-5 col-lg-4">
                                         <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('city') >= 0">
                                             <label for="cityInput">{{project.userProperties.userProfilePickLists['city'].name}}</label>
-                                            <select id="cityInput" data-ng-model="project.userProperties.userProfilePickLists['city'].defaultKey"
+                                            <select id="cityInput" class="custom-select"
+                                                    data-ng-model="project.userProperties.userProfilePickLists['city'].defaultKey"
                                                     data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['city'].items"></select>
                                         </div>
                                         <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('preferredBibleVersion') >= 0">
                                             <label for="bibleVersionInput">{{project.userProperties.userProfilePickLists['preferredBibleVersion'].name}}</label>
-                                            <select id="bibleVersionInput" data-ng-model="project.userProperties.userProfilePickLists['preferredBibleVersion'].defaultKey"
+                                            <select id="bibleVersionInput" class="custom-select"
+                                                    data-ng-model="project.userProperties.userProfilePickLists['preferredBibleVersion'].defaultKey"
                                                     data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['preferredBibleVersion'].items"></select>
                                         </div>
                                         <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('religiousAffiliation') >= 0">
                                             <label for="affiliationInput">{{project.userProperties.userProfilePickLists['religiousAffiliation'].name}}</label>
-                                            <select id="affiliationInput" data-ng-model="project.userProperties.userProfilePickLists['religiousAffiliation'].defaultKey"
+                                            <select id="affiliationInput" class="custom-select"
+                                                    data-ng-model="project.userProperties.userProfilePickLists['religiousAffiliation'].defaultKey"
                                                     data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['religiousAffiliation'].items"></select>
                                         </div>
                                         <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('studyGroup') >= 0">
                                             <label for="studyGroupInput">{{project.userProperties.userProfilePickLists['studyGroup'].name}}</label>
-                                            <select id="studyGroupInput" data-ng-model="project.userProperties.userProfilePickLists['studyGroup'].defaultKey"
+                                            <select id="studyGroupInput" class="custom-select"
+                                                    data-ng-model="project.userProperties.userProfilePickLists['studyGroup'].defaultKey"
                                                     data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['studyGroup'].items"></select>
                                         </div>
                                         <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('feedbackGroup') >= 0">
                                             <label for="feedbackGroupInput">{{project.userProperties.userProfilePickLists['feedbackGroup'].name}}</label>
-                                            <select id="feedbackGroupInput" data-ng-model="project.userProperties.userProfilePickLists['feedbackGroup'].defaultKey"
+                                            <select id="feedbackGroupInput" class="custom-select"
+                                                    data-ng-model="project.userProperties.userProfilePickLists['feedbackGroup'].defaultKey"
                                                     data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['feedbackGroup'].items"></select>
                                         </div>
                                     </div>
