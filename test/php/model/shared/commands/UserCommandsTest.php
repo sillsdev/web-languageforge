@@ -349,12 +349,6 @@ class UserCommandsTest extends TestCase
         UserCommands::createSimple($name, $projectId, $currentUserId, self::$environ->website);
     }
 
-    // TODO: Register within a project context
-    public function testRegister_WithProjectCode_UserInProjectAndProjectHasUser()
-    {
-        $this->markTestIncomplete('TODO: implement this');
-    }
-
     public function testRegister_NoProjectCode_UserInNoProjects()
     {
         $validCode = 'validCode';
