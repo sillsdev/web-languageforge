@@ -1,18 +1,18 @@
 <div class="container" data-ng-controller="SettingsCtrl" id="lexAppSettingsView">
-    <br><h2><span class="notranslate">{{project.projectName}}</span> <span data-translate="Settings"></span></h2>
-    <!-- <h2 translate="{projectName} Settings" translate-values="{projectName: project.projectName}"></h2> -->
+    <br>
+    <h2><span class="notranslate">{{project.projectName}}</span> Settings</h2>
     <uib-tabset>
-        <uib-tab heading="{{'Project Properties' | translate}}">
+        <uib-tab heading="Project Properties">
             <form class="card card-body bg-light ng-pristine ng-valid ng-scope ng-submitted" data-ng-submit="updateProject()" style="">
                 <fieldset data-ng-disabled="!rights.remove">
                     <div class="form-group row">
-                        <label class="col-form-label col-12" for="projName" data-translate="Project Name"></label>
+                        <label class="col-form-label col-12" for="projName">Project Name</label>
                         <div class="controls col-12">
-                            <input id="projName" type="text" class="form-control" placeholder="project name" data-ng-model="project.projectName" />
+                            <input id="projName" type="text" class="form-control" placeholder="project name" data-ng-model="project.projectName">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-12" for="language" data-translate="Default Interface Language"></label>
+                        <label class="col-form-label col-12" for="language">Default Interface Language</label>
                         <div class="controls col-12">
                             <select class="form-control custom-select" id="language"
                                 data-ng-model="project.interfaceLanguageCode"
@@ -22,13 +22,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-12">{{'Project Code' | translate}}</label>
+                        <label class="col-form-label col-12">Project Code</label>
                         <div class="controls col-12 notranslate">
                             {{project.projectCode}}
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-12">{{'Project Owner' | translate}}</label>
+                        <label class="col-form-label col-12">Project Owner</label>
                         <div class="controls col-12 notranslate">
                             {{project.ownerRef.username}}
                         </div>
@@ -36,13 +36,13 @@
                     <!--
                     <div class="form-group row">
                         <div class="controls col-12">
-                            <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"/> {{'Featured On Website' | translate}}</label>
+                            <label class="checkbox"><input type="checkbox" data-ng-model="project.featured"> Featured On Website></label>
                         </div>
                     </div>
                     -->
                     <div class="form-group row">
                         <div class="controls col-12">
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> {{'Save' | translate}}</button>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
                         </div>
                     </div>
                 </fieldset>
@@ -50,13 +50,13 @@
         </uib-tab>
 
         <!-- Archive tab disabled now that project owners can delete their own projects -->
-        <uib-tab heading="{{'Archive' | translate}}" data-ng-show="false">
+        <uib-tab heading="Archive" data-ng-show="false">
             <form class="card card-body bg-light">
                 <pui-archive-project pui-action-in-progress="actionInProgress">
                 </pui-archive-project>
             </form>
         </uib-tab>
-        <uib-tab heading="{{'Delete' | translate}}" data-ng-show="rights.remove">
+        <uib-tab heading="Delete" data-ng-show="rights.remove">
             <form class="card card-body bg-light">
                 <pui-delete-project></pui-delete-project>
             </form>
