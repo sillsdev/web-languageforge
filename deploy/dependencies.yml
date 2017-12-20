@@ -296,6 +296,14 @@
         - "es_401"
       when: inventory_hostname == "localhost"
 
+    - name: install languageforge-web-api init script
+      copy: src=../scripts/server/init/languageforge-web-api dest=/etc/init.d/languageforge-web-api owner=root group=root mode=0755
+      when: is_build_agent is defined and is_build_agent == true
+
+    - name: enable languageforge-web-api service
+      service: name=languageforge-web-api enabled=yes
+      when: is_build_agent is defined and is_build_agent == true
+
   handlers:
     - name: restart mongodb
       service: name=mongodb state=restarted
