@@ -1,16 +1,16 @@
 <div class="commentContainer card">
-    <div class="card-body" ng-class="{resolvedComment: comment.status == 'resolved'}">
+    <div class="card-body" data-ng-class="{resolvedComment: comment.status == 'resolved'}">
         <div class="commentContentContainer">
             <div class="comment-body">
                 <div class="comment-status">
-                    <div ng-show="comment.status == 'resolved'" class="comment-status-resolved" title="This comment is marked as resolved">
+                    <div data-ng-show="comment.status == 'resolved'" class="comment-status-resolved" title="This comment is marked as resolved">
                         <i style="color: #8be25c;" class="fa fa-check"></i> Resolved
                     </div>
-                    <div ng-show="comment.status == 'todo'" class="comment-status-todo" title="This comment is marked as todo">
+                    <div data-ng-show="comment.status == 'todo'" class="comment-status-todo" title="This comment is marked as todo">
                         <i class="fa fa-edit"></i> Todo
                     </div>
                 </div>
-                <div class="commentRegarding card card-default" ng-show="comment.regarding.field">
+                <div class="commentRegarding card card-default" data-ng-show="comment.regarding.field">
                     <div class="card-body">
                         <div class="form-group">
                             <span class="regardingContext">{{comment.regarding.word}}</span>
@@ -31,79 +31,79 @@
                         </div>
                     </div>
                 </div>
-                <div class="commentContent" ng-hide="comment.editing" ng-bind="comment.content"></div>
-                <div ng-show="comment.editing" class="commentEditing">
+                <div class="commentContent" data-ng-hide="comment.editing" data-ng-bind="comment.content"></div>
+                <div data-ng-show="comment.editing" class="commentEditing">
+                    <!--suppress HtmlFormInputWithoutLabel -->
                     <textarea class="form-control" data-ng-model="editingCommentContent"></textarea>
                     <div>
-                        <button data-ng-disabled="!comment.content" class="btn btn-sm btn-primary float-right" ng-click="updateComment(comment)">Update</button>
-                        <a class="btn btn-sm btn-std float-left" ng-click="comment.editing = false">Cancel</a>
-
+                        <button data-ng-disabled="!comment.content" class="btn btn-sm btn-primary float-right" data-ng-click="updateComment(comment)">Update</button>
+                        <a class="btn btn-sm btn-std float-left" data-ng-click="comment.editing = false">Cancel</a>
                     </div>
                 </div>
             </div>
             <div class="comment-footer">
                 <div>
-                    <img class="rounded-circle" ng-src="{{getAvatarUrl(comment.authorInfo.createdByUserRef.avatar_ref)}}">
+                    <img class="rounded-circle" data-ng-src="{{getAvatarUrl(comment.authorInfo.createdByUserRef.avatar_ref)}}">
                 </div>
                 <div class="data-and-author">
                     <div class="commentAuthor">{{comment.authorInfo.createdByUserRef.name}}</div>
                     <div class="commentDate">{{comment.authorInfo.createdDate | relativetime}}</div>
                 </div>
                 <div class="commentPlusOne">{{comment.score}}
-                    <i ng-show="canPlusOneComment(comment.id) && rights.canComment() && comment.status != 'resolved'" style="cursor: pointer"
-                        ng-click="plusOneComment(comment.id)" title="Like comment" class="fa fa-thumbs-o-up"></i>
-                    <i ng-hide="canPlusOneComment(comment.id) && rights.canComment() && comment.status != 'resolved'" style="opacity: 0.5" class="fa fa-thumbs-o-up"></i>
+                    <i data-ng-show="canPlusOneComment(comment.id) && rights.canComment() && comment.status != 'resolved'" style="cursor: pointer"
+                        data-ng-click="plusOneComment(comment.id)" title="Like comment" class="fa fa-thumbs-o-up"></i>
+                    <i data-ng-hide="canPlusOneComment(comment.id) && rights.canComment() && comment.status != 'resolved'" style="opacity: 0.5" class="fa fa-thumbs-o-up"></i>
                 </div>
                 <div class="dropdown float-right" uib-dropdown>
                     <button class="btn btn-sm btn-std ellipsis-menu pui-no-caret" uib-dropdown-toggle type="button"><i class="fa fa-ellipsis-v"></i></button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a href class="dropdown-item" ng-show="comment.status != 'open'" ng-click="updateCommentStatus(comment.id, 'open')"><i class="fa fa-chevron-circle-up"></i> Reopen comment</a>
-                        <a href class="dropdown-item" ng-show="comment.status != 'resolved'" ng-click="updateCommentStatus(comment.id, 'resolved')"><i class="fa fa-check"></i> Mark as resolved</a>
-                        <a href class="dropdown-item" ng-show="comment.status != 'todo'" ng-click="updateCommentStatus(comment.id, 'todo')"><i class="fa fa-edit"></i> Mark as to-do</a>
-
+                    <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+                        <a href class="dropdown-item" data-ng-show="comment.status != 'open'" data-ng-click="updateCommentStatus(comment.id, 'open')"><i class="fa fa-chevron-circle-up"></i> Reopen comment</a>
+                        <a href class="dropdown-item" data-ng-show="comment.status != 'resolved'" data-ng-click="updateCommentStatus(comment.id, 'resolved')"><i class="fa fa-check"></i> Mark as resolved</a>
+                        <a href class="dropdown-item" data-ng-show="comment.status != 'todo'" data-ng-click="updateCommentStatus(comment.id, 'todo')"><i class="fa fa-edit"></i> Mark as to-do</a>
                         <div class="dropdown-divider"></div>
-                        <a href class="dropdown-item" ng-show="rights.canEditComment(comment.authorInfo.createdByUserRef.id)" ng-click="editComment()"><i class="fa fa-pencil"></i> Edit</a>
-                        <a href class="dropdown-item" ng-show="rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && !comment.editing"
-                            ng-click="deleteComment(comment)"><i class="fa fa-trash" ></i> Delete</a>
+                        <a href class="dropdown-item" data-ng-show="rights.canEditComment(comment.authorInfo.createdByUserRef.id)" data-ng-click="editComment()"><i class="fa fa-pencil"></i> Edit</a>
+                        <a href class="dropdown-item" data-ng-show="rights.canDeleteComment(comment.authorInfo.createdByUserRef.id) && !comment.editing"
+                            data-ng-click="deleteComment(comment)"><i class="fa fa-trash" ></i> Delete</a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="commentRepliesContainer">
-            <div ng-repeat="reply in comment.replies" ng-mouseenter="reply.hover = true" ng-mouseleave="reply.hover = false" class="reply">
-                <div ng-hide="reply.editing" class="comment-replies">
+            <div data-ng-repeat="reply in comment.replies" data-ng-mouseenter="reply.hover = true" data-ng-mouseleave="reply.hover = false" class="reply">
+                <div data-ng-hide="reply.editing" class="comment-replies">
                     <div class="reply-body">
                         <span class="replyContent">{{reply.content}}</span><span class="commentAuthor"> - {{reply.authorInfo.createdByUserRef.name}}</span>
                         <span class="commentDate">{{reply.authorInfo.createdDate | relativetime}}</span>
                     </div>
-                    <div ng-show="comment.status != 'resolved'" class="reply-actions">
+                    <div data-ng-show="comment.status != 'resolved'" class="reply-actions">
                         <div class="dropdown float-right" uib-dropdown>
                             <button class="btn btn-sm btn-std ellipsis-menu pui-no-caret" uib-dropdown-toggle type="button"><i class="fa fa-ellipsis-v"></i></button>
-                            <div class="dropdown-menu dropdown-menu-right">
+                            <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
                                 <a href class="btn btn-sm btn-std dropdown-item editReplyLink"
-                                   ng-show="rights.canEditComment(reply.authorInfo.createdByUserRef.id)"
-                                   ng-click="editReply(reply)">
+                                   data-ng-show="rights.canEditComment(reply.authorInfo.createdByUserRef.id)"
+                                   data-ng-click="editReply(reply)">
                                     <i class="fa fa-pencil"></i> Edit</a>
                                 <a href class="btn btn-sm btn-std dropdown-item deleteReplyLink"
-                                   ng-show="rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)"
-                                   ng-click="deleteCommentReply(comment.id, reply)">
+                                   data-ng-show="rights.canDeleteComment(reply.authorInfo.createdByUserRef.id)"
+                                   data-ng-click="deleteCommentReply(comment.id, reply)">
                                     <i class="fa fa-trash"></i> Delete</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <form ng-show="reply.editing" ng-submit="submitReply(reply)">
-                    <textarea class="form-control" ng-model="reply.editingContent" pui-auto-focus="reply.isAutoFocusEditing"></textarea>
+                <form data-ng-show="reply.editing" data-ng-submit="submitReply(reply)">
+                    <!--suppress HtmlFormInputWithoutLabel -->
+                    <textarea class="form-control" data-ng-model="reply.editingContent" pui-auto-focus="reply.isAutoFocusEditing"></textarea>
                     <button type="submit" class="btn btn-sm btn-primary">Update</button>
-                    <a href ng-click="reply.editing = false">Cancel</a>
+                    <a href data-ng-click="reply.editing = false">Cancel</a>
                 </form>
             </div>
-            <form class="commentNewReplyForm" ng-show="showNewReplyForm" ng-submit="submitReply(newReply)">
-                <textarea class="form-control" placeholder="Reply here.  Press Enter when done." ng-model="newReply.editingContent" pui-auto-focus="isAutoFocusNewReply"></textarea>
+            <form class="commentNewReplyForm" data-ng-show="showNewReplyForm" data-ng-submit="submitReply(newReply)">
+                <textarea class="form-control" placeholder="Reply here.  Press Enter when done." data-ng-model="newReply.editingContent" pui-auto-focus="isAutoFocusNewReply"></textarea>
                 <button type="submit" class="btn btn-sm btn-primary">Post</button>
-                <a href ng-click="showNewReplyForm = false">Cancel</a>
+                <a href data-ng-click="showNewReplyForm = false">Cancel</a>
             </form>
         </div>
-        <a href class="btn btn-sm btn-std float-right" ng-show="rights.canComment() && !showNewReplyForm" ng-click="doReply()"><i class="fa fa-reply"></i> Reply</a>
+        <a href class="btn btn-sm btn-std float-right" data-ng-show="rights.canComment() && !showNewReplyForm" data-ng-click="doReply()"><i class="fa fa-reply"></i> Reply</a>
     </div>
 </div>
