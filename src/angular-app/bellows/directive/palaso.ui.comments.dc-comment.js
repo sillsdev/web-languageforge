@@ -30,12 +30,14 @@ angular.module('palaso.ui.comments')
         $scope.doReply = function doReply() {
           hideInputFields();
           $scope.showNewReplyForm = true;
+          $scope.isAutoFocusNewReply = true;
         };
 
         $scope.editReply = function editReply(reply) {
           hideInputFields();
           reply.editing = true;
           reply.editingContent = angular.copy(reply.content);
+          reply.isAutoFocusEditing = true;
         };
 
         $scope.submitReply = function submitReply(reply) {
