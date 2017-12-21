@@ -2,7 +2,7 @@
     <h2 style="font-weight:normal"><span class="notranslate">{{project.name}}</span> Dashboard</h2>
     <div class="notices">
         <alert data-ng-repeat="message in messages" type="info" close="markMessageRead(message.id)">
-            <b>{{message.subject}}</b><br /><span data-ng-bind-html="message.content"></span></alert>
+            <b>{{message.subject}}</b><br><span data-ng-bind-html="message.content"></span></alert>
     </div>
 
     <div id="settingsDropdownButton" class="float-right" uib-dropdown data-ng-show="rights.edit">
@@ -31,7 +31,7 @@
                     <div>
                         <div class="form-group">
                             <label>Title
-                                <input class="form-control" required data-ng-model="title" type="text" placeholder="Title"/>
+                                <input class="form-control" required data-ng-model="title" type="text" placeholder="Title">
                             </label>
                         </div>
                         <div class="form-group">
@@ -41,7 +41,7 @@
                         </div>
                         <div class="form-group">
                             <label>Font Name (optional)
-                                <input class="form-control" data-ng-model="fontfamily" type="text" placeholder="Title" />
+                                <input class="form-control" data-ng-model="fontfamily" type="text" placeholder="Title">
                             </label>
                         </div>
                         <div class="form-group">
@@ -55,16 +55,16 @@
                     <div class="verse-range" uib-collapse="rangeSelectorCollapsed">
                         <div class="form-group">
                             <label>From
-                                <div><input type="number" class="form-control" data-ng-model="startCh" min="1" placeholder="Chap." />
-                                    &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="startVs" min="1" placeholder="Verse" />
+                                <div><input type="number" class="form-control" data-ng-model="startCh" min="1" placeholder="Chap.">
+                                    &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="startVs" min="1" placeholder="Verse">
                                     <button data-ng-click="startCh = ''; startVs = ''" class="btn btn-link">reset</button>
                                 </div>
                             </label>
                         </div>
                         <div class="form-group">
                             <label>To
-                                <div><input type="number" class="form-control" data-ng-model="endCh" min="1" placeholder="Chap." />
-                                    &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="endVs" min="1" placeholder="Verse" />
+                                <div><input type="number" class="form-control" data-ng-model="endCh" min="1" placeholder="Chap.">
+                                    &nbsp;:&nbsp;<input type="number" class="form-control" data-ng-model="endVs" min="1" placeholder="Verse">
                                     <button data-ng-click="endCh = ''; endVs = ''" class="btn btn-link">reset</button>
                                 </div>
                             </label>

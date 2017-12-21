@@ -10,14 +10,14 @@
         </div>     
          <div style="margin-top:10px">
              <label> <b> Don't see your project, type below to create </b>: </label>
-             <br />
+             <br>
              <input 
             
                ng-model="languageCode"
-               ng-change="checkLanguageAvailability()" />
+               ng-change="checkLanguageAvailability()">
              <button ng-click="openNewLanguageModal()" class="btn btn-primary"> Select Language</button>
-             <br/>
-             <br/>
+             <br>
+             <br>
              <button ng-disabled="!canCreate" ng-click="createProject(false)" class="btn btn-primary"> Create Empty Project</button>
              <button ng-show="canCreate && languageHasGoogleTranslateData" ng-click="createProject(true)" class="btn btn-primary"> Create With Google Data</button>
          </div>  

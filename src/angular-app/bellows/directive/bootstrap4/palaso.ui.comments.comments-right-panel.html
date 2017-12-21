@@ -1,6 +1,6 @@
 <div>
     <div class="comments-search-container">
-        <input dir="auto" class="form-control" placeholder="Filter Comments" ng-model="commentFilter.text" type="text" />&nbsp;
+        <input dir="auto" class="form-control" placeholder="Filter Comments" ng-model="commentFilter.text" type="text">&nbsp;
         <span ng-show="commentFilter.text != ''" title="Clear Filter" ng-click="commentFilter.text = ''">
             <i class="fa fa-times"></i>
         </span>
@@ -34,7 +34,7 @@
                                         <regarding-field class="form-control" content="newComment.regarding.fieldValue" field-config="newComment.regardingFieldConfig"> </regarding-field>
                                     </div>
                                     <div data-ng-if="newComment.isRegardingPicture">
-                                        <img data-ng-src="{{newComment.regarding.fieldValue}}" />
+                                        <img data-ng-src="{{newComment.regarding.fieldValue}}">
                                     </div>
                                 </div>
                             </div>

@@ -16,7 +16,7 @@
                     <div class="col-sm-12" data-ng-class="{unread: $ctrl.isUnread(item.id)}">
                         <div class="col-md-1 col-md-1 activity-icon">
                             <!--<i class="fa fa-user-o" aria-hidden="true"></i>-->
-                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}" />
+                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}">
                         </div>
                         <div class="col-md-1 activity-date">
                             {{item.date | relativetime}}
@@ -27,7 +27,7 @@
                                 on <a class="notranslate" href="{{item.textHref}}">{{item.content.text}}</a>
                                 in <a class="notranslate" href="{{item.projectHref}}">{{item.content.project}}</a></span>
                             <p class="indented" data-ng-bind-html="item.content.answer"></p>
-                            <hr />
+                            <hr>
                             <p class="indented notranslate">{{item.content.comment}} - {{item.userRef.username}}</p>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                     <hr>
                     <div class="col-sm-12" data-ng-class="{unread: $ctrl.isUnread(item.id)}">
                         <div class="col-md-1 activity-icon">
-                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}" />
+                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}">
                         </div>
                         <div class="col-md-1 activity-date">
                             {{item.date | relativetime}}
@@ -48,7 +48,7 @@
                                 on <a href="{{item.textHref}}">{{item.content.text}}</a>
                                 in <a href="{{item.projectHref}}">{{item.content.project}}</a></span>
                             <p class="indented" data-ng-bind-html="item.content.answer"></p>
-                            <hr />
+                            <hr>
                             <p class="indented">{{item.content.comment}} - {{item.userRef.username}}</p>
                         </div>
                     </div>
@@ -122,7 +122,7 @@
                     <hr>
                     <div class="col-md-12" data-ng-class="{unread: $ctrl.isUnread(item.id)}">
                         <div class="col-md-1 activity-icon">
-                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}" />
+                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}">
                         </div>
                         <div class="col-md-1 activity-date">
                             {{item.date | relativetime}}
@@ -141,7 +141,7 @@
                     <hr>
                     <div class="col-md-12" data-ng-class="{unread: $ctrl.isUnread(item.id)}">
                         <div class="col-md-1 activity-icon">
-                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}" />
+                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}">
                         </div>
                         <div class="col-sm-1 activity-date">
                             {{item.date | relativetime}}
@@ -178,7 +178,7 @@
                     <hr>
                     <div class="col-sm-12" data-ng-class="{unread: $ctrl.isUnread(item.id)}">
                         <div class="col-sm-1 activity-icon">
-                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}" />
+                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}">
                         </div>
                         <div class="col-sm-2 activity-date">
                             {{item.date | relativetime}}
@@ -195,7 +195,7 @@
                     <hr>
                     <div class="col-sm-12" data-ng-class="{unread: $ctrl.isUnread(item.id)}">
                         <div class="col-sm-1 activity-icon">
-                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}" />
+                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}">
                         </div>
                         <div class="col-sm-2 activity-date">
                             {{item.date | relativetime}}
@@ -212,7 +212,7 @@
                     <hr>
                     <div class="col-sm-12" data-ng-class="{unread: $ctrl.isUnread(item.id)}">
                         <div class="col-sm-1 activity-icon">
-                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}" />
+                            <img width="50px" height="50px" data-ng-src="{{$ctrl.getAvatarUrl(item.userRef.avatar_ref)}}">
                         </div>
                         <div class="col-sm-2 activity-date">
                             {{item.date | relativetime}}
@@ -231,7 +231,7 @@
 
             </ng-switch>
         </div>
-        <div class="col-sm-12"><hr /></div>
+        <div class="col-sm-12"><hr></div>
         <div class="col-sm-12 activity-row" style="margin-top:20px;text-align:center" data-ng-show="$ctrl.filteredActivities.length > 0">
             <button disabled class="btn btn-primary">Show More Activity</button>
         </div>

@@ -18,7 +18,7 @@
                                        maxlength="50"
                                        required placeholder="eg: My Translation"
                                        data-idle-validate="$ctrl.checkProjectCode()"
-                                       data-idle-validate-keypress="$ctrl.resetValidateProjectForm()"  />
+                                       data-idle-validate-keypress="$ctrl.resetValidateProjectForm()" >
                                 <span class="input-group-addon ng-hide" data-ng-show="$ctrl.newProject.projectCode.length > 0 && $ctrl.projectCodeState === 'loading'">
                                     <i id="projectCodeLoading" class="fa fa-spinner fa-spin"></i>
                                 </span>
@@ -46,7 +46,7 @@
                                        required placeholder="eg: my_translation"
                                        data-ng-blur="$ctrl.checkProjectCode()"
                                        data-idle-validate="$ctrl.checkProjectCode()"
-                                       data-idle-validate-keypress="$ctrl.resetValidateProjectForm()" />
+                                       data-idle-validate-keypress="$ctrl.resetValidateProjectForm()">
                             </div>
                             <div class="input-group" data-ng-hide="$ctrl.newProject.editProjectCode">
                                 <input type="text"
@@ -60,7 +60,7 @@
                             </div>
                             <div class="input-group" data-ng-hide="$ctrl.isSRProject">
                                 <label class="checkbox">
-                                    <input type="checkbox" data-ng-model="$ctrl.newProject.editProjectCode" />
+                                    <input type="checkbox" data-ng-model="$ctrl.newProject.editProjectCode">
                                         {{'Edit project code' | translate}}
                                     <span class="text-muted">(You'll almost never need to check this)</span>
                                 </label>

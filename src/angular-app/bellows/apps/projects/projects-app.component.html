@@ -16,7 +16,7 @@
                             <div data-ng-repeat="appName in $ctrl.projectTypesBySite()" class="col-xs-3">
                                 <a data-ng-href="/app/{{appName}}/new-project">
                                     <figure>
-                                        <img data-ng-src="/Site/views/{{$ctrl.siteName}}/image/{{appName}}-newProjectBadge.png" />
+                                        <img data-ng-src="/Site/views/{{$ctrl.siteName}}/image/{{appName}}-newProjectBadge.png">
                                         <figcaption>{{$ctrl.projectTypeNames[appName]}}</figcaption>
                                     </figure>
                                 </a>
@@ -30,7 +30,7 @@
     </div>
     <div class="row" data-ng-show="$ctrl.rights.canEditProjects">
         <div class="col-xs-8 col-md-4">
-            <input class="form-control" type="text" ng-model="projectFilter" placeholder="Project List Filter"/>
+            <input class="form-control" type="text" ng-model="projectFilter" placeholder="Project List Filter">
         </div>
         <div class="col-xs-1">
             <a ng-show="projectFilter.length > 0" title="Clear Filter" ng-click="projectFilter = ''"><i class="fa fa-times" style="color:gray"></i></a>
@@ -39,7 +39,7 @@
     <div class="row">
         <div class="col-12">
             <div style="margin-top:20px;font-weight: bold" ng-show="$ctrl.rights.canEditProjects"><span ng-show="projectFilter.length > 0">Showing <span class="notranslate">{{filteredProjects.length}}</span> of </span><span class="notranslate">{{$ctrl.projects.length}}</span> Projects</div>
-            <hr />
+            <hr>
             <listview hide-if-empty="true" search="$ctrl.queryProjectsForUser()" items-filter="projectFilter" items="$ctrl.projects" filtered-items="filteredProjects" visible-items="visibleProjects" select="">
                 <div data-ng-repeat="project in visibleProjects">
                     <div class="row" data-ng-class="{active: $ctrl.isSelected(project)}">
@@ -48,7 +48,7 @@
                                 <span class="larger-text">{{project.projectName}}</span>
                             </a>
                             <span data-ng-show="!$ctrl.isInProject(project)" class="larger-text">{{project.projectName}}</span>
-                            <br />
+                            <br>
                             <small class="text-muted">{{$ctrl.projectTypeNames[project.appName]}}</small>
                         </div>
                         <div class="col-12 col-sm-6" data-ng-show="$ctrl.rights.canEditProjects">
@@ -57,7 +57,7 @@
                                 <i class="fa fa-plus"></i> Manager</button>
                         </div>
                     </div>
-                    <hr />
+                    <hr>
                 </div>
             </listview>
         </div>
