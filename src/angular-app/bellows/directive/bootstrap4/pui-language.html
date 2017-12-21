@@ -1,11 +1,11 @@
 <div class="container">
-    <div class="row no-gutters">
+    <div class="row no-gutters mb-2">
         <form class="col-md-5">
             <div class="input-group">
                 <div class="search-wrapper">
-                    <input type="text" class="form-control input-medium search-query" placeholder="Search" data-ng-model="searchText" autofocus>
-                    <span id="clearSearch" title="Clear Search" data-ng-click="clearSearch()"
-                        data-ng-show="searchText">
+                    <input type="text" class="form-control w-100 input-medium search-query" placeholder="Search" autofocus
+                           data-ng-model="searchText">
+                    <span id="clearSearch" title="Clear Search" data-ng-click="clearSearch()" data-ng-show="searchText">
                         <i class="fa fa-times"></i>
                     </span>
                 </div>
@@ -15,7 +15,7 @@
                 </span>
             </div>
         </form>
-        <div class="col-xs-6">
+        <div class="col-6">
             <button class="btn btn-primary float-right"
                 data-ng-show="!showSuggestions && puiSuggestedLanguageCodes.length > 0"
                 data-ng-click="suggest()">
@@ -29,10 +29,10 @@
     <div class="row">
         <div class="table table-responsive table-hover table-sm">
             <table class="table table-bordered">
-                <thead class="thead-inverse">
-                <tr>
-                    <th>Name</th><th>Code</th><th>Country</th><th>Other Names</th>
-                </tr>
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th><th>Code</th><th>Country</th><th>Other Names</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr data-ng-class="{'table-info': currentCode == language.code.three}" class="animate-repeat"
@@ -40,8 +40,10 @@
                         data-ng-repeat="language in languages | filter:filterText track by language.code.three">
                         <td class="primary"><div>{{language.name}}</div></td>
                         <td>{{(language.code.two) ? language.code.two : language.code.three}}</td>
-                        <td class="container" title="{{language.country.join(', ')}}"><div>{{language.country.join(', ')}}</div></td>
-                        <td class="container" title="{{language.altNames.join(', ')}}"><div>{{language.altNames.join(', ')}}</div></td>
+                        <td class="container" title="{{language.country.join(', ')}}">
+                            <div>{{language.country.join(', ')}}</div></td>
+                        <td class="container" title="{{language.altNames.join(', ')}}">
+                            <div>{{language.altNames.join(', ')}}</div></td>
                     </tr>
                 </tbody>
             </table>
