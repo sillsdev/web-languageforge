@@ -10,12 +10,12 @@
                 <div style="float:left; margin-right:20px" data-ng-bind-html="notice.message"></div>
                 <a style="font-size: smaller;" data-ng-click="notice.toggleDetails()">Click for details</a>
                 <div style="clear:both" data-ng-show="notice.showDetails">
-                    <hr />
+                    <hr>
                     <pre style="max-height: 600px; overflow-y: auto;">{{notice.details}}</pre>
                     <div ng-if="notice.type == 'danger'">
                         <a target="_blank" data-ng-href="mailto:{{$ctrl.issueEmail}}?subject={{notice.message|encodeURI}}&body={{notice.details|encodeURI}}">
                             Email a bug report to {{$ctrl.issueEmail}}</a>
-                        <br /><i>Please copy error above and include screenshot</i>
+                        <br><i>Please copy error above and include screenshot</i>
                     </div>
                 </div>
             </div>

@@ -242,7 +242,7 @@ export class TranslateEditorController implements angular.IController {
 
   modalDeleteDocumentSet(index: number): void {
     const documentSet = this.documentSets[index];
-    const deleteMessage = 'This will delete both source and target documents.<br /><br />' +
+    const deleteMessage = 'This will delete both source and target documents.<br><br>' +
       'Are you sure you want to delete the document set <b>' +
       documentSet.name + '</b>?';
     this.modal.showModalSimple('Delete Document Set?', deleteMessage, 'Cancel', 'Delete Document Set')
@@ -373,7 +373,7 @@ export class TranslateEditorController implements angular.IController {
 
   train(): void {
     const modalMessage = 'This will train the translation engine using all existing documents. ' +
-      'This can take several minutes and will operate in the background.<br /><br />' +
+      'This can take several minutes and will operate in the background.<br><br>' +
       'Are you sure you want to train the translation engine?';
     this.modal.showModalSimple('Train Translation Engine?', modalMessage, 'Cancel', 'Train')
       .then(() => {

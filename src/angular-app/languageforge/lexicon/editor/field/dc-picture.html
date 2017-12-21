@@ -9,7 +9,7 @@
                        class="fa fa-trash"></i>
                 </div>
                 <img class="img-fluid" data-ng-src="{{getPictureUrl(picture)}}" data-ng-attr-title="{{getPictureDescription(picture)}}"
-                     data-ng-click="control.selectFieldForComment('pictures', picture, '', '', getPictureUrl(picture))"/>
+                     data-ng-click="control.selectFieldForComment('pictures', picture, '', '', getPictureUrl(picture))">
                 <div data-ng-if="!config.captionHideIfEmpty || control.show.emptyFields ||
                  (config.captionHideIfEmpty && fieldContainsData('multitext', picture.caption))">
                     <dc-multitext control="control"

@@ -15,7 +15,7 @@
                                 <input class="form-control" id="name" autofocus
                                        required type="text" name="name"
                                        placeholder="{{'your name' | translate}}"
-                                       data-ng-model="$ctrl.record.name"/>
+                                       data-ng-model="$ctrl.record.name">
                             </div>
                         </div>
                     </div>
@@ -28,7 +28,7 @@
                                        placeholder="{{'your email' | translate}}"
                                        data-ng-blur="$ctrl.validateForm()"
                                        data-ng-disabled="$ctrl.emailProvided"
-                                       data-ng-model="$ctrl.record.email"/>
+                                       data-ng-model="$ctrl.record.email">
                                 <span class="input-group-addon alert-danger" data-ng-show="!$ctrl.emailValid || $ctrl.emailExists">
                                     <i class="fa fa-times"></i></span>
                             </div>
@@ -45,7 +45,7 @@
                                            placeholder="minimum 7 characters"
                                            data-zxcvbn="$ctrl.passwordStrength"
                                            data-ng-change="$ctrl.validateForm()"
-                                           data-ng-model="$ctrl.record.password" />
+                                           data-ng-model="$ctrl.record.password">
                                     <span class="input-group-addon" title="Password Strength"
                                           data-ng-show="$ctrl.record.password.length > 0"
                                           data-ng-class="{'alert-danger': ($ctrl.passwordStrength.score < 2 || $ctrl.record.password.length < 7), 'alert-warning': ($ctrl.passwordStrength.score == 2), 'alert-info': $ctrl.passwordStrength.score == 3, 'alert-success': $ctrl.passwordStrength.score == 4 }">
@@ -58,7 +58,7 @@
                     <div class="form-group row">
                         <div class="controls col-md-8 ml-md-auto">
                             <label class="checkbox">
-                                <input type="checkbox" data-ng-model="$ctrl.showPassword" />
+                                <input type="checkbox" data-ng-model="$ctrl.showPassword">
                                 {{'Show password' | translate}}</label>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                 </div>
             </div>
 
-            <br />
+            <br>
             <div class="row justify-content-center">
                 <span role="alert" class="text-danger" id="captchaInvalid" data-ng-show="$ctrl.captchaFailed">
                     The shape verification failed.  Please try again.<br></span>
@@ -82,7 +82,7 @@
                 <span role="alert" class="text-danger" id="passwordIsWeak" data-ng-show="$ctrl.passwordIsWeak">
                     Password is too weak.<br></span>
             </div>
-            <br />
+            <br>
             <div class="row justify-content-center">
                 <button class="btn btn-primary" type="submit" id="submit"
                         data-ng-disabled="signupForm.$invalid || $ctrl.passwordIsWeak">
@@ -96,7 +96,7 @@
                 </button>
             </div>
             <div class="text-center">
-                <br/>
+                <br>
                 <small data-translate="powered by"></small>
                 <p>{{'Sign-on Identification List' | translate}}</p>
             </div>
