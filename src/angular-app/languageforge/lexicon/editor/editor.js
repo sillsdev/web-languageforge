@@ -30,6 +30,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-comments.html',
         controller: 'EditorCommentsCtrl'
       })
+      .state('editor.rapidWord', {
+        url: '/rapidWord',
+        templateUrl: '/angular-app/languageforge/lexicon/editor/rapid-word-collection.html',
+        controller: 'RapidWordCollectionCtrl'
+      })
       ;
   }])
   .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService', '$q',
@@ -173,6 +178,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
             }
 
             return $q.all({
+              //lexService.entries
               entry: lexService.update(prepEntryForUpdate(entryToSave)),
               isSR: sendReceive.isSendReceiveProject()
             }).then(function (data) {
@@ -921,5 +927,20 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       lexProjectService.setBreadcrumbs('editor/entry', 'Comments');
     }
   ])
-
-  ;
+  .controller('RapidWordCollectionCtrl',['$scope', 'silNoticeService', 'userService', 'lexProjectService',
+  'sessionService', '$filter', 'lexConfigService', 'lexSendReceive',
+function ($scope, notice, userService, lexProjectService,
+          sessionService, $filter, lexConfig, sendReceive,editorService) {
+  var currentTabIndex = 0;
+  var warnOfUnsavedEditsId;
+    function createOptions() {
+      var options = [];
+      angular.forEach(semanticDomains_en, function (item) {
+        options.push(item);
+      });
+      return options;
+    }
+    $scope.options =createOptions();
+lexProjectService.setBreadcrumbs('rapidWord', $filter('translate')('Rapid Word Collection'));
+}
+  ]);
