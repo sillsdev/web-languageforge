@@ -30,7 +30,7 @@
                 <fieldset class="col-md-4">
                     <label class="form-group">Title
                         <input type="text" data-ng-model="questionTitle" class="form-control" maxlength="70"
-                            placeholder="One-line Summary For Title" />
+                            placeholder="One-line Summary For Title">
                     </label>
                     <label class="form-group">Question
                         <textarea required data-ng-model="questionDescription" class="form-control" rows="4"
@@ -40,7 +40,7 @@
                         <input title="A summary title is required for templates"
                             data-ng-disabled="!questionTitle" type="checkbox"
                             data-ng-model="saveAsTemplate"
-                            data-ng-show="rights.createTemplate" />
+                            data-ng-show="rights.createTemplate">
                         Also save as template</label>
                     <a href class="float-right"
                         data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">Cancel</a>
@@ -58,7 +58,7 @@
             </div>
         </form>
     </div>
-    <hr />
+    <hr>
     <div class="row">
         <div class="col-md-5" oncopy="return false;">
             <h2 class="float-left audio-buttons" data-ng-show="text.audioFileName">

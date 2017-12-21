@@ -17,7 +17,7 @@
                                                     <input class="form-control" id="email" autofocus
                                                            required type="email" name="email"
                                                            data-ng-blur="$ctrl.validateForm()"
-                                                           data-ng-model="$ctrl.user.email"/>
+                                                           data-ng-model="$ctrl.user.email">
                                                     <span class="input-group-addon alert-danger" data-ng-show="!$ctrl.emailValid || $ctrl.emailExists">
                                                         <i class="fa fa-times"></i></span>
                                                 </div>
@@ -30,7 +30,7 @@
                                                     <input class="form-control" id="username"
                                                            type="text" name="username"
                                                            data-ng-blur="$ctrl.validateForm();"
-                                                           data-ng-model="$ctrl.user.username"/>
+                                                           data-ng-model="$ctrl.user.username">
                                                     <span class="input-group-addon alert-danger" data-ng-show="!$ctrl.usernameValid || $ctrl.usernameExists">
                                                         <i class="fa fa-times"></i></span>
                                                 </div>
@@ -56,7 +56,7 @@
                                             <div class="col-md-4">
                                                 <label class="col-form-label text-md-right" for="avatarRef">Avatar</label>
                                                 <div class="controls" style="margin-bottom:10px">
-                                                    <img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{$ctrl.getAvatarUrl($ctrl.user.avatar_ref)}}" title="Use the dropdown selections below to change your avatar's color and shape" />
+                                                    <img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{$ctrl.getAvatarUrl($ctrl.user.avatar_ref)}}" title="Use the dropdown selections below to change your avatar's color and shape">
                                                 </div>
                                             </div>
                                             <div class="col-md-8">
@@ -76,7 +76,7 @@
                                         <div class="form-group row">
                                             <label class="col-form-label col-md-4 text-md-right" for="mobile_phone">Mobile Phone Number</label>
                                             <div class="col-md-8">
-                                                <input class="form-control" type="tel" data-pui-intl-tel-input id="mobile_phone" placeholder="###-####" data-ng-model="$ctrl.user.mobile_phone"/>
+                                                <input class="form-control" type="tel" data-pui-intl-tel-input id="mobile_phone" placeholder="###-####" data-ng-model="$ctrl.user.mobile_phone">
                                             </div>
                                         </div>
                                         <div class="form-group form-group-last row">
@@ -111,7 +111,7 @@
                                                 <input class="form-control" id="fullname" autofocus
                                                        type="text" name="fullname"
                                                        placeholder="(full name)"
-                                                       data-ng-model="$ctrl.user.name"/>
+                                                       data-ng-model="$ctrl.user.name">
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -120,7 +120,7 @@
                                                 <input class="form-control" id="age"
                                                        type="text" name="age"
                                                        placeholder="(age)"
-                                                       data-ng-model="$ctrl.user.age"/>
+                                                       data-ng-model="$ctrl.user.age">
                                             </div>
                                         </div>
                                         <div class="form-group form-group-last row">

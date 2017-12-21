@@ -9,26 +9,26 @@
         </div>
     </div>
 </form>
-<hr />
+<hr>
 <listview hide-if-empty="true" items="$ctrl.archivedProjects" visible-items="visibleProjects" select="">
     <div class="details-row" data-ng-repeat="project in visibleProjects">
         <ul class="list-inline" data-ng-class="{ active: $ctrl.isSelected(project) }">
             <li class="list-inline-item" data-ng-show="$ctrl.rights.publish">
                 <!--suppress HtmlFormInputWithoutLabel -->
                 <input type="checkbox" data-ng-checked="$ctrl.isSelected(project)"
-                       data-ng-click="$ctrl.updateSelection($event, project)" />
+                       data-ng-click="$ctrl.updateSelection($event, project)">
             </li>
             <li class="list-inline-item">
                 <span class="col-sm-4">
                     <a href="/app/{{project.appName}}/{{project.id}}/">
                         <span class="larger-text">{{project.projectName}}</span>
                     </a>
-                    <br />
+                    <br>
                     <small class="text-muted">{{$ctrl.projectTypeNames[project.appName]}}</small>
                 </span>
             </li>
             <li class="list-inline-item">Archived on <span class="notranslate">{{project.dateModified | date:'fullDate'}}</span></li>
         </ul>
-        <hr />
+        <hr>
     </div>
 </listview>

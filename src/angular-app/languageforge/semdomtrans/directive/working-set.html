@@ -7,7 +7,7 @@
                         <label> Working Set Name: </label>
                     </td>
                     <td>
-                        <input style="margin-right:10px" ng-model="model.name" />
+                        <input style="margin-right:10px" ng-model="model.name">
                     </td>
                 </tr>
                 <tr>
@@ -35,11 +35,11 @@
                         <label> Is Shared</label>
                     </td>
                     <td>
-                        <input type="checkbox" ng-model="model.isShared" />
+                        <input type="checkbox" ng-model="model.isShared">
                     </td>
                 </tr>
                 </table>
-                <br />
+                <br>
                 <button class="btn btn-primary" ng-click="control.saveWorkingSet(model)" ng-disabled="model.name == ''"> Save </button>
                 <button class="btn btn-std" ng-click="control.cancelEditingWorkingSet()"> Cancel </button>
         </table>

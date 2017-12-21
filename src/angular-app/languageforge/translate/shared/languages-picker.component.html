@@ -3,7 +3,7 @@
     <div class="form-group col-sm-6">
         <label class="col-form-label" for="sourceTag" data-translate="Language Tag"></label>
         <input class="form-control" type="text" id="sourceTag" required
-               data-ng-model="$ctrl.tlpProject.config.source.inputSystem.tag" />
+               data-ng-model="$ctrl.tlpProject.config.source.inputSystem.tag">
         <!--<div class="uneditable-input col-xs-8"
              data-ng-bind="$ctrl.displayLanguage($ctrl.tlpProject.config.source.inputSystem.tag,
               $ctrl.tlpProject.config.source.inputSystem.languageName)"></div>
@@ -17,16 +17,16 @@
     <div class="form-group col-sm-6">
         <label class="col-form-label" for="sourceName" data-translate="Language Name"></label>
         <input class="form-control" type="text" id="sourceName"
-               data-ng-model="$ctrl.tlpProject.config.source.inputSystem.languageName" />
+               data-ng-model="$ctrl.tlpProject.config.source.inputSystem.languageName">
     </div>
 </div>
-<br />
+<br>
 <h3 data-translate="Target Language"></h3>
 <div class="row">
     <div class="form-group col-sm-6">
         <label class="col-form-label" for="targetTag" data-translate="Language Tag"></label>
         <input class="form-control" type="text" id="targetTag" required
-               data-ng-model="$ctrl.tlpProject.config.target.inputSystem.tag" />
+               data-ng-model="$ctrl.tlpProject.config.target.inputSystem.tag">
         <!--<div class="uneditable-input col-xs-8"
              data-ng-bind="$ctrl.displayLanguage($ctrl.tlpProject.config.target.inputSystem.tag,
               $ctrl.tlpProject.config.target.inputSystem.languageName)"></div>
@@ -40,10 +40,10 @@
     <div class="form-group col-sm-6">
         <label class="col-form-label" for="targetName" data-translate="Language Name"></label>
         <input class="form-control" type="text" id="targetName"
-               data-ng-model="$ctrl.tlpProject.config.target.inputSystem.languageName" />
+               data-ng-model="$ctrl.tlpProject.config.target.inputSystem.languageName">
     </div>
 </div>
-<br />
+<br>
 <h3 class="d-none" data-translate="Share Translation Data"></h3>
 <div class="d-none row">
     <div class="form-group col-sm-12">
@@ -51,7 +51,7 @@
             <label>
                 <input type="radio" data-ng-value="false"
                        data-ng-model="$ctrl.tlpProject.config.isTranslationDataShared"
-                       data-ng-required="$ctrl.tlpProject.config.isTranslationDataShared === undefined" />
+                       data-ng-required="$ctrl.tlpProject.config.isTranslationDataShared === undefined">
                 {{'Share other project\'s translation data (improve suggestions) and share this project\'s ' +
                 'translation data (improve other\'s suggestions)' | translate}}
             </label>
@@ -60,7 +60,7 @@
             <label>
                 <input type="radio" data-ng-value="true"
                        data-ng-model="$ctrl.tlpProject.config.isTranslationDataShared"
-                       data-ng-required="$ctrl.tlpProject.config.isTranslationDataShared === undefined" />
+                       data-ng-required="$ctrl.tlpProject.config.isTranslationDataShared === undefined">
                 {{'No thanks, this project\'s translation data is private' | translate}}
             </label>
         </div>
@@ -69,7 +69,7 @@
 <h3 data-translate="Translation Data"></h3>
 <div class="form-group row">
     <div class="controls col-12">
-        <label class="checkbox"><input type="checkbox" data-ng-model="$ctrl.tlpProject.config.isTranslationDataScripture"/>
+        <label class="checkbox"><input type="checkbox" data-ng-model="$ctrl.tlpProject.config.isTranslationDataScripture">
             {{'Text is Scripture' | translate}}</label>
         &nbsp;&nbsp;&nbsp;<a data-ng-click="showTextHelp = !showTextHelp"><i class="fa fa-info-circle"></i></a>
         <small class="text-muted" data-ng-show="showTextHelp">
