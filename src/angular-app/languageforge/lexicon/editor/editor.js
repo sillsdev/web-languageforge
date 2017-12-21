@@ -30,6 +30,11 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
         templateUrl: '/angular-app/languageforge/lexicon/editor/editor-comments.html',
         controller: 'EditorCommentsCtrl'
       })
+      .state('editor.rapidWord', {
+        url: '/rapidWord',
+        templateUrl: '/angular-app/languageforge/lexicon/editor/rapid-word-collection.html',
+        controller: 'RapidWordCollectionCtrl'
+      })
       ;
   }])
   .controller('EditorCtrl', ['$scope', 'userService', 'sessionService', 'lexEntryApiService', '$q',
@@ -173,6 +178,7 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
             }
 
             return $q.all({
+              //lexService.entries
               entry: lexService.update(prepEntryForUpdate(entryToSave)),
               isSR: sendReceive.isSendReceiveProject()
             }).then(function (data) {
@@ -921,5 +927,48 @@ angular.module('lexicon.editor', ['ui.router', 'ui.bootstrap', 'coreModule',
       lexProjectService.setBreadcrumbs('editor/entry', 'Comments');
     }
   ])
+  .controller('RapidWordCollectionCtrl',['$scope', 'silNoticeService', 'userService', 'lexProjectService',
+  'sessionService', '$filter', 'lexConfigService', 'lexSendReceive','lexEditorDataService','lexUtils',
+function ($scope, notice, userService, lexProjectService,
+          sessionService, $filter, lexConfig, sendReceive,editorService,utils) {
+  var currentTabIndex = 0;
+  var warnOfUnsavedEditsId;
+    function createOptions() {
+      var options = [];
+      angular.forEach(semanticDomains_en, function (item) {
+        options.push(item);
+      });
+      return options;
+    }
+    $scope.options =createOptions();
 
-  ;
+    $scope.editorService = editorService;
+    $scope.configService = lexConfig;
+
+    $scope.showEntry = function(newValue) {
+      var options = [];
+      angular.forEach(editorService.visibleEntries, function (item) {
+        if(item.senses[0].semanticDomain.values.includes(newValue.key))
+          options.push(item);
+      });
+      $scope.entries = options;
+      $scope.verWs1 = JSON.stringify(options);
+    }
+    var session = sessionService.getSession();
+
+    $scope.verWs = session.$$state.value.data.projectSettings.config.entry.fields.lexeme.inputSystems[0];
+    $scope.anaWs = session.$$state.value.data.projectSettings.config.entry.fields.senses.fields.definition.inputSystems[0];
+
+    $scope.getWord = function(entry) {
+      var result = entry.lexeme[this.verWs].value;
+      return result;
+    };
+
+    $scope.getGloss = function(entry) {
+      var result = entry.senses[0].gloss[this.anaWs].value;
+      return result;
+    };
+
+lexProjectService.setBreadcrumbs('rapidWord', $filter('translate')('Rapid Word Collection'));
+}
+  ]);
