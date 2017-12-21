@@ -97,7 +97,7 @@
     <div id="picklist-column" class="col-sm d-flex flex-column mb-1">
         <div class="d-flex flex-no-grow">
             <label class="editor-label flex-grow text-truncate" data-translate="Documents"></label>
-            <button type="button" class="btn btn-std btn-sm" data-ng-click="$ctrl.modalUpdateDocumentSet()"
+            <button type="button" class="btn btn-std btn-sm mb-1" data-ng-click="$ctrl.modalUpdateDocumentSet()"
                     data-ng-show="$ctrl.tecRights.canEditProject()">
                 <i class="fa fa-plus"></i></button>
         </div>
@@ -132,7 +132,7 @@
             <div class="col-sm-6 d-flex flex-column" lang="{{$ctrl.left.inputSystem.tag}}" data-ng-show="$ctrl.hasDocumentSets()">
                 <div class="d-flex flex-no-grow">
                     <label class="flex-grow text-truncate editor-label">{{$ctrl.getEditorLabel($ctrl.left)}}</label>
-                    <button type="button" class="btn btn-std btn-sm d-none d-sm-block" data-ng-click="$ctrl.swapEditors()">
+                    <button type="button" class="btn btn-std btn-sm d-none d-sm-block mb-1" data-ng-click="$ctrl.swapEditors()">
                         <i class="fa fa-exchange"></i></button>
                 </div>
                 <ng-quill-editor class="notranslate"
