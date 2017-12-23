@@ -6,12 +6,8 @@
     </div>
 
     <div id="settingsDropdownButton" class="float-right" uib-dropdown data-ng-show="rights.edit">
-        <a class="btn btn-std"
-           uib-dropdown-toggle
-           tooltip-placement="left"
-           title="Settings">
-            <i class="fa fa-cog"></i>
-        </a>
+        <button class="btn btn-std" uib-dropdown-toggle tooltip-placement="left" title="Settings">
+            <i class="fa fa-cog"></i></button>
         <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
             <a class="dropdown-item" data-ng-href="#!/settings">Project Settings</a>
             <!--<a class="dropdown-item" ng-href="/app/usermanagement/{{project.id}}" translate="User Management"></a>-->
@@ -19,15 +15,21 @@
     </div>
 
     <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-        <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn btn-std" data-ng-click="archiveTexts()">
-            <i class="fa fa-archive fa-lg"></i> Archive Texts</button>
-        <button data-ng-show="rights.create" class="btn btn-primary" data-ng-click="newTextCollapsed = !newTextCollapsed">
-            <i class="fa fa-plus"></i> Add New Text</button>
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <button data-ng-disabled="selected.length == 0" data-ng-show="rights.archive" class="btn btn-std" data-ng-click="archiveTexts()">
+                    <i class="fa fa-archive fa-lg"></i> Archive Texts</button>
+            </div>
+            <div class="col-auto">
+                <button data-ng-show="rights.create" class="btn btn-primary" data-ng-click="newTextCollapsed = !newTextCollapsed">
+                    <i class="fa fa-plus"></i> Add New Text</button>
+            </div>
+        </div>
     </form>
     <div uib-collapse="newTextCollapsed">
         <div class="card new-text">
-            <form class="card-body" name="newTextForm">
-                <div class="col-md-4">
+            <form class="card-body row" name="newTextForm">
+                <div class="col-sm-6">
                     <div>
                         <div class="form-group">
                             <label>Title
@@ -70,10 +72,8 @@
                             </label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" data-ng-disabled="newTextForm.$invalid"
-                            data-ng-click="addText(); newTextCollapsed = true"><i class="fa fa-check"></i> Save</button>
                 </div>
-                <fieldset class="col-md-4">
+                <fieldset class="col-sm-6">
                     <div class="drop-box" data-ngf-drop="readUsx($file)" data-ngf-drag-over-class="'dragover'">
                         <h4>or drop a USX file here</h4>
                         <p>or if you prefer...</p>
@@ -82,8 +82,12 @@
                     <div data-ngf-no-file-drop>
                         <div class="btn btn-std" data-ngf-select="readUsx($file)">Browse...</div>
                     </div>
+                    <br>
                 </fieldset>
-                <div style="clear: left"></div>
+                <div class="col-12 clearfix">
+                    <button type="submit" class="btn btn-primary" data-ng-disabled="newTextForm.$invalid"
+                            data-ng-click="addText(); newTextCollapsed = true"><i class="fa fa-check"></i> Save</button>
+                </div>
             </form>
         </div>
     </div>
@@ -91,10 +95,10 @@
         <table class="texts table">
             <tr>
                 <th><!-- Checkbox column has no header --></th>
-                <th data-ng-click="doSortByColumn('title')"        >Text <i data-ng-class="sortIconClass('title')"></i></th>
+                <th data-ng-click="doSortByColumn('title')">Text <i data-ng-class="sortIconClass('title')"></i></th>
                 <th data-ng-click="doSortByColumn('questionCount')">Question <i data-ng-class="sortIconClass('questionCount')"></i></th>
                 <th data-ng-click="doSortByColumn('responseCount')">Response <i data-ng-class="sortIconClass('responseCount')"></i></th>
-                <th data-ng-click="doSortByColumn('dateCreated')"  >Date Added <i data-ng-class="sortIconClass('dateCreated')"></i></th>
+                <th data-ng-click="doSortByColumn('dateCreated')">Date Added <i data-ng-class="sortIconClass('dateCreated')"></i></th>
             </tr>
             <tr data-ng-repeat="text in visibleTexts" data-ng-class="{active: isSelected(text)}">
                 <td>

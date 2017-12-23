@@ -1,26 +1,36 @@
 <div data-ng-show="finishedLoading">
     <h2 style="font-weight: normal">Questions for <span class="notranslate">{{text.title}}</span></h2>
-    <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
-        <button data-ng-show="rights.create" class="btn btn-primary"
-                data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">
-            <i class="fa fa-plus"></i> Add New Question
-        </button>
-        <button data-ng-show="rights.archive" class="btn btn-std"
-            data-ng-disabled="selected.length == 0"
-            data-ng-click="archiveQuestions()">
-            <i class="fa fa-archive fa-lg"></i> Archive Questions
-        </button>
-        <button data-ng-show="rights.createTemplate"
-            data-ng-disabled="selected.length == 0 || selected.length > 1"
-            class="btn btn-std" data-ng-click="makeQuestionIntoTemplate()">
-            <i class="fa fa-thumb-tack"></i> Make Template
-        </button>
-        <div id="text_settings_button" class="float-right" uib-dropdown data-ng-show="rights.editOther">
-            <a class="btn btn-std" uib-dropdown-toggle tooltip-placement="left">
-                <i class="fa fa-cog"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
-                <a id="text_settings_link" class="dropdown-item" data-ng-href="#!/{{textId}}/settings">Text Settings</a>
+    <form data-ng-show="rights.showControlBar" class="control-bar form-inline d-block">
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <button data-ng-show="rights.create" class="btn btn-primary"
+                        data-ng-click="newQuestionCollapsed = !newQuestionCollapsed">
+                    <i class="fa fa-plus"></i> Add New Question
+                </button>
+            </div>
+            <div class="col-auto">
+                <button data-ng-show="rights.archive" class="btn btn-std"
+                        data-ng-disabled="selected.length == 0"
+                        data-ng-click="archiveQuestions()">
+                    <i class="fa fa-archive fa-lg"></i> Archive Questions
+                </button>
+            </div>
+            <div class="col-auto">
+                <button data-ng-show="rights.createTemplate"
+                        data-ng-disabled="selected.length == 0 || selected.length > 1"
+                        class="btn btn-std" data-ng-click="makeQuestionIntoTemplate()">
+                    <i class="fa fa-thumb-tack"></i> Make Template
+                </button>
+            </div>
+            <div class="col">
+                <div id="text_settings_button" class="float-right" uib-dropdown data-ng-show="rights.editOther">
+                    <button class="btn btn-std" uib-dropdown-toggle tooltip-placement="left">
+                        <i class="fa fa-cog"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+                        <a id="text_settings_link" class="dropdown-item" data-ng-href="#!/{{textId}}/settings">Text Settings</a>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
@@ -81,6 +91,7 @@
                     </tr>
                     <tr data-ng-repeat="question in visibleQuestions" data-ng-class="{active: isSelected(question)}">
                         <td>
+                            <!--suppress HtmlFormInputWithoutLabel -->
                             <input type="checkbox" data-ng-show="rights.archive" data-ng-checked="isSelected(question)" data-ng-click="updateSelection($event, question)">
                         </td>
                         <td>
