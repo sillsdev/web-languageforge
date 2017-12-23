@@ -47,3 +47,19 @@ select.custom-select {
     -webkit-appearance: none;  /* Removes default Chrome and Safari caret */
     -moz-appearance: none;  /* Removes default Firefox caret */
 }
+
+.dropdown .pui-no-caret::after {
+    display: none;
+}
+
+pui-tab {
+    width: 100%;
+}
+
+.flex-grow {
+    flex: 1 1 auto;
+}
+
+.flex-no-grow {
+    flex: 0 0 auto;
+}
