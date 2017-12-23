@@ -1,6 +1,6 @@
-@import '../../../../../../../node_modules/bootstrap/scss/_functions';
-@import '../../../../../../../node_modules/bootstrap/scss/_variables';
-@import '../../../../../../../node_modules/bootstrap/scss/_mixins';
+@import '../../../../../../../node_modules/bootstrap/scss/functions';
+@import '../../../../../../../node_modules/bootstrap/scss/variables';
+@import '../../../../../../../node_modules/bootstrap/scss/mixins';
 
 $navbar-height: 50px;
 
@@ -79,8 +79,8 @@ dl.picklists dd {
 .footer{
   background-color: $lf-blue;
   color: white;
-  padding: 60px 0;
-  margin-top: 50px;
+  padding: 0.5em;
+  margin-top: 0.5em;
 
   .links{
     color: white;
@@ -121,8 +121,8 @@ dl.picklists dd {
 .nav.nav-tabs {
   margin-bottom: 20px;
 }
- .newline {
-    display: block;
+.newline {
+  display: block;
 }
 // TODO: Remove hack for modal box issue as a result of ui.bootstrap
 .modal-select-language {
@@ -187,7 +187,6 @@ dl.picklists dd {
       }
     }
   }
-
 
   .modal-content {
     height: 100%;
@@ -254,7 +253,7 @@ dl.picklists dd {
   padding: 6px 0 0;
   margin-bottom: 0;
   border-radius: 0;
-  }
+}
 
 .fixed-nav-bar {
   position: fixed;
@@ -340,9 +339,9 @@ nav {
 }
 
 @media (max-width: 500px) {
- .filter-list {
-  float: left;
-}
+  .filter-list {
+    float: left;
+  }
 }
 
 .gutter-fix {
@@ -394,27 +393,6 @@ nav.navbar {
 
 .notices button.close {
   margin-right: 0.5em;
-}
-
-footer.footer {
-  margin-top: 0.5em;
-  padding: 0.5em;
-}
-
-.dropdown .pui-no-caret::after {
-  display: none;
-}
-
-pui-tab {
-  width: 100%;
-}
-
-.flex-grow {
-  flex: 1 1 auto;
-}
-
-.flex-no-grow {
-  flex: 0 0 auto;
 }
 
 .btn-std {
