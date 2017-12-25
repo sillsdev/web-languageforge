@@ -100,7 +100,7 @@ fi
 cd ..
 if [ ! -L web-scriptureforge ]; then
     echo "Fix scriptureforge.local symlink"
-    rm -r web-scriptureforge
+    sudo rm -r web-scriptureforge
     ln -s web-languageforge web-scriptureforge
 fi
 cd web-languageforge
