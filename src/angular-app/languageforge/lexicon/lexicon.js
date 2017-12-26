@@ -14,6 +14,7 @@ angular.module('lexicon',
     'lexicon.editor',
     'lexiconConfigurationModule',
     'lexicon.view.settings',
+    'lexicon.rapid-word',
     'lexicon.import-export',
     'lexicon.settings',
     'lexicon.sync',
@@ -38,6 +39,10 @@ angular.module('lexicon',
       .state('viewSettings', {
         url: '/viewSettings',
         templateUrl: '/angular-app/languageforge/lexicon/settings/view-settings.html'
+      })
+      .state('rapidWord', {
+        url: '/rapidWord',
+        templateUrl: '/angular-app/languageforge/lexicon/settings/rapid-word-collection.html'
       })
       .state('importExport', {
         url: '/importExport',
