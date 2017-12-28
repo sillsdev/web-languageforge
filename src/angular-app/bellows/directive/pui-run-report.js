@@ -4,7 +4,7 @@ angular.module('palaso.ui.runReport', ['coreModule'])
   .directive('puiRunReport', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/pui-run-report.html',
+      templateUrl: '/angular-app/bellows/directive/pui-run-report.html',
       scope: {},
       controller: ['$scope', 'projectService',
         function ($scope, projectService) {

@@ -1,13 +1,11 @@
 'use strict';
 angular.module('palaso.ui.comments')
 
-// Palaso UI Dictionary Control: Comments
-
+  // Palaso UI Dictionary Control: Comments
   .directive('commentsRightPanel', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion +
-        '/palaso.ui.comments.comments-right-panel.html',
+      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.comments-right-panel.html',
       scope: {
         entry: '=',
         control: '=',
