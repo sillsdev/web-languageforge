@@ -89,8 +89,7 @@ class App extends Base
         }
 
         if ($appModel->isBootstrap4) {
-            $this->addCssFiles(NG_BASE_FOLDER . 'bellows/cssBootstrap4');
-            $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive/bootstrap4');
+            $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive');
         } else {
             $this->addCssFiles(NG_BASE_FOLDER . 'bellows/cssBootstrap2');
             $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive/bootstrap2');
