@@ -1,11 +1,12 @@
 'use strict';
+
 angular.module('palaso.ui.comments')
 
-// Palaso UI Dictionary Control: Comments
+  // Palaso UI Dictionary Control: Comments
   .directive('regardingField', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion + '/palaso.ui.comments.regarding-field.html',
+      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.regarding-field.html',
       scope: {
         content: '=',
         control: '=',
@@ -21,9 +22,6 @@ angular.module('palaso.ui.comments')
             $scope.contentArr = newContent.split('#');
           }
         });
-      }],
-
-      link: function (scope, element, attrs, controller) {
-      }
+      }]
     };
   }]);

@@ -1,16 +1,17 @@
-"use strict";
-angular.module('palaso.ui.comments')
-  .directive('commentBubble', [function() {
-    return {
-      restrict : 'E',
-      templateUrl : '/angular-app/bellows/directive/' + bootstrapVersion + '/palaso.ui.comments.comment-bubble.html',
-      scope : {
-        field : "=",
-        control : "="
-      },
-      controller: ['$scope', 'lexCommentService', 'sessionService', function($scope, commentService, ss) {
+'use strict';
 
-        ss.getSession().then(function(session) {
+angular.module('palaso.ui.comments')
+  .directive('commentBubble', [function () {
+    return {
+      restrict: 'E',
+      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.comment-bubble.html',
+      scope: {
+        field: '=',
+        control: '='
+      },
+      controller: ['$scope', 'lexCommentService', 'sessionService', function ($scope, commentService, ss) {
+
+        ss.getSession().then(function (session) {
           $scope.getCount = function getCount() {
             if (session.hasProjectRight(ss.domain.COMMENTS, ss.operation.CREATE)) {
               return commentService.getFieldCommentCount($scope.field);
@@ -31,9 +32,8 @@ angular.module('palaso.ui.comments')
           };
         });
 
-      }],
-      link : function(scope, element, attrs, controller) {
-      }
+      }]
     };
   }])
+
 ;
