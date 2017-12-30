@@ -51,8 +51,6 @@ export class TranslateNewProjectController implements angular.IController {
   targetProject: ParatextProject;
   isRetrievingParatextUserInfo: boolean = false;
 
-  private readonly bootstrapVersion = 'bootstrap4';
-
   // Shorthand to make things look a touch nicer
   private readonly ok = this.makeFormValid;
   private readonly neutral = this.makeFormNeutral;
@@ -149,7 +147,7 @@ export class TranslateNewProjectController implements angular.IController {
     this.formValidated = true;
     this.formStatus = msg;
     this.formStatusClass = 'alert alert-info';
-    if (!msg) this.formStatusClass = (this.bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
+    if (!msg) this.formStatusClass = '';
     this.forwardBtnClass = 'btn-success';
     this.formValidationDefer.resolve(true);
     return this.formValidationDefer.promise;
@@ -158,8 +156,8 @@ export class TranslateNewProjectController implements angular.IController {
   private makeFormNeutral(msg: string = '') {
     this.formValidated = false;
     this.formStatus = msg;
-    this.formStatusClass = (this.bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
-    this.forwardBtnClass = (this.bootstrapVersion === 'bootstrap4' ? 'btn-std' : '');
+    this.formStatusClass = '';
+    this.forwardBtnClass = 'btn-std';
     this.formValidationDefer = this.$q.defer();
     this.formValidationDefer.resolve(true);
     return this.formValidationDefer.promise;
@@ -168,9 +166,8 @@ export class TranslateNewProjectController implements angular.IController {
   private makeFormInvalid(msg: string = '') {
     this.formValidated = false;
     this.formStatus = msg;
-    this.formStatusClass =
-      (this.bootstrapVersion === 'bootstrap4' ? 'alert alert-danger' : 'alert alert-error');
-    if (!msg) this.formStatusClass = (this.bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
+    this.formStatusClass = 'alert alert-danger';
+    if (!msg) this.formStatusClass = '';
     this.forwardBtnClass = '';
     this.formValidationDefer.resolve(false);
     return this.formValidationDefer.promise;
@@ -205,15 +202,13 @@ export class TranslateNewProjectController implements angular.IController {
   iconForStep(step: number) {
     const classes = [];
     if (this.$state.current.data.step > step) {
-      classes.push(
-        (this.bootstrapVersion === 'bootstrap4' ? 'fa fa-check-square' : 'icon-check-sign'));
+      classes.push('fa fa-check-square');
     }
 
     if (this.$state.current.data.step === step) {
-      classes.push((this.bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o' : 'icon-check-empty'));
+      classes.push('fa fa-square-o');
     } else if (this.$state.current.data.step < step) {
-      classes.push(
-        (this.bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o text-muted' : 'icon-check-empty text-muted'));
+      classes.push('fa fa-square-o text-muted');
     }
 
     return classes;

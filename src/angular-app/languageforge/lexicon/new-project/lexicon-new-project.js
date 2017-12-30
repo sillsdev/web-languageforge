@@ -136,7 +136,7 @@ angular.module('lexicon-new-project',
       $scope.formValidated = true;
       $scope.formStatus = msg;
       $scope.formStatusClass = 'alert alert-info';
-      if (!msg) $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
+      if (!msg) $scope.formStatusClass = '';
       $scope.forwardBtnClass = 'btn-primary';
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
@@ -146,8 +146,8 @@ angular.module('lexicon-new-project',
       if (!msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
-      $scope.forwardBtnClass = (bootstrapVersion === 'bootstrap4' ? 'btn-std' : '');
+      $scope.formStatusClass = '';
+      $scope.forwardBtnClass = 'btn-std';
       $scope.formValidationDefer = $q.defer();
       $scope.formValidationDefer.resolve(true);
       return $scope.formValidationDefer.promise;
@@ -157,9 +157,8 @@ angular.module('lexicon-new-project',
       if (!msg) msg = '';
       $scope.formValidated = false;
       $scope.formStatus = msg;
-      $scope.formStatusClass =
-        (bootstrapVersion === 'bootstrap4' ? 'alert alert-danger' : 'alert alert-error');
-      if (!msg) $scope.formStatusClass = (bootstrapVersion === 'bootstrap4' ? '' : 'neutral');
+      $scope.formStatusClass = 'alert alert-danger';
+      if (!msg) $scope.formStatusClass = '';
       $scope.forwardBtnClass = 'btn-std';
       $scope.formValidationDefer.resolve(false);
       return $scope.formValidationDefer.promise;
@@ -173,15 +172,13 @@ angular.module('lexicon-new-project',
     $scope.iconForStep = function iconForStep(step) {
       var classes = [];
       if ($state.current.data.step > step) {
-        classes.push(
-          (bootstrapVersion === 'bootstrap4' ? 'fa fa-check-square' : 'icon-check-sign'));
+        classes.push('fa fa-check-square');
       }
 
       if ($state.current.data.step === step) {
-        classes.push((bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o' : 'icon-check-empty'));
+        classes.push('fa fa-square-o');
       } else if ($state.current.data.step < step) {
-        classes.push((bootstrapVersion === 'bootstrap4' ? 'fa fa-square-o text-muted' :
-            'icon-check-empty text-muted'));
+        classes.push('fa fa-square-o text-muted');
       }
 
       return classes;
