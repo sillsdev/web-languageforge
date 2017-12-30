@@ -1,3 +1,5 @@
+'use strict';
+
 // *************************************
 //
 //   Gulpfile
@@ -155,7 +157,8 @@ var phpPatterns = [
   'test/**/*.php'
 ];
 
-// If using a JSON file for the Google API secrets, uncomment the following line and search for "Google API" to find other lines to uncomment further below.
+// If using a JSON file for the Google API secrets, uncomment the following line and search for
+// "Google API" to find other lines to uncomment further below.
 
 // const secrets_google_api_client_id = require('./secrets/google-api-client-id.json');
 
@@ -355,7 +358,7 @@ gulp.task('test-php-debug:watch', function () {
 gulp.task('test-js', function (cb) {
   new Server({
     configFile: __dirname + '/test/app/karma.conf.js',
-    reporters: 'teamcity',
+    reporters: 'teamcity'
   }, cb).start();
 });
 
@@ -507,6 +510,7 @@ gulp.task('local-restart-xforge-web-api', function (cb) {
   if (params.dest.includes('e2etest')) {
     suffix = '_e2etest';
   }
+
   var options = {
     applicationName: params.applicationName + suffix
   };
@@ -645,13 +649,14 @@ gulp.task('test-e2e-doTest', function (cb) {
     protractorOptions.args.push('--browserstackUser', params.browserStackUser);
     isBrowserStack = true;
   }
+
   if (params.browserStackKey && params.browserStackKey.length > 0) {
     protractorOptions.args.push('--browserstackKey', params.browserStackKey);
   }
 
   var webserverHost = params.webserverHost;
   if (isBrowserStack) {
-    webserverHost = webserverHost.replace(".local", ".org");
+    webserverHost = webserverHost.replace('.local', '.org');
   }
 
   if (params.conf && params.conf.length > 0) {
@@ -960,24 +965,29 @@ gulp.task('build-changeGroup').description =
 //   Task: Build Production Config
 // -------------------------------------
 gulp.task('build-productionConfig', function () {
-  var defaultMongodbConnection = 'localhost:27017';
-  // Pass Google client ID and secret via environment variables so they don't show up in the build logs
+  // Pass Google client ID and secret via environment variables so they don't show up in the build
+  // logs
   var googleClientId = process.env.GOOGLE_CLIENT_ID;
+  var defaultMongodbConnection = 'localhost:27017';
   if (googleClientId === undefined) {
     googleClientId = 'googleClientId';
   }
+
   var googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
   if (googleClientSecret === undefined) {
     googleClientSecret = 'googleClientSecret';
   }
+
   var paratextClientId = process.env.PARATEXT_CLIENT_ID;
   if (paratextClientId === undefined) {
     paratextClientId = 'paratextClientId';
   }
+
   var paratextApiToken = process.env.PARATEXT_API_TOKEN;
   if (paratextApiToken === undefined) {
     paratextApiToken = 'paratextApiToken';
   }
+
   var jwtKey = process.env.JWT_KEY;
   if (jwtKey === undefined) {
     jwtKey = 'jwtKey';
@@ -992,14 +1002,18 @@ gulp.task('build-productionConfig', function () {
       demand: false,
       default: 'not_a_secret',
       type: 'string' })
-    // If using a JSON file for the Google API secrets, uncomment the "default: secrets_google_api_client_id.(name)" lines below.
+
+    // If using a JSON file for the Google API secrets,
+    // uncomment the "default: secrets_google_api_client_id.(name)" lines below.
     .option('googleClientId', {
       demand: false,
+
       // default: secrets_google_api_client_id.web.client_id,
       default: googleClientId,
       type: 'string' })
     .option('googleClientSecret', {
       demand: false,
+
       // default: secrets_google_api_client_id.web.client_secret,
       default: googleClientSecret,
       type: 'string' })
@@ -1073,12 +1087,13 @@ gulp.task('build-clearLocalCache').description =
 // -------------------------------------
 gulp.task('build-dotnet-publish', function () {
   del('artifacts/netcore-api/**/*');
-  return gulp.src('src/netcore-api/SIL.XForge.WebApi.Server/SIL.XForge.WebApi.Server.csproj', { read: false })
-    .pipe(dotnetPublish({
-      configuration: 'Release',
-      runtime: 'linux-x64',
-      output: '../../../artifacts/netcore-api'
-    }))
+  return gulp.src('src/netcore-api/SIL.XForge.WebApi.Server/SIL.XForge.WebApi.Server.csproj',
+    { read: false })
+      .pipe(dotnetPublish({
+        configuration: 'Release',
+        runtime: 'linux-x64',
+        output: '../../../artifacts/netcore-api'
+      }));
 });
 
 // -------------------------------------
@@ -1089,10 +1104,12 @@ gulp.task('build-dotnet-secrets', function (cb) {
   if (paratextClientId === undefined) {
     paratextClientId = 'paratextClientId';
   }
+
   var paratextApiToken = process.env.PARATEXT_API_TOKEN;
   if (paratextApiToken === undefined) {
     paratextApiToken = 'paratextApiToken';
   }
+
   var jwtKey = process.env.JWT_KEY;
   if (jwtKey === undefined) {
     jwtKey = 'jwtKey';
