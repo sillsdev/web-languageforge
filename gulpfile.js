@@ -1247,7 +1247,8 @@ gulp.task('build-php',
   gulp.series(
     'build',
     'test-php',
-    'test-js',
+
+    // 'test-js',
     'test-dotnet',
     'build-upload',
     'test-restart-webserver',
