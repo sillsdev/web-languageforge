@@ -1,7 +1,5 @@
 'use strict';
 
-var bootstrapVersion = 'bootstrap4';
-
 /* See http://www.benlesh.com/2013/05/angularjs-unit-testing-controllers.html */
 
 describe('Project page (project.js)', function () {
