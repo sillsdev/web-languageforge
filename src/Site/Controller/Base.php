@@ -5,14 +5,13 @@ namespace Site\Controller;
 use Api\Library\Shared\Palaso\StringUtil;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
-use Api\Model\Shared\Command\SessionCommands;
 use Api\Model\Shared\FeaturedProjectListModel;
 use Api\Model\Shared\Rights\SystemRoles;
 use Api\Model\Shared\Rights\Operation;
 use Api\Model\Shared\Rights\Domain;
 use Api\Model\Shared\UserModel;
 use Silex\Application;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Acl\Exception\Exception;
 
@@ -25,19 +24,18 @@ class Base
         $this->_showHelp = false;
         $this->_appName = '';
         $this->data['isAdmin'] = false;
-        $this->data['projects'] = array();
+        $this->data['projects'] = [];
         $this->data['smallAvatarUrl'] = '';
         $this->data['userName'] = '';
         $this->data['version'] = VERSION;
         $this->data['useMinifiedJs'] = USE_MINIFIED_JS;
         $this->data['http_host'] = $_SERVER['HTTP_HOST'];
 
-        $this->data['jsFiles'] = array();
-        $this->data['jsNotMinifiedFiles'] = array();
-        $this->data['cssFiles'] = array();
-        $this->data['vendorFilesJs'] = array();
-        $this->data['vendorFilesMinJs'] = array();
-        $this->data['isBootstrap4'] = true;
+        $this->data['jsFiles'] = [];
+        $this->data['jsNotMinifiedFiles'] = [];
+        $this->data['cssFiles'] = [];
+        $this->data['vendorFilesJs'] = [];
+        $this->data['vendorFilesMinJs'] = [];
         $this->data['isAngular2'] = false;
     }
 
@@ -65,7 +63,12 @@ class Base
     /** @var string */
     protected $_appName;
 
-    // all child classes should call this method first to setup base variables
+    /**
+     * all child classes should call this method first to setup base variables
+     *
+     * @param Application $app
+     * @return RedirectResponse
+     */
     protected function setupBaseVariables(Application $app) {
         $this->_isLoggedIn = $this->isLoggedIn($app);
         $this->data['isLoggedIn'] = $this->_isLoggedIn;
@@ -75,28 +78,37 @@ class Base
 
                 if ($this->_userId) {
                     $this->_user = new UserModel($this->_userId);
-                } else {
+                } /** @noinspection PhpStatementHasEmptyBodyInspection */ else {
                     //TODO: load anonymous user here
                 }
             } catch (\Exception $e) {
                 return $app->redirect('/auth/logout');
             }
         }
+
+        return null;
     }
 
-    // all child classes should use this method to render their pages
+    /**
+     * all child classes should use this method to render their pages
+     *
+     * @param Application $app
+     * @param $viewName
+     * @return Response
+     * @throws \Exception
+     */
     protected function renderPage(Application $app, $viewName) {
         // TODO: move to app_dependencies once bootstrap4 migration is complete
         $sassDir = $this->getThemePath() . '/sass';
         if (!file_exists($sassDir)) {
             $sassDir = $this->getThemePath('default') . '/sass';
         }
-        $this->addCssFiles($sassDir, array(), false);
+        $this->addCssFiles($sassDir, [], false);
 
         // Add bellows JS for every page because top container menubar needs it for helps
         $bellowsFolder = NG_BASE_FOLDER . 'bellows';
         $this->addJavascriptFiles($bellowsFolder . '/_js_module_definitions');
-        $this->addJavascriptFiles($bellowsFolder . '/js', array('vendor', 'assets'));
+        $this->addJavascriptFiles($bellowsFolder . '/js', ['vendor', 'assets']);
         $this->addJavascriptFiles($bellowsFolder . '/directive');
 
         // Add general Angular app dependencies
@@ -182,7 +194,12 @@ class Base
         return 'Site/views/'.$this->website->base.'/theme/'.$theme;
     }
 
-    protected function getFilePath($filename) {
+    /**
+     * @param string $filename
+     * @return string
+     * @throws \Exception
+     */
+    protected function getFilePath(string $filename) {
         $themePath = $this->getThemePath();
         $filePath = $themePath . DIRECTORY_SEPARATOR . $filename;
         if (!file_exists($filePath)) {
@@ -195,15 +212,15 @@ class Base
         return DIRECTORY_SEPARATOR . $filePath;
     }
 
-    protected function addJavascriptFilesToBeMinified($folder, $exclude = array()) {
+    protected function addJavascriptFilesToBeMinified($folder, $exclude = []) {
         self::addFiles('js', $folder, $this->data['jsFiles'], $exclude, true);
     }
 
-    protected function addJavascriptFilesNotMinified($folder, $exclude = array()) {
+    protected function addJavascriptFilesNotMinified($folder, $exclude = []) {
         self::addFiles('js', $folder, $this->data['jsNotMinifiedFiles'], $exclude, true);
     }
 
-    protected function addJavascriptFiles($folder, $excludedFromMinification = array()) {
+    protected function addJavascriptFiles($folder, $excludedFromMinification = []) {
         $this->addJavascriptFilesToBeMinified($folder, $excludedFromMinification);
         foreach ($excludedFromMinification as $excludeFolder) {
             $notMinifiedPath = "$folder/$excludeFolder";
@@ -211,7 +228,7 @@ class Base
         }
     }
 
-    protected function addCssFiles($dir, $exclude = array(), $atEnd = true) {
+    protected function addCssFiles($dir, $exclude = [], $atEnd = true) {
         self::addFiles('css', $dir, $this->data['cssFiles'], $exclude, $atEnd);
     }
 
@@ -263,9 +280,9 @@ class Base
     protected function getAngularAppDependencies() {
         /* TODO: This is an Angular1 function; rename appropriately. */
         $jsonData = json_decode(file_get_contents(APPPATH . "app_dependencies.json"), true);
-        $jsFilesToReturn = array();
-        $jsMinFilesToReturn = array();
-        $cssFilesToReturn = array();
+        $jsFilesToReturn = [];
+        $jsMinFilesToReturn = [];
+        $cssFilesToReturn = [];
 
         foreach ($jsonData as $itemName => $properties) {
             $path = $properties["path"];
@@ -344,7 +361,7 @@ class Base
                 throw new Exception("This app depends upon $file and the file doesn't exist!");
             }
         }
-        return array("js" => $jsFilesToReturn, "min" => $jsMinFilesToReturn, "css" => $cssFilesToReturn);
+        return ["js" => $jsFilesToReturn, "min" => $jsMinFilesToReturn, "css" => $cssFilesToReturn];
     }
 
 }

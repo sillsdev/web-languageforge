@@ -2,15 +2,24 @@
 
 namespace Site\Controller;
 
+use Api\Library\Shared\Palaso\Exception\UserUnauthorizedException;
 use Api\Library\Shared\SilexSessionHelper;
 use Api\Library\Shared\Website;
 use Silex\Application;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class App extends Base
 {
+    /**
+     * @param Request $request
+     * @param Application $app
+     * @param $appName
+     * @param string $projectId
+     * @return Response
+     * @throws UserUnauthorizedException
+     * @throws \Exception
+     */
     public function view(
         /** @noinspection PhpUnusedParameterInspection */
         Request $request, Application $app, $appName, $projectId = ''
@@ -20,16 +29,19 @@ class App extends Base
         return $this->renderPage($app, 'angular-app');
     }
 
+    /**
+     * authentication is handled by the security policy set in index.php
+     *
+     * both /app/[appName] and /public/[appName] are handled by this controller
+     * /public/[appName] does not require authentication whereas /app/[appName] requires a user to be logged in
+     *
+     * @param Application $app
+     * @param string $appName
+     * @param string $projectId
+     * @throws UserUnauthorizedException
+     */
     public function setupAngularAppVariables(Application $app, $appName, $projectId = '')
     {
-        /**
-         * authentication is handled by the security policy set in index.php
-         *
-         * both /app/[appName] and /public/[appName] are handled by this controller
-         * /public/[appName] does not require authentication whereas /app/[appName] requires a user to be logged in
-         *
-         */
-
         if ($projectId == 'favicon.ico') {
             $projectId = '';
         }
@@ -45,10 +57,8 @@ class App extends Base
 
         $this->_appName = $appName;
         $this->data['isAngular2'] = $appModel->isAppAngular2();
-        $this->data['isBootstrap4'] = $appModel->isBootstrap4;
         $this->data['appName'] = $appName;
         $this->data['appFolder'] = $appModel->appFolder;
-        $this->data['bootstrapFolder'] = $appModel->bootstrapFolder;
 
         if ($appModel->requireProject) {
             if ($isPublicApp) {
@@ -70,38 +80,32 @@ class App extends Base
             $this->_showHelp = true;
         }
 
-        $this->addJavascriptFiles($appModel->siteFolder . '/js', array('vendor', 'assets'));
+        $this->addJavascriptFiles($appModel->siteFolder . '/js', ['vendor', 'assets']);
 
         if ($this->data['isAngular2']) {
             $this->addJavascriptFiles($appModel->appFolder . '/dist');
         } else {
-            $this->addJavascriptFiles($appModel->appFolder, array('js/vendor', 'js/assets'));
+            $this->addJavascriptFiles($appModel->appFolder, ['js/vendor', 'js/assets']);
         }
 
         if ($appModel->parentAppFolder) {
-            $this->addJavascriptFiles($appModel->parentAppFolder, array('js/vendor', 'js/assets'));
+            $this->addJavascriptFiles($appModel->parentAppFolder, ['js/vendor', 'js/assets']);
         }
 
         if ($appName == 'semdomtrans' || $appName == 'semdomtrans-new-project') {
             // special case for semdomtrans app
             // add lexicon JS files since the semdomtrans app depends upon these JS files
-            $this->addJavascriptFiles($appModel->siteFolder . '/lexicon', array('js/vendor', 'js/assets'));
+            $this->addJavascriptFiles($appModel->siteFolder . '/lexicon', ['js/vendor', 'js/assets']);
         }
 
-        if ($appModel->isBootstrap4) {
-            $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive');
-        } else {
-            $this->addCssFiles(NG_BASE_FOLDER . 'bellows/cssBootstrap2');
-            $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive/bootstrap2');
-        }
-        $this->addCssFiles($appModel->bootstrapFolder, array('node_modules'));
+        $this->addCssFiles(NG_BASE_FOLDER . 'bellows/directive');
+        $this->addCssFiles($appModel->appFolder, ['node_modules']);
     }
 }
 
 class AppNotFoundException extends \Exception { }
 
 class AppModel {
-
     /**
      * @var string
      */
@@ -135,16 +139,6 @@ class AppModel {
     /**
      * @var string
      */
-    public $bootstrapFolder;
-
-    /**
-     * @var bool
-     */
-    public $isBootstrap4;
-
-    /**
-     * @var string
-     */
     public $bellowsFolder;
 
     /**
@@ -154,10 +148,11 @@ class AppModel {
 
     /**
      * AppModel constructor
-     * @param $appName string
-     * @param $projectId string
-     * @param $website Website
-     * @param $isPublicApp bool
+     * @param string $appName
+     * @param string $projectId
+     * @param Website $website
+     * @param boolean $isPublicApp
+     * @throws AppNotFoundException
      */
     public function __construct($appName, $projectId, $website, $isPublicApp)
     {
@@ -165,8 +160,14 @@ class AppModel {
         $this->determineFolderPaths($appName, $projectId, $website, $isPublicApp);
     }
 
+    /**
+     * @param string $appName
+     * @param string $projectId
+     * @param Website $website
+     * @param boolean $isPublic
+     * @throws AppNotFoundException
+     */
     private function determineFolderPaths($appName, $projectId, $website, $isPublic) {
-        $isBootstrap4 = $this->isAppBootstrap4($appName, $website);
         $siteFolder = NG_BASE_FOLDER . $website->base;
         $sitePublicFolder = "$siteFolder/public";
         $bellowsFolder = NG_BASE_FOLDER . "bellows";
@@ -218,18 +219,9 @@ class AppModel {
             }
         }
 
-        $bootstrapNumber = ($isBootstrap4) ? 4 : 2;
-        if (file_exists("$appFolder/bootstrap$bootstrapNumber")) {
-            $bootstrapFolder = "$appFolder/bootstrap$bootstrapNumber";
-        } else {
-            $bootstrapFolder = $appFolder;
-        }
-
         $this->siteFolder = $siteFolder;
         $this->appFolder = $appFolder;
         $this->parentAppFolder = $parentAppFolder;
-        $this->bootstrapFolder = $bootstrapFolder;
-        $this->isBootstrap4 = $isBootstrap4;
         $this->isChildApp = $isChildApp;
         $this->isBellows = $isBellows;
         $this->bellowsFolder = $bellowsFolder;
@@ -251,58 +243,11 @@ class AppModel {
     }
 
     public function isAppAngular2() {
-        $siteAppsInAngular2 = array(
+        $siteAppsInAngular2 = [
             "rapid-words",
             "review-suggest"
-        );
+        ];
         return in_array($this->appName, $siteAppsInAngular2);
-    }
-
-    private function isAppBootstrap4($appName, $website) {
-
-        // replace "appName" with the name of the angular app that has been migrated to bootstrap 4
-        // Note that this will affect both the angular app and the app frame
-
-        $sharedAppsInBoostrap4 = array(
-            "activity",
-            "changepassword",
-            "forgot_password",
-            "link_oauth_account",
-            "login",
-            "oauth-signup",
-            "projects",
-            "reset_password",
-            "signup",
-            "siteadmin",
-            "usermanagement",
-            "userprofile"
-        );
-
-        $siteAppsInBootstrap4 = array(
-            "scriptureforge" => array("sfchecks"),
-            "languageforge" => array(
-                "rapid-words",
-                "lexicon",
-                "translate"
-            ),
-            "waaqwiinaagiwritings" => array("sfchecks"),
-            "jamaicanpsalms.scriptureforge" => array("sfchecks"),
-            "demo.scriptureforge" => array("sfchecks"),
-        );
-
-        $siteLookup = preg_replace('/^(dev|e2etest|qa|cat)?(\.)?(\S+)\.(org|local|com)$/', '$3', $website->domain);
-
-        if (in_array($appName, $sharedAppsInBoostrap4)) {
-            return true;
-        }
-
-        if (array_key_exists($siteLookup, $siteAppsInBootstrap4)) {
-            if (in_array($appName, $siteAppsInBootstrap4[$siteLookup])) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function isChildApp($location, $parentAppName, $appName) {
