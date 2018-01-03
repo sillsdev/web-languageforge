@@ -47,16 +47,16 @@
             <listview hide-if-empty="true" search="$ctrl.queryProjectsForUser()" items-filter="projectFilter"
                       items="$ctrl.projects" filtered-items="filteredProjects" visible-items="visibleProjects" select="">
                 <div data-ng-repeat="project in visibleProjects">
-                    <div class="row align-items-center" data-ng-class="{active: $ctrl.isSelected(project)}">
-                        <div class="col-4">
+                    <div class="row align-items-center mb-3" data-ng-class="{active: $ctrl.isSelected(project)}">
+                        <div class="col-md-4">
                             <a data-ng-show="$ctrl.isInProject(project)" data-ng-href="/app/{{project.appName}}/{{project.id}}">
                                 <span class="larger-text">{{project.projectName}}</span></a>
                             <span data-ng-show="!$ctrl.isInProject(project)" class="larger-text">{{project.projectName}}</span>
                         </div>
-                        <div class="col-5" data-ng-show="$ctrl.rights.canEditProjects">
+                        <div class="col-7 col-md-5" data-ng-show="$ctrl.rights.canEditProjects">
                             <small class="text-muted">{{$ctrl.projectTypeNames[project.appName]}}</small>
                         </div>
-                        <div class="col-3 text-right" data-ng-show="$ctrl.rights.canEditProjects">
+                        <div class="col-5 col-md-3 text-right" data-ng-show="$ctrl.rights.canEditProjects">
                             <button class="btn btn-std" data-ng-show="!$ctrl.isManager(project)"
                                     data-ng-click="$ctrl.addManagerToProject(project)">
                                 <i class="fa fa-plus"></i> Manager</button>
