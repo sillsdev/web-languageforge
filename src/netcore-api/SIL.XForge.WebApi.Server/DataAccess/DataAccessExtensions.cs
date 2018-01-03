@@ -12,17 +12,35 @@ using MongoDB.Driver;
 using SIL.XForge.WebApi.Server.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SIL.XForge.WebApi.Server.DataAccess
 {
     public static class DataAccessExtensions
     {
+        public static IRepository<T> Get<T>(this IProjectRepositoryFactory<T> factory, Project project)
+            where T : IEntity
+        {
+            return factory.Get(project.ProjectCode);
+        }
+
+        public static Task<T> UpdateAsync<T>(this IRepository<T> repo, T entity,
+            Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update, bool upsert = false) where T : IEntity
+        {
+            return repo.UpdateAsync(e => e.Id == entity.Id, update, upsert);
+        }
+
+        public static async Task<bool> DeleteAsync<T>(this IRepository<T> repo, T entity) where T : IEntity
+        {
+            return await repo.DeleteAsync(e => e.Id == entity.Id) != null;
+        }
+
         public static IServiceCollection AddMongoDataAccess(this IServiceCollection services,
             IConfiguration configuration)
         {
             IConfigurationSection dataAccessConfig = configuration.GetSection("DataAccess");
             string connectionString = dataAccessConfig.GetValue<string>("ConnectionString");
-            services.AddHangfire(x => x.UseMongoStorage(connectionString, DbNames.Jobs));
+            services.AddHangfire(x => x.UseMongoStorage(connectionString, "jobs"));
 
             BsonSerializer.RegisterDiscriminatorConvention(typeof(Project),
                 new HierarchicalDiscriminatorConvention("appName"));
@@ -51,8 +69,7 @@ namespace SIL.XForge.WebApi.Server.DataAccess
         }
 
         private static void AddMongoRepository<T>(this IServiceCollection services, string collectionName,
-            Action<BsonClassMap<T>> setup = null, bool subClass = false)
-            where T : IEntity
+            Action<BsonClassMap<T>> setup = null, bool subClass = false) where T : IEntity
         {
             BsonClassMap.RegisterClassMap<T>(cm =>
                 {
@@ -65,8 +82,9 @@ namespace SIL.XForge.WebApi.Server.DataAccess
                     }
                     setup?.Invoke(cm);
                 });
-            services.AddSingleton<IRepository<T>>(sp => new MongoRepository<T>(sp.GetService<IMongoClient>(),
-                collectionName));
+            services.AddSingleton<IRepository<T>>(sp =>
+                new MongoRepository<T>(sp.GetService<IMongoClient>().GetDatabase("scriptureforge")
+                    .GetCollection<T>(collectionName)));
         }
     }
 }

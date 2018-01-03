@@ -1,19 +1,15 @@
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <div class="control-group">
-            <div class="controls">
-                <a class="btn btn-secondary btn-block" data-ng-class="interfaceConfig.pullNormal"
-                    id="sendReceiveButton" data-ng-click="getProjectFromInternet()">
-                    <i class="fa fa-cloud-download fa-lg fa-fw text-info"></i>
-                    {{'Get project from LanguageDepot.org...' | translate}}
-                </a>
-            </div>
-            <div class="controls">
-                <a data-ng-class="interfaceConfig.pullNormal"
-                    id="createButton" data-ng-click="createNew()">
-                    <span style="text-decoration: underline;">{{'Create a non-send/receive project (not recommended)' | translate}}</span>
-                </a>
-            </div>
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="form-group">
+            <a class="btn btn-std btn-block" data-ng-class="interfaceConfig.pullNormal"
+                id="sendReceiveButton" data-ng-click="getProjectFromInternet()">
+                <i class="fa fa-cloud-download fa-lg fa-fw text-info"></i>
+                Get project from LanguageDepot.org...</a>
+        </div>
+        <div class="form-group text-center">
+            <a class="w-100" id="createButton" style="text-decoration: underline"
+               data-ng-class="interfaceConfig.pullNormal" data-ng-click="createNew()">
+                Create a non-send/receive project (not recommended)</a>
         </div>
     </div>
 </div>

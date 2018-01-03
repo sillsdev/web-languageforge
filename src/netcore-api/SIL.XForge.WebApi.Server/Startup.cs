@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using SIL.XForge.WebApi.Server.DataAccess;
+using SIL.XForge.WebApi.Server.Options;
 using SIL.XForge.WebApi.Server.Services;
 using System.Collections.Generic;
 using System.IO;
@@ -35,10 +36,7 @@ namespace SIL.XForge.WebApi.Server
                 issuers.Add("scriptureforge.local");
             }
             IConfigurationSection securityConfig = Configuration.GetSection("Security");
-            string keyFilePath = securityConfig.GetValue<string>("JwtKeyFile");
-            string key = "this_is_not_a_secret_dev_only";
-            if (!string.IsNullOrEmpty(keyFilePath) && File.Exists(keyFilePath))
-                key = File.ReadAllText(keyFilePath).Trim();
+            string jwtKey = securityConfig.GetValue<string>("JwtKey") ?? "this_is_not_a_secret_dev_only";
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -47,7 +45,7 @@ namespace SIL.XForge.WebApi.Server
                         ValidIssuers = issuers,
                         ValidAudiences = issuers,
                         RequireExpirationTime = false,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtKey))
                     };
                 });
 
@@ -65,8 +63,11 @@ namespace SIL.XForge.WebApi.Server
                     = new CamelCasePropertyNamesContractResolver());
             services.AddRouting(options => options.LowercaseUrls = true);
 
+            services.Configure<ParatextOptions>(Configuration.GetSection("Paratext"));
+
             services.AddMongoDataAccess(Configuration);
             services.AddSingleton<SendReceiveService>();
+            services.AddSingleton<ParatextService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,6 +6,7 @@ mongo_path: /var/lib/mongodb
 php_log_folder: /var/log/php
 lf_path: /var/lib/TeamCity/agent/work/f6d5bf0a0a22b861
 sf_path: /var/lib/TeamCity/agent/work/scriptureforge.local
+is_build_agent: true
 
 ssl_letsencrypt_install: false
 ssl_items:

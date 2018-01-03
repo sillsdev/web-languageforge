@@ -1,25 +1,29 @@
 'use strict';
+
 angular.module('palaso.util.model.transform', [])
+
 // from: http://stackoverflow.com/questions/14419651/angularjs-filters-on-ng-model-in-an-input
-.directive('modelTransformLimit', function(){
+.directive('modelTransformLimit', function () {
   return {
-    restrict : 'A',
+    restrict: 'A',
     require: 'ngModel',
     scope: {
       'model-transform-limit': '@'
     },
-    link: function(scope, element, attrs, modelCtrl) {
+    link: function (scope, element, attrs, modelCtrl) {
 
       modelCtrl.$parsers.push(function (inputValue) {
         var transformedInput = '';
         if (inputValue) {
-          transformedInput = inputValue.toLowerCase().substring(0, parseInt(attrs.modelTransformLimit));
+          transformedInput = inputValue.toLowerCase()
+            .substring(0, parseInt(attrs.modelTransformLimit));
 
-          if (transformedInput!=inputValue) {
+          if (transformedInput !== inputValue) {
             modelCtrl.$setViewValue(transformedInput);
             modelCtrl.$render();
           }
         }
+
         return transformedInput;
       });
     }
@@ -27,21 +31,22 @@ angular.module('palaso.util.model.transform', [])
 })
 
 // Truncate whitespace
-.directive('modelTransformNoSpace', function(){
+.directive('modelTransformNoSpace', function () {
   return {
-    restrict : 'A',
+    restrict: 'A',
     require: 'ngModel',
-    link: function(scope, element, attrs, modelCtrl) {
+    link: function (scope, element, attrs, modelCtrl) {
 
       modelCtrl.$parsers.push(function (inputValue) {
         var transformedInput = '';
         if (inputValue) {
           transformedInput = inputValue.replace(/\s+/g, '');
-          if (transformedInput!=inputValue) {
+          if (transformedInput !== inputValue) {
             modelCtrl.$setViewValue(transformedInput);
             modelCtrl.$render();
           }
         }
+
         return transformedInput;
       });
     }

@@ -17,8 +17,7 @@ namespace SIL.XForge.WebApi.Server.Services
 
         public async Task RunAsync(PerformContext context, IJobCancellationToken cancellationToken, string id)
         {
-            SendReceiveJob job = await _jobRepo.UpdateAsync(DbNames.Default,
-                j => j.Id == id && j.BackgroundJobId == null,
+            SendReceiveJob job = await _jobRepo.UpdateAsync(j => j.Id == id && j.BackgroundJobId == null,
                 b => b.Set(j => j.BackgroundJobId, context.BackgroundJob.Id));
             if (job == null)
                 return;
@@ -26,7 +25,7 @@ namespace SIL.XForge.WebApi.Server.Services
             // TODO: perform send/receive
             await Task.Delay(5000);
 
-            await _jobRepo.DeleteAsync(DbNames.Default, job);
+            await _jobRepo.DeleteAsync(job);
         }
     }
 }

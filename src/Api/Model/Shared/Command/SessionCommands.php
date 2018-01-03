@@ -18,7 +18,7 @@ class SessionCommands
      * @param string $mockFilename
      * @return array
      */
-    public static function getSessionData($projectId, $userId, $website, $appName = '')
+    public static function getSessionData($projectId, $userId, $website, $appName = '', $mockFilename = null)
     {
         $sessionData = array();
         $sessionData['baseSite'] = $website->base;
@@ -73,10 +73,43 @@ class SessionCommands
             "exp" => $expiration,
             "sub" => (string) $userId
         );
-        $sessionData['accessToken'] = JWT::encode($token, self::getJwtKey());
+        $sessionData['accessToken'] = JWT::encode($token, JWT_KEY);
 
         //return JsonEncoder::encode($sessionData);  // This is handled elsewhere
+        self::write($sessionData, $mockFilename);
+
         return $sessionData;
+    }
+
+    public static function getSessionFilePath($mockFilename = null)
+    {
+        $sessionId = session_id();
+        if(!is_null($mockFilename)){
+            $sessionId = $mockFilename;
+        }
+        if($sessionId == ""){
+            return false;
+        }
+
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData" . DIRECTORY_SEPARATOR . $sessionId . ".json";
+    }
+
+    private static function write($data, $mockFilename = null)
+    {
+        $jsonData = json_encode($data);
+
+        if(!file_exists(sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData")){
+            mkdir(sys_get_temp_dir() . DIRECTORY_SEPARATOR . "jsonSessionData");
+        }
+
+        //May pose a possible security risk to save with ID as filename.
+        $filePath = self::getSessionFilePath($mockFilename);
+        if(!$filePath){
+            return false;
+        }
+        $isWritten = file_put_contents($filePath, $jsonData);
+
+        return $isWritten !== false;
     }
 
     /**
@@ -103,18 +136,4 @@ class SessionCommands
 
         return $result;
     }
-
-    private static $_jwtKey;
-    private static function getJwtKey()
-    {
-        if (!isset(static::$_jwtKey)) {
-            if (file_exists(JWT_KEY_FILE)) {
-                static::$_jwtKey = trim(file_get_contents(JWT_KEY_FILE));
-            } else {
-                static::$_jwtKey = 'this_is_not_a_secret_dev_only';
-            }
-        }
-        return static::$_jwtKey;
-    }
-
 }

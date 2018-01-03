@@ -127,7 +127,7 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.srCredentialsPage.passwordInput.sendKeys(constants.passwordValid);
       browser.wait(expectedCondition.visibilityOf(page.srCredentialsPage.credentialsInvalid),
         CONDITION_TIMEOUT);
-      expect(page.srCredentialsPage.loginOk.isDisplayed()).toBe(false);
+      expect(page.srCredentialsPage.loginOk.isPresent()).toBe(false);
       expect(page.srCredentialsPage.credentialsInvalid.isDisplayed()).toBe(true); // flaky assertion
       page.formStatus.expectHasNoError();
       page.nextButton.click();
@@ -207,8 +207,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeExists),
         CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeExists.isDisplayed()).toBe(true);
-      expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
+      expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
       expect(page.namePage.projectCodeInput.getAttribute('value'))
         .toEqual(constants.testProjectCode);
       page.formStatus.expectContainsError('Another project with code \'' +
@@ -226,9 +226,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.namePage.projectNameInput.clear();
       page.namePage.projectNameInput.sendKeys(protractor.Key.TAB);
       browser.sleep(CHECK_PAUSE);
-      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
+      expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
       page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
@@ -241,8 +241,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk),
         CONDITION_TIMEOUT);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
-      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
       expect(page.namePage.projectCodeInput.getAttribute('value'))
         .toEqual(constants.newProjectCode);
       page.formStatus.expectHasNoError();
@@ -267,9 +267,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.namePage.projectCodeInput.clear();
       page.namePage.projectNameInput.sendKeys(protractor.Key.TAB);     // trigger project code check
       browser.sleep(CHECK_PAUSE);
-      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
+      expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
       page.formStatus.expectHasNoError();
       expect(page.nextButton.isEnabled()).toBe(true);
       page.nextButton.click();
@@ -282,8 +282,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.namePage.projectCodeInput.sendKeys('a');
       page.namePage.projectNameInput.sendKeys(protractor.Key.TAB);     // trigger project code check
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
-      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
       page.formStatus.expectHasNoError();
     });
@@ -293,9 +293,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.namePage.projectCodeInput.sendKeys('A' + protractor.Key.TAB);
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeAlphanumeric),
         CONDITION_TIMEOUT);
-      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
-      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
       page.formStatus.expectHasNoError();
       page.nextButton.click();
       page.formStatus.expectContainsError('Project Code must begin with a letter');
@@ -303,9 +303,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.namePage.projectCodeInput.sendKeys('aB' + protractor.Key.TAB);
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeAlphanumeric),
         CONDITION_TIMEOUT);
-      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
-      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
       page.formStatus.expectHasNoError();
       page.nextButton.click();
       page.formStatus.expectContainsError('Project Code must begin with a letter');
@@ -316,9 +316,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.namePage.projectCodeInput.sendKeys('1' + protractor.Key.TAB);
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeAlphanumeric),
         CONDITION_TIMEOUT);
-      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
-      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
       page.formStatus.expectHasNoError();
       page.nextButton.click();
       page.formStatus.expectContainsError('Project Code must begin with a letter');
@@ -329,9 +329,9 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.namePage.projectCodeInput.sendKeys('a?' + protractor.Key.TAB);
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeAlphanumeric),
         CONDITION_TIMEOUT);
-      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
       expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(true);
-      expect(page.namePage.projectCodeOk.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeOk.isPresent()).toBe(false);
       page.formStatus.expectHasNoError();
       page.nextButton.click();
       page.formStatus.expectContainsError('Project Code must begin with a letter');
@@ -465,8 +465,8 @@ describe('E2E testing: New Lex Project wizard app', function () {
       page.chooserPage.createButton.click();
       page.namePage.projectNameInput.sendKeys(constants.emptyProjectName + protractor.Key.TAB);
       browser.wait(expectedCondition.visibilityOf(page.namePage.projectCodeOk), CONDITION_TIMEOUT);
-      expect(page.namePage.projectCodeExists.isDisplayed()).toBe(false);
-      expect(page.namePage.projectCodeAlphanumeric.isDisplayed()).toBe(false);
+      expect(page.namePage.projectCodeExists.isPresent()).toBe(false);
+      expect(page.namePage.projectCodeAlphanumeric.isPresent()).toBe(false);
       expect(page.namePage.projectCodeOk.isDisplayed()).toBe(true);
       expect(page.nextButton.isEnabled()).toBe(true);
 

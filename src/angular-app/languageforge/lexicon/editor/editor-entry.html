@@ -18,15 +18,15 @@
                     </div>
                 </pui-typeahead>
             </div>
-            <div class="col-md-12 col-lg-4 hidden-sm-down">
-                <button ng-click="show.entryListModifiers = !show.entryListModifiers" class="btn btn-sm pull-right">
-                    <span class="fa" ng-class="{ 'fa-minus-square-o': show.entryListModifiers, 'fa-plus-square-o': !show.entryListModifiers} "></span>
+            <div class="col-md-12 col-lg-4 d-none d-md-block">
+                <button ng-click="show.entryListModifiers = !show.entryListModifiers" class="btn btn-sm float-right">
+                    <span class="fa" data-ng-class="show.entryListModifiers ? 'fa-minus-square-o': 'fa-plus-square-o'"></span>
                     Options</button>
             </div>
         </div>
-        <br class="hidden-sm-down hidden-lg-up" />
+        <br class="d-none d-md-block d-lg-none">
         <div class="row">
-            <div class="hidden-sm-down" ng-show="show.entryListModifiers">
+            <div class="d-none d-md-block" ng-show="show.entryListModifiers">
                 <div class="form-group sortfilter-form">
                     <label class="font-weight-bold" for="sortEntriesBy">Sort Entries By</label>
                     <div class="form-inline">
@@ -56,15 +56,15 @@
                     </div>
                 </div>
 
-                <br />
+                <br>
             </div>
         </div>
 
         <div class="row">
-            <div class="col hidden-sm-down list-group">
+            <div class="col d-none d-md-block list-group">
                 <div class="list-group-item list-group-item-action active">
-                    <small ng-hide="entryListModifiers.filterBy" id="totalNumberOfEntries" class="pull-right"><span class="notranslate">{{entries.length}}</span> {{'entries' | translate}}</small>
-                    <small ng-show="entryListModifiers.filterBy" class="pull-right notranslate">{{filteredEntries.length}} / {{entries.length}}</small>
+                    <small ng-hide="entryListModifiers.filterBy" id="totalNumberOfEntries" class="float-right"><span class="notranslate">{{entries.length}}</span> {{'entries' | translate}}</small>
+                    <small ng-show="entryListModifiers.filterBy" class="float-right notranslate">{{filteredEntries.length}} / {{entries.length}}</small>
                     <h5>{{ 'Words in dictionary' | translate }}</h5>
                 </div>
                 <div id="compactEntryListContainer" class="lexiconItemListContainer" data-pui-when-scrolled="show.more()">

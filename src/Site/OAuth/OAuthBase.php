@@ -274,7 +274,7 @@ abstract class OAuthBase extends Base
     protected function setOAuthDetailsInSession(Application $app, string $googleOAuthId, string $email, string $fullName, string $avatarUrl = null)
     {
         $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_TOKEN_ID_TO_LINK, $googleOAuthId);
-        $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_PROVIDER, 'google');
+        $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_PROVIDER, $this->getProviderName());
         $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_EMAIL_ADDRESS, $email);
         $app['session']->set(OAuthBase::SESSION_KEY_OAUTH_FULL_NAME, $fullName);
         if ($avatarUrl) {

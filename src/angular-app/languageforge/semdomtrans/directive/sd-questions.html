@@ -3,8 +3,8 @@
     <h2> Question <span class="notranslate">{{control.currentQuestionPos+1}}/{{model.questions.length}}</span> </h2>
 
     <div class="clearfix">
-        <button ng-show="(control.currentQuestionPos > 0)" ng-click="getPreviousQuestion()" class="pull-left btn btn-primary">Previous Question</button>
-        <button ng-show="(control.currentQuestionPos < model.questions.length - 1)" ng-click="getNextQuestion()" class="pull-right btn btn-primary">Next Question</button>
+        <button ng-show="(control.currentQuestionPos > 0)" ng-click="getPreviousQuestion()" class="float-left btn btn-primary">Previous Question</button>
+        <button ng-show="(control.currentQuestionPos < model.questions.length - 1)" ng-click="getNextQuestion()" class="float-right btn btn-primary">Next Question</button>
     </div>
     <div>
       	<table style="width:100%">

@@ -3,172 +3,182 @@
         <div class="col-sm-12">
             <h1>{{$ctrl.user.name}}'s User Profile</h1>
             <sil-notices></sil-notices>
-            <form class="form-horizontal" data-ng-submit="$ctrl.submit()" id="userprofileForm" name="userprofileForm">
-                <fieldset>
-                    <uib-tabset>
-                        <uib-tab heading="My Account" id="myAccountTab">
-                            <div class="form-group row">
-                                <div class="card bg-faded col-md-7">
-                                    <div class="card-block">
-                                        <div class="form-group row">
-                                            <label class="control-label col-md-4 text-md-right" for="email" data-translate="Email Address"></label>
-                                            <div class="controls col-md-8">
-                                                <div class="input-group">
-                                                    <input class="form-control" id="email" autofocus
-                                                           required type="email" name="email"
-                                                           data-ng-blur="$ctrl.validateForm()"
-                                                           data-ng-model="$ctrl.user.email"/>
-                                                    <span class="input-group-addon alert-danger" data-ng-show="!$ctrl.emailValid || $ctrl.emailExists">
-                                                        <i class="fa fa-times"></i></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="control-label col-md-4 text-md-right" for="username" data-translate="Username"></label>
-                                            <div class="controls col-md-8">
-                                                <div class="input-group">
-                                                    <input class="form-control" id="username"
-                                                           type="text" name="username"
-                                                           data-ng-blur="$ctrl.validateForm();"
-                                                           data-ng-model="$ctrl.user.username"/>
-                                                    <span class="input-group-addon alert-danger" data-ng-show="!$ctrl.usernameValid || $ctrl.usernameExists">
-                                                        <i class="fa fa-times"></i></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-md-4 text-md-right" data-translate="Last Login"></label>
-                                            <div class="controls col-md-8">
-                                                {{$ctrl.user.last_login * 1000 | date:shortDate}}
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <span role="alert" class="text-danger" id="emailTaken" data-ng-show="$ctrl.emailExists">Email Address {{$ctrl.takenEmail}} is taken. Please try another<br></span>
-                                            <span role="alert" class="text-danger" id="usernameTaken" data-ng-show="$ctrl.usernameExists">Username {{$ctrl.takenUsername}} is taken. Please try another<br></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="card bg-faded col-md-7">
-                                    <div class="card-block">
-                                        <div class="form-group row">
-                                            <div class="col-md-4">
-                                                <label class="control-label text-md-right" for="avatarRef" data-translate="Avatar"></label>
-                                                <div class="controls" style="margin-bottom:10px">
-                                                    <img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{$ctrl.getAvatarUrl($ctrl.user.avatar_ref)}}" title="Use the dropdown selections below to change your avatar's color and shape" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <select data-ng-model="$ctrl.user.avatar_color" class="form-control" data-ng-options="c.value as c.label for c in $ctrl.dropdown.avatarColors"><option value="">Select a Color...</option></select>
-                                                <br/>
-                                                <select data-ng-model="$ctrl.user.avatar_shape" class="form-control" data-ng-options="s.value as s.label for s in $ctrl.dropdown.avatarShapes"><option value="">Choose an animal...</option></select>
+            <form data-ng-submit="$ctrl.submit()" id="userprofileForm" name="userprofileForm">
+                <uib-tabset>
+                    <uib-tab heading="My Account" id="myAccountTab">
+                        <div class="form-group row">
+                            <div class="card bg-light col-md-9 col-lg-7">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <label class="col-form-label col-md-4 text-md-right" for="email">Email Address</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <input class="form-control" id="email" autofocus
+                                                       required type="email" name="email"
+                                                       data-ng-blur="$ctrl.validateForm()"
+                                                       data-ng-model="$ctrl.user.email">
+                                                <span class="input-group-addon alert-danger" data-ng-if="!$ctrl.emailValid || $ctrl.emailExists">
+                                                    <i class="fa fa-times"></i></span>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="card bg-faded col-md-7">
-                                    <div class="card-block">
-                                        <div class="form-group row">
-                                            <label class="control-label col-md-4 text-md-right" for="mobile_phone" data-translate="Mobile Phone Number"></label>
-                                            <div class="controls col-md-8">
-                                                <input type="tel" data-pui-intl-tel-input id="mobile_phone" placeholder="###-####" class="form-control" data-ng-model="$ctrl.user.mobile_phone"/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="control-label col-md-4 text-md-right" data-translate="Receive updates via"></label>
-                                            <div class="controls col-md-8">
-                                                <div class="btn-group btn-group-justified" role="group">
-                                                    <button type="button" class="btn btn-secondary" data-ng-model="$ctrl.user.communicate_via" uib-btn-radio="'email'" id="EmailButton">
-                                                        <i class="fa fa-envelope-o iconPadding"></i>Email
-                                                    </button>
-                                                    <button type="button" class="btn btn-secondary" data-ng-model="$ctrl.user.communicate_via" uib-btn-radio="'sms'"   id="SMSButton">
-                                                        <i class="fa fa-mobile iconPadding"></i>SMS
-                                                    </button>
-                                                    <button type="button" class="btn btn-secondary" data-ng-model="$ctrl.user.communicate_via" uib-btn-radio="'both'"  id="BothButton">
-                                                        <i class="fa fa-envelope-o iconPadding"></i><i class="fa fa-mobile iconPadding"></i>Both
-                                                    </button>
-                                                </div>
+                                    <div class="form-group row">
+                                        <label class="col-form-label col-md-4 text-md-right" for="username">Username</label>
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <input class="form-control" id="username"
+                                                       type="text" name="username"
+                                                       data-ng-blur="$ctrl.validateForm();"
+                                                       data-ng-model="$ctrl.user.username">
+                                                <span class="input-group-addon alert-danger" data-ng-if="!$ctrl.usernameValid || $ctrl.usernameExists">
+                                                    <i class="fa fa-times"></i></span>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <label><a href="/app/changepassword">Change Password</a></label>
-                        </uib-tab>
-                        <uib-tab heading="About Me" id="AboutMeTab">
-                            <div class="form-group row">
-                                <div class="card bg-faded col-md-7">
-                                    <div class="card-block">
-                                        <h5>Tell us about yourself...</h5>
-                                        <div class="form-group row">
-                                            <label class="control-label col-md-4 text-md-right" for="fullname" data-translate="Full Name"></label>
-                                            <div class="controls col-md-8">
-                                                <input class="form-control" id="fullname" autofocus
-                                                       type="text" name="fullname"
-                                                       placeholder="(full name)"
-                                                       data-ng-model="$ctrl.user.name"/>
-                                            </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-4 text-md-right">Last Login</label>
+                                        <div class="col-md-8">
+                                            {{$ctrl.user.last_login * 1000 | date:shortDate}}
                                         </div>
-                                        <div class="form-group row">
-                                            <label class="control-label col-md-4 text-md-right" for="age" data-translate="Age"></label>
-                                            <div class="controls col-md-8">
-                                                <input class="form-control" id="age"
-                                                       type="text" name="age"
-                                                       placeholder="(age)"
-                                                       data-ng-model="$ctrl.user.age"/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="control-label col-md-4 text-md-right" for="gender" data-translate="Gender"></label>
-                                            <div class="col-md-8">
-                                                <select class="form-control" id="gender" data-ng-model="$ctrl.user.gender">
-                                                    <option>Male</option>
-                                                    <option>Female</option>
-                                                </select>
-                                            </div>
-                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <span role="alert" class="text-danger" id="emailTaken" data-ng-show="$ctrl.emailExists">Email Address {{$ctrl.takenEmail}} is taken. Please try another<br></span>
+                                        <span role="alert" class="text-danger" id="usernameTaken" data-ng-show="$ctrl.usernameExists">Username {{$ctrl.takenUsername}} is taken. Please try another<br></span>
                                     </div>
                                 </div>
                             </div>
-                        </uib-tab>
-                        <uib-tab data-ng-repeat="project in $ctrl.projectsSettings" heading="{{project.name}}" disabled="project.userProperties.userProfilePropertiesEnabled.length == 0">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-5 col-lg-4">
-                                        <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('city') >= 0">
-                                            <label>{{project.userProperties.userProfilePickLists['city'].name}}</label>
-                                            <select data-ng-class="" data-ng-model="project.userProperties.userProfilePickLists['city'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['city'].items"></select>
-                                        </div>
-                                        <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('preferredBibleVersion') >= 0">
-                                            <label>{{project.userProperties.userProfilePickLists['preferredBibleVersion'].name}}</label>
-                                            <select data-ng-model="project.userProperties.userProfilePickLists['preferredBibleVersion'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['preferredBibleVersion'].items"></select>
-                                        </div>
-                                        <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('religiousAffiliation') >= 0">
-                                            <label>{{project.userProperties.userProfilePickLists['religiousAffiliation'].name}}</label>
-                                            <select data-ng-model="project.userProperties.userProfilePickLists['religiousAffiliation'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['religiousAffiliation'].items"></select>
-                                        </div>
-                                        <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('studyGroup') >= 0">
-                                            <label>{{project.userProperties.userProfilePickLists['studyGroup'].name}}</label>
-                                            <select data-ng-model="project.userProperties.userProfilePickLists['studyGroup'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['studyGroup'].items"></select>
-                                        </div>
-                                        <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('feedbackGroup') >= 0">
-                                            <label>{{project.userProperties.userProfilePickLists['feedbackGroup'].name}}</label>
-                                            <select data-ng-model="project.userProperties.userProfilePickLists['feedbackGroup'].defaultKey" data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['feedbackGroup'].items"></select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </uib-tab>
-                    </uib-tabset>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <button type="submit" data-ng-disabled="userprofileForm.$invalid||$ctrl.emailExists||$ctrl.usernameExists" class="btn btn-primary " id="saveBtn"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
                         </div>
+                        <div class="form-group row">
+                            <div class="card bg-light col-md-9 col-lg-7">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <label class="col-form-label text-md-right" for="avatarRef">Avatar</label>
+                                            <div class="controls" style="margin-bottom:10px">
+                                                <img class="img-polaroid" width="100px" height="100px" id="avatarRef" data-ng-src="{{$ctrl.getAvatarUrl($ctrl.user.avatar_ref)}}" title="Use the dropdown selections below to change your avatar's color and shape">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <!--suppress HtmlFormInputWithoutLabel -->
+                                            <select data-ng-model="$ctrl.user.avatar_color" class="form-control custom-select" data-ng-options="c.value as c.label for c in $ctrl.dropdown.avatarColors"><option value="">Select a Color...</option></select>
+                                            <br><br>
+                                            <!--suppress HtmlFormInputWithoutLabel -->
+                                            <select data-ng-model="$ctrl.user.avatar_shape" class="form-control custom-select" data-ng-options="s.value as s.label for s in $ctrl.dropdown.avatarShapes"><option value="">Choose an animal...</option></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="card bg-light col-md-9 col-lg-7">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <label class="col-form-label col-md-4 text-md-right" for="mobile_phone">Mobile Phone Number</label>
+                                        <div class="col-md-8">
+                                            <input class="form-control" type="tel" data-pui-intl-tel-input id="mobile_phone" placeholder="###-####" data-ng-model="$ctrl.user.mobile_phone">
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-last row">
+                                        <label class="col-form-label col-md-4 text-md-right">Receive updates via</label>
+                                        <div class="col-md-8">
+                                            <div class="btn-group d-flex" role="group">
+                                                <button type="button" class="btn btn-std" data-ng-model="$ctrl.user.communicate_via" uib-btn-radio="'email'" id="EmailButton">
+                                                    <i class="fa fa-envelope-o iconPadding"></i>Email
+                                                </button>
+                                                <button type="button" class="btn btn-std" data-ng-model="$ctrl.user.communicate_via" uib-btn-radio="'sms'"   id="SMSButton">
+                                                    <i class="fa fa-mobile iconPadding"></i>SMS
+                                                </button>
+                                                <button type="button" class="btn btn-std" data-ng-model="$ctrl.user.communicate_via" uib-btn-radio="'both'"  id="BothButton">
+                                                    <i class="fa fa-envelope-o iconPadding"></i><i class="fa fa-mobile iconPadding"></i>Both
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <label><a href="/app/changepassword">Change Password</a></label>
+                    </uib-tab>
+                    <uib-tab heading="About Me" id="AboutMeTab">
+                        <div class="form-group row">
+                            <div class="card bg-light col-md-9 col-lg-7">
+                                <div class="card-body">
+                                    <h5>Tell us about yourself...</h5>
+                                    <div class="form-group row">
+                                        <label class="col-form-label col-md-4 text-md-right" for="fullname">Full Name</label>
+                                        <div class="col-md-8">
+                                            <input class="form-control" id="fullname" autofocus
+                                                   type="text" name="fullname"
+                                                   placeholder="(full name)"
+                                                   data-ng-model="$ctrl.user.name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-form-label col-md-4 text-md-right" for="age">Age</label>
+                                        <div class="col-md-8">
+                                            <input class="form-control" id="age"
+                                                   type="text" name="age"
+                                                   placeholder="(age)"
+                                                   data-ng-model="$ctrl.user.age">
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-last row">
+                                        <label class="col-form-label col-md-4 text-md-right" for="gender">Gender</label>
+                                        <div class="col-md-8">
+                                            <select class="form-control custom-select" id="gender" data-ng-model="$ctrl.user.gender">
+                                                <option>Male</option>
+                                                <option>Female</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </uib-tab>
+                    <uib-tab data-ng-repeat="project in $ctrl.projectsSettings" heading="{{project.name}}" disabled="project.userProperties.userProfilePropertiesEnabled.length == 0">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-5 col-lg-4">
+                                    <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('city') >= 0">
+                                        <label for="cityInput">{{project.userProperties.userProfilePickLists['city'].name}}</label>
+                                        <select id="cityInput" class="custom-select"
+                                                data-ng-model="project.userProperties.userProfilePickLists['city'].defaultKey"
+                                                data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['city'].items"></select>
+                                    </div>
+                                    <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('preferredBibleVersion') >= 0">
+                                        <label for="bibleVersionInput">{{project.userProperties.userProfilePickLists['preferredBibleVersion'].name}}</label>
+                                        <select id="bibleVersionInput" class="custom-select"
+                                                data-ng-model="project.userProperties.userProfilePickLists['preferredBibleVersion'].defaultKey"
+                                                data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['preferredBibleVersion'].items"></select>
+                                    </div>
+                                    <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('religiousAffiliation') >= 0">
+                                        <label for="affiliationInput">{{project.userProperties.userProfilePickLists['religiousAffiliation'].name}}</label>
+                                        <select id="affiliationInput" class="custom-select"
+                                                data-ng-model="project.userProperties.userProfilePickLists['religiousAffiliation'].defaultKey"
+                                                data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['religiousAffiliation'].items"></select>
+                                    </div>
+                                    <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('studyGroup') >= 0">
+                                        <label for="studyGroupInput">{{project.userProperties.userProfilePickLists['studyGroup'].name}}</label>
+                                        <select id="studyGroupInput" class="custom-select"
+                                                data-ng-model="project.userProperties.userProfilePickLists['studyGroup'].defaultKey"
+                                                data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['studyGroup'].items"></select>
+                                    </div>
+                                    <div data-ng-show="project.userProperties.userProfilePropertiesEnabled.indexOf('feedbackGroup') >= 0">
+                                        <label for="feedbackGroupInput">{{project.userProperties.userProfilePickLists['feedbackGroup'].name}}</label>
+                                        <select id="feedbackGroupInput" class="custom-select"
+                                                data-ng-model="project.userProperties.userProfilePickLists['feedbackGroup'].defaultKey"
+                                                data-ng-options="item.key as item.value for item in project.userProperties.userProfilePickLists['feedbackGroup'].items"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </uib-tab>
+                </uib-tabset>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <button type="submit" data-ng-disabled="userprofileForm.$invalid||$ctrl.emailExists||$ctrl.usernameExists" class="btn btn-primary " id="saveBtn"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
                     </div>
-                </fieldset>
+                </div>
             </form>
         </div>
     </div>
