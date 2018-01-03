@@ -1,10 +1,10 @@
 <form class="form-horizontal dc-optionlist">
     <div class="form-group row">
-        <label class="control-label col-md-4 text-md-right">{{config.label}}</label>
+        <label class="col-form-label col-md-4 text-md-right">{{config.label}}</label>
         <div class="controls col-md-8">
             <!--suppress HtmlFormInputWithoutLabel -->
-            <select class="form-control" data-ng-show="$state.is('editor.entry') && control.rights.canEditEntry()" data-ng-model="model.value"
-                    data-ng-options="item.key as item.value for item in items">
+            <select class="form-control custom-select" data-ng-show="$state.is('editor.entry') && control.rights.canEditEntry()"
+                    data-ng-model="model.value" data-ng-options="item.key as item.value for item in items">
                 <option value="">Unknown</option>
             </select>
             <span class="uneditable-input" data-ng-hide="$state.is('editor.entry') && control.rights.canEditEntry()"

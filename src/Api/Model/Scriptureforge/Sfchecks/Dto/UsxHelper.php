@@ -4,9 +4,10 @@ namespace Api\Model\Scriptureforge\Sfchecks\Dto;
 
 class UsxHelper
 {
-    public function __construct($usx)
+    public function __construct($usx, $isVerseOnNewLine = false)
     {
         $this->_usx = $usx;
+        $this->isVerseOnNewLine = $isVerseOnNewLine;
         $this->_parser = xml_parser_create('UTF-8');
         xml_set_object($this->_parser, $this);
         xml_set_element_handler($this->_parser, "onTagOpen", "onTagClose");
@@ -36,6 +37,8 @@ class UsxHelper
     private $_footnoteCaller;
     private $_footnoteStyle;
     private $_footnotes;
+
+    private $isVerseOnNewLine;
 
     /** @var array */
     private $_info;
@@ -186,7 +189,11 @@ class UsxHelper
             $this->_info['startChapter'] = $number;
         }
         $this->_info['endChapter'] = $number;
-        $this->outputText("<div class=\"$style\">Chapter $number</div>");
+        if ($this->isVerseOnNewLine) {
+            $this->outputText("<p class=\"$style\">Chapter $number</p>");
+        } else {
+            $this->outputText("<div class=\"$style\">Chapter $number</div>");
+        }
     }
 
     private function onVerse($number, $style)
@@ -195,6 +202,9 @@ class UsxHelper
             $this->_info['startVerse'] = $number;
         }
         $this->_info['endVerse'] = $number;
+        if ($this->isVerseOnNewLine) {
+            $this->outputText("</p><p>");
+        }
         $this->outputText("<sup>$number</sup>");
     }
 

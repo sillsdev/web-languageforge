@@ -2,70 +2,68 @@
 <div data-ng-show="rights.editOther">
     <uib-tabset>
         <uib-tab heading="Edit Text">
-            <div>
-                <form>
-                    <div class="col-md-4">
-                        <div>
-                            <div class="form-group">
-                                <label>Title
-                                    <input class="form-control" required data-ng-model="editedText.title" type="text" placeholder="Title"/>
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>Text
-                                    <textarea class="form-control" textdrop data-ng-model="editedText.content" rows="4" placeholder="Paste the USX text here"></textarea>
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>Font Name (optional)
-                                    <input class="form-control" data-ng-model="editedText.fontfamily" type="text" placeholder="Title" />
-                                </label>
-                            </div>
-                            <div>
-                                <a href="" data-ng-click="editPreviousText()"
-                                   class="no-margin">Edit previous text</a>
-                                <b>(dangerous!)</b>
-                            </div>
-                            <div class="form-group">
-                                <a href data-ng-click="toggleRangeSelector()">Select limited verse range</a>
-                            </div>
+            <form class="row">
+                <div class="col-sm-6">
+                    <div>
+                        <div class="form-group">
+                            <label>Title
+                                <input class="form-control" required data-ng-model="editedText.title" type="text" placeholder="Title">
+                            </label>
                         </div>
-                        <div class="verse-range" uib-collapse="rangeSelectorCollapsed">
-                            <div class="form-inline">
-                                <label>From
-                                    <div><input type="number" style="width:6em" class="form-control" data-ng-model="editedText.startCh" min="1" placeholder="Chap." />
-                                        &nbsp;:&nbsp;<input type="number" style="width:6em" class="form-control" data-ng-model="editedText.startVs" min="1" placeholder="Verse" />
-                                        <button data-ng-click="editedText.startCh = ''; editedText.startVs = ''" class="btn btn-link">reset</button>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="form-inline">
-                                <label>To
-                                    <div><input type="number" style="width:6em" class="form-control" data-ng-model="editedText.endCh" min="1" placeholder="Chap." />
-                                        &nbsp;:&nbsp;<input type="number" style="width:6em" class="form-control" data-ng-model="editedText.endVs" min="1" placeholder="Verse" />
-                                        <button data-ng-click="endCh = ''; endVs = ''" class="btn btn-link">reset</button>
-                                    </div>
-                                </label>
-                            </div>
+                        <div class="form-group">
+                            <label>Text
+                                <textarea class="form-control" textdrop data-ng-model="editedText.content" rows="4" placeholder="Paste the USX text here"></textarea>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Font Name (optional)
+                                <input class="form-control" data-ng-model="editedText.fontfamily" type="text" placeholder="Title">
+                            </label>
+                        </div>
+                        <div>
+                            <a href="" data-ng-click="editPreviousText()"
+                               class="no-margin">Edit previous text</a>
+                            <b>(dangerous!)</b>
+                        </div>
+                        <div class="form-group">
+                            <a href data-ng-click="toggleRangeSelector()">Select limited verse range</a>
                         </div>
                     </div>
-                    <fieldset class="col-md-4">
-                        <div class="drop-box" data-ngf-drop="readUsx($file)" data-ngf-drag-over-class="'dragover'">
-                            <h4>or drop a USX file here</h4>
-                            <p>or if you prefer...</p>
-                            <button class="btn btn-primary" id="browseUsxButton" data-ngf-select="readUsx($file)">Browse...</button>
+                    <div class="verse-range" uib-collapse="rangeSelectorCollapsed">
+                        <div class="form-inline">
+                            <label>From
+                                <div><input type="number" style="width:6em" class="form-control" data-ng-model="editedText.startCh" min="1" placeholder="Chap.">
+                                    &nbsp;:&nbsp;<input type="number" style="width:6em" class="form-control" data-ng-model="editedText.startVs" min="1" placeholder="Verse">
+                                    <button data-ng-click="editedText.startCh = ''; editedText.startVs = ''" class="btn btn-link">reset</button>
+                                </div>
+                            </label>
                         </div>
-                        <div data-ngf-no-file-drop>
-                            <div class="btn" data-ngf-select="readUsx($file)">Browse...</div>
+                        <div class="form-inline">
+                            <label>To
+                                <div><input type="number" style="width:6em" class="form-control" data-ng-model="editedText.endCh" min="1" placeholder="Chap.">
+                                    &nbsp;:&nbsp;<input type="number" style="width:6em" class="form-control" data-ng-model="editedText.endVs" min="1" placeholder="Verse">
+                                    <button data-ng-click="endCh = ''; endVs = ''" class="btn btn-link">reset</button>
+                                </div>
+                            </label>
                         </div>
-                    </fieldset>
-                </form>
-            </div>
-            <div class="clearfix"></div>
-            <div>
-                <button type="submit" class="btn btn-primary save-text" data-ng-click="updateText(editedText)">
-                    <i class="fa fa-check"></i> Save</button>
-            </div>
+                    </div>
+                </div>
+                <fieldset class="col-sm-6">
+                    <div class="drop-box" data-ngf-drop="readUsx($file)" data-ngf-drag-over-class="'dragover'">
+                        <h4>or drop a USX file here</h4>
+                        <p>or if you prefer...</p>
+                        <button class="btn btn-primary" id="browseUsxButton" data-ngf-select="readUsx($file)">Browse...</button>
+                    </div>
+                    <div data-ngf-no-file-drop>
+                        <div class="btn btn-std" data-ngf-select="readUsx($file)">Browse...</div>
+                    </div>
+                    <br>
+                </fieldset>
+                <div class="col-12 clearfix">
+                    <button type="submit" class="btn btn-primary" data-ng-click="updateText(editedText)">
+                        <i class="fa fa-check"></i> Save</button>
+                </div>
+            </form>
         </uib-tab>
         <uib-tab heading="Archived Questions">
             <div data-ng-controller="TextSettingsArchivedQuestionsCtrl">
@@ -84,33 +82,33 @@
                         <tr data-ng-repeat="question in visibleArchivedQuestions"
                              class="details-row" data-ng-class="{active: isSelected(question)}">
                                 <td data-ng-show="rights.archive">
-                                    <label><input type="checkbox" data-ng-click="updateSelection($event, question)" /></label></td>
-                                <td><a class="span5" data-ng-href="{{question.url}}">
+                                    <label><input type="checkbox" data-ng-click="updateSelection($event, question)"></label></td>
+                                <td><a class="col-md-5" data-ng-href="{{question.url}}">
                                     <span class="larger-text">{{question.calculatedTitle}}</span></a></td>
                                 <td><a data-ng-href="{{question.url}}">
                                         <span class="notranslate">{{question.answerCount}}</span> answers
                                     </a></td>
                                 <td><span class="notranslate">{{question.responseCount}}</span> responses</td>
                                 <td>Archived on <span class="notranslate">{{question.dateModified | date:'fullDate'}}</span></td>
-                            <hr />
+                            <hr>
                         </tr>
                     </table>
                 </listview>
             </div>
         </uib-tab>
         <uib-tab heading="Audio File">
-            <form class="well " data-ng-submit="updateText(editedText)">
+            <form data-ng-submit="updateText(editedText)">
                 <label>Upload an Audio File</label>
                 <div class="drop-box" data-ngf-drop="uploadAudio($file)" data-ngf-drag-over-class="'dragover'">
                     <h4>Drop an MP3 file here</h4>
-                    <br/>
+                    <br>
                     <p>or if you prefer...</p>
                     <button class="btn btn-primary" id="browseButton" data-ngf-select="uploadAudio($file)">Browse...</button>
                 </div>
                 <div data-ngf-no-file-drop>
-                    <div class="btn" data-ngf-select="uploadAudio($file)">Browse...</div>
+                    <div class="btn btn-std" data-ngf-select="uploadAudio($file)">Browse...</div>
                 </div>
-                <br />
+                <br>
                 <div data-ng-show="file != null">
                     <p><strong>{{file.name}}</strong> {{file.size | bytes }}</p>
                     <audio controls data-ngf-src="file"></audio>
@@ -120,33 +118,39 @@
             </form>
         </uib-tab>
         <uib-tab heading="ParaTExt Export">
-            <div class="row-fluid outer-flex" data-ng-controller="ParatextExportTextCtrl">
+            <div class="row outer-flex" data-ng-controller="ParatextExportTextCtrl">
                 <h4>Export Text Answers/Comments to a ParaTExt XML file</h4>
-                <form class="span4" name="exportForm">
-                    <label><input type="checkbox" checked name="exportAnswers"
-                                  id="exportAnswers" disabled /> Export Answers</label>
-                    <br>
-                    <label><input type="checkbox" name="exportComments"
-                                  data-ng-model="exportConfig.exportComments" /> Export Comments</label>
-                    <br>
-                    <label><input type="checkbox" name="exportFlagged"
-                                  data-ng-model="exportConfig.exportFlagged" />
-                        Only export flagged Answers</label>
-                    <br>
-                    <button class="btn btn-primary"
-                            data-ng-disabled="exportForm.$invalid || download.inprogress"
-                            data-ng-click="startExport()" class="btn">
-                        Prepare Export</button>
-                    <span data-ng-show="download.inprogress">
-                        <i class="fa fa-spinner fa-spin" style="position: absolute; padding-left: 5px; padding-top: 8px;"></i></span>
-                    <p data-ng-show="download.complete && download.totalCount == 0"
-                       class="text-error" id="noExportMsg">No answers/comments were
-                        exported. Make sure you flagged answers for export and try
-                        again, or uncheck "Only export flagged Answers" to export all
-                        answers/comments</p>
+                <form class="col-sm-6" name="exportForm">
+                    <div class="form-group">
+                        <label><input type="checkbox" checked name="exportAnswers"
+                                      id="exportAnswers" disabled> Export Answers</label>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" name="exportComments"
+                                      data-ng-model="exportConfig.exportComments"> Export Comments</label>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" name="exportFlagged"
+                                      data-ng-model="exportConfig.exportFlagged">
+                            Only export flagged Answers</label>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" data-ng-disabled="exportForm.$invalid || download.inprogress"
+                                data-ng-click="startExport()">
+                            Prepare Export</button>
+                        <span data-ng-show="download.inprogress">
+                            <i class="fa fa-spinner fa-spin" style="position: absolute; padding-left: 5px; padding-top: 8px;"></i></span>
+                    </div>
+                    <div class="form-group">
+                        <p data-ng-show="download.complete && download.totalCount == 0"
+                           class="text-error" id="noExportMsg">No answers/comments were
+                            exported. Make sure you flagged answers for export and try
+                            again, or uncheck "Only export flagged Answers" to export all
+                            answers/comments</p>
+                    </div>
                 </form>
-                <div class="span5" style="margin-right: 200px"
-                     data-ng-show="download.totalCount">
+                <div class="col-sm-6" data-ng-show="download.totalCount">
+                    <br class="d-sm-none">
                     <p data-ng-show="download.totalCount > 0" class="text-success">
                         Ready to Download: <span data-ng-show="download.answerCount > 0"
                                                  class="label label-success"><span class="notranslate">{{download.answerCount}}</span>

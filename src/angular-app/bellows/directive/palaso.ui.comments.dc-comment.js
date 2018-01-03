@@ -1,12 +1,12 @@
 'use strict';
+
 angular.module('palaso.ui.comments')
 
-// Palaso UI Dictionary Control: Comments
+  // Palaso UI Dictionary Control: Comments
   .directive('dcComment', [function () {
     return {
       restrict: 'E',
-      templateUrl: '/angular-app/bellows/directive/' + bootstrapVersion +
-        '/palaso.ui.comments.dc-comment.html',
+      templateUrl: '/angular-app/bellows/directive/palaso.ui.comments.dc-comment.html',
       controller: ['$scope', 'lexCommentService', 'sessionService', 'utilService', 'modalService',
       function ($scope, commentService, sessionService, util, modal) {
         $scope.getAvatarUrl = util.constructor.getAvatarUrl;

@@ -8,7 +8,8 @@ namespace SIL.XForge.WebApi.Server.Models
         public string Username { get; set; }
         public string Name { get; set; }
         public string Role { get; set; }
-        public Dictionary<string, string> SiteRole { get; set; }
+        public Dictionary<string, string> SiteRole { get; set; } = new Dictionary<string, string>();
+        public AccessTokenInfo ParatextAccessToken { get; set; } = new AccessTokenInfo();
 
         public Dictionary<string, object> ExtraElements { get; set; }
 

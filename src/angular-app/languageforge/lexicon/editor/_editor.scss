@@ -1,8 +1,9 @@
+@import '../../../../../node_modules/bootstrap/scss/functions';
 @import '../../../../../node_modules/bootstrap/scss/variables';
 @import '../../../../../node_modules/bootstrap/scss/mixins';
 
 @import '../../../../Site/views/languageforge/theme/default/sass/variables';
-@import '../../../bellows/directive/bootstrap4/palaso.ui.comments.dc-comment';
+@import '../../../bellows/directive/palaso.ui.comments.dc-comment';
 @import 'field/dc-audio';
 @import 'field/dc-formattedtext';
 @import 'field/dc-multioptionlist';
@@ -197,7 +198,7 @@ legend.override-bootstrap {
     padding: 1px;
 }
 
-.datepicker table th button.pull-left, .datepicker table th button.pull-right {
+.datepicker table th button.float-left, .datepicker table th button.float-right {
     padding: 2px 13px;
 }
 
@@ -255,6 +256,10 @@ legend.override-bootstrap {
     position: absolute;
     top: 0; /* Might need to increase this once the "For the demo, these do NOT work" text goes away */
     right: 10px;
+}
+
+dc-entry .card {
+    margin-bottom: 1rem;
 }
 
 #entryList {
@@ -329,7 +334,7 @@ legend.override-bootstrap {
         margin-bottom: 5px;
         padding: 8px 0 24px;
     }
-    .card-block .addItem {
+    .card-body .addItem {
         margin-right: 0;
     }
     .topAddMeaning {
@@ -352,7 +357,7 @@ legend.override-bootstrap {
             cursor: pointer;
         }
         i:hover {
-            color: $brand-danger;
+            color: map-get($theme-colors, danger);
         }
     }
     h5 {

@@ -79,14 +79,14 @@ describe('Editor Comments', function () {
 
   it('comments page: click +1 button on first comment', function () {
     var comment = editorPage.comment.getComment(0);
-    expect(comment.plusOne.getAttribute('ng-click')).not.toBe(null); // Should be clickable
+    expect(comment.plusOne.getAttribute('data-ng-click')).not.toBe(null); // Should be clickable
     comment.plusOne.click();
     expect(comment.score.getText()).toEqual('1');
   });
 
   it('comments page: +1 button disabled after clicking', function () {
     var comment = editorPage.comment.getComment(0);
-    expect(comment.plusOne.getAttribute('ng-click')).toBe(null); // Should NOT be clickable
+    expect(comment.plusOne.getAttribute('data-ng-click')).toBe(null); // Should NOT be clickable
     comment.plusOne.click();
     expect(comment.score.getText()).toEqual('1'); // Should not change from previous test
   });

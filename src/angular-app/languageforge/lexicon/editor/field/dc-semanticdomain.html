@@ -1,6 +1,6 @@
 <form class="form-horizontal dc-semanticdomain">
     <div class="form-group row">
-        <label class="control-label col-md-4 text-md-right">{{config.label}}</label>
+        <label class="col-form-label col-md-4 text-md-right">{{config.label}}</label>
         <div class="controls col-md-8">
             <div class="notranslate dc-semanticdomain-values"
                  data-ng-repeat="value in model.values | orderBy: orderItemsByListOrder">
@@ -16,7 +16,7 @@
             <div class="notranslate dc-semanticdomain-values"
                  data-ng-show="$state.is('editor.entry') && rights.canEditEntry() && isAdding">
                 <!--suppress HtmlFormInputWithoutLabel -->
-                <select class="form-control" data-ng-change="addValue()" data-ng-model="newValue"
+                <select class="form-control custom-select" data-ng-change="addValue()" data-ng-model="newValue"
                         data-ng-options="option.key as option.value for option in options | orderBy: 'key' | filter: filterSelectedOptions">
                     <option value="">Pick an item</option>
                 </select>
@@ -29,7 +29,7 @@
 </form>
 <div class="addItem"
      data-ng-show="rights.canEditEntry() && $state.is('editor.entry') && showAddButton()">
-    <a class="btn btn-sm btn-secondary" data-ng-click="isAdding = true"><i class="fa fa-plus"></i> Add {{config.label}}</a>
+    <a class="btn btn-sm btn-std" data-ng-click="isAdding = true"><i class="fa fa-plus"></i> Add {{config.label}}</a>
 </div>
 <div class="spacing-after"
      data-ng-hide="rights.canEditEntry() && $state.is('editor.entry') && showAddButton()">&nbsp;</div>
