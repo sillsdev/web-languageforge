@@ -4,7 +4,7 @@ import 'angular-sortable-view';
 import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import 'angular-truncate-2';
-import 'angular-ui-bootstrap';
+import 'angular-ui-bootstrap-4';
 import 'angular-ui-router';
 import 'angular-ui-validate';
 import 'angular-zxcvbn';

@@ -18,6 +18,7 @@ describe('User Profile E2E Test', function () {
 
     // Perform activity E2E tests according to the different roles
     describe('Running as: ' + expectedUsername, function () {
+      var newUsername = 'newusername';
 
       it('Logging in', function () {
         // Login before test to ensure proper role
@@ -140,7 +141,6 @@ describe('User Profile E2E Test', function () {
 
         userProfile.getMyAccount();
         var newEmail = 'newemail@example.com';
-        var newUsername = 'newusername';
 
         // Change email
         userProfile.myAccountTab.updateEmail(newEmail);
@@ -176,9 +176,10 @@ describe('User Profile E2E Test', function () {
         expect(userProfile.myAccountTab.saveBtn.isEnabled()).toBe(true);
         userProfile.myAccountTab.saveBtn.click();
         util.clickModalButton('Save changes');
+      });
 
-        // Login with new username and revert to original username
-        loginPage.get();
+      it('Login with new username and revert to original username', function () {
+        // user is automatically logged out and taken to login page when username is changed
         browser.wait(expectedCondition.visibilityOf(loginPage.username), CONDITION_TIMEOUT);
         expect(loginPage.infoMessages.count()).toBe(1);
         expect(loginPage.infoMessages.first().getText()).toContain(

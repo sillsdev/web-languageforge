@@ -1,7 +1,7 @@
 <div class="row outer-flex">
 
     <!-- Left column: option lists -->
-    <div class="col-md-3 control-group">
+    <div class="col-md-3 form-group">
         <dl class="picklists">
             <dt data-translate="Select a list" id="editListValuesFieldset"></dt>
             <dd>
@@ -16,8 +16,8 @@
 
     <!-- Right column: optionlist setup -->
     <div class="col-md-9">
-        <div class="card card-block bg-faded settings-panel" id="picklistEditorFieldset">
-            <h3 class="control-label">{{$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].name}}</h3>
+        <div class="card card-body bg-light settings-panel" id="picklistEditorFieldset">
+            <h3 class="col-form-label">{{$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].name}}</h3>
             <i>(At this time {{$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].name}} items cannot be deleted)</i>
             <div class="controls">
                 <picklist-editor items="$ctrl.olcOptionListsDirty[$ctrl.currentListIndex].items"

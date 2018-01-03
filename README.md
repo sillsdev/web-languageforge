@@ -543,3 +543,47 @@ In the *root* folder: `npm install`
 #### Update composer ####
 
 In the **src/** folder: `composer install`
+
+## Running the Node Server ##
+
+To run the node server to get real time updating...
+````
+cd src/node
+sudo node server.js
+````
+
+## Setting up and running the Machine Web Server ##
+
+### Installation and Deployment
+From the **web-languageforge** repo root folder...
+````
+cd ..
+git clone git@github.com:sillsdev/machine.git
+cd machine
+git checkout -b Translation origin/Translation
+````
+
+To deploy the machine server...
+````
+cd build
+./deploy-developer.sh
+````
+
+### Running
+To run the machine server...
+
+````
+./run-developer.sh
+````
+
+Sometimes you may have to remove the `json` file in `/var/lib/languageforge/machine/data/build/` and then restart.
+
+### Suggestion data
+Copy `/var/lib/languageforge/machine/` from live server.
+Add any project slugs to the `Projects` section of the `json` file in `/var/lib/languageforge/machine/data/engine/`.
+
+## ElasticSearch Data ##
+Before putting data into **ElasticSearch**, setup the index with settings and data mappings...
+```
+./scripts/server/elasticSearch/setupElasticSearchCATIndex.sh
+```

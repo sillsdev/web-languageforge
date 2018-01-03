@@ -28,15 +28,14 @@ namespace SIL.XForge.WebApi.Server.Controllers
         [SiteAuthorize(Domain.Projects, Operation.View)]
         public async Task<IEnumerable<SendReceiveJobDto>> GetAllAsync()
         {
-            IReadOnlyList<SendReceiveJob> jobs = await _jobRepo.GetAllAsync(DbNames.Default);
+            IReadOnlyList<SendReceiveJob> jobs = await _jobRepo.GetAllAsync();
             return jobs.Select(CreateDto);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(string id)
         {
-            SendReceiveJob job = await _jobRepo.GetAsync(DbNames.Default, id);
-            if (job != null)
+            if ((await _jobRepo.TryGetAsync(id)).TryResult(out SendReceiveJob job))
             {
                 switch (await AuthorizeAsync(job.ProjectRef, new Right(Domain.Projects, Operation.View)))
                 {
@@ -54,7 +53,7 @@ namespace SIL.XForge.WebApi.Server.Controllers
         [ProjectAuthorize(Domain.Projects, Operation.Edit)]
         public async Task<IActionResult> CreateAsync([FromBody] string projectId)
         {
-            SendReceiveJob job = await _jobRepo.UpdateAsync(DbNames.Default, j => j.ProjectRef == projectId,
+            SendReceiveJob job = await _jobRepo.UpdateAsync(j => j.ProjectRef == projectId,
                 b => b.SetOnInsert(j => j.ProjectRef, projectId), true);
             _sendReceiveService.StartJob(job);
             SendReceiveJobDto dto = CreateDto(job);
@@ -64,13 +63,12 @@ namespace SIL.XForge.WebApi.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(string id)
         {
-            SendReceiveJob job = await _jobRepo.GetAsync(DbNames.Default, id);
-            if (job != null)
+            if ((await _jobRepo.TryGetAsync(id)).TryResult(out SendReceiveJob job))
             {
                 switch (await AuthorizeAsync(job.ProjectRef, new Right(Domain.Projects, Operation.Edit)))
                 {
                     case AuthorizeResult.Success:
-                        if (await _jobRepo.DeleteAsync(DbNames.Default, job))
+                        if (await _jobRepo.DeleteAsync(job))
                         {
                             _sendReceiveService.CancelJob(job);
                             return Ok();

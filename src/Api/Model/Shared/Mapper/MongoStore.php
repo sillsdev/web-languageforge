@@ -106,6 +106,21 @@ class MongoStore
 
     /**
      * @param string $databaseName
+     * @param string $collectionName
+     */
+    public static function dropCollection($databaseName, $collectionName)
+    {
+        $db = self::connect($databaseName);
+        if (self::hasDB($databaseName)) {
+            if ($collectionName != 'system.indexes') {
+                $collection = $db->selectCollection($collectionName);
+                $collection->drop();
+            }
+        }
+    }
+
+    /**
+     * @param string $databaseName
      * @return integer
      */
     public static function countCollections($databaseName)

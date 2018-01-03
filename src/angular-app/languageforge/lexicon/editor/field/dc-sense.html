@@ -1,13 +1,13 @@
 <div class="dc-sense card">
     <div class="meaning-label card-header">
         <div data-ng-if="control.rights.canEditEntry() && $state.is('editor.entry')"
-             class="deleteX pull-right">
+             class="deleteX float-right">
             <i data-ng-click="remove(index)" title="Delete Meaning {{index+1}}"
                class="fa fa-trash"></i>
         </div>
         Meaning <span class="notranslate">{{index+1}}</span>
     </div>
-    <div class="card-block">
+    <div class="card-body">
         <dc-fieldrepeat config="config" model="model" control="control"></dc-fieldrepeat>
         <div data-ng-if="config.fields.examples.fieldOrder.length > 0">
             <div data-ng-repeat="example in model.examples">
@@ -15,7 +15,7 @@
                             config="config.fields.examples" model="example"></dc-example>
             </div>
             <div data-ng-if="control.rights.canEditEntry() && $state.is('editor.entry')" class="addItem">
-                <a class="btn btn-sm btn-secondary" data-ng-click="addExample()"><i class="fa fa-plus"></i> Add Example</a>
+                <a class="btn btn-sm btn-std" data-ng-click="addExample()"><i class="fa fa-plus"></i> Add Example</a>
             </div>
         </div>
     </div>

@@ -19,25 +19,22 @@ namespace SIL.XForge.WebApi.Server.Controllers
 
         protected AuthorizeResult Authorize(Project project, Right right)
         {
-            if (project != null)
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (project.HasRight(userId, new Right(Domain.Projects, Operation.Edit)))
             {
-                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (project.HasRight(userId, new Right(Domain.Projects, Operation.Edit)))
-                {
-                    return AuthorizeResult.Success;
-                }
-                else
-                {
-                    return AuthorizeResult.Forbidden;
-                }
+                return AuthorizeResult.Success;
             }
-            return AuthorizeResult.NotFound;
+            else
+            {
+                return AuthorizeResult.Forbidden;
+            }
         }
 
         protected async Task<AuthorizeResult> AuthorizeAsync(string projectId, Right right)
         {
-            Project project = await ProjectRepo.GetAsync(DbNames.Default, projectId);
-            return Authorize(project, right);
+            if ((await ProjectRepo.TryGetAsync(projectId)).TryResult(out T project))
+                return Authorize(project, right);
+            return AuthorizeResult.NotFound;
         }
 
         protected enum AuthorizeResult

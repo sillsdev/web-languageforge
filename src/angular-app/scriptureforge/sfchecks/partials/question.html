@@ -1,39 +1,37 @@
 <div class="row">
-    <h2 class="pull-left audio-buttons" data-ng-show="text.audioFileName">
-        <pui-soundplayer data-url="audioPlayUrl" uib-tooltip="Play audio"></pui-soundplayer>
+    <h2 class="float-left audio-buttons" data-ng-show="text.audioFileName">
+        <pui-soundplayer data-url="audioPlayUrl" title="Play audio"></pui-soundplayer>
         <a data-ng-show="project.allowAudioDownload" data-ng-href="{{audioDownloadUrl}}">
-            <i class="fa fa-arrow-circle-o-down" uib-tooltip="Download audio"></i></a>
+            <i class="fa fa-arrow-circle-o-down" title="Download audio"></i></a>
     </h2>
     <h2>{{text.title}}</h2>
 </div>
 <div class="row">
 
-    <div class="col-md-5" oncopy="return false;">
+    <div class="col-md-6" oncopy="return false;">
         <div id="textcontrol" style="font-family: {{text.fontfamily}}" data-sil-selection data-sil-selected-text="selectedText" content="text.content"></div>
     </div>
     <div id="comments" class="col-md-6" data-ng-show="finishedLoading">
         <div class="question">
-            <a data-ng-show="rightsEditQuestion()" class="btn btn-secondary pull-right" data-ng-click="toggleQuestionEditor()">
-                <i class="fa fa-cog fa-lg"></i></a>
+            <button class="btn btn-std float-right" data-ng-show="rightsEditQuestion()" data-ng-click="toggleQuestionEditor()">
+                <i class="fa fa-cog fa-lg"></i></button>
             <h2>{{questionTitleCalculated}}</h2>
-            <h4 data-ng-show="questionIsClosed()"
-                style="color: gray; font-style: italic">This question is marked
-                closed</h4>
+            <h4 data-ng-show="questionIsClosed()" style="color: gray; font-style: italic">This question is marked closed</h4>
             <div>{{question.description}}</div>
             <div class="edit-question" uib-collapse="editQuestionCollapsed">
                 <form class="card">
                     <b>Question Settings</b>
-                    <fieldset class="card-block">
+                    <fieldset class="card-body">
                         <label class="form-group">Question
-                            <textarea required data-ng-model="editedQuestion.description" class="form-control col-md-4"
+                            <textarea required data-ng-model="editedQuestion.description" class="form-control col-12"
                                       rows="4" placeholder="The Question"></textarea>
                         </label>
                         <label class="form-group">Title
-                            <input type="text" data-ng-model="editedQuestion.title" class="form-control col-md-4"
-                                   maxlength="35" placeholder="One-line Summary For Title" />
+                            <input type="text" data-ng-model="editedQuestion.title" class="form-control col-12"
+                                   maxlength="35" placeholder="One-line Summary For Title">
                         </label>
                         <label class="form-group">Workflow
-                            <select class="form-control" data-ng-model="editedQuestion.workflowState"
+                            <select class="form-control custom-select" data-ng-model="editedQuestion.workflowState"
                                     data-ng-options="s.state as s.label for s in workflowStates"
                                     name="workflowState"></select>
                         </label>
@@ -47,7 +45,7 @@
             </div>
             <div data-ng-show="question.answerCount == 0 && !questionIsClosed()">
                 There are no answers yet for this question. You could be the first one to reply!</div>
-            <br />
+            <br>
         </div>
         <div class="new-answer">
             <div data-ng-hide="questionIsClosed()">
@@ -79,8 +77,8 @@
                 </div>
                 <div>
                     <div data-ng-class="{unread: isUnreadAnswer(answerId)}" class="answer">
-                        <!--<b>DEBUG:</b>answerId = {{answerId}}, answer.id = {{answer.id}}<br/>-->
-                        <!--<b>DEBUG:</b>answer = {{answer}}<br/>-->
+                        <!--<b>DEBUG:</b>answerId = {{answerId}}, answer.id = {{answer.id}}<br>-->
+                        <!--<b>DEBUG:</b>answer = {{answer}}<br>-->
                         <div data-ng-show="answer.textHighlight" data-ng-bind-html="answer.textHighlight"
                              class="scripture-quote"></div>
                         <div class="answerContent" data-ng-bind-html="answer.content"></div>
@@ -89,9 +87,9 @@
                                  data-tags="answer.tags" data-on-delete="deletedTags(answer)"
                                  data-rights-delete="rightsDeleteTag()"></div>
                             <div class="author">
-                                <img data-ng-src="{{getAvatarUrl(answer.userRef.avatar_ref)}}" width="32" height="32" />
+                                <img data-ng-src="{{getAvatarUrl(answer.userRef.avatar_ref)}}" width="32" height="32">
                                 <div>
-                                    Answered <span class="notranslate">{{answer.dateCreated | date:mediumDate}}</span><br />
+                                    Answered <span class="notranslate">{{answer.dateCreated | date:mediumDate}}</span><br>
                                     by <span class="notranslate">{{answer.userRef.username}}</span>
                                 </div>
                             </div>
@@ -104,10 +102,10 @@
                                    data-ng-click="answerDelete(answerId)">delete</a>&nbsp;&nbsp;
                                 <a href data-ng-show="rightsExport() && !questionIsClosed()"
                                    data-ng-click="flagForExport(answer)">
-                                    <i data-ng-show="answer.isToBeExported" class="fa fa-flag" uib-tooltip="Flagged for export"
+                                    <i data-ng-show="answer.isToBeExported" class="fa fa-flag" title="Flagged for export"
                                        style="color: red"></i>
                                     <i data-ng-show="!answer.isToBeExported" class="fa fa-flag-o"
-                                       uib-tooltip="Click to flag for export"></i></a>
+                                       title="Click to flag for export"></i></a>
                             </div>
                             <div data-ng-switch data-on="answerEditorVisible(answerId)">
                                 <form data-ng-submit="editAnswer(editedAnswer)" data-ng-switch-when="true">

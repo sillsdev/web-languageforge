@@ -3,10 +3,8 @@
 <head>
     {# Required meta tags always come first #}
     <meta charset="utf-8">
-    {% if isBootstrap4 %}
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-    {% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     <title>{{ app.website.name }}</title>
 
@@ -58,14 +56,6 @@
     {% endfor %}
 
     <script src="/Site/views/shared/container/xforge.navbarApp.js?v={{ version }}"></script>
-
-    <script type="text/javascript">
-        {% if isBootstrap4 %}
-        var bootstrapVersion = "bootstrap4";
-        {% else %}
-        var bootstrapVersion = "bootstrap2";
-        {% endif %}
-    </script>
 
     {% if 'languageforge.org' in app.website.domain %}
         <script type="text/javascript">window.liveSettings={api_key:"a328216f86c9417cb7583c0100669635"}</script>

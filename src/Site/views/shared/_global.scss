@@ -1,44 +1,65 @@
 .desktop-title {
-  position: relative;
-  bottom: 11px;
-  img {
-    height: 3.5em;
-  }
-  a {
     position: relative;
-    bottom: 8px;
-    color: white;
-  }
-  a:hover {
-    text-decoration: none;
-  }
+    bottom: 11px;
+    img {
+        height: 3.5em;
+    }
+    a {
+        position: relative;
+        bottom: 8px;
+        color: white;
+    }
+    a:hover {
+        text-decoration: none;
+    }
 }
 
 .mobile-title {
-  position: relative;
-  bottom: 13px;
-  img {
-    height: 2.6em;
-  }
-  a:hover {
-    text-decoration: none;
-  }
+    position: relative;
+    bottom: 13px;
+    img {
+        height: 2.6em;
+    }
+    a:hover {
+        text-decoration: none;
+    }
 }
 
-.btn {
-  margin-bottom: 5px;
+.alert-dismissible .close {
+    top: -.125rem;
+    padding: 0;
 }
-
-
 
 // override bootstrap tab style for on focus / hover as temporary fix for uib-tabs
 // this fixes/removes the grey line on the bottom of selected tabs
 // longterm solution is to make a change to a fork of uib, after we switch to bs4-beta
 .nav-tabs {
-  .nav-link:focus{
-    border-bottom-color: white;
-  }
-  .uib-tab.active a:hover {
-    border-bottom-color: white;
-  }
+    .nav-link:focus{
+        border-bottom-color: white;
+    }
+    .uib-tab.active a:hover {
+        border-bottom-color: white;
+    }
+}
+
+// bootstrap v4 Beta 2 uses 'appearance: none' but browsers are not recognizing that property name - IJH 2017-12
+select.custom-select {
+    -webkit-appearance: none;  /* Removes default Chrome and Safari caret */
+    -moz-appearance: none;  /* Removes default Firefox caret */
+}
+
+.dropdown .pui-no-caret::after {
+    display: none;
+}
+
+pui-tab {
+    width: 100%;
+}
+
+.flex-grow {
+    flex: 1 1 auto;
+}
+
+.flex-no-grow {
+    flex: 0 0 auto;
 }

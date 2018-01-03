@@ -1,6 +1,5 @@
 *~
 *.swp
-**/.bundle/
 .DS_Store
 .externalToolBuilders
 .idea/
@@ -26,20 +25,22 @@ src/cache/
 src/dist/
 src/js/lib/languageforge.min.js
 src/js/lib/scriptureforge.min.js
+src/node/config.js
 src/node_modules/
 !src/vendor/lift/
 src/vendor/
 test/CodeCoverage/
 vagrant_ansible_inventory_*
 test/app/protractorConfBrowserStack.js
+artifacts/
 
 # CSS files generated from Sass
 src/angular-app/bellows/apps/**/*.css
-src/angular-app/bellows/cssBootstrap4/**/*.css
+src/angular-app/bellows/directive/*.css
+src/angular-app/bellows/directive/**/*.css
 src/angular-app/languageforge/**/*.css
 src/angular-app/scriptureforge/**/*.css
 src/Site/views/**/*.css
-src/Site/views/scriptureforge/theme/default/cssBootstrap4/**/.css
 
 secrets/
 

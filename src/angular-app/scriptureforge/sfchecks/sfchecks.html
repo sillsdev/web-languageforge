@@ -1,15 +1,15 @@
 {% verbatim %}
 <div class="content container" ng-cloak>
     <div id="sfchecks-hmenu" class="hdrnav">
-        <div ng-controller="inviteAFriend" id="inviteAFriend" class="pull-right" ng-show="showInviteDiv">
+        <div ng-controller="inviteAFriend" id="inviteAFriend" class="float-right" ng-show="showInviteDiv">
             <div class="overlay-bg" ng-show="showInviteForm">
                 <form class="form-inline" ng-submit="sendInvite();showInviteForm=false">
                     <div class="heading">
                         <span>Invite a friend to Scripture Forge</span>
-                        <span><a href class="pull-right" ng-click="showInviteForm=false"><i class="fa fa-times"></i></a></span>
+                        <span><a href class="float-right" ng-click="showInviteForm=false"><i class="fa fa-times"></i></a></span>
                     </div>
                     <div class="input-group">
-                        <input required type="email" class="form-control" ng-model="email" placeholder="email@address"/>
+                        <input required type="email" class="form-control" ng-model="email" placeholder="email@address">
                         <span class="input-group-btn">
                             <button class="btn btn-primary invitation-send-btn" type="submit">Send Invitation</button>
                         </span>
@@ -23,7 +23,7 @@
     <div style="padding-top:10px" ng-controller="MainCtrl">
     <sil-notices></sil-notices>
     <!-- <div data-wc-overlay="" data-wc-overlay-delay="6000">
-    <img src="/Site/views/shared/image/shared/loading.gif" />&nbsp; Loading...
+    <img src="/Site/views/shared/image/shared/loading.gif">&nbsp; Loading...
     </div>-->
     <div ng-view></div>
     </div>

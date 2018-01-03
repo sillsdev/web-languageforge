@@ -29,9 +29,8 @@ namespace SIL.XForge.WebApi.Server.Controllers
 
             if (context.ActionArguments.TryGetValue("projectId", out object obj))
             {
-                var projectId = obj as string;
-                Project project = await _projectRepo.GetAsync(DbNames.Default, projectId);
-                if (project != null)
+                var projectId = (string) obj;
+                if ((await _projectRepo.TryGetAsync(projectId)).TryResult(out Project project))
                 {
                     string userId = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (project.HasRight(userId, _right))

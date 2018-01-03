@@ -110,14 +110,14 @@ angular.module('lexicon',
 
         if (inputSystemsService.constructor.isRightToLeft(code)) {
           $scope.interfaceConfig.direction = 'rtl';
-          $scope.interfaceConfig.pullToSide = 'pull-left';
-          $scope.interfaceConfig.pullNormal = 'pull-right';
+          $scope.interfaceConfig.pullToSide = 'float-left';
+          $scope.interfaceConfig.pullNormal = 'float-right';
           $scope.interfaceConfig.placementToSide = 'right';
           $scope.interfaceConfig.placementNormal = 'left';
         } else {
           $scope.interfaceConfig.direction = 'ltr';
-          $scope.interfaceConfig.pullToSide = 'pull-right';
-          $scope.interfaceConfig.pullNormal = 'pull-left';
+          $scope.interfaceConfig.pullToSide = 'float-right';
+          $scope.interfaceConfig.pullNormal = 'float-left';
           $scope.interfaceConfig.placementToSide = 'left';
           $scope.interfaceConfig.placementNormal = 'right';
         }

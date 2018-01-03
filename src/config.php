@@ -63,9 +63,17 @@ if (! defined('GOOGLE_CLIENT_SECRET')) {
     define('GOOGLE_CLIENT_SECRET', 'googleClientSecret');
 }
 
+if (! defined('PARATEXT_CLIENT_ID')) {
+    define('PARATEXT_CLIENT_ID', 'paratextClientId');
+}
+
+if (! defined('PARATEXT_API_TOKEN')) {
+    define('PARATEXT_API_TOKEN', 'paratextApiToken');
+}
+
 define('NG_BASE_FOLDER', 'angular-app/');
 define('BCRYPT_COST', 7);
 
-if (! defined('JWT_KEY_FILE')) {
-    define('JWT_KEY_FILE', 'jwt_key');
+if (! defined('JWT_KEY')) {
+    define('JWT_KEY', 'this_is_not_a_secret_dev_only');
 }

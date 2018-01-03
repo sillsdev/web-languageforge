@@ -7,15 +7,16 @@ use Api\Model\Shared\UserModel;
 
 class QuestionCommentDtoEncoder extends JsonEncoder
 {
-    public function encodeIdReference($key, $model)
+    public function encodeIdReference(&$key, $model)
     {
         if ($key == 'userRef') {
             $user = new UserModel($model->id);
 
-            return array(
-                    'userid' => $user->id->asString(),
-                    'avatar_ref' => $user->avatar_ref,
-                    'username' => $user->username);
+            return [
+                'userid' => $user->id->asString(),
+                'avatar_ref' => $user->avatar_ref,
+                'username' => $user->username
+            ];
         } else {
             $result = $model->id;
 
