@@ -25,6 +25,11 @@ class TranslateMetricCommandsTest extends TestCase
         self::$environ->clean();
     }
 
+    /**
+     * This test is intentionally EXCLUDED from PHP unit tests.
+     * It is intended to be run manually (explicitly)
+     * @group explicit
+     */
     public function testElasticSearchDoc_CRUD_CreateAndDeleteOk()
     {
         $valid = @fsockopen('es_401', 9200, $errno, $errstr, 30);
