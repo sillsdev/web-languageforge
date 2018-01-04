@@ -592,3 +592,4 @@ Before putting data into **ElasticSearch**, setup the index with settings and da
 
 * Elizabeth Koning
 * Ethan Clark
+* Ziqi Chen
