@@ -11,6 +11,7 @@ dc-formattedtext {
 
 .dc-formattedtext .ta-scroll-window > .ta-bind,
 .dc-formattedtext .ta-root textarea {
+    width: 100%;
 }
 
 .dc-formattedtext .ta-toolbar {
@@ -84,5 +85,5 @@ dc-formattedtext {
     display: none;
 }
 .ta-root.focussed .ta-toolbar {
-    display: block;
+    /*display: block;*/
 }
