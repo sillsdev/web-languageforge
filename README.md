@@ -50,7 +50,7 @@ PHP code conforms to [PSR-2](http://www.php-fig.org/psr/psr-2/).
 
  * Add `php-cs-fixer` globally installed with *composer* (http://cs.sensiolabs.org/). Here is how to add it to **PhpStorm** (https://hackernoon.com/how-to-configure-phpstorm-to-use-php-cs-fixer-1844991e521f). Use it with the parameters `fix --verbose "$FileDir$/$FileName$"`.
 
-JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/javascript). 
+JavaScript code conforms to [AirBNB JS style guide](https://github.com/airbnb/javascript).
 
  * Using PhpStorm with JSCS helps a lot with automating this (see the section below on PhpStorm [Coding Standard and Style](#CodeStyle)).
  * We plan to use [Prettier](https://prettier.io/) with pre-commit hook after re-writing the whole repo with Prettier first.
@@ -76,7 +76,7 @@ Other useful resources:
 
 ## Recommended Development Environment ##
 
-### Automatic Install 
+### Automatic Install
 The below sections go into detail on how to manually set up the developer environment.  As an alternative to these instructions, you can download and run the automatic install script that is known to work on Ubuntu Xenial Native and Ubuntu Xenial on Windows 10 WSL.
 [Click here for the Automatic Install instructions](#automatic-install-script).
 
@@ -587,3 +587,6 @@ Before putting data into **ElasticSearch**, setup the index with settings and da
 ```
 ./scripts/server/elasticSearch/setupElasticSearchCATIndex.sh
 ```
+
+## Contributors
+- Mark Wissink
