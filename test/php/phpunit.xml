@@ -29,6 +29,7 @@
         <testsuite name="xForge all PHP unit tests">
             <directory>./</directory>
             <exclude>./library/shared/LanguageDataTest.php</exclude>
+            <exclude>./model/languageforge/translate/dto/TranslateMetricDtoTest.php</exclude>
         </testsuite>
     </testsuites>
     <groups>
