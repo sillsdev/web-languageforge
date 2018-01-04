@@ -588,5 +588,6 @@ Before putting data into **ElasticSearch**, setup the index with settings and da
 ./scripts/server/elasticSearch/setupElasticSearchCATIndex.sh
 ```
 
-## Contributors
+##Contributors
+- Benjamin Kastner
 - Mark Wissink
