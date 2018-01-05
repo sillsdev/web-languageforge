@@ -12,10 +12,9 @@ function BellowsChangePasswordPage() {
     browser.wait(expectedCondition.visibilityOf(this.password), CONDITION_TIMEOUT);
   };
 
-  this.form = element(by.tagName('form'));
-  this.password = element(by.model('$ctrl.password'));
-  this.confirm = element(by.model('$ctrl.confirm_password'));
-  this.passwordMatchImage = element(by.id('passwordMatch'));
-  this.submitButton = element(by.partialButtonText('Change Password'));
+  this.password = element(by.id('change-password-input'));
+  this.confirm = element(by.id('change-password-confirm-input'));
+  this.passwordMatchImage = element(by.id('change-password-match'));
+  this.submitButton = element(by.id('change-password-submit-button'));
   this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
 }
