@@ -25,8 +25,8 @@ function SfUserProfilePage() {
   };
 
   this.tabs = {
-    myAccount:    element(by.linkText('My Account')),
-    aboutMe:      element(by.linkText('About Me'))
+    myAccount:    element(by.id('myAccountTab')),
+    aboutMe:      element(by.id('AboutMeTab'))
   };
 
   // Navigate to the MyProfile -> About Me page
@@ -46,18 +46,18 @@ function SfUserProfilePage() {
     emailTaken:  element(by.id('emailTaken')),
     usernameTaken: element(by.id('usernameTaken')),
 
-    avatarColor:      element(by.model('$ctrl.user.avatar_color')),
-    avatarShape:      element(by.model('$ctrl.user.avatar_shape')),
+    avatarColor:      element(by.id('user-profile-avatar-color')),
+    avatarShape:      element(by.id('user-profile-avatar-shape')),
     avatar:           element(by.id('avatarRef')),
 
     // Jamaican mobile phone number will move to Project scope
-    mobilePhoneInput: element(by.model('$ctrl.user.mobile_phone')),
+    mobilePhoneInput: element(by.id('mobile_phone')),
 
     // Contact preferences
-    emailBtn:         element(By.partialButtonText('Email')),
-    SMSBtn:           element(By.partialButtonText('SMS')),
-    bothBtn:          element(By.partialButtonText('Both')),
-    saveBtn:          element(By.partialButtonText('Save'))
+    emailBtn:         element(by.id('EmailButton')),
+    SMSBtn:           element(by.id('SMSButton')),
+    bothBtn:          element(by.id('BothButton')),
+    saveBtn:          element(by.id('saveBtn'))
   };
 
   this.myAccountTab.selectColor = function (newColor) {
@@ -100,10 +100,10 @@ function SfUserProfilePage() {
   }.bind(this);
 
   this.aboutMeTab = {
-    fullName: element(by.model('$ctrl.user.name')),
-    age:      element(by.model('$ctrl.user.age')),
-    gender:   element(by.model('$ctrl.user.gender')),
-    saveBtn:  element(by.partialButtonText('Save'))
+    fullName: element(by.id('fullname')),
+    age:      element(by.id('age')),
+    gender:   element(by.id('gender')),
+    saveBtn:  element(by.id('saveBtn'))
   };
 
   this.aboutMeTab.updateFullName = function (newFullName) {
