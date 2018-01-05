@@ -40,7 +40,7 @@ describe('E2E Projects List App', function () {
   };
 
   var shouldProjectHaveButtons = function shouldProjectHaveButtons(projectRow, bool) {
-    var addAsManagerBtn = projectRow.element(by.partialButtonText('Manager'));
+    var addAsManagerBtn = projectRow.element(by.id('managerButton'));
     expect(addAsManagerBtn.isDisplayed()).toBe(bool);
   };
 
@@ -86,7 +86,7 @@ describe('E2E Projects List App', function () {
         shouldProjectHaveButtons(projectRow, true);
 
         // Now add the admin back to the project
-        projectRow.element(by.partialButtonText('Manager')).click();
+        projectRow.element(by.id('managerButton')).click();
       });
 
       // And the buttons should go away after one of them is clicked
