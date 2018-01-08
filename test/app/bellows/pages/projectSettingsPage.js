@@ -8,8 +8,8 @@ function BellowsProjectSettingsPage() {
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
-  this.settingsMenuLink = element(by.className('btn dropdown-toggle'));
-  this.projectSettingsLink = element(by.linkText('Project Settings'));
+  this.settingsMenuLink = element(by.id('settingsDropdownButton'));
+  this.projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
   this.get = function get(projectName) {
@@ -24,15 +24,18 @@ function BellowsProjectSettingsPage() {
   this.noticeList = element.all(by.repeater('notice in $ctrl.notices()'));
   this.firstNoticeCloseButton = this.noticeList.first().element(by.buttonText('×'));
 
-  this.backButton = element(by.linkText('Back'));
-
   this.tabDivs = element.all(by.className('tab-pane'));
   this.activePane = element(by.css('div.tab-pane.active'));
 
+  /*
+  Would like to use id locators, but the pui-tab directive that is used in the project settingsPage
+  in scripture forge is currently making it hard to assign an id to the tab element. This should be
+  updated, but due to time shortage, it will be left as is.
+  */
   this.tabs = {
     project: element(by.linkText('Project Properties')),
-    reports: element(by.linkText('Reports')),
-    archive: element(by.linkText('Archive')),
+    //reports: element(by.linkText('Reports')), // This feature is never tested
+    //archive: element(by.linkText('Archive')), // This is a disabled feature
     remove: element(by.linkText('Delete'))
   };
 
@@ -40,9 +43,9 @@ function BellowsProjectSettingsPage() {
     name: element(by.model('project.projectName')),
     code: element(by.model('project.projectCode')),
     projectOwner: element(by.binding('project.ownerRef.username')),
-    saveButton: this.tabDivs.get(0).element(by.buttonText('Save'))
+    saveButton: element(by.id('project-properties-save-button'))
 
-    //button: element(by.id('project_properties_save_button'))
+    //button: element(by.id('project-properties-save-button'))
   };
 
   // placeholder since we don't have Reports tests
@@ -50,14 +53,12 @@ function BellowsProjectSettingsPage() {
   };
 
   // Archive tab currently disabled
-  this.archiveTab = {
-    archiveButton: this.activePane.element(by.buttonText('Archive this project'))
-  };
+  // this.archiveTab = {
+  //  archiveButton: this.activePane.element(by.buttonText('Archive this project'))
+  // };
 
   this.deleteTab = {
-    deleteBoxText: this.activePane.element(by.model('deleteBoxText')),
-    deleteButton: this.activePane.element(by.buttonText('Delete this project'))
+    deleteBoxText: this.activePane.element(by.id('deletebox')),
+    deleteButton: this.activePane.element(by.id('deleteProject'))
   };
-
 }
-
