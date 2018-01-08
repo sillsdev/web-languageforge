@@ -18,7 +18,7 @@ function ProjectsPage() {
 
   this.testProjectName = 'Test Project';
 
-  this.createBtn = element(by.partialButtonText('Start or Join a New Project'));
+  this.createBtn = element(by.id('startJoinProjectButton'));
   this.newProjectNameInput  = element(by.model('newProject.projectName'));
   this.newProjectTypeSelect = element(by.model('newProject.appName'));
   this.saveBtn = element(by.partialButtonText('Save'));
