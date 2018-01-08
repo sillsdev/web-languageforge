@@ -29,7 +29,7 @@ export class UnifiedConfigurationController implements angular.IController {
     if (configChange != null && configChange.previousValue !== configChange.currentValue &&
       configChange.currentValue != null
     ) {
-      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.uccConfigDirty, 0);
+      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.uccConfigDirty);
     }
   }
 }
