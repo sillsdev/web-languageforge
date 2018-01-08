@@ -88,7 +88,7 @@ function ProjectsPage() {
       var addMembersBtn = element(by.id('addMembersButton'));
       browser.wait(expectedCondition.visibilityOf(addMembersBtn), CONDITION_TIMEOUT);
       addMembersBtn.click();
-      var newMembersDiv = element(by.css('#newMembersDiv'));
+      var newMembersDiv = element(by.id('newMembersDiv'));
       var userNameInput = newMembersDiv.element(by.id('typeaheadInput'));
       browser.wait(expectedCondition.visibilityOf(userNameInput), CONDITION_TIMEOUT);
       userNameInput.sendKeys(usersName);
