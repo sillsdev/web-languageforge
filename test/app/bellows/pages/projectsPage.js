@@ -24,11 +24,7 @@ function ProjectsPage() {
 
   this.settings = {};
   this.settings.button = element(by.id('settingsBtn'));
-  if (browser.baseUrl.includes('scriptureforge')) {
-    this.settings.userManagementLink = element(by.linkText('Project Settings'));
-  } else if (browser.baseUrl.includes('languageforge')) {
-    this.settings.userManagementLink = element(by.linkText('User Management'));
-  }
+  this.settings.userManagementLink = element(by.id('userManagementLink'));
 
   // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test
   // Project will be on page 1, and you can find it.
