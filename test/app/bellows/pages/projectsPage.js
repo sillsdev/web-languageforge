@@ -40,6 +40,7 @@ function ProjectsPage() {
   //noinspection JSUnusedGlobalSymbols
   this.select100ItemsPerPage = function select100ItemsPerPage() {
     util.clickDropdownByValue(this.itemsPerPageCtrl, '100');
+    //Chris doesn't know of a better way than by.css() in this case, so leaving it as is.
     expect(element(by.model('itemsPerPage')).element(by.css('option:checked'))
       .getText()).toEqual('100');
   };
