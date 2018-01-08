@@ -5,6 +5,7 @@ import {LexiconConfigService} from '../../core/lexicon-config.service';
 import {LexConfigField, LexiconConfig} from '../../shared/model/lexicon-config.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
 import {Field} from './configuration-fields.component';
+import {ConfigurationUnifiedViewModel} from './configuration-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 
 export class UnifiedConfigurationController implements angular.IController {
@@ -18,10 +19,19 @@ export class UnifiedConfigurationController implements angular.IController {
   uccSelectField: (params: { fieldName: string }) => void;
   uccOnUpdate: (params: { $event: { configDirty: LexiconConfig } }) => void;
 
-  static $inject: string[] = ['$scope', '$uibModal'];
-  constructor(private $scope: angular.IScope, private $modal: ModalService) {
-  }
+  unifiedViewModel: ConfigurationUnifiedViewModel;
 
+  static $inject: string[] = ['$scope', '$uibModal'];
+  constructor(private $scope: angular.IScope, private $modal: ModalService) { }
+
+  $onChanges(changes: any) {
+    const configChange = changes.uccConfigDirty as angular.IChangesObject<LexiconConfig>;
+    if (configChange != null && configChange.previousValue !== configChange.currentValue &&
+      configChange.currentValue != null
+    ) {
+      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.uccConfigDirty, 0);
+    }
+  }
 }
 
 export const UnifiedConfigurationComponent: angular.IComponentOptions = {
