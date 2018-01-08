@@ -11,7 +11,10 @@ export class ConfigurationUnifiedViewModel {
   // Settings objects for Example Fields
   exampleFields: FieldSettings[];
 
-  constructor(numEntryFields: number, numSenseFields: number, numExampleFields: number) {
+  // Settings objects for Input System
+  inputSystem: InputSystemSettings[];
+
+  constructor(numEntryFields: number, numSenseFields: number, numExampleFields: number, numInputSystem: number) {
     this.entryFields = [];
     for (let i = 0; i < numEntryFields; i++) {
       this.entryFields[i] = new FieldSettings();
@@ -26,15 +29,23 @@ export class ConfigurationUnifiedViewModel {
     for (let i = 0; i < numExampleFields; i++) {
       this.exampleFields[i] = new FieldSettings();
     }
+
+    this.inputSystem = [];
+    for(let i = 0; i < numInputSystem; i++) {
+      this.inputSystem[i] = new InputSystemSettings();
+    }
   }
 }
 
-export class FieldSettings {
+export class InputSystemSettings {
   name: string;
-  hiddenIfEmpty: boolean;
   observer: boolean;
   commenter: boolean;
   contributor: boolean;
   manager: boolean;
   groups: boolean[];
+}
+
+export class FieldSettings extends InputSystemSettings {
+  hiddenIfEmpty: boolean;
 }
