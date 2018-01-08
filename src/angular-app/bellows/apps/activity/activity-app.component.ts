@@ -7,6 +7,7 @@ import { SessionService } from '../../core/session.service';
 import { UtilityService } from '../../core/utility.service';
 import { Project } from '../../shared/model/project.model';
 import { User } from '../../shared/model/user.model';
+import { NoticeService } from '../../core/notice/notice.service';
 
 class Activity {
   action: string;
@@ -39,32 +40,35 @@ export class ActivityAppController implements angular.IController {
 
   static $inject = ['$sce', 'activityService',
     'breadcrumbService', 'linkService',
-    'sessionService'];
+    'sessionService', 'silNoticeService'];
   constructor(private $sce: angular.ISCEService, private activityService: ActivityService,
               private breadcrumbService: BreadcrumbService, private linkService: LinkService,
-              private sessionService: SessionService) { }
+              private sessionService: SessionService, private noticeService: NoticeService) { }
 
   $onInit(): void {
-    this.breadcrumbService.set('top', [
-      { label: 'Activity' }
-    ]);
+      this.breadcrumbService.set('top', [
+        { label: 'Activity' }
+      ]);
 
-    this.activityService.listActivity(result => {
-      if (result.ok) {
-        this.activities = [];
-        this.unread = result.data.unread;
-        for (const key in result.data.activity) {
-          if (result.data.activity.hasOwnProperty(key)) {
-            this.activities.push(result.data.activity[key]);
+      this.noticeService.setLoading("Fetching Activity");
+
+      this.activityService.listActivity(result => {
+        this.noticeService.cancelLoading();
+        if (result.ok) {
+          this.activities = [];
+          this.unread = result.data.unread;
+          for (const key in result.data.activity) {
+            if (result.data.activity.hasOwnProperty(key)) {
+              this.activities.push(result.data.activity[key]);
+            }
           }
+          this.decodeActivityList(this.activities);
+          this.filteredActivities = this.activities;
+        } else {
+          this.noticeService.push(this.noticeService.ERROR, 'Activities failed to load');
         }
-
-        this.decodeActivityList(this.activities);
-        this.filteredActivities = this.activities;
-      }
-    });
-
-  }
+      });
+    }
 
   isUnread(id: string) {
     return (this.unread.findIndex(value => value === id) > -1);
