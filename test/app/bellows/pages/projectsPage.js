@@ -23,7 +23,7 @@ function ProjectsPage() {
   this.newProjectTypeSelect = element(by.model('newProject.appName'));
 
   this.settings = {};
-  this.settings.button = element(by.className('fa fa-cog'));
+  this.settings.button = element(by.id('settingsBtn'));
   if (browser.baseUrl.includes('scriptureforge')) {
     this.settings.userManagementLink = element(by.linkText('Project Settings'));
   } else if (browser.baseUrl.includes('languageforge')) {
