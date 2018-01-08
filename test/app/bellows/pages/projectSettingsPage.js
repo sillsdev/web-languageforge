@@ -43,9 +43,9 @@ function BellowsProjectSettingsPage() {
     name: element(by.model('project.projectName')),
     code: element(by.model('project.projectCode')),
     projectOwner: element(by.binding('project.ownerRef.username')),
-    saveButton: element(by.id('project_properties_save_button'))
+    saveButton: element(by.id('project-properties-save-button'))
 
-    //button: element(by.id('project_properties_save_button'))
+    //button: element(by.id('project-properties-save-button'))
   };
 
   // placeholder since we don't have Reports tests
