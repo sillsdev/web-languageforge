@@ -29,7 +29,9 @@ describe('Bellows E2E Project Settings App', function () {
     expect(managementPage.archiveTab.archiveButton.isDisplayed()).toBe(true);
     expect(managementPage.archiveTab.archiveButton.isEnabled()).toBe(true);
     */
-    settingsPage.tabs.remove.click();
+    browser.wait(expectedCondition.elementToBeClickable(settingsPage.tabs.remove), CONDITION_TIMEOUT);
+    browser.actions().mouseMove(settingsPage.tabs.remove).click().perform();
+    //settingsPage.tabs.remove.click();
     browser.wait(expectedCondition.visibilityOf(settingsPage.deleteTab.deleteButton),
       CONDITION_TIMEOUT);
     expect(settingsPage.deleteTab.deleteButton.isDisplayed()).toBe(true);
@@ -45,7 +47,8 @@ describe('Bellows E2E Project Settings App', function () {
       .not.toContain(constants.managerUsername);
   });
 
-  it('Manager cannot view archive tab if not owner', function () {
+  // Archive tab is a disabled/hidden feature
+  xit('Manager cannot view archive tab if not owner', function () {
     expect(settingsPage.tabs.archive.isPresent()).toBe(false);
   });
 
