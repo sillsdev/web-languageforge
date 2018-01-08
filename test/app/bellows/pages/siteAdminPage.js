@@ -15,14 +15,14 @@ function SiteAdminPage() {
   this.activePane = element(by.css('div.tab-pane.active'));
 
   this.tabs = {
-    reports: element(by.linkText('Users')),
-    archivedProjects: element(by.linkText('Archived Projects'))
+    reports: element(by.id('users')),
+    archivedProjects: element(by.id('archivedprojects'))
   };
 
   this.tabs.archivedProjects.republishButton =
-    this.activePane.element(by.buttonText('Re-publish Projects'));
+    this.activePane.element(by.id('site-admin-republish-btn'));
   this.tabs.archivedProjects.deleteButton =
-    this.activePane.element(by.buttonText('Delete Projects'));
+    this.activePane.element(by.id('site-admin-delete-btn'));
   this.tabs.archivedProjects.projectsList =
     element.all(by.repeater('project in visibleProjects'));
   this.tabs.archivedProjects.setCheckbox = function (row, value) {
@@ -32,7 +32,7 @@ function SiteAdminPage() {
   }.bind(this);
 
   //noinspection JSUnusedGlobalSymbols
-  this.addBtn = element(by.partialButtonText('Add New'));
+  this.addBtn = element(by.id('site-admin-add-new-btn'));
 
   //noinspection JSUnusedGlobalSymbols
   this.userFilterInput = element(by.model('filterUsers'));

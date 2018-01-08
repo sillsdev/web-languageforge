@@ -95,7 +95,7 @@ function SfProjectSettingsPage() {
     featured: element(by.model('project.featured')),
     allowAudioDownload: element(by.model('project.allowAudioDownload')),
     usersSeeEachOthersResponses: element(by.model('project.usersSeeEachOthersResponses')),
-    saveButton: element(by.id('project_properties_save_button'))
+    saveButton: element(by.id('project-properties-save-button'))
   };
 
   // Set a checkbox to either true or false no matter what its current value is
