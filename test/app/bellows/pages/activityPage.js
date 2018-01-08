@@ -15,11 +15,11 @@ function SfActivityPage() {
   };
 
   this.clickOnAllActivity = function clickOnAllActivity() {
-    element(by.partialButtonText('All Activity')).click();
+    element(by.id('activity-showAllActivityButton')).click();
   };
 
   this.clickOnShowOnlyMyActivity = function clickOnShowOnlyMyActivity() {
-    element(by.partialButtonText('Show Only My Activity')).click();
+    element(by.id('activity-showOnlyMyActivityButton')).click();
   };
 
   // Returns the number of items in the activity list
@@ -46,5 +46,4 @@ function SfActivityPage() {
       names.getText().then(console.log);
     });
   };
-
 }

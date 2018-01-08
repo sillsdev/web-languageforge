@@ -13,6 +13,7 @@ import { ModalService } from './modal/modal.service';
 import { OfflineModule } from './offline/offline.module';
 import { SessionService } from './session.service';
 import { UtilityService } from './utility.service';
+import { NoticeService } from './notice/notice.service';
 
 export const CoreModule = angular
   .module('coreModule', [JsonRpcModule, OfflineModule])
@@ -25,6 +26,7 @@ export const CoreModule = angular
   .service('linkService', LinkService)
   .service('utilService', UtilityService)
   .service('restApiService', RestApiService)
+  .service('noticeService', NoticeService)
   .service('userRestApiService', UserRestApiService)
   .filter('bytes', BytesFilter)
   .filter('relativetime', RelativeTimeFilter)
