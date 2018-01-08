@@ -52,7 +52,7 @@ export class FieldConfigurationController implements angular.IController {
   constructor(private $scope: angular.IScope, private $modal: ModalService) {
     $scope.$watchCollection(() => this.fccCurrentField.inputSystems.selecteds,
       (newValue: { [languageTag: string]: boolean }) => {
-        if (angular.isDefined(newValue)) {
+        if (newValue != null && this.fccFieldConfig != null && this.fccCurrentField != null) {
           const currentFieldConfigMultiText = this.fccFieldConfig[this.fccCurrentField.name] as LexConfigMultiText;
           if (angular.isDefined(currentFieldConfigMultiText.inputSystems)) {
             currentFieldConfigMultiText.inputSystems = [];
@@ -113,7 +113,7 @@ export class FieldConfigurationController implements angular.IController {
   }
 
   fieldConfigItemExists(itemName: string): boolean {
-    if (angular.isUndefined(this.fccCurrentField)) {
+    if (this.fccCurrentField != null && this.fccCurrentField != null) {
       return false;
     }
     return itemName in this.fccFieldConfig[this.fccCurrentField.name];

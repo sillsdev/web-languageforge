@@ -53,7 +53,7 @@ export class InputSystemsConfigurationController implements angular.IController 
   }
 
   isInputSystemInUse(): boolean {
-    if (!(this.selectedInputSystemId in this.iscInputSystemViewModels)) {
+    if (this.iscInputSystemViewModels == null || !(this.selectedInputSystemId in this.iscInputSystemViewModels)) {
       return true;
     }
 
@@ -62,7 +62,7 @@ export class InputSystemsConfigurationController implements angular.IController 
   }
 
   newExists(special: string): boolean {
-    if (!(this.selectedInputSystemId in this.iscInputSystemViewModels)) {
+    if (this.iscInputSystemViewModels == null || !(this.selectedInputSystemId in this.iscInputSystemViewModels)) {
       return false;
     }
 
