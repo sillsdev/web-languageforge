@@ -21,7 +21,6 @@ function ProjectsPage() {
   this.createBtn = element(by.id('startJoinProjectButton'));
   this.newProjectNameInput  = element(by.model('newProject.projectName'));
   this.newProjectTypeSelect = element(by.model('newProject.appName'));
-  this.saveBtn = element(by.partialButtonText('Save'));
 
   this.settings = {};
   this.settings.button = element(by.className('fa fa-cog'));
@@ -68,14 +67,6 @@ function ProjectsPage() {
     });
 
     return result;
-  };
-
-  //noinspection JSUnusedGlobalSymbols
-  this.addNewProject = function addNewProject(nameToAdd) {
-    this.createBtn.click();
-    this.newProjectNameInput.sendKeys(nameToAdd);
-    util.clickDropdownByValue(this.newProjectTypeSelect, projectTypes.sf);
-    this.saveBtn.click();
   };
 
   this.clickOnProject = function clickOnProject(projectName) {
