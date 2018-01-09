@@ -1,7 +1,7 @@
 <h2 style="font-weight: normal">Update <span class="notranslate">{{textTitle}}</span></h2>
 <div data-ng-show="rights.editOther">
     <uib-tabset>
-        <uib-tab heading="Edit Text">
+        <uib-tab heading="Edit Text" id="questions-settings-edit-tab">
             <form class="row">
                 <div class="col-sm-6">
                     <div>
@@ -21,7 +21,7 @@
                             </label>
                         </div>
                         <div>
-                            <a href="" data-ng-click="editPreviousText()"
+                            <a id="questions-settings-edit-previous" href="" data-ng-click="editPreviousText()"
                                class="no-margin">Edit previous text</a>
                             <b>(dangerous!)</b>
                         </div>
@@ -60,15 +60,16 @@
                     <br>
                 </fieldset>
                 <div class="col-12 clearfix">
-                    <button type="submit" class="btn btn-primary" data-ng-click="updateText(editedText)">
+                    <button type="submit" class="btn btn-primary" id="questions-settings-save-btn" data-ng-click="updateText(editedText)">
                         <i class="fa fa-check"></i> Save</button>
                 </div>
             </form>
         </uib-tab>
-        <uib-tab heading="Archived Questions">
+        <uib-tab heading="Archived Questions" id="questions-settings-archived-tab">
             <div data-ng-controller="TextSettingsArchivedQuestionsCtrl">
                 <form data-ng-show="rights.showControlBar" class="control-bar form-inline">
                     <button class="btn btn-primary"
+                            id="questions-settings-republish-btn"
                             data-ng-disabled="selected.length == 0"
                             data-ng-show="rights.archive"
                             data-ng-click="publishQuestions()">
@@ -96,7 +97,7 @@
                 </listview>
             </div>
         </uib-tab>
-        <uib-tab heading="Audio File">
+        <uib-tab heading="Audio File" id="questions-settings-audio-tab">
             <form data-ng-submit="updateText(editedText)">
                 <label>Upload an Audio File</label>
                 <div class="drop-box" data-ngf-drop="uploadAudio($file)" data-ngf-drag-over-class="'dragover'">
@@ -117,7 +118,7 @@
                 <div data-ng-bind-html="uploadResult"></div>
             </form>
         </uib-tab>
-        <uib-tab heading="ParaTExt Export">
+        <uib-tab heading="ParaTExt Export" id="questions-settings-paratext-tab">
             <div class="row outer-flex" data-ng-controller="ParatextExportTextCtrl">
                 <h4>Export Text Answers/Comments to a ParaTExt XML file</h4>
                 <form class="col-sm-6" name="exportForm">
@@ -135,7 +136,8 @@
                             Only export flagged Answers</label>
                     </div>
                     <div>
-                        <button class="btn btn-primary" data-ng-disabled="exportForm.$invalid || download.inprogress"
+                        <button class="btn btn-primary" id="questions-settings-prepare-btn"
+                                data-ng-disabled="exportForm.$invalid || download.inprogress"
                                 data-ng-click="startExport()">
                             Prepare Export</button>
                         <span data-ng-show="download.inprogress">
@@ -158,7 +160,7 @@
                                            class="label label-info"><span class="notranslate">{{download.commentCount}}</span>
                     comment(s)</span>
                     </p>
-                    <button data-ng-click="downloadExport()" class="btn btn-primary">
+                    <button data-ng-click="downloadExport()" class="btn btn-primary" id="questions-settings-download-btn">
                         Download ParaTExt XML File</button>
                 </div>
             </div>

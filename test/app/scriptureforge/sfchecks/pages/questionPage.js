@@ -35,7 +35,7 @@ function SfQuestionPage() {
   this.answers.add = function (answer) {
     // Using ID "Comments" contains Answers and Comments
     this.answerCtrl = browser.element(by.id('comments'));
-    var newAnswer = this.answerCtrl.element(by.css('textarea.newAnswer'));
+    var newAnswer = this.answerCtrl.element(by.id('question-new-answer'));
     newAnswer.sendKeys(answer);
     browser.wait(expectedCondition.textToBePresentInElementValue(newAnswer, answer),
       CONDITION_TIMEOUT);
