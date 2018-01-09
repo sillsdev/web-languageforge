@@ -9,7 +9,7 @@ namespace SIL.XForge.WebApi.Server.Models
         public string Id { get; set; }
         public string ProjectRef { get; set; }
         public string BackgroundJobId { get; set; }
-        public string State { get; set; } = PendingState;
+        public string State { get; set; }
         public double PercentCompleted { get; set; }
     }
 }

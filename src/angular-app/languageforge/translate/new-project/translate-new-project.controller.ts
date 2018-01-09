@@ -334,6 +334,7 @@ export class TranslateNewProjectController implements angular.IController {
         this.show.nextButton = false;
         this.resetValidateProjectForm();
 
+        this.newProject.config.isTranslationDataScripture = true;
         this.updateConfigForParatextProject('source', this.sourceParatextProject);
         this.updateConfigForParatextProject('target', this.targetParatextProject);
 
