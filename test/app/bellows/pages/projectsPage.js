@@ -93,7 +93,7 @@ function ProjectsPage() {
       browser.wait(expectedCondition.visibilityOf(userNameInput), CONDITION_TIMEOUT);
       userNameInput.sendKeys(usersName);
 
-      var typeaheadDiv = element(by.css('.typeahead'));
+      var typeaheadDiv = element(by.id('typeaheadDiv'));
       var typeaheadItems = typeaheadDiv.all(by.css('ul li'));
       util.findRowByText(typeaheadItems, usersName).then(function (item) {
         item.click();
