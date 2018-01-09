@@ -1,6 +1,6 @@
 <!-- Table responsive as an experiment to proportion the table, if bothersome remove -->
 <div class="form-check row table-responsive-sm">
-	<table class="table table-striped" id="Table">
+	<table class="table table-striped">
 		<thead>
 			<tr class="table-secondary">
 				<th class="text-center"></th>
@@ -15,53 +15,29 @@
 				<th><button type="button" class="btn btn-light">+</button></th>
 			</tr>
 		</thead>
-		<tbody id="Body">
+		<tbody>
 			<tr>
 				<tr>
 					<th class="text-center table-secondary">Input Systems</th>
 					<td></td>
 					<td></td>
 					<th class="text-center">Select All</th>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsObserver" aria-label="..."  type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsCollab" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsComment" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsManag" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsUser1" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..."  type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
 				</tr>
-				<tr>
+				<tr data-ng-repeat="input in $ctrl.unifiedViewModel.inputSystem">
 					<th class="text-center table-secondary" ></th>
-					<td class="text-center"></td>
-					<th class="text-center">id</th>
-					<td class="text-center"><input class="form-check-input position-static" id="WordsSelectAll" aria-label="..."  type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="WordsObserver" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="WordsCollab" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="WordsComment" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="WordsManag" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="WordsUser1" aria-label="..." type="checkbox"></td>
-					<td></td>
-				</tr>
-				<tr>
-					<th class="text-center table-secondary" ></th>
-					<td class="text-center"></td>
-					<th class="text-center">en</th>
-					<td class="text-center"><input class="form-check-input position-static" id="CitFormSelectAll" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="CitFormObserver" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="CitFormCollab" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="CitFormComment" aria-label="..."  type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="CitFormManag" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="CitFormUser1" aria-label="..." type="checkbox"></td>
-					<td></td>
-					</tr>
-				<tr>
-					<th class="text-center table-secondary"></th>
-					<td class="text-center"></td>
-					<th class="text-center">fr</th>
-					<td class="text-center"><input class="form-check-input position-static" id="PronFormSelectAll" aria-label="..."type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="PronFormObserver" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="PronFormCollab" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="PronFormComment" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="PronFormManag" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="PronFormUser1" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="input.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
+					<th class="text-center">{{input.name}}</th>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="input.observer" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="input.commenter" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="input.contributor" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="input.manager" aria-label="..." type="checkbox"></td>
+					<td class="text-center" data-ng-repeat="group in input.groups"><input class="form-check-input position-static" data-ng-model="group" aria-label="..." type="checkbox"></td>
 					<td></td>
 				</tr>
 				<tr>
@@ -77,21 +53,21 @@
 					<td></td>
 					<td></td>
 					<th class="text-center">Select All</th>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsObserver" aria-label="..."  type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsCollab" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsComment" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsManag" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsUser1" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..."  type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center" data-ng-repeat="group in $ctrl.unifiedViewModel.entryFields[0].groups"><input class="form-check-input position-static" data-ng-model="group" aria-label="..." type="checkbox"></td>
 					<td></td>
 				</tr>
-                <tr data-ng-repeat="entryField in $ctrl.unifiedViewModel.entryFields">
+        <tr data-ng-repeat="entryField in $ctrl.unifiedViewModel.entryFields">
 					<th class="text-center table-secondary" ></th>
 					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
 					<th class="text-center">{{entryField.name}}</th>
 					<td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
 					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.observer" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.contributor" aria-label="..." type="checkbox"></td>
 					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.commenter" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.contributor" aria-label="..." type="checkbox"></td>
 					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.manager" aria-label="..." type="checkbox"></td>
 					<td class="text-center" data-ng-repeat="group in entryField.groups"><input class="form-check-input position-static" data-ng-model="group" aria-label="..." type="checkbox"></td>
 					<td></td>
@@ -106,22 +82,22 @@
 					<td></td>
 					<td></td>
 					<th class="text-center">Select All</th>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsObserver" aria-label="..."  type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsCollab" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsComment" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsManag" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsUser1" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..."  type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
 					<td></td>
 					</tr>
-                <tr data-ng-repeat="senseField in $ctrl.unifiedViewModel.senseFields">
+        <tr data-ng-repeat="senseField in $ctrl.unifiedViewModel.senseFields">
 					<th class="text-center table-secondary" ></th>
-					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
 					<th class="text-center">{{senseField.name}}</th>
 					<td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.observer" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.contributor" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.commenter" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.manager" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.observer" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.commenter" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.contributor" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="senseField.manager" aria-label="..." type="checkbox"></td>
 					<td class="text-center" data-ng-repeat="group in senseField.groups"><input class="form-check-input position-static" data-ng-model="group" aria-label="..." type="checkbox"></td>
 					<td></td>
 				</tr>
@@ -135,11 +111,11 @@
 					<td></td>
 					<td></td>
 					<th class="text-center">Select All</th>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsObserver" aria-label="..."  type="checkbox"></td>
-					<td class="text-center"><input  class="form-check-input position-static" id="EntryFieldsCollab" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsComment" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsManag" aria-label="..." type="checkbox"></td>
-					<td class="text-center"><input  class="form-check-input position-static" id="EntryFieldsUser1" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..."  type="checkbox"></td>
+					<td class="text-center"><input  class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input  class="form-check-input position-static" aria-label="..." type="checkbox"></td>
 					<td></td>
 				</tr>
 				<tr data-ng-repeat="exampleField in $ctrl.unifiedViewModel.exampleFields">
