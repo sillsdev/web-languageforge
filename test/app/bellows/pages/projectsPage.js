@@ -157,7 +157,7 @@ function ProjectsPage() {
       var foundUserRow = projectMemberRows.first();
       var rowCheckbox = foundUserRow.element(by.css('input[type="checkbox"]'));
       util.setCheckbox(rowCheckbox, true);
-      var removeMembersBtn = element(by.partialButtonText('Remove Members'));
+      var removeMembersBtn = element(by.id('removeMembersBtn'));
       removeMembersBtn.click();
 
       this.get(); // After all is finished, reload projects page
