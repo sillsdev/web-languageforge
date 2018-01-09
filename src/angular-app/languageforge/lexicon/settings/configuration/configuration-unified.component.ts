@@ -1,6 +1,7 @@
 import * as angular from 'angular';
 
 import {ModalService} from '../../../../bellows/core/modal/modal.service';
+import {User} from '../../../../bellows/shared/model/user.model';
 import {LexiconConfigService} from '../../core/lexicon-config.service';
 import {LexConfigField, LexiconConfig} from '../../shared/model/lexicon-config.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
@@ -14,6 +15,7 @@ export class UnifiedConfigurationController implements angular.IController {
   uccConfigDirty: LexiconConfig;
   uccInputSystemViewModels: { [inputSystemId: string]: ConfigurationInputSystemsViewModel };
   uccInputSystemsList: ConfigurationInputSystemsViewModel[];
+  uccUsers: { [userId: string]: User };
   readonly uccConfigPristine: LexiconConfig;
   readonly uccOptionLists: LexOptionList[];
   uccSelectField: (params: { fieldName: string }) => void;
@@ -29,7 +31,7 @@ export class UnifiedConfigurationController implements angular.IController {
     if (configChange != null && configChange.previousValue !== configChange.currentValue &&
       configChange.currentValue != null
     ) {
-      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.uccConfigDirty);
+      this.unifiedViewModel = new ConfigurationUnifiedViewModel(this.uccConfigDirty, this.uccUsers);
     }
   }
 }
@@ -43,6 +45,7 @@ export const UnifiedConfigurationComponent: angular.IComponentOptions = {
     uccInputSystemViewModels: '<',
     uccInputSystemsList: '<',
     uccOptionLists: '<',
+    uccUsers: '<',
     uccSelectField: '&',
     uccOnUpdate: '&'
   },
