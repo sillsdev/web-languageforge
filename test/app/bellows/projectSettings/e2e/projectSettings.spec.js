@@ -48,9 +48,11 @@ describe('Bellows E2E Project Settings App', function () {
   });
 
   // Archive tab is a disabled/hidden feature
+  /*
   xit('Manager cannot view archive tab if not owner', function () {
     expect(settingsPage.tabs.archive.isPresent()).toBe(false);
   });
+  */
 
   it('Manager cannot view delete tab if not owner', function () {
     expect(settingsPage.tabs.remove.isPresent()).toBe(false);
@@ -89,6 +91,7 @@ describe('Bellows E2E Project Settings App', function () {
   });
 
   // Since Archive tab is now disabled, ignoring Archive / re-publish tests
+  /*
   xit('Manager can archive if owner', function () {
     loginPage.loginAsManager();
     settingsPage.get(constants.testProjectName);
@@ -145,5 +148,6 @@ describe('Bellows E2E Project Settings App', function () {
     projectsPage.get();
     expect(projectsPage.projectsList.count()).toBe(3);
   }).pend('Archive tab is currently disabled');
+  */
 
 });
