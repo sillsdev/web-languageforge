@@ -9,7 +9,7 @@ var SignupPage = function () {
     browser.get(browser.baseUrl + '/public/signup#!/?e=' + encodeURIComponent(email));
   };
 
-  this.signupForm = element(by.tagName('form'));
+  this.signupForm = element(by.id('signupForm'));
   this.emailInput = element(by.id('email'));
   this.emailInvalid = element(by.id('emailInvalid'));
   this.emailTaken = element(by.id('emailTaken'));
@@ -21,7 +21,7 @@ var SignupPage = function () {
   this.passwordIsWeak = element(by.id('passwordIsWeak'));
   this.showPassword = element(by.model('$ctrl.showPassword'));
 
-  this.captchaDiv = element(by.className('pui-captcha'));
+  this.captchaDiv = element(by.id('pui-captcha'));
   this.captcha = {
     expectedItemName: this.captchaDiv.element(by.id('expectedItemName')),
     blueSquareButton: this.captchaDiv.element(by.id('captcha0')),
@@ -32,14 +32,14 @@ var SignupPage = function () {
       this.blueSquareButton.click();
       this.expectedItemName.getText().then(function (result) {
         if (result === 'Blue Square') {
-          element(by.className('pui-captcha')).element(by.id('captcha1')).click();
+          element(by.id('pui-captcha')).element(by.id('captcha1')).click();
         }
       });
     },
 
     setValidCaptcha: function () {
       this.expectedItemName.getText().then(function (result) {
-        var captchaDiv = element(by.className('pui-captcha'));
+        var captchaDiv = element(by.id('pui-captcha'));
         switch (result) {
           case 'Blue Square' :
             captchaDiv.element(by.id('captcha0')).click();
