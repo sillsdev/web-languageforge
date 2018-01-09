@@ -11,14 +11,14 @@ function SfTextPage() {
 
   this.notice = util.notice;
 
-  this.archiveButton = element(by.partialButtonText('Archive Questions'));
-  this.makeTemplateBtn = element(by.partialButtonText('Make Template'));
-  this.addNewBtn = element(by.partialButtonText('Add New Question'));
-  this.textSettingsBtn = element(by.id('text_settings_button'));
+  this.archiveButton = element(by.id('questions-archive-btn'));
+  this.makeTemplateBtn = element(by.id('questions-make-template-btn'));
+  this.addNewBtn = element(by.id('questions-add-new-btn'));
+  this.textSettingsBtn = element(by.id('questions-text-settings-btn'));
 
   this.clickTextSettingsButton = function() {
-    element(by.id("text_settings_button")).click();
-    element(by.id("text_settings_link")).click();
+    element(by.id("questions-text-settings-btn")).click();
+    element(by.id("questions-text-settings-link")).click();
   }
 
   this.questionLink = function questionLink(title) {
@@ -34,13 +34,13 @@ function SfTextPage() {
   this.questionRows  = element.all(by.repeater('question in visibleQuestions'));
 
   //noinspection JSUnusedGlobalSymbols
-  this.questionText = element(by.model('questionDescription'));
+  //this.questionText = element(by.model('questionDescription'));
 
   //noinspection JSUnusedGlobalSymbols
-  this.questionSummary = element(by.model('questionTitle'));
+  //this.questionSummary = element(by.model('questionTitle'));
 
   //noinspection JSUnusedGlobalSymbols
-  this.saveQuestion = element(by.partialButtonText('Save'));
+  //this.saveQuestion = element(by.partialButtonText('Save'));
 
   // getFirstCheckbox has to be a function because the .first() method will actually resolve the
   // finder
@@ -49,16 +49,14 @@ function SfTextPage() {
   };
 
   this.newQuestion = {
-    showFormButton: element(by.partialButtonText('Add New Question')),
-    form: element(by.name('newQuestionForm')),
+    showFormButton: element(by.id('questions-add-new-btn')),
+    form: element(by.id('questions-new-question-form')),
     description: element(by.model('questionDescription')),
     summary: element(by.model('questionTitle')),
-    saveButton: element(by.css('form[name="newQuestionForm"]'))
-      .element(by.css('.save-new-question'))
+    saveButton: element(by.id('questions-save-question-btn'))
   };
 
   this.addNewQuestion = function addNewQuestion(description, summary) {
-    expect(this.newQuestion.showFormButton.isDisplayed()).toBe(true);
     this.newQuestion.showFormButton.click();
     browser.wait(expectedCondition.visibilityOf(this.newQuestion.description), CONDITION_TIMEOUT);
     this.newQuestion.description.sendKeys(description);
