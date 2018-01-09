@@ -44,12 +44,14 @@ namespace SIL.XForge.WebApi.Server.DataAccess
 
             BsonSerializer.RegisterDiscriminatorConvention(typeof(Project),
                 new HierarchicalDiscriminatorConvention("appName"));
-            var pack = new ConventionPack
+            var globalPack = new ConventionPack
             {
                 new CamelCaseElementNameConvention(),
                 new ObjectRefConvention()
             };
-            ConventionRegistry.Register("Custom", pack, t => true);
+            ConventionRegistry.Register("Global", globalPack, t => true);
+            var paratextProjectPack = new ConventionPack { new NoIdMemberConvention() };
+            ConventionRegistry.Register("ParatextProject", paratextProjectPack, t => t == typeof(ParatextProject));
 
             services.AddSingleton<IMongoClient>(sp => new MongoClient(connectionString));
 

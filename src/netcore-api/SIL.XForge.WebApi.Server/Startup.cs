@@ -64,6 +64,7 @@ namespace SIL.XForge.WebApi.Server
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.Configure<ParatextOptions>(Configuration.GetSection("Paratext"));
+            services.Configure<SendReceiveOptions>(Configuration.GetSection("SendReceive"));
 
             services.AddMongoDataAccess(Configuration);
             services.AddSingleton<SendReceiveService>();
