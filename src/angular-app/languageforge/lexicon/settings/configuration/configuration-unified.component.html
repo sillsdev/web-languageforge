@@ -102,6 +102,35 @@
 			</tr>
 			<tr>
 				<tr>
+					<th class="text-center table-secondary">Sense Fields</th>
+					<td></td>
+					<td></td>
+					<th class="text-center">Select All</th>
+					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsObserver" aria-label="..."  type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsCollab" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsComment" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsManag" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" id="EntryFieldsUser1" aria-label="..." type="checkbox"></td>
+					<td></td>
+					</tr>
+                <tr data-ng-repeat="senseField in $ctrl.unifiedViewModel.senseFields">
+					<th class="text-center table-secondary" ></th>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
+					<th class="text-center">{{senseField.name}}</th>
+					<td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.observer" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.contributor" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.commenter" aria-label="..." type="checkbox"></td>
+					<td class="text-center"><input class="form-check-input position-static" data-ng-model="entryField.manager" aria-label="..." type="checkbox"></td>
+					<td class="text-center" data-ng-repeat="group in senseField.groups"><input class="form-check-input position-static" data-ng-model="group" aria-label="..." type="checkbox"></td>
+					<td></td>
+				</tr>
+				<tr>
+					<th class="text-center table-secondary"></th>
+				</tr>
+			</tr>
+			<tr>
+				<tr>
 					<th class="text-center table-secondary">Example Fields</th>
 					<td></td>
 					<td></td>
@@ -147,7 +176,7 @@
 					<td class="text-center"><input class="form-check-input position-static" id="PronFormComment" aria-label="..." type="checkbox"></td>
 					<td class="text-center"><input class="form-check-input position-static" id="PronFormManag" aria-label="..." type="checkbox"></td>
 					<td class="text-center"><input class="form-check-input position-static" id="PronFormUser1" aria-label="..." type="checkbox"></td>
-					<td></td>				
+					<td></td>
 				</tr>
 				<tr>
 					<th class="text-center table-secondary"></th>
@@ -159,7 +188,7 @@
 					<td class="text-center"><input class="form-check-input position-static" id="PronFormComment" aria-label="..." type="checkbox"></td>
 					<td class="text-center"><input class="form-check-input position-static" id="PronFormManag" aria-label="..." type="checkbox"></td>
 					<td class="text-center"><input class="form-check-input position-static" id="PronFormUser1" aria-label="..." type="checkbox"></td>
-					<td></td>				
+					<td></td>
 				</tr>
 				<tr>
 					<th class="text-center table-secondary"><button type="button" class="btn btn-light">+</button></th>
