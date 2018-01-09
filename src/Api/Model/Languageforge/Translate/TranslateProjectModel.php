@@ -5,9 +5,12 @@ namespace Api\Model\Languageforge\Translate;
 use Api\Model\Languageforge\LfProjectModel;
 use Api\Model\Languageforge\Translate\Command\TranslateProjectCommands;
 use Api\Model\Shared\Mapper\MongoStore;
+use Palaso\Utilities\FileUtilities;
 
 class TranslateProjectModel extends LfProjectModel
 {
+    const SENDRECEIVE_PATH = '/var/lib/languageforge/translate/sendreceive';
+
     public function __construct($id = '')
     {
         $this->appName = LfProjectModel::TRANSLATE_APP;
@@ -48,6 +51,8 @@ class TranslateProjectModel extends LfProjectModel
         MongoStore::dropCollection('realtime', $this->databaseName());
         MongoStore::dropCollection('realtime', 'o_' . $this->databaseName());
         TranslateProjectCommands::removeMachineTranslationProject($this);
+        $projectPath = self::SENDRECEIVE_PATH . DIRECTORY_SEPARATOR . $this->projectCode;
+        FileUtilities::removeFolderAndAllContents($projectPath);
         parent::remove();
     }
 

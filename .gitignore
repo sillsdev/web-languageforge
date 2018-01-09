@@ -52,3 +52,5 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 *.user
+
+appsettings.user.json

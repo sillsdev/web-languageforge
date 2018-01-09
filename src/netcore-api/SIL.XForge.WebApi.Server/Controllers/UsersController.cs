@@ -28,7 +28,7 @@ namespace SIL.XForge.WebApi.Server.Controllers
             if (!(await _userRepo.TryGetAsync(GetActualUserId(userId))).TryResult(out User user))
                 return NotFound();
 
-            if ((await _paratextService.TryGetUserInfo(user)).TryResult(out ParatextUserInfo userInfo))
+            if ((await _paratextService.TryGetUserInfoAsync(user)).TryResult(out ParatextUserInfo userInfo))
                 return Ok(CreateDto(userInfo));
             return NoContent();
         }

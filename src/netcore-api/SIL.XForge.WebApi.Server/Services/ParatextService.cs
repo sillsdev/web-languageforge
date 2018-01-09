@@ -41,24 +41,69 @@ namespace SIL.XForge.WebApi.Server.Services
             _registryClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public Task<Attempt<ParatextUserInfo>> TryGetUserInfo(User user)
+        public async Task<Attempt<ParatextUserInfo>> TryGetUserInfoAsync(User user)
         {
-            return CallApiAsync(user, async u =>
+            if ((await TryCallApiAsync(_dataAccessClient, user, HttpMethod.Get, "projects"))
+                .TryResult(out string response))
+            {
+                var repos = XElement.Parse(response);
+                var repoIds = new HashSet<string>(repos.Elements("repo").Select(r => (string) r.Element("projid")));
+                if ((await TryCallApiAsync(_registryClient, user, HttpMethod.Get, "projects"))
+                    .TryResult(out response))
                 {
-                    if ((await TryGetRepoIdsAsync(u)).TryResult(out ISet<string> projectIds))
+                    var projectArray = JArray.Parse(response);
+                    var projects = new List<ParatextProject>();
+                    foreach (JToken projectObj in projectArray)
                     {
-                        if ((await TryGetProjectsAsync(u, projectIds))
-                            .TryResult(out IReadOnlyList<ParatextProject> projects))
-                        {
-                            return Attempt.Success(new ParatextUserInfo
+                        JToken identificationObj = projectObj["identification_systemId"]
+                            .FirstOrDefault(id => (string) id["type"] == "paratext");
+                        if (identificationObj == null)
+                            continue;
+                        string projectId = (string) identificationObj["text"];
+                        if (!repoIds.Contains(projectId))
+                            continue;
+
+                        projects.Add(new ParatextProject
                             {
-                                Username = GetUsername(u),
-                                Projects = projects
+                                Id = projectId,
+                                Name = (string) identificationObj["fullname"],
+                                LanguageTag = (string) projectObj["language_ldml"],
+                                // TODO: use SIL.WritingSystems to get language name from ISO-3 code
+                                LanguageName = (string) projectObj["language_iso"]
                             });
-                        }
                     }
-                    return Attempt<ParatextUserInfo>.Failure;
-                });
+                    return Attempt.Success(new ParatextUserInfo
+                        {
+                            Username = GetUsername(user),
+                            Projects = projects
+                        });
+                }
+            }
+            return Attempt<ParatextUserInfo>.Failure;
+        }
+
+        public async Task<Attempt<IReadOnlyList<string>>> TryGetBooksAsync(User user, string projectId)
+        {
+            if ((await TryCallApiAsync(_dataAccessClient, user, HttpMethod.Get, $"books/{projectId}"))
+                .TryResult(out string response))
+            {
+                var books = XElement.Parse(response);
+                string[] bookIds = books.Elements("Book").Select(b => (string) b.Attribute("id")).ToArray();
+                return Attempt.Success<IReadOnlyList<string>>(bookIds);
+            }
+            return Attempt<IReadOnlyList<string>>.Failure;
+        }
+
+        public Task<Attempt<string>> TryGetBookTextAsync(User user, string projectId, string bookId)
+        {
+            return TryCallApiAsync(_dataAccessClient, user, HttpMethod.Get, $"text/{projectId}/{bookId}");
+        }
+
+        public Task<Attempt<string>> TryUpdateBookTextAsync(User user, string projectId, string bookId, string revision,
+            string usxText)
+        {
+            return TryCallApiAsync(_dataAccessClient, user, HttpMethod.Post, $"text/{projectId}/{revision}/{bookId}",
+                usxText);
         }
 
         private string GetUsername(User user)
@@ -68,55 +113,7 @@ namespace SIL.XForge.WebApi.Server.Services
             return usernameClaim?.Value;
         }
 
-        private async Task<Attempt<ISet<string>>> TryGetRepoIdsAsync(User user)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, "api8/projects");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer",
-                user.ParatextAccessToken.AccessToken);
-            HttpResponseMessage response = await _dataAccessClient.SendAsync(request);
-            if (!response.IsSuccessStatusCode)
-                return Attempt<ISet<string>>.Failure;
-            string responseXml = await response.Content.ReadAsStringAsync();
-            var repos = XElement.Parse(responseXml);
-            var repoIds = new HashSet<string>(repos.Elements("repo").Select(r => (string) r.Element("projid")));
-            return new Attempt<ISet<string>>(repoIds);
-        }
-
-        private async Task<Attempt<IReadOnlyList<ParatextProject>>> TryGetProjectsAsync(User user,
-            ISet<string> projectIds)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, "api8/projects");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer",
-                user.ParatextAccessToken.AccessToken);
-            HttpResponseMessage response = await _registryClient.SendAsync(request);
-            if (!response.IsSuccessStatusCode)
-                return Attempt<IReadOnlyList<ParatextProject>>.Failure;
-            string responseJson = await response.Content.ReadAsStringAsync();
-            var projectArray = JArray.Parse(responseJson);
-            var projects = new List<ParatextProject>();
-            foreach (JToken projectObj in projectArray)
-            {
-                JToken identificationObj = projectObj["identification_systemId"]
-                    .FirstOrDefault(id => (string) id["type"] == "paratext");
-                if (identificationObj == null)
-                    continue;
-                string projectId = (string) identificationObj["text"];
-                if (!projectIds.Contains(projectId))
-                    continue;
-
-                projects.Add(new ParatextProject
-                    {
-                        Id = projectId,
-                        Name = (string) identificationObj["fullname"],
-                        LanguageTag = (string) projectObj["language_ldml"],
-                        // TODO: use SIL.WritingSystems to get language name from ISO-3 code
-                        LanguageName = (string) projectObj["language_iso"]
-                    });
-            }
-            return new Attempt<IReadOnlyList<ParatextProject>>(projects);
-        }
-
-        private async Task<Attempt<User>> RefreshAccessTokenAsync(User user)
+        private async Task<bool> RefreshAccessTokenAsync(User user)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "api8/token");
 
@@ -128,24 +125,25 @@ namespace SIL.XForge.WebApi.Server.Services
             request.Content = new StringContent(requestObj.ToString(), Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _registryClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
-                return Attempt.Failure(user);
+                return false;
 
             string responseJson = await response.Content.ReadAsStringAsync();
             var responseObj = JObject.Parse(responseJson);
-            var accessTokenInfo = new AccessTokenInfo
+            user.ParatextAccessToken = new AccessTokenInfo
             {
                 IdToken = (string) responseObj["id_token"],
                 AccessToken = (string) responseObj["access_token"],
                 RefreshToken = (string) responseObj["refresh_token"]
             };
-            user = await _userRepo.UpdateAsync(user, b => b.Set(u => u.ParatextAccessToken, accessTokenInfo));
-            return Attempt.Success(user);
+            await _userRepo.UpdateAsync(user, b => b.Set(u => u.ParatextAccessToken, user.ParatextAccessToken));
+            return true;
         }
 
-        private async Task<Attempt<T>> CallApiAsync<T>(User user, Func<User, Task<Attempt<T>>> call)
+        private async Task<Attempt<string>> TryCallApiAsync(HttpClient client, User user, HttpMethod method, string url,
+            string content = null)
         {
             if (user.ParatextAccessToken?.AccessToken == null)
-                return Attempt<T>.Failure;
+                return Attempt<string>.Failure;
 
             bool expired = IsAccessTokenExpired(user);
             bool refreshed = false;
@@ -153,23 +151,28 @@ namespace SIL.XForge.WebApi.Server.Services
             {
                 if (expired)
                 {
-                    if (!(await RefreshAccessTokenAsync(user)).TryResult(out user))
-                        return Attempt<T>.Failure;
+                    if (!await RefreshAccessTokenAsync(user))
+                        return Attempt<string>.Failure;
                     refreshed = true;
                 }
 
-                Attempt<T> attempt = await call(user);
-                if (attempt.Success)
-                    return attempt;
+                var request = new HttpRequestMessage(method, $"api8/{url}");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer",
+                    user.ParatextAccessToken.AccessToken);
+                if (content != null)
+                    request.Content = new StringContent(content);
+                HttpResponseMessage response = await client.SendAsync(request);
+                if (response.IsSuccessStatusCode)
+                    return Attempt.Success(await response.Content.ReadAsStringAsync());
 
                 // assume that the token has expired if the call didn't succeed
                 expired = true;
             }
 
-            return Attempt<T>.Failure;
+            return Attempt<string>.Failure;
         }
 
-        private bool IsAccessTokenExpired(User user)
+        private static bool IsAccessTokenExpired(User user)
         {
             var accessToken = new JwtSecurityToken(user.ParatextAccessToken.AccessToken);
             var now = DateTime.UtcNow;
