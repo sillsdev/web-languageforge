@@ -2,6 +2,7 @@ import * as angular from 'angular';
 
 import {NoticeService} from '../../../../bellows/core/notice/notice.service';
 import {Session, SessionService} from '../../../../bellows/core/session.service';
+import {User} from '../../../../bellows/shared/model/user.model';
 import {LexiconConfigService} from '../../core/lexicon-config.service';
 import {LexiconProjectService} from '../../core/lexicon-project.service';
 import {LexiconSendReceiveService} from '../../core/lexicon-send-receive.service';
@@ -28,6 +29,7 @@ export class LexiconConfigurationController implements angular.IController {
     }
   };
   isSaving = false;
+  users: { [userId: string]: User } = {};
   readonly selects = new OptionSelects();
 
   configDirty: LexiconConfig;
@@ -62,6 +64,14 @@ export class LexiconConfigurationController implements angular.IController {
 
       sendReceive.setPollUpdateSuccessCallback(this.pollUpdateSuccess);
       sendReceive.setSyncProjectStatusSuccessCallback(this.syncProjectStatusSuccess);
+    });
+
+    lexProjectService.users(result => {
+      if (result.ok) {
+        for (const user of (result.data.users as User[])) {
+          this.users[user.id] = user;
+        }
+      }
     });
   }
 

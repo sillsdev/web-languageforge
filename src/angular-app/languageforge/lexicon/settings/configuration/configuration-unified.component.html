@@ -11,7 +11,7 @@
                 <th class="text-center">Commenter</th>
                 <th class="text-center">Contributor</th>
                 <th class="text-center">Manager</th>
-                <th class="text-center">User1</th>
+                <th class="text-center" data-ng-repeat="groupLabel in $ctrl.unifiedViewModel.groupLabels">{{groupLabel}}</th>
                 <th><button type="button" class="btn btn-light">+</button></th>
             </tr>
         </thead>
@@ -26,11 +26,11 @@
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+                    <td class="text-center" data-ng-repeat="group in $ctrl.unifiedViewModel.inputSystems[0].groups"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                 </tr>
                 <tr data-ng-repeat="inputSystems in $ctrl.unifiedViewModel.inputSystems">
                     <th class="text-center table-secondary" ></th>
-                    <td class="text-center"><input class="form-check-input position-static" data-ng-model="input.hiddenIfEmpty" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"></td>
                     <th class="text-center">{{inputSystems.name}}</th>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..."type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" data-ng-model="inputSystems.observer" aria-label="..." type="checkbox"></td>
@@ -57,7 +57,7 @@
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
-                    <td class="text-center" data-ng-repeat="group in $ctrl.unifiedViewModel.entryFields[0].groups"><input class="form-check-input position-static" data-ng-model="group" aria-label="..." type="checkbox"></td>
+                    <td class="text-center" data-ng-repeat="group in $ctrl.unifiedViewModel.entryFields[0].groups"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr data-ng-repeat="entryField in $ctrl.unifiedViewModel.entryFields">
@@ -86,7 +86,7 @@
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+                    <td class="text-center" data-ng-repeat="group in $ctrl.unifiedViewModel.senseFields[0].groups"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr data-ng-repeat="senseField in $ctrl.unifiedViewModel.senseFields">
@@ -112,10 +112,10 @@
                     <td></td>
                     <th class="text-center">Select All</th>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..."  type="checkbox"></td>
-                    <td class="text-center"><input  class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
-                    <td class="text-center"><input  class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+                    <td class="text-center"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
+                    <td class="text-center" data-ng-repeat="group in $ctrl.unifiedViewModel.exampleFields[0].groups"><input class="form-check-input position-static" aria-label="..." type="checkbox"></td>
                     <td></td>
                 </tr>
                 <tr data-ng-repeat="exampleField in $ctrl.unifiedViewModel.exampleFields">

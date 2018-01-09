@@ -1,3 +1,4 @@
+import {User} from '../../../../bellows/shared/model/user.model';
 import {
   LexConfigFieldList, LexiconConfig, LexRoleViewConfig,
   LexViewMultiTextFieldConfig
@@ -6,6 +7,9 @@ import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 import {OptionSelects} from './option-selects.model';
 
 export class ConfigurationUnifiedViewModel {
+  // Group labels
+  groupLabels: string[];
+
   // Settings objects for Input System
   inputSystems: InputSystemSettings[];
 
@@ -18,7 +22,7 @@ export class ConfigurationUnifiedViewModel {
   // Settings objects for Example Fields
   exampleFields: FieldSettings[];
 
-  constructor(config: LexiconConfig) {
+  constructor(config: LexiconConfig, users: { [userId: string]: User }) {
     this.inputSystems = ConfigurationUnifiedViewModel.setInputSystemViewModel(config);
 
     const entryConfig = config.entry;
@@ -31,6 +35,8 @@ export class ConfigurationUnifiedViewModel {
         this.exampleFields = ConfigurationUnifiedViewModel.setLevelViewModel(examplesConfig, config);
       }
     }
+
+    this.groupLabels = ConfigurationUnifiedViewModel.setGroupLabels(config, users);
 
     console.log('inputSystems', this.inputSystems);
     console.log('entryFields', this.entryFields, 'senseFields', this.senseFields, 'exampleFields', this.exampleFields);
@@ -134,6 +140,20 @@ export class ConfigurationUnifiedViewModel {
         fieldSettings.groups[groupIndex++] = config.userViews[userId].fields[fieldName].show;
       }
     }
+  }
+
+  private static setGroupLabels(config: LexiconConfig, users: { [userId: string]: User }): string[] {
+    const groupLabels: string[] = [];
+    let groupIndex = 0;
+    for (const userId in config.userViews) {
+      if (config.userViews.hasOwnProperty(userId) && config.userViews[userId] != null
+        && (userId in users)
+      ) {
+        groupLabels[groupIndex++] = users[userId].username;
+      }
+    }
+
+    return groupLabels;
   }
 
 }
