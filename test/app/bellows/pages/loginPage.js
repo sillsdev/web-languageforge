@@ -9,14 +9,12 @@ function BellowsLoginPage() {
     browser.get(browser.baseUrl + '/auth/login');
   };
 
-  //this.form = element(by.css('form[name="loginForm"]'));
   this.form = element(by.id('login-loginForm'));
   this.infoMessages = element.all(by.className('alert-info'));
   this.errors = element.all(by.css('.alert-danger'));
   this.username = element(by.id('username'));
   this.password = element(by.id('password'));
   this.forgotPasswordLink = element(by.id('forgot_password'));
-  //this.submit   = element(by.xpath('//button[@type="submit"]'));
   this.submit     = element(by.id('login-submit'));
 
   this.login = function login(username, password) {
