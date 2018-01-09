@@ -29,7 +29,7 @@
             <form class="card card-body bg-light">
                 <div class="form-row align-items-top">
                     <div class="col-auto">
-                        <pui-typeahead class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
+                        <pui-typeahead id="typeaheadDiv" class="typeahead" items="users" term="typeahead.userName" search="queryUser" select="selectUser">
                             <ul ng-hide="users.length == 0">
                                 <li typeahead-item="user" data-ng-repeat="user in users" class="typeahead-item">
                                     <img width="32px" data-ng-src="{{imageSource(user.avatarRef)}}" class="left">
