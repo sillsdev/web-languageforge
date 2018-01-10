@@ -22,10 +22,6 @@ function ProjectsPage() {
   this.newProjectNameInput  = element(by.model('newProject.projectName'));
   this.newProjectTypeSelect = element(by.model('newProject.appName'));
 
-  this.settings = {};
-  this.settings.button = element(by.id('settingsBtn'));
-  this.settings.userManagementLink = element(by.id('dropdown-project-settings'));
-
   // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test
   // Project will be on page 1, and you can find it.
   this.itemsPerPageCtrl = element(by.model('itemsPerPage'));
@@ -75,15 +71,24 @@ function ProjectsPage() {
     });
   };
 
+  var settingsBtn = element(by.id('settingsBtn'));
+  var userManagementLink;
+  if (browser.baseUrl.includes('languageforge')) {
+    userManagementLink = element(by.id('userManagementLink'));
+  } else {
+    userManagementLink = element(by.id('dropdown-project-settings'));
+  }
+
   this.addUserToProject = function addUserToProject(projectName, usersName, roleText) {
     this.findProject(projectName).then(function (projectRow) {
+
       var projectLink = projectRow.element(by.css('a'));
       projectLink.click();
-      browser.wait(expectedCondition.visibilityOf(this.settings.button), CONDITION_TIMEOUT);
-      this.settings.button.click();
-      browser.wait(expectedCondition.visibilityOf(this.settings.userManagementLink),
+      browser.wait(expectedCondition.visibilityOf(settingsBtn), CONDITION_TIMEOUT);
+      settingsBtn.click();
+      browser.wait(expectedCondition.visibilityOf(userManagementLink),
         CONDITION_TIMEOUT);
-      this.settings.userManagementLink.click();
+      userManagementLink.click();
 
       var addMembersBtn = element(by.id('addMembersButton'));
       browser.wait(expectedCondition.visibilityOf(addMembersBtn), CONDITION_TIMEOUT);
@@ -139,8 +144,8 @@ function ProjectsPage() {
       var projectLink = projectRow.element(by.css('a'));
       projectLink.click();
 
-      this.settings.button.click();
-      this.settings.userManagementLink.click();
+      settingsBtn.click();
+      userManagementLink.click();
 
       var userFilter;
       var projectMemberRows;
