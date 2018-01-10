@@ -18,18 +18,13 @@ function ProjectsPage() {
 
   this.testProjectName = 'Test Project';
 
-  this.createBtn = element(by.partialButtonText('Start or Join a New Project'));
+  this.createBtn = element(by.id('startJoinProjectButton'));
   this.newProjectNameInput  = element(by.model('newProject.projectName'));
   this.newProjectTypeSelect = element(by.model('newProject.appName'));
-  this.saveBtn = element(by.partialButtonText('Save'));
 
   this.settings = {};
-  this.settings.button = element(by.className('fa fa-cog'));
-  if (browser.baseUrl.includes('scriptureforge')) {
-    this.settings.userManagementLink = element(by.linkText('Project Settings'));
-  } else if (browser.baseUrl.includes('languageforge')) {
-    this.settings.userManagementLink = element(by.linkText('User Management'));
-  }
+  this.settings.button = element(by.id('settingsBtn'));
+  this.settings.userManagementLink = element(by.id('dropdown-project-settings'));
 
   // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test
   // Project will be on page 1, and you can find it.
@@ -45,6 +40,7 @@ function ProjectsPage() {
   //noinspection JSUnusedGlobalSymbols
   this.select100ItemsPerPage = function select100ItemsPerPage() {
     util.clickDropdownByValue(this.itemsPerPageCtrl, '100');
+    //We don't know of a better way than by.css() in this case, so leaving it as is. -Ben Kastner 2018-1-09
     expect(element(by.model('itemsPerPage')).element(by.css('option:checked'))
       .getText()).toEqual('100');
   };
@@ -70,14 +66,6 @@ function ProjectsPage() {
     return result;
   };
 
-  //noinspection JSUnusedGlobalSymbols
-  this.addNewProject = function addNewProject(nameToAdd) {
-    this.createBtn.click();
-    this.newProjectNameInput.sendKeys(nameToAdd);
-    util.clickDropdownByValue(this.newProjectTypeSelect, projectTypes.sf);
-    this.saveBtn.click();
-  };
-
   this.clickOnProject = function clickOnProject(projectName) {
     this.findProject(projectName).then(function (projectRow) {
       var projectLink = projectRow.element(by.css('a'));
@@ -100,12 +88,12 @@ function ProjectsPage() {
       var addMembersBtn = element(by.id('addMembersButton'));
       browser.wait(expectedCondition.visibilityOf(addMembersBtn), CONDITION_TIMEOUT);
       addMembersBtn.click();
-      var newMembersDiv = element(by.css('#newMembersDiv'));
+      var newMembersDiv = element(by.id('newMembersDiv'));
       var userNameInput = newMembersDiv.element(by.id('typeaheadInput'));
       browser.wait(expectedCondition.visibilityOf(userNameInput), CONDITION_TIMEOUT);
       userNameInput.sendKeys(usersName);
 
-      var typeaheadDiv = element(by.css('.typeahead'));
+      var typeaheadDiv = element(by.id('typeaheadDiv'));
       var typeaheadItems = typeaheadDiv.all(by.css('ul li'));
       util.findRowByText(typeaheadItems, usersName).then(function (item) {
         item.click();
@@ -169,7 +157,7 @@ function ProjectsPage() {
       var foundUserRow = projectMemberRows.first();
       var rowCheckbox = foundUserRow.element(by.css('input[type="checkbox"]'));
       util.setCheckbox(rowCheckbox, true);
-      var removeMembersBtn = element(by.partialButtonText('Remove Members'));
+      var removeMembersBtn = element(by.id('removeMembersBtn'));
       removeMembersBtn.click();
 
       this.get(); // After all is finished, reload projects page
