@@ -24,7 +24,7 @@ function ProjectsPage() {
 
   this.settings = {};
   this.settings.button = element(by.id('settingsBtn'));
-  this.settings.userManagementLink = element(by.id('userManagementLink'));
+  this.settings.userManagementLink = element(by.id('dropdown-project-settings'));
 
   // Or just select "100" from the per-page dropdown, then you're pretty much guaranteed the Test
   // Project will be on page 1, and you can find it.
