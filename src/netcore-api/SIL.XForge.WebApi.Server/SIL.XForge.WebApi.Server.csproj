@@ -18,4 +18,8 @@
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ShareDB\ShareDB.csproj" />
+  </ItemGroup>
+
 </Project>
