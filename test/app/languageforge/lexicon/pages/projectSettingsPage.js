@@ -7,8 +7,8 @@ function ProjectSettingsPage() {
   var expectedCondition = protractor.ExpectedConditions;
   var CONDITION_TIMEOUT = 3000;
 
-  this.settingsMenuLink = element(by.className('btn dropdown-toggle'));
-  this.projectSettingsLink = element(by.linkText('Project Settings'));
+  this.settingsMenuLink = element(by.id('settingsDropdownButton'));
+  this.projectSettingsLink = element(by.id('dropdown-project-settings'));
 
   // Get the projectSettings for project projectName
   this.get = function get(projectName) {
@@ -19,9 +19,6 @@ function ProjectSettingsPage() {
     browser.wait(expectedCondition.visibilityOf(this.projectSettingsLink), CONDITION_TIMEOUT);
     this.projectSettingsLink.click();
   };
-
-  //noinspection JSUnusedGlobalSymbols
-  this.backToDictionaryBtn = element(by.buttonText('Dictionary'));
 
   this.tabDivs = element.all(by.className('tab-pane'));
   this.activePane = element(by.css('div.tab-pane.active'));
@@ -35,7 +32,7 @@ function ProjectSettingsPage() {
   };
 
   this.projectTab = {
-    saveButton: this.tabDivs.get(0).element(by.buttonText('Save'))
+    saveButton: this.tabDivs.get(0).element(by.id('project-settings-save-btn'))
   };
 
   /** Second parameter is optional, default false. If true, fieldName will be considered
