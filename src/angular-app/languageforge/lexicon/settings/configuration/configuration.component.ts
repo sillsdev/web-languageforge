@@ -13,6 +13,7 @@ import {
 import { LexiconProjectSettings } from '../../shared/model/lexicon-project-settings.model';
 import {LexOptionList} from '../../shared/model/option-list.model';
 import {Field} from './configuration-fields.component';
+import {ConfigurationUnifiedViewModel} from './configuration-unified-view.model';
 import {ConfigurationInputSystemsViewModel} from './input-system-view.model';
 import {OptionSelects} from './option-selects.model';
 
@@ -37,6 +38,7 @@ export class LexiconConfigurationController implements angular.IController {
   fieldConfig: { [fieldName: string]: LexConfigField };
   inputSystemViewModels: { [inputSystemId: string]: ConfigurationInputSystemsViewModel };
   inputSystemsList: ConfigurationInputSystemsViewModel[];
+  unifiedViewModel: ConfigurationUnifiedViewModel;
   optionListsDirty: any;
   optionListsPristine: any;
 
@@ -100,6 +102,8 @@ export class LexiconConfigurationController implements angular.IController {
       return;
     }
 
+    this.unifiedViewModel.updateConfig(this.configDirty);
+
     this.lexProjectService.updateConfiguration(this.configDirty, this.optionListsDirty, result => {
       if (result.ok) {
         const isSuccess = result.data;
@@ -157,7 +161,8 @@ export class LexiconConfigurationController implements angular.IController {
       configDirty?: LexiconConfig,
       inputSystemViewModels?: { [inputSystemId: string]: ConfigurationInputSystemsViewModel },
       inputSystemsList?: ConfigurationInputSystemsViewModel[],
-      optionListsDirty?: LexOptionList[]
+      optionListsDirty?: LexOptionList[],
+      unifiedViewModel?: ConfigurationUnifiedViewModel
     }
   ): void => {
     if ($event.configDirty) {
@@ -177,6 +182,11 @@ export class LexiconConfigurationController implements angular.IController {
 
     if ($event.optionListsDirty) {
         this.optionListsDirty = $event.optionListsDirty;
+        this.$scope.configForm.$setDirty();
+    }
+
+    if ($event.unifiedViewModel) {
+        this.unifiedViewModel = $event.unifiedViewModel;
         this.$scope.configForm.$setDirty();
     }
   }

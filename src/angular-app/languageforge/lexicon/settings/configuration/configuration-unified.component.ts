@@ -18,7 +18,7 @@ export class UnifiedConfigurationController implements angular.IController {
   uccUsers: { [userId: string]: User };readonly uccConfigPristine: LexiconConfig;
   readonly uccOptionLists: LexOptionList[];
   uccSelectField: (params: { fieldName: string }) => void;
-  uccOnUpdate: (params: { $event: { configDirty: LexiconConfig } }) => void;
+  uccOnUpdate: (params: { $event: { unifiedViewModel: ConfigurationUnifiedViewModel } }) => void;
 
   unifiedViewModel: ConfigurationUnifiedViewModel;
 
@@ -26,6 +26,12 @@ export class UnifiedConfigurationController implements angular.IController {
 
   static $inject: string[] = ['$scope', '$uibModal'];
   constructor(private $scope: angular.IScope, private $modal: ModalService) {
+  }
+
+  $onInit() {
+    this.$scope.$watch(() => this.unifiedViewModel, () => {
+      this.uccOnUpdate({ $event: { unifiedViewModel: this.unifiedViewModel } });
+    }, true);
   }
 
   $onChanges(changes: any) {
