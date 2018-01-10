@@ -2,7 +2,7 @@
     <form class="form-inline" data-ng-show="$ctrl.rights.showControlBar">
         <div class="form-row align-items-center">
             <div class="col-auto">
-                <button class="btn btn-primary" data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.remove"
+                <button id="removeMembersBtn" class="btn btn-primary" data-ng-disabled="$ctrl.selected.length == 0" data-ng-show="$ctrl.rights.remove"
                         data-ng-click="$ctrl.removeProjectUsers()"><i class="fa fa-trash iconPadding"></i>Remove Members</button>
             </div>
             <div class="col-auto">
@@ -18,7 +18,7 @@
     <div id="newMembersDiv" class=" new-item" uib-collapse="!newUserCollapsed">
         <form class="form-inline">
         <div class="form-control row gutter-fix">
-            <pui-typeahead class="typeahead" items="$ctrl.users" term="$ctrl.typeahead.userName" search="$ctrl.queryUser" select="$ctrl.selectUser">
+            <pui-typeahead id="typeaheadDiv" class="typeahead" items="$ctrl.users" term="$ctrl.typeahead.userName" search="$ctrl.queryUser" select="$ctrl.selectUser">
                 <ul>
                     <li typeahead-item="user" data-ng-repeat="user in $ctrl.users" class="typeahead-item">
                         <img width="32px" data-ng-src="{{$ctrl.imageSource(user.avatarRef)}}" class="left">
